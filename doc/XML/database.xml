@@ -16,6 +16,9 @@
 
             <primary>field1,field2</primary>
             <index>groups</index>
+
+
+            <comment>This is a table comment</comment>
         </table>
     </global>
 
@@ -28,6 +31,8 @@
             <field type="text">emotion_image</field>
             <field type="int(12)">release_until</field>
             <field type="bigint(20)">emotion_folder</field>
+
+            <comment>This is a table comment</comment>
         </table>
 
         <!--

@@ -331,6 +331,12 @@
 
             <section name="securityHeaders_csp"/>
 
+            <section name="cookies">
+                <conf name="sameSite">
+                    <type><![CDATA[string]]></type>
+                </conf>
+            </section>
+
             <section name="permissions">
                 <conf name="package">
                     <type><![CDATA[bool]]></type>
@@ -966,6 +972,29 @@
                         <locale group="quiqqer/quiqqer" var="quiqqer.settings.security_headers"/>
                     </text>
                     <icon>fa fa-unlock-alt</icon>
+
+                    <settings title="cookies" name="cookies">
+                        <title>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.cookies.title"/>
+                        </title>
+                        <description>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.cookies.description"/>
+                        </description>
+
+                        <select conf="cookies.sameSite" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.cookies.sameSite"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.cookies.sameSite.description"/>
+                            </description>
+                            <option value=""></option>
+                            <option value="None">None</option>
+                            <option value="Lax">Lax</option>
+                            <option value="Strict">Strict</option>
+                        </select>
+                    </settings>
 
                     <settings title="securityHeaders_hsts" name="securityHeaders_hsts">
                         <title>

@@ -105,9 +105,21 @@ class Session
             'name'            => $sessionName,
             'cookie_lifetime' => $this->lifetime,
             'gc_maxlifetime'  => $this->lifetime,
-            'cookie_secure'   => QUI\Utils\System::isProtocolSecure(),
-            //'cookie_samesite' => 'strict'
+            'cookie_secure'   => QUI\Utils\System::isProtocolSecure()
         ];
+
+        // cookie same site
+        $sameSite = QUI::conf('cookies', 'sameSite');
+
+        if ($sameSite && $sameSite !== '') {
+            switch ($sameSite) {
+                case 'Lax':
+                case 'None':
+                case 'Strict':
+                    $storageOptions['cookie_samesite'] = $sameSite;
+                    break;
+            }
+        }
 
         if (!\class_exists('NativeSessionStorage')) {
             $fileNativeSessionStorage = $symfonyDir.'Session/Storage/NativeSessionStorage.php';
