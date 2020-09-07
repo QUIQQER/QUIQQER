@@ -301,8 +301,10 @@ class Setup
      */
     public static function generateFileLinks()
     {
-        $fileHeader
-            = '<?php
+        $date = \date('Y-m-d H:i:s');
+
+        $fileHeader = <<<EOF
+<?php
 
  /**
   * This file is part of QUIQQER.
@@ -323,11 +325,10 @@ class Setup
   * (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
   *
   * Generated File via QUIQQER
-  * Date: '.\date('Y-m-d H:i:s').'
-  *
+  * Date: {$date}
   */
 
-';
+EOF;
 
         $OPT_DIR = OPT_DIR;
         $CMS_DIR = CMS_DIR;
@@ -341,8 +342,12 @@ class Setup
         $bootstrap   = CMS_DIR.'bootstrap.php';
         $console     = CMS_DIR.'console';
 
-        // bootstrap
-        $bootstrapContent = $fileHeader."
+
+        ////////
+        // bootstrap.php
+        ////////
+        $bootstrapContent = <<<EOT
+{$fileHeader}
 \$etc_dir = dirname(__FILE__).'/etc/';
 
 if (!file_exists(\$etc_dir.'conf.ini.php')) {
@@ -359,25 +364,70 @@ if (!defined('ETC_DIR')) {
 if (file_exists(\$boot)) {
     require \$boot;
 }
-";
+EOT;
         \file_put_contents($bootstrap, $bootstrapContent);
 
 
+        ////////
         // ajax.php
-        $content = $fileHeader.
-                   "define('QUIQQER_SYSTEM',true);".
-                   "require '{$OPT_DIR}quiqqer/quiqqer/ajax.php';\n";
+        ////////
+        $content = <<<EOT
+{$fileHeader}
+// maintenance mode
+\$maintenanceFile = dirname(__FILE__).'/maintenance.html';
 
+if (file_exists(\$maintenanceFile)) {
+    http_response_code(503);
+    header('x-powered-by:');
+    header('Retry-After:10');
+
+    echo json_encode([
+        'Exception' => [
+            'message' => 'Site is under maintenance',
+            'code'    => 503
+        ]
+    ]);
+    exit;
+}
+
+define('QUIQQER_SYSTEM',true);
+require '{$OPT_DIR}quiqqer/quiqqer/ajax.php';
+EOT;
         \file_put_contents($ajax, $content);
 
+
+        ////////
         // ajaxBundler.php
-        $content = $fileHeader.
-                   "define('QUIQQER_SYSTEM',true);".
-                   "require '{$SYS_DIR}ajaxBundler.php';\n";
+        ////////
+        $content = <<<EOT
+{$fileHeader}
+// maintenance mode
+\$maintenanceFile = dirname(__FILE__).'/maintenance.html';
+
+if (file_exists(\$maintenanceFile)) {
+    http_response_code(503);
+    header('x-powered-by:');
+    header('Retry-After:10');
+
+    echo json_encode([
+        'Exception' => [
+            'message' => 'Site is under maintenance',
+            'code'    => 503
+        ]
+    ]);
+    exit;
+}
+
+define('QUIQQER_SYSTEM',true);
+require '{$SYS_DIR}ajaxBundler.php';
+EOT;
 
         \file_put_contents($ajaxBundler, $content);
 
+
+        ////////
         // image.php
+        ////////
         $content = $fileHeader.
                    "define('QUIQQER_SYSTEM',true);".
                    "require dirname(__FILE__) .'/bootstrap.php';\n".
@@ -407,14 +457,20 @@ EOT;
 
         \file_put_contents($index, $content);
 
+
+        ////////
         // quiqqer.php
+        ////////
         $content = $fileHeader.
                    "define('CMS_DIR', '{$CMS_DIR}');\n".
                    "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';\n";
 
         \file_put_contents($quiqqer, $content);
 
+
+        ////////
         // console
+        ////////
         $phpCommand = QUI::conf('globals', 'phpCommand');
 
         if (empty($phpCommand)) {
