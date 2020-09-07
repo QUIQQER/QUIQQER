@@ -3,6 +3,7 @@
   "type": "quiqqer-system",
   "description": "A modular based management system written in JavaScript and PHP",
   "license": "GPL-3.0+",
+  "version": "1.5.0-RC1",
   "authors": [
     {
       "name": "Henning Leutz",
