@@ -28,6 +28,7 @@ class Maintenance extends QUI\System\Console\Tool
     /**
      * (non-PHPdoc)
      *
+     * @throws QUI\Exception
      * @see \QUI\System\Console\Tool::execute()
      */
     public function execute()
@@ -39,11 +40,25 @@ class Maintenance extends QUI\System\Console\Tool
         if ($this->getArgument('status') == 'on') {
             $this->write('on');
             $Config->set('globals', 'maintenance', 1);
+
+            // copy maintenance file
+            $file = OPT_DIR.'quiqqer/quiqqer/lib/templates/maintenance.html';
+
+            if (\file_exists(ETC_DIR.'maintenance.html')) {
+                $file = ETC_DIR.'maintenance.html';
+            }
+
+            \file_put_contents(CMS_DIR.'maintenance.html', \file_get_contents($file));
         }
 
         if ($this->getArgument('status') == 'off') {
             $this->write('off');
             $Config->set('globals', 'maintenance', 0);
+
+            // delete maintenance file
+            if (file_exists(CMS_DIR.'maintenance.html')) {
+                unlink(CMS_DIR.'maintenance.html');
+            }
         }
 
         $Config->save();

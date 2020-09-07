@@ -51,6 +51,7 @@ class Update extends QUI\System\Console\Tool
     /**
      * (non-PHPdoc)
      *
+     * @throws QUI\Exception
      * @see \QUI\System\Console\Tool::execute()
      */
     public function execute()
@@ -94,12 +95,11 @@ class Update extends QUI\System\Console\Tool
             }
         }
 
+        // @todo
         if ($this->getArgument('setDevelopment')) {
             $packageList = [];
 
-            $libraries = QUI::getPackageManager()->getInstalled([
-                'type' => 'quiqqer-library'
-            ]);
+            $libraries = QUI::getPackageManager()->getInstalled();
 
             foreach ($libraries as $library) {
                 $packageList[$library['name']] = 'dev-dev';
@@ -177,6 +177,10 @@ class Update extends QUI\System\Console\Tool
             return;
         }
 
+        $Maintenance = new Maintenance();
+        $Maintenance->setArgument('status', 'on');
+        $Maintenance->execute();
+
         try {
             $Packages->refreshServerList();
             $Packages->getComposer()->unmute();
@@ -232,6 +236,9 @@ class Update extends QUI\System\Console\Tool
         }
 
         $this->logBuffer();
+
+        $Maintenance->setArgument('status', 'off');
+        $Maintenance->execute();
     }
 
     /**

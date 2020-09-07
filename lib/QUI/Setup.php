@@ -386,10 +386,24 @@ if (file_exists(\$boot)) {
         \file_put_contents($image, $content);
 
         // index.php
-        $content = $fileHeader.
-                   "define('QUIQQER_SYSTEM',true);".
-                   "require dirname(__FILE__) .'/bootstrap.php';\n".
-                   "require '{$OPT_DIR}quiqqer/quiqqer/index.php';\n";
+        $content = <<<EOT
+{$fileHeader}
+// maintenance mode
+\$maintenanceFile = dirname(__FILE__).'/maintenance.html';
+
+if (file_exists(\$maintenanceFile)) {
+    http_response_code(503);
+    header('x-powered-by:');
+    header('Retry-After:10');
+
+    echo file_get_contents(\$maintenanceFile);
+    exit;
+}
+
+define('QUIQQER_SYSTEM',true);
+require dirname(__FILE__) .'/bootstrap.php';
+require '{$OPT_DIR}quiqqer/quiqqer/index.php';
+EOT;
 
         \file_put_contents($index, $content);
 
