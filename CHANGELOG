@@ -3,11 +3,12 @@
     Features
 
     - New Maintenance Mode
-    - Export Grid Data to Excel, CSV, XML out of the Box
-    - Mail Log integrated
-    - QUIQQER Country Settings
-    - MongoDB as Caching Server
-    - Rewritten of the permission manager (1000x faster)
+    - The grid can now export data by default.
+      Each module can thus quickly and easily offer data in Excel, CSV or XML.
+    - The mail communication can now be logged completely
+    - QUIQQER now has specific country settings
+    - MongoDB can now be used as a caching server
+    - Permission manager was completely rewritten (1000x faster)
 
     Feature Developers
 
@@ -93,7 +94,7 @@
     - refactor: frontend Project -> languages attribute; Language Select consider Frontend
     - refactor: quiqqer exception_error_handler better error output
     - refactor: controls/users/address/Select -> country added to the address text; new event -> onload
-    - refactor: fix: Update File.js - update chunk params in correct order (by hen)
+    - refactor: Update File.js - update chunk params in correct order (by hen)
     - refactor: Update Form.js - prevent multiple finish event triggering (by hen)
     - refactor: check if locale has an empty language, so use the default language from the system
     - refactor: quiqqer.upload.maxFileUploadSize to 10000000 bytes
