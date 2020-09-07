@@ -3988,19 +3988,14 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             <de><![CDATA[Allgemeine Cookie Einstellungen.]]></de>
         </locale>
         <locale name="quiqqer.settings.cookies.sameSite">
-            <de><![CDATA[SameSite]]></de>
             <en><![CDATA[SameSite]]></en>
         </locale>
-        <locale name="quiqqer.settings.cookies.sameSite.description">
-            <de><![CDATA[
-            SameSite verhindert, dass der Browser Cookies zusammen mit Cross-Site-Anfragen sendet.
-            Das Hauptziel ist die Verringerung des Risikos, dass Informationen aus verschiedenen Quellen nach außen dringen.
-            Es bietet auch einen gewissen Schutz vor Fälschungsangriffen auf Cross-Site-Anfragen.
-            ]]></de>
+        <locale name="quiqqer.settings.cookies.sameSite.description" html="true">
             <en><![CDATA[
             SameSite prevents the browser from sending this cookie along with cross-site requests.
             The main goal is mitigate the risk of cross-origin information leakage.
-            It also provides some protection against cross-site request forgery attacks.
+            It also provides some protection against cross-site request forgery attacks.<br />
+            <a href="https://owasp.org/www-community/SameSite" target="_blank">More information</a>
             ]]></en>
         </locale>
         <locale name="quiqqer.settings.security_headers">
