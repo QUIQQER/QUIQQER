@@ -40,6 +40,10 @@
             <primary>id</primary>
             <index>username,password</index>
             <auto_increment>id</auto_increment>
+
+            <comment>
+                User table for QUIQQER
+            </comment>
         </table>
 
 
