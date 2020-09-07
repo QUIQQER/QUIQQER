@@ -1,3 +1,71 @@
+1.4.2 (13.03.2020)
+
+    Features
+
+    - feat: Confirm dialog before clearing complete QUIQQER cache - #981
+    - feat: Multi key encryption keys are now possible
+    - feat: Show an info message if the admin mail is empty
+
+
+    Fixes
+
+    - fix: #978
+    - fix: #984 - sort / order fixed
+    - fix: openssl iv length bugs fixed
+    - fix: refactor: set or overwrite db settings is not allowed via the frontend
+    - fix: refactor: set or overwrite openssl settings is not allowed via the frontend
+    - fix: encryption debugging logs
+    - fix: catch hex2bin exception
+    - fix: mailer -> remove picture
+    - fix: cleanup from output filter
+    - fix: output filter sonder style elements
+    - fix: add missing locale variables for cache-clear-buttons
+    - fix: correct order of implode() parameters
+    - fix: clear compile cache at quiqqer cache clearing
+    - refactor: global settings filter at backend communitcation + global quiqqer settings nonce
+    - refactor: cleanup -> output
+    - refactor: implemented new user delete permission
+
+1.4.1 (06.03.2020)
+
+    Main Features
+
+    - #977 Incorrect character encoding in the multilingual image titles
+    - #973 Slow Querys in Media
+    - #968 Emojis Support
+    - #966 Pagination in Media looks strange if there are less results than set to "per page
+
+    Features
+
+    - feat: console tool GetSiteAttributes
+
+    Fixes
+
+    - fix: #977
+    - fix: packages now use the quiqqer cache naming convention table
+    - fix: Folder download fixed for new Chrome Versions
+    - fix: missing locale packages.panel.category.system
+    - fix: redis server check consider empty locahost
+    - fix: redis server check consider empty locahost
+    - fix: cache instances dont instance multiple instances
+    - fix: activating and deactivating of sites which have a release date in the future
+    - fix: media sorting -> default ASC
+    - fix: #975 - Project Input with pre-defined project
+    - fix: feat: X-Frame-Options as config option (not in GUI available; same for X-Content-Type-Options & X-XSS-Protection
+    - fix: clear cache all removed to quiqqer clear cache
+    - fix: pagination rendering in media panel #966
+    - fix: Folder Viewer -> create folder -> refresh
+    - fix: create media folder in folder viewer translated; fix: media folder -> better exception handling
+    - fix: pcsg/kunden/froilein-adrett-template#18
+    - fix: #96 - Media Folder sind nicht multilingual
+    - fix: consider empty templates (if smth is wrong) in the template handler
+    - fix: Output->images() -> correctly check if ['src'] is set
+    - fix: default value for project default language
+    - refactor: #973 - Slow Querys in Media
+    - refactor: White background color for media input.
+    - refactor: feat: new clear caching events
+    - refactor: quiqqer >= php 7.2
+
 1.4.0 (24.02.2020)
 
     Main Features
@@ -31,7 +99,6 @@
     fix: path history removed from constructor (media)
     fix: performance issue -> urldecode problem solved
     fix: fallback for empty project in controls/projects/project/media/Input
-
 
     refactor: added new createImageHtml Events; consider mime_type for source element
 
