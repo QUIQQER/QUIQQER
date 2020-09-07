@@ -41,9 +41,7 @@
             <index>username,password</index>
             <auto_increment>id</auto_increment>
 
-            <comment>
-                User table for QUIQQER
-            </comment>
+            <comment>This table contains the users of QUIQQER.</comment>
         </table>
 
 
@@ -58,6 +56,8 @@
 
             <primary>id</primary>
             <auto_increment>id</auto_increment>
+
+            <comment>This table contains the workspaces of the QUIQQER users.</comment>
         </table>
 
         <table name="groups">
@@ -73,6 +73,8 @@
 
             <primary>id</primary>
             <index>parent</index>
+
+            <comment>This table contains the groups of QUIQQER.</comment>
         </table>
 
         <table name="permissions">
@@ -137,6 +139,10 @@
             <field type="INT(11) NOT NULL DEFAULT 0">session_lifetime</field>
 
             <primary>session_id</primary>
+            <comment>
+                This table contains the user session. This table is only used when sessions run over the database.
+                Default is the file system.
+            </comment>
         </table>
 
         <table name="updateChecks">
