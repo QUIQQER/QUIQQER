@@ -4492,6 +4492,11 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
+
+        <locale name="PackageNotLicensedException.message" html="true">
+            <de><![CDATA[Für diese Funktion benötigen Sie eine Lizenz für das Paket <b>[package]</b>. Sie können eine entsprechende Lizenz im <a href="https://store.quiqqer.de" target="_blank">QUIQQER Package Store</a> erwerben.]]></de>
+        </locale>
+
         <locale name="quiqqer.settings.auth.showResetPasswordBackend">
             <de><![CDATA["Passwort vergessen" im Backend Login]]></de>
         </locale>

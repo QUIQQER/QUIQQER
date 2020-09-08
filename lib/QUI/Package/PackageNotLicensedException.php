@@ -26,24 +26,13 @@ class PackageNotLicensedException extends \QUI\Exception
     public function __construct(string $package, $message = null, string $url = null)
     {
         if (empty($message)) {
-            if (empty($url)) {
-                $message = QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
-                    'PackageNotLicensedException.message',
-                    [
-                        'package' => $package
-                    ]
-                );
-            } else {
-                $message = QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
-                    'PackageNotLicensedException.message_url',
-                    [
-                        'package' => $package,
-                        'url'     => $url
-                    ]
-                );
-            }
+            $message = QUI::getLocale()->get(
+                'quiqqer/quiqqer',
+                'PackageNotLicensedException.message',
+                [
+                    'package' => $package
+                ]
+            );
         }
 
         parent::__construct($message, $this->code, []);
