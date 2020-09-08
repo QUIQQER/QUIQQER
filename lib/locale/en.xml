@@ -4343,6 +4343,11 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
+
+        <locale name="PackageNotLicensedException.message" html="true">
+            <en><![CDATA[For this feature requires a package license for <b>[package]</b>. You can purchase the appropriate license at the <a href="https://store.quiqqer.com" target="_blank">QUIQQER Package Store</a>.]]></en>
+        </locale>
+
         <locale name="quiqqer.settings.auth.showResetPasswordBackend">
             <en><![CDATA["Forgot password" in backend Login]]></en>
         </locale>
