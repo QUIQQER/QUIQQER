@@ -610,6 +610,22 @@ define('classes/packages/Manager', [
                     onError  : reject
                 });
             });
+        },
+
+        /**
+         * Checks if this QUIQQER system has a specific package license
+         *
+         * @param {String} pkg
+         * @returns {Promise}
+         */
+        hasPackageLicense: function (pkg) {
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_packages_hasLicense', resolve, {
+                    'package'     : pkg,
+                    licensePackage: pkg,
+                    onError       : reject
+                });
+            });
         }
     });
 });
