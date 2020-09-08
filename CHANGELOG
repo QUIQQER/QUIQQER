@@ -1,3 +1,171 @@
+1.5.0 ()
+
+    Features
+
+    - New Maintenance Mode
+    - The grid can now export data by default.
+      Each module can thus quickly and easily offer data in Excel, CSV or XML.
+    - The mail communication can now be logged completely
+    - QUIQQER now has specific country settings
+    - MongoDB can now be used as a caching server
+    - Permission manager was completely rewritten (1000x faster)
+
+    Feature Developers
+
+    - Database Comments
+    - XSD Files for QUIQQER XML Files (https://dev.quiqqer.com/quiqqer/quiqqer/-/tree/master/doc/XML)
+    - New console-tool to manage update-servers
+    - New PackageInstallException was introduced
+    - QUIQQER CLI -> Grouping commands
+    - QUIQQER CLI -> System Tool Flag
+    - editMobile() + editFax() at Address Class
+    - Mootools 1.6
+    - Seperate Cache into 2 Caching Types (Longterm Cache and Shortterm Cache)
+
+    Fix
+
+    - fix: Solved overloaded upload requests
+    - fix: User Addresses are faster now (table index)
+    - fix: Add missing language codes (Andora)
+    - fix: If user mail will be changed, it will set it to the default address, too
+    - fix: Form.js -> use correct API to add single param in setParams
+    - fix: Upload file -> correctly transmit custom file parameters to server
+    - fix: Consider old packages which doesnt exists anymore in the menu build
+    - fix: Upload field -> do not display submit button if 'sendbutton' option is set to false quiqqer/package-formbuilder#12
+    - fix: Media FilePanel -> correctly display watermark size percentage; fixed JS error on save
+    - fix: do not register multiple event listeners in Store API
+    - fix: password change window -> display error messages in window quiqqer/frontend-users#50
+    - fix: correctly read custom console tool arguments from CLI
+    - fix: prefix suffix at project data -> use correct suffix data
+    - fix: country and language fixes
+    - fix: dom parser consider data-qui attribute
+    - fix: rel stylesheet -> output filter consider only stylesheet rel
+    - fix: quiqqer/quiqqer#1024 - Media: Error when unpacking a Zip
+    - fix: adding PathHash insertion to the Media Tables
+    - fix: fileformat consider flex box tables
+    - fix: mail test consider multiple mails with , (commas)
+    - fix: undefined function MongoDB\is_in_transaction() workaround
+    - fix: upload form resize and height calculation fixed
+    - fix: upload finish status is now set correctly
+    - fix: TypeError: Cannot read property 'getId' of undefined - happens sometimes during file deletion
+    - fix: utf8 decode fix
+    - fix: workaround for QUI.parse in combination with slower PCs
+
+    - quiqqer/quiqqer#377 - User permissions & view permissions has errors
+    - quiqqer/quiqqer#972 - Images with DE + EN titles are incorrect
+    - quiqqer/quiqqer#752 - Prevent two identical VHosts from being created
+    - quiqqer/quiqqer#778 - Page prefix / suffix is not saved
+    - quiqqer/quiqqer#929 - Templte events should be handled specifically
+    - quiqqer/quiqqer#955 - FileUpload for nobody
+           - The FileUpload is currently deeply connected to the QUIQQER backend, so a user must always exist to use the upload classes.
+           - Change the file upload from database (UserID) to SessionID and JSON
+                - API to integrate the upload into frontend forms without user
+                - Developer must be able to set data types
+           - Developer Must Manage Upload Folder
+           - Deletion of expired uploadfiles per cron
+           - Security checks during upload
+    - quiqqer/quiqqer#980 - Automatic hyphens behaviour
+    - quiqqer/quiqqer#989 - smarty image -> ignores host parameters
+    - quiqqer/quiqqer#995 - Menu entries don't show after installing a package
+    - quiqqer/quiqqer#1004 - Dragging & Dropping a media folder into itself causes errors
+    - quiqqer/quiqqer#1006 - Users can't be deactivated with the slider in the user-manager table overview
+    - quiqqer/quiqqer#1011 - Media: File with empty title and alt-text after upload
+    - quiqqer/quiqqer#1013 - consider errors at upload manager -> cleanup queue file list
+    - quiqqer/quiqqer#1017 - add last update hash to js and css files via output
+    - quiqqer/quiqqer#1018 - var/composer/repo/ cleanup
+    - quiqqer/quiqqer#1019 - Standard address -> Manage in backend
+    - quiqqer/quiqqer#1020 - Special characters in addresses
+    - quiqqer/quiqqer#1021 - Calling the index.php returns the start page with code 200
+    - quiqqer/quiqqer#1027 - Wrong console tool is execute#1020d by quiqqer:package
+
+    - fix: quiqqer/template-packagestore#16 -> its possible to set style="" at {image} smarty function
+
+    - refactor: Uploaded uses fetch() instead of XMLHttpRequest (Thereby better handling of connection errors)
+    - refactor: log 'user not found' exception during authentication in auth.log instead of error.log
+    - refactor: QUIQQER main console -> read system tools in correct place
+    - refactor: Focus style of buttons are now visible
+    - refactor: added aliases for cli htaccess and licence
+    - refactor: alias for quiqqer:update to update
+    - refactor: alias for quiqqer:setup to setup
+    - refactor: added system country to JS
+    - refactor: integrated PermissionUsers for MediaItems
+    - refactor: user has current address now, getCurrentAddress(); current used address for the user
+    - refactor: Project languages are no accessible at JS; set user lang, set internal language attribute of an user
+    - refactor: frontend Project -> languages attribute; Language Select consider Frontend
+    - refactor: quiqqer exception_error_handler better error output
+    - refactor: controls/users/address/Select -> country added to the address text; new event -> onload
+    - refactor: Update File.js - update chunk params in correct order (by hen)
+    - refactor: Update Form.js - prevent multiple finish event triggering (by hen)
+    - refactor: check if locale has an empty language, so use the default language from the system
+    - refactor: quiqqer.upload.maxFileUploadSize to 10000000 bytes
+
+1.4.2 (13.03.2020)
+
+    Features
+
+    - feat: Confirm dialog before clearing complete QUIQQER cache - #981
+    - feat: Multi key encryption keys are now possible
+    - feat: Show an info message if the admin mail is empty
+
+    Fixes
+
+    - fix: #978
+    - fix: #984 - sort / order fixed
+    - fix: openssl iv length bugs fixed
+    - fix: refactor: set or overwrite db settings is not allowed via the frontend
+    - fix: refactor: set or overwrite openssl settings is not allowed via the frontend
+    - fix: encryption debugging logs
+    - fix: catch hex2bin exception
+    - fix: mailer -> remove picture
+    - fix: cleanup from output filter
+    - fix: output filter sonder style elements
+    - fix: add missing locale variables for cache-clear-buttons
+    - fix: correct order of implode() parameters
+    - fix: clear compile cache at quiqqer cache clearing
+    - refactor: global settings filter at backend communitcation + global quiqqer settings nonce
+    - refactor: cleanup -> output
+    - refactor: implemented new user delete permission
+
+1.4.1 (06.03.2020)
+
+    Main Features
+
+    - #977 Incorrect character encoding in the multilingual image titles
+    - #973 Slow Querys in Media
+    - #968 Emojis Support
+    - #966 Pagination in Media looks strange if there are less results than set to "per page
+
+    Features
+
+    - feat: console tool GetSiteAttributes
+
+    Fixes
+
+    - fix: #977
+    - fix: packages now use the quiqqer cache naming convention table
+    - fix: Folder download fixed for new Chrome Versions
+    - fix: missing locale packages.panel.category.system
+    - fix: redis server check consider empty locahost
+    - fix: redis server check consider empty locahost
+    - fix: cache instances dont instance multiple instances
+    - fix: activating and deactivating of sites which have a release date in the future
+    - fix: media sorting -> default ASC
+    - fix: #975 - Project Input with pre-defined project
+    - fix: feat: X-Frame-Options as config option (not in GUI available; same for X-Content-Type-Options & X-XSS-Protection
+    - fix: clear cache all removed to quiqqer clear cache
+    - fix: pagination rendering in media panel #966
+    - fix: Folder Viewer -> create folder -> refresh
+    - fix: create media folder in folder viewer translated; fix: media folder -> better exception handling
+    - fix: pcsg/kunden/froilein-adrett-template#18
+    - fix: #96 - Media Folder sind nicht multilingual
+    - fix: consider empty templates (if smth is wrong) in the template handler
+    - fix: Output->images() -> correctly check if ['src'] is set
+    - fix: default value for project default language
+    - refactor: #973 - Slow Querys in Media
+    - refactor: White background color for media input.
+    - refactor: feat: new clear caching events
+    - refactor: quiqqer >= php 7.2
+
 1.4.0 (24.02.2020)
 
     Main Features
@@ -31,7 +199,6 @@
     fix: path history removed from constructor (media)
     fix: performance issue -> urldecode problem solved
     fix: fallback for empty project in controls/projects/project/media/Input
-
 
     refactor: added new createImageHtml Events; consider mime_type for source element
 
