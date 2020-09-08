@@ -151,6 +151,9 @@ if ($Avatar) {
         var QUIQQER_HASH    = "<?php echo QUI::getPackageManager()->getHash(); ?>";
         var QUIQQER_CONFIG  = <?php echo \json_encode($config); ?>;
 
+        // Exceptions
+        var QUIQQER_EXCEPTION_CODE_PACKAGE_NOT_LICENSED = <?php echo QUI::getPackageManager()::EXCEPTION_CODE_PACKAGE_NOT_LICENSED; ?>;
+
         // standard project
         var QUIQQER_PROJECT = <?php echo \json_encode([
             'name' => $Project ? $Project->getName() : '',

@@ -74,6 +74,9 @@ QUI::$Ajax->registerFunction(
 
             // re-create composer.json
             QUI::getPackageManager()->refreshServerList();
+
+            // clear license cache
+            \QUI\Cache\Manager::clear('quiqqer_licenses');
         } catch (\Exception $Exception) {
             QUI\System\Log::addError('AJAX :: ajax_licenseKey_upload');
             QUI\System\Log::writeException($Exception);
