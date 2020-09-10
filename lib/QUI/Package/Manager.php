@@ -20,6 +20,7 @@ if (!defined('JSON_UNESCAPED_UNICODE')) {
 
 use QUI;
 use QUI\Utils\System\File as QUIFile;
+use QUI\Cache\Manager as QUICacheManager;
 
 /**
  * Package Manager for the QUIQQER System
@@ -54,6 +55,8 @@ class Manager extends QUI\QDOM
 
     /** @var string The key used to store the packages with database xml files */
     const CACHE_DB_XML_LIST = 'quiqqer/packages/list/haveDatabaseXml';
+
+    const EXCEPTION_CODE_PACKAGE_NOT_LICENSED = 1599;
 
     /**
      * Package Directory
@@ -2331,4 +2334,135 @@ class Manager extends QUI\QDOM
     }
 
     //endregion
+
+    /**
+     * Checks if this QUIQQER system has the license to use a certain package.
+     *
+     * @param string $package - Package name (internal)
+     * @return bool
+     */
+    public function hasLicense(string $package)
+    {
+        $cacheName = 'quiqqer_licenses/'.$package;
+
+        try {
+            return QUICacheManager::get($cacheName);
+        } catch (\Exception $Exception) {
+            // nothing, make license server request
+        }
+
+        $licenseConfigFile = CMS_DIR.'etc/license.ini.php';
+
+        if (!\file_exists($licenseConfigFile)) {
+            return false;
+        }
+
+        try {
+            $licenseServerUrl = QUI::conf('license', 'url');
+
+            if (empty($licenseServerUrl)) {
+                return false;
+            }
+
+            $LicenseConfig = new QUI\Config($licenseConfigFile);
+
+            $licenseId   = $LicenseConfig->get('license', 'id');
+            $licenseHash = $LicenseConfig->get('license', 'licenseHash');
+
+            if (empty($licenseId) || empty($licenseHash)) {
+                return false;
+            }
+
+            $licenseServerUrl = \rtrim($licenseServerUrl).'api/license/haslicensedpackage?';
+
+            $licenseServerUrl .= \http_build_query([
+                'licenseid'   => $licenseId,
+                'licensehash' => $licenseHash,
+                'package'     => $package
+            ]);
+
+            $Curl = \curl_init();
+
+            \curl_setopt_array($Curl, [
+                CURLOPT_RETURNTRANSFER => 1,
+                CURLOPT_URL            => $licenseServerUrl,
+                CURLOPT_USERAGENT      => 'QUIQQER'
+            ]);
+
+            $response = \curl_exec($Curl);
+
+            \curl_close($Curl);
+
+            $isLicensed = !empty($response);
+
+            QUICacheManager::set($cacheName, $isLicensed);
+
+            return $isLicensed;
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            return false;
+        }
+    }
+
+    /**
+     * Checks if this QUIQQER system has the license to use a certain package.
+     *
+     * @param string $package - Package name (internal)
+     * @return bool
+     */
+    public function getPackageStoreUrls(string $package)
+    {
+        $cacheName = 'quiqqer_packagestore_urls/'.$package;
+
+        try {
+            return \json_decode(QUI\Cache\LongTermCache::get($cacheName), true);
+        } catch (\Exception $Exception) {
+            // nothing, make license server request
+        }
+
+        $licenseConfigFile = CMS_DIR.'etc/license.ini.php';
+
+        if (!\file_exists($licenseConfigFile)) {
+            return false;
+        }
+
+        try {
+            $licenseServerUrl = QUI::conf('license', 'url');
+
+            if (empty($licenseServerUrl)) {
+                return false;
+            }
+
+            $licenseServerUrl = \rtrim($licenseServerUrl).'api/license/getstoreurls?';
+
+            $licenseServerUrl .= \http_build_query([
+                'package' => $package
+            ]);
+
+            $Curl = \curl_init();
+
+            \curl_setopt_array($Curl, [
+                CURLOPT_RETURNTRANSFER => 1,
+                CURLOPT_URL            => $licenseServerUrl,
+                CURLOPT_USERAGENT      => 'QUIQQER'
+            ]);
+
+            $response = \curl_exec($Curl);
+
+            \curl_close($Curl);
+
+            if (empty($response)) {
+                return false;
+            }
+
+            $urls = \json_decode($response, true);
+
+            QUI\Cache\LongTermCache::set($cacheName, $response);
+
+            return $urls;
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            return false;
+        }
+    }
 }
