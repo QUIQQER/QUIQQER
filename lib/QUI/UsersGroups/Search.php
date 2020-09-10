@@ -402,7 +402,7 @@ class Search
             $sql = 'SELECT id';
         }
 
-        $sql .= ' FROM '.QUI\Groups\Manager::table();
+        $sql .= ' FROM `'.QUI\Groups\Manager::table() .'`';
 
         // build WHERE
         $where = [];
