@@ -73,6 +73,9 @@
     "npm-asset\/urijs": "1.*",
     "npm-asset\/downloadjs": "1.*"
   },
+  "provide": {
+    "psr/http-client-implementation": "1.0"
+  },
   "scripts": {
     "post-install-cmd": [
       "QUI\\Update::onInstall"
