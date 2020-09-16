@@ -376,13 +376,10 @@ foreach ($packages as $package) {
 
             if ("language" in navigator) {
                 lang = navigator.language;
-
             } else if ("browserLanguage" in navigator) {
                 lang = navigator.browserLanguage;
-
             } else if ("systemLanguage" in navigator) {
                 lang = navigator.systemLanguage;
-
             } else if ("userLanguage" in navigator) {
                 lang = navigator.userLanguage;
             }
@@ -405,7 +402,9 @@ foreach ($packages as $package) {
                     'locale/quiqqer/quiqqer/' + lang
                 ], function (QUI, Session, QUILocale) {
                     QUILocale.setCurrent(lang);
-                    Session.set('quiqqer-user-language', lang);
+                    Session.set('quiqqer-user-language', lang).catch(function (err) {
+                        // doesn't matter
+                    });
 
                     var LoginElement = document.getElement('.quiqqer-login');
 
