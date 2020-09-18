@@ -13,8 +13,6 @@ use QUI\Utils\Project;
 
 /**
  * Class RenameProject
- *
- * @package QUI\System\Console\Tools
  */
 class RenameProject extends Tool
 {

@@ -9,8 +9,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Class Forwarding
- *
- * @package QUI\System
  */
 class Forwarding
 {

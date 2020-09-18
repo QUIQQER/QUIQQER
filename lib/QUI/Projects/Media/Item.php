@@ -18,7 +18,6 @@ use QUI\Utils\System\File as QUIFile;
  * the parent class of each media entry
  *
  * @author  www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.projects.media
  * @licence For copyright and license information, please view the /README.md
  */
 abstract class Item extends QUI\QDOM

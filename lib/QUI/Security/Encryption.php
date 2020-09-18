@@ -11,7 +11,6 @@ use QUI;
 /**
  * Class Encryption
  *
- * @package QUI
  * @todo verschiedenen Verschlüsselungsmethoden mit Fallback
  */
 class Encryption

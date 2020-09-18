@@ -49,6 +49,8 @@ class Site
     }
 
     /**
+     * Alias for setRecursiveAttribute
+     *
      * @param \QUI\Interfaces\Projects\Site $Site
      * @param $attribute
      *

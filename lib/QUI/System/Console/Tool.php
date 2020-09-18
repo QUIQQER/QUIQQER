@@ -13,7 +13,6 @@ use QUI;
  * Parent class for a console tool
  *
  * @author  www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.system.console
  * @licence For copyright and license information, please view the /README.md
  */
 abstract class Tool extends QUI\QDOM

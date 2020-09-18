@@ -12,8 +12,6 @@ use QUI;
  * Class Element
  * Abstraction element for create-read-update-delete
  *
- * @package QUI\CRUD
- *
  * @event onDeleteBegin
  * @event onDeleteEnd
  * @event onSaveBegin

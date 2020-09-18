@@ -17,7 +17,6 @@ use \Symfony\Component\HttpFoundation\Response;
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
- * @package QUI
  *
  * @todo  must be rewritten, spaghetti code :(
  * @todo  create new concept

@@ -11,8 +11,6 @@ use QUI\Demodata\Parser\DemoDataParser;
 
 /**
  * Class Project
- *
- * @package QUI\Utils
  */
 class Project
 {
@@ -195,9 +193,10 @@ class Project
     }
 
     /**
-     * @param QUI\Projects\Project $Project
-     * @param $templateName
+     * Apply demo data to a project
      *
+     * @param QUI\Projects\Project $Project
+     * @param string $templateName
      *
      * @throws QUI\Exception
      */
@@ -224,7 +223,7 @@ class Project
     }
 
     /**
-     * parse a locale string that no url error exists
+     * Parse a locale string that no url error exists
      *
      * @param string $group
      * @param string $var

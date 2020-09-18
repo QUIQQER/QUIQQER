@@ -11,8 +11,6 @@ use QUI;
 /**
  * Class Uuid
  * - Helps to generate unique IDs
- *
- * @package QUI\Utils
  */
 class Uuid
 {

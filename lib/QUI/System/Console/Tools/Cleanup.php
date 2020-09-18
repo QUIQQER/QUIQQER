@@ -6,7 +6,6 @@ use QUI;
 
 /**
  * Class Cleanup
- * @package QUI\System\Console\Tools
  */
 class Cleanup extends QUI\System\Console\Tool
 {

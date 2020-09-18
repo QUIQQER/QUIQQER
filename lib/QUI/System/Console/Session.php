@@ -11,8 +11,6 @@ use QUI;
 /**
  * Class Session
  * Session placeholder for the CLI
- *
- * @package QUI\System\Console
  */
 class Session
 {

@@ -16,7 +16,6 @@ use QUI\Utils\System\File;
  * A media image
  *
  * @author  www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.projects.media
  * @licence For copyright and license information, please view the /README.md
  */
 class Image extends Item implements QUI\Interfaces\Projects\Media\File

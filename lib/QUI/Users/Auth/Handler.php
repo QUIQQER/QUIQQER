@@ -12,8 +12,6 @@ use QUI\Users\AuthenticatorInterface;
 /**
  * Class Handler
  * Main Class, Handling class for authenticators
- *
- * @package QUI
  */
 class Handler
 {

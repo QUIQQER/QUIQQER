@@ -12,7 +12,6 @@ use QUI;
  * System test
  *
  * @author  www.pcsg.de (Henning Leutz)
- * @package quiqqer/quiqqer
  * @licence For copyright and license information, please view the /README.md
  */
 abstract class Test extends QUI\QDOM implements QUI\Interfaces\System\Test

@@ -12,8 +12,6 @@ use QUI;
 
 /**
  * Class CommandEvents
- *
- * @package QUI\Package
  */
 class CommandEvents
 {

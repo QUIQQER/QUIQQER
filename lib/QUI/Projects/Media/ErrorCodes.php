@@ -8,8 +8,6 @@ namespace QUI\Projects\Media;
 
 /**
  * Class ErrorCodes
- *
- * @package QUI\Projects\Media
  */
 class ErrorCodes
 {

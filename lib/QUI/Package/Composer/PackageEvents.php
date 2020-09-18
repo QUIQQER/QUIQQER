@@ -15,7 +15,6 @@ use Composer\DependencyResolver\Operation\UpdateOperation;
 
 /**
  * Class PackageEvents
- * @package QUI\Package
  */
 class PackageEvents
 {
