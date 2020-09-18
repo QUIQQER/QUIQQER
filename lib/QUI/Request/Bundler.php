@@ -13,7 +13,6 @@ use QUI\Utils\Security\Orthos;
  * Class Bundler
  *
  * @author  www.pcsg.de (Henning Leutz)
- * @package QUI\Request
  */
 class Bundler
 {

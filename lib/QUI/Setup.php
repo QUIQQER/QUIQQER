@@ -14,7 +14,6 @@ use QUI\Utils\System\File as SystemFile;
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
- * @package com.pcsg.qui
  */
 class Setup
 {

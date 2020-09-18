@@ -20,7 +20,6 @@ use \Symfony\Component\HttpFoundation\Response;
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
- * @package quiqqer/quiqqer
  */
 class QUI
 {
@@ -233,7 +232,6 @@ class QUI
              * CMS_DIR - Path to the quiqqer folder, where the whole system are located
              *
              * @var string
-             * @package com.pcsg.qui
              */
             \define('CMS_DIR', $config['globals']['cms_dir']);
         }
@@ -243,7 +241,6 @@ class QUI
              * DEBUG_MODE - setting if debug mode is enabled or not
              *
              * @var boolean
-             * @package com.pcsg.qui
              */
             \define("DEBUG_MODE", $config['globals']['debug_mode']);
         }
@@ -253,7 +250,6 @@ class QUI
              * DEVELOPMENT - setting if the system is in development mode or not
              *
              * @var boolean
-             * @package com.pcsg.qui
              */
             \define("DEVELOPMENT", $config['globals']['development']);
         }
@@ -276,7 +272,6 @@ class QUI
              * LIB_DIR - Path to the lib folder, where all the libraries are located
              *
              * @var string
-             * @package com.pcsg.qui
              */
             \define('LIB_DIR', $lib_dir);
         }
@@ -287,7 +282,6 @@ class QUI
              * where all the files are located on which the web server must have access
              *
              * @var string
-             * @package com.pcsg.qui
              */
             \define('VAR_DIR', $var_dir);
         }
@@ -297,7 +291,6 @@ class QUI
              * BIN_DIR - Path to the bin folder, where all temp files are located
              *
              * @var string
-             * @package com.pcsg.qui
              */
             \define('BIN_DIR', \dirname(LIB_DIR).'/bin/');
         }
@@ -307,7 +300,6 @@ class QUI
              * USR_DIR - Path to the usr folder, where all projects are located
              *
              * @var string
-             * @package com.pcsg.qui
              */
             \define('USR_DIR', $config['globals']['usr_dir']);
         }
@@ -317,7 +309,6 @@ class QUI
              * SYS_DIR - Path to the etc folder, where all the configurations are located
              *
              * @var string
-             * @package com.pcsg.qui
              */
             \define('SYS_DIR', \dirname(LIB_DIR).'/admin/');
         }
@@ -327,7 +318,6 @@ class QUI
              * OPT_DIR - Path to the plugin folder, where all plugins are located
              *
              * @var string
-             * @package com.pcsg.qui
              */
             \define('OPT_DIR', $config['globals']['opt_dir']);
         }
@@ -337,8 +327,7 @@ class QUI
              * URL_DIR - path by which the system is accessible via the browser
              *
              * @var string
-             * @package com.pcsg.qui
-             */
+            */
             \define('URL_DIR', $config['globals']['url_dir']);
         }
 
@@ -357,7 +346,6 @@ class QUI
              * if a backtrace should write in the logs during a error
              *
              * @var string
-             * @package com.pcsg.qui
              */
             \define('ERROR_BACKTRACE', $Config->get('error', 'backtrace'));
         }
@@ -367,9 +355,7 @@ class QUI
              * QUI_DB_PRFX - The DB Table Prefix
              *
              * @var string
-             * @package com.pcsg.qui
              */
-
             $prfx = '';
 
             if ($Config->get('db', 'prfx')) {

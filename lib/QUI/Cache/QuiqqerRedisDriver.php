@@ -5,8 +5,6 @@ namespace QUI\Cache;
 /**
  * Class QuiqqerRedisDriver
  * - Workaround class, because tedivm don't include the PR :(
- *
- * @package QUI\Cache
  */
 class QuiqqerRedisDriver extends \Stash\Driver\Redis
 {

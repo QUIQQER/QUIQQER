@@ -11,8 +11,6 @@ use QUI\Control;
 
 /**
  * Class QUIQQERLogin
- *
- * @package QUI
  */
 class QUIQQERLogin extends Control
 {

@@ -13,7 +13,6 @@ use QUI;
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
- * @package quiqqer/quiqqer
  * @deprecated use QUI\Utils\UserGroups
  */
 class Utils extends QUI\Utils\UserGroups

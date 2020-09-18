@@ -14,8 +14,6 @@ use QUI\Utils\Text\XML;
 
 /**
  * Class Menu
- *
- * @package QUI\Workspace
  */
 class Menu
 {

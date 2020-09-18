@@ -13,8 +13,6 @@ use QUI\Utils\Security\Orthos;
 /**
  * Class Auth
  * Standard QUIQQER Authentication
- *
- * @package QUI\Users
  */
 class QUIQQER extends AbstractAuthenticator
 {

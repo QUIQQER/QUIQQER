@@ -195,6 +195,15 @@ define('classes/request/Bundler', [
 
                 onCancel: function () {
                     this.fireEvent('requestCancel', [this]);
+                }.bind(this),
+
+                onFailure: function (xhr) {
+                    if (xhr.responseText !== '') {
+                        this.$parseResponse(xhr.responseText, Params, requestData);
+                    }
+
+                    this.fireEvent('requestFailure', [this]);
+                    this.fireEvent('requestCancel', [this]);
                 }.bind(this)
             });
 
@@ -280,6 +289,8 @@ define('classes/request/Bundler', [
                 return false;
             };
 
+            var maintenance = false;
+
             for (k in result) {
                 if (!result.hasOwnProperty(k)) {
                     continue;
@@ -290,6 +301,22 @@ define('classes/request/Bundler', [
                 entryResult = result[k];
 
                 entryData.resolve(entryResult);
+
+                if (typeof entryResult.Exception !== 'undefined' &&
+                    typeof entryResult.Exception.code !== 'undefined'
+                ) {
+                    maintenance = true;
+                }
+            }
+
+            if (maintenance) {
+                require(['Locale'], function (QUILocale) {
+                    QUI.getMessageHandler(function (MH) {
+                        MH.addInformation(
+                            QUILocale.get('quiqqer/quiqqer', 'message.maintenance')
+                        );
+                    });
+                });
             }
         }
     });

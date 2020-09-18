@@ -13,10 +13,8 @@ namespace QUI\Interfaces\Projects;
  * a trash are used eq. by projects and the media center
  *
  * @author  www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.interface.projects
  * @licence For copyright and license information, please view the /README.md
  */
-
 interface Trash
 {
     /**

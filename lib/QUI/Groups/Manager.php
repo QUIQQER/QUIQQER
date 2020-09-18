@@ -13,7 +13,6 @@ use QUI\Utils\Security\Orthos;
  * Group Manager
  *
  * @author  www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.groups
  * @licence For copyright and license information, please view the /README.md
  */
 class Manager extends QUI\QDOM

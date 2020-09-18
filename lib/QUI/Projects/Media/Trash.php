@@ -13,7 +13,6 @@ use QUI\Projects\Media;
  * The media trash
  *
  * @author  www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.projects.media
  * @licence For copyright and license information, please view the /README.md
  */
 class Trash implements QUI\Interfaces\Projects\Trash

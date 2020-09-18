@@ -11,8 +11,6 @@ use QUI;
  * Helps with the config
  *
  * Header check: https://observatory.mozilla.org/
- *
- * @package QUI\System
  */
 class CSP
 {

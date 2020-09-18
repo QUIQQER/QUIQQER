@@ -15,8 +15,6 @@ use QUI\Utils\Text\XML;
 
 /**
  * Class Output
- *
- * @package QUI
  */
 class Output extends Singleton
 {

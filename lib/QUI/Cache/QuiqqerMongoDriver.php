@@ -15,8 +15,6 @@ use Stash\Exception\InvalidArgumentException;
 /**
  * Class QuiqqerMongoDriver
  * based on https://github.com/fisuku/mongostash
- *
- * @package QUI\Cache
  */
 class QuiqqerMongoDriver extends AbstractDriver
 {

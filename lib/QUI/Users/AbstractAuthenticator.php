@@ -12,7 +12,6 @@ use QUI;
  * Parent class for external Authenticator
  *
  * @author  www.pcsg.de (Henning Leutz)
- * @package \QUI\Interfaces\Users
  * @licence For copyright and license information, please view the /README.md
  */
 abstract class AbstractAuthenticator implements QUI\Users\AuthenticatorInterface

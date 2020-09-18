@@ -11,8 +11,6 @@ use QUI;
 /**
  * Class Handler
  * Icon handler for css class icons like font awesome
- *
- * @package QUI\Icons
  */
 class Handler
 {

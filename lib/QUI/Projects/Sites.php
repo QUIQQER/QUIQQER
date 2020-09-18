@@ -16,7 +16,6 @@ use QUI\Utils\Text\XML;
  * Helper for the Site Object
  *
  * @author  www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.projects
  * @licence For copyright and license information, please view the /README.md
  */
 class Sites

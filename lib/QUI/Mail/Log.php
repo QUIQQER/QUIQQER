@@ -7,8 +7,6 @@ use QUI;
 
 /**
  * Class Log
- *
- * @package QUI\Mail
  */
 class Log
 {
