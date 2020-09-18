@@ -12,7 +12,6 @@ use QUI\Projects\Site\Utils;
 /**
  * Class Navigation
  *
- * @package quiqqer/quiqqer
  * @licence For copyright and license information, please view the /README.md
  */
 class Navigation extends QUI\Control
