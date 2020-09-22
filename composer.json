@@ -71,7 +71,8 @@
     "npm-asset\/nouislider": "*",
     "npm-asset\/mustache": "2.*",
     "npm-asset\/urijs": "1.*",
-    "npm-asset\/downloadjs": "1.*"
+    "npm-asset\/downloadjs": "1.*",
+    "npm-asset\/requirejs": "2.*"
   },
   "provide": {
     "psr/http-client-implementation": "1.0"
