@@ -115,7 +115,7 @@
 
     {if $Template->getAttribute('requirejs')}
         <!-- include components -->
-        <script src="{$URL_OPT_DIR}bin/r.js?lu={$lastUpdate|md5}"></script>
+        <script src="{$URL_OPT_DIR}bin/requirejs/require.js?lu={$lastUpdate|md5}"></script>
         <script>
             require.config({
                 baseUrl : URL_DIR,
