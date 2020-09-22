@@ -432,6 +432,10 @@ class Manager extends QUI\QDOM
                 "bower"            => false,
                 "npm-searchable"   => false,
                 "bower-searchable" => false
+            ],
+            "installer-types"        => ["component"],
+            "installer-paths"        => [
+                OPT_DIR.'bin/{$name}/' => ["type:component"]
             ]
         ];
 
@@ -2400,6 +2404,7 @@ class Manager extends QUI\QDOM
             return $isLicensed;
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
+
             return false;
         }
     }
@@ -2462,6 +2467,7 @@ class Manager extends QUI\QDOM
             return $urls;
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
+
             return false;
         }
     }
