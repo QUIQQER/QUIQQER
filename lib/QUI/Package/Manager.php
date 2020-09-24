@@ -571,6 +571,8 @@ class Manager extends QUI\QDOM
                                 'header' => [
                                     'licenseid: '.$data['id'],
                                     'licensehash: '.$hash,
+                                    'systemid: '.QUI\System\License::getSystemId(),
+                                    'systemhash: '.QUI\System\License::getSystemDataHash(),
                                     'clientdata: '.\bin2hex(\json_encode($this->getLicenseClientData()))
                                 ]
                             ]
@@ -2358,12 +2360,6 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            $licenseServerUrl = QUI::conf('license', 'url');
-
-            if (empty($licenseServerUrl)) {
-                return false;
-            }
-
             $LicenseConfig = new QUI\Config($licenseConfigFile);
 
             $licenseId   = $LicenseConfig->get('license', 'id');
@@ -2373,11 +2369,11 @@ class Manager extends QUI\QDOM
                 return false;
             }
 
-            $licenseServerUrl = \rtrim($licenseServerUrl).'api/license/haslicensedpackage?';
+            $licenseServerUrl = QUI\System\License::getLicenseServerUrl().'api/license/haslicensedpackage?';
 
             $licenseServerUrl .= \http_build_query([
                 'licenseid'   => $licenseId,
-                'licensehash' => $licenseHash,
+                'licensehash' => \bin2hex($licenseHash),
                 'package'     => $package
             ]);
 
