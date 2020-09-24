@@ -5,17 +5,6 @@
  *
  * @module controls/LicenseKey
  * @author www.pcsg.de (Patrick Müller)
- *
- * @require qui/controls/Control
- * @require qui/controls/loader/Loader
- * @require qui/controls/windows/Popup
- * @require qui/controls/buttons/Button
- * @require controls/upload/Form
- * @require Locale
- * @require Ajax
- * @require Mustache
- * @require text!controls/licenseKey/LicenseKey.html
- * @require css!controls/licenseKey/LicenseKey.css
  */
 define('controls/licenseKey/LicenseKey', [
 
@@ -48,7 +37,9 @@ define('controls/licenseKey/LicenseKey', [
             '$displayLicenseData',
             '$getLicenseData',
             'refresh',
-            '$deleteLicense'
+            '$deleteLicense',
+            '$checkStatus',
+            '$getStatus'
         ],
 
         initialize: function (options) {
@@ -101,16 +92,23 @@ define('controls/licenseKey/LicenseKey', [
             var lgPrefix = 'controls.licensekey.template.';
 
             this.$Elm.set('html', Mustache.render(template, {
-                header         : QUILocale.get(lg, lgPrefix + 'header'),
-                labelId        : QUILocale.get(lg, lgPrefix + 'labelId'),
-                labelCreated   : QUILocale.get(lg, lgPrefix + 'labelCreated'),
-                labelValidUntil: QUILocale.get(lg, lgPrefix + 'labelValidUntil'),
-                labelName      : QUILocale.get(lg, lgPrefix + 'labelName'),
-                labelUpload    : QUILocale.get(lg, lgPrefix + 'labelUpload'),
-                id             : LicenseData.id,
-                created        : LicenseData.created,
-                validUntil     : LicenseData.validUntil,
-                name           : LicenseData.name
+                header             : QUILocale.get(lg, lgPrefix + 'header'),
+                labelId            : QUILocale.get(lg, lgPrefix + 'labelId'),
+                labelCreated       : QUILocale.get(lg, lgPrefix + 'labelCreated'),
+                labelValidUntil    : QUILocale.get(lg, lgPrefix + 'labelValidUntil'),
+                labelName          : QUILocale.get(lg, lgPrefix + 'labelName'),
+                labelUpload        : QUILocale.get(lg, lgPrefix + 'labelUpload'),
+                labelStatus        : QUILocale.get(lg, lgPrefix + 'labelStatus'),
+                labelSystemId      : QUILocale.get(lg, lgPrefix + 'labelSystemId'),
+                labelSystemDataHash: QUILocale.get(lg, lgPrefix + 'labelSystemDataHash'),
+                descSystemId       : QUILocale.get(lg, lgPrefix + 'descSystemId'),
+                descSystemDataHash : QUILocale.get(lg, lgPrefix + 'descSystemDataHash'),
+                id                 : LicenseData.id,
+                created            : LicenseData.created,
+                validUntil         : LicenseData.validUntil,
+                name               : LicenseData.name,
+                systemId           : LicenseData.systemId,
+                systemDataHash     : LicenseData.systemDataHash
             }));
 
             // license key upload
@@ -145,6 +143,156 @@ define('controls/licenseKey/LicenseKey', [
 
             UploadForm.setParam('onfinish', 'ajax_licenseKey_upload');
             UploadForm.setParam('extract', 0);
+
+            this.$checkStatus();
+        },
+
+        /**
+         * Check license status
+         */
+        $checkStatus: function () {
+            var self      = this;
+            var StatusElm = this.$Elm.getElement('.quiqqer-licensekey-status');
+
+            StatusElm.set('html', QUILocale.get(lg, 'controls.licensekey.status.loading'));
+
+            new Element('span', {
+                'class': 'fa fa-spinner fa-spin'
+            }).inject(StatusElm, 'top');
+
+            var setStatus = function (status, remainingActivations) {
+                StatusElm.set('html', '');
+
+                remainingActivations = remainingActivations || false;
+
+                new Element('div', {
+                    'class': 'quiqqer-licensekey-status-text quiqqer-licensekey-status-' + status,
+                    html   : QUILocale.get(lg, 'controls.licensekey.status.' + status)
+                }).inject(StatusElm);
+
+                if (remainingActivations) {
+                    new Element('span', {
+                        html: QUILocale.get(lg, 'controls.licensekey.status.remaining_activations', {
+                            count: remainingActivations
+                        })
+                    }).inject(StatusElm);
+                }
+            };
+
+            var showMessage = function (msg, isError) {
+                var elmClass = 'quiqqer-licensekey-status-info';
+
+                isError = isError || false;
+
+                if (isError) {
+                    elmClass = 'quiqqer-licensekey-status-error';
+                }
+
+                new Element('div', {
+                    'class': elmClass,
+                    html   : msg
+                }).inject(StatusElm);
+            };
+
+            var showActivationRequestMessage = function (msg) {
+                new QUIConfirm({
+                    maxHeight: 300,
+                    maxWidth : 500,
+                    autoclose: true,
+
+                    information: msg,
+                    title      : false,
+                    texticon   : 'fa fa-info-circle',
+                    text       : QUILocale.get(lg, 'controls.licensekey.status.activation.text'),
+                    icon       : 'fa fa-info-circle',
+
+                    cancel_button: false,
+                    ok_button    : {
+                        text     : QUILocale.get(lg, 'controls.licensekey.status.activation.btn.ok'),
+                        textimage: 'icon-ok fa fa-check'
+                    }
+                }).open();
+            };
+
+            var showActivateBtn = function () {
+                new QUIButton({
+                    'class': 'quiqqer-licensekey-status-btn',
+                    text   : QUILocale.get(lg, 'controls.licensekey.status.btn.activate'),
+                    events : {
+                        onClick: function (Btn) {
+                            Btn.disable();
+
+                            self.$activateSystem().then(function (Status) {
+                                self.$checkStatus();
+                                showActivationRequestMessage(Status.msg);
+                            }, function (Error) {
+                                Btn.enable();
+                                showActivationRequestMessage(
+                                    QUILocale.get(lg, 'controls.licensekey.status.activation.error')
+                                );
+                            });
+                        }
+                    }
+                }).inject(StatusElm);
+            };
+
+            this.$getStatus().then(function (Status) {
+                if (Status.active) {
+                    setStatus('active', Status.remainingActivations);
+                } else {
+                    setStatus('inactive');
+                    showActivateBtn();
+
+                    if ("reasonCode" in Status && Status.reasonCode) {
+                        showMessage(QUILocale.get(lg, 'controls.licensekey.status.reasonCode.' + Status.reasonCode));
+                    }
+                }
+            }, function (Error) {
+                setStatus('unknown');
+                showMessage(Error.getMessage(), true);
+            });
+        },
+
+        /**
+         * Activate QUIQQER system for uploaded license
+         *
+         * @return {Promise}
+         */
+        $activateSystem: function () {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.post('ajax_licenseKey_activate', resolve, {
+                    onError  : reject,
+                    showError: false
+                });
+            });
+        },
+
+        /**
+         * Deactivate QUIQQER system for uploaded license
+         *
+         * @return {Promise}
+         */
+        $deactivateSystem: function () {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.post('ajax_licenseKey_deactivate', resolve, {
+                    onError  : reject,
+                    showError: false
+                });
+            });
+        },
+
+        /**
+         * Get license status
+         *
+         * @return {Promise}
+         */
+        $getStatus: function () {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.get('ajax_licenseKey_checkStatus', resolve, {
+                    onError  : reject,
+                    showError: false
+                });
+            });
         },
 
         /**
