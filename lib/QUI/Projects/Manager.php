@@ -489,7 +489,7 @@ class Manager
             if (!isset($conf['default_lang'])) {
                 $conf['default_lang'] = 'en';
             }
-            
+
             try {
                 $Project = self::getProject(
                     $project,
@@ -611,6 +611,7 @@ class Manager
      * @param string $name - Project name
      * @param string $lang - Project lang
      * @param array $languages - optional, additional languages
+     * @param string $template - Project template
      *
      * @return \QUI\Projects\Project
      * @throws \QUI\Exception
@@ -618,11 +619,9 @@ class Manager
      *
      * @todo noch einmal anschauen und übersichtlicher schreiben
      */
-    public static function createProject($name, $lang, $languages = [])
+    public static function createProject($name, $lang, $languages = [], $template = '')
     {
-        Permission::checkPermission(
-            'quiqqer.projects.create'
-        );
+        Permission::checkPermission('quiqqer.projects.create');
 
         if (\strlen($name) <= 2) {
             throw new QUI\Exception(
@@ -746,17 +745,17 @@ class Manager
 
         // first folder
         $DataBase->insert($table_media, [
-            'id'      => 1,
-            'name'    => 'Start',
-            'title'   => 'start',
-            'short'   => 'Shorttext',
-            'type'    => 'folder',
-            'file'    => '',
-            'active'  => 1,
-            'deleted' => 0,
-            'c_date'  => \date('Y-m-d H:i:s'),
-            'c_user'  => QUI::getUserBySession()->getId(),
-            'e_user'  => QUI::getUserBySession()->getId(),
+            'id'       => 1,
+            'name'     => 'Start',
+            'title'    => 'start',
+            'short'    => 'Shorttext',
+            'type'     => 'folder',
+            'file'     => '',
+            'active'   => 1,
+            'deleted'  => 0,
+            'c_date'   => \date('Y-m-d H:i:s'),
+            'c_user'   => QUI::getUserBySession()->getId(),
+            'e_user'   => QUI::getUserBySession()->getId(),
             'pathHash' => md5('')
         ]);
 
@@ -795,7 +794,7 @@ class Manager
             'default_lang' => $lang,
             'langs'        => \implode(',', $languages),
             'admin_mail'   => '',
-            'template'     => $name,
+            'template'     => $template,
             'image_text'   => '0',
             'keywords'     => '',
             'description'  => '',
