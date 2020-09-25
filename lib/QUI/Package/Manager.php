@@ -2378,6 +2378,8 @@ class Manager extends QUI\QDOM
             $licenseServerUrl .= \http_build_query([
                 'licenseid'   => $licenseId,
                 'licensehash' => \bin2hex($licenseHash),
+                'systemid'    => QUI\System\License::getSystemId(),
+                'systemhash'  => QUI\System\License::getSystemDataHash(),
                 'package'     => $package
             ]);
 
