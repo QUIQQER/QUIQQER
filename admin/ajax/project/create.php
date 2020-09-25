@@ -10,26 +10,22 @@
 QUI::$Ajax->registerFunction(
     'ajax_project_create',
     function ($params) {
-        $params = \json_decode($params, true);
+        $params   = \json_decode($params, true);
+        $template = '';
 
-        $Project = QUI\Projects\Manager::createProject(
-            $params['project'],
-            $params['lang']
-        );
-
+        // @todo check if template is allowed
         if (isset($params['template']) && !empty($params['template'])) {
-            $Config = QUI::getProjectManager()->getConfig();
-
-            $installedTemplates = QUI::getPackageManager()->searchInstalledPackages([
-                'type' => 'quiqqer-template'
-            ]);
-
             $template = $params['template'];
             $template = QUI\Utils\Security\Orthos::removeHTML($template);
             $template = QUI\Utils\Security\Orthos::clearPath($template);
-            $Config->set($Project->getName(), 'template', $template);
-            $Config->save();
         }
+
+        $Project = QUI\Projects\Manager::createProject(
+            $params['project'],
+            $params['lang'],
+            [],
+            $template
+        );
 
         if (isset($params['demodata']) && $params['demodata'] && isset($template)) {
             QUI\Utils\Project::applyDemoDataToProject($Project, $template);
