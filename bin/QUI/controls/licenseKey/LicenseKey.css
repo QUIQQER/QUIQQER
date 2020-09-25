@@ -1,3 +1,25 @@
 .quiqqer-licensekey-panel {
     width: 100%;
 }
+
+.quiqqer-licensekey-status-text {
+    font-weight: bold;
+}
+
+.quiqqer-licensekey-status-active {
+    color: green;
+}
+
+.quiqqer-licensekey-status-inactive {
+    color: red;
+}
+
+.quiqqer-licensekey-status-unknown {
+    color: grey;
+}
+
+.quiqqer-licensekey-status button {
+    float: right !important;
+    height: 20px;
+    line-height: 20px;
+}

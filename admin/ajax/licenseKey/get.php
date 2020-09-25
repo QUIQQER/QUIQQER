@@ -1,7 +1,6 @@
 <?php
 
-use QUI\Security\Encryption;
-use QUI\Utils\System\File;
+use QUI\System\License;
 use QUI\Config;
 
 /**
@@ -13,11 +12,16 @@ QUI::$Ajax->registerFunction(
     'ajax_licenseKey_get',
     function () {
         $licenseConfigFile = CMS_DIR.'etc/license.ini.php';
-        $default           = [
-            'id'         => '-',
-            'created'    => '-',
-            'validUntil' => '-',
-            'name'       => '-',
+        $systemId          = License::getSystemId();
+        $systemDataHash    = License::getSystemDataHash();
+
+        $default = [
+            'systemId'       => $systemId,
+            'systemDataHash' => $systemDataHash,
+            'id'             => '-',
+            'created'        => '-',
+            'validUntil'     => '-',
+            'name'           => '-',
         ];
 
         if (!\file_exists($licenseConfigFile)) {
@@ -40,6 +44,9 @@ QUI::$Ajax->registerFunction(
         }
 
         unset($data['keyHash']);
+
+        $data['systemId']       = $systemId;
+        $data['systemDataHash'] = $systemDataHash;
 
         return $data;
     },
