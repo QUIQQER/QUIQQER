@@ -328,7 +328,7 @@ foreach ($packages as $package) {
 
     ?>
 
-    <script src="<?php echo URL_OPT_DIR; ?>bin/require.js"></script>
+    <script src="<?php echo URL_OPT_DIR; ?>bin/r.js"></script>
     <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-core.js"></script>
     <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-more.js"></script>
     <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/moofx.js"></script>

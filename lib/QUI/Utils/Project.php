@@ -45,9 +45,7 @@ class Project
         $First = $Project->firstChild();
         $First = $First->getEdit();
 
-        if (!$First->getAttribute('layout')
-            || $First->getAttribute('layout') === ''
-        ) {
+        if (!$First->getAttribute('layout') || $First->getAttribute('layout') === '') {
             $First->setAttribute('layout', 'layout/startpage');
             $First->save();
         }

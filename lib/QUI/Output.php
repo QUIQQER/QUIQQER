@@ -733,9 +733,10 @@ class Output extends Singleton
             }
         }
 
-        $url = $this->extendUrlWithParams($url, $params);
+        $url    = $this->extendUrlWithParams($url, $params);
+        $vhosts = QUI::vhosts();
 
-        if (!$Project->hasVHost()) {
+        if (!$Project->hasVHost() && !empty($vhosts)) {
             $url = $Project->getLang().'/'.$url;
         }
 
@@ -746,8 +747,6 @@ class Output extends Singleton
         ) {
             return $Project->getVHost(true, true).URL_DIR.$url;
         }
-
-        $vHosts = QUI::getRewrite()->getVHosts();
 
         /**
          * Sprache behandeln
