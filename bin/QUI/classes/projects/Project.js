@@ -163,16 +163,10 @@ define('classes/projects/Project', [
                     }
 
                     resolve(self.$config);
-
-                    require(['Projects'], function (Projects) {
-                        Projects.fireEvent('projectSave', [self]);
-                    });
-
                 }, {
                     project: this.getName(),
                     onError: reject
                 });
-
             }.bind(this));
         },
 
@@ -183,14 +177,12 @@ define('classes/projects/Project', [
         getDefaults: function () {
             var self = this;
             return new Promise(function (resolve, reject) {
-
                 Ajax.get('ajax_project_get_defaults', function (result) {
                     resolve(result);
                 }, {
                     project: self.encode(),
                     onError: reject
                 });
-
             });
         },
 
@@ -238,6 +230,10 @@ define('classes/projects/Project', [
                     resolve(result);
 
                     self.fireEvent('save');
+
+                    require(['Projects'], function (Projects) {
+                        Projects.fireEvent('projectSave', [self]);
+                    });
                 }, {
                     project: self.getName(),
                     params : JSON.encode(params || false),
@@ -282,6 +278,19 @@ define('classes/projects/Project', [
          */
         getLang: function () {
             return this.getAttribute('lang');
+        },
+
+        /**
+         * Return all languages
+         *
+         * @return {Array}
+         */
+        getLanguages: function () {
+            if (!this.getAttribute('langs')) {
+                return [this.getLang()];
+            }
+
+            return this.getAttribute('langs').split(',');
         },
 
         /**
