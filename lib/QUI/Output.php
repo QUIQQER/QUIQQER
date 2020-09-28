@@ -609,11 +609,18 @@ class Output extends Singleton
             return $html;
         }
 
+        // external files dont get the lu flag
+        if (\strpos($att['src'], 'http://') !== false
+            || \strpos($att['src'], 'https://') !== false
+            || \strpos($att['src'], '//') === 0) {
+            return $html;
+        }
+
         $lu   = \md5(QUI::$last_up_date);
-        $file = CMS_DIR.ltrim($att['src'], '/');
+        $file = CMS_DIR.\ltrim($att['src'], '/');
 
         // check if css file is project custom css
-        if (strpos($att['src'], 'custom.js') !== false && \file_exists($file)) {
+        if (\strpos($att['src'], 'custom.js') !== false && \file_exists($file)) {
             $lu = \md5(filemtime($file));
         }
 
