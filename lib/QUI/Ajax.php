@@ -536,4 +536,12 @@ class Ajax extends QUI\QDOM
                 break;
         }
     }
+
+    /**
+     * @return array
+     */
+    public function getJsCallbacks()
+    {
+        return $this->jsCallbacks;
+    }
 }
