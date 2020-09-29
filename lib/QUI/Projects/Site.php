@@ -1946,7 +1946,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         try {
             QUI\Cache\Manager::set($this->getCachePath(), $this->encode());
         } catch (\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
+            QUI\System\Log::addDebug($Exception->getMessage());
         }
     }
 
