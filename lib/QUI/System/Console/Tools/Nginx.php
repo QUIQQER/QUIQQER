@@ -146,6 +146,7 @@ image/x-icon
 text/cache-manifest
 text/css
 text/plain
+text/html
 text/xml
 text/vcard
 text/vnd.rim.location.xloc
@@ -154,16 +155,39 @@ text/x-component
 text/x-cross-domain-policy;
 
 # Cache Control
-location ~*  \.(css|html|js)$ {
-    expires 7d;
+location ~*  \.(css)$ {
+    expires 1y;
+    add_header Cache-Control "public";
+}
+
+location ~*  \.(js)$ {
+    expires 1y;
+    add_header Cache-Control "private";
+}
+
+location ~*  \.(html|xhtml|php)$ {
+    expires 600s;
+    add_header Cache-Control "private, must-revalidate";
+}
+
+location ~*  \.(eot|svg|ttf)$ {
+    expires 1y;
+    add_header Cache-Control "public";
+}
+
+location ~*  \.(woff|woff2)$ {
+    expires 1y;
+    add_header Cache-Control "public";
 }
 
 location ~*  \.(xml)$ {
-    expires 600s;
+    expires 1y;
+    add_header Cache-Control "public";
 }
 
-location ~*  \.(gif|jpg|jpeg|png|svg|ico)$ {
-    expires 1M;
+location ~*  \.(gif|jpg|jpeg|png|svg|ico|webp)$ {
+    expires 1y;
+    add_header Cache-Control "public";
 }
 
 # ETag
