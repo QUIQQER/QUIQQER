@@ -1401,7 +1401,7 @@ class Edit extends Site
         try {
             QUI\Cache\Manager::set($linkCache, $this->getLocation());
         } catch (\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
+            QUI\System\Log::addDebug($Exception->getMessage());
         }
     }
 
