@@ -82,8 +82,7 @@ class Bundler
         }
 
         $result = [
-            'maintenance' => QUI::conf('globals', 'maintenance') ? 1 : 0,
-            'jsCallbacks' => [] // @todo
+            'maintenance' => QUI::conf('globals', 'maintenance') ? 1 : 0
         ];
 
         foreach ($function as $fun) {
@@ -110,6 +109,8 @@ class Bundler
 
             $MessageHandler->clear();
         }
+
+        $result['jsCallbacks'] = QUI::getAjax()->getJsCallbacks();
 
         return $result;
     }
