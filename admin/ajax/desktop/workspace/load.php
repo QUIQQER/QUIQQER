@@ -6,9 +6,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_desktop_workspace_load',
     function () {
-        $list = QUI\Workspace\Manager::getWorkspacesByUser(
-            QUI::getUserBySession()
-        );
+        $list = QUI\Workspace\Manager::getWorkspacesByUser(QUI::getUserBySession());
 
         if (!QUI::conf('mail', 'admin_mail') || QUI::conf('mail', 'admin_mail') === '') {
             QUI::getMessagesHandler()->addError(
