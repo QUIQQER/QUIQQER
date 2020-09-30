@@ -86,7 +86,17 @@ class Manager
                     ]);
                 }
             } catch (QUI\Exception $Exception) {
-                QUI\System\Log::addError($Exception->getMessage());
+                if ($Exception->getCode() === 404) {
+                    QUI::getDataBase()->delete(self::table(), [
+                        'id' => $entry['id']
+                    ]);
+
+                    continue;
+                }
+
+                QUI\System\Log::addError($Exception->getMessage(), [
+                    'userId' => $entry['uid']
+                ]);
             }
         }
     }
