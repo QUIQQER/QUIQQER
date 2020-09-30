@@ -62,6 +62,36 @@ class Manager
     }
 
     /**
+     * Deletes all Workspaces from users which are not admin users
+     */
+    public static function cleanup()
+    {
+        try {
+            $entries = QUI::getDataBase()->fetch([
+                'from' => self::table()
+            ]);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+
+            return;
+        }
+
+        foreach ($entries as $entry) {
+            try {
+                $User = QUI::getUsers()->get($entry['uid']);
+
+                if (!QUI\Permissions\Permission::isAdmin($User)) {
+                    QUI::getDataBase()->delete(self::table(), [
+                        'id' => $entry['id']
+                    ]);
+                }
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
+            }
+        }
+    }
+
+    /**
      * Add a workspace
      *
      * @param \QUI\Interfaces\Users\User $User
