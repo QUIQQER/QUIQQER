@@ -33,11 +33,14 @@ class Manager
      */
     public static function setup()
     {
-        $Table  = QUI::getDataBase()->table();
-        $column = $Table->getColumn(self::table(), 'data');
+        $Table = QUI::getDataBase()->table();
 
-        if (\strpos($column['Type'], 'longtext') !== false) {
-            return;
+        if ($Table->existColumnInTable(self::table(), 'data')) {
+            $column = $Table->getColumn(self::table(), 'data');
+
+            if (\stripos($column['Type'], 'text') !== false) {
+                return;
+            }
         }
 
         try {
@@ -45,7 +48,7 @@ class Manager
                 'id'        => 'int(11) NOT NULL',
                 'uid'       => 'int(11) NOT NULL',
                 'title'     => 'text',
-                'data'      => 'longtext',
+                'data'      => 'text',
                 'minHeight' => 'int',
                 'minWidth'  => 'int',
                 'standard'  => 'int(1)'
@@ -217,6 +220,12 @@ class Manager
         if (isset($data['data'])) {
             $data['data']      = \json_decode($data['data'], true);
             $workspace['data'] = \json_encode($data['data']);
+
+            // text = 65535 single bytes chars
+            // but we have utf8, so we use max 20000, not perfect but better than nothing
+            if (\mb_strlen($workspace['data']) > 20000) {
+                throw new QUI\Exception('Could not save the workspace. Workspace is to big.');
+            }
         }
 
         QUI::getDataBase()->update(self::table(), $workspace, [
