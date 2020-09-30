@@ -36,7 +36,7 @@ class Manager
         $Table  = QUI::getDataBase()->table();
         $column = $Table->getColumn(self::table(), 'data');
 
-        if (\strpos($column['Type'], 'longtext') === false) {
+        if (\strpos($column['Type'], 'longtext') !== false) {
             return;
         }
 
