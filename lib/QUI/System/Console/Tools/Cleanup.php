@@ -45,6 +45,11 @@ class Cleanup extends QUI\System\Console\Tool
         QUI\Cron\QuiqqerCrons::clearSessions();
         $this->write('[OK]');
 
+        // clear all workspaces from users which are nor admin users
+        $this->writeLn('- Cleanup workspaces ');
+        QUI\Workspace\Manager::cleanup();
+        $this->write('[OK]');
+
         $this->writeLn();
         $this->writeLn('The system is now clean 👍');
         $this->writeLn();
