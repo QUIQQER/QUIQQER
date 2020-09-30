@@ -33,20 +33,29 @@ class Manager
      */
     public static function setup()
     {
-        $Table = QUI::getDataBase()->table();
+        $Table  = QUI::getDataBase()->table();
+        $column = $Table->getColumn(self::table(), 'data');
 
-        $Table->addColumn(self::table(), [
-            'id'        => 'int(11) NOT NULL',
-            'uid'       => 'int(11) NOT NULL',
-            'title'     => 'text',
-            'data'      => 'text',
-            'minHeight' => 'int',
-            'minWidth'  => 'int',
-            'standard'  => 'int(1)'
-        ]);
+        if (\strpos($column['Type'], 'longtext') === false) {
+            return;
+        }
 
-        $Table->setAutoIncrement(self::table(), 'id');
-        $Table->setPrimaryKey(self::table(), 'id');
+        try {
+            $Table->addColumn(self::table(), [
+                'id'        => 'int(11) NOT NULL',
+                'uid'       => 'int(11) NOT NULL',
+                'title'     => 'text',
+                'data'      => 'longtext',
+                'minHeight' => 'int',
+                'minWidth'  => 'int',
+                'standard'  => 'int(1)'
+            ]);
+
+            $Table->setAutoIncrement(self::table(), 'id');
+            $Table->setPrimaryKey(self::table(), 'id');
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
     }
 
     /**
