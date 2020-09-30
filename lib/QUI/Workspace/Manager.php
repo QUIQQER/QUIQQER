@@ -52,16 +52,22 @@ class Manager
     /**
      * Add a workspace
      *
-     * @param \QUI\USers\User $User
+     * @param \QUI\Interfaces\Users\User $User
      * @param string $title - title of the workspace
      * @param string $data - Workspace profile
      * @param integer $minHeight - minimum height of the workspace
      * @param integer $minWidth - minimum width of the workspace
      *
      * @return integer - new Workspace ID
+     *
+     * @throws QUI\Exception
      */
     public static function addWorkspace($User, $title, $data, $minHeight, $minWidth)
     {
+        if (!QUI::getUsers()->isUser($User)) {
+            throw new QUI\Exception('No user given');
+        }
+
         $title     = Orthos::clear($title);
         $minHeight = (int)$minHeight;
         $minWidth  = (int)$minWidth;
@@ -94,11 +100,11 @@ class Manager
     /**
      * Return the workspaces list from an user
      *
-     * @param \QUI\Users\User $User
+     * @param \QUI\Interfaces\Users\User $User
      *
      * @return array
      */
-    public static function getWorkspacesByUser(QUI\Users\User $User)
+    public static function getWorkspacesByUser(QUI\Interfaces\Users\User $User)
     {
         $result = QUI::getDataBase()->fetch([
             'from'  => self::table(),
@@ -106,6 +112,17 @@ class Manager
                 'uid' => $User->getId()
             ]
         ]);
+
+        if (empty($result) && QUI\Permissions\Permission::isAdmin($User)) {
+            QUI::getUsers()->setDefaultWorkspacesForUsers($User);
+
+            $result = QUI::getDataBase()->fetch([
+                'from'  => self::table(),
+                'where' => [
+                    'uid' => $User->getId()
+                ]
+            ]);
+        }
 
         return $result;
     }
@@ -207,11 +224,19 @@ class Manager
     /**
      * Set the workspace to the standard workspace
      *
-     * @param \QUI\Users\User $User
+     * @param QUI\Interfaces\Users\User $User
      * @param integer $id
      */
-    public static function setStandardWorkspace(QUI\Users\User $User, $id)
+    public static function setStandardWorkspace(QUI\Interfaces\Users\User $User, int $id)
     {
+        if (!QUI::getUsers()->isUser($User)) {
+            return;
+        }
+
+        if (!QUI\Permissions\Permission::isAdmin($User)) {
+            return;
+        }
+
         // all to no standard
         QUI::getDataBase()->update(
             self::table(),
