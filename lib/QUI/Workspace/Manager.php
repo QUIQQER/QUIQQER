@@ -78,7 +78,7 @@ class Manager
 
         foreach ($entries as $entry) {
             try {
-                $User = QUI::getUsers()->get($entry['uid']);
+                $User = QUI::getUsers()->get((int)$entry['uid']);
 
                 if (!QUI\Permissions\Permission::isAdmin($User)) {
                     QUI::getDataBase()->delete(self::table(), [
@@ -95,7 +95,7 @@ class Manager
                 }
 
                 QUI\System\Log::addError($Exception->getMessage(), [
-                    'userId' => $entry['uid']
+                    'user-id' => $entry['uid']
                 ]);
             }
         }
@@ -329,7 +329,7 @@ class Manager
 
         $panels   = [];
         $xmlFiles = \array_merge(
-            [SYS_DIR.'panels.xml'],
+            [SYS_DIR . 'panels.xml'],
             QUI::getPackageManager()->getPackageXMLFiles('panels.xml')
         );
 
@@ -356,7 +356,7 @@ class Manager
      */
     public static function getTwoColumnDefault()
     {
-        return \file_get_contents(\dirname(\dirname(__FILE__)).'/Users/workspaces/twoColumns.js');
+        return \file_get_contents(\dirname(\dirname(__FILE__)) . '/Users/workspaces/twoColumns.js');
     }
 
     /**
@@ -366,6 +366,6 @@ class Manager
      */
     public static function getThreeColumnDefault()
     {
-        return \file_get_contents(\dirname(\dirname(__FILE__)).'/Users/workspaces/threeColumns.js');
+        return \file_get_contents(\dirname(\dirname(__FILE__)) . '/Users/workspaces/threeColumns.js');
     }
 }
