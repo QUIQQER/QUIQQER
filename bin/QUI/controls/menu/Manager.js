@@ -208,7 +208,8 @@ define('controls/menu/Manager', [
             var self        = this,
                 menuRequire = Item.getAttribute('require'),
                 exec        = Item.getAttribute('exec'),
-                xmlFile     = Item.getAttribute('qui-xml-file');
+                xmlFile     = Item.getAttribute('qui-xml-file'),
+                windowName  = Item.getAttribute('qui-window-name');
 
             Item.setAttribute('originalIcon', Item.getAttribute('icon'));
             Item.setAttribute('icon', 'fa fa-spinner fa-spin');
@@ -246,7 +247,9 @@ define('controls/menu/Manager', [
 
                 require(['controls/desktop/panels/XML'], function (XMLPanel) {
                     self.openPanelInTasks(
-                        new XMLPanel(xmlFile)
+                        new XMLPanel(xmlFile, {
+                            name: windowName
+                        })
                     );
 
                     Item.setAttribute('icon', Item.getAttribute('originalIcon'));

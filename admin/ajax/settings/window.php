@@ -8,7 +8,11 @@
  */
 QUI::$Ajax->registerFunction(
     'ajax_settings_window',
-    function ($file) {
+    function ($file, $windowName) {
+        if (!isset($windowName)) {
+            $windowName = false;
+        }
+
         if (\file_exists($file)) {
             $files = [$file];
         } else {
@@ -18,13 +22,16 @@ QUI::$Ajax->registerFunction(
         $cacheName = 'quiqqer/package/quiqqer/quiqqer/menu/windows/'.\md5(\json_encode($files));
         $Settings  = QUI\Utils\XML\Settings::getInstance();
 
+        if ($windowName) {
+            $cacheName .= \md5($windowName);
+        }
+
         try {
             $result = QUI\Cache\Manager::get($cacheName);
         } catch (QUI\Exception $Exception) {
-            $windowName = false;
-
-            if (\is_array($files) &&
-                \in_array('packages/quiqqer/quiqqer/admin/settings/cache.xml', $files)) {
+            if (!$windowName
+                && \is_array($files)
+                && \in_array('packages/quiqqer/quiqqer/admin/settings/cache.xml', $files)) {
                 $windowName = 'quiqqer-cache';
             }
 
@@ -73,6 +80,6 @@ QUI::$Ajax->registerFunction(
 
         return $result;
     },
-    ['file'],
+    ['file', 'windowName'],
     'Permission::checkAdminUser'
 );
