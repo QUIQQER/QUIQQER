@@ -183,7 +183,8 @@ define('controls/desktop/panels/XML', [
 
                 self.getCategoryBar().firstChild().click();
             }, {
-                file: JSON.encode(this.$file)
+                file      : JSON.encode(this.$file),
+                windowName: this.getAttribute('name')
             });
         },
 
