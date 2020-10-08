@@ -9,7 +9,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_settings_window',
     function ($file, $windowName) {
-        if (!isset($windowName)) {
+        if (!isset($windowName) || strpos($windowName, '.xml') !== 'xml') {
             $windowName = false;
         }
 
