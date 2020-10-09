@@ -2799,6 +2799,12 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="grid.export.type.print">
             <en><![CDATA[Print]]></en>
         </locale>
+        <locale name="grid.export.message">
+            <en><![CDATA[Please select the fields to be exported:]]></en>
+        </locale>
+        <locale name="grid.export.message.exportType">
+            <en><![CDATA[Please select the type of export:]]></en>
+        </locale>
         <locale name="controls.group.table.btns.adduser">
             <en><![CDATA[Add user(s)]]></en>
         </locale>
@@ -2834,7 +2840,8 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[Delete license]]></en>
         </locale>
         <locale name="controls.licensekey.status.activation.error">
-            <en><![CDATA[The license could not be activated at the license server. Please try again or send a support request to support@pcsg.de.]]></en>
+            <en>
+                <![CDATA[The license could not be activated at the license server. Please try again or send a support request to support@pcsg.de.]]></en>
         </locale>
         <locale name="controls.licensekey.template.labelStatus">
             <en><![CDATA[Activation status]]></en>
@@ -2846,22 +2853,26 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[System configuration hash]]></en>
         </locale>
         <locale name="controls.licensekey.template.descSystemId">
-            <en><![CDATA[Unique identifier generated for your QUIQQER system that is registered on the license server when you activate a license. Used to distinguish between several QUIQER systems that are assigned to a license.]]></en>
+            <en>
+                <![CDATA[Unique identifier generated for your QUIQQER system that is registered on the license server when you activate a license. Used to distinguish between several QUIQER systems that are assigned to a license.]]></en>
         </locale>
         <locale name="controls.licensekey.template.descSystemDataHash">
-            <en><![CDATA[Unique hash of your QUIQQER system configuration. Changes if essential parts of your configuration change. Activation for a license or system ID always applies to a system configuration hash. As soon as this value changes, the license has to be activated again.]]></en>
+            <en>
+                <![CDATA[Unique hash of your QUIQQER system configuration. Changes if essential parts of your configuration change. Activation for a license or system ID always applies to a system configuration hash. As soon as this value changes, the license has to be activated again.]]></en>
         </locale>
         <locale name="controls.licensekey.status.loading">
             <en><![CDATA[Checking status...]]></en>
         </locale>
         <locale name="controls.licensekey.status.error.general" html="true">
-            <en><![CDATA[The license status could not be retrieved. Please repeat the process or send a support request to <a href="mailto:support@pcsg.de">support@pcsg.de</a>.]]></en>
+            <en>
+                <![CDATA[The license status could not be retrieved. Please repeat the process or send a support request to <a href="mailto:support@pcsg.de">support@pcsg.de</a>.]]></en>
         </locale>
         <locale name="controls.licensekey.status.reasonCode.system_not_registered">
             <en><![CDATA[This QUIQQER system is not yet registered with the license server.]]></en>
         </locale>
         <locale name="controls.licensekey.status.reasonCode.system_inactive">
-            <en><![CDATA[This QUIQQER system is currently not activated for this license. To use this license, please activate your system.]]></en>
+            <en>
+                <![CDATA[This QUIQQER system is currently not activated for this license. To use this license, please activate your system.]]></en>
         </locale>
         <locale name="controls.licensekey.status.activation.btn.ok">
             <en><![CDATA[Understood]]></en>
@@ -2879,7 +2890,8 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[Deactivate system]]></en>
         </locale>
         <locale name="controls.licensekey.status.reasonCode.system_changed">
-            <en><![CDATA[This QUIQQER system has changed significantly since its last activation and must therefore be reactivated.]]></en>
+            <en>
+                <![CDATA[This QUIQQER system has changed significantly since its last activation and must therefore be reactivated.]]></en>
         </locale>
         <locale name="controls.licensekey.status.active">
             <en><![CDATA[active]]></en>
@@ -4402,10 +4414,12 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
     <groups name="quiqqer/quiqqer" datatype="php">
 
         <locale name="PackageNotLicensedException.message" html="true">
-            <en><![CDATA[This feature requires a package license for <b>[package]</b>. You can purchase the appropriate license at the <a href="https://store.quiqqer.com" target="_blank">QUIQQER Package Store</a>.]]></en>
+            <en>
+                <![CDATA[This feature requires a package license for <b>[package]</b>. You can purchase the appropriate license at the <a href="https://store.quiqqer.com" target="_blank">QUIQQER Package Store</a>.]]></en>
         </locale>
         <locale name="exception.License.connection_error">
-            <en><![CDATA[Currently no connection to the license server can be established. Please repeat the procedure or write a support request to support@pcsg.de.]]></en>
+            <en>
+                <![CDATA[Currently no connection to the license server can be established. Please repeat the procedure or write a support request to support@pcsg.de.]]></en>
         </locale>
 
         <locale name="quiqqer.settings.auth.showResetPasswordBackend">
