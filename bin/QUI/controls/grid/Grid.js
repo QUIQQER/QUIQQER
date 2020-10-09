@@ -39,13 +39,14 @@ define('controls/grid/Grid', [
     'qui/controls/buttons/Separator',
     'qui/controls/contextmenu/Menu',
     'qui/controls/contextmenu/Item',
+    'qui/controls/windows/Confirm',
     'qui/utils/Controls',
     'Locale',
 
     'css!controls/grid/Grid.css'
 
 ], function (QUI, QUIControl, QUIButton, QUISeparator, QUIContextMenu,
-             QUIContextItem, ControlUtils, QUILocale) {
+             QUIContextItem, QUIConfirm, ControlUtils, QUILocale) {
     "use strict";
 
     var Panel = null;
@@ -3031,113 +3032,153 @@ define('controls/grid/Grid', [
         },
 
         getExportSelect: function () {
-            var c, len, columnModel, header, dataIndex;
+            var self = this;
 
-            var t       = this;
-            var options = t.getAttributes();
-
-            var selectWindow  = new Element('div.exportSelectDiv'),
-                exportBarDiv  = new Element('div.exportSelectBtnDiv'),
-                exportDataDiv = new Element('div.exportItemsDiv'),
-                exportTextDiv = new Element('div.exportTextsDiv', {
-                    html: 'Bitte wählen sie die Felder aus die exportiert werden sollen'
-                });
-
-            t.container.appendChild(selectWindow);
-            selectWindow.appendChild(exportTextDiv);
-            selectWindow.appendChild(exportDataDiv);
-            selectWindow.appendChild(exportBarDiv);
-
-            for (c = 0, len = this.$columnModel.length; c < len; c++) {
-                columnModel = this.$columnModel[c];
-                header      = columnModel.header;
-                dataIndex   = columnModel.dataIndex;
-
-                if (this.exportable(columnModel) === false) {
-                    continue;
-                }
-
-                var div   = new Element('div.exportItemDiv'),
-
-                    span  = new Element('span', {
-                        html: header
-                    }),
-
-                    input = new Element('input', {
-                        type   : 'checkbox',
-                        checked: 'checked',
-                        value  : dataIndex,
-                        id     : 'export_' + dataIndex,
-                        name   : dataIndex
-                    });
-
-                div.appendChild(input);
-                div.appendChild(span);
-
-                exportDataDiv.appendChild(div);
-            }
-
-            var func_export_btn_click = function (Btn) {
-                Btn.getAttribute('Grid').exportGrid(
-                    Btn.getAttribute('exportType')
-                );
-            };
-
-            var fileImage,
-                types = options.exportTypes;
-
-            for (var exportType in types) {
-                if (!types.hasOwnProperty(exportType)) {
-                    continue;
-                }
-
-                if (!exportType) {
-                    continue;
-                }
-
-                switch (exportType) {
-                    case 'csv':
-                        fileImage = 'fa fa-text-o';
-                        break;
-
-                    case 'json':
-                        fileImage = 'fa fa-code-o';
-                        break;
-
-                    case 'xls':
-                        fileImage = 'fa fa-excel-o';
-                        break;
-
-                    case 'pdf':
-                        fileImage = 'fa fa-pdf-o';
-                        break;
-
-                    default:
-                        fileImage = 'fa fa-file';
-                }
-
-                new QUIButton({
-                    name      : exportType,
-                    text      : QUILocale.get('quiqqer/quiqqer', 'grid.export.type.' + exportType),
-                    events    : {
-                        click: func_export_btn_click
-                    },
-                    textimage : fileImage,
-                    Grid      : this,
-                    exportType: exportType
-                }).inject(exportBarDiv);
-            }
-
-            new QUIButton({
-                name     : 'cancel',
-                text     : QUILocale.get('quiqqer/quiqqer', 'cancel'),
+            new QUIConfirm({
+                icon     : 'fa fa-download',
+                title    : '',
+                maxHeight: 500,
+                maxWidth : 800,
+                autoclose: false,
                 events   : {
-                    click: function () {
-                        t.container.getElement('.exportSelectDiv').destroy();
+                    onOpen: function (Win) {
+                        Win.$exportTypes = [];
+
+                        var c, len, columnModel, header, dataIndex;
+
+                        var options = self.getAttributes(),
+                            Content = Win.getContent();
+
+                        Content.set('html', '');
+
+                        var exportBarDiv  = new Element('div.exportSelectBtnDiv'),
+                            exportDataDiv = new Element('div.exportItemsDiv'),
+                            exportTextDiv = new Element('div.exportTextsDiv', {
+                                html: QUILocale.get('quiqqer/quiqqer', 'grid.export.message')
+                            });
+
+
+                        Content.appendChild(exportTextDiv);
+                        Content.appendChild(exportDataDiv);
+                        Content.appendChild(exportBarDiv);
+
+                        for (c = 0, len = self.$columnModel.length; c < len; c++) {
+                            columnModel = self.$columnModel[c];
+                            header      = columnModel.header;
+                            dataIndex   = columnModel.dataIndex;
+
+                            if (self.exportable(columnModel) === false) {
+                                continue;
+                            }
+
+                            var div   = new Element('div.exportItemDiv'),
+                                span  = new Element('span', {
+                                    html: header
+                                }),
+                                input = new Element('input', {
+                                    type   : 'checkbox',
+                                    checked: 'checked',
+                                    value  : dataIndex,
+                                    id     : 'export_' + dataIndex,
+                                    name   : dataIndex
+                                });
+
+                            div.appendChild(input);
+                            div.appendChild(span);
+
+                            exportDataDiv.appendChild(div);
+                        }
+
+                        var func_export_btn_click = function (Btn) {
+                            Btn.getAttribute('Grid').exportGrid(
+                                Btn.getAttribute('exportType')
+                            );
+                        };
+
+                        // export type
+                        new Element('div', {
+                            html  : QUILocale.get('quiqqer/quiqqer', 'grid.export.message.exportType'),
+                            styles: {
+                                marginTop: 10
+                            }
+                        }).inject(exportBarDiv);
+
+
+                        var fileImage, Button,
+                            types = options.exportTypes;
+
+                        for (var exportType in types) {
+                            if (!types.hasOwnProperty(exportType)) {
+                                continue;
+                            }
+
+                            if (!exportType) {
+                                continue;
+                            }
+
+                            switch (exportType) {
+                                case 'csv':
+                                    fileImage = 'fa fa-text-o';
+                                    break;
+
+                                case 'json':
+                                    fileImage = 'fa fa-code-o';
+                                    break;
+
+                                case 'xls':
+                                    fileImage = 'fa fa-excel-o';
+                                    break;
+
+                                case 'pdf':
+                                    fileImage = 'fa fa-pdf-o';
+                                    break;
+
+                                default:
+                                    fileImage = 'fa fa-file';
+                            }
+
+                            Button = new QUIButton({
+                                name      : exportType,
+                                text      : QUILocale.get('quiqqer/quiqqer', 'grid.export.type.' + exportType),
+                                textimage : fileImage,
+                                exportType: exportType,
+                                styles    : {
+                                    marginRight: 10,
+                                    marginTop  : 10
+                                },
+                                events    : {
+                                    click: function (Instance) {
+                                        Win.$exportTypes.forEach(function (Btn) {
+                                            Btn.setNormal();
+                                        });
+
+                                        Instance.setActive();
+                                    }
+                                }
+                            });
+
+                            Win.$exportTypes.push(Button);
+                            Button.inject(exportBarDiv);
+                        }
+                    },
+
+                    onSubmit: function (Win) {
+                        var active = Win.$exportTypes.filter(function (Btn) {
+                            return Btn.isActive();
+                        });
+
+                        if (!active.length) {
+                            return;
+                        }
+
+                        self.exportGrid(
+                            active[0].getAttribute('exportType')
+                        );
+
+                        Win.close();
                     }
-                },
-                textimage: 'fa fa-remove'
-            }).create().inject(exportBarDiv);
+                }
+            }).open();
 
             return false;
         },
@@ -3187,7 +3228,6 @@ define('controls/grid/Grid', [
             }
 
             this.setAttribute('exportData', data);
-            document.getElement('.exportSelectDiv').destroy();
 
             return data;
         },
