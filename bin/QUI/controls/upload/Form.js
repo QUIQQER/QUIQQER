@@ -542,6 +542,8 @@ define('controls/upload/Form', [
                 IconForm.getElement(
                     '.controls-upload-form-single-container-select'
                 ).set('html', Input.files[0].name);
+
+                self.$files = Input.files;
             });
 
             new Element('div', {
