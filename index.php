@@ -194,6 +194,7 @@ try {
         && !QUI::getUsers()->isAuth(QUI::getUserBySession())
         && empty($query)
         && $Rewrite->getHeaderCode() === 200
+        && (defined('NO_INTERNAL_CACHE') && !NO_INTERNAL_CACHE) // api for modules, if modules says that no internal cache should be used
     ) {
         try {
             $cache_content = QUI\Cache\Manager::get($siteCachePath);
