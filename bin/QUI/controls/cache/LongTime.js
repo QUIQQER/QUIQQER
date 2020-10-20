@@ -64,7 +64,7 @@ define('controls/cache/LongTime', [
             new Element('button', {
                 type  : 'buttons',
                 class : 'qui-button',
-                html  : 'Kompletten Langzeitcache leeren',
+                html  : QUILocale.get(lg, 'delete.long.term.cache.button'),
                 styles: {
                     'float'     : 'right',
                     marginBottom: 20
@@ -229,7 +229,7 @@ define('controls/cache/LongTime', [
                                 );
                             });
                         }, {
-                            longterm: 1
+                            params: JSON.encode({longterm: 1})
                         });
                     }
                 }

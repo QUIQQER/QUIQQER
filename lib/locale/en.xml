@@ -5623,6 +5623,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="message.long.term.cache.clear.success">
             <en><![CDATA[The long-term cache was successfully deleted.]]></en>
         </locale>
+        <locale name="delete.long.term.cache.button">
+            <en><![CDATA[Empty complete long-term cache]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/controls" datatype="php,js">
         <locale name="package.title">
