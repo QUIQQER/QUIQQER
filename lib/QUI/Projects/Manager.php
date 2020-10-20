@@ -850,24 +850,23 @@ class Manager
             );
         }
 
-        $project = $Project->getName();
-        $langs   = $Project->getAttribute('langs');
+        $project   = $Project->getName();
+        $languages = $Project->getAttribute('langs');
 
         $DataBase = QUI::getDataBase();
         $Table    = $DataBase->table();
 
         // delete site tables for all languages
-        foreach ($langs as $lang) {
+        foreach ($languages as $lang) {
             $table_site     = QUI::getDBTableName($project.'_'.$lang.'_sites');
             $table_site_rel = QUI::getDBTableName(
                 $project.'_'.$lang
                 .'_sites_relations'
             );
-            $table_multi    = QUI::getDBTableName($project.'_multilingual');
 
+            $table_multi     = QUI::getDBTableName($project.'_multilingual');
             $table_media     = QUI::getDBTableName($project.'_media');
             $table_media_rel = QUI::getDBTableName($project.'_media_relations');
-
 
             $Table->delete($table_site);
             $Table->delete($table_site_rel);
@@ -887,15 +886,15 @@ class Manager
                 continue;
             }
 
-            $dbfields = XML::getDataBaseFromXml($databaseXml);
+            $dbFields = XML::getDataBaseFromXml($databaseXml);
 
-            if (!isset($dbfields['projects'])) {
+            if (!isset($dbFields['projects'])) {
                 continue;
             }
 
             // for each language
-            foreach ($dbfields['projects'] as $table) {
-                foreach ($langs as $lang) {
+            foreach ($dbFields['projects'] as $table) {
+                foreach ($languages as $lang) {
                     $tbl = QUI::getDBTableName(
                         $project.'_'.$lang.'_'.$table['suffix']
                     );
@@ -920,15 +919,17 @@ class Manager
             ]
         );
 
+        // delete media
+        QUI::getTemp()->moveToTemp(CMS_DIR.'media/sites/'.$project);
+        QUI::getTemp()->moveToTemp(CMS_DIR.'media/cache/'.$project);
+
+
         // config schreiben
         $Config = self::getConfig();
         $Config->del($project);
         $Config->save();
-
         QUI\Cache\Manager::clear('QUI::config');
 
-
-        // project create event
         QUI::getEvents()->fireEvent('deleteProject', [$project]);
     }
 

@@ -5829,6 +5829,9 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         <locale name="message.long.term.cache.clear.success">
             <de><![CDATA[Der Langzeitcache wurde erfolgreich gelöscht.]]></de>
         </locale>
+        <locale name="delete.long.term.cache.button">
+            <de><![CDATA[Kompletten Langzeitcache leeren]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/controls" datatype="php,js">
