@@ -5124,6 +5124,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="control.usersgroups.select.search.field.placeholder">
             <en><![CDATA[Search for a group or a user ...]]></en>
         </locale>
+        <locale name="control.media.select.search.field.placeholder">
+            <de><![CDATA[Search for a media file ...]]></de>
+        </locale>
         <locale name="control.usersgroups.window.search.title">
             <en><![CDATA[User and group search]]></en>
         </locale>
