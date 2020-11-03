@@ -5320,6 +5320,9 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         <locale name="control.usersgroups.select.search.field.placeholder">
             <de><![CDATA[Suche nach einer Gruppe oder einem Benutzer...]]></de>
         </locale>
+        <locale name="control.media.select.search.field.placeholder">
+            <de><![CDATA[Suche nach einer Mediadatei ...]]></de>
+        </locale>
         <locale name="control.usersgroups.window.search.title">
             <de><![CDATA[Benutzer- und Gruppensuche]]></de>
         </locale>
