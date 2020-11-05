@@ -165,9 +165,11 @@ define('controls/licenseKey/LicenseKey', [
 
                 remainingActivations = remainingActivations || false;
 
+                var text = status ? QUILocale.get(lg, 'controls.licensekey.status.' + status) : '-';
+
                 new Element('div', {
                     'class': 'quiqqer-licensekey-status-text quiqqer-licensekey-status-' + status,
-                    html   : QUILocale.get(lg, 'controls.licensekey.status.' + status)
+                    html   : text
                 }).inject(StatusElm);
 
                 if (remainingActivations) {
@@ -237,7 +239,9 @@ define('controls/licenseKey/LicenseKey', [
             };
 
             this.$getStatus().then(function (Status) {
-                if (Status.active) {
+                if (!Status) {
+                    setStatus(false);
+                } else if (Status.active) {
                     setStatus('active', Status.remainingActivations);
                 } else {
                     setStatus('inactive');

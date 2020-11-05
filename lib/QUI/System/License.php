@@ -199,13 +199,17 @@ class License
     /**
      * Get status of this QUIQQER system regarding the currently registered license
      *
-     * @return array
+     * @return array|false - License data or false if no license available
      * @throws QUI\Exception
      */
     public static function getStatus()
     {
         $licenseServerUrl = self::getLicenseServerUrl().'api/license/status?';
         $licenseData      = self::getLicenseData();
+
+        if (empty($licenseData)) {
+            return false;
+        }
 
         $licenseServerUrl .= \http_build_query([
             'licenseid'   => $licenseData['id'],
