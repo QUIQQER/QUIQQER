@@ -205,16 +205,16 @@ define('controls/users/search/Search', [
          */
         search: function () {
             var options = this.$Grid.options;
-            var search  = this.getAttribute('searchSettings');
+            var Search  = this.getAttribute('searchSettings');
             var Form    = this.$SearchForm;
 
-            if (!search) {
-                search = {};
+            if (!Search) {
+                Search = {};
             }
 
-            search.userSearchString = this.$SearchInput.value;
+            Search.userSearchString = this.$SearchInput.value;
 
-            search.fields = {
+            Search.fields = {
                 id       : Form.elements.userId.checked ? 1 : 0,
                 username : Form.elements.username.checked ? 1 : 0,
                 firstname: Form.elements.firstname.checked ? 1 : 0,
@@ -223,10 +223,16 @@ define('controls/users/search/Search', [
                 group    : Form.elements.group.checked ? 1 : 0
             };
 
-            search.filter = {
+            var RegDateFilter = {
                 regdate_from: Form.elements['registration-from'].value,
                 regdate_to  : Form.elements['registration-to'].value
             };
+
+            if (typeof Search.filter === 'object') {
+                Search.filter = Object.merge(Search.filter, RegDateFilter);
+            } else {
+                Search.filter = RegDateFilter;
+            }
 
             Users.getList({
                 field         : options.sortOn,
@@ -234,7 +240,7 @@ define('controls/users/search/Search', [
                 limit         : options.perPage,
                 page          : options.page,
                 search        : this.getAttribute('search'),
-                searchSettings: search
+                searchSettings: Search
             }).then(function (result) {
                 this.$Grid.setData(
                     this.$parseDataForGrid(result)
