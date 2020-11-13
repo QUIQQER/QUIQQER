@@ -2393,7 +2393,7 @@ class Manager extends QUI\QDOM
 
             $isLicensed = !empty($response);
 
-            QUICacheManager::set($cacheName, $isLicensed);
+            QUICacheManager::set($cacheName, $isLicensed, \date_interval_create_from_date_string('1 day'));
 
             return $isLicensed;
         } catch (\Exception $Exception) {
