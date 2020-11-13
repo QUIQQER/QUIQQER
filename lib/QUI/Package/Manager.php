@@ -2364,20 +2364,16 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            $LicenseConfig = new QUI\Config($licenseConfigFile);
+            $licenseData = QUI\System\License::getLicenseData();
 
-            $licenseId   = $LicenseConfig->get('license', 'id');
-            $licenseHash = $LicenseConfig->get('license', 'licenseHash');
-
-            if (empty($licenseId) || empty($licenseHash)) {
+            if (empty($licenseData['id']) || empty($licenseData['licenseHash'])) {
                 return false;
             }
 
             $licenseServerUrl = QUI\System\License::getLicenseServerUrl().'api/license/haslicensedpackage?';
-
             $licenseServerUrl .= \http_build_query([
-                'licenseid'   => $licenseId,
-                'licensehash' => \bin2hex($licenseHash),
+                'licenseid'   => $licenseData['id'],
+                'licensehash' => $licenseData['licenseHash'],
                 'systemid'    => QUI\System\License::getSystemId(),
                 'systemhash'  => QUI\System\License::getSystemDataHash(),
                 'package'     => $package
