@@ -313,7 +313,8 @@ define('controls/users/Address', [
                 city      : this.$City.value,
                 country   : this.$Country.value,
                 mails     : emails,
-                phone     : this.$PhoneGrid.getData()
+                phone     : this.$PhoneGrid.getData(),
+                standard  : this.$Standard.checked ? 1 : 0
             };
 
             Ajax.post('ajax_users_address_save', function () {
