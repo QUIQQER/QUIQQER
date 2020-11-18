@@ -14,7 +14,6 @@ use QUI;
  * Check for all requirements that packages or quiqqer needed
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.systemcheck
  * @licence For copyright and license information, please view the /README.md
  *
  * @todo create a gui, api, console api for \QUI\System\Checks\Manager

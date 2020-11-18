@@ -10,7 +10,6 @@ namespace QUI\Interfaces\Users;
  * The user interface
  *
  * @author  www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.interface.users
  * @licence For copyright and license information, please view the /README.md
  */
 

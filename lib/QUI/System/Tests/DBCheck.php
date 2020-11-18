@@ -15,7 +15,6 @@ use QUI\Utils\StringHelper as StringHelper;
  * Database Check - Compares existing QUIQQER database tables with database.xml files
  * and detects discrepancies
  *
- * @package quiqqer/quiqqer
  * @author  www.pcsg.de (Patrick Müller)
  * @licence For copyright and license information, please view the /README.md
  */

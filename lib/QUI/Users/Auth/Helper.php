@@ -11,8 +11,6 @@ use QUI\Users\AuthenticatorInterface;
 /**
  * Class Helper
  * Some helper methods, for better authenticator handling
- *
- * @package QUI\Users\Auth
  */
 class Helper
 {

@@ -14,7 +14,6 @@ use QUI\Utils\Text\XML;
  * Helper for groups
  *
  * @author  Henning Leutz (PCSG)
- * @package com.pcsg.qui.groups
  * @licence For copyright and license information, please view the /README.md
  */
 class Utils

@@ -15,7 +15,6 @@ use QUI\Utils\Security\Orthos;
  * Rights management
  *
  * @author  www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.rights
  * @licence For copyright and license information, please view the /README.md
  */
 class Manager

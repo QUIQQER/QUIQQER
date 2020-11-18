@@ -20,6 +20,7 @@ define('controls/projects/project/Panel', [
 
     'Locale',
     'controls/projects/Manager',
+    'classes/projects/Project',
 
     'css!controls/projects/project/Panel.css'
 
@@ -40,7 +41,8 @@ define('controls/projects/project/Panel', [
         QUISitemapFilter   = arguments[9],
 
         Locale             = arguments[10],
-        ProjectManager     = arguments[11];
+        ProjectManager     = arguments[11],
+        Project            = arguments[12];
 
     /**
      * @class controls/projects/project/Panel
@@ -59,7 +61,8 @@ define('controls/projects/project/Panel', [
             '$onInject',
             '$onResize',
             '$onDestroy',
-            '$openSitePanel'
+            '$openSitePanel',
+            '$onProjectChange'
         ],
 
         initialize: function (options) {
@@ -95,9 +98,9 @@ define('controls/projects/project/Panel', [
             this.$__fx_run = false;
 
             Projects.addEvents({
-                onCreate     : this.refresh, // on project create
-                onDelete     : this.refresh, // on project delete
-                onProjectSave: this.refresh // on project saved
+                onCreate     : this.$onProjectChange, // on project create
+                onDelete     : this.$onProjectChange, // on project delete
+                onProjectSave: this.$onProjectChange  // on project saved
             });
 
             this.addEvents({
@@ -139,6 +142,29 @@ define('controls/projects/project/Panel', [
             }
 
             this.createList();
+        },
+
+        /**
+         * event: if a project change
+         * -> deleted, saved, created
+         */
+        $onProjectChange: function (ProjectInstance) {
+            if (!(ProjectInstance instanceof Project)) {
+                return;
+            }
+
+            var self = this;
+
+            this.Loader.show();
+
+            this.createList(false).then(function () {
+                self.$__fx_run = false;
+                self.openProject().then(function () {
+                    self.Loader.hide();
+                }).catch(function () {
+                    self.Loader.hide();
+                });
+            });
         },
 
         /**
@@ -441,19 +467,24 @@ define('controls/projects/project/Panel', [
          * event destroy
          */
         $onDestroy: function () {
-            Projects.removeEvent('onCreate', this.refresh);
-            Projects.removeEvent('onDelete', this.refresh);
-            Projects.removeEvent('onProjectSave', this.refresh);
+            Projects.removeEvent('onCreate', this.$onProjectChange);
+            Projects.removeEvent('onDelete', this.$onProjectChange);
+            Projects.removeEvent('onProjectSave', this.$onProjectChange);
         },
 
         /**
          * Create the Project list for the Panel
          *
+         * @param {Boolean} [openList] - opens the list directly, default = true
          * @method controls/projects/project/Panel#createList
          */
-        createList: function () {
+        createList: function (openList) {
             if (this.$__fx_run) {
                 return;
+            }
+
+            if (typeof openList === 'undefined') {
+                openList = true;
             }
 
             this.$__fx_run = true;
@@ -474,7 +505,7 @@ define('controls/projects/project/Panel', [
 
             this.refresh();
 
-            Projects.getList(function (result) {
+            return Projects.getList().then(function (result) {
                 if (!Object.getLength(result)) {
                     self.$ProjectContainer.setStyle('overflow', null);
                     self.$__fx_run = false;
@@ -624,19 +655,20 @@ define('controls/projects/project/Panel', [
                 });
 
 
-                moofx(List).animate({
-                    left   : 0,
-                    opacity: 1
-                }, {
-                    equation: 'ease-in',
-                    duration: 300,
-                    callback: function () {
-                        self.$__fx_run = false;
+                if (openList) {
+                    moofx(List).animate({
+                        left   : 0,
+                        opacity: 1
+                    }, {
+                        duration: 250,
+                        callback: function () {
+                            self.$__fx_run = false;
 
-                        self.$ProjectContainer.setStyle('overflow', null);
-                        self.$Button.setActive();
-                    }
-                });
+                            self.$ProjectContainer.setStyle('overflow', null);
+                            self.$Button.setActive();
+                        }
+                    });
+                }
             });
         },
 

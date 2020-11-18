@@ -194,7 +194,7 @@ define('controls/projects/project/Settings', [
                     self.addCategory(list[i]);
                 }
 
-                self.refresh();
+                self.refreshData();
             }, {
                 project: this.getProject().encode()
             });
@@ -203,8 +203,7 @@ define('controls/projects/project/Settings', [
         /**
          * Refresh the project data
          */
-        refresh: function () {
-            this.parent();
+        refreshData: function () {
             this.Loader.show();
 
             var self = this;
@@ -213,7 +212,6 @@ define('controls/projects/project/Settings', [
                 this.getProject().getConfig(),
                 this.getProject().getDefaults()
             ]).then(function (result) {
-
                 self.setAttributes({
                     name : 'projects-panel',
                     icon : 'fa fa-home',
@@ -239,6 +237,7 @@ define('controls/projects/project/Settings', [
                 }
 
                 self.getCategoryBar().firstChild().click();
+                self.refresh();
             });
         },
 
@@ -365,7 +364,7 @@ define('controls/projects/project/Settings', [
                                 value: langs[i]
                             }).inject(Langs);
                         }
-                        
+
                         // prefix
                         self.$Prefix = new Translation({
                             'group'  : 'project/' + self.$Project.getName(),
@@ -619,10 +618,10 @@ define('controls/projects/project/Settings', [
                     langs: langs.join(',')
                 }).then(function () {
                     // self.Loader.hide();
-                    self.refresh();
+                    self.refreshData();
                 }).catch(function () {
                     // self.Loader.hide();
-                    self.refresh();
+                    self.refreshData();
                 });
             });
         },

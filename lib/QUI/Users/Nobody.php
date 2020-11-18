@@ -15,7 +15,6 @@ use QUI\ERP\Currency\Handler as Currencies;
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
- * @package com.pcsg.qui.users
  */
 class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
 {

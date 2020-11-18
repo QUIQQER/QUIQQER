@@ -11,7 +11,6 @@ use QUI;
 /**
  * Curl Test
  *
- * @package quiqqer/quiqqer
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  */

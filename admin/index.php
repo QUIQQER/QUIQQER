@@ -151,6 +151,9 @@ if ($Avatar) {
         var QUIQQER_HASH    = "<?php echo QUI::getPackageManager()->getHash(); ?>";
         var QUIQQER_CONFIG  = <?php echo \json_encode($config); ?>;
 
+        // Exceptions
+        var QUIQQER_EXCEPTION_CODE_PACKAGE_NOT_LICENSED = <?php echo QUI::getPackageManager()::EXCEPTION_CODE_PACKAGE_NOT_LICENSED; ?>;
+
         // standard project
         var QUIQQER_PROJECT = <?php echo \json_encode([
             'name' => $Project ? $Project->getName() : '',
@@ -248,7 +251,7 @@ if ($Avatar) {
     </div>
 </noscript>
 
-<script src="<?php echo URL_OPT_DIR; ?>bin/require.js"></script>
+<script src="<?php echo URL_OPT_DIR; ?>bin/requirejs/require.js"></script>
 <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-core.js"></script>
 <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-more.js"></script>
 <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/moofx.js"></script>

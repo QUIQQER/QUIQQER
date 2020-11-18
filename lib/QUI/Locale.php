@@ -15,7 +15,6 @@ use QUI\Utils\StringHelper;
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
- * @package com.pcsg.qui
  *
  * @use     gettext - if enabled
  * @todo    integrate http://php.net/intl

@@ -7,8 +7,6 @@ use Stash;
 
 /**
  * Class LongTermCache
- *
- * @package QUI\Cache
  */
 class LongTermCache
 {

@@ -10,7 +10,6 @@ use QUI;
 
 /**
  * Class Password
- * @package QUI
  */
 class Password
 {

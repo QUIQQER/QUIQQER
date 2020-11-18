@@ -1,4 +1,12 @@
-1.5.0 ()
+1.5.1 ()
+
+    Fix
+
+    - Sort Error fixed; Sorting consider inactive Sites
+    - quiqqer/quiqqer#1033 No Vhosts and only one language -> Links with language flag
+    - quiqqer/quiqqer#728 removed robloach/component-installer
+
+1.5.0 (11.09.2020)
 
     Features
 

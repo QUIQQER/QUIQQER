@@ -11,7 +11,6 @@ use QUI;
 /**
  * update.quiqqer.com and composer.quiqqer.com Test
  *
- * @package quiqqer/quiqqer
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  */

@@ -4,7 +4,6 @@
  * QUIQQER Mail Protection
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.quiqqer
  *
  * @copyright  2012 PCSG
  * @since      available since Release QUIQQER 1

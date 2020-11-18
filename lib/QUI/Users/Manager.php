@@ -361,7 +361,42 @@ class Manager
         $newId = QUI::getDataBase()->getPDO()->lastInsertId();
         $User  = $this->get($newId);
 
+        $Everyone = new QUI\Groups\Everyone();
+
+        $User->setAttribute('toolbar', $Everyone->getAttribute('toolbar'));
+
+        if (!$User->getAttribute('toolbar')) {
+            $available = QUI\Editor\Manager::getToolbars();
+
+            if (!empty($available)) {
+                $User->setAttribute('toolbar', $available[0]);
+            }
+        }
+
+        $User->addToGroup($Everyone->getId());
+        $User->save($ParentUser);
+
+        QUI::getEvents()->fireEvent('userCreate', [$User]);
+
         // workspace
+        $this->setDefaultWorkspacesForUsers($User);
+
+        return $User;
+    }
+
+    /**
+     * Set the default workspace for an user
+     * The user must have administration permissions
+     *
+     * @param QUI\Interfaces\Users\User $User
+     * @throws QUI\Exception
+     */
+    public function setDefaultWorkspacesForUsers(QUI\Interfaces\Users\User $User)
+    {
+        if (!QUI\Permissions\Permission::isAdmin($User)) {
+            return;
+        }
+
         $twoColumn   = QUI\Workspace\Manager::getTwoColumnDefault();
         $threeColumn = QUI\Workspace\Manager::getThreeColumnDefault();
 
@@ -382,25 +417,6 @@ class Manager
         );
 
         QUI\Workspace\Manager::setStandardWorkspace($User, $newWorkspaceId);
-
-        $Everyone = new QUI\Groups\Everyone();
-
-        $User->setAttribute('toolbar', $Everyone->getAttribute('toolbar'));
-
-        if (!$User->getAttribute('toolbar')) {
-            $available = QUI\Editor\Manager::getToolbars();
-
-            if (!empty($available)) {
-                $User->setAttribute('toolbar', $available[0]);
-            }
-        }
-
-        $User->addToGroup($Everyone->getId());
-        $User->save($ParentUser);
-
-        QUI::getEvents()->fireEvent('userCreate', [$User]);
-
-        return $User;
     }
 
     /**

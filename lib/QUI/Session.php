@@ -81,6 +81,7 @@ class Session
         }
 
         $sessionName = QUI::conf('session', 'name');
+        $sessionName = \preg_replace("/[^a-zA-Z0-9]/", '', $sessionName);
 
         // If no session name set in the config, generate and set a 5 random character long name
         if (!$sessionName) {

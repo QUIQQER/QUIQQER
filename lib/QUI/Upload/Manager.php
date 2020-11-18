@@ -17,7 +17,6 @@ use QUI\Permissions\Permission;
  * Manage Uploads from Users to the media
  *
  * @author  www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.upload
  * @licence For copyright and license information, please view the /README.md
  */
 class Manager

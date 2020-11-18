@@ -7,8 +7,6 @@ namespace QUI\Interfaces\System;
 
 /**
  * Interface Test
- *
- * @package quiqqer/quiqqer
  */
 interface Patch
 {

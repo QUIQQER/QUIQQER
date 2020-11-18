@@ -12,8 +12,6 @@ use QUI\Package\Package;
 /**
  * Class Lock
  * Helps to lock a item or an object
- *
- * @package QUI
  */
 class Locker
 {

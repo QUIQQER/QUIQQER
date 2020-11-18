@@ -489,7 +489,7 @@ class Manager
             if (!isset($conf['default_lang'])) {
                 $conf['default_lang'] = 'en';
             }
-            
+
             try {
                 $Project = self::getProject(
                     $project,
@@ -611,6 +611,7 @@ class Manager
      * @param string $name - Project name
      * @param string $lang - Project lang
      * @param array $languages - optional, additional languages
+     * @param string $template - Project template
      *
      * @return \QUI\Projects\Project
      * @throws \QUI\Exception
@@ -618,11 +619,9 @@ class Manager
      *
      * @todo noch einmal anschauen und übersichtlicher schreiben
      */
-    public static function createProject($name, $lang, $languages = [])
+    public static function createProject($name, $lang, $languages = [], $template = '')
     {
-        Permission::checkPermission(
-            'quiqqer.projects.create'
-        );
+        Permission::checkPermission('quiqqer.projects.create');
 
         if (\strlen($name) <= 2) {
             throw new QUI\Exception(
@@ -746,17 +745,17 @@ class Manager
 
         // first folder
         $DataBase->insert($table_media, [
-            'id'      => 1,
-            'name'    => 'Start',
-            'title'   => 'start',
-            'short'   => 'Shorttext',
-            'type'    => 'folder',
-            'file'    => '',
-            'active'  => 1,
-            'deleted' => 0,
-            'c_date'  => \date('Y-m-d H:i:s'),
-            'c_user'  => QUI::getUserBySession()->getId(),
-            'e_user'  => QUI::getUserBySession()->getId(),
+            'id'       => 1,
+            'name'     => 'Start',
+            'title'    => 'start',
+            'short'    => 'Shorttext',
+            'type'     => 'folder',
+            'file'     => '',
+            'active'   => 1,
+            'deleted'  => 0,
+            'c_date'   => \date('Y-m-d H:i:s'),
+            'c_user'   => QUI::getUserBySession()->getId(),
+            'e_user'   => QUI::getUserBySession()->getId(),
             'pathHash' => md5('')
         ]);
 
@@ -795,7 +794,7 @@ class Manager
             'default_lang' => $lang,
             'langs'        => \implode(',', $languages),
             'admin_mail'   => '',
-            'template'     => $name,
+            'template'     => $template,
             'image_text'   => '0',
             'keywords'     => '',
             'description'  => '',
@@ -851,24 +850,23 @@ class Manager
             );
         }
 
-        $project = $Project->getName();
-        $langs   = $Project->getAttribute('langs');
+        $project   = $Project->getName();
+        $languages = $Project->getAttribute('langs');
 
         $DataBase = QUI::getDataBase();
         $Table    = $DataBase->table();
 
         // delete site tables for all languages
-        foreach ($langs as $lang) {
+        foreach ($languages as $lang) {
             $table_site     = QUI::getDBTableName($project.'_'.$lang.'_sites');
             $table_site_rel = QUI::getDBTableName(
                 $project.'_'.$lang
                 .'_sites_relations'
             );
-            $table_multi    = QUI::getDBTableName($project.'_multilingual');
 
+            $table_multi     = QUI::getDBTableName($project.'_multilingual');
             $table_media     = QUI::getDBTableName($project.'_media');
             $table_media_rel = QUI::getDBTableName($project.'_media_relations');
-
 
             $Table->delete($table_site);
             $Table->delete($table_site_rel);
@@ -888,15 +886,15 @@ class Manager
                 continue;
             }
 
-            $dbfields = XML::getDataBaseFromXml($databaseXml);
+            $dbFields = XML::getDataBaseFromXml($databaseXml);
 
-            if (!isset($dbfields['projects'])) {
+            if (!isset($dbFields['projects'])) {
                 continue;
             }
 
             // for each language
-            foreach ($dbfields['projects'] as $table) {
-                foreach ($langs as $lang) {
+            foreach ($dbFields['projects'] as $table) {
+                foreach ($languages as $lang) {
                     $tbl = QUI::getDBTableName(
                         $project.'_'.$lang.'_'.$table['suffix']
                     );
@@ -921,15 +919,17 @@ class Manager
             ]
         );
 
+        // delete media
+        QUI::getTemp()->moveToTemp(CMS_DIR.'media/sites/'.$project);
+        QUI::getTemp()->moveToTemp(CMS_DIR.'media/cache/'.$project);
+
+
         // config schreiben
         $Config = self::getConfig();
         $Config->del($project);
         $Config->save();
-
         QUI\Cache\Manager::clear('QUI::config');
 
-
-        // project create event
         QUI::getEvents()->fireEvent('deleteProject', [$project]);
     }
 

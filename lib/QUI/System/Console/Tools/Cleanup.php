@@ -6,7 +6,6 @@ use QUI;
 
 /**
  * Class Cleanup
- * @package QUI\System\Console\Tools
  */
 class Cleanup extends QUI\System\Console\Tool
 {
@@ -44,6 +43,11 @@ class Cleanup extends QUI\System\Console\Tool
 
         $this->writeLn('- Purge Sessions ');
         QUI\Cron\QuiqqerCrons::clearSessions();
+        $this->write('[OK]');
+
+        // clear all workspaces from users which are nor admin users
+        $this->writeLn('- Cleanup workspaces ');
+        QUI\Workspace\Manager::cleanup();
         $this->write('[OK]');
 
         $this->writeLn();

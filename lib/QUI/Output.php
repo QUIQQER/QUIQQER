@@ -15,8 +15,6 @@ use QUI\Utils\Text\XML;
 
 /**
  * Class Output
- *
- * @package QUI
  */
 class Output extends Singleton
 {
@@ -611,11 +609,18 @@ class Output extends Singleton
             return $html;
         }
 
+        // external files dont get the lu flag
+        if (\strpos($att['src'], 'http://') !== false
+            || \strpos($att['src'], 'https://') !== false
+            || \strpos($att['src'], '//') === 0) {
+            return $html;
+        }
+
         $lu   = \md5(QUI::$last_up_date);
-        $file = CMS_DIR.ltrim($att['src'], '/');
+        $file = CMS_DIR.\ltrim($att['src'], '/');
 
         // check if css file is project custom css
-        if (strpos($att['src'], 'custom.js') !== false && \file_exists($file)) {
+        if (\strpos($att['src'], 'custom.js') !== false && \file_exists($file)) {
             $lu = \md5(filemtime($file));
         }
 
@@ -735,9 +740,10 @@ class Output extends Singleton
             }
         }
 
-        $url = $this->extendUrlWithParams($url, $params);
+        $url    = $this->extendUrlWithParams($url, $params);
+        $vhosts = QUI::vhosts();
 
-        if (!$Project->hasVHost()) {
+        if (!$Project->hasVHost() && !empty($vhosts)) {
             $url = $Project->getLang().'/'.$url;
         }
 
@@ -748,8 +754,6 @@ class Output extends Singleton
         ) {
             return $Project->getVHost(true, true).URL_DIR.$url;
         }
-
-        $vHosts = QUI::getRewrite()->getVHosts();
 
         /**
          * Sprache behandeln

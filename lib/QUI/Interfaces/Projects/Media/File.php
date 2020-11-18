@@ -14,7 +14,6 @@ use QUI;
  * it shows the main methods of a media file (file, image, folder)
  *
  * @author  www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.interface.projects.media
  * @licence For copyright and license information, please view the /README.md
  */
 interface File

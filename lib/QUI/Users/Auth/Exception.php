@@ -10,7 +10,6 @@ use QUI;
 
 /**
  * Class Exception
- * @package QUI\Users\Auth
  */
 class Exception extends QUI\Exception
 {

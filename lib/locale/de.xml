@@ -2832,6 +2832,12 @@
         <locale name="grid.export.type.print">
             <de><![CDATA[Drucken]]></de>
         </locale>
+        <locale name="grid.export.message">
+            <de><![CDATA[Bitte wähle die Felder aus die exportiert werden sollen:]]></de>
+        </locale>
+        <locale name="grid.export.message.exportType">
+            <de><![CDATA[Bitte wähle die Art des Exports aus:]]></de>
+        </locale>
         <locale name="controls.group.table.btns.adduser">
             <de><![CDATA[Benutzer hinzufügen]]></de>
         </locale>
@@ -2854,6 +2860,10 @@
         <locale name="controls.licensekey.template.labelId">
             <de><![CDATA[Lizenz-ID]]></de>
         </locale>
+        <locale name="controls.licensekey.status.activation.error">
+            <de>
+                <![CDATA[Die Lizenz konnte nicht am Lizenz-Server aktiviert werden. Bitte wiederholen Sie den Vorgang oder wenden Sie sich mit einer Support-Anfrage an support@pcsg.de.]]></de>
+        </locale>
         <locale name="controls.licensekey.template.labelCreated">
             <de><![CDATA[Erstellt am]]></de>
         </locale>
@@ -2868,6 +2878,77 @@
         </locale>
         <locale name="controls.licensekey.template.labelDelete">
             <de><![CDATA[Lizenz löschen]]></de>
+        </locale>
+        <locale name="controls.licensekey.template.labelStatus">
+            <de><![CDATA[Aktivierungs-Status]]></de>
+        </locale>
+        <locale name="controls.licensekey.template.labelSystemId">
+            <de><![CDATA[System ID]]></de>
+        </locale>
+        <locale name="controls.licensekey.template.labelSystemDataHash">
+            <de><![CDATA[System-Konfigurations Hash]]></de>
+        </locale>
+        <locale name="controls.licensekey.template.descSystemId">
+            <de>
+                <![CDATA[Einmalig für Ihr QUIQQER-System generieter Identifikator, der am Lizenz-Server registriert wird, sobald Sie eine Lizenz aktivieren. Dient dazu, mehrere QUIQQER-Systeme, die einer Lizenz zugeordnet sind, zu unterscheiden.]]></de>
+        </locale>
+        <locale name="controls.licensekey.template.descSystemDataHash">
+            <de>
+                <![CDATA[Eindeutiger Hash Ihrer QUIQQER Systemkonfiguration. Ändert sich, wenn sich wesentliche Bestandteile Ihrer Konfiguration ändern. Die Aktivierung für eine Lizenz bzw. System ID gilt immer für einen System-Konfigurations-Hash. Sobald sich dieser Wert ändert, muss die Lizenz erneut aktiviert werden.]]></de>
+        </locale>
+        <locale name="controls.licensekey.status.loading">
+            <de><![CDATA[Frage Status ab...]]></de>
+        </locale>
+        <locale name="controls.licensekey.status.error.general" html="true">
+            <de>
+                <![CDATA[Der Lizenz-Status konnte nicht überprüft werden. Bitte wiederholen Sie den Vorgang oder schreiben Sie eine Support-Anfrage an <a href="mailto:support@pcsg.de">support@pcsg.de</a>.]]></de>
+        </locale>
+        <locale name="controls.licensekey.status.error.request_error" html="true">
+            <de>
+                <![CDATA[Der Lizenz-Status konnte nicht überprüft werden. Bitte wiederholen Sie den Vorgang oder schreiben Sie eine Support-Anfrage an <a href="mailto:support@pcsg.de">support@pcsg.de</a>.]]></de>
+        </locale>
+        <locale name="controls.licensekey.status.error.system_not_registered" html="true">
+            <de>
+                <![CDATA[Der Lizenz-Status konnte nicht überprüft werden. Bitte wiederholen Sie den Vorgang oder schreiben Sie eine Support-Anfrage an <a href="mailto:support@pcsg.de">support@pcsg.de</a>.]]></de>
+        </locale>
+        <locale name="controls.licensekey.status.active">
+            <de><![CDATA[aktiv]]></de>
+        </locale>
+        <locale name="controls.licensekey.status.inactive">
+            <de><![CDATA[inaktiv]]></de>
+        </locale>
+        <locale name="controls.licensekey.status.unknown">
+            <de><![CDATA[unbekannt]]></de>
+        </locale>
+        <locale name="controls.licensekey.status.reasonCode.system_not_registered">
+            <de><![CDATA[Dieses QUIQQER-System ist noch nicht am Lizenz-Server registriert.]]></de>
+        </locale>
+        <locale name="controls.licensekey.status.reasonCode.system_inactive">
+            <de>
+                <![CDATA[Dieses QUIQQER-System ist zur Zeit für diese Lizenz nicht aktiviert. Um die Lizenz nutzen zu können, aktivieren Sie bitte Ihr System.]]></de>
+        </locale>
+        <locale name="controls.licensekey.status.reasonCode.system_changed">
+            <de>
+                <![CDATA[Dieses QUIQQER-System hat sich seit der letzten Aktivierung in wesentlichen Bestandteilen geändert und muss daher erneut aktiviert werden.]]></de>
+        </locale>
+        <locale name="controls.licensekey.status.reasonCode.wrong_license">
+            <de>
+                <![CDATA[Diese QUIQQER-Lizenz konnte nicht am Lizenz-Server validiert werden. Bitte stellen Sie sicher, dass Sie eine offizielle und gültige QUIQQER-Lizenzdatei verwenden!]]></de>
+        </locale>
+        <locale name="controls.licensekey.status.activation.btn.ok">
+            <de><![CDATA[Verstanden]]></de>
+        </locale>
+        <locale name="controls.licensekey.status.activation.text">
+            <de><![CDATA[Lizenz-Aktivierung]]></de>
+        </locale>
+        <locale name="controls.licensekey.status.remaining_activations">
+            <de><![CDATA[(verbleibende Aktivierungen: [count])]]></de>
+        </locale>
+        <locale name="controls.licensekey.status.btn.activate">
+            <de><![CDATA[System aktivieren]]></de>
+        </locale>
+        <locale name="controls.licensekey.status.btn.deactivate">
+            <de><![CDATA[System deaktivieren]]></de>
         </locale>
         <locale name="quiqqer.auth.login.password_reset">
             <de><![CDATA[Passwort vergessen]]></de>
@@ -4492,6 +4573,16 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
+
+        <locale name="PackageNotLicensedException.message" html="true">
+            <de>
+                <![CDATA[Für diese Funktion benötigen Sie eine Lizenz für das Paket <b>[package]</b>. Sie können eine entsprechende Lizenz im <a href="https://store.quiqqer.de" target="_blank">QUIQQER Package Store</a> erwerben.]]></de>
+        </locale>
+        <locale name="exception.License.connection_error">
+            <de>
+                <![CDATA[Es kann aktuell keine Verbindung zum Lizenz-Server hergestellt werden. Bitte wiederholen Sie den Vorgang oder schreiben Sie eine Support-Anfrage an support@pcsg.de.]]></de>
+        </locale>
+
         <locale name="quiqqer.settings.auth.showResetPasswordBackend">
             <de><![CDATA["Passwort vergessen" im Backend Login]]></de>
         </locale>
@@ -5229,6 +5320,9 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         <locale name="control.usersgroups.select.search.field.placeholder">
             <de><![CDATA[Suche nach einer Gruppe oder einem Benutzer...]]></de>
         </locale>
+        <locale name="control.media.select.search.field.placeholder">
+            <de><![CDATA[Suche nach einer Mediadatei ...]]></de>
+        </locale>
         <locale name="control.usersgroups.window.search.title">
             <de><![CDATA[Benutzer- und Gruppensuche]]></de>
         </locale>
@@ -5737,6 +5831,9 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         </locale>
         <locale name="message.long.term.cache.clear.success">
             <de><![CDATA[Der Langzeitcache wurde erfolgreich gelöscht.]]></de>
+        </locale>
+        <locale name="delete.long.term.cache.button">
+            <de><![CDATA[Kompletten Langzeitcache leeren]]></de>
         </locale>
     </groups>
 

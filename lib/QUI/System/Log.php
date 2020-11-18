@@ -13,7 +13,6 @@ use QUI;
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
- * @package QUI\System
  * @need quiqqr/log
  */
 class Log

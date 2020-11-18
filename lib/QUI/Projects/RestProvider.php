@@ -13,8 +13,6 @@ use Psr\Http\Message\ResponseInterface as ResponseInterface;
 
 /**
  * Class RestProvider
- *
- * @package QUI\Projects
  */
 class RestProvider implements QUI\REST\ProviderInterface
 {

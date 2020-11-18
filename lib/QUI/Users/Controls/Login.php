@@ -12,8 +12,6 @@ use QUI\Control;
 /**
  * Class Login
  * Main Login Control - Log in an user with all authentications
- *
- * @package QUI
  */
 class Login extends Control
 {

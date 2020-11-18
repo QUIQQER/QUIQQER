@@ -189,13 +189,13 @@ span.unknown-packages-warning {
     background: #eee;
 }
 
-pre {
+.system-check pre {
     margin: 0;
     max-width: 100%;
     overflow: auto;
 }
 
-code {
+.system-check code {
     background: #454545 none repeat scroll 0 0;
     border: 1px solid #666;
     border-radius: 0;
@@ -205,7 +205,7 @@ code {
     padding: 0.25em 0.65em;
 }
 
-pre code {
+.system-check pre code {
     display: block;
     line-height: 1.75em;
     overflow-x: auto;

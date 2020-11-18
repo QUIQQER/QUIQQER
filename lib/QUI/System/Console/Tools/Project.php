@@ -11,8 +11,6 @@ use QUI;
 
 /**
  * Class Project
- *
- * @package QUI\System\Console\Tools
  */
 class Project extends QUI\System\Console\Tool
 {

@@ -56,6 +56,36 @@ define('classes/projects/Manager', [
         },
 
         /**
+         * constructor
+         *
+         * @param {Object} options
+         */
+        initialize: function (options) {
+            this.parent(options);
+
+            this.addEvents({
+                onProjectSave: function (Project) {
+                    this.$getList = null;
+
+                    var name     = Project.getName(),
+                        projects = {};
+
+                    for (var key in this.$projects) {
+                        if (!this.$projects.hasOwnProperty(key)) {
+                            continue;
+                        }
+
+                        if (key.indexOf(name + '-') !== 0) {
+                            projects[key] = this.$projects[key];
+                        }
+                    }
+
+                    this.$projects = projects;
+                }.bind(this)
+            });
+        },
+
+        /**
          * Return the wanted project
          * If no name and lang given, the current project will be return
          *

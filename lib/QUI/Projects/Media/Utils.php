@@ -14,7 +14,6 @@ use QUI\Utils\StringHelper as StringUtils;
  * Helper for the Media Center Manager
  *
  * @author  www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.projects.media
  * @licence For copyright and license information, please view the /README.md
  */
 class Utils

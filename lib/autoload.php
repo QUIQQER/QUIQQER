@@ -9,7 +9,6 @@
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
- * @package quiqqer/quiqqer
  */
 
 require \dirname(__FILE__).'/Autoloader.php';

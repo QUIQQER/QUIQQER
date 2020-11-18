@@ -5,11 +5,6 @@
  *
  * @module controls/licenseKey/LicenseKeyPanel
  * @author www.pcsg.de (Patrick Müller)
- *
- * @require qui/controls/desktop/Panel
- * @require controls/licenseKey/LicenseKey
- * @require Locale
- * @require css!controls/licenseKey/LicenseKeyPanel.css
  */
 define('controls/licenseKey/LicenseKeyPanel', [
 

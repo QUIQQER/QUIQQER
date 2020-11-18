@@ -12,7 +12,6 @@ use QUI\Projects\Site\Canonical;
  * Interface of a template engine
  *
  * @author  www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.interface.template
  * @licence For copyright and license information, please view the /README.md
  */
 interface EngineInterface

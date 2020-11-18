@@ -12,8 +12,6 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class Headers
  * Header check: https://observatory.mozilla.org/
- *
- * @package QUI\System
  */
 class Headers
 {

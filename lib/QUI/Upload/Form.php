@@ -7,8 +7,6 @@ use QUI\Permissions\Permission;
 
 /**
  * Class Form
- *
- * @package QUI\Upload
  */
 class Form extends QUI\QDOM
 {

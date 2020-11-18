@@ -14,7 +14,6 @@ use QUI;
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
- * @package com.pcsg.qui.utils.request
  */
 class Ajax extends QUI\QDOM
 {
@@ -536,5 +535,13 @@ class Ajax extends QUI\QDOM
                 echo '<quiqqer>'.\json_encode($return).'</quiqqer>';
                 break;
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getJsCallbacks()
+    {
+        return $this->jsCallbacks;
     }
 }

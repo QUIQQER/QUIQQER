@@ -11,8 +11,6 @@ use QUI\Projects\Media;
 
 /**
  * Class ExternalImage
- *
- * @package QUI\Projects\Media
  */
 class ExternalImage implements QUI\Interfaces\Projects\Media\File
 {

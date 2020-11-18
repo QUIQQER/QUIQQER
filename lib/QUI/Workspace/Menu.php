@@ -14,8 +14,6 @@ use QUI\Utils\Text\XML;
 
 /**
  * Class Menu
- *
- * @package QUI\Workspace
  */
 class Menu
 {
@@ -212,6 +210,7 @@ class Menu
                     $files[] = $file;
 
                     $Item->setAttribute('qui-xml-file', $files);
+                    $Item->setAttribute('qui-window-name', $winName);
                     $this->setWindowTitle($Item, $Window);
                     $this->setWindowIcon($Item, $Window);
                     continue;
@@ -228,6 +227,7 @@ class Menu
                 $Item->setAttribute('onClick', 'QUI.Menu.menuClick');
                 $Item->setAttribute('qui-window', true);
                 $Item->setAttribute('qui-xml-file', $file);
+                $Item->setAttribute('qui-window-name', $file);
 
                 if (!empty($winName)) {
                     $windowList[$winName] = $Item;

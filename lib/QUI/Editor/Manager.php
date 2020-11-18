@@ -18,7 +18,6 @@ use QUI\Utils\Text\XML;
  * manages all wysiwyg editors and the settings for them
  *
  * @author  www.pcsg.de (Henning Leutz)
- * @package quiqqer/quiqqer
  * @licence For copyright and license information, please view the /README.md
  */
 class Manager

@@ -12,8 +12,6 @@ use QUI;
  * Class Factory
  * Abstration factory for create-read-update-delete
  *
- * @package QUI\CRUD
- *
  * @event onCreateBegin
  * @event onCreateEnd
  */

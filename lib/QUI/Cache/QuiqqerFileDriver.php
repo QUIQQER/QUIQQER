@@ -10,8 +10,6 @@ use QUI;
 
 /**
  * Class QuiqqerFileDriver
- *
- * @package QUI\Cache
  */
 class QuiqqerFileDriver extends \Stash\Driver\FileSystem
 {

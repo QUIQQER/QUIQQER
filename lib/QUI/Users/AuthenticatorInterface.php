@@ -10,7 +10,6 @@ namespace QUI\Users;
  * Interface for external authentification
  *
  * @author  www.pcsg.de (Henning Leutz)
- * @package \QUI\Interfaces\Users
  * @licence For copyright and license information, please view the /README.md
  */
 

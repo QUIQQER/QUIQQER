@@ -40,7 +40,7 @@ define('controls/usersAndGroups/Select', [
     return new Class({
 
         Extends: QUIElementSelect,
-        Type   : 'controls/groups/Select',
+        Type   : 'controls/usersAndGroups/Select',
 
         Binds: [
             '$onSearchButtonClick',

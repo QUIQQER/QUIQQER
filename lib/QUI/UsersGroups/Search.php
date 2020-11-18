@@ -14,7 +14,6 @@ use QUI\Utils\Security\Orthos;
  *
  * @author  www.pcsg.de (Patrick Müller)
  * @licence For copyright and license information, please view the /README.md
- * @package quiqqer/quiqqer
  */
 class Search
 {
@@ -402,7 +401,7 @@ class Search
             $sql = 'SELECT id';
         }
 
-        $sql .= ' FROM '.QUI\Groups\Manager::table();
+        $sql .= ' FROM `'.QUI\Groups\Manager::table() .'`';
 
         // build WHERE
         $where = [];

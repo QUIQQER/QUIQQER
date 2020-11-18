@@ -23,7 +23,9 @@ QUI::$Ajax->registerFunction(
             $Parent->save();
         }
 
-        $childrenIds = $Parent->getChildrenIds();
+        $childrenIds = $Parent->getChildrenIds([
+            'active' => '0&1'
+        ]);
 
         foreach ($ids as $id) {
             $from = $from + 1;

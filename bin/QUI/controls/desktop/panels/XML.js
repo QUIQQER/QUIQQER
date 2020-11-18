@@ -40,7 +40,8 @@ define('controls/desktop/panels/XML', [
         ],
 
         options: {
-            category: false // which category should be open at the start
+            category: false,  // which category should be open at the start
+            name    : false   // name of the window = xml window name
         },
 
         initialize: function (xmlfile, options) {
@@ -183,7 +184,8 @@ define('controls/desktop/panels/XML', [
 
                 self.getCategoryBar().firstChild().click();
             }, {
-                file: JSON.encode(this.$file)
+                file      : JSON.encode(this.$file),
+                windowName: this.getAttribute('name')
             });
         },
 

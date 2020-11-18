@@ -11,8 +11,6 @@ use QUI\Utils\System\File;
 
 /**
  * Class LocalServer
- *
- * @package QUI\Package
  */
 class LocalServer extends QUI\Utils\Singleton
 {

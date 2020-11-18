@@ -8,7 +8,6 @@ namespace QUI\Interfaces\System;
 /**
  * Interface Test
  *
- * @package quiqqer/quiqqer
  * @licence For copyright and license information, please view the /README.md
  */
 interface Test

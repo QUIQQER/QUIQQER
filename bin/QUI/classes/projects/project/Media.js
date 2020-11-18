@@ -463,6 +463,26 @@ define('classes/projects/project/Media', [
                     onError: reject
                 });
             });
+        },
+
+        //region search
+
+        /**
+         * Search files into the media
+         *
+         * @return {Promise}
+         */
+        search: function (search, params) {
+            var self = this;
+
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_media_search', resolve, {
+                    project: self.getProject().getName(),
+                    search : search,
+                    params : JSON.encode(params),
+                    onError: reject
+                });
+            });
         }
     });
 });
