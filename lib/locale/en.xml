@@ -3487,6 +3487,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="exception.login.fail.user_not_active">
             <en><![CDATA[Login failed. User is not active.]]></en>
         </locale>
+        <locale name="exception.login.fail.user_deleted">
+            <de><![CDATA[Login failed. User is marked as deleted.]]></de>
+        </locale>
         <locale name="exception.login.fail.login_locked">
             <en><![CDATA[Login failed. Login for this user is currently locked. Please try again later.]]></en>
         </locale>

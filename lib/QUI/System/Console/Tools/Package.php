@@ -35,7 +35,7 @@ class Package extends QUI\System\Console\Tool
             )
             ->addArgument(
                 'list',
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.list.description'),
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.installed.description'),
                 false,
                 true
             )
