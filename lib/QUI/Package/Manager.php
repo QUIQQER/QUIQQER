@@ -2364,20 +2364,16 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            $LicenseConfig = new QUI\Config($licenseConfigFile);
+            $licenseData = QUI\System\License::getLicenseData();
 
-            $licenseId   = $LicenseConfig->get('license', 'id');
-            $licenseHash = $LicenseConfig->get('license', 'licenseHash');
-
-            if (empty($licenseId) || empty($licenseHash)) {
+            if (empty($licenseData['id']) || empty($licenseData['licenseHash'])) {
                 return false;
             }
 
             $licenseServerUrl = QUI\System\License::getLicenseServerUrl().'api/license/haslicensedpackage?';
-
             $licenseServerUrl .= \http_build_query([
-                'licenseid'   => $licenseId,
-                'licensehash' => \bin2hex($licenseHash),
+                'licenseid'   => $licenseData['id'],
+                'licensehash' => $licenseData['licenseHash'],
                 'systemid'    => QUI\System\License::getSystemId(),
                 'systemhash'  => QUI\System\License::getSystemDataHash(),
                 'package'     => $package
@@ -2397,7 +2393,7 @@ class Manager extends QUI\QDOM
 
             $isLicensed = !empty($response);
 
-            QUICacheManager::set($cacheName, $isLicensed);
+            QUICacheManager::set($cacheName, $isLicensed, \date_interval_create_from_date_string('1 day'));
 
             return $isLicensed;
         } catch (\Exception $Exception) {
