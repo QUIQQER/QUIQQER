@@ -108,6 +108,8 @@ class QUIQQER extends AbstractAuthenticator
             );
         }
 
+        $password = \trim($password);
+
         $userData = QUI::getDataBase()->fetch([
             'select' => ['password'],
             'from'   => QUI::getUsers()->table(),
