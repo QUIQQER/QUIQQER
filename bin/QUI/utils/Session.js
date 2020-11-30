@@ -49,6 +49,7 @@ define('utils/Session', ['Ajax'], function (QUIAjax) {
         get: function (key) {
             return new Promise(function (resolve, reject) {
                 QUIAjax.get('ajax_session_get', function (value) {
+                    console.error('session get', value);
                     try {
                         resolve(JSON.decode(value));
                     } catch (e) {

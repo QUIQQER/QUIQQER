@@ -3616,6 +3616,9 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="exception.login.fail.user_not_active">
             <de><![CDATA[Login fehlgeschlagen. Benutzer ist nicht aktiv.]]></de>
         </locale>
+        <locale name="exception.login.fail.user_deleted">
+            <de><![CDATA[Login fehlgeschlagen. Benutzer ist als gelöscht markiert.]]></de>
+        </locale>
         <locale name="exception.login.fail.login_locked">
             <de><![CDATA[
                 Login fehlgeschlagen. Der Login für diesen Benutzer ist z.Z. gesperrt. Bitte versuchen Sie es später noch einmal.]]></de>
