@@ -285,6 +285,8 @@ try {
 
     QUI::getEvents()->fireEvent('responseSent', [$Response]);
 } catch (\Exception $Exception) {
+    QUI\System\Log::writeException($Exception);
+
     // error ??
     \header('HTTP/1.1 503 Service Temporarily Unavailable');
     \header('Status: 503 Service Temporarily Unavailable');
