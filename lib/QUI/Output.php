@@ -6,6 +6,7 @@
 
 namespace QUI;
 
+use Masterminds\HTML5;
 use QUI;
 use QUI\Utils\Singleton;
 
@@ -124,13 +125,13 @@ class Output extends Singleton
 
         // picture elements
         \libxml_use_internal_errors(true);
-        $Dom  = new \DOMDocument();
-        $meta = '<?xml encoding="utf-8" ?>';
+        $HTML5 = new HTML5();
+        $meta  = '<?xml encoding="utf-8" ?>';
 
         if (\strpos($content, '<body') === false) {
-            $Dom->loadHTML($meta.'<html><body>'.$content.'</body></html>');
+            $Dom = $HTML5->loadHTML($meta.'<html><body>'.$content.'</body></html>');
         } else {
-            $Dom->loadHTML($meta.$content);
+            $Dom = $HTML5->loadHTML($meta.$content);
         }
 
         \libxml_clear_errors();
