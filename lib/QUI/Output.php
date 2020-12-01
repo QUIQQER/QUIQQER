@@ -126,12 +126,11 @@ class Output extends Singleton
         // picture elements
         \libxml_use_internal_errors(true);
         $HTML5 = new HTML5();
-        $meta  = '<?xml encoding="utf-8" ?>';
 
         if (\strpos($content, '<body') === false) {
-            $Dom = $HTML5->loadHTML($meta.'<html><body>'.$content.'</body></html>');
+            $Dom = $HTML5->loadHTML('<html><body>'.$content.'</body></html>');
         } else {
-            $Dom = $HTML5->loadHTML($meta.$content);
+            $Dom = $HTML5->loadHTML($content);
         }
 
         \libxml_clear_errors();
@@ -141,11 +140,20 @@ class Output extends Singleton
 
         $nodeContent = function ($n) {
             /* @var $n \DOMElement */
-            $d = new \DOMDocument();
-            $b = $d->importNode($n->cloneNode(true), true);
-            $d->appendChild($b);
+            $HTML5 = new HTML5([
+                'disable_html_ns' => true
+            ]);
 
-            return $d->saveHTML();
+            $Dom = $HTML5->loadHTML('');
+            $b   = $Dom->importNode($n->cloneNode(true), true);
+
+            $Dom->appendChild($b);
+            $html = $Dom->saveHTML();
+
+            $html = \str_replace('<!DOCTYPE html>', '', $html);
+            $html = \trim($html);
+
+            return $html;
         };
 
         $getPicture = function ($html) {
@@ -153,9 +161,9 @@ class Output extends Singleton
                 return null;
             }
 
-            $d = new \DOMDocument();
+            $HTML5 = new HTML5();
 
-            $d->loadHTML(
+            $d = $HTML5->loadHTML(
                 \mb_convert_encoding(
                     $html,
                     'HTML-ENTITIES',
@@ -172,7 +180,7 @@ class Output extends Singleton
             return null;
         };
 
-        $isInPicture = function (\DOMElement $Image) {
+        $isInPicture = function ($Image) {
             $Parent = $Image->parentNode;
 
             while ($Parent) {
@@ -224,7 +232,8 @@ class Output extends Singleton
             ));
         }
 
-        $result = str_replace('<?xml encoding="utf-8" ?>', '', $result);
+        $result = \str_replace(['</img>', '</source>'], '', $result);
+        $result = \str_replace('<?xml encoding="utf-8" ?>', '', $result);
 
         return $result;
     }
