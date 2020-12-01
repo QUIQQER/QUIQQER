@@ -212,17 +212,20 @@ class Output extends Singleton
             }
         }
 
-
         if ($withDocumentOutput) {
-            return $Dom->saveHTML();
+            $result = $Dom->saveHTML();
+        } else {
+            $Body = $Dom->getElementsByTagName('body')[0];
+
+            $result = \implode(\array_map(
+                [$Body->ownerDocument, "saveHTML"],
+                \iterator_to_array($Body->childNodes)
+            ));
         }
 
-        $Body = $Dom->getElementsByTagName('body')[0];
+        $result = str_replace('<?xml encoding="utf-8" ?>', '', $result);
 
-        return \implode(\array_map(
-            [$Body->ownerDocument, "saveHTML"],
-            \iterator_to_array($Body->childNodes)
-        ));
+        return $result;
     }
 
     /**
