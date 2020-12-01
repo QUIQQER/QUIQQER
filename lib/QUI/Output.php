@@ -232,7 +232,7 @@ class Output extends Singleton
             ));
         }
 
-        $result = \str_replace(['</img>', '</source>'], '', $result);
+        $result = \str_replace(['</img>', '</source>', '</meta>', '</link>', '</input>'], '', $result);
         $result = \str_replace('<?xml encoding="utf-8" ?>', '', $result);
 
         return $result;
