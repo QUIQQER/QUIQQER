@@ -120,7 +120,6 @@ define('controls/lang/Select', [
          */
         $buildSelect: function () {
             var self = this;
-
             var Prom;
 
             if (typeof QUIQQER_FRONTEND !== 'undefined' && QUIQQER_PROJECT) {
