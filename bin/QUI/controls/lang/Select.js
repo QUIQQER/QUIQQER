@@ -134,7 +134,6 @@ define('controls/lang/Select', [
             }
 
             return Prom.then(function (languages) {
-                console.log(languages);
                 for (var i = 0, len = languages.length; i < len; i++) {
                     self.$Select.appendChild(
                         QUILocale.get('quiqqer/quiqqer', 'language.' + languages[i]),
