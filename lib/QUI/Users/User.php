@@ -1796,6 +1796,13 @@ class User implements QUI\Interfaces\Users\User
             ['id' => $this->getId()]
         );
 
+        // delete all workspaces of this user
+        QUI::getDataBase()->delete(
+            QUI\Workspace\Manager::table(),
+            ['uid' => $this->getId()]
+        );
+
+
         $this->logout();
 
         QUI\System\Log::write(
