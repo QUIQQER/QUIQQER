@@ -17,9 +17,9 @@
             <field type="DATETIME NULL DEFAULT NULL">expire</field>
             <field type="DATETIME NULL DEFAULT NULL">lastedit</field>
             <field type="TEXT NULL">user_agent</field>
-            <field type="VARCHAR(40) DEFAULT NULL">firstname</field>
-            <field type="VARCHAR(40) DEFAULT NULL">lastname</field>
-            <field type="VARCHAR(40) DEFAULT NULL">usertitle</field>
+            <field type="VARCHAR(255) DEFAULT NULL">firstname</field>
+            <field type="VARCHAR(255) DEFAULT NULL">lastname</field>
+            <field type="VARCHAR(255) DEFAULT NULL">usertitle</field>
             <field type="INT(1) NOT NULL DEFAULT '0'">company</field>
             <field type="DATE NULL DEFAULT NULL">birthday</field>
             <field type="TEXT NULL">avatar</field>
@@ -159,9 +159,9 @@
         <table name="users_address">
             <field type="INT(11) NOT NULL">id</field>
             <field type="INT(11) NOT NULL">uid</field>
-            <field type="VARCHAR(10)">salutation</field>
-            <field type="VARCHAR(40)">firstname</field>
-            <field type="VARCHAR(40)">lastname</field>
+            <field type="VARCHAR(255)">salutation</field>
+            <field type="VARCHAR(255)">firstname</field>
+            <field type="VARCHAR(255)">lastname</field>
             <field type="TEXT NULL">phone</field>
             <field type="TEXT NULL">mail</field>
             <field type="VARCHAR(100)">company</field>
