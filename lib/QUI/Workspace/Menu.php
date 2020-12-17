@@ -25,9 +25,8 @@ class Menu
     public function getMenu()
     {
         try {
-            $cache = QUI\Cache\Manager::get(
-                $this->getCacheName()
-            );
+            $cacheName = $this->getCacheName();
+            $cache     = QUI\Cache\Manager::get($cacheName);
 
             if (!empty($cache)) {
                 return $cache;
@@ -380,7 +379,7 @@ class Menu
     public static function clearMenuCache(QUI\Interfaces\Users\User $User)
     {
         QUI\Cache\Manager::clear(
-            'qui/admin/menu/'.$User->getId().'/'.$User->getLang()
+            'settings/backend-menu/'.$User->getId().'/'
         );
     }
 

@@ -538,10 +538,10 @@ class Media extends QUI\QDOM
      */
     public function getChildByPath($filepath)
     {
-        $cache = $this->getCacheDir().'filePathIds/'.md5($filepath);
+        $cache = $this->getCacheDir().'filePathIds/'.\md5($filepath);
 
         try {
-            $id = (int)QUI\Cache\Manager::get($cache);
+            $id = QUI\Cache\LongTermCache::get($cache);
         } catch (QUI\Exception $Exception) {
             $table = $this->getTable();
 
@@ -560,6 +560,8 @@ class Media extends QUI\QDOM
             }
 
             $id = (int)$result[0]['id'];
+
+            QUI\Cache\LongTermCache::set($cache, $id);
         }
 
         return $this->get($id);
