@@ -707,6 +707,9 @@
         <locale name="quiqqer.settings.general.webserver.forcehttps.description">
             <en><![CDATA[All http request will be 301-redirected to https]]></en>
         </locale>
+        <locale name="quiqqer.settings.general.favicon">
+            <en><![CDATA[QUIQQER Admin Favicon-Icon]]></en>
+        </locale>
         <locale name="quiqqer.settings.webserver.type.title">
             <en><![CDATA[Type]]></en>
         </locale>
