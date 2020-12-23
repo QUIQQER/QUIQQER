@@ -7,6 +7,7 @@
 }
 
 .qui-controls-project-media-input-preview {
+    background-size: contain !important;
     border: 1px solid #ddd;
     border-radius: 3px 0 0 3px;
     float: left;

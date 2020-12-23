@@ -131,7 +131,62 @@ define('controls/projects/project/media/Input', [
             // preview
             this.$Preview = new Element('div', {
                 html   : '&nbsp;',
-                'class': 'qui-controls-project-media-input-preview'
+                'class': 'qui-controls-project-media-input-preview',
+                events : {
+                    mouseenter: function () {
+                        var pos  = self.$Preview.getPosition();
+                        var size = 250;
+
+                        var winSize = window.QUI.getWindowSize();
+                        var top     = pos.y + 30;
+                        var left    = pos.x + 30;
+
+                        if (top + size > winSize.y) {
+                            top = pos.y - size;
+                        }
+
+                        if (left + size > winSize.x) {
+                            top = pos.x - size;
+                        }
+
+                        var Parent = new Element('div', {
+                            'class': 'qui-controls-project-media-input-preview--view',
+                            html   : '<div></div>',
+                            styles : {
+                                backgroundColor: '#fff',
+                                borderRadius   : 5,
+                                boxShadow      : '1px 1px 5px -2px rgba(0, 0, 0, 0.75)',
+                                height         : 250,
+                                width          : 250,
+                                padding        : 5,
+                                position       : 'absolute',
+                                top            : top,
+                                left           : left,
+                                zIndex         : 10
+                            }
+                        }).inject(document.body);
+
+                        var url = self.$Preview.getStyle('background');
+
+                        if (url.indexOf('__') !== -1) {
+                            var p = url.split('__');
+                            url   = p[0] + '.' + p[1].split('.')[1];
+                        }
+
+                        new Element('div', {
+                            styles: {
+                                background        : url,
+                                backgroundSize    : 'contain',
+                                backgroundPosition: 'center center',
+                                height            : '100%',
+                                width             : '100%'
+                            }
+                        }).inject(Parent);
+                    },
+                    mouseleave: function () {
+                        document.getElements('.qui-controls-project-media-input-preview--view').destroy();
+                    }
+                }
             }).inject(this.$Elm);
 
             this.$Path = new Element('div', {
