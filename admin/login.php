@@ -44,6 +44,33 @@ foreach ($packages as $package) {
     <title>
         QUIQQER Content Management System - <?php echo HOST ?> -
     </title>
+    <!-- favicon -->
+    <?php
+    $favicon = QUI::conf('globals', 'favicon');
+
+    if ($favicon) {
+        try {
+            $Favicon    = QUI\Projects\Media\Utils::getImageByUrl($favicon);
+            $attributes = $Favicon->getAttributes();
+            $type       = $attributes['mime_type'];
+
+            ?>
+            <link rel="shortcut icon" href="<?php echo $Favicon->getSizeCacheUrl(62, 62); ?>"
+                  type="<?php echo $type; ?>">
+
+            <link rel="icon" href="<?php echo $Favicon->getSizeCacheUrl(16, 16); ?>" sizes="16x16"
+                  type="<?php echo $type; ?>">
+            <link rel="icon" href="<?php echo $Favicon->getSizeCacheUrl(32, 32); ?>" sizes="32x32"
+                  type="<?php echo $type; ?>">
+            <link rel="icon" href="<?php echo $Favicon->getSizeCacheUrl(48, 48); ?>" sizes="48x48"
+                  type="<?php echo $type; ?>">
+            <link rel="icon" href="<?php echo $Favicon->getSizeCacheUrl(62, 62); ?>" sizes="62x62"
+                  type="<?php echo $type; ?>">
+            <?php
+        } catch (QUI\Exception $Exception) {
+        }
+    }
+    ?>
 
     <?php
 

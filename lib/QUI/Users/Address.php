@@ -621,11 +621,11 @@ class Address extends QUI\QDOM
         $city      = $this->getAttribute('city');
         $country   = $this->getAttribute('country');
 
-        if (empty($firstName)) {
+        if (empty($firstName) && $User) {
             $firstName = $User->getAttribute('firstname');
         }
 
-        if (empty($lastName)) {
+        if (empty($lastName) && $User) {
             $lastName = $User->getAttribute('lastname');
         }
 

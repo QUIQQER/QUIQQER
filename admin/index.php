@@ -18,7 +18,8 @@ try {
 }
 
 // user avatar
-$Avatar = QUI::getUserBySession()->getAvatar();
+$User   = QUI::getUserBySession();
+$Avatar = $User->getAvatar();
 $avatar = '';
 
 if ($Avatar) {
@@ -38,6 +39,34 @@ if ($Avatar) {
 <head>
     <title>QUIQQER - <?php echo HOST ?></title>
 
+    <!-- favicon -->
+    <?php
+    $favicon = QUI::conf('globals', 'favicon');
+
+    if ($favicon) {
+        try {
+            $Favicon    = QUI\Projects\Media\Utils::getImageByUrl($favicon);
+            $attributes = $Favicon->getAttributes();
+            $type       = $attributes['mime_type'];
+
+            ?>
+            <link rel="shortcut icon" href="<?php echo $Favicon->getSizeCacheUrl(62, 62); ?>"
+                  type="<?php echo $type; ?>">
+
+            <link rel="icon" href="<?php echo $Favicon->getSizeCacheUrl(16, 16); ?>" sizes="16x16"
+                  type="<?php echo $type; ?>">
+            <link rel="icon" href="<?php echo $Favicon->getSizeCacheUrl(32, 32); ?>" sizes="32x32"
+                  type="<?php echo $type; ?>">
+            <link rel="icon" href="<?php echo $Favicon->getSizeCacheUrl(48, 48); ?>" sizes="48x48"
+                  type="<?php echo $type; ?>">
+            <link rel="icon" href="<?php echo $Favicon->getSizeCacheUrl(62, 62); ?>" sizes="62x62"
+                  type="<?php echo $type; ?>">
+            <?php
+        } catch (QUI\Exception $Exception) {
+        }
+    }
+    ?>
+
     <link
             href="//fonts.googleapis.com/css?family=Open+Sans:400,700,400italic"
             rel="stylesheet"
@@ -54,8 +83,6 @@ if ($Avatar) {
           content="Modular design. Convenient backend  Fast implementation. The all around carefree Enterprise Content Management System."
     />
 
-    <link href="<?php echo URL_BIN_DIR; ?>images/Q.png" rel="shortcut icon" type="image/x-icon"/>
-
     <!-- [begin] css combine -->
 
     <link href="<?php echo URL_BIN_DIR; ?>css/tables.css"
@@ -68,16 +95,6 @@ if ($Avatar) {
     echo QUI\FontAwesome\EventHandler::fontawesome(false, false);
 
     ?>
-
-    <!--    <link href="--><?php //echo $qui_extend; ?><!--font-awesome/css/font-awesome.min.css"-->
-    <!--          rel="stylesheet"-->
-    <!--          type="text/css"-->
-    <!--    />-->
-    <!---->
-    <!--    <link href="--><?php //echo URL_BIN_DIR; ?><!--css/fonts/font-awesome.min.css"-->
-    <!--          rel="stylesheet"-->
-    <!--          type="text/css"-->
-    <!--    />-->
 
     <!--[if (lt IE 9) & (!IEMobile)]>
     <link href="<?php echo $qui_extend; ?>unsemantic/ie.css"
