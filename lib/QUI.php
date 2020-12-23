@@ -327,7 +327,7 @@ class QUI
              * URL_DIR - path by which the system is accessible via the browser
              *
              * @var string
-            */
+             */
             \define('URL_DIR', $config['globals']['url_dir']);
         }
 
@@ -830,14 +830,15 @@ class QUI
         if (self::$Locale === null) {
             self::$Locale = new \QUI\Locale();
 
+            $language  = self::conf('globals', 'standardLanguage');
+            $languages = self::availableLanguages();
+
             if (isset($_REQUEST['lang']) && \strlen($_REQUEST['lang']) === 2) {
                 self::$Locale->setCurrent($_REQUEST['lang']);
-            } else {
-                $language = self::conf('globals', 'standardLanguage');
-
-                if (!empty($language)) {
-                    self::$Locale->setCurrent($language);
-                }
+            } elseif (!empty($language)) {
+                self::$Locale->setCurrent($language);
+            } elseif (\count($languages) === 1) {
+                self::$Locale->setCurrent($languages[0]);
             }
         }
 
