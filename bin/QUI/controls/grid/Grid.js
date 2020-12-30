@@ -11,6 +11,7 @@
  *
  * @fires onClick
  * @fires onDblClick
+ * @fires onDblClickBegin [event, this]
  * @fires onContextMenu
  * @fires onBlur
  * @fires onFocus
@@ -871,6 +872,9 @@ define('controls/grid/Grid', [
                 return;
             }
 
+            this.fireEvent("dblClickBegin", [evt, this]);
+
+
             var ondblclick;
             var target = evt.target,
                 row    = li.retrieve('row');
@@ -885,7 +889,7 @@ define('controls/grid/Grid', [
                 var childs = li.getChildren();
 
                 for (i = 0, len = childs.length; i < len; i++) {
-                    if (childs[i] == target) {
+                    if (childs[i] === target) {
                         break;
                     }
                 }
