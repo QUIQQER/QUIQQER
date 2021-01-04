@@ -3302,7 +3302,7 @@ define('controls/grid/Grid', [
                     filename = filename.substr(start, end - start);
 
                     return Response.blob().then(function (blob) {
-                        require([URL_OPT_DIR + 'bin/downloadjs/download'], function (download) {
+                        require([URL_OPT_DIR + 'bin/downloadjs/download.js'], function (download) {
                             self.hideLoader();
 
                             download(blob, filename, Headers.get('Content-Type'));
