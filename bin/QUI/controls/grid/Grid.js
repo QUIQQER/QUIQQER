@@ -3080,10 +3080,10 @@ define('controls/grid/Grid', [
                                     html: header
                                 }),
                                 input = new Element('input', {
+                                    'class': 'export_' + dataIndex,
                                     type   : 'checkbox',
                                     checked: 'checked',
                                     value  : dataIndex,
-                                    id     : 'export_' + dataIndex,
                                     name   : dataIndex
                                 });
 
@@ -3205,7 +3205,7 @@ define('controls/grid/Grid', [
                     continue;
                 }
 
-                Checkbox = t.container.getElement('#export_' + dataIndex);
+                Checkbox = document.body.getElement('.exportItemDiv .export_' + dataIndex);
 
                 if (!Checkbox || !Checkbox.checked) {
                     continue;
