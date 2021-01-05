@@ -108,7 +108,7 @@ class Address extends QUI\QDOM
             $email    = $User->getAttribute('email');
 
             if (!count($mailList)
-                && $User->getStandardAddress()->getId() === $this->getId()
+                && $User->getAttribute('address') === $this->getId()
                 && !empty($email)
             ) {
                 $this->addMail($email);
