@@ -117,7 +117,7 @@ class Address extends QUI\QDOM
     /**
      * @return User
      */
-    public function getUser()
+    public function getUser(): ?User
     {
         return $this->User;
     }
@@ -268,7 +268,7 @@ class Address extends QUI\QDOM
      *
      * @return array
      */
-    public function getPhoneList()
+    public function getPhoneList(): array
     {
         if (\is_array($this->getAttribute('phone'))) {
             return $this->getAttribute('phone');
@@ -288,7 +288,7 @@ class Address extends QUI\QDOM
      *
      * @return string
      */
-    public function getPhone()
+    public function getPhone(): string
     {
         $list = $this->getPhoneList();
 
@@ -312,7 +312,7 @@ class Address extends QUI\QDOM
      *
      * @return string
      */
-    public function getMobile()
+    public function getMobile(): string
     {
         $list = $this->getPhoneList();
 
@@ -336,7 +336,7 @@ class Address extends QUI\QDOM
      *
      * @return string
      */
-    public function getFax()
+    public function getFax(): string
     {
         $list = $this->getPhoneList();
 
@@ -424,7 +424,7 @@ class Address extends QUI\QDOM
      *
      * @return array
      */
-    public function getMailList()
+    public function getMailList(): array
     {
         $result = \json_decode($this->getAttribute('mail'), true);
 
@@ -441,7 +441,7 @@ class Address extends QUI\QDOM
      * @return QUI\Countries\Country
      * @throws QUI\Users\Exception
      */
-    public function getCountry()
+    public function getCountry(): QUI\Countries\Country
     {
         if ($this->getAttribute('country') === false) {
             throw new QUI\Users\Exception(
@@ -558,7 +558,7 @@ class Address extends QUI\QDOM
      * @param array $options - options ['mail' => true, 'tel' => true]
      * @return string - HTML <address>
      */
-    public function getDisplay($options = [])
+    public function getDisplay($options = []): string
     {
         try {
             $Engine = QUI::getTemplateManager()->getEngine(true);
@@ -600,7 +600,7 @@ class Address extends QUI\QDOM
      * @param array $options - options
      * @return string
      */
-    public function render($options = [])
+    public function render($options = []): string
     {
         return $this->getDisplay($options);
     }
@@ -608,7 +608,7 @@ class Address extends QUI\QDOM
     /**
      * @return string
      */
-    public function getText()
+    public function getText(): string
     {
         $User = $this->User;
 
@@ -677,7 +677,14 @@ class Address extends QUI\QDOM
             unset($part[0]);
         }
 
-        return \implode('; ', $part);
+        $address = \implode('; ', $part);
+        $company = $this->getAttribute('company');
+
+        if (!empty($company)) {
+            return $company.'; '.$address;
+        }
+
+        return $address;
     }
 
     /**
@@ -685,7 +692,7 @@ class Address extends QUI\QDOM
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         $User = $this->User;
 
@@ -777,7 +784,7 @@ class Address extends QUI\QDOM
      *
      * @return array
      */
-    public function getCustomData()
+    public function getCustomData(): array
     {
         return $this->customData;
     }
@@ -787,7 +794,7 @@ class Address extends QUI\QDOM
      *
      * @return string
      */
-    public function toJSON()
+    public function toJSON(): string
     {
         $attributes       = $this->getAttributes();
         $attributes['id'] = $this->getId();
@@ -802,7 +809,7 @@ class Address extends QUI\QDOM
      * @param bool $compareCustomData (optional) - Consider custom data on comparison [default: false]
      * @return bool
      */
-    public function equals(Address $Address, $compareCustomData = false)
+    public function equals(Address $Address, $compareCustomData = false): bool
     {
         if ($this->getId() === $Address->getId()) {
             return false;

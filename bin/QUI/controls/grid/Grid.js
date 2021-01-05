@@ -11,6 +11,7 @@
  *
  * @fires onClick
  * @fires onDblClick
+ * @fires onDblClickBegin [event, this]
  * @fires onContextMenu
  * @fires onBlur
  * @fires onFocus
@@ -871,6 +872,9 @@ define('controls/grid/Grid', [
                 return;
             }
 
+            this.fireEvent("dblClickBegin", [evt, this]);
+
+
             var ondblclick;
             var target = evt.target,
                 row    = li.retrieve('row');
@@ -885,7 +889,7 @@ define('controls/grid/Grid', [
                 var childs = li.getChildren();
 
                 for (i = 0, len = childs.length; i < len; i++) {
-                    if (childs[i] == target) {
+                    if (childs[i] === target) {
                         break;
                     }
                 }
@@ -3076,10 +3080,10 @@ define('controls/grid/Grid', [
                                     html: header
                                 }),
                                 input = new Element('input', {
+                                    'class': 'export_' + dataIndex,
                                     type   : 'checkbox',
                                     checked: 'checked',
                                     value  : dataIndex,
-                                    id     : 'export_' + dataIndex,
                                     name   : dataIndex
                                 });
 
@@ -3201,7 +3205,7 @@ define('controls/grid/Grid', [
                     continue;
                 }
 
-                Checkbox = t.container.getElement('#export_' + dataIndex);
+                Checkbox = document.body.getElement('.exportItemDiv .export_' + dataIndex);
 
                 if (!Checkbox || !Checkbox.checked) {
                     continue;
@@ -3298,7 +3302,7 @@ define('controls/grid/Grid', [
                     filename = filename.substr(start, end - start);
 
                     return Response.blob().then(function (blob) {
-                        require([URL_OPT_DIR + 'bin/downloadjs/download'], function (download) {
+                        require([URL_OPT_DIR + 'bin/downloadjs/download.js'], function (download) {
                             self.hideLoader();
 
                             download(blob, filename, Headers.get('Content-Type'));
