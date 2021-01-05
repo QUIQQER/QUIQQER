@@ -102,19 +102,6 @@ class Address extends QUI\QDOM
         }
 
         $this->setAttributes($data);
-
-        try {
-            $mailList = $this->getMailList();
-            $email    = $User->getAttribute('email');
-
-            if (!count($mailList)
-                && $User->getAttribute('address') === $this->getId()
-                && !empty($email)
-            ) {
-                $this->addMail($email);
-            }
-        } catch (QUI\Exception $Exception) {
-        }
     }
 
     /**

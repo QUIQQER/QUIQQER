@@ -2168,6 +2168,24 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getStandardAddress()
     {
+        $Address  = $this->getStandardAddressHelper();
+        $mailList = $Address->getMailList();
+        $email    = $this->getAttribute('email');
+
+        // set default mail address
+        if (empty($mailList) && !empty($email)) {
+            $Address->addMail($email);
+        }
+
+        return $Address;
+    }
+
+    /**
+     * @return Address
+     * @throws Exception
+     */
+    protected function getStandardAddressHelper(): Address
+    {
         if ($this->getAttribute('address')) {
             return $this->getAddress($this->getAttribute('address'));
         }
