@@ -72,7 +72,8 @@ class Address extends QUI\QDOM
                         'addressId' => (int)$id,
                         'userId'    => $User->getId()
                     ]
-                )
+                ),
+                404
             );
         }
 
