@@ -623,8 +623,6 @@ class Address extends QUI\QDOM
      */
     public function getText(): string
     {
-        $User = $this->User;
-
         $salutation = $this->getAttribute('salutation');
         $firstName  = $this->getAttribute('firstname');
         $lastName   = $this->getAttribute('lastname');
@@ -633,14 +631,6 @@ class Address extends QUI\QDOM
         $zip       = $this->getAttribute('zip');
         $city      = $this->getAttribute('city');
         $country   = $this->getAttribute('country');
-
-        if (empty($firstName) && $User) {
-            $firstName = $User->getAttribute('firstname');
-        }
-
-        if (empty($lastName) && $User) {
-            $lastName = $User->getAttribute('lastname');
-        }
 
         // build parts
         $part = [0 => [], 1 => [], 2 => []];
