@@ -484,7 +484,9 @@ class Address extends QUI\QDOM
             $PermissionUser = QUI::getUserBySession();
         }
 
-        $this->getUser()->checkEditPermission($PermissionUser);
+
+        $User = $this->getUser();
+        $User->checkEditPermission($PermissionUser);
 
         try {
             QUI::getEvents()->fireEvent('userAddressSaveBegin', [$this, $this->getUser()]);
@@ -527,6 +529,16 @@ class Address extends QUI\QDOM
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
             QUI\System\Log::writeDebugException($Exception);
+        }
+
+        try {
+            // update user firstname lastname, if this address is the default address
+            if ($User->getStandardAddress()->getId() === $this->getId()) {
+                $User->setAttribute('firstname', $cleanupAttributes($this->getAttribute('firstname')));
+                $User->setAttribute('lastname', $cleanupAttributes($this->getAttribute('lastname')));
+            }
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addDebug($Exception->getMessage());
         }
 
         try {

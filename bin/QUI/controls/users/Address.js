@@ -14,12 +14,13 @@ define('controls/users/Address', [
     'qui/controls/loader/Loader',
     'qui/controls/windows/Confirm',
     'controls/grid/Grid',
+    'Users',
     'Ajax',
     'Locale',
 
     'css!controls/users/Address.css'
 
-], function (QUI, QUIControl, QUILoader, QUIConfirm, Grid, Ajax, Locale) {
+], function (QUI, QUIControl, QUILoader, QUIConfirm, Grid, Users, Ajax, Locale) {
     "use strict";
 
     var lg = 'quiqqer/quiqqer';
@@ -318,6 +319,15 @@ define('controls/users/Address', [
             };
 
             Ajax.post('ajax_users_address_save', function () {
+                // if address is default address, we neet to refresh the user
+                if (self.$Standard.checked) {
+                    Users.get(self.getAttribute('uid')).load().then(function () {
+                        self.fireEvent('saved', [self]);
+                    });
+
+                    return;
+                }
+
                 self.fireEvent('saved', [self]);
             }, {
                 uid : this.getAttribute('uid'),

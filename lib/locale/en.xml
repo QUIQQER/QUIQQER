@@ -529,6 +529,9 @@
         <locale name="exception.user.no.address.exists">
             <en><![CDATA[Unfortunately the user does not have an address.]]></en>
         </locale>
+        <locale name="exception.user.name.already.exists">
+            <en><![CDATA[This username already exists.]]></en>
+        </locale>
         <locale name="user.settings.setNewPassword">
             <en><![CDATA[Renew password]]></en>
         </locale>

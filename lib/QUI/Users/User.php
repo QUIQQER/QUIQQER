@@ -160,6 +160,11 @@ class User implements QUI\Interfaces\Users\User
     protected $address_list = [];
 
     /**
+     * @var null|Address
+     */
+    protected $StandardAddress = null;
+
+    /**
      * constructor
      *
      * @param integer $id - ID of the user
@@ -974,7 +979,9 @@ class User implements QUI\Interfaces\Users\User
                 Manager::checkUsernameSigns($value);
 
                 if ($this->name != $value && QUI::getUsers()->usernameExists($value)) {
-                    throw new QUI\Users\Exception('Name existiert bereits');
+                    throw new QUI\Users\Exception(
+                        QUI::getLocale()->get('quiqqer/quiqqer', 'exception.user.name.already.exists')
+                    );
                 }
 
                 $this->name = $value;
@@ -995,6 +1002,11 @@ class User implements QUI\Interfaces\Users\User
             case "lang":
                 $this->lang           = $value;
                 $this->settings[$key] = $value;
+                break;
+
+            case "address":
+                $this->StandardAddress = null;
+                $this->settings[$key]  = $value;
                 break;
 
             default:
@@ -1469,7 +1481,6 @@ class User implements QUI\Interfaces\Users\User
      *
      * @param QUI\Interfaces\Users\User|boolean $ParentUser
      *
-     * @return \PDOStatement
      * @throws QUI\Exception
      * @see QUI\Interfaces\Users\User::save()
      *
@@ -1588,7 +1599,9 @@ class User implements QUI\Interfaces\Users\User
             }
         }
 
-        $email = null;
+        // default address filling
+        $email         = null;
+        $addressSaving = false;
 
         if (!empty($this->getAttribute('email'))) {
             $email = \trim($this->getAttribute('email'));
@@ -1596,6 +1609,27 @@ class User implements QUI\Interfaces\Users\User
             try {
                 $Address = $this->getStandardAddress();
                 $Address->editMail(0, $email);
+                $addressSaving = true;
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeDebugException($Exception);
+            }
+        }
+
+        if (!empty($this->getAttribute('firstname'))) {
+            try {
+                $Address = $this->getStandardAddress();
+                $Address->setAttribute('firstname', $this->getAttribute('firstname'));
+                $addressSaving = true;
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeDebugException($Exception);
+            }
+        }
+
+        if (!empty($this->getAttribute('lastname'))) {
+            try {
+                $Address = $this->getStandardAddress();
+                $Address->setAttribute('lastname', $this->getAttribute('lastname'));
+                $addressSaving = true;
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::writeDebugException($Exception);
             }
@@ -1603,7 +1637,7 @@ class User implements QUI\Interfaces\Users\User
 
 
         // saving
-        $result = QUI::getDataBase()->update(
+        QUI::getDataBase()->update(
             Manager::table(),
             [
                 'username'         => $this->getUsername(),
@@ -1631,11 +1665,13 @@ class User implements QUI\Interfaces\Users\User
             ['id' => $this->getId()]
         );
 
+        if ($addressSaving) {
+            $this->getStandardAddress()->save();
+        }
+
         QUI::getEvents()->fireEvent('userSaveEnd', [$this]);
 
         QUI\Workspace\Menu::clearMenuCache($this);
-
-        return $result;
     }
 
     /**
@@ -1924,7 +1960,7 @@ class User implements QUI\Interfaces\Users\User
      *
      * @return array
      */
-    protected function getListOfExtraAttributes()
+    protected function getListOfExtraAttributes(): array
     {
         $cache = 'quiqqer/users/user-extra-attributes';
 
@@ -1969,7 +2005,7 @@ class User implements QUI\Interfaces\Users\User
      *
      * @return array
      */
-    protected function readAttributesFromUserXML($file)
+    protected function readAttributesFromUserXML($file): array
     {
         $cache = 'quiqqer/users/user-extra-attributes/'.\md5($file);
 
@@ -2195,8 +2231,14 @@ class User implements QUI\Interfaces\Users\User
      */
     protected function getStandardAddressHelper(): Address
     {
+        if ($this->StandardAddress) {
+            return $this->StandardAddress;
+        }
+
         if ($this->getAttribute('address')) {
-            return $this->getAddress($this->getAttribute('address'));
+            $this->StandardAddress = $this->getAddress($this->getAttribute('address'));
+
+            return $this->StandardAddress;
         }
 
         $list = $this->getAddressList();
@@ -2204,7 +2246,9 @@ class User implements QUI\Interfaces\Users\User
         if (\count($list)) {
             \reset($list);
 
-            return \current($list);
+            $this->StandardAddress = \current($list);
+
+            return $this->StandardAddress;
         }
 
         throw new QUI\Users\Exception(
