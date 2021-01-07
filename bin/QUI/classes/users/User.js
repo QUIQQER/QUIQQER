@@ -149,6 +149,19 @@ define('classes/users/User', [
         },
 
         /**
+         * Loads the user attributes from the db if not yet loaded
+         *
+         * @return {Promise}
+         */
+        loadIfNotLoaded: function () {
+            if (this.$loaded) {
+                return Promise.resolve(this);
+            }
+
+            return this.load();
+        },
+
+        /**
          * the user has been loaded once?
          *
          * @return {Boolean}
