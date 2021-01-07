@@ -1588,11 +1588,16 @@ class User implements QUI\Interfaces\Users\User
             }
         }
 
-        if ($this->getAttribute('email')) {
+        $email = null;
+
+        if (!empty($this->getAttribute('email'))) {
+            $email = \trim($this->getAttribute('email'));
+
             try {
                 $Address = $this->getStandardAddress();
-                $Address->editMail(0, $this->getAttribute('email'));
+                $Address->editMail(0, $email);
             } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeDebugException($Exception);
             }
         }
 
@@ -1607,7 +1612,7 @@ class User implements QUI\Interfaces\Users\User
                 'lastname'         => $this->getAttribute('lastname'),
                 'usertitle'        => $this->getAttribute('usertitle'),
                 'birthday'         => $birthday,
-                'email'            => $this->getAttribute('email'),
+                'email'            => $email,
                 'avatar'           => $avatar,
                 'su'               => $this->isSU() ? 1 : 0,
                 'extra'            => \json_encode($extra),
@@ -2174,7 +2179,11 @@ class User implements QUI\Interfaces\Users\User
 
         // set default mail address
         if (empty($mailList) && !empty($email)) {
-            $Address->addMail($email);
+            try {
+                $Address->addMail($email);
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
         }
 
         return $Address;
