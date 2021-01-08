@@ -1635,6 +1635,10 @@ class User implements QUI\Interfaces\Users\User
             }
         }
 
+        if (!$this->getAttribute('address')) {
+            $this->setAttribute('address', $this->getStandardAddress()->getId());
+        }
+
 
         // saving
         QUI::getDataBase()->update(
