@@ -2144,9 +2144,16 @@ class User implements QUI\Interfaces\Users\User
             $_params
         );
 
-        return $this->getAddress(
+        $CreatedAddress = $this->getAddress(
             QUI::getDataBase()->getPDO()->lastInsertId()
         );
+
+        if (\count($this->getAddressList()) === 1) {
+            $this->setAttribute('address', $CreatedAddress->getId());
+            $this->save($ParentUser);
+        }
+
+        return $CreatedAddress;
     }
 
     /**
