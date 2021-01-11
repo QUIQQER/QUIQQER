@@ -123,7 +123,7 @@ define('controls/projects/Popup', [
                     allowedProject = self.getAttribute('project'),
                     allowedLangs   = !selfLangs ? false : {};
 
-                if (selfLangs && selfLangs.length) {
+                if (selfLangs && selfLangs.length && allowedLangs) {
                     for (i = 0, len = selfLangs.length; i < len; i++) {
                         allowedLangs[selfLangs[i]] = true;
                     }
@@ -137,7 +137,7 @@ define('controls/projects/Popup', [
                     langs = result[project].langs.split(',');
 
                     for (i = 0, len = langs.length; i < len; i++) {
-                        if (allowedProject && allowedProject != project) {
+                        if (selfLangs && allowedProject && allowedProject != project) {
                             continue;
                         }
 
