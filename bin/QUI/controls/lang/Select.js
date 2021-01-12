@@ -62,6 +62,10 @@ define('controls/lang/Select', [
             this.$Select = new QUISelect({
                 disabled: true,
                 events  : {
+                    onChangeBegin: function (value) {
+                        this.fireEvent('changeBegin', [this, value]);
+                    }.bind(this),
+
                     onChange: function (value) {
                         this.$Input.value = value;
                         this.fireEvent('change', [this, value]);
@@ -102,6 +106,10 @@ define('controls/lang/Select', [
             this.$Select = new QUISelect({
                 disabled: true,
                 events  : {
+                    onChangeBegin: function (value) {
+                        this.fireEvent('changeBegin', [this, value]);
+                    }.bind(this),
+                    
                     onChange: function (value) {
                         this.fireEvent('change', [this, value]);
                     }.bind(this)
