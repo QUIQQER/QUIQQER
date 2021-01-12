@@ -149,6 +149,14 @@ define('controls/editors/Editor', [
          * event : on loaded
          */
         $onLoaded: function () {
+            if (typeof this.getDocument().body === 'undefined' || !this.getDocument().body) {
+                setTimeout(function () {
+                    this.$onLoaded();
+                }.bind(this), 1000);
+
+                return;
+            }
+
             if (this.getAttribute('bodyId')) {
                 this.getDocument().body.id = this.getAttribute('bodyId');
             }

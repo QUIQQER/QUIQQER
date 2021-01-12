@@ -72,7 +72,8 @@ class Address extends QUI\QDOM
                         'addressId' => (int)$id,
                         'userId'    => $User->getId()
                     ]
-                )
+                ),
+                404
             );
         }
 
@@ -483,7 +484,9 @@ class Address extends QUI\QDOM
             $PermissionUser = QUI::getUserBySession();
         }
 
-        $this->getUser()->checkEditPermission($PermissionUser);
+
+        $User = $this->getUser();
+        $User->checkEditPermission($PermissionUser);
 
         try {
             QUI::getEvents()->fireEvent('userAddressSaveBegin', [$this, $this->getUser()]);
@@ -526,6 +529,16 @@ class Address extends QUI\QDOM
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
             QUI\System\Log::writeDebugException($Exception);
+        }
+
+        try {
+            // update user firstname lastname, if this address is the default address
+            if ($User->getStandardAddress()->getId() === $this->getId()) {
+                $User->setAttribute('firstname', $cleanupAttributes($this->getAttribute('firstname')));
+                $User->setAttribute('lastname', $cleanupAttributes($this->getAttribute('lastname')));
+            }
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addDebug($Exception->getMessage());
         }
 
         try {
@@ -610,8 +623,6 @@ class Address extends QUI\QDOM
      */
     public function getText(): string
     {
-        $User = $this->User;
-
         $salutation = $this->getAttribute('salutation');
         $firstName  = $this->getAttribute('firstname');
         $lastName   = $this->getAttribute('lastname');
@@ -620,14 +631,6 @@ class Address extends QUI\QDOM
         $zip       = $this->getAttribute('zip');
         $city      = $this->getAttribute('city');
         $country   = $this->getAttribute('country');
-
-        if (empty($firstName) && $User) {
-            $firstName = $User->getAttribute('firstname');
-        }
-
-        if (empty($lastName) && $User) {
-            $lastName = $User->getAttribute('lastname');
-        }
 
         // build parts
         $part = [0 => [], 1 => [], 2 => []];
