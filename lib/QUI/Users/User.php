@@ -1603,6 +1603,14 @@ class User implements QUI\Interfaces\Users\User
         $email         = null;
         $addressSaving = false;
 
+        try {
+            $this->getStandardAddress();
+        } catch (QUI\Exception $Exception) {
+            if ($Exception->getCode() === 404) {
+                $this->addAddress();
+            }
+        }
+
         if (!empty($this->getAttribute('email'))) {
             $email = \trim($this->getAttribute('email'));
 
@@ -2127,16 +2135,6 @@ class User implements QUI\Interfaces\Users\User
             $_params[$needle] = Orthos::clear($params[$needle]);
         }
 
-        $tmp_first = $this->getAttribute('firstname');
-        $tmp_last  = $this->getAttribute('lastname');
-
-        if (empty($tmp_first) && empty($tmp_last)) {
-            $this->setAttribute('firstname', $_params['firstname']);
-            $this->setAttribute('lastname', $_params['lastname']);
-            $this->save($ParentUser);
-        }
-
-
         $_params['uid'] = $this->getId();
 
         QUI::getDataBase()->insert(
@@ -2147,6 +2145,15 @@ class User implements QUI\Interfaces\Users\User
         $CreatedAddress = $this->getAddress(
             QUI::getDataBase()->getPDO()->lastInsertId()
         );
+
+        $tmp_first = $this->getAttribute('firstname');
+        $tmp_last  = $this->getAttribute('lastname');
+
+        if (empty($tmp_first) && empty($tmp_last)) {
+            $this->setAttribute('firstname', $_params['firstname']);
+            $this->setAttribute('lastname', $_params['lastname']);
+            $this->save($ParentUser);
+        }
 
         if (\count($this->getAddressList()) === 1) {
             $this->setAttribute('address', $CreatedAddress->getId());
