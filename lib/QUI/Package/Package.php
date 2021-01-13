@@ -107,13 +107,14 @@ class Package extends QUI\QDOM
      *
      * @param string $package - Name of the Package
      *
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
-    public function __construct($package)
+    public function __construct(string $package)
     {
         $packageDir = OPT_DIR.$package.'/';
 
-        if (\strpos($package, '-asset/') !== false) {
+        // if not exists look at bin
+        if (!\is_dir($packageDir)) {
             $packageDir = OPT_DIR.'/bin/'.\explode('/', $package)[1].'/';
         }
 
@@ -181,7 +182,7 @@ class Package extends QUI\QDOM
      *
      * @return array
      */
-    protected function getPackageXMLData()
+    protected function getPackageXMLData(): array
     {
         if ($this->packageXML !== null) {
             return $this->packageXML;
@@ -212,7 +213,7 @@ class Package extends QUI\QDOM
      *
      * @return string
      */
-    public function getDir()
+    public function getDir(): string
     {
         return $this->packageDir;
     }
@@ -222,7 +223,7 @@ class Package extends QUI\QDOM
      *
      * @return string
      */
-    public function getCacheName()
+    public function getCacheName(): string
     {
         return 'quiqqer/package/'.$this->getName();
     }
@@ -232,7 +233,7 @@ class Package extends QUI\QDOM
      *
      * @return string
      */
-    public function getCachePath()
+    public function getCachePath(): string
     {
         return $this->getCacheName();
     }
@@ -245,7 +246,7 @@ class Package extends QUI\QDOM
      *
      * @todo cache that
      */
-    public function getProvider($providerName = false)
+    public function getProvider($providerName = false): array
     {
         $packageData = $this->getPackageXMLData();
 
@@ -296,7 +297,7 @@ class Package extends QUI\QDOM
      *
      * @return bool
      */
-    public function hasTemplateParent()
+    public function hasTemplateParent(): bool
     {
         $parent = $this->getTemplateParent();
 
@@ -309,7 +310,7 @@ class Package extends QUI\QDOM
      *
      * @return string
      */
-    public function getVarDir()
+    public function getVarDir(): string
     {
         $varDir = VAR_DIR.'package/'.$this->getName().'/';
 
@@ -323,7 +324,7 @@ class Package extends QUI\QDOM
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -333,7 +334,7 @@ class Package extends QUI\QDOM
      *
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         if ($this->title) {
             return $this->title;
@@ -364,9 +365,9 @@ class Package extends QUI\QDOM
     /**
      * Return the package description
      *
-     * @return String
+     * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         if ($this->description) {
             return $this->description;
@@ -405,9 +406,9 @@ class Package extends QUI\QDOM
     /**
      * Return the path to the package image / icon
      *
-     * @return String
+     * @return string
      */
-    public function getImage()
+    public function getImage(): string
     {
         $packageData = $this->getPackageXMLData();
 
@@ -430,7 +431,7 @@ class Package extends QUI\QDOM
      * @param string $permissionName
      * @return mixed
      */
-    public function getPermissionName($permissionName = 'canUse')
+    public function getPermissionName($permissionName = 'canUse'): string
     {
         $nameShortCut = \preg_replace("/[^A-Za-z0-9 ]/", '', $this->getName());
 
@@ -449,7 +450,7 @@ class Package extends QUI\QDOM
      *
      * @return array
      */
-    public function getPreviewImages()
+    public function getPreviewImages(): array
     {
         $packageData = $this->getPackageXMLData();
 
@@ -493,7 +494,7 @@ class Package extends QUI\QDOM
      *
      * @return array
      */
-    public function getLock()
+    public function getLock(): array
     {
         return QUI::getPackageManager()->getPackageLock($this);
     }
@@ -565,7 +566,7 @@ class Package extends QUI\QDOM
      *
      * @return array
      */
-    public function getDependencies()
+    public function getDependencies(): array
     {
         $composer = $this->getComposerData();
 
@@ -582,7 +583,7 @@ class Package extends QUI\QDOM
      * @param string $name - e.g. "database.xml" / "package.xml" etc.
      * @return string|false - absolute file path or false if xml file does not exist
      */
-    public function getXMLFilePath($name)
+    public function getXMLFilePath(string $name)
     {
         $file = $this->getDir().$name;
 
@@ -600,7 +601,7 @@ class Package extends QUI\QDOM
      * @return string|false - absolute file path or false if xml file does not exist
      * @deprecated
      */
-    public function getXMLFile($name)
+    public function getXMLFile(string $name)
     {
         return $this->getXMLFilePath($name);
     }
@@ -613,7 +614,7 @@ class Package extends QUI\QDOM
      *
      * @return bool
      */
-    public function hasPermission($permission = 'canUse', $User = null)
+    public function hasPermission($permission = 'canUse', $User = null): bool
     {
         if (!QUI::conf('permissions', 'package')) {
             return true;
