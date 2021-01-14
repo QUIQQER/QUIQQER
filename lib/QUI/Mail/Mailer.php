@@ -104,9 +104,9 @@ class Mailer extends QUI\QDOM
     /**
      * Send the mail
      *
-     * @throws \QUI\Exception
+     * @throws \QUI\Exception|\PHPMailer\PHPMailer\Exception
      */
-    public function send()
+    public function send(): bool
     {
         $PHPMailer = QUI::getMailManager()->getPHPMailer();
         $html      = $this->Template->getHTML();
@@ -252,7 +252,7 @@ class Mailer extends QUI\QDOM
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'subject'      => $this->getAttribute('subject'),
@@ -278,7 +278,7 @@ class Mailer extends QUI\QDOM
      *
      * @param string $from - mail@domain.net
      */
-    public function setFrom($from)
+    public function setFrom(string $from)
     {
         $this->setAttribute('from', $from);
     }
@@ -288,7 +288,7 @@ class Mailer extends QUI\QDOM
      *
      * @param string $fromName - Firstname Lastname
      */
-    public function setFromName($fromName)
+    public function setFromName(string $fromName)
     {
         $this->setAttribute('fromName', $fromName);
     }
@@ -298,7 +298,7 @@ class Mailer extends QUI\QDOM
      *
      * @param string $subject
      */
-    public function setSubject($subject)
+    public function setSubject(string $subject)
     {
         $this->setAttribute('subject', $subject);
     }
@@ -308,7 +308,7 @@ class Mailer extends QUI\QDOM
      *
      * @param boolean $html - is the mail a html mail or not?
      */
-    public function setHTML($html)
+    public function setHTML(bool $html)
     {
         $this->setAttribute('html', (bool)$html);
     }
@@ -318,7 +318,7 @@ class Mailer extends QUI\QDOM
      *
      * @param string $html
      */
-    public function setBody($html)
+    public function setBody(string $html)
     {
         $this->Template->setBody($html);
     }
@@ -344,7 +344,7 @@ class Mailer extends QUI\QDOM
      * @param string $email - E-Mail
      * @param string|boolean $name - E-Mail Name
      */
-    public function addRecipient($email, $name = false)
+    public function addRecipient(string $email, $name = false)
     {
         $email = \trim($email);
         $email = \explode(',', $email);
@@ -364,7 +364,7 @@ class Mailer extends QUI\QDOM
      * @param string $email - E-Mail
      * @param string|boolean $name - E-Mail Name
      */
-    public function addReplyTo($email, $name = false)
+    public function addReplyTo(string $email, $name = false)
     {
         $email = \trim($email);
         $email = \explode(',', $email);
@@ -384,7 +384,7 @@ class Mailer extends QUI\QDOM
      * @param string $email - E-Mail
      * @param string|boolean $name - E-Mail Name
      */
-    public function addCC($email, $name = false)
+    public function addCC(string $email, $name = false)
     {
         $email = \trim($email);
         $email = \explode(',', $email);
@@ -404,7 +404,7 @@ class Mailer extends QUI\QDOM
      * @param string $email - E-Mail
      * @param string|boolean $name - E-Mail Name
      */
-    public function addBCC($email, $name = false)
+    public function addBCC(string $email, $name = false)
     {
         $email = \trim($email);
         $email = \explode(',', $email);
@@ -425,7 +425,7 @@ class Mailer extends QUI\QDOM
      *
      * @return boolean
      */
-    public function addAttachment($file)
+    public function addAttachment(string $file): bool
     {
         if (!\file_exists($file)) {
             return false;
