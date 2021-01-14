@@ -92,6 +92,25 @@ QUI::$Ajax->registerFunction(
             );
         }
 
+        // send mail with Mail Template
+        try {
+            $Mailers = QUI::getMailManager()->getMailer();
+            $Mailers->setSubject(QUI::getLocale()->get(
+                'quiqqer/quiqqer',
+                'text.mail.subject'
+            ));
+
+            $Mailers->setBody(QUI::getLocale()->get(
+                'quiqqer/quiqqer',
+                'text.mail.body'
+            ));
+
+            $Mailers->addRecipient(QUI::conf('mail', 'admin_mail'));
+            $Mailers->send();
+        } catch (\Exception $Exception) {
+            QUI\Mail\Log::logException($Exception);
+        }
+
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get('quiqqer/quiqqer', 'message.testmail.success')
         );
