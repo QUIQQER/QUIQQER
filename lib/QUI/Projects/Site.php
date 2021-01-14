@@ -1587,6 +1587,15 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getUrlRewritten($pathParams = [], $getParams = [])
     {
+        $eventResult = false;
+
+        $this->Events->fireEvent('urlRewritten', [$this, &$eventResult]);
+        QUI::getEvents()->fireEvent('urlRewritten', [$this, &$eventResult]);
+
+        if (!empty($eventResult)) {
+            return $eventResult;
+        }
+
         $pathParams['site'] = $this;
 
         $Output = QUI::getRewrite()->getOutput();
