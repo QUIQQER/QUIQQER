@@ -534,6 +534,7 @@ class Address extends QUI\QDOM
         try {
             // update user firstname lastname, if this address is the default address
             if ($User->getStandardAddress()->getId() === $this->getId()) {
+                $User->setAttribute('email', $cleanupAttributes($this->getAttribute('email')));
                 $User->setAttribute('firstname', $cleanupAttributes($this->getAttribute('firstname')));
                 $User->setAttribute('lastname', $cleanupAttributes($this->getAttribute('lastname')));
             }
@@ -733,7 +734,7 @@ class Address extends QUI\QDOM
      * Set custom data entry
      *
      * @param string $key
-     * @param integer|float|double|bool|string $value
+     * @param integer|float|bool|string $value
      * @return void
      */
     public function setCustomDataEntry($key, $value)

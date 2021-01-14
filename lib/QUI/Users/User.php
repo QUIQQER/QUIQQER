@@ -2230,7 +2230,7 @@ class User implements QUI\Interfaces\Users\User
         $Address  = $this->getStandardAddressHelper();
         $mailList = $Address->getMailList();
         $email    = $this->getAttribute('email');
-        $email    = trim($email);
+        $email    = \trim($email);
 
         // set default mail address
         if (empty($mailList) && !empty($email)) {
