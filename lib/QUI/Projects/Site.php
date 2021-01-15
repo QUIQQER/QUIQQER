@@ -1589,8 +1589,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     {
         $eventResult = false;
 
-        $this->Events->fireEvent('urlRewritten', [$this, &$eventResult]);
-        QUI::getEvents()->fireEvent('urlRewritten', [$this, &$eventResult]);
+        $this->Events->fireEvent('getUrlRewritten', [$this, &$eventResult]);
+        QUI::getEvents()->fireEvent('siteGetUrlRewritten', [$this, &$eventResult]);
 
         if (!empty($eventResult)) {
             return $eventResult;
