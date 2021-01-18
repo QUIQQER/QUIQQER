@@ -57,7 +57,9 @@ define('libs/HistoryTabs', [
                 Next = Tasks.lastChild();
             }
 
-            Next.click();
+            if (Next) {
+                Next.click();
+            }
             return;
         }
 
@@ -78,7 +80,9 @@ define('libs/HistoryTabs', [
                 Next = Tasks.firstChild();
             }
 
-            Next.click();
+            if (Next) {
+                Next.click();
+            }
             return;
         }
     });
