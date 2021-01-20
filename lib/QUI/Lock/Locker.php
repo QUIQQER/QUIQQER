@@ -118,6 +118,7 @@ class Locker
         if ($User->isSU()
             || QUI::getUsers()->isSystemUser($User)
             || $locked === $User->getId()
+            || (!empty($locked['id']) && $locked['id'] === $User->getId())
         ) {
             self::unlock($Package, $key);
         }
