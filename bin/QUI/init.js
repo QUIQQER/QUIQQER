@@ -44,7 +44,9 @@ require.config({
         "URI"               : URL_OPT_DIR + 'bin/urijs/src/URI',
         'IPv6'              : URL_OPT_DIR + 'bin/urijs/src/IPv6',
         'punycode'          : URL_OPT_DIR + 'bin/urijs/src/punycode',
-        'SecondLevelDomains': URL_OPT_DIR + 'bin/urijs/src/SecondLevelDomains'
+        'SecondLevelDomains': URL_OPT_DIR + 'bin/urijs/src/SecondLevelDomains',
+        'Navigo'            : URL_OPT_DIR + 'bin/navigo/lib/navigo.min',
+        'HistoryEvents'     : URL_OPT_DIR + 'bin/history-events/dist/history-events.min'
     },
 
     waitSeconds: 0,
@@ -98,7 +100,7 @@ require(requireList, function () {
     Locale.setCurrent(USER.lang);
 
     // workaround, because the QUI framework has sometimes its own Locale :-/
-    require(['qui/Locale'], function(QUIsOwnLocale) {
+    require(['qui/Locale'], function (QUIsOwnLocale) {
         QUIsOwnLocale.setCurrent(USER.lang);
     });
 
@@ -314,6 +316,7 @@ require(requireList, function () {
          * Menu
          */
         require(['Menu']);
+        require(['libs/HistoryTabs']);
 
         /**
          * If files were dropped to quiqqer
