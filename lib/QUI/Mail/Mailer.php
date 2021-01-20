@@ -186,8 +186,9 @@ class Mailer extends QUI\QDOM
             $PHPMailer->addBCC($email);
         }
 
-        if (QUI::conf('mail', 'admin_bcc')) {
+        if ((int)QUI::conf('mail', 'admin_bcc')) {
             $PHPMailer->addBCC(QUI::conf('mail', 'admin_mail'));
+            $this->addBCC(QUI::conf('mail', 'admin_mail'));
         }
 
         // attachments
