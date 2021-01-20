@@ -3184,6 +3184,15 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="quiqqer.settings.email.smtp.debug">
             <en><![CDATA[SMTP Debug Level]]></en>
         </locale>
+        <locale name="quiqqer.settings.email.admin_bcc">
+            <en><![CDATA[Administration E-mail as BCC]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.admin_bcc.description">
+            <en><![CDATA[
+            Each e-mail is additionally sent to the administration e-mail as BCC.
+            This setting can be used to check that the e-mail is being sent smoothly.
+            ]]></en>
+        </locale>
         <locale name="quiqqer.settings.email.logging.description">
             <en><![CDATA[The complete mail delivery is logged by QUIQQER]]></en>
         </locale>

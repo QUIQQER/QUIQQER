@@ -3265,6 +3265,15 @@
         <locale name="quiqqer.settings.email.smtp.debug">
             <de><![CDATA[SMTP Debug Level]]></de>
         </locale>
+        <locale name="quiqqer.settings.email.admin_bcc">
+            <de><![CDATA[Administrations-E-Mail als BCC]]></de>
+        </locale>
+        <locale name="quiqqer.settings.email.admin_bcc.description">
+            <de><![CDATA[
+            Jede E-Mail wird zusätzlich an die Administrations-E-Mail als BCC gesendet.
+            Diese Einstellung kann genutzt werden um den reibungslosen E-Mail Versand zu prüfen.
+            ]]></de>
+        </locale>
         <locale name="quiqqer.settings.auth">
             <de><![CDATA[Authentifizierung]]></de>
         </locale>

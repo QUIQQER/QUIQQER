@@ -231,6 +231,10 @@
                     <type><![CDATA[number]]></type>
                     <defaultvalue>0</defaultvalue>
                 </conf>
+                <conf name="admin_bcc">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
             </section>
 
             <section name="session">
@@ -657,6 +661,14 @@
                             </text>
                             <description>
                                 <locale group="quiqqer/quiqqer" var="quiqqer.settings.email.logging.description"/>
+                            </description>
+                        </input>
+                        <input conf="mail.admin_bcc" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.email.admin_bcc"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.email.admin_bcc.description"/>
                             </description>
                         </input>
                     </settings>
