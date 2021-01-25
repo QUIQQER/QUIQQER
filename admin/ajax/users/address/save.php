@@ -74,6 +74,10 @@ QUI::$Ajax->registerFunction(
             $User->save();
         }
 
+        if ($Address->getId() === $User->getStandardAddress()->getId()) {
+            $User->save();
+        }
+
         return $Address->getId();
     },
     ['uid', 'aid', 'data'],

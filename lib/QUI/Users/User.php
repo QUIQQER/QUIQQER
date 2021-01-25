@@ -1009,6 +1009,26 @@ class User implements QUI\Interfaces\Users\User
                 $this->settings[$key]  = $value;
                 break;
 
+            case "email":
+                $value                   = trim($value);
+                $this->settings['email'] = $value;
+
+                try {
+                    $this->getStandardAddress()->editMail(0, $value);
+                } catch (QUI\Exception $Exception) {
+                }
+                break;
+
+            case "firstname":
+                $this->settings['firstname'] = $value;
+                $this->getStandardAddress()->setAttribute('firstname', $value);
+                break;
+
+            case "lastname":
+                $this->settings['lastname'] = $value;
+                $this->getStandardAddress()->setAttribute('lastname', $value);
+                break;
+
             default:
                 $this->settings[$key] = $value;
                 break;
@@ -1022,9 +1042,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function removeAttribute($key)
     {
-        if (!$key || $key == 'id' || $key == 'password'
-            || $key == 'user_agent'
-        ) {
+        if (!$key || $key == 'id' || $key == 'password' || $key == 'user_agent') {
             return;
         }
 
@@ -1600,48 +1618,8 @@ class User implements QUI\Interfaces\Users\User
         }
 
         // default address filling
-        $email         = null;
-        $addressSaving = false;
-
-        try {
-            $this->getStandardAddress();
-        } catch (QUI\Exception $Exception) {
-            if ($Exception->getCode() === 404) {
-                $this->addAddress([], QUI::getUsers()->getSystemUser());
-            }
-        }
-
-        if (!empty($this->getAttribute('email'))) {
-            $email = \trim($this->getAttribute('email'));
-
-            try {
-                $Address = $this->getStandardAddress();
-                $Address->editMail(0, $email);
-                $addressSaving = true;
-            } catch (QUI\Exception $Exception) {
-                QUI\System\Log::writeDebugException($Exception);
-            }
-        }
-
-        if (!empty($this->getAttribute('firstname'))) {
-            try {
-                $Address = $this->getStandardAddress();
-                $Address->setAttribute('firstname', $this->getAttribute('firstname'));
-                $addressSaving = true;
-            } catch (QUI\Exception $Exception) {
-                QUI\System\Log::writeDebugException($Exception);
-            }
-        }
-
-        if (!empty($this->getAttribute('lastname'))) {
-            try {
-                $Address = $this->getStandardAddress();
-                $Address->setAttribute('lastname', $this->getAttribute('lastname'));
-                $addressSaving = true;
-            } catch (QUI\Exception $Exception) {
-                QUI\System\Log::writeDebugException($Exception);
-            }
-        }
+        $email = \trim($this->getAttribute('email'));
+        $this->getStandardAddress();
 
         if (!$this->getAttribute('address')) {
             $this->setAttribute('address', $this->getStandardAddress()->getId());
@@ -1677,9 +1655,7 @@ class User implements QUI\Interfaces\Users\User
             ['id' => $this->getId()]
         );
 
-        if ($addressSaving) {
-            $this->getStandardAddress()->save($ParentUser);
-        }
+        $this->getStandardAddress()->save($ParentUser);
 
         QUI::getEvents()->fireEvent('userSaveEnd', [$this]);
 
@@ -2091,6 +2067,7 @@ class User implements QUI\Interfaces\Users\User
         ]);
 
         // max 100 addresses per user
+        // @todo do it as permission
         if (!empty($addresses[0]['count']) && $addresses[0]['count'] > 100) {
             throw new QUI\Exception([
                 'quiqqer/quiqqer',
@@ -2248,7 +2225,8 @@ class User implements QUI\Interfaces\Users\User
 
     /**
      * @return Address
-     * @throws Exception
+     * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
      */
     protected function getStandardAddressHelper(): Address
     {
@@ -2272,10 +2250,7 @@ class User implements QUI\Interfaces\Users\User
             return $this->StandardAddress;
         }
 
-        throw new QUI\Users\Exception(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.user.no.address.exists'),
-            404
-        );
+        return $this->addAddress([], QUI::getUsers()->getSystemUser());
     }
 
     /**

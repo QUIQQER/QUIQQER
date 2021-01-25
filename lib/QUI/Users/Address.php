@@ -534,7 +534,13 @@ class Address extends QUI\QDOM
         try {
             // update user firstname lastname, if this address is the default address
             if ($User->getStandardAddress()->getId() === $this->getId()) {
-                $User->setAttribute('email', $cleanupAttributes($this->getAttribute('email')));
+                $mailList = $this->getMailList();
+
+                if (\count($mailList)) {
+                    $email = \reset($mailList);
+                    $User->setAttribute('email', $cleanupAttributes($email));
+                }
+
                 $User->setAttribute('firstname', $cleanupAttributes($this->getAttribute('firstname')));
                 $User->setAttribute('lastname', $cleanupAttributes($this->getAttribute('lastname')));
             }
