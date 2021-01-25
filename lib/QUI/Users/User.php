@@ -1607,7 +1607,7 @@ class User implements QUI\Interfaces\Users\User
             $this->getStandardAddress();
         } catch (QUI\Exception $Exception) {
             if ($Exception->getCode() === 404) {
-                $this->addAddress([], $ParentUser);
+                $this->addAddress([], QUI::getUsers()->getSystemUser());
             }
         }
 
