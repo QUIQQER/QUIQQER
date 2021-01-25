@@ -1678,7 +1678,7 @@ class User implements QUI\Interfaces\Users\User
         );
 
         if ($addressSaving) {
-            $this->getStandardAddress()->save();
+            $this->getStandardAddress()->save($ParentUser);
         }
 
         QUI::getEvents()->fireEvent('userSaveEnd', [$this]);
