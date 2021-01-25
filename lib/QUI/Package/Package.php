@@ -114,7 +114,7 @@ class Package extends QUI\QDOM
         $packageDir = OPT_DIR.$package.'/';
 
         // if not exists look at bin
-        if (!\is_dir($packageDir)) {
+        if (!\is_dir($packageDir) && \strpos($package, '/') !== false) {
             $packageDir = OPT_DIR.'/bin/'.\explode('/', $package)[1].'/';
         }
 
