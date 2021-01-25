@@ -165,6 +165,13 @@ class User implements QUI\Interfaces\Users\User
     protected $StandardAddress = null;
 
     /**
+     * construct loading flag
+     *
+     * @var bool
+     */
+    protected $isLoaded = true;
+
+    /**
      * constructor
      *
      * @param integer $id - ID of the user
@@ -174,7 +181,8 @@ class User implements QUI\Interfaces\Users\User
      */
     public function __construct($id, Manager $Users)
     {
-        $this->Users = $Users;
+        $this->isLoaded = false;
+        $this->Users    = $Users;
 
         if (\is_numeric($id)) {
             $id = (int)$id;
@@ -322,24 +330,12 @@ class User implements QUI\Interfaces\Users\User
             }
         }
 
-        try {
-            if ($this->getAttribute('firstname') === '' || $this->getAttribute('firstname') === false) {
-                $Address = $this->getStandardAddress();
-                $this->setAttribute('firstname', $Address->getAttribute('firstname'));
-            }
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::addDebug($Exception->getMessage());
-        }
-
-        try {
-            if ($this->getAttribute('lastname') === '' || $this->getAttribute('lastname') === false) {
-                $Address = $this->getStandardAddress();
-                $this->setAttribute('lastname', $Address->getAttribute('lastname'));
-            }
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::addDebug($Exception->getMessage());
-        }
-
+        // load default address fields
+        // syn main user address fields
+        $this->isLoaded = true;
+        $this->setAttribute('firstname', $data[0]['firstname']);
+        $this->setAttribute('lastname', $data[0]['lastname']);
+        $this->setAttribute('email', $data[0]['email']);
 
         // Event
         QUI::getEvents()->fireEvent('userLoad', [$this]);
@@ -1013,20 +1009,28 @@ class User implements QUI\Interfaces\Users\User
                 $value                   = trim($value);
                 $this->settings['email'] = $value;
 
-                try {
-                    $this->getStandardAddress()->editMail(0, $value);
-                } catch (QUI\Exception $Exception) {
+                if ($this->isLoaded === true) {
+                    try {
+                        $this->getStandardAddress()->editMail(0, $value);
+                    } catch (QUI\Exception $Exception) {
+                    }
                 }
                 break;
 
             case "firstname":
                 $this->settings['firstname'] = $value;
-                $this->getStandardAddress()->setAttribute('firstname', $value);
+
+                if ($this->isLoaded === true) {
+                    $this->getStandardAddress()->setAttribute('firstname', $value);
+                }
                 break;
 
             case "lastname":
                 $this->settings['lastname'] = $value;
-                $this->getStandardAddress()->setAttribute('lastname', $value);
+
+                if ($this->isLoaded === true) {
+                    $this->getStandardAddress()->setAttribute('lastname', $value);
+                }
                 break;
 
             default:
@@ -2250,7 +2254,15 @@ class User implements QUI\Interfaces\Users\User
             return $this->StandardAddress;
         }
 
-        return $this->addAddress([], QUI::getUsers()->getSystemUser());
+        $Address = $this->addAddress([
+            'firstname' => $this->getAttribute('firstname'),
+            'lastname'  => $this->getAttribute('lastname')
+        ], QUI::getUsers()->getSystemUser());
+
+        $Address->addMail($this->getAttribute('email'));
+        $Address->save(QUI::getUsers()->getSystemUser());
+
+        return $Address;
     }
 
     /**
