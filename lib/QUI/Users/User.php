@@ -2259,7 +2259,10 @@ class User implements QUI\Interfaces\Users\User
             'lastname'  => $this->getAttribute('lastname')
         ], QUI::getUsers()->getSystemUser());
 
-        $Address->addMail($this->getAttribute('email'));
+        if (!empty($this->getAttribute('email'))) {
+            $Address->addMail($this->getAttribute('email'));
+        }
+
         $Address->save(QUI::getUsers()->getSystemUser());
 
         return $Address;
