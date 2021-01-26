@@ -56,7 +56,10 @@ define('controls/users/User', [
 
         initialize: function (uid, options) {
             if (typeOf(uid) === 'string' || typeOf(uid) === 'number') {
-                this.$User = Users.get(uid);
+                this.$uid = uid;
+
+                //this.$User = Users.get(uid);
+
                 this.setAttribute('name', 'user-panel-' + uid);
                 this.setAttribute('#id', 'user-panel-' + uid);
             }
@@ -103,7 +106,7 @@ define('controls/users/User', [
         unserialize: function (data) {
             this.setAttributes(data.attributes);
 
-            this.$User = Users.get(data.userid);
+            this.$uid = data.userid;
 
             this.setAttribute('name', 'user-panel-' + data.userid);
             this.setAttribute('#id', 'user-panel-' + data.userid);
@@ -117,7 +120,7 @@ define('controls/users/User', [
          * @return {Object} classes/users/User
          */
         getUser: function () {
-            return this.$User;
+            return Users.get(this.$uid);
         },
 
         /**
@@ -267,6 +270,21 @@ define('controls/users/User', [
         },
 
         /**
+         * Refresh the current display
+         * -> execute no unload
+         * -> uses the current user data
+         */
+        refreshDisplay: function () {
+            var Active = this.getCategoryBar().getActive();
+
+            if (!Active) {
+                Active = this.getCategoryBar().firstChild();
+            }
+
+            this.$onButtonActive(Active);
+        },
+
+        /**
          * the button active event
          * load the template of the category, parse the controls and insert the values
          *
@@ -282,9 +300,7 @@ define('controls/users/User', [
 
             this.$hideCurrentContent().then(function () {
                 return self.$getCategoryContent(Btn);
-
             }).then(function (result) {
-
                 if (!result) {
                     result = '';
                 }
@@ -311,10 +327,8 @@ define('controls/users/User', [
 
                 // parse all the controls
                 return QUI.parse(Body);
-
             }).then(function () {
                 return ControlUtils.parse(self.getBody());
-
             }).then(function () {
                 var Created   = self.getBody().getElement('[name="regdate"]');
                 var LastEdit  = self.getBody().getElement('[name="lastedit"]');
@@ -387,10 +401,6 @@ define('controls/users/User', [
                     if (name in attributes) {
                         Control.setValue(attributes[name]);
                     }
-
-                    // if (extras && name in extras) {
-                    //     Control.setValue(extras[name]);
-                    // }
                 });
 
                 // password save
@@ -642,7 +652,6 @@ define('controls/users/User', [
                     self.Loader.hide();
                 }
             });
-
         },
 
         /**
