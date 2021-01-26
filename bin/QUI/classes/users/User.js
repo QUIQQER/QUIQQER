@@ -90,7 +90,6 @@ define('classes/users/User', [
             return new Promise(function (resolve, reject) {
 
                 Ajax.get('ajax_users_get', function (result) {
-console.error('LOAD');
                     self.$loaded    = true;
                     self.$addresses = false;
 
@@ -398,7 +397,7 @@ console.error('LOAD');
          */
         getAddressList: function () {
             var self = this;
-console.error('getAddressList -> ', self);
+
             return new Promise(function (resolve, reject) {
                 if (self.$addresses) {
                     resolve(self.$addresses);
