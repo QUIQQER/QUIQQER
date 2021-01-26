@@ -1376,6 +1376,7 @@ class Manager
             'birthday'  => true,
             'active'    => true,
             'regdate'   => true,
+            'lastedit'  => true,
             'su'        => true
         ];
 
