@@ -1013,6 +1013,9 @@ class User implements QUI\Interfaces\Users\User
                     try {
                         $this->getStandardAddress()->editMail(0, $value);
                     } catch (QUI\Exception $Exception) {
+                        if (empty($value)) {
+                            $this->getStandardAddress()->clearMail();
+                        }
                     }
                 }
                 break;

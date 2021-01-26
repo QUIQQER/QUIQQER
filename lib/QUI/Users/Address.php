@@ -390,7 +390,7 @@ class Address extends QUI\QDOM
      */
     public function clearMail()
     {
-        $this->setAttribute('mail', false);
+        $this->setAttribute('mail', json_encode([]));
     }
 
     /**
