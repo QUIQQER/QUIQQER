@@ -217,6 +217,11 @@ define('controls/users/Panel', [
                     dataType : 'string',
                     width    : 150
                 }, {
+                    header   : QUILocale.get(lg, 'e_date'),
+                    dataIndex: 'lastedit',
+                    dataType : 'date',
+                    width    : 150
+                }, {
                     header   : QUILocale.get(lg, 'c_date'),
                     dataIndex: 'regdate',
                     dataType : 'date',

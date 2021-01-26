@@ -35,6 +35,7 @@ QUI::$Ajax->registerFunction(
 
         $search = $Users->search($params);
         $result = [];
+        $Locale = QUI::getLocale();
 
         foreach ($search as $user) {
             if (!isset($user['usergroup'])) {
@@ -59,8 +60,26 @@ QUI::$Ajax->registerFunction(
 
             $user['usergroup'] = \trim($groupnames, ',');
 
-            if ($user['regdate'] != 0) {
-                $user['regdate'] = \date('d.m.Y H:i:s', $user['regdate']);
+            if (empty($user['regdate'])) {
+                $user['regdate'] = '-';
+            } else {
+                $RegDate = \date_create('@'.$user['regdate']);
+
+                if ($RegDate) {
+                    $user['regdate'] = $Locale->formatDate($RegDate->getTimestamp());
+                }
+            }
+
+            if (!empty($user['lastedit'])) {
+                $LastEdit = \date_create($user['lastedit']);
+
+                if ($LastEdit) {
+                    $user['lastedit'] = $Locale->formatDate($LastEdit->getTimestamp());
+                } else {
+                    $user['lastedit'] = '-';
+                }
+            } else {
+                $user['lastedit'] = '-';
             }
 
             $result[] = $user;
