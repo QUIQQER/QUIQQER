@@ -55,19 +55,16 @@ define('controls/users/User', [
         ],
 
         initialize: function (uid, options) {
+            this.parent(options);
+
+            this.$uid = parseInt(uid);
+
             if (typeOf(uid) === 'string' || typeOf(uid) === 'number') {
-                this.$uid = uid;
-
-                //this.$User = Users.get(uid);
-
                 this.setAttribute('name', 'user-panel-' + uid);
                 this.setAttribute('#id', 'user-panel-' + uid);
             }
 
             this.$AddressGrid = null;
-
-            // defaults
-            this.parent(options);
 
             this.addEvents({
                 onCreate : this.$onCreate,
@@ -222,13 +219,7 @@ define('controls/users/User', [
 
                 self.setAttribute('icon', 'fa fa-user');
 
-                var Load = Promise.resolve();
-
-                if (User.getAttribute('title') === false) {
-                    Load = User.load();
-                }
-
-                Load.then(function () {
+                User.loadIfNotLoaded().then(function () {
                     self.setAttribute('title', QUILocale.get(lg, 'users.user.title', {
                         username: User.getAttribute('username')
                     }));
