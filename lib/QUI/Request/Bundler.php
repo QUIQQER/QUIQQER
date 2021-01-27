@@ -55,7 +55,20 @@ class Bundler
             }
         }
 
-        return \json_encode($result);
+        try {
+            return \json_encode($result, \JSON_THROW_ON_ERROR);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeRecursive($result);
+            QUI\System\Log::writeException($Exception);
+
+            $result['Exception'] = [
+                'message' => $Exception->getMessage(),
+                'code'    => $Exception->getCode(),
+                'type'    => \get_class($Exception)
+            ];
+
+            return \json_encode($result);
+        }
     }
 
     /**

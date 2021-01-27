@@ -32,8 +32,6 @@ define('classes/users/User', [
         attributes: {}, // user attributes
 
         initialize: function (uid) {
-            this.parent();
-
             this.$uid    = uid;
             this.$extras = {};
             this.$loaded = false;

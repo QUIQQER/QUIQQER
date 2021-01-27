@@ -55,16 +55,17 @@ define('controls/users/User', [
         ],
 
         initialize: function (uid, options) {
-            this.parent(options);
-
-            this.$uid = parseInt(uid);
-
             if (typeOf(uid) === 'string' || typeOf(uid) === 'number') {
+                this.$uid    = parseInt(uid);
+                this.$userId = parseInt(uid);
                 this.setAttribute('name', 'user-panel-' + uid);
                 this.setAttribute('#id', 'user-panel-' + uid);
             }
 
             this.$AddressGrid = null;
+            this.parent(options);
+
+            var self = this;
 
             this.addEvents({
                 onCreate : this.$onCreate,
@@ -103,7 +104,8 @@ define('controls/users/User', [
         unserialize: function (data) {
             this.setAttributes(data.attributes);
 
-            this.$uid = data.userid;
+            this.$uid    = data.userid;
+            this.$userId = data.userid;
 
             this.setAttribute('name', 'user-panel-' + data.userid);
             this.setAttribute('#id', 'user-panel-' + data.userid);
@@ -117,7 +119,7 @@ define('controls/users/User', [
          * @return {Object} classes/users/User
          */
         getUser: function () {
-            return Users.get(this.$uid);
+            return Users.get(this.$userId);
         },
 
         /**
@@ -223,6 +225,14 @@ define('controls/users/User', [
                     self.setAttribute('title', QUILocale.get(lg, 'users.user.title', {
                         username: User.getAttribute('username')
                     }));
+
+                    self.refresh();
+
+                    var Active = self.getCategoryBar().getActive();
+
+                    if (!Active) {
+                        self.getCategoryBar().firstChild().click();
+                    }
 
                     if (User.isActive() === -1) {
                         Status.setSilentOff();

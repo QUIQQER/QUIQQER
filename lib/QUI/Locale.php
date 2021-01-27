@@ -267,7 +267,7 @@ class Locale
             $result = \strftime($format, $timestamp);
             \setlocale(LC_TIME, $oldlocale);
 
-            return $result;
+            return \utf8_encode($result);
         }
 
         $formats = $this->getDateFormats();
@@ -278,7 +278,7 @@ class Locale
             $result = strftime($formats[$current], $timestamp);
             \setlocale(LC_TIME, $oldlocale);
 
-            return $result;
+            return \utf8_encode($result);
         }
 
         return \utf8_encode(\strftime('%D', $timestamp));
