@@ -38,4 +38,7 @@ if (isset($_REQUEST['lang']) && \strlen($_REQUEST['lang']) === 2) {
 
 // request
 $Bundler = new QUI\Request\Bundler();
-echo $Bundler->response();
+$result = $Bundler->response();
+
+echo $result;
+exit;
