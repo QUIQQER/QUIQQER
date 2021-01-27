@@ -32,6 +32,8 @@ define('classes/users/User', [
         attributes: {}, // user attributes
 
         initialize: function (uid) {
+            this.parent();
+
             this.$uid    = uid;
             this.$extras = {};
             this.$loaded = false;
@@ -88,7 +90,6 @@ define('classes/users/User', [
             var self = this;
 
             return new Promise(function (resolve, reject) {
-
                 Ajax.get('ajax_users_get', function (result) {
                     self.$loaded    = true;
                     self.$addresses = false;
@@ -144,7 +145,6 @@ define('classes/users/User', [
                     uid    : self.getId(),
                     onError: reject
                 });
-
             });
         },
 
