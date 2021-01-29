@@ -97,6 +97,9 @@
         <locale name="address">
             <de><![CDATA[Adresse]]></de>
         </locale>
+        <locale name="address.suffix">
+            <de><![CDATA[Adressezusatz]]></de>
+        </locale>
         <locale name="addresses">
             <de><![CDATA[Adressen]]></de>
         </locale>

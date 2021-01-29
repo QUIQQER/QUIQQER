@@ -123,6 +123,34 @@ class Address extends QUI\QDOM
         return $this->User;
     }
 
+    //region attributes
+
+    /**
+     * @param string $name
+     * @return false|mixed|null
+     */
+    public function getAttribute($name)
+    {
+        if ($name === 'suffix') {
+            return $this->getAddressSuffix();
+        }
+
+        return parent::getAttribute($name);
+    }
+
+    /**
+     * @return array
+     */
+    public function getAttributes()
+    {
+        $attributes           = parent::getAttributes();
+        $attributes['suffix'] = $this->getAddressSuffix();
+
+        return $attributes;
+    }
+
+    //endregion
+
     /**
      * Add an phone number
      *
@@ -743,7 +771,7 @@ class Address extends QUI\QDOM
      * @param integer|float|bool|string $value
      * @return void
      */
-    public function setCustomDataEntry($key, $value)
+    public function setCustomDataEntry(string $key, $value)
     {
         if (\is_object($value)) {
             return;
@@ -767,7 +795,7 @@ class Address extends QUI\QDOM
      * @param string $key
      * @return mixed|null - Null if no entry set
      */
-    public function getCustomDataEntry($key)
+    public function getCustomDataEntry(string $key)
     {
         if (\array_key_exists($key, $this->customData)) {
             return $this->customData[$key];
@@ -863,4 +891,28 @@ class Address extends QUI\QDOM
 
         return $dataThis == $dataOther;
     }
+
+    //region address suffix - Address suffix
+
+    /**
+     * Add a address suffix to the address
+     *
+     * @param string $suffix
+     */
+    public function setAddressSuffix(string $suffix)
+    {
+        $this->setCustomDataEntry('address-suffix', $suffix);
+    }
+
+    /**
+     * Return the address suffix to the address
+     *
+     * @return mixed|null
+     */
+    public function getAddressSuffix()
+    {
+        return $this->getCustomDataEntry('address-suffix');
+    }
+
+    //endregion
 }
