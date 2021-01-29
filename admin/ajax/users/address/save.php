@@ -63,6 +63,10 @@ QUI::$Ajax->registerFunction(
             }
         }
 
+        if (isset($data['suffix'])) {
+            $Address->setAddressSuffix($data['suffix']);
+        }
+
         unset($data['mails']);
         unset($data['phone']);
 
