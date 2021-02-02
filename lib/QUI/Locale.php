@@ -127,7 +127,14 @@ class Locale
      */
     public function setCurrent($lang)
     {
-        $this->current = \preg_replace('/[^a-zA-Z_]/', '', $lang);
+        $lang = \preg_replace('/[^a-zA-Z_]/', '', $lang);
+        $lang = \trim($lang);
+
+        if (!empty($lang)) {
+            $this->current = $lang;
+        } else {
+            $this->current = QUI::conf('globals', 'standardLanguage');
+        }
     }
 
     /**
