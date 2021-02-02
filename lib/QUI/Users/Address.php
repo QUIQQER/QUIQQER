@@ -911,6 +911,10 @@ class Address extends QUI\QDOM
      */
     public function getAddressSuffix()
     {
+        if (!empty($this->attributes['suffix'])) {
+            return $this->attributes['suffix'];
+        }
+
         return $this->getCustomDataEntry('address-suffix');
     }
 
