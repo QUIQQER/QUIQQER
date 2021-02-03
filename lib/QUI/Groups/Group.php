@@ -90,7 +90,7 @@ class Group extends QUI\QDOM
         $result = QUI::getGroups()->getGroupData($id);
 
         if (!isset($result[0])) {
-            if ($id === Manager::EVERYONE_ID) {
+            if ($this->getAttribute('id') === Manager::EVERYONE_ID) {
                 return;
             }
 
