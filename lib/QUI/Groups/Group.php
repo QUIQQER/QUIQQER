@@ -90,6 +90,10 @@ class Group extends QUI\QDOM
         $result = QUI::getGroups()->getGroupData($id);
 
         if (!isset($result[0])) {
+            if ($id === Manager::EVERYONE_ID) {
+                return;
+            }
+
             throw new QUI\Exception(
                 ['quiqqer/quiqqer', 'exception.lib.qui.group.doesnt.exist'],
                 404

@@ -61,6 +61,7 @@ address {
     line-height: normal;
 }
 
+address .name,
 address .salutation {
     margin-top: 10px;
 }
