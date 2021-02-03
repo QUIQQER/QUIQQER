@@ -87,12 +87,28 @@ class Group extends QUI\QDOM
         } catch (QUI\Cache\Exception $Exception) {
         }
 
-        $result = QUI::getGroups()->getGroupData($id);
+        $result = QUI::getGroups()->getGroupData(
+            $this->getAttribute('id')
+        );
 
-        if (!isset($result[0]) &&
-            ($this->getAttribute('id') === Manager::EVERYONE_ID || $this->getAttribute('id') === Manager::GUEST_ID)) {
-            QUI::getGroups()->setup();
-            $result = QUI::getGroups()->getGroupData($id);
+        if (empty($result) && $this->getAttribute('id') === Manager::EVERYONE_ID) {
+            QUI::getDataBase()->insert(Manager::table(), [
+                'id'   => Manager::EVERYONE_ID,
+                'name' => 'Everyone'
+            ]);
+
+            $result = QUI::getGroups()->getGroupData(
+                $this->getAttribute('id')
+            );
+        } elseif (empty($result) && $this->getAttribute('id') === Manager::GUEST_ID) {
+            QUI::getDataBase()->insert(Manager::table(), [
+                'id'   => Manager::GUEST_ID,
+                'name' => 'Guest'
+            ]);
+
+            $result = QUI::getGroups()->getGroupData(
+                $this->getAttribute('id')
+            );
         }
 
         if (!isset($result[0])) {
