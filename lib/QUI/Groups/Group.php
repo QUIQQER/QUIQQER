@@ -89,11 +89,13 @@ class Group extends QUI\QDOM
 
         $result = QUI::getGroups()->getGroupData($id);
 
-        if (!isset($result[0])) {
-            if ($this->getAttribute('id') === Manager::EVERYONE_ID) {
-                return;
-            }
+        if (!isset($result[0]) &&
+            ($this->getAttribute('id') === Manager::EVERYONE_ID || $this->getAttribute('id') === Manager::GUEST_ID)) {
+            QUI::getGroups()->setup();
+            $result = QUI::getGroups()->getGroupData($id);
+        }
 
+        if (!isset($result[0])) {
             throw new QUI\Exception(
                 ['quiqqer/quiqqer', 'exception.lib.qui.group.doesnt.exist'],
                 404
