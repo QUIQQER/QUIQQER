@@ -298,7 +298,7 @@ class Manager extends QUI\QDOM
             'limit' => 1
         ]);
 
-        if ($groupId === 1 || $groupId === 0) {
+        if (isset($result[0]) && ($groupId === 1 || $groupId === 0)) {
             $this->data[$groupId] = $result;
         }
 
