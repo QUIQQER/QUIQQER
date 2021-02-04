@@ -1199,6 +1199,9 @@ class User implements QUI\Interfaces\Users\User
     {
         $this->checkEditPermission($ParentUser);
 
+        $newPassword = \trim($newPassword);
+        $oldPassword = \trim($oldPassword);
+
         if (empty($newPassword) || empty($oldPassword)) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
