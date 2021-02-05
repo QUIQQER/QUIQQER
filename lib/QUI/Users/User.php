@@ -1345,6 +1345,9 @@ class User implements QUI\Interfaces\Users\User
             $this->checkEditPermission($ParentUser);
         }
 
+        QUI::getEvents()->fireEvent('userActivateBegin', [$this, $code, $ParentUser]);
+
+
         // benutzer ist schon aktiv, aktivierung kann nicht durchgeführt werden
         if ($this->isActive()) {
             throw new QUI\Users\Exception(
