@@ -9,8 +9,11 @@ define('controls/users/User', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
+
     'qui/controls/buttons/Button',
     'qui/controls/buttons/ButtonSwitch',
+    'qui/controls/buttons/ButtonMultiple',
+
     'qui/controls/windows/Confirm',
     'controls/grid/Grid',
     'qui/utils/Form',
@@ -22,7 +25,7 @@ define('controls/users/User', [
 
     'css!controls/users/User.css'
 
-], function (QUI, QUIPanel, QUIButton, QUIButtonSwitch, QUIConfirm, Grid,
+], function (QUI, QUIPanel, QUIButton, QUIButtonSwitch, QUIButtonMultiple, QUIConfirm, Grid,
              FormUtils, ControlUtils, Users, QUIAjax, QUILocale, Editors) {
     "use strict";
 
@@ -51,7 +54,8 @@ define('controls/users/User', [
             '$onUserRefresh',
             '$onUserDelete',
             '$onClickSave',
-            '$onClickDel'
+            '$onClickDel',
+            '$onClickSendMail'
         ],
 
         initialize: function (uid, options) {
@@ -171,17 +175,55 @@ define('controls/users/User', [
                 })
             );
 
-            this.addButton({
-                name  : 'userDelete',
-                title : QUILocale.get(lg, 'users.user.btn.delete'),
-                icon  : 'fa fa-trash-o',
-                events: {
-                    onClick: this.$onClickDel
+            var ExtrasBtn = new QUIButtonMultiple({
+                name     : 'extra',
+                textimage: 'fa fa-caret-down',
+                title    : QUILocale.get(lg, 'quiqqer.customer.panel.extras.title'),
+                events   : {
+                    onClick: function () {
+                        ExtrasBtn.getMenu().then(function (Menu) {
+                            var pos  = ExtrasBtn.getElm().getPosition(),
+                                size = ExtrasBtn.getElm().getSize();
+
+                            Menu.setAttribute('corner', 'topRight');
+
+                            ExtrasBtn.openMenu().then(function () {
+                                Menu.setPosition(
+                                    pos.x - 150,
+                                    pos.y + size.y + 10
+                                );
+                            });
+                        });
+                    }
                 },
-                styles: {
+                styles   : {
                     'float': 'right'
                 }
             });
+
+            ExtrasBtn.appendChild({
+                name  : 'sendMail',
+                title : QUILocale.get(lg, 'users.user.btn.sendMail'),
+                text  : QUILocale.get(lg, 'users.user.btn.sendMail'),
+                icon  : 'fa fa-envelope',
+                events: {
+                    onClick: this.$onClickSendMail
+                }
+            });
+
+            ExtrasBtn.appendChild({
+                name  : 'userDelete',
+                title : QUILocale.get(lg, 'users.user.btn.delete'),
+                text  : QUILocale.get(lg, 'users.user.btn.delete'),
+                icon  : 'fa fa-trash-o',
+                events: {
+                    onClick: this.$onClickDel
+                }
+            });
+
+            ExtrasBtn.getElm().addClass('quiqqer-quiqqer-user-mail-extrasbtn');
+
+            this.addButton(ExtrasBtn);
 
             // permissions
             new QUIButton({
@@ -927,6 +969,20 @@ define('controls/users/User', [
                     }
                 }
             }).open();
+        },
+
+        /**
+         * Open "send user mail" dialog
+         */
+        $onClickSendMail: function () {
+            var self = this,
+                uid  = this.getUser().getId();
+
+            require(['controls/users/mail/SendUserMail'], function (SendUserMail) {
+                new SendUserMail({
+                    userId: uid
+                }).open();
+            });
         },
 
         /**

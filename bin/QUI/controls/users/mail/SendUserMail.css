@@ -1,0 +1,19 @@
+.quiqqer-quiqqer-user-mail-mailEditor > label {
+    display: block;
+    margin: 10px 0;
+    width: 100%;
+}
+
+.quiqqer-quiqqer-user-mail-mailEditor-subject {
+    display: block;
+    width: 100%;
+}
+
+.quiqqer-quiqqer-user-mail-info {
+    float: left;
+    margin-top: 10px;
+}
+
+.quiqqer-quiqqer-user-mail-mailEditor-content {
+    height: 435px;
+}

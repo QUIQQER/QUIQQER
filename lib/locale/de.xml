@@ -2369,6 +2369,9 @@
         <locale name="users.user.btn.password.save">
             <de><![CDATA[Passwort speichern]]></de>
         </locale>
+        <locale name="users.user.btn.sendMail">
+            <de><![CDATA[E-Mail senden]]></de>
+        </locale>
         <locale name="users.user.window.delete.title">
             <de><![CDATA[Benutzer löschen]]></de>
         </locale>
@@ -4594,6 +4597,10 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
+        
+        <locale name="message.ajax.user.sendMail.success">
+            <de><![CDATA[Die E-Mail wurde erfolgreich an Benutzer [user] versendet.]]></de>
+        </locale>
 
         <locale name="PackageNotLicensedException.message" html="true">
             <de>
@@ -5286,6 +5293,28 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">
+        <locale name="controls.SendUserMail.title">
+            <de><![CDATA[E-Mail an Benutzer senden]]></de>
+        </locale>
+        <locale name="controls.SendUserMail.tpl.labelMailSubject">
+            <de><![CDATA[Betreff]]></de>
+        </locale>
+        <locale name="controls.SendUserMail.tpl.labelMailContent">
+            <de><![CDATA[Inhalt]]></de>
+        </locale>
+        <locale name="controls.SendUserMail.submit">
+            <de><![CDATA[E-Mail jetzt versenden]]></de>
+        </locale>
+        <locale name="controls.SendUserMail.user_no_mail">
+            <de><![CDATA[Es kann aktuell keine E-Mail an diesen Benutzer gesendet werden, da keine E-Mail-Adresse in den Benutzerdaten vorliegt. Bitte legen Sie zuerst eine E-Mail-Adresse für diesen Benutzer fest.]]></de>
+        </locale>
+        <locale name="controls.SendUserMail.empty_subject">
+            <de><![CDATA[Bitte geben Sie einen E-Mail Betreff an.]]></de>
+        </locale>
+        <locale name="controls.SendUserMail.empty_body">
+            <de><![CDATA[Bitte geben Sie einen Inhalt für die E-Mail an.]]></de>
+        </locale>
+
         <locale name="controls.email.select.email_invalid">
             <de><![CDATA[Diese E-Mail-Adresse ist ungültig. Bitte geben Sie eine gültige E-Mail-Adresse ein.]]></de>
         </locale>

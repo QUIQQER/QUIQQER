@@ -5090,6 +5090,29 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
+
+        <locale name="controls.SendUserMail.title">
+            <en><![CDATA[Send email to user]]></en>
+        </locale>
+        <locale name="controls.SendUserMail.tpl.labelMailSubject">
+            <en><![CDATA[Subject]]></en>
+        </locale>
+        <locale name="controls.SendUserMail.tpl.labelMailContent">
+            <en><![CDATA[Content]]></en>
+        </locale>
+        <locale name="controls.SendUserMail.submit">
+            <en><![CDATA[Send email now]]></en>
+        </locale>
+        <locale name="controls.SendUserMail.user_no_mail">
+            <en><![CDATA[No email can currently be sent to this user because there is no email address in the user data. Please set an email address for this user first.]]></en>
+        </locale>
+        <locale name="controls.SendUserMail.empty_subject">
+            <en><![CDATA[Please provide an email subject.]]></en>
+        </locale>
+        <locale name="controls.SendUserMail.empty_body">
+            <en><![CDATA[Please provide content for the email.]]></en>
+        </locale>
+        
         <locale name="controls.email.select.email_invalid">
             <en><![CDATA[This e-mail address is invalid. Please enter a valid e-mail address.]]></en>
         </locale>
