@@ -2553,6 +2553,9 @@
         <locale name="users.user.btn.password.generate">
             <de><![CDATA[Passwort generieren]]></de>
         </locale>
+        <locale name="users.user.btn.password.generateAndSend">
+            <de><![CDATA[Neues Passwort erstellen und per E-Mail senden]]></de>
+        </locale>
         <locale name="users.panel.btn.edit">
             <de><![CDATA[Benutzer bearbeiten]]></de>
         </locale>
@@ -4597,9 +4600,34 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
-        
+
         <locale name="message.ajax.user.sendMail.success">
             <de><![CDATA[Die E-Mail wurde erfolgreich an Benutzer [user] versendet.]]></de>
+        </locale>
+        <locale name="message.ajax.user.setAndSendPassword.no_mail_sent">
+            <de><![CDATA[Das Passwort für Benutzer [user] wurde neu gesetzt, konnte aber nicht per E-Mail versendet werden, da in den Benutzerdaten keine E-Mail-Adresse hinterlegt ist.]]></de>
+        </locale>
+        <locale name="message.ajax.user.setAndSendPassword.success">
+            <de><![CDATA[Das Password für Benutzer [user] wurde neu gesetzt und per E-Mail versendet.]]></de>
+        </locale>
+        <locale name="mails.user.new_password.subject">
+            <de><![CDATA[Ihr neues Login-Passwort]]></de>
+        </locale>
+        <locale name="mails.user.new_password.body">
+            <de><![CDATA[
+Hallo [name],
+<br/><br/>
+ein Administrator hat Ihr Login-Passwort zurückgesetzt. Sie können sich jetzt mit Ihrer E-Mail-Adresse und folgendem Passwort einloggen:
+<br/><br/>
+[password]
+<br/><br/>
+[forceNewMsg]
+]]></de>
+        </locale>
+        <locale name="mails.user.new_password.body.force_new">
+            <de><![CDATA[
+Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
+]]></de>
         </locale>
 
         <locale name="PackageNotLicensedException.message" html="true">
@@ -5293,6 +5321,16 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">
+        <locale name="controls.SendPassword.title">
+            <de><![CDATA[Neues Passwort für Benutzer erstellen und per E-Mail senden]]></de>
+        </locale>
+        <locale name="controls.SendPassword.submit">
+            <de><![CDATA[Passwort speichern und E-Mail senden]]></de>
+        </locale>
+        <locale name="controls.SendPassword.passwords_not_equal">
+            <de><![CDATA[Die Passwörter stimmen nicht überein.]]></de>
+        </locale>
+
         <locale name="controls.SendUserMail.title">
             <de><![CDATA[E-Mail an Benutzer senden]]></de>
         </locale>
@@ -5306,7 +5344,8 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
             <de><![CDATA[E-Mail jetzt versenden]]></de>
         </locale>
         <locale name="controls.SendUserMail.user_no_mail">
-            <de><![CDATA[Es kann aktuell keine E-Mail an diesen Benutzer gesendet werden, da keine E-Mail-Adresse in den Benutzerdaten vorliegt. Bitte legen Sie zuerst eine E-Mail-Adresse für diesen Benutzer fest.]]></de>
+            <de>
+                <![CDATA[Es kann aktuell keine E-Mail an diesen Benutzer gesendet werden, da keine E-Mail-Adresse in den Benutzerdaten vorliegt. Bitte legen Sie zuerst eine E-Mail-Adresse für diesen Benutzer fest.]]></de>
         </locale>
         <locale name="controls.SendUserMail.empty_subject">
             <de><![CDATA[Bitte geben Sie einen E-Mail Betreff an.]]></de>

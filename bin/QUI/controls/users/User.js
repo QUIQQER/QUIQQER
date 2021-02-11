@@ -496,6 +496,26 @@ define('controls/users/User', [
                     }
                 }
 
+                // Generate and send new password btn
+                var GenerateAndSendContainer = Body.getElement('.quiqqer-quiqqer-user-security-generateAndSend');
+
+                if (GenerateAndSendContainer) {
+                    new QUIButton({
+                        title    : QUILocale.get(lg, 'users.user.btn.password.generateAndSend'),
+                        text     : QUILocale.get(lg, 'users.user.btn.password.generateAndSend'),
+                        textimage: 'fa fa-asterisk',
+                        events   : {
+                            onClick: function () {
+                                require(['controls/users/password/send/SendPassword'], function (SendPassword) {
+                                    new SendPassword({
+                                        userId: User.getId()
+                                    }).open();
+                                });
+                            }
+                        }
+                    }).inject(GenerateAndSendContainer);
+                }
+
                 // authenticator
                 if (authenticators) {
                     var toggleAuthenticator = function (Btn) {
