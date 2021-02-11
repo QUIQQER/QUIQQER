@@ -2322,6 +2322,9 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="users.user.btn.password.save">
             <en><![CDATA[Save password]]></en>
         </locale>
+        <locale name="users.user.btn.password.generateAndSend">
+            <en><![CDATA[Create new password and send via email]]></en>
+        </locale>
         <locale name="users.user.window.delete.title">
             <en><![CDATA[Delete user]]></en>
         </locale>
@@ -4434,6 +4437,32 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
 
     <groups name="quiqqer/quiqqer" datatype="php">
 
+        <locale name="message.ajax.user.setAndSendPassword.no_mail_sent">
+            <en><![CDATA[The password for user [user] was reset, but could not be sent by e-mail because there is no e-mail address stored in the user data.]]></en>
+        </locale>
+        <locale name="message.ajax.user.setAndSendPassword.success">
+            <en><![CDATA[The password for user [user] was reset and sent via email.]]></en>
+        </locale>
+        <locale name="mails.user.new_password.subject">
+            <en><![CDATA[Your new login password]]></en>
+        </locale>
+        <locale name="mails.user.new_password.body">
+            <en><![CDATA[
+Hello [name],
+<br/><br/>
+an administrator has reset your login password. You can now log in using your email address and the following password:
+<br/><br/>
+[password]
+<br/><br/>
+[forceNewMsg]
+]]></en>
+        </locale>
+        <locale name="mails.user.new_password.body.force_new">
+            <en><![CDATA[
+After logging in you will be prompted to set a new password.
+]]></en>
+        </locale>
+
         <locale name="PackageNotLicensedException.message" html="true">
             <en>
                 <![CDATA[This feature requires a package license for <b>[package]</b>. You can purchase the appropriate license at the <a href="https://store.quiqqer.com" target="_blank">QUIQQER Package Store</a>.]]></en>
@@ -5090,6 +5119,16 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
+
+        <locale name="controls.SendPassword.title">
+            <en><![CDATA[Create new user password and send via email]]></en>
+        </locale>
+        <locale name="controls.SendPassword.submit">
+            <en><![CDATA[Save password and send email]]></en>
+        </locale>
+        <locale name="controls.SendPassword.passwords_not_equal">
+            <en><![CDATA[The passwords do not match.]]></en>
+        </locale>
 
         <locale name="controls.SendUserMail.title">
             <en><![CDATA[Send email to user]]></en>
