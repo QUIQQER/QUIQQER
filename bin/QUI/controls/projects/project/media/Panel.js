@@ -134,7 +134,6 @@ define('controls/projects/project/media/Panel', [
             this.$Pagination          = null;
             this.$PaginationContainer = null;
 
-
             this.$children = {
                 data : [],
                 page : 1,
@@ -558,11 +557,11 @@ define('controls/projects/project/media/Panel', [
          */
         refresh: function () {
             if (this.getAttribute('fileid')) {
-                this.openID(this.getAttribute('fileid'));
+                this.openID(this.getAttribute('fileid'), true);
                 return;
             }
 
-            this.openID(1);
+            this.openID(1, true);
         },
 
         /**
@@ -570,10 +569,13 @@ define('controls/projects/project/media/Panel', [
          *
          * @method controls/projects/project/media/Panel#openID
          * @param {Number} fileid
+         * @param {Boolean} isRefresh (optional) - opens an item as part of a refresh (i.e. pagination) [default: false]
          */
-        openID: function (fileid) {
+        openID: function (fileid, isRefresh) {
             var self    = this,
                 Project = this.$Media.getProject();
+
+            isRefresh = isRefresh || false;
 
             this.Loader.show();
             this.$selected = [];
@@ -631,6 +633,13 @@ define('controls/projects/project/media/Panel', [
                     }
 
                     self.setAttribute('fileid', MediaFile.getId());
+
+                    // If not part of a refresh / pagination, a new folder has been opened.
+                    // In this case always set the page to 1
+                    if (!isRefresh) {
+                        self.setAttribute('page', 1);
+                    }
+
                     self.$CurrentFolder = MediaFile;
 
                     // load children
@@ -1118,7 +1127,6 @@ define('controls/projects/project/media/Panel', [
                 'qui-media-panel-view',
                 this.getAttribute('view')
             );
-
 
             switch (this.getAttribute('view')) {
                 case 'details':
