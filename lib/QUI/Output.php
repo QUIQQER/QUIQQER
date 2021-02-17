@@ -59,6 +59,8 @@ class Output extends Singleton
      */
     public function parse($content)
     {
+        QUI::getEvents()->fireEvent('outputParseBegin', [&$content]);
+
         // rewrite image
         $content = \preg_replace_callback(
             '#(src|data\-image|data\-href|data\-link|data\-src)="(image.php)\?([^"]*)"#',
@@ -110,10 +112,14 @@ class Output extends Singleton
         );
 
         if (empty($content)) {
+            QUI::getEvents()->fireEvent('outputParseEnd', [&$content]);
+
             return $content;
         }
 
         if (\strpos($content, '<img') === false) {
+            QUI::getEvents()->fireEvent('outputParseEnd', [&$content]);
+
             return $content;
         }
 
@@ -237,7 +243,10 @@ class Output extends Singleton
             '',
             $result
         );
+
         $result = \str_replace('<?xml encoding="utf-8" ?>', '', $result);
+
+        QUI::getEvents()->fireEvent('outputParseEnd', [&$result]);
 
         return $result;
     }
