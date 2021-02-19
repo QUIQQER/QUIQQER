@@ -86,6 +86,9 @@ define('controls/grid/Grid', [
             filterHide   : true,
             filterHideCls: 'hide',
 
+            storageKey: false, // if storage key is set, the grid settings (column model) are saved in the locale storage
+            titleSort : false, // user are able to sort the titles by themselves
+
             filterSelectedCls: 'filter',
             multipleSelection: false,
             editable         : false,   // Grid.addEvent('editcomplete', function(data) // selectable muss "true" sein!
@@ -111,7 +114,7 @@ define('controls/grid/Grid', [
             perPage       : 100,
             filterInput   : true,
             // dataProvider
-            dataProvider  : null,
+            dataProvider: null,
 
             //export
             exportName    : false,
@@ -143,6 +146,21 @@ define('controls/grid/Grid', [
                 delete options.columnModel;
             } else {
                 this.$columnModel = {};
+            }
+            
+            if (typeof options.storageKey !== 'undefined' && options.storageKey) {
+                var columnModel = QUI.Storage.get(options.storageKey);
+
+                if (columnModel) {
+                    try {
+                        columnModel = JSON.decode(columnModel);
+
+                        if (typeOf(columnModel) === 'array') {
+                            this.$columnModel = columnModel;
+                        }
+                    } catch (e) {
+                    }
+                }
             }
 
             this.parent(options);
@@ -1050,7 +1068,7 @@ define('controls/grid/Grid', [
             });
         },
 
-        unique  : function (a, asNumber) {
+        unique: function (a, asNumber) {
             function om_sort_number(a, b) {
                 return a - b;
             }
@@ -1722,6 +1740,10 @@ define('controls/grid/Grid', [
                 if (!columnModel.hidden) {
                     dragTempWidth += columnModel.width;
                 }
+            }
+
+            if (this.getAttribute('storageKey')) {
+                QUI.Storage.set(this.getAttribute('storageKey'), JSON.encode(this.$columnModel));
             }
         },
 
