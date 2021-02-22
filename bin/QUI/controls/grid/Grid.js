@@ -60,6 +60,20 @@ define('controls/grid/Grid', [
         }
     };
 
+    var getHash = function (str) {
+        if (typeOf(str) !== 'string') {
+            str = JSON.encode(str);
+        }
+
+        var hash = 0;
+
+        for (var i = 0; i < str.length; i++) {
+            hash += Math.pow(str.charCodeAt(i) * 31, str.length - i);
+            hash = hash & hash; // Convert to 32bit integer
+        }
+        return hash;
+    }
+
     // workaround for css loading
     require(['css!controls/grid/Grid.css']);
 
@@ -147,11 +161,13 @@ define('controls/grid/Grid', [
             } else {
                 this.$columnModel = {};
             }
-            
+
             if (typeof options.storageKey !== 'undefined' && options.storageKey) {
                 var columnModel = QUI.Storage.get(options.storageKey);
+                var storageHash = parseInt(QUI.Storage.get(options.storageKey + '-key'));
+                var currentHash = getHash(this.$columnModel);
 
-                if (columnModel) {
+                if (columnModel && storageHash === currentHash) {
                     try {
                         columnModel = JSON.decode(columnModel);
 
@@ -160,6 +176,8 @@ define('controls/grid/Grid', [
                         }
                     } catch (e) {
                     }
+                } else {
+                    QUI.Storage.set(options.storageKey + '-key', currentHash);
                 }
             }
 
@@ -2684,6 +2702,13 @@ define('controls/grid/Grid', [
                         '</div>';
                 }
 
+                if (options.titleSort) {
+                    h = h + '' +
+                        '<div class="pGroup" style="float: right">' +
+                        '   <div class="pButton pSort"><span class="fa fa-sort"></span></div>' +
+                        '</div>';
+                }
+
                 pDiv2.innerHTML = h;
 
                 var o = null;
@@ -2745,6 +2770,9 @@ define('controls/grid/Grid', [
 
                 if ((o = pDiv2.getElement('.pExport'))) {
                     o.addEvent('click', this.getExportSelect.bind(this));
+                }
+                if ((o = pDiv2.getElement('.pSort'))) {
+                    o.addEvent('click', this.openSortWindow.bind(this));
                 }
             }
         },
@@ -3511,6 +3539,14 @@ define('controls/grid/Grid', [
             this.getButtons().forEach(function (Button) {
                 Button.enable();
             });
+        },
+
+        /**
+         * opens the sorting window
+         * - the user are able to sort the grid titles (columns)
+         */
+        openSortWindow: function () {
+            console.log('arrrrrr');
         }
     });
 });

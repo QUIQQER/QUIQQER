@@ -326,7 +326,7 @@
 
 .omnigrid div.pDiv div.pDiv2 {
     float: left;
-    width: 1024px;
+    width: 100%;
 }
 
 div.pGroup {
@@ -363,7 +363,6 @@ div.pGroup {
 }
 
 .omnigrid div.pDiv span {
-    float: left;
     line-height: 24px;
     padding: 0 2px;
 }
@@ -401,7 +400,8 @@ div.pGroup {
 .omnigrid .pNext,
 .omnigrid .pLast,
 .omnigrid .pReload,
-.omnigrid .pExport {
+.omnigrid .pExport,
+.omnigrid .pSort {
     color: #A0AEC0;
     display: inline-block;
     font: normal normal normal 14px/1 FontAwesome;
@@ -418,8 +418,14 @@ div.pGroup {
 .omnigrid .pNext:hover,
 .omnigrid .pLast:hover,
 .omnigrid .pReload:hover,
-.omnigrid .pExport:hover {
+.omnigrid .pExport:hover,
+.omnigrid .pSort:hover {
     color: #4A5568;
+}
+
+.omnigrid .pSort {
+    float: right !important;
+    text-align: center;
 }
 
 .omnigrid .pFirst:after {
