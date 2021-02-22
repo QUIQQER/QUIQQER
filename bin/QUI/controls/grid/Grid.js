@@ -66,11 +66,14 @@ define('controls/grid/Grid', [
         }
 
         var hash = 0;
+        var i, len, char;
 
-        for (var i = 0; i < str.length; i++) {
-            hash += Math.pow(str.charCodeAt(i) * 31, str.length - i);
+        for (i = 0, len = str.length; i < len; i++) {
+            char = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
             hash = hash & hash; // Convert to 32bit integer
         }
+
         return hash;
     }
 
@@ -178,6 +181,7 @@ define('controls/grid/Grid', [
                     }
                 } else {
                     QUI.Storage.set(options.storageKey + '-key', currentHash);
+                    QUI.Storage.set(options.storageKey, JSON.encode(this.$columnModel));
                 }
             }
 
