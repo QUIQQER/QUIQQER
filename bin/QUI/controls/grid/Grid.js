@@ -60,6 +60,23 @@ define('controls/grid/Grid', [
         }
     };
 
+    var getHash = function (str) {
+        if (typeOf(str) !== 'string') {
+            str = JSON.encode(str);
+        }
+
+        var hash = 0;
+        var i, len, char;
+
+        for (i = 0, len = str.length; i < len; i++) {
+            char = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convert to 32bit integer
+        }
+
+        return hash;
+    }
+
     // workaround for css loading
     require(['css!controls/grid/Grid.css']);
 
@@ -86,6 +103,9 @@ define('controls/grid/Grid', [
             filterHide   : true,
             filterHideCls: 'hide',
 
+            storageKey: false, // if storage key is set, the grid settings (column model) are saved in the locale storage
+            titleSort : false, // user are able to sort the titles by themselves
+
             filterSelectedCls: 'filter',
             multipleSelection: false,
             editable         : false,   // Grid.addEvent('editcomplete', function(data) // selectable muss "true" sein!
@@ -111,7 +131,7 @@ define('controls/grid/Grid', [
             perPage       : 100,
             filterInput   : true,
             // dataProvider
-            dataProvider  : null,
+            dataProvider: null,
 
             //export
             exportName    : false,
@@ -143,6 +163,26 @@ define('controls/grid/Grid', [
                 delete options.columnModel;
             } else {
                 this.$columnModel = {};
+            }
+
+            if (typeof options.storageKey !== 'undefined' && options.storageKey) {
+                var columnModel = QUI.Storage.get(options.storageKey);
+                var storageHash = parseInt(QUI.Storage.get(options.storageKey + '-key'));
+                var currentHash = getHash(this.$columnModel);
+
+                if (columnModel && storageHash === currentHash) {
+                    try {
+                        columnModel = JSON.decode(columnModel);
+
+                        if (typeOf(columnModel) === 'array') {
+                            this.$columnModel = columnModel;
+                        }
+                    } catch (e) {
+                    }
+                } else {
+                    QUI.Storage.set(options.storageKey + '-key', currentHash);
+                    QUI.Storage.set(options.storageKey, JSON.encode(this.$columnModel));
+                }
             }
 
             this.parent(options);
@@ -1050,7 +1090,7 @@ define('controls/grid/Grid', [
             });
         },
 
-        unique  : function (a, asNumber) {
+        unique: function (a, asNumber) {
             function om_sort_number(a, b) {
                 return a - b;
             }
@@ -1722,6 +1762,10 @@ define('controls/grid/Grid', [
                 if (!columnModel.hidden) {
                     dragTempWidth += columnModel.width;
                 }
+            }
+
+            if (this.getAttribute('storageKey')) {
+                QUI.Storage.set(this.getAttribute('storageKey'), JSON.encode(this.$columnModel));
             }
         },
 
@@ -2662,6 +2706,13 @@ define('controls/grid/Grid', [
                         '</div>';
                 }
 
+                if (options.titleSort) {
+                    h = h + '' +
+                        '<div class="pGroup" style="float: right">' +
+                        '   <div class="pButton pSort"><span class="fa fa-sort"></span></div>' +
+                        '</div>';
+                }
+
                 pDiv2.innerHTML = h;
 
                 var o = null;
@@ -2723,6 +2774,9 @@ define('controls/grid/Grid', [
 
                 if ((o = pDiv2.getElement('.pExport'))) {
                     o.addEvent('click', this.getExportSelect.bind(this));
+                }
+                if ((o = pDiv2.getElement('.pSort'))) {
+                    o.addEvent('click', this.openSortWindow.bind(this));
                 }
             }
         },
@@ -3489,6 +3543,14 @@ define('controls/grid/Grid', [
             this.getButtons().forEach(function (Button) {
                 Button.enable();
             });
+        },
+
+        /**
+         * opens the sorting window
+         * - the user are able to sort the grid titles (columns)
+         */
+        openSortWindow: function () {
+            console.log('arrrrrr');
         }
     });
 });
