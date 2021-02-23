@@ -157,6 +157,8 @@ define('controls/grid/Grid', [
         $refreshDelayID: null,
 
         initialize: function (container, options) {
+            this.$gridHash = 0;
+
             // column model
             if (typeof options.columnModel !== 'undefined') {
                 this.$columnModel = options.columnModel;
@@ -165,28 +167,12 @@ define('controls/grid/Grid', [
                 this.$columnModel = {};
             }
 
-            if (typeof options.storageKey !== 'undefined' && options.storageKey) {
-                var columnModel = QUI.Storage.get(options.storageKey);
-                var storageHash = parseInt(QUI.Storage.get(options.storageKey + '-key'));
-                var currentHash = getHash(this.$columnModel);
-
-                if (columnModel && storageHash === currentHash) {
-                    try {
-                        columnModel = JSON.decode(columnModel);
-
-                        if (typeOf(columnModel) === 'array') {
-                            this.$columnModel = columnModel;
-                        }
-                    } catch (e) {
-                    }
-                } else {
-                    QUI.Storage.set(options.storageKey + '-key', currentHash);
-                    QUI.Storage.set(options.storageKey, JSON.encode(this.$columnModel));
-                }
-            }
-
             this.parent(options);
 
+            if (typeof options.storageKey !== 'undefined' && options.storageKey) {
+                this.$gridHash = getHash(this.$columnModel);
+                this.$loadFromStorage(options);
+            }
 
             this.container = typeOf(container) === 'string' ? document.id(container) : container;
             this.$disabled = false;
@@ -1765,7 +1751,7 @@ define('controls/grid/Grid', [
             }
 
             if (this.getAttribute('storageKey')) {
-                QUI.Storage.set(this.getAttribute('storageKey'), JSON.encode(this.$columnModel));
+                this.$saveToStorage();
             }
         },
 
@@ -2810,6 +2796,7 @@ define('controls/grid/Grid', [
         perPageChange: function () {
             this.setAttribute('page', 1);
             this.setAttribute('perPage', this.container.getElement('.rp').value);
+            this.$saveToStorage();
             this.refresh();
         },
 
@@ -2874,6 +2861,8 @@ define('controls/grid/Grid', [
             } else if (el.hasClass('DESC')) {
                 el.sortBy = 'DESC';
             }
+
+            this.$saveToStorage();
 
             if (this.getAttribute('serverSort')) {
                 this.refresh();
@@ -3543,6 +3532,71 @@ define('controls/grid/Grid', [
             this.getButtons().forEach(function (Button) {
                 Button.enable();
             });
+        },
+
+        /**
+         * save this grid to the storage
+         */
+        $saveToStorage: function () {
+            if (!this.getAttribute('storageKey')) {
+                return;
+            }
+
+            QUI.Storage.set(this.getAttribute('storageKey') + '-key', this.$gridHash);
+
+            QUI.Storage.set(this.getAttribute('storageKey'), JSON.encode({
+                column : this.$columnModel,
+                perPage: this.getAttribute('perPage'),
+                sortOn : this.getAttribute('sortOn'),
+                sortBy : this.getAttribute('sortBy')
+            }));
+        },
+
+        /**
+         * load the storage in to the grid
+         *
+         * @param {Object} options
+         */
+        $loadFromStorage: function (options) {
+            if (!this.getAttribute('storageKey')) {
+                return;
+            }
+
+            QUI.Storage.get(this.getAttribute('storageKey'));
+
+            var storage = QUI.Storage.get(this.getAttribute('storageKey'));
+
+            try {
+                storage = JSON.decode(storage);
+            } catch (e) {
+                return;
+            }
+
+            var storageHash = parseInt(QUI.Storage.get(this.getAttribute('storageKey') + '-key'));
+            var currentHash = this.$gridHash;
+
+            if (typeof storage.column !== 'undefined' && storageHash === currentHash) {
+                try {
+                    if (typeOf(storage.column) === 'array') {
+                        this.$columnModel = storage.column;
+                    }
+                } catch (e) {
+                }
+
+                if (typeof storage.perPage !== 'undefined') {
+                    this.setAttribute('perPage', storage.perPage);
+                }
+
+                if (typeof storage.sortOn !== 'undefined') {
+                    this.setAttribute('sortOn', storage.sortOn);
+                }
+
+                if (typeof storage.sortBy !== 'undefined') {
+                    this.setAttribute('sortBy', storage.sortBy);
+                }
+            } else {
+                this.$saveToStorage();
+            }
         },
 
         /**
