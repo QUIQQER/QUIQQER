@@ -3566,6 +3566,10 @@ define('controls/grid/Grid', [
 
             var storage = QUI.Storage.get(this.getAttribute('storageKey'));
 
+            if (!storage) {
+                return;
+            }
+
             try {
                 storage = JSON.decode(storage);
             } catch (e) {
