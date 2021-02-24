@@ -46,6 +46,13 @@ class Output extends Singleton
     protected $linkCache = [];
 
     /**
+     * internal lifetime link cache for rewritten urls
+     *
+     * @var array
+     */
+    protected $rewrittenCache = [];
+
+    /**
      * @var array
      */
     protected $settings = [
@@ -734,36 +741,44 @@ class Output extends Singleton
             }
         }
 
-        $linkCachePath = QUI\Projects\Site::getLinkCachePath($project, $lang, $id);
+        $rewrittenCache = $project.'_'.$lang.'_'.$id;
 
-        try {
-            $url = QUI\Cache\Manager::get($linkCachePath);
-        } catch (\Exception $Exception) {
-            $_params = [];
-
-            if (isset($params['suffix'])) {
-                $_params['suffix'] = $params['suffix'];
-            }
+        if (isset($this->rewrittenCache[$rewrittenCache])) {
+            $url = $this->rewrittenCache[$rewrittenCache];
+        } else {
+            $linkCachePath = QUI\Projects\Site::getLinkCachePath($project, $lang, $id);
 
             try {
-                /* @var $Site \QUI\Projects\Site */
-                $Site = $Project->get((int)$id);
-            } catch (QUI\Exception $Exception) {
-                return '';
-            }
-
-            if ($Site->getAttribute('deleted')) {
-                return '';
-            }
-
-            // Create cache
-            $url = $Site->getLocation($_params);
-
-            try {
-                QUI\Cache\Manager::set($linkCachePath, $url);
+                $url = QUI\Cache\Manager::get($linkCachePath);
             } catch (\Exception $Exception) {
-                QUI\System\Log::writeException($Exception);
+                $_params = [];
+
+                if (isset($params['suffix'])) {
+                    $_params['suffix'] = $params['suffix'];
+                }
+
+                try {
+                    /* @var $Site \QUI\Projects\Site */
+                    $Site = $Project->get((int)$id);
+                } catch (QUI\Exception $Exception) {
+                    return '';
+                }
+
+                if ($Site->getAttribute('deleted')) {
+                    return '';
+                }
+
+                // Create cache
+                $url = $Site->getLocation($_params);
+
+                try {
+                    QUI\Cache\Manager::set($linkCachePath, $url);
+                } catch (\Exception $Exception) {
+                    QUI\System\Log::writeException($Exception);
+                }
             }
+
+            $this->rewrittenCache[$rewrittenCache] = $url;
         }
 
         $url    = $this->extendUrlWithParams($url, $params);
