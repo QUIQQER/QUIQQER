@@ -14,7 +14,7 @@ QUI::$Ajax->registerFunction(
             QUI\Utils\System\File::unlink(VAR_DIR.'cache/compile');
         }
 
-        if (isset($params['templates']) && $params['templates'] == 1) {
+        if (!empty($params['templates']) || !empty($params['quiqqer-template'])) {
             QUI\Utils\System\File::unlink(VAR_DIR.'cache/templates');
             QUI\Utils\System\File::unlink(VAR_DIR.'cache/compile');
         }

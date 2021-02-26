@@ -2760,6 +2760,9 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-packages">
             <en><![CDATA[Clear QUIQQER packages cache]]></en>
         </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-template">
+            <en><![CDATA[Clear template cache]]></en>
+        </locale>
 
         <locale name="quiqqer.settings.cache.clear.compile">
             <en><![CDATA[Clear system-cache]]></en>
@@ -4438,7 +4441,8 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
     <groups name="quiqqer/quiqqer" datatype="php">
 
         <locale name="message.ajax.user.setAndSendPassword.no_mail_sent">
-            <en><![CDATA[The password for user [user] was reset, but could not be sent by e-mail because there is no e-mail address stored in the user data.]]></en>
+            <en>
+                <![CDATA[The password for user [user] was reset, but could not be sent by e-mail because there is no e-mail address stored in the user data.]]></en>
         </locale>
         <locale name="message.ajax.user.setAndSendPassword.success">
             <en><![CDATA[The password for user [user] was reset and sent via email.]]></en>
@@ -5143,7 +5147,8 @@ After logging in you will be prompted to set a new password.
             <en><![CDATA[Send email now]]></en>
         </locale>
         <locale name="controls.SendUserMail.user_no_mail">
-            <en><![CDATA[No email can currently be sent to this user because there is no email address in the user data. Please set an email address for this user first.]]></en>
+            <en>
+                <![CDATA[No email can currently be sent to this user because there is no email address in the user data. Please set an email address for this user first.]]></en>
         </locale>
         <locale name="controls.SendUserMail.empty_subject">
             <en><![CDATA[Please provide an email subject.]]></en>
@@ -5151,7 +5156,7 @@ After logging in you will be prompted to set a new password.
         <locale name="controls.SendUserMail.empty_body">
             <en><![CDATA[Please provide content for the email.]]></en>
         </locale>
-        
+
         <locale name="controls.email.select.email_invalid">
             <en><![CDATA[This e-mail address is invalid. Please enter a valid e-mail address.]]></en>
         </locale>

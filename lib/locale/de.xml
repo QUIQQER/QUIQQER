@@ -2796,6 +2796,9 @@
         <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-packages">
             <de><![CDATA[QUIQQER Packages Cache leeren]]></de>
         </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-template">
+            <de><![CDATA[Template Cache leeren]]></de>
+        </locale>
         <locale name="quiqqer.settings.cache.clear.compile">
             <de><![CDATA[System-Cache leeren]]></de>
         </locale>

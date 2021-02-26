@@ -61,6 +61,20 @@ define('controls/cache/Settings', [
             QuiqqerCacheBody.addClass('quiqqer-settings-cache-tbody');
             PurgeCacheBody.addClass('quiqqer-settings-cache-tbody');
 
+            var btnClick = function (Btn) {
+                Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
+
+                var icon    = Btn.getAttribute('data').icon;
+                var name    = Btn.getAttribute('data').name;
+                var options = {};
+
+                options[name] = true;
+
+                self.clear(options, function () {
+                    Btn.setAttribute('textimage', icon);
+                });
+            };
+
             // complete
             new QUIButton({
                 text     : QUILocale.get(lg, 'quiqqer.settings.cache.clear.complete'),
@@ -70,6 +84,17 @@ define('controls/cache/Settings', [
                 }
             }).inject(ClearCacheBody);
 
+            new QUIButton({
+                text     : QUILocale.get(lg, 'quiqqer.settings.cache.clear.quiqqer-quiqqer-template'),
+                textimage: 'fa fa-eye',
+                data     : {
+                    name: 'quiqqer-template',
+                    icon: 'fa fa-eye'
+                },
+                events   : {
+                    onClick: btnClick
+                }
+            }).inject(ClearCacheBody);
 
             // QUIQQER
             new QUIButton({
@@ -105,20 +130,6 @@ define('controls/cache/Settings', [
                 name: 'quiqqer-packages',
                 icon: 'fa fa-puzzle-piece'
             }];
-
-            var btnClick = function (Btn) {
-                Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
-
-                var icon    = Btn.getAttribute('data').icon;
-                var name    = Btn.getAttribute('data').name;
-                var options = {};
-
-                options[name] = true;
-
-                self.clear(options, function () {
-                    Btn.setAttribute('textimage', icon);
-                });
-            };
 
             for (var i = 0, len = quiqqerButtons.length; i < len; i++) {
                 new QUIButton({
