@@ -229,7 +229,7 @@ class Locale
         $decimalPattern    = self::get('quiqqer/quiqqer', 'numberFormat.decimal_pattern');
 
         if (!empty($decimalSeparator)) {
-            $Formatter->setSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL, $groupingSeparator);
+            $Formatter->setSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL, $decimalSeparator);
         }
 
         if (!empty($groupingSeparator)) {
