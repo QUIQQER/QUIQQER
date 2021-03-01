@@ -185,6 +185,12 @@ button:focus {
     flex: 1;
 }
 
+select.field-container-field {
+    /* flex bug fix */
+    /* it is not 50% but flex box needs a width attribute */
+    width: 50%;
+}
+
 label.field-container-field {
     cursor: pointer;
 }
