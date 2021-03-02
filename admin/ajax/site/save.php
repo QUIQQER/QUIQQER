@@ -17,18 +17,28 @@ QUI::$Ajax->registerFunction(
 
         $attributes = \json_decode($attributes, true);
 
-        $Site->setAttributes($attributes);
-        $Site->save();
-        $Site->refresh();
+        try {
+            $Site->setAttributes($attributes);
+            $Site->save();
+            $Site->refresh();
+        } catch (QUI\Exception $Exception) {
+            QUI::getMessagesHandler()->addError($Exception->getMessage());
+        }
 
-        require_once 'get.php';
+        try {
+            require_once 'get.php';
 
-        $result = QUI::$Ajax->callRequestFunction('ajax_site_get', [
-            'project' => \json_encode($Project->toArray()),
-            'id'      => $id
-        ]);
+            $result = QUI::$Ajax->callRequestFunction('ajax_site_get', [
+                'project' => \json_encode($Project->toArray()),
+                'id'      => $id
+            ]);
 
-        return $result['result'];
+            return $result['result'];
+        } catch (QUI\Exception $Exception) {
+            QUI::getMessagesHandler()->addError($Exception->getMessage());
+        }
+
+        return [];
     },
     ['project', 'id', 'attributes'],
     'Permission::checkAdminUser'
