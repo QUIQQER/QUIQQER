@@ -2691,6 +2691,13 @@
         <locale name="quiqqer.settings.cache.clear.complete">
             <de><![CDATA[Kompletten Cache leeren]]></de>
         </locale>
+        <locale name="quiqqer.settings.cache.clear.complete.title">
+            <de><![CDATA[
+            Löscht alle zwischengespeicherten Daten vom System und Erweiterungen.
+            Ausgenommen ist nur der Langzeitcache und Erweiterungen die eine eigene
+            Cacheverwaltung mitbringen wie der Website-Cache oder die Produktverwaltung.
+            ]]></de>
+        </locale>
         <locale name="quiqqer.settings.cache.clear.complete.confirm.information">
             <de>
                 <![CDATA[Durch das Leeren des kompletten QUIQQER Caches können ggf. größere Datenmengen gelöscht werden, deren Neuerstellung eine längere Zeit benötigt. Dies kann dazu führen, dass Ihre Website in diesem Zeitraum erheblich langsamer ist.]]></de>
@@ -2700,6 +2707,15 @@
         </locale>
         <locale name="quiqqer.settings.cache.clear.complete.confirm.submit">
             <de><![CDATA[Jetzt kompletten QUIQQER Cache löschen]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.description" html="true">
+            <de><![CDATA[
+            <h1>Cache-Verwaltung</h1>
+            <p>In QUIQQER und den QUIQQER Erweiterungen werden viele Daten zwischengespeichert (gecached) um die Geschwindigkeit des Systems zu erhöhen.
+            Im normalem Betrieb von QUIQQER muss der Cache nicht manuell gelöscht werden.
+            Sollten aber Änderungen am System vorgenommen werden (Einstellungen, Updates, Templateänderungen, Datenbankenänderungen etc.),
+            kann es unter Umständen nötig sein das zwischengespeicherte Daten gelöscht werden müssen.</p>
+            ]]></de>
         </locale>
 
         <locale name="quiqqer.settings.cache.longtime.title">
@@ -2775,14 +2791,17 @@
         </locale>
 
         <locale name="quiqqer.settings.cache.clear.quiqqer">
-            <de><![CDATA[Kompletten QUIQQER Cache leeren]]></de>
+            <de><![CDATA[Kompletten QUIQQER-Cache leeren]]></de>
         </locale>
 
         <locale name="quiqqer.settings.cache.quiqqer.title">
             <de><![CDATA[QUIQQER System Cache]]></de>
         </locale>
         <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-projects">
-            <de><![CDATA[QUIQQER Projekt Cache leeren]]></de>
+            <de><![CDATA[QUIQQER Projekt-Cache leeren]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-projects.title">
+            <de><![CDATA[Alle zwischengespeicherten Daten von Projekten und Seite werden gelöscht.]]></de>
         </locale>
         <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-groups">
             <de><![CDATA[QUIQQER Gruppen Cache leeren]]></de>
@@ -2790,15 +2809,36 @@
         <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-users">
             <de><![CDATA[QUIQQER Benutzer Cache leeren]]></de>
         </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-users-groups">
+            <de><![CDATA[QUIQQER Benutzer & Gruppen Cache leeren]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-users-groups.title">
+            <de><![CDATA[
+            Alle zwischengespeicherten Daten und Berechtigungen von Benutzer und Gruppen werden gelöscht.
+            ]]></de>
+        </locale>
         <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-permissions">
             <de><![CDATA[QUIQQER Permission Cache leeren]]></de>
         </locale>
         <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-packages">
-            <de><![CDATA[QUIQQER Packages Cache leeren]]></de>
+            <de><![CDATA[QUIQQER Paket-Cache leeren]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-packages.title">
+            <de><![CDATA[
+            Alle zwischengespeicherten Daten der installierten Pakete werden gelöscht:
+            Achtung: Dieser Punkt löscht nicht den Cache der Pakete wenn diese eigene Caching Methoden besitzen.
+            ]]></de>
         </locale>
         <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-template">
-            <de><![CDATA[Template Cache leeren]]></de>
+            <de><![CDATA[Template-Cache leeren]]></de>
         </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-template.title">
+            <de><![CDATA[
+            Löscht nur den HTML Cache der Template-Engine.
+            Dies ist nötig wenn manuell Änderungen an HTML Dateien vorgenommen wurden.
+            ]]></de>
+        </locale>
+
         <locale name="quiqqer.settings.cache.clear.compile">
             <de><![CDATA[System-Cache leeren]]></de>
         </locale>
@@ -2810,6 +2850,13 @@
         </locale>
         <locale name="quiqqer.settings.cache.purge.button">
             <de><![CDATA[Cache säubern]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.purge.button.title">
+            <de><![CDATA[
+            Führt eine Bereinigung des Cachesystem aus.
+            Alle zwischengespeicherten Daten, dessen Ablaufdatum in der Vergangenheit liegen, werden gelöscht.
+            Es werden keine aktuellen Cachedaten gelöscht.
+            ]]></de>
         </locale>
         <locale name="workspace.toolarge.window.title">
             <de><![CDATA[Der Arbeitsbereich ist zu gross]]></de>
@@ -3143,10 +3190,10 @@
             <de><![CDATA[Die .html Endung wird an Seitenadressen angehängt. Ihre Projekteseiten besitzen .html]]></de>
         </locale>
         <locale name="quiqqer.settings.cache.management.title">
-            <de><![CDATA[Cache Management]]></de>
+            <de><![CDATA[Cache- / Zwischenspeicher Verwaltung]]></de>
         </locale>
         <locale name="quiqqer.settings.cache.management.text">
-            <de><![CDATA[Cache Management]]></de>
+            <de><![CDATA[Cache- / Zwischenspeicher Verwaltung]]></de>
         </locale>
         <locale name="quiqqer.settings.cache.clear.title">
             <de><![CDATA[Caches leeren]]></de>
@@ -4608,7 +4655,8 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             <de><![CDATA[Die E-Mail wurde erfolgreich an Benutzer [user] versendet.]]></de>
         </locale>
         <locale name="message.ajax.user.setAndSendPassword.no_mail_sent">
-            <de><![CDATA[Das Passwort für Benutzer [user] wurde neu gesetzt, konnte aber nicht per E-Mail versendet werden, da in den Benutzerdaten keine E-Mail-Adresse hinterlegt ist.]]></de>
+            <de>
+                <![CDATA[Das Passwort für Benutzer [user] wurde neu gesetzt, konnte aber nicht per E-Mail versendet werden, da in den Benutzerdaten keine E-Mail-Adresse hinterlegt ist.]]></de>
         </locale>
         <locale name="message.ajax.user.setAndSendPassword.success">
             <de><![CDATA[Das Password für Benutzer [user] wurde neu gesetzt und per E-Mail versendet.]]></de>

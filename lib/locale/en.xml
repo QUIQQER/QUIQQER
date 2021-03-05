@@ -2623,6 +2623,14 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="quiqqer.settings.cache.clear.complete">
             <en><![CDATA[Clear complete cache]]></en>
         </locale>
+        <locale name="quiqqer.settings.cache.clear.complete.title">
+            <en><![CDATA[
+            Deletes all cached data from the system and extensions.
+            The only exceptions are the long-term cache and extensions that have their own cache management,
+            such as the website cache or product management.
+            ]]></en>
+        </locale>
+
         <locale name="quiqqer.settings.cache.clear.quiqqer">
             <en><![CDATA[Clear complete QUIQQER cache]]></en>
         </locale>
@@ -2635,6 +2643,15 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         </locale>
         <locale name="quiqqer.settings.cache.clear.complete.confirm.submit">
             <en><![CDATA[Clear complete QUIQQER cache now]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.description" html="true">
+            <en><![CDATA[
+            <h1>Cache management</h1>
+            <p>In QUIQQER and the QUIQQER extensions a lot of data is cached to increase the speed of the system.
+            In normal operation of QUIQQER the cache does not need to be cleared manually.
+            However, if changes are made to the system (settings, updates, template changes, database changes, etc.),
+            it may be necessary to clear cached data.</p>
+            ]]></en>
         </locale>
 
         <locale name="quiqqer.settings.cache.longtime.title">
@@ -2748,20 +2765,43 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-projects">
             <en><![CDATA[Clear QUIQQER project cache]]></en>
         </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-projects.title">
+            <en><![CDATA[All cached data from projects and page will be deleted.]]></en>
+        </locale>
         <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-groups">
             <en><![CDATA[Clear QUIQQER group cache]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-users">
             <en><![CDATA[Clear QUIQQER user cache]]></en>
         </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-users-groups">
+            <en><![CDATA[QUIQQER Clear User & Group Cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-users-groups.title">
+            <en><![CDATA[
+            All cached data and permissions of users and groups will be deleted.
+            ]]></en>
+        </locale>
+
         <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-permissions">
             <en><![CDATA[Clear QUIQQER permission cache]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-packages">
             <en><![CDATA[Clear QUIQQER packages cache]]></en>
         </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-packages.title">
+            <en><![CDATA[
+            All cached data of the installed packages will be cleared.
+            Attention: This does not clear the cache of the packages if they have their own caching methods.
+            ]]></en>
+        </locale>
         <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-template">
             <en><![CDATA[Clear template cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-template.title">
+            <en><![CDATA[
+            Clears only the HTML cache of the template engine. This is necessary if manual changes were made to HTML files.
+            ]]></en>
         </locale>
 
         <locale name="quiqqer.settings.cache.clear.compile">
@@ -2776,6 +2816,14 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="quiqqer.settings.cache.purge.button">
             <en><![CDATA[Purge cache]]></en>
         </locale>
+        <locale name="quiqqer.settings.cache.purge.button.title">
+            <en><![CDATA[
+            Performs a cleanup of the cache system.
+            All data stored between whose expiration date is in the past is deleted.
+            No current cache data is deleted.
+            ]]></en>
+        </locale>
+
         <locale name="workspace.toolarge.window.title">
             <en><![CDATA[The workspace is too large]]></en>
         </locale>

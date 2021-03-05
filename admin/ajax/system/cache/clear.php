@@ -10,7 +10,7 @@ QUI::$Ajax->registerFunction(
     function ($params) {
         $params = \json_decode($params, true);
 
-        if (isset($params['compile']) && $params['compile'] == 1) {
+        if (!empty($params['compile'])) {
             QUI\Utils\System\File::unlink(VAR_DIR.'cache/compile');
         }
 
@@ -20,41 +20,47 @@ QUI::$Ajax->registerFunction(
         }
 
 
-        if (isset($params['complete']) && $params['complete'] == 1) {
+        if (!empty($params['complete'])) {
             QUI\Cache\Manager::clearAll();
         }
 
 
-        if (isset($params['settings']) && $params['settings'] == 1) {
+        if (!empty($params['settings'])) {
             QUI\Cache\Manager::clearSettingsCache();
         }
 
         // quiqqer internal cache
-        if (isset($params['quiqqer']) && $params['quiqqer'] == 1) {
+        if (!empty($params['quiqqer'])) {
             QUI\Cache\Manager::clearCompleteQuiqqerCache();
         }
 
-        if (isset($params['quiqqer-projects']) && $params['quiqqer-projects'] == 1) {
+        if (!empty($params['quiqqer-projects'])) {
             QUI\Cache\Manager::clearProjectsCache();
         }
 
-        if (isset($params['quiqqer-groups']) && $params['quiqqer-groups'] == 1) {
+        if (!empty($params['quiqqer-groups'])) {
             QUI\Cache\Manager::clearGroupsCache();
         }
 
-        if (isset($params['quiqqer-users']) && $params['quiqqer-users'] == 1) {
+        if (!empty($params['quiqqer-users'])) {
             QUI\Cache\Manager::clearUsersCache();
         }
 
-        if (isset($params['quiqqer-permissions']) && $params['quiqqer-permissions'] == 1) {
+        if (!empty($params['quiqqer-permissions'])) {
             QUI\Cache\Manager::clearPermissionsCache();
         }
 
-        if (isset($params['quiqqer-packages']) && $params['quiqqer-packages'] == 1) {
+        if (!empty($params['quiqqer-users-groups'])) {
+            QUI\Cache\Manager::clearGroupsCache();
+            QUI\Cache\Manager::clearUsersCache();
+            QUI\Cache\Manager::clearPermissionsCache();
+        }
+
+        if (!empty($params['quiqqer-packages'])) {
             QUI\Cache\Manager::clearPackagesCache();
         }
 
-        if (isset($params['longterm']) && $params['longterm'] == 1) {
+        if (!empty($params['longterm'])) {
             QUI\Cache\LongTermCache::clear();
         }
     },

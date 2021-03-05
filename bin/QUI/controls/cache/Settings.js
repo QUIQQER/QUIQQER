@@ -61,6 +61,14 @@ define('controls/cache/Settings', [
             QuiqqerCacheBody.addClass('quiqqer-settings-cache-tbody');
             PurgeCacheBody.addClass('quiqqer-settings-cache-tbody');
 
+            new Element('div', {
+                html  : QUILocale.get(lg, 'quiqqer.settings.cache.clear.description'),
+                styles: {
+                    marginBottom: 20,
+                    width       : '100%'
+                }
+            }).inject(this.getElm(), 'top');
+
             var btnClick = function (Btn) {
                 Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
@@ -75,9 +83,18 @@ define('controls/cache/Settings', [
                 });
             };
 
+            var cleanupTitle = function (str) {
+                str = str.trim();
+                str = str.replace(/\s{2,}/g, ' ');
+                str = str.replace(/\t/g, ' ');
+
+                return str;
+            };
+
             // complete
             new QUIButton({
                 text     : QUILocale.get(lg, 'quiqqer.settings.cache.clear.complete'),
+                title    : cleanupTitle(QUILocale.get(lg, 'quiqqer.settings.cache.clear.complete.title')),
                 textimage: 'fa fa-trash-o',
                 events   : {
                     onClick: this.$confirmCacheClearDialog
@@ -86,6 +103,7 @@ define('controls/cache/Settings', [
 
             new QUIButton({
                 text     : QUILocale.get(lg, 'quiqqer.settings.cache.clear.quiqqer-quiqqer-template'),
+                title    : cleanupTitle(QUILocale.get(lg, 'quiqqer.settings.cache.clear.quiqqer-quiqqer-template.title')),
                 textimage: 'fa fa-eye',
                 data     : {
                     name: 'quiqqer-template',
@@ -99,6 +117,7 @@ define('controls/cache/Settings', [
             // QUIQQER
             new QUIButton({
                 text     : QUILocale.get(lg, 'quiqqer.settings.cache.clear.quiqqer'),
+                title    : cleanupTitle(QUILocale.get(lg, 'quiqqer.settings.cache.clear.quiqqer.title')),
                 textimage: URL_BIN_DIR + '16x16/quiqqer.png',
                 events   : {
                     onClick: function (Btn) {
@@ -118,14 +137,8 @@ define('controls/cache/Settings', [
                 name: 'quiqqer-projects',
                 icon: 'fa fa-home'
             }, {
-                name: 'quiqqer-groups',
-                icon: 'fa fa-group'
-            }, {
-                name: 'quiqqer-users',
-                icon: 'fa fa-user'
-            }, {
-                name: 'quiqqer-permissions',
-                icon: 'fa fa-shield'
+                name: 'quiqqer-users-groups',
+                icon: 'fa fa-users'
             }, {
                 name: 'quiqqer-packages',
                 icon: 'fa fa-puzzle-piece'
@@ -134,6 +147,7 @@ define('controls/cache/Settings', [
             for (var i = 0, len = quiqqerButtons.length; i < len; i++) {
                 new QUIButton({
                     text     : QUILocale.get(lg, 'quiqqer.settings.cache.clear.quiqqer-' + quiqqerButtons[i].name),
+                    title    : cleanupTitle(QUILocale.get(lg, 'quiqqer.settings.cache.clear.quiqqer-' + quiqqerButtons[i].name + '.title')),
                     textimage: quiqqerButtons[i].icon,
                     data     : quiqqerButtons[i],
                     events   : {
@@ -146,6 +160,7 @@ define('controls/cache/Settings', [
             // purge
             new QUIButton({
                 text     : QUILocale.get(lg, 'quiqqer.settings.cache.purge.button'),
+                title    : cleanupTitle(QUILocale.get(lg, 'quiqqer.settings.cache.purge.button.title')),
                 textimage: 'fa fa-paint-brush',
                 events   : {
                     onClick: function (Btn) {

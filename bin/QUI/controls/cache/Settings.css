@@ -1,6 +1,6 @@
 .quiqqer-settings-cache-table {
     clear: none;
-    max-width: 320px;
+    max-width: 350px;
     margin-right: 20px;
 }
 
@@ -12,7 +12,7 @@
 .quiqqer-settings-cache-container button {
     clear: both;
     margin: 0 0 10px 0;
-    min-width: 300px;
+    min-width: 330px;
     text-align: left;
 }
 
