@@ -130,7 +130,7 @@ define('Ajax', [
                         if (this in self.$onprogress &&
                             "$result" in self.$onprogress[this] &&
                             "maintenance" in self.$onprogress[this].$result &&
-                            self.$onprogress[this].$result.maintenance
+                            parseInt(self.$onprogress[this].$result.maintenance)
                         ) {
                             self.showMaintenanceMessage();
                         }
@@ -164,7 +164,8 @@ define('Ajax', [
                         // maintenance?
                         if (Response &&
                             "$result" in Response && Response.$result &&
-                            "maintenance" in Response.$result && Response.$result.maintenance
+                            "maintenance" in Response.$result && Response.$result.maintenance &&
+                            parseInt(Response.$result && Response.$result.maintenance)
                         ) {
                             self.showMaintenanceMessage();
                         }

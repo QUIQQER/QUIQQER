@@ -303,7 +303,7 @@ define('classes/request/Bundler', [
                 entryData.resolve(entryResult);
 
                 if (typeof entryResult.Exception !== 'undefined' &&
-                    typeof entryResult.Exception.code !== 'undefined'
+                    typeof entryResult.Exception.code === 'undefined'
                 ) {
                     maintenance = true;
                 }

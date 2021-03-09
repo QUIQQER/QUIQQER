@@ -239,6 +239,7 @@ class Update
 
         if (QUI::getUserBySession()->getId()) {
             QUI::setup();
+            QUI::getTemp()->moveToTemp(VAR_DIR.'cache/');
             $IO->write('QUIQQER Setup finish');
         } else {
             QUI\Cache\Manager::clearCompleteQuiqqerCache();
