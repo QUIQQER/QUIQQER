@@ -442,10 +442,17 @@ class Manager
             return self::$projects[$project]['_standard'];
         }
 
-        if (isset(self::$projects[$project])
-            && isset(self::$projects[$project][$lang])
-        ) {
-            return self::$projects[$project][$lang];
+        if (isset(self::$projects[$project]) && isset(self::$projects[$project][$lang])) {
+            /* @var $Project QUI\Projects\Project */
+            $Project = self::$projects[$project][$lang];
+
+            if (!$template) {
+                return $Project;
+            }
+
+            if ($Project->getAttribute('template') === $template) {
+                return $Project;
+            }
         }
 
         // Wenn der RAM zu voll wird, Objekte mal leeren
