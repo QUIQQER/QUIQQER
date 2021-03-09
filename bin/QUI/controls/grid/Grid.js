@@ -104,7 +104,7 @@ define('controls/grid/Grid', [
             filterHideCls: 'hide',
 
             storageKey: false, // if storage key is set, the grid settings (column model) are saved in the locale storage
-            titleSort : false, // user are able to sort the titles by themselves
+            columnSort: false, // user are able to sort the titles by themselves
 
             filterSelectedCls: 'filter',
             multipleSelection: false,
@@ -2692,7 +2692,7 @@ define('controls/grid/Grid', [
                         '</div>';
                 }
 
-                if (options.titleSort) {
+                if (options.columnSort) {
                     h = h + '' +
                         '<div class="pGroup" style="float: right">' +
                         '   <div class="pButton pSort"><span class="fa fa-sort"></span></div>' +
