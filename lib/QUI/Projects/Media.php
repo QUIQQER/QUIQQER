@@ -644,14 +644,25 @@ class Media extends QUI\QDOM
             $real_file = $this->getFullPath().$result[0]['file'];
         }
 
+        $imageHeight = null;
+        $imageWidth  = null;
+
+        if (!empty($info['height'])) {
+            $imageHeight = $info['height'];
+        }
+
+        if (!empty($info['width'])) {
+            $imageWidth = $info['width'];
+        }
+
         QUI::getDataBase()->update(
             $this->getTable(),
             [
                 'file'         => $new_file,
                 'name'         => $name,
                 'mime_type'    => $info['mime_type'],
-                'image_height' => $info['height'],
-                'image_width'  => $info['width'],
+                'image_height' => $imageHeight,
+                'image_width'  => $imageWidth,
                 'type'         => QUI\Projects\Media\Utils::getMediaTypeByMimeType(
                     $info['mime_type']
                 )
