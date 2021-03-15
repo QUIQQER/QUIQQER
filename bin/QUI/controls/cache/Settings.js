@@ -142,6 +142,9 @@ define('controls/cache/Settings', [
             }, {
                 name: 'quiqqer-packages',
                 icon: 'fa fa-puzzle-piece'
+            }, {
+                name: 'settings',
+                icon: 'fa fa-wrench'
             }];
 
             for (var i = 0, len = quiqqerButtons.length; i < len; i++) {
