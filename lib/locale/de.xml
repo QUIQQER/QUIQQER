@@ -2793,6 +2793,9 @@
         <locale name="quiqqer.settings.cache.clear.quiqqer">
             <de><![CDATA[Kompletten QUIQQER-Cache leeren]]></de>
         </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer.title">
+            <de><![CDATA[Es werden alle zwischengespeicherten Daten von QUIQQER gelöscht. Einstellungen, Benutzer, Gruppen, Berechtigungen, Projekte etc. Nicht gelöscht werden zwischengespeicherte Daten von Erweiterungen und Modulen.]]></de>
+        </locale>
 
         <locale name="quiqqer.settings.cache.quiqqer.title">
             <de><![CDATA[QUIQQER System Cache]]></de>
@@ -2802,6 +2805,12 @@
         </locale>
         <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-projects.title">
             <de><![CDATA[Alle zwischengespeicherten Daten von Projekten und Seite werden gelöscht.]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-settings">
+            <de><![CDATA[QUIQQER Einstellungen-Cache leeren]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-settings.title">
+            <de><![CDATA[Löscht zwischengespeicherte Daten zu diversen QUIQQER-Einstellungen (z.B. Menü-Aufbau)]]></de>
         </locale>
         <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-groups">
             <de><![CDATA[QUIQQER Gruppen Cache leeren]]></de>
