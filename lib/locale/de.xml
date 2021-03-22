@@ -5512,7 +5512,7 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         <locale name="packages.panel.category.update">
             <de><![CDATA[Aktualisierung]]></de>
         </locale>
-        <locale name="packages.panel.category.systemCheck">
+        <locale name="packages.panel.category.systemCheck.cat.title">
             <de><![CDATA[System Check]]></de>
         </locale>
         <locale name="packages.panel.category.settings">

@@ -122,7 +122,7 @@ define('controls/packages/Panel', [
 
             this.addCategory({
                 name  : 'systemcheck',
-                text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.systemCheck'),
+                text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.systemCheck.cat.title'),
                 image : 'fa fa-info-circle',
                 events: {
                     onActive: this.loadSystemCheck

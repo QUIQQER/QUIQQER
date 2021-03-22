@@ -5314,7 +5314,7 @@ After logging in you will be prompted to set a new password.
         <locale name="packages.panel.category.update">
             <en><![CDATA[Update]]></en>
         </locale>
-        <locale name="packages.panel.category.systemCheck">
+        <locale name="packages.panel.category.systemCheck.cat.title">
             <en><![CDATA[System check]]></en>
         </locale>
         <locale name="packages.panel.category.settings">
