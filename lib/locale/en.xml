@@ -232,6 +232,9 @@
         <locale name="permission.quiqqer.admin.users.delete">
             <en><![CDATA[Is allowed to delete users.]]></en>
         </locale>
+        <locale name="permission.quiqqer.admin.users.send_mail">
+            <en><![CDATA[Is allowed to send emails to users (via QUIQQER user panel).]]></en>
+        </locale>
         <locale name="permission.quiqqer.projects.create">
             <en><![CDATA[Is allowed to create projects.]]></en>
         </locale>
@@ -2321,6 +2324,12 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         </locale>
         <locale name="users.user.btn.password.save">
             <en><![CDATA[Save password]]></en>
+        </locale>
+        <locale name="users.user.btn.sendMail">
+            <en><![CDATA[Send email]]></en>
+        </locale>
+        <locale name="users.user.btn.sendMail.no_permission">
+            <en><![CDATA[You do not have the necessary permission to send emails to users]]></en>
         </locale>
         <locale name="users.user.btn.password.generateAndSend">
             <en><![CDATA[Create new password and send via email]]></en>

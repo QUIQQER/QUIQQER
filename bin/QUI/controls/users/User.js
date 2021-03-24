@@ -202,11 +202,12 @@ define('controls/users/User', [
             });
 
             ExtrasBtn.appendChild({
-                name  : 'sendMail',
-                title : QUILocale.get(lg, 'users.user.btn.sendMail'),
-                text  : QUILocale.get(lg, 'users.user.btn.sendMail'),
-                icon  : 'fa fa-envelope',
-                events: {
+                name    : 'sendMail',
+                title   : QUILocale.get(lg, 'users.user.btn.sendMail'),
+                text    : QUILocale.get(lg, 'users.user.btn.sendMail'),
+                icon    : 'fa fa-envelope',
+                disabled: true,
+                events  : {
                     onClick: this.$onClickSendMail
                 }
             });
@@ -293,6 +294,32 @@ define('controls/users/User', [
                         Status.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
                     }
                 });
+
+                require(['Permissions'], function (Permissions) {
+                    Permissions.hasPermission('quiqqer.admin.users.send_mail').then(function (canSendUserMail) {
+                        var btnChildren = ExtrasBtn.getChildren();
+                        var SendMailBtn = null;
+
+                        for (var i = 0, len = btnChildren.length; i < len; i++) {
+                            var Item = btnChildren[i];
+
+                            if (Item.getAttribute('name') === 'sendMail') {
+                                SendMailBtn = Item;
+                                break;
+                            }
+                        }
+
+                        if (!SendMailBtn) {
+                            return;
+                        }
+
+                        if (canSendUserMail) {
+                            SendMailBtn.enable();
+                        } else {
+                            SendMailBtn.getElm().set('title', QUILocale.get(lg, 'users.user.btn.sendMail.no_permission'));
+                        }
+                    });
+                })
             }, {
                 uid    : this.getUser().getId(),
                 onError: function () {

@@ -232,6 +232,9 @@
         <locale name="permission.quiqqer.admin.users.delete">
             <de><![CDATA[Darf Benutzer löschen.]]></de>
         </locale>
+        <locale name="permission.quiqqer.admin.users.send_mail">
+            <de><![CDATA[Darf E-Mail an Benutzer schicken (über QUIQQER Benutzer-Panel).]]></de>
+        </locale>
         <locale name="permission.quiqqer.projects.create">
             <de><![CDATA[Darf Projekte anlegen.]]></de>
         </locale>
@@ -2371,6 +2374,9 @@
         </locale>
         <locale name="users.user.btn.sendMail">
             <de><![CDATA[E-Mail senden]]></de>
+        </locale>
+        <locale name="users.user.btn.sendMail.no_permission">
+            <de><![CDATA[Sie haben nicht die nötige Berechtigung, um E-Mails an Benutzer zu senden]]></de>
         </locale>
         <locale name="users.user.window.delete.title">
             <de><![CDATA[Benutzer löschen]]></de>
