@@ -29,7 +29,8 @@ define('controls/projects/Popup', [
 
         Binds: [
             '$onCreate',
-            '$onOpen'
+            '$onOpen',
+            '$onOpenBegin'
         ],
 
         options: {
@@ -56,7 +57,8 @@ define('controls/projects/Popup', [
             this.$Select      = null;
 
             this.addEvents({
-                onOpen: this.$onOpen
+                onOpen     : this.$onOpen,
+                onOpenBegin: this.$onOpenBegin
             });
         },
 
@@ -168,6 +170,28 @@ define('controls/projects/Popup', [
 
                 self.Loader.hide();
             }.bind(this));
+        },
+
+        /**
+         * event: on open begin
+         */
+        $onOpenBegin: function () {
+            var ckDialogs = document.getElements('.cke_dialog');
+
+            if (!ckDialogs.length) {
+                return;
+            }
+
+            // ckeditor stuff has extrem high zindex
+            var currentIndex = this.getElm().getStyle('z-index');
+
+            for (var i = 0, len = ckDialogs.length; i < len; i++) {
+                if (currentIndex < parseInt(ckDialogs[i].getStyle('z-index'))) {
+                    currentIndex = parseInt(ckDialogs[i].getStyle('z-index'));
+                }
+            }
+
+            this.getElm().setStyle('z-index', currentIndex + 10);
         },
 
         /**

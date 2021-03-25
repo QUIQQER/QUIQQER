@@ -26,6 +26,7 @@ define('controls/projects/project/media/Popup', [
         Binds: [
             '$onCreate',
             '$onOpen',
+            '$onOpenBegin',
             '$getDetails'
         ],
 
@@ -50,9 +51,10 @@ define('controls/projects/project/media/Popup', [
             this.$created = false;
 
             this.addEvents({
-                onCreate: this.$onCreate,
-                onOpen  : this.$onOpen,
-                onClose : function () {
+                onCreate   : this.$onCreate,
+                onOpen     : this.$onOpen,
+                onOpenBegin: this.$onOpenBegin,
+                onClose    : function () {
                     if (this.$Panel) {
                         this.$Panel.destroy();
                     }
@@ -219,6 +221,28 @@ define('controls/projects/project/media/Popup', [
             if (this.$Panel) {
                 this.$Panel.resize();
             }
+        },
+
+        /**
+         * event: on open begin
+         */
+        $onOpenBegin: function () {
+            var ckDialogs = document.getElements('.cke_dialog');
+
+            if (!ckDialogs.length) {
+                return;
+            }
+
+            // ckeditor stuff has extrem high zindex
+            var currentIndex = this.getElm().getStyle('z-index');
+
+            for (var i = 0, len = ckDialogs.length; i < len; i++) {
+                if (currentIndex < parseInt(ckDialogs[i].getStyle('z-index'))) {
+                    currentIndex = parseInt(ckDialogs[i].getStyle('z-index'));
+                }
+            }
+
+            this.getElm().setStyle('z-index', currentIndex + 10);
         },
 
         /**
