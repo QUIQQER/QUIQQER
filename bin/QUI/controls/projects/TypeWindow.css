@@ -1,5 +1,5 @@
 
-.qui-window-popup-content {
+.qui-type-window .qui-window-popup-content {
     display: flex;
     flex-direction: column;
 }
