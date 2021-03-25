@@ -242,6 +242,7 @@ define('controls/projects/project/media/Popup', [
                 }
             }
 
+            this.Background.getElm().setStyle('z-index', currentIndex + 9);
             this.getElm().setStyle('z-index', currentIndex + 10);
         },
 

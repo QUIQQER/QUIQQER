@@ -191,6 +191,7 @@ define('controls/projects/Popup', [
                 }
             }
 
+            this.Background.getElm().setStyle('z-index', currentIndex + 9);
             this.getElm().setStyle('z-index', currentIndex + 10);
         },
 
