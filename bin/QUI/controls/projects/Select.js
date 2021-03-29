@@ -43,7 +43,9 @@ define('controls/projects/Select', [
         create: function () {
             var self = this;
 
-            this.$Elm = new Element('div');
+            this.$Elm = new Element('div', {
+                'class': 'qui-controls-project-select'
+            });
 
             var localStorageValue = QUI.Storage.get('dashboard-media-info-card-project-select');
 
