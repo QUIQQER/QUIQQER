@@ -109,6 +109,8 @@ define('controls/lang/ContentMultiLang', [
                 try {
                     this.$data = JSON.decode(this.$Input.value);
                 } catch (e) {
+                    this.$data = {};
+                    this.$data[QUIQQER_PROJECT.lang] = this.$Input.value;
                 }
 
                 if (typeOf(this.$data) !== 'object') {
