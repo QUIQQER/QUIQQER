@@ -395,7 +395,18 @@ define('utils/Panels', function () {
                             if (pType === 'controls/desktop/panels/XML' &&
                                 Child.getType() === 'controls/desktop/panels/XML'
                             ) {
-                                if (Panel.getFile() !== Child.getFile()) {
+                                var oFile = Panel.getFile(),
+                                    cFile = Child.getFile();
+
+                                if (typeOf(oFile) === 'array') {
+                                    oFile = oFile.join(',');
+                                }
+
+                                if (typeOf(cFile) === 'array') {
+                                    cFile = cFile.join(',');
+                                }
+
+                                if (oFile !== cFile) {
                                     continue;
                                 }
                             }
