@@ -2772,7 +2772,8 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[QUIQQER System Cache]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.clear.quiqqer.title">
-            <en><![CDATA[All cached data will be deleted from QUIQQER. Settings, users, groups, permissions, projects, etc. Not deleted are cached data of extensions and modules.]]></en>
+            <en>
+                <![CDATA[All cached data will be deleted from QUIQQER. Settings, users, groups, permissions, projects, etc. Not deleted are cached data of extensions and modules.]]></en>
         </locale>
 
         <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-projects">
@@ -4439,6 +4440,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
 
         <locale name="permission.quiqqer.projects.media._header">
             <en><![CDATA[Media permissions]]></en>
+        </locale>
+        <locale name="permission.quiqqer.projects.media.set_permissions">
+            <en><![CDATA[Is allowed to edit media permissions]]></en>
         </locale>
         <locale name="permission.quiqqer.projects.media.view">
             <en><![CDATA[Is allowed to see the file / folder]]></en>

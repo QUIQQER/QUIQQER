@@ -2800,7 +2800,8 @@
             <de><![CDATA[Kompletten QUIQQER-Cache leeren]]></de>
         </locale>
         <locale name="quiqqer.settings.cache.clear.quiqqer.title">
-            <de><![CDATA[Es werden alle zwischengespeicherten Daten von QUIQQER gelöscht. Einstellungen, Benutzer, Gruppen, Berechtigungen, Projekte etc. Nicht gelöscht werden zwischengespeicherte Daten von Erweiterungen und Modulen.]]></de>
+            <de>
+                <![CDATA[Es werden alle zwischengespeicherten Daten von QUIQQER gelöscht. Einstellungen, Benutzer, Gruppen, Berechtigungen, Projekte etc. Nicht gelöscht werden zwischengespeicherte Daten von Erweiterungen und Modulen.]]></de>
         </locale>
 
         <locale name="quiqqer.settings.cache.quiqqer.title">
@@ -4596,6 +4597,9 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
 
         <locale name="permission.quiqqer.projects.media._header">
             <de><![CDATA[Media Rechte]]></de>
+        </locale>
+        <locale name="permission.quiqqer.projects.media.set_permissions">
+            <de><![CDATA[Darf Medienrechte bearbeiten]]></de>
         </locale>
         <locale name="permission.quiqqer.projects.media.view">
             <de><![CDATA[Darf die Datei / den Ordner sehen]]></de>
