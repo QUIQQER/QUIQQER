@@ -850,7 +850,7 @@ class Address extends QUI\QDOM
     public function equals(Address $Address, $compareCustomData = false): bool
     {
         if ($this->getId() === $Address->getId()) {
-            return false;
+            return true;
         }
 
         $dataThis  = $this->getAttributes();
@@ -875,6 +875,10 @@ class Address extends QUI\QDOM
                 unset($dataOther['customData']);
             }
         }
+
+        // ignore id
+        unset($dataThis['id']);
+        unset($dataOther['id']);
 
         // ignore empty fields
         foreach ($dataThis as $k => $v) {
