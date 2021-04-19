@@ -125,6 +125,15 @@ button:focus {
     font-family: monospace;
 }
 
+input[type="search"] {
+    position: relative;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+    cursor: pointer;
+    position: relative;
+}
+
 /** logo, title
  * ====================================================== */
 
