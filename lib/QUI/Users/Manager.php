@@ -333,8 +333,8 @@ class Manager
             $newName       = $newUserLocale;
 
             while ($this->usernameExists($newName)) {
-                $newName = $newUserLocale.' ('.time().')';
-                sleep(1);
+                $milliseconds = round(microtime(true) * 1000);
+                $newName      = $newUserLocale.' ('.$milliseconds.')';
             }
         }
 
