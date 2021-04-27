@@ -10,11 +10,16 @@
 QUI::$Ajax->registerFunction(
     'ajax_users_getCategories',
     function ($uid) {
-        $Users   = QUI::getUsers();
-        $User    = $Users->get((int)$uid);
-        $Toolbar = QUI\Users\Utils::getUserToolbar($User);
+        try {
+            $Users   = QUI::getUsers();
+            $User    = $Users->get((int)$uid);
+            $Toolbar = QUI\Users\Utils::getUserToolbar($User);
 
-        return $Toolbar->toArray();
+            return $Toolbar->toArray();
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            throw $Exception;
+        }
     },
     ['uid'],
     'Permission::checkAdminUser'

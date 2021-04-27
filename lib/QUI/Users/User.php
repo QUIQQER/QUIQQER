@@ -2248,9 +2248,12 @@ class User implements QUI\Interfaces\Users\User
         }
 
         if ($this->getAttribute('address')) {
-            $this->StandardAddress = $this->getAddress($this->getAttribute('address'));
+            try {
+                $this->StandardAddress = $this->getAddress($this->getAttribute('address'));
 
-            return $this->StandardAddress;
+                return $this->StandardAddress;
+            } catch (QUI\Exception $Exception) {
+            }
         }
 
         $list = $this->getAddressList();
