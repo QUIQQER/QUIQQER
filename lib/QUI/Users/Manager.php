@@ -331,11 +331,10 @@ class Manager
         } else {
             $newUserLocale = QUI::getLocale()->get('quiqqer/quiqqer', 'user.create.new.username');
             $newName       = $newUserLocale;
-            $i             = 0;
 
             while ($this->usernameExists($newName)) {
-                $newName = $newUserLocale.' ('.$i.')';
-                $i++;
+                $milliseconds = round(microtime(true) * 1000);
+                $newName      = $newUserLocale.' ('.$milliseconds.')';
             }
         }
 
