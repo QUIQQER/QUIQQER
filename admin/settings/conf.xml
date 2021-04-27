@@ -130,7 +130,7 @@
                 </conf>
                 <conf name="showResetPasswordFrontend">
                     <type><![CDATA[bool]]></type>
-                    <defaultvalue>0</defaultvalue>
+                    <defaultvalue>1</defaultvalue>
                 </conf>
                 <conf name="passwordResetLinkValidTime">
                     <type><![CDATA[integer]]></type>
