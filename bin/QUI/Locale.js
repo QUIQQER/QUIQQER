@@ -3,7 +3,6 @@
  *
  * @module Locale
  * @author www.pcsg.de (Henning Leutz)
- * @require qui/Locale
  */
 define('Locale', ['classes/Locale'], function (QUILocale) {
     "use strict";

@@ -4,13 +4,8 @@
  * @module classes/users/SystemUser
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/QUI
- * @require qui/classes/DOM
- * @require classes/users/Nobody
- *
  * @event onRefresh [ {classes/users/SystemUser} ]
  */
-
 define('classes/users/SystemUser', [
 
     'qui/QUI',

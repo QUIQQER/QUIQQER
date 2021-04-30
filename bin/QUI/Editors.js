@@ -4,9 +4,6 @@
  *
  * @module Editors
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require classes/editor/Manager
  */
 define('Editors', [
 

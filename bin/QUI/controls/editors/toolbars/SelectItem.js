@@ -1,9 +1,6 @@
 /**
  * @module controls/editors/toolbars/SelectItem
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/elements/Select
  */
 define('controls/editors/toolbars/SelectItem', [
 

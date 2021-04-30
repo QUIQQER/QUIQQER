@@ -4,12 +4,7 @@
  *
  * @module controls/groups/Entry
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/controls/Control
- * @require Groups
- * @require Locale
  */
-
 define('controls/groups/Entry', [
 
     'qui/controls/Control',

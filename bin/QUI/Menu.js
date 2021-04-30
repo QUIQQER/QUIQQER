@@ -3,9 +3,6 @@
  *
  * @module Menu
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require controls/menu/Manager
  */
 define('Menu', [
 

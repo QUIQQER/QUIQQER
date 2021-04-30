@@ -2,12 +2,6 @@
  * @module controls/users/password/Password
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require Ajax
- * @require Locale
- * @require css!controls/users/password/Password.css
- *
  * @event onSaveBegin [self]
  * @event onSaveEnd [self]
  * @event onSave [self]

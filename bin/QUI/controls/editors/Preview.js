@@ -3,9 +3,6 @@
  *
  * @package controls/editors/Input
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/Control
  */
 define('controls/editors/Preview', [
 

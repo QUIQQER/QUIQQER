@@ -4,13 +4,8 @@
  * @module controls/groups/sitemap/Window
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/controls/windows/Confirm
- * @require controls/groups/Sitemap
- * @require Locale
- *
  * @event onSubmit [ this, values ]
  */
-
 define('controls/groups/sitemap/Window', [
 
     'qui/QUI',

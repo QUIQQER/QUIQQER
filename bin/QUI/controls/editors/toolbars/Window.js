@@ -1,11 +1,6 @@
 /**
  * @module controls/editors/toolbars/Window
- *
- * @require qui/QUI
- * @require qui/controls/windows/Confirm
- * @require Ajax
- * @require Locale
- * @require controls/grid/Grid
+ * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/editors/toolbars/Window', [
 

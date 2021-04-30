@@ -4,9 +4,6 @@
  *
  * @module classes/projects/media/Trash
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/classes/DOM
- * @require Ajax
  */
 
 define('classes/projects/media/Trash', [

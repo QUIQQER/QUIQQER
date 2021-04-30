@@ -4,8 +4,6 @@
  *
  * @module classes/projects/project/media/Image
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require classes/projects/project/media/Item
  */
 
 define('classes/projects/project/media/Image', [

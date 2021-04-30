@@ -4,8 +4,6 @@
  *
  * @module classes/Locale
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/Locale
  */
 var needle = ['qui/classes/Locale'];
 

@@ -3,7 +3,6 @@
  *
  * @module Plugins
  * @author www.pcsg.de (Henning Leutz)
- * @require classes/plugins/Manager
  * @deprecated -> package manager
  */
 define(['classes/plugins/Manager'], function (PluginManager) {

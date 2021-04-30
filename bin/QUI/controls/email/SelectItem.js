@@ -1,12 +1,6 @@
 /**
  * @module controls/email/SelectItem
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/elements/Select
- * @require Ajax
- * @require Groups
- * @require Users
  */
 define('controls/email/SelectItem', [
 

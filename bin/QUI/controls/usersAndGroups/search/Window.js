@@ -1,11 +1,6 @@
 /**
  * @module controls/usersAndGroups/search/Window
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/windows/Confirm
- * @require controls/users/search/Search
- * @require Locale
  */
 define('controls/usersAndGroups/search/Window', [
 

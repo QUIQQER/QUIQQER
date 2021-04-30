@@ -2,9 +2,6 @@
  * @module controls/packages/PHPInfo
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires qui/QUI
- * @requires qui/controls/Control
- *
  * @event onLoad
  */
 define('controls/packages/PHPInfo', [

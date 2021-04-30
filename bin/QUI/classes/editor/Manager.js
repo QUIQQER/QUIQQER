@@ -5,12 +5,7 @@
  *
  * @module classes/editor/Manager
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/classes/DOM
- * @require Ajax
  */
-
 define('classes/editor/Manager', [
 
     'qui/QUI',

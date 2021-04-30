@@ -4,13 +4,6 @@
  * @module controls/usersAndGroups/Input
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/controls/Control
- * @require qui/controls/buttons/Button
- * @require controls/users/Entry
- * @require controls/groups/Entry
- * @require Ajax
- * @require Locale
- *
  * @event onAddUser [ this, id ]
  * @event onAddgroup [ this, id ]
  *

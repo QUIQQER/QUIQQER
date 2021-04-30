@@ -3,11 +3,6 @@
  *
  * @module classes/packages/Manager
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/classes/DOM
- * @require Ajax
- * @require Locale
  */
 define('classes/packages/Manager', [
 

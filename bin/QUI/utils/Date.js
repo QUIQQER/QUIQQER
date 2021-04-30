@@ -5,8 +5,6 @@
  *
  * @author www.pcsg.de (Jan Wennrich)
  * @author Smart people from Stack Overflow
- *
- * @require Locale
  */
 define('utils/Date', [
     'Locale'

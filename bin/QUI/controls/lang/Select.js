@@ -4,12 +4,6 @@
  *
  * Sprachauswahl - DropDown
  *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/buttons/Select
- * @require Ajax
- * @require Locale
- *
  * @event onChange
  */
 define('controls/lang/Select', [

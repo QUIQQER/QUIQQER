@@ -4,10 +4,6 @@
  *
  * @module utils/permissions/Utils
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require Locale
- * @require classes/permissions/Permissions
- * @require css!utils/permissions/Utils.css
  */
 define('utils/permissions/Utils', [
 

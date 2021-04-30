@@ -3,16 +3,6 @@
  *
  * @module controls/projects/project/site/Search
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/desktop/Panel
- * @require qui/controls/buttons/Button
- * @require controls/grid/Grid
- * @require controls/projects/project/site/Panel
- * @require Projects
- * @require Ajax
- * @require Locale
- * @require css!controls/projects/project/site/Search.css
  **/
 define('controls/projects/project/site/Search', [
 

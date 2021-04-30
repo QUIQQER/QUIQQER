@@ -4,11 +4,6 @@
  * @module utils/Site
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/QUI
- * @require utils/Panels
- * @require Locale
- * @require Ajax
- *
  * @event onBeforeOpenCreateChild [ ParentSite ]
  * @event onOpenCreateChild [ Win, ParentSite ]
  * @event onOpenCreateChildSubmit [ value, Win, ParentSite ]

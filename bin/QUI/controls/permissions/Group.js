@@ -3,9 +3,6 @@
  *
  * @module controls/permissions/Group
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require controls/permissions/Permission
- * @require Locale
  */
 define('controls/permissions/Group', [
 

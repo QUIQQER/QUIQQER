@@ -3,9 +3,6 @@
  *
  * @module utils/Controls
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/utils/Elements
- * @require qui/lib/polyfills/Promise
  */
 
 define('utils/Controls', [

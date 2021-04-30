@@ -2,16 +2,6 @@
  *
  * @module controls/projects/project/site/Select
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/buttons/Button
- * @require qui/controls/windows/Popup
- * @require controls/projects/TypeWindow
- * @require controls/projects/Popup
- * @require Projects
- * @require Locale
- * @require css!controls/projects/project/site/Select.css
  */
 define('controls/projects/project/site/Select', [
 

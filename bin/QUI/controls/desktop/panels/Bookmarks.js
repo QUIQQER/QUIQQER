@@ -3,10 +3,6 @@
  *
  * @module controls/desktop/panels/Bookmarks
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/controls/bookmarks/Panel
- * @require classes/utils/Sortables
- * @require css!controls/desktop/panels/Bookmarks.css
  */
 define('controls/desktop/panels/Bookmarks', [
 
@@ -208,7 +204,7 @@ define('controls/desktop/panels/Bookmarks', [
                 new Element('div', {
                     'class': 'qui-bookmark-placeholder',
                     html   : '<span class="fa fa-arrows"></span>' +
-                    Child.getElement('.qui-bookmark-text').get('text')
+                        Child.getElement('.qui-bookmark-text').get('text')
                 }).inject(Child);
             });
 

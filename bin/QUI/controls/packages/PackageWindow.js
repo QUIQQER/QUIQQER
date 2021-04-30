@@ -1,10 +1,6 @@
 /**
  * @module controls/packages/PackageWindow
  * @author www.pcsg.de (Henning Leutz)
- *
- * @requires qui/QUI
- * @requires qui/controls/windows/Popup
- * @requires controls/packages/Package
  */
 define('controls/packages/PackageWindow', [
 

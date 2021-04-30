@@ -2,19 +2,6 @@
  * @module controls/packages/System
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires qui/QUI
- * @requires qui/controls/Control
- * @requires qui/controls/buttons/Button
- * @requires qui/controls/windows/Confirm
- * @requires Packages
- * @requires Mustache
- * @requires Ajax
- * @requires Locale
- * @requires utils/Favicon
- * @requires package/quiqqer/translator/bin/Translator
- * @requires text!controls/packages/System.html
- * @requires css!controls/packages/System.css
- *
  * @event onLoad
  * @event onShowLoader
  * @event onHideLoader

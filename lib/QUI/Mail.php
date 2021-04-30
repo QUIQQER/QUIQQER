@@ -16,8 +16,6 @@ use Html2Text\Html2Text;
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  *
- * @requires phpmailer/phpmailer
- *
  * @example $Mail = new \QUI\Mail(array(
  * 'MAILFrom'     => $MAILFrom,
  * 'MAILFromText' => $MAILFromText,

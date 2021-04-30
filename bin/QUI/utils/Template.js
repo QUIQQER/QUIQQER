@@ -4,12 +4,7 @@
  *
  * @module utils/Template
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/classes/DOM
- * @require qui/utils/Object
- * @require Ajax
  */
-
 define('utils/Template', [
 
     'qui/classes/DOM',

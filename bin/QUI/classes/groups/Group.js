@@ -4,10 +4,6 @@
  * @module classes/groups/Group
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/classes/DOM
- * @require Ajax
- * @require qui/utils/Object
- *
  * @event onRefresh [ {classes/groups/Group} ]
  * @event onActivate [ {classes/groups/Group} ]
  * @event onDeactivate [ {classes/groups/Group} ]

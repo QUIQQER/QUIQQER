@@ -4,10 +4,7 @@
  *
  * @module classes/utils/SyntaxHighlighter
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/classes/DOM
  */
-
 define(['qui/classes/DOM'], function (DOM) {
     "use strict";
 

@@ -1,11 +1,6 @@
 /**
  * @module package/quiqqer/areas/bin/controls/Areas
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/elements/Select
- * @require Ajax
- * @require Locale
  */
 define('controls/groups/SelectItem', [
 

@@ -3,11 +3,6 @@
  *
  * @module controls/projects/project/media/Sitemap
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/controls/Control
- * @require qui/controls/sitemap/Map
- * @require qui/controls/sitemap/Item
- * @require Ajax
  */
 define('controls/projects/project/media/Sitemap', [
 

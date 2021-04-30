@@ -5,8 +5,6 @@
  * @module classes/request/Downloads
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/classes/DOM
- *
  * @event onComplete
  *
  * @example
@@ -15,7 +13,6 @@
       DownloadManager.download( 'ajax_downloadTest' );
  })
  */
-
 define('classes/request/Downloads', [
 
     'qui/classes/DOM',

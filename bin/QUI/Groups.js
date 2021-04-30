@@ -3,9 +3,6 @@
  *
  * @module Groups
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require classes/groups/Manager
  */
 define('Groups', [
 

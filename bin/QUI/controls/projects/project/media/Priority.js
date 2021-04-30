@@ -3,15 +3,7 @@
  *
  * @author www.pcsg.de (Henning Leutz)
  * @module controls/projects/project/media/Priority
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/loader/Loader
- * @require controls/grid/Grid
- * @require Locale
- * @require Ajax
  */
-
 define('controls/projects/project/media/Priority', [
 
     'qui/QUI',

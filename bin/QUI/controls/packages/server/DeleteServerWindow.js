@@ -3,14 +3,6 @@
  *
  * @module controls/packages/server/DeleteServerWindow
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/windows/Confirm
- * @require Mustache
- * @require Locale
- * @require Packages
- * @require text!controls/packages/server/Server.html
- * @require css!controls/packages/server/Server.css
  */
 define('controls/packages/server/DeleteServerWindow', [
 

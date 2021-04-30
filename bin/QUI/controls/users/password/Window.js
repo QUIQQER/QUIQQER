@@ -2,11 +2,6 @@
  * @module controls/users/password/Window
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/QUI
- * @require qui/controls/windows/Confirm
- * @require controls/users/password/Password
- * @require css!controls/users/password/Window.css
- *
  * @event onSuccess [this]
  * @event onError [this]
  */

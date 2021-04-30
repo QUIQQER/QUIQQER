@@ -7,9 +7,6 @@
  * @module classes/request/Upload
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/QUI
- * @require qui/classes/DOM
- *
  * @event onDragenter [{DOMEvent}, {DOMNode Target}, {self}]
  * @event onDragleave [{DOMEvent}, {DOMNode Target}, {self}]
  * @event onDragover [{DOMEvent}, {DOMNode Target}, {self}]

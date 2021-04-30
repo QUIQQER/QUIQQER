@@ -1,9 +1,6 @@
 /**
  * @module controls/icons/Confirm
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/windows/Confirm
  */
 define('controls/icons/Confirm', [
 

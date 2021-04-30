@@ -2,9 +2,6 @@
  * @module controls/packages/SystemCheck
  * @author www.pcsg.de (Michael Danielczok)
  *
- * @requires qui/QUI
- * @requires qui/controls/Control
- *
  * @event onLoad
  */
 define('controls/packages/SystemCheck', [

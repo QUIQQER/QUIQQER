@@ -6,14 +6,6 @@
  *
  * @events onItemClick [ this, {qui/controls/sitemap/Item} ]
  * @events onItemDblClick [ this, {qui/controls/sitemap/Item} ]
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/sitemap/Map
- * @require qui/controls/sitemap/Item
- * @require Locale
- * @require Ajax
- * @require Groups
  */
 define('controls/groups/Sitemap', [
 
