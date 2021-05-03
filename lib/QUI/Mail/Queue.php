@@ -37,8 +37,8 @@ class Queue
         $Table->addColumn(self::table(), [
             'id'           => 'int(11) NOT NULL',
             'subject'      => 'varchar(1000)',
-            'body'         => 'text',
-            'text'         => 'text',
+            'body'         => 'longtext',
+            'text'         => 'longtext',
             'from'         => 'text',
             'fromName'     => 'text',
             'ishtml'       => 'int(1)',
