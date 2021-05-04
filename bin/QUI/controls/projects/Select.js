@@ -28,7 +28,9 @@ define('controls/projects/Select', [
             langSelect   : true,
             emptyselect  : true,
             icon         : 'fa fa-home',
-            localeStorage: false // name for the locale storage, if this is set, the value is stored in the locale storage
+            localeStorage: false, // name for the locale storage, if this is set, the value is stored in the locale storage
+            project      : false,
+            lang         : false
         },
 
         initialize: function (options) {
@@ -110,6 +112,12 @@ define('controls/projects/Select', [
                     } catch (e) {
                         value = self.$Select.firstChild().getAttribute('value');
                     }
+                }
+
+                if (self.getAttribute('project') && self.getAttribute('lang')) {
+                    value = self.getAttribute('project') + ',' + self.getAttribute('lang');
+                } else if (self.getAttribute('project')) {
+                    value = self.getAttribute('project');
                 }
 
                 self.$Select.setValue(value);

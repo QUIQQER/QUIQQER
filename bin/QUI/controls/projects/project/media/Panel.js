@@ -130,6 +130,7 @@ define('controls/projects/project/media/Panel', [
             this.$Media  = Media || null;
             this.$File   = null;
             this.$Filter = null;
+            this.$loaded = false;
 
             this.$Pagination          = null;
             this.$PaginationContainer = null;
@@ -484,9 +485,18 @@ define('controls/projects/project/media/Panel', [
                             paddingLeft: 0
                         });
 
+                        var project = false, lang = false;
+
+                        if (self.$Media && self.$Media.getProject()) {
+                            project = self.$Media.getProject().getName();
+                            lang    = self.$Media.getProject().getLang();
+                        }
+
                         new ProjectSelect({
                             langSelect : false,
                             emptyselect: false,
+                            project    : project,
+                            lang       : lang,
                             styles     : {
                                 border      : 'none',
                                 borderRight : '1px solid #dedede',
@@ -497,6 +507,10 @@ define('controls/projects/project/media/Panel', [
                             },
                             events     : {
                                 onChange: function (value) {
+                                    if (!self.$loaded) {
+                                        return;
+                                    }
+
                                     if (self.$Media && self.$Media.getProject() &&
                                         self.$Media.getProject().getName() === value) {
                                         return;
@@ -513,7 +527,9 @@ define('controls/projects/project/media/Panel', [
                 }
 
                 if (self.getAttribute('startid')) {
-                    self.openID(self.getAttribute('startid'));
+                    self.openID(self.getAttribute('startid')).then(function () {
+                        self.$loaded = true;
+                    });
                     return;
                 }
 
@@ -522,11 +538,15 @@ define('controls/projects/project/media/Panel', [
                 var cacheMedia = Project.getName() + '-' + Project.getLang() + '-id';
 
                 if (QUI.Storage.get(cacheMedia)) {
-                    self.openID(QUI.Storage.get(cacheMedia));
+                    self.openID(QUI.Storage.get(cacheMedia)).then(function () {
+                        self.$loaded = true;
+                    });
                     return;
                 }
 
-                self.openID(1);
+                self.openID(1).then(function () {
+                    self.$loaded = true;
+                });
             });
         },
 
@@ -568,10 +588,10 @@ define('controls/projects/project/media/Panel', [
          * Opens the file and load the breadcrumb
          *
          * @method controls/projects/project/media/Panel#openID
-         * @param {Number} fileid
-         * @param {Boolean} isRefresh (optional) - opens an item as part of a refresh (i.e. pagination) [default: false]
+         * @param {Number} fileId
+         * @param {Boolean} [isRefresh] (optional) - opens an item as part of a refresh (i.e. pagination) [default: false]
          */
-        openID: function (fileid, isRefresh) {
+        openID: function (fileId, isRefresh) {
             var self    = this,
                 Project = this.$Media.getProject();
 
@@ -594,17 +614,17 @@ define('controls/projects/project/media/Panel', [
             // set cache
             QUI.Storage.set(
                 Project.getName() + '-' + Project.getLang() + '-id',
-                fileid
+                fileId
             );
 
-            this.setAttribute('startid', fileid);
+            this.setAttribute('startid', fileId);
 
             // Reset pagination
             this.$Pagination = null;
 
             return new Promise(function (resolve) {
                 // get the file object
-                self.getMedia().get(fileid).then(function (MediaFile) {
+                self.getMedia().get(fileId).then(function (MediaFile) {
                     // set media image to the panel
                     self.setOptions({
                         icon : 'fa fa-picture-o',
