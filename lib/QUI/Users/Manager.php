@@ -1513,14 +1513,18 @@ class Manager
 
 
             if ($filter_group) {
-                $groups = \explode(',', $filter['filter_group']);
+                $groups   = \explode(',', $filter['filter_group']);
+                $subQuery = [];
 
                 foreach ($groups as $groupId) {
                     if ((int)$groupId > 0) {
-                        $query               .= ' AND usergroup LIKE :'.$groupId.' ';
+                        $subQuery[] = 'usergroup LIKE :'.$groupId.' ';
+
                         $binds[':'.$groupId] = '%,'.(int)$groupId.',%';
                     }
                 }
+
+                $query .= ' AND ('.\implode(' OR ', $subQuery).')';
             }
 
             if ($filter_groups_exclude) {
