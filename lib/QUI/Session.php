@@ -112,7 +112,7 @@ class Session
         // cookie same site
         $sameSite = QUI::conf('cookies', 'sameSite');
 
-        if ($sameSite && $sameSite !== '') {
+        if ($sameSite && $sameSite !== '' && QUI\Utils\System::isProtocolSecure()) {
             switch ($sameSite) {
                 case 'Lax':
                 case 'None':
