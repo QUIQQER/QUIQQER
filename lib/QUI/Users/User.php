@@ -1485,7 +1485,7 @@ class User implements QUI\Interfaces\Users\User
                 'lang'       => '',
                 'shortcuts'  => '',
                 'activation' => '',
-                'expire'     => '0000-00-00 00:00:00'
+                'expire'     => null
             ],
             ['id' => $this->getId()]
         );
