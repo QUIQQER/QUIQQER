@@ -1477,7 +1477,7 @@ class User implements QUI\Interfaces\Users\User
                 'firstname'  => '',
                 'lastname'   => '',
                 'usertitle'  => '',
-                'birthday'   => '',
+                'birthday'   => null,
                 'email'      => '',
                 'su'         => 0,
                 'avatar'     => '',
