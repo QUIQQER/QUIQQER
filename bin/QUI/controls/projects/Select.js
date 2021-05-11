@@ -130,11 +130,24 @@ define('controls/projects/Select', [
         },
 
         /**
-         *
          * @returns {*}
          */
         getValue: function () {
             return this.$Select.getValue();
+        },
+
+        /**
+         * disables the select
+         */
+        disable: function () {
+            this.$Select.disable();
+        },
+
+        /**
+         * enables the select
+         */
+        enable: function () {
+            this.$Select.enable();
         }
     });
 });
