@@ -850,6 +850,25 @@ class Output extends Singleton
     }
 
     /**
+     * Removes an internal rewritten url from the cache, if needed
+     * use this with caution
+     *
+     * @param Interfaces\Projects\Site $Site
+     */
+    public function removeRewrittenUrlCache(QUI\Interfaces\Projects\Site $Site)
+    {
+        $project = $Site->getProject()->getName();
+        $lang    = $Site->getProject()->getLang();
+        $id      = $Site->getId();
+
+        $rewrittenCache = $project.'_'.$lang.'_'.$id;
+
+        if (isset($this->rewrittenCache[$rewrittenCache])) {
+            unset($this->rewrittenCache[$rewrittenCache]);
+        }
+    }
+
+    /**
      * Erweitert die URL um Params
      *
      * @param string $url
