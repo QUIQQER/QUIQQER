@@ -63,6 +63,8 @@ class Output extends Singleton
     /**
      * @param $content
      * @return mixed
+     *
+     * @throws QUI\Exception
      */
     public function parse($content)
     {
@@ -272,16 +274,16 @@ class Output extends Singleton
      * @param string $setting
      * @param string|bool|float|integer $value
      */
-    public function setSetting($setting, $value)
+    public function setSetting(string $setting, $value)
     {
         $this->settings[$setting] = $value;
     }
 
     /**
-     * @param $output
+     * @param array $output
      * @return string
      */
-    protected function dataLinks($output)
+    protected function dataLinks(array $output): string
     {
         if ($output[2] !== 'index.php') {
             return $output[0];
@@ -296,7 +298,7 @@ class Output extends Singleton
      * @param array $output
      * @return string
      */
-    protected function links($output)
+    protected function links(array $output): string
     {
         // no php url
         if ($output[2] !== 'index.php') {
@@ -363,7 +365,7 @@ class Output extends Singleton
      * @param array $output
      * @return string
      */
-    protected function cleanEmptyLinks($output)
+    protected function cleanEmptyLinks(array $output): string
     {
         if (\strpos($output[0], 'href=') === false) {
             return $output[1];
@@ -378,7 +380,7 @@ class Output extends Singleton
      * @param array $output
      * @return string
      */
-    protected function files($output)
+    protected function files(array $output): string
     {
         try {
             $url = MediaUtils::getRewrittenUrl('image.php?'.$output[3]);
@@ -395,7 +397,7 @@ class Output extends Singleton
      * @param array $output
      * @return string
      */
-    protected function images($output)
+    protected function images(array $output): string
     {
         $img = $output[0];
         $att = StringUtils::getHTMLAttributes($img);
@@ -579,7 +581,7 @@ class Output extends Singleton
      * @param array $output
      * @return string
      */
-    protected function cssLinkHref($output)
+    protected function cssLinkHref(array $output): string
     {
         $html = $output[0];
         $att  = StringUtils::getHTMLAttributes($html);
@@ -629,7 +631,7 @@ class Output extends Singleton
      * @param $output
      * @return string
      */
-    protected function scripts($output)
+    protected function scripts($output): string
     {
         $html = $output[0];
         $att  = StringUtils::getHTMLAttributes($html);
@@ -679,10 +681,12 @@ class Output extends Singleton
      *
      * @param array $params
      * @param array $getParams
-     * @return bool|string
+     *
+     * @return string
+     *
      * @throws Exception
      */
-    public function getSiteUrl($params = [], $getParams = [])
+    public function getSiteUrl(array $params = [], array $getParams = []): string
     {
         $project = false;
         $id      = false;
@@ -876,7 +880,7 @@ class Output extends Singleton
      *
      * @return string
      */
-    protected function extendUrlWithParams($url, $params)
+    protected function extendUrlWithParams(string $url, array $params = []): string
     {
         if (!\count($params)) {
             return $url;
