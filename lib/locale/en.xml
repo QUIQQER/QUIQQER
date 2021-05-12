@@ -5788,6 +5788,9 @@ After logging in you will be prompted to set a new password.
         <locale name="delete.long.term.cache.button">
             <en><![CDATA[Empty complete long-term cache]]></en>
         </locale>
+        <locale name="panel.settings.title">
+            <en><![CDATA[Settings: [title] - [category]]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/controls" datatype="php,js">
         <locale name="package.title">

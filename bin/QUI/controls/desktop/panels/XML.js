@@ -48,6 +48,7 @@ define('controls/desktop/panels/XML', [
             this.$file    = xmlfile;
             this.$config  = null;
             this.$Control = null;
+            this.$title   = null;
 
             this.addEvent('onCreate', this.$onCreate);
 
@@ -167,8 +168,20 @@ define('controls/desktop/panels/XML', [
                 }
 
                 self.setAttributes(result);
-                self.refresh();
 
+                if (typeof result.title !== 'undefined') {
+                    self.$title = result.title;
+                }
+
+                self.setAttribute(
+                    'title',
+                    QUILocale.get('quiqqer/quiqqer', 'panel.settings.title', {
+                        title   : self.$title,
+                        category: ''
+                    })
+                );
+
+                self.refresh();
                 self.fireEvent('createEnd', [self]);
 
                 if (self.getAttribute('category')) {
@@ -399,6 +412,16 @@ define('controls/desktop/panels/XML', [
          * @param {Object} Category - qui/controls/buttons/Button
          */
         $onCategoryActive: function (Category) {
+            this.setAttribute(
+                'title',
+                QUILocale.get('quiqqer/quiqqer', 'panel.settings.title', {
+                    title   : this.$title,
+                    category: Category.getAttribute('title')
+                })
+            );
+
+            this.refresh();
+
             this.unloadCategory();
             this.loadCategory(Category);
         },
