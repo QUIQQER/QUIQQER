@@ -28,6 +28,7 @@ QUI::$Ajax->registerFunction(
 
         try {
             $result = QUI\Cache\Manager::get($cacheName);
+            throw new QUI\Exception('');
         } catch (QUI\Exception $Exception) {
             if (!$windowName
                 && \is_array($files)
