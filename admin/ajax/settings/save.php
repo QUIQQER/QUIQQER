@@ -116,6 +116,9 @@ QUI::$Ajax->registerFunction(
                 }
             }
 
+            // generate ./console
+            QUI\Setup::generateFileLinks();
+
             # Save the current .htaccess content to see if the config changed
             $oldContent = "";
 
