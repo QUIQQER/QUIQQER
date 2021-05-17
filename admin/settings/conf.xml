@@ -123,7 +123,7 @@
                 </conf>
                 <conf name="ignoreSiteCacheClearing">
                     <type><![CDATA[bool]]></type>
-                    <type><![CDATA[0]]></type>
+                    <defaultvalue><![CDATA[0]]></defaultvalue>
                 </conf>
             </section>
 
