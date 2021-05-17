@@ -121,6 +121,10 @@
                 <conf name="nonce">
                     <type><![CDATA[string]]></type>
                 </conf>
+                <conf name="ignoreSiteCacheClearing">
+                    <type><![CDATA[bool]]></type>
+                    <type><![CDATA[0]]></type>
+                </conf>
             </section>
 
             <section name="auth_settings">

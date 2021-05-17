@@ -668,7 +668,9 @@ class Edit extends Site
         }
 
         //$this->deleteTemp($User);
-        $Project->clearCache();
+        if (!QUI::conf('general', 'ignoreSiteCacheClearing')) {
+            $Project->clearCache();
+        }
 
         // Cache löschen
         $this->deleteCache();
