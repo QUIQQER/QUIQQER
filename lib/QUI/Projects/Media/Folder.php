@@ -1408,7 +1408,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         // mb_strtolower hat folgenden Grund: file_exists beachtet Gross und Kleinschreibung im Unix Systemen
         // Daher sind die Namen im Mediabereich alle klein geschrieben damit es keine Doppelten Dateien geben kann
         // Test.jpg und test.jpg wären unterschiedliche Dateien bei Windows aber nicht
-        $filename = \mb_strtolower($filename);
+
+        // $filename = \mb_strtolower($filename); -> mor will das raus haben
 
         // svg fix
         if ($fileinfo['mime_type'] == 'text/html'
