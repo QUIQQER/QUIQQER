@@ -276,7 +276,7 @@ define('classes/projects/project/media/Item', [
          */
         del: function (oncomplete, params) {
             this.fireEvent('delete', [this]);
-            this.getMedia().del(this.getId(), oncomplete, params);
+            this.getMedia().del([this.getId()], oncomplete, params);
         },
 
         /**

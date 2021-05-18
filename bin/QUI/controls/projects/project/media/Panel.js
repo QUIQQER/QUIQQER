@@ -67,6 +67,7 @@ define('controls/projects/project/media/Panel', [
             '$onCreate',
             '$viewOnDrop',
             '$itemEvent',
+            '$itemDelete',
             '$itemHideStatusChange',
             '$onFilter',
             'unselectItems',
@@ -160,7 +161,7 @@ define('controls/projects/project/media/Panel', [
                     this.$Media.removeEvent('onItemDeactivate', this.$itemEvent);
                     this.$Media.removeEvent('onItemRefresh', this.$itemEvent);
                     this.$Media.removeEvent('onItemSave', this.$itemEvent);
-                    this.$Media.removeEvent('onItemDelete', this.$itemEvent);
+                    this.$Media.removeEvent('onItemDelete', this.$itemDelete);
                     this.$Media.removeEvent('onItemsHide', this.$itemHideStatusChange);
                     this.$Media.removeEvent('onItemsVisible', this.$itemHideStatusChange);
                 }.bind(this)
@@ -174,7 +175,7 @@ define('controls/projects/project/media/Panel', [
                     onItemDeactivate: this.$itemEvent,
                     onItemRefresh   : this.$itemEvent,
                     onItemSave      : this.$itemEvent,
-                    onItemDelete    : this.$itemEvent,
+                    onItemDelete    : this.$itemDelete,
                     onItemsHide     : this.$itemHideStatusChange,
                     onItemsVisible  : this.$itemHideStatusChange
                 });
@@ -215,7 +216,7 @@ define('controls/projects/project/media/Panel', [
                 onItemDeactivate: this.$itemEvent,
                 onItemRefresh   : this.$itemEvent,
                 onItemSave      : this.$itemEvent,
-                onItemDelete    : this.$itemEvent,
+                onItemDelete    : this.$itemDelete,
                 onItemsHide     : this.$itemHideStatusChange,
                 onItemsVisible  : this.$itemHideStatusChange
             });
@@ -1199,7 +1200,13 @@ define('controls/projects/project/media/Panel', [
             if (!files.length) {
                 return;
             }
-            console.log('$viewOnDrop');
+
+            if (this.getAttribute('view') === 'details') {
+                var MediaBody = this.getContent().getElement('.qui-media-content')
+                this.$PanelContextMenu.showDragDropMenu(files, MediaBody, event);
+                return;
+            }
+
             if (Elm.hasClass('qui-media-content')) {
                 this.$PanelContextMenu.showDragDropMenu(files, Elm, event);
                 return;
@@ -1537,6 +1544,7 @@ define('controls/projects/project/media/Panel', [
             this.$Filter.setStyle('display', 'none');
 
             var Grid = new GridControl(GridContainer, {
+                storageKey : 'quiqqer-media-panel',
                 columnModel: [{
                     header   : '&nbsp;',
                     dataIndex: 'icon',
@@ -1553,15 +1561,15 @@ define('controls/projects/project/media/Panel', [
                     dataType : 'string',
                     width    : 150
                 }, {
-                    header   : Locale.get(lg, 'title'),
-                    dataIndex: 'title',
-                    dataType : 'string',
-                    width    : 150
-                }, {
                     header   : Locale.get(lg, 'extension'),
                     dataIndex: 'extension',
                     dataType : 'string',
                     width    : 80
+                }, {
+                    header   : Locale.get(lg, 'title'),
+                    dataIndex: 'title',
+                    dataType : 'string',
+                    width    : 150
                 }, {
                     header   : Locale.get(lg, 'c_date'),
                     dataIndex: 'c_date',
@@ -1642,7 +1650,27 @@ define('controls/projects/project/media/Panel', [
                 }
             });
 
+            Grid.getElm().addEvents({
+                dragleave: function (e) {
+                    self.$dragLeave(e, Grid.getElm());
+                }
+            });
+
+            var i, len, title;
             var children = Result.data;
+
+            for (i = 0, len = children.length; i < len; i++) {
+                try {
+                    title = children[i].title;
+                    title = JSON.decode(title);
+                    title = Object.values(title);
+                    title = title.filter(Boolean); // filter empty
+                    title = title.join('; ');
+
+                    children[i].title = title;
+                } catch (e) {
+                }
+            }
 
             if (children[0] && children[0].name !== '..') {
                 var breadcrumb_list = Array.clone(
@@ -2236,6 +2264,19 @@ define('controls/projects/project/media/Panel', [
                 return;
             }
 
+            if (this.getAttribute('view') === 'details') {
+                if (typeof this.$lastDroppable !== 'undefined') {
+                    this.$dragLeave(event, this.$lastDroppable);
+                }
+
+                this.getContent()
+                    .getElement('.qui-media-content')
+                    .addClass('qui-media-content-ondragdrop');
+
+                this.$lastDroppable = this.getContent().getElement('.qui-media-content');
+                return;
+            }
+
             if (Elm.hasClass('media-drop')) {
                 var Control = QUI.Controls.getById(
                     Elm.get('data-quiid')
@@ -2267,7 +2308,6 @@ define('controls/projects/project/media/Panel', [
                 return;
             }
 
-
             if (!Elm.hasClass('qui-media-item')) {
                 Elm = Elm.getParent('.qui-media-item');
             }
@@ -2276,9 +2316,11 @@ define('controls/projects/project/media/Panel', [
                 this.$dragLeave(event, this.$lastDroppable);
             }
 
-            this.$lastDroppable = Elm;
+            if (Elm) {
+                this.$lastDroppable = Elm;
 
-            Elm.addClass('qui-media-item-ondragdrop');
+                Elm.addClass('qui-media-item-ondragdrop');
+            }
         },
 
         /**
@@ -2289,6 +2331,13 @@ define('controls/projects/project/media/Panel', [
          */
         $dragLeave: function (event, Elm) {
             if (!Elm) {
+                return;
+            }
+
+            if (this.getAttribute('view') === 'details') {
+                this.getContent()
+                    .getElement('.qui-media-content')
+                    .removeClass('qui-media-content-ondragdrop');
                 return;
             }
 
@@ -2410,6 +2459,10 @@ define('controls/projects/project/media/Panel', [
                 this.$children[i].title    = Item.getAttribute('title');
                 break;
             }
+        },
+
+        $itemDelete: function () {
+            this.refresh();
         },
 
         /**

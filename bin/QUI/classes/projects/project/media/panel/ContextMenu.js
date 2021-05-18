@@ -381,6 +381,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 .setPosition(pos.x, pos.y)
                 .setTitle(title);
 
+            Menu.getElm().setStyle('zIndex', QUI.Windows.$getmaxWindowZIndex() + 1);
 
             if (Droppable.get('data-type') !== 'folder') {
                 Menu.appendChild(

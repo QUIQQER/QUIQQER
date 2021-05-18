@@ -349,7 +349,7 @@ define('classes/projects/project/Media', [
 
                     resolve(false);
 
-                    self.fireEvent('itemDeactivate', [self, self.$items[id]]);
+                    self.fireEvent('itemDelete', [self, self.$items[id]]);
                     delete self.$items[id];
                 }, params);
             }.bind(this));

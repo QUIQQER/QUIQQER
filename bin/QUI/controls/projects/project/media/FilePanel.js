@@ -341,8 +341,8 @@ define('controls/projects/project/media/FilePanel', [
                     file: this.$File.getAttribute('file')
                 }),
 
-                maxWidth : 533,
-                maxHeight: 300,
+                maxHeight: 400,
+                maxWidth : 600,
 
                 autoclose: false,
                 events   : {
