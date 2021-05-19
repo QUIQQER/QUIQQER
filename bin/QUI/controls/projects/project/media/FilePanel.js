@@ -151,6 +151,11 @@ define('controls/projects/project/media/FilePanel', [
             this.parent(options);
         },
 
+        /**
+         * Tooltip for files
+         *
+         * @return {*}
+         */
         getToolTipText: function () {
             var self = this;
 

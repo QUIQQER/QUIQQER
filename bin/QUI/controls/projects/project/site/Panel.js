@@ -155,6 +155,53 @@ define('controls/projects/project/site/Panel', [
         },
 
         /**
+         *
+         * @return {Promise}
+         */
+        getToolTipText: function () {
+            var self = this;
+
+            return new Promise(function (resolve) {
+                var project = self.$Site.getProject().getName();
+                var lang    = self.$Site.getProject().getLang();
+                var id      = self.$Site.getId();
+
+                var tpl = '<table>' +
+                    '<tr>' +
+                    '   <td>{{localeProject}}</td>' +
+                    '   <td>{{project}}</td>' +
+                    '</tr>' +
+                    '<tr>' +
+                    '   <td>{{localeLang}}</td>' +
+                    '   <td>{{lang}}</td>' +
+                    '</tr>' +
+                    '<tr>' +
+                    '   <td>{{localeID}}</td>' +
+                    '   <td>{{id}}</td>' +
+                    '</tr>' +
+                    '<tr>' +
+                    '   <td>{{localeUrl}}</td>' +
+                    '   <td>{{url}}</td>' +
+                    '</tr>' +
+                    '</table>';
+
+                var result = Mustache.render(tpl, {
+                    localeProject: Locale.get(lg, 'project'),
+                    localeLang   : Locale.get(lg, 'language'),
+                    localeID     : Locale.get(lg, 'id'),
+                    localeUrl    : Locale.get(lg, 'projects.project.site.panel.information.nameUrl'),
+
+                    project: project,
+                    lang   : lang,
+                    id     : id,
+                    url    : self.$Site.getUrl()
+                });
+
+                resolve(result);
+            });
+        },
+
+        /**
          * Save the site panel to the workspace
          *
          * @method controls/projects/project/site/Panel#serialize
