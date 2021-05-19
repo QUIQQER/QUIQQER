@@ -75,7 +75,8 @@
     "npm-asset\/downloadjs": "1.*",
     "npm-asset\/requirejs": "2.*",
     "npm-asset\/navigo": "*",
-    "npm-asset\/history-events": "*"
+    "npm-asset\/history-events": "*",
+    "npm-asset/tippy.js": ">=16.3"
   },
   "provide": {
     "psr/http-client-implementation": "1.0"
