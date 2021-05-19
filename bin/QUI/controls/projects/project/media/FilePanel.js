@@ -151,6 +151,43 @@ define('controls/projects/project/media/FilePanel', [
             this.parent(options);
         },
 
+        getToolTipText: function () {
+            var self = this;
+
+            var File  = self.getFile();
+            var url   = File.getUrl();
+            var image = File.getType() === 'classes/projects/project/media/Image';
+
+            return new Promise(function (resolve) {
+                if (!image) {
+                    return '<p>Title: ' + File.getTitle() + '</p>';
+                }
+
+                url = url + '&quiadmin=1&maxheight=80&maxwidth=80';
+
+                require(['image!' + url], function () {
+                    var title = File.getTitle();
+
+                    if (title === '') {
+                        title = '---';
+                    }
+
+                    var result = '' +
+                        '<div style="width: 300px; display: flex; padding: 10px;">' +
+                        '   <div style="width: 80px; height: 80px; display: flex; justify-content: center; align-items: center">' +
+                        '       <img src="' + url + '" alt="" />' +
+                        '   </div>' +
+                        '   <div style="padding: 0 0 0 10px;">' +
+                        '      <p>Name: ' + File.getAttribute('name') + '</p>' +
+                        '      <p>Title: ' + title + '</p>' +
+                        '   </div>' +
+                        '</div>';
+
+                    resolve(result);
+                });
+            });
+        },
+
         /**
          * Return the Media object of the panel
          *
@@ -278,7 +315,7 @@ define('controls/projects/project/media/FilePanel', [
         },
 
         /**
-         * Return the file objectwhich is linked to the panel
+         * Return the file object which is linked to the panel
          *
          * @method controls/projects/project/media/FilePanel#load
          * @return {classes/project/media/Item} File

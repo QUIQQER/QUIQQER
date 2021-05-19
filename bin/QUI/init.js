@@ -46,7 +46,8 @@ require.config({
         'punycode'          : URL_OPT_DIR + 'bin/urijs/src/punycode',
         'SecondLevelDomains': URL_OPT_DIR + 'bin/urijs/src/SecondLevelDomains',
         'Navigo'            : URL_OPT_DIR + 'bin/navigo/lib/navigo.min',
-        'HistoryEvents'     : URL_OPT_DIR + 'bin/history-events/dist/history-events.min'
+        'HistoryEvents'     : URL_OPT_DIR + 'bin/history-events/dist/history-events.min',
+        '@popperjs/core'    : URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/lib/tippy/popper.min'
     },
 
     waitSeconds: 0,
@@ -128,6 +129,40 @@ require(requireList, function () {
             typeof Error !== 'undefined') {
             console.warn(new Error().stack);
         }
+    });
+
+    // taskbar tooltips
+    require([
+        URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/lib/tippy/tippy.min.js',
+        'css!' + URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/lib/tippy/tippy.css'
+    ], function (tippy) {
+        QUI.addEvent('onQuiTaskBarTaskCreate', function (Instance) {
+            if (typeof tippy === 'undefined') {
+                return;
+            }
+
+            var Node = Instance.getElm();
+
+            tippy(Node, {
+                animateFill: false,
+                animation  : 'shift-away',
+                content    : '<span class="fa fa-circle-o-notch fa-spin"></span>',
+                allowHTML  : true,
+                onShow     : function (TippyInstance) {
+                    Instance.getToolTipText().then(function (text) {
+                        if (!text) {
+                            TippyInstance.setContent(
+                                Instance.getInstance().getAttribute('title')
+                            );
+
+                            return;
+                        }
+
+                        TippyInstance.setContent(text);
+                    });
+                }
+            });
+        });
     });
 
     if ("gui" in QUIQQER_CONFIG && QUIQQER_CONFIG.gui && QUIQQER_CONFIG.gui.panelTaskLimit) {
