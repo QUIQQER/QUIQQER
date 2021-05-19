@@ -163,23 +163,22 @@ define('controls/projects/project/media/FilePanel', [
                     return '<p>Title: ' + File.getTitle() + '</p>';
                 }
 
-                url = url + '&quiadmin=1&maxheight=80&maxwidth=80';
+                url = url + '&quiadmin=1&maxheight=200&maxwidth=200';
 
                 require(['image!' + url], function () {
-                    var title = File.getTitle();
+                    var file = File.getAttribute('file');
 
-                    if (title === '') {
-                        title = '---';
-                    }
+                    file = file.split('/');
+                    file = file[file.length - 1];
 
                     var result = '' +
-                        '<div style="width: 300px; display: flex; padding: 10px;">' +
-                        '   <div style="width: 80px; height: 80px; display: flex; justify-content: center; align-items: center">' +
-                        '       <img src="' + url + '" alt="" />' +
+                        '<div style="min-width: 200px; display: flex; padding: 10px; flex-direction: column">' +
+                        '   <div style="margin-bottom: 10px;">' +
+                        '      <p>' + File.getAttribute('name') + '</p>' +
+                        '      <p style="font-size: 10px; padding-top: 5px">' + file + '</p>' +
                         '   </div>' +
-                        '   <div style="padding: 0 0 0 10px;">' +
-                        '      <p>Name: ' + File.getAttribute('name') + '</p>' +
-                        '      <p>Title: ' + title + '</p>' +
+                        '   <div style="display: flex; justify-content: center; align-items: center">' +
+                        '       <img src="' + url + '" alt="" />' +
                         '   </div>' +
                         '</div>';
 
