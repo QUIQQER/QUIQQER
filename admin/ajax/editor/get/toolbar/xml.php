@@ -17,7 +17,15 @@ QUI::$Ajax->registerFunction(
             return \file_get_contents($file);
         }
 
-        return '';
+        QUI\System\Log::addError('Toolbar not found', [
+            'toolbar' => $toolbar
+        ]);
+
+        $files = QUI\Utils\System\File::readDir(
+            QUI\Editor\Manager::getToolbarsPath()
+        );
+
+        return \file_get_contents(QUI\Editor\Manager::getToolbarsPath().'/'.$files[0]);
     },
     ['toolbar']
 );
