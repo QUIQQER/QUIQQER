@@ -1058,10 +1058,10 @@ define('controls/grid/Grid', [
 
             if (this.getAttribute('showtoggleicon') && li.getElement('.toggleicon')) {
                 li.getElement('.toggleicon')
-                  .setStyle(
-                      'background-position',
-                      section.getStyle('display') === 'block' ? '-16px 0' : '0 0'
-                  );
+                    .setStyle(
+                        'background-position',
+                        section.getStyle('display') === 'block' ? '-16px 0' : '0 0'
+                    );
             }
 
             this.lastsection = section;
@@ -2417,21 +2417,23 @@ define('controls/grid/Grid', [
                     });
 
                     // context menu
-                    if (Btn.$items.length) {
-                        for (var itm = 0, itmLength = Btn.$items.length; itm < itmLength; itm++) {
-                            var ItemClone = new QUIContextItem(
-                                Btn.$items[itm].getAttributes()
-                            );
+                    if ('$items' in Btn) {
+                        if (Btn.$items.length) {
+                            for (var itm = 0, itmLength = Btn.$items.length; itm < itmLength; itm++) {
+                                var ItemClone = new QUIContextItem(
+                                    Btn.$items[itm].getAttributes()
+                                );
 
-                            ItemClone.addEvent('onClick', itemClick.bind(Btn.$items[itm]));
+                                ItemClone.addEvent('onClick', itemClick.bind(Btn.$items[itm]));
 
-                            Item.appendChild(ItemClone);
+                                Item.appendChild(ItemClone);
+                            }
                         }
+
+                        this.$Menu.appendChild(Item);
                     }
 
-                    this.$Menu.appendChild(Item);
-
-                    if (Btn.isDisabled()) {
+                    if ('isDisabled' in Btn && Btn.isDisabled()) {
                         Item.disable();
                     }
                 }
