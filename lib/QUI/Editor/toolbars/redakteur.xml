@@ -8,8 +8,8 @@
         </group>
 
         <group>
-
             <button>Templates</button>
+            <button>quiqqerBricks</button>
             <separator/>
             <button>Paste</button>
             <button>PasteText</button>
