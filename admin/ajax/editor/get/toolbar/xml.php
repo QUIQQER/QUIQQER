@@ -13,7 +13,7 @@ QUI::$Ajax->registerFunction(
         $file = QUI\Editor\Manager::getToolbarsPath().$toolbar;
         $file = QUI\Utils\Security\Orthos::clearPath($file);
 
-        if (\file_exists($file)) {
+        if (!\is_dir($file) && \file_exists($file)) {
             return \file_get_contents($file);
         }
 
