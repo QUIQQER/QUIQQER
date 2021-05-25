@@ -7,6 +7,8 @@
  * @licence For copyright and license information, please view the /README.md
  */
 
+const QUIQQER_MIN_PHP_VERSION = '7.4.0';
+
 \header("Content-Type: text/html; charset=utf-8");
 \header("Cache-Control: no-cache, must-revalidate");
 \header("Pragma: no-cache");
@@ -21,6 +23,16 @@
 
 QUI::load();
 QUI\Utils\System\Debug::marker('header start');
+
+if (version_compare(phpversion(), QUIQQER_MIN_PHP_VERSION, '<=')) {
+    $message = 'QUIQQER runs with a wrong PHP Version. Please upgrade your PHP Version.';
+
+    QUI\System\Log::addError($message, [
+        'version' => phpversion()
+    ]);
+
+    exit($message);
+}
 
 \ini_set("error_log", VAR_DIR.'log/error'.\date('-Y-m-d').'.log');
 \ini_set('session.save_path', VAR_DIR.'sessions');
