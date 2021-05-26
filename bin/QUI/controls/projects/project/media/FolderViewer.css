@@ -9,6 +9,10 @@
 /** buttons
  * ====================================================== */
 
+.qui-diashow-image-buttons {
+    z-index: 1;
+}
+
 .qui-project-media-folderViewer-buttons {
     background: none repeat scroll 0 0 #e1e4e9;
     float: left;
