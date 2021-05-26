@@ -373,7 +373,8 @@ define('controls/projects/project/media/FolderViewer', [
 
                     self.$Container.set('html', '');
 
-                    var files = 0;
+                    var files      = 0;
+                    var imageFiles = 0;
 
                     for (var i = 0, len = items.length; i < len; i++) {
                         if (!allowedTypes.contains(items[i].type)) {
@@ -382,9 +383,13 @@ define('controls/projects/project/media/FolderViewer', [
 
                         self.$createImageItem(items[i]).inject(self.$Container);
                         files++;
+
+                        if (items[i].type === 'image') {
+                            imageFiles++;
+                        }
                     }
 
-                    if (files >= 2) {
+                    if (imageFiles >= 2) {
                         self.$ButtonsDiashow.show();
                         self.$ButtonsSeparator.show();
                         self.$ButtonsDiashow.enable();
@@ -445,9 +450,16 @@ define('controls/projects/project/media/FolderViewer', [
                 'package/quiqqer/diashow/bin/Diashow',
                 'qui/utils/Elements'
             ], function (Diashow, ElementUtils) {
-                var imageData = self.$Container.getElements(
+                var MediaItemElements = self.$Container.getElements(
                     '.qui-project-media-folderViewer-item'
-                ).map(function (Elm) {
+                );
+
+                // Filter non-images
+                MediaItemElements = MediaItemElements.filter(function(Elm) {
+                    return Elm.get('data-type') === 'image';
+                });
+
+                var imageData = MediaItemElements.map(function (Elm) {
                     return {
                         src  : Elm.get('data-src'),
                         title: Elm.title,
@@ -554,19 +566,19 @@ define('controls/projects/project/media/FolderViewer', [
             }
 
             var Container = new Element('div', {
-                'class'        : 'qui-project-media-folderViewer-item',
-                html           : '<div class="qui-project-media-folderViewer-item-image"></div>' +
+                'class'     : 'qui-project-media-folderViewer-item',
+                html        : '<div class="qui-project-media-folderViewer-item-image"></div>' +
                     '<span class="qui-project-media-folderViewer-item-title">' +
                     imageData.name +
                     '</span>',
-                alt            : imageData.name,
-                title          : imageData.name,
-                styles         : {
+                alt         : imageData.name,
+                title       : imageData.name,
+                styles      : {
                     cursor: cursor
                 },
-                'data-src'     : dataSrc,
-                'data-short'   : imageData.short,
-                'data-id'      : imageData.id,
+                'data-src'  : dataSrc,
+                'data-short': imageData.short,
+                'data-id'   : imageData.id,
                 //'data-project' : project,
                 'data-type'    : imageData.type,
                 'data-active'  : imageData.active ? 1 : 0,
