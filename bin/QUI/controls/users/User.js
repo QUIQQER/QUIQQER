@@ -64,12 +64,12 @@ define('controls/users/User', [
                 this.$userId = parseInt(uid);
                 this.setAttribute('name', 'user-panel-' + uid);
                 this.setAttribute('#id', 'user-panel-' + uid);
+
+                QUI.Controls.$cids[this.$uid] = this;
             }
 
             this.$AddressGrid = null;
             this.parent(options);
-
-            var self = this;
 
             this.addEvents({
                 onCreate : this.$onCreate,
@@ -114,6 +114,8 @@ define('controls/users/User', [
             this.setAttribute('name', 'user-panel-' + data.userid);
             this.setAttribute('#id', 'user-panel-' + data.userid);
 
+            QUI.Controls.$cids[this.$uid] = this;
+            
             return this;
         },
 
