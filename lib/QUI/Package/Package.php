@@ -880,6 +880,10 @@ class Package extends QUI\QDOM
     public function uninstall()
     {
         QUI::getEvents()->fireEvent('packageUnInstall', [$this->getName()]);
+        QUI::getEvents()->fireEvent(
+            'packageUnInstall-'.$this->getName(),
+            [$this->getName()]
+        );
 
         // remove events
         QUI::getEvents()->removePackageEvents($this);
@@ -898,6 +902,10 @@ class Package extends QUI\QDOM
         QUI::getPermissionManager()->removePermission($this->getPermissionName('header'));
 
         QUI::getEvents()->fireEvent('packageDestroy', [$this->getName()]);
+        QUI::getEvents()->fireEvent(
+            'packageDestroy-'.$this->getName(),
+            [$this->getName()]
+        );
     }
 
     /**
@@ -908,5 +916,9 @@ class Package extends QUI\QDOM
     public function onUpdate()
     {
         QUI::getEvents()->fireEvent('packageUpdate', [$this]);
+        QUI::getEvents()->fireEvent(
+            'packageUpdate-'.$this->getName(),
+            [$this]
+        );
     }
 }
