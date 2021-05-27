@@ -640,7 +640,10 @@ class Package extends QUI\QDOM
     {
         $this->readPackageData();
 
+        $pkgName = $this->getName();
+
         QUI::getEvents()->fireEvent('packageSetupBegin', [$this]);
+        QUI::getEvents()->fireEvent('packageSetupBegin-'.$pkgName, [$this]);
 
         // options
         $optionLocalePublish = true;
@@ -664,6 +667,7 @@ class Package extends QUI\QDOM
 
         if (!$this->isQuiqqerPackage()) {
             QUI::getEvents()->fireEvent('packageSetupEnd', [$this]);
+            QUI::getEvents()->fireEvent('packageSetupEnd-'.$pkgName, [$this]);
 
             return;
         }
@@ -755,7 +759,9 @@ class Package extends QUI\QDOM
         // settings
         if (!\file_exists($dir.self::SETTINGS_XML)) {
             QUI::getEvents()->fireEvent('packageSetup', [$this]);
+            QUI::getEvents()->fireEvent('packageSetup-'.$pkgName, [$this]);
             QUI::getEvents()->fireEvent('packageSetupEnd', [$this]);
+            QUI::getEvents()->fireEvent('packageSetupEnd-'.$pkgName, [$this]);
 
             return;
         }
@@ -767,7 +773,9 @@ class Package extends QUI\QDOM
         }
 
         QUI::getEvents()->fireEvent('packageSetup', [$this]);
+        QUI::getEvents()->fireEvent('packageSetup-'.$pkgName, [$this]);
         QUI::getEvents()->fireEvent('packageSetupEnd', [$this]);
+        QUI::getEvents()->fireEvent('packageSetupEnd-'.$pkgName, [$this]);
     }
 
     /**
@@ -842,7 +850,10 @@ class Package extends QUI\QDOM
     {
         $this->readPackageData();
 
+        $pkgName = $this->getName();
+
         QUI::getEvents()->fireEvent('packageInstallBefore', [$this]);
+        QUI::getEvents()->fireEvent('packageInstallBefore-'.$pkgName, [$this]);
 
         Update::importEvents(
             $this->getDir().self::EVENTS_XML,
@@ -850,12 +861,14 @@ class Package extends QUI\QDOM
         );
 
         QUI::getEvents()->fireEvent('packageInstall', [$this]);
+        QUI::getEvents()->fireEvent('packageInstall-'.$pkgName, [$this]);
 
         if ($this->isQuiqqerPackage()) {
             $this->setup();
         }
 
         QUI::getEvents()->fireEvent('packageInstallAfter', [$this]);
+        QUI::getEvents()->fireEvent('packageInstallAfter-'.$pkgName, [$this]);
     }
 
     /**
