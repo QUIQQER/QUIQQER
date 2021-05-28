@@ -18,7 +18,12 @@ QUI::$Ajax->registerFunction(
         $Media   = $Project->getMedia();
 
         if (!\is_array($fileid)) {
-            $File = $Media->get($fileid);
+            if (Utils::isMediaUrl($fileid)) {
+                $File = Utils::getMediaItemByUrl($fileid);
+            } else {
+                $File = $Media->get($fileid);
+            }
+
             $attr = $File->getAttributes();
 
             try {
@@ -52,7 +57,11 @@ QUI::$Ajax->registerFunction(
         $list = [];
 
         foreach ($fileid as $id) {
-            $File = $Media->get($id);
+            if (Utils::isMediaUrl($fileid)) {
+                $File = Utils::getMediaItemByUrl($fileid);
+            } else {
+                $File = $Media->get($id);
+            }
 
             if (!Utils::isImage($File)) {
                 $list[] = $File->getAttributes();

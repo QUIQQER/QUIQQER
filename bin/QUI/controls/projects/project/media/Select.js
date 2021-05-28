@@ -40,7 +40,8 @@ define('controls/projects/project/media/Select', [
         ],
 
         options: {
-            project: false
+            project : false,
+            use_urls: false  // use media item URLs instead of IDs
         },
 
         initialize: function (options) {
@@ -124,7 +125,11 @@ define('controls/projects/project/media/Select', [
                     autoclose: true,
                     events   : {
                         onSubmit: function (Win, mediaFile) {
-                            self.addItem(mediaFile.id);
+                            if (self.getAttribute('use_urls')) {
+                                self.addItem(mediaFile.url);
+                            } else {
+                                self.addItem(mediaFile.id);
+                            }
                         }
                     }
                 }).open();
