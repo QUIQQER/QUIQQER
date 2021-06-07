@@ -833,7 +833,9 @@ class QUI
             $language  = self::conf('globals', 'standardLanguage');
             $languages = self::availableLanguages();
 
-            if (isset($_REQUEST['lang']) && \strlen($_REQUEST['lang']) === 2) {
+            if (isset($_REQUEST['lang'])
+                && \is_string($_REQUEST['lang'])
+                && \strlen($_REQUEST['lang']) === 2) {
                 self::$Locale->setCurrent($_REQUEST['lang']);
             } elseif (!empty($language)) {
                 self::$Locale->setCurrent($language);
