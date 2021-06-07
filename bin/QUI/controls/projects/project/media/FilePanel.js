@@ -740,12 +740,33 @@ define('controls/projects/project/media/FilePanel', [
                             }
                         },
                         styles: {
-                            'float': 'right'
+                            'float': 'right',
+                            width  : 50
                         }
                     }).inject(
-                        Body.getElement('input[name="file_url"]'),
+                        Body.getElement('input[name="file_file"]'),
                         'after'
                     );
+
+                    // cleanup button
+                    Form.elements.cleanup.addEvent('click', function () {
+                        var Fa = Form.elements.cleanup.getElement('.fa');
+
+                        Fa.removeClass('fa-paint-brush');
+                        Fa.addClass('fa-spinner fa-spin');
+
+                        self.$File.clearCache().then(function () {
+                            Fa.addClass('fa-paint-brush');
+                            Fa.removeClass('fa-spinner');
+                            Fa.removeClass('fa-spin');
+
+                            QUI.getMessageHandler().then(function (MH) {
+                                MH.addSuccess(Locale.get(lg, 'message.quiqqer.project.media.fileCacheClear.success'));
+                            });
+                        });
+                    });
+
+                    Form.elements.cleanup.disabled = false;
 
                     Body.getElements('[data-qui="controls/lang/InputMultiLang"]').forEach(function (Node) {
                         var Instance = QUI.Controls.getById(Node.get('data-quiid'));

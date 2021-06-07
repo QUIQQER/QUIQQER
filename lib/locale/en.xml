@@ -5791,6 +5791,9 @@ After logging in you will be prompted to set a new password.
         <locale name="panel.settings.title">
             <en><![CDATA[Settings: [title] - [category]]]></en>
         </locale>
+        <locale name="message.quiqqer.project.media.fileCacheClear.success">
+            <en><![CDATA[The media cache was successfully cleared.]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/controls" datatype="php,js">
         <locale name="package.title">

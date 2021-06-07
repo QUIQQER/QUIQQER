@@ -472,6 +472,23 @@ define('classes/projects/project/media/Item', [
             }
 
             this.$effects[effect] = value;
+        },
+
+        /**
+         * Clear the cache of the media item
+         *
+         * @return {Promise}
+         */
+        clearCache: function () {
+            var self = this;
+
+            return new Promise(function (resolve) {
+                Ajax.post('ajax_media_deleteCache', resolve, {
+                    'package': 'quiqqer/quiqqer',
+                    project  : self.getMedia().getProject().getName(),
+                    fileId   : self.getId()
+                });
+            });
         }
     });
 });

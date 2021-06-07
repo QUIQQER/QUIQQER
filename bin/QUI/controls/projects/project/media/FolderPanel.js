@@ -308,6 +308,28 @@ define('controls/projects/project/media/FolderPanel', [
 
                     Form.elements.size.value = value;
 
+                    // cleanup button
+                    Form.elements.cleanup.addEvent('click', function (e) {
+                        e.stop();
+
+                        var Fa = Form.elements.cleanup.getElement('.fa');
+
+                        Fa.removeClass('fa-paint-brush');
+                        Fa.addClass('fa-spinner fa-spin');
+
+                        self.$Folder.clearCache().then(function () {
+                            Fa.addClass('fa-paint-brush');
+                            Fa.removeClass('fa-spinner');
+                            Fa.removeClass('fa-spin');
+
+                            QUI.getMessageHandler().then(function (MH) {
+                                MH.addSuccess(Locale.get(lg, 'message.quiqqer.project.media.fileCacheClear.success'));
+                            });
+                        });
+                    });
+
+                    Form.elements.cleanup.disabled = false;
+
                     self.Loader.hide();
                 }).catch(function () {
                     self.Loader.hide();
@@ -506,7 +528,7 @@ define('controls/projects/project/media/FolderPanel', [
                     Select.setValue('default');
                 }
 
-                // get one image frome the folder
+                // get one image from the folder
                 Folder.getChildren(function (children) {
                     var i, len;
 
