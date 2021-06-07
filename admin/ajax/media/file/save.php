@@ -28,12 +28,24 @@ QUI::$Ajax->registerFunction(
             unset($attributes['file']);
         }
 
+        $oldEffects = $File->getEffects();
         $File->setAttributes($attributes);
+
+        if (isset($attributes['image_effects'])) {
+            $File->setEffects($attributes['image_effects']);
+        }
+
         $File->save();
 
-        //QUI::getMessagesHandler()->clear();
+        $newEffects = $File->getEffects();
 
         if (QUI\Projects\Media\Utils::isFolder($File)) {
+            if (\json_encode($oldEffects) !== \json_encode($newEffects)) {
+                // delete image cache
+                $File->deleteCache();
+                //$File->setEffectsRecursive(); // needs to long
+            }
+
             QUI::getMessagesHandler()->addSuccess(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',

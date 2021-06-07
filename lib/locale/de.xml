@@ -2663,7 +2663,7 @@
             <de><![CDATA[SHA1 Berechnung starten]]></de>
         </locale>
         <locale name="projects.project.site.folder.has.no.images">
-            <de><![CDATA[Es konnten keine Bilder in dem Ordner gefunden.]]></de>
+            <de><![CDATA[Es konnten keine Bilder in dem Ordner gefunden werden.]]></de>
         </locale>
         <locale name="upload.form.btn.cancel.alt">
             <de><![CDATA[Upload abbrechen]]></de>

@@ -1247,9 +1247,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function deleteCache()
     {
-        FileUtils::unlink(
-            $this->Media->getAttribute('cache_dir').$this->getAttribute('file')
-        );
+        $cacheDir  = $this->Media->getFullCachePath();
+        $cacheFile = $cacheDir.$this->getAttribute('file');
+
+        FileUtils::unlink($cacheFile);
 
         return true;
     }

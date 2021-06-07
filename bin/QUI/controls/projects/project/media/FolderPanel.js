@@ -483,9 +483,8 @@ define('controls/projects/project/media/FolderPanel', [
 
                 WatermarkInput = new MediaInput({
                     styles: {
-                        clear    : 'both',
-                        'float'  : 'left',
-                        marginTop: 10
+                        clear  : 'both',
+                        'float': 'left'
                     },
                     events: {
                         onChange: function (Input, value) {
@@ -510,6 +509,8 @@ define('controls/projects/project/media/FolderPanel', [
                 // get one image frome the folder
                 Folder.getChildren(function (children) {
                     var i, len;
+
+                    children = children.data;
 
                     for (i = 0, len = children.length; i < len; i++) {
                         if (children[i].type === 'image') {
