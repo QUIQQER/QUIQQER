@@ -2635,7 +2635,7 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="quiqqer.settings.cache.clear.complete.title">
             <en><![CDATA[
             Deletes all cached data from the system and extensions.
-            The only exceptions are the long-term cache and extensions that have their own cache management,
+            The only exceptions are the long-term cache, media cache and extensions that have their own cache management,
             such as the website cache or product management.
             ]]></en>
         </locale>

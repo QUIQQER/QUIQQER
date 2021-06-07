@@ -2700,7 +2700,7 @@
         <locale name="quiqqer.settings.cache.clear.complete.title">
             <de><![CDATA[
             Löscht alle zwischengespeicherten Daten vom System und Erweiterungen.
-            Ausgenommen ist nur der Langzeitcache und Erweiterungen die eine eigene
+            Ausgenommen ist nur der Langzeitcache, Media Cache und Erweiterungen die eine eigene
             Cacheverwaltung mitbringen wie der Website-Cache oder die Produktverwaltung.
             ]]></de>
         </locale>
