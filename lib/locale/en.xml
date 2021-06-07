@@ -2823,6 +2823,12 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             Clears only the HTML cache of the template engine. This is necessary if manual changes were made to HTML files.
             ]]></en>
         </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-media">
+            <en><![CDATA[Clear QUIQQER media cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-media.title">
+            <en><![CDATA[All media cache files are deleted, so all cache files must be recreated.]]></en>
+        </locale>
 
         <locale name="quiqqer.settings.cache.clear.compile">
             <en><![CDATA[Clear system-cache]]></en>

@@ -2854,6 +2854,12 @@
             Dies ist nötig wenn manuell Änderungen an HTML Dateien vorgenommen wurden.
             ]]></de>
         </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-media">
+            <de><![CDATA[QUIQQER Medien Cache leeren]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-media.title">
+            <de><![CDATA[Es werden alle Mediencachedateien gelöscht, somit müssen alle Cachedateien neu erzeugt werden.]]></de>
+        </locale>
 
         <locale name="quiqqer.settings.cache.clear.compile">
             <de><![CDATA[System-Cache leeren]]></de>

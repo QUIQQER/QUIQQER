@@ -50,6 +50,10 @@ QUI::$Ajax->registerFunction(
             QUI\Cache\Manager::clearPermissionsCache();
         }
 
+        if (!empty($params['quiqqer-media'])) {
+            QUI\Cache\Manager::clearMediaCache();
+        }
+
         if (!empty($params['quiqqer-users-groups'])) {
             QUI\Cache\Manager::clearGroupsCache();
             QUI\Cache\Manager::clearUsersCache();

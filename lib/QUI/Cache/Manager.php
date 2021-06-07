@@ -690,6 +690,37 @@ class Manager
     }
 
     /**
+     * Clears the project media cache
+     *
+     * @param false|string $projectName - optional, name of the project
+     */
+    public static function clearMediaCache($projectName = false)
+    {
+        // clear all media cache
+        if (empty($projectName)) {
+            $projects = QUI::getProjectManager()->getProjectList();
+
+            foreach ($projects as $Project) {
+                try {
+                    $Project->getMedia()->clearCache();
+                } catch (QUI\Exception $Exception) {
+                    QUI\System\Log::addError($Exception->getMessage());
+                }
+            }
+
+            return;
+        }
+
+        // clear specific media cache
+        try {
+            $Project = QUI::getProject($projectName);
+            $Project->getMedia()->clearCache();
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
+    }
+
+    /**
      * Clears the groups cache
      * - /quiqqer/groups/
      */
