@@ -173,7 +173,7 @@ define('controls/projects/project/site/Panel', [
                     '</tr>' +
                     '<tr>' +
                     '   <td>{{localeLang}}</td>' +
-                    '   <td>{{lang}}</td>' +
+                    '   <td><img src="' + window.URL_OPT_DIR + 'quiqqer/quiqqer/bin/16x16/flags/{{lang}}.png" alt="" /> {{lang}}</td>' +
                     '</tr>' +
                     '<tr>' +
                     '   <td>{{localeID}}</td>' +
