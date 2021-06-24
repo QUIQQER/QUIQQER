@@ -749,6 +749,8 @@ define('controls/projects/project/media/FilePanel', [
                     );
 
                     // cleanup button
+                    Form.elements.cleanup.title = Locale.get(lg, 'projects.project.site.media.filePanel.btn.cache.clear');
+
                     Form.elements.cleanup.addEvent('click', function () {
                         var Fa = Form.elements.cleanup.getElement('.fa');
 

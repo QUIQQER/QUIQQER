@@ -1712,6 +1712,9 @@
         <locale name="projects.project.site.media.filePanel.btn.downloadFile.alt">
             <de><![CDATA[Die Datei wird in den Papierkorb verschoben und kann wieder hergestellt werden]]></de>
         </locale>
+        <locale name="projects.project.site.media.filePanel.btn.cache.clear">
+            <de><![CDATA[Mediacache für diese Datei löschen.]]></de>
+        </locale>
         <locale name="projects.project.site.media.filePanel.window.delete.title">
             <de><![CDATA[Möchten Sie die Datei [file] wirklich löschen?]]></de>
         </locale>

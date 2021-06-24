@@ -1690,6 +1690,10 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="projects.project.site.media.filePanel.btn.downloadFile.alt">
             <en><![CDATA[The file is moved to the trash and can be restored.]]></en>
         </locale>
+        <locale name="projects.project.site.media.filePanel.btn.cache.clear">
+            <en><![CDATA[Clear media cache for this file.]]></en>
+        </locale>
+
         <locale name="projects.project.site.media.filePanel.window.delete.title">
             <en><![CDATA[Are you sure you want to delete the file [file]?]]></en>
         </locale>
