@@ -25,7 +25,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @var int
      */
-    protected $IMAGE_MAX_SIZE = 1200;
+    protected $IMAGE_MAX_SIZE = 4000;
 
     /**
      * Image constructor.

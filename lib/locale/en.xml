@@ -320,12 +320,10 @@
             <en><![CDATA[Create image cache on the fly.]]></en>
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.maxUploadFileSize">
-            <en><![CDATA[Maximum file size of an image]]></en>
+            <en><![CDATA[Maximum file size]]></en>
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.maxUploadFileSize.description" html="true">
-            <en><![CDATA[
-            Images that are larger than the specified value will be blocked during upload.
-            ]]></en>
+            <en><![CDATA[Files that are larger than the specified value will be blocked during upload.]]></en>
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.maxImageCacheSize">
             <en><![CDATA[Maximum cache image size]]></en>
@@ -4283,7 +4281,7 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
             <en><![CDATA[Maximum size of an image]]></en>
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.maxUploadSize.description">
-            <en><![CDATA[Images that are larger than the specified value are automatically adjusted.]]></en>
+            <en><![CDATA[Images that are larger than the specified value (higher or wider) are automatically adjusted by upload.]]></en>
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.watermark.description">
             <en><![CDATA[Note: Changes to the watermark delete the entire media cache.]]></en>
