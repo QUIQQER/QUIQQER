@@ -385,28 +385,30 @@ class Utils
             }
 
             $imageWidth = $Image->getWidth();
-            $maxWidth   = false;
-            $maxHeight  = false;
+//            $maxWidth   = false;
+//            $maxHeight  = false;
+            $maxWidth  = $Image->getWidth();
+            $maxHeight = $Image->getHeight();
 
-            if (isset($attributes['width'])) {
-                $maxWidth = (int)$attributes['width'];
-            }
-
-            if (isset($attributes['height'])) {
-                $maxHeight = (int)$attributes['height'];
-            }
-
-            if (isset($attributes['style'])) {
-                $style = StringUtils::splitStyleAttributes($attributes['style']);
-
-                if (isset($style['width']) && \strpos($style['width'], '%') === false) {
-                    $maxWidth = (int)$style['width'];
-                }
-
-                if (isset($style['height']) && \strpos($style['height'], '%') === false) {
-                    $maxHeight = (int)$style['height'];
-                }
-            }
+//            if (isset($attributes['width'])) {
+//                $maxWidth = (int)$attributes['width'];
+//            }
+//
+//            if (isset($attributes['height'])) {
+//                $maxHeight = (int)$attributes['height'];
+//            }
+//
+//            if (isset($attributes['style'])) {
+//                $style = StringUtils::splitStyleAttributes($attributes['style']);
+//
+//                if (isset($style['width']) && \strpos($style['width'], '%') === false) {
+//                    $maxWidth = (int)$style['width'];
+//                }
+//
+//                if (isset($style['height']) && \strpos($style['height'], '%') === false) {
+//                    $maxHeight = (int)$style['height'];
+//                }
+//            }
 
             if ($imageWidth) {
                 $end = $maxWidth && $imageWidth > $maxWidth ? $maxWidth : $imageWidth;
@@ -501,7 +503,7 @@ class Utils
         if (!empty($attributes['style'])) {
             $picture = \str_replace(
                 '<picture>',
-                '<picture style="' . $attributes['style'] . '">',
+                '<picture style="'.$attributes['style'].'">',
                 $picture
             );
         }
