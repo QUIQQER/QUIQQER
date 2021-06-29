@@ -38,7 +38,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
 
         $this->checkPermission('quiqqer.projects.media.view');
 
-
+        // @todo settings
         $WHITE_LIST_EXTENSION = [
             'pdf',
             'txt',
@@ -51,6 +51,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
             'swf',
             'flv',
             'mp3',
+            'mp4',
             'ogg',
             'wav',
             'mpeg',
