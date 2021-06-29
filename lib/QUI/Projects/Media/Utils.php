@@ -486,6 +486,10 @@ class Utils
                         $media = ' media="'.$set['media'].'"';
                     }
 
+                    if (!isset($set['src']) || !isset($set['type'])) {
+                        continue;
+                    }
+
                     $srcset .= '<source '.$media.' srcset="'.$host.$set['src'].'" type="'.$set['type'].'" />';
                 }
             }
