@@ -4281,7 +4281,8 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
             <en><![CDATA[Maximum size of an image]]></en>
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.maxUploadSize.description">
-            <en><![CDATA[Images that are larger than the specified value (higher or wider) are automatically adjusted by upload.]]></en>
+            <en>
+                <![CDATA[Images that are larger than the specified value (higher or wider) are automatically adjusted by upload.]]></en>
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.watermark.description">
             <en><![CDATA[Note: Changes to the watermark delete the entire media cache.]]></en>
@@ -4301,6 +4302,28 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="projects.project.settings.panel.mediaSettings.watermark.ratio">
             <en><![CDATA[Watermark size]]></en>
         </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.media_useImageScale">
+            <en><![CDATA[Responsive Images (scale ratio)]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.media_useImageScale.description">
+            <en><![CDATA[
+            This value determines at which DPR the image should be loaded.
+            1x corresponds to a normal display with single pixel density,
+            2x stands for high-resolution displays with a pixel density of 2 (e.g. Apple's Retina display),
+            3x and more stands for even higher resolution displays. (Default: 2x)
+            ]]></en>
+        </locale>
+
+        <locale name="projects.project.settings.panel.mediaSettings.media_imageBatchesCount">
+            <en><![CDATA[Adaptive images]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.media_imageBatchesCount.description">
+            <en><![CDATA[
+            Downscaling: Images are automatically offered by QUIQQER in different sizes.
+            The setting determines the number of different image sizes. (Default: 3)
+            ]]></en>
+        </locale>
+
         <locale name="watermark.position.bottom.right">
             <en><![CDATA[bottom right]]></en>
         </locale>

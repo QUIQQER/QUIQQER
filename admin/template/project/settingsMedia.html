@@ -67,6 +67,39 @@
                 </div>
             </td>
         </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer"
+                        var="projects.project.settings.panel.mediaSettings.media_useImageScale"}
+                    </span>
+                    <span class="field-container-field field-container-field-no-padding">
+                        <input type="number" name="media_useImageScale" style="width: calc(100% - 35px); border: none"/>
+                        <span style="line-height: 30px; padding-left: 10px;">x</span>
+                    </span>
+                </label>
+                <div class="field-container-item-desc">
+                    {locale group="quiqqer/quiqqer"
+                    var="projects.project.settings.panel.mediaSettings.media_useImageScale.description"}
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer"
+                        var="projects.project.settings.panel.mediaSettings.media_imageBatchesCount"}
+                    </span>
+                    <input type="number" name="media_imageBatchesCount" class="field-container-field"/>
+                </label>
+                <div class="field-container-item-desc">
+                    {locale group="quiqqer/quiqqer"
+                    var="projects.project.settings.panel.mediaSettings.media_imageBatchesCount.description"}
+                </div>
+            </td>
+        </tr>
         </tbody>
     </table>
 

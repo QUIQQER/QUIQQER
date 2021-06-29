@@ -384,11 +384,10 @@ class Utils
                 $host = $Image->getMedia()->getProject()->getVHost(true, true);
             }
 
+            $Project    = $Image->getMedia()->getProject();
             $imageWidth = $Image->getWidth();
-            $maxWidth = false;
+            $maxWidth   = false;
             $maxHeight  = false;
-//            $maxWidth  = $Image->getWidth();
-//            $maxHeight = $Image->getHeight();
 
             if (isset($attributes['width'])) {
                 $maxWidth = (int)$attributes['width'];
@@ -417,8 +416,13 @@ class Utils
                 $start = 100;
                 $sets  = [];
 
-                // @todo setting
-                $batchSize = 200;
+                $batchesCount = (int)$Project->getConfig('media_imageBatchesCount');
+
+                if (!$batchesCount) {
+                    $batchesCount = 3;
+                }
+
+                $batchSize = \ceil($end / $batchesCount) ?: 200;
                 $duplicate = [];
 
                 for (; $start < $end + $batchSize; $start += $batchSize) {
@@ -436,8 +440,27 @@ class Utils
 
                     $duplicate[$imageUrl] = true;
 
+                    $src    = \htmlspecialchars($imageUrl);
+                    $imageX = (int)$Project->getConfig('media_useImageScale');
+
+                    if (!$imageX) {
+                        $imageX = 2;
+                    }
+
+                    if ($imageX > 20) {
+                        $imageX = 20; // <<-- crazy dudes
+                    }
+
+                    for ($i = 2; $i <= $imageX; $i++) {
+                        if ($imageWidth > $start * $imageX) {
+                            $src2x = $Image->getSizeCacheUrl($start * $imageX, $maxHeight);
+                            $src2x = \htmlspecialchars($src2x);
+                            $src   .= ", {$src2x} {$i}x";
+                        }
+                    }
+
                     $sets[] = [
-                        'src'   => \htmlspecialchars($imageUrl),
+                        'src'   => $src,
                         'media' => $media,
                         'type'  => $Image->getAttribute('mime_type')
                     ];
@@ -1208,19 +1231,19 @@ class Utils
 
         $query = "
         SELECT
-          (CASE
+        (case
              /* Count all 'image/%' mimetypes as image */
              WHEN `mime_type` LIKE 'image/%' THEN 'image'
-             ELSE `mime_type` END
-          ) AS mime_type
-          , COUNT(id) AS count
+             else `mime_type` END
+          ) as mime_type
+          , COUNT(id) as count
         FROM `{$table}`
         WHERE `type` != 'folder'
         GROUP BY
-          (CASE
+                            (case
              /* Group all 'image/%' mimetypes as image */
              WHEN `mime_type` LIKE 'image/%' THEN 'image'
-             ELSE `mime_type` END
+             else `mime_type` END
           )
         ;
         ";
