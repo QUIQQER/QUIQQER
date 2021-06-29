@@ -385,7 +385,7 @@ class Utils
             }
 
             $Project    = $Image->getMedia()->getProject();
-            $imageWidth = $Image->getWidth();
+            $imageWidth = (int)$Image->getWidth();
             $maxWidth   = false;
             $maxHeight  = false;
 
@@ -451,11 +451,11 @@ class Utils
                         $imageX = 20; // <<-- crazy dudes
                     }
 
-                    for ($i = 2; $i <= $imageX; $i++) {
-                        if ($imageWidth > $start * $imageX) {
-                            $src2x = $Image->getSizeCacheUrl($start * $imageX, $maxHeight);
+                    for ($x = 2; $x <= $imageX; $x++) {
+                        if ($imageWidth > $start * $x) {
+                            $src2x = $Image->getSizeCacheUrl($start * $x);
                             $src2x = \htmlspecialchars($src2x);
-                            $src   .= ", {$src2x} {$i}x";
+                            $src   .= ", {$src2x} {$x}x";
                         }
                     }
 

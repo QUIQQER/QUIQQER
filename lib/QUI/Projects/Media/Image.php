@@ -63,7 +63,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     public function getWidth()
     {
         if ($this->getAttribute('image_width')) {
-            return $this->getAttribute('image_width');
+            return (int)$this->getAttribute('image_width');
         }
 
         $data = File::getInfo($this->getFullPath(), [
@@ -71,7 +71,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         ]);
 
         if (isset($data['width'])) {
-            return $data['width'];
+            return (int)$data['width'];
         }
 
         return false;
@@ -86,7 +86,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     public function getHeight()
     {
         if ($this->getAttribute('image_height')) {
-            return $this->getAttribute('image_height');
+            return (int)$this->getAttribute('image_height');
         }
 
         $data = File::getInfo($this->getFullPath(), [
@@ -94,7 +94,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         ]);
 
         if (isset($data['height'])) {
-            return $data['height'];
+            return (int)$data['height'];
         }
 
         return false;
