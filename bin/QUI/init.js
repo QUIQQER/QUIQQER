@@ -136,6 +136,19 @@ require(requireList, function () {
         URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/lib/tippy/tippy.min.js',
         'css!' + URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/lib/tippy/tippy.css'
     ], function (tippy) {
+        QUI.addEvent('onParseBegin', function (QUI, Parent) {
+            // parse title
+            const titleElms = Parent.querySelectorAll('[title]');
+
+            tippy(titleElms, {
+                content(reference) {
+                    const title = reference.getAttribute('title');
+                    reference.removeAttribute('title');
+                    return title;
+                }
+            });
+        });
+
         QUI.addEvent('onQuiTaskBarTaskCreate', function (Instance) {
             if (typeof tippy === 'undefined') {
                 return;
