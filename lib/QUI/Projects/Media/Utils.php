@@ -413,7 +413,7 @@ class Utils
                 $end = $maxWidth && $imageWidth > $maxWidth ? $maxWidth : $imageWidth;
                 $end = (int)$end;
 
-                $start = 100;
+                $start = 400;
                 $sets  = [];
 
                 $batchesCount = (int)$Project->getConfig('media_imageBatchesCount');
