@@ -466,6 +466,14 @@ class Utils
                     ];
                 }
 
+                if (!count($sets)) {
+                    $sets[] = [
+                        'src'   => \htmlspecialchars($Image->getSizeCacheUrl()),
+                        'media' => '',
+                        'type'  => $Image->getAttribute('mime_type')
+                    ];
+                }
+
                 // last one is the original
                 if ($maxWidth || $maxHeight) {
                     $sets[\array_key_last($sets)]['media'] = '';
@@ -476,15 +484,6 @@ class Utils
                         'type'  => $Image->getAttribute('mime_type')
                     ];
                 }
-
-                if (!count($sets)) {
-                    $sets[] = [
-                        'src'   => \htmlspecialchars($Image->getSizeCacheUrl()),
-                        'media' => '',
-                        'type'  => $Image->getAttribute('mime_type')
-                    ];
-                }
-
 
                 foreach ($sets as $set) {
                     $media = '';
