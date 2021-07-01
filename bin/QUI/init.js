@@ -138,12 +138,23 @@ require(requireList, function () {
     ], function (tippy) {
         QUI.addEvent('onParseBegin', function (QUI, Parent) {
             // parse title
-            const titleElms = Parent.querySelectorAll('[title]');
+            let titleElms = Parent.querySelectorAll('[title]');
+
+            titleElms = Array.from(titleElms);
+            titleElms = titleElms.filter(function (node) {
+                return node.get('title') !== '';
+            });
 
             tippy(titleElms, {
-                content(reference) {
+                animateFill: false,
+                animation  : 'shift-away',
+                allowHTML  : true,
+                content    : function (reference) {
                     const title = reference.getAttribute('title');
                     reference.removeAttribute('title');
+
+                    console.log(title);
+
                     return title;
                 }
             });
