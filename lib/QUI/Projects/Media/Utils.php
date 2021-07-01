@@ -477,6 +477,14 @@ class Utils
                     ];
                 }
 
+                if (!count($sets)) {
+                    $sets[] = [
+                        'src'   => \htmlspecialchars($Image->getSizeCacheUrl()),
+                        'media' => '',
+                        'type'  => $Image->getAttribute('mime_type')
+                    ];
+                }
+
 
                 foreach ($sets as $set) {
                     $media = '';
