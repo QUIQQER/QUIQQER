@@ -75,7 +75,15 @@
     "npm-asset\/downloadjs": "1.*",
     "npm-asset\/requirejs": "2.*",
     "npm-asset\/navigo": "*",
-    "npm-asset\/history-events": "*"
+    "npm-asset\/history-events": "*",
+    "quiqqer-asset\/intl": "1.*",
+    "quiqqer-asset\/nouislider": ">=15",
+    "quiqqer-asset\/mustache": "2.*",
+    "quiqqer-asset\/urijs": "1.*",
+    "quiqqer-asset\/downloadjs": "1.*",
+    "quiqqer-asset\/requirejs": "2.*",
+    "quiqqer-asset\/navigo": "*",
+    "quiqqer-asset\/history-events": "*"
   },
   "provide": {
     "psr/http-client-implementation": "1.0"
