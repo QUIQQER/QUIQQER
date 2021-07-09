@@ -636,7 +636,7 @@ class Package extends QUI\QDOM
      * @param array $params - optional ['localePublish' => true, 'localeImport' => true, 'forceImport' => false]
      * @throws QUI\Exception
      */
-    public function setup($params = [])
+    public function setup(array $params = [])
     {
         $this->readPackageData();
 
@@ -755,6 +755,7 @@ class Package extends QUI\QDOM
             $this->setupLocalePublish();
         }
 
+        $this->moveQuiqqerAsset();
 
         // settings
         if (!\file_exists($dir.self::SETTINGS_XML)) {
@@ -952,7 +953,7 @@ class Package extends QUI\QDOM
             return;
         }
 
-        $quiqqerAssetDir = OPT_DIR.'bin/quiqqer-asset/'.$this->getName();
+        $quiqqerAssetDir = OPT_DIR.'bin/'.$this->getName();
 
         if (is_dir($quiqqerAssetDir)) {
             QUI::getTemp()->moveToTemp($quiqqerAssetDir);
