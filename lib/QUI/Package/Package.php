@@ -320,7 +320,7 @@ class Package extends QUI\QDOM
     }
 
     /**
-     * Return the system path of the package
+     * Return the name of the package
      *
      * @return string
      */
@@ -834,11 +834,23 @@ class Package extends QUI\QDOM
      *
      * @return bool
      */
-    public function isQuiqqerPackage()
+    public function isQuiqqerPackage(): bool
     {
         $this->readPackageData();
 
         return $this->isQuiqqerPackage;
+    }
+
+    /**
+     * Is the package a quiqqer asset package?
+     *
+     * @return bool
+     */
+    public function isQuiqqerAsset(): bool
+    {
+        $this->readPackageData();
+
+        return $this->composerData['type'] === 'quiqqer-asset';
     }
 
     /**
@@ -866,6 +878,13 @@ class Package extends QUI\QDOM
         if ($this->isQuiqqerPackage()) {
             $this->setup();
         }
+
+        if ($this->isQuiqqerPackage()) {
+            $this->setup();
+        }
+
+        $this->moveQuiqqerAsset();
+
 
         QUI::getEvents()->fireEvent('packageInstallAfter', [$this]);
         QUI::getEvents()->fireEvent('packageInstallAfter-'.$pkgName, [$this]);
@@ -919,6 +938,30 @@ class Package extends QUI\QDOM
         QUI::getEvents()->fireEvent(
             'packageUpdate-'.$this->getName(),
             [$this]
+        );
+
+        $this->moveQuiqqerAsset();
+    }
+
+    /**
+     * @throws QUI\Exception
+     */
+    private function moveQuiqqerAsset()
+    {
+        if (!$this->isQuiqqerAsset()) {
+            return;
+        }
+
+        $quiqqerAssetDir = OPT_DIR.'bin/quiqqer-asset/'.$this->getName();
+
+        if (is_dir($quiqqerAssetDir)) {
+            QUI::getTemp()->moveToTemp($quiqqerAssetDir);
+        }
+
+        // copy this to the package bin
+        QUI\Utils\System\File::dircopy(
+            $this->getDir(),
+            $quiqqerAssetDir
         );
     }
 }
