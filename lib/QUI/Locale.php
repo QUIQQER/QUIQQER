@@ -638,7 +638,7 @@ class Locale
 
         $file = $GetText->getFile();
 
-        System\Log::addWarning(
+        System\Log::addDebug(
             QUI::getLocale()->get('quiqqer/quiqqer', 'message.translation.file.not.found', [
                 'file' => $file
             ]),
