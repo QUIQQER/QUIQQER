@@ -78,7 +78,7 @@
     "npm-asset\/history-events": "*",
     "quiqqer-asset\/intl": "1.*",
     "quiqqer-asset\/nouislider": ">=15",
-    "quiqqer-asset\/mustache": "2.*",
+    "quiqqer-asset\/mustache": "4.*",
     "quiqqer-asset\/urijs": "1.*",
     "quiqqer-asset\/downloadjs": "1.*",
     "quiqqer-asset\/requirejs": "2.*",
