@@ -153,8 +153,6 @@ require(requireList, function () {
                     const title = reference.getAttribute('title');
                     reference.removeAttribute('title');
 
-                    console.log(title);
-
                     return title;
                 }
             });
