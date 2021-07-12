@@ -579,6 +579,16 @@ class Manager
             );
         }
 
+        if (defined('QUIQQER_SETUP')) {
+            throw new QUI\Cache\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.lib.cache.manager.not.exist'
+                ),
+                404
+            );
+        }
+
         try {
             $Item   = self::getStash($name);
             $data   = $Item->get();
