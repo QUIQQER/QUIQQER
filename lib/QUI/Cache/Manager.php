@@ -538,6 +538,10 @@ class Manager
      */
     public static function set($name, $data, $time = null)
     {
+        if (defined('QUIQQER_SETUP')) {
+            return;
+        }
+
         try {
             $Stash = self::getStash($name);
             $Stash->set($data);
