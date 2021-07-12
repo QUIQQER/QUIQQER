@@ -59,7 +59,8 @@ function exception_error_handler($errno, $errstr, $errfile, $errline)
     }
 
     if (\strpos($errstr, 'session_regenerate_id()') !== false
-        || \strpos($errstr, 'session_destroy()') !== false) {
+        || \strpos($errstr, 'session_destroy()') !== false
+        || \strpos($errstr, 'Required parameter $permissions follows optional parameter $path') !== false) {
         return true;
     }
 
