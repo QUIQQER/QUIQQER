@@ -34,7 +34,7 @@ class Autoloader
 
         self::$ComposerLoader = require \dirname(\dirname(\dirname(\dirname(__FILE__)))).'/autoload.php';
 
-        $dir = dirname(dirname(__FILE__));
+        $dir = \dirname(\dirname(\dirname(\dirname(__FILE__))));
 
         if (defined('OPT_DIR')) {
             $dir = OPT_DIR;
@@ -43,6 +43,23 @@ class Autoloader
         self::$ComposerLoader->addClassMap([
             'Stash\\Utilities' => $dir.'/tedivm/stash/src/Stash/Utilities.php'
         ]);
+    }
+
+    /**
+     * Check if auto loader is correct
+     */
+    public static function checkAutoloader()
+    {
+        $fs = \spl_autoload_functions();
+
+        foreach ($fs as $f) {
+            // remove composer
+            if (\is_array($f) && $f[0] instanceof \Composer\Autoload\ClassLoader) {
+                \spl_autoload_unregister($f);
+            }
+        }
+
+        self::init();
     }
 
     /**

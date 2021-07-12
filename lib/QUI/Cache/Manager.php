@@ -118,13 +118,8 @@ class Manager
             ]);
         }
 
-        if (self::$stashLoaded === false) {
-            // workaround for composer 2 loading
-            QUI\Autoloader::$ComposerLoader->addClassMap([
-                'Stash\\Utilities' => OPT_DIR.'/tedivm/stash/src/Stash/Utilities.php'
-            ]);
-
-            self::$stashLoaded = true;
+        if (!class_exists('Stash\Utilities', false)) {
+            QUI\Autoloader::checkAutoloader();
         }
 
         if (!empty($key)) {
