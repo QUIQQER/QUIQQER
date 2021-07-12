@@ -44,23 +44,23 @@ class Autoloader
             'Stash\\Utilities' => $dir.'/tedivm/stash/src/Stash/Utilities.php'
         ]);
     }
-
-    /**
-     * Check if auto loader is correct
-     */
-    public static function checkAutoloader()
-    {
-        $fs = \spl_autoload_functions();
-
-        foreach ($fs as $f) {
-            // remove composer
-            if (\is_array($f) && $f[0] instanceof \Composer\Autoload\ClassLoader) {
-                \spl_autoload_unregister($f);
-            }
-        }
-
-        self::init();
-    }
+//
+//    /**
+//     * Check if auto loader is correct
+//     */
+//    public static function checkAutoloader()
+//    {
+//        $fs = \spl_autoload_functions();
+//
+//        foreach ($fs as $f) {
+//            // remove composer
+//            if (\is_array($f) && $f[0] instanceof \Composer\Autoload\ClassLoader) {
+//                \spl_autoload_unregister($f);
+//            }
+//        }
+//
+//        self::init();
+//    }
 
     /**
      * Start the autoload

@@ -118,10 +118,6 @@ class Manager
             ]);
         }
 
-        if (!class_exists('Stash\Utilities', false)) {
-            QUI\Autoloader::checkAutoloader();
-        }
-
         if (!empty($key)) {
             $key = \md5(__FILE__).'/qui/'.$key;
         }
