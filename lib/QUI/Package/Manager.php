@@ -643,7 +643,7 @@ class Manager extends QUI\QDOM
         }
 
         if ($this->version) {
-            $composerJson->require->{"quiqqer/quiqqer"} = $this->version;
+            $composerJson->require["quiqqer/quiqqer"] = $this->version;
         }
 
         // save
