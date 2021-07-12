@@ -28,6 +28,11 @@ class Manager
     public static $noClearing = false;
 
     /**
+     * @var bool
+     */
+    public static $stashLoaded = false;
+
+    /**
      * Cache Manager Configs
      *
      * @var \QUI\Config
@@ -113,11 +118,13 @@ class Manager
             ]);
         }
 
-        if (!class_exists('Stash\Utilities')) {
+        if (self::$stashLoaded === false) {
             // workaround for composer 2 loading
             QUI\Autoloader::$ComposerLoader->addClassMap([
                 'Stash\\Utilities' => OPT_DIR.'/tedivm/stash/src/Stash/Utilities.php'
             ]);
+
+            self::$stashLoaded = true;
         }
 
         if (!empty($key)) {
