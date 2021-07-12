@@ -115,7 +115,7 @@
 
 {if $Template->getAttribute('requirejs')}
 <!-- include components -->
-<script src="{$URL_OPT_DIR}bin/requirejs/require.js?lu={$lastUpdate}" type="text/javascript"></script>
+<script src="{$URL_OPT_DIR}bin/quiqqer-asset/requirejs/requirejs/require.js?lu={$lastUpdate|md5}"></script>
 <script>
     require.config({
         baseUrl : URL_DIR,
@@ -134,17 +134,17 @@
             "Ajax"          : URL_BIN_DIR +'QUI/Ajax',
             "Locale"        : URL_BIN_DIR +'QUI/Locale',
             "UploadManager" : URL_BIN_DIR +'QUI/UploadManager',
-            "Mustache"      : URL_OPT_DIR + 'bin/mustache/mustache.min',
+            "Mustache"      : URL_OPT_DIR + 'bin/quiqqer-asset/mustache/mustache/mustache.min',
             "QUIQQER"       :  URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/QUIQQER',
             "Packages"      :  URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/Packages',
 
             "MooToolsCore"      : URL_OPT_DIR + "bin/qui/qui/lib/mootools-core",
             "MooToolsMore"      : URL_OPT_DIR + "bin/qui/qui/lib/mootools-more",
             "MooFX"             : URL_OPT_DIR + "bin/qui/qui/lib/moofx",
-            "URI"               : URL_OPT_DIR + 'bin/urijs/src/URI',
-            'IPv6'              : URL_OPT_DIR + 'bin/urijs/src/IPv6',
-            'punycode'          : URL_OPT_DIR + 'bin/urijs/src/punycode',
-            'SecondLevelDomains': URL_OPT_DIR + 'bin/urijs/src/SecondLevelDomains'
+            "URI"               : URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/URI',
+            'IPv6'              : URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/IPv6',
+            'punycode'          : URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/punycode',
+            'SecondLevelDomains': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/SecondLevelDomains'
         },
         waitSeconds : 0,
         locale      : QUIQQER_USER.lang +"-"+ QUIQQER_USER.lang,
