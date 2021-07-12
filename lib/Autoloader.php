@@ -33,10 +33,6 @@ class Autoloader
         }
 
         self::$ComposerLoader = require \dirname(\dirname(\dirname(\dirname(__FILE__)))).'/autoload.php';
-
-        self::$ComposerLoader->addClassMap([
-            'Stash\Utilities' => \dirname(\dirname(\dirname(\dirname(__FILE__)))).'/tedivm/stash/src/Stash/Utilities.php'
-        ]);
     }
 
     /**
