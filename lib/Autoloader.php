@@ -24,6 +24,28 @@ class Autoloader
     public static $ComposerLoader = null;
 
     /**
+     * init
+     */
+    public static function init()
+    {
+        if (self::$ComposerLoader) {
+            return;
+        }
+
+        self::$ComposerLoader = require \dirname(\dirname(\dirname(\dirname(__FILE__)))).'/autoload.php';
+
+        $dir = dirname(dirname(__FILE__));
+
+        if (defined('OPT_DIR')) {
+            $dir = OPT_DIR;
+        }
+
+        self::$ComposerLoader->addClassMap([
+            'Stash\\Utilities' => $dir.'/tedivm/stash/src/Stash/Utilities.php'
+        ]);
+    }
+
+    /**
      * Start the autoload
      *
      * @param string $classname - class which is required
@@ -32,6 +54,8 @@ class Autoloader
      */
     public static function load($classname)
     {
+        self::init();
+
         if (\class_exists($classname, false)) {
             return true;
         }
@@ -89,21 +113,6 @@ class Autoloader
             if (\interface_exists($classname, false)) {
                 return true;
             }
-        }
-
-        // use now the composer loader
-        if (!self::$ComposerLoader) {
-            self::$ComposerLoader = require \dirname(\dirname(\dirname(\dirname(__FILE__)))).'/autoload.php';
-
-            $dir = dirname(dirname(__FILE__));
-
-            if (defined('OPT_DIR')) {
-                $dir = OPT_DIR;
-            }
-
-            self::$ComposerLoader->addClassMap([
-                'Stash\\Utilities' => $dir.'/tedivm/stash/src/Stash/Utilities.php'
-            ]);
         }
 
         return self::$ComposerLoader->loadClass($classname);

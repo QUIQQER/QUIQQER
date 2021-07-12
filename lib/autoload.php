@@ -21,6 +21,7 @@ require \dirname(__FILE__).'/polyfills.php';
  *
  * @return boolean
  */
+QUI\Autoloader::init();
 
 \spl_autoload_register(function ($className) {
     return \QUI\Autoloader::load($className);
