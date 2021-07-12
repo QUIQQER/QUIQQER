@@ -405,9 +405,9 @@ class Manager extends QUI\QDOM
 
         // config
         if (!$composerJson) {
-            $composerJson = null;
+            $composerJson = [];
         }
-        
+
         $composerJson->config = [
             "vendor-dir"        => OPT_DIR,
             "cache-dir"         => $this->vardir,
