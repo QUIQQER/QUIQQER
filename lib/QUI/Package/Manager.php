@@ -405,7 +405,7 @@ class Manager extends QUI\QDOM
 
         // config
         if (!$composerJson) {
-            $composerJson = [];
+            $composerJson = json_decode('{}');
         }
 
         $composerJson->config = [
