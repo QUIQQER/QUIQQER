@@ -25,8 +25,10 @@ require \dirname(__FILE__).'/polyfills.php';
 // unregister other autoload functions (all must run over quiqqer)
 $fs = spl_autoload_functions();
 
-foreach ($fs as $f) {
-    spl_autoload_unregister($f);
+if (is_array($fs)) {
+    foreach ($fs as $f) {
+        spl_autoload_unregister($f);
+    }
 }
 
 QUI\Autoloader::init();
