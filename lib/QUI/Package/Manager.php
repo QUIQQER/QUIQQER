@@ -226,7 +226,8 @@ class Manager extends QUI\QDOM
             'quiqqer-plugin',
             'quiqqer-module',
             'quiqqer-template',
-            'quiqqer-application'
+            'quiqqer-application',
+            'quiqqer-assets'
         ];
     }
 
@@ -615,7 +616,7 @@ class Manager extends QUI\QDOM
 
             // must have
             $require                    = [];
-            $require["php"]             = ">=5.5";
+            $require["php"]             = ">=7.2";
             $require["quiqqer/quiqqer"] = "dev-master";
 
             foreach ($list as $package) {
@@ -651,6 +652,25 @@ class Manager extends QUI\QDOM
                 $composerJson->require = [
                     "quiqqer/quiqqer" => $this->version
                 ];
+            }
+        }
+
+        // remove unneeded stuff
+        if (is_array($composerJson->require)) {
+            if (isset($composerJson->require['hirak/prestissimo'])) {
+                unset($composerJson->require['hirak/prestissimo']);
+            }
+
+            if (isset($composerJson->require['pcsg/composer-assets'])) {
+                unset($composerJson->require['pcsg/composer-assets']);
+            }
+        } elseif (is_object($composerJson->require)) {
+            if (isset($composerJson->require->{'hirak/prestissimo'})) {
+                unset($composerJson->require->{'hirak/prestissimo'});
+            }
+
+            if (isset($composerJson->require->{'pcsg/composer-assets'})) {
+                unset($composerJson->require->{'pcsg/composer-assets'});
             }
         }
 
