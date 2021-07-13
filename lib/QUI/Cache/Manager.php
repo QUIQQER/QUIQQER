@@ -28,6 +28,11 @@ class Manager
     public static $noClearing = false;
 
     /**
+     * @var bool
+     */
+    public static $stashLoaded = false;
+
+    /**
      * Cache Manager Configs
      *
      * @var \QUI\Config
@@ -533,6 +538,10 @@ class Manager
      */
     public static function set($name, $data, $time = null)
     {
+        if (defined('QUIQQER_SETUP')) {
+            return;
+        }
+
         try {
             $Stash = self::getStash($name);
             $Stash->set($data);
@@ -565,6 +574,16 @@ class Manager
     public static function get($name)
     {
         if (self::getConfig()->get('general', 'nocache')) {
+            throw new QUI\Cache\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.lib.cache.manager.not.exist'
+                ),
+                404
+            );
+        }
+
+        if (defined('QUIQQER_SETUP')) {
             throw new QUI\Cache\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',

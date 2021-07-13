@@ -24,6 +24,35 @@ class Autoloader
     public static $ComposerLoader = null;
 
     /**
+     * init
+     */
+    public static function init()
+    {
+        if (self::$ComposerLoader) {
+            return;
+        }
+
+        self::$ComposerLoader = require \dirname(\dirname(\dirname(\dirname(__FILE__)))).'/autoload.php';
+    }
+
+    /**
+     * Check if auto loader is correct
+     */
+    public static function checkAutoloader()
+    {
+        $fs = \spl_autoload_functions();
+
+        foreach ($fs as $f) {
+            // remove composer
+            if (\is_array($f) && $f[0] instanceof \Composer\Autoload\ClassLoader) {
+                \spl_autoload_unregister($f);
+            }
+        }
+
+        self::init();
+    }
+
+    /**
      * Start the autoload
      *
      * @param string $classname - class which is required
@@ -32,6 +61,8 @@ class Autoloader
      */
     public static function load($classname)
     {
+        self::init();
+
         if (\class_exists($classname, false)) {
             return true;
         }
@@ -89,11 +120,6 @@ class Autoloader
             if (\interface_exists($classname, false)) {
                 return true;
             }
-        }
-
-        // use now the composer loader
-        if (!self::$ComposerLoader) {
-            self::$ComposerLoader = require \dirname(\dirname(\dirname(\dirname(__FILE__)))).'/autoload.php';
         }
 
         return self::$ComposerLoader->loadClass($classname);

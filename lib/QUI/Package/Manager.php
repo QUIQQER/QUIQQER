@@ -404,6 +404,10 @@ class Manager extends QUI\QDOM
         }
 
         // config
+        if (!$composerJson) {
+            $composerJson = json_decode('{}');
+        }
+
         $composerJson->config = [
             "vendor-dir"        => OPT_DIR,
             "cache-dir"         => $this->vardir,
@@ -639,7 +643,15 @@ class Manager extends QUI\QDOM
         }
 
         if ($this->version) {
-            $composerJson->require->{"quiqqer/quiqqer"} = $this->version;
+            if (is_array($composerJson->require)) {
+                $composerJson->require["quiqqer/quiqqer"] = $this->version;
+            } elseif (is_object($composerJson->require)) {
+                $composerJson->require->{"quiqqer/quiqqer"} = $this->version;
+            } else {
+                $composerJson->require = [
+                    "quiqqer/quiqqer" => $this->version
+                ];
+            }
         }
 
         // save
@@ -799,6 +811,10 @@ class Manager extends QUI\QDOM
 
         $data = \file_get_contents($installed_file);
         $list = \json_decode($data, true);
+
+        if (file_exists($this->dir.'composer/installed.php')) {
+            $list = $list['packages'];
+        }
 
         $result = [];
 

@@ -39,14 +39,14 @@ require.config({
         "locale"     : URL_VAR_DIR + 'locale/bin',
         "URL_OPT_DIR": URL_OPT_DIR,
         "URL_BIN_DIR": URL_BIN_DIR,
-        "Mustache"   : URL_OPT_DIR + 'bin/mustache/mustache.min',
+        "Mustache"   : URL_OPT_DIR + 'bin/quiqqer-asset/mustache/mustache/mustache.min',
 
-        "URI"               : URL_OPT_DIR + 'bin/urijs/src/URI',
-        'IPv6'              : URL_OPT_DIR + 'bin/urijs/src/IPv6',
-        'punycode'          : URL_OPT_DIR + 'bin/urijs/src/punycode',
-        'SecondLevelDomains': URL_OPT_DIR + 'bin/urijs/src/SecondLevelDomains',
-        'Navigo'            : URL_OPT_DIR + 'bin/navigo/lib/navigo.min',
-        'HistoryEvents'     : URL_OPT_DIR + 'bin/history-events/dist/history-events.min',
+        "URI"               : URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/URI',
+        'IPv6'              : URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/IPv6',
+        'punycode'          : URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/punycode',
+        'SecondLevelDomains': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/SecondLevelDomains',
+        'Navigo'            : URL_OPT_DIR + 'bin/quiqqer-asset/navigo/navigo/lib/navigo.min',
+        'HistoryEvents'     : URL_OPT_DIR + 'bin/quiqqer-asset/history-events/history-events/dist/history-events.min',
         '@popperjs/core'    : URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/lib/tippy/popper.min'
     },
 
@@ -152,8 +152,6 @@ require(requireList, function () {
                 content    : function (reference) {
                     const title = reference.getAttribute('title');
                     reference.removeAttribute('title');
-
-                    console.log(title);
 
                     return title;
                 }

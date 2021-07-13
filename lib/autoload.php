@@ -22,6 +22,17 @@ require \dirname(__FILE__).'/polyfills.php';
  * @return boolean
  */
 
+// unregister other autoload functions (all must run over quiqqer)
+$fs = spl_autoload_functions();
+
+if (is_array($fs)) {
+    foreach ($fs as $f) {
+        spl_autoload_unregister($f);
+    }
+}
+
+QUI\Autoloader::init();
+
 \spl_autoload_register(function ($className) {
     return \QUI\Autoloader::load($className);
 });
@@ -50,7 +61,8 @@ function exception_error_handler($errno, $errstr, $errfile, $errline)
     }
 
     if (\strpos($errstr, 'session_regenerate_id()') !== false
-        || \strpos($errstr, 'session_destroy()') !== false) {
+        || \strpos($errstr, 'session_destroy()') !== false
+        || \strpos($errstr, 'Required parameter $permissions follows optional parameter $path') !== false) {
         return true;
     }
 

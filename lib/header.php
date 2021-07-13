@@ -21,6 +21,7 @@ const QUIQQER_MIN_PHP_VERSION = '7.4.0';
 \ini_set('display_errors', false);
 \ini_set("log_errors", "on");
 
+QUI\Autoloader::checkAutoloader();
 QUI::load();
 QUI\Utils\System\Debug::marker('header start');
 
