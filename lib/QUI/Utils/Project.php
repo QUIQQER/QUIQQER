@@ -206,7 +206,7 @@ class Project
         $demoDataArray = [];
 
         if (\file_exists($TemplatePackage->getDir().'demodata.xml')) {
-            $demoDataArray = $Parser->parse($TemplatePackage);
+            $demoDataArray = $Parser->parse($TemplatePackage, $Project);
         }
 
         if (empty($demoDataArray)) {
