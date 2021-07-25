@@ -138,6 +138,10 @@ require(requireList, function () {
     ], function (tippy) {
         QUI.addEvent('onParseBegin', function (QUI, Parent) {
             // parse title
+            if (!Parent) {
+                return;
+            }
+
             let titleElms = Parent.querySelectorAll('[title]');
 
             titleElms = Array.from(titleElms);
