@@ -582,7 +582,7 @@ class Utils
         }
 
         if (!$height && isset($attributes['height'])) {
-            $width = $attributes['height'];
+            $height = $attributes['height'];
         }
 
         if (\strpos($width, '%') !== false) {
