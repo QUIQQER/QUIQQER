@@ -953,30 +953,16 @@ class Package extends QUI\QDOM
             return;
         }
 
-        $fullPackageName = $this->getName();
-        $nameParts       = \explode("/", $fullPackageName);
-        $packageName     = $nameParts[1];
-
-        $quiqqerAssetDir         = OPT_DIR.'bin/'.$packageName;
-        $quiqqerAssetDirFallback = OPT_DIR.'bin/'.$fullPackageName;
+        $quiqqerAssetDir = OPT_DIR.'bin/'.$this->getName();
 
         if (is_dir($quiqqerAssetDir)) {
             QUI::getTemp()->moveToTemp($quiqqerAssetDir);
         }
 
-        if (is_dir($quiqqerAssetDirFallback)) {
-            QUI::getTemp()->moveToTemp($quiqqerAssetDirFallback);
-        }
-
         // copy this to the package bin
         QUI\Utils\System\File::dircopy(
-            $this->getDir().'/'.$packageName,
-            $quiqqerAssetDir
-        );
-
-        QUI\Utils\System\File::dircopy(
             $this->getDir(),
-            $quiqqerAssetDirFallback
+            $quiqqerAssetDir
         );
     }
 }
