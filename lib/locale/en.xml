@@ -4542,6 +4542,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
 
     <groups name="quiqqer/quiqqer" datatype="php">
 
+        <locale name="RestProvider.Projects.title">
+            <en><![CDATA[QUQIQER Core REST API]]></en>
+        </locale>
         <locale name="message.ajax.user.setAndSendPassword.no_mail_sent">
             <en>
                 <![CDATA[The password for user [user] was reset, but could not be sent by e-mail because there is no e-mail address stored in the user data.]]></en>

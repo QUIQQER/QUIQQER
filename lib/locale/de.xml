@@ -4701,6 +4701,10 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
 
     <groups name="quiqqer/quiqqer" datatype="php">
 
+        <locale name="RestProvider.Projects.title">
+            <de><![CDATA[QUQIQER Core REST API]]></de>
+        </locale>
+
         <locale name="message.ajax.user.sendMail.success">
             <de><![CDATA[Die E-Mail wurde erfolgreich an Benutzer [user] versendet.]]></de>
         </locale>
