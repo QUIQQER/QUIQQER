@@ -738,7 +738,7 @@ class Address extends QUI\QDOM
         $firstName  = $this->getAttribute('firstname');
         $lastName   = $this->getAttribute('lastname');
 
-        if (empty($firstName)) {
+        if (empty($firstName) && $User) {
             $firstName = $User->getAttribute('firstname');
         }
 
@@ -746,7 +746,7 @@ class Address extends QUI\QDOM
             $firstName = '';
         }
 
-        if (empty($lastName)) {
+        if (empty($lastName) && $User) {
             $lastName = $User->getAttribute('lastname');
         }
 
