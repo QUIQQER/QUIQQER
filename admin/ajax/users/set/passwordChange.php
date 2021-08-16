@@ -26,5 +26,5 @@ QUI::$Ajax->registerFunction(
 
         $User->changePassword($newPassword, $oldPassword);
     },
-    array('uid', 'newPassword', 'passwordRepeat', 'oldPassword')
+    ['uid', 'newPassword', 'passwordRepeat', 'oldPassword']
 );

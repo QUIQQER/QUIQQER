@@ -11,5 +11,5 @@ QUI::$Ajax->registerFunction(
     function ($permission) {
         return QUI\Permissions\Permission::hasPermission($permission);
     },
-    array('permission')
+    ['permission']
 );

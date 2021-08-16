@@ -16,6 +16,6 @@ QUI::$Ajax->registerFunction(
 
         return $Group->getId();
     },
-    array('groupname', 'pid'),
+    ['groupname', 'pid'],
     'Permission::checkUser'
 );

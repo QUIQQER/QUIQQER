@@ -9,16 +9,13 @@
 QUI::$Ajax->registerFunction(
     'ajax_system_systemcheckResultsFromCache',
     function () {
-
         if (!isset($_REQUEST['lang'])) {
             $_REQUEST['lang'] = 'en';
         }
 
-        $lang = substr($_REQUEST['lang'], 0, 2);
-
+        $lang         = substr($_REQUEST['lang'], 0, 2);
         $Requirements = new \QUI\Requirements\Requirements($lang);
-
-        $allTests = $Requirements->getTests();
+        $allTests     = $Requirements->getTests();
 
         return \QUI\Requirements\Utils::htmlFormatTestResults($allTests);
     },

@@ -32,12 +32,12 @@ QUI::$Ajax->registerFunction(
 
             echo '<script>
             window.parent.QUI.getMessageHandler().then(function(MH) {
-                MH.addError("' . $message . '");
+                MH.addError("'.$message.'");
             });
             </script>';
             exit;
         }
     },
-    array('project', 'folderId'),
+    ['project', 'folderId'],
     'Permission::checkAdminUser'
 );

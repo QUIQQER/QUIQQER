@@ -18,6 +18,6 @@ QUI::$Ajax->registerFunction(
 
         return $attr;
     },
-    array('gid'),
+    ['gid'],
     'Permission::checkAdminUser'
 );

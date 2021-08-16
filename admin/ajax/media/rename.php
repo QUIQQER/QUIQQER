@@ -20,6 +20,6 @@ QUI::$Ajax->registerFunction(
 
         return $Item->getAttribute('name');
     },
-    array('project', 'id', 'newname'),
+    ['project', 'id', 'newname'],
     'Permission::checkAdminUser'
 );

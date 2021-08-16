@@ -30,6 +30,6 @@ QUI::$Ajax->registerFunction(
             return $Media->firstChild()->getId();
         }
     },
-    array('project', 'fileid'),
+    ['project', 'fileid'],
     'Permission::checkAdminUser'
 );

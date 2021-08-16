@@ -17,6 +17,6 @@ QUI::$Ajax->registerFunction(
 
         $Site->linked((int)$newParentId);
     },
-    array('project', 'id', 'newParentId'),
+    ['project', 'id', 'newParentId'],
     'Permission::checkAdminUser'
 );

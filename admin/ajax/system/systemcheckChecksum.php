@@ -9,7 +9,6 @@
 QUI::$Ajax->registerFunction(
     'ajax_system_systemcheckChecksum',
     function ($packageName) {
-
         $cacheFile = VAR_DIR."/tmp/requirements_checks_result_package";
 
         if (!\file_exists($cacheFile)) {

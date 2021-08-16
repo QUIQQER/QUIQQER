@@ -12,6 +12,6 @@ QUI::$Ajax->registerFunction(
         $VhostManager = new QUI\System\VhostManager();
         $VhostManager->removeVhost($vhost);
     },
-    array('vhost'),
+    ['vhost'],
     'Permission::checkSU'
 );

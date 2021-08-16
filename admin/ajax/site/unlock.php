@@ -15,6 +15,6 @@ QUI::$Ajax->registerFunction(
 
         $Site->unlockWithRights();
     },
-    array('project', 'id'),
+    ['project', 'id'],
     'Permission::checkAdminUser'
 );

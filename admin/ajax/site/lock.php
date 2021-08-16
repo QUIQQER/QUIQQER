@@ -15,6 +15,6 @@ QUI::$Ajax->registerFunction(
 
         $Site->lock();
     },
-    array('project', 'id'),
+    ['project', 'id'],
     'Permission::checkAdminUser'
 );

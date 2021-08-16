@@ -11,5 +11,5 @@ QUI::$Ajax->registerFunction(
     function ($permission, $ruleset) {
         return QUI::getUserBySession()->getPermission($permission, $ruleset);
     },
-    array('permission', 'ruleset')
+    ['permission', 'ruleset']
 );

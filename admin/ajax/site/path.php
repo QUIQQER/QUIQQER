@@ -13,7 +13,7 @@ QUI::$Ajax->registerFunction(
         $Project = QUI::getProjectManager()->decode($project);
         $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
 
-        $pids    = array();
+        $pids    = [];
         $parents = $Site->getParents();
 
         foreach ($parents as $Parent) {
@@ -23,6 +23,6 @@ QUI::$Ajax->registerFunction(
 
         return $pids;
     },
-    array('project', 'id'),
+    ['project', 'id'],
     'Permission::checkAdminUser'
 );

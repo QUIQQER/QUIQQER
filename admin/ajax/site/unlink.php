@@ -17,6 +17,6 @@ QUI::$Ajax->registerFunction(
 
         $Site->deleteLinked((int)$parentId, $all);
     },
-    array('project', 'id', 'parentId', 'all'),
+    ['project', 'id', 'parentId', 'all'],
     'Permission::checkAdminUser'
 );

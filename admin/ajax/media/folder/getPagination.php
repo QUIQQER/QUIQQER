@@ -17,7 +17,7 @@ QUI::$Ajax->registerFunction(
 
         $Output  = new QUI\Output();
         $control = $Pagination->create();
-        $css = QUI\Control\Manager::getCSS();
+        $css     = QUI\Control\Manager::getCSS();
 
         return $Output->parse($css.$control);
     },

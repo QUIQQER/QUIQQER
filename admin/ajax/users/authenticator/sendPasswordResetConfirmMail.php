@@ -7,9 +7,9 @@ use QUI\Users\Auth\Handler;
  *
  * @param integer|string $uid
  * @param string $authenticator
+ * @return void
  * @throws \QUI\Users\Exception
  *
- * @return void
  */
 QUI::$Ajax->registerFunction(
     'ajax_users_authenticator_sendPasswordResetConfirmMail',
@@ -27,11 +27,11 @@ QUI::$Ajax->registerFunction(
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
 
-            throw new QUI\Users\Auth\Exception(array(
+            throw new QUI\Users\Auth\Exception([
                 'quiqqer/quiqqer',
                 'exception.user.auth.send_password_reset_mail_error'
-            ));
+            ]);
         }
     },
-    array('email')
+    ['email']
 );

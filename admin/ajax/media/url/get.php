@@ -17,6 +17,6 @@ QUI::$Ajax->registerFunction(
 
         return $Media->get($fileid)->getUrl(true);
     },
-    array('project', 'fileid'),
+    ['project', 'fileid'],
     'Permission::checkAdminUser'
 );

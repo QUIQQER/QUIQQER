@@ -15,11 +15,11 @@ QUI::$Ajax->registerFunction(
         $Media   = $Project->getMedia();
 
         // check before upload if a replacement is allowed
-        QUI\Projects\Media\Utils::checkReplace($Media, $fileid, array(
+        QUI\Projects\Media\Utils::checkReplace($Media, $fileid, [
             'name' => $filename,
             'type' => $filetype
-        ));
+        ]);
     },
-    array('project', 'fileid', 'filename', 'filetype'),
+    ['project', 'fileid', 'filename', 'filetype'],
     'Permission::checkAdminUser'
 );

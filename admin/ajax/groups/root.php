@@ -10,9 +10,9 @@ QUI::$Ajax->registerFunction(
     function () {
         require_once 'get.php';
 
-        $result = QUI::$Ajax->callRequestFunction('ajax_groups_get', array(
+        $result = QUI::$Ajax->callRequestFunction('ajax_groups_get', [
             'gid' => (int)QUI::conf('globals', 'root')
-        ));
+        ]);
 
         return $result['result'];
     },

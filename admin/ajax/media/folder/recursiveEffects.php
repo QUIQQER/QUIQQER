@@ -30,6 +30,6 @@ QUI::$Ajax->registerFunction(
                 ->get('quiqqer/quiqqer', 'message.folder.effects.resursive,success')
         );
     },
-    array('project', 'folderId'),
+    ['project', 'folderId'],
     'Permission::checkAdminUser'
 );

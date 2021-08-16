@@ -36,6 +36,6 @@ QUI::$Ajax->registerFunction(
 
         return $buttonList;
     },
-    ['project', 'lang'],
+    ['project'],
     'Permission::checkAdminUser'
 );

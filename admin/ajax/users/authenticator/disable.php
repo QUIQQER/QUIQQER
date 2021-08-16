@@ -13,6 +13,6 @@ QUI::$Ajax->registerFunction(
         $User = QUI::getUsers()->get($uid);
         $User->disableAuthenticator($authenticator);
     },
-    array('uid', 'authenticator'),
+    ['uid', 'authenticator'],
     'Permission::checkAdminUser'
 );

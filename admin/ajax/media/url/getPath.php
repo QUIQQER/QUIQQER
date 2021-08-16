@@ -19,12 +19,12 @@ QUI::$Ajax->registerFunction(
         try {
             $File = QUI\Projects\Media\Utils::getMediaItemByUrl($fileurl);
 
-            return URL_DIR . $File->getPath();
+            return URL_DIR.$File->getPath();
         } catch (QUI\Exception $Exception) {
         }
 
         return $fileurl;
     },
-    array('fileurl'),
+    ['fileurl'],
     'Permission::checkAdminUser'
 );

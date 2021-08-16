@@ -13,6 +13,6 @@ QUI::$Ajax->registerFunction(
     function ($mail) {
         return boolval(Orthos::checkMailSyntax($mail));
     },
-    array('mail'),
+    ['mail'],
     'Permission::checkUser'
 );

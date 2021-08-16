@@ -13,6 +13,6 @@ QUI::$Ajax->registerFunction(
 
         return $VhostManager->getVhost($vhost);
     },
-    array('vhost'),
+    ['vhost'],
     'Permission::checkSU'
 );

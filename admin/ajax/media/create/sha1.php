@@ -11,14 +11,14 @@ QUI::$Ajax->registerFunction(
         $Project = QUI\Projects\Manager::decode($project);
         $Media   = $Project->getMedia();
 
-        $ids = $Media->getChildrenIds(array(
-            'where' => array(
-                'type' => array(
+        $ids = $Media->getChildrenIds([
+            'where' => [
+                'type' => [
                     'type'  => 'NOT',
                     'value' => 'folder'
-                )
-            )
-        ));
+                ]
+            ]
+        ]);
 
         foreach ($ids as $id) {
             try {
@@ -31,6 +31,6 @@ QUI::$Ajax->registerFunction(
             }
         }
     },
-    array('project'),
+    ['project'],
     'Permission::checkAdminUser'
 );

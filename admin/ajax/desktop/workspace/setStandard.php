@@ -13,6 +13,6 @@ QUI::$Ajax->registerFunction(
             $id
         );
     },
-    array('id'),
+    ['id'],
     'Permission::checkUser'
 );

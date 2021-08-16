@@ -17,6 +17,6 @@ QUI::$Ajax->registerFunction(
 
         return !$Site->getAttribute('active') ? 0 : 1;
     },
-    array('project', 'id'),
+    ['project', 'id'],
     'Permission::checkAdminUser'
 );

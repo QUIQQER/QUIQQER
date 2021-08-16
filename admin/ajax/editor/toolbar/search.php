@@ -6,5 +6,5 @@ QUI::$Ajax->registerFunction(
     function ($search) {
         return QUI\Editor\Manager::search($search);
     },
-    array('search')
+    ['search']
 );

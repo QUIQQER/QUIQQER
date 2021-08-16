@@ -139,14 +139,20 @@ class Manager
      * Delete a workspace
      *
      * @param integer $id - Workspace ID
-     * @param \QUI\Users\User $User - User of the Workspace
+     * @param QUI\Interfaces\Users\User $User - User of the Workspace
      */
-    public static function deleteWorkspace($id, $User)
+    public static function deleteWorkspace(int $id, QUI\Interfaces\Users\User $User)
     {
-        QUI::getDataBase()->delete(self::table(), [
-            'uid' => $User->getId(),
-            'id'  => (int)$id
-        ]);
+        try {
+            QUI::getDataBase()->delete(self::table(), [
+                'uid' => $User->getId(),
+                'id'  => (int)$id
+            ]);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception, [
+                'trace' => $Exception->getTraceAsString()
+            ]);
+        }
     }
 
     /**
@@ -329,7 +335,7 @@ class Manager
 
         $panels   = [];
         $xmlFiles = \array_merge(
-            [SYS_DIR . 'panels.xml'],
+            [SYS_DIR.'panels.xml'],
             QUI::getPackageManager()->getPackageXMLFiles('panels.xml')
         );
 
@@ -356,7 +362,7 @@ class Manager
      */
     public static function getTwoColumnDefault()
     {
-        return \file_get_contents(\dirname(\dirname(__FILE__)) . '/Users/workspaces/twoColumns.js');
+        return \file_get_contents(\dirname(\dirname(__FILE__)).'/Users/workspaces/twoColumns.js');
     }
 
     /**
@@ -366,6 +372,6 @@ class Manager
      */
     public static function getThreeColumnDefault()
     {
-        return \file_get_contents(\dirname(\dirname(__FILE__)) . '/Users/workspaces/threeColumns.js');
+        return \file_get_contents(\dirname(\dirname(__FILE__)).'/Users/workspaces/threeColumns.js');
     }
 }

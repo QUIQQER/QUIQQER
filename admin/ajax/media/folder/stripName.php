@@ -5,5 +5,5 @@ QUI::$Ajax->registerFunction(
     function ($name) {
         return QUI\Projects\Media\Utils::stripFolderName($name);
     },
-    array('name')
+    ['name']
 );

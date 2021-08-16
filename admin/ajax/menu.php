@@ -13,6 +13,7 @@ QUI::$Ajax->registerFunction(
     'ajax_menu',
     function () {
         $Menu = new QUI\Workspace\Menu();
+
         return $Menu->getMenu();
     },
     false,

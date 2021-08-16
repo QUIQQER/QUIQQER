@@ -19,7 +19,7 @@ QUI::$Ajax->registerFunction(
             )
         );
     },
-    ['server', 'params'],
+    ['server'],
     [
         'Permission::checkAdminUser',
         'quiqqer.system.update'

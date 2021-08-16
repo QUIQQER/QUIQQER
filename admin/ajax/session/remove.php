@@ -10,5 +10,5 @@ QUI::$Ajax->registerFunction(
     function ($key) {
         QUI::getSession()->del($key);
     },
-    array('key')
+    ['key']
 );

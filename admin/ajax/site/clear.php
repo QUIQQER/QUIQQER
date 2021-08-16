@@ -16,6 +16,6 @@ QUI::$Ajax->registerFunction(
             QUI::getProjectManager()->decode($project)
         );
     },
-    array('project', 'name'),
+    ['project', 'name'],
     'Permission::checkAdminUser'
 );

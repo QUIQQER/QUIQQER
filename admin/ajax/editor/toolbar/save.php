@@ -18,5 +18,5 @@ QUI::$Ajax->registerFunction(
             )
         );
     },
-    array('toolbar', 'xml')
+    ['toolbar', 'xml']
 );

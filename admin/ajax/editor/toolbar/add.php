@@ -10,5 +10,5 @@ QUI::$Ajax->registerFunction(
     function ($toolbar) {
         QUI\Editor\Manager::addToolbar($toolbar);
     },
-    array('toolbar')
+    ['toolbar']
 );

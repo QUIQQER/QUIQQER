@@ -14,6 +14,6 @@ QUI::$Ajax->registerFunction(
 
         return QUI\Groups\Utils::getGroupToolbar($Group)->toArray();
     },
-    array('gid'),
+    ['gid'],
     'Permission::checkSU'
 );

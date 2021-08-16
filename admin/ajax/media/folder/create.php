@@ -28,6 +28,6 @@ QUI::$Ajax->registerFunction(
 
         return QUI\Projects\Media\Utils::parseForMediaCenter($Folder);
     },
-    array('project', 'parentid', 'newfolder'),
+    ['project', 'parentid', 'newfolder'],
     'Permission::checkAdminUser'
 );

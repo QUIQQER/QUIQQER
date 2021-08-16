@@ -12,6 +12,6 @@ QUI::$Ajax->registerFunction(
         $UploadManager = new QUI\Upload\Manager();
         $UploadManager->cancel($file);
     },
-    array('file'),
+    ['file'],
     'Permission::checkAdminUser'
 );

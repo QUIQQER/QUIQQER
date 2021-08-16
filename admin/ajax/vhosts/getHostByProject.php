@@ -14,6 +14,6 @@ QUI::$Ajax->registerFunction(
 
         return $Manager->getHostByProject($Project->getName(), $Project->getLang());
     },
-    array('project'),
+    ['project'],
     'Permission::checkSU'
 );

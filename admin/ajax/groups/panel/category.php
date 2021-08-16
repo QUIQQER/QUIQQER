@@ -14,6 +14,6 @@ QUI::$Ajax->registerFunction(
     function ($gid, $plugin, $tab) {
         return QUI\Groups\Utils::getTab($gid, $plugin, $tab);
     },
-    array('gid', 'plugin', 'tab'),
+    ['gid', 'plugin', 'tab'],
     'Permission::checkSU'
 );

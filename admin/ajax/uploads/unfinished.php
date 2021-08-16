@@ -9,6 +9,7 @@ QUI::$Ajax->registerFunction(
     'ajax_uploads_unfinished',
     function () {
         $UploadManager = new QUI\Upload\Manager();
+
         return $UploadManager->getUnfinishedUploadsFromUser();
     },
     false,

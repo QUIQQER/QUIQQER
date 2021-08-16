@@ -21,14 +21,14 @@ QUI::$Ajax->registerFunction(
 
         foreach ($parentIds as $id) {
             $ParentSite = new QUI\Projects\Site\Edit($Project, (int)$id);
-            $path .= $ParentSite->getAttribute('name') . '/';
+            $path       .= $ParentSite->getAttribute('name').'/';
         }
 
-        $path .= $Parent->getAttribute('name') . '/';
+        $path .= $Parent->getAttribute('name').'/';
         $path .= $Site->getAttribute('name');
 
         return $path;
     },
-    array('project', 'id', 'parentId'),
+    ['project', 'id', 'parentId'],
     'Permission::checkAdminUser'
 );

@@ -38,6 +38,6 @@ QUI::$Ajax->registerFunction(
 
         return $fileurl;
     },
-    array('fileurl', 'maxWidth', 'maxHeight'),
+    ['fileurl', 'maxWidth', 'maxHeight'],
     'Permission::checkAdminUser'
 );
