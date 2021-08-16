@@ -11,7 +11,6 @@ QUI::$Ajax->registerFunction(
     'ajax_users_authenticator_has',
     function ($uid, $authenticator) {
         return QUI::getUsers()->get($uid)->hasAuthenticator($authenticator);
-
     },
     ['uid', 'authenticator'],
     'Permission::checkAdminUser'
