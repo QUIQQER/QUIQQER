@@ -57,8 +57,8 @@ QUI::$Ajax->registerFunction(
         $list = [];
 
         foreach ($fileid as $id) {
-            if (Utils::isMediaUrl($fileid)) {
-                $File = Utils::getMediaItemByUrl($fileid);
+            if (Utils::isMediaUrl($id)) {
+                $File = Utils::getMediaItemByUrl($id);
             } else {
                 $File = $Media->get($id);
             }
