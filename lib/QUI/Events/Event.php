@@ -236,7 +236,10 @@ class Event implements QUI\Interfaces\Events
                 $Clone = new QUI\Exception(
                     $message,
                     $Exception->getCode(),
-                    ['trace' => $Exception->getTraceAsString()]
+                    [
+                        'trace'        => $Exception->getTraceAsString(),
+                        'functionType' => gettype($fn)
+                    ]
                 );
 
                 $Stack->addException($Clone);
