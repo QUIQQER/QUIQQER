@@ -226,7 +226,7 @@ class Event implements QUI\Interfaces\Events
                 );
 
                 $Stack->addException($Clone);
-            } catch (\Exception $Exception) {
+            } catch (\Throwable $Exception) {
                 $message = $Exception->getMessage();
 
                 if (\is_string($fn)) {
