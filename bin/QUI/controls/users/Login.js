@@ -94,7 +94,7 @@ define('controls/users/Login', [
                 this.Loader.show();
             }
 
-            var self = this;
+            const self = this;
 
             QUIAjax.get('ajax_users_loginControl', function (result) {
                 self.$buildAuthenticator(result).then(function () {
@@ -127,14 +127,14 @@ define('controls/users/Login', [
          * Refresh the form data and set events to the current form
          */
         $refreshForm: function () {
-            var self = this;
+            const self = this;
 
             this.$forms.set({
                 action: '',
                 method: 'POST',
                 events: {
                     submit: function (event) {
-                        var Target = null;
+                        let Target = null;
 
                         if (typeOf(event) === 'element') {
                             Target = event;
@@ -158,7 +158,7 @@ define('controls/users/Login', [
                 }
             });
 
-            var onSuccess = this.getAttribute('onSuccess');
+            const onSuccess = this.getAttribute('onSuccess');
 
             if (typeof window[onSuccess] === 'function') {
                 this.setAttribute('onSuccess', window[onSuccess]);
@@ -172,16 +172,16 @@ define('controls/users/Login', [
          * @return {Promise}
          */
         $buildAuthenticator: function (html) {
-            var Container = new Element('div', {
+            const Container = new Element('div', {
                 html: html
             });
 
-            var elements = Container.getChildren(),
-                forms    = Container.getElements('form'),
+            const elements = Container.getChildren(),
+                  forms    = Container.getElements('form'),
 
-                children = elements.filter(function (Node) {
-                    return !Node.get('data-qui');
-                });
+                  children = elements.filter(function (Node) {
+                      return !Node.get('data-qui');
+                  });
 
             if (!forms.length) {
                 QUIAjax.post('ajax_user_logout', function () {
@@ -194,7 +194,7 @@ define('controls/users/Login', [
             forms.setStyle('opacity', 0);
             forms.inject(this.getElm());
 
-            for (var i = 1, len = forms.length; i < len; i++) {
+            for (let i = 1, len = forms.length; i < len; i++) {
                 new Element('div', {
                     'class': 'quiqqer-login-or',
                     html   : '<span>' + QUILocale.get('quiqqer/quiqqer', 'controls.users.auth.login.or') + '</span>'
@@ -211,10 +211,10 @@ define('controls/users/Login', [
             return QUI.parse(forms).then(function () {
                 this.Loader.hide();
 
-                var Node = this.getElm().getElement('[data-qui="controls/users/auth/QUIQQERLogin"]');
+                const Node = this.getElm().getElement('[data-qui="controls/users/auth/QUIQQERLogin"]');
 
                 if (Node && Node.get('data-quiid')) {
-                    var Control = QUI.Controls.getById(Node.get('data-quiid'));
+                    const Control = QUI.Controls.getById(Node.get('data-quiid'));
 
                     if (Control) {
                         Control.addEvents({
@@ -242,7 +242,7 @@ define('controls/users/Login', [
          * Execute the current authentication
          */
         auth: function (Form) {
-            var self = this;
+            const self = this;
 
             if (this.getAttribute('showLoader')) {
                 this.Loader.show();
@@ -270,7 +270,7 @@ define('controls/users/Login', [
                         return;
                     }
 
-                    var Or = self.getElm().getElements('.quiqqer-login-or');
+                    const Or = self.getElm().getElements('.quiqqer-login-or');
 
                     if (Or.length) {
                         moofx(Or).animate({
@@ -316,15 +316,15 @@ define('controls/users/Login', [
          * event: on show password
          */
         $onShowPassword: function () {
-            var i, len, height, Form, Rule;
-            var rule  = this.getElm().getElements('.quiqqer-login-or');
-            var forms = this.getElm().getElements('form').filter(function (form) {
+            let i, len, height, Form, Rule;
+            let rule  = this.getElm().getElements('.quiqqer-login-or');
+            let forms = this.getElm().getElements('form').filter(function (form) {
                 return form.get('data-authenticator') !== 'QUI\\Users\\Auth\\QUIQQER';
             });
 
             rule.setStyle('display', null);
 
-            var done = function () {
+            const done = function () {
                 this.setStyle('overflow', null);
                 this.setStyle('height', null);
             };
@@ -374,8 +374,8 @@ define('controls/users/Login', [
          * event: on show password reset
          */
         onShowPasswordReset: function () {
-            var rule  = this.getElm().getElements('.quiqqer-login-or');
-            var forms = this.getElm().getElements('form').filter(function (form) {
+            let rule  = this.getElm().getElements('.quiqqer-login-or');
+            let forms = this.getElm().getElements('form').filter(function (form) {
                 return form.get('data-authenticator') !== 'QUI\\Users\\Auth\\QUIQQER';
             });
 
