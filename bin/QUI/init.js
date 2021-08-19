@@ -142,6 +142,11 @@ require(requireList, function () {
                 return;
             }
 
+            // workaround
+            if (typeof Parent.length !== 'undefined') {
+                return;
+            }
+
             let titleElms = Parent.querySelectorAll('[title]');
 
             titleElms = Array.from(titleElms);
