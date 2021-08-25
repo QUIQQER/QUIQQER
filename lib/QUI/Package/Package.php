@@ -880,10 +880,6 @@ class Package extends QUI\QDOM
             $this->setup();
         }
 
-        if ($this->isQuiqqerPackage()) {
-            $this->setup();
-        }
-
         $this->moveQuiqqerAsset();
 
 
