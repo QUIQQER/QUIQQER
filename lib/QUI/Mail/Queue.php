@@ -332,6 +332,10 @@ class Queue
             $html = \preg_replace('#<source([^>]*)>#i', '', $html);
             $html = \str_replace('</picture>', '', $html);
 
+            $Output = new QUI\Output();
+            $Output->setSetting('use-absolute-urls', true);
+            $html = $Output->parse($html);
+
             $PhpMailer->From     = $params['from'];
             $PhpMailer->FromName = $params['fromName'];
             $PhpMailer->Subject  = $params['subject'];
