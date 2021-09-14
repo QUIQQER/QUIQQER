@@ -114,8 +114,7 @@ class Mailer extends QUI\QDOM
         // remove picture elements
         $html = \preg_replace('#<picture([^>]*)>#i', '', $html);
         $html = \preg_replace('#<source([^>]*)>#i', '', $html);
-
-        $html = str_replace('</picture>', '', $html);
+        $html = \str_replace('</picture>', '', $html);
 
 
         $PHPMailer->Subject = $this->getAttribute('subject');
