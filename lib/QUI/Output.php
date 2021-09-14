@@ -57,7 +57,8 @@ class Output extends Singleton
      */
     protected $settings = [
         'use-system-image-paths' => false,
-        'remove-deleted-links'   => true
+        'remove-deleted-links'   => true,
+        'use-absolute-urls'      => false
     ];
 
     /**
@@ -119,6 +120,15 @@ class Output extends Singleton
             [&$this, "scripts"],
             $content
         );
+        
+        if ($this->settings['use-absolute-urls']) {
+            $content = \preg_replace_callback(
+                '#(href|src)="(.*?)\?([^"]*)#',
+                [&$this, "absoluteUrls"],
+                $content
+            );
+        }
+
 
         if (empty($content)) {
             QUI::getEvents()->fireEvent('outputParseEnd', [&$content]);
@@ -674,6 +684,42 @@ class Output extends Singleton
         $result .= '>';
 
         return $result;
+    }
+
+    /**
+     * Set a host to all urls
+     *
+     * @param $output
+     * @return string
+     */
+    protected function absoluteUrls($output): string
+    {
+        $html = $output[0];
+
+        if (!isset($output[1]) || !isset($output[2])) {
+            return $html;
+        }
+
+        $url = $output[2];
+
+        if (strpos($url, 'https://') !== false && strpos($url, 'http://') !== false) {
+            return $html;
+        }
+
+        $host = HOST;
+
+        if ($this->Project) {
+            $host = $this->Project->getHost();
+
+            if (strpos($host, 'https://') === false && strpos($host, 'http://') === false) {
+                $host = 'https://'.$host;
+            }
+        }
+
+        $host = trim($host, '/').'/';
+        $url  = trim($url, '/');
+
+        return $output[1].'="'.$host.$url.'"';
     }
 
     /**
