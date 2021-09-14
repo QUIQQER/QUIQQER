@@ -328,14 +328,16 @@ class Queue
 
             // remove picture elements
             $html = $params['body'];
-            $html = \preg_replace('#<picture([^>]*)>#i', '', $html);
-            $html = \preg_replace('#<source([^>]*)>#i', '', $html);
-            $html = \str_replace('</picture>', '', $html);
 
             $Output = new QUI\Output();
             $Output->setSetting('use-absolute-urls', true);
             $html = $Output->parse($html);
 
+            $html = \preg_replace('#<picture([^>]*)>#i', '', $html);
+            $html = \preg_replace('#<source([^>]*)>#i', '', $html);
+            $html = \str_replace('</picture>', '', $html);
+
+            QUI\System\Log::writeRecursive($html);
             $PhpMailer->From     = $params['from'];
             $PhpMailer->FromName = $params['fromName'];
             $PhpMailer->Subject  = $params['subject'];

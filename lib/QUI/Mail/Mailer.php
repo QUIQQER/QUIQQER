@@ -112,13 +112,13 @@ class Mailer extends QUI\QDOM
         $html      = $this->Template->getHTML();
 
         // remove picture elements
-        $html = \preg_replace('#<picture([^>]*)>#i', '', $html);
-        $html = \preg_replace('#<source([^>]*)>#i', '', $html);
-        $html = \str_replace('</picture>', '', $html);
-
         $Output = new QUI\Output();
         $Output->setSetting('use-absolute-urls', true);
         $html = $Output->parse($html);
+
+        $html = \preg_replace('#<picture([^>]*)>#i', '', $html);
+        $html = \preg_replace('#<source([^>]*)>#i', '', $html);
+        $html = \str_replace('</picture>', '', $html);
 
         $PHPMailer->Subject = $this->getAttribute('subject');
         $PHPMailer->Body    = $html;
