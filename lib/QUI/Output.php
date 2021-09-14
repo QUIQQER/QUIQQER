@@ -120,10 +120,10 @@ class Output extends Singleton
             [&$this, "scripts"],
             $content
         );
-        
+
         if ($this->settings['use-absolute-urls']) {
             $content = \preg_replace_callback(
-                '#(href|src)="(.*?)\?([^"]*)#',
+                '#(href|src)="(.*?)([^"]*)#',
                 [&$this, "absoluteUrls"],
                 $content
             );
@@ -696,13 +696,17 @@ class Output extends Singleton
     {
         $html = $output[0];
 
-        if (!isset($output[1]) || !isset($output[2])) {
+        if (!isset($output[1]) || !isset($output[2]) || !isset($output[3])) {
             return $html;
         }
 
-        $url = $output[2];
+        $url = $output[3];
 
-        if (strpos($url, 'https://') !== false && strpos($url, 'http://') !== false) {
+        if (strpos($url, 'https://') !== false || strpos($url, 'http://') !== false) {
+            return $html;
+        }
+
+        if (strpos($url, 'data:') !== false || empty($url)) {
             return $html;
         }
 
