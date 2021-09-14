@@ -326,10 +326,16 @@ class Queue
                 $PhpMailer->AltBody = $params['text'];
             }
 
+            // remove picture elements
+            $html = $params['body'];
+            $html = \preg_replace('#<picture([^>]*)>#i', '', $html);
+            $html = \preg_replace('#<source([^>]*)>#i', '', $html);
+            $html = \str_replace('</picture>', '', $html);
+
             $PhpMailer->From     = $params['from'];
             $PhpMailer->FromName = $params['fromName'];
             $PhpMailer->Subject  = $params['subject'];
-            $PhpMailer->Body     = $params['body'];
+            $PhpMailer->Body     = $html;
 
             Log::logSend($PhpMailer);
 
