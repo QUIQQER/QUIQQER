@@ -229,7 +229,7 @@ try {
         QUI::getEvents()->fireEvent('requestOutput', [&$content]);
 
         if (empty($content)) {
-            throw new QUI\Exception('Empty content at '.$Site->getId());
+            throw new QUI\Exception('Empty content at '.$Site->getId(), 5001);
         }
 
         $Response->setContent($content);
@@ -263,8 +263,9 @@ try {
             $Response->setStatusCode(Response::HTTP_SERVICE_UNAVAILABLE);
         }
 
-
-        Log::writeException($Exception, Log::LEVEL_ERROR);
+        if ($Exception->getCode() !== 5001) {
+            Log::writeException($Exception, Log::LEVEL_ERROR);
+        }
 
         $Template = new QUI\Template();
 
