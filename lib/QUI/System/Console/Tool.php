@@ -265,7 +265,8 @@ abstract class Tool extends QUI\QDOM
         }
 
         // if cli, read user input
-        if (\php_sapi_name() == 'cli' && !empty($paramData['optional'])) {
+        if (\php_sapi_name() == 'cli' &&
+            (isset($paramData['optional']) && $paramData['optional'] === false)) {
             $this->writeLn('');
             $this->writeLn('Missing Argument', 'brown');
 
