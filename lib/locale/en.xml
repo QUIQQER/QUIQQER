@@ -5226,6 +5226,24 @@ After logging in you will be prompted to set a new password.
         <locale name="exception.upload.not.allowed.ending">
             <en><![CDATA[Unfortunately you are not allowed to upload this file.]]></en>
         </locale>
+
+        <locale name="set.up.title">
+            <en><![CDATA[QUIQQER set up]]></en>
+        </locale>
+        <locale name="set.up.description">
+            <en><![CDATA[Set up the QUIQQER basic system]]></en>
+        </locale>
+        <locale name="quiqqer.setup.welcome.title">
+            <en><![CDATA[Welcome to the setup of your QUIQQER system]]></en>
+        </locale>
+        <locale name="quiqqer.setup.welcome.description">
+            <en><![CDATA[
+            <p>Thank you for choosing QUIQQER. QUIQQER is a versatile system,
+            so there are some steps you should set up.</p>
+            <p>The setup will guide you step by step through the different settings.
+            So that QUIQQER is perfectly tuned to you and your project.</p>
+            ]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
 
