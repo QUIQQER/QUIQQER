@@ -63,6 +63,5 @@ class QuiqqerProvider extends AbstractInstallationWizard
     public function execute($data = []): void
     {
         // check if all data are available what we needed
-
     }
 }
