@@ -1367,7 +1367,10 @@ class User implements QUI\Interfaces\Users\User
             );
         }
 
-        $this->checkUserMail();
+        // check if is the users e-mail address already exists
+        if (QUI::conf('globals', 'emaillogin')) {
+            $this->checkUserMail();
+        }
 
         $groups = $this->getGroups(false);
 
