@@ -49,7 +49,11 @@ class QuiqqerProvider extends AbstractInstallationWizard
     public function getSteps(): array
     {
         return [
-            new QuiqqerSteps\Welcome()
+            new QuiqqerSteps\Welcome(),
+            new QuiqqerSteps\Country(),
+            new QuiqqerSteps\Mail(),
+            new QuiqqerSteps\MailSMTP(),
+            new QuiqqerSteps\Cron()
         ];
     }
 
@@ -59,5 +63,6 @@ class QuiqqerProvider extends AbstractInstallationWizard
     public function execute($data = []): void
     {
         // check if all data are available what we needed
+
     }
 }

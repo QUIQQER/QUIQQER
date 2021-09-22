@@ -19,6 +19,14 @@ abstract class AbstractInstallationWizardStep extends QUI\Control implements \QU
     }
 
     /**
+     * @return string
+     */
+    public function getJavaScriptControl(): string
+    {
+        return $this->getAttribute('qui-class');
+    }
+
+    /**
      * @param null $Locale
      * @return array
      */
@@ -26,7 +34,8 @@ abstract class AbstractInstallationWizardStep extends QUI\Control implements \QU
     {
         return [
             'title'       => $this->getTitle($Locale),
-            'description' => $this->getDescription($Locale)
+            'description' => $this->getDescription($Locale),
+            'jsControl'   => $this->getJavaScriptControl()
         ];
     }
 }

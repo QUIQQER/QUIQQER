@@ -20,6 +20,11 @@ interface InstallationWizardStepInterface
     public function getDescription($Locale = null): string;
 
     /**
+     * @return string
+     */
+    public function getJavaScriptControl(): string;
+
+    /**
      * Method is called when the setup will be executed
      *
      * @return void

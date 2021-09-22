@@ -1,0 +1,38 @@
+.quiqqer-setup-mailSmtp label {
+    display: flex;
+    clear: both;
+    padding: 10px;
+    width: 100%;
+}
+
+.quiqqer-setup-mailSmtp-btns button {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    margin: 10px 10px 0 0;
+    padding: 10px;
+}
+
+.quiqqer-setup-mailSmtp-btns button .fa {
+    font-size: 26px;
+    padding: 0 0 10px;
+}
+
+.quiqqer-setup-mailSmtp label span {
+    width: 200px;
+}
+
+.quiqqer-setup-mailSmtp label.checkbox span {
+    width: inherit;
+}
+
+.quiqqer-setup-mailSmtp label input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.quiqqer-setup-mailSmtp label select,
+.quiqqer-setup-mailSmtp label input[type="text"] {
+    width: 300px;
+}
