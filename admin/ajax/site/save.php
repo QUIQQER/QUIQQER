@@ -15,6 +15,8 @@ QUI::$Ajax->registerFunction(
         $Project = QUI::getProjectManager()->decode($project);
         $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
 
+        QUI::getEvents()->fireEvent('onSiteSaveAjaxBegin', [$Site]);
+
         $attributes = \json_decode($attributes, true);
 
         try {
@@ -24,6 +26,8 @@ QUI::$Ajax->registerFunction(
         } catch (QUI\Exception $Exception) {
             QUI::getMessagesHandler()->addError($Exception->getMessage());
         }
+
+        QUI::getEvents()->fireEvent('onSiteSaveAjaxEnd', [$Site]);
 
         try {
             require_once 'get.php';
