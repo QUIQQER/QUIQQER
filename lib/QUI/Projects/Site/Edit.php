@@ -289,7 +289,8 @@ class Edit extends Site
         QUI::getDataBase()->exec([
             'update' => $this->TABLE,
             'set'    => [
-                'active' => 0
+                'active'       => 0,
+                'release_from' => ''
             ],
             'where'  => [
                 'id' => $this->getId()
