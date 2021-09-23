@@ -10,11 +10,10 @@ define('controls/installation/MailSMTP', [
 
     'css!controls/installation/MailSMTP.css'
 
-], function (QUI, QUIControl) {
+], function (QUI, QUIControl, QUIAjax) {
     "use strict";
 
-    let noSMTP  = null;
-    let useSMTP = null;
+    let noSMTP = null;
 
     return new Class({
 
@@ -50,7 +49,11 @@ define('controls/installation/MailSMTP', [
             }
 
             // check smtp
+            this.checkSMTPServer().then(() => {
 
+            }).catch(() => {
+
+            });
 
             return false;
         },
@@ -93,11 +96,30 @@ define('controls/installation/MailSMTP', [
         },
 
         checkSMTPServer: function () {
-            return new Promise(function (resolve) {
-                QUIAjax.get('', function () {
-                    resolve();
-                }, {
-                    'package': 'quiqqer/quiqqer'
+            const Form   = this.getElm().getElement('form');
+            const Wizard = this.getAttribute('Wizard');
+            const data   = Wizard.getData();
+
+            if (data['mail.admin_mail'] === '') {
+                return Promise.reject('Empty admin mail');
+            }
+
+            return new Promise(function (resolve, reject) {
+                QUIAjax.get('ajax_system_mailTest', resolve, {
+                    'package': 'quiqqer/quiqqer',
+                    onError  : reject,
+                    params   : JSON.encode({
+                        adminMail : data['mail.admin_mail'],
+                        SMTPServer: Form.elements['smtp-server'].value,
+                        SMTPUser  : Form.elements['smtp-user'].value,
+                        SMTPPass  : Form.elements['smtp-password'].value,
+                        SMTPPort  : Form.elements['smtp-port'].value,
+                        SMTPSecure: Form.elements['smtp-secure'].value,
+
+                        SMTPSecureSSL_verify_peer      : Form.elements['smtp-secure-verify_peer'].value,
+                        SMTPSecureSSL_verify_peer_name : Form.elements['smtp-secure-verify_peer_name'].value,
+                        SMTPSecureSSL_allow_self_signed: Form.elements['mail.settings.allow_self_signed'].values
+                    })
                 });
             });
         }

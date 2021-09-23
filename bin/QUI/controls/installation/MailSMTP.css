@@ -33,6 +33,7 @@
 }
 
 .quiqqer-setup-mailSmtp label select,
-.quiqqer-setup-mailSmtp label input[type="text"] {
+.quiqqer-setup-mailSmtp label input[type="text"],
+.quiqqer-setup-mailSmtp label input[type="password"] {
     width: 300px;
 }

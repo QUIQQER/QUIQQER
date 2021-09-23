@@ -94,6 +94,10 @@ define('InstallationWizard', [
             });
         },
 
+        getData: function () {
+            return formData;
+        },
+
         $loadInstallation: function (list) {
             if (list.length > 1) {
                 // create provider select

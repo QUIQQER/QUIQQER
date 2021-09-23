@@ -56,7 +56,13 @@ QUI::$Ajax->registerFunction(
 
         // debug output
         try {
-            $recipients = QUI::conf('mail', 'admin_mail');
+            $mailRecipient = QUI::conf('mail', 'admin_mail');
+
+            if (!empty($params['adminMail'])) {
+                $mailRecipient = $params['adminMail'];
+            }
+
+            $recipients = $mailRecipient;
             $recipients = \trim($recipients);
             $recipients = \explode(',', $recipients);
 
@@ -105,7 +111,7 @@ QUI::$Ajax->registerFunction(
                 'text.mail.body'
             ));
 
-            $Mailers->addRecipient(QUI::conf('mail', 'admin_mail'));
+            $Mailers->addRecipient($mailRecipient);
             $Mailers->send();
         } catch (\Exception $Exception) {
             QUI\Mail\Log::logException($Exception);

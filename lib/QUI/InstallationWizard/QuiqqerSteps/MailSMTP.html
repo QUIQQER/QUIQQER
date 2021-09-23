@@ -63,6 +63,16 @@
                 <span>{locale group="quiqqer/quiqqer" var="mail.settings.allow_self_signed"}</span>
             </label>
 
+            <label style="margin-top: 2rem">
+                <span>{locale group="quiqqer/quiqqer" var="quiqqer.settings.email.smtp.auth.user"}</span>
+                <input type="text" name="smtp-user" autocomplete="new-user" />
+            </label>
+
+             <label>
+                <span>{locale group="quiqqer/quiqqer" var="quiqqer.settings.email.smtp.auth.password"}</span>
+                <input type="password" name="smtp-password" autocomplete="new-password" />
+            </label>
+
             <input type="hidden" name="use-smtp" value="0" />
         </form>
     </div>
