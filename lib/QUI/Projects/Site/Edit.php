@@ -296,7 +296,7 @@ class Edit extends Site
             'update' => $this->TABLE,
             'set'    => [
                 'active'       => 0,
-                'release_from' => '',
+                'release_from' => null,
                 'e_user'       => $User->getId()
             ],
             'where'  => [
