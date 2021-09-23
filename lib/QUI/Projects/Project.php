@@ -1306,7 +1306,8 @@ class Project
                 'image_emotion' => 'text NULL',
                 'image_site'    => 'text NULL',
                 'release_from'  => 'DATETIME NULL DEFAULT NULL',
-                'release_to'    => 'DATETIME NULL DEFAULT NULL'
+                'release_to'    => 'DATETIME NULL DEFAULT NULL',
+                'auto_release'  => 'int(1) DEFAULT 0'
             ]);
 
             // fix for old tables

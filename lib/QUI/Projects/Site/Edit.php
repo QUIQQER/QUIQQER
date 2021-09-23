@@ -180,24 +180,21 @@ class Edit extends Site
         $release_from = $this->getAttribute('release_from');
         $release_to   = $this->getAttribute('release_to');
 
-        if (!$release_from || $release_from === '0000-00-00 00:00:00') {
-            $release_from = \date('Y-m-d H:i:s');
-            //$this->setAttribute('release_from', $release_from);
+        if ($release_from && $release_to !== '0000-00-00 00:00:00') {
+            $release_from = \strtotime($release_from);
+
+            if ($release_from > \time()) {
+                throw new QUI\Exception(
+                    QUI::getLocale()->get(
+                        'quiqqer/quiqqer',
+                        'exception.site.release.from.inFuture'
+                    ),
+                    1119
+                );
+            }
         }
 
-        $release_from = \strtotime($release_from);
-
-        if ($release_from && $release_from >= \time()) {
-            throw new QUI\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
-                    'exception.site.release.from.inFuture'
-                ),
-                1119
-            );
-        }
-
-        if (!$release_to || $release_to == '0000-00-00 00:00:00') {
+        if (!$release_to || $release_to === '0000-00-00 00:00:00') {
             return;
         }
 
@@ -636,7 +633,8 @@ class Edit extends Site
                 'release_from'  => $release_from,
                 'release_to'    => $release_to,
                 // Extra-Feld
-                'extra'         => \json_encode($siteExtra)
+                'extra'         => \json_encode($siteExtra),
+                'auto_release'  => $this->getAttribute('auto_release') ? 1 : 0
             ],
             [
                 'id' => $this->getId()
