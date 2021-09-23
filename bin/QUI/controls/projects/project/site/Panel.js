@@ -1934,6 +1934,12 @@ define('controls/projects/project/site/Panel', [
                 return;
             }
 
+            this.getSite().setAttribute('release_from', '');
+
+            if (this.getContent().getElement('[name="release_from"]')) {
+                this.getContent().getElement('[name="release_from"]').value = '';
+            }
+
             Status.setAttributes({
                 'textimage': Status.getAttribute('aimage'),
                 'text'     : Status.getAttribute('atext'),
