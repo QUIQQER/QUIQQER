@@ -325,6 +325,7 @@ define('classes/projects/project/Site', [
                 if (result) {
                     Site.fireEvent('activate', [Site]);
                 } else {
+                    Site.setAttribute('release_from', '');
                     Site.fireEvent('deactivate', [Site]);
                 }
 
@@ -346,6 +347,7 @@ define('classes/projects/project/Site', [
             Ajax.post('ajax_site_deactivate', function (result) {
                 if (result === 0) {
                     Site.setAttribute('active', 0);
+                    Site.setAttribute('release_from', '');
                 }
 
                 if (typeof onfinish === 'function') {
