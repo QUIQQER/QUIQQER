@@ -70,7 +70,7 @@ require.config({
  */
 
 // main require list + locale translations
-var requireList = [
+let requireList = [
     'qui/QUI',
     'Locale',
     'Ajax',
@@ -79,7 +79,7 @@ var requireList = [
     'qui/controls/buttons/Button',
     'qui/controls/contextmenu/Item',
     'qui/controls/contextmenu/Separator'
-].append(QUIQQER_LOCALE || []);
+].append(window.QUIQQER_LOCALE || []);
 
 if (typeof window.Intl === "undefined") {
     console.error("Intl is not supported");
@@ -88,7 +88,7 @@ if (typeof window.Intl === "undefined") {
 require(requireList, function () {
     "use strict";
 
-    var QUI                     = arguments[0],
+    let QUI                     = arguments[0],
         Locale                  = arguments[1],
         Ajax                    = arguments[2],
         Projects                = arguments[3],
@@ -98,11 +98,15 @@ require(requireList, function () {
         QUIContextmenuItem      = arguments[6],
         QUIContextmenuSeparator = arguments[7];
 
-    Locale.setCurrent(USER.lang);
+    Locale.setCurrent(window.USER.lang);
 
     // workaround, because the QUI framework has sometimes its own Locale :-/
     require(['qui/Locale'], function (QUIsOwnLocale) {
-        QUIsOwnLocale.setCurrent(USER.lang);
+        QUIsOwnLocale.setCurrent(window.USER.lang);
+    });
+
+    require(['InstallationWizard'], function (InstallationWizard) {
+        InstallationWizard.load();
     });
 
     QUI.setAttributes({

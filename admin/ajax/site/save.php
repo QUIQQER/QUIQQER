@@ -15,15 +15,26 @@ QUI::$Ajax->registerFunction(
         $Project = QUI::getProjectManager()->decode($project);
         $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
 
+        QUI::getEvents()->fireEvent('onSiteSaveAjaxBegin', [$Site]);
+
         $attributes = \json_decode($attributes, true);
 
         try {
             $Site->setAttributes($attributes);
+
+            if ($Site->getAttribute('release_from') || $Site->getAttribute('release_to')) {
+                $Site->setAttribute('auto_release', 1);
+            } else {
+                $Site->setAttribute('auto_release', 0);
+            }
+
             $Site->save();
             $Site->refresh();
         } catch (QUI\Exception $Exception) {
             QUI::getMessagesHandler()->addError($Exception->getMessage());
         }
+
+        QUI::getEvents()->fireEvent('onSiteSaveAjaxEnd', [$Site]);
 
         try {
             require_once 'get.php';

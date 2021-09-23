@@ -21,11 +21,12 @@
         <provider>
             <rest src="\QUI\Projects\RestProvider"/>
             <auth src="\QUI\Users\Auth\QUIQQER"/>
-            <desktopSearch src="\QUI\Workspace\Search\Provider\Sites" />
-            <desktopSearch src="\QUI\Workspace\Search\Provider\Media" />
-            <desktopSearch src="\QUI\Workspace\Search\Provider\SettingsCategories" />
-            <desktopSearch src="\QUI\Workspace\Search\Provider\UsersAndGroups" />
-            <desktopSearch src="\QUI\Workspace\Search\Provider\Projects" />
+            <desktopSearch src="\QUI\Workspace\Search\Provider\Sites"/>
+            <desktopSearch src="\QUI\Workspace\Search\Provider\Media"/>
+            <desktopSearch src="\QUI\Workspace\Search\Provider\SettingsCategories"/>
+            <desktopSearch src="\QUI\Workspace\Search\Provider\UsersAndGroups"/>
+            <desktopSearch src="\QUI\Workspace\Search\Provider\Projects"/>
+            <installationWizard src="\QUI\InstallationWizard\QuiqqerProvider"/>
         </provider>
     </package>
 </quiqqer>

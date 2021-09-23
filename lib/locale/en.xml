@@ -4538,6 +4538,53 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
             Example: .gif, .jpg, .jpeg, .pdf
             ]]></en>
         </locale>
+
+        <locale name="quiqqer.setup.mail.title">
+            <en><![CDATA[Administrator email]]></en>
+        </locale>
+        <locale name="quiqqer.setup.mail.description">
+            <en><![CDATA[
+                Please enter an e-mail address which will be used as a general e-mail address.
+                Error messages or information will be sent to this e-mail, for example.
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.setup.mail.label">
+            <en><![CDATA[E-Mail address]]></en>
+        </locale>
+        <locale name="quiqqer.setup.mail.placeholder">
+            <en><![CDATA[hello@email.tld]]></en>
+        </locale>
+
+        <locale name="quiqqer.setup.mail.smtp.title">
+            <en><![CDATA[SMTP mail server settings]]></en>
+        </locale>
+        <locale name="quiqqer.setup.mail.smtp.description">
+            <en><![CDATA[
+            The SMTP server is responsible for sending e-mails.
+            If you have a SMTP server for sending e-mails, please enter the data of the server.
+            ]]></en>
+        </locale>
+
+        <locale name="quiqqer.setup.country.title">
+            <en><![CDATA[Country settings]]></en>
+        </locale>
+        <locale name="quiqqer.setup.country.description">
+            <en><![CDATA[
+            Please set the default country that QUIQQER should use.
+            This setting may affect some modules or plugins.
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.setup.cron.title">
+            <en><![CDATA[Cron Service]]></en>
+        </locale>
+        <locale name="quiqqer.setup.cron.description">
+            <en><![CDATA[
+            <p>That your QUIQQER system can execute tasks in regular intervals, this must be triggered with an external system.
+            We recommend Cron, which is delivered with Unix systems by default.</p>
+            <p>If you don't have the possibility to set up your own Cron,
+            the developers of QUIQQER offer a service which does this for you.</p>
+            ]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -5226,6 +5273,24 @@ After logging in you will be prompted to set a new password.
         <locale name="exception.upload.not.allowed.ending">
             <en><![CDATA[Unfortunately you are not allowed to upload this file.]]></en>
         </locale>
+
+        <locale name="set.up.title">
+            <en><![CDATA[QUIQQER set up]]></en>
+        </locale>
+        <locale name="set.up.description">
+            <en><![CDATA[Set up the QUIQQER basic system]]></en>
+        </locale>
+        <locale name="quiqqer.setup.welcome.title">
+            <en><![CDATA[Welcome to the setup of your QUIQQER system]]></en>
+        </locale>
+        <locale name="quiqqer.setup.welcome.description">
+            <en><![CDATA[
+            <p>Thank you for choosing QUIQQER. QUIQQER is a versatile system,
+            so there are some steps you should set up.</p>
+            <p>The setup will guide you step by step through the different settings.
+            So that QUIQQER is perfectly tuned to you and your project.</p>
+            ]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
 
@@ -5827,6 +5892,13 @@ After logging in you will be prompted to set a new password.
         </locale>
         <locale name="message.quiqqer.project.media.fileCacheClear.success">
             <en><![CDATA[The media cache was successfully cleared.]]></en>
+        </locale>
+
+        <locale name="set.up.next.button.text">
+            <en><![CDATA[Next]]></en>
+        </locale>
+        <locale name="set.up.execute.button.text">
+            <en><![CDATA[Complete setup]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/controls" datatype="php,js">

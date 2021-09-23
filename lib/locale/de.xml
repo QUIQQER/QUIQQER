@@ -4697,6 +4697,55 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             Beispiel: .gif,.jpg,.jpeg,.pdf
             ]]></de>
         </locale>
+
+        <locale name="quiqqer.setup.mail.title">
+            <de><![CDATA[Administrator-E-Mail]]></de>
+        </locale>
+        <locale name="quiqqer.setup.mail.description">
+            <de><![CDATA[
+                Bitte gebe eine E-Mail Adresse welche als allgemeine E-Mail Adresse verwendet wird.
+                Fehlermeldungen oder Informationen werden zum Beispiel an diese E-Mail gesendet.
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.setup.mail.label">
+            <de><![CDATA[E-Mail Adresse]]></de>
+        </locale>
+        <locale name="quiqqer.setup.mail.placeholder">
+            <de><![CDATA[hello@email.tld]]></de>
+        </locale>
+
+        <locale name="quiqqer.setup.mail.smtp.title">
+            <de><![CDATA[SMTP Mailserver Einstellungen]]></de>
+        </locale>
+        <locale name="quiqqer.setup.mail.smtp.description">
+            <de><![CDATA[
+            Der SMTP Server ist für den Versand von E-Mails zuständig.
+            Wenn du einen SMTP Server für den Versand von E-Mails gebe bitte die Daten des Serves ein.
+            ]]></de>
+        </locale>
+
+
+        <locale name="quiqqer.setup.country.title">
+            <de><![CDATA[Länder-Einstellung]]></de>
+        </locale>
+        <locale name="quiqqer.setup.country.description">
+            <de><![CDATA[
+            Bitte lege das standard Land fest welches QUIQQER verwenden soll.
+            Diese Einstellung kann Auswirkung auf einige Module oder Plugins haben.
+            ]]></de>
+        </locale>
+
+        <locale name="quiqqer.setup.cron.title">
+            <de><![CDATA[Cron Service]]></de>
+        </locale>
+        <locale name="quiqqer.setup.cron.description">
+            <de><![CDATA[
+            <p>Damit dein QUIQQER System in regelmäßigen Abständen Tasks ausführen kann, muss dieses mit einem externen System angestoßen werden.
+            Wir empfehlen dir hierfür Cron, welches bei Unix Systemen standardmäßig mitgeliefert ist.</p>
+            <p>Hast du jedoch keine Möglichkeit einen eigenen Cron einzurichten,
+            bieten die Entwickler von QUIQQER einen Service welcher dies für dich erledigt.</p>
+            ]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -5424,6 +5473,25 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         <locale name="exception.upload.not.allowed.ending">
             <de><![CDATA[Diese Datei darfst du leider nicht hochladen.]]></de>
         </locale>
+
+        <locale name="set.up.title">
+            <de><![CDATA[QUIQQER Setup]]></de>
+        </locale>
+        <locale name="set.up.description">
+            <de><![CDATA[Richte das QUIQQER Grundsystem ein]]></de>
+        </locale>
+        <locale name="quiqqer.setup.welcome.title">
+            <de><![CDATA[Willkommen bei der Einrichtung deines QUIQQER Systems]]></de>
+        </locale>
+        <locale name="quiqqer.setup.welcome.description">
+            <de><![CDATA[
+            <p>Danke das du dich für QUIQQER entschieden hast. QUIQQER ist ein vielseitiges System,
+            daher gibt es einige Schritte die du einstellen solltest.</p>
+            <p>Das Setup wird dich Stück für Stück durch verschiedenen Einstellungsmöglichkeiten leiten.
+            Damit QUIQQER perfekt auf dich und deinem Vorhaben eingestimmt ist.</p>
+            ]]></de>
+        </locale>
+
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">
         <locale name="controls.SendPassword.title">
@@ -6034,6 +6102,13 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         </locale>
         <locale name="message.quiqqer.project.media.fileCacheClear.success">
             <de><![CDATA[Der Media Cache wurde erfolgreich gelöscht.]]></de>
+        </locale>
+
+        <locale name="set.up.next.button.text">
+            <de><![CDATA[Weiter]]></de>
+        </locale>
+        <locale name="set.up.execute.button.text">
+            <de><![CDATA[Setup ausführen]]></de>
         </locale>
     </groups>
 

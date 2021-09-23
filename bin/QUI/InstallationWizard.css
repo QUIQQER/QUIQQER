@@ -1,0 +1,79 @@
+.installation-wizard {
+    border-radius: 3px;
+}
+
+.installation-wizard .qui-window-popup-content {
+    padding: 0;
+}
+
+.installation-wizard .qui-window-popup-content p {
+    padding-bottom: 10px;
+}
+
+/** title
+ =============================== */
+
+.installation-wizard .qui-window-popup-buttons,
+.installation-wizard .qui-window-popup-title {
+    /*padding-left: 3rem;*/
+    background: #383838;
+    color: #fff;
+}
+
+.installation-wizard .qui-window-popup-title .fa-close {
+    color: #fff;
+}
+
+.installation-wizard .qui-window-popup-title-icon,
+.installation-wizard .qui-window-popup-title-text {
+    line-height: 30px;
+}
+
+.installation-wizard .qui-window-popup-title-close {
+    height: 50px;
+}
+
+/** buttons
+ =============================== */
+
+.installation-wizard .qui-window-popup-buttons {
+    display: flex;
+    width: 100%;
+}
+
+.installation-wizard .steps-container {
+    align-items: center;
+    display: flex;
+    flex-grow: 1;
+    margin-left: 20px;
+}
+
+.installation-wizard .steps-container-step {
+    background: #999;
+    border-radius: 100%;
+    height: 10px;
+    margin: 0 5px;
+    width: 10px;
+}
+
+.installation-wizard .steps-container-step--active {
+    background: #666;
+}
+
+.installation-wizard .next-button {
+    width: 200px;
+}
+
+.installation-wizard .next-button:hover {
+
+}
+
+.installation-wizard .next-button button {
+    cursor: pointer;
+    border: 1px solid #acacac;
+    border-radius: 3px;
+    float: right;
+    line-height: 26px;
+    text-align: center;
+    width: 140px;
+}

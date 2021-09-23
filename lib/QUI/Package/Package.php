@@ -25,18 +25,18 @@ use QUI\Cache\LongTermCache;
  */
 class Package extends QUI\QDOM
 {
-    const CONSOLE_XML     = 'console.xml';
-    const DATABASE_XML    = 'database.xml';
-    const EVENTS_XML      = 'events.xml';
-    const GROUP_XML       = 'group.xml';
-    const LOCALE_XML      = 'locale.xml';
-    const MENU_XML        = 'menu.xml';
-    const PANELS_XML      = 'panels.xml';
+    const CONSOLE_XML = 'console.xml';
+    const DATABASE_XML = 'database.xml';
+    const EVENTS_XML = 'events.xml';
+    const GROUP_XML = 'group.xml';
+    const LOCALE_XML = 'locale.xml';
+    const MENU_XML = 'menu.xml';
+    const PANELS_XML = 'panels.xml';
     const PERMISSIONS_XML = 'permissions.xml';
-    const SETTINGS_XML    = 'settings.xml';
-    const SITE_XML        = 'site.xml';
-    const USER_XML        = 'user.xml';
-    const WIDGETS_XML     = 'widgets.xml';
+    const SETTINGS_XML = 'settings.xml';
+    const SITE_XML = 'site.xml';
+    const USER_XML = 'user.xml';
+    const WIDGETS_XML = 'widgets.xml';
 
     /**
      * Name of the package
@@ -157,6 +157,12 @@ class Package extends QUI\QDOM
         }
 
         if (!isset($this->composerData['type'])) {
+            $this->readPackageInfo = true;
+
+            return;
+        }
+
+        if ($this->composerData['type'] === 'quiqqer-asset') {
             $this->readPackageInfo = true;
 
             return;
