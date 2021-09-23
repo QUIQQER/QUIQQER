@@ -170,7 +170,7 @@ class Edit extends Site
 
     /**
      * Check if the release from date is in the future or the release until is in the past
-     * throws exception if the site cant activated
+     * throws exception if the site can't activated
      *
      * @throws QUI\Exception
      */
@@ -180,14 +180,14 @@ class Edit extends Site
         $release_from = $this->getAttribute('release_from');
         $release_to   = $this->getAttribute('release_to');
 
-        if (!$release_from || $release_from == '0000-00-00 00:00:00') {
+        if (!$release_from || $release_from === '0000-00-00 00:00:00') {
             $release_from = \date('Y-m-d H:i:s');
-            $this->setAttribute('release_from', $release_from);
+            //$this->setAttribute('release_from', $release_from);
         }
 
         $release_from = \strtotime($release_from);
 
-        if ($release_from && $release_from > \time()) {
+        if ($release_from && $release_from >= \time()) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -223,6 +223,10 @@ class Edit extends Site
      */
     public function activate($User = false)
     {
+        if (!$User) {
+            $User = QUI::getUserBySession();
+        }
+
         try {
             $this->checkPermission('quiqqer.projects.site.edit', $User);
         } catch (QUI\Exception $Exception) {
@@ -248,7 +252,8 @@ class Edit extends Site
         // save
         QUI::getDataBase()->update($this->TABLE, [
             'active'       => 1,
-            'release_from' => $releaseFrom
+            'release_from' => $releaseFrom,
+            'e_user'       => $User->getId()
         ], [
             'id' => $this->getId()
         ]);
@@ -271,6 +276,10 @@ class Edit extends Site
      */
     public function deactivate($User = false)
     {
+        if (!$User) {
+            $User = QUI::getUserBySession();
+        }
+
         try {
             // Prüfen ob der Benutzer die Seite bearbeiten darf
             $this->checkPermission('quiqqer.projects.site.edit', $User);
@@ -290,7 +299,8 @@ class Edit extends Site
             'update' => $this->TABLE,
             'set'    => [
                 'active'       => 0,
-                'release_from' => ''
+                'release_from' => '',
+                'e_user'       => $User->getId()
             ],
             'where'  => [
                 'id' => $this->getId()
@@ -388,6 +398,10 @@ class Edit extends Site
      */
     public function save($SaveUser = false)
     {
+        if (!$SaveUser) {
+            $SaveUser = QUI::getUserBySession();
+        }
+
         try {
             // Prüfen ob der Benutzer die Seite bearbeiten darf
             $this->checkPermission('quiqqer.projects.site.edit', $SaveUser);
@@ -611,7 +625,7 @@ class Edit extends Site
                 'type'          => $this->getAttribute('type'),
                 'layout'        => $this->getAttribute('layout'),
                 'nav_hide'      => $this->getAttribute('nav_hide') ? 1 : 0,
-                'e_user'        => QUI::getUserBySession()->getId(),
+                'e_user'        => $SaveUser->getId(),
                 // ORDER
                 'order_type'    => $order_type,
                 'order_field'   => $order_field,
