@@ -183,7 +183,7 @@ class Edit extends Site
         if ($release_from && $release_to !== '0000-00-00 00:00:00') {
             $release_from = \strtotime($release_from);
 
-            if ($release_from < \time()) {
+            if ($release_from > \time()) {
                 throw new QUI\Exception(
                     QUI::getLocale()->get(
                         'quiqqer/quiqqer',
@@ -200,7 +200,7 @@ class Edit extends Site
 
         $release_to = \strtotime($release_to);
 
-        if ($release_to && $release_to > \time()) {
+        if ($release_to && $release_to < \time()) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -507,7 +507,7 @@ class Edit extends Site
                 // daher werden nur aktive seite beachten
                 $release_from = \date(
                     'Y-m-d H:i:s',
-                    \strtotime($this->getAttribute('e_date'))
+                    \strtotime(date('Y-m-d H:i:s'))
                 );
             }
         }
