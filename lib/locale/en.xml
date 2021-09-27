@@ -4585,6 +4585,33 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
             the developers of QUIQQER offer a service which does this for you.</p>
             ]]></en>
         </locale>
+
+        <locale name="quiqqer.setup.finish.title">
+            <en><![CDATA[Just one more small step]]></en>
+        </locale>
+        <locale name="quiqqer.setup.finish.description">
+            <en><![CDATA[
+            <p>Thank you for using QUIQQER, you have almost set up your QUIQQER system.
+            Your system is now set up for you.</p>
+            <p>If you want to learn even more about QUIQQER, check it out here:</p>
+            <ul>
+                <li><a href="https://www.quiqqer.com" target="_blank">https://www.quiqqer.com</a></li>
+                <li><a href="https://www.ecoyn.com" target="_blank">https://www.ecoyn.com</a></li>
+            </ul>
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.setup.cron.button.cronservice">
+            <en><![CDATA[Use Cron Service]]></en>
+        </locale>
+        <locale name="quiqqer.setup.cron.button.no.cronservice">
+            <en><![CDATA[Skip and do not use cron service]]></en>
+        </locale>
+        <locale name="quiqqer.setup.cron.button.register">
+            <en><![CDATA[Register]]></en>
+        </locale>
+        <locale name="quiqqer.setup.cron.button.next">
+            <en><![CDATA[Continue without registration]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">

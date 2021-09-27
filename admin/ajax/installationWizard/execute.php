@@ -20,7 +20,7 @@ QUI::$Ajax->registerFunction(
 
         /* @var $Provider QUI\InstallationWizard\InstallationWizardInterface */
         $Provider = new $provider();
-        $Provider->execute($data);
+        $Provider->execute(json_decode($data, true));
 
         ProviderHandler::setProviderStatus($Provider, ProviderHandler::STATUS_SET_UP_DONE);
     },

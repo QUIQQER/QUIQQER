@@ -27,7 +27,6 @@ define('InstallationWizard', [
     let WizardWindow    = null;
     let formData        = {};
 
-    // @todo step changing -> next click
     // @todo last step -> execute setup
     // @todo multiple setups (module / plugin)
 
@@ -36,7 +35,6 @@ define('InstallationWizard', [
          * Loads the wizard - and checks if
          */
         load: function () {
-            return;
             QUIAjax.get('ajax_installationWizard_get', (list) => {
                 if (!list.length) {
                     return;
@@ -122,7 +120,8 @@ define('InstallationWizard', [
                 }).inject(StepsContainer);
             }
 
-            this.loadStep(0).catch(() => {
+            this.loadStep(0).catch((err) => {
+                console.error(err);
             });
         },
 
@@ -266,11 +265,31 @@ define('InstallationWizard', [
                 return;
             }
 
-            this.loadStep(currentStep + 1);
+            this.loadStep(currentStep + 1).catch(function (err) {
+                console.error(err);
+            });
         },
 
         next: function () {
-            this.loadStep(currentStep + 1);
+            this.loadStep(currentStep + 1).catch(function (err) {
+                console.error(err);
+            });
+        },
+
+        //region begin loader
+
+        showLoader: function () {
+            console.log('showLoader');
+
+            WizardWindow.Loader.show();
+        },
+
+        hideLoader: function () {
+            console.log('hideLoader');
+
+            WizardWindow.Loader.hide();
         }
+
+        //endregion
     };
 });

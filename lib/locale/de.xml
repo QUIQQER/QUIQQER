@@ -4746,6 +4746,33 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             bieten die Entwickler von QUIQQER einen Service welcher dies für dich erledigt.</p>
             ]]></de>
         </locale>
+
+        <locale name="quiqqer.setup.finish.title">
+            <de><![CDATA[Nur noch ein kleiner Schritt]]></de>
+        </locale>
+        <locale name="quiqqer.setup.finish.description">
+            <de><![CDATA[
+            <p>Danke das du QUIQQER nutzen möchtest, Du hast dein QUIQQER System fast eingerichtet.
+            Dein System wird nun für dich eingerichtet.</p>
+            <p>Möchtest du noch mehr über QUIQQER erfahren, dann schaue doch einmal hier nach:</p>
+            <ul>
+                <li><a href="https://www.quiqqer.de" target="_blank">https://www.quiqqer.de</a></li>
+                <li><a href="https://www.ecoyn.de" target="_blank">https://www.ecoyn.de</a></li>
+            </ul>
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.setup.cron.button.cronservice">
+            <de><![CDATA[Cron Service nutzen]]></de>
+        </locale>
+        <locale name="quiqqer.setup.cron.button.no.cronservice">
+            <de><![CDATA[Überspringen und kein Cron Service nutzen]]></de>
+        </locale>
+        <locale name="quiqqer.setup.cron.button.register">
+            <de><![CDATA[Registrieren]]></de>
+        </locale>
+        <locale name="quiqqer.setup.cron.button.next">
+            <de><![CDATA[Weiter ohne Registrierung]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">

@@ -9,32 +9,29 @@
     padding: 3rem;
     color: #fff;
     font-size: 1.25rem;
-    overflow: auto;
     "
 >
-    <div style="float: left; width: 60%; display: flex; flex-direction: column;">
-        <h1 style="font-size: 3rem">{locale group="quiqqer/quiqqer" var="quiqqer.setup.cron.title"}</h1>
-        {locale group="quiqqer/quiqqer" var="quiqqer.setup.cron.description"}
+    <style>
+        .quiqqer-wizard-finish-header {
+            display: flex;
+            flex-direction: column;
+            float: left;
+            width: 60%;
+        }
 
-        <div class="quiqqer-setup-cron-btns" style="display: flex; width: 400px; margin-top: 3rem;">
-            <button name="use-cronservice">
-                <span class="fa fa-gears"></span>
-                <span>
-                    {locale group="quiqqer/quiqqer" var="quiqqer.setup.cron.button.cronservice"}
-                </span>
-            </button>
+        .quiqqer-wizard-finish-header a {
+            color: #fff;
+        }
 
-            <button name="no-cronservice">
-                <span class="fa fa-angle-right"></span>
-                <span>
-                    {locale group="quiqqer/quiqqer" var="quiqqer.setup.cron.button.no.cronservice"}
-                </span>
-            </button>
-        </div>
-
-        <form></form>
+        .quiqqer-wizard-finish-header a:hover {
+            text-decoration: none;
+        }
+    </style>
+    <div class="quiqqer-wizard-finish-header">
+        <h1 style="font-size: 3rem">{locale group="quiqqer/quiqqer" var="quiqqer.setup.finish.title"}</h1>
+        {locale group="quiqqer/quiqqer" var="quiqqer.setup.finish.description"}
     </div>
     <div style="align-items: center; display: flex; flex-grow: 1; justify-content: end; flex-direction: column;">
-        <img src="{$urlImageDir}Q_zeigestock-02.svg" style="max-width: 400px" />
+        <img src="{$urlImageDir}Q_zauberer-01.svg" style="max-width: 350px" />
     </div>
 </div>

@@ -7,17 +7,8 @@ use QUI;
 /**
  * Class Welcome
  */
-class Cron extends QUI\InstallationWizard\AbstractInstallationWizardStep
+class Finish extends QUI\InstallationWizard\AbstractInstallationWizardStep
 {
-    /**
-     * @param array $attributes
-     */
-    public function __construct($attributes = [])
-    {
-        parent::__construct($attributes);
-        $this->setJavaScriptControl('controls/installation/Cron');
-    }
-
     /**
      * @param null $Locale
      * @return string
@@ -28,7 +19,7 @@ class Cron extends QUI\InstallationWizard\AbstractInstallationWizardStep
             $Locale = QUI::getLocale();
         }
 
-        return $Locale->get('quiqqer/quiqqer', 'quiqqer.setup.cron.title');
+        return $Locale->get('quiqqer/quiqqer', 'quiqqer.setup.finish.title');
     }
 
     /**
@@ -41,7 +32,7 @@ class Cron extends QUI\InstallationWizard\AbstractInstallationWizardStep
             $Locale = QUI::getLocale();
         }
 
-        return $Locale->get('quiqqer/quiqqer', 'quiqqer.setup.cron.description');
+        return $Locale->get('quiqqer/quiqqer', 'quiqqer.setup.finish.description');
     }
 
     /**
@@ -59,6 +50,6 @@ class Cron extends QUI\InstallationWizard\AbstractInstallationWizardStep
             'urlImageDir' => URL_OPT_DIR.'quiqqer/quiqqer/bin/images/installation/'
         ]);
 
-        return $Engine->fetch(dirname(__FILE__).'/Cron.html');
+        return $Engine->fetch(dirname(__FILE__).'/Finish.html');
     }
 }
