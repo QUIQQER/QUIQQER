@@ -1,0 +1,14 @@
+.quiqqer-setup-cron-btns button {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    margin: 10px 10px 0 0;
+    padding: 10px;
+}
+
+.quiqqer-setup-cron-btns button .fa {
+    font-size: 26px;
+    padding: 0 0 10px;
+}

@@ -57,7 +57,7 @@ interface InstallationWizardInterface
     /**
      * Setup will be executed
      *
-     * @return mixed
+     * @param array $data
      */
-    public function execute($data = []);
+    public function execute(array $data = []);
 }

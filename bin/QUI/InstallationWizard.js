@@ -27,8 +27,6 @@ define('InstallationWizard', [
     let WizardWindow    = null;
     let formData        = {};
 
-    // @todo step changing -> next click
-    // @todo last step -> execute setup
     // @todo multiple setups (module / plugin)
 
     return {
@@ -36,22 +34,30 @@ define('InstallationWizard', [
          * Loads the wizard - and checks if
          */
         load: function () {
-            return;
             QUIAjax.get('ajax_installationWizard_get', (list) => {
                 if (!list.length) {
                     return;
                 }
 
-                console.log('Installation wizard loading', list);
-
                 // open installation wizard
                 require(['qui/controls/windows/Popup'], (Window) => {
-                    // @todo window height + width -> max 90%
+                    const sizes = QUI.getWindowSize();
+
+                    let maxHeight = 800,
+                        maxWidth  = 1200;
+
+                    if (sizes.y * 0.9 < maxHeight) {
+                        maxHeight = Math.round(sizes.y * 0.9);
+                    }
+
+                    if (sizes.x * 0.9 < maxWidth) {
+                        maxWidth = Math.round(sizes.x * 0.9);
+                    }
 
                     WizardWindow = new Window({
-                        title    : 'Welcome to the QUIQQER Setup',
-                        maxHeight: 800,
-                        maxWidth : 1200,
+                        title    : QUILocale.get('quiqqer/quiqqer', 'quiqqer.setup.window.title'),
+                        maxHeight: maxHeight,
+                        maxWidth : maxWidth,
                         resizable: false,
                         icon     : 'fa fa-magic',
                         events   : {
@@ -59,12 +65,8 @@ define('InstallationWizard', [
                                 Win.getElm().addClass('installation-wizard');
                                 Win.$Buttons.getElements('button').destroy();
 
-                                StepsContainer = new Element('div.steps-container').inject(Win.$Buttons);
-
-                                NextButtonContainer = new Element('div', {
-                                    'class': 'next-button',
-
-                                }).inject(Win.$Buttons);
+                                StepsContainer      = new Element('div.steps-container').inject(Win.$Buttons);
+                                NextButtonContainer = new Element('div.next-button').inject(Win.$Buttons);
 
                                 NextButton = new Element('button', {
                                     'class': 'qui-button',
@@ -79,13 +81,25 @@ define('InstallationWizard', [
 
                             onOpen: () => {
                                 this.$loadInstallation(list);
+                            },
+
+                            onCancel: () => {
+                                let providers = list.map(function (entry) {
+                                    return entry.class;
+                                });
+
+                                QUIAjax.post('ajax_installationWizard_cancel', function () {
+                                    // nothing
+                                }, {
+                                    'package': 'quiqqer/quiqqer',
+                                    providers: JSON.encode(providers)
+                                });
                             }
                         }
                     });
 
                     WizardWindow.open();
                 });
-
             }, {
                 'package': 'quiqqer/quiqqer',
                 onError  : function () {
@@ -122,7 +136,8 @@ define('InstallationWizard', [
                 }).inject(StepsContainer);
             }
 
-            this.loadStep(0).catch(() => {
+            this.loadStep(0).catch((err) => {
+                console.error(err);
             });
         },
 
@@ -211,8 +226,6 @@ define('InstallationWizard', [
                 formData = Object.assign(formData, FormUtils.getFormData(Form));
             }
 
-            console.log(formData);
-
             return Next.then(() => {
                 if (CurrentControl) {
                     CurrentControl.destroy();
@@ -240,8 +253,6 @@ define('InstallationWizard', [
                 return;
             }
 
-            // @todo step control save
-
             WizardWindow.Loader.show();
 
             let steps = StepsContainer.getElements('.steps-container-step');
@@ -249,7 +260,11 @@ define('InstallationWizard', [
             if (currentStep >= steps.length - 1) {
                 // execute
                 QUIAjax.post('ajax_installationWizard_execute', () => {
-                    // @todo success message
+                    QUI.getMessageHandler().then(function (MH) {
+                        MH.addSuccess(
+                            QUILocale.get('quiqqer/quiqqer', 'quiqqer.setup.success')
+                        );
+                    });
 
                     WizardWindow.close();
                 }, {
@@ -257,7 +272,9 @@ define('InstallationWizard', [
                     provider : CurrentProvider.class,
                     data     : JSON.encode(formData),
                     onError  : function (err) {
-                        // @todo error message
+                        QUI.getMessageHandler().then(function (MH) {
+                            MH.addError(err.getMessage());
+                        });
 
                         WizardWindow.Loader.hide();
                     }
@@ -266,11 +283,27 @@ define('InstallationWizard', [
                 return;
             }
 
-            this.loadStep(currentStep + 1);
+            this.loadStep(currentStep + 1).catch(function (err) {
+                console.error(err);
+            });
         },
 
         next: function () {
-            this.loadStep(currentStep + 1);
+            this.loadStep(currentStep + 1).catch(function (err) {
+                console.error(err);
+            });
+        },
+
+        //region begin loader
+
+        showLoader: function () {
+            WizardWindow.Loader.show();
+        },
+
+        hideLoader: function () {
+            WizardWindow.Loader.hide();
         }
+
+        //endregion
     };
 });

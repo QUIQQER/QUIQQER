@@ -13,7 +13,8 @@ define('controls/installation/MailSMTP', [
 ], function (QUI, QUIControl, QUIAjax) {
     "use strict";
 
-    let noSMTP = null;
+    let noSMTP  = null;
+    let useSMTP = null;
 
     return new Class({
 
@@ -48,11 +49,20 @@ define('controls/installation/MailSMTP', [
                 return true;
             }
 
+            if (useSMTP === true) {
+                return true;
+            }
+
+            const Wizard = this.getAttribute('Wizard');
+
             // check smtp
+            Wizard.showLoader();
+
             this.checkSMTPServer().then(() => {
-
+                useSMTP = true;
+                Wizard.next();
             }).catch(() => {
-
+                Wizard.hideLoader();
             });
 
             return false;
