@@ -27,7 +27,6 @@ define('InstallationWizard', [
     let WizardWindow    = null;
     let formData        = {};
 
-    // @todo last step -> execute setup
     // @todo multiple setups (module / plugin)
 
     return {
@@ -40,14 +39,12 @@ define('InstallationWizard', [
                     return;
                 }
 
-                console.log('Installation wizard loading', list);
-
                 // open installation wizard
                 require(['qui/controls/windows/Popup'], (Window) => {
                     // @todo window height + width -> max 90%
 
                     WizardWindow = new Window({
-                        title    : 'Welcome to the QUIQQER Setup',
+                        title    : 'Welcome to the QUIQQER Setup', // @todo locale
                         maxHeight: 800,
                         maxWidth : 1200,
                         resizable: false,
@@ -77,6 +74,19 @@ define('InstallationWizard', [
 
                             onOpen: () => {
                                 this.$loadInstallation(list);
+                            },
+
+                            onCancel: () => {
+                                let providers = list.map(function (entry) {
+                                    return entry.class;
+                                });
+
+                                QUIAjax.post('ajax_installationWizard_cancel', function () {
+                                    // nothing
+                                }, {
+                                    'package': 'quiqqer/quiqqer',
+                                    providers: JSON.encode(providers)
+                                });
                             }
                         }
                     });
@@ -210,8 +220,6 @@ define('InstallationWizard', [
                 formData = Object.assign(formData, FormUtils.getFormData(Form));
             }
 
-            console.log(formData);
-
             return Next.then(() => {
                 if (CurrentControl) {
                     CurrentControl.destroy();
@@ -238,8 +246,6 @@ define('InstallationWizard', [
             if (currentStep === null) {
                 return;
             }
-
-            // @todo step control save
 
             WizardWindow.Loader.show();
 
@@ -279,14 +285,10 @@ define('InstallationWizard', [
         //region begin loader
 
         showLoader: function () {
-            console.log('showLoader');
-
             WizardWindow.Loader.show();
         },
 
         hideLoader: function () {
-            console.log('hideLoader');
-
             WizardWindow.Loader.hide();
         }
 
