@@ -41,12 +41,23 @@ define('InstallationWizard', [
 
                 // open installation wizard
                 require(['qui/controls/windows/Popup'], (Window) => {
-                    // @todo window height + width -> max 90%
+                    const sizes = QUI.getWindowSize();
+
+                    let maxHeight = 800,
+                        maxWidth  = 1200;
+
+                    if (sizes.y * 0.9 < maxHeight) {
+                        maxHeight = Math.round(sizes.y * 0.9);
+                    }
+
+                    if (sizes.x * 0.9 < maxWidth) {
+                        maxWidth = Math.round(sizes.x * 0.9);
+                    }
 
                     WizardWindow = new Window({
-                        title    : 'Welcome to the QUIQQER Setup', // @todo locale
-                        maxHeight: 800,
-                        maxWidth : 1200,
+                        title    : QUILocale.get('quiqqer/quiqqer', 'quiqqer.setup.window.title'),
+                        maxHeight: maxHeight,
+                        maxWidth : maxWidth,
                         resizable: false,
                         icon     : 'fa fa-magic',
                         events   : {
@@ -54,12 +65,8 @@ define('InstallationWizard', [
                                 Win.getElm().addClass('installation-wizard');
                                 Win.$Buttons.getElements('button').destroy();
 
-                                StepsContainer = new Element('div.steps-container').inject(Win.$Buttons);
-
-                                NextButtonContainer = new Element('div', {
-                                    'class': 'next-button',
-
-                                }).inject(Win.$Buttons);
+                                StepsContainer      = new Element('div.steps-container').inject(Win.$Buttons);
+                                NextButtonContainer = new Element('div.next-button').inject(Win.$Buttons);
 
                                 NextButton = new Element('button', {
                                     'class': 'qui-button',
@@ -93,7 +100,6 @@ define('InstallationWizard', [
 
                     WizardWindow.open();
                 });
-
             }, {
                 'package': 'quiqqer/quiqqer',
                 onError  : function () {
@@ -254,7 +260,11 @@ define('InstallationWizard', [
             if (currentStep >= steps.length - 1) {
                 // execute
                 QUIAjax.post('ajax_installationWizard_execute', () => {
-                    // @todo success message
+                    QUI.getMessageHandler().then(function (MH) {
+                        MH.addSuccess(
+                            QUILocale.get('quiqqer/quiqqer', 'quiqqer.setup.success')
+                        );
+                    });
 
                     WizardWindow.close();
                 }, {
@@ -262,7 +272,9 @@ define('InstallationWizard', [
                     provider : CurrentProvider.class,
                     data     : JSON.encode(formData),
                     onError  : function (err) {
-                        // @todo error message
+                        QUI.getMessageHandler().then(function (MH) {
+                            MH.addError(err.getMessage());
+                        });
 
                         WizardWindow.Loader.hide();
                     }

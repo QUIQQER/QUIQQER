@@ -4612,6 +4612,14 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="quiqqer.setup.cron.button.next">
             <en><![CDATA[Continue without registration]]></en>
         </locale>
+        <locale name="quiqqer.setup.window.title">
+            <en><![CDATA[Welcome to the QUIQQER Setup]]></en>
+        </locale>
+        <locale name="quiqqer.setup.success">
+            <en><![CDATA[
+            The setup was successfully completed. Thank you for choosing QUIQQER.
+            ]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">

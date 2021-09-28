@@ -4773,6 +4773,14 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="quiqqer.setup.cron.button.next">
             <de><![CDATA[Weiter ohne Registrierung]]></de>
         </locale>
+        <locale name="quiqqer.setup.window.title">
+            <de><![CDATA[Willkommen zum QUIQQER Einstellungs Assistent]]></de>
+        </locale>
+        <locale name="quiqqer.setup.success">
+            <de><![CDATA[
+            Die Einrichtung wurde erfolgreich abgeschlossen. Vielen Dank, dass Du dich für QUIQQER entschieden hast.
+            ]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
