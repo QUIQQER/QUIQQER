@@ -671,6 +671,11 @@ class Package extends QUI\QDOM
 
         $dir = $this->getDir();
 
+        if ($this->isQuiqqerAsset()) {
+            QUI\System\Log::writeRecursive(1, QUI\System\Log::LEVEL_ERROR);
+            $this->moveQuiqqerAsset();
+        }
+
         if (!$this->isQuiqqerPackage()) {
             QUI::getEvents()->fireEvent('packageSetupEnd', [$this]);
             QUI::getEvents()->fireEvent('packageSetupEnd-'.$pkgName, [$this]);
@@ -761,8 +766,6 @@ class Package extends QUI\QDOM
             $this->setupLocalePublish();
         }
 
-        $this->moveQuiqqerAsset();
-
         // settings
         if (!\file_exists($dir.self::SETTINGS_XML)) {
             QUI::getEvents()->fireEvent('packageSetup', [$this]);
@@ -845,6 +848,10 @@ class Package extends QUI\QDOM
     {
         $this->readPackageData();
 
+        if (!isset($this->composerData['type'])) {
+            return false;
+        }
+
         return $this->isQuiqqerPackage;
     }
 
@@ -856,6 +863,10 @@ class Package extends QUI\QDOM
     public function isQuiqqerAsset(): bool
     {
         $this->readPackageData();
+
+        if (!isset($this->composerData['type'])) {
+            return false;
+        }
 
         return $this->composerData['type'] === 'quiqqer-asset';
     }
@@ -957,7 +968,7 @@ class Package extends QUI\QDOM
 
         $quiqqerAssetDir = OPT_DIR.'bin/'.$this->getName();
 
-        if (is_dir($quiqqerAssetDir)) {
+        if (\is_dir($quiqqerAssetDir)) {
             QUI::getTemp()->moveToTemp($quiqqerAssetDir);
         }
 
