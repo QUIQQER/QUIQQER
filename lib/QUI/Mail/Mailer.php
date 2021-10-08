@@ -114,6 +114,7 @@ class Mailer extends QUI\QDOM
         // remove picture elements
         $Output = new QUI\Output();
         $Output->setSetting('use-absolute-urls', true);
+        $Output->setSetting('parse-to-picture-elements', false);
         $html = $Output->parse($html);
 
         $html = \preg_replace('#<picture([^>]*)>#i', '', $html);

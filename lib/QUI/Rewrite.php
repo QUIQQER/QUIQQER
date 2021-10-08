@@ -295,12 +295,21 @@ class Rewrite
             }
 
             // Sprache
-            if (isset($_url[0])
-                && (\strlen($_url[0]) == 2
-                    || \strlen(\str_replace($defaultSuffix, '', $_url[0])) == 2)
-            ) {
-                $this->lang = \str_replace($defaultSuffix, '', $_url[0]);
+            $language = false;
 
+            if (isset($_url[0])
+                && (\strlen($_url[0]) == 2 || \strlen(\str_replace($defaultSuffix, '', $_url[0])) == 2)
+            ) {
+                $availableLanguages = QUI::availableLanguages();
+                $language           = \str_replace($defaultSuffix, '', $_url[0]);
+
+                if (!\in_array($language, $availableLanguages)) {
+                    $language = false;
+                }
+            }
+
+            if ($language) {
+                $this->lang = $language;
                 QUI::getLocale()->setCurrent($this->lang);
 
                 unset($_url[0]);
@@ -479,8 +488,8 @@ class Rewrite
                 // nur wenn $defaultSuffix == ''
                 $this->showErrorHeader(301, $url);
             } elseif ($defaultSuffix === ''
-                      && isset($pathinfo['extension'])
-                      && $pathinfo['extension'] == 'html'
+                && isset($pathinfo['extension'])
+                && $pathinfo['extension'] == 'html'
             ) {
                 // Falls Extension .html und suffix leer ist
                 // dann auf kein suffix leiten
