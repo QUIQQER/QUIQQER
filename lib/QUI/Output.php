@@ -56,9 +56,10 @@ class Output extends Singleton
      * @var array
      */
     protected $settings = [
-        'use-system-image-paths' => false,
-        'remove-deleted-links'   => true,
-        'use-absolute-urls'      => false
+        'use-system-image-paths'    => false,
+        'remove-deleted-links'      => true,
+        'use-absolute-urls'         => false,
+        'parse-to-picture-elements' => true
     ];
 
     /**
@@ -161,88 +162,89 @@ class Output extends Singleton
         \libxml_clear_errors();
 
 
-        $images = $Dom->getElementsByTagName('img');
+        if ($this->settings['parse-to-picture-elements']) {
+            $images = $Dom->getElementsByTagName('img');
 
-        $nodeContent = function ($n) {
-            /* @var $n \DOMElement */
-            $HTML5 = new HTML5([
-                'disable_html_ns' => true
-            ]);
+            $nodeContent = function ($n) {
+                /* @var $n \DOMElement */
+                $HTML5 = new HTML5([
+                    'disable_html_ns' => true
+                ]);
 
-            $Dom = $HTML5->loadHTML('');
-            $b   = $Dom->importNode($n->cloneNode(true), true);
+                $Dom = $HTML5->loadHTML('');
+                $b   = $Dom->importNode($n->cloneNode(true), true);
 
-            $Dom->appendChild($b);
-            $html = $Dom->saveHTML();
+                $Dom->appendChild($b);
+                $html = $Dom->saveHTML();
 
-            $html = \str_replace('<!DOCTYPE html>', '', $html);
-            $html = \trim($html);
+                $html = \str_replace('<!DOCTYPE html>', '', $html);
+                $html = \trim($html);
 
-            return $html;
-        };
+                return $html;
+            };
 
-        $getPicture = function ($html) {
-            if (empty($html)) {
+            $getPicture = function ($html) {
+                if (empty($html)) {
+                    return null;
+                }
+
+                $HTML5 = new HTML5();
+
+                $d = $HTML5->loadHTML(
+                    \mb_convert_encoding(
+                        $html,
+                        'HTML-ENTITIES',
+                        'UTF-8'
+                    )
+                );
+
+                $p = $d->getElementsByTagName('picture');
+
+                if ($p->length) {
+                    return $p[0];
+                }
+
                 return null;
-            }
+            };
 
-            $HTML5 = new HTML5();
+            $isInPicture = function ($Image) {
+                $Parent = $Image->parentNode;
 
-            $d = $HTML5->loadHTML(
-                \mb_convert_encoding(
-                    $html,
-                    'HTML-ENTITIES',
-                    'UTF-8'
-                )
-            );
+                while ($Parent) {
+                    $parent = $Parent->nodeName;
+                    $Parent = $Parent->parentNode;
 
-            $p = $d->getElementsByTagName('picture');
+                    if ($parent === 'body') {
+                        return false;
+                    }
 
-            if ($p->length) {
-                return $p[0];
-            }
-
-            return null;
-        };
-
-        $isInPicture = function ($Image) {
-            $Parent = $Image->parentNode;
-
-            while ($Parent) {
-                $parent = $Parent->nodeName;
-                $Parent = $Parent->parentNode;
-
-                if ($parent === 'body') {
-                    return false;
+                    if ($parent === 'picture') {
+                        return true;
+                    }
                 }
 
-                if ($parent === 'picture') {
-                    return true;
+                return false;
+            };
+
+            foreach ($images as $Image) {
+                if ($isInPicture($Image)) {
+                    continue;
                 }
-            }
 
-            return false;
-        };
+                $image = $nodeContent($Image);
 
+                $html = \preg_replace_callback(
+                    '#<img([^>]*)>#i',
+                    [&$this, "images"],
+                    $image
+                );
 
-        foreach ($images as $Image) {
-            if ($isInPicture($Image)) {
-                continue;
-            }
+                $Picture = $getPicture($html);
 
-            $image = $nodeContent($Image);
-
-            $html = \preg_replace_callback(
-                '#<img([^>]*)>#i',
-                [&$this, "images"],
-                $image
-            );
-
-            $Picture = $getPicture($html);
-
-            if ($Picture) {
-                $Picture = $Dom->importNode($Picture, true);
-                $Image->parentNode->replaceChild($Picture, $Image);
+                if ($Picture) {
+                    $Picture = $Dom->importNode($Picture, true);
+                    $Image->parentNode->replaceChild($Picture, $Image);
+                }
             }
         }
 
