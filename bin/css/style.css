@@ -218,6 +218,7 @@ label.field-container-field {
     font: inherit;
     font-weight: normal;
     width: 200px;
+    flex-shrink: 0;
 }
 
 .field-container-field,
