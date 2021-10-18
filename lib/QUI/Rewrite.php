@@ -1452,7 +1452,7 @@ class Rewrite
         // Nach / (slash) sortieren, damit URL mit mehr Kindseiten als erstes kommen
         // Ansonsten kann es vorkommen das die falsche Seite für den Pfad zuständig ist
         \usort($list, function ($a, $b) {
-            return \substr_count($a['path'], '/') < \substr_count($b['path'], '/');
+            return \mb_substr_count($a['path'], '/') - \mb_substr_count($b['path'], '/');
         });
 
         foreach ($list as $entry) {
