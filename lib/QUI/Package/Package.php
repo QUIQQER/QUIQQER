@@ -672,7 +672,6 @@ class Package extends QUI\QDOM
         $dir = $this->getDir();
 
         if ($this->isQuiqqerAsset()) {
-            QUI\System\Log::writeRecursive(1, QUI\System\Log::LEVEL_ERROR);
             $this->moveQuiqqerAsset();
         }
 
