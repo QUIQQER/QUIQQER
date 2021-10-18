@@ -20,7 +20,10 @@ QUI::$Ajax->registerFunction(
         $Provider = new $provider();
         $Step     = $Provider->getStep($step);
 
-        return $Step->create();
+        $control = $Step->create();
+        $control .= QUI\Control\Manager::getCSS();
+
+        return $control;
     },
     ['provider', 'step'],
     'Permission::checkSU'
