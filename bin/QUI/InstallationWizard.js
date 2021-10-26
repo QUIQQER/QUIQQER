@@ -35,6 +35,8 @@ define('InstallationWizard', [
          */
         load: function () {
             QUIAjax.get('ajax_installationWizard_get', (list) => {
+                console.log(list);
+
                 if (!list.length) {
                     return;
                 }

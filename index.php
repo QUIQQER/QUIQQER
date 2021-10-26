@@ -43,6 +43,11 @@ try {
     require_once 'bootstrap.php';
 
     if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'index.php') !== false) {
+        QUI::getEvents()->fireEvent('errorHeaderShowBefore', [
+            Response::HTTP_SEE_OTHER,
+            $_SERVER['REQUEST_URI']
+        ]);
+
         $Redirect = new RedirectResponse(URL_DIR);
         $Redirect->setStatusCode(Response::HTTP_SEE_OTHER);
 
