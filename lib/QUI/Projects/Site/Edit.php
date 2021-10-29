@@ -695,15 +695,6 @@ class Edit extends Site
         // Letztes Speichern
         $Project->setEditDate(\time());
 
-        // Clear URL caches, because the URL may have changed
-        // See quiqqer/quiqqer#1129 for more information
-        QUI::getRewrite()->getOutput()->removeRewrittenUrlCache($this);
-        QUI\Cache\Manager::clear(QUI\Projects\Site::getLinkCachePath(
-            $Project->getName(),
-            $Project->getLang(),
-            $this->getId()
-        ));
-
         // on save event
         try {
             $this->Events->fireEvent('save', [$this]);
