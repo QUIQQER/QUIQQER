@@ -10,6 +10,17 @@ use QUI;
 class Workspace extends QUI\InstallationWizard\AbstractInstallationWizardStep
 {
     /**
+     * @param array $attributes
+     */
+    public function __construct($attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $this->addCSSFile(dirname(__FILE__) .'/Workspace.css');
+        $this->setJavaScriptControl('controls/installation/Workspace');
+    }
+
+    /**
      * @param null $Locale
      * @return string
      */

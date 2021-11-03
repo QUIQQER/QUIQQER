@@ -54,6 +54,7 @@ class QuiqqerProvider extends AbstractInstallationWizard
             new QuiqqerSteps\Mail(),
             new QuiqqerSteps\MailSMTP(),
             new QuiqqerSteps\Cron(),
+            new QuiqqerSteps\Workspace(),
             new QuiqqerSteps\Finish(),
         ];
     }
@@ -87,6 +88,25 @@ class QuiqqerProvider extends AbstractInstallationWizard
             $Config->set('mail', 'SMTPSecureSSL_verify_peer', $data['smtp-secure-verify_peer']);
             $Config->set('mail', 'SMTPSecureSSL_verify_peer_name', $data['smtp-secure-verify_peer_name']);
             $Config->set('mail', 'SMTPSecureSSL_allow_self_signed', $data['mail.settings.allow_self_signed']);
+        }
+
+        // workspace
+        if (isset($data['workspace-columns'])) {
+            switch($data['workspace-columns']) {
+                case '2-columns':
+                    QUI\Workspace\Manager::setStandardWorkspace(
+                        QUI::getUserBySession(),
+                        1
+                    );
+                    break;
+
+                case '3-columns':
+                    QUI\Workspace\Manager::setStandardWorkspace(
+                        QUI::getUserBySession(),
+                        2
+                    );
+                break;
+            }
         }
 
         $Config->save();

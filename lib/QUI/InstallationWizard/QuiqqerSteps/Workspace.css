@@ -1,0 +1,38 @@
+.quiqqer-installation-workspace-list-button {
+    align-items: center;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    float: left;
+    flex-direction: column;
+    margin: 20px 20px 0 0;
+    padding: 20px 40px;
+    position: relative;
+    text-align: center;
+}
+
+.quiqqer-installation-workspace-list-button .fa {
+    margin-bottom: 10px;
+}
+
+.quiqqer-installation-workspace-list-button:hover {
+    opacity: 0.9;
+}
+
+.quiqqer-installation-workspace-list-button--active {
+    background: #0069B4;
+    border: none;
+    color: #fff;
+}
+
+.quiqqer-installation-workspace-list-button--active:after {
+    content: "\f00c";
+    font: normal normal normal 14px/1 FontAwesome;
+
+    bottom: 5px;
+    color: #85dc85;
+    font-size: 20px;
+    position: absolute;
+    right: 5px;
+}

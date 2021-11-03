@@ -269,6 +269,9 @@ define('InstallationWizard', [
                     });
 
                     WizardWindow.close();
+
+                    // reload
+                    window.location.reload();
                 }, {
                     'package': 'quiqqer/quiqqer',
                     provider : CurrentProvider.class,
