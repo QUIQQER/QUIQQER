@@ -92,7 +92,7 @@ class QuiqqerProvider extends AbstractInstallationWizard
 
         // workspace
         if (isset($data['workspace-columns'])) {
-            switch($data['workspace-columns']) {
+            switch ($data['workspace-columns']) {
                 case '2-columns':
                     QUI\Workspace\Manager::setStandardWorkspace(
                         QUI::getUserBySession(),
@@ -105,7 +105,7 @@ class QuiqqerProvider extends AbstractInstallationWizard
                         QUI::getUserBySession(),
                         2
                     );
-                break;
+                    break;
             }
         }
 
