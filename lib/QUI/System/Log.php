@@ -90,6 +90,10 @@ class Log
             $context['request'] = HOST.$_SERVER['REQUEST_URI'];
         }
 
+        if (isset($_REQUEST['quiqqerBundle'])) {
+            $context['ajaxBundler'] = $_REQUEST['quiqqerBundle'];
+        }
+
         $User = QUI::getUserBySession();
 
         $context['errorFilename'] = $filename;
