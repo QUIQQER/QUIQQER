@@ -4781,6 +4781,17 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             Die Einrichtung wurde erfolgreich abgeschlossen. Vielen Dank, dass Du dich für QUIQQER entschieden hast.
             ]]></de>
         </locale>
+
+        <locale name="quiqqer.setup.workspace.title">
+            <de><![CDATA[
+            Workspace einrichten
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.setup.workspace.description">
+            <de><![CDATA[
+            Workspace einrichten (Beschreibung)
+            ]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">

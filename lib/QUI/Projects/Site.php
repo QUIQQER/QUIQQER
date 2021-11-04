@@ -1945,6 +1945,17 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     public function deleteCache()
     {
         QUI\Cache\Manager::clear($this->getCachePath());
+
+        $Project = $this->getProject();
+
+        // Clear the URL caches - required when the URL changes (e.g. when moving a site)
+        // See quiqqer/quiqqer#1129 for more information
+        QUI::getRewrite()->getOutput()->removeRewrittenUrlCache($this);
+        QUI\Cache\Manager::clear(QUI\Projects\Site::getLinkCachePath(
+            $Project->getName(),
+            $Project->getLang(),
+            $this->getId()
+        ));
     }
 
     /**

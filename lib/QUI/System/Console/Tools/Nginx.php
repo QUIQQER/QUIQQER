@@ -16,9 +16,9 @@ use QUI;
  */
 class Nginx extends QUI\System\Console\Tool
 {
-    protected $nginxConfigFile;
-    protected $nginxConfDir;
-    protected $subConfDir;
+    protected string $nginxConfigFile;
+    protected string $nginxConfDir;
+    protected string $subConfDir;
 
     /**
      * Konstruktor
@@ -62,6 +62,7 @@ HEAD;
 
         // Create subconfig dir
         $this->subConfDir = $this->nginxConfDir."conf.d/";
+
         if (!\is_dir($this->subConfDir)) {
             \mkdir($this->subConfDir, 0755, true);
         }
@@ -235,7 +236,7 @@ OPTI;
      *
      * @return bool
      */
-    public function hasModifications()
+    public function hasModifications(): bool
     {
         if (!\file_exists($this->nginxConfigFile)) {
             return true;
@@ -256,12 +257,16 @@ OPTI;
      *
      * @return string
      */
-    protected function template()
+    protected function template(): string
     {
         $quiqqerDir    = CMS_DIR;
         $quiqqerUrlDir = URL_DIR;
 
         # Process domain
+        if (!\defined('HOST')) {
+            \define('HOST', QUI::conf('globals', 'host'));
+        }
+
         $domain = \trim(HOST);
         $domain = \str_replace("https://", "", $domain);
         $domain = \str_replace("http://", "", $domain);

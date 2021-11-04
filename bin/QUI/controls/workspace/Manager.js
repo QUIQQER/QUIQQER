@@ -427,6 +427,7 @@ define('controls/workspace/Manager', [
             }
 
             if (!data) {
+                return;
                 QUI.getMessageHandler().then(function (MH) {
                     MH.addError(Locale.get('quiqqer/quiqqer', 'message.error.in.workspace'));
                 });

@@ -4620,6 +4620,17 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
             The setup was successfully completed. Thank you for choosing QUIQQER.
             ]]></en>
         </locale>
+        <locale name="quiqqer.setup.workspace.title">
+            <en><![CDATA[
+            Workspace einrichten (Beschreibung)
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.setup.workspace.description">
+            <en><![CDATA[
+            Workspace einrichten (Beschreibung)
+            ]]></en>
+        </locale>
+
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
