@@ -150,6 +150,9 @@ class Output extends Singleton
         }
 
         // picture elements
+        $executionTime = \ini_get('max_execution_time');
+        \set_time_limit(100);
+
         \libxml_use_internal_errors(true);
         $HTML5 = new HTML5();
 
@@ -258,6 +261,8 @@ class Output extends Singleton
                 \iterator_to_array($Body->childNodes)
             ));
         }
+        // reset to the normal limit
+        \set_time_limit($executionTime);
 
         $result = \str_replace(
             ['</img>', '</source>', '</meta>', '</link>', '</input>', '</br>'],
