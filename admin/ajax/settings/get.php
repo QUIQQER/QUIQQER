@@ -17,7 +17,7 @@ QUI::$Ajax->registerFunction(
         }
 
         foreach ($files as $file) {
-            if (!\str_contains($file, CMS_DIR)) {
+            if (strpos($file, CMS_DIR) === false) {
                 $file = CMS_DIR.$file;
             }
 
