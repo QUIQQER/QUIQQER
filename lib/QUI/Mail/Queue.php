@@ -88,12 +88,13 @@ class Queue
             unset($params['attachements']);
         }
 
-
         QUI::getDataBase()->insert(self::table(), $params);
 
         $newMailId = QUI::getDataBase()->getPDO()->lastInsertId('id');
 
         // attachements
+        $attachmentFiles = [];
+
         if (\is_array($attachements)) {
             $mailQueueDir = self::getAttachmentDir($newMailId);
 
@@ -107,6 +108,20 @@ class Queue
                 $infos = File::getInfo($attachement);
 
                 File::copy($attachement, $mailQueueDir.$infos['basename']);
+
+                $attachmentFiles[] = $infos['basename'];
+            }
+
+            if (!empty($attachmentFiles)) {
+                QUI::getDataBase()->update(
+                    self::table(),
+                    [
+                        'attachements' => \json_encode($attachmentFiles)
+                    ],
+                    [
+                        'id' => $newMailId
+                    ]
+                );
             }
         }
 
@@ -292,30 +307,33 @@ class Queue
             }
 
             // exist attachements?
-            $mailQueueDir = self::getAttachmentDir($params['id']);
+            $mailQueueDir = false;
 
-            if (\is_dir($mailQueueDir)) {
-                $files = File::readDir($mailQueueDir);
+            if (!empty($params['attachements'])) {
+                $attachmentFiles = \json_decode($params['attachements'], true);
+                $mailQueueDir    = self::getAttachmentDir($params['id']);
 
-                foreach ($files as $file) {
-                    $file = $mailQueueDir.$file;
+                if (\is_dir($mailQueueDir)) {
+                    foreach ($attachmentFiles as $fileName) {
+                        $file = $mailQueueDir.$fileName;
 
-                    if (!\file_exists($file)) {
-                        continue;
+                        if (!\file_exists($file)) {
+                            continue;
+                        }
+
+                        $infos = File::getInfo($file);
+
+                        if (!isset($infos['mime_type'])) {
+                            $infos['mime_type'] = 'application/octet-stream';
+                        }
+
+                        $PhpMailer->addAttachment(
+                            $file,
+                            $infos['basename'],
+                            'base64',
+                            $infos['mime_type']
+                        );
                     }
-
-                    $infos = File::getInfo($file);
-
-                    if (!isset($infos['mime_type'])) {
-                        $infos['mime_type'] = 'application/octet-stream';
-                    }
-
-                    $PhpMailer->addAttachment(
-                        $file,
-                        $infos['basename'],
-                        'base64',
-                        $infos['mime_type']
-                    );
                 }
             }
 
@@ -338,7 +356,6 @@ class Queue
             $html = \preg_replace('#<source([^>]*)>#i', '', $html);
             $html = \str_replace('</picture>', '', $html);
 
-            QUI\System\Log::writeRecursive($html);
             $PhpMailer->From     = $params['from'];
             $PhpMailer->FromName = $params['fromName'];
             $PhpMailer->Subject  = $params['subject'];
@@ -348,7 +365,7 @@ class Queue
 
             $PhpMailer->send();
 
-            if (\is_dir($mailQueueDir)) {
+            if ($mailQueueDir && \is_dir($mailQueueDir)) {
                 File::deleteDir($mailQueueDir);
             }
 
