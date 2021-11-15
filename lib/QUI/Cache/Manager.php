@@ -677,6 +677,23 @@ class Manager
     }
 
     /**
+     * @throws QUI\Exception
+     */
+    public static function clearTemplateCache()
+    {
+        QUI\Utils\System\File::unlink(VAR_DIR.'cache/templates');
+        QUI\Utils\System\File::unlink(VAR_DIR.'cache/compile');
+
+        self::clear('quiqqer/template');
+
+        try {
+            QUI::getEvents()->fireEvent('clearTemplateCache');
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
+    }
+
+    /**
      * Clears the projects cache
      * - /quiqqer/projects/
      */
