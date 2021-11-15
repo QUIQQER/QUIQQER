@@ -15,10 +15,8 @@ QUI::$Ajax->registerFunction(
         }
 
         if (!empty($params['templates']) || !empty($params['quiqqer-template'])) {
-            QUI\Utils\System\File::unlink(VAR_DIR.'cache/templates');
-            QUI\Utils\System\File::unlink(VAR_DIR.'cache/compile');
+            QUI\Cache\Manager::clearTemplateCache();
         }
-
 
         if (!empty($params['complete'])) {
             QUI\Cache\Manager::clearAll();
