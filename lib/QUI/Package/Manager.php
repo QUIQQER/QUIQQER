@@ -2439,9 +2439,9 @@ class Manager extends QUI\QDOM
      * Checks if this QUIQQER system has the license to use a certain package.
      *
      * @param string $package - Package name (internal)
-     * @return bool
+     * @return bool|array
      */
-    public function getPackageStoreUrls(string $package): bool
+    public function getPackageStoreUrls(string $package)
     {
         $cacheName = 'quiqqer_packagestore_urls/'.$package;
 
