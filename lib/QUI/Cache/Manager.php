@@ -679,7 +679,8 @@ class Manager
     /**
      * @throws QUI\Exception
      */
-    public static function clearTemplateCache() {
+    public static function clearTemplateCache()
+    {
         QUI\Utils\System\File::unlink(VAR_DIR.'cache/templates');
         QUI\Utils\System\File::unlink(VAR_DIR.'cache/compile');
 
