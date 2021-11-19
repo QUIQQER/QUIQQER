@@ -220,10 +220,6 @@ class Edit extends Site
      */
     public function activate($User = false)
     {
-        if (!$User) {
-            $User = QUI::getUserBySession();
-        }
-
         try {
             $this->checkPermission('quiqqer.projects.site.edit', $User);
         } catch (QUI\Exception $Exception) {
@@ -231,6 +227,10 @@ class Edit extends Site
                 QUI::getLocale()
                     ->get('quiqqer/quiqqer', 'exception.permissions.edit')
             );
+        }
+
+        if (!$User) {
+            $User = QUI::getUserBySession();
         }
 
         $this->Events->fireEvent('checkActivate', [$this]);
@@ -273,10 +273,6 @@ class Edit extends Site
      */
     public function deactivate($User = false)
     {
-        if (!$User) {
-            $User = QUI::getUserBySession();
-        }
-
         try {
             // Prüfen ob der Benutzer die Seite bearbeiten darf
             $this->checkPermission('quiqqer.projects.site.edit', $User);
@@ -287,6 +283,10 @@ class Edit extends Site
                     'exception.permissions.edit'
                 )
             );
+        }
+
+        if (!$User) {
+            $User = QUI::getUserBySession();
         }
 
         QUI::getEvents()->fireEvent('siteCheckDeactivate', [$this]);
@@ -395,10 +395,6 @@ class Edit extends Site
      */
     public function save($SaveUser = false)
     {
-        if (!$SaveUser) {
-            $SaveUser = QUI::getUserBySession();
-        }
-
         try {
             // Prüfen ob der Benutzer die Seite bearbeiten darf
             $this->checkPermission('quiqqer.projects.site.edit', $SaveUser);
@@ -409,6 +405,10 @@ class Edit extends Site
                     'exception.permissions.edit'
                 )
             );
+        }
+
+        if (!$SaveUser) {
+            $SaveUser = QUI::getUserBySession();
         }
 
         $mid = $this->isLockedFromOther();
@@ -980,12 +980,11 @@ class Edit extends Site
         $childPermissions = [],
         $User = false
     ) {
+        $this->checkPermission('quiqqer.projects.site.new', $User);
+
         if ($User == false) {
             $User = QUI::getUserBySession();
         }
-
-        $this->checkPermission('quiqqer.projects.site.new', $User);
-
 
         //$newid    = $Project->getNewId();
         $new_name = 'Neue Seite';   // @todo multilingual
