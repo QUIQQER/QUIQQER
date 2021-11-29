@@ -74,8 +74,7 @@ class Ajax extends QUI\QDOM
         string $reg_function,
         $reg_vars = [],
         $user_perm = false
-    ): bool
-    {
+    ): bool {
         if (!\is_string($reg_function)) {
             return false;
         }
@@ -108,8 +107,7 @@ class Ajax extends QUI\QDOM
         callable $function,
         $reg_vars = [],
         $user_perm = false
-    ): bool
-    {
+    ): bool {
         if (!\is_callable($function)) {
             return false;
         }
