@@ -22,14 +22,14 @@ class Ajax extends QUI\QDOM
      *
      * @var array
      */
-    protected static $functions = [];
+    protected static array $functions = [];
 
     /**
      * Available ajax lambda functions
      *
      * @var array
      */
-    protected static $callables = [];
+    protected static array $callables = [];
 
     /**
      * javascript functions to be executed by after a request
@@ -37,14 +37,14 @@ class Ajax extends QUI\QDOM
      *
      * @var array
      */
-    protected $jsCallbacks = [];
+    protected array $jsCallbacks = [];
 
     /**
      * registered permissions from available ajax functions
      *
      * @var array
      */
-    protected static $permissions = [];
+    protected static array $permissions = [];
 
     /**
      * constructor
@@ -52,7 +52,7 @@ class Ajax extends QUI\QDOM
      * @param array $params
      * @throws \Exception
      */
-    public function __construct($params = [])
+    public function __construct(array $params = [])
     {
         self::setAttributes($params);
 
@@ -71,10 +71,11 @@ class Ajax extends QUI\QDOM
      * @return bool
      */
     public static function register(
-        $reg_function,
-        $reg_vars = [],
-        $user_perm = false
-    ) {
+        string $reg_function,
+               $reg_vars = [],
+               $user_perm = false
+    ): bool
+    {
         if (!\is_string($reg_function)) {
             return false;
         }
@@ -97,17 +98,18 @@ class Ajax extends QUI\QDOM
      *
      * @param string $name - Name of the function
      * @param callable $function - Function
-     * @param array $reg_vars - Variables of the function
+     * @param array|bool $reg_vars - Variables of the function
      * @param bool|false|array|string $user_perm - (optional) permissions / rights
      *
      * @return bool
      */
     public static function registerFunction(
-        $name,
-        $function,
-        $reg_vars = [],
-        $user_perm = false
-    ) {
+        string   $name,
+        callable $function,
+                 $reg_vars = [],
+                 $user_perm = false
+    ): bool
+    {
         if (!\is_callable($function)) {
             return false;
         }
@@ -137,7 +139,7 @@ class Ajax extends QUI\QDOM
      *
      * @return array
      */
-    public static function getRegisteredFunctions()
+    public static function getRegisteredFunctions(): array
     {
         return self::$functions;
     }
@@ -147,7 +149,7 @@ class Ajax extends QUI\QDOM
      *
      * @return array
      */
-    public static function getRegisteredCallables()
+    public static function getRegisteredCallables(): array
     {
         return self::$callables;
     }
@@ -174,6 +176,22 @@ class Ajax extends QUI\QDOM
             return;
         }
 
+        if (QUI::isBackend()) {
+            $parts       = \explode('_', $reg_function);
+            $pluginParts = \array_slice($parts, 1, 2);
+
+            if (isset($pluginParts[0]) && isset($pluginParts[1])) {
+                try {
+                    $Package = null;
+                    $Package = QUI::getPackage($pluginParts[0].'/'.$pluginParts[1]);
+                } catch (QUI\Exception $Exception) {
+                }
+
+                if ($Package) {
+                    $Package->hasPermission();
+                }
+            }
+        }
 
         if (\is_string($function)) {
             $function = [$function];
@@ -294,7 +312,7 @@ class Ajax extends QUI\QDOM
      *
      * @return array - the result
      */
-    public function callRequestFunction($_rf, $values = false)
+    public function callRequestFunction(string $_rf, $values = false): array
     {
         if (!isset(self::$functions[$_rf]) && !isset(self::$callables[$_rf])) {
             if (\defined('DEVELOPMENT') && DEVELOPMENT) {
@@ -395,11 +413,9 @@ class Ajax extends QUI\QDOM
      * @param string $javascriptFunctionName - name of the javascript callback function
      * @param array $params - optional, params for the javascript callback function
      */
-    public function triggerGlobalJavaScriptCallback($javascriptFunctionName, $params = [])
+    public function triggerGlobalJavaScriptCallback(string $javascriptFunctionName, array $params = [])
     {
-        if (\is_string($javascriptFunctionName)) {
-            $this->jsCallbacks[$javascriptFunctionName] = $params;
-        }
+        $this->jsCallbacks[$javascriptFunctionName] = $params;
     }
 
     /**
@@ -409,7 +425,7 @@ class Ajax extends QUI\QDOM
      *
      * @return array
      */
-    public function writeException($Exception)
+    public function writeException($Exception): array
     {
         $return = [];
         $class  = \get_class($Exception);
@@ -540,7 +556,7 @@ class Ajax extends QUI\QDOM
     /**
      * @return array
      */
-    public function getJsCallbacks()
+    public function getJsCallbacks(): array
     {
         return $this->jsCallbacks;
     }
