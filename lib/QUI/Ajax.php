@@ -72,8 +72,8 @@ class Ajax extends QUI\QDOM
      */
     public static function register(
         string $reg_function,
-               $reg_vars = [],
-               $user_perm = false
+        $reg_vars = [],
+        $user_perm = false
     ): bool
     {
         if (!\is_string($reg_function)) {
@@ -106,8 +106,8 @@ class Ajax extends QUI\QDOM
     public static function registerFunction(
         string   $name,
         callable $function,
-                 $reg_vars = [],
-                 $user_perm = false
+        $reg_vars = [],
+        $user_perm = false
     ): bool
     {
         if (!\is_callable($function)) {
