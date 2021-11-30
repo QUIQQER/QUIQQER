@@ -149,7 +149,17 @@ define('controls/editors/Editor', [
          * event : on loaded
          */
         $onLoaded: function () {
-            if (typeof this.getDocument().body === 'undefined' || !this.getDocument().body) {
+            let Document = this.getDocument();
+
+            let CkEditorMainInput = undefined;
+
+            if (this.isCkEditor5()) {
+                CkEditorMainInput = Document.querySelector('.ck .ck-editor__main');
+            } else {
+                CkEditorMainInput = Document.body;
+            }
+
+            if (typeof CkEditorMainInput === 'undefined' || !CkEditorMainInput) {
                 setTimeout(function () {
                     this.$onLoaded();
                 }.bind(this), 1000);
@@ -157,17 +167,17 @@ define('controls/editors/Editor', [
                 return;
             }
 
-            if (this.getAttribute('bodyId')) {
-                this.getDocument().body.id = this.getAttribute('bodyId');
-            }
+           if (this.getAttribute('bodyId')) {
+               CkEditorMainInput.id = this.getAttribute('bodyId');
+           }
 
-            if (this.getAttribute('bodyClass')) {
-                this.getDocument().body.className = this.getAttribute('bodyClass');
-            }
+           if (this.getAttribute('bodyClass')) {
+               CkEditorMainInput.classList.add(this.getAttribute('bodyClass'));
+           }
 
-            if (this.getAttribute('content')) {
-                this.setContent(this.getAttribute('content'));
-            }
+           if (this.getAttribute('content')) {
+               this.setContent(this.getAttribute('content'));
+           }
 
             this.Loader.hide();
         },
@@ -379,6 +389,10 @@ define('controls/editors/Editor', [
          * @return {HTMLElement} document
          */
         getDocument: function () {
+            if (this.isCkEditor5()) {
+                return this.$Elm.getElement('.ck');
+            }
+
             return this.$Elm.getElement('iframe').contentWindow.document;
         },
 
@@ -482,6 +496,19 @@ define('controls/editors/Editor', [
             require(['controls/projects/Popup'], function (Popup) {
                 new Popup(options).open();
             });
+        },
+
+        /**
+         * Returns if the loaded Editor is CKEditor in version 5
+         *
+         * @returns {boolean}
+         */
+        isCkEditor5: function() {
+            // CKEditor 4 does not define CKEDITOR_VERSION, but CKEditor 5 does
+            // This is probably not the best way to do this.
+            // But afaik the editor's version is unknown before initializing it without additional Ajax requests
+            // TODO: Find out if the version can be determined without the editor being initialized
+            return typeof window.CKEDITOR_VERSION !== 'undefined';
         }
     });
 });
