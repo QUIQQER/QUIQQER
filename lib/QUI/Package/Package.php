@@ -695,12 +695,13 @@ class Package extends QUI\QDOM
 
                 if (!isset($found[0])) {
                     QUI::getPermissionManager()->addPermission([
-                        'name'         => $this->getPermissionName(),
-                        'title'        => 'quiqqer/quiqqer permission.package.canUse',
-                        'desc'         => '',
-                        'area'         => '',
-                        'type'         => 'bool',
-                        'defaultvalue' => 1
+                        'name'           => $this->getPermissionName(),
+                        'title'          => 'quiqqer/quiqqer permission.package.canUse',
+                        'desc'           => '',
+                        'area'           => '',
+                        'type'           => 'bool',
+                        'defaultvalue'   => 0,
+                        'rootPermission' => 1
                     ]);
                 }
             } catch (QUI\Exception $Exception) {

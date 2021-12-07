@@ -108,6 +108,14 @@ class Mailer extends QUI\QDOM
      */
     public function send(): bool
     {
+        try {
+            QUI::getEvents()->fireEvent('mailerSendInit', [
+                $this
+            ]);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+
         $PHPMailer = QUI::getMailManager()->getPHPMailer();
         $html      = $this->Template->getHTML();
 

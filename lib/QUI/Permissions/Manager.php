@@ -412,12 +412,23 @@ class Manager
      *                            eq: system, plugin-name, user
      *
      */
-    public function importPermissionsFromXml($xmlFile, $src = '')
+    public function importPermissionsFromXml(string $xmlFile, string $src = '')
     {
-        $permissions = QUI\Utils\Text\XML::getPermissionsFromXml($xmlFile);
+        $rootPermissions = [];
+        $permissions     = QUI\Utils\Text\XML::getPermissionsFromXml($xmlFile);
 
         if (!\count($permissions)) {
             return;
+        }
+
+        try {
+            $RootGroup = null;
+            $RootGroup = QUI::getGroups()->get(
+                QUI::conf('globals', 'root')
+            );
+
+            $rootPermissions = $this->getPermissions($RootGroup);
+        } catch (QUI\Exception $Exception) {
         }
 
         foreach ($permissions as $permission) {
@@ -433,6 +444,21 @@ class Manager
 
             try {
                 $this->addPermission($permission);
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
+            }
+
+            if (isset($permission['rootPermission'])
+                && $permission['rootPermission'] !== null        // if root permission === null, no root permission is set
+                && !isset($rootPermissions[$permission['name']]) // if not exists, use root permission default
+            ) {
+                $rootPermissions[$permission['name']] = $permission['rootPermission'];
+            }
+        }
+
+        if ($RootGroup && \count($rootPermissions)) {
+            try {
+                $this->setPermissions($RootGroup, $rootPermissions);
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::addError($Exception->getMessage());
             }
