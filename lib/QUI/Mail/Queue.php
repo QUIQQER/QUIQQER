@@ -252,6 +252,14 @@ class Queue
      */
     protected function sendMail($params)
     {
+        try {
+            QUI::getEvents()->fireEvent('mailerSendInit', [
+                $this
+            ]);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+
         $queueLimitPerHour = (int)QUI::conf('mail', 'queueLimitPerHour');
 
         if ($queueLimitPerHour > 0 && $this->getMailsSentInLastHour() >= $queueLimitPerHour) {
