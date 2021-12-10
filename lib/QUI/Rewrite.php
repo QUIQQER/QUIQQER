@@ -33,7 +33,7 @@ class Rewrite
     const URL_PROJECT_CHARACTER = '^';
     const URL_DEFAULT_SUFFIX = '.html';
 
-    static public $SUFFIX = false;
+    public static $SUFFIX = false;
 
     /**
      * site request parameter
