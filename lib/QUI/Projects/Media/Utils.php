@@ -333,11 +333,7 @@ class Utils
      *
      * @return string
      */
-    public static function getImageHTML(
-        $src,
-        $attributes = [],
-        $withHost = false
-    )
+    public static function getImageHTML($src, $attributes = [], $withHost = false)
     {
         $src = self::getImageSource($src, $attributes);
 
@@ -1047,11 +1043,7 @@ class Utils
      *
      * @throws QUI\Exception
      */
-    public static function checkReplace(
-        QUI\Projects\Media $Media,
-                           $fileid,
-                           $uploadparams
-    )
+    public static function checkReplace(QUI\Projects\Media $Media, $fileid, $uploadparams)
     {
         $fileid = (int)$fileid;
 
