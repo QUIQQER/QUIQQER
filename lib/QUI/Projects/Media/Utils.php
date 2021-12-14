@@ -64,7 +64,7 @@ class Utils
             /* @var $Item \QUI\Projects\Media\Folder */
             return [
                 'icon'          => 'fa fa-home',
-                'icon80x80'     => URL_BIN_DIR.'80x80/media.png',
+                'icon80x80'     => URL_BIN_DIR . '80x80/media.png',
                 'extension'     => '',
                 'id'            => $Item->getId(),
                 'name'          => $Item->getAttribute('name'),
@@ -87,7 +87,7 @@ class Utils
             /* @var $Item \QUI\Projects\Media\Folder */
             return [
                 'icon'          => 'fa fa-folder-o',
-                'icon80x80'     => URL_BIN_DIR.'80x80/extensions/folder.png',
+                'icon80x80'     => URL_BIN_DIR . '80x80/extensions/folder.png',
                 'extension'     => '',
                 'id'            => $Item->getId(),
                 'name'          => $Item->getAttribute('name'),
@@ -153,59 +153,59 @@ class Utils
         }
 
         $extensions['16x16'] = [
-            'folder' => URL_BIN_DIR.'16x16/extensions/folder.png',
-            'pdf'    => URL_BIN_DIR.'16x16/extensions/pdf.png',
+            'folder' => URL_BIN_DIR . '16x16/extensions/folder.png',
+            'pdf'    => URL_BIN_DIR . '16x16/extensions/pdf.png',
             // Images
-            'jpg'    => URL_BIN_DIR.'16x16/extensions/image.png',
-            'jpeg'   => URL_BIN_DIR.'16x16/extensions/image.png',
-            'gif'    => URL_BIN_DIR.'16x16/extensions/image.png',
-            'png'    => URL_BIN_DIR.'16x16/extensions/image.png',
+            'jpg'    => URL_BIN_DIR . '16x16/extensions/image.png',
+            'jpeg'   => URL_BIN_DIR . '16x16/extensions/image.png',
+            'gif'    => URL_BIN_DIR . '16x16/extensions/image.png',
+            'png'    => URL_BIN_DIR . '16x16/extensions/image.png',
             // Movie
-            'avi'    => URL_BIN_DIR.'16x16/extensions/film.png',
-            'mpeg'   => URL_BIN_DIR.'16x16/extensions/film.png',
-            'mpg'    => URL_BIN_DIR.'16x16/extensions/film.png',
+            'avi'    => URL_BIN_DIR . '16x16/extensions/film.png',
+            'mpeg'   => URL_BIN_DIR . '16x16/extensions/film.png',
+            'mpg'    => URL_BIN_DIR . '16x16/extensions/film.png',
             // Archiv
-            'tar'    => URL_BIN_DIR.'16x16/extensions/archive.png',
-            'rar'    => URL_BIN_DIR.'16x16/extensions/archive.png',
-            'zip'    => URL_BIN_DIR.'16x16/extensions/archive.png',
-            'gz'     => URL_BIN_DIR.'16x16/extensions/archive.png',
-            '7z'     => URL_BIN_DIR.'16x16/extensions/archive.png',
+            'tar'    => URL_BIN_DIR . '16x16/extensions/archive.png',
+            'rar'    => URL_BIN_DIR . '16x16/extensions/archive.png',
+            'zip'    => URL_BIN_DIR . '16x16/extensions/archive.png',
+            'gz'     => URL_BIN_DIR . '16x16/extensions/archive.png',
+            '7z'     => URL_BIN_DIR . '16x16/extensions/archive.png',
             //Office
 
             // Music
-            'mp3'    => URL_BIN_DIR.'16x16/extensions/sound.png',
-            'ogg'    => URL_BIN_DIR.'16x16/extensions/sound.png',
+            'mp3'    => URL_BIN_DIR . '16x16/extensions/sound.png',
+            'ogg'    => URL_BIN_DIR . '16x16/extensions/sound.png',
         ];
 
         $extensions['80x80'] = [
-            'folder' => URL_BIN_DIR.'80x80/extensions/folder.png',
-            'pdf'    => URL_BIN_DIR.'80x80/extensions/pdf.png',
+            'folder' => URL_BIN_DIR . '80x80/extensions/folder.png',
+            'pdf'    => URL_BIN_DIR . '80x80/extensions/pdf.png',
             // Images
-            'jpg'    => URL_BIN_DIR.'80x80/extensions/image.png',
-            'jpeg'   => URL_BIN_DIR.'80x80/extensions/image.png',
-            'gif'    => URL_BIN_DIR.'80x80/extensions/image.png',
-            'png'    => URL_BIN_DIR.'80x80/extensions/image.png',
+            'jpg'    => URL_BIN_DIR . '80x80/extensions/image.png',
+            'jpeg'   => URL_BIN_DIR . '80x80/extensions/image.png',
+            'gif'    => URL_BIN_DIR . '80x80/extensions/image.png',
+            'png'    => URL_BIN_DIR . '80x80/extensions/image.png',
             // Movie
-            'avi'    => URL_BIN_DIR.'80x80/extensions/film.png',
-            'mpeg'   => URL_BIN_DIR.'80x80/extensions/film.png',
-            'mpg'    => URL_BIN_DIR.'80x80/extensions/film.png',
+            'avi'    => URL_BIN_DIR . '80x80/extensions/film.png',
+            'mpeg'   => URL_BIN_DIR . '80x80/extensions/film.png',
+            'mpg'    => URL_BIN_DIR . '80x80/extensions/film.png',
             // Archiv
-            'tar'    => URL_BIN_DIR.'80x80/extensions/archive.png',
-            'rar'    => URL_BIN_DIR.'80x80/extensions/archive.png',
-            'zip'    => URL_BIN_DIR.'80x80/extensions/archive.png',
-            'gz'     => URL_BIN_DIR.'80x80/extensions/archive.png',
-            '7z'     => URL_BIN_DIR.'80x80/extensions/archive.png',
+            'tar'    => URL_BIN_DIR . '80x80/extensions/archive.png',
+            'rar'    => URL_BIN_DIR . '80x80/extensions/archive.png',
+            'zip'    => URL_BIN_DIR . '80x80/extensions/archive.png',
+            'gz'     => URL_BIN_DIR . '80x80/extensions/archive.png',
+            '7z'     => URL_BIN_DIR . '80x80/extensions/archive.png',
             //Office
 
             // Music
-            'mp3'    => URL_BIN_DIR.'80x80/extensions/sound.png',
+            'mp3'    => URL_BIN_DIR . '80x80/extensions/sound.png',
         ];
 
         if (isset($extensions[$size][$ext])) {
             return $extensions[$size][$ext];
         }
 
-        return URL_BIN_DIR.$size.'/extensions/empty.png';
+        return URL_BIN_DIR . $size . '/extensions/empty.png';
     }
 
     /**
@@ -314,9 +314,9 @@ class Utils
             return self::$urlItemCache[$url];
         }
 
-        $params  = StringUtils::getUrlAttributes($url);
+        $params = StringUtils::getUrlAttributes($url);
         $Project = QUI::getProject($params['project']);
-        $Media   = $Project->getMedia();
+        $Media = $Project->getMedia();
 
         self::$urlItemCache[$url] = $Media->get((int)$params['id']);
 
@@ -333,11 +333,8 @@ class Utils
      *
      * @return string
      */
-    public static function getImageHTML(
-        $src,
-        $attributes = [],
-        $withHost = false
-    ) {
+    public static function getImageHTML($src, $attributes = [], $withHost = false)
+    {
         $src = self::getImageSource($src, $attributes);
 
         if (empty($src)) {
@@ -350,7 +347,7 @@ class Utils
 
         $parts = \explode('/', $src);
 
-        $cacheName = 'quiqqer/projects/'.$parts[3].'/picture-'.\md5(serialize([
+        $cacheName = 'quiqqer/projects/' . $parts[3] . '/picture-' . \md5(serialize([
                 'attributes' => $attributes,
                 'src'        => $src,
                 'withHost'   => $withHost
@@ -363,7 +360,10 @@ class Utils
         }
 
         try {
-            QUI::getEvents()->fireEvent('mediaCreateImageHtmlBegin', [$src, $attributes]);
+            QUI::getEvents()->fireEvent('mediaCreateImageHtmlBegin', [
+                $src,
+                $attributes
+            ]);
         } catch (QUI\Exception $Exception) {
             Log::addDebug($Exception->getMessage());
         }
@@ -371,9 +371,10 @@ class Utils
 
         // build picture source sets
         $srcset = '';
-        $host   = '';
+        $host = '';
 
         try {
+            $src = urldecode($src);
             $Image = Utils::getElement($src);
 
             if (!self::isImage($Image)) {
@@ -384,10 +385,10 @@ class Utils
                 $host = $Image->getMedia()->getProject()->getVHost(true, true);
             }
 
-            $Project    = $Image->getMedia()->getProject();
+            $Project = $Image->getMedia()->getProject();
             $imageWidth = (int)$Image->getWidth();
-            $maxWidth   = false;
-            $maxHeight  = false;
+            $maxWidth = false;
+            $maxHeight = false;
 
             if (isset($attributes['width'])) {
                 $maxWidth = (int)$attributes['width'];
@@ -414,7 +415,7 @@ class Utils
                 $end = (int)$end;
 
                 $start = 400;
-                $sets  = [];
+                $sets = [];
 
                 $batchesCount = (int)$Project->getConfig('media_imageBatchesCount');
 
@@ -426,10 +427,10 @@ class Utils
                 $duplicate = [];
 
                 for (; $start < $end + $batchSize; $start += $batchSize) {
-                    $media = '(max-width: '.$start.'px)';
+                    $media = '(max-width: ' . $start . 'px)';
 
                     if ($maxHeight) {
-                        $media = '(max-width: '.$start.'px) or (max-height: '.$maxHeight.'px)';
+                        $media = '(max-width: ' . $start . 'px) or (max-height: ' . $maxHeight . 'px)';
                     }
 
                     $imageUrl = $Image->getSizeCacheUrl($start, $maxHeight);
@@ -440,7 +441,7 @@ class Utils
 
                     $duplicate[$imageUrl] = true;
 
-                    $src    = \htmlspecialchars($imageUrl);
+                    $src = \htmlspecialchars($imageUrl);
                     $imageX = (int)$Project->getConfig('media_useImageScale');
 
                     if (!$imageX) {
@@ -455,7 +456,7 @@ class Utils
                         if ($imageWidth > $start * $x) {
                             $src2x = $Image->getSizeCacheUrl($start * $x);
                             $src2x = \htmlspecialchars($src2x);
-                            $src   .= ", {$src2x} {$x}x";
+                            $src .= ", {$src2x} {$x}x";
                         }
                     }
 
@@ -490,14 +491,14 @@ class Utils
 
                     // last item doesn't need
                     if (!empty($set['media'])) {
-                        $media = ' media="'.$set['media'].'"';
+                        $media = ' media="' . $set['media'] . '"';
                     }
 
                     if (!isset($set['src']) || !isset($set['type'])) {
                         continue;
                     }
 
-                    $srcset .= '<source '.$media.' srcset="'.$host.$set['src'].'" type="'.$set['type'].'" />';
+                    $srcset .= '<source ' . $media . ' srcset="' . $host . $set['src'] . '" type="' . $set['type'] . '" />';
                 }
             }
         } catch (QUI\Exception $Exception) {
@@ -518,14 +519,14 @@ class Utils
                 $value = \ForceUTF8\Encoding::toUTF8($value);
             }
 
-            $img .= \htmlspecialchars($key).'="'.$value.'" ';
+            $img .= \htmlspecialchars($key) . '="' . $value . '" ';
         }
 
-        $img .= ' src="'.$host.\htmlspecialchars($src).'" />';
+        $img .= ' src="' . $host . \htmlspecialchars($src) . '" />';
 
 
         // picture html
-        $picture = '<picture>'.$srcset.$img.'</picture>';
+        $picture = '<picture>' . $srcset . $img . '</picture>';
 
         try {
             QUI::getEvents()->fireEvent('mediaCreateImageHtml', [&$picture]);
@@ -537,7 +538,7 @@ class Utils
         if (!empty($attributes['style'])) {
             $picture = \str_replace(
                 '<picture>',
-                '<picture style="'.$attributes['style'].'">',
+                '<picture style="' . $attributes['style'] . '">',
                 $picture
             );
         }
@@ -556,7 +557,7 @@ class Utils
      */
     public static function getImageSource($src, $attributes = [])
     {
-        $width  = false;
+        $width = false;
         $height = false;
 
         if (isset($attributes['style'])) {
@@ -612,7 +613,7 @@ class Utils
             $src = $Image->getSizeCacheUrl($width, $height);
 
             if ($Image->hasViewPermissionSet()) {
-                $src = URL_DIR.$Image->getUrl();
+                $src = URL_DIR . $Image->getUrl();
             }
         } catch (QUI\Exception $Exception) {
             Log::writeException($Exception);
@@ -656,11 +657,11 @@ class Utils
         // detect parameters
         $params = StringUtils::getUrlAttributes($output);
 
-        $id      = $params['id'];
+        $id = $params['id'];
         $project = $params['project'];
 
-        $cache = 'cache/links/'.$project.'/media/'.$id;
-        $url   = '';
+        $cache = 'cache/links/' . $project . '/media/' . $id;
+        $url = '';
 
         // exist cache?
         try {
@@ -683,14 +684,14 @@ class Utils
                     'trace' => $Exception->getTrace()
                 ]);
 
-                return URL_DIR.$output;
+                return URL_DIR . $output;
             } catch (\Exception $Exception) {
                 Log::addDebug($Exception->getMessage(), [
                     'url'   => $output,
                     'trace' => $Exception->getTrace()
                 ]);
 
-                return URL_DIR.$output;
+                return URL_DIR . $output;
             }
         }
 
@@ -711,13 +712,13 @@ class Utils
                 $url_explode[1] = '';
             }
 
-            $url = $url_explode[0].'__'.$size['width'].'x'.$size['height'].'.'.$url_explode[1];
+            $url = $url_explode[0] . '__' . $size['width'] . 'x' . $size['height'] . '.' . $url_explode[1];
         }
 
-        if (!\file_exists(CMS_DIR.$url)) {
+        if (!\file_exists(CMS_DIR . $url)) {
             $Project = QUI::getProject($project);
-            $Media   = $Project->getMedia();
-            $Obj     = $Media->get((int)$id);
+            $Media = $Project->getMedia();
+            $Obj = $Media->get((int)$id);
 
             if ($Obj->getType() == 'IMAGE') {
                 if (!isset($size['width'])) {
@@ -852,8 +853,16 @@ class Utils
     {
         // Umlaute
         $str = \str_replace(
-            ['ä', 'ö', 'ü'],
-            ['ae', 'oe', 'ue'],
+            [
+                'ä',
+                'ö',
+                'ü'
+            ],
+            [
+                'ae',
+                'oe',
+                'ue'
+            ],
             $str
         );
 
@@ -970,8 +979,8 @@ class Utils
     public static function getElement($url)
     {
         $filePath = self::getRealFileDataFromCacheUrl($url);
-        $Project  = QUI::getProject($filePath['project']);
-        $Media    = $Project->getMedia();
+        $Project = QUI::getProject($filePath['project']);
+        $Media = $Project->getMedia();
 
         return $Media->getChildByPath($filePath['filePath']);
     }
@@ -1002,7 +1011,7 @@ class Utils
             );
         }
 
-        $parts   = \explode('/', $parts[1]);
+        $parts = \explode('/', $parts[1]);
         $project = \array_shift($parts);
 
         // if the element (image) is resized resize
@@ -1010,13 +1019,13 @@ class Utils
 
         if (\strpos($fileName, '__') !== false) {
             $lastpos_ul = \strrpos($fileName, '__') + 2;
-            $pos_dot    = \strpos($fileName, '.', $lastpos_ul);
+            $pos_dot = \strpos($fileName, '.', $lastpos_ul);
 
-            $fileName = \substr($fileName, 0, ($lastpos_ul - 2)).
-                        \substr($fileName, $pos_dot);
+            $fileName = \substr($fileName, 0, ($lastpos_ul - 2)) .
+                \substr($fileName, $pos_dot);
         }
 
-        $parts[]   = $fileName;
+        $parts[] = $fileName;
         $filePaths = \implode('/', $parts);
 
         return [
@@ -1034,11 +1043,8 @@ class Utils
      *
      * @throws QUI\Exception
      */
-    public static function checkReplace(
-        QUI\Projects\Media $Media,
-        $fileid,
-        $uploadparams
-    ) {
+    public static function checkReplace(QUI\Projects\Media $Media, $fileid, $uploadparams)
+    {
         $fileid = (int)$fileid;
 
         $result = QUI::getDataBase()->fetch([

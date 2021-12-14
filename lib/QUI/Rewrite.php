@@ -33,7 +33,7 @@ class Rewrite
     const URL_PROJECT_CHARACTER = '^';
     const URL_DEFAULT_SUFFIX = '.html';
 
-    static public $SUFFIX = false;
+    public static $SUFFIX = false;
 
     /**
      * site request parameter
@@ -502,7 +502,7 @@ class Rewrite
 
         $this->first_child = $this->getProject()->firstChild();
 
-        if ($this->site) {
+        if ($this->site && $this->site->getId() !== $this->first_child->getId()) {
             $this->setIntoPath($this->first_child);
             $this->setIntoPath($this->site);
 
