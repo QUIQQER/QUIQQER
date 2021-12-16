@@ -22,6 +22,8 @@ define('controls/projects/project/media/Input', [
 ], function (QUIControl, QUIButton, IconConfirm, QUIStringUtils, MediaPopup, Projects, Ajax, Locale) {
     "use strict";
 
+    const lg = 'quiqqer/quiqqer';
+
     /**
      * @class controls/projects/Input
      *
@@ -48,7 +50,8 @@ define('controls/projects/project/media/Input', [
             breadcrumb          : true,     // you can specified if the breadcrumb is shown or not
             selectable_types    : false,    // you can specified which types are selectable
             selectable_mimetypes: false,    // you can specified which mime types are selectable
-            cssclasses          : false     // css classes can be selected
+            cssclasses          : false,    // css classes can be selected
+            ratio_warning       : false     // if the image has not an 1:1 ration, a warning icon is displayed
         },
 
         initialize: function (options, Input) {
@@ -56,11 +59,11 @@ define('controls/projects/project/media/Input', [
 
             this.$Input = Input || null;
 
-            this.$Path    = null;
+            this.$Path = null;
             this.$Preview = null;
             this.$Project = null;
 
-            this.$CSSButton   = null;
+            this.$CSSButton = null;
             this.$MediaButton = null;
 
             this.addEvents({
@@ -91,11 +94,12 @@ define('controls/projects/project/media/Input', [
          * @return {HTMLElement|Element}
          */
         create: function () {
-            var self = this;
+            const self = this;
 
             this.$Elm = new Element('div', {
                 'class'     : 'qui-controls-project-media-input box',
-                'data-quiid': this.getId()
+                'data-quiid': this.getId(),
+                'data-qui'  : 'controls/projects/project/media/Input'
             });
 
             if (!this.$Input) {
@@ -121,7 +125,7 @@ define('controls/projects/project/media/Input', [
             });
 
             if (this.$Input.value !== '') {
-                var urlParams = QUIStringUtils.getUrlParams(this.$Input.value);
+                const urlParams = QUIStringUtils.getUrlParams(this.$Input.value);
 
                 if ("project" in urlParams) {
                     this.setProject(urlParams.project);
@@ -134,12 +138,12 @@ define('controls/projects/project/media/Input', [
                 'class': 'qui-controls-project-media-input-preview',
                 events : {
                     mouseenter: function () {
-                        var pos  = self.$Preview.getPosition();
-                        var size = 250;
+                        let pos = self.$Preview.getPosition();
+                        let size = 250;
 
-                        var winSize = window.QUI.getWindowSize();
-                        var top     = pos.y + 30;
-                        var left    = pos.x + 30;
+                        let winSize = window.QUI.getWindowSize();
+                        let top = pos.y + 30;
+                        let left = pos.x + 30;
 
                         if (top + size > winSize.y) {
                             top = pos.y - size;
@@ -149,7 +153,7 @@ define('controls/projects/project/media/Input', [
                             top = pos.x - size;
                         }
 
-                        var Parent = new Element('div', {
+                        const Parent = new Element('div', {
                             'class': 'qui-controls-project-media-input-preview--view',
                             html   : '<div></div>',
                             styles : {
@@ -166,11 +170,11 @@ define('controls/projects/project/media/Input', [
                             }
                         }).inject(document.body);
 
-                        var url = self.$Preview.getStyle('background');
+                        let url = self.$Preview.getStyle('background');
 
                         if (url.indexOf('__') !== -1) {
-                            var p = url.split('__');
-                            url   = p[0] + '.' + p[1].split('.')[1];
+                            let p = url.split('__');
+                            url = p[0] + '.' + p[1].split('.')[1];
                         }
 
                         new Element('div', {
@@ -204,7 +208,7 @@ define('controls/projects/project/media/Input', [
                 },
                 events: {
                     onClick: function () {
-                        var value   = self.$Input.value,
+                        let value   = self.$Input.value,
                             project = '',
                             fileid  = false;
 
@@ -221,7 +225,7 @@ define('controls/projects/project/media/Input', [
                         }
 
                         if (value !== '') {
-                            var urlParams = QUIStringUtils.getUrlParams(value);
+                            let urlParams = QUIStringUtils.getUrlParams(value);
 
                             if ("id" in urlParams) {
                                 fileid = urlParams.id;
@@ -249,9 +253,13 @@ define('controls/projects/project/media/Input', [
                             events              : {
                                 onSubmit: function (Popup, params) {
                                     self.$Input.value = params.url;
-                                    self.fireEvent('change', [self, self.getValue()]);
-                                    self.$change();
 
+                                    self.fireEvent('change', [
+                                        self,
+                                        self.getValue()
+                                    ]);
+
+                                    self.$change();
                                     self.$refreshPreview();
                                 }
                             }
@@ -309,6 +317,9 @@ define('controls/projects/project/media/Input', [
          */
         $onImport: function () {
             this.$Input = this.getElm();
+
+            console.log(this.$Input);
+
             this.create();
         },
 
@@ -332,7 +343,10 @@ define('controls/projects/project/media/Input', [
             str = str || '';
 
             this.$Input.value = str.toString();
-            this.fireEvent('change', [this, this.getValue()]);
+            this.fireEvent('change', [
+                this,
+                this.getValue()
+            ]);
             this.$refreshPreview();
         },
 
@@ -342,7 +356,10 @@ define('controls/projects/project/media/Input', [
         clear: function () {
             this.$Input.value = '';
             this.$Path.set('html', '&nbsp;');
-            this.fireEvent('change', [this, this.getValue()]);
+            this.fireEvent('change', [
+                this,
+                this.getValue()
+            ]);
 
             this.$change();
             this.$refreshPreview();
@@ -352,7 +369,7 @@ define('controls/projects/project/media/Input', [
          * refresh the preview
          */
         $refreshPreview: function () {
-            var value = this.$Input.value;
+            const value = this.$Input.value;
 
             if (value === '' || value === '0') {
                 this.$Preview.setStyle('background', null);
@@ -365,7 +382,7 @@ define('controls/projects/project/media/Input', [
             this.$Preview.getElements('.fa-warning').destroy();
 
             if (!value.match('image.php')) {
-                var Span = new Element('span', {
+                const Span = new Element('span', {
                     'class': 'qui-controls-project-media-input-preview-icon'
                 }).inject(this.$Preview);
 
@@ -374,7 +391,7 @@ define('controls/projects/project/media/Input', [
             }
 
             // loader image
-            var MiniLoader = new Element('div', {
+            const MiniLoader = new Element('div', {
                 'class': 'fa fa-spinner fa-spin',
                 styles : {
                     fontSize : 18,
@@ -387,13 +404,29 @@ define('controls/projects/project/media/Input', [
                 }
             }).inject(this.$Preview);
 
-            var self = this;
+            const self = this;
 
             Ajax.get([
                 'ajax_media_url_rewrited',
-                'ajax_media_url_getPath'
-            ], function (result, path) {
-                var previewUrl = (URL_DIR + result).replace('//', '/');
+                'ajax_media_url_getPath',
+                'ajax_media_url_getImageSize'
+            ], function (result, path, size) {
+                const previewUrl = (URL_DIR + result).replace('//', '/');
+
+                if (self.getAttribute('ratio_warning') && size.width !== size.height) {
+                    new Element('span', {
+                        'class': 'fa fa-exclamation-triangle',
+                        styles : {
+                            bottom  : 0,
+                            color   : '#FDDD5C',
+                            left    : 25,
+                            position: 'absolute'
+                        },
+                        title  : Locale.get(lg, 'control.project.input.ratio.warning')
+                    }).inject(self.getElm());
+                } else {
+                    self.getElm().getElements('.fa-exclamation-triangle').destroy();
+                }
 
                 self.$Path.set('html', path);
                 self.$Path.set('title', path);
@@ -406,7 +439,6 @@ define('controls/projects/project/media/Input', [
                         'background',
                         'url(' + previewUrl + ') no-repeat center center'
                     );
-
                 }, function () {
                     console.log('error at: ', previewUrl);
                     self.$Preview
@@ -430,7 +462,7 @@ define('controls/projects/project/media/Input', [
          */
         $change: function () {
             if ("createEvent" in document) {
-                var evt = document.createEvent("HTMLEvents");
+                const evt = document.createEvent("HTMLEvents");
                 evt.initEvent("change", false, true);
                 this.$Input.dispatchEvent(evt);
             } else {
