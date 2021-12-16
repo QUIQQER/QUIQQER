@@ -110,6 +110,10 @@ define('controls/projects/project/media/Input', [
                 this.$Elm.wraps(this.$Input);
             }
 
+            if (this.$Input.getAttribute('data-qui-options-ratio_warning')) {
+                this.setAttribute('ratio_warning', this.$Input.getAttribute('data-qui-options-ratio_warning'));
+            }
+
             if (this.getAttribute('styles')) {
                 this.$Elm.setStyles(this.getAttribute('styles'));
             }
@@ -317,9 +321,6 @@ define('controls/projects/project/media/Input', [
          */
         $onImport: function () {
             this.$Input = this.getElm();
-
-            console.log(this.$Input);
-
             this.create();
         },
 

@@ -450,7 +450,6 @@
                         <input conf="globals.favicon"
                                type="hidden"
                                data-qui="controls/projects/project/media/Input"
-                               data-qui-options-ratio_warning="1"
                         >
                             <text>
                                 <locale group="quiqqer/quiqqer" var="quiqqer.settings.general.favicon"/>
