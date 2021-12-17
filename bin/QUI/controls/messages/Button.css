@@ -73,6 +73,21 @@
     color: #000;
 }
 
+.quiqqer-message-handler-header [name="filter-notifications"] {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #89949e;
+    line-height: 30px;
+    margin: 0.25rem;
+    padding: 0 1rem;
+}
+
+.quiqqer-message-handler-header [name="filter-notifications"]:hover {
+    background: #b8c2cc;
+    color: #000;
+}
+
 .quiqqer-message-handler-messages {
     height: calc(100% - 100px);
     overflow: auto;
@@ -169,6 +184,56 @@ body > .quiqqer-message {
     z-index: 10000 !important;
 }
 
+
+/** filter
+ ========================================== */
+
+.quiqqer-messages-filter {
+    background: #fff;
+    border-bottom: 1px solid #e6e7e9;
+}
+
+.quiqqer-messages-filter span {
+    cursor: pointer;
+    display: inline-block;
+    line-height: 28px;
+    margin-bottom: 1px;
+    margin-top: 1px;
+    margin-left: 1px;
+    text-align: center;
+    width: 30px;
+}
+
+.quiqqer-messages-filter span:hover {
+    background: #b8c2cc;
+    color: #000;
+}
+
+.fa-info-circle.information {
+    color: #3490DC;
+}
+
+.fa-check-circle.success {
+    color: #38C172;
+}
+
+.fa-exclamation-circle.attention {
+    color: #de751f;
+}
+
+.fa-exclamation-circle.error {
+    color: #cc1f1a;
+}
+
+
+.fa-info-circle.active,
+.fa-check-circle.active,
+.fa-exclamation-circle.active,
+.fa-exclamation-circle.active {
+    background: #d8e0ea;
+}
+
+
 /** message design -> style
  ========================================== */
 
@@ -199,7 +264,7 @@ body > .quiqqer-message {
     color: #3490DC;
 }
 
-.quiqqer-message-success {
+.quiqqer-message-attention {
     background-color: #fff5eb;
     border-left-color: #f6993f;
     color: #de751f;

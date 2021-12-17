@@ -26,6 +26,9 @@ define('controls/messages/Button', [
             'toggle',
             'refresh',
             'clear',
+            'toggleFilter',
+            'openFilter',
+            'toggleFilter',
             '$customMessageHandling',
             '$closeMessage',
             '$destroyMessage'
@@ -49,6 +52,14 @@ define('controls/messages/Button', [
             this.$MessageBox = null;
             this.$Messages = null;
             this.$Header = null;
+            this.$Filter = null;
+
+            this.$filter = {
+                information: true,
+                success    : true,
+                attention  : true,
+                error      : true
+            };
         },
 
         create: function () {
@@ -108,6 +119,9 @@ define('controls/messages/Button', [
                          '   ' + QUILocale.get(lg, 'message.handler.title') +
                          '</span>' +
                          '' +
+                         '<div name="filter-notifications">' +
+                         '  <span class="fa fa-filter"></span>' +
+                         '</div>' +
                          '<button name="clear-notifications">' +
                          '   <span class="fa fa-trash"></span>' +
                          '   <span>' + QUILocale.get(lg, 'message.handler.clear') + '</span>' +
@@ -128,6 +142,7 @@ define('controls/messages/Button', [
 
             // events
             this.$Header.getElement('[name="clear-notifications"]').addEvent('click', this.clear);
+            this.$Header.getElement('[name="filter-notifications"]').addEvent('click', this.toggleFilter);
 
             return this.$Elm;
         },
@@ -194,7 +209,7 @@ define('controls/messages/Button', [
             this.$rendering = true;
             this.$MessageHandler.clearNewMessages();
 
-            const messages = this.$MessageHandler.getMessages();
+            let messages = this.$MessageHandler.getMessages();
 
             this.$Messages.set('html', '');
 
@@ -203,6 +218,36 @@ define('controls/messages/Button', [
                 b = new Date(b.getAttribute('time'));
 
                 return a > b ? -1 : a < b ? 1 : 0;
+            });
+
+            messages = messages.filter((msg) => {
+                switch (msg.getType()) {
+                    case 'qui/controls/messages/Attention':
+                        if (!this.$filter.attention) {
+                            return false;
+                        }
+                        break;
+
+                    case 'qui/controls/messages/Success':
+                        if (!this.$filter.success) {
+                            return false;
+                        }
+                        break;
+
+                    case 'qui/controls/messages/Error':
+                        if (!this.$filter.error) {
+                            return false;
+                        }
+                        break;
+
+                    case 'qui/controls/messages/Information':
+                        if (!this.$filter.information) {
+                            return false;
+                        }
+                        break;
+                }
+
+                return true;
             });
 
             for (let i = 0, len = messages.length; i < len; i++) {
@@ -337,7 +382,7 @@ define('controls/messages/Button', [
 
             switch (Message.getType()) {
                 case 'qui/controls/messages/Attention':
-                    icon = 'fa fa-info-circle';
+                    icon = 'fa fa-exclamation-circle';
                     messageType = 'quiqqer-message-attention';
                     break;
 
@@ -547,6 +592,63 @@ define('controls/messages/Button', [
                     }
                 });
             });
+        },
+
+        toggleFilter: function (e) {
+            if (typeOf(e) === 'domevent') {
+                e.stop();
+            }
+
+            if (!this.$Filter) {
+                this.openFilter();
+            } else {
+                this.closeFilter();
+            }
+        },
+
+        openFilter: function () {
+            if (this.$Filter) {
+                return;
+            }
+
+            this.$Messages.setStyle('height', 'calc(100% - 130px)');
+
+            this.$Filter = new Element('div', {
+                'class': 'quiqqer-messages-filter',
+                html   : '<span class="fa fa-info-circle information" data-filter="information"></span>' +
+                         '<span class="fa fa-check-circle success" data-filter="success"></span>' +
+                         '<span class="fa fa-exclamation-circle attention" data-filter="attention"></span>' +
+                         '<span class="fa fa-exclamation-circle error" data-filter="error"></span>'
+            }).inject(this.$Messages, 'before');
+
+            this.$Filter.getElements('.fa').addEvent('click', (event) => {
+                const Target = event.target;
+                const filter = Target.get('data-filter');
+
+                if (typeof this.$filter[filter] === 'undefined') {
+                    return;
+                }
+
+                Target.classList.toggle('active');
+
+                this.$filter[filter] = Target.hasClass('active');
+                this.refresh();
+            });
+
+            this.$Filter.getElements('.fa').forEach((Node) => {
+                const filter = Node.get('data-filter');
+
+                if (this.$filter[filter]) {
+                    Node.addClass('active');
+                }
+            });
+        },
+
+        closeFilter: function () {
+            this.$Filter.destroy();
+            this.$Filter = null;
+
+            this.$Messages.setStyle('height', 'calc(100% - 100px)');
         }
     });
 });
