@@ -176,7 +176,7 @@ require(requireList, function () {
                 return;
             }
 
-            var Node = Instance.getElm();
+            const Node = Instance.getElm();
 
             tippy(Node, {
                 animateFill: false,
@@ -219,11 +219,11 @@ require(requireList, function () {
         );
     });
 
-    var menuLoaded             = false,
+    let menuLoaded             = false,
         workspaceLoaded        = false,
         quiqqerLoadedTriggered = false;
 
-    var quiqqerIsLoaded = function () {
+    const quiqqerIsLoaded = function () {
         if (quiqqerLoadedTriggered) {
             return;
         }
@@ -245,11 +245,11 @@ require(requireList, function () {
         }
 
         // load the default workspace
-        var doc_size  = document.body.getSize(),
-            Container = document.getElement('.qui-workspace-container'),
-            Menu      = document.getElement('.qui-menu-container');
+        let doc_size      = document.body.getSize(),
+            Container     = document.getElement('.qui-workspace-container'),
+            MenuContainer = document.getElement('.qui-menu-container');
 
-        var menuY = Menu.getComputedSize().height;
+        let menuY = MenuContainer.getComputedSize().height;
 
         Container.setStyles({
             overflow: 'hidden',
@@ -266,7 +266,7 @@ require(requireList, function () {
         /**
          * Workspace
          */
-        var Workspace = new WSManager({
+        const Workspace = new WSManager({
             autoResize: false,
             events    : {
                 onLoadWorkspace: function (WS) {
@@ -274,16 +274,16 @@ require(requireList, function () {
                 },
 
                 onWorkspaceLoaded: function (WS) {
-                    var createMenu = function (Menu) {
-                        var list = WS.getList(),
-                            Bar  = Menu.getChildren();
+                    const createMenu = function (Menu) {
+                        const list = WS.getList(),
+                              Bar  = Menu.getChildren();
 
                         // logo
                         if (Bar.getChildren('quiqqer')) {
-                            var Quiqqer = Bar.getChildren('quiqqer');
+                            const Quiqqer = Bar.getChildren('quiqqer');
 
                             if (Quiqqer) {
-                                var Img = Quiqqer.getElm().getElement('img');
+                                const Img = Quiqqer.getElm().getElement('img');
 
                                 if (Img) {
                                     Img.setStyles({
@@ -300,6 +300,17 @@ require(requireList, function () {
                         WS.Loader.hide();
                         quiqqerIsLoaded();
 
+                        // message
+                        require(['controls/messages/Button'], function (MessageButton) {
+                            let Profile = MenuContainer.getElement('.qui-profile-button');
+
+                            if (Profile) {
+                                new MessageButton().inject(Profile, 'after');
+                            } else {
+                                new MessageButton().inject(MenuContainer);
+                            }
+                        });
+
                         if (!Bar.getChildren('profile')) {
                             return;
                         }
@@ -308,13 +319,13 @@ require(requireList, function () {
                             return;
                         }
 
-                        var Workspaces = Bar.getChildren('profile')
-                                            .getChildren('workspaces');
+                        const Workspaces = Bar.getChildren('profile')
+                                              .getChildren('workspaces');
 
                         Workspaces.clear();
 
                         Object.each(list, function (Entry) {
-                            var standard = false;
+                            let standard = false;
 
                             if ("standard" in Entry && Entry.standard &&
                                 (Entry.standard).toInt()) {
@@ -422,7 +433,7 @@ require(requireList, function () {
                 // logout
                 Ajax.post('ajax_user_logout', function () {
                     window.onbeforeunload = null;
-                    window.location       = URL_DIR + 'admin/';
+                    window.location = URL_DIR + 'admin/';
                 });
             });
         };
