@@ -438,5 +438,16 @@ require(requireList, function () {
             });
         };
 
+        // check if message panel exist
+        QUI.addEvent('onQuiqqerLoaded', function () {
+            (function () {
+                let messagePanels = QUI.Controls.getByType('qui/controls/messages/Panel');
+
+                for (let i = 0, len = messagePanels.length; i < len; i++) {
+                    messagePanels[i].destroy();
+                }
+            }).delay(5000);
+        });
+
     });
 });
