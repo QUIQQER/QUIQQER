@@ -29,8 +29,8 @@ define('controls/menu/Manager', [
         initialize: function (options) {
             this.parent(options);
 
-            this.$Bar      = null;
-            this.$Profile  = null;
+            this.$Bar = null;
+            this.$Profile = null;
             this.$isLoaded = false;
         },
 
@@ -114,7 +114,7 @@ define('controls/menu/Manager', [
                 return;
             }
 
-            var ContextMenu = self.$Profile.getContextMenu();
+            const ContextMenu = self.$Profile.getContextMenu();
 
             ContextMenu.addEvent('blur', function () {
                 ContextMenu.hide.delay(200, ContextMenu);
@@ -143,7 +143,7 @@ define('controls/menu/Manager', [
                 );
             });
 
-            var Profile = new Element('div', {
+            const Profile = new Element('div', {
                 'class': 'qui-contextmenu-baritem smooth qui-profile-button',
                 events : {
                     click: function (event) {
@@ -170,7 +170,7 @@ define('controls/menu/Manager', [
                 }
             }).inject(Menu);
 
-            var LetterElm = new Element('span', {
+            const LetterElm = new Element('span', {
                 html   : letter,
                 'class': 'qui-profile-button-letter'
             }).inject(Profile);

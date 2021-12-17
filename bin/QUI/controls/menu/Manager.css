@@ -3,7 +3,7 @@
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
-    border: 1px solid #DDDDDD;
+    border: 1px solid rgba(147, 128, 108, 0.25);
     border-radius: 20px;
     cursor: pointer;
     float: right !important;
