@@ -484,7 +484,10 @@ define('controls/messages/Button', [
          * @param event
          */
         $destroyMessage: function (event) {
-            const self = this;
+            if (!this.$MessageHandler) {
+                return;
+            }
+
             let Target = event.target;
 
             event.stop();
@@ -501,7 +504,7 @@ define('controls/messages/Button', [
             });
 
             if (Message.length) {
-                Message[0].destroy();
+                this.$MessageHandler.$onMessageDestroy(Message[0]);
             }
 
             moofx(Target).animate({
@@ -511,11 +514,11 @@ define('controls/messages/Button', [
                 opacity: 0
             }, {
                 duration: 200,
-                callback: function () {
+                callback: () => {
                     Target.destroy();
 
-                    if (!self.getElm().getElement('.quiqqer-message')) {
-                        self.refresh();
+                    if (!this.$MessageBox.getElement('.quiqqer-message')) {
+                        this.refresh();
                     }
                 }
             });
