@@ -36,17 +36,6 @@
             </text>
         </panel>
 
-        <!-- qui message handler -->
-        <panel require="qui/controls/messages/Panel">
-            <image>fa fa-bullhorn</image>
-            <title>
-                <locale group="quiqqer/quiqqer" var="panels.messages.title"/>
-            </title>
-            <text>
-                <locale group="quiqqer/quiqqer" var="panels.messages.description"/>
-            </text>
-        </panel>
-
         <!-- qui task panel -->
         <panel require="qui/controls/desktop/Tasks">
             <image>fa fa-tasks</image>

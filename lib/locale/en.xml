@@ -5946,6 +5946,21 @@ After logging in you will be prompted to set a new password.
         <locale name="set.up.execute.button.text">
             <en><![CDATA[Complete setup]]></en>
         </locale>
+        <locale name="control.project.input.ratio.warning">
+            <en><![CDATA[
+            Maybe the images blur when you zoom out because width or height is odd.
+            ]]></en>
+        </locale>
+
+        <locale name="message.handler.title">
+            <en><![CDATA[Notifications]]></en>
+        </locale>
+        <locale name="message.handler.clear">
+            <en><![CDATA[clear]]></en>
+        </locale>
+        <locale name="message.handler.no.messages">
+            <en><![CDATA[No messages received]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/controls" datatype="php,js">
         <locale name="package.title">

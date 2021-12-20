@@ -1,24 +1,36 @@
 .qui-profile-button {
-    background-color: #DDDDDD;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    border: 1px solid #DDDDDD;
-    border-radius: 20px;
+    background-color: #ededed;
+    border: 1px solid rgba(147, 128, 108, 0.25);
+    border-radius: 5px;
     cursor: pointer;
     float: right !important;
     font-size: 16px;
-    height: 30px;
+    height: 32px;
     line-height: 30px;
-    margin: 15px 30px 0 0;
+    margin: 2px 10px 0 0;
     position: relative;
     text-align: center;
-    top: -10px;
-    width: 30px;
+    width: 50px;
 }
 
 .qui-profile-button:hover {
-    opacity: 0.8;
+    background: #0069B4;
+    color: #ffffff;
+}
+
+.qui-profile-button:hover .fa-angle-down {
+    color: #ffffff;
+}
+
+.avatar-image {
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    display: inline-block;
+    float: left;
+    height: 25px;
+    margin: 3px;
+    width: 25px;
 }
 
 .qui-profile-contextMenu:after {

@@ -29,8 +29,8 @@ define('controls/menu/Manager', [
         initialize: function (options) {
             this.parent(options);
 
-            this.$Bar      = null;
-            this.$Profile  = null;
+            this.$Bar = null;
+            this.$Profile = null;
             this.$isLoaded = false;
         },
 
@@ -114,7 +114,7 @@ define('controls/menu/Manager', [
                 return;
             }
 
-            var ContextMenu = self.$Profile.getContextMenu();
+            const ContextMenu = self.$Profile.getContextMenu();
 
             ContextMenu.addEvent('blur', function () {
                 ContextMenu.hide.delay(200, ContextMenu);
@@ -143,8 +143,9 @@ define('controls/menu/Manager', [
                 );
             });
 
-            var Profile = new Element('div', {
+            const Profile = new Element('div', {
                 'class': 'qui-contextmenu-baritem smooth qui-profile-button',
+                html   : '<span class="avatar-image"></span>',
                 events : {
                     click: function (event) {
                         event.stop();
@@ -170,7 +171,7 @@ define('controls/menu/Manager', [
                 }
             }).inject(Menu);
 
-            var LetterElm = new Element('span', {
+            const LetterElm = new Element('span', {
                 html   : letter,
                 'class': 'qui-profile-button-letter'
             }).inject(Profile);
@@ -179,16 +180,18 @@ define('controls/menu/Manager', [
                 html  : '<span class="fa fa-angle-down"></span>',
                 styles: {
                     position: 'absolute',
-                    right   : -15,
+                    right   : 5,
                     top     : 0
                 }
             }).inject(Profile);
 
             if (window.USER.avatar !== '') {
-                Profile.setStyle('background-image', "url('" + window.USER.avatar + "')");
+                Profile.getElement('.avatar-image')
+                       .setStyle('background-image', "url('" + window.USER.avatar + "')");
                 LetterElm.destroy();
             } else {
-                Profile.addClass('qui-profile-button-' + letter.toLowerCase());
+                Profile.getElement('.avatar-image')
+                       .addClass('qui-profile-button-' + letter.toLowerCase());
             }
         },
 
