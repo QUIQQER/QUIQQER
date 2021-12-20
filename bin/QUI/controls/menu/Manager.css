@@ -47,6 +47,15 @@
     color: #212527;
 }
 
+.qui-profile-button-letter {
+    left: 0;
+    line-height: 30px;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    width: 30px;
+}
+
 .qui-profile-button-a,
 .qui-profile-button-_ {
     background-color: #2f8fc6;
