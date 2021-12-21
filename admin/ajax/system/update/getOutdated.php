@@ -12,7 +12,7 @@ QUI::$Ajax->registerFunction(
             $force = false;
         }
 
-        if (is_int($force) || is_string($force)) {
+        if (\is_int($force) || \is_string($force)) {
             $force = (int)$force;
             $force = (bool)$force;
         }
