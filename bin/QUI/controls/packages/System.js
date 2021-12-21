@@ -323,7 +323,7 @@ define('controls/packages/System', [
 
                 const packages = this.$Result.getElements('.packages-package');
 
-                if (packages) {
+                if (packages && packages.length) {
                     moofx(packages).animate({
                         opacity: 0,
                         width  : 0
