@@ -71,14 +71,14 @@ class Manager extends QUI\QDOM
      *
      * @var string
      */
-    protected $vardir;
+    protected string $vardir;
 
     /**
      * Path to the composer.json file
      *
      * @var string
      */
-    protected $composer_json;
+    protected string $composer_json;
 
     /**
      * Path to the composer.lock file
@@ -106,77 +106,70 @@ class Manager extends QUI\QDOM
      *
      * @var boolean
      */
-    protected $exec = false;
+    protected bool $exec = false;
 
     /**
      * temporary require packages
      *
      * @var array
      */
-    protected $require = [];
+    protected array $require = [];
 
     /**
      * QUIQQER Version ->getVersion()
      *
      * @var string
      */
-    protected $version = null;
+    protected ?string $version = null;
 
     /**
      * QUIQQER Version ->getHash()
      *
      * @var string
      */
-    protected $hash = null;
+    protected ?string $hash = null;
 
     /**
      * List of packages objects
      *
      * @var array
      */
-    protected $packages = [];
+    protected array $packages = [];
 
     /**
      * List of installed packages flags
      *
      * @var array
      */
-    protected $installed = [];
+    protected array $installed = [];
 
     /**
      * internal event manager
      *
      * @var QUI\Events\Manager
      */
-    public $Events;
+    public QUI\Events\Manager $Events;
 
     /**
      * internal event manager
      *
      * @var QUI\Composer\Composer
      */
-    public $Composer;
-
-    /**
-     * Path to the local repository
-     *
-     * @var string
-     */
-    protected $localRepository;
+    public ?QUI\Composer\Composer $Composer;
 
     /**
      * active servers - use as temp for local repo using
      *
      * @var array
      */
-    protected $activeServers = [];
+    protected array $activeServers = [];
 
     /**
      * constructor
      *
      * @param array $attributes
      */
-    public function __construct($attributes = [])
+    public function __construct(array $attributes = [])
     {
         // defaults
         $this->setAttributes([
@@ -215,7 +208,7 @@ class Manager extends QUI\QDOM
     }
 
     /**
-     * Return the available quiqqer package types
+     * Return the available QUIQQER package types
      *
      * @return array
      */
@@ -390,7 +383,7 @@ class Manager extends QUI\QDOM
      *
      * @param array $packages - add packages to the composer json
      */
-    protected function createComposerJSON($packages = [])
+    protected function createComposerJSON(array $packages = [])
     {
         if (\file_exists($this->composer_json)) {
             $composerJson = \json_decode(
@@ -1951,10 +1944,9 @@ class Manager extends QUI\QDOM
      *
      * @param bool|string - (optional) The packagename which should get updated.
      *
-     * @return string
+     * @return array
      *
      * @throws QUI\Exception
-     * @throws QUI\Lockclient\Exceptions\LockServerException
      */
     protected function composerUpdateOrInstall($package): array
     {
@@ -1998,10 +1990,9 @@ class Manager extends QUI\QDOM
      * @param $packages
      * @param $version
      *
-     * @return string
+     * @return array
      *
      * @throws PackageInstallException
-     * @throws QUI\Lockclient\Exceptions\LockServerException
      */
     protected function composerRequireOrInstall($packages, $version): array
     {
@@ -2035,7 +2026,6 @@ class Manager extends QUI\QDOM
     protected function checkComposerInstallRequirements()
     {
         $memoryLimit = QUI\Utils\System::getMemoryLimit();
-        $lockServerEnabled = QUI::conf('globals', 'lockserver_enabled');
 
         // Lockserver can not handle VCS repositories ==> Check if local execution is possible or fail the operation
         if ($this->isVCSServerEnabled()) {
@@ -2043,12 +2033,9 @@ class Manager extends QUI\QDOM
                 return;
             }
 
-            $exceptionLocale = $lockServerEnabled ?
-                'message.online.update.RAM.insufficient.vcs.lock' : 'message.online.update.RAM.insufficient.vcs';
-
             throw new PackageInstallException([
                 'quiqqer/quiqqer',
-                $exceptionLocale
+                'message.online.update.RAM.insufficient.vcs'
             ]);
         }
 
@@ -2059,7 +2046,7 @@ class Manager extends QUI\QDOM
             return;
         }
 
-        if (!$lockServerEnabled && $memoryLimit != -1 && $memoryLimit < self::REQUIRED_MEMORY * 1024 * 1024) {
+        if ($memoryLimit != -1 && $memoryLimit < self::REQUIRED_MEMORY * 1024 * 1024) {
             throw new PackageInstallException([
                 'quiqqer/quiqqer',
                 'message.online.update.RAM.insufficient'

@@ -286,7 +286,7 @@ class Update extends QUI\System\Console\Tool
      *
      * @param string $buffer
      */
-    protected function writeToLog($buffer)
+    protected function writeToLog(string $buffer)
     {
         if (empty($buffer)) {
             return;
