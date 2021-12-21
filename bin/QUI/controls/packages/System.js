@@ -253,7 +253,7 @@ define('controls/packages/System', [
                   Button = this.$Update;
 
             Button.setAttribute('textimage', 'fa fa-spinner fa-spin');
-            
+
             return Packages.getOutdated(force || false).then(function (result) {
                 let title   = QUILocale.get(lg, 'message.update.not.available.title'),
                     message = QUILocale.get(lg, 'message.update.not.available.description');
@@ -268,7 +268,7 @@ define('controls/packages/System', [
                 }
 
                 QUI.getMessageHandler().then(function (Handler) {
-                    if (result) {
+                    if (result && result.length) {
                         Handler.pushAttention(title, message, false);
                         Handler.addAttention(message);
                         return;
