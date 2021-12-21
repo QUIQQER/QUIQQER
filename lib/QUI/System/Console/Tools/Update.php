@@ -65,11 +65,15 @@ class Update extends QUI\System\Console\Tool
         $this->writeLn('');
         $this->logBuffer();
 
-        $self     = $this;
+        $self = $this;
         $Packages = QUI::getPackageManager();
 
         // output events
         $Packages->getComposer()->addEvent('onOutput', function ($Composer, $output, $type) use ($self) {
+            if ($this->getArgument('check')) {
+                return;
+            }
+
             $self->write($output);
             $self->writeToLog($output);
         });
@@ -105,10 +109,10 @@ class Update extends QUI\System\Console\Tool
                 $packageList[$library['name']] = 'dev-dev';
             }
 
-            $packageList['quiqqer/qui']     = 'dev-dev';
+            $packageList['quiqqer/qui'] = 'dev-dev';
             $packageList['quiqqer/quiqqer'] = 'dev-dev';
             $packageList['quiqqer/qui-php'] = 'dev-dev';
-            $packageList['quiqqer/utils']   = 'dev-dev';
+            $packageList['quiqqer/utils'] = 'dev-dev';
 
             foreach ($packageList as $package => $version) {
 //                $Packages->setPackage($package, $version);
@@ -131,7 +135,7 @@ class Update extends QUI\System\Console\Tool
                 return;
             }
 
-            $nameLength    = 0;
+            $nameLength = 0;
             $versionLength = 0;
 
             // #locale
@@ -164,7 +168,7 @@ class Update extends QUI\System\Console\Tool
 
                 $this->resetColor();
                 $this->write(
-                    \str_pad($package['oldVersion'], $versionLength + 2, ' ').' -> '
+                    \str_pad($package['oldVersion'], $versionLength + 2, ' ') . ' -> '
                 );
 
                 $this->write($package['version'], 'cyan');
@@ -188,13 +192,13 @@ class Update extends QUI\System\Console\Tool
 
             $this->logBuffer();
             $wasExecuted = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.execute');
-            $webserver   = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.webserver');
+            $webserver = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.webserver');
 
             $this->writeLn($wasExecuted);
-            $this->writeToLog($wasExecuted.PHP_EOL);
+            $this->writeToLog($wasExecuted . PHP_EOL);
 
             $this->writeLn($webserver);
-            $this->writeToLog($webserver.PHP_EOL);
+            $this->writeToLog($webserver . PHP_EOL);
 
             $Httaccess = new Htaccess();
             $Httaccess->execute();
@@ -203,7 +207,7 @@ class Update extends QUI\System\Console\Tool
             $Httaccess->execute();
 
             $this->writeToLog(PHP_EOL);
-            $this->writeToLog('✔️'.PHP_EOL);
+            $this->writeToLog('✔️' . PHP_EOL);
             $this->writeToLog(PHP_EOL);
 
             // setup set the last update date
@@ -215,7 +219,7 @@ class Update extends QUI\System\Console\Tool
             $this->write(' [error]', 'red');
             $this->writeLn('');
             $this->writeLn(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.error.1').'::'.$Exception->getMessage(),
+                QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.error.1') . '::' . $Exception->getMessage(),
                 'red'
             );
 
@@ -227,7 +231,7 @@ class Update extends QUI\System\Console\Tool
             $this->writeLn('');
 
             $this->writeLn(
-                'php var/composer/composer.phar --working-dir="'.VAR_DIR.'composer" update',
+                'php var/composer/composer.phar --working-dir="' . VAR_DIR . 'composer" update',
                 'red'
             );
 
@@ -288,6 +292,6 @@ class Update extends QUI\System\Console\Tool
             return;
         }
 
-        \error_log($buffer, 3, VAR_DIR.'log/update-'.\date('Y-m-d').'.log');
+        \error_log($buffer, 3, VAR_DIR . 'log/update-' . \date('Y-m-d') . '.log');
     }
 }

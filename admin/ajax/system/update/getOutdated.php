@@ -14,7 +14,7 @@ QUI::$Ajax->registerFunction(
 
         if (is_int($force) || is_string($force)) {
             $force = (int)$force;
-            $force = $force ? true : false;
+            $force = (bool)$force;
         }
 
         return QUI::getPackageManager()->getOutdated($force);

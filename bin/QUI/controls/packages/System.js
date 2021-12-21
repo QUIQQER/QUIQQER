@@ -26,7 +26,7 @@ define('controls/packages/System', [
              QUIAjax, QUILocale, FaviconUtils, Translator, template) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/quiqqer';
 
     return new Class({
 
@@ -47,9 +47,9 @@ define('controls/packages/System', [
             this.parent(options);
 
             this.$Buttons = null;
-            this.$Result  = null;
-            this.$list    = [];
-            this.$view    = options && options.view || 'tile';
+            this.$Result = null;
+            this.$list = [];
+            this.$view = options && options.view || 'tile';
 
             this.addEvents({
                 onInject: this.$onInject
@@ -140,7 +140,7 @@ define('controls/packages/System', [
          * event : on inject
          */
         $onInject: function () {
-            var self = this;
+            const self = this;
 
             this.$List = {
                 viewTile: this.viewTile,
@@ -196,7 +196,7 @@ define('controls/packages/System', [
          * @returns {Promise}
          */
         executeCompleteSetup: function () {
-            var Button = this.$Setup;
+            const Button = this.$Setup;
 
             FaviconUtils.loading();
 
@@ -249,17 +249,17 @@ define('controls/packages/System', [
          * @returns {Promise}
          */
         checkUpdates: function (force) {
-            var self   = this,
-                Button = this.$Update;
+            const self   = this,
+                  Button = this.$Update;
 
             Button.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
             return Packages.getOutdated(force || false).then(function (result) {
-                var title   = QUILocale.get(lg, 'message.update.not.available.title'),
+                let title   = QUILocale.get(lg, 'message.update.not.available.title'),
                     message = QUILocale.get(lg, 'message.update.not.available.description');
 
                 if (result && result.length) {
-                    title   = QUILocale.get(lg, 'message.update.available.title');
+                    title = QUILocale.get(lg, 'message.update.available.title');
                     message = QUILocale.get(lg, 'message.update.available.description');
 
                     self.$list = result;
@@ -323,7 +323,7 @@ define('controls/packages/System', [
                     );
                 });
 
-                var packages = this.$Result.getElements('.packages-package');
+                const packages = this.$Result.getElements('.packages-package');
 
                 moofx(packages).animate({
                     opacity: 0,
@@ -372,9 +372,9 @@ define('controls/packages/System', [
             this.$view = 'tile';
             this.$Result.set('html', '');
 
-            var i, len, pkg, Package;
+            let i, len, pkg, Package;
 
-            var Update = new Element('span', {
+            const Update = new Element('span', {
                 'class': 'fa fa-play-circle-o button'
             });
 
@@ -384,11 +384,11 @@ define('controls/packages/System', [
                 Package = new Element('div', {
                     'class'       : 'packages-package qui-control-packages-system-package-viewTile',
                     'html'        : '<div class="qui-control-packages-system-package-viewTile-text">' +
-                    '  <span class="package">' + pkg.package + '</span>' +
-                    '  <span class="version">' + pkg.version + '</span>' +
-                    '  <span class="oldVersion">' + pkg.oldVersion + '</span>' +
-                    '</div>' +
-                    '<div class="qui-control-packages-system-package-viewTile-buttons"></div>',
+                                    '  <span class="package">' + pkg.package + '</span>' +
+                                    '  <span class="version">' + pkg.version + '</span>' +
+                                    '  <span class="oldVersion">' + pkg.oldVersion + '</span>' +
+                                    '</div>' +
+                                    '<div class="qui-control-packages-system-package-viewTile-buttons"></div>',
                     title         : QUILocale.get(lg, 'packages.panel.system.packageUpdate.title', {
                         package: pkg.package,
                         version: pkg.version
@@ -408,9 +408,9 @@ define('controls/packages/System', [
             this.$view = 'tile';
             this.$Result.set('html', '');
 
-            var i, len, pkg, Package;
+            let i, len, pkg, Package;
 
-            var Update = new Element('span', {
+            const Update = new Element('span', {
                 'class': 'fa fa-play-circle-o button'
             });
 
@@ -420,11 +420,11 @@ define('controls/packages/System', [
                 Package = new Element('div', {
                     'class'       : 'packages-package qui-control-packages-system-package-viewList',
                     'html'        : '<div class="qui-control-packages-system-package-viewList-text">' +
-                    '  <span class="package">' + pkg.package + '</span>' +
-                    '  <span class="oldVersion">' + pkg.oldVersion + '</span>' +
-                    '  <span class="version">' + pkg.version + '</span>' +
-                    '</div>' +
-                    '<div class="qui-control-packages-system-package-viewList-buttons"></div>',
+                                    '  <span class="package">' + pkg.package + '</span>' +
+                                    '  <span class="oldVersion">' + pkg.oldVersion + '</span>' +
+                                    '  <span class="version">' + pkg.version + '</span>' +
+                                    '</div>' +
+                                    '<div class="qui-control-packages-system-package-viewList-buttons"></div>',
                     events        : {
                         click: this.$onPackageUpdate
                     },
@@ -446,11 +446,11 @@ define('controls/packages/System', [
          * @param {Event} event
          */
         $onPackageUpdate: function (event) {
-            var Target  = event.target,
-                Package = Target.getParent('.packages-package'),
-                pkg     = Package.get('data-package');
+            const Target  = event.target,
+                  Package = Target.getParent('.packages-package'),
+                  pkg     = Package.get('data-package');
 
-            var Loader = new Element('div', {
+            const Loader = new Element('div', {
                 'class': 'packages-package-loader',
                 'html' : '<span class="fa fa-spinner fa-spin"></span>',
                 styles : {
