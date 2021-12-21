@@ -42,7 +42,7 @@ class Manager extends QUI\QDOM
     const REQUIRED_MEMORY = 128;
 
     /** @var int The minimum required memory_limit of PHP in megabytes, if the user added VCS repositories */
-    const REQUIRED_MEMORY_VCS = 256;
+    const REQUIRED_MEMORY_VCS = 128;
 
     /** @var string The key used to store the package folder size in cache */
     const CACHE_KEY_PACKAGE_FOLDER_SIZE = "quiqqer/packages/package_folder_size";
@@ -1587,7 +1587,7 @@ class Manager extends QUI\QDOM
      * @throws \QUI\Exception
      * @throws \Exception
      */
-    public function getOutdated(bool $force = false): array
+    public function getOutdated($force = false): array
     {
         if (!\is_bool($force)) {
             $force = false;
@@ -1660,7 +1660,7 @@ class Manager extends QUI\QDOM
      * @todo if exception uncommitted changes -> own error message
      * @todo if exception uncommitted changes -> interactive mode
      */
-    public function update($package = false, bool $mute = true)
+    public function update($package = false, $mute = true)
     {
         $Composer = $this->getComposer();
 
@@ -1729,7 +1729,7 @@ class Manager extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    protected function getUpdateConf(): QUI\Config
+    protected function getUpdateConf()
     {
         // set last update
         if (!\file_exists(CMS_DIR . 'etc/last_update.ini.php')) {
@@ -1951,12 +1951,12 @@ class Manager extends QUI\QDOM
      *
      * @param bool|string - (otional) The packagename which should get updated.
      *
-     * @return array
+     * @return string
      *
      * @throws QUI\Exception
      * @throws QUI\Lockclient\Exceptions\LockServerException
      */
-    protected function composerUpdateOrInstall($package): array
+    protected function composerUpdateOrInstall($package): string
     {
         $lockServerEnabled = QUI::conf('globals', 'lockserver_enabled');
         $memoryLimit = QUI\Utils\System::getMemoryLimit();
@@ -2028,12 +2028,12 @@ class Manager extends QUI\QDOM
      * @param $packages
      * @param $version
      *
-     * @return array
+     * @return string
      *
      * @throws PackageInstallException
      * @throws QUI\Lockclient\Exceptions\LockServerException
      */
-    protected function composerRequireOrInstall($packages, $version): array
+    protected function composerRequireOrInstall($packages, $version): string
     {
         $this->checkComposerInstallRequirements();
 

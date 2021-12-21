@@ -253,7 +253,7 @@ define('controls/packages/System', [
                   Button = this.$Update;
 
             Button.setAttribute('textimage', 'fa fa-spinner fa-spin');
-
+            
             return Packages.getOutdated(force || false).then(function (result) {
                 let title   = QUILocale.get(lg, 'message.update.not.available.title'),
                     message = QUILocale.get(lg, 'message.update.not.available.description');
@@ -263,6 +263,8 @@ define('controls/packages/System', [
                     message = QUILocale.get(lg, 'message.update.available.description');
 
                     self.$list = result;
+                } else {
+                    self.$list = [];
                 }
 
                 QUI.getMessageHandler().then(function (Handler) {
@@ -279,12 +281,9 @@ define('controls/packages/System', [
                 Button.setAttribute('forcecheck', true);
                 Button.setAttribute('textimage', 'fa fa-check-circle-o');
                 self.refresh();
-
             }).then(function () {
                 return self.refreshLastUpdateCheckDate();
-
             }).catch(function (Exception) {
-
                 QUI.getMessageHandler().then(function (Handler) {
                     Handler.pushError(
                         QUILocale.get(lg, 'message.update.error.title'),
@@ -307,7 +306,6 @@ define('controls/packages/System', [
             this.fireEvent('showLoader');
 
             return Packages.update().then(function () {
-
                 this.$Update.setAttribute('textimage', 'fa fa-check-circle-o');
                 this.$Update.setAttribute('checkUpdates', false);
 
@@ -335,9 +333,7 @@ define('controls/packages/System', [
                 });
 
                 this.fireEvent('hideLoader');
-
             }.bind(this)).catch(function (Exception) {
-
                 QUI.getMessageHandler().then(function (MH) {
                     MH.addError(Exception.getMessage());
                 });
