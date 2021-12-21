@@ -323,19 +323,25 @@ define('controls/packages/System', [
 
                 const packages = this.$Result.getElements('.packages-package');
 
-                moofx(packages).animate({
-                    opacity: 0,
-                    width  : 0
-                }, {
-                    callback: function () {
-                        packages.destroy();
-                    }
-                });
+                if (packages) {
+                    moofx(packages).animate({
+                        opacity: 0,
+                        width  : 0
+                    }, {
+                        callback: function () {
+                            packages.destroy();
+                        }
+                    });
+                }
 
                 this.fireEvent('hideLoader');
             }.bind(this)).catch(function (Exception) {
                 QUI.getMessageHandler().then(function (MH) {
-                    MH.addError(Exception.getMessage());
+                    if (typeof Exception.getMessage === 'function') {
+                        MH.addError(Exception.getMessage());
+                    } else {
+                        console.error(Exception);
+                    }
                 });
 
                 this.fireEvent('hideLoader');
