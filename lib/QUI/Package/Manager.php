@@ -1655,6 +1655,8 @@ class Manager extends QUI\QDOM
      */
     public function update($package = false, $mute = true)
     {
+        QUI::getEvents()->fireEvent('updateBegin');
+
         $Composer = $this->getComposer();
 
         $needledRAM = $this->isVCSServerEnabled() ? self::REQUIRED_MEMORY_VCS . 'M' : self::REQUIRED_MEMORY . 'M';
@@ -1713,6 +1715,8 @@ class Manager extends QUI\QDOM
         $Last = $this->getUpdateConf();
         $Last->set('quiqqer', 'lastUpdate', \time());
         $Last->save();
+
+        QUI::getEvents()->fireEvent('updateEnd');
     }
 
     /**
