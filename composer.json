@@ -67,6 +67,7 @@
     "quiqqer\/backendsearch": "1.*|dev-master|dev-dev",
     "quiqqer\/requirements": ">2.0.2|dev-master|dev-dev",
     "quiqqer\/demodata": "^1.0|dev-master|dev-dev",
+    "quiqqer-asset/animejs": "*",
     "quiqqer-asset\/intl": "1.*",
     "quiqqer-asset\/nouislider": ">=15",
     "quiqqer-asset\/mustache": "4.*",
