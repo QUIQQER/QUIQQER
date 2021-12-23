@@ -16,6 +16,25 @@
     padding: 0 0 0 20px;
 }
 
+.qui-control-packages-update-infos-v2 {
+    clear: both;
+
+    float: left;
+    list-style-type: none;
+    margin: 0;
+    padding: 20px 0 0 0;
+    width: 100%;
+}
+
+.qui-control-packages-update-infos-v2 li {
+    clear: both;
+}
+
+.qui-control-packages-update-infos-v2 span {
+    display: inline-block;
+    width: 200px;
+}
+
 .qui-control-packages-update-infos-v li {
     clear: both;
 }
@@ -33,6 +52,10 @@
     clear: both;
     float: left;
     white-space: nowrap;
+}
+
+.qui-control-packages-update-infos-last-cell {
+
 }
 
 .qui-control-packages-update-buttons {
