@@ -179,15 +179,29 @@ define('controls/packages/System', [
          * @returns {Promise}
          */
         refreshLastUpdateCheckDate: function () {
-            return Packages.getLastUpdateCheck(true).then(function (lastUpdateCheck) {
+            return Promise.all([
+                Packages.getLastUpdateCheck(true),
+                Packages.getLastUpdate(true)
+            ]).then((res) => {
+                let lastUpdateCheck = res[0];
+                let lastUpdate = res[1];
+
                 if (!lastUpdateCheck) {
                     lastUpdateCheck = '---';
+                }
+
+                if (!lastUpdate) {
+                    lastUpdate = '---';
                 }
 
                 this.$Elm.getElement(
                     '.qui-control-packages-update-infos-lastCheck'
                 ).set('html', lastUpdateCheck);
-            }.bind(this));
+
+                this.$Elm.getElement(
+                    '.qui-control-packages-update-infos-last'
+                ).set('html', lastUpdate);
+            });
         },
 
         /**
