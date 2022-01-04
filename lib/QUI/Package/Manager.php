@@ -817,7 +817,9 @@ class Manager extends QUI\QDOM
         try {
             $this->list = QUI\Cache\LongTermCache::get(self::CACHE_NAME_TYPES);
 
-            return $this->list;
+            if (\is_array($this->list)) {
+                return $this->list;
+            }
         } catch (QUI\Exception $Exception) {
         }
 
@@ -830,7 +832,7 @@ class Manager extends QUI\QDOM
         $data = \file_get_contents($installed_file);
         $list = \json_decode($data, true);
 
-        if (file_exists($this->dir . 'composer/installed.php')) {
+        if (isset($list['packages'])) {
             $list = $list['packages'];
         }
 
