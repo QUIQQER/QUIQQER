@@ -17,16 +17,17 @@
         {locale group="quiqqer/quiqqer" var="quiqqer.setup.mail.description"}
         <form style="margin-top: 3rem; clear: both">
             <label>
-                <span>{locale group="quiqqer/quiqqer" var="quiqqer.setup.mail.label"}</span><br />
+                <span>{locale group="quiqqer/quiqqer" var="quiqqer.setup.mail.label"}</span><br/>
                 <input
-                    type="text" name="mail.admin_mail"
-                    style="margin: 10px 0; width: 250px; padding: 10px;"
-                    placeholder="{locale group="quiqqer/quiqqer" var="quiqqer.setup.mail.placeholder"}"
+                        type="text" name="mail.admin_mail"
+                        style="margin: 10px 0; width: 250px; padding: 10px;"
+                        placeholder="{locale group='quiqqer/quiqqer' var='quiqqer.setup.mail.placeholder'}"
+                        value="{$mail}"
                 />
             </label>
         </form>
     </div>
     <div style="align-items: center; display: flex; flex-grow: 1; justify-content: end; flex-direction: column;">
-        <img src="{$urlImageDir}Q_haelt_Q-01.svg" style="max-width: 400px" />
+        <img src="{$urlImageDir}Q_haelt_Q-01.svg" style="max-width: 400px"/>
     </div>
 </div>
