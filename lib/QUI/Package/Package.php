@@ -11,6 +11,10 @@ use QUI\Update;
 use QUI\Utils\Text\XML;
 use QUI\Cache\LongTermCache;
 
+use Composer\Json\JsonFile;
+use Seld\JsonLint\JsonParser;
+use Seld\JsonLint\ParsingException;
+
 /**
  * An installed package
  *
@@ -111,20 +115,20 @@ class Package extends QUI\QDOM
      */
     public function __construct(string $package)
     {
-        $packageDir = OPT_DIR.$package.'/';
+        $packageDir = OPT_DIR . $package . '/';
 
         // if not exists look at bin
         if (!\is_dir($packageDir) && \strpos($package, '/') !== false) {
-            $packageDir = OPT_DIR.'/bin/'.\explode('/', $package)[1].'/';
+            $packageDir = OPT_DIR . '/bin/' . \explode('/', $package)[1] . '/';
         }
 
         if (!\is_dir($packageDir)) {
             $package = \htmlspecialchars($package);
-            throw new QUI\Exception('Package not exists ['.$package.']', 404);
+            throw new QUI\Exception('Package not exists [' . $package . ']', 404);
         }
 
         $this->packageDir = $packageDir;
-        $this->name       = $package;
+        $this->name = $package;
     }
 
     /**
@@ -137,7 +141,7 @@ class Package extends QUI\QDOM
         }
 
         // no composer.json, no real package
-        if (!\file_exists($this->packageDir.'composer.json')) {
+        if (!\file_exists($this->packageDir . 'composer.json')) {
             $this->readPackageInfo = true;
 
             return;
@@ -148,7 +152,7 @@ class Package extends QUI\QDOM
         // ERROR
         if (!$this->composerData) {
             QUI\System\Log::addCritical(
-                'Package composer.json has some errors: '.\json_last_error_msg(),
+                'Package composer.json has some errors: ' . \json_last_error_msg(),
                 [
                     'package'    => $this->name,
                     'packageDir' => $this->packageDir
@@ -175,7 +179,7 @@ class Package extends QUI\QDOM
         }
 
         $this->isQuiqqerPackage = true;
-        $this->configPath       = CMS_DIR.'etc/plugins/'.$this->getName().'.ini.php';
+        $this->configPath = CMS_DIR . 'etc/plugins/' . $this->getName() . '.ini.php';
 
         QUI\Utils\System\File::mkfile($this->configPath);
 
@@ -200,7 +204,7 @@ class Package extends QUI\QDOM
             return [];
         }
 
-        $packageXML = $this->packageDir.'/package.xml';
+        $packageXML = $this->packageDir . '/package.xml';
 
         // package xml
         if (!\file_exists($packageXML)) {
@@ -231,7 +235,7 @@ class Package extends QUI\QDOM
      */
     public function getCacheName(): string
     {
-        return 'quiqqer/package/'.$this->getName();
+        return 'quiqqer/package/' . $this->getName();
     }
 
     /**
@@ -318,7 +322,7 @@ class Package extends QUI\QDOM
      */
     public function getVarDir(): string
     {
-        $varDir = VAR_DIR.'package/'.$this->getName().'/';
+        $varDir = VAR_DIR . 'package/' . $this->getName() . '/';
 
         QUI\Utils\System\File::mkdir($varDir);
 
@@ -422,8 +426,8 @@ class Package extends QUI\QDOM
             return $packageData['image'];
         }
 
-        if (\file_exists($this->packageDir.'bin/package.png')) {
-            return \str_replace(OPT_DIR, URL_OPT_DIR, $this->packageDir).'bin/package.png';
+        if (\file_exists($this->packageDir . 'bin/package.png')) {
+            return \str_replace(OPT_DIR, URL_OPT_DIR, $this->packageDir) . 'bin/package.png';
         }
 
         return '';
@@ -443,10 +447,10 @@ class Package extends QUI\QDOM
 
         switch ($permissionName) {
             case 'header':
-                return 'permission.quiqqer.packages.'.$nameShortCut.'._header';
+                return 'permission.quiqqer.packages.' . $nameShortCut . '._header';
 
             default:
-                return 'quiqqer.packages.'.$nameShortCut.'.canUse';
+                return 'quiqqer.packages.' . $nameShortCut . '.canUse';
         }
     }
 
@@ -477,7 +481,7 @@ class Package extends QUI\QDOM
     public function getConfig()
     {
         if ($this->configPath === null) {
-            $configFile = CMS_DIR.'etc/plugins/'.$this->getName().'.ini.php';
+            $configFile = CMS_DIR . 'etc/plugins/' . $this->getName() . '.ini.php';
 
             if (\file_exists($configFile)) {
                 $this->configPath = $configFile;
@@ -512,11 +516,11 @@ class Package extends QUI\QDOM
      */
     public function getComposerData()
     {
-        if ($this->composerData) {
+        if (!empty($this->composerData)) {
             return $this->composerData;
         }
 
-        $cache = $this->getCacheName().'/composerData';
+        $cache = $this->getCacheName() . '/composerData';
 
         try {
             $this->composerData = LongTermCache::get($cache);
@@ -526,26 +530,29 @@ class Package extends QUI\QDOM
             QUI\System\Log::writeDebugException($Exception);
         }
 
+        $Parser = new JsonParser();
+        $file = false;
 
-        if (\file_exists($this->packageDir.'composer.json')) {
-            $this->composerData = \json_decode(
-                \file_get_contents($this->packageDir.'composer.json'),
-                true
-            );
+        if (\file_exists($this->packageDir . 'composer.json')) {
+            $file = $this->packageDir . 'composer.json';
+        } elseif (\file_exists($this->packageDir . 'package.json')) {
+            $file = $this->packageDir . 'package.json';
+        } elseif (\file_exists($this->packageDir . 'bower.json')) {
+            $file = $this->packageDir . 'bower.json';
         }
 
-        if (\file_exists($this->packageDir.'package.json')) {
-            $this->composerData = \json_decode(
-                \file_get_contents($this->packageDir.'package.json'),
-                true
-            );
-        }
-
-        if (\file_exists($this->packageDir.'bower.json')) {
-            $this->composerData = \json_decode(
-                \file_get_contents($this->packageDir.'bower.json'),
-                true
-            );
+        if ($file) {
+            try {
+                $this->composerData = $Parser->parse(
+                    file_get_contents($file),
+                    JsonParser::PARSE_TO_ASSOC
+                );
+            } catch (ParsingException $Exception) {
+                QUI\System\Log::addAlert($Exception->getMessage(), [
+                    'ALERT'    => 'FILE HAS PARSING ERRORS',
+                    'jsonfile' => $file
+                ]);
+            }
         }
 
         $lock = QUI::getPackageManager()->getPackageLock($this);
@@ -591,7 +598,7 @@ class Package extends QUI\QDOM
      */
     public function getXMLFilePath(string $name)
     {
-        $file = $this->getDir().$name;
+        $file = $this->getDir() . $name;
 
         if (!\file_exists($file)) {
             return false;
@@ -649,12 +656,12 @@ class Package extends QUI\QDOM
         $pkgName = $this->getName();
 
         QUI::getEvents()->fireEvent('packageSetupBegin', [$this]);
-        QUI::getEvents()->fireEvent('packageSetupBegin-'.$pkgName, [$this]);
+        QUI::getEvents()->fireEvent('packageSetupBegin-' . $pkgName, [$this]);
 
         // options
         $optionLocalePublish = true;
-        $optionLocaleImport  = true;
-        $optionForceImport   = false;
+        $optionLocaleImport = true;
+        $optionForceImport = false;
 
         if (isset($params['localePublish'])) {
             $optionLocalePublish = $params['localePublish'];
@@ -677,7 +684,7 @@ class Package extends QUI\QDOM
 
         if (!$this->isQuiqqerPackage()) {
             QUI::getEvents()->fireEvent('packageSetupEnd', [$this]);
-            QUI::getEvents()->fireEvent('packageSetupEnd-'.$pkgName, [$this]);
+            QUI::getEvents()->fireEvent('packageSetupEnd-' . $pkgName, [$this]);
 
             return;
         }
@@ -743,19 +750,19 @@ class Package extends QUI\QDOM
         }
 
         // xml
-        Update::importDatabase($dir.self::DATABASE_XML);
-        Update::importTemplateEngines($dir.'engines.xml');
-        Update::importEditors($dir.'wysiwyg.xml');
+        Update::importDatabase($dir . self::DATABASE_XML);
+        Update::importTemplateEngines($dir . 'engines.xml');
+        Update::importEditors($dir . 'wysiwyg.xml');
 
         QUI::getPermissionManager()->deletePermissionsFromPackage($this);
 
-        Update::importPermissions($dir.self::PERMISSIONS_XML, $this->getName());
-        Update::importMenu($dir.self::MENU_XML);
+        Update::importPermissions($dir . self::PERMISSIONS_XML, $this->getName());
+        Update::importMenu($dir . self::MENU_XML);
 
         // events
         QUI\Events\Manager::clear($this->getName());
-        Update::importEvents($dir.self::EVENTS_XML, $this->getName());
-        Update::importSiteEvents($dir.self::SITE_XML);
+        Update::importEvents($dir . self::EVENTS_XML, $this->getName());
+        Update::importSiteEvents($dir . self::SITE_XML);
 
         // locale
         if ($optionLocaleImport) {
@@ -767,25 +774,25 @@ class Package extends QUI\QDOM
         }
 
         // settings
-        if (!\file_exists($dir.self::SETTINGS_XML)) {
+        if (!\file_exists($dir . self::SETTINGS_XML)) {
             QUI::getEvents()->fireEvent('packageSetup', [$this]);
-            QUI::getEvents()->fireEvent('packageSetup-'.$pkgName, [$this]);
+            QUI::getEvents()->fireEvent('packageSetup-' . $pkgName, [$this]);
             QUI::getEvents()->fireEvent('packageSetupEnd', [$this]);
-            QUI::getEvents()->fireEvent('packageSetupEnd-'.$pkgName, [$this]);
+            QUI::getEvents()->fireEvent('packageSetupEnd-' . $pkgName, [$this]);
 
             return;
         }
 
-        $Config = XML::getConfigFromXml($dir.self::SETTINGS_XML);
+        $Config = XML::getConfigFromXml($dir . self::SETTINGS_XML);
 
         if ($Config) {
             $Config->save();
         }
 
         QUI::getEvents()->fireEvent('packageSetup', [$this]);
-        QUI::getEvents()->fireEvent('packageSetup-'.$pkgName, [$this]);
+        QUI::getEvents()->fireEvent('packageSetup-' . $pkgName, [$this]);
         QUI::getEvents()->fireEvent('packageSetupEnd', [$this]);
-        QUI::getEvents()->fireEvent('packageSetupEnd-'.$pkgName, [$this]);
+        QUI::getEvents()->fireEvent('packageSetupEnd-' . $pkgName, [$this]);
     }
 
     /**
@@ -796,15 +803,15 @@ class Package extends QUI\QDOM
         $dir = $this->getDir();
 
         try {
-            $groups   = [];
-            $files    = [$dir.self::LOCALE_XML];
-            $Dom      = XML::getDomFromXml($dir.self::LOCALE_XML);
+            $groups = [];
+            $files = [$dir . self::LOCALE_XML];
+            $Dom = XML::getDomFromXml($dir . self::LOCALE_XML);
             $FileList = $Dom->getElementsByTagName('file');
 
             if ($FileList->length) {
                 /** @var \DOMElement $File */
                 foreach ($FileList as $File) {
-                    $files[] = $this->getDir().\ltrim($File->getAttribute('file'), '/');
+                    $files[] = $this->getDir() . \ltrim($File->getAttribute('file'), '/');
                 }
             }
 
@@ -883,15 +890,15 @@ class Package extends QUI\QDOM
         $pkgName = $this->getName();
 
         QUI::getEvents()->fireEvent('packageInstallBefore', [$this]);
-        QUI::getEvents()->fireEvent('packageInstallBefore-'.$pkgName, [$this]);
+        QUI::getEvents()->fireEvent('packageInstallBefore-' . $pkgName, [$this]);
 
         Update::importEvents(
-            $this->getDir().self::EVENTS_XML,
+            $this->getDir() . self::EVENTS_XML,
             $this->getName()
         );
 
         QUI::getEvents()->fireEvent('packageInstall', [$this]);
-        QUI::getEvents()->fireEvent('packageInstall-'.$pkgName, [$this]);
+        QUI::getEvents()->fireEvent('packageInstall-' . $pkgName, [$this]);
 
         if ($this->isQuiqqerPackage()) {
             $this->setup();
@@ -901,7 +908,7 @@ class Package extends QUI\QDOM
 
 
         QUI::getEvents()->fireEvent('packageInstallAfter', [$this]);
-        QUI::getEvents()->fireEvent('packageInstallAfter-'.$pkgName, [$this]);
+        QUI::getEvents()->fireEvent('packageInstallAfter-' . $pkgName, [$this]);
     }
 
     /**
@@ -914,7 +921,7 @@ class Package extends QUI\QDOM
     {
         QUI::getEvents()->fireEvent('packageUnInstall', [$this->getName()]);
         QUI::getEvents()->fireEvent(
-            'packageUnInstall-'.$this->getName(),
+            'packageUnInstall-' . $this->getName(),
             [$this->getName()]
         );
 
@@ -936,7 +943,7 @@ class Package extends QUI\QDOM
 
         QUI::getEvents()->fireEvent('packageDestroy', [$this->getName()]);
         QUI::getEvents()->fireEvent(
-            'packageDestroy-'.$this->getName(),
+            'packageDestroy-' . $this->getName(),
             [$this->getName()]
         );
     }
@@ -950,7 +957,7 @@ class Package extends QUI\QDOM
     {
         QUI::getEvents()->fireEvent('packageUpdate', [$this]);
         QUI::getEvents()->fireEvent(
-            'packageUpdate-'.$this->getName(),
+            'packageUpdate-' . $this->getName(),
             [$this]
         );
 
@@ -966,7 +973,7 @@ class Package extends QUI\QDOM
             return;
         }
 
-        $quiqqerAssetDir = OPT_DIR.'bin/'.$this->getName();
+        $quiqqerAssetDir = OPT_DIR . 'bin/' . $this->getName();
 
         if (\is_dir($quiqqerAssetDir)) {
             QUI::getTemp()->moveToTemp($quiqqerAssetDir);
