@@ -74,6 +74,7 @@ class Update
      */
     public static function onUpdate(Event $Event)
     {
+        // clear package cache
         QUI::getEvents()->fireEvent('updateBegin');
 
         $IO = $Event->getIO();
@@ -109,6 +110,9 @@ class Update
         if (!\defined('URL_VAR_DIR')) {
             \define('URL_VAR_DIR', URL_DIR . \str_replace(CMS_DIR, '', VAR_DIR));
         }
+
+        // clear package cache, so we get the newest package data
+        QUI\Cache\Manager::clearPackagesCache();
 
 
         QUI::getLocale()->setCurrent('en');

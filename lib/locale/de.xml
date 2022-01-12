@@ -4703,12 +4703,12 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         </locale>
         <locale name="quiqqer.setup.mail.description">
             <de><![CDATA[
-                Bitte gebe eine E-Mail Adresse welche als allgemeine E-Mail Adresse verwendet wird.
-                Fehlermeldungen oder Informationen werden zum Beispiel an diese E-Mail gesendet.
+                Bitte gib die E-Mail-Adresse an, die als allgemeine E-Mail-Adresse verwendet werden soll.
+                Hierüber empfängst du etwa Fehlermeldungen und Informationen.
             ]]></de>
         </locale>
         <locale name="quiqqer.setup.mail.label">
-            <de><![CDATA[E-Mail Adresse]]></de>
+            <de><![CDATA[E-Mail-Adresse]]></de>
         </locale>
         <locale name="quiqqer.setup.mail.placeholder">
             <de><![CDATA[hello@email.tld]]></de>
@@ -4719,8 +4719,8 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         </locale>
         <locale name="quiqqer.setup.mail.smtp.description">
             <de><![CDATA[
-            Der SMTP Server ist für den Versand von E-Mails zuständig.
-            Wenn du einen SMTP Server für den Versand von E-Mails gebe bitte die Daten des Serves ein.
+            Der SMPT Server ist für den Versand von E-Mails zuständig.
+            Wenn du einen SMPT Server für den Versand von E-Mails nutzt, gib bitte die Daten des Servers ein.
             ]]></de>
         </locale>
 
@@ -4730,8 +4730,8 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         </locale>
         <locale name="quiqqer.setup.country.description">
             <de><![CDATA[
-            Bitte lege das standard Land fest welches QUIQQER verwenden soll.
-            Diese Einstellung kann Auswirkung auf einige Module oder Plugins haben.
+            Bitte wähle aus, welches Land QUIQQER als Standard verwenden soll.
+            Diese Einstellung kann Auswirkung auf verschiedene Module und Plugins haben.
             ]]></de>
         </locale>
 
@@ -4740,10 +4740,10 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         </locale>
         <locale name="quiqqer.setup.cron.description">
             <de><![CDATA[
-            <p>Damit dein QUIQQER System in regelmäßigen Abständen Tasks ausführen kann, muss dieses mit einem externen System angestoßen werden.
-            Wir empfehlen dir hierfür Cron, welches bei Unix Systemen standardmäßig mitgeliefert ist.</p>
-            <p>Hast du jedoch keine Möglichkeit einen eigenen Cron einzurichten,
-            bieten die Entwickler von QUIQQER einen Service welcher dies für dich erledigt.</p>
+            <p>Damit QUIQQER wiederkehrende Aufgaben automatisiert ausführen kann, braucht es ein externes System.
+            Wir empfehlen dir Cron. Das ist bei Unix-Systemen standardmäßig mitgeliefert.</p>
+            <p>Hast du keine Möglichkeit einen eigenen Cron einzurichten,
+            bieten die Entwickler von QUIQQER einen Service, der das für dich übernimmt.</p>
             ]]></de>
         </locale>
 
@@ -4752,9 +4752,9 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         </locale>
         <locale name="quiqqer.setup.finish.description">
             <de><![CDATA[
-            <p>Danke das du QUIQQER nutzen möchtest, Du hast dein QUIQQER System fast eingerichtet.
-            Dein System wird nun für dich eingerichtet.</p>
-            <p>Möchtest du noch mehr über QUIQQER erfahren, dann schaue doch einmal hier nach:</p>
+            <p>Danke das du QUIQQER nutzen möchtest, du hast es fast geschafft.
+            Dein QUIQQER System wird nun für dich eingerichtet.</p>
+            <p>Du möchtest mehr über QUIQQER erfahren? Dann schaue gern hier nach:</p>
             <ul>
                 <li><a href="https://www.quiqqer.de" target="_blank">https://www.quiqqer.de</a></li>
                 <li><a href="https://www.ecoyn.de" target="_blank">https://www.ecoyn.de</a></li>
@@ -4784,12 +4784,12 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
 
         <locale name="quiqqer.setup.workspace.title">
             <de><![CDATA[
-            Workspace einrichten
+            Arbeitsumgebung einrichten
             ]]></de>
         </locale>
         <locale name="quiqqer.setup.workspace.description">
             <de><![CDATA[
-            Workspace einrichten (Beschreibung)
+            Wähle die Arbeitsumgebung, die am besten zu dir und deinem Projekt passt.
             ]]></de>
         </locale>
     </groups>
@@ -5527,14 +5527,14 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
             <de><![CDATA[Richte das QUIQQER Grundsystem ein]]></de>
         </locale>
         <locale name="quiqqer.setup.welcome.title">
-            <de><![CDATA[Willkommen bei der Einrichtung deines QUIQQER Systems]]></de>
+            <de><![CDATA[Willkommen bei QUIQQER]]></de>
         </locale>
         <locale name="quiqqer.setup.welcome.description">
             <de><![CDATA[
-            <p>Danke das du dich für QUIQQER entschieden hast. QUIQQER ist ein vielseitiges System,
-            daher gibt es einige Schritte die du einstellen solltest.</p>
-            <p>Das Setup wird dich Stück für Stück durch verschiedenen Einstellungsmöglichkeiten leiten.
-            Damit QUIQQER perfekt auf dich und deinem Vorhaben eingestimmt ist.</p>
+            <p>Danke, dass du dich für QUIQQER entschieden hast. QUIQQER ist ein vielseitiges System.
+            Richte es so ein, wie du es brauchst.</p>
+            <p>Unser Setup leitet dich Schritt für Schritt durch unterschiedliche Einstellungsmöglichkeiten
+            – damit QUIQQER perfekt zu dir und deinem Projekt passt.</p>
             ]]></de>
         </locale>
 

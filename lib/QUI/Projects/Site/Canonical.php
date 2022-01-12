@@ -59,7 +59,7 @@ class Canonical
             $httpsHost           = $Project->getVHost(true, true);
 
             if ($requestHost != $hostWithoutProtocol) {
-                return $this->getLinkRel($httpsHost.$siteUrl);
+                return $this->getLinkRel($httpsHost . $siteUrl);
             }
         }
 
@@ -75,7 +75,7 @@ class Canonical
             if ($httpsHostExists
                 && QUI\Utils\System::isProtocolSecure() === false
             ) {
-                return $this->getLinkRel($httpsHost.$siteUrl);
+                return $this->getLinkRel($httpsHost . $siteUrl);
             }
 
             return '';
@@ -85,6 +85,10 @@ class Canonical
 
         if (isset($_REQUEST['_url'])) {
             $requestUrl = $_REQUEST['_url'];
+        }
+
+        if ($this->considerGetParams) {
+            $requestUrl = ltrim($_SERVER['REQUEST_URI'], '/');
         }
 
         if (empty($requestUrl)) {
@@ -106,14 +110,14 @@ class Canonical
             if ($httpsHostExists
                 && QUI\Utils\System::isProtocolSecure() === false
             ) {
-                return $this->getLinkRel($httpsHost.URL_DIR.$requestUrl);
+                return $this->getLinkRel($httpsHost . URL_DIR . $requestUrl);
             }
 
             return '';
         }
 
-        // canonical and request the same? than no output
-        if ($httpsHost.URL_DIR.$requestUrl == $canonical && $this->considerGetParams === false) {
+        // canonical and request the same? then no output
+        if ($httpsHost . URL_DIR . $requestUrl == $canonical && $this->considerGetParams === false) {
             return '';
         }
 
@@ -123,7 +127,7 @@ class Canonical
             return $this->getLinkRel($canonical);
         }
 
-        return $this->getLinkRel($httpsHost.URL_DIR.$canonical);
+        return $this->getLinkRel($httpsHost . URL_DIR . $canonical);
     }
 
     /**
@@ -144,7 +148,7 @@ class Canonical
      */
     protected function getLinkRel($url)
     {
-        return '<link rel="canonical" href="'.$url.'" />';
+        return '<link rel="canonical" href="' . $url . '" />';
     }
 
     /**

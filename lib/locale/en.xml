@@ -4545,7 +4545,7 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="quiqqer.setup.mail.description">
             <en><![CDATA[
                 Please enter an e-mail address which will be used as a general e-mail address.
-                Error messages or information will be sent to this e-mail, for example.
+                This is where you receive error messages and information.
             ]]></en>
         </locale>
         <locale name="quiqqer.setup.mail.label">
@@ -4560,8 +4560,8 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         </locale>
         <locale name="quiqqer.setup.mail.smtp.description">
             <en><![CDATA[
-            The SMTP server is responsible for sending e-mails.
-            If you have a SMTP server for sending e-mails, please enter the data of the server.
+            The SMPT server is responsible for sending e-mails.
+            If you use a SMPT server for sending e-mails, please enter the server's data.
             ]]></en>
         </locale>
 
@@ -4570,8 +4570,8 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         </locale>
         <locale name="quiqqer.setup.country.description">
             <en><![CDATA[
-            Please set the default country that QUIQQER should use.
-            This setting may affect some modules or plugins.
+            Please select which country QUIQQER should use as default.
+            This setting can have effect on different modules and plugins.
             ]]></en>
         </locale>
         <locale name="quiqqer.setup.cron.title">
@@ -4579,10 +4579,10 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         </locale>
         <locale name="quiqqer.setup.cron.description">
             <en><![CDATA[
-            <p>That your QUIQQER system can execute tasks in regular intervals, this must be triggered with an external system.
-            We recommend Cron, which is delivered with Unix systems by default.</p>
-            <p>If you don't have the possibility to set up your own Cron,
-            the developers of QUIQQER offer a service which does this for you.</p>
+            <p>In order for QUIQQER to perform recurring tasks automatically, it needs an external system.
+            We recommend Cron. This is included by default with Unix systems.</p>.
+            <p>If you don't have the possibility to set up your own cron,
+            the developers of QUIQQER offer a service that will do it for you.</p>
             ]]></en>
         </locale>
 
@@ -4591,8 +4591,8 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         </locale>
         <locale name="quiqqer.setup.finish.description">
             <en><![CDATA[
-            <p>Thank you for using QUIQQER, you have almost set up your QUIQQER system.
-            Your system is now set up for you.</p>
+            <p>Danke das du QUIQQER nutzen möchtest, du hast es fast geschafft.
+            Dein QUIQQER System wird nun für dich eingerichtet</p>
             <p>If you want to learn even more about QUIQQER, check it out here:</p>
             <ul>
                 <li><a href="https://www.quiqqer.com" target="_blank">https://www.quiqqer.com</a></li>
@@ -4622,12 +4622,12 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         </locale>
         <locale name="quiqqer.setup.workspace.title">
             <en><![CDATA[
-            Workspace einrichten (Beschreibung)
+            Set up working environment
             ]]></en>
         </locale>
         <locale name="quiqqer.setup.workspace.description">
             <en><![CDATA[
-            Workspace einrichten (Beschreibung)
+            Choose the work environment that best suits you and your project.
             ]]></en>
         </locale>
 
@@ -5327,14 +5327,14 @@ After logging in you will be prompted to set a new password.
             <en><![CDATA[Set up the QUIQQER basic system]]></en>
         </locale>
         <locale name="quiqqer.setup.welcome.title">
-            <en><![CDATA[Welcome to the setup of your QUIQQER system]]></en>
+            <en><![CDATA[Welcome to QUIQQER]]></en>
         </locale>
         <locale name="quiqqer.setup.welcome.description">
             <en><![CDATA[
-            <p>Thank you for choosing QUIQQER. QUIQQER is a versatile system,
-            so there are some steps you should set up.</p>
-            <p>The setup will guide you step by step through the different settings.
-            So that QUIQQER is perfectly tuned to you and your project.</p>
+            <p>Thank you for choosing QUIQQER. QUIQQER is a versatile system.
+            Set it up the way you need it.</p>
+            <p>Our setup will guide you step by step through different settings options
+            - so that QUIQQER fits perfectly to you and your project.</p>
             ]]></en>
         </locale>
     </groups>
