@@ -8,6 +8,10 @@ namespace QUI\Projects\Site;
 
 use QUI;
 
+use function ltrim;
+use function parse_url;
+use function strpos;
+
 /**
  * Canonical meta helper
  *
@@ -19,21 +23,21 @@ class Canonical
     /**
      * Internal Site
      *
-     * @var \QUI\Projects\Site
+     * @var QUI\Interfaces\Projects\Site
      */
-    protected $Site;
+    protected QUI\Interfaces\Projects\Site $Site;
 
     /**
      * @var bool
      */
-    protected $considerGetParams = false;
+    protected bool $considerGetParams = false;
 
     /**
      * construct
      *
-     * @param \QUI\Projects\Site $Site
+     * @param QUI\Interfaces\Projects\Site $Site
      */
-    public function __construct($Site)
+    public function __construct(QUI\Interfaces\Projects\Site $Site)
     {
         $this->Site = $Site;
     }
@@ -42,9 +46,8 @@ class Canonical
      * Return the meta tag, if it is allowed
      *
      * @return string
-     * @throws QUI\Exception
      */
-    public function output()
+    public function output(): string
     {
         $Site    = $this->Site;
         $Project = $Site->getProject();
@@ -68,7 +71,7 @@ class Canonical
             $httpsHost       = $Project->getVHost(true, true);
             $httpsHostExists = false;
 
-            if (\strpos($httpsHost, 'https:') !== false) {
+            if (strpos($httpsHost, 'https:') !== false) {
                 $httpsHostExists = true;
             }
 
@@ -95,12 +98,12 @@ class Canonical
             return '';
         }
 
-        $canonical = \ltrim($this->Site->getCanonical(), '/');
+        $canonical = ltrim($this->Site->getCanonical(), '/');
         $httpsHost = $Project->getVHost(true, true);
 
         $httpsHostExists = false;
 
-        if (\strpos($httpsHost, 'https:') !== false) {
+        if (strpos($httpsHost, 'https:') !== false) {
             $httpsHostExists = true;
         }
 
@@ -123,7 +126,7 @@ class Canonical
 
 
         // fix doppelter HOST im canonical https://dev.quiqqer.com/quiqqer/quiqqer/issues/574
-        if (\strpos($canonical, 'https:') !== false || \strpos($canonical, 'http:') !== false) {
+        if (strpos($canonical, 'https:') !== false || strpos($canonical, 'http:') !== false) {
             return $this->getLinkRel($canonical);
         }
 
@@ -132,11 +135,11 @@ class Canonical
 
     /**
      * @param $url
-     * @return mixed
+     * @return array|false|int|string|null
      */
     protected function removeHost($url)
     {
-        return \parse_url($url, PHP_URL_PATH);
+        return parse_url($url, PHP_URL_PATH);
     }
 
     /**
@@ -146,7 +149,7 @@ class Canonical
      *
      * @return string
      */
-    protected function getLinkRel($url)
+    protected function getLinkRel(string $url): string
     {
         return '<link rel="canonical" href="' . $url . '" />';
     }
