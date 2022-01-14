@@ -446,7 +446,7 @@ class Project
             try {
                 $result[] = $this->get($entry['id']);
             } catch (QUI\Exception $Exception) {
-                QUI\System\Log::writeException($Exception);
+                QUI\System\Log::addDebug($Exception->getMessage());
             }
         }
 
@@ -1162,7 +1162,7 @@ class Project
         ) {
             $sql['where']['deleted'] = 0;
         } elseif (isset($sql['where']['deleted'])
-                  && $sql['where']['deleted'] == -1
+            && $sql['where']['deleted'] == -1
         ) {
             unset($sql['where']['deleted']);
         } elseif (\is_string($sql['where'])) {
