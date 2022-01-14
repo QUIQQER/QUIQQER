@@ -124,8 +124,8 @@ class Utils
         // URL Filter
         if ($Project !== null) {
             $name   = $Project->getAttribute('name');
-            $filter = USR_DIR.'lib/'.$name.'/url.filter.php';
-            $func   = 'url_filter_'.$name;
+            $filter = USR_DIR . 'lib/' . $name . '/url.filter.php';
+            $func   = 'url_filter_' . $name;
 
             $filter = Orthos::clearPath(\realpath($filter));
 
@@ -153,7 +153,7 @@ class Utils
     public static function getDataBaseXMLListForSite($Site)
     {
         $siteType = $Site->getAttribute('type');
-        $cache    = $Site->getCachePath().'/xml-database-list/'.$siteType;
+        $cache    = $Site->getCachePath() . '/xml-database-list/' . $siteType;
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -164,7 +164,7 @@ class Utils
         $result    = [];
 
         foreach ($dbXmlList as $package) {
-            $file = OPT_DIR.$package.'/database.xml';
+            $file = OPT_DIR . $package . '/database.xml';
 
             if (!\file_exists($file)) {
                 continue;
@@ -232,7 +232,7 @@ class Utils
     public static function getDataListForSite($Site)
     {
         $siteType = $Site->getAttribute('type');
-        $cache    = $Site->getCachePath().'/xml-database-tables/'.$siteType;
+        $cache    = $Site->getCachePath() . '/xml-database-tables/' . $siteType;
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -285,7 +285,7 @@ class Utils
                 $suffix = $Table->getAttribute('name');
                 $fields = $Table->getElementsByTagName('field');
 
-                $table = QUI::getDBTableName($name.'_'.$lang.'_'.$suffix);
+                $table = QUI::getDBTableName($name . '_' . $lang . '_' . $suffix);
                 $data  = [];
 
 
@@ -329,7 +329,7 @@ class Utils
     public static function getExtraAttributeListForSite($Site)
     {
         $siteType = $Site->getAttribute('type');
-        $cache    = $Site->getCachePath().'/xml-database-attributes/'.$siteType;
+        $cache    = $Site->getCachePath() . '/xml-database-attributes/' . $siteType;
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -343,7 +343,7 @@ class Utils
 
 
         foreach ($siteXmlList as $package) {
-            $file = OPT_DIR.$package.'/site.xml';
+            $file = OPT_DIR . $package . '/site.xml';
 
             if (!\file_exists($file)) {
                 continue;
@@ -368,11 +368,9 @@ class Utils
         $type = \explode(':', $siteType);
 
         if (isset($type[1])) {
-            $expr
-                =
-                '//site/types/type[@type="'.$type[1].'"]/attributes/attribute';
+            $expr = '//site/types/type[@type="' . $type[1] . '"]/attributes/attribute';
 
-            $siteXmlFile = OPT_DIR.$type[0].'/site.xml';
+            $siteXmlFile = OPT_DIR . $type[0] . '/site.xml';
 
             $Dom  = XML::getDomFromXml($siteXmlFile);
             $Path = new \DOMXPath($Dom);
@@ -407,7 +405,7 @@ class Utils
     public static function getExtraSettingsForSite($Site)
     {
         $siteType = $Site->getAttribute('type');
-        $cache    = $Site->getCachePath().'/xml-database-settings/'.$siteType;
+        $cache    = $Site->getCachePath() . '/xml-database-settings/' . $siteType;
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -420,7 +418,7 @@ class Utils
         $result      = '';
 
         foreach ($siteXmlList as $package) {
-            $file = OPT_DIR.$package.'/site.xml';
+            $file = OPT_DIR . $package . '/site.xml';
 
             if (!\file_exists($file)) {
                 continue;
@@ -438,8 +436,8 @@ class Utils
 
         // site type extra xml
         $type    = \explode(':', $Site->getAttribute('type'));
-        $dir     = OPT_DIR.$type[0];
-        $siteXML = $dir.'/site.xml';
+        $dir     = OPT_DIR . $type[0];
+        $siteXML = $dir . '/site.xml';
 
         if (\file_exists($siteXML)) {
             $Dom  = XML::getDomFromXml($siteXML);
@@ -447,7 +445,7 @@ class Utils
 
             // type extra
             $cats = $Path->query(
-                "//site/types/type[@type='".$type[1]."']/settings/category"
+                "//site/types/type[@type='" . $type[1] . "']/settings/category"
             );
 
             foreach ($cats as $Category) {
@@ -474,7 +472,7 @@ class Utils
     public static function getAdminSiteModulesFromSite($Site)
     {
         $siteType = $Site->getAttribute('type');
-        $cache    = $Site->getCachePath().'/xml-admin-modules/'.$siteType;
+        $cache    = $Site->getCachePath() . '/xml-admin-modules/' . $siteType;
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -483,8 +481,8 @@ class Utils
 
         // site type extra xml
         $type    = \explode(':', $Site->getAttribute('type'));
-        $dir     = OPT_DIR.$type[0];
-        $siteXML = $dir.'/site.xml';
+        $dir     = OPT_DIR . $type[0];
+        $siteXML = $dir . '/site.xml';
 
         $result = [];
 
@@ -494,7 +492,7 @@ class Utils
 
             // type extra
             $modules = $Path->query(
-                "//site/types/type[@type='".$type[1]."']/admin/js"
+                "//site/types/type[@type='" . $type[1] . "']/admin/js"
             );
 
             foreach ($modules as $Module) {
