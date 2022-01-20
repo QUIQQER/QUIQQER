@@ -497,8 +497,10 @@ define('controls/messages/Button', [
             }
 
             Node.setStyles({
-                opacity: 0,
-                top    : 50
+                opacity : 0,
+                position: 'absolute',
+                top     : 50,
+                zIndex  : QUI.Windows.$getmaxWindowZIndex() + 1
             });
 
             Node.inject(document.body);

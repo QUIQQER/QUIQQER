@@ -368,16 +368,15 @@ class Utils
         $type = \explode(':', $siteType);
 
         if (isset($type[1])) {
-            $expr
-                =
-                '//site/types/type[@type="'.$type[1].'"]/attributes/attribute';
+            // Query for site type attributes in the original package of the site type
+            $exprPackage = '//site/types/type[@type="'.$type[1].'"]/attributes/attribute';
 
-            $siteXmlFile = OPT_DIR.$type[0].'/site.xml';
+            $originalPackageSiteXmlFile = OPT_DIR.$type[0].'/site.xml';
 
-            $Dom  = XML::getDomFromXml($siteXmlFile);
+            $Dom  = XML::getDomFromXml($originalPackageSiteXmlFile);
             $Path = new \DOMXPath($Dom);
 
-            $attributes = $Path->query($expr);
+            $attributes = $Path->query($exprPackage);
 
             /* @var $Attribute \DOMElement */
             foreach ($attributes as $Attribute) {
@@ -385,6 +384,34 @@ class Utils
                     'attribute' => \trim($Attribute->nodeValue),
                     'default'   => $Attribute->getAttribute('default')
                 ];
+            }
+
+            // Query for site type attributes in other packages than the original package of the site type
+            $exprOtherPackage = '//site/types/type[@type="'.$type[0].':'.$type[1].'"]/attributes/attribute';
+
+            foreach ($siteXmlList as $package) {
+                $siteXmlFile = OPT_DIR.$package.'/site.xml';
+
+                if ($siteXmlFile === $originalPackageSiteXmlFile) {
+                    continue;
+                }
+
+                if (!\file_exists($siteXmlFile)) {
+                    continue;
+                }
+
+                $Dom  = XML::getDomFromXml($siteXmlFile);
+                $Path = new \DOMXPath($Dom);
+
+                $attributes = $Path->query($exprOtherPackage);
+
+                /* @var $Attribute \DOMElement */
+                foreach ($attributes as $Attribute) {
+                    $result[] = [
+                        'attribute' => \trim($Attribute->nodeValue),
+                        'default'   => $Attribute->getAttribute('default')
+                    ];
+                }
             }
         }
 

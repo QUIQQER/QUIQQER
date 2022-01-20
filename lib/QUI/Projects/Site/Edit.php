@@ -15,6 +15,8 @@ use QUI\Groups\Group;
 use QUI\Utils\Security\Orthos;
 use QUI\Lock\Locker;
 
+use function json_decode;
+
 /**
  * Site Objekt für den Adminbereich
  * Stellt Methoden für das Bearbeiten von einer Seite zur Verfügung
@@ -78,8 +80,8 @@ class Edit extends Site
 
         $this->refresh();
 
-        QUI\Utils\System\File::mkdir(VAR_DIR.'admin/');
-        QUI\Utils\System\File::mkdir(VAR_DIR.'lock/');
+        QUI\Utils\System\File::mkdir(VAR_DIR . 'admin/');
+        QUI\Utils\System\File::mkdir(VAR_DIR . 'lock/');
 
         $this->load();
 
@@ -145,7 +147,7 @@ class Edit extends Site
 
                 // @todo get extra attribute list
 
-                $extra = \json_decode($a_val, true);
+                $extra = json_decode($a_val, true);
 
                 foreach ($extra as $key => $value) {
                     $this->setAttribute($key, $value);
@@ -652,12 +654,12 @@ class Edit extends Site
             $package   = $dataEntry['package'];
             $suffix    = $dataEntry['suffix'];
 
-            $attributeSuffix = $package.'.'.$suffix.'.';
+            $attributeSuffix = $package . '.' . $suffix . '.';
             $attributeSuffix = \str_replace('/', '.', $attributeSuffix);
 
             foreach ($fieldList as $siteAttribute) {
                 $data[$siteAttribute] = $this->getAttribute(
-                    $attributeSuffix.$siteAttribute
+                    $attributeSuffix . $siteAttribute
                 );
             }
 
@@ -751,33 +753,33 @@ class Edit extends Site
     public function getChildrenIdsFromParentId($pid, $params = [])
     {
         $where_1 = [
-            $this->RELTABLE.'.parent' => (int)$pid,
-            $this->TABLE.'.deleted'   => 0,
-            $this->RELTABLE.'.child'  => '`'.$this->TABLE.'.id`'
+            $this->RELTABLE . '.parent' => (int)$pid,
+            $this->TABLE . '.deleted'   => 0,
+            $this->RELTABLE . '.child'  => '`' . $this->TABLE . '.id`'
         ];
 
         if (isset($params['where']) && \is_array($params['where'])) {
             $where = \array_merge($where_1, $params['where']);
         } elseif (isset($params['where']) && \is_string($params['where'])) {
             // @todo where als param string
-            QUI\System\Log::addDebug('WIRD NICHT verwendet'.$params['where']);
+            QUI\System\Log::addDebug('WIRD NICHT verwendet' . $params['where']);
             $where = $where_1;
         } else {
             $where = $where_1;
         }
 
-        $order = $this->TABLE.'.order_field';
+        $order = $this->TABLE . '.order_field';
 
         if (isset($params['order'])) {
             if (\strpos($params['order'], '.') !== false) {
-                $order = $this->TABLE.'.'.$params['order'];
+                $order = $this->TABLE . '.' . $params['order'];
             } else {
                 $order = $params['order'];
             }
         }
 
         $result = QUI::getDataBase()->fetch([
-            'select' => $this->TABLE.'.id',
+            'select' => $this->TABLE . '.id',
             'count'  => isset($params['count']) ? 'count' : false,
             'from'   => [
                 $this->RELTABLE,
@@ -995,7 +997,7 @@ class Edit extends Site
 
         if (!isset($params['name']) || empty($params['name'])) {
             while ($this->existNameInChildren($new_name)) {
-                $new_name = $old.' ('.$i.')';
+                $new_name = $old . ' (' . $i . ')';
                 $i++;
             }
         } else {
@@ -1157,7 +1159,7 @@ class Edit extends Site
         QUI::getDataBase()->update(
             $this->RELTABLE,
             ['parent' => $Parent->getId()],
-            'child = '.$this->getId().' AND oparent IS NULL'
+            'child = ' . $this->getId() . ' AND oparent IS NULL'
         );
 
         //$this->deleteTemp();
@@ -1295,8 +1297,8 @@ class Edit extends Site
         $Parent  = $this->getParent();
 
         $table = QUI::getDBTableName(
-            $Project->getAttribute('name').'_'.
-            $Project->getAttribute('lang').'_sites_relations'
+            $Project->getAttribute('name') . '_' .
+            $Project->getAttribute('lang') . '_sites_relations'
         );
 
         // Prüfen ob die Seite schon in dem Parent ist
@@ -1358,8 +1360,8 @@ class Edit extends Site
         $DataBase = QUI::getDataBase();
 
         $table = QUI::getDBTableName(
-            $Project->getAttribute('name').'_'.
-            $Project->getAttribute('lang').'_sites_relations'
+            $Project->getAttribute('name') . '_' .
+            $Project->getAttribute('lang') . '_sites_relations'
         );
 
         if (QUI\Utils\BoolHelper::JSBool($all)) {
@@ -1548,9 +1550,9 @@ class Edit extends Site
      */
     protected function getLockKey()
     {
-        return $this->getProject()->getName().'_'.
-               $this->getProject()->getLang().'_'.
-               $this->getId();
+        return $this->getProject()->getName() . '_' .
+            $this->getProject()->getLang() . '_' .
+            $this->getId();
     }
 
     /**
