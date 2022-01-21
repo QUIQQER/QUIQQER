@@ -22,6 +22,7 @@ use function file_exists;
 use function htmlspecialchars;
 use function intval;
 use function is_object;
+use function is_string;
 use function md5;
 use function md5_file;
 use function method_exists;
@@ -291,13 +292,20 @@ class Utils
      * Return the media image
      * If it is no image, its throws an exception
      *
-     * @param string $url - image.php? url
+     * @param mixed $url - image.php? url
      *
      * @return Image
      * @throws QUI\Exception
      */
-    public static function getImageByUrl(string $url): Image
+    public static function getImageByUrl($url): Image
     {
+        if (!is_string($url)) {
+            throw new QUI\Exception(
+                'The wanted URL is not a QUIQQER item url',
+                ErrorCodes::NOT_AN_ITEM_URL
+            );
+        }
+        
         if (self::isMediaUrl($url) === false) {
             throw new QUI\Exception(
                 'Its not a QUIQQER image url',
@@ -321,13 +329,20 @@ class Utils
     /**
      * Return the media image, file, folder
      *
-     * @param string $url - image.php? url
+     * @param mixed $url - image.php? url
      *
      * @return Item
      * @throws QUI\Exception
      */
-    public static function getMediaItemByUrl(string $url): Item
+    public static function getMediaItemByUrl($url): Item
     {
+        if (!is_string($url)) {
+            throw new QUI\Exception(
+                'The wanted URL is not a QUIQQER item url',
+                ErrorCodes::NOT_AN_ITEM_URL
+            );
+        }
+
         if (self::isMediaUrl($url) === false) {
             throw new QUI\Exception(
                 'Its not a QUIQQER item url',
