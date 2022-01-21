@@ -371,14 +371,15 @@ class Utils
         }
 
         $parts = explode('/', $src);
+        $md5   = md5(
+            serialize([
+                'attributes' => $attributes,
+                'src'        => $src,
+                'withHost'   => $withHost
+            ])
+        );
 
-        $cacheName = 'quiqqer/projects/' . $parts[3] . '/picture-' . md5(
-                serialize([
-                    'attributes' => $attributes,
-                    'src'        => $src,
-                    'withHost'   => $withHost
-                ])
-            );
+        $cacheName = 'quiqqer/projects/' . $parts[3] . '/picture-' . $md5;
 
         try {
             return QUI\Cache\Manager::get($cacheName);
