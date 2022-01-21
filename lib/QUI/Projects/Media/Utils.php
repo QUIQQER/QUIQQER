@@ -15,13 +15,24 @@ use QUI\Utils\StringHelper as StringUtils;
 use QUI\Utils\Text\XML;
 
 use function array_pop;
+use function array_shift;
 use function count;
 use function explode;
 use function file_exists;
+use function htmlspecialchars;
 use function intval;
 use function is_object;
+use function md5;
+use function md5_file;
 use function method_exists;
+use function preg_match;
+use function preg_replace;
+use function sha1_file;
+use function str_replace;
 use function strpos;
+use function strrpos;
+use function substr;
+use function substr_count;
 use function trim;
 
 /**
@@ -72,7 +83,7 @@ class Utils
      *
      * @return array
      */
-    public static function parseForMediaCenter($Item): array
+    public static function parseForMediaCenter(Item $Item): array
     {
         if ($Item->getId() === 1) {
             /* @var $Item Folder */
@@ -154,7 +165,7 @@ class Utils
      *
      * @todo icons in config auslagern, somit einfacher erweiterbar
      */
-    public static function getIconByExtension($ext, $size = '16x16'): string
+    public static function getIconByExtension(string $ext, string $size = '16x16'): string
     {
         switch ($size) {
             case '16x16':
@@ -249,7 +260,7 @@ class Utils
      *
      * @return string
      */
-    public static function getExtension($filename): string
+    public static function getExtension(string $filename): string
     {
         $explode = explode('.', $filename);
 
@@ -265,7 +276,7 @@ class Utils
      * @example \QUI\Projects\Media\Utils::getMediaTypeByMimeType( 'image/jpeg' )
      *
      */
-    public static function getMediaTypeByMimeType($mime_type): string
+    public static function getMediaTypeByMimeType(string $mime_type): string
     {
         if (strpos($mime_type, 'image/') !== false
             && strpos($mime_type, 'vnd.adobe') === false
@@ -285,7 +296,7 @@ class Utils
      * @return Image
      * @throws QUI\Exception
      */
-    public static function getImageByUrl($url): Image
+    public static function getImageByUrl(string $url): Image
     {
         if (self::isMediaUrl($url) === false) {
             throw new QUI\Exception(
@@ -315,7 +326,7 @@ class Utils
      * @return Item
      * @throws QUI\Exception
      */
-    public static function getMediaItemByUrl($url): Item
+    public static function getMediaItemByUrl(string $url): Item
     {
         if (self::isMediaUrl($url) === false) {
             throw new QUI\Exception(
@@ -347,7 +358,7 @@ class Utils
      *
      * @return string
      */
-    public static function getImageHTML($src, $attributes = [], $withHost = false): string
+    public static function getImageHTML(string $src, array $attributes = [], bool $withHost = false): string
     {
         $src = self::getImageSource($src, $attributes);
 
@@ -361,7 +372,7 @@ class Utils
 
         $parts = explode('/', $src);
 
-        $cacheName = 'quiqqer/projects/' . $parts[3] . '/picture-' . \md5(
+        $cacheName = 'quiqqer/projects/' . $parts[3] . '/picture-' . md5(
                 serialize([
                     'attributes' => $attributes,
                     'src'        => $src,
@@ -457,7 +468,7 @@ class Utils
 
                     $duplicate[$imageUrl] = true;
 
-                    $src    = \htmlspecialchars($imageUrl);
+                    $src    = htmlspecialchars($imageUrl);
                     $imageX = (int)$Project->getConfig('media_useImageScale');
 
                     if (!$imageX) {
@@ -471,7 +482,7 @@ class Utils
                     for ($x = 2; $x <= $imageX; $x++) {
                         if ($imageWidth > $start * $x) {
                             $src2x = $Image->getSizeCacheUrl($start * $x);
-                            $src2x = \htmlspecialchars($src2x);
+                            $src2x = htmlspecialchars($src2x);
                             $src   .= ", {$src2x} {$x}x";
                         }
                     }
@@ -485,7 +496,7 @@ class Utils
 
                 if (!count($sets)) {
                     $sets[] = [
-                        'src'   => \htmlspecialchars($Image->getSizeCacheUrl()),
+                        'src'   => htmlspecialchars($Image->getSizeCacheUrl()),
                         'media' => '',
                         'type'  => $Image->getAttribute('mime_type')
                     ];
@@ -496,7 +507,7 @@ class Utils
                     $sets[\array_key_last($sets)]['media'] = '';
                 } else {
                     $sets[] = [
-                        'src'   => \htmlspecialchars($Image->getSizeCacheUrl()),
+                        'src'   => htmlspecialchars($Image->getSizeCacheUrl()),
                         'media' => '',
                         'type'  => $Image->getAttribute('mime_type')
                     ];
@@ -535,10 +546,10 @@ class Utils
                 $value = \ForceUTF8\Encoding::toUTF8($value);
             }
 
-            $img .= \htmlspecialchars($key) . '="' . $value . '" ';
+            $img .= htmlspecialchars($key) . '="' . $value . '" ';
         }
 
-        $img .= ' src="' . $host . \htmlspecialchars($src) . '" />';
+        $img .= ' src="' . $host . htmlspecialchars($src) . '" />';
 
 
         // picture html
@@ -552,7 +563,7 @@ class Utils
 
 
         if (!empty($attributes['style'])) {
-            $picture = \str_replace(
+            $picture = str_replace(
                 '<picture>',
                 '<picture style="' . $attributes['style'] . '">',
                 $picture
@@ -571,7 +582,7 @@ class Utils
      * @param array $attributes
      * @return string
      */
-    public static function getImageSource($src, $attributes = []): string
+    public static function getImageSource($src, array $attributes = []): string
     {
         $width  = false;
         $height = false;
@@ -649,7 +660,7 @@ class Utils
      *
      * @deprecated use getRewrittenUrl
      */
-    public static function getRewritedUrl($output, $size = []): string
+    public static function getRewritedUrl($output, array $size = []): string
     {
         return self::getRewrittenUrl($output, $size);
     }
@@ -664,7 +675,7 @@ class Utils
      *
      * @throws QUI\Exception
      */
-    public static function getRewrittenUrl($output, $size = []): string
+    public static function getRewrittenUrl(string $output, array $size = []): string
     {
         if (self::isMediaUrl($output) === false) {
             return $output;
@@ -773,7 +784,7 @@ class Utils
     public static function checkFolderName($str): bool
     {
         // Prüfung des Namens - Sonderzeichen
-        if (\preg_match('/[^0-9_a-zA-Z \-]/', $str)) {
+        if (preg_match('/[^0-9_a-zA-Z \-]/', $str)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -807,10 +818,10 @@ class Utils
     public static function stripFolderName($str): string
     {
         $str = QUI\Utils\Convert::convertRoman($str);
-        $str = \preg_replace('/[^0-9a-zA-Z\-]/', '_', $str);
+        $str = preg_replace('/[^0-9a-zA-Z\-]/', '_', $str);
 
         // clean double _
-        $str = \preg_replace('/[_]{2,}/', "_", $str);
+        $str = preg_replace('/[_]{2,}/', "_", $str);
 
         return $str;
     }
@@ -825,7 +836,7 @@ class Utils
     public static function checkMediaName($filename)
     {
         // Prüfung des Namens - Sonderzeichen
-        if (\preg_match('/[^0-9_a-zA-Z \-.]/', $filename)) {
+        if (preg_match('/[^0-9_a-zA-Z \-.]/', $filename)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -837,7 +848,7 @@ class Utils
         }
 
         // mehr als zwei punkte
-        if (\substr_count($filename, '.') > 1) {
+        if (substr_count($filename, '.') > 1) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -868,7 +879,7 @@ class Utils
     public static function stripMediaName(string $str): string
     {
         // Umlaute
-        $str = \str_replace(
+        $str = str_replace(
             [
                 'ä',
                 'ö',
@@ -882,14 +893,14 @@ class Utils
             $str
         );
 
-        $str = \preg_replace('/[^0-9_a-zA-Z\ \.\-]/', '', $str);
+        $str = preg_replace('/[^0-9_a-zA-Z\ \.\-]/', '', $str);
 
         // delete the dots but not the last dot
-        $str = \str_replace('.', '_', $str);
+        $str = str_replace('.', '_', $str);
         $str = StringUtils::replaceLast('_', '.', $str);
 
         // FIX
-        $str = \preg_replace('/[_]{2,}/', "_", $str);
+        $str = preg_replace('/[_]{2,}/', "_", $str);
 
         return $str;
     }
@@ -972,7 +983,7 @@ class Utils
      *
      * @return boolean
      */
-    public static function isMediaUrl($url): bool
+    public static function isMediaUrl(string $url): bool
     {
         if (strpos($url, 'image.php') !== false
             && strpos($url, 'project=') !== false
@@ -992,7 +1003,7 @@ class Utils
      * @return Item
      * @throws QUI\Exception
      */
-    public static function getElement($url): Item
+    public static function getElement(string $url): Item
     {
         $filePath = self::getRealFileDataFromCacheUrl($url);
         $Project  = QUI::getProject($filePath['project']);
@@ -1028,17 +1039,17 @@ class Utils
         }
 
         $parts   = explode('/', $parts[1]);
-        $project = \array_shift($parts);
+        $project = array_shift($parts);
 
         // if the element (image) is resized resize
         $fileName = array_pop($parts);
 
         if (strpos($fileName, '__') !== false) {
-            $lastpos_ul = \strrpos($fileName, '__') + 2;
+            $lastpos_ul = strrpos($fileName, '__') + 2;
             $pos_dot    = strpos($fileName, '.', $lastpos_ul);
 
-            $fileName = \substr($fileName, 0, ($lastpos_ul - 2)) .
-                \substr($fileName, $pos_dot);
+            $fileName = substr($fileName, 0, ($lastpos_ul - 2)) .
+                substr($fileName, $pos_dot);
         }
 
         $parts[]   = $fileName;
@@ -1120,7 +1131,7 @@ class Utils
     public static function generateMD5($File): string
     {
         /* @var $File Image */
-        return \md5_file($File->getFullPath());
+        return md5_file($File->getFullPath());
     }
 
     /**
@@ -1133,7 +1144,7 @@ class Utils
     public static function generateSHA1($File): string
     {
         /* @var $File Image */
-        return \sha1_file($File->getFullPath());
+        return sha1_file($File->getFullPath());
     }
 
     /**
@@ -1209,9 +1220,9 @@ class Utils
      * @param QUI\Projects\Project $Project
      * @param boolean $force - Force a calculation of the media folder size. Values aren't returned from cache. Expect timeouts.
      *
-     * @return int
+     * @return int|null
      */
-    public static function getMediaFolderSizeForProject(QUI\Projects\Project $Project, $force = false): int
+    public static function getMediaFolderSizeForProject(QUI\Projects\Project $Project, bool $force = false): ?int
     {
         return QUI\Utils\System\Folder::getFolderSize($Project->getMedia()->getFullPath(), $force);
     }
@@ -1239,9 +1250,9 @@ class Utils
      * @param QUI\Projects\Project $Project
      * @param boolean $force - Force a calculation of the media folder size. Values aren't returned from cache. Expect timeouts.
      *
-     * @return int
+     * @return int|null
      */
-    public static function getMediaCacheFolderSizeForProject(QUI\Projects\Project $Project, $force = false): int
+    public static function getMediaCacheFolderSizeForProject(QUI\Projects\Project $Project, $force = false): ?int
     {
         return QUI\Utils\System\Folder::getFolderSize($Project->getMedia()->getFullCachePath(), $force);
     }
