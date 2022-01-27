@@ -305,7 +305,7 @@ class Utils
                 ErrorCodes::NOT_AN_ITEM_URL
             );
         }
-        
+
         if (self::isMediaUrl($url) === false) {
             throw new QUI\Exception(
                 'Its not a QUIQQER image url',
