@@ -60,4 +60,12 @@ interface InstallationWizardInterface
      * @param array $data
      */
     public function execute(array $data = []);
+
+    /**
+     * is called when all provider lists are called via ajax
+     *
+     * @param $list
+     * @return mixed
+     */
+    public function onListInit(&$list);
 }
