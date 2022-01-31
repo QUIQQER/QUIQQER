@@ -6,9 +6,35 @@
 
 namespace QUI\Projects\Media;
 
+use DOMElement;
+use DOMXPath;
 use QUI;
 use QUI\System\Log;
 use QUI\Utils\StringHelper as StringUtils;
+
+use QUI\Utils\Text\XML;
+
+use function array_pop;
+use function array_shift;
+use function count;
+use function explode;
+use function file_exists;
+use function htmlspecialchars;
+use function intval;
+use function is_object;
+use function is_string;
+use function md5;
+use function md5_file;
+use function method_exists;
+use function preg_match;
+use function preg_replace;
+use function sha1_file;
+use function str_replace;
+use function strpos;
+use function strrpos;
+use function substr;
+use function substr_count;
+use function trim;
 
 /**
  * Helper for the Media Center Manager
@@ -48,23 +74,23 @@ class Utils
     /**
      * @var array
      */
-    protected static $urlItemCache = [];
+    protected static array $urlItemCache = [];
 
     /**
      * Returns the item array
      * the array is specially adapted for the media center
      *
-     * @param \QUI\Projects\Media\Item $Item
+     * @param Item $Item
      *
      * @return array
      */
-    public static function parseForMediaCenter($Item)
+    public static function parseForMediaCenter(Item $Item): array
     {
         if ($Item->getId() === 1) {
-            /* @var $Item \QUI\Projects\Media\Folder */
+            /* @var $Item Folder */
             return [
                 'icon'          => 'fa fa-home',
-                'icon80x80'     => URL_BIN_DIR . '80x80/media.png',
+                'icon80x80'     => URL_BIN_DIR.'80x80/media.png',
                 'extension'     => '',
                 'id'            => $Item->getId(),
                 'name'          => $Item->getAttribute('name'),
@@ -83,11 +109,11 @@ class Utils
             ];
         }
 
-        if ($Item->getType() == QUI\Projects\Media\Folder::class) {
-            /* @var $Item \QUI\Projects\Media\Folder */
+        if ($Item->getType() == Folder::class) {
+            /* @var $Item Folder */
             return [
                 'icon'          => 'fa fa-folder-o',
-                'icon80x80'     => URL_BIN_DIR . '80x80/extensions/folder.png',
+                'icon80x80'     => URL_BIN_DIR.'80x80/extensions/folder.png',
                 'extension'     => '',
                 'id'            => $Item->getId(),
                 'name'          => $Item->getAttribute('name'),
@@ -117,7 +143,7 @@ class Utils
             'name'      => $Item->getAttribute('name'),
             'title'     => $Item->getAttribute('title'),
             'short'     => $Item->getAttribute('short'),
-            'type'      => $Item->getType() === QUI\Projects\Media\Image::class ? 'image' : 'file',
+            'type'      => $Item->getType() === Image::class ? 'image' : 'file',
             'url'       => $Item->getUrl(),
             'active'    => $Item->isActive(),
             'e_date'    => $Item->getAttribute('e_date'),
@@ -140,7 +166,7 @@ class Utils
      *
      * @todo icons in config auslagern, somit einfacher erweiterbar
      */
-    public static function getIconByExtension($ext, $size = '16x16')
+    public static function getIconByExtension(string $ext, string $size = '16x16'): string
     {
         switch ($size) {
             case '16x16':
@@ -153,67 +179,67 @@ class Utils
         }
 
         $extensions['16x16'] = [
-            'folder' => URL_BIN_DIR . '16x16/extensions/folder.png',
-            'pdf'    => URL_BIN_DIR . '16x16/extensions/pdf.png',
+            'folder' => URL_BIN_DIR.'16x16/extensions/folder.png',
+            'pdf'    => URL_BIN_DIR.'16x16/extensions/pdf.png',
             // Images
-            'jpg'    => URL_BIN_DIR . '16x16/extensions/image.png',
-            'jpeg'   => URL_BIN_DIR . '16x16/extensions/image.png',
-            'gif'    => URL_BIN_DIR . '16x16/extensions/image.png',
-            'png'    => URL_BIN_DIR . '16x16/extensions/image.png',
+            'jpg'    => URL_BIN_DIR.'16x16/extensions/image.png',
+            'jpeg'   => URL_BIN_DIR.'16x16/extensions/image.png',
+            'gif'    => URL_BIN_DIR.'16x16/extensions/image.png',
+            'png'    => URL_BIN_DIR.'16x16/extensions/image.png',
             // Movie
-            'avi'    => URL_BIN_DIR . '16x16/extensions/film.png',
-            'mpeg'   => URL_BIN_DIR . '16x16/extensions/film.png',
-            'mpg'    => URL_BIN_DIR . '16x16/extensions/film.png',
+            'avi'    => URL_BIN_DIR.'16x16/extensions/film.png',
+            'mpeg'   => URL_BIN_DIR.'16x16/extensions/film.png',
+            'mpg'    => URL_BIN_DIR.'16x16/extensions/film.png',
             // Archiv
-            'tar'    => URL_BIN_DIR . '16x16/extensions/archive.png',
-            'rar'    => URL_BIN_DIR . '16x16/extensions/archive.png',
-            'zip'    => URL_BIN_DIR . '16x16/extensions/archive.png',
-            'gz'     => URL_BIN_DIR . '16x16/extensions/archive.png',
-            '7z'     => URL_BIN_DIR . '16x16/extensions/archive.png',
+            'tar'    => URL_BIN_DIR.'16x16/extensions/archive.png',
+            'rar'    => URL_BIN_DIR.'16x16/extensions/archive.png',
+            'zip'    => URL_BIN_DIR.'16x16/extensions/archive.png',
+            'gz'     => URL_BIN_DIR.'16x16/extensions/archive.png',
+            '7z'     => URL_BIN_DIR.'16x16/extensions/archive.png',
             //Office
 
             // Music
-            'mp3'    => URL_BIN_DIR . '16x16/extensions/sound.png',
-            'ogg'    => URL_BIN_DIR . '16x16/extensions/sound.png',
+            'mp3'    => URL_BIN_DIR.'16x16/extensions/sound.png',
+            'ogg'    => URL_BIN_DIR.'16x16/extensions/sound.png',
         ];
 
         $extensions['80x80'] = [
-            'folder' => URL_BIN_DIR . '80x80/extensions/folder.png',
-            'pdf'    => URL_BIN_DIR . '80x80/extensions/pdf.png',
+            'folder' => URL_BIN_DIR.'80x80/extensions/folder.png',
+            'pdf'    => URL_BIN_DIR.'80x80/extensions/pdf.png',
             // Images
-            'jpg'    => URL_BIN_DIR . '80x80/extensions/image.png',
-            'jpeg'   => URL_BIN_DIR . '80x80/extensions/image.png',
-            'gif'    => URL_BIN_DIR . '80x80/extensions/image.png',
-            'png'    => URL_BIN_DIR . '80x80/extensions/image.png',
+            'jpg'    => URL_BIN_DIR.'80x80/extensions/image.png',
+            'jpeg'   => URL_BIN_DIR.'80x80/extensions/image.png',
+            'gif'    => URL_BIN_DIR.'80x80/extensions/image.png',
+            'png'    => URL_BIN_DIR.'80x80/extensions/image.png',
             // Movie
-            'avi'    => URL_BIN_DIR . '80x80/extensions/film.png',
-            'mpeg'   => URL_BIN_DIR . '80x80/extensions/film.png',
-            'mpg'    => URL_BIN_DIR . '80x80/extensions/film.png',
+            'avi'    => URL_BIN_DIR.'80x80/extensions/film.png',
+            'mpeg'   => URL_BIN_DIR.'80x80/extensions/film.png',
+            'mpg'    => URL_BIN_DIR.'80x80/extensions/film.png',
             // Archiv
-            'tar'    => URL_BIN_DIR . '80x80/extensions/archive.png',
-            'rar'    => URL_BIN_DIR . '80x80/extensions/archive.png',
-            'zip'    => URL_BIN_DIR . '80x80/extensions/archive.png',
-            'gz'     => URL_BIN_DIR . '80x80/extensions/archive.png',
-            '7z'     => URL_BIN_DIR . '80x80/extensions/archive.png',
+            'tar'    => URL_BIN_DIR.'80x80/extensions/archive.png',
+            'rar'    => URL_BIN_DIR.'80x80/extensions/archive.png',
+            'zip'    => URL_BIN_DIR.'80x80/extensions/archive.png',
+            'gz'     => URL_BIN_DIR.'80x80/extensions/archive.png',
+            '7z'     => URL_BIN_DIR.'80x80/extensions/archive.png',
             //Office
 
             // Music
-            'mp3'    => URL_BIN_DIR . '80x80/extensions/sound.png',
+            'mp3'    => URL_BIN_DIR.'80x80/extensions/sound.png',
         ];
 
         if (isset($extensions[$size][$ext])) {
             return $extensions[$size][$ext];
         }
 
-        return URL_BIN_DIR . $size . '/extensions/empty.png';
+        return URL_BIN_DIR.$size.'/extensions/empty.png';
     }
 
     /**
      * Return the fitting font awesome class
-     * @param \QUI\Projects\Media\Item $Item
+     * @param Item $Item
      * @return string
      */
-    public static function getFontAwesomeIconByItem($Item)
+    public static function getFontAwesomeIconByItem(Item $Item): string
     {
         if (self::isImage($Item)) {
             return 'fa-file-photo-o';
@@ -235,11 +261,11 @@ class Utils
      *
      * @return string
      */
-    public static function getExtension($filename)
+    public static function getExtension(string $filename): string
     {
-        $explode = \explode('.', $filename);
+        $explode = explode('.', $filename);
 
-        return \array_pop($explode);
+        return array_pop($explode);
     }
 
     /**
@@ -251,10 +277,10 @@ class Utils
      * @example \QUI\Projects\Media\Utils::getMediaTypeByMimeType( 'image/jpeg' )
      *
      */
-    public static function getMediaTypeByMimeType($mime_type)
+    public static function getMediaTypeByMimeType(string $mime_type): string
     {
-        if (\strpos($mime_type, 'image/') !== false
-            && \strpos($mime_type, 'vnd.adobe') === false
+        if (strpos($mime_type, 'image/') !== false
+            && strpos($mime_type, 'vnd.adobe') === false
         ) {
             return 'image';
         }
@@ -266,13 +292,20 @@ class Utils
      * Return the media image
      * If it is no image, its throws an exception
      *
-     * @param string $url - image.php? url
+     * @param mixed $url - image.php? url
      *
-     * @return QUI\Projects\Media\Image
+     * @return Image
      * @throws QUI\Exception
      */
-    public static function getImageByUrl($url)
+    public static function getImageByUrl($url): Image
     {
+        if (!is_string($url)) {
+            throw new QUI\Exception(
+                'The wanted URL is not a QUIQQER item url',
+                ErrorCodes::NOT_AN_ITEM_URL
+            );
+        }
+
         if (self::isMediaUrl($url) === false) {
             throw new QUI\Exception(
                 'Its not a QUIQQER image url',
@@ -289,20 +322,27 @@ class Utils
             );
         }
 
-        /* @var $Obj QUI\Projects\Media\Image */
+        /* @var $Obj Image */
         return $Obj;
     }
 
     /**
      * Return the media image, file, folder
      *
-     * @param string $url - image.php? url
+     * @param mixed $url - image.php? url
      *
-     * @return QUI\Projects\Media\Item
+     * @return Item
      * @throws QUI\Exception
      */
-    public static function getMediaItemByUrl($url)
+    public static function getMediaItemByUrl($url): Item
     {
+        if (!is_string($url)) {
+            throw new QUI\Exception(
+                'The wanted URL is not a QUIQQER item url',
+                ErrorCodes::NOT_AN_ITEM_URL
+            );
+        }
+
         if (self::isMediaUrl($url) === false) {
             throw new QUI\Exception(
                 'Its not a QUIQQER item url',
@@ -314,9 +354,9 @@ class Utils
             return self::$urlItemCache[$url];
         }
 
-        $params = StringUtils::getUrlAttributes($url);
+        $params  = StringUtils::getUrlAttributes($url);
         $Project = QUI::getProject($params['project']);
-        $Media = $Project->getMedia();
+        $Media   = $Project->getMedia();
 
         self::$urlItemCache[$url] = $Media->get((int)$params['id']);
 
@@ -333,7 +373,7 @@ class Utils
      *
      * @return string
      */
-    public static function getImageHTML($src, $attributes = [], $withHost = false)
+    public static function getImageHTML(string $src, array $attributes = [], bool $withHost = false): string
     {
         $src = self::getImageSource($src, $attributes);
 
@@ -341,18 +381,20 @@ class Utils
             return '';
         }
 
-        if (\strpos($src, 'image.php') !== false) {
+        if (strpos($src, 'image.php') !== false) {
             return '';
         }
 
-        $parts = \explode('/', $src);
-
-        $cacheName = 'quiqqer/projects/' . $parts[3] . '/picture-' . \md5(serialize([
+        $parts = explode('/', $src);
+        $md5   = md5(
+            serialize([
                 'attributes' => $attributes,
                 'src'        => $src,
                 'withHost'   => $withHost
-            ]));
+            ])
+        );
 
+        $cacheName = 'quiqqer/projects/'.$parts[3].'/picture-'.$md5;
         try {
             return QUI\Cache\Manager::get($cacheName);
         } catch (QUi\Exception $Exception) {
@@ -371,11 +413,11 @@ class Utils
 
         // build picture source sets
         $srcset = '';
-        $host = '';
+        $host   = '';
 
         try {
-            $src = urldecode($src);
-            $Image = Utils::getElement($src);
+            $originalSrc = urldecode($src);
+            $Image       = Utils::getElement($originalSrc);
 
             if (!self::isImage($Image)) {
                 return '';
@@ -385,10 +427,10 @@ class Utils
                 $host = $Image->getMedia()->getProject()->getVHost(true, true);
             }
 
-            $Project = $Image->getMedia()->getProject();
+            $Project    = $Image->getMedia()->getProject();
             $imageWidth = (int)$Image->getWidth();
-            $maxWidth = false;
-            $maxHeight = false;
+            $maxWidth   = false;
+            $maxHeight  = false;
 
             if (isset($attributes['width'])) {
                 $maxWidth = (int)$attributes['width'];
@@ -401,21 +443,33 @@ class Utils
             if (isset($attributes['style'])) {
                 $style = StringUtils::splitStyleAttributes($attributes['style']);
 
-                if (isset($style['width']) && \strpos($style['width'], '%') === false) {
+                if (isset($style['width']) && strpos($style['width'], '%') === false) {
                     $maxWidth = (int)$style['width'];
                 }
 
-                if (isset($style['height']) && \strpos($style['height'], '%') === false) {
+                if (isset($style['height']) && strpos($style['height'], '%') === false) {
                     $maxHeight = (int)$style['height'];
                 }
             }
+
+            $imageX = (int)$Project->getConfig('media_useImageScale');
+
+            if (!$imageX) {
+                $imageX = 2;
+            }
+
+            if ($imageX > 20) {
+                $imageX = 20; // <<-- crazy dudes
+            }
+
+            $imgSrcSetEntries = [];
 
             if ($imageWidth) {
                 $end = $maxWidth && $imageWidth > $maxWidth ? $maxWidth : $imageWidth;
                 $end = (int)$end;
 
                 $start = 400;
-                $sets = [];
+                $sets  = [];
 
                 $batchesCount = (int)$Project->getConfig('media_imageBatchesCount');
 
@@ -427,10 +481,10 @@ class Utils
                 $duplicate = [];
 
                 for (; $start < $end + $batchSize; $start += $batchSize) {
-                    $media = '(max-width: ' . $start . 'px)';
+                    $media = '(max-width: '.$start.'px)';
 
                     if ($maxHeight) {
-                        $media = '(max-width: ' . $start . 'px) or (max-height: ' . $maxHeight . 'px)';
+                        $media = '(max-width: '.$start.'px) or (max-height: '.$maxHeight.'px)';
                     }
 
                     $imageUrl = $Image->getSizeCacheUrl($start, $maxHeight);
@@ -441,35 +495,28 @@ class Utils
 
                     $duplicate[$imageUrl] = true;
 
-                    $src = \htmlspecialchars($imageUrl);
-                    $imageX = (int)$Project->getConfig('media_useImageScale');
-
-                    if (!$imageX) {
-                        $imageX = 2;
-                    }
-
-                    if ($imageX > 20) {
-                        $imageX = 20; // <<-- crazy dudes
-                    }
+                    $srcForSet = \htmlspecialchars($imageUrl);
 
                     for ($x = 2; $x <= $imageX; $x++) {
                         if ($imageWidth > $start * $x) {
-                            $src2x = $Image->getSizeCacheUrl($start * $x);
-                            $src2x = \htmlspecialchars($src2x);
-                            $src .= ", {$src2x} {$x}x";
+                            $src2x     = $Image->getSizeCacheUrl($start * $x);
+                            $src2x     = \htmlspecialchars($src2x);
+                            $srcForSet .= ", {$src2x} {$x}x";
                         }
                     }
 
                     $sets[] = [
-                        'src'   => $src,
+                        'src'   => $srcForSet,
                         'media' => $media,
                         'type'  => $Image->getAttribute('mime_type')
                     ];
+
+                    $imgSrcSetEntries[] = $srcForSet;
                 }
 
                 if (!count($sets)) {
                     $sets[] = [
-                        'src'   => \htmlspecialchars($Image->getSizeCacheUrl()),
+                        'src'   => htmlspecialchars($Image->getSizeCacheUrl()),
                         'media' => '',
                         'type'  => $Image->getAttribute('mime_type')
                     ];
@@ -480,7 +527,7 @@ class Utils
                     $sets[\array_key_last($sets)]['media'] = '';
                 } else {
                     $sets[] = [
-                        'src'   => \htmlspecialchars($Image->getSizeCacheUrl()),
+                        'src'   => htmlspecialchars($Image->getSizeCacheUrl()),
                         'media' => '',
                         'type'  => $Image->getAttribute('mime_type')
                     ];
@@ -491,14 +538,14 @@ class Utils
 
                     // last item doesn't need
                     if (!empty($set['media'])) {
-                        $media = ' media="' . $set['media'] . '"';
+                        $media = ' media="'.$set['media'].'"';
                     }
 
                     if (!isset($set['src']) || !isset($set['type'])) {
                         continue;
                     }
 
-                    $srcset .= '<source ' . $media . ' srcset="' . $host . $set['src'] . '" type="' . $set['type'] . '" />';
+                    $srcset .= '<source '.$media.' srcset="'.$host.$set['src'].'" type="'.$set['type'].'" />';
                 }
             }
         } catch (QUI\Exception $Exception) {
@@ -519,14 +566,20 @@ class Utils
                 $value = \ForceUTF8\Encoding::toUTF8($value);
             }
 
-            $img .= \htmlspecialchars($key) . '="' . $value . '" ';
+            $img .= \htmlspecialchars($key).'="'.$value.'" ';
         }
 
-        $img .= ' src="' . $host . \htmlspecialchars($src) . '" />';
+        $img .= ' src="'.$host.\htmlspecialchars($originalSrc).'"';
+
+        if (!empty($imgSrcSetEntries)) {
+            $img .= ' srcset="'.\implode(',', $imgSrcSetEntries).'"';
+        }
+
+        $img .= ' />';
 
 
         // picture html
-        $picture = '<picture>' . $srcset . $img . '</picture>';
+        $picture = '<picture>'.$srcset.$img.'</picture>';
 
         try {
             QUI::getEvents()->fireEvent('mediaCreateImageHtml', [&$picture]);
@@ -536,9 +589,9 @@ class Utils
 
 
         if (!empty($attributes['style'])) {
-            $picture = \str_replace(
+            $picture = str_replace(
                 '<picture>',
-                '<picture style="' . $attributes['style'] . '">',
+                '<picture style="'.$attributes['style'].'">',
                 $picture
             );
         }
@@ -555,9 +608,9 @@ class Utils
      * @param array $attributes
      * @return string
      */
-    public static function getImageSource($src, $attributes = [])
+    public static function getImageSource($src, array $attributes = []): string
     {
-        $width = false;
+        $width  = false;
         $height = false;
 
         if (isset($attributes['style'])) {
@@ -586,13 +639,13 @@ class Utils
             $height = $attributes['height'];
         }
 
-        if (\strpos($width, '%') !== false) {
+        if (strpos($width, '%') !== false) {
             $width = false;
         } else {
             $width = (int)$width;
         }
 
-        if (\strpos($height, '%') !== false) {
+        if (strpos($height, '%') !== false) {
             $height = false;
         } else {
             $height = (int)$height;
@@ -608,12 +661,12 @@ class Utils
             return '';
         }
 
-        /* @var $Image QUI\Projects\Media\Image */
+        /* @var $Image Image */
         try {
             $src = $Image->getSizeCacheUrl($width, $height);
 
             if ($Image->hasViewPermissionSet()) {
-                $src = URL_DIR . $Image->getUrl();
+                $src = URL_DIR.$Image->getUrl();
             }
         } catch (QUI\Exception $Exception) {
             Log::writeException($Exception);
@@ -633,7 +686,7 @@ class Utils
      *
      * @deprecated use getRewrittenUrl
      */
-    public static function getRewritedUrl($output, $size = [])
+    public static function getRewritedUrl($output, array $size = []): string
     {
         return self::getRewrittenUrl($output, $size);
     }
@@ -648,7 +701,7 @@ class Utils
      *
      * @throws QUI\Exception
      */
-    public static function getRewrittenUrl($output, $size = [])
+    public static function getRewrittenUrl(string $output, array $size = []): string
     {
         if (self::isMediaUrl($output) === false) {
             return $output;
@@ -657,11 +710,11 @@ class Utils
         // detect parameters
         $params = StringUtils::getUrlAttributes($output);
 
-        $id = $params['id'];
+        $id      = $params['id'];
         $project = $params['project'];
 
-        $cache = 'cache/links/' . $project . '/media/' . $id;
-        $url = '';
+        $cache = 'cache/links/'.$project.'/media/'.$id;
+        $url   = '';
 
         // exist cache?
         try {
@@ -684,21 +737,21 @@ class Utils
                     'trace' => $Exception->getTrace()
                 ]);
 
-                return URL_DIR . $output;
+                return URL_DIR.$output;
             } catch (\Exception $Exception) {
                 Log::addDebug($Exception->getMessage(), [
                     'url'   => $output,
                     'trace' => $Exception->getTrace()
                 ]);
 
-                return URL_DIR . $output;
+                return URL_DIR.$output;
             }
         }
 
 
         // Falls Grösse mit eingebaut wurde diese mit einbauen
-        if (\count($size)) {
-            $url_explode = \explode('.', $url);
+        if (count($size)) {
+            $url_explode = explode('.', $url);
 
             if (!isset($size['height'])) {
                 $size['height'] = '';
@@ -712,13 +765,13 @@ class Utils
                 $url_explode[1] = '';
             }
 
-            $url = $url_explode[0] . '__' . $size['width'] . 'x' . $size['height'] . '.' . $url_explode[1];
+            $url = $url_explode[0].'__'.$size['width'].'x'.$size['height'].'.'.$url_explode[1];
         }
 
-        if (!\file_exists(CMS_DIR . $url)) {
+        if (!file_exists(CMS_DIR.$url)) {
             $Project = QUI::getProject($project);
-            $Media = $Project->getMedia();
-            $Obj = $Media->get((int)$id);
+            $Media   = $Project->getMedia();
+            $Obj     = $Media->get((int)$id);
 
             if ($Obj->getType() == 'IMAGE') {
                 if (!isset($size['width'])) {
@@ -754,10 +807,10 @@ class Utils
      * @return boolean
      * @throws QUI\Exception
      */
-    public static function checkFolderName($str)
+    public static function checkFolderName($str): bool
     {
         // Prüfung des Namens - Sonderzeichen
-        if (\preg_match('/[^0-9_a-zA-Z \-]/', $str)) {
+        if (preg_match('/[^0-9_a-zA-Z \-]/', $str)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -768,7 +821,7 @@ class Utils
             );
         }
 
-        if (\strpos($str, '__') !== false) {
+        if (strpos($str, '__') !== false) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -788,13 +841,13 @@ class Utils
      *
      * @return string
      */
-    public static function stripFolderName($str)
+    public static function stripFolderName($str): string
     {
         $str = QUI\Utils\Convert::convertRoman($str);
-        $str = \preg_replace('/[^0-9a-zA-Z\-]/', '_', $str);
+        $str = preg_replace('/[^0-9a-zA-Z\-]/', '_', $str);
 
         // clean double _
-        $str = \preg_replace('/[_]{2,}/', "_", $str);
+        $str = preg_replace('/[_]{2,}/', "_", $str);
 
         return $str;
     }
@@ -809,7 +862,7 @@ class Utils
     public static function checkMediaName($filename)
     {
         // Prüfung des Namens - Sonderzeichen
-        if (\preg_match('/[^0-9_a-zA-Z \-.]/', $filename)) {
+        if (preg_match('/[^0-9_a-zA-Z \-.]/', $filename)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -821,7 +874,7 @@ class Utils
         }
 
         // mehr als zwei punkte
-        if (\substr_count($filename, '.') > 1) {
+        if (substr_count($filename, '.') > 1) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -831,7 +884,7 @@ class Utils
             );
         }
 
-        if (\strpos($filename, '__') !== false) {
+        if (strpos($filename, '__') !== false) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -852,7 +905,7 @@ class Utils
     public static function stripMediaName(string $str): string
     {
         // Umlaute
-        $str = \str_replace(
+        $str = str_replace(
             [
                 'ä',
                 'ö',
@@ -866,14 +919,14 @@ class Utils
             $str
         );
 
-        $str = \preg_replace('/[^0-9_a-zA-Z\ \.\-]/', '', $str);
+        $str = preg_replace('/[^0-9_a-zA-Z\ \.\-]/', '', $str);
 
         // delete the dots but not the last dot
-        $str = \str_replace('.', '_', $str);
+        $str = str_replace('.', '_', $str);
         $str = StringUtils::replaceLast('_', '.', $str);
 
         // FIX
-        $str = \preg_replace('/[_]{2,}/', "_", $str);
+        $str = preg_replace('/[_]{2,}/', "_", $str);
 
         return $str;
     }
@@ -889,17 +942,17 @@ class Utils
      *
      * @return boolean
      */
-    public static function isFolder($Unknown)
+    public static function isFolder($Unknown): bool
     {
-        if (!\is_object($Unknown)) {
+        if (!is_object($Unknown)) {
             return false;
         }
 
-        if (!\method_exists($Unknown, 'getType')) {
+        if (!method_exists($Unknown, 'getType')) {
             return false;
         }
 
-        if ($Unknown->getType() === QUI\Projects\Media\Folder::class) {
+        if ($Unknown->getType() === Folder::class) {
             return true;
         }
 
@@ -913,17 +966,17 @@ class Utils
      *
      * @return boolean
      */
-    public static function isImage($Unknown)
+    public static function isImage($Unknown): bool
     {
-        if (!\is_object($Unknown)) {
+        if (!is_object($Unknown)) {
             return false;
         }
 
-        if (!\method_exists($Unknown, 'getType')) {
+        if (!method_exists($Unknown, 'getType')) {
             return false;
         }
 
-        if ($Unknown->getType() === QUI\Projects\Media\Image::class) {
+        if ($Unknown->getType() === Image::class) {
             return true;
         }
 
@@ -936,13 +989,13 @@ class Utils
      * @param $Unknown
      * @return bool
      */
-    public static function isItem($Unknown)
+    public static function isItem($Unknown): bool
     {
-        if (!\is_object($Unknown)) {
+        if (!is_object($Unknown)) {
             return false;
         }
 
-        if (!\method_exists($Unknown, 'getType')) {
+        if (!method_exists($Unknown, 'getType')) {
             return false;
         }
 
@@ -956,11 +1009,11 @@ class Utils
      *
      * @return boolean
      */
-    public static function isMediaUrl($url)
+    public static function isMediaUrl(string $url): bool
     {
-        if (\strpos($url, 'image.php') !== false
-            && \strpos($url, 'project=') !== false
-            && \strpos($url, 'id=') !== false
+        if (strpos($url, 'image.php') !== false
+            && strpos($url, 'project=') !== false
+            && strpos($url, 'id=') !== false
         ) {
             return true;
         }
@@ -976,11 +1029,11 @@ class Utils
      * @return Item
      * @throws QUI\Exception
      */
-    public static function getElement($url)
+    public static function getElement(string $url): Item
     {
         $filePath = self::getRealFileDataFromCacheUrl($url);
-        $Project = QUI::getProject($filePath['project']);
-        $Media = $Project->getMedia();
+        $Project  = QUI::getProject($filePath['project']);
+        $Media    = $Project->getMedia();
 
         return $Media->getChildByPath($filePath['filePath']);
     }
@@ -991,12 +1044,12 @@ class Utils
      *
      * @throws QUI\Exception
      */
-    public static function getRealFileDataFromCacheUrl($url)
+    public static function getRealFileDataFromCacheUrl($url): array
     {
-        if (\strpos($url, 'media/cache/') !== false) {
-            $parts = \explode('media/cache/', $url);
-        } elseif (\strpos($url, 'media/sites/') !== false) {
-            $parts = \explode('media/sites/', $url);
+        if (strpos($url, 'media/cache/') !== false) {
+            $parts = explode('media/cache/', $url);
+        } elseif (strpos($url, 'media/sites/') !== false) {
+            $parts = explode('media/sites/', $url);
         } else {
             throw new QUI\Exception(
                 'File not found',
@@ -1011,21 +1064,21 @@ class Utils
             );
         }
 
-        $parts = \explode('/', $parts[1]);
-        $project = \array_shift($parts);
+        $parts   = explode('/', $parts[1]);
+        $project = array_shift($parts);
 
         // if the element (image) is resized resize
-        $fileName = \array_pop($parts);
+        $fileName = array_pop($parts);
 
-        if (\strpos($fileName, '__') !== false) {
-            $lastpos_ul = \strrpos($fileName, '__') + 2;
-            $pos_dot = \strpos($fileName, '.', $lastpos_ul);
+        if (strpos($fileName, '__') !== false) {
+            $lastpos_ul = strrpos($fileName, '__') + 2;
+            $pos_dot    = strpos($fileName, '.', $lastpos_ul);
 
-            $fileName = \substr($fileName, 0, ($lastpos_ul - 2)) .
-                \substr($fileName, $pos_dot);
+            $fileName = substr($fileName, 0, ($lastpos_ul - 2)).
+                        substr($fileName, $pos_dot);
         }
 
-        $parts[] = $fileName;
+        $parts[]   = $fileName;
         $filePaths = \implode('/', $parts);
 
         return [
@@ -1097,27 +1150,27 @@ class Utils
     /**
      * Generate the MD5 hash of a file object
      *
-     * @param \QUI\Projects\Media\File|\QUI\Projects\Media\Image $File
+     * @param File|Image $File
      *
      * @return string
      */
-    public static function generateMD5($File)
+    public static function generateMD5($File): string
     {
-        /* @var $File \QUI\Projects\Media\Image */
-        return \md5_file($File->getFullPath());
+        /* @var $File Image */
+        return md5_file($File->getFullPath());
     }
 
     /**
      * Generate the SHA1 hash of a file object
      *
-     * @param \QUI\Projects\Media\File|\QUI\Projects\Media\Image $File
+     * @param File|Image $File
      *
      * @return string
      */
-    public static function generateSHA1($File)
+    public static function generateSHA1($File): string
     {
-        /* @var $File \QUI\Projects\Media\Image */
-        return \sha1_file($File->getFullPath());
+        /* @var $File Image */
+        return sha1_file($File->getFullPath());
     }
 
     /**
@@ -1127,7 +1180,7 @@ class Utils
      *
      * @return int
      */
-    public static function countFoldersForProject(QUI\Projects\Project $Project)
+    public static function countFoldersForProject(QUI\Projects\Project $Project): int
     {
         $mediaTable = $Project->getMedia()->getTable();
 
@@ -1144,7 +1197,7 @@ class Utils
         }
 
         if (isset($result[0])) {
-            return \intval($result[0]['id']);
+            return intval($result[0]['id']);
         }
 
         return 0;
@@ -1157,7 +1210,7 @@ class Utils
      *
      * @return int
      */
-    public static function countFilesForProject(QUI\Projects\Project $Project)
+    public static function countFilesForProject(QUI\Projects\Project $Project): int
     {
         $mediaTable = $Project->getMedia()->getTable();
 
@@ -1177,7 +1230,7 @@ class Utils
         }
 
         if (isset($result[0])) {
-            return \intval($result[0]['id']);
+            return intval($result[0]['id']);
         }
 
         return 0;
@@ -1193,9 +1246,9 @@ class Utils
      * @param QUI\Projects\Project $Project
      * @param boolean $force - Force a calculation of the media folder size. Values aren't returned from cache. Expect timeouts.
      *
-     * @return int
+     * @return int|null
      */
-    public static function getMediaFolderSizeForProject(QUI\Projects\Project $Project, $force = false)
+    public static function getMediaFolderSizeForProject(QUI\Projects\Project $Project, bool $force = false): ?int
     {
         return QUI\Utils\System\Folder::getFolderSize($Project->getMedia()->getFullPath(), $force);
     }
@@ -1208,7 +1261,7 @@ class Utils
      *
      * @return int|null
      */
-    public static function getMediaFolderSizeTimestampForProject(QUI\Projects\Project $Project)
+    public static function getMediaFolderSizeTimestampForProject(QUI\Projects\Project $Project): ?int
     {
         return QUI\Utils\System\Folder::getFolderSizeTimestamp($Project->getMedia()->getFullPath());
     }
@@ -1223,9 +1276,9 @@ class Utils
      * @param QUI\Projects\Project $Project
      * @param boolean $force - Force a calculation of the media folder size. Values aren't returned from cache. Expect timeouts.
      *
-     * @return int
+     * @return int|null
      */
-    public static function getMediaCacheFolderSizeForProject(QUI\Projects\Project $Project, $force = false)
+    public static function getMediaCacheFolderSizeForProject(QUI\Projects\Project $Project, $force = false): ?int
     {
         return QUI\Utils\System\Folder::getFolderSize($Project->getMedia()->getFullCachePath(), $force);
     }
@@ -1238,7 +1291,7 @@ class Utils
      *
      * @return int|null
      */
-    public static function getMediaCacheFolderSizeTimestampForProject(QUI\Projects\Project $Project)
+    public static function getMediaCacheFolderSizeTimestampForProject(QUI\Projects\Project $Project): ?int
     {
         return QUI\Utils\System\Folder::getFolderSizeTimestamp($Project->getMedia()->getFullCachePath());
     }
@@ -1250,7 +1303,7 @@ class Utils
      *
      * @return array - the array's keys are the file types and their values are their amounts
      */
-    public static function countFiletypesForProject(QUI\Projects\Project $Project)
+    public static function countFiletypesForProject(QUI\Projects\Project $Project): array
     {
         $table = $Project->getMedia()->getTable();
 
@@ -1282,9 +1335,57 @@ class Utils
         $return = [];
 
         foreach ($result as $element) {
-            $return[$element['mime_type']] = \intval($element['count']);
+            $return[$element['mime_type']] = intval($element['count']);
         }
 
         return $return;
+    }
+
+    /**
+     * @param Item $Item
+     * @return array
+     */
+    public static function getExtraAttributeListForMediaItems(Item $Item): array
+    {
+        $cache = $Item->getMedia()->getProject()->getCachePath().'/xml-media-attributes/';
+
+        try {
+            return QUI\Cache\Manager::get($cache);
+        } catch (QUI\Exception $Exception) {
+        }
+
+
+        // global extra attributes
+        $siteXmlList = QUI::getPackageManager()->getPackageMediaXmlList();
+        $result      = [];
+
+        foreach ($siteXmlList as $package) {
+            $file = OPT_DIR.$package.'/media.xml';
+
+            if (!file_exists($file)) {
+                continue;
+            }
+
+            $Dom  = XML::getDomFromXml($file);
+            $Path = new DOMXPath($Dom);
+
+            $attributes = $Path->query('//quiqqer/media/attributes/attribute');
+
+            /* @var $Attribute DOMElement */
+            foreach ($attributes as $Attribute) {
+                $result[] = [
+                    'attribute' => trim($Attribute->nodeValue),
+                    'default'   => $Attribute->getAttribute('default')
+                ];
+            }
+        }
+
+        try {
+            QUI\Cache\Manager::set($cache, $result);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
+
+        return $result;
     }
 }

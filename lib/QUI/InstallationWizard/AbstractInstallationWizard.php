@@ -57,4 +57,8 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
             'class'       => \get_class($this)
         ];
     }
+
+    public function onListInit(&$list)
+    {
+    }
 }

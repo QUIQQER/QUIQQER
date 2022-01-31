@@ -181,7 +181,6 @@ body > .quiqqer-message {
     position: absolute;
     right: 10px;
     top: 60px;
-    z-index: 10000 !important;
 }
 
 

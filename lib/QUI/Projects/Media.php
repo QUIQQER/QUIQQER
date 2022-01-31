@@ -93,7 +93,7 @@ class Media extends QUI\QDOM
      */
     public function getPath()
     {
-        return 'media/sites/'.$this->getProject()->getAttribute('name').'/';
+        return 'media/sites/' . $this->getProject()->getAttribute('name') . '/';
     }
 
     /**
@@ -105,7 +105,7 @@ class Media extends QUI\QDOM
      */
     public function getFullPath()
     {
-        return CMS_DIR.$this->getPath();
+        return CMS_DIR . $this->getPath();
     }
 
     /**
@@ -115,7 +115,7 @@ class Media extends QUI\QDOM
      */
     public function getCacheDir()
     {
-        return 'media/cache/'.$this->getProject()->getAttribute('name').'/';
+        return 'media/cache/' . $this->getProject()->getAttribute('name') . '/';
     }
 
     /**
@@ -126,7 +126,7 @@ class Media extends QUI\QDOM
      */
     public function getFullCachePath()
     {
-        return CMS_DIR.$this->getCacheDir();
+        return CMS_DIR . $this->getCacheDir();
     }
 
     /**
@@ -139,10 +139,10 @@ class Media extends QUI\QDOM
     public function getTable($type = false)
     {
         if ($type == 'relations') {
-            return QUI::getDBTableName($this->Project->getAttribute('name').'_media_relations');
+            return QUI::getDBTableName($this->Project->getAttribute('name') . '_media_relations');
         }
 
-        return QUI::getDBTableName($this->Project->getAttribute('name').'_media');
+        return QUI::getDBTableName($this->Project->getAttribute('name') . '_media');
     }
 
     /**
@@ -165,7 +165,7 @@ class Media extends QUI\QDOM
             }
         }
 
-        return URL_BIN_DIR.'images/Q.png';
+        return URL_BIN_DIR . 'images/Q.png';
     }
 
     /**
@@ -301,6 +301,7 @@ class Media extends QUI\QDOM
             'pathHistory'   => 'text',
             'hidden'        => 'int(1) default 0',
             'pathHash'      => 'varchar(32) NOT NULL',
+            'extra'         => 'text NULL',
         ]);
 
         $DataBase->table()->setPrimaryKey($table, 'id');
@@ -317,7 +318,7 @@ class Media extends QUI\QDOM
         $DataBase->table()->setIndex($table, 'pathHash');
 
         try {
-            $DataBase->execSQL('UPDATE '.$table.' SET pathHash = MD5(file)');
+            $DataBase->execSQL('UPDATE ' . $table . ' SET pathHash = MD5(file)');
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
@@ -329,7 +330,7 @@ class Media extends QUI\QDOM
             if ($DataBase->table()->issetIndex($table, $index)) {
                 try {
                     $DataBase->fetchSQL(
-                        'ALTER TABLE `'.$table.'` DROP INDEX `'.$index.'`;'
+                        'ALTER TABLE `' . $table . '` DROP INDEX `' . $index . '`;'
                     );
                 } catch (\Exception $Exception) {
                     QUI\System\Log::writeException($Exception);
@@ -490,7 +491,7 @@ class Media extends QUI\QDOM
         ]);
 
         if (!isset($result[0])) {
-            throw new QUI\Exception('ID '.$id.' not found', 404);
+            throw new QUI\Exception('ID ' . $id . ' not found', 404);
         }
 
 
@@ -538,7 +539,7 @@ class Media extends QUI\QDOM
      */
     public function getChildByPath($filepath)
     {
-        $cache = $this->getCacheDir().'filePathIds/'.\md5($filepath);
+        $cache = $this->getCacheDir() . 'filePathIds/' . \md5($filepath);
 
         try {
             $id = QUI\Cache\LongTermCache::get($cache);
@@ -546,17 +547,17 @@ class Media extends QUI\QDOM
             $table = $this->getTable();
 
             $result = QUI::getDataBase()->fetch([
-                'select' => [$table.'.id'],
+                'select' => [$table . '.id'],
                 'from'   => [$table],
                 'where'  => [
-                    $table.'.deleted' => 0,
-                    $table.'.file'    => $filepath
+                    $table . '.deleted' => 0,
+                    $table . '.file'    => $filepath
                 ],
                 'limit'  => 1
             ]);
 
             if (!isset($result[0])) {
-                throw new QUI\Exception('File '.$filepath.' not found', 404);
+                throw new QUI\Exception('File ' . $filepath . ' not found', 404);
             }
 
             $id = (int)$result[0]['id'];
@@ -624,7 +625,7 @@ class Media extends QUI\QDOM
 
         if ($data['name'] != $name && $Parent->childWithNameExists($name)) {
             throw new QUI\Exception(
-                'A file with the name '.$name.' already exist.',
+                'A file with the name ' . $name . ' already exist.',
                 403
             );
         }
@@ -632,16 +633,16 @@ class Media extends QUI\QDOM
         // delete the file
         if (isset($data['file']) && !empty($data['file'])) {
             QUI\Utils\System\File::unlink(
-                $this->getFullPath().$data['file']
+                $this->getFullPath() . $data['file']
             );
         }
 
         if ($data['name'] != $name) {
-            $new_file  = $Parent->getPath().$name;
-            $real_file = $Parent->getFullPath().$name;
+            $new_file  = $Parent->getPath() . $name;
+            $real_file = $Parent->getFullPath() . $name;
         } else {
             $new_file  = $result[0]['file'];
-            $real_file = $this->getFullPath().$result[0]['file'];
+            $real_file = $this->getFullPath() . $result[0]['file'];
         }
 
         $imageHeight = null;
