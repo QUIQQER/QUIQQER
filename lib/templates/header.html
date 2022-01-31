@@ -186,6 +186,10 @@
                     // Load QUI
                     require(["qui/QUI"], function (QUI) {
                         QUI.addEvent("onError", function (msg, url, linenumber) {
+                            if (typeof linenumber === "undefined") {
+                                linenumber = 0;
+                            }
+
                             console.error(msg);
                             console.error(url);
                             console.error("LineNo: " + linenumber);

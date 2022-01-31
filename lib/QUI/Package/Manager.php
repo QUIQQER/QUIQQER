@@ -231,12 +231,15 @@ class Manager extends QUI\QDOM
      * Return the last update date
      *
      * @return integer
-     *
-     * @throws QUI\Exception
      */
     public function getLastUpdateDate(): int
     {
-        return (int)$this->getUpdateConf()->get('quiqqer', 'lastUpdate');
+        try {
+            return (int)$this->getUpdateConf()->get('quiqqer', 'lastUpdate');
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+            return 0;
+        }
     }
 
     /**
