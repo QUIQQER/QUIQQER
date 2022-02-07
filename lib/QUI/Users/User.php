@@ -621,8 +621,13 @@ class User implements QUI\Interfaces\Users\User
 
         // Use standard address
         try {
-            $Address     = $this->getStandardAddress();
-            $addressName = $Address->getName();
+            $Address        = $this->getStandardAddress();
+            $addressName    = $Address->getName();
+            $addressCompany = $Address->getAttribute('company');
+
+            if (!empty($addressCompany)) {
+                return $addressCompany;
+            }
 
             if (!empty($addressName)) {
                 return $addressName;
