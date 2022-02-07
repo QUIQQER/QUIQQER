@@ -85,7 +85,7 @@ define('controls/workspace/Manager', [
         initialize: function (options) {
             this.parent(options);
 
-            this.Loader    = new QUILoader();
+            this.Loader = new QUILoader();
             this.Workspace = new QUIWorkspace({
                 events: {
                     onColumnContextMenu: this.$onColumnContextMenu
@@ -94,12 +94,12 @@ define('controls/workspace/Manager', [
 
             this.$spaces = {};
 
-            this.$minWidth   = false;
-            this.$minHeight  = false;
+            this.$minWidth = false;
+            this.$minHeight = false;
             this.$ParentNode = null;
 
             this.$availablePanels = null; // cache
-            this.$resizeDelay     = null;
+            this.$resizeDelay = null;
 
             this.$resizeQuestionWindow = false; // if resize quesion window open?
 
@@ -174,14 +174,14 @@ define('controls/workspace/Manager', [
 
             if (this.$minWidth && width < this.$minWidth) {
                 width = this.$minWidth;
-                rq    = true;
+                rq = true;
 
                 this.$Elm.setStyle('overflow', 'auto');
             }
 
             if (this.$minHeight && height < this.$minHeight) {
                 height = this.$minHeight;
-                rq     = true;
+                rq = true;
 
                 this.$Elm.setStyle('overflow', 'auto');
             }
@@ -270,10 +270,13 @@ define('controls/workspace/Manager', [
                 }
 
                 // ask which workspace
+                // @todo show only if install wizard wasn't executed
+                /*
                 if (!Standard) {
                     self.$openWorkspaceListWindow();
                     return;
                 }
+                */
 
                 // load standard workspace
                 self.$loadWorkspace(Standard.id);
@@ -416,7 +419,7 @@ define('controls/workspace/Manager', [
             var self      = this,
                 workspace = this.$spaces[id];
 
-            this.$minWidth  = workspace.minWidth;
+            this.$minWidth = workspace.minWidth;
             this.$minHeight = workspace.minHeight;
 
             var data = null;
@@ -447,7 +450,7 @@ define('controls/workspace/Manager', [
                     events     : {
                         onOpen: function (Win) {
                             var Content = Win.getContent();
-                            var Active  = null;
+                            var Active = null;
 
                             var activate = function (Btn) {
                                 if (Active !== null) {
@@ -502,7 +505,8 @@ define('controls/workspace/Manager', [
                                 TwoColumnsNode = Content.getElement('[name="twoColumns"]');
 
                             var TwoColumns = QUI.Controls.getById(TwoColumnsNode.get('data-quiid'));
-                            var Prom       = TwoColumns.isActive() ? self.getTwoColumnDefault() : self.getThreeColumnDefault();
+                            var Prom = TwoColumns.isActive() ? self.getTwoColumnDefault() :
+                                self.getThreeColumnDefault();
 
                             Prom.then(function (result) {
                                 self.Workspace.unserialize(JSON.decode(result));
@@ -764,7 +768,7 @@ define('controls/workspace/Manager', [
          * @param {Object} Workspace - qui/controls/desktop/Workspace
          */
         $loadDefault3Column: function (Workspace) {
-            this.$minWidth  = 1000;
+            this.$minWidth = 1000;
             this.$minHeight = 500;
 
             var size   = this.$Elm.getSize(),
@@ -813,7 +817,7 @@ define('controls/workspace/Manager', [
          * @param {Object} Workspace - qui/controls/desktop/Workspace
          */
         $loadDefault2Column: function (Workspace) {
-            this.$minWidth  = 700;
+            this.$minWidth = 700;
             this.$minHeight = 500;
 
             var size         = this.$Elm.getSize(),
@@ -1275,7 +1279,7 @@ define('controls/workspace/Manager', [
 
                                 Elm = new Element('div', {
                                     html          : '<h2>' + panels[i].title + '</h2>' +
-                                        '<p>' + panels[i].text + '</p>',
+                                                    '<p>' + panels[i].text + '</p>',
                                     'class'       : 'qui-controls-workspace-panelList-panel smooth',
                                     'data-require': panels[i].require,
                                     events        : {
@@ -1338,19 +1342,22 @@ define('controls/workspace/Manager', [
                                     dataIndex: 'id',
                                     dataType : 'Integer',
                                     hidden   : true
-                                }, {
+                                },
+                                {
                                     header   : Locale.get('quiqqer/quiqqer', 'title'),
                                     dataIndex: 'title',
                                     dataType : 'string',
                                     width    : 200,
                                     editable : true
-                                }, {
+                                },
+                                {
                                     header   : Locale.get('quiqqer/quiqqer', 'window.workspaces.width'),
                                     dataIndex: 'minWidth',
                                     dataType : 'string',
                                     width    : 100,
                                     editable : true
-                                }, {
+                                },
+                                {
                                     header   : Locale.get('quiqqer/quiqqer', 'window.workspaces.height'),
                                     dataIndex: 'minHeight',
                                     dataType : 'string',
@@ -1370,9 +1377,11 @@ define('controls/workspace/Manager', [
                                             self.openCreateWindow();
                                         }
                                     }
-                                }, {
+                                },
+                                {
                                     type: 'separator'
-                                }, {
+                                },
+                                {
                                     name     : 'delete',
                                     title    : Locale.get('quiqqer/quiqqer', 'window.workspaces.delete'),
                                     text     : Locale.get('quiqqer/quiqqer', 'delete'),
@@ -1429,7 +1438,8 @@ define('controls/workspace/Manager', [
                                             }).open();
                                         }
                                     }
-                                }, {
+                                },
+                                {
                                     name  : '',
                                     text  : Locale.get('quiqqer/quiqqer', 'workspace.fixed'),
                                     styles: {
