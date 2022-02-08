@@ -597,6 +597,49 @@ class User implements QUI\Interfaces\Users\User
     }
 
     /**
+     * Get display name of the user.
+     *
+     * @return string
+     */
+    public function getDisplayName(): string
+    {
+        // Name directly set in user attributes
+        $firstname = $this->getAttribute('firstname');
+        $lastname  = $this->getAttribute('lastname');
+
+        if ($firstname && $lastname) {
+            return $firstname.' '.$lastname;
+        }
+
+        if ($firstname) {
+            return $firstname;
+        }
+
+        if ($lastname) {
+            return $lastname;
+        }
+
+        // Use standard address
+        try {
+            $Address        = $this->getStandardAddress();
+            $addressName    = $Address->getName();
+            $addressCompany = $Address->getAttribute('company');
+
+            if (!empty($addressCompany)) {
+                return $addressCompany;
+            }
+
+            if (!empty($addressName)) {
+                return $addressName;
+            }
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
+        }
+
+        return $this->getUsername();
+    }
+
+    /**
      * Return username
      *
      * @return bool|string
@@ -1108,7 +1151,6 @@ class User implements QUI\Interfaces\Users\User
         $params['active']  = $this->active;
         $params['deleted'] = $this->deleted;
         $params['admin']   = $this->canUseBackend();
-        $params['avatar']  = $this->getAvatar();
         $params['su']      = $this->isSU();
 
         $params['usergroup']   = $this->getGroups(false);
@@ -1116,6 +1158,7 @@ class User implements QUI\Interfaces\Users\User
         $params['extras']      = $this->extra;
         $params['hasPassword'] = empty($this->password) ? 0 : 1;
         $params['avatar']      = '';
+        $params['displayName'] = $this->getDisplayName();
 
         try {
             $Image = QUI\Projects\Media\Utils::getImageByUrl($this->getAttribute('avatar'));

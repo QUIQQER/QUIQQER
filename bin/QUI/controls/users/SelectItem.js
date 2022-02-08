@@ -54,7 +54,7 @@ define('controls/users/SelectItem', [
 
             return Prom.then(function () {
                 this.$Text.set({
-                    html: User.getName()
+                    html: User.getAttribute('displayName')
                 });
             }.bind(this)).catch(function (err) {
                 console.error(err);
