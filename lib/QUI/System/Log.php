@@ -87,19 +87,21 @@ class Log
         }
 
         if (isset($_SERVER['REQUEST_URI']) && !empty($_SERVER['REQUEST_URI'])) {
-            $context['request'] = HOST.$_SERVER['REQUEST_URI'];
+            $context['request'] = HOST . $_SERVER['REQUEST_URI'];
         }
 
         if (isset($_REQUEST['quiqqerBundle'])) {
             $context['ajaxBundler'] = $_REQUEST['quiqqerBundle'];
         }
 
-        $User = QUI::getUserBySession();
-
         $context['errorFilename'] = $filename;
-        $context['userId']        = $User->getId();
-        $context['username']      = $User->getUsername();
         $context['IP']            = QUI\Utils\System::getClientIP();
+
+        if (defined('QUIQQER_SESSION_STARTED')) {
+            $User                = QUI::getUserBySession();
+            $context['userId']   = $User->getId();
+            $context['username'] = $User->getUsername();
+        }
 
         if ($filename) {
             $context['filename'] = $filename;
@@ -175,13 +177,13 @@ class Log
         $filename = false,
         $force = false
     ) {
-        $message = $Exception->getCode()." :: \n\n";
+        $message = $Exception->getCode() . " :: \n\n";
 
         if (method_exists($Exception, 'getContext')) {
-            $message .= print_r($Exception->getContext(), true)."\n\n";
+            $message .= print_r($Exception->getContext(), true) . "\n\n";
         }
 
-        $message .= $Exception->getMessage()."\n";
+        $message .= $Exception->getMessage() . "\n";
         $message .= $Exception->getTraceAsString();
 
         self::write($message, $logLevel, $context, $filename, $force);
@@ -207,13 +209,13 @@ class Log
             return;
         }
 
-        $message = $Exception->getCode()." :: \n\n";
+        $message = $Exception->getCode() . " :: \n\n";
 
         if (method_exists($Exception, 'getContext')) {
-            $message .= print_r($Exception->getContext(), true)."\n\n";
+            $message .= print_r($Exception->getContext(), true) . "\n\n";
         }
 
-        $message .= $Exception->getMessage()."\n";
+        $message .= $Exception->getMessage() . "\n";
         $message .= $Exception->getTraceAsString();
 
         self::write($message, $logLevel, $context, $filename, $force);
