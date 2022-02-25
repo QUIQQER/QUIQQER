@@ -17,6 +17,21 @@ use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHa
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler;
 
+use function array_flip;
+use function array_rand;
+use function array_unique;
+use function array_values;
+use function class_exists;
+use function explode;
+use function file_exists;
+use function headers_sent;
+use function implode;
+use function md5;
+use function microtime;
+use function preg_replace;
+use function range;
+use function time;
+
 /**
  * Session handling for QUIQQER
  *
@@ -54,12 +69,12 @@ class Session
      *
      * @var string
      */
-    private $table;
+    private string $table;
 
     /**
      * @var array
      */
-    protected $vars = [];
+    protected array $vars = [];
 
     /**
      * constructor
@@ -73,7 +88,7 @@ class Session
         // symfony files
         $classNativeSessionStorage = '\Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage';
         $classSession              = '\Symfony\Component\HttpFoundation\Session\Session';
-        $symfonyDir                = OPT_DIR.'symfony/http-foundation/';
+        $symfonyDir                = OPT_DIR . 'symfony/http-foundation/';
 
         // options
         if (QUI::conf('session', 'max_life_time')) {
@@ -81,21 +96,21 @@ class Session
         }
 
         $sessionName = QUI::conf('session', 'name');
-        $sessionName = \preg_replace("/[^a-zA-Z0-9]/", '', $sessionName);
+        $sessionName = preg_replace("/[^a-zA-Z0-9]/", '', $sessionName);
 
         // If no session name set in the config, generate and set a 5 random character long name
         if (!$sessionName) {
             // Array with uppercase alphabet as values
-            $alphabetAsValues = \range('A', 'Z');
+            $alphabetAsValues = range('A', 'Z');
 
             // Array with uppercase alphabet as keys
-            $alphabetAsKeys = \array_flip($alphabetAsValues);
+            $alphabetAsKeys = array_flip($alphabetAsValues);
 
             // Pick 5 random keys (characters) as an array from the alphabet-array
-            $randomCharacters = \array_rand($alphabetAsKeys, 5);
+            $randomCharacters = array_rand($alphabetAsKeys, 5);
 
             // Implode the array of characters to a string
-            $sessionName = \implode($randomCharacters);
+            $sessionName = implode($randomCharacters);
 
             QUI::$Conf->set('session', 'name', $sessionName);
             QUI::$Conf->save();
@@ -122,22 +137,22 @@ class Session
             }
         }
 
-        if (!\class_exists('NativeSessionStorage')) {
-            $fileNativeSessionStorage = $symfonyDir.'Session/Storage/NativeSessionStorage.php';
+        if (!class_exists('NativeSessionStorage')) {
+            $fileNativeSessionStorage = $symfonyDir . 'Session/Storage/NativeSessionStorage.php';
 
-            if (!\file_exists($fileNativeSessionStorage)) {
-                $fileNativeSessionStorage = $symfonyDir.'Component/HttpFoundation/Session/Storage/NativeSessionStorage.php';
+            if (!file_exists($fileNativeSessionStorage)) {
+                $fileNativeSessionStorage = $symfonyDir . 'Component/HttpFoundation/Session/Storage/NativeSessionStorage.php';
             }
 
-            if (!\file_exists($fileNativeSessionStorage)) {
+            if (!file_exists($fileNativeSessionStorage)) {
                 throw new \Exception(
-                    'Session File not found '.$fileNativeSessionStorage
+                    'Session File not found ' . $fileNativeSessionStorage
                 );
             }
 
             include_once $fileNativeSessionStorage;
 
-            if (\class_exists($classNativeSessionStorage)) {
+            if (class_exists($classNativeSessionStorage)) {
                 $this->Storage = new $classNativeSessionStorage(
                     $storageOptions,
                     $this->getStorage()
@@ -150,20 +165,20 @@ class Session
             );
         }
 
-        if (!\class_exists('NativeSessionStorage')) {
-            $fileSession = $symfonyDir.'Session/Session.php';
+        if (!class_exists('NativeSessionStorage')) {
+            $fileSession = $symfonyDir . 'Session/Session.php';
 
-            if (!\file_exists($fileSession)) {
-                $fileSession = $symfonyDir.'Symfony/Component/HttpFoundation/Session/Session.php';
+            if (!file_exists($fileSession)) {
+                $fileSession = $symfonyDir . 'Symfony/Component/HttpFoundation/Session/Session.php';
             }
 
-            if (!\file_exists($fileSession)) {
-                throw new \Exception('Session File not found '.$fileSession);
+            if (!file_exists($fileSession)) {
+                throw new \Exception('Session File not found ' . $fileSession);
             }
 
             include_once $fileSession;
 
-            if (\class_exists($classSession)) {
+            if (class_exists($classSession)) {
                 $this->Session = new $classSession($this->Storage);
             }
         } else {
@@ -172,12 +187,13 @@ class Session
             );
         }
 
-        if (\headers_sent()) {
+        if (headers_sent()) {
             $this->Storage = new MockFileSessionStorage();
             $this->Session = new \Symfony\Component\HttpFoundation\Session\Session($this->Storage);
         }
 
         $this->start();
+        define('QUIQQER_SESSION_STARTED', 1);
     }
 
     /**
@@ -199,23 +215,23 @@ class Session
                 break;
 
             default:
-                return new NativeFileSessionHandler(VAR_DIR.'sessions');
+                return new NativeFileSessionHandler(VAR_DIR . 'sessions');
         }
 
         // redis sessions
-        if ($sessionType === 'redis' && \class_exists('RedisArray')) {
+        if ($sessionType === 'redis' && class_exists('RedisArray')) {
             $redisServer  = QUI::conf('session_redis');
             $redisCluster = QUI::conf('session_redis_cluster');
 
             $RedisCluster = null;
 
-            if (!empty($redisCluster) && !empty($redisCluster['cluster']) && \class_exists('RedisArray')) {
-                $cluster     = \explode(',', $redisCluster['cluster']);
+            if (!empty($redisCluster) && !empty($redisCluster['cluster']) && class_exists('RedisArray')) {
+                $cluster     = explode(',', $redisCluster['cluster']);
                 $timeout     = null;
                 $readTimeout = null;
                 $persistent  = false;
 
-                $cluster = \array_unique($cluster);
+                $cluster = array_unique($cluster);
 
                 try {
                     $RedisCluster = new \RedisCluster(
@@ -233,8 +249,8 @@ class Session
             }
 
             if (!empty($redisServer) && !empty($redisServer['server'])) {
-                $redisServer = \explode(',', $redisServer['server']);
-                $redisServer = \array_values($redisServer);
+                $redisServer = explode(',', $redisServer['server']);
+                $redisServer = array_values($redisServer);
 
                 return new RedisSessionHandler(
                     new \RedisArray($redisServer)
@@ -247,14 +263,14 @@ class Session
         }
 
         // memcached
-        if ($sessionType == 'memcached' && \class_exists('Memcached')) {
+        if ($sessionType == 'memcached' && class_exists('Memcached')) {
             $memcached_data = QUI::conf('session', 'memcached_data');
-            $memcached_data = \explode(';', $memcached_data);
+            $memcached_data = explode(';', $memcached_data);
 
             $Memcached = new \Memcached('quiqqer-session');
 
             foreach ($memcached_data as $serverData) {
-                $serverData = \explode(':', $serverData);
+                $serverData = explode(':', $serverData);
 
                 $server = $serverData[0];
                 $port   = 11211;
@@ -267,21 +283,21 @@ class Session
             }
 
             return new MemcachedSessionHandler($Memcached);
-        } elseif ($sessionType == 'memcached' && !\class_exists('Memcached')) {
+        } elseif ($sessionType == 'memcached' && !class_exists('Memcached')) {
             Log::addWarning('Memcached not installed');
         }
 
 
         // memcache
         // @deprecated
-        if ($sessionType == 'memcache' && \class_exists('Memcache')) {
+        if ($sessionType == 'memcache' && class_exists('Memcache')) {
             $memcache_data = QUI::conf('session', 'memcache_data');
-            $memcache_data = \explode(';', $memcache_data);
+            $memcache_data = explode(';', $memcache_data);
 
             $Memcache = new \Memcache();
 
             foreach ($memcache_data as $serverData) {
-                $serverData = \explode(':', $serverData);
+                $serverData = explode(':', $serverData);
 
                 $server = $serverData[0];
                 $port   = 11211;
@@ -294,7 +310,7 @@ class Session
             }
 
             return new MemcacheSessionHandler($Memcache);
-        } elseif ($sessionType == 'memcache' && !\class_exists('Memcache')) {
+        } elseif ($sessionType == 'memcache' && !class_exists('Memcache')) {
             Log::addWarning('Memcache not installed');
         }
 
@@ -313,7 +329,7 @@ class Session
             ]);
         }
 
-        return new NativeFileSessionHandler(VAR_DIR.'sessions');
+        return new NativeFileSessionHandler(VAR_DIR . 'sessions');
     }
 
     /**
@@ -329,7 +345,7 @@ class Session
             $MetaBag = $this->Session->getMetadataBag();
 
             // workaround for session refresh
-            if ($this->lifetime && $MetaBag->getLastUsed() + ($this->lifetime / 2) < \time()) {
+            if ($this->lifetime && $MetaBag->getLastUsed() + ($this->lifetime / 2) < time()) {
                 $this->refresh();
             }
 
@@ -367,7 +383,7 @@ class Session
      * @param string $name - Name og the variable
      * @param string $value - value of the variable
      */
-    public function set($name, $value)
+    public function set(string $name, $value)
     {
         if ($this->Session) {
             $this->Session->set($name, $value);
@@ -391,7 +407,7 @@ class Session
      *
      * @return mixed
      */
-    public function get($name)
+    public function get(string $name)
     {
         if ($this->Session) {
             return $this->Session->get($name, false);
@@ -405,13 +421,13 @@ class Session
      *
      * @return string
      */
-    public function getId()
+    public function getId(): string
     {
         if ($this->Session) {
             return $this->Session->getId();
         }
 
-        return \md5(\microtime()).QUI\Utils\Security\Orthos::getPassword();
+        return md5(microtime()) . QUI\Utils\Security\Orthos::getPassword();
     }
 
     /**
@@ -419,13 +435,13 @@ class Session
      *
      * @return boolean
      */
-    public function check()
+    public function check(): bool
     {
         if (!$this->Session) {
             return false;
         }
 
-        $idle = \time() - $this->Session->getMetadataBag()->getLastUsed();
+        $idle = time() - $this->Session->getMetadataBag()->getLastUsed();
 
         if ($idle > $this->lifetime) {
             $this->Session->invalidate();
@@ -441,7 +457,7 @@ class Session
      *
      * @param string $var - name of the variable
      */
-    public function del($var)
+    public function del(string $var)
     {
         if ($this->Session) {
             $this->Session->remove($var);
@@ -453,7 +469,7 @@ class Session
      *
      * @param string $var
      */
-    public function remove($var)
+    public function remove(string $var)
     {
         $this->del($var);
     }
@@ -478,7 +494,7 @@ class Session
      *
      * @return integer
      */
-    public function getLastRefreshFrom($sid)
+    public function getLastRefreshFrom(string $sid): int
     {
         try {
             $result = QUI::getDataBase()->fetch([
@@ -506,13 +522,13 @@ class Session
      *
      * @return boolean
      */
-    public function isUserOnline($uid)
+    public function isUserOnline(int $uid): bool
     {
         try {
             $result = QUI::getDataBase()->fetch([
                 'from'  => $this->table,
                 'where' => [
-                    'uid' => (int)$uid
+                    'uid' => $uid
                 ],
                 'limit' => 1
             ]);

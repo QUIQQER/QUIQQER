@@ -6,13 +6,44 @@
 
 namespace QUI;
 
+use DOMElement;
+use ForceUTF8\Encoding;
 use Masterminds\HTML5;
-use QUI;
-use QUI\Utils\Singleton;
 
+use QUI;
+use QUI\Projects\Project;
+use QUI\Projects\Site;
+use QUI\Utils\Singleton;
 use QUI\Utils\StringHelper as StringUtils;
 use QUI\Projects\Media\Utils as MediaUtils;
-use QUI\Utils\Text\XML;
+
+use function array_map;
+use function count;
+use function explode;
+use function file_exists;
+use function http_build_query;
+use function implode;
+use function ini_get;
+use function is_array;
+use function is_integer;
+use function is_object;
+use function is_string;
+use function iterator_to_array;
+use function libxml_clear_errors;
+use function libxml_use_internal_errors;
+use function ltrim;
+use function mb_convert_encoding;
+use function md5;
+use function parse_str;
+use function parse_url;
+use function preg_replace;
+use function preg_replace_callback;
+use function set_time_limit;
+use function str_replace;
+use function strpos;
+use function strtolower;
+use function trim;
+use function urldecode;
 
 /**
  * Class Output
@@ -22,40 +53,40 @@ class Output extends Singleton
     /**
      * Current output project
      *
-     * @var null|QUI\Projects\Project
+     * @var null|Project
      */
-    protected $Project = null;
+    protected ?Project $Project = null;
 
     /**
      * internal lifetime image cache
      *
      * @var array
      */
-    protected $imageCache = [];
+    protected array $imageCache = [];
 
     /**
      * @var array
      */
-    protected $imageUrlCache = [];
+    protected array $imageUrlCache = [];
 
     /**
      * internal lifetime link cache
      *
      * @var array
      */
-    protected $linkCache = [];
+    protected array $linkCache = [];
 
     /**
      * internal lifetime link cache for rewritten urls
      *
      * @var array
      */
-    protected $rewrittenCache = [];
+    protected array $rewrittenCache = [];
 
     /**
      * @var array
      */
-    protected $settings = [
+    protected array $settings = [
         'use-system-image-paths'    => false,
         'remove-deleted-links'      => true,
         'use-absolute-urls'         => false,
@@ -73,27 +104,27 @@ class Output extends Singleton
         QUI::getEvents()->fireEvent('outputParseBegin', [&$content]);
 
         // rewrite image
-        $content = \preg_replace_callback(
+        $content = preg_replace_callback(
             '#(src|data\-image|data\-href|data\-link|data\-src)="(image.php)\?([^"]*)"#',
             [&$this, "dataImages"],
             $content
         );
 
         // rewrite files
-        $content = \preg_replace_callback(
+        $content = preg_replace_callback(
             '#(href|src|value)="(image.php)\?([^"]*)"#',
             [&$this, "files"],
             $content
         );
 
         // rewrite links
-        $content = \preg_replace_callback(
+        $content = preg_replace_callback(
             '#(data\-href|data\-link)="(index.php)\?([^"]*)"#',
             [&$this, "dataLinks"],
             $content
         );
 
-        $content = \preg_replace_callback(
+        $content = preg_replace_callback(
             '#(href|src|action|value)="(index.php)\?([^"]*)"#',
             [&$this, "links"],
             $content
@@ -101,7 +132,7 @@ class Output extends Singleton
 
         // search empty <a> links
         if ($this->settings['remove-deleted-links']) {
-            $content = \preg_replace_callback(
+            $content = preg_replace_callback(
                 '/<a[ ]*?>(.*?)<\/a>/ims',
                 [&$this, "cleanEmptyLinks"],
                 $content
@@ -109,21 +140,21 @@ class Output extends Singleton
         }
 
         // search css files
-        $content = \preg_replace_callback(
+        $content = preg_replace_callback(
             '#<link([^>]*)>#',
             [&$this, "cssLinkHref"],
             $content
         );
 
         // search css files
-        $content = \preg_replace_callback(
+        $content = preg_replace_callback(
             '#<script([^>]*)>#',
             [&$this, "scripts"],
             $content
         );
 
         if ($this->settings['use-absolute-urls']) {
-            $content = \preg_replace_callback(
+            $content = preg_replace_callback(
                 '#(href|src)="(.*?)([^"]*)#',
                 [&$this, "absoluteUrls"],
                 $content
@@ -137,7 +168,7 @@ class Output extends Singleton
             return $content;
         }
 
-        if (\strpos($content, '<img') === false) {
+        if (strpos($content, '<img') === false) {
             QUI::getEvents()->fireEvent('outputParseEnd', [&$content]);
 
             return $content;
@@ -145,31 +176,31 @@ class Output extends Singleton
 
         $withDocumentOutput = false;
 
-        if (\strpos($content, '<html') !== false && \strpos($content, '<body') !== false) {
+        if (strpos($content, '<html') !== false && strpos($content, '<body') !== false) {
             $withDocumentOutput = true;
         }
 
         // picture elements
-        $executionTime = \ini_get('max_execution_time');
-        \set_time_limit(100);
+        $executionTime = ini_get('max_execution_time');
+        set_time_limit(100);
 
-        \libxml_use_internal_errors(true);
+        libxml_use_internal_errors(true);
         $HTML5 = new HTML5();
 
-        if (\strpos($content, '<body') === false) {
-            $Dom = $HTML5->loadHTML('<html><body>'.$content.'</body></html>');
+        if (strpos($content, '<body') === false) {
+            $Dom = $HTML5->loadHTML('<html><body>' . $content . '</body></html>');
         } else {
             $Dom = $HTML5->loadHTML($content);
         }
 
-        \libxml_clear_errors();
+        libxml_clear_errors();
 
 
         if ($this->settings['parse-to-picture-elements']) {
             $images = $Dom->getElementsByTagName('img');
 
             $nodeContent = function ($n) {
-                /* @var $n \DOMElement */
+                /* @var $n DOMElement */
                 $HTML5 = new HTML5([
                     'disable_html_ns' => true
                 ]);
@@ -180,8 +211,8 @@ class Output extends Singleton
                 $Dom->appendChild($b);
                 $html = $Dom->saveHTML();
 
-                $html = \str_replace('<!DOCTYPE html>', '', $html);
-                $html = \trim($html);
+                $html = str_replace('<!DOCTYPE html>', '', $html);
+                $html = trim($html);
 
                 return $html;
             };
@@ -194,7 +225,7 @@ class Output extends Singleton
                 $HTML5 = new HTML5();
 
                 $d = $HTML5->loadHTML(
-                    \mb_convert_encoding(
+                    mb_convert_encoding(
                         $html,
                         'HTML-ENTITIES',
                         'UTF-8'
@@ -236,7 +267,7 @@ class Output extends Singleton
 
                 $image = $nodeContent($Image);
 
-                $html = \preg_replace_callback(
+                $html = preg_replace_callback(
                     '#<img([^>]*)>#i',
                     [&$this, "images"],
                     $image
@@ -256,21 +287,23 @@ class Output extends Singleton
         } else {
             $Body = $Dom->getElementsByTagName('body')[0];
 
-            $result = \implode(\array_map(
-                [$Body->ownerDocument, "saveHTML"],
-                \iterator_to_array($Body->childNodes)
-            ));
+            $result = implode(
+                array_map(
+                    [$Body->ownerDocument, "saveHTML"],
+                    iterator_to_array($Body->childNodes)
+                )
+            );
         }
         // reset to the normal limit
-        \set_time_limit($executionTime);
+        set_time_limit($executionTime);
 
-        $result = \str_replace(
+        $result = str_replace(
             ['</img>', '</source>', '</meta>', '</link>', '</input>', '</br>'],
             '',
             $result
         );
 
-        $result = \str_replace('<?xml encoding="utf-8" ?>', '', $result);
+        $result = str_replace('<?xml encoding="utf-8" ?>', '', $result);
 
         QUI::getEvents()->fireEvent('outputParseEnd', [&$result]);
 
@@ -280,7 +313,7 @@ class Output extends Singleton
     /**
      * @param Projects\Project $Project
      */
-    public function setProject(QUI\Projects\Project $Project)
+    public function setProject(Project $Project)
     {
         $this->Project = $Project;
     }
@@ -322,56 +355,55 @@ class Output extends Singleton
             return $output[0];
         }
 
-        $output = \str_replace('&amp;', '&', $output);   // &amp; fix
-        $output = \str_replace('〈=', '&lang=', $output); // URL FIX
+        $output = str_replace('&amp;', '&', $output);   // &amp; fix
+        $output = str_replace('〈=', '&lang=', $output); // URL FIX
 
         $components = $output[3];
 
         // Falls in der eigenen Sammlung schon vorhanden
         if (isset($this->linkCache[$components])) {
-            return $output[1].'="'.$this->linkCache[$components].'"';
+            return $output[1] . '="' . $this->linkCache[$components] . '"';
         }
 
-        $parseUrl = \parse_url($output[2].'?'.$components);
+        $parseUrl = parse_url($output[2] . '?' . $components);
 
-        if (!isset($parseUrl['query']) || empty($parseUrl['query'])) {
+        if (empty($parseUrl['query'])) {
             return $output[0];
         }
 
         $urlQuery = $parseUrl['query'];
 
-        if (\strpos($urlQuery, 'project') === false
-            || \strpos($urlQuery, 'lang') === false
-            || \strpos($urlQuery, 'id') === false
+        if (strpos($urlQuery, 'project') === false
+            || strpos($urlQuery, 'lang') === false
+            || strpos($urlQuery, 'id') === false
         ) {
             // no quiqqer url
             return $output[0];
         }
 
         // maybe a quiqqer url ?
-        \parse_str($urlQuery, $urlQueryParams);
+        parse_str($urlQuery, $urlQueryParams);
 
         try {
             $url    = $this->getSiteUrl($urlQueryParams);
             $anchor = '';
 
             if (isset($parseUrl['fragment']) && !empty($parseUrl['fragment'])) {
-                $anchor = '#'.$parseUrl['fragment'];
+                $anchor = '#' . $parseUrl['fragment'];
             }
 
             if (empty($url)) {
                 return '';
             }
 
-            $this->linkCache[$components] = $url.$anchor;
+            $this->linkCache[$components] = $url . $anchor;
 
-            return $output[1].'="'.$url.$anchor.'"';
+            return $output[1] . '="' . $url . $anchor . '"';
         } catch (\Exception $Exception) {
             QUI\System\Log::writeDebugException($Exception);
 
             return '';
         }
-
         //return $output[0];
     }
 
@@ -384,7 +416,7 @@ class Output extends Singleton
      */
     protected function cleanEmptyLinks(array $output): string
     {
-        if (\strpos($output[0], 'href=') === false) {
+        if (strpos($output[0], 'href=') === false) {
             return $output[1];
         }
 
@@ -400,12 +432,12 @@ class Output extends Singleton
     protected function files(array $output): string
     {
         try {
-            $url = MediaUtils::getRewrittenUrl('image.php?'.$output[3]);
+            $url = MediaUtils::getRewrittenUrl('image.php?' . $output[3]);
         } catch (QUI\Exception $Exception) {
             $url = '';
         }
 
-        return $output[1].'="'.$url.'"';
+        return $output[1] . '="' . $url . '"';
     }
 
     /**
@@ -428,15 +460,15 @@ class Output extends Singleton
             return $output[0];
         }
 
-        if (!MediaUtils::isMediaUrl($att['src']) && \strpos($att['src'], 'media/cache') === false) {
+        if (!MediaUtils::isMediaUrl($att['src']) && strpos($att['src'], 'media/cache') === false) {
             // is relative url from the system?
             if ($this->settings['use-system-image-paths']
-                && \strpos($output[0], 'http') === false
+                && strpos($output[0], 'http') === false
             ) {
                 // workaround for system paths, not optimal
-                $output[0] = \str_replace(
+                $output[0] = str_replace(
                     ' src="',
-                    ' src="'.CMS_DIR,
+                    ' src="' . CMS_DIR,
                     $output[0]
                 );
             }
@@ -444,17 +476,17 @@ class Output extends Singleton
             return $output[0];
         }
 
-        $src = \str_replace('&amp;', '&', $att['src']);
-        $src = \urldecode($src);
+        $src = str_replace('&amp;', '&', $att['src']);
+        $src = urldecode($src);
 
         unset($att['src']);
 
-        if (\strpos($src, 'media/cache') !== false) {
+        if (strpos($src, 'media/cache') !== false) {
             try {
                 $fileData = MediaUtils::getRealFileDataFromCacheUrl($src);
 
                 $src = QUI\Cache\Manager::get(
-                    'media/cache/'.$fileData['project'].'/indexSrcCache/'.\md5($fileData['filePath'])
+                    'media/cache/' . $fileData['project'] . '/indexSrcCache/' . md5($fileData['filePath'])
                 );
             } catch (QUI\Exception $Exception) {
                 try {
@@ -463,7 +495,7 @@ class Output extends Singleton
                     $project = $Image->getProject()->getName();
 
                     QUI\Cache\Manager::set(
-                        'media/cache/'.$project.'/indexSrcCache/'.md5($Image->getAttribute('file')),
+                        'media/cache/' . $project . '/indexSrcCache/' . md5($Image->getAttribute('file')),
                         $src
                     );
                 } catch (QUI\Exception $Exception) {
@@ -475,8 +507,8 @@ class Output extends Singleton
             try {
                 $Image = MediaUtils::getImageByUrl($src);
 
-                $att['alt']      = \ForceUTF8\Encoding::toUTF8($Image->getAlt());
-                $att['title']    = \ForceUTF8\Encoding::toUTF8($Image->getTitle());
+                $att['alt']      = Encoding::toUTF8($Image->getAlt());
+                $att['title']    = Encoding::toUTF8($Image->getTitle());
                 $att['data-src'] = $Image->getSizeCacheUrl();
 
                 if ($Image->hasViewPermissionSet()) {
@@ -491,9 +523,9 @@ class Output extends Singleton
 
         // workaround
         if ($this->settings['use-system-image-paths']) {
-            $html = \str_replace(
+            $html = str_replace(
                 ' src="',
-                ' src="'.CMS_DIR,
+                ' src="' . CMS_DIR,
                 $html
             );
         }
@@ -509,42 +541,42 @@ class Output extends Singleton
      */
     protected function dataImages($output)
     {
-        $output = \str_replace('&amp;', '&', $output);   // &amp; fix
-        $output = \str_replace('〈=', '&lang=', $output); // URL FIX
+        $output = str_replace('&amp;', '&', $output);   // &amp; fix
+        $output = str_replace('〈=', '&lang=', $output); // URL FIX
 
         $components = $output[3];
 
 
         // Falls in der eigenen Sammlung schon vorhanden
         if (isset($this->imageUrlCache[$components])) {
-            return $output[1].'="'.$this->imageUrlCache[$components].'"';
+            return $output[1] . '="' . $this->imageUrlCache[$components] . '"';
         }
 
-        $parseUrl = \parse_url($output[2].'?'.$components);
+        $parseUrl = parse_url($output[2] . '?' . $components);
 
-        if (!isset($parseUrl['query']) || empty($parseUrl['query'])) {
+        if (empty($parseUrl['query'])) {
             return $output[0];
         }
 
         $urlQuery = $parseUrl['query'];
 
         // check no quiqqer url
-        if (\strpos($urlQuery, 'project') === false || \strpos($urlQuery, 'id') === false) {
+        if (strpos($urlQuery, 'project') === false || strpos($urlQuery, 'id') === false) {
             return $output[0];
         }
 
         try {
-            $MediaItem = MediaUtils::getMediaItemByUrl('image.php?'.$components);
+            $MediaItem = MediaUtils::getMediaItemByUrl('image.php?' . $components);
         } catch (QUI\Exception $Exception) {
             return '';
         }
 
         if ($MediaItem->hasViewPermissionSet()) {
-            return $output[1].'="'.URL_DIR.$MediaItem->getUrl().'"';
+            return $output[1] . '="' . URL_DIR . $MediaItem->getUrl() . '"';
         }
 
         if (MediaUtils::isImage($MediaItem)) {
-            $attributes = StringUtils::getUrlAttributes('?'.$components);
+            $attributes = StringUtils::getUrlAttributes('?' . $components);
 
             if (isset($attributes['maxwidth'])) {
                 $attributes['width'] = $attributes['maxwidth'];
@@ -555,7 +587,7 @@ class Output extends Singleton
             }
 
             $source = MediaUtils::getImageSource(
-                'image.php?'.$components,
+                'image.php?' . $components,
                 $attributes
             );
         } else {
@@ -564,7 +596,7 @@ class Output extends Singleton
 
         $this->imageUrlCache[$components] = $source;
 
-        return $output[1].'="'.$source.'"';
+        return $output[1] . '="' . $source . '"';
     }
 
     /**
@@ -575,15 +607,15 @@ class Output extends Singleton
     {
         $html = $output[0];
 
-        if (\strpos($html, '</picture>') !== false) {
+        if (strpos($html, '</picture>') !== false) {
             return $html;
         }
 
         // find image
-        $html = \str_replace("\n", ' ', $html);
-        $html = \preg_replace('!\s+!', ' ', $html);
+        $html = str_replace("\n", ' ', $html);
+        $html = preg_replace('!\s+!', ' ', $html);
 
-        $html = \preg_replace_callback(
+        $html = preg_replace_callback(
             '#<img([^>]*)>#i',
             [&$this, "images"],
             $html
@@ -611,32 +643,32 @@ class Output extends Singleton
             return $html;
         }
 
-        if (\strtolower($att['rel']) !== 'stylesheet') {
+        if (strtolower($att['rel']) !== 'stylesheet') {
             return $html;
         }
 
-        if (\strpos($att['href'], '?lu=') !== false) {
+        if (strpos($att['href'], '?lu=') !== false) {
             return $html;
         }
 
-        $lu   = \md5(QUI::$last_up_date);
-        $file = CMS_DIR.ltrim($att['href'], '/');
+        $lu   = md5(QUI::getPackageManager()->getLastUpdateDate());
+        $file = CMS_DIR . ltrim($att['href'], '/');
 
         // check if css file is project custom css
-        if (strpos($att['href'], 'custom.css') !== false && \file_exists($file)) {
-            $lu = \md5(filemtime($file));
+        if (strpos($att['href'], 'custom.css') !== false && file_exists($file)) {
+            $lu = md5(filemtime($file));
         }
 
-        if (\strpos($att['href'], '?') === false) {
-            $att['href'] .= '?lu='.$lu;
+        if (strpos($att['href'], '?') === false) {
+            $att['href'] .= '?lu=' . $lu;
         } else {
-            $att['href'] .= '&lu='.$lu;
+            $att['href'] .= '&lu=' . $lu;
         }
 
         $result = '<link ';
 
         foreach ($att as $k => $v) {
-            $result .= $k.'="'.$v.'" ';
+            $result .= $k . '="' . $v . '" ';
         }
 
         $result .= '/>';
@@ -657,35 +689,35 @@ class Output extends Singleton
             return $html;
         }
 
-        if (\strpos($att['src'], '?lu=') !== false) {
+        if (strpos($att['src'], '?lu=') !== false) {
             return $html;
         }
 
         // external files dont get the lu flag
-        if (\strpos($att['src'], 'http://') !== false
-            || \strpos($att['src'], 'https://') !== false
-            || \strpos($att['src'], '//') === 0) {
+        if (strpos($att['src'], 'http://') !== false
+            || strpos($att['src'], 'https://') !== false
+            || strpos($att['src'], '//') === 0) {
             return $html;
         }
 
-        $lu   = \md5(QUI::$last_up_date);
-        $file = CMS_DIR.\ltrim($att['src'], '/');
+        $lu   = md5(QUI::getPackageManager()->getLastUpdateDate());
+        $file = CMS_DIR . ltrim($att['src'], '/');
 
         // check if css file is project custom css
-        if (\strpos($att['src'], 'custom.js') !== false && \file_exists($file)) {
-            $lu = \md5(filemtime($file));
+        if (strpos($att['src'], 'custom.js') !== false && file_exists($file)) {
+            $lu = md5(filemtime($file));
         }
 
-        if (\strpos($att['src'], '?') === false) {
-            $att['src'] .= '?lu='.$lu;
+        if (strpos($att['src'], '?') === false) {
+            $att['src'] .= '?lu=' . $lu;
         } else {
-            $att['src'] .= '&lu='.$lu;
+            $att['src'] .= '&lu=' . $lu;
         }
 
         $result = '<script ';
 
         foreach ($att as $k => $v) {
-            $result .= $k.'="'.$v.'" ';
+            $result .= $k . '="' . $v . '" ';
         }
 
         $result .= '>';
@@ -723,14 +755,14 @@ class Output extends Singleton
             $host = $this->Project->getHost();
 
             if (strpos($host, 'https://') === false && strpos($host, 'http://') === false) {
-                $host = 'https://'.$host;
+                $host = 'https://' . $host;
             }
         }
 
-        $host = trim($host, '/').'/';
+        $host = trim($host, '/') . '/';
         $url  = trim($url, '/');
 
-        return $output[1].'="'.$host.$url.'"';
+        return $output[1] . '="' . $host . $url . '"';
     }
 
     /**
@@ -749,9 +781,9 @@ class Output extends Singleton
         $id      = false;
 
         // Falls ein Objekt übergeben wird
-        if (isset($params['site']) && \is_object($params['site'])) {
-            /* @var $Project QUI\Projects\Project */
-            /* @var $Site QUI\Projects\Site */
+        if (isset($params['site']) && is_object($params['site'])) {
+            /* @var $Project Project */
+            /* @var $Site Site */
             $Site    = $params['site'];
             $Project = $Site->getProject();
             $id      = $Site->getId();
@@ -796,18 +828,18 @@ class Output extends Singleton
         if (!isset($Project)) {
             try {
                 $Project = QUI::getProject($project, $lang);
-                /* @var $Project \QUI\Projects\Project */
+                /* @var $Project Project */
             } catch (QUI\Exception $Exception) {
                 return '';
             }
         }
 
-        $rewrittenCache = $project.'_'.$lang.'_'.$id;
+        $rewrittenCache = $project . '_' . $lang . '_' . $id;
 
         if (isset($this->rewrittenCache[$rewrittenCache])) {
             $url = $this->rewrittenCache[$rewrittenCache];
         } else {
-            $linkCachePath = QUI\Projects\Site::getLinkCachePath($project, $lang, $id);
+            $linkCachePath = Site::getLinkCachePath($project, $lang, $id);
 
             try {
                 $url = QUI\Cache\Manager::get($linkCachePath);
@@ -819,7 +851,7 @@ class Output extends Singleton
                 }
 
                 try {
-                    /* @var $Site \QUI\Projects\Site */
+                    /* @var $Site Site */
                     $Site = $Project->get((int)$id);
                 } catch (QUI\Exception $Exception) {
                     return '';
@@ -846,7 +878,7 @@ class Output extends Singleton
         $vhosts = QUI::vhosts();
 
         if (!$Project->hasVHost() && !empty($vhosts)) {
-            $url = $Project->getLang().'/'.$url;
+            $url = $Project->getLang() . '/' . $url;
         }
 
         // If the output project is different than the one of the page
@@ -854,7 +886,7 @@ class Output extends Singleton
         if (!$this->Project ||
             $Project->toArray() != $this->Project->toArray()
         ) {
-            return $Project->getVHost(true, true).URL_DIR.$url;
+            return $Project->getVHost(true, true) . URL_DIR . $url;
         }
 
         /**
@@ -895,16 +927,16 @@ class Output extends Singleton
 //            $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
 //        }
 
-        $url = URL_DIR.$url;
+        $url = URL_DIR . $url;
 
         $projectHost = $Project->getHost();
-        $projectHost = \str_replace(['https://', 'http://'], '', $projectHost);
+        $projectHost = str_replace(['https://', 'http://'], '', $projectHost);
 
         // falls host anders ist, dann muss dieser dran gehängt werden
         // damit kein doppelter content entsteht
         if (!isset($_SERVER['HTTP_HOST']) ||
             (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != $projectHost && $projectHost != '')) {
-            $url = $Project->getVHost(true, true).$url;
+            $url = $Project->getVHost(true, true) . $url;
         }
 
         return $url;
@@ -922,7 +954,7 @@ class Output extends Singleton
         $lang    = $Site->getProject()->getLang();
         $id      = $Site->getId();
 
-        $rewrittenCache = $project.'_'.$lang.'_'.$id;
+        $rewrittenCache = $project . '_' . $lang . '_' . $id;
 
         if (isset($this->rewrittenCache[$rewrittenCache])) {
             unset($this->rewrittenCache[$rewrittenCache]);
@@ -939,17 +971,17 @@ class Output extends Singleton
      */
     protected function extendUrlWithParams(string $url, array $params = []): string
     {
-        if (!\count($params)) {
+        if (!count($params)) {
             return $url;
         }
 
         $separator = Rewrite::URL_PARAM_SEPARATOR;
         $getParams = [];
 
-        if (isset($params['_getParams']) && \is_string($params['_getParams'])) {
-            \parse_str($params['_getParams'], $getParams);
+        if (isset($params['_getParams']) && is_string($params['_getParams'])) {
+            parse_str($params['_getParams'], $getParams);
             unset($params['_getParams']);
-        } elseif (isset($params['_getParams']) && \is_array($params['_getParams'])) {
+        } elseif (isset($params['_getParams']) && is_array($params['_getParams'])) {
             $getParams = $params['_getParams'];
             unset($params['_getParams']);
         }
@@ -961,12 +993,12 @@ class Output extends Singleton
 
 
         $suffix = '';
-        $exp    = \explode('.', $url);
+        $exp    = explode('.', $url);
         $url    = $exp[0];
 
         foreach ($params as $param => $value) {
-            if (\is_integer($param)) {
-                $url .= $separator.$value;
+            if (is_integer($param)) {
+                $url .= $separator . $value;
                 continue;
             }
 
@@ -975,19 +1007,19 @@ class Output extends Singleton
             }
 
             if ($param === "0") {
-                $url .= $separator.$value;
+                $url .= $separator . $value;
                 continue;
             }
 
-            $url .= $separator.$param.$separator.$value;
+            $url .= $separator . $param . $separator . $value;
         }
 
         if (isset($params['suffix'])) {
-            $suffix = '.'.$params['suffix'];
+            $suffix = '.' . $params['suffix'];
         }
 
         if (empty($suffix) && isset($exp[1])) {
-            $suffix = '.'.$exp[1];
+            $suffix = '.' . $exp[1];
         }
 
         if (empty($suffix)) {
@@ -995,9 +1027,9 @@ class Output extends Singleton
         }
 
         if (empty($getParams)) {
-            return $url.$suffix;
+            return $url . $suffix;
         }
 
-        return $url.$suffix.'?'.\http_build_query($getParams);
+        return $url . $suffix . '?' . http_build_query($getParams);
     }
 }

@@ -40,7 +40,7 @@ class QuiqqerProvider extends AbstractInstallationWizard
      */
     public function getPriority(): int
     {
-        return 1;
+        return 2;
     }
 
     /**

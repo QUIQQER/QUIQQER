@@ -337,7 +337,7 @@ class Update
                 continue;
             }
 
-            $priority = 0;
+            $priority = 10;
 
             if ($Event->getAttribute('priority')) {
                 $priority = (int)$Event->getAttribute('priority');

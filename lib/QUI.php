@@ -41,79 +41,72 @@ class QUI
     /**
      * QUI Config, use \QUI::getConfig()
      *
-     * @var \QUI\Config
+     * @var \QUI\Config|null
      */
-    public static $Conf = null;
+    public static ?\QUI\Config $Conf = null;
 
     /**
      * QUI getDB object, use \QUI::getDB()
      *
-     * @var \QUI\Utils\MyDB
+     * @var \QUI\Utils\MyDB|null
      */
-    public static $DataBase = null;
+    public static ?\QUI\Utils\MyDB $DataBase = null;
 
     /**
      * QUI getDataBase object, use \QUI::getDataBase();
      *
-     * @var \QUI\Database\DB
+     * @var \QUI\Database\DB|null
      */
-    public static $DataBase2 = null;
+    public static ?\QUI\Database\DB $DataBase2 = null;
 
     /**
      * QUI Error Handler, use \QUI::getErrorHandler();
      *
-     * @var \QUI\Exceptions\Handler
+     * @var \QUI\Exceptions\Handler|null
      */
-    public static $ErrorHandler = null;
+    public static ?\QUI\Exceptions\Handler $ErrorHandler = null;
 
     /**
      * QUI vhosts, use \QUI::vhosts();
      *
-     * @var array
+     * @var array|null
      */
-    public static $vhosts = null;
-
-    /**
-     * Timestamp of the last update
-     *
-     * @var integer
-     */
-    public static $last_up_date = null;
+    public static ?array $vhosts = null;
 
     /**
      * QUI Ajax
      *
-     * @var \QUI\Ajax
+     * @var \QUI\Ajax|null
      */
-    public static $Ajax = null;
+    public static ?\QUI\Ajax $Ajax = null;
 
     /**
      * QUI GroupManager, use \QUI::getGroups()
      *
-     * @var \QUI\Groups\Manager
+     * @var \QUI\Groups\Manager|null
      */
-    public static $Groups = null;
+    public static ?\QUI\Groups\Manager $Groups = null;
 
     /**
      * QUI Message Handler, use \QUI::getMessageHandler()
      *
-     * @var \QUI\Messages\Handler
+     * @var \QUI\Messages\Handler|null
      */
-    public static $MessageHandler = null;
+    public static ?\QUI\Messages\Handler $MessageHandler = null;
 
     /**
      * QUI Locale Object, use \QUI::getLocale()
      *
-     * @var \QUI\Locale
+     * @var \QUI\Locale|null
      */
-    public static $Locale = null;
+    public static ?\QUI\Locale $Locale = null;
 
     /**
      * QUI default Locale Object
      *
-     * @var \QUI\Locale
+     * @var \QUI\Locale|null
      */
-    protected static $SystemLocale = null;
+    protected static ?\QUI\Locale $SystemLocale = null;
 
     /**
      * QUI Mail Manager
@@ -221,118 +214,111 @@ class QUI
     public static function load()
     {
         // load the main configuration
-        $config = \parse_ini_file(ETC_DIR.'conf.ini.php', true);
+        $config = \parse_ini_file(ETC_DIR . 'conf.ini.php', true);
 
         /**
          * load the constants
          */
 
-        if (!\defined('CMS_DIR')) {
+        if (!defined('CMS_DIR')) {
             /**
              * CMS_DIR - Path to the quiqqer folder, where the whole system are located
              *
              * @var string
              */
-            \define('CMS_DIR', $config['globals']['cms_dir']);
+            define('CMS_DIR', $config['globals']['cms_dir']);
         }
 
-        if (!\defined('DEBUG_MODE')) {
+        if (!defined('DEBUG_MODE')) {
             /**
              * DEBUG_MODE - setting if debug mode is enabled or not
              *
              * @var boolean
              */
-            \define("DEBUG_MODE", $config['globals']['debug_mode']);
+            define("DEBUG_MODE", $config['globals']['debug_mode']);
         }
 
-        if (!\defined('DEVELOPMENT')) {
+        if (!defined('DEVELOPMENT')) {
             /**
              * DEVELOPMENT - setting if the system is in development mode or not
              *
              * @var boolean
              */
-            \define("DEVELOPMENT", $config['globals']['development']);
+            define("DEVELOPMENT", $config['globals']['development']);
         }
 
         $var_dir = $config['globals']['var_dir'];
-
-        if (\file_exists($var_dir.'last_update')) {
-            self::$last_up_date = \file_get_contents($var_dir.'last_update');
-        } else {
-            self::$last_up_date = \time();
-        }
-
-        $lib_dir = \dirname(__FILE__).'/';
+        $lib_dir = \dirname(__FILE__) . '/';
         $var_dir = $config['globals']['var_dir'];
 
         // Define quiqqer path constants
 
-        if (!\defined('LIB_DIR')) {
+        if (!defined('LIB_DIR')) {
             /**
              * LIB_DIR - Path to the lib folder, where all the libraries are located
              *
              * @var string
              */
-            \define('LIB_DIR', $lib_dir);
+            define('LIB_DIR', $lib_dir);
         }
 
-        if (!\defined('VAR_DIR')) {
+        if (!defined('VAR_DIR')) {
             /**
              * VAR_DIR - Path to the var folder,
              * where all the files are located on which the web server must have access
              *
              * @var string
              */
-            \define('VAR_DIR', $var_dir);
+            define('VAR_DIR', $var_dir);
         }
 
-        if (!\defined('BIN_DIR')) {
+        if (!defined('BIN_DIR')) {
             /**
              * BIN_DIR - Path to the bin folder, where all temp files are located
              *
              * @var string
              */
-            \define('BIN_DIR', \dirname(LIB_DIR).'/bin/');
+            define('BIN_DIR', \dirname(LIB_DIR) . '/bin/');
         }
 
-        if (!\defined('USR_DIR')) {
+        if (!defined('USR_DIR')) {
             /**
              * USR_DIR - Path to the usr folder, where all projects are located
              *
              * @var string
              */
-            \define('USR_DIR', $config['globals']['usr_dir']);
+            define('USR_DIR', $config['globals']['usr_dir']);
         }
 
-        if (!\defined('SYS_DIR')) {
+        if (!defined('SYS_DIR')) {
             /**
              * SYS_DIR - Path to the etc folder, where all the configurations are located
              *
              * @var string
              */
-            \define('SYS_DIR', \dirname(LIB_DIR).'/admin/');
+            define('SYS_DIR', \dirname(LIB_DIR) . '/admin/');
         }
 
-        if (!\defined('OPT_DIR')) {
+        if (!defined('OPT_DIR')) {
             /**
              * OPT_DIR - Path to the plugin folder, where all plugins are located
              *
              * @var string
              */
-            \define('OPT_DIR', $config['globals']['opt_dir']);
+            define('OPT_DIR', $config['globals']['opt_dir']);
         }
 
-        if (!\defined('URL_DIR')) {
+        if (!defined('URL_DIR')) {
             /**
              * URL_DIR - path by which the system is accessible via the browser
              *
              * @var string
              */
-            \define('URL_DIR', $config['globals']['url_dir']);
+            define('URL_DIR', $config['globals']['url_dir']);
         }
 
 
-        $Config     = new QUI\Config(ETC_DIR.'conf.ini.php');
+        $Config     = new QUI\Config(ETC_DIR . 'conf.ini.php');
         self::$Conf = $Config;
 
         if ($Config->getValue('globals', 'timezone')) {
@@ -340,17 +326,17 @@ class QUI
         }
 
 
-        if (!\defined('ERROR_BACKTRACE')) {
+        if (!defined('ERROR_BACKTRACE')) {
             /**
              * ERROR_BACKTRACE - configuration,
              * if a backtrace should write in the logs during a error
              *
              * @var string
              */
-            \define('ERROR_BACKTRACE', $Config->get('error', 'backtrace'));
+            define('ERROR_BACKTRACE', $Config->get('error', 'backtrace'));
         }
 
-        if (!\defined('QUI_DB_PRFX')) {
+        if (!defined('QUI_DB_PRFX')) {
             /**
              * QUI_DB_PRFX - The DB Table Prefix
              *
@@ -362,22 +348,22 @@ class QUI
                 $prfx = $Config->get('db', 'prfx');
             }
 
-            \define('QUI_DB_PRFX', $prfx);
+            define('QUI_DB_PRFX', $prfx);
         }
 
         // create the temp folder
         // @todo better do at the setup
         $folders = [
             // VAR
-            VAR_DIR.'log/',
-            VAR_DIR.'sessions/',
-            VAR_DIR.'uid_sess/',
-            VAR_DIR.'backup/',
-            VAR_DIR.'lock/',
+            VAR_DIR . 'log/',
+            VAR_DIR . 'sessions/',
+            VAR_DIR . 'uid_sess/',
+            VAR_DIR . 'backup/',
+            VAR_DIR . 'lock/',
 
             // Cache - noch nötig?
-            VAR_DIR.'locale/',
-            VAR_DIR.'tmp/' // @todo temp
+            VAR_DIR . 'locale/',
+            VAR_DIR . 'tmp/' // @todo temp
         ];
 
         foreach ($folders as $folder) {
@@ -385,34 +371,34 @@ class QUI
         }
 
 
-        if (!\defined('URL_LIB_DIR')) {
-            \define('URL_LIB_DIR', QUI::conf('globals', 'url_lib_dir'));
+        if (!defined('URL_LIB_DIR')) {
+            define('URL_LIB_DIR', QUI::conf('globals', 'url_lib_dir'));
         }
 
-        if (!\defined('URL_BIN_DIR')) {
-            \define('URL_BIN_DIR', QUI::conf('globals', 'url_bin_dir'));
+        if (!defined('URL_BIN_DIR')) {
+            define('URL_BIN_DIR', QUI::conf('globals', 'url_bin_dir'));
         }
 
-        if (!\defined('URL_SYS_DIR')) {
-            \define('URL_SYS_DIR', QUI::conf('globals', 'url_sys_dir'));
+        if (!defined('URL_SYS_DIR')) {
+            define('URL_SYS_DIR', QUI::conf('globals', 'url_sys_dir'));
         }
 
-        if (!\defined('URL_USR_DIR')) {
-            \define('URL_USR_DIR', URL_DIR.\str_replace(CMS_DIR, '', USR_DIR));
+        if (!defined('URL_USR_DIR')) {
+            define('URL_USR_DIR', URL_DIR . str_replace(CMS_DIR, '', USR_DIR));
         }
 
-        if (!\defined('URL_OPT_DIR')) {
-            \define('URL_OPT_DIR', URL_DIR.\str_replace(CMS_DIR, '', OPT_DIR));
+        if (!defined('URL_OPT_DIR')) {
+            define('URL_OPT_DIR', URL_DIR . str_replace(CMS_DIR, '', OPT_DIR));
         }
 
-        if (!\defined('URL_VAR_DIR')) {
-            \define('URL_VAR_DIR', URL_DIR.\str_replace(CMS_DIR, '', VAR_DIR));
+        if (!defined('URL_VAR_DIR')) {
+            define('URL_VAR_DIR', URL_DIR . str_replace(CMS_DIR, '', VAR_DIR));
         }
 
         // bugfix: workround: Uncaught Error: Call to undefined function DusanKasan\Knapsack\append()
         if (!\function_exists('\DusanKasan\Knapsack\append')) {
-            if (\file_exists(OPT_DIR.'dusank/knapsack/src/collection_functions.php')) {
-                require_once OPT_DIR.'dusank/knapsack/src/collection_functions.php';
+            if (\file_exists(OPT_DIR . 'dusank/knapsack/src/collection_functions.php')) {
+                require_once OPT_DIR . 'dusank/knapsack/src/collection_functions.php';
             }
         }
 
@@ -446,15 +432,15 @@ class QUI
                     $_SERVER["HTTP_REFERER"] = '';
                 }
 
-                $message = "Peak usage: ".$limit."\n".
-                           "memory_limit: ".\ini_get('memory_limit')."\n".
-                           "URI: ".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"]."\n".
-                           "HTTP_REFERER: ".$_SERVER["HTTP_REFERER"];
+                $message = "Peak usage: " . $limit . "\n" .
+                    "memory_limit: " . \ini_get('memory_limit') . "\n" .
+                    "URI: " . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] . "\n" .
+                    "HTTP_REFERER: " . $_SERVER["HTTP_REFERER"];
 
                 if (self::conf('mail', 'admin_mail')) {
                     self::getMailManager()->send(
                         self::conf('mail', 'admin_mail'),
-                        'Memory limit reached at http://'.$_SERVER["HTTP_HOST"],
+                        'Memory limit reached at http://' . $_SERVER["HTTP_HOST"],
                         $message
                     );
                 }
@@ -492,7 +478,7 @@ class QUI
      *
      * @return mixed
      */
-    public static function conf($section, $key = null)
+    public static function conf(string $section, string $key = null)
     {
         if (self::$Conf === null) {
             self::$Conf = self::getConfig('etc/conf.ini.php');
@@ -504,7 +490,7 @@ class QUI
     /**
      * @return array
      */
-    public static function backendGuiConfigs()
+    public static function backendGuiConfigs(): array
     {
         $config                = [];
         $config['globals']     = QUI::conf('globals');
@@ -528,15 +514,15 @@ class QUI
      *
      * @return array
      */
-    public static function availableLanguages()
+    public static function availableLanguages(): array
     {
-        $langs = QUI\Translator::getAvailableLanguages();
+        $languages = QUI\Translator::getAvailableLanguages();
 
-        if (empty($langs)) {
-            $langs = ['en'];
+        if (empty($languages)) {
+            $languages = ['en'];
         }
 
-        return $langs;
+        return $languages;
     }
 
     /**
@@ -544,7 +530,7 @@ class QUI
      *
      * @return string
      */
-    public static function version()
+    public static function version(): string
     {
         return self::getPackageManager()->getVersion();
     }
@@ -554,7 +540,7 @@ class QUI
      *
      * @return array
      */
-    public static function vhosts()
+    public static function vhosts(): ?array
     {
         if (self::$vhosts !== null) {
             return self::$vhosts;
@@ -575,7 +561,7 @@ class QUI
      *
      * @return \QUI\Ajax
      */
-    public static function getAjax()
+    public static function getAjax(): \QUI\Ajax
     {
         if (self::$Ajax === null) {
             self::$Ajax = new QUI\Ajax([
@@ -595,7 +581,7 @@ class QUI
      */
     public static function getDBTableName($table)
     {
-        return QUI_DB_PRFX.$table;
+        return QUI_DB_PRFX . $table;
     }
 
     /**
@@ -613,10 +599,10 @@ class QUI
         $lang = true
     ) {
         if ($lang === false) {
-            return QUI_DB_PRFX.$Project->getName().'_'.$table;
+            return QUI_DB_PRFX . $Project->getName() . '_' . $table;
         }
 
-        return QUI_DB_PRFX.$Project->getName().'_'.$Project->getLang().'_'.$table;
+        return QUI_DB_PRFX . $Project->getName() . '_' . $Project->getLang() . '_' . $table;
     }
 
     /**
@@ -635,7 +621,7 @@ class QUI
             return self::$Configs[$file];
         }
 
-        $_file = CMS_DIR.$file;
+        $_file = CMS_DIR . $file;
 
         if (\substr($file, -4) !== '.php') {
             $_file .= '.php';
@@ -644,7 +630,7 @@ class QUI
         if (!isset(self::$Configs[$file])) {
             if (!\file_exists($_file) || \is_dir($_file)) {
                 throw new \QUI\Exception(
-                    'Error: Ini Datei: '.$_file.' existiert nicht.',
+                    'Error: Ini Datei: ' . $_file . ' existiert nicht.',
                     404
                 );
             }
@@ -774,13 +760,13 @@ class QUI
     public static function getErrorHandler()
     {
         if (self::$ErrorHandler === null) {
-            require_once \dirname(__FILE__).'/QUI/Exceptions/Handler.php';
+            require_once \dirname(__FILE__) . '/QUI/Exceptions/Handler.php';
 
             self::$ErrorHandler = new \QUI\Exceptions\Handler();
 
             self::$ErrorHandler->setAttribute(
                 'logdir',
-                self::conf('globals', 'var_dir').'log/'
+                self::conf('globals', 'var_dir') . 'log/'
             );
 
             self::$ErrorHandler->setAttribute(
@@ -825,7 +811,7 @@ class QUI
      *
      * @return \QUI\Locale
      */
-    public static function getLocale()
+    public static function getLocale(): ?\QUI\Locale
     {
         if (self::$Locale === null) {
             self::$Locale = new \QUI\Locale();
@@ -860,7 +846,7 @@ class QUI
      *
      * @return \QUI\Locale
      */
-    public static function getSystemLocale()
+    public static function getSystemLocale(): ?\QUI\Locale
     {
         if (self::$SystemLocale !== null) {
             return self::$SystemLocale;
@@ -881,7 +867,7 @@ class QUI
      *
      * @return \QUI\Mail\Manager
      */
-    public static function getMailManager()
+    public static function getMailManager(): ?\QUI\Mail\Manager
     {
         if (self::$MailManager === null) {
             self::$MailManager = new \QUI\Mail\Manager();
@@ -895,7 +881,7 @@ class QUI
      *
      * @return \QUI\Package\Manager
      */
-    public static function getPackageManager()
+    public static function getPackageManager(): ?\QUI\Package\Manager
     {
         if (self::$PackageManager === null) {
             self::$PackageManager = new \QUI\Package\Manager();
@@ -913,7 +899,7 @@ class QUI
      *
      * @throws QUI\Exception
      */
-    public static function getPackage($package)
+    public static function getPackage(string $package): \QUI\Package\Package
     {
         return self::getPackageManager()->getInstalledPackage($package);
     }
@@ -923,7 +909,7 @@ class QUI
      *
      * @return \QUI\Projects\Manager
      */
-    public static function getProjectManager()
+    public static function getProjectManager(): ?\QUI\Projects\Manager
     {
         if (self::$ProjectManager === null) {
             self::$ProjectManager = new \QUI\Projects\Manager();
@@ -937,7 +923,7 @@ class QUI
      *
      * @return \QUI\Rewrite
      */
-    public static function getRewrite()
+    public static function getRewrite(): ?\QUI\Rewrite
     {
         if (self::$Rewrite === null) {
             self::$Rewrite = new \QUI\Rewrite();
@@ -953,7 +939,7 @@ class QUI
      *
      * @deprecated use ::getPermissionManager
      */
-    public static function getRights()
+    public static function getRights(): ?\QUI\Permissions\Manager
     {
         return self::getPermissionManager();
     }
@@ -963,7 +949,7 @@ class QUI
      *
      * @return \QUI\Permissions\Manager
      */
-    public static function getPermissionManager()
+    public static function getPermissionManager(): ?\QUI\Permissions\Manager
     {
         if (self::$Rights === null) {
             self::$Rights = new \QUI\Permissions\Manager();
@@ -1032,7 +1018,7 @@ class QUI
     public static function getTemp()
     {
         if (self::$Temp === null) {
-            self::$Temp = new \QUI\Temp(VAR_DIR.'tmp');
+            self::$Temp = new \QUI\Temp(VAR_DIR . 'tmp');
         }
 
         return self::$Temp;
@@ -1071,7 +1057,7 @@ class QUI
      *
      * @return \QUI\Interfaces\Users\User
      */
-    public static function getUserBySession()
+    public static function getUserBySession(): \QUI\Interfaces\Users\User
     {
         return self::getUsers()->getUserBySession();
     }
@@ -1081,9 +1067,9 @@ class QUI
      *
      * @return bool
      */
-    public static function isBackend()
+    public static function isBackend(): bool
     {
-        return \defined('QUIQQER_BACKEND') && QUIQQER_BACKEND;
+        return defined('QUIQQER_BACKEND') && QUIQQER_BACKEND;
     }
 
     /**
@@ -1091,13 +1077,13 @@ class QUI
      *
      * @return bool
      */
-    public static function isFrontend()
+    public static function isFrontend(): bool
     {
-        if (\defined('QUIQQER_BACKEND') && QUIQQER_BACKEND) {
+        if (defined('QUIQQER_BACKEND') && QUIQQER_BACKEND) {
             return false;
         }
 
-        if (\defined('QUIQQER_CONSOLE') && QUIQQER_CONSOLE) {
+        if (defined('QUIQQER_CONSOLE') && QUIQQER_CONSOLE) {
             return false;
         }
 
@@ -1106,9 +1092,11 @@ class QUI
 
     /**
      * Runs QUIQQER in the system (console)?
+     *
+     * @return bool
      */
-    public static function isSystem()
+    public static function isSystem(): bool
     {
-        return \defined('QUIQQER_CONSOLE') && QUIQQER_CONSOLE;
+        return defined('QUIQQER_CONSOLE') && QUIQQER_CONSOLE;
     }
 }
