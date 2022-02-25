@@ -482,6 +482,31 @@ class Utils
             }
         }
 
+        // site type extra xml from OTHER packages
+        foreach ($siteXmlList as $package) {
+            $file = OPT_DIR.$package.'/site.xml';
+
+            if ($file === $siteXML) {
+                continue;
+            }
+
+            if (!\file_exists($file)) {
+                continue;
+            }
+
+            $Dom  = XML::getDomFromXml($file);
+            $Path = new \DOMXPath($Dom);
+
+            // type extra
+            $cats = $Path->query(
+                "//site/types/type[@type='".$type[0].':'.$type[1]."']/settings/category"
+            );
+
+            foreach ($cats as $Category) {
+                $result .= DOM::parseCategoryToHTML($Category);
+            }
+        }
+
         try {
             QUI\Cache\Manager::set($cache, $result);
         } catch (\Exception $Exception) {
