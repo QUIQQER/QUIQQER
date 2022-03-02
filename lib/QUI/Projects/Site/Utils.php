@@ -482,28 +482,30 @@ class Utils
             }
         }
 
-        // site type extra xml from OTHER packages
-        foreach ($siteXmlList as $package) {
-            $file = OPT_DIR.$package.'/site.xml';
+        if (!empty($type[1])) {
+            // site type extra xml from OTHER packages
+            foreach ($siteXmlList as $package) {
+                $file = OPT_DIR.$package.'/site.xml';
 
-            if ($file === $siteXML) {
-                continue;
-            }
+                if ($file === $siteXML) {
+                    continue;
+                }
 
-            if (!\file_exists($file)) {
-                continue;
-            }
+                if (!\file_exists($file)) {
+                    continue;
+                }
 
-            $Dom  = XML::getDomFromXml($file);
-            $Path = new \DOMXPath($Dom);
+                $Dom  = XML::getDomFromXml($file);
+                $Path = new \DOMXPath($Dom);
 
-            // type extra
-            $cats = $Path->query(
-                "//site/types/type[@type='".$type[0].':'.$type[1]."']/settings/category"
-            );
+                // type extra
+                $cats = $Path->query(
+                    "//site/types/type[@type='".$type[0].':'.$type[1]."']/settings/category"
+                );
 
-            foreach ($cats as $Category) {
-                $result .= DOM::parseCategoryToHTML($Category);
+                foreach ($cats as $Category) {
+                    $result .= DOM::parseCategoryToHTML($Category);
+                }
             }
         }
 
