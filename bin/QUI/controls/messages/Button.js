@@ -496,11 +496,17 @@ define('controls/messages/Button', [
                 return Promise.resolve();
             }
 
+            let zIndex = QUI.Windows.$getmaxWindowZIndex() + 1;
+
+            if (zIndex < 1000) {
+                zIndex = 1000;
+            }
+
             Node.setStyles({
                 opacity : 0,
                 position: 'absolute',
                 top     : 50,
-                zIndex  : QUI.Windows.$getmaxWindowZIndex() + 1
+                zIndex  : zIndex
             });
 
             Node.inject(document.body);
