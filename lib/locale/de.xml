@@ -3942,6 +3942,9 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="projects.project.site.panel.information.edited">
             <de><![CDATA[geändert am]]></de>
         </locale>
+        <locale name="projects.project.site.panel.information.template">
+            <de><![CDATA[Template]]></de>
+        </locale>
         <locale name="projects.project.site.panel.extras.title">
             <de><![CDATA[Extras]]></de>
         </locale>
@@ -3989,6 +3992,12 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         </locale>
         <locale name="projects.project.site.panel.settings.media.site_image">
             <de><![CDATA[Seiten-Bild]]></de>
+        </locale>
+        <locale name="projects.project.site.panel.settings.layout">
+            <de><![CDATA[Layout-Einstellungen]]></de>
+        </locale>
+        <locale name="projects.project.site.panel.settings.layout">
+            <de><![CDATA[Layout-Einstellungen]]></de>
         </locale>
         <locale name="menu.extras.projects.text">
             <de><![CDATA[Projektverwaltung]]></de>
@@ -4226,7 +4235,7 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
                 <p>Diese Einstellung beeinflusst alle Zeit und Datumsangaben.</p>
                 <p>
                     Eine Liste aller Zeitzonen finden Sie unter:
-                    <a href="http://php.net/manual/de/timezones.php" target="_blank">http://php.net/manual/de/timezones.php</a>
+                    <a href="https://php.net/manual/de/timezones.php" target="_blank">https://php.net/manual/de/timezones.php</a>
                 </p>
             ]]></de>
         </locale>
@@ -4257,8 +4266,8 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="quiqqer.settings.date_formats.description">
             <de><![CDATA[
                 <p>Einstellungen und oder mögliche Datumsformate finden Sie unter:</p>
-                <p><a href="http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">
-                http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters
+                <p><a href="https://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">
+                https://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters
                 </a></p>
                 ]]></de>
         </locale>
@@ -4541,7 +4550,7 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             <de><![CDATA[Du hast nicht die nötigen Rechte um diese Aktion durchzuführen]]></de>
         </locale>
         <locale name="projects.project.site.select.btn.addTypes">
-            <de><![CDATA[Seitentyp hinzufügen ]]></de>
+            <de><![CDATA[Seitentyp hinzufügen]]></de>
         </locale>
         <locale name="packages.panel.category.system">
             <de><![CDATA[System Check]]></de>

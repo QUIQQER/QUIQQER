@@ -113,21 +113,21 @@ define('controls/projects/project/site/Panel', [
         },
 
         initialize: function (Site, options) {
-            this.$built           = false;
-            this.$Site            = null;
+            this.$built = false;
+            this.$Site = null;
             this.$CategoryControl = null;
-            this.$Container       = null;
+            this.$Container = null;
 
-            this.$ButtonOpenWebsite    = null;
-            this.$PreviousCategory     = null;
+            this.$ButtonOpenWebsite = null;
+            this.$PreviousCategory = null;
             this.$editorPeriodicalSave = false; // delay for the wysiwyg editor, to save to the locale storage
 
             if (typeOf(Site) === 'classes/projects/project/Site') {
                 var Project = Site.getProject(),
                     id      = 'panel-' +
-                        Project.getName() + '-' +
-                        Project.getLang() + '-' +
-                        Site.getId();
+                              Project.getName() + '-' +
+                              Project.getLang() + '-' +
+                              Site.getId();
 
                 // default id
                 this.setAttribute('id', id);
@@ -159,31 +159,32 @@ define('controls/projects/project/site/Panel', [
          * @return {Promise}
          */
         getToolTipText: function () {
-            var self = this;
+            const self = this;
 
             return new Promise(function (resolve) {
                 var project = self.$Site.getProject().getName();
-                var lang    = self.$Site.getProject().getLang();
-                var id      = self.$Site.getId();
+                var lang = self.$Site.getProject().getLang();
+                var id = self.$Site.getId();
 
                 var tpl = '<table>' +
-                    '<tr>' +
-                    '   <td>{{localeProject}}</td>' +
-                    '   <td>{{project}}</td>' +
-                    '</tr>' +
-                    '<tr>' +
-                    '   <td>{{localeLang}}</td>' +
-                    '   <td><img src="' + window.URL_OPT_DIR + 'quiqqer/quiqqer/bin/16x16/flags/{{lang}}.png" alt="" /> {{lang}}</td>' +
-                    '</tr>' +
-                    '<tr>' +
-                    '   <td>{{localeID}}</td>' +
-                    '   <td>{{id}}</td>' +
-                    '</tr>' +
-                    '<tr>' +
-                    '   <td>{{localeUrl}}</td>' +
-                    '   <td>{{url}}</td>' +
-                    '</tr>' +
-                    '</table>';
+                          '<tr>' +
+                          '   <td>{{localeProject}}</td>' +
+                          '   <td>{{project}}</td>' +
+                          '</tr>' +
+                          '<tr>' +
+                          '   <td>{{localeLang}}</td>' +
+                          '   <td><img src="' + window.URL_OPT_DIR +
+                          'quiqqer/quiqqer/bin/16x16/flags/{{lang}}.png" alt="" /> {{lang}}</td>' +
+                          '</tr>' +
+                          '<tr>' +
+                          '   <td>{{localeID}}</td>' +
+                          '   <td>{{id}}</td>' +
+                          '</tr>' +
+                          '<tr>' +
+                          '   <td>{{localeUrl}}</td>' +
+                          '   <td>{{url}}</td>' +
+                          '</tr>' +
+                          '</table>';
 
                 var result = Mustache.render(tpl, {
                     localeProject: Locale.get(lg, 'project'),
@@ -235,7 +236,7 @@ define('controls/projects/project/site/Panel', [
                 data.lang
             );
 
-            this.$Site      = Project.get(data.id);
+            this.$Site = Project.get(data.id);
             this.$delayTest = 0;
 
             return this;
@@ -350,8 +351,8 @@ define('controls/projects/project/site/Panel', [
             title = Site.getAttribute('title') + ' (' + Site.getId() + ')';
 
             description = Site.getAttribute('name') + ' - ' +
-                Site.getId() + ' - ' +
-                Project.getName();
+                          Site.getId() + ' - ' +
+                          Project.getName();
 
             if (Site.getId() !== 1) {
                 description = description + ' - ' + Site.getUrl();
@@ -490,7 +491,7 @@ define('controls/projects/project/site/Panel', [
 
 
                     for (i = 0, len = categories.length; i < len; i++) {
-                        events   = {};
+                        events = {};
                         category = categories[i];
 
                         if (typeOf(category.events) === 'object') {
@@ -573,7 +574,7 @@ define('controls/projects/project/site/Panel', [
                 return;
             }
 
-            var self = this;
+            const self = this;
 
             this.$buildPanel().then(function () {
                 return Site.hasWorkingStorageChanges();
@@ -608,8 +609,8 @@ define('controls/projects/project/site/Panel', [
 
                 var StorageTime = null;
                 var storageDate = '---';
-                var storage     = Site.getWorkingStorage();
-                var EditDate    = new Date(Site.getAttribute('e_date'));
+                var storage = Site.getWorkingStorage();
+                var EditDate = new Date(Site.getAttribute('e_date'));
 
                 if ("__storageTime" in storage) {
                     StorageTime = new Date(storage.__storageTime);
@@ -802,7 +803,7 @@ define('controls/projects/project/site/Panel', [
          * @method controls/projects/project/site/Panel#openPermissions
          */
         save: function () {
-            var self = this;
+            const self = this;
 
             this.$onCategoryLeave(this.getActiveCategory()).then(function () {
                 return self.getSite().save();
@@ -997,7 +998,7 @@ define('controls/projects/project/site/Panel', [
          * @return {Promise}
          */
         $onCategoryEnter: function (Category) {
-            var self = this;
+            const self = this;
 
             if (Category === this.getActiveCategory()) {
                 this.Loader.hide();
@@ -1174,7 +1175,7 @@ define('controls/projects/project/site/Panel', [
 
                                         var attributes = Site.getAttributes();
 
-                                        var name  = cleanupUrl(attributes.name);
+                                        var name = cleanupUrl(attributes.name);
                                         var title = cleanupUrl(attributes.title);
                                         var value = cleanupUrl(this.value);
 
@@ -1269,7 +1270,7 @@ define('controls/projects/project/site/Panel', [
                                     };
 
                                     for (i = 0, len = rowList.length; i < len; i++) {
-                                        Row     = rowList[i];
+                                        Row = rowList[i];
                                         Buttons = rowList[i].getElement('.site-lang-entry-button');
 
                                         if (!Row.get('data-id').toInt()) {
@@ -1509,8 +1510,15 @@ define('controls/projects/project/site/Panel', [
                 });
             }
 
-            var Form     = Body.getElement('form'),
-                elements = Form.elements;
+            const Form     = Body.getElement('form'),
+                  elements = Form.elements;
+
+            if (Category.getAttribute('name') === 'settings') {
+                if (typeof elements.layout !== 'undefined') {
+                    Site.setAttribute('layout', elements.layout.value);
+                }
+
+            }
 
             // information tab
             if (Category.getAttribute('name') === 'information') {
@@ -1532,9 +1540,9 @@ define('controls/projects/project/site/Panel', [
             }
 
             // unload params
-            var FormData = QUIFormUtils.getFormData(Form);
+            const FormData = QUIFormUtils.getFormData(Form);
 
-            for (var key in FormData) {
+            for (let key in FormData) {
                 if (key === '') {
                     continue;
                 }
@@ -1544,8 +1552,8 @@ define('controls/projects/project/site/Panel', [
                 }
             }
 
-            var onunloadRequire = Category.getAttribute('onunload_require'),
-                onunload        = Category.getAttribute('onunload');
+            const onunloadRequire = Category.getAttribute('onunload_require'),
+                  onunload        = Category.getAttribute('onunload');
 
             return Promise.resolve().then(function () {
                 if (onunloadRequire) {
@@ -1574,7 +1582,7 @@ define('controls/projects/project/site/Panel', [
          * @return {Promise}
          */
         $onCategoryLeaveHide: function () {
-            var self = this;
+            const self = this;
 
             return new Promise(function (resolve) {
                 moofx(self.$Container).animate({
@@ -1593,7 +1601,7 @@ define('controls/projects/project/site/Panel', [
          * @return {Promise}
          */
         $onCategoryEntryShow: function () {
-            var self = this;
+            const self = this;
 
             return new Promise(function (resolve) {
                 moofx(self.$Container).animate({
@@ -1763,7 +1771,7 @@ define('controls/projects/project/site/Panel', [
 
                         if (typeof event !== 'undefined') {
                             lastPos = QUIElmUtils.getCursorPosition(event.target);
-                            hold    = false;
+                            hold = false;
                         }
 
                         this.value = cleanupUrl(this.value);
@@ -1885,7 +1893,7 @@ define('controls/projects/project/site/Panel', [
 
             if (Form) {
                 var attributes = this.getSite().getAttributes();
-                var NameInput  = this.getBody().getElement('input[name="site-name"]');
+                var NameInput = this.getBody().getElement('input[name="site-name"]');
 
                 attributes['site-name'] = attributes.name;
 
@@ -2059,7 +2067,7 @@ define('controls/projects/project/site/Panel', [
          * Opens a project popup, so, an user can set a languag link
          */
         addLanguageLink: function () {
-            var self = this;
+            const self = this;
 
             require(['controls/projects/Popup'], function (ProjectPopup) {
                 var Site    = self.getSite(),
@@ -2114,7 +2122,7 @@ define('controls/projects/project/site/Panel', [
          * @param {String} id - Site-ID of the language link
          */
         removeLanguageLink: function (lang, id) {
-            var self = this;
+            const self = this;
 
             var Site    = self.getSite(),
                 Project = Site.getProject();
@@ -2241,7 +2249,7 @@ define('controls/projects/project/site/Panel', [
          * Open the preview window
          */
         openPreview: function () {
-            var self = this;
+            const self = this;
 
             this.Loader.show();
 
@@ -2288,7 +2296,7 @@ define('controls/projects/project/site/Panel', [
                         continue;
                     }
 
-                    to  = typeOf(attributes[key]);
+                    to = typeOf(attributes[key]);
                     val = attributes[key];
 
                     if (to !== 'string' && to !== 'number') {

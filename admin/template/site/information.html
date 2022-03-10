@@ -52,39 +52,6 @@
             </label>
         </td>
     </tr>
-    <tr>
-        <td>
-            <label class="field-container">
-                <span class="field-container-item">
-                    {locale group="quiqqer/quiqqer" var="projects.project.site.panel.information.type"}
-                </span>
-                <input name="type" value="" class="project-types field-container-field"/>
-            </label>
-        </td>
-    </tr>
-
-    {assign var=layouts value=$Project->getLayouts()}
-    {if count($layouts)}
-    <tr>
-        <td>
-            <label class="field-container">
-                <span class="field-container-item">
-                    {locale group="quiqqer/quiqqer" var="projects.project.site.panel.information.layout"}
-                </span>
-
-                <select name="layout" class="field-container-field">
-                    <option value=""></option>
-                    {foreach from=$layouts item=layout}
-                    <option value="{$layout.type}">
-                        {$layout.title}
-                    </option>
-                    {/foreach}
-                </select>
-
-            </label>
-        </td>
-        {/if}
-    </tr>
     </tbody>
 </table>
 

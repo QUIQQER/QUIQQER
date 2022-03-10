@@ -2,10 +2,12 @@
     <thead>
     <tr>
         <th>
-            {locale group="quiqqer/quiqqer" var="projects.project.site.panel.settings.media"}
+            {locale group="quiqqer/quiqqer" var="projects.project.site.panel.settings.layout"}
+            <!--
             <div class="description">
-                {locale group="quiqqer/quiqqer" var="projects.project.site.panel.settings.media.info"}
+                {locale group="quiqqer/quiqqer" var="projects.project.site.panel.settings.layout.info"}
             </div>
+            -->
         </th>
     </tr>
     </thead>
@@ -17,7 +19,7 @@
                 <span class="field-container-item">
                     {locale group="quiqqer/quiqqer" var="projects.project.site.panel.settings.media.emotion_image"}
                 </span>
-                <input name="image_emotion" class="media-image field-container-field" />
+                <input name="image_emotion" class="media-image field-container-field"/>
             </label>
         </td>
     </tr>
@@ -27,11 +29,58 @@
                 <span class="field-container-item">
                     {locale group="quiqqer/quiqqer" var="projects.project.site.panel.settings.media.site_image"}
                 </span>
-                <input name="image_site" class="media-image field-container-field" data-qui-options-cssclasses="1" />
+                <input name="image_site" class="media-image field-container-field" data-qui-options-cssclasses="1"/>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/quiqqer" var="projects.project.site.panel.information.type"}
+                </span>
+                <input name="type" value="" class="project-types field-container-field"/>
             </label>
         </td>
     </tr>
 
+    {if count($layouts)}
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/quiqqer" var="projects.project.site.panel.information.layout"}
+                </span>
+                <select name="layout" class="field-container-field">
+                    <option value=""></option>
+                    {foreach $layouts as $layout}
+                    <option value="{$layout.type}">
+                        {$layout.title}
+                    </option>
+                    {/foreach}
+                </select>
+            </label>
+        </td>
+    </tr>
+    {/if}
+
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/quiqqer" var="projects.project.site.panel.information.template"}
+                </span>
+                <select name="template" class="field-container-field">
+                    <option value=""></option>
+                    {foreach $templates as $template}
+                    <option value="{$template.name}">
+                        {$template.name}
+                    </option>
+                    {/foreach}
+                </select>
+            </label>
+        </td>
+    </tr>
     </tbody>
 </table>
 
@@ -51,7 +100,7 @@
                 <span class="field-container-item">
                     {locale group="quiqqer/quiqqer" var="projects.project.site.panel.settings.publication.from"}
                 </span>
-                <input type="datetime" name="release_from" />
+                <input type="datetime" name="release_from"/>
             </label>
         </td>
     </tr>
@@ -61,7 +110,7 @@
                 <span class="field-container-item">
                     {locale group="quiqqer/quiqqer" var="projects.project.site.panel.settings.publication.to"}
                 </span>
-                <input type="datetime" name="release_to" />
+                <input type="datetime" name="release_to"/>
             </label>
         </td>
     </tr>

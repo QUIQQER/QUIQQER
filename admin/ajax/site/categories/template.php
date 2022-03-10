@@ -14,9 +14,15 @@ QUI::$Ajax->registerFunction(
         $Project = QUI::getProjectManager()->decode($project);
         $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
 
-        return QUI\Utils\StringHelper::removeLineBreaks(
-            QUI\Utils\DOM::getTabHTML($tab, $Site)
-        );
+        $templates = QUI::getPackageManager()->searchInstalledPackages(['type' => "quiqqer-template"]);
+        $layouts   = $Project->getLayouts();
+
+        $html = QUI\Utils\DOM::getTabHTML($tab, $Site, [
+            'templates' => $templates,
+            'layouts'   => $layouts
+        ]);
+
+        return QUI\Utils\StringHelper::removeLineBreaks($html);
     },
     ['project', 'id', 'tab'],
     'Permission::checkAdminUser'

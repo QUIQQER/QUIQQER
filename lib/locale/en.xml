@@ -3805,6 +3805,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="projects.project.site.panel.information.edited">
             <en><![CDATA[edited on]]></en>
         </locale>
+        <locale name="projects.project.site.panel.information.template">
+            <en><![CDATA[Template]]></en>
+        </locale>
         <locale name="projects.project.site.panel.extras.title">
             <en><![CDATA[Extras]]></en>
         </locale>
@@ -3850,6 +3853,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         </locale>
         <locale name="projects.project.site.panel.settings.media.site_image">
             <en><![CDATA[Site image]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.settings.media.layout">
+            <en><![CDATA[Layout settings]]></en>
         </locale>
         <locale name="menu.extras.projects.text">
             <en><![CDATA[Projects manager]]></en>
@@ -4080,7 +4086,7 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
             <en><![CDATA[
             <p>This setting affects all time and dates</p>
             <p>You can find a complete list of all timezones at:
-            <a href="http://php.net/manual/en/timezones.php" target="_blank">http://php.net/manual/en/timezones.php</a>
+            <a href="https://php.net/manual/en/timezones.php" target="_blank">https://php.net/manual/en/timezones.php</a>
             </p>]]></en>
         </locale>
         <locale name="quiqqer.settings.date_formats">
@@ -4110,8 +4116,8 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="quiqqer.settings.date_formats.description">
             <en><![CDATA[
                 <p>Einstellungen und oder mögliche Datumsformate finden Sie unter:</p>
-                <p><a href="http://php.net/manual/en/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">
-                    http://php.net/manual/en/function.strftime.php#refsect1-function.strftime-parameters
+                <p><a href="https://php.net/manual/en/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">
+                    https://php.net/manual/en/function.strftime.php#refsect1-function.strftime-parameters
                     </a>
                 </p>
             ]]></en>
