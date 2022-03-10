@@ -42,6 +42,9 @@ define('controls/projects/project/site/CreateWindow', [
                 maxWidth : 600,
                 maxHeight: 500,
                 autoclose: false,
+
+                cancel_button     : false,
+                backgroundClosable: false
             });
 
             this.$Site = this.getAttribute('Site');
@@ -69,7 +72,10 @@ define('controls/projects/project/site/CreateWindow', [
             const Layouts = Win.getContent().getElement('[name="layout"]');
             const SiteType = Win.getContent().getElement('[name="type"]');
 
-            QUIAjax.get('ajax_project_get_layouts', (layouts) => {
+            QUIAjax.get([
+                'ajax_project_get_layouts',
+                'ajax_site_children_getChildType',
+            ], (layouts, childType) => {
                 new Element('option', {
                     html : '',
                     value: ''
@@ -82,9 +88,12 @@ define('controls/projects/project/site/CreateWindow', [
                     }).inject(Layouts);
                 }
 
-                new TypeInput({
-                    project: this.$Site.getProject().getName()
-                }, SiteType).create();
+                const TypeInstance = new TypeInput({
+                    project: this.$Site.getProject().getName(),
+                    value  : childType
+                }, SiteType);
+
+                TypeInstance.create();
 
                 this.$Site.fireEvent('openCreateChild', [
                     Win,
@@ -95,7 +104,8 @@ define('controls/projects/project/site/CreateWindow', [
                 Win.resize();
                 Win.Loader.hide();
             }, {
-                project: this.$Site.getProject().encode()
+                project: this.$Site.getProject().encode(),
+                siteId : this.$Site.getId()
             });
         },
 

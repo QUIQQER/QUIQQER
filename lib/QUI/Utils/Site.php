@@ -6,6 +6,8 @@
 
 namespace QUI\Utils;
 
+use QUI;
+
 /**
  * QUIQQER Site Util class
  *
@@ -59,5 +61,28 @@ class Site
     public static function setRecursivAttribute(\QUI\Interfaces\Projects\Site $Site, $attribute)
     {
         self::setRecursiveAttribute($Site, $attribute);
+    }
+
+    public static function getChildType(\QUI\Projects\Site $Site): string
+    {
+        $Project     = $Site->getProject();
+        $siteTypes   = QUI::getPackageManager()->getAvailableSiteTypes($Project);
+        $currentType = $Site->getAttribute('type');
+
+        foreach ($siteTypes as $module) {
+            foreach ($module as $siteType) {
+                if (!isset($siteType['type'])) {
+                    continue;
+                }
+
+                if ($currentType === $siteType['type']) {
+                    if (!empty($siteType['childrenType'])) {
+                        return $siteType['childrenType'];
+                    }
+                }
+            }
+        }
+
+        return 'standard';
     }
 }

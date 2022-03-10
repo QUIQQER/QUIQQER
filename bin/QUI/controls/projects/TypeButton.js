@@ -47,7 +47,7 @@ define('controls/projects/TypeButton', [
          * @return {HTMLElement}
          */
         create: function () {
-            var self = this;
+            const self = this;
 
             this.$Button = new QUIButton({
                 name  : 'project-types',
@@ -78,6 +78,18 @@ define('controls/projects/TypeButton', [
             this.$Elm.set('data-quiid', this.getId());
 
             return this.$Elm;
-        }
+        },
+
+        disable: function() {
+            if (this.$Button) {
+                this.$Button.disable();
+            }
+        },
+
+        enable: function() {
+            if (this.$Button) {
+                this.$Button.enable();
+            }
+        },
     });
 });

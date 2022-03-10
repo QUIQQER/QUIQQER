@@ -6129,7 +6129,7 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         </locale>
         <locale name="projects.project.site.window.create.header" html="1">
             <de><![CDATA[
-            <h3>Neue Seite anlegen</h3>
+            <h3>Seite anlegen</h3>
             <p>Mit Übernehmen legst du eine neue Seite unter <b>[name]</b> an.</p>
             ]]></de>
         </locale>

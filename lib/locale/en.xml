@@ -5915,7 +5915,7 @@ After logging in you will be prompted to set a new password.
         </locale>
         <locale name="projects.project.site.window.create.header" html="1">
             <en><![CDATA[
-            <h3>Create new page</h3>
+            <h3>Create page</h3>
             <p>With Apply you create a new page under <b>[name]</b>..</p>
             ]]></en>
         </locale>

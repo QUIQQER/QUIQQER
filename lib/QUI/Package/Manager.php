@@ -18,6 +18,7 @@ if (!defined('JSON_UNESCAPED_UNICODE')) {
     define('JSON_UNESCAPED_UNICODE', 256);
 }
 
+use DOMElement;
 use QUI;
 use QUI\Utils\System\File as QUIFile;
 use QUI\Cache\Manager as QUICacheManager;
@@ -2163,13 +2164,14 @@ class Manager extends QUI\QDOM
             $typeList = QUI\Utils\Text\XML::getTypesFromXml($siteXml);
 
             foreach ($typeList as $Type) {
-                /* @var $Type \DOMElement */
+                /* @var $Type DOMElement */
                 $types[$name][] = [
-                    'type' => $name . ':' . $Type->getAttribute('type'),
-                    'icon' => $Type->getAttribute('icon'),
-                    'text' => $this->getSiteTypeName(
+                    'type'         => $name . ':' . $Type->getAttribute('type'),
+                    'icon'         => $Type->getAttribute('icon'),
+                    'text'         => $this->getSiteTypeName(
                         $name . ':' . $Type->getAttribute('type')
-                    )
+                    ),
+                    'childrenType' => $Type->getAttribute('child-type')
                 ];
             }
         }
@@ -2280,7 +2282,7 @@ class Manager extends QUI\QDOM
             return false;
         }
 
-        /* @var $Type \DOMElement */
+        /* @var $Type DOMElement */
         $Type = $Types->item(0);
         $data = [];
 

@@ -35,15 +35,16 @@ define('controls/projects/TypeInput', [
 
         options: {
             project: false,
-            name   : ''
+            name   : '',
+            value  : false
         },
 
         initialize: function (options, Input) {
             this.parent(options);
 
             this.$Input = Input || null;
-            this.$Elm   = null;
-            this.$Text  = null;
+            this.$Elm = null;
+            this.$Text = null;
 
             this.$TypeButton = null;
         },
@@ -55,7 +56,7 @@ define('controls/projects/TypeInput', [
          * @return {HTMLElement}
          */
         create: function () {
-            var self = this;
+            const self = this;
 
             if (!this.$Input) {
                 this.$Input = new Element('input', {
@@ -65,9 +66,14 @@ define('controls/projects/TypeInput', [
 
             this.$Input.type = 'hidden';
 
+            if (this.getAttribute('value')) {
+                this.$Input.value = this.getAttribute('value');
+            }
+
             this.$Elm = new Element('div', {
                 'class'     : 'qui-projects-type-input',
-                'data-quiid': this.getId()
+                'data-quiid': this.getId(),
+                'data-qui'  : 'controls/projects/TypeInput'
             });
 
             this.$Elm.wraps(this.$Input);
@@ -120,19 +126,37 @@ define('controls/projects/TypeInput', [
         },
 
         /**
+         * disable the control
+         */
+        disable: function () {
+            if (this.$TypeButton) {
+                this.$TypeButton.disable();
+            }
+        },
+
+        /**
+         * enable the control
+         */
+        enable: function () {
+            if (this.$TypeButton) {
+                this.$TypeButton.enable();
+            }
+        },
+
+        /**
          * Load the user-type-name to the control
          *
          * @method controls/projects/TypeInput#loadTypeName
          */
         loadTypeName: function () {
-            var self = this;
+            const self = this;
 
             this.$Text.set({
                 html : '<span class="fa fa-spinner fa-spin"></span>',
                 title: '...'
             });
 
-            var value = this.$Input.value;
+            let value = this.$Input.value;
 
 
             if (!value || value === '' || value === 'standard') {
