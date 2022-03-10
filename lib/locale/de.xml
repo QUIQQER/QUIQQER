@@ -6118,6 +6118,20 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         <locale name="projects.project.site.panel.information.openInSiteStructure">
             <de><![CDATA[In der Projekt Sitemap öffnen]]></de>
         </locale>
+        <locale name="projects.project.site.window.create.header" html="1">
+            <de><![CDATA[
+            <h3>Neue Seite anlegen</h3>
+            <p>Mit Übernehmen legst du eine neue Seite unter [name] an.</p>
+            ]]></de>
+        </locale>
+        <locale name="projects.project.site.window.create.inputTitle">
+            <de><![CDATA[Titel der neuen Seite]]></de>
+        </locale>
+        <locale name="projects.project.site.window.create.seoTitle">
+            <de><![CDATA[SEO Titel der neuen Seite (optional)]]></de>
+        </locale>
+
+
         <locale name="control.upload.icon.submit">
             <de><![CDATA[Hochladen]]></de>
         </locale>

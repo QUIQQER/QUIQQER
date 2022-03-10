@@ -1,0 +1,48 @@
+{{{header}}}
+
+<form name="createSite" style="margin-top: 20px">
+    <table class="data-table data-table-flexbox">
+        <tbody>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {{title}}
+                    </span>
+                    <input type="text" name="title" class="field-container-field" required/>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {{seoTitle}}
+                    </span>
+                    <input type="text" name="seotitle" class="field-container-field"/>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container type-input">
+                    <span class="field-container-item">
+                        {{siteType}}
+                    </span>
+                    <input type="text" name="type" class="field-container-field"/>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {{layout}}
+                    </span>
+                    <select name="layout" class="field-container-field"></select>
+                </label>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</form>

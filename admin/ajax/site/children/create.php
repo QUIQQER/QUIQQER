@@ -11,14 +11,19 @@
 QUI::$Ajax->registerFunction(
     'ajax_site_children_create',
     function ($project, $id, $attributes) {
+        $attributes = json_decode($attributes, true);
+
+        if (empty($attributes['name']) && !empty($attributes['title'])) {
+            $attributes['name'] = QUI\Projects\Site\Utils::clearUrl($attributes['title']);
+        }
+
         $Project = QUI::getProjectManager()->decode($project);
         $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
+        $childId = $Site->createChild($attributes);
 
-        $childid = $Site->createChild(
-            \json_decode($attributes, true)
-        );
-
-        $Child = new QUI\Projects\Site\Edit($Project, $childid);
+        $Child = new QUI\Projects\Site\Edit($Project, $childId);
+        $Child->setAttributes($attributes);
+        $Child->save();
 
         return $Child->getAttributes();
     },

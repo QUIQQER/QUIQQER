@@ -99,13 +99,13 @@ define('utils/Site', [
          * Create a child site, opens the confirm window
          *
          * @param {Object} ParentSite - classes/projects/Site
-         * @param {String} [value] - new name of the site, if no newname was passed, a window would be open
+         * @param {String} [value] - new name of the site, if no new name was passed, a window would be open
          */
         openCreateChild: function (ParentSite, value) {
-            var self    = this,
-                lg      = 'quiqqer/quiqqer',
-                Site    = ParentSite,
-                Project = Site.getProject();
+            const self    = this,
+                  lg      = 'quiqqer/quiqqer',
+                  Site    = ParentSite,
+                  Project = Site.getProject();
 
             if (typeof value === 'undefined') {
                 value = '';
@@ -120,9 +120,24 @@ define('utils/Site', [
 
             ParentSite.fireEvent('beforeOpenCreateChild', [ParentSite]);
 
+            require(['controls/projects/project/site/CreateWindow'], function (CreateWindow) {
+                new CreateWindow({
+                    Site  : Site,
+                    events: {
+                        onSiteCreated: function (Child) {
+                            PanelUtils.openSitePanel(
+                                Project.getName(),
+                                Project.getLang(),
+                                Child.getId()
+                            );
+                        }
+                    }
+                }).open();
+            });
+
+            return;
 
             require(['qui/controls/windows/Prompt'], function (Prompt) {
-
                 new Prompt({
                     title        : Locale.get(lg, 'projects.project.site.panel.window.create.title'),
                     text         : Locale.get(lg, 'projects.project.site.panel.window.create.text'),
@@ -146,15 +161,19 @@ define('utils/Site', [
                     autoclose    : false,
                     events       : {
                         onOpen: function (Win) {
-                            ParentSite.fireEvent('openCreateChild', [Win, ParentSite]);
+                            ParentSite.fireEvent('openCreateChild', [
+                                Win,
+                                ParentSite
+                            ]);
                             Win.resize();
                         },
 
                         onSubmit: function (value, Win) {
-                            ParentSite.fireEvent(
-                                'openCreateChildSubmit',
-                                [value, Win, ParentSite]
-                            );
+                            ParentSite.fireEvent('openCreateChildSubmit', [
+                                value,
+                                Win,
+                                ParentSite
+                            ]);
 
                             Site.createChild(value, function (result) {
                                 Win.close();
@@ -167,7 +186,7 @@ define('utils/Site', [
 
                             }, function (Exception) {
                                 // on error
-                                if (Exception.getCode() == 702) {
+                                if (Exception.getCode() === 702) {
                                     Ajax.get('ajax_site_clear', function (newName) {
                                         Win.close();
 
