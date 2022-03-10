@@ -33,14 +33,14 @@ class Rewrite
     const URL_PROJECT_CHARACTER = '^';
     const URL_DEFAULT_SUFFIX = '.html';
 
-    public static $SUFFIX = false;
+    public static bool $SUFFIX = false;
 
     /**
      * site request parameter
      *
      * @var array
      */
-    public $site_params = [];
+    public array $site_params = [];
 
     /**
      * active project
@@ -54,12 +54,12 @@ class Rewrite
      *
      * @var string
      */
-    private $project_str = '';
+    private string $project_str = '';
 
     /**
      * active template
      *
-     * @var string
+     * @var string|bool
      */
     private $template_str = false;
 
@@ -68,7 +68,7 @@ class Rewrite
      *
      * @var string
      */
-    private $project_prefix = '';
+    private string $project_prefix = '';
 
     /**
      * project lang
@@ -80,9 +80,9 @@ class Rewrite
     /**
      * active site
      *
-     * @var \QUI\Projects\Site
+     * @var Projects\Site|null
      */
-    private $site = null;
+    private ?Projects\Site $site = null;
 
     /**
      * first site of the project
@@ -96,7 +96,7 @@ class Rewrite
      *
      * @var array
      */
-    private $path = [];
+    private array $path = [];
 
     /**
      * @var null
@@ -108,21 +108,21 @@ class Rewrite
      *
      * @var array
      */
-    private $ids_in_path = [];
+    private array $ids_in_path = [];
 
     /**
      * internal url cache
      *
      * @var array
      */
-    private $url_cache = [];
+    private array $url_cache = [];
 
     /**
      * internal image link cache
      *
      * @var array
      */
-    private $image_cache = [];
+    private array $image_cache = [];
 
     /**
      * loaded vhosts
@@ -136,23 +136,24 @@ class Rewrite
      *
      * @var string
      */
-    private $suffix = '.html';
+    private string $suffix = '.html';
 
     /**
      * the html output
      *
      * @var string
      */
-    private $output_content = '';
+    private string $output_content = '';
 
     /**
      * Standard header code
      *
      * @var int
      */
-    private $headerCode = 200;
+    private int $headerCode = 200;
 
-    protected $Output;
+    protected QUI\Events\Event $Events;
+    protected Output $Output;
 
     /**
      * constructor
@@ -220,10 +221,10 @@ class Rewrite
         // dann / dran
         // sprach ist ein ordner keine seite
         if (!empty($_REQUEST['_url']) && \strlen($_REQUEST['_url']) == 2) {
-            QUI::getEvents()->fireEvent('request', [$this, $_REQUEST['_url'].'/']);
+            QUI::getEvents()->fireEvent('request', [$this, $_REQUEST['_url'] . '/']);
 
             // 301 weiterleiten
-            $this->showErrorHeader(301, URL_DIR.$_REQUEST['_url'].'/');
+            $this->showErrorHeader(301, URL_DIR . $_REQUEST['_url'] . '/');
         }
 
 
@@ -234,12 +235,12 @@ class Rewrite
             && \strlen($_REQUEST['_url']) != 3
             && \strpos($_REQUEST['_url'], 'media/cache') === false
         ) {
-            $_REQUEST['_url'] = \substr($_REQUEST['_url'], 0, -1).$defaultSuffix;
+            $_REQUEST['_url'] = \substr($_REQUEST['_url'], 0, -1) . $defaultSuffix;
 
             QUI::getEvents()->fireEvent('request', [$this, $_REQUEST['_url']]);
 
             // 301 weiterleiten
-            $this->showErrorHeader(301, URL_DIR.$_REQUEST['_url']);
+            $this->showErrorHeader(301, URL_DIR . $_REQUEST['_url']);
         }
 
         // Suffix
@@ -275,11 +276,11 @@ class Rewrite
                     $this->template_str = $_project_split[1];
                 }
 
-                $this->project_prefix = self::URL_PROJECT_CHARACTER.$this->project_str.'/';
+                $this->project_prefix = self::URL_PROJECT_CHARACTER . $this->project_str . '/';
 
                 if ($this->template_str) {
-                    $this->project_prefix = self::URL_PROJECT_CHARACTER.$this->project_str;
-                    $this->project_prefix .= self::URL_PROJECT_CHARACTER.$this->template_str.'/';
+                    $this->project_prefix = self::URL_PROJECT_CHARACTER . $this->project_str;
+                    $this->project_prefix .= self::URL_PROJECT_CHARACTER . $this->template_str . '/';
                 }
 
 
@@ -330,12 +331,12 @@ class Rewrite
                     && isset($vhosts[$_SERVER['HTTP_HOST']][$this->lang])
                     && !empty($vhosts[$_SERVER['HTTP_HOST']][$this->lang])
                     && (int)$_SERVER['SERVER_PORT'] !== 443
-                    && QUI::conf('globals', 'httpshost') != 'https://'.$_SERVER['HTTP_HOST']
+                    && QUI::conf('globals', 'httpshost') != 'https://' . $_SERVER['HTTP_HOST']
                 ) {
                     $url = \implode('/', $_url);
-                    $url = $vhosts[$_SERVER['HTTP_HOST']][$this->lang].URL_DIR.$url;
+                    $url = $vhosts[$_SERVER['HTTP_HOST']][$this->lang] . URL_DIR . $url;
                     $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
-                    $url = 'http://'.$this->project_prefix.$url;
+                    $url = 'http://' . $this->project_prefix . $url;
 
                     QUI::getEvents()->fireEvent('request', [$this, $_REQUEST['_url']]);
 
@@ -423,7 +424,7 @@ class Rewrite
                 } catch (QUI\Permissions\Exception $Exception) {
                     \http_response_code(Response::HTTP_FORBIDDEN);
 
-                    $file = OPT_DIR.'quiqqer/quiqqer/bin/images/deny.svg';
+                    $file = OPT_DIR . 'quiqqer/quiqqer/bin/images/deny.svg';
                     $Item->setAttribute('mime_type', 'image/svg+xml');
                 } catch (QUI\Exception $Exception) {
                     QUI\System\Log::writeException($Exception);
@@ -435,7 +436,7 @@ class Rewrite
                 } catch (QUI\Permissions\Exception $Exception) {
                     \http_response_code(Response::HTTP_FORBIDDEN);
 
-                    $file = OPT_DIR.'quiqqer/quiqqer/bin/images/deny.svg';
+                    $file = OPT_DIR . 'quiqqer/quiqqer/bin/images/deny.svg';
                     $Item->setAttribute('mime_type', 'image/svg+xml');
                 } catch (QUI\Exception $Exception) {
                     QUI\System\Log::writeException($Exception);
@@ -454,13 +455,13 @@ class Rewrite
             }
 
             // Dateien direkt im Browser ausgeben, da Cachedatei noch nicht verfügbar war
-            \header("Content-Type: ".$Item->getAttribute('mime_type'));
-            \header("Expires: ".\gmdate("D, d M Y H:i:s")." GMT");
+            \header("Content-Type: " . $Item->getAttribute('mime_type'));
+            \header("Expires: " . \gmdate("D, d M Y H:i:s") . " GMT");
             \header("Pragma: public");
             \header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
             \header("Accept-Ranges: bytes");
-            \header("Content-Disposition: inline; filename=\"".\pathinfo($file, PATHINFO_BASENAME)."\"");
-            \header("Last-Modified: ".\gmdate("D, d M Y H:i:s")." GMT");
+            \header("Content-Disposition: inline; filename=\"" . \pathinfo($file, PATHINFO_BASENAME) . "\"");
+            \header("Last-Modified: " . \gmdate("D, d M Y H:i:s") . " GMT");
 
             $fo_image = \fopen($file, "r");
             $fr_image = \fread($fo_image, \filesize($file));
@@ -481,7 +482,7 @@ class Rewrite
             $pathinfo = \pathinfo($_REQUEST['_url']);
 
             if (!isset($pathinfo['extension']) && $defaultSuffix !== '') {
-                $url = URL_DIR.$_REQUEST['_url'].$defaultSuffix;
+                $url = URL_DIR . $_REQUEST['_url'] . $defaultSuffix;
                 $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
 
                 // Falls keine Extension (.html) dann auf .html
@@ -495,7 +496,7 @@ class Rewrite
                 // dann auf kein suffix leiten
                 $this->showErrorHeader(
                     301,
-                    \str_replace('.html', '', URL_DIR.$_REQUEST['_url'])
+                    \str_replace('.html', '', URL_DIR . $_REQUEST['_url'])
                 );
             }
         }
@@ -544,14 +545,14 @@ class Rewrite
                 && !empty($vhosts[$_SERVER['HTTP_HOST']][$this->lang])
                 && $_SERVER['HTTP_HOST'] != $vhosts[$_SERVER['HTTP_HOST']][$this->lang]
                 && (int)$_SERVER['SERVER_PORT'] !== 443
-                && QUI::conf('globals', 'httpshost') != 'https://'.$_SERVER['HTTP_HOST']
+                && QUI::conf('globals', 'httpshost') != 'https://' . $_SERVER['HTTP_HOST']
             ) {
                 $url = $this->site->getUrlRewritten();
 
                 if (\strpos($url, 'http:') === false) {
-                    $url = $vhosts[$_SERVER['HTTP_HOST']][$this->lang].URL_DIR.$url;
+                    $url = $vhosts[$_SERVER['HTTP_HOST']][$this->lang] . URL_DIR . $url;
                     $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
-                    $url = 'http://'.$this->project_prefix.$url;
+                    $url = 'http://' . $this->project_prefix . $url;
                 }
 
                 if ($url !== $this->getRequestUri()) {
@@ -590,7 +591,7 @@ class Rewrite
 
 
         if ($pos !== false) {
-            $request_url = \substr($request_url, 0, $pos).\substr($request_url, $end);
+            $request_url = \substr($request_url, 0, $pos) . \substr($request_url, $end);
 
             if ($this->site->getId() == 1) {
                 $request_url = \substr($request_url, 0, $pos);
@@ -1276,7 +1277,7 @@ class Rewrite
         if (isset($output[3]) && \strpos($output[3], '@') !== false) {
             [$user, $domain] = \explode("@", $output[3]);
 
-            return 'href="'.URL_DIR.'[mailto]'.$user.'[at]'.$domain.'" target="mail_protection"';
+            return 'href="' . URL_DIR . '[mailto]' . $user . '[at]' . $domain . '" target="mail_protection"';
         }
 
         return $output[0];
@@ -1301,7 +1302,7 @@ class Rewrite
         $url = \str_replace($search, '-', $url);
 
         if (\substr($url, -5) == '_html') {
-            $url = \substr($url, 0, -5).self::getDefaultSuffix();
+            $url = \substr($url, 0, -5) . self::getDefaultSuffix();
         }
 
         return $url;
