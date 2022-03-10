@@ -5907,6 +5907,19 @@ After logging in you will be prompted to set a new password.
         <locale name="projects.project.site.panel.information.openInSiteStructure">
             <en><![CDATA[Open in the project Sitemap]]></en>
         </locale>
+        <locale name="projects.project.site.window.create.header" html="1">
+            <en><![CDATA[
+            <h3>Create new page</h3>
+            <p>With Apply you create a new page under <b>[name]</b>..</p>
+            ]]></en>
+        </locale>
+        <locale name="projects.project.site.window.create.inputTitle">
+            <en><![CDATA[Title of the new page]]></en>
+        </locale>
+        <locale name="projects.project.site.window.create.seoTitle">
+            <en><![CDATA[SEO title of the new page (optional)]]></en>
+        </locale>
+
         <locale name="control.upload.icon.submit">
             <en><![CDATA[Upload]]></en>
         </locale>
