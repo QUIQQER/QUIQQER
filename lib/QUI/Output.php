@@ -9,13 +9,12 @@ namespace QUI;
 use DOMElement;
 use ForceUTF8\Encoding;
 use Masterminds\HTML5;
-
 use QUI;
+use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Projects\Project;
 use QUI\Projects\Site;
 use QUI\Utils\Singleton;
 use QUI\Utils\StringHelper as StringUtils;
-use QUI\Projects\Media\Utils as MediaUtils;
 
 use function array_map;
 use function count;
@@ -101,6 +100,10 @@ class Output extends Singleton
      */
     public function parse($content)
     {
+        if (empty($content)) {
+            return '';
+        }
+
         QUI::getEvents()->fireEvent('outputParseBegin', [&$content]);
 
         // rewrite image
