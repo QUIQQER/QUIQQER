@@ -6,11 +6,20 @@
 
 namespace QUI\Cache;
 
+use MongoDB\BSON\Regex;
+use MongoDB\Client;
 use MongoDB\Collection;
+use MongoDB\Driver\Exception\BulkWriteException;
 use QUI;
-
 use Stash\Driver\AbstractDriver;
 use Stash\Exception\InvalidArgumentException;
+
+use function class_exists;
+use function file_exists;
+use function function_exists;
+use function implode;
+use function serialize;
+use function unserialize;
 
 /**
  * Class QuiqqerMongoDriver
@@ -19,7 +28,7 @@ use Stash\Exception\InvalidArgumentException;
 class QuiqqerMongoDriver extends AbstractDriver
 {
     /**
-     * @var \MongoDB\Collection
+     * @var Collection
      */
     private $collection;
 
@@ -32,10 +41,10 @@ class QuiqqerMongoDriver extends AbstractDriver
         parent::__construct($options);
 
         // workaround for mongo auto loading, // load mongo functions
-        if (!\function_exists('\MongoDB\is_in_transaction')) {
-            $file = OPT_DIR.'mongodb/mongodb/src/functions.php';
+        if (!function_exists('\MongoDB\is_in_transaction')) {
+            $file = OPT_DIR . 'mongodb/mongodb/src/functions.php';
 
-            if (\file_exists($file)) {
+            if (file_exists($file)) {
                 require $file;
             }
         }
@@ -47,7 +56,7 @@ class QuiqqerMongoDriver extends AbstractDriver
      */
     private static function mapKey($key)
     {
-        return \implode('/', $key);
+        return implode('/', $key);
     }
 
     /**
@@ -61,7 +70,7 @@ class QuiqqerMongoDriver extends AbstractDriver
 
         if ($doc) {
             return [
-                'data'       => \unserialize($doc['data']),
+                'data'       => unserialize($doc['data']),
                 'expiration' => $doc['expiration']
             ];
         }
@@ -74,16 +83,16 @@ class QuiqqerMongoDriver extends AbstractDriver
      */
     public function storeData($key, $data, $expiration)
     {
-        if ($this->collection instanceof \MongoDB\Collection) {
+        if ($this->collection instanceof Collection) {
             $id = self::mapKey($key);
 
             try {
                 $this->collection->replaceOne(['_id' => $id], [
                     '_id'        => $id,
-                    'data'       => \serialize($data),
+                    'data'       => serialize($data),
                     'expiration' => $expiration
                 ], ['upsert' => true]);
-            } catch (\MongoDB\Driver\Exception\BulkWriteException $ignored) {
+            } catch (BulkWriteException $ignored) {
                 // As of right now, BulkWriteException can be thrown by
                 // replaceOne in high-throughput environments where race
                 // conditions can occur
@@ -104,11 +113,11 @@ class QuiqqerMongoDriver extends AbstractDriver
             return true;
         }
 
-        $preg = "^".preg_quote(self::mapKey($key));
+        $preg = "^" . preg_quote(self::mapKey($key));
 
-        if ($this->collection instanceof \MongoDB\Collection) {
+        if ($this->collection instanceof Collection) {
             $this->collection->deleteMany([
-                '_id' => new \MongoDB\BSON\Regex($preg, '')
+                '_id' => new Regex($preg, '')
             ]);
         }
 
@@ -120,7 +129,7 @@ class QuiqqerMongoDriver extends AbstractDriver
      */
     public function purge()
     {
-        if ($this->collection instanceof \MongoDB\Collection) {
+        if ($this->collection instanceof Collection) {
             $this->collection->deleteMany([
                 'expiration' => ['$lte' => time()]
             ]);
@@ -153,10 +162,10 @@ class QuiqqerMongoDriver extends AbstractDriver
     {
         $options += $this->getDefaultOptions();
 
-        /* @var $client \MongoDB\Client */
+        /* @var $client Client */
         $Client = $options['mongo'];
 
-        if (!($Client instanceof \MongoDB\Client)) {
+        if (!($Client instanceof Client)) {
             throw new \InvalidArgumentException(
                 'MongoDB\Driver\Manager instance required'
             );
@@ -177,7 +186,7 @@ class QuiqqerMongoDriver extends AbstractDriver
      */
     public static function isAvailable()
     {
-        return \class_exists('\MongoDB\Client', false);
+        return class_exists('\MongoDB\Client', false);
     }
 
     /**
