@@ -37,7 +37,7 @@
     "html2text\/html2text": "1.0.1",
     "intervention\/image": "2.*",
     "t7systems\/blowfish": "1.0.0",
-    "dusank\/knapsack": "10.*",
+    "dusank\/knapsack": "8.*|9.*|10.*",
     "league\/climate": "3.*",
     "ramsey\/uuid": "3.*",
     "neitanod/forceutf8": "*",
