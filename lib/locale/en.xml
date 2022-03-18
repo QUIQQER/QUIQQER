@@ -4871,6 +4871,9 @@ After logging in you will be prompted to set a new password.
         <locale name="console.systemtool.password-reset">
             <en><![CDATA[Initiates a password reset]]></en>
         </locale>
+        <locale name="console.systemtool.clear-cache-path">
+            <en><![CDATA[Deletes a specific cache path. (--path="")]]></en>
+        </locale>
         <locale name="console.tool.project.rename.description">
             <en><![CDATA[Changes the name of an existing project.]]></en>
         </locale>
