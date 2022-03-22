@@ -6,8 +6,12 @@
 
 namespace QUI\Mail;
 
-use QUI;
 use PHPMailer\PHPMailer\PHPMailer;
+use QUI;
+
+use function explode;
+use function rtrim;
+use function trim;
 
 /**
  * Mail Manager
@@ -20,9 +24,9 @@ class Manager
     /**
      * mail queue manager
      *
-     * @var \QUI\Mail\Queue
+     * @var Queue|null
      */
-    protected $Queue = null;
+    protected ?Queue $Queue = null;
 
     /**
      * Send a mail
@@ -33,15 +37,15 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public function send($to, $subject, $body)
+    public function send(string $to, string $subject, string $body)
     {
         $Mailer = new Mailer();
 
-        $to = \trim($to);
-        $to = \explode(',', $to);
+        $to = trim($to);
+        $to = explode(',', $to);
 
         foreach ($to as $mail) {
-            $Mailer->addRecipient(\trim($mail));
+            $Mailer->addRecipient(trim($mail));
         }
 
         $Mailer->setSubject($subject);
@@ -52,9 +56,9 @@ class Manager
     /**
      * Return the mail queue manager
      *
-     * @return \QUI\Mail\Queue
+     * @return Queue
      */
-    public function getQueue()
+    public function getQueue(): Queue
     {
         if ($this->Queue === null) {
             $this->Queue = new Queue();
@@ -69,7 +73,7 @@ class Manager
      *
      * @return Mailer
      */
-    public function getMailer()
+    public function getMailer(): Mailer
     {
         return new Mailer();
     }
@@ -79,7 +83,7 @@ class Manager
      *
      * @return PHPMailer
      */
-    public function getPHPMailer()
+    public function getPHPMailer(): PHPMailer
     {
         $config = QUI::conf('mail');
         $Mail   = new PHPMailer(true);
@@ -99,7 +103,7 @@ class Manager
                 $Mail->SMTPDebug = (int)$config['SMTPDebug'];
 
                 $Mail->Debugoutput = function ($str, $level) {
-                    Log::write(\rtrim($str));
+                    Log::write(rtrim($str));
                 };
             }
 

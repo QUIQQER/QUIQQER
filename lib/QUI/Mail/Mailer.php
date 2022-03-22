@@ -6,8 +6,18 @@
 
 namespace QUI\Mail;
 
-use QUI;
+use Exception;
 use Html2Text\Html2Text;
+use QUI;
+
+use QUI\Projects\Project;
+
+use function explode;
+use function file_exists;
+use function is_array;
+use function preg_replace;
+use function str_replace;
+use function trim;
 
 /**
  * Mailer class sends a mail
@@ -23,7 +33,7 @@ class Mailer extends QUI\QDOM
     /**
      * Mail template
      *
-     * @var \QUI\Mail\Template
+     * @var Template
      */
     public $Template = null;
 
@@ -125,9 +135,9 @@ class Mailer extends QUI\QDOM
         $Output->setSetting('parse-to-picture-elements', false);
         $html = $Output->parse($html);
 
-        $html = \preg_replace('#<picture([^>]*)>#i', '', $html);
-        $html = \preg_replace('#<source([^>]*)>#i', '', $html);
-        $html = \str_replace('</picture>', '', $html);
+        $html = preg_replace('#<picture([^>]*)>#i', '', $html);
+        $html = preg_replace('#<source([^>]*)>#i', '', $html);
+        $html = str_replace('</picture>', '', $html);
 
         $PHPMailer->Subject = $this->getAttribute('subject');
         $PHPMailer->Body    = $html;
@@ -150,7 +160,7 @@ class Mailer extends QUI\QDOM
                 continue;
             }
 
-            if (\is_array($email)) {
+            if (is_array($email)) {
                 $PHPMailer->addAddress($email[0], $email[1]);
                 continue;
             }
@@ -163,7 +173,7 @@ class Mailer extends QUI\QDOM
                 continue;
             }
 
-            if (\is_array($email)) {
+            if (is_array($email)) {
                 $PHPMailer->addReplyTo($email[0], $email[1]);
                 continue;
             }
@@ -176,7 +186,7 @@ class Mailer extends QUI\QDOM
                 continue;
             }
 
-            if (\is_array($email)) {
+            if (is_array($email)) {
                 $PHPMailer->addCC($email[0], $email[1]);
                 continue;
             }
@@ -189,7 +199,7 @@ class Mailer extends QUI\QDOM
                 continue;
             }
 
-            if (\is_array($email)) {
+            if (is_array($email)) {
                 $PHPMailer->addBCC($email[0], $email[1]);
                 continue;
             }
@@ -198,8 +208,8 @@ class Mailer extends QUI\QDOM
         }
 
         if ((int)QUI::conf('mail', 'admin_bcc')) {
-            $adminBccMails = \trim(QUI::conf('mail', 'admin_mail'));
-            $adminBccMails = \explode(',', $adminBccMails);
+            $adminBccMails = trim(QUI::conf('mail', 'admin_mail'));
+            $adminBccMails = explode(',', $adminBccMails);
 
             foreach ($adminBccMails as $mail) {
                 if (!empty($mail)) {
@@ -212,7 +222,7 @@ class Mailer extends QUI\QDOM
 
         // attachments
         foreach ($this->attachments as $file) {
-            if (!\file_exists($file)) {
+            if (!file_exists($file)) {
                 continue;
             }
 
@@ -262,11 +272,11 @@ class Mailer extends QUI\QDOM
             Log::logDone($PHPMailer);
 
             return true;
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             Log::logException($Exception);
 
             throw new QUI\Exception(
-                'Mail Error: '.$Exception->getMessage()
+                'Mail Error: ' . $Exception->getMessage()
             );
         }
     }
@@ -350,9 +360,9 @@ class Mailer extends QUI\QDOM
     /**
      * Set the project object, for the mailer and the mailer template
      *
-     * @param \QUI\Projects\Project $Project
+     * @param Project $Project
      */
-    public function setProject(QUI\Projects\Project $Project)
+    public function setProject(Project $Project)
     {
         $this->setAttribute('Project', $Project);
         $this->Template->setAttribute('Project', $Project);
@@ -370,8 +380,8 @@ class Mailer extends QUI\QDOM
      */
     public function addRecipient(string $email, $name = false)
     {
-        $email = \trim($email);
-        $email = \explode(',', $email);
+        $email = trim($email);
+        $email = explode(',', $email);
 
         foreach ($email as $mail) {
             if ($name) {
@@ -390,8 +400,8 @@ class Mailer extends QUI\QDOM
      */
     public function addReplyTo(string $email, $name = false)
     {
-        $email = \trim($email);
-        $email = \explode(',', $email);
+        $email = trim($email);
+        $email = explode(',', $email);
 
         foreach ($email as $mail) {
             if ($name) {
@@ -410,8 +420,8 @@ class Mailer extends QUI\QDOM
      */
     public function addCC(string $email, $name = false)
     {
-        $email = \trim($email);
-        $email = \explode(',', $email);
+        $email = trim($email);
+        $email = explode(',', $email);
 
         foreach ($email as $mail) {
             if ($name) {
@@ -430,8 +440,8 @@ class Mailer extends QUI\QDOM
      */
     public function addBCC(string $email, $name = false)
     {
-        $email = \trim($email);
-        $email = \explode(',', $email);
+        $email = trim($email);
+        $email = explode(',', $email);
 
         foreach ($email as $mail) {
             if ($name) {
@@ -451,7 +461,7 @@ class Mailer extends QUI\QDOM
      */
     public function addAttachment(string $file): bool
     {
-        if (!\file_exists($file)) {
+        if (!file_exists($file)) {
             return false;
         }
 
@@ -469,7 +479,7 @@ class Mailer extends QUI\QDOM
      */
     public function addAttachments($files)
     {
-        if (!\is_array($files)) {
+        if (!is_array($files)) {
             $this->addAttachment($files);
 
             return;
