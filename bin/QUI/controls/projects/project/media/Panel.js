@@ -30,7 +30,7 @@ define('controls/projects/project/media/Panel', [
 ], function () {
     "use strict";
 
-    var lg                = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/quiqqer';
     var HIDE_HIDDEN_FILES = 1; // 1 = hide all hidden files, 0 = show all hidden files
 
     var QUI              = arguments[0],
@@ -125,15 +125,25 @@ define('controls/projects/project/media/Panel', [
             this.setAttribute('icon', 'fa fa-picture-o');
             this.parent(options);
 
-            this.$limitOptions = [10, 25, 50, 100, 250, 500, 1000, 2000, 5000];
+            this.$limitOptions = [
+                10,
+                25,
+                50,
+                100,
+                250,
+                500,
+                1000,
+                2000,
+                5000
+            ];
 
-            this.$Map    = null;
-            this.$Media  = Media || null;
-            this.$File   = null;
+            this.$Map = null;
+            this.$Media = Media || null;
+            this.$File = null;
             this.$Filter = null;
             this.$loaded = false;
 
-            this.$Pagination          = null;
+            this.$Pagination = null;
             this.$PaginationContainer = null;
 
             this.$children = {
@@ -144,7 +154,7 @@ define('controls/projects/project/media/Panel', [
 
             this.$selected = [];
 
-            this.$DOMEvents        = new PanelDOMEvents(this);
+            this.$DOMEvents = new PanelDOMEvents(this);
             this.$PanelContextMenu = new PanelContextMenu(this);
 
             this.addEvents({
@@ -241,7 +251,7 @@ define('controls/projects/project/media/Panel', [
                 return;
             }
 
-            var Omnigrid  = this.getBody().getElement('.omnigrid');
+            var Omnigrid = this.getBody().getElement('.omnigrid');
             var Container = this.getBody().getElement('.qui-media-content');
 
             if (!Omnigrid) {
@@ -490,7 +500,7 @@ define('controls/projects/project/media/Panel', [
 
                         if (self.$Media && self.$Media.getProject()) {
                             project = self.$Media.getProject().getName();
-                            lang    = self.$Media.getProject().getLang();
+                            lang = self.$Media.getProject().getLang();
                         }
 
                         new ProjectSelect({
@@ -535,7 +545,7 @@ define('controls/projects/project/media/Panel', [
                 }
 
                 // cached id?
-                var Project    = self.$Media.getProject();
+                var Project = self.$Media.getProject();
                 var cacheMedia = Project.getName() + '-' + Project.getLang() + '-id';
 
                 if (QUI.Storage.get(cacheMedia)) {
@@ -852,7 +862,10 @@ define('controls/projects/project/media/Panel', [
                     buttons: false
                 });
 
-            self.fireEvent('uploadOpenBegin', [self, Sheet]);
+            self.fireEvent('uploadOpenBegin', [
+                self,
+                Sheet
+            ]);
 
             extract = extract || false;
 
@@ -885,8 +898,8 @@ define('controls/projects/project/media/Panel', [
                     }
 
                     var height = Content.getSize().y -
-                        Parent.getSize().y -
-                        80; // 80 = content padding + form margin
+                                 Parent.getSize().y -
+                                 80; // 80 = content padding + form margin
 
                     // upload form
                     var Form = new UploadForm({
@@ -962,7 +975,10 @@ define('controls/projects/project/media/Panel', [
 
             var showSheet = function () {
                 Sheet.show().then(function () {
-                    self.fireEvent('uploadOpen', [self, Sheet]);
+                    self.fireEvent('uploadOpen', [
+                        self,
+                        Sheet
+                    ]);
                 });
             };
 
@@ -1259,7 +1275,7 @@ define('controls/projects/project/media/Panel', [
                 }
 
                 Child = children[i];
-                ext   = '';
+                ext = '';
 
                 if (Child.extension !== '') {
                     ext = '.' + Child.extension;
@@ -1351,7 +1367,7 @@ define('controls/projects/project/media/Panel', [
                 }
 
                 Child = children[i];
-                ext   = '';
+                ext = '';
 
                 if (Child.extension !== '') {
                     ext = '.' + Child.extension;
@@ -1481,7 +1497,10 @@ define('controls/projects/project/media/Panel', [
                     type   : Target.get('data-type')
                 };
 
-                this.fireEvent('childClick', [this, imageData]);
+                this.fireEvent('childClick', [
+                    this,
+                    imageData
+                ]);
                 return;
             }
 
@@ -1545,52 +1564,62 @@ define('controls/projects/project/media/Panel', [
 
             var Grid = new GridControl(GridContainer, {
                 storageKey : 'quiqqer-media-panel',
-                columnModel: [{
-                    header   : '&nbsp;',
-                    dataIndex: 'icon',
-                    dataType : 'image',
-                    width    : 30
-                }, {
-                    header   : Locale.get(lg, 'id'),
-                    dataIndex: 'id',
-                    dataType : 'integer',
-                    width    : 50
-                }, {
-                    header   : Locale.get(lg, 'name'),
-                    dataIndex: 'name',
-                    dataType : 'string',
-                    width    : 150
-                }, {
-                    header   : Locale.get(lg, 'extension'),
-                    dataIndex: 'extension',
-                    dataType : 'string',
-                    width    : 80
-                }, {
-                    header   : Locale.get(lg, 'title'),
-                    dataIndex: 'title',
-                    dataType : 'string',
-                    width    : 150
-                }, {
-                    header   : Locale.get(lg, 'c_date'),
-                    dataIndex: 'c_date',
-                    dataType : 'date',
-                    width    : 150
-                }, {
-                    header   : Locale.get(lg, 'c_user'),
-                    dataIndex: 'c_user',
-                    dataType : 'string',
-                    width    : 150
-                }, {
-                    header   : Locale.get(lg, 'e_date'),
-                    dataIndex: 'e_date',
-                    dataType : 'date',
-                    width    : 150
-                }, {
-                    header   : Locale.get(lg, 'e_user'),
-                    dataIndex: 'e_user',
-                    dataType : 'string',
-                    width    : 150
-                }],
+                columnModel: [
+                    {
+                        header   : '&nbsp;',
+                        dataIndex: 'icon',
+                        dataType : 'image',
+                        width    : 30
+                    },
+                    {
+                        header   : Locale.get(lg, 'id'),
+                        dataIndex: 'id',
+                        dataType : 'integer',
+                        width    : 50
+                    },
+                    {
+                        header   : Locale.get(lg, 'name'),
+                        dataIndex: 'name',
+                        dataType : 'string',
+                        width    : 150
+                    },
+                    {
+                        header   : Locale.get(lg, 'extension'),
+                        dataIndex: 'extension',
+                        dataType : 'string',
+                        width    : 80
+                    },
+                    {
+                        header   : Locale.get(lg, 'title'),
+                        dataIndex: 'title',
+                        dataType : 'string',
+                        width    : 150
+                    },
+                    {
+                        header   : Locale.get(lg, 'c_date'),
+                        dataIndex: 'c_date',
+                        dataType : 'date',
+                        width    : 150
+                    },
+                    {
+                        header   : Locale.get(lg, 'c_user'),
+                        dataIndex: 'c_user',
+                        dataType : 'string',
+                        width    : 150
+                    },
+                    {
+                        header   : Locale.get(lg, 'e_date'),
+                        dataIndex: 'e_date',
+                        dataType : 'date',
+                        width    : 150
+                    },
+                    {
+                        header   : Locale.get(lg, 'e_user'),
+                        dataIndex: 'e_user',
+                        dataType : 'string',
+                        width    : 150
+                    }
+                ],
 
                 pagination       : true,
                 filterInput      : true,
@@ -1642,7 +1671,10 @@ define('controls/projects/project/media/Panel', [
                             type   : ''
                         };
 
-                        self.fireEvent('childClick', [self, imageData]);
+                        self.fireEvent('childClick', [
+                            self,
+                            imageData
+                        ]);
                         return;
                     }
 
@@ -1708,7 +1740,7 @@ define('controls/projects/project/media/Panel', [
          * @method controls/projects/project/media/Panel#createFolder
          */
         createFolder: function () {
-            var self = this;
+            const self = this;
 
             require(['qui/controls/windows/Prompt'], function (Prompt) {
                 new Prompt({
@@ -1748,7 +1780,7 @@ define('controls/projects/project/media/Panel', [
          * @param {String} name
          */
         createFolderReplaceName: function (name) {
-            var self = this;
+            const self = this;
 
             require(['qui/controls/windows/Confirm'], function (Confirm) {
                 new Confirm({
@@ -1970,10 +2002,10 @@ define('controls/projects/project/media/Panel', [
                 mimeType = '';
 
             if (typeOf(Item) === 'element') {
-                elmtype  = Item.get('data-type');
+                elmtype = Item.get('data-type');
                 mimeType = Item.get('data-mimetype');
             } else {
-                elmtype  = Item.type;
+                elmtype = Item.type;
                 mimeType = Item.mimetype;
             }
 
@@ -2009,7 +2041,7 @@ define('controls/projects/project/media/Panel', [
                 return;
             }
 
-            var self = this;
+            const self = this;
 
             self.Loader.show();
 
@@ -2035,7 +2067,7 @@ define('controls/projects/project/media/Panel', [
                 return Promise.resolve();
             }
 
-            var self = this;
+            const self = this;
 
             return new Promise(function (resolve) {
                 self.Loader.show();
@@ -2139,7 +2171,10 @@ define('controls/projects/project/media/Panel', [
             // mootools draging
             new Drag.Move(this.$Drag, {
 
-                droppables: ['[data-type="folder"]', '.media-drop'].join(','),
+                droppables: [
+                    '[data-type="folder"]',
+                    '.media-drop'
+                ].join(','),
                 onComplete: this.$dragComplete.bind(this),
                 onDrop    : this.$drop.bind(this),
 
@@ -2249,7 +2284,10 @@ define('controls/projects/project/media/Panel', [
          * @param {DOMEvent} event
          */
         $dragComplete: function (event) {
-            this.fireEvent('dragDropComplete', [this, event]);
+            this.fireEvent('dragDropComplete', [
+                this,
+                event
+            ]);
             this.$dragStop();
         },
 
@@ -2417,7 +2455,7 @@ define('controls/projects/project/media/Panel', [
             }
 
             var Content = this.getContent();
-            var Node    = Content.getElement('[data-id="' + Item.getId() + '"]');
+            var Node = Content.getElement('[data-id="' + Item.getId() + '"]');
 
             if (!Node) {
                 return;
@@ -2451,12 +2489,12 @@ define('controls/projects/project/media/Panel', [
                     continue;
                 }
 
-                this.$children[i].active   = Item.isActive();
-                this.$children[i].e_date   = Item.getAttribute('e_date');
-                this.$children[i].name     = Item.getAttribute('name');
+                this.$children[i].active = Item.isActive();
+                this.$children[i].e_date = Item.getAttribute('e_date');
+                this.$children[i].name = Item.getAttribute('name');
                 this.$children[i].priority = Item.getAttribute('priority');
-                this.$children[i].short    = Item.getAttribute('short');
-                this.$children[i].title    = Item.getAttribute('title');
+                this.$children[i].short = Item.getAttribute('short');
+                this.$children[i].title = Item.getAttribute('title');
                 break;
             }
         },
@@ -2480,7 +2518,7 @@ define('controls/projects/project/media/Panel', [
                 clearTimeout(this.$filterDelay);
             }
 
-            var self = this;
+            const self = this;
 
             this.$filterDelay = function () {
                 var i, len, Child, Title;
@@ -2520,8 +2558,8 @@ define('controls/projects/project/media/Panel', [
          * @param {DOMEvent} event
          */
         $onPaginationLimitChange: function (event) {
-            var total        = this.getAttribute('total');
-            var limit        = event.target.value;
+            var total = this.getAttribute('total');
+            var limit = event.target.value;
             var newPageCount = Math.ceil(total / limit);
 
             this.setAttribute('limit', limit);
@@ -2542,7 +2580,7 @@ define('controls/projects/project/media/Panel', [
                 return;
             }
 
-            var self = this;
+            const self = this;
 
             this.Loader.show();
 
@@ -2565,7 +2603,7 @@ define('controls/projects/project/media/Panel', [
 
                 var refreshPagination = self.getAttribute('limit') !== currentLimit;
 
-                var total        = self.getAttribute('total');
+                var total = self.getAttribute('total');
                 var newPageCount = Math.ceil(total / currentLimit);
 
                 self.setAttribute('limit', currentLimit);
@@ -2598,6 +2636,9 @@ define('controls/projects/project/media/Panel', [
                             if (refreshPagination) {
                                 self.refresh();
                             }
+                        }).catch(function (e) {
+                            console.error(e);
+                            self.Loader.hide();
                         });
                     });
                 });

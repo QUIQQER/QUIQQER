@@ -8,6 +8,8 @@ namespace QUI\Controls;
 
 use QUI;
 
+use function dirname;
+
 /**
  * Alphabet sorting
  *
@@ -49,7 +51,7 @@ class Breadcrumb extends QUI\Control
 
         $this->setAttribute(
             'height',
-            (int)$this->getAttribute('controlHeight').'px'
+            (int)$this->getAttribute('controlHeight') . 'px'
         );
 
         $this->setStyle('height', $this->getAttribute('controlHeight'));
@@ -79,8 +81,8 @@ class Breadcrumb extends QUI\Control
                 break;
         }
 
-        $this->addCSSFile(\dirname(__FILE__).$css);
+        $this->addCSSFile(dirname(__FILE__) . $css);
 
-        return $Engine->fetch(\dirname(__FILE__).$template);
+        return $Engine->fetch(dirname(__FILE__) . $template);
     }
 }

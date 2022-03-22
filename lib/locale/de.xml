@@ -5043,8 +5043,11 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         <locale name="console.systemtool.password-reset">
             <de><![CDATA[Initiiert ein Passwort-Reset]]></de>
         </locale>
+        <locale name="console.systemtool.clear-cache-path">
+            <de><![CDATA[Löscht einen bestimmten cache path.]]></de>
+        </locale>
         <locale name="console.tool.project.rename.description">
-            <de><![CDATA[Benennt ein vorhandenes Projekt um.]]></de>
+            <de><![CDATA[Benennt ein vorhandenes Projekt um.  (--path="")]]></de>
         </locale>
         <locale name="console.tool.project.delete.description">
             <de><![CDATA[Entfernt ein Projekt.]]></de>

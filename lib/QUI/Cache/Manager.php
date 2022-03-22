@@ -6,8 +6,25 @@
 
 namespace QUI\Cache;
 
+use DateInterval;
+use DateTimeInterface;
+use MongoDB\Client;
 use QUI;
+use QUI\Config;
 use Stash;
+
+use function array_unshift;
+use function class_exists;
+use function explode;
+use function file_put_contents;
+use function get_class;
+use function is_array;
+use function is_dir;
+use function is_null;
+use function is_numeric;
+use function is_string;
+use function md5;
+use function strpos;
 
 /**
  * Cache Manager
@@ -35,7 +52,7 @@ class Manager
     /**
      * Cache Manager Configs
      *
-     * @var \QUI\Config
+     * @var Config
      */
     public static $Config = null;
 
@@ -80,7 +97,7 @@ class Manager
     /**
      * Cache Settings
      *
-     * @return QUI\Config
+     * @return Config
      */
     public static function getConfig()
     {
@@ -88,7 +105,7 @@ class Manager
             try {
                 self::$Config = QUI::getConfig('etc/cache.ini.php');
             } catch (QUI\Exception $Exception) {
-                \file_put_contents(CMS_DIR.'etc/cache.ini.php', '');
+                file_put_contents(CMS_DIR . 'etc/cache.ini.php', '');
 
                 self::$Config = QUI::getConfig('etc/cache.ini.php');
             }
@@ -108,22 +125,22 @@ class Manager
     public static function getStash($key = '')
     {
         // pfad erstellen falls nicht erstellt ist
-        if (!\is_dir(VAR_DIR.'cache/stack/')) {
-            QUI\Utils\System\File::mkdir(VAR_DIR.'cache/stack/');
+        if (!is_dir(VAR_DIR . 'cache/stack/')) {
+            QUI\Utils\System\File::mkdir(VAR_DIR . 'cache/stack/');
         }
 
-        if (!\is_string($key)) {
+        if (!is_string($key)) {
             throw new QUI\Exception('Cache: No String given', 405, [
                 'key' => $key
             ]);
         }
 
         if (!empty($key)) {
-            $key = \md5(__FILE__).'/qui/'.$key;
+            $key = md5(__FILE__) . '/qui/' . $key;
         }
 
         if (empty($key)) {
-            $key = \md5(__FILE__).'/qui/';
+            $key = md5(__FILE__) . '/qui/';
         }
 
         $key = QUI\Utils\StringHelper::replaceDblSlashes($key);
@@ -180,7 +197,7 @@ class Manager
             switch ($confHandler) {
                 case 'apc':
                     try {
-                        \array_unshift($handlers, self::getDriver([], 'apc'));
+                        array_unshift($handlers, self::getDriver([], 'apc'));
                     } catch (Stash\Exception\RuntimeException $Exception) {
                     }
 
@@ -204,7 +221,7 @@ class Manager
 
                 case 'memcache':
                     try {
-                        \array_unshift($handlers, self::getDriver([], 'memcache'));
+                        array_unshift($handlers, self::getDriver([], 'memcache'));
                     } catch (Stash\Exception\RuntimeException $Exception) {
                     }
 
@@ -212,7 +229,7 @@ class Manager
 
                 case 'mongo':
                     try {
-                        \array_unshift($handlers, self::getDriver([], 'mongo'));
+                        array_unshift($handlers, self::getDriver([], 'mongo'));
                     } catch (Stash\Exception\RuntimeException $Exception) {
                     }
 
@@ -272,13 +289,13 @@ class Manager
 
             case 'redis':
                 $conf = $Config->get('general', 'redis');
-                $conf = \explode(',', $conf);
+                $conf = explode(',', $conf);
 
                 $servers = [];
 
-                if (\is_array($conf) && !empty($conf[0])) {
+                if (is_array($conf) && !empty($conf[0])) {
                     foreach ($conf as $server) {
-                        $servers[] = \explode(':', $server);
+                        $servers[] = explode(':', $server);
                     }
                 }
 
@@ -320,7 +337,7 @@ class Manager
                 $servers     = [];
 
                 for ($i = 1; $i <= $serverCount; $i++) {
-                    $section = 'memcache'.$i;
+                    $section = 'memcache' . $i;
 
                     $servers[] = [
                         $Config->get($section, 'host'),
@@ -361,7 +378,7 @@ class Manager
                 break;
 
             case 'mongo':
-                if (!\class_exists('\MongoDB\Client')) {
+                if (!class_exists('\MongoDB\Client')) {
                     QUI\System\Log::write(
                         'Mongo DB Driver not found. 
                         Please install MongoDB\Client (php MongoDB extension) and the mongodb/mongodb package.
@@ -387,17 +404,17 @@ class Manager
                         $collection = $conf['collection'];
                     }
 
-                    if (\strpos($host, 'mongodb://') === false) {
-                        $host = 'mongodb://'.$host;
+                    if (strpos($host, 'mongodb://') === false) {
+                        $host = 'mongodb://' . $host;
                     }
 
                     if (!empty($conf['username']) && !empty($conf['password'])) {
-                        $Client = new \MongoDB\Client($host, [
+                        $Client = new Client($host, [
                             "username" => $conf['username'],
                             "password" => $conf['password']
                         ]);
                     } else {
-                        $Client = new \MongoDB\Client($host);
+                        $Client = new Client($host);
                     }
 
                     return new QuiqqerMongoDriver([
@@ -413,14 +430,14 @@ class Manager
         // default = filesystem
         $conf   = $Config->get('filesystem');
         $params = [
-            'path' => VAR_DIR.'cache/stack/'
+            'path' => VAR_DIR . 'cache/stack/'
         ];
 
-        if (!empty($conf['path']) && \is_dir($conf['path'])) {
+        if (!empty($conf['path']) && is_dir($conf['path'])) {
             $params['path'] = $conf['path'];
         }
 
-        if (!empty($options['path']) && \is_dir($options['path'])) {
+        if (!empty($options['path']) && is_dir($options['path'])) {
             $params['path'] = $options['path'];
         }
 
@@ -466,17 +483,17 @@ class Manager
      */
     public static function getFileSystemCache()
     {
-        if (!\is_null(self::$FileSystemStash)) {
+        if (!is_null(self::$FileSystemStash)) {
             return self::$FileSystemStash;
         }
 
         $Config = self::getConfig();
         $conf   = $Config->get('filesystem');
         $params = [
-            'path' => VAR_DIR.'cache/stack/'
+            'path' => VAR_DIR . 'cache/stack/'
         ];
 
-        if (!empty($conf['path']) && \is_dir($conf['path'])) {
+        if (!empty($conf['path']) && is_dir($conf['path'])) {
             $params['path'] = $conf['path'];
         }
 
@@ -508,7 +525,7 @@ class Manager
             $handlers = self::$handlers;
 
             foreach ($handlers as $Handler) {
-                if (\get_class($Handler) == $type) {
+                if (get_class($Handler) == $type) {
                     return $Handler;
                 }
             }
@@ -532,7 +549,7 @@ class Manager
      *
      * @param string $name
      * @param mixed $data
-     * @param \DateTimeInterface|int|\DateInterval|null $time Seconds, Interval or exact date at/after which the cache item expires.
+     * @param DateTimeInterface|int|DateInterval|null $time Seconds, Interval or exact date at/after which the cache item expires.
      *                                                         If $time is null, the cache will try to use the default value,
      *                                                         if no default value is set, the maximum possible time for the used implementation will be used.
      */
@@ -546,11 +563,11 @@ class Manager
             $Stash = self::getStash($name);
             $Stash->set($data);
 
-            if ($time instanceof \DateTimeInterface) {
+            if ($time instanceof DateTimeInterface) {
                 $Stash->expiresAt($time);
             }
 
-            if (\is_numeric($time) || $time instanceof \DateInterval) {
+            if (is_numeric($time) || $time instanceof DateInterval) {
                 $Stash->expiresAfter($time);
             }
 
@@ -670,7 +687,7 @@ class Manager
 
 
         try {
-            QUI\Utils\System\File::unlink(VAR_DIR.'cache/compile');
+            QUI\Utils\System\File::unlink(VAR_DIR . 'cache/compile');
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
         }
@@ -681,8 +698,8 @@ class Manager
      */
     public static function clearTemplateCache()
     {
-        QUI\Utils\System\File::unlink(VAR_DIR.'cache/templates');
-        QUI\Utils\System\File::unlink(VAR_DIR.'cache/compile');
+        QUI\Utils\System\File::unlink(VAR_DIR . 'cache/templates');
+        QUI\Utils\System\File::unlink(VAR_DIR . 'cache/compile');
 
         self::clear('quiqqer/template');
 
@@ -716,7 +733,7 @@ class Manager
      */
     public static function clearProjectCache($projectName)
     {
-        self::clear('quiqqer/projects/'.$projectName);
+        self::clear('quiqqer/projects/' . $projectName);
 
         try {
             QUI::getEvents()->fireEvent('clearProjectCache', [$projectName]);
@@ -824,7 +841,7 @@ class Manager
      */
     public static function clearPackageCache($packageName)
     {
-        self::clear('quiqqer/package/'.$packageName);
+        self::clear('quiqqer/package/' . $packageName);
 
         try {
             QUI::getEvents()->fireEvent('clearPackageCache', [$packageName]);
@@ -879,7 +896,7 @@ class Manager
         }
 
         try {
-            QUI::getTemp()->moveToTemp(VAR_DIR.'cache/');
+            QUI::getTemp()->moveToTemp(VAR_DIR . 'cache/');
 
             self::getStash('')->clear();
 
@@ -904,7 +921,7 @@ class Manager
      */
     public static function getCacheFolderSize($force = false)
     {
-        $cacheFolder = VAR_DIR."cache/";
+        $cacheFolder = VAR_DIR . "cache/";
 
         return QUI\Utils\System\Folder::getFolderSize($cacheFolder, $force);
     }
@@ -917,7 +934,7 @@ class Manager
      */
     public static function getCacheFolderSizeTimestamp()
     {
-        $cacheFolder = VAR_DIR."cache/";
+        $cacheFolder = VAR_DIR . "cache/";
 
         return QUI\Utils\System\Folder::getFolderSizeTimestamp($cacheFolder);
     }

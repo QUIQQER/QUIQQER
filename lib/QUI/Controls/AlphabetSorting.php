@@ -8,6 +8,10 @@ namespace QUI\Controls;
 
 use QUI;
 
+use function dirname;
+use function is_int;
+use function is_string;
+
 /**
  * Alphabet sorting
  *
@@ -25,7 +29,7 @@ class AlphabetSorting extends QUI\Control
         parent::__construct($attributes);
 
         $this->addCSSFile(
-            \dirname(__FILE__).'/AlphabetSorting.css'
+            dirname(__FILE__) . '/AlphabetSorting.css'
         );
 
         $this->setAttribute('class', 'quiqqer-alphabetSorting grid-100 grid-parent');
@@ -80,7 +84,7 @@ class AlphabetSorting extends QUI\Control
             }
 
 
-            if (\is_string($value) || \is_int($value)) {
+            if (is_string($value) || is_int($value)) {
                 $params[$key] = $value;
             }
         }
@@ -93,6 +97,6 @@ class AlphabetSorting extends QUI\Control
             'Project'   => $Project
         ]);
 
-        return $Engine->fetch(\dirname(__FILE__).'/AlphabetSorting.html');
+        return $Engine->fetch(dirname(__FILE__) . '/AlphabetSorting.html');
     }
 }

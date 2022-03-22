@@ -2,8 +2,16 @@
 
 namespace QUI\Cache;
 
+use MongoDB\Client;
 use QUI;
 use Stash;
+
+use function explode;
+use function file_put_contents;
+use function is_array;
+use function is_dir;
+use function md5;
+use function strpos;
 
 /**
  * Class LongTermCache
@@ -11,14 +19,14 @@ use Stash;
 class LongTermCache
 {
     /**
-     * @var null
+     * @var null|QUI\Config
      */
-    protected static $Config = null;
+    protected static ?QUI\Config $Config = null;
 
     /**
-     * @var null
+     * @var null|Stash\Pool
      */
-    protected static $Pool = null;
+    protected static ?Stash\Pool $Pool = null;
 
     /**
      * @var null
@@ -113,7 +121,7 @@ class LongTermCache
     {
         $Config = self::getConfig();
 
-        if ($Config->get('longtime', 'type') === 'filesystem' && !\is_dir(self::fileSystemPath())) {
+        if ($Config->get('longtime', 'type') === 'filesystem' && !is_dir(self::fileSystemPath())) {
             QUI\Utils\System\File::mkdir(self::fileSystemPath());
         }
     }
@@ -129,7 +137,7 @@ class LongTermCache
             try {
                 self::$Config = QUI::getConfig('etc/cache.ini.php');
             } catch (QUI\Exception $Exception) {
-                \file_put_contents(CMS_DIR.'etc/cache.ini.php', '');
+                file_put_contents(CMS_DIR . 'etc/cache.ini.php', '');
 
                 self::$Config = QUI::getConfig('etc/cache.ini.php');
             }
@@ -141,7 +149,7 @@ class LongTermCache
     /**
      * @return Stash\Pool
      */
-    protected static function getPool()
+    protected static function getPool(): ?Stash\Pool
     {
         if (self::$Pool === null) {
             self::$Pool = new Stash\Pool(self::getDriver());
@@ -165,13 +173,13 @@ class LongTermCache
         switch ($type) {
             case 'redis':
                 $conf = $Config->get('longtime', 'redis_server');
-                $conf = \explode(',', $conf);
+                $conf = explode(',', $conf);
 
                 $servers = [];
 
-                if (\is_array($conf) && !empty($conf[0])) {
+                if (is_array($conf) && !empty($conf[0])) {
                     foreach ($conf as $server) {
-                        $servers[] = \explode(':', $server);
+                        $servers[] = explode(':', $server);
                     }
                 }
 
@@ -226,17 +234,17 @@ class LongTermCache
                         $collection = $conf['mongo_collection'];
                     }
 
-                    if (\strpos($host, 'mongodb://') === false) {
-                        $host = 'mongodb://'.$host;
+                    if (strpos($host, 'mongodb://') === false) {
+                        $host = 'mongodb://' . $host;
                     }
 
                     if (!empty($conf['mongo_username']) && !empty($conf['mongo_password'])) {
-                        $Client = new \MongoDB\Client($host, [
+                        $Client = new Client($host, [
                             "username" => $conf['mongo_username'],
                             "password" => $conf['mongo_password']
                         ]);
                     } else {
-                        $Client = new \MongoDB\Client($host);
+                        $Client = new Client($host);
                     }
 
                     self::$Driver = new QuiqqerMongoDriver([
@@ -255,7 +263,7 @@ class LongTermCache
                 'path' => self::fileSystemPath()
             ];
 
-            if (!empty($conf['file_path']) && \is_dir($conf['file_path'])) {
+            if (!empty($conf['file_path']) && is_dir($conf['file_path'])) {
                 $params['path'] = $conf['file_path'];
             }
 
@@ -269,16 +277,16 @@ class LongTermCache
      * @param $name
      * @return string
      */
-    protected static function generateStorageKey($name)
+    protected static function generateStorageKey($name): string
     {
-        return \md5(__FILE__).'/quiqqer-lt/'.$name;
+        return md5(__FILE__) . '/quiqqer-lt/' . $name;
     }
 
     /**
      * @return string
      */
-    public static function fileSystemPath()
+    public static function fileSystemPath(): string
     {
-        return VAR_DIR.'cache/longtime/';
+        return VAR_DIR . 'cache/longtime/';
     }
 }

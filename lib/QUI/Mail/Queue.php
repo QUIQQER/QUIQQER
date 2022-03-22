@@ -369,6 +369,18 @@ class Queue
             $PhpMailer->Subject  = $params['subject'];
             $PhpMailer->Body     = $html;
 
+            try {
+                QUI::getEvents()->fireEvent('mailerSendBegin', [$this, $PhpMailer]);
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
+
+            try {
+                QUI::getEvents()->fireEvent('mailerSend', [$this, $PhpMailer]);
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
+
             Log::logSend($PhpMailer);
 
             $PhpMailer->send();
