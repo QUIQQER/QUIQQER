@@ -62,8 +62,8 @@ define('controls/editors/Editor', [
 
         initialize: function (Manager, options) {
             this.$Manager = Manager;
-            this.$Elm     = null;
-            this.$Input   = null;
+            this.$Elm = null;
+            this.$Input = null;
             this.$Project = null;
 
             if (typeof this.$Manager === 'undefined') {
@@ -74,9 +74,9 @@ define('controls/editors/Editor', [
 
             this.Loader = null;
 
-            this.$Instance  = null;
+            this.$Instance = null;
             this.$Container = null;
-            this.$loaded    = false;
+            this.$loaded = false;
 
             this.addEvents({
                 onLoaded: this.$onLoaded,
@@ -151,7 +151,7 @@ define('controls/editors/Editor', [
         $onLoaded: function () {
             let Document = this.getDocument();
 
-            let CkEditorMainInput = undefined;
+            let CkEditorMainInput;
 
             if (this.isCkEditor5()) {
                 CkEditorMainInput = Document.querySelector('.ck .ck-editor__main');
@@ -167,17 +167,27 @@ define('controls/editors/Editor', [
                 return;
             }
 
-           if (this.getAttribute('bodyId')) {
-               CkEditorMainInput.id = this.getAttribute('bodyId');
-           }
+            if (this.getAttribute('bodyId')) {
+                CkEditorMainInput.id = this.getAttribute('bodyId');
+            }
 
-           if (this.getAttribute('bodyClass')) {
-               CkEditorMainInput.classList.add(this.getAttribute('bodyClass'));
-           }
+            if (this.getAttribute('bodyClass')) {
+                let classes = this.getAttribute('bodyClass');
 
-           if (this.getAttribute('content')) {
-               this.setContent(this.getAttribute('content'));
-           }
+                if (classes) {
+                    classes = classes.split(' ');
+                } else {
+                    classes = [];
+                }
+
+                for (let i = 0, len = classes.length; i < len; i++) {
+                    CkEditorMainInput.classList.add(classes[i]);
+                }
+            }
+
+            if (this.getAttribute('content')) {
+                this.setContent(this.getAttribute('content'));
+            }
 
             this.Loader.hide();
         },
@@ -203,7 +213,7 @@ define('controls/editors/Editor', [
 
             if (nodeName === 'INPUT' || nodeName === 'TEXTAREA') {
                 this.$Input = this.$Elm;
-                this.$Elm   = this.create();
+                this.$Elm = this.create();
 
                 this.$Input.set('type', 'hidden');
                 this.$Elm.wraps(this.$Input);
@@ -277,7 +287,10 @@ define('controls/editors/Editor', [
          */
         setContent: function (content) {
             this.setAttribute('content', content);
-            this.fireEvent('setContent', [content, this]);
+            this.fireEvent('setContent', [
+                content,
+                this
+            ]);
         },
 
         /**
@@ -451,12 +464,18 @@ define('controls/editors/Editor', [
             if (file.indexOf("//") === 0 ||
                 file.indexOf("https://") === 0 ||
                 file.indexOf("http://") === 0) {
-                this.fireEvent('addCSS', [file, this]);
+                this.fireEvent('addCSS', [
+                    file,
+                    this
+                ]);
                 return;
             }
 
             if (!file.indexOf('?')) {
-                this.fireEvent('addCSS', [file, this]);
+                this.fireEvent('addCSS', [
+                    file,
+                    this
+                ]);
                 return;
             }
 
@@ -464,7 +483,10 @@ define('controls/editors/Editor', [
                 file = file + '?lu=' + QUIQQER.lu;
             }
 
-            this.fireEvent('addCSS', [file, this]);
+            this.fireEvent('addCSS', [
+                file,
+                this
+            ]);
         },
 
         /**
@@ -490,7 +512,7 @@ define('controls/editors/Editor', [
         openProject: function (options) {
             if (this.$Project) {
                 options.project = this.$Project.getName();
-                options.lang    = this.$Project.getLang();
+                options.lang = this.$Project.getLang();
             }
 
             require(['controls/projects/Popup'], function (Popup) {
@@ -503,7 +525,7 @@ define('controls/editors/Editor', [
          *
          * @returns {boolean}
          */
-        isCkEditor5: function() {
+        isCkEditor5: function () {
             // CKEditor 4 does not define CKEDITOR_VERSION, but CKEditor 5 does
             // This is probably not the best way to do this.
             // But afaik the editor's version is unknown before initializing it without additional Ajax requests
