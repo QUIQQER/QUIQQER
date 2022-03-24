@@ -1067,6 +1067,13 @@ class Utils
         $parts   = explode('/', $parts[1]);
         $project = array_shift($parts);
 
+        if (!QUI::getProjectManager()::existsProject($project)) {
+            throw new QUI\Exception(
+                'File not found',
+                ErrorCodes::FILE_NOT_FOUND
+            );
+        }
+
         // if the element (image) is resized resize
         $fileName = array_pop($parts);
 
