@@ -1855,7 +1855,7 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[Delete site shortcut]]></en>
         </locale>
         <locale name="projects.project.site.panel.window.create.title">
-            <en><![CDATA[How be called the new page?]]></en>
+            <en><![CDATA[Create new Site]]></en>
         </locale>
         <locale name="projects.project.site.panel.unlock">
             <en><![CDATA[Unlock anyway]]></en>

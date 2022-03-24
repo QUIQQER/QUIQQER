@@ -11,6 +11,7 @@ use QUI\Permissions\Permission;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\DOM;
 use QUI\Utils\Text\XML;
+use QUI\Cache\Manager as QUICacheManager;
 
 /**
  * The Project Manager
@@ -820,6 +821,9 @@ class Manager
 
         $Config->save();
 
+        // Clear projects cache
+        QUI\Cache\Manager::clearProjectsCache();
+
         // Project setup
         $Project = self::getProject($name);
         $Project->refresh();
@@ -1260,5 +1264,39 @@ class Manager
         }
 
         return $result;
+    }
+
+    /**
+     * Check if a project with given name exists.
+     *
+     * @param string $projectName
+     * @return bool
+     */
+    public static function existsProject(string $projectName): bool
+    {
+        if (isset(self::$projects[$projectName])) {
+            return true;
+        }
+
+        $cacheName = 'quiqqer/projects/__exists/'.$projectName;
+
+        try {
+            return QUICacheManager::get($cacheName);
+        } catch (\Exception $Exception) {
+            // re-build cache
+        }
+
+        try {
+            $config = Manager::getConfig()->toArray();
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            return false;
+        }
+
+        $projectExists = isset($config[$projectName]);
+
+        QUICacheManager::set($cacheName, $projectExists);
+
+        return $projectExists;
     }
 }
