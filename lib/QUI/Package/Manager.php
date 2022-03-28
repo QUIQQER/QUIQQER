@@ -20,12 +20,12 @@ if (!defined('JSON_UNESCAPED_UNICODE')) {
 
 use Composer\Semver\VersionParser;
 use DOMElement;
+use DOMXPath;
 use Exception;
 use QUI;
+use QUI\Cache\Manager as QUICacheManager;
 use QUI\Projects\Project;
 use QUI\Utils\System\File as QUIFile;
-use QUI\Cache\Manager as QUICacheManager;
-
 use UnexpectedValueException;
 
 use function array_filter;
@@ -1796,6 +1796,7 @@ class Manager extends QUI\QDOM
         $Last->set('quiqqer', 'lastUpdate', time());
         $Last->save();
 
+        QUI::getDataBase()->table()->truncate(QUI::getDBTableName('updateChecks'));
         QUI::getEvents()->fireEvent('updateEnd');
     }
 
@@ -2342,7 +2343,7 @@ class Manager extends QUI\QDOM
         }
 
         $Dom   = QUI\Utils\Text\XML::getDomFromXml($siteXml);
-        $XPath = new \DOMXPath($Dom);
+        $XPath = new DOMXPath($Dom);
         $Types = $XPath->query('//type[@type="' . $type . '"]');
 
         if (!$Types->length) {

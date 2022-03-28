@@ -168,13 +168,22 @@ define('controls/packages/System', [
                 }).then(function () {
                     return self.refreshLastUpdateCheckDate();
                 }).then(function () {
+                    return Packages.getOutdated(false).then(function (result) {
+                        if (result && result.length) {
+                            self.$list = result;
+                            self.viewList();
+                        } else {
+                            self.$list = [];
+                        }
+                    });
+                }).then(function () {
                     self.fireEvent('load', [self]);
                 });
             });
         },
 
         /**
-         * Refrsh the last update date display
+         * Refresh the last update date display
          *
          * @returns {Promise}
          */
@@ -218,9 +227,7 @@ define('controls/packages/System', [
 
             return QUI.getMessageHandler().then(function (MH) {
                 return MH.addLoading(QUILocale.get(lg, 'message.setup.runs'));
-
             }).then(function (Loading) {
-
                 return Packages.setup().then(function () {
                     return Translator.refreshLocale();
                 }).then(function () {
