@@ -5983,6 +5983,23 @@ After logging in you will be prompted to set a new password.
         <locale name="message.handler.no.messages">
             <en><![CDATA[No messages received]]></en>
         </locale>
+
+        <locale name="confirm.window.system.update.title">
+            <en><![CDATA[Perform system update]]></en>
+        </locale>
+        <locale name="confirm.window.system.update.text">
+            <en><![CDATA[Perform system update]]></en>
+        </locale>
+        <locale name="confirm.window.system.update.button.exec">
+            <en><![CDATA[Perform system update]]></en>
+        </locale>
+        <locale name="confirm.window.system.update.information">
+            <en><![CDATA[
+            You want to update your QUIQQER system.
+            Please only perform the update if you are sure about this step.
+            Note that if an error occurs, this may cause the site to become inaccessible.
+            ]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/controls" datatype="php,js">
         <locale name="package.title">

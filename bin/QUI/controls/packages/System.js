@@ -379,6 +379,9 @@ define('controls/packages/System', [
             return Packages.update(pkg);
         },
 
+        /**
+         * opens the execution window
+         */
         $openSetupExecuteWindow: function () {
             new QUIConfirm({
                 icon       : 'fa fa-check-circle-o',
@@ -386,7 +389,7 @@ define('controls/packages/System', [
                 title      : QUILocale.get(lg, 'confirm.window.system.update.title'),
                 information: QUILocale.get(lg, 'confirm.window.system.update.information'),
                 text       : QUILocale.get(lg, 'confirm.window.system.update.text'),
-                maxHeight  : 400,
+                maxHeight  : 300,
                 maxWidth   : 500,
                 events     : {
                     onSubmit: function (Win) {
@@ -395,6 +398,10 @@ define('controls/packages/System', [
                             Win.close();
                         });
                     }
+                },
+                ok_button  : {
+                    text     : QUILocale.get(lg, 'confirm.window.system.update.button.exec'),
+                    textimage: false
                 }
             }).open();
         },

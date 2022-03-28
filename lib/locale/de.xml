@@ -6197,6 +6197,23 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         <locale name="message.handler.no.messages">
             <de><![CDATA[Keine Nachrichten vorhanden]]></de>
         </locale>
+
+        <locale name="confirm.window.system.update.title">
+            <de><![CDATA[System Update durchführen]]></de>
+        </locale>
+        <locale name="confirm.window.system.update.text">
+            <de><![CDATA[System Update durchführen]]></de>
+        </locale>
+        <locale name="confirm.window.system.update.button.exec">
+            <de><![CDATA[System Update durchführen]]></de>
+        </locale>
+        <locale name="confirm.window.system.update.information">
+            <de><![CDATA[
+            Du möchtest ein System Update deines QUIQQER Systems durchführen.
+            Bitte führe das Update nur durch wenn du dir zu diesem Schritt sicher bist.
+            Beachte, wenn ein Fehler aufrtitt kann dies gegebenenfalls dazu führen das die Seite nicht mehr erreichbar ist.
+            ]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/controls" datatype="php,js">
