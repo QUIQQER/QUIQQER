@@ -392,7 +392,7 @@ define('controls/packages/System', [
                 maxHeight  : 300,
                 maxWidth   : 500,
                 events     : {
-                    onSubmit: function (Win) {
+                    onSubmit: (Win) => {
                         Win.Loader.show();
                         this.executeSystemUpdate().then(function () {
                             Win.close();
