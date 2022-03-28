@@ -108,9 +108,9 @@ define('controls/packages/System', [
                 text     : QUILocale.get(lg, 'packages.panel.btn.executeUpdate'),
                 textimage: 'fa fa-exclamation-triangle',
                 events   : {
-                    onClick: function () {
-                        this.executeSystemUpdate();
-                    }.bind(this)
+                    onClick: () => {
+                        this.$openSetupExecuteWindow();
+                    }
                 },
                 styles   : {
                     'float': 'right'
@@ -377,6 +377,26 @@ define('controls/packages/System', [
          */
         executePackageUpdate: function (pkg) {
             return Packages.update(pkg);
+        },
+
+        $openSetupExecuteWindow: function () {
+            new QUIConfirm({
+                icon       : 'fa fa-check-circle-o',
+                texticon   : 'fa fa-check-circle-o',
+                title      : QUILocale.get(lg, 'confirm.window.system.update.title'),
+                information: QUILocale.get(lg, 'confirm.window.system.update.information'),
+                text       : QUILocale.get(lg, 'confirm.window.system.update.text'),
+                maxHeight  : 400,
+                maxWidth   : 500,
+                events     : {
+                    onSubmit: function (Win) {
+                        Win.Loader.show();
+                        this.executeSystemUpdate().then(function () {
+                            Win.close();
+                        });
+                    }
+                }
+            }).open();
         },
 
         /**
