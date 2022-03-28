@@ -8,6 +8,14 @@ namespace QUI\System\Console\Tools;
 
 use QUI;
 
+use function array_map;
+use function flush;
+use function implode;
+use function ob_flush;
+use function ob_get_contents;
+use function ob_start;
+use function trim;
+
 /**
  * Execute the system setup
  *
@@ -44,7 +52,7 @@ class Setup extends QUI\System\Console\Tool
         );
 
 
-        \ob_start();
+        ob_start();
 
         $this->logBuffer();
 
@@ -66,12 +74,12 @@ class Setup extends QUI\System\Console\Tool
             )
         ]);
 
-        $data = \explode('<br />', $data);
-        $data = \array_map(function ($entry) {
-            return \trim($entry);
+        $data = explode('<br />', $data);
+        $data = array_map(function ($entry) {
+            return trim($entry);
         }, $data);
 
-        $data = \implode("\n", $data);
+        $data = implode("\n", $data);
 
         $this->writeLn($data);
         $this->writeLn('');
@@ -93,8 +101,8 @@ class Setup extends QUI\System\Console\Tool
      */
     protected function logBuffer()
     {
-        $buffer = \ob_get_contents();
-        $buffer = \trim($buffer);
+        $buffer = ob_get_contents();
+        $buffer = trim($buffer);
 
         if (!empty($buffer)) {
             QUI\System\Log::write(
@@ -106,7 +114,7 @@ class Setup extends QUI\System\Console\Tool
             );
         }
 
-        \flush();
-        \ob_flush();
+        flush();
+        ob_flush();
     }
 }
