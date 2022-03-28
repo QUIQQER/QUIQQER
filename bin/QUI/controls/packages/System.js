@@ -108,9 +108,9 @@ define('controls/packages/System', [
                 text     : QUILocale.get(lg, 'packages.panel.btn.executeUpdate'),
                 textimage: 'fa fa-exclamation-triangle',
                 events   : {
-                    onClick: function () {
-                        this.executeSystemUpdate();
-                    }.bind(this)
+                    onClick: () => {
+                        this.$openSetupExecuteWindow();
+                    }
                 },
                 styles   : {
                     'float': 'right'
@@ -168,13 +168,22 @@ define('controls/packages/System', [
                 }).then(function () {
                     return self.refreshLastUpdateCheckDate();
                 }).then(function () {
+                    return Packages.getOutdated(false).then(function (result) {
+                        if (result && result.length) {
+                            self.$list = result;
+                            self.viewList();
+                        } else {
+                            self.$list = [];
+                        }
+                    });
+                }).then(function () {
                     self.fireEvent('load', [self]);
                 });
             });
         },
 
         /**
-         * Refrsh the last update date display
+         * Refresh the last update date display
          *
          * @returns {Promise}
          */
@@ -218,9 +227,7 @@ define('controls/packages/System', [
 
             return QUI.getMessageHandler().then(function (MH) {
                 return MH.addLoading(QUILocale.get(lg, 'message.setup.runs'));
-
             }).then(function (Loading) {
-
                 return Packages.setup().then(function () {
                     return Translator.refreshLocale();
                 }).then(function () {
@@ -370,6 +377,33 @@ define('controls/packages/System', [
          */
         executePackageUpdate: function (pkg) {
             return Packages.update(pkg);
+        },
+
+        /**
+         * opens the execution window
+         */
+        $openSetupExecuteWindow: function () {
+            new QUIConfirm({
+                icon       : 'fa fa-check-circle-o',
+                texticon   : 'fa fa-check-circle-o',
+                title      : QUILocale.get(lg, 'confirm.window.system.update.title'),
+                information: QUILocale.get(lg, 'confirm.window.system.update.information'),
+                text       : QUILocale.get(lg, 'confirm.window.system.update.text'),
+                maxHeight  : 300,
+                maxWidth   : 500,
+                events     : {
+                    onSubmit: function (Win) {
+                        Win.Loader.show();
+                        this.executeSystemUpdate().then(function () {
+                            Win.close();
+                        });
+                    }
+                },
+                ok_button  : {
+                    text     : QUILocale.get(lg, 'confirm.window.system.update.button.exec'),
+                    textimage: false
+                }
+            }).open();
         },
 
         /**
