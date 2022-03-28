@@ -6,7 +6,9 @@
 
 namespace QUI\System\Console;
 
+use Exception;
 use QUI;
+use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
 
 /**
  * Class Session
@@ -17,22 +19,22 @@ class Session
     /**
      * @var array
      */
-    protected $params = array();
+    protected array $params = [];
 
     /**
      * @var string
      */
-    protected $id;
+    protected string $id;
 
     /**
-     * @var \Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage
+     * @var MockFileSessionStorage
      */
-    protected $Storage;
+    protected MockFileSessionStorage $Storage;
 
     /**
      * @var \Symfony\Component\HttpFoundation\Session\Session
      */
-    protected $Session;
+    protected \Symfony\Component\HttpFoundation\Session\Session $Session;
 
     /**
      * Session constructor.
@@ -41,7 +43,7 @@ class Session
     {
         $this->id = uniqid();
 
-        $this->Storage = new \Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage();
+        $this->Storage = new MockFileSessionStorage();
         $this->Session = new \Symfony\Component\HttpFoundation\Session\Session($this->Storage);
     }
 
@@ -70,7 +72,7 @@ class Session
     /**
      * @return string
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
@@ -78,7 +80,7 @@ class Session
     /**
      * @return bool
      */
-    public function check()
+    public function check(): bool
     {
         return true;
     }
@@ -86,7 +88,7 @@ class Session
     /**
      * @param string $name
      */
-    public function del($name)
+    public function del(string $name)
     {
         if (isset($this->params[$name])) {
             unset($this->params[$name]);
@@ -96,7 +98,7 @@ class Session
     /**
      * @param string $name
      */
-    public function remove($name)
+    public function remove(string $name)
     {
         if (isset($this->params[$name])) {
             unset($this->params[$name]);
@@ -108,14 +110,14 @@ class Session
      */
     public function destroy()
     {
-        $this->params = array();
+        $this->params = [];
     }
 
     /**
      * @param $sid
      * @return int
      */
-    public function getLastRefreshFrom($sid)
+    public function getLastRefreshFrom($sid): int
     {
         return time();
     }
@@ -125,7 +127,7 @@ class Session
      *
      * @return \Symfony\Component\HttpFoundation\Session\Session
      */
-    public function getSymfonySession()
+    public function getSymfonySession(): \Symfony\Component\HttpFoundation\Session\Session
     {
         return $this->Session;
     }
@@ -136,8 +138,12 @@ class Session
     {
     }
 
+    /**
+     * @throws Exception
+     */
     public function setup()
     {
+        QUI\Session::setup();
     }
 
     public function refresh()

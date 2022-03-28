@@ -6,16 +6,22 @@
 
 namespace QUI;
 
+use Memcache;
+use Memcached;
+use PDO;
 use QUI;
 use QUI\System\Log;
-
-use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
-use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
+use RedisArray;
+use RedisCluster;
+use RedisClusterException;
+use SessionHandlerInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcacheSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler;
+use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
+use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 
 use function array_flip;
 use function array_rand;
@@ -60,7 +66,7 @@ class Session
     /**
      * Storage handler
      *
-     * @var \Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
+     * @var PdoSessionHandler
      */
     private $Storage = false;
 
@@ -199,7 +205,7 @@ class Session
     /**
      * Return the storage type
      *
-     * @return \SessionHandlerInterface
+     * @return SessionHandlerInterface
      *
      * @throws QUI\Exception
      */
@@ -234,14 +240,14 @@ class Session
                 $cluster = array_unique($cluster);
 
                 try {
-                    $RedisCluster = new \RedisCluster(
+                    $RedisCluster = new RedisCluster(
                         'quiqqer-session',
                         $cluster,
                         $timeout,
                         $readTimeout,
                         $persistent
                     );
-                } catch (\RedisClusterException $Exception) {
+                } catch (RedisClusterException $Exception) {
                     Log::addAlert($Exception->getMessage());
                 }
 
@@ -253,12 +259,12 @@ class Session
                 $redisServer = array_values($redisServer);
 
                 return new RedisSessionHandler(
-                    new \RedisArray($redisServer)
+                    new RedisArray($redisServer)
                 );
             }
 
             return new RedisSessionHandler(
-                new \RedisArray(['localhost'])
+                new RedisArray(['localhost'])
             );
         }
 
@@ -267,7 +273,7 @@ class Session
             $memcached_data = QUI::conf('session', 'memcached_data');
             $memcached_data = explode(';', $memcached_data);
 
-            $Memcached = new \Memcached('quiqqer-session');
+            $Memcached = new Memcached('quiqqer-session');
 
             foreach ($memcached_data as $serverData) {
                 $serverData = explode(':', $serverData);
@@ -294,7 +300,7 @@ class Session
             $memcache_data = QUI::conf('session', 'memcache_data');
             $memcache_data = explode(';', $memcache_data);
 
-            $Memcache = new \Memcache();
+            $Memcache = new Memcache();
 
             foreach ($memcache_data as $serverData) {
                 $serverData = explode(':', $serverData);
@@ -318,7 +324,7 @@ class Session
         // session via database
         if ($sessionType == 'database') {
             $PDO = QUI::getDataBase()->getNewPDO();
-            $PDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             return new PdoSessionHandler($PDO, [
                 'db_table'        => $this->table,
@@ -360,13 +366,13 @@ class Session
      *
      * @throws \Exception
      */
-    public function setup()
+    public static function setup()
     {
         $DBTable = QUI::getDataBase()->table();
 
         // pdo mysql options db
         // more at http://symfony.com/doc/current/cookbook/configuration/pdo_session_storage.html
-        $DBTable->addColumn($this->table, [
+        $DBTable->addColumn(QUI::getDBTableName('sessions'), [
             'session_id'       => 'varchar(255) NOT NULL',
             'session_value'    => 'text NOT NULL',
             'session_time'     => 'int(11) NOT NULL',
@@ -374,7 +380,7 @@ class Session
             'uid'              => 'int(11) NOT NULL'
         ]);
 
-        $DBTable->setPrimaryKey($this->table, 'session_id');
+        $DBTable->setPrimaryKey(QUI::getDBTableName('sessions'), 'session_id');
     }
 
     /**
