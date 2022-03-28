@@ -1064,10 +1064,16 @@ class Utils
             );
         }
 
-        $parts   = explode('/', $parts[1]);
-        $project = array_shift($parts);
+        $parts          = explode('/', $parts[1]);
+        $project        = array_shift($parts);
+        $ProjectManager = QUI::getProjectManager();
 
-        if (!QUI::getProjectManager()::existsProject($project)) {
+        /*
+         * method_exists is checked here because otherwise a fatal error might be thrown
+         * during composer update when two different instance of QUIQQER are initialised
+         * and "existsProject" does not exist in the calling instance.
+         */
+        if (\method_exists($ProjectManager, 'existsProject') && !$ProjectManager::existsProject($project)) {
             throw new QUI\Exception(
                 'File not found',
                 ErrorCodes::FILE_NOT_FOUND
