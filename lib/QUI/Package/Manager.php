@@ -1792,9 +1792,7 @@ class Manager extends QUI\QDOM
         }
 
         // set last update
-        $Last = $this->getUpdateConf();
-        $Last->set('quiqqer', 'lastUpdate', time());
-        $Last->save();
+        QUI::getPackageManager()->setLastUpdateDate();
 
         QUI::getDataBase()->table()->truncate(QUI::getDBTableName('updateChecks'));
         QUI::getEvents()->fireEvent('updateEnd');

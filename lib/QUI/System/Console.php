@@ -61,12 +61,12 @@ class Console
      *
      * @var array
      */
-    private $tools = [];
+    private array $tools = [];
 
     /**
      * @var array All available tools, but grouped
      */
-    private $groupedTools = [];
+    private array $groupedTools = [];
 
     /**
      * List of system tools
@@ -74,7 +74,7 @@ class Console
      *
      * @var array
      */
-    private $systemTools = [
+    private array $systemTools = [
         'clear-all-quiqqer-cache',
         'clear-cache',
         'clear-cache-path',
@@ -94,7 +94,7 @@ class Console
      *
      * @var array
      */
-    private $argv;
+    private array $argv;
 
     /**
      * The current text color
@@ -115,7 +115,7 @@ class Console
      *
      * @var array
      */
-    protected $colors = [
+    protected array $colors = [
         'black'        => '0;30',
         'dark_gray'    => '1;30',
         'blue'         => '0;34',
@@ -147,7 +147,7 @@ class Console
      *
      * @var array
      */
-    protected $bg = [
+    protected array $bg = [
         'black'      => '40',
         'red'        => '41',
         'green'      => '42',
@@ -163,12 +163,12 @@ class Console
      *
      * @var array
      */
-    protected $arguments = [];
+    protected array $arguments = [];
 
     /**
      * @var null|QUI\Interfaces\Users\User
      */
-    protected $User = null;
+    protected ?QUI\Interfaces\Users\User $User = null;
 
     /**
      * constructor

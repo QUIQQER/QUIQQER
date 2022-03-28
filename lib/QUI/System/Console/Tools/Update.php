@@ -6,7 +6,17 @@
 
 namespace QUI\System\Console\Tools;
 
+use Exception;
 use QUI;
+
+use function date;
+use function error_log;
+use function flush;
+use function ob_flush;
+use function ob_get_contents;
+use function str_pad;
+use function strlen;
+use function trim;
 
 /**
  * Update command for the console
@@ -65,7 +75,7 @@ class Update extends QUI\System\Console\Tool
         $this->writeLn('');
         $this->logBuffer();
 
-        $self = $this;
+        $self     = $this;
         $Packages = QUI::getPackageManager();
 
         // output events
@@ -109,10 +119,10 @@ class Update extends QUI\System\Console\Tool
                 $packageList[$library['name']] = 'dev-dev';
             }
 
-            $packageList['quiqqer/qui'] = 'dev-dev';
+            $packageList['quiqqer/qui']     = 'dev-dev';
             $packageList['quiqqer/quiqqer'] = 'dev-dev';
             $packageList['quiqqer/qui-php'] = 'dev-dev';
-            $packageList['quiqqer/utils'] = 'dev-dev';
+            $packageList['quiqqer/utils']   = 'dev-dev';
 
             foreach ($packageList as $package => $version) {
 //                $Packages->setPackage($package, $version);
@@ -128,14 +138,14 @@ class Update extends QUI\System\Console\Tool
 
             try {
                 $packages = $Packages->getOutdated(true);
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 $this->writeToLog('====== ERROR ======');
                 $this->writeToLog($Exception->getMessage());
 
                 return;
             }
 
-            $nameLength = 0;
+            $nameLength    = 0;
             $versionLength = 0;
 
             // #locale
@@ -151,24 +161,24 @@ class Update extends QUI\System\Console\Tool
             }
 
             foreach ($packages as $package) {
-                if (\strlen($package['package']) > $nameLength) {
-                    $nameLength = \strlen($package['package']);
+                if (strlen($package['package']) > $nameLength) {
+                    $nameLength = strlen($package['package']);
                 }
 
-                if (\strlen($package['oldVersion']) > $versionLength) {
-                    $versionLength = \strlen($package['oldVersion']);
+                if (strlen($package['oldVersion']) > $versionLength) {
+                    $versionLength = strlen($package['oldVersion']);
                 }
             }
 
             foreach ($packages as $package) {
                 $this->write(
-                    \str_pad($package['package'], $nameLength + 2, ' '),
+                    str_pad($package['package'], $nameLength + 2, ' '),
                     'green'
                 );
 
                 $this->resetColor();
                 $this->write(
-                    \str_pad($package['oldVersion'], $versionLength + 2, ' ') . ' -> '
+                    str_pad($package['oldVersion'], $versionLength + 2, ' ') . ' -> '
                 );
 
                 $this->write($package['version'], 'cyan');
@@ -192,7 +202,7 @@ class Update extends QUI\System\Console\Tool
 
             $this->logBuffer();
             $wasExecuted = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.execute');
-            $webserver = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.webserver');
+            $webserver   = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.webserver');
 
             $this->writeLn($wasExecuted);
             $this->writeToLog($wasExecuted . PHP_EOL);
@@ -212,10 +222,11 @@ class Update extends QUI\System\Console\Tool
 
             // setup set the last update date
             QUI::getPackageManager()->setLastUpdateDate();
+
             QUI\Cache\Manager::clearCompleteQuiqqerCache();
             QUI\Cache\Manager::longTimeCacheClearCompleteQuiqqer();
             $this->logBuffer();
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             $this->write(' [error]', 'red');
             $this->writeLn('');
             $this->writeLn(
@@ -273,12 +284,12 @@ class Update extends QUI\System\Console\Tool
      */
     protected function logBuffer()
     {
-        $buffer = \ob_get_contents();
-        $buffer = \trim($buffer);
+        $buffer = ob_get_contents();
+        $buffer = trim($buffer);
         $this->writeToLog($buffer);
 
-        @\flush();
-        @\ob_flush();
+        @flush();
+        @ob_flush();
     }
 
     /**
@@ -292,6 +303,6 @@ class Update extends QUI\System\Console\Tool
             return;
         }
 
-        \error_log($buffer, 3, VAR_DIR . 'log/update-' . \date('Y-m-d') . '.log');
+        error_log($buffer, 3, VAR_DIR . 'log/update-' . date('Y-m-d') . '.log');
     }
 }
