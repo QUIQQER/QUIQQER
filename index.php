@@ -13,31 +13,30 @@
  * @author www.pcsg.com (Henning Leutz)
  */
 
-\error_reporting(E_ALL);
+error_reporting(E_ALL);
 
-if (!\defined('QUIQQER_SYSTEM')) {
-    \define('QUIQQER_SYSTEM', true);
+if (!defined('QUIQQER_SYSTEM')) {
+    define('QUIQQER_SYSTEM', true);
 }
 
 // Mailto
 if (isset($_REQUEST['_url'])
-    && \strpos($_REQUEST['_url'], '[mailto]') !== false
+    && strpos($_REQUEST['_url'], '[mailto]') !== false
 ) {
-    $addr = \str_replace('[mailto]', '', $_REQUEST['_url']);
-    [$user, $host] = \explode("[at]", $addr);
+    $addr = str_replace('[mailto]', '', $_REQUEST['_url']);
+    [$user, $host] = explode("[at]", $addr);
 
     if (isset($user) && isset($host)) {
-        \header("Location: mailto:".$user."@".$host);
+        header("Location: mailto:" . $user . "@" . $host);
         exit;
     }
 }
 
-use \Symfony\Component\HttpFoundation\Response;
-use \Symfony\Component\HttpFoundation\RedirectResponse;
-
-use QUI\Utils\System\Debug;
-use QUI\Utils\Security\Orthos;
 use QUI\System\Log;
+use QUI\Utils\Security\Orthos;
+use QUI\Utils\System\Debug;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 try {
     require_once 'bootstrap.php';
@@ -73,7 +72,7 @@ try {
 
         $Response->setContent(
             '<div style="text-align: center; margin-top: 100px;">
-                <img src="'.URL_BIN_DIR.'quiqqer_logo.png" style="max-width: 100%;" />
+                <img src="' . URL_BIN_DIR . 'quiqqer_logo.png" style="max-width: 100%;" />
             </div>'
         );
 
@@ -112,7 +111,7 @@ try {
         $Locale = QUI::getLocale();
     }
 
-    if (\defined('LOGIN_FAILED')
+    if (defined('LOGIN_FAILED')
         || isset($_POST['login'])
         || isset($_GET['logout'])
     ) {
@@ -146,14 +145,14 @@ try {
             'URL_VAR_DIR' => URL_VAR_DIR,
             'URL_OPT_DIR' => URL_OPT_DIR,
             'URL_USR_DIR' => URL_USR_DIR,
-            'URL_TPL_DIR' => URL_USR_DIR.$Project->getName().'/',
-            'TPL_DIR'     => OPT_DIR.$Project->getName().'/',
+            'URL_TPL_DIR' => URL_USR_DIR . $Project->getName() . '/',
+            'TPL_DIR'     => OPT_DIR . $Project->getName() . '/',
         ]);
 
-        $file  = LIB_DIR.'templates/maintenance.html';
-        $pfile = USR_DIR.$Project->getName().'/lib/maintenance.html';
+        $file  = LIB_DIR . 'templates/maintenance.html';
+        $pfile = USR_DIR . $Project->getName() . '/lib/maintenance.html';
 
-        if (\file_exists($pfile)) {
+        if (file_exists($pfile)) {
             $file = $pfile;
         }
 
@@ -168,7 +167,7 @@ try {
     QUI::getEvents()->fireEvent('start');
     Debug::marker('objekte initialisiert');
 
-    $siteCachePath = $Site->getCachePath().'/'.\md5(QUI::getRequest()->getRequestUri());
+    $siteCachePath = $Site->getCachePath() . '/' . md5(QUI::getRequest()->getRequestUri());
 
     // Check if user is allowed to view Site and set appropriate error code if not
     if ($Site instanceof QUI\Projects\Site\PermissionDenied) {
@@ -181,11 +180,11 @@ try {
     // @todo collect get query lists and consider the query params
     $query = $Request->getQueryString();
 
-    if (\is_string($query)) {
-        \parse_str($query, $query);
+    if (is_string($query)) {
+        parse_str($query, $query);
     }
 
-    if (!\is_array($query)) {
+    if (!is_array($query)) {
         $query = [];
     }
 
@@ -199,14 +198,16 @@ try {
         && !QUI::getUsers()->isAuth(QUI::getUserBySession())
         && empty($query)
         && $Rewrite->getHeaderCode() === 200
-        && (defined('NO_INTERNAL_CACHE') && !NO_INTERNAL_CACHE) // api for modules, if modules says that no internal cache should be used
+        && (defined(
+                'NO_INTERNAL_CACHE'
+            ) && !NO_INTERNAL_CACHE) // api for modules, if modules says that no internal cache should be used
     ) {
         try {
             $cache_content = QUI\Cache\Manager::get($siteCachePath);
             $content       = $Rewrite->outputFilter($cache_content);
 
             if (empty($content)) {
-                throw new QUI\Exception('Empty content at '.$Site->getId());
+                throw new QUI\Exception('Empty content at ' . $Site->getId());
             }
 
             QUI::getEvents()->fireEvent('requestOutput', [&$content]);
@@ -215,7 +216,7 @@ try {
 
             QUI::getEvents()->fireEvent('responseSent', [$Response]);
             exit;
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             Log::writeDebugException($Exception);
         }
     }
@@ -234,7 +235,7 @@ try {
         QUI::getEvents()->fireEvent('requestOutput', [&$content]);
 
         if (empty($content)) {
-            throw new QUI\Exception('Empty content at '.$Site->getId(), 5001);
+            throw new QUI\Exception('Empty content at ' . $Site->getId(), 5001);
         }
 
         $Response->setContent($content);
@@ -248,7 +249,7 @@ try {
         ) {
             try {
                 QUI\Cache\Manager::set($siteCachePath, $content);
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 Log::writeDebugException($Exception);
             }
         }
@@ -290,17 +291,17 @@ try {
     $Response->send();
 
     QUI::getEvents()->fireEvent('responseSent', [$Response]);
-} catch (\Exception $Exception) {
+} catch (Exception $Exception) {
     QUI\System\Log::writeException($Exception);
 
     // error ??
-    \header('HTTP/1.1 503 Service Temporarily Unavailable');
-    \header('Status: 503 Service Temporarily Unavailable');
+    header('HTTP/1.1 503 Service Temporarily Unavailable');
+    header('Status: 503 Service Temporarily Unavailable');
 
-    \error_log($Exception->getTraceAsString());
-    \error_log($Exception->getMessage());
+    error_log($Exception->getTraceAsString());
+    error_log($Exception->getMessage());
 
-    echo \file_get_contents(
-        \dirname(__FILE__).'/lib/templates/error.html'
+    echo file_get_contents(
+        dirname(__FILE__) . '/lib/templates/error.html'
     );
 }
