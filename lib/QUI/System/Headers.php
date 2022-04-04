@@ -9,6 +9,11 @@ namespace QUI\System;
 use QUI;
 use Symfony\Component\HttpFoundation\Response;
 
+use function explode;
+use function implode;
+use function is_array;
+use function str_replace;
+
 /**
  * Class Headers
  * Header check: https://observatory.mozilla.org/
@@ -16,17 +21,16 @@ use Symfony\Component\HttpFoundation\Response;
 class Headers
 {
     /**
-     * @var Response
+     * @var Response|null
      */
-    protected $Response = null;
-
+    protected ?Response $Response = null;
 
     /**
      * Default HSTS settings
      *
      * @var array
      */
-    protected $hsts = [
+    protected array $hsts = [
         'max-age'    => '31536000',
         'subdomains' => false,
         'preload'    => false
@@ -35,7 +39,7 @@ class Headers
     /**
      * @var array
      */
-    protected $csp = [];
+    protected array $csp = [];
 
     /**
      * @var bool
@@ -55,9 +59,9 @@ class Headers
     /**
      * Headers constructor.
      *
-     * @param Response $Response
+     * @param Response|null $Response
      */
-    public function __construct($Response = null)
+    public function __construct(?Response $Response = null)
     {
         if ($Response) {
             $this->Response = $Response;
@@ -93,9 +97,9 @@ class Headers
         // default CSP
         $cspHeaders = QUI::conf('securityHeaders_csp');
 
-        if (!empty($cspHeaders) && \is_array($cspHeaders)) {
+        if (!empty($cspHeaders) && is_array($cspHeaders)) {
             foreach ($cspHeaders as $key => $values) {
-                $values = \explode(' ', $values);
+                $values = explode(' ', $values);
 
                 foreach ($values as $value) {
                     $this->cspAdd($value, $key);
@@ -109,7 +113,7 @@ class Headers
      *
      * @return Response
      */
-    public function getResponse()
+    public function getResponse(): ?Response
     {
         return $this->Response;
     }
@@ -127,9 +131,9 @@ class Headers
         // HTTP Strict Transport Security (HSTS)
         $Response->headers->set(
             'Strict-Transport-Security',
-            'max-age='.$this->hsts['max-age']
-            .($this->hsts['subdomains'] ? '; includeSubDomains' : '')
-            .($this->hsts['preload'] ? '; preload' : '')
+            'max-age=' . $this->hsts['max-age']
+            . ($this->hsts['subdomains'] ? '; includeSubDomains' : '')
+            . ($this->hsts['preload'] ? '; preload' : '')
         );
 
         $Response->headers->set("X-Content-Type-Options", $this->xContentTypeOptions);
@@ -162,10 +166,10 @@ class Headers
         }
 
         foreach ($list as $directive => $entries) {
-            $csp[] = $directive.' '.\implode(' ', $entries);
+            $csp[] = $directive . ' ' . implode(' ', $entries);
         }
 
-        $Response->headers->set("Content-Security-Policy", \implode('; ', $csp));
+        $Response->headers->set("Content-Security-Policy", implode('; ', $csp));
     }
 
     /**
@@ -181,13 +185,13 @@ class Headers
      * @param bool $preload
      */
     public function hsts(
-        $maxAge = 31536000,
-        $subDomains = false,
-        $preload = false
+        int $maxAge = 31536000,
+        bool $subDomains = false,
+        bool $preload = false
     ) {
-        $this->hsts['max-age']    = (int)$maxAge;
-        $this->hsts['subdomains'] = (bool)$subDomains;
-        $this->hsts['preload']    = (bool)$preload;
+        $this->hsts['max-age']    = $maxAge;
+        $this->hsts['subdomains'] = $subDomains;
+        $this->hsts['preload']    = $preload;
     }
 
     /**
@@ -196,9 +200,9 @@ class Headers
      *
      * @param bool $mode
      */
-    public function hstsSubdomains($mode = true)
+    public function hstsSubdomains(bool $mode = true)
     {
-        $this->hsts['subdomains'] = (bool)$mode;
+        $this->hsts['subdomains'] = $mode;
     }
 
     /**
@@ -207,9 +211,9 @@ class Headers
      *
      * @param bool $mode
      */
-    public function hstsPreload($mode = true)
+    public function hstsPreload(bool $mode = true)
     {
-        $this->hsts['preload'] = (bool)$mode;
+        $this->hsts['preload'] = $mode;
     }
 
     /**
@@ -218,9 +222,9 @@ class Headers
      *
      * @param integer $maxAge
      */
-    public function hstsMaxAge($maxAge)
+    public function hstsMaxAge(int $maxAge)
     {
-        $this->hsts['max-age'] = (int)$maxAge;
+        $this->hsts['max-age'] = $maxAge;
     }
 
     /**
@@ -231,17 +235,17 @@ class Headers
      * Add a Content-Security-Policy entry
      *
      * @param string $value - Domain or a csp value
-     * @param string $directive - optional, (default = defaulf) CSP directive,
+     * @param string $directive - optional, (default = default) CSP directive,
      *                            value can be an entry from the CSP directive list
      */
-    public function cspAdd($value, $directive = 'default')
+    public function cspAdd(string $value, string $directive = 'default')
     {
         if (CSP::getInstance()->isDirectiveAllowed($directive) === false) {
             return;
         }
 
         // value cleanup
-        $value = \str_replace(
+        $value = str_replace(
             [';', '"', "'"],
             '',
             $value
@@ -258,7 +262,7 @@ class Headers
      *
      * @param string $cspValue
      */
-    public function cspRemove($cspValue)
+    public function cspRemove(string $cspValue)
     {
         $new = [];
 
