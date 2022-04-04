@@ -54,6 +54,9 @@ define('controls/messages/Button', [
             this.$Header = null;
             this.$Filter = null;
 
+            // message queue
+            this.$queue = [];
+
             this.$filter = {
                 information: true,
                 success    : true,
@@ -465,9 +468,19 @@ define('controls/messages/Button', [
                 return;
             }
 
-            this.$showMessage(
-                this.$createMessageNode(Message)
-            ).catch(function (err) {
+            const MessageNode = this.$createMessageNode(Message);
+
+            if (this.$queue.length) {
+                this.$queue.push(MessageNode);
+                this.$MessageHandler.$newMessages++;
+                this.$MessageHandler.save();
+                this.refresh();
+
+                return;
+            }
+
+            this.$queue.push(MessageNode);
+            this.$showMessage(MessageNode).catch(function (err) {
                 console.error(err);
             });
 
@@ -511,15 +524,25 @@ define('controls/messages/Button', [
 
             Node.inject(document.body);
 
-            return new Promise(function (resolve) {
+            return new Promise((resolve) => {
                 moofx(Node).animate({
                     opacity: 1,
                     top    : 60
                 }, {
                     duration: 200,
-                    callback: function () {
-                        setTimeout(function () {
-                            self.$closeMessage(Node).catch(function (err) {
+                    callback: () => {
+                        setTimeout(() => {
+                            self.$closeMessage(Node).then(() => {
+                                let index = this.$queue.indexOf(Node);
+
+                                if (index > -1) {
+                                    this.$queue.splice(index, 1);
+                                }
+
+                                if (this.$queue.length) {
+                                    return this.$showMessage(this.$queue[0]);
+                                }
+                            }).catch((err) => {
                                 console.error(err);
                             });
                         }, self.getAttribute('messageDelay'));
