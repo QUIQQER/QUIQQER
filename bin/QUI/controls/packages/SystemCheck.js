@@ -104,6 +104,7 @@ define('controls/packages/SystemCheck', [
 
             this.getSystemCheckResultsFromCache().then(function (resultHtml) {
                 self.ResultContainer.innerHTML += resultHtml;
+                self.$setSystemCheckEvents();
             });
 
             self.fireEvent('load', [this]);
@@ -115,8 +116,8 @@ define('controls/packages/SystemCheck', [
          */
         confirmSystemCheckExec: function () {
             new QUIConfirm({
-                icon: 'fa fa-info-circle',
-                texticon: false,
+                icon       : 'fa fa-info-circle',
+                texticon   : false,
                 title      : QUILocale.get(lg, 'packages.panel.category.systemcheck.execbutton'),
                 information: QUILocale.get(lg, 'packages.panel.category.systemcheck.confirm.info'),
                 ok_button  : {
@@ -140,21 +141,21 @@ define('controls/packages/SystemCheck', [
                 lg, 'packages.panel.category.systemcheck.loader'
             ));
 
-            var self = this;
-
-            this.runSystemCheck().then(function () {
-                var checksums = self.$Elm.getElement('.test-message-checkSum');
-
-                var click = function (PackageElm) {
-                    if (PackageElm.hasClass('unknown-packages-warning')) {
-                        return;
-                    }
-                    PackageElm.addEvent('click', self.$packageClick);
-                };
-
-                checksums.getChildren().each(click);
-                self.Loader.hide();
+            this.runSystemCheck().then(() => {
+                this.$setSystemCheckEvents();
+                this.Loader.hide();
             });
+        },
+
+        $setSystemCheckEvents: function () {
+            const checksums = this.$Elm.getElement('.test-message-checkSum');
+            const click = (PackageElm) => {
+                if (!PackageElm.hasClass('unknown-packages-warning')) {
+                    PackageElm.addEvent('click', this.$packageClick);
+                }
+            };
+
+            checksums.getChildren().each(click);
         },
 
         /**
