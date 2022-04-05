@@ -78,14 +78,13 @@ define('controls/packages/System', [
             );
 
             this.$Update = new QUIButton({
-                name      : 'update',
-                text      : QUILocale.get(lg, 'packages.panel.btn.startUpdate'),
-                textimage : 'fa fa-check-circle-o',
-                forcecheck: false,
-                events    : {
-                    onClick: function (Btn) {
-                        this.checkUpdates(Btn.getAttribute('forcecheck'));
-                    }.bind(this)
+                name     : 'update',
+                text     : QUILocale.get(lg, 'packages.panel.btn.startUpdate'),
+                textimage: 'fa fa-check-circle-o',
+                events   : {
+                    onClick: () => {
+                        this.checkUpdates(true);
+                    }
                 }
             }).inject(this.$Buttons);
 
