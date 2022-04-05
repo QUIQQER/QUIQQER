@@ -15,17 +15,17 @@ define('InstallationWizard', [
     "use strict";
 
     const STATUS_SET_UP_NOT_STARTED = 0;
-    const STATUS_SET_UP_STARTED     = 1;
-    const STATUS_SET_UP_DONE        = 2;
+    const STATUS_SET_UP_STARTED = 1;
+    const STATUS_SET_UP_DONE = 2;
 
     let StepsContainer,
         NextButton, NextButtonContainer;
 
     let CurrentProvider = null;
-    let currentStep     = null;
-    let CurrentControl  = null;
-    let WizardWindow    = null;
-    let formData        = {};
+    let currentStep = null;
+    let CurrentControl = null;
+    let WizardWindow = null;
+    let formData = {};
 
     // @todo multiple setups (module / plugin)
 
@@ -57,17 +57,18 @@ define('InstallationWizard', [
                     }
 
                     WizardWindow = new Window({
-                        title    : QUILocale.get('quiqqer/quiqqer', 'quiqqer.setup.window.title'),
-                        maxHeight: maxHeight,
-                        maxWidth : maxWidth,
-                        resizable: false,
-                        icon     : 'fa fa-magic',
-                        events   : {
+                        title             : QUILocale.get('quiqqer/quiqqer', 'quiqqer.setup.window.title'),
+                        maxHeight         : maxHeight,
+                        maxWidth          : maxWidth,
+                        resizable         : false,
+                        icon              : 'fa fa-magic',
+                        backgroundClosable: false,
+                        events            : {
                             onCreate: (Win) => {
                                 Win.getElm().addClass('installation-wizard');
                                 Win.$Buttons.getElements('button').destroy();
 
-                                StepsContainer      = new Element('div.steps-container').inject(Win.$Buttons);
+                                StepsContainer = new Element('div.steps-container').inject(Win.$Buttons);
                                 NextButtonContainer = new Element('div.next-button').inject(Win.$Buttons);
 
                                 NextButton = new Element('button', {
