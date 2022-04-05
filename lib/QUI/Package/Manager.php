@@ -1692,6 +1692,8 @@ class Manager extends QUI\QDOM
                     return $result;
                 }
             }
+
+            return [];
         }
 
         try {
