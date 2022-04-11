@@ -226,10 +226,10 @@ class Everyone extends QUI\Groups\Group
      * @param string $name - name of the subgroup
      * @param QUI\Interfaces\Users\User|null $ParentUser - (optional), Parent User, which create the user
      *
-     * @return Manager
+     * @return Group
      * @throws QUI\Exception
      */
-    public function createChild(string $name, QUI\Interfaces\Users\User $ParentUser = null)
+    public function createChild(string $name, ?QUI\Interfaces\Users\User $ParentUser = null): Group
     {
         throw new QUI\Exception(
             QUI::getLocale()->get(

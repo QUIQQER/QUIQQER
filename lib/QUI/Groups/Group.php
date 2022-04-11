@@ -943,7 +943,7 @@ class Group extends QUI\QDOM
      * @return QUI\Groups\Group
      * @throws QUI\Exception
      */
-    public function createChild(string $name, $ParentUser = null): Group
+    public function createChild(string $name, ?QUI\Interfaces\Users\User $ParentUser = null): Group
     {
         // check, is the user allowed to create new users
         QUI\Permissions\Permission::checkPermission(
