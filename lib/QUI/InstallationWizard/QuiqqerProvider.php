@@ -51,6 +51,7 @@ class QuiqqerProvider extends AbstractInstallationWizard
         return [
             new QuiqqerSteps\Welcome(),
             new QuiqqerSteps\Country(),
+            new QuiqqerSteps\Groups(),
             new QuiqqerSteps\Mail(),
             new QuiqqerSteps\MailSMTP(),
             new QuiqqerSteps\Cron(),
@@ -90,6 +91,10 @@ class QuiqqerProvider extends AbstractInstallationWizard
             $Config->set('mail', 'SMTPSecureSSL_allow_self_signed', $data['mail.settings.allow_self_signed']);
         }
 
+        if (!empty($data['add-quiqqer-groups'])) {
+            $this->setupForGroupsAndToolbars();
+        }
+
         // workspace
         if (isset($data['workspace-columns'])) {
             switch ($data['workspace-columns']) {
@@ -110,5 +115,13 @@ class QuiqqerProvider extends AbstractInstallationWizard
         }
 
         $Config->save();
+    }
+
+    protected function setupForGroupsAndToolbars()
+    {
+        $Root = QUI::getGroups()->get(QUI::conf('globals', 'root'));
+
+        // Redakteur
+        // $Root->createChild();
     }
 }

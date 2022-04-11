@@ -4580,6 +4580,22 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
             This setting can have effect on different modules and plugins.
             ]]></en>
         </locale>
+
+        <locale name="quiqqer.setup.groups.title">
+            <en><![CDATA[Group settings]]></en>
+        </locale>
+        <locale name="quiqqer.setup.groups.description">
+            <en><![CDATA[
+            <p>Would you like to use QUIQQER with a team or more people?</p>
+            <p></p>
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.setup.groups.text">
+            <en><![CDATA[
+            Yes, I would like to use QUIQQER with several people and groups and toolbars are to be set up.
+            ]]></en>
+        </locale>
+
         <locale name="quiqqer.setup.cron.title">
             <en><![CDATA[Cron Service]]></en>
         </locale>
