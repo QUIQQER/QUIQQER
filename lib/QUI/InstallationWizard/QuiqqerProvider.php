@@ -62,6 +62,7 @@ class QuiqqerProvider extends AbstractInstallationWizard
 
     /**
      * @param array $data
+     * @throws QUI\Exception
      */
     public function execute(array $data = []): void
     {
@@ -119,25 +120,45 @@ class QuiqqerProvider extends AbstractInstallationWizard
 
     /**
      * @return void
-     * @throws QUI\Exception
      */
     protected function setupForGroupsAndToolbars()
     {
-        $Root   = QUI::getGroups()->get(QUI::conf('globals', 'root'));
-        $Config = QUI::getConfig('etc/conf.ini.php');
+        try {
+            $Root   = QUI::getGroups()->get(QUI::conf('globals', 'root'));
+            $Config = QUI::getConfig('etc/conf.ini.php');
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+            return;
+        }
 
         // Redakteur / Editor
-        if (!$Config->getValue('installationWizard', 'editorId')) {
-            $Editor = $Root->createChild('Editor', $Root);
-            $Config->setValue('installationWizard', 'editorId', $Editor->getId());
+        try {
+            if (!$Config->getValue('installationWizard', 'editorId')) {
+                $Editor = $Root->createChild('Editor', $Root);
+                $Config->setValue('installationWizard', 'editorId', $Editor->getId());
+                // @todo set permission
+            }
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
         }
 
         // sys admin
-        if (!$Config->getValue('installationWizard', 'editorId')) {
-            $sysAdmin = $Root->createChild('Sysadmin', $Root);
-            $Config->setValue('installationWizard', 'sysAdminId', $sysAdmin->getId());
+        try {
+            if (!$Config->getValue('installationWizard', 'editorId')) {
+                $sysAdmin = $Root->createChild('System administrator', $Root);
+                $Config->setValue('installationWizard', 'sysAdminId', $sysAdmin->getId());
+                // @todo set permission
+            }
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
         }
 
-        $Config->save();
+
+        try {
+            $Config->save();
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+            return;
+        }
     }
 }
