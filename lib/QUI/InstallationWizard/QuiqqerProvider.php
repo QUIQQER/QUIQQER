@@ -117,11 +117,27 @@ class QuiqqerProvider extends AbstractInstallationWizard
         $Config->save();
     }
 
+    /**
+     * @return void
+     * @throws QUI\Exception
+     */
     protected function setupForGroupsAndToolbars()
     {
-        $Root = QUI::getGroups()->get(QUI::conf('globals', 'root'));
+        $Root   = QUI::getGroups()->get(QUI::conf('globals', 'root'));
+        $Config = QUI::getConfig('etc/conf.ini.php');
 
-        // Redakteur
-        // $Root->createChild();
+        // Redakteur / Editor
+        if (!$Config->getValue('installationWizard', 'editorId')) {
+            $Editor = $Root->createChild('Editor', $Root);
+            $Config->setValue('installationWizard', 'editorId', $Editor->getId());
+        }
+
+        // sys admin
+        if (!$Config->getValue('installationWizard', 'editorId')) {
+            $sysAdmin = $Root->createChild('Sysadmin', $Root);
+            $Config->setValue('installationWizard', 'sysAdminId', $sysAdmin->getId());
+        }
+
+        $Config->save();
     }
 }

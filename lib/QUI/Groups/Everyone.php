@@ -8,6 +8,10 @@ namespace QUI\Groups;
 
 use QUI;
 
+use function array_filter;
+use function explode;
+use function json_encode;
+
 /**
  * The Everyone Group
  *
@@ -86,9 +90,9 @@ class Everyone extends QUI\Groups\Group
         $toolbar          = '';
 
         if ($this->getAttribute('assigned_toolbar')) {
-            $toolbars = \explode(',', $this->getAttribute('assigned_toolbar'));
+            $toolbars = explode(',', $this->getAttribute('assigned_toolbar'));
 
-            $assignedToolbars = \array_filter($toolbars, function ($toolbar) {
+            $assignedToolbars = array_filter($toolbars, function ($toolbar) {
                 return QUI\Editor\Manager::existsToolbar($toolbar);
             });
 
@@ -101,10 +105,10 @@ class Everyone extends QUI\Groups\Group
 
         // Felder bekommen
         QUI::getDataBase()->update(
-            QUI\Groups\Manager::table(),
+            Manager::table(),
             [
                 'name'             => 'Everyone',
-                'rights'           => \json_encode($this->rights),
+                'rights'           => json_encode($this->rights),
                 'active'           => 1,
                 'assigned_toolbar' => $assignedToolbars,
                 'toolbar'          => $toolbar
@@ -220,12 +224,12 @@ class Everyone extends QUI\Groups\Group
      * Create a subgroup
      *
      * @param string $name - name of the subgroup
-     * @param QUI\Interfaces\Users\User $ParentUser - (optional), Parent User, which create the user
+     * @param QUI\Interfaces\Users\User|null $ParentUser - (optional), Parent User, which create the user
      *
-     * @return \QUI\Groups\Manager
+     * @return Manager
      * @throws QUI\Exception
      */
-    public function createChild($name, $ParentUser = null)
+    public function createChild(string $name, QUI\Interfaces\Users\User $ParentUser = null)
     {
         throw new QUI\Exception(
             QUI::getLocale()->get(

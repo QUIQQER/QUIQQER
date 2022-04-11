@@ -8,6 +8,20 @@ namespace QUI\Groups;
 
 use QUI;
 
+use function array_filter;
+use function array_flip;
+use function array_merge;
+use function count;
+use function explode;
+use function in_array;
+use function is_array;
+use function is_int;
+use function json_decode;
+use function json_encode;
+use function microtime;
+use function mt_rand;
+use function mt_srand;
+
 /**
  * A group
  *
@@ -67,7 +81,7 @@ class Group extends QUI\QDOM
 
         try {
             // falls cache vorhanden ist
-            $cache = QUI\Cache\Manager::get('qui/groups/group/'.$this->getId());
+            $cache = QUI\Cache\Manager::get('qui/groups/group/' . $this->getId());
 
             if (isset($cache['parentids'])) {
                 $this->parentids = $cache['parentids'];
@@ -77,7 +91,7 @@ class Group extends QUI\QDOM
                 $this->rights = $cache['rights'];
             }
 
-            if (isset($cache['attributes']) && \is_array($cache['attributes'])) {
+            if (isset($cache['attributes']) && is_array($cache['attributes'])) {
                 foreach ($cache['attributes'] as $key => $value) {
                     $this->setAttribute($key, $value);
                 }
@@ -126,9 +140,9 @@ class Group extends QUI\QDOM
         if (isset($result[0]['extra'])) {
             $extraList = $this->getListOfExtraAttributes();
             $extras    = [];
-            $extraData = \json_decode($result[0]['extra'], true);
+            $extraData = json_decode($result[0]['extra'], true);
 
-            if (!\is_array($extraData)) {
+            if (!is_array($extraData)) {
                 $extraData = [];
             }
 
@@ -172,7 +186,7 @@ class Group extends QUI\QDOM
          * @param int $groupId
          */
         $deleteGidInUsers = function ($groupId) {
-            if (!\is_int($groupId)) {
+            if (!is_int($groupId)) {
                 return;
             }
 
@@ -185,8 +199,8 @@ class Group extends QUI\QDOM
                 WHERE usergroup LIKE :where"
             );
 
-            $Statement->bindValue('where', '%,'.$groupId.',%');
-            $Statement->bindValue('search', ','.$groupId.',');
+            $Statement->bindValue('where', '%,' . $groupId . ',%');
+            $Statement->bindValue('search', ',' . $groupId . ',');
             $Statement->bindValue('replace', ',');
             $Statement->execute();
         };
@@ -219,7 +233,7 @@ class Group extends QUI\QDOM
             ]
         ]);
 
-        QUI\Cache\Manager::clear('qui/groups/group/'.$this->getId());
+        QUI\Cache\Manager::clear('qui/groups/group/' . $this->getId());
     }
 
     /**
@@ -337,9 +351,9 @@ class Group extends QUI\QDOM
         $toolbar          = '';
 
         if ($this->getAttribute('assigned_toolbar')) {
-            $toolbars = \explode(',', $this->getAttribute('assigned_toolbar'));
+            $toolbars = explode(',', $this->getAttribute('assigned_toolbar'));
 
-            $assignedToolbars = \array_filter($toolbars, function ($toolbar) {
+            $assignedToolbars = array_filter($toolbars, function ($toolbar) {
                 return QUI\Editor\Manager::existsToolbar($toolbar);
             });
 
@@ -358,8 +372,8 @@ class Group extends QUI\QDOM
             Manager::table(),
             [
                 'name'             => $this->getAttribute('name'),
-                'rights'           => \json_encode($this->rights),
-                'extra'            => \json_encode($extra),
+                'rights'           => json_encode($this->rights),
+                'extra'            => json_encode($extra),
                 'avatar'           => $avatar,
                 'assigned_toolbar' => $assignedToolbars,
                 'toolbar'          => $toolbar
@@ -533,7 +547,7 @@ class Group extends QUI\QDOM
         $children = $this->getChildrenIds(true);
 
         if (!empty($children)) {
-            $children = \array_flip($children);
+            $children = array_flip($children);
 
             if (isset($children[$NewParent->getId()])) {
                 throw new QUI\Groups\Exception(
@@ -634,7 +648,7 @@ class Group extends QUI\QDOM
                 'username'  => $username,
                 'usergroup' => [
                     'type'  => '%LIKE%',
-                    'value' => ','.$this->getId().','
+                    'value' => ',' . $this->getId() . ','
                 ]
             ],
             'limit'  => '1'
@@ -671,7 +685,7 @@ class Group extends QUI\QDOM
             'where' => [
                 'usergroup' => [
                     'type'  => '%LIKE%',
-                    'value' => ",".$this->getId().","
+                    'value' => "," . $this->getId() . ","
                 ]
             ]
         ];
@@ -706,7 +720,7 @@ class Group extends QUI\QDOM
     public function isParent($id, $recursiv = false)
     {
         if ($recursiv) {
-            if (\in_array($id, $this->parentids)) {
+            if (in_array($id, $this->parentids)) {
                 return true;
             }
 
@@ -811,7 +825,7 @@ class Group extends QUI\QDOM
      */
     public function hasChildren()
     {
-        return \count($this->getChildren());
+        return count($this->getChildren());
     }
 
     /**
@@ -831,7 +845,7 @@ class Group extends QUI\QDOM
             try {
                 $Child = $Groups->get($id);
 
-                $children[] = \array_merge(
+                $children[] = array_merge(
                     $Child->getAttributes(),
                     ['hasChildren' => $Child->hasChildren()]
                 );
@@ -899,8 +913,9 @@ class Group extends QUI\QDOM
      * Helper method for the recursiveness
      *
      * @param integer $id
+     * @throws QUI\Database\Exception
      */
-    private function getChildrenIdsHelper($id)
+    private function getChildrenIdsHelper(int $id)
     {
         $result = QUI::getDataBase()->fetch([
             'select' => 'id',
@@ -923,12 +938,12 @@ class Group extends QUI\QDOM
      * Create a subgroup
      *
      * @param string $name - name of the subgroup
-     * @param QUI\Interfaces\Users\User $ParentUser - (optional), Parent User, which create the user
+     * @param QUI\Interfaces\Users\User|null $ParentUser - (optional), Parent User, which create the user
      *
      * @return QUI\Groups\Group
      * @throws QUI\Exception
      */
-    public function createChild($name, $ParentUser = null)
+    public function createChild(string $name, $ParentUser = null): Group
     {
         // check, is the user allowed to create new users
         QUI\Permissions\Permission::checkPermission(
@@ -940,8 +955,8 @@ class Group extends QUI\QDOM
         $newId  = false;
 
         while ($create) {
-            \mt_srand(\microtime(true) * 1000000);
-            $newId = \mt_rand(10, 1000000000);
+            mt_srand(microtime(true) * 1000000);
+            $newId = mt_rand(10, 1000000000);
 
             $result = QUI::getDataBase()->fetch([
                 'select' => 'id',
@@ -985,13 +1000,12 @@ class Group extends QUI\QDOM
     /**
      * creates the group cache
      *
-     * @throws QUI\Exception
      * @ignore
      */
     protected function createCache()
     {
         // Cache aufbauen
-        QUI\Cache\Manager::set('quiqqer/groups/group/'.$this->getId(), [
+        QUI\Cache\Manager::set('quiqqer/groups/group/' . $this->getId(), [
             'parentids'  => $this->getParentIds(),
             'attributes' => $this->getAttributes(),
             'rights'     => $this->rights

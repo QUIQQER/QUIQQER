@@ -8,6 +8,8 @@ namespace QUI\Groups;
 
 use QUI;
 
+use function json_encode;
+
 /**
  * The Guest Group
  *
@@ -80,14 +82,14 @@ class Guest extends QUI\Groups\Group
 
         // Felder bekommen
         QUI::getDataBase()->update(
-            QUI\Groups\Manager::table(),
-            array(
-                'name'    => 'Guest',
+            Manager::table(),
+            [
+                'name' => 'Guest',
                 'toolbar' => $this->getAttribute('toolbar'),
-                'rights'  => \json_encode($this->rights),
-                'active'  => 1
-            ),
-            array('id' => $this->getId())
+                'rights' => json_encode($this->rights),
+                'active' => 1
+            ],
+            ['id' => $this->getId()]
         );
 
         $this->createCache();
@@ -156,7 +158,7 @@ class Guest extends QUI\Groups\Group
      */
     public function getParentIds()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -176,9 +178,9 @@ class Guest extends QUI\Groups\Group
      *
      * @return array
      */
-    public function getChildren($params = array())
+    public function getChildren($params = [])
     {
-        return array();
+        return [];
     }
 
     /**
@@ -189,9 +191,9 @@ class Guest extends QUI\Groups\Group
      *
      * @return array
      */
-    public function getChildrenIds($recursiv = false, $params = array())
+    public function getChildrenIds($recursiv = false, $params = [])
     {
-        return array();
+        return [];
     }
 
     /**
@@ -200,10 +202,10 @@ class Guest extends QUI\Groups\Group
      * @param string $name - name of the subgroup
      * @param QUI\Interfaces\Users\User $ParentUser - (optional), Parent User, which create the user
      *
-     * @return \QUI\Groups\Manager
+     * @return Manager
      * @throws QUI\Exception
      */
-    public function createChild($name, $ParentUser = null)
+    public function createChild(string $name, $ParentUser = null)
     {
         throw new QUI\Exception(
             QUI::getLocale()->get(
