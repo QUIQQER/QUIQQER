@@ -1,5 +1,6 @@
 
 .qui-controls-project-media-input {
+    display: flex;
     float: left;
     position: relative;
     width: 100%;
@@ -30,13 +31,13 @@
 .qui-controls-project-media-input-path {
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
+    flex-grow: 1;
     float: left;
     line-height: 28px;
     overflow: hidden;
     padding: 0 10px;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: calc(100% - 180px);
 }
 
 .field-container > .qui-controls-project-media-input {

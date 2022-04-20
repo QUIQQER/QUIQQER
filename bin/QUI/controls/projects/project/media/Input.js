@@ -51,6 +51,7 @@ define('controls/projects/project/media/Input', [
             selectable_types    : false,    // you can specified which types are selectable
             selectable_mimetypes: false,    // you can specified which mime types are selectable
             cssclasses          : false,    // css classes can be selected
+            mediabutton         : true,     // images can be selected
             ratio_warning       : false     // if the image has not an 1:1 ration, a warning icon is displayed
         },
 
@@ -271,6 +272,10 @@ define('controls/projects/project/media/Input', [
                     }
                 }
             }).inject(this.$Elm);
+
+            if (!this.getAttribute('mediabutton')) {
+                this.$MediaButton.hide();
+            }
 
             if (this.getAttribute('cssclasses')) {
                 this.$CSSButton = new QUIButton({

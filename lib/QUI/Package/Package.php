@@ -6,14 +6,30 @@
 
 namespace QUI\Package;
 
+use DOMElement;
+use Exception;
 use QUI;
+use QUI\Cache\LongTermCache;
 use QUI\Update;
 use QUI\Utils\Text\XML;
-use QUI\Cache\LongTermCache;
-
-use Composer\Json\JsonFile;
 use Seld\JsonLint\JsonParser;
 use Seld\JsonLint\ParsingException;
+
+use function array_filter;
+use function array_map;
+use function array_unique;
+use function explode;
+use function file_exists;
+use function htmlspecialchars;
+use function is_array;
+use function is_dir;
+use function json_last_error_msg;
+use function ltrim;
+use function preg_replace;
+use function str_replace;
+use function strpos;
+
+use const ARRAY_FILTER_USE_KEY;
 
 /**
  * An installed package
@@ -118,17 +134,17 @@ class Package extends QUI\QDOM
         $packageDir = OPT_DIR . $package . '/';
 
         // if not exists look at bin
-        if (!\is_dir($packageDir) && \strpos($package, '/') !== false) {
-            $packageDir = OPT_DIR . '/bin/' . \explode('/', $package)[1] . '/';
+        if (!is_dir($packageDir) && strpos($package, '/') !== false) {
+            $packageDir = OPT_DIR . '/bin/' . explode('/', $package)[1] . '/';
         }
 
-        if (!\is_dir($packageDir)) {
-            $package = \htmlspecialchars($package);
+        if (!is_dir($packageDir)) {
+            $package = htmlspecialchars($package);
             throw new QUI\Exception('Package not exists [' . $package . ']', 404);
         }
 
         $this->packageDir = $packageDir;
-        $this->name = $package;
+        $this->name       = $package;
     }
 
     /**
@@ -141,7 +157,7 @@ class Package extends QUI\QDOM
         }
 
         // no composer.json, no real package
-        if (!\file_exists($this->packageDir . 'composer.json')) {
+        if (!file_exists($this->packageDir . 'composer.json')) {
             $this->readPackageInfo = true;
 
             return;
@@ -152,7 +168,7 @@ class Package extends QUI\QDOM
         // ERROR
         if (!$this->composerData) {
             QUI\System\Log::addCritical(
-                'Package composer.json has some errors: ' . \json_last_error_msg(),
+                'Package composer.json has some errors: ' . json_last_error_msg(),
                 [
                     'package'    => $this->name,
                     'packageDir' => $this->packageDir
@@ -172,14 +188,14 @@ class Package extends QUI\QDOM
             return;
         }
 
-        if (\strpos($this->composerData['type'], 'quiqqer-') === false) {
+        if (strpos($this->composerData['type'], 'quiqqer-') === false) {
             $this->readPackageInfo = true;
 
             return;
         }
 
         $this->isQuiqqerPackage = true;
-        $this->configPath = CMS_DIR . 'etc/plugins/' . $this->getName() . '.ini.php';
+        $this->configPath       = CMS_DIR . 'etc/plugins/' . $this->getName() . '.ini.php';
 
         QUI\Utils\System\File::mkfile($this->configPath);
 
@@ -207,7 +223,7 @@ class Package extends QUI\QDOM
         $packageXML = $this->packageDir . '/package.xml';
 
         // package xml
-        if (!\file_exists($packageXML)) {
+        if (!file_exists($packageXML)) {
             $this->packageXML = [];
 
             return $this->packageXML;
@@ -269,9 +285,9 @@ class Package extends QUI\QDOM
         }
 
         $provider = $packageData['provider'];
-        $provider = \array_filter($provider, function ($key) use ($providerName) {
+        $provider = array_filter($provider, function ($key) use ($providerName) {
             return $key === $providerName;
-        }, \ARRAY_FILTER_USE_KEY);
+        }, ARRAY_FILTER_USE_KEY);
 
         if (!isset($provider[$providerName])) {
             return [];
@@ -426,8 +442,22 @@ class Package extends QUI\QDOM
             return $packageData['image'];
         }
 
-        if (\file_exists($this->packageDir . 'bin/package.png')) {
-            return \str_replace(OPT_DIR, URL_OPT_DIR, $this->packageDir) . 'bin/package.png';
+        if (file_exists($this->packageDir . 'bin/package.png')) {
+            return str_replace(OPT_DIR, URL_OPT_DIR, $this->packageDir) . 'bin/package.png';
+        }
+
+        return '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getVersion(): string
+    {
+        $composer = $this->getComposerData();
+
+        if (isset($composer['version'])) {
+            return $composer['version'];
         }
 
         return '';
@@ -443,7 +473,7 @@ class Package extends QUI\QDOM
      */
     public function getPermissionName($permissionName = 'canUse'): string
     {
-        $nameShortCut = \preg_replace("/[^A-Za-z0-9 ]/", '', $this->getName());
+        $nameShortCut = preg_replace("/[^A-Za-z0-9 ]/", '', $this->getName());
 
         switch ($permissionName) {
             case 'header':
@@ -464,7 +494,7 @@ class Package extends QUI\QDOM
     {
         $packageData = $this->getPackageXMLData();
 
-        if (!isset($packageData['preview']) || !\is_array($packageData['preview'])) {
+        if (!isset($packageData['preview']) || !is_array($packageData['preview'])) {
             return [];
         }
 
@@ -483,7 +513,7 @@ class Package extends QUI\QDOM
         if ($this->configPath === null) {
             $configFile = CMS_DIR . 'etc/plugins/' . $this->getName() . '.ini.php';
 
-            if (\file_exists($configFile)) {
+            if (file_exists($configFile)) {
                 $this->configPath = $configFile;
             }
         }
@@ -531,13 +561,13 @@ class Package extends QUI\QDOM
         }
 
         $Parser = new JsonParser();
-        $file = false;
+        $file   = false;
 
-        if (\file_exists($this->packageDir . 'composer.json')) {
+        if (file_exists($this->packageDir . 'composer.json')) {
             $file = $this->packageDir . 'composer.json';
-        } elseif (\file_exists($this->packageDir . 'package.json')) {
+        } elseif (file_exists($this->packageDir . 'package.json')) {
             $file = $this->packageDir . 'package.json';
-        } elseif (\file_exists($this->packageDir . 'bower.json')) {
+        } elseif (file_exists($this->packageDir . 'bower.json')) {
             $file = $this->packageDir . 'bower.json';
         }
 
@@ -600,7 +630,7 @@ class Package extends QUI\QDOM
     {
         $file = $this->getDir() . $name;
 
-        if (!\file_exists($file)) {
+        if (!file_exists($file)) {
             return false;
         }
 
@@ -660,8 +690,8 @@ class Package extends QUI\QDOM
 
         // options
         $optionLocalePublish = true;
-        $optionLocaleImport = true;
-        $optionForceImport = false;
+        $optionLocaleImport  = true;
+        $optionForceImport   = false;
 
         if (isset($params['localePublish'])) {
             $optionLocalePublish = $params['localePublish'];
@@ -741,7 +771,7 @@ class Package extends QUI\QDOM
                         $this->getName(),
                         $data
                     );
-                } catch (\Exception $Exception) {
+                } catch (Exception $Exception) {
                     QUI::getMessagesHandler()->addAttention(
                         $Exception->getMessage()
                     );
@@ -774,7 +804,7 @@ class Package extends QUI\QDOM
         }
 
         // settings
-        if (!\file_exists($dir . self::SETTINGS_XML)) {
+        if (!file_exists($dir . self::SETTINGS_XML)) {
             QUI::getEvents()->fireEvent('packageSetup', [$this]);
             QUI::getEvents()->fireEvent('packageSetup-' . $pkgName, [$this]);
             QUI::getEvents()->fireEvent('packageSetupEnd', [$this]);
@@ -803,15 +833,15 @@ class Package extends QUI\QDOM
         $dir = $this->getDir();
 
         try {
-            $groups = [];
-            $files = [$dir . self::LOCALE_XML];
-            $Dom = XML::getDomFromXml($dir . self::LOCALE_XML);
+            $groups   = [];
+            $files    = [$dir . self::LOCALE_XML];
+            $Dom      = XML::getDomFromXml($dir . self::LOCALE_XML);
             $FileList = $Dom->getElementsByTagName('file');
 
             if ($FileList->length) {
-                /** @var \DOMElement $File */
+                /** @var DOMElement $File */
                 foreach ($FileList as $File) {
-                    $files[] = $this->getDir() . \ltrim($File->getAttribute('file'), '/');
+                    $files[] = $this->getDir() . ltrim($File->getAttribute('file'), '/');
                 }
             }
 
@@ -821,12 +851,12 @@ class Package extends QUI\QDOM
                 );
             }
 
-            $groups = \array_map(function ($data) {
+            $groups = array_map(function ($data) {
                 return $data['group'];
             }, $groups);
 
-            $groups = \array_unique($groups);
-        } catch (\Exception $Exception) {
+            $groups = array_unique($groups);
+        } catch (Exception $Exception) {
             $groups = [];
             QUI\System\Log::addWarning($Exception->getMessage());
         }
@@ -835,7 +865,7 @@ class Package extends QUI\QDOM
         $groups[] = $this->getName();
         $groups[] = 'quiqqer/quiqqer';
 
-        $groups = \array_unique($groups);
+        $groups = array_unique($groups);
 
         foreach ($groups as $group) {
             try {
@@ -975,7 +1005,7 @@ class Package extends QUI\QDOM
 
         $quiqqerAssetDir = OPT_DIR . 'bin/' . $this->getName();
 
-        if (\is_dir($quiqqerAssetDir)) {
+        if (is_dir($quiqqerAssetDir)) {
             QUI::getTemp()->moveToTemp($quiqqerAssetDir);
         }
 

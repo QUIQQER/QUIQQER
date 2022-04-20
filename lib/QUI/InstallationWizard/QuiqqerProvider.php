@@ -51,6 +51,7 @@ class QuiqqerProvider extends AbstractInstallationWizard
         return [
             new QuiqqerSteps\Welcome(),
             new QuiqqerSteps\Country(),
+            new QuiqqerSteps\Groups(),
             new QuiqqerSteps\Mail(),
             new QuiqqerSteps\MailSMTP(),
             new QuiqqerSteps\Cron(),
@@ -61,6 +62,7 @@ class QuiqqerProvider extends AbstractInstallationWizard
 
     /**
      * @param array $data
+     * @throws QUI\Exception
      */
     public function execute(array $data = []): void
     {
@@ -90,6 +92,10 @@ class QuiqqerProvider extends AbstractInstallationWizard
             $Config->set('mail', 'SMTPSecureSSL_allow_self_signed', $data['mail.settings.allow_self_signed']);
         }
 
+        if (!empty($data['add-quiqqer-groups'])) {
+            $this->setupForGroupsAndToolbars();
+        }
+
         // workspace
         if (isset($data['workspace-columns'])) {
             switch ($data['workspace-columns']) {
@@ -110,5 +116,49 @@ class QuiqqerProvider extends AbstractInstallationWizard
         }
 
         $Config->save();
+    }
+
+    /**
+     * @return void
+     */
+    protected function setupForGroupsAndToolbars()
+    {
+        try {
+            $Root   = QUI::getGroups()->get(QUI::conf('globals', 'root'));
+            $Config = QUI::getConfig('etc/conf.ini.php');
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+            return;
+        }
+
+        // Redakteur / Editor
+        try {
+            if (!$Config->getValue('installationWizard', 'editorId')) {
+                $Editor = $Root->createChild('Editor', $Root);
+                $Config->setValue('installationWizard', 'editorId', $Editor->getId());
+                // @todo set permission
+            }
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
+
+        // sys admin
+        try {
+            if (!$Config->getValue('installationWizard', 'editorId')) {
+                $sysAdmin = $Root->createChild('System administrator', $Root);
+                $Config->setValue('installationWizard', 'sysAdminId', $sysAdmin->getId());
+                // @todo set permission
+            }
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
+
+
+        try {
+            $Config->save();
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+            return;
+        }
     }
 }

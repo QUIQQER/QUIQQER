@@ -4744,6 +4744,21 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             ]]></de>
         </locale>
 
+        <locale name="quiqqer.setup.groups.title">
+            <de><![CDATA[Gruppen-Einstellung]]></de>
+        </locale>
+        <locale name="quiqqer.setup.groups.description">
+            <de><![CDATA[
+            <p>Möchtest du QUIQQER mit einem Team oder weiteren Personen nutzen?</p>
+            <p></p>
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.setup.groups.text">
+            <de><![CDATA[
+            Ja, ich möchte QUIQQER mit mehreren Personen nutzen und es sollen Gruppen und Toolbars eingerichtet werden.
+            ]]></de>
+        </locale>
+
         <locale name="quiqqer.setup.cron.title">
             <de><![CDATA[Cron Service]]></de>
         </locale>
