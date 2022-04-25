@@ -6,13 +6,36 @@
 
 namespace QUI\Projects\Site;
 
+use DOMElement;
+use DOMXPath;
 use QUI;
+use QUI\Exception;
 use QUI\Projects;
 use QUI\Projects\Project;
-use QUI\Utils\StringHelper as StringUtils;
-use QUI\Utils\Text\XML;
 use QUI\Utils\DOM;
 use QUI\Utils\Security\Orthos;
+use QUI\Utils\StringHelper as StringUtils;
+use QUI\Utils\Text\XML;
+
+use function array_merge;
+use function count;
+use function explode;
+use function file_exists;
+use function function_exists;
+use function get_class;
+use function html_entity_decode;
+use function is_array;
+use function is_numeric;
+use function is_string;
+use function parse_str;
+use function parse_url;
+use function preg_match;
+use function preg_replace;
+use function realpath;
+use function str_replace;
+use function strlen;
+use function strpos;
+use function trim;
 
 /**
  * Site Utils - Site Helper
@@ -28,25 +51,25 @@ class Utils
      * @param string $name
      *
      * @return boolean
-     * @throws QUI\Exception
+     * @throws Exception
      */
     public static function checkName($name)
     {
         if (!isset($name)) {
-            throw new QUI\Exception(
+            throw new Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.url.missing.title')
             );
         }
 
-        if (\strlen($name) <= 2) {
-            throw new QUI\Exception(
+        if (strlen($name) <= 2) {
+            throw new Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.url.2.signs'),
                 701
             );
         }
 
-        if (\strlen($name) > 200) {
-            throw new QUI\Exception(
+        if (strlen($name) > 200) {
+            throw new Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.url.200.signs'),
                 704
             );
@@ -60,8 +83,8 @@ class Utils
         }
 
         // Prüfung des Namens - Sonderzeichen
-        if (\preg_match($signs, $name)) {
-            throw new QUI\Exception(
+        if (preg_match($signs, $name)) {
+            throw new Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.url.wrong.signs', [
                     'name'  => $name,
                     'signs' => $signs
@@ -85,7 +108,7 @@ class Utils
     public static function clearUrl($url, QUI\Projects\Project $Project = null)
     {
         // space separator
-        $url = \str_replace(QUI\Rewrite::URL_SPACE_CHARACTER, ' ', $url);
+        $url = str_replace(QUI\Rewrite::URL_SPACE_CHARACTER, ' ', $url);
 
         // clear
         $signs = [
@@ -115,30 +138,30 @@ class Utils
             '/'
         ];
 
-        $url = \str_replace($signs, '', $url);
+        $url = str_replace($signs, '', $url);
         //$url = preg_replace('[-.,:;#`!§$%&/?<>\=\'\"\@\_\]\[\+]', '', $url);
 
         // doppelte leerzeichen löschen
-        $url = \preg_replace('/([ ]){2,}/', "$1", $url);
+        $url = preg_replace('/([ ]){2,}/', "$1", $url);
 
         // URL Filter
         if ($Project !== null) {
             $name   = $Project->getAttribute('name');
-            $filter = USR_DIR.'lib/'.$name.'/url.filter.php';
-            $func   = 'url_filter_'.$name;
+            $filter = USR_DIR . 'lib/' . $name . '/url.filter.php';
+            $func   = 'url_filter_' . $name;
 
-            $filter = Orthos::clearPath(\realpath($filter));
+            $filter = Orthos::clearPath(realpath($filter));
 
-            if (\file_exists($filter)) {
+            if (file_exists($filter)) {
                 require_once $filter;
 
-                if (\function_exists($func)) {
+                if (function_exists($func)) {
                     $url = $func($url);
                 }
             }
         }
 
-        $url = \str_replace(' ', QUI\Rewrite::URL_SPACE_CHARACTER, $url);
+        $url = str_replace(' ', QUI\Rewrite::URL_SPACE_CHARACTER, $url);
 
         return $url;
     }
@@ -153,30 +176,30 @@ class Utils
     public static function getDataBaseXMLListForSite($Site)
     {
         $siteType = $Site->getAttribute('type');
-        $cache    = $Site->getCachePath().'/xml-database-list/'.$siteType;
+        $cache    = $Site->getCachePath() . '/xml-database-list/' . $siteType;
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (QUI\Exception $Exception) {
+        } catch (Exception $Exception) {
         }
 
         $dbXmlList = QUI::getPackageManager()->getPackageDatabaseXmlList();
         $result    = [];
 
         foreach ($dbXmlList as $package) {
-            $file = OPT_DIR.$package.'/database.xml';
+            $file = OPT_DIR . $package . '/database.xml';
 
-            if (!\file_exists($file)) {
+            if (!file_exists($file)) {
                 continue;
             }
 
             $Dom  = XML::getDomFromXml($file);
-            $Path = new \DOMXPath($Dom);
+            $Path = new DOMXPath($Dom);
 
             $tableList = $Path->query("//database/projects/table");
 
             for ($i = 0, $len = $tableList->length; $i < $len; $i++) {
-                /* @var $Table \DOMElement */
+                /* @var $Table DOMElement */
                 $Table = $tableList->item($i);
 
                 if ($Table->getAttribute('no-auto-update')) {
@@ -192,10 +215,10 @@ class Utils
                 $types = $Table->getAttribute('site-types');
 
                 if ($types) {
-                    $types = \explode(',', $types);
+                    $types = explode(',', $types);
                 }
 
-                if (!empty($types) && \is_array($types)) {
+                if (!empty($types) && is_array($types)) {
                     foreach ($types as $allowedType) {
                         if (!StringUtils::match($allowedType, $siteType)) {
                             continue 2;
@@ -232,11 +255,11 @@ class Utils
     public static function getDataListForSite($Site)
     {
         $siteType = $Site->getAttribute('type');
-        $cache    = $Site->getCachePath().'/xml-database-tables/'.$siteType;
+        $cache    = $Site->getCachePath() . '/xml-database-tables/' . $siteType;
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (QUI\Exception $Exception) {
+        } catch (Exception $Exception) {
         }
 
         $dbXmlList = self::getDataBaseXMLListForSite($Site);
@@ -248,13 +271,13 @@ class Utils
 
         foreach ($dbXmlList as $dbXml) {
             $Dom     = XML::getDomFromXml($dbXml['file']);
-            $Path    = new \DOMXPath($Dom);
+            $Path    = new DOMXPath($Dom);
             $package = $dbXml['package'];
 
             $tableList = $Path->query("//database/projects/table");
 
             for ($i = 0, $len = $tableList->length; $i < $len; $i++) {
-                /* @var $Table \DOMElement */
+                /* @var $Table DOMElement */
                 $Table = $tableList->item($i);
 
                 if ($Table->getAttribute('no-auto-update')) {
@@ -270,10 +293,10 @@ class Utils
                 $types = $Table->getAttribute('site-types');
 
                 if ($types) {
-                    $types = \explode(',', $types);
+                    $types = explode(',', $types);
                 }
 
-                if (!empty($types) && \is_array($types)) {
+                if (!empty($types) && is_array($types)) {
                     foreach ($types as $allowedType) {
                         if (!StringUtils::match($allowedType, $siteType)) {
                             continue 2;
@@ -285,13 +308,13 @@ class Utils
                 $suffix = $Table->getAttribute('name');
                 $fields = $Table->getElementsByTagName('field');
 
-                $table = QUI::getDBTableName($name.'_'.$lang.'_'.$suffix);
+                $table = QUI::getDBTableName($name . '_' . $lang . '_' . $suffix);
                 $data  = [];
 
 
                 for ($f = 0, $flen = $fields->length; $f < $flen; $f++) {
                     $Field     = $fields->item($f);
-                    $attribute = \trim($Field->nodeValue);
+                    $attribute = trim($Field->nodeValue);
 
                     $data[] = $attribute;
                 }
@@ -329,11 +352,11 @@ class Utils
     public static function getExtraAttributeListForSite($Site)
     {
         $siteType = $Site->getAttribute('type');
-        $cache    = $Site->getCachePath().'/xml-database-attributes/'.$siteType;
+        $cache    = $Site->getCachePath() . '/xml-database-attributes/' . $siteType;
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (QUI\Exception $Exception) {
+        } catch (Exception $Exception) {
         }
 
 
@@ -343,21 +366,21 @@ class Utils
 
 
         foreach ($siteXmlList as $package) {
-            $file = OPT_DIR.$package.'/site.xml';
+            $file = OPT_DIR . $package . '/site.xml';
 
-            if (!\file_exists($file)) {
+            if (!file_exists($file)) {
                 continue;
             }
 
             $Dom  = XML::getDomFromXml($file);
-            $Path = new \DOMXPath($Dom);
+            $Path = new DOMXPath($Dom);
 
             $attributes = $Path->query('//site/attributes/attribute');
 
-            /* @var $Attribute \DOMElement */
+            /* @var $Attribute DOMElement */
             foreach ($attributes as $Attribute) {
                 $result[] = [
-                    'attribute' => \trim($Attribute->nodeValue),
+                    'attribute' => trim($Attribute->nodeValue),
                     'default'   => $Attribute->getAttribute('default')
                 ];
             }
@@ -365,50 +388,50 @@ class Utils
 
 
         // extra type attributes
-        $type = \explode(':', $siteType);
+        $type = explode(':', $siteType);
 
         if (isset($type[1])) {
             // Query for site type attributes in the original package of the site type
-            $exprPackage = '//site/types/type[@type="'.$type[1].'"]/attributes/attribute';
+            $exprPackage = '//site/types/type[@type="' . $type[1] . '"]/attributes/attribute';
 
-            $originalPackageSiteXmlFile = OPT_DIR.$type[0].'/site.xml';
+            $originalPackageSiteXmlFile = OPT_DIR . $type[0] . '/site.xml';
 
             $Dom  = XML::getDomFromXml($originalPackageSiteXmlFile);
-            $Path = new \DOMXPath($Dom);
+            $Path = new DOMXPath($Dom);
 
             $attributes = $Path->query($exprPackage);
 
-            /* @var $Attribute \DOMElement */
+            /* @var $Attribute DOMElement */
             foreach ($attributes as $Attribute) {
                 $result[] = [
-                    'attribute' => \trim($Attribute->nodeValue),
+                    'attribute' => trim($Attribute->nodeValue),
                     'default'   => $Attribute->getAttribute('default')
                 ];
             }
 
             // Query for site type attributes in other packages than the original package of the site type
-            $exprOtherPackage = '//site/types/type[@type="'.$type[0].':'.$type[1].'"]/attributes/attribute';
+            $exprOtherPackage = '//site/types/type[@type="' . $type[0] . ':' . $type[1] . '"]/attributes/attribute';
 
             foreach ($siteXmlList as $package) {
-                $siteXmlFile = OPT_DIR.$package.'/site.xml';
+                $siteXmlFile = OPT_DIR . $package . '/site.xml';
 
                 if ($siteXmlFile === $originalPackageSiteXmlFile) {
                     continue;
                 }
 
-                if (!\file_exists($siteXmlFile)) {
+                if (!file_exists($siteXmlFile)) {
                     continue;
                 }
 
                 $Dom  = XML::getDomFromXml($siteXmlFile);
-                $Path = new \DOMXPath($Dom);
+                $Path = new DOMXPath($Dom);
 
                 $attributes = $Path->query($exprOtherPackage);
 
-                /* @var $Attribute \DOMElement */
+                /* @var $Attribute DOMElement */
                 foreach ($attributes as $Attribute) {
                     $result[] = [
-                        'attribute' => \trim($Attribute->nodeValue),
+                        'attribute' => trim($Attribute->nodeValue),
                         'default'   => $Attribute->getAttribute('default')
                     ];
                 }
@@ -434,11 +457,11 @@ class Utils
     public static function getExtraSettingsForSite($Site)
     {
         $siteType = $Site->getAttribute('type');
-        $cache    = $Site->getCachePath().'/xml-database-settings/'.$siteType;
+        $cache    = $Site->getCachePath() . '/xml-database-settings/' . $siteType;
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (QUI\Exception $Exception) {
+        } catch (Exception $Exception) {
         }
 
 
@@ -447,14 +470,14 @@ class Utils
         $result      = '';
 
         foreach ($siteXmlList as $package) {
-            $file = OPT_DIR.$package.'/site.xml';
+            $file = OPT_DIR . $package . '/site.xml';
 
-            if (!\file_exists($file)) {
+            if (!file_exists($file)) {
                 continue;
             }
 
             $Dom  = XML::getDomFromXml($file);
-            $Path = new \DOMXPath($Dom);
+            $Path = new DOMXPath($Dom);
             $cats = $Path->query("//site/settings/category");
 
             foreach ($cats as $Category) {
@@ -464,17 +487,17 @@ class Utils
 
 
         // site type extra xml
-        $type    = \explode(':', $Site->getAttribute('type'));
-        $dir     = OPT_DIR.$type[0];
-        $siteXML = $dir.'/site.xml';
+        $type    = explode(':', $Site->getAttribute('type'));
+        $dir     = OPT_DIR . $type[0];
+        $siteXML = $dir . '/site.xml';
 
-        if (\file_exists($siteXML)) {
+        if (file_exists($siteXML)) {
             $Dom  = XML::getDomFromXml($siteXML);
-            $Path = new \DOMXPath($Dom);
+            $Path = new DOMXPath($Dom);
 
             // type extra
             $cats = $Path->query(
-                "//site/types/type[@type='".$type[1]."']/settings/category"
+                "//site/types/type[@type='" . $type[1] . "']/settings/category"
             );
 
             foreach ($cats as $Category) {
@@ -485,22 +508,22 @@ class Utils
         if (!empty($type[1])) {
             // site type extra xml from OTHER packages
             foreach ($siteXmlList as $package) {
-                $file = OPT_DIR.$package.'/site.xml';
+                $file = OPT_DIR . $package . '/site.xml';
 
                 if ($file === $siteXML) {
                     continue;
                 }
 
-                if (!\file_exists($file)) {
+                if (!file_exists($file)) {
                     continue;
                 }
 
                 $Dom  = XML::getDomFromXml($file);
-                $Path = new \DOMXPath($Dom);
+                $Path = new DOMXPath($Dom);
 
                 // type extra
                 $cats = $Path->query(
-                    "//site/types/type[@type='".$type[0].':'.$type[1]."']/settings/category"
+                    "//site/types/type[@type='" . $type[0] . ':' . $type[1] . "']/settings/category"
                 );
 
                 foreach ($cats as $Category) {
@@ -528,27 +551,27 @@ class Utils
     public static function getAdminSiteModulesFromSite($Site)
     {
         $siteType = $Site->getAttribute('type');
-        $cache    = $Site->getCachePath().'/xml-admin-modules/'.$siteType;
+        $cache    = $Site->getCachePath() . '/xml-admin-modules/' . $siteType;
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (QUI\Exception $Exception) {
+        } catch (Exception $Exception) {
         }
 
         // site type extra xml
-        $type    = \explode(':', $Site->getAttribute('type'));
-        $dir     = OPT_DIR.$type[0];
-        $siteXML = $dir.'/site.xml';
+        $type    = explode(':', $Site->getAttribute('type'));
+        $dir     = OPT_DIR . $type[0];
+        $siteXML = $dir . '/site.xml';
 
         $result = [];
 
-        if (\file_exists($siteXML)) {
+        if (file_exists($siteXML)) {
             $Dom  = XML::getDomFromXml($siteXML);
-            $Path = new \DOMXPath($Dom);
+            $Path = new DOMXPath($Dom);
 
             // type extra
             $modules = $Path->query(
-                "//site/types/type[@type='".$type[1]."']/admin/js"
+                "//site/types/type[@type='" . $type[1] . "']/admin/js"
             );
 
             foreach ($modules as $Module) {
@@ -577,7 +600,7 @@ class Utils
      */
     public static function isSiteObject($Site)
     {
-        switch (\get_class($Site)) {
+        switch (get_class($Site)) {
             case 'QUI\\Projects\\Site':
             case 'QUI\\Projects\\Site\\Edit':
             case 'QUI\\Projects\\Site\\OnlyDB':
@@ -600,19 +623,19 @@ class Utils
      */
     public static function isSiteLink($link)
     {
-        if (\strpos($link, 'index.php') === false) {
+        if (strpos($link, 'index.php') === false) {
             return false;
         }
 
-        if (\strpos($link, 'project=') === false) {
+        if (strpos($link, 'project=') === false) {
             return false;
         }
 
-        if (\strpos($link, 'lang=') === false) {
+        if (strpos($link, 'lang=') === false) {
             return false;
         }
 
-        if (\strpos($link, 'id=') === false) {
+        if (strpos($link, 'id=') === false) {
             return false;
         }
 
@@ -626,12 +649,12 @@ class Utils
      * @param string $link - index.php?project=test&lang=de&id=1
      *
      * @return Projects\Site
-     * @throws QUI\Exception
+     * @throws Exception
      */
     public static function getSiteByLink($link)
     {
         if (!self::isSiteLink($link)) {
-            throw new QUI\Exception(
+            throw new Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'exception.site.not.found'
@@ -645,10 +668,10 @@ class Utils
             );
         }
 
-        $parseUrl = \parse_url($link);
+        $parseUrl = parse_url($link);
 
-        if (!isset($parseUrl['query']) || empty($parseUrl['query'])) {
-            throw new QUI\Exception(
+        if (empty($parseUrl['query'])) {
+            throw new Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'exception.site.not.found'
@@ -662,7 +685,7 @@ class Utils
             );
         }
 
-        \parse_str($parseUrl['query'], $urlQueryParams);
+        parse_str($parseUrl['query'], $urlQueryParams);
 
         $Project = QUI::getProject(
             $urlQueryParams['project'],
@@ -679,14 +702,14 @@ class Utils
      * @param $link
      * @return Projects\Site
      *
-     * @throws QUI\Exception
+     * @throws Exception
      */
     public static function getSiteByUrl(Project $Project, $link)
     {
-        $link  = \str_replace('.html', '', $link);
-        $link  = \trim($link);
-        $link  = \trim($link, '/');
-        $parts = \explode('/', $link);
+        $link  = str_replace('.html', '', $link);
+        $link  = trim($link);
+        $link  = trim($link, '/');
+        $parts = explode('/', $link);
 
         $Site = $Project->firstChild();
 
@@ -728,10 +751,10 @@ class Utils
         // @todo eigener select, rückgabe dann wie in liste übergeben
 //        }
 
-        if (\is_string($list)) {
-            $sitetypes = \explode(';', $list);
+        if (is_string($list)) {
+            $sitetypes = explode(';', $list);
         } else {
-            if (\is_array($list)) {
+            if (is_array($list)) {
                 $sitetypes = $list;
             } else {
                 return [];
@@ -744,16 +767,16 @@ class Utils
         $where   = [];
 
         foreach ($sitetypes as $sitetypeEntry) {
-            if (\is_numeric($sitetypeEntry)) {
+            if (is_numeric($sitetypeEntry)) {
                 $ids[] = (int)$sitetypeEntry;
                 continue;
             }
 
-            if (\strpos($sitetypeEntry, 'p') === 0
-                && \strpos($sitetypeEntry, '/') === false
-                && \strpos($sitetypeEntry, ':') === false
+            if (strpos($sitetypeEntry, 'p') === 0
+                && strpos($sitetypeEntry, '/') === false
+                && strpos($sitetypeEntry, ':') === false
             ) {
-                $parents[] = \str_replace('p', '', $sitetypeEntry);
+                $parents[] = str_replace('p', '', $sitetypeEntry);
                 continue;
             }
 
@@ -776,7 +799,7 @@ class Utils
         }
 
         // parents are set
-        if (\count($parents)) {
+        if (count($parents)) {
             foreach ($parents as $parentId) {
                 try {
                     $Parent = $Project->get((int)$parentId);
@@ -785,12 +808,12 @@ class Utils
                         'order' => $order
                     ]);
 
-                    $ids = \array_merge($ids, $children);
-                } catch (QUI\Exception $Exception) {
+                    $ids = array_merge($ids, $children);
+                } catch (Exception $Exception) {
                 }
             }
 
-            if (!\count($ids)) {
+            if (!count($ids)) {
                 if (isset($params['count']) && $params['count']) {
                     return [['count' => 0]];
                 }
@@ -842,12 +865,12 @@ class Utils
      *
      * @return string
      *
-     * @throws \QUI\Exception
+     * @throws Exception
      */
     public static function rewriteSiteLink($link)
     {
         if (!self::isSiteLink($link)) {
-            throw new QUI\Exception(
+            throw new Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'exception.site.not.found'
@@ -861,10 +884,10 @@ class Utils
             );
         }
 
-        $parseUrl = \parse_url($link);
+        $parseUrl = parse_url($link);
 
         if (!isset($parseUrl['query']) || empty($parseUrl['query'])) {
-            throw new QUI\Exception(
+            throw new Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'exception.site.not.found'
@@ -879,7 +902,7 @@ class Utils
         }
 
         // html_entity_decode because -> &nbsp; in index.php links
-        \parse_str(\html_entity_decode($parseUrl['query']), $urlQueryParams);
+        parse_str(html_entity_decode($parseUrl['query']), $urlQueryParams);
 
         return QUI::getRewrite()->getOutput()->getSiteUrl($urlQueryParams);
     }
