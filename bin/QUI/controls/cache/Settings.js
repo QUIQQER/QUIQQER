@@ -72,8 +72,8 @@ define('controls/cache/Settings', [
             var btnClick = function (Btn) {
                 Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
-                var icon    = Btn.getAttribute('data').icon;
-                var name    = Btn.getAttribute('data').name;
+                var icon = Btn.getAttribute('data').icon;
+                var name = Btn.getAttribute('data').name;
                 var options = {};
 
                 options[name] = true;
@@ -133,27 +133,34 @@ define('controls/cache/Settings', [
                 }
             }).inject(QuiqqerCacheBody);
 
-            var quiqqerButtons = [{
-                name: 'quiqqer-projects',
-                icon: 'fa fa-home'
-            }, {
-                name: 'quiqqer-users-groups',
-                icon: 'fa fa-users'
-            }, {
-                name: 'quiqqer-packages',
-                icon: 'fa fa-puzzle-piece'
-            }, {
-                name: 'settings',
-                icon: 'fa fa-wrench'
-            }, {
-                name: 'media',
-                icon: 'fa fa-picture-o'
-            }];
+            var quiqqerButtons = [
+                {
+                    name: 'quiqqer-projects',
+                    icon: 'fa fa-home'
+                },
+                {
+                    name: 'quiqqer-users-groups',
+                    icon: 'fa fa-users'
+                },
+                {
+                    name: 'quiqqer-packages',
+                    icon: 'fa fa-puzzle-piece'
+                },
+                {
+                    name: 'settings',
+                    icon: 'fa fa-wrench'
+                },
+                {
+                    name: 'media',
+                    icon: 'fa fa-picture-o'
+                }
+            ];
 
             for (var i = 0, len = quiqqerButtons.length; i < len; i++) {
                 new QUIButton({
                     text     : QUILocale.get(lg, 'quiqqer.settings.cache.clear.quiqqer-' + quiqqerButtons[i].name),
-                    title    : cleanupTitle(QUILocale.get(lg, 'quiqqer.settings.cache.clear.quiqqer-' + quiqqerButtons[i].name + '.title')),
+                    title    : cleanupTitle(QUILocale.get(lg, 'quiqqer.settings.cache.clear.quiqqer-' +
+                                                              quiqqerButtons[i].name + '.title')),
                     textimage: quiqqerButtons[i].icon,
                     data     : quiqqerButtons[i],
                     events   : {
@@ -178,6 +185,8 @@ define('controls/cache/Settings', [
                     }
                 }
             }).inject(PurgeCacheBody);
+
+            QUI.fireEvent('onQuiqqerCacheClearPanel', [this]);
         },
 
         /**

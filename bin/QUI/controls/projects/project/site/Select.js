@@ -57,13 +57,13 @@ define('controls/projects/project/site/Select', [
         initialize: function (options) {
             this.parent(options);
 
-            this.$Input     = false;
-            this.$Buttons   = false;
+            this.$Input = false;
+            this.$Buttons = false;
             this.$Container = false;
-            this.$Project   = false;
+            this.$Project = false;
 
-            this.$ButtonTypes   = false;
-            this.$ButtonSite    = false;
+            this.$ButtonTypes = false;
+            this.$ButtonSite = false;
             this.$ButtonParents = false;
 
             this.addEvents({
@@ -80,8 +80,8 @@ define('controls/projects/project/site/Select', [
             this.$Elm = new Element('div', {
                 'class': 'control-site-select',
                 html   : '<div class="control-site-select-container"></div>' +
-                    '<div class="control-site-select-buttons"></div>' +
-                    '<div class="control-site-select-description"></div>'
+                         '<div class="control-site-select-buttons"></div>' +
+                         '<div class="control-site-select-description"></div>'
             });
 
             if (!this.$Input) {
@@ -94,8 +94,8 @@ define('controls/projects/project/site/Select', [
                 this.$Elm.setStyles(this.getAttribute('styles'));
             }
 
-            this.$Buttons     = this.$Elm.getElement('.control-site-select-buttons');
-            this.$Container   = this.$Elm.getElement('.control-site-select-container');
+            this.$Buttons = this.$Elm.getElement('.control-site-select-buttons');
+            this.$Container = this.$Elm.getElement('.control-site-select-container');
             this.$Description = this.$Elm.getElement('.control-site-select-description');
 
             this.$Container.set(
@@ -110,7 +110,7 @@ define('controls/projects/project/site/Select', [
                 selectparentLocale = '';
 
             var buttons = 0;
-            var width   = '100%';
+            var width = '100%';
 
             if (this.getAttribute('selecttypes')) {
                 selecttypesLocale = QUILocale.get(lg, 'projects.project.site.select.description.site_types');
@@ -231,11 +231,11 @@ define('controls/projects/project/site/Select', [
          * event : on import
          */
         $onImport: function () {
-            if (this.$Elm.nodeName != 'INPUT') {
+            if (this.$Elm.nodeName !== 'INPUT') {
                 return;
             }
 
-            this.$Input      = this.$Elm;
+            this.$Input = this.$Elm;
             this.$Input.type = 'hidden';
             this.$Input.set('data-quiid', this.getId());
 
@@ -264,7 +264,7 @@ define('controls/projects/project/site/Select', [
          * @param {String} [lang] - Language of the Project
          */
         setProject: function (project, lang) {
-            if (typeOf(project) == 'classes/projects/Project') {
+            if (typeOf(project) === 'classes/projects/Project') {
                 this.$Project = project;
 
                 if (this.$ButtonTypes) {
@@ -350,7 +350,7 @@ define('controls/projects/project/site/Select', [
                 return;
             }
 
-            var self = this;
+            const self = this;
 
             new ProjectWindow({
                 project: this.$Project.getName(),
@@ -375,7 +375,7 @@ define('controls/projects/project/site/Select', [
                 return;
             }
 
-            var self = this;
+            const self = this;
 
             new ProjectWindow({
                 project: this.$Project.getName(),
@@ -401,7 +401,7 @@ define('controls/projects/project/site/Select', [
                 return;
             }
 
-            var self = this;
+            const self = this;
 
             new TypeWindow({
                 multiple         : true,
@@ -513,14 +513,14 @@ define('controls/projects/project/site/Select', [
          * @returns {HTMLElement}
          */
         createEntry: function (value) {
-            var self = this;
+            const self = this;
 
             var Item = new Element('div', {
                 'class'     : 'control-site-select-entry',
                 html        : '<div class="control-site-select-entry-text">' + value + '</div>' +
-                    '<div class="control-site-select-entry-delete">' +
-                    '<span class="fa fa-remove"></span>' +
-                    '</div>',
+                              '<div class="control-site-select-entry-delete">' +
+                              '<span class="fa fa-remove"></span>' +
+                              '</div>',
                 "data-value": value
             });
 

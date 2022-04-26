@@ -476,11 +476,14 @@ class Manager extends QUI\QDOM
             $composerJson->config['minimum-stability'] = 'stable';
         }
 
-        if (!isset($composerJson->config['allow-plugins'])) {
-            $composerJson->config['allow-plugins'] = [
-                "composer/installers"                   => true,
-                "oomphinc/composer-installers-extender" => true
-            ];
+        $allowedPlugins = [
+            "composer/installers"                   => true,
+            "oomphinc/composer-installers-extender" => true,
+            "kylekatarnls/update-helper"            => true
+        ];
+
+        foreach ($allowedPlugins as $plugin) {
+            $composerJson->config['allow-plugins'][$plugin] = true;
         }
 
         if (DEVELOPMENT) {

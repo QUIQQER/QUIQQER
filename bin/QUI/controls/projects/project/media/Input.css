@@ -38,6 +38,7 @@
     padding: 0 10px;
     text-overflow: ellipsis;
     white-space: nowrap;
+    width: 1px;
 }
 
 .field-container > .qui-controls-project-media-input {
