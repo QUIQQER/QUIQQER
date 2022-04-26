@@ -477,9 +477,9 @@ class Manager extends QUI\QDOM
         }
 
         $allowedPlugins = [
-            "composer/installers"                   => true,
-            "oomphinc/composer-installers-extender" => true,
-            "kylekatarnls/update-helper"            => true
+            "composer/installers",
+            "oomphinc/composer-installers-extender",
+            "kylekatarnls/update-helper"
         ];
 
         foreach ($allowedPlugins as $plugin) {
