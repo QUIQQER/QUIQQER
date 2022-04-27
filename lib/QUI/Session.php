@@ -377,7 +377,7 @@ class Session
             'session_value'    => 'text NOT NULL',
             'session_time'     => 'int(11) NOT NULL',
             'session_lifetime' => 'int(12) NOT NULL',
-            'uid'              => 'int(11) NOT NULL'
+            'uid'              => 'int(11) NULL'
         ]);
 
         $DBTable->setPrimaryKey(QUI::getDBTableName('sessions'), 'session_id');
