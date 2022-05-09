@@ -226,9 +226,9 @@ define('InstallationWizard', [
             const Form = WizardWindow.getContent().getElement('form');
 
             if (Form) {
-                formData = Object.assign(formData, FormUtils.getFormData(Form));
+                formData = Object.assign(formData, FormUtils.getDataFromNode(Form));
             }
-
+            
             return Next.then(() => {
                 if (CurrentControl) {
                     CurrentControl.destroy();

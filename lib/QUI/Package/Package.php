@@ -720,7 +720,7 @@ class Package extends QUI\QDOM
         }
 
         // permissions
-        if ($this->getName() != 'quiqqer/quiqqer') { // you can't set permissions to the core
+        if ($this->getName() !== 'quiqqer/quiqqer') { // you can't set permissions to the core
             try {
                 $found = QUI::getDataBase()->fetch([
                     'from'  => QUI\Permissions\Manager::table(),
