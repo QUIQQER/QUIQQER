@@ -6,6 +6,10 @@
 QUI::$Ajax->registerFunction(
     'ajax_installationWizard_get',
     function () {
+        if (!QUI::getUserBySession()->isSU()) {
+            return [];
+        }
+
         $list = QUI\InstallationWizard\ProviderHandler::getNotSetUpProviderList();
 
         foreach ($list as $Provider) {
@@ -23,5 +27,5 @@ QUI::$Ajax->registerFunction(
         return $list;
     },
     false,
-    'Permission::checkSU'
+    ''
 );
