@@ -49,7 +49,7 @@ QUI::$Ajax->registerFunction(
             $i = 0;
 
             foreach ($section as $key => $val) {
-                $str .= '<tr class="'.($i % 2 ? 'odd' : 'even').'">';
+                $str .= '<tr class="' . ($i % 2 ? 'odd' : 'even') . '">';
 
                 if (\is_array($val)) {
                     $str .= "<td>$key</td>";
@@ -72,5 +72,8 @@ QUI::$Ajax->registerFunction(
         return $str;
     },
     false,
-    'Permission::checkSU'
+    [
+        'Permission::checkAdminUser',
+        'quiqqer.system.update'
+    ]
 );

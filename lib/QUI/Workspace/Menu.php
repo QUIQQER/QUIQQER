@@ -74,7 +74,7 @@ class Menu
 
         XML::addXMLFileToMenu($Menu, SYS_DIR . 'menu.xml');
 
-        if (!$User->isSU()) {
+        if (!$User->isSU() && !Permission::hasPermission('quiqqer.system.update')) {
             if ($Menu->getElementByName('quiqqer')) {
                 $Menu->getElementByName('quiqqer')->clear();
             }

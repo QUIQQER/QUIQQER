@@ -10,5 +10,8 @@ QUI::$Ajax->registerFunction(
     function ($File) {
     },
     ['File'],
-    'Permission::checkSU'
+    [
+        'Permission::checkAdminUser',
+        'quiqqer.system.update'
+    ]
 );

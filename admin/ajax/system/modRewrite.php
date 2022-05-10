@@ -35,5 +35,8 @@ QUI::$Ajax->registerFunction(
         return 0;
     },
     false,
-    'Permission::checkAdminUser'
+    [
+        'Permission::checkAdminUser',
+        'quiqqer.system.update'
+    ]
 );

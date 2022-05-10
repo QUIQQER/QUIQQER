@@ -215,7 +215,7 @@
   "quiqqer.customer.OpenItemsList.view": false,
   "quiqqer.customer.editComments": false,
   "quiqqer.admin": true,
-  "quiqqer.system.update": false,
+  "quiqqer.system.update": true,
   "quiqqer.system.permissions": false,
   "quiqqer.dbadmin.access": true,
   "quiqqer.frontendUsers.profile.view.user.data": false,
@@ -223,10 +223,10 @@
   "quiqqer.invoice.temporary.edit": false,
   "quiqqer.customer.create": false,
   "quiqqer.editors.ckeditor5.plugins.toggle": false,
-  "quiqqer.system.console": false,
-  "quiqqer.system.cache": false,
+  "quiqqer.system.console": true,
+  "quiqqer.system.cache": true,
   "quiqqer.invoice.create": false,
   "quiqqer.invoice.copy": false,
-  "quiqqer.admin.settings": false,
+  "quiqqer.admin.settings": true,
   "quiqqer.settings": true
 }

@@ -4590,12 +4590,16 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="quiqqer.setup.groups.description">
             <en><![CDATA[
             <p>Would you like to use QUIQQER with a team or more people?</p>
+            <p>We now create user groups and permissions in QUIQQER.
+            Depending on how you want to use QUIQQER we can create different user groups with different permissions.
+            Please choose which setup fits better to your project.</p>
             <p></p>
             ]]></en>
         </locale>
         <locale name="quiqqer.setup.groups.text">
             <en><![CDATA[
             Yes, I would like to use QUIQQER with several people and groups and toolbars are to be set up.
+            I would like to distinguish between system administrator, administrator and editor.
             ]]></en>
         </locale>
 

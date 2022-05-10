@@ -10,5 +10,8 @@ QUI::$Ajax->registerFunction(
         $Table->optimize($Table->getTables());
     },
     false,
-    'Permission::checkSU'
+    [
+        'Permission::checkAdminUser',
+        'quiqqer.system.update'
+    ]
 );

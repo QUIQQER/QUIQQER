@@ -82,7 +82,7 @@ QUI::$Ajax->registerFunction(
 
             $Mail->SMTPDebug   = 3;
             $Mail->Debugoutput = function ($str, $level) {
-                QUI\System\Log::writeRecursive(\rtrim($str).PHP_EOL);
+                QUI\System\Log::writeRecursive(\rtrim($str) . PHP_EOL);
                 QUI\Mail\Log::write(\rtrim($str));
             };
 
@@ -101,15 +101,19 @@ QUI::$Ajax->registerFunction(
         // send mail with Mail Template
         try {
             $Mailers = QUI::getMailManager()->getMailer();
-            $Mailers->setSubject(QUI::getLocale()->get(
-                'quiqqer/quiqqer',
-                'text.mail.subject'
-            ));
+            $Mailers->setSubject(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'text.mail.subject'
+                )
+            );
 
-            $Mailers->setBody(QUI::getLocale()->get(
-                'quiqqer/quiqqer',
-                'text.mail.body'
-            ));
+            $Mailers->setBody(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'text.mail.body'
+                )
+            );
 
             $Mailers->addRecipient($mailRecipient);
             $Mailers->send();
@@ -122,5 +126,8 @@ QUI::$Ajax->registerFunction(
         );
     },
     ['params'],
-    'Permission::checkSU'
+    [
+        'Permission::checkAdminUser',
+        'quiqqer.system.update'
+    ]
 );
