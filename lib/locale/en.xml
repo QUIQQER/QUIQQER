@@ -166,6 +166,9 @@
         <locale name="permission.quiqqer.admin.users._header">
             <en><![CDATA[Users]]></en>
         </locale>
+        <locale name="permission.quiqqer.settings">
+            <en><![CDATA[Allows to make settings]]></en>
+        </locale>
         <locale name="permission.quiqqer.users._header">
             <en><![CDATA[Users]]></en>
         </locale>
