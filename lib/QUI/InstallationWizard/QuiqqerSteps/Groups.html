@@ -12,16 +12,18 @@
     overflow: auto;
     "
 >
-    <div style="float: left; width: 60%; display: flex; flex-direction: column;">
-        <h1 style="font-size: 3rem">{locale group="quiqqer/quiqqer" var="quiqqer.setup.groups.title"}</h1>
-        {locale group="quiqqer/quiqqer" var="quiqqer.setup.groups.description"}
+    <form action="" method="post">
+        <div style="float: left; width: 60%; display: flex; flex-direction: column;">
+            <h1 style="font-size: 3rem">{locale group="quiqqer/quiqqer" var="quiqqer.setup.groups.title"}</h1>
+            {locale group="quiqqer/quiqqer" var="quiqqer.setup.groups.description"}
 
-        <label>
-            <input type="checkbox" name="add-quiqqer-groups"/>
-            {locale group="quiqqer/quiqqer" var="quiqqer.setup.groups.text"}
-        </label>
-    </div>
-    <div style="align-items: center; display: flex; flex-grow: 1; justify-content: end; flex-direction: column;">
-        <img src="{$urlImageDir}Q_haelt_Q-01.svg" style="max-width: 400px"/>
-    </div>
+            <label>
+                <input type="checkbox" name="add-quiqqer-groups" style="float: left; margin-right: 10px"/>
+                <span style="float:left; width: calc(100% - 40px)">{locale group="quiqqer/quiqqer" var="quiqqer.setup.groups.text"}</span>
+            </label>
+        </div>
+        <div style="align-items: center; display: flex; flex-grow: 1; justify-content: end; flex-direction: column;">
+            <img src="{$urlImageDir}Q_haelt_Q-01.svg" style="max-width: 400px"/>
+        </div>
+    </form>
 </div>

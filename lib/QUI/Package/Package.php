@@ -650,7 +650,7 @@ class Package extends QUI\QDOM
     }
 
     /**
-     * Checks the package permisson
+     * Checks the package permission
      *
      * @param string $permission - could be canUse
      * @param QUI\Interfaces\Users\User|null $User
@@ -662,15 +662,11 @@ class Package extends QUI\QDOM
         if (!QUI::conf('permissions', 'package')) {
             return true;
         }
-
-        switch ($permission) {
-            default:
-            case 'canUse':
-                return QUI\Permissions\Permission::hasPermission(
-                    $this->getPermissionName($permission),
-                    $User
-                );
-        }
+        
+        return QUI\Permissions\Permission::hasPermission(
+            $this->getPermissionName($permission),
+            $User
+        );
     }
 
     /**
@@ -720,7 +716,7 @@ class Package extends QUI\QDOM
         }
 
         // permissions
-        if ($this->getName() != 'quiqqer/quiqqer') { // you can't set permissions to the core
+        if ($this->getName() !== 'quiqqer/quiqqer') { // you can't set permissions to the core
             try {
                 $found = QUI::getDataBase()->fetch([
                     'from'  => QUI\Permissions\Manager::table(),

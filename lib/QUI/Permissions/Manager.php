@@ -435,13 +435,17 @@ class Manager
             return;
         }
 
-        try {
-            $RootGroup = null;
-            $RootGroup = QUI::getGroups()->get(
-                QUI::conf('globals', 'root')
-            );
+        $RootGroup = null;
 
+        try {
+            $RootGroup       = QUI::getGroups()->get(QUI::conf('globals', 'root'));
             $rootPermissions = $this->getPermissions($RootGroup);
+        } catch (QUI\Exception $Exception) {
+        }
+
+        try {
+            $Everyone            = QUI::getGroups()->get(QUI\Groups\Manager::EVERYONE_ID);
+            $everyonePermissions = $this->getPermissions($Everyone);
         } catch (QUI\Exception $Exception) {
         }
 
@@ -468,11 +472,26 @@ class Manager
             ) {
                 $rootPermissions[$permission['name']] = $permission['rootPermission'];
             }
+
+            if (isset($permission['everyonePermission'])
+                && $permission['everyonePermission'] !== null        // if root permission === null, no root permission is set
+                && !isset($rootPermissions[$permission['name']]) // if not exists, use root permission default
+            ) {
+                $everyonePermissions[$permission['name']] = $permission['everyonePermission'];
+            }
         }
 
         if ($RootGroup && count($rootPermissions)) {
             try {
                 $this->setPermissions($RootGroup, $rootPermissions);
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
+            }
+        }
+
+        if (count($everyonePermissions)) {
+            try {
+                $this->setPermissions($Everyone, $everyonePermissions);
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::addError($Exception->getMessage());
             }

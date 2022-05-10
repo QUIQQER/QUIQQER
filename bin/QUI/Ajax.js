@@ -32,7 +32,7 @@ define('Ajax', [
         // nothing
     });
 
-    var apiPoint    = '/ajax.php';
+    var apiPoint = '/ajax.php';
     var AjaxBundler = new Bundler();
 
     if (typeof QUIQQER !== 'undefined' && "ajax" in QUIQQER) {
@@ -41,7 +41,7 @@ define('Ajax', [
         apiPoint = URL_SYS_DIR + 'ajax.php';
     }
 
-    var TRY_MAX   = 3;
+    var TRY_MAX = 3;
     var TRY_DELAY = 1000;
 
     if (typeof QUIQQER_CONFIG !== 'undefined' &&
@@ -71,11 +71,11 @@ define('Ajax', [
          */
         request: function (call, method, callback, params) {
             // if sync, the browser freeze
-            var options;
-            var self = this,
-                id   = String.uniqueID();
+            let options;
+            const self = this,
+                  id   = String.uniqueID();
 
-            method   = method || 'post'; // is post, put, get or delete
+            method = method || 'post'; // is post, put, get or delete
             callback = callback || function () {
             };
 
@@ -103,8 +103,8 @@ define('Ajax', [
                 showLogin: typeof params.showLogin !== 'undefined' ? params.showLogin : true,
                 events   : {
                     onSuccess: function () {
-                        var args    = arguments;
-                        var Request = args[args.length - 1];
+                        const args = arguments;
+                        const Request = args[args.length - 1];
 
                         if (Request.getAttribute('logout')) {
                             return;
@@ -136,6 +136,10 @@ define('Ajax', [
                         }
 
                         callback.apply(this, arguments);
+
+                        if (this in self.$onprogress) {
+                            delete self.$onprogress[this];
+                        }
                     }.bind(id),
 
                     onCancel: function (Request) {
@@ -145,7 +149,7 @@ define('Ajax', [
                     },
 
                     onError: function (Exception, Request) {
-                        var Response     = null,
+                        let Response     = null,
                             networkError = true,
                             tries        = Request.getAttribute('REQUEST_TRIES') || 0;
 
@@ -157,7 +161,7 @@ define('Ajax', [
                             Response = self.$onprogress[this];
                         }
 
-                        var requestCallback = function () {
+                        const requestCallback = function () {
                             callback.apply(this, arguments);
                         }.bind(this);
 
@@ -223,7 +227,6 @@ define('Ajax', [
                         ) {
                             Request.setAttribute('logout', true);
                             self.$openLogin(call, method, requestCallback, params);
-
                             return;
                         }
 

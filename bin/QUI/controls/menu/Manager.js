@@ -208,6 +208,10 @@ define('controls/menu/Manager', [
                 event.stop();
             }
 
+            if (!Item) {
+                return;
+            }
+
             var self        = this,
                 menuRequire = Item.getAttribute('require'),
                 exec        = Item.getAttribute('exec'),

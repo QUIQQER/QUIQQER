@@ -13,8 +13,11 @@ QUI::$Ajax->registerFunction(
             'checks' => QUI\System\Checks\Manager::standard()
         ]);
 
-        return $Engine->fetch(SYS_DIR.'ajax/system/check.html');
+        return $Engine->fetch(SYS_DIR . 'ajax/system/check.html');
     },
     false,
-    'Permission::checkSU'
+    [
+        'Permission::checkAdminUser',
+        'quiqqer.system.update'
+    ]
 );

@@ -13,12 +13,15 @@ QUI::$Ajax->registerFunction(
             $_REQUEST['lang'] = 'en';
         }
 
-        $lang         = substr($_REQUEST['lang'], 0, 2);
+        $lang = substr($_REQUEST['lang'], 0, 2);
         $Requirements = new \QUI\Requirements\Requirements($lang);
-        $allTests     = $Requirements->getTests();
+        $allTests = $Requirements->getTests();
 
         return \QUI\Requirements\Utils::htmlFormatTestResults($allTests, false);
     },
     false,
-    'Permission::checkSU'
+    [
+        'Permission::checkAdminUser',
+        'quiqqer.system.update'
+    ]
 );

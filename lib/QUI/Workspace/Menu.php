@@ -6,11 +6,19 @@
 
 namespace QUI\Workspace;
 
+use DOMElement;
 use QUI;
-use QUI\Permissions\Permission;
 use QUI\Controls\Contextmenu\Bar;
 use QUI\Controls\Contextmenu\Menuitem;
+use QUI\Permissions\Permission;
 use QUI\Utils\Text\XML;
+
+use function array_values;
+use function file_exists;
+use function is_array;
+use function str_replace;
+use function strcmp;
+use function usort;
 
 /**
  * Class Menu
@@ -22,7 +30,7 @@ class Menu
      *
      * @return array
      */
-    public function getMenu()
+    public function getMenu(): array
     {
         try {
             $cacheName = $this->getCacheName();
@@ -50,7 +58,7 @@ class Menu
      * @return array
      * @throws QUI\Exception
      */
-    public function createMenu()
+    public function createMenu(): array
     {
         $User = QUI::getUserBySession();
 
@@ -64,9 +72,9 @@ class Menu
             'id'     => 'menu'
         ]);
 
-        XML::addXMLFileToMenu($Menu, SYS_DIR.'menu.xml');
+        XML::addXMLFileToMenu($Menu, SYS_DIR . 'menu.xml');
 
-        if (!$User->isSU()) {
+        if (!$User->isSU() && !Permission::hasPermission('quiqqer.system.update')) {
             if ($Menu->getElementByName('quiqqer')) {
                 $Menu->getElementByName('quiqqer')->clear();
             }
@@ -95,12 +103,18 @@ class Menu
             $Extras = $Menu->getElementByName('extras');
             $Rights = $Extras->getElementByName('rights');
 
-            if (!$canSeeGroups && $Rights) {
-                $Rights->removeChild('groups');
+            if (!$canSeeGroups) {
+                if ($Rights) {
+                    $Rights->removeChild('groups');
+                }
             }
 
-            if (!$canSeeUsers && $Rights) {
-                $Rights->removeChild('users');
+            if (!$canSeeUsers) {
+                if ($Rights) {
+                    $Rights->removeChild('users');
+                }
+
+                $Extras->removeChild('rights');
             }
 
             if (!$canSeePermissions && $Rights) {
@@ -137,126 +151,128 @@ class Menu
                     'onClick' => 'QUI.Menu.menuClick',
                     'project' => $project,
                     'name'    => $project,
-                    '#id'     => 'settings-'.$project
+                    '#id'     => 'settings-' . $project
                 ])
             );
         }
 
         // read the settings.xml's
-        $files = [];
+        if (Permission::hasPermission('quiqqer.settings')) {
+            $files = [];
 
-        if ($User->isSU()) {
-            $dir   = SYS_DIR.'settings/';
-            $files = QUI\Utils\System\File::readDir($dir);
+            if ($User->isSU()) {
+                $dir   = SYS_DIR . 'settings/';
+                $files = QUI\Utils\System\File::readDir($dir);
 
-            foreach ($files as $key => $file) {
-                $files[$key] = \str_replace(CMS_DIR, '', $dir.$file);
-            }
-        }
-
-        // plugin settings
-        $packages = QUI::getPackageManager()->getInstalled();
-
-        foreach ($packages as $package) {
-            try {
-                $Package = QUI::getPackage($package['name']);
-            } catch (QUI\Exception $Exception) {
-                continue;
+                foreach ($files as $key => $file) {
+                    $files[$key] = str_replace(CMS_DIR, '', $dir . $file);
+                }
             }
 
-            if (!$Package->isQuiqqerPackage()) {
-                continue;
+            // plugin settings
+            $packages = QUI::getPackageManager()->getInstalled();
+
+            foreach ($packages as $package) {
+                try {
+                    $Package = QUI::getPackage($package['name']);
+                } catch (QUI\Exception $Exception) {
+                    continue;
+                }
+
+                if (!$Package->isQuiqqerPackage()) {
+                    continue;
+                }
+
+                if (!$Package->hasPermission()) {
+                    continue;
+                }
+
+                $setting_file = $Package->getXMLFilePath(QUI\Package\Package::SETTINGS_XML);
+
+                if (file_exists($setting_file)) {
+                    $files[] = str_replace(CMS_DIR, '', $setting_file);
+                }
             }
 
-            if (!$Package->hasPermission()) {
-                continue;
-            }
 
-            $setting_file = $Package->getXMLFilePath(QUI\Package\Package::SETTINGS_XML);
+            // create the menu setting entries
+            $Settings   = $Menu->getElementByName('settings');
+            $windowList = [];
 
-            if (\file_exists($setting_file)) {
-                $files[] = \str_replace(CMS_DIR, '', $setting_file);
-            }
-        }
+            foreach ($files as $file) {
+                $windows = XML::getSettingWindowsFromXml(CMS_DIR . $file);
 
+                if (!$windows) {
+                    continue;
+                }
 
-        // create the menu setting entries
-        $Settings   = $Menu->getElementByName('settings');
-        $windowList = [];
+                foreach ($windows as $Window) {
+                    /* @var $Window DOMElement */
+                    /* @var $Win DOMElement */
+                    $winName    = $Window->getAttribute('name');
+                    $menuParent = $Window->getAttribute('menu-parent');
 
-        foreach ($files as $file) {
-            $windows = XML::getSettingWindowsFromXml(CMS_DIR.$file);
+                    if (isset($windowList[$winName])) {
+                        /* @var $Item Menuitem */
+                        $Item  = $windowList[$winName];
+                        $files = $Item->getAttribute('qui-xml-file');
 
-            if (!$windows) {
-                continue;
-            }
+                        if (!is_array($files)) {
+                            $files = [$files];
+                        }
 
-            foreach ($windows as $Window) {
-                /* @var $Window \DOMElement */
-                /* @var $Win \DOMElement */
-                $winName    = $Window->getAttribute('name');
-                $menuParent = $Window->getAttribute('menu-parent');
+                        $files[] = $file;
 
-                if (isset($windowList[$winName])) {
-                    /* @var $Item Menuitem */
-                    $Item  = $windowList[$winName];
-                    $files = $Item->getAttribute('qui-xml-file');
-
-                    if (!\is_array($files)) {
-                        $files = [$files];
+                        $Item->setAttribute('qui-xml-file', $files);
+                        $Item->setAttribute('qui-window-name', $winName);
+                        $this->setWindowTitle($Item, $Window);
+                        $this->setWindowIcon($Item, $Window);
+                        continue;
                     }
 
-                    $files[] = $file;
 
-                    $Item->setAttribute('qui-xml-file', $files);
-                    $Item->setAttribute('qui-window-name', $winName);
-                    $this->setWindowTitle($Item, $Window);
-                    $this->setWindowIcon($Item, $Window);
-                    continue;
+                    $Item = new Menuitem();
+
+                    $Item->setAttribute(
+                        'name',
+                        $menuParent . $Window->getAttribute('name') . '/'
+                    );
+
+                    $Item->setAttribute('onClick', 'QUI.Menu.menuClick');
+                    $Item->setAttribute('qui-window', true);
+                    $Item->setAttribute('qui-xml-file', $file);
+                    $Item->setAttribute('qui-window-name', $file);
+
+                    if (!empty($winName)) {
+                        $windowList[$winName] = $Item;
+                    }
+
+                    // titel
+                    /* @var $Title DOMElement */
+                    if (!$Item->getAttribute('text')) {
+                        $this->setWindowTitle($Item, $Window);
+                    }
+
+                    $params = $Window->getElementsByTagName('params');
+
+                    if ($params->item(0)) {
+                        $this->setWindowIcon($Item, $Window);
+                    }
+
+                    if (!$menuParent) {
+                        $Settings->appendChild($Item);
+                        continue;
+                    }
+
+                    $Parent = $Menu->getElementByPath($menuParent);
+
+                    if (!$Parent) {
+                        $Settings->appendChild($Item);
+                        continue;
+                    }
+
+                    $Parent->appendChild($Item);
                 }
-
-
-                $Item = new Menuitem();
-
-                $Item->setAttribute(
-                    'name',
-                    $menuParent.$Window->getAttribute('name').'/'
-                );
-
-                $Item->setAttribute('onClick', 'QUI.Menu.menuClick');
-                $Item->setAttribute('qui-window', true);
-                $Item->setAttribute('qui-xml-file', $file);
-                $Item->setAttribute('qui-window-name', $file);
-
-                if (!empty($winName)) {
-                    $windowList[$winName] = $Item;
-                }
-
-                // titel
-                /* @var $Title \DOMElement */
-                if (!$Item->getAttribute('text')) {
-                    $this->setWindowTitle($Item, $Window);
-                }
-
-                $params = $Window->getElementsByTagName('params');
-
-                if ($params->item(0)) {
-                    $this->setWindowIcon($Item, $Window);
-                }
-
-                if (!$menuParent) {
-                    $Settings->appendChild($Item);
-                    continue;
-                }
-
-                $Parent = $Menu->getElementByPath($menuParent);
-
-                if (!$Parent) {
-                    $Settings->appendChild($Item);
-                    continue;
-                }
-
-                $Parent->appendChild($Item);
             }
         }
 
@@ -270,21 +286,19 @@ class Menu
                 continue;
             }
 
-            $menuXml = $Package->getXMLFilePath(QUI\Package\Package::MENU_XML);
-
-            if (!$menuXml) {
-                continue;
-            }
-
             if (!$Package->hasPermission()) {
                 continue;
             }
 
-            XML::addXMLFileToMenu($Menu, $menuXml, $User);
+            $menuXml = $Package->getXMLFilePath(QUI\Package\Package::MENU_XML);
+
+            if ($menuXml) {
+                XML::addXMLFileToMenu($Menu, $menuXml, $User);
+            }
         }
 
         $menu = $Menu->toArray();
-        $menu = \array_values($menu);
+        $menu = array_values($menu);
 
         // sort
         foreach ($menu as $key => $item) {
@@ -295,7 +309,7 @@ class Menu
                 continue;
             }
 
-            $menu[$key]['items'] = $this->sortItems($menu[$key]['items']);
+            $menu[$key]['items'] = $this->sortItems($item['items']);
         }
 
         QUI\Cache\Manager::set($this->getCacheName(), $menu);
@@ -308,9 +322,9 @@ class Menu
      * only if no title is set
      *
      * @param Menuitem $MenuItem
-     * @param \DOMElement $Node
+     * @param DOMElement $Node
      */
-    public function setWindowTitle($MenuItem, $Node)
+    public function setWindowTitle(Menuitem $MenuItem, $Node)
     {
         if ($MenuItem->getAttribute('text')) {
             return;
@@ -319,7 +333,7 @@ class Menu
         $titles = $Node->getElementsByTagName('title');
         $Title  = $titles->item(0);
 
-        /* @var $Title \DOMElement */
+        /* @var $Title DOMElement */
         if ($Title) {
             $MenuItem->setAttribute(
                 'text',
@@ -333,9 +347,9 @@ class Menu
      * only if no icon is set
      *
      * @param Menuitem $MenuItem
-     * @param \DOMElement $Node
+     * @param DOMElement $Node
      */
-    public function setWindowIcon($MenuItem, $Node)
+    public function setWindowIcon(Menuitem $MenuItem, $Node)
     {
         if ($MenuItem->getAttribute('icon')) {
             return;
@@ -363,12 +377,11 @@ class Menu
      * Cachename for the menu
      * The name of the menu cache is user dependent
      */
-    protected function getCacheName()
+    protected function getCacheName(): string
     {
-        $User  = QUI::getUserBySession();
-        $cache = 'settings/backend-menu/'.$User->getId().'/'.$User->getLang();
+        $User = QUI::getUserBySession();
 
-        return $cache;
+        return 'settings/backend-menu/' . $User->getId() . '/' . $User->getLang();
     }
 
     /**
@@ -379,7 +392,7 @@ class Menu
     public static function clearMenuCache(QUI\Interfaces\Users\User $User)
     {
         QUI\Cache\Manager::clear(
-            'settings/backend-menu/'.$User->getId().'/'
+            'settings/backend-menu/' . $User->getId() . '/'
         );
     }
 
@@ -389,9 +402,9 @@ class Menu
      * @param $items
      * @return array
      */
-    protected function sortItems($items)
+    protected function sortItems($items): array
     {
-        \usort($items, [$this, 'sortByTitle']);
+        usort($items, [$this, 'sortByTitle']);
 
         foreach ($items as $key => $item) {
             if (isset($item['items']) && !empty($item['items'])) {
@@ -409,7 +422,7 @@ class Menu
      * @param array $b
      * @return int
      */
-    protected function sortByTitle($a, $b)
+    protected function sortByTitle(array $a, array $b): int
     {
         if ($a['name'] == 'quiqqer') {
             return -1;
@@ -419,6 +432,6 @@ class Menu
             return 1;
         }
 
-        return \strcmp($a["text"], $b["text"]);
+        return strcmp($a["text"], $b["text"]);
     }
 }

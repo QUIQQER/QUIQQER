@@ -18,5 +18,8 @@ QUI::$Ajax->registerFunction(
         QUI\Setup::all();
     },
     ['package'],
-    'Permission::checkSU'
+    [
+        'Permission::checkAdminUser',
+        'quiqqer.system.update'
+    ]
 );

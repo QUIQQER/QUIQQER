@@ -166,6 +166,9 @@
         <locale name="permission.quiqqer.admin.users._header">
             <de><![CDATA[Benutzer]]></de>
         </locale>
+        <locale name="permission.quiqqer.settings">
+            <de><![CDATA[Darf Einstellungen vornehmen]]></de>
+        </locale>
         <locale name="permission.quiqqer.users._header">
             <de><![CDATA[Benutzer]]></de>
         </locale>
@@ -4750,12 +4753,16 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="quiqqer.setup.groups.description">
             <de><![CDATA[
             <p>Möchtest du QUIQQER mit einem Team oder weiteren Personen nutzen?</p>
+            <p>Wir legen jetzt Benutzergruppen und Berechtigungen in QUIQQER an.
+            Je nachdem wie du QUIQQER verwenden möchtest können wir unterschiedliche Nutzergruppen mit unterschiedlichen Berechtigungen anlegen.
+            Bitte wähle aus welches Setup besser zu deinem Projekt passt.</p>
             <p></p>
             ]]></de>
         </locale>
         <locale name="quiqqer.setup.groups.text">
             <de><![CDATA[
             Ja, ich möchte QUIQQER mit mehreren Personen nutzen und es sollen Gruppen und Toolbars eingerichtet werden.
+            Ich möchte zwischen Systemadministrator, Administrator und Redaktion unterscheiden.
             ]]></de>
         </locale>
 
