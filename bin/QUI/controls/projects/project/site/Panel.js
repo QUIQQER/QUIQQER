@@ -3,6 +3,8 @@
  *
  * @module controls/projects/project/site/Panel
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @event onQuiqqerSitePanelBuild [self] - Fires when the Site panel is built and categories / buttons are added
  */
 define('controls/projects/project/site/Panel', [
 
@@ -541,6 +543,8 @@ define('controls/projects/project/site/Panel', [
                     if (isLocked) {
                         self.setLocked();
                     }
+
+                    QUI.fireEvent('quiqqerSitePanelBuild', [self]);
 
                     resolve();
                 }, {
@@ -1529,7 +1533,7 @@ define('controls/projects/project/site/Panel', [
                 Site.setAttribute('title', elements.title.value);
                 Site.setAttribute('short', elements.short.value);
                 Site.setAttribute('nav_hide', elements.nav_hide.checked);
-                
+
                 if (typeof elements.layout !== 'undefined') {
                     Site.setAttribute('layout', elements.layout.value);
                 }
