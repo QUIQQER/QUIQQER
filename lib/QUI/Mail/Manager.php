@@ -36,6 +36,7 @@ class Manager
      * @param string $body
      *
      * @throws QUI\Exception
+     * @throws \PHPMailer\PHPMailer\Exception
      */
     public function send(string $to, string $subject, string $body)
     {
