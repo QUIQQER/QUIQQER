@@ -9,6 +9,7 @@ namespace QUI;
 use QUI;
 use QUI\Projects\Project;
 use QUI\Utils\System\File as SystemFile;
+use QUI\System\License;
 
 use function date;
 use function file_exists;
@@ -347,6 +348,7 @@ EOF;
         $quiqqer     = CMS_DIR . 'quiqqer.php';
         $bootstrap   = CMS_DIR . 'bootstrap.php';
         $console     = CMS_DIR . 'console';
+        $systemId    = License::getSystemId();
 
 
         ////////
@@ -447,7 +449,11 @@ EOT;
 // maintenance mode
 \$maintenanceFile = dirname(__FILE__).'/maintenance.html';
 
-if (file_exists(\$maintenanceFile)) {
+\$ignoreMaintenance = !empty(\$_REQUEST['systemId']) &&
+                        \$_REQUEST['systemId'] === '$systemId' &&
+                        !empty(\$_REQUEST['ignoreMaintenance']);
+
+if (!\$ignoreMaintenance && file_exists(\$maintenanceFile)) {
     http_response_code(503);
     header('x-powered-by:');
     header('Retry-After:10');

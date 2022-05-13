@@ -4761,8 +4761,12 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         </locale>
         <locale name="quiqqer.setup.groups.text">
             <de><![CDATA[
-            Ja, ich möchte QUIQQER mit mehreren Personen nutzen und es sollen Gruppen und Toolbars eingerichtet werden.
-            Ich möchte zwischen Systemadministrator, Administrator und Redaktion unterscheiden.
+            Ich nutze QUIQQER im Team mit anderen und möchte zwischen Systemadministrator, Administrator und Redaktion unterscheiden.
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.setup.groups.alone.text">
+            <de><![CDATA[
+            Ich nutze QUIQQER Alleine oder mit wenigen anderen Nutzern die alle die Selben (Administrations-) Berechtigungen haben.
             ]]></de>
         </locale>
 

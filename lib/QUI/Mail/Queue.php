@@ -6,8 +6,21 @@
 
 namespace QUI\Mail;
 
+use Exception;
 use QUI;
 use QUI\Utils\System\File;
+
+use function explode;
+use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
+use function is_array;
+use function is_dir;
+use function json_decode;
+use function json_encode;
+use function preg_replace;
+use function str_replace;
+use function time;
 
 /**
  * Mail queue
@@ -17,18 +30,26 @@ use QUI\Utils\System\File;
  */
 class Queue
 {
+    const STATUS_ADDED = 0;
+    const STATUS_SENT = 1;
+    const STATUS_SENDING = 2;
+    const STATUS_ERROR = 3;
+
     /**
      * Return the table string
      *
      * @return string
      */
-    public static function table()
+    public static function table(): string
     {
         return QUI::getDBTableName('mailqueue');
     }
 
     /**
      * Execute the db mail queue setup
+     *
+     * @throws \QUI\Database\Exception
+     * @throws \QUI\Exception
      */
     public static function setup()
     {
@@ -46,7 +67,10 @@ class Queue
             'replyto'      => 'text',
             'cc'           => 'text',
             'bcc'          => 'text',
-            'attachements' => 'text'
+            'attachements' => 'text',
+            'status'       => 'int(1) NOT NULL DEFAULT 0',
+            'lastsend'     => 'int(11)',
+            'retry'        => 'int(3) NOT NULL DEFAULT 0'
         ]);
 
         $Table->setPrimaryKey(self::table(), 'id');
@@ -60,9 +84,9 @@ class Queue
      *
      * @return string
      */
-    public static function getAttachmentDir($mailId)
+    public static function getAttachmentDir($mailId): string
     {
-        return VAR_DIR.'mailQueue/'.(int)$mailId.'/';
+        return VAR_DIR . 'mailQueue/' . (int)$mailId . '/';
     }
 
     /**
@@ -71,20 +95,24 @@ class Queue
      * @param Mailer|QUI\Mail $Mail
      *
      * @return integer - Mailqueue-ID
+     *
+     * @throws \QUI\Database\Exception
+     * @throws \QUI\Exception
      */
-    public static function addToQueue($Mail)
+    public static function addToQueue($Mail): int
     {
         $params = $Mail->toArray();
 
-        $params['mailto']  = \json_encode($params['mailto']);
-        $params['replyto'] = \json_encode($params['replyto']);
-        $params['cc']      = \json_encode($params['cc']);
-        $params['bcc']     = \json_encode($params['bcc']);
+        $params['mailto']  = json_encode($params['mailto']);
+        $params['replyto'] = json_encode($params['replyto']);
+        $params['cc']      = json_encode($params['cc']);
+        $params['bcc']     = json_encode($params['bcc']);
+        $params['status']  = self::STATUS_ADDED;
 
-        $attachements = [];
+        $attachments = [];
 
         if (isset($params['attachements'])) {
-            $attachements = $params['attachements'];
+            $attachments = $params['attachements'];
             unset($params['attachements']);
         }
 
@@ -92,22 +120,22 @@ class Queue
 
         $newMailId = QUI::getDataBase()->getPDO()->lastInsertId('id');
 
-        // attachements
+        // attachments
         $attachmentFiles = [];
 
-        if (\is_array($attachements)) {
+        if (is_array($attachments)) {
             $mailQueueDir = self::getAttachmentDir($newMailId);
 
             File::mkdir($mailQueueDir);
 
-            foreach ($attachements as $attachement) {
-                if (!\file_exists($attachement)) {
+            foreach ($attachments as $attachment) {
+                if (!file_exists($attachment)) {
                     continue;
                 }
 
-                $infos = File::getInfo($attachement);
+                $infos = File::getInfo($attachment);
 
-                File::copy($attachement, $mailQueueDir.$infos['basename']);
+                File::copy($attachment, $mailQueueDir . $infos['basename']);
 
                 $attachmentFiles[] = $infos['basename'];
             }
@@ -116,7 +144,7 @@ class Queue
                 QUI::getDataBase()->update(
                     self::table(),
                     [
-                        'attachements' => \json_encode($attachmentFiles)
+                        'attachements' => json_encode($attachmentFiles)
                     ],
                     [
                         'id' => $newMailId
@@ -129,14 +157,21 @@ class Queue
     }
 
     /**
-     * Send a mail from the queue
+     * Send the next mail from the queue
      *
      * @return boolean
+     * @throws \QUI\Database\Exception
      */
-    public function send()
+    public function send(): bool
     {
         $params = QUI::getDataBase()->fetch([
             'from'  => self::table(),
+            'where' => [
+                'status' => [
+                    'type'  => 'NOT',
+                    'value' => self::STATUS_SENDING
+                ]
+            ],
             'limit' => 1
         ]);
 
@@ -144,13 +179,26 @@ class Queue
             return true;
         }
 
+        $entry = $params[0];
+
+        QUI::getDataBase()->update(
+            self::table(),
+            [
+                'status'   => self::STATUS_SENDING,
+                'lastsend' => time(),
+                'retry'    => (int)$entry['retry']++
+            ],
+            ['id' => $entry['id']]
+        );
+
+
         try {
-            $send = $this->sendMail($params[0]);
+            $send = $this->sendMail($entry);
 
             // successful send
             if ($send) {
                 QUI::getDataBase()->delete(self::table(), [
-                    'id' => $params[0]['id']
+                    'id' => $entry['id']
                 ]);
 
                 return true;
@@ -170,12 +218,19 @@ class Queue
      * Send all mails from the queue
      *
      * @return void
+     * @throws \QUI\Database\Exception
      */
     public function sendAll()
     {
         $result = QUI::getDataBase()->fetch([
             'select' => 'id',
-            'from'   => self::table()
+            'from'   => self::table(),
+            'where'  => [
+                'status' => [
+                    'type'  => 'NOT',
+                    'value' => self::STATUS_SENDING
+                ]
+            ]
         ]);
 
         foreach ($result as $row) {
@@ -192,19 +247,19 @@ class Queue
     }
 
     /**
-     * Send an mail by its mailqueue id
+     * Send an mail by its mail queue id
      *
      * @param integer $id
      *
      * @return boolean
      * @throws QUI\Exception
      */
-    public function sendById($id)
+    public function sendById(int $id): bool
     {
         $params = QUI::getDataBase()->fetch([
             'from'  => self::table(),
             'where' => [
-                'id' => (int)$id
+                'id' => $id
             ],
             'limit' => 1
         ]);
@@ -219,14 +274,29 @@ class Queue
             );
         }
 
+        if ((int)$params[0]['status'] === self::STATUS_SENDING) {
+            return true;
+        }
+
+        $entry = $params[0];
+
+        QUI::getDataBase()->update(
+            self::table(),
+            [
+                'status'   => self::STATUS_SENDING,
+                'lastsend' => time(),
+                'retry'    => (int)$entry['retry']++
+            ],
+            ['id' => $id]
+        );
 
         try {
-            $send = $this->sendMail($params[0]);
+            $send = $this->sendMail($entry);
 
             // successful send
             if ($send) {
                 QUI::getDataBase()->delete(self::table(), [
-                    'id' => $params[0]['id']
+                    'id' => $entry['id']
                 ]);
 
                 return true;
@@ -250,7 +320,7 @@ class Queue
      *
      * @throws \QUI\Exception
      */
-    protected function sendMail($params)
+    protected function sendMail(array $params): bool
     {
         try {
             QUI::getEvents()->fireEvent('mailerSendInit', [
@@ -269,14 +339,14 @@ class Queue
         try {
             $PhpMailer = QUI::getMailManager()->getPHPMailer();
 
-            $mailto  = \json_decode($params['mailto'], true);
-            $replyto = \json_decode($params['replyto'], true);
-            $cc      = \json_decode($params['cc'], true);
-            $bcc     = \json_decode($params['bcc'], true);
+            $mailto  = json_decode($params['mailto'], true);
+            $replyto = json_decode($params['replyto'], true);
+            $cc      = json_decode($params['cc'], true);
+            $bcc     = json_decode($params['bcc'], true);
 
             // mailto
             foreach ($mailto as $address) {
-                if (\is_array($address)) {
+                if (is_array($address)) {
                     $PhpMailer->addAddress($address[0], $address[1]);
                     continue;
                 }
@@ -286,7 +356,7 @@ class Queue
 
             // reply
             foreach ($replyto as $entry) {
-                if (\is_array($entry)) {
+                if (is_array($entry)) {
                     $PhpMailer->addAddress($entry[0], $entry[1]);
                     continue;
                 }
@@ -296,7 +366,7 @@ class Queue
 
             // cc
             foreach ($cc as $entry) {
-                if (\is_array($entry)) {
+                if (is_array($entry)) {
                     $PhpMailer->addAddress($entry[0], $entry[1]);
                     continue;
                 }
@@ -306,7 +376,7 @@ class Queue
 
             // bcc
             foreach ($bcc as $entry) {
-                if (\is_array($entry)) {
+                if (is_array($entry)) {
                     $PhpMailer->addAddress($entry[0], $entry[1]);
                     continue;
                 }
@@ -314,18 +384,18 @@ class Queue
                 $PhpMailer->addBCC($entry);
             }
 
-            // exist attachements?
+            // exist attachments?
             $mailQueueDir = false;
 
             if (!empty($params['attachements'])) {
-                $attachmentFiles = \json_decode($params['attachements'], true);
+                $attachmentFiles = json_decode($params['attachements'], true);
                 $mailQueueDir    = self::getAttachmentDir($params['id']);
 
-                if (\is_dir($mailQueueDir)) {
+                if (is_dir($mailQueueDir)) {
                     foreach ($attachmentFiles as $fileName) {
-                        $file = $mailQueueDir.$fileName;
+                        $file = $mailQueueDir . $fileName;
 
-                        if (!\file_exists($file)) {
+                        if (!file_exists($file)) {
                             continue;
                         }
 
@@ -348,7 +418,7 @@ class Queue
 
             // html mail ?
             if ($params['ishtml']) {
-                $PhpMailer->isHTML(true);
+                $PhpMailer->isHTML();
                 $PhpMailer->AltBody = $params['text'];
             }
 
@@ -360,9 +430,9 @@ class Queue
             $Output->setSetting('parse-to-picture-elements', false);
             $html = $Output->parse($html);
 
-            $html = \preg_replace('#<picture([^>]*)>#i', '', $html);
-            $html = \preg_replace('#<source([^>]*)>#i', '', $html);
-            $html = \str_replace('</picture>', '', $html);
+            $html = preg_replace('#<picture([^>]*)>#i', '', $html);
+            $html = preg_replace('#<source([^>]*)>#i', '', $html);
+            $html = str_replace('</picture>', '', $html);
 
             $PhpMailer->From     = $params['from'];
             $PhpMailer->FromName = $params['fromName'];
@@ -385,7 +455,7 @@ class Queue
 
             $PhpMailer->send();
 
-            if ($mailQueueDir && \is_dir($mailQueueDir)) {
+            if ($mailQueueDir && is_dir($mailQueueDir)) {
                 File::deleteDir($mailQueueDir);
             }
 
@@ -394,12 +464,18 @@ class Queue
             }
 
             return true;
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
             Log::logException($Exception);
 
+            QUI::getDataBase()->update(
+                self::table(),
+                ['status' => self::STATUS_ERROR],
+                ['id' => $params['id']]
+            );
+
             throw new QUI\Exception(
-                'Mail Error: '.$Exception->getMessage(),
+                'Mail Error: ' . $Exception->getMessage(),
                 500
             );
         }
@@ -409,8 +485,9 @@ class Queue
      * Return the number of the queue
      *
      * @return integer
+     * @throws \QUI\Database\Exception
      */
-    public function count()
+    public function count(): int
     {
         $result = QUI::getDataBase()->fetch([
             'from'  => self::table(),
@@ -427,8 +504,9 @@ class Queue
      * Return the queue list
      *
      * @return array
+     * @throws \QUI\Database\Exception
      */
-    public function getList()
+    public function getList(): array
     {
         return QUI::getDataBase()->fetch([
             'from' => self::table()
@@ -439,23 +517,24 @@ class Queue
      * Get number of mails that have been sent via queue in the last hour
      *
      * @return int
+     * @throws \QUI\Exception
      */
-    protected function getMailsSentInLastHour()
+    protected function getMailsSentInLastHour(): int
     {
-        $cacheFile = QUI::getPackage('quiqqer/quiqqer')->getVarDir().'mailqueue';
-        $time      = \time();
+        $cacheFile = QUI::getPackage('quiqqer/quiqqer')->getVarDir() . 'mailqueue';
+        $time      = time();
 
-        if (!\file_exists($cacheFile)) {
-            \file_put_contents($cacheFile, "$time-0");
+        if (!file_exists($cacheFile)) {
+            file_put_contents($cacheFile, "$time-0");
 
             return 0;
         }
 
-        $mailsSent  = \explode('-', \file_get_contents($cacheFile));
+        $mailsSent  = explode('-', file_get_contents($cacheFile));
         $createTime = (int)$mailsSent[0];
 
-        if ((\time() - $createTime) > 3600) {
-            \file_put_contents($cacheFile, "$time-0");
+        if ((time() - $createTime) > 3600) {
+            file_put_contents($cacheFile, "$time-0");
 
             return 0;
         }
@@ -467,13 +546,14 @@ class Queue
      * Increase number of mails sent by 1 and save this information in the cache
      *
      * @return void
+     * @throws \QUI\Exception
      */
     protected function increaseMailsSent()
     {
-        $cacheFile = QUI::getPackage('quiqqer/quiqqer')->getVarDir().'mailqueue';
+        $cacheFile = QUI::getPackage('quiqqer/quiqqer')->getVarDir() . 'mailqueue';
         $mailsSent = $this->getMailsSentInLastHour();
 
-        $mailsSentCache = \explode('-', \file_get_contents($cacheFile));
-        \file_put_contents($cacheFile, $mailsSentCache[0].'-'.($mailsSent + 1));
+        $mailsSentCache = explode('-', file_get_contents($cacheFile));
+        file_put_contents($cacheFile, $mailsSentCache[0] . '-' . ($mailsSent + 1));
     }
 }

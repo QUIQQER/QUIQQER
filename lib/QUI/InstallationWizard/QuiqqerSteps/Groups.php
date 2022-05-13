@@ -11,6 +11,15 @@ use function dirname;
  */
 class Groups extends QUI\InstallationWizard\AbstractInstallationWizardStep
 {
+    /**
+     * @param array $attributes
+     */
+    public function __construct($attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $this->setJavaScriptControl('controls/installation/Groups');
+    }
 
     /**
      * @param null $Locale

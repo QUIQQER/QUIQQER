@@ -17,9 +17,17 @@
             <h1 style="font-size: 3rem">{locale group="quiqqer/quiqqer" var="quiqqer.setup.groups.title"}</h1>
             {locale group="quiqqer/quiqqer" var="quiqqer.setup.groups.description"}
 
-            <label>
+            <label style="margin-bottom: 20px">
                 <input type="checkbox" name="add-quiqqer-groups" style="float: left; margin-right: 10px"/>
-                <span style="float:left; width: calc(100% - 40px)">{locale group="quiqqer/quiqqer" var="quiqqer.setup.groups.text"}</span>
+                <span style="float:left; width: calc(100% - 40px)">
+                    {locale group="quiqqer/quiqqer" var="quiqqer.setup.groups.text"}
+                </span>
+            </label>
+            <label>
+                <input type="checkbox" name="no-quiqqer-groups" style="float: left; margin-right: 10px"/>
+                <span style="float:left; width: calc(100% - 40px)">
+                    {locale group="quiqqer/quiqqer" var="quiqqer.setup.groups.alone.text"}
+                </span>
             </label>
         </div>
         <div style="align-items: center; display: flex; flex-grow: 1; justify-content: end; flex-direction: column;">
