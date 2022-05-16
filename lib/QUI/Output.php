@@ -20,6 +20,7 @@ use function array_map;
 use function count;
 use function explode;
 use function file_exists;
+use function html_entity_decode;
 use function http_build_query;
 use function implode;
 use function ini_get;
@@ -43,6 +44,9 @@ use function strpos;
 use function strtolower;
 use function trim;
 use function urldecode;
+
+use const ENT_HTML5;
+use const ENT_NOQUOTES;
 
 /**
  * Class Output
@@ -310,6 +314,38 @@ class Output extends Singleton
 
         QUI::getEvents()->fireEvent('outputParseEnd', [&$result]);
 
+        $result = preg_replace_callback(
+            '#title="([^"]*)"#i',
+            function ($output) {
+                if (empty($output[1])) {
+                    return $output[0];
+                }
+
+                $title = $output[1];
+                $title = html_entity_decode($title, ENT_NOQUOTES | ENT_HTML5);
+                $title = QUI\Utils\Security\Orthos::removeHTML($title);
+
+                return 'title="' . $title . '"';
+            },
+            $result
+        );
+
+        $result = preg_replace_callback(
+            '#alt="([^"]*)"#i',
+            function ($output) {
+                if (empty($output[1])) {
+                    return $output[0];
+                }
+
+                $alt = $output[1];
+                $alt = html_entity_decode($alt, ENT_NOQUOTES | ENT_HTML5);
+                $alt = QUI\Utils\Security\Orthos::removeHTML($alt);
+
+                return 'alt="' . $alt . '"';
+            },
+            $result
+        );
+
         return $result;
     }
 
@@ -510,8 +546,8 @@ class Output extends Singleton
             try {
                 $Image = MediaUtils::getImageByUrl($src);
 
-                $att['alt']      = Encoding::toUTF8($Image->getAlt());
-                $att['title']    = Encoding::toUTF8($Image->getTitle());
+                $att['alt']      = $Image->getAlt();
+                $att['title']    = $Image->getTitle();
                 $att['data-src'] = $Image->getSizeCacheUrl();
 
                 if ($Image->hasViewPermissionSet()) {
@@ -521,6 +557,9 @@ class Output extends Singleton
             } catch (QUI\Exception $Exception) {
             }
         }
+
+        $att['alt']   = Encoding::toUTF8($att['alt']);
+        $att['title'] = Encoding::toUTF8($att['title']);
 
         $html = MediaUtils::getImageHTML($src, $att);
 

@@ -4710,6 +4710,30 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             ]]></de>
         </locale>
 
+        <locale name="quiqqer.setup.licence.title">
+            <de><![CDATA[Allgemeine Lizenzbestimmungen]]></de>
+        </locale>
+        <locale name="quiqqer.setup.licence.description">
+            <de><![CDATA[
+               	Unten findest du die Lizenzbestimmungen von ecoyn. Bitte lies den Text in Ruhe durch.
+               	Wenn du einverstanden bist, klicke auf „Weiter“.
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.setup.licence.checkbox">
+            <de><![CDATA[
+            Ich stimme den Lizenzbestimmungen zu.
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.setup.licence.chargable">
+            <de><![CDATA[
+                <p>Du möchtest ecoyn genauer anpassen? Dazu bietet das System viele Module:
+                Verwalte Abos oder Rechnungen, erinnere an Zahlungen, bereite deine Buchhaltung vor und vieles mehr. Bis zu einem Jahresumsatz von 100.000 Euro nutzt du alle Pakete kostenfrei.
+                Für nicht freie Module musst du danach eine kostenpflichtige Lizenz erwerben.</p>
+                <p>Möchtest du ecoyn inklusive der unfreien Module installieren?</p>
+            ]]></de>
+        </locale>
+
+
         <locale name="quiqqer.setup.mail.title">
             <de><![CDATA[Administrator-E-Mail]]></de>
         </locale>
