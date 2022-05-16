@@ -7,9 +7,30 @@
 namespace QUI\Users;
 
 use QUI;
-use QUI\Utils\Security\Orthos as Orthos;
 use QUI\ERP\Currency\Handler as Currencies;
 use QUI\Users\Auth;
+use QUI\Utils\Security\Orthos as Orthos;
+
+use function array_flip;
+use function array_merge;
+use function array_search;
+use function class_exists;
+use function count;
+use function explode;
+use function file_exists;
+use function get_class;
+use function implode;
+use function in_array;
+use function is_array;
+use function is_null;
+use function is_numeric;
+use function is_string;
+use function json_decode;
+use function md5;
+use function reset;
+use function strpos;
+use function strtotime;
+use function trim;
 
 /**
  * A user
@@ -184,7 +205,7 @@ class User implements QUI\Interfaces\Users\User
         $this->isLoaded = false;
         $this->Users    = $Users;
 
-        if (\is_numeric($id)) {
+        if (is_numeric($id)) {
             $id = (int)$id;
 
             if (!$id || $id <= 10) {
@@ -294,9 +315,9 @@ class User implements QUI\Interfaces\Users\User
         if (isset($data[0]['extra'])) {
             $extraList = $this->getListOfExtraAttributes();
             $extras    = [];
-            $extraData = \json_decode($data[0]['extra'], true);
+            $extraData = json_decode($data[0]['extra'], true);
 
-            if (!\is_array($extraData)) {
+            if (!is_array($extraData)) {
                 $extraData = [];
             }
 
@@ -323,9 +344,9 @@ class User implements QUI\Interfaces\Users\User
         }
 
         if (isset($data[0]['authenticator'])) {
-            $this->authenticator = \json_decode($data[0]['authenticator'], true);
+            $this->authenticator = json_decode($data[0]['authenticator'], true);
 
-            if (!\is_array($this->authenticator)) {
+            if (!is_array($this->authenticator)) {
                 $this->authenticator = [];
             }
         }
@@ -351,7 +372,7 @@ class User implements QUI\Interfaces\Users\User
         $result = [];
 
         $available = Auth\Handler::getInstance()->getAvailableAuthenticators();
-        $available = \array_flip($available);
+        $available = array_flip($available);
 
         foreach ($this->authenticator as $authenticator) {
             if (!Auth\Helper::hasUserPermissionToUseAuthenticator($this, $authenticator)) {
@@ -378,7 +399,7 @@ class User implements QUI\Interfaces\Users\User
     {
         $Handler   = Auth\Handler::getInstance();
         $available = $Handler->getAvailableAuthenticators();
-        $available = \array_flip($available);
+        $available = array_flip($available);
 
         if (!isset($available[$authenticator])) {
             throw new QUI\Users\Exception(
@@ -387,7 +408,7 @@ class User implements QUI\Interfaces\Users\User
             );
         }
 
-        if (!\in_array($authenticator, $this->authenticator)) {
+        if (!in_array($authenticator, $this->authenticator)) {
             throw new QUI\Users\Exception(
                 ['quiqqer/quiqqer', 'exception.authenticator.not.found'],
                 404
@@ -414,7 +435,7 @@ class User implements QUI\Interfaces\Users\User
     public function enableAuthenticator($authenticator, $ParentUser = false)
     {
         $available = Auth\Handler::getInstance()->getAvailableAuthenticators();
-        $available = \array_flip($available);
+        $available = array_flip($available);
 
         if (!isset($available[$authenticator])) {
             throw new QUI\Users\Exception(
@@ -430,11 +451,11 @@ class User implements QUI\Interfaces\Users\User
             );
         }
 
-        if (\in_array($authenticator, $this->authenticator)) {
+        if (in_array($authenticator, $this->authenticator)) {
             return;
         }
 
-        if (\class_exists('QUI\Watcher')) {
+        if (class_exists('QUI\Watcher')) {
             QUI\Watcher::addString(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'user.enable.authenticator', [
                     'id' => $this->getId()
@@ -459,7 +480,7 @@ class User implements QUI\Interfaces\Users\User
     public function disableAuthenticator($authenticator, $ParentUser = false)
     {
         $available = Auth\Handler::getInstance()->getAvailableAuthenticators();
-        $available = \array_flip($available);
+        $available = array_flip($available);
 
         if (!isset($available[$authenticator])) {
             throw new QUI\Users\Exception(
@@ -471,15 +492,15 @@ class User implements QUI\Interfaces\Users\User
             );
         }
 
-        if (!\in_array($authenticator, $this->authenticator)) {
+        if (!in_array($authenticator, $this->authenticator)) {
             return;
         }
 
-        if (($key = \array_search($authenticator, $this->authenticator)) !== false) {
+        if (($key = array_search($authenticator, $this->authenticator)) !== false) {
             unset($this->authenticator[$key]);
         }
 
-        if (\class_exists('QUI\Watcher')) {
+        if (class_exists('QUI\Watcher')) {
             QUI\Watcher::addString(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'user.disable.authenticator', [
                     'id' => $this->getId()
@@ -506,7 +527,7 @@ class User implements QUI\Interfaces\Users\User
             return false;
         }
 
-        return \in_array($authenticator, $this->authenticator);
+        return in_array($authenticator, $this->authenticator);
     }
 
     /**
@@ -556,7 +577,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getType()
     {
-        return \get_class($this);
+        return get_class($this);
     }
 
     /**
@@ -590,7 +611,7 @@ class User implements QUI\Interfaces\Users\User
         $lastname  = $this->getAttribute('lastname');
 
         if ($firstname && $lastname) {
-            return $firstname.' '.$lastname;
+            return $firstname . ' ' . $lastname;
         }
 
         return $this->getUsername();
@@ -608,7 +629,7 @@ class User implements QUI\Interfaces\Users\User
         $lastname  = $this->getAttribute('lastname');
 
         if ($firstname && $lastname) {
-            return $firstname.' '.$lastname;
+            return $firstname . ' ' . $lastname;
         }
 
         if ($firstname) {
@@ -674,7 +695,7 @@ class User implements QUI\Interfaces\Users\User
             $lang = $this->getAttribute('lang');
         }
 
-        if (\in_array($lang, $langs)) {
+        if (in_array($lang, $langs)) {
             $this->lang = $lang;
         }
 
@@ -731,7 +752,7 @@ class User implements QUI\Interfaces\Users\User
      * @return string
      * @todo do it as a plugin
      */
-    public function getCurrency()
+    public function getCurrency(): string
     {
         try {
             QUI::getPackage('quiqqer/currency');
@@ -758,7 +779,7 @@ class User implements QUI\Interfaces\Users\User
             }
         }
 
-        return Currencies::getDefaultCurrency();
+        return Currencies::getDefaultCurrency()->getCode();
     }
 
     /**
@@ -828,7 +849,7 @@ class User implements QUI\Interfaces\Users\User
         $this->Group  = [];
         $this->groups = false;
 
-        if (\is_array($groups)) {
+        if (is_array($groups)) {
             $aTmp        = [];
             $this->Group = [];
 
@@ -841,13 +862,13 @@ class User implements QUI\Interfaces\Users\User
                 }
             }
 
-            $this->groups = ','.\implode(',', $aTmp).',';
+            $this->groups = ',' . implode(',', $aTmp) . ',';
 
             return;
         }
 
-        if (\is_string($groups) && \strpos($groups, ',') !== false) {
-            $groups = \explode(',', $groups);
+        if (is_string($groups) && strpos($groups, ',') !== false) {
+            $groups = explode(',', $groups);
             $aTmp   = [];
 
             foreach ($groups as $g) {
@@ -863,16 +884,16 @@ class User implements QUI\Interfaces\Users\User
                 }
             }
 
-            $this->groups = ','.\implode(',', $aTmp).',';
+            $this->groups = ',' . implode(',', $aTmp) . ',';
 
             return;
         }
 
 
-        if (\is_string($groups)) {
+        if (is_string($groups)) {
             try {
                 $this->Group[] = $Groups->get($groups);
-                $this->groups  = ','.$groups.',';
+                $this->groups  = ',' . $groups . ',';
             } catch (QUI\Exception $Exception) {
             }
         }
@@ -889,13 +910,13 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getGroups($asObjects = true)
     {
-        if ($this->Group && \is_array($this->Group)) {
+        if ($this->Group && is_array($this->Group)) {
             if ($asObjects == true) {
                 return $this->Group;
             }
 
-            if (\is_string($this->groups)) {
-                return \explode(',', \trim($this->groups, ','));
+            if (is_string($this->groups)) {
+                return explode(',', trim($this->groups, ','));
             }
 
             return $this->groups;
@@ -913,14 +934,14 @@ class User implements QUI\Interfaces\Users\User
     {
         $Groups = QUI::getGroups();
 
-        if (\is_string($Group) || \is_int($Group)) {
+        if (is_string($Group) || \is_int($Group)) {
             $Group = $Groups->get((int)$Group);
         }
 
         $groups = $this->getGroups(true);
         $new_gr = [];
 
-        if (!\is_array($groups)) {
+        if (!is_array($groups)) {
             $groups = [];
         }
 
@@ -952,7 +973,7 @@ class User implements QUI\Interfaces\Users\User
         $newGroups = [];
         $_tmp      = [];
 
-        if (!\is_array($groups)) {
+        if (!is_array($groups)) {
             $groups = [];
         }
 
@@ -1002,7 +1023,7 @@ class User implements QUI\Interfaces\Users\User
             case "su":
                 // only a super user can set a superuser
                 if (QUI::getUsers()->existsSession() && QUI::getUsers()->getUserBySession()->isSU()) {
-                    if (\is_numeric($value)) {
+                    if (is_numeric($value)) {
                         $this->su = !!(int)$value;
                     } else {
                         $this->su = (bool)$value;
@@ -1031,7 +1052,7 @@ class User implements QUI\Interfaces\Users\User
                 break;
 
             case "expire":
-                $time = \strtotime($value);
+                $time = strtotime($value);
 
                 if ($time > 0) {
                     $this->settings[$key] = \date('Y-m-d H:i:s', $time);
@@ -1242,8 +1263,8 @@ class User implements QUI\Interfaces\Users\User
     {
         $this->checkEditPermission($ParentUser);
 
-        $newPassword = \trim($newPassword);
-        $oldPassword = \trim($oldPassword);
+        $newPassword = trim($newPassword);
+        $oldPassword = trim($oldPassword);
 
         if (empty($newPassword) || empty($oldPassword)) {
             throw new QUI\Users\Exception(
@@ -1573,7 +1594,7 @@ class User implements QUI\Interfaces\Users\User
 
         if ($this->getAttribute('expire')) {
             // Datumsprüfung auf Syntax
-            $value = \trim($this->getAttribute('expire'));
+            $value = trim($this->getAttribute('expire'));
 
             if (Orthos::checkMySqlDatetimeSyntax($value)) {
                 $expire = $value;
@@ -1582,7 +1603,7 @@ class User implements QUI\Interfaces\Users\User
 
         if ($this->getAttribute('birthday')) {
             // Datumsprüfung auf Syntax
-            $value = \trim($this->getAttribute('birthday'));
+            $value = trim($this->getAttribute('birthday'));
 
             if (\strlen($value) == 10) {
                 $value .= ' 00:00:00';
@@ -1629,13 +1650,13 @@ class User implements QUI\Interfaces\Users\User
         $toolbar          = '';
 
         if ($this->getAttribute('assigned_toolbar')) {
-            $toolbars = \explode(',', $this->getAttribute('assigned_toolbar'));
+            $toolbars = explode(',', $this->getAttribute('assigned_toolbar'));
 
             $assignedToolbars = \array_filter($toolbars, function ($toolbar) {
                 return QUI\Editor\Manager::existsToolbar($toolbar);
             });
 
-            $assignedToolbars = \implode(',', $assignedToolbars);
+            $assignedToolbars = implode(',', $assignedToolbars);
         }
 
         if (QUI\Editor\Manager::existsToolbar($this->getAttribute('toolbar'))) {
@@ -1677,7 +1698,7 @@ class User implements QUI\Interfaces\Users\User
         }
 
         // default address filling
-        $email = \trim($this->getAttribute('email'));
+        $email = trim($this->getAttribute('email'));
         $this->getStandardAddress();
 
         if (!$this->getAttribute('address')) {
@@ -1690,7 +1711,7 @@ class User implements QUI\Interfaces\Users\User
             Manager::table(),
             [
                 'username'         => $this->getUsername(),
-                'usergroup'        => ','.\implode(',', $this->getGroups(false)).',',
+                'usergroup'        => ',' . implode(',', $this->getGroups(false)) . ',',
                 'firstname'        => $this->getAttribute('firstname'),
                 'lastname'         => $this->getAttribute('lastname'),
                 'usertitle'        => $this->getAttribute('usertitle'),
@@ -1794,11 +1815,11 @@ class User implements QUI\Interfaces\Users\User
     {
         $groups = $this->getGroups(false);
 
-        if (!\is_array($groups)) {
+        if (!is_array($groups)) {
             return false;
         }
 
-        return \in_array($groupId, $groups);
+        return in_array($groupId, $groups);
     }
 
     /**
@@ -2021,13 +2042,13 @@ class User implements QUI\Interfaces\Users\User
 
         foreach ($list as $entry) {
             $plugin  = $entry['name'];
-            $userXml = OPT_DIR.$plugin.'/user.xml';
+            $userXml = OPT_DIR . $plugin . '/user.xml';
 
-            if (!\file_exists($userXml)) {
+            if (!file_exists($userXml)) {
                 continue;
             }
 
-            $attributes = \array_merge(
+            $attributes = array_merge(
                 $attributes,
                 $this->readAttributesFromUserXML($userXml)
             );
@@ -2054,7 +2075,7 @@ class User implements QUI\Interfaces\Users\User
      */
     protected function readAttributesFromUserXML($file): array
     {
-        $cache = 'quiqqer/users/user-extra-attributes/'.\md5($file);
+        $cache = 'quiqqer/users/user-extra-attributes/' . md5($file);
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -2086,7 +2107,7 @@ class User implements QUI\Interfaces\Users\User
             }
 
             $attributes[] = [
-                'name'    => \trim($Attribute->nodeValue),
+                'name'    => trim($Attribute->nodeValue),
                 'encrypt' => !!$Attribute->getAttribute('encrypt')
             ];
         }
@@ -2110,7 +2131,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function addAddress($params = [], $ParentUser = null)
     {
-        if (\is_null($ParentUser)) {
+        if (is_null($ParentUser)) {
             $ParentUser = QUI::getUserBySession();
         }
 
@@ -2150,7 +2171,7 @@ class User implements QUI\Interfaces\Users\User
             'country'
         ];
 
-        if (!\is_array($params)) {
+        if (!is_array($params)) {
             $params = [];
         }
 
@@ -2160,7 +2181,7 @@ class User implements QUI\Interfaces\Users\User
                 continue;
             }
 
-            if (\is_array($params[$needle])) {
+            if (is_array($params[$needle])) {
                 $_params[$needle] = \json_encode(
                     Orthos::clearArray($params[$needle])
                 );
@@ -2191,7 +2212,7 @@ class User implements QUI\Interfaces\Users\User
             $this->save($ParentUser);
         }
 
-        if (\count($this->getAddressList()) === 1) {
+        if (count($this->getAddressList()) === 1) {
             $this->setAttribute('address', $CreatedAddress->getId());
             $this->save($ParentUser);
         }
@@ -2266,7 +2287,7 @@ class User implements QUI\Interfaces\Users\User
         $Address  = $this->getStandardAddressHelper();
         $mailList = $Address->getMailList();
         $email    = $this->getAttribute('email');
-        $email    = \trim($email);
+        $email    = trim($email);
 
         // set default mail address
         if (empty($mailList) && !empty($email)) {
@@ -2304,8 +2325,8 @@ class User implements QUI\Interfaces\Users\User
 
         $list = $this->getAddressList();
 
-        if (\count($list)) {
-            \reset($list);
+        if (count($list)) {
+            reset($list);
 
             $this->StandardAddress = \current($list);
 
@@ -2387,7 +2408,7 @@ class User implements QUI\Interfaces\Users\User
                 'limit' => 2
             ]);
 
-            if (\count($suUsers) <= 1) {
+            if (count($suUsers) <= 1) {
                 throw new QUI\Users\Exception(
                     QUI::getLocale()->get('quiqqer/quiqqer', 'exception.user.one.superuser.must.exists')
                 );
@@ -2403,7 +2424,7 @@ class User implements QUI\Interfaces\Users\User
             'limit' => 2
         ]);
 
-        if (\count($activeUsers) <= 1) {
+        if (count($activeUsers) <= 1) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.user.one.active.user.must.exists')
             );
