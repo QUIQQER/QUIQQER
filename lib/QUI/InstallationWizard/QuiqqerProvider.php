@@ -53,7 +53,7 @@ class QuiqqerProvider extends AbstractInstallationWizard
     {
         return [
             new QuiqqerSteps\Welcome(),
-            new QuiqqerSteps\Licence(),
+            //new QuiqqerSteps\Licence(),
             new QuiqqerSteps\Country(),
             new QuiqqerSteps\Groups(),
             new QuiqqerSteps\Mail(),

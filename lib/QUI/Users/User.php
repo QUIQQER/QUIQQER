@@ -22,6 +22,7 @@ use function get_class;
 use function implode;
 use function in_array;
 use function is_array;
+use function is_int;
 use function is_null;
 use function is_numeric;
 use function is_string;
@@ -934,7 +935,7 @@ class User implements QUI\Interfaces\Users\User
     {
         $Groups = QUI::getGroups();
 
-        if (is_string($Group) || \is_int($Group)) {
+        if (is_string($Group) || is_int($Group)) {
             $Group = $Groups->get((int)$Group);
         }
 
