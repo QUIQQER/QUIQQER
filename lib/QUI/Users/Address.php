@@ -8,6 +8,7 @@ namespace QUI\Users;
 
 use QUI;
 use QUI\Utils\Security\Orthos as Orthos;
+use QUI\Interfaces\Users\User as QUIUserInterface;
 
 /**
  * User Address
@@ -23,7 +24,7 @@ class Address extends QUI\QDOM
     /**
      * The user
      *
-     * @var QUI\Users\User
+     * @var QUIUserInterface
      */
     protected $User = null;
 
@@ -44,12 +45,12 @@ class Address extends QUI\QDOM
     /**
      * constructor
      *
-     * @param QUI\Users\User $User - User
+     * @param QUIUserInterface $User - User
      * @param integer $id - Address id
      *
      * @throws \QUI\Users\Exception
      */
-    public function __construct(User $User, $id)
+    public function __construct(QUIUserInterface $User, $id)
     {
         try {
             $result = QUI::getDataBase()->fetch([
@@ -116,9 +117,9 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * @return User
+     * @return QUIUserInterface
      */
-    public function getUser(): ?User
+    public function getUser(): ?QUIUserInterface
     {
         return $this->User;
     }
@@ -499,7 +500,7 @@ class Address extends QUI\QDOM
     /**
      * Saves the address
      *
-     * @param null|QUI\Interfaces\Users\User $PermissionUser
+     * @param null|QUIUserInterface $PermissionUser
      * @throws QUI\Permissions\Exception
      */
     public function save($PermissionUser = null)
