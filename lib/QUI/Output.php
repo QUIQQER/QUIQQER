@@ -558,8 +558,13 @@ class Output extends Singleton
             }
         }
 
-        $att['alt']   = Encoding::toUTF8($att['alt']);
-        $att['title'] = Encoding::toUTF8($att['title']);
+        if (isset($att['alt'])) {
+            $att['alt'] = Encoding::toUTF8($att['alt']);
+        }
+
+        if (isset($att['title'])) {
+            $att['title'] = Encoding::toUTF8($att['title']);
+        }
 
         $html = MediaUtils::getImageHTML($src, $att);
 
