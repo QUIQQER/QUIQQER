@@ -1,10 +1,441 @@
-1.5.1 ()
+1.6.0 (20.05.2022)
+
+    Main Features
+
+    - Wizard
+    - Composer 2 + PHP 8.0
+    - Auto update
+    - Direct Mail send to Users via User Panel
+    - Media custom attribute API
+    - Better User UX
+        - New Message Handler
+        - "forward and back" keys switch tabs
+
+    Features
+
+    - feat: possibility to ignore maintenance mode
+    - feat: Site Panel -> onQuiqqerSitePanelBuild event
+    - feat: quiqqer/quiqqer#1133
+    - feat: new panel cache js event
+    - feat: media input -> media button can be disabled
+    - feat: quiqqer/quiqqer#1141
+    - feat: getVersion() at Package Class; refactor: code style
+    - feat: quiqqer:copy-language-sites -> --copy_bricks and --do_not_activate options quiqqer/quiqqer#1149
+    - feat: new cli command: ./console clear-cache-path
+    - feat: quiqqer/quiqqer#1145 - children creation wizard
+    - feat: getDisplayName for user with address fallback
+    - feat: quiqqer/quiqqer#1135
+    - feat: new events updateBegin, updateEnd
+    - feat: new message handler
+    - feat: quiqqer/quiqqer#1123
+    - feat: new mail event -> mailerSendInit
+    - feat: adds support for CKEditor 5
+    - feat: clear URL caches when saving site
+    - feat: ecoyn/core#6 - installation wizard API
+    - feat: output filter has the possibility to set all links absolute; mailer use new output filter option
+    - feat: project language copy console tool quiqqer/quiqqer#1120
+    - feat: quiqqer/products#309
+    - feat: picture -> reponsive image ratio -> consider 2x, 3x
+    - feat: Tasks / Panels are able to set bigger ToolTips
+    - feat: new hidden setting - ignoreSiteCacheClearing
+    - feat: send images with user mail function via user panel quiqqer/quiqqer#1072
+    - feat: Cache management -> clear settings cache option; refactor: added missing cache clear button title
+    - feat: refactor: quiqqer/quiqqer#1080
+    - feat: storage saves perPage, sortBy & sortOn
+    - feat: quiqqer/quiqqer#1078 - Changes to the column model are stored in locale storage
+    - feat: Output Filter Events
+    - feat: set and send new password via user panel quiqqer/quiqqer#1073
+    - feat: send email via user panel quiqqer/quiqqer#1072
+    - feat: new user event -> onUserActivateBegin -> quiqqer/customer#48
+    - feat: quiqqer/customer#45
+    - feat: user panel -> refresh Display Method
+    - feat: address -> get user by an address id; fix: user email address saving at user creation fixed
+    - feat: e_date column in backend user list
+    - feat: admin mail as BCC
+    - feat: quiqqer/quiqqer#1066
+    - feat: new url -> Site -> onUrlRewritten
+    - feat: User.loadIfotLoaded Method
+    - feat: trim email address on user save
+    - feat: preview of media input
 
     Fix
 
-    - Sort Error fixed; Sorting consider inactive Sites
-    - quiqqer/quiqqer#1033 No Vhosts and only one language -> Links with language flag
-    - quiqqer/quiqqer#728 removed robloach/component-installer
+    - fix: Undefinded index title in Output.php
+    - fix: Undefined index "title" Output.php
+    - fix: namerobot/template-namerobot.de#1
+    - fix: quiqqer/quiqqer#1100
+    - fix: installation wizard only active at SU
+    - fix: workaround flex fix width -> media input
+    - fix: Declaration of QUI\Groups\Guest::createChild(string , = null) must be compatible
+    - fix: quiqqer/quiqqer#1148
+    - fix: quiqqer/quiqqer#1126
+    - fix: system panel -> opening is slow -> outdated check
+    - fix: quiqqer/quiqqer#1151
+    - fix: setup must not set the last update flag
+    - fix: Removed commented out meta image property. Facebook and Twitter interpreted this as an empty open graph tag.
+    - fix: check if QUIQQER project exists before trying to load it from request path quiqqer/quiqqer#1125; feat: existsProject method
+    - fix: DOMTokenList error -> editor.js considers mulitple css body classes
+    - fix: quiqqer/quiqqer#1140
+    - fix: error catch
+    - fix: reuire knapsack 8 to 10
+    - fix: Deprecation Notice: preg_replace_callback(): Passing null to parameter #3
+    - fix: quiqqer/quiqqer#1145
+    - fix: endless loop
+    - fix: quiqqer/quiqqer#1139
+    - fix: array offset check
+    - fix: allow site settings extension by other packages
+    - fix: log error prevented when session is not yet properly established
+    - fix: default event priority to 10
+    - fix: site params -> no website cache
+    - fix: data-no-cache=1
+    - fix: use correct last update date - newer method
+    - fix: Address getName() -> do not return single space character if address has no name parts
+    - fix: Uncaught TypeError: QUI\Projects\Media\Utils::getMediaFolderSizeForProject()
+    - fix: allow other packages than the original site type package to extend site type attributes
+    - fix: quiqqer/quiqqer#1136
+    - fix: json parsing errors
+    - fix: clear package cache at quiqqer update
+    - fix: Notice: Undefined index: packages - composer update fix
+    - fix: update -> js -> package list check
+    - fix: null check
+    - fix: update check -> correct message
+    - fix: profile button - letter pos
+    - fix: message handling -> message deletion fixed
+    - fix: url decode for image paths - picture elements are generated correctly
+    - fix: pcsg/projects/walking-family-project#104 - incorrect breadcrumb
+    - fix: remove debug log pcsg-projects/briefwahl-beantragen/briefwahl#21
+    - fix: remove wrong return type declaration from Package\Manager::getPackageStoreUrls
+    - fix: str contains -> haystack fix
+    - fix: consider undefined HOST const
+    - fix: setup wizard -> consider control css
+    - fix: mail -> no picture element parsing
+    - fix: consider _p as no language. quiqqer/products#332
+    - fix: consider quiqqer asset -> setup
+    - fix: Don't cache breadcrumb control.
+    - fix: release from
+    - fix: consider deactivation at site panel -> empty release_from
+    - fix: set null atsite deactivation
+    - fix: use at Site->save for e_date
+    - fix: site deactivating deletes release from date, because deactivation does not work with a release date
+    - fix: user activate -> only check for duplicate email address if email login is active
+    - fix: check optional parameters - console
+    - fix: QUIQQER CLI: correct call for optional arguments
+    - fix: same behavior for the mail queue as with the mailer
+    - fix: quiqqer/quiqqer/-/commit/4c1035ef78c60f55882310b160b22327b4f219ea#note_116307
+    - fix: tooltip parsing -> consider moofx elememts object
+    - fix: throwable exception -> added function type to to the context
+    - fix: require qui 1.5 and higher
+    - fix: Warning: strpos() expects parameter 1 to be string, array given
+    - fix: Uncaught Error: Unknown named parameter -> ajax -> php8
+    - fix: undefined variable -> ajax -> php8
+    - fix: Uncaught Error: Unknown named parameter
+    - fix: autoloading -> composer 2
+    - fix: composer 2 loading -> stash workaround
+    - fix: use new quiqqer assets
+    - fix: composer 2 loading workaround for stash utilities
+    - fix: composer 2 + stash workaround
+    - fix: locale missing file to debug message
+    - fix: we dont need pcsg composer assets anymore
+    - fix: use quiqqer asset require
+    - fix: use package name for quiqqer assets -> bin folder
+    - fix: consider empty sets at picture source elements
+    - fix: quiqqer/products#309
+    - fix: consider image 2x 3x ratio
+    - fix: Default value by image upload (4000).
+    - fix: template are able to overwrite package scripts
+    - fix: feat: quiqqer/quiqqer#1101
+    - fix: quiqqer/quiqqer#1101
+    - fix: quiqqer/quiqqer#1108
+    - fix: set internal global control id for the user panel
+    - fix: diashow show pagination / title bar in conjunction with resize dragger
+    - fix: quiqqer/quiqqer#1096
+    - fix: fallback for missing toolbar
+    - fix: dir check for unknown toolbar
+    - fix: quiqqer/erp#67
+    - fix: quiqqer/erp#67
+    - fix: user disable -> set 'expire' column to NULL instead of empty string
+    - fix: user disable -> set 'birthday' column to NULL instead of empty string
+    - fix: mark cross site cookies error fixed -> consider non https
+    - fix: title -> media clear cache
+    - fix: use no ui slide in version 15
+    - fix: pcsg/kunden/bow-modellhandel-template#79
+    - fix: quiqqer/quiqqer#1051
+    - fix: pcsg/kunden/bow-modellhandel-template#77
+    - fix: quiqqer/quiqqer#876
+    - fix: Address->equals method
+    - fix: missing locale -> permissions
+    - fix: quiqqer/quiqqer#1092
+    - fix: add mysql update password routine -> need to be a varchar 255
+    - fix: Fallback for none multilingual input editor.
+    - fix: project select -> add class
+    - fix: consider ckeditor z index for media / project popups
+    - fix: stupid css from hen fixed
+    - fix: refactor: Media fixes :: Media View Grid - use local storage; fiel ending after name; multilingual showed up correctly in the grid; Drag Drop Upload is possible in the Grid now; File Deletion via File Panel are fixed
+    - fix: duplicate locale
+    - fix: quiqqer/quiqqer#561
+    - fix: Media->replace() -> only set image_height and image_width if available in file metadata
+    - fix: missmatched tags
+    - fix: send admin BCC mails when multiple adresses are configured with comma separation
+    - fix: exception -> maintenance -> wrong message triggering fixed
+    - fix: quiqqer/quiqqer#1068 (by hen)
+    - fix: flex box fix -> found via quiqqer/erp#42
+    - fix: at update var/cache clearing
+    - fix: use correct variable for decimal separator in Locale->formatNumber
+    - fix: performance boost at link parsing -> runtime cache for same sites and different get params
+    - fix: Grid storage -> return if no storage key exists
+    - fix: consider non utf8 and utf8 strings at date formating
+    - fix: media pagination -> always open page 1 when opening a folder NameStorm/Website#63
+    - fix: change password -> trim all input quiqqer/quiqqer#1075
+    - fix: consider empty everony group
+    - fix: everyone / guest endless lopp
+    - fix: if locale is empty, the default quiqqer system languages is used
+    - fix: typo
+    - fix: json encode -> utf, locale encode because of json encode bug; fix: open users twice
+    - fix: user QUI and user ID conflict solved
+    - fix: consider empty mail at user creation
+    - fix: user address field chaos, when user dont have an default address
+    - fix: package consider old package names
+    - fix: refactor: mail firstname lastname matching
+    - fix: if default address is missing, use system user to create it
+    - fix: User->save(), use Permission User when saving address
+    - fix: consider permission parent user, if user has no address
+    - fix: missing bcc admin mail for mail queue
+    - fix: correct event -> siteGetUrlRewritten
+    - fix: refactor: standard address set the default email too
+    - fix: trim email at the Standard Address fetch
+    - fix: refactor: check user bin folder at Package Manager
+    - fix: add user address on save, if no address exist
+    - fix: check at wysiwy editor loading, if document and body is accessible
+    - fix: if selfLangs are false, all projects and languages are allowed (by hen)
+    - fix: refactor:default address will be set if none is set when user save
+    - fix: quiqqer/customer#42
+    - fix: correct use of first address as fallback address
+    - fix: default mail address for default address
+    - fix: address mail
+    - fix: grid export -> uses css classes for js export data
+    - fix: require -> downloadjs -> correct url
+    - fix: quiqqer/customer#38; refactor: method return type hints
+    - fix: address considers null user
+    - fix: quiqqer/quiqqer#1061
+    - fix: delete workspaces at user deletion
+    - fix: A document must not include both a meta element with an http-equiv attribute whose value is content-type, and a meta element with a charset attribute
+    - fix: -> sourceset -> correct media query
+    - fix: remove xml output
+    - fix: Include correct require.js
+    - fix: quiqqer/quiqqer#1043
+    - fix: package console tool -> wrong locale
+    - refactor: Address -> use QUIQQER User Interface instead of User class for type hinting
+    - refactor: no licence needed for the install wizard
+    - refactor: includes -> at user class
+    - refactor: licence step -> install wizard
+    - refactor: quiqqer/quiqqer#1141 - Setup Wizzard -> Gruppen anlegen
+    - refactor: permissions for quiqqer.system.update
+    - refactor: feat: quiqqer/quiqqer#1133 + quiqqer/quiqqer#1141
+    - refactor: better loging -> ajax error requests added to the js errors
+    - refactor: added kylekatarnls/update-helper to the allowed plugins
+    - refactor: quiqqer/quiqqer#1142
+    - refactor: fix: system console session class uses web session setup
+    - refactor: check if existsProject method exists before calling
+    - refactor: use of stash 0.17.*
+    - refactor: translations
+    - refactor: code style; fix: Mail Queue triggers mailerSendBegin + mailerSend events
+    - refactor: cleanup + utils is in 1.22 allowed
+    - refactor: require knapsack 10.*
+    - refactor: added allow plugins - code cleanup 7.2
+    - refactor: php7.4
+    - refactor: quiqqer/quiqqer#1145
+    - refactor: quiqqer/cron required version
+    - refactor: user getDisplayName -> use address company as fallback
+    - refactor: workspace list window deactivated because of install wizard
+    - refactor: feat: installation wizard -> onListInit method
+    - refactor: req -> newer font awesome
+    - refactor: merge conflict
+    - refactor: multiple image sources now in img srcset instead of src
+    - refactor: pcsg-projects/briefwahl-beantragen/briefwahl#5
+    - refactor: typing
+    - refactor: Canonical -> if get params active -> use REQUEST_URI
+    - refactor: quiqqer installation wizard -> locale + placeholder values
+    - refactor: quiqqer/quiqqer#1049
+    - refactor: Information when the last update was performed
+    - refactor: set available updates
+    - refactor: added updateEnd and updateBegin event to Package manager
+    - refactor: added animejs
+    - refactor: code style
+    - refactor: remove lock server
+    - refactor: fix: web setup / update
+    - refactor: fix: web update / check
+    - refactor: quiqqer/quiqqer#1123
+    - refactor: profile menu adapted to the rest of the menu
+    - refactor: remove old message handler
+    - refactor: message handler -> filter
+    - refactor: code style
+    - refactor: quiqqer/quiqqer#1133
+    - refactor: Edit.php -> optimized permission check
+    - refactor: consider template caching -> introduce new template cache namespace
+    - refactor: consider php7 compatibility
+    - refactor: html5 consider timeout
+    - refactor: better log for ajax bundler
+    - refactor: wizard -> consider workspace
+    - refactor: workspace -> setup wizzard
+    - refactor: consider open base dir -> replaces file_exists
+    - refactor: moves URL cache clear into Site::deleteCache() method
+    - refactor: quiqqer/redirect#45 - added event for 303
+    - refactor: remove write log
+    - refactor: deprecated usage of usort
+    - refactor: avoid shrinking field container item (data table setting).
+    - refactor: wizard title - locale
+    - refactor: close setup wizard -> cancels it
+    - refactor: quiqqer setup wizard
+    - refactor: mail test -> setup
+    - refactor: auto release flag for project sites
+    - refactor: installation wizard
+    - refactor: installation wizard
+    - refactor: quiqqer/redirect#41
+    - refactor: index.php -> do not log empty content exception in error log
+    - refactor: Breadcrumb Control --> unnecessary float left property deleted.
+    - refactor: require -> quiqqer utils 1.23
+    - refactor: use symfony console 5
+    - refactor: workaround class for the quiqqer setup
+    - refactor: catch all errors at the main event class
+    - refactor: composer 2 loader workaround -> setup problem
+    - refactor: syfony console 4,5,6 allowed -> php7 + 8
+    - refactor: composer2 compatibility
+    - refactor: allowe composer 2
+    - refactor: composer 2 allowed
+    - refactor: remove npm packages with quiqqer assets
+    - refactor: use quiqqer assets instead of npm packages
+    - refactor: consider quiqqer assets
+    - refactor: use quiqqer assets
+    - refactor: image picture sourceset start set to 400
+    - refactor: remove picturefill and promise polyfill
+    - refactor: isset src at getImageHTML
+    - refactor: mini workaround for quiqqer/quiqqer#1116
+    - refactor: deliver every size
+    - refactor: deliver every size
+    - refactor: flag added for site task tooltip
+    - refactor: MediaSelect -> option to work with media URLs instead of IDs
+    - refactor: package events
+    - refactor: implemented new package setup install events
+    - refactor: FolderViewer -> Only show diashow btn if more than 1 image; only show diashow with images; only make images zoomable
+    - refactor: php min version is 7.4
+    - refactor: check min php version
+    - refactor: added quiqqer bricks to the toolbars
+    - refactor: Grid.js -> allow Separators to be added as grid 'buttons'
+    - refactor: tooltip for project site panels
+    - refactor: better image task preview
+    - refactor: added new tippy js tooltip lib
+    - refactor: added tippy -> new toolbar lib
+    - refactor: upload -> dont delete spaces and dont rename file names to lower case
+    - refactor: quiqqer/quiqqer#1096
+    - refactor: better settings titles
+    - refactor: feat: Project Select -> disable + enable
+    - refactor: type hints
+    - refactor: feat: removeRewrittenUrlCache - quiqqer/redirect#40 - helper method implemented
+    - refactor: api for toolbar editor configurator
+    - refactor: mailqueue table 'body' and 'text' columns changed to LONGTEXT
+    - refactor: cleanup
+    - refactor: show reset password in frontend by default quiqqer/frontend-users#54
+    - refactor: quiqqer/quiqqer#876 - Performance issue with default username when creating new users
+    - refactor: chrome input type search -> plus button
+    - refactor: readme modified and updated to newer information
+    - refactor: titleSort to columnSort
+    - refactor: version 1.5.1
+    - refactor: quiqqer/quiqqer#1082 - UX of caching management revised
+    - refactor: to much logging
+    - refactor: consider column changes in combination with the storage
+    - refactor: allow composer asset in dev versions -> PHP 8 Update
+    - refactor: everyone and guest group -> if not exists
+    - refactor: fallback / workaround for non existing everyone group at setup
+    - refactor: address saluation -> to user
+    - refactor: cleanup
+    - refactor: Locker -> correctly check user id in all possible configurations
+    - refactor: unlock via ajax -> use unlock instead of unlockWithPermissions
+    - refactor: method hints; refactor: feat: better mail test -> mail test uses the html template, too
+    - refactor: added new event at lang selec
+    - refactor: first address will be the default address and get the default address at the creation process
+    - refactor: removed no longer needed firstname lastname workaround
+    - refactor: firstname and lastname synchronize with the default address.
+        if firstname and lastname are saved at the user, this will be saved in the default address.
+        if firstname and lastname are changed at the default address, this will be transferred to the user.
+    - refactor: standard address get user default email address if address email is empty
+    - refactor: rgba to hex
+    - refactor: feat: add onDblClickBegin at Grid
+    - refactor: if only one language available, use this language as default language
+    - refactor: feat: own favicon for administration
+    - refactor: filePathIds > moved to long term cache
+    - refactor: more size for users_address table fields 'firstname', 'lastname' and 'usertitle'
+    - refactor: more size for users table fields 'firstname', 'lastname' and 'usertitle'
+    - refactor: console log
+    - refactor: remove console log
+    - refactor: fix: delete console log
+    - refactor: use min versions of css! image! text! require modules
+    - refactor: html5 output
+    - refactor: use html5 parsing in the output
+    - refactor: using of masterminds/html5
+    - refactor: better exception output
+    - refactor: exception handling for deactivated and deleted user accounts quiqqer/frontend-users#53
+    - refactor: trim login password quiqqer/frontend-users#53
+    - refactor: login uses no bundle - no settings exists at the login page
+
+1.5.2 (09.03.2021)
+
+    Fixes
+
+    - fixes missmatched Version
+
+1.5.1 (18.11.2020)
+
+    Features
+
+    - feat: New Media Select Control
+    - feat: cleanup console tools, cleanups workspaces, too
+    - feat: updated license management and API
+    - feat: PackageNotLicensedException -> default messages
+    - feat: license features redirect#32
+
+    Fixes
+
+    - fix: #1044 - Locale for grid export is missing
+    - fix: #1057 - User -> Default address not changeable
+    - fix: #829 - After adding language to project the administration has to be reloaded
+    - fix: #1033 - No Vhosts and only one language -> Links with language flag
+    - fix: #1037 - Inform about Maintenance Mode in Admin Login Panel
+    - fix: #1035 - Longterm cache clear via backend not working
+    - fix: demodata#12
+    - fix: compatibility to quiqqer/cache module
+    - fix: haslicensedpackage request redirect#34
+    - fix: User search window -> correctly send filter params erp#32
+    - fix: haslicensedpackage request redirect#34
+    - fix: license status display if no license uploaded #1056
+    - fix: narrows selector of pre- and code-tag in systemcheck control
+    - fix: delete project -> deletes media files at the filesystem
+    - fix: upload single view -> missing set
+    - fix: prevent wrong cookie names
+    - fix: workaround for automatic xml panel naming
+    - fix: menu -> fowards the windowName to the xml panel
+    - fix: consider deleted users at workspace cleanup
+    - fix: #1045 - check workspace size
+    - fix: project site cache building writes Exception Log only at debug mode
+    - fix: trigger javascript callbacks with ajax bundler enabled #1042
+    - fix: consider external links at lu flag during output filter
+    - fix: use correct require.js version
+    - fix: sorting consider inactive sites, too
+    - fix: missing user and project attributes in no conflict mode
+    - fix: SQL Errors -> group search
+    - fix: wrong control type fixed for controls/usersAndGroups/Select
+    - refactor: cache license information for 1 day
+    - refactor: npm requirejs
+    - refactor: requirejs???
+    - refactor: feat: no cache dev api for modules
+    - refactor: code style
+    - refactor: Log message improved.
+    - refactor: updated nginx default cache optimizations
+    - refactor: Package->hasLicense() now sends systemId and systemHash
+    - refactor: used correct require js + changelog adjustment
+    - refactor: #728
+    - refactor: provide psr/http-client-implementation
+    - refactor: psr/http-client-implementation
+    - refactor: add psr/http-client-implementation
 
 1.5.0 (11.09.2020)
 
