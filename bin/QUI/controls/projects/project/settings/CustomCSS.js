@@ -1,4 +1,3 @@
-
 /**
  * CustomCSS for a project
  *
@@ -16,25 +15,26 @@ define('controls/projects/project/settings/CustomCSS', [
 
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/projects/project/settings/CustomCSS',
+        Extends: QUIControl,
+        Type   : 'controls/projects/project/settings/CustomCSS',
 
-        Binds : [
+        Binds: [
             '$onInject'
         ],
 
-        options : {
-            css : false
+        options: {
+            css: false
         },
 
-        initialize : function (options) {
+        initialize: function (options) {
             this.parent(options);
 
+            this.$Editor = null;
             this.$Textarea = null;
-            this.$Project  = this.getAttribute('Project');
+            this.$Project = this.getAttribute('Project');
 
             this.addEvents({
-                onInject : this.$onInject
+                onInject: this.$onInject
             });
         },
 
@@ -43,27 +43,26 @@ define('controls/projects/project/settings/CustomCSS', [
          *
          * @return {HTMLElement}
          */
-        create : function () {
+        create: function () {
             this.$Elm = this.parent();
 
             this.$Elm.set({
-                'class' : 'control-project-setting-custom-css',
-                html    : '<textarea></textarea>',
-                styles  : {
-                    'float' : 'left',
-                    height  : '100%',
-                    width   : '100%'
+                'class': 'control-project-setting-custom-css',
+                html   : '<textarea></textarea>',
+                styles : {
+                    border : '1px solid rgb(213 213 213)',
+                    'float': 'left',
+                    height : '100%',
+                    width  : '100%'
                 }
             });
 
             this.$Textarea = this.$Elm.getElement('textarea');
 
             this.$Textarea.set({
-                name   : 'project-custom-css',
-                styles : {
-                    'float' : 'left',
-                    height  : '100%',
-                    width   : '100%'
+                name  : 'project-custom-css',
+                styles: {
+                    display: 'none'
                 }
             });
 
@@ -73,20 +72,35 @@ define('controls/projects/project/settings/CustomCSS', [
         /**
          * event : on inject
          */
-        $onInject : function () {
-            var self = this;
+        $onInject: function () {
+            const Panel = QUI.Controls.getById(
+                this.getElm().getParent('.qui-panel').get('data-quiid')
+            );
 
-            if (this.getAttribute('css')) {
-                this.$Textarea.value = this.getAttribute('css');
-                this.fireEvent('load');
-                return;
-            }
+            const Loader = Panel.Loader;
+            Loader.show();
 
-            QUIAjax.get('ajax_project_get_customCSS', function (css) {
-                self.$Textarea.value = css;
-                self.fireEvent('load');
-            }, {
-                project : this.$Project.encode()
+            require(['controls/editors/CodeEditor'], (CodeEditor) => {
+                this.$Editor = new CodeEditor({
+                    type: 'css'
+                }).inject(this.getElm());
+
+                if (this.getAttribute('css')) {
+                    this.$Editor.setValue(this.getAttribute('css'));
+                    this.$Textarea.value = this.$Editor.getValue();
+                    this.fireEvent('load');
+                    Loader.hide();
+                    return;
+                }
+
+                QUIAjax.get('ajax_project_get_customCSS', (css) => {
+                    this.$Editor.setValue(css);
+                    this.$Textarea.value = this.$Editor.getValue();
+                    this.fireEvent('load');
+                    Loader.hide();
+                }, {
+                    project: this.$Project.encode()
+                });
             });
         },
 
@@ -95,8 +109,18 @@ define('controls/projects/project/settings/CustomCSS', [
          *
          * @param {Object} Project - classes/projects/Project
          */
-        setProject : function (Project) {
+        setProject: function (Project) {
             this.$Project = Project;
+        },
+
+        /**
+         * set the editor value to the textarea
+         *
+         * @return string
+         */
+        save: function () {
+            this.$Textarea.value = this.$Editor.getValue();
+            return this.$Editor.getValue();
         }
     });
 });

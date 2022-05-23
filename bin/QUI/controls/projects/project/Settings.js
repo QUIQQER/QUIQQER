@@ -85,10 +85,11 @@ define('controls/projects/project/Settings', [
                 this.getAttribute('project')
             );
 
+            this.$Control = null;
             this.$Prefix = null;
             this.$Suffix = null;
 
-            this.$config   = {};
+            this.$config = {};
             this.$defaults = {};
 
             this.addEvents({
@@ -220,7 +221,7 @@ define('controls/projects/project/Settings', [
 
                 self.$Title.set('html', self.getAttribute('title'));
 
-                self.$config   = result[0];
+                self.$config = result[0];
                 self.$defaults = result[1];
 
                 self.Loader.hide();
@@ -473,26 +474,24 @@ define('controls/projects/project/Settings', [
          * @return {Promise}
          */
         openCustomCSS: function () {
-            var self = this;
+            return this.$onCategoryLeave().then(() => {
+                return new Promise((resolve) => {
+                    this.$Container.set('html', '<form></form>');
 
-            return this.$onCategoryLeave().then(function () {
-                return new Promise(function (resolve) {
-                    self.$Container.set('html', '<form></form>');
+                    require(['controls/projects/project/settings/CustomCSS'], (CustomCSS) => {
+                        let css  = false,
+                            Form = this.getBody().getElement('form');
 
-                    require(['controls/projects/project/settings/CustomCSS'], function (CustomCSS) {
-                        var css  = false,
-                            Form = self.getBody().getElement('form');
-
-                        if ("project-custom-css" in self.$config) {
-                            css = self.$config["project-custom-css"];
+                        if ("project-custom-css" in this.$config) {
+                            css = this.$config["project-custom-css"];
                         }
 
-                        new CustomCSS({
-                            Project: self.getProject(),
+                        this.$Control = new CustomCSS({
+                            Project: this.getProject(),
                             css    : css,
                             events : {
-                                onLoad: function () {
-                                    self.$showBody().then(resolve);
+                                onLoad: () => {
+                                    this.$showBody().then(resolve);
                                 }
                             }
                         }).inject(Form);
@@ -553,8 +552,13 @@ define('controls/projects/project/Settings', [
          * @return {Promise}
          */
         $onCategoryLeave: function (noHide) {
-            var Content = this.getContent(),
-                Form    = Content.getElement('form');
+            const Content = this.getContent(),
+                  Form    = Content.getElement('form');
+
+            if (this.$Control && typeof this.$Control.save === 'function') {
+                this.$Control.save();
+                this.$Control = null;
+            }
 
             if (!Form) {
                 return Promise.resolve();
@@ -575,9 +579,9 @@ define('controls/projects/project/Settings', [
                 this.$Suffix = null;
             }
 
-            var data = QUIFormUtils.getFormData(Form);
+            let data = QUIFormUtils.getFormData(Form);
 
-            for (var i in data) {
+            for (let i in data) {
                 if (data.hasOwnProperty(i)) {
                     this.$config[i] = data[i];
                 }
@@ -585,7 +589,7 @@ define('controls/projects/project/Settings', [
 
             // exist langs?
             if (typeof Form.elements.langs !== 'undefined') {
-                var Langs = Form.elements.langs,
+                let Langs = Form.elements.langs,
                     langs = Langs.getElements('option').map(function (Elm) {
                         return Elm.value;
                     });
