@@ -253,6 +253,9 @@
         <locale name="permission.quiqqer.projects.editCustomCSS">
             <de><![CDATA[Darf Custom-CSS von Projekte ändern.]]></de>
         </locale>
+        <locale name="permission.quiqqer.projects.editCustomJS">
+            <de><![CDATA[Darf Custom-JavaScript von Projekte ändern.]]></de>
+        </locale>
         <locale name="permission.quiqqer.project.edit">
             <de><![CDATA[Darf Projekt editieren.]]></de>
         </locale>
@@ -2656,6 +2659,9 @@
         </locale>
         <locale name="projects.project.panel.settings.btn.customCSS">
             <de><![CDATA[Custom-CSS]]></de>
+        </locale>
+        <locale name="projects.project.panel.settings.btn.customJS">
+            <de><![CDATA[Custom-JavaScript]]></de>
         </locale>
         <locale name="groups.panel.group.is.deactive">
             <de><![CDATA[Gruppe ist deaktiviert. Per Klick auf den Button aktivieren Sie die Gruppe.]]></de>

@@ -100,6 +100,9 @@
     <!-- Darf Projekte CSS ändern -->
     <permission name="quiqqer.projects.editCustomCSS" type="bool"/>
 
+    <!-- Darf Projekte JS ändern -->
+    <permission name="quiqqer.projects.editCustomJS" type="bool"/>
+
 
     <!-- Project permissions  -->
 

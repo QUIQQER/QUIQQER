@@ -41,6 +41,8 @@ use function strlen;
 use function strpos;
 use function substr;
 
+use const USR_DIR;
+
 /**
  * A project
  *
@@ -1538,10 +1540,53 @@ class Project
      *
      * @return string
      */
-    public function getCustomCSS()
+    public function getCustomCSS(): string
     {
         if (file_exists(USR_DIR . $this->getName() . '/bin/custom.css')) {
             return file_get_contents(USR_DIR . $this->getName() . '/bin/custom.css');
+        }
+
+        return '';
+    }
+
+    /**
+     * Set custom CSS for the project -> set it to the custom.css file
+     *
+     * @param string $javascript - CSS Data
+     *
+     * @throws QUI\Exception
+     */
+    public function setCustomJavaScript($javascript)
+    {
+        Permission::checkProjectPermission(
+            'quiqqer.projects.editCustomJS',
+            $this
+        );
+
+        $file = USR_DIR . $this->getName() . '/bin/custom.js';
+
+        QUI\Utils\System\File::mkfile($file);
+
+        if (!is_writable($file)) {
+            throw new QUI\Exception([
+                'quiqqer/quiqqer',
+                'exception.custom.javascript.is.not.writeable',
+                ['file' => $file]
+            ]);
+        }
+
+        file_put_contents($file, $javascript);
+    }
+
+    /**
+     * Return the custom js for the project
+     *
+     * @return string
+     */
+    public function getCustomJavaScript(): string
+    {
+        if (file_exists(USR_DIR . $this->getName() . '/bin/custom.js')) {
+            return file_get_contents(USR_DIR . $this->getName() . '/bin/custom.js');
         }
 
         return '';
@@ -1552,7 +1597,7 @@ class Project
      *
      * @return integer
      */
-    public function getLastEditDate()
+    public function getLastEditDate(): int
     {
         try {
             return (int)QUI\Cache\Manager::get($this->getEDateCacheName());
@@ -1562,7 +1607,10 @@ class Project
         return 0;
     }
 
-    protected function getEDateCacheName()
+    /**
+     * @return string
+     */
+    protected function getEDateCacheName(): string
     {
         return $this->getCachePath() . '/edate/';
     }

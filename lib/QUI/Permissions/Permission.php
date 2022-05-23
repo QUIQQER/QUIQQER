@@ -7,10 +7,10 @@
 namespace QUI\Permissions;
 
 use QUI;
+use QUI\Groups\Group;
 use QUI\Projects\Media;
 use QUI\Projects\Project;
 use QUI\Users\User;
-use QUI\Groups\Group;
 
 /**
  * Provides methods for quick rights checking
@@ -218,7 +218,7 @@ class Permission
     {
         if (!isset($permissions[$perm])) {
             QUI\System\Log::addNotice(
-                'Permission missing: '.$perm
+                'Permission missing: ' . $perm
             );
 
             return true;
@@ -491,7 +491,7 @@ class Permission
         }
 
         $permList = [];
-        $user     = 'u'.$User->getId();
+        $user     = 'u' . $User->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = \explode(',', \trim($permissions[$permission], ' ,'));
@@ -545,7 +545,7 @@ class Permission
         }
 
         $permList = [];
-        $group    = 'g'.$Group->getId();
+        $group    = 'g' . $Group->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = \explode(',', \trim($permissions[$permission], ' ,'));
@@ -797,7 +797,7 @@ class Permission
         }
 
         $permList = [];
-        $group    = 'g'.$Group->getId();
+        $group    = 'g' . $Group->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = \explode(',', \trim($permissions[$permission], ' ,'));
@@ -852,7 +852,7 @@ class Permission
         }
 
         $permList = [];
-        $user     = 'u'.$User->getId();
+        $user     = 'u' . $User->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = \explode(',', \trim($permissions[$permission], ' ,'));
@@ -910,7 +910,7 @@ class Permission
         }
 
         $permList = [];
-        $groups   = 'g'.$Group->getId();
+        $groups   = 'g' . $Group->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = \explode(',', \trim($permissions[$permission], ' ,'));
@@ -961,7 +961,7 @@ class Permission
         }
 
         $permList = [];
-        $user     = 'u'.$User->getId();
+        $user     = 'u' . $User->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = \explode(',', \trim($permissions[$permission], ' ,'));
@@ -1034,7 +1034,7 @@ class Permission
                         $User
                     );
                 }
-                break;
+
             case 'quiqqer.projects.destroy':
             case 'quiqqer.project.destroy':
                 try {
@@ -1049,7 +1049,7 @@ class Permission
                         $User
                     );
                 }
-                break;
+
             case 'quiqqer.projects.setconfig':
             case 'quiqqer.project.setconfig':
                 try {
@@ -1064,7 +1064,7 @@ class Permission
                         $User
                     );
                 }
-                break;
+
             case 'quiqqer.projects.editCustomCSS':
             case 'quiqqer.project.editCustomCSS':
                 try {
@@ -1076,6 +1076,21 @@ class Permission
                 } catch (QUI\Permissions\Exception $Exception) {
                     return self::checkPermission(
                         'quiqqer.projects.editCustomCSS',
+                        $User
+                    );
+                }
+
+            case 'quiqqer.projects.editCustomJS':
+            case 'quiqqer.project.editCustomJS':
+                try {
+                    return self::checkPermissionList(
+                        $permissions,
+                        'quiqqer.project.editCustomJS',
+                        $User
+                    );
+                } catch (QUI\Permissions\Exception $Exception) {
+                    return self::checkPermission(
+                        'quiqqer.projects.editCustomJS',
                         $User
                     );
                 }
@@ -1108,7 +1123,7 @@ class Permission
         }
 
         $permList = [];
-        $user     = 'u'.$User->getId();
+        $user     = 'u' . $User->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = \explode(',', \trim($permissions[$permission], ' ,'));
@@ -1156,7 +1171,7 @@ class Permission
         }
 
         $permList = [];
-        $group    = 'g'.$Group->getId();
+        $group    = 'g' . $Group->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = \explode(',', \trim($permissions[$permission], ' ,'));
@@ -1276,7 +1291,7 @@ class Permission
         }
 
         $permList = [];
-        $group    = 'g'.$Group->getId();
+        $group    = 'g' . $Group->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = \explode(',', \trim($permissions[$permission], ' ,'));
@@ -1331,7 +1346,7 @@ class Permission
         }
 
         $permList = [];
-        $user     = 'u'.$User->getId();
+        $user     = 'u' . $User->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = \explode(',', \trim($permissions[$permission], ' ,'));
@@ -1387,7 +1402,7 @@ class Permission
         }
 
         $permList = [];
-        $group    = 'g'.$Group->getId();
+        $group    = 'g' . $Group->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = \explode(',', \trim($permissions[$permission], ' ,'));
@@ -1442,7 +1457,7 @@ class Permission
         }
 
         $permList = [];
-        $user     = 'u'.$User->getId();
+        $user     = 'u' . $User->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = \explode(',', \trim($permissions[$permission], ' ,'));

@@ -253,6 +253,9 @@
         <locale name="permission.quiqqer.projects.editCustomCSS">
             <en><![CDATA[Is allowed to edit Custom-CSS from a project.]]></en>
         </locale>
+        <locale name="permission.quiqqer.projects.editCustomJS">
+            <en><![CDATA[Is allowed to edit Custom-JavaScript from a project.]]></en>
+        </locale>
         <locale name="permission.quiqqer.project.edit">
             <en><![CDATA[Is allowed to edit projects.]]></en>
         </locale>
@@ -2592,6 +2595,9 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         </locale>
         <locale name="projects.project.panel.settings.btn.customCSS">
             <en><![CDATA[Custom-CSS]]></en>
+        </locale>
+        <locale name="projects.project.panel.settings.btn.customJS">
+            <en><![CDATA[Custom-JavaScript]]></en>
         </locale>
         <locale name="groups.panel.group.is.deactive">
             <en><![CDATA[Group is inactive. Click on the button to activate the group.]]></en>

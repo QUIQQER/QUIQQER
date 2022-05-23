@@ -15,6 +15,7 @@
   "quiqqer.projects.destroy": false,
   "quiqqer.projects.setconfig": false,
   "quiqqer.projects.editCustomCSS": false,
+  "quiqqer.projects.editCustomJS": false,
   "quiqqer.packages.ecoyncore.canUse": false,
   "quiqqer.packages.quiqqercron.canUse": false,
   "quiqqer.cron.deactivate": false,

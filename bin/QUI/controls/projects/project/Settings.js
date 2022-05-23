@@ -63,6 +63,7 @@ define('controls/projects/project/Settings', [
             'del',
             'openSettings',
             'openCustomCSS',
+            'openCustomJS',
             'openAdminSettings',
             'openBackup',
             'openMediaSettings'
@@ -171,6 +172,15 @@ define('controls/projects/project/Settings', [
                 icon  : 'fa fa-css3',
                 events: {
                     onClick: this.openCustomCSS
+                }
+            });
+
+            this.addCategory({
+                name  : 'customJS',
+                text  : Locale.get(lg, 'projects.project.panel.settings.btn.customJS'),
+                icon  : 'fa fa-code',
+                events: {
+                    onClick: this.openCustomJS
                 }
             });
 
@@ -507,6 +517,44 @@ define('controls/projects/project/Settings', [
         },
 
         /**
+         * Open Custom JavaScript
+         *
+         * @return {Promise}
+         */
+        openCustomJS: function () {
+            return this.$onCategoryLeave().then(() => {
+                return new Promise((resolve) => {
+                    this.$Container.set('html', '<form></form>');
+
+                    require(['controls/projects/project/settings/CustomJS'], (CustomJS) => {
+                        let js   = false,
+                            Form = this.getBody().getElement('form');
+
+                        if ("project-custom-js" in this.$config) {
+                            js = this.$config["project-custom-js"];
+                        }
+
+                        this.$Control = new CustomJS({
+                            Project   : this.getProject(),
+                            javascript: js,
+                            events    : {
+                                onLoad: () => {
+                                    this.$showBody().then(resolve);
+                                }
+                            }
+                        }).inject(Form);
+
+                        Form.setStyles({
+                            'float': 'left',
+                            height : '100%',
+                            width  : '100%'
+                        });
+                    });
+                });
+            });
+        },
+
+        /**
          * Opens the Media Settings
          *
          * @method controls/projects/project/Settings#openMediaSettings
@@ -646,6 +694,7 @@ define('controls/projects/project/Settings', [
                 case "settings":
                 case "adminSettings":
                 case "customCSS":
+                case "customJS":
                 case "mediaSettings":
                     return Promise.resolve(1);
             }

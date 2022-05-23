@@ -50,7 +50,7 @@ class Defaults extends QUI\System\Console\Tool
         // set default root
         $Root = $Groups->firstChild();
 
-        QUI::getPermissionManager()->setPermissions($Root, array(
+        QUI::getPermissionManager()->setPermissions($Root, [
             "quiqqer.admin.groups.edit"              => true,
             "quiqqer.admin.groups.view"              => true,
             "quiqqer.cron.execute"                   => true,
@@ -60,6 +60,7 @@ class Defaults extends QUI\System\Console\Tool
             "quiqqer.projects.destroy"               => true,
             "quiqqer.projects.setconfig"             => true,
             "quiqqer.projects.editCustomCSS"         => true,
+            "quiqqer.projects.editCustomJS"          => true,
             "quiqqer.cron.activate"                  => true,
             "quiqqer.admin.users.view"               => true,
             "quiqqer.admin.users.edit"               => true,
@@ -81,16 +82,16 @@ class Defaults extends QUI\System\Console\Tool
             "quiqqer.projects.sites.edit"            => true,
             "quiqqer.projects.sites.del"             => true,
             "quiqqer.projects.sites.new"             => true
-        ));
+        ]);
 
 
         // default permission for everyone
         try {
             $Everyone = new QUI\Groups\Everyone();
 
-            QUI::getPermissionManager()->setPermissions($Everyone, array(
+            QUI::getPermissionManager()->setPermissions($Everyone, [
                 'quiqqer.projects.sites.view' => true
-            ));
+            ]);
 
             $this->writeLn('- Permissions for Everyone were set', 'green');
         } catch (QUI\Exception $Exception) {
@@ -102,9 +103,9 @@ class Defaults extends QUI\System\Console\Tool
         try {
             $Guest = new QUI\Groups\Guest();
 
-            QUI::getPermissionManager()->setPermissions($Guest, array(
+            QUI::getPermissionManager()->setPermissions($Guest, [
                 'quiqqer.projects.sites.view' => true
-            ));
+            ]);
 
             $this->writeLn('- Permissions for Guest were set', 'green');
         } catch (QUI\Exception $Exception) {
