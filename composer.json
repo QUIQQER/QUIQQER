@@ -3,6 +3,7 @@
   "type": "quiqqer-system",
   "description": "A modular based management system written in JavaScript and PHP",
   "license": "GPL-3.0+",
+  "version": "1.6.0",
   "authors": [
     {
       "name": "Henning Leutz",
@@ -75,7 +76,8 @@
     "quiqqer-asset\/downloadjs": "1.*",
     "quiqqer-asset\/requirejs": "2.*",
     "quiqqer-asset\/navigo": "*",
-    "quiqqer-asset\/history-events": "*"
+    "quiqqer-asset\/history-events": "*",
+    "quiqqer-asset\/ace-builds": "*"
   },
   "provide": {
     "psr/http-client-implementation": "1.0"
