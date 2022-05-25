@@ -8,6 +8,17 @@ namespace QUI\System\Console\Tools;
 
 use QUI;
 
+use function date;
+use function define;
+use function defined;
+use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
+use function is_dir;
+use function mkdir;
+use function str_replace;
+use function trim;
+
 /**
  * Generate the nginx.conf file
  *
@@ -29,8 +40,8 @@ class Nginx extends QUI\System\Console\Tool
         $this->setName('quiqqer:nginx')
             ->setDescription('Generate the nginx.conf File.');
 
-        $this->nginxConfDir    = ETC_DIR."nginx/";
-        $this->nginxConfigFile = $this->nginxConfDir."nginx.conf";
+        $this->nginxConfDir    = ETC_DIR . "nginx/";
+        $this->nginxConfigFile = $this->nginxConfDir . "nginx.example.conf";
     }
 
     /**
@@ -42,7 +53,7 @@ class Nginx extends QUI\System\Console\Tool
     {
         $this->writeLn('Generating nginx.conf ...');
 
-        $nginxBackupFile = VAR_DIR.'backup/nginx.conf_'.\date('Y-m-d__H_i_s');
+        $nginxBackupFile = VAR_DIR . 'backup/nginx.conf_' . date('Y-m-d__H_i_s');
 
         // ************************************* //
         //              Sub Configs              //
@@ -56,20 +67,20 @@ class Nginx extends QUI\System\Console\Tool
 HEAD;
 
         // Create cert directory
-        if (!\is_dir($this->nginxConfDir."/certs")) {
-            \mkdir($this->nginxConfDir."/certs", 0755, true);
+        if (!is_dir($this->nginxConfDir . "/certs")) {
+            mkdir($this->nginxConfDir . "/certs", 0755, true);
         }
 
         // Create subconfig dir
-        $this->subConfDir = $this->nginxConfDir."conf.d/";
+        $this->subConfDir = $this->nginxConfDir . "conf.d/";
 
-        if (!\is_dir($this->subConfDir)) {
-            \mkdir($this->subConfDir, 0755, true);
+        if (!is_dir($this->subConfDir)) {
+            mkdir($this->subConfDir, 0755, true);
         }
 
         // Create subconfig: PHP
-        if (!\file_exists($this->subConfDir."php.include")) {
-            \file_put_contents($this->subConfDir."php.include", $header);
+        if (!file_exists($this->subConfDir . "php.include")) {
+            file_put_contents($this->subConfDir . "php.include", $header);
 
             $geoIPSettings = <<<GEO
 ### SET GEOIP Variables ###
@@ -84,39 +95,39 @@ HEAD;
 #fastcgi_param GEOIP_LONGITUDE \$geoip2_data_postal_code;
 GEO;
 
-            \file_put_contents($this->subConfDir."php.include", $geoIPSettings, FILE_APPEND);
+            file_put_contents($this->subConfDir . "php.include", $geoIPSettings, FILE_APPEND);
         }
 
-        if (!\file_exists($this->subConfDir."redirects.include")) {
-            \file_put_contents($this->subConfDir."redirects.include", $header);
+        if (!file_exists($this->subConfDir . "redirects.include")) {
+            file_put_contents($this->subConfDir . "redirects.include", $header);
         }
 
-        if (!\file_exists($this->subConfDir."whitelist.include")) {
-            \file_put_contents($this->subConfDir."whitelist.include", $header);
+        if (!file_exists($this->subConfDir . "whitelist.include")) {
+            file_put_contents($this->subConfDir . "whitelist.include", $header);
         }
 
-        if (!\file_exists($this->subConfDir."server.include")) {
-            \file_put_contents($this->subConfDir."server.include", $header);
+        if (!file_exists($this->subConfDir . "server.include")) {
+            file_put_contents($this->subConfDir . "server.include", $header);
         }
 
-        if (!\file_exists($this->subConfDir."ssl.include")) {
+        if (!file_exists($this->subConfDir . "ssl.include")) {
             $sslConfTemplate = $header;
-            $sslConfTemplate .= "ssl    on;".PHP_EOL;
-            $sslConfTemplate .= "ssl_certificate        ".$this->nginxConfDir."certs/cert.pem;        # Replace with valid certificate".PHP_EOL;
-            $sslConfTemplate .= "ssl_certificate_key    ".$this->nginxConfDir."certs/key.pem;      # Replace with valid certificate key".PHP_EOL;
+            $sslConfTemplate .= "ssl    on;" . PHP_EOL;
+            $sslConfTemplate .= "ssl_certificate        " . $this->nginxConfDir . "certs/cert.pem;        # Replace with valid certificate" . PHP_EOL;
+            $sslConfTemplate .= "ssl_certificate_key    " . $this->nginxConfDir . "certs/key.pem;      # Replace with valid certificate key" . PHP_EOL;
 
-            \file_put_contents(
-                $this->nginxConfDir."certs/cert.pem",
+            file_put_contents(
+                $this->nginxConfDir . "certs/cert.pem",
                 "# Replace this file with your valid SSL certificate"
             );
-            \file_put_contents(
-                $this->nginxConfDir."certs/key.pem",
+            file_put_contents(
+                $this->nginxConfDir . "certs/key.pem",
                 "# Replace this file with your valid certificates key"
             );
-            \file_put_contents($this->subConfDir."ssl.include", $sslConfTemplate);
+            file_put_contents($this->subConfDir . "ssl.include", $sslConfTemplate);
         }
 
-        if (!\file_exists($this->subConfDir."optimization.include")) {
+        if (!file_exists($this->subConfDir . "optimization.include")) {
             $optimizations = $header;
             $optimizations .= PHP_EOL;
             $optimizations .= <<<OPTI
@@ -195,17 +206,17 @@ location ~*  \.(gif|jpg|jpeg|png|svg|ico|webp)$ {
 etag off;
 OPTI;
 
-            \file_put_contents($this->subConfDir."optimization.include", $optimizations);
+            file_put_contents($this->subConfDir . "optimization.include", $optimizations);
         }
 
         // ************************************* //
         //              Backup                   //
         // ************************************* //
 
-        if (\file_exists($this->nginxConfigFile)) {
-            \file_put_contents(
+        if (file_exists($this->nginxConfigFile)) {
+            file_put_contents(
                 $nginxBackupFile,
-                \file_get_contents($this->nginxConfigFile)
+                file_get_contents($this->nginxConfigFile)
             );
 
             $this->writeLn('You can find a .nginx Backup File at:');
@@ -225,9 +236,9 @@ OPTI;
 
         $nginxContent = $this->template();
 
-        \file_put_contents($this->nginxConfigFile, $nginxContent);
+        file_put_contents($this->nginxConfigFile, $nginxContent);
 
-        $this->writeLn('');
+        $this->writeLn();
         $this->resetColor();
     }
 
@@ -238,14 +249,14 @@ OPTI;
      */
     public function hasModifications(): bool
     {
-        if (!\file_exists($this->nginxConfigFile)) {
+        if (!file_exists($this->nginxConfigFile)) {
             return true;
         }
 
-        $oldContent = \file_get_contents($this->nginxConfigFile);
+        $oldContent = file_get_contents($this->nginxConfigFile);
         $content    = $this->template();
 
-        if (\trim($oldContent) != \trim($content)) {
+        if (trim($oldContent) != trim($content)) {
             return true;
         }
 
@@ -263,13 +274,13 @@ OPTI;
         $quiqqerUrlDir = URL_DIR;
 
         # Process domain
-        if (!\defined('HOST')) {
-            \define('HOST', QUI::conf('globals', 'host'));
+        if (!defined('HOST')) {
+            define('HOST', QUI::conf('globals', 'host'));
         }
 
-        $domain = \trim(HOST);
-        $domain = \str_replace("https://", "", $domain);
-        $domain = \str_replace("http://", "", $domain);
+        $domain = trim(HOST);
+        $domain = str_replace("https://", "", $domain);
+        $domain = str_replace("http://", "", $domain);
 
         $phpParams = <<<PHPPARAM
 fastcgi_param   QUERY_STRING            \$query_string;
@@ -372,20 +383,20 @@ PHPPARAM;
             # ////////////////////////////////////////////////////////////////////////////////
     
             location = {$quiqqerUrlDir}index.php {
-                {$phpParams}
+                $phpParams
             }
     
     
             location = {$quiqqerUrlDir}image.php {
-                {$phpParams}
+                $phpParams
             }
     
             location ~* ^(.*)/bin/(.*)\.php$ {
-                {$phpParams}
+                $phpParams
             }
     
             location ~* {$quiqqerUrlDir}packages/quiqqer/quiqqer/admin/(.*).php$ {
-                {$phpParams}
+                $phpParams
             }
             
             location ~* {$quiqqerUrlDir}[^/]*\.php$ {
@@ -461,8 +472,7 @@ REWRITE;
         $forceHttpsConfiguration = <<<NGINX
         
          upstream php {
-                server unix:/var/run/php/php7.0-fpm.sock;   # Replace with valid path to php-fpm
-                #server unix:/var/run/php5-fpm.sock;
+                server unix:/var/run/php/php8.1-fpm.sock;   # Replace with valid path to php-fpm
         }
 
         server {
@@ -502,8 +512,7 @@ NGINX;
         $httpConfiguration = <<<NGINX
         
         upstream php {
-                server unix:/var/run/php/php7.0-fpm.sock;   # Replace with valid path to php-fpm
-                #server unix:/var/run/php5-fpm.sock;
+                server unix:/var/run/php/php8.1-fpm.sock;   # Replace with valid path to php-fpm
         }
         
         server {
