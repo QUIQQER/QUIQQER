@@ -8,6 +8,19 @@ namespace QUI\System\Console\Tools;
 
 use QUI;
 
+use function count;
+use function date;
+use function explode;
+use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
+use function implode;
+use function ltrim;
+use function parse_ini_file;
+use function str_replace;
+use function substr;
+use function trim;
+
 /**
  * Generate the system htaccess file
  *
@@ -36,16 +49,16 @@ class Htaccess extends QUI\System\Console\Tool
     {
         $this->writeLn('Generating HTACCESS ...');
 
-        $htaccessBackupFile = VAR_DIR.'backup/htaccess_'.\date('Y-m-d__H_i_s');
-        $htaccessFile       = CMS_DIR.'.htaccess';
+        $htaccessBackupFile = VAR_DIR . 'backup/htaccess_' . date('Y-m-d__H_i_s');
+        $htaccessFile       = CMS_DIR . '.htaccess';
 
         # Create the custom htaccess file if it does not exist
-        if (!\file_exists(ETC_DIR.'htaccess.custom.php')) {
-            \file_put_contents(ETC_DIR.'htaccess.custom.php', "#<?php exit; ?>");
+        if (!file_exists(ETC_DIR . 'htaccess.custom.php')) {
+            file_put_contents(ETC_DIR . 'htaccess.custom.php', "#<?php exit; ?>");
         }
 
         $oldTemplate = false;
-        $config      = \parse_ini_file(ETC_DIR."conf.ini.php", true);
+        $config      = parse_ini_file(ETC_DIR . "conf.ini.php", true);
 
         if (!isset($config['webserver']['type'])) {
             $this->writeLn('Webservertype is not configured!', "red");
@@ -62,10 +75,10 @@ class Htaccess extends QUI\System\Console\Tool
         //
         // generate backup
         //
-        if (\file_exists($htaccessFile)) {
-            \file_put_contents(
+        if (file_exists($htaccessFile)) {
+            file_put_contents(
                 $htaccessBackupFile,
-                \file_get_contents($htaccessFile)
+                file_get_contents($htaccessFile)
             );
 
             $this->writeLn('You can find a .htaccess Backup File at:');
@@ -95,7 +108,7 @@ class Htaccess extends QUI\System\Console\Tool
 # (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
 #
 # Generated HTACCESS File via QUIQQER
-# Date: '.\date('Y-m-d H:i:s').'
+# Date: ' . date('Y-m-d H:i:s') . '
 #
 # Command to create new htaccess:
 # ./console --tool=quiqqer:htaccess
@@ -106,9 +119,9 @@ class Htaccess extends QUI\System\Console\Tool
 
 
         // Custom htaccess
-        if (file_exists(ETC_DIR.'htaccess.custom.php')) {
-            $htaccessContent .= "\n\n# Custom htaccess (".ETC_DIR.'htaccess.custom.php'.")\n";
-            $htaccessContent .= \file_get_contents(ETC_DIR.'htaccess.custom.php');
+        if (file_exists(ETC_DIR . 'htaccess.custom.php')) {
+            $htaccessContent .= "\n\n# Custom htaccess (" . ETC_DIR . 'htaccess.custom.php' . ")\n";
+            $htaccessContent .= file_get_contents(ETC_DIR . 'htaccess.custom.php');
             $htaccessContent .= "\n\n";
         }
 
@@ -119,9 +132,9 @@ class Htaccess extends QUI\System\Console\Tool
         }
 
 
-        \file_put_contents($htaccessFile, $htaccessContent);
+        file_put_contents($htaccessFile, $htaccessContent);
 
-        $this->writeLn('');
+        $this->writeLn();
         $this->resetColor();
     }
 
@@ -130,35 +143,35 @@ class Htaccess extends QUI\System\Console\Tool
      *
      * @return bool
      */
-    public function hasModifications()
+    public function hasModifications(): bool
     {
-        $htaccessFile = CMS_DIR.'.htaccess';
+        $htaccessFile = CMS_DIR . '.htaccess';
         $oldTemplate  = false;
 
         // Read old htaccess content and remove header
-        $oldHtaccessContent = \trim(\file_get_contents($htaccessFile));
-        $lines              = \explode(PHP_EOL, $oldHtaccessContent);
+        $oldHtaccessContent = trim(file_get_contents($htaccessFile));
+        $lines              = explode(PHP_EOL, $oldHtaccessContent);
 
-        for ($i = 0; $i < \count($lines); $i++) {
+        for ($i = 0; $i < count($lines); $i++) {
             $line = $lines[$i];
-            if (\substr($line, 0, 1) === "#") {
+            if (substr($line, 0, 1) === "#") {
                 unset($lines[$i]);
                 continue;
             }
 
             break;
         }
-        $oldHtaccessContent = \implode(PHP_EOL, $lines);
+        $oldHtaccessContent = implode(PHP_EOL, $lines);
 
 
         try {
             $version = QUI\Utils\System\Webserver::detectApacheVersion();
 
             if (!isset($version[1])) {
-                throw new QUI\Exception("Couldnt detect Webserver version");
+                throw new QUI\Exception("Couldn't detect Webserver version");
             }
 
-            $this->writeLn("Apache version detected : ".$version[0].".".$version[1]);
+            $this->writeLn("Apache version detected : " . $version[0] . "." . $version[1]);
             if ($version[1] <= 2) {
                 $oldTemplate = true;
             }
@@ -181,9 +194,9 @@ class Htaccess extends QUI\System\Console\Tool
 
 
         // Custom htaccess
-        if (\file_exists(ETC_DIR.'htaccess.custom.php')) {
-            $htaccessContent .= "\n\n# Custom htaccess (".ETC_DIR.'htaccess.custom.php'.")\n";
-            $htaccessContent .= \file_get_contents(ETC_DIR.'htaccess.custom.php');
+        if (file_exists(ETC_DIR . 'htaccess.custom.php')) {
+            $htaccessContent .= "\n\n# Custom htaccess (" . ETC_DIR . 'htaccess.custom.php' . ")\n";
+            $htaccessContent .= file_get_contents(ETC_DIR . 'htaccess.custom.php');
             $htaccessContent .= "\n\n";
         }
 
@@ -193,7 +206,7 @@ class Htaccess extends QUI\System\Console\Tool
             $htaccessContent .= $this->template();
         }
 
-        if (\trim($oldHtaccessContent) == \trim($htaccessContent)) {
+        if (trim($oldHtaccessContent) == trim($htaccessContent)) {
             return false;
         }
 
@@ -206,7 +219,7 @@ class Htaccess extends QUI\System\Console\Tool
      *
      * @return string
      */
-    protected function template()
+    protected function template(): string
     {
         $URL_DIR     = URL_DIR;
         $URL_LIB_DIR = URL_LIB_DIR;
@@ -215,32 +228,32 @@ class Htaccess extends QUI\System\Console\Tool
         $URL_VAR_DIR = URL_VAR_DIR;
 
         if ($URL_DIR != '/') {
-            $URL_LIB_DIR = \str_replace($URL_DIR, '', URL_LIB_DIR);
-            $URL_BIN_DIR = \str_replace($URL_DIR, '', URL_BIN_DIR);
-            $URL_SYS_DIR = \str_replace($URL_DIR, '', URL_SYS_DIR);
-            $URL_VAR_DIR = \str_replace($URL_DIR, '', URL_VAR_DIR);
+            $URL_LIB_DIR = str_replace($URL_DIR, '', URL_LIB_DIR);
+            $URL_BIN_DIR = str_replace($URL_DIR, '', URL_BIN_DIR);
+            $URL_SYS_DIR = str_replace($URL_DIR, '', URL_SYS_DIR);
+            $URL_VAR_DIR = str_replace($URL_DIR, '', URL_VAR_DIR);
         }
 
-        $URL_LIB_DIR = \ltrim($URL_LIB_DIR, '/');
-        $URL_BIN_DIR = \ltrim($URL_BIN_DIR, '/');
-        $URL_SYS_DIR = \ltrim($URL_SYS_DIR, '/');
-        $URL_VAR_DIR = \ltrim($URL_VAR_DIR, '/');
+        $URL_LIB_DIR = ltrim($URL_LIB_DIR, '/');
+        $URL_BIN_DIR = ltrim($URL_BIN_DIR, '/');
+        $URL_SYS_DIR = ltrim($URL_SYS_DIR, '/');
+        $URL_VAR_DIR = ltrim($URL_VAR_DIR, '/');
 
-        $quiqqerLib = URL_OPT_DIR.'quiqqer/quiqqer/lib';
-        $quiqqerBin = URL_OPT_DIR.'quiqqer/quiqqer/bin';
-        $quiqqerSys = URL_OPT_DIR.'quiqqer/quiqqer/admin';
-        $quiqqerDir = URL_OPT_DIR.'quiqqer/quiqqer';
+        $quiqqerLib = URL_OPT_DIR . 'quiqqer/quiqqer/lib';
+        $quiqqerBin = URL_OPT_DIR . 'quiqqer/quiqqer/bin';
+        $quiqqerSys = URL_OPT_DIR . 'quiqqer/quiqqer/admin';
+        $quiqqerDir = URL_OPT_DIR . 'quiqqer/quiqqer';
 
-        $URL_SYS_ADMIN_DIR = \trim($URL_SYS_DIR, '/');
+        $URL_SYS_ADMIN_DIR = trim($URL_SYS_DIR, '/');
 
 
         # Check for QUIQQERs webserver configuration
         $forceHttps = "";
 
         if (QUI::conf("webserver", "forceHttps")) {
-            $forceHttps = "# Redirect non https traffic to https. For a safer web.".PHP_EOL;
-            $forceHttps .= "    RewriteCond %{HTTPS} !on".PHP_EOL;
-            $forceHttps .= "    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,END]".PHP_EOL;
+            $forceHttps = "# Redirect non https traffic to https. For a safer web." . PHP_EOL;
+            $forceHttps .= "    RewriteCond %{HTTPS} !on" . PHP_EOL;
+            $forceHttps .= "    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,END]" . PHP_EOL;
         }
 
 
@@ -261,10 +274,10 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteRule ^(.*)$ – [END,R=403]
 
     ## bin dir
-    RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [END]".
+    RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [END]" .
 
-               # This is a temporary workaround. needs to be removed when the media upload is relocated
-               "
+            # This is a temporary workaround. needs to be removed when the media upload is relocated
+            "
     ## lib dir
     RewriteRule ^lib/(.*)$ {$quiqqerLib}/$1 [END]
 
@@ -315,30 +328,30 @@ class Htaccess extends QUI\System\Console\Tool
         $URL_VAR_DIR = URL_VAR_DIR;
 
         if ($URL_DIR != '/') {
-            $URL_LIB_DIR = \str_replace($URL_DIR, '', URL_LIB_DIR);
-            $URL_BIN_DIR = \str_replace($URL_DIR, '', URL_BIN_DIR);
-            $URL_SYS_DIR = \str_replace($URL_DIR, '', URL_SYS_DIR);
-            $URL_VAR_DIR = \str_replace($URL_DIR, '', URL_VAR_DIR);
+            $URL_LIB_DIR = str_replace($URL_DIR, '', URL_LIB_DIR);
+            $URL_BIN_DIR = str_replace($URL_DIR, '', URL_BIN_DIR);
+            $URL_SYS_DIR = str_replace($URL_DIR, '', URL_SYS_DIR);
+            $URL_VAR_DIR = str_replace($URL_DIR, '', URL_VAR_DIR);
         }
 
-        $URL_LIB_DIR = \ltrim($URL_LIB_DIR, '/');
-        $URL_BIN_DIR = \ltrim($URL_BIN_DIR, '/');
-        $URL_SYS_DIR = \ltrim($URL_SYS_DIR, '/');
-        $URL_VAR_DIR = \ltrim($URL_VAR_DIR, '/');
+        $URL_LIB_DIR = ltrim($URL_LIB_DIR, '/');
+        $URL_BIN_DIR = ltrim($URL_BIN_DIR, '/');
+        $URL_SYS_DIR = ltrim($URL_SYS_DIR, '/');
+        $URL_VAR_DIR = ltrim($URL_VAR_DIR, '/');
 
-        $quiqqerLib = URL_OPT_DIR.'quiqqer/quiqqer/lib';
-        $quiqqerBin = URL_OPT_DIR.'quiqqer/quiqqer/bin';
-        $quiqqerSys = URL_OPT_DIR.'quiqqer/quiqqer/admin';
-        $quiqqerDir = URL_OPT_DIR.'quiqqer/quiqqer';
+        $quiqqerLib = URL_OPT_DIR . 'quiqqer/quiqqer/lib';
+        $quiqqerBin = URL_OPT_DIR . 'quiqqer/quiqqer/bin';
+        $quiqqerSys = URL_OPT_DIR . 'quiqqer/quiqqer/admin';
+        $quiqqerDir = URL_OPT_DIR . 'quiqqer/quiqqer';
 
-        $URL_SYS_ADMIN_DIR = \trim($URL_SYS_DIR, '/');
+        $URL_SYS_ADMIN_DIR = trim($URL_SYS_DIR, '/');
 
         # Check for QUIQQERs webserver configuration
         $forceHttps = "";
         if (QUI::conf("webserver", "forceHttps")) {
-            $forceHttps = "# Redirect non https traffic to https. For a safer web.".PHP_EOL;
-            $forceHttps .= "    RewriteCond %{HTTPS} !on".PHP_EOL;
-            $forceHttps .= "    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]".PHP_EOL;
+            $forceHttps = "# Redirect non https traffic to https. For a safer web." . PHP_EOL;
+            $forceHttps .= "    RewriteCond %{HTTPS} !on" . PHP_EOL;
+            $forceHttps .= "    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]" . PHP_EOL;
         }
 
         return "
@@ -362,10 +375,10 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteRule ^ - [L]
 
     ## bin dir
-    RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [L]".
+    RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [L]" .
 
-               # This is a temporary workaround. needs to be removed when the media upload is relocated
-               "
+            # This is a temporary workaround. needs to be removed when the media upload is relocated
+            "
     ## lib dir
     RewriteRule ^lib/(.*)$ {$quiqqerLib}/$1 [L]
 
