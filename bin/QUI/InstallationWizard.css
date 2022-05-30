@@ -10,6 +10,10 @@
     padding-bottom: 10px;
 }
 
+.installation-wizard .qui-window-popup-content a {
+    color: #fff;
+}
+
 /** title
  =============================== */
 
