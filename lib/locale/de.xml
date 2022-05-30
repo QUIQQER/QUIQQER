@@ -4857,6 +4857,9 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             Wähle die Arbeitsumgebung, die am besten zu dir und deinem Projekt passt.
             ]]></de>
         </locale>
+        <locale name="set.up.execute.button.text">
+            <de><![CDATA[Setup ausführen]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -6234,9 +6237,6 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
 
         <locale name="set.up.next.button.text">
             <de><![CDATA[Weiter]]></de>
-        </locale>
-        <locale name="set.up.execute.button.text">
-            <de><![CDATA[Setup ausführen]]></de>
         </locale>
         <locale name="control.project.input.ratio.warning">
             <de><![CDATA[

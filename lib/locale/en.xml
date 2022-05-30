@@ -4693,7 +4693,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
             Choose the work environment that best suits you and your project.
             ]]></en>
         </locale>
-
+        <locale name="set.up.execute.button.text">
+            <en><![CDATA[Complete setup]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -6021,9 +6023,6 @@ After logging in you will be prompted to set a new password.
 
         <locale name="set.up.next.button.text">
             <en><![CDATA[Next]]></en>
-        </locale>
-        <locale name="set.up.execute.button.text">
-            <en><![CDATA[Complete setup]]></en>
         </locale>
         <locale name="control.project.input.ratio.warning">
             <en><![CDATA[

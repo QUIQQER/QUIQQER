@@ -2,6 +2,11 @@
 
 namespace QUI\InstallationWizard;
 
+use QUI;
+
+use function array_map;
+use function get_class;
+
 /**
  * Class AbstractInstallationWizard
  */
@@ -40,21 +45,35 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
     }
 
     /**
+     * @param $Locale
+     * @return string
+     */
+    public function getFinishButtonText($Locale = null): string
+    {
+        if ($Locale === null) {
+            $Locale = QUI::getLocale();
+        }
+
+        return $Locale->get('quiqqer/quiqqer', 'set.up.execute.button.text');
+    }
+
+    /**
      * @param null $Locale
      * @return array
      */
     public function toArray($Locale = null): array
     {
-        $steps = \array_map(function ($Step) {
+        $steps = array_map(function ($Step) {
             return $Step->toArray();
         }, $this->getSteps());
 
         return [
-            'title'       => $this->getTitle($Locale),
-            'description' => $this->getDescription($Locale),
-            'status'      => $this->getStatus(),
-            'steps'       => $steps,
-            'class'       => \get_class($this)
+            'title'        => $this->getTitle($Locale),
+            'description'  => $this->getDescription($Locale),
+            'status'       => $this->getStatus(),
+            'steps'        => $steps,
+            'class'        => get_class($this),
+            'finishButton' => $this->getFinishButtonText($Locale)
         ];
     }
 

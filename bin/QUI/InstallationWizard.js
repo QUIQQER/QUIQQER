@@ -27,6 +27,8 @@ define('InstallationWizard', [
     let WizardWindow = null;
     let formData = {};
 
+    let finishButtonTitle = '';
+
     // @todo multiple setups (module / plugin)
 
     return {
@@ -120,6 +122,8 @@ define('InstallationWizard', [
                 // create provider select
             }
 
+            finishButtonTitle = list[0].finishButton;
+
             this.$loadSteps(list[0]);
         },
 
@@ -197,7 +201,7 @@ define('InstallationWizard', [
 
                     if (steps.length - 1 === step) {
                         // last step
-                        NextButton.set('html', QUILocale.get('quiqqer/quiqqer', 'set.up.execute.button.text'));
+                        NextButton.set('html', finishButtonTitle);
                     } else {
                         NextButton.set('html', QUILocale.get('quiqqer/quiqqer', 'set.up.next.button.text'));
                     }
@@ -228,7 +232,7 @@ define('InstallationWizard', [
             if (Form) {
                 formData = Object.assign(formData, FormUtils.getDataFromNode(Form));
             }
-            
+
             return Next.then(() => {
                 if (CurrentControl) {
                     CurrentControl.destroy();
