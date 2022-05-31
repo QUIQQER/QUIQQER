@@ -468,7 +468,7 @@ class Manager extends QUI\QDOM
             "cache-dir"         => $this->varDir,
             "component-dir"     => OPT_DIR . 'bin',
             "quiqqer-dir"       => CMS_DIR,
-            "secure-http"       => false,
+            "secure-http"       => true,
             "preferred-install" => 'dist'
         ];
 
