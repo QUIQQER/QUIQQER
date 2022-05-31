@@ -9,6 +9,7 @@
  *
  * @throws \QUI\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_media_upload',
     function ($project, $parentid, $File) {
@@ -26,8 +27,46 @@ QUI::$Ajax->registerFunction(
         /* @var $File QUI\QDOM */
         $file = $File->getAttribute('filepath');
 
-        if (!\file_exists($file)) {
+        if (!file_exists($file)) {
             return '';
+        }
+
+        // check if image must be rotated
+        $fInfo    = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($fInfo, $file);
+        finfo_close($fInfo);
+
+        try {
+            if (in_array($mimeType, ['image/jpeg', 'image/tiff'])) {
+                $exif = exif_read_data($file);
+
+                if (!empty($exif['Orientation'])) {
+                    // Decide orientation
+                    if ($exif['Orientation'] == 3) {
+                        $rotation = 180;
+                    } else {
+                        if ($exif['Orientation'] == 6) {
+                            $rotation = 90;
+                        } else {
+                            if ($exif['Orientation'] == 8) {
+                                $rotation = -90;
+                            } else {
+                                $rotation = 0;
+                            }
+                        }
+                    }
+
+                    // Rotate the image
+                    if ($rotation) {
+                        $ImageManager = $Media->getImageManager();
+                        $Image        = $ImageManager->make($file);
+
+                        $Image->rotate($rotation);
+                        $Image->save();
+                    }
+                }
+            }
+        } catch (\Exception $Exception) {
         }
 
         return $Folder->uploadFile($file)->getAttributes();

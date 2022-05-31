@@ -6,8 +6,8 @@
 
 namespace QUI\Projects;
 
-use QUI;
 use Intervention\Image\ImageManager;
+use QUI;
 
 /**
  * Media Manager for a project
@@ -238,7 +238,7 @@ class Media extends QUI\QDOM
      *
      * @return ImageManager
      */
-    public function getImageManager()
+    public function getImageManager(): ImageManager
     {
         $Project = $this->getProject();
         $library = $Project->getConfig('media_image_library');
@@ -253,9 +253,9 @@ class Media extends QUI\QDOM
                 $library = '';
         }
 
-//        if (\class_exists('Imagick') && ($library === '' || $library === 'imagick')) {
-//            return new ImageManager(['driver' => 'imagick']);
-//        }
+        if (\class_exists('Imagick') && ($library === '' || $library === 'imagick')) {
+            return new ImageManager(['driver' => 'imagick']);
+        }
 
         return new ImageManager(['driver' => 'gd']);
     }

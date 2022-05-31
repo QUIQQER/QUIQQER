@@ -12,6 +12,9 @@ use QUI\Projects\Media;
 use QUI\Utils\StringHelper;
 use QUI\Utils\System\File;
 
+use function ini_get;
+use function set_time_limit;
+
 /**
  * A media image
  *
@@ -129,22 +132,22 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     {
         $Media = $this->Media;
         /* @var $Media QUI\Projects\Media */
-        $cacheDir = CMS_DIR.$Media->getCacheDir();
+        $cacheDir = CMS_DIR . $Media->getCacheDir();
         $file     = $this->getAttribute('file');
 
 
         if ($this->hasPermission('quiqqer.projects.media.view') &&
             $this->hasPermission('quiqqer.projects.media.view', QUI::getUsers()->getNobody()) === false) {
-            $cacheDir = VAR_DIR.'media/cache/permissions/'.$this->getProject()->getAttribute('name').'/';
+            $cacheDir = VAR_DIR . 'media/cache/permissions/' . $this->getProject()->getAttribute('name') . '/';
         }
 
 
         if ($this->getAttribute('mime_type') == 'image/svg+xml') {
-            return $cacheDir.$file;
+            return $cacheDir . $file;
         }
 
         if (!$maxWidth && !$maxHeight) {
-            return $cacheDir.$file;
+            return $cacheDir . $file;
         }
 
 
@@ -181,21 +184,23 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
         if ($width || $height) {
             $part      = \explode('.', $file);
-            $cacheFile = $cacheDir.$part[0].'__'.$width.'x'.$height.$extra.'.'.StringHelper::toLower(\end($part));
+            $cacheFile = $cacheDir . $part[0] . '__' . $width . 'x' . $height . $extra . '.' . StringHelper::toLower(
+                    \end($part)
+                );
 
             if (empty($height)) {
-                $cacheFile = $cacheDir.$part[0].'__'.$width.$extra.'.'.StringHelper::toLower(\end($part));
+                $cacheFile = $cacheDir . $part[0] . '__' . $width . $extra . '.' . StringHelper::toLower(\end($part));
             }
 
             if ($this->getAttribute('reflection')) {
-                $cacheFile = $cacheDir.$part[0].'__'.$width.'x'.$height.$extra.'.png';
+                $cacheFile = $cacheDir . $part[0] . '__' . $width . 'x' . $height . $extra . '.png';
 
                 if (empty($height)) {
-                    $cacheFile = $cacheDir.$part[0].'__'.$width.$extra.'.png';
+                    $cacheFile = $cacheDir . $part[0] . '__' . $width . $extra . '.png';
                 }
             }
         } else {
-            $cacheFile = $cacheDir.$file;
+            $cacheFile = $cacheDir . $file;
         }
 
         return $cacheFile;
@@ -217,7 +222,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $cacheUrl  = \str_replace(CMS_DIR, URL_DIR, $cachePath);
 
         if ($this->hasViewPermissionSet()) {
-            $cacheUrl = URL_DIR.$this->getUrl();
+            $cacheUrl = URL_DIR . $this->getUrl();
         }
 
         if (!\preg_match('/[^a-zA-Z0-9_\-.\/]/i', $cacheUrl)) {
@@ -226,23 +231,26 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
         // thanks to http://php.net/manual/de/function.rawurlencode.php#100313
         // thanks to http://php.net/manual/de/function.rawurlencode.php#63751
-        $encoded = \implode("/", \array_map(function ($part) {
-            $encoded = '';
-            $length  = \mb_strlen($part);
+        $encoded = \implode(
+            "/",
+            \array_map(function ($part) {
+                $encoded = '';
+                $length  = \mb_strlen($part);
 
-            for ($i = 0; $i < $length; $i++) {
-                $str = \mb_substr($part, $i, 1);
+                for ($i = 0; $i < $length; $i++) {
+                    $str = \mb_substr($part, $i, 1);
 
-                if (!\preg_match('/[^a-zA-Z0-9_\-.]/i', $str)) {
-                    $encoded .= $str;
-                    continue;
+                    if (!\preg_match('/[^a-zA-Z0-9_\-.]/i', $str)) {
+                        $encoded .= $str;
+                        continue;
+                    }
+
+                    $encoded .= '%' . wordwrap(bin2hex($str), 2, '%', true);
                 }
 
-                $encoded .= '%'.wordwrap(bin2hex($str), 2, '%', true);
-            }
-
-            return $encoded;
-        }, \explode("/", $cacheUrl)));
+                return $encoded;
+            }, \explode("/", $cacheUrl))
+        );
 
         return $encoded;
     }
@@ -439,8 +447,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
 
         // create image
-        $time = \ini_get('max_execution_time');
-        \set_time_limit(1000);
+        $time = ini_get('max_execution_time');
+        set_time_limit(1000);
 
         try {
             $Image = $Media->getImageManager()->make($original);
@@ -561,7 +569,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $Image->save($cacheFile);
 
         // reset to the normal limit
-        \set_time_limit($time);
+        set_time_limit($time);
 
         QUI::getEvents()->fireEvent('mediaCreateSizeCache', [$this, $Image]);
 
@@ -577,10 +585,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     public function deleteCache()
     {
         $Media = $this->Media;
-        $cdir  = CMS_DIR.$Media->getCacheDir();
+        $cdir  = CMS_DIR . $Media->getCacheDir();
         $file  = $this->getAttribute('file');
 
-        $cachefile = $cdir.$file;
+        $cachefile = $cdir . $file;
         $cacheData = \pathinfo($cachefile);
 
         $fileData = File::getInfo($this->getFullPath());
@@ -591,8 +599,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $len = \strlen($filename);
 
             // cache delete
-            if (\substr($file, 0, $len + 2) == $filename.'__') {
-                File::unlink($cacheData['dirname'].'/'.$file);
+            if (\substr($file, 0, $len + 2) == $filename . '__') {
+                File::unlink($cacheData['dirname'] . '/' . $file);
             }
         }
 
@@ -610,14 +618,14 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $Media   = $this->Media;
         $Project = $Media->getProject();
 
-        $cacheDir  = VAR_DIR.'media/cache/admin/'.$Project->getName().'/'.$Project->getLang().'/';
-        $cacheName = $this->getId().'__';
+        $cacheDir  = VAR_DIR . 'media/cache/admin/' . $Project->getName() . '/' . $Project->getLang() . '/';
+        $cacheName = $this->getId() . '__';
 
         $files = File::readDir($cacheDir);
 
         foreach ($files as $file) {
             if (\strpos($file, $cacheName) === 0) {
-                \unlink($cacheDir.$file);
+                \unlink($cacheDir . $file);
             }
         }
     }
@@ -634,8 +642,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function resize($newWidth = 0, $newHeight = 0)
     {
-        $dir      = CMS_DIR.$this->Media->getPath();
-        $original = $dir.$this->getAttribute('file');
+        $dir      = CMS_DIR . $this->Media->getPath();
+        $original = $dir . $this->getAttribute('file');
 
         if ($this->getAttribute('mime_type') == 'image/svg+xml') {
             return $original;
