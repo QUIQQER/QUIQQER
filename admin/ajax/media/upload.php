@@ -46,10 +46,10 @@ QUI::$Ajax->registerFunction(
                         $rotation = 180;
                     } else {
                         if ($exif['Orientation'] == 6) {
-                            $rotation = 90;
+                            $rotation = -90;
                         } else {
                             if ($exif['Orientation'] == 8) {
-                                $rotation = -90;
+                                $rotation = 90;
                             } else {
                                 $rotation = 0;
                             }
