@@ -45,11 +45,11 @@ define('controls/installation/Cron', [
         },
 
         next: function () {
-            if (USE_CRON_SERVICE === false) {
+            if (USE_CRON_SERVICE !== null) {
                 return true;
             }
 
-            const Email  = this.getElm().getElement('[type="email"]');
+            const Email = this.getElm().getElement('[type="email"]');
             const Wizard = this.getAttribute('Wizard');
 
             if (USE_CRON_SERVICE === null && !Email) {
@@ -80,7 +80,7 @@ define('controls/installation/Cron', [
         },
 
         useCronService: function () {
-            const Form    = this.getElm().getElement('form');
+            const Form = this.getElm().getElement('form');
             const Buttons = this.getElm().getElements('.quiqqer-setup-cron-btns button');
 
             moofx(Buttons).animate({
@@ -137,7 +137,11 @@ define('controls/installation/Cron', [
                         }
                     }).inject(Form);
 
-                    moofx([Input, Button, Cancel]).animate({
+                    moofx([
+                        Input,
+                        Button,
+                        Cancel
+                    ]).animate({
                         opacity: 1
                     });
                 }
