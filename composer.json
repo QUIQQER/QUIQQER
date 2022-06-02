@@ -65,7 +65,7 @@
     "quiqqer\/meta": "1.*|dev-master|dev-dev",
     "quiqqer\/fontawesome": ">=4.8|dev-master|dev-dev",
     "quiqqer\/backendsearch": "1.*|dev-master|dev-dev",
-    "quiqqer\/requirements": ">2.0.2|dev-master|dev-dev",
+    "quiqqer\/requirements": "3.*|dev-master|dev-dev",
     "quiqqer\/demodata": "^1.0|dev-master|dev-dev",
     "quiqqer-asset/animejs": "*",
     "quiqqer-asset\/intl": "1.*",
