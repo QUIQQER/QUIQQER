@@ -121,6 +121,7 @@
         <locale group="quiqqer/quiqqer" var="menu.settings.editor.text"/>
     </item>
 
+    <!--
     <item parent="/settings/quiqqer/"
           name="vhosts"
           icon="fa fa-location-arrow"
@@ -128,7 +129,9 @@
     >
         <locale group="quiqqer/quiqqer" var="menu.settings.vhosts.text"/>
     </item>
+    -->
 
+    <!--
     <item parent="/settings/quiqqer/"
           name="forwardings"
           icon="fa fa-external-link"
@@ -136,7 +139,7 @@
     >
         <locale group="quiqqer/quiqqer" var="menu.settings.forwardings.text"/>
     </item>
-
+   -->
 
     <item parent="/settings/"
           name="projects"

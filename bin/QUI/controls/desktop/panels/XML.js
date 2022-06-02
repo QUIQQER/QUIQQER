@@ -45,10 +45,10 @@ define('controls/desktop/panels/XML', [
         },
 
         initialize: function (xmlfile, options) {
-            this.$file    = xmlfile;
-            this.$config  = null;
+            this.$file = xmlfile;
+            this.$config = null;
             this.$Control = null;
-            this.$title   = null;
+            this.$title = null;
 
             this.addEvent('onCreate', this.$onCreate);
 
@@ -79,7 +79,7 @@ define('controls/desktop/panels/XML', [
         unserialize: function (data) {
             this.setAttributes(data.attributes);
 
-            this.$file   = data.file;
+            this.$file = data.file;
             this.$config = data.config;
 
             if (!this.$Elm) {
@@ -100,7 +100,7 @@ define('controls/desktop/panels/XML', [
          * Internal creation
          */
         $onCreate: function () {
-            var self = this;
+            const self = this;
 
             this.Loader.show();
 
@@ -108,9 +108,8 @@ define('controls/desktop/panels/XML', [
                 'ajax_settings_window',
                 'ajax_settings_get'
             ], function (result, config) {
-
-                var categories = result.categories || [],
-                    buttons    = result.buttons || [];
+                const categories = result.categories || [],
+                      buttons    = result.buttons || [];
 
                 if (typeof result.categories !== 'undefined') {
                     delete result.categories;
@@ -126,7 +125,7 @@ define('controls/desktop/panels/XML', [
                 self.getCategoryBar().clear();
 
                 // load categories
-                var i, len, Category;
+                let i, len, Category;
 
                 for (i = 0, len = categories.length; i < len; i++) {
                     Category = new QUIButton(categories[i]);
@@ -185,7 +184,7 @@ define('controls/desktop/panels/XML', [
                 self.fireEvent('createEnd', [self]);
 
                 if (self.getAttribute('category')) {
-                    var Wanted = self.getCategoryBar().getElement(
+                    const Wanted = self.getCategoryBar().getElement(
                         self.getAttribute('category')
                     );
 
@@ -208,18 +207,18 @@ define('controls/desktop/panels/XML', [
          * @param {Object} Category - qui/controls/buttons/Button
          */
         loadCategory: function (Category) {
-            var self = this;
+            const self = this;
 
             this.Loader.show();
 
-            var file = Category.getAttribute('file');
+            let file = Category.getAttribute('file');
 
             if (!file || file === '') {
                 file = this.$file;
             }
 
             Ajax.get('ajax_settings_category', function (result) {
-                var Body = self.getBody();
+                const Body = self.getBody();
 
                 if (!result) {
                     result = '';
@@ -238,7 +237,7 @@ define('controls/desktop/panels/XML', [
                     config   = self.$config;
 
                 for (i = 0, len = elements.length; i < len; i++) {
-                    Elm   = elements[i];
+                    Elm = elements[i];
                     value = QUIObjectUtils.getValue(Elm.name, config);
 
                     if (!value) {
@@ -255,17 +254,15 @@ define('controls/desktop/panels/XML', [
 
                 // parse controls
                 Promise.all([
-
                     QUI.parse(Body),
                     ControlUtils.parse(Body)
-
                 ]).then(function () {
 
                     var i, len, Node, Control, nodeName;
                     var quiElements = Body.getElements('[data-quiid]');
 
                     for (i = 0, len = quiElements.length; i < len; i++) {
-                        Node     = quiElements[i];
+                        Node = quiElements[i];
                         nodeName = Node.nodeName;
 
                         if (nodeName !== 'INPUT' &&
@@ -344,19 +341,19 @@ define('controls/desktop/panels/XML', [
          * @param {Boolean} [clear] - Clear the html, default = true
          */
         unloadCategory: function (clear) {
-            var i, len, Elm, name, tok, namespace;
+            let i, len, Elm, name, tok, namespace;
 
             if (typeof clear === 'undefined') {
                 clear = true;
             }
 
-            var Body   = this.getBody(),
-                Form   = Body.getElement('form'),
-                values = {};
+            const Body   = this.getBody(),
+                  Form   = Body.getElement('form'),
+                  values = {};
 
             if (Form) {
                 for (i = 0, len = Form.elements.length; i < len; i++) {
-                    Elm  = Form.elements[i];
+                    Elm = Form.elements[i];
                     name = Elm.name;
 
                     if (name === '') {
@@ -412,6 +409,22 @@ define('controls/desktop/panels/XML', [
          * @param {Object} Category - qui/controls/buttons/Button
          */
         $onCategoryActive: function (Category) {
+            if (Category.getAttribute('click') && Category.getAttribute('click') !== '') {
+                require([Category.getAttribute('click')], function (f) {
+                    f();
+                });
+
+                // select old category
+                const OldCategory = this.getActiveCategory();
+                this.unloadCategory();
+
+                setTimeout(function () {
+                    OldCategory.click();
+                }, 200);
+
+                return;
+            }
+
             this.setAttribute(
                 'title',
                 QUILocale.get('quiqqer/quiqqer', 'panel.settings.title', {
@@ -432,10 +445,10 @@ define('controls/desktop/panels/XML', [
         save: function () {
             this.unloadCategory(false);
 
-            var inList = {};
+            const inList = {};
 
             // filter controls with save method
-            var saveable = QUI.Controls.getControlsInElement(this.getBody()).filter(function (Control) {
+            const saveable = QUI.Controls.getControlsInElement(this.getBody()).filter(function (Control) {
                 if (Control.getId() in inList) {
                     return false;
                 }
@@ -448,7 +461,7 @@ define('controls/desktop/panels/XML', [
                 return true;
             });
 
-            var promises = saveable.map(function (Control) {
+            let promises = saveable.map(function (Control) {
                 return Control.save();
             }).filter(function (Promise) {
                 return typeof Promise.then === 'function';
