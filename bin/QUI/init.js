@@ -126,8 +126,7 @@ require(requireList, function () {
         'control-task-panel-limit'        : 50,
         'control-task-panel-limit-message': Locale.get('quiqqer/quiqqer', 'message.to.much.tasks')
     });
-    console.error(QUI.getAttribute('control-windows-cancel-no-button'));
-
+    
     QUI.addEvent('onError', function (err, url, line) {
         console.error(err + ' - ' + url + ' - ' + line);
 
