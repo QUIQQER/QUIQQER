@@ -350,7 +350,7 @@
         <locale name="projects.project.settings.panel.convertRomanLetters.description">
             <de><![CDATA[
             Romanische Zeichen in ihre lateinisches Gegenstück konvertieren.
-            Umlaute wie ä ö ü werden somit zu ae, oe und ue.
+            Umlaute wie ä ö ü werden, in der URL beim Speichern einer Seite, zu ae, oe oder ue umgewandelt.
             ]]></de>
         </locale>
         <locale name="projects.project.settings.panel.defaultSitestructure.button">
