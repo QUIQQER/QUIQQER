@@ -115,6 +115,7 @@ require(requireList, function () {
 
         'control-desktop-panel-sheet-closetext': Locale.get('quiqqer/quiqqer', 'close'),
         'control-windows-popup-closetext'      : Locale.get('quiqqer/quiqqer', 'close'),
+        'control-windows-cancel-no-button'     : true,
         'control-windows-confirm-canceltext'   : Locale.get('quiqqer/quiqqer', 'cancel'),
         'control-windows-confirm-submittext'   : Locale.get('quiqqer/quiqqer', 'accept'),
         'control-windows-prompt-canceltext'    : Locale.get('quiqqer/quiqqer', 'cancel'),
@@ -125,7 +126,7 @@ require(requireList, function () {
         'control-task-panel-limit'        : 50,
         'control-task-panel-limit-message': Locale.get('quiqqer/quiqqer', 'message.to.much.tasks')
     });
-
+    
     QUI.addEvent('onError', function (err, url, line) {
         console.error(err + ' - ' + url + ' - ' + line);
 

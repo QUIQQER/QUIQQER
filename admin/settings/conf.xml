@@ -1073,7 +1073,26 @@
                                data-qui="controls/system/settings/CSPSettings"
                                label="false"/>
                     </settings>
+                </category>
 
+                <category name="vhosts"
+                          index="8"
+                          click="functions/openVhost"
+                >
+                    <text>
+                        <locale group="quiqqer/quiqqer" var="menu.settings.vhosts.text"/>
+                    </text>
+                    <icon>fa fa-location-arrow</icon>
+                </category>
+
+                <category name="forwardings"
+                          index="9"
+                          click="functions/openForwarding"
+                >
+                    <text>
+                        <locale group="quiqqer/quiqqer" var="menu.settings.forwardings.text"/>
+                    </text>
+                    <icon>fa fa-external-link</icon>
                 </category>
 
             </categories>
