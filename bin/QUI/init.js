@@ -115,7 +115,7 @@ require(requireList, function () {
 
         'control-desktop-panel-sheet-closetext': Locale.get('quiqqer/quiqqer', 'close'),
         'control-windows-popup-closetext'      : Locale.get('quiqqer/quiqqer', 'close'),
-        'control-windows-cancel-no-button'     : true,
+        'control-windows-cancel-no-button'     : false,
         'control-windows-confirm-canceltext'   : Locale.get('quiqqer/quiqqer', 'cancel'),
         'control-windows-confirm-submittext'   : Locale.get('quiqqer/quiqqer', 'accept'),
         'control-windows-prompt-canceltext'    : Locale.get('quiqqer/quiqqer', 'cancel'),
