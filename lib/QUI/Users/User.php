@@ -53,98 +53,98 @@ class User implements QUI\Interfaces\Users\User
     /**
      * The groups in which the user is
      *
-     * @var array|\QUI\Groups\Group
+     * @var QUI\Groups\Group[]|null
      */
-    public $Group = [];
+    public ?array $Group = null;
 
     /**
      * User locale object
      *
-     * @var \QUI\Locale
+     * @var QUI\Locale|null
      */
-    public $Locale = null;
+    public ?QUI\Locale $Locale = null;
 
     /**
      * User ID
      *
-     * @var integer
+     * @var integer|null
      */
-    protected $id = null;
+    protected ?int $id = null;
 
     /**
      * User UUID
      *
-     * @var string
+     * @var string|null
      */
-    protected $uuid = null;
+    protected ?string $uuid = null;
 
     /**
      * User groups
      *
-     * @var array
+     * @var string
      */
-    protected $groups;
+    protected string $groups;
 
     /**
      * Username
      *
      * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * User lang
      *
-     * @var string
+     * @var string|null
      */
-    protected $lang = null;
+    protected ?string $lang = null;
 
     /**
      * Active status
      *
      * @var integer
      */
-    protected $active = 0;
+    protected int $active = 0;
 
     /**
      * Delete status
      *
      * @var integer
      */
-    protected $deleted = 0;
+    protected int $deleted = 0;
 
     /**
      * Super user flag
      *
      * @var boolean
      */
-    protected $su = false;
+    protected bool $su = false;
 
     /**
      * Admin flag
      *
      * @var boolean
      */
-    protected $admin = null;
+    protected ?bool $admin = null;
 
     /**
      * is the user a company
      *
      * @var false
      */
-    protected $company = false;
+    protected bool $company = false;
 
     /**
      * @var array
      */
-    protected $authenticator = [];
+    protected array $authenticator = [];
 
     /**
      * Settings
      *
      * @var array
      */
-    protected $settings;
+    protected array $settings;
 
     /**
      * User manager
@@ -273,7 +273,8 @@ class User implements QUI\Interfaces\Users\User
         }
 
         if (isset($data[0]['usergroup'])) {
-            $this->setGroups($data[0]['usergroup']);
+            $this->groups = $data[0]['usergroup'];
+            //$this->setGroups($data[0]['usergroup']);
 
             unset($data[0]['usergroup']);
         }
@@ -829,7 +830,7 @@ class User implements QUI\Interfaces\Users\User
     public function clearGroups()
     {
         $this->Group  = [];
-        $this->groups = false;
+        $this->groups = '';
     }
 
     /**
@@ -837,7 +838,6 @@ class User implements QUI\Interfaces\Users\User
      *
      * @param array|string $groups
      * @see QUI\Interfaces\Users\User::setGroups()
-     *
      */
     public function setGroups($groups)
     {
@@ -848,7 +848,7 @@ class User implements QUI\Interfaces\Users\User
         $Groups = QUI::getGroups();
 
         $this->Group  = [];
-        $this->groups = false;
+        $this->groups = '';
 
         if (is_array($groups)) {
             $aTmp        = [];
@@ -905,22 +905,29 @@ class User implements QUI\Interfaces\Users\User
      *
      * @param boolean $asObjects - returns the groups as objects (true) or as an array (false)
      *
-     * @return array|bool
+     * @return QUI\Groups\Group[]|array|bool
      * @see QUI\Interfaces\Users\User::getGroups()
-     *
      */
     public function getGroups($asObjects = true)
     {
-        if ($this->Group && is_array($this->Group)) {
-            if ($asObjects == true) {
-                return $this->Group;
+        if ($asObjects === true) {
+            if ($this->Group === null) {
+                $this->Group = [];
+                $groupIds    = explode(',', trim($this->groups, ','));
+
+                foreach ($groupIds as $id) {
+                    try {
+                        $this->Group[] = QUI::getGroups()->get($id);
+                    } catch (QUI\Exception $Exception) {
+                    }
+                }
             }
 
-            if (is_string($this->groups)) {
-                return explode(',', trim($this->groups, ','));
-            }
+            return $this->Group;
+        }
 
-            return $this->groups;
+        if (!empty($this->groups)) {
+            return explode(',', trim($this->groups, ','));
         }
 
         return false;
@@ -939,14 +946,14 @@ class User implements QUI\Interfaces\Users\User
             $Group = $Groups->get((int)$Group);
         }
 
-        $groups = $this->getGroups(true);
+        $groups = $this->getGroups();
         $new_gr = [];
 
         if (!is_array($groups)) {
             $groups = [];
         }
 
-        foreach ($groups as $key => $UserGroup) {
+        foreach ($groups as $UserGroup) {
             /* @var $UserGroup QUI\Groups\Group */
             if ($UserGroup->getId() != $Group->getId()) {
                 $new_gr[] = $UserGroup->getId();
