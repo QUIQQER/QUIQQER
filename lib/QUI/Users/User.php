@@ -830,7 +830,7 @@ class User implements QUI\Interfaces\Users\User
     public function clearGroups()
     {
         $this->Group  = [];
-        $this->groups = null;
+        $this->groups = '';
     }
 
     /**
