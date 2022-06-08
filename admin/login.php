@@ -6,6 +6,7 @@ $languages = QUI::availableLanguages();
 $packages  = QUI::getPackageManager()->getInstalled();
 
 $authPackages = [];
+$logo         = QUI::getLocale()->get('quiqqer/quiqqer', 'menu.quiqqer.text');
 
 foreach ($packages as $package) {
     try {
@@ -38,11 +39,13 @@ foreach ($packages as $package) {
     <!-- HTML5
           ================================================== -->
     <!--[if lt IE 9]>
-    <script src="<?php echo URL_BIN_DIR; ?>js/mvc/html5.js"></script>
+    <script src="<?php
+    echo URL_BIN_DIR; ?>js/mvc/html5.js"></script>
     <![endif]-->
 
     <title>
-        QUIQQER Content Management System - <?php echo HOST ?> -
+        QUIQQER Content Management System - <?php
+        echo HOST ?> -
     </title>
     <!-- favicon -->
     <?php
@@ -55,17 +58,27 @@ foreach ($packages as $package) {
             $type       = $attributes['mime_type'];
 
             ?>
-            <link rel="shortcut icon" href="<?php echo $Favicon->getSizeCacheUrl(62, 62); ?>"
-                  type="<?php echo $type; ?>">
+            <link rel="shortcut icon" href="<?php
+            echo $Favicon->getSizeCacheUrl(62, 62); ?>"
+                  type="<?php
+                  echo $type; ?>">
 
-            <link rel="icon" href="<?php echo $Favicon->getSizeCacheUrl(16, 16); ?>" sizes="16x16"
-                  type="<?php echo $type; ?>">
-            <link rel="icon" href="<?php echo $Favicon->getSizeCacheUrl(32, 32); ?>" sizes="32x32"
-                  type="<?php echo $type; ?>">
-            <link rel="icon" href="<?php echo $Favicon->getSizeCacheUrl(48, 48); ?>" sizes="48x48"
-                  type="<?php echo $type; ?>">
-            <link rel="icon" href="<?php echo $Favicon->getSizeCacheUrl(62, 62); ?>" sizes="62x62"
-                  type="<?php echo $type; ?>">
+            <link rel="icon" href="<?php
+            echo $Favicon->getSizeCacheUrl(16, 16); ?>" sizes="16x16"
+                  type="<?php
+                  echo $type; ?>">
+            <link rel="icon" href="<?php
+            echo $Favicon->getSizeCacheUrl(32, 32); ?>" sizes="32x32"
+                  type="<?php
+                  echo $type; ?>">
+            <link rel="icon" href="<?php
+            echo $Favicon->getSizeCacheUrl(48, 48); ?>" sizes="48x48"
+                  type="<?php
+                  echo $type; ?>">
+            <link rel="icon" href="<?php
+            echo $Favicon->getSizeCacheUrl(62, 62); ?>" sizes="62x62"
+                  type="<?php
+                  echo $type; ?>">
             <?php
         } catch (QUI\Exception $Exception) {
         }
@@ -81,14 +94,14 @@ foreach ($packages as $package) {
 
     foreach ($authPackages as $package) {
         foreach ($languages as $lang) {
-            $files[] = 'locale/'.$package.'/'.$lang;
+            $files[] = 'locale/' . $package . '/' . $lang;
         }
     }
 
     echo '<script type="text/javascript">';
     echo '/* <![CDATA[ */';
-    echo 'var QUIQQER_LOCALE = '.\json_encode($files, true).';';
-    echo 'var QUIQQER_LANGUAGES = '.\json_encode($languages, true).';';
+    echo 'var QUIQQER_LOCALE = ' . \json_encode($files, true) . ';';
+    echo 'var QUIQQER_LANGUAGES = ' . \json_encode($languages, true) . ';';
     echo 'var QUIQQER_IS_ADMIN_LOGIN = true;';
     echo 'var QUIQQER_CONFIG = {globals: {no_ajax_bundler: 1}}';
     echo '/* ]]> */';
@@ -123,12 +136,6 @@ foreach ($packages as $package) {
             min-height: 380px;
         }
 
-        .logo {
-            margin: 40px 0 40px -239px;
-            left: 50%;
-            position: relative;
-        }
-
         .login {
             margin: 0 auto;
             max-width: 300px;
@@ -155,191 +162,14 @@ foreach ($packages as $package) {
             line-height: 30px !important;
         }
 
-        /* Animate.css - http://daneden.me/animate */
-        .animated {
-            -webkit-animation-fill-mode: both;
-            -moz-animation-fill-mode: both;
-            -ms-animation-fill-mode: both;
-            -o-animation-fill-mode: both;
-            animation-fill-mode: both;
-            -webkit-animation-duration: 2s;
-            -moz-animation-duration: 2s;
-            -ms-animation-duration: 2s;
-            -o-animation-duration: 2s;
-            animation-duration: 2s;
+        .logo {
+            text-align: center;
         }
 
-        .animated.hinge {
-            -webkit-animation-duration: 2s;
-            -moz-animation-duration: 2s;
-            -ms-animation-duration: 2s;
-            -o-animation-duration: 2s;
-            animation-duration: 2s;
-        }
-
-        @-webkit-keyframes tada {
-            0% {
-                -webkit-transform: scale(1);
-            }
-            10%, 20% {
-                -webkit-transform: scale(0.9) rotate(-3deg);
-            }
-            30%, 50%, 70%, 90% {
-                -webkit-transform: scale(1.1) rotate(3deg);
-            }
-            40%, 60%, 80% {
-                -webkit-transform: scale(1.1) rotate(-3deg);
-            }
-            100% {
-                -webkit-transform: scale(1) rotate(0);
-            }
-        }
-
-        @-moz-keyframes tada {
-            0% {
-                -moz-transform: scale(1);
-            }
-            10%, 20% {
-                -moz-transform: scale(0.9) rotate(-3deg);
-            }
-            30%, 50%, 70%, 90% {
-                -moz-transform: scale(1.1) rotate(3deg);
-            }
-            40%, 60%, 80% {
-                -moz-transform: scale(1.1) rotate(-3deg);
-            }
-            100% {
-                -moz-transform: scale(1) rotate(0);
-            }
-        }
-
-        @-o-keyframes tada {
-            0% {
-                -o-transform: scale(1);
-            }
-            10%, 20% {
-                -o-transform: scale(0.9) rotate(-3deg);
-            }
-            30%, 50%, 70%, 90% {
-                -o-transform: scale(1.1) rotate(3deg);
-            }
-            40%, 60%, 80% {
-                -o-transform: scale(1.1) rotate(-3deg);
-            }
-            100% {
-                -o-transform: scale(1) rotate(0);
-            }
-        }
-
-        @keyframes tada {
-            0% {
-                transform: scale(1);
-            }
-            10%, 20% {
-                transform: scale(0.9) rotate(-3deg);
-            }
-            30%, 50%, 70%, 90% {
-                transform: scale(1.1) rotate(3deg);
-            }
-            40%, 60%, 80% {
-                transform: scale(1.1) rotate(-3deg);
-            }
-            100% {
-                transform: scale(1) rotate(0);
-            }
-        }
-
-        .tada {
-            -webkit-animation-name: tada;
-            -moz-animation-name: tada;
-            -o-animation-name: tada;
-            animation-name: tada;
-        }
-
-        @-webkit-keyframes swing {
-            20%, 40%, 60%, 80%, 100% {
-                -webkit-transform-origin: top center;
-            }
-            20% {
-                -webkit-transform: rotate(15deg);
-            }
-            40% {
-                -webkit-transform: rotate(-10deg);
-            }
-            60% {
-                -webkit-transform: rotate(5deg);
-            }
-            80% {
-                -webkit-transform: rotate(-5deg);
-            }
-            100% {
-                -webkit-transform: rotate(0deg);
-            }
-        }
-
-        @-moz-keyframes swing {
-            20% {
-                -moz-transform: rotate(15deg);
-            }
-            40% {
-                -moz-transform: rotate(-10deg);
-            }
-            60% {
-                -moz-transform: rotate(5deg);
-            }
-            80% {
-                -moz-transform: rotate(-5deg);
-            }
-            100% {
-                -moz-transform: rotate(0deg);
-            }
-        }
-
-        @-o-keyframes swing {
-            20% {
-                -o-transform: rotate(15deg);
-            }
-            40% {
-                -o-transform: rotate(-10deg);
-            }
-            60% {
-                -o-transform: rotate(5deg);
-            }
-            80% {
-                -o-transform: rotate(-5deg);
-            }
-            100% {
-                -o-transform: rotate(0deg);
-            }
-        }
-
-        @keyframes swing {
-            20% {
-                transform: rotate(15deg);
-            }
-            40% {
-                transform: rotate(-10deg);
-            }
-            60% {
-                transform: rotate(5deg);
-            }
-            80% {
-                transform: rotate(-5deg);
-            }
-            100% {
-                transform: rotate(0deg);
-            }
-        }
-
-        .swing {
-            -webkit-transform-origin: top center;
-            -moz-transform-origin: top center;
-            -o-transform-origin: top center;
-            transform-origin: top center;
-            -webkit-animation-name: swing;
-            -moz-animation-name: swing;
-            -o-animation-name: swing;
-            animation-name: swing;
+        .logo img {
+            margin: 30px auto;
+            max-width: 256px;
+            width: 100%;
         }
 
         .quiqqer-language-switch {
@@ -356,18 +186,23 @@ foreach ($packages as $package) {
 
     ?>
 
-    <script src="<?php echo URL_OPT_DIR; ?>bin/quiqqer-asset/requirejs/requirejs/require.js"></script>
-    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-core.js"></script>
-    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-more.js"></script>
-    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/moofx.js"></script>
+    <script src="<?php
+    echo URL_OPT_DIR; ?>bin/quiqqer-asset/requirejs/requirejs/require.js"></script>
+    <script src="<?php
+    echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-core.js"></script>
+    <script src="<?php
+    echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-more.js"></script>
+    <script src="<?php
+    echo URL_OPT_DIR; ?>bin/qui/qui/lib/moofx.js"></script>
 
     <script type="text/javascript">
 
-        var URL_DIR     = '<?php echo URL_DIR; ?>',
-            URL_BIN_DIR = '<?php echo URL_BIN_DIR; ?>',
-            URL_OPT_DIR = '<?php echo URL_OPT_DIR; ?>',
-            URL_SYS_DIR = '<?php echo URL_SYS_DIR; ?>',
-            LANGUAGE    = null;
+        const URL_DIR     = '<?php echo URL_DIR; ?>',
+              URL_BIN_DIR = '<?php echo URL_BIN_DIR; ?>',
+              URL_OPT_DIR = '<?php echo URL_OPT_DIR; ?>',
+              URL_SYS_DIR = '<?php echo URL_SYS_DIR; ?>';
+
+        let LANGUAGE = null;
 
         // require config
         require.config({
@@ -400,7 +235,7 @@ foreach ($packages as $package) {
                 return LANGUAGE;
             }
 
-            var lang = 'en';
+            let lang = 'en';
 
             if ("language" in navigator) {
                 lang = navigator.language;
@@ -434,7 +269,7 @@ foreach ($packages as $package) {
                         // doesn't matter
                     });
 
-                    var LoginElement = document.getElement('.quiqqer-login');
+                    const LoginElement = document.getElement('.quiqqer-login');
 
                     if (!LoginElement) {
                         resolve();
@@ -459,7 +294,7 @@ foreach ($packages as $package) {
             });
 
             setLanguage(getCurrentLanguage()).then(function () {
-                var LogIn = new Login({
+                const LogIn = new Login({
                     onSuccess: window.onSuccess
                 }).inject(document.getElement('.login'));
 
@@ -467,7 +302,7 @@ foreach ($packages as $package) {
                 // chrome workaround - because of state saving
                 // sometimes, chrome don't load all events on a back up'd tab
                 (function () {
-                    var Form = LogIn.getElm().getElement('form');
+                    const Form = LogIn.getElm().getElement('form');
 
                     if (!Form) {
                         LogIn.refresh();
@@ -520,16 +355,18 @@ foreach ($packages as $package) {
 
 <div class="container">
     <div class="quiqqer-language-switch"></div>
-    <img src="<?php echo URL_BIN_DIR; ?>quiqqer_logo.png"
-         alt="QUIQQER Login"
-         title="QUIQQER Logo"
-         class="logo"
-    />
+
+    <div class="logo">
+        <?php
+        echo $logo;
+        ?>
+    </div>
 
     <div class="login"></div>
 </div>
 
-<?php if (\defined('LOGIN_FAILED')) { ?>
+<?php
+if (defined('LOGIN_FAILED')) { ?>
     <script type="text/javascript">
         require(['qui/QUI'], function () {
             QUI.getMessageHandler().then(function (MH) {
@@ -537,18 +374,22 @@ foreach ($packages as $package) {
             });
         });
     </script>
-<?php } ?>
+    <?php
+} ?>
 
 <script>
     var LoginContainer = document.getElement('.quiqqer-language-switch'),
-        needle         = ['qui/controls/buttons/Select', 'Locale'];
+        needle         = [
+            'qui/controls/buttons/Select',
+            'Locale'
+        ];
 
-    for (var i = 0, len = QUIQQER_LANGUAGES.length; i < len; i++) {
+    for (let i = 0, len = QUIQQER_LANGUAGES.length; i < len; i++) {
         needle.push('locale/quiqqer/quiqqer/' + QUIQQER_LANGUAGES[i]);
     }
 
     require(needle, function (QUISelect, QUILocale) {
-        var Select = new QUISelect({
+        const Select = new QUISelect({
             events: {
                 onChange: function () {
                     setLanguage(Select.getValue());
@@ -556,14 +397,14 @@ foreach ($packages as $package) {
             }
         }).inject(LoginContainer);
 
-        var i, len, lang;
-        var current = QUILocale.getCurrent();
+        let i, len, lang, text;
+        const current = QUILocale.getCurrent();
 
         for (i = 0, len = QUIQQER_LANGUAGES.length; i < len; i++) {
             lang = QUIQQER_LANGUAGES[i];
             QUILocale.setCurrent(lang);
 
-            var text = QUILocale.get('quiqqer/quiqqer', 'language.' + lang);
+            text = QUILocale.get('quiqqer/quiqqer', 'language.' + lang);
 
             if (!QUILocale.exists('quiqqer/quiqqer', 'language.' + lang)) {
                 QUILocale.setCurrent('en');
