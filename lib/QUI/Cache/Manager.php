@@ -186,7 +186,9 @@ class Manager
         $confHandlers = $Config->get('handlers');
 
         if (empty($confHandlers)) {
-            $confHandlers['filesystem'] = 1;
+            $confHandlers = [
+                'filesystem' => 1
+            ];
         }
 
         foreach ($confHandlers as $confHandler => $bool) {

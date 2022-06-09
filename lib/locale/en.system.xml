@@ -1943,7 +1943,7 @@
                 <![CDATA[Failed login attempt: "[username]" (#[userId]) | Authenticator: "[authenticator]" | IP address: [ipAddress] | User Agent: "[userAgent]"]]></en>
         </locale>
         <locale name="menu.quiqqer.text" html="true">
-            <en><![CDATA[<img src="../bin/quiqqer_logo_mini.png" />]]></en>
+            <en><![CDATA[<img src="../bin/quiqqer_logo.svg" />]]></en>
         </locale>
         <locale name="menu.profile.text">
             <en><![CDATA[Profile]]></en>
