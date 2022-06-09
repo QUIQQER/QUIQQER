@@ -46,6 +46,10 @@ use function strpos;
 use function trim;
 use function unlink;
 
+use const OPT_DIR;
+use const URL_DIR;
+use const USR_DIR;
+
 /**
  * Wysiwyg manager
  *
@@ -693,8 +697,7 @@ class Manager
 
         file_put_contents($file, $xml);
 
-
-        QUI\Cache\Manager::clear('editor/xml/file');
+        QUI\Cache\Manager::clear('settings/editor/xml');
     }
 
     /**
