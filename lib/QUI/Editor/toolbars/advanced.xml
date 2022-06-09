@@ -3,7 +3,7 @@
         <group>
             <button>Source</button>
             <button>Templates</button>
-            <button>quiqqerBricks</button>
+            <button>QuiqqerBricks</button>
         </group>
 
         <group>
@@ -64,7 +64,7 @@
             <button>pre</button>
             <button>ShowBlocks</button>
             <button>SpecialChar</button>
-            <separator />
+            <separator/>
             <button>Table</button>
         </group>
     </line>
