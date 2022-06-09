@@ -2057,7 +2057,7 @@
             ]]></de>
         </locale>
         <locale name="menu.quiqqer.text" html="true">
-            <de><![CDATA[<img src="../bin/quiqqer_logo_mini.png" />]]></de>
+            <de><![CDATA[<img src="../bin/quiqqer_logo.svg" />]]></de>
         </locale>
         <locale name="menu.profile.text">
             <de><![CDATA[Profil]]></de>
