@@ -16,6 +16,7 @@ use function array_merge;
 use function array_search;
 use function class_exists;
 use function count;
+use function date;
 use function explode;
 use function file_exists;
 use function get_class;
@@ -1060,10 +1061,12 @@ class User implements QUI\Interfaces\Users\User
                 break;
 
             case "expire":
-                $time = strtotime($value);
+                if ($value) {
+                    $time = strtotime($value);
 
-                if ($time > 0) {
-                    $this->settings[$key] = \date('Y-m-d H:i:s', $time);
+                    if ($time > 0) {
+                        $this->settings[$key] = date('Y-m-d H:i:s', $time);
+                    }
                 }
                 break;
 
@@ -1729,7 +1732,7 @@ class User implements QUI\Interfaces\Users\User
                 'su'               => $this->isSU() ? 1 : 0,
                 'extra'            => \json_encode($extra),
                 'lang'             => $this->getAttribute('lang'),
-                'lastedit'         => \date("Y-m-d H:i:s"),
+                'lastedit'         => date("Y-m-d H:i:s"),
                 'expire'           => $expire,
                 'shortcuts'        => $this->getAttribute('shortcuts'),
                 'address'          => (int)$this->getAttribute('address'),
