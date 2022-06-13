@@ -3626,7 +3626,7 @@ define('controls/grid/Grid', [
             var storageHash = parseInt(QUI.Storage.get(this.getAttribute('storageKey') + '-key'));
             var currentHash = this.$gridHash;
 
-            if (typeof storage.column !== 'undefined' && storageHash ===c urrentHash) {
+            if (typeof storage.column !== 'undefined' && storageHash === currentHash) {
                 try {
                     if (typeOf(storage.column) === 'array') {
                         this.$columnModel = storage.column;
