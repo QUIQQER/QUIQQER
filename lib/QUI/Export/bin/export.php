@@ -1,23 +1,23 @@
 <?php
 
-$dir = \str_replace('quiqqer/quiqqer/lib/QUI/Export/bin', '', \dirname(__FILE__));
-\define('QUIQQER_SYSTEM', true);
-\define('QUIQQER_AJAX', true);
+$dir = str_replace('quiqqer/quiqqer/lib/QUI/Export/bin', '', dirname(__FILE__));
+define('QUIQQER_SYSTEM', true);
+define('QUIQQER_AJAX', true);
 
-require_once $dir.'header.php';
+require_once $dir . 'header.php';
 
 try {
     QUI\Permissions\Permission::checkAdminUser(QUI::getUserBySession());
 } catch (QUI\Exception $Exception) {
     QUI::getGlobalResponse()->setStatusCode($Exception->getMessage());
-    QUI::getGlobalResponse()->setContent(\json_encode($Exception->toArray()));
+    QUI::getGlobalResponse()->setContent(json_encode($Exception->toArray()));
     QUI::getGlobalResponse()->send();
     exit;
 }
 
 
 $body = file_get_contents('php://input');
-$body = \json_decode($body, true);
+$body = json_decode($body, true);
 
 if (!$body
     || !isset($body['data'])
@@ -45,27 +45,27 @@ if (isset($body['type'])) {
 $header = [];
 
 foreach ($body['data']['header'] as $key => $entry) {
-    $header[] = \html_entity_decode($entry['header']);
+    $header[] = html_entity_decode($entry['header']);
 }
 
 // data
 $data = [];
 
 foreach ($body['data']['data'] as $key => $entry) {
-    $entry = \array_values($entry);
+    $entry = array_values($entry);
 
     foreach ($entry as $k => $v) {
-        if (\is_string($v)) {
+        if (is_string($v)) {
             $entry[$k] = $v;
             continue;
         }
 
-        if (\is_array($v) && \count($v) === 1) {
-            $entry[$k] = \current($v);
+        if (is_array($v) && count($v) === 1) {
+            $entry[$k] = current($v);
             continue;
         }
 
-        $entry[$k] = \json_encode($v);
+        $entry[$k] = json_encode($v);
     }
 
     $data[] = $entry;
@@ -80,26 +80,32 @@ if (!empty($body['name'])) {
 
 // export
 try {
-    $Writer = League\Csv\Writer::createFromFileObject(new \SplTempFileObject());
-    $Writer->setDelimiter("#");
+    $Writer = League\Csv\Writer::createFromFileObject(new SplTempFileObject());
     $Writer->setNewline("\r\n"); //use windows line endings for compatibility with some csv libraries
-    $Writer->setEnclosure($enclosure);
+    //$Writer->setDelimiter(",");
+    //$Writer->setEnclosure($enclosure);
 
     // header
     $Writer->insertOne($header);
 
     if ($type === 'xml') {
-        $filename = $name.'.xml';
+        $filename = $name . '.xml';
 
         $Writer->insertAll($data);
         $Reader = League\Csv\Reader::createFromString($Writer->getContent());
         $Dom    = (new League\Csv\XMLConverter())->convert($Reader);
         $output = $Dom->saveXML();
     } elseif ($type === 'json') {
-        $filename = $name.'.json';
-        $output   = \json_encode($data);
+        $filename = $name . '.json';
+        $output   = json_encode($data);
     } else {
-        $filename = $name.'.csv';
+        $filename = $name . '.csv';
+
+        // normalerweise wird das hier nicht gebraucht:
+        //
+        //foreach ($data as $key => $entry) {
+        //  $data[$key] = str_replace('"', "'", $entry);
+        //}
 
         $Writer->insertAll($data);
 
