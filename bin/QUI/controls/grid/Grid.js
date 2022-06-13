@@ -127,7 +127,22 @@ define('controls/grid/Grid', [
             url           : null,
             pagination    : false,
             page          : 1,
-            perPageOptions: [5, 10, 20, 50, 75, 100, 150, 200, 250, 500, 750, 1000, 2500, 5000],
+            perPageOptions: [
+                5,
+                10,
+                20,
+                50,
+                75,
+                100,
+                150,
+                200,
+                250,
+                500,
+                750,
+                1000,
+                2500,
+                5000
+            ],
             perPage       : 100,
             filterInput   : true,
             // dataProvider
@@ -177,7 +192,7 @@ define('controls/grid/Grid', [
             this.container = typeOf(container) === 'string' ? document.id(container) : container;
             this.$disabled = false;
 
-            this._stopdrag  = false;
+            this._stopdrag = false;
             this._dragtimer = false;
             this._mousedown = false;
 
@@ -274,12 +289,12 @@ define('controls/grid/Grid', [
             t.renderData();
 
             t.$refreshDelayID = null;
-            t.dragging        = false;
-            t.selected        = [];
+            t.dragging = false;
+            t.selected = [];
 
             t.elements = t.ulBody.getElements('li');
 
-            t.filtered    = false;
+            t.filtered = false;
             t.lastsection = null;
 
             if (t.getAttribute('alternaterows')) {
@@ -764,7 +779,7 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            this._stopdrag  = false;
+            this._stopdrag = false;
             this._dragtimer = this.startDrag.delay(200, this, event);
         },
 
@@ -789,7 +804,7 @@ define('controls/grid/Grid', [
             }
 
             this._dragtimer = false;
-            this._stopdrag  = true;
+            this._stopdrag = true;
         },
 
         onRowClick: function (evt) {
@@ -843,7 +858,7 @@ define('controls/grid/Grid', [
                         si = t.selected[selectedNum - 1];
                     }
 
-                    var endindex   = row;
+                    var endindex = row;
                     var startindex = Math.min(si, endindex);
 
                     endindex = Math.max(si, endindex);
@@ -881,14 +896,17 @@ define('controls/grid/Grid', [
                 }
             }
 
-            t.fireEvent("click", [{
-                indices: t.selected,
-                target : t,
-                row    : row,
-                element: li,
-                cell   : t.getTdParent(evt.target),
-                evt    : evt
-            }, this]);
+            t.fireEvent("click", [
+                {
+                    indices: t.selected,
+                    target : t,
+                    row    : row,
+                    element: li,
+                    cell   : t.getTdParent(evt.target),
+                    evt    : evt
+                },
+                this
+            ]);
         },
 
         onRowDblClick: function (evt) {
@@ -898,7 +916,10 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            this.fireEvent("dblClickBegin", [evt, this]);
+            this.fireEvent("dblClickBegin", [
+                evt,
+                this
+            ]);
 
 
             var ondblclick;
@@ -1058,10 +1079,10 @@ define('controls/grid/Grid', [
 
             if (this.getAttribute('showtoggleicon') && li.getElement('.toggleicon')) {
                 li.getElement('.toggleicon')
-                    .setStyle(
-                        'background-position',
-                        section.getStyle('display') === 'block' ? '-16px 0' : '0 0'
-                    );
+                  .setStyle(
+                      'background-position',
+                      section.getStyle('display') === 'block' ? '-16px 0' : '0 0'
+                  );
             }
 
             this.lastsection = section;
@@ -1262,8 +1283,8 @@ define('controls/grid/Grid', [
                     data.page = 1;
                 }
 
-                options.page    = data.page * 1;
-                options.total   = data.total;
+                options.page = data.page * 1;
+                options.total = data.total;
                 options.maxpage = Math.ceil(options.total / options.perPage);
 
                 var cPage = container.getElements('div.pDiv input.cpage');
@@ -1275,10 +1296,10 @@ define('controls/grid/Grid', [
                     page = ((data.page - 1) * options.perPage + 1);
 
                 var stats = '<span>' + page + '</span>' +
-                    '<span>..</span>' +
-                    '<span>' + to + '</span>' +
-                    '<span> / </span>' +
-                    '<span>' + data.total + '</span>';
+                            '<span>..</span>' +
+                            '<span>' + to + '</span>' +
+                            '<span> / </span>' +
+                            '<span>' + data.total + '</span>';
 
                 container.getElements('div.pDiv .pPageStat').set('html', stats);
 
@@ -1336,7 +1357,7 @@ define('controls/grid/Grid', [
 
             this.$data[row] = data;
 
-            var Row    = this.container.getElement('[data-row="' + row + '"]');
+            var Row = this.container.getElement('[data-row="' + row + '"]');
             var newRow = this.renderRow(row, this.$data[row]);
 
             newRow.inject(Row, 'after');
@@ -1711,7 +1732,7 @@ define('controls/grid/Grid', [
 
         // Drag columns events
         rePosDrag: function () {
-            var t       = this;
+            var t = this;
             var options = t.getAttributes();
 
             if (!options.resizeColumns) {
@@ -1736,7 +1757,7 @@ define('controls/grid/Grid', [
 
             for (c = 0, oclen = cModel.length; c < oclen; c++) {
                 columnModel = cModel[c];
-                dragSt      = cDrags[c];
+                dragSt = cDrags[c];
 
                 if (typeof dragSt === 'undefined') {
                     continue;
@@ -1802,7 +1823,7 @@ define('controls/grid/Grid', [
             hDivBox.setStyle('width', t.sumWidth + visibleColumns * 2);
 
             // header
-            var columns   = hDivBox.getElements('div.th');
+            var columns = hDivBox.getElements('div.th');
             var columnObj = columns[colindex];
 
             columnObj.setStyle('width', pos - (browser ? 6 : 6));
@@ -2012,8 +2033,8 @@ define('controls/grid/Grid', [
                     new Element('div', {
                         'class': 'data-empty',
                         html   : '<div class="data-empty-cell">' +
-                            QUILocale.get('quiqqer/quiqqer', 'grid.is.empty') +
-                            '</div>'
+                                 QUILocale.get('quiqqer/quiqqer', 'grid.is.empty') +
+                                 '</div>'
                     }).inject(this.container.getElement('.bDiv'));
                 }
             } else {
@@ -2094,9 +2115,9 @@ define('controls/grid/Grid', [
             };
 
             for (c = 0; c < columnCount; c++) {
-                columnModel     = this.$columnModel[c];
+                columnModel = this.$columnModel[c];
                 columnDataIndex = columnModel.dataIndex;
-                columnData      = this.$data[r][columnDataIndex] || false;
+                columnData = this.$data[r][columnDataIndex] || false;
 
                 div = new Element('div.td', {
                     'data-index': columnModel.dataIndex || '',
@@ -2134,13 +2155,13 @@ define('controls/grid/Grid', [
                 }
 
                 if (columnModel.dataType === 'button' && columnData) {
-                    var _btn  = this.$data[r][columnDataIndex];
+                    var _btn = this.$data[r][columnDataIndex];
                     _btn.data = this.$data[r];
 
-                    _btn.data.row  = r;
+                    _btn.data.row = r;
                     _btn.data.List = t;
 
-                    var Btn  = new QUIButton(_btn);
+                    var Btn = new QUIButton(_btn);
                     var node = Btn.create();
 
                     //node.removeClass( 'button' );
@@ -2454,7 +2475,7 @@ define('controls/grid/Grid', [
 
             hDiv.appendChild(hDivBox);
 
-            t.sumWidth       = 0;
+            t.sumWidth = 0;
             t.visibleColumns = 0; // razlikuje se od columnCount jer podaci za neke kolone su ocitani ali se ne prikazuju, npr. bitno kod li width
 
             var sortBy = this.getAttribute('sortBy');
@@ -2538,7 +2559,7 @@ define('controls/grid/Grid', [
 
             /* omni grid version + cWidth = -2; by mor*/
             if (this.getAttribute('resizeColumns')) {
-                var cDrag         = new Element('div.cDrag');
+                var cDrag = new Element('div.cDrag');
                 var toolbarHeight = 0;
 
                 if (tDiv) {
@@ -2549,11 +2570,11 @@ define('controls/grid/Grid', [
                 container.appendChild(cDrag);
 
                 var dragTempWidth = 0;
-                var cWidth        = -2;
+                var cWidth = -2;
 
                 for (i = 0; i < columnCount; i++) {
-                    columnModel      = this.$columnModel[i] || {};
-                    var dragSt       = new Element('div');
+                    columnModel = this.$columnModel[i] || {};
+                    var dragSt = new Element('div');
                     var headerHeight = options.showHeader ? 24 + 2 : 0; // +2 border
 
                     if (typeof columnModel.width === 'undefined') {
@@ -2616,7 +2637,8 @@ define('controls/grid/Grid', [
 
             bDiv.appendChild(t.ulBody);
 
-            if ((this.getAttribute('pagination') || this.getAttribute('filterInput')) && !container.getElement('div.pDiv')) {
+            if ((this.getAttribute('pagination') || this.getAttribute('filterInput')) &&
+                !container.getElement('div.pDiv')) {
                 var pDiv = new Element('div.pDiv', {
                     styles: {
                         width : width,
@@ -2640,17 +2662,20 @@ define('controls/grid/Grid', [
 
                     for (optIdx = 0, len = options.perPageOptions.length; optIdx < len; optIdx++) {
                         if (options.perPageOptions[optIdx] != options.perPage) {
-                            h = h + '<option value="' + options.perPageOptions[optIdx] + '">' + options.perPageOptions[optIdx] + '</option>';
+                            h = h + '<option value="' + options.perPageOptions[optIdx] + '">' +
+                                options.perPageOptions[optIdx] + '</option>';
                         } else {
                             setDefaultPerPage = true;
 
-                            h = h + '<option selected="selected" value="' + options.perPageOptions[optIdx] + '">' + options.perPageOptions[optIdx] + '</option>';
+                            h = h + '<option selected="selected" value="' + options.perPageOptions[optIdx] + '">' +
+                                options.perPageOptions[optIdx] + '</option>';
                         }
                     }
 
                     h = h + '</select></div>';
 
-                    h = h + '<div class="btnseparator"></div><div class="pGroup"><div class="pFirst pButton"></div><div class="pPrev pButton"></div></div>';
+                    h = h +
+                        '<div class="btnseparator"></div><div class="pGroup"><div class="pFirst pButton"></div><div class="pPrev pButton"></div></div>';
                     h = h + '<div class="btnseparator"></div><div class="pGroup">' +
                         '<span class="pcontrol">' +
                         '<input class="cpage" type="text" value="1" size="4" style="text-align:center" /> ' +
@@ -2658,8 +2683,10 @@ define('controls/grid/Grid', [
                         '<span class="cpageMax"></span>' +
                         '</span>' +
                         '</div>';
-                    h = h + '<div class="btnseparator"></div><div class="pGroup"><div class="pNext pButton"></div><div class="pLast pButton"></div></div>';
-                    h = h + '<div class="btnseparator"></div><div class="pGroup"><div class="pReload pButton"></div></div>';
+                    h = h +
+                        '<div class="btnseparator"></div><div class="pGroup"><div class="pNext pButton"></div><div class="pLast pButton"></div></div>';
+                    h = h +
+                        '<div class="btnseparator"></div><div class="pGroup"><div class="pReload pButton"></div></div>';
                     h = h + '<div class="btnseparator"></div><div class="pGroup"><span class="pPageStat"></span></div>';
                 }
 
@@ -2689,7 +2716,8 @@ define('controls/grid/Grid', [
                 if (options.exportData) {
                     h = h + '<div class="btnseparator"></div>' +
                         '<div class="pGroup">' +
-                        '   <div class="pExport pButton" title="' + QUILocale.get('quiqqer/quiqqer', 'grid.export.button.title') + '">' +
+                        '   <div class="pExport pButton" title="' +
+                        QUILocale.get('quiqqer/quiqqer', 'grid.export.button.title') + '">' +
                         '   </div>' +
                         '</div>';
                 }
@@ -2812,7 +2840,7 @@ define('controls/grid/Grid', [
             }
 
             var Input = this.container.getElement('div.pDiv2 input');
-            var np    = Input.value;
+            var np = Input.value;
 
             if (np > 0 && np <= this.getAttribute('maxpage')) {
                 this.setAttribute('page', np);
@@ -3012,9 +3040,9 @@ define('controls/grid/Grid', [
                 el, columnModel;
 
             clen = this.$columnModel.length;
-            len  = this.$data.length;
+            len = this.$data.length;
             data = this.$data;
-            key  = key.toString().toLowerCase();
+            key = key.toString().toLowerCase();
 
             columnModel = this.$columnModel;
 
@@ -3113,8 +3141,8 @@ define('controls/grid/Grid', [
 
                         for (c = 0, len = self.$columnModel.length; c < len; c++) {
                             columnModel = self.$columnModel[c];
-                            header      = columnModel.header;
-                            dataIndex   = columnModel.dataIndex;
+                            header = columnModel.header;
+                            dataIndex = columnModel.dataIndex;
 
                             if (self.exportable(columnModel) === false) {
                                 continue;
@@ -3243,8 +3271,8 @@ define('controls/grid/Grid', [
 
             for (c = 0, len = this.$columnModel.length; c < len; c++) {
                 columnModel = this.$columnModel[c];
-                header      = columnModel.header;
-                dataIndex   = columnModel.dataIndex;
+                header = columnModel.header;
+                dataIndex = columnModel.dataIndex;
 
                 if (this.exportable(columnModel) === false) {
                     continue;
@@ -3267,7 +3295,7 @@ define('controls/grid/Grid', [
 
             if (gridData) {
                 for (i = 0, len = gridData.length; i < len; i++) {
-                    var dat      = gridData[i];
+                    var dat = gridData[i];
                     data.data[i] = {};
 
                     for (var h in data.header) {
@@ -3341,13 +3369,15 @@ define('controls/grid/Grid', [
                     var Headers = Response.headers;
 
                     var filename = Headers.get('Content-Disposition');
-                    var start    = filename.indexOf('filename="') + ('filename="').length;
-                    var end      = filename.indexOf('"', start);
+                    var start = filename.indexOf('filename="') + ('filename="').length;
+                    var end = filename.indexOf('"', start);
 
                     filename = filename.substr(start, end - start);
 
                     return Response.blob().then(function (blob) {
-                        require([URL_OPT_DIR + 'bin/downloadjs/download.js'], function (download) {
+                        require([
+                            URL_OPT_DIR + 'bin/quiqqer-asset/downloadjs/downloadjs/download.js'
+                        ], function (download) {
                             self.hideLoader();
 
                             download(blob, filename, Headers.get('Content-Type'));
@@ -3435,7 +3465,10 @@ define('controls/grid/Grid', [
                 }.bind(this),
 
                 onStart: function (element, droppable) {
-                    this.fireEvent('dragDropStart', [element, droppable]);
+                    this.fireEvent('dragDropStart', [
+                        element,
+                        droppable
+                    ]);
                 }.bind(this),
 
                 onComplete: function () {
@@ -3443,11 +3476,17 @@ define('controls/grid/Grid', [
                 }.bind(this),
 
                 onEnter: function (element, droppable) {
-                    this.fireEvent('dragDropEnter', [element, droppable]);
+                    this.fireEvent('dragDropEnter', [
+                        element,
+                        droppable
+                    ]);
                 }.bind(this),
 
                 onLeave: function (element, droppable) {
-                    this.fireEvent('dragDropLeave', [element, droppable]);
+                    this.fireEvent('dragDropLeave', [
+                        element,
+                        droppable
+                    ]);
                 }.bind(this),
 
                 onDrop: function (element, droppable, event) {
