@@ -73,6 +73,7 @@ use function time;
 use function trim;
 use function usort;
 
+use const DEVELOPMENT;
 use const JSON_PRETTY_PRINT;
 use const PHP_URL_HOST;
 
@@ -2084,6 +2085,10 @@ class Manager extends QUI\QDOM
         $updateOptions = [
             '--no-autoloader' => true
         ];
+
+        if (!DEVELOPMENT) {
+            $updateOptions['--no-dev'] = true;
+        }
 
         // Disable lockserver if a vcs repository is used
         // Lockserver can not handle VCS repositories ==> Check if local execution is possible or fail the operation
