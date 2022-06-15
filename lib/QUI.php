@@ -244,7 +244,7 @@ class QUI
              *
              * @var boolean
              */
-            define("DEVELOPMENT", $config['globals']['development']);
+            define("DEVELOPMENT", !!$config['globals']['development']);
         }
 
         $var_dir = $config['globals']['var_dir'];
