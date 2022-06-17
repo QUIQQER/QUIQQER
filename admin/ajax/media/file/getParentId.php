@@ -13,6 +13,7 @@ QUI::$Ajax->registerFunction(
     function ($project, $fileid) {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media   = $Project->getMedia();
+        $fileid  = (int)$fileid;
 
         try {
             $File = $Media->get((int)$fileid);
