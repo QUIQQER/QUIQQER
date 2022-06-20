@@ -6,8 +6,33 @@
 
 namespace QUI;
 
+use DateTimeImmutable;
+use ForceUTF8\Encoding;
+use IntlDateFormatter;
+use NumberFormatter;
 use QUI;
 use QUI\Utils\StringHelper;
+
+use function array_merge;
+use function DusanKasan\Knapsack\first;
+use function explode;
+use function file_exists;
+use function floatval;
+use function function_exists;
+use function is_array;
+use function is_numeric;
+use function is_object;
+use function is_string;
+use function preg_replace;
+use function setlocale;
+use function shell_exec;
+use function str_replace;
+use function strpos;
+use function strtolower;
+use function strtotime;
+use function strtoupper;
+use function trim;
+use function usort;
 
 /**
  * The locale object
@@ -33,48 +58,48 @@ class Locale
      *
      * @var string
      */
-    protected $current = 'en';
+    protected string $current = 'en';
 
     /**
      * the exist langs
      *
      * @var array
      */
-    protected $langs = [];
+    protected array $langs = [];
 
     /**
      * gettext object
      *
      * @var array
      */
-    protected $gettext = [];
+    protected array $gettext = [];
     /**
      * no translation flag
      *
      * @var boolean
      */
-    public $no_translation = false;
+    public bool $no_translation = false;
 
     /**
      * ini file objects, if no gettext exist
      *
      * @var array
      */
-    protected $inis = [];
+    protected array $inis = [];
 
     /**
      * List of internal locale list for setlocale()
      *
      * @var array
      */
-    protected $localeList = [];
+    protected array $localeList = [];
 
     /**
      * Saves the current language of this Locale if setTemporaryCurrent is used.
      *
      * @var bool
      */
-    protected $tempCurrent = false;
+    protected bool $tempCurrent = false;
 
 
     /**
@@ -125,10 +150,10 @@ class Locale
      *
      * @param string $lang - en, en_EN, de, de_DE, de_AT
      */
-    public function setCurrent($lang)
+    public function setCurrent(string $lang)
     {
-        $lang = \preg_replace('/[^a-zA-Z_]/', '', $lang);
-        $lang = \trim($lang);
+        $lang = preg_replace('/[^a-zA-Z_]/', '', $lang);
+        $lang = trim($lang);
 
         if (!empty($lang)) {
             $this->current = $lang;
@@ -142,7 +167,7 @@ class Locale
      *
      * @return string
      */
-    public function getCurrent()
+    public function getCurrent(): string
     {
         return $this->current;
     }
@@ -212,16 +237,16 @@ class Locale
      * @param integer $format
      * @return string
      */
-    public function formatNumber($number, $format = \NumberFormatter::DECIMAL)
+    public function formatNumber($number, int $format = NumberFormatter::DECIMAL): string
     {
         $localeCode = QUI::getLocale()->getLocalesByLang(
             QUI::getLocale()->getCurrent()
         );
 
-        $Formatter = new \NumberFormatter($localeCode[0], $format);
+        $Formatter = new NumberFormatter($localeCode[0], $format);
 
-        if (\is_string($number)) {
-            $number = \floatval($number);
+        if (is_string($number)) {
+            $number = floatval($number);
         }
 
         $decimalSeparator  = self::get('quiqqer/quiqqer', 'numberFormat.decimal_separator');
@@ -229,11 +254,11 @@ class Locale
         $decimalPattern    = self::get('quiqqer/quiqqer', 'numberFormat.decimal_pattern');
 
         if (!empty($decimalSeparator)) {
-            $Formatter->setSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL, $decimalSeparator);
+            $Formatter->setSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL, $decimalSeparator);
         }
 
         if (!empty($groupingSeparator)) {
-            $Formatter->setSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL, $groupingSeparator);
+            $Formatter->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, $groupingSeparator);
         }
 
         if (!empty($decimalPattern)) {
@@ -260,35 +285,43 @@ class Locale
      *
      * @return string
      */
-    public function formatDate($timestamp, $format = false)
+    public function formatDate($timestamp, $format = false): string
     {
-        if (!\is_numeric($timestamp)) {
-            $timestamp = \strtotime($timestamp);
+        if (!is_numeric($timestamp)) {
+            $timestamp = strtotime($timestamp);
         }
 
+        $Date    = DateTimeImmutable::createFromFormat('U', $timestamp);
         $current = $this->getCurrent();
 
-        if ($format) {
-            $oldlocale = \setlocale(LC_TIME, "0");
-            \setlocale(LC_TIME, $this->getLocalesByLang($current));
-            $result = \strftime($format, $timestamp);
-            \setlocale(LC_TIME, $oldlocale);
+        $locales    = $this->getLocalesByLang($current);
+        $localeCode = first($locales);
 
-            return \ForceUTF8\Encoding::toUTF8($result);
+        if ($format) {
+            $oldLocale = setlocale(LC_TIME, "0");
+
+            setlocale(LC_TIME, $localeCode);
+            //$result = strftime($format, $timestamp);
+            $result = $Date->format($format);
+            setlocale(LC_TIME, $oldLocale);
+
+            return Encoding::toUTF8($result);
         }
 
         $formats = $this->getDateFormats();
 
         if (!empty($formats[$current])) {
-            $oldlocale = \setlocale(LC_TIME, "0");
-            \setlocale(LC_TIME, $this->getLocalesByLang($current));
-            $result = strftime($formats[$current], $timestamp);
-            \setlocale(LC_TIME, $oldlocale);
+            $oldLocale = setlocale(LC_TIME, "0");
 
-            return \ForceUTF8\Encoding::toUTF8($result);
+            setlocale(LC_TIME, $localeCode);
+            //$result = strftime($formats[$current], $timestamp);
+            $result = $Date->format($formats[$current]);
+            setlocale(LC_TIME, $oldLocale);
+
+            return Encoding::toUTF8($result);
         }
 
-        return \ForceUTF8\Encoding::toUTF8(\strftime('%D', $timestamp));
+        return Encoding::toUTF8($Date->format('%D'));
     }
 
     /**
@@ -299,17 +332,16 @@ class Locale
      * @return \IntlDateFormatter
      */
     public function getDateFormatter(
-        $dateType = \IntlDateFormatter::SHORT,
-        $timeType = \IntlDateFormatter::NONE
-    ) {
+        int $dateType = IntlDateFormatter::SHORT,
+        int $timeType = IntlDateFormatter::NONE
+    ): IntlDateFormatter {
         $localeCode = $this->getLocalesByLang($this->getCurrent());
-        $Formatter  = new \IntlDateFormatter($localeCode[0], $dateType, $timeType);
 
-        return $Formatter;
+        return new IntlDateFormatter($localeCode[0], $dateType, $timeType);
     }
 
     /**
-     * Return all available dateformats
+     * Return all available date formats
      *
      * @return array
      */
@@ -335,7 +367,7 @@ class Locale
      *
      * @return array
      */
-    public function getLocalesByLang($lang)
+    public function getLocalesByLang(string $lang): array
     {
         if (isset($this->localeList[$lang])) {
             return $this->localeList[$lang];
@@ -344,13 +376,13 @@ class Locale
         // no shell
         if (!QUI\Utils\System::isShellFunctionEnabled('locale')) {
             // if we cannot read locale list, so we must guess
-            $langCode = \strtolower($lang).'_'.\strtoupper($lang);
+            $langCode = strtolower($lang) . '_' . strtoupper($lang);
 
             $this->localeList[$lang] = [
                 $langCode,
-                $langCode.'.utf8',
-                $langCode.'.UTF-8',
-                $langCode.'@euro'
+                $langCode . '.utf8',
+                $langCode . '.UTF-8',
+                $langCode . '@euro'
             ];
 
             return $this->localeList[$lang];
@@ -358,20 +390,20 @@ class Locale
 
 
         // via shell
-        $locales = \shell_exec('locale -a');
-        $locales = \explode("\n", $locales);
+        $locales = shell_exec('locale -a');
+        $locales = explode("\n", $locales);
 
         $langList = [];
 
         foreach ($locales as $locale) {
-            if (\strpos($locale, $lang) !== 0) {
+            if (strpos($locale, $lang) !== 0) {
                 continue;
             }
 
             $langList[] = $locale;
         }
 
-        $langCode = \strtolower($lang).'_'.\strtoupper($lang);
+        $langCode = strtolower($lang) . '_' . strtoupper($lang);
 
         // not the best solution
         if ($lang == 'en') {
@@ -379,16 +411,16 @@ class Locale
         }
 
         // sort, main locale to the top
-        \usort($langList, function ($a, $b) use ($langCode) {
+        usort($langList, function ($a, $b) use ($langCode) {
             if ($a == $b) {
                 return 0;
             }
 
-            if (\strpos($a, $langCode) === 0) {
+            if (strpos($a, $langCode) === 0) {
                 return -1;
             }
 
-            if (\strpos($b, $langCode) === 0) {
+            if (strpos($b, $langCode) === 0) {
                 return 1;
             }
 
@@ -408,7 +440,7 @@ class Locale
      * @param string|array $key
      * @param string|boolean $value
      */
-    public function set($lang, $group, $key, $value = false)
+    public function set(string $lang, string $group, $key, $value = false)
     {
         if (!isset($this->langs[$lang])) {
             $this->langs[$lang] = [];
@@ -418,13 +450,13 @@ class Locale
             $this->langs[$lang][$group] = [];
         }
 
-        if (!\is_array($key)) {
+        if (!is_array($key)) {
             $this->langs[$lang][$group][$key] = $value;
 
             return;
         }
 
-        $this->langs[$lang][$group] = \array_merge(
+        $this->langs[$lang][$group] = array_merge(
             $this->langs[$lang][$group],
             $key
         );
@@ -438,7 +470,7 @@ class Locale
      *
      * @return boolean
      */
-    public function exists($group, $value = false)
+    public function exists(string $group, $value = false): bool
     {
         $str = $this->getHelper($group, $value);
 
@@ -450,7 +482,7 @@ class Locale
             return true;
         }
 
-        $_str = '['.$group.'] '.$value;
+        $_str = '[' . $group . '] ' . $value;
 
         if ($_str === $str) {
             return false;
@@ -465,7 +497,7 @@ class Locale
      * @param {string} $language - language eq: de, en
      * @return bool
      */
-    public function existsLang($language)
+    public function existsLang($language): bool
     {
         return isset($this->langs[$language]);
     }
@@ -479,28 +511,23 @@ class Locale
      *
      * @return string|array
      */
-    public function get($group, $value = false, $replace = false)
+    public function get(string $group, $value = false, $replace = false)
     {
-        if ($replace === false || empty($replace)) {
-            $str = $this->getHelper($group, $value);
-            $str = \str_replace('{\n}', PHP_EOL, $str);
-
-            return $str;
-        }
-
         $str = $this->getHelper($group, $value);
 
+        if (empty($replace)) {
+            return str_replace('{\n}', PHP_EOL, $str);
+        }
+
         foreach ($replace as $key => $value) {
-            if (\is_array($value) || \is_object($value)) {
+            if (is_array($value) || is_object($value)) {
                 continue;
             }
 
-            $str = \str_replace('['.$key.']', $value, $str);
-        };
+            $str = str_replace('[' . $key . ']', $value, $str);
+        }
 
-        $str = \str_replace('{\n}', PHP_EOL, $str);
-
-        return $str;
+        return str_replace('{\n}', PHP_EOL, $str);
     }
 
     /**
@@ -513,28 +540,23 @@ class Locale
      *
      * @return string|array
      */
-    public function getByLang($lang, $group, $value = false, $replace = false)
+    public function getByLang(string $lang, string $group, $value = false, $replace = false)
     {
-        if ($replace === false || empty($replace)) {
-            $str = $this->getHelper($group, $value, $lang);
-            $str = \str_replace('{\n}', PHP_EOL, $str);
-
-            return $str;
-        }
-
         $str = $this->getHelper($group, $value, $lang);
 
+        if (empty($replace)) {
+            return str_replace('{\n}', PHP_EOL, $str);
+        }
+
         foreach ($replace as $key => $value) {
-            if (\is_array($value) || \is_object($value)) {
+            if (is_array($value) || is_object($value)) {
                 continue;
             }
 
-            $str = \str_replace('['.$key.']', $value, $str);
-        };
+            $str = str_replace('[' . $key . ']', $value, $str);
+        }
 
-        $str = \str_replace('{\n}', PHP_EOL, $str);
-
-        return $str;
+        return str_replace('{\n}', PHP_EOL, $str);
     }
 
     /**
@@ -548,10 +570,10 @@ class Locale
      * @see ->get()
      * @ignore
      */
-    protected function getHelper($group, $value = false, $current = false)
+    protected function getHelper(string $group, $value = false, $current = false)
     {
         if ($this->no_translation) {
-            return '['.$group.'] '.$value;
+            return '[' . $group . '] ' . $value;
         }
 
         if (!$current) {
@@ -592,7 +614,7 @@ class Locale
             return $this->langs[$current][$group][$value];
         }
 
-        return '['.$group.'] '.$value;
+        return '[' . $group . '] ' . $value;
     }
 
     /**
@@ -603,21 +625,19 @@ class Locale
      *
      * @return boolean|\QUI\Utils\Translation\GetText
      */
-    public function initGetText($group, $lang = null)
+    public function initGetText(string $group, ?string $lang = null)
     {
         $current = $this->current;
 
-        if (\is_string($lang)) {
+        if (is_string($lang)) {
             $current = $lang;
         }
 
-        if (isset($this->gettext[$current])
-            && isset($this->gettext[$current][$group])
-        ) {
+        if (isset($this->gettext[$current]) && isset($this->gettext[$current][$group])) {
             return $this->gettext[$current][$group];
         }
 
-        if (!\function_exists('gettext')) {
+        if (!function_exists('gettext')) {
             $this->gettext[$current][$group] = false;
 
             return false;
@@ -660,7 +680,7 @@ class Locale
      *
      * @throws QUI\Exception
      */
-    public function initConfig($group, $lang = false)
+    public function initConfig(string $group, $lang = false)
     {
         if ($lang === false) {
             $lang = $this->current;
@@ -668,15 +688,11 @@ class Locale
 
         $file = $this->getTranslationFile($lang, $group);
 
-        if (!\file_exists($file)) {
+        if (!file_exists($file)) {
             return;
         }
 
-        if (isset($this->inis[$file])) {
-            $Config = $this->inis[$file];
-        } else {
-            $Config = new QUI\Config($file);
-        }
+        $Config = $this->inis[$file] ?? new QUI\Config($file);
 
         $this->set($lang, $group, $Config->toArray());
     }
@@ -689,13 +705,13 @@ class Locale
      *
      * @return string
      */
-    public function getTranslationFile($lang, $group)
+    public function getTranslationFile(string $lang, string $group): string
     {
-        $lang   = \preg_replace('/[^a-zA-Z]/', '', $lang);
-        $locale = StringHelper::toLower($lang).'_'.StringHelper::toUpper($lang);
-        $group  = \str_replace('/', '_', $group);
+        $lang   = preg_replace('/[^a-zA-Z]/', '', $lang);
+        $locale = StringHelper::toLower($lang) . '_' . StringHelper::toUpper($lang);
+        $group  = str_replace('/', '_', $group);
 
-        return $this->dir().'/'.$locale.'/LC_MESSAGES/'.$group.'.ini.php';
+        return $this->dir() . '/' . $locale . '/LC_MESSAGES/' . $group . '.ini.php';
     }
 
     /**
@@ -703,9 +719,9 @@ class Locale
      *
      * @return string
      */
-    public function dir()
+    public function dir(): string
     {
-        return VAR_DIR.'locale/';
+        return VAR_DIR . 'locale/';
     }
 
     /**
@@ -715,11 +731,11 @@ class Locale
      * @param string $str
      * @return bool
      */
-    public function isLocaleString($str)
+    public function isLocaleString(string $str): bool
     {
-        if (\strpos($str, ' ') === false
-            || \strpos($str, '[') === false
-            || \strpos($str, ']') === false
+        if (strpos($str, ' ') === false
+            || strpos($str, '[') === false
+            || strpos($str, ']') === false
         ) {
             return false;
         }
@@ -734,16 +750,16 @@ class Locale
      * @param string $str
      * @return array -  [0=>group, 1=>var]
      */
-    public function getPartsOfLocaleString($str)
+    public function getPartsOfLocaleString(string $str): array
     {
-        $str = \explode(' ', $str);
+        $str = explode(' ', $str);
 
         if (!isset($str[1])) {
             return $str;
         }
 
-        $group = \str_replace(['[', ']'], '', $str[0]);
-        $var   = \trim($str[1]);
+        $group = str_replace(['[', ']'], '', $str[0]);
+        $var   = trim($str[1]);
 
         return [$group, $var];
     }
@@ -757,7 +773,7 @@ class Locale
      */
     public function parseLocaleString($title)
     {
-        if (\is_array($title)) {
+        if (is_array($title)) {
             return $this->parseLocaleArray($title);
         }
 
@@ -776,7 +792,7 @@ class Locale
      * @param array $locale - with group, translation var and replacement vars (optional)
      * @return string
      */
-    public function parseLocaleArray($locale)
+    public function parseLocaleArray(array $locale)
     {
         if (!isset($locale[0]) || !isset($locale[1])) {
             return '';
