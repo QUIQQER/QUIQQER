@@ -74,8 +74,8 @@ class Manager implements QUI\Interfaces\Events
                 $this->Events->addEvent(
                     $params['event'],
                     $params['callback'],
-                    isset($params['priority']) ? $params['priority'] : 0,
-                    isset($params['package']) ? $params['package'] : ''
+                    $params['priority'] ?? 0,
+                    $params['package'] ?? ''
                 );
             }
 
@@ -121,6 +121,9 @@ class Manager implements QUI\Interfaces\Events
             'package'  => 'TEXT NULL',
             'priority' => 'INT DEFAULT 0'
         ]);
+
+        QUI::getDataBase()->Table()->setFulltext(self::table(), 'sitetype');
+        QUI::getDataBase()->Table()->setIndex(self::table(), 'event');
 
         self::clear();
     }
