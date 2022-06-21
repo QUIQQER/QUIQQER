@@ -278,6 +278,8 @@ class User implements QUI\Interfaces\Users\User
             //$this->setGroups($data[0]['usergroup']);
 
             unset($data[0]['usergroup']);
+        } else {
+            $this->groups = '';
         }
 
         if (isset($data[0]['active']) && $data[0]['active'] == 1) {
