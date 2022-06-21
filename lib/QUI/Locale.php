@@ -287,23 +287,44 @@ class Locale
      */
     public function formatDate($timestamp, $format = false): string
     {
+        $Formatter = self::getDateFormatter();
+        $current   = $this->getCurrent();
+
         if (!is_numeric($timestamp)) {
             $timestamp = strtotime($timestamp);
         }
 
-        $Formatter = self::getDateFormatter();
-        $current   = $this->getCurrent();
+        // new stuff, compatible with php9
+        if ($format === false) {
+            return Encoding::toUTF8($Formatter->format($timestamp));
+        }
 
+        $formats = $this->getDateFormats();
+
+        if (!empty($formats[$current])) {
+            $format = $formats[$current];
+        }
+
+        if (strpos($format, '%') === false) {
+            $Formatter->setPattern($format);
+
+            return Encoding::toUTF8(
+                $Formatter->format($timestamp)
+            );
+        }
+
+        // deprecate log
+        QUI\System\Log::addDeprecated('Deprecated formatDate usage');
+
+        // old stuff with strftime
         $locales    = $this->getLocalesByLang($current);
         $localeCode = first($locales);
 
         if ($format) {
-            $Formatter->setPattern($format);
             $oldLocale = setlocale(LC_TIME, "0");
 
             setlocale(LC_TIME, $localeCode);
             $result = strftime($format, $timestamp);
-            //$result = $Formatter->format($timestamp); // new method php9
             setlocale(LC_TIME, $oldLocale);
 
             return Encoding::toUTF8($result);
@@ -313,17 +334,14 @@ class Locale
 
         if (!empty($formats[$current])) {
             $oldLocale = setlocale(LC_TIME, "0");
-            $Formatter->setPattern($formats[$current]);
 
             setlocale(LC_TIME, $localeCode);
             $result = strftime($formats[$current], $timestamp);
-            //$result = $Formatter->format($timestamp); // new method php9
             setlocale(LC_TIME, $oldLocale);
 
             return Encoding::toUTF8($result);
         }
 
-        //return Encoding::toUTF8($Formatter->format($timestamp));
         return Encoding::toUTF8(strftime('%D', $timestamp));
     }
 
