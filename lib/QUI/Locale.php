@@ -6,7 +6,6 @@
 
 namespace QUI;
 
-use DateTimeImmutable;
 use ForceUTF8\Encoding;
 use IntlDateFormatter;
 use NumberFormatter;
@@ -27,6 +26,7 @@ use function preg_replace;
 use function setlocale;
 use function shell_exec;
 use function str_replace;
+use function strftime;
 use function strpos;
 use function strtolower;
 use function strtotime;
@@ -291,18 +291,19 @@ class Locale
             $timestamp = strtotime($timestamp);
         }
 
-        $Date    = DateTimeImmutable::createFromFormat('U', $timestamp);
-        $current = $this->getCurrent();
+        $Formatter = self::getDateFormatter();
+        $current   = $this->getCurrent();
 
         $locales    = $this->getLocalesByLang($current);
         $localeCode = first($locales);
 
         if ($format) {
+            $Formatter->setPattern($format);
             $oldLocale = setlocale(LC_TIME, "0");
 
             setlocale(LC_TIME, $localeCode);
-            //$result = strftime($format, $timestamp);
-            $result = $Date->format($format);
+            $result = strftime($format, $timestamp);
+            //$result = $Formatter->format($timestamp); // new method php9
             setlocale(LC_TIME, $oldLocale);
 
             return Encoding::toUTF8($result);
@@ -312,16 +313,18 @@ class Locale
 
         if (!empty($formats[$current])) {
             $oldLocale = setlocale(LC_TIME, "0");
+            $Formatter->setPattern($formats[$current]);
 
             setlocale(LC_TIME, $localeCode);
-            //$result = strftime($formats[$current], $timestamp);
-            $result = $Date->format($formats[$current]);
+            $result = strftime($formats[$current], $timestamp);
+            //$result = $Formatter->format($timestamp); // new method php9
             setlocale(LC_TIME, $oldLocale);
 
             return Encoding::toUTF8($result);
         }
 
-        return Encoding::toUTF8($Date->format('%D'));
+        //return Encoding::toUTF8($Formatter->format($timestamp));
+        return Encoding::toUTF8(strftime('%D', $timestamp));
     }
 
     /**
