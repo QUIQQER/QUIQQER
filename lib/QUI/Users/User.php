@@ -1083,6 +1083,10 @@ class User implements QUI\Interfaces\Users\User
                 break;
 
             case "email":
+                if ($value === null) {
+                    $value = '';
+                }
+
                 $value                   = trim($value);
                 $this->settings['email'] = $value;
 
