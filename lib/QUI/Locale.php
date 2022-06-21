@@ -26,6 +26,7 @@ use function preg_replace;
 use function setlocale;
 use function shell_exec;
 use function str_replace;
+use function strftime;
 use function strpos;
 use function strtolower;
 use function strtotime;
@@ -322,7 +323,8 @@ class Locale
             return Encoding::toUTF8($result);
         }
 
-        return Encoding::toUTF8($Formatter->format($timestamp));
+        //return Encoding::toUTF8($Formatter->format($timestamp));
+        return Encoding::toUTF8(strftime('%D', $timestamp));
     }
 
     /**
