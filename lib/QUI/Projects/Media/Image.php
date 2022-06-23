@@ -12,6 +12,8 @@ use QUI\Projects\Media;
 use QUI\Utils\StringHelper;
 use QUI\Utils\System\File;
 
+use function end;
+use function explode;
 use function ini_get;
 use function set_time_limit;
 
@@ -163,15 +165,22 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $params = $this->getResizeSize($maxWidth, $maxHeight);
 
         if ($params['height'] > $params['width']) {
-            $tempParams = $this->getResizeSize(
-                false,
-                QUI\Utils\Math::ceilUp($params['height'], 100)
-            );
+            if (!($params['height'] % 8 === 0)) {
+                $tempParams = $this->getResizeSize(
+                    false,
+                    QUI\Utils\Math::ceilUp($params['height'], 100)
+                );
+            } else {
+                $tempParams = $this->getResizeSize(false, $params['height']);
+            }
         } else {
-            $tempParams = $this->getResizeSize(
-                QUI\Utils\Math::ceilUp($params['width'], 100),
-                false
-            );
+            if (!($params['width'] % 8 === 0)) {
+                $tempParams = $this->getResizeSize(
+                    QUI\Utils\Math::ceilUp($params['width'], 100)
+                );
+            } else {
+                $tempParams = $this->getResizeSize($params['width']);
+            }
         }
 
         $height = $tempParams['height'];
@@ -183,13 +192,13 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
 
         if ($width || $height) {
-            $part      = \explode('.', $file);
-            $cacheFile = $cacheDir . $part[0] . '__' . $width . 'x' . $height . $extra . '.' . StringHelper::toLower(
-                    \end($part)
-                );
+            $part      = explode('.', $file);
+            $cacheFile = $cacheDir . $part[0] . '__' . $width . 'x' . $height . $extra . '.' .
+                StringHelper::toLower(end($part));
 
             if (empty($height)) {
-                $cacheFile = $cacheDir . $part[0] . '__' . $width . $extra . '.' . StringHelper::toLower(\end($part));
+                $cacheFile = $cacheDir . $part[0] . '__' . $width . $extra . '.' .
+                    StringHelper::toLower(end($part));
             }
 
             if ($this->getAttribute('reflection')) {
@@ -249,7 +258,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                 }
 
                 return $encoded;
-            }, \explode("/", $cacheUrl))
+            }, explode("/", $cacheUrl))
         );
 
         return $encoded;
@@ -435,13 +444,12 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             return $cacheFile;
         }
 
-
         // resize the proportions
-        if ($width) {
+        if ($width && !($width % 8 === 0)) {
             $width = QUI\Utils\Math::ceilUp($width, 100);
         }
 
-        if ($height) {
+        if ($height && !($width % 8 === 0)) {
             $height = QUI\Utils\Math::ceilUp($height, 100);
         }
 
