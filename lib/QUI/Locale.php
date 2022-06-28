@@ -274,6 +274,10 @@ class Locale
         //  "decimal_pattern": "#,##0.###",
         //  "percent_pattern": "#,##0%",
 
+        if ($number === null) {
+            $number = 0;
+        }
+
         return $Formatter->format($number);
     }
 
