@@ -254,7 +254,7 @@ class Package extends QUI\System\Console\Tool
             $Console        = $this;
 
             $Composer->addEvent('onOutput', function ($self, $data, $type) use ($Console) {
-                $Console->writeLn($data);
+                $Console->write($data);
             });
 
             $Composer->unmute();
