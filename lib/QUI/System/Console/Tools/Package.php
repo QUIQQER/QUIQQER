@@ -253,7 +253,7 @@ class Package extends QUI\System\Console\Tool
             $Composer       = $PackageManager->getComposer();
             $Console        = $this;
 
-            $Composer->addEvent('output', function ($self, $data, $type) use ($Console) {
+            $Composer->addEvent('onOutput', function ($self, $data, $type) use ($Console) {
                 $Console->writeLn($data);
             });
 
