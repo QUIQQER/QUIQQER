@@ -251,6 +251,12 @@ class Package extends QUI\System\Console\Tool
 
             $PackageManager = QUI::getPackageManager();
             $Composer       = $PackageManager->getComposer();
+            $Console        = $this;
+
+            $Composer->addEvent('output', function ($self, $data, $type) use ($Console) {
+                $Console->writeLn($data);
+            });
+
             $Composer->unmute();
             $Composer->requirePackage($package);
             //$PackageManager->install($package);
