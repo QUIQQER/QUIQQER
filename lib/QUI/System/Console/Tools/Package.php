@@ -6,8 +6,8 @@
 
 namespace QUI\System\Console\Tools;
 
-use QUI;
 use League\CLImate\CLImate;
+use QUI;
 
 /**
  * Package console tool
@@ -112,7 +112,7 @@ class Package extends QUI\System\Console\Tool
 
         foreach ($installed as $package => $version) {
             $data[] = [
-                'name'    => $package,
+                'name' => $package,
                 'version' => $version
             ];
         }
@@ -135,7 +135,7 @@ class Package extends QUI\System\Console\Tool
 
         try {
             $Package = QUI::getPackage($package);
-            $Climate->lightGreen(' '.$package);
+            $Climate->lightGreen(' ' . $package);
             $Climate->out('');
 
             $composer = $Package->getComposerData();
@@ -228,6 +228,15 @@ class Package extends QUI\System\Console\Tool
         $this->writeLn();
         $Climate = new CLImate();
 
+        if (empty($package)) {
+            $Climate->output->write(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'console.tool.package.message.install.noPackage',
+                )
+            );
+        }
+
         try {
             QUI::getPackage($package);
             $this->writeLn('Package already exists');
@@ -241,7 +250,10 @@ class Package extends QUI\System\Console\Tool
             );
 
             $PackageManager = QUI::getPackageManager();
-            $PackageManager->install($package);
+            $Composer       = $PackageManager->getComposer();
+            $Composer->unmute();
+            $Composer->requirePackage($package);
+            //$PackageManager->install($package);
         }
     }
 }

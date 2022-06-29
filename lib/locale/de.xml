@@ -5303,6 +5303,9 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         <locale name="console.tool.package.message.install.execute">
             <de><![CDATA[Das Paket [package] wird gesucht und installiert]]></de>
         </locale>
+        <locale name="console.tool.package.message.install.noPackage">
+            <de><![CDATA[Bitte gebe ein Paket an welches installiert werden soll. (--install=package)]]></de>
+        </locale>
         <locale name="user.create.new.username">
             <de><![CDATA[Neuer Benutzer]]></de>
         </locale>

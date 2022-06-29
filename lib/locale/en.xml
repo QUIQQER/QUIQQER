@@ -5126,6 +5126,9 @@ After logging in you will be prompted to set a new password.
         <locale name="console.tool.package.message.install.execute">
             <en><![CDATA[The package [package] will be searched and installed:]]></en>
         </locale>
+        <locale name="console.tool.package.message.install.noPackage">
+            <en><![CDATA[Please specify a package which should be installed. (--install=package)]]></en>
+        </locale>
         <locale name="user.create.new.username">
             <en><![CDATA[New User]]></en>
         </locale>        <!-- Authenticator: QUIQQER Login -->
