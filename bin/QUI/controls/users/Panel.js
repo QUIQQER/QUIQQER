@@ -75,7 +75,7 @@ define('controls/users/Panel', [
             this.setAttributes({
                 field         : 'username',
                 order         : 'ASC',
-                limit         : 20,
+                limit         : 100,
                 page          : 1,
                 search        : false,
                 searchSettings: {},

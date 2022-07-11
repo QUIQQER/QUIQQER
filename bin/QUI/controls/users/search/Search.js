@@ -37,7 +37,6 @@ define('controls/users/search/Search', [
         options: {
             field         : 'username',
             order         : 'ASC',
-            limit         : 20,
             page          : 1,
             search        : false,
             searchSettings: {},
