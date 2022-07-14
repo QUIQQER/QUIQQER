@@ -1,9 +1,10 @@
 .qui-controls-user-password-window-message {
     background-color: #FAF6D4;
-    border-bottom: 1px solid #E6C26E;
-    left: 0;
+    border: 1px solid #E6C26E;
     padding: 10px;
-    position: absolute;
-    top: 0;
-    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.qui-controls-user-password-quiWindow input[name="show"] {
+    vertical-align: middle;
 }

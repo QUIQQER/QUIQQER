@@ -26,9 +26,10 @@ define('controls/users/password/Window', [
         ],
 
         options: {
+            'class'   : 'qui-controls-user-password-quiWindow',
             icon      : 'fa fa-key',
             title     : QUILocale.get('quiqqer/quiqqer', 'menu.profile.userPassword.text'),
-            maxHeight : 470,
+            maxHeight : 500,
             maxWidth  : 340,
             uid       : false,
             autoclose : false,
@@ -62,14 +63,10 @@ define('controls/users/password/Window', [
             Win.getContent().set('html', '');
 
             if (this.getAttribute('message')) {
-                var Message = new Element('div', {
+                new Element('div', {
                     'class': 'qui-controls-user-password-window-message',
                     html   : this.getAttribute('message')
                 }).inject(Win.getContent());
-
-                Win.getContent().setStyles({
-                    paddingTop: Message.getSize().y + 20
-                });
             }
 
             this.$Password = new Password({
