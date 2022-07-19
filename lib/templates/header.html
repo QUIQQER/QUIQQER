@@ -185,6 +185,8 @@
 
                     // Load QUI
                     require(["qui/QUI"], function (QUI) {
+                        window.quiIsLoaded = true;
+
                         QUI.addEvent("onError", function (msg, url, linenumber) {
                             if (typeof linenumber === "undefined") {
                                 linenumber = 0;
@@ -202,6 +204,20 @@
                     QUI.parse(document.body);
                 });
             });
+
+
+            window.quiIsLoaded = false;
+            window.whenQuiLoaded = function() {
+                if (quiIsLoaded) {
+                    return Promise.resolve();
+                }
+
+                return new Promise(function(resolve) {
+                    setTimeout(function () {
+                        whenQuiLoaded().then(resolve);
+                    }, 100);
+                });
+            };
         </script>
     {/if}
 
