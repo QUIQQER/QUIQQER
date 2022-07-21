@@ -7,10 +7,14 @@
 namespace QUI\Users;
 
 use QUI;
+use QUI\Security\Password;
+use QUI\Utils\DOM;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\Text\XML;
-use QUI\Utils\DOM;
-use QUI\Security\Password;
+
+use function get_class;
+use function is_numeric;
+use function is_object;
 
 /**
  * QUIQQER user manager
@@ -108,7 +112,8 @@ class Manager
         );
 
         try {
-            $DataBase->getPDO()->exec("
+            $DataBase->getPDO()->exec(
+                "
                 UPDATE `{$table}` 
                 SET lastedit = NULL 
                 WHERE 
@@ -126,7 +131,8 @@ class Manager
                 WHERE 
                     birthday = '0000-00-00' OR 
                     birthday = '';
-            ");
+            "
+            );
         } catch (\PDOException $Exception) {
         }
 
@@ -190,7 +196,7 @@ class Manager
      */
     public function isAuth($User)
     {
-        if (!\is_object($User) || !$User->getId()) {
+        if (!is_object($User) || !$User->getId()) {
             return false;
         }
 
@@ -217,11 +223,11 @@ class Manager
      */
     public function isUser($User)
     {
-        if (!\is_object($User)) {
+        if (!is_object($User)) {
             return false;
         }
 
-        if (\get_class($User) === User::class) {
+        if (get_class($User) === User::class) {
             return true;
         }
 
@@ -241,11 +247,11 @@ class Manager
      */
     public function isSystemUser($User)
     {
-        if (!\is_object($User)) {
+        if (!is_object($User)) {
             return false;
         }
 
-        if (\get_class($User) === SystemUser::class) {
+        if (get_class($User) === SystemUser::class) {
             return true;
         }
 
@@ -261,11 +267,11 @@ class Manager
      */
     public function isNobodyUser($User)
     {
-        if (!\is_object($User)) {
+        if (!is_object($User)) {
             return false;
         }
 
-        if (\get_class($User) === Nobody::class) {
+        if (get_class($User) === Nobody::class) {
             return true;
         }
 
@@ -334,7 +340,7 @@ class Manager
 
             while ($this->usernameExists($newName)) {
                 $milliseconds = round(microtime(true) * 1000);
-                $newName      = $newUserLocale.' ('.$milliseconds.')';
+                $newName      = $newUserLocale . ' (' . $milliseconds . ')';
             }
         }
 
@@ -594,7 +600,7 @@ class Manager
             );
         }
 
-        if ($Session->get('auth-'.\get_class($Authenticator))
+        if ($Session->get('auth-' . get_class($Authenticator))
             && $Session->get('username')
             && $Session->get('uid')
         ) {
@@ -607,7 +613,7 @@ class Manager
             $Exception->setAttribute('reason', self::AUTH_ERROR_AUTH_ERROR);
 
             QUI\System\Log::write(
-                'Login failed: '.$username,
+                'Login failed: ' . $username,
                 QUI\System\Log::LEVEL_WARNING,
                 [],
                 'auth'
@@ -622,7 +628,7 @@ class Manager
             );
         } catch (\Exception $Exception) {
             QUI\System\Log::write(
-                'Login failed: '.$username,
+                'Login failed: ' . $username,
                 QUI\System\Log::LEVEL_WARNING,
                 [],
                 'auth'
@@ -650,7 +656,7 @@ class Manager
         }
 
         $Session->set(
-            'auth-'.\get_class($Authenticator),
+            'auth-' . get_class($Authenticator),
             1
         );
 
@@ -1073,7 +1079,7 @@ class Manager
      */
     public function get($id)
     {
-        if (\is_numeric($id)) {
+        if (is_numeric($id)) {
             if (!$id) {
                 return new Nobody();
             }
@@ -1098,6 +1104,27 @@ class Manager
         $this->users[$id]        = $User;
 
         return $User;
+    }
+
+    /**
+     * this method is used for a cleanup of the ram.
+     * individual user instances can be removed from the internal ram cache.
+     *
+     * @param \QUI\Interfaces\Users\User $User
+     * @return void
+     */
+    public function unsetUserInstance(QUI\Interfaces\Users\User $User)
+    {
+        $uuid = $User->getUniqueId();
+        $id   = $User->getId();
+
+        if (isset($this->users[$id])) {
+            unset($this->users[$id]);
+        }
+
+        if (isset($this->usersUUIDs[$uuid])) {
+            unset($this->usersUUIDs[$uuid]);
+        }
     }
 
     /**
@@ -1381,11 +1408,11 @@ class Manager
         /**
          * SELECT
          */
-        $query = 'SELECT * FROM '.self::table();
+        $query = 'SELECT * FROM ' . self::table();
         $binds = [];
 
         if (isset($params['count'])) {
-            $query = 'SELECT COUNT( id ) AS count FROM '.self::table();
+            $query = 'SELECT COUNT( id ) AS count FROM ' . self::table();
         }
 
         /**
@@ -1474,7 +1501,7 @@ class Manager
                 $query .= ' WHERE 1=1 ';
             } else {
                 $query            .= ' WHERE (';
-                $binds[':search'] = '%'.$search.'%';
+                $binds[':search'] = '%' . $search . '%';
 
                 if (empty($search)) {
                     $binds[':search'] = '%';
@@ -1489,7 +1516,7 @@ class Manager
                         continue;
                     }
 
-                    $query .= ' '.$field.' LIKE :search OR ';
+                    $query .= ' ' . $field . ' LIKE :search OR ';
                 }
 
                 if (\substr($query, -3) == 'OR ') {
@@ -1518,20 +1545,20 @@ class Manager
 
                 foreach ($groups as $groupId) {
                     if ((int)$groupId > 0) {
-                        $subQuery[] = 'usergroup LIKE :'.$groupId.' ';
+                        $subQuery[] = 'usergroup LIKE :' . $groupId . ' ';
 
-                        $binds[':'.$groupId] = '%,'.(int)$groupId.',%';
+                        $binds[':' . $groupId] = '%,' . (int)$groupId . ',%';
                     }
                 }
 
-                $query .= ' AND ('.\implode(' OR ', $subQuery).')';
+                $query .= ' AND (' . \implode(' OR ', $subQuery) . ')';
             }
 
             if ($filter_groups_exclude) {
                 foreach ($filter['filter_groups_exclude'] as $groupId) {
                     if ((int)$groupId > 0) {
-                        $query               .= ' AND usergroup NOT LIKE :'.$groupId.' ';
-                        $binds[':'.$groupId] = '%,'.(int)$groupId.',%';
+                        $query                 .= ' AND usergroup NOT LIKE :' . $groupId . ' ';
+                        $binds[':' . $groupId] = '%,' . (int)$groupId . ',%';
                     }
                 }
             }
@@ -1539,7 +1566,7 @@ class Manager
             if ($filter_regdate_first) {
                 $query              .= ' AND regdate >= :firstreg ';
                 $binds[':firstreg'] = QUI\Utils\Convert::convertMySqlDatetime(
-                    $filter['filter_regdate_first'].' 00:00:00'
+                    $filter['filter_regdate_first'] . ' 00:00:00'
                 );
             }
 
@@ -1547,7 +1574,7 @@ class Manager
             if ($filter_regdate_last) {
                 $query             .= " AND regdate <= :lastreg ";
                 $binds[':lastreg'] = QUI\Utils\Convert::convertMySqlDatetime(
-                    $filter['filter_regdate_last'].' 00:00:00'
+                    $filter['filter_regdate_last'] . ' 00:00:00'
                 );
             }
         }
@@ -1561,7 +1588,7 @@ class Manager
             && $params['field']
             && isset($allowOrderFields[$params['field']])
         ) {
-            $query .= ' ORDER BY '.$params['field'].' '.$params['order'];
+            $query .= ' ORDER BY ' . $params['field'] . ' ' . $params['order'];
         }
 
         /**
@@ -1576,7 +1603,7 @@ class Manager
                 $start = (int)$params['start'];
             }
 
-            $query .= ' LIMIT '.$start.', '.$max;
+            $query .= ' LIMIT ' . $start . ', ' . $max;
         }
 
         $Statement = $PDO->prepare($query);
@@ -1690,7 +1717,7 @@ class Manager
 
         foreach ($packages as $package) {
             $name    = $package['name'];
-            $userXml = OPT_DIR.$name.'/user.xml';
+            $userXml = OPT_DIR . $name . '/user.xml';
 
             if (!\file_exists($userXml)) {
                 continue;
@@ -1716,6 +1743,6 @@ class Manager
             'extend' => $extend
         ]);
 
-        return $Engine->fetch(SYS_DIR.'template/users/profile.html');
+        return $Engine->fetch(SYS_DIR . 'template/users/profile.html');
     }
 }
