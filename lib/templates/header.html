@@ -167,6 +167,21 @@
                     },
                     SecondLevelDomains: {
                         exports: 'SecondLevelDomains'
+                    },
+                    MooFX: {
+                        exports: 'moofx'
+                    },
+                    MooTools: {
+                        exports: 'MooTools',
+                        deps: ["MooToolsCore", "MooToolsMore", "MooFX"]
+                    },
+                    MooToolsCore: {
+                        exports: 'MooTools'
+                    },
+                    MooToolsMore: {
+                        deps: [
+                            'MooToolsCore'
+                        ]
                     }
                 }
             });
