@@ -16,5 +16,5 @@ QUI::$Ajax->registerFunction(
         return $Site->delete();
     },
     ['project', 'id'],
-    'Permission::checkAdminUser'
+    ['Permission::checkAdminUser', 'quiqqer.projects.site.del']
 );

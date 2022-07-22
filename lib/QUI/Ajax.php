@@ -8,6 +8,9 @@ namespace QUI;
 
 use QUI;
 
+use function is_array;
+use function is_callable;
+
 /**
  * QUIQQER Ajax
  * Communication between JavaScript and PHP
@@ -79,7 +82,7 @@ class Ajax extends QUI\QDOM
             return false;
         }
 
-        if (!\is_array($reg_vars)) {
+        if (!is_array($reg_vars)) {
             $reg_vars = [];
         }
 
@@ -108,7 +111,7 @@ class Ajax extends QUI\QDOM
         $reg_vars = [],
         $user_perm = false
     ): bool {
-        if (!\is_callable($function)) {
+        if (!is_callable($function)) {
             return false;
         }
 
@@ -116,7 +119,7 @@ class Ajax extends QUI\QDOM
             return false;
         }
 
-        if (!\is_array($reg_vars)) {
+        if (!is_array($reg_vars)) {
             $reg_vars = [];
         }
 
@@ -207,7 +210,7 @@ class Ajax extends QUI\QDOM
                 $func = '\\QUI\\Rights\\' . $func;
             }
 
-            if (!\is_callable($func)) {
+            if (!is_callable($func)) {
                 throw new QUI\Permissions\Exception('Permission denied', 503);
             }
 
@@ -234,7 +237,7 @@ class Ajax extends QUI\QDOM
         $_rfs   = \json_decode($_REQUEST['_rf'], true);
         $result = [];
 
-        if (!\is_array($_rfs)) {
+        if (!is_array($_rfs)) {
             $_rfs = [$_rfs];
         }
 
@@ -263,7 +266,7 @@ class Ajax extends QUI\QDOM
                 return \utf8_encode($mixed);
             }
 
-            if (\is_array($mixed)) {
+            if (is_array($mixed)) {
                 foreach ($mixed as $key => $value) {
                     $mixed[$key] = $utf8ize($value);
                 }
@@ -443,7 +446,7 @@ class Ajax extends QUI\QDOM
                     return false;
             }
 
-            return \is_string($v) || \is_array($v) || \is_numeric($v) || \is_bool($v);
+            return \is_string($v) || is_array($v) || \is_numeric($v) || \is_bool($v);
         }, ARRAY_FILTER_USE_BOTH);
 
         switch ($class) {
