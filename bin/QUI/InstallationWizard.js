@@ -37,8 +37,6 @@ define('InstallationWizard', [
          */
         load: function () {
             QUIAjax.get('ajax_installationWizard_get', (list) => {
-                console.log(list);
-
                 if (!list.length) {
                     return;
                 }
@@ -265,6 +263,8 @@ define('InstallationWizard', [
             let steps = StepsContainer.getElements('.steps-container-step');
 
             if (currentStep >= steps.length - 1) {
+                WizardWindow.Loader.setAttribute('closetime', 500000);
+
                 // execute
                 QUIAjax.post('ajax_installationWizard_execute', () => {
                     QUI.getMessageHandler().then(function (MH) {
