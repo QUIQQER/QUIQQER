@@ -52,15 +52,15 @@ define('classes/projects/project/Site', [
         },
 
         initialize: function (Project, id) {
-            this.$Project      = Project;
+            this.$Project = Project;
             this.$has_children = false;
-            this.$parentid     = false;
-            this.$loaded       = false;
+            this.$parentid = false;
+            this.$loaded = false;
 
             this.$workingId = 'site-' +
-                Project.getName() + '-' +
-                Project.getLang() + '-' +
-                id;
+                              Project.getName() + '-' +
+                              Project.getLang() + '-' +
+                              id;
 
             this.$modulesLoaded = false;
 
@@ -79,7 +79,7 @@ define('classes/projects/project/Site', [
             var Project = this.getProject(),
                 encode  = Project.encode();
 
-            encode    = JSON.decode(encode);
+            encode = JSON.decode(encode);
             encode.id = this.getId();
 
             return JSON.encode(encode);
@@ -102,9 +102,9 @@ define('classes/projects/project/Site', [
                 //Site.clearWorkingStorage();
 
                 Site.$has_children = false;
-                Site.$parentid     = false;
-                Site.$url          = '';
-                Site.$loaded       = true;
+                Site.$parentid = false;
+                Site.$url = '';
+                Site.$loaded = true;
 
                 if ("has_children" in result) {
                     Site.$has_children = parseInt(result.has_children);
@@ -251,7 +251,7 @@ define('classes/projects/project/Site', [
                 var data = this.ajaxParams(),
                     Site = this;
 
-                data.params  = JSON.encode(params || {});
+                data.params = JSON.encode(params || {});
                 data.onError = reject;
 
                 Ajax.get('ajax_site_getchildren', function (result) {
@@ -280,7 +280,11 @@ define('classes/projects/project/Site', [
                         callback(children, result);
                     }
 
-                    Site.fireEvent('getChildren', [Site, children, result]);
+                    Site.fireEvent('getChildren', [
+                        Site,
+                        children,
+                        result
+                    ]);
 
                     resolve(result);
 
@@ -379,7 +383,7 @@ define('classes/projects/project/Site', [
 
             return new Promise(function (resolve, reject) {
                 params.attributes = JSON.encode(Site.getAttributes());
-                params.onError    = reject;
+                params.onError = reject;
 
                 Ajax.post('ajax_site_save', function (result) {
                     if (result && result.attributes) {
@@ -388,8 +392,8 @@ define('classes/projects/project/Site', [
 
                     if (result) {
                         Site.$has_children = parseInt(result.has_children) || false;
-                        Site.$parentid     = (result.parentid).toInt() || false;
-                        Site.$url          = result.url || '';
+                        Site.$parentid = (result.parentid).toInt() || false;
+                        Site.$url = result.url || '';
                     }
 
                     // if status change, trigger events
@@ -420,12 +424,12 @@ define('classes/projects/project/Site', [
          * @param {Function} [onfinish] - (optional), callback function
          */
         del: function (onfinish) {
-            return new Promise(function (resolve, reject) {
-                var params = this.ajaxParams();
+            return new Promise((resolve, reject) => {
+                let params = this.ajaxParams();
 
                 params.onError = reject;
 
-                Ajax.post('ajax_site_delete', function (result) {
+                Ajax.post('ajax_site_delete', (result) => {
                     if (typeof onfinish === 'function') {
                         onfinish(result);
                     }
@@ -434,8 +438,8 @@ define('classes/projects/project/Site', [
                     this.fireEvent('delete', [this]);
 
                     resolve(result);
-                }.bind(this), this.ajaxParams());
-            }.bind(this));
+                }, params);
+            });
         },
 
         /**
@@ -451,14 +455,17 @@ define('classes/projects/project/Site', [
                     params = this.ajaxParams();
 
                 params.newParentId = newParentId;
-                params.onError     = reject;
+                params.onError = reject;
 
                 Ajax.post('ajax_site_move', function (result) {
                     if (typeof callback === 'function') {
                         callback(result);
                     }
 
-                    Site.fireEvent('move', [Site, newParentId]);
+                    Site.fireEvent('move', [
+                        Site,
+                        newParentId
+                    ]);
 
                     resolve(result);
                 }, params);
@@ -479,14 +486,17 @@ define('classes/projects/project/Site', [
                     params = this.ajaxParams();
 
                 params.newParent = JSON.encode(newParent);
-                params.onError   = reject;
+                params.onError = reject;
 
                 Ajax.post('ajax_site_copy', function (result) {
                     if (typeof callback === 'function') {
                         callback(result);
                     }
 
-                    Site.fireEvent('copy', [Site, newParent]);
+                    Site.fireEvent('copy', [
+                        Site,
+                        newParent
+                    ]);
 
                     resolve(result);
 
@@ -512,7 +522,10 @@ define('classes/projects/project/Site', [
                     callback(result);
                 }
 
-                Site.fireEvent('linked', [Site, newParentId]);
+                Site.fireEvent('linked', [
+                    Site,
+                    newParentId
+                ]);
             }, params);
         },
 
@@ -588,7 +601,7 @@ define('classes/projects/project/Site', [
 
             if (typeof onerror !== 'undefined') {
                 params.showError = false;
-                params.onError   = onerror;
+                params.onError = onerror;
             }
 
             var Site = this;
@@ -604,7 +617,10 @@ define('classes/projects/project/Site', [
                     onfinish(result);
                 }
 
-                Site.fireEvent('createChild', [Site, result.id]);
+                Site.fireEvent('createChild', [
+                    Site,
+                    result.id
+                ]);
 
             }, params);
         },
@@ -632,13 +648,16 @@ define('classes/projects/project/Site', [
                 var Site   = this,
                     params = this.ajaxParams();
 
-                params.onError  = reject;
+                params.onError = reject;
                 params.parentId = parentId;
-                params.all      = all || false;
+                params.all = all || false;
 
                 Ajax.post('ajax_site_unlink', function () {
                     resolve();
-                    Site.fireEvent('unlink', [Site, parentId]);
+                    Site.fireEvent('unlink', [
+                        Site,
+                        parentId
+                    ]);
                 }, params);
             }.bind(this));
         },
@@ -653,7 +672,7 @@ define('classes/projects/project/Site', [
             return new Promise(function (resolve, reject) {
                 var params = this.ajaxParams();
 
-                params.onError  = reject;
+                params.onError = reject;
                 params.parentId = parentId;
 
                 Ajax.post('ajax_site_getLinkedPath', resolve, params);
@@ -847,7 +866,7 @@ define('classes/projects/project/Site', [
             }
 
             // locale storage
-            var attributes           = this.options.attributes;
+            var attributes = this.options.attributes;
             attributes.__storageTime = new Date().getTime();
 
             QUI.Storage.set(this.getWorkingStorageId(), JSON.encode(attributes));
