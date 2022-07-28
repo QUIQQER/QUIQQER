@@ -430,99 +430,11 @@ define('controls/workspace/Manager', [
             }
 
             if (!data) {
-                return;
-                QUI.getMessageHandler().then(function (MH) {
-                    MH.addError(Locale.get('quiqqer/quiqqer', 'message.error.in.workspace'));
-                });
+                data = [];
+            }
 
-                this.Workspace.clear();
-
-                // load standard
-                new QUIConfirm({
-                    icon       : 'fa fa-laptop',
-                    title      : Locale.get('quiqqer/quiqqer', 'window.workspace.corrupt.title'),
-                    text       : Locale.get('quiqqer/quiqqer', 'window.workspace.corrupt.text'),
-                    texticon   : false,
-                    information: Locale.get('quiqqer/quiqqer', 'window.workspace.corrupt.information'),
-                    maxHeight  : 600,
-                    maxWidth   : 800,
-                    autoclose  : false,
-                    events     : {
-                        onOpen: function (Win) {
-                            var Content = Win.getContent();
-                            var Active = null;
-
-                            var activate = function (Btn) {
-                                if (Active !== null) {
-                                    Active.setNormal();
-                                }
-
-                                Btn.setActive();
-                                Active = Btn;
-                            };
-
-                            var Container = new Element('div', {
-                                styles: {
-                                    margin   : 10,
-                                    textAlign: 'center',
-                                    width    : '100%'
-                                }
-                            }).inject(Content.getElement('.information'), 'after');
-
-                            var TwoColumns = new QUIButton({
-                                name  : 'twoColumns',
-                                text  : Locale.get('quiqqer/quiqqer', 'workspaces.2.columns'),
-                                styles: {
-                                    'float': 'none',
-                                    margin : 5,
-                                    width  : 160
-                                },
-                                events: {
-                                    onClick: activate
-                                }
-                            }).inject(Container);
-
-                            new QUIButton({
-                                name  : 'threeColumns',
-                                text  : Locale.get('quiqqer/quiqqer', 'workspaces.3.columns'),
-                                styles: {
-                                    'float': 'none',
-                                    margin : 5,
-                                    width  : 160
-                                },
-                                events: {
-                                    onClick: activate
-                                }
-                            }).inject(Container);
-
-                            activate(TwoColumns);
-                        },
-
-                        onSubmit: function (Win) {
-                            Win.Loader.show();
-
-                            var Content        = Win.getContent(),
-                                TwoColumnsNode = Content.getElement('[name="twoColumns"]');
-
-                            var TwoColumns = QUI.Controls.getById(TwoColumnsNode.get('data-quiid'));
-                            var Prom = TwoColumns.isActive() ? self.getTwoColumnDefault() :
-                                self.getThreeColumnDefault();
-
-                            Prom.then(function (result) {
-                                self.Workspace.unserialize(JSON.decode(result));
-                                self.Workspace.fix();
-                                self.Workspace.resize();
-                                self.setAttribute('workspaceId', id);
-
-                                Win.close();
-                                self.Loader.hide();
-                            });
-                        }
-                    }
-                }).open();
-
-                //this.Loader.hide();
-                return;
+            if (typeof data[0] !== 'undefined') {
+                data[0].attributes.responsive = true;
             }
 
             // cleanup
@@ -776,7 +688,8 @@ define('controls/workspace/Manager', [
 
             // Columns
             var LeftColumn   = new QUIColumn({
-                    height: size.y
+                    height    : size.y,
+                    responsive: true
                 }),
 
                 MiddleColumn = new QUIColumn({
@@ -824,7 +737,8 @@ define('controls/workspace/Manager', [
                 panels       = this.$getDefaultPanels(),
 
                 LeftColumn   = new QUIColumn({
-                    height: size.y
+                    height    : size.y,
+                    responsive: true
                 }),
 
                 MiddleColumn = new QUIColumn({
