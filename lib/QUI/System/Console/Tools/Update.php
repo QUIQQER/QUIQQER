@@ -55,6 +55,11 @@ class Update extends QUI\System\Console\Tool
                 QUI::getLocale()->get('quiqqer/quiqqer', 'console.update.set-date'),
                 false,
                 true
+            )->addArgument(
+                'package',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.update.package.update.check'),
+                false,
+                true
             );
     }
 
@@ -196,9 +201,15 @@ class Update extends QUI\System\Console\Tool
         $Maintenance->execute();
 
         try {
+            $package = false;
+
+            if ($this->getArgument('package')) {
+                $package = $this->getArgument('package');
+            }
+
             $Packages->refreshServerList();
             $Packages->getComposer()->unmute();
-            $Packages->update(false, false);
+            $Packages->update($package, false);
 
             $this->logBuffer();
             $wasExecuted = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.execute');

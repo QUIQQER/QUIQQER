@@ -5516,6 +5516,11 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         <locale name="console.update.set-date">
             <de><![CDATA[Aktualisiert nur das quiqqer Update-Datum.]]></de>
         </locale>
+        <locale name="console.update.package.update.check">
+            <de><![CDATA[
+            Einzelnes Paket aktualisieren. (Beachte Abhängigkeiten können unter Umstände auch aktualisiert werden)
+            ]]></de>
+        </locale>
 
         <locale name="user.settings.showNamesInSitemap">
             <de><![CDATA[Seitennamen in der Sitemap anzeigen]]></de>

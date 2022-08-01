@@ -5332,6 +5332,11 @@ After logging in you will be prompted to set a new password.
         <locale name="console.update.set-date">
             <en><![CDATA[Updates only the quiqqer update-date.]]></en>
         </locale>
+        <locale name="console.update.package.update.check">
+            <en><![CDATA[
+            Update single package. (Note that dependencies can also be updated under certain circumstances).
+            ]]></en>
+        </locale>
 
         <locale name="user.settings.showNamesInSitemap">
             <en><![CDATA[Show site names in the sitemap]]></en>
