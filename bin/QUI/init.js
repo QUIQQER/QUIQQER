@@ -126,7 +126,7 @@ require(requireList, function () {
         'control-task-panel-limit'        : 50,
         'control-task-panel-limit-message': Locale.get('quiqqer/quiqqer', 'message.to.much.tasks')
     });
-    
+
     QUI.addEvent('onError', function (err, url, line) {
         console.error(err + ' - ' + url + ' - ' + line);
 
@@ -304,9 +304,11 @@ require(requireList, function () {
                         // message
                         require(['controls/messages/Button'], function (MessageButton) {
                             let Profile = MenuContainer.getElement('.qui-profile-button');
-
+                            
                             if (Profile) {
-                                new MessageButton().inject(Profile, 'after');
+                                if (!Profile.getParent().getElement('[data-qui="controls/messages/Button"]')) {
+                                    new MessageButton().inject(Profile, 'after');
+                                }
                             } else {
                                 new MessageButton().inject(MenuContainer);
                             }
