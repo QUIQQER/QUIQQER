@@ -4839,7 +4839,7 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             <de><![CDATA[Weiter ohne Registrierung]]></de>
         </locale>
         <locale name="quiqqer.setup.window.title">
-            <de><![CDATA[Willkommen zum QUIQQER Einstellungs Assistent]]></de>
+            <de><![CDATA[Willkommen im QUIQQER Einstellungs Assistent]]></de>
         </locale>
         <locale name="quiqqer.setup.success">
             <de><![CDATA[

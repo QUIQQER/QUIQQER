@@ -44,7 +44,27 @@ define('controls/installation/Groups', [
             const AddGroups = this.getElm().getElement('[name="add-quiqqer-groups"]');
             const NoGroups = this.getElm().getElement('[name="no-quiqqer-groups"]');
 
+            if (!AddGroups.checked && !NoGroups.checked) {
+                NoGroups.required = 'required';
+                this.triggerError(NoGroups);
+
+                setTimeout(function () {
+                    NoGroups.required = false;
+                }, 1000);
+            }
+
             return AddGroups.checked || NoGroups.checked;
+        },
+
+        triggerError: function (Node) {
+            if ("checkValidity" in Node) {
+                Node.checkValidity();
+            }
+
+            // chrome validate message
+            if ("reportValidity" in Node) {
+                Node.reportValidity();
+            }
         }
     });
 });

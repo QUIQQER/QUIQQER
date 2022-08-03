@@ -212,6 +212,10 @@ define('InstallationWizard', [
                         if (Container.get('data-quiid')) {
                             CurrentControl = QUI.Controls.getById(Container.get('data-quiid'));
                             CurrentControl.setAttribute('Wizard', this);
+
+                            if (typeof CurrentControl.load === 'function') {
+                                CurrentControl.load();
+                            }
                         }
 
                         currentStep = step;
