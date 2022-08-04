@@ -9,11 +9,11 @@
 QUI::$Ajax->registerFunction(
     'ajax_settings_save',
     function ($file, $params) {
-        $jsonFiles = \json_decode($file, true);
+        $jsonFiles = json_decode($file, true);
         $files     = [];
 
         if ($jsonFiles) {
-            if (\is_string($jsonFiles)) {
+            if (is_string($jsonFiles)) {
                 $files = [$jsonFiles];
             } else {
                 $files = $jsonFiles;
@@ -21,11 +21,11 @@ QUI::$Ajax->registerFunction(
         }
 
         foreach ($files as $file) {
-            if (!\file_exists($file)) {
-                $file = CMS_DIR.$file;
+            if (!file_exists($file)) {
+                $file = CMS_DIR . $file;
             }
 
-            if (!\file_exists($file)) {
+            if (!file_exists($file)) {
                 QUI\Log\Logger::getLogger()->addError(
                     QUI::getLocale()->get(
                         'quiqqer/quiqqer',
@@ -36,12 +36,12 @@ QUI::$Ajax->registerFunction(
                 continue;
             }
 
-            if (\is_string($params)) {
-                $params = \json_decode($params, true);
+            if (is_string($params)) {
+                $params = json_decode($params, true);
             }
 
             // csp data
-            if (\strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') !== false
+            if (strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') !== false
                 && isset($params['securityHeaders_csp'])
             ) {
                 unset($params['securityHeaders_csp']);
@@ -49,7 +49,7 @@ QUI::$Ajax->registerFunction(
 
             // more bad workaround by hen
             // @todo need to fix that
-            if (\strpos($file, 'quiqqer/quiqqer/admin/settings/cache.xml') !== false) {
+            if (strpos($file, 'quiqqer/quiqqer/admin/settings/cache.xml') !== false) {
                 if (!empty($params['general']['cacheType'])) {
                     $cacheType = $params['general']['cacheType'];
 
@@ -69,7 +69,7 @@ QUI::$Ajax->registerFunction(
                 }
             }
 
-            if (\strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') !== false) {
+            if (strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') !== false) {
                 // overwrite openssl settings is not allowed
                 if (isset($params['openssl'])) {
                     unset($params['openssl']);
@@ -102,7 +102,7 @@ QUI::$Ajax->registerFunction(
             );
 
             // bad workaround by hen
-            if (\strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') === false) {
+            if (strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') === false) {
                 continue;
             }
 
@@ -123,8 +123,8 @@ QUI::$Ajax->registerFunction(
             # Save the current .htaccess content to see if the config changed
             $oldContent = "";
 
-            if (\file_exists(CMS_DIR.".htaccess")) {
-                $oldContent = \file_get_contents(CMS_DIR.".htaccess");
+            if (file_exists(CMS_DIR . ".htaccess")) {
+                $oldContent = file_get_contents(CMS_DIR . ".htaccess");
             }
 
             $Htaccess = new QUI\System\Console\Tools\Htaccess();
@@ -133,8 +133,8 @@ QUI::$Ajax->registerFunction(
 
             $webserverConfig = QUI::conf("webserver", "type");
 
-            if ($webserverConfig !== false && \is_string($webserverConfig)
-                && \strpos($webserverConfig, "apache") !== false) {
+            if ($webserverConfig !== false && is_string($webserverConfig)
+                && strpos($webserverConfig, "apache") !== false) {
                 continue;
             }
 
@@ -154,11 +154,11 @@ QUI::$Ajax->registerFunction(
                 continue;
             }
 
-            if (!\file_exists(CMS_DIR.".htaccess")) {
+            if (!file_exists(CMS_DIR . ".htaccess")) {
                 continue;
             }
 
-            $newContent = \file_get_contents(CMS_DIR.".htaccess");
+            $newContent = file_get_contents(CMS_DIR . ".htaccess");
 
             if ($newContent != $oldContent) {
                 QUI::getMessagesHandler()->addInformation(
