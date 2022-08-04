@@ -299,7 +299,7 @@ class Locale
         }
 
         // new stuff, compatible with php9
-        if ($format === false) {
+        if (empty($format)) {
             return Encoding::toUTF8($Formatter->format($timestamp));
         }
 
