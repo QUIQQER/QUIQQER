@@ -169,7 +169,6 @@ foreach ($packages as $package) {
         .logo img {
             margin: 30px auto;
             max-width: 500px;
-            width: 100%;
         }
 
         .quiqqer-language-switch {
