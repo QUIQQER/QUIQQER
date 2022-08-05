@@ -2090,6 +2090,12 @@ class Manager extends QUI\QDOM
             $updateOptions['--no-dev'] = true;
         }
 
+        if (!empty($package) && is_string($package)) {
+            $updateOptions['packages'] = [$package];
+        } elseif (!empty($package) && is_array($package)) {
+            $updateOptions['packages'] = $package;
+        }
+
         // Disable lockserver if a vcs repository is used
         // Lockserver can not handle VCS repositories ==> Check if local execution is possible or fail the operation
         if ($this->isVCSServerEnabled()) {

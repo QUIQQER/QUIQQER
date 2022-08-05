@@ -201,15 +201,22 @@ class Update extends QUI\System\Console\Tool
         $Maintenance->execute();
 
         try {
-            $package = false;
+            $Packages->refreshServerList();
+
+            $Composer = $Packages->getComposer();
+            $Composer->unmute();
 
             if ($this->getArgument('package')) {
-                $package = $this->getArgument('package');
+                $Composer->update([
+                    'packages'            => [
+                        $this->getArgument('package')
+                    ],
+                    '--with-dependencies' => false,
+                    '--no-autoloader'     => true
+                ]);
+            } else {
+                $Packages->update(false, false);
             }
-
-            $Packages->refreshServerList();
-            $Packages->getComposer()->unmute();
-            $Packages->update($package, false);
 
             $this->logBuffer();
             $wasExecuted = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.execute');
@@ -221,11 +228,11 @@ class Update extends QUI\System\Console\Tool
             $this->writeLn($webserver);
             $this->writeToLog($webserver . PHP_EOL);
 
-            $Httaccess = new Htaccess();
-            $Httaccess->execute();
+            $Htaccess = new Htaccess();
+            $Htaccess->execute();
 
-            $Httaccess = new Nginx();
-            $Httaccess->execute();
+            $NGINX = new Nginx();
+            $NGINX->execute();
 
             $this->writeToLog(PHP_EOL);
             $this->writeToLog('✔️' . PHP_EOL);
