@@ -5517,9 +5517,7 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
             <de><![CDATA[Aktualisiert nur das quiqqer Update-Datum.]]></de>
         </locale>
         <locale name="console.update.package.update.check">
-            <de><![CDATA[
-            Einzelnes Paket aktualisieren. (Beachte Abhängigkeiten können unter Umstände auch aktualisiert werden)
-            ]]></de>
+            <de><![CDATA[Einzelnes Paket aktualisieren.]]></de>
         </locale>
 
         <locale name="user.settings.showNamesInSitemap">
