@@ -41,10 +41,11 @@
 
             <label>
                 <span>{locale group="quiqqer/quiqqer" var="quiqqer.settings.email.smtp.secure"}</span>
+
                 <select type="text" name="smtp-secure">
                     <option value="">---</option>
-                    <option value="ssl"{if $SMTPSecure === 'ssl'}checked{/if}>SSL</option>
-                    <option value="tls"{if $SMTPSecure === 'tls'}checked{/if}>TLS</option>
+                    <option value="ssl"{if $SMTPSecure === 'ssl'}selected{/if}>SSL</option>
+                    <option value="tls"{if $SMTPSecure === 'tls'}selected{/if}>TLS</option>
                 </select>
             </label>
 
