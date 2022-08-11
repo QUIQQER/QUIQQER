@@ -82,18 +82,18 @@ define('controls/projects/project/Panel', [
                 title: Locale.get('quiqqer/quiqqer', 'projects.project.panel.title')
             });
 
-            this.$Map         = null;
+            this.$Map = null;
             this.$projectmaps = {};
-            this.$Filter      = null;
-            this.$Button      = null;
+            this.$Filter = null;
+            this.$Button = null;
 
-            this.$ProjectList      = null;
+            this.$ProjectList = null;
             this.$ProjectContainer = null;
-            this.$ProjectSearch    = null;
-            this.$ProjectContent   = null;
+            this.$ProjectSearch = null;
+            this.$ProjectContent = null;
 
             this.$LanguageSelect = null;
-            this.$MediaButton    = null;
+            this.$MediaButton = null;
 
             this.$__fx_run = false;
 
@@ -191,9 +191,9 @@ define('controls/projects/project/Panel', [
             Content.setStyle('opacity', 0);
 
             this.$ProjectContainer = Content.getElement('.project-container');
-            this.$ProjectList      = Content.getElement('.project-list');
-            this.$ProjectSearch    = Content.getElement('.project-search');
-            this.$ProjectContent   = Content.getElement('.project-content');
+            this.$ProjectList = Content.getElement('.project-list');
+            this.$ProjectSearch = Content.getElement('.project-search');
+            this.$ProjectContent = Content.getElement('.project-content');
 
             this.$ProjectContainer.setStyles({
                 height: 'calc(100% - 40px)'
@@ -715,7 +715,7 @@ define('controls/projects/project/Panel', [
                 onChildClick      : this.$openSitePanel,
                 onChildContextMenu: function (Item, MapItem, event) {
                     var title = MapItem.getAttribute('text') + ' - ' +
-                        MapItem.getAttribute('value');
+                                MapItem.getAttribute('value');
 
                     MapItem.getContextMenu().setTitle(title).setPosition(
                         event.page.x,
@@ -839,7 +839,7 @@ define('controls/projects/project/Panel', [
          */
         $openSitePanel: function (Item) {
             var self    = this,
-                id      = (Item.getAttribute('value')).toInt(),
+                id      = parseInt(Item.getAttribute('value')),
                 project = this.getAttribute('project'),
                 lang    = this.getAttribute('lang');
 

@@ -32,7 +32,7 @@ define('classes/groups/Group', [
         attributes: {}, // group attributes
 
         initialize: function (gid) {
-            this.$gid    = parseInt(gid);
+            this.$gid = parseInt(gid);
             this.$loaded = false;
         },
 
@@ -185,7 +185,7 @@ define('classes/groups/Group', [
          * @return {Boolean} true or false
          */
         isActive: function () {
-            return !!(this.getAttribute('active')).toInt();
+            return !!parseInt(this.getAttribute('active'));
         },
 
         /**
@@ -199,7 +199,7 @@ define('classes/groups/Group', [
          * @return {Promise}
          */
         getUsers: function (onfinish, limits) {
-            var self   = this;
+            var self = this;
             var params = {
                 limit: limits.limit || 50,
                 page : limits.page || 1,

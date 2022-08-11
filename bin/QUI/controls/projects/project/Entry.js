@@ -48,10 +48,10 @@ define('controls/projects/project/Entry', [
 
             this.$Project = Projects.get(project, lang);
 
-            this.$Elm      = null;
-            this.$Close    = null;
-            this.$Text     = null;
-            this.$Icon     = null;
+            this.$Elm = null;
+            this.$Close = null;
+            this.$Text = null;
+            this.$Icon = null;
             this.$IconSpan = null;
 
             this.addEvents({
@@ -85,12 +85,12 @@ define('controls/projects/project/Entry', [
                 'data-lang'   : this.getProject().getLang(),
 
                 html  : '<div class="project-entry-icon">' +
-                    '<span class="fa fa-home"></span>' +
-                    '</div>' +
-                    '<div class="project-entry-text"></div>' +
-                    '<div class="project-entry-close">' +
-                    '<span class="fa fa-remove"></span>' +
-                    '</div>',
+                        '<span class="fa fa-home"></span>' +
+                        '</div>' +
+                        '<div class="project-entry-text"></div>' +
+                        '<div class="project-entry-close">' +
+                        '<span class="fa fa-remove"></span>' +
+                        '</div>',
                 events: {
                     mouseover: function () {
                         this.addClass('hover');
@@ -106,8 +106,8 @@ define('controls/projects/project/Entry', [
             }
 
             this.$Close = this.$Elm.getElement('.project-entry-close');
-            this.$Icon  = this.$Elm.getElement('.project-entry-icon');
-            this.$Text  = this.$Elm.getElement('.project-entry-text');
+            this.$Icon = this.$Elm.getElement('.project-entry-icon');
+            this.$Text = this.$Elm.getElement('.project-entry-text');
 
             this.$IconSpan = this.$Icon.getElement('span');
 
@@ -146,9 +146,9 @@ define('controls/projects/project/Entry', [
 
 
             this.$Elm.setStyles({
-                width: (iconWidth).toInt() +
-                    (textWidth).toInt() +
-                    (closeWidth).toInt()
+                width: parseInt(iconWidth) +
+                       parseInt(textWidth) +
+                       parseInt(closeWidth)
             });
         },
 

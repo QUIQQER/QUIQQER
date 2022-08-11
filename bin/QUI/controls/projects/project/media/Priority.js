@@ -56,42 +56,50 @@ define('controls/projects/project/media/Priority', [
             });
 
             this.$Grid = new Grid(this.$Elm, {
-                buttons    : [{
-                    text  : QUILocale.get(
-                        'quiqqer/quiqqer',
-                        'projects.project.site.media.priority.btn.save'
-                    ),
-                    events: {
-                        onClick: this.save
+                buttons    : [
+                    {
+                        text  : QUILocale.get(
+                            'quiqqer/quiqqer',
+                            'projects.project.site.media.priority.btn.save'
+                        ),
+                        events: {
+                            onClick: this.save
+                        }
                     }
-                }],
-                columnModel: [{
-                    header   : '&nbsp;',
-                    dataIndex: 'order',
-                    dataType : 'node',
-                    width    : 100
-                }, {
-                    header   : QUILocale.get('quiqqer/quiqqer', 'id'),
-                    dataIndex: 'id',
-                    dataType : 'integer',
-                    width    : 50
-                }, {
-                    header   : QUILocale.get('quiqqer/quiqqer', 'name'),
-                    dataIndex: 'name',
-                    dataType : 'string',
-                    width    : 300
-                }, {
-                    header   : QUILocale.get('quiqqer/quiqqer', 'title'),
-                    dataIndex: 'title',
-                    dataType : 'string',
-                    width    : 300
-                }, {
-                    header   : '&nbsp;',
-                    dataIndex: 'preview',
-                    dataType : 'node',
-                    width    : 60,
-                    className: 'project-media-priority-image'
-                }]
+                ],
+                columnModel: [
+                    {
+                        header   : '&nbsp;',
+                        dataIndex: 'order',
+                        dataType : 'node',
+                        width    : 100
+                    },
+                    {
+                        header   : QUILocale.get('quiqqer/quiqqer', 'id'),
+                        dataIndex: 'id',
+                        dataType : 'integer',
+                        width    : 50
+                    },
+                    {
+                        header   : QUILocale.get('quiqqer/quiqqer', 'name'),
+                        dataIndex: 'name',
+                        dataType : 'string',
+                        width    : 300
+                    },
+                    {
+                        header   : QUILocale.get('quiqqer/quiqqer', 'title'),
+                        dataIndex: 'title',
+                        dataType : 'string',
+                        width    : 300
+                    },
+                    {
+                        header   : '&nbsp;',
+                        dataIndex: 'preview',
+                        dataType : 'node',
+                        width    : 60,
+                        className: 'project-media-priority-image'
+                    }
+                ]
             });
 
             this.Loader.inject(this.$Elm);
@@ -115,7 +123,7 @@ define('controls/projects/project/media/Priority', [
 
                 require(['Projects'], function (Projects) {
                     var project = self.getAttribute('project');
-                    var Media   = Projects.get(project).getMedia();
+                    var Media = Projects.get(project).getMedia();
 
                     Media.get(self.getAttribute('folderId')).then(function (Item) {
                         if (Item.getType() !== 'classes/projects/project/media/Folder') {
@@ -181,7 +189,7 @@ define('controls/projects/project/media/Priority', [
                 for (var i = 0, len = data.length; i < len; i++) {
                     priorities.push({
                         id      : data[i].id,
-                        priority: (data[i].order.value).toInt()
+                        priority: parseInt(data[i].order.value)
                     });
                 }
 

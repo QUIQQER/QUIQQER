@@ -46,12 +46,12 @@ define('controls/users/search/Search', [
         initialize: function (options) {
             this.parent(options);
 
-            this.$Grid       = null;
-            this.$Result     = null;
-            this.$Container  = null;
+            this.$Grid = null;
+            this.$Result = null;
+            this.$Container = null;
             this.$SearchForm = null;
 
-            this.active_text   = QUILocale.get(lg, 'users.panel.user.is.active');
+            this.active_text = QUILocale.get(lg, 'users.panel.user.is.active');
             this.deactive_text = QUILocale.get(lg, 'users.panel.user.is.deactive');
         },
 
@@ -80,11 +80,11 @@ define('controls/users/search/Search', [
                 }
             });
 
-            this.$Result    = this.$Elm.getElement('.user-search-control-result');
+            this.$Result = this.$Elm.getElement('.user-search-control-result');
             this.$Container = this.$Elm.getElement('.user-search-control-result-container');
 
-            this.$SearchForm   = this.$Elm.getElement('[name="user-search-control-form"]');
-            this.$SearchInput  = this.$Elm.getElement('[name="search"]');
+            this.$SearchForm = this.$Elm.getElement('[name="user-search-control-form"]');
+            this.$SearchInput = this.$Elm.getElement('[name="search"]');
             this.$SubmitButton = this.$Elm.getElement('[name="submit"]');
             this.$FilterButton = this.$Elm.getElement('button[name="filter"]');
 
@@ -116,47 +116,56 @@ define('controls/users/search/Search', [
 
             // grid
             this.$Grid = new Grid(this.$Container, {
-                columnModel      : [{
-                    header   : QUILocale.get(lg, 'status'),
-                    dataIndex: 'status',
-                    dataType : 'QUI',
-                    width    : 60
-                }, {
-                    header   : QUILocale.get(lg, 'user_id'),
-                    dataIndex: 'id',
-                    dataType : 'integer',
-                    width    : 150
-                }, {
-                    header   : QUILocale.get(lg, 'username'),
-                    dataIndex: 'username',
-                    dataType : 'integer',
-                    width    : 150
-                }, {
-                    header   : QUILocale.get(lg, 'group'),
-                    dataIndex: 'usergroup',
-                    dataType : 'integer',
-                    width    : 150
-                }, {
-                    header   : QUILocale.get(lg, 'email'),
-                    dataIndex: 'email',
-                    dataType : 'string',
-                    width    : 150
-                }, {
-                    header   : QUILocale.get(lg, 'firstname'),
-                    dataIndex: 'firstname',
-                    dataType : 'string',
-                    width    : 150
-                }, {
-                    header   : QUILocale.get(lg, 'lastname'),
-                    dataIndex: 'lastname',
-                    dataType : 'string',
-                    width    : 150
-                }, {
-                    header   : QUILocale.get(lg, 'c_date'),
-                    dataIndex: 'regdate',
-                    dataType : 'date',
-                    width    : 150
-                }],
+                columnModel      : [
+                    {
+                        header   : QUILocale.get(lg, 'status'),
+                        dataIndex: 'status',
+                        dataType : 'QUI',
+                        width    : 60
+                    },
+                    {
+                        header   : QUILocale.get(lg, 'user_id'),
+                        dataIndex: 'id',
+                        dataType : 'integer',
+                        width    : 150
+                    },
+                    {
+                        header   : QUILocale.get(lg, 'username'),
+                        dataIndex: 'username',
+                        dataType : 'integer',
+                        width    : 150
+                    },
+                    {
+                        header   : QUILocale.get(lg, 'group'),
+                        dataIndex: 'usergroup',
+                        dataType : 'integer',
+                        width    : 150
+                    },
+                    {
+                        header   : QUILocale.get(lg, 'email'),
+                        dataIndex: 'email',
+                        dataType : 'string',
+                        width    : 150
+                    },
+                    {
+                        header   : QUILocale.get(lg, 'firstname'),
+                        dataIndex: 'firstname',
+                        dataType : 'string',
+                        width    : 150
+                    },
+                    {
+                        header   : QUILocale.get(lg, 'lastname'),
+                        dataIndex: 'lastname',
+                        dataType : 'string',
+                        width    : 150
+                    },
+                    {
+                        header   : QUILocale.get(lg, 'c_date'),
+                        dataIndex: 'regdate',
+                        dataType : 'date',
+                        width    : 150
+                    }
+                ],
                 pagination       : true,
                 filterInput      : true,
                 perPage          : this.getAttribute('limit'),
@@ -204,8 +213,8 @@ define('controls/users/search/Search', [
          */
         search: function () {
             var options = this.$Grid.options;
-            var Search  = this.getAttribute('searchSettings');
-            var Form    = this.$SearchForm;
+            var Search = this.getAttribute('searchSettings');
+            var Form = this.$SearchForm;
 
             if (!Search) {
                 Search = {};
@@ -270,7 +279,7 @@ define('controls/users/search/Search', [
             for (i = 0, len = data.data.length; i < len; i++) {
                 entry = data.data[i];
 
-                data.data[i].active    = (entry.active).toInt();
+                data.data[i].active = parseInt(entry.active);
                 data.data[i].usergroup = entry.usergroup || '';
 
                 if (entry.active === -1) {

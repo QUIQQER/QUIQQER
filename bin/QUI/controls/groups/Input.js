@@ -54,11 +54,11 @@ define('controls/groups/Input', [
 
             this.$search = false;
 
-            this.$Input     = null;
-            this.$Elm       = false;
+            this.$Input = null;
+            this.$Elm = false;
             this.$Container = null;
-            this.$search    = false;
-            this.$DropDown  = null;
+            this.$search = false;
+            this.$DropDown = null;
 
             this.$Parent = Input || null;
 
@@ -184,7 +184,7 @@ define('controls/groups/Input', [
             var values = this.$Parent.value.toString().split(',');
 
             for (i = 0, len = values.length; i < len; i++) {
-                val = (values[i]).toInt();
+                val = parseInt(values[i]);
 
                 if (val) {
                     this.addGroup(val);
@@ -316,7 +316,10 @@ define('controls/groups/Input', [
                 }
             }).inject(this.$Container);
 
-            this.fireEvent('add', [this, gid]);
+            this.fireEvent('add', [
+                this,
+                gid
+            ]);
             this.update();
 
             return this;

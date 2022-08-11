@@ -304,7 +304,7 @@ require(requireList, function () {
                         // message
                         require(['controls/messages/Button'], function (MessageButton) {
                             let Profile = MenuContainer.getElement('.qui-profile-button');
-                            
+
                             if (Profile) {
                                 if (!Profile.getParent().getElement('[data-qui="controls/messages/Button"]')) {
                                     new MessageButton().inject(Profile, 'after');
@@ -330,8 +330,7 @@ require(requireList, function () {
                         Object.each(list, function (Entry) {
                             let standard = false;
 
-                            if ("standard" in Entry && Entry.standard &&
-                                (Entry.standard).toInt()) {
+                            if ("standard" in Entry && Entry.standard && parseInt(Entry.standard)) {
                                 standard = true;
                             }
 

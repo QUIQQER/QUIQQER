@@ -44,11 +44,11 @@ define('controls/usersAndGroups/search/Search', [
             this.parent(options);
 
             this.$Container = null;
-            this.$Grid      = null;
-            this.$Input     = null;
-            this.$Form      = null;
+            this.$Grid = null;
+            this.$Input = null;
+            this.$Form = null;
 
-            this.active_text   = QUILocale.get(lg, 'users.panel.user.is.active');
+            this.active_text = QUILocale.get(lg, 'users.panel.user.is.active');
             this.deactive_text = QUILocale.get(lg, 'users.panel.user.is.deactive');
         },
 
@@ -73,7 +73,7 @@ define('controls/usersAndGroups/search/Search', [
             });
 
             this.$Input = this.$Elm.getElement('[type="search"]');
-            this.$Form  = this.$Elm.getElement('form');
+            this.$Form = this.$Elm.getElement('form');
 
             if (this.getAttribute('search')) {
                 this.$Input.value = this.getAttribute('search');
@@ -94,27 +94,32 @@ define('controls/usersAndGroups/search/Search', [
             this.$Container.inject(this.$Elm);
 
             this.$Grid = new Grid(this.$Container, {
-                columnModel      : [{
-                    header   : QUILocale.get(lg, 'type'),
-                    dataIndex: 'typeIcon',
-                    dataType : 'node',
-                    width    : 40
-                }, {
-                    header   : QUILocale.get(lg, 'status'),
-                    dataIndex: 'status',
-                    dataType : 'QUI',
-                    width    : 60
-                }, {
-                    header   : QUILocale.get(lg, 'id'),
-                    dataIndex: 'id',
-                    dataType : 'integer',
-                    width    : 150
-                }, {
-                    header   : QUILocale.get(lg, 'name'),
-                    dataIndex: 'name',
-                    dataType : 'integer',
-                    width    : 150
-                }],
+                columnModel      : [
+                    {
+                        header   : QUILocale.get(lg, 'type'),
+                        dataIndex: 'typeIcon',
+                        dataType : 'node',
+                        width    : 40
+                    },
+                    {
+                        header   : QUILocale.get(lg, 'status'),
+                        dataIndex: 'status',
+                        dataType : 'QUI',
+                        width    : 60
+                    },
+                    {
+                        header   : QUILocale.get(lg, 'id'),
+                        dataIndex: 'id',
+                        dataType : 'integer',
+                        width    : 150
+                    },
+                    {
+                        header   : QUILocale.get(lg, 'name'),
+                        dataIndex: 'name',
+                        dataType : 'integer',
+                        width    : 150
+                    }
+                ],
                 pagination       : true,
                 filterInput      : true,
                 perPage          : this.getAttribute('limit'),
@@ -220,7 +225,7 @@ define('controls/usersAndGroups/search/Search', [
             for (i = 0, len = data.data.length; i < len; i++) {
                 entry = data.data[i];
 
-                data.data[i].active = (entry.active).toInt();
+                data.data[i].active = parseInt(entry.active);
                 data.data[i].status = new QUISwitch({
                     status: entry.active == 1,
                     uid   : entry.id,
@@ -236,7 +241,7 @@ define('controls/usersAndGroups/search/Search', [
                 }
 
                 data.data[i].typeIcon = UserIcon.clone();
-                data.data[i].name     = entry.username;
+                data.data[i].name = entry.username;
             }
 
             return data;

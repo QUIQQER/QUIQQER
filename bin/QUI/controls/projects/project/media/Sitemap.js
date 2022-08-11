@@ -244,7 +244,10 @@ define('controls/projects/project/media/Sitemap', [
                 events     : {
                     onOpen : this.$loadChildren,
                     onClick: function (Itm) {
-                        self.fireEvent('itemClick', [Itm, self]);
+                        self.fireEvent('itemClick', [
+                            Itm,
+                            self
+                        ]);
                     }
                 }
             });
@@ -277,11 +280,14 @@ define('controls/projects/project/media/Sitemap', [
                 Item.addIcon('fa fa-spinner fa-spin');
                 Item.removeIcon(Item.getAttribute('icon'));
 
-                self.fireEvent('openBegin', [Item, self]);
+                self.fireEvent('openBegin', [
+                    Item,
+                    self
+                ]);
 
                 // if children are false
                 Ajax.get('ajax_media_getsubfolders', function (result) {
-                    var count    = (result.count).toInt(),
+                    var count    = parseInt(result.count),
                         end      = start + projectLimit,
                         sheets   = (count / projectLimit).ceil(),
                         children = result.children;
@@ -349,7 +355,10 @@ define('controls/projects/project/media/Sitemap', [
                     Item.removeIcon('fa-spinner');
                     Item.addIcon(Item.getAttribute('icon'));
 
-                    self.fireEvent('openEnd', [Item, self]);
+                    self.fireEvent('openEnd', [
+                        Item,
+                        self
+                    ]);
 
                     resolve();
                 }, {
@@ -398,7 +407,7 @@ define('controls/projects/project/media/Sitemap', [
             }
 
             var self     = this,
-                sheets   = (Item.getAttribute('sheets')).toInt(),
+                sheets   = parseInt(Item.getAttribute('sheets')),
                 Select   = new Element('select'),
                 SiteItem = Item.getAttribute('Item');
 
@@ -410,7 +419,7 @@ define('controls/projects/project/media/Sitemap', [
             }
 
             if (SiteItem.getAttribute('limitStart') !== false) {
-                Select.value = (SiteItem.getAttribute('limitStart')).toInt() + 1;
+                Select.value = parseInt(SiteItem.getAttribute('limitStart')) + 1;
             }
 
 
@@ -432,7 +441,7 @@ define('controls/projects/project/media/Sitemap', [
 
                     onSubmit: function (Win) {
                         var Select = Win.getContent().getElement('select'),
-                            sheet  = (Select.value).toInt();
+                            sheet  = parseInt(Select.value);
 
                         SiteItem.setAttribute('limitStart', sheet - 1);
                         self.$loadChildren(SiteItem);

@@ -392,7 +392,7 @@ define('classes/projects/project/Site', [
 
                     if (result) {
                         Site.$has_children = parseInt(result.has_children) || false;
-                        Site.$parentid = (result.parentid).toInt() || false;
+                        Site.$parentid = parseInt(result.parentid) || false;
                         Site.$url = result.url || '';
                     }
 

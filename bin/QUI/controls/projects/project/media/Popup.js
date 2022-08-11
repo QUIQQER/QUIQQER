@@ -43,7 +43,7 @@ define('controls/projects/project/media/Popup', [
         initialize: function (options) {
             this.parent(options);
 
-            this.$Panel      = null;
+            this.$Panel = null;
             this.$folderData = {
                 id: this.getAttribute('fileid') || 1
             };
@@ -102,11 +102,11 @@ define('controls/projects/project/media/Popup', [
                             width    : '100%'
                         },
                         html  : '<div style="margin-bottom: 20px;">' +
-                            QUILocale.get(
-                                'quiqqer/quiqqer',
-                                'projects.project.site.media.popup.noProject.text'
-                            ) +
-                            '</div>'
+                                QUILocale.get(
+                                    'quiqqer/quiqqer',
+                                    'projects.project.site.media.popup.noProject.text'
+                                ) +
+                                '</div>'
                     }).inject(Content);
 
                     new ProjectSelect({
@@ -144,7 +144,7 @@ define('controls/projects/project/media/Popup', [
             }
 
             Project = Projects.get(project);
-            Media   = Project.getMedia();
+            Media = Project.getMedia();
 
             this.addButton(
                 new QUIButton({
@@ -315,7 +315,10 @@ define('controls/projects/project/media/Popup', [
 
                 if (folders && folders.contains('folder')) {
                     this.close();
-                    this.fireEvent('submit', [this, imageData]);
+                    this.fireEvent('submit', [
+                        this,
+                        imageData
+                    ]);
                     return;
                 }
             }
@@ -328,7 +331,10 @@ define('controls/projects/project/media/Popup', [
             }
 
             this.close();
-            this.fireEvent('submit', [this, imageData]);
+            this.fireEvent('submit', [
+                this,
+                imageData
+            ]);
         },
 
         /**
@@ -346,7 +352,7 @@ define('controls/projects/project/media/Popup', [
                     return;
                 }
 
-                if (!(data.active).toInt()) {
+                if (!parseInt(data.active)) {
                     self.$Panel.Loader.hide();
                     self.$activateItem(imageData);
                     return;

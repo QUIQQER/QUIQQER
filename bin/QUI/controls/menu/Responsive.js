@@ -45,13 +45,13 @@ define('controls/menu/Responsive', [
                 }
             });
 
-            this.$Back     = null;
-            this.$Close    = null;
-            this.$Content  = null;
+            this.$Back = null;
+            this.$Close = null;
+            this.$Content = null;
             this.$parentId = 1;
 
             this.$show = false;
-            this.$FX   = null;
+            this.$FX = null;
         },
 
         /**
@@ -65,14 +65,14 @@ define('controls/menu/Responsive', [
             this.$Elm = new Element('div', {
                 'class': 'qui-controls-menu-responsive',
                 html   : '<div class="qcm-responsive-title">' +
-                '<div class="qcm-responsive-title-home">' +
-                '<span class="fa fa-home"></span>' +
-                '<span>Menü</span>' +
-                '</div>' +
-                '<div class="qcm-responsive-title-close fa fa-remove"></div>' +
-                '</div>' +
-                '<div class="qcm-responsive-buttons"></div>' +
-                '<div class="qcm-responsive-content"></div>',
+                         '<div class="qcm-responsive-title-home">' +
+                         '<span class="fa fa-home"></span>' +
+                         '<span>Menü</span>' +
+                         '</div>' +
+                         '<div class="qcm-responsive-title-close fa fa-remove"></div>' +
+                         '</div>' +
+                         '<div class="qcm-responsive-buttons"></div>' +
+                         '<div class="qcm-responsive-content"></div>',
                 styles : {
                     left    : -500,
                     position: 'fixed',
@@ -81,7 +81,7 @@ define('controls/menu/Responsive', [
             });
 
             this.$Buttons = this.$Elm.getElement('.qcm-responsive-buttons');
-            this.$Close   = this.$Elm.getElement('.qcm-responsive-title-close');
+            this.$Close = this.$Elm.getElement('.qcm-responsive-title-close');
             this.$Content = this.$Elm.getElement('.qcm-responsive-content');
 
             // home button
@@ -268,7 +268,7 @@ define('controls/menu/Responsive', [
                         }
                     }).inject(Container);
 
-                    if (!(entry.hasChildren).toInt()) {
+                    if (!parseInt(entry.hasChildren)) {
                         Text.setStyle('width', size.x);
                         continue;
                     }

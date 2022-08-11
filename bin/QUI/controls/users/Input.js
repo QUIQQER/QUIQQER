@@ -54,12 +54,12 @@ define('controls/users/Input', [
 
             this.$search = false;
 
-            this.$Input     = null;
-            this.$Elm       = false;
+            this.$Input = null;
+            this.$Elm = false;
             this.$Container = null;
-            this.$search    = false;
-            this.$DropDown  = null;
-            this.$disabled  = false;
+            this.$search = false;
+            this.$DropDown = null;
+            this.$disabled = false;
 
             this.$Bind = Input || null;
 
@@ -161,7 +161,7 @@ define('controls/users/Input', [
             var wasDisabled = this.isDisabled();
 
             this.$Bind.disabled = false;
-            this.$disabled      = false;
+            this.$disabled = false;
 
 
             var i, len;
@@ -175,7 +175,7 @@ define('controls/users/Input', [
 
             if (wasDisabled) {
                 this.$Bind.disabled = true;
-                this.$disabled      = true;
+                this.$disabled = true;
 
                 // disable children
                 var list = this.$getUserEntries();
@@ -389,7 +389,7 @@ define('controls/users/Input', [
 
             var self = this;
 
-            uid = (uid).toInt();
+            uid = parseInt(uid);
 
             var User = new UserEntry(uid, {
                 events: {
@@ -405,7 +405,10 @@ define('controls/users/Input', [
                 User.disable();
             }
 
-            this.fireEvent('add', [this, uid]);
+            this.fireEvent('add', [
+                this,
+                uid
+            ]);
             this.update();
         },
 

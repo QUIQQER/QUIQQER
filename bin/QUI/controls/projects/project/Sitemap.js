@@ -81,7 +81,7 @@ define('controls/projects/project/Sitemap', [
                 this.setAttribute('multiple', this.getAttribute('multible'));
             }
 
-            this.$Elm       = null;
+            this.$Elm = null;
             this.$showNames = false;
 
             this.$Map = new QUISitemap({
@@ -127,7 +127,7 @@ define('controls/projects/project/Sitemap', [
             });
 
             // copy and paste ids
-            this.$cut  = false;
+            this.$cut = false;
             this.$copy = false;
         },
 
@@ -175,7 +175,10 @@ define('controls/projects/project/Sitemap', [
                     var First = self.$Map.firstChild();
 
                     if (First.isOpen()) {
-                        self.fireEvent('openEnd', [First, self]);
+                        self.fireEvent('openEnd', [
+                            First,
+                            self
+                        ]);
                         return;
                     }
 
@@ -282,7 +285,7 @@ define('controls/projects/project/Sitemap', [
                         Map = self.getMap();
 
                     for (i = 0, len = ids.length; i < len; i++) {
-                        id    = (ids[i]).toInt();
+                        id = parseInt(ids[i]);
                         items = Map.getChildrenByValue(id);
 
                         if (!items.length) {
@@ -438,7 +441,7 @@ define('controls/projects/project/Sitemap', [
                     limit     : start + ',' + projectLimit
                 }).then(function (result) {
 
-                    var count    = (result.count).toInt(),
+                    var count    = parseInt(result.count),
                         end      = start + projectLimit,
                         sheets   = (count / projectLimit).ceil(),
                         children = result.children;
@@ -543,13 +546,13 @@ define('controls/projects/project/Sitemap', [
             }
 
             var attributes = {
-                hasChildren: (result.has_children).toInt(),
+                hasChildren: parseInt(result.has_children),
                 dragable   : true
             };
 
             if ("name" in result) {
                 attributes.name = result.name;
-                attributes.alt  = result.name + '.html';
+                attributes.alt = result.name + '.html';
             }
 
             if ("id" in result) {
@@ -558,7 +561,7 @@ define('controls/projects/project/Sitemap', [
             }
 
             if ("title" in result) {
-                attributes.text  = this.$showNames ? result.name : result.title;
+                attributes.text = this.$showNames ? result.name : result.title;
                 attributes.title = this.$showNames ? result.name : result.title;
             }
 
@@ -594,7 +597,7 @@ define('controls/projects/project/Sitemap', [
             var active = true;
 
             if ("active" in result) {
-                if (result.active.toInt() === 0) {
+                if (parseInt(result.active) === 0) {
                     Itm.deactivate();
 
                     active = false;
@@ -755,7 +758,7 @@ define('controls/projects/project/Sitemap', [
                     }
 
                     var dataString = ' ' + data.project + ' (' + data.lang + ') ' +
-                        '#' + data.id + '';
+                                     '#' + data.id + '';
 
                     Paste.setAttribute(
                         'text', Locale.get('quiqqer/quiqqer', 'paste') + dataString
@@ -812,7 +815,7 @@ define('controls/projects/project/Sitemap', [
             }
 
             var self     = this,
-                sheets   = (Item.getAttribute('sheets')).toInt(),
+                sheets   = parseInt(Item.getAttribute('sheets')),
                 Select   = new Element('select'),
                 SiteItem = Item.getAttribute('Item');
 
@@ -824,7 +827,7 @@ define('controls/projects/project/Sitemap', [
             }
 
             if (SiteItem.getAttribute('limitStart') !== false) {
-                Select.value = (SiteItem.getAttribute('limitStart')).toInt() + 1;
+                Select.value = parseInt(SiteItem.getAttribute('limitStart')) + 1;
             }
 
 
@@ -846,7 +849,7 @@ define('controls/projects/project/Sitemap', [
 
                     onSubmit: function (Win) {
                         var Select = Win.getContent().getElement('select'),
-                            sheet  = (Select.value).toInt();
+                            sheet  = parseInt(Select.value);
 
                         SiteItem.setAttribute('limitStart', sheet - 1);
                         self.$loadChildren(SiteItem);
@@ -867,10 +870,16 @@ define('controls/projects/project/Sitemap', [
         $open: function (Item) {
             var self = this;
 
-            this.fireEvent('openBegin', [Item, this]);
+            this.fireEvent('openBegin', [
+                Item,
+                this
+            ]);
 
             this.$loadChildren(Item, function (Item) {
-                self.fireEvent('openEnd', [Item, self]);
+                self.fireEvent('openEnd', [
+                    Item,
+                    self
+                ]);
             });
         },
 
@@ -1057,10 +1066,10 @@ define('controls/projects/project/Sitemap', [
             var i, len, Item, params;
 
             for (i = 0, len = children.length; i < len; i++) {
-                Item   = children[i];
+                Item = children[i];
                 params = Site.getAttributes();
 
-                params.active       = Site.isActive();
+                params.active = Site.isActive();
                 params.has_children = Site.hasChildren() ? 1 : 0;
 
                 this.$parseArrayToSitemapitem(params, Item);

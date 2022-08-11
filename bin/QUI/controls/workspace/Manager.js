@@ -257,8 +257,7 @@ define('controls/workspace/Manager', [
                 for (var i = 0, len = list.length; i < len; i++) {
                     self.$spaces[list[i].id] = list[i];
 
-                    if (list[i].standard &&
-                        (list[i].standard).toInt() === 1) {
+                    if (list[i].standard && parseInt(list[i].standard) === 1) {
                         Standard = list[i];
                     }
                 }
@@ -399,7 +398,7 @@ define('controls/workspace/Manager', [
             this.Loader.show();
 
             if (typeof id !== 'undefined') {
-                id = id.toInt();
+                id = parseInt(id);
             }
 
             if (!id || typeOf(id) !== 'number') {
@@ -1115,7 +1114,7 @@ define('controls/workspace/Manager', [
                         // create workspace for serialize
                         var Workspace = new QUIWorkspace(),
                             Parent    = self.$Elm.clone(),
-                            columns   = (Columns.value).toInt();
+                            columns   = parseInt(Columns.value);
 
                         Workspace.inject(Parent);
 

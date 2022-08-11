@@ -132,7 +132,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 );
             }
 
-            var sels    = this.getPanel().getSelectedItems();
+            var sels = this.getPanel().getSelectedItems();
             var Content = Panel.getContent();
 
             if (!sels.length || sels.length === 1) {
@@ -353,7 +353,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             // check if its the same id
             if (typeOf(Element) === 'element') {
                 ids = Element.get('data-ids').split(',');
-                id  = Droppable.get('data-id');
+                id = Droppable.get('data-id');
 
                 if (ids.length === 1 && ids[0] === id) {
                     return;
@@ -463,7 +463,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
 
 
             ids = Element.get('data-ids').split(',');
-            id  = Droppable.get('data-id');
+            id = Droppable.get('data-id');
 
             // show choices
             Menu.appendChild(
@@ -522,7 +522,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
 
             var sels = this.getPanel().getSelectedItems();
 
-            if (DOMNode.get('data-active').toInt() === 0) {
+            if (parseInt(DOMNode.get('data-active')) === 0) {
                 Menu.appendChild(
                     this.getActivateItem(DOMNode)
                 );
@@ -841,7 +841,8 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 Menu.appendChild(
                     new QUIContextmenuItem({
                         name    : 'hide',
-                        text    : isHidden ? QUILocale.get('quiqqer/quiqqer', 'media.item.visible') : QUILocale.get('quiqqer/quiqqer', 'media.item.hide'),
+                        text    : isHidden ? QUILocale.get('quiqqer/quiqqer', 'media.item.visible') :
+                            QUILocale.get('quiqqer/quiqqer', 'media.item.hide'),
                         icon    : isHidden ? 'fa fa-eye' : 'fa fa-eye-slash',
                         isHidden: isHidden,
                         events  : {

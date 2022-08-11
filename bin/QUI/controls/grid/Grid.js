@@ -536,7 +536,7 @@ define('controls/grid/Grid', [
 
             var td       = li.getElements('div.td')[c],
                 data     = this.$data[sels[0]],
-                width    = td.getStyle('width').toInt() - 5,
+                width    = parseInt(td.getStyle('width')) - 5,
                 html     = data[colmod.dataIndex],
                 editType = colmod.editType ? colmod.editType : this.getAttribute('editType');
 
@@ -1804,7 +1804,7 @@ define('controls/grid/Grid', [
                 columnModel = cModel[c];
 
                 if (c == colindex) {
-                    pos = dragSt.getStyle('left').toInt() + scrollX - this.sumWidth - (browser ? -1 : 1); // zato sto je u dragSt.left +2
+                    pos = parseInt(dragSt.getStyle('left')) + scrollX - this.sumWidth - (browser ? -1 : 1); // zato sto je u dragSt.left +2
                 } else if (!columnModel.hidden) {
                     t.sumWidth += columnModel.width;
                 }
@@ -1925,7 +1925,7 @@ define('controls/grid/Grid', [
             }
 
             if (this.getAttribute('buttons') && this.container.getElement('.tDiv')) {
-                height = height - this.container.getElement('.tDiv').getStyle('height').toInt();
+                height = height - parseInt(this.container.getElement('.tDiv').getStyle('height'));
             }
 
             if (this.getAttribute('pagination') || this.getAttribute('filterInput')) {
@@ -2563,7 +2563,7 @@ define('controls/grid/Grid', [
                 var toolbarHeight = 0;
 
                 if (tDiv) {
-                    toolbarHeight = tDiv.getStyle('height').toInt();
+                    toolbarHeight = parseInt(tDiv.getStyle('height'));
                 }
 
                 cDrag.setStyle('top', toolbarHeight);

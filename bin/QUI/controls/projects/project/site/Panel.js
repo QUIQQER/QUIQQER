@@ -1277,7 +1277,7 @@ define('controls/projects/project/site/Panel', [
                                         Row = rowList[i];
                                         Buttons = rowList[i].getElement('.site-lang-entry-button');
 
-                                        if (!Row.get('data-id').toInt()) {
+                                        if (!parseInt(Row.get('data-id'))) {
                                             // seite in sprache kopieren und sprach verknüpfung anlegen
                                             new QUIButton({
                                                 name  : 'copy-linking',
