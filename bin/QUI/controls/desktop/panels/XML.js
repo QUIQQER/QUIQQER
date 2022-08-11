@@ -245,7 +245,7 @@ define('controls/desktop/panels/XML', [
                     }
 
                     if (Elm.type === 'checkbox' || Elm.type === 'radio') {
-                        Elm.checked = (value).toInt();
+                        Elm.checked = parseInt(value);
                         continue;
                     }
 
