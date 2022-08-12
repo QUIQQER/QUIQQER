@@ -11,11 +11,11 @@ QUI::$Ajax->registerFunction(
         $providers = json_decode($providers, true);
 
         foreach ($providers as $provider) {
-            if (!\class_exists($provider)) {
+            if (!class_exists($provider)) {
                 continue;
             }
 
-            $interfaces = \class_implements($provider);
+            $interfaces = class_implements($provider);
 
             if (!isset($interfaces['QUI\InstallationWizard\InstallationWizardInterface'])) {
                 continue;

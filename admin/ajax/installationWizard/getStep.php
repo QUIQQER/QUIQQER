@@ -6,11 +6,11 @@
 QUI::$Ajax->registerFunction(
     'ajax_installationWizard_getStep',
     function ($provider, $step) {
-        if (!\class_exists($provider)) {
+        if (!class_exists($provider)) {
             return '';
         }
 
-        $interfaces = \class_implements($provider);
+        $interfaces = class_implements($provider);
 
         if (!isset($interfaces['QUI\InstallationWizard\InstallationWizardInterface'])) {
             return '';
