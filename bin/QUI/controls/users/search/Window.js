@@ -13,6 +13,7 @@ define('controls/users/search/Window', [
     "use strict";
 
     return new Class({
+
         Extends: QUIConfirm,
         Type   : 'controls/users/search/Window',
 
@@ -51,7 +52,8 @@ define('controls/users/search/Window', [
          * event : on open
          */
         $onOpen: function () {
-            var Content = this.getContent();
+            const Content = this.getContent();
+            const Win = this;
 
             Content.set('html', '');
             Content.setStyle('padding', 0);
@@ -61,7 +63,13 @@ define('controls/users/search/Window', [
                 searchSettings: this.getAttribute('searchSettings'),
                 editable      : this.getAttribute('editable'),
                 events        : {
-                    onDblClick: this.submit
+                    onDblClick   : this.submit,
+                    onSearchBegin: function () {
+                        Win.Loader.show();
+                    },
+                    onSearchEnd  : function () {
+                        Win.Loader.hide();
+                    }
                 }
             }).inject(Content);
 
@@ -81,13 +89,16 @@ define('controls/users/search/Window', [
          * Submit the window
          */
         submit: function () {
-            var data = this.$Search.getSelectedData();
+            const data = this.$Search.getSelectedData();
 
             if (!data.length) {
                 return;
             }
 
-            this.fireEvent('submit', [this, data]);
+            this.fireEvent('submit', [
+                this,
+                data
+            ]);
 
             if (this.getAttribute('autoclose')) {
                 this.close();

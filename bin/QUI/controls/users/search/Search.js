@@ -21,7 +21,7 @@ define('controls/users/search/Search', [
 ], function (QUI, QUIControl, QUISwitch, QUILocale, QUIAjax, Users, Mustache, Grid, template) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/quiqqer';
 
     return new Class({
 
@@ -37,6 +37,7 @@ define('controls/users/search/Search', [
         options: {
             field         : 'username',
             order         : 'ASC',
+            limit         : 100,
             page          : 1,
             search        : false,
             searchSettings: {},
@@ -59,7 +60,7 @@ define('controls/users/search/Search', [
          * event : on open
          */
         create: function () {
-            var self = this;
+            const self = this;
 
             this.$Elm = new Element('div', {
                 'class': 'user-search-control',
@@ -200,7 +201,7 @@ define('controls/users/search/Search', [
          * @return {Promise}
          */
         resize: function () {
-            var size = this.$Result.getSize();
+            const size = this.$Result.getSize();
 
             return Promise.all([
                 this.$Grid.setHeight(size.y - 40),
@@ -212,9 +213,12 @@ define('controls/users/search/Search', [
          * execute the search
          */
         search: function () {
-            var options = this.$Grid.options;
-            var Search = this.getAttribute('searchSettings');
-            var Form = this.$SearchForm;
+            this.fireEvent('searchBegin');
+
+            const options = this.$Grid.options;
+            const Form = this.$SearchForm;
+
+            let Search = this.getAttribute('searchSettings');
 
             if (!Search) {
                 Search = {};
@@ -231,7 +235,7 @@ define('controls/users/search/Search', [
                 group    : Form.elements.group.checked ? 1 : 0
             };
 
-            var RegDateFilter = {
+            const RegDateFilter = {
                 regdate_from: Form.elements['registration-from'].value,
                 regdate_to  : Form.elements['registration-to'].value
             };
@@ -249,11 +253,13 @@ define('controls/users/search/Search', [
                 page          : options.page,
                 search        : this.getAttribute('search'),
                 searchSettings: Search
-            }).then(function (result) {
+            }).then((result) => {
                 this.$Grid.setData(
                     this.$parseDataForGrid(result)
                 );
-            }.bind(this));
+
+                this.fireEvent('searchEnd');
+            });
         },
 
         /**
@@ -272,9 +278,9 @@ define('controls/users/search/Search', [
          * @return {Array}
          */
         $parseDataForGrid: function (data) {
-            var i, len, entry;
+            let i, len, entry;
 
-            var editable = this.getAttribute('editable');
+            const editable = this.getAttribute('editable');
 
             for (i = 0, len = data.data.length; i < len; i++) {
                 entry = data.data[i];
@@ -317,9 +323,9 @@ define('controls/users/search/Search', [
          * @param {Object} Switch - qui/controls/buttons/Switch
          */
         $onSwitchStatusChange: function (Switch) {
-            var self = this,
-                uid  = Switch.getAttribute('uid'),
-                User = Users.get(uid);
+            const self = this,
+                  uid  = Switch.getAttribute('uid'),
+                  User = Users.get(uid);
 
             if (!User.isLoaded()) {
                 User.load(function () {
@@ -329,7 +335,7 @@ define('controls/users/search/Search', [
                 return;
             }
 
-            var userStatus = !!User.isActive();
+            const userStatus = !!User.isActive();
 
             // status is the same as the switch, we do nothing
             if (userStatus === Switch.getStatus()) {
@@ -349,7 +355,7 @@ define('controls/users/search/Search', [
          * Toggle the filter
          */
         toggleFilter: function () {
-            var FilterContainer = this.getElm().getElement('.user-search-control-form-filter');
+            const FilterContainer = this.getElm().getElement('.user-search-control-form-filter');
 
             if (FilterContainer.getStyle('display') === 'none') {
                 this.openFilter();
@@ -362,8 +368,8 @@ define('controls/users/search/Search', [
          * Open the filter
          */
         openFilter: function () {
-            var self            = this,
-                FilterContainer = this.getElm().getElement('.user-search-control-form-filter');
+            const self            = this,
+                  FilterContainer = this.getElm().getElement('.user-search-control-form-filter');
 
             FilterContainer.setStyle('position', 'absolute');
             FilterContainer.setStyle('opacity', 0);
@@ -375,7 +381,7 @@ define('controls/users/search/Search', [
             FilterContainer.setStyle('paddingBottom', null);
             FilterContainer.setStyle('paddingTop', null);
 
-            var height = FilterContainer.getSize().y;
+            const height = FilterContainer.getSize().y;
 
             FilterContainer.setStyle('height', 0);
             FilterContainer.setStyle('paddingBottom', 0);
@@ -400,8 +406,8 @@ define('controls/users/search/Search', [
          * Close the filter
          */
         closeFilter: function () {
-            var self            = this,
-                FilterContainer = this.getElm().getElement('.user-search-control-form-filter');
+            const self            = this,
+                  FilterContainer = this.getElm().getElement('.user-search-control-form-filter');
 
             moofx(FilterContainer).animate({
                 height       : 0,
