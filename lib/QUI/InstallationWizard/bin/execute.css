@@ -25,7 +25,7 @@ h1 {
     font-weight: 300;
 }
 
-pre {
+.wizard-process {
     background: #000;
     bottom: 40px;
     font-size: 12px;
@@ -38,11 +38,14 @@ pre {
     width: calc(100% - 80px);
 }
 
+/*
 pre > pre {
     height: initial;
     overflow: initial;
     position: initial;
+    text-align: left;
 }
+*/
 
 .wizard-steps {
     align-items: center;

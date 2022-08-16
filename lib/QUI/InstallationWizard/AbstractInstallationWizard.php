@@ -6,7 +6,6 @@ use QUI;
 
 use function array_map;
 use function get_class;
-use function ob_flush;
 
 /**
  * Class AbstractInstallationWizard
@@ -104,7 +103,10 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
     public function write(string $line)
     {
         echo $line . '<br />';
-        echo 'document.querySelector("pre").scrollTop = document.querySelector("pre").scrollHeight;';
-        ob_flush();
+        echo 'document.querySelector(".wizard-process").scrollTop = document.querySelector(".wizard-process").scrollHeight;';
+
+        if (function_exists('flushIt')) {
+            flushIt();
+        }
     }
 }
