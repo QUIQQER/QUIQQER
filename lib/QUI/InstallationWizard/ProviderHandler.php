@@ -4,6 +4,14 @@ namespace QUI\InstallationWizard;
 
 use QUI;
 
+use function array_merge;
+use function class_exists;
+use function class_implements;
+use function file_exists;
+use function file_put_contents;
+use function get_class;
+use function trim;
+
 /**
  * Class ProviderHandler
  *
@@ -28,8 +36,8 @@ class ProviderHandler
      */
     public static function getConfig(): ?QUI\Config
     {
-        if (!\file_exists(ETC_DIR.'installationWizard.ini.php')) {
-            \file_put_contents(ETC_DIR.'installationWizard.ini.php', '');
+        if (!file_exists(ETC_DIR . 'installationWizard.ini.php')) {
+            file_put_contents(ETC_DIR . 'installationWizard.ini.php', '');
         }
 
         if (self::$Config === null) {
@@ -58,21 +66,21 @@ class ProviderHandler
                     continue;
                 }
 
-                $list = \array_merge($list, $Package->getProvider('installationWizard'));
+                $list = array_merge($list, $Package->getProvider('installationWizard'));
             } catch (QUI\Exception $exception) {
             }
         }
 
         foreach ($list as $provider) {
             try {
-                if (!\class_exists($provider)) {
+                if (!class_exists($provider)) {
                     continue;
                 }
 
-                $interfaces = \class_implements($provider);
+                $interfaces = class_implements($provider);
 
                 if (isset($interfaces['QUI\InstallationWizard\InstallationWizardInterface'])) {
-                    $provider       = \trim($provider, '\\');
+                    $provider       = trim($provider, '\\');
                     $providerList[] = new $provider();
                 }
             } catch (\Exception $Exception) {
@@ -107,7 +115,7 @@ class ProviderHandler
     public static function getProviderStatus(InstallationWizardInterface $Provider): int
     {
         try {
-            return (int)self::getConfig()->get('status', \get_class($Provider));
+            return (int)self::getConfig()->get('status', get_class($Provider));
         } catch (QUI\Exception $Exception) {
             return self::STATUS_SET_UP_NOT_STARTED;
         }
@@ -120,7 +128,7 @@ class ProviderHandler
      */
     public static function setProviderStatus(InstallationWizardInterface $Provider, int $status)
     {
-        self::getConfig()->set('status', \get_class($Provider), $status);
+        self::getConfig()->set('status', get_class($Provider), $status);
         self::getConfig()->save();
     }
 }

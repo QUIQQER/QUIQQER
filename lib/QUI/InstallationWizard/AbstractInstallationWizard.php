@@ -6,6 +6,7 @@ use QUI;
 
 use function array_map;
 use function get_class;
+use function ob_flush;
 
 /**
  * Class AbstractInstallationWizard
@@ -79,5 +80,31 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
 
     public function onListInit(&$list)
     {
+    }
+
+    public function getExecuteSteps(): array
+    {
+        return [
+            [
+                'title'   => '',
+                'content' => ''
+            ]
+        ];
+    }
+
+    public function getExecuteContent(): string
+    {
+        return QUI::getLocale()->get('quiqqer/quiqqer', 'execution.content');
+    }
+
+    /**
+     * @param string $line
+     * @return void
+     */
+    public function write(string $line)
+    {
+        echo $line . '<br />';
+        echo 'document.querySelector("pre").scrollTop = document.querySelector("pre").scrollHeight;';
+        ob_flush();
     }
 }

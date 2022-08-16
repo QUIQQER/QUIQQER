@@ -9,20 +9,19 @@ QUI::$Ajax->registerFunction(
     'ajax_installationWizard_execute',
     function ($provider, $data) {
         if (!class_exists($provider)) {
-            return;
+            return false;
         }
 
         $interfaces = class_implements($provider);
 
         if (!isset($interfaces['QUI\InstallationWizard\InstallationWizardInterface'])) {
-            return;
+            return false;
         }
 
-        /* @var $Provider QUI\InstallationWizard\InstallationWizardInterface */
-        $Provider = new $provider();
-        $Provider->execute(json_decode($data, true));
-
-        ProviderHandler::setProviderStatus($Provider, ProviderHandler::STATUS_SET_UP_DONE);
+        ProviderHandler::getConfig()->set('execute', 'provider', $provider);
+        ProviderHandler::getConfig()->set('execute', 'data', $data);
+        ProviderHandler::getConfig()->save();
+        return true;
     },
     ['provider', 'data'],
     'Permission::checkSU'

@@ -270,7 +270,32 @@ define('InstallationWizard', [
                 WizardWindow.Loader.setAttribute('closetime', 500000);
 
                 // execute
-                QUIAjax.post('ajax_installationWizard_execute', () => {
+                QUIAjax.post('ajax_installationWizard_execute', (saved) => {
+                    if (saved) {
+                        WizardWindow.close();
+
+                        // @todo  open iframe
+
+                        new Element('iframe', {
+                            src   : URL_OPT_DIR + 'quiqqer/quiqqer/lib/QUI/InstallationWizard/bin/execute.php',
+                            styles: {
+                                background: '#fff',
+                                border    : 0,
+                                height    : '100%',
+                                left      : 0,
+                                position  : 'absolute',
+                                top       : 0,
+                                width     : '100%',
+                                zIndex    : 1000
+                            }
+                        }).inject(document.body);
+
+                        return;
+                    }
+
+                    // @todo show some errors
+
+                    /*
                     QUI.getMessageHandler().then(function (MH) {
                         MH.addSuccess(
                             QUILocale.get('quiqqer/quiqqer', 'quiqqer.setup.success')
@@ -281,6 +306,7 @@ define('InstallationWizard', [
 
                     // reload
                     window.location.reload();
+                    */
                 }, {
                     'package': 'quiqqer/quiqqer',
                     provider : CurrentProvider.class,

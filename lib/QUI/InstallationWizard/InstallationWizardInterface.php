@@ -7,6 +7,7 @@ namespace QUI\InstallationWizard;
  */
 interface InstallationWizardInterface
 {
+
     /**
      * @param null $Locale
      * @return string
@@ -60,6 +61,24 @@ interface InstallationWizardInterface
      * @param array $data
      */
     public function execute(array $data = []);
+
+    /**
+     * output for the setup details
+     * is usable via the execute method
+     *
+     * @param string $line
+     */
+    public function write(string $line);
+
+    /**
+     * @return array
+     */
+    public function getExecuteSteps(): array;
+
+    /**
+     * @return string
+     */
+    public function getExecuteContent(): string;
 
     /**
      * is called when all provider lists are called via ajax
