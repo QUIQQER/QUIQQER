@@ -103,7 +103,12 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
     public function write(string $line)
     {
         echo $line . '<br />';
-        echo 'document.querySelector(".wizard-process").scrollTop = document.querySelector(".wizard-process").scrollHeight;';
+        echo '<script>
+        (function() {
+            const Process = document.querySelector(".wizard-process");
+            Process.scrollTop = Process.scrollHeight;
+        })();
+        </script>';
 
         if (function_exists('flushIt')) {
             flushIt();

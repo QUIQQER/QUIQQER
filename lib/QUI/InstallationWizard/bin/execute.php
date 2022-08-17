@@ -96,4 +96,4 @@ echo $Provider->getExecuteContent(); ?>
 
 flushIt();
 
-$Provider->execute(json_decode($data, true));
+$Provider->execute($data);

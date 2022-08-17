@@ -25,28 +25,6 @@ h1 {
     font-weight: 300;
 }
 
-.wizard-process {
-    background: #000;
-    bottom: 40px;
-    font-size: 12px;
-    color: #fff;
-    height: 300px;
-    left: 40px;
-    overflow: auto;
-    position: absolute;
-    padding: 10px;
-    width: calc(100% - 80px);
-}
-
-/*
-pre > pre {
-    height: initial;
-    overflow: initial;
-    position: initial;
-    text-align: left;
-}
-*/
-
 .wizard-steps {
     align-items: center;
     display: flex;
@@ -69,8 +47,23 @@ pre > pre {
     font-size: 2.5rem;
 }
 
+/* process display */
+.wizard-process {
+    background: #000;
+    bottom: 40px;
+    font-size: 12px;
+    color: #fff;
+    height: 300px;
+    left: 40px;
+    overflow: auto;
+    position: absolute;
+    padding: 10px;
+    width: calc(100% - 80px);
+}
+
+/* process button */
 .wizard-show-process {
-    bottom: 30px;
+    bottom: 20px;
     color: #fff;
     cursor: pointer;
     opacity: 0.75;
