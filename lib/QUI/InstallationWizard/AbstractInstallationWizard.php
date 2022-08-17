@@ -98,7 +98,7 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
      */
     public function getExecuteContent(): string
     {
-        return QUI::getLocale()->get('quiqqer/quiqqer', 'execution.content');
+        return '';
     }
 
     /**
@@ -108,12 +108,7 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
      */
     public function getExecuteSteps(): array
     {
-        return [
-            [
-                'title'   => '',
-                'content' => ''
-            ]
-        ];
+        return [];
     }
 
     /**
