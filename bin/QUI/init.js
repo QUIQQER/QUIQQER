@@ -421,6 +421,10 @@ require(requireList, function () {
 
 
         window.onbeforeunload = function () {
+            if (typeof window.QUIQQER_REFRESH !== 'undefined') {
+                return;
+            }
+
             Workspace.save();
 
             return Locale.get('quiqqer/quiqqer', 'log.out.message');

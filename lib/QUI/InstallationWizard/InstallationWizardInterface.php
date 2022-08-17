@@ -63,6 +63,13 @@ interface InstallationWizardInterface
     public function execute(array $data = []);
 
     /**
+     * Returns a finish text (optional)
+     *
+     * @return bool|string
+     */
+    public function finish();
+
+    /**
      * output for the setup details
      * is usable via the execute method
      *

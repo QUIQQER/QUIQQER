@@ -81,6 +81,31 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
     {
     }
 
+    /**
+     * @return false|string
+     */
+    public function finish()
+    {
+        return false;
+    }
+
+    //region execution methods
+
+    /**
+     * Returns the text for the finish display
+     *
+     * @return string
+     */
+    public function getExecuteContent(): string
+    {
+        return QUI::getLocale()->get('quiqqer/quiqqer', 'execution.content');
+    }
+
+    /**
+     * Returns the step which are shown during the execute() step (installation)
+     *
+     * @return \string[][]
+     */
     public function getExecuteSteps(): array
     {
         return [
@@ -91,12 +116,9 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
         ];
     }
 
-    public function getExecuteContent(): string
-    {
-        return QUI::getLocale()->get('quiqqer/quiqqer', 'execution.content');
-    }
-
     /**
+     * Writes an output during the ->execute() installation / setup
+     *
      * @param string $line
      * @return void
      */
@@ -114,4 +136,6 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
             flushIt();
         }
     }
+
+    //endregion
 }

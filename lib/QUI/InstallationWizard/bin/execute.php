@@ -45,6 +45,10 @@ function flushIt()
 
         <title>Installation Wizard</title>
         <link href="execute.css" rel="stylesheet" type="text/css"/>
+
+        <?php
+        echo QUI\FontAwesome\EventHandler::fontawesome(false, false);
+        ?>
     </head>
 <?php
 flushIt();
@@ -106,4 +110,8 @@ try {
     Log::writeException($Exception);
 }
 
-$Provider->write('<script>window.finish();</script>');
+if ($Provider->finish()) {
+    echo $Provider->finish();
+} else {
+    $Provider->write('<script>window.finish();</script>');
+}
