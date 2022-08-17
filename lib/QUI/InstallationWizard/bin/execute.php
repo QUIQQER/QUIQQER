@@ -1,6 +1,7 @@
 <?php
 
 use QUI\InstallationWizard\ProviderHandler;
+use QUI\System\Log;
 
 const QUIQQER_SYSTEM = true;
 
@@ -83,9 +84,10 @@ $execSteps = $Provider->getExecuteSteps();
     <script>
         window.STEPS = <?php echo json_encode($execSteps); ?>;
     </script>
-<?php
-echo $Provider->getExecuteContent(); ?>
-
+    <div class="wizard-content">
+        <?php
+        echo $Provider->getExecuteContent(); ?>
+    </div>
     <div class="wizard-steps"></div>
 
     <script src="<?php
@@ -97,3 +99,11 @@ echo $Provider->getExecuteContent(); ?>
 flushIt();
 
 $Provider->execute($data);
+
+try {
+    ProviderHandler::setProviderStatus($Provider, ProviderHandler::STATUS_SET_UP_DONE);
+} catch (QUI\Exception $Exception) {
+    Log::writeException($Exception);
+}
+
+$Provider->write('<script>window.finish();</script>');
