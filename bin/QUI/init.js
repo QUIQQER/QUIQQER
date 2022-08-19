@@ -231,6 +231,18 @@ require(requireList, function () {
 
         if (menuLoaded && workspaceLoaded) {
             quiqqerLoadedTriggered = true;
+
+            QUI.addEvent('onQuiqqerUserAuthLoginSuccess', function () {
+                const ActiveTask = document.getElement('.qui-task.active');
+
+                if (ActiveTask) {
+                    try {
+                        QUI.Controls.getById(ActiveTask.get('data-quiid')).getInstance().refresh();
+                    } catch (e) {
+                    }
+                }
+            });
+
             QUI.fireEvent('quiqqerLoaded');
             window.fireEvent('quiqqerLoaded');
         }
