@@ -26,6 +26,7 @@ define('InstallationWizard', [
     let CurrentControl = null;
     let WizardWindow = null;
     let formData = {};
+    let CURRENT_MAX_STEP = 0; // der maximale step welcher schon ausgewählt wurde
 
     let finishButtonTitle = '';
 
@@ -125,8 +126,6 @@ define('InstallationWizard', [
                 src    : list[0].logo
             }).inject(WizardWindow.getContent());
 
-            console.log(list[0]);
-
             finishButtonTitle = list[0].finishButton;
 
             this.$loadSteps(list[0]);
@@ -144,13 +143,26 @@ define('InstallationWizard', [
             for (let i = 0; i < steps.length; i++) {
                 new Element('div', {
                     'class'    : 'steps-container-step',
-                    'data-step': i
+                    'data-step': i,
+                    events     : {
+                        click: this.$stepClick.bind(this)
+                    }
                 }).inject(StepsContainer);
             }
 
             this.loadStep(0).catch((err) => {
                 console.error(err);
             });
+        },
+
+        $stepClick: function (e) {
+            const Step = e.target;
+
+            if (Step.hasClass('steps-container-step--clickable')) {
+                this.loadStep(parseInt(Step.get('data-step'))).catch(function (err) {
+                    console.error(err);
+                });
+            }
         },
 
         /**
@@ -230,6 +242,24 @@ define('InstallationWizard', [
                         }
 
                         currentStep = step;
+
+                        // refresh steps
+                        if (currentStep > CURRENT_MAX_STEP) {
+                            CURRENT_MAX_STEP = currentStep;
+                        }
+
+                        let i, Step;
+
+                        for (i = 0; i <= CURRENT_MAX_STEP; i++) {
+                            Step = StepsContainer.getElement('.steps-container-step:nth-child(' + (i + 1) + ')');
+
+                            if (Step) {
+                                Step.addClass('steps-container-step--clickable');
+                            } else {
+                                Step.removeClass('steps-container-step--clickable');
+                            }
+                        }
+
                         resolve();
                     });
                 }, {

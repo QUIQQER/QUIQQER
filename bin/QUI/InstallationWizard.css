@@ -66,6 +66,15 @@
     width: 10px;
 }
 
+.installation-wizard .steps-container-step--clickable {
+    background: #a0bbd9;
+    cursor: pointer;
+}
+
+.installation-wizard .steps-container-step--clickable:hover {
+    box-shadow: 0 0 3px 3px #007395;
+}
+
 .installation-wizard .steps-container-step--active {
     background: #666;
 }
