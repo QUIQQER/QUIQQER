@@ -29,6 +29,14 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
     }
 
     /**
+     * @return string
+     */
+    public function getLogo(): string
+    {
+        return URL_OPT_DIR . 'quiqqer/quiqqer/bin/quiqqer_logo.svg';
+    }
+
+    /**
      * @param int $step
      * @return InstallationWizardStepInterface
      * @throws Exception
@@ -70,6 +78,7 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
         return [
             'title'        => $this->getTitle($Locale),
             'description'  => $this->getDescription($Locale),
+            'logo'         => $this->getLogo(),
             'status'       => $this->getStatus(),
             'steps'        => $steps,
             'class'        => get_class($this),

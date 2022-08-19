@@ -120,6 +120,13 @@ define('InstallationWizard', [
                 // create provider select
             }
 
+            new Element('img', {
+                'class': 'installation-wizard-logo',
+                src    : list[0].logo
+            }).inject(WizardWindow.getContent());
+
+            console.log(list[0]);
+
             finishButtonTitle = list[0].finishButton;
 
             this.$loadSteps(list[0]);
@@ -180,7 +187,11 @@ define('InstallationWizard', [
 
             let fetchNextStep = new Promise((resolve) => {
                 QUIAjax.get('ajax_installationWizard_getStep', (html) => {
-                    WizardWindow.getContent().set('html', '');
+                    WizardWindow.getContent().getChildren().forEach(function (Node) {
+                        if (!Node.hasClass('installation-wizard-logo')) {
+                            Node.destroy();
+                        }
+                    });
 
                     let Container = new Element('div', {
                         html  : html,

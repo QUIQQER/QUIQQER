@@ -7,7 +7,6 @@ namespace QUI\InstallationWizard;
  */
 interface InstallationWizardInterface
 {
-
     /**
      * @param null $Locale
      * @return string
@@ -19,6 +18,11 @@ interface InstallationWizardInterface
      * @return string
      */
     public function getDescription($Locale = null): string;
+
+    /**
+     * @return string
+     */
+    public function getLogo(): string;
 
     /**
      * Return the priority of the installation wizard
