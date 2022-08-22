@@ -35,10 +35,10 @@ QUI::$Ajax->registerFunction(
 
         // require sort
         if (isset($composerData['require'])) {
-            \ksort($composerData['require']);
+            ksort($composerData['require']);
         }
 
-        return \array_merge($composerData, $standardData, $hashData);
+        return array_merge($composerData, $standardData, $hashData);
     },
     ['package'],
     [

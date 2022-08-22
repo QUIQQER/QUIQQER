@@ -510,7 +510,6 @@ define('classes/packages/Manager', [
                     }
 
                     resolve(result);
-
                 }, {
                     'package': pkg,
                     showError: false,
@@ -569,14 +568,15 @@ define('classes/packages/Manager', [
 
             const self = this;
 
-            return this.getPackage(pkg).then(function () {
-                self.$installed[pkg] = true;
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_system_packages_isInstalled', function (isInstalled) {
+                    self.$installed[pkg] = !!isInstalled;
 
-                return true;
-            }).catch(function () {
-                self.$installed[pkg] = false;
-
-                return false;
+                    resolve(self.$installed[pkg]);
+                }, {
+                    showError: false,
+                    onError  : reject
+                });
             });
         },
 
