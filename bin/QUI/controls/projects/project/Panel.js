@@ -480,7 +480,7 @@ define('controls/projects/project/Panel', [
          */
         createList: function (openList) {
             if (this.$__fx_run) {
-                return;
+                return Promise.resolve();
             }
 
             if (typeof openList === 'undefined') {
@@ -692,6 +692,10 @@ define('controls/projects/project/Panel', [
                 lang      = this.getAttribute('lang');
 
             var Project = Projects.get(project, lang);
+
+            if (!Project) {
+                return Promise.reject('Project ' + project + ' not found');
+            }
 
             Container.setStyle('overflow', 'hidden');
 

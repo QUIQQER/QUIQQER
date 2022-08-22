@@ -262,7 +262,7 @@ define('controls/projects/project/Settings', [
 
             this.Loader.show();
             this.$onCategoryLeave(false);
-
+            console.log('#### save');
             var Project  = this.getProject(),
                 name     = Project.getName(),
                 loadHide = function () {
@@ -603,17 +603,20 @@ define('controls/projects/project/Settings', [
             const Content = this.getContent(),
                   Form    = Content.getElement('form');
 
+            if (typeof noHide === 'undefined') {
+                noHide = true;
+            }
+
             if (this.$Control && typeof this.$Control.save === 'function') {
                 this.$Control.save();
-                this.$Control = null;
+
+                if (noHide === true) {
+                    this.$Control = null;
+                }
             }
 
             if (!Form) {
                 return Promise.resolve();
-            }
-
-            if (typeof noHide === 'undefined') {
-                noHide = true;
             }
 
 
