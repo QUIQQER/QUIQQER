@@ -262,7 +262,7 @@ define('controls/projects/project/Settings', [
 
             this.Loader.show();
             this.$onCategoryLeave(false);
-            console.log('#### save');
+            
             var Project  = this.getProject(),
                 name     = Project.getName(),
                 loadHide = function () {
