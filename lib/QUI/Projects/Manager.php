@@ -6,12 +6,39 @@
 
 namespace QUI\Projects;
 
+use DOMXPath;
 use QUI;
-use QUI\Permissions\Permission;
-use QUI\Utils\Security\Orthos;
-use QUI\Utils\DOM;
-use QUI\Utils\Text\XML;
 use QUI\Cache\Manager as QUICacheManager;
+use QUI\Permissions\Permission;
+use QUI\Utils\DOM;
+use QUI\Utils\Security\Orthos;
+use QUI\Utils\Text\XML;
+
+use function array_filter;
+use function array_flip;
+use function array_unique;
+use function count;
+use function date;
+use function explode;
+use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
+use function get_class;
+use function implode;
+use function in_array;
+use function is_bool;
+use function is_dir;
+use function is_numeric;
+use function is_string;
+use function json_decode;
+use function key;
+use function preg_replace;
+use function rename;
+use function str_replace;
+use function strlen;
+use function strpos;
+use function trim;
+use function unlink;
 
 /**
  * The Project Manager
@@ -82,7 +109,7 @@ class Manager
         $Project      = $project;
         $handedParams = $params;
 
-        if (\is_string($Project) || \get_class($Project) != Project::class) {
+        if (is_string($Project) || get_class($Project) != Project::class) {
             $Project = self::getProject($project);
         }
 
@@ -129,11 +156,11 @@ class Manager
 
                 $setValue = $params[$key];
 
-                if (!\is_string($setValue) && !\is_bool($setValue) && !\is_numeric($setValue)) {
+                if (!is_string($setValue) && !is_bool($setValue) && !is_numeric($setValue)) {
                     continue;
                 }
 
-                if (\is_string($setValue)) {
+                if (is_string($setValue)) {
                     $setValue = Orthos::removeHTML($setValue);
                     $setValue = Orthos::clearPath($setValue);
                 }
@@ -143,10 +170,10 @@ class Manager
         }
 
         // doppelte sprachen filtern
-        $languages = \explode(',', $availableConfig['langs']);
-        $languages = \array_unique($languages);
+        $languages = explode(',', $availableConfig['langs']);
+        $languages = array_unique($languages);
 
-        $availableConfig['langs'] = \implode(',', $languages);
+        $availableConfig['langs'] = implode(',', $languages);
 
         $Config->setSection($projectName, $availableConfig);
         $Config->save();
@@ -268,7 +295,7 @@ class Manager
      */
     public static function getProjectConfigList(QUI\Projects\Project $Project)
     {
-        $cache = $Project->getCachePath().'/configList';
+        $cache = $Project->getCachePath() . '/configList';
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -310,7 +337,7 @@ class Manager
 
         foreach ($settingsXml as $file) {
             $Dom  = XML::getDomFromXml($file);
-            $Path = new \DOMXPath($Dom);
+            $Path = new DOMXPath($Dom);
 
             $settingsList = $Path->query('//project/settings');
 
@@ -322,15 +349,15 @@ class Manager
                 $settingsName = $Settings->getAttribute('name');
 
                 if (!empty($settingsName)) {
-                    $settingsName = $settingsName.'.';
+                    $settingsName = $settingsName . '.';
                 }
 
                 foreach ($sections as $section => $entry) {
                     foreach ($entry as $key => $param) {
-                        $config[$settingsName.$section.'.'.$key] = '';
+                        $config[$settingsName . $section . '.' . $key] = '';
 
                         if (isset($param['default'])) {
-                            $config[$settingsName.$section.'.'.$key] = $param['default'];
+                            $config[$settingsName . $section . '.' . $key] = $param['default'];
                         }
                     }
                 }
@@ -354,7 +381,7 @@ class Manager
         $Config = self::getConfig();
         $config = $Config->toArray();
 
-        return \count($config);
+        return count($config);
     }
 
     /**
@@ -368,8 +395,8 @@ class Manager
      */
     public static function decode($project)
     {
-        if (\is_string($project)) {
-            $project = \json_decode($project, true);
+        if (is_string($project)) {
+            $project = json_decode($project, true);
         }
 
         if (!isset($project['name']) || !$project['name']) {
@@ -545,7 +572,7 @@ class Manager
         $result = [];
 
         foreach ($config as $project => $conf) {
-            $langs = \explode(',', \trim($conf['langs']));
+            $langs = explode(',', trim($conf['langs']));
 
             foreach ($langs as $lang) {
                 if (isset(self::$projects[$project])
@@ -583,7 +610,7 @@ class Manager
 
         $config = self::getConfig()->toArray();
 
-        if (!\count($config)) {
+        if (!count($config)) {
             throw new QUI\Exception(
                 'No project exist'
             );
@@ -604,11 +631,11 @@ class Manager
                 'No standard project are set. Please define a standard projekt'
             );
 
-            $project = \key($config);
+            $project = key($config);
 
             self::$Standard = QUI\Projects\Manager::getProject(
                 $project,
-                $config[\key($config)]['default_lang']
+                $config[key($config)]['default_lang']
             );
         }
 
@@ -633,7 +660,7 @@ class Manager
     {
         Permission::checkPermission('quiqqer.projects.create');
 
-        if (\strlen($name) <= 2) {
+        if (strlen($name) <= 2) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -643,7 +670,7 @@ class Manager
             );
         }
 
-        if (\strlen($lang) != 2) {
+        if (strlen($lang) != 2) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -676,8 +703,8 @@ class Manager
         /**
          * Sites and sites relation
          */
-        $table_site     = QUI_DB_PRFX.$name.'_'.$lang.'_sites';
-        $table_site_rel = QUI_DB_PRFX.$name.'_'.$lang.'_sites_relations';
+        $table_site     = QUI_DB_PRFX . $name . '_' . $lang . '_sites';
+        $table_site_rel = QUI_DB_PRFX . $name . '_' . $lang . '_sites_relations';
 
         $Table->addColumn($table_site, [
             'id'          => 'bigint(20) NOT NULL',
@@ -715,7 +742,7 @@ class Manager
             'type'     => 'standard',
             'active'   => 1,
             'deleted'  => 0,
-            'c_date'   => \date('Y-m-d H:i:s'),
+            'c_date'   => date('Y-m-d H:i:s'),
             'c_user'   => QUI::getUserBySession()->getId(),
             'e_user'   => QUI::getUserBySession()->getId(),
             'nav_hide' => 0
@@ -725,8 +752,8 @@ class Manager
         /**
          * Media and media relation
          */
-        $table_media     = QUI_DB_PRFX.$name.'_media';
-        $table_media_rel = QUI_DB_PRFX.$name.'_media_relations';
+        $table_media     = QUI_DB_PRFX . $name . '_media';
+        $table_media_rel = QUI_DB_PRFX . $name . '_media_relations';
 
         $Table->addColumn($table_media, [
             'id'           => 'bigint(20) NOT NULL',
@@ -763,7 +790,7 @@ class Manager
             'file'     => '',
             'active'   => 1,
             'deleted'  => 0,
-            'c_date'   => \date('Y-m-d H:i:s'),
+            'c_date'   => date('Y-m-d H:i:s'),
             'c_user'   => QUI::getUserBySession()->getId(),
             'e_user'   => QUI::getUserBySession()->getId(),
             'pathHash' => md5('')
@@ -773,36 +800,36 @@ class Manager
         /**
          * Create the file system folders
          */
-        QUI\Utils\System\File::mkdir(CMS_DIR.'media/sites/'.$name.'/');
-        QUI\Utils\System\File::mkdir(USR_DIR.$name.'/');
+        QUI\Utils\System\File::mkdir(CMS_DIR . 'media/sites/' . $name . '/');
+        QUI\Utils\System\File::mkdir(USR_DIR . $name . '/');
 
 
         /**
          * Languages
          */
-        if (!\in_array($lang, $languages)) {
+        if (!in_array($lang, $languages)) {
             $languages[] = $lang;
         }
 
-        $languages = \array_filter($languages, function ($language) {
-            return \strlen($language) === 2;
+        $languages = array_filter($languages, function ($language) {
+            return strlen($language) === 2;
         });
 
-        $languages = \array_unique($languages);
+        $languages = array_unique($languages);
 
 
         /**
          * Write the config
          */
-        if (!\file_exists(CMS_DIR.'etc/projects.ini.php')) {
-            \file_put_contents(CMS_DIR.'etc/projects.ini.php', '');
+        if (!file_exists(CMS_DIR . 'etc/projects.ini.php')) {
+            file_put_contents(CMS_DIR . 'etc/projects.ini.php', '');
         }
 
         $Config = self::getConfig();
 
         $Config->setSection($name, [
             'default_lang' => $lang,
-            'langs'        => \implode(',', $languages),
+            'langs'        => implode(',', $languages),
             'admin_mail'   => '',
             'template'     => $template,
             'image_text'   => '0',
@@ -815,7 +842,7 @@ class Manager
             'standard'     => '0'
         ]);
 
-        if (\count($Config->toArray()) <= 1) {
+        if (count($Config->toArray()) <= 1) {
             $Config->setValue($name, 'standard', 1);
         }
 
@@ -871,15 +898,15 @@ class Manager
 
         // delete site tables for all languages
         foreach ($languages as $lang) {
-            $table_site     = QUI::getDBTableName($project.'_'.$lang.'_sites');
+            $table_site     = QUI::getDBTableName($project . '_' . $lang . '_sites');
             $table_site_rel = QUI::getDBTableName(
-                $project.'_'.$lang
-                .'_sites_relations'
+                $project . '_' . $lang
+                . '_sites_relations'
             );
 
-            $table_multi     = QUI::getDBTableName($project.'_multilingual');
-            $table_media     = QUI::getDBTableName($project.'_media');
-            $table_media_rel = QUI::getDBTableName($project.'_media_relations');
+            $table_multi     = QUI::getDBTableName($project . '_multilingual');
+            $table_media     = QUI::getDBTableName($project . '_media');
+            $table_media_rel = QUI::getDBTableName($project . '_media_relations');
 
             $Table->delete($table_site);
             $Table->delete($table_site_rel);
@@ -893,9 +920,9 @@ class Manager
 
         foreach ($packages as $package) {
             // search database tables
-            $databaseXml = OPT_DIR.$package['name'].'/database.xml';
+            $databaseXml = OPT_DIR . $package['name'] . '/database.xml';
 
-            if (!\file_exists($databaseXml)) {
+            if (!file_exists($databaseXml)) {
                 continue;
             }
 
@@ -909,7 +936,7 @@ class Manager
             foreach ($dbFields['projects'] as $table) {
                 foreach ($languages as $lang) {
                     $tbl = QUI::getDBTableName(
-                        $project.'_'.$lang.'_'.$table['suffix']
+                        $project . '_' . $lang . '_' . $table['suffix']
                     );
 
                     $Table->delete($tbl);
@@ -919,22 +946,22 @@ class Manager
 
         // delete projects permissions
         QUI::getDataBase()->delete(
-            QUI::getDBTableName(QUI\Permissions\Manager::TABLE).'2projects',
+            QUI::getDBTableName(QUI\Permissions\Manager::TABLE) . '2projects',
             [
                 'project' => $project
             ]
         );
 
         QUI::getDataBase()->delete(
-            QUI::getDBTableName(QUI\Permissions\Manager::TABLE).'2sites',
+            QUI::getDBTableName(QUI\Permissions\Manager::TABLE) . '2sites',
             [
                 'project' => $project
             ]
         );
 
         // delete media
-        QUI::getTemp()->moveToTemp(CMS_DIR.'media/sites/'.$project);
-        QUI::getTemp()->moveToTemp(CMS_DIR.'media/cache/'.$project);
+        QUI::getTemp()->moveToTemp(CMS_DIR . 'media/sites/' . $project);
+        QUI::getTemp()->moveToTemp(CMS_DIR . 'media/cache/' . $project);
 
 
         // config schreiben
@@ -964,19 +991,19 @@ class Manager
         // ----------------------------- //
 
         // File: etc/projects.ini.php
-        $filename = ETC_DIR.'projects.ini.php';
-        $content  = \file_get_contents($filename);
+        $filename = ETC_DIR . 'projects.ini.php';
+        $content  = file_get_contents($filename);
 
-        $content = \str_replace($oldName, $newName, $content);
-        \file_put_contents($filename, $content);
+        $content = str_replace($oldName, $newName, $content);
+        file_put_contents($filename, $content);
 
 
         // File: etc/vhosts.ini.php
-        $filename = ETC_DIR.'vhosts.ini.php';
-        $content  = \file_get_contents($filename);
+        $filename = ETC_DIR . 'vhosts.ini.php';
+        $content  = file_get_contents($filename);
 
-        $content = \str_replace($oldName, $newName, $content);
-        \file_put_contents($filename, $content);
+        $content = str_replace($oldName, $newName, $content);
+        file_put_contents($filename, $content);
 
 
         // ----------------------------- //
@@ -985,7 +1012,7 @@ class Manager
 
         $tables = [];
 
-        $Stmt = \QUI::getDataBase()->getPDO()->prepare('SHOW TABLES;');
+        $Stmt = QUI::getDataBase()->getPDO()->prepare('SHOW TABLES;');
         $Stmt->execute();
         $result = $Stmt->fetchAll();
 
@@ -994,23 +1021,25 @@ class Manager
         }
 
         foreach ($tables as $oldTableName) {
-            if (\strpos($oldTableName.'_', QUI_DB_PRFX.$oldName) === false) {
+            if (strpos($oldTableName . '_', QUI_DB_PRFX . $oldName) === false) {
                 continue;
             }
 
-            $newTableName = \preg_replace(
-                "~^".QUI_DB_PRFX.$oldName."_~m",
-                QUI_DB_PRFX.$newName."_",
+            $newTableName = preg_replace(
+                "~^" . QUI_DB_PRFX . $oldName . "_~m",
+                QUI_DB_PRFX . $newName . "_",
                 $oldTableName
             );
 
-            $sql  = 'ALTER TABLE '.$oldTableName.' RENAME '.$newTableName.';';
-            $Stmt = \QUI::getDataBase()->getPDO()->prepare($sql);
+            $sql  = 'ALTER TABLE ' . $oldTableName . ' RENAME ' . $newTableName . ';';
+            $Stmt = QUI::getDataBase()->getPDO()->prepare($sql);
 
             try {
                 $Stmt->execute();
             } catch (\Exception $Exception) {
-                QUI\System\Log::writeRecursive("Could not rename Table '".$oldTableName."': ".$Exception->getMessage());
+                QUI\System\Log::writeRecursive(
+                    "Could not rename Table '" . $oldTableName . "': " . $Exception->getMessage()
+                );
             }
         }
 
@@ -1019,21 +1048,21 @@ class Manager
         //              Media           //
         // ----------------------------- //
 
-        $sourceDir = CMS_DIR.'media/sites/'.$oldName;
-        $targetDir = CMS_DIR.'media/sites/'.$newName;
+        $sourceDir = CMS_DIR . 'media/sites/' . $oldName;
+        $targetDir = CMS_DIR . 'media/sites/' . $newName;
 
-        if (\is_dir($sourceDir)) {
-            \rename($sourceDir, $targetDir);
+        if (is_dir($sourceDir)) {
+            rename($sourceDir, $targetDir);
         }
 
         // ----------------------------- //
         //              USR           //
         // ----------------------------- //
-        $sourceDir = USR_DIR.$oldName;
-        $targetDir = USR_DIR.$newName;
+        $sourceDir = USR_DIR . $oldName;
+        $targetDir = USR_DIR . $newName;
 
-        if (\is_dir($sourceDir)) {
-            \rename($sourceDir, $targetDir);
+        if (is_dir($sourceDir)) {
+            rename($sourceDir, $targetDir);
         }
 
         // -----------------------------//
@@ -1045,13 +1074,13 @@ class Manager
         // ----------------------------- //
         //              Locale           //
         // ----------------------------- //
-        if (\file_exists(VAR_DIR.'locale/localefiles')) {
-            \unlink(VAR_DIR.'locale/localefiles');
+        if (file_exists(VAR_DIR . 'locale/localefiles')) {
+            unlink(VAR_DIR . 'locale/localefiles');
         }
 
 
         // Remove old translation
-        $translationGroup = 'project/'.$oldName;
+        $translationGroup = 'project/' . $oldName;
         $translationVar   = 'title';
 
         $translation = QUI\Translator::get($translationGroup, $translationVar);
@@ -1061,7 +1090,7 @@ class Manager
         }
 
 
-        $translationGroup = 'project/'.$newName;
+        $translationGroup = 'project/' . $newName;
         $translationVar   = 'title';
 
         $translation = QUI\Translator::get($translationGroup, $translationVar);
@@ -1070,7 +1099,10 @@ class Manager
             try {
                 QUI\Translator::add($translationGroup, $translationVar);
             } catch (\Exception $Exception) {
-                QUI\System\Log::addError('Rename project: Could not add language variable '.$translationGroup.'/'.$translationVar.': '.$Exception->getMessage());
+                QUI\System\Log::addError(
+                    'Rename project: Could not add language variable ' . $translationGroup . '/' . $translationVar . ': ' . $Exception->getMessage(
+                    )
+                );
             }
         }
 
@@ -1080,7 +1112,7 @@ class Manager
         //              Finish           //
         // ----------------------------- //
 
-        \QUI::getEvents()->fireEvent('projectRenamed', [
+        QUI::getEvents()->fireEvent('projectRenamed', [
             $Project,
             $oldName,
             $newName
@@ -1148,7 +1180,7 @@ class Manager
             }
         }
 
-        $result = \array_unique($result);
+        $result = array_unique($result);
 
         return $result;
     }
@@ -1163,7 +1195,7 @@ class Manager
      */
     public static function getRelatedSettingsXML(QUI\Projects\Project $Project)
     {
-        $cache = $Project->getCachePath().'/relatedSettingsXml';
+        $cache = $Project->getCachePath() . '/relatedSettingsXml';
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -1174,7 +1206,7 @@ class Manager
         $packages = QUI::getPackageManager()->getInstalled();
 
         $templates = self::getRelatedTemplates($Project);
-        $templates = \array_flip($templates);
+        $templates = array_flip($templates);
 
         // read template config
         foreach ($packages as $package) {
@@ -1187,14 +1219,14 @@ class Manager
             }
 
             // consider inheritance
-            $file = OPT_DIR.$package['name'].'/settings.xml';
+            $file = OPT_DIR . $package['name'] . '/settings.xml';
 
-            if (!\file_exists($file)) {
+            if (!file_exists($file)) {
                 continue;
             }
 
             $Dom  = XML::getDomFromXml($file);
-            $Path = new \DOMXPath($Dom);
+            $Path = new DOMXPath($Dom);
 
             $Settings = $Path->query('//quiqqer/project/settings');
 
@@ -1204,11 +1236,11 @@ class Manager
         }
 
         // direct - project settings
-        $projectSettings = USR_DIR.$Project->getName().'/settings.xml';
+        $projectSettings = USR_DIR . $Project->getName() . '/settings.xml';
 
-        if (\file_exists($projectSettings)) {
+        if (file_exists($projectSettings)) {
             $Dom  = XML::getDomFromXml($projectSettings);
-            $Path = new \DOMXPath($Dom);
+            $Path = new DOMXPath($Dom);
 
             $Settings = $Path->query('//quiqqer/project/settings');
 
@@ -1249,11 +1281,11 @@ class Manager
         $search = $params['search'];
 
         foreach ($list as $project => $entry) {
-            if (!empty($search) && \strpos($project, $search) === false) {
+            if (!empty($search) && strpos($project, $search) === false) {
                 continue;
             }
 
-            $languages = \explode(',', $entry['langs']);
+            $languages = explode(',', $entry['langs']);
 
             foreach ($languages as $lang) {
                 $result[] = [
@@ -1278,7 +1310,7 @@ class Manager
             return true;
         }
 
-        $cacheName = 'quiqqer/projects/__exists/'.$projectName;
+        $cacheName = 'quiqqer/projects/__exists/' . $projectName;
 
         try {
             return QUICacheManager::get($cacheName);
