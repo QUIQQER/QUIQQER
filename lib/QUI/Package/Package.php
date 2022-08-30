@@ -57,6 +57,7 @@ class Package extends QUI\QDOM
     const SITE_XML = 'site.xml';
     const USER_XML = 'user.xml';
     const WIDGETS_XML = 'widgets.xml';
+    const PANEL_XML = 'panel.xml';
 
     /**
      * Name of the package
@@ -662,7 +663,7 @@ class Package extends QUI\QDOM
         if (!QUI::conf('permissions', 'package')) {
             return true;
         }
-        
+
         return QUI\Permissions\Permission::hasPermission(
             $this->getPermissionName($permission),
             $User

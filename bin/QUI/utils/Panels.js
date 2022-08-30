@@ -5,10 +5,15 @@
  * @module utils/Panels
  * @author www.pcsg.de (Henning Leutz)
  */
-define('utils/Panels', function () {
+define('utils/Panels', [
+    'qui/QUI',
+    'Locale',
+], function (QUI, QUILocale) {
     "use strict";
 
-    return {
+    let Utils;
+
+    Utils = {
 
         /**
          * opens a site panel
@@ -22,7 +27,7 @@ define('utils/Panels', function () {
          * @return Promise
          */
         openSitePanel: function (project, lang, id, callback) {
-            var self = this;
+            const self = this;
 
             return new Promise(function (resolve, reject) {
 
@@ -32,11 +37,11 @@ define('utils/Panels', function () {
                     'controls/projects/project/site/Panel',
                     'Projects'
                 ], function (QUI, QUIPanel, SitePanel, Projects) {
-                    var n      = 'panel-' + project + '-' + lang + '-' + id,
+                    let n      = 'panel-' + project + '-' + lang + '-' + id,
                         panels = QUI.Controls.get(n);
 
                     if (panels.length) {
-                        for (var i = 0, len = panels.length; i < len; i++) {
+                        for (let i = 0, len = panels.length; i < len; i++) {
                             if (!instanceOf(panels[i], QUIPanel)) {
                                 continue;
                             }
@@ -55,7 +60,7 @@ define('utils/Panels', function () {
                         return;
                     }
 
-                    var Panel = new SitePanel(
+                    const Panel = new SitePanel(
                         Projects.get(project, lang).get(id)
                     );
 
@@ -66,7 +71,6 @@ define('utils/Panels', function () {
                     }
 
                     resolve(Panel);
-
                 }, reject);
             });
         },
@@ -82,8 +86,9 @@ define('utils/Panels', function () {
          * @return Promise
          */
         openMediaPanel: function (project, params, callback) {
-            var self     = this,
-                folderId = false;
+            const self = this;
+
+            let folderId = false;
 
             if (typeof params === 'undefined') {
                 params = {};
@@ -94,16 +99,15 @@ define('utils/Panels', function () {
             }
 
             return new Promise(function (resolve, reject) {
-
                 require([
                     'qui/QUI',
                     'qui/controls/desktop/Panel',
                     'controls/projects/project/media/Panel',
                     'Projects'
                 ], function (QUI, QUIPanel, MediaPanel, Projects) {
-                    var i, len, Panel, Project, cacheMedia;
+                    let i, len, Panel, Project, cacheMedia;
 
-                    var panels = QUI.Controls.getByType(
+                    let panels = QUI.Controls.getByType(
                         'controls/projects/project/media/Panel'
                     );
 
@@ -125,7 +129,7 @@ define('utils/Panels', function () {
                                 return;
                             }
 
-                            Project    = Panel.getProject();
+                            Project = Panel.getProject();
                             cacheMedia = Project.getName() + '-' + Project.getLang() + '-id';
 
                             if (QUI.Storage.get(cacheMedia)) {
@@ -147,7 +151,7 @@ define('utils/Panels', function () {
                         return;
                     }
 
-                    Project    = Projects.get(project);
+                    Project = Projects.get(project);
                     cacheMedia = Project.getName() + '-' + Project.getLang() + '-id';
 
                     if (!folderId && QUI.Storage.get(cacheMedia)) {
@@ -172,7 +176,6 @@ define('utils/Panels', function () {
                     }
 
                     resolve(Panel);
-
                 }, reject);
             });
         },
@@ -187,7 +190,7 @@ define('utils/Panels', function () {
          * @return Promise
          */
         openMediaItemPanel: function (project, id, callback) {
-            var self = this;
+            const self = this;
 
             return new Promise(function (resolve, reject) {
 
@@ -199,20 +202,17 @@ define('utils/Panels', function () {
                     'controls/projects/project/media/FolderPanel',
                     'Projects'
                 ], function (QUI, QUIPanel, MediaPanel, FilePanel, FolderPanel, Projects) {
-                    var Media = Projects.get(project).getMedia();
+                    const Media = Projects.get(project).getMedia();
 
                     Media.get(id).then(function (Item) {
+                        let i, len, Panel = false;
 
-                        var i, len, Panel = false;
-
-                        var panels = QUI.Controls.get(
+                        let panels = QUI.Controls.get(
                             'projects-media-file-panel-' + Item.getId()
                         );
 
                         if (panels.length) {
-
                             for (i = 0, len = panels.length; i < len; i++) {
-
                                 Panel = panels[i];
 
                                 if (Panel.getProject().getName() !== project) {
@@ -236,14 +236,11 @@ define('utils/Panels', function () {
                         // if the MediaFile is no Folder
                         if (Item.getType() !== 'classes/projects/project/media/Folder') {
                             Panel = new FilePanel(Item);
-
                         } else if (Item.getType() === 'classes/projects/project/media/Folder') {
-
                             Panel = new FolderPanel({
                                 folderId: Item.getId(),
                                 project : project
                             });
-
                         }
 
                         if (!Panel) {
@@ -257,11 +254,8 @@ define('utils/Panels', function () {
                         }
 
                         resolve(Panel);
-
                     }).catch(reject);
-
                 }, reject);
-
             });
         },
 
@@ -272,21 +266,21 @@ define('utils/Panels', function () {
          * @param {Function} [callback] - callback function
          */
         openTrashPanel: function (callback) {
-            var self = this;
+            const self = this;
 
             return new Promise(function (resolve, reject) {
                 require([
                     'qui/QUI',
                     'controls/trash/Panel'
                 ], function (QUI, TrashPanel) {
-                    var name   = 'panel-trash',
+                    let name   = 'panel-trash',
                         panels = QUI.Controls.get(name);
 
                     if (panels.length) {
                         panels[0].open();
 
                         // if a task exist, click it and open the instance
-                        var Task = panels[0].getAttribute('Task');
+                        const Task = panels[0].getAttribute('Task');
 
                         if (Task && Task.getType() === 'qui/controls/taskbar/Task') {
                             panels[0].getAttribute('Task').click();
@@ -299,7 +293,7 @@ define('utils/Panels', function () {
                         return;
                     }
 
-                    var Panel = new TrashPanel({
+                    const Panel = new TrashPanel({
                         name: name
                     });
 
@@ -321,7 +315,7 @@ define('utils/Panels', function () {
          * @return {Promise}
          */
         openProjectSettings: function (project) {
-            var self = this;
+            const self = this;
 
             return new Promise(function (resolve) {
                 require([
@@ -345,7 +339,7 @@ define('utils/Panels', function () {
          * @param {number} userId
          */
         openUserPanel: function (userId) {
-            var self = this;
+            const self = this;
 
             return new Promise(function (resolve) {
                 require(['controls/users/User'], function (UserPanel) {
@@ -366,13 +360,13 @@ define('utils/Panels', function () {
          * @return Promise
          */
         openPanelInTasks: function (Panel) {
-            var self = this;
+            const self = this;
 
             return new Promise(function (resolve, reject) {
                 require(['qui/QUI'], function (QUI) {
-                    var i, len, Child;
+                    let i, len, Child;
 
-                    var pType  = Panel.getType(),
+                    let pType  = Panel.getType(),
                         panels = QUI.Controls.getByType(pType);
 
                     if (panels.length) {
@@ -386,8 +380,8 @@ define('utils/Panels', function () {
                             if ((Panel.getAttribute('title') !== Child.getAttribute('title')) &&
 
                                 (Panel.getAttribute('#id') &&
-                                    Child.getAttribute('#id') &&
-                                    Panel.getAttribute('#id') !== Child.getAttribute('#id'))) {
+                                Child.getAttribute('#id') &&
+                                Panel.getAttribute('#id') !== Child.getAttribute('#id'))) {
 
                                 continue;
                             }
@@ -395,7 +389,7 @@ define('utils/Panels', function () {
                             if (pType === 'controls/desktop/panels/XML' &&
                                 Child.getType() === 'controls/desktop/panels/XML'
                             ) {
-                                var oFile = Panel.getFile(),
+                                let oFile = Panel.getFile(),
                                     cFile = Child.getFile();
 
                                 if (typeOf(oFile) === 'array') {
@@ -421,7 +415,7 @@ define('utils/Panels', function () {
                     }
 
                     // if panel not exists
-                    var tasks = QUI.Controls.getByType('qui/controls/desktop/Tasks');
+                    const tasks = QUI.Controls.getByType('qui/controls/desktop/Tasks');
 
                     if (!tasks.length) {
                         reject('Panel could not be found');
@@ -453,7 +447,7 @@ define('utils/Panels', function () {
          */
         execPanelOpen: function (Panel) {
             // if a task exist, click it and open the instance
-            var Task = Panel.getAttribute('Task');
+            const Task = Panel.getAttribute('Task');
 
             if (Task && Task.getType() === 'qui/controls/taskbar/Task') {
                 Panel.getAttribute('Task').click();
@@ -461,7 +455,155 @@ define('utils/Panels', function () {
             }
 
             Panel.open();
+        },
+
+        //region panel api
+
+        /**
+         * Global panel API to extend panel categories
+         * -> is executed at init.js
+         *
+         * @param Panel
+         * @returns {Promise}
+         */
+        panelApiInjectionEvent: function (Panel) {
+            const type = Panel.getType();
+
+            if (type === '' || !type) {
+                return Promise.resolve([]);
+            }
+
+            return new Promise((resolve, reject) => {
+                require(['Ajax'], (QUIAjax) => {
+                    QUIAjax.get('ajax_desktop_categories', (result) => {
+                        for (let i = 0, len = result.length; i < len; i++) {
+                            result[i].click = Utils.panelApiClick;
+
+                            if (typeOf(result[i].title) === 'array') {
+                                result[i].title = QUILocale.get(result[i].title[0], result[i].title[1]);
+                            }
+
+                            result[i].text = result[i].title;
+                        }
+
+                        resolve(result);
+                    }, {
+                        type   : type,
+                        onError: reject
+                    });
+                });
+            });
+        },
+
+        /**
+         * Click for the Panel Category API
+         *
+         * @param Panel
+         * @param Category
+         * @returns {Promise<Promise>}
+         */
+        panelApiClick: function (Panel, Category) {
+            Panel.Loader.show();
+
+            const Container = Panel.$Container;
+
+            return new Promise(function (resolve) {
+                if (typeof Panel.$onCategoryLeave !== 'function') {
+                    resolve();
+                    return;
+                }
+
+                const r = Panel.$onCategoryLeave();
+
+                if (!r) {
+                    resolve();
+                    return;
+                }
+
+                if (typeof r.then === 'function') {
+                    return r.then(resolve);
+                }
+
+                resolve();
+            }).then(function () {
+                if (typeof Panel.$hideCategory === 'function') {
+                    return Panel.$hideCategory();
+                }
+
+                return Utils.$panelApiHideCategory(Container);
+            }).then(function () {
+                return Utils.getPanelCategories(Panel, Category);
+            }).then(function (categoryHtml) {
+                Container.set('html', categoryHtml);
+
+                return QUI.parse(Container);
+            }).then(function () {
+                if (typeof Panel.$showCategory === 'function') {
+                    return Panel.$showCategory();
+                }
+
+                return Utils.$panelApiShowCategory(Container);
+            }).then(function () {
+                Panel.Loader.hide();
+            });
+        },
+
+        /**
+         * show the container
+         *
+         * @return Promise
+         */
+        $panelApiShowCategory: function (Container) {
+            return new Promise(function (resolve) {
+                moofx(Container).animate({
+                    opacity: 1,
+                    top    : 0
+                }, {
+                    duration: 250,
+                    callback: resolve
+                });
+            });
+        },
+
+        /**
+         * hide the container
+         *
+         * @return Promise
+         */
+        $panelApiHideCategory: function (Container) {
+            return new Promise(function (resolve) {
+                moofx(Container).animate({
+                    opacity: 0,
+                    top    : -20
+                }, {
+                    duration: 250,
+                    callback: function () {
+                        Container.set('html', '');
+                        resolve();
+                    }
+                });
+            });
+        },
+
+        /**
+         * @param Panel
+         * @param Category
+         * @returns {Promise}
+         */
+        getPanelCategories: function (Panel, Category) {
+            const type = Panel.getType();
+
+            return new Promise((resolve) => {
+                require(['Ajax'], (QUIAjax) => {
+                    QUIAjax.get('ajax_desktop_getCategory', resolve, {
+                        type    : type,
+                        category: Category.getAttribute('name')
+                    });
+                });
+            });
         }
     };
+
+    return Utils;
 });
 

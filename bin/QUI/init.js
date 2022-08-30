@@ -78,7 +78,8 @@ let requireList = [
     'controls/workspace/Manager',
     'qui/controls/buttons/Button',
     'qui/controls/contextmenu/Item',
-    'qui/controls/contextmenu/Separator'
+    'qui/controls/contextmenu/Separator',
+    'utils/Panels'
 ].append(window.QUIQQER_LOCALE || []);
 
 if (typeof window.Intl === "undefined") {
@@ -96,7 +97,8 @@ require(requireList, function () {
         QUIButton               = arguments[5],
 
         QUIContextmenuItem      = arguments[6],
-        QUIContextmenuSeparator = arguments[7];
+        QUIContextmenuSeparator = arguments[7],
+        PanelUtils              = arguments[8];
 
     Locale.setCurrent(window.USER.lang);
 
@@ -124,7 +126,8 @@ require(requireList, function () {
         'control-windows-submit-submittext'    : Locale.get('quiqqer/quiqqer', 'accept'),
 
         'control-task-panel-limit'        : 50,
-        'control-task-panel-limit-message': Locale.get('quiqqer/quiqqer', 'message.to.much.tasks')
+        'control-task-panel-limit-message': Locale.get('quiqqer/quiqqer', 'message.to.much.tasks'),
+        'quiqqer-panel-inject'            : PanelUtils.panelApiInjectionEvent
     });
 
     QUI.addEvent('onError', function (err, url, line) {
