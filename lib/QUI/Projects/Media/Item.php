@@ -535,6 +535,7 @@ abstract class Item extends QUI\QDOM
                 'short'         => $this->saveMultilingualField($this->description),
                 'order'         => $order,
                 'priority'      => (int)$this->getAttribute('priority'),
+                'external'      => $this->getAttribute('external'),
                 'image_effects' => json_encode($image_effects),
                 'type'          => $type,
                 'pathHistory'   => json_encode($this->getPathHistory()),

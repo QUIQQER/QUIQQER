@@ -65,14 +65,15 @@ define('classes/projects/project/media/Item', [
             image_height: '',
             image_width : '',
             cache_url   : '',
-            hidden      : 0
+            hidden      : 0,
+            external    : ''
         },
 
         initialize: function (params, Media) {
-            this.$Media   = Media;
-            this.$Panel   = null;
+            this.$Media = Media;
+            this.$Panel = null;
             this.$effects = null;
-            this.$loaded  = false;
+            this.$loaded = false;
 
             this.parent(params);
         },
@@ -84,7 +85,7 @@ define('classes/projects/project/media/Item', [
          * @return {Promise}
          */
         refresh: function (oncomplete) {
-            var self = this;
+            const self = this;
 
             return this.getMedia().getData(this.getId()).then(function (result) {
                 self.setAttributes(result);
@@ -137,8 +138,8 @@ define('classes/projects/project/media/Item', [
                 CustomLocale = QUILocale;
             }
 
-            var locale = CustomLocale.getCurrent();
-            var title  = this.getAttribute('title');
+            const locale = CustomLocale.getCurrent();
+            let title = this.getAttribute('title');
 
             try {
                 title = this.getAttribute('title');
@@ -166,8 +167,8 @@ define('classes/projects/project/media/Item', [
          * @return {String}
          */
         getUrl: function () {
-            var project = this.getMedia().getProject().getName(),
-                id      = this.getId();
+            const project = this.getMedia().getProject().getName(),
+                  id      = this.getId();
 
             return 'image.php?project=' + project + '&id=' + id;
         },
@@ -237,10 +238,10 @@ define('classes/projects/project/media/Item', [
          * @return Promise
          */
         save: function (oncomplete, params) {
-            var self = this;
+            const self = this;
 
             return new Promise(function (resolve, reject) {
-                var attributes = self.getAttributes();
+                const attributes = self.getAttributes();
 
                 attributes.image_effects = self.getEffects();
 
@@ -292,8 +293,8 @@ define('classes/projects/project/media/Item', [
          * @return Promise
          */
         activate: function (oncomplete, params) {
-            var Media  = this.getMedia(),
-                Result = Media.activate(this.getId(), oncomplete, params);
+            const Media  = this.getMedia(),
+                  Result = Media.activate(this.getId(), oncomplete, params);
 
             return Result.then(function (result) {
                 this.setAttribute('active', result);
@@ -314,8 +315,8 @@ define('classes/projects/project/media/Item', [
          * @return Promise
          */
         deactivate: function (oncomplete, params) {
-            var Media  = this.getMedia(),
-                Result = Media.deactivate(this.getId(), oncomplete, params);
+            const Media  = this.getMedia(),
+                  Result = Media.deactivate(this.getId(), oncomplete, params);
 
             return Result.then(function (result) {
                 this.setAttribute('active', result);
@@ -333,7 +334,7 @@ define('classes/projects/project/media/Item', [
                 return;
             }
 
-            var url = Ajax.$url + '?' + Ajax.parseParams('ajax_media_file_download', {
+            const url = Ajax.$url + '?' + Ajax.parseParams('ajax_media_file_download', {
                 project: this.getMedia().getProject().getName(),
                 fileid : this.getId()
             });
@@ -376,7 +377,7 @@ define('classes/projects/project/media/Item', [
          * @return {Boolean}
          */
         isActive: function () {
-            var active = this.getAttribute('active');
+            const active = this.getAttribute('active');
 
             if (typeOf(active) === 'boolean') {
                 return active;
@@ -448,7 +449,7 @@ define('classes/projects/project/media/Item', [
          * @param {String} effect
          */
         getEffect: function (effect) {
-            var effects = this.getEffects();
+            const effects = this.getEffects();
 
             return effect in effects ? effects[effect] : false;
         },
@@ -480,7 +481,7 @@ define('classes/projects/project/media/Item', [
          * @return {Promise}
          */
         clearCache: function () {
-            var self = this;
+            const self = this;
 
             return new Promise(function (resolve) {
                 Ajax.post('ajax_media_deleteCache', resolve, {

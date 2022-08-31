@@ -2648,6 +2648,19 @@
         <locale name="projects.project.site.media.filePanel.image.effects.text">
             <de><![CDATA[Bildeffekte]]></de>
         </locale>
+        <locale name="projects.project.site.media.filePanel.image.external">
+            <de><![CDATA[Externe URL]]></de>
+        </locale>
+        <locale name="projects.project.site.media.filePanel.image.external.description">
+            <de><![CDATA[
+            Setze hier eine URL zu einem externen Bild. QUIQQER wird regelmäßig
+            das externe Bild herrunterladen und dieses Bild damit aktualisieren.
+            Beachte, wenn das externe Bild nicht mehr erreichbar ist, wird dieses Bild deaktiviert.
+            ]]></de>
+        </locale>
+        <locale name="projects.project.site.media.filePanel.image.external.button">
+            <de><![CDATA[Bild aktualisieren]]></de>
+        </locale>
         <locale name="projects.project.media.folderviewer.btn.diashow">
             <de><![CDATA[Diashow starten]]></de>
         </locale>

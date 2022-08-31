@@ -9,16 +9,20 @@ namespace QUI\Projects\Media;
 use Exception;
 use QUI;
 use QUI\Projects\Media;
+use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Utils\StringHelper;
 use QUI\Utils\System\File;
+use QUI\Utils\System\File as FileUtils;
 
 use function array_map;
+use function date;
 use function dirname;
 use function end;
 use function explode;
 use function fclose;
 use function feof;
 use function file_exists;
+use function file_put_contents;
 use function fread;
 use function implode;
 use function ini_get;
@@ -26,11 +30,13 @@ use function is_array;
 use function is_numeric;
 use function mb_strlen;
 use function mb_substr;
+use function md5_file;
 use function pathinfo;
 use function preg_match;
 use function preg_match_all;
 use function round;
 use function set_time_limit;
+use function sha1_file;
 use function str_replace;
 use function strlen;
 use function strpos;
@@ -840,7 +846,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             );
         }
 
-        $md5 = \md5_file($this->getFullPath());
+        $md5 = md5_file($this->getFullPath());
 
         $this->setAttribute('md5hash', $md5);
 
@@ -867,7 +873,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             );
         }
 
-        $sha1 = \sha1_file($this->getFullPath());
+        $sha1 = sha1_file($this->getFullPath());
 
         $this->setAttribute('sha1hash', $sha1);
 
@@ -876,5 +882,57 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             ['sha1hash' => $sha1],
             ['id' => $this->getId()]
         );
+    }
+
+    /**
+     * @return void
+     * @throws \QUI\Exception
+     */
+    public function updateExternalImage()
+    {
+        $SessionUser = QUI::getUserBySession();
+        $external    = $this->getAttribute('external');
+
+        if (empty($external)) {
+            return;
+        }
+
+        try {
+            $file     = QUI\Utils\Request\Url::get($external);
+            $original = $this->getFullPath();
+
+            file_put_contents($original, $file);
+
+            // update image dimensions
+            $fileInfo    = FileUtils::getInfo($original);
+            $imageWidth  = null;
+            $imageHeight = null;
+
+            if (isset($fileInfo['width']) && $fileInfo['width']) {
+                $imageWidth = (int)$fileInfo['width'];
+            }
+
+            if (isset($fileInfo['height']) && $fileInfo['height']) {
+                $imageHeight = (int)$fileInfo['height'];
+            }
+
+            QUI::getDataBase()->update($this->Media->getTable(), [
+                'e_date'       => date('Y-m-d h:i:s'),
+                'e_user'       => $SessionUser->getId(),
+                'mime_type'    => $fileInfo['mime_type'],
+                'image_width'  => $imageWidth,
+                'image_height' => $imageHeight,
+                'type'         => MediaUtils::getMediaTypeByMimeType($fileInfo['mime_type'])
+            ], [
+                'id' => $this->getId()
+            ]);
+
+            $this->setAttribute('mime_type', $fileInfo['mime_type']);
+            $this->setAttribute('image_width', $imageWidth);
+            $this->setAttribute('image_height', $imageHeight);
+            $this->deleteCache();
+        } catch (QUI\Exception $Exception) {
+            $this->deactivate();
+        }
     }
 }

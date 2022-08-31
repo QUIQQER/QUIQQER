@@ -22,6 +22,7 @@ define('controls/projects/project/media/FilePanel', [
     'utils/Media',
     'controls/projects/project/media/Input',
     'Locale',
+    'Ajax',
     'Projects',
 
     'css!controls/projects/project/media/FilePanel.css'
@@ -29,25 +30,26 @@ define('controls/projects/project/media/FilePanel', [
 ], function () {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/quiqqer';
 
-    var QUI                = arguments[0],
-        QUIPanel           = arguments[1],
-        QUILoader          = arguments[2],
-        PanelDOMEvents     = arguments[3],
-        QUIButton          = arguments[4],
-        QUIButtonSeparator = arguments[5],
-        QUISelect          = arguments[6],
-        QUIConfirm         = arguments[7],
-        QUIRange           = arguments[8],
-        Template           = arguments[9],
-        FormUtils          = arguments[10],
-        StringUtils        = arguments[11],
-        ControlUtils       = arguments[12],
-        MediaUtils         = arguments[13],
-        MediaInput         = arguments[14],
-        Locale             = arguments[15],
-        Projects           = arguments[16];
+    const QUI                = arguments[0],
+          QUIPanel           = arguments[1],
+          QUILoader          = arguments[2],
+          PanelDOMEvents     = arguments[3],
+          QUIButton          = arguments[4],
+          QUIButtonSeparator = arguments[5],
+          QUISelect          = arguments[6],
+          QUIConfirm         = arguments[7],
+          QUIRange           = arguments[8],
+          Template           = arguments[9],
+          FormUtils          = arguments[10],
+          StringUtils        = arguments[11],
+          ControlUtils       = arguments[12],
+          MediaUtils         = arguments[13],
+          MediaInput         = arguments[14],
+          Locale             = arguments[15],
+          QUIAjax            = arguments[16],
+          Projects           = arguments[17];
 
     /**
      * A Media-Panel, opens the Media in an Desktop Panel
@@ -67,6 +69,7 @@ define('controls/projects/project/media/FilePanel', [
         Binds: [
             'toggleStatus',
             'openDetails',
+            'openExternalUrl',
             'openImageEffects',
             'openPreview',
             'openPermissions',
@@ -84,21 +87,22 @@ define('controls/projects/project/media/FilePanel', [
         },
 
         initialize: function (File, options) {
-            var self = this;
+            const self = this;
 
             this.$__injected = false;
 
-            this.$DOMEvents        = new PanelDOMEvents(this);
-            this.$EffectPreview    = null;
-            this.$EffectLoader     = null;
-            this.$EffectBlur       = null;
+            this.$DOMEvents = new PanelDOMEvents(this);
+            this.$EffectPreview = null;
+            this.$EffectLoader = null;
+            this.$EffectBlur = null;
             this.$EffectBrightness = null;
-            this.$EffectContrast   = null;
-            this.$EffectWatermark  = null;
+            this.$EffectContrast = null;
+            this.$EffectWatermark = null;
 
-            this.$ButtonActiv   = null;
+            this.$ButtonActive = null;
             this.$ButtonDetails = null;
             this.$ButtonEffects = null;
+            this.$ButtonExternal = null;
             this.$ButtonPreview = null;
 
             this.addEvents({
@@ -116,7 +120,7 @@ define('controls/projects/project/media/FilePanel', [
                         self.$ButtonPreview.destroy();
                     }
 
-                    self.$ButtonActiv = null;
+                    self.$ButtonActive = null;
                 }
             });
 
@@ -126,7 +130,7 @@ define('controls/projects/project/media/FilePanel', [
             }
 
 
-            this.$File  = File;
+            this.$File = File;
             this.$Media = this.$File.getMedia();
 
             // default id
@@ -157,11 +161,11 @@ define('controls/projects/project/media/FilePanel', [
          * @return {*}
          */
         getToolTipText: function () {
-            var self = this;
+            const self = this;
+            const File = self.getFile();
 
-            var File  = self.getFile();
-            var url   = File.getUrl();
-            var image = File.getType() === 'classes/projects/project/media/Image';
+            let url = File.getUrl();
+            let image = File.getType() === 'classes/projects/project/media/Image';
 
             return new Promise(function (resolve) {
                 if (!image) {
@@ -171,21 +175,21 @@ define('controls/projects/project/media/FilePanel', [
                 url = url + '&quiadmin=1&maxheight=200&maxwidth=200';
 
                 require(['image!' + url], function () {
-                    var file = File.getAttribute('file');
+                    let file = File.getAttribute('file');
 
                     file = file.split('/');
                     file = file[file.length - 1];
 
-                    var result = '' +
-                        '<div style="min-width: 200px; display: flex; padding: 10px; flex-direction: column">' +
-                        '   <div style="margin-bottom: 10px;">' +
-                        '      <p>' + File.getAttribute('name') + '</p>' +
-                        '      <p style="font-size: 10px; padding-top: 5px">' + file + '</p>' +
-                        '   </div>' +
-                        '   <div style="display: flex; justify-content: center; align-items: center">' +
-                        '       <img src="' + url + '" alt="" />' +
-                        '   </div>' +
-                        '</div>';
+                    let result = '' +
+                                 '<div style="min-width: 200px; display: flex; padding: 10px; flex-direction: column">' +
+                                 '   <div style="margin-bottom: 10px;">' +
+                                 '      <p>' + File.getAttribute('name') + '</p>' +
+                                 '      <p style="font-size: 10px; padding-top: 5px">' + file + '</p>' +
+                                 '   </div>' +
+                                 '   <div style="display: flex; justify-content: center; align-items: center">' +
+                                 '       <img src="' + url + '" alt="" />' +
+                                 '   </div>' +
+                                 '</div>';
 
                     resolve(result);
                 });
@@ -228,7 +232,7 @@ define('controls/projects/project/media/FilePanel', [
                 return;
             }
 
-            var self = this;
+            const self = this;
 
             this.Loader.show();
 
@@ -256,10 +260,10 @@ define('controls/projects/project/media/FilePanel', [
          * @param {Function} [callback] - callback function, optional
          */
         load: function (callback) {
-            var self = this;
+            const self = this;
 
             if (!this.$File) {
-                var Project = Projects.get(this.getAttribute('project'));
+                const Project = Projects.get(this.getAttribute('project'));
 
                 this.$Media = Project.getMedia();
                 this.$Media.get(this.getAttribute('fileId')).then(function (File) {
@@ -270,8 +274,8 @@ define('controls/projects/project/media/FilePanel', [
                 return;
             }
 
-            var File = this.$File,
-                icon = 'fa fa-picture-o';
+            const File = this.$File;
+            let icon = 'fa fa-picture-o';
 
             if (File.getAttribute('type') === 'image') {
                 icon = URL_BIN_DIR + '16x16/extensions/image.png';
@@ -335,17 +339,16 @@ define('controls/projects/project/media/FilePanel', [
          * @return Promise
          */
         save: function () {
-            var self = this;
+            const self = this;
 
             this.Loader.show();
-
             this.$unloadCategory();
 
-            var File = this.getFile();
+            const File = this.getFile();
 
             File.save(function () {
                 // Update the (maybe truncated) filename
-                var NameInput = self.getContent().getElement('input[name=file_name]');
+                const NameInput = self.getContent().getElement('input[name=file_name]');
 
                 if (NameInput) {
                     NameInput.value = File.getAttribute('name');
@@ -364,7 +367,7 @@ define('controls/projects/project/media/FilePanel', [
          * @method controls/projects/project/media/FilePanel#del
          */
         del: function () {
-            var self = this;
+            const self = this;
 
             new QUIConfirm({
                 icon    : 'fa fa-trash-o',
@@ -460,7 +463,7 @@ define('controls/projects/project/media/FilePanel', [
          * @method controls/projects/project/media/FilePanel#$createTabs
          */
         $createButtons: function () {
-            var self = this;
+            const self = this;
 
             this.getButtonBar().clear();
 
@@ -588,6 +591,17 @@ define('controls/projects/project/media/FilePanel', [
                 }
             });
 
+            if (this.$File.getType() === 'classes/projects/project/media/Image') {
+                this.$ButtonExternal = new QUIButton({
+                    text  : Locale.get(lg, 'projects.project.site.media.filePanel.image.external'),
+                    name  : 'externalUrl',
+                    icon  : 'fa fa-globe',
+                    events: {
+                        onClick: this.openExternalUrl
+                    }
+                });
+            }
+
             this.$ButtonPreview = new QUIButton({
                 text  : Locale.get(lg, 'projects.project.site.media.filePanel.preview.text'),
                 name  : 'preview',
@@ -598,6 +612,11 @@ define('controls/projects/project/media/FilePanel', [
             });
 
             this.addCategory(this.$ButtonEffects);
+
+            if (this.$File.getType() === 'classes/projects/project/media/Image') {
+                this.addCategory(this.$ButtonExternal);
+            }
+
             this.addCategory(this.$ButtonPreview);
 
 
@@ -610,21 +629,21 @@ define('controls/projects/project/media/FilePanel', [
          * unload the category and set the data to the file
          */
         $unloadCategory: function () {
-            if (!this.$ButtonActiv || this.$__injected === false) {
+            if (!this.$ButtonActive || this.$__injected === false) {
                 return;
             }
 
-            var Body = this.getContent();
-            var Form = Body.getElement('form');
+            const Body = this.getContent();
+            const Form = Body.getElement('form');
 
             if (typeOf(Form) !== 'element') {
                 return;
             }
 
-            var data = FormUtils.getFormData(Form),
-                File = this.getFile();
+            const data = FormUtils.getFormData(Form),
+                  File = this.getFile();
 
-            for (var i in data) {
+            for (let i in data) {
                 if (!data.hasOwnProperty(i)) {
                     return;
                 }
@@ -656,6 +675,10 @@ define('controls/projects/project/media/FilePanel', [
             if (typeof Form.elements.file_alt !== 'undefined') {
                 File.setAttribute('alt', Form.elements.file_alt.value);
             }
+
+            if (typeof Form.elements.externalUrl !== 'undefined') {
+                File.setAttribute('external', Form.elements.externalUrl.value);
+            }
         },
 
         /**
@@ -671,59 +694,54 @@ define('controls/projects/project/media/FilePanel', [
             this.Loader.show();
             this.$unloadCategory();
 
-            this.$ButtonActiv = this.$ButtonDetails;
-            this.$ButtonActiv.setActive();
+            this.$ButtonActive = this.$ButtonDetails;
+            this.$ButtonActive.setActive();
 
 
-            var self = this,
-                Body = this.getContent(),
-                File = this.$File;
+            const self = this,
+                  Body = this.getContent(),
+                  File = this.$File;
 
             Body.set('html', '');
 
             Template.get('project_media_file', function (result) {
-                var Body = self.getContent();
-
                 Body.set('html', '<form>' + result + '</form>');
 
-                var Form = Body.getElement('form');
+                const Form = Body.getElement('form');
 
                 Form.elements.file_title.value = File.getAttribute('title');
-                Form.elements.file_alt.value   = File.getAttribute('alt');
+                Form.elements.file_alt.value = File.getAttribute('alt');
                 Form.elements.file_short.value = File.getAttribute('short');
 
                 ControlUtils.parse(Form).then(function () {
                     return QUI.parse(Form);
                 }).then(function () {
-                    var dimension = '';
+                    let dimension = '';
 
                     if (File.getAttribute('image_width') &&
                         File.getAttribute('image_height')) {
                         dimension = File.getAttribute('image_width') +
-                            ' x ' +
-                            File.getAttribute('image_height');
+                                    ' x ' +
+                                    File.getAttribute('image_height');
                     }
 
                     // set data to form
-                    FormUtils.setDataToForm(
-                        {
-                            file_id       : File.getId(),
-                            file_name     : File.getAttribute('name'),
-                            file_file     : File.getAttribute('file'),
-                            file_path     : File.getAttribute('path'),
-                            file_type     : File.getAttribute('type'),
-                            file_edate    : File.getAttribute('e_date'),
-                            file_url      : File.getAttribute('cache_url'),
-                            file_dimension: dimension,
-                            file_md5      : File.getAttribute('md5hash'),
-                            file_sha1     : File.getAttribute('sha1hash'),
-                            file_size     : StringUtils.formatBytes(
-                                File.getAttribute('filesize')
-                            ),
-                            file_priority : File.getAttribute('priority')
-                        },
-                        Form
-                    );
+                    FormUtils.setDataToForm({
+                        file_id       : File.getId(),
+                        file_name     : File.getAttribute('name'),
+                        file_file     : File.getAttribute('file'),
+                        file_path     : File.getAttribute('path'),
+                        file_type     : File.getAttribute('type'),
+                        file_edate    : File.getAttribute('e_date'),
+                        file_url      : File.getAttribute('cache_url'),
+                        file_dimension: dimension,
+                        file_md5      : File.getAttribute('md5hash'),
+                        file_sha1     : File.getAttribute('sha1hash'),
+                        file_size     : StringUtils.formatBytes(
+                            File.getAttribute('filesize')
+                        ),
+                        file_priority : File.getAttribute('priority')
+                    }, Form);
 
                     MediaUtils.bindCheckMediaName(
                         Body.getElement('[name="file_name"]')
@@ -749,10 +767,11 @@ define('controls/projects/project/media/FilePanel', [
                     );
 
                     // cleanup button
-                    Form.elements.cleanup.title = Locale.get(lg, 'projects.project.site.media.filePanel.btn.cache.clear');
+                    Form.elements.cleanup.title =
+                        Locale.get(lg, 'projects.project.site.media.filePanel.btn.cache.clear');
 
                     Form.elements.cleanup.addEvent('click', function () {
-                        var Fa = Form.elements.cleanup.getElement('.fa');
+                        const Fa = Form.elements.cleanup.getElement('.fa');
 
                         Fa.removeClass('fa-paint-brush');
                         Fa.addClass('fa-spinner fa-spin');
@@ -771,7 +790,7 @@ define('controls/projects/project/media/FilePanel', [
                     Form.elements.cleanup.disabled = false;
 
                     Body.getElements('[data-qui="controls/lang/InputMultiLang"]').forEach(function (Node) {
-                        var Instance = QUI.Controls.getById(Node.get('data-quiid'));
+                        const Instance = QUI.Controls.getById(Node.get('data-quiid'));
 
                         if (!Instance) {
                             return;
@@ -801,15 +820,15 @@ define('controls/projects/project/media/FilePanel', [
 
             this.$unloadCategory();
 
-            this.$ButtonActiv = this.$ButtonPreview;
-            this.$ButtonActiv.setActive();
+            this.$ButtonActive = this.$ButtonPreview;
+            this.$ButtonActive.setActive();
 
 
-            var Body = this.getContent();
+            const Body = this.getContent();
 
             Body.set('html', '');
 
-            var url = URL_DIR + this.$File.getAttribute('url');
+            let url = URL_DIR + this.$File.getAttribute('url');
 
             if (url.match('image.php')) {
                 url = url + '&noresize=1';
@@ -834,28 +853,28 @@ define('controls/projects/project/media/FilePanel', [
             this.Loader.show();
             this.$unloadCategory();
 
-            this.$ButtonActiv = this.$ButtonEffects;
-            this.$ButtonActiv.setActive();
+            this.$ButtonActive = this.$ButtonEffects;
+            this.$ButtonActive.setActive();
 
-            var self    = this,
-                Content = this.getContent();
+            const self    = this,
+                  Content = this.getContent();
 
             Content.set('html', '');
 
             Template.get('project_media_effects', function (result) {
-                var WatermarkInput;
-                var Effects = self.getFile().getEffects();
+                let WatermarkInput;
+                let Effects = self.getFile().getEffects();
 
                 Content.set(
                     'html',
                     '<form>' + result + '</form>'
                 );
 
-                var WatermarkPosition = Content.getElement('[name="effect-watermark_position"]'),
-                    Watermark         = Content.getElement('.effect-watermark'),
-                    WatermarkRatio    = Content.getElement('[name="effect-watermark_ratio"]'),
-                    WatermarkCell     = Content.getElement('.effect-watermark-cell'),
-                    WatermarkRow      = Content.getElement('.effect-watermark-row');
+                const WatermarkPosition = Content.getElement('[name="effect-watermark_position"]'),
+                      Watermark         = Content.getElement('.effect-watermark'),
+                      WatermarkRatio    = Content.getElement('[name="effect-watermark_ratio"]'),
+                      WatermarkCell     = Content.getElement('.effect-watermark-cell'),
+                      WatermarkRow      = Content.getElement('.effect-watermark-row');
 
                 self.$EffectWatermark = Content.getElement('[name="effect-watermark"]');
 
@@ -865,8 +884,8 @@ define('controls/projects/project/media/FilePanel', [
 
                 self.$EffectLoader = new QUILoader().inject(Content.getElement('.preview-frame'));
 
-                var Form      = Content.getElement('form');
-                var Greyscale = Content.getElement('[name="effect-greyscale"]');
+                const Form = Content.getElement('form');
+                const Greyscale = Content.getElement('[name="effect-greyscale"]');
 
                 if (!("blur" in Effects)) {
                     Effects.blur = 0;
@@ -962,7 +981,7 @@ define('controls/projects/project/media/FilePanel', [
                 WatermarkRatio.addEvent('change', self.$refreshImageEffectFrame);
 
                 // watermark
-                var Select = new QUISelect({
+                const Select = new QUISelect({
                     menuWidth: 300,
                     styles   : {
                         width: 260
@@ -1038,6 +1057,66 @@ define('controls/projects/project/media/FilePanel', [
         },
 
         /**
+         * open external url
+         */
+        openExternalUrl: function () {
+            if (this.$ButtonExternal.isActive()) {
+                return;
+            }
+
+            this.Loader.show();
+            this.$unloadCategory();
+
+            this.$ButtonActive = this.$ButtonExternal;
+            this.$ButtonActive.setActive();
+
+            const self    = this,
+                  File    = this.getFile(),
+                  Content = this.getContent();
+
+            Content.set('html', '');
+
+            Template.get('project_media_externalUrl', function (result) {
+                Content.set('html', '<form>' + result + '</form>');
+
+                const Form = Content.getElement('form');
+                const Cell = Form.elements.externalUrl.getParent('td');
+
+                Form.elements.externalUrl.value = self.getFile().getAttribute('external');
+
+
+                new QUIButton({
+                    textimage: 'fa fa-refresh',
+                    text     : Locale.get(lg, 'projects.project.site.media.filePanel.image.external.button'),
+                    styles   : {
+                        'float': 'right',
+                        margin : '10px 0 0 0'
+                    },
+                    events   : {
+                        onClick: function (Instance) {
+                            Instance.setAttribute('textimage', 'fa fa-spinner fa-spin');
+                            Instance.disable();
+
+                            QUIAjax.post('ajax_media_file_externalUpdate', function () {
+                                Instance.setAttribute('textimage', 'fa fa-refresh');
+                                Instance.enable();
+                            }, {
+                                project: File.getMedia().getProject().getName(),
+                                fileid : File.getId(),
+                                onError: function () {
+                                    Instance.setAttribute('textimage', 'fa fa-refresh');
+                                    Instance.enable();
+                                }
+                            });
+                        }
+                    }
+                }).inject(Cell);
+
+                self.Loader.hide();
+            });
+        },
+
+        /**
          * Refresh the effect preview image
          */
         $refreshImageEffectFrame: function () {
@@ -1045,19 +1124,19 @@ define('controls/projects/project/media/FilePanel', [
                 return;
             }
 
-            var File              = this.getFile(),
+            let File              = this.getFile(),
                 fileId            = File.getId(),
                 project           = this.getProject().getName(),
                 Content           = this.getContent(),
                 Form              = Content.getElement('form'),
                 WatermarkPosition = Content.getElement('[name="effect-watermark_position"]');
 
-            var Greyscale = Content.getElement('[name="effect-greyscale"]');
-            var url       = URL_LIB_DIR + 'QUI/Projects/Media/bin/effectPreview.php?';
+            const Greyscale = Content.getElement('[name="effect-greyscale"]');
+            let url = URL_LIB_DIR + 'QUI/Projects/Media/bin/effectPreview.php?';
 
-            var effectBlur      = this.$EffectBlur.getValue();
-            var effectBrightnes = this.$EffectBrightness.getValue();
-            var effectContrast  = this.$EffectContrast.getValue();
+            let effectBlur = this.$EffectBlur.getValue();
+            let effectBrightnes = this.$EffectBrightness.getValue();
+            let effectContrast = this.$EffectContrast.getValue();
 
             url = url + Object.toQueryString({
                 id                : fileId,
@@ -1078,9 +1157,9 @@ define('controls/projects/project/media/FilePanel', [
             }
 
             this.$effectDelay = (function () {
-                Form.getElement('[name="effect-blur"]').value       = parseInt(effectBlur.from);
+                Form.getElement('[name="effect-blur"]').value = parseInt(effectBlur.from);
                 Form.getElement('[name="effect-brightness"]').value = effectBrightnes.from;
-                Form.getElement('[name="effect-contrast"]').value   = effectContrast.from;
+                Form.getElement('[name="effect-contrast"]').value = effectContrast.from;
 
                 require(['image!' + url], function () {
                     this.$EffectPreview.set('src', url);
@@ -1094,7 +1173,7 @@ define('controls/projects/project/media/FilePanel', [
          * event on file activate
          */
         $onFileActivate: function () {
-            var Button = this.getButtonBar().getElement('status');
+            const Button = this.getButtonBar().getElement('status');
 
             Button.setAttribute('textimage', 'fa fa-remove');
             Button.setAttribute(
@@ -1107,7 +1186,7 @@ define('controls/projects/project/media/FilePanel', [
          * event on file deactivate
          */
         $onFileDeactivate: function () {
-            var Button = this.getButtonBar().getElement('status');
+            const Button = this.getButtonBar().getElement('status');
 
             Button.setAttribute('textimage', 'fa fa-ok');
             Button.setAttribute(
@@ -1120,8 +1199,8 @@ define('controls/projects/project/media/FilePanel', [
          * Open the permissions
          */
         openPermissions: function () {
-            var Parent = this.getParent(),
-                File   = this.$File;
+            const Parent = this.getParent(),
+                  File   = this.$File;
 
             require(['controls/permissions/Panel'], function (PermPanel) {
                 Parent.appendChild(

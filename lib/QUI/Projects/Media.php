@@ -311,6 +311,7 @@ class Media extends QUI\QDOM
             'hidden'        => 'int(1) default 0',
             'pathHash'      => 'varchar(32) NOT NULL',
             'extra'         => 'text NULL',
+            'external'      => 'text NULL',
         ]);
 
         $DataBase->table()->setPrimaryKey($table, 'id');
@@ -751,5 +752,30 @@ class Media extends QUI\QDOM
         }
 
         return new Media\File($result, $this);
+    }
+
+
+    public function updateExternalImages()
+    {
+        $result = QUI::getDataBase()->fetch([
+            'from'  => $this->getTable(),
+            'where' => [
+                'external' => [
+                    'type'  => 'NOT LIKE',
+                    'value' => ''
+                ]
+            ]
+        ]);
+
+        foreach ($result as $item) {
+            try {
+                $Image = $this->get($item['id']);
+
+                if ($Image instanceof QUI\Projects\Media\Image) {
+                    $Image->updateExternalImage();
+                }
+            } catch (QUI\Exception $Exception) {
+            }
+        }
     }
 }

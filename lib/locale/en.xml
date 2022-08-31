@@ -2587,6 +2587,19 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="projects.project.site.media.filePanel.image.effects.text">
             <en><![CDATA[Picture effects]]></en>
         </locale>
+        <locale name="projects.project.site.media.filePanel.image.external">
+            <en><![CDATA[External URL]]></en>
+        </locale>
+        <locale name="projects.project.site.media.filePanel.image.external.description">
+            <en><![CDATA[
+            Set a URL to an external image here. QUIQQER will regularly
+            download the external image and update this image with it.
+            Note that if the external image is no longer accessible, this image will be disabled.
+            ]]></en>
+        </locale>
+        <locale name="projects.project.site.media.filePanel.image.external.button">
+            <en><![CDATA[Update image]]></en>
+        </locale>
         <locale name="projects.project.media.folderviewer.btn.diashow">
             <en><![CDATA[Start diashow]]></en>
         </locale>

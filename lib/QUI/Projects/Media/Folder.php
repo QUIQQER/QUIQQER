@@ -9,9 +9,15 @@ namespace QUI\Projects\Media;
 use QUI;
 use QUI\Projects\Media;
 use QUI\Projects\Media\Utils as MediaUtils;
-use QUI\Utils\System\File as FileUtils;
-use QUI\Utils\StringHelper as StringUtils;
 use QUI\Utils\Security\Orthos;
+use QUI\Utils\StringHelper as StringUtils;
+use QUI\Utils\System\File as FileUtils;
+
+use function date;
+use function file_exists;
+use function md5;
+use function str_replace;
+use function time;
 
 /**
  * A media folder
@@ -285,8 +291,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         $PDO      = QUI::getDataBase()->getPDO();
-        $old_path = $this->getPath().'/';
-        $new_path = $Parent->getPath().'/'.$newName;
+        $old_path = $this->getPath() . '/';
+        $new_path = $Parent->getPath() . '/' . $newName;
 
         $new_path = StringUtils::replaceDblSlashes($new_path);
         $new_path = \ltrim($new_path, '/');
@@ -298,14 +304,14 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         // update children paths
         $Statement = $PDO->prepare(
-            "UPDATE ".$this->Media->getTable()."
+            "UPDATE " . $this->Media->getTable() . "
              SET file = REPLACE(file, :oldpath, :newpath)
              WHERE file LIKE :search"
         );
 
-        $Statement->bindValue('oldpath', $old_path.'/');
-        $Statement->bindValue('newpath', $new_path.'/');
-        $Statement->bindValue('search', $old_path."/%");
+        $Statement->bindValue('oldpath', $old_path . '/');
+        $Statement->bindValue('newpath', $new_path . '/');
+        $Statement->bindValue('search', $old_path . "/%");
 
         $Statement->execute();
 
@@ -315,7 +321,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             $title = $newName;
         }
 
-        $file    = StringUtils::replaceDblSlashes($new_path.'/');
+        $file    = StringUtils::replaceDblSlashes($new_path . '/');
         $md5File = md5($file);
 
         // update me
@@ -331,15 +337,15 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         );
 
         FileUtils::move(
-            $this->Media->getFullPath().$old_path,
-            $this->Media->getFullPath().$new_path
+            $this->Media->getFullPath() . $old_path,
+            $this->Media->getFullPath() . $new_path
         );
 
         // @todo rename cache instead of delete
         $this->deleteCache();
 
         $this->setAttribute('name', $newName);
-        $this->setAttribute('file', $new_path.'/');
+        $this->setAttribute('file', $new_path . '/');
 
         QUI::getEvents()->fireEvent('mediaRename', [$this]);
     }
@@ -374,33 +380,33 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         $PDO      = QUI::getDataBase()->getPDO();
         $old_path = $this->getPath();
-        $new_path = $Folder->getPath().'/'.$this->getAttribute('name');
+        $new_path = $Folder->getPath() . '/' . $this->getAttribute('name');
 
         $old_path = StringUtils::replaceDblSlashes($old_path);
         $new_path = StringUtils::replaceDblSlashes($new_path);
 
         // update children paths
         $Statement = $PDO->prepare(
-            "UPDATE ".$this->Media->getTable()."
+            "UPDATE " . $this->Media->getTable() . "
              SET file = REPLACE(file, :oldpath, :newpath)
              WHERE file LIKE :search"
         );
 
-        $Statement->bindValue('oldpath', StringUtils::replaceDblSlashes($old_path.'/'));
-        $Statement->bindValue('newpath', StringUtils::replaceDblSlashes($new_path.'/'));
-        $Statement->bindValue('search', $old_path."%");
+        $Statement->bindValue('oldpath', StringUtils::replaceDblSlashes($old_path . '/'));
+        $Statement->bindValue('newpath', StringUtils::replaceDblSlashes($new_path . '/'));
+        $Statement->bindValue('search', $old_path . "%");
 
         $Statement->execute();
 
         // update me
-        $file = StringUtils::replaceDblSlashes($new_path.'/');
+        $file = StringUtils::replaceDblSlashes($new_path . '/');
 
 
         QUI::getDataBase()->update(
             $this->Media->getTable(),
             [
                 'file'     => $file,
-                'pathHash' => \md5($file)
+                'pathHash' => md5($file)
             ],
             ['id' => $this->getId()]
         );
@@ -418,8 +424,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         );
 
         FileUtils::move(
-            $this->Media->getFullPath().$old_path,
-            $this->Media->getFullPath().$new_path
+            $this->Media->getFullPath() . $old_path,
+            $this->Media->getFullPath() . $new_path
         );
 
         // @todo rename cache instead of delete
@@ -481,7 +487,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $path = $this->getFullPath();
 
         $tempFolder = QUI::getTemp()->createFolder();
-        $newZipFile = $tempFolder.$this->getAttribute('name').'.zip';
+        $newZipFile = $tempFolder . $this->getAttribute('name') . '.zip';
 
         if (!\class_exists('\ZipArchive')) {
             throw new QUI\Exception([
@@ -640,14 +646,14 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $table     = Orthos::cleanupDatabaseFieldName($table);
         $table_rel = Orthos::cleanupDatabaseFieldName($table_rel);
 
-        $table_parent = $table_rel.'.`parent`';
-        $table_child  = $table_rel.'.`child`';
+        $table_parent = $table_rel . '.`parent`';
+        $table_child  = $table_rel . '.`child`';
 
-        $table_id     = $table.'.`id`';
-        $table_delete = $table.'.`deleted`';
-        $table_type   = $table.'.`type`';
-        $table_cDate  = $table.'.`c_date`';
-        $table_name   = $table.'.`name`';
+        $table_id     = $table . '.`id`';
+        $table_delete = $table . '.`deleted`';
+        $table_type   = $table . '.`type`';
+        $table_cDate  = $table . '.`c_date`';
+        $table_name   = $table . '.`name`';
 
         $parentId = $this->getId();
 
@@ -767,9 +773,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                     $table_rel
                 ],
                 'where' => [
-                    $table_rel.'.parent' => $this->getId(),
-                    $table_rel.'.child'  => '`'.$table.'.id`',
-                    $table.'.deleted'    => 0
+                    $table_rel . '.parent' => $this->getId(),
+                    $table_rel . '.child'  => '`' . $table . '.id`',
+                    $table . '.deleted'    => 0
                 ]
             ]);
         } catch (QUI\Database\Exception $Exception) {
@@ -885,10 +891,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 $table_rel
             ],
             'where'  => [
-                $table_rel.'.parent' => $this->getId(),
-                $table_rel.'.child'  => '`'.$table.'.id`',
-                $table.'.deleted'    => 0,
-                $table.'.type'       => $type
+                $table_rel . '.parent' => $this->getId(),
+                $table_rel . '.child'  => '`' . $table . '.id`',
+                $table . '.deleted'    => 0,
+                $table . '.type'       => $type
             ]
         ];
 
@@ -899,7 +905,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         if (isset($params['where']['file'])) {
-            $params['where']['pathHash'] = \md5($params['where']['file']);
+            $params['where']['pathHash'] = md5($params['where']['file']);
             unset($params['where']['file']);
         }
 
@@ -1028,10 +1034,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                     $table_rel
                 ],
                 'where' => [
-                    $table_rel.'.parent' => $this->getId(),
-                    $table_rel.'.child'  => '`'.$table.'.id`',
-                    $table.'.deleted'    => 0,
-                    $table.'.type'       => 'folder'
+                    $table_rel . '.parent' => $this->getId(),
+                    $table_rel . '.child'  => '`' . $table . '.id`',
+                    $table . '.deleted'    => 0,
+                    $table . '.type'       => 'folder'
                 ]
             ]);
         } catch (QUI\Database\Exception $Exception) {
@@ -1064,10 +1070,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 $table_rel
             ],
             'where' => [
-                $table_rel.'.parent' => $this->getId(),
-                $table_rel.'.child'  => '`'.$table.'.id`',
-                $table.'.deleted'    => 0,
-                $table.'.type'       => 'folder'
+                $table_rel . '.parent' => $this->getId(),
+                $table_rel . '.child'  => '`' . $table . '.id`',
+                $table . '.deleted'    => 0,
+                $table . '.type'       => 'folder'
             ],
             'order' => 'name'
         ]);
@@ -1117,17 +1123,17 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         $query = [
             'select' => [
-                $table.'.id'
+                $table . '.id'
             ],
             'from'   => [
                 $table,
                 $table_rel
             ],
             'where'  => [
-                $table_rel.'.parent' => $this->getId(),
-                $table_rel.'.child'  => '`'.$table.'.id`',
-                $table.'.deleted'    => 0,
-                $table.'.name'       => $filename
+                $table_rel . '.parent' => $this->getId(),
+                $table_rel . '.child'  => '`' . $table . '.id`',
+                $table . '.deleted'    => 0,
+                $table . '.name'       => $filename
             ]
         ];
 
@@ -1189,16 +1195,16 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         try {
             $result = QUI::getDataBase()->fetch([
                 'select' => [
-                    $table.'.id'
+                    $table . '.id'
                 ],
                 'from'   => [
                     $table,
                     $table_rel
                 ],
                 'where'  => [
-                    $table_rel.'.parent' => $this->getId(),
-                    $table_rel.'.child'  => '`'.$table.'.id`',
-                    $table.'.file'       => $this->getPath().$file
+                    $table_rel . '.parent' => $this->getId(),
+                    $table_rel . '.child'  => '`' . $table . '.id`',
+                    $table . '.file'       => $this->getPath() . $file
                 ],
                 'limit'  => 1
             ]);
@@ -1227,14 +1233,14 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             return true;
         }
 
-        $cacheDir = CMS_DIR.$this->Media->getCacheDir().$this->getAttribute('file');
+        $cacheDir = CMS_DIR . $this->Media->getCacheDir() . $this->getAttribute('file');
 
         if (FileUtils::mkdir($cacheDir)) {
             return true;
         }
 
         throw new QUI\Exception(
-            'createCache() Error; Could not create Folder '.$cacheDir,
+            'createCache() Error; Could not create Folder ' . $cacheDir,
             ErrorCodes::FOLDER_CACHE_CREATION_MKDIR_ERROR
         );
     }
@@ -1248,7 +1254,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     public function deleteCache()
     {
         $cacheDir  = $this->Media->getFullCachePath();
-        $cacheFile = $cacheDir.$this->getAttribute('file');
+        $cacheFile = $cacheDir . $this->getAttribute('file');
 
         FileUtils::unlink($cacheFile);
 
@@ -1273,9 +1279,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
 
         $User = QUI::getUserBySession();
-        $dir  = $this->Media->getFullPath().$this->getPath();
+        $dir  = $this->Media->getFullPath() . $this->getPath();
 
-        if (\is_dir($dir.$new_name)) {
+        if (\is_dir($dir . $new_name)) {
             // prüfen ob dieser ordner schon als kind existiert
             // wenn nein, muss dieser ordner in der DB angelegt werden
 
@@ -1287,19 +1293,19 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
             if ($children) {
                 throw new QUI\Exception(
-                    'Der Ordner existiert schon '.$dir.$new_name,
+                    'Der Ordner existiert schon ' . $dir . $new_name,
                     ErrorCodes::FOLDER_ALREADY_EXISTS
                 );
             }
         }
 
-        FileUtils::mkdir($dir.$new_name);
+        FileUtils::mkdir($dir . $new_name);
 
         $table     = $this->Media->getTable();
         $table_rel = $this->Media->getTable('relations');
 
         // In die DB legen
-        $file = $this->getAttribute('file').$new_name.'/';
+        $file = $this->getAttribute('file') . $new_name . '/';
 
         QUI::getDataBase()->insert($table, [
             'name'      => $new_name,
@@ -1307,10 +1313,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'short'     => $new_name,
             'type'      => 'folder',
             'file'      => $file,
-            'pathHash'  => \md5($file),
+            'pathHash'  => md5($file),
             'alt'       => $new_name,
-            'c_date'    => \date('Y-m-d h:i:s'),
-            'e_date'    => \date('Y-m-d h:i:s'),
+            'c_date'    => date('Y-m-d h:i:s'),
+            'e_date'    => date('Y-m-d h:i:s'),
             'c_user'    => $User->getId(),
             'e_user'    => $User->getId(),
             'mime_type' => 'folder'
@@ -1323,7 +1329,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'child'  => $id
         ]);
 
-        if (\is_dir($dir.$new_name)) {
+        if (\is_dir($dir . $new_name)) {
             $Folder = $this->Media->get($id);
 
             $Folder->setEffects($this->getEffects());
@@ -1366,7 +1372,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             );
         }
 
-        if (!\file_exists($file)) {
+        if (!file_exists($file)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.file.not.found', [
                     'file' => $file
@@ -1422,7 +1428,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             if (\strpos($content, '<svg') !== false && \strpos($content, '</svg>')) {
                 \file_put_contents(
                     $file,
-                    '<?xml version="1.0" encoding="UTF-8"?>'.
+                    '<?xml version="1.0" encoding="UTF-8"?>' .
                     $content
                 );
 
@@ -1435,11 +1441,11 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             $filename .= FileUtils::getEndingByMimeType($fileinfo['mime_type']);
         }
 
-        $new_file = $this->getFullPath().'/'.$filename;
-        $new_file = \str_replace("//", "/", $new_file);
+        $new_file = $this->getFullPath() . '/' . $filename;
+        $new_file = str_replace("//", "/", $new_file);
 
         // overwrite the file
-        if (\file_exists($new_file)) {
+        if (file_exists($new_file)) {
             if ($options != self::FILE_OVERWRITE_DESTROY
                 && $options != self::FILE_OVERWRITE_TRUE
             ) {
@@ -1485,13 +1491,13 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $table_rel = $this->Media->getTable('relations');
 
         $new_file_info = FileUtils::getInfo($new_file);
-        $title         = \str_replace('_', ' ', $new_file_info['filename']);
+        $title         = str_replace('_', ' ', $new_file_info['filename']);
 
         if (empty($new_file_info['filename'])) {
-            $new_file_info['filename'] = \time();
+            $new_file_info['filename'] = time();
         }
 
-        $filePath = $this->getAttribute('file').'/'.$new_file_info['basename'];
+        $filePath = $this->getAttribute('file') . '/' . $new_file_info['basename'];
 
         if ($this->getId() == 1) {
             $filePath = $new_file_info['basename'];
@@ -1514,9 +1520,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'name'         => $new_file_info['filename'],
             'short'        => '',
             'file'         => $filePath,
-            'pathHash'     => \md5($filePath),
-            'c_date'       => \date('Y-m-d h:i:s'),
-            'e_date'       => \date('Y-m-d h:i:s'),
+            'pathHash'     => md5($filePath),
+            'c_date'       => date('Y-m-d h:i:s'),
+            'e_date'       => date('Y-m-d h:i:s'),
             'c_user'       => $EditUser->getId(),
             'e_user'       => $EditUser->getId(),
             'mime_type'    => $new_file_info['mime_type'],
@@ -1610,7 +1616,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         foreach ($files as $file) {
             // subfolders
-            if (\is_dir($path.'/'.$file)) {
+            if (\is_dir($path . '/' . $file)) {
                 $foldername = MediaUtils::stripFolderName($file);
 
                 try {
@@ -1619,15 +1625,15 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                     $NewFolder = $this->createFolder($foldername);
                 }
 
-                $NewFolder->uploadFolder($path.'/'.$file);
+                $NewFolder->uploadFolder($path . '/' . $file);
                 continue;
             }
 
             // import files
             if ($Folder) {
-                $Folder->uploadFile($path.'/'.$file);
+                $Folder->uploadFile($path . '/' . $file);
             } else {
-                $this->uploadFile($path.'/'.$file);
+                $this->uploadFile($path . '/' . $file);
             }
         }
 

@@ -15,7 +15,7 @@ QUI::$Ajax->registerFunction(
         $Project    = QUI\Projects\Manager::getProject($project);
         $Media      = $Project->getMedia();
         $File       = $Media->get($fileid);
-        $attributes = \json_decode($attributes, true);
+        $attributes = json_decode($attributes, true);
 
         // rename check
         if (isset($attributes['name']) && $File->getAttribute('name') != $attributes['name']) {
@@ -40,7 +40,7 @@ QUI::$Ajax->registerFunction(
         $newEffects = $File->getEffects();
 
         if (QUI\Projects\Media\Utils::isFolder($File)) {
-            if (\json_encode($oldEffects) !== \json_encode($newEffects)) {
+            if (json_encode($oldEffects) !== json_encode($newEffects)) {
                 // delete image cache
                 $File->deleteCache();
                 //$File->setEffectsRecursive(); // needs to long
