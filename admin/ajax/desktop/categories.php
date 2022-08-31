@@ -10,6 +10,13 @@ use QUI\Package\Package;
 QUI::$Ajax->registerFunction(
     'ajax_desktop_categories',
     function ($type) {
+        $cache = 'quiqqer/package/quiqqer/quiqqer/desktopCategories/list/' . md5($type);
+
+        try {
+            return QUI\Cache\Manager::get($cache);
+        } catch (QUI\Exception $Exception) {
+        }
+
         $Settings       = QUI\Utils\XML\Settings::getInstance();
         $PackageHandler = QUI::getPackageManager();
 
@@ -34,6 +41,8 @@ QUI::$Ajax->registerFunction(
             $Collection = $Settings->getCategories($panelXml);
             $categories = array_merge($categories, $Collection->toArray());
         }
+
+        QUI\Cache\Manager::set($cache, $categories);
 
         return $categories;
     },
