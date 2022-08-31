@@ -754,18 +754,27 @@ class Media extends QUI\QDOM
         return new Media\File($result, $this);
     }
 
-
+    /**
+     * Updates all external images
+     *
+     * @return void
+     */
     public function updateExternalImages()
     {
-        $result = QUI::getDataBase()->fetch([
-            'from'  => $this->getTable(),
-            'where' => [
-                'external' => [
-                    'type'  => 'NOT LIKE',
-                    'value' => ''
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'from'  => $this->getTable(),
+                'where' => [
+                    'external' => [
+                        'type'  => 'NOT LIKE',
+                        'value' => ''
+                    ]
                 ]
-            ]
-        ]);
+            ]);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            return;
+        }
 
         foreach ($result as $item) {
             try {
