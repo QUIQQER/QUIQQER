@@ -10,16 +10,14 @@ use QUI;
 use QUI\Projects\Media\File;
 use QUI\Projects\Media\Image;
 use QUI\Projects\Media\Utils as MediaUtils;
-
 use QUI\Projects\Project;
 use QUI\Projects\Site;
 use QUI\Projects\Site\Edit;
-use \Symfony\Component\HttpFoundation\RedirectResponse;
-use \Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 use function array_flip;
 use function array_map;
-use function array_push;
 use function array_shift;
 use function array_unshift;
 use function count;
@@ -38,6 +36,7 @@ use function implode;
 use function in_array;
 use function is_array;
 use function is_object;
+use function is_string;
 use function ltrim;
 use function mb_strlen;
 use function mb_substr;
@@ -1393,6 +1392,21 @@ class Rewrite
     {
         $Project = $Site->getProject();
         $table   = QUI::getDBProjectTableName('paths', $Project);
+
+        // check, if path is the same, if yes, we have nothing to do
+        if (is_string($paths)) {
+            $alreadyRegistered = QUI::getDataBase()->fetch([
+                'from'  => $table,
+                'where' => [
+                    'id'   => $Site->getId(),
+                    'path' => $paths
+                ]
+            ]);
+
+            if (count($alreadyRegistered)) {
+                return;
+            }
+        }
 
         $currentPaths = QUI::getDataBase()->fetch([
             'from' => $table
