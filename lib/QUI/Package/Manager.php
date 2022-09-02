@@ -1732,6 +1732,7 @@ class Manager extends QUI\QDOM
      *
      * @param string|boolean $package - optional, package name, if false, it updates the complete system
      * @param bool $mute -mute option for the composer output
+     * @param QUI\Interfaces\System\SystemOutput|null $Output
      *
      * @throws QUI\Exception
      * @throws QUI\Lockclient\Exceptions\LockServerException
@@ -1739,8 +1740,16 @@ class Manager extends QUI\QDOM
      * @todo if exception uncommitted changes -> own error message
      * @todo if exception uncommitted changes -> interactive mode
      */
-    public function update($package = false, bool $mute = true)
-    {
+    public function update(
+        $package = false,
+        bool $mute = true,
+        ?QUI\Interfaces\System\SystemOutput $Output = null
+    ) {
+        if (!$Output) {
+            $Output = new QUI\System\VoidOutput();
+        }
+
+
         QUI::getEvents()->fireEvent('updateBegin');
 
         $Composer = $this->getComposer();
@@ -1791,13 +1800,17 @@ class Manager extends QUI\QDOM
         ]);
 
         if ($package) {
+            $Output->writeLn('Optimized done ... run setup for ' . $package);
             $Package = self::getInstalledPackage($package);
             $Package->setup();
         } else {
-            QUI\Setup::all();
+            $Output->writeLn('Optimized done ... run complete setup ...');
+            QUI\Setup::all($Output);
         }
 
         // set last update
+        $Output->writeLn('Cleanup database');
+
         QUI::getPackageManager()->setLastUpdateDate();
 
         QUI::getDataBase()->table()->truncate(QUI::getDBTableName('updateChecks'));

@@ -215,7 +215,7 @@ class Update extends QUI\System\Console\Tool
                     '--no-autoloader'     => true
                 ]);
             } else {
-                $Packages->update(false, false);
+                $Packages->update(false, false, $this);
             }
 
             $this->logBuffer();

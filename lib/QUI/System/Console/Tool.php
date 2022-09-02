@@ -15,7 +15,7 @@ use QUI;
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  */
-abstract class Tool extends QUI\QDOM
+abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutput
 {
     /**
      * Console parameter list, list of available parameter
@@ -175,7 +175,7 @@ abstract class Tool extends QUI\QDOM
             $this->resetColor();
 
             foreach ($this->examples as $example) {
-                $this->writeLn('- '.$example);
+                $this->writeLn('- ' . $example);
             }
 
             $this->writeLn();
@@ -199,11 +199,11 @@ abstract class Tool extends QUI\QDOM
         $data    = [];
 
         foreach ($this->paramsList as $param) {
-            $argv        = '--'.\ltrim($param['param'], '-');
+            $argv        = '--' . \ltrim($param['param'], '-');
             $description = '';
 
             if (isset($param['short']) && !empty($param['short'])) {
-                $argv .= ' (-'.\ltrim($param['short'], '-').')';
+                $argv .= ' (-' . \ltrim($param['short'], '-') . ')';
             }
 
             if (isset($param['description']) && !empty($param['description'])) {
@@ -245,8 +245,8 @@ abstract class Tool extends QUI\QDOM
             return $this->params[$name];
         }
 
-        if (isset($this->params['--'.$name])) {
-            return $this->params['--'.$name];
+        if (isset($this->params['--' . $name])) {
+            return $this->params['--' . $name];
         }
 
         // short argument?
@@ -271,7 +271,7 @@ abstract class Tool extends QUI\QDOM
             $this->writeLn('Missing Argument', 'brown');
 
             $this->writeLn('');
-            $this->write('--'.$name.': ', 'green');
+            $this->write('--' . $name . ': ', 'green');
 
             $this->resetColor();
 
@@ -305,7 +305,7 @@ abstract class Tool extends QUI\QDOM
      * @param string|boolean $color - (optional) Text color
      * @param string|boolean $bg - (optional) Background color
      */
-    public function writeLn($msg = '', $color = false, $bg = false)
+    public function writeLn(string $msg = '', $color = false, $bg = false)
     {
         if ($this->getAttribute('parent')) {
             $this->getAttribute('parent')->writeLn($msg, $color, $bg);
@@ -319,7 +319,7 @@ abstract class Tool extends QUI\QDOM
      * @param string|boolean $color - optional, Text color
      * @param string|boolean $bg - optional, Background color
      */
-    public function write($msg, $color = false, $bg = false)
+    public function write(string $msg, $color = false, $bg = false)
     {
         $this->message($msg, $color, $bg);
     }

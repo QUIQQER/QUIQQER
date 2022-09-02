@@ -8,8 +8,8 @@ namespace QUI;
 
 use QUI;
 use QUI\Projects\Project;
-use QUI\Utils\System\File as SystemFile;
 use QUI\System\License;
+use QUI\Utils\System\File as SystemFile;
 
 use function date;
 use function file_exists;
@@ -31,11 +31,17 @@ class Setup
     /**
      * Execute the QUIQQER Setup
      *
+     * @param QUI\Interfaces\System\SystemOutput|null $Output
+     *
      * @throws QUI\Exception
      * @throws QUI\ExceptionStack
      */
-    public static function all()
+    public static function all(?QUI\Interfaces\System\SystemOutput $Output = null)
     {
+        if (!$Output) {
+            $Output = new QUI\System\VoidOutput();
+        }
+
         QUI\System\Log::write(
             'Execute Setup',
             QUI\System\Log::LEVEL_NOTICE,
@@ -57,19 +63,38 @@ class Setup
             );
         }
 
+        $Output->writeLn('> Start Session setup');
         QUI::getSession()->setup();
 
+        $Output->writeLn('> Create directories');
         self::makeDirectories();
+
+        $Output->writeLn('> Generate file links');
         self::generateFileLinks();
+
+        $Output->writeLn('> Execute main setup (groups, users, workspace)');
         self::executeMainSystemSetup();
+
+        $Output->writeLn('> Execute communication setup (mail, messages, events)');
         self::executeCommunicationSetup();
+
+        $Output->writeLn('> Create header files');
         self::makeHeaderFiles();
+
+        $Output->writeLn('> Execute project setups');
         self::executeEachProjectSetup();
+
+        $Output->writeLn('> Execute package setups');
         self::executeEachPackageSetup();
+
+        $Output->writeLn('> Import permissions');
         self::importPermissions();
+
+        $Output->writeLn('> Cleanup');
         self::finish();
 
         QUI::getEvents()->fireEvent('setupAllEnd');
+        $Output->writeLn('> Done');
     }
 
     /**
