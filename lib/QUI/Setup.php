@@ -298,11 +298,16 @@ class Setup
 
             $list = SystemFile::readDir(OPT_DIR . '/' . $package);
 
-            foreach ($list as $key => $sub) {
+            foreach ($list as $sub) {
                 $packageName = $package . '/' . $sub;
+                $Package     = $PackageManager->getInstalledPackage($package);
+
+                if (!$Package->isQuiqqerPackage()) {
+                    continue;
+                }
 
                 $Output->writeLn('>> run setup for ' . $packageName);
-                $PackageManager->setup($packageName, $setupOptions);
+                $Package->setup($setupOptions);
             }
         }
 
