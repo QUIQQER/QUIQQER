@@ -692,6 +692,10 @@ define('controls/users/User', [
                             }
 
                             Toolbar.value = User.getAttribute('toolbar');
+
+                            if (Toolbar.value === '' && toolbars.length) {
+                                Toolbar.value = toolbars[0];
+                            }
                         });
                     };
 
