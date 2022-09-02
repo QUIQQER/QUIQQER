@@ -9,31 +9,31 @@
 QUI::$Ajax->registerFunction(
     'ajax_settings_get',
     function ($file) {
-        $files  = \json_decode($file, true);
+        $files  = json_decode($file, true);
         $config = [];
 
-        if (\is_string($files)) {
+        if (is_string($files)) {
             $files = [$files];
         }
 
         foreach ($files as $file) {
             if (strpos($file, CMS_DIR) === false) {
-                $file = CMS_DIR.$file;
+                $file = CMS_DIR . $file;
             }
 
-            if (!\file_exists($file)) {
+            if (!file_exists($file)) {
                 continue;
             }
 
             $Config = QUI\Utils\Text\XML::getConfigFromXml($file, true);
 
             if ($Config) {
-                $config = \array_merge_recursive($config, $Config->toArray());
+                $config = array_merge_recursive($config, $Config->toArray());
             }
 
             // hidden fields
-            // dont show this in the frontend
-            if (\strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') !== false) {
+            // don't show this in the frontend
+            if (strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') !== false) {
                 unset($config['db']);
                 unset($config['openssl']);
                 unset($config['globals']['salt']);
@@ -48,7 +48,7 @@ QUI::$Ajax->registerFunction(
                 unset($config['globals']['root']);
 
                 if (empty($config['globals']['nonce'])) {
-                    $nonce = \QUI\Security\Password::generateRandom(10);
+                    $nonce = \QUI\Security\Password::generateRandom();
 
                     $Config->setValue('globals', 'nonce', $nonce);
                     $Config->save();

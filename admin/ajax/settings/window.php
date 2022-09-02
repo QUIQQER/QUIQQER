@@ -9,34 +9,34 @@
 QUI::$Ajax->registerFunction(
     'ajax_settings_window',
     function ($file, $windowName) {
-        if (!isset($windowName) || \strpos($windowName, '.xml') !== false) {
+        if (!isset($windowName) || strpos($windowName, '.xml') !== false) {
             $windowName = false;
         }
 
-        if (\file_exists($file)) {
+        if (file_exists($file)) {
             $files = [$file];
         } else {
-            $files = \json_decode($file, true);
+            $files = json_decode($file, true);
         }
 
-        $cacheName = 'quiqqer/package/quiqqer/quiqqer/menu/windows/'.\md5(\json_encode($files));
+        $cacheName = 'quiqqer/package/quiqqer/quiqqer/menu/windows/' . md5(json_encode($files));
         $Settings  = QUI\Utils\XML\Settings::getInstance();
 
         if ($windowName) {
-            $cacheName .= \md5($windowName);
+            $cacheName .= md5($windowName);
         }
 
         try {
             $result = QUI\Cache\Manager::get($cacheName);
         } catch (QUI\Exception $Exception) {
             if (!$windowName
-                && \is_array($files)
-                && \in_array('packages/quiqqer/quiqqer/admin/settings/cache.xml', $files)) {
+                && is_array($files)
+                && in_array('packages/quiqqer/quiqqer/admin/settings/cache.xml', $files)) {
                 $windowName = 'quiqqer-cache';
             }
 
             if (!empty($windowName) && $windowName !== 'qui-desktop-panel') {
-                $Settings->setXMLPath('//quiqqer/settings/window[@name="'.$windowName.'"]');
+                $Settings->setXMLPath('//quiqqer/settings/window[@name="' . $windowName . '"]');
             } else {
                 $Settings->setXMLPath('//quiqqer/settings/window');
             }
@@ -59,7 +59,7 @@ QUI::$Ajax->registerFunction(
         $result['categories'] = [];
 
         foreach ($categories as $key => $category) {
-            if (isset($category['title']) && \is_array($category['title'])) {
+            if (isset($category['title']) && is_array($category['title'])) {
                 $category['text'] = QUI::getLocale()->get(
                     $category['title'][0],
                     $category['title'][1]

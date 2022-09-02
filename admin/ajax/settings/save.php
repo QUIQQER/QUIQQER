@@ -53,7 +53,7 @@ QUI::$Ajax->registerFunction(
                 if (!empty($params['general']['cacheType'])) {
                     $cacheType = $params['general']['cacheType'];
 
-                    $params['handlers'] = \array_fill_keys([
+                    $params['handlers'] = array_fill_keys([
                         'apc',
                         'filesystem',
                         'redis',
@@ -111,7 +111,7 @@ QUI::$Ajax->registerFunction(
                     QUI::getPackageManager()->setQuiqqerVersion(
                         $params['globals']['quiqqer_version']
                     );
-                } catch (\UnexpectedValueException $Exception) {
+                } catch (UnexpectedValueException $Exception) {
                     QUI::getMessagesHandler()->addError($Exception->getMessage());
                 }
             }
@@ -141,7 +141,7 @@ QUI::$Ajax->registerFunction(
             # Compare new and old .htaccess
             try {
                 $webServer = QUI\Utils\System\Webserver::detectInstalledWebserver();
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 $webServer = "";
             }
 
