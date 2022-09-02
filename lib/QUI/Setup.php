@@ -85,7 +85,7 @@ class Setup
         self::executeEachProjectSetup();
 
         $Output->writeLn('> Execute package setups');
-        self::executeEachPackageSetup();
+        self::executeEachPackageSetup([], $Output);
 
         $Output->writeLn('> Import permissions');
         self::importPermissions();
@@ -252,12 +252,19 @@ class Setup
      * Execute for each package the setup
      *
      * @param array $setupOptions - options for the package setup
+     * @param QUI\Interfaces\System\SystemOutput|null $Output
      *
      * @throws QUI\Exception
      * @throws QUI\ExceptionStack
      */
-    public static function executeEachPackageSetup($setupOptions = [])
-    {
+    public static function executeEachPackageSetup(
+        $setupOptions = [],
+        ?QUI\Interfaces\System\SystemOutput $Output = null
+    ) {
+        if (!$Output) {
+            $Output = new QUI\System\VoidOutput();
+        }
+
         QUI::getEvents()->fireEvent('setupPackageSetupBegin');
 
         $PackageManager = QUI::getPackageManager();
@@ -293,6 +300,8 @@ class Setup
 
             foreach ($list as $key => $sub) {
                 $packageName = $package . '/' . $sub;
+
+                $Output->writeLn('>> run setup for ' . $packageName);
                 $PackageManager->setup($packageName, $setupOptions);
             }
         }
