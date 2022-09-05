@@ -292,11 +292,11 @@ class Setup
                 continue;
             }
 
-            if (!is_dir(OPT_DIR . '/' . $package)) {
+            if (!is_dir(OPT_DIR . $package)) {
                 continue;
             }
 
-            $list = SystemFile::readDir(OPT_DIR . '/' . $package);
+            $list = SystemFile::readDir(OPT_DIR . $package);
 
             foreach ($list as $sub) {
                 $packageName = $package . '/' . $sub;
