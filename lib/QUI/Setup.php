@@ -300,7 +300,12 @@ class Setup
 
             foreach ($list as $sub) {
                 $packageName = $package . '/' . $sub;
-                $Package     = $PackageManager->getInstalledPackage($packageName);
+
+                try {
+                    $Package = $PackageManager->getInstalledPackage($packageName);
+                } catch (QUI\Exception $Exception) {
+                    continue;
+                }
 
                 if (!$Package->isQuiqqerPackage()) {
                     continue;
