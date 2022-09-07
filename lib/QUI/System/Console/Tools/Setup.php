@@ -13,7 +13,6 @@ use function flush;
 use function implode;
 use function ob_flush;
 use function ob_get_contents;
-use function ob_start;
 use function trim;
 
 /**
@@ -51,11 +50,6 @@ class Setup extends QUI\System\Console\Tool
             true
         );
 
-
-        ob_start();
-
-        $this->logBuffer();
-
         $PackageManager = QUI::getPackageManager();
         $quiqqer        = QUI::getPackageManager()->getPackage('quiqqer/quiqqer');
         $reference      = '';
@@ -85,15 +79,10 @@ class Setup extends QUI\System\Console\Tool
         $this->writeLn('');
 
         $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.setup.start.message'));
-        $this->logBuffer();
-
-        QUI\Setup::all();
+        QUI\Setup::all($this);
 
         $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.setup.message.success'));
-        $this->logBuffer();
-
         $this->writeLn('');
-        $this->logBuffer();
     }
 
     /**
