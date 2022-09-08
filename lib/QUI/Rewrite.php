@@ -739,72 +739,76 @@ class Rewrite
             return $this->first_child;
         }
 
-        $_url = explode('/', trim($url, '/'));
+        try {
+            $_url = explode('/', trim($url, '/'));
 
-        if (count($_url) <= 1) {
-            // Erste Ebene
-            $site_url = explode('.', $_url[0]);
-
-            $this->site_params = explode(
-                self::URL_PARAM_SEPARATOR,
-                $site_url[0]
-            );
-
-            // für was? :
-            // $this->first_child->getAttribute('name') == str_replace('-', ' ', $this->site_params[0])
-            if (empty($this->site_params[0])) {
-                return $this->first_child;
-            }
-
-            $id = $this->first_child->getChildIdByName(
-                $this->site_params[0]
-            );
-
-            $Site = $this->getProject()->get($id);
-
-            if ($setPath) {
-                $this->setIntoPath($Site);
-            }
-
-            return $Site;
-        }
-
-        $Child = false;
-
-        for ($i = 0, $len = count($_url); $i < $len; $i++) {
-            if ($Child == false) {
-                $Child = $this->first_child;
-            }
-
-            $val = $_url[$i];
-
-            // letzte seite = url params raushohlen
-            if ($len === $i + 1) {
-                $defaultSuffix = QUI\Rewrite::getDefaultSuffix();
-                $suffixLen     = mb_strlen($defaultSuffix);
-
-                if ($defaultSuffix != ''
-                    && mb_substr($val, $suffixLen * -1) == $defaultSuffix
-                ) {
-                    $site_url = mb_substr($val, 0, $suffixLen * -1);
-                } else {
-                    $site_url = $val;
-                }
+            if (count($_url) <= 1) {
+                // Erste Ebene
+                $site_url = explode('.', $_url[0]);
 
                 $this->site_params = explode(
                     self::URL_PARAM_SEPARATOR,
-                    $site_url
+                    $site_url[0]
                 );
 
-                $val = $this->site_params[0];
+                // für was? :
+                // $this->first_child->getAttribute('name') == str_replace('-', ' ', $this->site_params[0])
+                if (empty($this->site_params[0])) {
+                    return $this->first_child;
+                }
+
+                $id = $this->first_child->getChildIdByName(
+                    $this->site_params[0]
+                );
+
+                $Site = $this->getProject()->get($id);
+
+                if ($setPath) {
+                    $this->setIntoPath($Site);
+                }
+
+                return $Site;
             }
 
-            $id    = $Child->getChildIdByName($val);
-            $Child = $this->getProject()->get($id);
+            $Child = false;
 
-            if ($setPath) {
-                $this->setIntoPath($Child);
+            for ($i = 0, $len = count($_url); $i < $len; $i++) {
+                if ($Child == false) {
+                    $Child = $this->first_child;
+                }
+
+                $val = $_url[$i];
+
+                // letzte seite = url params raushohlen
+                if ($len === $i + 1) {
+                    $defaultSuffix = QUI\Rewrite::getDefaultSuffix();
+                    $suffixLen     = mb_strlen($defaultSuffix);
+
+                    if ($defaultSuffix != ''
+                        && mb_substr($val, $suffixLen * -1) == $defaultSuffix
+                    ) {
+                        $site_url = mb_substr($val, 0, $suffixLen * -1);
+                    } else {
+                        $site_url = $val;
+                    }
+
+                    $this->site_params = explode(
+                        self::URL_PARAM_SEPARATOR,
+                        $site_url
+                    );
+
+                    $val = $this->site_params[0];
+                }
+
+                $id    = $Child->getChildIdByName($val);
+                $Child = $this->getProject()->get($id);
+
+                if ($setPath) {
+                    $this->setIntoPath($Child);
+                }
             }
+        } catch (\Exception $Exception) {
+            $Child = QUI\Utils\Site::getSiteByUrl($url);
         }
 
         return $Child;
