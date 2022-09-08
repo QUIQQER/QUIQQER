@@ -10,6 +10,7 @@ use QUI;
 
 use function explode;
 use function implode;
+use function ltrim;
 use function str_replace;
 use function strlen;
 use function strpos;
@@ -114,7 +115,9 @@ class Site
         $project = '';
         $lang    = '';
 
-        $urlParts      = explode('/', $_REQUEST['_url']);
+        $url = ltrim($url, '/');
+
+        $urlParts      = explode('/', $url);
         $defaultSuffix = QUI\Rewrite::getDefaultSuffix();
 
         // fetch project
@@ -155,6 +158,8 @@ class Site
         ) {
             $lang    = str_replace($defaultSuffix, '', $urlParts[0]);
             $cleanup = [];
+
+            unset($urlParts[0]);
 
             foreach ($urlParts as $elm) {
                 $cleanup[] = $elm;
