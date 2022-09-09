@@ -171,5 +171,8 @@ QUI::$Ajax->registerFunction(
         }
     },
     ['file', 'params'],
-    'Permission::checkAdminUser'
+    [
+        'Permission::checkAdminUser',
+        'quiqqer.settings'
+    ]
 );
