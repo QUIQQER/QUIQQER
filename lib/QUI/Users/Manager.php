@@ -11,6 +11,7 @@ use QUI\Security\Password;
 use QUI\Utils\DOM;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\Text\XML;
+use QUI\Interfaces\Users\User as QUIUserInterface;
 
 use function get_class;
 use function is_numeric;
@@ -392,7 +393,7 @@ class Manager
      * Create user with specific attributes
      *
      * @param array $attributes
-     * @param User|null $PermissionUser
+     * @param QUIUserInterface|null $PermissionUser
      * @return User
      *
      * @throws Exception
@@ -401,7 +402,7 @@ class Manager
      * @throws QUI\ExceptionStack
      * @throws QUI\Permissions\Exception
      */
-    public function createChildWithAttributes(array $attributes = [], ?User $PermissionUser = null): User
+    public function createChildWithAttributes(array $attributes = [], ?QUIUserInterface $PermissionUser = null): User
     {
         // check, is the user allowed to create new users
         QUI\Permissions\Permission::checkPermission(
