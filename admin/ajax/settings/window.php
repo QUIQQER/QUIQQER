@@ -43,7 +43,7 @@ QUI::$Ajax->registerFunction(
 
             $result = $Settings->getPanel($files, $windowName);
 
-            $result['name']       = $windowName;
+            $result['name'] = $windowName;
             $result['categories'] = $result['categories']->toArray();
 
             foreach ($result['categories'] as $key => $category) {
@@ -81,5 +81,8 @@ QUI::$Ajax->registerFunction(
         return $result;
     },
     ['file', 'windowName'],
-    'Permission::checkAdminUser'
+    [
+        'Permission::checkAdminUser',
+        'quiqqer.settings'
+    ]
 );

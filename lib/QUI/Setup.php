@@ -6,6 +6,7 @@
 
 namespace QUI;
 
+use IntlDateFormatter;
 use QUI;
 use QUI\Projects\Project;
 use QUI\System\License;
@@ -65,6 +66,8 @@ class Setup
 
         $Output->writeLn('> Start Session setup');
         QUI::getSession()->setup();
+
+        $now = date('H:i:s');
 
         $Output->writeLn('> Create directories');
         self::makeDirectories();
@@ -283,6 +286,11 @@ class Setup
         QUI\Cache\Manager::$noClearing = true;
 
         // first we need all databases
+        $Formatter = QUI::getLocale()->getDateFormatter(
+            IntlDateFormatter::NONE,
+            IntlDateFormatter::MEDIUM
+        );
+
         foreach ($packages as $package) {
             if ($package == 'composer') {
                 continue;
@@ -311,7 +319,10 @@ class Setup
                     continue;
                 }
 
-                $Output->writeLn('>> run setup for ' . $packageName);
+                $Output->writeLn(
+                    '>> ' . $Formatter->format(time()) . ' - run setup for package ' . $packageName
+                );
+
                 $Package->setup($setupOptions);
             }
         }

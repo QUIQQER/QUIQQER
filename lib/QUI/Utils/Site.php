@@ -8,6 +8,14 @@ namespace QUI\Utils;
 
 use QUI;
 
+use function explode;
+use function implode;
+use function ltrim;
+use function str_replace;
+use function strlen;
+use function strpos;
+use function substr;
+
 /**
  * QUIQQER Site Util class
  *
@@ -24,7 +32,7 @@ class Site
      * @param \QUI\Interfaces\Projects\Site $Site
      * @param string $attribute
      */
-    public static function setRecursiveAttribute(\QUI\Interfaces\Projects\Site $Site, $attribute)
+    public static function setRecursiveAttribute(\QUI\Interfaces\Projects\Site $Site, string $attribute)
     {
         $value = $Site->getAttribute($attribute);
 
@@ -63,6 +71,10 @@ class Site
         self::setRecursiveAttribute($Site, $attribute);
     }
 
+    /**
+     * @param \QUI\Projects\Site $Site
+     * @return string
+     */
     public static function getChildType(\QUI\Projects\Site $Site): string
     {
         $Project     = $Site->getProject();
@@ -84,5 +96,100 @@ class Site
         }
 
         return 'standard';
+    }
+
+    /**
+     * Tries to find the matching site based on a URL
+     *
+     * @param $url
+     *
+     * @return \QUI\Projects\Site
+     * @throws \QUI\Exception
+     */
+    public static function getSiteByUrl($url): QUI\Projects\Site
+    {
+        if (empty($url)) {
+            throw new QUI\Exception('Site not found', 404);
+        }
+
+        $project = '';
+        $lang    = '';
+
+        $url = ltrim($url, '/');
+
+        $urlParts      = explode('/', $url);
+        $defaultSuffix = QUI\Rewrite::getDefaultSuffix();
+
+        // fetch project
+        if (isset($urlParts[0])
+            && substr($urlParts[0], 0, 1) == QUI\Rewrite::URL_PROJECT_CHARACTER
+        ) {
+            $project = str_replace(
+                $defaultSuffix,
+                '',
+                substr($urlParts[0], 1)
+            );
+
+            // if a second project_character, it's the template
+            if (strpos($project, QUI\Rewrite::URL_PROJECT_CHARACTER)) {
+                $split = explode(
+                    QUI\Rewrite::URL_PROJECT_CHARACTER,
+                    $project
+                );
+
+                $project = $split[0];
+                //$template = $split[1];
+            }
+
+            unset($urlParts[0]);
+
+            $cleanup = [];
+
+            foreach ($urlParts as $elm) {
+                $cleanup[] = $elm;
+            }
+
+            $urlParts = $cleanup;
+        }
+
+        // fetch language
+        if (isset($urlParts[0])
+            && (strlen($urlParts[0]) == 2 || strlen(str_replace($defaultSuffix, '', $urlParts[0])) == 2)
+        ) {
+            $lang    = str_replace($defaultSuffix, '', $urlParts[0]);
+            $cleanup = [];
+
+            unset($urlParts[0]);
+
+            foreach ($urlParts as $elm) {
+                $cleanup[] = $elm;
+            }
+
+            $urlParts = $cleanup;
+        }
+
+        // initialize project
+        if (!empty($project) && !empty($lang)) {
+            $Project = QUI\Projects\Manager::getProject(
+                $project,
+                $lang
+            );
+        } elseif (empty($project) && !empty($lang)) {
+            $Default = QUI\Projects\Manager::getStandard();
+            $Project = QUI\Projects\Manager::getProject(
+                $Default->getName(),
+                $lang
+            );
+        } else {
+            $Project = QUI::getRewrite()->getProject();
+        }
+
+        $url = implode('/', $urlParts);
+
+        try {
+            return QUI\Projects\Site\Utils::getSiteByUrl($Project, $url);
+        } catch (QUI\Exception $Exception) {
+            throw new QUI\Exception('Site not found', 404);
+        }
     }
 }

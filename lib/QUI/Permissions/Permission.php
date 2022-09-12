@@ -148,7 +148,10 @@ class Permission
                     'quiqqer/quiqqer',
                     'exception.no.permission'
                 ),
-                440
+                440,
+                [
+                    'permission' => 'checkAdminUser'
+                ]
             );
         }
     }
@@ -199,7 +202,10 @@ class Permission
 
         throw new QUI\Permissions\Exception(
             QUI::getLocale()->get('quiqqer/quiqqer', 'exception.no.permission'),
-            403
+            403,
+            [
+                'permission' => $perm
+            ]
         );
     }
 
@@ -236,8 +242,10 @@ class Permission
                 ),
                 403,
                 [
-                    'userid'   => $User->getId(),
-                    'username' => $User->getName()
+                    'userid'     => $User->getId(),
+                    'username'   => $User->getName(),
+                    'permission' => $permissions
+
                 ]
             );
         }
@@ -353,7 +361,10 @@ class Permission
                 'quiqqer/quiqqer',
                 'exception.no.permission'
             ),
-            403
+            403,
+            [
+                'permission' => $perm
+            ]
         );
     }
 
@@ -385,7 +396,10 @@ class Permission
                     'quiqqer/quiqqer',
                     'exception.no.permission'
                 ),
-                403
+                403,
+                [
+                    'permission' => 'checkSu'
+                ]
             );
         }
     }

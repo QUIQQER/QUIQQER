@@ -9,7 +9,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_settings_get',
     function ($file) {
-        $files  = json_decode($file, true);
+        $files = json_decode($file, true);
         $config = [];
 
         if (is_string($files)) {
@@ -61,5 +61,8 @@ QUI::$Ajax->registerFunction(
         return $config;
     },
     ['file'],
-    'Permission::checkSU'
+    [
+        'Permission::checkAdminUser',
+        'quiqqer.settings'
+    ]
 );

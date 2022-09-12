@@ -42,5 +42,8 @@ QUI::$Ajax->registerFunction(
         return $result;
     },
     ['file', 'category', 'windowName'],
-    'Permission::checkAdminUser'
+    [
+        'Permission::checkAdminUser',
+        'quiqqer.settings'
+    ]
 );
