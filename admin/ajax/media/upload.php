@@ -10,6 +10,8 @@
  * @throws \QUI\Exception
  */
 
+use QUI\Projects\Media\Folder;
+
 QUI::$Ajax->registerFunction(
     'ajax_media_upload',
     function ($project, $parentid, $File) {
@@ -69,7 +71,7 @@ QUI::$Ajax->registerFunction(
         } catch (\Exception $Exception) {
         }
 
-        return $Folder->uploadFile($file)->getAttributes();
+        return $Folder->uploadFile($file, Folder::FILE_OVERWRITE_TRUE)->getAttributes();
     },
     ['project', 'parentid', 'File'],
     'Permission::checkAdminUser'
