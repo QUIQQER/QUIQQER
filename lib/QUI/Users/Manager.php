@@ -15,6 +15,8 @@ use QUI\Utils\Text\XML;
 use function get_class;
 use function is_numeric;
 use function is_object;
+use function microtime;
+use function round;
 
 /**
  * QUIQQER user manager
@@ -26,11 +28,11 @@ use function is_object;
  */
 class Manager
 {
-    const AUTH_ERROR_AUTH_ERROR = 'AUTH_ERROR_AUTH_ERROR';
-    const AUTH_ERROR_USER_NOT_FOUND = 'auth_error_user_not_found';
+    const AUTH_ERROR_AUTH_ERROR      = 'AUTH_ERROR_AUTH_ERROR';
+    const AUTH_ERROR_USER_NOT_FOUND  = 'auth_error_user_not_found';
     const AUTH_ERROR_USER_NOT_ACTIVE = 'auth_error_user_not_active';
-    const AUTH_ERROR_USER_DELETED = 'auth_error_user_deleted';
-    const AUTH_ERROR_LOGIN_EXPIRED = 'auth_error_login_expired';
+    const AUTH_ERROR_USER_DELETED    = 'auth_error_user_deleted';
+    const AUTH_ERROR_LOGIN_EXPIRED   = 'auth_error_login_expired';
     const AUTH_ERROR_NO_ACTIVE_GROUP = 'auth_error_no_active_group';
 
     /**
@@ -340,7 +342,7 @@ class Manager
 
             while ($this->usernameExists($newName)) {
                 $milliseconds = round(microtime(true) * 1000);
-                $newName      = $newUserLocale . ' (' . $milliseconds . ')';
+                $newName      = $newUserLocale.' ('.$milliseconds.')';
             }
         }
 
@@ -382,6 +384,121 @@ class Manager
 
         // workspace
         $this->setDefaultWorkspacesForUsers($User);
+
+        return $User;
+    }
+
+    /**
+     * Create user with specific attributes
+     *
+     * @param array $attributes
+     * @param User|null $PermissionUser
+     * @return User
+     *
+     * @throws Exception
+     * @throws QUI\Database\Exception
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
+     * @throws QUI\Permissions\Exception
+     */
+    public function createChildWithAttributes(array $attributes = [], ?User $PermissionUser = null): User
+    {
+        // check, is the user allowed to create new users
+        QUI\Permissions\Permission::checkPermission(
+            'quiqqer.admin.users.create',
+            $PermissionUser
+        );
+
+        $insertData = [
+            'regdate' => \time(),
+            'lang'    => QUI::getLocale()->getCurrent()
+        ];
+
+        // Specific attributes that identify users need to checked first
+        if (!empty($attributes['username'])) {
+            $username = $attributes['username'];
+
+            if ($this->usernameExists($username)) {
+                throw new QUI\Users\Exception(
+                    QUI::getLocale()->get(
+                        'quiqqer/quiqqer',
+                        'exception.lib.user.exist'
+                    )
+                );
+            }
+
+            self::checkUsernameSigns($username);
+
+            $insertData['username'] = $username;
+            unset($attributes['username']);
+        } else {
+            $newUserLocale = QUI::getLocale()->get('quiqqer/quiqqer', 'user.create.new.username');
+            $newName       = $newUserLocale;
+
+            while ($this->usernameExists($newName)) {
+                $milliseconds = round(microtime(true) * 1000);
+                $newName      = $newUserLocale.' ('.$milliseconds.')';
+            }
+
+            $insertData['username'] = $newName;
+        }
+
+        if (!empty($attributes['uuid'])) {
+            $uuid = $attributes['uuid'];
+
+            try {
+                $this->get($uuid);
+
+                throw new QUI\Users\Exception(
+                    QUI::getLocale()->get(
+                        'quiqqer/quiqqer',
+                        'exception.lib.user.exist'
+                    )
+                );
+            } catch (\Exception $Exception) {
+                // uuid does not exist - this is good
+            }
+
+            $insertData['uuid'] = $uuid;
+            unset($attributes['uuid']);
+        } else {
+            try {
+                $insertData['uuid'] = QUI\Utils\Uuid::get();
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+                throw new QUI\Users\Exception('Could not create User. Please try again later.');
+            }
+        }
+
+        QUI::getDataBase()->insert(self::table(), $insertData);
+
+        $newId = QUI::getDataBase()->getPDO()->lastInsertId();
+        $User  = $this->get($newId);
+
+        $Everyone = new QUI\Groups\Everyone();
+
+        $User->setAttribute('toolbar', $Everyone->getAttribute('toolbar'));
+
+        if (!$User->getAttribute('toolbar')) {
+            $available = QUI\Editor\Manager::getToolbars();
+
+            if (!empty($available)) {
+                $User->setAttribute('toolbar', $available[0]);
+            }
+        }
+
+        $User->addToGroup($Everyone->getId());
+        $User->save($PermissionUser);
+
+        QUI::getEvents()->fireEvent('userCreate', [$User]);
+
+        // workspace
+        $this->setDefaultWorkspacesForUsers($User);
+
+        if (!empty($attributes)) {
+            $User->setAttributes($attributes);
+            $User->save($PermissionUser);
+        }
 
         return $User;
     }
@@ -600,7 +717,7 @@ class Manager
             );
         }
 
-        if ($Session->get('auth-' . get_class($Authenticator))
+        if ($Session->get('auth-'.get_class($Authenticator))
             && $Session->get('username')
             && $Session->get('uid')
         ) {
@@ -613,7 +730,7 @@ class Manager
             $Exception->setAttribute('reason', self::AUTH_ERROR_AUTH_ERROR);
 
             QUI\System\Log::write(
-                'Login failed: ' . $username,
+                'Login failed: '.$username,
                 QUI\System\Log::LEVEL_WARNING,
                 [],
                 'auth'
@@ -628,7 +745,7 @@ class Manager
             );
         } catch (\Exception $Exception) {
             QUI\System\Log::write(
-                'Login failed: ' . $username,
+                'Login failed: '.$username,
                 QUI\System\Log::LEVEL_WARNING,
                 [],
                 'auth'
@@ -656,7 +773,7 @@ class Manager
         }
 
         $Session->set(
-            'auth-' . get_class($Authenticator),
+            'auth-'.get_class($Authenticator),
             1
         );
 
@@ -1408,11 +1525,11 @@ class Manager
         /**
          * SELECT
          */
-        $query = 'SELECT * FROM ' . self::table();
+        $query = 'SELECT * FROM '.self::table();
         $binds = [];
 
         if (isset($params['count'])) {
-            $query = 'SELECT COUNT( id ) AS count FROM ' . self::table();
+            $query = 'SELECT COUNT( id ) AS count FROM '.self::table();
         }
 
         /**
@@ -1501,7 +1618,7 @@ class Manager
                 $query .= ' WHERE 1=1 ';
             } else {
                 $query            .= ' WHERE (';
-                $binds[':search'] = '%' . $search . '%';
+                $binds[':search'] = '%'.$search.'%';
 
                 if (empty($search)) {
                     $binds[':search'] = '%';
@@ -1516,7 +1633,7 @@ class Manager
                         continue;
                     }
 
-                    $query .= ' ' . $field . ' LIKE :search OR ';
+                    $query .= ' '.$field.' LIKE :search OR ';
                 }
 
                 if (\substr($query, -3) == 'OR ') {
@@ -1545,20 +1662,20 @@ class Manager
 
                 foreach ($groups as $groupId) {
                     if ((int)$groupId > 0) {
-                        $subQuery[] = 'usergroup LIKE :' . $groupId . ' ';
+                        $subQuery[] = 'usergroup LIKE :'.$groupId.' ';
 
-                        $binds[':' . $groupId] = '%,' . (int)$groupId . ',%';
+                        $binds[':'.$groupId] = '%,'.(int)$groupId.',%';
                     }
                 }
 
-                $query .= ' AND (' . \implode(' OR ', $subQuery) . ')';
+                $query .= ' AND ('.\implode(' OR ', $subQuery).')';
             }
 
             if ($filter_groups_exclude) {
                 foreach ($filter['filter_groups_exclude'] as $groupId) {
                     if ((int)$groupId > 0) {
-                        $query                 .= ' AND usergroup NOT LIKE :' . $groupId . ' ';
-                        $binds[':' . $groupId] = '%,' . (int)$groupId . ',%';
+                        $query               .= ' AND usergroup NOT LIKE :'.$groupId.' ';
+                        $binds[':'.$groupId] = '%,'.(int)$groupId.',%';
                     }
                 }
             }
@@ -1566,7 +1683,7 @@ class Manager
             if ($filter_regdate_first) {
                 $query              .= ' AND regdate >= :firstreg ';
                 $binds[':firstreg'] = QUI\Utils\Convert::convertMySqlDatetime(
-                    $filter['filter_regdate_first'] . ' 00:00:00'
+                    $filter['filter_regdate_first'].' 00:00:00'
                 );
             }
 
@@ -1574,7 +1691,7 @@ class Manager
             if ($filter_regdate_last) {
                 $query             .= " AND regdate <= :lastreg ";
                 $binds[':lastreg'] = QUI\Utils\Convert::convertMySqlDatetime(
-                    $filter['filter_regdate_last'] . ' 00:00:00'
+                    $filter['filter_regdate_last'].' 00:00:00'
                 );
             }
         }
@@ -1588,7 +1705,7 @@ class Manager
             && $params['field']
             && isset($allowOrderFields[$params['field']])
         ) {
-            $query .= ' ORDER BY ' . $params['field'] . ' ' . $params['order'];
+            $query .= ' ORDER BY '.$params['field'].' '.$params['order'];
         }
 
         /**
@@ -1603,7 +1720,7 @@ class Manager
                 $start = (int)$params['start'];
             }
 
-            $query .= ' LIMIT ' . $start . ', ' . $max;
+            $query .= ' LIMIT '.$start.', '.$max;
         }
 
         $Statement = $PDO->prepare($query);
@@ -1717,7 +1834,7 @@ class Manager
 
         foreach ($packages as $package) {
             $name    = $package['name'];
-            $userXml = OPT_DIR . $name . '/user.xml';
+            $userXml = OPT_DIR.$name.'/user.xml';
 
             if (!\file_exists($userXml)) {
                 continue;
@@ -1743,6 +1860,6 @@ class Manager
             'extend' => $extend
         ]);
 
-        return $Engine->fetch(SYS_DIR . 'template/users/profile.html');
+        return $Engine->fetch(SYS_DIR.'template/users/profile.html');
     }
 }
