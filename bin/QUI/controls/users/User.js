@@ -4,6 +4,8 @@
  *
  * @module controls/users/User
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @event onQuiqqerUserPanelCreate [self] - Fires when the User panel is created
  */
 define('controls/users/User', [
 
@@ -322,6 +324,8 @@ define('controls/users/User', [
                         }
                     });
                 });
+
+                QUI.fireEvent('quiqqerUserPanelCreate', [self]);
             }, {
                 uid    : this.getUser().getId(),
                 onError: function () {
