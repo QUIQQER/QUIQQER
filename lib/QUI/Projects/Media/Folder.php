@@ -6,18 +6,32 @@
 
 namespace QUI\Projects\Media;
 
+use Exception;
 use QUI;
 use QUI\Projects\Media;
 use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\StringHelper as StringUtils;
 use QUI\Utils\System\File as FileUtils;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use ZipArchive;
 
+use function count;
 use function date;
+use function explode;
 use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
+use function is_dir;
+use function is_string;
 use function md5;
 use function str_replace;
+use function strlen;
+use function strpos;
+use function substr;
 use function time;
+use function unlink;
 
 /**
  * A media folder
@@ -496,14 +510,14 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             ]);
         }
 
-        $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($path),
-            \RecursiveIteratorIterator::LEAVES_ONLY
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($path),
+            RecursiveIteratorIterator::LEAVES_ONLY
         );
 
         $countFiles = 0;
 
-        foreach ($files as $name => $File) {
+        foreach ($files as $File) {
             if (!$File->isDir()) {
                 $countFiles++;
             }
@@ -516,16 +530,16 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             ]);
         }
 
-        $Zip = new \ZipArchive();
-        $Zip->open($newZipFile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+        $Zip = new ZipArchive();
+        $Zip->open($newZipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
-        foreach ($files as $name => $File) {
+        foreach ($files as $File) {
             if ($File->isDir()) {
                 continue;
             }
 
             $filePath     = $File->getRealPath();
-            $relativePath = \substr($filePath, \strlen($path));
+            $relativePath = substr($filePath, strlen($path));
 
             $Zip->addFile($filePath, $relativePath);
         }
@@ -615,7 +629,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         // abwärtskompatibilität
-        if (\is_string($params)) {
+        if (is_string($params)) {
             $order  = $params;
             $params = [];
         }
@@ -660,30 +674,30 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         switch ($order) {
             case 'id':
             case 'id ASC':
-                $order_by = "find_in_set({$table_type}, 'folder') DESC, {$table_id}";
+                $order_by = "find_in_set($table_type, 'folder') DESC, $table_id";
                 break;
 
             case 'id DESC':
-                $order_by = "find_in_set({$table_type}, 'folder') DESC, {$table_id} DESC";
+                $order_by = "find_in_set($table_type, 'folder') DESC, $table_id DESC";
                 break;
 
             case 'c_date':
             case 'c_date ASC':
-                $order_by = "find_in_set({$table_type}, 'folder') DESC, {$table_cDate}";
+                $order_by = "find_in_set($table_type, 'folder') DESC, $table_cDate";
                 break;
 
             case 'c_date DESC':
-                $order_by = "find_in_set({$table_type}, 'folder') DESC, {$table_cDate} DESC";
+                $order_by = "find_in_set($table_type, 'folder') DESC, $table_cDate DESC";
                 break;
 
             case 'name ASC':
-                $order_by = "find_in_set({$table_type}, 'folder') DESC, {$table_name}";
+                $order_by = "find_in_set($table_type, 'folder') DESC, $table_name";
                 break;
 
             default:
             case 'name':
             case 'name DESC':
-                $order_by = "find_in_set({$table_type}, 'folder') DESC, {$table_name} DESC";
+                $order_by = "find_in_set($table_type, 'folder') DESC, $table_name DESC";
                 break;
 
             case 'priority':
@@ -696,9 +710,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $isCountRequest = !empty($params['count']);
 
         if (!$isCountRequest && isset($params['limit'])) {
-            $limitParams = \explode(',', $params['limit']);
+            $limitParams = explode(',', $params['limit']);
 
-            if (\count($limitParams) === 2) {
+            if (count($limitParams) === 2) {
                 $limitParams[0] = (int)$limitParams[0];
                 $limitParams[1] = (int)$limitParams[1];
 
@@ -743,7 +757,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         if ($isCountRequest) {
-            return \count($fetch);
+            return count($fetch);
         }
 
         $result = [];
@@ -1057,6 +1071,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * Returns only the sub folders
      *
      * @return array
+     * @throws \QUI\Database\Exception
      * @deprecated use getFolders
      */
     public function getSubFolders()
@@ -1281,7 +1296,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $User = QUI::getUserBySession();
         $dir  = $this->Media->getFullPath() . $this->getPath();
 
-        if (\is_dir($dir . $new_name)) {
+        if (is_dir($dir . $new_name)) {
             // prüfen ob dieser ordner schon als kind existiert
             // wenn nein, muss dieser ordner in der DB angelegt werden
 
@@ -1329,7 +1344,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'child'  => $id
         ]);
 
-        if (\is_dir($dir . $new_name)) {
+        if (is_dir($dir . $new_name)) {
             $Folder = $this->Media->get($id);
 
             $Folder->setEffects($this->getEffects());
@@ -1359,8 +1374,11 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function uploadFile($file, $options = self::FILE_OVERWRITE_NONE, $EditUser = null)
-    {
+    public function uploadFile(
+        string $file,
+        int $options = Folder::FILE_OVERWRITE_NONE,
+        ?QUI\Interfaces\Users\User $EditUser = null
+    ) {
         if (empty($EditUser)) {
             $EditUser = QUI::getUserBySession();
         }
@@ -1381,7 +1399,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             );
         }
 
-        if (\is_dir($file)) {
+        if (is_dir($file)) {
             return $this->uploadFolder($file);
         }
 
@@ -1391,16 +1409,16 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         // test if the image is readable
         if (MediaUtils::getMediaTypeByMimeType($fileinfo['mime_type']) === 'image'
-            && \strpos($fileinfo['mime_type'], 'svg') === false
+            && strpos($fileinfo['mime_type'], 'svg') === false
         ) {
             try {
                 $this->getMedia()->getImageManager()->make($file);
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 $message = $Exception->getMessage();
 
                 // gd lib has some unsupported image types
-                // but we can go on
-                if (\strpos($message, 'Unsupported image type') === false) {
+                // we can go on
+                if (strpos($message, 'Unsupported image type') === false) {
                     QUI\System\Log::addError($Exception->getMessage());
 
                     throw new QUI\Exception(
@@ -1423,10 +1441,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             || $fileinfo['mime_type'] == 'text/plain'
             || $fileinfo['mime_type'] == 'image/svg'
         ) {
-            $content = \file_get_contents($file);
+            $content = file_get_contents($file);
 
-            if (\strpos($content, '<svg') !== false && \strpos($content, '</svg>')) {
-                \file_put_contents(
+            if (strpos($content, '<svg') !== false && strpos($content, '</svg>')) {
+                file_put_contents(
                     $file,
                     '<?xml version="1.0" encoding="UTF-8"?>' .
                     $content
@@ -1446,9 +1464,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         // overwrite the file
         if (file_exists($new_file)) {
-            if ($options != self::FILE_OVERWRITE_DESTROY
-                && $options != self::FILE_OVERWRITE_TRUE
-            ) {
+            if ($options != self::FILE_OVERWRITE_DESTROY && $options != self::FILE_OVERWRITE_TRUE) {
                 throw new QUI\Exception(
                     QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.already.exists', [
                         'filename' => $filename
@@ -1478,7 +1494,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                     ['file' => $new_file]
                 );
 
-                \unlink($new_file);
+                unlink($new_file);
             }
         }
 
@@ -1547,7 +1563,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         $maxSize = $this->getProject()->getConfig('media_maxUploadSize');
 
-        // if it is an image, than resize -> if needed
+        // if it is an image, then resize -> if needed
         if (Utils::isImage($File) && $maxSize) {
             /* @var $File Image */
             $resizeData = $File->getResizeSize($maxSize, $maxSize);
@@ -1616,7 +1632,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         foreach ($files as $file) {
             // subfolders
-            if (\is_dir($path . '/' . $file)) {
+            if (is_dir($path . '/' . $file)) {
                 $foldername = MediaUtils::stripFolderName($file);
 
                 try {
