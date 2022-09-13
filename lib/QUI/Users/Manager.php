@@ -471,6 +471,26 @@ class Manager
             }
         }
 
+        if (!empty($attributes['id'])) {
+            $id = (int)$attributes['id'];
+
+            try {
+                $this->get($id);
+
+                throw new QUI\Users\Exception(
+                    QUI::getLocale()->get(
+                        'quiqqer/quiqqer',
+                        'exception.lib.user.exist'
+                    )
+                );
+            } catch (\Exception $Exception) {
+                // id does not exist - this is good
+            }
+
+            $insertData['id'] = $id;
+            unset($attributes['id']);
+        }
+
         QUI::getDataBase()->insert(self::table(), $insertData);
 
         $newId = QUI::getDataBase()->getPDO()->lastInsertId();
