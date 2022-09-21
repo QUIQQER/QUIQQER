@@ -638,6 +638,7 @@ define('controls/projects/project/Sitemap', [
                                 project : self.getAttribute('project'),
                                 lang    : self.getAttribute('lang'),
                                 id      : Itm.getAttribute('value'),
+                                site    : Itm.getAttribute('name'),
                                 Item    : Itm,
                                 copyType: 'copy'
                             });
@@ -655,6 +656,7 @@ define('controls/projects/project/Sitemap', [
                                 project : self.getAttribute('project'),
                                 lang    : self.getAttribute('lang'),
                                 id      : Itm.getAttribute('value'),
+                                site    : Itm.getAttribute('name'),
                                 Item    : Itm,
                                 copyType: 'cut'
                             });
@@ -739,7 +741,7 @@ define('controls/projects/project/Sitemap', [
                     Paste.disable();
                     Linked.disable();
 
-                    if (Itm.getAttribute('value') == 1) {
+                    if (parseInt(Itm.getAttribute('value')) === 1) {
                         Cut.disable();
                     } else {
                         Cut.enable();
@@ -757,15 +759,17 @@ define('controls/projects/project/Sitemap', [
                         return;
                     }
 
-                    var dataString = ' ' + data.project + ' (' + data.lang + ') ' +
+                    var dataString = ' ' + data.site + ' (' + data.lang + ') ' +
                                      '#' + data.id + '';
 
                     Paste.setAttribute(
-                        'text', Locale.get('quiqqer/quiqqer', 'paste') + dataString
+                        'text',
+                        Locale.get('quiqqer/quiqqer', 'paste') + ':<br /> ' + dataString
                     );
 
                     Linked.setAttribute(
-                        'text', Locale.get('quiqqer/quiqqer', 'linked.paste') + dataString
+                        'text',
+                        Locale.get('quiqqer/quiqqer', 'linked.paste') + ':<br /> ' + dataString
                     );
 
                     Paste.enable();
