@@ -315,7 +315,7 @@ class Setup
                     continue;
                 }
 
-                if (!$Package->isQuiqqerPackage()) {
+                if (!$Package->isQuiqqerPackage() && !$Package->isQuiqqerAsset()) {
                     continue;
                 }
 
