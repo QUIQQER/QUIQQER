@@ -665,17 +665,11 @@ class Locale
         $file = $GetText->getFile();
 
         System\Log::addDebug(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'message.translation.file.not.found', [
-                'file' => $file
-            ]),
+            'Translation file for "'.$file.'" not found.',
             [
                 'file' => $file
             ]
         );
-
-//        $this->gettext[$current][$group] = false;
-
-        return false;
     }
 
     /**

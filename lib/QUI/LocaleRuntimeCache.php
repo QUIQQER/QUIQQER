@@ -45,6 +45,15 @@ class LocaleRuntimeCache
         );
     }
 
+    /**
+     * Set translation cache via GetText object.
+     *
+     * @param string $lang
+     * @param string $group
+     * @param GetText $GetText
+     *
+     * @return void
+     */
     public static function setWithGetText(string $lang, string $group, GetText $GetText): void
     {
         self::$getTextInstances[$lang][$group] = $GetText;
