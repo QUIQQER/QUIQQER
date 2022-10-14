@@ -34,6 +34,10 @@ use function str_replace;
 use function strpos;
 use function trim;
 
+use const PATHINFO_EXTENSION;
+use const URL_DIR;
+use const VAR_DIR;
+
 /**
  * A media item
  * the parent class of each media entry
@@ -417,6 +421,11 @@ abstract class Item extends QUI\QDOM
         }
 
         QUI::getEvents()->fireEvent('mediaDeactivate', [$this]);
+
+        // remove fila path cache
+        QUI\Cache\LongTermCache::clear(
+            $this->getMedia()->getCacheDir() . 'filePathIds/' . md5($this->getAttribute('file'))
+        );
     }
 
     /**
@@ -709,6 +718,11 @@ abstract class Item extends QUI\QDOM
             QUI\System\Log::addWarning($Exception->getMessage());
         }
 
+        // remove fila path cache
+        QUI\Cache\LongTermCache::clear(
+            $this->getMedia()->getCacheDir() . 'filePathIds/' . md5($this->getAttribute('file'))
+        );
+
         if ($notFound) {
             $this->destroy();
         }
@@ -756,6 +770,11 @@ abstract class Item extends QUI\QDOM
         ]);
 
         QUI::getEvents()->fireEvent('mediaDestroy', [$this]);
+
+        // remove fila path cache
+        QUI\Cache\LongTermCache::clear(
+            $Media->getCacheDir() . 'filePathIds/' . md5($this->getAttribute('file'))
+        );
     }
 
     /**
