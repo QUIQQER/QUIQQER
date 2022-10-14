@@ -19,6 +19,7 @@ use function file_exists;
 use function floatval;
 use function function_exists;
 use function is_array;
+use function is_null;
 use function is_numeric;
 use function is_object;
 use function is_string;
@@ -401,13 +402,13 @@ class Locale
         // no shell
         if (!QUI\Utils\System::isShellFunctionEnabled('locale')) {
             // if we cannot read locale list, so we must guess
-            $langCode = strtolower($lang) . '_' . strtoupper($lang);
+            $langCode = strtolower($lang).'_'.strtoupper($lang);
 
             $this->localeList[$lang] = [
                 $langCode,
-                $langCode . '.utf8',
-                $langCode . '.UTF-8',
-                $langCode . '@euro'
+                $langCode.'.utf8',
+                $langCode.'.UTF-8',
+                $langCode.'@euro'
             ];
 
             return $this->localeList[$lang];
@@ -428,7 +429,7 @@ class Locale
             $langList[] = $locale;
         }
 
-        $langCode = strtolower($lang) . '_' . strtoupper($lang);
+        $langCode = strtolower($lang).'_'.strtoupper($lang);
 
         // not the best solution
         if ($lang == 'en') {
@@ -458,33 +459,23 @@ class Locale
     }
 
     /**
-     * Set translation
-     *
      * @param string $lang - Language
      * @param string $group - Language group
      * @param string|array $key
      * @param string|boolean $value
+     * @deprecated
+     *
+     * Set translation
+     *
      */
     public function set(string $lang, string $group, $key, $value = false)
     {
-        if (!isset($this->langs[$lang])) {
-            $this->langs[$lang] = [];
-        }
-
-        if (!isset($this->langs[$lang][$group])) {
-            $this->langs[$lang][$group] = [];
-        }
-
         if (!is_array($key)) {
-            $this->langs[$lang][$group][$key] = $value;
-
+            LocaleRuntimeCache::set($lang, $group, [$key => $value]);
             return;
         }
 
-        $this->langs[$lang][$group] = array_merge(
-            $this->langs[$lang][$group],
-            $key
-        );
+        LocaleRuntimeCache::set($lang, $group, $key);
     }
 
     /**
@@ -507,7 +498,7 @@ class Locale
             return true;
         }
 
-        $_str = '[' . $group . '] ' . $value;
+        $_str = '['.$group.'] '.$value;
 
         if ($_str === $str) {
             return false;
@@ -549,7 +540,7 @@ class Locale
                 continue;
             }
 
-            $str = str_replace('[' . $key . ']', $value, $str);
+            $str = str_replace('['.$key.']', $value, $str);
         }
 
         return str_replace('{\n}', PHP_EOL, $str);
@@ -578,7 +569,7 @@ class Locale
                 continue;
             }
 
-            $str = str_replace('[' . $key . ']', $value, $str);
+            $str = str_replace('['.$key.']', $value, $str);
         }
 
         return str_replace('{\n}', PHP_EOL, $str);
@@ -598,48 +589,42 @@ class Locale
     protected function getHelper(string $group, $value = false, $current = false)
     {
         if ($this->no_translation) {
-            return '[' . $group . '] ' . $value;
+            return '['.$group.'] '.$value;
         }
 
         if (!$current) {
             $current = $this->current;
         }
 
-        if (isset($this->langs[$current][$group][$value])) {
-            return $this->langs[$current][$group][$value];
+        $translation = LocaleRuntimeCache::get($current, $group, $value);
+
+        if (!is_null($translation)) {
+            return $translation;
         }
 
         // auf gettext wenn vorhanden
-        $GetText = $this->initGetText($group, $current);
+        $this->initGetText($group, $current);
 
-        if ($GetText !== false) {
-            $str = $GetText->get($value);
+        $translation = LocaleRuntimeCache::get($current, $group, $value);
 
-            if ($value != $str) {
-                return $str;
+        if (!is_null($translation)) {
+            return $translation;
+        }
+
+        // Kein gettext vorhanden, dann Config einlesen
+        try {
+            $this->initConfig($group, $current);
+
+            $translation = LocaleRuntimeCache::get($current, $group, $value);
+
+            if (!is_null($translation)) {
+                return $translation;
             }
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
         }
 
-        if (!isset($this->langs[$current]) || !isset($this->langs[$current][$group])) {
-            // Kein gettext vorhanden, dann Config einlesen
-            $this->langs[$current][$group] = [];
-
-            try {
-                $this->initConfig($group, $current);
-            } catch (QUI\Exception $Exception) {
-                QUI\System\Log::writeDebugException($Exception);
-            }
-        }
-
-        if (!$value) {
-            return $this->langs[$current][$group];
-        }
-
-        if (isset($this->langs[$current][$group][$value])) {
-            return $this->langs[$current][$group][$value];
-        }
-
-        return '[' . $group . '] ' . $value;
+        return '['.$group.'] '.$value;
     }
 
     /**
@@ -648,7 +633,7 @@ class Locale
      * @param string $group - language group
      * @param string|null $lang - optional, language
      *
-     * @return boolean|\QUI\Utils\Translation\GetText
+     * @return boolean|\QUI\Utils\Translation\GetText|void
      */
     public function initGetText(string $group, ?string $lang = null)
     {
@@ -658,16 +643,13 @@ class Locale
             $current = $lang;
         }
 
-        if (isset($this->gettext[$current]) && isset($this->gettext[$current][$group])) {
-            return $this->gettext[$current][$group];
+        if (LocaleRuntimeCache::isCached($lang, $group, true)) {
+            return;
         }
 
         if (!function_exists('gettext')) {
-            $this->gettext[$current][$group] = false;
-
-            return false;
+            return;
         }
-
 
         $GetText = new QUI\Utils\Translation\GetText(
             $current,
@@ -675,40 +657,37 @@ class Locale
             $this->dir()
         );
 
-        $this->gettext[$current][$group] = $GetText;
-
         if ($GetText->fileExist()) {
-            return $GetText;
+            LocaleRuntimeCache::setWithGetText($current, $group, $GetText);
+            return;
         }
 
         $file = $GetText->getFile();
 
         System\Log::addDebug(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'message.translation.file.not.found', [
-                'file' => $file
-            ]),
+            'Translation file for "'.$file.'" not found.',
             [
                 'file' => $file
             ]
         );
-
-        $this->gettext[$current][$group] = false;
-
-        return false;
     }
 
     /**
      * read a config
      *
      * @param string $group - translation group
-     * @param string|bool $lang - translation language
+     * @param string|null $lang - translation language
      *
      * @throws QUI\Exception
      */
-    public function initConfig(string $group, $lang = false)
+    public function initConfig(string $group, ?string $lang = null): void
     {
-        if ($lang === false) {
+        if (empty($lang)) {
             $lang = $this->current;
+        }
+
+        if (LocaleRuntimeCache::isCached($lang, $group)) {
+            return;
         }
 
         $file = $this->getTranslationFile($lang, $group);
@@ -717,9 +696,8 @@ class Locale
             return;
         }
 
-        $Config = $this->inis[$file] ?? new QUI\Config($file);
-
-        $this->set($lang, $group, $Config->toArray());
+        $Config = new QUI\Config($file);
+        LocaleRuntimeCache::set($lang, $group, $Config->toArray());
     }
 
     /**
@@ -733,10 +711,10 @@ class Locale
     public function getTranslationFile(string $lang, string $group): string
     {
         $lang   = preg_replace('/[^a-zA-Z]/', '', $lang);
-        $locale = StringHelper::toLower($lang) . '_' . StringHelper::toUpper($lang);
+        $locale = StringHelper::toLower($lang).'_'.StringHelper::toUpper($lang);
         $group  = str_replace('/', '_', $group);
 
-        return $this->dir() . '/' . $locale . '/LC_MESSAGES/' . $group . '.ini.php';
+        return $this->dir().'/'.$locale.'/LC_MESSAGES/'.$group.'.ini.php';
     }
 
     /**
@@ -746,7 +724,7 @@ class Locale
      */
     public function dir(): string
     {
-        return VAR_DIR . 'locale/';
+        return VAR_DIR.'locale/';
     }
 
     /**
