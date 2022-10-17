@@ -307,8 +307,8 @@ class Manager
             'filesize' => true
         ]);
 
-
-        $configMaxFileSize = Permission::getPermission('quiqqer.upload.maxFileUploadSize');
+        $User              = QUI::getUserBySession();
+        $configMaxFileSize = $User->getPermission('quiqqer.upload.maxFileUploadSize', 'maxInteger');
 
         if ((int)QUI\Projects\Manager::get()->getConfig('media_maxUploadFileSize')) {
             $configMaxFileSize = (int)QUI\Projects\Manager::get()->getConfig('media_maxUploadFileSize');
