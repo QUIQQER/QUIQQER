@@ -35,31 +35,35 @@ define('controls/system/settings/Config', [
          * event : on import
          */
         $onImport: function () {
-            var self  = this,
-                Panel = this.$Panel;
+            const self  = this,
+                  Panel = this.$Panel;
 
             Ajax.get('ajax_system_getQuiqqerVersions', function (versions) {
-                var Select = Panel.getContent().getElement('[name="globals.quiqqer_version"]');
+                const Select = Panel.getContent().getElement('[name="globals.quiqqer_version"]');
 
                 if (!Select) {
                     return;
                 }
 
-                for (var i = 0, len = versions.length; i < len; i++) {
+                for (let i = 0, len = versions.length; i < len; i++) {
                     new Element('option', {
                         value: versions[i],
                         html : versions[i]
                     }).inject(Select);
                 }
 
-                if (!Select.getElement('[value="' + QUIQQER_VERSION + '"]')) {
+                // replace last security version number
+                let parts = QUIQQER_VERSION.split('.');
+                let version = parts[0] + '.' + parts[1] + '.*';
+
+                if (!Select.getElement('[value="' + version + '"]')) {
                     new Element('option', {
-                        value: QUIQQER_VERSION,
-                        html : QUIQQER_VERSION
+                        value: version,
+                        html : version
                     }).inject(Select);
                 }
 
-                Select.value = QUIQQER_VERSION;
+                Select.value = version;
 
                 Select.addEvent('change', function () {
                     if (this.value === 'dev-dev') {
@@ -75,7 +79,7 @@ define('controls/system/settings/Config', [
          * Set the system to development mode
          */
         setDevelopment: function () {
-            var self = this;
+            const self = this;
 
             new QUIConfirm({
                 title    : 'Development Modus',
@@ -84,7 +88,7 @@ define('controls/system/settings/Config', [
                 autoclose: false,
                 events   : {
                     onOpen: function (Win) {
-                        var Content = Win.getContent();
+                        const Content = Win.getContent();
 
                         Win.Loader.show();
 
@@ -98,7 +102,7 @@ define('controls/system/settings/Config', [
                         );
 
                         Ajax.get('ajax_system_packages_list', function (result) {
-                            var id = Win.getId();
+                            let id = Win.getId();
 
                             result.push(
                                 {name: 'quiqqer/qui'},
@@ -107,10 +111,11 @@ define('controls/system/settings/Config', [
                                 {name: 'quiqqer/utils'}
                             );
 
-                            for (var i = 0, len = result.length; i < len; i++) {
+                            for (let i = 0, len = result.length; i < len; i++) {
                                 new Element('div', {
-                                    html: '<input type="checkbox" value="' + result[i].name + '" id="w' + id + '_' + i + '" />' +
-                                        '<label for="w' + id + '_' + i + '">' + result[i].name + '</label>'
+                                    html: '<input type="checkbox" value="' + result[i].name + '" id="w' + id + '_' + i +
+                                          '" />' +
+                                          '<label for="w' + id + '_' + i + '">' + result[i].name + '</label>'
                                 }).inject(Content);
                             }
 
@@ -128,18 +133,16 @@ define('controls/system/settings/Config', [
                     onSubmit: function (Win) {
                         Win.Loader.show();
 
-                        var packages = Win.getContent()
-                                          .getElements('[type="checkbox"]:checked')
-                                          .map(function (Elm) {
-                                              return Elm.get('value');
-                                          });
+                        const packages = Win.getContent().getElements('[type="checkbox"]:checked').map(function (Elm) {
+                            return Elm.get('value');
+                        });
 
                         if (!packages.length) {
                             Win.close();
                             return;
                         }
 
-                        Ajax.get('ajax_system_packages_setVersion', function (result) {
+                        Ajax.post('ajax_system_packages_setVersion', function () {
                             Win.close();
                         }, {
                             packages: JSON.encode(packages),
