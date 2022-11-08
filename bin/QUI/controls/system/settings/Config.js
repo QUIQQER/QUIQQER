@@ -53,17 +53,21 @@ define('controls/system/settings/Config', [
                 }
 
                 // replace last security version number
-                let parts = QUIQQER_VERSION.split('.');
-                let version = parts[0] + '.' + parts[1] + '.*';
+                if (QUIQQER_VERSION.indexOf('dev') === -1) {
+                    let parts = QUIQQER_VERSION.split('.');
+                    let version = parts[0] + '.' + parts[1] + '.*';
 
-                if (!Select.getElement('[value="' + version + '"]')) {
-                    new Element('option', {
-                        value: version,
-                        html : version
-                    }).inject(Select);
+                    if (!Select.getElement('[value="' + version + '"]')) {
+                        new Element('option', {
+                            value: version,
+                            html : version
+                        }).inject(Select);
+                    }
+
+                    Select.value = version;
+                } else {
+                    Select.value = QUIQQER_VERSION;
                 }
-
-                Select.value = version;
 
                 Select.addEvent('change', function () {
                     if (this.value === 'dev-dev') {
