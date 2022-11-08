@@ -54,7 +54,7 @@ class Session
      *
      * @var int
      */
-    protected $lifetime = 1400;
+    public int $lifetime = 1400;
 
     /**
      * Session handler
