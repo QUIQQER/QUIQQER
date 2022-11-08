@@ -143,6 +143,9 @@ class Session
             }
         }
 
+        QUI::getEvents()->fireEvent('quiqqerSessionStorageInit', [$this, &$storageOptions]);
+
+
         if (!class_exists('NativeSessionStorage')) {
             $fileNativeSessionStorage = $symfonyDir . 'Session/Storage/NativeSessionStorage.php';
 
