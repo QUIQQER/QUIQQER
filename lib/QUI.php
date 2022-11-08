@@ -4,9 +4,8 @@
  * This file contains QUI
  */
 
-use \Symfony\Component\HttpFoundation\Cookie;
-use \Symfony\Component\HttpFoundation\Request;
-use \Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * The Main Object of the QUIQQER Management System
@@ -458,6 +457,8 @@ class QUI
             $Config->set('globals', 'system_changed', 0);
             $Config->save();
         }
+
+        QUI::getEvents()->fireEvent('quiqqerInit');
     }
 
     /**
