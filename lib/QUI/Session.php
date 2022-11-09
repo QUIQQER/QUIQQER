@@ -351,6 +351,11 @@ class Session
         }
 
         if ($this->Session->isStarted()) {
+            if ($this->check() === false) {
+                $this->destroy();
+                return;
+            }
+
             $MetaBag = $this->Session->getMetadataBag();
 
             // workaround for session refresh
