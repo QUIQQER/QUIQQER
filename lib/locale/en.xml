@@ -5424,6 +5424,9 @@ After logging in you will be prompted to set a new password.
             - so that QUIQQER fits perfectly to you and your project.</p>
             ]]></en>
         </locale>
+        <locale name="site.permission.denied.for.logged.in.users.message">
+            <en><![CDATA[You do not have the necessary rights to view this page.]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
 

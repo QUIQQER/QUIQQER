@@ -5627,7 +5627,9 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
             – damit QUIQQER perfekt zu dir und deinem Projekt passt.</p>
             ]]></de>
         </locale>
-
+        <locale name="site.permission.denied.for.logged.in.users.message">
+            <de><![CDATA[Du hast leider nicht die nötigen Rechte diese Seite anzusehen.]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">
         <locale name="controls.SendPassword.title">

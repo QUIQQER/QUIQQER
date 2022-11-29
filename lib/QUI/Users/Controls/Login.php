@@ -34,7 +34,8 @@ class Login extends Control
 
         parent::__construct($options);
 
-        $this->addCSSClass('quiqqer-login');
+        $this->addCSSClass('quiqqer-login ');
+        $this->setJavaScriptControl('controls/users/Login');
     }
 
     /**
@@ -91,7 +92,7 @@ class Login extends Control
             'count'          => \count($authenticators) - 1
         ]);
 
-        return $Engine->fetch(\dirname(__FILE__).'/Login.html');
+        return $Engine->fetch(\dirname(__FILE__) . '/Login.html');
     }
 
     /**
@@ -113,7 +114,7 @@ class Login extends Control
 
         if (QUI::getSession()->get('auth-globals') != 1) {
             foreach ($authenticators as $auth) {
-                if (QUI::getSession()->get('auth-'.$auth) !== 1) {
+                if (QUI::getSession()->get('auth-' . $auth) !== 1) {
                     $globals[] = $auth;
                 }
             }
@@ -150,7 +151,7 @@ class Login extends Control
         $authenticators = $User->getAuthenticators();
 
         foreach ($authenticators as $Authenticator) {
-            if (QUI::getSession()->get('auth-'.\get_class($Authenticator)) !== 1) {
+            if (QUI::getSession()->get('auth-' . \get_class($Authenticator)) !== 1) {
                 return \get_class($Authenticator);
             }
         }

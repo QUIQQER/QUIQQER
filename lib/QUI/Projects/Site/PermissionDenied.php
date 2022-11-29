@@ -28,13 +28,13 @@ class PermissionDenied extends QUI\Projects\Site
     public function __construct(QUI\Projects\Project $Project, $id)
     {
         $this->TABLE        = $Project->table();
-        $this->RELTABLE     = $Project->table().'_relations';
-        $this->RELLANGTABLE = $Project->getAttribute('name').'_multilingual';
+        $this->RELTABLE     = $Project->table() . '_relations';
+        $this->RELLANGTABLE = $Project->getAttribute('name') . '_multilingual';
 
         $id = (int)$id;
 
         if (empty($id)) {
-            throw new QUI\Exception('Site Error; No ID given:'.$id, 400);
+            throw new QUI\Exception('Site Error; No ID given:' . $id, 400);
         }
 
         $this->id      = $id;
@@ -74,5 +74,38 @@ class PermissionDenied extends QUI\Projects\Site
         ]);
 
         $this->setAttributes($result[0]);
+
+        // content
+        if (QUI::getUserBySession()->getId()) {
+            $User = QUI::getUserBySession();
+
+            // eingeloggt, aber keine permission -> hinweis
+            $message = QUI::getLocale()->get('quiqqer/quiqqer', 'site.permission.denied.for.logged.in.users.message', [
+                'username' => $User->getUsername(),
+                'name'     => $User->getName()
+            ]);
+
+            $button = '<a href="?logout=1" class="btn qui-button">' .
+                QUI::getLocale()->get('quiqqer/quiqqer', 'logout') .
+                '</a>';
+
+            $this->setAttribute(
+                'content',
+                $message . '<br /><br />' . $button
+            );
+        } else {
+            $isFrontendUsersInstalled = QUI::getPackageManager()->isInstalled('quiqqer/frontend-users');
+
+            // nicht eingeloggt, login anbieten
+            if (!$isFrontendUsersInstalled) {
+                $Login = new QUI\Users\Controls\Login();
+                $this->setAttribute('content', $Login->create());
+            } else {
+                $this->setAttribute(
+                    'content',
+                    '<div data-qui="package/quiqqer/frontend-users/bin/frontend/controls/login/Login"></div>'
+                );
+            }
+        }
     }
 }
