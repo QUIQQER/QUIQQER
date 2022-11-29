@@ -103,7 +103,10 @@ class PermissionDenied extends QUI\Projects\Site
             } else {
                 $this->setAttribute(
                     'content',
-                    '<div data-qui="package/quiqqer/frontend-users/bin/frontend/controls/login/Login"></div>'
+                    '<div data-qui="package/quiqqer/frontend-users/bin/frontend/controls/login/Login"
+                           data-qui-options-redirect="0"
+                           data-qui-options-reload="1"
+                    ></div>'
                 );
             }
         }
