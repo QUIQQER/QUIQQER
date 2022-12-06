@@ -37,3 +37,25 @@ if (!function_exists("array_key_last")) {
         return \array_keys($array)[\count($array) - 1];
     }
 }
+
+if (!function_exists("array_merge_recursive_overwrite")) {
+    function array_merge_recursive_overwrite(array ...$arrays): array
+    {
+        $merged = [];
+        foreach ($arrays as $current) {
+            foreach ($current as $key => $value) {
+                if (is_string($key)) {
+                    if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
+                        $merged[$key] = (__FUNCTION__)($merged[$key], $value);
+                    } else {
+                        $merged[$key] = $value;
+                    }
+                } else {
+                    $merged[] = $value;
+                }
+            }
+        }
+
+        return $merged;
+    }
+}

@@ -28,7 +28,7 @@ QUI::$Ajax->registerFunction(
             $Config = QUI\Utils\Text\XML::getConfigFromXml($file, true);
 
             if ($Config) {
-                $config = array_merge_recursive($config, $Config->toArray());
+                $config = array_merge_recursive_overwrite($config, $Config->toArray());
             }
 
             // hidden fields
