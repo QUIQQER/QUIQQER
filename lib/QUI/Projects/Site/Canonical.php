@@ -55,6 +55,18 @@ class Canonical
         $siteUrl = $this->Site->getCanonical();
         $siteUrl = $this->removeHost($siteUrl);
 
+        if ($Site->getAttribute('meta.canonical') !== '') {
+            $metaCanonical = $Site->getAttribute('meta.canonical');
+
+            if (!QUI\Projects\Site\Utils::isSiteLink($metaCanonical)) {
+                if (filter_var($metaCanonical, FILTER_VALIDATE_URL)) {
+                    return $this->getLinkRel($metaCanonical);
+                }
+
+                return '';
+            }
+        }
+
         // host check
         if (isset($_SERVER['HTTP_HOST'])) {
             $requestHost         = $_SERVER['HTTP_HOST'];
@@ -100,6 +112,15 @@ class Canonical
 
         $canonical = ltrim($this->Site->getCanonical(), '/');
         $httpsHost = $Project->getVHost(true, true);
+
+        if (QUI\Projects\Site\Utils::isSiteLink($canonical)) {
+            try {
+                $CanonicalSite = QUI\Projects\Site\Utils::getSiteByLink($canonical);
+                $canonical     = $CanonicalSite->getUrlRewritten();
+                $canonical     = ltrim($canonical, '/');
+            } catch (\Exception $Exception) {
+            }
+        }
 
         $httpsHostExists = false;
 

@@ -1901,6 +1901,12 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getCanonical()
     {
+        if ($this->getAttribute('meta.canonical')) {
+            $this->setAttribute('canonical', $this->getAttribute('meta.canonical'));
+
+            return $this->getAttribute('meta.canonical');
+        }
+
         if ($this->getAttribute('canonical')) {
             return $this->getAttribute('canonical');
         }
