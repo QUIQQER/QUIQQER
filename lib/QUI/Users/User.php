@@ -568,7 +568,10 @@ class User implements QUI\Interfaces\Users\User
 
     /**
      * @param $permission
-     * @throws QUI\Exception
+     *
+     * @return void
+     *
+     * @throws \QUI\Permissions\Exception
      */
     public function checkPermission($permission)
     {
