@@ -810,7 +810,7 @@ class Edit extends Site
      *
      * @return boolean
      */
-    public function existNameInChildren($name)
+    public function existNameInChildren(string $name): bool
     {
         $query = "
             SELECT COUNT($this->TABLE.id) AS count
@@ -1176,8 +1176,8 @@ class Edit extends Site
         $this->deleteCache();
 
         // remove internal parent ids
-        $this->parents_id = false;
-        $this->parent_id  = false;
+        $this->parents_id = null;
+        $this->parent_id  = null;
 
 
         $this->Events->fireEvent('move', [$this, $pid]);
