@@ -6,16 +6,29 @@
 
 namespace QUI\Projects\Site;
 
+use Exception;
 use QUI;
-use QUI\Projects\Site;
-use QUI\Projects\Project;
-use QUI\Permissions\Permission;
-use QUI\Users\User;
 use QUI\Groups\Group;
-use QUI\Utils\Security\Orthos;
 use QUI\Lock\Locker;
+use QUI\Permissions\Permission;
+use QUI\Projects\Project;
+use QUI\Projects\Site;
+use QUI\Users\User;
+use QUI\Utils\Security\Orthos;
 
+use function array_merge;
+use function date;
+use function in_array;
+use function is_array;
+use function is_numeric;
+use function is_string;
 use function json_decode;
+use function json_encode;
+use function str_replace;
+use function strpos;
+use function strtotime;
+use function time;
+use function trim;
 
 /**
  * Site Objekt für den Adminbereich
@@ -64,7 +77,7 @@ class Edit extends Site
      *
      * @var array
      */
-    public $conf = [];
+    public array $conf = [];
 
     /**
      * Constructor
@@ -172,7 +185,7 @@ class Edit extends Site
 
     /**
      * Check if the release from date is in the future or the release until is in the past
-     * throws exception if the site can't activated
+     * throws exception if the site can't activate
      *
      * @throws QUI\Exception
      */
@@ -183,9 +196,9 @@ class Edit extends Site
         $release_to   = $this->getAttribute('release_to');
 
         if ($release_from && $release_to !== '0000-00-00 00:00:00') {
-            $release_from = \strtotime($release_from);
+            $release_from = strtotime($release_from);
 
-            if ($release_from > \time()) {
+            if ($release_from > time()) {
                 throw new QUI\Exception(
                     QUI::getLocale()->get(
                         'quiqqer/quiqqer',
@@ -200,9 +213,9 @@ class Edit extends Site
             return;
         }
 
-        $release_to = \strtotime($release_to);
+        $release_to = strtotime($release_to);
 
-        if ($release_to && $release_to < \time()) {
+        if ($release_to && $release_to < time()) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -245,7 +258,7 @@ class Edit extends Site
         $releaseFrom = $this->getAttribute('release_from');
 
         if (!Orthos::checkMySqlDatetimeSyntax($releaseFrom)) {
-            $releaseFrom = \date('Y-m-d H:i:s');
+            $releaseFrom = date('Y-m-d H:i:s');
         }
 
         // save
@@ -349,13 +362,13 @@ class Edit extends Site
         // on destroy event
         try {
             $this->Events->fireEvent('destroy', [$this]);
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
 
         try {
             QUI::getEvents()->fireEvent('siteDestroy', [$this]);
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
 
@@ -443,7 +456,6 @@ class Edit extends Site
             );
         }
 
-        /* @var $Project QUI\Projects\Project */
         $Project = $this->getProject();
         $name    = $this->getAttribute('name');
 
@@ -451,10 +463,10 @@ class Edit extends Site
             $name = QUI\Utils\Convert::convertRoman($name); // cleanup name
         }
 
-        $name = \trim($name);
+        $name = trim($name);
 
 
-        // checks if the name is conform and allowed to use
+        // checks if the name is conformed and allowed to use
         QUI\Projects\Site\Utils::checkName($name);
 
 
@@ -467,7 +479,7 @@ class Edit extends Site
                 $Parent = new QUI\Projects\Site\Edit($Project, $pid);
 
                 try {
-                    $childId = (int)$Parent->getChildIdByName($name);
+                    $childId = $Parent->getChildIdByName($name);
 
                     if ($childId !== $this->id) {
                         throw new QUI\Exception(
@@ -497,28 +509,28 @@ class Edit extends Site
         if ($this->getAttribute('release_from')
             && $this->getAttribute('release_from') != '0000-00-00 00:00:00'
         ) {
-            $rf = \strtotime($this->getAttribute('release_from'));
+            $rf = strtotime($this->getAttribute('release_from'));
 
             if ($rf) {
-                $release_from = \date('Y-m-d H:i:s', $rf);
+                $release_from = date('Y-m-d H:i:s', $rf);
             }
         } else {
             if ($this->getAttribute('active')) {
                 // nur bei aktiven seiten das e_date setzen
                 // wenn der cron läuft, darf eine inaktive seite nicht sofort aktiviert werden
                 // daher werden nur aktive seite beachten
-                $release_from = \date(
+                $release_from = date(
                     'Y-m-d H:i:s',
-                    \strtotime(date('Y-m-d H:i:s'))
+                    strtotime(date('Y-m-d H:i:s'))
                 );
             }
         }
 
         if ($this->getAttribute('release_to')) {
-            $rt = \strtotime($this->getAttribute('release_to'));
+            $rt = strtotime($this->getAttribute('release_to'));
 
             if ($rt && $rt > 0) {
-                $release_to = \date('Y-m-d H:i:s', $rt);
+                $release_to = date('Y-m-d H:i:s', $rt);
             } else {
                 $release_to = '';
             }
@@ -605,7 +617,7 @@ class Edit extends Site
 
         $order_field = $this->getAttribute('order_field');
 
-        if (\is_numeric($order_field)) {
+        if (is_numeric($order_field)) {
             $order_field = (int)$order_field;
         }
 
@@ -618,7 +630,7 @@ class Edit extends Site
             $this->TABLE,
             [
                 'name'          => $name,
-                'title'         => \trim($this->getAttribute('title')),
+                'title'         => trim($this->getAttribute('title')),
                 'short'         => $this->getAttribute('short'),
                 'content'       => $this->getAttribute('content'),
                 'type'          => $this->getAttribute('type'),
@@ -635,7 +647,7 @@ class Edit extends Site
                 'release_from'  => $release_from,
                 'release_to'    => $release_to,
                 // Extra-Feld
-                'extra'         => \json_encode($siteExtra),
+                'extra'         => json_encode($siteExtra),
                 'auto_release'  => $this->getAttribute('auto_release') ? 1 : 0
             ],
             [
@@ -655,7 +667,7 @@ class Edit extends Site
             $suffix    = $dataEntry['suffix'];
 
             $attributeSuffix = $package . '.' . $suffix . '.';
-            $attributeSuffix = \str_replace('/', '.', $attributeSuffix);
+            $attributeSuffix = str_replace('/', '.', $attributeSuffix);
 
             foreach ($fieldList as $siteAttribute) {
                 $data[$siteAttribute] = $this->getAttribute(
@@ -695,7 +707,7 @@ class Edit extends Site
         $this->createCache();
 
         // Letztes Speichern
-        $Project->setEditDate(\time());
+        $Project->setEditDate(time());
 
         // on save event
         try {
@@ -708,7 +720,7 @@ class Edit extends Site
                 /* @var $Exc \Exception */
                 QUI\System\Log::writeException($Exc);
             }
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
 
@@ -750,7 +762,7 @@ class Edit extends Site
      * @see Site::getChildrenIdsFromParentId()
      *
      */
-    public function getChildrenIdsFromParentId($pid, $params = [])
+    public function getChildrenIdsFromParentId(int $pid, array $params = []): array
     {
         $where_1 = [
             $this->RELTABLE . '.parent' => (int)$pid,
@@ -758,9 +770,9 @@ class Edit extends Site
             $this->RELTABLE . '.child'  => '`' . $this->TABLE . '.id`'
         ];
 
-        if (isset($params['where']) && \is_array($params['where'])) {
-            $where = \array_merge($where_1, $params['where']);
-        } elseif (isset($params['where']) && \is_string($params['where'])) {
+        if (isset($params['where']) && is_array($params['where'])) {
+            $where = array_merge($where_1, $params['where']);
+        } elseif (isset($params['where']) && is_string($params['where'])) {
             // @todo where als param string
             QUI\System\Log::addDebug('WIRD NICHT verwendet' . $params['where']);
             $where = $where_1;
@@ -771,14 +783,14 @@ class Edit extends Site
         $order = $this->TABLE . '.order_field';
 
         if (isset($params['order'])) {
-            if (\strpos($params['order'], '.') !== false) {
+            if (strpos($params['order'], '.') !== false) {
                 $order = $this->TABLE . '.' . $params['order'];
             } else {
                 $order = $params['order'];
             }
         }
 
-        $result = QUI::getDataBase()->fetch([
+        return QUI::getDataBase()->fetch([
             'select' => $this->TABLE . '.id',
             'count'  => isset($params['count']) ? 'count' : false,
             'from'   => [
@@ -786,11 +798,9 @@ class Edit extends Site
                 $this->TABLE
             ],
             'order'  => $order,
-            'limit'  => isset($params['limit']) ? $params['limit'] : false,
+            'limit'  => $params['limit'] ?? false,
             'where'  => $where
         ]);
-
-        return $result;
     }
 
     /**
@@ -803,12 +813,12 @@ class Edit extends Site
     public function existNameInChildren($name)
     {
         $query = "
-            SELECT COUNT({$this->TABLE}.id) AS count
-            FROM `{$this->RELTABLE}`,`{$this->TABLE}`
-            WHERE `{$this->RELTABLE}`.`parent` = {$this->getId()} AND
-                  `{$this->RELTABLE}`.`child` = `{$this->TABLE}`.`id` AND
-                  `{$this->TABLE}`.`name` = :name AND
-                  `{$this->TABLE}`.`deleted` = 0
+            SELECT COUNT($this->TABLE.id) AS count
+            FROM `$this->RELTABLE`,`$this->TABLE`
+            WHERE `$this->RELTABLE`.`parent` = {$this->getId()} AND
+                  `$this->RELTABLE`.`child` = `$this->TABLE`.`id` AND
+                  `$this->TABLE`.`name` = :name AND
+                  `$this->TABLE`.`deleted` = 0
         ";
 
         $PDO       = QUI::getDataBase()->getPDO();
@@ -837,7 +847,7 @@ class Edit extends Site
      * @return array|int
      * @throws QUI\Exception
      *
-     * @todo $recusiv parameter is not used and the interface defines it as a $load parameter
+     * @todo $recursiv parameter is not used and the interface defines it as a $load parameter
      *
      */
     public function getChildren($params = [], $recursiv = false)
@@ -1025,7 +1035,7 @@ class Edit extends Site
         $_params = [
             'name'        => $new_name,
             'title'       => $new_name,
-            'c_date'      => \date('Y-m-d H:i:s'),
+            'c_date'      => date('Y-m-d H:i:s'),
             'e_user'      => $User->getId(),
             'c_user'      => $User->getId(),
             'c_user_ip'   => QUI\Utils\System::getClientIP(),
@@ -1129,7 +1139,7 @@ class Edit extends Site
         $Parent   = $Project->get((int)$pid);// Check whether the parent exists
         $children = $this->getChildrenIds();
 
-        if (\in_array($pid, $children) || $pid === $this->getId()) {
+        if (in_array($pid, $children) || $pid === $this->getId()) {
             return false;
         }
 
@@ -1264,13 +1274,13 @@ class Edit extends Site
         );
 
         // Erstmal Seitentyp setzn
-        $Site = new QUI\Projects\Site\Edit($Project, (int)$site_id);
+        $Site = new QUI\Projects\Site\Edit($Project, $site_id);
         $Site->setAttribute('type', $this->getAttribute('type'));
         $Site->setAttribute('title', $title);
         $Site->save();
 
         // Alle Attribute setzen
-        $Site = new QUI\Projects\Site\Edit($Project, (int)$site_id);
+        $Site = new QUI\Projects\Site\Edit($Project, $site_id);
 
         foreach ($attribues as $key => $value) {
             if ($key == 'name' || $key == 'title' || $key == 'type') {
@@ -1416,7 +1426,7 @@ class Edit extends Site
 
         try {
             QUI\Cache\Manager::set($linkCache, $this->getLocation());
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::addDebug($Exception->getMessage());
         }
     }
@@ -1459,7 +1469,7 @@ class Edit extends Site
             return false;
         }
 
-        if (\is_array($uid) && isset($uid['id'])) {
+        if (is_array($uid) && isset($uid['id'])) {
             return $uid['id'];
         }
 

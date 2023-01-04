@@ -17,7 +17,7 @@ QUI::$Ajax->registerFunction(
 
         QUI::getEvents()->fireEvent('onSiteSaveAjaxBegin', [$Site]);
 
-        $attributes = \json_decode($attributes, true);
+        $attributes = json_decode($attributes, true);
 
         try {
             $Site->setAttributes($attributes);
@@ -40,7 +40,7 @@ QUI::$Ajax->registerFunction(
             require_once 'get.php';
 
             $result = QUI::$Ajax->callRequestFunction('ajax_site_get', [
-                'project' => \json_encode($Project->toArray()),
+                'project' => json_encode($Project->toArray()),
                 'id'      => $id
             ]);
 
