@@ -6,6 +6,7 @@
 
 namespace QUI\Projects\Site;
 
+use Exception;
 use QUI;
 
 /**
@@ -25,13 +26,11 @@ class PermissionDenied extends QUI\Projects\Site
      *
      * @throws QUI\Exception
      */
-    public function __construct(QUI\Projects\Project $Project, $id)
+    public function __construct(QUI\Projects\Project $Project, int $id)
     {
         $this->TABLE        = $Project->table();
         $this->RELTABLE     = $Project->table() . '_relations';
         $this->RELLANGTABLE = $Project->getAttribute('name') . '_multilingual';
-
-        $id = (int)$id;
 
         if (empty($id)) {
             throw new QUI\Exception('Site Error; No ID given:' . $id, 400);
@@ -53,7 +52,7 @@ class PermissionDenied extends QUI\Projects\Site
      * @inheritdoc
      * @return QUI\Projects\Site
      */
-    public function load($plugin = false)
+    public function load($plugin = false): QUI\Projects\Site
     {
         return $this;
     }
@@ -65,13 +64,17 @@ class PermissionDenied extends QUI\Projects\Site
      */
     public function refresh()
     {
-        $result = QUI::getDataBase()->fetch([
-            'from'  => $this->TABLE,
-            'where' => [
-                'id' => 1
-            ],
-            'limit' => '1'
-        ]);
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'from'  => $this->TABLE,
+                'where' => [
+                    'id' => 1
+                ],
+                'limit' => '1'
+            ]);
+        } catch (Exception $exception) {
+            return;
+        }
 
         $this->setAttributes($result[0]);
 
