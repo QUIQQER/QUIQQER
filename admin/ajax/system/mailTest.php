@@ -6,7 +6,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_system_mailTest',
     function ($params) {
-        $params = \json_decode($params, true);
+        $params = json_decode($params, true);
         $Mail   = QUI::getMailManager()->getPHPMailer();
 
         $Mail->Mailer = 'mail';
@@ -63,8 +63,8 @@ QUI::$Ajax->registerFunction(
             }
 
             $recipients = $mailRecipient;
-            $recipients = \trim($recipients);
-            $recipients = \explode(',', $recipients);
+            $recipients = trim($recipients);
+            $recipients = explode(',', $recipients);
 
             foreach ($recipients as $recipient) {
                 $Mail->addAddress($recipient);
@@ -82,14 +82,14 @@ QUI::$Ajax->registerFunction(
 
             $Mail->SMTPDebug   = 3;
             $Mail->Debugoutput = function ($str, $level) {
-                QUI\System\Log::writeRecursive(\rtrim($str) . PHP_EOL);
-                QUI\Mail\Log::write(\rtrim($str));
+                QUI\System\Log::writeRecursive(rtrim($str) . PHP_EOL);
+                QUI\Mail\Log::write(rtrim($str));
             };
 
             QUI\Mail\Log::logSend($Mail);
             $Mail->send();
             QUI\Mail\Log::logDone($Mail);
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\Mail\Log::logException($Exception);
 
             throw new QUI\Exception(
@@ -117,7 +117,7 @@ QUI::$Ajax->registerFunction(
 
             $Mailers->addRecipient($mailRecipient);
             $Mailers->send();
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\Mail\Log::logException($Exception);
         }
 
