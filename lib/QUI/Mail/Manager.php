@@ -89,7 +89,7 @@ class Manager
         $config = QUI::conf('mail');
         $Mail   = new PHPMailer(true);
 
-        if ($config['SMTP'] == true) {
+        if (isset($config['SMTP']) && $config['SMTP']) {
             $Mail->Mailer   = 'smtp';
             $Mail->Host     = $config['SMTPServer'];
             $Mail->SMTPAuth = $config['SMTPAuth'];
@@ -110,10 +110,8 @@ class Manager
 
             if (isset($config['SMTPSecure'])) {
                 switch ($config['SMTPSecure']) {
-                    case "ssl":
-                        $Mail->SMTPSecure = $config['SMTPSecure'];
-                        break;
                     case "tls":
+                    case "ssl":
                         $Mail->SMTPSecure = $config['SMTPSecure'];
                         break;
                 }
