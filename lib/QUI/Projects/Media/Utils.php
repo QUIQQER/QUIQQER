@@ -571,7 +571,7 @@ class Utils
         $img .= ' src="' . $host . \htmlspecialchars($originalSrc) . '"';
 
         if (!empty($imgSrcSetEntries)) {
-            $img .= ' srcset="' . \implode(',', $imgSrcSetEntries) . '"';
+            $img .= ' srcset="' . \implode(', ', $imgSrcSetEntries) . '"';
         }
 
         $img .= ' />';
