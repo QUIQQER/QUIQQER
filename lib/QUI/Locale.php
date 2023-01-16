@@ -304,13 +304,7 @@ class Locale
             return Encoding::toUTF8($Formatter->format($timestamp));
         }
 
-        $formats = $this->getDateFormats();
-
-        if (!empty($formats[$current])) {
-            $format = $formats[$current];
-        }
-
-        if (strpos($format, '%') === false) {
+        if (mb_strpos($format, '%') === false) {
             $Formatter->setPattern($format);
 
             return Encoding::toUTF8(
@@ -325,29 +319,29 @@ class Locale
         $locales    = $this->getLocalesByLang($current);
         $localeCode = first($locales);
 
-        if ($format) {
-            $oldLocale = setlocale(LC_TIME, "0");
+//        if ($format) {
+        $oldLocale = setlocale(LC_TIME, "0");
 
-            setlocale(LC_TIME, $localeCode);
-            $result = strftime($format, $timestamp);
-            setlocale(LC_TIME, $oldLocale);
+        setlocale(LC_TIME, $localeCode);
+        $result = strftime($format, $timestamp);
+        setlocale(LC_TIME, $oldLocale);
 
-            return Encoding::toUTF8($result);
-        }
+        return Encoding::toUTF8($result);
+//        }
 
-        $formats = $this->getDateFormats();
-
-        if (!empty($formats[$current])) {
-            $oldLocale = setlocale(LC_TIME, "0");
-
-            setlocale(LC_TIME, $localeCode);
-            $result = strftime($formats[$current], $timestamp);
-            setlocale(LC_TIME, $oldLocale);
-
-            return Encoding::toUTF8($result);
-        }
-
-        return Encoding::toUTF8(strftime('%D', $timestamp));
+//        $formats = $this->getDateFormats();
+//
+//        if (!empty($formats[$current])) {
+//            $oldLocale = setlocale(LC_TIME, "0");
+//
+//            setlocale(LC_TIME, $localeCode);
+//            $result = strftime($formats[$current], $timestamp);
+//            setlocale(LC_TIME, $oldLocale);
+//
+//            return Encoding::toUTF8($result);
+//        }
+//
+//        return Encoding::toUTF8(strftime('%D', $timestamp));
     }
 
     /**
