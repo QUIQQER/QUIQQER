@@ -458,8 +458,14 @@ define('controls/messages/Button', [
          * custom message handling
          *
          * @param {Object} Message
+         * @param {HTMLElement} Node
          */
-        $customMessageHandling: function (Message) {
+        $customMessageHandling: function (Message, Node) {
+            if (Node) {
+                this.$showMessageAtNode(Message, Node);
+                return;
+            }
+
             if (this.$open) {
                 this.$MessageHandler.$newMessages++;
                 this.$MessageHandler.save();
@@ -546,6 +552,64 @@ define('controls/messages/Button', [
                                 console.error(err);
                             });
                         }, self.getAttribute('messageDelay'));
+
+                        resolve();
+                    }
+                });
+            });
+        },
+
+        $showMessageAtNode: function (Message, Parent) {
+            const MessageNode = this.$createMessageNode(Message);
+            let zIndex = QUI.Windows.$getmaxWindowZIndex() + 1;
+
+            if (zIndex < 1000) {
+                zIndex = 1000;
+            }
+
+            MessageNode.setStyles({
+                opacity : 0,
+                position: 'absolute',
+                zIndex  : zIndex
+            });
+
+            MessageNode.inject(document.body);
+
+            let pos = Parent.getPosition();
+            let size = Parent.getSize();
+            let startY = pos.y + size.y - 10;
+
+            MessageNode.setStyles({
+                left: pos.x,
+                top : startY
+            });
+
+            const winSize = QUI.getWindowSize();
+            const messageSize = MessageNode.getSize();
+
+            if (messageSize.x + pos.x > winSize.x) {
+                MessageNode.setStyle('left', winSize.x - messageSize.x - 10);
+            }
+
+            return new Promise((resolve) => {
+                moofx(MessageNode).animate({
+                    opacity: 1,
+                    top    : startY + 10
+                }, {
+                    duration: 200,
+                    callback: () => {
+                        setTimeout(() => {
+                            moofx(MessageNode).animate({
+                                opacity: 0,
+                                top    : startY
+                            }, {
+                                duration: 200,
+                                callback: function () {
+                                    MessageNode.destroy();
+                                    resolve();
+                                }
+                            });
+                        }, this.getAttribute('messageDelay'));
 
                         resolve();
                     }
