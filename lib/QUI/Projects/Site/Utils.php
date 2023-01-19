@@ -53,7 +53,7 @@ class Utils
      * @return boolean
      * @throws Exception
      */
-    public static function checkName($name)
+    public static function checkName(string $name): bool
     {
         if (!isset($name)) {
             throw new Exception(
@@ -105,7 +105,7 @@ class Utils
      *
      * @return string
      */
-    public static function clearUrl($url, QUI\Projects\Project $Project = null)
+    public static function clearUrl(string $url, QUI\Projects\Project $Project = null): string
     {
         // space separator
         $url = str_replace(QUI\Rewrite::URL_SPACE_CHARACTER, ' ', $url);
@@ -161,9 +161,7 @@ class Utils
             }
         }
 
-        $url = str_replace(' ', QUI\Rewrite::URL_SPACE_CHARACTER, $url);
-
-        return $url;
+        return str_replace(' ', QUI\Rewrite::URL_SPACE_CHARACTER, $url);
     }
 
     /**
@@ -173,7 +171,7 @@ class Utils
      *
      * @return array
      */
-    public static function getDataBaseXMLListForSite($Site)
+    public static function getDataBaseXMLListForSite(Projects\Site $Site): array
     {
         $siteType = $Site->getAttribute('type');
         $cache    = $Site->getCachePath() . '/xml-database-list/' . $siteType;
@@ -252,7 +250,7 @@ class Utils
      *
      * @return array
      */
-    public static function getDataListForSite($Site)
+    public static function getDataListForSite(Projects\Site $Site): array
     {
         $siteType = $Site->getAttribute('type');
         $cache    = $Site->getCachePath() . '/xml-database-tables/' . $siteType;
@@ -312,14 +310,14 @@ class Utils
                 $data  = [];
 
 
-                for ($f = 0, $flen = $fields->length; $f < $flen; $f++) {
+                for ($f = 0, $fLen = $fields->length; $f < $fLen; $f++) {
                     $Field     = $fields->item($f);
                     $attribute = trim($Field->nodeValue);
 
                     $data[] = $attribute;
                 }
 
-                if (!isset($data) || empty($data)) {
+                if (empty($data)) {
                     continue;
                 }
 
@@ -341,7 +339,6 @@ class Utils
         return $result;
     }
 
-
     /**
      * Return database.xml list for the Site Object
      *
@@ -349,7 +346,7 @@ class Utils
      *
      * @return array
      */
-    public static function getExtraAttributeListForSite($Site)
+    public static function getExtraAttributeListForSite(Projects\Site $Site): array
     {
         $siteType = $Site->getAttribute('type');
         $cache    = $Site->getCachePath() . '/xml-database-attributes/' . $siteType;
@@ -450,14 +447,19 @@ class Utils
     /**
      * Return the extra settings from site.xml's
      *
-     * @param QUI\Projects\Site $Site
+     * @param QUI\Projects\Site|QUI\Projects\Site\Edit $Site
+     * @param string $current
      *
      * @return string
      */
-    public static function getExtraSettingsForSite($Site)
+    public static function getExtraSettingsForSite($Site, string $current = ''): string
     {
+        if (empty($current)) {
+            $current = QUI::getLocale()->getCurrent();
+        }
+
         $siteType = $Site->getAttribute('type');
-        $cache    = $Site->getCachePath() . '/xml-database-settings/' . $siteType;
+        $cache    = $Site->getCachePath() . '/xml-database-settings/' . $current . '/' . $siteType;
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -481,7 +483,7 @@ class Utils
             $cats = $Path->query("//site/settings/category");
 
             foreach ($cats as $Category) {
-                $result .= DOM::parseCategoryToHTML($Category);
+                $result .= DOM::parseCategoryToHTML($Category, $current);
             }
         }
 
@@ -501,7 +503,7 @@ class Utils
             );
 
             foreach ($cats as $Category) {
-                $result .= DOM::parseCategoryToHTML($Category);
+                $result .= DOM::parseCategoryToHTML($Category, $current);
             }
         }
 
@@ -527,7 +529,7 @@ class Utils
                 );
 
                 foreach ($cats as $Category) {
-                    $result .= DOM::parseCategoryToHTML($Category);
+                    $result .= DOM::parseCategoryToHTML($Category, $current);
                 }
             }
         }
@@ -544,7 +546,7 @@ class Utils
     /**
      * Return the admin site modules from site.xml's
      *
-     * @param QUI\Projects\Site $Site
+     * @param QUI\Projects\Site|QUI\Projects\Site\Edit $Site
      *
      * @return array|boolean
      */
@@ -598,7 +600,7 @@ class Utils
      *
      * @return boolean
      */
-    public static function isSiteObject($Site)
+    public static function isSiteObject($Site): bool
     {
         switch (get_class($Site)) {
             case 'QUI\\Projects\\Site':
@@ -621,7 +623,7 @@ class Utils
      *
      * @return boolean
      */
-    public static function isSiteLink($link)
+    public static function isSiteLink(string $link): bool
     {
         if (strpos($link, 'index.php') === false) {
             return false;
@@ -651,7 +653,7 @@ class Utils
      * @return Projects\Site
      * @throws Exception
      */
-    public static function getSiteByLink($link)
+    public static function getSiteByLink(string $link): Projects\Site
     {
         if (!self::isSiteLink($link)) {
             throw new Exception(
@@ -704,7 +706,7 @@ class Utils
      *
      * @throws Exception
      */
-    public static function getSiteByUrl(Project $Project, $link)
+    public static function getSiteByUrl(Project $Project, $link): Projects\Site
     {
         $link  = str_replace('.html', '', $link);
         $link  = trim($link);
@@ -734,8 +736,8 @@ class Utils
     public static function getSitesByInputList(
         Project $Project,
         $list,
-        $params = []
-    ) {
+        array $params = []
+    ): array {
         $limit = 2;
         $order = 'release_from ASC';
 
@@ -858,7 +860,7 @@ class Utils
     }
 
     /**
-     * Return the rewrited link
+     * Return the rewritten link
      * eq: rewriteSiteLink( index.php?project=test&lang=de&id=1 )
      *
      * @param string $link - Project of the sites
@@ -867,7 +869,7 @@ class Utils
      *
      * @throws Exception
      */
-    public static function rewriteSiteLink($link)
+    public static function rewriteSiteLink(string $link): string
     {
         if (!self::isSiteLink($link)) {
             throw new Exception(
@@ -886,7 +888,7 @@ class Utils
 
         $parseUrl = parse_url($link);
 
-        if (!isset($parseUrl['query']) || empty($parseUrl['query'])) {
+        if (empty($parseUrl['query'])) {
             throw new Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
