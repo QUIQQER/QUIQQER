@@ -525,7 +525,13 @@ class Project
             }
         }
 
-        return HOST;
+        $StandardProject = QUI::getProjectManager()->getStandard();
+
+        if ($StandardProject->getName() === $this->getName()) {
+            return HOST;
+        }
+
+        return HOST . '/' . QUI\Rewrite::URL_PROJECT_CHARACTER . $this->getName() . '/';
     }
 
     /**
