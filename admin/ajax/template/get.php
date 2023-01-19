@@ -11,23 +11,25 @@
  *
  * @throws QUI\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_template_get',
     function ($template, $package, $params = '') {
-        $Engine = QUI::getTemplateManager()->getEngine(true);
+        $current = QUI::getLocale()->getCurrent();
+        $Engine  = QUI::getTemplateManager()->getEngine(true);
 
         if (isset($package) && !empty($package)) {
             QUI::getPackage($package); // check if package exists
 
-            $template = OPT_DIR.$package.'/'.\str_replace('_', '/', $template).'.html';
+            $template = OPT_DIR . $package . '/' . str_replace('_', '/', $template) . '.html';
         } else {
-            $dir      = SYS_DIR.'template/';
-            $template = $dir.\str_replace('_', '/', $template).'.html';
+            $dir      = SYS_DIR . 'template/';
+            $template = $dir . str_replace('_', '/', $template) . '.html';
         }
 
-        $template = \realpath($template);
+        $template = realpath($template);
 
-        if (!$template || !\file_exists($template)) {
+        if (!$template || !file_exists($template)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -36,7 +38,7 @@ QUI::$Ajax->registerFunction(
             );
         }
 
-        if (\strpos($template, CMS_DIR) !== 0) {
+        if (strpos($template, CMS_DIR) !== 0) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -46,11 +48,14 @@ QUI::$Ajax->registerFunction(
         }
 
         if (!empty($params)) {
-            $params = \json_decode($params, true);
+            $params = json_decode($params, true);
         }
 
+        $QUI = new QUI();
+        $QUI::getLocale()->setCurrent($current);
+
         $Engine->assign([
-            'QUI'    => new QUI(),
+            'QUI'    => $QUI,
             'params' => $params
         ]);
 
