@@ -270,7 +270,8 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteRule ^{$URL_SYS_ADMIN_DIR}$ {$URL_DIR}{$URL_SYS_DIR} [R=301,END]
 
     #Block .git directories and their contents
-    RewriteCond %{REQUEST_URI} ^(.*\/)?.git(\/.*)?$
+    RewriteCond %{REQUEST_URI} ^(.*\/)?.git(\/.*)?$ [OR]
+    RewriteCond %{REQUEST_URI} ^/console
     RewriteRule ^(.*)$ – [END,R=403]
 
     ## bin dir
@@ -367,7 +368,8 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteRule ^{$URL_SYS_ADMIN_DIR}$ {$URL_DIR}{$URL_SYS_DIR} [R=301,L]
 
     #Block .git directories and their contents
-    RewriteCond %{REQUEST_URI} ^(.*\/)?.git(\/.*)?$
+    RewriteCond %{REQUEST_URI} ^(.*\/)?.git(\/.*)?$ [OR]
+    RewriteCond %{REQUEST_URI} ^/console
     RewriteRule ^(.*)$ – [L,R=403]
 
     # pass-through if another rewrite rule has been applied already
