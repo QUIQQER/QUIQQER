@@ -54,7 +54,7 @@
     "quiqqer\/calendar-controls": "1.*|dev-master|dev-dev",
     "quiqqer\/countries": "1.*|dev-master|dev-dev",
     "quiqqer\/colorpicker": ">=1.1|dev-master|dev-dev",
-    "quiqqer\/translator": "1.*|dev-master|dev-dev",
+    "quiqqer\/translator": ">=1.9|dev-master|dev-dev",
     "quiqqer\/utils": ">=1.22|dev-master|dev-dev",
     "quiqqer\/cron": "^1.10.2|dev-master|dev-dev",
     "quiqqer\/log": ">=1.5|dev-master|dev-dev",
