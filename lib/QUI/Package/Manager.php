@@ -37,6 +37,7 @@ use function array_slice;
 use function array_unique;
 use function array_values;
 use function bin2hex;
+use function class_exists;
 use function count;
 use function curl_close;
 use function curl_exec;
@@ -45,6 +46,8 @@ use function curl_setopt_array;
 use function current;
 use function date;
 use function date_interval_create_from_date_string;
+use function define;
+use function defined;
 use function dirname;
 use function explode;
 use function file_exists;
@@ -56,6 +59,7 @@ use function is_array;
 use function is_bool;
 use function is_dir;
 use function is_null;
+use function is_object;
 use function is_string;
 use function json_decode;
 use function json_encode;
@@ -73,9 +77,14 @@ use function time;
 use function trim;
 use function usort;
 
+use const CURLOPT_RETURNTRANSFER;
+use const CURLOPT_URL;
+use const CURLOPT_USERAGENT;
 use const DEVELOPMENT;
 use const JSON_PRETTY_PRINT;
+use const OPT_DIR;
 use const PHP_URL_HOST;
+use const VAR_DIR;
 
 /**
  * Package Manager for the QUIQQER System
@@ -157,7 +166,7 @@ class Manager extends QUI\QDOM
      *
      * @var array
      */
-    protected $list = false;
+    protected array $list = [];
 
     /**
      * Can composer execute via bash? shell?
@@ -710,14 +719,14 @@ class Manager extends QUI\QDOM
             }
         }
 
-        if ($this->version) {
+        if (QUI::conf('globals', 'quiqqer_version')) {
             if (is_array($composerJson->require)) {
-                $composerJson->require["quiqqer/quiqqer"] = $this->version;
+                $composerJson->require["quiqqer/quiqqer"] = QUI::conf('globals', 'quiqqer_version');
             } elseif (is_object($composerJson->require)) {
-                $composerJson->require->{"quiqqer/quiqqer"} = $this->version;
+                $composerJson->require->{"quiqqer/quiqqer"} = QUI::conf('globals', 'quiqqer_version');
             } else {
                 $composerJson->require = [
-                    "quiqqer/quiqqer" => $this->version
+                    "quiqqer/quiqqer" => QUI::conf('globals', 'quiqqer_version')
                 ];
             }
         }
@@ -879,16 +888,17 @@ class Manager extends QUI\QDOM
      *
      * @return array
      */
-    protected function getList()
+    protected function getList(): array
     {
-        if ($this->list) {
+        if (!empty($this->list)) {
             return $this->list;
         }
 
         try {
-            $this->list = QUI\Cache\LongTermCache::get(self::CACHE_NAME_TYPES);
+            $list = QUI\Cache\LongTermCache::get(self::CACHE_NAME_TYPES);
 
-            if (is_array($this->list)) {
+            if (is_array($list)) {
+                $this->list = $list;
                 return $this->list;
             }
         } catch (QUI\Exception $Exception) {
