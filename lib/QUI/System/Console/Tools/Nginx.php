@@ -364,6 +364,10 @@ PHPPARAM;
             location = {$quiqqerUrlDir}admin {
                 return 301 https://\$http_host{$quiqqerUrlDir}admin/;
             }
+            
+            location = {$quiqqerUrlDir}console {
+                return 504;
+            }
     
             location = {$quiqqerUrlDir}admin/ {
                 rewrite {$quiqqerUrlDir}admin/(.*) {$quiqqerUrlDir}packages/quiqqer/quiqqer/admin/index.php last;
