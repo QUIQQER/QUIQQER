@@ -12,12 +12,10 @@ use NumberFormatter;
 use QUI;
 use QUI\Utils\StringHelper;
 
-use function array_merge;
 use function DusanKasan\Knapsack\first;
 use function explode;
 use function file_exists;
 use function floatval;
-use function function_exists;
 use function is_array;
 use function is_null;
 use function is_numeric;
@@ -41,9 +39,6 @@ use function usort;
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
- *
- * @use     gettext - if enabled
- * @todo    integrate http://php.net/intl
  */
 class Locale
 {
@@ -62,18 +57,12 @@ class Locale
     protected string $current = 'en';
 
     /**
-     * the exist langs
+     * the existing languages
      *
      * @var array
      */
-    protected array $langs = [];
+    protected array $languages = [];
 
-    /**
-     * gettext object
-     *
-     * @var array
-     */
-    protected array $gettext = [];
     /**
      * no translation flag
      *
@@ -82,7 +71,7 @@ class Locale
     public bool $no_translation = false;
 
     /**
-     * ini file objects, if no gettext exist
+     * ini file objects
      *
      * @var array
      */
@@ -116,7 +105,7 @@ class Locale
     /**
      * Sets the current language of this locale to $lang.
      *
-     * WARNING: It it STRONGLY advised to use resetCurrent() immediately after
+     * WARNING: It's STRONGLY advised to use resetCurrent() immediately after
      * your use case. Changing the global current language longer than that may otherwise have
      * unforeseeable consequences!
      *
@@ -227,8 +216,7 @@ class Locale
      */
     public function refresh()
     {
-        $this->gettext = [];
-        $this->langs   = [];
+        $this->languages = [];
     }
 
     /**
@@ -396,13 +384,13 @@ class Locale
         // no shell
         if (!QUI\Utils\System::isShellFunctionEnabled('locale')) {
             // if we cannot read locale list, so we must guess
-            $langCode = strtolower($lang).'_'.strtoupper($lang);
+            $langCode = strtolower($lang) . '_' . strtoupper($lang);
 
             $this->localeList[$lang] = [
                 $langCode,
-                $langCode.'.utf8',
-                $langCode.'.UTF-8',
-                $langCode.'@euro'
+                $langCode . '.utf8',
+                $langCode . '.UTF-8',
+                $langCode . '@euro'
             ];
 
             return $this->localeList[$lang];
@@ -423,7 +411,7 @@ class Locale
             $langList[] = $locale;
         }
 
-        $langCode = strtolower($lang).'_'.strtoupper($lang);
+        $langCode = strtolower($lang) . '_' . strtoupper($lang);
 
         // not the best solution
         if ($lang == 'en') {
@@ -492,7 +480,7 @@ class Locale
             return true;
         }
 
-        $_str = '['.$group.'] '.$value;
+        $_str = '[' . $group . '] ' . $value;
 
         if ($_str === $str) {
             return false;
@@ -509,7 +497,7 @@ class Locale
      */
     public function existsLang($language): bool
     {
-        return isset($this->langs[$language]);
+        return isset($this->languages[$language]);
     }
 
     /**
@@ -534,7 +522,7 @@ class Locale
                 continue;
             }
 
-            $str = str_replace('['.$key.']', $value, $str);
+            $str = str_replace('[' . $key . ']', $value, $str);
         }
 
         return str_replace('{\n}', PHP_EOL, $str);
@@ -563,7 +551,7 @@ class Locale
                 continue;
             }
 
-            $str = str_replace('['.$key.']', $value, $str);
+            $str = str_replace('[' . $key . ']', $value, $str);
         }
 
         return str_replace('{\n}', PHP_EOL, $str);
@@ -583,7 +571,7 @@ class Locale
     protected function getHelper(string $group, $value = false, $current = false)
     {
         if ($this->no_translation) {
-            return '['.$group.'] '.$value;
+            return '[' . $group . '] ' . $value;
         }
 
         if (!$current) {
@@ -592,20 +580,10 @@ class Locale
 
         $translation = LocaleRuntimeCache::get($current, $group, $value);
 
-        if (!is_null($translation)) {
+        if (!$translation === null) {
             return $translation;
         }
 
-        // auf gettext wenn vorhanden
-        $this->initGetText($group, $current);
-
-        $translation = LocaleRuntimeCache::get($current, $group, $value);
-
-        if (!is_null($translation)) {
-            return $translation;
-        }
-
-        // Kein gettext vorhanden, dann Config einlesen
         try {
             $this->initConfig($group, $current);
 
@@ -618,52 +596,7 @@ class Locale
             QUI\System\Log::writeDebugException($Exception);
         }
 
-        return '['.$group.'] '.$value;
-    }
-
-    /**
-     * the GetText init
-     *
-     * @param string $group - language group
-     * @param string|null $lang - optional, language
-     *
-     * @return boolean|\QUI\Utils\Translation\GetText|void
-     */
-    public function initGetText(string $group, ?string $lang = null)
-    {
-        $current = $this->current;
-
-        if (is_string($lang)) {
-            $current = $lang;
-        }
-
-        if (LocaleRuntimeCache::isCached($lang, $group, true)) {
-            return;
-        }
-
-        if (!function_exists('gettext')) {
-            return;
-        }
-
-        $GetText = new QUI\Utils\Translation\GetText(
-            $current,
-            $group,
-            $this->dir()
-        );
-
-        if ($GetText->fileExist()) {
-            LocaleRuntimeCache::setWithGetText($current, $group, $GetText);
-            return;
-        }
-
-        $file = $GetText->getFile();
-
-        System\Log::addDebug(
-            'Translation file for "'.$file.'" not found.',
-            [
-                'file' => $file
-            ]
-        );
+        return '[' . $group . '] ' . $value;
     }
 
     /**
@@ -705,10 +638,10 @@ class Locale
     public function getTranslationFile(string $lang, string $group): string
     {
         $lang   = preg_replace('/[^a-zA-Z]/', '', $lang);
-        $locale = StringHelper::toLower($lang).'_'.StringHelper::toUpper($lang);
+        $locale = StringHelper::toLower($lang);//. '_' . StringHelper::toUpper($lang);
         $group  = str_replace('/', '_', $group);
 
-        return $this->dir().'/'.$locale.'/LC_MESSAGES/'.$group.'.ini.php';
+        return $this->dir() . '/' . $locale . '/LC_MESSAGES/' . $group . '.ini.php';
     }
 
     /**
@@ -718,7 +651,7 @@ class Locale
      */
     public function dir(): string
     {
-        return VAR_DIR.'locale/';
+        return VAR_DIR . 'locale/';
     }
 
     /**

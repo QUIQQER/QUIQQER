@@ -2,9 +2,9 @@
 
 namespace QUI;
 
-use QUI\Utils\Translation\GetText;
+use Gettext\GettextTranslator;
+
 use function array_merge;
-use function is_array;
 
 /**
  * Static class that holds global Locale data.
@@ -14,12 +14,9 @@ class LocaleRuntimeCache
     /**
      * @var array Holds all locale vars by language and package
      */
-    protected static array $langs = [];
+    protected static array $languages = [];
 
-    /**
-     * @var GetText[]
-     */
-    protected static array $getTextInstances = [];
+    protected static ?GettextTranslator $GettextTranslator = null;
 
     /**
      * Set global locale group or
@@ -31,32 +28,18 @@ class LocaleRuntimeCache
      */
     public static function set(string $lang, string $group, array $translations): void
     {
-        if (!isset(self::$langs[$lang])) {
-            self::$langs[$lang] = [];
+        if (!isset(self::$languages[$lang])) {
+            self::$languages[$lang] = [];
         }
 
-        if (!isset(self::$langs[$lang][$group])) {
-            self::$langs[$lang][$group] = [];
+        if (!isset(self::$languages[$lang][$group])) {
+            self::$languages[$lang][$group] = [];
         }
 
-        self::$langs[$lang][$group] = array_merge(
-            self::$langs[$lang][$group],
+        self::$languages[$lang][$group] = array_merge(
+            self::$languages[$lang][$group],
             $translations
         );
-    }
-
-    /**
-     * Set translation cache via GetText object.
-     *
-     * @param string $lang
-     * @param string $group
-     * @param GetText $GetText
-     *
-     * @return void
-     */
-    public static function setWithGetText(string $lang, string $group, GetText $GetText): void
-    {
-        self::$getTextInstances[$lang][$group] = $GetText;
     }
 
     /**
@@ -70,23 +53,13 @@ class LocaleRuntimeCache
      */
     public static function get(string $lang, string $group, $value = false): ?string
     {
-        if (isset(self::$getTextInstances[$lang][$group])) {
-            /** @var GetText $GetTextInstance */
-            $GetTextInstance = self::$getTextInstances[$lang][$group];
-            $str             = $GetTextInstance->get($value);
-
-            if ($value != $str) {
-                return $str;
-            }
-        }
-
         if ($value === false) {
-            if (isset(self::$langs[$lang][$group])) {
-                return self::$langs[$lang][$group];
+            if (isset(self::$languages[$lang][$group])) {
+                return self::$languages[$lang][$group];
             }
         } else {
-            if (isset(self::$langs[$lang][$group][$value])) {
-                return self::$langs[$lang][$group][$value];
+            if (isset(self::$languages[$lang][$group][$value])) {
+                return self::$languages[$lang][$group][$value];
             }
         }
 
@@ -98,15 +71,11 @@ class LocaleRuntimeCache
      *
      * @param string $lang
      * @param string $group
-     * @param bool $viaGetText (optional) - Check if it is cached via gettext
+     *
      * @return bool
      */
-    public static function isCached(string $lang, string $group, bool $viaGetText = false): bool
+    public static function isCached(string $lang, string $group): bool
     {
-        if ($viaGetText) {
-            return isset(self::$getTextInstances[$lang][$group]);
-        }
-
-        return isset(self::$langs[$lang][$group]);
+        return isset(self::$languages[$lang][$group]);
     }
 }
