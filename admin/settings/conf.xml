@@ -53,7 +53,6 @@
                 </conf>
                 <conf name="quiqqer_version">
                     <type><![CDATA[string]]></type>
-                    <defaultvalue>master-dev</defaultvalue>
                 </conf>
                 <conf name="lockserver_enabled">
                     <type><![CDATA[bool]]></type>
