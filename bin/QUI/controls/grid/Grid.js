@@ -1522,20 +1522,9 @@ define('controls/grid/Grid', [
         unSelectRow: function (Row) {
             Row.removeClass('selected');
 
-            var i, len;
-
-            var sel  = this.selected,
-                nsel = [];
-
-            for (i = 0, len = sel.length; i < len; i++) {
-                var RowElm = this.getRowElement(i);
-
-                if (RowElm.hasClass('selected')) {
-                    nsel.push(RowElm);
-                }
-            }
-
-            this.selected = nsel;
+            this.selected = this.selected.filter(selectedRowIndex => {
+                return this.getRowElement(selectedRowIndex).hasClass('selected');
+            });
         },
 
         // API
