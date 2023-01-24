@@ -12,11 +12,17 @@ use QUI;
 use function date;
 use function error_log;
 use function flush;
+use function is_dir;
 use function ob_flush;
 use function ob_get_contents;
 use function str_pad;
 use function strlen;
+use function strpos;
 use function trim;
+
+use function unlink;
+
+use const VAR_DIR;
 
 /**
  * Update command for the console
@@ -114,27 +120,6 @@ class Update extends QUI\System\Console\Tool
             }
         }
 
-        // @todo
-        if ($this->getArgument('setDevelopment')) {
-            $packageList = [];
-
-            $libraries = QUI::getPackageManager()->getInstalled();
-
-            foreach ($libraries as $library) {
-                $packageList[$library['name']] = 'dev-dev';
-            }
-
-            $packageList['quiqqer/qui']     = 'dev-dev';
-            $packageList['quiqqer/quiqqer'] = 'dev-dev';
-            $packageList['quiqqer/qui-php'] = 'dev-dev';
-            $packageList['quiqqer/utils']   = 'dev-dev';
-
-            foreach ($packageList as $package => $version) {
-//                $Packages->setPackage($package, $version);
-            }
-        }
-
-
         if ($this->getArgument('check')) {
             $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.log.message.update.via.console'));
             $this->writeLn();
@@ -215,6 +200,28 @@ class Update extends QUI\System\Console\Tool
                     '--no-autoloader'     => true
                 ]);
             } else {
+                $localeDir        = VAR_DIR . 'locale/';
+                $localeFiles      = $localeDir . 'localefiles';
+                $entries          = QUI\Utils\System\File::readDir($localeDir);
+                $oldDirsAvailable = false;
+
+                // cleanup
+                foreach ($entries as $entry) {
+                    if ($entry === 'localefiles' || $entry === 'bin') {
+                        continue;
+                    }
+
+                    // delete old dirs
+                    if (is_dir($localeDir . $entry) && strpos($entry, '_') !== false) {
+                        QUI\Utils\System\File::deleteDir($localeDir . $entry);
+                        $oldDirsAvailable = true;
+                    }
+                }
+
+                if ($oldDirsAvailable) {
+                    unlink($localeFiles);
+                }
+
                 $Packages->update(false, false, $this);
             }
 
