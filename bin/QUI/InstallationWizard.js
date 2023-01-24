@@ -231,6 +231,10 @@ define('InstallationWizard', [
                         Container.set('data-qui', providerSteps[step].jsControl);
                     }
 
+                    Container.getElements('form').addEvent('submit', function (e) {
+                        e.stop();
+                    });
+
                     QUI.parse(WizardWindow.getContent()).then(() => {
                         if (Container.get('data-quiid')) {
                             CurrentControl = QUI.Controls.getById(Container.get('data-quiid'));
