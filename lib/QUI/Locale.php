@@ -26,6 +26,7 @@ use function shell_exec;
 use function str_contains;
 use function str_replace;
 use function strftime;
+use function strlen;
 use function strpos;
 use function strtolower;
 use function strtotime;
@@ -596,7 +597,7 @@ class Locale
             QUI\System\Log::writeDebugException($Exception);
         }
 
-        if (str_contains($translation, ' ') && empty($translation)) {
+        if (str_contains($translation, ' ') && strlen($translation) === 1) {
             return ' ';
         }
 
