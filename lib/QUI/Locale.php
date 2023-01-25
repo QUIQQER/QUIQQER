@@ -597,7 +597,7 @@ class Locale
             QUI\System\Log::writeDebugException($Exception);
         }
 
-        if (str_contains($translation, ' ') && strlen($translation) === 1) {
+        if ($translation !== null && str_contains($translation, ' ') && strlen($translation) === 1) {
             return ' ';
         }
 
