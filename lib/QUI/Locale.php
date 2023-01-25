@@ -17,13 +17,13 @@ use function explode;
 use function file_exists;
 use function floatval;
 use function is_array;
-use function is_null;
 use function is_numeric;
 use function is_object;
 use function is_string;
 use function preg_replace;
 use function setlocale;
 use function shell_exec;
+use function str_contains;
 use function str_replace;
 use function strftime;
 use function strpos;
@@ -580,7 +580,7 @@ class Locale
 
         $translation = LocaleRuntimeCache::get($current, $group, $value);
 
-        if (!$translation === null) {
+        if ($translation !== null) {
             return $translation;
         }
 
@@ -589,11 +589,15 @@ class Locale
 
             $translation = LocaleRuntimeCache::get($current, $group, $value);
 
-            if (!is_null($translation)) {
+            if ($translation !== null) {
                 return $translation;
             }
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::writeDebugException($Exception);
+        }
+
+        if (str_contains($translation, ' ') && empty($translation)) {
+            return ' ';
         }
 
         return '[' . $group . '] ' . $value;
