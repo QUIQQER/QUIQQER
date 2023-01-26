@@ -8,6 +8,9 @@ namespace QUI\Events;
 
 use QUI;
 
+use function is_array;
+use function is_string;
+
 /**
  * The Event Manager
  * Registered and set global events
@@ -25,12 +28,12 @@ class Manager implements QUI\Interfaces\Events
      *
      * @var array
      */
-    protected $siteEvents = [];
+    protected array $siteEvents = [];
 
     /**
      * @var Event
      */
-    protected $Events;
+    protected Event $Events;
 
     /**
      * construct
@@ -100,7 +103,7 @@ class Manager implements QUI\Interfaces\Events
      *
      * @return string
      */
-    public static function table()
+    public static function table(): string
     {
         return QUI::getDBTableName('events');
     }
@@ -154,7 +157,7 @@ class Manager implements QUI\Interfaces\Events
      *
      * @return array
      */
-    public function getList()
+    public function getList(): array
     {
         return $this->Events->getList();
     }
@@ -166,7 +169,7 @@ class Manager implements QUI\Interfaces\Events
      *
      * @return array
      */
-    public function getSiteListByType($type)
+    public function getSiteListByType(string $type): array
     {
         $result = [];
 
@@ -193,23 +196,23 @@ class Manager implements QUI\Interfaces\Events
      * @example $EventManager->addEvent('myEvent', function() { });
      *
      */
-    public function addEvent($event, $fn, $package = '', $priority = 0)
+    public function addEvent($event, $fn, string $package = '', int $priority = 0)
     {
-        if (!\is_string($package)) {
+        if (!is_string($package)) {
             $package = '';
         }
 
         // add the event to the db
-        if (\is_string($fn)) {
+        if (is_string($fn)) {
             QUI::getDataBase()->insert(self::table(), [
                 'event'    => $event,
                 'callback' => $fn,
                 'package'  => $package,
-                'priority' => (int)$priority
+                'priority' => $priority
             ]);
         }
 
-        $this->Events->addEvent($event, $fn, (int)$priority);
+        $this->Events->addEvent($event, $fn, $priority);
     }
 
     /**
@@ -224,9 +227,9 @@ class Manager implements QUI\Interfaces\Events
      * @example $EventManager->addEvent('onSave', '\Namespace\Class::exec', 'quiqqer/blog:blog/entry' });
      *
      */
-    public function addSiteEvent($event, $fn, $siteType, $priority = 0)
+    public function addSiteEvent(string $event, callable $fn, string $siteType, int $priority = 0)
     {
-        if (!\is_string($fn)) {
+        if (!is_string($fn)) {
             return;
         }
 
@@ -258,7 +261,7 @@ class Manager implements QUI\Interfaces\Events
      *
      * @throws QUI\Exception
      */
-    public function removeEvent($event, $fn = false, $package = '')
+    public function removeEvent($event, $fn = false, string $package = '')
     {
         $this->Events->removeEvent($event, $fn);
 
@@ -268,7 +271,7 @@ class Manager implements QUI\Interfaces\Events
             ]);
         }
 
-        if (\is_string($fn)) {
+        if (is_string($fn)) {
             QUI::getDataBase()->delete(self::table(), [
                 'event'    => $event,
                 'callback' => $fn,
@@ -291,7 +294,7 @@ class Manager implements QUI\Interfaces\Events
     /**
      * Removes all events of the given type from the stack of events of a Class instance.
      * If no $fn is specified, removes all events of the event.
-     * It remove the events from the database, too.
+     * It removes the events from the database, too.
      *
      * @param array $events - [optional] If not passed removes all events of all types.
      */
@@ -314,12 +317,12 @@ class Manager implements QUI\Interfaces\Events
      * @see \QUI\Interfaces\Events::fireEvent()
      *
      */
-    public function fireEvent($event, $args = false, $force = false)
+    public function fireEvent($event, $args = false, bool $force = false): array
     {
         // event onFireEvent
         $fireArgs = $args;
 
-        if (!\is_array($fireArgs)) {
+        if (!is_array($fireArgs)) {
             $fireArgs = [];
         }
 
