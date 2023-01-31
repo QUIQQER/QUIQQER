@@ -5498,6 +5498,18 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         <locale name="update.log.message.update.via.console">
             <de><![CDATA[Prüfe nach Aktualisierungen...]]></de>
         </locale>
+        <locale name="security.update">
+            <de><![CDATA[Security Updates]]></de>
+        </locale>
+        <locale name="security.update.start">
+            <de><![CDATA[> Prüfe auf Security Updates]]></de>
+        </locale>
+        <locale name="security.update.no.updates.found">
+            <de><![CDATA[Keine Security Updates gefunden.]]></de>
+        </locale>
+        <locale name="security.update.updates.found">
+            <de><![CDATA[> Security Updates gefunden! Updates werden durchgeführt.]]></de>
+        </locale>
         <locale name="update.message.start">
             <de><![CDATA[- Starte Update:]]></de>
         </locale>
@@ -5627,7 +5639,9 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
             – damit QUIQQER perfekt zu dir und deinem Projekt passt.</p>
             ]]></de>
         </locale>
-
+        <locale name="site.permission.denied.for.logged.in.users.message">
+            <de><![CDATA[Du hast leider nicht die nötigen Rechte diese Seite anzusehen.]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">
         <locale name="controls.SendPassword.title">
