@@ -170,8 +170,10 @@ class SecurityUpdate extends QUI\System\Console\Tool
             }
 
             $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'security.update.updates.found'));
+            $this->writeLn();
+            $this->writeLn();
             $dryRun = false;
-            
+
             // if update exist, activate maintenance
             $Maintenance = new Maintenance();
             $Maintenance->setArgument('status', 'on');

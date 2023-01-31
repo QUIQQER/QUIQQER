@@ -5502,13 +5502,13 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
             <de><![CDATA[Security Updates]]></de>
         </locale>
         <locale name="security.update.start">
-            <de><![CDATA[- Prüfe auf Security Updates]]></de>
+            <de><![CDATA[> Prüfe auf Security Updates]]></de>
         </locale>
         <locale name="security.update.no.updates.found">
             <de><![CDATA[Keine Security Updates gefunden.]]></de>
         </locale>
         <locale name="security.update.updates.found">
-            <de><![CDATA[- Security Updates gefunden! Updates werden durchgeführt.]]></de>
+            <de><![CDATA[> Security Updates gefunden! Updates werden durchgeführt.]]></de>
         </locale>
         <locale name="update.message.start">
             <de><![CDATA[- Starte Update:]]></de>
