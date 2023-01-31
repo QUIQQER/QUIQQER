@@ -22,6 +22,8 @@ use function json_decode;
 use function json_encode;
 use function ob_flush;
 use function ob_get_contents;
+use function str_replace;
+use function strpos;
 use function trim;
 use function unlink;
 
@@ -58,26 +60,35 @@ class SecurityUpdate extends QUI\System\Console\Tool
 
         Cleanup::clearComposer();
 
-        $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.start'));
+        $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'security.update'));
+        $this->writeLn('========================');
         $this->writeLn('');
         $this->logBuffer();
 
-        $self     = $this;
-        $Packages = QUI::getPackageManager();
+        $self         = $this;
+        $Packages     = QUI::getPackageManager();
+        $dryRun       = true;
+        $dryRunOutput = '';
 
         // output events
-        $Packages->getComposer()->addEvent('onOutput', function ($Composer, $output, $type) use ($self) {
-            if ($this->getArgument('check')) {
-                return;
+        $Packages->getComposer()->addEvent(
+            'onOutput',
+            function ($Composer, $output, $type) use ($self, &$dryRun, &$dryRunOutput) {
+                if ($dryRun) {
+                    $dryRunOutput .= $output;
+                    return;
+                }
+
+                if ($this->getArgument('check')) {
+                    return;
+                }
+
+                $self->write($output);
+                $self->writeToLog($output);
             }
+        );
 
-            $self->write($output);
-            $self->writeToLog($output);
-        });
-
-        $Maintenance = new Maintenance();
-        $Maintenance->setArgument('status', 'on');
-        $Maintenance->execute();
+        $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'security.update.start'));
 
         try {
             $Packages->refreshServerList();
@@ -120,7 +131,53 @@ class SecurityUpdate extends QUI\System\Console\Tool
 
             file_put_contents($composerOriginal, json_encode($composerJSON, JSON_PRETTY_PRINT));
 
+
+            // run the test with the security package list
+            $Composer->update([
+                '--dry-run' => true
+            ]);
+
+            $dryRunOutput = explode(PHP_EOL, $dryRunOutput);
+            $installs     = 0;
+            $updates      = 0;
+            $removals     = 0;
+
+            foreach ($dryRunOutput as $line) {
+                if (strpos($line, 'Lock file operations:') === false) {
+                    continue;
+                }
+
+                $line  = str_replace('Lock file operations:', '', $line);
+                $lines = explode(',', $line);
+
+                foreach ($lines as $l) {
+                    if (strpos($l, 'installs') !== false) {
+                        $installs = (int)str_replace('installs', '', $l);
+                    } elseif (strpos($l, 'updates') !== false) {
+                        $updates = (int)str_replace('updates', '', $l);
+                    } elseif (strpos($l, 'removals') !== false) {
+                        $removals = (int)str_replace('removals', '', $l);
+                    }
+                }
+
+                break;
+            }
+
             // run the update with the security package list
+            if (!$installs && !$updates && !$removals) {
+                $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'security.update.no.updates.found'));
+                return;
+            }
+
+            $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'security.update.updates.found'));
+            $dryRun = false;
+            
+            // if update exist, activate maintenance
+            $Maintenance = new Maintenance();
+            $Maintenance->setArgument('status', 'on');
+            $Maintenance->execute();
+
+
             $Composer->update();
 
             // reset the composer jsons

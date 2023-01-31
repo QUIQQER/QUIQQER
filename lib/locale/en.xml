@@ -5315,6 +5315,18 @@ After logging in you will be prompted to set a new password.
         <locale name="update.log.message.update.via.console">
             <en><![CDATA[Check for updates...]]></en>
         </locale>
+        <locale name="security.update">
+            <en><![CDATA[Security updates]]></en>
+        </locale>
+        <locale name="- security.update.start">
+            <en><![CDATA[Check for security updates]]></en>
+        </locale>
+        <locale name="security.update.no.updates.found">
+            <en><![CDATA[No security updates found.]]></en>
+        </locale>
+        <locale name="security.update.updates.found">
+            <en><![CDATA[- Security Updates found! Updates are being performed.]]></en>
+        </locale>
         <locale name="update.message.start">
             <en><![CDATA[- Starting Update:]]></en>
         </locale>
