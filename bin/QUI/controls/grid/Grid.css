@@ -75,12 +75,14 @@
 }
 
 .omnigrid div.hDiv div.th {
-    line-height: 24px;
     border-bottom: 1px solid #E2E8F0;
+    line-height: 24px;
+    min-height: 24px;
 }
 
 .omnigrid div.bDiv .td {
     line-height: 27px;
+    min-height: 24px;
     /*background-color:red;*/
 }
 
