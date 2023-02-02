@@ -7,11 +7,11 @@
 namespace QUI\Users;
 
 use QUI;
+use QUI\Interfaces\Users\User as QUIUserInterface;
 use QUI\Security\Password;
 use QUI\Utils\DOM;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\Text\XML;
-use QUI\Interfaces\Users\User as QUIUserInterface;
 
 use function get_class;
 use function is_numeric;
@@ -29,11 +29,11 @@ use function round;
  */
 class Manager
 {
-    const AUTH_ERROR_AUTH_ERROR      = 'AUTH_ERROR_AUTH_ERROR';
-    const AUTH_ERROR_USER_NOT_FOUND  = 'auth_error_user_not_found';
+    const AUTH_ERROR_AUTH_ERROR = 'AUTH_ERROR_AUTH_ERROR';
+    const AUTH_ERROR_USER_NOT_FOUND = 'auth_error_user_not_found';
     const AUTH_ERROR_USER_NOT_ACTIVE = 'auth_error_user_not_active';
-    const AUTH_ERROR_USER_DELETED    = 'auth_error_user_deleted';
-    const AUTH_ERROR_LOGIN_EXPIRED   = 'auth_error_login_expired';
+    const AUTH_ERROR_USER_DELETED = 'auth_error_user_deleted';
+    const AUTH_ERROR_LOGIN_EXPIRED = 'auth_error_login_expired';
     const AUTH_ERROR_NO_ACTIVE_GROUP = 'auth_error_no_active_group';
 
     /**
@@ -343,7 +343,7 @@ class Manager
 
             while ($this->usernameExists($newName)) {
                 $milliseconds = round(microtime(true) * 1000);
-                $newName      = $newUserLocale.' ('.$milliseconds.')';
+                $newName      = $newUserLocale . ' (' . $milliseconds . ')';
             }
         }
 
@@ -438,7 +438,7 @@ class Manager
 
             while ($this->usernameExists($newName)) {
                 $milliseconds = round(microtime(true) * 1000);
-                $newName      = $newUserLocale.' ('.$milliseconds.')';
+                $newName      = $newUserLocale . ' (' . $milliseconds . ')';
             }
 
             $insertData['username'] = $newName;
@@ -738,7 +738,7 @@ class Manager
             );
         }
 
-        if ($Session->get('auth-'.get_class($Authenticator))
+        if ($Session->get('auth-' . get_class($Authenticator))
             && $Session->get('username')
             && $Session->get('uid')
         ) {
@@ -751,7 +751,7 @@ class Manager
             $Exception->setAttribute('reason', self::AUTH_ERROR_AUTH_ERROR);
 
             QUI\System\Log::write(
-                'Login failed: '.$username,
+                'Login failed: ' . $username,
                 QUI\System\Log::LEVEL_WARNING,
                 [],
                 'auth'
@@ -766,7 +766,7 @@ class Manager
             );
         } catch (\Exception $Exception) {
             QUI\System\Log::write(
-                'Login failed: '.$username,
+                'Login failed: ' . $username,
                 QUI\System\Log::LEVEL_WARNING,
                 [],
                 'auth'
@@ -794,7 +794,7 @@ class Manager
         }
 
         $Session->set(
-            'auth-'.get_class($Authenticator),
+            'auth-' . get_class($Authenticator),
             1
         );
 
@@ -1208,9 +1208,9 @@ class Manager
     }
 
     /**
-     * Get the user by id
+     * Get the user by id or uuid
      *
-     * @param integer $id
+     * @param integer|string $id - Could be user-id or user uuid
      * @return QUI\Users\User|Nobody|SystemUser|false
      *
      * @throws QUI\Users\Exception
@@ -1546,11 +1546,11 @@ class Manager
         /**
          * SELECT
          */
-        $query = 'SELECT * FROM '.self::table();
+        $query = 'SELECT * FROM ' . self::table();
         $binds = [];
 
         if (isset($params['count'])) {
-            $query = 'SELECT COUNT( id ) AS count FROM '.self::table();
+            $query = 'SELECT COUNT( id ) AS count FROM ' . self::table();
         }
 
         /**
@@ -1639,7 +1639,7 @@ class Manager
                 $query .= ' WHERE 1=1 ';
             } else {
                 $query            .= ' WHERE (';
-                $binds[':search'] = '%'.$search.'%';
+                $binds[':search'] = '%' . $search . '%';
 
                 if (empty($search)) {
                     $binds[':search'] = '%';
@@ -1654,7 +1654,7 @@ class Manager
                         continue;
                     }
 
-                    $query .= ' '.$field.' LIKE :search OR ';
+                    $query .= ' ' . $field . ' LIKE :search OR ';
                 }
 
                 if (\substr($query, -3) == 'OR ') {
@@ -1683,20 +1683,20 @@ class Manager
 
                 foreach ($groups as $groupId) {
                     if ((int)$groupId > 0) {
-                        $subQuery[] = 'usergroup LIKE :'.$groupId.' ';
+                        $subQuery[] = 'usergroup LIKE :' . $groupId . ' ';
 
-                        $binds[':'.$groupId] = '%,'.(int)$groupId.',%';
+                        $binds[':' . $groupId] = '%,' . (int)$groupId . ',%';
                     }
                 }
 
-                $query .= ' AND ('.\implode(' OR ', $subQuery).')';
+                $query .= ' AND (' . \implode(' OR ', $subQuery) . ')';
             }
 
             if ($filter_groups_exclude) {
                 foreach ($filter['filter_groups_exclude'] as $groupId) {
                     if ((int)$groupId > 0) {
-                        $query               .= ' AND usergroup NOT LIKE :'.$groupId.' ';
-                        $binds[':'.$groupId] = '%,'.(int)$groupId.',%';
+                        $query                 .= ' AND usergroup NOT LIKE :' . $groupId . ' ';
+                        $binds[':' . $groupId] = '%,' . (int)$groupId . ',%';
                     }
                 }
             }
@@ -1704,7 +1704,7 @@ class Manager
             if ($filter_regdate_first) {
                 $query              .= ' AND regdate >= :firstreg ';
                 $binds[':firstreg'] = QUI\Utils\Convert::convertMySqlDatetime(
-                    $filter['filter_regdate_first'].' 00:00:00'
+                    $filter['filter_regdate_first'] . ' 00:00:00'
                 );
             }
 
@@ -1712,7 +1712,7 @@ class Manager
             if ($filter_regdate_last) {
                 $query             .= " AND regdate <= :lastreg ";
                 $binds[':lastreg'] = QUI\Utils\Convert::convertMySqlDatetime(
-                    $filter['filter_regdate_last'].' 00:00:00'
+                    $filter['filter_regdate_last'] . ' 00:00:00'
                 );
             }
         }
@@ -1726,7 +1726,7 @@ class Manager
             && $params['field']
             && isset($allowOrderFields[$params['field']])
         ) {
-            $query .= ' ORDER BY '.$params['field'].' '.$params['order'];
+            $query .= ' ORDER BY ' . $params['field'] . ' ' . $params['order'];
         }
 
         /**
@@ -1741,7 +1741,7 @@ class Manager
                 $start = (int)$params['start'];
             }
 
-            $query .= ' LIMIT '.$start.', '.$max;
+            $query .= ' LIMIT ' . $start . ', ' . $max;
         }
 
         $Statement = $PDO->prepare($query);
@@ -1855,7 +1855,7 @@ class Manager
 
         foreach ($packages as $package) {
             $name    = $package['name'];
-            $userXml = OPT_DIR.$name.'/user.xml';
+            $userXml = OPT_DIR . $name . '/user.xml';
 
             if (!\file_exists($userXml)) {
                 continue;
@@ -1881,6 +1881,6 @@ class Manager
             'extend' => $extend
         ]);
 
-        return $Engine->fetch(SYS_DIR.'template/users/profile.html');
+        return $Engine->fetch(SYS_DIR . 'template/users/profile.html');
     }
 }
