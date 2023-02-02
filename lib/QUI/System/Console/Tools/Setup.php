@@ -6,6 +6,7 @@
 
 namespace QUI\System\Console\Tools;
 
+use DateTimeInterface;
 use QUI;
 
 use function array_map;
@@ -64,7 +65,7 @@ class Setup extends QUI\System\Console\Tool
             'ref'         => $reference,
             'date'        => QUI::getLocale()->formatDate(
                 $PackageManager->getLastUpdateCheckDate(),
-                '%B %d %Y, %X %Z'
+                DateTimeInterface::RFC7231
             )
         ]);
 
