@@ -28,6 +28,7 @@ use function trim;
 use function unlink;
 
 use const JSON_PRETTY_PRINT;
+use const VAR_DIR;
 
 /**
  * Update command for the console
@@ -44,7 +45,8 @@ class SecurityUpdate extends QUI\System\Console\Tool
         $this->systemTool = true;
 
         $this->setName('quiqqer:security-update')
-            ->setDescription('Update the quiqqer system and the quiqqer packages only with security Updates');
+            ->setDescription('Update the quiqqer system and the quiqqer packages only with security Updates')
+            ->addArgument('--mail', 'Which should receive the update log (--mail=info@quiqqer.com)', 'm', true);
     }
 
     /**
@@ -239,8 +241,38 @@ class SecurityUpdate extends QUI\System\Console\Tool
 
         $this->logBuffer();
 
-        $Maintenance->setArgument('status', 'off');
-        $Maintenance->execute();
+        // mail
+        $mail = $this->getArgument('mail') || $this->getArgument('m');
+
+        if (!empty($mail)) {
+            try {
+                $logFile = VAR_DIR . 'log/update-' . date('Y-m-d') . '.log';
+
+                $Mailer = QUI::getMailManager()->getMailer();
+                $Mailer->addAttachment($logFile);
+
+                $Mailer->setSubject(
+                    QUI::getLocale()->get('quiqqer/quiqqer', 'security.update.console.mail.subject', [
+                        'host' => HOST
+                    ])
+                );
+
+                $Mailer->setBody(
+                    QUI::getLocale()->get('quiqqer/quiqqer', 'security.update.console.mail.body', [
+                        'host' => HOST
+                    ])
+                );
+
+                $Mailer->send();
+            } catch (\PHPMailer\PHPMailer\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
+            }
+        }
+
+        if (isset($Maintenance)) {
+            $Maintenance->setArgument('status', 'off');
+            $Maintenance->execute();
+        }
     }
 
     /**

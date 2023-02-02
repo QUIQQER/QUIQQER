@@ -4873,6 +4873,18 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="set.up.execute.button.text">
             <de><![CDATA[Setup ausführen]]></de>
         </locale>
+        <locale name="security.update.console.mail.subject">
+            <de><![CDATA[Automatisiertes Sicherheitsupdate wurde durchgeführt - [host]]]></de>
+        </locale>
+        <locale name="security.update.console.mail.body" html="true">
+            <de><![CDATA[
+            <p>Hallo,</p>
+            <br />
+            <p>ich möchte dich informieren, dass ein automatisiertes Sicherheitsupdate erfolgreich durchgeführt wurde.
+            Die Log-Datei des Updates findest du im Anhang dieser E-Mail.</p>
+            <p>Bitte überprüfe die Log-Datei.</o>
+           ]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
