@@ -242,7 +242,11 @@ class SecurityUpdate extends QUI\System\Console\Tool
         $this->logBuffer();
 
         // mail
-        $mail = $this->getArgument('mail') || $this->getArgument('m');
+        $mail = $this->getArgument('mail');
+
+        if ($this->getArgument('m')) {
+            $mail = $this->getArgument('m');
+        }
 
         if (!empty($mail)) {
             try {
