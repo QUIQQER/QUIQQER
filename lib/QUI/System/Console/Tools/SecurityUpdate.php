@@ -28,6 +28,7 @@ use function trim;
 use function unlink;
 
 use const JSON_PRETTY_PRINT;
+use const PHP_EOL;
 use const VAR_DIR;
 
 /**
@@ -129,10 +130,43 @@ class SecurityUpdate extends QUI\System\Console\Tool
             }
 
             $composerJSON            = json_decode(file_get_contents($composerOriginal), true);
+            $originalRequire         = $composerJSON['require'];
             $composerJSON['require'] = $packages;
 
-            file_put_contents($composerOriginal, json_encode($composerJSON, JSON_PRETTY_PRINT));
+            // keep composer.json versions
+            // quiqqer/website-locker
+            foreach ($originalRequire as $package => $v) {
+                if ($package === 'php') {
+                    if (!isset($composerJSON['require']['php'])) {
+                        $composerJSON['require']['php'] = $v;
+                    }
+                    continue;
+                }
 
+                $stability = $VersionParser->parseStability($v);
+
+                if ($stability !== 'stable') {
+                    continue;
+                }
+
+                if (strpos($v, '*') !== false) {
+                    continue;
+                }
+
+                try {
+                    $version = $VersionParser->normalize($v);
+                } catch (\RuntimeException $e) {
+                    continue;
+                }
+
+                // wenn version direkt festgesetzt wurde, nicht ändern
+                // quiqqer/quiqqer#1192
+                if (substr_count($version, '.') === 3) {
+                    $composerJSON['require'][$package] = $v;
+                }
+            }
+
+            file_put_contents($composerOriginal, json_encode($composerJSON, JSON_PRETTY_PRINT));
 
             // run the test with the security package list
             $Composer->update([
