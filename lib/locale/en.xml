@@ -4709,6 +4709,18 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="set.up.execute.button.text">
             <en><![CDATA[Complete setup]]></en>
         </locale>
+        <locale name="security.update.console.mail.subject">
+            <en><![CDATA[Automated security update was performed - [host]]]></en>
+        </locale>
+        <locale name="security.update.console.mail.body" html="true">
+            <en><![CDATA[
+            <p>Hello,</p>
+            <br />
+            <p>I would like to inform you that an automated security update has been successfully performed.
+            You can find the log file of the update in the attachment of this e-mail.</p>
+            <p>Please check the log file.</o>
+           ]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
