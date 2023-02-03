@@ -79,7 +79,7 @@ class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
     {
         $Everyone = new QUI\Groups\Everyone();
 
-        if ($array == true) {
+        if ($array === true) {
             return [$Everyone];
         }
 
