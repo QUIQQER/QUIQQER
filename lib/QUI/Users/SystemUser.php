@@ -50,11 +50,11 @@ class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
+     * @return string
      * @see \QUI\Interfaces\Users\User::getUsername()
      *
-     * @return string
      */
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->getName();
     }
@@ -62,11 +62,11 @@ class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
+     * @return string
      * @see \QUI\Interfaces\Users\User::getName()
      *
-     * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->getAttribute('username');
     }
@@ -75,7 +75,7 @@ class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
      * @param bool|true $array
      * @return array
      */
-    public function getGroups($array = true)
+    public function getGroups($array = true): array
     {
         $Everyone = new QUI\Groups\Everyone();
 
