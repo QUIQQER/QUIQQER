@@ -19,9 +19,9 @@ use QUI\ERP\Currency\Handler as Currencies;
 class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
 {
     /**
-     * @var null
+     * @var \QUI\Locale|null
      */
-    protected $Locale = null;
+    protected ?QUI\Locale $Locale = null;
 
     /**
      * constructor
@@ -49,16 +49,16 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::isSU()
      */
-    public function isSU()
+    public function isSU(): bool
     {
         return false;
     }
 
     /**
      * @param int $groupId
-     * @return mixed
+     * @return bool
      */
-    public function isInGroup($groupId)
+    public function isInGroup($groupId): bool
     {
         return in_array($groupId, $this->getGroups(false));
     }
@@ -66,7 +66,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     /**
      * @deprecated
      */
-    public function isAdmin()
+    public function isAdmin(): bool
     {
         return $this->canUseBackend();
     }
@@ -75,7 +75,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * Nobody is no company
      * @return false
      */
-    public function isCompany()
+    public function isCompany(): bool
     {
         return false;
     }
@@ -83,7 +83,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     /**
      * @return bool
      */
-    public function canUseBackend()
+    public function canUseBackend(): bool
     {
         return false;
     }
@@ -93,7 +93,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::isDeleted()
      */
-    public function isDeleted()
+    public function isDeleted(): bool
     {
         return true;
     }
@@ -103,7 +103,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::isActive()
      */
-    public function isActive()
+    public function isActive(): bool
     {
         return false;
     }
@@ -113,7 +113,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::isOnline()
      */
-    public function isOnline()
+    public function isOnline(): bool
     {
         return true;
     }
@@ -123,7 +123,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::logout()
      */
-    public function logout()
+    public function logout(): bool
     {
         return false;
     }
@@ -137,7 +137,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::activate()
      *
      */
-    public function activate($code)
+    public function activate($code): bool
     {
         return false;
     }
@@ -149,7 +149,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::deactivate()
      *
      */
-    public function deactivate()
+    public function deactivate(): bool
     {
         return false;
     }
@@ -163,7 +163,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::disable()
      *
      */
-    public function disable($ParentUser = false)
+    public function disable($ParentUser = false): bool
     {
         return false;
     }
@@ -177,7 +177,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::save()
      *
      */
-    public function save($ParentUser = false)
+    public function save($ParentUser = false): bool
     {
         QUI::getSession()->set('attributes', $this->getAttributes());
 
@@ -191,7 +191,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::delete()
      *
      */
-    public function delete()
+    public function delete(): bool
     {
         return false;
     }
@@ -204,7 +204,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @throws \QUI\Users\Exception
      * @ignore
      */
-    public function addAddress($params)
+    public function addAddress(array $params)
     {
         throw new QUI\Users\Exception(
             QUI::getLocale()->get(
@@ -255,7 +255,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::getExtra()
      *
      */
-    public function getExtra($field)
+    public function getExtra(string $field): bool
     {
         return false;
     }
@@ -267,7 +267,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::getType()
      *
      */
-    public function getType()
+    public function getType(): string
     {
         return get_class($this);
     }
@@ -279,7 +279,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::getId()
      *
      */
-    public function getId()
+    public function getId(): bool
     {
         return false;
     }
@@ -291,7 +291,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::getUniqueId()
      *
      */
-    public function getUniqueId()
+    public function getUniqueId(): bool
     {
         return false;
     }
@@ -303,7 +303,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::getName()
      *
      */
-    public function getName()
+    public function getName(): string
     {
         return QUI::getLocale()->get('quiqqer/quiqqer', 'nobody.name');
     }
@@ -315,7 +315,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::getUsername()
      *
      */
-    public function getUsername()
+    public function getUsername(): string
     {
         return QUI::getLocale()->get('quiqqer/quiqqer', 'nobody.username');
     }
@@ -325,7 +325,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @return string
      */
-    public function getLang()
+    public function getLang(): string
     {
         return self::getLocale()->getCurrent();
     }
@@ -335,7 +335,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @return \QUI\Locale
      */
-    public function getLocale()
+    public function getLocale(): ?QUI\Locale
     {
         if ($this->Locale) {
             return $this->Locale;
@@ -359,7 +359,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @return array
      * @ignore
      */
-    public function getAddressList()
+    public function getAddressList(): array
     {
         return [];
     }
@@ -472,7 +472,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @return false
      * @ignore
      */
-    public function getStandardAddress()
+    public function getStandardAddress(): bool
     {
         return false;
     }
@@ -483,7 +483,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @return bool
      * @see \QUI\Interfaces\Users\User::getStatus()
      */
-    public function getStatus()
+    public function getStatus(): bool
     {
         return true;
     }
@@ -497,7 +497,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::setGroups()
      *
      */
-    public function setGroups($groups)
+    public function setGroups($groups): bool
     {
         return false;
     }
@@ -511,12 +511,12 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::getGroups()
      *
      */
-    public function getGroups($array = true)
+    public function getGroups($array = true): array
     {
         $Guest    = new QUI\Groups\Guest();
         $Everyone = new QUI\Groups\Everyone();
 
-        if ($array == true) {
+        if ($array === true) {
             return [$Guest, $Everyone];
         }
 
@@ -545,11 +545,11 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @return boolean|string
      */
-    public function hasPermission($permission)
+    public function hasPermission(string $permission)
     {
         $list = QUI::getPermissionManager()->getUserPermissionData($this);
 
-        return isset($list[$permission]) ? $list[$permission] : false;
+        return $list[$permission] ?? false;
     }
 
     /**
@@ -563,7 +563,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::getPermission()
      *
      */
-    public function getPermission($right, $ruleset = false)
+    public function getPermission($right, $ruleset = false): bool
     {
         return QUI::getPermissionManager()->getUserPermission($this, $right, $ruleset);
     }
@@ -588,7 +588,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::setPassword()
      *
      */
-    public function setPassword($new, $ParentUser = false)
+    public function setPassword($new, $ParentUser = false): bool
     {
         return false;
     }
@@ -603,7 +603,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::checkPassword()
      *
      */
-    public function checkPassword($pass, $encrypted = false)
+    public function checkPassword($pass, $encrypted = false): bool
     {
         return false;
     }
