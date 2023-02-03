@@ -275,11 +275,11 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
-     * @return false
+     * @return bool|int
      * @see \QUI\Interfaces\Users\User::getId()
      *
      */
-    public function getId(): bool
+    public function getId()
     {
         return false;
     }
@@ -287,11 +287,11 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
-     * @return false
+     * @return false|string
      * @see \QUI\Interfaces\Users\User::getUniqueId()
      *
      */
-    public function getUniqueId(): bool
+    public function getUniqueId()
     {
         return false;
     }
