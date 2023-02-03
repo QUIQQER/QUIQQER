@@ -7,8 +7,11 @@
 namespace QUI\Users;
 
 use QUI;
-use QUI\Utils\Security\Orthos as Orthos;
 use QUI\Interfaces\Users\User as QUIUserInterface;
+use QUI\Utils\Security\Orthos as Orthos;
+
+use function current;
+use function json_decode;
 
 /**
  * User Address
@@ -24,9 +27,9 @@ class Address extends QUI\QDOM
     /**
      * The user
      *
-     * @var QUIUserInterface
+     * @var QUIUserInterface|null
      */
-    protected $User = null;
+    protected ?QUIUserInterface $User = null;
 
     /**
      * Address-ID
@@ -40,7 +43,7 @@ class Address extends QUI\QDOM
      *
      * @var array
      */
-    protected $customData = [];
+    protected array $customData = [];
 
     /**
      * constructor
@@ -50,13 +53,13 @@ class Address extends QUI\QDOM
      *
      * @throws \QUI\Users\Exception
      */
-    public function __construct(QUIUserInterface $User, $id)
+    public function __construct(QUIUserInterface $User, int $id)
     {
         try {
             $result = QUI::getDataBase()->fetch([
                 'from'  => Manager::tableAddress(),
                 'where' => [
-                    'id'  => (int)$id,
+                    'id'  => $id,
                     'uid' => $User->getId()
                 ],
                 'limit' => '1'
@@ -70,7 +73,7 @@ class Address extends QUI\QDOM
                     'quiqqer/quiqqer',
                     'exception.lib.user.address.not.found',
                     [
-                        'addressId' => (int)$id,
+                        'addressId' => $id,
                         'userId'    => $User->getId()
                     ]
                 ),
@@ -79,7 +82,7 @@ class Address extends QUI\QDOM
         }
 
         $this->User = $User;
-        $this->id   = (int)$id;
+        $this->id   = $id;
 
         if (!isset($result[0])) {
             throw new QUI\Users\Exception(
@@ -87,20 +90,20 @@ class Address extends QUI\QDOM
                     'quiqqer/quiqqer',
                     'exception.lib.user.address.not.found',
                     [
-                        'addressId' => (int)$id,
+                        'addressId' => $id,
                         'userId'    => $User->getId()
                     ]
                 )
             );
         }
 
-        $data = \current($result);
+        $data = current($result);
 
         unset($data['id']);
         unset($data['uid']);
 
         if (!empty($data['custom_data'])) {
-            $this->setCustomData(\json_decode($data['custom_data'], true));
+            $this->setCustomData(json_decode($data['custom_data'], true));
         }
 
         $this->setAttributes($data);
@@ -142,7 +145,7 @@ class Address extends QUI\QDOM
     /**
      * @return array
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         $attributes           = parent::getAttributes();
         $attributes['suffix'] = $this->getAddressSuffix();
@@ -304,7 +307,7 @@ class Address extends QUI\QDOM
             return $this->getAttribute('phone');
         }
 
-        $result = \json_decode($this->getAttribute('phone'), true);
+        $result = json_decode($this->getAttribute('phone'), true);
 
         if (\is_array($result)) {
             return $result;
@@ -456,7 +459,7 @@ class Address extends QUI\QDOM
      */
     public function getMailList(): array
     {
-        $result = \json_decode($this->getAttribute('mail'), true);
+        $result = json_decode($this->getAttribute('mail'), true);
 
         if (\is_array($result)) {
             return $result;
@@ -640,7 +643,7 @@ class Address extends QUI\QDOM
             return $Engine->fetch($template);
         }
 
-        return $Engine->fetch(SYS_DIR.'template/users/address/display.html');
+        return $Engine->fetch(SYS_DIR . 'template/users/address/display.html');
     }
 
     /**
@@ -720,7 +723,7 @@ class Address extends QUI\QDOM
         $company = $this->getAttribute('company');
 
         if (!empty($company)) {
-            return $company.'; '.$address;
+            return $company . '; ' . $address;
         }
 
         return $address;

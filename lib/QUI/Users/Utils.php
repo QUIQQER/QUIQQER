@@ -10,6 +10,11 @@ use QUI;
 use QUI\Utils\DOM;
 use QUI\Utils\Text\XML;
 
+use function explode;
+use function file_exists;
+use function str_replace;
+use function strpos;
+
 /**
  * Helper for users
  *
@@ -21,18 +26,18 @@ class Utils
     /**
      * JavaScript Buttons / Tabs from a user
      *
-     * @param \QUI\Users\User $User
+     * @param QUI\Interfaces\Users\User $User
      *
      * @return \QUI\Controls\Toolbar\Bar
      */
-    public static function getUserToolbar($User)
+    public static function getUserToolbar(QUI\Interfaces\Users\User $User): QUI\Controls\Toolbar\Bar
     {
         $TabBar = new QUI\Controls\Toolbar\Bar([
             'name' => 'UserToolbar'
         ]);
 
         DOM::addTabsToToolbar(
-            XML::getTabsFromXml(OPT_DIR.'quiqqer/quiqqer/user.xml'),
+            XML::getTabsFromXml(OPT_DIR . 'quiqqer/quiqqer/user.xml'),
             $TabBar,
             'quiqqer/quiqqer'
         );
@@ -54,9 +59,9 @@ class Utils
                 continue;
             }
 
-            $userXml = OPT_DIR.$entry['name'].'/user.xml';
+            $userXml = OPT_DIR . $entry['name'] . '/user.xml';
 
-            if (!\file_exists($userXml)) {
+            if (!file_exists($userXml)) {
                 continue;
             }
 
@@ -96,9 +101,9 @@ class Utils
 
         foreach ($projects as $project) {
             DOM::addTabsToToolbar(
-                XML::getTabsFromXml(USR_DIR.'lib/'.$project.'/user.xml'),
+                XML::getTabsFromXml(USR_DIR . 'lib/' . $project . '/user.xml'),
                 $TabBar,
-                'project.'.$project
+                'project.' . $project
             );
         }
 
@@ -108,7 +113,7 @@ class Utils
     /**
      * Tab contents of a user Tabs / Buttons
      *
-     * @param integer $uid
+     * @param integer|string $uid
      * @param string $plugin
      * @param string $tab
      *
@@ -118,10 +123,10 @@ class Utils
      *
      * @todo kick <tab> as xml in user.xml
      */
-    public static function getTab($uid, $plugin, $tab)
+    public static function getTab($uid, string $plugin, string $tab): string
     {
         $Users       = QUI::getUsers();
-        $User        = $Users->get((int)$uid);
+        $User        = $Users->get($uid);
         $AuthHandler = Auth\Handler::getInstance();
 
         // assign user as global var
@@ -144,7 +149,7 @@ class Utils
         QUI::getTemplateManager()->assignGlobalParam('userAuthenticators', $userAuthenticators);
 
         // <category>
-        if (\file_exists($plugin)) {
+        if (file_exists($plugin)) {
             $Settings = QUI\Utils\XML\Settings::getInstance();
             $Settings->setXMLPath('//user/window');
 
@@ -153,8 +158,8 @@ class Utils
 
 
         // project
-        if (\strpos($plugin, 'project.') !== false) {
-            $project = \explode('project.', $plugin);
+        if (strpos($plugin, 'project.') !== false) {
+            $project = explode('project.', $plugin);
 
             return DOM::getTabHTML(
                 $tab,
@@ -165,12 +170,12 @@ class Utils
 
         // plugin
         try {
-            $plugin  = \str_replace('plugin.', '', $plugin);
+            $plugin  = str_replace('plugin.', '', $plugin);
             $Package = QUI::getPackage($plugin);
 
             return DOM::getTabHTML(
                 $tab,
-                OPT_DIR.$Package->getName().'/user.xml'
+                OPT_DIR . $Package->getName() . '/user.xml'
             );
         } catch (QUI\Exception $Exception) {
         }
