@@ -77,9 +77,9 @@ class Manager
     private ?SystemUser $SystemUser = null;
 
     /**
-     * @var null|User
+     * @var null|QUIUserInterface
      */
-    private ?User $Session = null;
+    private ?QUIUserInterface $Session = null;
 
     /**
      * internal prevention for multiple session user calling
