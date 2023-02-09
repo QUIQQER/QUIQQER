@@ -1826,7 +1826,7 @@ class Manager
      *
      * @return boolean
      */
-    public static function clearUsername(string $username): bool
+    public static function clearUsername(string $username): string
     {
         return preg_replace('/[^a-zA-Z0-9-_äöüß@\.\+]/', '', $username);
     }
