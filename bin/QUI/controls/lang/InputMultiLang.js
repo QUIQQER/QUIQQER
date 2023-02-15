@@ -29,10 +29,10 @@ define('controls/lang/InputMultiLang', [
             this.parent(options);
 
             this.$Container = null;
-            this.$Button    = null;
-            this.$Input     = null;
-            this.$disabled  = false;
-            this.$loaded    = false;
+            this.$Button = null;
+            this.$Input = null;
+            this.$disabled = false;
+            this.$loaded = false;
 
             this.addEvents({
                 onImport: this.$onImport,
@@ -54,11 +54,11 @@ define('controls/lang/InputMultiLang', [
          * event : on import
          */
         $onImport: function () {
-            var self = this,
-                Elm  = this.getElm(),
-                path = URL_BIN_DIR + '16x16/flags/';
+            const self = this,
+                  Elm  = this.getElm(),
+                  path = URL_BIN_DIR + '16x16/flags/';
 
-            this.$Input      = Elm;
+            this.$Input = Elm;
             this.$Input.type = 'hidden';
 
             this.$Button = new Element('span', {
@@ -74,14 +74,15 @@ define('controls/lang/InputMultiLang', [
                 'class': 'field-container-field'
             }).wraps(Elm, 'after');
 
-            this.$Elm.addClass(
-                'quiqqer-inputmultilang__minimize'
-            );
+            this.$Elm.addClass('quiqqer-inputmultilang__minimize');
 
+            QUIQQER.getAvailableLanguages().then((languages) => {
+                if (!this.$Elm) {
+                    return;
+                }
 
-            QUIQQER.getAvailableLanguages().then(function (languages) {
-                var i, len, flag, lang, LangContainer, InputField;
-                var current = QUILocale.getCurrent(),
+                let i, len, flag, lang, LangContainer, InputField;
+                let current = QUILocale.getCurrent(),
                     data    = {};
 
                 try {
@@ -89,7 +90,7 @@ define('controls/lang/InputMultiLang', [
                 } catch (e) {
                     if (Elm.value.indexOf('https://') !== -1) {
                         for (i = 0, len = languages.length; i < len; i++) {
-                            lang       = languages[i];
+                            lang = languages[i];
                             data[lang] = Elm.value;
                         }
                     } else {
@@ -100,7 +101,7 @@ define('controls/lang/InputMultiLang', [
 
                 // php <-> js -> array / object conversion fix
                 if (typeOf(data) === 'array') {
-                    var newData = {};
+                    let newData = {};
 
                     Array.each(data, function (o) {
                         Object.merge(newData, o);
@@ -126,18 +127,18 @@ define('controls/lang/InputMultiLang', [
                     return 0;
                 });
 
-                var onChange = function () {
+                const onChange = function () {
                     self.refreshData();
                 };
 
                 for (i = 0, len = languages.length; i < len; i++) {
                     lang = languages[i];
                     flag = path + lang + '.png';
-
+                    
                     LangContainer = new Element('div', {
                         'class': 'quiqqer-inputmultilang-entry',
                         html   : '<input type="text" name="' + lang + '" />'
-                    }).inject(self.$Elm);
+                    }).inject(this.$Elm);
 
                     InputField = LangContainer.getElement('input');
                     InputField.setStyles({
@@ -245,8 +246,8 @@ define('controls/lang/InputMultiLang', [
 
             this.$Input.value = data;
 
-            var lang, Input;
-            var inputData = this.getData();
+            let lang, Input;
+            const inputData = this.getData();
 
             for (lang in inputData) {
                 if (!inputData.hasOwnProperty(lang)) {
@@ -288,16 +289,14 @@ define('controls/lang/InputMultiLang', [
                 return;
             }
 
-            var self = this,
-                list = this.$Elm.getElements(
-                    '.quiqqer-inputmultilang-entry'
-                );
+            const self = this,
+                  list = this.$Elm.getElements('.quiqqer-inputmultilang-entry');
 
             this.$Elm.removeClass(
                 'quiqqer-inputmultilang__minimize'
             );
 
-            var First = list.shift();
+            const First = list.shift();
 
             list.setStyles({
                 display: null,
@@ -331,12 +330,12 @@ define('controls/lang/InputMultiLang', [
                 return;
             }
 
-            var self = this,
-                list = this.$Elm.getElements(
-                    '.quiqqer-inputmultilang-entry'
-                );
+            const self = this,
+                  list = this.$Elm.getElements(
+                      '.quiqqer-inputmultilang-entry'
+                  );
 
-            var First = list.shift();
+            const First = list.shift();
 
             First.setStyle('height', null);
 
@@ -365,8 +364,8 @@ define('controls/lang/InputMultiLang', [
          * Updates the data to the input field
          */
         refreshData: function () {
-            var result = {};
-            var fields = this.$Elm.getElements('input');
+            const result = {};
+            const fields = this.$Elm.getElements('input');
 
             fields.each(function (Field) {
                 result[Field.name] = Field.value;
