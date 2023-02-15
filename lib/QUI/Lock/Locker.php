@@ -8,6 +8,10 @@ namespace QUI\Lock;
 
 use QUI;
 use QUI\Package\Package;
+use Stash\Interfaces\ItemInterface;
+
+use function is_null;
+use function time;
 
 /**
  * Class Lock
@@ -26,9 +30,13 @@ class Locker
      *
      * @throws QUI\Lock\Exception
      */
-    public static function lock(Package $Package, $key, $lifetime = false, $User = null)
-    {
-        if (\is_null($User)) {
+    public static function lock(
+        Package $Package,
+        string $key,
+        $lifetime = false,
+        QUI\Interfaces\Users\User $User = null
+    ) {
+        if (is_null($User)) {
             $User = QUI::getUserBySession();
         }
 
@@ -56,9 +64,13 @@ class Locker
      * @throws QUI\Permissions\Exception
      * @throws QUI\Lock\Exception
      */
-    public static function lockWithPermissions(Package $Package, $key, $permission = '', $User = null)
-    {
-        if (\is_null($User)) {
+    public static function lockWithPermissions(
+        Package $Package,
+        $key,
+        string $permission = '',
+        $User = null
+    ) {
+        if (is_null($User)) {
             $User = QUI::getUserBySession();
         }
 
@@ -79,7 +91,7 @@ class Locker
      * @param string $key
      * @throws QUI\Lock\Exception
      */
-    public static function unlock(Package $Package, $key)
+    public static function unlock(Package $Package, string $key)
     {
         $Item = self::getStash(self::getLockKey($Package, $key));
         $Item->clear();
@@ -96,9 +108,13 @@ class Locker
      * @throws QUI\Permissions\Exception
      * @throws QUI\Lock\Exception
      */
-    public static function unlockWithPermissions(Package $Package, $key, $permission = '', $User = null)
-    {
-        if (\is_null($User)) {
+    public static function unlockWithPermissions(
+        Package $Package,
+        $key,
+        string $permission = '',
+        $User = null
+    ) {
+        if (is_null($User)) {
             $User = QUI::getUserBySession();
         }
 
@@ -133,9 +149,13 @@ class Locker
      * @param bool $considerUser (optional) - Consider a $key as NOT locked if it was created by the given $User [default: true]
      * @return false|mixed
      */
-    public static function isLocked(Package $Package, $key, $User = null, $considerUser = true)
-    {
-        if (\is_null($User)) {
+    public static function isLocked(
+        Package $Package,
+        string $key,
+        ?QUI\Interfaces\Users\User $User = null,
+        bool $considerUser = true
+    ) {
+        if (is_null($User)) {
             $User = QUI::getUserBySession();
         }
 
@@ -166,8 +186,11 @@ class Locker
      *
      * @throws QUI\Lock\Exception
      */
-    public static function checkLocked(Package $Package, $key, $User = null)
-    {
+    public static function checkLocked(
+        Package $Package,
+        string $key,
+        ?QUI\Interfaces\Users\User $User = null
+    ) {
         if (self::isLocked($Package, $key, $User)) {
             throw new QUI\Lock\Exception('Item is locked');
         }
@@ -181,7 +204,7 @@ class Locker
      * @return int
      * @throws QUI\Lock\Exception
      */
-    public static function getLockTime(Package $Package, $key)
+    public static function getLockTime(Package $Package, string $key): int
     {
         $Item   = self::getStash(self::getLockKey($Package, $key));
         $Expire = $Item->getExpiration();
@@ -190,7 +213,7 @@ class Locker
             return 0;
         }
 
-        return \time() - $Expire->getTimestamp();
+        return time() - $Expire->getTimestamp();
     }
 
     /**
@@ -202,13 +225,13 @@ class Locker
      *
      * @throws QUI\Lock\Exception
      */
-    protected static function getLockKey(Package $Package, $key)
+    protected static function getLockKey(Package $Package, string $key): string
     {
-        if (!\is_string($key) || empty($key)) {
+        if (empty($key)) {
             throw new QUI\Lock\Exception('Lock::lock() need a string as key');
         }
 
-        return 'lock/'.$Package->getName().'_'.$key;
+        return 'lock/' . $Package->getName() . '_' . $key;
     }
 
     /**
@@ -218,7 +241,7 @@ class Locker
      * @return \Stash\Interfaces\ItemInterface
      * @throws QUI\Lock\Exception
      */
-    protected static function getStash($name)
+    protected static function getStash(string $name): ItemInterface
     {
         try {
             return QUI\Cache\Manager::getStash($name);
@@ -240,7 +263,7 @@ class Locker
      * @return mixed|null
      * @throws QUI\Lock\Exception
      */
-    protected static function getStashData($name)
+    protected static function getStashData(string $name)
     {
         $Item   = self::getStash($name);
         $data   = $Item->get();
