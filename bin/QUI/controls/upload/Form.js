@@ -1276,7 +1276,11 @@ define('controls/upload/Form', [
             }
 
             if (this.$Info) {
-                this.$Info.getElement('.file-name').set('html', '');
+                const FileNameElm = this.$Info.getElement('.file-name');
+
+                if (FileNameElm) {
+                    FileNameElm.set('html', '');
+                }
             }
 
             var self = this;
