@@ -2110,7 +2110,8 @@ class Manager extends QUI\QDOM
         ];
 
         if (!DEVELOPMENT) {
-            $updateOptions['--no-dev'] = true;
+            $updateOptions['--no-dev']      = true;
+            $updateOptions['--interactive'] = false;
         }
 
         if (!empty($package) && is_string($package)) {
