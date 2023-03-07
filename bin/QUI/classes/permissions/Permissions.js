@@ -47,6 +47,23 @@ define('classes/permissions/Permissions', [
         },
 
         /**
+         * Get single permission value.
+         *
+         * @param {String} permission
+         * @param {String} ruleset
+         * @return {Promise}
+         */
+        getPermission: function (permission, ruleset) {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.get('ajax_permissions_session_getPermission', resolve, {
+                    onError   : reject,
+                    permission: permission,
+                    ruleset   : ruleset
+                });
+            });
+        },
+
+        /**
          * Return the permission list
          *
          * @returns {Promise}
