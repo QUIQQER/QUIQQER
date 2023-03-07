@@ -11,10 +11,10 @@ use QUI;
 use QUI\Projects\Media;
 use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Utils\StringHelper;
-use QUI\Utils\System\File;
 use QUI\Utils\System\File as FileUtils;
 
 use function array_map;
+use function bin2hex;
 use function date;
 use function dirname;
 use function end;
@@ -23,6 +23,7 @@ use function fclose;
 use function feof;
 use function file_exists;
 use function file_put_contents;
+use function fopen;
 use function fread;
 use function implode;
 use function ini_get;
@@ -42,6 +43,10 @@ use function strlen;
 use function strpos;
 use function substr;
 use function unlink;
+use function wordwrap;
+
+use const URL_DIR;
+use const VAR_DIR;
 
 /**
  * A media image
@@ -56,7 +61,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @var int
      */
-    protected $IMAGE_MAX_SIZE = 4000;
+    protected int $IMAGE_MAX_SIZE = 4000;
 
     /**
      * Image constructor.
@@ -97,7 +102,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             return (int)$this->getAttribute('image_width');
         }
 
-        $data = File::getInfo($this->getFullPath(), [
+        $data = FileUtils::getInfo($this->getFullPath(), [
             'imagesize' => true
         ]);
 
@@ -120,7 +125,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             return (int)$this->getAttribute('image_height');
         }
 
-        $data = File::getInfo($this->getFullPath(), [
+        $data = FileUtils::getInfo($this->getFullPath(), [
             'imagesize' => true
         ]);
 
@@ -194,7 +199,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             if (!($params['height'] % 8 === 0)) {
                 $tempParams = $this->getResizeSize(
                     false,
-                    QUI\Utils\Math::ceilUp($params['height'], 100)
+                    QUI\Utils\Math::ceilUp($params['height'], 16)
                 );
             } else {
                 $tempParams = $this->getResizeSize(false, $params['height']);
@@ -202,7 +207,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         } else {
             if (!($params['width'] % 8 === 0)) {
                 $tempParams = $this->getResizeSize(
-                    QUI\Utils\Math::ceilUp($params['width'], 100)
+                    QUI\Utils\Math::ceilUp($params['width'], 16)
                 );
             } else {
                 $tempParams = $this->getResizeSize($params['width']);
@@ -356,7 +361,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $height = $this->getAttribute('image_height');
 
         if (!$width || !$height) {
-            $info = File::getInfo($this->getFullPath(), [
+            $info = FileUtils::getInfo($this->getFullPath(), [
                 'imagesize' => true
             ]);
 
@@ -445,17 +450,17 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         // create cache folder
-        File::mkdir(dirname($cacheFile));
+        FileUtils::mkdir(dirname($cacheFile));
 
         if ($this->getAttribute('mime_type') == 'image/svg+xml') {
-            File::copy($original, $cacheFile);
+            FileUtils::copy($original, $cacheFile);
 
             return $cacheFile;
         }
 
         // quiqqer/quiqqer#782
         if ($this->getAttribute('mime_type') == 'image/gif' && $this->isAnimated()) {
-            File::copy($original, $cacheFile);
+            FileUtils::copy($original, $cacheFile);
 
             return $cacheFile;
         }
@@ -463,7 +468,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $effects = $this->getEffects();
 
         if ($width === false && $height === false && empty($effects)) {
-            File::copy($original, $cacheFile);
+            FileUtils::copy($original, $cacheFile);
 
             return $cacheFile;
         }
@@ -486,7 +491,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $Image = $Media->getImageManager()->make($original);
         } catch (Exception $Exception) {
             QUI\System\Log::addDebug($Exception->getMessage());
-            File::copy($original, $cacheFile);
+            FileUtils::copy($original, $cacheFile);
 
             return $cacheFile;
         }
@@ -595,7 +600,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         // create folders
-        File::mkdir(dirname($cacheFile));
+        FileUtils::mkdir(dirname($cacheFile));
 
         // save cache image
         $Image->save($cacheFile);
@@ -623,8 +628,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $cachefile = $cdir . $file;
         $cacheData = pathinfo($cachefile);
 
-        $fileData = File::getInfo($this->getFullPath());
-        $files    = File::readDir($cacheData['dirname'], true);
+        $fileData = FileUtils::getInfo($this->getFullPath());
+        $files    = FileUtils::readDir($cacheData['dirname'], true);
         $filename = $fileData['filename'];
 
         foreach ($files as $file) {
@@ -632,11 +637,11 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
             // cache delete
             if (substr($file, 0, $len + 2) == $filename . '__') {
-                File::unlink($cacheData['dirname'] . '/' . $file);
+                FileUtils::unlink($cacheData['dirname'] . '/' . $file);
             }
         }
 
-        File::unlink($cachefile);
+        FileUtils::unlink($cachefile);
 
         // delete admin cache, too
         $this->deleteAdminCache();
@@ -653,7 +658,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $cacheDir  = VAR_DIR . 'media/cache/admin/' . $Project->getName() . '/' . $Project->getLang() . '/';
         $cacheName = $this->getId() . '__';
 
-        $files = File::readDir($cacheDir);
+        $files = FileUtils::readDir($cacheDir);
 
         foreach ($files as $file) {
             if (strpos($file, $cacheName) === 0) {
@@ -672,7 +677,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @throws QUI\Permissions\Exception
      */
-    public function resize($newWidth = 0, $newHeight = 0)
+    public function resize(int $newWidth = 0, int $newHeight = 0)
     {
         $dir      = CMS_DIR . $this->Media->getPath();
         $original = $dir . $this->getAttribute('file');
@@ -715,7 +720,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     {
         $filename = $this->getFullPath();
 
-        if (!($fh = @\fopen($filename, 'rb'))) {
+        if (!($fh = @fopen($filename, 'rb'))) {
             return false;
         }
 

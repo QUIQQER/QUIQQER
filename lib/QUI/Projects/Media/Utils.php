@@ -15,10 +15,12 @@ use QUI\Utils\Text\XML;
 
 use function array_pop;
 use function array_shift;
+use function ceil;
 use function count;
 use function explode;
 use function file_exists;
 use function htmlspecialchars;
+use function implode;
 use function intval;
 use function is_object;
 use function is_string;
@@ -394,6 +396,7 @@ class Utils
         );
 
         $cacheName = 'quiqqer/projects/' . $parts[3] . '/picture-' . $md5;
+
         try {
             return QUI\Cache\Manager::get($cacheName);
         } catch (QUi\Exception $Exception) {
@@ -464,10 +467,8 @@ class Utils
             $imgSrcSetEntries = [];
 
             if ($imageWidth) {
-                $end = $maxWidth && $imageWidth > $maxWidth ? $maxWidth : $imageWidth;
-                $end = (int)$end;
-
-                $start = 400;
+                $end   = $maxWidth && $imageWidth > $maxWidth ? $maxWidth : $imageWidth;
+                $start = 16;
                 $sets  = [];
 
                 $batchesCount = (int)$Project->getConfig('media_imageBatchesCount');
@@ -476,7 +477,7 @@ class Utils
                     $batchesCount = 3;
                 }
 
-                $batchSize = \ceil($end / $batchesCount) ?: 200;
+                $batchSize = ceil($end / $batchesCount) ?: 200;
                 $duplicate = [];
 
                 for (; $start < $end + $batchSize; $start += $batchSize) {
@@ -494,13 +495,13 @@ class Utils
 
                     $duplicate[$imageUrl] = true;
 
-                    $srcForSet = \htmlspecialchars($imageUrl);
+                    $srcForSet = htmlspecialchars($imageUrl);
 
                     for ($x = 2; $x <= $imageX; $x++) {
                         if ($imageWidth > $start * $x) {
                             $src2x     = $Image->getSizeCacheUrl($start * $x);
-                            $src2x     = \htmlspecialchars($src2x);
-                            $srcForSet .= ", {$src2x} {$x}x";
+                            $src2x     = htmlspecialchars($src2x);
+                            $srcForSet .= ", $src2x {$x}x";
                         }
                     }
 
@@ -523,7 +524,7 @@ class Utils
 
                 // last one is the original
                 if ($maxWidth || $maxHeight) {
-                    $sets[\array_key_last($sets)]['media'] = '';
+                    $sets[array_key_last($sets)]['media'] = '';
                 } else {
                     $sets[] = [
                         'src'   => htmlspecialchars($Image->getSizeCacheUrl()),
@@ -565,15 +566,15 @@ class Utils
                 $value = \ForceUTF8\Encoding::toUTF8($value);
             }
 
-            $img .= \htmlspecialchars($key) . '="' . $value . '" ';
+            $img .= htmlspecialchars($key) . '="' . $value . '" ';
         }
 
-        $img .= ' src="' . $host . \htmlspecialchars($originalSrc) . '"';
-
-        if (!empty($imgSrcSetEntries)) {
-            $img .= ' srcset="' . \implode(', ', $imgSrcSetEntries) . '"';
-        }
-
+        $img .= ' src="' . $host . htmlspecialchars($originalSrc) . '"';
+        /*
+                if (!empty($imgSrcSetEntries)) {
+                    $img .= ' srcset="' . implode(', ', $imgSrcSetEntries) . '"';
+                }
+        */
         $img .= ' />';
 
 
@@ -806,7 +807,7 @@ class Utils
      * @return boolean
      * @throws QUI\Exception
      */
-    public static function checkFolderName($str): bool
+    public static function checkFolderName(string $str): bool
     {
         // Prüfung des Namens - Sonderzeichen
         if (preg_match('/[^0-9_a-zA-Z \-]/', $str)) {
@@ -840,15 +841,13 @@ class Utils
      *
      * @return string
      */
-    public static function stripFolderName($str): string
+    public static function stripFolderName(string $str): string
     {
         $str = QUI\Utils\Convert::convertRoman($str);
         $str = preg_replace('/[^0-9a-zA-Z\-]/', '_', $str);
 
         // clean double _
-        $str = preg_replace('/[_]{2,}/', "_", $str);
-
-        return $str;
+        return preg_replace('/[_]{2,}/', "_", $str);
     }
 
     /**
@@ -858,7 +857,7 @@ class Utils
      *
      * @throws QUI\Exception
      */
-    public static function checkMediaName($filename)
+    public static function checkMediaName(string $filename)
     {
         // Prüfung des Namens - Sonderzeichen
         if (preg_match('/[^0-9_a-zA-Z \-.]/', $filename)) {
@@ -925,9 +924,7 @@ class Utils
         $str = StringUtils::replaceLast('_', '.', $str);
 
         // FIX
-        $str = preg_replace('/[_]{2,}/', "_", $str);
-
-        return $str;
+        return preg_replace('/[_]{2,}/', "_", $str);
     }
 
     /**
@@ -1072,7 +1069,7 @@ class Utils
          * during composer update when two different instance of QUIQQER are initialised
          * and "existsProject" does not exist in the calling instance.
          */
-        if (\method_exists($ProjectManager, 'existsProject') && !$ProjectManager::existsProject($project)) {
+        if (method_exists($ProjectManager, 'existsProject') && !$ProjectManager::existsProject($project)) {
             throw new QUI\Exception(
                 'File not found',
                 ErrorCodes::FILE_NOT_FOUND
@@ -1091,7 +1088,7 @@ class Utils
         }
 
         $parts[]   = $fileName;
-        $filePaths = \implode('/', $parts);
+        $filePaths = implode('/', $parts);
 
         return [
             'project'  => $project,
