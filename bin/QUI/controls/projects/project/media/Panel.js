@@ -23,6 +23,7 @@ define('controls/projects/project/media/Panel', [
     'Locale',
     'utils/Media',
     'Projects',
+    'Permissions',
     'qui/controls/loader/Loader',
 
     'css!controls/projects/project/media/Panel.css'
@@ -30,7 +31,7 @@ define('controls/projects/project/media/Panel', [
 ], function () {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg                = 'quiqqer/quiqqer';
     var HIDE_HIDDEN_FILES = 1; // 1 = hide all hidden files, 0 = show all hidden files
 
     var QUI              = arguments[0],
@@ -46,7 +47,8 @@ define('controls/projects/project/media/Panel', [
         Ajax             = arguments[10],
         Locale           = arguments[11],
         MediaUtils       = arguments[12],
-        Projects         = arguments[13];
+        Projects         = arguments[13],
+        Permissions      = arguments[14];
 
     /**
      * A Media-Panel, opens the Media in an Apppanel
@@ -137,14 +139,16 @@ define('controls/projects/project/media/Panel', [
                 5000
             ];
 
-            this.$Map = null;
-            this.$Media = Media || null;
-            this.$File = null;
+            this.$Map    = null;
+            this.$Media  = Media || null;
+            this.$File   = null;
             this.$Filter = null;
             this.$loaded = false;
 
-            this.$Pagination = null;
+            this.$Pagination          = null;
             this.$PaginationContainer = null;
+
+            this.$maxFileUploads = 5;
 
             this.$children = {
                 data : [],
@@ -154,7 +158,7 @@ define('controls/projects/project/media/Panel', [
 
             this.$selected = [];
 
-            this.$DOMEvents = new PanelDOMEvents(this);
+            this.$DOMEvents        = new PanelDOMEvents(this);
             this.$PanelContextMenu = new PanelContextMenu(this);
 
             this.addEvents({
@@ -251,7 +255,7 @@ define('controls/projects/project/media/Panel', [
                 return;
             }
 
-            var Omnigrid = this.getBody().getElement('.omnigrid');
+            var Omnigrid  = this.getBody().getElement('.omnigrid');
             var Container = this.getBody().getElement('.qui-media-content');
 
             if (!Omnigrid) {
@@ -500,7 +504,7 @@ define('controls/projects/project/media/Panel', [
 
                         if (self.$Media && self.$Media.getProject()) {
                             project = self.$Media.getProject().getName();
-                            lang = self.$Media.getProject().getLang();
+                            lang    = self.$Media.getProject().getLang();
                         }
 
                         new ProjectSelect({
@@ -537,26 +541,33 @@ define('controls/projects/project/media/Panel', [
                     });
                 }
 
-                if (self.getAttribute('startid')) {
-                    self.openID(self.getAttribute('startid')).then(function () {
+                Permissions.getPermission(
+                    'quiqqer.upload.maxUploadCount',
+                    'maxInteger'
+                ).then((maxFileUploads) => {
+                    self.$maxFileUploads = maxFileUploads;
+
+                    if (self.getAttribute('startid')) {
+                        self.openID(self.getAttribute('startid')).then(function () {
+                            self.$loaded = true;
+                        });
+                        return;
+                    }
+
+                    // cached id?
+                    var Project    = self.$Media.getProject();
+                    var cacheMedia = Project.getName() + '-' + Project.getLang() + '-id';
+
+                    if (QUI.Storage.get(cacheMedia)) {
+                        self.openID(QUI.Storage.get(cacheMedia)).then(function () {
+                            self.$loaded = true;
+                        });
+                        return;
+                    }
+
+                    self.openID(1).then(function () {
                         self.$loaded = true;
                     });
-                    return;
-                }
-
-                // cached id?
-                var Project = self.$Media.getProject();
-                var cacheMedia = Project.getName() + '-' + Project.getLang() + '-id';
-
-                if (QUI.Storage.get(cacheMedia)) {
-                    self.openID(QUI.Storage.get(cacheMedia)).then(function () {
-                        self.$loaded = true;
-                    });
-                    return;
-                }
-
-                self.openID(1).then(function () {
-                    self.$loaded = true;
                 });
             });
         },
@@ -898,14 +909,14 @@ define('controls/projects/project/media/Panel', [
                     }
 
                     var height = Content.getSize().y -
-                                 Parent.getSize().y -
-                                 80; // 80 = content padding + form margin
+                        Parent.getSize().y -
+                        80; // 80 = content padding + form margin
 
                     // upload form
                     var Form = new UploadForm({
                         sendbutton  : true,
                         cancelbutton: true,
-                        maxuploads  : 5,
+                        maxuploads  : self.$maxFileUploads,
                         styles      : {
                             float : 'left',
                             clear : 'both',
@@ -1275,7 +1286,7 @@ define('controls/projects/project/media/Panel', [
                 }
 
                 Child = children[i];
-                ext = '';
+                ext   = '';
 
                 if (Child.extension !== '') {
                     ext = '.' + Child.extension;
@@ -1367,7 +1378,7 @@ define('controls/projects/project/media/Panel', [
                 }
 
                 Child = children[i];
-                ext = '';
+                ext   = '';
 
                 if (Child.extension !== '') {
                     ext = '.' + Child.extension;
@@ -2002,10 +2013,10 @@ define('controls/projects/project/media/Panel', [
                 mimeType = '';
 
             if (typeOf(Item) === 'element') {
-                elmtype = Item.get('data-type');
+                elmtype  = Item.get('data-type');
                 mimeType = Item.get('data-mimetype');
             } else {
-                elmtype = Item.type;
+                elmtype  = Item.type;
                 mimeType = Item.mimetype;
             }
 
@@ -2455,7 +2466,7 @@ define('controls/projects/project/media/Panel', [
             }
 
             var Content = this.getContent();
-            var Node = Content.getElement('[data-id="' + Item.getId() + '"]');
+            var Node    = Content.getElement('[data-id="' + Item.getId() + '"]');
 
             if (!Node) {
                 return;
@@ -2489,12 +2500,12 @@ define('controls/projects/project/media/Panel', [
                     continue;
                 }
 
-                this.$children[i].active = Item.isActive();
-                this.$children[i].e_date = Item.getAttribute('e_date');
-                this.$children[i].name = Item.getAttribute('name');
+                this.$children[i].active   = Item.isActive();
+                this.$children[i].e_date   = Item.getAttribute('e_date');
+                this.$children[i].name     = Item.getAttribute('name');
                 this.$children[i].priority = Item.getAttribute('priority');
-                this.$children[i].short = Item.getAttribute('short');
-                this.$children[i].title = Item.getAttribute('title');
+                this.$children[i].short    = Item.getAttribute('short');
+                this.$children[i].title    = Item.getAttribute('title');
                 break;
             }
         },
@@ -2558,8 +2569,8 @@ define('controls/projects/project/media/Panel', [
          * @param {DOMEvent} event
          */
         $onPaginationLimitChange: function (event) {
-            var total = this.getAttribute('total');
-            var limit = event.target.value;
+            var total        = this.getAttribute('total');
+            var limit        = event.target.value;
             var newPageCount = Math.ceil(total / limit);
 
             this.setAttribute('limit', limit);
@@ -2603,7 +2614,7 @@ define('controls/projects/project/media/Panel', [
 
                 var refreshPagination = self.getAttribute('limit') !== currentLimit;
 
-                var total = self.getAttribute('total');
+                var total        = self.getAttribute('total');
                 var newPageCount = Math.ceil(total / currentLimit);
 
                 self.setAttribute('limit', currentLimit);
