@@ -481,13 +481,16 @@ class Utils
                 $duplicate = [];
 
                 for (; $start < $end + $batchSize; $start += $batchSize) {
-                    $media = '(max-width: ' . $start . 'px)';
-
-                    if ($maxHeight) {
-                        $media = '(max-width: ' . $start . 'px) or (max-height: ' . $maxHeight . 'px)';
-                    }
-
+                    $media    = '(max-width: ' . $start . 'px)';
                     $imageUrl = $Image->getSizeCacheUrl($start, $maxHeight);
+
+                    $currentHeight = explode('__', $imageUrl)[1];
+                    $currentHeight = explode('.', $currentHeight)[0];
+                    $currentHeight = (int)explode('x', $currentHeight)[1];
+
+                    if ($currentHeight) {
+                        $media = '(max-width: ' . $start . 'px) or (max-height: ' . $currentHeight . 'px)';
+                    }
 
                     if (isset($duplicate[$imageUrl])) {
                         continue;
