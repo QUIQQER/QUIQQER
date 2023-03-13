@@ -29,6 +29,7 @@ use function json_encode;
 use function md5;
 use function method_exists;
 use function pathinfo;
+use function preg_replace;
 use function reset;
 use function str_replace;
 use function strpos;
@@ -789,8 +790,12 @@ abstract class Item extends QUI\QDOM
     {
         $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
-
+        // spaces making too many problems
+        // every space will be converted into a _
+        // two _ will be converted into one _
         $newName = trim($newName, "_ \t\n\r\0\x0B"); // Trim the default characters and underscores
+        $newName = str_replace(' ', '_', $newName);
+        $newName = preg_replace('#(_){2,}#', "$1", $newName);
 
         $original  = $this->getFullPath();
         $extension = QUI\Utils\StringHelper::pathinfo($original, PATHINFO_EXTENSION);
