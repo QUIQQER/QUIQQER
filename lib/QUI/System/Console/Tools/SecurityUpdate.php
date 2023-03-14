@@ -93,18 +93,18 @@ class SecurityUpdate extends QUI\System\Console\Tool
 
         $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'security.update.start'));
 
+        $Packages->refreshServerList();
+
+        $Composer = $Packages->getComposer();
+        $Composer->unmute();
+
+        // create security composer
+        $workingDir = $Composer->getWorkingDir();
+
+        $composerOriginal = $workingDir . 'composer.json';
+        $composerBackups  = $workingDir . 'composer-security-update-backup.json';
+
         try {
-            $Packages->refreshServerList();
-
-            $Composer = $Packages->getComposer();
-            $Composer->unmute();
-
-            // create security composer
-            $workingDir = $Composer->getWorkingDir();
-
-            $composerOriginal = $workingDir . 'composer.json';
-            $composerBackups  = $workingDir . 'composer-security-update-backup.json';
-
             if (!file_exists($composerOriginal)) {
                 $this->writeLn('Couldn\'t find the composer.json file.', 'red');
                 exit;
@@ -218,11 +218,6 @@ class SecurityUpdate extends QUI\System\Console\Tool
 
             $Composer->update();
 
-            // reset the composer jsons
-            unlink($composerOriginal);
-            copy($composerBackups, $composerOriginal);
-            unlink($composerBackups);
-
             $this->logBuffer();
             $wasExecuted = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.execute');
             $webserver   = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.webserver');
@@ -271,6 +266,11 @@ class SecurityUpdate extends QUI\System\Console\Tool
 
             $this->resetColor();
             $this->writeLn('');
+        } finally {
+            // reset the composer jsons
+            unlink($composerOriginal);
+            copy($composerBackups, $composerOriginal);
+            unlink($composerBackups);
         }
 
         $this->logBuffer();
