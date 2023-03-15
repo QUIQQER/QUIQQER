@@ -50,9 +50,10 @@ define('controls/grid/Grid', [
              QUIContextItem, QUIConfirm, ControlUtils, QUILocale) {
     "use strict";
 
-    var Panel = null;
+    let Panel = null;
+    const lg = 'quiqqer/quiqqer';
 
-    var resizeMeInThePanel = function () {
+    const resizeMeInThePanel = function () {
         this.resize();
 
         if (Panel) {
@@ -60,13 +61,13 @@ define('controls/grid/Grid', [
         }
     };
 
-    var getHash = function (str) {
+    const getHash = function (str) {
         if (typeOf(str) !== 'string') {
             str = JSON.encode(str);
         }
 
-        var hash = 0;
-        var i, len, char;
+        let hash = 0;
+        let i, len, char;
 
         for (i = 0, len = str.length; i < len; i++) {
             char = str.charCodeAt(i);
@@ -75,7 +76,7 @@ define('controls/grid/Grid', [
         }
 
         return hash;
-    }
+    };
 
     // workaround for css loading
     require(['css!controls/grid/Grid.css']);
@@ -103,8 +104,8 @@ define('controls/grid/Grid', [
             filterHide   : true,
             filterHideCls: 'hide',
 
-            storageKey: false, // if storage key is set, the grid settings (column model) are saved in the locale storage
-            columnSort: false, // user are able to sort the titles by themselves
+            storageKey  : false, // if storage key is set, the grid settings (column model) are saved in the locale storage
+            configurable: true, // table is configurable, user is able to dragdrop columns, storage key must be set
 
             filterSelectedCls: 'filter',
             multipleSelection: false,
@@ -167,6 +168,10 @@ define('controls/grid/Grid', [
             dragDropClass    : false
         },
 
+        Binds: [
+            'openSortWindow'
+        ],
+
         $data          : false,
         $columnModel   : false,
         $refreshDelayID: null,
@@ -181,6 +186,8 @@ define('controls/grid/Grid', [
             } else {
                 this.$columnModel = {};
             }
+
+            this.$originalColumns = this.$columnModel;
 
             this.parent(options);
 
@@ -215,10 +222,10 @@ define('controls/grid/Grid', [
                     'outline'   : 0
                 },
                 events      : {
-                    'focus'    : this.focus.bind(this),
-                    'blur'     : this.blur.bind(this),
-                    'mousedown': this.mousedown.bind(this),
-                    'mouseup'  : this.mouseup.bind(this)
+                    focus    : this.focus.bind(this),
+                    blur     : this.blur.bind(this),
+                    mousedown: this.mousedown.bind(this),
+                    mouseup  : this.mouseup.bind(this)
                 },
                 'data-quiid': this.getId()
             });
@@ -231,7 +238,7 @@ define('controls/grid/Grid', [
             // this.resize.delay(250, this);
             // this.resize.delay(500, this);
 
-            var PanelNode = this.container.getParent('.qui-panel');
+            const PanelNode = this.container.getParent('.qui-panel');
 
             if (!PanelNode) {
                 return;
@@ -266,13 +273,13 @@ define('controls/grid/Grid', [
 
             this.container.removeClass('omnigrid');
 
-            var PanelNode = this.container.getParent('.qui-panel');
+            const PanelNode = this.container.getParent('.qui-panel');
 
             if (!PanelNode) {
                 return;
             }
 
-            var Panel = QUI.Controls.getById(PanelNode.get('data-quiid'));
+            const Panel = QUI.Controls.getById(PanelNode.get('data-quiid'));
 
             if (!Panel) {
                 return;
@@ -284,7 +291,7 @@ define('controls/grid/Grid', [
 
         // API
         reset: function () {
-            var t = this;
+            const t = this;
 
             t.renderData();
 
@@ -304,7 +311,7 @@ define('controls/grid/Grid', [
             // Setup header
             t.container.getElements('.th').each(function (el, i) {
                 //alert(el.dataType);
-                var dataType = el.retrieve('dataType');
+                const dataType = el.retrieve('dataType');
 
                 if (!dataType) {
                     return;
@@ -323,7 +330,7 @@ define('controls/grid/Grid', [
                         return yr;
                     }
 
-                    var ret, strtime;
+                    let ret, strtime;
 
                     if (str.length > 12) {
                         strtime = str.substring(str.lastIndexOf(' ') + 1);
@@ -346,7 +353,7 @@ define('controls/grid/Grid', [
                 };
 
                 el.findData = function (elem) {
-                    var child = elem.getFirst();
+                    const child = elem.getFirst();
 
                     if (child) {
                         return el.findData(child);
@@ -356,7 +363,7 @@ define('controls/grid/Grid', [
                 };
 
                 el.stripHTML = function (str) {
-                    var tmp = str.replace(/(<.*['"])([^'"]*)(['"]>)/g,
+                    const tmp = str.replace(/(<.*['"])([^'"]*)(['"]>)/g,
                         function (x, p1, p2, p3) {
                             return p1 + p3;
                         }
@@ -367,7 +374,7 @@ define('controls/grid/Grid', [
 
                 el.compare = function (a, b) {
                     // a i b su LI elementi
-                    var var1 = a.getChildren()[i].innerHTML.trim(),
+                    let var1 = a.getChildren()[i].innerHTML.trim(),
                         var2 = b.getChildren()[i].innerHTML.trim();
 
                     if (dataType === 'number' ||
@@ -431,15 +438,15 @@ define('controls/grid/Grid', [
          * Resize the grid
          */
         resize: function () {
-            var self       = 0,
-                Container  = this.container,
-                width      = Container.getSize().x,
-                buttons    = Container.getElements('.tDiv button'),
-                separators = Container.getElements('.tDiv .qui-buttons-separator');
+            const self       = 0,
+                  Container  = this.container,
+                  width      = Container.getSize().x,
+                  buttons    = Container.getElements('.tDiv button'),
+                  separators = Container.getElements('.tDiv .qui-buttons-separator');
 
             buttons.setStyle('display', null);
 
-            var sumWidth = buttons.map(function (Button) {
+            let sumWidth = buttons.map(function (Button) {
                 if (self.$Menu === Button) {
                     return 0;
                 }
@@ -490,8 +497,8 @@ define('controls/grid/Grid', [
         //        dataIndex:Number - column name || columnIndex:Number - column index
         //}
         edit: function (options) {
-            var li;
-            var t    = this,
+            let li;
+            let t    = this,
                 sels = t.getSelectedIndices();
 
             if (!sels || sels.length === 0 || !t.getAttribute('editable')) {
@@ -507,8 +514,8 @@ define('controls/grid/Grid', [
             t.finishEditing();
 
             // nadi index u columnModel
-            var c = options.columnIndex || 0;
-            var colmod, len;
+            let c = options.columnIndex || 0;
+            let colmod, len;
 
             if (options.dataIndex) {
                 for (len = this.$columnModel.length; c < len; c++) {
@@ -534,15 +541,15 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            var td       = li.getElements('div.td')[c],
-                data     = this.$data[sels[0]],
-                width    = parseInt(td.getStyle('width')) - 5,
-                html     = data[colmod.dataIndex],
-                editType = colmod.editType ? colmod.editType : this.getAttribute('editType');
+            const td       = li.getElements('div.td')[c],
+                  data     = this.$data[sels[0]],
+                  width    = parseInt(td.getStyle('width')) - 5,
+                  html     = data[colmod.dataIndex],
+                  editType = colmod.editType ? colmod.editType : this.getAttribute('editType');
 
             td.innerHTML = '';
 
-            var input = new Element(editType, {
+            const input = new Element(editType, {
                 'class': 'inline',
                 style  : "width: " + width + "px; height: auto;",
                 value  : html,
@@ -575,7 +582,7 @@ define('controls/grid/Grid', [
         },
 
         finishEditing: function (evt) {
-            var t = this;
+            const t = this;
 
             if (!t.inlineeditmode) {
                 return;
@@ -589,11 +596,11 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            var row      = t.inlineEditSafe.row,
-                data     = this.$data[row],
-                colmod   = t.inlineEditSafe.columnModel,
-                td       = t.inlineEditSafe.td,
-                editType = colmod.editType ? colmod.editType : this.getAttribute('editType');
+            const row      = t.inlineEditSafe.row,
+                  data     = this.$data[row],
+                  colmod   = t.inlineEditSafe.columnModel,
+                  td       = t.inlineEditSafe.td,
+                  editType = colmod.editType ? colmod.editType : this.getAttribute('editType');
 
             if (editType === 'textarea' &&
                 evt &&
@@ -670,8 +677,8 @@ define('controls/grid/Grid', [
 
         // API
         removeSections: function () {
-            var i, len;
-            var sections = this.ulBody.getElements('.section');
+            let i, len;
+            const sections = this.ulBody.getElements('.section');
 
             if (this.getAttribute('showtoggleicon')) {
                 this.ulBody.getElements('.toggleicon').setStyle('background-position', '0 0');
@@ -727,7 +734,7 @@ define('controls/grid/Grid', [
         },
 
         onRowMouseOver: function (evt) {
-            var li = this.getLiParent(evt.target);
+            let li = this.getLiParent(evt.target);
 
             if (!li) {
                 return;
@@ -749,7 +756,7 @@ define('controls/grid/Grid', [
         },
 
         onRowMouseOut: function (evt) {
-            var li = this.getLiParent(evt.target);
+            let li = this.getLiParent(evt.target);
 
             if (!li) {
                 return;
@@ -808,9 +815,9 @@ define('controls/grid/Grid', [
         },
 
         onRowClick: function (evt) {
-            var i, len, row;
+            let i, len, row;
 
-            var t       = this,
+            let t       = this,
                 li      = this.getLiParent(evt.target),
                 onclick = false;
 
@@ -829,7 +836,7 @@ define('controls/grid/Grid', [
             row = li.retrieve('row');
 
             if (t.getAttribute('selectable')) {
-                var selectedNum = t.selected.length,
+                let selectedNum = t.selected.length,
                     dontselect  = false;
 
                 if ((!evt.control && !evt.shift && !evt.meta) || !t.getAttribute('multipleSelection')) {
@@ -852,14 +859,14 @@ define('controls/grid/Grid', [
                 }
 
                 if (evt.shift && t.getAttribute('multipleSelection')) {
-                    var si = 0;
+                    let si = 0;
 
                     if (t.selected.length > 0) {
                         si = t.selected[selectedNum - 1];
                     }
 
-                    var endindex = row;
-                    var startindex = Math.min(si, endindex);
+                    let endindex = row;
+                    let startindex = Math.min(si, endindex);
 
                     endindex = Math.max(si, endindex);
 
@@ -910,7 +917,7 @@ define('controls/grid/Grid', [
         },
 
         onRowDblClick: function (evt) {
-            var li = this.getLiParent(evt.target);
+            let li = this.getLiParent(evt.target);
 
             if (!li) {
                 return;
@@ -922,8 +929,8 @@ define('controls/grid/Grid', [
             ]);
 
 
-            var ondblclick;
-            var target = evt.target,
+            let ondblclick;
+            let target = evt.target,
                 row    = li.retrieve('row');
 
             if (!target.hasClass('td') && target.getParent('.td')) {
@@ -932,8 +939,8 @@ define('controls/grid/Grid', [
 
             if (this.getAttribute('editable') &&
                 this.getAttribute('editondblclick') && target.hasClass('td')) {
-                var i, len;
-                var childs = li.getChildren();
+                let i, len;
+                const childs = li.getChildren();
 
                 for (i = 0, len = childs.length; i < len; i++) {
                     if (childs[i] === target) {
@@ -941,7 +948,7 @@ define('controls/grid/Grid', [
                     }
                 }
 
-                var obj = this.edit({
+                const obj = this.edit({
                     columnIndex: i,
                     li         : li
                 });
@@ -968,7 +975,7 @@ define('controls/grid/Grid', [
                 }
             }
 
-            var eventparams = {
+            const eventparams = {
                 row    : row,
                 target : this,
                 element: li,
@@ -979,7 +986,7 @@ define('controls/grid/Grid', [
         },
 
         onRowContext: function (event) {
-            var li = this.getLiParent(event.target);
+            const li = this.getLiParent(event.target);
 
             if (!li) {
                 return;
@@ -1014,12 +1021,12 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            var row     = li.retrieve('row'),
+            let row     = li.retrieve('row'),
                 section = this.getSection(row);
 
             if (this.getAttribute('accordion') &&
                 (typeof section === 'undefined' || !section)) {
-                var li2 = new Element('li.section', {
+                const li2 = new Element('li.section', {
                     styles: {
                         width: this.sumWidth + 2 * this.visibleColumns
                     }
@@ -1027,7 +1034,7 @@ define('controls/grid/Grid', [
 
                 li2.addClass('section-' + li.retrieve('row'));
 
-                var oSibling = li.nextSibling;
+                const oSibling = li.nextSibling;
 
                 if (!oSibling) {
                     this.ulBody.appendChild(li2);
@@ -1044,7 +1051,7 @@ define('controls/grid/Grid', [
                         this.lastsection.setStyle('display', 'none');
 
                         if (this.lastsection.getPrevious()) {
-                            var ToggleIcon = this.lastsection.getPrevious().getElement('.toggleicon');
+                            const ToggleIcon = this.lastsection.getPrevious().getElement('.toggleicon');
 
                             if (ToggleIcon) {
                                 ToggleIcon.setStyle('background-position', '0 0');
@@ -1102,7 +1109,7 @@ define('controls/grid/Grid', [
                 return a - b;
             }
 
-            var sf = asNumber ? om_sort_number : function () {
+            const sf = asNumber ? om_sort_number : function () {
             };
 
             a.sort(sf);
@@ -1112,14 +1119,14 @@ define('controls/grid/Grid', [
         },
         // API
         loadData: function (url) {
-            var options   = this.getAttributes(),
-                container = this.container;
+            const options   = this.getAttributes(),
+                  container = this.container;
 
             if (!this.getAttribute('url') && !this.getAttribute('dataProvider')) {
                 return;
             }
 
-            var data = {};
+            let data = {};
 
             // pagination
             if (this.getAttribute('pagination')) {
@@ -1136,7 +1143,7 @@ define('controls/grid/Grid', [
             }
 
             if (this.getAttribute('filterInput')) {
-                var cfilter = container.getElement('input.cfilter');
+                const cfilter = container.getElement('input.cfilter');
 
                 if (cfilter) {
                     data.filter = cfilter.value;
@@ -1150,7 +1157,7 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            var request = new Request.JSON({
+            const request = new Request.JSON({
                 url : (url !== null) ? url : options.url,
                 data: data
             });
@@ -1173,13 +1180,13 @@ define('controls/grid/Grid', [
         },
 
         resetButtons: function () {
-            var btns = this.getAttribute('buttons');
+            const btns = this.getAttribute('buttons');
 
             if (!btns || !btns.length) {
                 return;
             }
 
-            var i, len, Btn;
+            let i, len, Btn;
 
             for (i = 0, len = btns.length; i < len; i++) {
                 if (!btns[btns[i].name]) {
@@ -1203,15 +1210,15 @@ define('controls/grid/Grid', [
          * @return {Array}
          */
         getButtons: function () {
-            var buttons = [];
+            const buttons = [];
 
-            var btns = this.getAttribute('buttons');
+            const btns = this.getAttribute('buttons');
 
             if (!btns || !btns.length) {
                 return buttons;
             }
 
-            var i, len;
+            let i, len;
 
             for (i = 0, len = btns.length; i < len; i++) {
                 if (QUI.Controls.isControl(btns[i])) {
@@ -1236,9 +1243,9 @@ define('controls/grid/Grid', [
          * @return {null|*}
          */
         getButton: function (name) {
-            var buttons = this.getButtons();
+            const buttons = this.getButtons();
 
-            for (var i = 0, len = buttons.length; i < len; i++) {
+            for (let i = 0, len = buttons.length; i < len; i++) {
                 if (buttons[i].getAttribute('name') === name) {
                     return buttons[i];
                 }
@@ -1261,8 +1268,8 @@ define('controls/grid/Grid', [
 
         // API
         setData: function (data, cm) {
-            var options   = this.getAttributes(),
-                container = this.container;
+            const options   = this.getAttributes(),
+                  container = this.container;
 
             if (!data) {
                 return;
@@ -1287,19 +1294,19 @@ define('controls/grid/Grid', [
                 options.total = data.total;
                 options.maxpage = Math.ceil(options.total / options.perPage);
 
-                var cPage = container.getElements('div.pDiv input.cpage');
+                const cPage = container.getElements('div.pDiv input.cpage');
 
                 cPage.set('value', data.page);
                 cPage.setStyle('width', 32);
 
-                var to   = (data.page * options.perPage) > data.total ? data.total : (data.page * options.perPage),
-                    page = ((data.page - 1) * options.perPage + 1);
+                const to   = (data.page * options.perPage) > data.total ? data.total : (data.page * options.perPage),
+                      page = ((data.page - 1) * options.perPage + 1);
 
-                var stats = '<span>' + page + '</span>' +
-                            '<span>..</span>' +
-                            '<span>' + to + '</span>' +
-                            '<span> / </span>' +
-                            '<span>' + data.total + '</span>';
+                const stats = '<span>' + page + '</span>' +
+                              '<span>..</span>' +
+                              '<span>' + to + '</span>' +
+                              '<span> / </span>' +
+                              '<span>' + data.total + '</span>';
 
                 container.getElements('div.pDiv .pPageStat').set('html', stats);
 
@@ -1357,8 +1364,8 @@ define('controls/grid/Grid', [
 
             this.$data[row] = data;
 
-            var Row = this.container.getElement('[data-row="' + row + '"]');
-            var newRow = this.renderRow(row, this.$data[row]);
+            const Row = this.container.getElement('[data-row="' + row + '"]');
+            const newRow = this.renderRow(row, this.$data[row]);
 
             newRow.inject(Row, 'after');
             Row.destroy();
@@ -1367,7 +1374,7 @@ define('controls/grid/Grid', [
         },
 
         setScroll: function (x, y) {
-            new Fx.Scroll(
+            new window.Fx.Scroll(
                 this.container.getElement('.bDiv')
             ).set(x, y);
         },
@@ -1402,7 +1409,7 @@ define('controls/grid/Grid', [
          * @param {Array} rowIds - list of the row ids
          */
         deleteRows: function (rowIds) {
-            for (var i = 0, len = rowIds.length; i < len; i++) {
+            for (let i = 0, len = rowIds.length; i < len; i++) {
                 delete this.$data[rowIds[i]];
             }
 
@@ -1417,7 +1424,7 @@ define('controls/grid/Grid', [
         },
 
         hideWhiteOverflow: function () {
-            var gBlock;
+            let gBlock;
 
             if ((gBlock = this.container.getElement('.gBlock'))) {
                 gBlock.dispose();
@@ -1425,8 +1432,8 @@ define('controls/grid/Grid', [
         },
 
         showWhiteOverflow: function () {
-            var gBlock;
-            var container = this.container;
+            let gBlock;
+            let container = this.container;
 
             // white overflow & loader
             if ((gBlock = container.getElement('.gBlock'))) {
@@ -1472,7 +1479,7 @@ define('controls/grid/Grid', [
 
         // API
         selectAll: function () {
-            var i, len, el;
+            let i, len, el;
 
             for (i = 0, len = this.elements.length; i < len; i++) {
                 el = this.elements[i];
@@ -1506,8 +1513,8 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            var i, len;
-            var children = Row.getParent().getElements('li');
+            let i, len;
+            const children = Row.getParent().getElements('li');
 
             for (i = 0, len = children.length; i < len; i++) {
                 if (children[i] === Row) {
@@ -1529,7 +1536,7 @@ define('controls/grid/Grid', [
 
         // API
         unselectAll: function () {
-            for (var i = 0, len = this.elements.length; i < len; i++) {
+            for (let i = 0, len = this.elements.length; i < len; i++) {
                 this.elements[i].removeClass('selected');
             }
 
@@ -1543,8 +1550,8 @@ define('controls/grid/Grid', [
         },
 
         getSelectedData: function () {
-            var i, len;
-            var data = [];
+            let i, len;
+            const data = [];
 
             for (i = 0, len = this.selected.length; i < len; i++) {
                 data.push(this.getDataByRow(this.selected[i]));
@@ -1555,7 +1562,7 @@ define('controls/grid/Grid', [
 
         // API
         setSelectedIndices: function (arr) {
-            var i, alen, li;
+            let i, alen, li;
 
             this.selected = arr;
 
@@ -1574,7 +1581,7 @@ define('controls/grid/Grid', [
         },
 
         removeHeader: function () {
-            var obj = this.container.getElement('.hDiv');
+            const obj = this.container.getElement('.hDiv');
 
             if (obj) {
                 obj.empty();
@@ -1585,7 +1592,7 @@ define('controls/grid/Grid', [
 
         // API
         removeAll: function () {
-            for (var i = 0, len = this.elements; i < len; i++) {
+            for (let i = 0, len = this.elements; i < len; i++) {
                 this.elements[i].destroy();
             }
 
@@ -1608,8 +1615,8 @@ define('controls/grid/Grid', [
 
         // API
         setColumnProperty: function (columnName, property, value) {
-            var i, len;
-            var cmu = this.$columnModel;
+            let i, len;
+            const cmu = this.$columnModel;
 
             if (!cmu || !columnName || !property) {
                 return;
@@ -1627,7 +1634,7 @@ define('controls/grid/Grid', [
 
         // Automatsko odredivanje column modela ako nije zadan
         setAutoColumnModel: function () {
-            var rowCount = this.$data.length;
+            const rowCount = this.$data.length;
 
             if (!rowCount) {
                 return;
@@ -1636,12 +1643,12 @@ define('controls/grid/Grid', [
             this.$columnModel = [];
 
             // uzmi schemu od prvog podatka
-            for (var cn in this.$data[0]) {
+            for (let cn in this.$data[0]) {
                 if (!this.$data[0].hasOwnProperty(cn)) {
                     continue;
                 }
 
-                var dataType = typeof (this.$data[0][cn]) === "number" ? "number" : "string";
+                const dataType = typeof (this.$data[0][cn]) === "number" ? "number" : "string";
 
                 this.$columnModel.push({
                     header   : cn,
@@ -1661,11 +1668,11 @@ define('controls/grid/Grid', [
 
         // API
         setSize: function (w, h) {
-            var container = this.container,
-                gBlock    = container.getElement('.gBlock'),
-                hDiv      = container.getElement('.hDiv'),
-                tDiv      = container.getElement('.tDiv'),
-                bodyEl    = container.getElement('.bDiv');
+            const container = this.container,
+                  gBlock    = container.getElement('.gBlock'),
+                  hDiv      = container.getElement('.hDiv'),
+                  tDiv      = container.getElement('.tDiv'),
+                  bodyEl    = container.getElement('.bDiv');
 
             this.setAttribute('width', w ? w : this.getAttribute('width'));
             this.setAttribute('height', h ? h : this.getAttribute('height'));
@@ -1673,7 +1680,7 @@ define('controls/grid/Grid', [
             container.setStyle('width', this.getAttribute('width'));
             container.setStyle('height', this.getAttribute('height'));
 
-            var width = this.getAttribute('width');
+            const width = this.getAttribute('width');
 
             if (this.getAttribute('buttons')) {
                 tDiv.setStyle('width', width);
@@ -1699,9 +1706,9 @@ define('controls/grid/Grid', [
         },
 
         onBodyScroll: function () {
-            var hbox = this.container.getElement('.hDivBox'),
-                bbox = this.container.getElement('.bDiv'),
-                xs   = bbox.getScroll().x;
+            const hbox = this.container.getElement('.hDivBox'),
+                  bbox = this.container.getElement('.bDiv'),
+                  xs   = bbox.getScroll().x;
 
             hbox.setStyle('left', -xs);
             this.rePosDrag();
@@ -1721,16 +1728,16 @@ define('controls/grid/Grid', [
 
         // Drag columns events
         rePosDrag: function () {
-            var t = this;
-            var options = t.getAttributes();
+            const t = this;
+            const options = t.getAttributes();
 
             if (!options.resizeColumns) {
                 return;
             }
 
-            var c, oclen, columnModel, dragSt;
+            let c, oclen, columnModel, dragSt;
 
-            var dragTempWidth = 0,
+            let dragTempWidth = 0,
                 container     = t.container,
 
                 cDrags        = container.getElements('.cDrag div'),
@@ -1766,12 +1773,12 @@ define('controls/grid/Grid', [
         },
 
         onColumnDragComplete: function (target) {
-            var t = this;
-            var c, len, columnModel;
+            const t = this;
+            let c, len, columnModel;
 
             t.dragging = false;
 
-            var colindex       = target.retrieve('column'),
+            let colindex       = parseInt(target.retrieve('column')),
                 cDrag          = t.container.getElement('div.cDrag'),
                 scrollX        = t.container.getElement('div.bDiv').getScroll().x,
                 dragSt         = cDrag.getElements('div')[colindex],
@@ -1792,7 +1799,7 @@ define('controls/grid/Grid', [
             for (c = 0, len = cModel.length; c < len; c++) {
                 columnModel = cModel[c];
 
-                if (c == colindex) {
+                if (c === colindex) {
                     pos = parseInt(dragSt.getStyle('left')) + scrollX - this.sumWidth - (browser ? -1 : 1); // zato sto je u dragSt.left +2
                 } else if (!columnModel.hidden) {
                     t.sumWidth += columnModel.width;
@@ -1807,23 +1814,23 @@ define('controls/grid/Grid', [
             t.sumWidth += pos;
 
             t.ulBody.setStyle('width', t.sumWidth + visibleColumns * (browser ? 1 : 1));
-            var hDivBox = document.id(t.options.name + '_hDivBox');
+            const hDivBox = document.id(t.options.name + '_hDivBox');
 
             hDivBox.setStyle('width', t.sumWidth + visibleColumns * 2);
 
             // header
-            var columns = hDivBox.getElements('div.th');
-            var columnObj = columns[colindex];
+            const columns = hDivBox.getElements('div.th');
+            const columnObj = columns[colindex];
 
             columnObj.setStyle('width', pos - (browser ? 6 : 6));
 
             // sve kolone u body
             elements.each(function (el) {
-                el.setStyle('width', t.sumWidth + 2 * visibleColumns); // inace se Div-ovi wrapaju
+                el.setStyle('width', t.sumWidth + 2 * visibleColumns);
 
                 if (!el.hasClass('section')) {
-                    var columns   = el.getElements('div.td'),
-                        columnObj = columns[colindex];
+                    const columns   = el.getElements('div.td'),
+                          columnObj = columns[colindex];
 
                     columnObj.setStyle('width', pos - (browser ? 6 : 6));
                 }
@@ -1854,7 +1861,7 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            var Target      = evt.target,
+            let Target      = evt.target,
                 colindex    = Target.getAttribute('column'),
                 columnModel = this.$columnModel[colindex] || {},
                 colSort     = this.getAttribute('sortBy');
@@ -1881,8 +1888,8 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            var colindex    = evt.target.getAttribute('column'),
-                columnModel = this.$columnModel[colindex] || {};
+            const colindex    = evt.target.getAttribute('column'),
+                  columnModel = this.$columnModel[colindex] || {};
 
             if (typeof columnModel.onmouseover === 'function') {
                 columnModel.onmouseover(evt);
@@ -1896,8 +1903,8 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            var colindex    = evt.target.getAttribute('column'),
-                columnModel = this.$columnModel[colindex] || {};
+            const colindex    = evt.target.getAttribute('column'),
+                  columnModel = this.$columnModel[colindex] || {};
 
             if (typeof columnModel.onmouseout === 'function') {
                 columnModel.onmouseout(evt);
@@ -1907,7 +1914,7 @@ define('controls/grid/Grid', [
         },
 
         getBodyHeight: function () {
-            var height = this.getAttribute('height');
+            let height = this.getAttribute('height');
 
             if (this.getAttribute('showHeader')) {
                 height = height - 26;
@@ -1944,7 +1951,7 @@ define('controls/grid/Grid', [
                 }, {
                     duration: 100,
                     callback: function () {
-                        var bDiv = this.container.getElement('.bDiv');
+                        const bDiv = this.container.getElement('.bDiv');
 
                         if (bDiv) {
                             moofx(bDiv).animate({
@@ -1985,7 +1992,7 @@ define('controls/grid/Grid', [
                 }, {
                     duration: 100,
                     callback: function () {
-                        var bDiv = this.container.getElement('.bDiv');
+                        const bDiv = this.container.getElement('.bDiv');
 
                         if (bDiv) {
                             moofx(bDiv).animate({
@@ -2014,8 +2021,8 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            var rowCount  = this.$data.length,
-                DataEmpty = this.container.getElement('.data-empty');
+            const rowCount  = this.$data.length,
+                  DataEmpty = this.container.getElement('.data-empty');
 
             if (!rowCount) {
                 if (!DataEmpty) {
@@ -2032,9 +2039,9 @@ define('controls/grid/Grid', [
                 }
             }
 
-            for (var r = 0; r < rowCount; r++) {
-                var rowdata = this.$data[r],
-                    li      = this.renderRow(r, rowdata);
+            for (let r = 0; r < rowCount; r++) {
+                const rowData = this.$data[r],
+                      li      = this.renderRow(r, rowData);
 
                 this.ulBody.appendChild(li);
 
@@ -2044,7 +2051,7 @@ define('controls/grid/Grid', [
 
                 if (this.getAttribute('accordion') &&
                     this.getAttribute('accordionRenderer') && !this.getAttribute('accordionLiveRenderer')) {
-                    var li2 = new Element('li.section');
+                    const li2 = new Element('li.section');
                     li2.addClass('section-' + r);
                     li2.setStyle('width', this.sumWidth + 2 * this.visibleColumns);
 
@@ -2072,16 +2079,16 @@ define('controls/grid/Grid', [
          * @return {HTMLElement|Element} li
          */
         renderRow: function (row, data) {
-            var c;
+            let c;
 
-            var t           = this,
-                o           = t.getAttributes(),
-                r           = row,
+            const t           = this,
+                  o           = t.getAttributes(),
+                  r           = row,
 
-                columnCount = this.$columnModel.length,
-                rowdata     = data;
+                  columnCount = this.$columnModel.length,
+                  rowdata     = data;
 
-            var li = new Element('li.tr', {
+            const li = new Element('li.tr', {
                 styles: {
                     width: t.sumWidth + 2 * t.visibleColumns
                 }
@@ -2094,11 +2101,11 @@ define('controls/grid/Grid', [
                 li.addClass(this.$data[r].cssClass);
             }
 
-            var columnModel, columnDataIndex, columnData, div, val;
-            var firstvisible = -1;
+            let columnModel, columnDataIndex, columnData, div, val;
+            let firstVisible = -1;
 
-            var func_input_click = function (data) {
-                var index = data.columnModel.dataIndex;
+            const func_input_click = function (data) {
+                const index = data.columnModel.dataIndex;
 
                 data.list.$data[data.row][index] = data.input.checked ? 1 : 0;
             };
@@ -2125,7 +2132,7 @@ define('controls/grid/Grid', [
 
                 li.appendChild(div);
 
-                firstvisible = (!columnModel.hidden && firstvisible === -1) ? c : firstvisible;
+                firstVisible = (!columnModel.hidden && firstVisible === -1) ? c : firstVisible;
 
                 if (columnModel.hidden) {
                     div.setStyle('display', 'none');
@@ -2144,14 +2151,14 @@ define('controls/grid/Grid', [
                 }
 
                 if (columnModel.dataType === 'button' && columnData) {
-                    var _btn = this.$data[r][columnDataIndex];
+                    const _btn = this.$data[r][columnDataIndex];
                     _btn.data = this.$data[r];
 
                     _btn.data.row = r;
                     _btn.data.List = t;
 
-                    var Btn = new QUIButton(_btn);
-                    var node = Btn.create();
+                    const Btn = new QUIButton(_btn);
+                    const node = Btn.create();
 
                     //node.removeClass( 'button' );
                     //node.addClass( 'button' );
@@ -2177,7 +2184,7 @@ define('controls/grid/Grid', [
                 }
 
                 if (columnModel.dataType === "checkbox") {
-                    var input = new Element('input', {type: "checkbox"});
+                    const input = new Element('input', {type: "checkbox"});
 
                     input.onclick = func_input_click.bind(this, {
                         columnModel: columnModel,
@@ -2246,7 +2253,7 @@ define('controls/grid/Grid', [
                 }
 
 
-                var str = rowdata[columnDataIndex];
+                let str = rowdata[columnDataIndex];
 
                 if (typeof rowdata[columnDataIndex] !== 'undefined' && rowdata[columnDataIndex] !== null) {
                     str = rowdata[columnDataIndex];
@@ -2273,9 +2280,9 @@ define('controls/grid/Grid', [
                     div.set('text', str);
                 }
 
-                var Toggle = false;
+                let Toggle = false;
 
-                if (firstvisible === c && o.accordion && o.showtoggleicon) {
+                if (firstVisible === c && o.accordion && o.showtoggleicon) {
                     Toggle = new Element('div.toggleicon', {
                         title : o.toggleiconTitle,
                         events: {
@@ -2315,10 +2322,10 @@ define('controls/grid/Grid', [
 
         // Main draw function
         draw: function () {
-            var i, len, columnModel, sortable;
-            var t = this;
+            let i, len, columnModel, sortable;
+            const t = this;
 
-            var container   = t.container,
+            let container   = t.container,
                 browser     = false, // Browser.Engine.trident,
                 options     = t.getAttributes(),
                 width       = options.width ? options.width - (browser ? 2 : 2) : '', //-2 radi bordera
@@ -2357,21 +2364,21 @@ define('controls/grid/Grid', [
                     dropDownIcon: false
                 }).inject(tDiv);
 
-                var bt = this.getAttribute('buttons');
+                const bt = this.getAttribute('buttons');
 
-                var node, Btn;
+                let node, Btn;
 
-                var itemClick = function () {
+                const itemClick = function () {
                     if (!this.getChildren().length) {
                         this.click();
                     }
                 };
 
-                var itemDisable = function () {
+                const itemDisable = function () {
                     this.disable();
                 };
 
-                var itemNormal = function () {
+                const itemNormal = function () {
                     this.enable();
                 };
 
@@ -2401,7 +2408,7 @@ define('controls/grid/Grid', [
                     node.type = 'button';
                     node.addClass('btn-silver');
 
-                    var Item = new QUIContextItem({
+                    const Item = new QUIContextItem({
                         text  : Btn.getAttribute('text'),
                         icon  : Btn.getAttribute('icon') || Btn.getAttribute('textimage') || Btn.getAttribute('image'),
                         events: {
@@ -2429,8 +2436,8 @@ define('controls/grid/Grid', [
                     // context menu
                     if ('$items' in Btn) {
                         if (Btn.$items.length) {
-                            for (var itm = 0, itmLength = Btn.$items.length; itm < itmLength; itm++) {
-                                var ItemClone = new QUIContextItem(
+                            for (let itm = 0, itmLength = Btn.$items.length; itm < itmLength; itm++) {
+                                const ItemClone = new QUIContextItem(
                                     Btn.$items[itm].getAttributes()
                                 );
 
@@ -2450,7 +2457,7 @@ define('controls/grid/Grid', [
             }
 
             // Header
-            var hDiv = new Element('div.hDiv', {
+            const hDiv = new Element('div.hDiv', {
                 styles: {
                     'width': width
                 }
@@ -2458,21 +2465,21 @@ define('controls/grid/Grid', [
 
             container.appendChild(hDiv);
 
-            var hDivBox = new Element('div.hDivBox', {
+            const hDivBox = new Element('div.hDivBox', {
                 id: this.getAttribute('name') + '_hDivBox'
             });
 
             hDiv.appendChild(hDivBox);
 
             t.sumWidth = 0;
-            t.visibleColumns = 0; // razlikuje se od columnCount jer podaci za neke kolone su ocitani ali se ne prikazuju, npr. bitno kod li width
+            t.visibleColumns = 0;
 
-            var sortBy = this.getAttribute('sortBy');
+            const sortBy = this.getAttribute('sortBy');
 
             for (i = 0; i < columnCount; i++) {
                 columnModel = this.$columnModel[i] || {};
 
-                var div = new Element('div.th', {
+                const div = new Element('div.th', {
                     'column': i
                 });
 
@@ -2520,8 +2527,8 @@ define('controls/grid/Grid', [
                     t.visibleColumns++;
                 }
 
-                var header = columnModel.header,
-                    title  = columnModel.title;
+                const header = columnModel.header,
+                      title  = columnModel.title;
 
                 if (header) {
                     div.innerHTML = header;
@@ -2548,8 +2555,8 @@ define('controls/grid/Grid', [
 
             /* omni grid version + cWidth = -2; by mor*/
             if (this.getAttribute('resizeColumns')) {
-                var cDrag = new Element('div.cDrag');
-                var toolbarHeight = 0;
+                const cDrag = new Element('div.cDrag');
+                let toolbarHeight = 0;
 
                 if (tDiv) {
                     toolbarHeight = parseInt(tDiv.getStyle('height'));
@@ -2558,13 +2565,13 @@ define('controls/grid/Grid', [
                 cDrag.setStyle('top', toolbarHeight);
                 container.appendChild(cDrag);
 
-                var dragTempWidth = 0;
-                var cWidth = -2;
+                let dragTempWidth = 0;
+                let cWidth = -2;
 
                 for (i = 0; i < columnCount; i++) {
                     columnModel = this.$columnModel[i] || {};
-                    var dragSt = new Element('div');
-                    var headerHeight = options.showHeader ? 24 + 2 : 0; // +2 border
+                    const dragSt = new Element('div');
+                    const headerHeight = options.showHeader ? 24 + 2 : 0; // +2 border
 
                     if (typeof columnModel.width === 'undefined') {
                         columnModel.width = 100;
@@ -2584,7 +2591,7 @@ define('controls/grid/Grid', [
                     dragSt.addEvent('mouseout', t.outDragColumn.bind(this));
                     dragSt.addEvent('mouseover', t.overDragColumn.bind(this));
 
-                    var dragMove = new Drag(dragSt, {snap: 0}); // , {container: this.container.getElement('.cDrag') }
+                    const dragMove = new Drag(dragSt, {snap: 0}); // , {container: this.container.getElement('.cDrag') }
                     dragMove.addEvent('drag', t.onColumnDragging.bind(this));
                     dragMove.addEvent('start', t.onColumnDragStart.bind(this));
                     dragMove.addEvent('complete', t.onColumnDragComplete.bind(this));
@@ -2601,7 +2608,7 @@ define('controls/grid/Grid', [
             }
 
             // Body
-            var bDiv = new Element('div.bDiv', {
+            const bDiv = new Element('div.bDiv', {
                 id    : this.getAttribute('name') + '_bDiv',
                 styles: {
                     'height': this.getBodyHeight() - 3
@@ -2620,15 +2627,16 @@ define('controls/grid/Grid', [
 
             t.ulBody = new Element('ul', {
                 styles: {
-                    'width': t.sumWidth + t.visibleColumns * (browser ? 1 : 1)
+                    width: t.sumWidth + t.visibleColumns * (browser ? 1 : 1)
                 }
             });
 
             bDiv.appendChild(t.ulBody);
 
-            if ((this.getAttribute('pagination') || this.getAttribute('filterInput')) &&
-                !container.getElement('div.pDiv')) {
-                var pDiv = new Element('div.pDiv', {
+            if ((this.getAttribute('pagination') ||
+                 this.getAttribute('filterInput')) && !container.getElement('div.pDiv')) {
+
+                const pDiv = new Element('div.pDiv', {
                     styles: {
                         width : width,
                         height: 30
@@ -2637,20 +2645,20 @@ define('controls/grid/Grid', [
 
                 container.appendChild(pDiv);
 
-                var pDiv2 = new Element('div.pDiv2');
+                const pDiv2 = new Element('div.pDiv2');
                 pDiv.appendChild(pDiv2);
 
-                var h = '';
+                let h = '';
 
 
                 if (this.getAttribute('pagination')) {
                     h = h + '<div class="pGroup"><select class="rp" name="rp">';
 
-                    var optIdx;
-                    var setDefaultPerPage = false;
+                    let optIdx;
+                    let setDefaultPerPage = false;
 
                     for (optIdx = 0, len = options.perPageOptions.length; optIdx < len; optIdx++) {
-                        if (options.perPageOptions[optIdx] != options.perPage) {
+                        if (parseInt(options.perPageOptions[optIdx]) !== parseInt(options.perPage)) {
                             h = h + '<option value="' + options.perPageOptions[optIdx] + '">' +
                                 options.perPageOptions[optIdx] + '</option>';
                         } else {
@@ -2711,16 +2719,9 @@ define('controls/grid/Grid', [
                         '</div>';
                 }
 
-                if (options.columnSort) {
-                    h = h + '' +
-                        '<div class="pGroup" style="float: right">' +
-                        '   <div class="pButton pSort"><span class="fa fa-sort"></span></div>' +
-                        '</div>';
-                }
-
                 pDiv2.innerHTML = h;
 
-                var o = null;
+                let o;
 
                 if ((o = pDiv2.getElement('.pFirst'))) {
                     o.addEvent('click', this.firstPage.bind(this));
@@ -2780,8 +2781,19 @@ define('controls/grid/Grid', [
                 if ((o = pDiv2.getElement('.pExport'))) {
                     o.addEvent('click', this.getExportSelect.bind(this));
                 }
-                if ((o = pDiv2.getElement('.pSort'))) {
-                    o.addEvent('click', this.openSortWindow.bind(this));
+
+                if (this.getAttribute('configurable') && this.getAttribute('storageKey')) {
+                    new Element('button', {
+                        styles: {
+                            cursor: 'pointer',
+                            float : 'right',
+                            margin: 0
+                        },
+                        html  : '<span class="fa fa-sort"></span>',
+                        events: {
+                            click: this.openSortWindow
+                        }
+                    }).inject(pDiv2);
                 }
             }
         },
@@ -2828,8 +2840,8 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            var Input = this.container.getElement('div.pDiv2 input');
-            var np = Input.value;
+            const Input = this.container.getElement('div.pDiv2 input');
+            const np = Input.value;
 
             if (np > 0 && np <= this.getAttribute('maxpage')) {
                 this.setAttribute('page', np);
@@ -2868,8 +2880,8 @@ define('controls/grid/Grid', [
                 this.removeSections();
             }
 
-            var header = this.container.getElements('.th'),
-                el     = header[index];
+            const header = this.container.getElements('.th'),
+                  el     = header[index];
 
             if (typeof by !== 'undefined') {
                 el.addClass(by.toLowerCase());
@@ -2893,7 +2905,7 @@ define('controls/grid/Grid', [
 
             this.selected = [];
 
-            for (var i = 0, len = this.elements.length; i < len; i++) {
+            for (let i = 0, len = this.elements.length; i < len; i++) {
                 if (this.elements[i].hasClass('selected')) {
                     this.selected.push(this.elements[i].retrieve('row'));
                 }
@@ -2913,11 +2925,11 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            var i, len;
+            let i, len;
 
-            var _data = [],
-                index = this.selected[0],
-                data  = this.$data;
+            const _data = [],
+                  index = this.selected[0],
+                  data  = this.$data;
 
             if (index === 0) {
                 return;
@@ -2928,7 +2940,7 @@ define('controls/grid/Grid', [
                     continue;
                 }
 
-                if (i == index - 1) {
+                if (i === index - 1) {
                     _data.push(data[index]);
                 }
 
@@ -2947,25 +2959,23 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            var i;
-
-            var _data = [],
-                index = this.selected[0],
-                data  = this.$data,
-                len   = data.length;
+            const _data = [],
+                  index = this.selected[0],
+                  data  = this.$data,
+                  len   = data.length;
 
             if (index + 1 >= len) {
                 return;
             }
 
-            for (i = 0; i < len; i++) {
-                if (i == index) {
+            for (let i = 0; i < len; i++) {
+                if (i === index) {
                     continue;
                 }
 
                 _data.push(data[i]);
 
-                if (i == index + 1) {
+                if (i === index + 1) {
                     _data.push(data[index]);
                 }
             }
@@ -2978,8 +2988,8 @@ define('controls/grid/Grid', [
         },
 
         altRow: function () {
-            var i, len;
-            var elements = this.elements;
+            let i, len;
+            const elements = this.elements;
 
             for (i = 0, len = elements.length; i < len; i++) {
                 if (i % 2) {
@@ -2992,8 +3002,8 @@ define('controls/grid/Grid', [
         },
 
         filteredAltRow: function () {
-            var i, len;
-            var elements = this.ulBody.getElements('.' + this.getAttribute('filterSelectedCls'));
+            let i, len;
+            const elements = this.ulBody.getElements('.' + this.getAttribute('filterSelectedCls'));
 
             for (i = 0, len = elements.length; i < len; i++) {
                 if (i % 2) {
@@ -3007,7 +3017,7 @@ define('controls/grid/Grid', [
 
         filerData: function () {
             if (this.getAttribute('filterInput')) {
-                var cfilter = this.container.getElement('input.cfilter');
+                const cfilter = this.container.getElement('input.cfilter');
 
                 if (cfilter) {
                     this.filter(cfilter.value);
@@ -3017,16 +3027,15 @@ define('controls/grid/Grid', [
 
         // API
         filter: function (key) {
-            var filterHide    = this.getAttribute('filterHide'),
-                filterHideCls = this.getAttribute('filterHideCls');
+            const filterHide    = this.getAttribute('filterHide'),
+                  filterHideCls = this.getAttribute('filterHideCls');
 
             if (!key.length || key === '') {
                 this.clearFilter();
                 return;
             }
 
-            var i, c, len, clen, data, dat, cml,
-                el, columnModel;
+            let i, c, len, clen, data, dat, cml, el, columnModel;
 
             clen = this.$columnModel.length;
             len = this.$data.length;
@@ -3059,7 +3068,7 @@ define('controls/grid/Grid', [
                         continue;
                     }
 
-                    var haystack;
+                    let haystack;
 
                     if (typeof dat[cml.dataIndex] === 'object' && 'innerHTML' in dat[cml.dataIndex]) {
                         haystack = dat[cml.dataIndex].innerHTML.toLowerCase();
@@ -3080,9 +3089,9 @@ define('controls/grid/Grid', [
 
         // API
         clearFilter: function () {
-            var el;
+            let el;
 
-            for (var i = 0, len = this.elements.length; i < len; i++) {
+            for (let i = 0, len = this.elements.length; i < len; i++) {
                 el = this.elements[i];
                 el.removeClass(this.getAttribute('filterSelectedCls'));
 
@@ -3098,7 +3107,7 @@ define('controls/grid/Grid', [
         },
 
         getExportSelect: function () {
-            var self = this;
+            const self = this;
 
             new QUIConfirm({
                 icon     : 'fa fa-download',
@@ -3110,18 +3119,18 @@ define('controls/grid/Grid', [
                     onOpen: function (Win) {
                         Win.$exportTypes = [];
 
-                        var c, len, columnModel, header, dataIndex;
+                        let c, len, columnModel, header, dataIndex;
 
-                        var options = self.getAttributes(),
-                            Content = Win.getContent();
+                        const options = self.getAttributes(),
+                              Content = Win.getContent();
 
                         Content.set('html', '');
 
-                        var exportBarDiv  = new Element('div.exportSelectBtnDiv'),
-                            exportDataDiv = new Element('div.exportItemsDiv'),
-                            exportTextDiv = new Element('div.exportTextsDiv', {
-                                html: QUILocale.get('quiqqer/quiqqer', 'grid.export.message')
-                            });
+                        const exportBarDiv  = new Element('div.exportSelectBtnDiv'),
+                              exportDataDiv = new Element('div.exportItemsDiv'),
+                              exportTextDiv = new Element('div.exportTextsDiv', {
+                                  html: QUILocale.get('quiqqer/quiqqer', 'grid.export.message')
+                              });
 
 
                         Content.appendChild(exportTextDiv);
@@ -3137,29 +3146,23 @@ define('controls/grid/Grid', [
                                 continue;
                             }
 
-                            var div   = new Element('div.exportItemDiv'),
-                                span  = new Element('span', {
-                                    html: header
-                                }),
-                                input = new Element('input', {
-                                    'class': 'export_' + dataIndex,
-                                    type   : 'checkbox',
-                                    checked: 'checked',
-                                    value  : dataIndex,
-                                    name   : dataIndex
-                                });
+                            const div   = new Element('div.exportItemDiv'),
+                                  span  = new Element('span', {
+                                      html: header
+                                  }),
+                                  input = new Element('input', {
+                                      'class': 'export_' + dataIndex,
+                                      type   : 'checkbox',
+                                      checked: 'checked',
+                                      value  : dataIndex,
+                                      name   : dataIndex
+                                  });
 
                             div.appendChild(input);
                             div.appendChild(span);
 
                             exportDataDiv.appendChild(div);
                         }
-
-                        var func_export_btn_click = function (Btn) {
-                            Btn.getAttribute('Grid').exportGrid(
-                                Btn.getAttribute('exportType')
-                            );
-                        };
 
                         // export type
                         new Element('div', {
@@ -3170,10 +3173,10 @@ define('controls/grid/Grid', [
                         }).inject(exportBarDiv);
 
 
-                        var fileImage, Button,
+                        let fileImage, Button,
                             types = options.exportTypes;
 
-                        for (var exportType in types) {
+                        for (const exportType in types) {
                             if (!types.hasOwnProperty(exportType)) {
                                 continue;
                             }
@@ -3229,7 +3232,7 @@ define('controls/grid/Grid', [
                     },
 
                     onSubmit: function (Win) {
-                        var active = Win.$exportTypes.filter(function (Btn) {
+                        const active = Win.$exportTypes.filter(function (Btn) {
                             return Btn.isActive();
                         });
 
@@ -3250,10 +3253,9 @@ define('controls/grid/Grid', [
         },
 
         setExportData: function () {
-            var c, i, len, columnModel, header, dataIndex, Checkbox;
-            var t = this;
+            let c, i, len, columnModel, header, dataIndex, Checkbox;
 
-            var data = {
+            const data = {
                 header: {},
                 data  : []
             };
@@ -3280,14 +3282,14 @@ define('controls/grid/Grid', [
             }
 
 
-            var gridData = this.getData();
+            const gridData = this.getData();
 
             if (gridData) {
                 for (i = 0, len = gridData.length; i < len; i++) {
-                    var dat = gridData[i];
+                    const dat = gridData[i];
                     data.data[i] = {};
 
-                    for (var h in data.header) {
+                    for (const h in data.header) {
                         data.data[i][data.header[h].dataIndex] = dat[data.header[h].dataIndex];
                     }
                 }
@@ -3312,17 +3314,13 @@ define('controls/grid/Grid', [
                 return true;
             }
 
-            if (columnModel.hidden ||
-                columnModel.dataType === 'button' ||
-                columnModel.dataType === 'checkbox') {
-                return false;
-            }
-
-            return true;
+            return !(columnModel.hidden ||
+                     columnModel.dataType === 'button' ||
+                     columnModel.dataType === 'checkbox');
         },
 
         exportGrid: function (type) {
-            var self       = this,
+            let self       = this,
                 data       = this.setExportData(),
                 exportUrl  = this.getAttribute('exportBinUrl'),
                 exportName = this.getAttribute('exportName')
@@ -3344,7 +3342,7 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            var tempData = {
+            const tempData = {
                 data: data,
                 type: type,
                 name: exportName
@@ -3361,11 +3359,11 @@ define('controls/grid/Grid', [
                     },
                     body   : JSON.stringify(tempData)
                 }).then(function (Response) {
-                    var Headers = Response.headers;
+                    const Headers = Response.headers;
 
-                    var filename = Headers.get('Content-Disposition');
-                    var start = filename.indexOf('filename="') + ('filename="').length;
-                    var end = filename.indexOf('"', start);
+                    let filename = Headers.get('Content-Disposition');
+                    const start = filename.indexOf('filename="') + ('filename="').length;
+                    const end = filename.indexOf('"', start);
 
                     filename = filename.substr(start, end - start);
 
@@ -3412,15 +3410,15 @@ define('controls/grid/Grid', [
 
             this._mousedown = true;
 
-            var mx = event.page.x,
-                my = event.page.y,
-                li = this.getLiParent(event.target);
+            const mx = event.page.x,
+                  my = event.page.y,
+                  li = this.getLiParent(event.target);
 
             if (!li || typeof li.retrieve('row') === 'undefined') {
                 return;
             }
 
-            var row  = li.retrieve('row'),
+            let row  = li.retrieve('row'),
                 data = this.getDataByRow(row),
                 html = '';
 
@@ -3590,17 +3588,15 @@ define('controls/grid/Grid', [
 
         /**
          * load the storage in to the grid
-         *
-         * @param {Object} options
          */
-        $loadFromStorage: function (options) {
+        $loadFromStorage: function () {
             if (!this.getAttribute('storageKey')) {
                 return;
             }
 
             QUI.Storage.get(this.getAttribute('storageKey'));
 
-            var storage = QUI.Storage.get(this.getAttribute('storageKey'));
+            let storage = QUI.Storage.get(this.getAttribute('storageKey'));
 
             if (!storage) {
                 return;
@@ -3612,8 +3608,8 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            var storageHash = parseInt(QUI.Storage.get(this.getAttribute('storageKey') + '-key'));
-            var currentHash = this.$gridHash;
+            const storageHash = parseInt(QUI.Storage.get(this.getAttribute('storageKey') + '-key'));
+            const currentHash = this.$gridHash;
 
             if (typeof storage.column !== 'undefined' && storageHash === currentHash) {
                 try {
@@ -3644,7 +3640,151 @@ define('controls/grid/Grid', [
          * - the user are able to sort the grid titles (columns)
          */
         openSortWindow: function () {
-            console.log('arrrrrr');
+            new QUIConfirm({
+                icon     : 'fa fa-sort',
+                title    : QUILocale.get(lg, 'window.grid.sorting.title'),
+                maxHeight: 800,
+                maxWidth : 800,
+                ok_button: {
+                    text     : QUILocale.get(lg, 'window.grid.sorting.submit'),
+                    textimage: 'fa fa-check'
+                },
+                events   : {
+                    onOpen: (Win) => {
+                        Win.Loader.show();
+
+                        const Content = Win.getContent();
+                        Content.addClass('grid-dd');
+                        Content.set('html', '');
+
+                        new Element('div', {
+                            html  : QUILocale.get(lg, 'window.grid.sorting.description'),
+                            styles: {
+                                marginBottom: '2rem',
+                                textAlign   : 'center'
+                            }
+                        }).inject(Content);
+
+                        const List = new Element('ul').inject(Content);
+
+                        require(['package/quiqqer/bricks/bin/Sortables'], (Sortables) => {
+                            const columns = this.$columnModel.map(function (col) {
+                                return col.dataIndex;
+                            });
+
+                            this.$originalColumns.forEach((data) => {
+                                let header = data.header;
+
+                                if (header === '' || header === '&nbsp;') {
+                                    header = data.dataIndex;
+                                }
+
+                                let Entry = new Element('li', {
+                                    html        : header,
+                                    'data-index': data.dataIndex
+                                }).inject(List);
+
+                                new Element('input', {
+                                    type   : 'checkbox',
+                                    checked: columns.indexOf(data.dataIndex) !== -1
+                                }).inject(Entry);
+                            });
+
+
+                            new Sortables(List, {
+                                revert: {
+                                    duration  : 500,
+                                    transition: 'elastic:out'
+                                },
+                                clone : function (event) {
+                                    let Target = event.target;
+
+                                    if (Target.nodeName !== 'LI') {
+                                        Target = Target.getParent('li');
+                                    }
+
+                                    let size = Target.getSize(),
+                                        pos  = Target.getPosition(Target.getParent('ul'));
+
+                                    return new Element('div', {
+                                        styles: {
+                                            background: 'rgba(0,0,0,0.5)',
+                                            height    : size.y,
+                                            top       : pos.y,
+                                            width     : size.x,
+                                            zIndex    : 1000,
+                                            position  : 'absolute'
+                                        }
+                                    });
+                                },
+
+                                onStart: function (element) {
+                                    let Ul = element.getParent('ul');
+
+                                    element.addClass('grid-dd-active');
+
+                                    Ul.setStyles({
+                                        height  : Ul.getSize().y,
+                                        overflow: 'hidden',
+                                        width   : Ul.getSize().x
+                                    });
+                                },
+
+                                onComplete: function (element) {
+                                    let Ul = element.getParent('ul');
+
+                                    element.removeClass('grid-dd-active');
+
+                                    Ul.setStyles({
+                                        height  : null,
+                                        overflow: null,
+                                        width   : null
+                                    });
+                                }
+                            });
+
+                            Win.Loader.hide();
+                        });
+                    },
+
+                    onSubmit: (Win) => {
+                        const Content = Win.getContent();
+                        const List = Content.getElement('ul');
+                        const list = List.getElements('li').map(function (Li) {
+                            if (!Li.getElement('input').checked) {
+                                return false;
+                            }
+
+                            return Li.get('data-index');
+                        }).filter(n => n);
+
+                        const getColumn = (column) => {
+                            for (let i = 0, len = this.$originalColumns.length; i < len; i++) {
+                                if (this.$originalColumns[i].dataIndex === column) {
+                                    return this.$originalColumns[i];
+                                }
+                            }
+
+                            return false;
+                        };
+
+                        const columns = [];
+
+                        for (let i = 0, len = list.length; i < len; i++) {
+                            columns.push(getColumn(list[i]));
+                        }
+
+                        this.$columnModel = columns;
+                        this.$saveToStorage();
+
+                        this.container.set('html', '');
+
+                        this.draw();
+                        this.resize();
+                        this.refresh();
+                    }
+                }
+            }).open();
         }
     });
 });

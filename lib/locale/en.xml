@@ -2918,6 +2918,19 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="grid.export.message.exportType">
             <en><![CDATA[Please select the type of export:]]></en>
         </locale>
+        <locale name="window.grid.sorting.title">
+            <en><![CDATA[Please select the type of export:]]></en>
+        </locale>
+        <locale name="window.grid.sorting.submit">
+            <en><![CDATA[Customize]]></en>
+        </locale>
+        <locale name="window.grid.sorting.description" html="true">
+            <en><![CDATA[
+            <p>Customize the table according to your needs.</p>
+            <p>You can easily change the order of the columns using the drag-and-drop feature, or turn
+            unwanted columns on or off. So you can change the table according to your ideas</p>.
+            ]]></en>
+        </locale>
         <locale name="controls.group.table.btns.adduser">
             <en><![CDATA[Add user(s)]]></en>
         </locale>
