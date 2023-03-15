@@ -3675,10 +3675,10 @@ define('controls/grid/Grid', [
                             this.$originalColumns.forEach((data) => {
                                 let header = data.header;
 
-                                if (header === '' || header === '&nbsp;') {
+                                if (typeof header === 'undefined' || header === '' || header === '&nbsp;') {
                                     header = data.dataIndex;
                                 }
-
+                                
                                 let Entry = new Element('li', {
                                     html        : header,
                                     'data-index': data.dataIndex

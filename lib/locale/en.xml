@@ -648,10 +648,10 @@
             <en><![CDATA[The file [file] is unfortunately too big. The maximum upload size for a file is [size]]]></en>
         </locale>
         <locale name="exception.media.upload.fileType.not.allowed">
-            <de><![CDATA[
+            <en><![CDATA[
             Unfortunately, the file type of the [file] file is not allowed.
             Please use only the following file types: [filetypes]
-            ]]></de>
+            ]]></en>
         </locale>
         <locale name="exception.media.move.is.no.folder">
             <en><![CDATA[Please select a folder to move the files.]]></en>
@@ -2548,7 +2548,7 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[There are no images in this folder.]]></en>
         </locale>
         <locale name="projects.project.media.folderviewer.createNewFolderButton">
-            <de><![CDATA[Create new media folder]]></de>
+            <en><![CDATA[Create new media folder]]></en>
         </locale>
         <locale name="projects.project.media.fileviewer.empty">
             <en><![CDATA[There are no files in this folder.]]></en>
@@ -2919,7 +2919,7 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[Please select the type of export:]]></en>
         </locale>
         <locale name="window.grid.sorting.title">
-            <en><![CDATA[Please select the type of export:]]></en>
+            <en><![CDATA[Customize table]]></en>
         </locale>
         <locale name="window.grid.sorting.submit">
             <en><![CDATA[Customize]]></en>
@@ -3004,7 +3004,7 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[Understood]]></en>
         </locale>
         <locale name="controls.licensekey.status.remaining_activations">
-            <de><![CDATA[(remaining activations: [count])]]></de>
+            <en><![CDATA[(remaining activations: [count])]]></en>
         </locale>
         <locale name="controls.licensekey.status.activation.text">
             <en><![CDATA[License activation]]></en>
@@ -3623,7 +3623,7 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
             <en><![CDATA[Login failed. User is not active.]]></en>
         </locale>
         <locale name="exception.login.fail.user_deleted">
-            <de><![CDATA[Login failed. User is marked as deleted.]]></de>
+            <en><![CDATA[Login failed. User is marked as deleted.]]></en>
         </locale>
         <locale name="exception.login.fail.login_locked">
             <en><![CDATA[Login failed. Login for this user is currently locked. Please try again later.]]></en>
@@ -4616,18 +4616,18 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
             ]]></en>
         </locale>
         <locale name="quiqqer.setup.licence.checkbox">
-            <de><![CDATA[
+            <en><![CDATA[
             I agree to the terms of the license.
-            ]]></de>
+            ]]></en>
         </locale>
         <locale name="quiqqer.setup.licence.chargable">
-            <de><![CDATA[
+            <en><![CDATA[
                 <p>You want to customize ecoyn more precisely? The system offers many modules for this purpose:
                 Manage subscriptions or invoices, remind you of payments, prepare your accounting and much more.
                 Up to an annual turnover of 100.000 Euro you can use all packages for free.
                 After that, you have to purchase a license for non-free modules.</p>
                 <p>Do you want to install ecoyn including the non-free modules?</p>
-            ]]></de>
+            ]]></en>
         </locale>
 
         <locale name="quiqqer.setup.country.title">
@@ -5182,7 +5182,7 @@ After logging in you will be prompted to set a new password.
 
         <!-- region Update-Server Console Tool -->
         <locale name="console.tool.updateserver.add.description">
-            <de><![CDATA[Manages the list of update-servers.]]></de>
+            <en><![CDATA[Manages the list of update-servers.]]></en>
         </locale>
         <locale name="console.tool.updateserver.help">
             <en><![CDATA[No arguments passed, exiting. Valid arguments are 'add' and 'remove'.]]></en>
@@ -5556,7 +5556,7 @@ After logging in you will be prompted to set a new password.
             <en><![CDATA[Search for a group or a user ...]]></en>
         </locale>
         <locale name="control.media.select.search.field.placeholder">
-            <de><![CDATA[Search for a media file ...]]></de>
+            <en><![CDATA[Search for a media file ...]]></en>
         </locale>
         <locale name="control.usersgroups.window.search.title">
             <en><![CDATA[User and group search]]></en>

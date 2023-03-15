@@ -2950,7 +2950,7 @@
             <de><![CDATA[Bitte wähle die Art des Exports aus:]]></de>
         </locale>
         <locale name="window.grid.sorting.title">
-            <de><![CDATA[Customize table]]></de>
+            <de><![CDATA[Tabelle anpassen]]></de>
         </locale>
         <locale name="window.grid.sorting.submit">
             <de><![CDATA[Anpassen]]></de>
