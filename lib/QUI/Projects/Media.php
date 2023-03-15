@@ -502,6 +502,10 @@ class Media extends QUI\QDOM
             throw new QUI\Exception('ID ' . $id . ' not found', 404);
         }
 
+        if (QUI::isFrontend() && $result[0]['deleted']) {
+            throw new QUI\Exception('ID ' . $id . ' not found', 404);
+        }
+
 
         $this->children[$id] = $this->parseResultToItem($result[0]);
 

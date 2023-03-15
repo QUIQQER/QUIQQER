@@ -26,6 +26,7 @@ use function is_file;
 use function is_string;
 use function json_decode;
 use function json_encode;
+use function mb_strtolower;
 use function md5;
 use function method_exists;
 use function pathinfo;
@@ -800,6 +801,24 @@ abstract class Item extends QUI\QDOM
         $original  = $this->getFullPath();
         $extension = QUI\Utils\StringHelper::pathinfo($original, PATHINFO_EXTENSION);
         $Parent    = $this->getParent();
+
+        if (mb_strtolower($extension) !== $extension) {
+            $fileToUpper = $Parent->getFullPath() . $newName . '.' . $extension;
+            $fileToLower = $Parent->getFullPath() . $newName . '.' . mb_strtolower($extension);
+
+            rename($fileToUpper, $fileToLower);
+
+            QUI::getDataBase()->update(
+                $this->Media->getTable(),
+                ['file' => $Parent->getPath() . $newName . '.' . mb_strtolower($extension)],
+                ['id' => $this->getId()]
+            );
+
+            $this->setAttribute('file', $Parent->getPath() . $newName . '.' . mb_strtolower($extension));
+
+            $extension = mb_strtolower($extension);
+            $original  = $this->getFullPath();
+        }
 
         $new_full_file = $Parent->getFullPath() . $newName . '.' . $extension;
         $new_file      = $Parent->getPath() . $newName . '.' . $extension;
