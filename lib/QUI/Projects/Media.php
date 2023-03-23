@@ -9,6 +9,7 @@ namespace QUI\Projects;
 use Exception;
 use Intervention\Image\ImageManager;
 use QUI;
+use QUI\Projects\Media\Utils;
 
 use function class_exists;
 use function date;
@@ -17,6 +18,9 @@ use function is_array;
 use function json_decode;
 use function json_encode;
 use function md5;
+use function preg_replace;
+use function str_replace;
+use function trim;
 
 /**
  * Media Manager for a project
@@ -165,7 +169,7 @@ class Media extends QUI\QDOM
 
         if ($Project->getConfig('placeholder')) {
             try {
-                $Image = QUI\Projects\Media\Utils::getImageByUrl(
+                $Image = Utils::getImageByUrl(
                     $Project->getConfig('placeholder')
                 );
 
@@ -188,7 +192,7 @@ class Media extends QUI\QDOM
 
         if ($Project->getConfig('placeholder')) {
             try {
-                return QUI\Projects\Media\Utils::getImageByUrl(
+                return Utils::getImageByUrl(
                     $Project->getConfig('placeholder')
                 );
             } catch (QUI\Exception $Exception) {
@@ -209,7 +213,7 @@ class Media extends QUI\QDOM
 
         if ($Project->getConfig('logo')) {
             try {
-                $Image = QUI\Projects\Media\Utils::getImageByUrl(
+                $Image = Utils::getImageByUrl(
                     $Project->getConfig('logo')
                 );
 
@@ -232,7 +236,7 @@ class Media extends QUI\QDOM
 
         if ($Project->getConfig('logo')) {
             try {
-                return QUI\Projects\Media\Utils::getImageByUrl(
+                return Utils::getImageByUrl(
                     $Project->getConfig('logo')
                 );
             } catch (QUI\Exception $Exception) {
@@ -623,17 +627,22 @@ class Media extends QUI\QDOM
             $name = $info['basename'];
         }
 
-        /**
-         * get the parent and check if a file like the replace file exist
-         */
-        $parentid = $this->getParentIdFrom($data['id']);
+        $name = trim($name, "_ \t\n\r\0\x0B"); // Trim the default characters and underscores
+        $name = str_replace(' ', '_', $name);
+        $name = preg_replace('#(_){2,}#', "$1", $name);
+        $name = Utils::stripMediaName($name);
 
-        if (!$parentid) {
+        /**
+         * get the parent and check, if a file, like the replaced file, exists
+         */
+        $parentId = $this->getParentIdFrom($data['id']);
+
+        if (!$parentId) {
             throw new QUI\Exception('No Parent found.', 404);
         }
 
         /* @var $Parent \QUI\Projects\Media\Folder */
-        $Parent = $this->get($parentid);
+        $Parent = $this->get($parentId);
 
         if ($data['name'] != $name && $Parent->childWithNameExists($name)) {
             throw new QUI\Exception(
@@ -676,7 +685,7 @@ class Media extends QUI\QDOM
                 'mime_type'    => $info['mime_type'],
                 'image_height' => $imageHeight,
                 'image_width'  => $imageWidth,
-                'type'         => QUI\Projects\Media\Utils::getMediaTypeByMimeType(
+                'type'         => Utils::getMediaTypeByMimeType(
                     $info['mime_type']
                 )
             ],

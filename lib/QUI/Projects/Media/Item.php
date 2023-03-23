@@ -18,6 +18,7 @@ use function count;
 use function current;
 use function explode;
 use function file_exists;
+use function file_get_contents;
 use function file_put_contents;
 use function in_array;
 use function is_array;
@@ -487,7 +488,7 @@ abstract class Item extends QUI\QDOM
 
         // svg fix
         if ($this->getAttribute('mime_type') == 'text/html') {
-            $content = \file_get_contents($this->getFullPath());
+            $content = file_get_contents($this->getFullPath());
 
             if (strpos($content, '<svg') !== false && strpos($content, '</svg>')) {
                 file_put_contents(
