@@ -10,6 +10,7 @@ use Exception;
 use Intervention\Image\ImageManager;
 use QUI;
 use QUI\Projects\Media\Utils;
+use QUI\Utils\System\File as FileUtils;
 
 use function class_exists;
 use function date;
@@ -651,6 +652,31 @@ class Media extends QUI\QDOM
             );
         }
 
+        // check file size if needed and if the file is an image
+        $imageType = Utils::getMediaTypeByMimeType($info['mime_type']);
+
+        if ($imageType === 'image') {
+            $maxConfigSize = $this->getProject()->getConfig('media_maxUploadSize');
+            $info          = FileUtils::getInfo($file, ['imagesize' => true]);
+
+            // create image
+            $Image = $this->getImageManager()->make($file);
+            $sizes = QUI\Utils\Math::resize($info['width'], $info['height'], $maxConfigSize);
+
+            $Image->resize(
+                (int)$sizes[1],
+                (int)$sizes[2],
+                function ($Constraint) {
+                    /* @var $Constraint \Intervention\Image\Constraint; */
+                    $Constraint->aspectRatio();
+                    $Constraint->upsize();
+                }
+            );
+
+            $Image->save($file);
+            $info = QUI\Utils\System\File::getInfo($file);
+        }
+
         // delete the file
         if (isset($data['file']) && !empty($data['file'])) {
             QUI\Utils\System\File::unlink(
@@ -685,9 +711,7 @@ class Media extends QUI\QDOM
                 'mime_type'    => $info['mime_type'],
                 'image_height' => $imageHeight,
                 'image_width'  => $imageWidth,
-                'type'         => Utils::getMediaTypeByMimeType(
-                    $info['mime_type']
-                )
+                'type'         => $imageType
             ],
             ['id' => $id]
         );
