@@ -482,10 +482,6 @@ class Manager extends QUI\QDOM
             "preferred-install" => 'dist'
         ];
 
-        if (!isset($composerJson->config)) {
-            $composerJson->config['minimum-stability'] = 'stable';
-        }
-
         $allowedPlugins = [
             "composer/installers",
             "oomphinc/composer-installers-extender",
@@ -499,6 +495,15 @@ class Manager extends QUI\QDOM
         if (DEVELOPMENT) {
             $composerJson->config['minimum-stability'] = 'dev';
             $composerJson->config['preferred-install'] = 'source';
+            $composerJson['prefer-stable']             = false;
+        }
+
+        if (!isset($composerJson->config['minimum-stability'])) {
+            $composerJson->config['minimum-stability'] = 'stable';
+        }
+
+        if (!isset($composerJson['prefer-stable'])) {
+            $composerJson['prefer-stable'] = true;
         }
 
         $composerJson->extra = [
