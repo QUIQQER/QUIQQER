@@ -1214,7 +1214,7 @@ class User implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
-     * @return QUI\Projects\Media\Image|false
+     * @return QUI\Interfaces\Projects\Media\File|false
      * @see QUI\Interfaces\Users\User::getAvatar()
      *
      */

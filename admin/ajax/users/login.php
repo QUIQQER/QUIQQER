@@ -6,6 +6,8 @@
 QUI::$Ajax->registerFunction(
     'ajax_users_login',
     function ($authenticator, $params, $globalauth) {
+        QUI::getEvents()->fireEvent('userLoginAjaxStart');
+
         QUI::getSession()->destroy();
         QUI::getSession()->set('inAuthentication', 1);
 
@@ -65,7 +67,7 @@ QUI::$Ajax->registerFunction(
             'authenticator' => $Login->next(),
             'control'       => $control,
             'user'          => [
-                'id'   => $SessionUser->getId(),
+                'id' => $SessionUser->getId(),
                 'name' => $SessionUser->getName(),
                 'lang' => $SessionUser->getLang()
             ]
