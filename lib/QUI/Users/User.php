@@ -1259,6 +1259,8 @@ class User implements QUI\Interfaces\Users\User
             return;
         }
 
+        QUI::getEvents()->fireEvent('userLogoutBegin', [$this]);
+
         // Wenn der Benutzer dieser hier ist
         $Users    = QUI::getUsers();
         $SessUser = $Users->getUserBySession();
