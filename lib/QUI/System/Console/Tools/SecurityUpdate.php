@@ -28,6 +28,7 @@ use function trim;
 use function unlink;
 
 use const JSON_PRETTY_PRINT;
+use const PHP_EOL;
 use const VAR_DIR;
 
 /**
@@ -92,18 +93,18 @@ class SecurityUpdate extends QUI\System\Console\Tool
 
         $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'security.update.start'));
 
+        $Packages->refreshServerList();
+
+        $Composer = $Packages->getComposer();
+        $Composer->unmute();
+
+        // create security composer
+        $workingDir = $Composer->getWorkingDir();
+
+        $composerOriginal = $workingDir . 'composer.json';
+        $composerBackups  = $workingDir . 'composer-security-update-backup.json';
+
         try {
-            $Packages->refreshServerList();
-
-            $Composer = $Packages->getComposer();
-            $Composer->unmute();
-
-            // create security composer
-            $workingDir = $Composer->getWorkingDir();
-
-            $composerOriginal = $workingDir . 'composer.json';
-            $composerBackups  = $workingDir . 'composer-security-update-backup.json';
-
             if (!file_exists($composerOriginal)) {
                 $this->writeLn('Couldn\'t find the composer.json file.', 'red');
                 exit;
@@ -129,10 +130,43 @@ class SecurityUpdate extends QUI\System\Console\Tool
             }
 
             $composerJSON            = json_decode(file_get_contents($composerOriginal), true);
+            $originalRequire         = $composerJSON['require'];
             $composerJSON['require'] = $packages;
 
-            file_put_contents($composerOriginal, json_encode($composerJSON, JSON_PRETTY_PRINT));
+            // keep composer.json versions
+            // quiqqer/website-locker
+            foreach ($originalRequire as $package => $v) {
+                if ($package === 'php') {
+                    if (!isset($composerJSON['require']['php'])) {
+                        $composerJSON['require']['php'] = $v;
+                    }
+                    continue;
+                }
 
+                $stability = $VersionParser->parseStability($v);
+
+                if ($stability !== 'stable') {
+                    continue;
+                }
+
+                if (strpos($v, '*') !== false) {
+                    continue;
+                }
+
+                try {
+                    $version = $VersionParser->normalize($v);
+                } catch (\RuntimeException $e) {
+                    continue;
+                }
+
+                // wenn version direkt festgesetzt wurde, nicht ändern
+                // quiqqer/quiqqer#1192
+                if (substr_count($version, '.') === 3) {
+                    $composerJSON['require'][$package] = $v;
+                }
+            }
+
+            file_put_contents($composerOriginal, json_encode($composerJSON, JSON_PRETTY_PRINT));
 
             // run the test with the security package list
             $Composer->update([
@@ -184,11 +218,6 @@ class SecurityUpdate extends QUI\System\Console\Tool
 
             $Composer->update();
 
-            // reset the composer jsons
-            unlink($composerOriginal);
-            copy($composerBackups, $composerOriginal);
-            unlink($composerBackups);
-
             $this->logBuffer();
             $wasExecuted = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.execute');
             $webserver   = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.webserver');
@@ -237,12 +266,21 @@ class SecurityUpdate extends QUI\System\Console\Tool
 
             $this->resetColor();
             $this->writeLn('');
+        } finally {
+            // reset the composer jsons
+            unlink($composerOriginal);
+            copy($composerBackups, $composerOriginal);
+            unlink($composerBackups);
         }
 
         $this->logBuffer();
 
         // mail
-        $mail = $this->getArgument('mail') || $this->getArgument('m');
+        $mail = $this->getArgument('mail');
+
+        if ($this->getArgument('m')) {
+            $mail = $this->getArgument('m');
+        }
 
         if (!empty($mail)) {
             try {
