@@ -55,7 +55,7 @@ class Canonical
         $siteUrl = $this->Site->getCanonical();
         $siteUrl = $this->removeHost($siteUrl);
 
-        if ($Site->getAttribute('meta.canonical') !== '') {
+        if ($Site->getAttribute('meta.canonical') && $Site->getAttribute('meta.canonical') !== '') {
             $metaCanonical = $Site->getAttribute('meta.canonical');
 
             if (!QUI\Projects\Site\Utils::isSiteLink($metaCanonical)) {

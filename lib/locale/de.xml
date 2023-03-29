@@ -2949,6 +2949,19 @@
         <locale name="grid.export.message.exportType">
             <de><![CDATA[Bitte wähle die Art des Exports aus:]]></de>
         </locale>
+        <locale name="window.grid.sorting.title">
+            <de><![CDATA[Tabelle anpassen]]></de>
+        </locale>
+        <locale name="window.grid.sorting.submit">
+            <de><![CDATA[Anpassen]]></de>
+        </locale>
+        <locale name="window.grid.sorting.description" html="true">
+            <de><![CDATA[
+            <p>Passe die Tabelle individuell nach deinen Bedürfnissen an.</p>
+            <p>Du kannst die Reihenfolge der Spalten einfach per Drag-and-Drop-Funktion ändern oder
+            unerwünschte Spalten ein- oder ausschalten. Somit kannst du die Tabelle ganz nach deinen Vorstellungen verändern</p>
+            ]]></de>
+        </locale>
         <locale name="controls.group.table.btns.adduser">
             <de><![CDATA[Benutzer hinzufügen]]></de>
         </locale>

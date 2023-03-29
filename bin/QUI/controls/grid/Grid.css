@@ -718,3 +718,57 @@ macht mehr kaputt als ganz
 .omnigrid .qui-switch-icon-off {
     font-size: 12px !important;
 }
+
+
+.grid-dd {
+    float: left;
+    margin-bottom: 20px;
+    position: relative;
+    width: 100%;
+}
+
+.grid-dd ul {
+    border-top: 1px solid #dedede;
+    margin: 0 auto;
+    max-width: 500px;
+    padding: 0;
+    position: relative;
+    width: 100%;
+}
+
+.grid-dd li {
+    border-bottom: 1px solid #dedede;
+    border-left: 1px solid #dedede;
+    border-right: 1px solid #dedede;
+    cursor: pointer;
+    list-style-type: none;
+    line-height: 30px;
+    padding-left: 10px;
+    position: relative;
+}
+
+.grid-dd li input {
+    float: left;
+    margin-right: 10px;
+    margin-top: 9px;
+}
+
+.grid-dd li:hover {
+    background: #ededed;
+}
+
+.grid-dd-placeholder {
+    background: #fff;
+    cursor: pointer;
+    height: 100%;
+    left: 0;
+    padding: 5px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.grid-dd-active .grid-dd-placeholder {
+    background: #2f8fc6;
+    color: #fff;
+}

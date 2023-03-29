@@ -18,6 +18,7 @@ use function count;
 use function current;
 use function explode;
 use function file_exists;
+use function file_get_contents;
 use function file_put_contents;
 use function in_array;
 use function is_array;
@@ -26,9 +27,11 @@ use function is_file;
 use function is_string;
 use function json_decode;
 use function json_encode;
+use function mb_strtolower;
 use function md5;
 use function method_exists;
 use function pathinfo;
+use function preg_replace;
 use function reset;
 use function str_replace;
 use function strpos;
@@ -485,7 +488,7 @@ abstract class Item extends QUI\QDOM
 
         // svg fix
         if ($this->getAttribute('mime_type') == 'text/html') {
-            $content = \file_get_contents($this->getFullPath());
+            $content = file_get_contents($this->getFullPath());
 
             if (strpos($content, '<svg') !== false && strpos($content, '</svg>')) {
                 file_put_contents(
@@ -789,12 +792,34 @@ abstract class Item extends QUI\QDOM
     {
         $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
-
+        // spaces making too many problems
+        // every space will be converted into a _
+        // two _ will be converted into one _
         $newName = trim($newName, "_ \t\n\r\0\x0B"); // Trim the default characters and underscores
+        $newName = str_replace(' ', '_', $newName);
+        $newName = preg_replace('#(_){2,}#', "$1", $newName);
 
         $original  = $this->getFullPath();
         $extension = QUI\Utils\StringHelper::pathinfo($original, PATHINFO_EXTENSION);
         $Parent    = $this->getParent();
+
+        if (mb_strtolower($extension) !== $extension) {
+            $fileToUpper = $Parent->getFullPath() . $newName . '.' . $extension;
+            $fileToLower = $Parent->getFullPath() . $newName . '.' . mb_strtolower($extension);
+
+            rename($fileToUpper, $fileToLower);
+
+            QUI::getDataBase()->update(
+                $this->Media->getTable(),
+                ['file' => $Parent->getPath() . $newName . '.' . mb_strtolower($extension)],
+                ['id' => $this->getId()]
+            );
+
+            $this->setAttribute('file', $Parent->getPath() . $newName . '.' . mb_strtolower($extension));
+
+            $extension = mb_strtolower($extension);
+            $original  = $this->getFullPath();
+        }
 
         $new_full_file = $Parent->getFullPath() . $newName . '.' . $extension;
         $new_file      = $Parent->getPath() . $newName . '.' . $extension;

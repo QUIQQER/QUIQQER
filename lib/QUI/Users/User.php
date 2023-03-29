@@ -1214,7 +1214,7 @@ class User implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
-     * @return QUI\Projects\Media\Image|false
+     * @return QUI\Interfaces\Projects\Media\File|false
      * @see QUI\Interfaces\Users\User::getAvatar()
      *
      */
@@ -1258,6 +1258,8 @@ class User implements QUI\Interfaces\Users\User
         if (!$this->getId()) {
             return;
         }
+
+        QUI::getEvents()->fireEvent('userLogoutBegin', [$this]);
 
         // Wenn der Benutzer dieser hier ist
         $Users    = QUI::getUsers();

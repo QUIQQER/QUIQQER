@@ -45,7 +45,7 @@ class CSP
         'default' => 'default-src',
         'font'    => 'font-src',
         'form'    => 'form-action',
-        'image'   => 'image-src',
+        'image'   => 'img-src',
         'img'     => 'img-src',
         'script'  => 'script-src',
         'style'   => 'style-src',
