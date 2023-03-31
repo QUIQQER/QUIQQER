@@ -5,6 +5,12 @@ namespace QUI\System;
 
 use QUI;
 
+use function array_unique;
+use function explode;
+use function implode;
+use function is_null;
+use function str_replace;
+
 /**
  * Class CSP
  * Content Security Policy Helper
@@ -15,18 +21,18 @@ use QUI;
 class CSP
 {
     /**
-     * @var CSP
+     * @var ?CSP
      */
-    protected static $Instance = null;
+    protected static ?CSP $Instance = null;
 
     /**
      * Return the global CSP object
      *
      * @return CSP
      */
-    public static function getInstance()
+    public static function getInstance(): ?CSP
     {
-        if (\is_null(self::$Instance)) {
+        if (is_null(self::$Instance)) {
             self::$Instance = new CSP();
         }
 
@@ -38,19 +44,23 @@ class CSP
      *
      * @var array
      */
-    protected $cspDirective = [
-        'base'    => 'base-uri',
-        'child'   => 'child-src',
-        'connect' => 'connect-src',
-        'default' => 'default-src',
-        'font'    => 'font-src',
-        'form'    => 'form-action',
-        'image'   => 'img-src',
-        'img'     => 'img-src',
-        'script'  => 'script-src',
-        'style'   => 'style-src',
-        'object'  => 'object-src',
-        'report'  => 'report-uri'
+    protected array $cspDirective = [
+        'base'           => 'base-uri',
+        'child'          => 'child-src',
+        'connect'        => 'connect-src',
+        'default'        => 'default-src',
+        'font'           => 'font-src',
+        'form'           => 'form-action',
+        'image'          => 'img-src',
+        'img'            => 'img-src',
+        'script'         => 'script-src',
+        'style'          => 'style-src',
+        'object'         => 'object-src',
+        'report'         => 'report-uri',
+        'frameAncestors' => 'frame-ancestors',
+        'ancestors'      => 'frame-ancestors',
+        'reportUri'      => 'report-uri',
+        'styleSrcElem'   => 'style-src-elem'
     ];
 
     /**
@@ -58,7 +68,7 @@ class CSP
      *
      * @var array
      */
-    protected $cspSource = [
+    protected array $cspSource = [
         'none'           => "'none'",
         'self'           => "'self'",
         'strict-dynamic' => "'strict-dynamic'",
@@ -102,18 +112,20 @@ class CSP
 
     /**
      * Return all available CSP sources
+     *
      * @return array
      */
-    public function getCSPSources()
+    public function getCSPSources(): array
     {
         return $this->cspSource;
     }
 
     /**
      * Return all available CSP directives
+     *
      * @return array
      */
-    public function getCSPDirectives()
+    public function getCSPDirectives(): array
     {
         return $this->cspDirective;
     }
@@ -124,7 +136,7 @@ class CSP
      * @param string $directive
      * @return bool
      */
-    public function isDirectiveAllowed($directive)
+    public function isDirectiveAllowed(string $directive): bool
     {
         if (isset($this->cspDirective[$directive])) {
             return true;
@@ -157,11 +169,11 @@ class CSP
             $directive = $this->cspDirective[$directive];
         }
 
-        $values = \explode(' ', $value);
+        $values = explode(' ', $value);
         $list   = [];
 
         foreach ($values as $value) {
-            $value = \str_replace(
+            $value = str_replace(
                 [';', '"', "'"],
                 '',
                 $value
@@ -174,13 +186,13 @@ class CSP
             $list[] = $value;
         }
 
-        $list   = \array_unique($list);
+        $list   = array_unique($list);
         $Config = $this->getConfig();
 
         $Config->setValue(
             'securityHeaders_csp',
             $directive,
-            \implode(' ', $list)
+            implode(' ', $list)
         );
 
         $Config->save();
@@ -189,7 +201,7 @@ class CSP
     /**
      * @return array
      */
-    public function getCSPDirectiveConfig()
+    public function getCSPDirectiveConfig(): array
     {
         $config = $this->getConfig()->toArray();
         $csp    = [];
@@ -205,10 +217,10 @@ class CSP
                 $directive = $this->cspDirective[$directive];
             }
 
-            $values = \explode(' ', $value);
+            $values = explode(' ', $value);
 
             foreach ($values as $directiveValue) {
-                $directiveValue = \str_replace(
+                $directiveValue = str_replace(
                     [';', '"', "'"],
                     '',
                     $directiveValue
@@ -224,7 +236,7 @@ class CSP
 
         // cleanup
         foreach ($result as $directive => $values) {
-            $result[$directive] = \implode(' ', \array_unique($values));
+            $result[$directive] = implode(' ', array_unique($values));
         }
 
         return $result;
