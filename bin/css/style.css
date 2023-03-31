@@ -134,6 +134,10 @@ input[type="search"]::-webkit-search-cancel-button {
     position: relative;
 }
 
+.cke_reset {
+    min-height: 250px;
+}
+
 /** logo, title
  * ====================================================== */
 
