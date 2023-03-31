@@ -2,9 +2,9 @@
     <tr>
         <td>
             <label class="field-container hasCheckbox">
-                <div class="field-container-item" title="">
+                <span class="field-container-item" title="">
                     {{titleValue}}
-                </div>
+                </span>
                 <input name="value" required="required" type="text" class="field-container-field"/>
             </label>
             <div style="clear: both;">
@@ -24,9 +24,9 @@
     <tr>
         <td>
             <label class="field-container">
-                <div class="field-container-item" title="">
+                <span class="field-container-item" title="">
                     {{titleDirective}}
-                </div>
+                </span>
                 <select name="directive" class="field-container-field">
                     <option value="base-uri">base-uri</option>
                     <option value="child-src">child-src</option>
@@ -39,6 +39,9 @@
                     <option value="style-src">style-src</option>
                     <option value="object-src">object-src</option>
                     <option value="report-uri">report-uri</option>
+                    <option value="frame-ancestors">frame-ancestors</option>
+                    <option value="report-uri">report-uri</option>
+                    <option value="style-src-elem">style-src-elem</option>
                 </select>
             </label>
         </td>
