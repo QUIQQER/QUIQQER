@@ -238,6 +238,8 @@ class SecurityUpdate extends QUI\System\Console\Tool
             $this->writeToLog('✔️' . PHP_EOL);
             $this->writeToLog(PHP_EOL);
 
+            QUI\Setup::all($this);
+
             // setup set the last update date
             QUI::getPackageManager()->setLastUpdateDate();
 
