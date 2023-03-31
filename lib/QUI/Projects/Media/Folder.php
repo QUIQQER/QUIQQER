@@ -776,6 +776,14 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function hasChildren()
     {
+        $cachePath = $this->getCachePath() . '/hasChildren';
+
+        try {
+            return QUI\Cache\Manager::get($cachePath);
+        } catch (\Exception $Exception) {
+            // re-build cache
+        }
+
         $table     = $this->Media->getTable();
         $table_rel = $this->Media->getTable('relations');
 
@@ -798,9 +806,12 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             return 0;
         }
 
-
         if (isset($result[0]) && isset($result[0]['children'])) {
-            return (int)$result[0]['children'];
+            $childrenCount = (int)$result[0]['children'];
+
+            QUI\Cache\Manager::set($cachePath, $childrenCount);
+
+            return $childrenCount;
         }
 
         return 0;
@@ -1037,6 +1048,14 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function hasSubFolders()
     {
+        $cachePath = $this->getCachePath() . '/hasSubFolders';
+
+        try {
+            return QUI\Cache\Manager::get($cachePath);
+        } catch (\Exception $Exception) {
+            // re-build cache
+        }
+
         $table     = $this->Media->getTable();
         $table_rel = $this->Media->getTable('relations');
 
@@ -1061,7 +1080,11 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         if (isset($result[0]) && isset($result[0]['children'])) {
-            return (int)$result[0]['children'];
+            $childrenCount = (int)$result[0]['children'];
+
+            QUI\Cache\Manager::set($cachePath, $childrenCount);
+
+            return $childrenCount;
         }
 
         return 0;
@@ -1344,6 +1367,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'child'  => $id
         ]);
 
+        QUI\Cache\Manager::clear($this->getCachePath());
+
         if (is_dir($dir . $new_name)) {
             $Folder = $this->Media->get($id);
 
@@ -1588,6 +1613,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         $File->save();
 
+        QUI\Cache\Manager::clear($this->getCachePath());
+
         return $File;
     }
 
@@ -1653,6 +1680,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             }
         }
 
+        QUI\Cache\Manager::clear($this->getCachePath());
+
         return $this;
     }
 
@@ -1689,5 +1718,15 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         return $result;
+    }
+
+    /**
+     * Get cache path where internal folder statistics are cached (e.g. children count, subfolder count).
+     *
+     * @return string
+     */
+    protected function getCachePath(): string
+    {
+        return 'quiqqer/media/' . $this->getProject()->getName() . '/folder/' . $this->getId() . '/';
     }
 }

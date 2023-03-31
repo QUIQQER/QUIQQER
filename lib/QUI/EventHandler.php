@@ -7,6 +7,9 @@
 namespace QUI;
 
 use QUI;
+use QUI\Users\Manager;
+use function date;
+use function implode;
 
 /**
  * Intranet
@@ -237,7 +240,7 @@ class EventHandler
             return;
         }
 
-        $NextLoginAllowed = new \DateTime($lastLoginAttempt.' +'.$failedLogins.' second');
+        $NextLoginAllowed = new \DateTime($lastLoginAttempt . ' +' . $failedLogins . ' second');
         $Now              = new \DateTime();
 
         if ($Now < $NextLoginAllowed) {
@@ -262,7 +265,17 @@ class EventHandler
                 'lastLoginAttempt' => false
             ]);
 
-            $User->save(QUI::getUsers()->getSystemUser());
+            // Directly update database and do not save user.
+            QUI::getDataBase()->update(
+                Manager::table(),
+                [
+                    'lastLoginAttempt' => null,
+                    'failedLogins'     => 0
+                ],
+                [
+                    'id' => $User->getId()
+                ]
+            );
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
