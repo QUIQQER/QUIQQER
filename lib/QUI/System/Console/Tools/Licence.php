@@ -6,7 +6,11 @@
 
 namespace QUI\System\Console\Tools;
 
+use League\CLImate\CLImate;
 use QUI;
+
+use function implode;
+use function is_array;
 
 /**
  * Show the licence
@@ -22,7 +26,9 @@ class Licence extends QUI\System\Console\Tool
     public function __construct()
     {
         $this->systemTool = true;
-        $this->setName('quiqqer:licence')->setDescription('Show the licence information');
+        $this->setName('quiqqer:licence')
+            ->setDescription('Show the licence information')
+            ->addArgument('list', 'Print a list of all licenses', false, true);
     }
 
     /**
@@ -32,7 +38,48 @@ class Licence extends QUI\System\Console\Tool
      */
     public function execute()
     {
-        $licenceFile = OPT_DIR.'quiqqer/quiqqer/LICENSE';
+        if ($this->getArgument('list')) {
+            $installed = QUI::getPackageManager()->getInstalled();
+            $data      = [];
+
+            foreach ($installed as $package) {
+                $license = '';
+
+                if (isset($package['license'])) {
+                    $license = $package['license'];
+                } else {
+                    try {
+                        // check composer json
+                        $Package  = QUI::getPackageManager()->getInstalledPackage($package['name']);
+                        $composer = $Package->getComposerData();
+
+                        if (isset($composer['license'])) {
+                            $license = $composer['license'];
+                        } elseif (isset($composer['licence'])) {
+                            $license = $composer['licence'];
+                        }
+                    } catch (QUI\Exception $Exception) {
+                    }
+                }
+
+                if (is_array($license)) {
+                    $license = implode(',', $license);
+                }
+
+                $data[] = [
+                    $package['name'],
+                    $license
+                ];
+            }
+
+            $Climate = new CLImate();
+            $Climate->columns($data);
+            $Climate->out('');
+
+            exit;
+        }
+
+        $licenceFile = OPT_DIR . 'quiqqer/quiqqer/LICENSE';
         $content     = file_get_contents($licenceFile);
 
         echo $content;
