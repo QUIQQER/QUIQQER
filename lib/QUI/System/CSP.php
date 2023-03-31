@@ -5,11 +5,19 @@ namespace QUI\System;
 
 use QUI;
 
+use function array_merge;
 use function array_unique;
+use function array_values;
 use function explode;
+use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
 use function implode;
+use function in_array;
 use function is_null;
 use function str_replace;
+
+use const ETC_DIR;
 
 /**
  * Class CSP
@@ -24,6 +32,13 @@ class CSP
      * @var ?CSP
      */
     protected static ?CSP $Instance = null;
+
+    /**
+     * List of csp directives
+     *
+     * @var array
+     */
+    protected array $allowedIni = [];
 
     /**
      * Return the global CSP object
@@ -41,6 +56,7 @@ class CSP
 
     /**
      * List of csp directives
+     * - default directives
      *
      * @var array
      */
@@ -75,6 +91,22 @@ class CSP
         'unsafe-inline'  => "'unsafe-inline'",
         'unsafe-eval'    => "'unsafe-eval'"
     ];
+
+    public function __construct()
+    {
+        if (!file_exists(ETC_DIR . 'cspList.ini')) {
+            $default = array_values($this->cspDirective);
+            $default = array_unique($default);
+            $default = implode("\n", $default);
+
+            file_put_contents(
+                ETC_DIR . 'cspList.ini',
+                $default
+            );
+        }
+
+        $this->allowedIni = explode("\n", file_get_contents(ETC_DIR . 'cspList.ini'));
+    }
 
     /**
      * Delete all CSP directive entries
@@ -111,13 +143,29 @@ class CSP
     }
 
     /**
-     * Return all available CSP sources
+     * Returns all available CSP sources
      *
      * @return array
      */
     public function getCSPSources(): array
     {
         return $this->cspSource;
+    }
+
+    /**
+     * Returns all allowed csp directives
+     *
+     * @return array
+     */
+    public function getAllowedCSPList(): array
+    {
+        $allowed = $this->allowedIni;
+        $allowed = array_merge($allowed, array_values($this->cspDirective));
+        $allowed = array_unique($allowed);
+
+        sort($allowed);
+
+        return $allowed;
     }
 
     /**
@@ -142,10 +190,12 @@ class CSP
             return true;
         }
 
-        foreach ($this->cspDirective as $d) {
-            if ($d == $directive) {
-                return true;
-            }
+        if (in_array($directive, $this->cspDirective)) {
+            return true;
+        }
+
+        if (in_array($directive, $this->allowedIni)) {
+            return true;
         }
 
         return false;
