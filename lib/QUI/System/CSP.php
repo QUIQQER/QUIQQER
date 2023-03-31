@@ -18,6 +18,7 @@ use function is_null;
 use function str_replace;
 
 use const ETC_DIR;
+use const PHP_EOL;
 
 /**
  * Class CSP
@@ -94,18 +95,26 @@ class CSP
 
     public function __construct()
     {
-        if (!file_exists(ETC_DIR . 'cspList.ini')) {
+        $listFile = ETC_DIR . 'cspList.ini.php';
+
+        if (!file_exists($listFile)) {
             $default = array_values($this->cspDirective);
             $default = array_unique($default);
             $default = implode("\n", $default);
 
             file_put_contents(
-                ETC_DIR . 'cspList.ini',
+                $listFile,
+
+                ';<?php exit; ?>' . PHP_EOL .
                 $default
             );
         }
 
-        $this->allowedIni = explode("\n", file_get_contents(ETC_DIR . 'cspList.ini'));
+        $content = file_get_contents($listFile);
+        $content = str_replace(';<?php exit; ?>', '', $content);
+        $content = trim($content);
+
+        $this->allowedIni = explode("\n", $content);
     }
 
     /**
