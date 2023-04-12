@@ -567,8 +567,7 @@ abstract class Item extends QUI\QDOM
         }
 
         // build frontend cache
-        $Media   = $this->getMedia();
-        $Project = $Media->getProject();
+        $Media = $this->getMedia();
 
         // id cache via filepath
         QUI\Cache\LongTermCache::set(
