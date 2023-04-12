@@ -576,11 +576,6 @@ abstract class Item extends QUI\QDOM
             $this->getId()
         );
 
-        QUI\Cache\Manager::set(
-            'media/cache/' . $Project->getName() . '/indexSrcCache/' . md5($this->getAttribute('file')),
-            $this->getUrl()
-        );
-
         QUI::getEvents()->fireEvent('mediaSave', [$this]);
     }
 
