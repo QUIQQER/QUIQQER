@@ -567,18 +567,12 @@ abstract class Item extends QUI\QDOM
         }
 
         // build frontend cache
-        $Media   = $this->getMedia();
-        $Project = $Media->getProject();
+        $Media = $this->getMedia();
 
         // id cache via filepath
         QUI\Cache\LongTermCache::set(
             $Media->getCacheDir() . 'filePathIds/' . md5($this->getAttribute('file')),
             $this->getId()
-        );
-
-        QUI\Cache\Manager::set(
-            'media/cache/' . $Project->getName() . '/indexSrcCache/' . md5($this->getAttribute('file')),
-            $this->getUrl()
         );
 
         QUI::getEvents()->fireEvent('mediaSave', [$this]);
