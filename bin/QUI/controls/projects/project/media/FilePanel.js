@@ -187,7 +187,7 @@ define('controls/projects/project/media/FilePanel', [
                                  '      <p style="font-size: 10px; padding-top: 5px">' + file + '</p>' +
                                  '   </div>' +
                                  '   <div style="display: flex; justify-content: center; align-items: center">' +
-                                 '       <img src="' + url + '" alt="" />' +
+                                 '       <img src="' + url + '" alt="" style="max-width: 200; max-height: 200px" />' +
                                  '   </div>' +
                                  '</div>';
 

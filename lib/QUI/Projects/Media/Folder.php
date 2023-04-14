@@ -1589,7 +1589,11 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $maxSize = $this->getProject()->getConfig('media_maxUploadSize');
 
         // if it is an image, then resize -> if needed
-        if (Utils::isImage($File) && $maxSize) {
+        if (Utils::isImage($File)
+            && $maxSize
+            && isset($new_file_info['width'])
+            && isset($new_file_info['height'])
+        ) {
             /* @var $File Image */
             $resizeData = $File->getResizeSize($maxSize, $maxSize);
 
