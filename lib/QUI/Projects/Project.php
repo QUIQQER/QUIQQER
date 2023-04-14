@@ -499,26 +499,6 @@ class Project
 
         $Hosts = QUI::getRewrite()->getVHosts();
 
-        try {
-            $CurrentProject = QUI::getRewrite()->getProject();
-            $currentHost    = $CurrentProject->getHost();
-
-            if ($CurrentProject->getName() === $this->getName()
-                && $CurrentProject->getLang() !== $this->getLang()
-                && isset($Hosts[$currentHost])
-                && isset($Hosts[$currentHost][$this->getLang()])
-            ) {
-                $vHost = $Hosts[$currentHost][$this->getLang()];
-
-                if (QUI::conf("webserver", "forceHttps")) {
-                    return $with_protocol ? 'https://' . $vHost : $vHost;
-                }
-
-                return $with_protocol ? 'http://' . $vHost : $vHost;
-            }
-        } catch (QUI\Exception $Exception) {
-        }
-
         foreach ($Hosts as $url => $params) {
             if ($url == 404 || $url == 301) {
                 continue;
