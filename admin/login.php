@@ -2,8 +2,13 @@
 
 QUI::getEvents()->fireEvent('adminRequest');
 
-$languages = QUI::availableLanguages();
-$packages  = QUI::getPackageManager()->getInstalled();
+$languages       = QUI::availableLanguages();
+$packages        = QUI::getPackageManager()->getInstalled();
+$defaultLanguage = QUI::conf('globals', 'standardLanguage');
+
+if (!empty($defaultLanguage)) {
+    QUI::getLocale()->setCurrent($defaultLanguage);
+}
 
 $authPackages = [];
 $logo         = QUI::getLocale()->get('quiqqer/quiqqer', 'menu.quiqqer.text');

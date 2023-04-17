@@ -6,6 +6,7 @@ use QUI;
 
 use function dirname;
 use function file_get_contents;
+use function mb_strtolower;
 
 /**
  * Class QuiqqerProvider
@@ -74,7 +75,7 @@ class QuiqqerProvider extends AbstractInstallationWizard
 
         // check if all data are available what we needed
         if (isset($data['quiqqer-country'])) {
-            $Config->set('general', 'standardLanguage', $data['quiqqer-country']);
+            $Config->set('globals', 'standardLanguage', mb_strtolower($data['quiqqer-country']));
         }
 
         if (!empty($data['mail.admin_mail'])) {
