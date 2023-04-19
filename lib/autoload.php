@@ -11,8 +11,8 @@
  * @licence For copyright and license information, please view the /README.md
  */
 
-require \dirname(__FILE__).'/Autoloader.php';
-require \dirname(__FILE__).'/polyfills.php';
+require dirname(__FILE__) . '/QUI/Autoloader.php';
+require dirname(__FILE__) . '/polyfills.php';
 
 /**
  * Main QUIQQER Autoload function
@@ -33,45 +33,45 @@ if (is_array($fs)) {
 
 QUI\Autoloader::init();
 
-\spl_autoload_register(function ($className) {
-    return \QUI\Autoloader::load($className);
+spl_autoload_register(function ($className) {
+    return QUI\Autoloader::load($className);
 });
 
 /**
  * Error Handler
  *
  * @param integer $errno
- * @param string $errstr
- * @param string $errfile
- * @param string $errline
+ * @param string $errStr
+ * @param string $errFile
+ * @param string $errLine
  *
  * @return boolean
  * @throws ErrorException
  * @author www.pcsg.de (Henning Leutz)
  *
  */
-function exception_error_handler($errno, $errstr, $errfile, $errline)
+function exception_error_handler(int $errno, string $errStr, string $errFile, string $errLine): bool
 {
-    if ($errstr == 'json_encode(): Invalid UTF-8 sequence in argument') {
+    if ($errStr == 'json_encode(): Invalid UTF-8 sequence in argument') {
         QUI::getErrorHandler()->setAttribute('show_request', true);
-        QUI::getErrorHandler()->writeErrorToLog($errno, $errstr, $errfile, $errline);
+        QUI::getErrorHandler()->writeErrorToLog($errno, $errStr, $errFile, $errLine);
         QUI::getErrorHandler()->setAttribute('show_request', false);
 
         return true;
     }
 
-    if (\strpos($errstr, 'session_regenerate_id()') !== false
-        || \strpos($errstr, 'session_destroy()') !== false
-        || \strpos($errstr, 'Required parameter $permissions follows optional parameter $path') !== false) {
+    if (strpos($errStr, 'session_regenerate_id()') !== false
+        || strpos($errStr, 'session_destroy()') !== false
+        || strpos($errStr, 'Required parameter $permissions follows optional parameter $path') !== false) {
         return true;
     }
 
-    $l = \error_reporting();
+    $l = error_reporting();
 
     if ($errno === E_DEPRECATED || $errno === E_USER_DEPRECATED) {
-        QUI\System\Log::addInfo('Deprecated: '.$errstr, [
-            'file' => $errfile,
-            'line' => $errline
+        QUI\System\Log::addInfo('Deprecated: ' . $errStr, [
+            'file' => $errFile,
+            'line' => $errLine
         ]);
 
         return true;
@@ -108,20 +108,20 @@ function exception_error_handler($errno, $errstr, $errfile, $errline)
                 break;
         }
 
-        $errorMessage = $type.': '.$errstr;
-        $errorMessage .= PHP_EOL.'File: '.$errfile;
-        $errorMessage .= PHP_EOL.'Line:'.$errline;
+        $errorMessage = $type . ': ' . $errStr;
+        $errorMessage .= PHP_EOL . 'File: ' . $errFile;
+        $errorMessage .= PHP_EOL . 'Line:' . $errLine;
 
         $exception = new \ErrorException(
             $errorMessage,
             $errno,
             $errno,
-            $errfile,
-            $errline
+            $errFile,
+            $errLine
         );
 
         if ($exit) {
-            \exception_handler($exception);
+            exception_handler($exception);
             exit('Unknown Error in QUIQQER exception_error_handler()');
         }
 
@@ -136,7 +136,7 @@ function exception_error_handler($errno, $errstr, $errfile, $errline)
  *
  * @param Exception $Exception
  */
-function exception_handler($Exception)
+function exception_handler(Exception $Exception)
 {
     QUI::getErrorHandler()->writeErrorToLog(
         $Exception->getCode(),
@@ -147,7 +147,7 @@ function exception_handler($Exception)
 
     if (DEVELOPMENT) {
         print(
-            $Exception->getMessage()."\n".$Exception->getTraceAsString()."\n"
+            $Exception->getMessage() . "\n" . $Exception->getTraceAsString() . "\n"
         );
     }
 }

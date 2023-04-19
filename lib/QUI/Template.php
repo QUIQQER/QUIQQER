@@ -817,7 +817,8 @@ class Template extends QUI\QDOM
             return $Engine->fetch(LIB_DIR . 'templates/headerNoConflict.html');
         }
 
-        return $Engine->fetch(LIB_DIR . 'templates/header.html');
+        $res = $Engine->fetch(LIB_DIR . 'templates/header.html');
+        return $res;
     }
 
     /**

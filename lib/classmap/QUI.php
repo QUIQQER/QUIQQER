@@ -110,100 +110,100 @@ class QUI
     /**
      * QUI Mail Manager
      *
-     * @var \QUI\Mail\Manager
+     * @var ?\QUI\Mail\Manager
      */
-    public static $MailManager = null;
+    public static ?\QUI\Mail\Manager $MailManager = null;
 
     /**
-     * QUI Packagemanager, use \QUI::getPackageManager();
+     * QUI project manager, use \QUI::getPackageManager();
      *
-     * @var \QUI\Package\Manager
+     * @var ?\QUI\Package\Manager
      */
-    public static $PackageManager = null;
+    public static ?\QUI\Package\Manager $PackageManager = null;
 
     /**
-     * QUI Projectmanager, use \QUI::getProjectManager();
+     * QUI project manager, use \QUI::getProjectManager();
      *
-     * @var \QUI\Projects\Manager
+     * @var ?\QUI\Projects\Manager
      */
-    public static $ProjectManager = null;
+    public static ?\QUI\Projects\Manager $ProjectManager = null;
 
     /**
-     * QUI Projectmanager, use \QUI::getProjectManager();
+     * QUI project manager, use \QUI::getProjectManager();
      *
-     * @var Request
+     * @var ?Request
      */
-    public static $Request = null;
+    public static ?Request $Request = null;
 
     /**
      * Global Response Object
      *
-     * @var Response
+     * @var ?Response
      */
-    public static $Response = null;
+    public static ?Response $Response = null;
 
     /**
      * QUI Rewrite Object, use \QUI::getRewrite();
      *
-     * @var \QUI\Rewrite
+     * @var ?\QUI\Rewrite
      */
-    public static $Rewrite = null;
+    public static ?\QUI\Rewrite $Rewrite = null;
 
     /**
      * QUI Rights Object, use \QUI::getRights();
      *
-     * @var \QUI\Permissions\Manager
+     * @var ?\QUI\Permissions\Manager
      */
-    public static $Rights = null;
+    public static ?\QUI\Permissions\Manager $Rights = null;
 
     /**
      * QUI Session Object, use \QUI::getSession();
      *
-     * @var \QUI\Session
+     * @var ?\QUI\Session|QUI\System\Console\Session
      */
     public static $Session = null;
 
     /**
      * QUI\Temp Object, use \QUI::getTemp();
      *
-     * @var \QUI\Temp
+     * @var ?\QUI\Temp
      */
-    public static $Temp = null;
+    public static ?\QUI\Temp $Temp = null;
 
     /**
      * QUI User Manager, use \QUI::getUsers();
      *
-     * @var \QUI\Users\Manager
+     * @var ?\QUI\Users\Manager
      */
-    public static $Users = null;
+    public static ?\QUI\Users\Manager $Users = null;
 
     /**
      * internal config objects, array list of configs
      *
      * @var array
      */
-    public static $Configs = [];
+    public static array $Configs = [];
 
     /**
      * QUI global Events
      *
-     * @var \QUI\Events\Manager
+     * @var ?\QUI\Events\Manager
      */
-    public static $Events = null;
+    public static ?\QUI\Events\Manager $Events = null;
 
     /**
      * Country Manager
      *
-     * @var \QUI\Countries\Manager
+     * @var ?\QUI\Countries\Manager
      */
-    public static $Countries = null;
+    public static ?\QUI\Countries\Manager $Countries = null;
 
     /**
      * Template Manager
      *
-     * @var \QUI\Template
+     * @var ?\QUI\Template
      */
-    public static $Template = null;
+    public static ?\QUI\Template $Template = null;
 
     /**
      * Set all important paths and load QUIQQER
@@ -213,7 +213,7 @@ class QUI
     public static function load()
     {
         // load the main configuration
-        $config = \parse_ini_file(ETC_DIR . 'conf.ini.php', true);
+        $config = parse_ini_file(ETC_DIR . 'conf.ini.php', true);
 
         /**
          * load the constants
@@ -222,8 +222,6 @@ class QUI
         if (!defined('CMS_DIR')) {
             /**
              * CMS_DIR - Path to the quiqqer folder, where the whole system are located
-             *
-             * @var string
              */
             define('CMS_DIR', $config['globals']['cms_dir']);
         }
@@ -231,8 +229,6 @@ class QUI
         if (!defined('DEBUG_MODE')) {
             /**
              * DEBUG_MODE - setting if debug mode is enabled or not
-             *
-             * @var boolean
              */
             define("DEBUG_MODE", $config['globals']['debug_mode']);
         }
@@ -240,23 +236,18 @@ class QUI
         if (!defined('DEVELOPMENT')) {
             /**
              * DEVELOPMENT - setting if the system is in development mode or not
-             *
-             * @var boolean
              */
             define("DEVELOPMENT", !!$config['globals']['development']);
         }
 
         $var_dir = $config['globals']['var_dir'];
-        $lib_dir = \dirname(__FILE__) . '/';
-        $var_dir = $config['globals']['var_dir'];
+        $lib_dir = dirname(__FILE__, 2) . '/';
 
         // Define quiqqer path constants
 
         if (!defined('LIB_DIR')) {
             /**
              * LIB_DIR - Path to the lib folder, where all the libraries are located
-             *
-             * @var string
              */
             define('LIB_DIR', $lib_dir);
         }
@@ -265,8 +256,6 @@ class QUI
             /**
              * VAR_DIR - Path to the var folder,
              * where all the files are located on which the web server must have access
-             *
-             * @var string
              */
             define('VAR_DIR', $var_dir);
         }
@@ -274,17 +263,13 @@ class QUI
         if (!defined('BIN_DIR')) {
             /**
              * BIN_DIR - Path to the bin folder, where all temp files are located
-             *
-             * @var string
              */
-            define('BIN_DIR', \dirname(LIB_DIR) . '/bin/');
+            define('BIN_DIR', dirname(LIB_DIR) . '/bin/');
         }
 
         if (!defined('USR_DIR')) {
             /**
              * USR_DIR - Path to the usr folder, where all projects are located
-             *
-             * @var string
              */
             define('USR_DIR', $config['globals']['usr_dir']);
         }
@@ -292,17 +277,13 @@ class QUI
         if (!defined('SYS_DIR')) {
             /**
              * SYS_DIR - Path to the etc folder, where all the configurations are located
-             *
-             * @var string
              */
-            define('SYS_DIR', \dirname(LIB_DIR) . '/admin/');
+            define('SYS_DIR', dirname(LIB_DIR) . '/admin/');
         }
 
         if (!defined('OPT_DIR')) {
             /**
              * OPT_DIR - Path to the plugin folder, where all plugins are located
-             *
-             * @var string
              */
             define('OPT_DIR', $config['globals']['opt_dir']);
         }
@@ -310,8 +291,6 @@ class QUI
         if (!defined('URL_DIR')) {
             /**
              * URL_DIR - path by which the system is accessible via the browser
-             *
-             * @var string
              */
             define('URL_DIR', $config['globals']['url_dir']);
         }
@@ -321,7 +300,7 @@ class QUI
         self::$Conf = $Config;
 
         if ($Config->getValue('globals', 'timezone')) {
-            \date_default_timezone_set($Config->getValue('globals', 'timezone'));
+            date_default_timezone_set($Config->getValue('globals', 'timezone'));
         }
 
 
@@ -329,8 +308,6 @@ class QUI
             /**
              * ERROR_BACKTRACE - configuration,
              * if a backtrace should write in the logs during a error
-             *
-             * @var string
              */
             define('ERROR_BACKTRACE', $Config->get('error', 'backtrace'));
         }
@@ -338,8 +315,6 @@ class QUI
         if (!defined('QUI_DB_PRFX')) {
             /**
              * QUI_DB_PRFX - The DB Table Prefix
-             *
-             * @var string
              */
             $prfx = '';
 
@@ -395,8 +370,8 @@ class QUI
         }
 
         // bugfix: workround: Uncaught Error: Call to undefined function DusanKasan\Knapsack\append()
-        if (!\function_exists('\DusanKasan\Knapsack\append')) {
-            if (\file_exists(OPT_DIR . 'dusank/knapsack/src/collection_functions.php')) {
+        if (!function_exists('\DusanKasan\Knapsack\append')) {
+            if (file_exists(OPT_DIR . 'dusank/knapsack/src/collection_functions.php')) {
                 require_once OPT_DIR . 'dusank/knapsack/src/collection_functions.php';
             }
         }
@@ -411,12 +386,12 @@ class QUI
             QUI\Utils\System\Debug::marker('END');
 
             // ram peak, if the ram usage is to high, than write and send a message
-            $peak      = \memory_get_peak_usage();
+            $peak      = memory_get_peak_usage();
             $mem_limit = QUI\Utils\System\File::getBytes(ini_get('memory_limit')) * 0.8;
 
             if ($peak > $mem_limit && $mem_limit > 0) {
                 $limit = QUI\Utils\System\File::formatSize(
-                    \memory_get_peak_usage()
+                    memory_get_peak_usage()
                 );
 
                 if (!isset($_SERVER["HTTP_HOST"])) {
@@ -477,7 +452,7 @@ class QUI
      * @param string $section
      * @param string|null $key (optional)
      *
-     * @return mixed
+     * @return array|bool|string
      */
     public static function conf(string $section, string $key = null)
     {
@@ -574,19 +549,19 @@ class QUI
     }
 
     /**
-     * Return the tablename with the QUI Prefix
+     * Return the table name with the QUI Prefix
      *
      * @param string $table
      *
      * @return string
      */
-    public static function getDBTableName($table)
+    public static function getDBTableName(string $table): string
     {
         return QUI_DB_PRFX . $table;
     }
 
     /**
-     * Return the tablename with the QUI Prefix and table params
+     * Return the table name with the QUI Prefix and table params
      *
      * @param string $table
      * @param \QUI\Projects\Project
@@ -595,10 +570,10 @@ class QUI
      * @return string
      */
     public static function getDBProjectTableName(
-        $table,
+        string $table,
         \QUI\Projects\Project $Project,
-        $lang = true
-    ) {
+        bool $lang = true
+    ): string {
         if ($lang === false) {
             return QUI_DB_PRFX . $Project->getName() . '_' . $table;
         }
@@ -614,9 +589,8 @@ class QUI
      *
      * @return \QUI\Config
      * @throws \QUI\Exception
-     *
      */
-    public static function getConfig($file)
+    public static function getConfig(string $file): \QUI\Config
     {
         if (isset(self::$Configs[$file])) {
             return self::$Configs[$file];
@@ -624,12 +598,12 @@ class QUI
 
         $_file = CMS_DIR . $file;
 
-        if (\substr($file, -4) !== '.php') {
+        if (substr($file, -4) !== '.php') {
             $_file .= '.php';
         }
 
         if (!isset(self::$Configs[$file])) {
-            if (!\file_exists($_file) || \is_dir($_file)) {
+            if (!file_exists($_file) || \is_dir($_file)) {
                 throw new \QUI\Exception(
                     'Error: Ini Datei: ' . $_file . ' existiert nicht.',
                     404
@@ -647,7 +621,7 @@ class QUI
      *
      * @return \QUI\Countries\Manager
      */
-    public static function getCountries()
+    public static function getCountries(): ?\QUI\Countries\Manager
     {
         if (self::$Countries === null) {
             self::$Countries = new \QUI\Countries\Manager();
@@ -657,7 +631,7 @@ class QUI
     }
 
     /**
-     * Returns the Datebase Object (old version)
+     * Returns the datebase Object (old version)
      *
      * @return \QUI\Utils\MyDB
      * @deprecated
@@ -677,7 +651,7 @@ class QUI
      *
      * @return \QUI\Database\DB
      */
-    public static function getDataBase()
+    public static function getDataBase(): ?\QUI\Database\DB
     {
         if (self::$DataBase2 === null) {
             self::$DataBase2 = new \QUI\Database\DB([
@@ -697,7 +671,7 @@ class QUI
      *
      * @return \QUI\Events\Manager
      */
-    public static function getEvents()
+    public static function getEvents(): ?\QUI\Events\Manager
     {
         if (self::$Events === null) {
             self::$Events = new \QUI\Events\Manager();
@@ -711,7 +685,7 @@ class QUI
      *
      * @return \PDO
      */
-    public static function getPDO()
+    public static function getPDO(): PDO
     {
         return self::getDataBase()->getPDO();
     }
@@ -731,9 +705,9 @@ class QUI
      * @uses \QUI\Projects\Manager
      *
      */
-    public static function getProject($project, $lang = false, $template = false)
+    public static function getProject($project, $lang = false, $template = false): \QUI\Projects\Project
     {
-        if (\is_array($project)) {
+        if (is_array($project)) {
             $lang     = false;
             $template = false;
 
@@ -758,10 +732,10 @@ class QUI
      *
      * @return \QUI\Exceptions\Handler
      */
-    public static function getErrorHandler()
+    public static function getErrorHandler(): ?\QUI\Exceptions\Handler
     {
         if (self::$ErrorHandler === null) {
-            require_once \dirname(__FILE__) . '/QUI/Exceptions/Handler.php';
+            require_once dirname(__FILE__, 2) . '/QUI/Exceptions/Handler.php';
 
             self::$ErrorHandler = new \QUI\Exceptions\Handler();
 
@@ -784,7 +758,7 @@ class QUI
      *
      * @return \QUI\Groups\Manager
      */
-    public static function getGroups()
+    public static function getGroups(): ?\QUI\Groups\Manager
     {
         if (self::$Groups === null) {
             self::$Groups = new \QUI\Groups\Manager();
@@ -798,7 +772,7 @@ class QUI
      *
      * @return \QUI\Messages\Handler
      */
-    public static function getMessagesHandler()
+    public static function getMessagesHandler(): ?\QUI\Messages\Handler
     {
         if (self::$MessageHandler === null) {
             self::$MessageHandler = new \QUI\Messages\Handler();
@@ -821,12 +795,12 @@ class QUI
             $languages = self::availableLanguages();
 
             if (isset($_REQUEST['lang'])
-                && \is_string($_REQUEST['lang'])
-                && \strlen($_REQUEST['lang']) === 2) {
+                && is_string($_REQUEST['lang'])
+                && strlen($_REQUEST['lang']) === 2) {
                 self::$Locale->setCurrent($_REQUEST['lang']);
             } elseif (!empty($language)) {
                 self::$Locale->setCurrent($language);
-            } elseif (\count($languages) === 1) {
+            } elseif (count($languages) === 1) {
                 self::$Locale->setCurrent($languages[0]);
             }
         }
@@ -964,7 +938,7 @@ class QUI
      *
      * @return Request
      */
-    public static function getRequest()
+    public static function getRequest(): ?Request
     {
         if (self::$Request === null) {
             self::$Request = Request::createFromGlobals();
@@ -976,7 +950,7 @@ class QUI
     /**
      * @return Response
      */
-    public static function getGlobalResponse()
+    public static function getGlobalResponse(): ?Response
     {
         if (self::$Response === null) {
             self::$Response = new Response();
@@ -1016,7 +990,7 @@ class QUI
      *
      * @return QUI\Temp
      */
-    public static function getTemp()
+    public static function getTemp(): ?\QUI\Temp
     {
         if (self::$Temp === null) {
             self::$Temp = new \QUI\Temp(VAR_DIR . 'tmp');
@@ -1030,7 +1004,7 @@ class QUI
      *
      * @return \QUI\Template
      */
-    public static function getTemplateManager()
+    public static function getTemplateManager(): ?\QUI\Template
     {
         if (self::$Template === null) {
             self::$Template = new \QUI\Template();
@@ -1044,7 +1018,7 @@ class QUI
      *
      * @return \QUI\Users\Manager
      */
-    public static function getUsers()
+    public static function getUsers(): ?\QUI\Users\Manager
     {
         if (self::$Users === null) {
             self::$Users = new \QUI\Users\Manager();

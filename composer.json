@@ -95,8 +95,11 @@
   },
   "autoload": {
     "psr-0": {
-      "QUI": "lib\/"
-    }
+      "QUI": "lib/"
+    },
+    "classmap": [
+      "lib/classmap/"
+    ]
   },
   "autoload-dev": {
     "psr-4": {
