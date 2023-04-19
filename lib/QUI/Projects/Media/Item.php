@@ -801,6 +801,10 @@ abstract class Item extends QUI\QDOM
             $fileToUpper = $Parent->getFullPath() . $newName . '.' . $extension;
             $fileToLower = $Parent->getFullPath() . $newName . '.' . mb_strtolower($extension);
 
+            if (!file_exists($fileToUpper) && file_exists($original)) {
+                $fileToUpper = $original;
+            }
+
             rename($fileToUpper, $fileToLower);
 
             QUI::getDataBase()->update(
