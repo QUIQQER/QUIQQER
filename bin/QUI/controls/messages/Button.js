@@ -6,14 +6,16 @@ define('controls/messages/Button', [
 
     'qui/QUI',
     'qui/controls/Control',
+    'qui/controls/messages/Loading',
     'Locale',
 
     'css!controls/messages/Button.css'
 
-], function (QUI, QUIControl, QUILocale) {
+], function (QUI, QUIControl, LoadingMessage, QUILocale) {
     "use strict";
 
     const lg = 'quiqqer/quiqqer';
+    const uploadMessages = {};
 
     return new Class({
 
@@ -146,6 +148,10 @@ define('controls/messages/Button', [
             // events
             this.$Header.getElement('[name="clear-notifications"]').addEvent('click', this.clear);
             this.$Header.getElement('[name="filter-notifications"]').addEvent('click', this.toggleFilter);
+
+            QUI.addEvent('upload', (File) => {
+                this.$addFileUpload(File);
+            });
 
             return this.$Elm;
         },
@@ -537,6 +543,25 @@ define('controls/messages/Button', [
                 }, {
                     duration: 200,
                     callback: () => {
+                        let messageDelay = self.getAttribute('messageDelay');
+
+                        if (this.$queue.length >= 2) {
+                            messageDelay = 1000;
+                        }
+
+                        if (Node.hasClass('quiqqer-message-loading')) {
+                            for (let i in uploadMessages) {
+                                if (uploadMessages[i].getId() === Node.get('data-msg-id')) {
+                                    return;
+                                }
+                            }
+
+                            // file not found, so upload is already done
+                            messageDelay = 50;
+                            Node.getElement('.quiqqer-message-loading-progress-bar').setStyle('width', '100%');
+                        }
+
+
                         setTimeout(() => {
                             self.$closeMessage(Node).then(() => {
                                 let index = this.$queue.indexOf(Node);
@@ -551,7 +576,7 @@ define('controls/messages/Button', [
                             }).catch((err) => {
                                 console.error(err);
                             });
-                        }, self.getAttribute('messageDelay'));
+                        }, messageDelay);
 
                         resolve();
                     }
@@ -687,6 +712,95 @@ define('controls/messages/Button', [
                     }
                 });
             });
+        },
+
+        $addFileUpload: function (File) {
+            const fileId = File.getId();
+
+            if (typeof uploadMessages[fileId] !== 'undefined') {
+                return;
+            }
+
+            const MessageInstance = new LoadingMessage({
+                percent: 0,
+                message: '<span>Upload ' + File.$File.name + '</span>' +
+                         '<span class="quiqqer-message-loading-progress">' +
+                         '  <span class="quiqqer-message-loading-progress-bar"></span>' +
+                         '</span>'
+            });
+
+            uploadMessages[fileId] = MessageInstance;
+
+            File.addEvent('onRefresh', function (File, percent) {
+                if (typeof uploadMessages[File.getId()] === 'undefined') {
+                    return;
+                }
+
+                const instanceId = uploadMessages[File.getId()].getId();
+                const MessageNode = document.body.getElement('[data-msg-id=' + instanceId + ']');
+
+                if (!MessageNode) {
+                    return;
+                }
+
+                MessageNode.getElement('.quiqqer-message-loading-progress-bar')
+                           .setStyle('width', percent + '%');
+            });
+
+            File.addEvent('onComplete', (File) => {
+                if (typeof uploadMessages[File.getId()] === 'undefined') {
+                    this.$MessageHandler.addSuccess(
+                        QUILocale.get(lg, 'upload.successful', {
+                            file: File.$File.name
+                        })
+                    );
+
+                    return;
+                }
+
+                const instanceId = uploadMessages[File.getId()].getId();
+                const MessageNode = document.body.getElement('[data-msg-id=' + instanceId + ']');
+
+                delete uploadMessages[File.getId()];
+
+                if (MessageNode) {
+                    this.$closeMessage(MessageNode).then(() => {
+                        this.$MessageHandler.addSuccess(
+                            QUILocale.get(lg, 'upload.successful', {
+                                file: File.$File.name
+                            })
+                        );
+
+                        let index = this.$queue.indexOf(MessageNode);
+
+                        if (index > -1) {
+                            this.$queue.splice(index, 1);
+                        }
+
+                        if (this.$queue.length) {
+                            return this.$showMessage(this.$queue[0]);
+                        }
+                    }).catch((err) => {
+                        console.error(err);
+                    });
+                } else {
+                    this.$MessageHandler.addSuccess(
+                        QUILocale.get(lg, 'upload.successful', {
+                            file: File.$File.name
+                        })
+                    );
+                }
+            });
+
+            File.addEvent('onError', (File) => {
+                if (typeof uploadMessages[File.getId()] === 'undefined') {
+                    return;
+                }
+
+                delete uploadMessages[File.getId()];
+            });
+
+            this.$customMessageHandling(MessageInstance, null);
         },
 
         toggleFilter: function (e) {

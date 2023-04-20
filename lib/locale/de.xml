@@ -4898,6 +4898,9 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             <p>Bitte überprüfe die Log-Datei.</o>
            ]]></de>
         </locale>
+        <locale name="upload.successful">
+            <de><![CDATA[[file] wurde erfolgreich hochgeladen]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">

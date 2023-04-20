@@ -29,19 +29,19 @@ define('controls/upload/File', [
 ], function () {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/quiqqer';
 
-    var QUI                = arguments[0],
-        QUIControl         = arguments[1],
-        QUIContextMenu     = arguments[2],
-        QUIContextmenuItem = arguments[3],
-        QUIButton          = arguments[4],
-        QUIProgressbar     = arguments[5],
-        QUIConfirm         = arguments[6],
-        MessageError       = arguments[7],
-        MathUtils          = arguments[8],
-        ObjectUtils        = arguments[9],
-        QUILocale          = arguments[11];
+    const QUI                = arguments[0],
+          QUIControl         = arguments[1],
+          QUIContextMenu     = arguments[2],
+          QUIContextmenuItem = arguments[3],
+          QUIButton          = arguments[4],
+          QUIProgressbar     = arguments[5],
+          QUIConfirm         = arguments[6],
+          MessageError       = arguments[7],
+          MathUtils          = arguments[8],
+          ObjectUtils        = arguments[9],
+          QUILocale          = arguments[11];
 
 
     /**
@@ -94,19 +94,19 @@ define('controls/upload/File', [
                 return;
             }
 
-            this.$is_paused   = false;
-            this.$file_size   = this.$File.size;
-            this.$chunk_size  = (1024 * 256); // 256kb
+            this.$is_paused = false;
+            this.$file_size = this.$File.size;
+            this.$chunk_size = (1024 * 256); // 256kb
             this.$range_start = 0;
-            this.$range_end   = this.$chunk_size;
+            this.$range_end = this.$chunk_size;
             this.$upload_time = null;
-            this.$execute     = true; // false if no execute of the update routine
-            this.$result      = null;
-            this.$error       = false;
-            this.$errors      = 0;
-            this.$uploaded    = false;
+            this.$execute = true; // false if no execute of the update routine
+            this.$result = null;
+            this.$error = false;
+            this.$errors = 0;
+            this.$uploaded = false;
 
-            this.$ContextMenu  = null;
+            this.$ContextMenu = null;
             this.$slice_method = 'slice';
 
             if ('mozSlice' in this.$File) {
@@ -122,9 +122,9 @@ define('controls/upload/File', [
             // if something has already been uploaded
             // eg: the file is from the upload manager
             if ('uploaded' in this.$File) {
-                this.$is_paused   = true;
+                this.$is_paused = true;
                 this.$range_start = this.$File.uploaded;
-                this.$range_end   = this.$range_start + this.$chunk_size;
+                this.$range_end = this.$range_start + this.$chunk_size;
 
                 if (this.$Progress) {
                     this.$Progress.set(
@@ -144,13 +144,13 @@ define('controls/upload/File', [
          * @return {Element}
          */
         create: function () {
-            var self = this;
+            const self = this;
 
             this.$Elm = new Element('div', {
                 html       : '<div class="file-name">' + this.getFilename() + '</div>' +
-                    '<div class="upload-time"></div>' +
-                    '<div class="progress"></div>' +
-                    '<div class="buttons"></div>',
+                             '<div class="upload-time"></div>' +
+                             '<div class="progress"></div>' +
+                             '<div class="buttons"></div>',
                 'class'    : 'upload-manager-file box smooth',
                 'data-file': this.getId()
             });
@@ -181,12 +181,12 @@ define('controls/upload/File', [
             this.$Progress.inject(this.$Elm.getElement('.progress'));
 
 
-            var Buttons = this.$Elm.getElement('.buttons');
+            const Buttons = this.$Elm.getElement('.buttons');
 
             Buttons.set({
                 html  : '<form action="" method="">' +
-                    '<input type="file" name="files" value="upload" />' +
-                    '</form>',
+                        '<input type="file" name="files" value="upload" />' +
+                        '</form>',
                 styles: {
                     'float': 'right',
                     clear  : 'both',
@@ -197,8 +197,8 @@ define('controls/upload/File', [
             Buttons.getElement('input[type="file"]').set({
                 events: {
                     change: function (event) {
-                        var Target = event.target,
-                            files  = Target.files;
+                        const Target = event.target,
+                              files  = Target.files;
 
                         if (!files[0]) {
                             return;
@@ -302,7 +302,7 @@ define('controls/upload/File', [
 
             // onerror, display it
             this.addEvent('onError', function (Exception, File) {
-                var Elm = File.getElm();
+                const Elm = File.getElm();
 
                 if (!Elm) {
                     return;
@@ -348,9 +348,12 @@ define('controls/upload/File', [
          * @method controls/upload/File#refresh
          */
         refresh: function () {
-            var percent = MathUtils.percent(this.$range_start, this.$file_size);
+            const percent = MathUtils.percent(this.$range_start, this.$file_size);
 
-            this.fireEvent('refresh', [this, percent]);
+            this.fireEvent('refresh', [
+                this,
+                percent
+            ]);
 
             if (!this.$Progress) {
                 return;
@@ -375,9 +378,9 @@ define('controls/upload/File', [
 
             // set upload start time
             if (!this.$upload_time) {
-                var Now     = new Date();
-                var minutes = ('0' + Now.getMinutes()).slice(-2);
-                var hours   = ('0' + Now.getHours()).slice(-2);
+                const Now = new Date();
+                const minutes = ('0' + Now.getMinutes()).slice(-2);
+                const hours = ('0' + Now.getHours()).slice(-2);
 
                 this.$upload_time = hours + ':' + minutes;
 
@@ -411,7 +414,10 @@ define('controls/upload/File', [
 
                 if (this.$error === false) {
                     this.$uploaded = true;
-                    this.fireEvent('complete', [this, this.$result]);
+                    this.fireEvent('complete', [
+                        this,
+                        this.$result
+                    ]);
                 }
 
                 return;
@@ -442,7 +448,7 @@ define('controls/upload/File', [
          */
         resume: function () {
             if (!(this.$File instanceof File)) {
-                var Upload = this.getElm().getElement('input[type="file"]');
+                const Upload = this.getElm().getElement('input[type="file"]');
 
                 if (Upload) {
                     Upload.click();
@@ -516,21 +522,21 @@ define('controls/upload/File', [
 
             if (this.$range_end > this.$file_size) {
                 this.$range_end = this.$file_size;
-                this.$execute   = false;
+                this.$execute = false;
             }
 
             // the file part
-            var data = this.$File[this.$slice_method](
+            const data = this.$File[this.$slice_method](
                 this.$range_start,
                 this.$range_end
             );
 
-            var FileParams = this.getAttribute('params');
+            let FileParams = this.getAttribute('params');
 
             FileParams = Object.assign({}, FileParams); // workaround, otherwise always duplicates itself
 
             // extra params for ajax function
-            var UploadParams = ObjectUtils.combine((FileParams || {}), {
+            const UploadParams = ObjectUtils.combine((FileParams || {}), {
                 file    : JSON.encode({
                     uploadstart: this.$upload_time,
                     chunksize  : this.$chunk_size,
@@ -563,8 +569,10 @@ define('controls/upload/File', [
                 UploadParams.lang = QUILocale.getCurrent();
             }
 
+            QUI.fireEvent('upload', [this]);
+            
             // $project, $parentid, $file, $data
-            var url = URL_LIB_DIR + 'QUI/Upload/bin/upload.php?' + Object.toQueryString(UploadParams);
+            const url = URL_LIB_DIR + 'QUI/Upload/bin/upload.php?' + Object.toQueryString(UploadParams);
 
             fetch(url, {
                 method : 'PUT',
@@ -576,7 +584,7 @@ define('controls/upload/File', [
                 body   : data
             }).then(function (response) {
                 this.$range_start = this.$range_end;
-                this.$range_end   = this.$range_start + this.$chunk_size;
+                this.$range_end = this.$range_start + this.$chunk_size;
 
                 if (this.$range_end > this.$file_size) {
                     this.$range_end = this.$file_size;
@@ -622,10 +630,10 @@ define('controls/upload/File', [
          * @param {String} responseText - server answer
          */
         $parseResult: function (responseText) {
-            var str   = responseText || '',
-                len   = str.length,
-                start = 9,
-                end   = len - 10;
+            const str   = responseText || '',
+                  len   = str.length,
+                  start = 9,
+                  end   = len - 10;
 
             if (!len) {
                 return;
@@ -657,19 +665,19 @@ define('controls/upload/File', [
             }
 
             // callback
-            var result = eval('(' + str.substring(start, end) + ')');
+            const result = eval('(' + str.substring(start, end) + ')');
 
             // exist messages?
             if (result.message_handler &&
                 result.message_handler.length) {
-                var messages = result.message_handler;
+                const messages = result.message_handler;
 
                 QUI.getMessageHandler(function (MH) {
-                    var send = function (Message) {
+                    const send = function (Message) {
                         MH.add(Message);
                     };
 
-                    for (var i = 0, len = messages.length; i < len; i++) {
+                    for (let i = 0, len = messages.length; i < len; i++) {
                         // parse time for javascript date
                         if ("time" in messages[i]) {
                             messages[i].time = messages[i] * 1000;
@@ -682,7 +690,7 @@ define('controls/upload/File', [
 
             // exist a main exception?
             if (result.Exception) {
-                this.$error   = true;
+                this.$error = true;
                 this.$execute = false;
 
                 return this.fireEvent('error', [

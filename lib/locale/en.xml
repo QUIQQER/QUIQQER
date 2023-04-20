@@ -4734,6 +4734,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
             <p>Please check the log file.</o>
            ]]></en>
         </locale>
+        <locale name="upload.successful">
+            <en><![CDATA[[file] was successfully uploaded]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">

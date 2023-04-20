@@ -274,3 +274,26 @@ body > .quiqqer-message {
     border-left-color: #51D88A;
     color: #38C172;
 }
+
+.quiqqer-message-loading {
+    background-color: #fbfcfd;
+    border: 0;
+    color: #898989;
+}
+
+.quiqqer-message-loading-progress {
+    background: #e6e7e9;
+    clear: both;
+    display: inline-block;
+    height: 8px;
+    position: relative;
+    width: 100%;
+}
+
+.quiqqer-message-loading-progress-bar {
+    background: #206bc4;
+    left: 0;
+    height: 8px;
+    position: absolute;
+    top: 0;
+}
