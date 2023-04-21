@@ -131,7 +131,7 @@ define('controls/editors/Editor', [
          * @param {Function} [callback] - callback function
          */
         load: function (callback) {
-            var self = this;
+            const self = this;
 
             this.getSettings().then(function (data) {
                 self.setAttribute('bodyId', data.bodyId);
@@ -208,8 +208,8 @@ define('controls/editors/Editor', [
          * thats not optimal, because we must generate a new editor instance with the editor manager
          */
         $onImport: function () {
-            var self     = this,
-                nodeName = this.$Elm.nodeName;
+            const self     = this,
+                  nodeName = this.$Elm.nodeName;
 
             if (nodeName === 'INPUT' || nodeName === 'TEXTAREA') {
                 this.$Input = this.$Elm;
@@ -314,7 +314,7 @@ define('controls/editors/Editor', [
                 return;
             }
 
-            var self = this;
+            const self = this;
 
             this.getManager().getToolbar(function (buttons) {
                 self.setAttribute('buttons', buttons);
@@ -416,7 +416,7 @@ define('controls/editors/Editor', [
          * @return {Promise}
          */
         getSettings: function (callback) {
-            var project = null,
+            let project = null,
                 buttons = this.getAttribute('buttons');
 
             if (this.$Project) {

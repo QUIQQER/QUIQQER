@@ -29,27 +29,27 @@ define('controls/projects/project/site/Panel', [
 ], function () {
     "use strict";
 
-    var QUI             = arguments[0],
-        QUIPanel        = arguments[1],
-        Projects        = arguments[2],
-        Ajax            = arguments[3],
-        QUIButton       = arguments[4],
-        QUIConfirm      = arguments[5],
-        QUIFormUtils    = arguments[6],
-        QUIElmUtils     = arguments[7],
-        ControlUtils    = arguments[8],
-        PanelUtils      = arguments[9],
-        SiteUtils       = arguments[10],
-        Locale          = arguments[11],
-        Users           = arguments[12],
-        Mustache        = arguments[13],
-        templateRestore = arguments[14];
+    const QUI             = arguments[0],
+          QUIPanel        = arguments[1],
+          Projects        = arguments[2],
+          Ajax            = arguments[3],
+          QUIButton       = arguments[4],
+          QUIConfirm      = arguments[5],
+          QUIFormUtils    = arguments[6],
+          QUIElmUtils     = arguments[7],
+          ControlUtils    = arguments[8],
+          PanelUtils      = arguments[9],
+          SiteUtils       = arguments[10],
+          Locale          = arguments[11],
+          Users           = arguments[12],
+          Mustache        = arguments[13],
+          templateRestore = arguments[14];
 
-    var lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/quiqqer';
 
-    var cleanupUrl = function (value) {
-        var notAllowed = Object.keys(SiteUtils.notAllowedUrlSigns()).join('|'),
-            reg        = new RegExp('[' + notAllowed + ']', "g");
+    const cleanupUrl = function (value) {
+        const notAllowed = Object.keys(SiteUtils.notAllowedUrlSigns()).join('|'),
+              reg        = new RegExp('[' + notAllowed + ']', "g");
 
         value = value.replace(reg, '');
         value = value.replace(/ /g, QUIQQER.Rewrite.URL_SPACE_CHARACTER);
@@ -105,7 +105,8 @@ define('controls/projects/project/site/Panel', [
             '$onSiteActivate',
             '$onSiteDeactivate',
             '$onSiteSave',
-            '$onSiteDelete'
+            '$onSiteDelete',
+            '$onKeyDown'
         ],
 
         options: {
@@ -125,11 +126,11 @@ define('controls/projects/project/site/Panel', [
             this.$editorPeriodicalSave = false; // delay for the wysiwyg editor, to save to the locale storage
 
             if (typeOf(Site) === 'classes/projects/project/Site') {
-                var Project = Site.getProject(),
-                    id      = 'panel-' +
-                              Project.getName() + '-' +
-                              Project.getLang() + '-' +
-                              Site.getId();
+                const Project = Site.getProject(),
+                      id      = 'panel-' +
+                                Project.getName() + '-' +
+                                Project.getLang() + '-' +
+                                Site.getId();
 
                 // default id
                 this.setAttribute('id', id);
@@ -164,31 +165,31 @@ define('controls/projects/project/site/Panel', [
             const self = this;
 
             return new Promise(function (resolve) {
-                var project = self.$Site.getProject().getName();
-                var lang = self.$Site.getProject().getLang();
-                var id = self.$Site.getId();
+                const project = self.$Site.getProject().getName();
+                const lang = self.$Site.getProject().getLang();
+                const id = self.$Site.getId();
 
-                var tpl = '<table>' +
-                          '<tr>' +
-                          '   <td>{{localeProject}}</td>' +
-                          '   <td>{{project}}</td>' +
-                          '</tr>' +
-                          '<tr>' +
-                          '   <td>{{localeLang}}</td>' +
-                          '   <td><img src="' + window.URL_OPT_DIR +
-                          'quiqqer/quiqqer/bin/16x16/flags/{{lang}}.png" alt="" /> {{lang}}</td>' +
-                          '</tr>' +
-                          '<tr>' +
-                          '   <td>{{localeID}}</td>' +
-                          '   <td>{{id}}</td>' +
-                          '</tr>' +
-                          '<tr>' +
-                          '   <td>{{localeUrl}}</td>' +
-                          '   <td>{{url}}</td>' +
-                          '</tr>' +
-                          '</table>';
+                const tpl = '<table>' +
+                            '<tr>' +
+                            '   <td>{{localeProject}}</td>' +
+                            '   <td>{{project}}</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '   <td>{{localeLang}}</td>' +
+                            '   <td><img src="' + window.URL_OPT_DIR +
+                            'quiqqer/quiqqer/bin/16x16/flags/{{lang}}.png" alt="" /> {{lang}}</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '   <td>{{localeID}}</td>' +
+                            '   <td>{{id}}</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '   <td>{{localeUrl}}</td>' +
+                            '   <td>{{url}}</td>' +
+                            '</tr>' +
+                            '</table>';
 
-                var result = Mustache.render(tpl, {
+                const result = Mustache.render(tpl, {
                     localeProject: Locale.get(lg, 'project'),
                     localeLang   : Locale.get(lg, 'language'),
                     localeID     : Locale.get(lg, 'id'),
@@ -211,8 +212,8 @@ define('controls/projects/project/site/Panel', [
          * @return {Object} data
          */
         serialize: function () {
-            var Site    = this.getSite(),
-                Project = Site.getProject();
+            const Site    = this.getSite(),
+                  Project = Site.getProject();
 
             return {
                 attributes: this.getAttributes(),
@@ -233,7 +234,7 @@ define('controls/projects/project/site/Panel', [
         unserialize: function (data) {
             this.setAttributes(data.attributes);
 
-            var Project = Projects.get(
+            const Project = Projects.get(
                 data.project,
                 data.lang
             );
@@ -258,8 +259,8 @@ define('controls/projects/project/site/Panel', [
          * Open the site in a popup
          */
         openSiteInPopup: function () {
-            var Site    = this.getSite(),
-                Project = Site.getProject();
+            const Site    = this.getSite(),
+                  Project = Site.getProject();
 
             SiteUtils.openSite(
                 Project.getName(),
@@ -272,17 +273,17 @@ define('controls/projects/project/site/Panel', [
          * Opens the site in the project panel
          */
         openSiteInStructure: function () {
-            var Panel;
-            var projectPanels = QUI.Controls.getByType('controls/projects/project/Panel');
+            let Panel;
+            const projectPanels = QUI.Controls.getByType('controls/projects/project/Panel');
 
-            var Site    = this.getSite(),
-                Project = Site.getProject();
+            const Site    = this.getSite(),
+                  Project = Site.getProject();
 
-            var onOpen = function () {
+            const onOpen = function () {
                 Panel.openSite(Site.getId());
             };
 
-            for (var i = 0, len = projectPanels.length; i < len; i++) {
+            for (let i = 0, len = projectPanels.length; i < len; i++) {
                 Panel = projectPanels[i];
 
                 if (Panel.getAttribute('project') === Project.getName() &&
@@ -322,7 +323,7 @@ define('controls/projects/project/site/Panel', [
                 // if dom is not loaded, we wait 200ms
                 (function () {
                     if (this.$delayTest > 10) {
-                        var errorMessage = Locale.get('quiqqer/quiqqer', 'exception.site.panel.error', {
+                        const errorMessage = Locale.get('quiqqer/quiqqer', 'exception.site.panel.error', {
                             id: this.getSite().getId()
                         });
 
@@ -345,10 +346,10 @@ define('controls/projects/project/site/Panel', [
          * Refresh the site panel
          */
         refresh: function () {
-            var title, description;
+            let title, description;
 
-            var Site    = this.getSite(),
-                Project = Site.getProject();
+            const Site    = this.getSite(),
+                  Project = Site.getProject();
 
             title = Site.getAttribute('title') + ' (' + Site.getId() + ')';
 
@@ -448,9 +449,9 @@ define('controls/projects/project/site/Panel', [
                 return Promise.resolve();
             }
 
-            var self    = this,
-                Site    = this.getSite(),
-                Project = Site.getProject();
+            const self    = this,
+                  Site    = this.getSite(),
+                  Project = Site.getProject();
 
             return new Promise(function (resolve) {
                 Ajax.get([
@@ -459,7 +460,7 @@ define('controls/projects/project/site/Panel', [
                     'ajax_site_isLockedFromOther',
                     'ajax_site_lock'
                 ], function (categories, buttons, isLocked) {
-                    var i, ev, fn, len, data, events, category, Category;
+                    let i, ev, fn, len, data, events, category, Category;
 
                     self.$built = true;
 
@@ -485,7 +486,7 @@ define('controls/projects/project/site/Panel', [
                         self.addButton(data);
                     }
 
-                    var Save = self.getButtonBar().getChildren('save');
+                    const Save = self.getButtonBar().getChildren('save');
 
                     if (Save) {
                         Save.getElm().addClass('qui-site-button-save');
@@ -558,7 +559,7 @@ define('controls/projects/project/site/Panel', [
          * event : on inject
          */
         $onInject: function () {
-            var Site = this.getSite();
+            const Site = this.getSite();
 
             Site.addEvents({
                 onLoad      : this.load,
@@ -578,6 +579,8 @@ define('controls/projects/project/site/Panel', [
                 return;
             }
 
+            document.addEventListener('keydown', this.$onKeyDown);
+
             const self = this;
 
             this.$buildPanel().then(function () {
@@ -588,7 +591,7 @@ define('controls/projects/project/site/Panel', [
                     return;
                 }
 
-                var EditUser = Users.get(Site.getAttribute('e_user'));
+                const EditUser = Users.get(Site.getAttribute('e_user'));
 
                 if (EditUser.isLoaded()) {
                     return Promise.resolve(EditUser);
@@ -603,7 +606,7 @@ define('controls/projects/project/site/Panel', [
                     return;
                 }
 
-                var Sheet = self.createSheet({
+                const Sheet = self.createSheet({
                     icon : 'fa fa-window-restore',
                     title: Locale.get('quiqqer/quiqqer', 'panel.site.restore.title', {
                         id: Site.getId()
@@ -611,10 +614,10 @@ define('controls/projects/project/site/Panel', [
                 });
 
 
-                var StorageTime = null;
-                var storageDate = '---';
-                var storage = Site.getWorkingStorage();
-                var EditDate = new Date(Site.getAttribute('e_date'));
+                let StorageTime = null;
+                let storageDate = '---';
+                const storage = Site.getWorkingStorage();
+                const EditDate = new Date(Site.getAttribute('e_date'));
 
                 if ("__storageTime" in storage) {
                     StorageTime = new Date(storage.__storageTime);
@@ -624,7 +627,7 @@ define('controls/projects/project/site/Panel', [
                     });
                 }
 
-                var localeParams = {
+                const localeParams = {
                     id          : Site.getId(),
                     title       : Site.getAttribute('title'),
                     editUser    : EditUser.getName(),
@@ -636,7 +639,7 @@ define('controls/projects/project/site/Panel', [
                     localeDate  : storageDate
                 };
 
-                var text = Locale.get(
+                let text = Locale.get(
                     'quiqqer/quiqqer',
                     'panel.site.restore.message.local.newer',
                     localeParams
@@ -696,8 +699,8 @@ define('controls/projects/project/site/Panel', [
          * event : on destroy
          */
         $onDestroy: function () {
-            var Site    = this.getSite(),
-                Project = Site.getProject();
+            const Site    = this.getSite(),
+                  Project = Site.getProject();
 
             Site.removeEvent('onLoad', this.load);
             Site.removeEvent('onActivate', this.$onSiteActivate);
@@ -708,6 +711,7 @@ define('controls/projects/project/site/Panel', [
             Site.clearWorkingStorage();
 
             window.removeEvent('login', this.$onLogin);
+            document.removeEventListener('keydown', this.$onKeyDown);
 
             // only unlock if the site was not locked from another user
             if (!this.$Container.getElement('[data-locked]')) {
@@ -715,6 +719,18 @@ define('controls/projects/project/site/Panel', [
                     project: Project.encode(),
                     id     : Site.getId()
                 });
+            }
+        },
+
+        /**
+         * event: key down
+         *
+         * @param e
+         */
+        $onKeyDown: function (e) {
+            if (e.ctrlKey && e.key === 's' && this.isOpen()) {
+                e.preventDefault();
+                this.save();
             }
         },
 
@@ -741,8 +757,8 @@ define('controls/projects/project/site/Panel', [
          * @method controls/projects/project/site/Panel#openPermissions
          */
         openPermissions: function () {
-            var Parent = this.getParent(),
-                Site   = this.getSite();
+            const Parent = this.getParent(),
+                  Site   = this.getSite();
 
             require(['controls/permissions/Panel'], function (PermPanel) {
                 Parent.appendChild(
@@ -759,10 +775,10 @@ define('controls/projects/project/site/Panel', [
          * @method controls/projects/project/site/Panel#openMedia
          */
         openMedia: function () {
-            var Parent  = this.getParent(),
-                Site    = this.getSite(),
-                Project = Site.getProject(),
-                Media   = Project.getMedia();
+            const Parent  = this.getParent(),
+                  Site    = this.getSite(),
+                  Project = Site.getProject(),
+                  Media   = Project.getMedia();
 
             require(['controls/projects/project/media/Panel'], function (Panel) {
                 Parent.appendChild(new Panel(Media));
@@ -775,10 +791,10 @@ define('controls/projects/project/site/Panel', [
          * @method controls/projects/project/site/Panel#openSort
          */
         openSort: function () {
-            var Site = this.getSite(),
+            let Site = this.getSite(),
                 Sort = false;
 
-            var Sheets = this.createSheet({
+            const Sheets = this.createSheet({
                 icon   : 'fa fa-sort',
                 buttons: false,
                 title  : Locale.get(lg, 'projects.project.site.panel.sort.title', {
@@ -813,7 +829,7 @@ define('controls/projects/project/site/Panel', [
                 return self.getSite().save();
             }).then(function () {
                 // refresh data
-                var Form = self.$Container.getElement('form');
+                const Form = self.$Container.getElement('form');
 
                 if (Form) {
                     QUIFormUtils.setDataToForm(
@@ -833,7 +849,7 @@ define('controls/projects/project/site/Panel', [
          * opens the site delete dialog
          */
         del: function () {
-            var Site = this.getSite();
+            const Site = this.getSite();
 
             require(['qui/controls/windows/Confirm'], function (Confirm) {
                 new Confirm({
@@ -908,8 +924,8 @@ define('controls/projects/project/site/Panel', [
          * @return {Promise}
          */
         deleteLinked: function (parentId) {
-            var self = this,
-                Site = this.getSite();
+            const self = this,
+                  Site = this.getSite();
 
             return new Promise(function (resolve, reject) {
                 if (typeof parentId === 'undefined') {
@@ -1009,14 +1025,14 @@ define('controls/projects/project/site/Panel', [
                 return Promise.resolve();
             }
 
-            var setProject = function () {
+            const setProject = function () {
                 // set the project to the controls
-                var i, len, Control;
+                let i, len, Control;
 
-                var Site    = self.getSite(),
-                    Project = Site.getProject(),
-                    Form    = self.getBody().getElement('form'),
-                    quiids  = Form.getElements('[data-quiid]');
+                const Site    = self.getSite(),
+                      Project = Site.getProject(),
+                      Form    = self.getBody().getElement('form'),
+                      quiids  = Form.getElements('[data-quiid]');
 
                 for (i = 0, len = quiids.length; i < len; i++) {
                     Control = QUI.Controls.getById(
@@ -1073,7 +1089,7 @@ define('controls/projects/project/site/Panel', [
                     this.$Container.set('html', '');
 
                     return this.$getCategoryFromXml(Category.getAttribute('name')).then(function (result) {
-                        var Form = new Element('form', {
+                        const Form = new Element('form', {
                             html: result
                         }).inject(self.$Container);
 
@@ -1090,15 +1106,15 @@ define('controls/projects/project/site/Panel', [
                     return QUI.parse(this.$Container);
                 }
 
-                var Site    = self.getSite(),
-                    Project = Site.getProject();
+                const Site    = self.getSite(),
+                      Project = Site.getProject();
 
                 return new Promise(function (resolve) {
                     Ajax.get([
                         'ajax_site_categories_template',
                         'ajax_site_lock'
                     ], function (result) {
-                        var Body = self.$Container;
+                        const Body = self.$Container;
 
                         if (!result) {
                             Body.set('html', '');
@@ -1108,7 +1124,7 @@ define('controls/projects/project/site/Panel', [
 
                         Body.set('html', '<form class="qui-site-data">' + result + '</form>');
 
-                        var Form = Body.getElement('form');
+                        const Form = Body.getElement('form');
 
                         Form.addEvent('submit', function (event) {
                             event.stop();
@@ -1127,7 +1143,7 @@ define('controls/projects/project/site/Panel', [
 
                         // search editor controls
                         if (Category.getAttribute('name') === 'settings') {
-                            var Editors = Body.getElements('[data-qui="controls/editors/Editor"]');
+                            const Editors = Body.getElements('[data-qui="controls/editors/Editor"]');
 
                             if (Editors.length) {
                                 Editors.set('data-qui', null);
@@ -1145,14 +1161,14 @@ define('controls/projects/project/site/Panel', [
                                 self.$bindNameInputUrlFilter();
 
                                 // site linking
-                                var i, len, Row;
+                                let i, len, Row;
 
-                                var LinkinTable     = Body.getElement('.site-linking'),
-                                    LinkinLangTable = Body.getElement('.site-langs'),
-                                    Locked          = Body.getElement('[data-locked]'),
-                                    Title           = Body.getElement('[name="title"]'),
-                                    OpenInStructure = Body.getElement('[name="open-in-structure"]'),
-                                    SiteType        = Body.getElement('[name="type"]')
+                                const LinkinTable     = Body.getElement('.site-linking'),
+                                      LinkinLangTable = Body.getElement('.site-langs'),
+                                      Locked          = Body.getElement('[data-locked]'),
+                                      Title           = Body.getElement('[name="title"]'),
+                                      OpenInStructure = Body.getElement('[name="open-in-structure"]'),
+                                      SiteType        = Body.getElement('[name="type"]')
                                 ;
 
                                 if (OpenInStructure) {
@@ -1177,11 +1193,11 @@ define('controls/projects/project/site/Panel', [
                                             return;
                                         }
 
-                                        var attributes = Site.getAttributes();
+                                        const attributes = Site.getAttributes();
 
-                                        var name = cleanupUrl(attributes.name);
-                                        var title = cleanupUrl(attributes.title);
-                                        var value = cleanupUrl(this.value);
+                                        const name = cleanupUrl(attributes.name);
+                                        const title = cleanupUrl(attributes.title);
+                                        const value = cleanupUrl(this.value);
 
                                         if (value === title) {
                                             return;
@@ -1201,7 +1217,7 @@ define('controls/projects/project/site/Panel', [
 
 
                                 if (LinkinTable) {
-                                    var openDeleteLink = function (Btn) {
+                                    const openDeleteLink = function (Btn) {
                                         Btn.setAttribute('icon', 'fa fa-spinner fa-spin');
 
                                         self.deleteLinked(
@@ -1231,7 +1247,7 @@ define('controls/projects/project/site/Panel', [
                                 }
 
                                 if (LinkinLangTable) {
-                                    var Buttons,
+                                    let Buttons,
                                         rowList = LinkinLangTable.getElements('tbody tr');
 
                                     new QUIButton({
@@ -1252,13 +1268,13 @@ define('controls/projects/project/site/Panel', [
                                     }).inject(LinkinLangTable.getElement('th'));
 
                                     // helper functions
-                                    var copyLinking = function (Btn) {
+                                    const copyLinking = function (Btn) {
                                         self.copySiteToLang(
                                             Btn.getAttribute('lang')
                                         );
                                     };
 
-                                    var openSite = function (Btn) {
+                                    const openSite = function (Btn) {
                                         PanelUtils.openSitePanel(
                                             Project.getName(),
                                             Btn.getAttribute('lang'),
@@ -1266,7 +1282,7 @@ define('controls/projects/project/site/Panel', [
                                         );
                                     };
 
-                                    var removeLinking = function (Btn) {
+                                    const removeLinking = function (Btn) {
                                         self.removeLanguageLink(
                                             Btn.getAttribute('lang'),
                                             Btn.getAttribute('siteId')
@@ -1373,9 +1389,9 @@ define('controls/projects/project/site/Panel', [
          * @return {Promise}
          */
         $categoryOnLoad: function (Category) {
-            var self          = this,
-                onloadRequire = Category.getAttribute('onload_require'),
-                onload        = Category.getAttribute('onload');
+            const self          = this,
+                  onloadRequire = Category.getAttribute('onload_require'),
+                  onload        = Category.getAttribute('onload');
 
             return new Promise(function (resolve) {
                 if (onloadRequire) {
@@ -1386,7 +1402,7 @@ define('controls/projects/project/site/Panel', [
                             return;
                         }
 
-                        var type = typeOf(Plugin);
+                        const type = typeOf(Plugin);
 
                         if (type === 'function') {
                             type(Category, self);
@@ -1427,8 +1443,8 @@ define('controls/projects/project/site/Panel', [
          * @return {Promise}
          */
         $getCategoryFromXml: function (name) {
-            var Site    = this.getSite(),
-                Project = Site.getProject();
+            const Site    = this.getSite(),
+                  Project = Site.getProject();
 
             return new Promise(function (resolve) {
                 Ajax.get('ajax_site_categories_xml', resolve, {
@@ -1453,8 +1469,8 @@ define('controls/projects/project/site/Panel', [
         $onCategoryLeave: function (Category, callback) {
             this.Loader.show();
 
-            var Site = this.getSite(),
-                Body = this.$Container;
+            const Site = this.getSite(),
+                  Body = this.$Container;
 
             if (typeof Category === 'undefined' || !Category) {
                 return Promise.resolve();
@@ -1630,10 +1646,10 @@ define('controls/projects/project/site/Panel', [
          * @param {Object} Btn - qui/controls/buttons/Button
          */
         $onPanelButtonClick: function (Btn) {
-            var Panel = this,
-                Site  = Panel.getSite();
+            const Panel = this,
+                  Site  = Panel.getSite();
 
-            var evalButtonClick = function () {
+            const evalButtonClick = function () {
                 eval(Btn.getAttribute('_onclick') + '();');
             };
 
@@ -1643,7 +1659,7 @@ define('controls/projects/project/site/Panel', [
             }
 
             // storage cleanung, so that this can be properly compared
-            var storageCleanup = function (storage) {
+            const storageCleanup = function (storage) {
                 if (!storage) {
                     return '';
                 }
@@ -1668,11 +1684,11 @@ define('controls/projects/project/site/Panel', [
                 return JSON.encode(storage);
             };
 
-            var oldStorage = storageCleanup(Site.getWorkingStorage());
+            const oldStorage = storageCleanup(Site.getWorkingStorage());
 
             Panel.$onCategoryLeave(Panel.getActiveCategory()).then(function () {
                 return new Promise(function (resolve) {
-                    var currentStorage = storageCleanup(Site.getWorkingStorage());
+                    const currentStorage = storageCleanup(Site.getWorkingStorage());
 
                     // check if site must be saved
                     if (!oldStorage || oldStorage === currentStorage) {
@@ -1718,13 +1734,13 @@ define('controls/projects/project/site/Panel', [
          * init the name input key events
          */
         $bindNameInputUrlFilter: function () {
-            var Site = this.getSite(),
-                Body = this.$Container;
+            const Site = this.getSite(),
+                  Body = this.$Container;
 
-            var NameInput     = Body.getElement('input[name="site-name"]'),
-                UrlDisplay    = Body.getElement('.site-url-display'),
-                UrlEditButton = Body.getElement('.site-url-display-edit'),
-                siteUrl       = Site.getUrl();
+            const NameInput     = Body.getElement('input[name="site-name"]'),
+                  UrlDisplay    = Body.getElement('.site-url-display'),
+                  UrlEditButton = Body.getElement('.site-url-display-edit'),
+                  siteUrl       = Site.getUrl();
 
             if (!NameInput) {
                 return;
@@ -1757,7 +1773,7 @@ define('controls/projects/project/site/Panel', [
             }).inject(UrlEditButton);
 
             // filter
-            var sitePath = siteUrl.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '') + '/',
+            let sitePath = siteUrl.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '') + '/',
                 lastPos  = null,
                 hold     = false;
 
@@ -1773,7 +1789,7 @@ define('controls/projects/project/site/Panel', [
                     },
 
                     keyup: function (event) {
-                        var old = this.value;
+                        const old = this.value;
 
                         if (typeof event !== 'undefined') {
                             lastPos = QUIElmUtils.getCursorPosition(event.target);
@@ -1806,9 +1822,9 @@ define('controls/projects/project/site/Panel', [
          * Disable the buttons, if the site is locked
          */
         setLocked: function () {
-            var buttons = this.getButtons();
+            const buttons = this.getButtons();
 
-            for (var i = 0, len = buttons.length; i < len; i++) {
+            for (let i = 0, len = buttons.length; i < len; i++) {
                 if ("disable" in buttons[i]) {
                     buttons[i].disable();
                 }
@@ -1819,9 +1835,9 @@ define('controls/projects/project/site/Panel', [
          * Enable the buttons, if the site is unlocked
          */
         setUnlocked: function () {
-            var buttons = this.getButtons();
+            const buttons = this.getButtons();
 
-            for (var i = 0, len = buttons.length; i < len; i++) {
+            for (let i = 0, len = buttons.length; i < len; i++) {
                 if ("enable" in buttons[i]) {
                     buttons[i].enable();
                 }
@@ -1832,8 +1848,8 @@ define('controls/projects/project/site/Panel', [
          * unlock the site, only if the user has the permission
          */
         unlockSite: function () {
-            var self = this,
-                Site = this.getSite();
+            const self = this,
+                  Site = this.getSite();
 
             this.Loader.show();
 
@@ -1848,9 +1864,9 @@ define('controls/projects/project/site/Panel', [
          * @private
          */
         $destroyRefresh: function () {
-            var self    = this,
-                Site    = this.getSite(),
-                Project = Site.getProject();
+            const self    = this,
+                  Site    = this.getSite(),
+                  Project = Site.getProject();
 
             require(['utils/Panels'], function (Utils) {
                 self.destroy();
@@ -1867,8 +1883,8 @@ define('controls/projects/project/site/Panel', [
          * event : on login
          */
         $onLogin: function () {
-            var Active = this.getActiveCategory(),
-                Task   = this.getAttribute('Task');
+            const Active = this.getActiveCategory(),
+                  Task   = this.getAttribute('Task');
 
             // if task exists, check if task is active
             if (Task &&
@@ -1895,11 +1911,11 @@ define('controls/projects/project/site/Panel', [
          * event on site save
          */
         $onSiteSave: function () {
-            var Form = this.getBody().getElement('form');
+            const Form = this.getBody().getElement('form');
 
             if (Form) {
-                var attributes = this.getSite().getAttributes();
-                var NameInput = this.getBody().getElement('input[name="site-name"]');
+                const attributes = this.getSite().getAttributes();
+                const NameInput = this.getBody().getElement('input[name="site-name"]');
 
                 attributes['site-name'] = attributes.name;
 
@@ -1919,7 +1935,7 @@ define('controls/projects/project/site/Panel', [
         $onSiteActivate: function () {
             this.$ButtonOpenWebsite.show();
 
-            var Status = this.getButtons('status');
+            const Status = this.getButtons('status');
 
             if (!Status) {
                 this.Loader.hide();
@@ -1941,7 +1957,7 @@ define('controls/projects/project/site/Panel', [
         $onSiteDeactivate: function () {
             this.$ButtonOpenWebsite.hide();
 
-            var Status = this.getButtons('status');
+            const Status = this.getButtons('status');
 
             if (!Status) {
                 this.Loader.hide();
@@ -1982,8 +1998,8 @@ define('controls/projects/project/site/Panel', [
          * @return {Promise}
          */
         loadEditor: function (content) {
-            var self = this,
-                Body = this.$Container;
+            const self = this,
+                  Body = this.$Container;
 
             Body.set('html', '');
             Body.setStyle('opacity', 0);
@@ -1991,8 +2007,8 @@ define('controls/projects/project/site/Panel', [
             return new Promise(function (resolve) {
                 require(['Editors'], function (Editors) {
                     Editors.getEditor().then(function (Editor) {
-                        var Site    = self.getSite(),
-                            Project = Site.getProject();
+                        const Site    = self.getSite(),
+                              Project = Site.getProject();
 
                         self.setAttribute('Editor', Editor);
 
@@ -2036,7 +2052,7 @@ define('controls/projects/project/site/Panel', [
                 this.$clearEditorPeriodicalSave();
             }
 
-            var self      = this,
+            let self      = this,
                 Category  = this.getActiveCategory(),
                 attribute = false;
 
@@ -2049,7 +2065,7 @@ define('controls/projects/project/site/Panel', [
             }
 
             this.$editorPeriodicalSave = (function (attr) {
-                var Editor = self.getAttribute('Editor');
+                const Editor = self.getAttribute('Editor');
 
                 if (!Editor) {
                     return;
@@ -2076,18 +2092,18 @@ define('controls/projects/project/site/Panel', [
             const self = this;
 
             require(['controls/projects/Popup'], function (ProjectPopup) {
-                var Site    = self.getSite(),
-                    Project = Site.getProject();
+                const Site    = self.getSite(),
+                      Project = Site.getProject();
 
                 Project.getConfig(function (config) {
-                    var langs = config.langs,
+                    let langs = config.langs,
                         lang  = Project.getLang();
 
                     langs = langs.split(',');
 
-                    var needles = [];
+                    const needles = [];
 
-                    for (var i = 0, len = langs.length; i < len; i++) {
+                    for (let i = 0, len = langs.length; i < len; i++) {
                         if (langs[i] !== lang) {
                             needles.push(langs[i]);
                         }
@@ -2130,8 +2146,8 @@ define('controls/projects/project/site/Panel', [
         removeLanguageLink: function (lang, id) {
             const self = this;
 
-            var Site    = self.getSite(),
-                Project = Site.getProject();
+            const Site    = self.getSite(),
+                  Project = Site.getProject();
 
             new QUIConfirm({
                 title    : Locale.get(lg, 'projects.project.site.panel.linked.window.delete.title'),
@@ -2173,8 +2189,8 @@ define('controls/projects/project/site/Panel', [
                 return;
             }
 
-            var self    = this,
-                Project = this.$Site.getProject();
+            const self    = this,
+                  Project = this.$Site.getProject();
 
             new QUIConfirm({
                 title      : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.title', {
@@ -2260,16 +2276,16 @@ define('controls/projects/project/site/Panel', [
             this.Loader.show();
 
             return this.$onCategoryLeave(this.getActiveCategory()).then(function () {
-                var Site    = self.getSite(),
-                    Project = Site.getProject();
+                const Site    = self.getSite(),
+                      Project = Site.getProject();
 
-                var Form = new Element('form', {
+                const Form = new Element('form', {
                     method: 'POST',
                     action: URL_SYS_DIR + 'bin/preview.php',
                     target: '_blank'
                 });
 
-                var attributes = Site.getAttributes();
+                const attributes = Site.getAttributes();
 
                 new Element('input', {
                     type : 'hidden',
@@ -2290,9 +2306,9 @@ define('controls/projects/project/site/Panel', [
                 }).inject(Form);
 
 
-                var val, to;
+                let val, to;
 
-                for (var key in attributes) {
+                for (let key in attributes) {
 
                     if (!attributes.hasOwnProperty(key)) {
                         continue;
@@ -2342,8 +2358,8 @@ define('controls/projects/project/site/Panel', [
          * Shows title url customization confirm window
          */
         $showTitleUrlAdjustment: function () {
-            var self = this,
-                Site = this.getSite();
+            const self = this,
+                  Site = this.getSite();
 
             new QUIConfirm({
                 icon         : 'fa fa-file-o',
@@ -2355,8 +2371,8 @@ define('controls/projects/project/site/Panel', [
                 maxWidth     : 600,
                 events       : {
                     onSubmit: function () {
-                        var Title = self.getBody().getElement('[name="title"]'),
-                            Name  = self.getBody().getElement('[name="site-name"]');
+                        const Title = self.getBody().getElement('[name="title"]'),
+                              Name  = self.getBody().getElement('[name="site-name"]');
 
                         Name.value = cleanupUrl(Title.value);
                         Name.fireEvent('keyup');
@@ -2365,8 +2381,8 @@ define('controls/projects/project/site/Panel', [
                         Site.setAttribute('title', Title.value);
                     },
                     onCancel: function () {
-                        var Title = self.getBody().getElement('[name="title"]'),
-                            Name  = self.getBody().getElement('[name="site-name"]');
+                        const Title = self.getBody().getElement('[name="title"]'),
+                              Name  = self.getBody().getElement('[name="site-name"]');
 
                         Site.setAttribute('name', Name.value);
                         Site.setAttribute('title', Title.value);
