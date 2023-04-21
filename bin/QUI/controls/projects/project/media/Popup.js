@@ -18,6 +18,8 @@ define('controls/projects/project/media/Popup', [
 ], function (QUIPopup, QUIConfirm, QUIButton, MediaPanel, ProjectSelect, Projects, QUILocale, Ajax) {
     "use strict";
 
+    let LAST_FILE_ID = false;
+
     return new Class({
 
         Extends: QUIPopup,
@@ -72,17 +74,17 @@ define('controls/projects/project/media/Popup', [
 
             this.Loader.show();
 
-            var Media, Project, Content;
+            let Media, Project, Content;
 
-            var self    = this,
-                project = this.getAttribute('project');
+            const self    = this,
+                  project = this.getAttribute('project');
 
             Content = this.getContent();
 
             // project selection, if no project exists
             if (!project) {
                 Projects.getList(function (result) {
-                    var length = Object.getLength(result);
+                    const length = Object.getLength(result);
 
                     if (length === 1) {
                         self.setAttribute('project', Object.keys(result)[0]);
@@ -91,7 +93,7 @@ define('controls/projects/project/media/Popup', [
                         return;
                     }
 
-                    var SelectContainer = new Element('div', {
+                    const SelectContainer = new Element('div', {
                         styles: {
                             height   : '100%',
                             left     : 0,
@@ -136,7 +138,6 @@ define('controls/projects/project/media/Popup', [
                         }
                     }).inject(SelectContainer);
 
-
                     this.Loader.hide();
                 }.bind(this));
 
@@ -164,35 +165,41 @@ define('controls/projects/project/media/Popup', [
                 padding: 0
             });
 
-            Ajax.get('ajax_media_file_getParentId', function (parentId) {
-                self.$Panel = new MediaPanel(Media, {
+            let fileId = this.getAttribute('fileid');
+
+            if (!fileId) {
+                fileId = LAST_FILE_ID;
+            }
+
+            Ajax.get('ajax_media_file_getParentId', (parentId) => {
+                this.$Panel = new MediaPanel(Media, {
                     startid             : parentId,
                     dragable            : false,
                     collapsible         : false,
                     selectable          : true,
-                    breadcrumb          : self.getAttribute('breadcrumb'),
-                    selectable_types    : self.getAttribute('selectable_types'),
-                    selectable_mimetypes: self.getAttribute('selectable_mimetypes'),
+                    breadcrumb          : this.getAttribute('breadcrumb'),
+                    selectable_types    : this.getAttribute('selectable_types'),
+                    selectable_mimetypes: this.getAttribute('selectable_mimetypes'),
                     isInPopup           : true,
                     events              : {
-                        onCreate: function (Panel) {
+                        onCreate: (Panel) => {
                             Panel.getElm().setStyle('borderRadius', 0);
-                            self.Loader.hide();
+                            this.Loader.hide();
                         },
 
-                        onChildClick: function (Panel, imageData) {
-                            self.$itemClick(imageData);
+                        onChildClick: (Panel, imageData) => {
+                            this.$itemClick(imageData);
                         },
 
-                        onUploadOpenBegin: function (Panel) {
+                        onUploadOpenBegin: (Panel) => {
                             moofx(Panel.getContent()).animate({
                                 opacity: 0
                             });
-                            self.hideButtons();
+                            this.hideButtons();
                         },
 
-                        onUploadClose: function (Panel) {
-                            self.showButtons();
+                        onUploadClose: (Panel) => {
+                            this.showButtons();
 
                             moofx(Panel.getContent()).animate({
                                 opacity: 1
@@ -201,13 +208,13 @@ define('controls/projects/project/media/Popup', [
                     }
                 });
 
-                self.$Panel.inject(Content);
+                this.$Panel.inject(Content);
 
-                if (self.isOpened()) {
-                    self.$Panel.resize();
+                if (this.isOpened()) {
+                    this.$Panel.resize();
                 }
             }, {
-                fileid : this.getAttribute('fileid'),
+                fileid : fileId,
                 project: Project.getName()
             });
 
@@ -227,16 +234,16 @@ define('controls/projects/project/media/Popup', [
          * event: on open begin
          */
         $onOpenBegin: function () {
-            var ckDialogs = document.getElements('.cke_dialog');
+            const ckDialogs = document.getElements('.cke_dialog');
 
             if (!ckDialogs.length) {
                 return;
             }
 
             // ckeditor stuff has extrem high zindex
-            var currentIndex = this.getElm().getStyle('z-index');
+            let currentIndex = this.getElm().getStyle('z-index');
 
-            for (var i = 0, len = ckDialogs.length; i < len; i++) {
+            for (let i = 0, len = ckDialogs.length; i < len; i++) {
                 if (currentIndex < parseInt(ckDialogs[i].getStyle('z-index'))) {
                     currentIndex = parseInt(ckDialogs[i].getStyle('z-index'));
                 }
@@ -251,11 +258,11 @@ define('controls/projects/project/media/Popup', [
          * @param {Object} imageData - data of the image
          */
         $activateItem: function (imageData) {
-            var self = this;
+            const self = this;
 
             this.close();
 
-            var Confirm = new QUIConfirm({
+            const Confirm = new QUIConfirm({
                 title      : QUILocale.get('quiqqer/quiqqer', 'projects.project.site.media.popup.window.activate.title'),
                 text       : QUILocale.get('quiqqer/quiqqer', 'projects.project.site.media.popup.window.activate.text'),
                 information: QUILocale.get('quiqqer/quiqqer', 'projects.project.site.media.popup.window.activate.information'),
@@ -265,7 +272,7 @@ define('controls/projects/project/media/Popup', [
                         require([
                             'controls/projects/project/media/Popup'
                         ], function (MediaPopup) {
-                            var MP = new MediaPopup(self.getAttributes());
+                            const MP = new MediaPopup(self.getAttributes());
 
                             if ("submit" in self.$events) {
                                 self.$events.submit.each(function (f) {
@@ -311,9 +318,11 @@ define('controls/projects/project/media/Popup', [
 
             // if folder is in the selectable_types, you can select folders
             if (folderCheck) {
-                var folders = this.getAttribute('selectable_types');
+                const folders = this.getAttribute('selectable_types');
 
                 if (folders && folders.contains('folder')) {
+                    LAST_FILE_ID = imageData.id;
+
                     this.close();
                     this.fireEvent('submit', [
                         this,
@@ -330,6 +339,8 @@ define('controls/projects/project/media/Popup', [
                 return;
             }
 
+            LAST_FILE_ID = imageData.id;
+
             this.close();
             this.fireEvent('submit', [
                 this,
@@ -342,7 +353,7 @@ define('controls/projects/project/media/Popup', [
          * @param {Object} imageData -  data of the image
          */
         $itemClick: function (imageData) {
-            var self = this;
+            const self = this;
 
             this.$Panel.Loader.hide();
 
@@ -369,7 +380,7 @@ define('controls/projects/project/media/Popup', [
          * @param {Function} callback
          */
         $getDetails: function (imageData, callback) {
-            var project = this.getAttribute('project');
+            let project = this.getAttribute('project');
 
             if (this.$Panel) {
                 project = this.$Panel.getMedia().getProject().getName();

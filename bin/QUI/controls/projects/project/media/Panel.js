@@ -31,24 +31,26 @@ define('controls/projects/project/media/Panel', [
 ], function () {
     "use strict";
 
-    var lg                = 'quiqqer/quiqqer';
-    var HIDE_HIDDEN_FILES = 1; // 1 = hide all hidden files, 0 = show all hidden files
+    const lg = 'quiqqer/quiqqer';
 
-    var QUI              = arguments[0],
-        QUIPanel         = arguments[1],
-        Media            = arguments[2],
-        MediaSitemap     = arguments[3],
-        PanelDOMEvents   = arguments[4],
-        PanelContextMenu = arguments[5],
-        BreadcrumbItem   = arguments[6],
-        GridControl      = arguments[7],
-        UploadForm       = arguments[8],
-        RequestUpload    = arguments[9],
-        Ajax             = arguments[10],
-        Locale           = arguments[11],
-        MediaUtils       = arguments[12],
-        Projects         = arguments[13],
-        Permissions      = arguments[14];
+    let HIDE_HIDDEN_FILES = 1; // 1 = hide all hidden files, 0 = show all hidden files
+    let SHOW_SITEMAP_STATUS = false;
+
+    const QUI              = arguments[0],
+          QUIPanel         = arguments[1],
+          Media            = arguments[2],
+          MediaSitemap     = arguments[3],
+          PanelDOMEvents   = arguments[4],
+          PanelContextMenu = arguments[5],
+          BreadcrumbItem   = arguments[6],
+          GridControl      = arguments[7],
+          UploadForm       = arguments[8],
+          RequestUpload    = arguments[9],
+          Ajax             = arguments[10],
+          Locale           = arguments[11],
+          MediaUtils       = arguments[12],
+          Projects         = arguments[13],
+          Permissions      = arguments[14];
 
     /**
      * A Media-Panel, opens the Media in an Apppanel
@@ -139,13 +141,13 @@ define('controls/projects/project/media/Panel', [
                 5000
             ];
 
-            this.$Map    = null;
-            this.$Media  = Media || null;
-            this.$File   = null;
+            this.$Map = null;
+            this.$Media = Media || null;
+            this.$File = null;
             this.$Filter = null;
             this.$loaded = false;
 
-            this.$Pagination          = null;
+            this.$Pagination = null;
             this.$PaginationContainer = null;
 
             this.$maxFileUploads = 5;
@@ -158,7 +160,7 @@ define('controls/projects/project/media/Panel', [
 
             this.$selected = [];
 
-            this.$DOMEvents        = new PanelDOMEvents(this);
+            this.$DOMEvents = new PanelDOMEvents(this);
             this.$PanelContextMenu = new PanelContextMenu(this);
 
             this.addEvents({
@@ -218,7 +220,7 @@ define('controls/projects/project/media/Panel', [
          * @return {Object} this (controls/projects/project/site/Panel)
          */
         unserialize: function (data) {
-            var Project = Projects.get(data.project);
+            const Project = Projects.get(data.project);
 
             this.setAttributes(data.attributes);
             this.$Media = Project.getMedia();
@@ -255,14 +257,14 @@ define('controls/projects/project/media/Panel', [
                 return;
             }
 
-            var Omnigrid  = this.getBody().getElement('.omnigrid');
-            var Container = this.getBody().getElement('.qui-media-content');
+            const Omnigrid = this.getBody().getElement('.omnigrid');
+            const Container = this.getBody().getElement('.qui-media-content');
 
             if (!Omnigrid) {
                 return;
             }
 
-            var Grid = QUI.Controls.getById(Omnigrid.get('data-quiid'));
+            const Grid = QUI.Controls.getById(Omnigrid.get('data-quiid'));
 
             if (Grid) {
                 Grid.setHeight(Container.getSize().y - 10);
@@ -278,8 +280,8 @@ define('controls/projects/project/media/Panel', [
             this.Loader.show();
 
             // blur event
-            var self = this,
-                Body = this.getContent();
+            const self = this,
+                  Body = this.getContent();
 
             Body.addEvent('click', this.unselectItems);
             Body.addEvent('contextmenu', this.$onContextMenu);
@@ -316,15 +318,15 @@ define('controls/projects/project/media/Panel', [
                 );
 
                 // views
-                var View = new QUIButton({
+                const View = new QUIButton({
                     textimage: 'fa fa-th',
                     name     : 'view',
                     text     : '',
                     methods  : {
                         change: function (Item) {
-                            var Btn = Item.getAttribute('Button');
+                            const Btn = Item.getAttribute('Button');
 
-                            var viewText = Locale.get(
+                            let viewText = Locale.get(
                                 lg, 'projects.project.site.media.panel.btn.view.title'
                             );
 
@@ -403,7 +405,7 @@ define('controls/projects/project/media/Panel', [
                 self.addButton(View);
 
                 View.getContextMenu(function (Menu) {
-                    var Item = false,
+                    let Item = false,
                         view = QUI.Storage.get('qui-media-panel-view');
 
                     if (!view) {
@@ -440,7 +442,7 @@ define('controls/projects/project/media/Panel', [
                 );
 
                 // Upload
-                var Upload = new QUIButton({
+                const Upload = new QUIButton({
                     name     : 'upload',
                     textimage: 'fa fa-upload',
                     text     : Locale.get(lg, 'projects.project.site.media.panel.btn.upload')
@@ -489,7 +491,7 @@ define('controls/projects/project/media/Panel', [
 
                 // show project select
                 if (self.getAttribute('isInPopup') && self.getAttribute('breadcrumb')) {
-                    var Breadcrumb = self.getElm().getElement('.qui-panel-breadcrumb');
+                    const Breadcrumb = self.getElm().getElement('.qui-panel-breadcrumb');
 
                     require(['controls/projects/Select'], function (ProjectSelect) {
                         self.getBreadcrumb().getElm().setStyles({
@@ -500,11 +502,12 @@ define('controls/projects/project/media/Panel', [
                             paddingLeft: 0
                         });
 
-                        var project = false, lang = false;
+                        let project = false,
+                            lang    = false;
 
                         if (self.$Media && self.$Media.getProject()) {
                             project = self.$Media.getProject().getName();
-                            lang    = self.$Media.getProject().getLang();
+                            lang = self.$Media.getProject().getLang();
                         }
 
                         new ProjectSelect({
@@ -531,7 +534,7 @@ define('controls/projects/project/media/Panel', [
                                         return;
                                     }
 
-                                    var Project = Projects.get(value);
+                                    const Project = Projects.get(value);
                                     self.$Media = Project.getMedia();
 
                                     self.openID(1);
@@ -547,6 +550,14 @@ define('controls/projects/project/media/Panel', [
                 ).then((maxFileUploads) => {
                     self.$maxFileUploads = maxFileUploads;
 
+                    if (SHOW_SITEMAP_STATUS) {
+                        self.showSitemap();
+                        self.getButtons('left-sitemap-media-button').setActive();
+                    }
+
+                    const Project = self.$Media.getProject();
+                    const cacheMedia = Project.getName() + '-' + Project.getLang() + '-id';
+
                     if (self.getAttribute('startid')) {
                         self.openID(self.getAttribute('startid')).then(function () {
                             self.$loaded = true;
@@ -555,9 +566,6 @@ define('controls/projects/project/media/Panel', [
                     }
 
                     // cached id?
-                    var Project    = self.$Media.getProject();
-                    var cacheMedia = Project.getName() + '-' + Project.getLang() + '-id';
-
                     if (QUI.Storage.get(cacheMedia)) {
                         self.openID(QUI.Storage.get(cacheMedia)).then(function () {
                             self.$loaded = true;
@@ -614,8 +622,8 @@ define('controls/projects/project/media/Panel', [
          * @param {Boolean} [isRefresh] (optional) - opens an item as part of a refresh (i.e. pagination) [default: false]
          */
         openID: function (fileId, isRefresh) {
-            var self    = this,
-                Project = this.$Media.getProject();
+            const self    = this,
+                  Project = this.$Media.getProject();
 
             isRefresh = isRefresh || false;
 
@@ -751,11 +759,13 @@ define('controls/projects/project/media/Panel', [
          * @method controls/projects/project/media/Panel#showSitemap
          */
         showSitemap: function () {
-            var Container;
+            let Container;
 
-            var self  = this,
-                Body  = this.getContent(),
-                Items = Body.getElement('.qui-media-content');
+            SHOW_SITEMAP_STATUS = true;
+
+            const self  = this,
+                  Body  = this.getContent(),
+                  Items = Body.getElement('.qui-media-content');
 
             if (!Body.getElement('.qui-media-sitemap')) {
                 new Element('div', {
@@ -807,9 +817,11 @@ define('controls/projects/project/media/Panel', [
          * @method controls/projects/project/media/Panel#hideSitemap
          */
         hideSitemap: function () {
-            var self      = this,
-                Body      = this.getContent(),
-                Container = Body.getElement('.qui-media-sitemap');
+            const self      = this,
+                  Body      = this.getContent(),
+                  Container = Body.getElement('.qui-media-sitemap');
+
+            SHOW_SITEMAP_STATUS = false;
 
             if (this.$Map) {
                 this.$Map.destroy();
@@ -820,8 +832,8 @@ define('controls/projects/project/media/Panel', [
                 left: -350
             }, {
                 callback: function () {
-                    var Body  = self.getContent(),
-                        Items = Body.getElement('.qui-media-content');
+                    const Body  = self.getContent(),
+                          Items = Body.getElement('.qui-media-content');
 
                     Container.destroy();
 
@@ -830,7 +842,7 @@ define('controls/projects/project/media/Panel', [
                         marginLeft: null
                     });
 
-                    var Btn = self.getButtons('left-sitemap-media-button');
+                    const Btn = self.getButtons('left-sitemap-media-button');
 
                     if (Btn) {
                         Btn.setNormal();
@@ -868,10 +880,10 @@ define('controls/projects/project/media/Panel', [
          *                                    extrat = false => standard upload
          */
         $upload: function (extract) {
-            var self  = this,
-                Sheet = this.createSheet({
-                    buttons: false
-                });
+            const self  = this,
+                  Sheet = this.createSheet({
+                      buttons: false
+                  });
 
             self.fireEvent('uploadOpenBegin', [
                 self,
@@ -886,8 +898,8 @@ define('controls/projects/project/media/Panel', [
                     self.fireEvent('uploadClose', [self]);
                 },
                 onOpen : function () {
-                    var Parent;
-                    var Content = Sheet.getBody();
+                    let Parent;
+                    const Content = Sheet.getBody();
 
                     Content.set({
                         html  : '',
@@ -908,12 +920,12 @@ define('controls/projects/project/media/Panel', [
                         }).inject(Content);
                     }
 
-                    var height = Content.getSize().y -
-                        Parent.getSize().y -
-                        80; // 80 = content padding + form margin
+                    const height = Content.getSize().y -
+                                   Parent.getSize().y -
+                                   80; // 80 = content padding + form margin
 
                     // upload form
-                    var Form = new UploadForm({
+                    const Form = new UploadForm({
                         sendbutton  : true,
                         cancelbutton: true,
                         maxuploads  : self.$maxFileUploads,
@@ -959,9 +971,9 @@ define('controls/projects/project/media/Panel', [
                             },
 
                             onComplete: function () {
-                                var panels = QUI.Controls.get('projects-media-panel');
+                                const panels = QUI.Controls.get('projects-media-panel');
 
-                                for (var i = 0, len = panels.length; i < len; i++) {
+                                for (let i = 0, len = panels.length; i < len; i++) {
                                     panels[i].refresh();
                                 }
                             }
@@ -984,7 +996,7 @@ define('controls/projects/project/media/Panel', [
                 }
             });
 
-            var showSheet = function () {
+            const showSheet = function () {
                 Sheet.show().then(function () {
                     self.fireEvent('uploadOpen', [
                         self,
@@ -1019,15 +1031,15 @@ define('controls/projects/project/media/Panel', [
          * @method controls/projects/project/media/Panel#$createSitemap
          */
         $createSitemap: function () {
-            var Body      = this.getContent(),
-                Container = Body.getElement('.qui-media-sitemap');
+            const Body      = this.getContent(),
+                  Container = Body.getElement('.qui-media-sitemap');
 
             if (!Container) {
                 return;
             }
 
-            var self    = this,
-                Project = this.getMedia().getProject();
+            const self    = this,
+                  Project = this.getMedia().getProject();
 
             this.$Map = new MediaSitemap({
                 project: Project.getName(),
@@ -1047,8 +1059,8 @@ define('controls/projects/project/media/Panel', [
 
             // open last breadcrumb item in the sitemap
             this.$Map.addEvent('onOpenEnd', function (Item, MapControl) {
-                var Breadcrumb = self.getBreadcrumb(),
-                    Last       = Breadcrumb.lastChild();
+                const Breadcrumb = self.getBreadcrumb(),
+                      Last       = Breadcrumb.lastChild();
 
                 MapControl.selectFolder(Last.getAttribute('id'));
             });
@@ -1061,18 +1073,18 @@ define('controls/projects/project/media/Panel', [
          * @params {array} items
          */
         $createBreadCrumb: function (items) {
-            var i, len, Item;
+            let i, len, Item;
 
             if (this.getAttribute('breadcrumb') === false) {
                 return;
             }
 
-            var self       = this,
-                Breadcrumb = this.getBreadcrumb(),
+            const self       = this,
+                  Breadcrumb = this.getBreadcrumb(),
 
-                func_open  = function (Item) {
-                    self.openID(Item.getAttribute('id'));
-                };
+                  func_open  = function (Item) {
+                      self.openID(Item.getAttribute('id'));
+                  };
 
             Breadcrumb.clear();
 
@@ -1100,20 +1112,20 @@ define('controls/projects/project/media/Panel', [
          * @method controls/projects/project/media/Panel#$resizeSheet
          */
         $resizeSheet: function () {
-            var Body  = this.getContent(),
-                Map   = Body.getElement('.qui-media-sitemap'),
-                Sheet = Body.getElement('.pannelsheet');
+            const Body  = this.getContent(),
+                  Map   = Body.getElement('.qui-media-sitemap'),
+                  Sheet = Body.getElement('.pannelsheet');
 
             if (!Sheet) {
                 return;
             }
 
-            var PanelContent = Sheet.getElement('.pannelsheet-content'),
-                PanelButtons = Sheet.getElement('.pannelsheet-buttons');
+            const PanelContent = Sheet.getElement('.pannelsheet-content'),
+                  PanelButtons = Sheet.getElement('.pannelsheet-buttons');
 
 
             if (!Map) {
-                var body_width = Body.getSize().x;
+                const body_width = Body.getSize().x;
 
                 Sheet.setStyles({
                     'width': body_width,
@@ -1126,8 +1138,8 @@ define('controls/projects/project/media/Panel', [
                 return;
             }
 
-            var sheet_size = Sheet.getSize().x,
-                map_size   = Map.getSize().x;
+            const sheet_size = Sheet.getSize().x,
+                  map_size   = Map.getSize().x;
 
             Sheet.setStyles({
                 'width': sheet_size - map_size,
@@ -1145,12 +1157,13 @@ define('controls/projects/project/media/Panel', [
          * @params {array} children
          */
         $view: function (children) {
-            var self     = this,
-                Body     = this.getContent(),
-                droplist = [];
+            const self = this,
+                  Body = this.getContent();
+
+            let droplist = [];
 
             // create the media body
-            var MediaBody;
+            let MediaBody;
 
             if (!Body.getElement('.qui-media-content')) {
                 MediaBody = new Element('div', {
@@ -1229,7 +1242,7 @@ define('controls/projects/project/media/Panel', [
             }
 
             if (this.getAttribute('view') === 'details') {
-                var MediaBody = this.getContent().getElement('.qui-media-content')
+                const MediaBody = this.getContent().getElement('.qui-media-content')
                 this.$PanelContextMenu.showDragDropMenu(files, MediaBody, event);
                 return;
             }
@@ -1261,16 +1274,16 @@ define('controls/projects/project/media/Panel', [
          * @return {Array} the drop-upload-list
          */
         $viewSymbols: function (Result, Container) {
-            var i, len, ext, Elm, Child;
+            let i, len, ext, Elm, Child;
 
-            var droplist = [],
-                Media    = this.$Media,
-                Project  = Media.getProject(),
-                project  = Project.getName();
+            const droplist = [],
+                  Media    = this.$Media,
+                  Project  = Media.getProject(),
+                  project  = Project.getName();
 
             this.$Filter.setStyle('display', null);
 
-            var showBrokenFileMsg = function (File) {
+            const showBrokenFileMsg = function (File) {
                 QUI.getMessageHandler(function (MH) {
                     MH.addError(
                         'File is broken #' + File.id + ' ' + File.name
@@ -1278,7 +1291,7 @@ define('controls/projects/project/media/Panel', [
                 });
             };
 
-            var children = Result.data;
+            const children = Result.data;
 
             for (i = 0, len = children.length; i < len; i++) {
                 if (i === 0 && children[i].name === '..') {
@@ -1286,7 +1299,7 @@ define('controls/projects/project/media/Panel', [
                 }
 
                 Child = children[i];
-                ext   = '';
+                ext = '';
 
                 if (Child.extension !== '') {
                     ext = '.' + Child.extension;
@@ -1361,16 +1374,16 @@ define('controls/projects/project/media/Panel', [
          * @return {Array} the drop-upload-list
          */
         $viewPreview: function (Result, Container) {
-            var i, len, url, ext, Child, Elm;
+            let i, len, url, ext, Child, Elm;
 
-            var droplist = [],
-                Media    = this.$Media,
-                Project  = Media.getProject(),
-                project  = Project.getName();
+            const droplist = [],
+                  Media    = this.$Media,
+                  Project  = Media.getProject(),
+                  project  = Project.getName();
 
             this.$Filter.setStyle('display', null);
 
-            var children = Result.data;
+            const children = Result.data;
 
             for (i = 0, len = children.length; i < len; i++) {
                 if (i === 0 && children[i].name === '..') {
@@ -1378,7 +1391,7 @@ define('controls/projects/project/media/Panel', [
                 }
 
                 Child = children[i];
-                ext   = '';
+                ext = '';
 
                 if (Child.extension !== '') {
                     ext = '.' + Child.extension;
@@ -1478,7 +1491,7 @@ define('controls/projects/project/media/Panel', [
             event.stopPropagation();
             event.stop();
 
-            var Target = event.target;
+            let Target = event.target;
 
             if (Target.nodeName === 'SPAN') {
                 Target = Target.getParent('div');
@@ -1497,11 +1510,11 @@ define('controls/projects/project/media/Panel', [
                     this.$selected.erase(Target);
                 }
 
-                var id      = Target.get('data-id'),
-                    project = this.getProject().getName();
+                const id      = Target.get('data-id'),
+                      project = this.getProject().getName();
 
 
-                var imageData = {
+                const imageData = {
                     id     : id,
                     project: project,
                     url    : MediaUtils.getUrlByImageParams(id, project),
@@ -1566,14 +1579,14 @@ define('controls/projects/project/media/Panel', [
         $viewDetails: function (Result, Container) {
             Container.set('html', '');
 
-            var self          = this,
-                GridContainer = new Element('div');
+            const self          = this,
+                  GridContainer = new Element('div');
 
             GridContainer.inject(Container);
 
             this.$Filter.setStyle('display', 'none');
 
-            var Grid = new GridControl(GridContainer, {
+            const Grid = new GridControl(GridContainer, {
                 storageKey : 'quiqqer-media-panel',
                 columnModel: [
                     {
@@ -1645,7 +1658,7 @@ define('controls/projects/project/media/Panel', [
                 width            : Container.getSize().x - 100,
                 height           : Container.getSize().y - 40,
                 onrefresh        : function (me) {
-                    var options = me.options;
+                    const options = me.options;
 
                     self.setAttribute('field', options.sortOn);
                     self.setAttribute('order', options.sortBy);
@@ -1663,19 +1676,19 @@ define('controls/projects/project/media/Panel', [
 
             Grid.addEvents({
                 onClick: function (data) {
-                    var Grid    = data.target,
-                        row     = data.row,
-                        rowData = Grid.getDataByRow(row);
+                    const Grid    = data.target,
+                          row     = data.row,
+                          rowData = Grid.getDataByRow(row);
 
                     if (self.getAttribute('selectable') &&
                         self.isItemSelectable(rowData) &&
                         rowData.type !== 'folder' // folder must be openable
                     ) {
-                        var GridData = Grid.getDataByRow(row),
-                            id       = GridData.id,
-                            project  = self.getProject().getName();
+                        const GridData = Grid.getDataByRow(row),
+                              id       = GridData.id,
+                              project  = self.getProject().getName();
 
-                        var imageData = {
+                        const imageData = {
                             id     : id,
                             project: project,
                             url    : MediaUtils.getUrlByImageParams(id, project),
@@ -1699,8 +1712,8 @@ define('controls/projects/project/media/Panel', [
                 }
             });
 
-            var i, len, title;
-            var children = Result.data;
+            let i, len, title;
+            const children = Result.data;
 
             for (i = 0, len = children.length; i < len; i++) {
                 try {
@@ -1716,12 +1729,12 @@ define('controls/projects/project/media/Panel', [
             }
 
             if (children[0] && children[0].name !== '..') {
-                var breadcrumb_list = Array.clone(
+                const breadcrumb_list = Array.clone(
                     this.getBreadcrumb().getChildren()
                 );
 
                 if (breadcrumb_list.length > 1) {
-                    var Last       = breadcrumb_list.pop(),
+                    let Last       = breadcrumb_list.pop(),
                         BeforeLast = breadcrumb_list.pop();
 
                     children.reverse();
@@ -1825,7 +1838,7 @@ define('controls/projects/project/media/Panel', [
                         onSubmit: function (Win) {
                             Win.Loader.show();
 
-                            var value = Win.getAttribute('newName');
+                            const value = Win.getAttribute('newName');
 
                             self.$File.createFolder(value).then(function (Folder) {
                                 if (typeOf(Folder) === 'classes/projects/project/media/Folder') {
@@ -1958,7 +1971,7 @@ define('controls/projects/project/media/Panel', [
                 return;
             }
 
-            for (var i = 0, len = this.$selected.length; i < len; i++) {
+            for (let i = 0, len = this.$selected.length; i < len; i++) {
                 if (!this.$selected[i]) {
                     continue;
                 }
@@ -1986,7 +1999,7 @@ define('controls/projects/project/media/Panel', [
          */
         isItemSelectable: function (Item) {
             // selectable
-            var selectableTypes     = this.getAttribute('selectable_types'),
+            let selectableTypes     = this.getAttribute('selectable_types'),
                 selectableMimeTypes = this.getAttribute('selectable_mimetypes');
 
             if (!selectableTypes && !selectableMimeTypes) {
@@ -2001,22 +2014,22 @@ define('controls/projects/project/media/Panel', [
                 selectableMimeTypes = ['*'];
             }
 
-            var allTypes = selectableTypes.contains('*'),
-                allMimes = selectableMimeTypes.contains('*');
+            const allTypes = selectableTypes.contains('*'),
+                  allMimes = selectableMimeTypes.contains('*');
 
             if (allTypes && allMimes) {
                 return true;
             }
 
 
-            var elmtype  = '',
+            let elmtype  = '',
                 mimeType = '';
 
             if (typeOf(Item) === 'element') {
-                elmtype  = Item.get('data-type');
+                elmtype = Item.get('data-type');
                 mimeType = Item.get('data-mimetype');
             } else {
-                elmtype  = Item.type;
+                elmtype = Item.type;
                 mimeType = Item.mimetype;
             }
 
@@ -2025,8 +2038,8 @@ define('controls/projects/project/media/Panel', [
             }
 
 
-            var mimeTypeFound = selectableMimeTypes.contains(mimeType),
-                typeFound     = selectableTypes.contains(elmtype);
+            const mimeTypeFound = selectableMimeTypes.contains(mimeType),
+                  typeFound     = selectableTypes.contains(elmtype);
 
             // if all mime types allowed and the allowed type is correct
             if (allMimes && typeFound) {
@@ -2121,12 +2134,13 @@ define('controls/projects/project/media/Panel', [
 
             this.setAttribute('_mousedown', true);
 
-            var i, len, ElmSize;
+            let i, len, ElmSize;
 
-            var self = this,
-                mx   = event.page.x,
-                my   = event.page.y,
-                Elm  = event.target;
+            const self = this,
+                  mx   = event.page.x,
+                  my   = event.page.y;
+
+            let Elm = event.target;
 
             if (!Elm.hasClass('qui-media-item')) {
                 Elm = Elm.getParent('.qui-media-item');
@@ -2159,7 +2173,7 @@ define('controls/projects/project/media/Panel', [
             }
 
             // set ids as data-ids
-            var ids = [];
+            const ids = [];
 
             for (i = 0, len = this.$selected.length; i < len; i++) {
                 ids.push(this.$selected[i].get('data-id'));
@@ -2219,7 +2233,7 @@ define('controls/projects/project/media/Panel', [
             }
 
             if (Droppable.hasClass('media-drop')) {
-                var Control = QUI.Controls.getById(
+                const Control = QUI.Controls.getById(
                     Droppable.get('data-quiid')
                 );
 
@@ -2228,15 +2242,15 @@ define('controls/projects/project/media/Panel', [
                 }
 
 
-                var items   = [],
-                    ids     = Element.get('data-ids'),
-                    Media   = this.getMedia(),
-                    Project = Media.getProject(),
-                    project = Project.getName();
+                const items   = [],
+                      Media   = this.getMedia(),
+                      Project = Media.getProject(),
+                      project = Project.getName();
 
+                let ids = Element.get('data-ids');
                 ids = ids.split(',');
 
-                for (var i = 0, len = ids.length; i < len; i++) {
+                for (let i = 0, len = ids.length; i < len; i++) {
                     items.push({
                         id     : ids[i],
                         Media  : Media,
@@ -2327,7 +2341,7 @@ define('controls/projects/project/media/Panel', [
             }
 
             if (Elm.hasClass('media-drop')) {
-                var Control = QUI.Controls.getById(
+                const Control = QUI.Controls.getById(
                     Elm.get('data-quiid')
                 );
 
@@ -2391,7 +2405,7 @@ define('controls/projects/project/media/Panel', [
             }
 
             if (Elm.hasClass('media-drop')) {
-                var Control = QUI.Controls.getById(
+                const Control = QUI.Controls.getById(
                     Elm.get('data-quiid')
                 );
 
@@ -2408,7 +2422,7 @@ define('controls/projects/project/media/Panel', [
                 return;
             }
 
-            var Parent = Elm.getParent();
+            const Parent = Elm.getParent();
 
             if (Parent &&
                 Parent.hasClass('qui-media-item-ondragdrop') && !Parent.hasClass('qui-media-content')) {
@@ -2443,7 +2457,7 @@ define('controls/projects/project/media/Panel', [
          * @param {Object} Item - qui/classes/projects/media/Item
          */
         $itemEvent: function (Media, Item) {
-            var i, len;
+            let i, len;
 
             if (typeOf(Item) === 'array') {
                 for (i = 0, len = Item.length; i < len; i++) {
@@ -2465,8 +2479,8 @@ define('controls/projects/project/media/Panel', [
                 return;
             }
 
-            var Content = this.getContent();
-            var Node    = Content.getElement('[data-id="' + Item.getId() + '"]');
+            const Content = this.getContent();
+            const Node = Content.getElement('[data-id="' + Item.getId() + '"]');
 
             if (!Node) {
                 return;
@@ -2493,19 +2507,19 @@ define('controls/projects/project/media/Panel', [
 
             Node.getElement('span').set('html', Item.getAttribute('name'));
 
-            var itemId = parseInt(Item.getId());
+            const itemId = parseInt(Item.getId());
 
             for (i = 0, len = this.$children.length; i < len; i++) {
                 if (parseInt(this.$children[i].id) !== itemId) {
                     continue;
                 }
 
-                this.$children[i].active   = Item.isActive();
-                this.$children[i].e_date   = Item.getAttribute('e_date');
-                this.$children[i].name     = Item.getAttribute('name');
+                this.$children[i].active = Item.isActive();
+                this.$children[i].e_date = Item.getAttribute('e_date');
+                this.$children[i].name = Item.getAttribute('name');
                 this.$children[i].priority = Item.getAttribute('priority');
-                this.$children[i].short    = Item.getAttribute('short');
-                this.$children[i].title    = Item.getAttribute('title');
+                this.$children[i].short = Item.getAttribute('short');
+                this.$children[i].title = Item.getAttribute('title');
                 break;
             }
         },
@@ -2532,10 +2546,10 @@ define('controls/projects/project/media/Panel', [
             const self = this;
 
             this.$filterDelay = function () {
-                var i, len, Child, Title;
-                var children = self.getContent().getElements('.qui-media-item');
+                let i, len, Child, Title;
+                const children = self.getContent().getElements('.qui-media-item');
 
-                var value = String(self.$Filter.value).toLowerCase();
+                const value = String(self.$Filter.value).toLowerCase();
 
                 for (i = 0, len = children.length; i < len; i++) {
                     Child = children[i];
@@ -2569,9 +2583,9 @@ define('controls/projects/project/media/Panel', [
          * @param {DOMEvent} event
          */
         $onPaginationLimitChange: function (event) {
-            var total        = this.getAttribute('total');
-            var limit        = event.target.value;
-            var newPageCount = Math.ceil(total / limit);
+            const total = this.getAttribute('total');
+            const limit = event.target.value;
+            const newPageCount = Math.ceil(total / limit);
 
             this.setAttribute('limit', limit);
             localStorage.setItem('quiqqer-media-pagination-limit', limit);
@@ -2599,28 +2613,30 @@ define('controls/projects/project/media/Panel', [
                 self.$PaginationContainer.set('html', paginationHtml);
                 self.$PaginationContainer.removeClass('qui-media-pagination__hidden');
 
-                var LimitSelect = new Element('select', {
+                const LimitSelect = new Element('select', {
                     'class': 'qui-media-pagination-limit',
                     events : {
                         change: self.$onPaginationLimitChange
                     }
                 }).inject(self.$PaginationContainer, 'top');
 
-                var currentLimit = localStorage.getItem('quiqqer-media-pagination-limit');
+                let currentLimit = localStorage.getItem('quiqqer-media-pagination-limit');
 
                 if (!currentLimit) {
                     currentLimit = self.getAttribute('limit');
                 }
 
-                var refreshPagination = self.getAttribute('limit') !== currentLimit;
+                const refreshPagination = self.getAttribute('limit') !== currentLimit;
 
-                var total        = self.getAttribute('total');
-                var newPageCount = Math.ceil(total / currentLimit);
+                const total = self.getAttribute('total');
+                const newPageCount = Math.ceil(total / currentLimit);
 
                 self.setAttribute('limit', currentLimit);
 
-                for (var i = 0, len = self.$limitOptions.length; i < len; i++) {
-                    var limitOption = self.$limitOptions[i];
+                let i, len, limitOption;
+
+                for (i = 0, len = self.$limitOptions.length; i < len; i++) {
+                    limitOption = self.$limitOptions[i];
 
                     new Element('option', {
                         value   : limitOption,
