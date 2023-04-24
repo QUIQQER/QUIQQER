@@ -19,7 +19,7 @@ define('controls/users/Select', [
 ], function (QUIControl, QUIElementSelect, QUILocale, QUIAjax) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/quiqqer';
 
     /**
      * @class controls/users/Select
@@ -53,9 +53,9 @@ define('controls/users/Select', [
 
             this.addEvents({
                 onSearchButtonClick: this.$onSearchButtonClick,
-                onCreate           : function () {
+                onCreate           : () => {
                     this.getElm().addClass('quiqqer-user-select');
-                }.bind(this)
+                }
             });
         },
 
@@ -68,10 +68,10 @@ define('controls/users/Select', [
         userSearch: function (value) {
             return new Promise(function (resolve) {
                 QUIAjax.get('ajax_usersgroups_search', function (result) {
-                    var i, len;
+                    let i, len;
 
-                    var data       = [],
-                        userResult = result.users;
+                    const data       = [],
+                          userResult = result.users;
 
                     for (i = 0, len = userResult.length; i < len; i++) {
                         data.push({
@@ -83,9 +83,9 @@ define('controls/users/Select', [
 
                     resolve(data);
                 }, {
-                    search : value,
-                    fields : false,
-                    params : JSON.decode({
+                    search: value,
+                    fields: false,
+                    params: JSON.decode({
                         limit: 10
                     })
                 });
@@ -99,31 +99,31 @@ define('controls/users/Select', [
          * @param {Object} Btn
          */
         $onSearchButtonClick: function (Select, Btn) {
-            var oldIcon = Btn.getAttribute('icon');
+            const oldIcon = Btn.getAttribute('icon');
 
             Btn.setAttribute('icon', 'fa fa-spinner fa-spin');
             Btn.disable();
 
             require([
                 'controls/users/search/Window'
-            ], function (Window) {
+            ], (Window) => {
                 new Window({
                     autoclose     : true,
                     multiple      : this.getAttribute('multiple'),
                     search        : this.getAttribute('search'),
                     searchSettings: this.getAttribute('searchSettings'),
                     events        : {
-                        onSubmit: function (Win, userIds) {
-                            for (var i = 0, len = userIds.length; i < len; i++) {
+                        onSubmit: (Win, userIds) => {
+                            for (let i = 0, len = userIds.length; i < len; i++) {
                                 this.addItem(userIds[i].id);
                             }
-                        }.bind(this)
+                        }
                     }
                 }).open();
 
                 Btn.setAttribute('icon', oldIcon);
                 Btn.enable();
-            }.bind(this));
+            });
         }
     });
 });

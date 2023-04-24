@@ -40,7 +40,7 @@ define('controls/users/Entry', [
             this.$User = Users.get(uid);
             this.parent(options);
 
-            this.$Elm      = null;
+            this.$Elm = null;
             this.$disabled = false;
         },
 
@@ -59,7 +59,7 @@ define('controls/users/Entry', [
          * @return {HTMLElement}
          */
         create: function () {
-            var self = this;
+            const self = this;
 
             this.$Elm = new Element('div', {
                 'class'     : 'users-entry users-entry-enabled smooth',
@@ -71,7 +71,7 @@ define('controls/users/Entry', [
                               '<div class="users-entry-close fa fa-remove"></div>'
             });
 
-            var Close = this.$Elm.getElement('.users-entry-close');
+            const Close = this.$Elm.getElement('.users-entry-close');
 
             Close.addEvent('click', function () {
                 if (!self.isDisabled()) {
@@ -103,7 +103,7 @@ define('controls/users/Entry', [
          * @return {Object} this (controls/users/Entry)
          */
         refresh: function () {
-            var UserIcon = this.$Elm.getElement('.users-entry-icon');
+            const UserIcon = this.$Elm.getElement('.users-entry-icon');
 
             if (!UserIcon) {
                 return this;
@@ -118,18 +118,27 @@ define('controls/users/Entry', [
                 return this;
             }
 
-            var uid = this.$User.getId();
+            const uid = this.$User.getId();
 
             if (uid === '') {
-                this.fireEvent('error', [this, uid]);
+                this.fireEvent('error', [
+                    this,
+                    uid
+                ]);
                 this.destroy();
                 return this;
             }
 
             this.$User.load().then(function () {
-                this.fireEvent('load', [this, this.$User]);
+                this.fireEvent('load', [
+                    this,
+                    this.$User
+                ]);
             }.bind(this)).catch(function () {
-                this.fireEvent('error', [this, uid]);
+                this.fireEvent('error', [
+                    this,
+                    uid
+                ]);
                 this.destroy();
             }.bind(this));
 
@@ -137,7 +146,7 @@ define('controls/users/Entry', [
         },
 
         /**
-         * Update the user name
+         * Update the username
          *
          * @param {Object} User - classes/users/User
          * @return {Object} this (controls/users/Entry)
@@ -147,7 +156,7 @@ define('controls/users/Entry', [
                 return this;
             }
 
-            var UserIcon = this.$Elm.getElement('.users-entry-icon');
+            const UserIcon = this.$Elm.getElement('.users-entry-icon');
 
             if (!UserIcon) {
                 return this;
@@ -157,15 +166,21 @@ define('controls/users/Entry', [
             UserIcon.removeClass('fa-spinner');
             UserIcon.removeClass('fa-spin');
 
-            this.$Elm.getElement('.users-entry-text')
-                .set('html', User.getName() + ' (' + User.getId() + ')');
+            let displayName = User.getName();
+
+            if (User.getAttribute('companyName')) {
+                displayName = displayName + ', ' + User.getAttribute('companyName');
+            }
+
+            displayName = displayName + ' (' + User.getId() + ')';
+            this.$Elm.getElement('.users-entry-text').set('html', displayName);
 
             return this;
         },
 
         /**
          * Disable the control
-         * no changes are posible
+         * no changes are possible
          */
         disable: function () {
             this.$Elm.removeClass('users-entry-enabled');

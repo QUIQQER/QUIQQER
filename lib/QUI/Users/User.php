@@ -23,6 +23,7 @@ use function get_class;
 use function implode;
 use function in_array;
 use function is_array;
+use function is_bool;
 use function is_int;
 use function is_null;
 use function is_numeric;
@@ -1200,6 +1201,19 @@ class User implements QUI\Interfaces\Users\User
         $params['hasPassword'] = empty($this->password) ? 0 : 1;
         $params['avatar']      = '';
         $params['displayName'] = $this->getDisplayName();
+        $params['companyName'] = '';
+
+        if ($this->isCompany()) {
+            try {
+                $Address        = $this->getStandardAddress();
+                $addressCompany = $Address->getAttribute('company');
+
+                if (!empty($addressCompany)) {
+                    $params['companyName'] = $addressCompany;
+                }
+            } catch (\Exception $Exception) {
+            }
+        }
 
         try {
             $Image = QUI\Projects\Media\Utils::getImageByUrl($this->getAttribute('avatar'));
@@ -1851,7 +1865,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function setCompanyStatus($status = false)
     {
-        if (\is_bool($status)) {
+        if (is_bool($status)) {
             $this->company = $status;
         }
     }
