@@ -49,9 +49,9 @@ class LocaleRuntimeCache
      * @param string $group
      * @param string|bool $value - If the value is false, return the whole translation group
      *
-     * @return string|null
+     * @return string|null|array
      */
-    public static function get(string $lang, string $group, $value = false): ?string
+    public static function get(string $lang, string $group, $value = false)
     {
         if ($value === false) {
             if (isset(self::$languages[$lang][$group])) {
