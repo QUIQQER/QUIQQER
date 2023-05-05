@@ -105,8 +105,8 @@ foreach ($packages as $package) {
 
     echo '<script type="text/javascript">';
     echo '/* <![CDATA[ */';
-    echo 'var QUIQQER_LOCALE = ' . \json_encode($files, true) . ';';
-    echo 'var QUIQQER_LANGUAGES = ' . \json_encode($languages, true) . ';';
+    echo 'var QUIQQER_LOCALE = ' . json_encode($files, true) . ';';
+    echo 'var QUIQQER_LANGUAGES = ' . json_encode($languages, true) . ';';
     echo 'var QUIQQER_IS_ADMIN_LOGIN = true;';
     echo 'var QUIQQER_CONFIG = {globals: {no_ajax_bundler: 1}}';
     echo '/* ]]> */';

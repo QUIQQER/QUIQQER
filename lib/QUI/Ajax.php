@@ -29,6 +29,7 @@ use function json_encode;
 use function json_last_error;
 use function mb_strripos;
 use function mb_substr;
+use function md5;
 use function method_exists;
 use function strip_tags;
 use function strpos;
@@ -271,6 +272,7 @@ class Ajax extends QUI\QDOM
         // maintenance flag
         $result['maintenance'] = QUI::conf('globals', 'maintenance') ? 1 : 0;
         $result['jsCallbacks'] = $this->jsCallbacks;
+        $result['vMd5']        = md5(QUI::version());
 
         QUI::getEvents()->fireEvent('ajaxResult', [&$result]);
 
