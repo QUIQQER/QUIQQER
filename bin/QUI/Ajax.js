@@ -581,6 +581,10 @@ define('Ajax', [
         },
 
         $versionCheck: function (requestResult) {
+            if (typeof window.QUIQQER_FRONTEND !== 'undefined' && window.QUIQQER_FRONTEND) {
+                return;
+            }
+            
             if (typeof requestResult.vMd5 === 'undefined') {
                 return;
             }
