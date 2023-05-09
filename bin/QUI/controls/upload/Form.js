@@ -35,7 +35,7 @@ define('controls/upload/Form', [
 ], function (QUI, QUIControl, QUIProgressbar, QUIButton, QUILoader, MediaUtils, Upload, Locale) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg         = 'quiqqer/quiqqer';
     var delayClick = false;
 
     /**
@@ -103,21 +103,21 @@ define('controls/upload/Form', [
 
             this.parent(options);
 
-            this.$Add = null;
-            this.$Elm = null;
-            this.$Form = null;
-            this.$Frame = null;
-            this.$Buttons = null;
-            this.$BgText = null;
+            this.$Add        = null;
+            this.$Elm        = null;
+            this.$Form       = null;
+            this.$Frame      = null;
+            this.$Buttons    = null;
+            this.$BgText     = null;
             this.$SendButton = null;
 
-            this.$enabled = true;
-            this.$files = {};
-            this.$params = {};
+            this.$enabled  = true;
+            this.$files    = {};
+            this.$params   = {};
             this.$finished = false;
 
             this.$Progress = null;
-            this.$Info = null;
+            this.$Info     = null;
 
             this.addEvents({
                 onInject : this.$onInject,
@@ -151,7 +151,7 @@ define('controls/upload/Form', [
 
                     if (self.$Add &&
                         (self.getAttribute('maxuploads') === false ||
-                         parseInt(self.getAttribute('maxuploads')) > elms.length)) {
+                            parseInt(self.getAttribute('maxuploads')) > elms.length)) {
                         self.$Add.enable();
                     }
                 }
@@ -250,10 +250,10 @@ define('controls/upload/Form', [
             this.$Elm = new Element('div', {
                 'class': 'controls-upload-form',
                 html   : '<div class="controls-upload-info"></div>' +
-                         '<div class="controls-upload-buttons"></div>' +
-                         '<div class="controls-upload-bg-text">' +
-                         Locale.get(lg, 'upload.form.background.text') +
-                         '</div>',
+                    '<div class="controls-upload-buttons"></div>' +
+                    '<div class="controls-upload-bg-text">' +
+                    Locale.get(lg, 'upload.form.background.text') +
+                    '</div>',
                 styles : {
                     height: 140
                 }
@@ -262,8 +262,8 @@ define('controls/upload/Form', [
             this.Loader = new QUILoader().inject(this.$Elm);
 
             this.$Buttons = this.$Elm.getElement('.controls-upload-buttons');
-            this.$BgText = this.$Elm.getElement('.controls-upload-bg-text');
-            this.$Info = this.$Elm.getElement('.controls-upload-info');
+            this.$BgText  = this.$Elm.getElement('.controls-upload-bg-text');
+            this.$Info    = this.$Elm.getElement('.controls-upload-info');
 
             this.$createIconView();
             this.$createSingleView();
@@ -406,8 +406,8 @@ define('controls/upload/Form', [
          */
         resize: function () {
             var buttonsHeight = this.$Buttons.getSize().y;
-            var inforHeight = this.$Info.getSize().y;
-            var height = buttonsHeight + inforHeight;
+            var inforHeight   = this.$Info.getSize().y;
+            var height        = buttonsHeight + inforHeight;
 
             this.$Form.setStyle('height', 'calc(100% - ' + height + 'px)');
         },
@@ -436,9 +436,9 @@ define('controls/upload/Form', [
                 IconForm.getElement('input').set('name', this.getAttribute('name'));
             }
 
-            var self = this;
+            var self       = this;
             var UploadIcon = new Element('span').inject(IconForm);
-            var Input = IconForm.getElement('input');
+            var Input      = IconForm.getElement('input');
 
             UploadIcon.addClass('controls-upload-icon');
             UploadIcon.addClass(this.getAttribute('typeOfLookIcon'));
@@ -461,10 +461,10 @@ define('controls/upload/Form', [
                 new Element('button', {
                     'class': 'controls-upload-form-submit',
                     html   : '' +
-                             '<span class="fa fa-arrow-circle-o-right"></span>' +
-                             '<span>' +
-                             Locale.get(lg, 'control.upload.icon.submit') +
-                             '</span>',
+                        '<span class="fa fa-arrow-circle-o-right"></span>' +
+                        '<span>' +
+                        Locale.get(lg, 'control.upload.icon.submit') +
+                        '</span>',
                     events : {
                         click: function (e) {
                             e.stop();
@@ -511,7 +511,7 @@ define('controls/upload/Form', [
                 IconForm.getElement('input').set('name', this.getAttribute('name'));
             }
 
-            var self = this;
+            var self  = this;
             var Input = IconForm.getElement('input');
 
             Input.addEvent('change', function () {
@@ -549,12 +549,12 @@ define('controls/upload/Form', [
             new Element('div', {
                 'class': 'controls-upload-form-single-container',
                 html   : '' +
-                         '<div class="controls-upload-form-single-container-preview"></div>' +
-                         '<div class="controls-upload-form-single-container-select">' +
-                         '   <span class="controls-upload-form-single-container-select-placeholder">' +
-                         Locale.get(lg, 'control.upload.placeholder') +
-                         '   </span>' +
-                         '</div>',
+                    '<div class="controls-upload-form-single-container-preview"></div>' +
+                    '<div class="controls-upload-form-single-container-select">' +
+                    '   <span class="controls-upload-form-single-container-select-placeholder">' +
+                    Locale.get(lg, 'control.upload.placeholder') +
+                    '   </span>' +
+                    '</div>',
                 events : {
                     click: function (e) {
                         e.stop();
@@ -578,10 +578,10 @@ define('controls/upload/Form', [
                 disabled: true,
                 'class' : 'controls-upload-form-submit',
                 html    : '' +
-                          '<span class="fa fa-arrow-circle-o-right"></span>' +
-                          '<span>' +
-                          Locale.get(lg, 'control.upload.icon.submit') +
-                          '</span>',
+                    '<span class="fa fa-arrow-circle-o-right"></span>' +
+                    '<span>' +
+                    Locale.get(lg, 'control.upload.icon.submit') +
+                    '</span>',
                 events  : {
                     click: function (e) {
                         e.stop();
@@ -603,7 +603,7 @@ define('controls/upload/Form', [
          */
         $imagePreview: function (file) {
             // preview
-            var reader = new FileReader();
+            var reader  = new FileReader();
             var Preview = this.getElm().getElement(
                 '.controls-upload-form-single-container-preview'
             );
@@ -679,6 +679,16 @@ define('controls/upload/Form', [
             var self = this,
                 elms = this.$Form.getElements('input[type="file"]');
 
+            // Remove empty inputs
+            elms = elms.filter((FileInput) => {
+                if (!FileInput.value) {
+                    FileInput.getParent('div.qui-form-upload').destroy();
+                    return false;
+                }
+
+                return true;
+            });
+
             if (this.getAttribute('maxuploads') !== false &&
                 elms.length !== 0 &&
                 this.getAttribute('maxuploads') <= elms.length) {
@@ -690,7 +700,7 @@ define('controls/upload/Form', [
             Container.addEvents({
                 mouseenter: function () {
                     var Button = Container.getElement('button');
-                    var Btn = QUI.Controls.getById(Button.get('data-quiid'));
+                    var Btn    = QUI.Controls.getById(Button.get('data-quiid'));
 
                     Btn.enable();
                     Container.getElement('button').setStyle('display', null);
@@ -698,7 +708,7 @@ define('controls/upload/Form', [
 
                 mouseleave: function () {
                     var Button = Container.getElement('button');
-                    var Btn = QUI.Controls.getById(Button.get('data-quiid'));
+                    var Btn    = QUI.Controls.getById(Button.get('data-quiid'));
 
                     Btn.disable();
                     Container.getElement('button').setStyle('display', 'none');
@@ -761,7 +771,7 @@ define('controls/upload/Form', [
                         event.stop();
 
                         var Container = Btn.getAttribute('Container');
-                        var fid = Slick.uidOf(Input);
+                        var fid       = Slick.uidOf(Input);
 
                         if (self.$files[fid]) {
                             delete self.$files[fid];
@@ -777,6 +787,8 @@ define('controls/upload/Form', [
             }).inject(Container);
 
             Container.inject(this.$Form);
+
+            console.log(elms.length);
 
             if (this.$Add &&
                 this.getAttribute('maxuploads') &&
@@ -887,10 +899,10 @@ define('controls/upload/Form', [
         createInfo: function () {
             this.$Info = new Element('div', {
                 html   : '<div class="file-name">' +
-                         Locale.get(lg, 'upload.form.info.text') +
-                         '</div>' +
-                         '<div class="upload-time"></div>' +
-                         '<div class="progress"></div>',
+                    Locale.get(lg, 'upload.form.info.text') +
+                    '</div>' +
+                    '<div class="upload-time"></div>' +
+                    '<div class="progress"></div>',
                 'class': 'upload-manager-file box smooth'
             });
 
@@ -1089,10 +1101,12 @@ define('controls/upload/Form', [
             event.stop();
 
             if (typeof files === 'undefined') {
+                Target.destroy();
                 return;
             }
 
             if (!files.length || !files[0]) {
+                Target.destroy();
                 return;
             }
 
@@ -1102,6 +1116,7 @@ define('controls/upload/Form', [
                 sum        = current + files.length;
 
             if (maxUploads && maxUploads < sum) {
+                Target.destroy();
                 return;
             }
 
@@ -1300,7 +1315,7 @@ define('controls/upload/Form', [
                         var Old = self.getElm();
 
                         Old.set('html', '');
-                        self.$files = {};
+                        self.$files    = {};
                         self.$finished = false;
                         self.create().replaces(Old);
                     }
