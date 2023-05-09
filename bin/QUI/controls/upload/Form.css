@@ -201,3 +201,8 @@
     display: inline-block;
     width: 130px;
 }
+
+.highlight {
+    background-color: #CFF09E;
+    border-color: #666;
+}
