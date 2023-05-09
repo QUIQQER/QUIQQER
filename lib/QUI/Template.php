@@ -163,6 +163,13 @@ class Template extends QUI\QDOM
 
         $engine = QUI::conf('template', 'engine');
 
+        if ($engine === 'smarty3' && class_exists('QUI\Smarty\Smarty4')) {
+            QUI::getConfig('etc/conf.ini.php')->setValue('template', 'engine', 'smarty4');
+            QUI::getConfig('etc/conf.ini.php')->save();
+
+            $engine = 'smarty4';
+        }
+
         if (!isset($this->engines[$engine])) {
             throw new QUI\Exception('Template Engine not found!');
         }
