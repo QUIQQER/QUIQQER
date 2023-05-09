@@ -6118,6 +6118,27 @@ After logging in you will be prompted to set a new password.
             Note that if an error occurs, this may cause the site to become inaccessible.
             ]]></en>
         </locale>
+        
+        <locale name="update.refresh.title">
+            <en><![CDATA[
+            Please reload interface: Backend and frontend versions different
+            ]]></en>
+        </locale>
+        <locale name="update.refresh.text">
+            <en><![CDATA[
+            Backend and frontend versions different
+            ]]></en>
+        </locale>
+        <locale name="update.refresh.information">
+            <en><![CDATA[
+            It seems that the backend and the frontend have different versions.
+            To make sure everything works smoothly, we recommend reloading the interface.
+            If you don't want to reload the interface now, you can do it later to make sure,
+            that you are using the latest version.]]></en>
+        </locale>
+        <locale name="update.refresh.submit">
+            <en><![CDATA[Reload now]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/controls" datatype="php,js">
         <locale name="package.title">

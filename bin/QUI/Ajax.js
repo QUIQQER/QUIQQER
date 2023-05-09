@@ -32,8 +32,8 @@ define('Ajax', [
         // nothing
     });
 
-    var apiPoint = '/ajax.php';
-    var AjaxBundler = new Bundler();
+    let apiPoint = '/ajax.php';
+    const AjaxBundler = new Bundler();
 
     if (typeof QUIQQER !== 'undefined' && "ajax" in QUIQQER) {
         apiPoint = QUIQQER.ajax;
@@ -41,8 +41,11 @@ define('Ajax', [
         apiPoint = URL_SYS_DIR + 'ajax.php';
     }
 
-    var TRY_MAX = 3;
-    var TRY_DELAY = 1000;
+    let REFRESH_WINDOW_OPEN = false;
+    let REFRESH_WINDOW_CANCELED = false;
+
+    let TRY_MAX = 3;
+    let TRY_DELAY = 1000;
 
     if (typeof QUIQQER_CONFIG !== 'undefined' &&
         typeof QUIQQER_CONFIG.globals !== 'undefined' &&
@@ -50,7 +53,7 @@ define('Ajax', [
         TRY_MAX = 0;
     }
 
-    var Ajax = {
+    const Ajax = {
 
         $globalJSF : {}, // global javascript callback functions
         $onprogress: {},
@@ -124,6 +127,8 @@ define('Ajax', [
                             );
                         }
 
+                        self.$versionCheck(self.$onprogress[this].$result);
+
                         QUI.fireEvent('ajaxResult', [self.$onprogress[this].$result]);
 
                         // maintenance?
@@ -183,6 +188,8 @@ define('Ajax', [
                                 Response.$result.jsCallbacks,
                                 Response.$result
                             );
+
+                            self.$versionCheck(Response.$result);
                         }
 
                         Request.setAttribute('hasError', true);
@@ -280,15 +287,15 @@ define('Ajax', [
 
             this.$onprogress[id] = new QUIAjax(options);
 
-            var useBundler = true;
+            let useBundler = true;
 
-            if (typeof QUIQQER_CONFIG !== 'undefined' &&
-                typeof QUIQQER_CONFIG.globals !== 'undefined' &&
-                typeof QUIQQER_CONFIG.globals.no_ajax_bundler !== 'undefined') {
-                useBundler = !parseInt(QUIQQER_CONFIG.globals.no_ajax_bundler);
+            if (typeof window.QUIQQER_CONFIG !== 'undefined' &&
+                typeof window.QUIQQER_CONFIG.globals !== 'undefined' &&
+                typeof window.QUIQQER_CONFIG.globals.no_ajax_bundler !== 'undefined') {
+                useBundler = !parseInt(window.QUIQQER_CONFIG.globals.no_ajax_bundler);
             }
 
-            if (typeof QUIQQER_FRONTEND !== 'undefined' && QUIQQER_FRONTEND) {
+            if (typeof window.QUIQQER_FRONTEND !== 'undefined' && window.QUIQQER_FRONTEND) {
                 useBundler = false;
             }
 
@@ -299,7 +306,7 @@ define('Ajax', [
             }
 
             // bundle the request
-            var Done;
+            let Done;
 
             switch (method) {
                 case 'put':
@@ -318,7 +325,7 @@ define('Ajax', [
             }
 
             Done.then(function (result) {
-                var Request = self.$onprogress[this];
+                const Request = self.$onprogress[this];
 
                 Request.$result = result;
                 Request.$parseResult();
@@ -341,13 +348,13 @@ define('Ajax', [
          * @param params
          */
         $openLogin: function (call, method, callback, params) {
-            var self = this;
+            const self = this;
 
             // check if events exists and login is overwritten
-            var events = QUI.$events;
+            const events = QUI.$events;
 
             if (typeof events.ajaxLogin !== 'undefined') {
-                var eventResults = events.ajaxLogin.map(function (f) {
+                const eventResults = events.ajaxLogin.map(function (f) {
                     return f(Ajax, call, method, callback, params);
                 });
 
@@ -397,7 +404,7 @@ define('Ajax', [
                 return;
             }
 
-            for (var f in functionList) {
+            for (const f in functionList) {
                 if (f in this.$globalJSF && this.$globalJSF.hasOwnProperty(f)) {
                     this.$globalJSF[f](response, functionList[f]);
                 }
@@ -427,7 +434,7 @@ define('Ajax', [
          * @return {Ajax}
          */
         syncRequest: function (call, method, params) {
-            var id = String.uniqueID();
+            const id = String.uniqueID();
 
             method = method || 'post'; // is post, put, get or delete
 
@@ -571,6 +578,57 @@ define('Ajax', [
             params.preventCache = String.uniqueID();
 
             return this.request(call, 'delete', callback, params);
+        },
+
+        $versionCheck: function (requestResult) {
+            if (typeof window.QUIQQER === 'undefined') {
+                return;
+            }
+
+            if (typeof window.QUIQQER_FRONTEND !== 'undefined' && window.QUIQQER_FRONTEND) {
+                return;
+            }
+
+            if (typeof requestResult.vMd5 === 'undefined') {
+                return;
+            }
+
+            if (requestResult.vMd5 === window.QUIQQER.vMd5) {
+                return;
+            }
+
+            if (document.getElement('.window-update-refresh-info')) {
+                return;
+            }
+
+            if (REFRESH_WINDOW_OPEN || REFRESH_WINDOW_CANCELED) {
+                return;
+            }
+
+            require([
+                'controls/system/UpdateRefreshWindow'
+            ], function (UpdateRefreshWindow) {
+                if (document.getElement('.window-update-refresh-info')) {
+                    return;
+                }
+
+                if (REFRESH_WINDOW_OPEN || REFRESH_WINDOW_CANCELED) {
+                    return;
+                }
+
+                REFRESH_WINDOW_OPEN = true;
+
+                new UpdateRefreshWindow({
+                    events: {
+                        onClose : function () {
+                            REFRESH_WINDOW_OPEN = false;
+                        },
+                        onCancel: function () {
+                            REFRESH_WINDOW_CANCELED = true;
+                        }
+                    }
+                }).open();
+            });
         }
     };
 

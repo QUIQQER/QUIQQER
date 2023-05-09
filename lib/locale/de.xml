@@ -6331,6 +6331,28 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
             Beachte, wenn ein Fehler aufrtitt kann dies gegebenenfalls dazu führen das die Seite nicht mehr erreichbar ist.
             ]]></de>
         </locale>
+
+        <locale name="update.refresh.title">
+            <de><![CDATA[
+            Bitte Oberfläche neu laden: Backend und Frontend-Versionen unterschiedlich
+            ]]></de>
+        </locale>
+        <locale name="update.refresh.text">
+            <de><![CDATA[
+            Backend und Frontend-Versionen unterschiedlich
+            ]]></de>
+        </locale>
+        <locale name="update.refresh.information">
+            <de><![CDATA[
+            Es scheint, als hätten das Backend und das Frontend unterschiedliche Versionen.
+            Um sicherzustellen, dass alles reibungslos funktioniert, empfehlen wir, die Oberfläche neu zu laden.
+            Wenn du die Oberfläche jetzt nicht neu laden möchtest, kannst du dies später tun, um sicherzustellen,
+            dass du die aktuellste Version verwendest.
+            ]]></de>
+        </locale>
+        <locale name="update.refresh.submit">
+            <de><![CDATA[Jetzt neu laden]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/controls" datatype="php,js">

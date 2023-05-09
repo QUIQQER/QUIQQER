@@ -1,13 +1,13 @@
 <?php
 
-\define('QUIQQER_SYSTEM', true);
+define('QUIQQER_SYSTEM', true);
 require 'header.php';
 
 QUI::getEvents()->fireEvent('adminRequest');
 
 // qui path
-$qui_path   = URL_OPT_DIR.'bin/qui/';
-$qui_extend = URL_OPT_DIR.'bin/qui/extend/';
+$qui_path   = URL_OPT_DIR . 'bin/qui/';
+$qui_extend = URL_OPT_DIR . 'bin/qui/extend/';
 
 $config  = QUI::backendGuiConfigs();
 $Project = null;
@@ -29,15 +29,20 @@ if ($Avatar) {
 ?>
 <!doctype html>
 <!--[if lt IE 7 ]>
-<html class="ie ie6" lang="<?php echo $User->getLang(); ?>"> <![endif]-->
+<html class="ie ie6" lang="<?php
+echo $User->getLang(); ?>"> <![endif]-->
 <!--[if IE 7 ]>
-<html class="ie ie7" lang="<?php echo $User->getLang(); ?>"> <![endif]-->
+<html class="ie ie7" lang="<?php
+echo $User->getLang(); ?>"> <![endif]-->
 <!--[if IE 8 ]>
-<html class="ie ie8" lang="<?php echo $User->getLang(); ?>"> <![endif]-->
+<html class="ie ie8" lang="<?php
+echo $User->getLang(); ?>"> <![endif]-->
 <!--[if (gte IE 9)|!(IE)]><!-->
-<html lang="<?php echo $User->getLang(); ?>"> <!--<![endif]-->
+<html lang="<?php
+echo $User->getLang(); ?>"> <!--<![endif]-->
 <head>
-    <title>QUIQQER - <?php echo HOST ?></title>
+    <title>QUIQQER - <?php
+        echo HOST ?></title>
 
     <!-- favicon -->
     <?php
@@ -50,17 +55,27 @@ if ($Avatar) {
             $type       = $attributes['mime_type'];
 
             ?>
-            <link rel="shortcut icon" href="<?php echo $Favicon->getSizeCacheUrl(62, 62); ?>"
-                  type="<?php echo $type; ?>">
+            <link rel="shortcut icon" href="<?php
+            echo $Favicon->getSizeCacheUrl(62, 62); ?>"
+                  type="<?php
+                  echo $type; ?>">
 
-            <link rel="icon" href="<?php echo $Favicon->getSizeCacheUrl(16, 16); ?>" sizes="16x16"
-                  type="<?php echo $type; ?>">
-            <link rel="icon" href="<?php echo $Favicon->getSizeCacheUrl(32, 32); ?>" sizes="32x32"
-                  type="<?php echo $type; ?>">
-            <link rel="icon" href="<?php echo $Favicon->getSizeCacheUrl(48, 48); ?>" sizes="48x48"
-                  type="<?php echo $type; ?>">
-            <link rel="icon" href="<?php echo $Favicon->getSizeCacheUrl(62, 62); ?>" sizes="62x62"
-                  type="<?php echo $type; ?>">
+            <link rel="icon" href="<?php
+            echo $Favicon->getSizeCacheUrl(16, 16); ?>" sizes="16x16"
+                  type="<?php
+                  echo $type; ?>">
+            <link rel="icon" href="<?php
+            echo $Favicon->getSizeCacheUrl(32, 32); ?>" sizes="32x32"
+                  type="<?php
+                  echo $type; ?>">
+            <link rel="icon" href="<?php
+            echo $Favicon->getSizeCacheUrl(48, 48); ?>" sizes="48x48"
+                  type="<?php
+                  echo $type; ?>">
+            <link rel="icon" href="<?php
+            echo $Favicon->getSizeCacheUrl(62, 62); ?>" sizes="62x62"
+                  type="<?php
+                  echo $type; ?>">
             <?php
         } catch (QUI\Exception $Exception) {
         }
@@ -68,9 +83,9 @@ if ($Avatar) {
     ?>
 
     <link
-            href="//fonts.googleapis.com/css?family=Open+Sans:400,700,400italic"
-            rel="stylesheet"
-            type="text/css"
+        href="//fonts.googleapis.com/css?family=Open+Sans:400,700,400italic"
+        rel="stylesheet"
+        type="text/css"
     />
 
     <meta name="viewport"
@@ -85,7 +100,8 @@ if ($Avatar) {
 
     <!-- [begin] css combine -->
 
-    <link href="<?php echo URL_BIN_DIR; ?>css/tables.css"
+    <link href="<?php
+    echo URL_BIN_DIR; ?>css/tables.css"
           rel="stylesheet"
           type="text/css"
     />
@@ -97,45 +113,53 @@ if ($Avatar) {
     ?>
 
     <!--[if (lt IE 9) & (!IEMobile)]>
-    <link href="<?php echo $qui_extend; ?>unsemantic/ie.css"
+    <link href="<?php
+    echo $qui_extend; ?>unsemantic/ie.css"
           rel="stylesheet"
           type="text/css"
     />
     <![endif]-->
 
     <link
-            href="<?php echo $qui_extend; ?>unsemantic/unsemantic-grid-responsive.css"
-            rel="stylesheet"
-            type="text/css"
+        href="<?php
+        echo $qui_extend; ?>unsemantic/unsemantic-grid-responsive.css"
+        rel="stylesheet"
+        type="text/css"
     />
 
     <link
-            href="<?php echo URL_OPT_DIR; ?>quiqqer/messages/bin/messages.css"
-            rel="stylesheet"
-            type="text/css"
+        href="<?php
+        echo URL_OPT_DIR; ?>quiqqer/messages/bin/messages.css"
+        rel="stylesheet"
+        type="text/css"
     />
 
-    <link href="<?php echo $qui_extend; ?>animate.min.css"
+    <link href="<?php
+    echo $qui_extend; ?>animate.min.css"
           rel="stylesheet"
           type="text/css"
     />
 
-    <link href="<?php echo $qui_extend; ?>classes.css"
+    <link href="<?php
+    echo $qui_extend; ?>classes.css"
           rel="stylesheet"
           type="text/css"
     />
 
-    <link href="<?php echo $qui_extend; ?>buttons.css"
+    <link href="<?php
+    echo $qui_extend; ?>buttons.css"
           rel="stylesheet"
           type="text/css"
     />
 
-    <link href="<?php echo $qui_extend; ?>elements.css"
+    <link href="<?php
+    echo $qui_extend; ?>elements.css"
           rel="stylesheet"
           type="text/css"
     />
 
-    <link href="<?php echo URL_BIN_DIR; ?>css/style.css"
+    <link href="<?php
+    echo URL_BIN_DIR; ?>css/style.css"
           rel="stylesheet"
           type="text/css"
     />
@@ -165,11 +189,12 @@ if ($Avatar) {
         };
 
         var QUIQQER_VERSION = "<?php echo QUI::getPackageManager()->getVersion(); ?>";
-        var QUIQQER_HASH    = "<?php echo QUI::getPackageManager()->getHash(); ?>";
-        var QUIQQER_CONFIG  = <?php echo \json_encode($config); ?>;
+        var QUIQQER_HASH = "<?php echo QUI::getPackageManager()->getHash(); ?>";
+        var QUIQQER_CONFIG = <?php echo \json_encode($config); ?>;
 
         // Exceptions
-        var QUIQQER_EXCEPTION_CODE_PACKAGE_NOT_LICENSED = <?php echo QUI::getPackageManager()::EXCEPTION_CODE_PACKAGE_NOT_LICENSED; ?>;
+        var QUIQQER_EXCEPTION_CODE_PACKAGE_NOT_LICENSED = <?php echo QUI::getPackageManager(
+        )::EXCEPTION_CODE_PACKAGE_NOT_LICENSED; ?>;
 
         // standard project
         var QUIQQER_PROJECT = <?php echo \json_encode([
@@ -187,6 +212,7 @@ if ($Avatar) {
             ajax            : '<?php echo URL_SYS_DIR; ?>ajax.php',
             inAdministration: true,
             lu              : "<?php echo QUI::getPackageManager()->getLastUpdateDate(); ?>",
+            vMd5            : "<?php echo md5(QUI::version()); ?>",
 
             installPackage: function (packageName, version, server) {
                 return new Promise(function (resolve, reject) {
@@ -231,12 +257,12 @@ if ($Avatar) {
     $locales = [];
 
     foreach ($files as $package => $file) {
-        $locales[] = $package.'/'.$User->getLang();
+        $locales[] = $package . '/' . $User->getLang();
     }
 
     echo '<script type="text/javascript">';
     echo '/* <![CDATA[ */';
-    echo 'var QUIQQER_LOCALE = '.\json_encode($locales, true);
+    echo 'var QUIQQER_LOCALE = ' . \json_encode($locales, true);
     echo '/* ]]> */';
     echo '</script>';
 
@@ -244,13 +270,15 @@ if ($Avatar) {
     ?>
 
 </head>
-<body class="<?php echo $User->getLang(); ?>">
+<body class="<?php
+echo $User->getLang(); ?>">
 
 <div id="wrapper">
     <!--
         <div class="qui-logo-container grid-100 grid-parent">
             <a href="/admin/">
-                <img src="<?php echo URL_BIN_DIR; ?>quiqqer_logo_mini.png"
+                <img src="<?php
+    echo URL_BIN_DIR; ?>quiqqer_logo_mini.png"
                     title="QUIQQER - Open Source Management System for Entrepreneurs"
                 />
             </a>
@@ -268,13 +296,18 @@ if ($Avatar) {
     </div>
 </noscript>
 
-<script src="<?php echo URL_OPT_DIR; ?>bin/quiqqer-asset/requirejs/requirejs/require.js"></script>
-<script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-core.js"></script>
-<script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-more.js"></script>
-<script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/moofx.js"></script>
+<script src="<?php
+echo URL_OPT_DIR; ?>bin/quiqqer-asset/requirejs/requirejs/require.js"></script>
+<script src="<?php
+echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-core.js"></script>
+<script src="<?php
+echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-more.js"></script>
+<script src="<?php
+echo URL_OPT_DIR; ?>bin/qui/qui/lib/moofx.js"></script>
 
 <!-- load the quiqqer admin -->
-<script src="<?php echo URL_BIN_DIR; ?>QUI/init.js"></script>
+<script src="<?php
+echo URL_BIN_DIR; ?>QUI/init.js"></script>
 
 <?php
 QUI::getEvents()->fireEvent('adminLoadFooter');
