@@ -19,7 +19,6 @@ use function str_pad;
 use function strlen;
 use function strpos;
 use function trim;
-
 use function unlink;
 
 use const VAR_DIR;
@@ -250,6 +249,12 @@ class Update extends QUI\System\Console\Tool
 
             QUI\Cache\Manager::clearCompleteQuiqqerCache();
             QUI\Cache\Manager::longTimeCacheClearCompleteQuiqqer();
+
+            // composer optimize
+            $Composer->dumpAutoload([
+                '--optimize' => true
+            ]);
+            
             $this->logBuffer();
         } catch (Exception $Exception) {
             $this->write(' [error]', 'red');
