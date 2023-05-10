@@ -195,7 +195,7 @@ class Output extends Singleton
         $HTML5 = new HTML5();
 
         if (strpos($content, '<body') === false) {
-            $Dom = $HTML5->loadHTML('<html><body>'.$content.'</body></html>');
+            $Dom = $HTML5->loadHTML('<html><body>' . $content . '</body></html>');
         } else {
             $Dom = $HTML5->loadHTML($content);
         }
@@ -325,7 +325,7 @@ class Output extends Singleton
                 $title = html_entity_decode($title, ENT_NOQUOTES | ENT_HTML5);
                 $title = QUI\Utils\Security\Orthos::removeHTML($title);
 
-                return 'title="'.$title.'"';
+                return 'title="' . $title . '"';
             },
             $result
         );
@@ -341,7 +341,23 @@ class Output extends Singleton
                 $alt = html_entity_decode($alt, ENT_NOQUOTES | ENT_HTML5);
                 $alt = QUI\Utils\Security\Orthos::removeHTML($alt);
 
-                return 'alt="'.$alt.'"';
+                return 'alt="' . $alt . '"';
+            },
+            $result
+        );
+
+        $result = preg_replace_callback(
+            '#href="([^"]*)"#i',
+            function ($output) {
+                if (empty($output[1])) {
+                    return $output[0];
+                }
+
+                $href = $output[1];
+                $href = html_entity_decode($href, ENT_NOQUOTES | ENT_HTML5);
+                $href = QUI\Utils\Security\Orthos::removeHTML($href);
+
+                return 'href="' . $href . '"';
             },
             $result
         );
@@ -401,10 +417,10 @@ class Output extends Singleton
 
         // Falls in der eigenen Sammlung schon vorhanden
         if (isset($this->linkCache[$components])) {
-            return $output[1].'="'.$this->linkCache[$components].'"';
+            return $output[1] . '="' . $this->linkCache[$components] . '"';
         }
 
-        $parseUrl = parse_url($output[2].'?'.$components);
+        $parseUrl = parse_url($output[2] . '?' . $components);
 
         if (empty($parseUrl['query'])) {
             return $output[0];
@@ -428,16 +444,16 @@ class Output extends Singleton
             $anchor = '';
 
             if (isset($parseUrl['fragment']) && !empty($parseUrl['fragment'])) {
-                $anchor = '#'.$parseUrl['fragment'];
+                $anchor = '#' . $parseUrl['fragment'];
             }
 
             if (empty($url)) {
                 return '';
             }
 
-            $this->linkCache[$components] = $url.$anchor;
+            $this->linkCache[$components] = $url . $anchor;
 
-            return $output[1].'="'.$url.$anchor.'"';
+            return $output[1] . '="' . $url . $anchor . '"';
         } catch (\Exception $Exception) {
             QUI\System\Log::writeDebugException($Exception);
 
@@ -471,12 +487,12 @@ class Output extends Singleton
     protected function files(array $output): string
     {
         try {
-            $url = MediaUtils::getRewrittenUrl('image.php?'.$output[3]);
+            $url = MediaUtils::getRewrittenUrl('image.php?' . $output[3]);
         } catch (QUI\Exception $Exception) {
             $url = '';
         }
 
-        return $output[1].'="'.$url.'"';
+        return $output[1] . '="' . $url . '"';
     }
 
     /**
@@ -507,7 +523,7 @@ class Output extends Singleton
                 // workaround for system paths, not optimal
                 $output[0] = str_replace(
                     ' src="',
-                    ' src="'.CMS_DIR,
+                    ' src="' . CMS_DIR,
                     $output[0]
                 );
             }
@@ -522,23 +538,9 @@ class Output extends Singleton
 
         if (strpos($src, 'media/cache') !== false) {
             try {
-                $fileData = MediaUtils::getRealFileDataFromCacheUrl($src);
-
-                $src = QUI\Cache\Manager::get(
-                    'media/cache/'.$fileData['project'].'/indexSrcCache/'.md5($fileData['filePath'])
-                );
+                $Image = MediaUtils::getElement($src);
+                $src   = $Image->getUrl();
             } catch (QUI\Exception $Exception) {
-                try {
-                    $Image   = MediaUtils::getElement($src);
-                    $src     = $Image->getUrl();
-                    $project = $Image->getProject()->getName();
-
-                    QUI\Cache\Manager::set(
-                        'media/cache/'.$project.'/indexSrcCache/'.md5($Image->getAttribute('file')),
-                        $src
-                    );
-                } catch (QUI\Exception $Exception) {
-                }
             }
         }
 
@@ -572,7 +574,7 @@ class Output extends Singleton
         if ($this->settings['use-system-image-paths']) {
             $html = str_replace(
                 ' src="',
-                ' src="'.CMS_DIR,
+                ' src="' . CMS_DIR,
                 $html
             );
         }
@@ -596,10 +598,10 @@ class Output extends Singleton
 
         // Falls in der eigenen Sammlung schon vorhanden
         if (isset($this->imageUrlCache[$components])) {
-            return $output[1].'="'.$this->imageUrlCache[$components].'"';
+            return $output[1] . '="' . $this->imageUrlCache[$components] . '"';
         }
 
-        $parseUrl = parse_url($output[2].'?'.$components);
+        $parseUrl = parse_url($output[2] . '?' . $components);
 
         if (empty($parseUrl['query'])) {
             return $output[0];
@@ -613,17 +615,17 @@ class Output extends Singleton
         }
 
         try {
-            $MediaItem = MediaUtils::getMediaItemByUrl('image.php?'.$components);
+            $MediaItem = MediaUtils::getMediaItemByUrl('image.php?' . $components);
         } catch (QUI\Exception $Exception) {
             return '';
         }
 
         if ($MediaItem->hasViewPermissionSet()) {
-            return $output[1].'="'.URL_DIR.$MediaItem->getUrl().'"';
+            return $output[1] . '="' . URL_DIR . $MediaItem->getUrl() . '"';
         }
 
         if (MediaUtils::isImage($MediaItem)) {
-            $attributes = StringUtils::getUrlAttributes('?'.$components);
+            $attributes = StringUtils::getUrlAttributes('?' . $components);
 
             if (isset($attributes['maxwidth'])) {
                 $attributes['width'] = $attributes['maxwidth'];
@@ -634,7 +636,7 @@ class Output extends Singleton
             }
 
             $source = MediaUtils::getImageSource(
-                'image.php?'.$components,
+                'image.php?' . $components,
                 $attributes
             );
         } else {
@@ -643,7 +645,7 @@ class Output extends Singleton
 
         $this->imageUrlCache[$components] = $source;
 
-        return $output[1].'="'.$source.'"';
+        return $output[1] . '="' . $source . '"';
     }
 
     /**
@@ -699,7 +701,7 @@ class Output extends Singleton
         }
 
         $lu   = md5(QUI::getPackageManager()->getLastUpdateDate());
-        $file = CMS_DIR.ltrim($att['href'], '/');
+        $file = CMS_DIR . ltrim($att['href'], '/');
 
         // check if css file is project custom css
         if (strpos($att['href'], 'custom.css') !== false && file_exists($file)) {
@@ -707,15 +709,15 @@ class Output extends Singleton
         }
 
         if (strpos($att['href'], '?') === false) {
-            $att['href'] .= '?lu='.$lu;
+            $att['href'] .= '?lu=' . $lu;
         } else {
-            $att['href'] .= '&lu='.$lu;
+            $att['href'] .= '&lu=' . $lu;
         }
 
         $result = '<link ';
 
         foreach ($att as $k => $v) {
-            $result .= $k.'="'.$v.'" ';
+            $result .= $k . '="' . $v . '" ';
         }
 
         $result .= '/>';
@@ -748,7 +750,7 @@ class Output extends Singleton
         }
 
         $lu   = md5(QUI::getPackageManager()->getLastUpdateDate());
-        $file = CMS_DIR.ltrim($att['src'], '/');
+        $file = CMS_DIR . ltrim($att['src'], '/');
 
         // check if css file is project custom css
         if (strpos($att['src'], 'custom.js') !== false && file_exists($file)) {
@@ -756,15 +758,15 @@ class Output extends Singleton
         }
 
         if (strpos($att['src'], '?') === false) {
-            $att['src'] .= '?lu='.$lu;
+            $att['src'] .= '?lu=' . $lu;
         } else {
-            $att['src'] .= '&lu='.$lu;
+            $att['src'] .= '&lu=' . $lu;
         }
 
         $result = '<script ';
 
         foreach ($att as $k => $v) {
-            $result .= $k.'="'.$v.'" ';
+            $result .= $k . '="' . $v . '" ';
         }
 
         $result .= '>';
@@ -802,14 +804,14 @@ class Output extends Singleton
             $host = $this->Project->getHost();
 
             if (strpos($host, 'https://') === false && strpos($host, 'http://') === false) {
-                $host = 'https://'.$host;
+                $host = 'https://' . $host;
             }
         }
 
-        $host = trim($host, '/').'/';
+        $host = trim($host, '/') . '/';
         $url  = trim($url, '/');
 
-        return $output[1].'="'.$host.$url.'"';
+        return $output[1] . '="' . $host . $url . '"';
     }
 
     /**
@@ -881,7 +883,7 @@ class Output extends Singleton
             }
         }
 
-        $rewrittenCache = $project.'_'.$lang.'_'.$id;
+        $rewrittenCache = $project . '_' . $lang . '_' . $id;
 
         if (isset($this->rewrittenCache[$rewrittenCache])) {
             $url = $this->rewrittenCache[$rewrittenCache];
@@ -925,7 +927,7 @@ class Output extends Singleton
         $vhosts = QUI::vhosts();
 
         if (!$Project->hasVHost() && !empty($vhosts)) {
-            $url = $Project->getLang().'/'.$url;
+            $url = $Project->getLang() . '/' . $url;
         }
 
         // If the output project is different than the one of the page
@@ -933,7 +935,7 @@ class Output extends Singleton
         if (!$this->Project ||
             $Project->toArray() != $this->Project->toArray()
         ) {
-            return $Project->getVHost(true, true).URL_DIR.$url;
+            return $Project->getVHost(true, true) . URL_DIR . $url;
         }
 
         /**
@@ -974,7 +976,7 @@ class Output extends Singleton
 //            $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
 //        }
 
-        $url = URL_DIR.$url;
+        $url = URL_DIR . $url;
 
         $projectHost = $Project->getHost();
         $projectHost = str_replace(['https://', 'http://'], '', $projectHost);
@@ -983,7 +985,7 @@ class Output extends Singleton
         // damit kein doppelter content entsteht
         if (!isset($_SERVER['HTTP_HOST']) ||
             (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != $projectHost && $projectHost != '')) {
-            $url = $Project->getVHost(true, true).$url;
+            $url = $Project->getVHost(true, true) . $url;
         }
 
         return $url;
@@ -1001,7 +1003,7 @@ class Output extends Singleton
         $lang    = $Site->getProject()->getLang();
         $id      = $Site->getId();
 
-        $rewrittenCache = $project.'_'.$lang.'_'.$id;
+        $rewrittenCache = $project . '_' . $lang . '_' . $id;
 
         if (isset($this->rewrittenCache[$rewrittenCache])) {
             unset($this->rewrittenCache[$rewrittenCache]);
@@ -1045,7 +1047,7 @@ class Output extends Singleton
 
         foreach ($params as $param => $value) {
             if (is_integer($param)) {
-                $url .= $separator.$value;
+                $url .= $separator . $value;
                 continue;
             }
 
@@ -1054,19 +1056,19 @@ class Output extends Singleton
             }
 
             if ($param === "0") {
-                $url .= $separator.$value;
+                $url .= $separator . $value;
                 continue;
             }
 
-            $url .= $separator.$param.$separator.$value;
+            $url .= $separator . $param . $separator . $value;
         }
 
         if (isset($params['suffix'])) {
-            $suffix = '.'.$params['suffix'];
+            $suffix = '.' . $params['suffix'];
         }
 
         if (empty($suffix) && isset($exp[1])) {
-            $suffix = '.'.$exp[1];
+            $suffix = '.' . $exp[1];
         }
 
         if (empty($suffix)) {
@@ -1074,9 +1076,9 @@ class Output extends Singleton
         }
 
         if (empty($getParams)) {
-            return $url.$suffix;
+            return $url . $suffix;
         }
 
-        return $url.$suffix.'?'.http_build_query($getParams);
+        return $url . $suffix . '?' . http_build_query($getParams);
     }
 }
