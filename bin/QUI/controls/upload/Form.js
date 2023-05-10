@@ -119,6 +119,8 @@ define('controls/upload/Form', [
             this.$Progress = null;
             this.$Info     = null;
 
+            this.$isDropping = false;
+
             this.addEvents({
                 onInject : this.$onInject,
                 onDestroy: function () {
@@ -680,14 +682,18 @@ define('controls/upload/Form', [
                 elms = this.$Form.getElements('input[type="file"]');
 
             // Remove empty inputs
-            elms = elms.filter((FileInput) => {
-                if (!FileInput.value) {
-                    FileInput.getParent('div.qui-form-upload').destroy();
-                    return false;
-                }
+            if (!self.$isDropping) {
+                elms = elms.filter((FileInput) => {
+                    const FileInfoElm = FileInput.getParent().getElement('.controls-upload-form-fileinfo');
 
-                return true;
-            });
+                    if (!FileInfoElm.innerHTML) {
+                        FileInfoElm.getParent('div.qui-form-upload').destroy();
+                        return false;
+                    }
+
+                    return true;
+                });
+            }
 
             if (this.getAttribute('maxuploads') !== false &&
                 elms.length !== 0 &&
@@ -787,8 +793,6 @@ define('controls/upload/Form', [
             }).inject(Container);
 
             Container.inject(this.$Form);
-
-            console.log(elms.length);
 
             if (this.$Add &&
                 this.getAttribute('maxuploads') &&
@@ -1231,6 +1235,8 @@ define('controls/upload/Form', [
                         });
                     }
 
+                    self.$isDropping = true;
+
                     // add to the list
                     for (var i = 0, len = files.length; i < len; i++) {
                         self.addUpload(files[i]);
@@ -1247,6 +1253,8 @@ define('controls/upload/Form', [
                         Elm,
                         self
                     ]);
+
+                    self.$isDropping = false;
                 }
             });
         },
