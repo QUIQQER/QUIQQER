@@ -53,7 +53,7 @@
     "quiqqer\/dashboard": "1.*|dev-master|dev-dev",
     "quiqqer\/qui": ">=1.5|dev-master|dev-dev",
     "quiqqer\/qui-php": ">=0.12|dev-master|dev-dev",
-    "quiqqer\/smarty4": "1.*|dev-master|dev-dev",
+    "quiqqer\/smarty3": "1.*|dev-master|dev-dev",
     "quiqqer\/ckeditor4": "2.*|1.*|dev-master|dev-dev",
     "quiqqer\/calendar-controls": "1.*|dev-master|dev-dev",
     "quiqqer\/countries": "1.*|dev-master|dev-dev",
