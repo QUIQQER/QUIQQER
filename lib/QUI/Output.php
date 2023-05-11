@@ -346,6 +346,22 @@ class Output extends Singleton
             $result
         );
 
+        $result = preg_replace_callback(
+            '#href="([^"]*)"#i',
+            function ($output) {
+                if (empty($output[1])) {
+                    return $output[0];
+                }
+
+                $href = $output[1];
+                $href = html_entity_decode($href, ENT_NOQUOTES | ENT_HTML5);
+                $href = QUI\Utils\Security\Orthos::removeHTML($href);
+
+                return 'href="' . $href . '"';
+            },
+            $result
+        );
+
         return $result;
     }
 
