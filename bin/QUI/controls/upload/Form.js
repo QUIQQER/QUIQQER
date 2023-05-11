@@ -71,7 +71,9 @@ define('controls/upload/Form', [
             '$onFileUploadRefresh',
             '$onFileUploadCancel',
             '$onError',
-            '$onInject'
+            '$onInject',
+            '$filterEmptyUploadElements',
+            '$onInputChange'
         ],
 
         /**
@@ -678,22 +680,14 @@ define('controls/upload/Form', [
                 return false;
             }
 
-            var self = this,
-                elms = this.$Form.getElements('input[type="file"]');
+            var self = this;
 
             // Remove empty inputs
             if (!self.$isDropping) {
-                elms = elms.filter((FileInput) => {
-                    const FileInfoElm = FileInput.getParent().getElement('.controls-upload-form-fileinfo');
-
-                    if (!FileInfoElm.innerHTML) {
-                        FileInfoElm.getParent('div.qui-form-upload').destroy();
-                        return false;
-                    }
-
-                    return true;
-                });
+                this.$filterEmptyUploadElements();
             }
+
+            const elms = this.$Form.getElements('input[type="file"]');
 
             if (this.getAttribute('maxuploads') !== false &&
                 elms.length !== 0 &&
@@ -794,12 +788,6 @@ define('controls/upload/Form', [
 
             Container.inject(this.$Form);
 
-            if (this.$Add &&
-                this.getAttribute('maxuploads') &&
-                parseInt(this.getAttribute('maxuploads')) <= elms.length + 1) {
-                this.$Add.disable();
-            }
-
             return Input;
         },
 
@@ -863,6 +851,8 @@ define('controls/upload/Form', [
                     self.$formClick = true;
                 }
             });
+
+            this.$filterEmptyUploadElements();
         },
 
         /**
@@ -1115,11 +1105,18 @@ define('controls/upload/Form', [
             }
 
             // check max length
-            var maxUploads = this.getAttribute('maxuploads'),
-                current    = Object.getLength(this.$files),
-                sum        = current + files.length;
+            const maxUploads       = this.getAttribute('maxuploads');
+            const currentFileCount = Object.getLength(this.$files);
 
-            if (maxUploads && maxUploads < sum) {
+            if (maxUploads && maxUploads <= currentFileCount) {
+                QUI.getMessageHandler().then((MH) => {
+                    MH.addError(
+                        Locale.get(lg, 'upload.form.message.limit', {
+                            limit: maxUploads
+                        })
+                    );
+                });
+
                 Target.destroy();
                 return;
             }
@@ -1133,8 +1130,19 @@ define('controls/upload/Form', [
                 return;
             }
 
-
             for (var i = 0, len = files.length; i < len; i++) {
+                if (Object.getLength(this.$files) >= maxUploads) {
+                    QUI.getMessageHandler().then((MH) => {
+                        MH.addError(
+                            Locale.get(lg, 'upload.form.message.limit', {
+                                limit: maxUploads
+                            })
+                        );
+                    });
+
+                    break;
+                }
+
                 if (i === 0) {
                     this.addUpload(files[i], Target);
                     continue;
@@ -1254,6 +1262,7 @@ define('controls/upload/Form', [
                         self
                     ]);
 
+                    self.$filterEmptyUploadElements();
                     self.$isDropping = false;
                 }
             });
@@ -1338,6 +1347,43 @@ define('controls/upload/Form', [
                 this,
                 Error
             ]);
+        },
+
+        /**
+         * Removes upload elements that have no selected file.
+         *
+         * @return {void}
+         */
+        $filterEmptyUploadElements: function () {
+            let elms = this.$Form.getElements('div.qui-form-upload');
+
+            // Remove empty inputs
+            elms = elms.filter((FileElm) => {
+                const FileInfoElm = FileElm.getElement('.controls-upload-form-fileinfo');
+
+                if (!FileInfoElm.innerHTML) {
+                    FileElm.destroy();
+                    return false;
+                }
+
+                return true;
+            });
+
+            if (!this.$Add) {
+                return;
+            }
+
+            const maxFileUploads = parseInt(this.getAttribute('maxuploads'));
+
+            if (!maxFileUploads) {
+                return;
+            }
+
+            if (maxFileUploads <= elms.length) {
+                this.$Add.disable();
+            } else {
+                this.$Add.enable();
+            }
         }
     });
 });
