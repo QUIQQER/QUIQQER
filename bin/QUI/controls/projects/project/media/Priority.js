@@ -111,7 +111,7 @@ define('controls/projects/project/media/Priority', [
          * Refresh the display
          */
         refresh: function () {
-            return new Promise(function (resolve, reject) {
+            return new Promise((resolve, reject) => {
                 this.Loader.show();
 
                 if (!this.$Grid || !this.$Elm) {
@@ -119,24 +119,25 @@ define('controls/projects/project/media/Priority', [
                     return;
                 }
 
-                var self = this;
+                const self = this;
 
                 require(['Projects'], function (Projects) {
-                    var project = self.getAttribute('project');
-                    var Media = Projects.get(project).getMedia();
+                    const project = self.getAttribute('project');
+                    const Media = Projects.get(project).getMedia();
 
-                    Media.get(self.getAttribute('folderId')).then(function (Item) {
+                    Media.get(self.getAttribute('folderId')).then((Item) => {
                         if (Item.getType() !== 'classes/projects/project/media/Folder') {
                             return;
                         }
 
-                        Item.getChildren().then(function (children) {
-                            var data = [];
+                        Item.getChildren().then((children) => {
+                            let data = [];
+                            let childData = children.data;
 
-                            for (var i = 0, len = children.length; i < len; i++) {
+                            for (let i = 0, len = childData.length; i < len; i++) {
                                 data.push({
                                     order  : new Element('input', {
-                                        value : children[i].priority,
+                                        value : childData[i].priority,
                                         type  : 'number',
                                         styles: {
                                             lineHeight: 22,
@@ -144,12 +145,12 @@ define('controls/projects/project/media/Priority', [
                                             width     : '95%'
                                         }
                                     }),
-                                    id     : children[i].id,
-                                    name   : children[i].name,
-                                    title  : children[i].title,
+                                    id     : childData[i].id,
+                                    name   : childData[i].name,
+                                    title  : childData[i].title,
                                     preview: new Element('img', {
                                         src: URL_DIR + 'image.php?' + Object.toQueryString({
-                                            id       : children[i].id,
+                                            id       : childData[i].id,
                                             project  : project,
                                             quiadmin : 1,
                                             maxheight: 60,
@@ -161,7 +162,9 @@ define('controls/projects/project/media/Priority', [
                             }
 
                             self.$Grid.setData({
-                                data: data
+                                data : data,
+                                page : children.page,
+                                total: children.total
                             });
 
                             self.Loader.hide();
@@ -169,9 +172,8 @@ define('controls/projects/project/media/Priority', [
                             resolve();
                         });
                     });
-
                 }, reject);
-            }.bind(this));
+            });
         },
 
         /**
@@ -180,28 +182,28 @@ define('controls/projects/project/media/Priority', [
          * @return Promise
          */
         save: function () {
-            return new Promise(function (resolve, reject) {
+            return new Promise((resolve, reject) => {
                 this.Loader.show();
 
-                var priorities = [],
-                    data       = this.$Grid.getData();
+                const priorities = [],
+                      data       = this.$Grid.getData();
 
-                for (var i = 0, len = data.length; i < len; i++) {
+                for (let i = 0, len = data.length; i < len; i++) {
                     priorities.push({
                         id      : data[i].id,
                         priority: parseInt(data[i].order.value)
                     });
                 }
 
-                QUIAjax.post('ajax_media_folder_setPriorities', function () {
+                QUIAjax.post('ajax_media_folder_setPriorities', () => {
                     this.refresh().then(resolve);
-                }.bind(this), {
+                }, {
                     project   : this.getAttribute('project'),
                     folderId  : this.getAttribute('folderId'),
                     priorities: JSON.encode(priorities),
                     onError   : reject
                 });
-            }.bind(this));
+            });
         },
 
         /**
@@ -212,7 +214,7 @@ define('controls/projects/project/media/Priority', [
                 return;
             }
 
-            var size = this.$Elm.getSize();
+            const size = this.$Elm.getSize();
 
             this.$Grid.setHeight(size.y);
             this.$Grid.setWidth(size.x);

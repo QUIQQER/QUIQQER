@@ -9,6 +9,8 @@ namespace QUI;
 use QUI;
 use QUI\Utils\Security\Orthos;
 
+use function class_exists;
+use function class_implements;
 use function explode;
 use function file_exists;
 use function file_get_contents;
@@ -17,6 +19,9 @@ use function htmlspecialchars;
 use function is_array;
 use function realpath;
 use function str_replace;
+
+use const ETC_DIR;
+use const PHP_EOL;
 
 /**
  * Template Engine Manager
@@ -164,12 +169,32 @@ class Template extends QUI\QDOM
         $engine = QUI::conf('template', 'engine');
 
         if (!isset($this->engines[$engine])) {
-            throw new QUI\Exception('Template Engine not found!');
+            // smarty 4 workaround
+            if (class_exists('QUI\Smarty\Smarty4')) {
+                $Config = QUI::getConfig('etc/conf.ini.php');
+                $Config->setValue('template', 'engine', 'smarty4');
+                $Config->save();
+
+                $templateIni = ETC_DIR . 'templates.ini.php';
+                $iniContent  = file_get_contents($templateIni);
+
+                file_put_contents(
+                    $templateIni,
+                    trim($iniContent) . PHP_EOL . 'smarty4="QUI\Smarty\Smarty4"'
+                );
+
+                self::getConfig()->reload();
+
+                $engine        = 'smarty4';
+                $this->engines = self::getConfig()->toArray();
+            } else {
+                throw new QUI\Exception('Template Engine not found!');
+            }
         }
 
         /* @var $Engine QUI\Interfaces\Template\EngineInterface */
         $Engine     = new $this->engines[$engine]($admin);
-        $implements = \class_implements($Engine);
+        $implements = class_implements($Engine);
 
         if (!isset($implements['QUI\Interfaces\Template\EngineInterface'])) {
             throw new QUI\Exception(
