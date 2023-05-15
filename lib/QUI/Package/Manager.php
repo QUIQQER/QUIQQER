@@ -473,14 +473,16 @@ class Manager extends QUI\QDOM
             $composerJson = json_decode('{}');
         }
 
-        $composerJson->config = [
-            "vendor-dir"        => OPT_DIR,
-            "cache-dir"         => $this->varDir,
-            "component-dir"     => OPT_DIR . 'bin',
-            "quiqqer-dir"       => CMS_DIR,
-            "secure-http"       => true,
-            "preferred-install" => 'dist'
-        ];
+        if (!isset($composerJson->config)) {
+            $composerJson->config = json_decode('{}');
+        }
+
+        $composerJson->config->{"vendor-dir"}        = OPT_DIR;
+        $composerJson->config->{"cache-dir"}         = $this->varDir;
+        $composerJson->config->{"component-dir"}     = OPT_DIR . 'bin';
+        $composerJson->config->{"quiqqer-dir"}       = CMS_DIR;
+        $composerJson->config->{"secure-http"}       = true;
+        $composerJson->config->{"preferred-install"} = 'dist';
 
         $allowedPlugins = [
             "composer/installers",
@@ -488,8 +490,12 @@ class Manager extends QUI\QDOM
             "kylekatarnls/update-helper"
         ];
 
+        if (!isset($composerJson->config->{'allow-plugins'})) {
+            $composerJson->config->{'allow-plugins'} = json_decode('{}');
+        }
+
         foreach ($allowedPlugins as $plugin) {
-            $composerJson->config['allow-plugins'][$plugin] = true;
+            $composerJson->config->{'allow-plugins'}->{$plugin} = true;
         }
 
         if (DEVELOPMENT) {
