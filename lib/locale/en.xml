@@ -4737,6 +4737,12 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="upload.successful">
             <en><![CDATA[[file] was successfully uploaded]]></en>
         </locale>
+        <locale name="upload.bulk.successful">
+            <en><![CDATA[[count] files were successfully uploaded to [folder].]]></en>
+        </locale>
+        <locale name="upload.bulk.message">
+            <en><![CDATA[[done] files uploaded from [total].]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -6118,7 +6124,7 @@ After logging in you will be prompted to set a new password.
             Note that if an error occurs, this may cause the site to become inaccessible.
             ]]></en>
         </locale>
-        
+
         <locale name="update.refresh.title">
             <en><![CDATA[
             Please reload interface: Backend and frontend versions different

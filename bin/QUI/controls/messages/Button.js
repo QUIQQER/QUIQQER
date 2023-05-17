@@ -7,15 +7,17 @@ define('controls/messages/Button', [
     'qui/QUI',
     'qui/controls/Control',
     'qui/controls/messages/Loading',
+    'classes/request/BulkUpload',
     'Locale',
 
     'css!controls/messages/Button.css'
 
-], function (QUI, QUIControl, LoadingMessage, QUILocale) {
+], function (QUI, QUIControl, LoadingMessage, BulkUpload, QUILocale) {
     "use strict";
 
     const lg = 'quiqqer/quiqqer';
     const uploadMessages = {};
+    const uploadNodes = [];
 
     return new Class({
 
@@ -259,8 +261,21 @@ define('controls/messages/Button', [
                 return true;
             });
 
-            for (let i = 0, len = messages.length; i < len; i++) {
+            let i, len;
+
+            for (i = 0, len = messages.length; i < len; i++) {
                 this.$createMessageNode(messages[i]).inject(this.$Messages);
+            }
+
+            for (i = 0, len = uploadNodes.length; i < len; i++) {
+                uploadNodes[i].setStyles({
+                    opacity : 1,
+                    position: 'relative',
+                    top     : null,
+                    display : null
+                });
+
+                uploadNodes[i].inject(this.$Messages, 'top');
             }
 
             if (messages.length) {
@@ -428,8 +443,26 @@ define('controls/messages/Button', [
                                '   <span class="fa fa-clock-o"></span>' +
                                '   ' + this.$getMessageDisplayTime(Message) +
                                '</span>' +
-                               '<div class="quiqqer-message-close"><span class="fa fa-close"></span></div>'
+                               '<div class="quiqqer-message-close">' +
+                               '    <span class="fa fa-close"></span>' +
+                               '</div>'
             });
+
+            if (messageType === 'quiqqer-message-loading') {
+                new Element('span', {
+                    'class': 'fa fa-circle-o-notch fa-spin',
+                    styles : {
+                        float   : 'right',
+                        color   : '#000',
+                        fontSize: '16px',
+                        padding : 0
+                    }
+                }).inject(Node.getElement('.quiqqer-message-date'));
+            }
+
+            if (Message.getElm().hasClass('quiqqer-message-loading--bulk')) {
+                Node.addClass('quiqqer-message-loading--bulk');
+            }
 
             if (messageType !== '') {
                 Node.addClass(messageType);
@@ -549,6 +582,10 @@ define('controls/messages/Button', [
                             messageDelay = 1000;
                         }
 
+                        if (Node.hasClass('quiqqer-message-loading--bulk')) {
+                            return;
+                        }
+
                         if (Node.hasClass('quiqqer-message-loading')) {
                             for (let i in uploadMessages) {
                                 if (uploadMessages[i].getId() === Node.get('data-msg-id')) {
@@ -661,6 +698,22 @@ define('controls/messages/Button', [
                 Target = Target.getParent('.quiqqer-message');
             }
 
+            // loading
+            if (Target.hasClass('quiqqer-message-loading--bulk')) {
+                moofx(Target).animate({
+                    opacity: 0,
+                    top    : 50
+                }, {
+                    duration: 200,
+                    callback: () => {
+                        uploadNodes.push(Target);
+                        Target.setStyle('display', 'none');
+                    }
+                });
+
+                return;
+            }
+
             const msgId    = Target.get('data-msg-id'),
                   messages = this.$MessageHandler.getMessages();
 
@@ -715,6 +768,101 @@ define('controls/messages/Button', [
         },
 
         $addFileUpload: function (File) {
+            if (File instanceof BulkUpload) {
+                const progress = File.getProgress();
+
+                const MessageInstance = new LoadingMessage({
+                    percent: 0,
+                    message: '<span class="quiqqer-message-loading-text">' +
+                             QUILocale.get(lg, 'upload.bulk.message', {
+                                 done : progress.done,
+                                 total: progress.total
+                             }) +
+                             '</span>' +
+                             '<span class="quiqqer-message-loading-progress">' +
+                             '   <span class="quiqqer-message-loading-progress-bar"></span>' +
+                             '</span>'
+                });
+
+                MessageInstance.getElm().addClass('quiqqer-message-loading--bulk');
+                uploadMessages[File.getId()] = MessageInstance;
+
+                File.addEvent('uploadPartEnd', function () {
+                    const progress = File.getProgress();
+
+                    const instanceId = uploadMessages[File.getId()].getId();
+                    const MessageNode = document.body.getElement('[data-msg-id=' + instanceId + ']');
+
+                    if (!MessageNode) {
+                        return;
+                    }
+
+                    const Text = MessageNode.getElement('.quiqqer-message-loading-text');
+                    const Bar = MessageNode.getElement('.quiqqer-message-loading-progress-bar');
+
+                    Text.set('html', QUILocale.get(lg, 'upload.bulk.message', {
+                        done : progress.done,
+                        total: progress.total
+                    }));
+
+                    Bar.setStyle('width', progress.percent + '%');
+                });
+
+                File.addEvent('finish', () => {
+                    if (typeof uploadMessages[File.getId()] === 'undefined') {
+                        return;
+                    }
+
+                    const progress = File.getProgress();
+                    const instanceId = uploadMessages[File.getId()].getId();
+                    const MessageNode = document.body.getElement('[data-msg-id=' + instanceId + ']');
+
+                    if (!MessageNode) {
+                        return;
+                    }
+
+                    delete uploadMessages[File.getId()];
+
+                    this.$closeMessage(MessageNode).then(() => {
+                        require(['Projects'], (Projects) => {
+                            const Project = Projects.get(File.getAttribute('project'));
+                            const Media = Project.getMedia();
+
+                            Media.get(File.getAttribute('parentId')).then((Folder) => {
+                                this.$MessageHandler.addSuccess(
+                                    QUILocale.get(lg, 'upload.bulk.successful', {
+                                        count : progress.total,
+                                        folder: Folder.getAttribute('name')
+                                    })
+                                );
+                            });
+                        });
+
+                        let inUploadNodes = uploadNodes.indexOf(MessageNode);
+
+                        if (inUploadNodes > -1) {
+                            uploadNodes.splice(inUploadNodes, 1);
+                            MessageNode.destroy();
+                        }
+
+                        let index = this.$queue.indexOf(MessageNode);
+
+                        if (index > -1) {
+                            this.$queue.splice(index, 1);
+                        }
+
+                        if (this.$queue.length) {
+                            return this.$showMessage(this.$queue[0]);
+                        }
+                    });
+                });
+
+                this.$customMessageHandling(MessageInstance, null);
+
+                return;
+            }
+
+
             const fileId = File.getId();
 
             if (typeof uploadMessages[fileId] !== 'undefined') {
