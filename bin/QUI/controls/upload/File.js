@@ -82,6 +82,10 @@ define('controls/upload/File', [
         initialize: function (File, options) {
             this.$File = File;
 
+            if (typeof this.$File.fileObject !== 'undefined') {
+                this.$File = this.$File.fileObject;
+            }
+
             if (!this.$File.size || !this.getFilename()) {
                 this.$File = false;
 
@@ -570,7 +574,7 @@ define('controls/upload/File', [
             }
 
             QUI.fireEvent('upload', [this]);
-            
+
             // $project, $parentid, $file, $data
             const url = URL_LIB_DIR + 'QUI/Upload/bin/upload.php?' + Object.toQueryString(UploadParams);
 

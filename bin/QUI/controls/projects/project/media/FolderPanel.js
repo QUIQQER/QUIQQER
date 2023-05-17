@@ -37,7 +37,7 @@ define('controls/projects/project/media/FolderPanel', [
              Ajax) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/quiqqer';
 
     return new Class({
 
@@ -64,13 +64,13 @@ define('controls/projects/project/media/FolderPanel', [
         initialize: function (options) {
             this.parent(options);
 
-            this.$Folder           = null;
-            this.$Media            = null;
-            this.$EffectPreview    = null;
-            this.$EffectBlur       = null;
+            this.$Folder = null;
+            this.$Media = null;
+            this.$EffectPreview = null;
+            this.$EffectBlur = null;
             this.$EffectBrightness = null;
-            this.$EffectContrast   = null;
-            this.$EffectWatermark  = null;
+            this.$EffectContrast = null;
+            this.$EffectWatermark = null;
 
             this.$loaded = false;
 
@@ -112,20 +112,20 @@ define('controls/projects/project/media/FolderPanel', [
 
             this.$loaded = true;
 
-            var self    = this,
-                Project = Projects.get(this.getAttribute('project')),
-                Media   = Project.getMedia();
+            const self    = this,
+                  Project = Projects.get(this.getAttribute('project')),
+                  Media   = Project.getMedia();
 
             Media.get(this.getAttribute('folderId')).then(function (Folder) {
                 self.$Folder = Folder;
-                self.$Media  = Media;
+                self.$Media = Media;
 
                 self.$Folder.addEvents({
                     onRefresh: self.$onFolderRefresh,
                     onSave   : self.$onFolderRefresh
                 });
 
-                var title = Project.getName() + '://' + Folder.getAttribute('file');
+                const title = Project.getName() + '://' + Folder.getAttribute('file');
 
                 self.setAttributes({
                     icon : 'fa fa-folder-open-o',
@@ -147,8 +147,8 @@ define('controls/projects/project/media/FolderPanel', [
          * on refresh
          */
         $onFolderRefresh: function () {
-            var Project = Projects.get(this.getAttribute('project')),
-                title   = Project.getName() + '://' + this.$Folder.getAttribute('file');
+            const Project = Projects.get(this.getAttribute('project')),
+                  title   = Project.getName() + '://' + this.$Folder.getAttribute('file');
 
             this.setAttributes({
                 title: title
@@ -156,7 +156,7 @@ define('controls/projects/project/media/FolderPanel', [
 
             this.refresh();
 
-            var Category = this.getActiveCategory();
+            const Category = this.getActiveCategory();
 
             if (Category.getAttribute('name') === 'details') {
                 this.openDetails(false);
@@ -177,7 +177,7 @@ define('controls/projects/project/media/FolderPanel', [
                 return Promise.resolve();
             }
 
-            var self = this;
+            const self = this;
 
             this.Loader.show();
             this.$unloadCategory();
@@ -205,7 +205,7 @@ define('controls/projects/project/media/FolderPanel', [
          * @method controls/projects/project/media/FilePanel#del
          */
         del: function () {
-            var self = this;
+            const self = this;
 
             new QUIConfirm({
                 icon     : 'fa fa-trash-o',
@@ -252,8 +252,8 @@ define('controls/projects/project/media/FolderPanel', [
             }
 
 
-            var self = this,
-                Body = this.getContent();
+            const self = this,
+                  Body = this.getContent();
 
             Body.set('html', '');
             Body.setStyle('opacity', 0);
@@ -266,8 +266,8 @@ define('controls/projects/project/media/FolderPanel', [
                     '<form>' + result + '</form>'
                 );
 
-                var Form  = Body.getElement('form'),
-                    Order = Form.getElement('[name="order"]');
+                const Form  = Body.getElement('form'),
+                      Order = Form.getElement('[name="order"]');
 
                 QUIFormUtils.setDataToForm(self.$Folder.getAttributes(), Form);
 
@@ -294,15 +294,21 @@ define('controls/projects/project/media/FolderPanel', [
                 QUI.parse().then(Form).then(function () {
                     return self.$Folder.getSize();
                 }).then(function (bytes) {
-                    var value;
-                    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+                    let value;
+                    const sizes = [
+                        'Bytes',
+                        'KB',
+                        'MB',
+                        'GB',
+                        'TB'
+                    ];
 
                     bytes = parseInt(bytes);
 
                     if (bytes === 0) {
                         value = '0 Byte';
                     } else {
-                        var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+                        const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
                         value = Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
                     }
 
@@ -312,7 +318,7 @@ define('controls/projects/project/media/FolderPanel', [
                     Form.elements.cleanup.addEvent('click', function (e) {
                         e.stop();
 
-                        var Fa = Form.elements.cleanup.getElement('.fa');
+                        const Fa = Form.elements.cleanup.getElement('.fa');
 
                         Fa.removeClass('fa-paint-brush');
                         Fa.addClass('fa-spinner fa-spin');
@@ -357,9 +363,9 @@ define('controls/projects/project/media/FolderPanel', [
 
             this.Loader.show();
 
-            var self   = this,
-                Body   = this.getContent(),
-                Folder = this.$Folder;
+            const self   = this,
+                  Body   = this.getContent(),
+                  Folder = this.$Folder;
 
             Body.set('html', '');
 
@@ -369,15 +375,15 @@ define('controls/projects/project/media/FolderPanel', [
                     '<form>' + result + '</form>'
                 );
 
-                var WatermarkInput;
+                let WatermarkInput;
 
-                var Effects           = Folder.getEffects(),
-                    Greyscale         = Body.getElement('[name="effect-greyscale"]'),
-                    WatermarkPosition = Body.getElement('[name="effect-watermark_position"]'),
-                    WatermarkRatio    = Body.getElement('[name="effect-watermark_ratio"]'),
-                    Watermark         = Body.getElement('.effect-watermark'),
-                    WatermarkCell     = Body.getElement('.effect-watermark-cell'),
-                    WatermarkRow      = Body.getElement('.effect-watermark-row');
+                const Effects           = Folder.getEffects(),
+                      Greyscale         = Body.getElement('[name="effect-greyscale"]'),
+                      WatermarkPosition = Body.getElement('[name="effect-watermark_position"]'),
+                      WatermarkRatio    = Body.getElement('[name="effect-watermark_ratio"]'),
+                      Watermark         = Body.getElement('.effect-watermark'),
+                      WatermarkCell     = Body.getElement('.effect-watermark-cell'),
+                      WatermarkRow      = Body.getElement('.effect-watermark-row');
 
                 self.$EffectWatermark = Body.getElement('[name="effect-watermark"]');
 
@@ -460,7 +466,7 @@ define('controls/projects/project/media/FolderPanel', [
                 );
 
                 // watermark
-                var Select = new QUISelect({
+                const Select = new QUISelect({
                     menuWidth: 300,
                     styles   : {
                         width: 260
@@ -530,11 +536,9 @@ define('controls/projects/project/media/FolderPanel', [
 
                 // get one image from the folder
                 Folder.getChildren(function (children) {
-                    var i, len;
-
                     children = children.data;
 
-                    for (i = 0, len = children.length; i < len; i++) {
+                    for (let i = 0, len = children.length; i < len; i++) {
                         if (children[i].type === 'image') {
                             self.$previewImageData = children[i];
                             break;
@@ -551,7 +555,7 @@ define('controls/projects/project/media/FolderPanel', [
          * Opens the children order
          */
         openPriorityOrder: function () {
-            var self = this;
+            const self = this;
 
             this.createSheet({
                 icon       : 'fa fa-sort-amount-asc',
@@ -562,7 +566,7 @@ define('controls/projects/project/media/FolderPanel', [
                 },
                 events     : {
                     onOpen: function (Sheet) {
-                        var Content = Sheet.getContent();
+                        const Content = Sheet.getContent();
 
                         Content.setStyles({
                             padding: 20
@@ -589,7 +593,7 @@ define('controls/projects/project/media/FolderPanel', [
                 return;
             }
 
-            var self = this;
+            const self = this;
 
             new QUIConfirm({
                 title      : Locale.get(lg, 'media.folderPanel.window.effect.recursive.title'),
@@ -619,7 +623,7 @@ define('controls/projects/project/media/FolderPanel', [
          * create the action buttons of the panel
          */
         $createButtons: function () {
-            var self = this;
+            const self = this;
 
             this.getButtonBar().clear();
 
@@ -700,7 +704,7 @@ define('controls/projects/project/media/FolderPanel', [
                 return;
             }
 
-            var PreviewParent = this.getContent().getElement('.preview-frame');
+            const PreviewParent = this.getContent().getElement('.preview-frame');
 
             if (typeof this.$previewImageData === 'undefined') {
                 PreviewParent.set(
@@ -715,7 +719,7 @@ define('controls/projects/project/media/FolderPanel', [
                 return;
             }
 
-            var Image = PreviewParent.getElement('img');
+            let Image = PreviewParent.getElement('img');
 
             if (!Image) {
                 PreviewParent.set('html', '');
@@ -726,14 +730,14 @@ define('controls/projects/project/media/FolderPanel', [
             }
 
 
-            var fileId            = this.$previewImageData.id,
-                project           = this.$Media.getProject().getName(),
-                Content           = this.getContent(),
-                WatermarkPosition = Content.getElement('[name="effect-watermark_position"]'),
-                WatermarkRatio    = Content.getElement('[name="effect-watermark_ratio"]');
+            const fileId            = this.$previewImageData.id,
+                  project           = this.$Media.getProject().getName(),
+                  Content           = this.getContent(),
+                  WatermarkPosition = Content.getElement('[name="effect-watermark_position"]'),
+                  WatermarkRatio    = Content.getElement('[name="effect-watermark_ratio"]');
 
-            var Greyscale = Content.getElement('[name="effect-greyscale"]');
-            var url       = URL_LIB_DIR + 'QUI/Projects/Media/bin/effectPreview.php?';
+            const Greyscale = Content.getElement('[name="effect-greyscale"]');
+            let url = URL_LIB_DIR + 'QUI/Projects/Media/bin/effectPreview.php?';
 
             url = url + Object.toQueryString({
                 id                : fileId,
@@ -755,8 +759,8 @@ define('controls/projects/project/media/FolderPanel', [
          * unload the category and set the data to the folder
          */
         $unloadCategory: function () {
-            var Body = this.getContent();
-            var Form = Body.getElement('form');
+            const Body = this.getContent();
+            const Form = Body.getElement('form');
 
             if (!Form || !Form.getParent()) {
                 return;
@@ -766,9 +770,9 @@ define('controls/projects/project/media/FolderPanel', [
                 return;
             }
 
-            var data = QUIFormUtils.getFormData(Form);
+            const data = QUIFormUtils.getFormData(Form);
 
-            for (var i in data) {
+            for (const i in data) {
                 if (!data.hasOwnProperty(i)) {
                     return;
                 }
@@ -787,8 +791,8 @@ define('controls/projects/project/media/FolderPanel', [
          * Open the permissions
          */
         openPermissions: function () {
-            var Parent = this.getParent(),
-                Folder = this.$Folder;
+            const Parent = this.getParent(),
+                  Folder = this.$Folder;
 
             require(['controls/permissions/Panel'], function (PermPanel) {
                 Parent.appendChild(

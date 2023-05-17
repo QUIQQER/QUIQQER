@@ -4901,6 +4901,12 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="upload.successful">
             <de><![CDATA[[file] wurde erfolgreich hochgeladen]]></de>
         </locale>
+        <locale name="upload.bulk.successful">
+            <de><![CDATA[Es wurden [count] Dateien nach [folder] erfolgreich hochgeladen.]]></de>
+        </locale>
+        <locale name="upload.bulk.message">
+            <de><![CDATA[[done] Dateien von [total] hochgeladen]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
