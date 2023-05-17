@@ -246,6 +246,8 @@ define('controls/users/search/Search', [
                 Search.filter = RegDateFilter;
             }
 
+            console.log(Search);
+
             Users.getList({
                 field         : options.sortOn,
                 order         : options.sortBy,
