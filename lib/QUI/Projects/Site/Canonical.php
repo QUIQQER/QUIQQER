@@ -93,6 +93,10 @@ class Canonical
                 return $this->getLinkRel($httpsHost . $siteUrl);
             }
 
+            if ($this->Site->getAttribute('ERROR_HEADER')) {
+                return $this->getLinkRel($httpsHost . $this->Site->getCanonical());
+            }
+
             return '';
         }
 

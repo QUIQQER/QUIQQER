@@ -2,10 +2,15 @@
 
 namespace QUI\System;
 
-use QUI;
 use DusanKasan\Knapsack\Collection;
-use Symfony\Component\HttpFoundation\Request;
+use QUI;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+
+use function file_exists;
+use function file_put_contents;
+use function is_array;
+use function trim;
 
 /**
  * Class Forwarding
@@ -21,9 +26,9 @@ class Forwarding
      *
      * @throws QUI\Exception
      */
-    public static function create($from, $target, $httpCode = 301)
+    public static function create(string $from, string $target, $httpCode = 301)
     {
-        $config = self::getConfg()->toArray();
+        $config = self::getConfig()->toArray();
 
         if (isset($config[$from])) {
             throw new QUI\Exception([
@@ -36,9 +41,9 @@ class Forwarding
             $httpCode = 301;
         }
 
-        self::getConfg()->setValue($from, 'target', $target);
-        self::getConfg()->setValue($from, 'code', $httpCode);
-        self::getConfg()->save();
+        self::getConfig()->setValue($from, 'target', $target);
+        self::getConfig()->setValue($from, 'code', $httpCode);
+        self::getConfig()->save();
     }
 
     /**
@@ -50,9 +55,9 @@ class Forwarding
      *
      * @throws QUI\Exception
      */
-    public static function update($from, $target, $httpCode = 301)
+    public static function update(string $from, string $target, $httpCode = 301)
     {
-        $config = self::getConfg()->toArray();
+        $config = self::getConfig()->toArray();
 
         if (!isset($config[$from])) {
             throw new QUI\Exception(
@@ -68,9 +73,9 @@ class Forwarding
             $httpCode = 301;
         }
 
-        self::getConfg()->setValue($from, 'target', $target);
-        self::getConfg()->setValue($from, 'code', $httpCode);
-        self::getConfg()->save();
+        self::getConfig()->setValue($from, 'target', $target);
+        self::getConfig()->setValue($from, 'code', $httpCode);
+        self::getConfig()->save();
     }
 
     /**
@@ -81,15 +86,15 @@ class Forwarding
      */
     public static function delete($from)
     {
-        if (\is_array($from)) {
+        if (is_array($from)) {
             foreach ($from as $f) {
-                self::getConfg()->del($f);
+                self::getConfig()->del($f);
             }
         } else {
-            self::getConfg()->del($from);
+            self::getConfig()->del($from);
         }
 
-        self::getConfg()->save();
+        self::getConfig()->save();
     }
 
     /**
@@ -99,10 +104,10 @@ class Forwarding
      *
      * @throws QUI\Exception
      */
-    public static function getConfg()
+    public static function getConfig(): QUI\Config
     {
-        if (!\file_exists(CMS_DIR.'etc/forwarding.ini.php')) {
-            \file_put_contents(CMS_DIR.'etc/forwarding.ini.php', '');
+        if (!file_exists(CMS_DIR . 'etc/forwarding.ini.php')) {
+            file_put_contents(CMS_DIR . 'etc/forwarding.ini.php', '');
         }
 
         return QUI::getConfig('etc/forwarding.ini.php');
@@ -113,10 +118,10 @@ class Forwarding
      *
      * @return Collection
      */
-    public static function getList()
+    public static function getList(): Collection
     {
         try {
-            return new Collection(self::getConfg()->toArray());
+            return new Collection(self::getConfig()->toArray());
         } catch (QUI\Exception $Exception) {
             Log::writeException($Exception);
         }
@@ -136,7 +141,7 @@ class Forwarding
         $list = [];
 
         try {
-            $list = self::getConfg()->toArray();
+            $list = self::getConfig()->toArray();
         } catch (QUI\Exception $Exception) {
             Log::writeException($Exception);
         }
@@ -144,15 +149,15 @@ class Forwarding
         $uri  = $Request->getRequestUri();
         $host = $Request->getSchemeAndHttpHost();
 
-        $request = $host.$uri;
+        $request = $host . $uri;
 
         // directly found
         if (isset($list[$request])) {
             self::redirect($list[$request]);
         }
 
-        if (isset($list[\trim($request, '/')])) {
-            self::redirect($list[\trim($request, '/')]);
+        if (isset($list[trim($request, '/')])) {
+            self::redirect($list[trim($request, '/')]);
         }
 
 
@@ -162,7 +167,7 @@ class Forwarding
                 continue;
             }
 
-            self::redirect($list[$from]);
+            self::redirect($params);
         }
     }
 
@@ -171,7 +176,7 @@ class Forwarding
      *
      * @param array $data
      */
-    protected static function redirect($data)
+    protected static function redirect(array $data)
     {
         $target = $data['target'];
         $code   = (int)$data['code'];
