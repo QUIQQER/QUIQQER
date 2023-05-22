@@ -39,29 +39,31 @@ define('controls/workspace/Manager', [
 ], function () {
     "use strict";
 
-    var QUI                     = arguments[0],
-        QUIControl              = arguments[1],
-        QUILoader               = arguments[2],
-        QUIButton               = arguments[3],
-        QUIWorkspace            = arguments[4],
-        QUIColumn               = arguments[5],
-        QUIPanel                = arguments[6],
-        QUITasks                = arguments[7],
-        QUIWindow               = arguments[8],
-        QUIConfirm              = arguments[9],
-        QUIMessagePanel         = arguments[10],
-        QUIContextmenuItem      = arguments[11],
-        QUIContextmenuSeparator = arguments[12],
-        QUIControlUtils         = arguments[13],
+    const lg = 'quiqqer/quiqqer';
 
-        BookmarkPanel           = arguments[14],
-        ProjectPanel            = arguments[15],
-        Grid                    = arguments[16],
-        Ajax                    = arguments[17],
-        Locale                  = arguments[18],
-        UploadManager           = arguments[19],
-        Mustache                = arguments[20],
-        templateCreate          = arguments[21];
+    const QUI                     = arguments[0],
+          QUIControl              = arguments[1],
+          QUILoader               = arguments[2],
+          QUIButton               = arguments[3],
+          QUIWorkspace            = arguments[4],
+          QUIColumn               = arguments[5],
+          QUIPanel                = arguments[6],
+          QUITasks                = arguments[7],
+          QUIWindow               = arguments[8],
+          QUIConfirm              = arguments[9],
+          QUIMessagePanel         = arguments[10],
+          QUIContextmenuItem      = arguments[11],
+          QUIContextmenuSeparator = arguments[12],
+          QUIControlUtils         = arguments[13],
+
+          BookmarkPanel           = arguments[14],
+          ProjectPanel            = arguments[15],
+          Grid                    = arguments[16],
+          Ajax                    = arguments[17],
+          Locale                  = arguments[18],
+          UploadManager           = arguments[19],
+          Mustache                = arguments[20],
+          templateCreate          = arguments[21];
 
 
     return new Class({
@@ -108,7 +110,7 @@ define('controls/workspace/Manager', [
             });
 
             if (this.getAttribute('autoResize')) {
-                var self = this;
+                const self = this;
 
                 window.addEvent('resize', function () {
                     // delay,
@@ -164,10 +166,9 @@ define('controls/workspace/Manager', [
                 return;
             }
 
-            var size   = this.$ParentNode.getSize(),
+            let size   = this.$ParentNode.getSize(),
                 width  = size.x,
                 height = size.y,
-
                 rq     = false;
 
             this.$Elm.setStyle('overflow', null);
@@ -203,17 +204,17 @@ define('controls/workspace/Manager', [
          * @param {Function} [callback] - (optional) callback function
          */
         load: function (callback) {
-            var self = this;
+            const self = this;
 
             this.Loader.show();
 
             Ajax.get('ajax_desktop_workspace_load', function (list) {
                 if (!list || !list.length) {
                     // create default workspaces
-                    var colums2, colums3;
+                    let colums2, colums3;
 
-                    var Workspace = new QUIWorkspace(),
-                        Parent    = self.$Elm.clone();
+                    const Workspace = new QUIWorkspace(),
+                          Parent    = self.$Elm.clone();
 
                     Workspace.inject(Parent);
 
@@ -221,7 +222,7 @@ define('controls/workspace/Manager', [
                     self.$loadDefault2Column(Workspace);
 
                     colums2 = {
-                        title    : Locale.get('quiqqer/quiqqer', 'workspaces.2.columns'),
+                        title    : Locale.get(lg, 'workspaces.2.columns'),
                         data     : JSON.encode(Workspace.serialize()),
                         minHeight: self.$minHeight,
                         minWidth : self.$minWidth
@@ -233,7 +234,7 @@ define('controls/workspace/Manager', [
                     self.$loadDefault3Column(Workspace);
 
                     colums3 = {
-                        title    : Locale.get('quiqqer/quiqqer', 'workspaces.3.columns'),
+                        title    : Locale.get(lg, 'workspaces.3.columns'),
                         data     : JSON.encode(Workspace.serialize()),
                         minHeight: self.$minHeight,
                         minWidth : self.$minWidth
@@ -252,9 +253,9 @@ define('controls/workspace/Manager', [
                 self.$spaces = {};
 
 
-                var Standard = false;
+                let Standard = false;
 
-                for (var i = 0, len = list.length; i < len; i++) {
+                for (let i = 0, len = list.length; i < len; i++) {
                     self.$spaces[list[i].id] = list[i];
 
                     if (list[i].standard && parseInt(list[i].standard) === 1) {
@@ -329,7 +330,7 @@ define('controls/workspace/Manager', [
                 return;
             }
 
-            var self = this;
+            const self = this;
 
             // loads available panels
             Ajax.get('ajax_desktop_workspace_getAvailablePanels', function (panels) {
@@ -348,7 +349,7 @@ define('controls/workspace/Manager', [
         loadWorkspace: function (id) {
             if (typeof this.$spaces[id] === 'undefined') {
                 QUI.getMessageHandler(function (MH) {
-                    MH.addError(Locale.get('quiqqer/quiqqer', 'message.workspace.not.found'));
+                    MH.addError(Locale.get(lg, 'message.workspace.not.found'));
                 });
 
                 return;
@@ -359,7 +360,7 @@ define('controls/workspace/Manager', [
             this.save();
             this.Workspace.clear();
 
-            var data = null;
+            let data = null;
 
             try {
                 data = JSON.decode(this.$spaces[id].data);
@@ -377,7 +378,7 @@ define('controls/workspace/Manager', [
 
             this.setAttribute('workspaceId', id);
 
-            var self = this;
+            const self = this;
 
             Ajax.post('ajax_desktop_workspace_setStandard', function () {
                 self.fireEvent('loadWorkspace', [self]);
@@ -408,20 +409,19 @@ define('controls/workspace/Manager', [
 
             if (typeof this.$spaces[id] === 'undefined') {
                 QUI.getMessageHandler(function (MH) {
-                    MH.addError(Locale.get('quiqqer/quiqqer', 'message.workspace.not.found'));
+                    MH.addError(Locale.get(lg, 'message.workspace.not.found'));
                 });
 
                 this.Loader.hide();
                 return;
             }
 
-            var self      = this,
-                workspace = this.$spaces[id];
+            const workspace = this.$spaces[id];
 
             this.$minWidth = workspace.minWidth;
             this.$minHeight = workspace.minHeight;
 
-            var data = null;
+            let data = null;
 
             try {
                 data = JSON.decode(workspace.data);
@@ -437,7 +437,7 @@ define('controls/workspace/Manager', [
             }
 
             // cleanup
-            var c, i, len, clen, children;
+            let c, i, len, clen, children;
 
             for (i = 0, len = data.length; i < len; i++) {
                 children = data[i].children;
@@ -450,7 +450,7 @@ define('controls/workspace/Manager', [
 
                     if (children[c].type === 'qui/controls/messages/Panel') {
                         data[i].children[c].attributes.title = Locale.get(
-                            'quiqqer/quiqqer',
+                            lg,
                             'panels.messages.title'
                         );
                     }
@@ -472,7 +472,7 @@ define('controls/workspace/Manager', [
          * the user can choose the standard workspace
          */
         $openWorkspaceListWindow: function () {
-            var self = this;
+            const self = this;
 
             // workaround
             require([
@@ -482,19 +482,19 @@ define('controls/workspace/Manager', [
                 'css!' + URL_BIN_DIR + 'css/style.css'
             ], function () {
                 new QUIWindow({
-                    title    : Locale.get('quiqqer/quiqqer', 'window.workspaces.select.title'),
+                    title    : Locale.get(lg, 'window.workspaces.select.title'),
                     maxHeight: 200,
                     maxWidth : 500,
                     autoclose: false,
                     buttons  : false,
                     events   : {
                         onOpen: function (Win) {
-                            var Body = Win.getContent().set(
+                            const Body = Win.getContent().set(
                                 'html',
-                                Locale.get('quiqqer/quiqqer', 'window.workspaces.select.text') + '<select></select>'
+                                Locale.get(lg, 'window.workspaces.select.text') + '<select></select>'
                             );
 
-                            var Select = Body.getElement('select');
+                            const Select = Body.getElement('select');
 
                             Select.setStyles({
                                 display: 'block',
@@ -504,7 +504,7 @@ define('controls/workspace/Manager', [
 
                             Select.addEvents({
                                 change: function () {
-                                    var value = this.value;
+                                    const value = this.value;
 
                                     Win.Loader.show();
 
@@ -522,7 +522,7 @@ define('controls/workspace/Manager', [
                                 value: ''
                             }).inject(Select);
 
-                            for (var i in self.$spaces) {
+                            for (const i in self.$spaces) {
                                 if (self.$spaces.hasOwnProperty(i)) {
                                     new Element('option', {
                                         html : self.$spaces[i].title,
@@ -554,7 +554,7 @@ define('controls/workspace/Manager', [
          * @param {Function} [callback] - (optional) callback function, triggered only at async=true
          */
         save: function (async, callback) {
-            var workspace = this.Workspace.serialize();
+            const workspace = this.Workspace.serialize();
 
             if (!workspace.length) {
                 return;
@@ -576,7 +576,7 @@ define('controls/workspace/Manager', [
 
             // Send the beacon
             if (typeof navigator.sendBeacon !== 'undefined') {
-                var data = {
+                let data = {
                     _rf      : JSON.encode(['ajax_desktop_workspace_save']),
                     data     : JSON.encode(workspace),
                     id       : this.getAttribute('workspaceId'),
@@ -682,24 +682,24 @@ define('controls/workspace/Manager', [
             this.$minWidth = 1000;
             this.$minHeight = 500;
 
-            var size   = this.$Elm.getSize(),
-                panels = this.$getDefaultPanels();
+            const size   = this.$Elm.getSize(),
+                  panels = this.$getDefaultPanels();
 
             // Columns
-            var LeftColumn   = new QUIColumn({
-                    height    : size.y,
-                    responsive: true
-                }),
+            const LeftColumn   = new QUIColumn({
+                      height    : size.y,
+                      responsive: true
+                  }),
 
-                MiddleColumn = new QUIColumn({
-                    height: size.y,
-                    width : size.x * 0.7
-                }),
+                  MiddleColumn = new QUIColumn({
+                      height: size.y,
+                      width : size.x * 0.7
+                  }),
 
-                RightColumn  = new QUIColumn({
-                    height: size.y,
-                    width : size.x * 0.3
-                });
+                  RightColumn  = new QUIColumn({
+                      height: size.y,
+                      width : size.x * 0.3
+                  });
 
 
             Workspace.appendChild(LeftColumn);
@@ -732,18 +732,18 @@ define('controls/workspace/Manager', [
             this.$minWidth = 700;
             this.$minHeight = 500;
 
-            var size         = this.$Elm.getSize(),
-                panels       = this.$getDefaultPanels(),
+            const size         = this.$Elm.getSize(),
+                  panels       = this.$getDefaultPanels(),
 
-                LeftColumn   = new QUIColumn({
-                    height    : size.y,
-                    responsive: true
-                }),
+                  LeftColumn   = new QUIColumn({
+                      height    : size.y,
+                      responsive: true
+                  }),
 
-                MiddleColumn = new QUIColumn({
-                    height: size.y,
-                    width : size.x - 400
-                });
+                  MiddleColumn = new QUIColumn({
+                      height: size.y,
+                      width : size.x - 400
+                  });
 
 
             Workspace.appendChild(LeftColumn);
@@ -769,7 +769,7 @@ define('controls/workspace/Manager', [
          * @return {Object}
          */
         $getDefaultPanels: function () {
-            var Bookmarks = new BookmarkPanel({
+            const Bookmarks = new BookmarkPanel({
                 title : 'Bookmarks',
                 icon  : 'fa fa-bookmark',
                 name  : 'qui-bookmarks',
@@ -778,10 +778,10 @@ define('controls/workspace/Manager', [
                         Panel.Loader.show();
 
                         require(['Users'], function (Users) {
-                            var User = Users.get(USER.id);
+                            const User = Users.get(USER.id);
 
                             User.load(function () {
-                                var data = JSON.decode(User.getAttribute('qui-bookmarks'));
+                                const data = JSON.decode(User.getAttribute('qui-bookmarks'));
 
                                 if (!data) {
                                     Panel.Loader.hide();
@@ -798,7 +798,7 @@ define('controls/workspace/Manager', [
                         Panel.Loader.show();
 
                         require(['Users'], function (Users) {
-                            var User = Users.get(USER.id);
+                            const User = Users.get(USER.id);
 
                             User.setAttribute('qui-bookmarks', JSON.encode(Panel.serialize()));
 
@@ -812,7 +812,7 @@ define('controls/workspace/Manager', [
                         Panel.Loader.show();
 
                         require(['Users'], function (Users) {
-                            var User = Users.get(USER.id);
+                            const User = Users.get(USER.id);
 
                             User.setExtra('qui-bookmarks', JSON.encode(Panel.serialize()));
 
@@ -826,7 +826,7 @@ define('controls/workspace/Manager', [
 
 
             // task panel
-            var Tasks = new QUITasks({
+            const Tasks = new QUITasks({
                 title: 'My Panel 1',
                 icon : 'fa fa-heart',
                 name : 'tasks'
@@ -858,9 +858,9 @@ define('controls/workspace/Manager', [
 
             Column.highlight();
 
-            var self   = this,
-                Menu   = Column.$ContextMenu,
-                panels = Column.getChildren();
+            const self   = this,
+                  Menu   = Column.$ContextMenu,
+                  panels = Column.getChildren();
 
             Menu.addEvents({
                 onBlur: this.$onColumnContextMenuBlur
@@ -872,7 +872,7 @@ define('controls/workspace/Manager', [
             // add panels
             Menu.appendChild(
                 new QUIContextmenuItem({
-                    text  : Locale.get('quiqqer/quiqqer', 'workspace.contextmenu.add.panel'),
+                    text  : Locale.get(lg, 'workspace.contextmenu.add.panel'),
                     icon  : 'fa fa-plus',
                     name  : 'addPanelsToColumn',
                     events: {
@@ -887,8 +887,8 @@ define('controls/workspace/Manager', [
             // remove panels
             if (Object.getLength(panels)) {
                 // remove panels
-                var RemovePanels = new QUIContextmenuItem({
-                    text: Locale.get('quiqqer/quiqqer', 'workspace.contextmenu.remove.panel'),
+                const RemovePanels = new QUIContextmenuItem({
+                    text: Locale.get(lg, 'workspace.contextmenu.remove.panel'),
                     name: 'removePanelOfColumn',
                     icon: 'fa fa-trash-o'
                 });
@@ -915,15 +915,15 @@ define('controls/workspace/Manager', [
             Menu.appendChild(new QUIContextmenuSeparator());
 
             // add columns
-            var AddColumn = new QUIContextmenuItem({
-                text: Locale.get('quiqqer/quiqqer', 'workspace.contextmenu.add.column'),
+            const AddColumn = new QUIContextmenuItem({
+                text: Locale.get(lg, 'workspace.contextmenu.add.column'),
                 name: 'add_columns',
                 icon: 'fa fa-plus'
             });
 
             AddColumn.appendChild(
                 new QUIContextmenuItem({
-                    text  : Locale.get('quiqqer/quiqqer', 'workspace.contextmenu.add.column.before'),
+                    text  : Locale.get(lg, 'workspace.contextmenu.add.column.before'),
                     name  : 'addColumnBefore',
                     icon  : 'fa fa-long-arrow-left',
                     events: {
@@ -941,7 +941,7 @@ define('controls/workspace/Manager', [
                 })
             ).appendChild(
                 new QUIContextmenuItem({
-                    text  : Locale.get('quiqqer/quiqqer', 'workspace.contextmenu.add.column.after'),
+                    text  : Locale.get(lg, 'workspace.contextmenu.add.column.after'),
                     name  : 'addColumnAfter',
                     icon  : 'fa fa-long-arrow-right',
                     events: {
@@ -965,7 +965,7 @@ define('controls/workspace/Manager', [
             // remove column
             Menu.appendChild(
                 new QUIContextmenuItem({
-                    text  : Locale.get('quiqqer/quiqqer', 'workspace.contextmenu.delete.column'),
+                    text  : Locale.get(lg, 'workspace.contextmenu.delete.column'),
                     icon  : 'fa fa-trash-o',
                     name  : 'removeColumn',
                     events: {
@@ -1052,38 +1052,38 @@ define('controls/workspace/Manager', [
          * Opens the create workspace window
          */
         openCreateWindow: function () {
-            var self = this;
+            const self = this;
 
             new QUIConfirm({
-                title        : Locale.get('quiqqer/quiqqer', 'window.workspaces.add'),
+                title        : Locale.get(lg, 'window.workspaces.add'),
                 icon         : 'fa fa-laptop',
                 maxWidth     : 600,
                 maxHeight    : 600,
                 autoclose    : false,
                 ok_button    : {
-                    text     : Locale.get('quiqqer/quiqqer', 'create'),
+                    text     : Locale.get(lg, 'create'),
                     textimage: 'fa fa-check'
                 },
                 cancel_button: {
-                    text     : Locale.get('quiqqer/quiqqer', 'cancel'),
+                    text     : Locale.get(lg, 'cancel'),
                     textimage: 'fa fa-remove'
                 },
                 events       : {
                     onOpen: function (Win) {
-                        var Content = Win.getContent(),
-                            id      = Win.getId(),
-                            size    = document.getSize();
+                        const Content = Win.getContent(),
+                              id      = Win.getId(),
+                              size    = document.getSize();
 
                         Content.addClass('qui-workspace-manager-window');
                         Content.set('html', Mustache.render(templateCreate, {
                             id            : id,
                             size          : size,
-                            title         : Locale.get('quiqqer/quiqqer', 'window.workspaces.create.header.title'),
-                            labelTitle    : Locale.get('quiqqer/quiqqer', 'title'),
-                            labelCols     : Locale.get('quiqqer/quiqqer', 'window.workspaces.create.cols'),
-                            titleUsage    : Locale.get('quiqqer/quiqqer', 'window.workspaces.create.usage'),
-                            labelMinWidth : Locale.get('quiqqer/quiqqer', 'window.workspaces.create.usage.minWidth'),
-                            labelMinHeight: Locale.get('quiqqer/quiqqer', 'window.workspaces.create.usage.minWidth')
+                            title         : Locale.get(lg, 'window.workspaces.create.header.title'),
+                            labelTitle    : Locale.get(lg, 'title'),
+                            labelCols     : Locale.get(lg, 'window.workspaces.create.cols'),
+                            titleUsage    : Locale.get(lg, 'window.workspaces.create.usage'),
+                            labelMinWidth : Locale.get(lg, 'window.workspaces.create.usage.minWidth'),
+                            labelMinHeight: Locale.get(lg, 'window.workspaces.create.usage.minWidth')
                         }));
                     },
 
@@ -1092,13 +1092,13 @@ define('controls/workspace/Manager', [
                     },
 
                     onSubmit: function (Win) {
-                        var Content   = Win.getContent(),
-                            size      = document.getSize(),
+                        const Content   = Win.getContent(),
+                              size      = document.getSize(),
 
-                            Title     = Content.getElement('input[name="workspace-title"]'),
-                            Columns   = Content.getElement('input[name="workspace-columns"]'),
-                            minWidth  = Content.getElement('input[name="workspace-minWidth"]'),
-                            minHeight = Content.getElement('input[name="workspace-minHeight"]');
+                              Title     = Content.getElement('input[name="workspace-title"]'),
+                              Columns   = Content.getElement('input[name="workspace-columns"]'),
+                              minWidth  = Content.getElement('input[name="workspace-minWidth"]'),
+                              minHeight = Content.getElement('input[name="workspace-minHeight"]');
 
                         if (Title.value === '') {
                             return;
@@ -1112,13 +1112,13 @@ define('controls/workspace/Manager', [
                         Win.Loader.show();
 
                         // create workspace for serialize
-                        var Workspace = new QUIWorkspace(),
-                            Parent    = self.$Elm.clone(),
-                            columns   = parseInt(Columns.value);
+                        const Workspace = new QUIWorkspace(),
+                              Parent    = self.$Elm.clone(),
+                              columns   = parseInt(Columns.value);
 
                         Workspace.inject(Parent);
 
-                        for (var i = 0; i < columns; i++) {
+                        for (let i = 0; i < columns; i++) {
                             Workspace.appendChild(
                                 new QUIColumn({
                                     height: size.y,
@@ -1152,10 +1152,10 @@ define('controls/workspace/Manager', [
                 return;
             }
 
-            var self = this;
+            const self = this;
 
             new QUIWindow({
-                title    : Locale.get('quiqqer/quiqqer', 'window.workspaces.panel.list.title'),
+                title    : Locale.get(lg, 'window.workspaces.panel.list.title'),
                 buttons  : false,
                 maxWidth : 500,
                 maxHeight: 700,
@@ -1169,8 +1169,8 @@ define('controls/workspace/Manager', [
 
                         Column.highlight();
 
-                        var click = function (event) {
-                            var Target = event.target;
+                        const click = function (event) {
+                            let Target = event.target;
 
                             if (!Target.hasClass('qui-controls-workspace-panelList-panel')) {
                                 Target = Target.getParent('.qui-controls-workspace-panelList-panel');
@@ -1184,8 +1184,8 @@ define('controls/workspace/Manager', [
 
                         // loads available panels
                         self.getAvailablePanels(function (panels) {
-                            var i, len, Elm, Icon;
-                            var Content = Win.getContent();
+                            let i, len, Elm, Icon;
+                            const Content = Win.getContent();
 
                             for (i = 0, len = panels.length; i < len; i++) {
                                 Icon = false;
@@ -1227,10 +1227,10 @@ define('controls/workspace/Manager', [
          * edit / delete your workspaces
          */
         openWorkspaceEdit: function () {
-            var self = this;
+            const self = this;
 
             new QUIWindow({
-                title    : Locale.get('quiqqer/quiqqer', 'window.workspaces.title'),
+                title    : Locale.get(lg, 'window.workspaces.title'),
                 buttons  : false,
                 maxWidth : 800,
                 maxHeight: 600,
@@ -1238,18 +1238,18 @@ define('controls/workspace/Manager', [
                     onOpen: function (Win) {
                         Win.Loader.show();
 
-                        var Content       = Win.getContent(),
-                            size          = Content.getSize(),
-                            GridContainer = new Element('div').inject(Content);
+                        const Content       = Win.getContent(),
+                              size          = Content.getSize(),
+                              GridContainer = new Element('div').inject(Content);
 
                         new Element('p', {
-                            html  : Locale.get('quiqqer/quiqqer', 'window.workspaces.message'),
+                            html  : Locale.get(lg, 'window.workspaces.message'),
                             styles: {
                                 marginBottom: 10
                             }
                         }).inject(Content, 'top');
 
-                        var EditGrid = new Grid(GridContainer, {
+                        const EditGrid = new Grid(GridContainer, {
                             columnModel      : [
                                 {
                                     dataIndex: 'id',
@@ -1257,21 +1257,21 @@ define('controls/workspace/Manager', [
                                     hidden   : true
                                 },
                                 {
-                                    header   : Locale.get('quiqqer/quiqqer', 'title'),
+                                    header   : Locale.get(lg, 'title'),
                                     dataIndex: 'title',
                                     dataType : 'string',
                                     width    : 200,
                                     editable : true
                                 },
                                 {
-                                    header   : Locale.get('quiqqer/quiqqer', 'window.workspaces.width'),
+                                    header   : Locale.get(lg, 'window.workspaces.width'),
                                     dataIndex: 'minWidth',
                                     dataType : 'string',
                                     width    : 100,
                                     editable : true
                                 },
                                 {
-                                    header   : Locale.get('quiqqer/quiqqer', 'window.workspaces.height'),
+                                    header   : Locale.get(lg, 'window.workspaces.height'),
                                     dataIndex: 'minHeight',
                                     dataType : 'string',
                                     width    : 100,
@@ -1281,8 +1281,8 @@ define('controls/workspace/Manager', [
                             buttons          : [
                                 {
                                     name     : 'add',
-                                    title    : Locale.get('quiqqer/quiqqer', 'window.workspaces.add'),
-                                    text     : Locale.get('quiqqer/quiqqer', 'add'),
+                                    title    : Locale.get(lg, 'window.workspaces.add'),
+                                    text     : Locale.get(lg, 'add'),
                                     textimage: 'fa fa-plus',
                                     events   : {
                                         onClick: function () {
@@ -1296,18 +1296,18 @@ define('controls/workspace/Manager', [
                                 },
                                 {
                                     name     : 'delete',
-                                    title    : Locale.get('quiqqer/quiqqer', 'window.workspaces.delete'),
-                                    text     : Locale.get('quiqqer/quiqqer', 'delete'),
+                                    title    : Locale.get(lg, 'window.workspaces.delete'),
+                                    text     : Locale.get(lg, 'delete'),
                                     textimage: 'fa fa-trash-o',
                                     disabled : true,
                                     events   : {
                                         onClick: function (Btn) {
                                             // delete selected workspaces
-                                            var Grid = Btn.getAttribute('Grid'),
-                                                data = Grid.getSelectedData(),
-                                                ids  = [];
+                                            const Grid = Btn.getAttribute('Grid'),
+                                                  data = Grid.getSelectedData(),
+                                                  ids  = [];
 
-                                            for (var i = 0, len = data.length; i < len; i++) {
+                                            for (let i = 0, len = data.length; i < len; i++) {
                                                 ids.push(data[i].id);
                                             }
 
@@ -1316,16 +1316,13 @@ define('controls/workspace/Manager', [
                                             new QUIConfirm({
                                                 name       : 'delete',
                                                 icon       : 'fa fa-trash-o',
-                                                title      : Locale.get('quiqqer/quiqqer',
-                                                    'window.workspaces.delete.title'),
-                                                text       : Locale.get('quiqqer/quiqqer',
-                                                    'window.workspaces.delete.text'),
-                                                information: Locale.get('quiqqer/quiqqer',
-                                                    'window.workspaces.delete.information', {
-                                                        ids: ids.join(',')
-                                                    }),
+                                                title      : Locale.get(lg, 'window.workspaces.delete.title'),
+                                                text       : Locale.get(lg, 'window.workspaces.delete.text'),
+                                                information: Locale.get(lg, 'window.workspaces.delete.information', {
+                                                    ids: ids.join(',')
+                                                }),
                                                 ok_button  : {
-                                                    text     : Locale.get('quiqqer/quiqqer', 'delete'),
+                                                    text     : Locale.get(lg, 'delete'),
                                                     textimage: 'fa fa-trash'
                                                 },
                                                 texticon   : 'fa fa-trash-o',
@@ -1354,7 +1351,7 @@ define('controls/workspace/Manager', [
                                 },
                                 {
                                     name  : '',
-                                    text  : Locale.get('quiqqer/quiqqer', 'workspace.fixed'),
+                                    text  : Locale.get(lg, 'workspace.fixed'),
                                     styles: {
                                         'float': 'right'
                                     },
@@ -1363,13 +1360,13 @@ define('controls/workspace/Manager', [
                                             if (self.Workspace.$fixed) {
                                                 self.unfix();
                                                 Btn.setAttribute('text',
-                                                    Locale.get('quiqqer/quiqqer', 'workspace.flexible'));
+                                                    Locale.get(lg, 'workspace.flexible'));
                                                 Btn.setAttribute('status', 0);
                                                 return;
                                             }
 
                                             self.fix();
-                                            Btn.setAttribute('text', Locale.get('quiqqer/quiqqer', 'workspace.fixed'));
+                                            Btn.setAttribute('text', Locale.get(lg, 'workspace.fixed'));
                                             Btn.setAttribute('status', 1);
                                         }
                                     }
@@ -1384,8 +1381,8 @@ define('controls/workspace/Manager', [
                             editondblclick   : true
                         });
 
-                        var workspaces = self.getList(),
-                            data       = [];
+                        const workspaces = self.getList(),
+                              data       = [];
 
                         Object.each(workspaces, function (Workspace) {
                             data.push(Workspace);
@@ -1397,11 +1394,11 @@ define('controls/workspace/Manager', [
 
                         EditGrid.addEvents({
                             onClick: function () {
-                                var DelButton = EditGrid.getButtons().filter(function (Btn) {
+                                const DelButton = EditGrid.getButtons().filter(function (Btn) {
                                     return Btn.getAttribute('name') === 'delete';
                                 })[0];
 
-                                var sels = EditGrid.getSelectedData();
+                                const sels = EditGrid.getSelectedData();
 
                                 if (sels.length) {
                                     DelButton.enable();
@@ -1413,9 +1410,9 @@ define('controls/workspace/Manager', [
                             onEditComplete: function (data) {
                                 Win.Loader.show();
 
-                                var index   = data.columnModel.dataIndex,
-                                    Data    = EditGrid.getDataByRow(data.row),
-                                    newData = {};
+                                const index   = data.columnModel.dataIndex,
+                                      Data    = EditGrid.getDataByRow(data.row),
+                                      newData = {};
 
                                 newData[index] = data.input.value;
 
@@ -1451,36 +1448,36 @@ define('controls/workspace/Manager', [
 
             this.$resizeQuestionWindow = true;
 
-            var self = this,
-                size = this.$ParentNode.getSize();
+            const self = this,
+                  size = this.$ParentNode.getSize();
 
 
             new QUIConfirm({
-                title        : Locale.get('quiqqer/quiqqer', 'workspace.toolarge.window.title'),
+                title        : Locale.get(lg, 'workspace.toolarge.window.title'),
                 autoclose    : false,
                 maxWidth     : 600,
                 maxHeight    : 400,
                 texticon     : false,
                 cancel_button: {
-                    text     : Locale.get('quiqqer/quiqqer', 'cancel'),
+                    text     : Locale.get(lg, 'cancel'),
                     textimage: 'fa fa-remove'
                 },
                 ok_button    : {
-                    text     : Locale.get('quiqqer/quiqqer', 'ok'),
+                    text     : Locale.get(lg, 'ok'),
                     textimage: 'fa fa-check'
                 },
                 events       : {
                     onOpen: function (Win) {
-                        var i, Select, Workspace;
+                        let i, Select, Workspace;
 
-                        var Content = Win.getContent(),
-                            width   = size.x,
-                            height  = size.y;
+                        const Content = Win.getContent(),
+                              width   = size.x,
+                              height  = size.y;
 
                         Content.set(
                             'html',
 
-                            Locale.get('quiqqer/quiqqer', 'workspace.toolarge.window.text') +
+                            Locale.get(lg, 'workspace.toolarge.window.text') +
                             '<select></select>'
                         );
 
@@ -1517,13 +1514,13 @@ define('controls/workspace/Manager', [
                         // no workspaces available
                         Content.set(
                             'html',
-                            Locale.get('quiqqer/quiqqer', 'workspace.toolarge.window.noWorkspaces.text')
+                            Locale.get(lg, 'workspace.toolarge.window.noWorkspaces.text')
                         );
                     },
 
                     onSubmit: function (Win) {
-                        var Content = Win.getContent(),
-                            Select  = Content.getElement('select');
+                        const Content = Win.getContent(),
+                              Select  = Content.getElement('select');
 
                         // no workspaces available
                         if (!Select) {

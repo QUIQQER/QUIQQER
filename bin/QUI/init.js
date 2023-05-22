@@ -344,14 +344,25 @@ require(requireList, function () {
 
                         Object.each(list, function (Entry) {
                             let standard = false;
+                            let title = Entry.title;
 
                             if ("standard" in Entry && Entry.standard && parseInt(Entry.standard)) {
                                 standard = true;
                             }
 
+                            if (title.indexOf(']') !== -1 && title.indexOf('[') !== -1 && title.indexOf(' ') !== -1) {
+                                title = title.split(' ');
+                                title = Locale.get(
+                                    title[0].replace('[', '').replace(']', ''),
+                                    title[1]
+                                );
+                            }
+
+                            console.log(Entry.title);
+
                             Workspaces.appendChild(
                                 new QUIContextmenuItem({
-                                    text  : Entry.title,
+                                    text  : title,
                                     wid   : Entry.id,
                                     icon  : standard ? 'fa fa-check' : 'fa fa-minus',
                                     events: {
