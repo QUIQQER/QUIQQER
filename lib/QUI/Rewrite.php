@@ -53,6 +53,8 @@ use function trim;
 use function urldecode;
 use function usort;
 
+use const URL_DIR;
+
 /**
  * Rewrite - URL Verwaltung (sprechende URLS)
  *
@@ -265,10 +267,15 @@ class Rewrite
         // globale forwarding - 301, etc
         QUI\System\Forwarding::forward(QUI::getRequest());
 
+        // on character urls are not allowed
+        if (!empty($_REQUEST['_url']) && mb_strlen($_REQUEST['_url']) === 1) {
+            $this->showErrorHeader(404, URL_DIR);
+        }
+
         // wenn sprach ohne /
         // dann / dran
         // sprach ist ein ordner keine seite
-        if (!empty($_REQUEST['_url']) && strlen($_REQUEST['_url']) == 2) {
+        if (!empty($_REQUEST['_url']) && mb_strlen($_REQUEST['_url']) == 2) {
             QUI::getEvents()->fireEvent('request', [$this, $_REQUEST['_url'] . '/']);
 
             // 301 weiterleiten
@@ -1073,6 +1080,7 @@ class Rewrite
 
                     $this->project = $ErrorSite->getProject();
                     $this->site    = $ErrorSite;
+                    $this->site->setAttribute('ERROR_HEADER', 404);
 
                     return true;
                 } catch (QUI\Exception $Exception) {
