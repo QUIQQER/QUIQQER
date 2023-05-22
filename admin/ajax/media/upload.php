@@ -11,6 +11,7 @@
  */
 
 use QUI\Projects\Media\Folder;
+use QUI\Projects\Media\Utils;
 
 QUI::$Ajax->registerFunction(
     'ajax_media_upload',
@@ -69,6 +70,26 @@ QUI::$Ajax->registerFunction(
                 }
             }
         } catch (\Exception $Exception) {
+        }
+
+        $params = $File->getAttribute('params');
+
+        // if file has a folder in original file path
+        if (!empty($params) && !empty($params['filepath']) && strpos($params['filepath'], '/') !== false) {
+            $path = trim($params['filepath'], '/');
+            $path = explode('/', $path);
+
+            array_pop($path);
+
+            foreach ($path as $folder) {
+                $folder = Utils::stripFolderName($folder);
+
+                if ($Folder->childWithNameExists($folder)) {
+                    $Folder = $Folder->getChildByName($folder);
+                } else {
+                    $Folder = $Folder->createFolder($folder);
+                }
+            }
         }
 
         return $Folder->uploadFile($file, Folder::FILE_OVERWRITE_TRUE)->getAttributes();

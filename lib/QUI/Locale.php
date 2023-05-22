@@ -16,6 +16,7 @@ use function DusanKasan\Knapsack\first;
 use function explode;
 use function file_exists;
 use function floatval;
+use function in_array;
 use function is_array;
 use function is_numeric;
 use function is_object;
@@ -56,13 +57,6 @@ class Locale
      * @var string
      */
     protected string $current = 'en';
-
-    /**
-     * the existing languages
-     *
-     * @var array
-     */
-    protected array $languages = [];
 
     /**
      * no translation flag
@@ -217,7 +211,6 @@ class Locale
      */
     public function refresh()
     {
-        $this->languages = [];
     }
 
     /**
@@ -498,7 +491,7 @@ class Locale
      */
     public function existsLang($language): bool
     {
-        return isset($this->languages[$language]);
+        return in_array(QUI::availableLanguages(), $language);
     }
 
     /**

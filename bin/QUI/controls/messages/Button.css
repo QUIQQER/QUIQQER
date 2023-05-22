@@ -145,10 +145,10 @@
 }
 
 .quiqqer-message-date {
-    display: flex;
+    display: block;
     font-size: 0.8rem;
     margin-top: 1rem;
-    padding-left: 1.5rem;
+    padding-left: 0.85rem;
     opacity: 0.8;
     width: 100%;
 }
@@ -182,7 +182,6 @@ body > .quiqqer-message {
     right: 10px;
     top: 60px;
 }
-
 
 /** filter
  ========================================== */

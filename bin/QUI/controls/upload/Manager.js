@@ -289,6 +289,38 @@ define('controls/upload/Manager', [
                 ]);
             };
 
+            if (files.length > 1) {
+                require(['classes/request/BulkUpload'], (BulkUpload) => {
+                    new BulkUpload({
+                        parentId   : params.parentid,
+                        project    : params.project,
+                        phpOnFinish: rf,
+                        events     : {
+                            onFinish: () => {
+                                this.fireEvent('finished', [this]);
+                                this.fireEvent('complete', [this]);
+
+                                if (typeof params.onComplete === 'function') {
+                                    params.onComplete();
+                                }
+
+                                if (typeof params.events !== 'undefined' &&
+                                    typeof params.events.onComplete === 'function') {
+                                    params.events.onComplete();
+                                }
+
+                                this.fireEvent('fileUploadRefresh', [
+                                    this,
+                                    100
+                                ]);
+                            }
+                        }
+                    }).upload(files);
+                });
+
+                return;
+            }
+
             for (i = 0, len = files.length; i < len; i++) {
                 file_params = Object.clone(params);
                 file_params.extract = !!(extract && extract[files[i].name]);

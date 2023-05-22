@@ -9,6 +9,8 @@ namespace QUI\UsersGroups;
 use QUI;
 use QUI\Utils\Security\Orthos;
 
+use function array_merge;
+
 /**
  * Search for users and groups
  *
@@ -72,7 +74,18 @@ class Search
                 ]);
             }
 
-            $resultUsers = self::searchUsers($searchTerm, $searchParams['users'], $count);
+            $searchUserParams = $searchParams['users'];
+
+            if (!empty($searchParams['users']['select'])) {
+                $searchUserParams = array_merge(
+                    $searchUserParams,
+                    [
+                        'searchFields' => $searchParams['users']['select']
+                    ]
+                );
+            }
+
+            $resultUsers = self::searchUsers($searchTerm, $searchUserParams, $count);
 
             if ($count) {
                 $searchResult['users'] = $resultUsers;

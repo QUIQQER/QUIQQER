@@ -27,6 +27,7 @@ use function fwrite;
 use function get_class;
 use function implode;
 use function is_array;
+use function is_callable;
 use function is_dir;
 use function is_object;
 use function json_decode;
@@ -65,7 +66,7 @@ class Manager
     public function init()
     {
         // if a onstart function
-        if (isset($_REQUEST['onstart']) && !empty($_REQUEST['onstart'])) {
+        if (!empty($_REQUEST['onstart'] && is_callable($_REQUEST['onstart']))) {
             $this->callFunction($_REQUEST['onstart'], $_REQUEST);
         }
 

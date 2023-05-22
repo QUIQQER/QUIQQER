@@ -428,27 +428,25 @@ define('controls/projects/project/media/Panel', [
                     new QUISeparator()
                 );
 
-                self.addButton(
-                    new QUIButton({
-                        name     : 'create_folder',
-                        text     : Locale.get(lg, 'projects.project.site.media.panel.btn.create'),
-                        textimage: 'fa fa-folder-open-o',
-                        events   : {
-                            onClick: function () {
+                // Upload
+                const Upload = new QUIButton({
+                    name : 'upload',
+                    icon : 'fa fa-plus',
+                    title: Locale.get(lg, 'projects.project.site.media.panel.btn.upload')
+                });
+
+                Upload.appendChild(
+                    new ContextmenuItem({
+                        name  : 'create_folder',
+                        text  : Locale.get(lg, 'projects.project.site.media.panel.btn.create'),
+                        icon  : 'fa fa-folder-open-o',
+                        events: {
+                            onMouseDown: function () {
                                 self.createFolder();
                             }
                         }
                     })
-                );
-
-                // Upload
-                const Upload = new QUIButton({
-                    name     : 'upload',
-                    textimage: 'fa fa-upload',
-                    text     : Locale.get(lg, 'projects.project.site.media.panel.btn.upload')
-                });
-
-                Upload.appendChild(
+                ).appendChild(
                     new ContextmenuItem({
                         name  : 'upload_files',
                         text  : Locale.get(lg, 'projects.project.site.media.panel.btn.upload.files'),
@@ -971,6 +969,8 @@ define('controls/projects/project/media/Panel', [
                             },
 
                             onComplete: function () {
+                                Sheet.hide();
+
                                 const panels = QUI.Controls.get('projects-media-panel');
 
                                 for (let i = 0, len = panels.length; i < len; i++) {
@@ -1220,6 +1220,11 @@ define('controls/projects/project/media/Panel', [
                     event.stop();
                 },
 
+                onDragleave: function (event, Elm) {
+                    self.$dragLeave(event, Elm);
+                    event.stop();
+                },
+
                 onDragend: function (event, Elm) {
                     self.$dragLeave(event, Elm);
                     event.stop();
@@ -1242,7 +1247,7 @@ define('controls/projects/project/media/Panel', [
             }
 
             if (this.getAttribute('view') === 'details') {
-                const MediaBody = this.getContent().getElement('.qui-media-content')
+                const MediaBody = this.getContent().getElement('.qui-media-content');
                 this.$PanelContextMenu.showDragDropMenu(files, MediaBody, event);
                 return;
             }
@@ -2120,10 +2125,6 @@ define('controls/projects/project/media/Panel', [
                 return;
             }
 
-            if (Browser.ie8) {
-                return;
-            }
-
             if (this.getAttribute('_mousedown')) {
                 return;
             }
@@ -2195,11 +2196,11 @@ define('controls/projects/project/media/Panel', [
 
             // mootools draging
             new Drag.Move(this.$Drag, {
-
                 droppables: [
                     '[data-type="folder"]',
                     '.media-drop'
                 ].join(','),
+
                 onComplete: this.$dragComplete.bind(this),
                 onDrop    : this.$drop.bind(this),
 
@@ -2271,16 +2272,12 @@ define('controls/projects/project/media/Panel', [
          * Stops the Drag Drop
          */
         $dragStop: function () {
-            if (Browser.ie8) {
-                return;
-            }
-
-            (function () {
+            (() => {
                 if (typeof this.$Drag !== 'undefined' && this.$Drag) {
                     this.$Drag.destroy();
                     this.$Drag = null;
                 }
-            }).delay(200, this);
+            }).delay(200);
 
             // Wenn noch kein mousedown drag getätigt wurde
             // mousedown "abbrechen" und onclick ausführen
@@ -2313,6 +2310,7 @@ define('controls/projects/project/media/Panel', [
                 this,
                 event
             ]);
+
             this.$dragStop();
         },
 
@@ -2401,6 +2399,7 @@ define('controls/projects/project/media/Panel', [
                 this.getContent()
                     .getElement('.qui-media-content')
                     .removeClass('qui-media-content-ondragdrop');
+
                 return;
             }
 
