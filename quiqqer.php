@@ -1,7 +1,7 @@
 <?php
 
 // no console
-if (php_sapi_name() != 'cli') {
+if (php_sapi_name() !== 'cli') {
     exit;
 }
 
@@ -53,7 +53,7 @@ define('QUIQQER_SYSTEM', true);
 require dirname(__FILE__, 3) . '/header.php';
 
 // no console
-if (php_sapi_name() != 'cli') {
+if (php_sapi_name() !== 'cli') {
     exit;
 }
 
@@ -65,6 +65,18 @@ if (!file_exists($conf)) {
 
 // Console aufbauen
 define('QUIQQER_CONSOLE', true);
+
+
+if (!empty($_SERVER['argv']) && $_SERVER['argv'][0] === 'quiqqer.php') {
+    /* @deprecated for quiqqer v2.0 */
+    echo 'The direct call of quiqqer.php is deprecated.';
+    echo PHP_EOL;
+    echo 'At the latest in quiqqer v2.0 quiqqer.php will no longer exist.';
+    echo PHP_EOL;
+    echo 'Please use ./console';
+    echo PHP_EOL;
+    echo PHP_EOL;
+}
 
 $Console = new \QUI\System\Console();
 $Console->start();

@@ -524,9 +524,10 @@ EOT;
 
         file_put_contents($index, $content);
 
-
         ////////
         // quiqqer.php
+        // @deprecated for quiqqer v2.0
+        // quiqqer.php is not needed anymore -> use ./console
         ////////
         $content = $fileHeader .
             "define('CMS_DIR', '{$CMS_DIR}');\n" .

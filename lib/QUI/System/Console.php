@@ -34,6 +34,7 @@ use function key;
 use function ksort;
 use function ob_end_clean;
 use function php_sapi_name;
+use function phpversion;
 use function posix_geteuid;
 use function posix_getpwuid;
 use function rand;
@@ -172,6 +173,7 @@ class Console
 
     /**
      * constructor
+     * @throws \QUI\Exception
      */
     public function __construct()
     {
@@ -249,8 +251,8 @@ class Console
             );
 
             $this->clearMsg();
-            $this->writeLn('');
-            $this->writeLn('');
+            $this->writeLn();
+            $this->writeLn();
             $this->write(QUI::getLocale()->get('quiqqer/quiqqer', 'console.execute-user.question'));
 
             $input = $this->readInput();
@@ -326,6 +328,7 @@ class Console
 
     /**
      * Execute the authentication
+     * @throws \QUI\Users\Exception|\QUI\Database\Exception
      */
     protected function authenticate()
     {
@@ -411,7 +414,7 @@ class Console
      *
      * @return array
      */
-    protected function readArgv()
+    protected function readArgv(): array
     {
         // Vars löschen die Probleme bereiten können
         $_REQUEST = [];
@@ -445,7 +448,7 @@ class Console
      *
      * @return array
      */
-    public function getArguments()
+    public function getArguments(): array
     {
         if (!empty($this->arguments)) {
             return $this->arguments;
@@ -466,7 +469,7 @@ class Console
      * @param string $argument
      * @param string $value
      */
-    public function setArgument($argument, $value)
+    public function setArgument(string $argument, string $value)
     {
         $argument = trim($argument, '-');
 
@@ -480,7 +483,7 @@ class Console
      *
      * @return mixed|null
      */
-    public function getArgument($argument)
+    public function getArgument(string $argument)
     {
         $argument = trim($argument, '-');
 
@@ -581,7 +584,7 @@ class Console
             return $this->tools[$tool];
         }
 
-        if ($tool == true) {
+        if ($tool) {
             return $this->tools;
         }
 
@@ -599,7 +602,7 @@ class Console
 
         if ($Tool = $this->get($this->getArgument('tool'))) {
             try {
-                if (is_array($Tool) || !$Tool) {
+                if (is_array($Tool)) {
                     throw new QUI\Exception('Tool not found', 404);
                 }
 
@@ -641,10 +644,10 @@ class Console
             QUI::getUsers()->getSystemUser()
         );
 
-        $self = $this;
         $help = $this->getArgument('help');
 
-        $displaySystemToolHelp = function ($tool) use ($self) {
+        $displaySystemToolHelp = function ($tool) {
+            $self        = $this;
             $description = QUI::getLocale()->get(
                 'quiqqer/quiqqer',
                 'console.systemtool.' . $tool
@@ -797,12 +800,13 @@ class Console
     /**
      * Read all tools and include it
      *
-     * @return array
+     * @return void
+     * @throws \QUI\Exception
      */
-    private function read()
+    private function read(): void
     {
         if (!empty($this->tools)) {
-            return $this->tools;
+            return;
         }
 
         // Standard Konsoletools
@@ -887,8 +891,6 @@ class Console
         }
 
         $this->groupedTools = $groups;
-
-        return $this->tools;
     }
 
     /**
@@ -899,7 +901,7 @@ class Console
      *
      * @throws QUI\Exception
      */
-    protected function includeClasses($file, $dir)
+    protected function includeClasses(string $file, string $dir)
     {
         $file = Orthos::clearPath(realpath($dir . $file));
 
@@ -975,7 +977,7 @@ class Console
      *
      * @param string $msg - [optional] extra text
      */
-    public function help($msg = '')
+    public function help(string $msg = '')
     {
         $this->clearMsg();
         $this->getArguments();
@@ -986,7 +988,7 @@ class Console
         $this->writeLn(" ./console [group] [tool]", 'orange');
 
         $this->clearMsg();
-        $this->writeLn("");
+        $this->writeLn();
         $this->writeLn(" Optional arguments");
         $this->writeLn(" --help			This help text");
 
@@ -1041,19 +1043,19 @@ class Console
  (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
 
 
- Welcome to QUIQQER Version ' . $version . ' - Last Update: ' . $lastUpdate . '
+ Welcome to QUIQQER Version ' . $version . ' - Last Update: ' . $lastUpdate . ' - PHP Version: ' . phpversion() . '
 ';
 
         $this->message($str, 'green', 'white');
         $this->clearMsg();
 
         $licenceText = '
- QUIQQER Copyright (C) ' . $year . '  PCSG  - Computer & Internet Service OHG - www.pcsg.de
- This program comes with ABSOLUTELY NO WARRANTY; for details type `./console licence`.
- This is free software, and you are welcome to redistribute it under certain conditions; 
- visit www.quiqqer.com for details.
+ QUIQQER Copyright(C) ' . $year . '  PCSG - Computer & Internet Service OHG - www . pcsg . de
+ This program comes with ABSOLUTELY NO WARRANTY; for details type `./console licence` .
+ This is free software, and you are welcome to redistribute it under certain conditions;
+ visit www . quiqqer . com for details .
 
-';
+                               ';
 
         $this->message($licenceText, 'cyan', 'white');
         $this->clearMsg();
@@ -1074,7 +1076,7 @@ class Console
      *
      * @return string
      */
-    public function readInput()
+    public function readInput(): string
     {
         return trim(fgets(STDIN));
     }
@@ -1086,7 +1088,7 @@ class Console
      * @param string|boolean $color - (optional) textcolor
      * @param string|boolean $bg - (optional) background color
      */
-    public function writeLn($msg = '', $color = false, $bg = false)
+    public function writeLn(string $msg = '', $color = false, $bg = false)
     {
         $this->message("\n" . $msg, $color, $bg);
     }
@@ -1095,10 +1097,10 @@ class Console
      * alternative for message()
      *
      * @param string $msg - Message to output
-     * @param string|boolean $color - (optional) textcolor
+     * @param string|boolean $color - (optional) text color
      * @param string|boolean $bg - (optional) background color
      */
-    public function write($msg, $color = false, $bg = false)
+    public function write(string $msg, $color = false, $bg = false)
     {
         $this->message($msg, $color, $bg);
     }
@@ -1107,10 +1109,10 @@ class Console
      * Output a message
      *
      * @param string $msg - Message to output
-     * @param string|boolean $color - (optional) textcolor
+     * @param string|boolean $color - (optional) text color
      * @param string|boolean $bg - (optional) background color
      */
-    public function message($msg, $color = false, $bg = false)
+    public function message(string $msg, $color = false, $bg = false)
     {
         if ($color) {
             $this->current_color = $color;
@@ -1168,7 +1170,7 @@ class Console
 
         $data = [
             ['           Short Command', 'Command', 'Description'],
-            ['           -------------', '-------', '-----------'],
+            ['-------------', '-------', '-----------'],
             ['', '']
         ];
 
@@ -1195,6 +1197,7 @@ class Console
 
     /**
      * Initiates a password reset
+     * @throws \QUI\Users\Exception
      */
     protected function passwordReset()
     {
