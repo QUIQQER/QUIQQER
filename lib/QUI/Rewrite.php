@@ -268,7 +268,9 @@ class Rewrite
         QUI\System\Forwarding::forward(QUI::getRequest());
 
         // on character urls are not allowed
-        if (!empty($_REQUEST['_url']) && mb_strlen($_REQUEST['_url']) === 1) {
+        if (!empty($_REQUEST['_url'])
+            && (mb_strlen($_REQUEST['_url']) === 1 || mb_substr($_REQUEST['_url'], 0, 1) === '.')
+        ) {
             $this->showErrorHeader(404, URL_DIR);
         }
 

@@ -97,6 +97,10 @@ class Canonical
                 return $this->getLinkRel($httpsHost . $this->Site->getCanonical());
             }
 
+            if (strpos($_REQUEST['_url'], QUI\Rewrite::URL_PARAM_SEPARATOR) !== false) {
+                return $this->getLinkRel($httpsHost . $this->Site->getCanonical());
+            }
+
             return '';
         }
 
