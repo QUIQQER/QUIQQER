@@ -545,7 +545,7 @@ EOT;
             $phpCommand = 'php';
         }
 
-        $content = "#!/usr/bin/env {$phpCommand}\n" .
+        $content = "#!/usr/bin/env  -S QUIQQER_CONSOLE_EXECUTION=1 {$phpCommand}\n" .
             $fileHeader .
             "define('CMS_DIR', '{$CMS_DIR}');\n" .
             "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';\n";
