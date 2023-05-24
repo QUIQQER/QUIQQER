@@ -6,8 +6,16 @@
 
 namespace QUI\Workspace;
 
+use Exception;
 use QUI;
 use QUI\Utils\Security\Orthos;
+
+use function array_merge;
+use function dirname;
+use function file_get_contents;
+use function json_decode;
+use function json_encode;
+use function mb_strlen;
 
 /**
  * Workspace Manager
@@ -23,7 +31,7 @@ class Manager
      *
      * @return string
      */
-    public static function table()
+    public static function table(): string
     {
         return QUI::getDBTableName('users_workspaces');
     }
@@ -56,13 +64,15 @@ class Manager
 
             $Table->setAutoIncrement(self::table(), 'id');
             $Table->setPrimaryKey(self::table(), 'id');
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
         }
     }
 
     /**
      * Deletes all Workspaces from users which are not admin users
+     *
+     * @throws QUI\Exception
      */
     public static function cleanup()
     {
@@ -114,15 +124,18 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function addWorkspace($User, $title, $data, $minHeight, $minWidth)
-    {
+    public static function addWorkspace(
+        QUI\Interfaces\Users\User $User,
+        string $title,
+        string $data,
+        int $minHeight,
+        int $minWidth
+    ): int {
         if (!QUI::getUsers()->isUser($User)) {
             throw new QUI\Exception('No user given');
         }
 
-        $title     = Orthos::clear($title);
-        $minHeight = (int)$minHeight;
-        $minWidth  = (int)$minWidth;
+        $title = Orthos::clear($title);
 
         QUI::getDataBase()->insert(self::table(), [
             'uid'       => $User->getId(),
@@ -146,7 +159,7 @@ class Manager
         try {
             QUI::getDataBase()->delete(self::table(), [
                 'uid' => $User->getId(),
-                'id'  => (int)$id
+                'id'  => $id
             ]);
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError($Exception, [
@@ -161,8 +174,10 @@ class Manager
      * @param \QUI\Interfaces\Users\User $User
      *
      * @return array
+     * @throws \QUI\Database\Exception
+     * @throws \QUI\Exception
      */
-    public static function getWorkspacesByUser(QUI\Interfaces\Users\User $User)
+    public static function getWorkspacesByUser(QUI\Interfaces\Users\User $User): array
     {
         $result = QUI::getDataBase()->fetch([
             'from'  => self::table(),
@@ -195,7 +210,7 @@ class Manager
      * @throws \QUI\Exception
      *
      */
-    public static function getWorkspaceById($id, $User)
+    public static function getWorkspaceById(int $id, QUI\Users\User $User): array
     {
         $result = QUI::getDataBase()->fetch([
             'from'  => self::table(),
@@ -225,8 +240,10 @@ class Manager
      * @param \QUI\Users\User $User
      *
      * @return array
+     * @throws \QUI\Database\Exception
+     * @throws \QUI\Exception
      */
-    public static function getWorkspacesTitlesByUser(QUI\Users\User $User)
+    public static function getWorkspacesTitlesByUser(QUI\Users\User $User): array
     {
         $workspaces = self::getWorkspacesByUser($User);
         $result     = [];
@@ -247,7 +264,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function saveWorkspace(QUI\Users\User $User, $id, $data = [])
+    public static function saveWorkspace(QUI\Users\User $User, int $id, array $data = [])
     {
         $workspace = self::getWorkspaceById($id, $User);
 
@@ -264,12 +281,12 @@ class Manager
         }
 
         if (isset($data['data'])) {
-            $data['data']      = \json_decode($data['data'], true);
-            $workspace['data'] = \json_encode($data['data']);
+            $data['data']      = json_decode($data['data'], true);
+            $workspace['data'] = json_encode($data['data']);
 
-            // text = 65535 single bytes chars
+            // text = 65535 single bytes chars,
             // but we have utf8, so we use max 20000, not perfect but better than nothing
-            if (\mb_strlen($workspace['data']) > 20000) {
+            if (mb_strlen($workspace['data']) > 20000) {
                 throw new QUI\Exception('Could not save the workspace. Workspace is to big.');
             }
         }
@@ -290,6 +307,7 @@ class Manager
      *
      * @param QUI\Interfaces\Users\User $User
      * @param integer $id
+     * @throws \QUI\Database\Exception
      */
     public static function setStandardWorkspace(QUI\Interfaces\Users\User $User, int $id)
     {
@@ -324,7 +342,7 @@ class Manager
      *
      * @return array
      */
-    public static function getAvailablePanels()
+    public static function getAvailablePanels(): array
     {
         $cache = 'quiqqer/package/quiqqer/quiqqer/available-panels';
 
@@ -334,13 +352,13 @@ class Manager
         }
 
         $panels   = [];
-        $xmlFiles = \array_merge(
-            [SYS_DIR.'panels.xml'],
+        $xmlFiles = array_merge(
+            [SYS_DIR . 'panels.xml'],
             QUI::getPackageManager()->getPackageXMLFiles('panels.xml')
         );
 
         foreach ($xmlFiles as $file) {
-            $panels = \array_merge(
+            $panels = array_merge(
                 $panels,
                 QUI\Utils\Text\XML::getPanelsFromXMLFile($file)
             );
@@ -348,7 +366,7 @@ class Manager
 
         try {
             QUI\Cache\Manager::set($cache, $panels);
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::writeDebugException($Exception);
         }
 
@@ -360,9 +378,9 @@ class Manager
      *
      * @return string
      */
-    public static function getTwoColumnDefault()
+    public static function getTwoColumnDefault(): string
     {
-        return \file_get_contents(\dirname(\dirname(__FILE__)).'/Users/workspaces/twoColumns.js');
+        return file_get_contents(dirname(__FILE__, 2) . '/Users/workspaces/twoColumns.js');
     }
 
     /**
@@ -370,8 +388,8 @@ class Manager
      *
      * @return string
      */
-    public static function getThreeColumnDefault()
+    public static function getThreeColumnDefault(): string
     {
-        return \file_get_contents(\dirname(\dirname(__FILE__)).'/Users/workspaces/threeColumns.js');
+        return file_get_contents(dirname(__FILE__, 2) . '/Users/workspaces/threeColumns.js');
     }
 }

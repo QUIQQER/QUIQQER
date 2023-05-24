@@ -324,7 +324,7 @@ class Menu
      * @param Menuitem $MenuItem
      * @param DOMElement $Node
      */
-    public function setWindowTitle(Menuitem $MenuItem, $Node)
+    public function setWindowTitle(Menuitem $MenuItem, DOMElement $Node)
     {
         if ($MenuItem->getAttribute('text')) {
             return;
@@ -349,7 +349,7 @@ class Menu
      * @param Menuitem $MenuItem
      * @param DOMElement $Node
      */
-    public function setWindowIcon(Menuitem $MenuItem, $Node)
+    public function setWindowIcon(Menuitem $MenuItem, DOMElement $Node)
     {
         if ($MenuItem->getAttribute('icon')) {
             return;
@@ -407,7 +407,7 @@ class Menu
         usort($items, [$this, 'sortByTitle']);
 
         foreach ($items as $key => $item) {
-            if (isset($item['items']) && !empty($item['items'])) {
+            if (!empty($item['items'])) {
                 $items[$key]['items'] = $this->sortItems($item['items']);
             }
         }
