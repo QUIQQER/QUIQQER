@@ -233,7 +233,9 @@ class Package extends QUI\System\Console\Tool
             $Climate = new CLImate();
             $Climate->out('');
             $Climate->lightGreen(
-                ' ' . QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.message.search.result')
+                ' ' . QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.search.resultMessage', [
+                    'count' => count($table)
+                ])
             );
             $Climate->out('');
             $Climate->table($table);
