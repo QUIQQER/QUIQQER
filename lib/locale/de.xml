@@ -5344,6 +5344,12 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         <locale name="console.tool.package.show.description">
             <de><![CDATA[Zeigt informationen über ein installiertes Paket an.]]></de>
         </locale>
+        <locale name="console.tool.package.search.description">
+            <de><![CDATA[Suche nach verfügbaren Paketen.]]></de>
+        </locale>
+        <locale name="console.tool.package.search.resultMessage">
+            <de><![CDATA[[count] Pakete gefunden:]]></de>
+        </locale>
         <locale name="console.tool.package.message.setup.execute">
             <de><![CDATA[Führe das Setup für folgendes Paket aus:]]></de>
         </locale>

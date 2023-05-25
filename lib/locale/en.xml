@@ -5167,6 +5167,12 @@ After logging in you will be prompted to set a new password.
         <locale name="console.tool.package.show.description">
             <en><![CDATA[Displays information about an installed package.]]></en>
         </locale>
+        <locale name="console.tool.package.search.description">
+            <en><![CDATA[Search for available packages.]]></en>
+        </locale>
+        <locale name="console.tool.package.search.resultMessage">
+            <en><![CDATA[[count] packages found:]]></en>
+        </locale>
         <locale name="console.tool.package.message.setup.execute">
             <en><![CDATA[Execute the setup for the following package:]]></en>
         </locale>

@@ -9,6 +9,9 @@ namespace QUI\System\Console\Tools;
 use League\CLImate\CLImate;
 use QUI;
 
+use function is_array;
+use function ksort;
+
 /**
  * Package console tool
  * Package handling via CLI
@@ -42,6 +45,12 @@ class Package extends QUI\System\Console\Tool
             ->addArgument(
                 'show',
                 QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.show.description'),
+                false,
+                true
+            )
+            ->addArgument(
+                'search',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.search.description'),
                 false,
                 true
             )
@@ -96,6 +105,12 @@ class Package extends QUI\System\Console\Tool
             return;
         }
 
+        if ($this->getArgument('search')) {
+            $this->searchPackage($this->getArgument('search'));
+
+            return;
+        }
+
         $this->outputHelp();
     }
 
@@ -106,7 +121,7 @@ class Package extends QUI\System\Console\Tool
     {
         $installed = QUI::getPackageManager()->getInstalledVersions();
 
-        \ksort($installed);
+        ksort($installed);
 
         $data = [];
 
@@ -128,7 +143,7 @@ class Package extends QUI\System\Console\Tool
      *
      * @param string $package
      */
-    protected function showPackageInformation($package)
+    protected function showPackageInformation(string $package)
     {
         $this->writeLn();
         $Climate = new CLImate();
@@ -142,7 +157,7 @@ class Package extends QUI\System\Console\Tool
             $data     = [];
 
             foreach ($composer as $key => $entry) {
-                if (\is_array($entry)) {
+                if (is_array($entry)) {
                     continue;
                 }
 
@@ -194,12 +209,43 @@ class Package extends QUI\System\Console\Tool
         }
     }
 
+    protected function searchPackage($search)
+    {
+        $this->writeLn();
+
+        $Spinner = new QUI\System\Console\Spinner(
+            QUI\System\Console\Spinner::DOTS
+        );
+
+        $Spinner->run('Searching...', function () use ($search, $Spinner) {
+            $Composer = QUI::getPackageManager()->getComposer();
+            $result   = $Composer->search($search);
+            $Spinner->stop();
+
+            // remove first element, because of wrong output, first line is not a package
+            array_shift($result);
+            $table = [];
+
+            foreach ($result as $k => $v) {
+                $table[] = [trim($k), trim($v)];
+            }
+
+            $Climate = new CLImate();
+            $Climate->out('');
+            $Climate->lightGreen(
+                ' ' . QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.message.search.result')
+            );
+            $Climate->out('');
+            $Climate->table($table);
+        });
+    }
+
     /**
      * Execute the setup for a package
      *
      * @param string $package
      */
-    protected function executePackageSetup($package)
+    protected function executePackageSetup(string $package)
     {
         $this->writeLn();
         $Climate = new CLImate();
@@ -223,7 +269,7 @@ class Package extends QUI\System\Console\Tool
      *
      * @param string $package
      */
-    protected function installPackage($package)
+    protected function installPackage(string $package)
     {
         $this->writeLn();
         $Climate = new CLImate();
@@ -259,7 +305,6 @@ class Package extends QUI\System\Console\Tool
 
             $Composer->unmute();
             $Composer->requirePackage($package);
-            //$PackageManager->install($package);
         }
     }
 }
