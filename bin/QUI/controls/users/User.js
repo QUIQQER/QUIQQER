@@ -929,7 +929,7 @@ define('controls/users/User', [
             if (buttonStatus) {
                 Prom = User.activate();
             } else {
-                Prom = User.deactivate();
+                Prom = this.userDeactivation();
             }
 
             Prom.then(function () {
@@ -1403,6 +1403,36 @@ define('controls/users/User', [
                     }
                 }
             }).open();
+        },
+
+        userDeactivation: function () {
+            return new Promise((resolve, reject) => {
+                const User = this.getUser();
+
+                new QUIConfirm({
+                    title      : QUILocale.get(lg, 'users.panel.deactivate.window.title'),
+                    text       : QUILocale.get(lg, 'users.panel.deactivate.window.text', {
+                        userid  : User.getId(),
+                        username: User.getName()
+                    }),
+                    information: QUILocale.get(lg, 'users.panel.deactivate.window.information'),
+                    maxHeight  : 400,
+                    maxWidth   : 600,
+                    autoclose  : false,
+                    events     : {
+                        onSubmit: function (Win) {
+                            Win.Loader.show();
+
+                            User.deactivate().then(function () {
+                                Win.close();
+                                resolve();
+                            });
+                        },
+
+                        onCancel: reject
+                    }
+                }).open();
+            });
         }
     });
 });
