@@ -65,6 +65,12 @@ class Package extends QUI\System\Console\Tool
                 QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.setup.description'),
                 false,
                 true
+            )
+            ->addArgument(
+                'purge',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.purge.description'),
+                false,
+                true
             );
     }
 
@@ -107,6 +113,12 @@ class Package extends QUI\System\Console\Tool
 
         if ($this->getArgument('search')) {
             $this->searchPackage($this->getArgument('search'));
+
+            return;
+        }
+
+        if ($this->getArgument('remove')) {
+            $this->removePackage($this->getArgument('remove'));
 
             return;
         }
@@ -240,6 +252,11 @@ class Package extends QUI\System\Console\Tool
             $Climate->out('');
             $Climate->table($table);
         });
+    }
+
+    protected function removePackage(string $package)
+    {
+        $Composer = QUI::getPackageManager()->getComposer();
     }
 
     /**

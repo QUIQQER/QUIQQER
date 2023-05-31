@@ -20,7 +20,7 @@ define('controls/projects/project/site/Search', [
 ], function (QUI, QUIPanel, QUIButton, Grid, SitePanel, Projects, Ajax, Locale) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/quiqqer';
 
     return new Class({
 
@@ -41,14 +41,14 @@ define('controls/projects/project/site/Search', [
         },
 
         initialize: function (options) {
-            var self = this;
+            const self = this;
 
             this.parent(options);
 
-            this.$Grid           = null;
+            this.$Grid = null;
             this.$LabelContainer = null;
-            this.$SearchInput    = null;
-            this.$ProjectList    = null;
+            this.$SearchInput = null;
+            this.$ProjectList = null;
 
             this.addEvents({
                 onCreate      : this.$onCreate,
@@ -66,8 +66,8 @@ define('controls/projects/project/site/Search', [
          * event : on create
          */
         $onCreate: function () {
-            var self    = this,
-                Content = this.getContent();
+            const self    = this,
+                  Content = this.getContent();
 
             Content.addClass('control-site-search');
 
@@ -76,7 +76,7 @@ define('controls/projects/project/site/Search', [
 
                 '<div class="control-site-search-label box">' +
                 '<label for="">' + Locale.get(lg, 'projects.project.site.search.label') + '</label>' +
-
+                '<input type="text" name="search" />' +
                 '<select name="field">' +
                 '<option value="">' + Locale.get(lg, 'projects.project.site.search.all_attributes') + '</option>' +
                 '<option value="id">' + Locale.get(lg, 'id') + '</option>' +
@@ -86,15 +86,14 @@ define('controls/projects/project/site/Search', [
                 '<select name="project">' +
                 '<option value="">' + Locale.get(lg, 'projects.project.site.search.all_projects') + '</option>' +
                 '</select>' +
-                '<input type="text" name="search" />' +
                 '</div>' +
                 '<label>' + Locale.get(lg, 'projects.project.site.results.label') + '</label>'
             );
 
             this.$LabelContainer = Content.getElement('.control-site-search-label');
-            this.$SearchInput    = Content.getElement('[name="search"]');
-            this.$ProjectList    = Content.getElement('[name="project"]');
-            this.$FieldList      = Content.getElement('[name="field"]');
+            this.$SearchInput = Content.getElement('[name="search"]');
+            this.$ProjectList = Content.getElement('[name="project"]');
+            this.$FieldList = Content.getElement('[name="field"]');
 
             this.$SearchInput.set(
                 'placeholder',
@@ -109,70 +108,88 @@ define('controls/projects/project/site/Search', [
                         self.search();
                     }
                 }
-            }).inject(this.$LabelContainer);
+            }).inject(this.$LabelContainer.getElement('[name="search"]'), 'after');
 
             this.$SearchInput.addEvents({
                 keyup: function (event) {
-                    if (event && event.key == 'enter') {
+                    if (event && event.key === 'enter') {
                         self.search();
                     }
                 }
             });
 
             // Grid
-            var Container = new Element('div', {
-                'class': 'control-site-search-grid box'
-            }).inject(Content);
+            const Container = new Element('div.control-site-search-gridContainer').inject(Content);
 
-            this.$Grid = new Grid(Container, {
-                columnModel: [{
-                    dataType : 'button',
-                    header   : '&nbsp;',
-                    dataIndex: 'open',
-                    width    : 50
-                }, {
-                    dataType : 'integer',
-                    header   : Locale.get(lg, 'id'),
-                    dataIndex: 'id',
-                    width    : 100
-                }, {
-                    dataType : 'string',
-                    header   : Locale.get(lg, 'name'),
-                    dataIndex: 'name',
-                    width    : 150
-                }, {
-                    dataType : 'string',
-                    header   : Locale.get(lg, 'title'),
-                    dataIndex: 'title',
-                    width    : 150
-                }, {
-                    dataType : 'string',
-                    header   : Locale.get(lg, 'type'),
-                    dataIndex: 'type',
-                    width    : 150
-                }, {
-                    dataType : 'string',
-                    header   : Locale.get(lg, 'project'),
-                    dataIndex: 'project',
-                    width    : 150
-                }],
+            const GridContainer = new Element('div', {
+                'class': 'control-site-search-grid box'
+            }).inject(Container);
+
+            this.$Grid = new Grid(GridContainer, {
+                columnModel: [
+                    {
+                        dataType : 'button',
+                        header   : '&nbsp;',
+                        dataIndex: 'open',
+                        width    : 50
+                    },
+                    {
+                        dataType : 'integer',
+                        header   : Locale.get(lg, 'id'),
+                        dataIndex: 'id',
+                        width    : 100
+                    },
+                    {
+                        dataType : 'string',
+                        header   : Locale.get(lg, 'name'),
+                        dataIndex: 'name',
+                        width    : 150
+                    },
+                    {
+                        dataType : 'string',
+                        header   : Locale.get(lg, 'title'),
+                        dataIndex: 'title',
+                        width    : 150
+                    },
+                    {
+                        dataType : 'string',
+                        header   : Locale.get(lg, 'type'),
+                        dataIndex: 'type',
+                        width    : 150
+                    },
+                    {
+                        dataType : 'string',
+                        header   : Locale.get(lg, 'project'),
+                        dataIndex: 'project',
+                        width    : 150
+                    }
+                ],
                 pagination : true,
                 onrefresh  : function () {
                     self.search();
                 }
             });
 
-            this.$Grid.addEvent('onDblClick', function (data) {
+            this.$Grid.addEvent('onDblClick', (data) => {
                 data = data.target.getDataByRow(data.row);
 
-                var siteId      = data.id,
+                let siteId      = data.id,
                     projectData = data.project;
-
 
                 projectData = projectData.replace('(', '').replace(')', '').split(' ');
 
-                var Project = Projects.get(projectData[0], projectData[1]),
-                    Site    = Project.get(siteId);
+                if (this.getAttribute('onClick')) {
+                    this.getAttribute('onClick')(this, {
+                        id     : siteId,
+                        project: projectData[0],
+                        lang   : projectData[1]
+                    });
+
+                    return;
+                }
+
+                const Project = Projects.get(projectData[0], projectData[1]),
+                      Site    = Project.get(siteId);
 
                 new SitePanel(Site).inject(self.getParent());
             });
@@ -187,7 +204,7 @@ define('controls/projects/project/site/Search', [
          * event : on inject
          */
         $onShow: function () {
-            var self = this;
+            const self = this;
 
             this.Loader.show();
 
@@ -200,7 +217,7 @@ define('controls/projects/project/site/Search', [
                     '</option>'
                 );
 
-                for (var project in list) {
+                for (const project in list) {
                     if (!list.hasOwnProperty(project)) {
                         continue;
                     }
@@ -224,14 +241,14 @@ define('controls/projects/project/site/Search', [
                 return;
             }
 
-            var Body = this.getContent();
+            const Body = this.getContent();
 
             if (!Body) {
                 return;
             }
 
-            var size      = Body.getSize(),
-                labelSite = this.$LabelContainer.getSize();
+            const size      = Body.getSize(),
+                  labelSite = this.$LabelContainer.getSize();
 
             this.$Grid.setHeight(size.y - 100 - labelSite.y);
             this.$Grid.setWidth(size.x - 40);
@@ -241,8 +258,8 @@ define('controls/projects/project/site/Search', [
          * execute the search
          */
         search: function () {
-            var self   = this,
-                fields = [];
+            const self   = this,
+                  fields = [];
 
             this.Loader.show();
 
@@ -251,9 +268,9 @@ define('controls/projects/project/site/Search', [
             }
 
             Ajax.get('ajax_site_search', function (result) {
-                var data = result.data;
+                const data = result.data;
 
-                for (var i = 0, len = data.length; i < len; i++) {
+                for (let i = 0, len = data.length; i < len; i++) {
                     result.data[i].open = {
                         icon       : 'fa fa-file-o',
                         siteid     : data[i].id,
@@ -285,13 +302,13 @@ define('controls/projects/project/site/Search', [
          * @param {qui/controls/buttons/Button} Btn
          */
         $openSite: function (Btn) {
-            var siteId      = Btn.getAttribute('siteid'),
+            let siteId      = Btn.getAttribute('siteid'),
                 projectData = Btn.getAttribute('siteproject');
 
             projectData = projectData.replace('(', '').replace(')', '').split(' ');
 
-            var Project = Projects.get(projectData[0], projectData[1]),
-                Site    = Project.get(siteId);
+            const Project = Projects.get(projectData[0], projectData[1]),
+                  Site    = Project.get(siteId);
 
             new SitePanel(Site).inject(this.getParent());
         }

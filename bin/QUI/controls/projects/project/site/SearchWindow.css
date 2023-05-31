@@ -1,0 +1,34 @@
+.project-search-window .qui-panel .qui-panel-header {
+    display: none;
+}
+
+.project-search-window .qui-panel .qui-panel-content {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+
+.project-search-window .qui-window-popup-content {
+    padding: 0 !important;
+}
+
+.project-search-window .control-site-search-label {
+    background: #efefef;
+    margin: 0;
+    padding: 20px;
+}
+
+.project-search-window .control-site-search label {
+    display: none;
+}
+
+.project-search-window select {
+    background: #fff;
+}
+
+.project-search-window .control-site-search-gridContainer {
+    display: inline-block;
+    flex-grow: 1;
+    padding: 20px;
+    width: 100%;
+}
