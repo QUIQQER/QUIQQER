@@ -25,21 +25,21 @@ define('controls/users/Panel', [
 ], function () {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/quiqqer';
 
-    var QUI          = arguments[0],
-        Panel        = arguments[1],
-        Grid         = arguments[2],
-        Users        = arguments[3],
-        Attention    = arguments[4],
-        QUIConfirm   = arguments[5],
-        QUIPrompt    = arguments[6],
-        QUIButton    = arguments[7],
-        QUISwitch    = arguments[8],
-        Template     = arguments[9],
-        ControlUtils = arguments[10],
-        QUILocale    = arguments[11],
-        Permissions  = arguments[12];
+    const QUI          = arguments[0],
+          Panel        = arguments[1],
+          Grid         = arguments[2],
+          Users        = arguments[3],
+          Attention    = arguments[4],
+          QUIConfirm   = arguments[5],
+          QUIPrompt    = arguments[6],
+          QUIButton    = arguments[7],
+          QUISwitch    = arguments[8],
+          Template     = arguments[9],
+          ControlUtils = arguments[10],
+          QUILocale    = arguments[11],
+          Permissions  = arguments[12];
 
     /**
      * @class controls/users/Panel
@@ -84,7 +84,7 @@ define('controls/users/Panel', [
 
             this.parent(options);
 
-            this.$Grid      = null;
+            this.$Grid = null;
             this.$Container = null;
 
             this.addEvent('onCreate', this.$onCreate);
@@ -97,21 +97,21 @@ define('controls/users/Panel', [
                 onSave        : this.$onUserRefresh
             });
 
-            this.addEvent('onDestroy', function () {
+            this.addEvent('onDestroy', () => {
                 Users.removeEvents({
                     onSwitchStatus: this.$onSwitchStatus,
                     onDelete      : this.$onDeleteUser,
                     onRefresh     : this.$onUserRefresh,
                     onSave        : this.$onUserRefresh
                 });
-            }.bind(this));
+            });
 
 
-            this.active_image = 'fa fa-check';
-            this.active_text  = QUILocale.get(lg, 'users.panel.user.is.active');
+            //this.active_image = 'fa fa-check';
+            this.active_text = QUILocale.get(lg, 'users.panel.user.is.active');
 
-            this.deactive_image = 'fa fa-remove';
-            this.deactive_text  = QUILocale.get(lg, 'users.panel.user.is.deactive');
+            //this.deactive_image = 'fa fa-remove';
+            this.deactive_text = QUILocale.get(lg, 'users.panel.user.is.deactive');
         },
 
         /**
@@ -175,58 +175,68 @@ define('controls/users/Panel', [
             });
 
             // create grid
-            var Body = this.getBody();
+            const Body = this.getBody();
 
             this.$Container = new Element('div');
             this.$Container.inject(Body);
 
             this.$Grid = new Grid(this.$Container, {
-                columnModel: [{
-                    header   : QUILocale.get(lg, 'status'),
-                    dataIndex: 'status',
-                    dataType : 'QUI',
-                    width    : 60
-                }, {
-                    header   : QUILocale.get(lg, 'user_id'),
-                    dataIndex: 'id',
-                    dataType : 'integer',
-                    width    : 150
-                }, {
-                    header   : QUILocale.get(lg, 'username'),
-                    dataIndex: 'username',
-                    dataType : 'integer',
-                    width    : 150
-                }, {
-                    header   : QUILocale.get(lg, 'group'),
-                    dataIndex: 'usergroup',
-                    dataType : 'integer',
-                    width    : 150
-                }, {
-                    header   : QUILocale.get(lg, 'email'),
-                    dataIndex: 'email',
-                    dataType : 'string',
-                    width    : 150
-                }, {
-                    header   : QUILocale.get(lg, 'firstname'),
-                    dataIndex: 'firstname',
-                    dataType : 'string',
-                    width    : 150
-                }, {
-                    header   : QUILocale.get(lg, 'lastname'),
-                    dataIndex: 'lastname',
-                    dataType : 'string',
-                    width    : 150
-                }, {
-                    header   : QUILocale.get(lg, 'e_date'),
-                    dataIndex: 'lastedit',
-                    dataType : 'date',
-                    width    : 150
-                }, {
-                    header   : QUILocale.get(lg, 'c_date'),
-                    dataIndex: 'regdate',
-                    dataType : 'date',
-                    width    : 150
-                }],
+                columnModel: [
+                    {
+                        header   : QUILocale.get(lg, 'status'),
+                        dataIndex: 'status',
+                        dataType : 'QUI',
+                        width    : 60
+                    },
+                    {
+                        header   : QUILocale.get(lg, 'user_id'),
+                        dataIndex: 'id',
+                        dataType : 'integer',
+                        width    : 150
+                    },
+                    {
+                        header   : QUILocale.get(lg, 'username'),
+                        dataIndex: 'username',
+                        dataType : 'integer',
+                        width    : 150
+                    },
+                    {
+                        header   : QUILocale.get(lg, 'group'),
+                        dataIndex: 'usergroup',
+                        dataType : 'integer',
+                        width    : 150
+                    },
+                    {
+                        header   : QUILocale.get(lg, 'email'),
+                        dataIndex: 'email',
+                        dataType : 'string',
+                        width    : 150
+                    },
+                    {
+                        header   : QUILocale.get(lg, 'firstname'),
+                        dataIndex: 'firstname',
+                        dataType : 'string',
+                        width    : 150
+                    },
+                    {
+                        header   : QUILocale.get(lg, 'lastname'),
+                        dataIndex: 'lastname',
+                        dataType : 'string',
+                        width    : 150
+                    },
+                    {
+                        header   : QUILocale.get(lg, 'e_date'),
+                        dataIndex: 'lastedit',
+                        dataType : 'date',
+                        width    : 150
+                    },
+                    {
+                        header   : QUILocale.get(lg, 'c_date'),
+                        dataIndex: 'regdate',
+                        dataType : 'date',
+                        width    : 150
+                    }
+                ],
                 pagination : true,
                 filterInput: true,
                 perPage    : this.getAttribute('limit'),
@@ -238,7 +248,7 @@ define('controls/users/Panel', [
                 width      : Body.getSize().x - 40,
                 height     : Body.getSize().y - 40,
                 onrefresh  : function (me) {
-                    var options = me.options;
+                    const options = me.options;
 
                     this.setAttribute('field', options.sortOn);
                     this.setAttribute('order', options.sortBy);
@@ -305,32 +315,32 @@ define('controls/users/Panel', [
         search: function () {
             this.Loader.show();
 
-            var self  = this,
-                Sheet = this.createSheet({
-                    title      : QUILocale.get(lg, 'users.panel.search.title'),
-                    icon       : 'fa fa-search',
-                    closeButton: {
-                        text: 'schließen'
-                    }
-                });
+            const self  = this,
+                  Sheet = this.createSheet({
+                      title      : QUILocale.get(lg, 'users.panel.search.title'),
+                      icon       : 'fa fa-search',
+                      closeButton: {
+                          text: 'schließen'
+                      }
+                  });
 
             Sheet.addEvent('onOpen', function (Sheet) {
                 Template.get('users_searchtpl', function (result) {
-                    var i, len, inputs, new_id, Frm, Search, Label;
+                    let i, len, inputs, new_id, Frm, Search, Label;
 
-                    var Body     = Sheet.getBody(),
-                        settings = self.getAttribute('searchSettings'),
+                    const Body     = Sheet.getBody(),
+                          settings = self.getAttribute('searchSettings'),
 
-                        values   = Object.merge(
-                            {},
-                            settings.filter,
-                            settings.fields
-                        );
+                          values   = Object.merge(
+                              {},
+                              settings.filter,
+                              settings.fields
+                          );
 
                     Body.set('html', result);
 
 
-                    Frm    = Body.getElement('form');
+                    Frm = Body.getElement('form');
                     Search = Frm.elements.search;
 
                     Search.addEvent('keyup', function (event) {
@@ -414,13 +424,14 @@ define('controls/users/Panel', [
          * @param {Object} Sheet - qui/desktop/panels/Sheet
          */
         execSearch: function (Sheet) {
-            var Frm = Sheet.getBody().getElement('form');
+            const Frm = Sheet.getBody().getElement('form');
 
             this.setAttribute('search', true);
 
             // check if one checkbox is active
-            if (!Frm.elements.uid.checked && !Frm.elements.username.checked && !Frm.elements.email.checked && !Frm.elements.firstname.checked && !Frm.elements.lastname.checked) {
-                Frm.elements.uid.checked      = true;
+            if (!Frm.elements.uid.checked && !Frm.elements.username.checked && !Frm.elements.email.checked &&
+                !Frm.elements.firstname.checked && !Frm.elements.lastname.checked) {
+                Frm.elements.uid.checked = true;
                 Frm.elements.username.checked = true;
             }
 
@@ -450,7 +461,7 @@ define('controls/users/Panel', [
          * Open the user create dialog
          */
         createUser: function () {
-            var self = this;
+            const self = this;
 
             new QUIPrompt({
                 name       : 'CreateUser',
@@ -479,7 +490,10 @@ define('controls/users/Panel', [
                             return;
                         }
 
-                        Win.fireEvent('onsubmit', [Win.getValue(), Win]);
+                        Win.fireEvent('onsubmit', [
+                            Win.getValue(),
+                            Win
+                        ]);
                         Win.close();
                     });
 
@@ -527,9 +541,9 @@ define('controls/users/Panel', [
          * onclick on the grid
          */
         $gridClick: function (data) {
-            var len    = data.target.selected.length,
-                Edit   = this.getButtons('userEdit'),
-                Delete = this.getButtons('userDel');
+            const len    = data.target.selected.length,
+                  Edit   = this.getButtons('userEdit'),
+                  Delete = this.getButtons('userDel');
 
             if (len === 0) {
                 Edit.disable();
@@ -568,7 +582,7 @@ define('controls/users/Panel', [
          * Resize the users panel
          */
         $onResize: function () {
-            var Body = this.getBody();
+            const Body = this.getBody();
 
             if (!Body) {
                 return;
@@ -585,7 +599,7 @@ define('controls/users/Panel', [
                 this.getGrid().setHeight(Body.getSize().y - 40);
             }
 
-            var Message = Body.getElement('.messages-message');
+            const Message = Body.getElement('.messages-message');
 
             if (Message) {
                 Message.setStyle('width', this.getBody().getSize().x - 40);
@@ -595,8 +609,8 @@ define('controls/users/Panel', [
 
 
             // resize switches
-            var i, len, Control;
-            var switches = Body.getElements('.qui-switch');
+            let i, len, Control;
+            const switches = Body.getElements('.qui-switch');
 
             for (i = 0, len = switches.length; i < len; i++) {
                 Control = QUI.Controls.getById(switches[i].get('data-quiid'));
@@ -613,7 +627,7 @@ define('controls/users/Panel', [
          * @param {Function} [callback]
          */
         $loadUsers: function (callback) {
-            var self = this;
+            const self = this;
 
             this.Loader.show();
 
@@ -653,7 +667,7 @@ define('controls/users/Panel', [
                 search        : this.getAttribute('search'),
                 searchSettings: this.getAttribute('searchSettings')
             }).then(function (result) {
-                var Grid = self.getGrid();
+                const Grid = self.getGrid();
 
                 self.setAttribute('title', QUILocale.get(lg, 'users.panel.title'));
                 self.setAttribute('icon', 'fa fa-user');
@@ -682,8 +696,8 @@ define('controls/users/Panel', [
          * @param {Object} Switch - qui/controls/buttons/Switch
          */
         $btnSwitchStatus: function (Switch) {
-            var self = this,
-                User = Users.get(Switch.getAttribute('uid'));
+            const self = this,
+                  User = Users.get(Switch.getAttribute('uid'));
 
             if (!User.isLoaded()) {
                 User.load(function () {
@@ -694,7 +708,7 @@ define('controls/users/Panel', [
                 return;
             }
 
-            var userStatus = !!User.isActive();
+            const userStatus = !!User.isActive();
 
             // status is the same as the switch, we must do nothing
             if (userStatus === Switch.getStatus()) {
@@ -717,10 +731,14 @@ define('controls/users/Panel', [
                             Win.Loader.show();
 
                             Users.deactivate(Switch.getAttribute('uid')).then(function () {
-                                var Switch = self.$getUserSwitch(User);
+                                const Switch = self.$getUserSwitch(User);
 
                                 if (Switch) {
-                                    User.isActive() ? Switch.setSilentOn() : Switch.setSilentOff();
+                                    if (User.isActive()) {
+                                        Switch.setSilentOn();
+                                    } else {
+                                        Switch.setSilentOff();
+                                    }
                                 }
 
                                 Win.close();
@@ -737,10 +755,14 @@ define('controls/users/Panel', [
             }
 
             Users.activate(Switch.getAttribute('uid')).then(function () {
-                var Switch = self.$getUserSwitch(User);
+                const Switch = self.$getUserSwitch(User);
 
                 if (Switch) {
-                    User.isActive() ? Switch.setSilentOn() : Switch.setSilentOff();
+                    if (User.isActive()) {
+                        Switch.setSilentOn();
+                    } else {
+                        Switch.setSilentOff();
+                    }
                 }
             });
         },
@@ -752,10 +774,10 @@ define('controls/users/Panel', [
          * @param {Object} ids - User-IDs
          */
         $onSwitchStatus: function (Users, ids) {
-            var i, len, Switch, entry, status;
+            let i, len, Switch, entry, status;
 
-            var Grid = this.getGrid(),
-                data = Grid.getData();
+            const Grid = this.getGrid(),
+                  data = Grid.getData();
 
             for (i = 0, len = data.length; i < len; i++) {
                 if (typeof ids[data[i].id] === 'undefined') {
@@ -787,11 +809,11 @@ define('controls/users/Panel', [
          * @param {Object} User - classes/users/User
          */
         $onUserRefresh: function (Users, User) {
-            var Grid = this.getGrid(),
-                data = Grid.getData(),
-                id   = User.getId();
+            const Grid = this.getGrid(),
+                  data = Grid.getData(),
+                  id   = User.getId();
 
-            for (var i = 0, len = data.length; i < len; i++) {
+            for (let i = 0, len = data.length; i < len; i++) {
                 if (parseInt(data[i].id) === id) {
                     Grid.setDataByRow(i, this.userToGridData(User));
                 }
@@ -802,11 +824,11 @@ define('controls/users/Panel', [
          * if a user is deleted
          */
         $onDeleteUser: function (Users, ids) {
-            var i, id, len;
+            let i, id, len;
 
-            var Grid = this.getGrid(),
-                data = Grid.getData(),
-                tmp  = {};
+            const Grid = this.getGrid(),
+                  data = Grid.getData(),
+                  tmp  = {};
 
             for (i = 0, len = ids.length; i < len; i++) {
                 tmp[ids[i]] = true;
@@ -826,9 +848,9 @@ define('controls/users/Panel', [
          * Open all marked users
          */
         $onButtonEditClick: function () {
-            var Parent  = this.getParent(),
-                Grid    = this.getGrid(),
-                seldata = Grid.getSelectedData();
+            const Parent  = this.getParent(),
+                  Grid    = this.getGrid(),
+                  seldata = Grid.getSelectedData();
 
             if (!seldata.length) {
                 return;
@@ -839,14 +861,14 @@ define('controls/users/Panel', [
                 return;
             }
 
-            var i, len;
+            let i, len;
 
             if (Parent.getType() === 'qui/controls/desktop/Tasks') {
                 require([
                     'controls/users/User',
                     'qui/controls/taskbar/Group'
                 ], function (UserPanel, QUITaskGroup) {
-                    var User, Task, TaskGroup;
+                    let User, Task, TaskGroup;
 
                     TaskGroup = new QUITaskGroup();
                     Parent.appendTask(TaskGroup);
@@ -874,10 +896,10 @@ define('controls/users/Panel', [
          * Open deletion popup
          */
         $onButtonDelClick: function () {
-            var i, len;
+            let i, len;
 
-            var uids = [],
-                data = this.getGrid().getSelectedData();
+            const uids = [],
+                  data = this.getGrid().getSelectedData();
 
             for (i = 0, len = data.length; i < len; i++) {
                 uids.push(data[i].id);
@@ -918,12 +940,12 @@ define('controls/users/Panel', [
          * @return {Array}
          */
         $parseDataForGrid: function (data) {
-            var i, len, entry;
+            let i, len, entry;
 
             for (i = 0, len = data.length; i < len; i++) {
                 entry = data[i];
 
-                data[i].active    = parseInt(entry.active);
+                data[i].active = parseInt(entry.active);
                 data[i].usergroup = entry.usergroup || '';
 
                 if (entry.active === -1) {
@@ -951,11 +973,11 @@ define('controls/users/Panel', [
          * @returns {Object|Boolean} (qui/controls/buttons/Switch)
          */
         $getUserSwitch: function (User) {
-            var Grid = this.getGrid(),
-                data = Grid.getData(),
-                id   = User.getId();
+            const Grid = this.getGrid(),
+                  data = Grid.getData(),
+                  id   = User.getId();
 
-            for (var i = 0, len = data.length; i < len; i++) {
+            for (let i = 0, len = data.length; i < len; i++) {
                 if (parseInt(data[i].id) === id) {
                     return Grid.getDataByRow(i).status;
                 }
@@ -971,9 +993,9 @@ define('controls/users/Panel', [
          * @return {Object}
          */
         userToGridData: function (User) {
-            var active = parseInt(User.isActive()),
-                id     = User.getId(),
-                result = User.getAttributes();
+            const active = parseInt(User.isActive()),
+                  id     = User.getId(),
+                  result = User.getAttributes();
 
             result.usergroup = result.usergroup || '';
 
