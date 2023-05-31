@@ -5152,6 +5152,11 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         <locale name="console.systemtool.clear-cache-path">
             <de><![CDATA[Löscht einen bestimmten cache path.]]></de>
         </locale>
+        <locale name="console.systemtool.composer">
+            <de><![CDATA[
+            Führt composer Befehle direkt aus ohne QUIQQER auszuführen. Nutze diesen Command wirklich nur wenn du weist was du tust!!
+            ]]></de>
+        </locale>
         <locale name="console.tool.project.rename.description">
             <de><![CDATA[Benennt ein vorhandenes Projekt um.  (--path="")]]></de>
         </locale>

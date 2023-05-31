@@ -87,7 +87,8 @@ class Console
         'setup',
         'update',
         'licence',
-        'htaccess'
+        'htaccess',
+        'composer'
     ];
 
     /**

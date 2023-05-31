@@ -4980,6 +4980,11 @@ After logging in you will be prompted to set a new password.
         <locale name="console.systemtool.clear-cache-path">
             <en><![CDATA[Deletes a specific cache path. (--path="")]]></en>
         </locale>
+        <locale name="console.systemtool.composer">
+            <en><![CDATA[
+            Executes composer commands directly without running QUIQQER. Use this command only if you know what you are doing!
+            ]]></en>
+        </locale>
         <locale name="console.tool.project.rename.description">
             <en><![CDATA[Changes the name of an existing project.]]></en>
         </locale>
