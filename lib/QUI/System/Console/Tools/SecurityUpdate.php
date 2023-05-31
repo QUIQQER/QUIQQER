@@ -174,9 +174,8 @@ class SecurityUpdate extends QUI\System\Console\Tool
             ]);
 
             $dryRunOutput = explode(PHP_EOL, $dryRunOutput);
-            $installs     = 0;
-            $updates      = 0;
-            $removals     = 0;
+
+            $isUpdateAvailable = false;
 
             foreach ($dryRunOutput as $line) {
                 if (strpos($line, 'Lock file operations:') === false) {
@@ -187,24 +186,25 @@ class SecurityUpdate extends QUI\System\Console\Tool
                 $lines = explode(',', $line);
 
                 foreach ($lines as $l) {
-                    if (strpos($l, 'installs') !== false) {
-                        $installs = (int)str_replace('installs', '', $l);
-                    } elseif (strpos($l, 'updates') !== false) {
-                        $updates = (int)str_replace('updates', '', $l);
-                    } elseif (strpos($l, 'removals') !== false) {
-                        $removals = (int)str_replace('removals', '', $l);
+                    // line formed like: "0 updates"
+                    if (strpos(trim($l), '0') === 0) {
+                        continue;
                     }
+
+                    // line does not start with "0", therefore something should be installed, updated or removed
+                    $isUpdateAvailable = true;
+                    break;
                 }
 
                 break;
             }
 
-            // run the update with the security package list
-            if (!$installs && !$updates && !$removals) {
+            if (!$isUpdateAvailable) {
                 $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'security.update.no.updates.found'));
                 return;
             }
 
+            // run the update with the security package list
             $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'security.update.updates.found'));
             $this->writeLn();
             $this->writeLn();

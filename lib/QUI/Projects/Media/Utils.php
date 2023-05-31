@@ -559,6 +559,11 @@ class Utils
         $img = '<img ';
 
         foreach ($attributes as $key => $value) {
+            if (($key === 'width' || $key === 'height') && is_numeric($value)) {
+                $img .= htmlspecialchars($key) . '="' . $value . '" ';
+                continue;
+            }
+
             if (is_array($value) && $key === 'alt') {
                 $value = $Image->getAlt();
             } elseif (!is_string($value)) {
