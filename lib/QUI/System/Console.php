@@ -1013,7 +1013,6 @@ class Console
         $Climate->white()->out(implode(', ', $groups));
 
         $this->writeLn($msg);
-
         exit;
     }
 

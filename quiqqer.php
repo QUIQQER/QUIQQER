@@ -65,7 +65,7 @@ if (!file_exists($conf)) {
 
 // Console aufbauen
 define('QUIQQER_CONSOLE', true);
-define("QUIQQER_CONSOLE_EXECUTION", getenv('QUIQQER_CONSOLE_EXECUTION'));
+
 
 if (!empty($_SERVER['argv']) && $_SERVER['argv'][0] === 'quiqqer.php') {
     /* @deprecated for quiqqer v2.0 */
@@ -76,20 +76,6 @@ if (!empty($_SERVER['argv']) && $_SERVER['argv'][0] === 'quiqqer.php') {
     echo 'Please use ./console';
     echo PHP_EOL;
     echo PHP_EOL;
-}
-
-if (!QUIQQER_CONSOLE_EXECUTION) {
-    echo "\033[1;37m";
-    echo "\033[41m";
-    echo PHP_EOL;
-    echo PHP_EOL;
-    echo ' Please use ./console as command!';
-    echo PHP_EOL;
-    echo ' Starting with QUIQQER 2.0 your current command is no longer allowed and will no longer work';
-    echo PHP_EOL;
-    echo "\033[0m";
-    echo PHP_EOL;
-    /* @todo for quiqqer v2.0 -> exit */
 }
 
 $Console = new \QUI\System\Console();
