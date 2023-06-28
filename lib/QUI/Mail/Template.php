@@ -6,8 +6,8 @@
 
 namespace QUI\Mail;
 
-use QUI;
 use Html2Text\Html2Text;
+use QUI;
 
 /**
  * Mail Template
@@ -102,7 +102,7 @@ class Template extends QUI\QDOM
     {
         $Html2Text = new Html2Text($this->getHTML());
 
-        return $Html2Text->get_text();
+        return $Html2Text->getText();
     }
 
     /**

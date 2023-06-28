@@ -9,7 +9,6 @@ namespace QUI\Mail;
 use Exception;
 use Html2Text\Html2Text;
 use QUI;
-
 use QUI\Projects\Project;
 
 use function explode;
@@ -151,7 +150,7 @@ class Mailer extends QUI\QDOM
         // html ?
         if ($this->getAttribute('html')) {
             $Html2Text          = new Html2Text($PHPMailer->Body);
-            $PHPMailer->AltBody = $Html2Text->get_text();
+            $PHPMailer->AltBody = $Html2Text->getText();
         }
 
         // addresses

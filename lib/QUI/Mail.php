@@ -6,8 +6,8 @@
 
 namespace QUI;
 
-use QUI;
 use Html2Text\Html2Text;
+use QUI;
 
 /**
  * E-Mail
@@ -84,7 +84,7 @@ class Mail
         // Standard Config setzen
         $mailconf = QUI::conf('mail');
 
-        $this->config = array(
+        $this->config = [
             'IsSMTP'       => $mailconf['SMTP'],
             'SMTPServer'   => $mailconf['SMTPServer'],
             'SMTPAuth'     => $mailconf['SMTPAuth'],
@@ -94,7 +94,7 @@ class Mail
             'MAILFromText' => $mailconf['MAILFromText'],
             'MAILReplyTo'  => $mailconf['MAILReplyTo'],
             'CharSet'      => 'UTF-8'
-        );
+        ];
 
         // Übergebene Config übernehmen
         if ($config != false) {
@@ -159,6 +159,10 @@ class Mail
     /**
      * send the mail
      *
+     * @param array $mailconf
+     *
+     * @return true
+     * @throws QUI\Exception
      * @example send(array(
      *        'MailTo'    => 'cms@pcsg.de',
      *        'Subject'    => 'CMS Newsletter',
@@ -166,10 +170,6 @@ class Mail
      *        'files'    => array('datei1', 'datei2', 'datei3')
      * ));
      *
-     * @param array $mailconf
-     *
-     * @return true
-     * @throws QUI\Exception
      */
     public function send($mailconf)
     {
@@ -288,7 +288,7 @@ class Mail
         if ($IsHTML) {
             $Html2Text = new Html2Text($Body);
 
-            $this->Mail->AltBody = $Html2Text->get_text();
+            $this->Mail->AltBody = $Html2Text->getText();
         }
 
         // with mail queue?
@@ -339,7 +339,7 @@ class Mail
             $IsHTML = false;
         }
 
-        return array(
+        return [
             'subject'      => $this->Mail->Subject,
             'body'         => $this->Mail->Body,
             'text'         => $this->Mail->AltBody,
@@ -351,6 +351,6 @@ class Mail
             'cc'           => $this->Mail->getCcAddresses(),
             'bcc'          => $this->Mail->getBccAddresses(),
             'attachements' => $this->Mail->getAttachments()
-        );
+        ];
     }
 }
