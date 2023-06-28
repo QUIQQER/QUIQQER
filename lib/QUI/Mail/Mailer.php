@@ -32,51 +32,51 @@ class Mailer extends QUI\QDOM
     /**
      * Mail template
      *
-     * @var Template
+     * @var Template|null
      */
-    public $Template = null;
+    public ?Template $Template = null;
 
     /**
      * list of recipients
      *
      * @var array
      */
-    protected $recipients = [];
+    protected array $recipients = [];
 
     /**
      * list of reply
      *
      * @var array
      */
-    protected $reply = [];
+    protected array $reply = [];
 
     /**
      * list of cc
      *
      * @var array
      */
-    protected $cc = [];
+    protected array $cc = [];
 
     /**
      * list of bcc
      *
      * @var array
      */
-    protected $bcc = [];
+    protected array $bcc = [];
 
     /**
      * list of attachments
      *
      * @var array
      */
-    protected $attachments = [];
+    protected array $attachments = [];
 
     /**
      * constructor
      *
      * @param array $attributes
      */
-    public function __construct($attributes = [])
+    public function __construct(array $attributes = [])
     {
         $config = QUI::conf('mail');
 
@@ -293,7 +293,7 @@ class Mailer extends QUI\QDOM
             'text'         => $this->Template->getText(),
             'from'         => $this->getAttribute('from'),
             'fromName'     => $this->getAttribute('fromName'),
-            'ishtml'       => (bool)$this->getAttribute('html') ? 1 : 0,
+            'ishtml'       => $this->getAttribute('html') ? 1 : 0,
             'mailto'       => $this->recipients,
             'replyto'      => $this->reply,
             'cc'           => $this->cc,
@@ -343,7 +343,7 @@ class Mailer extends QUI\QDOM
      */
     public function setHTML(bool $html)
     {
-        $this->setAttribute('html', (bool)$html);
+        $this->setAttribute('html', $html);
     }
 
     /**

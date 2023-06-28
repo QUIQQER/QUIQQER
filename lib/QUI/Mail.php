@@ -9,6 +9,10 @@ namespace QUI;
 use Html2Text\Html2Text;
 use QUI;
 
+use function file_exists;
+use function is_array;
+use function is_string;
+
 /**
  * E-Mail
  *
@@ -44,21 +48,21 @@ class Mail
      *
      * @var array
      */
-    private $config;
+    private array $config;
 
     /**
      * internal PHPMailer object
      *
      * @var \PHPMailer
      */
-    private $Mail;
+    private \PHPMailer $Mail;
 
     /**
      * Mail template
      *
      * @var \QUI\Mail\Template
      */
-    public $Template;
+    public Mail\Template $Template;
 
     /**
      * constructor
@@ -82,17 +86,17 @@ class Mail
         //require_once LIB_DIR .'extern/phpmail/class.phpmailer.php';
 
         // Standard Config setzen
-        $mailconf = QUI::conf('mail');
+        $mailConf = QUI::conf('mail');
 
         $this->config = [
-            'IsSMTP'       => $mailconf['SMTP'],
-            'SMTPServer'   => $mailconf['SMTPServer'],
-            'SMTPAuth'     => $mailconf['SMTPAuth'],
-            'SMTPUser'     => $mailconf['SMTPUser'],
-            'SMTPPass'     => $mailconf['SMTPPass'],
-            'MAILFrom'     => $mailconf['MAILFrom'],
-            'MAILFromText' => $mailconf['MAILFromText'],
-            'MAILReplyTo'  => $mailconf['MAILReplyTo'],
+            'IsSMTP'       => $mailConf['SMTP'],
+            'SMTPServer'   => $mailConf['SMTPServer'],
+            'SMTPAuth'     => $mailConf['SMTPAuth'],
+            'SMTPUser'     => $mailConf['SMTPUser'],
+            'SMTPPass'     => $mailConf['SMTPPass'],
+            'MAILFrom'     => $mailConf['MAILFrom'],
+            'MAILFromText' => $mailConf['MAILFromText'],
+            'MAILReplyTo'  => $mailConf['MAILReplyTo'],
             'CharSet'      => 'UTF-8'
         ];
 
@@ -171,15 +175,8 @@ class Mail
      * ));
      *
      */
-    public function send($mailconf)
+    public function send(array $mailconf): bool
     {
-        if (!\is_array($mailconf)) {
-            throw new QUI\Exception(
-                'Mail Error: send() Fehlender Paramater',
-                400
-            );
-        }
-
         if (!isset($mailconf['MailTo'])) {
             throw new QUI\Exception(
                 'Mail Error: send() Fehlender Paramater MailTo',
@@ -216,7 +213,7 @@ class Mail
             $IsHTML = $mailconf['IsHTML'];
         }
 
-        if (isset($mailconf['files']) && \is_array($mailconf['files'])) {
+        if (isset($mailconf['files']) && is_array($mailconf['files'])) {
             $files = $mailconf['files'];
         }
 
@@ -234,7 +231,7 @@ class Mail
             $this->Mail->isHTML(true);
         }
 
-        if (\is_array($MailTo)) {
+        if (is_array($MailTo)) {
             foreach ($MailTo as $mail) {
                 $this->Mail->addAddress($mail);
             }
@@ -243,11 +240,11 @@ class Mail
         }
 
         // Mail ReplyTo überschreiben
-        if (isset($MAILReplyTo) && \is_array($MAILReplyTo)) {
+        if (isset($MAILReplyTo) && is_array($MAILReplyTo)) {
             foreach ($MAILReplyTo as $mail) {
                 $this->Mail->addReplyTo($mail);
             }
-        } elseif (isset($MAILReplyTo) && \is_string($MAILReplyTo)) {
+        } elseif (isset($MAILReplyTo) && is_string($MAILReplyTo)) {
             $this->Mail->addReplyTo($MAILReplyTo);
         }
 
@@ -261,9 +258,9 @@ class Mail
         }
 
 
-        if (\is_array($files)) {
+        if (is_array($files)) {
             foreach ($files as $file) {
-                if (!\file_exists($file)) {
+                if (!file_exists($file)) {
                     continue;
                 }
 
@@ -302,13 +299,11 @@ class Mail
         }
 
 
-        if ($this->Mail->send()) {
-            QUI::getErrorHandler()->setAttribute('ERROR_8192', true);
+        QUI::getErrorHandler()->setAttribute('ERROR_8192', true);
 
+        if ($this->Mail->send()) {
             return true;
         }
-
-        QUI::getErrorHandler()->setAttribute('ERROR_8192', true);
 
         throw new QUI\Exception(
             'Mail Error: ' . $this->Mail->ErrorInfo,
@@ -331,7 +326,7 @@ class Mail
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         $IsHTML = true;
 
