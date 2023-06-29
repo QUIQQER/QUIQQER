@@ -21,19 +21,13 @@
     "email": "support@pcsg.de",
     "url": "http:\/\/www.quiqqer.com"
   },
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https:\/\/update.quiqqer.com"
-    }
-  ],
   "require": {
     "php": ">=7.4",
     "composer\/composer": "1.9.*|2.*",
     "tedivm\/stash": "0.17.*",
     "phpmailer\/phpmailer": "~6.0",
     "symfony\/http-foundation": ">=2.3|3.*|4.2.*",
-    "symfony\/console": "4.*|5.*",
+    "symfony\/console": "4.*|5.*|6.*",
     "symfony/polyfill-php80": "*",
     "symfony/polyfill-php81": "*",
     "symfony/polyfill-php82": "*",
