@@ -30,11 +30,11 @@ class Log
     /**
      * Return the log name by a log level
      *
-     * @param integer $LogLevel - Log Level
+     * @param integer|\Monolog\Level $LogLevel - Log Level
      *
      * @return string
      */
-    public static function levelToLogName(int $LogLevel): string
+    public static function levelToLogName($LogLevel): string
     {
         switch ($LogLevel) {
             case self::LEVEL_DEBUG:
@@ -97,7 +97,7 @@ class Log
             return;
         }
 
-        if (isset($_SERVER['REQUEST_URI']) && !empty($_SERVER['REQUEST_URI'])) {
+        if (!empty($_SERVER['REQUEST_URI'])) {
             $context['request'] = HOST . $_SERVER['REQUEST_URI'];
         }
 
@@ -124,37 +124,37 @@ class Log
 
         switch ($logLevelName) {
             case 'debug':
-                $Logger->addDebug($message, $context);
+                $Logger->debug($message, $context);
                 break;
 
             case 'info':
-                $Logger->addInfo($message, $context);
+                $Logger->info($message, $context);
                 break;
 
             case 'notice':
-                $Logger->addNotice($message, $context);
+                $Logger->notice($message, $context);
                 break;
 
             case 'deprecated':
             case 'warning':
-                $Logger->addWarning($message, $context);
+                $Logger->warning($message, $context);
                 break;
 
             case 'critical':
-                $Logger->addCritical($message, $context);
+                $Logger->critical($message, $context);
                 break;
 
             case 'alert':
-                $Logger->addAlert($message, $context);
+                $Logger->alert($message, $context);
                 break;
 
             case 'emergency':
-                $Logger->addEmergency($message, $context);
+                $Logger->emergency($message, $context);
                 break;
 
             case 'error':
             default:
-                $Logger->addError($message, $context);
+                $Logger->error($message, $context);
         }
     }
 
