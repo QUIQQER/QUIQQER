@@ -7,7 +7,11 @@
 namespace QUI\Projects\Media;
 
 use QUI;
+use QUI\Exception;
 use QUI\Projects\Media;
+use function end;
+use function file_exists;
+use function json_decode;
 
 /**
  * The media trash
@@ -22,7 +26,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
      *
      * @var QUI\Projects\Media
      */
-    protected $Media;
+    protected Media $Media;
 
     /**
      * Konstruktor
@@ -41,9 +45,9 @@ class Trash implements QUI\Interfaces\Projects\Trash
      *
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
-        return VAR_DIR.'media/trash/'.$this->Media->getProject()->getName().'/';
+        return VAR_DIR . 'media/trash/' . $this->Media->getProject()->getName() . '/';
     }
 
     /**
@@ -53,12 +57,12 @@ class Trash implements QUI\Interfaces\Projects\Trash
      *
      * @return array
      */
-    public function getList($params = [])
+    public function getList($params = []): array
     {
-        $Grid  = new QUI\Utils\Grid();
+        $Grid = new QUI\Utils\Grid();
         $query = $Grid->parseDBParams($params);
 
-        $query['from']  = $this->Media->getTable();
+        $query['from'] = $this->Media->getTable();
         $query['where'] = [
             'deleted' => 1
         ];
@@ -66,7 +70,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
         // count
         try {
             $count = QUI::getDataBase()->fetch([
-                'from'  => $this->Media->getTable(),
+                'from' => $this->Media->getTable(),
                 'count' => 'count',
                 'where' => [
                     'deleted' => 1
@@ -85,10 +89,10 @@ class Trash implements QUI\Interfaces\Projects\Trash
 
             $data[$key]['path'] = '---';
 
-            $pathHistory = \json_decode($entry['pathHistory'], true);
+            $pathHistory = json_decode($entry['pathHistory'], true);
 
             if (!empty($pathHistory)) {
-                $data[$key]['path'] = \end($pathHistory).'/';
+                $data[$key]['path'] = end($pathHistory) . '/';
             }
         }
 
@@ -96,14 +100,13 @@ class Trash implements QUI\Interfaces\Projects\Trash
     }
 
     /**
-     * Destroy the file item from the filesystem
-     * After it, its impossible to restore the item
+     * Destroys a file by deleting it and marking it as destroyed.
      *
-     * @param integer $id
-     *
-     * @throws QUI\Exception
+     * @param int $id The ID of the file to be destroyed.
+     * @return void
+     * @throws Exception
      */
-    public function destroy($id)
+    public function destroy(int $id)
     {
         // check if the file is really deleted?
         $File = $this->Media->get($id);
@@ -122,13 +125,13 @@ class Trash implements QUI\Interfaces\Projects\Trash
     {
         $data = QUI::getDataBase()->fetch([
             'select' => 'id',
-            'from'   => $this->Media->getTable(),
-            'where'  => [
+            'from' => $this->Media->getTable(),
+            'where' => [
                 'deleted' => 1
             ]
         ]);
 
-        foreach ($data as $key => $entry) {
+        foreach ($data as $entry) {
             try {
                 $File = $this->Media->get($entry['id']);
 
@@ -155,11 +158,11 @@ class Trash implements QUI\Interfaces\Projects\Trash
      * @return QUI\Projects\Media\Item
      * @throws QUI\Exception
      */
-    public function restore($id, Folder $Folder)
+    public function restore(int $id, Folder $Folder): Item
     {
-        $file = $this->getPath().$id;
+        $file = $this->getPath() . $id;
 
-        if (!\file_exists($file)) {
+        if (!file_exists($file)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.trash.file.not.found', [
                     'id' => $id
@@ -170,7 +173,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
 
         // search old db entry for data
         $data = QUI::getDataBase()->fetch([
-            'from'  => $this->Media->getTable(),
+            'from' => $this->Media->getTable(),
             'where' => [
                 'id' => $id
             ],
@@ -190,7 +193,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
             $data[0]['mime_type']
         );
 
-        $newFile = $this->getPath().$data[0]['name'].$extension;
+        $newFile = $this->getPath() . $data[0]['name'] . $extension;
 
         QUI\Utils\System\File::move($file, $newFile);
 
@@ -200,7 +203,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
         // change old db entry, if one exist
         $Item->setAttributes([
             'title' => $data[0]['title'],
-            'alt'   => $data[0]['alt'],
+            'alt' => $data[0]['alt'],
             'short' => $data[0]['short']
         ]);
 

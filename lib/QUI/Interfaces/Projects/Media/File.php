@@ -7,6 +7,12 @@
 namespace QUI\Interfaces\Projects\Media;
 
 use QUI;
+use QUI\Exception;
+use QUI\Interfaces\Users\User;
+use QUI\Projects\Media;
+use QUI\Projects\Media\Folder;
+use QUI\Projects\Media\Item;
+use QUI\Projects\Project;
 
 /**
  * The media file interface
@@ -23,35 +29,35 @@ interface File
      *
      * @return integer
      */
-    public function getId();
+    public function getId(): int;
 
     /**
      * Return the Parent of the file
      *
-     * @return \QUI\Projects\Media\Item
+     * @return Item
      */
-    public function getParent();
+    public function getParent(): Item;
 
     /**
      * Return the parent id
      *
      * @return integer
      */
-    public function getParentId();
+    public function getParentId(): int;
 
     /**
      * return all parent ids from the file
      *
      * @return array
      */
-    public function getParentIds();
+    public function getParentIds(): array;
 
     /**
      * Return the path from the file
      *
      * @return string
      */
-    public function getPath();
+    public function getPath(): string;
 
     /**
      * Return what type is the file
@@ -65,87 +71,88 @@ interface File
      *
      * @return string
      */
-    public function getUrl();
+    public function getUrl(): string;
 
     /**
      * Activate the file
      *
      * @param QUI\Interfaces\Users\User|null $PermissionUser
-     * @throws \QUI\Exception
+     * @throws Exception
      */
-    public function activate($PermissionUser = null);
+    public function activate(QUI\Interfaces\Users\User $PermissionUser = null);
 
     /**
      * Deactivate the file
      *
      * @param QUI\Interfaces\Users\User|null $PermissionUser
-     * @throws \QUI\Exception
+     * @throws Exception
      */
-    public function deactivate($PermissionUser = null);
+    public function deactivate(QUI\Interfaces\Users\User $PermissionUser = null);
 
     /**
      * Delete the file, file is in trash
      *
      * @param QUI\Interfaces\Users\User|null $PermissionUser
-     * @throws \QUI\Exception
+     * @throws Exception
      */
-    public function delete($PermissionUser = null);
+    public function delete(QUI\Interfaces\Users\User $PermissionUser = null);
 
     /**
      * Save the file with all its attributes to the Database
      *
-     * @throws \QUI\Exception
+     * @throws Exception
      */
     public function save();
 
     /**
      * Renames the file
      *
-     * @param string $newname - new name of the file
+     * @param string $newName
+     * @param User|null $PermissionUser
      *
-     * @throws \QUI\Exception
+     * @throws Exception
      */
-    public function rename($newname);
+    public function rename(string $newName, QUI\Interfaces\Users\User $PermissionUser = null);
 
     /**
      * create the file cache
      *
-     * @throws \QUI\Exception
+     * @throws Exception
      */
     public function createCache();
 
     /**
      * delete the file cache
      *
-     * @throws \QUI\Exception
+     * @throws Exception
      */
     public function deleteCache();
 
     /**
      * move the item to another folder
      *
-     * @param \QUI\Projects\Media\Folder $Folder
+     * @param Folder $Folder
      */
-    public function moveTo(QUI\Projects\Media\Folder $Folder);
+    public function moveTo(Folder $Folder);
 
     /**
      * copy the item to another folder
      *
-     * @param \QUI\Projects\Media\Folder $Folder
+     * @param Folder $Folder
      */
-    public function copyTo(QUI\Projects\Media\Folder $Folder);
+    public function copyTo(Folder $Folder);
 
     /**
      * Return the Media of the file
      *
-     * @return \QUI\Projects\Media
+     * @return Media
      */
-    public function getMedia();
+    public function getMedia(): Media;
 
     /**
      * Return the Project of the file
      *
-     * @return \QUI\Projects\Project
+     * @return Project
      */
-    public function getProject();
+    public function getProject(): Project;
 }

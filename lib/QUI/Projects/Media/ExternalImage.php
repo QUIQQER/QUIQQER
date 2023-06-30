@@ -7,7 +7,9 @@
 namespace QUI\Projects\Media;
 
 use QUI;
+use QUI\Exception;
 use QUI\Projects\Media;
+use QUI\Projects\Project;
 
 /**
  * Class ExternalImage
@@ -17,7 +19,7 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
     /**
      * @var string
      */
-    protected $image = '';
+    protected string $image = '';
 
     /**
      * ExternalImage constructor.
@@ -34,17 +36,17 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
      *
      * @return integer
      */
-    public function getId()
+    public function getId(): int
     {
-        return false;
+        return -1;
     }
 
     /**
      * Return the Media of the file
      *
-     * @return \QUI\Projects\Media
+     * @return Media
      */
-    public function getMedia()
+    public function getMedia(): Media
     {
         return $this->getProject()->getMedia();
     }
@@ -52,9 +54,10 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the Project of the file
      *
-     * @return \QUI\Projects\Project
+     * @return Project
+     * @throws Exception
      */
-    public function getProject()
+    public function getProject(): Project
     {
         return QUI::getRewrite()->getProject();
     }
@@ -62,9 +65,10 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the Parent of the file
      *
-     * @return \QUI\Projects\Media\Item
+     * @return Item
+     * @throws Exception
      */
-    public function getParent()
+    public function getParent(): Item
     {
         return $this->getMedia()->firstChild();
     }
@@ -73,8 +77,9 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
      * Return the parent id
      *
      * @return integer
+     * @throws Exception
      */
-    public function getParentId()
+    public function getParentId(): int
     {
         return $this->getParent()->getId();
     }
@@ -83,8 +88,9 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
      * return all parent ids from the file
      *
      * @return array
+     * @throws Exception
      */
-    public function getParentIds()
+    public function getParentIds(): array
     {
         return [$this->getParentId()];
     }
@@ -94,7 +100,7 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
      *
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         return '';
     }
@@ -104,7 +110,7 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
      *
      * @return string - \QUI\Projects\Media\Image | \QUI\Projects\Media\Folder | \QUI\Projects\Media\File
      */
-    public function getType()
+    public function getType(): string
     {
         return self::class;
     }
@@ -114,7 +120,7 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
      *
      * @return string
      */
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->image;
     }
@@ -122,9 +128,9 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the real with of the image
      *
-     * @return integer | false
+     * @return false
      */
-    public function getWidth()
+    public function getWidth(): bool
     {
         return false;
     }
@@ -132,9 +138,9 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the real height of the image
      *
-     * @return integer | false
+     * @return false
      */
-    public function getHeight()
+    public function getHeight(): bool
     {
         return false;
     }
@@ -156,12 +162,11 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the image path
      *
-     * @param string|boolean $maxwidth - (optional)
-     * @param string|boolean $maxheight - (optional)
-     *
+     * @param bool $maxWidth
+     * @param bool $maxHeight
      * @return string
      */
-    public function getSizeCachePath($maxwidth = false, $maxheight = false)
+    public function getSizeCachePath(bool $maxWidth = false, bool $maxHeight = false): string
     {
         return $this->image;
     }
@@ -169,12 +174,11 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the image url
      *
-     * @param string|boolean $maxwidth - (optional) width
-     * @param string|boolean $maxheight - (optional) height
-     *
+     * @param bool $maxWidth
+     * @param bool $maxHeight
      * @return string
      */
-    public function getSizeCacheUrl($maxwidth = false, $maxheight = false)
+    public function getSizeCacheUrl(bool $maxWidth = false, bool $maxHeight = false): string
     {
         return $this->image;
     }
@@ -183,12 +187,11 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
      * Creates a cache file and takes into account the maximum sizes
      * return the media url
      *
-     * @param integer|boolean $maxwidth
-     * @param integer|boolean $maxheight
-     *
+     * @param bool $maxWidth
+     * @param bool $maxHeight
      * @return string - Path to the file
      */
-    public function createSizeCacheUrl($maxwidth = false, $maxheight = false)
+    public function createSizeCacheUrl(bool $maxWidth = false, bool $maxHeight = false): string
     {
         return $this->image;
     }
@@ -196,12 +199,11 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
     /**
      * Creates a cache file and takes into account the maximum sizes
      *
-     * @param integer|boolean $maxwidth
-     * @param integer|boolean $maxheight
-     *
+     * @param bool $maxWidth
+     * @param bool $maxHeight
      * @return string - Path to the file
      */
-    public function createResizeCache($maxwidth = false, $maxheight = false)
+    public function createResizeCache(bool $maxWidth = false, bool $maxHeight = false): string
     {
         return $this->image;
     }
@@ -209,15 +211,14 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the Image specific max resize params
      *
-     * @param boolean|integer $maxwidth - (optional)
-     * @param boolean|integer $maxheight - (optional)
-     *
+     * @param bool $maxWidth
+     * @param bool $maxHeight
      * @return array - array('width' => 100, 'height' => 100)
      */
-    public function getResizeSize($maxwidth = false, $maxheight = false)
+    public function getResizeSize(bool $maxWidth = false, bool $maxHeight = false): array
     {
         return [
-            'width'  => false,
+            'width' => false,
             'height' => false
         ];
     }
@@ -230,7 +231,7 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
      *
      * @return string - URL to the cache file
      */
-    public function createSizeCache($width = false, $height = false)
+    public function createSizeCache($width = false, $height = false): string
     {
         return $this->image;
     }
@@ -243,7 +244,7 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
      *
      * @return string - Path to the new Image
      */
-    public function resize($newWidth = 0, $newHeight = 0)
+    public function resize(int $newWidth = 0, int $newHeight = 0): string
     {
         return $this->image;
     }
@@ -253,7 +254,7 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
      *
      * @return boolean
      */
-    public function getWatermark()
+    public function getWatermark(): bool
     {
         return false;
     }
@@ -261,18 +262,17 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the Watermark image file
      *
-     * @return Image|boolean
-     * @throws QUI\Exception
+     * @return boolean
      */
-    public function getWatermarkPosition()
+    public function getWatermarkPosition(): bool
     {
         return false;
     }
 
     /**
-     * @return array|bool|false|string
+     * @return bool
      */
-    public function getWatermarkRatio()
+    public function getWatermarkRatio(): bool
     {
         return false;
     }
@@ -321,9 +321,10 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
     /**
      * placeholder - do nothing
      *
-     * @param $newname
+     * @param string $newName
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
      */
-    public function rename($newname)
+    public function rename(string $newName, QUI\Interfaces\Users\User $PermissionUser = null)
     {
         // do nothing
     }
@@ -346,7 +347,7 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
     /**
      * placeholder - do nothing
      *
-     * @param $Folder
+     * @param Folder $Folder
      */
     public function moveTo(QUI\Projects\Media\Folder $Folder)
     {
@@ -356,7 +357,7 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
     /**
      * placeholder - do nothing
      *
-     * @param $Folder
+     * @param Folder $Folder
      */
     public function copyTo(QUI\Projects\Media\Folder $Folder)
     {
@@ -379,5 +380,5 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
         // do nothing
     }
 
-    //ednregion
+    //endregion
 }
