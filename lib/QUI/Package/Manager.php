@@ -755,6 +755,10 @@ class Manager extends QUI\QDOM
             if (isset($composerJson->require['pcsg/composer-assets'])) {
                 unset($composerJson->require['pcsg/composer-assets']);
             }
+
+            if (isset($composerJson->require['symfony/console']) && $composerJson->require['symfony/console'] === "4.*|5.*") {
+                unset($composerJson->require['symfony/console']);
+            }
         } elseif (is_object($composerJson->require)) {
             if (isset($composerJson->require->{'hirak/prestissimo'})) {
                 unset($composerJson->require->{'hirak/prestissimo'});
@@ -762,6 +766,10 @@ class Manager extends QUI\QDOM
 
             if (isset($composerJson->require->{'pcsg/composer-assets'})) {
                 unset($composerJson->require->{'pcsg/composer-assets'});
+            }
+
+            if (isset($composerJson->require->{'symfony/console'}) && $composerJson->require->{'symfony/console'} === "4.*|5.*") {
+                unset($composerJson->require->{'symfony/console'});
             }
         }
 
