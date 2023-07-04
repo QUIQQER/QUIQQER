@@ -26,6 +26,7 @@ use QUI;
 use QUI\Cache\Manager as QUICacheManager;
 use QUI\Projects\Project;
 use QUI\Utils\System\File as QUIFile;
+use Seld\JsonLint\JsonParser;
 use UnexpectedValueException;
 
 use function array_filter;
@@ -456,8 +457,10 @@ class Manager extends QUI\QDOM
      */
     protected function createComposerJSON(array $packages = [])
     {
+        $Parser = new JsonParser();
+
         if (file_exists($this->composer_json)) {
-            $composerJson = json_decode(
+            $composerJson = $Parser->parse(
                 file_get_contents($this->composer_json)
             );
         } else {
@@ -465,7 +468,7 @@ class Manager extends QUI\QDOM
                 dirname(__FILE__) . '/composer.tpl'
             );
 
-            $composerJson = json_decode($template);
+            $composerJson = $Parser->parse($template);
         }
 
         // config
