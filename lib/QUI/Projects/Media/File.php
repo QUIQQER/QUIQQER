@@ -10,6 +10,7 @@ use Exception;
 use QUI;
 use QUI\Projects\Media;
 use QUI\Utils\System\File as QUIFile;
+
 use function dirname;
 use function file_exists;
 use function in_array;
