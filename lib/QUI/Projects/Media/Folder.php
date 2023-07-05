@@ -1438,7 +1438,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
 
         // test if the image is readable
-        if (MediaUtils::getMediaTypeByMimeType($fileInfo['mime_type']) === 'image'
+        if (
+            MediaUtils::getMediaTypeByMimeType($fileInfo['mime_type']) === 'image'
             && strpos($fileInfo['mime_type'], 'svg') === false
         ) {
             try {
@@ -1467,7 +1468,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         // $filename = \mb_strtolower($filename); -> mor will das raus haben
 
         // svg fix
-        if ($fileInfo['mime_type'] == 'text/html'
+        if (
+            $fileInfo['mime_type'] == 'text/html'
             || $fileInfo['mime_type'] == 'text/plain'
             || $fileInfo['mime_type'] == 'image/svg'
         ) {
@@ -1594,7 +1596,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $maxSize = $this->getProject()->getConfig('media_maxUploadSize');
 
         // if it is an image, then resize -> if needed
-        if (Utils::isImage($File)
+        if (
+            Utils::isImage($File)
             && $maxSize
             && isset($new_file_info['width'])
             && isset($new_file_info['height'])
