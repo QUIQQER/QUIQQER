@@ -7,12 +7,12 @@
 namespace QUI\Projects\Media;
 
 use Exception;
+use Intervention\Image\Constraint;
 use QUI;
 use QUI\Projects\Media;
 use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Utils\StringHelper;
 use QUI\Utils\System\File as FileUtils;
-
 use function array_map;
 use function bin2hex;
 use function date;
@@ -44,7 +44,6 @@ use function strpos;
 use function substr;
 use function unlink;
 use function wordwrap;
-
 use const URL_DIR;
 use const VAR_DIR;
 
@@ -75,7 +74,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
         // read config
         $maxUploadImageSize = $this->getProject()->getConfig('media_maxUploadSize');
-        $maxImageCacheSize  = $this->getProject()->getConfig('media_maxImageCacheSize');
+        $maxImageCacheSize = $this->getProject()->getConfig('media_maxImageCacheSize');
 
         if (!empty($maxUploadImageSize)) {
             $this->IMAGE_MAX_SIZE = (int)$maxUploadImageSize;
@@ -161,12 +160,12 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @throws QUI\Exception
      */
-    public function getSizeCachePath($maxWidth = false, $maxHeight = false)
+    public function getSizeCachePath($maxWidth = false, $maxHeight = false): string
     {
         $Media = $this->Media;
         /* @var $Media QUI\Projects\Media */
         $cacheDir = CMS_DIR . $Media->getCacheDir();
-        $file     = $this->getAttribute('file');
+        $file = $this->getAttribute('file');
 
 
         if ($this->hasPermission('quiqqer.projects.media.view') &&
@@ -192,7 +191,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $maxHeight = $this->IMAGE_MAX_SIZE;
         }
 
-        $extra  = '';
+        $extra = '';
         $params = $this->getResizeSize($maxWidth, $maxHeight);
 
         if ($params['height'] > $params['width']) {
@@ -215,7 +214,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         $height = $tempParams['height'];
-        $width  = $tempParams['width'];
+        $width = $tempParams['width'];
 
         if ($this->getAttribute('reflection')) {
             $extra = '_reflection';
@@ -223,7 +222,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
 
         if ($width || $height) {
-            $part      = explode('.', $file);
+            $part = explode('.', $file);
             $cacheFile = $cacheDir . $part[0] . '__' . $width . 'x' . $height . $extra . '.' .
                 StringHelper::toLower(end($part));
 
@@ -249,17 +248,17 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the image url
      *
-     * @param string|boolean $maxwidth - (optional) width
-     * @param string|boolean $maxheight - (optional) height
+     * @param string|boolean $maxWidth - (optional) width
+     * @param string|boolean $maxHeight - (optional) height
      *
      * @return string
      *
      * @throws QUI\Exception
      */
-    public function getSizeCacheUrl($maxwidth = false, $maxheight = false)
+    public function getSizeCacheUrl($maxWidth = false, $maxHeight = false): string
     {
-        $cachePath = $this->getSizeCachePath($maxwidth, $maxheight);
-        $cacheUrl  = str_replace(CMS_DIR, URL_DIR, $cachePath);
+        $cachePath = $this->getSizeCachePath($maxWidth, $maxHeight);
+        $cacheUrl = str_replace(CMS_DIR, URL_DIR, $cachePath);
 
         if ($this->hasViewPermissionSet()) {
             $cacheUrl = URL_DIR . $this->getUrl();
@@ -275,7 +274,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             "/",
             array_map(function ($part) {
                 $encoded = '';
-                $length  = mb_strlen($part);
+                $length = mb_strlen($part);
 
                 for ($i = 0; $i < $length; $i++) {
                     $str = mb_substr($part, $i, 1);
@@ -299,16 +298,16 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * Creates a cache file and takes into account the maximum sizes
      * return the media url
      *
-     * @param integer|boolean $maxwidth
-     * @param integer|boolean $maxheight
+     * @param integer|boolean $maxWidth
+     * @param integer|boolean $maxHeight
      *
      * @return string - Path to the file
      *
      * @throws QUI\Exception
      */
-    public function createSizeCacheUrl($maxwidth = false, $maxheight = false)
+    public function createSizeCacheUrl($maxWidth = false, $maxHeight = false): string
     {
-        $params = $this->getResizeSize($maxwidth, $maxheight);
+        $params = $this->getResizeSize($maxWidth, $maxHeight);
 
         $cacheUrl = $this->createSizeCache(
             $params['width'],
@@ -348,16 +347,16 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @throws QUI\Exception
      */
-    public function getResizeSize($maxWidth = false, $maxHeight = false)
+    public function getResizeSize($maxWidth = false, $maxHeight = false): array
     {
         if ($this->getAttribute('mime_type') == 'image/svg+xml') {
             return [
-                'width'  => false,
+                'width' => false,
                 'height' => false
             ];
         }
 
-        $width  = $this->getAttribute('image_width');
+        $width = $this->getAttribute('image_width');
         $height = $this->getAttribute('image_height');
 
         if (!$width || !$height) {
@@ -365,13 +364,13 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                 'imagesize' => true
             ]);
 
-            $width  = $info['width'];
+            $width = $info['width'];
             $height = $info['height'];
         }
 
         $maxConfigSize = $this->getProject()->getConfig('media_maxUploadSize');
 
-        $newWidth  = $width;
+        $newWidth = $width;
         $newHeight = $height;
 
         if (!$maxWidth) {
@@ -396,19 +395,19 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $resize_by_percent = ($maxWidth * 100) / $newWidth;
 
             $newHeight = (int)round(($newHeight * $resize_by_percent) / 100);
-            $newWidth  = $maxWidth;
+            $newWidth = $maxWidth;
         }
 
         // Höhe
         if ($newHeight > $maxHeight) {
             $resize_by_percent = ($maxHeight * 100) / $newHeight;
 
-            $newWidth  = (int)round(($newWidth * $resize_by_percent) / 100);
+            $newWidth = (int)round(($newWidth * $resize_by_percent) / 100);
             $newHeight = $maxHeight;
         }
 
         return [
-            'width'  => $newWidth,
+            'width' => $newWidth,
             'height' => $newHeight
         ];
     }
@@ -441,8 +440,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $height = $this->IMAGE_MAX_SIZE;
         }
 
-        $Media     = $this->Media;
-        $original  = $this->getFullPath();
+        $Media = $this->Media;
+        $original = $this->getFullPath();
         $cacheFile = $this->getSizeCachePath($width, $height);
 
         if (file_exists($cacheFile)) {
@@ -507,7 +506,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             }
 
             $Image->resize($width, $height, function ($Constraint) {
-                /* @var $Constraint \Intervention\Image\Constraint; */
+                /* @var $Constraint Constraint; */
                 $Constraint->aspectRatio();
                 $Constraint->upsize();
             });
@@ -549,7 +548,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
         try {
             if ($Watermark) {
-                $pos   = $this->getWatermarkPosition();
+                $pos = $this->getWatermarkPosition();
                 $ratio = $this->getWatermarkRatio();
 
                 $WatermarkImage = $Media->getImageManager()->make(
@@ -577,13 +576,13 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                 // ratio calc
                 if ($ratio) {
                     $imageHeight = $Image->getHeight();
-                    $imageWidth  = $Image->getWidth();
+                    $imageWidth = $Image->getWidth();
 
                     $imageHeight = $imageHeight * ($ratio / 100);
-                    $imageWidth  = $imageWidth * ($ratio / 100);
+                    $imageWidth = $imageWidth * ($ratio / 100);
 
                     $WatermarkImage->resize($imageWidth, $imageHeight, function ($Constraint) {
-                        /* @var $Constraint \Intervention\Image\Constraint; */
+                        /* @var $Constraint Constraint; */
                         $Constraint->aspectRatio();
                         $Constraint->upsize();
                     });
@@ -593,9 +592,9 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             }
         } catch (Exception $Exception) {
             QUI\System\Log::addInfo($Exception->getMessage(), [
-                'file'   => $this->getFullPath(),
+                'file' => $this->getFullPath(),
                 'fileId' => $this->getId(),
-                'info'   => 'watermark creation'
+                'info' => 'watermark creation'
             ]);
         }
 
@@ -622,14 +621,14 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     public function deleteCache()
     {
         $Media = $this->Media;
-        $cdir  = CMS_DIR . $Media->getCacheDir();
-        $file  = $this->getAttribute('file');
+        $cdir = CMS_DIR . $Media->getCacheDir();
+        $file = $this->getAttribute('file');
 
         $cachefile = $cdir . $file;
         $cacheData = pathinfo($cachefile);
 
         $fileData = FileUtils::getInfo($this->getFullPath());
-        $files    = FileUtils::readDir($cacheData['dirname'], true);
+        $files = FileUtils::readDir($cacheData['dirname'], true);
         $filename = $fileData['filename'];
 
         foreach ($files as $file) {
@@ -652,10 +651,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function deleteAdminCache()
     {
-        $Media   = $this->Media;
+        $Media = $this->Media;
         $Project = $Media->getProject();
 
-        $cacheDir  = VAR_DIR . 'media/cache/admin/' . $Project->getName() . '/' . $Project->getLang() . '/';
+        $cacheDir = VAR_DIR . 'media/cache/admin/' . $Project->getName() . '/' . $Project->getLang() . '/';
         $cacheName = $this->getId() . '__';
 
         $files = FileUtils::readDir($cacheDir);
@@ -675,11 +674,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @return string - Path to the new Image
      *
-     * @throws QUI\Permissions\Exception
      */
-    public function resize(int $newWidth = 0, int $newHeight = 0)
+    public function resize(int $newWidth = 0, int $newHeight = 0): string
     {
-        $dir      = CMS_DIR . $this->Media->getPath();
+        $dir = CMS_DIR . $this->Media->getPath();
         $original = $dir . $this->getAttribute('file');
 
         if ($this->getAttribute('mime_type') == 'image/svg+xml') {
@@ -696,7 +694,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                 $newWidth,
                 $newHeight,
                 function ($Constraint) {
-                    /* @var $Constraint \Intervention\Image\Constraint; */
+                    /* @var $Constraint Constraint; */
                     $Constraint->aspectRatio();
                     $Constraint->upsize();
                 }
@@ -716,7 +714,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @return bool
      */
-    public function isAnimated()
+    public function isAnimated(): bool
     {
         $filename = $this->getFullPath();
 
@@ -790,10 +788,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     {
         $imageEffects = $this->getEffects();
 
-        if ($imageEffects
-            && isset($imageEffects['watermark_position'])
-            && !empty($imageEffects['watermark_position'])
-        ) {
+        if ($imageEffects && !empty($imageEffects['watermark_position'])) {
             return $imageEffects['watermark_position'];
         }
 
@@ -814,10 +809,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     {
         $imageEffects = $this->getEffects();
 
-        if ($imageEffects
-            && isset($imageEffects['watermark_ratio'])
-            && !empty($imageEffects['watermark_ratio'])
-        ) {
+        if ($imageEffects && !empty($imageEffects['watermark_ratio'])) {
             return $imageEffects['watermark_ratio'];
         }
 
@@ -896,21 +888,21 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     public function updateExternalImage()
     {
         $SessionUser = QUI::getUserBySession();
-        $external    = $this->getAttribute('external');
+        $external = $this->getAttribute('external');
 
         if (empty($external)) {
             return;
         }
 
         try {
-            $file     = QUI\Utils\Request\Url::get($external);
+            $file = QUI\Utils\Request\Url::get($external);
             $original = $this->getFullPath();
 
             file_put_contents($original, $file);
 
             // update image dimensions
-            $fileInfo    = FileUtils::getInfo($original);
-            $imageWidth  = null;
+            $fileInfo = FileUtils::getInfo($original);
+            $imageWidth = null;
             $imageHeight = null;
 
             if (isset($fileInfo['width']) && $fileInfo['width']) {
@@ -922,12 +914,12 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             }
 
             QUI::getDataBase()->update($this->Media->getTable(), [
-                'e_date'       => date('Y-m-d h:i:s'),
-                'e_user'       => $SessionUser->getId(),
-                'mime_type'    => $fileInfo['mime_type'],
-                'image_width'  => $imageWidth,
+                'e_date' => date('Y-m-d h:i:s'),
+                'e_user' => $SessionUser->getId(),
+                'mime_type' => $fileInfo['mime_type'],
+                'image_width' => $imageWidth,
                 'image_height' => $imageHeight,
-                'type'         => MediaUtils::getMediaTypeByMimeType($fileInfo['mime_type'])
+                'type' => MediaUtils::getMediaTypeByMimeType($fileInfo['mime_type'])
             ], [
                 'id' => $this->getId()
             ]);

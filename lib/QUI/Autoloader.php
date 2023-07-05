@@ -36,7 +36,11 @@ class Autoloader
     public static ?\Composer\Autoload\ClassLoader $ComposerLoader = null;
 
     /**
-     * init
+     * Initializes the class.
+     *
+     * Initializes the class by loading the composer autoloader if not already loaded.
+     *
+     * @return void
      */
     public static function init()
     {
@@ -48,7 +52,12 @@ class Autoloader
     }
 
     /**
-     * Check if autoloader is correct
+     * Check and unregister composer autoloader.
+     *
+     * This method checks if any autoload functions are registered and unregisters the composer autoloader.
+     * The composer autoloader is identified by an instance of the \Composer\Autoload\ClassLoader class.
+     *
+     * @return void
      */
     public static function checkAutoloader()
     {
@@ -65,11 +74,11 @@ class Autoloader
     }
 
     /**
-     * Start the autoload
+     * Load a class, interface, or function dynamically.
      *
-     * @param string $classname - class which is required
+     * @param string $classname The name of the class, interface, or function to load.
      *
-     * @return boolean
+     * @return bool True if the class, interface, or function is successfully loaded, false otherwise.
      */
     public static function load(string $classname): bool
     {

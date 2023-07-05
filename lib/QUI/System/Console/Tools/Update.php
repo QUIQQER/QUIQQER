@@ -85,7 +85,7 @@ class Update extends QUI\System\Console\Tool
         $this->writeLn('');
         $this->logBuffer();
 
-        $self     = $this;
+        $self = $this;
         $Packages = QUI::getPackageManager();
 
         // output events
@@ -134,7 +134,7 @@ class Update extends QUI\System\Console\Tool
                 return;
             }
 
-            $nameLength    = 0;
+            $nameLength = 0;
             $versionLength = 0;
 
             // #locale
@@ -192,16 +192,17 @@ class Update extends QUI\System\Console\Tool
 
             if ($this->getArgument('package')) {
                 $Composer->update([
-                    'packages'            => [
+                    'packages' => [
                         $this->getArgument('package')
                     ],
                     '--with-dependencies' => false,
-                    '--no-autoloader'     => true
+                    '--no-autoloader' => false,
+                    '--optimize-autoloader' => true
                 ]);
             } else {
-                $localeDir        = VAR_DIR . 'locale/';
-                $localeFiles      = $localeDir . 'localefiles';
-                $entries          = QUI\Utils\System\File::readDir($localeDir);
+                $localeDir = VAR_DIR . 'locale/';
+                $localeFiles = $localeDir . 'localefiles';
+                $entries = QUI\Utils\System\File::readDir($localeDir);
                 $oldDirsAvailable = false;
 
                 // cleanup
@@ -226,7 +227,7 @@ class Update extends QUI\System\Console\Tool
 
             $this->logBuffer();
             $wasExecuted = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.execute');
-            $webserver   = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.webserver');
+            $webserver = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.webserver');
 
             $this->writeLn($wasExecuted);
             $this->writeToLog($wasExecuted . PHP_EOL);
@@ -250,11 +251,6 @@ class Update extends QUI\System\Console\Tool
             QUI\Cache\Manager::clearCompleteQuiqqerCache();
             QUI\Cache\Manager::longTimeCacheClearCompleteQuiqqer();
 
-            // composer optimize
-            $Composer->dumpAutoload([
-                '--optimize' => true
-            ]);
-            
             $this->logBuffer();
         } catch (Exception $Exception) {
             $this->write(' [error]', 'red');
@@ -298,10 +294,10 @@ class Update extends QUI\System\Console\Tool
             QUI\System\Log::LEVEL_NOTICE,
             [
                 'params' => [
-                    'clearCache'     => $this->getArgument('clearCache'),
+                    'clearCache' => $this->getArgument('clearCache'),
                     'setDevelopment' => $this->getArgument('setDevelopment'),
-                    'check'          => $this->getArgument('check'),
-                    'set-date'       => $this->getArgument('set-date')
+                    'check' => $this->getArgument('check'),
+                    'set-date' => $this->getArgument('set-date')
                 ]
             ],
             'update',
