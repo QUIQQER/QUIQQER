@@ -1,3 +1,0 @@
-include:
-  - project: 'quiqqer/stabilization/semantic-release'
-    file: '/ci-templates/.gitlab-ci.yml'
