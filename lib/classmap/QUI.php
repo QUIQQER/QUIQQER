@@ -1,6 +1,6 @@
 <?php
 
-// phpcs:ignore PSR1.Classes.ClassDeclaration.MissingNamespace
+// phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace
 
 /**
  * This file contains QUI

@@ -72,7 +72,7 @@ class PermissionOrder
 
         return $result;
     }
-    
+
     /**
      * Calculates the minimum integer result of checking a permission against a list of objects.
      *
