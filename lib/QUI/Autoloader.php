@@ -6,6 +6,8 @@
 
 namespace QUI;
 
+use Composer\Autoload\ClassLoader;
+
 use function class_exists;
 use function dirname;
 use function file_exists;
@@ -31,25 +33,9 @@ class Autoloader
     /**
      * Composer Autoloader
      *
-     * @var ?\Composer\Autoload\ClassLoader
+     * @var ?ClassLoader
      */
-    public static ?\Composer\Autoload\ClassLoader $ComposerLoader = null;
-
-    /**
-     * Initializes the class.
-     *
-     * Initializes the class by loading the composer autoloader if not already loaded.
-     *
-     * @return void
-     */
-    public static function init()
-    {
-        if (self::$ComposerLoader) {
-            return;
-        }
-
-        self::$ComposerLoader = require dirname(__FILE__, 5) . '/autoload.php';
-    }
+    public static ?ClassLoader $ComposerLoader = null;
 
     /**
      * Check and unregister composer autoloader.
@@ -65,12 +51,28 @@ class Autoloader
 
         foreach ($fs as $f) {
             // remove composer
-            if (is_array($f) && $f[0] instanceof \Composer\Autoload\ClassLoader) {
+            if (is_array($f) && $f[0] instanceof ClassLoader) {
                 spl_autoload_unregister($f);
             }
         }
 
         self::init();
+    }
+
+    /**
+     * Initializes the class.
+     *
+     * Initializes the class by loading the composer autoloader if not already loaded.
+     *
+     * @return void
+     */
+    public static function init()
+    {
+        if (self::$ComposerLoader) {
+            return;
+        }
+
+        self::$ComposerLoader = require dirname(__FILE__, 5) . '/autoload.php';
     }
 
     /**

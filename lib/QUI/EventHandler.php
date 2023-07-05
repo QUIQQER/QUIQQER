@@ -6,10 +6,15 @@
 
 namespace QUI;
 
+use DateTime;
 use QUI;
 use QUI\Users\Manager;
+
 use function date;
-use function implode;
+use function is_array;
+use function json_decode;
+use function json_encode;
+use function strpos;
 
 /**
  * Intranet
@@ -83,7 +88,7 @@ class EventHandler
         // Check if htaccess or nginx need to be recreated
         $webServerType = QUI::conf("webserver", "type");
 
-        if (\strpos($webServerType, 'apache') !== false) {
+        if (strpos($webServerType, 'apache') !== false) {
             $HtAccess = new QUI\System\Console\Tools\Htaccess();
 
             if ($HtAccess->hasModifications()) {
@@ -124,9 +129,9 @@ class EventHandler
         if (empty($packageStoreUrlConf)) {
             $packageStoreUrlConf = [];
         } else {
-            $packageStoreUrlConf = \json_decode($packageStoreUrlConf, true);
+            $packageStoreUrlConf = json_decode($packageStoreUrlConf, true);
 
-            if (empty($packageStoreUrlConf) || !\is_array($packageStoreUrlConf)) {
+            if (empty($packageStoreUrlConf) || !is_array($packageStoreUrlConf)) {
                 $packageStoreUrlConf = [];
             }
         }
@@ -147,7 +152,7 @@ class EventHandler
         }
 
         $Conf = QUI::getConfig('etc/conf.ini.php');
-        $Conf->set('packagestore', 'url', \json_encode($packageStoreUrlConf));
+        $Conf->set('packagestore', 'url', json_encode($packageStoreUrlConf));
         $Conf->save();
     }
 
@@ -171,7 +176,7 @@ class EventHandler
         }
 
         try {
-            $User         = QUI::getUsers()->get($userId);
+            $User = QUI::getUsers()->get($userId);
             $failedLogins = $User->getAttribute('failedLogins');
 
             if (empty($failedLogins)) {
@@ -179,8 +184,8 @@ class EventHandler
             }
 
             $User->setAttributes([
-                'failedLogins'     => ++$failedLogins,
-                'lastLoginAttempt' => \date('Y-m-d H:i:s')
+                'failedLogins' => ++$failedLogins,
+                'lastLoginAttempt' => date('Y-m-d H:i:s')
             ]);
 
             $User->save(QUI::getUsers()->getSystemUser());
@@ -233,15 +238,15 @@ class EventHandler
             return;
         }
 
-        $failedLogins     = (int)$User->getAttribute('failedLogins');
+        $failedLogins = (int)$User->getAttribute('failedLogins');
         $lastLoginAttempt = $User->getAttribute('lastLoginAttempt');
 
         if (!$failedLogins || !$lastLoginAttempt) {
             return;
         }
 
-        $NextLoginAllowed = new \DateTime($lastLoginAttempt . ' +' . $failedLogins . ' second');
-        $Now              = new \DateTime();
+        $NextLoginAllowed = new DateTime($lastLoginAttempt . ' +' . $failedLogins . ' second');
+        $Now = new DateTime();
 
         if ($Now < $NextLoginAllowed) {
             throw new QUI\Users\Exception(
@@ -261,7 +266,7 @@ class EventHandler
     {
         try {
             $User->setAttributes([
-                'failedLogins'     => 0,
+                'failedLogins' => 0,
                 'lastLoginAttempt' => false
             ]);
 
@@ -270,7 +275,7 @@ class EventHandler
                 Manager::table(),
                 [
                     'lastLoginAttempt' => null,
-                    'failedLogins'     => 0
+                    'failedLogins' => 0
                 ],
                 [
                     'id' => $User->getId()

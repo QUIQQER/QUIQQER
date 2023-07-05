@@ -90,9 +90,9 @@ class Output extends Singleton
      * @var array
      */
     protected array $settings = [
-        'use-system-image-paths'    => false,
-        'remove-deleted-links'      => true,
-        'use-absolute-urls'         => false,
+        'use-system-image-paths' => false,
+        'remove-deleted-links' => true,
+        'use-absolute-urls' => false,
         'parse-to-picture-elements' => true
     ];
 
@@ -213,7 +213,7 @@ class Output extends Singleton
                 ]);
 
                 $Dom = $HTML5->loadHTML('');
-                $b   = $Dom->importNode($n->cloneNode(true), true);
+                $b = $Dom->importNode($n->cloneNode(true), true);
 
                 $Dom->appendChild($b);
                 $html = $Dom->saveHTML();
@@ -385,6 +385,25 @@ class Output extends Singleton
     }
 
     /**
+     * Removes an internal rewritten url from the cache, if needed
+     * use this with caution
+     *
+     * @param Interfaces\Projects\Site $Site
+     */
+    public function removeRewrittenUrlCache(QUI\Interfaces\Projects\Site $Site)
+    {
+        $project = $Site->getProject()->getName();
+        $lang = $Site->getProject()->getLang();
+        $id = $Site->getId();
+
+        $rewrittenCache = $project . '_' . $lang . '_' . $id;
+
+        if (isset($this->rewrittenCache[$rewrittenCache])) {
+            unset($this->rewrittenCache[$rewrittenCache]);
+        }
+    }
+
+    /**
      * @param array $output
      * @return string
      */
@@ -428,7 +447,8 @@ class Output extends Singleton
 
         $urlQuery = $parseUrl['query'];
 
-        if (strpos($urlQuery, 'project') === false
+        if (
+            strpos($urlQuery, 'project') === false
             || strpos($urlQuery, 'lang') === false
             || strpos($urlQuery, 'id') === false
         ) {
@@ -440,7 +460,7 @@ class Output extends Singleton
         parse_str($urlQuery, $urlQueryParams);
 
         try {
-            $url    = $this->getSiteUrl($urlQueryParams);
+            $url = $this->getSiteUrl($urlQueryParams);
             $anchor = '';
 
             if (isset($parseUrl['fragment']) && !empty($parseUrl['fragment'])) {
@@ -460,6 +480,258 @@ class Output extends Singleton
             return '';
         }
         //return $output[0];
+    }
+
+    /**
+     * Return a rewritten url from a site
+     *
+     * @param array $params
+     * @param array $getParams
+     *
+     * @return string
+     *
+     * @throws Exception
+     */
+    public function getSiteUrl(array $params = [], array $getParams = []): string
+    {
+        $project = false;
+        $id = false;
+
+        // Falls ein Objekt übergeben wird
+        if (isset($params['site']) && is_object($params['site'])) {
+            /* @var $Project Project */
+            /* @var $Site Site */
+            $Site = $params['site'];
+            $Project = $Site->getProject();
+            $id = $Site->getId();
+
+            $lang = $Project->getLang();
+            $project = $Project->getName();
+
+            unset($params['site']);
+        } else {
+            if (isset($params['id'])) {
+                $id = $params['id'];
+            }
+
+            if (isset($params['project'])) {
+                $project = $params['project'];
+            }
+
+            if (isset($params['lang'])) {
+                $lang = $params['lang'];
+            }
+
+            unset($params['project']);
+            unset($params['id']);
+            unset($params['lang']);
+        }
+
+        if ($id === false || $project === false) {
+            throw new QUI\Exception(
+                'Params missing Rewrite::getUrlFromPage'
+            );
+        }
+
+        if (!isset($lang)) {
+            $lang = '';
+        }
+
+        // get params
+        if (!empty($getParams)) {
+            $params['_getParams'] = $getParams;
+        }
+
+        if (!isset($Project)) {
+            try {
+                $Project = QUI::getProject($project, $lang);
+                /* @var $Project Project */
+            } catch (QUI\Exception $Exception) {
+                return '';
+            }
+        }
+
+        $rewrittenCache = $project . '_' . $lang . '_' . $id;
+
+        if (isset($this->rewrittenCache[$rewrittenCache])) {
+            $url = $this->rewrittenCache[$rewrittenCache];
+        } else {
+            $linkCachePath = Site::getLinkCachePath($project, $lang, $id);
+
+            try {
+                $url = QUI\Cache\Manager::get($linkCachePath);
+            } catch (\Exception $Exception) {
+                $_params = [];
+
+                if (isset($params['suffix'])) {
+                    $_params['suffix'] = $params['suffix'];
+                }
+
+                try {
+                    /* @var $Site Site */
+                    $Site = $Project->get((int)$id);
+                } catch (QUI\Exception $Exception) {
+                    return '';
+                }
+
+                if ($Site->getAttribute('deleted')) {
+                    return '';
+                }
+
+                // Create cache
+                $url = $Site->getLocation($_params);
+
+                try {
+                    QUI\Cache\Manager::set($linkCachePath, $url);
+                } catch (\Exception $Exception) {
+                    QUI\System\Log::writeException($Exception);
+                }
+            }
+
+            $this->rewrittenCache[$rewrittenCache] = $url;
+        }
+
+        $url = $this->extendUrlWithParams($url, $params);
+        $vhosts = QUI::vhosts();
+
+        if (!$Project->hasVHost() && !empty($vhosts)) {
+            $url = $Project->getLang() . '/' . $url;
+        }
+
+        // If the output project is different than the one of the page
+        // Then use absolute domain path
+        if (
+            !$this->Project ||
+            $Project->toArray() != $this->Project->toArray()
+        ) {
+            return $Project->getVHost(true, true) . URL_DIR . $url;
+        }
+
+        /**
+         * Sprache behandeln
+         */
+
+//        if (isset($_SERVER['HTTP_HOST'])
+//            && isset($vHosts[$_SERVER['HTTP_HOST']])
+//            && isset($vHosts[$_SERVER['HTTP_HOST']][$lang])
+//            && !empty($vHosts[$_SERVER['HTTP_HOST']][$lang])
+//        ) {
+//            $data  = $vHosts[$_SERVER['HTTP_HOST']];
+//            $vHost = $vHosts[$_SERVER['HTTP_HOST']][$lang];
+//
+//            if (// wenn ein Host eingetragen ist
+//                $lang != $Project->getAttribute('lang')
+//                // falls der jetzige host ein anderer ist als der vom link,
+//                // dann den host an den link setzen
+//                || $vHost != $_SERVER['HTTP_HOST']
+//            ) {
+//                $protocol = empty($data['httpshost']) ? 'http://' : 'https://';
+//
+//                // und die Sprache nicht die vom jetzigen Projekt ist
+//                // dann Host davor setzen
+//                $url = $vHost . URL_DIR . $url;
+//                $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
+//                $url = $protocol . $this->project_prefix . $url;
+//
+//                return $url;
+//            }
+//
+//            $url = $this->project_prefix . $url;
+//            $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
+//        } elseif ($Project->getAttribute('default_lang') !== $lang) {
+//            // Falls kein Host Eintrag gibt
+//            // Und nicht die Standardsprache dann das Sprachenflag davor setzen
+//            $url = $this->project_prefix . $lang . '/' . $url;
+//            $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
+//        }
+
+        $url = URL_DIR . $url;
+
+        $projectHost = $Project->getHost();
+        $projectHost = str_replace(['https://', 'http://'], '', $projectHost);
+
+        // falls host anders ist, dann muss dieser dran gehängt werden
+        // damit kein doppelter content entsteht
+        if (
+            !isset($_SERVER['HTTP_HOST']) ||
+            (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != $projectHost && $projectHost != '')
+        ) {
+            $url = $Project->getVHost(true, true) . $url;
+        }
+
+        return $url;
+    }
+
+    /**
+     * Erweitert die URL um Params
+     *
+     * @param string $url
+     * @param array $params
+     *
+     * @return string
+     */
+    protected function extendUrlWithParams(string $url, array $params = []): string
+    {
+        if (!count($params)) {
+            return $url;
+        }
+
+        $separator = Rewrite::URL_PARAM_SEPARATOR;
+        $getParams = [];
+
+        if (isset($params['_getParams']) && is_string($params['_getParams'])) {
+            parse_str($params['_getParams'], $getParams);
+            unset($params['_getParams']);
+        } elseif (isset($params['_getParams']) && is_array($params['_getParams'])) {
+            $getParams = $params['_getParams'];
+            unset($params['_getParams']);
+        }
+
+        if (isset($params['paramAsSites']) && $params['paramAsSites']) {
+            $separator = '/';
+            unset($params['paramAsSites']);
+        }
+
+
+        $suffix = '';
+        $exp = explode('.', $url);
+        $url = $exp[0];
+
+        foreach ($params as $param => $value) {
+            if (is_integer($param)) {
+                $url .= $separator . $value;
+                continue;
+            }
+
+            if ($param == 'suffix') {
+                continue;
+            }
+
+            if ($param === "0") {
+                $url .= $separator . $value;
+                continue;
+            }
+
+            $url .= $separator . $param . $separator . $value;
+        }
+
+        if (isset($params['suffix'])) {
+            $suffix = '.' . $params['suffix'];
+        }
+
+        if (empty($suffix) && isset($exp[1])) {
+            $suffix = '.' . $exp[1];
+        }
+
+        if (empty($suffix)) {
+            $suffix = QUI::getRewrite()->getDefaultSuffix();
+        }
+
+        if (empty($getParams)) {
+            return $url . $suffix;
+        }
+
+        return $url . $suffix . '?' . http_build_query($getParams);
     }
 
     /**
@@ -517,7 +789,8 @@ class Output extends Singleton
 
         if (!MediaUtils::isMediaUrl($att['src']) && strpos($att['src'], 'media/cache') === false) {
             // is relative url from the system?
-            if ($this->settings['use-system-image-paths']
+            if (
+                $this->settings['use-system-image-paths']
                 && strpos($output[0], 'http') === false
             ) {
                 // workaround for system paths, not optimal
@@ -539,7 +812,7 @@ class Output extends Singleton
         if (strpos($src, 'media/cache') !== false) {
             try {
                 $Image = MediaUtils::getElement($src);
-                $src   = $Image->getUrl();
+                $src = $Image->getUrl();
             } catch (QUI\Exception $Exception) {
             }
         }
@@ -548,12 +821,12 @@ class Output extends Singleton
             try {
                 $Image = MediaUtils::getImageByUrl($src);
 
-                $att['alt']      = $Image->getAlt();
-                $att['title']    = $Image->getTitle();
+                $att['alt'] = $Image->getAlt();
+                $att['title'] = $Image->getTitle();
                 $att['data-src'] = $Image->getSizeCacheUrl();
 
                 if ($Image->hasViewPermissionSet()) {
-                    $src             = $Image->getUrl();
+                    $src = $Image->getUrl();
                     $att['data-src'] = $Image->getUrl();
                 }
             } catch (QUI\Exception $Exception) {
@@ -682,7 +955,7 @@ class Output extends Singleton
     protected function cssLinkHref(array $output): string
     {
         $html = $output[0];
-        $att  = StringUtils::getHTMLAttributes($html);
+        $att = StringUtils::getHTMLAttributes($html);
 
         if (!isset($att['href'])) {
             return $html;
@@ -700,7 +973,7 @@ class Output extends Singleton
             return $html;
         }
 
-        $lu   = md5(QUI::getPackageManager()->getLastUpdateDate());
+        $lu = md5(QUI::getPackageManager()->getLastUpdateDate());
         $file = CMS_DIR . ltrim($att['href'], '/');
 
         // check if css file is project custom css
@@ -732,7 +1005,7 @@ class Output extends Singleton
     protected function scripts($output): string
     {
         $html = $output[0];
-        $att  = StringUtils::getHTMLAttributes($html);
+        $att = StringUtils::getHTMLAttributes($html);
 
         if (!isset($att['src'])) {
             return $html;
@@ -743,13 +1016,15 @@ class Output extends Singleton
         }
 
         // external files dont get the lu flag
-        if (strpos($att['src'], 'http://') !== false
+        if (
+            strpos($att['src'], 'http://') !== false
             || strpos($att['src'], 'https://') !== false
-            || strpos($att['src'], '//') === 0) {
+            || strpos($att['src'], '//') === 0
+        ) {
             return $html;
         }
 
-        $lu   = md5(QUI::getPackageManager()->getLastUpdateDate());
+        $lu = md5(QUI::getPackageManager()->getLastUpdateDate());
         $file = CMS_DIR . ltrim($att['src'], '/');
 
         // check if css file is project custom css
@@ -809,276 +1084,8 @@ class Output extends Singleton
         }
 
         $host = trim($host, '/') . '/';
-        $url  = trim($url, '/');
+        $url = trim($url, '/');
 
         return $output[1] . '="' . $host . $url . '"';
-    }
-
-    /**
-     * Return a rewritten url from a site
-     *
-     * @param array $params
-     * @param array $getParams
-     *
-     * @return string
-     *
-     * @throws Exception
-     */
-    public function getSiteUrl(array $params = [], array $getParams = []): string
-    {
-        $project = false;
-        $id      = false;
-
-        // Falls ein Objekt übergeben wird
-        if (isset($params['site']) && is_object($params['site'])) {
-            /* @var $Project Project */
-            /* @var $Site Site */
-            $Site    = $params['site'];
-            $Project = $Site->getProject();
-            $id      = $Site->getId();
-
-            $lang    = $Project->getLang();
-            $project = $Project->getName();
-
-            unset($params['site']);
-        } else {
-            if (isset($params['id'])) {
-                $id = $params['id'];
-            }
-
-            if (isset($params['project'])) {
-                $project = $params['project'];
-            }
-
-            if (isset($params['lang'])) {
-                $lang = $params['lang'];
-            }
-
-            unset($params['project']);
-            unset($params['id']);
-            unset($params['lang']);
-        }
-
-        if ($id === false || $project === false) {
-            throw new QUI\Exception(
-                'Params missing Rewrite::getUrlFromPage'
-            );
-        }
-
-        if (!isset($lang)) {
-            $lang = '';
-        }
-
-        // get params
-        if (!empty($getParams)) {
-            $params['_getParams'] = $getParams;
-        }
-
-        if (!isset($Project)) {
-            try {
-                $Project = QUI::getProject($project, $lang);
-                /* @var $Project Project */
-            } catch (QUI\Exception $Exception) {
-                return '';
-            }
-        }
-
-        $rewrittenCache = $project . '_' . $lang . '_' . $id;
-
-        if (isset($this->rewrittenCache[$rewrittenCache])) {
-            $url = $this->rewrittenCache[$rewrittenCache];
-        } else {
-            $linkCachePath = Site::getLinkCachePath($project, $lang, $id);
-
-            try {
-                $url = QUI\Cache\Manager::get($linkCachePath);
-            } catch (\Exception $Exception) {
-                $_params = [];
-
-                if (isset($params['suffix'])) {
-                    $_params['suffix'] = $params['suffix'];
-                }
-
-                try {
-                    /* @var $Site Site */
-                    $Site = $Project->get((int)$id);
-                } catch (QUI\Exception $Exception) {
-                    return '';
-                }
-
-                if ($Site->getAttribute('deleted')) {
-                    return '';
-                }
-
-                // Create cache
-                $url = $Site->getLocation($_params);
-
-                try {
-                    QUI\Cache\Manager::set($linkCachePath, $url);
-                } catch (\Exception $Exception) {
-                    QUI\System\Log::writeException($Exception);
-                }
-            }
-
-            $this->rewrittenCache[$rewrittenCache] = $url;
-        }
-
-        $url    = $this->extendUrlWithParams($url, $params);
-        $vhosts = QUI::vhosts();
-
-        if (!$Project->hasVHost() && !empty($vhosts)) {
-            $url = $Project->getLang() . '/' . $url;
-        }
-
-        // If the output project is different than the one of the page
-        // Then use absolute domain path
-        if (!$this->Project ||
-            $Project->toArray() != $this->Project->toArray()
-        ) {
-            return $Project->getVHost(true, true) . URL_DIR . $url;
-        }
-
-        /**
-         * Sprache behandeln
-         */
-
-//        if (isset($_SERVER['HTTP_HOST'])
-//            && isset($vHosts[$_SERVER['HTTP_HOST']])
-//            && isset($vHosts[$_SERVER['HTTP_HOST']][$lang])
-//            && !empty($vHosts[$_SERVER['HTTP_HOST']][$lang])
-//        ) {
-//            $data  = $vHosts[$_SERVER['HTTP_HOST']];
-//            $vHost = $vHosts[$_SERVER['HTTP_HOST']][$lang];
-//
-//            if (// wenn ein Host eingetragen ist
-//                $lang != $Project->getAttribute('lang')
-//                // falls der jetzige host ein anderer ist als der vom link,
-//                // dann den host an den link setzen
-//                || $vHost != $_SERVER['HTTP_HOST']
-//            ) {
-//                $protocol = empty($data['httpshost']) ? 'http://' : 'https://';
-//
-//                // und die Sprache nicht die vom jetzigen Projekt ist
-//                // dann Host davor setzen
-//                $url = $vHost . URL_DIR . $url;
-//                $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
-//                $url = $protocol . $this->project_prefix . $url;
-//
-//                return $url;
-//            }
-//
-//            $url = $this->project_prefix . $url;
-//            $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
-//        } elseif ($Project->getAttribute('default_lang') !== $lang) {
-//            // Falls kein Host Eintrag gibt
-//            // Und nicht die Standardsprache dann das Sprachenflag davor setzen
-//            $url = $this->project_prefix . $lang . '/' . $url;
-//            $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
-//        }
-
-        $url = URL_DIR . $url;
-
-        $projectHost = $Project->getHost();
-        $projectHost = str_replace(['https://', 'http://'], '', $projectHost);
-
-        // falls host anders ist, dann muss dieser dran gehängt werden
-        // damit kein doppelter content entsteht
-        if (!isset($_SERVER['HTTP_HOST']) ||
-            (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != $projectHost && $projectHost != '')) {
-            $url = $Project->getVHost(true, true) . $url;
-        }
-
-        return $url;
-    }
-
-    /**
-     * Removes an internal rewritten url from the cache, if needed
-     * use this with caution
-     *
-     * @param Interfaces\Projects\Site $Site
-     */
-    public function removeRewrittenUrlCache(QUI\Interfaces\Projects\Site $Site)
-    {
-        $project = $Site->getProject()->getName();
-        $lang    = $Site->getProject()->getLang();
-        $id      = $Site->getId();
-
-        $rewrittenCache = $project . '_' . $lang . '_' . $id;
-
-        if (isset($this->rewrittenCache[$rewrittenCache])) {
-            unset($this->rewrittenCache[$rewrittenCache]);
-        }
-    }
-
-    /**
-     * Erweitert die URL um Params
-     *
-     * @param string $url
-     * @param array $params
-     *
-     * @return string
-     */
-    protected function extendUrlWithParams(string $url, array $params = []): string
-    {
-        if (!count($params)) {
-            return $url;
-        }
-
-        $separator = Rewrite::URL_PARAM_SEPARATOR;
-        $getParams = [];
-
-        if (isset($params['_getParams']) && is_string($params['_getParams'])) {
-            parse_str($params['_getParams'], $getParams);
-            unset($params['_getParams']);
-        } elseif (isset($params['_getParams']) && is_array($params['_getParams'])) {
-            $getParams = $params['_getParams'];
-            unset($params['_getParams']);
-        }
-
-        if (isset($params['paramAsSites']) && $params['paramAsSites']) {
-            $separator = '/';
-            unset($params['paramAsSites']);
-        }
-
-
-        $suffix = '';
-        $exp    = explode('.', $url);
-        $url    = $exp[0];
-
-        foreach ($params as $param => $value) {
-            if (is_integer($param)) {
-                $url .= $separator . $value;
-                continue;
-            }
-
-            if ($param == 'suffix') {
-                continue;
-            }
-
-            if ($param === "0") {
-                $url .= $separator . $value;
-                continue;
-            }
-
-            $url .= $separator . $param . $separator . $value;
-        }
-
-        if (isset($params['suffix'])) {
-            $suffix = '.' . $params['suffix'];
-        }
-
-        if (empty($suffix) && isset($exp[1])) {
-            $suffix = '.' . $exp[1];
-        }
-
-        if (empty($suffix)) {
-            $suffix = QUI::getRewrite()->getDefaultSuffix();
-        }
-
-        if (empty($getParams)) {
-            return $url . $suffix;
-        }
-
-        return $url . $suffix . '?' . http_build_query($getParams);
     }
 }

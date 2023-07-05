@@ -7,6 +7,7 @@
 namespace QUI;
 
 use Html2Text\Html2Text;
+use PHPMailer;
 use QUI;
 
 use function file_exists;
@@ -44,25 +45,23 @@ use function is_string;
 class Mail
 {
     /**
-     * internal mail config
-     *
-     * @var array
-     */
-    private array $config;
-
-    /**
-     * internal PHPMailer object
-     *
-     * @var \PHPMailer
-     */
-    private \PHPMailer $Mail;
-
-    /**
      * Mail template
      *
      * @var \QUI\Mail\Template
      */
     public Mail\Template $Template;
+    /**
+     * internal mail config
+     *
+     * @var array
+     */
+    private array $config;
+    /**
+     * internal PHPMailer object
+     *
+     * @var PHPMailer
+     */
+    private PHPMailer $Mail;
 
     /**
      * constructor
@@ -89,15 +88,15 @@ class Mail
         $mailConf = QUI::conf('mail');
 
         $this->config = [
-            'IsSMTP'       => $mailConf['SMTP'],
-            'SMTPServer'   => $mailConf['SMTPServer'],
-            'SMTPAuth'     => $mailConf['SMTPAuth'],
-            'SMTPUser'     => $mailConf['SMTPUser'],
-            'SMTPPass'     => $mailConf['SMTPPass'],
-            'MAILFrom'     => $mailConf['MAILFrom'],
+            'IsSMTP' => $mailConf['SMTP'],
+            'SMTPServer' => $mailConf['SMTPServer'],
+            'SMTPAuth' => $mailConf['SMTPAuth'],
+            'SMTPUser' => $mailConf['SMTPUser'],
+            'SMTPPass' => $mailConf['SMTPPass'],
+            'MAILFrom' => $mailConf['MAILFrom'],
             'MAILFromText' => $mailConf['MAILFromText'],
-            'MAILReplyTo'  => $mailConf['MAILReplyTo'],
-            'CharSet'      => 'UTF-8'
+            'MAILReplyTo' => $mailConf['MAILReplyTo'],
+            'CharSet' => 'UTF-8'
         ];
 
         // Übergebene Config übernehmen
@@ -140,20 +139,20 @@ class Mail
         }
 
         // Mail Klasse laden und einstellungen übergeben
-        $this->Mail = new \PHPMailer();
+        $this->Mail = new PHPMailer();
 
         if ($this->config['IsSMTP'] == true) {
             //$this->mail->IsSMTP();
-            $this->Mail->Mailer   = 'smtp';
-            $this->Mail->Host     = $this->config['SMTPServer'];
+            $this->Mail->Mailer = 'smtp';
+            $this->Mail->Host = $this->config['SMTPServer'];
             $this->Mail->SMTPAuth = $this->config['SMTPAuth'];
             $this->Mail->Username = $this->config['SMTPUser'];
             $this->Mail->Password = $this->config['SMTPPass'];
         }
 
-        $this->Mail->From     = $this->config['MAILFrom'];
+        $this->Mail->From = $this->config['MAILFrom'];
         $this->Mail->FromName = $this->config['MAILFromText'];
-        $this->Mail->CharSet  = $this->config['CharSet'];
+        $this->Mail->CharSet = $this->config['CharSet'];
 
         //$this->mail->SetLanguage( 'de', LIB_DIR .'extern/phpmail/language/' );
 
@@ -198,8 +197,8 @@ class Mail
             );
         }
 
-        $Body    = $mailconf['Body'];
-        $MailTo  = $mailconf['MailTo'];
+        $Body = $mailconf['Body'];
+        $MailTo = $mailconf['MailTo'];
         $Subject = $mailconf['Subject'];
 
         if (isset($mailconf['MAILReplyTo'])) {
@@ -207,7 +206,7 @@ class Mail
         }
 
         $IsHTML = false;
-        $files  = false;
+        $files = false;
 
         if (isset($mailconf['IsHTML'])) {
             $IsHTML = $mailconf['IsHTML'];
@@ -280,7 +279,7 @@ class Mail
         }
 
         $this->Mail->Subject = $Subject;
-        $this->Mail->Body    = $Body;
+        $this->Mail->Body = $Body;
 
         if ($IsHTML) {
             $Html2Text = new Html2Text($Body);
@@ -291,7 +290,7 @@ class Mail
         // with mail queue?
         if (QUI::conf('mail', 'queue')) {
             $Queue = new Mail\Queue();
-            $id    = $Queue->addToQueue($this);
+            $id = $Queue->addToQueue($this);
 
             $Queue->sendById($id);
 
@@ -314,7 +313,7 @@ class Mail
     /**
      * Return the internal PHPMailer object
      *
-     * @return \PHPMailer
+     * @return PHPMailer
      */
     public function getPHPMailer()
     {
@@ -335,16 +334,16 @@ class Mail
         }
 
         return [
-            'subject'      => $this->Mail->Subject,
-            'body'         => $this->Mail->Body,
-            'text'         => $this->Mail->AltBody,
-            'from'         => $this->Mail->From,
-            'fromName'     => $this->Mail->FromName,
-            'ishtml'       => $IsHTML ? 1 : 0,
-            'mailto'       => $this->Mail->getAllRecipientAddresses(),
-            'replyto'      => $this->Mail->getReplyToAddresses(),
-            'cc'           => $this->Mail->getCcAddresses(),
-            'bcc'          => $this->Mail->getBccAddresses(),
+            'subject' => $this->Mail->Subject,
+            'body' => $this->Mail->Body,
+            'text' => $this->Mail->AltBody,
+            'from' => $this->Mail->From,
+            'fromName' => $this->Mail->FromName,
+            'ishtml' => $IsHTML ? 1 : 0,
+            'mailto' => $this->Mail->getAllRecipientAddresses(),
+            'replyto' => $this->Mail->getReplyToAddresses(),
+            'cc' => $this->Mail->getCcAddresses(),
+            'bcc' => $this->Mail->getBccAddresses(),
             'attachements' => $this->Mail->getAttachments()
         ];
     }

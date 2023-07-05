@@ -141,7 +141,7 @@ class Ajax extends QUI\QDOM
 
         self::$callables[$name] = [
             'callable' => $function,
-            'params'   => $reg_vars
+            'params' => $reg_vars
         ];
 
         if ($user_perm) {
@@ -194,7 +194,7 @@ class Ajax extends QUI\QDOM
         }
 
         if (QUI::isBackend()) {
-            $parts       = explode('_', $reg_function);
+            $parts = explode('_', $reg_function);
             $pluginParts = array_slice($parts, 1, 2);
 
             if (isset($pluginParts[0]) && isset($pluginParts[1])) {
@@ -242,7 +242,8 @@ class Ajax extends QUI\QDOM
      */
     public function call()
     {
-        if (!isset($_REQUEST['_rf'])
+        if (
+            !isset($_REQUEST['_rf'])
             || !is_string($_REQUEST['_rf']) && count($_REQUEST['_rf']) > 1
         ) {
             return $this->writeException(
@@ -250,7 +251,7 @@ class Ajax extends QUI\QDOM
             );
         }
 
-        $_rfs   = json_decode($_REQUEST['_rf'], true);
+        $_rfs = json_decode($_REQUEST['_rf'], true);
         $result = [];
 
         if (!is_array($_rfs)) {
@@ -272,7 +273,7 @@ class Ajax extends QUI\QDOM
         // maintenance flag
         $result['maintenance'] = QUI::conf('globals', 'maintenance') ? 1 : 0;
         $result['jsCallbacks'] = $this->jsCallbacks;
-        $result['vMd5']        = md5(QUI::version());
+        $result['vMd5'] = md5(QUI::version());
 
         QUI::getEvents()->fireEvent('ajaxResult', [&$result]);
 
@@ -389,7 +390,7 @@ class Ajax extends QUI\QDOM
         try {
             QUI::getEvents()->fireEvent('ajaxCallBefore', [
                 'function' => $_rf,
-                'params'   => $params
+                'params' => $params
             ]);
         } catch (\Exception $Exception) {
             return $this->writeException($Exception);
@@ -415,8 +416,8 @@ class Ajax extends QUI\QDOM
         try {
             QUI::getEvents()->fireEvent('ajaxCall', [
                 'function' => $_rf,
-                'result'   => $return,
-                'params'   => $params
+                'result' => $return,
+                'params' => $params
             ]);
         } catch (\Exception $Exception) {
             return $this->writeException($Exception);
@@ -446,7 +447,7 @@ class Ajax extends QUI\QDOM
     public function writeException($Exception): array
     {
         $return = [];
-        $class  = get_class($Exception);
+        $class = get_class($Exception);
 
         $data = [];
 
@@ -472,13 +473,13 @@ class Ajax extends QUI\QDOM
                 // DB Fehler immer loggen
                 if ($this->getAttribute('db_errors')) {
                     $return['ExceptionDBError']['message'] = $Exception->getMessage();
-                    $return['ExceptionDBError']['code']    = $Exception->getCode();
-                    $return['ExceptionDBError']['type']    = get_class($Exception);
+                    $return['ExceptionDBError']['code'] = $Exception->getCode();
+                    $return['ExceptionDBError']['type'] = get_class($Exception);
                 } else {
                     // Standardfehler rausbringen
                     $return['Exception']['message'] = 'Internal Server Error';
-                    $return['Exception']['code']    = 500;
-                    $return['Exception']['type']    = get_class($Exception);
+                    $return['Exception']['code'] = 500;
+                    $return['Exception']['type'] = get_class($Exception);
                 }
 
                 if ((DEVELOPMENT || DEBUG_MODE) && $class != 'PDOException') {
@@ -495,7 +496,7 @@ class Ajax extends QUI\QDOM
                     $FirstException = $list[0];
                     // method nicht mit ausgeben
                     $message = $FirstException->getMessage();
-                    $end     = mb_strripos($message, ' :: ');
+                    $end = mb_strripos($message, ' :: ');
 
                     if ($end) {
                         $message = mb_substr($message, 0, $end);
@@ -503,8 +504,8 @@ class Ajax extends QUI\QDOM
 
 
                     $return['Exception']['message'] = $message;
-                    $return['Exception']['code']    = $FirstException->getCode();
-                    $return['Exception']['type']    = $FirstException->getType();
+                    $return['Exception']['code'] = $FirstException->getCode();
+                    $return['Exception']['type'] = $FirstException->getType();
 
                     if (DEVELOPMENT || DEBUG_MODE) {
                         $return['Exception']['context'] = $FirstException->getContext();
@@ -516,8 +517,8 @@ class Ajax extends QUI\QDOM
             case 'QUI\\Exception':
             case 'QUI\\Users\\Exception':
                 $return['Exception']['message'] = $Exception->getMessage();
-                $return['Exception']['code']    = $Exception->getCode();
-                $return['Exception']['type']    = $Exception->getType();
+                $return['Exception']['code'] = $Exception->getCode();
+                $return['Exception']['type'] = $Exception->getType();
 
                 if (DEVELOPMENT || DEBUG_MODE) {
                     $return['Exception']['context'] = $Exception->getContext();
@@ -527,8 +528,8 @@ class Ajax extends QUI\QDOM
 
             default:
                 $return['Exception']['message'] = $Exception->getMessage();
-                $return['Exception']['code']    = $Exception->getCode();
-                $return['Exception']['type']    = get_class($Exception);
+                $return['Exception']['code'] = $Exception->getCode();
+                $return['Exception']['type'] = get_class($Exception);
                 break;
         }
 
@@ -562,7 +563,7 @@ class Ajax extends QUI\QDOM
                 $return = [
                     'Exception' => [
                         'message' => QUI::getLocale()->get('quiqqer/quiqqer', 'exception.timeout'),
-                        'code'    => 504
+                        'code' => 504
                     ]
                 ];
 

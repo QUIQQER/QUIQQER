@@ -6,8 +6,12 @@
 
 namespace QUI;
 
-use \QUI;
-use \Blowfish\Blowfish;
+use Blowfish\Blowfish;
+use QUI;
+
+use function base64_decode;
+use function base64_encode;
+use function substr;
 
 /**
  * Main Security class
@@ -59,7 +63,7 @@ class Security
     /**
      * Encrypted a password base64
      *
-     * @param string  $pass   - string to encrpyted
+     * @param string $pass - string to encrpyted
      * @param integer $switch - where to split
      *
      * @return string
@@ -67,23 +71,23 @@ class Security
     public static function b64encrypt($pass, $switch = 3)
     {
         // Passwort drehn
-        $newpass = \substr($pass, $switch).\substr($pass, 0, $switch);
+        $newpass = substr($pass, $switch) . substr($pass, 0, $switch);
 
-        return \base64_encode($newpass);
+        return base64_encode($newpass);
     }
 
     /**
      * Decrypt a base64 password
      *
-     * @param string  $pass   - string to decrypt
+     * @param string $pass - string to decrypt
      * @param integer $switch - where to split
      *
      * @return string
      */
     public static function b64decrypt($pass, $switch = 3)
     {
-        $newpass = \base64_decode($pass);
+        $newpass = base64_decode($pass);
 
-        return \substr($newpass, -$switch).\substr($newpass, 0, -$switch);
+        return substr($newpass, -$switch) . substr($newpass, 0, -$switch);
     }
 }

@@ -45,26 +45,23 @@ use function usort;
 class Locale
 {
     /**
+     * no translation flag
+     *
+     * @var boolean
+     */
+    public bool $no_translation = false;
+    /**
      * The current lang
      *
      * @var array|bool
      */
     protected $dateFormats = false;
-
     /**
      * The current lang
      *
      * @var string
      */
     protected string $current = 'en';
-
-    /**
-     * no translation flag
-     *
-     * @var boolean
-     */
-    public bool $no_translation = false;
-
     /**
      * ini file objects
      *
@@ -117,17 +114,13 @@ class Locale
     }
 
     /**
-     * Resets the current language to the initial state. Useful only after setTemporaryCurrent()
-     * was used!
+     * Return the current language
      *
-     * @return void
+     * @return string
      */
-    public function resetCurrent()
+    public function getCurrent(): string
     {
-        if (!empty($this->tempCurrent)) {
-            $this->setCurrent($this->tempCurrent);
-            $this->tempCurrent = false;
-        }
+        return $this->current;
     }
 
     /**
@@ -148,13 +141,17 @@ class Locale
     }
 
     /**
-     * Return the current language
+     * Resets the current language to the initial state. Useful only after setTemporaryCurrent()
+     * was used!
      *
-     * @return string
+     * @return void
      */
-    public function getCurrent(): string
+    public function resetCurrent()
     {
-        return $this->current;
+        if (!empty($this->tempCurrent)) {
+            $this->setCurrent($this->tempCurrent);
+            $this->tempCurrent = false;
+        }
     }
 
     /**
@@ -163,335 +160,6 @@ class Locale
     public function getDecimalSeparator()
     {
         return $this->get('quiqqer/quiqqer', 'numberFormat.decimal_separator');
-    }
-
-    /**
-     * @return string
-     */
-    public function getGroupingSeparator()
-    {
-        return $this->get('quiqqer/quiqqer', 'numberFormat.grouping_separator');
-    }
-
-    /**
-     * @return array|string
-     */
-    public function getDecimalPattern()
-    {
-        return $this->get('quiqqer/quiqqer', 'numberFormat.decimal_pattern');
-    }
-
-    /**
-     * @return array|string
-     */
-    public function getPercentPattern()
-    {
-        return $this->get('quiqqer/quiqqer', 'numberFormat.percent_pattern');
-    }
-
-    /**
-     * @return array|string
-     */
-    public function getCurrencyPattern()
-    {
-        return $this->get('quiqqer/quiqqer', 'numberFormat.currency_pattern');
-    }
-
-    /**
-     * @return array|string
-     */
-    public function getAccountingCurrencyPattern()
-    {
-        return $this->get('quiqqer/quiqqer', 'numberFormat.accounting_currency_pattern');
-    }
-
-    /**
-     * Refresh the locale
-     * Clears the locale
-     */
-    public function refresh()
-    {
-    }
-
-    /**
-     * Format a number
-     *
-     * @param float|integer $number
-     * @param integer $format
-     * @return string
-     */
-    public function formatNumber($number, int $format = NumberFormatter::DECIMAL): string
-    {
-        $localeCode = QUI::getLocale()->getLocalesByLang(
-            QUI::getLocale()->getCurrent()
-        );
-
-        $Formatter = new NumberFormatter($localeCode[0], $format);
-
-        if (is_string($number)) {
-            $number = floatval($number);
-        }
-
-        $decimalSeparator  = self::get('quiqqer/quiqqer', 'numberFormat.decimal_separator');
-        $groupingSeparator = self::get('quiqqer/quiqqer', 'numberFormat.grouping_separator');
-        $decimalPattern    = self::get('quiqqer/quiqqer', 'numberFormat.decimal_pattern');
-
-        if (!empty($decimalSeparator)) {
-            $Formatter->setSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL, $decimalSeparator);
-        }
-
-        if (!empty($groupingSeparator)) {
-            $Formatter->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, $groupingSeparator);
-        }
-
-        if (!empty($decimalPattern)) {
-            $Formatter->setPattern($decimalPattern);
-        }
-
-        //  numberFormat.numbering_system
-        //  numberFormat.percent_pattern
-        //  numberFormat.currency_pattern
-        //  numberFormat.accounting_currency_pattern
-
-        //  "numbering_system": "latn",
-        //  "decimal_pattern": "#,##0.###",
-        //  "percent_pattern": "#,##0%",
-
-        if ($number === null) {
-            $number = 0;
-        }
-
-        return $Formatter->format($number);
-    }
-
-    /**
-     * Format a date timestamp
-     *
-     * @param             $timestamp
-     * @param bool|string $format - (optional) ;if not given, it uses the quiqqer system format
-     *
-     * @return string
-     */
-    public function formatDate($timestamp, $format = false): string
-    {
-        $Formatter = self::getDateFormatter();
-        $current   = $this->getCurrent();
-
-        if (!is_numeric($timestamp)) {
-            $timestamp = strtotime($timestamp);
-        }
-
-        // new stuff, compatible with php9
-        if (empty($format)) {
-            return Encoding::toUTF8($Formatter->format($timestamp));
-        }
-
-        if (mb_strpos($format, '%') === false) {
-            $Formatter->setPattern($format);
-
-            return Encoding::toUTF8(
-                $Formatter->format($timestamp)
-            );
-        }
-
-        // deprecate log
-        QUI\System\Log::addDeprecated('Deprecated formatDate usage');
-
-        // old stuff with strftime
-        $locales    = $this->getLocalesByLang($current);
-        $localeCode = first($locales);
-
-//        if ($format) {
-        $oldLocale = setlocale(LC_TIME, "0");
-
-        setlocale(LC_TIME, $localeCode);
-        $result = strftime($format, $timestamp);
-        setlocale(LC_TIME, $oldLocale);
-
-        return Encoding::toUTF8($result);
-//        }
-
-//        $formats = $this->getDateFormats();
-//
-//        if (!empty($formats[$current])) {
-//            $oldLocale = setlocale(LC_TIME, "0");
-//
-//            setlocale(LC_TIME, $localeCode);
-//            $result = strftime($formats[$current], $timestamp);
-//            setlocale(LC_TIME, $oldLocale);
-//
-//            return Encoding::toUTF8($result);
-//        }
-//
-//        return Encoding::toUTF8(strftime('%D', $timestamp));
-    }
-
-    /**
-     * Return a date formatter for the current language
-     *
-     * @param int $dateType
-     * @param int $timeType
-     * @return \IntlDateFormatter
-     */
-    public function getDateFormatter(
-        int $dateType = IntlDateFormatter::SHORT,
-        int $timeType = IntlDateFormatter::NONE
-    ): IntlDateFormatter {
-        $localeCode = $this->getLocalesByLang($this->getCurrent());
-
-        return new IntlDateFormatter($localeCode[0], $dateType, $timeType);
-    }
-
-    /**
-     * Return all available date formats
-     *
-     * @return array
-     */
-    protected function getDateFormats()
-    {
-        if ($this->dateFormats) {
-            return $this->dateFormats;
-        }
-
-        $this->dateFormats = QUI::conf('date_formats');
-
-        if (!$this->dateFormats) {
-            $this->dateFormats = [];
-        }
-
-        return $this->dateFormats;
-    }
-
-    /**
-     * Return the locale list for a language
-     *
-     * @param string $lang - Language code (de, en, fr ...)
-     *
-     * @return array
-     */
-    public function getLocalesByLang(string $lang): array
-    {
-        if (isset($this->localeList[$lang])) {
-            return $this->localeList[$lang];
-        }
-
-        // no shell
-        if (!QUI\Utils\System::isShellFunctionEnabled('locale')) {
-            // if we cannot read locale list, so we must guess
-            $langCode = strtolower($lang) . '_' . strtoupper($lang);
-
-            $this->localeList[$lang] = [
-                $langCode,
-                $langCode . '.utf8',
-                $langCode . '.UTF-8',
-                $langCode . '@euro'
-            ];
-
-            return $this->localeList[$lang];
-        }
-
-
-        // via shell
-        $locales = shell_exec('locale -a');
-        $locales = explode("\n", $locales);
-
-        $langList = [];
-
-        foreach ($locales as $locale) {
-            if (strpos($locale, $lang) !== 0) {
-                continue;
-            }
-
-            $langList[] = $locale;
-        }
-
-        $langCode = strtolower($lang) . '_' . strtoupper($lang);
-
-        // not the best solution
-        if ($lang == 'en') {
-            $langCode = 'en_GB';
-        }
-
-        // sort, main locale to the top
-        usort($langList, function ($a, $b) use ($langCode) {
-            if ($a == $b) {
-                return 0;
-            }
-
-            if (strpos($a, $langCode) === 0) {
-                return -1;
-            }
-
-            if (strpos($b, $langCode) === 0) {
-                return 1;
-            }
-
-            return $a > $b;
-        });
-
-        $this->localeList[$lang] = $langList;
-
-        return $this->localeList[$lang];
-    }
-
-    /**
-     * @param string $lang - Language
-     * @param string $group - Language group
-     * @param string|array $key
-     * @param string|boolean $value
-     * @deprecated
-     *
-     * Set translation
-     *
-     */
-    public function set(string $lang, string $group, $key, $value = false)
-    {
-        if (!is_array($key)) {
-            LocaleRuntimeCache::set($lang, $group, [$key => $value]);
-            return;
-        }
-
-        LocaleRuntimeCache::set($lang, $group, $key);
-    }
-
-    /**
-     * Exist the variable in the translation?
-     *
-     * @param string $group - language group
-     * @param string|boolean $value - language group variable, optional
-     *
-     * @return boolean
-     */
-    public function exists(string $group, $value = false): bool
-    {
-        $str = $this->getHelper($group, $value);
-
-        if ($value === false) {
-            if (empty($str)) {
-                return false;
-            }
-
-            return true;
-        }
-
-        $_str = '[' . $group . '] ' . $value;
-
-        if ($_str === $str) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Exists the language in the locale?
-     *
-     * @param {string} $language - language eq: de, en
-     * @return bool
-     */
-    public function existsLang($language): bool
-    {
-        return in_array(QUI::availableLanguages(), $language);
     }
 
     /**
@@ -506,35 +174,6 @@ class Locale
     public function get(string $group, $value = false, $replace = false)
     {
         $str = $this->getHelper($group, $value);
-
-        if (empty($replace)) {
-            return str_replace('{\n}', PHP_EOL, $str);
-        }
-
-        foreach ($replace as $key => $value) {
-            if (is_array($value) || is_object($value)) {
-                continue;
-            }
-
-            $str = str_replace('[' . $key . ']', $value, $str);
-        }
-
-        return str_replace('{\n}', PHP_EOL, $str);
-    }
-
-    /**
-     * Get the translation from a specific language
-     *
-     * @param string $lang
-     * @param string $group
-     * @param string|boolean $value
-     * @param array|boolean $replace
-     *
-     * @return string|array
-     */
-    public function getByLang(string $lang, string $group, $value = false, $replace = false)
-    {
-        $str = $this->getHelper($group, $value, $lang);
 
         if (empty($replace)) {
             return str_replace('{\n}', PHP_EOL, $str);
@@ -635,9 +274,9 @@ class Locale
      */
     public function getTranslationFile(string $lang, string $group): string
     {
-        $lang   = preg_replace('/[^a-zA-Z]/', '', $lang);
+        $lang = preg_replace('/[^a-zA-Z]/', '', $lang);
         $locale = StringHelper::toLower($lang);//. '_' . StringHelper::toUpper($lang);
-        $group  = str_replace('/', '_', $group);
+        $group = str_replace('/', '_', $group);
 
         return $this->dir() . '/' . $locale . '/LC_MESSAGES/' . $group . '.ini.php';
     }
@@ -653,18 +292,297 @@ class Locale
     }
 
     /**
-     * Verified the string if the string is a locale string
-     * a locale strings looks like: [group] var.var.var
+     * @param string $lang - Language
+     * @param string $group - Language group
+     * @param string|array $key
+     * @param string|boolean $value
+     * @deprecated
      *
-     * @param string $str
-     * @return bool
+     * Set translation
+     *
      */
-    public function isLocaleString(string $str): bool
+    public function set(string $lang, string $group, $key, $value = false)
     {
-        if (strpos($str, ' ') === false
-            || strpos($str, '[') === false
-            || strpos($str, ']') === false
-        ) {
+        if (!is_array($key)) {
+            LocaleRuntimeCache::set($lang, $group, [$key => $value]);
+            return;
+        }
+
+        LocaleRuntimeCache::set($lang, $group, $key);
+    }
+
+    /**
+     * @return string
+     */
+    public function getGroupingSeparator()
+    {
+        return $this->get('quiqqer/quiqqer', 'numberFormat.grouping_separator');
+    }
+
+    /**
+     * @return array|string
+     */
+    public function getDecimalPattern()
+    {
+        return $this->get('quiqqer/quiqqer', 'numberFormat.decimal_pattern');
+    }
+
+    /**
+     * @return array|string
+     */
+    public function getPercentPattern()
+    {
+        return $this->get('quiqqer/quiqqer', 'numberFormat.percent_pattern');
+    }
+
+    /**
+     * @return array|string
+     */
+    public function getCurrencyPattern()
+    {
+        return $this->get('quiqqer/quiqqer', 'numberFormat.currency_pattern');
+    }
+
+    /**
+     * @return array|string
+     */
+    public function getAccountingCurrencyPattern()
+    {
+        return $this->get('quiqqer/quiqqer', 'numberFormat.accounting_currency_pattern');
+    }
+
+    /**
+     * Refresh the locale
+     * Clears the locale
+     */
+    public function refresh()
+    {
+    }
+
+    /**
+     * Format a number
+     *
+     * @param float|integer $number
+     * @param integer $format
+     * @return string
+     */
+    public function formatNumber($number, int $format = NumberFormatter::DECIMAL): string
+    {
+        $localeCode = QUI::getLocale()->getLocalesByLang(
+            QUI::getLocale()->getCurrent()
+        );
+
+        $Formatter = new NumberFormatter($localeCode[0], $format);
+
+        if (is_string($number)) {
+            $number = floatval($number);
+        }
+
+        $decimalSeparator = self::get('quiqqer/quiqqer', 'numberFormat.decimal_separator');
+        $groupingSeparator = self::get('quiqqer/quiqqer', 'numberFormat.grouping_separator');
+        $decimalPattern = self::get('quiqqer/quiqqer', 'numberFormat.decimal_pattern');
+
+        if (!empty($decimalSeparator)) {
+            $Formatter->setSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL, $decimalSeparator);
+        }
+
+        if (!empty($groupingSeparator)) {
+            $Formatter->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, $groupingSeparator);
+        }
+
+        if (!empty($decimalPattern)) {
+            $Formatter->setPattern($decimalPattern);
+        }
+
+        //  numberFormat.numbering_system
+        //  numberFormat.percent_pattern
+        //  numberFormat.currency_pattern
+        //  numberFormat.accounting_currency_pattern
+
+        //  "numbering_system": "latn",
+        //  "decimal_pattern": "#,##0.###",
+        //  "percent_pattern": "#,##0%",
+
+        if ($number === null) {
+            $number = 0;
+        }
+
+        return $Formatter->format($number);
+    }
+
+    /**
+     * Return the locale list for a language
+     *
+     * @param string $lang - Language code (de, en, fr ...)
+     *
+     * @return array
+     */
+    public function getLocalesByLang(string $lang): array
+    {
+        if (isset($this->localeList[$lang])) {
+            return $this->localeList[$lang];
+        }
+
+        // no shell
+        if (!QUI\Utils\System::isShellFunctionEnabled('locale')) {
+            // if we cannot read locale list, so we must guess
+            $langCode = strtolower($lang) . '_' . strtoupper($lang);
+
+            $this->localeList[$lang] = [
+                $langCode,
+                $langCode . '.utf8',
+                $langCode . '.UTF-8',
+                $langCode . '@euro'
+            ];
+
+            return $this->localeList[$lang];
+        }
+
+
+        // via shell
+        $locales = shell_exec('locale -a');
+        $locales = explode("\n", $locales);
+
+        $langList = [];
+
+        foreach ($locales as $locale) {
+            if (strpos($locale, $lang) !== 0) {
+                continue;
+            }
+
+            $langList[] = $locale;
+        }
+
+        $langCode = strtolower($lang) . '_' . strtoupper($lang);
+
+        // not the best solution
+        if ($lang == 'en') {
+            $langCode = 'en_GB';
+        }
+
+        // sort, main locale to the top
+        usort($langList, function ($a, $b) use ($langCode) {
+            if ($a == $b) {
+                return 0;
+            }
+
+            if (strpos($a, $langCode) === 0) {
+                return -1;
+            }
+
+            if (strpos($b, $langCode) === 0) {
+                return 1;
+            }
+
+            return $a > $b;
+        });
+
+        $this->localeList[$lang] = $langList;
+
+        return $this->localeList[$lang];
+    }
+
+    /**
+     * Format a date timestamp
+     *
+     * @param             $timestamp
+     * @param bool|string $format - (optional) ;if not given, it uses the quiqqer system format
+     *
+     * @return string
+     */
+    public function formatDate($timestamp, $format = false): string
+    {
+        $Formatter = self::getDateFormatter();
+        $current = $this->getCurrent();
+
+        if (!is_numeric($timestamp)) {
+            $timestamp = strtotime($timestamp);
+        }
+
+        // new stuff, compatible with php9
+        if (empty($format)) {
+            return Encoding::toUTF8($Formatter->format($timestamp));
+        }
+
+        if (mb_strpos($format, '%') === false) {
+            $Formatter->setPattern($format);
+
+            return Encoding::toUTF8(
+                $Formatter->format($timestamp)
+            );
+        }
+
+        // deprecate log
+        QUI\System\Log::addDeprecated('Deprecated formatDate usage');
+
+        // old stuff with strftime
+        $locales = $this->getLocalesByLang($current);
+        $localeCode = first($locales);
+
+//        if ($format) {
+        $oldLocale = setlocale(LC_TIME, "0");
+
+        setlocale(LC_TIME, $localeCode);
+        $result = strftime($format, $timestamp);
+        setlocale(LC_TIME, $oldLocale);
+
+        return Encoding::toUTF8($result);
+//        }
+
+//        $formats = $this->getDateFormats();
+//
+//        if (!empty($formats[$current])) {
+//            $oldLocale = setlocale(LC_TIME, "0");
+//
+//            setlocale(LC_TIME, $localeCode);
+//            $result = strftime($formats[$current], $timestamp);
+//            setlocale(LC_TIME, $oldLocale);
+//
+//            return Encoding::toUTF8($result);
+//        }
+//
+//        return Encoding::toUTF8(strftime('%D', $timestamp));
+    }
+
+    /**
+     * Return a date formatter for the current language
+     *
+     * @param int $dateType
+     * @param int $timeType
+     * @return IntlDateFormatter
+     */
+    public function getDateFormatter(
+        int $dateType = IntlDateFormatter::SHORT,
+        int $timeType = IntlDateFormatter::NONE
+    ): IntlDateFormatter {
+        $localeCode = $this->getLocalesByLang($this->getCurrent());
+
+        return new IntlDateFormatter($localeCode[0], $dateType, $timeType);
+    }
+
+    /**
+     * Exist the variable in the translation?
+     *
+     * @param string $group - language group
+     * @param string|boolean $value - language group variable, optional
+     *
+     * @return boolean
+     */
+    public function exists(string $group, $value = false): bool
+    {
+        $str = $this->getHelper($group, $value);
+
+        if ($value === false) {
+            if (empty($str)) {
+                return false;
+            }
+
+            return true;
+        }
+
+        $_str = '[' . $group . '] ' . $value;
+
+        if ($_str === $str) {
             return false;
         }
 
@@ -672,24 +590,43 @@ class Locale
     }
 
     /**
-     * Return the parts of a locale string
-     * a locale strings looks like: [group] var.var.var
+     * Exists the language in the locale?
      *
-     * @param string $str
-     * @return array -  [0=>group, 1=>var]
+     * @param {string} $language - language eq: de, en
+     * @return bool
      */
-    public function getPartsOfLocaleString(string $str): array
+    public function existsLang($language): bool
     {
-        $str = explode(' ', $str);
+        return in_array(QUI::availableLanguages(), $language);
+    }
 
-        if (!isset($str[1])) {
-            return $str;
+    /**
+     * Get the translation from a specific language
+     *
+     * @param string $lang
+     * @param string $group
+     * @param string|boolean $value
+     * @param array|boolean $replace
+     *
+     * @return string|array
+     */
+    public function getByLang(string $lang, string $group, $value = false, $replace = false)
+    {
+        $str = $this->getHelper($group, $value, $lang);
+
+        if (empty($replace)) {
+            return str_replace('{\n}', PHP_EOL, $str);
         }
 
-        $group = str_replace(['[', ']'], '', $str[0]);
-        $var   = trim($str[1]);
+        foreach ($replace as $key => $value) {
+            if (is_array($value) || is_object($value)) {
+                continue;
+            }
 
-        return [$group, $var];
+            $str = str_replace('[' . $key . ']', $value, $str);
+        }
+
+        return str_replace('{\n}', PHP_EOL, $str);
     }
 
     /**
@@ -731,5 +668,66 @@ class Locale
         }
 
         return $this->get($locale[0], $locale[1], $locale[2]);
+    }
+
+    /**
+     * Verified the string if the string is a locale string
+     * a locale strings looks like: [group] var.var.var
+     *
+     * @param string $str
+     * @return bool
+     */
+    public function isLocaleString(string $str): bool
+    {
+        if (
+            strpos($str, ' ') === false
+            || strpos($str, '[') === false
+            || strpos($str, ']') === false
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Return the parts of a locale string
+     * a locale strings looks like: [group] var.var.var
+     *
+     * @param string $str
+     * @return array -  [0=>group, 1=>var]
+     */
+    public function getPartsOfLocaleString(string $str): array
+    {
+        $str = explode(' ', $str);
+
+        if (!isset($str[1])) {
+            return $str;
+        }
+
+        $group = str_replace(['[', ']'], '', $str[0]);
+        $var = trim($str[1]);
+
+        return [$group, $var];
+    }
+
+    /**
+     * Return all available date formats
+     *
+     * @return array
+     */
+    protected function getDateFormats()
+    {
+        if ($this->dateFormats) {
+            return $this->dateFormats;
+        }
+
+        $this->dateFormats = QUI::conf('date_formats');
+
+        if (!$this->dateFormats) {
+            $this->dateFormats = [];
+        }
+
+        return $this->dateFormats;
     }
 }

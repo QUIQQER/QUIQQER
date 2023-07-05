@@ -53,6 +53,7 @@ use function trim;
 use function urldecode;
 use function usort;
 
+use const PHP_URL_PATH;
 use const URL_DIR;
 
 /**
@@ -84,126 +85,108 @@ class Rewrite
      * @var array
      */
     public array $site_params = [];
-
+    /**
+     * @var null
+     */
+    protected $registerPaths = null;
+    /**
+     * @var Output
+     */
+    protected Output $Output;
+    /**
+     * @var Events\Event
+     */
+    protected QUI\Events\Event $Events;
     /**
      * active project
      *
      * @var Project
      */
     private $project;
-
     /**
      * active project
      *
      * @var string
      */
     private string $project_str = '';
-
     /**
      * active template
      *
      * @var string
      */
     private $template_str = false;
-
     /**
      * if project prefix is set
      *
      * @var string
      */
     private string $project_prefix = '';
-
     /**
      * project lang
      *
      * @var string
      */
     private $lang = false;
-
     /**
      * active site
      *
      * @var Site
      */
     private $site = null;
-
     /**
      * first site of the project
      *
      * @var Site
      */
     private $first_child;
-
     /**
      * current site path
      *
      * @var array
      */
     private array $path = [];
-
-    /**
-     * @var null
-     */
-    protected $registerPaths = null;
-
     /**
      * current site path - but only the ids
      *
      * @var array
      */
     private array $ids_in_path = [];
-
     /**
      * internal url cache
      *
      * @var array
      */
     private array $url_cache = [];
-
     /**
      * internal image link cache
      *
      * @var array
      */
     private array $image_cache = [];
-
     /**
      * loaded vhosts
      *
      * @var array
      */
     private $vhosts = false;
-
     /**
      * current suffix, (.html, .pdf, .print)
      *
      * @var string
      */
     private string $suffix = '.html';
-
     /**
      * the html output
      *
      * @var string
      */
     private string $output_content = '';
-
     /**
      * Standard header code
      *
      * @var int
      */
     private int $headerCode = 200;
-
-    /**
-     * @var Output
-     */
-    protected Output $Output;
-
-    /**
-     * @var Events\Event
-     */
-    protected QUI\Events\Event $Events;
 
     /**
      * constructor
@@ -215,25 +198,28 @@ class Rewrite
     }
 
     /**
-     * Return the default suffix eq: .html or ''
+     * Sonderzeichen aus dem Namen entfernen damit die URL rein aussieht
+     *
+     * @param string $url
+     * @param boolean $slash - Soll Slash ersetzt werden oder nicht
      *
      * @return string
      */
-    public static function getDefaultSuffix()
+    public static function replaceUrlSigns(string $url, bool $slash = false): string
     {
-        if (self::$SUFFIX !== false) {
-            return self::$SUFFIX;
+        $search = ['%20', '.', ' ', '_'];
+
+        if ($slash) {
+            $search[] = '/';
         }
 
-        $conf = (int)QUI::conf('globals', 'htmlSuffix');
+        $url = str_replace($search, '-', $url);
 
-        if ($conf === 0) {
-            self::$SUFFIX = '';
-        } else {
-            self::$SUFFIX = '.html';
+        if (substr($url, -5) == '_html') {
+            $url = substr($url, 0, -5) . self::getDefaultSuffix();
         }
 
-        return self::$SUFFIX;
+        return $url;
     }
 
     /**
@@ -257,7 +243,7 @@ class Rewrite
             return;
         }
 
-        $vhosts        = $this->getVHosts();
+        $vhosts = $this->getVHosts();
         $defaultSuffix = self::getDefaultSuffix();
 
         if (!isset($_SERVER['HTTP_HOST'])) {
@@ -268,7 +254,8 @@ class Rewrite
         QUI\System\Forwarding::forward(QUI::getRequest());
 
         // on character urls are not allowed
-        if (!empty($_REQUEST['_url'])
+        if (
+            !empty($_REQUEST['_url'])
             && (mb_strlen($_REQUEST['_url']) === 1 || mb_substr($_REQUEST['_url'], 0, 1) === '.')
         ) {
             $this->showErrorHeader(404, URL_DIR);
@@ -287,7 +274,8 @@ class Rewrite
 
         // Kategorien aufruf
         // Aus url/kat/ wird url/kat.html
-        if (!empty($_REQUEST['_url'])
+        if (
+            !empty($_REQUEST['_url'])
             && substr($_REQUEST['_url'], -1) == '/'
             && strlen($_REQUEST['_url']) != 3
             && strpos($_REQUEST['_url'], 'media/cache') === false
@@ -313,7 +301,8 @@ class Rewrite
             $_url = explode('/', $_REQUEST['_url']);
 
             // projekt
-            if (isset($_url[0])
+            if (
+                isset($_url[0])
                 && substr($_url[0], 0, 1) == self::URL_PROJECT_CHARACTER
             ) {
                 $this->project_str = str_replace(
@@ -329,7 +318,7 @@ class Rewrite
                         $this->project_str
                     );
 
-                    $this->project_str  = $_project_split[0];
+                    $this->project_str = $_project_split[0];
                     $this->template_str = $_project_split[1];
                 }
 
@@ -355,11 +344,12 @@ class Rewrite
             // Sprache
             $language = false;
 
-            if (isset($_url[0])
+            if (
+                isset($_url[0])
                 && (strlen($_url[0]) == 2 || strlen(str_replace($defaultSuffix, '', $_url[0])) == 2)
             ) {
                 $availableLanguages = QUI::availableLanguages();
-                $language           = str_replace($defaultSuffix, '', $_url[0]);
+                $language = str_replace($defaultSuffix, '', $_url[0]);
 
                 if (!in_array($language, $availableLanguages)) {
                     $language = false;
@@ -383,7 +373,8 @@ class Rewrite
                 // Wenns ein Hosteintrag mit der Sprache gibt, dahin leiten
                 // und es nicht der https host ist
                 // @todo https host nicht über den port prüfen, zu ungenau
-                if (isset($_SERVER['HTTP_HOST'])
+                if (
+                    isset($_SERVER['HTTP_HOST'])
                     && isset($vhosts[$_SERVER['HTTP_HOST']])
                     && isset($vhosts[$_SERVER['HTTP_HOST']][$this->lang])
                     && !empty($vhosts[$_SERVER['HTTP_HOST']][$this->lang])
@@ -412,20 +403,21 @@ class Rewrite
 
 
         // Media Center Datei, falls nicht im Cache ist
-        if (isset($_REQUEST['_url'])
+        if (
+            isset($_REQUEST['_url'])
             && strpos($_REQUEST['_url'], 'media/cache') !== false
         ) {
             QUI::getEvents()->fireEvent('request', [$this, $_REQUEST['_url']]);
 
             $imageNotError = false;
-            $Item          = false;
+            $Item = false;
 
             try {
                 $Item = MediaUtils::getElement($_REQUEST['_url']);
 
                 if (strpos($_REQUEST['_url'], '__') !== false) {
                     $lastpos_ul = strrpos($_REQUEST['_url'], '__') + 2;
-                    $pos_dot    = strpos($_REQUEST['_url'], '.', $lastpos_ul);
+                    $pos_dot = strpos($_REQUEST['_url'], '.', $lastpos_ul);
 
                     $size = substr(
                         $_REQUEST['_url'],
@@ -545,7 +537,8 @@ class Rewrite
                 // Falls keine Extension (.html) dann auf .html
                 // nur wenn $defaultSuffix == ''
                 $this->showErrorHeader(301, $url);
-            } elseif ($defaultSuffix === ''
+            } elseif (
+                $defaultSuffix === ''
                 && isset($pathinfo['extension'])
                 && $pathinfo['extension'] == 'html'
             ) {
@@ -594,7 +587,8 @@ class Rewrite
 
             // Sprachen Host finden
             // und es nicht der https host ist
-            if (isset($_SERVER['HTTP_HOST'])
+            if (
+                isset($_SERVER['HTTP_HOST'])
                 && isset($vhosts[$_SERVER['HTTP_HOST']])
                 && isset($vhosts[$_SERVER['HTTP_HOST']][$this->lang])
                 && !empty($vhosts[$_SERVER['HTTP_HOST']][$this->lang])
@@ -666,321 +660,6 @@ class Rewrite
     }
 
     /**
-     * Parameter der Rewrite
-     *
-     * @param string $name
-     *
-     * @return string|boolean
-     */
-    public function getParam(string $name)
-    {
-        $result = '';
-
-        switch ($name) {
-            case 'project':
-                $result = $this->project_str;
-                break;
-
-            case 'project_prefix':
-                $result = $this->project_prefix;
-                break;
-
-            case 'template':
-                $result = $this->template_str;
-                break;
-
-            case 'lang':
-                $result = $this->lang;
-                break;
-        }
-
-        if (empty($result)) {
-            return false;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Return the current header code
-     *
-     * @return Int
-     */
-    public function getHeaderCode(): int
-    {
-        return $this->headerCode;
-    }
-
-    /**
-     * Enter description here...
-     *
-     * @return string
-     */
-    public function getProjectPrefix(): string
-    {
-        return $this->project_prefix;
-    }
-
-    /**
-     * Return the current request uri without params
-     *
-     * @return string
-     */
-    public function getRequestUri(): string
-    {
-        return strtok(QUI::getRequest()->getUri(), '?');
-    }
-
-    /**
-     * Enter description here...
-     *
-     * @param string $url
-     * @param boolean $setPath
-     *
-     * @return Site|false
-     *
-     * @throws QUI\Exception
-     */
-    public function getSiteByUrl(string $url, bool $setPath = true)
-    {
-        // Sprache raus
-        if ($url == '') {
-            return $this->first_child;
-        }
-
-        try {
-            $_url = explode('/', trim($url, '/'));
-
-            if (count($_url) <= 1) {
-                // Erste Ebene
-                $site_url = explode('.', $_url[0]);
-
-                $this->site_params = explode(
-                    self::URL_PARAM_SEPARATOR,
-                    $site_url[0]
-                );
-
-                // für was? :
-                // $this->first_child->getAttribute('name') == str_replace('-', ' ', $this->site_params[0])
-                if (empty($this->site_params[0])) {
-                    return $this->first_child;
-                }
-
-                $id = $this->first_child->getChildIdByName(
-                    $this->site_params[0]
-                );
-
-                $Site = $this->getProject()->get($id);
-
-                if ($setPath) {
-                    $this->setIntoPath($Site);
-                }
-
-                return $Site;
-            }
-
-            $Child = false;
-
-            for ($i = 0, $len = count($_url); $i < $len; $i++) {
-                if ($Child == false) {
-                    $Child = $this->first_child;
-                }
-
-                $val = $_url[$i];
-
-                // letzte seite = url params raushohlen
-                if ($len === $i + 1) {
-                    $defaultSuffix = QUI\Rewrite::getDefaultSuffix();
-                    $suffixLen     = mb_strlen($defaultSuffix);
-
-                    if ($defaultSuffix != ''
-                        && mb_substr($val, $suffixLen * -1) == $defaultSuffix
-                    ) {
-                        $site_url = mb_substr($val, 0, $suffixLen * -1);
-                    } else {
-                        $site_url = $val;
-                    }
-
-                    $this->site_params = explode(
-                        self::URL_PARAM_SEPARATOR,
-                        $site_url
-                    );
-
-                    $val = $this->site_params[0];
-                }
-
-                $id    = $Child->getChildIdByName($val);
-                $Child = $this->getProject()->get($id);
-
-                if ($setPath) {
-                    $this->setIntoPath($Child);
-                }
-            }
-        } catch (\Exception $Exception) {
-            $Child = QUI\Utils\Site::getSiteByUrl($url);
-        }
-
-        return $Child;
-    }
-
-    /**
-     * @return Output
-     *
-     * @throws QUI\Exception
-     */
-    public function getOutput(): Output
-    {
-        $this->Output->setProject($this->getProject());
-
-        return $this->Output;
-    }
-
-    /**
-     * Gibt das aktuelle Projekt zurück
-     * Die Daten werden aus der URL gehohlt
-     *
-     * @return Project
-     *
-     * @throws QUI\Exception
-     */
-    public function getProject(): Project
-    {
-        if ($this->project) {
-            return $this->project;
-        }
-
-        if (!empty($this->project_str)) {
-            return QUI\Projects\Manager::get();
-        }
-
-        // ajax?
-        if (defined('QUIQQER_AJAX') && QUIQQER_AJAX) {
-            if (isset($_REQUEST['lang'])) {
-                $this->lang = $_REQUEST['lang'];
-            }
-        }
-
-        // Vhosts
-        $Project = $this->getProjectByVhost();
-
-        if ($Project) {
-            if ($this->lang && $this->lang != $Project->getLang()) {
-                $Project = QUI\Projects\Manager::getProject(
-                    $Project->getName(),
-                    $this->lang
-                );
-            }
-
-            return $Project;
-        }
-
-        /**
-         * If a vhost wasn't found
-         */
-
-        // wenn standard vhost nicht der gewünschte ist, dann 404
-        $host = '';
-
-        if (defined('HOST')) {
-            $host = str_replace(['http://', 'https://'], '', HOST);
-        }
-
-        if (isset($_SERVER['HTTP_HOST']) && $host != $_SERVER['HTTP_HOST'] && $this->project) {
-            $this->showErrorHeader(404);
-
-            return $this->project;
-        }
-
-        try {
-            $Project = QUI\Projects\Manager::get();
-        } catch (QUI\Exception $Exception) {
-            $Project = false;
-        }
-
-        if ($Project && is_object($Project)) {
-            $this->project = $Project;
-
-            return $this->project;
-        }
-
-        // Projekt mit der Sprache exitiert nicht
-        $this->showErrorHeader(404);
-
-        $Project = QUI\Projects\Manager::getStandard();
-
-        $this->project = $Project;
-        $this->lang    = $Project->getLang();
-
-        QUI::getLocale()->setCurrent($Project->getLang());
-
-        return $Project;
-    }
-
-    /**
-     * Return the project by the vhost, if a vhost exist
-     *
-     * @return Project|false
-     */
-    protected function getProjectByVhost()
-    {
-        $vhosts = $this->getVHosts();
-
-        // Vhosts
-        $http_host = '';
-
-        if (isset($_SERVER['HTTP_HOST'])) {
-            $http_host = $_SERVER['HTTP_HOST'];
-        }
-
-        if (!isset($vhosts[$http_host])) {
-            return false;
-        }
-
-        if (!isset($vhosts[$http_host]['project'])) {
-            return false;
-        }
-
-        $pname = $vhosts[$http_host]['project'];
-
-        //$lang = false;
-        if (isset($vhosts[$http_host]['lang']) && !$this->lang) {
-            $this->lang = $vhosts[$http_host]['lang'];
-        }
-
-        $template = false;
-
-        if (isset($vhosts[$_SERVER['HTTP_HOST']]['template'])) {
-            $template = $vhosts[$_SERVER['HTTP_HOST']]['template'];
-        }
-
-        try {
-            $Project = QUI::getProject(
-                $pname,
-                $this->lang,
-                $template
-            );
-        } catch (QUI\Exception $Exception) {
-            // nothing todo
-            $Project = false;
-        }
-
-        if ($Project) {
-            $this->project = $Project;
-            $this->Output->setProject($Project);
-
-            if (!defined('QUIQQER_AJAX')) {
-                QUI::getLocale()->setCurrent(
-                    $Project->getAttribute('lang')
-                );
-            }
-
-            return $Project;
-        }
-
-        return false;
-    }
-
-    /**
      * Gibt die Vhosts zurück
      *
      * @return array
@@ -997,13 +676,25 @@ class Rewrite
     }
 
     /**
-     * Gibt das Suffix des Aufrufs zurück
+     * Return the default suffix eq: .html or ''
      *
-     * @return string .print / .html
+     * @return string
      */
-    public function getSuffix(): string
+    public static function getDefaultSuffix()
     {
-        return $this->suffix;
+        if (self::$SUFFIX !== false) {
+            return self::$SUFFIX;
+        }
+
+        $conf = (int)QUI::conf('globals', 'htmlSuffix');
+
+        if ($conf === 0) {
+            self::$SUFFIX = '';
+        } else {
+            self::$SUFFIX = '.html';
+        }
+
+        return self::$SUFFIX;
     }
 
     /**
@@ -1081,7 +772,7 @@ class Rewrite
                     $ErrorSite = $this->getErrorSite();
 
                     $this->project = $ErrorSite->getProject();
-                    $this->site    = $ErrorSite;
+                    $this->site = $ErrorSite;
                     $this->site->setAttribute('ERROR_HEADER', 404);
 
                     return true;
@@ -1118,7 +809,8 @@ class Rewrite
         $vhosts = $this->getVHosts();
 
         // Falls der Host eine eigene Fehlerseite zugewiesen bekommen hat
-        if (isset($vhosts[$_SERVER['HTTP_HOST']])
+        if (
+            isset($vhosts[$_SERVER['HTTP_HOST']])
             && isset($vhosts[$_SERVER['HTTP_HOST']]['error'])
         ) {
             $host = $_SERVER['HTTP_HOST'];
@@ -1142,7 +834,7 @@ class Rewrite
                 }
 
                 $Project = QUI::getProject($error[0], $error[1], $template);
-                $Site    = $Project->get((int)$error[2]);
+                $Site = $Project->get((int)$error[2]);
 
                 return $Site;
             } catch (QUI\Exception $Exception) {
@@ -1151,7 +843,8 @@ class Rewrite
             }
         }
 
-        if (isset($vhosts[404]) && isset($vhosts[404]['id'])
+        if (
+            isset($vhosts[404]) && isset($vhosts[404]['id'])
             && isset($vhosts[404]['project'])
             && isset($vhosts[404]['lang'])
         ) {
@@ -1173,6 +866,389 @@ class Rewrite
         }
 
         return $Standard->firstChild();
+    }
+
+    /**
+     * Gibt das aktuelle Projekt zurück
+     * Die Daten werden aus der URL gehohlt
+     *
+     * @return Project
+     *
+     * @throws QUI\Exception
+     */
+    public function getProject(): Project
+    {
+        if ($this->project) {
+            return $this->project;
+        }
+
+        if (!empty($this->project_str)) {
+            return QUI\Projects\Manager::get();
+        }
+
+        // ajax?
+        if (defined('QUIQQER_AJAX') && QUIQQER_AJAX) {
+            if (isset($_REQUEST['lang'])) {
+                $this->lang = $_REQUEST['lang'];
+            }
+        }
+
+        // Vhosts
+        $Project = $this->getProjectByVhost();
+
+        if ($Project) {
+            if ($this->lang && $this->lang != $Project->getLang()) {
+                $Project = QUI\Projects\Manager::getProject(
+                    $Project->getName(),
+                    $this->lang
+                );
+            }
+
+            return $Project;
+        }
+
+        /**
+         * If a vhost wasn't found
+         */
+
+        // wenn standard vhost nicht der gewünschte ist, dann 404
+        $host = '';
+
+        if (defined('HOST')) {
+            $host = str_replace(['http://', 'https://'], '', HOST);
+        }
+
+        if (isset($_SERVER['HTTP_HOST']) && $host != $_SERVER['HTTP_HOST'] && $this->project) {
+            $this->showErrorHeader(404);
+
+            return $this->project;
+        }
+
+        try {
+            $Project = QUI\Projects\Manager::get();
+        } catch (QUI\Exception $Exception) {
+            $Project = false;
+        }
+
+        if ($Project && is_object($Project)) {
+            $this->project = $Project;
+
+            return $this->project;
+        }
+
+        // Projekt mit der Sprache exitiert nicht
+        $this->showErrorHeader(404);
+
+        $Project = QUI\Projects\Manager::getStandard();
+
+        $this->project = $Project;
+        $this->lang = $Project->getLang();
+
+        QUI::getLocale()->setCurrent($Project->getLang());
+
+        return $Project;
+    }
+
+    /**
+     * Return the project by the vhost, if a vhost exist
+     *
+     * @return Project|false
+     */
+    protected function getProjectByVhost()
+    {
+        $vhosts = $this->getVHosts();
+
+        // Vhosts
+        $http_host = '';
+
+        if (isset($_SERVER['HTTP_HOST'])) {
+            $http_host = $_SERVER['HTTP_HOST'];
+        }
+
+        if (!isset($vhosts[$http_host])) {
+            return false;
+        }
+
+        if (!isset($vhosts[$http_host]['project'])) {
+            return false;
+        }
+
+        $pname = $vhosts[$http_host]['project'];
+
+        //$lang = false;
+        if (isset($vhosts[$http_host]['lang']) && !$this->lang) {
+            $this->lang = $vhosts[$http_host]['lang'];
+        }
+
+        $template = false;
+
+        if (isset($vhosts[$_SERVER['HTTP_HOST']]['template'])) {
+            $template = $vhosts[$_SERVER['HTTP_HOST']]['template'];
+        }
+
+        try {
+            $Project = QUI::getProject(
+                $pname,
+                $this->lang,
+                $template
+            );
+        } catch (QUI\Exception $Exception) {
+            // nothing todo
+            $Project = false;
+        }
+
+        if ($Project) {
+            $this->project = $Project;
+            $this->Output->setProject($Project);
+
+            if (!defined('QUIQQER_AJAX')) {
+                QUI::getLocale()->setCurrent(
+                    $Project->getAttribute('lang')
+                );
+            }
+
+            return $Project;
+        }
+
+        return false;
+    }
+
+    /**
+     * Return the current request uri without params
+     *
+     * @return string
+     */
+    public function getRequestUri(): string
+    {
+        return strtok(QUI::getRequest()->getUri(), '?');
+    }
+
+    /**
+     * Setzt eine Seite in den Path
+     *
+     * @param Interfaces\Projects\Site $Site - seite die hinzugefügt wird
+     */
+    private function setIntoPath(Interfaces\Projects\Site $Site)
+    {
+        $this->path[] = $Site;
+        $this->ids_in_path[] = $Site->getId();
+    }
+
+    /**
+     * Enter description here...
+     *
+     * @param string $url
+     * @param boolean $setPath
+     *
+     * @return Site|false
+     *
+     * @throws QUI\Exception
+     */
+    public function getSiteByUrl(string $url, bool $setPath = true)
+    {
+        // Sprache raus
+        if ($url == '') {
+            return $this->first_child;
+        }
+
+        try {
+            $_url = explode('/', trim($url, '/'));
+
+            if (count($_url) <= 1) {
+                // Erste Ebene
+                $site_url = explode('.', $_url[0]);
+
+                $this->site_params = explode(
+                    self::URL_PARAM_SEPARATOR,
+                    $site_url[0]
+                );
+
+                // für was? :
+                // $this->first_child->getAttribute('name') == str_replace('-', ' ', $this->site_params[0])
+                if (empty($this->site_params[0])) {
+                    return $this->first_child;
+                }
+
+                $id = $this->first_child->getChildIdByName(
+                    $this->site_params[0]
+                );
+
+                $Site = $this->getProject()->get($id);
+
+                if ($setPath) {
+                    $this->setIntoPath($Site);
+                }
+
+                return $Site;
+            }
+
+            $Child = false;
+
+            for ($i = 0, $len = count($_url); $i < $len; $i++) {
+                if ($Child == false) {
+                    $Child = $this->first_child;
+                }
+
+                $val = $_url[$i];
+
+                // letzte seite = url params raushohlen
+                if ($len === $i + 1) {
+                    $defaultSuffix = QUI\Rewrite::getDefaultSuffix();
+                    $suffixLen = mb_strlen($defaultSuffix);
+
+                    if (
+                        $defaultSuffix != ''
+                        && mb_substr($val, $suffixLen * -1) == $defaultSuffix
+                    ) {
+                        $site_url = mb_substr($val, 0, $suffixLen * -1);
+                    } else {
+                        $site_url = $val;
+                    }
+
+                    $this->site_params = explode(
+                        self::URL_PARAM_SEPARATOR,
+                        $site_url
+                    );
+
+                    $val = $this->site_params[0];
+                }
+
+                $id = $Child->getChildIdByName($val);
+                $Child = $this->getProject()->get($id);
+
+                if ($setPath) {
+                    $this->setIntoPath($Child);
+                }
+            }
+        } catch (\Exception $Exception) {
+            $Child = QUI\Utils\Site::getSiteByUrl($url);
+        }
+
+        return $Child;
+    }
+
+    /**
+     * Return the Site or false if a path exists
+     *
+     * @param string $path
+     * @param Project $Project
+     *
+     * @return Site|false
+     */
+    public function existRegisterPath(string $path, Project $Project)
+    {
+        if ($this->registerPaths === null) {
+            $table = QUI::getDBProjectTableName('paths', $Project);
+            $result = QUI::getDataBase()->fetch([
+                'from' => $table
+            ]);
+
+            $this->registerPaths = $result;
+        }
+
+        $list = $this->registerPaths;
+
+        // Nach / (slash) sortieren, damit URL mit mehr Kindseiten als erstes kommen
+        // Ansonsten kann es vorkommen das die falsche Seite für den Pfad zuständig ist
+        usort($list, function ($a, $b) {
+            return mb_substr_count($a['path'], '/') - mb_substr_count($b['path'], '/');
+        });
+
+        foreach ($list as $entry) {
+            if (!QUI\Utils\StringHelper::match($entry['path'], $path)) {
+                continue;
+            }
+
+            try {
+                $Site = $Project->get((int)$entry['id']);
+
+                if ($Site->getAttribute('active')) {
+                    return $Site;
+                }
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addDebug($Exception->getMessage());
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Parameter der Rewrite
+     *
+     * @param string $name
+     *
+     * @return string|boolean
+     */
+    public function getParam(string $name)
+    {
+        $result = '';
+
+        switch ($name) {
+            case 'project':
+                $result = $this->project_str;
+                break;
+
+            case 'project_prefix':
+                $result = $this->project_prefix;
+                break;
+
+            case 'template':
+                $result = $this->template_str;
+                break;
+
+            case 'lang':
+                $result = $this->lang;
+                break;
+        }
+
+        if (empty($result)) {
+            return false;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Return the current header code
+     *
+     * @return Int
+     */
+    public function getHeaderCode(): int
+    {
+        return $this->headerCode;
+    }
+
+    /**
+     * Enter description here...
+     *
+     * @return string
+     */
+    public function getProjectPrefix(): string
+    {
+        return $this->project_prefix;
+    }
+
+    /**
+     * @return Output
+     *
+     * @throws QUI\Exception
+     */
+    public function getOutput(): Output
+    {
+        $this->Output->setProject($this->getProject());
+
+        return $this->Output;
+    }
+
+    /**
+     * Gibt das Suffix des Aufrufs zurück
+     *
+     * @return string .print / .html
+     */
+    public function getSuffix(): string
+    {
+        return $this->suffix;
     }
 
     /**
@@ -1220,8 +1296,10 @@ class Rewrite
         }
 
         if ($start == true) {
-            if (isset($path) && is_array($path)
-                && (!isset($path[0]) || $path[0]->getId() != 1)) {
+            if (
+                isset($path) && is_array($path)
+                && (!isset($path[0]) || $path[0]->getId() != 1)
+            ) {
                 array_unshift($path, $this->first_child);
             }
         }
@@ -1259,18 +1337,7 @@ class Rewrite
      */
     public function addSiteToPath($Site)
     {
-        $this->path[]        = $Site;
-        $this->ids_in_path[] = $Site->getId();
-    }
-
-    /**
-     * Setzt eine Seite in den Path
-     *
-     * @param Interfaces\Projects\Site $Site - seite die hinzugefügt wird
-     */
-    private function setIntoPath(Interfaces\Projects\Site $Site)
-    {
-        $this->path[]        = $Site;
+        $this->path[] = $Site;
         $this->ids_in_path[] = $Site->getId();
     }
 
@@ -1290,7 +1357,7 @@ class Rewrite
 
         QUI::getEvents()->fireEvent('rewriteOutputBegin', [
             'Rewrite' => $this,
-            'output'  => $output
+            'output' => $output
         ]);
 
         $output = $this->Output->parse($output);
@@ -1304,20 +1371,10 @@ class Rewrite
 
         QUI::getEvents()->fireEvent('rewriteOutput', [
             'Rewrite' => $this,
-            'output'  => $output
+            'output' => $output
         ]);
 
         return $this->getOutputContent();
-    }
-
-    /**
-     * Output Content setzen
-     *
-     * @param string $str
-     */
-    public function setOutputContent(string $str)
-    {
-        $this->output_content = $str;
     }
 
     /**
@@ -1328,6 +1385,16 @@ class Rewrite
     public function getOutputContent(): string
     {
         return $this->output_content;
+    }
+
+    /**
+     * Output Content setzen
+     *
+     * @param string $str
+     */
+    public function setOutputContent(string $str)
+    {
+        $this->output_content = $str;
     }
 
     /**
@@ -1347,31 +1414,6 @@ class Rewrite
         }
 
         return $output[0];
-    }
-
-    /**
-     * Sonderzeichen aus dem Namen entfernen damit die URL rein aussieht
-     *
-     * @param string $url
-     * @param boolean $slash - Soll Slash ersetzt werden oder nicht
-     *
-     * @return string
-     */
-    public static function replaceUrlSigns(string $url, bool $slash = false): string
-    {
-        $search = ['%20', '.', ' ', '_'];
-
-        if ($slash) {
-            $search[] = '/';
-        }
-
-        $url = str_replace($search, '-', $url);
-
-        if (substr($url, -5) == '_html') {
-            $url = substr($url, 0, -5) . self::getDefaultSuffix();
-        }
-
-        return $url;
     }
 
     /**
@@ -1405,14 +1447,14 @@ class Rewrite
     public function registerPath($paths, $Site)
     {
         $Project = $Site->getProject();
-        $table   = QUI::getDBProjectTableName('paths', $Project);
+        $table = QUI::getDBProjectTableName('paths', $Project);
 
         // check, if path is the same, if yes, we have nothing to do
         if (is_string($paths)) {
             $alreadyRegistered = QUI::getDataBase()->fetch([
-                'from'  => $table,
+                'from' => $table,
                 'where' => [
-                    'id'   => $Site->getId(),
+                    'id' => $Site->getId(),
                     'path' => $paths
                 ]
             ]);
@@ -1434,12 +1476,12 @@ class Rewrite
 
         // cleanup paths - use only paths
         foreach ($paths as $key => $path) {
-            $paths[$key] = parse_url($path, \PHP_URL_PATH);
+            $paths[$key] = parse_url($path, PHP_URL_PATH);
         }
 
         foreach ($paths as $path) {
             QUI::getDataBase()->insert($table, [
-                'id'   => $Site->getId(),
+                'id' => $Site->getId(),
                 'path' => $path
             ]);
         }
@@ -1503,57 +1545,11 @@ class Rewrite
     public function unregisterPath($Site)
     {
         $Project = $Site->getProject();
-        $table   = QUI::getDBProjectTableName('paths', $Project);
+        $table = QUI::getDBProjectTableName('paths', $Project);
 
         QUI::getDataBase()->delete($table, [
             'id' => $Site->getId()
         ]);
-    }
-
-    /**
-     * Return the Site or false if a path exists
-     *
-     * @param string $path
-     * @param Project $Project
-     *
-     * @return Site|false
-     */
-    public function existRegisterPath(string $path, Project $Project)
-    {
-        if ($this->registerPaths === null) {
-            $table  = QUI::getDBProjectTableName('paths', $Project);
-            $result = QUI::getDataBase()->fetch([
-                'from' => $table
-            ]);
-
-            $this->registerPaths = $result;
-        }
-
-        $list = $this->registerPaths;
-
-        // Nach / (slash) sortieren, damit URL mit mehr Kindseiten als erstes kommen
-        // Ansonsten kann es vorkommen das die falsche Seite für den Pfad zuständig ist
-        usort($list, function ($a, $b) {
-            return mb_substr_count($a['path'], '/') - mb_substr_count($b['path'], '/');
-        });
-
-        foreach ($list as $entry) {
-            if (!QUI\Utils\StringHelper::match($entry['path'], $path)) {
-                continue;
-            }
-
-            try {
-                $Site = $Project->get((int)$entry['id']);
-
-                if ($Site->getAttribute('active')) {
-                    return $Site;
-                }
-            } catch (QUI\Exception $Exception) {
-                QUI\System\Log::addDebug($Exception->getMessage());
-            }
-        }
-
-        return false;
     }
 
     /**
