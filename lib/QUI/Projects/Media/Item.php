@@ -1062,10 +1062,12 @@ abstract class Item extends QUI\QDOM
      */
     public function setAttribute($name, $val)
     {
-        if ($name !== 'title'
+        if (
+            $name !== 'title'
             && $name !== 'short'
             && $name !== 'description'
-            && $name !== 'alt') {
+            && $name !== 'alt'
+        ) {
             parent::setAttribute($name, $val);
 
             return;
