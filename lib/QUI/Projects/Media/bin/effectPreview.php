@@ -3,6 +3,7 @@
 /**
  * This file includes the image preview
  */
+
 if (!isset($_REQUEST['id']) || !isset($_REQUEST['project'])) {
     exit;
 }
