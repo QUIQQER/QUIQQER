@@ -88,8 +88,10 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
         $cacheFile = $cdir . $file;
 
 
-        if ($this->hasPermission('quiqqer.projects.media.view') &&
-            $this->hasPermission('quiqqer.projects.media.view', QUI::getUsers()->getNobody()) === false) {
+        if (
+            $this->hasPermission('quiqqer.projects.media.view') &&
+            $this->hasPermission('quiqqer.projects.media.view', QUI::getUsers()->getNobody()) === false
+        ) {
             return $original;
         }
 
