@@ -30,17 +30,6 @@ use function is_int;
 class PermissionOrder
 {
     /**
-     * @deprecated
-     */
-    public static function max_integer(
-        $permission,
-        $list
-    ): ?int // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
-    {
-        return self::maxInteger($permission, $list);
-    }
-
-    /**
      * Finds the maximum integer value of a specified permission from a list of objects.
      *
      * @param string $permission The permission to check.
@@ -83,18 +72,7 @@ class PermissionOrder
 
         return $result;
     }
-
-    /**
-     * @deprecated
-     */
-    public static function min_integer(
-        $permission,
-        $list
-    ): ?int // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
-    {
-        return self::minInteger($permission, $list);
-    }
-
+    
     /**
      * Calculates the minimum integer result of checking a permission against a list of objects.
      *
