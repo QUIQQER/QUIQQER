@@ -16,6 +16,7 @@ use QUI\Utils\System\File as FileUtils;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ZipArchive;
+
 use function class_exists;
 use function count;
 use function date;
@@ -1404,11 +1405,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws QUI\Permissions\Exception
      */
     public function uploadFile(
-        string                     $file,
-        int                        $options = Folder::FILE_OVERWRITE_NONE,
+        string $file,
+        int $options = Folder::FILE_OVERWRITE_NONE,
         ?QUI\Interfaces\Users\User $EditUser = null
-    )
-    {
+    ) {
         if (empty($EditUser)) {
             $EditUser = QUI::getUserBySession();
         }
@@ -1438,7 +1438,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
 
         // test if the image is readable
-        if (MediaUtils::getMediaTypeByMimeType($fileInfo['mime_type']) === 'image'
+        if (
+            MediaUtils::getMediaTypeByMimeType($fileInfo['mime_type']) === 'image'
             && strpos($fileInfo['mime_type'], 'svg') === false
         ) {
             try {
@@ -1467,7 +1468,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         // $filename = \mb_strtolower($filename); -> mor will das raus haben
 
         // svg fix
-        if ($fileInfo['mime_type'] == 'text/html'
+        if (
+            $fileInfo['mime_type'] == 'text/html'
             || $fileInfo['mime_type'] == 'text/plain'
             || $fileInfo['mime_type'] == 'image/svg'
         ) {
@@ -1594,7 +1596,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $maxSize = $this->getProject()->getConfig('media_maxUploadSize');
 
         // if it is an image, then resize -> if needed
-        if (Utils::isImage($File)
+        if (
+            Utils::isImage($File)
             && $maxSize
             && isset($new_file_info['width'])
             && isset($new_file_info['height'])

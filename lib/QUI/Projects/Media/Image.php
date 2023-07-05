@@ -13,6 +13,7 @@ use QUI\Projects\Media;
 use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Utils\StringHelper;
 use QUI\Utils\System\File as FileUtils;
+
 use function array_map;
 use function bin2hex;
 use function date;
@@ -44,6 +45,7 @@ use function strpos;
 use function substr;
 use function unlink;
 use function wordwrap;
+
 use const URL_DIR;
 use const VAR_DIR;
 
@@ -168,8 +170,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $file = $this->getAttribute('file');
 
 
-        if ($this->hasPermission('quiqqer.projects.media.view') &&
-            $this->hasPermission('quiqqer.projects.media.view', QUI::getUsers()->getNobody()) === false) {
+        if (
+            $this->hasPermission('quiqqer.projects.media.view') &&
+            $this->hasPermission('quiqqer.projects.media.view', QUI::getUsers()->getNobody()) === false
+        ) {
             $cacheDir = VAR_DIR . 'media/cache/permissions/' . $this->getProject()->getAttribute('name') . '/';
         }
 
@@ -524,9 +528,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         if (isset($effects['brightness']) && is_numeric($effects['brightness'])) {
             $brightness = (int)$effects['brightness'];
 
-            if ($brightness !== 0 && $brightness >= -100
-                && $brightness <= 100
-            ) {
+            if ($brightness !== 0 && $brightness >= -100 && $brightness <= 100) {
                 $Image->brightness($brightness);
             }
         }

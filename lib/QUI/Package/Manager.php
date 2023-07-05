@@ -660,7 +660,8 @@ class Manager extends QUI\QDOM
                 $data = $LicenseConfig->getSection('license');
                 $licenseServerUrl = QUI::conf('license', 'url');
 
-                if (!empty($data['id'])
+                if (
+                    !empty($data['id'])
                     && !empty($data['licenseHash'])
                     && !empty($licenseServerUrl)
                 ) {
@@ -1793,10 +1794,12 @@ class Manager extends QUI\QDOM
         $needledRAM = $this->isVCSServerEnabled() ? self::REQUIRED_MEMORY_VCS . 'M' : self::REQUIRED_MEMORY . 'M';
         $limit = QUI\Utils\System::getMemoryLimit();
 
-        if (php_sapi_name() != 'cli'
+        if (
+            php_sapi_name() != 'cli'
             && $limit != -1
             && $this->isVCSServerEnabled()
-            && QUIFile::getBytes($needledRAM) > $limit) {
+            && QUIFile::getBytes($needledRAM) > $limit
+        ) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',

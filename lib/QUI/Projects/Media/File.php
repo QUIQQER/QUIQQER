@@ -10,6 +10,7 @@ use Exception;
 use QUI;
 use QUI\Projects\Media;
 use QUI\Utils\System\File as QUIFile;
+
 use function dirname;
 use function file_exists;
 use function in_array;
@@ -87,8 +88,10 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
         $cacheFile = $cdir . $file;
 
 
-        if ($this->hasPermission('quiqqer.projects.media.view') &&
-            $this->hasPermission('quiqqer.projects.media.view', QUI::getUsers()->getNobody()) === false) {
+        if (
+            $this->hasPermission('quiqqer.projects.media.view') &&
+            $this->hasPermission('quiqqer.projects.media.view', QUI::getUsers()->getNobody()) === false
+        ) {
             return $original;
         }
 

@@ -14,6 +14,7 @@ use QUI\Permissions\Permission;
 use QUI\Projects\Media;
 use QUI\Users\User;
 use QUI\Utils\System\File as QUIFile;
+
 use function array_reverse;
 use function count;
 use function current;
@@ -37,6 +38,7 @@ use function reset;
 use function str_replace;
 use function strpos;
 use function trim;
+
 use const PATHINFO_EXTENSION;
 use const URL_DIR;
 use const VAR_DIR;
@@ -1060,10 +1062,12 @@ abstract class Item extends QUI\QDOM
      */
     public function setAttribute($name, $val)
     {
-        if ($name !== 'title'
+        if (
+            $name !== 'title'
             && $name !== 'short'
             && $name !== 'description'
-            && $name !== 'alt') {
+            && $name !== 'alt'
+        ) {
             parent::setAttribute($name, $val);
 
             return;
