@@ -28,9 +28,7 @@ if (isset($_REQUEST['greyscale']) && (int)$_REQUEST['greyscale']) {
     $Image->greyscale();
 }
 
-if (isset($_REQUEST['brightness'])
-    && is_numeric($_REQUEST['brightness'])
-) {
+if (isset($_REQUEST['brightness']) && is_numeric($_REQUEST['brightness'])) {
     $Image->brightness(intval($_REQUEST['brightness']));
 }
 
@@ -38,9 +36,7 @@ if (isset($_REQUEST['blur']) && is_numeric($_REQUEST['blur'])) {
     $Image->blur(intval($_REQUEST['blur']));
 }
 
-if (isset($_REQUEST['contrast'])
-    && is_numeric($_REQUEST['contrast'])
-) {
+if (isset($_REQUEST['contrast']) && is_numeric($_REQUEST['contrast'])) {
     $contrast = intval($_REQUEST['contrast']);
 
     if ($contrast !== 0) {
