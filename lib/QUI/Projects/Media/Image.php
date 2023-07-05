@@ -13,6 +13,7 @@ use QUI\Projects\Media;
 use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Utils\StringHelper;
 use QUI\Utils\System\File as FileUtils;
+
 use function array_map;
 use function bin2hex;
 use function date;
@@ -44,6 +45,7 @@ use function strpos;
 use function substr;
 use function unlink;
 use function wordwrap;
+
 use const URL_DIR;
 use const VAR_DIR;
 

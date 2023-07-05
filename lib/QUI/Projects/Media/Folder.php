@@ -16,6 +16,7 @@ use QUI\Utils\System\File as FileUtils;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ZipArchive;
+
 use function class_exists;
 use function count;
 use function date;
@@ -1404,11 +1405,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws QUI\Permissions\Exception
      */
     public function uploadFile(
-        string                     $file,
-        int                        $options = Folder::FILE_OVERWRITE_NONE,
+        string $file,
+        int $options = Folder::FILE_OVERWRITE_NONE,
         ?QUI\Interfaces\Users\User $EditUser = null
-    )
-    {
+    ) {
         if (empty($EditUser)) {
             $EditUser = QUI::getUserBySession();
         }

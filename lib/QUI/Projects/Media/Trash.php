@@ -9,6 +9,7 @@ namespace QUI\Projects\Media;
 use QUI;
 use QUI\Exception;
 use QUI\Projects\Media;
+
 use function end;
 use function file_exists;
 use function json_decode;
