@@ -6,8 +6,6 @@
 
 namespace QUI\Utils;
 
-use QUI;
-
 /**
  * Class Uuid
  * - Helps to generate unique IDs
@@ -24,7 +22,7 @@ class Uuid
         } catch (\Exception $Exception) {
             $UUID = \Ramsey\Uuid\Uuid::uuid3(
                 \Ramsey\Uuid\Uuid::NAMESPACE_DNS,
-                \microtime(true).\uniqid()
+                \microtime(true) . \uniqid()
             );
         }
 

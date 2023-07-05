@@ -27,6 +27,19 @@ use function substr;
 class Site
 {
     /**
+     * Alias for setRecursiveAttribute
+     *
+     * @param \QUI\Interfaces\Projects\Site $Site
+     * @param $attribute
+     *
+     * @deprecated use setRecursiveAttribute
+     */
+    public static function setRecursivAttribute(\QUI\Interfaces\Projects\Site $Site, $attribute)
+    {
+        self::setRecursiveAttribute($Site, $attribute);
+    }
+
+    /**
      * Set a attribute recursive from its parents if the attribute is not set
      *
      * @param \QUI\Interfaces\Projects\Site $Site
@@ -59,26 +72,13 @@ class Site
     }
 
     /**
-     * Alias for setRecursiveAttribute
-     *
-     * @param \QUI\Interfaces\Projects\Site $Site
-     * @param $attribute
-     *
-     * @deprecated use setRecursiveAttribute
-     */
-    public static function setRecursivAttribute(\QUI\Interfaces\Projects\Site $Site, $attribute)
-    {
-        self::setRecursiveAttribute($Site, $attribute);
-    }
-
-    /**
      * @param \QUI\Projects\Site $Site
      * @return string
      */
     public static function getChildType(\QUI\Projects\Site $Site): string
     {
-        $Project     = $Site->getProject();
-        $siteTypes   = QUI::getPackageManager()->getAvailableSiteTypes($Project);
+        $Project = $Site->getProject();
+        $siteTypes = QUI::getPackageManager()->getAvailableSiteTypes($Project);
         $currentType = $Site->getAttribute('type');
 
         foreach ($siteTypes as $module) {
@@ -113,15 +113,16 @@ class Site
         }
 
         $project = '';
-        $lang    = '';
+        $lang = '';
 
         $url = ltrim($url, '/');
 
-        $urlParts      = explode('/', $url);
+        $urlParts = explode('/', $url);
         $defaultSuffix = QUI\Rewrite::getDefaultSuffix();
 
         // fetch project
-        if (isset($urlParts[0])
+        if (
+            isset($urlParts[0])
             && substr($urlParts[0], 0, 1) == QUI\Rewrite::URL_PROJECT_CHARACTER
         ) {
             $project = str_replace(
@@ -153,10 +154,11 @@ class Site
         }
 
         // fetch language
-        if (isset($urlParts[0])
+        if (
+            isset($urlParts[0])
             && (strlen($urlParts[0]) == 2 || strlen(str_replace($defaultSuffix, '', $urlParts[0])) == 2)
         ) {
-            $lang    = str_replace($defaultSuffix, '', $urlParts[0]);
+            $lang = str_replace($defaultSuffix, '', $urlParts[0]);
             $cleanup = [];
 
             unset($urlParts[0]);

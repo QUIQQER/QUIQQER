@@ -86,7 +86,7 @@ class Utils
         if (preg_match($signs, $name)) {
             throw new Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.url.wrong.signs', [
-                    'name'  => $name,
+                    'name' => $name,
                     'signs' => $signs
                 ]),
                 702
@@ -146,9 +146,9 @@ class Utils
 
         // URL Filter
         if ($Project !== null) {
-            $name   = $Project->getAttribute('name');
+            $name = $Project->getAttribute('name');
             $filter = USR_DIR . 'lib/' . $name . '/url.filter.php';
-            $func   = 'url_filter_' . $name;
+            $func = 'url_filter_' . $name;
 
             $filter = Orthos::clearPath(realpath($filter));
 
@@ -165,83 +165,6 @@ class Utils
     }
 
     /**
-     * Return database.xml list for the Site Object
-     *
-     * @param QUI\Projects\Site $Site
-     *
-     * @return array
-     */
-    public static function getDataBaseXMLListForSite(Projects\Site $Site): array
-    {
-        $siteType = $Site->getAttribute('type');
-        $cache    = $Site->getCachePath() . '/xml-database-list/' . $siteType;
-
-        try {
-            return QUI\Cache\Manager::get($cache);
-        } catch (Exception $Exception) {
-        }
-
-        $dbXmlList = QUI::getPackageManager()->getPackageDatabaseXmlList();
-        $result    = [];
-
-        foreach ($dbXmlList as $package) {
-            $file = OPT_DIR . $package . '/database.xml';
-
-            if (!file_exists($file)) {
-                continue;
-            }
-
-            $Dom  = XML::getDomFromXml($file);
-            $Path = new DOMXPath($Dom);
-
-            $tableList = $Path->query("//database/projects/table");
-
-            for ($i = 0, $len = $tableList->length; $i < $len; $i++) {
-                /* @var $Table DOMElement */
-                $Table = $tableList->item($i);
-
-                if ($Table->getAttribute('no-auto-update')) {
-                    continue;
-                }
-
-                if ($Table->getAttribute('no-project-lang')) {
-                    continue;
-                }
-
-
-                // types check
-                $types = $Table->getAttribute('site-types');
-
-                if ($types) {
-                    $types = explode(',', $types);
-                }
-
-                if (!empty($types) && is_array($types)) {
-                    foreach ($types as $allowedType) {
-                        if (!StringUtils::match($allowedType, $siteType)) {
-                            continue 2;
-                        }
-                    }
-                }
-
-                // table is ok
-                $result[] = [
-                    'file'    => $file,
-                    'package' => $package
-                ];
-            }
-        }
-
-        try {
-            QUI\Cache\Manager::set($cache, $result);
-        } catch (\Exception $Exception) {
-            QUI\System\Log::addError($Exception->getMessage());
-        }
-
-        return $result;
-    }
-
-    /**
      * Return data table array for the Site Object
      * a list of the extra database and extra attributes for saving the site
      * the extra attributes are all from database.xml files
@@ -253,7 +176,7 @@ class Utils
     public static function getDataListForSite(Projects\Site $Site): array
     {
         $siteType = $Site->getAttribute('type');
-        $cache    = $Site->getCachePath() . '/xml-database-tables/' . $siteType;
+        $cache = $Site->getCachePath() . '/xml-database-tables/' . $siteType;
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -261,15 +184,15 @@ class Utils
         }
 
         $dbXmlList = self::getDataBaseXMLListForSite($Site);
-        $Project   = $Site->getProject();
-        $name      = $Project->getName();
-        $lang      = $Project->getLang();
+        $Project = $Site->getProject();
+        $name = $Project->getName();
+        $lang = $Project->getLang();
 
         $result = [];
 
         foreach ($dbXmlList as $dbXml) {
-            $Dom     = XML::getDomFromXml($dbXml['file']);
-            $Path    = new DOMXPath($Dom);
+            $Dom = XML::getDomFromXml($dbXml['file']);
+            $Path = new DOMXPath($Dom);
             $package = $dbXml['package'];
 
             $tableList = $Path->query("//database/projects/table");
@@ -307,11 +230,11 @@ class Utils
                 $fields = $Table->getElementsByTagName('field');
 
                 $table = QUI::getDBTableName($name . '_' . $lang . '_' . $suffix);
-                $data  = [];
+                $data = [];
 
 
                 for ($f = 0, $fLen = $fields->length; $f < $fLen; $f++) {
-                    $Field     = $fields->item($f);
+                    $Field = $fields->item($f);
                     $attribute = trim($Field->nodeValue);
 
                     $data[] = $attribute;
@@ -322,10 +245,87 @@ class Utils
                 }
 
                 $result[] = [
-                    'table'   => $table,
-                    'data'    => $data,
+                    'table' => $table,
+                    'data' => $data,
                     'package' => $package,
-                    'suffix'  => $suffix
+                    'suffix' => $suffix
+                ];
+            }
+        }
+
+        try {
+            QUI\Cache\Manager::set($cache, $result);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
+
+        return $result;
+    }
+
+    /**
+     * Return database.xml list for the Site Object
+     *
+     * @param QUI\Projects\Site $Site
+     *
+     * @return array
+     */
+    public static function getDataBaseXMLListForSite(Projects\Site $Site): array
+    {
+        $siteType = $Site->getAttribute('type');
+        $cache = $Site->getCachePath() . '/xml-database-list/' . $siteType;
+
+        try {
+            return QUI\Cache\Manager::get($cache);
+        } catch (Exception $Exception) {
+        }
+
+        $dbXmlList = QUI::getPackageManager()->getPackageDatabaseXmlList();
+        $result = [];
+
+        foreach ($dbXmlList as $package) {
+            $file = OPT_DIR . $package . '/database.xml';
+
+            if (!file_exists($file)) {
+                continue;
+            }
+
+            $Dom = XML::getDomFromXml($file);
+            $Path = new DOMXPath($Dom);
+
+            $tableList = $Path->query("//database/projects/table");
+
+            for ($i = 0, $len = $tableList->length; $i < $len; $i++) {
+                /* @var $Table DOMElement */
+                $Table = $tableList->item($i);
+
+                if ($Table->getAttribute('no-auto-update')) {
+                    continue;
+                }
+
+                if ($Table->getAttribute('no-project-lang')) {
+                    continue;
+                }
+
+
+                // types check
+                $types = $Table->getAttribute('site-types');
+
+                if ($types) {
+                    $types = explode(',', $types);
+                }
+
+                if (!empty($types) && is_array($types)) {
+                    foreach ($types as $allowedType) {
+                        if (!StringUtils::match($allowedType, $siteType)) {
+                            continue 2;
+                        }
+                    }
+                }
+
+                // table is ok
+                $result[] = [
+                    'file' => $file,
+                    'package' => $package
                 ];
             }
         }
@@ -349,7 +349,7 @@ class Utils
     public static function getExtraAttributeListForSite(Projects\Site $Site): array
     {
         $siteType = $Site->getAttribute('type');
-        $cache    = $Site->getCachePath() . '/xml-database-attributes/' . $siteType;
+        $cache = $Site->getCachePath() . '/xml-database-attributes/' . $siteType;
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -359,7 +359,7 @@ class Utils
 
         // global extra attributes
         $siteXmlList = QUI::getPackageManager()->getPackageSiteXmlList();
-        $result      = [];
+        $result = [];
 
 
         foreach ($siteXmlList as $package) {
@@ -369,7 +369,7 @@ class Utils
                 continue;
             }
 
-            $Dom  = XML::getDomFromXml($file);
+            $Dom = XML::getDomFromXml($file);
             $Path = new DOMXPath($Dom);
 
             $attributes = $Path->query('//site/attributes/attribute');
@@ -378,7 +378,7 @@ class Utils
             foreach ($attributes as $Attribute) {
                 $result[] = [
                     'attribute' => trim($Attribute->nodeValue),
-                    'default'   => $Attribute->getAttribute('default')
+                    'default' => $Attribute->getAttribute('default')
                 ];
             }
         }
@@ -393,7 +393,7 @@ class Utils
 
             $originalPackageSiteXmlFile = OPT_DIR . $type[0] . '/site.xml';
 
-            $Dom  = XML::getDomFromXml($originalPackageSiteXmlFile);
+            $Dom = XML::getDomFromXml($originalPackageSiteXmlFile);
             $Path = new DOMXPath($Dom);
 
             $attributes = $Path->query($exprPackage);
@@ -402,7 +402,7 @@ class Utils
             foreach ($attributes as $Attribute) {
                 $result[] = [
                     'attribute' => trim($Attribute->nodeValue),
-                    'default'   => $Attribute->getAttribute('default')
+                    'default' => $Attribute->getAttribute('default')
                 ];
             }
 
@@ -420,7 +420,7 @@ class Utils
                     continue;
                 }
 
-                $Dom  = XML::getDomFromXml($siteXmlFile);
+                $Dom = XML::getDomFromXml($siteXmlFile);
                 $Path = new DOMXPath($Dom);
 
                 $attributes = $Path->query($exprOtherPackage);
@@ -429,7 +429,7 @@ class Utils
                 foreach ($attributes as $Attribute) {
                     $result[] = [
                         'attribute' => trim($Attribute->nodeValue),
-                        'default'   => $Attribute->getAttribute('default')
+                        'default' => $Attribute->getAttribute('default')
                     ];
                 }
             }
@@ -459,7 +459,7 @@ class Utils
         }
 
         $siteType = $Site->getAttribute('type');
-        $cache    = $Site->getCachePath() . '/xml-database-settings/' . $current . '/' . $siteType;
+        $cache = $Site->getCachePath() . '/xml-database-settings/' . $current . '/' . $siteType;
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -469,7 +469,7 @@ class Utils
 
         // global extra
         $siteXmlList = QUI::getPackageManager()->getPackageSiteXmlList();
-        $result      = '';
+        $result = '';
 
         foreach ($siteXmlList as $package) {
             $file = OPT_DIR . $package . '/site.xml';
@@ -478,7 +478,7 @@ class Utils
                 continue;
             }
 
-            $Dom  = XML::getDomFromXml($file);
+            $Dom = XML::getDomFromXml($file);
             $Path = new DOMXPath($Dom);
             $cats = $Path->query("//site/settings/category");
 
@@ -489,12 +489,12 @@ class Utils
 
 
         // site type extra xml
-        $type    = explode(':', $Site->getAttribute('type'));
-        $dir     = OPT_DIR . $type[0];
+        $type = explode(':', $Site->getAttribute('type'));
+        $dir = OPT_DIR . $type[0];
         $siteXML = $dir . '/site.xml';
 
         if (file_exists($siteXML)) {
-            $Dom  = XML::getDomFromXml($siteXML);
+            $Dom = XML::getDomFromXml($siteXML);
             $Path = new DOMXPath($Dom);
 
             // type extra
@@ -520,7 +520,7 @@ class Utils
                     continue;
                 }
 
-                $Dom  = XML::getDomFromXml($file);
+                $Dom = XML::getDomFromXml($file);
                 $Path = new DOMXPath($Dom);
 
                 // type extra
@@ -553,7 +553,7 @@ class Utils
     public static function getAdminSiteModulesFromSite($Site)
     {
         $siteType = $Site->getAttribute('type');
-        $cache    = $Site->getCachePath() . '/xml-admin-modules/' . $siteType;
+        $cache = $Site->getCachePath() . '/xml-admin-modules/' . $siteType;
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -561,14 +561,14 @@ class Utils
         }
 
         // site type extra xml
-        $type    = explode(':', $Site->getAttribute('type'));
-        $dir     = OPT_DIR . $type[0];
+        $type = explode(':', $Site->getAttribute('type'));
+        $dir = OPT_DIR . $type[0];
         $siteXML = $dir . '/site.xml';
 
         $result = [];
 
         if (file_exists($siteXML)) {
-            $Dom  = XML::getDomFromXml($siteXML);
+            $Dom = XML::getDomFromXml($siteXML);
             $Path = new DOMXPath($Dom);
 
             // type extra
@@ -616,6 +616,59 @@ class Utils
     }
 
     /**
+     * Return the site object of the quiqqer site link
+     * eq: getSiteByLink( index.php?project=test&lang=de&id=1 )
+     *
+     * @param string $link - index.php?project=test&lang=de&id=1
+     *
+     * @return Projects\Site
+     * @throws Exception
+     */
+    public static function getSiteByLink(string $link): Projects\Site
+    {
+        if (!self::isSiteLink($link)) {
+            throw new Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.site.not.found'
+                ),
+                705,
+                [
+                    'method' => 'getSiteByLink',
+                    'class' => 'QUI/projects/Site/Utils',
+                    'link' => $link
+                ]
+            );
+        }
+
+        $parseUrl = parse_url($link);
+
+        if (empty($parseUrl['query'])) {
+            throw new Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.site.not.found'
+                ),
+                705,
+                [
+                    'method' => 'getSiteByLink',
+                    'class' => 'QUI/projects/Site/Utils',
+                    'link' => $link
+                ]
+            );
+        }
+
+        parse_str($parseUrl['query'], $urlQueryParams);
+
+        $Project = QUI::getProject(
+            $urlQueryParams['project'],
+            $urlQueryParams['lang']
+        );
+
+        return $Project->get($urlQueryParams['id']);
+    }
+
+    /**
      * is the link a quiqqer site link?
      * eq: index.php?project=test&lang=de&id=1
      *
@@ -645,59 +698,6 @@ class Utils
     }
 
     /**
-     * Return the site object of the quiqqer site link
-     * eq: getSiteByLink( index.php?project=test&lang=de&id=1 )
-     *
-     * @param string $link - index.php?project=test&lang=de&id=1
-     *
-     * @return Projects\Site
-     * @throws Exception
-     */
-    public static function getSiteByLink(string $link): Projects\Site
-    {
-        if (!self::isSiteLink($link)) {
-            throw new Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
-                    'exception.site.not.found'
-                ),
-                705,
-                [
-                    'method' => 'getSiteByLink',
-                    'class'  => 'QUI/projects/Site/Utils',
-                    'link'   => $link
-                ]
-            );
-        }
-
-        $parseUrl = parse_url($link);
-
-        if (empty($parseUrl['query'])) {
-            throw new Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
-                    'exception.site.not.found'
-                ),
-                705,
-                [
-                    'method' => 'getSiteByLink',
-                    'class'  => 'QUI/projects/Site/Utils',
-                    'link'   => $link
-                ]
-            );
-        }
-
-        parse_str($parseUrl['query'], $urlQueryParams);
-
-        $Project = QUI::getProject(
-            $urlQueryParams['project'],
-            $urlQueryParams['lang']
-        );
-
-        return $Project->get($urlQueryParams['id']);
-    }
-
-    /**
      * Return a site by an url (relative url)
      *
      * @param Project $Project
@@ -708,15 +708,15 @@ class Utils
      */
     public static function getSiteByUrl(Project $Project, $link): Projects\Site
     {
-        $link  = str_replace('.html', '', $link);
-        $link  = trim($link);
-        $link  = trim($link, '/');
+        $link = str_replace('.html', '', $link);
+        $link = trim($link);
+        $link = trim($link, '/');
         $parts = explode('/', $link);
 
         $Site = $Project->firstChild();
 
         foreach ($parts as $part) {
-            $id   = $Site->getChildIdByName($part);
+            $id = $Site->getChildIdByName($part);
             $Site = $Project->get($id);
         }
 
@@ -763,10 +763,10 @@ class Utils
             }
         }
 
-        $ids     = [];
-        $types   = [];
+        $ids = [];
+        $types = [];
         $parents = [];
-        $where   = [];
+        $where = [];
 
         foreach ($sitetypes as $sitetypeEntry) {
             if (is_numeric($sitetypeEntry)) {
@@ -774,7 +774,8 @@ class Utils
                 continue;
             }
 
-            if (strpos($sitetypeEntry, 'p') === 0
+            if (
+                strpos($sitetypeEntry, 'p') === 0
                 && strpos($sitetypeEntry, '/') === false
                 && strpos($sitetypeEntry, ':') === false
             ) {
@@ -788,14 +789,14 @@ class Utils
         // query params
         if (!empty($ids)) {
             $where['id'] = [
-                'type'  => 'IN',
+                'type' => 'IN',
                 'value' => $ids
             ];
         }
 
         if (!empty($types)) {
             $where['type'] = [
-                'type'  => 'IN',
+                'type' => 'IN',
                 'value' => $types
             ];
         }
@@ -824,7 +825,7 @@ class Utils
             }
 
             $where['id'] = [
-                'type'  => 'IN',
+                'type' => 'IN',
                 'value' => $ids
             ];
 
@@ -854,8 +855,8 @@ class Utils
         // by no parents, we use WHERE OR
         return $Project->getSites([
             'where_or' => $where,
-            'limit'    => $limit,
-            'order'    => $order
+            'limit' => $limit,
+            'order' => $order
         ]);
     }
 
@@ -880,8 +881,8 @@ class Utils
                 705,
                 [
                     'method' => 'rewriteSiteLink',
-                    'class'  => 'QUI/projects/Site/Utils',
-                    'link'   => $link
+                    'class' => 'QUI/projects/Site/Utils',
+                    'link' => $link
                 ]
             );
         }
@@ -897,8 +898,8 @@ class Utils
                 705,
                 [
                     'method' => 'rewriteSiteLink',
-                    'class'  => 'QUI/projects/Site/Utils',
-                    'link'   => $link
+                    'class' => 'QUI/projects/Site/Utils',
+                    'link' => $link
                 ]
             );
         }

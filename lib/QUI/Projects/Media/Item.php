@@ -154,51 +154,13 @@ abstract class Item extends QUI\QDOM
     //region General getter and is methods
 
     /**
-     * Returns the id of the item
+     * Return the path of the file, without host, url dir or cms dir
      *
-     * @return integer
+     * @return string
      */
-    public function getId(): int
+    public function getPath(): string
     {
-        return (int)$this->getAttribute('id');
-    }
-
-    /**
-     * Return the Media of the item
-     *
-     * @return QUI\Projects\Media
-     */
-    public function getMedia(): Media
-    {
-        return $this->Media;
-    }
-
-    /**
-     * Return the Project of the item
-     */
-    public function getProject(): QUI\Projects\Project
-    {
-        return $this->getMedia()->getProject();
-    }
-
-    /**
-     * Returns if the file is active or not
-     *
-     * @return boolean
-     */
-    public function isActive(): bool
-    {
-        return (bool)$this->getAttribute('active');
-    }
-
-    /**
-     * Returns if the file is deleted or not
-     *
-     * @return boolean
-     */
-    public function isDeleted(): bool
-    {
-        return (bool)$this->getAttribute('deleted');
+        return $this->getAttribute('file');
     }
 
     /**
@@ -223,6 +185,153 @@ abstract class Item extends QUI\QDOM
         }
 
         return parent::getAttribute($name);
+    }
+
+    /**
+     * overwritten set attribute
+     * -> this method considers multilingual attributes
+     *
+     * @param string $name
+     * @param array|bool|object|string $val
+     * @return QUI\QDOM|void
+     */
+    public function setAttribute($name, $val)
+    {
+        if (
+            $name !== 'title'
+            && $name !== 'short'
+            && $name !== 'description'
+            && $name !== 'alt'
+        ) {
+            parent::setAttribute($name, $val);
+
+            return;
+        }
+
+        // Multilingual attribute
+
+        $languages = QUI::availableLanguages();
+        $result = [];
+
+        // its already an array
+        if (is_array($val)) {
+            foreach ($languages as $language) {
+                if (isset($val[$language])) {
+                    $result[$language] = $val[$language];
+                }
+            }
+
+            $this->setMultilingualArray($name, $result);
+
+            return;
+        }
+
+        // value is a string, so we need to look deeper
+        $val = json_decode($val, true);
+        $current = QUI::getLocale()->getCurrent();
+
+        if (!$val) {
+            $result[$current] = $val;
+        } else {
+            foreach ($languages as $language) {
+                if (isset($val[$language])) {
+                    $result[$language] = $val[$language];
+                }
+            }
+        }
+
+        $this->setMultilingualArray($name, $result);
+    }
+
+    /**
+     * Set multilingual attributes -> array of attributes [de => text, en => text]
+     * - util method
+     *
+     * @param string $type
+     * @param array $val
+     */
+    protected function setMultilingualArray(string $type, array $val)
+    {
+        switch ($type) {
+            case 'title':
+                foreach ($val as $language => $v) {
+                    $this->title[$language] = $v;
+                }
+                break;
+
+            case 'alt':
+                foreach ($val as $language => $v) {
+                    $this->alt[$language] = $v;
+                }
+                break;
+
+            case 'short':
+            case 'description':
+                foreach ($val as $language => $v) {
+                    $this->description[$language] = $v;
+                }
+                break;
+        }
+    }
+
+    /**
+     * Returns the id of the item
+     *
+     * @return integer
+     */
+    public function getId(): int
+    {
+        return (int)$this->getAttribute('id');
+    }
+
+    /**
+     * Returns the url from the file
+     *
+     * @param boolean $rewritten - false = image.php, true = rewrited URL
+     *
+     * @return string
+     */
+    public function getUrl(bool $rewritten = false): string
+    {
+        if (!$rewritten) {
+            $Project = $this->Media->getProject();
+
+            $str = 'image.php?id=' . $this->getId() . '&project=' . $Project->getAttribute('name');
+
+            if ($this->getAttribute('maxheight')) {
+                $str .= '&maxheight=' . $this->getAttribute('maxheight');
+            }
+
+            if ($this->getAttribute('maxwidth')) {
+                $str .= '&maxwidth=' . $this->getAttribute('maxwidth');
+            }
+
+            return $str;
+        }
+
+        if ($this->getAttribute('active') == 1) {
+            return URL_DIR . $this->Media->getCacheDir() . $this->getAttribute('file');
+        }
+
+        return '';
+    }
+
+    /**
+     * Return the Project of the item
+     */
+    public function getProject(): QUI\Projects\Project
+    {
+        return $this->getMedia()->getProject();
+    }
+
+    /**
+     * Return the Media of the item
+     *
+     * @return QUI\Projects\Media
+     */
+    public function getMedia(): Media
+    {
+        return $this->Media;
     }
 
     /**
@@ -276,6 +385,62 @@ abstract class Item extends QUI\QDOM
     }
 
     /**
+     * @param mixed ...$params
+     *
+     *      setTitle('text')                 - set this title to all languages
+     *      setTitle('text', 'language')     - set this title to the wanted languages
+     *      setTitle(['de' => 'text', 'en' => 'text'])  - set the language array
+     */
+    public function setTitle(...$params)
+    {
+        $this->setMultilingualParams($params, 'title');
+    }
+
+    //endregion
+
+    // region API Methods - General important file operations
+
+    /**
+     * Set multilingual params (attributes)
+     * - util helper
+     * - looks at the params type
+     * - helper for setTitle, setShort, setDescription, setAlt
+     *
+     * @param $params
+     * @param $type
+     */
+    protected function setMultilingualParams($params, $type)
+    {
+        $languages = QUI::availableLanguages();
+
+        if (count($params) === 2) {
+            $text = $params[0];
+            $language = $params[0];
+
+            if (in_array($languages, $language)) {
+                $this->setMultilingualArray($type, [$language => $text]);
+            }
+
+            return;
+        }
+
+        if (is_string($params[0])) {
+            $text = $params[0];
+            $result = [];
+
+            foreach ($languages as $language) {
+                $result[$language] = $text;
+            }
+
+            $this->setMultilingualArray($type, $result);
+
+            return;
+        }
+
+        $this->setMultilingualArray($type, $params[0]);
+    }
+
+    /**
      * Return the short / description
      * alias for getDescription()
      *
@@ -320,6 +485,20 @@ abstract class Item extends QUI\QDOM
     }
 
     /**
+     * Set the description of this item
+     *
+     *      setDescription('text')                 - set this description to all languages
+     *      setDescription('text', 'language')     - set this description to the wanted languages
+     *      setDescription(['de' => 'text', 'en' => 'text'])  - set the language array
+     *
+     * @param mixed ...$params
+     */
+    public function setDescription(...$params)
+    {
+        $this->setMultilingualParams($params, 'short');
+    }
+
+    /**
      * Return the alt text
      *
      * @param null|QUI\Locale $Locale
@@ -351,9 +530,19 @@ abstract class Item extends QUI\QDOM
         return $result;
     }
 
-    //endregion
-
-    // region API Methods - General important file operations
+    /**
+     * Set the alt of this item
+     *
+     *      setAlt('text')                 - set this alt to all languages
+     *      setAlt('text', 'language')     - set this alt to the wanted languages
+     *      setAlt(['de' => 'text', 'en' => 'text'])  - set the language array
+     *
+     * @param mixed ...$params
+     */
+    public function setAlt(...$params)
+    {
+        $this->setMultilingualParams($params, 'alt');
+    }
 
     /**
      * Activates this item
@@ -402,6 +591,68 @@ abstract class Item extends QUI\QDOM
     }
 
     /**
+     * Shortcut for QUI\Permissions\Permission::checkSitePermission
+     *
+     * @param string $permission - name of the permission
+     * @param User|boolean $User - optional
+     *
+     * @throws QUI\Permissions\Exception
+     */
+    public function checkPermission(string $permission, $User = false)
+    {
+        if (Media::useMediaPermissions() === false) {
+            return;
+        }
+
+
+        $Manager = QUI::getPermissionManager();
+        $permList = $Manager->getMediaPermissions($this);
+
+        if (empty($permList[$permission])) {
+            return;
+        }
+
+        QUI\Permissions\Permission::checkMediaPermission(
+            $permission,
+            $this,
+            $User
+        );
+    }
+
+    /**
+     * Return the Parent Media Item Object
+     *
+     * @return Folder
+     * @throws Exception
+     */
+    public function getParent(): Folder
+    {
+        return $this->Media->get($this->getParentId());
+    }
+
+    /**
+     * Return the parent id
+     *
+     * @return int
+     */
+    public function getParentId(): int
+    {
+        if ($this->parent_id) {
+            return $this->parent_id;
+        }
+
+        $id = $this->getId();
+
+        if ($id === 1) {
+            return false;
+        }
+
+        $this->parent_id = $this->Media->getParentIdFrom($id);
+
+        return $this->parent_id;
+    }
+
+    /**
      * Deactivate the file
      * the file is no longer public
      *
@@ -431,6 +682,309 @@ abstract class Item extends QUI\QDOM
         QUI\Cache\LongTermCache::clear(
             $this->getMedia()->getCacheDir() . 'filePathIds/' . md5($this->getAttribute('file'))
         );
+    }
+
+    /**
+     * Delete the file and move it to the trash
+     *
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
+     * @throws Exception
+     */
+    public function delete(QUI\Interfaces\Users\User $PermissionUser = null)
+    {
+        $this->checkPermission('quiqqer.projects.media.del', $PermissionUser);
+
+
+        if ($this->isDeleted()) {
+            throw new Exception(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.already.deleted'),
+                ErrorCodes::ALREADY_DELETED
+            );
+        }
+
+        QUI::getEvents()->fireEvent('mediaDeleteBegin', [$this]);
+
+        $Media = $this->Media;
+        $First = $Media->firstChild();
+
+        // Move file to the temp folder
+        $original = $this->getFullPath();
+        $notFound = false;
+
+        $var_folder = VAR_DIR . 'media/trash/' . $Media->getProject()->getName() . '/';
+
+        if (!is_file($original)) {
+            QUI::getMessagesHandler()->addAttention(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.delete.originalfile.notfound'
+                )
+            );
+
+            $notFound = true;
+        }
+
+        if ($First->getFullPath() == $original) {
+            throw new Exception(
+                ['quiqqer/quiqqer', 'exception.delete.root.file'],
+                ErrorCodes::ROOT_FOLDER_CANT_DELETED
+            );
+        }
+
+        // first, delete the cache
+        if (method_exists($this, 'deleteCache')) {
+            try {
+                $this->deleteCache();
+            } catch (\Exception $Exception) {
+                QUI\System\Log::addWarning($Exception->getMessage());
+            }
+        }
+
+        if (method_exists($this, 'deleteAdminCache')) {
+            try {
+                $this->deleteAdminCache();
+            } catch (\Exception $Exception) {
+                QUI\System\Log::addWarning($Exception->getMessage());
+            }
+        }
+
+
+        // second, move the file to the trash
+        try {
+            QUIFile::unlink($var_folder . $this->getId());
+        } catch (Exception $Exception) {
+            QUI\System\Log::addWarning($Exception->getMessage());
+        }
+
+        try {
+            QUIFile::mkdir($var_folder);
+            QUIFile::move($original, $var_folder . $this->getId());
+        } catch (Exception $Exception) {
+            QUI\System\Log::addWarning($Exception->getMessage());
+        }
+
+        // change db entries
+        QUI::getDataBase()->update(
+            $this->Media->getTable(),
+            [
+                'deleted' => 1,
+                'active' => 0,
+                'file' => ''
+            ],
+            [
+                'id' => $this->getId()
+            ]
+        );
+
+        QUI::getDataBase()->delete(
+            $this->Media->getTable('relations'),
+            ['child' => $this->getId()]
+        );
+
+        $this->parent_id = false;
+        $this->setAttribute('deleted', 1);
+        $this->setAttribute('active', 0);
+
+        try {
+            QUI::getEvents()->fireEvent('mediaDelete', [$this]);
+        } catch (QUI\ExceptionStack $Exception) {
+            QUI\System\Log::addWarning($Exception->getMessage());
+        }
+
+        // remove fila path cache
+        QUI\Cache\LongTermCache::clear(
+            $this->getMedia()->getCacheDir() . 'filePathIds/' . md5($this->getAttribute('file'))
+        );
+
+        if ($notFound) {
+            $this->destroy();
+        }
+    }
+
+    /**
+     * Returns if the file is deleted or not
+     *
+     * @return boolean
+     */
+    public function isDeleted(): bool
+    {
+        return (bool)$this->getAttribute('deleted');
+    }
+
+    /**
+     * Retrieves the full path for the current file.
+     *
+     * @return string The full path for the file.
+     */
+    public function getFullPath(): string
+    {
+        return $this->Media->getFullPath() . $this->getAttribute('file');
+    }
+
+    /**
+     * Destroy the File complete from the DataBase and from the Filesystem
+     *
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
+     * @throws Exception
+     */
+    public function destroy(QUI\Interfaces\Users\User $PermissionUser = null)
+    {
+        $this->checkPermission('quiqqer.projects.media.del', $PermissionUser);
+
+
+        if ($this->isActive()) {
+            throw new Exception(
+                'Only inactive files can be destroyed',
+                ErrorCodes::FILE_CANT_DESTROYED
+            );
+        }
+
+        if (!$this->isDeleted()) {
+            throw new Exception(
+                'Only deleted files can be destroyed',
+                ErrorCodes::FILE_CANT_DESTROYED
+            );
+        }
+
+        $Media = $this->Media;
+
+        // get the trash file and destroy it
+        $var_folder = VAR_DIR . 'media/trash/' . $Media->getProject()->getName() . '/';
+        $var_file = $var_folder . $this->getId();
+
+        try {
+            QUIFile::unlink($var_file);
+        } catch (Exception $Exception) {
+            QUI\System\Log::addWarning($Exception->getMessage());
+        }
+
+        QUI::getDataBase()->delete($this->Media->getTable(), [
+            'id' => $this->getId()
+        ]);
+
+        QUI::getEvents()->fireEvent('mediaDestroy', [$this]);
+
+        // remove fila path cache
+        QUI\Cache\LongTermCache::clear(
+            $Media->getCacheDir() . 'filePathIds/' . md5($this->getAttribute('file'))
+        );
+    }
+
+    /**
+     * Returns if the file is active or not
+     *
+     * @return boolean
+     */
+    public function isActive(): bool
+    {
+        return (bool)$this->getAttribute('active');
+    }
+
+    // endregion
+
+    // region Get Parent Methods
+
+    /**
+     * move the item to another folder
+     *
+     * @param Folder $Folder - the new folder of the file
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
+     *
+     * @throws Exception
+     */
+    public function moveTo(Folder $Folder, QUI\Interfaces\Users\User $PermissionUser = null)
+    {
+        $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
+
+
+        // check if a child with the same name exist
+        if ($Folder->fileWithNameExists($this->getAttribute('name'))) {
+            throw new Exception(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.with.same.name.exists', [
+                    'name' => $Folder->getAttribute('name')
+                ]),
+                ErrorCodes::FILE_ALREADY_EXISTS
+            );
+        }
+
+        $Parent = $this->getParent();
+        $old_path = $this->getFullPath();
+
+        $Parent->getFullPath();
+
+        $new_path = str_replace(
+            $Parent->getFullPath(),
+            $Folder->getFullPath(),
+            $this->getFullPath()
+        );
+
+        $new_file = str_replace($this->getMedia()->getFullPath(), '', $new_path);
+
+        // delete the file cache
+        // @todo move the cache too
+        if (method_exists($this, 'deleteCache')) {
+            $this->deleteCache();
+        }
+
+        if (method_exists($this, 'deleteAdminCache')) {
+            $this->deleteAdminCache();
+        }
+
+
+        // update file path
+        QUI::getDataBase()->update(
+            $this->Media->getTable(),
+            [
+                'file' => $new_file,
+                'pathHash' => md5($new_file)
+            ],
+            ['id' => $this->getId()]
+        );
+
+        // set the new parent relationship
+        QUI::getDataBase()->update(
+            $this->Media->getTable('relations'),
+            [
+                'parent' => $Folder->getId()
+            ],
+            [
+                'parent' => $Parent->getId(),
+                'child' => $this->getId()
+            ]
+        );
+
+        // move file on the real directory
+        QUIFile::move($old_path, $new_path);
+
+        // update internal references
+        $this->setAttribute('file', $new_file);
+
+
+        $this->parent_id = $Folder->getId();
+    }
+
+    /**
+     * copy the item to another folder
+     *
+     * @param Folder $Folder
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
+     *
+     * @return Item - The new file
+     *
+     * @throws Exception
+     */
+    public function copyTo(Folder $Folder, QUI\Interfaces\Users\User $PermissionUser = null): Item
+    {
+        $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
+
+        $File = $Folder->uploadFile($this->getFullPath());
+
+        $File->setAttribute('title', $this->getAttribute('title'));
+        $File->setAttribute('alt', $this->getAttribute('alt'));
+        $File->setAttribute('short', $this->getAttribute('short'));
+        $File->save();
+
+        return $File;
     }
 
     /**
@@ -581,202 +1135,6 @@ abstract class Item extends QUI\QDOM
     }
 
     /**
-     * @param string|array $value
-     * @return string
-     */
-    protected function saveMultilingualField($value): string
-    {
-        if (is_array($value)) {
-            return json_encode($value);
-        }
-
-        $value = json_decode($value, true);
-        $current = QUI::getLocale()->getCurrent();
-
-        if (!$value) {
-            return json_encode([
-                $current => $value
-            ]);
-        }
-
-        $result = [];
-
-        foreach ($value as $key => $val) {
-            if (QUI::getLocale()->existsLang($key)) {
-                $result[$key] = $val;
-            }
-        }
-
-        return json_encode($result);
-    }
-
-    /**
-     * Delete the file and move it to the trash
-     *
-     * @param QUI\Interfaces\Users\User|null $PermissionUser
-     * @throws Exception
-     */
-    public function delete(QUI\Interfaces\Users\User $PermissionUser = null)
-    {
-        $this->checkPermission('quiqqer.projects.media.del', $PermissionUser);
-
-
-        if ($this->isDeleted()) {
-            throw new Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.already.deleted'),
-                ErrorCodes::ALREADY_DELETED
-            );
-        }
-
-        QUI::getEvents()->fireEvent('mediaDeleteBegin', [$this]);
-
-        $Media = $this->Media;
-        $First = $Media->firstChild();
-
-        // Move file to the temp folder
-        $original = $this->getFullPath();
-        $notFound = false;
-
-        $var_folder = VAR_DIR . 'media/trash/' . $Media->getProject()->getName() . '/';
-
-        if (!is_file($original)) {
-            QUI::getMessagesHandler()->addAttention(
-                QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
-                    'exception.delete.originalfile.notfound'
-                )
-            );
-
-            $notFound = true;
-        }
-
-        if ($First->getFullPath() == $original) {
-            throw new Exception(
-                ['quiqqer/quiqqer', 'exception.delete.root.file'],
-                ErrorCodes::ROOT_FOLDER_CANT_DELETED
-            );
-        }
-
-        // first, delete the cache
-        if (method_exists($this, 'deleteCache')) {
-            try {
-                $this->deleteCache();
-            } catch (\Exception $Exception) {
-                QUI\System\Log::addWarning($Exception->getMessage());
-            }
-        }
-
-        if (method_exists($this, 'deleteAdminCache')) {
-            try {
-                $this->deleteAdminCache();
-            } catch (\Exception $Exception) {
-                QUI\System\Log::addWarning($Exception->getMessage());
-            }
-        }
-
-
-        // second, move the file to the trash
-        try {
-            QUIFile::unlink($var_folder . $this->getId());
-        } catch (Exception $Exception) {
-            QUI\System\Log::addWarning($Exception->getMessage());
-        }
-
-        try {
-            QUIFile::mkdir($var_folder);
-            QUIFile::move($original, $var_folder . $this->getId());
-        } catch (Exception $Exception) {
-            QUI\System\Log::addWarning($Exception->getMessage());
-        }
-
-        // change db entries
-        QUI::getDataBase()->update(
-            $this->Media->getTable(),
-            [
-                'deleted' => 1,
-                'active' => 0,
-                'file' => ''
-            ],
-            [
-                'id' => $this->getId()
-            ]
-        );
-
-        QUI::getDataBase()->delete(
-            $this->Media->getTable('relations'),
-            ['child' => $this->getId()]
-        );
-
-        $this->parent_id = false;
-        $this->setAttribute('deleted', 1);
-        $this->setAttribute('active', 0);
-
-        try {
-            QUI::getEvents()->fireEvent('mediaDelete', [$this]);
-        } catch (QUI\ExceptionStack $Exception) {
-            QUI\System\Log::addWarning($Exception->getMessage());
-        }
-
-        // remove fila path cache
-        QUI\Cache\LongTermCache::clear(
-            $this->getMedia()->getCacheDir() . 'filePathIds/' . md5($this->getAttribute('file'))
-        );
-
-        if ($notFound) {
-            $this->destroy();
-        }
-    }
-
-    /**
-     * Destroy the File complete from the DataBase and from the Filesystem
-     *
-     * @param QUI\Interfaces\Users\User|null $PermissionUser
-     * @throws Exception
-     */
-    public function destroy(QUI\Interfaces\Users\User $PermissionUser = null)
-    {
-        $this->checkPermission('quiqqer.projects.media.del', $PermissionUser);
-
-
-        if ($this->isActive()) {
-            throw new Exception(
-                'Only inactive files can be destroyed',
-                ErrorCodes::FILE_CANT_DESTROYED
-            );
-        }
-
-        if (!$this->isDeleted()) {
-            throw new Exception(
-                'Only deleted files can be destroyed',
-                ErrorCodes::FILE_CANT_DESTROYED
-            );
-        }
-
-        $Media = $this->Media;
-
-        // get the trash file and destroy it
-        $var_folder = VAR_DIR . 'media/trash/' . $Media->getProject()->getName() . '/';
-        $var_file = $var_folder . $this->getId();
-
-        try {
-            QUIFile::unlink($var_file);
-        } catch (Exception $Exception) {
-            QUI\System\Log::addWarning($Exception->getMessage());
-        }
-
-        QUI::getDataBase()->delete($this->Media->getTable(), [
-            'id' => $this->getId()
-        ]);
-
-        QUI::getEvents()->fireEvent('mediaDestroy', [$this]);
-
-        // remove fila path cache
-        QUI\Cache\LongTermCache::clear(
-            $Media->getCacheDir() . 'filePathIds/' . md5($this->getAttribute('file'))
-        );
-    }
-
-    /**
      * Rename the File
      *
      * @param string $newName - The new name what the file get
@@ -895,444 +1253,45 @@ abstract class Item extends QUI\QDOM
         QUI::getEvents()->fireEvent('mediaRename', [$this]);
     }
 
-    /**
-     * move the item to another folder
-     *
-     * @param Folder $Folder - the new folder of the file
-     * @param QUI\Interfaces\Users\User|null $PermissionUser
-     *
-     * @throws Exception
-     */
-    public function moveTo(Folder $Folder, QUI\Interfaces\Users\User $PermissionUser = null)
-    {
-        $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
-
-
-        // check if a child with the same name exist
-        if ($Folder->fileWithNameExists($this->getAttribute('name'))) {
-            throw new Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.with.same.name.exists', [
-                    'name' => $Folder->getAttribute('name')
-                ]),
-                ErrorCodes::FILE_ALREADY_EXISTS
-            );
-        }
-
-        $Parent = $this->getParent();
-        $old_path = $this->getFullPath();
-
-        $Parent->getFullPath();
-
-        $new_path = str_replace(
-            $Parent->getFullPath(),
-            $Folder->getFullPath(),
-            $this->getFullPath()
-        );
-
-        $new_file = str_replace($this->getMedia()->getFullPath(), '', $new_path);
-
-        // delete the file cache
-        // @todo move the cache too
-        if (method_exists($this, 'deleteCache')) {
-            $this->deleteCache();
-        }
-
-        if (method_exists($this, 'deleteAdminCache')) {
-            $this->deleteAdminCache();
-        }
-
-
-        // update file path
-        QUI::getDataBase()->update(
-            $this->Media->getTable(),
-            [
-                'file' => $new_file,
-                'pathHash' => md5($new_file)
-            ],
-            ['id' => $this->getId()]
-        );
-
-        // set the new parent relationship
-        QUI::getDataBase()->update(
-            $this->Media->getTable('relations'),
-            [
-                'parent' => $Folder->getId()
-            ],
-            [
-                'parent' => $Parent->getId(),
-                'child' => $this->getId()
-            ]
-        );
-
-        // move file on the real directory
-        QUIFile::move($old_path, $new_path);
-
-        // update internal references
-        $this->setAttribute('file', $new_file);
-
-
-        $this->parent_id = $Folder->getId();
-    }
-
-    /**
-     * copy the item to another folder
-     *
-     * @param Folder $Folder
-     * @param QUI\Interfaces\Users\User|null $PermissionUser
-     *
-     * @return Item - The new file
-     *
-     * @throws Exception
-     */
-    public function copyTo(Folder $Folder, QUI\Interfaces\Users\User $PermissionUser = null): Item
-    {
-        $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
-
-        $File = $Folder->uploadFile($this->getFullPath());
-
-        $File->setAttribute('title', $this->getAttribute('title'));
-        $File->setAttribute('alt', $this->getAttribute('alt'));
-        $File->setAttribute('short', $this->getAttribute('short'));
-        $File->save();
-
-        return $File;
-    }
-
-    /**
-     * @param mixed ...$params
-     *
-     *      setTitle('text')                 - set this title to all languages
-     *      setTitle('text', 'language')     - set this title to the wanted languages
-     *      setTitle(['de' => 'text', 'en' => 'text'])  - set the language array
-     */
-    public function setTitle(...$params)
-    {
-        $this->setMultilingualParams($params, 'title');
-    }
-
-    /**
-     * Set the title of this item
-     *
-     *      setShort('text')                 - set this short to all languages
-     *      setShort('text', 'language')     - set this short to the wanted languages
-     *      setShort(['de' => 'text', 'en' => 'text'])  - set the language array
-     *
-     * @param mixed ...$params
-     */
-    public function setShort(...$params)
-    {
-        $this->setDescription($params);
-    }
-
-    /**
-     * Set the description of this item
-     *
-     *      setDescription('text')                 - set this description to all languages
-     *      setDescription('text', 'language')     - set this description to the wanted languages
-     *      setDescription(['de' => 'text', 'en' => 'text'])  - set the language array
-     *
-     * @param mixed ...$params
-     */
-    public function setDescription(...$params)
-    {
-        $this->setMultilingualParams($params, 'short');
-    }
-
-    /**
-     * Set the alt of this item
-     *
-     *      setAlt('text')                 - set this alt to all languages
-     *      setAlt('text', 'language')     - set this alt to the wanted languages
-     *      setAlt(['de' => 'text', 'en' => 'text'])  - set the language array
-     *
-     * @param mixed ...$params
-     */
-    public function setAlt(...$params)
-    {
-        $this->setMultilingualParams($params, 'alt');
-    }
-
-    /**
-     * overwritten set attribute
-     * -> this method considers multilingual attributes
-     *
-     * @param string $name
-     * @param array|bool|object|string $val
-     * @return QUI\QDOM|void
-     */
-    public function setAttribute($name, $val)
-    {
-        if (
-            $name !== 'title'
-            && $name !== 'short'
-            && $name !== 'description'
-            && $name !== 'alt'
-        ) {
-            parent::setAttribute($name, $val);
-
-            return;
-        }
-
-        // Multilingual attribute
-
-        $languages = QUI::availableLanguages();
-        $result = [];
-
-        // its already an array
-        if (is_array($val)) {
-            foreach ($languages as $language) {
-                if (isset($val[$language])) {
-                    $result[$language] = $val[$language];
-                }
-            }
-
-            $this->setMultilingualArray($name, $result);
-
-            return;
-        }
-
-        // value is a string, so we need to look deeper
-        $val = json_decode($val, true);
-        $current = QUI::getLocale()->getCurrent();
-
-        if (!$val) {
-            $result[$current] = $val;
-        } else {
-            foreach ($languages as $language) {
-                if (isset($val[$language])) {
-                    $result[$language] = $val[$language];
-                }
-            }
-        }
-
-        $this->setMultilingualArray($name, $result);
-    }
-
-    /**
-     * Set multilingual params (attributes)
-     * - util helper
-     * - looks at the params type
-     * - helper for setTitle, setShort, setDescription, setAlt
-     *
-     * @param $params
-     * @param $type
-     */
-    protected function setMultilingualParams($params, $type)
-    {
-        $languages = QUI::availableLanguages();
-
-        if (count($params) === 2) {
-            $text = $params[0];
-            $language = $params[0];
-
-            if (in_array($languages, $language)) {
-                $this->setMultilingualArray($type, [$language => $text]);
-            }
-
-            return;
-        }
-
-        if (is_string($params[0])) {
-            $text = $params[0];
-            $result = [];
-
-            foreach ($languages as $language) {
-                $result[$language] = $text;
-            }
-
-            $this->setMultilingualArray($type, $result);
-
-            return;
-        }
-
-        $this->setMultilingualArray($type, $params[0]);
-    }
-
-    /**
-     * Set multilingual attributes -> array of attributes [de => text, en => text]
-     * - util method
-     *
-     * @param string $type
-     * @param array $val
-     */
-    protected function setMultilingualArray(string $type, array $val)
-    {
-        switch ($type) {
-            case 'title':
-                foreach ($val as $language => $v) {
-                    $this->title[$language] = $v;
-                }
-                break;
-
-            case 'alt':
-                foreach ($val as $language => $v) {
-                    $this->alt[$language] = $v;
-                }
-                break;
-
-            case 'short':
-            case 'description':
-                foreach ($val as $language => $v) {
-                    $this->description[$language] = $v;
-                }
-                break;
-        }
-    }
-
-    // endregion
-
-    // region Get Parent Methods
-
-    /**
-     * Return the parent id
-     *
-     * @return int
-     */
-    public function getParentId(): int
-    {
-        if ($this->parent_id) {
-            return $this->parent_id;
-        }
-
-        $id = $this->getId();
-
-        if ($id === 1) {
-            return false;
-        }
-
-        $this->parent_id = $this->Media->getParentIdFrom($id);
-
-        return $this->parent_id;
-    }
-
-    /**
-     * Return all parent ids
-     *
-     * @return array
-     */
-    public function getParentIds(): array
-    {
-        if ($this->getId() === 1) {
-            return [];
-        }
-
-        $parents = [];
-        $id = $this->getId();
-
-        while ($id = $this->Media->getParentIdFrom($id)) {
-            $parents[] = $id;
-        }
-
-        return array_reverse($parents);
-    }
-
-    /**
-     * Return the Parent Media Item Object
-     *
-     * @return Folder
-     * @throws Exception
-     */
-    public function getParent(): Folder
-    {
-        return $this->Media->get($this->getParentId());
-    }
-
-    /**
-     * Return all Parents
-     *
-     * @return array
-     *
-     * @throws Exception
-     */
-    public function getParents(): array
-    {
-        $ids = $this->getParentIds();
-        $parents = [];
-
-        foreach ($ids as $id) {
-            $parents[] = $this->Media->get($id);
-        }
-
-        return $parents;
-    }
-
     // endregion
 
     // region Path and URL Methods
 
     /**
-     * Return the path of the file, without host, url dir or cms dir
-     *
-     * @return string
+     * @param string $path
      */
-    public function getPath(): string
+    public function addToPathHistory(string $path)
     {
-        return $this->getAttribute('file');
+        $this->getPathHistory();
+
+        $this->pathHistory[] = $path;
     }
 
     /**
-     * Retrieves the full path for the current file.
-     *
-     * @return string The full path for the file.
+     * @return array
      */
-    public function getFullPath(): string
+    public function getPathHistory(): ?array
     {
-        return $this->Media->getFullPath() . $this->getAttribute('file');
-    }
-
-    /**
-     * Returns information about a file path
-     *
-     * @param array|boolean $options - If present, specifies a specific element to be returned;
-     *                                  one of:
-     *                                  PATHINFO_DIRNAME, PATHINFO_BASENAME,
-     *                                  PATHINFO_EXTENSION or PATHINFO_FILENAME.
-     * @return array|string
-     */
-    public function getPathinfo($options = false)
-    {
-        if (!$options) {
-            return pathinfo($this->getFullPath());
+        if ($this->pathHistory !== null) {
+            return $this->pathHistory;
         }
 
-        return pathinfo($this->getFullPath(), $options);
-    }
+        $pathHistory = $this->getAttribute('pathHistory');
 
-    /**
-     * Returns the url from the file
-     *
-     * @param boolean $rewritten - false = image.php, true = rewrited URL
-     *
-     * @return string
-     */
-    public function getUrl(bool $rewritten = false): string
-    {
-        if (!$rewritten) {
-            $Project = $this->Media->getProject();
+        if (!empty($pathHistory)) {
+            $pathHistory = json_decode($pathHistory, true);
 
-            $str = 'image.php?id=' . $this->getId() . '&project=' . $Project->getAttribute('name');
-
-            if ($this->getAttribute('maxheight')) {
-                $str .= '&maxheight=' . $this->getAttribute('maxheight');
+            if (is_array($pathHistory)) {
+                $this->pathHistory = $pathHistory;
             }
-
-            if ($this->getAttribute('maxwidth')) {
-                $str .= '&maxwidth=' . $this->getAttribute('maxwidth');
-            }
-
-            return $str;
         }
 
-        if ($this->getAttribute('active') == 1) {
-            return URL_DIR . $this->Media->getCacheDir() . $this->getAttribute('file');
+        if (empty($this->pathHistory)) {
+            $this->pathHistory[] = $this->getPath();
         }
 
-        return '';
+        return $this->pathHistory;
     }
-
-    // endregion
-
-    // region Effect methods
 
     /**
      * Return the effects of the item
@@ -1361,6 +1320,140 @@ abstract class Item extends QUI\QDOM
     }
 
     /**
+     * Set complete effects
+     *
+     * @param array $effects
+     */
+    public function setEffects(array $effects = [])
+    {
+        $this->effects = $effects;
+    }
+
+    // endregion
+
+    // region Effect methods
+
+    /**
+     * @param string|array $value
+     * @return string
+     */
+    protected function saveMultilingualField($value): string
+    {
+        if (is_array($value)) {
+            return json_encode($value);
+        }
+
+        $value = json_decode($value, true);
+        $current = QUI::getLocale()->getCurrent();
+
+        if (!$value) {
+            return json_encode([
+                $current => $value
+            ]);
+        }
+
+        $result = [];
+
+        foreach ($value as $key => $val) {
+            if (QUI::getLocale()->existsLang($key)) {
+                $result[$key] = $val;
+            }
+        }
+
+        return json_encode($result);
+    }
+
+    /**
+     * Is the media item hidden?
+     *
+     * @return bool
+     */
+    public function isHidden(): bool
+    {
+        return (bool)$this->getAttribute('hidden');
+    }
+
+    /**
+     * Set the title of this item
+     *
+     *      setShort('text')                 - set this short to all languages
+     *      setShort('text', 'language')     - set this short to the wanted languages
+     *      setShort(['de' => 'text', 'en' => 'text'])  - set the language array
+     *
+     * @param mixed ...$params
+     */
+    public function setShort(...$params)
+    {
+        $this->setDescription($params);
+    }
+
+    //endregion
+
+    //region Hidden
+
+    /**
+     * Return all Parents
+     *
+     * @return array
+     *
+     * @throws Exception
+     */
+    public function getParents(): array
+    {
+        $ids = $this->getParentIds();
+        $parents = [];
+
+        foreach ($ids as $id) {
+            $parents[] = $this->Media->get($id);
+        }
+
+        return $parents;
+    }
+
+    /**
+     * Return all parent ids
+     *
+     * @return array
+     */
+    public function getParentIds(): array
+    {
+        if ($this->getId() === 1) {
+            return [];
+        }
+
+        $parents = [];
+        $id = $this->getId();
+
+        while ($id = $this->Media->getParentIdFrom($id)) {
+            $parents[] = $id;
+        }
+
+        return array_reverse($parents);
+    }
+
+    /**
+     * Returns information about a file path
+     *
+     * @param array|boolean $options - If present, specifies a specific element to be returned;
+     *                                  one of:
+     *                                  PATHINFO_DIRNAME, PATHINFO_BASENAME,
+     *                                  PATHINFO_EXTENSION or PATHINFO_FILENAME.
+     * @return array|string
+     */
+    public function getPathinfo($options = false)
+    {
+        if (!$options) {
+            return pathinfo($this->getFullPath());
+        }
+
+        return pathinfo($this->getFullPath(), $options);
+    }
+
+    //endregion
+
+    //region Permissions
+
+    /**
      * Set an item effect
      *
      * @param string $effect - Name of the effect
@@ -1371,30 +1464,6 @@ abstract class Item extends QUI\QDOM
         $this->getEffects();
 
         $this->effects[$effect] = $value;
-    }
-
-    /**
-     * Set complete effects
-     *
-     * @param array $effects
-     */
-    public function setEffects(array $effects = [])
-    {
-        $this->effects = $effects;
-    }
-
-    //endregion
-
-    //region Hidden
-
-    /**
-     * Is the media item hidden?
-     *
-     * @return bool
-     */
-    public function isHidden(): bool
-    {
-        return (bool)$this->getAttribute('hidden');
     }
 
     /**
@@ -1413,9 +1482,15 @@ abstract class Item extends QUI\QDOM
         $this->setAttribute('hidden', false);
     }
 
-    //endregion
-
-    //region Permissions
+    /**
+     * Are view permissions set for this item?
+     *
+     * @return bool
+     */
+    public function hasViewPermissionSet(): bool
+    {
+        return $this->hasPermissionsSet('quiqqer.projects.media.view');
+    }
 
     /**
      * Are permissions set for this item?
@@ -1433,16 +1508,6 @@ abstract class Item extends QUI\QDOM
         $permList = $Manager->getMediaPermissions($this);
 
         return !empty($permList[$permission]);
-    }
-
-    /**
-     * Are view permissions set for this item?
-     *
-     * @return bool
-     */
-    public function hasViewPermissionSet(): bool
-    {
-        return $this->hasPermissionsSet('quiqqer.projects.media.view');
     }
 
     /**
@@ -1468,35 +1533,6 @@ abstract class Item extends QUI\QDOM
         }
 
         return QUI\Permissions\Permission::hasMediaPermission(
-            $permission,
-            $this,
-            $User
-        );
-    }
-
-    /**
-     * Shortcut for QUI\Permissions\Permission::checkSitePermission
-     *
-     * @param string $permission - name of the permission
-     * @param User|boolean $User - optional
-     *
-     * @throws QUI\Permissions\Exception
-     */
-    public function checkPermission(string $permission, $User = false)
-    {
-        if (Media::useMediaPermissions() === false) {
-            return;
-        }
-
-
-        $Manager = QUI::getPermissionManager();
-        $permList = $Manager->getMediaPermissions($this);
-
-        if (empty($permList[$permission])) {
-            return;
-        }
-
-        QUI\Permissions\Permission::checkMediaPermission(
             $permission,
             $this,
             $User
@@ -1531,6 +1567,12 @@ abstract class Item extends QUI\QDOM
         Permission::addGroupToMediaPermission($Group, $this, $permission, $EditUser);
     }
 
+
+
+    //endregion
+
+    //region Path history
+
     /**
      * Remove an user from the permission
      *
@@ -1557,48 +1599,6 @@ abstract class Item extends QUI\QDOM
     public function removeGroupFromSitePermission(Group $Group, string $permission, $EditUser = false)
     {
         Permission::removeGroupFromMediaPermission($Group, $this, $permission, $EditUser);
-    }
-
-
-
-    //endregion
-
-    //region Path history
-
-    /**
-     * @return array
-     */
-    public function getPathHistory(): ?array
-    {
-        if ($this->pathHistory !== null) {
-            return $this->pathHistory;
-        }
-
-        $pathHistory = $this->getAttribute('pathHistory');
-
-        if (!empty($pathHistory)) {
-            $pathHistory = json_decode($pathHistory, true);
-
-            if (is_array($pathHistory)) {
-                $this->pathHistory = $pathHistory;
-            }
-        }
-
-        if (empty($this->pathHistory)) {
-            $this->pathHistory[] = $this->getPath();
-        }
-
-        return $this->pathHistory;
-    }
-
-    /**
-     * @param string $path
-     */
-    public function addToPathHistory(string $path)
-    {
-        $this->getPathHistory();
-
-        $this->pathHistory[] = $path;
     }
 
     //endregion

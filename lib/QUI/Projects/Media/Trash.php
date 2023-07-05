@@ -101,25 +101,6 @@ class Trash implements QUI\Interfaces\Projects\Trash
     }
 
     /**
-     * Destroys a file by deleting it and marking it as destroyed.
-     *
-     * @param int $id The ID of the file to be destroyed.
-     * @return void
-     * @throws Exception
-     */
-    public function destroy(int $id)
-    {
-        // check if the file is really deleted?
-        $File = $this->Media->get($id);
-
-        if (!$File->isDeleted()) {
-            $File->delete();
-        }
-
-        $File->destroy();
-    }
-
-    /**
      * Clears the complete trash
      */
     public function clear()
@@ -148,6 +129,25 @@ class Trash implements QUI\Interfaces\Projects\Trash
                 ]);
             }
         }
+    }
+
+    /**
+     * Destroys a file by deleting it and marking it as destroyed.
+     *
+     * @param int $id The ID of the file to be destroyed.
+     * @return void
+     * @throws Exception
+     */
+    public function destroy(int $id)
+    {
+        // check if the file is really deleted?
+        $File = $this->Media->get($id);
+
+        if (!$File->isDeleted()) {
+            $File->delete();
+        }
+
+        $File->destroy();
     }
 
     /**

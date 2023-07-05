@@ -34,16 +34,6 @@ class MyDB
     }
 
     /**
-     * PDO Objekt
-     *
-     * @return \PDO
-     */
-    public function getPDO()
-    {
-        return QUI::getDataBase()->getPDO();
-    }
-
-    /**
      * \QUI\Database\DB Objekt (Neues Datenbank Objekt)
      *
      * @return \QUI\Database\DB
@@ -82,6 +72,16 @@ class MyDB
         }
 
         return $data;
+    }
+
+    /**
+     * PDO Objekt
+     *
+     * @return \PDO
+     */
+    public function getPDO()
+    {
+        return QUI::getDataBase()->getPDO();
     }
 
     /**
@@ -131,32 +131,6 @@ class MyDB
     }
 
     /**
-     * Unmaskierte Query
-     *
-     * @param array $params
-     *
-     * @return \PDOStatement
-     */
-    public function queryNoEscape($params)
-    {
-        return $this->DB->exec($params);
-    }
-
-    /**
-     * Insert Query mit Rückgabe (lastInsertId)
-     *
-     * @param array $params
-     *
-     * @return integer
-     */
-    public function insert($params)
-    {
-        $this->DB->exec($params);
-
-        return $this->DB->getPDO()->lastInsertId();
-    }
-
-    /**
      * Liefert Daten aus der Datenbank im Typ ARRAY oder ROW oder OBJEKT
      *
      * @param array $params
@@ -185,6 +159,18 @@ class MyDB
                 return $this->DB->fetch($params, \PDO::FETCH_ASSOC);
                 break;
         }
+    }
+
+    /**
+     * Unmaskierte Query
+     *
+     * @param array $params
+     *
+     * @return \PDOStatement
+     */
+    public function queryNoEscape($params)
+    {
+        return $this->DB->exec($params);
     }
 
     /**
@@ -225,26 +211,8 @@ class MyDB
         return $this->getData(
             array(
                 'select' => $field,
-                'from'   => $table,
-                'where'  => $fieldAndId
-            )
-        );
-    }
-
-    /**
-     * add a data row
-     *
-     * @param string $table
-     * @param array $FieldValue - [array('field1'=>'value1', 'field2'=>'value2', 'field3'=>'value3')]
-     *
-     * @return integer
-     */
-    public function addData($table, $FieldValue)
-    {
-        return $this->insert(
-            array(
-                'insert' => $table,
-                'set'    => $FieldValue
+                'from' => $table,
+                'where' => $fieldAndId
             )
         );
     }
@@ -265,8 +233,8 @@ class MyDB
         return $this->DB->exec(
             array(
                 'update' => $table,
-                'set'    => $fieldValue,
-                'where'  => $fieldAndId
+                'set' => $fieldValue,
+                'where' => $fieldAndId
             )
         );
     }
@@ -274,13 +242,45 @@ class MyDB
     /**
      * Insert
      *
-     * @param  string $table
-     * @param  array $fieldValue
+     * @param string $table
+     * @param array $fieldValue
      * @return string
      */
     public function insertData($table, $fieldValue)
     {
         return $this->addData($table, $fieldValue);
+    }
+
+    /**
+     * add a data row
+     *
+     * @param string $table
+     * @param array $FieldValue - [array('field1'=>'value1', 'field2'=>'value2', 'field3'=>'value3')]
+     *
+     * @return integer
+     */
+    public function addData($table, $FieldValue)
+    {
+        return $this->insert(
+            array(
+                'insert' => $table,
+                'set' => $FieldValue
+            )
+        );
+    }
+
+    /**
+     * Insert Query mit Rückgabe (lastInsertId)
+     *
+     * @param array $params
+     *
+     * @return integer
+     */
+    public function insert($params)
+    {
+        $this->DB->exec($params);
+
+        return $this->DB->getPDO()->lastInsertId();
     }
 
     /**
@@ -296,8 +296,8 @@ class MyDB
         return $this->DB->exec(
             array(
                 'delete' => true,
-                'from'   => $table,
-                'where'  => $fieldAndId
+                'from' => $table,
+                'where' => $fieldAndId
             )
         );
     }

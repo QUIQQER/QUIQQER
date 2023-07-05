@@ -51,7 +51,7 @@ class Utils
          */
 
         // tabs xml
-        $list         = QUI::getPackageManager()->getInstalled();
+        $list = QUI::getPackageManager()->getInstalled();
         $userXmlFiles = [];
 
         foreach ($list as $entry) {
@@ -78,18 +78,18 @@ class Utils
         $Settings = QUI\Utils\XML\Settings::getInstance();
         $Settings->setXMLPath('//user/window');
 
-        $result     = $Settings->getPanel($userXmlFiles);
+        $result = $Settings->getPanel($userXmlFiles);
         $categories = $result['categories']->toArray();
 
         foreach ($categories as $category) {
             $TabBar->appendChild(
                 new QUI\Controls\Toolbar\Tab([
-                    'name'    => $category['name'],
-                    'text'    => QUI::getLocale()->parseLocaleString($category['title']),
-                    'image'   => $category['icon'],
+                    'name' => $category['name'],
+                    'text' => QUI::getLocale()->parseLocaleString($category['title']),
+                    'image' => $category['icon'],
                     'wysiwyg' => false,
-                    'type'    => 'xml',
-                    'plugin'  => $category['file']
+                    'type' => 'xml',
+                    'plugin' => $category['file']
                 ])
             );
         }
@@ -125,8 +125,8 @@ class Utils
      */
     public static function getTab($uid, string $plugin, string $tab): string
     {
-        $Users       = QUI::getUsers();
-        $User        = $Users->get($uid);
+        $Users = QUI::getUsers();
+        $User = $Users->get($uid);
         $AuthHandler = Auth\Handler::getInstance();
 
         // assign user as global var
@@ -134,7 +134,7 @@ class Utils
 
         // authenticators
         $userAuthenticators = [];
-        $authenticators     = $AuthHandler->getAvailableAuthenticators();
+        $authenticators = $AuthHandler->getAvailableAuthenticators();
 
         foreach ($authenticators as $authenticator) {
             try {
@@ -170,7 +170,7 @@ class Utils
 
         // plugin
         try {
-            $plugin  = str_replace('plugin.', '', $plugin);
+            $plugin = str_replace('plugin.', '', $plugin);
             $Package = QUI::getPackage($plugin);
 
             return DOM::getTabHTML(

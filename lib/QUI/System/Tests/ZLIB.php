@@ -24,7 +24,7 @@ class ZLIB extends QUI\System\Test
         parent::__construct();
 
         $this->setAttributes(array(
-            'title'       => 'ZLIB',
+            'title' => 'ZLIB',
             'description' => ''
         ));
 

@@ -24,7 +24,7 @@ class Json extends QUI\System\Test
         parent::__construct();
 
         $this->setAttributes([
-            'title'       => 'json_decode and json_encode',
+            'title' => 'json_decode and json_encode',
             'description' => ''
         ]);
 

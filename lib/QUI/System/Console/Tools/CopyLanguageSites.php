@@ -92,7 +92,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
                 'Do NOT activate a copied Site if the source Site is active. This leaves all Site copies inactive!',
                 false,
                 true
-            );;
+            );
     }
 
     /**
@@ -207,7 +207,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
         }
 
         if ($copyBricks || mb_strtolower($copyBricks) === 'y') {
-            $this->copyBricks       = true;
+            $this->copyBricks = true;
             $this->sourceBrickAreas = $this->BricksManager->getAreasByProject($SourceProject);
 
             $this->copyBricks($SourceProject, $TargetProject);
@@ -239,24 +239,24 @@ class CopyLanguageSites extends QUI\System\Console\Tool
 
         $sourceBricks = QUI::getDataBase()->fetch([
             'select' => ['id'],
-            'from'   => $this->BricksManager->getTable(),
-            'where'  => [
+            'from' => $this->BricksManager->getTable(),
+            'where' => [
                 'project' => $SourceProject->getName(),
-                'lang'    => $SourceProject->getLang()
+                'lang' => $SourceProject->getLang()
             ]
         ]);
 
         foreach ($sourceBricks as $brick) {
             $sourceBrickId = $brick['id'];
 
-            $this->writeLn("Copy brick #".$sourceBrickId."...");
+            $this->writeLn("Copy brick #" . $sourceBrickId . "...");
 
             try {
                 $targetBrickId = $this->BricksManager->copyBrick(
                     $sourceBrickId,
                     [
                         'project' => $TargetProject->getName(),
-                        'lang'    => $TargetProject->getLang()
+                        'lang' => $TargetProject->getLang()
                     ]
                 );
 
@@ -265,7 +265,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
                 $this->write(" SUCCESS!");
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
-                $this->write(" ERROR: ".$Exception->getMessage());
+                $this->write(" ERROR: " . $Exception->getMessage());
             }
         }
     }
@@ -284,7 +284,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
      */
     protected function copyRecursive($SourceProject, $TargetProject, $sourceid, $targetid, $link = false)
     {
-        $SourceParentSite  = new QUI\Projects\Site\Edit($SourceProject, $sourceid);
+        $SourceParentSite = new QUI\Projects\Site\Edit($SourceProject, $sourceid);
         $sourceChildrenIds = $SourceParentSite->getChildrenIds([
             'active' => '0&1'
         ]);
@@ -294,7 +294,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
         }
 
         foreach ($sourceChildrenIds as $sourceChildId) {
-            $this->writeLn("Copy Site #".$sourceChildId."...");
+            $this->writeLn("Copy Site #" . $sourceChildId . "...");
 
             $SourceChild = new QUI\Projects\Site\Edit($SourceProject, $sourceChildId);
 
@@ -307,7 +307,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
                 $this->write(" SUCCESS!");
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
-                $this->write(" ERROR: ".$Exception->getMessage());
+                $this->write(" ERROR: " . $Exception->getMessage());
 
                 continue;
             }
@@ -320,7 +320,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
                     $this->write(" SUCCESS!");
                 } catch (\Exception $Exception) {
                     QUI\System\Log::writeException($Exception);
-                    $this->write(" ERROR: ".$Exception->getMessage());
+                    $this->write(" ERROR: " . $Exception->getMessage());
                 }
             }
 
@@ -330,7 +330,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
                 $siteAreaBricks = [];
 
                 foreach ($this->sourceBrickAreas as $brickArea) {
-                    $brickArea    = $brickArea['name'];
+                    $brickArea = $brickArea['name'];
                     $bricksByArea = $this->BricksManager->getBricksByArea($brickArea, $SourceChild);
 
                     if (empty($bricksByArea)) {
@@ -345,9 +345,9 @@ class CopyLanguageSites extends QUI\System\Console\Tool
 
                         if (isset($this->bricksMapping[$brickId])) {
                             $siteAreaBricks[$brickArea][] = [
-                                'brickId'      => $this->bricksMapping[$brickId],
+                                'brickId' => $this->bricksMapping[$brickId],
                                 'customfields' => '',
-                                'uid'          => ''
+                                'uid' => ''
                             ];
                         }
                     }
@@ -371,7 +371,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
                     $this->write(" SUCCESS!");
                 } catch (\Exception $Exception) {
                     QUI\System\Log::writeException($Exception);
-                    $this->write(" ERROR: ".$Exception->getMessage());
+                    $this->write(" ERROR: " . $Exception->getMessage());
                 }
             }
 

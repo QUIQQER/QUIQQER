@@ -56,22 +56,22 @@ flushIt();
 <body>
 
     <script>
-        const URL_DIR     = "<?php echo URL_DIR; ?>",
-              URL_LIB_DIR = "<?php echo URL_LIB_DIR; ?>",
-              URL_BIN_DIR = "<?php echo URL_BIN_DIR; ?>",
-              URL_USR_DIR = "<?php echo URL_USR_DIR; ?>",
-              URL_SYS_DIR = "<?php echo URL_SYS_DIR; ?>",
-              URL_OPT_DIR = "<?php echo URL_OPT_DIR; ?>",
-              URL_VAR_DIR = "<?php echo URL_VAR_DIR; ?>";
+        const URL_DIR = "<?php echo URL_DIR; ?>",
+            URL_LIB_DIR = "<?php echo URL_LIB_DIR; ?>",
+            URL_BIN_DIR = "<?php echo URL_BIN_DIR; ?>",
+            URL_USR_DIR = "<?php echo URL_USR_DIR; ?>",
+            URL_SYS_DIR = "<?php echo URL_SYS_DIR; ?>",
+            URL_OPT_DIR = "<?php echo URL_OPT_DIR; ?>",
+            URL_VAR_DIR = "<?php echo URL_VAR_DIR; ?>";
     </script>
 
 <?php
 flushIt();
 
-$Config   = ProviderHandler::getConfig();
+$Config = ProviderHandler::getConfig();
 $provider = $Config->get('execute', 'provider');
-$data     = $Config->get('execute', 'data');
-$data     = json_decode($data, true);
+$data = $Config->get('execute', 'data');
+$data = json_decode($data, true);
 
 $interfaces = class_implements($provider);
 
@@ -81,7 +81,7 @@ if (!isset($interfaces['QUI\InstallationWizard\InstallationWizardInterface'])) {
 }
 
 /* @var $Provider QUI\InstallationWizard\InstallationWizardInterface */
-$Provider  = new $provider();
+$Provider = new $provider();
 $execSteps = $Provider->getExecuteSteps();
 
 ?>

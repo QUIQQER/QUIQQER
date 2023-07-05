@@ -26,6 +26,18 @@ use function usort;
 class Menu
 {
     /**
+     * Clear the menu cache for an user
+     *
+     * @param QUI\Interfaces\Users\User $User
+     */
+    public static function clearMenuCache(QUI\Interfaces\Users\User $User)
+    {
+        QUI\Cache\Manager::clear(
+            'settings/backend-menu/' . $User->getId() . '/'
+        );
+    }
+
+    /**
      * Return the menu für the session user
      *
      * @return array
@@ -34,7 +46,7 @@ class Menu
     {
         try {
             $cacheName = $this->getCacheName();
-            $cache     = QUI\Cache\Manager::get($cacheName);
+            $cache = QUI\Cache\Manager::get($cacheName);
 
             if (!empty($cache)) {
                 return $cache;
@@ -49,6 +61,17 @@ class Menu
         }
 
         return [];
+    }
+
+    /**
+     * Cachename for the menu
+     * The name of the menu cache is user dependent
+     */
+    protected function getCacheName(): string
+    {
+        $User = QUI::getUserBySession();
+
+        return 'settings/backend-menu/' . $User->getId() . '/' . $User->getLang();
     }
 
     /**
@@ -67,9 +90,9 @@ class Menu
         );
 
         $Menu = new Bar([
-            'name'   => 'menu',
+            'name' => 'menu',
             'parent' => 'menubar',
-            'id'     => 'menu'
+            'id' => 'menu'
         ]);
 
         XML::addXMLFileToMenu($Menu, SYS_DIR . 'menu.xml');
@@ -90,13 +113,13 @@ class Menu
 
         if ($Menu->getElementByName('extras')) {
             // Benutzerverwaltung
-            $canSeeGroups      = Permission::hasPermission('quiqqer.admin.groups.view');
-            $canSeeUsers       = Permission::hasPermission('quiqqer.admin.users.view');
+            $canSeeGroups = Permission::hasPermission('quiqqer.admin.groups.view');
+            $canSeeUsers = Permission::hasPermission('quiqqer.admin.users.view');
             $canSeePermissions = false;
 
             if ($User->isSU()) {
-                $canSeeGroups      = true;
-                $canSeeUsers       = true;
+                $canSeeGroups = true;
+                $canSeeUsers = true;
                 $canSeePermissions = true;
             }
 
@@ -144,14 +167,14 @@ class Menu
 
             $Projects->appendChild(
                 new Menuitem([
-                    'text'    => $project,
-                    'icon'    => 'fa fa-home',
+                    'text' => $project,
+                    'icon' => 'fa fa-home',
                     'onclick' => '',
                     'require' => 'controls/projects/project/Settings',
                     'onClick' => 'QUI.Menu.menuClick',
                     'project' => $project,
-                    'name'    => $project,
-                    '#id'     => 'settings-' . $project
+                    'name' => $project,
+                    '#id' => 'settings-' . $project
                 ])
             );
         }
@@ -161,7 +184,7 @@ class Menu
             $files = [];
 
             if ($User->isSU()) {
-                $dir   = SYS_DIR . 'settings/';
+                $dir = SYS_DIR . 'settings/';
                 $files = QUI\Utils\System\File::readDir($dir);
 
                 foreach ($files as $key => $file) {
@@ -196,7 +219,7 @@ class Menu
 
 
             // create the menu setting entries
-            $Settings   = $Menu->getElementByName('settings');
+            $Settings = $Menu->getElementByName('settings');
             $windowList = [];
 
             foreach ($files as $file) {
@@ -209,12 +232,12 @@ class Menu
                 foreach ($windows as $Window) {
                     /* @var $Window DOMElement */
                     /* @var $Win DOMElement */
-                    $winName    = $Window->getAttribute('name');
+                    $winName = $Window->getAttribute('name');
                     $menuParent = $Window->getAttribute('menu-parent');
 
                     if (isset($windowList[$winName])) {
                         /* @var $Item Menuitem */
-                        $Item  = $windowList[$winName];
+                        $Item = $windowList[$winName];
                         $files = $Item->getAttribute('qui-xml-file');
 
                         if (!is_array($files)) {
@@ -302,7 +325,8 @@ class Menu
 
         // sort
         foreach ($menu as $key => $item) {
-            if ($item['name'] != 'settings'
+            if (
+                $item['name'] != 'settings'
                 && $item['name'] != 'extras'
                 && $item['name'] != 'apps'
             ) {
@@ -331,7 +355,7 @@ class Menu
         }
 
         $titles = $Node->getElementsByTagName('title');
-        $Title  = $titles->item(0);
+        $Title = $titles->item(0);
 
         /* @var $Title DOMElement */
         if ($Title) {
@@ -370,29 +394,6 @@ class Menu
         $MenuItem->setAttribute(
             'icon',
             QUI\Utils\DOM::parseVar($icon->item(0)->nodeValue)
-        );
-    }
-
-    /**
-     * Cachename for the menu
-     * The name of the menu cache is user dependent
-     */
-    protected function getCacheName(): string
-    {
-        $User = QUI::getUserBySession();
-
-        return 'settings/backend-menu/' . $User->getId() . '/' . $User->getLang();
-    }
-
-    /**
-     * Clear the menu cache for an user
-     *
-     * @param QUI\Interfaces\Users\User $User
-     */
-    public static function clearMenuCache(QUI\Interfaces\Users\User $User)
-    {
-        QUI\Cache\Manager::clear(
-            'settings/backend-menu/' . $User->getId() . '/'
         );
     }
 

@@ -12,13 +12,38 @@ namespace QUI\Users;
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  */
-
 interface AuthenticatorInterface
 {
     /**
      * @param string|array|integer $user - name of the user, or user id
      */
     public function __construct($user = '');
+
+    /**
+     * Return the login control
+     *
+     * @return \QUI\Control|null
+     */
+    public static function getLoginControl();
+
+    /**
+     * Return the password reset control
+     *
+     * @return \QUI\Control|null
+     */
+    public static function getPasswordResetControl();
+
+    /**
+     * Return the settings control (eq: for administration)
+     *
+     * @return \QUI\Control|null
+     */
+    public static function getSettingsControl();
+
+    /**
+     * @return bool
+     */
+    public static function isCLICompatible();
 
     /**
      * Authenticate the user
@@ -49,41 +74,15 @@ interface AuthenticatorInterface
     public function getDescription($Locale = null);
 
     /**
+     * CLI
+     */
+
+    /**
      * Return the quiqqer user id
      *
      * @return integer|boolean
      */
     public function getUserId();
-
-    /**
-     * Return the login control
-     *
-     * @return \QUI\Control|null
-     */
-    public static function getLoginControl();
-
-    /**
-     * Return the password reset control
-     *
-     * @return \QUI\Control|null
-     */
-    public static function getPasswordResetControl();
-
-    /**
-     * Return the settings control (eq: for administration)
-     *
-     * @return \QUI\Control|null
-     */
-    public static function getSettingsControl();
-
-    /**
-     * CLI
-     */
-
-    /**
-     * @return bool
-     */
-    public static function isCLICompatible();
 
     /**
      * The CLI Authentication, only if isCLICompatible returns true

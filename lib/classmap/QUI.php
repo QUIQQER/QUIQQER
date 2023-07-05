@@ -1,5 +1,7 @@
 <?php
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration.MissingNamespace
+
 /**
  * This file contains QUI
  */
@@ -99,111 +101,96 @@ class QUI
      * @var \QUI\Locale|null
      */
     public static ?\QUI\Locale $Locale = null;
-
-    /**
-     * QUI default Locale Object
-     *
-     * @var \QUI\Locale|null
-     */
-    protected static ?\QUI\Locale $SystemLocale = null;
-
     /**
      * QUI Mail Manager
      *
      * @var ?\QUI\Mail\Manager
      */
     public static ?\QUI\Mail\Manager $MailManager = null;
-
     /**
      * QUI project manager, use \QUI::getPackageManager();
      *
      * @var ?\QUI\Package\Manager
      */
     public static ?\QUI\Package\Manager $PackageManager = null;
-
     /**
      * QUI project manager, use \QUI::getProjectManager();
      *
      * @var ?\QUI\Projects\Manager
      */
     public static ?\QUI\Projects\Manager $ProjectManager = null;
-
     /**
      * QUI project manager, use \QUI::getProjectManager();
      *
      * @var ?Request
      */
     public static ?Request $Request = null;
-
     /**
      * Global Response Object
      *
      * @var ?Response
      */
     public static ?Response $Response = null;
-
     /**
      * QUI Rewrite Object, use \QUI::getRewrite();
      *
      * @var ?\QUI\Rewrite
      */
     public static ?\QUI\Rewrite $Rewrite = null;
-
     /**
      * QUI Rights Object, use \QUI::getRights();
      *
      * @var ?\QUI\Permissions\Manager
      */
     public static ?\QUI\Permissions\Manager $Rights = null;
-
     /**
      * QUI Session Object, use \QUI::getSession();
      *
      * @var ?\QUI\Session|QUI\System\Console\Session
      */
     public static $Session = null;
-
     /**
      * QUI\Temp Object, use \QUI::getTemp();
      *
      * @var ?\QUI\Temp
      */
     public static ?\QUI\Temp $Temp = null;
-
     /**
      * QUI User Manager, use \QUI::getUsers();
      *
      * @var ?\QUI\Users\Manager
      */
     public static ?\QUI\Users\Manager $Users = null;
-
     /**
      * internal config objects, array list of configs
      *
      * @var array
      */
     public static array $Configs = [];
-
     /**
      * QUI global Events
      *
      * @var ?\QUI\Events\Manager
      */
     public static ?\QUI\Events\Manager $Events = null;
-
     /**
      * Country Manager
      *
      * @var ?\QUI\Countries\Manager
      */
     public static ?\QUI\Countries\Manager $Countries = null;
-
     /**
      * Template Manager
      *
      * @var ?\QUI\Template
      */
     public static ?\QUI\Template $Template = null;
+    /**
+     * QUI default Locale Object
+     *
+     * @var \QUI\Locale|null
+     */
+    protected static ?\QUI\Locale $SystemLocale = null;
 
     /**
      * Set all important paths and load QUIQQER
@@ -296,7 +283,7 @@ class QUI
         }
 
 
-        $Config     = new QUI\Config(ETC_DIR . 'conf.ini.php');
+        $Config = new QUI\Config(ETC_DIR . 'conf.ini.php');
         self::$Conf = $Config;
 
         if ($Config->getValue('globals', 'timezone')) {
@@ -386,7 +373,7 @@ class QUI
             QUI\Utils\System\Debug::marker('END');
 
             // ram peak, if the ram usage is to high, than write and send a message
-            $peak      = memory_get_peak_usage();
+            $peak = memory_get_peak_usage();
             $mem_limit = QUI\Utils\System\File::getBytes(ini_get('memory_limit')) * 0.8;
 
             if ($peak > $mem_limit && $mem_limit > 0) {
@@ -437,16 +424,6 @@ class QUI
     }
 
     /**
-     * Starts the Setup
-     *
-     * @throws QUI\Exception
-     */
-    public static function setup()
-    {
-        QUI\Setup::all();
-    }
-
-    /**
      * Get a QUIQQER main configuration entry
      *
      * @param string $section
@@ -464,13 +441,126 @@ class QUI
     }
 
     /**
+     * Returns a config object for a INI file
+     * Starting from CMS_DIR
+     *
+     * @param string $file
+     *
+     * @return \QUI\Config
+     * @throws \QUI\Exception
+     */
+    public static function getConfig(string $file): \QUI\Config
+    {
+        if (isset(self::$Configs[$file])) {
+            return self::$Configs[$file];
+        }
+
+        $_file = CMS_DIR . $file;
+
+        if (substr($file, -4) !== '.php') {
+            $_file .= '.php';
+        }
+
+        if (!isset(self::$Configs[$file])) {
+            if (!file_exists($_file) || \is_dir($_file)) {
+                throw new \QUI\Exception(
+                    'Error: Ini Datei: ' . $_file . ' existiert nicht.',
+                    404
+                );
+            }
+
+            self::$Configs[$file] = new \QUI\Config($_file);
+        }
+
+        return self::$Configs[$file];
+    }
+
+    /**
+     * Returns the package manager
+     *
+     * @return \QUI\Package\Manager
+     */
+    public static function getPackageManager(): ?\QUI\Package\Manager
+    {
+        if (self::$PackageManager === null) {
+            self::$PackageManager = new \QUI\Package\Manager();
+        }
+
+        return self::$PackageManager;
+    }
+
+    /**
+     * Returns the ErrorHandler
+     *
+     * @return \QUI\Exceptions\Handler
+     */
+    public static function getErrorHandler(): ?\QUI\Exceptions\Handler
+    {
+        if (self::$ErrorHandler === null) {
+            require_once dirname(__FILE__, 2) . '/QUI/Exceptions/Handler.php';
+
+            self::$ErrorHandler = new \QUI\Exceptions\Handler();
+
+            self::$ErrorHandler->setAttribute(
+                'logdir',
+                self::conf('globals', 'var_dir') . 'log/'
+            );
+
+            self::$ErrorHandler->setAttribute(
+                'backtrace',
+                self::conf('error', 'backtrace')
+            );
+        }
+
+        return self::$ErrorHandler;
+    }
+
+    /**
+     * Return the mail manager
+     *
+     * @return \QUI\Mail\Manager
+     */
+    public static function getMailManager(): ?\QUI\Mail\Manager
+    {
+        if (self::$MailManager === null) {
+            self::$MailManager = new \QUI\Mail\Manager();
+        }
+
+        return self::$MailManager;
+    }
+
+    /**
+     * Returns the globals Events object
+     *
+     * @return \QUI\Events\Manager
+     */
+    public static function getEvents(): ?\QUI\Events\Manager
+    {
+        if (self::$Events === null) {
+            self::$Events = new \QUI\Events\Manager();
+        }
+
+        return self::$Events;
+    }
+
+    /**
+     * Starts the Setup
+     *
+     * @throws QUI\Exception
+     */
+    public static function setup()
+    {
+        QUI\Setup::all();
+    }
+
+    /**
      * @return array
      */
     public static function backendGuiConfigs(): array
     {
-        $config                = [];
-        $config['globals']     = QUI::conf('globals');
-        $config['gui']         = QUI::conf('gui');
+        $config = [];
+        $config['globals'] = QUI::conf('globals');
+        $config['gui'] = QUI::conf('gui');
         $config['permissions'] = QUI::conf('permissions');
 
         unset($config['globals']['salt']);
@@ -483,22 +573,6 @@ class QUI
         unset($config['globals']['opt_dir']);
 
         return $config;
-    }
-
-    /**
-     * Returns all available languages
-     *
-     * @return array
-     */
-    public static function availableLanguages(): array
-    {
-        $languages = QUI\Translator::getAvailableLanguages();
-
-        if (empty($languages)) {
-            $languages = ['en'];
-        }
-
-        return $languages;
     }
 
     /**
@@ -523,7 +597,7 @@ class QUI
         }
 
         try {
-            $vhosts       = self::getConfig('etc/vhosts.ini.php');
+            $vhosts = self::getConfig('etc/vhosts.ini.php');
             self::$vhosts = $vhosts->toArray();
         } catch (\QUI\Exception $Exception) {
             self::$vhosts = [];
@@ -582,41 +656,6 @@ class QUI
     }
 
     /**
-     * Returns a config object for a INI file
-     * Starting from CMS_DIR
-     *
-     * @param string $file
-     *
-     * @return \QUI\Config
-     * @throws \QUI\Exception
-     */
-    public static function getConfig(string $file): \QUI\Config
-    {
-        if (isset(self::$Configs[$file])) {
-            return self::$Configs[$file];
-        }
-
-        $_file = CMS_DIR . $file;
-
-        if (substr($file, -4) !== '.php') {
-            $_file .= '.php';
-        }
-
-        if (!isset(self::$Configs[$file])) {
-            if (!file_exists($_file) || \is_dir($_file)) {
-                throw new \QUI\Exception(
-                    'Error: Ini Datei: ' . $_file . ' existiert nicht.',
-                    404
-                );
-            }
-
-            self::$Configs[$file] = new \QUI\Config($_file);
-        }
-
-        return self::$Configs[$file];
-    }
-
-    /**
      * Returns the Country Manager
      *
      * @return \QUI\Countries\Manager
@@ -647,6 +686,16 @@ class QUI
     }
 
     /**
+     * Returns the PDO Database object
+     *
+     * @return \PDO
+     */
+    public static function getPDO(): PDO
+    {
+        return self::getDataBase()->getPDO();
+    }
+
+    /**
      * Returns the Database object
      *
      * @return \QUI\Database\DB
@@ -655,39 +704,15 @@ class QUI
     {
         if (self::$DataBase2 === null) {
             self::$DataBase2 = new \QUI\Database\DB([
-                'driver'   => self::conf('db', 'driver'),
-                'host'     => self::conf('db', 'host'),
-                'user'     => self::conf('db', 'user'),
+                'driver' => self::conf('db', 'driver'),
+                'host' => self::conf('db', 'host'),
+                'user' => self::conf('db', 'user'),
                 'password' => self::conf('db', 'password'),
-                'dbname'   => self::conf('db', 'database')
+                'dbname' => self::conf('db', 'database')
             ]);
         }
 
         return self::$DataBase2;
-    }
-
-    /**
-     * Returns the globals Events object
-     *
-     * @return \QUI\Events\Manager
-     */
-    public static function getEvents(): ?\QUI\Events\Manager
-    {
-        if (self::$Events === null) {
-            self::$Events = new \QUI\Events\Manager();
-        }
-
-        return self::$Events;
-    }
-
-    /**
-     * Returns the PDO Database object
-     *
-     * @return \PDO
-     */
-    public static function getPDO(): PDO
-    {
-        return self::getDataBase()->getPDO();
     }
 
     /**
@@ -708,7 +733,7 @@ class QUI
     public static function getProject($project, $lang = false, $template = false): \QUI\Projects\Project
     {
         if (is_array($project)) {
-            $lang     = false;
+            $lang = false;
             $template = false;
 
             if (isset($project['lang'])) {
@@ -725,32 +750,6 @@ class QUI
         }
 
         return \QUI\Projects\Manager::getProject($project, $lang, $template);
-    }
-
-    /**
-     * Returns the ErrorHandler
-     *
-     * @return \QUI\Exceptions\Handler
-     */
-    public static function getErrorHandler(): ?\QUI\Exceptions\Handler
-    {
-        if (self::$ErrorHandler === null) {
-            require_once dirname(__FILE__, 2) . '/QUI/Exceptions/Handler.php';
-
-            self::$ErrorHandler = new \QUI\Exceptions\Handler();
-
-            self::$ErrorHandler->setAttribute(
-                'logdir',
-                self::conf('globals', 'var_dir') . 'log/'
-            );
-
-            self::$ErrorHandler->setAttribute(
-                'backtrace',
-                self::conf('error', 'backtrace')
-            );
-        }
-
-        return self::$ErrorHandler;
     }
 
     /**
@@ -791,12 +790,14 @@ class QUI
         if (self::$Locale === null) {
             self::$Locale = new \QUI\Locale();
 
-            $language  = self::conf('globals', 'standardLanguage');
+            $language = self::conf('globals', 'standardLanguage');
             $languages = self::availableLanguages();
 
-            if (isset($_REQUEST['lang'])
+            if (
+                isset($_REQUEST['lang'])
                 && is_string($_REQUEST['lang'])
-                && strlen($_REQUEST['lang']) === 2) {
+                && strlen($_REQUEST['lang']) === 2
+            ) {
                 self::$Locale->setCurrent($_REQUEST['lang']);
             } elseif (!empty($language)) {
                 self::$Locale->setCurrent($language);
@@ -817,6 +818,22 @@ class QUI
     }
 
     /**
+     * Returns all available languages
+     *
+     * @return array
+     */
+    public static function availableLanguages(): array
+    {
+        $languages = QUI\Translator::getAvailableLanguages();
+
+        if (empty($languages)) {
+            $languages = ['en'];
+        }
+
+        return $languages;
+    }
+
+    /**
      * Return the QUIQQER default language locale
      *
      * @return \QUI\Locale
@@ -828,41 +845,13 @@ class QUI
         }
 
         self::$SystemLocale = new QUI\Locale();
-        $language           = self::conf('globals', 'standardLanguage');
+        $language = self::conf('globals', 'standardLanguage');
 
         if (!empty($language)) {
             self::$SystemLocale->setCurrent($language);
         }
 
         return self::$SystemLocale;
-    }
-
-    /**
-     * Return the mail manager
-     *
-     * @return \QUI\Mail\Manager
-     */
-    public static function getMailManager(): ?\QUI\Mail\Manager
-    {
-        if (self::$MailManager === null) {
-            self::$MailManager = new \QUI\Mail\Manager();
-        }
-
-        return self::$MailManager;
-    }
-
-    /**
-     * Returns the package manager
-     *
-     * @return \QUI\Package\Manager
-     */
-    public static function getPackageManager(): ?\QUI\Package\Manager
-    {
-        if (self::$PackageManager === null) {
-            self::$PackageManager = new \QUI\Package\Manager();
-        }
-
-        return self::$PackageManager;
     }
 
     /**
@@ -934,20 +923,6 @@ class QUI
     }
 
     /**
-     * Return the global request object
-     *
-     * @return Request
-     */
-    public static function getRequest(): ?Request
-    {
-        if (self::$Request === null) {
-            self::$Request = Request::createFromGlobals();
-        }
-
-        return self::$Request;
-    }
-
-    /**
      * @return Response
      */
     public static function getGlobalResponse(): ?Response
@@ -986,6 +961,20 @@ class QUI
     }
 
     /**
+     * Return the global request object
+     *
+     * @return Request
+     */
+    public static function getRequest(): ?Request
+    {
+        if (self::$Request === null) {
+            self::$Request = Request::createFromGlobals();
+        }
+
+        return self::$Request;
+    }
+
+    /**
      * Return the temp manager
      *
      * @return QUI\Temp
@@ -1014,6 +1003,16 @@ class QUI
     }
 
     /**
+     * Get current logged in user
+     *
+     * @return \QUI\Interfaces\Users\User
+     */
+    public static function getUserBySession(): \QUI\Interfaces\Users\User
+    {
+        return self::getUsers()->getUserBySession();
+    }
+
+    /**
      * Return the user manager
      *
      * @return \QUI\Users\Manager
@@ -1025,16 +1024,6 @@ class QUI
         }
 
         return self::$Users;
-    }
-
-    /**
-     * Get current logged in user
-     *
-     * @return \QUI\Interfaces\Users\User
-     */
-    public static function getUserBySession(): \QUI\Interfaces\Users\User
-    {
-        return self::getUsers()->getUserBySession();
     }
 
     /**

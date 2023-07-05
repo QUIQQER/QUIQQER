@@ -26,9 +26,9 @@ class Breadcrumb extends QUI\Control
     {
         // default options
         $this->setAttributes([
-            'class'         => 'quiqqer-breadcrumb',
+            'class' => 'quiqqer-breadcrumb',
             'controlHeight' => 40,
-            'layout'        => 'slider'
+            'layout' => 'slider'
         ]);
 
         parent::__construct($attributes);
@@ -45,7 +45,7 @@ class Breadcrumb extends QUI\Control
         $Engine = QUI::getTemplateManager()->getEngine();
 
         $Engine->assign([
-            'this'    => $this,
+            'this' => $this,
             'Rewrite' => QUI::getRewrite()
         ]);
 
@@ -62,7 +62,7 @@ class Breadcrumb extends QUI\Control
             default:
             case 'slider':
                 $template = '/Breadcrumb.Slider.html';
-                $css      = '/Breadcrumb.Slider.css';
+                $css = '/Breadcrumb.Slider.css';
 
                 $this->setAttribute(
                     'data-qui',
@@ -72,7 +72,7 @@ class Breadcrumb extends QUI\Control
 
             case 'dropdown':
                 $template = '/Breadcrumb.DropDown.html';
-                $css      = '/Breadcrumb.DropDown.css';
+                $css = '/Breadcrumb.DropDown.css';
 
                 $this->setAttribute(
                     'data-qui',

@@ -40,7 +40,7 @@ class Bundler
             return '';
         }
 
-        $result   = [];
+        $result = [];
         $requests = $_REQUEST['quiqqerBundle'];
 
         foreach ($requests as $request) {
@@ -49,8 +49,8 @@ class Bundler
             } catch (\Exception $Exception) {
                 $result[$request['rid']]['Exception'] = [
                     'message' => $Exception->getMessage(),
-                    'code'    => $Exception->getCode(),
-                    'type'    => \get_class($Exception)
+                    'code' => $Exception->getCode(),
+                    'type' => \get_class($Exception)
                 ];
             }
         }
@@ -63,8 +63,8 @@ class Bundler
 
             $result['Exception'] = [
                 'message' => $Exception->getMessage(),
-                'code'    => $Exception->getCode(),
-                'type'    => \get_class($Exception)
+                'code' => $Exception->getCode(),
+                'type' => \get_class($Exception)
             ];
 
             return \json_encode($result);
@@ -148,11 +148,11 @@ class Bundler
         }
 
         // admin ajax
-        $file = OPT_DIR.'quiqqer/quiqqer/admin/'.\str_replace('_', '/', $function).'.php';
+        $file = OPT_DIR . 'quiqqer/quiqqer/admin/' . \str_replace('_', '/', $function) . '.php';
         $file = Orthos::clearPath($file);
         $file = \realpath($file);
 
-        $dir = OPT_DIR.'quiqqer/quiqqer/admin/';
+        $dir = OPT_DIR . 'quiqqer/quiqqer/admin/';
 
         if (\strpos($file, $dir) !== false && \file_exists($file)) {
             require_once $file;
@@ -163,7 +163,7 @@ class Bundler
         }
 
 
-        $file = CMS_DIR.\str_replace('_', '/', $function).'.php';
+        $file = CMS_DIR . \str_replace('_', '/', $function) . '.php';
         $file = Orthos::clearPath($file);
         $file = \realpath($file);
 
@@ -201,12 +201,12 @@ class Bundler
         }
 
         $package = $request['params']['package'];
-        $dir     = OPT_DIR;
+        $dir = OPT_DIR;
 
-        $firstpart = 'package_'.\str_replace('/', '_', $package);
-        $ending    = \str_replace($firstpart, '', $function);
+        $firstpart = 'package_' . \str_replace('/', '_', $package);
+        $ending = \str_replace($firstpart, '', $function);
 
-        $file = $dir.$package.\str_replace('_', '/', $ending).'.php';
+        $file = $dir . $package . \str_replace('_', '/', $ending) . '.php';
         $file = Orthos::clearPath($file);
         $file = \realpath($file);
 
@@ -251,15 +251,15 @@ class Bundler
             );
         }
 
-        $projectDir = USR_DIR.$Project->getName();
-        $firstpart  = 'project_'.$Project->getName().'_';
+        $projectDir = USR_DIR . $Project->getName();
+        $firstpart = 'project_' . $Project->getName() . '_';
 
         $file = \str_replace($firstpart, '', $function);
-        $file = $projectDir.'/lib/'.\str_replace('_', '/', $file).'.php';
+        $file = $projectDir . '/lib/' . \str_replace('_', '/', $file) . '.php';
         $file = Orthos::clearPath($file);
         $file = \realpath($file);
 
-        $dir = $projectDir.'/lib/';
+        $dir = $projectDir . '/lib/';
 
         if (\strpos($file, $dir) !== false && \file_exists($file)) {
             require_once $file;

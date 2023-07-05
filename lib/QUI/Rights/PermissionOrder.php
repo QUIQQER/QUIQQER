@@ -7,8 +7,6 @@
 namespace QUI\Rights;
 
 use QUI;
-use QUI\Groups\Group;
-use QUI\Users\User;
 
 /**
  * Allgemeine Permission Sotierungs Handling Methoden

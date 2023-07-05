@@ -6,8 +6,6 @@
 
 namespace QUI\Security;
 
-use QUI;
-
 /**
  * Class Password
  */

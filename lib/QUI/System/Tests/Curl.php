@@ -24,7 +24,7 @@ class Curl extends QUI\System\Test
         parent::__construct();
 
         $this->setAttributes(array(
-            'title'       => 'curl test',
+            'title' => 'curl test',
             'description' => ''
         ));
 

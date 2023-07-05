@@ -223,6 +223,28 @@ class Rewrite
     }
 
     /**
+     * Return the default suffix eq: .html or ''
+     *
+     * @return string
+     */
+    public static function getDefaultSuffix()
+    {
+        if (self::$SUFFIX !== false) {
+            return self::$SUFFIX;
+        }
+
+        $conf = (int)QUI::conf('globals', 'htmlSuffix');
+
+        if ($conf === 0) {
+            self::$SUFFIX = '';
+        } else {
+            self::$SUFFIX = '.html';
+        }
+
+        return self::$SUFFIX;
+    }
+
+    /**
      * Request verarbeiten
      *
      * @throws QUI\Exception
@@ -673,28 +695,6 @@ class Rewrite
         $this->vhosts = QUI::vhosts();
 
         return $this->vhosts;
-    }
-
-    /**
-     * Return the default suffix eq: .html or ''
-     *
-     * @return string
-     */
-    public static function getDefaultSuffix()
-    {
-        if (self::$SUFFIX !== false) {
-            return self::$SUFFIX;
-        }
-
-        $conf = (int)QUI::conf('globals', 'htmlSuffix');
-
-        if ($conf === 0) {
-            self::$SUFFIX = '';
-        } else {
-            self::$SUFFIX = '.html';
-        }
-
-        return self::$SUFFIX;
     }
 
     /**

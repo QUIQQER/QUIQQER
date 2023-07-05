@@ -7,7 +7,6 @@
 namespace QUI\Cache;
 
 use QUI;
-
 use Stash\Driver\FileSystem;
 
 use function is_dir;

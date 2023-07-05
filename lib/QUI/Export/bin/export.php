@@ -19,7 +19,8 @@ try {
 $body = file_get_contents('php://input');
 $body = json_decode($body, true);
 
-if (!$body
+if (
+    !$body
     || !isset($body['data'])
     || !isset($body['data']['header'])
     || !isset($body['data']['data'])
@@ -27,7 +28,7 @@ if (!$body
     exit;
 }
 
-$type      = 'csv';
+$type = 'csv';
 $enclosure = "\x1f";
 
 if (isset($body['type'])) {
@@ -93,11 +94,11 @@ try {
 
         $Writer->insertAll($data);
         $Reader = League\Csv\Reader::createFromString($Writer->getContent());
-        $Dom    = (new League\Csv\XMLConverter())->convert($Reader);
+        $Dom = (new League\Csv\XMLConverter())->convert($Reader);
         $output = $Dom->saveXML();
     } elseif ($type === 'json') {
         $filename = $name . '.json';
-        $output   = json_encode($data);
+        $output = json_encode($data);
     } else {
         $filename = $name . '.csv';
 

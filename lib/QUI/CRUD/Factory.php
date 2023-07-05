@@ -31,21 +31,6 @@ abstract class Factory extends QUI\Utils\Singleton
     }
 
     /**
-     * @return string
-     */
-    abstract public function getDataBaseTableName();
-
-    /**
-     * @return string
-     */
-    abstract public function getChildClass();
-
-    /**
-     * @return array
-     */
-    abstract public function getChildAttributes();
-
-    /**
      * Return the number of the children
      *
      * @param array $queryParams
@@ -56,10 +41,10 @@ abstract class Factory extends QUI\Utils\Singleton
     public function countChildren($queryParams = [])
     {
         $query = [
-            'from'  => $this->getDataBaseTableName(),
+            'from' => $this->getDataBaseTableName(),
             'count' => [
                 'select' => 'id',
-                'as'     => 'id'
+                'as' => 'id'
             ]
         ];
 
@@ -85,6 +70,11 @@ abstract class Factory extends QUI\Utils\Singleton
     }
 
     /**
+     * @return string
+     */
+    abstract public function getDataBaseTableName();
+
+    /**
      * Create a new child
      *
      * @param array $data
@@ -95,7 +85,7 @@ abstract class Factory extends QUI\Utils\Singleton
     public function createChild($data = [])
     {
         $attributes = $this->getChildAttributes();
-        $childData  = [];
+        $childData = [];
 
         if (!\is_array($data)) {
             $data = [];
@@ -129,6 +119,11 @@ abstract class Factory extends QUI\Utils\Singleton
     }
 
     /**
+     * @return array
+     */
+    abstract public function getChildAttributes();
+
+    /**
      * Return a child
      *
      * @param integer $id
@@ -141,7 +136,7 @@ abstract class Factory extends QUI\Utils\Singleton
         $childClass = $this->getChildClass();
 
         $result = QUI::getDataBase()->fetch([
-            'from'  => $this->getDataBaseTableName(),
+            'from' => $this->getDataBaseTableName(),
             'where' => [
                 'id' => $id
             ],
@@ -165,6 +160,11 @@ abstract class Factory extends QUI\Utils\Singleton
     }
 
     /**
+     * @return string
+     */
+    abstract public function getChildClass();
+
+    /**
      * Return the children
      * If you want only the data, please use getChildrenData
      *
@@ -177,7 +177,7 @@ abstract class Factory extends QUI\Utils\Singleton
     {
         $result = [];
 
-        $data       = $this->getChildrenData($queryParams);
+        $data = $this->getChildrenData($queryParams);
         $childClass = $this->getChildClass();
 
         foreach ($data as $entry) {

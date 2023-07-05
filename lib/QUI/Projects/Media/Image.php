@@ -92,52 +92,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
-     * Return the real with of the image
-     *
-     * @return integer|false
-     * @throws QUI\Exception
-     */
-    public function getWidth()
-    {
-        if ($this->getAttribute('image_width')) {
-            return (int)$this->getAttribute('image_width');
-        }
-
-        $data = FileUtils::getInfo($this->getFullPath(), [
-            'imagesize' => true
-        ]);
-
-        if (isset($data['width'])) {
-            return (int)$data['width'];
-        }
-
-        return false;
-    }
-
-    /**
-     * Return the real height of the image
-     *
-     * @return integer|false
-     * @throws QUI\Exception
-     */
-    public function getHeight()
-    {
-        if ($this->getAttribute('image_height')) {
-            return (int)$this->getAttribute('image_height');
-        }
-
-        $data = FileUtils::getInfo($this->getFullPath(), [
-            'imagesize' => true
-        ]);
-
-        if (isset($data['height'])) {
-            return (int)$data['height'];
-        }
-
-        return false;
-    }
-
-    /**
      * (non-PHPdoc)
      *
      * @throws QUI\Exception
@@ -150,270 +104,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         return $this->createSizeCache();
-    }
-
-    /**
-     * Return the image path
-     *
-     * @param string|boolean $maxWidth - (optional)
-     * @param string|boolean $maxHeight - (optional)
-     *
-     * @return string
-     *
-     * @throws QUI\Exception
-     */
-    public function getSizeCachePath($maxWidth = false, $maxHeight = false): string
-    {
-        $Media = $this->Media;
-        /* @var $Media QUI\Projects\Media */
-        $cacheDir = CMS_DIR . $Media->getCacheDir();
-        $file = $this->getAttribute('file');
-
-
-        if (
-            $this->hasPermission('quiqqer.projects.media.view') &&
-            $this->hasPermission('quiqqer.projects.media.view', QUI::getUsers()->getNobody()) === false
-        ) {
-            $cacheDir = VAR_DIR . 'media/cache/permissions/' . $this->getProject()->getAttribute('name') . '/';
-        }
-
-
-        if ($this->getAttribute('mime_type') == 'image/svg+xml') {
-            return $cacheDir . $file;
-        }
-
-        if (!$maxWidth && !$maxHeight) {
-            return $cacheDir . $file;
-        }
-
-
-        if ($maxWidth > $this->IMAGE_MAX_SIZE) {
-            $maxWidth = $this->IMAGE_MAX_SIZE;
-        }
-
-        if ($maxHeight > $this->IMAGE_MAX_SIZE) {
-            $maxHeight = $this->IMAGE_MAX_SIZE;
-        }
-
-        $extra = '';
-        $params = $this->getResizeSize($maxWidth, $maxHeight);
-
-        if ($params['height'] > $params['width']) {
-            if (!($params['height'] % 8 === 0)) {
-                $tempParams = $this->getResizeSize(
-                    false,
-                    QUI\Utils\Math::ceilUp($params['height'], 16)
-                );
-            } else {
-                $tempParams = $this->getResizeSize(false, $params['height']);
-            }
-        } else {
-            if (!($params['width'] % 8 === 0)) {
-                $tempParams = $this->getResizeSize(
-                    QUI\Utils\Math::ceilUp($params['width'], 16)
-                );
-            } else {
-                $tempParams = $this->getResizeSize($params['width']);
-            }
-        }
-
-        $height = $tempParams['height'];
-        $width = $tempParams['width'];
-
-        if ($this->getAttribute('reflection')) {
-            $extra = '_reflection';
-        }
-
-
-        if ($width || $height) {
-            $part = explode('.', $file);
-            $cacheFile = $cacheDir . $part[0] . '__' . $width . 'x' . $height . $extra . '.' .
-                StringHelper::toLower(end($part));
-
-            if (empty($height)) {
-                $cacheFile = $cacheDir . $part[0] . '__' . $width . $extra . '.' .
-                    StringHelper::toLower(end($part));
-            }
-
-            if ($this->getAttribute('reflection')) {
-                $cacheFile = $cacheDir . $part[0] . '__' . $width . 'x' . $height . $extra . '.png';
-
-                if (empty($height)) {
-                    $cacheFile = $cacheDir . $part[0] . '__' . $width . $extra . '.png';
-                }
-            }
-        } else {
-            $cacheFile = $cacheDir . $file;
-        }
-
-        return $cacheFile;
-    }
-
-    /**
-     * Return the image url
-     *
-     * @param string|boolean $maxWidth - (optional) width
-     * @param string|boolean $maxHeight - (optional) height
-     *
-     * @return string
-     *
-     * @throws QUI\Exception
-     */
-    public function getSizeCacheUrl($maxWidth = false, $maxHeight = false): string
-    {
-        $cachePath = $this->getSizeCachePath($maxWidth, $maxHeight);
-        $cacheUrl = str_replace(CMS_DIR, URL_DIR, $cachePath);
-
-        if ($this->hasViewPermissionSet()) {
-            $cacheUrl = URL_DIR . $this->getUrl();
-        }
-
-        if (!preg_match('/[^a-zA-Z0-9_\-.\/]/i', $cacheUrl)) {
-            return $cacheUrl;
-        }
-
-        // thanks to http://php.net/manual/de/function.rawurlencode.php#100313
-        // thanks to http://php.net/manual/de/function.rawurlencode.php#63751
-        $encoded = implode(
-            "/",
-            array_map(function ($part) {
-                $encoded = '';
-                $length = mb_strlen($part);
-
-                for ($i = 0; $i < $length; $i++) {
-                    $str = mb_substr($part, $i, 1);
-
-                    if (!preg_match('/[^a-zA-Z0-9_\-.]/i', $str)) {
-                        $encoded .= $str;
-                        continue;
-                    }
-
-                    $encoded .= '%' . wordwrap(bin2hex($str), 2, '%', true);
-                }
-
-                return $encoded;
-            }, explode("/", $cacheUrl))
-        );
-
-        return $encoded;
-    }
-
-    /**
-     * Creates a cache file and takes into account the maximum sizes
-     * return the media url
-     *
-     * @param integer|boolean $maxWidth
-     * @param integer|boolean $maxHeight
-     *
-     * @return string - Path to the file
-     *
-     * @throws QUI\Exception
-     */
-    public function createSizeCacheUrl($maxWidth = false, $maxHeight = false): string
-    {
-        $params = $this->getResizeSize($maxWidth, $maxHeight);
-
-        $cacheUrl = $this->createSizeCache(
-            $params['width'],
-            $params['height']
-        );
-
-        return str_replace(CMS_DIR, URL_DIR, $cacheUrl);
-    }
-
-    /**
-     * Creates a cache file and takes into account the maximum sizes
-     *
-     * @param integer|boolean $maxWidth
-     * @param integer|boolean $maxHeight
-     *
-     * @return string - Path to the file
-     *
-     * @throws QUI\Exception
-     */
-    public function createResizeCache($maxWidth = false, $maxHeight = false)
-    {
-        $params = $this->getResizeSize($maxWidth, $maxHeight);
-
-        return $this->createSizeCache(
-            $params['width'],
-            $params['height']
-        );
-    }
-
-    /**
-     * Return the Image specific max resize params
-     *
-     * @param boolean|integer $maxWidth - (optional)
-     * @param boolean|integer $maxHeight - (optional)
-     *
-     * @return array - array('width' => 100, 'height' => 100)
-     *
-     * @throws QUI\Exception
-     */
-    public function getResizeSize($maxWidth = false, $maxHeight = false): array
-    {
-        if ($this->getAttribute('mime_type') == 'image/svg+xml') {
-            return [
-                'width' => false,
-                'height' => false
-            ];
-        }
-
-        $width = $this->getAttribute('image_width');
-        $height = $this->getAttribute('image_height');
-
-        if (!$width || !$height) {
-            $info = FileUtils::getInfo($this->getFullPath(), [
-                'imagesize' => true
-            ]);
-
-            $width = $info['width'];
-            $height = $info['height'];
-        }
-
-        $maxConfigSize = $this->getProject()->getConfig('media_maxUploadSize');
-
-        $newWidth = $width;
-        $newHeight = $height;
-
-        if (!$maxWidth) {
-            $maxWidth = $width;
-        }
-
-        if (!$maxHeight) {
-            $maxHeight = $height;
-        }
-
-        // max höhe breite auf 1200
-        if ($maxWidth > $maxConfigSize && $maxConfigSize) {
-            $maxWidth = $maxConfigSize;
-        }
-
-        if ($maxHeight > $maxConfigSize && $maxConfigSize) {
-            $maxHeight = $maxConfigSize;
-        }
-
-        // Breite
-        if ($newWidth > $maxWidth) {
-            $resize_by_percent = ($maxWidth * 100) / $newWidth;
-
-            $newHeight = (int)round(($newHeight * $resize_by_percent) / 100);
-            $newWidth = $maxWidth;
-        }
-
-        // Höhe
-        if ($newHeight > $maxHeight) {
-            $resize_by_percent = ($maxHeight * 100) / $newHeight;
-
-            $newWidth = (int)round(($newWidth * $resize_by_percent) / 100);
-            $newHeight = $maxHeight;
-        }
-
-        return [
-            'width' => $newWidth,
-            'height' => $newHeight
-        ];
     }
 
     /**
@@ -615,57 +305,208 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
-     * (non-PHPdoc)
+     * Return the image path
+     *
+     * @param string|boolean $maxWidth - (optional)
+     * @param string|boolean $maxHeight - (optional)
+     *
+     * @return string
      *
      * @throws QUI\Exception
-     * @see QUI\Interfaces\Projects\Media\File::deleteCache()
      */
-    public function deleteCache()
+    public function getSizeCachePath($maxWidth = false, $maxHeight = false): string
     {
         $Media = $this->Media;
-        $cdir = CMS_DIR . $Media->getCacheDir();
+        /* @var $Media QUI\Projects\Media */
+        $cacheDir = CMS_DIR . $Media->getCacheDir();
         $file = $this->getAttribute('file');
 
-        $cachefile = $cdir . $file;
-        $cacheData = pathinfo($cachefile);
 
-        $fileData = FileUtils::getInfo($this->getFullPath());
-        $files = FileUtils::readDir($cacheData['dirname'], true);
-        $filename = $fileData['filename'];
+        if (
+            $this->hasPermission('quiqqer.projects.media.view') &&
+            $this->hasPermission('quiqqer.projects.media.view', QUI::getUsers()->getNobody()) === false
+        ) {
+            $cacheDir = VAR_DIR . 'media/cache/permissions/' . $this->getProject()->getAttribute('name') . '/';
+        }
 
-        foreach ($files as $file) {
-            $len = strlen($filename);
 
-            // cache delete
-            if (substr($file, 0, $len + 2) == $filename . '__') {
-                FileUtils::unlink($cacheData['dirname'] . '/' . $file);
+        if ($this->getAttribute('mime_type') == 'image/svg+xml') {
+            return $cacheDir . $file;
+        }
+
+        if (!$maxWidth && !$maxHeight) {
+            return $cacheDir . $file;
+        }
+
+
+        if ($maxWidth > $this->IMAGE_MAX_SIZE) {
+            $maxWidth = $this->IMAGE_MAX_SIZE;
+        }
+
+        if ($maxHeight > $this->IMAGE_MAX_SIZE) {
+            $maxHeight = $this->IMAGE_MAX_SIZE;
+        }
+
+        $extra = '';
+        $params = $this->getResizeSize($maxWidth, $maxHeight);
+
+        if ($params['height'] > $params['width']) {
+            if (!($params['height'] % 8 === 0)) {
+                $tempParams = $this->getResizeSize(
+                    false,
+                    QUI\Utils\Math::ceilUp($params['height'], 16)
+                );
+            } else {
+                $tempParams = $this->getResizeSize(false, $params['height']);
+            }
+        } else {
+            if (!($params['width'] % 8 === 0)) {
+                $tempParams = $this->getResizeSize(
+                    QUI\Utils\Math::ceilUp($params['width'], 16)
+                );
+            } else {
+                $tempParams = $this->getResizeSize($params['width']);
             }
         }
 
-        FileUtils::unlink($cachefile);
+        $height = $tempParams['height'];
+        $width = $tempParams['width'];
 
-        // delete admin cache, too
-        $this->deleteAdminCache();
+        if ($this->getAttribute('reflection')) {
+            $extra = '_reflection';
+        }
+
+
+        if ($width || $height) {
+            $part = explode('.', $file);
+            $cacheFile = $cacheDir . $part[0] . '__' . $width . 'x' . $height . $extra . '.' .
+                StringHelper::toLower(end($part));
+
+            if (empty($height)) {
+                $cacheFile = $cacheDir . $part[0] . '__' . $width . $extra . '.' .
+                    StringHelper::toLower(end($part));
+            }
+
+            if ($this->getAttribute('reflection')) {
+                $cacheFile = $cacheDir . $part[0] . '__' . $width . 'x' . $height . $extra . '.png';
+
+                if (empty($height)) {
+                    $cacheFile = $cacheDir . $part[0] . '__' . $width . $extra . '.png';
+                }
+            }
+        } else {
+            $cacheFile = $cacheDir . $file;
+        }
+
+        return $cacheFile;
     }
 
     /**
-     * Delete the admin cache
+     * Return the Image specific max resize params
+     *
+     * @param boolean|integer $maxWidth - (optional)
+     * @param boolean|integer $maxHeight - (optional)
+     *
+     * @return array - array('width' => 100, 'height' => 100)
+     *
+     * @throws QUI\Exception
      */
-    public function deleteAdminCache()
+    public function getResizeSize($maxWidth = false, $maxHeight = false): array
     {
-        $Media = $this->Media;
-        $Project = $Media->getProject();
-
-        $cacheDir = VAR_DIR . 'media/cache/admin/' . $Project->getName() . '/' . $Project->getLang() . '/';
-        $cacheName = $this->getId() . '__';
-
-        $files = FileUtils::readDir($cacheDir);
-
-        foreach ($files as $file) {
-            if (strpos($file, $cacheName) === 0) {
-                unlink($cacheDir . $file);
-            }
+        if ($this->getAttribute('mime_type') == 'image/svg+xml') {
+            return [
+                'width' => false,
+                'height' => false
+            ];
         }
+
+        $width = $this->getAttribute('image_width');
+        $height = $this->getAttribute('image_height');
+
+        if (!$width || !$height) {
+            $info = FileUtils::getInfo($this->getFullPath(), [
+                'imagesize' => true
+            ]);
+
+            $width = $info['width'];
+            $height = $info['height'];
+        }
+
+        $maxConfigSize = $this->getProject()->getConfig('media_maxUploadSize');
+
+        $newWidth = $width;
+        $newHeight = $height;
+
+        if (!$maxWidth) {
+            $maxWidth = $width;
+        }
+
+        if (!$maxHeight) {
+            $maxHeight = $height;
+        }
+
+        // max höhe breite auf 1200
+        if ($maxWidth > $maxConfigSize && $maxConfigSize) {
+            $maxWidth = $maxConfigSize;
+        }
+
+        if ($maxHeight > $maxConfigSize && $maxConfigSize) {
+            $maxHeight = $maxConfigSize;
+        }
+
+        // Breite
+        if ($newWidth > $maxWidth) {
+            $resize_by_percent = ($maxWidth * 100) / $newWidth;
+
+            $newHeight = (int)round(($newHeight * $resize_by_percent) / 100);
+            $newWidth = $maxWidth;
+        }
+
+        // Höhe
+        if ($newHeight > $maxHeight) {
+            $resize_by_percent = ($maxHeight * 100) / $newHeight;
+
+            $newWidth = (int)round(($newWidth * $resize_by_percent) / 100);
+            $newHeight = $maxHeight;
+        }
+
+        return [
+            'width' => $newWidth,
+            'height' => $newHeight
+        ];
+    }
+
+    /**
+     * Is the image an animated image?
+     * Thanks to https://stackoverflow.com/a/415942
+     *
+     * @return bool
+     */
+    public function isAnimated(): bool
+    {
+        $filename = $this->getFullPath();
+
+        if (!($fh = @fopen($filename, 'rb'))) {
+            return false;
+        }
+
+        $count = 0;
+        //an animated gif contains multiple "frames", with each frame having a
+        //header made up of:
+        // * a static 4-byte sequence (\x00\x21\xF9\x04)
+        // * 4 variable bytes
+        // * a static 2-byte sequence (\x00\x2C)
+
+        // We read through the file til we reach the end of the file, or we've found
+        // at least 2 frame headers
+        while (!feof($fh) && $count < 2) {
+            $chunk = fread($fh, 1024 * 100); //read 100kb at a time
+            $count += preg_match_all('#\x00\x21\xF9\x04.{4}\x00[\x2C\x21]#s', $chunk, $matches);
+        }
+
+        fclose($fh);
+
+        return $count > 1;
     }
 
     /**
@@ -708,39 +549,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         return $original;
-    }
-
-    /**
-     * Is the image an animated image?
-     * Thanks to https://stackoverflow.com/a/415942
-     *
-     * @return bool
-     */
-    public function isAnimated(): bool
-    {
-        $filename = $this->getFullPath();
-
-        if (!($fh = @fopen($filename, 'rb'))) {
-            return false;
-        }
-
-        $count = 0;
-        //an animated gif contains multiple "frames", with each frame having a
-        //header made up of:
-        // * a static 4-byte sequence (\x00\x21\xF9\x04)
-        // * 4 variable bytes
-        // * a static 2-byte sequence (\x00\x2C)
-
-        // We read through the file til we reach the end of the file, or we've found
-        // at least 2 frame headers
-        while (!feof($fh) && $count < 2) {
-            $chunk = fread($fh, 1024 * 100); //read 100kb at a time
-            $count += preg_match_all('#\x00\x21\xF9\x04.{4}\x00[\x2C\x21]#s', $chunk, $matches);
-        }
-
-        fclose($fh);
-
-        return $count > 1;
     }
 
     /**
@@ -826,8 +634,142 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
-     * Hash methods
+     * Return the real height of the image
+     *
+     * @return integer|false
+     * @throws QUI\Exception
      */
+    public function getHeight()
+    {
+        if ($this->getAttribute('image_height')) {
+            return (int)$this->getAttribute('image_height');
+        }
+
+        $data = FileUtils::getInfo($this->getFullPath(), [
+            'imagesize' => true
+        ]);
+
+        if (isset($data['height'])) {
+            return (int)$data['height'];
+        }
+
+        return false;
+    }
+
+    /**
+     * Return the real with of the image
+     *
+     * @return integer|false
+     * @throws QUI\Exception
+     */
+    public function getWidth()
+    {
+        if ($this->getAttribute('image_width')) {
+            return (int)$this->getAttribute('image_width');
+        }
+
+        $data = FileUtils::getInfo($this->getFullPath(), [
+            'imagesize' => true
+        ]);
+
+        if (isset($data['width'])) {
+            return (int)$data['width'];
+        }
+
+        return false;
+    }
+
+    /**
+     * Return the image url
+     *
+     * @param string|boolean $maxWidth - (optional) width
+     * @param string|boolean $maxHeight - (optional) height
+     *
+     * @return string
+     *
+     * @throws QUI\Exception
+     */
+    public function getSizeCacheUrl($maxWidth = false, $maxHeight = false): string
+    {
+        $cachePath = $this->getSizeCachePath($maxWidth, $maxHeight);
+        $cacheUrl = str_replace(CMS_DIR, URL_DIR, $cachePath);
+
+        if ($this->hasViewPermissionSet()) {
+            $cacheUrl = URL_DIR . $this->getUrl();
+        }
+
+        if (!preg_match('/[^a-zA-Z0-9_\-.\/]/i', $cacheUrl)) {
+            return $cacheUrl;
+        }
+
+        // thanks to http://php.net/manual/de/function.rawurlencode.php#100313
+        // thanks to http://php.net/manual/de/function.rawurlencode.php#63751
+        $encoded = implode(
+            "/",
+            array_map(function ($part) {
+                $encoded = '';
+                $length = mb_strlen($part);
+
+                for ($i = 0; $i < $length; $i++) {
+                    $str = mb_substr($part, $i, 1);
+
+                    if (!preg_match('/[^a-zA-Z0-9_\-.]/i', $str)) {
+                        $encoded .= $str;
+                        continue;
+                    }
+
+                    $encoded .= '%' . wordwrap(bin2hex($str), 2, '%', true);
+                }
+
+                return $encoded;
+            }, explode("/", $cacheUrl))
+        );
+
+        return $encoded;
+    }
+
+    /**
+     * Creates a cache file and takes into account the maximum sizes
+     * return the media url
+     *
+     * @param integer|boolean $maxWidth
+     * @param integer|boolean $maxHeight
+     *
+     * @return string - Path to the file
+     *
+     * @throws QUI\Exception
+     */
+    public function createSizeCacheUrl($maxWidth = false, $maxHeight = false): string
+    {
+        $params = $this->getResizeSize($maxWidth, $maxHeight);
+
+        $cacheUrl = $this->createSizeCache(
+            $params['width'],
+            $params['height']
+        );
+
+        return str_replace(CMS_DIR, URL_DIR, $cacheUrl);
+    }
+
+    /**
+     * Creates a cache file and takes into account the maximum sizes
+     *
+     * @param integer|boolean $maxWidth
+     * @param integer|boolean $maxHeight
+     *
+     * @return string - Path to the file
+     *
+     * @throws QUI\Exception
+     */
+    public function createResizeCache($maxWidth = false, $maxHeight = false)
+    {
+        $params = $this->getResizeSize($maxWidth, $maxHeight);
+
+        return $this->createSizeCache(
+            $params['width'],
+            $params['height']
+        );
+    }
 
     /**
      * Generate the MD5 file hash and set it to the Database and to the Object
@@ -884,6 +826,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
+     * Hash methods
+     */
+
+    /**
      * @return void
      * @throws \QUI\Exception
      */
@@ -932,6 +878,60 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $this->deleteCache();
         } catch (QUI\Exception $Exception) {
             $this->deactivate();
+        }
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @throws QUI\Exception
+     * @see QUI\Interfaces\Projects\Media\File::deleteCache()
+     */
+    public function deleteCache()
+    {
+        $Media = $this->Media;
+        $cdir = CMS_DIR . $Media->getCacheDir();
+        $file = $this->getAttribute('file');
+
+        $cachefile = $cdir . $file;
+        $cacheData = pathinfo($cachefile);
+
+        $fileData = FileUtils::getInfo($this->getFullPath());
+        $files = FileUtils::readDir($cacheData['dirname'], true);
+        $filename = $fileData['filename'];
+
+        foreach ($files as $file) {
+            $len = strlen($filename);
+
+            // cache delete
+            if (substr($file, 0, $len + 2) == $filename . '__') {
+                FileUtils::unlink($cacheData['dirname'] . '/' . $file);
+            }
+        }
+
+        FileUtils::unlink($cachefile);
+
+        // delete admin cache, too
+        $this->deleteAdminCache();
+    }
+
+    /**
+     * Delete the admin cache
+     */
+    public function deleteAdminCache()
+    {
+        $Media = $this->Media;
+        $Project = $Media->getProject();
+
+        $cacheDir = VAR_DIR . 'media/cache/admin/' . $Project->getName() . '/' . $Project->getLang() . '/';
+        $cacheName = $this->getId() . '__';
+
+        $files = FileUtils::readDir($cacheDir);
+
+        foreach ($files as $file) {
+            if (strpos($file, $cacheName) === 0) {
+                unlink($cacheDir . $file);
+            }
         }
     }
 }

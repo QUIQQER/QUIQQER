@@ -145,104 +145,17 @@ class Package extends QUI\QDOM
         }
 
         $this->packageDir = $packageDir;
-        $this->name       = $package;
+        $this->name = $package;
     }
 
     /**
-     * read the package data
-     */
-    protected function readPackageData()
-    {
-        if ($this->readPackageInfo) {
-            return;
-        }
-
-        // no composer.json, no real package
-        if (!file_exists($this->packageDir . 'composer.json')) {
-            $this->readPackageInfo = true;
-
-            return;
-        }
-
-        $this->getComposerData();
-
-        // ERROR
-        if (!$this->composerData) {
-            QUI\System\Log::addCritical(
-                'Package composer.json has some errors: ' . json_last_error_msg(),
-                [
-                    'package'    => $this->name,
-                    'packageDir' => $this->packageDir
-                ]
-            );
-        }
-
-        if (!isset($this->composerData['type'])) {
-            $this->readPackageInfo = true;
-
-            return;
-        }
-
-        if ($this->composerData['type'] === 'quiqqer-asset') {
-            $this->readPackageInfo = true;
-
-            return;
-        }
-
-        if (strpos($this->composerData['type'], 'quiqqer-') === false) {
-            $this->readPackageInfo = true;
-
-            return;
-        }
-
-        $this->isQuiqqerPackage = true;
-        $this->configPath       = CMS_DIR . 'etc/plugins/' . $this->getName() . '.ini.php';
-
-        QUI\Utils\System\File::mkfile($this->configPath);
-
-
-        $this->readPackageInfo = true;
-    }
-
-    /**
-     * Read the package xml
-     *
-     * @return array
-     */
-    protected function getPackageXMLData(): array
-    {
-        if ($this->packageXML !== null) {
-            return $this->packageXML;
-        }
-
-        if (!$this->isQuiqqerPackage()) {
-            $this->packageXML = [];
-
-            return [];
-        }
-
-        $packageXML = $this->packageDir . '/package.xml';
-
-        // package xml
-        if (!file_exists($packageXML)) {
-            $this->packageXML = [];
-
-            return $this->packageXML;
-        }
-
-        $this->packageXML = XML::getPackageFromXMLFile($packageXML);
-
-        return $this->packageXML;
-    }
-
-    /**
-     * Return the system path of the package
+     * Alias for getCacheName()
      *
      * @return string
      */
-    public function getDir(): string
+    public function getCachePath(): string
     {
-        return $this->packageDir;
+        return $this->getCacheName();
     }
 
     /**
@@ -256,13 +169,13 @@ class Package extends QUI\QDOM
     }
 
     /**
-     * Alias for getCacheName()
+     * Return the name of the package
      *
      * @return string
      */
-    public function getCachePath(): string
+    public function getName(): string
     {
-        return $this->getCacheName();
+        return $this->name;
     }
 
     /**
@@ -298,6 +211,179 @@ class Package extends QUI\QDOM
     }
 
     /**
+     * Read the package xml
+     *
+     * @return array
+     */
+    protected function getPackageXMLData(): array
+    {
+        if ($this->packageXML !== null) {
+            return $this->packageXML;
+        }
+
+        if (!$this->isQuiqqerPackage()) {
+            $this->packageXML = [];
+
+            return [];
+        }
+
+        $packageXML = $this->packageDir . '/package.xml';
+
+        // package xml
+        if (!file_exists($packageXML)) {
+            $this->packageXML = [];
+
+            return $this->packageXML;
+        }
+
+        $this->packageXML = XML::getPackageFromXMLFile($packageXML);
+
+        return $this->packageXML;
+    }
+
+    /**
+     * Is the package a quiqqer package?
+     *
+     * @return bool
+     */
+    public function isQuiqqerPackage(): bool
+    {
+        $this->readPackageData();
+
+        if (!isset($this->composerData['type'])) {
+            return false;
+        }
+
+        return $this->isQuiqqerPackage;
+    }
+
+    /**
+     * read the package data
+     */
+    protected function readPackageData()
+    {
+        if ($this->readPackageInfo) {
+            return;
+        }
+
+        // no composer.json, no real package
+        if (!file_exists($this->packageDir . 'composer.json')) {
+            $this->readPackageInfo = true;
+
+            return;
+        }
+
+        $this->getComposerData();
+
+        // ERROR
+        if (!$this->composerData) {
+            QUI\System\Log::addCritical(
+                'Package composer.json has some errors: ' . json_last_error_msg(),
+                [
+                    'package' => $this->name,
+                    'packageDir' => $this->packageDir
+                ]
+            );
+        }
+
+        if (!isset($this->composerData['type'])) {
+            $this->readPackageInfo = true;
+
+            return;
+        }
+
+        if ($this->composerData['type'] === 'quiqqer-asset') {
+            $this->readPackageInfo = true;
+
+            return;
+        }
+
+        if (strpos($this->composerData['type'], 'quiqqer-') === false) {
+            $this->readPackageInfo = true;
+
+            return;
+        }
+
+        $this->isQuiqqerPackage = true;
+        $this->configPath = CMS_DIR . 'etc/plugins/' . $this->getName() . '.ini.php';
+
+        QUI\Utils\System\File::mkfile($this->configPath);
+
+
+        $this->readPackageInfo = true;
+    }
+
+    /**
+     * Return the composer data of the package
+     *
+     * @return array|bool|mixed
+     */
+    public function getComposerData()
+    {
+        if (!empty($this->composerData)) {
+            return $this->composerData;
+        }
+
+        $cache = $this->getCacheName() . '/composerData';
+
+        try {
+            $this->composerData = LongTermCache::get($cache);
+
+            return $this->composerData;
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
+        }
+
+        $Parser = new JsonParser();
+        $file = false;
+
+        if (file_exists($this->packageDir . 'composer.json')) {
+            $file = $this->packageDir . 'composer.json';
+        } elseif (file_exists($this->packageDir . 'package.json')) {
+            $file = $this->packageDir . 'package.json';
+        } elseif (file_exists($this->packageDir . 'bower.json')) {
+            $file = $this->packageDir . 'bower.json';
+        }
+
+        if ($file) {
+            try {
+                $this->composerData = $Parser->parse(
+                    file_get_contents($file),
+                    JsonParser::PARSE_TO_ASSOC
+                );
+            } catch (ParsingException $Exception) {
+                QUI\System\Log::addAlert($Exception->getMessage(), [
+                    'ALERT' => 'FILE HAS PARSING ERRORS',
+                    'jsonfile' => $file
+                ]);
+            }
+        }
+
+        $lock = QUI::getPackageManager()->getPackageLock($this);
+
+        if (isset($lock['version'])) {
+            $this->composerData['version'] = $lock['version'];
+        }
+
+        LongTermCache::set($cache, $this->composerData);
+
+        return $this->composerData;
+    }
+
+    /**
+     * Has the package a template parent?
+     * If the package is a template, its possible that the template has a package
+     *
+     * @return bool
+     */
+    public function hasTemplateParent(): bool
+    {
+        $parent = $this->getTemplateParent();
+
+        return !empty($parent);
+    }
+
+    /**
      * Return the template parent
      * - if one is set
      *
@@ -319,19 +405,6 @@ class Package extends QUI\QDOM
     }
 
     /**
-     * Has the package a template parent?
-     * If the package is a template, its possible that the template has a package
-     *
-     * @return bool
-     */
-    public function hasTemplateParent(): bool
-    {
-        $parent = $this->getTemplateParent();
-
-        return !empty($parent);
-    }
-
-    /**
      * Return the var dir for the package
      * you can use the var dir for not accessible files
      *
@@ -344,16 +417,6 @@ class Package extends QUI\QDOM
         QUI\Utils\System\File::mkdir($varDir);
 
         return $varDir;
-    }
-
-    /**
-     * Return the name of the package
-     *
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
     }
 
     /**
@@ -375,7 +438,8 @@ class Package extends QUI\QDOM
             return $this->title;
         }
 
-        if ($this->isQuiqqerPackage()
+        if (
+            $this->isQuiqqerPackage()
             && QUI::getLocale()->exists($this->name, 'package.title')
         ) {
             $this->title = QUI::getLocale()->get($this->name, 'package.title');
@@ -408,7 +472,8 @@ class Package extends QUI\QDOM
             return $this->description;
         }
 
-        if ($this->isQuiqqerPackage()
+        if (
+            $this->isQuiqqerPackage()
             && QUI::getLocale()->exists($this->name, 'package.description')
         ) {
             $this->description = QUI::getLocale()->get($this->name, 'package.description');
@@ -462,27 +527,6 @@ class Package extends QUI\QDOM
         }
 
         return '';
-    }
-
-    /**
-     * Return the permission name for a package permission
-     * eq:
-     * - canUse
-     *
-     * @param string $permissionName
-     * @return mixed
-     */
-    public function getPermissionName($permissionName = 'canUse'): string
-    {
-        $nameShortCut = preg_replace("/[^A-Za-z0-9 ]/", '', $this->getName());
-
-        switch ($permissionName) {
-            case 'header':
-                return 'permission.quiqqer.packages.' . $nameShortCut . '._header';
-
-            default:
-                return 'quiqqer.packages.' . $nameShortCut . '.canUse';
-        }
     }
 
     /**
@@ -541,63 +585,6 @@ class Package extends QUI\QDOM
     }
 
     /**
-     * Return the composer data of the package
-     *
-     * @return array|bool|mixed
-     */
-    public function getComposerData()
-    {
-        if (!empty($this->composerData)) {
-            return $this->composerData;
-        }
-
-        $cache = $this->getCacheName() . '/composerData';
-
-        try {
-            $this->composerData = LongTermCache::get($cache);
-
-            return $this->composerData;
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::writeDebugException($Exception);
-        }
-
-        $Parser = new JsonParser();
-        $file   = false;
-
-        if (file_exists($this->packageDir . 'composer.json')) {
-            $file = $this->packageDir . 'composer.json';
-        } elseif (file_exists($this->packageDir . 'package.json')) {
-            $file = $this->packageDir . 'package.json';
-        } elseif (file_exists($this->packageDir . 'bower.json')) {
-            $file = $this->packageDir . 'bower.json';
-        }
-
-        if ($file) {
-            try {
-                $this->composerData = $Parser->parse(
-                    file_get_contents($file),
-                    JsonParser::PARSE_TO_ASSOC
-                );
-            } catch (ParsingException $Exception) {
-                QUI\System\Log::addAlert($Exception->getMessage(), [
-                    'ALERT'    => 'FILE HAS PARSING ERRORS',
-                    'jsonfile' => $file
-                ]);
-            }
-        }
-
-        $lock = QUI::getPackageManager()->getPackageLock($this);
-
-        if (isset($lock['version'])) {
-            $this->composerData['version'] = $lock['version'];
-        }
-
-        LongTermCache::set($cache, $this->composerData);
-
-        return $this->composerData;
-    }
-
-    /**
      * Clears the package cache
      */
     public function clearCache()
@@ -622,6 +609,18 @@ class Package extends QUI\QDOM
     }
 
     /**
+     * use getXMLFilePath()
+     *
+     * @param string $name - e.g. "database.xml" / "package.xml" etc.
+     * @return string|false - absolute file path or false if xml file does not exist
+     * @deprecated
+     */
+    public function getXMLFile(string $name)
+    {
+        return $this->getXMLFilePath($name);
+    }
+
+    /**
      * Get specific XML file from Package
      *
      * @param string $name - e.g. "database.xml" / "package.xml" etc.
@@ -639,15 +638,13 @@ class Package extends QUI\QDOM
     }
 
     /**
-     * use getXMLFilePath()
+     * Return the system path of the package
      *
-     * @param string $name - e.g. "database.xml" / "package.xml" etc.
-     * @return string|false - absolute file path or false if xml file does not exist
-     * @deprecated
+     * @return string
      */
-    public function getXMLFile(string $name)
+    public function getDir(): string
     {
-        return $this->getXMLFilePath($name);
+        return $this->packageDir;
     }
 
     /**
@@ -671,6 +668,60 @@ class Package extends QUI\QDOM
     }
 
     /**
+     * Return the permission name for a package permission
+     * eq:
+     * - canUse
+     *
+     * @param string $permissionName
+     * @return mixed
+     */
+    public function getPermissionName($permissionName = 'canUse'): string
+    {
+        $nameShortCut = preg_replace("/[^A-Za-z0-9 ]/", '', $this->getName());
+
+        switch ($permissionName) {
+            case 'header':
+                return 'permission.quiqqer.packages.' . $nameShortCut . '._header';
+
+            default:
+                return 'quiqqer.packages.' . $nameShortCut . '.canUse';
+        }
+    }
+
+    /**
+     * Execute first install
+     *
+     * @throws QUI\Exception
+     */
+    public function install()
+    {
+        $this->readPackageData();
+
+        $pkgName = $this->getName();
+
+        QUI::getEvents()->fireEvent('packageInstallBefore', [$this]);
+        QUI::getEvents()->fireEvent('packageInstallBefore-' . $pkgName, [$this]);
+
+        Update::importEvents(
+            $this->getDir() . self::EVENTS_XML,
+            $this->getName()
+        );
+
+        QUI::getEvents()->fireEvent('packageInstall', [$this]);
+        QUI::getEvents()->fireEvent('packageInstall-' . $pkgName, [$this]);
+
+        if ($this->isQuiqqerPackage()) {
+            $this->setup();
+        }
+
+        $this->moveQuiqqerAsset();
+
+
+        QUI::getEvents()->fireEvent('packageInstallAfter', [$this]);
+        QUI::getEvents()->fireEvent('packageInstallAfter-' . $pkgName, [$this]);
+    }
+
+    /**
      * Execute the package setup
      *
      * @param array $params - optional ['localePublish' => true, 'localeImport' => true, 'forceImport' => false]
@@ -687,8 +738,8 @@ class Package extends QUI\QDOM
 
         // options
         $optionLocalePublish = true;
-        $optionLocaleImport  = true;
-        $optionForceImport   = false;
+        $optionLocaleImport = true;
+        $optionForceImport = false;
 
         if (isset($params['localePublish'])) {
             $optionLocalePublish = $params['localePublish'];
@@ -720,7 +771,7 @@ class Package extends QUI\QDOM
         if ($this->getName() !== 'quiqqer/quiqqer') { // you can't set permissions to the core
             try {
                 $found = QUI::getDataBase()->fetch([
-                    'from'  => QUI\Permissions\Manager::table(),
+                    'from' => QUI\Permissions\Manager::table(),
                     'where' => [
                         'name' => $this->getPermissionName()
                     ],
@@ -729,12 +780,12 @@ class Package extends QUI\QDOM
 
                 if (!isset($found[0])) {
                     QUI::getPermissionManager()->addPermission([
-                        'name'           => $this->getPermissionName(),
-                        'title'          => 'quiqqer/quiqqer permission.package.canUse',
-                        'desc'           => '',
-                        'area'           => '',
-                        'type'           => 'bool',
-                        'defaultvalue'   => 0,
+                        'name' => $this->getPermissionName(),
+                        'title' => 'quiqqer/quiqqer permission.package.canUse',
+                        'desc' => '',
+                        'area' => '',
+                        'type' => 'bool',
+                        'defaultvalue' => 0,
                         'rootPermission' => 1
                     ]);
                 }
@@ -747,7 +798,7 @@ class Package extends QUI\QDOM
 
             $data = [
                 'datatype' => 'php,js',
-                'package'  => $this->getName()
+                'package' => $this->getName()
             ];
 
             foreach ($languages as $lang) {
@@ -823,6 +874,44 @@ class Package extends QUI\QDOM
     }
 
     /**
+     * Is the package a quiqqer asset package?
+     *
+     * @return bool
+     */
+    public function isQuiqqerAsset(): bool
+    {
+        $this->readPackageData();
+
+        if (!isset($this->composerData['type'])) {
+            return false;
+        }
+
+        return $this->composerData['type'] === 'quiqqer-asset';
+    }
+
+    /**
+     * @throws QUI\Exception
+     */
+    private function moveQuiqqerAsset()
+    {
+        if (!$this->isQuiqqerAsset()) {
+            return;
+        }
+
+        $quiqqerAssetDir = OPT_DIR . 'bin/' . $this->getName();
+
+        if (is_dir($quiqqerAssetDir)) {
+            QUI::getTemp()->moveToTemp($quiqqerAssetDir);
+        }
+
+        // copy this to the package bin
+        QUI\Utils\System\File::dircopy(
+            $this->getDir(),
+            $quiqqerAssetDir
+        );
+    }
+
+    /**
      * publish the locale files of the package
      */
     protected function setupLocalePublish()
@@ -830,9 +919,9 @@ class Package extends QUI\QDOM
         $dir = $this->getDir();
 
         try {
-            $groups   = [];
-            $files    = [$dir . self::LOCALE_XML];
-            $Dom      = XML::getDomFromXml($dir . self::LOCALE_XML);
+            $groups = [];
+            $files = [$dir . self::LOCALE_XML];
+            $Dom = XML::getDomFromXml($dir . self::LOCALE_XML);
             $FileList = $Dom->getElementsByTagName('file');
 
             if ($FileList->length) {
@@ -871,71 +960,6 @@ class Package extends QUI\QDOM
                 QUI\System\Log::writeException($Exception);
             }
         }
-    }
-
-    /**
-     * Is the package a quiqqer package?
-     *
-     * @return bool
-     */
-    public function isQuiqqerPackage(): bool
-    {
-        $this->readPackageData();
-
-        if (!isset($this->composerData['type'])) {
-            return false;
-        }
-
-        return $this->isQuiqqerPackage;
-    }
-
-    /**
-     * Is the package a quiqqer asset package?
-     *
-     * @return bool
-     */
-    public function isQuiqqerAsset(): bool
-    {
-        $this->readPackageData();
-
-        if (!isset($this->composerData['type'])) {
-            return false;
-        }
-
-        return $this->composerData['type'] === 'quiqqer-asset';
-    }
-
-    /**
-     * Execute first install
-     *
-     * @throws QUI\Exception
-     */
-    public function install()
-    {
-        $this->readPackageData();
-
-        $pkgName = $this->getName();
-
-        QUI::getEvents()->fireEvent('packageInstallBefore', [$this]);
-        QUI::getEvents()->fireEvent('packageInstallBefore-' . $pkgName, [$this]);
-
-        Update::importEvents(
-            $this->getDir() . self::EVENTS_XML,
-            $this->getName()
-        );
-
-        QUI::getEvents()->fireEvent('packageInstall', [$this]);
-        QUI::getEvents()->fireEvent('packageInstall-' . $pkgName, [$this]);
-
-        if ($this->isQuiqqerPackage()) {
-            $this->setup();
-        }
-
-        $this->moveQuiqqerAsset();
-
-
-        QUI::getEvents()->fireEvent('packageInstallAfter', [$this]);
-        QUI::getEvents()->fireEvent('packageInstallAfter-' . $pkgName, [$this]);
     }
 
     /**
@@ -989,27 +1013,5 @@ class Package extends QUI\QDOM
         );
 
         $this->moveQuiqqerAsset();
-    }
-
-    /**
-     * @throws QUI\Exception
-     */
-    private function moveQuiqqerAsset()
-    {
-        if (!$this->isQuiqqerAsset()) {
-            return;
-        }
-
-        $quiqqerAssetDir = OPT_DIR . 'bin/' . $this->getName();
-
-        if (is_dir($quiqqerAssetDir)) {
-            QUI::getTemp()->moveToTemp($quiqqerAssetDir);
-        }
-
-        // copy this to the package bin
-        QUI\Utils\System\File::dircopy(
-            $this->getDir(),
-            $quiqqerAssetDir
-        );
     }
 }

@@ -39,24 +39,24 @@ class Handler extends QUI\QDOM
         $this->setAttribute('backtrace', false);
 
         // default error handling
-        $this->setAttribute('ERROR_1', true); // 1			E_ERROR
-        $this->setAttribute('ERROR_2', true); // 2 			E_WARNING
-        $this->setAttribute('ERROR_4', true); // 4 			E_PARSE
-        $this->setAttribute('ERROR_8', true); // 8 			E_NOTICE
-        $this->setAttribute('ERROR_16', true); // 16 		E_CORE_ERROR
-        $this->setAttribute('ERROR_32', true); // 32 		E_CORE_WARNING
-        $this->setAttribute('ERROR_64', true); // 64 		E_COMPILE_ERROR
-        $this->setAttribute('ERROR_128', true); // 128 		E_COMPILE_WARNING
-        $this->setAttribute('ERROR_256', true); // 256 		E_USER_ERROR
-        $this->setAttribute('ERROR_512', true); // 512 		E_USER_WARNING
-        $this->setAttribute('ERROR_1024', true); // 1024 	E_USER_NOTICE
-        $this->setAttribute('ERROR_2048', true); // 2048 	E_STRICT
+        $this->setAttribute('ERROR_1', true); // 1          E_ERROR
+        $this->setAttribute('ERROR_2', true); // 2          E_WARNING
+        $this->setAttribute('ERROR_4', true); // 4          E_PARSE
+        $this->setAttribute('ERROR_8', true); // 8          E_NOTICE
+        $this->setAttribute('ERROR_16', true); // 16        E_CORE_ERROR
+        $this->setAttribute('ERROR_32', true); // 32        E_CORE_WARNING
+        $this->setAttribute('ERROR_64', true); // 64        E_COMPILE_ERROR
+        $this->setAttribute('ERROR_128', true); // 128      E_COMPILE_WARNING
+        $this->setAttribute('ERROR_256', true); // 256      E_USER_ERROR
+        $this->setAttribute('ERROR_512', true); // 512      E_USER_WARNING
+        $this->setAttribute('ERROR_1024', true); // 1024    E_USER_NOTICE
+        $this->setAttribute('ERROR_2048', true); // 2048    E_STRICT
 
-        $this->setAttribute('ERROR_6143', true); // 6143 	E_ALL
-        $this->setAttribute('ERROR_2048', true); // 2048 	E_STRICT
-        $this->setAttribute('ERROR_4096', true); // 4096 	E_RECOVERABLE_ERROR
-        $this->setAttribute('ERROR_8192', true); // 8192 	E_DEPRECATED
-        $this->setAttribute('ERROR_16384', true); // 16384 	E_USER_DEPRECATED
+        $this->setAttribute('ERROR_6143', true); // 6143    E_ALL
+        $this->setAttribute('ERROR_2048', true); // 2048    E_STRICT
+        $this->setAttribute('ERROR_4096', true); // 4096    E_RECOVERABLE_ERROR
+        $this->setAttribute('ERROR_8192', true); // 8192    E_DEPRECATED
+        $this->setAttribute('ERROR_16384', true); // 16384  E_USER_DEPRECATED
 
         $this->setAttributes($params);
 
@@ -66,12 +66,12 @@ class Handler extends QUI\QDOM
     /**
      * Register shutdown funktions
      *
+     * @return boolean
+     * @throws QUI\Exception
      * @example QUI\ExceptionHandler->registerShutdown('function', 'param');
      * QUI\ExceptionHandler->registerShutdown(array($Object, 'dynamicMethod'));
      * QUI\ExceptionHandler->registerShutdown('class::staticMethod');
      *
-     * @throws QUI\Exception
-     * @return boolean
      */
     public function registerShutdown()
     {
@@ -131,14 +131,14 @@ class Handler extends QUI\QDOM
         $errfile = '',
         $errline = ''
     ) {
-        if ($this->getAttribute('ERROR_'.$errno) == false) {
+        if ($this->getAttribute('ERROR_' . $errno) == false) {
             return;
         }
 
         $log = false;
 
         if ($this->getAttribute('logdir')) {
-            $log = $this->getAttribute('logdir').'error'.\date('-Y-m-d').'.log';
+            $log = $this->getAttribute('logdir') . 'error' . \date('-Y-m-d') . '.log';
 
             // Log Verzeichnis erstellen
             QUI\Utils\System\File::mkdir($this->getAttribute('logdir'));
@@ -148,29 +148,29 @@ class Handler extends QUI\QDOM
             \file_put_contents($log, ' ');
         }
 
-        $err_msg = "\n\n==== Date: ".\date('Y-m-d H:i:s')
-                   ." ============================================\n";
+        $err_msg = "\n\n==== Date: " . \date('Y-m-d H:i:s')
+            . " ============================================\n";
 
         if ($this->getAttribute('show_request')) {
             if (isset($_SERVER['REQUEST_URI'])) {
-                $err_msg .= 'REQUEST URI: '.$_SERVER['REQUEST_URI']."\n";
+                $err_msg .= 'REQUEST URI: ' . $_SERVER['REQUEST_URI'] . "\n";
             }
 
             if (isset($_SERVER['HTTP_HOST'])) {
-                $err_msg .= 'HTTP_HOST: '.$_SERVER['HTTP_HOST']."\n";
+                $err_msg .= 'HTTP_HOST: ' . $_SERVER['HTTP_HOST'] . "\n";
             }
 
             if (isset($_SERVER['REMOTE_ADDR'])) {
-                $err_msg .= 'REMOTE_ADDR: '.$_SERVER['REMOTE_ADDR']."\n";
+                $err_msg .= 'REMOTE_ADDR: ' . $_SERVER['REMOTE_ADDR'] . "\n";
             }
 
             if (isset($_SERVER['HTTP_USER_AGENT'])) {
-                $err_msg .= 'HTTP_USER_AGENT: '.$_SERVER['HTTP_USER_AGENT']
-                            ."\n";
+                $err_msg .= 'HTTP_USER_AGENT: ' . $_SERVER['HTTP_USER_AGENT']
+                    . "\n";
             }
 
             if (isset($_REQUEST['_url'])) {
-                $err_msg .= '$_REQUEST[\'_url\']: '.$_REQUEST['_url']."\n";
+                $err_msg .= '$_REQUEST[\'_url\']: ' . $_REQUEST['_url'] . "\n";
             }
 
             unset($_REQUEST['REQUEST_URI']);
@@ -179,27 +179,27 @@ class Handler extends QUI\QDOM
             unset($_REQUEST['HTTP_USER_AGENT']);
             unset($_REQUEST['_url']);
 
-            $err_msg .= '$_REQUEST: '.\print_r($_REQUEST, true)."\n\n";
+            $err_msg .= '$_REQUEST: ' . \print_r($_REQUEST, true) . "\n\n";
         }
 
-        $err_msg .= "\nMessage:\n".$errstr."\n";
+        $err_msg .= "\nMessage:\n" . $errstr . "\n";
 
         if ($errno) {
-            $err_msg .= "Error No: ERROR_".$errno."\n";
+            $err_msg .= "Error No: ERROR_" . $errno . "\n";
         }
 
         if ($errfile) {
-            $err_msg .= "Error File:".$errfile."\n";
+            $err_msg .= "Error File:" . $errfile . "\n";
         }
 
         if ($errline) {
-            $err_msg .= "Error Line:".$errline."\n";
+            $err_msg .= "Error Line:" . $errline . "\n";
         }
 
         // Nutzerdaten
         if (isset($_SERVER['SERVER_ADDR'])) {
-            $err_msg .= "IP: ".$_SERVER['SERVER_ADDR']."\n";
-            $err_msg .= "Host: ".\gethostbyaddr($_SERVER['SERVER_ADDR'])."\n";
+            $err_msg .= "IP: " . $_SERVER['SERVER_ADDR'] . "\n";
+            $err_msg .= "Host: " . \gethostbyaddr($_SERVER['SERVER_ADDR']) . "\n";
         }
 
         // Backtrace
@@ -209,11 +209,12 @@ class Handler extends QUI\QDOM
             $buffer = \ob_get_contents();
             \ob_end_clean();
 
-            $err_msg .= "\n BACKTRACE\n\n".$buffer."\n";
+            $err_msg .= "\n BACKTRACE\n\n" . $buffer . "\n";
         }
 
 
-        if (\defined('ERROR_SEND')
+        if (
+            \defined('ERROR_SEND')
             && \defined('ERROR_MAIL')
             && \class_exists('Mail')
             && ERROR_SEND
@@ -227,7 +228,7 @@ class Handler extends QUI\QDOM
                         'lib.qui.exceptions.handler.mail.subject',
                         [
                             'host' => $_SERVER['HTTP_HOST'],
-                            'url'  => $_SERVER['REQUEST_URI']
+                            'url' => $_SERVER['REQUEST_URI']
                         ]
                     ),
                     $err_msg

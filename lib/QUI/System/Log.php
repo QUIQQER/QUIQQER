@@ -28,44 +28,22 @@ class Log
     const LEVEL_EMERGENCY = 600;
 
     /**
-     * Return the log name by a log level
+     * Writes with print_r the object into a log file
      *
-     * @param integer|\Monolog\Level $LogLevel - Log Level
-     *
-     * @return string
+     * @param object|string|integer|array $object
+     * @param integer $logLevel - Log-Level ( \QUI\System\Log::LEVEL_ERROR ... )
+     * @param array $context - context data
+     * @param string|boolean $filename - [optional] name of the log eq: messages, database
+     * @param boolean $force - [optional] if true: log in any case, no matter which settings
      */
-    public static function levelToLogName($LogLevel): string
-    {
-        switch ($LogLevel) {
-            case self::LEVEL_DEBUG:
-                return 'debug';
-
-            case self::LEVEL_DEPRECATED:
-                return 'deprecated';
-
-            case self::LEVEL_INFO:
-                return 'info';
-
-            case self::LEVEL_NOTICE:
-                return 'notice';
-
-            case self::LEVEL_WARNING:
-                return 'warning';
-
-            case self::LEVEL_ERROR:
-                return 'error';
-
-            case self::LEVEL_CRITICAL:
-                return 'critical';
-
-            case self::LEVEL_ALERT:
-                return 'alert';
-
-            case self::LEVEL_EMERGENCY:
-                return 'emergency';
-        }
-
-        return 'error';
+    public static function writeRecursive(
+        $object,
+        int $logLevel = self::LEVEL_INFO,
+        array $context = [],
+        $filename = false,
+        bool $force = false
+    ) {
+        self::write(print_r($object, true), $logLevel, $context, $filename, $force);
     }
 
     /**
@@ -91,9 +69,11 @@ class Log
 
         $logLevelName = self::levelToLogName($logLevel);
 
-        if ($force === false
+        if (
+            $force === false
             && isset($levels[$logLevelName])
-            && (int)$levels[$logLevelName] === 0) {
+            && (int)$levels[$logLevelName] === 0
+        ) {
             return;
         }
 
@@ -106,11 +86,11 @@ class Log
         }
 
         $context['errorFilename'] = $filename;
-        $context['IP']            = QUI\Utils\System::getClientIP();
+        $context['IP'] = QUI\Utils\System::getClientIP();
 
         if (defined('QUIQQER_SESSION_STARTED')) {
-            $User                = QUI::getUserBySession();
-            $context['userId']   = $User->getId();
+            $User = QUI::getUserBySession();
+            $context['userId'] = $User->getId();
             $context['username'] = $User->getUsername();
         }
 
@@ -159,22 +139,44 @@ class Log
     }
 
     /**
-     * Writes with print_r the object into a log file
+     * Return the log name by a log level
      *
-     * @param object|string|integer|array $object
-     * @param integer $logLevel - Log-Level ( \QUI\System\Log::LEVEL_ERROR ... )
-     * @param array $context - context data
-     * @param string|boolean $filename - [optional] name of the log eq: messages, database
-     * @param boolean $force - [optional] if true: log in any case, no matter which settings
+     * @param integer|\Monolog\Level $LogLevel - Log Level
+     *
+     * @return string
      */
-    public static function writeRecursive(
-        $object,
-        int $logLevel = self::LEVEL_INFO,
-        array $context = [],
-        $filename = false,
-        bool $force = false
-    ) {
-        self::write(print_r($object, true), $logLevel, $context, $filename, $force);
+    public static function levelToLogName($LogLevel): string
+    {
+        switch ($LogLevel) {
+            case self::LEVEL_DEBUG:
+                return 'debug';
+
+            case self::LEVEL_DEPRECATED:
+                return 'deprecated';
+
+            case self::LEVEL_INFO:
+                return 'info';
+
+            case self::LEVEL_NOTICE:
+                return 'notice';
+
+            case self::LEVEL_WARNING:
+                return 'warning';
+
+            case self::LEVEL_ERROR:
+                return 'error';
+
+            case self::LEVEL_CRITICAL:
+                return 'critical';
+
+            case self::LEVEL_ALERT:
+                return 'alert';
+
+            case self::LEVEL_EMERGENCY:
+                return 'emergency';
+        }
+
+        return 'error';
     }
 
     /**

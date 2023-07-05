@@ -3,6 +3,7 @@
 /**
  * \QUI\System\Console\Tools\SystemInfo
  */
+
 namespace QUI\System\Console\Tools;
 
 use QUI;
@@ -32,7 +33,7 @@ class SystemInfo extends QUI\System\Console\Tool
     public function execute()
     {
         $Package = QUI::getPackageManager()->getInstalledPackage('quiqqer/quiqqer');
-        $data    = $Package->getComposerData();
+        $data = $Package->getComposerData();
 
         $this->writeLn('QUIQQER Info');
         $this->writeLn('');

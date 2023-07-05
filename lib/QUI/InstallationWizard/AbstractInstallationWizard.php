@@ -21,22 +21,6 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
     }
 
     /**
-     * @return int
-     */
-    public function getStatus(): int
-    {
-        return ProviderHandler::getProviderStatus($this);
-    }
-
-    /**
-     * @return string
-     */
-    public function getLogo(): string
-    {
-        return URL_OPT_DIR . 'quiqqer/quiqqer/bin/quiqqer_logo.svg';
-    }
-
-    /**
      * @param int $step
      * @return InstallationWizardStepInterface
      * @throws Exception
@@ -53,19 +37,6 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
     }
 
     /**
-     * @param $Locale
-     * @return string
-     */
-    public function getFinishButtonText($Locale = null): string
-    {
-        if ($Locale === null) {
-            $Locale = QUI::getLocale();
-        }
-
-        return $Locale->get('quiqqer/quiqqer', 'set.up.execute.button.text');
-    }
-
-    /**
      * @param null $Locale
      * @return array
      */
@@ -76,14 +47,43 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
         }, $this->getSteps());
 
         return [
-            'title'        => $this->getTitle($Locale),
-            'description'  => $this->getDescription($Locale),
-            'logo'         => $this->getLogo(),
-            'status'       => $this->getStatus(),
-            'steps'        => $steps,
-            'class'        => get_class($this),
+            'title' => $this->getTitle($Locale),
+            'description' => $this->getDescription($Locale),
+            'logo' => $this->getLogo(),
+            'status' => $this->getStatus(),
+            'steps' => $steps,
+            'class' => get_class($this),
             'finishButton' => $this->getFinishButtonText($Locale)
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogo(): string
+    {
+        return URL_OPT_DIR . 'quiqqer/quiqqer/bin/quiqqer_logo.svg';
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus(): int
+    {
+        return ProviderHandler::getProviderStatus($this);
+    }
+
+    /**
+     * @param $Locale
+     * @return string
+     */
+    public function getFinishButtonText($Locale = null): string
+    {
+        if ($Locale === null) {
+            $Locale = QUI::getLocale();
+        }
+
+        return $Locale->get('quiqqer/quiqqer', 'set.up.execute.button.text');
     }
 
     public function onListInit(&$list)

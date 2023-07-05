@@ -32,6 +32,28 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
+     * return all parent ids from the file
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getParentIds(): array
+    {
+        return [$this->getParentId()];
+    }
+
+    /**
+     * Return the parent id
+     *
+     * @return integer
+     * @throws Exception
+     */
+    public function getParentId(): int
+    {
+        return $this->getParent()->getId();
+    }
+
+    /**
      * Return the file media ID
      *
      * @return integer
@@ -39,6 +61,17 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
     public function getId(): int
     {
         return -1;
+    }
+
+    /**
+     * Return the Parent of the file
+     *
+     * @return Item
+     * @throws Exception
+     */
+    public function getParent(): Item
+    {
+        return $this->getMedia()->firstChild();
     }
 
     /**
@@ -60,39 +93,6 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
     public function getProject(): Project
     {
         return QUI::getRewrite()->getProject();
-    }
-
-    /**
-     * Return the Parent of the file
-     *
-     * @return Item
-     * @throws Exception
-     */
-    public function getParent(): Item
-    {
-        return $this->getMedia()->firstChild();
-    }
-
-    /**
-     * Return the parent id
-     *
-     * @return integer
-     * @throws Exception
-     */
-    public function getParentId(): int
-    {
-        return $this->getParent()->getId();
-    }
-
-    /**
-     * return all parent ids from the file
-     *
-     * @return array
-     * @throws Exception
-     */
-    public function getParentIds(): array
-    {
-        return [$this->getParentId()];
     }
 
     /**
@@ -160,6 +160,19 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
+     * Create a cache file with the new width and height
+     *
+     * @param integer|boolean $width - (optional)
+     * @param integer|boolean $height - (optional)
+     *
+     * @return string - URL to the cache file
+     */
+    public function createSizeCache($width = false, $height = false): string
+    {
+        return $this->image;
+    }
+
+    /**
      * Return the image path
      *
      * @param bool $maxWidth
@@ -221,19 +234,6 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
             'width' => false,
             'height' => false
         ];
-    }
-
-    /**
-     * Create a cache file with the new width and height
-     *
-     * @param integer|boolean $width - (optional)
-     * @param integer|boolean $height - (optional)
-     *
-     * @return string - URL to the cache file
-     */
-    public function createSizeCache($width = false, $height = false): string
-    {
-        return $this->image;
     }
 
     /**

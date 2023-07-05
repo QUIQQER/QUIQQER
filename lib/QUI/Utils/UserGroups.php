@@ -18,6 +18,96 @@ use QUI;
 class UserGroups
 {
     /**
+     * @param array $array
+     * @return string
+     */
+    public static function parseUGArrayToString($array)
+    {
+        $result = '';
+
+        if (!isset($array['users'])) {
+            return $result;
+        }
+
+
+        if (!isset($array['groups'])) {
+            return $result;
+        }
+
+        $list = [];
+
+        foreach ($array['users'] as $uid) {
+            $list[] = 'u' . $uid;
+        }
+
+        foreach ($array['groups'] as $gid) {
+            $list[] = 'g' . $gid;
+        }
+
+        return \implode(',', $list);
+    }
+
+    /**
+     * Return the user group string from an user
+     *
+     * @param QUI\Interfaces\Users\User $User
+     * @return string
+     */
+    public static function getUserGroupStringFromUser(QUI\Interfaces\Users\User $User)
+    {
+        $result = [];
+        $groups = $User->getGroups();
+
+        if (!\is_array($groups)) {
+            $groups = [];
+        }
+
+        $result[] = 'u' . $User->getId();
+
+        /* @var $Group QUI\Groups\Group */
+        foreach ($groups as $Group) {
+            $result[] = 'g' . $Group->getId();
+        }
+
+        return \implode(',', $result);
+    }
+
+    /**
+     * Check user in the user group string
+     * there are also groups of user tested
+     *
+     * @param QUI\Interfaces\Users\User $User
+     * @param $ugString
+     * @return bool
+     */
+    public static function isUserInUserGroupString(QUI\Interfaces\Users\User $User, $ugString)
+    {
+        if (!\is_string($ugString)) {
+            return false;
+        }
+
+        $ugString = self::parseUsersGroupsString($ugString);
+        $users = $ugString['users'];
+        $groups = $ugString['groups'];
+
+        foreach ($users as $uid) {
+            if ($uid == $User->getId()) {
+                return true;
+            }
+        }
+
+        $userGroups = \array_flip($User->getGroups(false));
+
+        foreach ($groups as $gid) {
+            if (isset($userGroups[$gid])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Return an array (array('users', 'groups') from a user_groups string eq: u796832571,g654240634
      *
      * @param string $str
@@ -26,7 +116,7 @@ class UserGroups
     public static function parseUsersGroupsString($str)
     {
         $result = [
-            'users'  => [],
+            'users' => [],
             'groups' => []
         ];
 
@@ -52,96 +142,6 @@ class UserGroups
         }
 
         return $result;
-    }
-
-    /**
-     * @param array $array
-     * @return string
-     */
-    public static function parseUGArrayToString($array)
-    {
-        $result = '';
-
-        if (!isset($array['users'])) {
-            return $result;
-        }
-
-
-        if (!isset($array['groups'])) {
-            return $result;
-        }
-
-        $list = [];
-
-        foreach ($array['users'] as $uid) {
-            $list[] = 'u'.$uid;
-        }
-
-        foreach ($array['groups'] as $gid) {
-            $list[] = 'g'.$gid;
-        }
-
-        return \implode(',', $list);
-    }
-
-    /**
-     * Return the user group string from an user
-     *
-     * @param QUI\Interfaces\Users\User $User
-     * @return string
-     */
-    public static function getUserGroupStringFromUser(QUI\Interfaces\Users\User $User)
-    {
-        $result = [];
-        $groups = $User->getGroups();
-
-        if (!\is_array($groups)) {
-            $groups = [];
-        }
-
-        $result[] = 'u'.$User->getId();
-
-        /* @var $Group QUI\Groups\Group */
-        foreach ($groups as $Group) {
-            $result[] = 'g'.$Group->getId();
-        }
-
-        return \implode(',', $result);
-    }
-
-    /**
-     * Check user in the user group string
-     * there are also groups of user tested
-     *
-     * @param QUI\Interfaces\Users\User $User
-     * @param $ugString
-     * @return bool
-     */
-    public static function isUserInUserGroupString(QUI\Interfaces\Users\User $User, $ugString)
-    {
-        if (!\is_string($ugString)) {
-            return false;
-        }
-
-        $ugString = self::parseUsersGroupsString($ugString);
-        $users    = $ugString['users'];
-        $groups   = $ugString['groups'];
-
-        foreach ($users as $uid) {
-            if ($uid == $User->getId()) {
-                return true;
-            }
-        }
-
-        $userGroups = \array_flip($User->getGroups(false));
-
-        foreach ($groups as $gid) {
-            if (isset($userGroups[$gid])) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**

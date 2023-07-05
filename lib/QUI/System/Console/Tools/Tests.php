@@ -39,7 +39,7 @@ class Tests extends QUI\System\Console\Tool
                 $this->writeLn("");
 
                 $this->writeLn(
-                    $last_error['message'].' at line '.$last_error['line'].' :: '.$last_error['file'],
+                    $last_error['message'] . ' at line ' . $last_error['line'] . ' :: ' . $last_error['file'],
                     'red'
                 );
 
@@ -48,16 +48,16 @@ class Tests extends QUI\System\Console\Tool
         });
 
         // read tests
-        $testDir = LIB_DIR.'QUI/System/Tests/';
-        $tests   = QUI\Utils\System\File::readDir($testDir);
-        $list    = [];
+        $testDir = LIB_DIR . 'QUI/System/Tests/';
+        $tests = QUI\Utils\System\File::readDir($testDir);
+        $list = [];
 
         foreach ($tests as $testFile) {
-            $cls = 'QUI/System/Tests/'.\str_replace('.php', '', $testFile);
+            $cls = 'QUI/System/Tests/' . \str_replace('.php', '', $testFile);
             $cls = \str_replace('/', '\\', $cls);
 
             if (!\class_exists($cls)) {
-                require $testDir.$testFile;
+                require $testDir . $testFile;
             }
 
             if (!\class_exists($cls)) {
@@ -73,7 +73,7 @@ class Tests extends QUI\System\Console\Tool
             $list[] = $Test;
         }
 
-        $this->writeLn('Execute Tests: '.\count($list));
+        $this->writeLn('Execute Tests: ' . \count($list));
         $this->writeLn('=================================');
 
         $failed = 0;
@@ -87,11 +87,11 @@ class Tests extends QUI\System\Console\Tool
             }
 
             $message = '[ OK ] ';
-            $color   = 'green';
+            $color = 'green';
 
             if ($result == QUI\System\Test::STATUS_ERROR) {
                 $message = '[ -- ] ';
-                $color   = 'red';
+                $color = 'red';
 
                 if ($Test->isOptional()) {
                     $color = 'purple';

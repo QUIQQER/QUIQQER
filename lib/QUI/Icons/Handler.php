@@ -32,6 +32,14 @@ class Handler
     protected $files = [];
 
     /**
+     * Handler constructor.
+     */
+    public function __construct()
+    {
+        QUI::getEvents()->fireEvent('onIconsInit', [$this]);
+    }
+
+    /**
      * return the global icon handler
      *
      * @return Handler
@@ -43,14 +51,6 @@ class Handler
         }
 
         return self::$Instance;
-    }
-
-    /**
-     * Handler constructor.
-     */
-    public function __construct()
-    {
-        QUI::getEvents()->fireEvent('onIconsInit', [$this]);
     }
 
     /**
@@ -82,14 +82,6 @@ class Handler
      */
 
     /**
-     * @param $iconClass
-     */
-    public function addIcon($iconClass)
-    {
-        $this->list[] = \trim($iconClass);
-    }
-
-    /**
      * @param array $icons
      */
     public function addIcons(array $icons)
@@ -97,6 +89,14 @@ class Handler
         foreach ($icons as $icon) {
             $this->addIcon($icon);
         }
+    }
+
+    /**
+     * @param $iconClass
+     */
+    public function addIcon($iconClass)
+    {
+        $this->list[] = \trim($iconClass);
     }
 
     /**
@@ -119,20 +119,20 @@ class Handler
     /**
      * Return the list as anjson array
      *
-     * @return array
-     */
-    public function toArray()
-    {
-        return $this->list;
-    }
-
-    /**
-     * Return the list as anjson array
-     *
      * @return string
      */
     public function toJSON()
     {
         return \json_encode($this->toArray());
+    }
+
+    /**
+     * Return the list as anjson array
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->list;
     }
 }

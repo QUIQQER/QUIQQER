@@ -49,7 +49,7 @@ class Canonical
      */
     public function output(): string
     {
-        $Site    = $this->Site;
+        $Site = $this->Site;
         $Project = $Site->getProject();
 
         $siteUrl = $this->Site->getCanonical();
@@ -69,9 +69,9 @@ class Canonical
 
         // host check
         if (isset($_SERVER['HTTP_HOST'])) {
-            $requestHost         = $_SERVER['HTTP_HOST'];
+            $requestHost = $_SERVER['HTTP_HOST'];
             $hostWithoutProtocol = $Project->getVHost(false, true);
-            $httpsHost           = $Project->getVHost(true, true);
+            $httpsHost = $Project->getVHost(true, true);
 
             if ($requestHost != $hostWithoutProtocol) {
                 return $this->getLinkRel($httpsHost . $siteUrl);
@@ -80,14 +80,15 @@ class Canonical
 
 
         if ($this->Site->getId() === 1) {
-            $httpsHost       = $Project->getVHost(true, true);
+            $httpsHost = $Project->getVHost(true, true);
             $httpsHostExists = false;
 
             if (strpos($httpsHost, 'https:') !== false) {
                 $httpsHostExists = true;
             }
 
-            if ($httpsHostExists
+            if (
+                $httpsHostExists
                 && QUI\Utils\System::isProtocolSecure() === false
             ) {
                 return $this->getLinkRel($httpsHost . $siteUrl);
@@ -124,8 +125,8 @@ class Canonical
         if (QUI\Projects\Site\Utils::isSiteLink($canonical)) {
             try {
                 $CanonicalSite = QUI\Projects\Site\Utils::getSiteByLink($canonical);
-                $canonical     = $CanonicalSite->getUrlRewritten();
-                $canonical     = ltrim($canonical, '/');
+                $canonical = $CanonicalSite->getUrlRewritten();
+                $canonical = ltrim($canonical, '/');
             } catch (\Exception $Exception) {
             }
         }
@@ -139,7 +140,8 @@ class Canonical
         if (empty($canonical) || $canonical == $requestUrl) {
             // check if https host exist,
             // if true, and request ist not https, canonical is https
-            if ($httpsHostExists
+            if (
+                $httpsHostExists
                 && QUI\Utils\System::isProtocolSecure() === false
             ) {
                 return $this->getLinkRel($httpsHost . URL_DIR . $requestUrl);

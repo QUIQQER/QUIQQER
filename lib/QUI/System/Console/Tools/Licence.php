@@ -40,7 +40,7 @@ class Licence extends QUI\System\Console\Tool
     {
         if ($this->getArgument('list')) {
             $installed = QUI::getPackageManager()->getInstalled();
-            $data      = [];
+            $data = [];
 
             foreach ($installed as $package) {
                 $license = '';
@@ -50,7 +50,7 @@ class Licence extends QUI\System\Console\Tool
                 } else {
                     try {
                         // check composer json
-                        $Package  = QUI::getPackageManager()->getInstalledPackage($package['name']);
+                        $Package = QUI::getPackageManager()->getInstalledPackage($package['name']);
                         $composer = $Package->getComposerData();
 
                         if (isset($composer['license'])) {
@@ -80,7 +80,7 @@ class Licence extends QUI\System\Console\Tool
         }
 
         $licenceFile = OPT_DIR . 'quiqqer/quiqqer/LICENSE';
-        $content     = file_get_contents($licenceFile);
+        $content = file_get_contents($licenceFile);
 
         echo $content;
         echo PHP_EOL;

@@ -42,7 +42,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         QUI\Projects\Site $Parent = null
     ) {
         $this->Project = $Project;
-        $this->Parent  = $Parent;
+        $this->Parent = $Parent;
 
         $this->setAttributes($attributes);
 
@@ -50,7 +50,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         foreach ($needles as $needle) {
             if (!$this->getAttribute($needle)) {
-                throw new QUI\Exception('Misisng attribute '.$needle);
+                throw new QUI\Exception('Misisng attribute ' . $needle);
             }
         }
     }
@@ -142,19 +142,6 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     /**
-     * Return the ID of the site,
-     * or the ID of the sibling (linked) site of another languager
-     *
-     * @param string|boolean $lang - optional, if it is set, then the language of the wanted linked sibling site
-     *
-     * @return integer
-     */
-    public function getId($lang = false)
-    {
-        return $this->getAttribute('id');
-    }
-
-    /**
      * Gibt alle Kinder zurück
      *
      * @param array $params - Parameter für die Childrenausgabe
@@ -217,18 +204,6 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     public function previousSiblings($no)
     {
         return [];
-    }
-
-    /**
-     * Gibt das erste Kind der Seite zurück
-     *
-     * @param array $params
-     *
-     * @return QUI\Projects\Site | false
-     */
-    public function firstChild($params = [])
-    {
-        return false;
     }
 
     /**
@@ -376,6 +351,19 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     /**
+     * Return the ID of the site,
+     * or the ID of the sibling (linked) site of another languager
+     *
+     * @param string|boolean $lang - optional, if it is set, then the language of the wanted linked sibling site
+     *
+     * @return integer
+     */
+    public function getId($lang = false)
+    {
+        return $this->getAttribute('id');
+    }
+
+    /**
      * Gibt alle direkten Eltern Ids zurück
      *
      * Site
@@ -387,20 +375,10 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getParentIds()
     {
-        $parents   = $this->getParent()->getParentIds();
+        $parents = $this->getParent()->getParentIds();
         $parents[] = $this->getParent()->getId();
 
         return $parents;
-    }
-
-    /**
-     * Return the Parent ID List
-     *
-     * @return array
-     */
-    public function getParentIdTree()
-    {
-        return [];
     }
 
     /**
@@ -418,6 +396,28 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     /**
+     * Gibt das erste Kind der Seite zurück
+     *
+     * @param array $params
+     *
+     * @return QUI\Projects\Site | false
+     */
+    public function firstChild($params = [])
+    {
+        return false;
+    }
+
+    /**
+     * Return the Parent ID List
+     *
+     * @return array
+     */
+    public function getParentIdTree()
+    {
+        return [];
+    }
+
+    /**
      * Gibt alle rekursive Parents als Objekte zurück
      * Site->Parent->ParentParent->ParentParentParent
      *
@@ -425,7 +425,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getParents()
     {
-        $parents   = $this->getParent()->getParents();
+        $parents = $this->getParent()->getParents();
         $parents[] = $this->getParent();
 
         return $parents;

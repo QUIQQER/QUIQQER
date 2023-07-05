@@ -24,7 +24,7 @@ class ModRewrite extends QUI\System\Test
         parent::__construct();
 
         $this->setAttributes([
-            'title'       => 'Apache mod_rewrite installed',
+            'title' => 'Apache mod_rewrite installed',
             'description' => ''
         ]);
 
@@ -74,15 +74,15 @@ class ModRewrite extends QUI\System\Test
     {
         try {
             $Project = QUI::getProjectManager()->getStandard();
-            $host    = $Project->getHost();
+            $host = $Project->getHost();
         } catch (QUI\Exception $Exception) {
             return self::STATUS_ERROR;
         }
 
         try {
             $result = QUI\Utils\Request\Url::get(
-                'http://'.$host.'/'.URL_SYS_DIR
-                .'/ajax.php?_rf=["ajax_system_modRewrite"]'
+                'http://' . $host . '/' . URL_SYS_DIR
+                . '/ajax.php?_rf=["ajax_system_modRewrite"]'
             );
         } catch (QUI\Exception $Exception) {
             return self::STATUS_ERROR;
@@ -94,7 +94,7 @@ class ModRewrite extends QUI\System\Test
         }
 
         $start = 9;
-        $end   = \strpos($result, '</quiqqer>');
+        $end = \strpos($result, '</quiqqer>');
 
         $quiqqer = \substr($result, $start, $end - $start);
         $quiqqer = \json_decode($quiqqer, true);

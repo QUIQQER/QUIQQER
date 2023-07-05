@@ -7,7 +7,6 @@
 namespace QUI\System\Console\Tools;
 
 use QUI;
-use QUI\Projects\Manager;
 use QUI\System\Console\Tool;
 use QUI\Utils\Project;
 
@@ -36,11 +35,10 @@ class RenameProject extends Tool
      */
     public function execute()
     {
-
         $this->writeLnLocale("console.tool.project.rename.prompt.projectname.info", "cyan");
 
         foreach (QUI::getProjectManager()->getProjects() as $projectName) {
-            $this->writeLn(" * ".$projectName);
+            $this->writeLn(" * " . $projectName);
         }
 
         $this->writeLnLocale("console.tool.project.rename.prompt.projectname", "light_cyan");
@@ -64,7 +62,7 @@ class RenameProject extends Tool
             $this->resetColor();
             $this->newProjectName = $this->purgeProjectName($this->newProjectName);
             $this->writeLnLocale("console.tool.project.rename.validation.clear.name", "white");
-            $this->write(" ".$this->newProjectName, "light_green");
+            $this->write(" " . $this->newProjectName, "light_green");
             $this->writeLnLocale("console.tool.project.rename.prompt.continue.new.name", "light_cyan");
             if (trim(strtolower($this->readInput())) != "y") {
                 exit;
@@ -78,6 +76,19 @@ class RenameProject extends Tool
         $this->writeLn("");
     }
 
+    /**
+     * Prints a line to the output while using a locale variable of the 'quiqqer/quiqqer' group
+     *
+     * @param $locale
+     * @param bool $color
+     * @param bool $background
+     */
+    protected function writeLnLocale($locale, $color = false, $background = false)
+    {
+        $text = QUI::getLocale()->get("quiqqer/quiqqer", $locale);
+
+        $this->writeLn($text, $color, $background);
+    }
 
     /**
      * Removes forbidden characters from the project name
@@ -112,19 +123,5 @@ class RenameProject extends Tool
         ];
 
         return \str_replace($forbiddenCharacters, "", $name);
-    }
-
-    /**
-     * Prints a line to the output while using a locale variable of the 'quiqqer/quiqqer' group
-     *
-     * @param $locale
-     * @param bool $color
-     * @param bool $background
-     */
-    protected function writeLnLocale($locale, $color = false, $background = false)
-    {
-        $text = QUI::getLocale()->get("quiqqer/quiqqer", $locale);
-
-        $this->writeLn($text, $color, $background);
     }
 }

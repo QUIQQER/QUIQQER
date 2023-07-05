@@ -57,7 +57,12 @@ class Ajax extends QUI\QDOM
      * @var array
      */
     protected static array $callables = [];
-
+    /**
+     * registered permissions from available ajax functions
+     *
+     * @var array
+     */
+    protected static array $permissions = [];
     /**
      * javascript functions to be executed by after a request
      * This functions are registered via Ajax.registerCallback('functionName', callable);
@@ -65,13 +70,6 @@ class Ajax extends QUI\QDOM
      * @var array
      */
     protected array $jsCallbacks = [];
-
-    /**
-     * registered permissions from available ajax functions
-     *
-     * @var array
-     */
-    protected static array $permissions = [];
 
     /**
      * constructor
@@ -172,69 +170,6 @@ class Ajax extends QUI\QDOM
     }
 
     /**
-     * Checks the rights if a function has a checkPermissions routine
-     *
-     * @param string|callback $reg_function
-     *
-     * @throws \QUI\Exception
-     * @throws \QUI\Permissions\Exception
-     */
-    public static function checkPermissions($reg_function)
-    {
-        if (!isset(self::$permissions[$reg_function])) {
-            return;
-        }
-
-        $function = self::$permissions[$reg_function];
-
-        if (is_object($function) && get_class($function) === 'Closure') {
-            $function();
-
-            return;
-        }
-
-        if (QUI::isBackend()) {
-            $parts = explode('_', $reg_function);
-            $pluginParts = array_slice($parts, 1, 2);
-
-            if (isset($pluginParts[0]) && isset($pluginParts[1])) {
-                try {
-                    $Package = null;
-                    $Package = QUI::getPackage($pluginParts[0] . '/' . $pluginParts[1]);
-                } catch (QUI\Exception $Exception) {
-                }
-
-                if ($Package) {
-                    $Package->hasPermission();
-                }
-            }
-        }
-
-        if (is_string($function)) {
-            $function = [$function];
-        }
-
-        foreach ($function as $func) {
-            // if it is a real permission
-            if (strpos($func, '::') === false) {
-                Permissions\Permission::checkPermission($func);
-
-                return;
-            }
-
-            if (strpos($func, 'Permission') === 0) {
-                $func = '\\QUI\\Rights\\' . $func;
-            }
-
-            if (!is_callable($func)) {
-                throw new QUI\Permissions\Exception('Permission denied', 503);
-            }
-
-            call_user_func($func);
-        }
-    }
-
-    /**
      * ajax processing
      *
      * @return string|array - quiqqer XML
@@ -321,120 +256,6 @@ class Ajax extends QUI\QDOM
         }
 
         return '<quiqqer>' . $encoded . '</quiqqer>';
-    }
-
-    /**
-     * Internal call of an ajax function
-     *
-     * @param string $_rf
-     * @param array|boolean|mixed $values
-     *
-     * @return array - the result
-     */
-    public function callRequestFunction(string $_rf, $values = false): array
-    {
-        if (!isset(self::$functions[$_rf]) && !isset(self::$callables[$_rf])) {
-            if (defined('DEVELOPMENT') && DEVELOPMENT) {
-                System\Log::addDebug('Funktion ' . $_rf . ' nicht gefunden');
-            }
-
-            return $this->writeException(
-                new QUI\Exception('Bad Request', 400)
-            );
-        }
-
-        // Rechte prüfung
-        try {
-            $this->checkPermissions($_rf);
-        } catch (\Exception $Exception) {
-            return $this->writeException($Exception);
-        }
-
-
-        // Request vars
-        if (isset($_REQUEST['pcsg_uri'])) {
-            $_SERVER['REQUEST_URI'] = $_REQUEST['pcsg_uri'];
-        }
-
-        // Params
-        $params = [];
-
-        if (isset(self::$callables[$_rf])) {
-            $functionParams = self::$callables[$_rf]['params'];
-        } else {
-            $functionParams = self::$functions[$_rf];
-        }
-
-        foreach ($functionParams as $var) {
-            if (!isset($_REQUEST[$var]) && !$values) {
-                $params[$var] = '';
-                continue;
-            }
-
-            $value = '';
-
-            if ($values && isset($values[$var])) {
-                $value = $values[$var];
-            } elseif (isset($_REQUEST[$var])) {
-                $value = $_REQUEST[$var];
-            }
-
-            if (is_object($value)) {
-                $params[$var] = $value;
-                continue;
-            }
-
-            $params[$var] = $value;
-        }
-
-        try {
-            QUI::getEvents()->fireEvent('ajaxCallBefore', [
-                'function' => $_rf,
-                'params' => $params
-            ]);
-        } catch (\Exception $Exception) {
-            return $this->writeException($Exception);
-        }
-
-        try {
-            if (isset(self::$callables[$_rf])) {
-                $return = [
-                    'result' => call_user_func_array(
-                        self::$callables[$_rf]['callable'],
-                        $params
-                    )
-                ];
-            } else {
-                $return = [
-                    'result' => call_user_func_array($_rf, $params)
-                ];
-            }
-        } catch (\Exception $Exception) {
-            return $this->writeException($Exception);
-        }
-
-        try {
-            QUI::getEvents()->fireEvent('ajaxCall', [
-                'function' => $_rf,
-                'result' => $return,
-                'params' => $params
-            ]);
-        } catch (\Exception $Exception) {
-            return $this->writeException($Exception);
-        }
-
-        return $return;
-    }
-
-    /**
-     * Add a JavaScript callback function to the request
-     *
-     * @param string $javascriptFunctionName - name of the javascript callback function
-     * @param array $params - optional, params for the javascript callback function
-     */
-    public function triggerGlobalJavaScriptCallback(string $javascriptFunctionName, array $params = [])
-    {
-        $this->jsCallbacks[$javascriptFunctionName] = $params;
     }
 
     /**
@@ -551,6 +372,183 @@ class Ajax extends QUI\QDOM
         );
 
         return $return;
+    }
+
+    /**
+     * Internal call of an ajax function
+     *
+     * @param string $_rf
+     * @param array|boolean|mixed $values
+     *
+     * @return array - the result
+     */
+    public function callRequestFunction(string $_rf, $values = false): array
+    {
+        if (!isset(self::$functions[$_rf]) && !isset(self::$callables[$_rf])) {
+            if (defined('DEVELOPMENT') && DEVELOPMENT) {
+                System\Log::addDebug('Funktion ' . $_rf . ' nicht gefunden');
+            }
+
+            return $this->writeException(
+                new QUI\Exception('Bad Request', 400)
+            );
+        }
+
+        // Rechte prüfung
+        try {
+            $this->checkPermissions($_rf);
+        } catch (\Exception $Exception) {
+            return $this->writeException($Exception);
+        }
+
+
+        // Request vars
+        if (isset($_REQUEST['pcsg_uri'])) {
+            $_SERVER['REQUEST_URI'] = $_REQUEST['pcsg_uri'];
+        }
+
+        // Params
+        $params = [];
+
+        if (isset(self::$callables[$_rf])) {
+            $functionParams = self::$callables[$_rf]['params'];
+        } else {
+            $functionParams = self::$functions[$_rf];
+        }
+
+        foreach ($functionParams as $var) {
+            if (!isset($_REQUEST[$var]) && !$values) {
+                $params[$var] = '';
+                continue;
+            }
+
+            $value = '';
+
+            if ($values && isset($values[$var])) {
+                $value = $values[$var];
+            } elseif (isset($_REQUEST[$var])) {
+                $value = $_REQUEST[$var];
+            }
+
+            if (is_object($value)) {
+                $params[$var] = $value;
+                continue;
+            }
+
+            $params[$var] = $value;
+        }
+
+        try {
+            QUI::getEvents()->fireEvent('ajaxCallBefore', [
+                'function' => $_rf,
+                'params' => $params
+            ]);
+        } catch (\Exception $Exception) {
+            return $this->writeException($Exception);
+        }
+
+        try {
+            if (isset(self::$callables[$_rf])) {
+                $return = [
+                    'result' => call_user_func_array(
+                        self::$callables[$_rf]['callable'],
+                        $params
+                    )
+                ];
+            } else {
+                $return = [
+                    'result' => call_user_func_array($_rf, $params)
+                ];
+            }
+        } catch (\Exception $Exception) {
+            return $this->writeException($Exception);
+        }
+
+        try {
+            QUI::getEvents()->fireEvent('ajaxCall', [
+                'function' => $_rf,
+                'result' => $return,
+                'params' => $params
+            ]);
+        } catch (\Exception $Exception) {
+            return $this->writeException($Exception);
+        }
+
+        return $return;
+    }
+
+    /**
+     * Checks the rights if a function has a checkPermissions routine
+     *
+     * @param string|callback $reg_function
+     *
+     * @throws \QUI\Exception
+     * @throws \QUI\Permissions\Exception
+     */
+    public static function checkPermissions($reg_function)
+    {
+        if (!isset(self::$permissions[$reg_function])) {
+            return;
+        }
+
+        $function = self::$permissions[$reg_function];
+
+        if (is_object($function) && get_class($function) === 'Closure') {
+            $function();
+
+            return;
+        }
+
+        if (QUI::isBackend()) {
+            $parts = explode('_', $reg_function);
+            $pluginParts = array_slice($parts, 1, 2);
+
+            if (isset($pluginParts[0]) && isset($pluginParts[1])) {
+                try {
+                    $Package = null;
+                    $Package = QUI::getPackage($pluginParts[0] . '/' . $pluginParts[1]);
+                } catch (QUI\Exception $Exception) {
+                }
+
+                if ($Package) {
+                    $Package->hasPermission();
+                }
+            }
+        }
+
+        if (is_string($function)) {
+            $function = [$function];
+        }
+
+        foreach ($function as $func) {
+            // if it is a real permission
+            if (strpos($func, '::') === false) {
+                Permissions\Permission::checkPermission($func);
+
+                return;
+            }
+
+            if (strpos($func, 'Permission') === 0) {
+                $func = '\\QUI\\Rights\\' . $func;
+            }
+
+            if (!is_callable($func)) {
+                throw new QUI\Permissions\Exception('Permission denied', 503);
+            }
+
+            call_user_func($func);
+        }
+    }
+
+    /**
+     * Add a JavaScript callback function to the request
+     *
+     * @param string $javascriptFunctionName - name of the javascript callback function
+     * @param array $params - optional, params for the javascript callback function
+     */
+    public function triggerGlobalJavaScriptCallback(string $javascriptFunctionName, array $params = [])
+    {
+        $this->jsCallbacks[$javascriptFunctionName] = $params;
     }
 
     /**

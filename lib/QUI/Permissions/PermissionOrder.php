@@ -7,11 +7,19 @@
 namespace QUI\Permissions;
 
 use QUI;
+use QUI\Exception;
 use QUI\Groups\Group;
 use QUI\Users\User;
 
+use function is_bool;
+use function is_int;
+
 /**
- * Allgemeine Permission Sotierungs Handling Methoden
+ * Class PermissionOrder
+ *
+ * The PermissionOrder class provides methods for calculating the maximum and minimum integer values
+ * of a specified permission from a list of objects, as well as checking if a permission is granted
+ * for any object in the given list.
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
@@ -22,14 +30,26 @@ use QUI\Users\User;
 class PermissionOrder
 {
     /**
-     * Gibt den Maximalen integer Rechte Wert zurück
-     *
-     * @param string $permission - permission name
-     * @param array $list - List of groups or users
-     *
-     * @return integer
+     * @deprecated
      */
-    public static function maxInteger($permission, $list)
+    public static function max_integer(
+        $permission,
+        $list
+    ): ?int // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+    {
+        return self::maxInteger($permission, $list);
+    }
+
+    /**
+     * Finds the maximum integer value of a specified permission from a list of objects.
+     *
+     * @param string $permission The permission to check.
+     * @param array $list An array of objects to check permissions against.
+     *
+     * @return int|null The maximum integer value of the permission, or null if no objects have the permission.
+     * @throws Exception
+     */
+    public static function maxInteger(string $permission, array $list): ?int
     {
         $result = null;
 
@@ -53,10 +73,10 @@ class PermissionOrder
 
         // default
         if ($result === null) {
-            $Manager  = QUI::getPermissionManager();
+            $Manager = QUI::getPermissionManager();
             $permData = $Manager->getPermissionData($permission);
 
-            if (isset($permData['defaultvalue']) && !empty($permData['defaultvalue'])) {
+            if (!empty($permData['defaultvalue'])) {
                 return $permData['defaultvalue'];
             }
         }
@@ -67,20 +87,23 @@ class PermissionOrder
     /**
      * @deprecated
      */
-    public static function max_integer($permission, $list)
+    public static function min_integer(
+        $permission,
+        $list
+    ): ?int // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
     {
-        return self::maxInteger($permission, $list);
+        return self::minInteger($permission, $list);
     }
 
     /**
-     * Gibt den Minimalen integer Rechte Wert zurück
+     * Calculates the minimum integer result of checking a permission against a list of objects.
      *
-     * @param string $permission - permission name
-     * @param array $list - List of groups or users
-     *
-     * @return integer
+     * @param string $permission The permission to check against.
+     * @param array $list The list of objects to check the permission against.
+     * @return int|null The minimum integer result. If no object has the permission, returns null.
+     * @throws Exception
      */
-    public static function minInteger($permission, $list)
+    public static function minInteger(string $permission, array $list): ?int
     {
         $result = null;
 
@@ -105,12 +128,10 @@ class PermissionOrder
 
         // default
         if ($result === null) {
-            $Manager  = QUI::getPermissionManager();
+            $Manager = QUI::getPermissionManager();
             $permData = $Manager->getPermissionData($permission);
 
-            if (isset($permData['defaultvalue'])
-                && !empty($permData['defaultvalue'])
-            ) {
+            if (!empty($permData['defaultvalue'])) {
                 return $permData['defaultvalue'];
             }
         }
@@ -119,22 +140,16 @@ class PermissionOrder
     }
 
     /**
-     * @deprecated
-     */
-    public static function min_integer($permission, $list)
-    {
-        return self::minInteger($permission, $list);
-    }
-
-    /**
-     * Prüft die Rechte und gibt das Recht welches Geltung hat zurück
+     * Checks if a permission is granted for any object in the given list.
      *
-     * @param string $permission - permission name
-     * @param array $list - List of groups or users
+     * @param string $permission The permission to check for.
+     * @param array $list The list of objects to check against.
      *
-     * @return boolean
+     * @return bool|int|string Returns true if the permission is granted by any object,
+     *         the highest integer permission value if multiple objects have integer
+     *         permissions, or the string permission if granted by any object.
      */
-    public static function permission($permission, $list)
+    public static function permission(string $permission, array $list)
     {
         $result = false;
 
@@ -154,8 +169,8 @@ class PermissionOrder
             }
 
             // falls integer ist
-            if (\is_int($hasPermissionResult)) {
-                if (\is_bool($result)) {
+            if (is_int($hasPermissionResult)) {
+                if (is_bool($result)) {
                     $result = 0;
                 }
 

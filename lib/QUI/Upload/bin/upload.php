@@ -21,7 +21,7 @@ try {
 
     if (!empty($uploadResult)) {
         $result = [
-            'result'      => $uploadResult,
+            'result' => $uploadResult,
             'maintenance' => QUI::conf('globals', 'maintenance') ? 1 : 0
         ];
 
