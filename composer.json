@@ -100,5 +100,11 @@
     "psr-4": {
       "QUI\\Tests\\": "tests\/QUI\/"
     }
-  }
+  },
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/pcsg"
+    }
+  ]
 }
