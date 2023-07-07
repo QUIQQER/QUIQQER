@@ -87,11 +87,11 @@ class Manager
     public function getPHPMailer(): PHPMailer
     {
         $config = QUI::conf('mail');
-        $Mail   = new PHPMailer(true);
+        $Mail = new PHPMailer(true);
 
         if (isset($config['SMTP']) && $config['SMTP']) {
-            $Mail->Mailer   = 'smtp';
-            $Mail->Host     = $config['SMTPServer'];
+            $Mail->Mailer = 'smtp';
+            $Mail->Host = $config['SMTPServer'];
             $Mail->SMTPAuth = $config['SMTPAuth'];
             $Mail->Username = $config['SMTPUser'];
             $Mail->Password = $config['SMTPPass'];
@@ -124,16 +124,16 @@ class Manager
              */
             $Mail->SMTPOptions = [
                 'ssl' => [
-                    'verify_peer'       => (int)$config['SMTPSecureSSL_verify_peer'],
-                    'verify_peer_name'  => (int)$config['SMTPSecureSSL_verify_peer_name'],
+                    'verify_peer' => (int)$config['SMTPSecureSSL_verify_peer'],
+                    'verify_peer_name' => (int)$config['SMTPSecureSSL_verify_peer_name'],
                     'allow_self_signed' => (int)$config['SMTPSecureSSL_allow_self_signed']
                 ]
             ];
         }
 
-        $Mail->From     = $config['MAILFrom'];
+        $Mail->From = $config['MAILFrom'];
         $Mail->FromName = $config['MAILFromText'];
-        $Mail->CharSet  = 'UTF-8';
+        $Mail->CharSet = 'UTF-8';
 
         return $Mail;
     }

@@ -35,11 +35,11 @@ class PasswordResetVerification extends AbstractVerification
      */
     public function onSuccess()
     {
-        $Users      = QUI::getUsers();
+        $Users = QUI::getUsers();
         $SystemUser = $Users->getSystemUser();
 
         try {
-            $User        = $Users->get((int)$this->getIdentifier());
+            $User = $Users->get((int)$this->getIdentifier());
             $newPassword = QUI\Security\Password::generateRandom();
 
             // check if user has to set new password
@@ -53,11 +53,51 @@ class PasswordResetVerification extends AbstractVerification
             $this->sendNewUserPasswordMail($User, $newPassword);
         } catch (\Exception $Exception) {
             QUI\System\Log::addError(
-                self::class.' :: onSuccess -> Error while setting temporary new user password'
+                self::class . ' :: onSuccess -> Error while setting temporary new user password'
             );
 
             QUI\System\Log::writeException($Exception);
         }
+    }
+
+    /**
+     * Send mail with temporary password to user
+     *
+     * @param QUI\Users\User $User
+     * @param string $newPass
+     * @return void
+     */
+    protected function sendNewUserPasswordMail($User, $newPass)
+    {
+        $email = $User->getAttribute('email');
+
+        if (empty($email)) {
+            return;
+        }
+
+        $L = QUI::getLocale();
+        $lg = 'quiqqer/quiqqer';
+        $tplDir = QUI::getPackage('quiqqer/quiqqer')->getDir() . 'lib/templates/mail/auth/';
+
+        $Mailer = new QUI\Mail\Mailer();
+        $Engine = QUI::getTemplateManager()->getEngine();
+
+        $Engine->assign([
+            'body' => $L->get($lg, 'mail.auth.password_reset_newpassword.body', [
+                'username' => $User->getUsername(),
+                'newPassword' => $newPass
+            ])
+        ]);
+
+        $template = $Engine->fetch($tplDir . 'password_reset_newpassword.html');
+
+        $Mailer->addRecipient($email);
+        $Mailer->setSubject(
+            $L->get($lg, 'mail.auth.password_reset_newpassword.subject')
+        );
+
+        $Mailer->setBody($template);
+        $Mailer->send();
     }
 
     /**
@@ -141,45 +181,5 @@ class PasswordResetVerification extends AbstractVerification
     public function getOnErrorRedirectUrl()
     {
         return false;
-    }
-
-    /**
-     * Send mail with temporary password to user
-     *
-     * @param QUI\Users\User $User
-     * @param string $newPass
-     * @return void
-     */
-    protected function sendNewUserPasswordMail($User, $newPass)
-    {
-        $email = $User->getAttribute('email');
-
-        if (empty($email)) {
-            return;
-        }
-
-        $L      = QUI::getLocale();
-        $lg     = 'quiqqer/quiqqer';
-        $tplDir = QUI::getPackage('quiqqer/quiqqer')->getDir().'lib/templates/mail/auth/';
-
-        $Mailer = new QUI\Mail\Mailer();
-        $Engine = QUI::getTemplateManager()->getEngine();
-
-        $Engine->assign([
-            'body' => $L->get($lg, 'mail.auth.password_reset_newpassword.body', [
-                'username'    => $User->getUsername(),
-                'newPassword' => $newPass
-            ])
-        ]);
-
-        $template = $Engine->fetch($tplDir.'password_reset_newpassword.html');
-
-        $Mailer->addRecipient($email);
-        $Mailer->setSubject(
-            $L->get($lg, 'mail.auth.password_reset_newpassword.subject')
-        );
-
-        $Mailer->setBody($template);
-        $Mailer->send();
     }
 }

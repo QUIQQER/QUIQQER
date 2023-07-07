@@ -48,11 +48,6 @@ class UpdateServer extends QUI\System\Console\Tool
         return $this->showHelp();
     }
 
-    protected function showHelp()
-    {
-        $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.updateserver.help'));
-    }
-
     protected function addServer()
     {
         $server = $this->getArgument('add');
@@ -106,5 +101,10 @@ class UpdateServer extends QUI\System\Console\Tool
             QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.updateserver.remove.success'),
             'green'
         );
+    }
+
+    protected function showHelp()
+    {
+        $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.updateserver.help'));
     }
 }

@@ -129,7 +129,7 @@ class QuiqqerProvider extends AbstractInstallationWizard
     protected function setupForGroupsAndToolbars()
     {
         try {
-            $Root   = QUI::getGroups()->get(QUI::conf('globals', 'root'));
+            $Root = QUI::getGroups()->get(QUI::conf('globals', 'root'));
             $Config = QUI::getConfig('etc/installationWizard.ini.php');
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
@@ -137,7 +137,7 @@ class QuiqqerProvider extends AbstractInstallationWizard
         }
 
         // Redakteur / Editor
-        $table        = QUI\Permissions\Manager::table();
+        $table = QUI\Permissions\Manager::table();
         $table2groups = $table . '2groups';
 
         try {

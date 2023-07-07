@@ -26,22 +26,12 @@ class Message extends QUI\QDOM
         // defaults
         $this->setAttributes([
             'message' => '',
-            'code'    => '',
-            'time'    => \time(),
-            'mtype'   => \get_class($this)
+            'code' => '',
+            'time' => \time(),
+            'mtype' => \get_class($this)
         ]);
 
         $this->setAttributes($params);
-    }
-
-    /**
-     * Return a the message text
-     *
-     * @return string
-     */
-    public function getMessage()
-    {
-        return $this->getAttribute('message');
     }
 
     /**
@@ -62,5 +52,15 @@ class Message extends QUI\QDOM
     public function getHash()
     {
         return \md5($this->getMessage());
+    }
+
+    /**
+     * Return a the message text
+     *
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->getAttribute('message');
     }
 }

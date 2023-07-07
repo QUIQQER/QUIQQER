@@ -104,10 +104,10 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
         $optional = false
     ) {
         $this->paramsList[$name] = [
-            'param'       => $name,
+            'param' => $name,
             'description' => $description,
-            'short'       => $short,
-            'optional'    => (bool)$optional
+            'short' => $short,
+            'optional' => (bool)$optional
         ];
 
         return $this;
@@ -196,10 +196,10 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
         $this->writeLn();
 
         $Climate = new CLImate();
-        $data    = [];
+        $data = [];
 
         foreach ($this->paramsList as $param) {
-            $argv        = '--' . \ltrim($param['param'], '-');
+            $argv = '--' . \ltrim($param['param'], '-');
             $description = '';
 
             if (isset($param['short']) && !empty($param['short'])) {
@@ -221,6 +221,30 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
         $Climate->out('');
 
         return $this;
+    }
+
+    /**
+     * Output a line to the parent
+     *
+     * @param string $msg - (optional) Message
+     * @param string|boolean $color - (optional) Text color
+     * @param string|boolean $bg - (optional) Background color
+     */
+    public function writeLn(string $msg = '', $color = false, $bg = false)
+    {
+        if ($this->getAttribute('parent')) {
+            $this->getAttribute('parent')->writeLn($msg, $color, $bg);
+        }
+    }
+
+    /**
+     * Reset the color
+     */
+    public function resetColor()
+    {
+        if ($this->getAttribute('parent')) {
+            $this->getAttribute('parent')->clearMsg();
+        }
     }
 
     /**
@@ -251,7 +275,8 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
 
         // short argument?
         foreach ($this->paramsList as $entry) {
-            if ($entry['short'] == $name
+            if (
+                $entry['short'] == $name
                 && isset($this->params[$entry['param']])
             ) {
                 return $this->params[$entry['param']];
@@ -265,8 +290,10 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
         }
 
         // if cli, read user input
-        if (\php_sapi_name() == 'cli' &&
-            (isset($paramData['optional']) && $paramData['optional'] === false)) {
+        if (
+            \php_sapi_name() == 'cli' &&
+            (isset($paramData['optional']) && $paramData['optional'] === false)
+        ) {
             $this->writeLn('');
             $this->writeLn('Missing Argument', 'brown');
 
@@ -289,27 +316,6 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
         }
 
         return false;
-    }
-
-    /**
-     * Execute the Tool
-     */
-    public function execute()
-    {
-    }
-
-    /**
-     * Output a line to the parent
-     *
-     * @param string $msg - (optional) Message
-     * @param string|boolean $color - (optional) Text color
-     * @param string|boolean $bg - (optional) Background color
-     */
-    public function writeLn(string $msg = '', $color = false, $bg = false)
-    {
-        if ($this->getAttribute('parent')) {
-            $this->getAttribute('parent')->writeLn($msg, $color, $bg);
-        }
     }
 
     /**
@@ -353,13 +359,10 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
     }
 
     /**
-     * Reset the color
+     * Execute the Tool
      */
-    public function resetColor()
+    public function execute()
     {
-        if ($this->getAttribute('parent')) {
-            $this->getAttribute('parent')->clearMsg();
-        }
     }
 
     /**

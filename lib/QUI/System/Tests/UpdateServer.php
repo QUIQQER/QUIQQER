@@ -24,7 +24,7 @@ class UpdateServer extends QUI\System\Test
         parent::__construct();
 
         $this->setAttributes(array(
-            'title'       => 'Update Server: composer.quiqqer.com AND update.composer.com',
+            'title' => 'Update Server: composer.quiqqer.com AND update.composer.com',
             'description' => ''
         ));
 

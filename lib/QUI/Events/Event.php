@@ -53,6 +53,25 @@ class Event implements QUI\Interfaces\Events
     /**
      * (non-PHPdoc)
      *
+     * @param array $events
+     * @see \QUI\Interfaces\Events::addEvents()
+     *
+     */
+    public function addEvents(array $events)
+    {
+        foreach ($events as $event => $fn) {
+            if (\is_array($fn)) {
+                $this->addEvent($event, $fn[0], $fn[1], $fn[2]);
+                continue;
+            }
+
+            $this->addEvent($event, $fn);
+        }
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
      * @param string $event - The type of event (e.g. 'complete').
      * @param callable $fn - The function to execute.
      * @param int $priority - optional, Priority of the event
@@ -77,26 +96,21 @@ class Event implements QUI\Interfaces\Events
         $this->events[$event][] = [
             'callable' => $fn,
             'priority' => $priority,
-            'package'  => $package
+            'package' => $package
         ];
     }
 
     /**
      * (non-PHPdoc)
      *
-     * @param array $events
-     * @see \QUI\Interfaces\Events::addEvents()
+     * @param array $events - (optional) If not passed removes all events of all types.
+     * @see \QUI\Interfaces\Events::removeEvents()
      *
      */
-    public function addEvents(array $events)
+    public function removeEvents(array $events)
     {
         foreach ($events as $event => $fn) {
-            if (\is_array($fn)) {
-                $this->addEvent($event, $fn[0], $fn[1], $fn[2]);
-                continue;
-            }
-
-            $this->addEvent($event, $fn);
+            $this->removeEvent($event, $fn);
         }
     }
 
@@ -130,20 +144,6 @@ class Event implements QUI\Interfaces\Events
     /**
      * (non-PHPdoc)
      *
-     * @param array $events - (optional) If not passed removes all events of all types.
-     * @see \QUI\Interfaces\Events::removeEvents()
-     *
-     */
-    public function removeEvents(array $events)
-    {
-        foreach ($events as $event => $fn) {
-            $this->removeEvent($event, $fn);
-        }
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
      * @param string $event - The type of event (e.g. 'onComplete').
      * @param array|boolean $args - (optional) the argument(s) to pass to the function.
      *                            The arguments must be in an array.
@@ -165,7 +165,8 @@ class Event implements QUI\Interfaces\Events
 
 
         // recursion check
-        if (isset($this->currentRunning[$event])
+        if (
+            isset($this->currentRunning[$event])
             && $this->currentRunning[$event]
             && $force === false
         ) {
@@ -178,7 +179,7 @@ class Event implements QUI\Interfaces\Events
 
         $this->currentRunning[$event] = true;
 
-        $Stack  = new QUI\ExceptionStack();
+        $Stack = new QUI\ExceptionStack();
         $events = $this->events[$event];
 
         // sort
@@ -192,7 +193,7 @@ class Event implements QUI\Interfaces\Events
 
         // execute events
         foreach ($events as $data) {
-            $fn  = $data['callable'];
+            $fn = $data['callable'];
             $pkg = $data['package'];
 
             if (isset($this->ignore[$pkg])) {
@@ -243,7 +244,7 @@ class Event implements QUI\Interfaces\Events
                     $message,
                     $Exception->getCode(),
                     [
-                        'trace'        => $Exception->getTraceAsString(),
+                        'trace' => $Exception->getTraceAsString(),
                         'functionType' => gettype($fn)
                     ]
                 );

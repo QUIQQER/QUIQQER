@@ -24,7 +24,7 @@ class ImageLibrary extends QUI\System\Test
         parent::__construct();
 
         $this->setAttributes([
-            'title'       => 'Image Libraries',
+            'title' => 'Image Libraries',
             'description' => ''
         ]);
 
@@ -56,7 +56,7 @@ class ImageLibrary extends QUI\System\Test
 
         $this->setAttribute(
             'title',
-            'Image Libraries ('.\implode(', ', $libraries).')'
+            'Image Libraries (' . \implode(', ', $libraries) . ')'
         );
 
         return self::STATUS_OK;

@@ -17,16 +17,6 @@ use QUI;
 abstract class AbstractAuthenticator implements QUI\Users\AuthenticatorInterface
 {
     /**
-     * Return the ID of the user
-     *
-     * @return integer
-     */
-    public function getUserId()
-    {
-        return $this->getUser()->getId();
-    }
-
-    /**
      * Return the login control
      *
      * @return \QUI\Control|null
@@ -62,6 +52,16 @@ abstract class AbstractAuthenticator implements QUI\Users\AuthenticatorInterface
     public static function isCLICompatible()
     {
         return false;
+    }
+
+    /**
+     * Return the ID of the user
+     *
+     * @return integer
+     */
+    public function getUserId()
+    {
+        return $this->getUser()->getId();
     }
 
     /**

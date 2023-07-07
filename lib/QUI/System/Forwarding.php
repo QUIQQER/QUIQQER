@@ -47,6 +47,22 @@ class Forwarding
     }
 
     /**
+     * Return the forwarding config
+     *
+     * @return QUI\Config
+     *
+     * @throws QUI\Exception
+     */
+    public static function getConfig(): QUI\Config
+    {
+        if (!file_exists(CMS_DIR . 'etc/forwarding.ini.php')) {
+            file_put_contents(CMS_DIR . 'etc/forwarding.ini.php', '');
+        }
+
+        return QUI::getConfig('etc/forwarding.ini.php');
+    }
+
+    /**
      * Update a forwarding entry
      *
      * @param string $from
@@ -98,22 +114,6 @@ class Forwarding
     }
 
     /**
-     * Return the forwarding config
-     *
-     * @return QUI\Config
-     *
-     * @throws QUI\Exception
-     */
-    public static function getConfig(): QUI\Config
-    {
-        if (!file_exists(CMS_DIR . 'etc/forwarding.ini.php')) {
-            file_put_contents(CMS_DIR . 'etc/forwarding.ini.php', '');
-        }
-
-        return QUI::getConfig('etc/forwarding.ini.php');
-    }
-
-    /**
      * Return the list
      *
      * @return Collection
@@ -146,7 +146,7 @@ class Forwarding
             Log::writeException($Exception);
         }
 
-        $uri  = $Request->getRequestUri();
+        $uri = $Request->getRequestUri();
         $host = $Request->getSchemeAndHttpHost();
 
         $request = $host . $uri;
@@ -179,7 +179,7 @@ class Forwarding
     protected static function redirect(array $data)
     {
         $target = $data['target'];
-        $code   = (int)$data['code'];
+        $code = (int)$data['code'];
 
         if (empty($target)) {
             $target = URL_DIR;

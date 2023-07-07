@@ -24,7 +24,7 @@ class CHMOD extends QUI\System\Test
         parent::__construct();
 
         $this->setAttributes(array(
-            'title'       => 'QUIQQER Directory writable',
+            'title' => 'QUIQQER Directory writable',
             'description' => ''
         ));
 

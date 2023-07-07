@@ -109,148 +109,31 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
-     * Deactivate the folder
-     *
-     * @param QUI\Interfaces\Users\User|null $PermissionUser
-     *
-     * @throws QUI\Exception
-     * @see QUI\Interfaces\Projects\Media\File::deactivate()
-     */
-    public function deactivate(QUI\Interfaces\Users\User $PermissionUser = null)
-    {
-        if ($this->isActive() === false) {
-            return;
-        }
-
-        $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
-
-        QUI::getDataBase()->update(
-            $this->Media->getTable(),
-            ['active' => 0],
-            ['id' => $this->getId()]
-        );
-
-        $this->setAttribute('active', 0);
-
-        // Images / Folders / Files rekursive deactivasion
-        $ids = $this->getAllRecursiveChildrenIds();
-        $Media = $this->Media;
-
-        foreach ($ids as $id) {
-            try {
-                $Item = $Media->get($id);
-                $Item->deactivate($PermissionUser);
-            } catch (QUI\Exception $Exception) {
-                QUI\System\Log::writeException($Exception);
-            }
-        }
-
-        $this->deleteCache();
-
-        QUI::getEvents()->fireEvent('mediaDeactivate', [$this]);
-    }
-
-    /**
-     * Delete the folder
-     *
-     * @param QUI\Interfaces\Users\User|null $PermissionUser
-     *
-     * @throws QUI\Exception
-     * @see QUI\Projects\Media\Item::delete()
-     */
-    public function delete(QUI\Interfaces\Users\User $PermissionUser = null)
-    {
-        $this->checkPermission('quiqqer.projects.media.del', $PermissionUser);
-
-
-        if ($this->isDeleted()) {
-            throw new QUI\Exception(
-                'Folder is already deleted',
-                ErrorCodes::FOLDER_ALREADY_DELETED
-            );
-        }
-
-        if ($this->getId() == 1) {
-            throw new QUI\Exception(
-                'Root cannot deleted',
-                ErrorCodes::ROOT_FOLDER_CANT_DELETED
-            );
-        }
-
-        QUI::getEvents()->fireEvent('mediaDeleteBegin', [$this]);
-
-        $children = $this->getAllRecursiveChildrenIds();
-
-        // move files to the temp folder
-        // and delete the files first
-        foreach ($children as $id) {
-            try {
-                $File = $this->Media->get($id);
-
-                if (MediaUtils::isFolder($File) === false) {
-                    $File->delete($PermissionUser);
-                }
-            } catch (QUI\Exception $Exception) {
-                QUI\System\Log::writeException($Exception);
-            }
-        }
-
-        // now delete all sub folders
-        foreach ($children as $id) {
-            try {
-                $File = $this->Media->get($id);
-
-                if (MediaUtils::isFolder($File) === false) {
-                    continue;
-                }
-
-                // delete database entries
-                QUI::getDataBase()->delete(
-                    $this->Media->getTable(),
-                    ['id' => $id]
-                );
-
-                QUI::getDataBase()->delete(
-                    $this->Media->getTable('relations'),
-                    ['child' => $id]
-                );
-            } catch (QUI\Exception $Exception) {
-                QUI\System\Log::writeException($Exception);
-            }
-        }
-
-        // delete the own database entries
-        QUI::getDataBase()->delete(
-            $this->Media->getTable(),
-            ['id' => $this->getId()]
-        );
-
-        QUI::getDataBase()->delete(
-            $this->Media->getTable('relations'),
-            ['child' => $this->getId()]
-        );
-
-        FileUtils::unlink($this->getFullPath());
-
-
-        // delete cache
-        $this->deleteCache();
-
-        QUI::getEvents()->fireEvent('mediaDelete', [$this]);
-    }
-
-    /**
      * (non-PHPdoc)
      *
-     * @param QUI\Interfaces\Users\User|null $PermissionUser
-     * @see QUI\Projects\Media\Item::destroy()
+     * @throws QUI\Exception
+     * @see QUI\Interfaces\Projects\Media\File::createCache()
      */
-    public function destroy(QUI\Interfaces\Users\User $PermissionUser = null)
+    public function createCache(): bool
     {
-        // nothing
-        // folders are not in the trash
+        if (Media::$globalDisableMediaCacheCreation) {
+            return false;
+        }
 
-        QUI::getEvents()->fireEvent('mediaDestroy', [$this]);
+        if (!$this->getAttribute('active')) {
+            return true;
+        }
+
+        $cacheDir = CMS_DIR . $this->Media->getCacheDir() . $this->getAttribute('file');
+
+        if (FileUtils::mkdir($cacheDir)) {
+            return true;
+        }
+
+        throw new QUI\Exception(
+            'createCache() Error; Could not create Folder ' . $cacheDir,
+            ErrorCodes::FOLDER_CACHE_CREATION_MKDIR_ERROR
+        );
     }
 
     /**
@@ -367,6 +250,111 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $this->setAttribute('file', $new_path . '/');
 
         QUI::getEvents()->fireEvent('mediaRename', [$this]);
+    }
+
+    /**
+     * Return true if a child with the name exist
+     *
+     * @param string $name - name (my_holiday)
+     *
+     * @return boolean
+     */
+    public function childWithNameExists(string $name): bool
+    {
+        try {
+            $this->getChildByName($name);
+
+            return true;
+        } catch (QUI\Exception $Exception) {
+        }
+
+        return false;
+    }
+
+    /**
+     * Return a file from the folder by its name
+     *
+     * @param string $filename
+     *
+     * @return QUI\Projects\Media\Item
+     * @throws QUI\Exception
+     */
+    public function getChildByName(string $filename): Item
+    {
+        $children = $this->getChildrenByName($filename, 1);
+
+        return $children[0];
+    }
+
+    /**
+     * Return all children with the wanted name
+     *
+     * @param $filename
+     * @param bool $limit
+     * @return array
+     *
+     * @throws QUI\Database\Exception
+     * @throws QUI\Exception
+     */
+    public function getChildrenByName($filename, bool $limit = false): array
+    {
+        $table = $this->Media->getTable();
+        $table_rel = $this->Media->getTable('relations');
+
+        $query = [
+            'select' => [
+                $table . '.id'
+            ],
+            'from' => [
+                $table,
+                $table_rel
+            ],
+            'where' => [
+                $table_rel . '.parent' => $this->getId(),
+                $table_rel . '.child' => '`' . $table . '.id`',
+                $table . '.deleted' => 0,
+                $table . '.name' => $filename
+            ]
+        ];
+
+        if ($limit) {
+            $query['limit'] = $limit;
+        }
+
+        $dbResult = QUI::getDataBase()->fetch($query);
+
+        if (!isset($dbResult[0])) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.not.found.NAME', [
+                    'file' => $filename
+                ]),
+                ErrorCodes::FILE_NOT_FOUND
+            );
+        }
+
+        $result = [];
+
+        foreach ($dbResult as $entry) {
+            $result[] = $this->Media->get((int)$entry['id']);
+        }
+
+        return $result;
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @throws QUI\Exception
+     * @see QUI\Interfaces\Projects\Media\File::deleteCache()
+     */
+    public function deleteCache(): bool
+    {
+        $cacheDir = $this->Media->getFullCachePath();
+        $cacheFile = $cacheDir . $this->getAttribute('file');
+
+        FileUtils::unlink($cacheFile);
+
+        return true;
     }
 
     /**
@@ -496,117 +484,98 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
-     * Creates a zip in the temp and return the path to it
+     * Adds / create a subfolder
      *
-     * @return string
+     * @param string $foldername - Name of the new folder
+     *
+     * @return QUI\Projects\Media\Folder
      * @throws QUI\Exception
      */
-    public function createZIP(): string
+    public function createFolder(string $foldername): Folder
     {
-        $path = $this->getFullPath();
+        // Namensprüfung wegen unerlaubten Zeichen
+        MediaUtils::checkFolderName($foldername);
 
-        $tempFolder = QUI::getTemp()->createFolder();
-        $newZipFile = $tempFolder . $this->getAttribute('name') . '.zip';
+        // Whitespaces am Anfang und am Ende rausnehmen
+        $new_name = trim($foldername);
 
-        if (!class_exists('\ZipArchive')) {
-            throw new QUI\Exception([
-                'quiqqer/quiqqer',
-                'exception.zip.extension.not.installed'
-            ]);
-        }
 
-        $files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($path),
-            RecursiveIteratorIterator::LEAVES_ONLY
-        );
+        $User = QUI::getUserBySession();
+        $dir = $this->Media->getFullPath() . $this->getPath();
 
-        $countFiles = 0;
+        if (is_dir($dir . $new_name)) {
+            // prüfen ob dieser ordner schon als kind existiert
+            // wenn nein, muss dieser ordner in der DB angelegt werden
 
-        foreach ($files as $File) {
-            if (!$File->isDir()) {
-                $countFiles++;
+            try {
+                $children = $this->getChildByName($new_name);
+            } catch (QUI\Exception $Exception) {
+                $children = false;
+            }
+
+            if ($children) {
+                throw new QUI\Exception(
+                    'Der Ordner existiert schon ' . $dir . $new_name,
+                    ErrorCodes::FOLDER_ALREADY_EXISTS
+                );
             }
         }
 
-        if (!$countFiles) {
-            throw new QUI\Exception([
-                'quiqqer/quiqqer',
-                'exception.zip.folder.is.empty'
-            ]);
-        }
+        FileUtils::mkdir($dir . $new_name);
 
-        $Zip = new ZipArchive();
-        $Zip->open($newZipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+        $table = $this->Media->getTable();
+        $table_rel = $this->Media->getTable('relations');
 
-        foreach ($files as $File) {
-            if ($File->isDir()) {
-                continue;
-            }
+        // In die DB legen
+        $file = $this->getAttribute('file') . $new_name . '/';
 
-            $filePath = $File->getRealPath();
-            $relativePath = substr($filePath, strlen($path));
+        QUI::getDataBase()->insert($table, [
+            'name' => $new_name,
+            'title' => $new_name,
+            'short' => $new_name,
+            'type' => 'folder',
+            'file' => $file,
+            'pathHash' => md5($file),
+            'alt' => $new_name,
+            'c_date' => date('Y-m-d h:i:s'),
+            'e_date' => date('Y-m-d h:i:s'),
+            'c_user' => $User->getId(),
+            'e_user' => $User->getId(),
+            'mime_type' => 'folder'
+        ]);
 
-            $Zip->addFile($filePath, $relativePath);
-        }
+        $id = QUI::getDataBase()->getPDO()->lastInsertId();
 
-        $Zip->close();
+        QUI::getDataBase()->insert($table_rel, [
+            'parent' => $this->getId(),
+            'child' => $id
+        ]);
 
-        return $newZipFile;
-    }
+        QUI\Cache\Manager::clear($this->getCachePath());
 
-    /**
-     * Return the first child
-     *
-     * @return QUI\Projects\Media\File
-     *
-     * @throws QUI\Exception
-     */
-    public function firstChild(): File
-    {
-        $result = $this->getChildren(
-            ['limit' => 1]
-        );
+        if (is_dir($dir . $new_name)) {
+            $Folder = $this->Media->get($id);
 
-        if (isset($result[0])) {
-            return $result[0];
+            $Folder->setEffects($this->getEffects());
+            $Folder->save();
+
+            return $Folder;
         }
 
         throw new QUI\Exception(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.folder.has.no.files'),
-            ErrorCodes::FOLDER_HAS_NO_FILES
+            ['quiqqer/quiqqer', 'exception.media.folder.could.not.be.created'],
+            ErrorCodes::FOLDER_ERROR_CREATION
         );
     }
 
     /**
-     * Returns all children in the folder
+     * Get cache path where internal folder statistics are cached (e.g. children count, subfolder count).
      *
-     * @param array $params - [optional] db query fields
-     *
-     * @return array
+     * @return string
      */
-    public function getChildren(array $params = []): array
+    protected function getCachePath(): string
     {
-        $this->children = [];
-
-        if (!isset($params['order'])) {
-            $params['order'] = $this->getAttribute('order');
-        }
-
-        if (empty($params['order'])) {
-            $params['order'] = 'priority';
-        }
-
-        $ids = $this->getChildrenIds($params);
-
-        foreach ($ids as $id) {
-            try {
-                $this->children[] = $this->Media->get($id);
-            } catch (QUI\Exception $Exception) {
-                QUI\System\Log::writeException($Exception);
-            }
-        }
-
-        return $this->children;
+        return 'quiqqer/media/' . $this->getProject()->getName() . '/folder/' . $this->getId() . '/';
     }
 
     /**
@@ -775,6 +744,120 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
+     * Creates a zip in the temp and return the path to it
+     *
+     * @return string
+     * @throws QUI\Exception
+     */
+    public function createZIP(): string
+    {
+        $path = $this->getFullPath();
+
+        $tempFolder = QUI::getTemp()->createFolder();
+        $newZipFile = $tempFolder . $this->getAttribute('name') . '.zip';
+
+        if (!class_exists('\ZipArchive')) {
+            throw new QUI\Exception([
+                'quiqqer/quiqqer',
+                'exception.zip.extension.not.installed'
+            ]);
+        }
+
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($path),
+            RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        $countFiles = 0;
+
+        foreach ($files as $File) {
+            if (!$File->isDir()) {
+                $countFiles++;
+            }
+        }
+
+        if (!$countFiles) {
+            throw new QUI\Exception([
+                'quiqqer/quiqqer',
+                'exception.zip.folder.is.empty'
+            ]);
+        }
+
+        $Zip = new ZipArchive();
+        $Zip->open($newZipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+        foreach ($files as $File) {
+            if ($File->isDir()) {
+                continue;
+            }
+
+            $filePath = $File->getRealPath();
+            $relativePath = substr($filePath, strlen($path));
+
+            $Zip->addFile($filePath, $relativePath);
+        }
+
+        $Zip->close();
+
+        return $newZipFile;
+    }
+
+    /**
+     * Return the first child
+     *
+     * @return QUI\Projects\Media\File
+     *
+     * @throws QUI\Exception
+     */
+    public function firstChild(): File
+    {
+        $result = $this->getChildren(
+            ['limit' => 1]
+        );
+
+        if (isset($result[0])) {
+            return $result[0];
+        }
+
+        throw new QUI\Exception(
+            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.folder.has.no.files'),
+            ErrorCodes::FOLDER_HAS_NO_FILES
+        );
+    }
+
+    /**
+     * Returns all children in the folder
+     *
+     * @param array $params - [optional] db query fields
+     *
+     * @return array
+     */
+    public function getChildren(array $params = []): array
+    {
+        $this->children = [];
+
+        if (!isset($params['order'])) {
+            $params['order'] = $this->getAttribute('order');
+        }
+
+        if (empty($params['order'])) {
+            $params['order'] = 'priority';
+        }
+
+        $ids = $this->getChildrenIds($params);
+
+        foreach ($ids as $id) {
+            try {
+                $this->children[] = $this->Media->get($id);
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
+        }
+
+        return $this->children;
+    }
+
+    /**
      * Returns the count of the children
      *
      * @return integer
@@ -843,40 +926,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             QUI::getLocale()->get('quiqqer/quiqqer', 'exception.folder.has.no.images'),
             ErrorCodes::FOLDER_HAS_NO_IMAGES
         );
-    }
-
-    /**
-     * Return the sub folders from the folder
-     *
-     * @param array $params - filter parameter
-     *
-     * @return array
-     */
-    public function getFolders(array $params = [])
-    {
-        return $this->getElements('folder', $params);
-    }
-
-    /**
-     * Return the files from folder
-     *
-     * @param array $params - filter parameter
-     *
-     * @return array
-     */
-    public function getFiles(array $params = [])
-    {
-        return $this->getElements('file', $params);
-    }
-
-    /**
-     * @return int
-     *
-     * @todo as cron
-     */
-    public function getSize(): int
-    {
-        return QUI\Utils\System\Folder::getFolderSize($this->getFullPath());
     }
 
     /**
@@ -1046,6 +1095,40 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
+     * Return the sub folders from the folder
+     *
+     * @param array $params - filter parameter
+     *
+     * @return array
+     */
+    public function getFolders(array $params = [])
+    {
+        return $this->getElements('folder', $params);
+    }
+
+    /**
+     * Return the files from folder
+     *
+     * @param array $params - filter parameter
+     *
+     * @return array
+     */
+    public function getFiles(array $params = [])
+    {
+        return $this->getElements('file', $params);
+    }
+
+    /**
+     * @return int
+     *
+     * @todo as cron
+     */
+    public function getSize(): int
+    {
+        return QUI\Utils\System\Folder::getFolderSize($this->getFullPath());
+    }
+
+    /**
      * Returns the count of the children
      *
      * @return integer
@@ -1135,95 +1218,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
-     * Return a file from the folder by its name
-     *
-     * @param string $filename
-     *
-     * @return QUI\Projects\Media\Item
-     * @throws QUI\Exception
-     */
-    public function getChildByName(string $filename): Item
-    {
-        $children = $this->getChildrenByName($filename, 1);
-
-        return $children[0];
-    }
-
-    /**
-     * Return all children with the wanted name
-     *
-     * @param $filename
-     * @param bool $limit
-     * @return array
-     *
-     * @throws QUI\Database\Exception
-     * @throws QUI\Exception
-     */
-    public function getChildrenByName($filename, bool $limit = false): array
-    {
-        $table = $this->Media->getTable();
-        $table_rel = $this->Media->getTable('relations');
-
-        $query = [
-            'select' => [
-                $table . '.id'
-            ],
-            'from' => [
-                $table,
-                $table_rel
-            ],
-            'where' => [
-                $table_rel . '.parent' => $this->getId(),
-                $table_rel . '.child' => '`' . $table . '.id`',
-                $table . '.deleted' => 0,
-                $table . '.name' => $filename
-            ]
-        ];
-
-        if ($limit) {
-            $query['limit'] = $limit;
-        }
-
-        $dbResult = QUI::getDataBase()->fetch($query);
-
-        if (!isset($dbResult[0])) {
-            throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.not.found.NAME', [
-                    'file' => $filename
-                ]),
-                ErrorCodes::FILE_NOT_FOUND
-            );
-        }
-
-        $result = [];
-
-        foreach ($dbResult as $entry) {
-            $result[] = $this->Media->get((int)$entry['id']);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Return true if a child with the name exist
-     *
-     * @param string $name - name (my_holiday)
-     *
-     * @return boolean
-     */
-    public function childWithNameExists(string $name): bool
-    {
-        try {
-            $this->getChildByName($name);
-
-            return true;
-        } catch (QUI\Exception $Exception) {
-        }
-
-        return false;
-    }
-
-    /**
      * Return true if a file with the filename in the folder exists
      *
      * @param string $file - filename (my_holiday.png)
@@ -1258,135 +1252,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         return isset($result[0]);
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @throws QUI\Exception
-     * @see QUI\Interfaces\Projects\Media\File::createCache()
-     */
-    public function createCache(): bool
-    {
-        if (Media::$globalDisableMediaCacheCreation) {
-            return false;
-        }
-
-        if (!$this->getAttribute('active')) {
-            return true;
-        }
-
-        $cacheDir = CMS_DIR . $this->Media->getCacheDir() . $this->getAttribute('file');
-
-        if (FileUtils::mkdir($cacheDir)) {
-            return true;
-        }
-
-        throw new QUI\Exception(
-            'createCache() Error; Could not create Folder ' . $cacheDir,
-            ErrorCodes::FOLDER_CACHE_CREATION_MKDIR_ERROR
-        );
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @throws QUI\Exception
-     * @see QUI\Interfaces\Projects\Media\File::deleteCache()
-     */
-    public function deleteCache(): bool
-    {
-        $cacheDir = $this->Media->getFullCachePath();
-        $cacheFile = $cacheDir . $this->getAttribute('file');
-
-        FileUtils::unlink($cacheFile);
-
-        return true;
-    }
-
-    /**
-     * Adds / create a subfolder
-     *
-     * @param string $foldername - Name of the new folder
-     *
-     * @return QUI\Projects\Media\Folder
-     * @throws QUI\Exception
-     */
-    public function createFolder(string $foldername): Folder
-    {
-        // Namensprüfung wegen unerlaubten Zeichen
-        MediaUtils::checkFolderName($foldername);
-
-        // Whitespaces am Anfang und am Ende rausnehmen
-        $new_name = trim($foldername);
-
-
-        $User = QUI::getUserBySession();
-        $dir = $this->Media->getFullPath() . $this->getPath();
-
-        if (is_dir($dir . $new_name)) {
-            // prüfen ob dieser ordner schon als kind existiert
-            // wenn nein, muss dieser ordner in der DB angelegt werden
-
-            try {
-                $children = $this->getChildByName($new_name);
-            } catch (QUI\Exception $Exception) {
-                $children = false;
-            }
-
-            if ($children) {
-                throw new QUI\Exception(
-                    'Der Ordner existiert schon ' . $dir . $new_name,
-                    ErrorCodes::FOLDER_ALREADY_EXISTS
-                );
-            }
-        }
-
-        FileUtils::mkdir($dir . $new_name);
-
-        $table = $this->Media->getTable();
-        $table_rel = $this->Media->getTable('relations');
-
-        // In die DB legen
-        $file = $this->getAttribute('file') . $new_name . '/';
-
-        QUI::getDataBase()->insert($table, [
-            'name' => $new_name,
-            'title' => $new_name,
-            'short' => $new_name,
-            'type' => 'folder',
-            'file' => $file,
-            'pathHash' => md5($file),
-            'alt' => $new_name,
-            'c_date' => date('Y-m-d h:i:s'),
-            'e_date' => date('Y-m-d h:i:s'),
-            'c_user' => $User->getId(),
-            'e_user' => $User->getId(),
-            'mime_type' => 'folder'
-        ]);
-
-        $id = QUI::getDataBase()->getPDO()->lastInsertId();
-
-        QUI::getDataBase()->insert($table_rel, [
-            'parent' => $this->getId(),
-            'child' => $id
-        ]);
-
-        QUI\Cache\Manager::clear($this->getCachePath());
-
-        if (is_dir($dir . $new_name)) {
-            $Folder = $this->Media->get($id);
-
-            $Folder->setEffects($this->getEffects());
-            $Folder->save();
-
-            return $Folder;
-        }
-
-        throw new QUI\Exception(
-            ['quiqqer/quiqqer', 'exception.media.folder.could.not.be.created'],
-            ErrorCodes::FOLDER_ERROR_CREATION
-        );
     }
 
     /**
@@ -1631,32 +1496,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
-     * Set the effects recursive to all items and folders
-     *
-     * @todo do this as a job
-     */
-    public function setEffectsRecursive()
-    {
-        $Media = $this->getMedia();
-        $ids = $this->getAllRecursiveChildrenIds();
-        $effects = $this->getEffects();
-
-        foreach ($ids as $id) {
-            try {
-                set_time_limit(1);
-                $Item = $Media->get($id);
-
-                if (MediaUtils::isFolder($Item) || MediaUtils::isImage($Item)) {
-                    $Item->setEffects($effects);
-                    $Item->save();
-                }
-            } catch (QUI\Exception $Exception) {
-                QUI\System\Log::addDebug($Exception->getMessage());
-            }
-        }
-    }
-
-    /**
      * If the file is a folder
      *
      * @param string $path - Path to the dir
@@ -1698,6 +1537,48 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
+     * Deactivate the folder
+     *
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
+     *
+     * @throws QUI\Exception
+     * @see QUI\Interfaces\Projects\Media\File::deactivate()
+     */
+    public function deactivate(QUI\Interfaces\Users\User $PermissionUser = null)
+    {
+        if ($this->isActive() === false) {
+            return;
+        }
+
+        $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
+
+        QUI::getDataBase()->update(
+            $this->Media->getTable(),
+            ['active' => 0],
+            ['id' => $this->getId()]
+        );
+
+        $this->setAttribute('active', 0);
+
+        // Images / Folders / Files rekursive deactivasion
+        $ids = $this->getAllRecursiveChildrenIds();
+        $Media = $this->Media;
+
+        foreach ($ids as $id) {
+            try {
+                $Item = $Media->get($id);
+                $Item->deactivate($PermissionUser);
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
+        }
+
+        $this->deleteCache();
+
+        QUI::getEvents()->fireEvent('mediaDeactivate', [$this]);
+    }
+
+    /**
      * Returns all ids from children under the folder
      *
      * @return array
@@ -1733,12 +1614,131 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
-     * Get cache path where internal folder statistics are cached (e.g. children count, subfolder count).
+     * Delete the folder
      *
-     * @return string
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
+     *
+     * @throws QUI\Exception
+     * @see QUI\Projects\Media\Item::delete()
      */
-    protected function getCachePath(): string
+    public function delete(QUI\Interfaces\Users\User $PermissionUser = null)
     {
-        return 'quiqqer/media/' . $this->getProject()->getName() . '/folder/' . $this->getId() . '/';
+        $this->checkPermission('quiqqer.projects.media.del', $PermissionUser);
+
+
+        if ($this->isDeleted()) {
+            throw new QUI\Exception(
+                'Folder is already deleted',
+                ErrorCodes::FOLDER_ALREADY_DELETED
+            );
+        }
+
+        if ($this->getId() == 1) {
+            throw new QUI\Exception(
+                'Root cannot deleted',
+                ErrorCodes::ROOT_FOLDER_CANT_DELETED
+            );
+        }
+
+        QUI::getEvents()->fireEvent('mediaDeleteBegin', [$this]);
+
+        $children = $this->getAllRecursiveChildrenIds();
+
+        // move files to the temp folder
+        // and delete the files first
+        foreach ($children as $id) {
+            try {
+                $File = $this->Media->get($id);
+
+                if (MediaUtils::isFolder($File) === false) {
+                    $File->delete($PermissionUser);
+                }
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
+        }
+
+        // now delete all sub folders
+        foreach ($children as $id) {
+            try {
+                $File = $this->Media->get($id);
+
+                if (MediaUtils::isFolder($File) === false) {
+                    continue;
+                }
+
+                // delete database entries
+                QUI::getDataBase()->delete(
+                    $this->Media->getTable(),
+                    ['id' => $id]
+                );
+
+                QUI::getDataBase()->delete(
+                    $this->Media->getTable('relations'),
+                    ['child' => $id]
+                );
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
+        }
+
+        // delete the own database entries
+        QUI::getDataBase()->delete(
+            $this->Media->getTable(),
+            ['id' => $this->getId()]
+        );
+
+        QUI::getDataBase()->delete(
+            $this->Media->getTable('relations'),
+            ['child' => $this->getId()]
+        );
+
+        FileUtils::unlink($this->getFullPath());
+
+
+        // delete cache
+        $this->deleteCache();
+
+        QUI::getEvents()->fireEvent('mediaDelete', [$this]);
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
+     * @see QUI\Projects\Media\Item::destroy()
+     */
+    public function destroy(QUI\Interfaces\Users\User $PermissionUser = null)
+    {
+        // nothing
+        // folders are not in the trash
+
+        QUI::getEvents()->fireEvent('mediaDestroy', [$this]);
+    }
+
+    /**
+     * Set the effects recursive to all items and folders
+     *
+     * @todo do this as a job
+     */
+    public function setEffectsRecursive()
+    {
+        $Media = $this->getMedia();
+        $ids = $this->getAllRecursiveChildrenIds();
+        $effects = $this->getEffects();
+
+        foreach ($ids as $id) {
+            try {
+                set_time_limit(1);
+                $Item = $Media->get($id);
+
+                if (MediaUtils::isFolder($Item) || MediaUtils::isImage($Item)) {
+                    $Item->setEffects($effects);
+                    $Item->save();
+                }
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addDebug($Exception->getMessage());
+            }
+        }
     }
 }

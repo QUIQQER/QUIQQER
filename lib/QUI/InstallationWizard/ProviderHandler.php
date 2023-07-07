@@ -31,20 +31,20 @@ class ProviderHandler
     protected static ?QUI\Config $Config = null;
 
     /**
-     * @return QUI\Config|null
-     * @throws QUI\Exception
+     * @return InstallationWizardInterface[]
      */
-    public static function getConfig(): ?QUI\Config
+    public static function getNotSetUpProviderList(): array
     {
-        if (!file_exists(ETC_DIR . 'installationWizard.ini.php')) {
-            file_put_contents(ETC_DIR . 'installationWizard.ini.php', '');
+        $notSetUp = [];
+        $list = self::getProviderList();
+
+        foreach ($list as $Provider) {
+            if ($Provider->getStatus() !== self::STATUS_SET_UP_DONE) {
+                $notSetUp[] = $Provider;
+            }
         }
 
-        if (self::$Config === null) {
-            self::$Config = QUI::getConfig('etc/installationWizard.ini.php');
-        }
-
-        return self::$Config;
+        return $notSetUp;
     }
 
     /**
@@ -55,8 +55,8 @@ class ProviderHandler
     public static function getProviderList(): array
     {
         $providerList = [];
-        $list         = [];
-        $installed    = QUI::getPackageManager()->getInstalled();
+        $list = [];
+        $installed = QUI::getPackageManager()->getInstalled();
 
         foreach ($installed as $package) {
             try {
@@ -80,7 +80,7 @@ class ProviderHandler
                 $interfaces = class_implements($provider);
 
                 if (isset($interfaces['QUI\InstallationWizard\InstallationWizardInterface'])) {
-                    $provider       = trim($provider, '\\');
+                    $provider = trim($provider, '\\');
                     $providerList[] = new $provider();
                 }
             } catch (\Exception $Exception) {
@@ -89,23 +89,6 @@ class ProviderHandler
         }
 
         return $providerList;
-    }
-
-    /**
-     * @return InstallationWizardInterface[]
-     */
-    public static function getNotSetUpProviderList(): array
-    {
-        $notSetUp = [];
-        $list     = self::getProviderList();
-
-        foreach ($list as $Provider) {
-            if ($Provider->getStatus() !== self::STATUS_SET_UP_DONE) {
-                $notSetUp[] = $Provider;
-            }
-        }
-
-        return $notSetUp;
     }
 
     /**
@@ -119,6 +102,23 @@ class ProviderHandler
         } catch (QUI\Exception $Exception) {
             return self::STATUS_SET_UP_NOT_STARTED;
         }
+    }
+
+    /**
+     * @return QUI\Config|null
+     * @throws QUI\Exception
+     */
+    public static function getConfig(): ?QUI\Config
+    {
+        if (!file_exists(ETC_DIR . 'installationWizard.ini.php')) {
+            file_put_contents(ETC_DIR . 'installationWizard.ini.php', '');
+        }
+
+        if (self::$Config === null) {
+            self::$Config = QUI::getConfig('etc/installationWizard.ini.php');
+        }
+
+        return self::$Config;
     }
 
     /**

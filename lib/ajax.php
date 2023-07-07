@@ -25,9 +25,11 @@ if ($User->getId() && $User->getLang()) {
 
 // @todo dies muss wirklich getestet werden
 // @todo falls sprachen chaos erscheint
-if (defined('QUIQQER_FRONTEND')
+if (
+    defined('QUIQQER_FRONTEND')
     && isset($_REQUEST['lang'])
-    && (strlen($_REQUEST['lang']) === 2 || strlen($_REQUEST['lang']) === 5)) {
+    && (strlen($_REQUEST['lang']) === 2 || strlen($_REQUEST['lang']) === 5)
+) {
     QUI::getLocale()->setCurrent($_REQUEST['lang']);
 }
 
@@ -43,11 +45,11 @@ QUI::getAjax();
 // ajax package loader
 if (isset($_REQUEST['package'])) {
     $package = $_REQUEST['package'];
-    $dir     = OPT_DIR;
+    $dir = OPT_DIR;
 
     foreach ($_rf_files as $key => $file) {
         $firstPart = 'package_' . str_replace('/', '_', $package);
-        $ending    = str_replace($firstPart, '', $file);
+        $ending = str_replace($firstPart, '', $file);
 
         $_rf_file = $dir . $package . str_replace('_', '/', $ending) . '.php';
         $_rf_file = Orthos::clearPath($_rf_file);
@@ -87,7 +89,7 @@ if (isset($_REQUEST['project'])) {
     }
 
     $projectDir = USR_DIR . $Project->getName();
-    $firstPart  = 'project_' . $Project->getName() . '_';
+    $firstPart = 'project_' . $Project->getName() . '_';
 
     foreach ($_rf_files as $key => $file) {
         $file = str_replace($firstPart, '', $file);

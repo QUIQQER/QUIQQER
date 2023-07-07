@@ -19,6 +19,24 @@ class Handler
     protected $messages = [];
 
     /**
+     * Create the database table for the messages
+     */
+    public static function setup()
+    {
+        try {
+            QUI::getDataBase()->table()->addColumn(self::table(), [
+                'uid' => 'int(11)',
+                'message' => 'text',
+                'mtype' => 'varchar(100)',
+                'mcode' => 'varchar(5)',
+                'mtime' => 'int(11)'
+            ]);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+    }
+
+    /**
      * Return the message handler db table
      */
     public static function table()
@@ -27,29 +45,31 @@ class Handler
     }
 
     /**
-     * Create the database table for the messages
-     */
-    public static function setup()
-    {
-        try {
-            QUI::getDataBase()->table()->addColumn(self::table(), [
-                'uid'     => 'int(11)',
-                'message' => 'text',
-                'mtype'   => 'varchar(100)',
-                'mcode'   => 'varchar(5)',
-                'mtime'   => 'int(11)'
-            ]);
-        } catch (\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
-        }
-    }
-
-    /**
      * Clears the current message list
      */
     public function clear()
     {
         $this->messages = [];
+    }
+
+    /**
+     * Return the messages list as pure array
+     *
+     * @param QUI\Interfaces\Users\User $User
+     *
+     * @return array
+     */
+    public function getMessagesAsArray(QUI\Interfaces\Users\User $User)
+    {
+        $result = [];
+        $messages = $this->getNewMessages($User);
+
+        /* @var $Message Message */
+        foreach ($messages as $Message) {
+            $result[] = $Message->getAttributes();
+        }
+
+        return $result;
     }
 
     /**
@@ -69,7 +89,7 @@ class Handler
 
         try {
             $list = QUI::getDataBase()->fetch([
-                'from'  => self::table(),
+                'from' => self::table(),
                 'where' => [
                     'uid' => $User->getId()
                 ]
@@ -127,36 +147,6 @@ class Handler
     }
 
     /**
-     * Return the messages list as pure array
-     *
-     * @param QUI\Interfaces\Users\User $User
-     *
-     * @return array
-     */
-    public function getMessagesAsArray(QUI\Interfaces\Users\User $User)
-    {
-        $result   = [];
-        $messages = $this->getNewMessages($User);
-
-        /* @var $Message Message */
-        foreach ($messages as $Message) {
-            $result[] = $Message->getAttributes();
-        }
-
-        return $result;
-    }
-
-    /**
-     * Add a message to the handler
-     *
-     * @param \QUi\Messages\Message $Message
-     */
-    public function addMessage($Message)
-    {
-        $this->messages[$Message->getHash()] = $Message;
-    }
-
-    /**
      * Add an information for an user
      *
      * @param string $str
@@ -168,6 +158,16 @@ class Handler
                 'message' => $str
             ])
         );
+    }
+
+    /**
+     * Add a message to the handler
+     *
+     * @param \QUi\Messages\Message $Message
+     */
+    public function addMessage($Message)
+    {
+        $this->messages[$Message->getHash()] = $Message;
     }
 
     /**
@@ -213,33 +213,6 @@ class Handler
     }
 
     /**
-     * Send a message to an user and save it to the database
-     *
-     * @param QUI\Interfaces\Users\User $User
-     * @param \QUI\Messages\Message $Message
-     */
-    public function sendMessage(QUI\Interfaces\Users\User $User, Message $Message)
-    {
-        if (QUI::getUsers()->isSystemUser($User) ||
-            QUI::getUsers()->isNobodyUser($User)
-        ) {
-            return;
-        }
-
-        try {
-            QUI::getDataBase()->insert(self::table(), [
-                'uid'     => $User->getId(),
-                'message' => $Message->getMessage(),
-                'mcode'   => (int)$Message->getCode(),
-                'mtime'   => (int)$Message->getAttribute('time'),
-                'mtype'   => $Message->getType()
-            ]);
-        } catch (QUI\DataBase\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
-        }
-    }
-
-    /**
      * Send an information to an user and save it to the database
      *
      * @param QUI\Interfaces\Users\User $User
@@ -253,6 +226,34 @@ class Handler
                 'message' => $str
             ])
         );
+    }
+
+    /**
+     * Send a message to an user and save it to the database
+     *
+     * @param QUI\Interfaces\Users\User $User
+     * @param \QUI\Messages\Message $Message
+     */
+    public function sendMessage(QUI\Interfaces\Users\User $User, Message $Message)
+    {
+        if (
+            QUI::getUsers()->isSystemUser($User) ||
+            QUI::getUsers()->isNobodyUser($User)
+        ) {
+            return;
+        }
+
+        try {
+            QUI::getDataBase()->insert(self::table(), [
+                'uid' => $User->getId(),
+                'message' => $Message->getMessage(),
+                'mcode' => (int)$Message->getCode(),
+                'mtime' => (int)$Message->getAttribute('time'),
+                'mtype' => $Message->getType()
+            ]);
+        } catch (QUI\DataBase\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**

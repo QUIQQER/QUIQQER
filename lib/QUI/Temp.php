@@ -7,8 +7,17 @@
 namespace QUI;
 
 use QUI;
-use QUI\Utils\System\File as QUIFile;
 use QUI\Utils\Security\Orthos;
+use QUI\Utils\System\File as QUIFile;
+
+use function file_exists;
+use function is_dir;
+use function md5;
+use function microtime;
+use function realpath;
+use function rtrim;
+use function str_replace;
+use function system;
 
 /**
  * Temp managed the temp folder
@@ -31,58 +40,11 @@ class Temp
      */
     public function __construct($tempfolder)
     {
-        $this->folder = \rtrim($tempfolder, '/').'/';
+        $this->folder = rtrim($tempfolder, '/') . '/';
 
-        if (!\is_dir($this->folder)) {
+        if (!is_dir($this->folder)) {
             QUIFile::mkdir($this->folder);
         }
-    }
-
-    /**
-     * Create a temp folder and return the path to it
-     *
-     * @param string|boolean $name - (optional), if no name, a folder would be created with a random name
-     *
-     * @return string - Path to the folder
-     * @throws QUI\Exception
-     */
-    public function createFolder($name = false)
-    {
-        if (!empty($name)) {
-            $newFolder = $this->folder.$name.'/';
-            $newFolder = Orthos::clearPath($newFolder);
-
-            if (\is_dir($newFolder)) {
-                return $newFolder;
-            }
-
-            QUIFile::mkdir($this->folder);
-            QUIFile::mkdir($newFolder);
-
-            if (!\is_dir($newFolder)) {
-                throw new QUI\Exception(
-                    'Folder '.$newFolder.' could not be created'
-                );
-            }
-
-            if (!\realpath($newFolder)) {
-                throw new QUI\Exception(
-                    'Folder '.$newFolder.' could not be created'
-                );
-            }
-
-            return $newFolder;
-        }
-
-
-        // create a var_dir temp folder
-        do {
-            $folder = $this->folder.\str_replace([' ', '.'], '', \microtime()).'/';
-        } while (\file_exists($folder));
-
-        QUIFile::mkdir($folder);
-
-        return $folder;
     }
 
     /**
@@ -90,7 +52,7 @@ class Temp
      */
     public function clear()
     {
-        if (\system('rm -rf '.$this->folder)) {
+        if (system('rm -rf ' . $this->folder)) {
             QUIFile::mkdir($this->folder);
 
             return;
@@ -110,13 +72,60 @@ class Temp
      */
     public function moveToTemp($folder)
     {
-        if (!\file_exists($folder)) {
+        if (!file_exists($folder)) {
             return;
         }
 
         QUIFile::move(
             $folder,
-            self::createFolder().\md5($folder)
+            self::createFolder() . md5($folder)
         );
+    }
+
+    /**
+     * Create a temp folder and return the path to it
+     *
+     * @param string|boolean $name - (optional), if no name, a folder would be created with a random name
+     *
+     * @return string - Path to the folder
+     * @throws QUI\Exception
+     */
+    public function createFolder($name = false)
+    {
+        if (!empty($name)) {
+            $newFolder = $this->folder . $name . '/';
+            $newFolder = Orthos::clearPath($newFolder);
+
+            if (is_dir($newFolder)) {
+                return $newFolder;
+            }
+
+            QUIFile::mkdir($this->folder);
+            QUIFile::mkdir($newFolder);
+
+            if (!is_dir($newFolder)) {
+                throw new QUI\Exception(
+                    'Folder ' . $newFolder . ' could not be created'
+                );
+            }
+
+            if (!realpath($newFolder)) {
+                throw new QUI\Exception(
+                    'Folder ' . $newFolder . ' could not be created'
+                );
+            }
+
+            return $newFolder;
+        }
+
+
+        // create a var_dir temp folder
+        do {
+            $folder = $this->folder . str_replace([' ', '.'], '', microtime()) . '/';
+        } while (file_exists($folder));
+
+        QUIFile::mkdir($folder);
+
+        return $folder;
     }
 }

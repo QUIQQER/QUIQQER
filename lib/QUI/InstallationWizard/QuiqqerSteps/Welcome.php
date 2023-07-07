@@ -47,9 +47,9 @@ class Welcome extends QUI\InstallationWizard\AbstractInstallationWizardStep
         }
 
         $Engine->assign([
-            'urlImageDir' => URL_OPT_DIR.'quiqqer/quiqqer/bin/images/installation/'
+            'urlImageDir' => URL_OPT_DIR . 'quiqqer/quiqqer/bin/images/installation/'
         ]);
 
-        return $Engine->fetch(dirname(__FILE__).'/Welcome.html');
+        return $Engine->fetch(dirname(__FILE__) . '/Welcome.html');
     }
 }

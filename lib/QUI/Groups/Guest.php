@@ -62,16 +62,6 @@ class Guest extends QUI\Groups\Group
     }
 
     /**
-     * Returns the Group-ID
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return Manager::GUEST_ID;
-    }
-
-    /**
      * saves the group
      * All attributes are set in the database
      */
@@ -93,6 +83,16 @@ class Guest extends QUI\Groups\Group
         );
 
         $this->createCache();
+    }
+
+    /**
+     * Returns the Group-ID
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return Manager::GUEST_ID;
     }
 
     /**

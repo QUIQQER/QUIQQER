@@ -7,9 +7,9 @@
 namespace QUI\System\Tests;
 
 use QUI;
+use QUI\Utils\StringHelper as StringHelper;
 use QUI\Utils\System\File as SystemFile;
 use QUI\Utils\Text\XML;
-use QUI\Utils\StringHelper as StringHelper;
 
 /**
  * Database Check - Compares existing QUIQQER database tables with database.xml files
@@ -43,9 +43,9 @@ class DBCheck extends QUI\System\Test
         parent::__construct();
 
         $this->setAttributes([
-            'title'       => 'QUIQQER - Database Check (on failure check error log!)',
-            'description' => 'Compares existing QUIQQER database tables '.
-                             'with database.xml files and detects discrepancies.'
+            'title' => 'QUIQQER - Database Check (on failure check error log!)',
+            'description' => 'Compares existing QUIQQER database tables ' .
+                'with database.xml files and detects discrepancies.'
         ]);
 
         $this->isRequired = self::TEST_IS_REQUIRED;
@@ -64,7 +64,7 @@ class DBCheck extends QUI\System\Test
             return self::STATUS_ERROR;
         }
 
-        $packages     = SystemFile::readDir($packages_dir);
+        $packages = SystemFile::readDir($packages_dir);
         $this->Tables = QUI::getDataBase()->table();
 
         // first we need all databases
@@ -73,15 +73,15 @@ class DBCheck extends QUI\System\Test
                 continue;
             }
 
-            $package_dir = $packages_dir.$package;
-            $list        = SystemFile::readDir($package_dir);
+            $package_dir = $packages_dir . $package;
+            $list = SystemFile::readDir($package_dir);
 
             foreach ($list as $sub) {
-                if (!\is_dir($package_dir.'/'.$sub)) {
+                if (!\is_dir($package_dir . '/' . $sub)) {
                     continue;
                 }
 
-                $databaseXml = $package_dir.'/'.$sub.'/database.xml';
+                $databaseXml = $package_dir . '/' . $sub . '/database.xml';
 
                 if (!\file_exists($databaseXml)) {
                     continue;
@@ -118,7 +118,7 @@ class DBCheck extends QUI\System\Test
         if (isset($content['projects'])) {
             $projects = QUI::getProjectManager()->getProjects(true);
 
-            $langTables   = []; // language dependant tables
+            $langTables = []; // language dependant tables
             $noLangTables = []; // language independent tables
 
             foreach ($content['projects'] as $info) {
@@ -198,10 +198,10 @@ class DBCheck extends QUI\System\Test
     protected function extractTableData($info, $isGlobal = false)
     {
         $primaryKeys = [];
-        $checkData   = [
-            'table'    => $info['suffix'],
-            'fields'   => $info['fields'],
-            'indices'  => false,
+        $checkData = [
+            'table' => $info['suffix'],
+            'fields' => $info['fields'],
+            'indices' => false,
             'auto_inc' => false
         ];
 
@@ -245,12 +245,12 @@ class DBCheck extends QUI\System\Test
                     $this->addError(
                         $checkData['table'],
                         "---",
-                        "Primary Key error -> ".
+                        "Primary Key error -> " .
                         "XML file declares a primary key for table "
-                        .$checkData['table'].
+                        . $checkData['table'] .
                         " You can only declare a primary key if the table has the "
                         .
-                        "-> no-site-reference=\"1\" <- attribute OR the ".
+                        "-> no-site-reference=\"1\" <- attribute OR the " .
                         "-> no-project-lang=\"1\" <- attribute!"
                     );
                 }
@@ -260,11 +260,27 @@ class DBCheck extends QUI\System\Test
             // although technically it is created by the system in this special case
             if (!\in_array('id', $primaryKeys)) {
                 $checkData['primaryKeys'][] = 'id';
-                $checkData['fields']['id']  = 'BIGINT(20) NOT NULL PRIMARY KEY';
+                $checkData['fields']['id'] = 'BIGINT(20) NOT NULL PRIMARY KEY';
             }
         }
 
         return $checkData;
+    }
+
+    /**
+     * @param string $table
+     * @param string $dbTable
+     * @param string $error
+     */
+    protected function addError($table, $dbTable, $error)
+    {
+        $this->errors[] = [
+            'table' => $table,
+            'dbTable' => $dbTable,
+            'error' => $error
+        ];
+
+        $this->error = true;
     }
 
     /**
@@ -276,18 +292,18 @@ class DBCheck extends QUI\System\Test
     protected function checkTableIntegrity($table, $tblData)
     {
         // xml data
-        $tbl         = $tblData['table'];
+        $tbl = $tblData['table'];
         $primaryKeys = $tblData['primaryKeys'];
-        $indices     = $tblData['indices'];
-        $autoInc     = $tblData['auto_inc'];
-        $fields      = $tblData['fields'];
+        $indices = $tblData['indices'];
+        $autoInc = $tblData['auto_inc'];
+        $fields = $tblData['fields'];
 
         if (!$this->Tables->exist($table)) {
             $this->addError(
                 $tbl,
                 $table,
-                "Missing table -> ".
-                "Table \"$table\" is not found in the database.".
+                "Missing table -> " .
+                "Table \"$table\" is not found in the database." .
                 " Please execute the QUIQQER Setup."
             );
 
@@ -298,7 +314,7 @@ class DBCheck extends QUI\System\Test
             $this->addError(
                 $tbl,
                 $table,
-                "No PRIMARY KEY AND NO INDICES-> ".
+                "No PRIMARY KEY AND NO INDICES-> " .
                 "Table \"$table\" has no PRIMARY KEY."
             );
         }
@@ -317,7 +333,7 @@ class DBCheck extends QUI\System\Test
         }
 
         $_dbFields = $this->Tables->getFieldsInfos($table);
-        $dbFields  = [];
+        $dbFields = [];
 
         foreach ($_dbFields as $_entry) {
             $dbFields[] = $_entry['Field'];
@@ -326,7 +342,8 @@ class DBCheck extends QUI\System\Test
         // compare primary keys
         $keyCompare = \array_intersect($primaryKeys, $dbKeys);
 
-        if (\count($primaryKeys) !== \count($dbKeys)
+        if (
+            \count($primaryKeys) !== \count($dbKeys)
             || \count($keyCompare) !== \count($primaryKeys)
         ) {
             $_dbKeys = empty($dbKeys) ? '(none)' : \implode(',', $dbKeys);
@@ -335,9 +352,9 @@ class DBCheck extends QUI\System\Test
             $this->addError(
                 $tbl,
                 $table,
-                "Primary Key mismatch -> ".
-                "XML primary keys: ".$_prKeys.
-                " | Database table primary keys: ".$_dbKeys
+                "Primary Key mismatch -> " .
+                "XML primary keys: " . $_prKeys .
+                " | Database table primary keys: " . $_dbKeys
             );
         }
 
@@ -352,9 +369,9 @@ class DBCheck extends QUI\System\Test
             $this->addError(
                 $tbl,
                 $table,
-                "Missing table fields -> ".
-                "The XML file declares table fields that are ".
-                "missing in the database table: ".
+                "Missing table fields -> " .
+                "The XML file declares table fields that are " .
+                "missing in the database table: " .
                 \implode(',', $xmlFieldsDiff)
             );
         }
@@ -388,13 +405,13 @@ class DBCheck extends QUI\System\Test
 
             if ($nullable !== $isNullable) {
                 $should = $nullable ? "NULL" : "NOT NULL";
-                $is     = $isNullable ? "NULL" : "NOT NULL";
+                $is = $isNullable ? "NULL" : "NOT NULL";
 
                 $this->addError(
                     $tbl,
                     $table,
-                    "Field structure mismatch -> ".
-                    "The XML file says that field \"$fieldName\" ".
+                    "Field structure mismatch -> " .
+                    "The XML file says that field \"$fieldName\" " .
                     "should be $should but the database says it is $is."
                 );
             }
@@ -414,20 +431,20 @@ class DBCheck extends QUI\System\Test
 
             if ($autoIncrement !== $isAutoIncrement) {
                 $should = $autoIncrement ? "AUTO_INCREMENT" : "not AUTO_INCREMENT";
-                $is     = $isAutoIncrement ? "AUTO_INCREMENT" : "not AUTO_INCREMENT";
+                $is = $isAutoIncrement ? "AUTO_INCREMENT" : "not AUTO_INCREMENT";
 
                 $this->addError(
                     $tbl,
                     $table,
-                    "Field structure mismatch -> ".
-                    "The XML file says that field \"$fieldName\" ".
+                    "Field structure mismatch -> " .
+                    "The XML file says that field \"$fieldName\" " .
                     "should be $should but the database says it is $is."
                 );
             }
 
             /*** DATATYPE check ***/
             $isDatatype = $field['Type'];
-            $notNeeded  = [
+            $notNeeded = [
                 'primary key',
                 'not null',
                 'null',
@@ -436,7 +453,7 @@ class DBCheck extends QUI\System\Test
             ];
 
             // clear xml field data of already checked content
-            $fieldData  = \str_replace($notNeeded, '', $fieldData);
+            $fieldData = \str_replace($notNeeded, '', $fieldData);
             $isDatatype = \str_replace($notNeeded, '', $isDatatype);
 
             if (\strpos($fieldData, 'default') !== false) {
@@ -444,17 +461,19 @@ class DBCheck extends QUI\System\Test
                 $fieldData = $fieldData[0];
             }
 
-            $fieldData  = \trim($fieldData);
+            $fieldData = \trim($fieldData);
             $isDatatype = \trim($isDatatype);
 
             // correct things like "varchar( 20 )" to "varchar(20)" to match the column information
             $fieldData = \preg_replace('#\(\D*(\d+)\D*\)#i', '($1)', $fieldData);
 
-            if ($fieldData === 'int'
+            if (
+                $fieldData === 'int'
                 || $fieldData === 'mediumint'
-                || $fieldData === 'smallint') {
+                || $fieldData === 'smallint'
+            ) {
                 // int(10) = int
-                if (\strpos($isDatatype, $fieldData.'(') !== false) {
+                if (\strpos($isDatatype, $fieldData . '(') !== false) {
                     continue;
                 }
             }
@@ -467,29 +486,13 @@ class DBCheck extends QUI\System\Test
                 $this->addError(
                     $tbl,
                     $table,
-                    "Field structure mismatch -> ".
-                    "The XML file says that field \"$fieldName\" ".
-                    "should be \"$fieldData\"".
+                    "Field structure mismatch -> " .
+                    "The XML file says that field \"$fieldName\" " .
+                    "should be \"$fieldData\"" .
                     " but the database says it is \"$isDatatype\"."
                 );
             }
         }
-    }
-
-    /**
-     * @param string $table
-     * @param string $dbTable
-     * @param string $error
-     */
-    protected function addError($table, $dbTable, $error)
-    {
-        $this->errors[] = [
-            'table'   => $table,
-            'dbTable' => $dbTable,
-            'error'   => $error
-        ];
-
-        $this->error = true;
     }
 
     /**
@@ -505,11 +508,11 @@ class DBCheck extends QUI\System\Test
 
         foreach ($this->errors as $k => $err) {
             $msg .= "\n";
-            $msg .= "\n Error #".($k + 1).":";
+            $msg .= "\n Error #" . ($k + 1) . ":";
             $msg .= "\n -------------------------";
-            $msg .= "\n Definition for table: \t\"".$err['table']."\"";
-            $msg .= "\n Database table: \t\"".$err['dbTable']."\"";
-            $msg .= "\n Error: ".$err['error'];
+            $msg .= "\n Definition for table: \t\"" . $err['table'] . "\"";
+            $msg .= "\n Database table: \t\"" . $err['dbTable'] . "\"";
+            $msg .= "\n Error: " . $err['error'];
         }
 
         QUI\System\Log::addWarning($msg);

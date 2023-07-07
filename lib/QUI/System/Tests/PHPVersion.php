@@ -24,7 +24,7 @@ class PHPVersion extends QUI\System\Test
         parent::__construct();
 
         $this->setAttributes(array(
-            'title'       => 'QUIQQER - PHP Version - Higher 5.3',
+            'title' => 'QUIQQER - PHP Version - Higher 5.3',
             'description' => ''
         ));
 

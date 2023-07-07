@@ -3,6 +3,7 @@
 /**
  * This file contains \QUI\Interfaces\System\Test
  */
+
 namespace QUI\Interfaces\System;
 
 /**

@@ -10,7 +10,6 @@ use MongoDB\BSON\Regex;
 use MongoDB\Client;
 use MongoDB\Collection;
 use MongoDB\Driver\Exception\BulkWriteException;
-use QUI;
 use Stash\Driver\AbstractDriver;
 use Stash\Exception\InvalidArgumentException;
 
@@ -51,12 +50,11 @@ class QuiqqerMongoDriver extends AbstractDriver
     }
 
     /**
-     * @param array $key
-     * @return string
+     * {@inheritdoc}
      */
-    private static function mapKey($key)
+    public static function isAvailable()
     {
-        return implode('/', $key);
+        return class_exists('\MongoDB\Client', false);
     }
 
     /**
@@ -70,12 +68,21 @@ class QuiqqerMongoDriver extends AbstractDriver
 
         if ($doc) {
             return [
-                'data'       => unserialize($doc['data']),
+                'data' => unserialize($doc['data']),
                 'expiration' => $doc['expiration']
             ];
         }
 
         return false;
+    }
+
+    /**
+     * @param array $key
+     * @return string
+     */
+    private static function mapKey($key)
+    {
+        return implode('/', $key);
     }
 
     /**
@@ -88,8 +95,8 @@ class QuiqqerMongoDriver extends AbstractDriver
 
             try {
                 $this->collection->replaceOne(['_id' => $id], [
-                    '_id'        => $id,
-                    'data'       => serialize($data),
+                    '_id' => $id,
+                    'data' => serialize($data),
                     'expiration' => $expiration
                 ], ['upsert' => true]);
             } catch (BulkWriteException $ignored) {
@@ -139,18 +146,6 @@ class QuiqqerMongoDriver extends AbstractDriver
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getDefaultOptions()
-    {
-        return [
-            'mongo'      => 'quiqqer',
-            'database'   => 'local',
-            'collection' => 'quiqqer.store'
-        ];
-    }
-
-    /**
      * mongo - A MongoClient/Mongo/MongoDB instance. Required.
      *
      * @param array $options
@@ -184,9 +179,13 @@ class QuiqqerMongoDriver extends AbstractDriver
     /**
      * {@inheritdoc}
      */
-    public static function isAvailable()
+    public function getDefaultOptions()
     {
-        return class_exists('\MongoDB\Client', false);
+        return [
+            'mongo' => 'quiqqer',
+            'database' => 'local',
+            'collection' => 'quiqqer.store'
+        ];
     }
 
     /**

@@ -27,17 +27,17 @@ class OnlyDB extends QUI\Projects\Site
      */
     public function __construct(QUI\Projects\Project $Project, $id)
     {
-        $this->TABLE        = $Project->table();
-        $this->RELTABLE     = $Project->table().'_relations';
-        $this->RELLANGTABLE = $Project->getAttribute('name').'_multilingual';
+        $this->TABLE = $Project->table();
+        $this->RELTABLE = $Project->table() . '_relations';
+        $this->RELLANGTABLE = $Project->getAttribute('name') . '_multilingual';
 
         $id = (int)$id;
 
         if (empty($id)) {
-            throw new QUI\Exception('Site Error; No ID given:'.$id, 400);
+            throw new QUI\Exception('Site Error; No ID given:' . $id, 400);
         }
 
-        $this->id     = $id;
+        $this->id = $id;
         $this->Events = new QUI\Events\Event();
 
         // Daten aus der DB hohlen
@@ -55,7 +55,7 @@ class OnlyDB extends QUI\Projects\Site
     public function refresh()
     {
         $result = QUI::getDataBase()->fetch([
-            'from'  => $this->TABLE,
+            'from' => $this->TABLE,
             'where' => [
                 'id' => $this->getId()
             ],
@@ -69,7 +69,7 @@ class OnlyDB extends QUI\Projects\Site
         // Verknüpfung hohlen
         if ($this->getId() != 1) {
             $relresult = QUI::getDataBase()->fetch([
-                'from'  => $this->RELTABLE,
+                'from' => $this->RELTABLE,
                 'where' => [
                     'child' => $this->getId()
                 ]

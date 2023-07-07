@@ -35,7 +35,7 @@ class Utils
      */
     public static function normalizePath($path): string
     {
-        return rtrim(trim($path), '/').'/';
+        return rtrim(trim($path), '/') . '/';
     }
 
     /**
@@ -84,10 +84,10 @@ class Utils
                 continue;
             }
 
-            if (is_dir($dir.'/'.$entry)) {
-                $fileHashes[] = self::getDirMD5($dir.'/'.$entry);
+            if (is_dir($dir . '/' . $entry)) {
+                $fileHashes[] = self::getDirMD5($dir . '/' . $entry);
             } else {
-                $fileHashes[] = md5($dir.'/'.$entry);
+                $fileHashes[] = md5($dir . '/' . $entry);
             }
         }
 
@@ -149,7 +149,7 @@ class Utils
     {
         $apache24 = false;
         $apache22 = false;
-        $nginx    = false;
+        $nginx = false;
 
         ##############
         #   Apache   #
@@ -158,8 +158,8 @@ class Utils
         # With shell access
         if (System::isShellFunctionEnabled('shell_exec')) {
             $version = shell_exec('apache2 -v 2> /dev/null');
-            $regex   = "/Apache\\/([0-9\\.]*)/i";
-            $res     = preg_match($regex, $version, $matches);
+            $regex = "/Apache\\/([0-9\\.]*)/i";
+            $res = preg_match($regex, $version, $matches);
             if ($res && isset($matches[1])) {
                 $version = $matches[1];
 
@@ -178,11 +178,11 @@ class Utils
         # Attempt detection by apache2 module
         if (function_exists('apache_get_version')) {
             $version = apache_get_version();
-            $regex   = "/Apache\\/([0-9\\.]*)/i";
-            $res     = preg_match($regex, $version, $matches);
+            $regex = "/Apache\\/([0-9\\.]*)/i";
+            $res = preg_match($regex, $version, $matches);
 
             if ($res && isset($matches[1])) {
-                $version      = $matches[1];
+                $version = $matches[1];
                 $versionParts = explode('.', $version);
 
                 if ($versionParts[1] <= 2) {
@@ -202,8 +202,8 @@ class Utils
         # With shell access
         if (System::isShellFunctionEnabled('shell_exec')) {
             $version = shell_exec('nginx -v 2>&1 ');
-            $regex   = '~nginx/([0-9]+\.[0-9]+\.[0-9])+~i';
-            $res     = preg_match($regex, $version, $matches);
+            $regex = '~nginx/([0-9]+\.[0-9]+\.[0-9])+~i';
+            $res = preg_match($regex, $version, $matches);
             if ($res && isset($matches[1])) {
                 $nginx = true;
             }
@@ -226,8 +226,8 @@ class Utils
     public static function templateSupportsDemoData($templateName, $version): bool
     {
         $packagesJson = file_get_contents('https://update.quiqqer.com/packages.json');
-        $packages     = json_decode($packagesJson, true);
-        $packages     = $packages['packages'];
+        $packages = json_decode($packagesJson, true);
+        $packages = $packages['packages'];
 
         if (!isset($packages[$templateName][$version])) {
             return false;

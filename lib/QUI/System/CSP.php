@@ -1,6 +1,5 @@
 <?php
 
-
 namespace QUI\System;
 
 use QUI;
@@ -40,21 +39,6 @@ class CSP
      * @var array
      */
     protected array $allowedIni = [];
-
-    /**
-     * Return the global CSP object
-     *
-     * @return CSP
-     */
-    public static function getInstance(): ?CSP
-    {
-        if (is_null(self::$Instance)) {
-            self::$Instance = new CSP();
-        }
-
-        return self::$Instance;
-    }
-
     /**
      * List of csp directives
      * - default directives
@@ -62,35 +46,34 @@ class CSP
      * @var array
      */
     protected array $cspDirective = [
-        'base'           => 'base-uri',
-        'child'          => 'child-src',
-        'connect'        => 'connect-src',
-        'default'        => 'default-src',
-        'font'           => 'font-src',
-        'form'           => 'form-action',
-        'image'          => 'img-src',
-        'img'            => 'img-src',
-        'script'         => 'script-src',
-        'style'          => 'style-src',
-        'object'         => 'object-src',
-        'report'         => 'report-uri',
+        'base' => 'base-uri',
+        'child' => 'child-src',
+        'connect' => 'connect-src',
+        'default' => 'default-src',
+        'font' => 'font-src',
+        'form' => 'form-action',
+        'image' => 'img-src',
+        'img' => 'img-src',
+        'script' => 'script-src',
+        'style' => 'style-src',
+        'object' => 'object-src',
+        'report' => 'report-uri',
         'frameAncestors' => 'frame-ancestors',
-        'ancestors'      => 'frame-ancestors',
-        'reportUri'      => 'report-uri',
-        'styleSrcElem'   => 'style-src-elem'
+        'ancestors' => 'frame-ancestors',
+        'reportUri' => 'report-uri',
+        'styleSrcElem' => 'style-src-elem'
     ];
-
     /**
      * csp written out
      *
      * @var array
      */
     protected array $cspSource = [
-        'none'           => "'none'",
-        'self'           => "'self'",
+        'none' => "'none'",
+        'self' => "'self'",
         'strict-dynamic' => "'strict-dynamic'",
-        'unsafe-inline'  => "'unsafe-inline'",
-        'unsafe-eval'    => "'unsafe-eval'"
+        'unsafe-inline' => "'unsafe-inline'",
+        'unsafe-eval' => "'unsafe-eval'"
     ];
 
     public function __construct()
@@ -104,9 +87,7 @@ class CSP
 
             file_put_contents(
                 $listFile,
-
-                ';<?php exit; ?>' . PHP_EOL .
-                $default
+                ';<?php exit; ?>' . PHP_EOL . $default
             );
         }
 
@@ -115,6 +96,20 @@ class CSP
         $content = trim($content);
 
         $this->allowedIni = explode("\n", $content);
+    }
+
+    /**
+     * Return the global CSP object
+     *
+     * @return CSP
+     */
+    public static function getInstance(): ?CSP
+    {
+        if (is_null(self::$Instance)) {
+            self::$Instance = new CSP();
+        }
+
+        return self::$Instance;
     }
 
     /**
@@ -140,7 +135,7 @@ class CSP
     public function cleanup()
     {
         $Config = $this->getConfig();
-        $list   = $this->getCSPDirectiveConfig();
+        $list = $this->getCSPDirectiveConfig();
 
         $Config->del('securityHeaders_csp');
 
@@ -149,6 +144,50 @@ class CSP
         }
 
         $Config->save();
+    }
+
+    /**
+     * @return array
+     */
+    public function getCSPDirectiveConfig(): array
+    {
+        $config = $this->getConfig()->toArray();
+        $csp = [];
+
+        if (isset($config['securityHeaders_csp'])) {
+            $csp = $config['securityHeaders_csp'];
+        }
+
+        $result = [];
+
+        foreach ($csp as $directive => $value) {
+            if (isset($this->cspDirective[$directive])) {
+                $directive = $this->cspDirective[$directive];
+            }
+
+            $values = explode(' ', $value);
+
+            foreach ($values as $directiveValue) {
+                $directiveValue = str_replace(
+                    [';', '"', "'"],
+                    '',
+                    $directiveValue
+                );
+
+                if (isset($this->cspSource[$directiveValue])) {
+                    $directiveValue = $this->cspSource[$directiveValue];
+                }
+
+                $result[$directive][] = $directiveValue;
+            }
+        }
+
+        // cleanup
+        foreach ($result as $directive => $values) {
+            $result[$directive] = implode(' ', array_unique($values));
+        }
+
+        return $result;
     }
 
     /**
@@ -188,6 +227,53 @@ class CSP
     }
 
     /**
+     * Save the directive
+     *
+     * @param $directive
+     * @param $value
+     *
+     * @throws QUI\Exception
+     */
+    public function setCSPDirectiveToConfig($directive, $value)
+    {
+        if (!$this->isDirectiveAllowed($directive)) {
+            throw new QUI\Exception('Directive is not allowed');
+        }
+
+        if (isset($this->cspDirective[$directive])) {
+            $directive = $this->cspDirective[$directive];
+        }
+
+        $values = explode(' ', $value);
+        $list = [];
+
+        foreach ($values as $value) {
+            $value = str_replace(
+                [';', '"', "'"],
+                '',
+                $value
+            );
+
+            if (isset($this->cspSource[$value])) {
+                $value = $this->cspSource[$value];
+            }
+
+            $list[] = $value;
+        }
+
+        $list = array_unique($list);
+        $Config = $this->getConfig();
+
+        $Config->setValue(
+            'securityHeaders_csp',
+            $directive,
+            implode(' ', $list)
+        );
+
+        $Config->save();
+    }
+
+    /**
      * Is the directive allowed?
      *
      * @param string $directive
@@ -208,96 +294,5 @@ class CSP
         }
 
         return false;
-    }
-
-    /**
-     * Save the directive
-     *
-     * @param $directive
-     * @param $value
-     *
-     * @throws QUI\Exception
-     */
-    public function setCSPDirectiveToConfig($directive, $value)
-    {
-        if (!$this->isDirectiveAllowed($directive)) {
-            throw new QUI\Exception('Directive is not allowed');
-        }
-
-        if (isset($this->cspDirective[$directive])) {
-            $directive = $this->cspDirective[$directive];
-        }
-
-        $values = explode(' ', $value);
-        $list   = [];
-
-        foreach ($values as $value) {
-            $value = str_replace(
-                [';', '"', "'"],
-                '',
-                $value
-            );
-
-            if (isset($this->cspSource[$value])) {
-                $value = $this->cspSource[$value];
-            }
-
-            $list[] = $value;
-        }
-
-        $list   = array_unique($list);
-        $Config = $this->getConfig();
-
-        $Config->setValue(
-            'securityHeaders_csp',
-            $directive,
-            implode(' ', $list)
-        );
-
-        $Config->save();
-    }
-
-    /**
-     * @return array
-     */
-    public function getCSPDirectiveConfig(): array
-    {
-        $config = $this->getConfig()->toArray();
-        $csp    = [];
-
-        if (isset($config['securityHeaders_csp'])) {
-            $csp = $config['securityHeaders_csp'];
-        }
-
-        $result = [];
-
-        foreach ($csp as $directive => $value) {
-            if (isset($this->cspDirective[$directive])) {
-                $directive = $this->cspDirective[$directive];
-            }
-
-            $values = explode(' ', $value);
-
-            foreach ($values as $directiveValue) {
-                $directiveValue = str_replace(
-                    [';', '"', "'"],
-                    '',
-                    $directiveValue
-                );
-
-                if (isset($this->cspSource[$directiveValue])) {
-                    $directiveValue = $this->cspSource[$directiveValue];
-                }
-
-                $result[$directive][] = $directiveValue;
-            }
-        }
-
-        // cleanup
-        foreach ($result as $directive => $values) {
-            $result[$directive] = implode(' ', array_unique($values));
-        }
-
-        return $result;
     }
 }

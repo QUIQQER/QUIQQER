@@ -2,7 +2,7 @@
   "name": "quiqqer\/quiqqer",
   "type": "quiqqer-system",
   "description": "A modular based management system written in JavaScript and PHP",
-  "license": "GPL-3.0+",
+  "license": "GPL-3.0-or-later",
   "authors": [
     {
       "name": "Henning Leutz",
@@ -100,5 +100,11 @@
     "psr-4": {
       "QUI\\Tests\\": "tests\/QUI\/"
     }
-  }
+  },
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/pcsg"
+    }
+  ]
 }

@@ -28,16 +28,16 @@ class PermissionDenied extends QUI\Projects\Site
      */
     public function __construct(QUI\Projects\Project $Project, int $id)
     {
-        $this->TABLE        = $Project->table();
-        $this->RELTABLE     = $Project->table() . '_relations';
+        $this->TABLE = $Project->table();
+        $this->RELTABLE = $Project->table() . '_relations';
         $this->RELLANGTABLE = $Project->getAttribute('name') . '_multilingual';
 
         if (empty($id)) {
             throw new QUI\Exception('Site Error; No ID given:' . $id, 400);
         }
 
-        $this->id      = $id;
-        $this->Events  = new QUI\Events\Event();
+        $this->id = $id;
+        $this->Events = new QUI\Events\Event();
         $this->Project = $Project;
 
         // Get data from start page
@@ -49,15 +49,6 @@ class PermissionDenied extends QUI\Projects\Site
     }
 
     /**
-     * @inheritdoc
-     * @return QUI\Projects\Site
-     */
-    public function load($plugin = false): QUI\Projects\Site
-    {
-        return $this;
-    }
-
-    /**
      * Get data from start Site (ID: 1)
      *
      * @return void
@@ -66,7 +57,7 @@ class PermissionDenied extends QUI\Projects\Site
     {
         try {
             $result = QUI::getDataBase()->fetch([
-                'from'  => $this->TABLE,
+                'from' => $this->TABLE,
                 'where' => [
                     'id' => 1
                 ],
@@ -85,7 +76,7 @@ class PermissionDenied extends QUI\Projects\Site
             // eingeloggt, aber keine permission -> hinweis
             $message = QUI::getLocale()->get('quiqqer/quiqqer', 'site.permission.denied.for.logged.in.users.message', [
                 'username' => $User->getUsername(),
-                'name'     => $User->getName()
+                'name' => $User->getName()
             ]);
 
             $button = '<a href="?logout=1" class="btn qui-button">' .
@@ -113,5 +104,14 @@ class PermissionDenied extends QUI\Projects\Site
                 );
             }
         }
+    }
+
+    /**
+     * @inheritdoc
+     * @return QUI\Projects\Site
+     */
+    public function load($plugin = false): QUI\Projects\Site
+    {
+        return $this;
     }
 }

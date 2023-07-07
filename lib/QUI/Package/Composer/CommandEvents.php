@@ -28,7 +28,7 @@ class CommandEvents
     public static function registerPackageChange($packageName)
     {
         self::$packages[] = $packageName;
-        self::$packages   = \array_unique(self::$packages);
+        self::$packages = \array_unique(self::$packages);
     }
 
     /**
@@ -57,37 +57,7 @@ class CommandEvents
             } catch (QUI\Exception $Package) {
             }
         }
-
         // @todo system setup, user groups, events and so on
-    }
-
-    /**
-     * @param Event $Event
-     */
-    protected static function loadQUIQQER(Event $Event)
-    {
-        $Composer = $Event->getComposer();
-        $config   = $Composer->getConfig()->all();
-
-        if (!\defined('CMS_DIR')) {
-            \define('CMS_DIR', $config['config']['quiqqer-dir']);
-        }
-
-        if (!\defined('ETC_DIR')) {
-            \define('ETC_DIR', $config['config']['quiqqer-dir'].'etc/');
-        }
-
-        if (\php_sapi_name() === 'cli') {
-            if (!defined('SYSTEM_INTERN')) {
-                \define('SYSTEM_INTERN', true);
-            }
-
-            QUI\Permissions\Permission::setUser(
-                QUI::getUsers()->getSystemUser()
-            );
-        }
-
-        QUI::load();
     }
 
     /**
@@ -116,5 +86,34 @@ class CommandEvents
         echo "If the QUIQQER menu bar disappears, clear the cache." . PHP_EOL;
         echo 'You should edit the composer.json directly and then execute a composer update.' . PHP_EOL;
         echo PHP_EOL;
+    }
+
+    /**
+     * @param Event $Event
+     */
+    protected static function loadQUIQQER(Event $Event)
+    {
+        $Composer = $Event->getComposer();
+        $config = $Composer->getConfig()->all();
+
+        if (!\defined('CMS_DIR')) {
+            \define('CMS_DIR', $config['config']['quiqqer-dir']);
+        }
+
+        if (!\defined('ETC_DIR')) {
+            \define('ETC_DIR', $config['config']['quiqqer-dir'] . 'etc/');
+        }
+
+        if (\php_sapi_name() === 'cli') {
+            if (!defined('SYSTEM_INTERN')) {
+                \define('SYSTEM_INTERN', true);
+            }
+
+            QUI\Permissions\Permission::setUser(
+                QUI::getUsers()->getSystemUser()
+            );
+        }
+
+        QUI::load();
     }
 }

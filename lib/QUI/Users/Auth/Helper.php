@@ -3,6 +3,7 @@
 /**
  * This file contains QUI\Users\Auth\Helper
  */
+
 namespace QUI\Users\Auth;
 
 use QUI;
@@ -15,23 +16,25 @@ use QUI\Users\AuthenticatorInterface;
 class Helper
 {
     /**
-     * Return the authenticator class name as a permission name
+     * has the the user the permission to user the authenticator
      *
+     * @param QUI\Interfaces\Users\User|null|false $User - User
      * @param string|AuthenticatorInterface $authenticator - Name of the authenticator class
-     * @param string $permission - optional, wanted permission, eq: permissionName
-     * @return string
+     * @return bool
      */
-    public static function parseAuthenticatorToPermission($authenticator, $permission = '')
+    public static function hasUserPermissionToUseAuthenticator($User, $authenticator)
     {
-        if (\is_object($authenticator)) {
-            $authenticator = \get_class($authenticator);
+        if (!QUI::getUsers()->isUser($User)) {
+            return false;
         }
 
-        if (empty($permission)) {
-            return 'quiqqer.auth.' . \str_replace('\\', '', $authenticator);
+        try {
+            self::checkUserPermissionToUseAuthenticator($User, $authenticator);
+            return true;
+        } catch (QUI\Permissions\Exception $Exception) {
         }
 
-        return 'quiqqer.auth.' . \str_replace('\\', '', $authenticator) . '.' . $permission;
+        return false;
     }
 
     /**
@@ -63,24 +66,22 @@ class Helper
     }
 
     /**
-     * has the the user the permission to user the authenticator
+     * Return the authenticator class name as a permission name
      *
-     * @param QUI\Interfaces\Users\User|null|false $User - User
      * @param string|AuthenticatorInterface $authenticator - Name of the authenticator class
-     * @return bool
+     * @param string $permission - optional, wanted permission, eq: permissionName
+     * @return string
      */
-    public static function hasUserPermissionToUseAuthenticator($User, $authenticator)
+    public static function parseAuthenticatorToPermission($authenticator, $permission = '')
     {
-        if (!QUI::getUsers()->isUser($User)) {
-            return false;
+        if (\is_object($authenticator)) {
+            $authenticator = \get_class($authenticator);
         }
 
-        try {
-            self::checkUserPermissionToUseAuthenticator($User, $authenticator);
-            return true;
-        } catch (QUI\Permissions\Exception $Exception) {
+        if (empty($permission)) {
+            return 'quiqqer.auth.' . \str_replace('\\', '', $authenticator);
         }
 
-        return false;
+        return 'quiqqer.auth.' . \str_replace('\\', '', $authenticator) . '.' . $permission;
     }
 }

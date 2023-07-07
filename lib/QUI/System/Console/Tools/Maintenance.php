@@ -51,19 +51,19 @@ class Maintenance extends QUI\System\Console\Tool
                     $file = ETC_DIR . 'maintenance.html';
                 }
 
-                $Smarty  = QUI::getTemplateManager()->getEngine();
+                $Smarty = QUI::getTemplateManager()->getEngine();
                 $Project = QUI::getProjectManager()->getStandard();
 
                 $Smarty->assign([
-                    'Project'     => $Project,
-                    'URL_DIR'     => URL_DIR,
+                    'Project' => $Project,
+                    'URL_DIR' => URL_DIR,
                     'URL_BIN_DIR' => URL_BIN_DIR,
                     'URL_LIB_DIR' => URL_LIB_DIR,
                     'URL_VAR_DIR' => URL_VAR_DIR,
                     'URL_OPT_DIR' => URL_OPT_DIR,
                     'URL_USR_DIR' => URL_USR_DIR,
                     'URL_TPL_DIR' => URL_USR_DIR . $Project->getName() . '/',
-                    'TPL_DIR'     => OPT_DIR . $Project->getName() . '/',
+                    'TPL_DIR' => OPT_DIR . $Project->getName() . '/',
                 ]);
 
 

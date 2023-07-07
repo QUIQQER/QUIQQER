@@ -19,19 +19,19 @@ class Form extends QUI\QDOM
     {
         // defaults
         $this->setAttributes([
-            'name'        => 'test-upload',
+            'name' => 'test-upload',
             'contextMenu' => true,
-            'multiple'    => true,
-            'sendbutton'  => true,
-            'uploads'     => 1,
-            'hasFile'     => false,
-            'deleteFile'  => true,
+            'multiple' => true,
+            'sendbutton' => true,
+            'uploads' => 1,
+            'hasFile' => false,
+            'deleteFile' => true,
 
-            'allowedFileTypes'  => false, // eq: ['image/jpeg', 'image/png']
+            'allowedFileTypes' => false, // eq: ['image/jpeg', 'image/png']
             'allowedFileEnding' => false, // eq: ['.gif', '.jpg']
-            'maxFileSize'       => false, // eq: 20000000 = 20mb
+            'maxFileSize' => false, // eq: 20000000 = 20mb
 
-            'typeOfLook'     => 'DragDrop', // DragDrop, Icon, Single
+            'typeOfLook' => 'DragDrop', // DragDrop, Icon, Single
             'typeOfLookIcon' => 'fa fa-upload'
         ]);
 
@@ -77,20 +77,20 @@ class Form extends QUI\QDOM
 
 
         $Engine->assign([
-            'this'        => $this,
-            'name'        => $this->getAttribute('name'),
-            'id'          => QUI\Utils\Uuid::get(),
-            'uploads'     => \intval($this->getAttribute('uploads')),
+            'this' => $this,
+            'name' => $this->getAttribute('name'),
+            'id' => QUI\Utils\Uuid::get(),
+            'uploads' => \intval($this->getAttribute('uploads')),
             'contextMenu' => $this->phpBool2JsBool(\boolval($this->getAttribute('contextMenu'))),
-            'multiple'    => $this->phpBool2JsBool(\boolval($this->getAttribute('multiple'))),
-            'sendbutton'  => $this->phpBool2JsBool(\boolval($this->getAttribute('sendbutton'))),
-            'hasFile'     => $this->phpBool2JsBool(\boolval($this->getAttribute('hasFile'))),
-            'deleteFile'  => $this->phpBool2JsBool(\boolval($this->getAttribute('deleteFile'))),
-            'callable'    => \str_replace('\\', '\\\\', $this->getType()),
-            'typeOfLook'  => $typeOfLook
+            'multiple' => $this->phpBool2JsBool(\boolval($this->getAttribute('multiple'))),
+            'sendbutton' => $this->phpBool2JsBool(\boolval($this->getAttribute('sendbutton'))),
+            'hasFile' => $this->phpBool2JsBool(\boolval($this->getAttribute('hasFile'))),
+            'deleteFile' => $this->phpBool2JsBool(\boolval($this->getAttribute('deleteFile'))),
+            'callable' => \str_replace('\\', '\\\\', $this->getType()),
+            'typeOfLook' => $typeOfLook
         ]);
 
-        $maxFileSize      = $this->getAttribute('maxFileSize');
+        $maxFileSize = $this->getAttribute('maxFileSize');
         $allowedFileTypes = $this->getAttribute('allowedFileTypes');
 
         if (!$maxFileSize) {
@@ -105,7 +105,7 @@ class Form extends QUI\QDOM
             $Engine->assign('allowedFileTypes', \json_encode($allowedFileTypes));
         }
 
-        return $Engine->fetch(\dirname(__FILE__).'/Form.html');
+        return $Engine->fetch(\dirname(__FILE__) . '/Form.html');
     }
 
     /**

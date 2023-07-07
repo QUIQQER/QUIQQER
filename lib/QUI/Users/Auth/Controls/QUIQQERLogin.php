@@ -23,7 +23,7 @@ class QUIQQERLogin extends Control
         parent::__construct($options);
 
         $this->addCSSClass('quiqqer-login-auth');
-        $this->addCSSFile(dirname(__FILE__).'/QUIQQERLogin.css');
+        $this->addCSSFile(dirname(__FILE__) . '/QUIQQERLogin.css');
 
         $this->setJavaScriptControl('controls/users/auth/QUIQQERLogin');
     }
@@ -50,11 +50,11 @@ class QUIQQERLogin extends Control
         }
 
         $Engine->assign([
-            'usernameText'      => QUI::getLocale()->get('quiqqer/quiqqer', 'username'),
-            'passwordText'      => QUI::getLocale()->get('quiqqer/quiqqer', 'password'),
+            'usernameText' => QUI::getLocale()->get('quiqqer/quiqqer', 'username'),
+            'passwordText' => QUI::getLocale()->get('quiqqer/quiqqer', 'password'),
             'showPasswordReset' => $showPasswordReset
         ]);
 
-        return $Engine->fetch(\dirname(__FILE__).'/QUIQQERLogin.html');
+        return $Engine->fetch(\dirname(__FILE__) . '/QUIQQERLogin.html');
     }
 }

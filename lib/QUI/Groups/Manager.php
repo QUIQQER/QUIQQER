@@ -24,47 +24,31 @@ class Manager extends QUI\QDOM
 
     const GUEST_ID = 0;
     const EVERYONE_ID = 1;
-
+    protected static $getListOfExtraAttributes = null;
     /**
      * @var Everyone
      */
     protected $Everyone = null;
-
     /**
      * @var Guest
      */
     protected $Guest = null;
-
     /**
      * internal group cache
      *
      * @var array
      */
     protected $groups;
-
     /**
      * @var array
      */
     protected $data = [];
-
     /**
      * Files that are to be loaded in the admin area
      *
      * @var array
      */
     protected $adminjsfiles = [];
-
-    protected static $getListOfExtraAttributes = null;
-
-    /**
-     * Return the db table for the groups
-     *
-     * @return string
-     */
-    public static function table()
-    {
-        return QUI::getDBTableName('groups');
-    }
 
     /**
      * @return array|bool|object|string|null
@@ -84,12 +68,12 @@ class Manager extends QUI\QDOM
         } catch (QUI\Exception $Exception) {
         }
 
-        $list       = QUI::getPackageManager()->getInstalled();
+        $list = QUI::getPackageManager()->getInstalled();
         $attributes = [];
 
         foreach ($list as $entry) {
-            $plugin  = $entry['name'];
-            $userXml = OPT_DIR.$plugin.'/group.xml';
+            $plugin = $entry['name'];
+            $userXml = OPT_DIR . $plugin . '/group.xml';
 
             if (!\file_exists($userXml)) {
                 continue;
@@ -106,127 +90,6 @@ class Manager extends QUI\QDOM
         QUI\Cache\Manager::set($cache, $attributes);
 
         return $attributes;
-    }
-
-    /**
-     * Read an user.xml and return the attributes,
-     * if some extra attributes defined
-     *
-     * @param string $file
-     *
-     * @return array
-     */
-    protected static function readAttributesFromGroupXML($file)
-    {
-        $Dom  = QUI\Utils\Text\XML::getDomFromXml($file);
-        $Attr = $Dom->getElementsByTagName('attributes');
-
-        if (!$Attr->length) {
-            return [];
-        }
-
-        /* @var $Attributes \DOMElement */
-        $Attributes = $Attr->item(0);
-        $list       = $Attributes->getElementsByTagName('attribute');
-
-        if (!$list->length) {
-            return [];
-        }
-
-        $attributes = [];
-
-        for ($c = 0; $c < $list->length; $c++) {
-            $Attribute = $list->item($c);
-
-            if ($Attribute->nodeName == '#text') {
-                continue;
-            }
-
-            $attributes[] = \trim($Attribute->nodeValue);
-        }
-
-        return $attributes;
-    }
-
-    /**
-     * Setup for groups
-     */
-    public function setup()
-    {
-        $DataBase = QUI::getDataBase();
-        $Table    = $DataBase->table();
-
-        $Table->setPrimaryKey(self::table(), 'id');
-        $Table->setIndex(self::table(), 'parent');
-
-
-        // Guest
-        $result = QUI::getDataBase()->fetch([
-            'from'  => $this->table(),
-            'where' => [
-                'id' => 0
-            ]
-        ]);
-
-        if (!isset($result[0])) {
-            QUI\System\Log::addNotice('Guest Group does not exist.');
-
-            QUI::getDataBase()->insert($this->table(), [
-                'id'   => 0,
-                'name' => 'Guest'
-            ]);
-
-            QUI\System\Log::addNotice('Guest Group was created.');
-        } else {
-            QUI::getDataBase()->update($this->table(), [
-                'name' => 'Guest'
-            ], [
-                'id' => 0
-            ]);
-
-            QUI\System\Log::addNotice('Guest exists only updated');
-        }
-
-
-        // Everyone
-        $result = QUI::getDataBase()->fetch([
-            'from'  => $this->table(),
-            'where' => [
-                'id' => 1
-            ]
-        ]);
-
-        if (!isset($result[0])) {
-            QUI\System\Log::addNotice('Everyone Group does not exist...');
-
-            QUI::getDataBase()->insert($this->table(), [
-                'id'   => 1,
-                'name' => 'Everyone'
-            ]);
-
-            QUI\System\Log::addNotice('Everyone Group was created.');
-        } else {
-            QUI::getDataBase()->update($this->table(), [
-                'name' => 'Everyone'
-            ], [
-                'id' => 1
-            ]);
-
-            QUI\System\Log::addNotice('Everyone exists');
-        }
-
-        $this->get(0)->save();
-        $this->get(1)->save();
-    }
-
-    /**
-     * Returns the first group
-     *
-     * @return QUI\Groups\Group
-     */
-    public function firstChild()
-    {
-        return $this->get(QUI::conf('globals', 'root'));
     }
 
     /**
@@ -277,6 +140,137 @@ class Manager extends QUI\QDOM
     }
 
     /**
+     * Read an user.xml and return the attributes,
+     * if some extra attributes defined
+     *
+     * @param string $file
+     *
+     * @return array
+     */
+    protected static function readAttributesFromGroupXML($file)
+    {
+        $Dom = QUI\Utils\Text\XML::getDomFromXml($file);
+        $Attr = $Dom->getElementsByTagName('attributes');
+
+        if (!$Attr->length) {
+            return [];
+        }
+
+        /* @var $Attributes \DOMElement */
+        $Attributes = $Attr->item(0);
+        $list = $Attributes->getElementsByTagName('attribute');
+
+        if (!$list->length) {
+            return [];
+        }
+
+        $attributes = [];
+
+        for ($c = 0; $c < $list->length; $c++) {
+            $Attribute = $list->item($c);
+
+            if ($Attribute->nodeName == '#text') {
+                continue;
+            }
+
+            $attributes[] = \trim($Attribute->nodeValue);
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * Setup for groups
+     */
+    public function setup()
+    {
+        $DataBase = QUI::getDataBase();
+        $Table = $DataBase->table();
+
+        $Table->setPrimaryKey(self::table(), 'id');
+        $Table->setIndex(self::table(), 'parent');
+
+
+        // Guest
+        $result = QUI::getDataBase()->fetch([
+            'from' => $this->table(),
+            'where' => [
+                'id' => 0
+            ]
+        ]);
+
+        if (!isset($result[0])) {
+            QUI\System\Log::addNotice('Guest Group does not exist.');
+
+            QUI::getDataBase()->insert($this->table(), [
+                'id' => 0,
+                'name' => 'Guest'
+            ]);
+
+            QUI\System\Log::addNotice('Guest Group was created.');
+        } else {
+            QUI::getDataBase()->update($this->table(), [
+                'name' => 'Guest'
+            ], [
+                'id' => 0
+            ]);
+
+            QUI\System\Log::addNotice('Guest exists only updated');
+        }
+
+
+        // Everyone
+        $result = QUI::getDataBase()->fetch([
+            'from' => $this->table(),
+            'where' => [
+                'id' => 1
+            ]
+        ]);
+
+        if (!isset($result[0])) {
+            QUI\System\Log::addNotice('Everyone Group does not exist...');
+
+            QUI::getDataBase()->insert($this->table(), [
+                'id' => 1,
+                'name' => 'Everyone'
+            ]);
+
+            QUI\System\Log::addNotice('Everyone Group was created.');
+        } else {
+            QUI::getDataBase()->update($this->table(), [
+                'name' => 'Everyone'
+            ], [
+                'id' => 1
+            ]);
+
+            QUI\System\Log::addNotice('Everyone exists');
+        }
+
+        $this->get(0)->save();
+        $this->get(1)->save();
+    }
+
+    /**
+     * Return the db table for the groups
+     *
+     * @return string
+     */
+    public static function table()
+    {
+        return QUI::getDBTableName('groups');
+    }
+
+    /**
+     * Returns the first group
+     *
+     * @return QUI\Groups\Group
+     */
+    public function firstChild()
+    {
+        return $this->get(QUI::conf('globals', 'root'));
+    }
+
+    /**
      * Return the db data of a group
      *
      * @param integer|string $groupId
@@ -291,7 +285,7 @@ class Manager extends QUI\QDOM
         $groupId = (int)$groupId;
 
         $result = QUI::getDataBase()->fetch([
-            'from'  => self::table(),
+            'from' => self::table(),
             'where' => [
                 'id' => $groupId
             ],
@@ -328,13 +322,13 @@ class Manager extends QUI\QDOM
     {
         if ($objects == false) {
             return QUI::getDataBase()->fetch([
-                'from'  => self::table(),
+                'from' => self::table(),
                 'order' => 'name'
             ]);
         }
 
         $result = [];
-        $ids    = $this->getAllGroupIds();
+        $ids = $this->getAllGroupIds();
 
         foreach ($ids as $id) {
             try {
@@ -356,8 +350,8 @@ class Manager extends QUI\QDOM
     {
         $result = QUI::getDataBase()->fetch([
             'select' => 'id',
-            'from'   => self::table(),
-            'order'  => 'name'
+            'from' => self::table(),
+            'order' => 'name'
         ]);
 
         return $result;
@@ -373,6 +367,106 @@ class Manager extends QUI\QDOM
     public function search($params = [])
     {
         return $this->searchHelper($params);
+    }
+
+    /**
+     * Internal search helper
+     *
+     * @param array $params
+     *
+     * @return array
+     * @ignore
+     */
+    protected function searchHelper($params)
+    {
+        $DataBase = QUI::getDataBase();
+        $params = Orthos::clearArray($params);
+
+        $allowOrderFields = [
+            'id',
+            'name',
+            'parent',
+            'active'
+        ];
+
+        $allowSearchFields = [
+            'id' => true,
+            'name' => true,
+            'parent' => true,
+            'active' => true
+        ];
+
+        $max = 10;
+        $start = 0;
+
+        $_fields = [
+            'from' => self::table()
+        ];
+
+        if (isset($params['count'])) {
+            $_fields['count'] = [
+                'select' => 'id',
+                'as' => 'count'
+            ];
+        }
+
+        if (
+            isset($params['limit'])
+            || isset($params['start'])
+        ) {
+            if (isset($params['limit'])) {
+                $max = (int)$params['limit'];
+            }
+
+            if (isset($params['start'])) {
+                $start = (int)$params['start'];
+            }
+
+            $_fields['limit'] = $start . ', ' . $max;
+        }
+
+        if (
+            isset($params['order'])
+            && isset($params['field'])
+            && $params['field']
+            && \in_array($params['field'], $allowOrderFields)
+        ) {
+            $_fields['order'] = $params['field'] . ' ' . $params['order'];
+        }
+
+        if (isset($params['where'])) {
+            $_fields['where'] = $params['where'];
+        }
+
+        if (isset($params['where_or'])) {
+            $_fields['where_or'] = $params['where_or'];
+        }
+
+        if (isset($params['search']) && !isset($params['searchSettings'])) {
+            $_fields['where'] = [
+                'name' => [
+                    'type' => '%LIKE%',
+                    'value' => $params['search']
+                ]
+            ];
+        } elseif (
+            isset($params['search'])
+            && isset($params['searchSettings'])
+            && \is_array($params['searchSettings'])
+        ) {
+            foreach ($params['searchSettings'] as $field) {
+                if (!isset($allowSearchFields[$field])) {
+                    continue;
+                }
+
+                $_fields['where_or'][$field] = [
+                    'type' => '%LIKE%',
+                    'value' => $params['search']
+                ];
+            }
+        }
+
+        return $DataBase->fetch($_fields);
     }
 
     /**
@@ -412,102 +506,5 @@ class Manager extends QUI\QDOM
         }
 
         return 0;
-    }
-
-    /**
-     * Internal search helper
-     *
-     * @param array $params
-     *
-     * @return array
-     * @ignore
-     */
-    protected function searchHelper($params)
-    {
-        $DataBase = QUI::getDataBase();
-        $params   = Orthos::clearArray($params);
-
-        $allowOrderFields = [
-            'id',
-            'name',
-            'parent',
-            'active'
-        ];
-
-        $allowSearchFields = [
-            'id'     => true,
-            'name'   => true,
-            'parent' => true,
-            'active' => true
-        ];
-
-        $max   = 10;
-        $start = 0;
-
-        $_fields = [
-            'from' => self::table()
-        ];
-
-        if (isset($params['count'])) {
-            $_fields['count'] = [
-                'select' => 'id',
-                'as'     => 'count'
-            ];
-        }
-
-        if (isset($params['limit'])
-            || isset($params['start'])
-        ) {
-            if (isset($params['limit'])) {
-                $max = (int)$params['limit'];
-            }
-
-            if (isset($params['start'])) {
-                $start = (int)$params['start'];
-            }
-
-            $_fields['limit'] = $start.', '.$max;
-        }
-
-        if (isset($params['order'])
-            && isset($params['field'])
-            && $params['field']
-            && \in_array($params['field'], $allowOrderFields)
-        ) {
-            $_fields['order'] = $params['field'].' '.$params['order'];
-        }
-
-        if (isset($params['where'])) {
-            $_fields['where'] = $params['where'];
-        }
-
-        if (isset($params['where_or'])) {
-            $_fields['where_or'] = $params['where_or'];
-        }
-
-        if (isset($params['search']) && !isset($params['searchSettings'])) {
-            $_fields['where'] = [
-                'name' => [
-                    'type'  => '%LIKE%',
-                    'value' => $params['search']
-                ]
-            ];
-        } elseif (isset($params['search'])
-                  && isset($params['searchSettings'])
-                  && \is_array($params['searchSettings'])
-        ) {
-            foreach ($params['searchSettings'] as $field) {
-                if (!isset($allowSearchFields[$field])) {
-                    continue;
-                }
-
-                $_fields['where_or'][$field] = [
-                    'type'  => '%LIKE%',
-                    'value' => $params['search']
-                ];
-            }
-        }
-
-        return $DataBase->fetch($_fields);
     }
 }

@@ -55,32 +55,28 @@ class Session
      * @var int
      */
     public int $lifetime = 1400;
-
+    /**
+     * @var array
+     */
+    protected array $vars = [];
     /**
      * Session handler
      *
      * @var \Symfony\Component\HttpFoundation\Session\Session
      */
     private $Session = false;
-
     /**
      * Storage handler
      *
      * @var PdoSessionHandler
      */
     private $Storage = false;
-
     /**
      * Database table
      *
      * @var string
      */
     private string $table;
-
-    /**
-     * @var array
-     */
-    protected array $vars = [];
 
     /**
      * constructor
@@ -93,8 +89,8 @@ class Session
 
         // symfony files
         $classNativeSessionStorage = '\Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage';
-        $classSession              = '\Symfony\Component\HttpFoundation\Session\Session';
-        $symfonyDir                = OPT_DIR . 'symfony/http-foundation/';
+        $classSession = '\Symfony\Component\HttpFoundation\Session\Session';
+        $symfonyDir = OPT_DIR . 'symfony/http-foundation/';
 
         // options
         if (QUI::conf('session', 'max_life_time')) {
@@ -124,10 +120,10 @@ class Session
 
         $storageOptions = [
             'cookie_httponly' => true,
-            'name'            => $sessionName,
+            'name' => $sessionName,
             'cookie_lifetime' => $this->lifetime,
-            'gc_maxlifetime'  => $this->lifetime,
-            'cookie_secure'   => QUI\Utils\System::isProtocolSecure()
+            'gc_maxlifetime' => $this->lifetime,
+            'cookie_secure' => QUI\Utils\System::isProtocolSecure()
         ];
 
         // cookie same site
@@ -206,6 +202,19 @@ class Session
     }
 
     /**
+     * Set a variable to the session
+     *
+     * @param string $name - Name og the variable
+     * @param string $value - value of the variable
+     */
+    public function set(string $name, $value)
+    {
+        if ($this->Session) {
+            $this->Session->set($name, $value);
+        }
+    }
+
+    /**
      * Return the storage type
      *
      * @return SessionHandlerInterface
@@ -229,16 +238,16 @@ class Session
 
         // redis sessions
         if ($sessionType === 'redis' && class_exists('RedisArray')) {
-            $redisServer  = QUI::conf('session_redis');
+            $redisServer = QUI::conf('session_redis');
             $redisCluster = QUI::conf('session_redis_cluster');
 
             $RedisCluster = null;
 
             if (!empty($redisCluster) && !empty($redisCluster['cluster']) && class_exists('RedisArray')) {
-                $cluster     = explode(',', $redisCluster['cluster']);
-                $timeout     = null;
+                $cluster = explode(',', $redisCluster['cluster']);
+                $timeout = null;
                 $readTimeout = null;
-                $persistent  = false;
+                $persistent = false;
 
                 $cluster = array_unique($cluster);
 
@@ -282,7 +291,7 @@ class Session
                 $serverData = explode(':', $serverData);
 
                 $server = $serverData[0];
-                $port   = 11211;
+                $port = 11211;
 
                 if (isset($serverData[1])) {
                     $port = $serverData[1];
@@ -309,7 +318,7 @@ class Session
                 $serverData = explode(':', $serverData);
 
                 $server = $serverData[0];
-                $port   = 11211;
+                $port = 11211;
 
                 if (isset($serverData[1])) {
                     $port = $serverData[1];
@@ -330,10 +339,10 @@ class Session
             $PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             return new PdoSessionHandler($PDO, [
-                'db_table'        => $this->table,
-                'db_id_col'       => 'session_id',
-                'db_data_col'     => 'session_value',
-                'db_time_col'     => 'session_time',
+                'db_table' => $this->table,
+                'db_id_col' => 'session_id',
+                'db_data_col' => 'session_value',
+                'db_time_col' => 'session_time',
                 'db_lifetime_col' => 'session_lifetime'
             ]);
         }
@@ -370,6 +379,51 @@ class Session
     }
 
     /**
+     * Checks the validity of the session
+     *
+     * @return boolean
+     */
+    public function check(): bool
+    {
+        if (!$this->Session) {
+            return false;
+        }
+
+        $idle = time() - $this->Session->getMetadataBag()->getLastUsed();
+
+        if ($idle > $this->lifetime) {
+            $this->Session->invalidate();
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Destroy the whole session
+     */
+    public function destroy()
+    {
+        if (!$this->Session) {
+            return;
+        }
+
+        $this->Session->clear();
+        $this->Session->invalidate();
+    }
+
+    /**
+     * refresh the session and extend the session time
+     */
+    public function refresh()
+    {
+        if ($this->Session) {
+            $this->Session->migrate();
+        }
+    }
+
+    /**
      * Session setup
      *
      * @throws \Exception
@@ -381,37 +435,14 @@ class Session
         // pdo mysql options db
         // more at http://symfony.com/doc/current/cookbook/configuration/pdo_session_storage.html
         $DBTable->addColumn(QUI::getDBTableName('sessions'), [
-            'session_id'       => 'varchar(255) NOT NULL',
-            'session_value'    => 'text NOT NULL',
-            'session_time'     => 'int(11) NOT NULL',
+            'session_id' => 'varchar(255) NOT NULL',
+            'session_value' => 'text NOT NULL',
+            'session_time' => 'int(11) NOT NULL',
             'session_lifetime' => 'int(12) NOT NULL',
-            'uid'              => 'int(11) NULL'
+            'uid' => 'int(11) NULL'
         ]);
 
         $DBTable->setPrimaryKey(QUI::getDBTableName('sessions'), 'session_id');
-    }
-
-    /**
-     * Set a variable to the session
-     *
-     * @param string $name - Name og the variable
-     * @param string $value - value of the variable
-     */
-    public function set(string $name, $value)
-    {
-        if ($this->Session) {
-            $this->Session->set($name, $value);
-        }
-    }
-
-    /**
-     * refresh the session and extend the session time
-     */
-    public function refresh()
-    {
-        if ($this->Session) {
-            $this->Session->migrate();
-        }
     }
 
     /**
@@ -445,28 +476,6 @@ class Session
     }
 
     /**
-     * Checks the validity of the session
-     *
-     * @return boolean
-     */
-    public function check(): bool
-    {
-        if (!$this->Session) {
-            return false;
-        }
-
-        $idle = time() - $this->Session->getMetadataBag()->getLastUsed();
-
-        if ($idle > $this->lifetime) {
-            $this->Session->invalidate();
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * Delete a session variable
      *
      * @param string $var - name of the variable
@@ -489,19 +498,6 @@ class Session
     }
 
     /**
-     * Destroy the whole session
-     */
-    public function destroy()
-    {
-        if (!$this->Session) {
-            return;
-        }
-
-        $this->Session->clear();
-        $this->Session->invalidate();
-    }
-
-    /**
      * Return the last login from the session-id
      *
      * @param string $sid - Session-ID
@@ -512,7 +508,7 @@ class Session
     {
         try {
             $result = QUI::getDataBase()->fetch([
-                'from'  => $this->table,
+                'from' => $this->table,
                 'where' => [
                     'session_id' => $sid
                 ],
@@ -540,7 +536,7 @@ class Session
     {
         try {
             $result = QUI::getDataBase()->fetch([
-                'from'  => $this->table,
+                'from' => $this->table,
                 'where' => [
                     'uid' => $uid
                 ],

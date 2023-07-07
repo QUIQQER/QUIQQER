@@ -16,6 +16,56 @@ use QUI;
 class Encryption
 {
     /**
+     * Decrypts data (Entschlüsselt Daten)
+     *
+     * @param string $data
+     * @return string
+     *
+     * @throws \Exception
+     */
+    public static function decrypt($data)
+    {
+        if (empty($data)) {
+            return $data;
+        }
+
+        $Config = QUI::getConfig('etc/conf.ini.php');
+        $salt = $Config->getValue('globals', 'salt');
+        $sl = $Config->getValue('globals', 'saltlength');
+        $givenData = $data;
+
+        if (!$Config->getValue('openssl', 'iv')) {
+            self::encrypt('');
+        }
+
+        $iv = $Config->getValue('openssl', 'iv');
+
+        /**
+         * multi key support
+         */
+        if (\strpos($iv, ',') !== false) {
+            $ivs = \explode(',', trim($iv));
+        } else {
+            $ivs[] = trim($iv);
+        }
+
+        foreach ($ivs as $iv) {
+            try {
+                $iv = @\hex2bin($iv);
+                $data = \openssl_decrypt($givenData, 'aes-256-cbc', $salt, 0, $iv);
+
+                if ($data !== false) {
+                    return \substr($data, -$sl) . \substr($data, 0, -$sl);
+                }
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
+        }
+
+        return $givenData;
+    }
+
+    /**
      * Encrypts data (Verschlüsselt Daten)
      *
      * @param string $data
@@ -27,8 +77,8 @@ class Encryption
         $Config = QUI::getConfig('etc/conf.ini.php');
 
         $salt = $Config->getValue('globals', 'salt');
-        $sl   = $Config->getValue('globals', 'saltlength');
-        $iv   = $Config->getValue('openssl', 'iv');
+        $sl = $Config->getValue('globals', 'saltlength');
+        $iv = $Config->getValue('openssl', 'iv');
 
         if ($iv === false) {
             $iv = \openssl_random_pseudo_bytes(\openssl_cipher_iv_length('aes-256-cbc'));
@@ -54,58 +104,8 @@ class Encryption
             $iv = \hex2bin($iv);
         }
 
-        $data = \substr($data, $sl).\substr($data, 0, $sl);
+        $data = \substr($data, $sl) . \substr($data, 0, $sl);
 
         return \openssl_encrypt($data, 'aes-256-cbc', $salt, 0, $iv);
-    }
-
-    /**
-     * Decrypts data (Entschlüsselt Daten)
-     *
-     * @param string $data
-     * @return string
-     *
-     * @throws \Exception
-     */
-    public static function decrypt($data)
-    {
-        if (empty($data)) {
-            return $data;
-        }
-
-        $Config    = QUI::getConfig('etc/conf.ini.php');
-        $salt      = $Config->getValue('globals', 'salt');
-        $sl        = $Config->getValue('globals', 'saltlength');
-        $givenData = $data;
-
-        if (!$Config->getValue('openssl', 'iv')) {
-            self::encrypt('');
-        }
-
-        $iv = $Config->getValue('openssl', 'iv');
-
-        /**
-         * multi key support
-         */
-        if (\strpos($iv, ',') !== false) {
-            $ivs = \explode(',', trim($iv));
-        } else {
-            $ivs[] = trim($iv);
-        }
-
-        foreach ($ivs as $iv) {
-            try {
-                $iv   = @\hex2bin($iv);
-                $data = \openssl_decrypt($givenData, 'aes-256-cbc', $salt, 0, $iv);
-
-                if ($data !== false) {
-                    return \substr($data, -$sl).\substr($data, 0, -$sl);
-                }
-            } catch (\Exception $Exception) {
-                QUI\System\Log::writeException($Exception);
-            }
-        }
-
-        return $givenData;
     }
 }
