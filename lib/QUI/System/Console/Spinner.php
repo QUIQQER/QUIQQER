@@ -289,8 +289,8 @@ class Spinner
      */
     public function __construct(array $frames, bool $use_keyboard_interrupts = true)
     {
-        $this->frames  = $frames;
-        $this->length  = count($this->frames);
+        $this->frames = $frames;
+        $this->length = count($this->frames);
         $this->current = 0;
 
         $this->useKeyboardInterrupts = $use_keyboard_interrupts;
@@ -327,7 +327,7 @@ class Spinner
             }
 
             $this->childPid = $childPid;
-            $res            = $callback();
+            $res = $callback();
             posix_kill($childPid, SIGTERM);
             $this->resetTerminal();
             return $res;
@@ -337,10 +337,28 @@ class Spinner
         $this->loopSpinnerFrames();
     }
 
-    public function stop()
+    private function keyboardInterrupts()
     {
-        posix_kill($this->childPid, SIGTERM);
-        $this->resetTerminal();
+        // Keyboard interrupts. E.g. ctrl-c
+        // Exit both parent and child process
+        // They are both running the same code
+
+        $keyboard_interrupts = function ($sigNo) {
+            posix_kill($this->childPid, SIGTERM);
+            $this->resetTerminal();
+            exit($sigNo);
+        };
+
+        pcntl_signal(SIGINT, $keyboard_interrupts);
+        pcntl_signal(SIGTSTP, $keyboard_interrupts);
+        pcntl_signal(SIGQUIT, $keyboard_interrupts);
+        pcntl_async_signals(true);
+    }
+
+    private function resetTerminal()
+    {
+        echo $this->clearLine;
+        echo $this->blinkOn;
     }
 
     private function loopSpinnerFrames()
@@ -361,7 +379,7 @@ class Spinner
      */
     protected function next(): int
     {
-        $prev          = $this->current;
+        $prev = $this->current;
         $this->current = $prev + 1;
 
         if ($this->current >= $this->length - 1) {
@@ -371,29 +389,9 @@ class Spinner
         return $prev;
     }
 
-    private function resetTerminal()
+    public function stop()
     {
-        echo $this->clearLine;
-        echo $this->blinkOn;
+        posix_kill($this->childPid, SIGTERM);
+        $this->resetTerminal();
     }
-
-
-    private function keyboardInterrupts()
-    {
-        // Keyboard interrupts. E.g. ctrl-c
-        // Exit both parent and child process
-        // They are both running the same code
-
-        $keyboard_interrupts = function ($sigNo) {
-            posix_kill($this->childPid, SIGTERM);
-            $this->resetTerminal();
-            exit($sigNo);
-        };
-
-        pcntl_signal(SIGINT, $keyboard_interrupts);
-        pcntl_signal(SIGTSTP, $keyboard_interrupts);
-        pcntl_signal(SIGQUIT, $keyboard_interrupts);
-        pcntl_async_signals(true);
-    }
-
 }

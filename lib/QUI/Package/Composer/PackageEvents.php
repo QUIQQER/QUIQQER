@@ -6,12 +6,11 @@
 
 namespace QUI\Package\Composer;
 
-use Composer\DependencyResolver\Operation\UninstallOperation;
-use QUI;
-
-use Composer\Installer\PackageEvent;
 use Composer\DependencyResolver\Operation\InstallOperation;
+use Composer\DependencyResolver\Operation\UninstallOperation;
 use Composer\DependencyResolver\Operation\UpdateOperation;
+use Composer\Installer\PackageEvent;
+use QUI;
 
 /**
  * Class PackageEvents
@@ -37,9 +36,9 @@ class PackageEvents
         self::loadQUIQQER($Event);
 
         /* @var $Operation InstallOperation */
-        $Operation     = $Event->getOperation();
+        $Operation = $Event->getOperation();
         $TargetPackage = $Operation->getPackage();
-        $packageName   = $TargetPackage->getName();
+        $packageName = $TargetPackage->getName();
 
         try {
             $Package = QUI::getPackage($packageName);
@@ -51,7 +50,7 @@ class PackageEvents
                 $Exception->getMessage(),
                 $Exception->getCode(),
                 [
-                    'method'  => 'QUI\Package\Composer\PackageEvents::postPackageInstall',
+                    'method' => 'QUI\Package\Composer\PackageEvents::postPackageInstall',
                     'package' => $packageName
                 ]
             );
@@ -60,6 +59,35 @@ class PackageEvents
         QUI\Cache\Manager::clearPackagesCache();
         QUI\Cache\Manager::clearSettingsCache();
         QUI\Cache\Manager::clearCompleteQuiqqerCache();
+    }
+
+    /**
+     * @param PackageEvent $Event
+     */
+    protected static function loadQUIQQER(PackageEvent $Event)
+    {
+        $Composer = $Event->getComposer();
+        $config = $Composer->getConfig()->all();
+
+        if (!\defined('CMS_DIR')) {
+            \define('CMS_DIR', $config['config']['quiqqer-dir']);
+        }
+
+        if (!\defined('ETC_DIR')) {
+            \define('ETC_DIR', $config['config']['quiqqer-dir'] . 'etc/');
+        }
+
+        if (\php_sapi_name() === 'cli') {
+            if (!defined('SYSTEM_INTERN')) {
+                \define('SYSTEM_INTERN', true);
+            }
+
+            QUI\Permissions\Permission::setUser(
+                QUI::getUsers()->getSystemUser()
+            );
+        }
+
+        QUI::load();
     }
 
     /**
@@ -81,9 +109,9 @@ class PackageEvents
         self::loadQUIQQER($Event);
 
         /* @var $Operation UpdateOperation */
-        $Operation     = $Event->getOperation();
+        $Operation = $Event->getOperation();
         $TargetPackage = $Operation->getTargetPackage();
-        $packageName   = $TargetPackage->getName();
+        $packageName = $TargetPackage->getName();
 
         try {
             $Package = QUI::getPackage($packageName);
@@ -95,7 +123,7 @@ class PackageEvents
                 $Exception->getMessage(),
                 $Exception->getCode(),
                 [
-                    'method'  => 'QUI\Package\Composer\PackageEvents::postPackageUpdate',
+                    'method' => 'QUI\Package\Composer\PackageEvents::postPackageUpdate',
                     'package' => $packageName
                 ]
             );
@@ -116,9 +144,9 @@ class PackageEvents
         self::loadQUIQQER($Event);
 
         /* @var $Operation UninstallOperation */
-        $Operation     = $Event->getOperation();
+        $Operation = $Event->getOperation();
         $TargetPackage = $Operation->getPackage();
-        $packageName   = $TargetPackage->getName();
+        $packageName = $TargetPackage->getName();
 
         try {
             $Package = QUI::getPackage($packageName);
@@ -128,7 +156,7 @@ class PackageEvents
                 $Exception->getMessage(),
                 $Exception->getCode(),
                 [
-                    'method'  => 'QUI\Package\Composer\PackageEvents::postPackageUninstall',
+                    'method' => 'QUI\Package\Composer\PackageEvents::postPackageUninstall',
                     'package' => $packageName
                 ]
             );
@@ -149,34 +177,5 @@ class PackageEvents
         QUI\Cache\Manager::clearPackagesCache();
         QUI\Cache\Manager::clearSettingsCache();
         QUI\Cache\Manager::clearCompleteQuiqqerCache();
-    }
-
-    /**
-     * @param PackageEvent $Event
-     */
-    protected static function loadQUIQQER(PackageEvent $Event)
-    {
-        $Composer = $Event->getComposer();
-        $config   = $Composer->getConfig()->all();
-
-        if (!\defined('CMS_DIR')) {
-            \define('CMS_DIR', $config['config']['quiqqer-dir']);
-        }
-
-        if (!\defined('ETC_DIR')) {
-            \define('ETC_DIR', $config['config']['quiqqer-dir'].'etc/');
-        }
-
-        if (\php_sapi_name() === 'cli') {
-            if (!defined('SYSTEM_INTERN')) {
-                \define('SYSTEM_INTERN', true);
-            }
-
-            QUI\Permissions\Permission::setUser(
-                QUI::getUsers()->getSystemUser()
-            );
-        }
-
-        QUI::load();
     }
 }

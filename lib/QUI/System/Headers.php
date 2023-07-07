@@ -31,9 +31,9 @@ class Headers
      * @var array
      */
     protected array $hsts = [
-        'max-age'    => '31536000',
+        'max-age' => '31536000',
         'subdomains' => false,
-        'preload'    => false
+        'preload' => false
     ];
 
     /**
@@ -109,13 +109,66 @@ class Headers
     }
 
     /**
-     * Return the response object
+     * HTTP Strict Transport Security
+     * max age param
      *
-     * @return Response
+     * @param integer $maxAge
      */
-    public function getResponse(): ?Response
+    public function hstsMaxAge(int $maxAge)
     {
-        return $this->Response;
+        $this->hsts['max-age'] = $maxAge;
+    }
+
+    /**
+     * HTTP Strict Transport Security
+     * subdomains param
+     *
+     * @param bool $mode
+     */
+    public function hstsSubdomains(bool $mode = true)
+    {
+        $this->hsts['subdomains'] = $mode;
+    }
+
+    /**
+     * HTTP Strict Transport Security (HSTS)
+     */
+
+    /**
+     * HTTP Strict Transport Security
+     * preload param
+     *
+     * @param bool $mode
+     */
+    public function hstsPreload(bool $mode = true)
+    {
+        $this->hsts['preload'] = $mode;
+    }
+
+    /**
+     * Add a Content-Security-Policy entry
+     *
+     * @param string $value - Domain or a csp value
+     * @param string $directive - optional, (default = default) CSP directive,
+     *                            value can be an entry from the CSP directive list
+     */
+    public function cspAdd(string $value, string $directive = 'default')
+    {
+        if (CSP::getInstance()->isDirectiveAllowed($directive) === false) {
+            return;
+        }
+
+        // value cleanup
+        $value = str_replace(
+            [';', '"', "'"],
+            '',
+            $value
+        );
+
+        $this->csp[] = [
+            'value' => $value,
+            'directive' => $directive
+        ];
     }
 
     /**
@@ -145,13 +198,13 @@ class Headers
 
         // create CSP header
         $list = [];
-        $csp  = [];
+        $csp = [];
 
-        $cspSources    = CSP::getInstance()->getCSPSources();
+        $cspSources = CSP::getInstance()->getCSPSources();
         $cspDirectives = CSP::getInstance()->getCSPDirectives();
 
         foreach ($this->csp as $entry) {
-            $value     = $entry['value'];
+            $value = $entry['value'];
             $directive = $entry['directive'];
 
             if (isset($cspSources[$value])) {
@@ -173,7 +226,17 @@ class Headers
     }
 
     /**
-     * HTTP Strict Transport Security (HSTS)
+     * Return the response object
+     *
+     * @return Response
+     */
+    public function getResponse(): ?Response
+    {
+        return $this->Response;
+    }
+
+    /**
+     * Content-Security-Policy
      */
 
     /**
@@ -189,72 +252,9 @@ class Headers
         bool $subDomains = false,
         bool $preload = false
     ) {
-        $this->hsts['max-age']    = $maxAge;
-        $this->hsts['subdomains'] = $subDomains;
-        $this->hsts['preload']    = $preload;
-    }
-
-    /**
-     * HTTP Strict Transport Security
-     * subdomains param
-     *
-     * @param bool $mode
-     */
-    public function hstsSubdomains(bool $mode = true)
-    {
-        $this->hsts['subdomains'] = $mode;
-    }
-
-    /**
-     * HTTP Strict Transport Security
-     * preload param
-     *
-     * @param bool $mode
-     */
-    public function hstsPreload(bool $mode = true)
-    {
-        $this->hsts['preload'] = $mode;
-    }
-
-    /**
-     * HTTP Strict Transport Security
-     * max age param
-     *
-     * @param integer $maxAge
-     */
-    public function hstsMaxAge(int $maxAge)
-    {
         $this->hsts['max-age'] = $maxAge;
-    }
-
-    /**
-     * Content-Security-Policy
-     */
-
-    /**
-     * Add a Content-Security-Policy entry
-     *
-     * @param string $value - Domain or a csp value
-     * @param string $directive - optional, (default = default) CSP directive,
-     *                            value can be an entry from the CSP directive list
-     */
-    public function cspAdd(string $value, string $directive = 'default')
-    {
-        if (CSP::getInstance()->isDirectiveAllowed($directive) === false) {
-            return;
-        }
-
-        // value cleanup
-        $value = str_replace(
-            [';', '"', "'"],
-            '',
-            $value
-        );
-
-        $this->csp[] = [
-            'value'     => $value,
-            'directive' => $directive
-        ];
+        $this->hsts['subdomains'] = $subDomains;
+        $this->hsts['preload'] = $preload;
     }
 
     /**

@@ -64,6 +64,39 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     }
 
     /**
+     * (non-PHPdoc)
+     *
+     * @param boolean $array - returns the groups as objects (true) or as an array (false)
+     *
+     * @return array
+     * @see \QUI\Interfaces\Users\User::getGroups()
+     *
+     */
+    public function getGroups($array = true): array
+    {
+        $Guest = new QUI\Groups\Guest();
+        $Everyone = new QUI\Groups\Everyone();
+
+        if ($array === true) {
+            return [$Guest, $Everyone];
+        }
+
+        return [$Guest->getId(), $Everyone->getId()];
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @return bool|int
+     * @see \QUI\Interfaces\Users\User::getId()
+     *
+     */
+    public function getId()
+    {
+        return false;
+    }
+
+    /**
      * @deprecated
      */
     public function isAdmin(): bool
@@ -72,18 +105,18 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     }
 
     /**
-     * Nobody is no company
-     * @return false
+     * @return bool
      */
-    public function isCompany(): bool
+    public function canUseBackend(): bool
     {
         return false;
     }
 
     /**
-     * @return bool
+     * Nobody is no company
+     * @return false
      */
-    public function canUseBackend(): bool
+    public function isCompany(): bool
     {
         return false;
     }
@@ -215,6 +248,28 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     }
 
     /**
+     * Return the locale object depending on the user
+     *
+     * @return \QUI\Locale
+     */
+    public function getLocale(): ?QUI\Locale
+    {
+        if ($this->Locale) {
+            return $this->Locale;
+        }
+
+        $this->Locale = new QUI\Locale();
+
+        if (QUI::getSession()->get('CURRENT_LANG')) {
+            $this->Locale->setCurrent(QUI::getSession()->get('CURRENT_LANG'));
+        } else {
+            $this->Locale->setCurrent(QUI::getLocale()->getCurrent());
+        }
+
+        return $this->Locale;
+    }
+
+    /**
      * Nobody can't be added to the group
      *
      * @param int $groupId
@@ -275,18 +330,6 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
-     * @return bool|int
-     * @see \QUI\Interfaces\Users\User::getId()
-     *
-     */
-    public function getId()
-    {
-        return false;
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
      * @return false|string
      * @see \QUI\Interfaces\Users\User::getUniqueId()
      *
@@ -331,28 +374,6 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     }
 
     /**
-     * Return the locale object depending on the user
-     *
-     * @return \QUI\Locale
-     */
-    public function getLocale(): ?QUI\Locale
-    {
-        if ($this->Locale) {
-            return $this->Locale;
-        }
-
-        $this->Locale = new QUI\Locale();
-
-        if (QUI::getSession()->get('CURRENT_LANG')) {
-            $this->Locale->setCurrent(QUI::getSession()->get('CURRENT_LANG'));
-        } else {
-            $this->Locale->setCurrent(QUI::getLocale()->getCurrent());
-        }
-
-        return $this->Locale;
-    }
-
-    /**
      * This method is useless for nobody
      * \QUI\Users\Nobody cannot have a address
      *
@@ -382,6 +403,34 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
                 'exception.lib.user.nobody.get.address'
             )
         );
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see iUser::getCurrency()
+     */
+    public function getCurrency()
+    {
+        if (QUI::getSession()->get('currency')) {
+            $currency = QUI::getSession()->get('currency');
+
+            if (Currencies::existCurrency($currency)) {
+                return $currency;
+            }
+        }
+
+        $Country = $this->getCountry();
+
+        if ($Country) {
+            $currency = $Country->getCurrencyCode();
+
+            if (Currencies::existCurrency($currency)) {
+                return $currency;
+            }
+        }
+
+        return Currencies::getDefaultCurrency();
     }
 
     /**
@@ -438,34 +487,6 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see iUser::getCurrency()
-     */
-    public function getCurrency()
-    {
-        if (QUI::getSession()->get('currency')) {
-            $currency = QUI::getSession()->get('currency');
-
-            if (Currencies::existCurrency($currency)) {
-                return $currency;
-            }
-        }
-
-        $Country = $this->getCountry();
-
-        if ($Country) {
-            $currency = $Country->getCurrencyCode();
-
-            if (Currencies::existCurrency($currency)) {
-                return $currency;
-            }
-        }
-
-        return Currencies::getDefaultCurrency();
-    }
-
-    /**
      * This method is useless for nobody
      * \QUI\Users\Nobody cannot have a address
      *
@@ -505,27 +526,6 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
-     * @param boolean $array - returns the groups as objects (true) or as an array (false)
-     *
-     * @return array
-     * @see \QUI\Interfaces\Users\User::getGroups()
-     *
-     */
-    public function getGroups($array = true): array
-    {
-        $Guest    = new QUI\Groups\Guest();
-        $Everyone = new QUI\Groups\Everyone();
-
-        if ($array === true) {
-            return [$Guest, $Everyone];
-        }
-
-        return [$Guest->getId(), $Everyone->getId()];
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
      * @return \QUI\Projects\Media\Image|false
      * @see \QUI\Interfaces\Users\User::getAvatar()
      *
@@ -533,7 +533,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     public function getAvatar()
     {
         $Project = QUI::getProjectManager()->getStandard();
-        $Media   = $Project->getMedia();
+        $Media = $Project->getMedia();
 
         return $Media->getPlaceholderImage();
     }

@@ -151,6 +151,74 @@ class Package extends QUI\System\Console\Tool
     }
 
     /**
+     * Execute the setup for a package
+     *
+     * @param string $package
+     */
+    protected function executePackageSetup(string $package)
+    {
+        $this->writeLn();
+        $Climate = new CLImate();
+
+        try {
+            $Package = QUI::getPackage($package);
+
+            $Climate->output->write(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.message.setup.execute')
+            );
+            $Climate->lightGreen($package);
+            $Package->setup();
+        } catch (QUI\Exception $Exception) {
+            $Climate->error($Exception->getMessage());
+            exit;
+        }
+    }
+
+    /**
+     * Install a package
+     *
+     * @param string $package
+     */
+    protected function installPackage(string $package)
+    {
+        $this->writeLn();
+        $Climate = new CLImate();
+
+        if (empty($package)) {
+            $Climate->output->write(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'console.tool.package.message.install.noPackage',
+                )
+            );
+        }
+
+        try {
+            QUI::getPackage($package);
+            $this->writeLn('Package already exists');
+        } catch (QUI\Exception $Exception) {
+            $Climate->output->write(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'console.tool.package.message.install.execute',
+                    ['package' => $package]
+                )
+            );
+
+            $PackageManager = QUI::getPackageManager();
+            $Composer = $PackageManager->getComposer();
+            $Console = $this;
+
+            $Composer->addEvent('onOutput', function ($self, $data, $type) use ($Console) {
+                $Console->write($data);
+            });
+
+            $Composer->unmute();
+            $Composer->requirePackage($package);
+        }
+    }
+
+    /**
      * Show package information
      *
      * @param string $package
@@ -166,7 +234,7 @@ class Package extends QUI\System\Console\Tool
             $Climate->out('');
 
             $composer = $Package->getComposerData();
-            $data     = [];
+            $data = [];
 
             foreach ($composer as $key => $entry) {
                 if (is_array($entry)) {
@@ -231,7 +299,7 @@ class Package extends QUI\System\Console\Tool
 
         $Spinner->run('Searching...', function () use ($search, $Spinner) {
             $Composer = QUI::getPackageManager()->getComposer();
-            $result   = $Composer->search($search);
+            $result = $Composer->search($search);
             $Spinner->stop();
 
             // remove first element, because of wrong output, first line is not a package
@@ -257,73 +325,5 @@ class Package extends QUI\System\Console\Tool
     protected function removePackage(string $package)
     {
         $Composer = QUI::getPackageManager()->getComposer();
-    }
-
-    /**
-     * Execute the setup for a package
-     *
-     * @param string $package
-     */
-    protected function executePackageSetup(string $package)
-    {
-        $this->writeLn();
-        $Climate = new CLImate();
-
-        try {
-            $Package = QUI::getPackage($package);
-
-            $Climate->output->write(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.message.setup.execute')
-            );
-            $Climate->lightGreen($package);
-            $Package->setup();
-        } catch (QUI\Exception $Exception) {
-            $Climate->error($Exception->getMessage());
-            exit;
-        }
-    }
-
-    /**
-     * Install a package
-     *
-     * @param string $package
-     */
-    protected function installPackage(string $package)
-    {
-        $this->writeLn();
-        $Climate = new CLImate();
-
-        if (empty($package)) {
-            $Climate->output->write(
-                QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
-                    'console.tool.package.message.install.noPackage',
-                )
-            );
-        }
-
-        try {
-            QUI::getPackage($package);
-            $this->writeLn('Package already exists');
-        } catch (QUI\Exception $Exception) {
-            $Climate->output->write(
-                QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
-                    'console.tool.package.message.install.execute',
-                    ['package' => $package]
-                )
-            );
-
-            $PackageManager = QUI::getPackageManager();
-            $Composer       = $PackageManager->getComposer();
-            $Console        = $this;
-
-            $Composer->addEvent('onOutput', function ($self, $data, $type) use ($Console) {
-                $Console->write($data);
-            });
-
-            $Composer->unmute();
-            $Composer->requirePackage($package);
-        }
     }
 }

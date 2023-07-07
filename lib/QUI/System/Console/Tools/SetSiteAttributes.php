@@ -57,28 +57,28 @@ class SetSiteAttributes extends QUI\System\Console\Tool
         $this->writeLn("Site query (MySQL): WHERE ");
         $siteQuery = \trim($this->readInput());
 
-        $sql = "SELECT `id` FROM ".QUI::getDBProjectTableName('sites', $Project);
+        $sql = "SELECT `id` FROM " . QUI::getDBProjectTableName('sites', $Project);
         $sql .= " WHERE $siteQuery";
 
-        $this->writeLn("\nQuerying sites: ".$sql);
+        $this->writeLn("\nQuerying sites: " . $sql);
 
         try {
             $siteIds = QUI::getDataBase()->fetchSQL($sql);
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
-            $this->writeLn("\n\nERROR: Query failed -> ".$Exception->getMessage());
+            $this->writeLn("\n\nERROR: Query failed -> " . $Exception->getMessage());
             exit(1);
         }
 
-        $this->writeLn("Found ".count($siteIds)." sites.");
+        $this->writeLn("Found " . count($siteIds) . " sites.");
 
         // Set site attributes
         $this->writeLn("\n====== Set site attributes ======");
 
         $placeholderDesc = [
-            'id'    => 'Site ID',
+            'id' => 'Site ID',
             'title' => 'Site title',
-            'true'  => 'Boolean true',
+            'true' => 'Boolean true',
             'false' => 'Boolean false'
         ];
 
@@ -133,7 +133,7 @@ class SetSiteAttributes extends QUI\System\Console\Tool
                 $this->write(" OK!");
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
-                $this->write(" ERROR: ".$Exception->getMessage());
+                $this->write(" ERROR: " . $Exception->getMessage());
                 continue;
             }
 
@@ -141,29 +141,29 @@ class SetSiteAttributes extends QUI\System\Console\Tool
                 $output = $v;
 
                 foreach ($placeholderDesc as $placeholder => $desc) {
-                    $placeholder = '['.$placeholder.']';
+                    $placeholder = '[' . $placeholder . ']';
                     if (\mb_strpos($v, $placeholder) === false) {
                         continue;
                     }
 
                     switch ($placeholder) {
                         case '[id]':
-                            $v      = \str_replace($placeholder, $Site->getId(), $v);
+                            $v = \str_replace($placeholder, $Site->getId(), $v);
                             $output = $v;
                             break;
 
                         case '[title]':
-                            $v      = \str_replace($placeholder, $Site->getAttribute('title'), $v);
+                            $v = \str_replace($placeholder, $Site->getAttribute('title'), $v);
                             $output = $v;
                             break;
 
                         case '[true]':
-                            $v      = true;
+                            $v = true;
                             $output = 'true (bool)';
                             break;
 
                         case '[false]':
-                            $v      = false;
+                            $v = false;
                             $output = 'false (bool)';
                             break;
                     }
@@ -180,7 +180,7 @@ class SetSiteAttributes extends QUI\System\Console\Tool
                     $this->write(" OK!");
                 } catch (\Exception $Exception) {
                     QUI\System\Log::writeException($Exception);
-                    $this->write(" ERROR: ".$Exception->getMessage());
+                    $this->write(" ERROR: " . $Exception->getMessage());
                 }
             }
         }

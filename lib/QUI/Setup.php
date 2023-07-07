@@ -54,7 +54,8 @@ class Setup
         QUI::getEvents()->fireEvent('setupAllBegin');
 
         // not at phpunit
-        if (!isset($_SERVER['argv'])
+        if (
+            !isset($_SERVER['argv'])
             || (isset($_SERVER['argv'][0])
                 && strpos($_SERVER['argv'][0], 'phpunit') === false)
         ) {
@@ -101,66 +102,6 @@ class Setup
     }
 
     /**
-     * Execute the main System Setup
-     *
-     * - Permissions
-     * - Groups
-     * - Users
-     * - Workspace
-     *
-     * @throws QUI\Exception
-     * @throws QUI\ExceptionStack
-     */
-    public static function executeMainSystemSetup()
-    {
-        QUI::getEvents()->fireEvent('setupMainSystemBegin');
-
-        // Rechte setup
-        QUI::getPermissionManager()->setup();
-
-        // Gruppen erstellen
-        QUI::getGroups()->setup();
-
-        // Benutzer erstellen
-        QUI::getUsers()->setup();
-
-        // workspaces
-        Workspace\Manager::setup();
-
-        QUI::getEvents()->fireEvent('setupMainSystemEnd');
-    }
-
-    /**
-     * Execute the setup of the main communication classes
-     *
-     * - Mail
-     * - Messages
-     * - Editor
-     * - Events
-     *
-     * @throws QUI\Exception
-     * @throws QUI\ExceptionStack
-     */
-    public static function executeCommunicationSetup()
-    {
-        QUI::getEvents()->fireEvent('setupCommunicationBegin');
-
-        // mail queue setup
-        Mail\Queue::setup();
-
-        // Cron Setup
-        QUI::getMessagesHandler()->setup();
-
-        // WYSIWYG
-        QUI\Editor\Manager::setup();
-
-        // Events Setup
-        Events\Manager::setup();
-
-        QUI::getEvents()->fireEvent('setupCommunicationEnd');
-    }
-
-    /**
      * Create the default directories for QUIQQER
      *
      * @throws QUI\Exception
@@ -198,163 +139,6 @@ class Setup
         QUI\Cache\LongTermCache::setup();
 
         QUI::getEvents()->fireEvent('setupMakeDirectoriesEnd');
-    }
-
-    /**
-     * Create the header files
-     *
-     * @throws QUI\Exception
-     * @throws QUI\ExceptionStack
-     */
-    public static function makeHeaderFiles()
-    {
-        QUI::getEvents()->fireEvent('setupMakeHeaderFilesBegin');
-
-        $str = "<?php require_once '" . CMS_DIR . "bootstrap.php'; ?>";
-
-        if (file_exists(USR_DIR . 'header.php')) {
-            unlink(USR_DIR . 'header.php');
-        }
-
-        if (file_exists(OPT_DIR . 'header.php')) {
-            unlink(OPT_DIR . 'header.php');
-        }
-
-        file_put_contents(USR_DIR . 'header.php', $str);
-        file_put_contents(OPT_DIR . 'header.php', $str);
-
-        QUI::getEvents()->fireEvent('setupMakeHeaderFilesEnd');
-    }
-
-    /**
-     * Execute for each project the setup
-     *
-     * @param array $setupOptions - options for the package setup [executePackageSetup]
-     *
-     * @throws QUI\Exception
-     */
-    public static function executeEachProjectSetup($setupOptions = [])
-    {
-        $projects = Projects\Manager::getProjects(true);
-
-        if (!isset($setupOptions['executePackagesSetup'])) {
-            $setupOptions['executePackagesSetup'] = false;
-        }
-
-        /* @var $Project Project */
-        foreach ($projects as $Project) {
-            try {
-                $Project->setup($setupOptions);
-            } catch (\Exception $Exception) {
-                QUI\System\Log::writeException($Exception);
-            }
-        }
-    }
-
-    /**
-     * Execute for each package the setup
-     *
-     * @param array $setupOptions - options for the package setup
-     * @param QUI\Interfaces\System\SystemOutput|null $Output
-     *
-     * @throws QUI\Exception
-     * @throws QUI\ExceptionStack
-     */
-    public static function executeEachPackageSetup(
-        $setupOptions = [],
-        ?QUI\Interfaces\System\SystemOutput $Output = null
-    ) {
-        if (!$Output) {
-            $Output = new QUI\System\VoidOutput();
-        }
-
-        QUI::getEvents()->fireEvent('setupPackageSetupBegin');
-
-        $PackageManager = QUI::getPackageManager();
-        $packages       = SystemFile::readDir(OPT_DIR);
-
-        $PackageManager->refreshServerList();
-
-        if (!is_array($setupOptions)) {
-            $setupOptions = [];
-        }
-
-        if (!isset($setupOptions['localePublish'])) {
-            $setupOptions['localePublish'] = false;
-        }
-
-        QUI\Cache\Manager::$noClearing = true;
-
-        // first we need all databases
-        $Formatter = QUI::getLocale()->getDateFormatter(
-            IntlDateFormatter::NONE,
-            IntlDateFormatter::MEDIUM
-        );
-
-        foreach ($packages as $package) {
-            if ($package == 'composer') {
-                continue;
-            }
-
-            if ($package == 'bin') {
-                continue;
-            }
-
-            if (!is_dir(OPT_DIR . $package)) {
-                continue;
-            }
-
-            $list = SystemFile::readDir(OPT_DIR . $package);
-
-            foreach ($list as $sub) {
-                $packageName = $package . '/' . $sub;
-
-                try {
-                    $Package = $PackageManager->getInstalledPackage($packageName);
-                } catch (QUI\Exception $Exception) {
-                    continue;
-                }
-
-                if (!$Package->isQuiqqerPackage() && !$Package->isQuiqqerAsset()) {
-                    continue;
-                }
-
-                $Output->writeLn(
-                    '>> ' . $Formatter->format(time()) . ' - run setup for package ' . $packageName
-                );
-
-                $Package->setup($setupOptions);
-            }
-        }
-
-        QUI\Cache\Manager::$noClearing = false;
-        QUI\Cache\Manager::clearCompleteQuiqqerCache();
-
-        QUI::getEvents()->fireEvent('setupPackageSetupEnd');
-    }
-
-    /**
-     * Import all important permissions
-     */
-    public static function importPermissions()
-    {
-        QUI\Permissions\Manager::importPermissionsForGroups();
-    }
-
-    /**
-     * Finish the setup
-     *
-     * - set last update
-     * - clear the cache
-     *
-     * @throws QUI\Exception
-     */
-    public static function finish()
-    {
-        QUI\Translator::create();
-
-        // clear cache
-        QUI\Cache\Manager::clearCompleteQuiqqerCache();
     }
 
     /**
@@ -396,14 +180,14 @@ EOF;
         $CMS_DIR = CMS_DIR;
         $SYS_DIR = SYS_DIR;
 
-        $ajax        = CMS_DIR . 'ajax.php';
+        $ajax = CMS_DIR . 'ajax.php';
         $ajaxBundler = CMS_DIR . 'ajaxBundler.php';
-        $image       = CMS_DIR . 'image.php';
-        $index       = CMS_DIR . 'index.php';
-        $quiqqer     = CMS_DIR . 'quiqqer.php';
-        $bootstrap   = CMS_DIR . 'bootstrap.php';
-        $console     = CMS_DIR . 'console';
-        $systemId    = License::getSystemId();
+        $image = CMS_DIR . 'image.php';
+        $index = CMS_DIR . 'index.php';
+        $quiqqer = CMS_DIR . 'quiqqer.php';
+        $bootstrap = CMS_DIR . 'bootstrap.php';
+        $console = CMS_DIR . 'console';
+        $systemId = License::getSystemId();
 
 
         ////////
@@ -552,5 +336,222 @@ EOT;
 
         file_put_contents($console, $content);
         system("chmod +x {$console}");
+    }
+
+    /**
+     * Execute the main System Setup
+     *
+     * - Permissions
+     * - Groups
+     * - Users
+     * - Workspace
+     *
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
+     */
+    public static function executeMainSystemSetup()
+    {
+        QUI::getEvents()->fireEvent('setupMainSystemBegin');
+
+        // Rechte setup
+        QUI::getPermissionManager()->setup();
+
+        // Gruppen erstellen
+        QUI::getGroups()->setup();
+
+        // Benutzer erstellen
+        QUI::getUsers()->setup();
+
+        // workspaces
+        Workspace\Manager::setup();
+
+        QUI::getEvents()->fireEvent('setupMainSystemEnd');
+    }
+
+    /**
+     * Execute the setup of the main communication classes
+     *
+     * - Mail
+     * - Messages
+     * - Editor
+     * - Events
+     *
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
+     */
+    public static function executeCommunicationSetup()
+    {
+        QUI::getEvents()->fireEvent('setupCommunicationBegin');
+
+        // mail queue setup
+        Mail\Queue::setup();
+
+        // Cron Setup
+        QUI::getMessagesHandler()->setup();
+
+        // WYSIWYG
+        QUI\Editor\Manager::setup();
+
+        // Events Setup
+        Events\Manager::setup();
+
+        QUI::getEvents()->fireEvent('setupCommunicationEnd');
+    }
+
+    /**
+     * Create the header files
+     *
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
+     */
+    public static function makeHeaderFiles()
+    {
+        QUI::getEvents()->fireEvent('setupMakeHeaderFilesBegin');
+
+        $str = "<?php require_once '" . CMS_DIR . "bootstrap.php'; ?>";
+
+        if (file_exists(USR_DIR . 'header.php')) {
+            unlink(USR_DIR . 'header.php');
+        }
+
+        if (file_exists(OPT_DIR . 'header.php')) {
+            unlink(OPT_DIR . 'header.php');
+        }
+
+        file_put_contents(USR_DIR . 'header.php', $str);
+        file_put_contents(OPT_DIR . 'header.php', $str);
+
+        QUI::getEvents()->fireEvent('setupMakeHeaderFilesEnd');
+    }
+
+    /**
+     * Execute for each project the setup
+     *
+     * @param array $setupOptions - options for the package setup [executePackageSetup]
+     *
+     * @throws QUI\Exception
+     */
+    public static function executeEachProjectSetup($setupOptions = [])
+    {
+        $projects = Projects\Manager::getProjects(true);
+
+        if (!isset($setupOptions['executePackagesSetup'])) {
+            $setupOptions['executePackagesSetup'] = false;
+        }
+
+        /* @var $Project Project */
+        foreach ($projects as $Project) {
+            try {
+                $Project->setup($setupOptions);
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
+        }
+    }
+
+    /**
+     * Execute for each package the setup
+     *
+     * @param array $setupOptions - options for the package setup
+     * @param QUI\Interfaces\System\SystemOutput|null $Output
+     *
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
+     */
+    public static function executeEachPackageSetup(
+        $setupOptions = [],
+        ?QUI\Interfaces\System\SystemOutput $Output = null
+    ) {
+        if (!$Output) {
+            $Output = new QUI\System\VoidOutput();
+        }
+
+        QUI::getEvents()->fireEvent('setupPackageSetupBegin');
+
+        $PackageManager = QUI::getPackageManager();
+        $packages = SystemFile::readDir(OPT_DIR);
+
+        $PackageManager->refreshServerList();
+
+        if (!is_array($setupOptions)) {
+            $setupOptions = [];
+        }
+
+        if (!isset($setupOptions['localePublish'])) {
+            $setupOptions['localePublish'] = false;
+        }
+
+        QUI\Cache\Manager::$noClearing = true;
+
+        // first we need all databases
+        $Formatter = QUI::getLocale()->getDateFormatter(
+            IntlDateFormatter::NONE,
+            IntlDateFormatter::MEDIUM
+        );
+
+        foreach ($packages as $package) {
+            if ($package == 'composer') {
+                continue;
+            }
+
+            if ($package == 'bin') {
+                continue;
+            }
+
+            if (!is_dir(OPT_DIR . $package)) {
+                continue;
+            }
+
+            $list = SystemFile::readDir(OPT_DIR . $package);
+
+            foreach ($list as $sub) {
+                $packageName = $package . '/' . $sub;
+
+                try {
+                    $Package = $PackageManager->getInstalledPackage($packageName);
+                } catch (QUI\Exception $Exception) {
+                    continue;
+                }
+
+                if (!$Package->isQuiqqerPackage() && !$Package->isQuiqqerAsset()) {
+                    continue;
+                }
+
+                $Output->writeLn(
+                    '>> ' . $Formatter->format(time()) . ' - run setup for package ' . $packageName
+                );
+
+                $Package->setup($setupOptions);
+            }
+        }
+
+        QUI\Cache\Manager::$noClearing = false;
+        QUI\Cache\Manager::clearCompleteQuiqqerCache();
+
+        QUI::getEvents()->fireEvent('setupPackageSetupEnd');
+    }
+
+    /**
+     * Import all important permissions
+     */
+    public static function importPermissions()
+    {
+        QUI\Permissions\Manager::importPermissionsForGroups();
+    }
+
+    /**
+     * Finish the setup
+     *
+     * - set last update
+     * - clear the cache
+     *
+     * @throws QUI\Exception
+     */
+    public static function finish()
+    {
+        QUI\Translator::create();
+
+        // clear cache
+        QUI\Cache\Manager::clearCompleteQuiqqerCache();
     }
 }

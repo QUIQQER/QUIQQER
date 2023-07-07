@@ -10,6 +10,8 @@ use QUI;
 use QUI\Groups\Group;
 use QUI\Projects\Media;
 use QUI\Projects\Project;
+use QUI\Projects\Site;
+use QUI\Projects\Site\Edit;
 use QUI\Users\User;
 
 use function array_flip;
@@ -42,6 +44,77 @@ class Permission
     protected static ?QUI\Interfaces\Users\User $User = null;
 
     /**
+     * has the User the permission
+     *
+     * @param string $perm
+     * @param User|boolean $User
+     *
+     * @return false|string|permission
+     */
+    public static function hasPermission(string $perm, $User = false)
+    {
+        try {
+            return self::checkPermission($perm, $User);
+        } catch (QUI\Exception $Exception) {
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks whether the user has the permission
+     *
+     * @param string $perm
+     * @param User|boolean|null $User - optional
+     *
+     * @return false|string|permission
+     *
+     * @throws Exception
+     */
+    public static function checkPermission(string $perm, $User = false)
+    {
+        if (!$User) {
+            $User = self::getUser();
+        }
+
+        if ($User->isSU()) {
+            return true;
+        }
+
+        if (QUI::getUsers()->isSystemUser($User)) {
+            return true;
+        }
+
+        $Manager = QUI::getPermissionManager();
+        $permissions = $Manager->getPermissions($User);
+
+        // first check user permission
+        if (!empty($permissions[$perm])) {
+            return $permissions[$perm];
+        }
+
+        $groups = $User->getGroups();
+
+        if (!empty($groups)) {
+            foreach ($groups as $Group) {
+                $permissions = $Manager->getPermissions($Group);
+
+                if (isset($permissions[$perm]) && !empty($permissions[$perm])) {
+                    return $permissions[$perm];
+                }
+            }
+        }
+
+        throw new Exception(
+            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.no.permission'),
+            403,
+            [
+                'permission' => $perm
+            ]
+        );
+    }
+
+    /**
      * @return QUI\Interfaces\Users\User
      */
     protected static function getUser()
@@ -66,30 +139,9 @@ class Permission
     }
 
     /**
-     * Checks, if the user is an admin user
-     *
-     * @param \QUI\Users\User|boolean $User - optional
-     *
-     * @return boolean
-     */
-    public static function isAdmin($User = false)
-    {
-        if (!$User) {
-            $User = self::getUser();
-        }
-
-        try {
-            return self::checkPermission('quiqqer.admin', $User);
-        } catch (QUI\Exception $Exception) {
-        }
-
-        return false;
-    }
-
-    /**
      * Checks, if the user has the SuperUser flag
      *
-     * @param \QUI\Users\User|boolean $User - optional
+     * @param User|boolean $User - optional
      *
      * @return boolean
      */
@@ -103,27 +155,9 @@ class Permission
     }
 
     /**
-     * has the User the permission
-     *
-     * @param string $perm
-     * @param \QUI\Users\User|boolean $User
-     *
-     * @return false|string|permission
-     */
-    public static function hasPermission(string $perm, $User = false)
-    {
-        try {
-            return self::checkPermission($perm, $User);
-        } catch (QUI\Exception $Exception) {
-        }
-
-        return false;
-    }
-
-    /**
      * Checks if the user is allowed to enter the admin area
      *
-     * @param \QUI\Users\User|boolean $User - optional
+     * @param User|boolean $User - optional
      *
      * @throws \QUI\Exception
      */
@@ -142,7 +176,7 @@ class Permission
         }
 
         if (!self::isAdmin($UserToCheck)) {
-            throw new QUI\Permissions\Exception(
+            throw new Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'exception.no.permission'
@@ -156,16 +190,340 @@ class Permission
     }
 
     /**
-     * Checks whether the user has the permission
+     * Checks if the object is also a user object
+     *
+     * @param User|boolean $User - optional
+     *
+     * @throws Exception
+     * @throws \QUI\Exception
+     */
+    public static function checkUser($User = false)
+    {
+        $UserToCheck = $User;
+
+        if (!$User) {
+            $UserToCheck = self::getUser();
+        }
+
+        if (get_class($UserToCheck) !== 'QUI\\Users\\User') {
+            if (!$User) {
+                QUI::getUsers()->checkUserSession();
+            }
+
+            // if no exception throws
+            throw new Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.permission.session.expired'
+                ),
+                401
+            );
+        }
+    }
+
+    /**
+     * Checks, if the user is an admin user
+     *
+     * @param User|boolean $User - optional
+     *
+     * @return boolean
+     */
+    public static function isAdmin($User = false)
+    {
+        if (!$User) {
+            $User = self::getUser();
+        }
+
+        try {
+            return self::checkPermission('quiqqer.admin', $User);
+        } catch (QUI\Exception $Exception) {
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if the user is a SuperUser
+     * if not, it throws an exception
+     *
+     * @param User|boolean $User - optional
+     *
+     * @throws Exception
+     * @throws \QUI\Exception
+     */
+    public static function checkSU($User = false)
+    {
+        $UserToCheck = false;
+
+        if (!$User) {
+            $UserToCheck = self::getUser();
+        }
+
+        if ($UserToCheck) {
+            self::checkUser($User);
+        } else {
+            self::checkUser();
+        }
+
+        if (!self::isSU($UserToCheck)) {
+            throw new Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.no.permission'
+                ),
+                403,
+                [
+                    'permission' => 'checkSu'
+                ]
+            );
+        }
+    }
+
+    /**
+     * Checks if the permission is set
      *
      * @param string $perm
-     * @param \QUI\Users\User|boolean|null $User - optional
+     * @param User|boolean $User - optional
      *
-     * @return false|string|permission
-     *
-     * @throws \QUI\Permissions\Exception
+     * @return boolean
      */
-    public static function checkPermission(string $perm, $User = false)
+    public static function existsPermission(string $perm, $User = false): bool
+    {
+        if (!$User) {
+            $User = self::getUser();
+        }
+
+        $Manager = QUI::getPermissionManager();
+        $permissions = $Manager->getPermissions($User);
+
+        // first check user permission
+        if (isset($permissions[$perm])) {
+            return true;
+        }
+
+        $groups = $User->getGroups();
+
+        foreach ($groups as $Group) {
+            $permissions = $Manager->getPermissions($Group);
+
+            if (isset($permissions[$perm])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Add a user to the permission
+     *
+     * @param User $User
+     * @param Site|Edit $Site
+     * @param string $permission - name of the permission
+     * @param boolean|User $EditUser
+     *
+     * @return bool
+     *
+     * @throws QUI\Exception
+     * @throws Exception
+     */
+    public static function addUserToSitePermission(
+        User $User,
+        $Site,
+        string $permission,
+        $EditUser = false
+    ): bool {
+        if (!QUI\Projects\Site\Utils::isSiteObject($Site)) {
+            return false;
+        }
+
+        /* @var $Site Site */
+        $Site->checkPermission('quiqqer.projects.site.edit', $EditUser);
+
+        $Manager = QUI::getPermissionManager();
+        $permissions = $Manager->getSitePermissions($Site);
+
+        if (!isset($permissions[$permission])) {
+            return false;
+        }
+
+        $permList = [];
+        $user = 'u' . $User->getId();
+
+        if (!empty($permissions[$permission])) {
+            $permList = explode(',', trim($permissions[$permission], ' ,'));
+        }
+
+        $flip = array_flip($permList);
+
+        // user is in the permissions
+        if (isset($flip[$user])) {
+            return true;
+        }
+
+        $permList[] = $user;
+
+        $Manager->setSitePermissions(
+            $Site,
+            [$permission => implode(',', $permList)],
+            $EditUser
+        );
+
+        return true;
+    }
+
+    /**
+     * Sites
+     */
+
+    /**
+     * Add a group to the permission
+     *
+     * @param Group $Group
+     * @param Site|Edit $Site
+     * @param string $permission - name of the permission
+     * @param boolean|User $EditUser
+     *
+     * @return bool
+     *
+     * @throws QUI\Exception
+     * @throws Exception
+     */
+    public static function addGroupToSitePermission(
+        Group $Group,
+        $Site,
+        string $permission,
+        $EditUser
+    ): bool {
+        if (!QUI\Projects\Site\Utils::isSiteObject($Site)) {
+            return false;
+        }
+
+        /* @var $Site Site */
+        $Site->checkPermission('quiqqer.projects.site.edit', $EditUser);
+
+        $Manager = QUI::getPermissionManager();
+        $permissions = $Manager->getSitePermissions($Site);
+
+        if (!isset($permissions[$permission])) {
+            return false;
+        }
+
+        $permList = [];
+        $group = 'g' . $Group->getId();
+
+        if (!empty($permissions[$permission])) {
+            $permList = explode(',', trim($permissions[$permission], ' ,'));
+        }
+
+        $flip = array_flip($permList);
+
+        // user is in the permissions
+        if (isset($flip[$group])) {
+            return true;
+        }
+
+        $permList[] = $group;
+
+
+        $Manager->setSitePermissions(
+            $Site,
+            [$permission => implode(',', $permList)],
+            $EditUser
+        );
+
+        return true;
+    }
+
+    /**
+     * Checks if the permission exists in the Site
+     *
+     * @param string $perm
+     * @param Site|Edit $Site
+     *
+     * @return bool
+     */
+    public static function existsSitePermission(string $perm, $Site): bool
+    {
+        $Manager = QUI::getPermissionManager();
+        $permissions = $Manager->getSitePermissions($Site);
+
+        return isset($permissions[$perm]);
+    }
+
+    /**
+     * Return the Site Permission
+     *
+     * @param Site|Edit $Site
+     * @param string $perm
+     *
+     * @return mixed|boolean
+     */
+    public static function getSitePermission($Site, string $perm)
+    {
+        $Manager = QUI::getPermissionManager();
+        $permissions = $Manager->getSitePermissions($Site);
+
+        return $permissions[$perm] ?? false;
+    }
+
+    /**
+     * Return a permission of the user
+     * - can be user for string permissions
+     *
+     * @param string $perm
+     * @param QUI\Interfaces\Users\User|null $User
+     *
+     * @return mixed|boolean
+     */
+    public static function getPermission(string $perm, QUI\Interfaces\Users\User $User = null)
+    {
+        if ($User === null) {
+            $User = self::getUser();
+        }
+
+        $Manager = QUI::getPermissionManager();
+        $permissions = $Manager->getPermissions($User);
+
+        // first check user permission
+        if (isset($permissions[$perm]) && !empty($permissions[$perm])) {
+            return $permissions[$perm];
+        }
+
+        return $permissions[$perm] ?? false;
+    }
+
+    /**
+     * has the User the permission at the site?
+     *
+     * @param string $perm
+     * @param Site $Site
+     * @param User|boolean $User - optional
+     *
+     * @return bool
+     */
+    public static function hasSitePermission(string $perm, Site $Site, $User = false)
+    {
+        try {
+            return self::checkSitePermission($perm, $Site, $User);
+        } catch (QUI\Exception $Exception) {
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if the User have the permission of the Site
+     *
+     * @param string $perm
+     * @param Site|Edit $Site
+     * @param User|boolean $User - optional
+     *
+     * @return boolean
+     *
+     * @throws Exception
+     */
+    public static function checkSitePermission(string $perm, $Site, $User = false)
     {
         if (!$User) {
             $User = self::getUser();
@@ -179,33 +537,95 @@ class Permission
             return true;
         }
 
-        $Manager     = QUI::getPermissionManager();
-        $permissions = $Manager->getPermissions($User);
 
-        // first check user permission
-        if (isset($permissions[$perm]) && !empty($permissions[$perm])) {
-            return $permissions[$perm];
-        }
+        $Manager = QUI::getPermissionManager();
+        $permissions = $Manager->getSitePermissions($Site);
 
-        $groups = $User->getGroups();
+        // default site rights, view, edit, del, new: has their own special checks
+        // with project and site checks
+        switch ($perm) {
+            case 'quiqqer.projects.site.view':
+            case 'quiqqer.projects.sites.view':
+                try {
+                    return self::checkPermissionList(
+                        $permissions,
+                        'quiqqer.projects.site.view',
+                        $User
+                    );
+                } catch (Exception $Exception) {
+                    // if site permissions are not empty do not check user permissions
+                    if (!empty($permissions['quiqqer.projects.site.view'])) {
+                        throw $Exception;
+                    }
 
-        if (!empty($groups)) {
-            foreach ($groups as $Group) {
-                $permissions = $Manager->getPermissions($Group);
-
-                if (isset($permissions[$perm]) && !empty($permissions[$perm])) {
-                    return $permissions[$perm];
+                    return self::checkPermission(
+                        'quiqqer.projects.sites.view',
+                        $User
+                    );
                 }
-            }
+                break;
+            case 'quiqqer.projects.site.edit':
+            case 'quiqqer.projects.sites.edit':
+                try {
+                    return self::checkPermissionList(
+                        $permissions,
+                        'quiqqer.projects.site.edit',
+                        $User
+                    );
+                } catch (Exception $Exception) {
+                    // if site permissions are not empty do not check user permissions
+                    if (!empty($permissions['quiqqer.projects.site.edit'])) {
+                        throw $Exception;
+                    }
+
+                    return self::checkPermission(
+                        'quiqqer.projects.sites.edit',
+                        $User
+                    );
+                }
+                break;
+            case 'quiqqer.projects.site.del':
+            case 'quiqqer.projects.sites.del':
+                try {
+                    return self::checkPermissionList(
+                        $permissions,
+                        'quiqqer.projects.site.del',
+                        $User
+                    );
+                } catch (Exception $Exception) {
+                    // if site permissions are not empty do not check user permissions
+                    if (!empty($permissions['quiqqer.projects.site.del'])) {
+                        throw $Exception;
+                    }
+
+                    return self::checkPermission(
+                        'quiqqer.projects.sites.del',
+                        $User
+                    );
+                }
+                break;
+            case 'quiqqer.projects.site.new':
+            case 'quiqqer.projects.sites.new':
+                try {
+                    return self::checkPermissionList(
+                        $permissions,
+                        'quiqqer.projects.site.new',
+                        $User
+                    );
+                } catch (Exception $Exception) {
+                    // if site permissions are not empty do not check user permissions
+                    if (!empty($permissions['quiqqer.projects.site.new'])) {
+                        throw $Exception;
+                    }
+
+                    return self::checkPermission(
+                        'quiqqer.projects.sites.new',
+                        $User
+                    );
+                }
         }
 
-        throw new QUI\Permissions\Exception(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.no.permission'),
-            403,
-            [
-                'permission' => $perm
-            ]
-        );
+        return self::checkPermissionList($permissions, $perm, $User);
     }
 
     /**
@@ -213,11 +633,11 @@ class Permission
      *
      * @param array $permissions - list of permissions
      * @param string $perm
-     * @param \QUI\Users\User|boolean $User
+     * @param User|boolean $User
      *
      * @return boolean
      *
-     * @throws \QUI\Permissions\Exception
+     * @throws Exception
      */
     public static function checkPermissionList(array $permissions, string $perm, $User = false): bool
     {
@@ -234,15 +654,15 @@ class Permission
         }
 
         if (empty($permissions[$perm])) {
-            throw new QUI\Permissions\Exception(
+            throw new Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'exception.no.permission'
                 ),
                 403,
                 [
-                    'userid'     => $User->getId(),
-                    'username'   => $User->getName(),
+                    'userid' => $User->getId(),
+                    'username' => $User->getName(),
                     'permission' => $permissions
 
                 ]
@@ -251,10 +671,10 @@ class Permission
 
         // what type
         try {
-            $Manager   = QUI::getPermissionManager();
+            $Manager = QUI::getPermissionManager();
             $perm_data = $Manager->getPermissionData($perm);
         } catch (QUI\Exception $Exception) {
-            throw new QUI\Permissions\Exception(
+            throw new Exception(
                 $Exception->getMessage(),
                 $Exception->getCode()
             );
@@ -275,7 +695,8 @@ class Permission
                 $group_ids = $User->getGroups(false);
                 $group_ids = explode(',', $group_ids);
 
-                if (strpos($perm_value, 'g') !== false
+                if (
+                    strpos($perm_value, 'g') !== false
                     || strpos($perm_value, 'u') !== false
                 ) {
                     $perm_value = (int)substr($perm_value, 1);
@@ -325,13 +746,14 @@ class Permission
 
                 foreach ($ids as $id) {
                     $real_id = $id;
-                    $type    = 'g';
+                    $type = 'g';
 
-                    if (strpos($id, 'g') !== false
+                    if (
+                        strpos($id, 'g') !== false
                         || strpos($id, 'u') !== false
                     ) {
                         $real_id = (int)substr($id, 1);
-                        $type    = substr($id, 0, 1);
+                        $type = substr($id, 0, 1);
                     }
 
                     switch ($type) {
@@ -355,7 +777,7 @@ class Permission
             return true;
         }
 
-        throw new QUI\Permissions\Exception(
+        throw new Exception(
             QUI::getLocale()->get(
                 'quiqqer/quiqqer',
                 'exception.no.permission'
@@ -368,435 +790,17 @@ class Permission
     }
 
     /**
-     * Checks if the user is a SuperUser
-     * if not, it throws an exception
-     *
-     * @param \QUI\Users\User|boolean $User - optional
-     *
-     * @throws \QUI\Permissions\Exception
-     * @throws \QUI\Exception
-     */
-    public static function checkSU($User = false)
-    {
-        $UserToCheck = false;
-
-        if (!$User) {
-            $UserToCheck = self::getUser();
-        }
-
-        if ($UserToCheck) {
-            self::checkUser($User);
-        } else {
-            self::checkUser();
-        }
-
-        if (!self::isSU($UserToCheck)) {
-            throw new QUI\Permissions\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
-                    'exception.no.permission'
-                ),
-                403,
-                [
-                    'permission' => 'checkSu'
-                ]
-            );
-        }
-    }
-
-    /**
-     * Checks if the object is also a user object
-     *
-     * @param \QUI\Users\User|boolean $User - optional
-     *
-     * @throws \QUI\Permissions\Exception
-     * @throws \QUI\Exception
-     */
-    public static function checkUser($User = false)
-    {
-        $UserToCheck = $User;
-
-        if (!$User) {
-            $UserToCheck = self::getUser();
-        }
-
-        if (get_class($UserToCheck) !== 'QUI\\Users\\User') {
-            if (!$User) {
-                QUI::getUsers()->checkUserSession();
-            }
-
-            // if no exception throws
-            throw new QUI\Permissions\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
-                    'exception.permission.session.expired'
-                ),
-                401
-            );
-        }
-    }
-
-    /**
-     * Checks if the permission is set
-     *
-     * @param string $perm
-     * @param \QUI\Users\User|boolean $User - optional
-     *
-     * @return boolean
-     */
-    public static function existsPermission(string $perm, $User = false): bool
-    {
-        if (!$User) {
-            $User = self::getUser();
-        }
-
-        $Manager     = QUI::getPermissionManager();
-        $permissions = $Manager->getPermissions($User);
-
-        // first check user permission
-        if (isset($permissions[$perm])) {
-            return true;
-        }
-
-        $groups = $User->getGroups();
-
-        foreach ($groups as $Group) {
-            $permissions = $Manager->getPermissions($Group);
-
-            if (isset($permissions[$perm])) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Sites
-     */
-
-    /**
-     * Add a user to the permission
-     *
-     * @param \QUI\Users\User $User
-     * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
-     * @param string $permission - name of the permission
-     * @param boolean|\QUI\Users\User $EditUser
-     *
-     * @return bool
-     *
-     * @throws QUI\Exception
-     * @throws QUI\Permissions\Exception
-     */
-    public static function addUserToSitePermission(
-        User $User,
-        $Site,
-        string $permission,
-        $EditUser = false
-    ): bool {
-        if (!QUI\Projects\Site\Utils::isSiteObject($Site)) {
-            return false;
-        }
-
-        /* @var $Site \QUI\Projects\Site */
-        $Site->checkPermission('quiqqer.projects.site.edit', $EditUser);
-
-        $Manager     = QUI::getPermissionManager();
-        $permissions = $Manager->getSitePermissions($Site);
-
-        if (!isset($permissions[$permission])) {
-            return false;
-        }
-
-        $permList = [];
-        $user     = 'u' . $User->getId();
-
-        if (!empty($permissions[$permission])) {
-            $permList = explode(',', trim($permissions[$permission], ' ,'));
-        }
-
-        $flip = array_flip($permList);
-
-        // user is in the permissions
-        if (isset($flip[$user])) {
-            return true;
-        }
-
-        $permList[] = $user;
-
-        $Manager->setSitePermissions(
-            $Site,
-            [$permission => implode(',', $permList)],
-            $EditUser
-        );
-
-        return true;
-    }
-
-    /**
-     * Add a group to the permission
-     *
-     * @param \QUI\Groups\Group $Group
-     * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
-     * @param string $permission - name of the permission
-     * @param boolean|\QUI\Users\User $EditUser
-     *
-     * @return bool
-     *
-     * @throws QUI\Exception
-     * @throws QUI\Permissions\Exception
-     */
-    public static function addGroupToSitePermission(
-        Group $Group,
-        $Site,
-        string $permission,
-        $EditUser
-    ): bool {
-        if (!QUI\Projects\Site\Utils::isSiteObject($Site)) {
-            return false;
-        }
-
-        /* @var $Site \QUI\Projects\Site */
-        $Site->checkPermission('quiqqer.projects.site.edit', $EditUser);
-
-        $Manager     = QUI::getPermissionManager();
-        $permissions = $Manager->getSitePermissions($Site);
-
-        if (!isset($permissions[$permission])) {
-            return false;
-        }
-
-        $permList = [];
-        $group    = 'g' . $Group->getId();
-
-        if (!empty($permissions[$permission])) {
-            $permList = explode(',', trim($permissions[$permission], ' ,'));
-        }
-
-        $flip = array_flip($permList);
-
-        // user is in the permissions
-        if (isset($flip[$group])) {
-            return true;
-        }
-
-        $permList[] = $group;
-
-
-        $Manager->setSitePermissions(
-            $Site,
-            [$permission => implode(',', $permList)],
-            $EditUser
-        );
-
-        return true;
-    }
-
-    /**
-     * Checks if the User have the permission of the Site
-     *
-     * @param string $perm
-     * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
-     * @param \QUI\Users\User|boolean $User - optional
-     *
-     * @return boolean
-     *
-     * @throws \QUI\Permissions\Exception
-     */
-    public static function checkSitePermission(string $perm, $Site, $User = false)
-    {
-        if (!$User) {
-            $User = self::getUser();
-        }
-
-        if ($User->isSU()) {
-            return true;
-        }
-
-        if (QUI::getUsers()->isSystemUser($User)) {
-            return true;
-        }
-
-
-        $Manager     = QUI::getPermissionManager();
-        $permissions = $Manager->getSitePermissions($Site);
-
-        // default site rights, view, edit, del, new: has their own special checks
-        // with project and site checks
-        switch ($perm) {
-            case 'quiqqer.projects.site.view':
-            case 'quiqqer.projects.sites.view':
-                try {
-                    return self::checkPermissionList(
-                        $permissions,
-                        'quiqqer.projects.site.view',
-                        $User
-                    );
-                } catch (QUI\Permissions\Exception $Exception) {
-                    // if site permissions are not empty do not check user permissions
-                    if (!empty($permissions['quiqqer.projects.site.view'])) {
-                        throw $Exception;
-                    }
-
-                    return self::checkPermission(
-                        'quiqqer.projects.sites.view',
-                        $User
-                    );
-                }
-                break;
-            case 'quiqqer.projects.site.edit':
-            case 'quiqqer.projects.sites.edit':
-                try {
-                    return self::checkPermissionList(
-                        $permissions,
-                        'quiqqer.projects.site.edit',
-                        $User
-                    );
-                } catch (QUI\Permissions\Exception $Exception) {
-                    // if site permissions are not empty do not check user permissions
-                    if (!empty($permissions['quiqqer.projects.site.edit'])) {
-                        throw $Exception;
-                    }
-
-                    return self::checkPermission(
-                        'quiqqer.projects.sites.edit',
-                        $User
-                    );
-                }
-                break;
-            case 'quiqqer.projects.site.del':
-            case 'quiqqer.projects.sites.del':
-                try {
-                    return self::checkPermissionList(
-                        $permissions,
-                        'quiqqer.projects.site.del',
-                        $User
-                    );
-                } catch (QUI\Permissions\Exception $Exception) {
-                    // if site permissions are not empty do not check user permissions
-                    if (!empty($permissions['quiqqer.projects.site.del'])) {
-                        throw $Exception;
-                    }
-
-                    return self::checkPermission(
-                        'quiqqer.projects.sites.del',
-                        $User
-                    );
-                }
-                break;
-            case 'quiqqer.projects.site.new':
-            case 'quiqqer.projects.sites.new':
-                try {
-                    return self::checkPermissionList(
-                        $permissions,
-                        'quiqqer.projects.site.new',
-                        $User
-                    );
-                } catch (QUI\Permissions\Exception $Exception) {
-                    // if site permissions are not empty do not check user permissions
-                    if (!empty($permissions['quiqqer.projects.site.new'])) {
-                        throw $Exception;
-                    }
-
-                    return self::checkPermission(
-                        'quiqqer.projects.sites.new',
-                        $User
-                    );
-                }
-        }
-
-        return self::checkPermissionList($permissions, $perm, $User);
-    }
-
-    /**
-     * Checks if the permission exists in the Site
-     *
-     * @param string $perm
-     * @param \QUI\Projects\Site\|\QUI\Projects\Site\Edit $Site
-     *
-     * @return bool
-     */
-    public static function existsSitePermission(string $perm, $Site): bool
-    {
-        $Manager     = QUI::getPermissionManager();
-        $permissions = $Manager->getSitePermissions($Site);
-
-        return isset($permissions[$perm]);
-    }
-
-    /**
-     * Return the Site Permission
-     *
-     * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
-     * @param string $perm
-     *
-     * @return mixed|boolean
-     */
-    public static function getSitePermission($Site, string $perm)
-    {
-        $Manager     = QUI::getPermissionManager();
-        $permissions = $Manager->getSitePermissions($Site);
-
-        return $permissions[$perm] ?? false;
-    }
-
-    /**
-     * Return a permission of the user
-     * - can be user for string permissions
-     *
-     * @param string $perm
-     * @param QUI\Interfaces\Users\User|null $User
-     *
-     * @return mixed|boolean
-     */
-    public static function getPermission(string $perm, QUI\Interfaces\Users\User $User = null)
-    {
-        if ($User === null) {
-            $User = self::getUser();
-        }
-
-        $Manager     = QUI::getPermissionManager();
-        $permissions = $Manager->getPermissions($User);
-
-        // first check user permission
-        if (isset($permissions[$perm]) && !empty($permissions[$perm])) {
-            return $permissions[$perm];
-        }
-
-        return $permissions[$perm] ?? false;
-    }
-
-    /**
-     * has the User the permission at the site?
-     *
-     * @param string $perm
-     * @param \QUI\Projects\Site $Site
-     * @param \QUI\Users\User|boolean $User - optional
-     *
-     * @return bool
-     */
-    public static function hasSitePermission(string $perm, QUI\Projects\Site $Site, $User = false)
-    {
-        try {
-            return self::checkSitePermission($perm, $Site, $User);
-        } catch (QUI\Exception $Exception) {
-        }
-
-        return false;
-    }
-
-    /**
      * Remove a group from the permission
      *
      * @param Group $Group
-     * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
+     * @param Site|Edit $Site
      * @param string $permission
-     * @param boolean|\QUI\Users\User $EditUser
+     * @param boolean|User $EditUser
      *
      * @return bool
      *
      * @throws QUI\Exception
-     * @throws QUI\Permissions\Exception
+     * @throws Exception
      */
     public static function removeGroupFromSitePermission(
         Group $Group,
@@ -808,10 +812,10 @@ class Permission
             return false;
         }
 
-        /* @var $Site \QUI\Projects\Site */
+        /* @var $Site Site */
         $Site->checkPermission('quiqqer.projects.site.edit', $EditUser);
 
-        $Manager     = QUI::getPermissionManager();
+        $Manager = QUI::getPermissionManager();
         $permissions = $Manager->getSitePermissions($Site);
 
         if (!isset($permissions[$permission])) {
@@ -819,7 +823,7 @@ class Permission
         }
 
         $permList = [];
-        $group    = 'g' . $Group->getId();
+        $group = 'g' . $Group->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -847,15 +851,15 @@ class Permission
     /**
      * Remove a user from the permission
      *
-     * @param \QUI\Users\User $User
-     * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
+     * @param User $User
+     * @param Site|Edit $Site
      * @param string $permission
-     * @param boolean|\QUI\Users\User $EditUser
+     * @param boolean|User $EditUser
      *
      * @return bool
      *
      * @throws QUI\Exception
-     * @throws QUI\Permissions\Exception
+     * @throws Exception
      */
     public static function removeUserFromSitePermission(
         User $User,
@@ -867,10 +871,10 @@ class Permission
             return false;
         }
 
-        /* @var $Site \QUI\Projects\Site */
+        /* @var $Site Site */
         $Site->checkPermission('quiqqer.projects.site.edit', $EditUser);
 
-        $Manager     = QUI::getPermissionManager();
+        $Manager = QUI::getPermissionManager();
         $permissions = $Manager->getSitePermissions($Site);
 
         if (!isset($permissions[$permission])) {
@@ -878,7 +882,7 @@ class Permission
         }
 
         $permList = [];
-        $user     = 'u' . $User->getId();
+        $user = 'u' . $User->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -912,13 +916,13 @@ class Permission
      * Adds a user to the Project permission
      *
      * @param Group $Group
-     * @param \QUI\Projects\Project $Project
+     * @param Project $Project
      * @param string $permission
-     * @param boolean|\QUI\Users\User $EditUser
+     * @param boolean|User $EditUser
      *
      * @return bool
      *
-     * @throws QUI\Permissions\Exception
+     * @throws Exception
      */
     public static function addGroupToProjectPermission(
         Group $Group,
@@ -928,7 +932,7 @@ class Permission
     ): bool {
         self::checkProjectPermission('quiqqer.projects.edit', $Project, $EditUser);
 
-        $Manager     = QUI::getPermissionManager();
+        $Manager = QUI::getPermissionManager();
         $permissions = $Manager->getProjectPermissions($Project);
 
         if (!isset($permissions[$permission])) {
@@ -936,7 +940,7 @@ class Permission
         }
 
         $permList = [];
-        $groups   = 'g' . $Group->getId();
+        $groups = 'g' . $Group->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -961,12 +965,126 @@ class Permission
     }
 
     /**
+     * Checks if the User have the permission of the Project
+     *
+     * @param string $perm
+     * @param Project $Project
+     * @param User|boolean $User - optional
+     *
+     * @return bool
+     *
+     * @throws Exception
+     */
+    public static function checkProjectPermission(
+        string $perm,
+        Project $Project,
+        $User = false
+    ) {
+        if (!$User) {
+            $User = self::getUser();
+        }
+
+        if ($User->isSU()) {
+            return true;
+        }
+
+        if (QUI::getUsers()->isSystemUser($User)) {
+            return true;
+        }
+
+        $Manager = QUI::getPermissionManager();
+        $permissions = $Manager->getProjectPermissions($Project);
+
+
+        // default project rights, edit, destroy, setconfig, editCustomCSS: has their own special checks
+        // with project and site checks
+        switch ($perm) {
+            case 'quiqqer.projects.edit':
+            case 'quiqqer.project.edit':
+                try {
+                    return self::checkPermissionList(
+                        $permissions,
+                        'quiqqer.project.edit',
+                        $User
+                    );
+                } catch (Exception $Exception) {
+                    return self::checkPermission(
+                        'quiqqer.projects.edit',
+                        $User
+                    );
+                }
+
+            case 'quiqqer.projects.destroy':
+            case 'quiqqer.project.destroy':
+                try {
+                    return self::checkPermissionList(
+                        $permissions,
+                        'quiqqer.project.destroy',
+                        $User
+                    );
+                } catch (Exception $Exception) {
+                    return self::checkPermission(
+                        'quiqqer.projects.destroy',
+                        $User
+                    );
+                }
+
+            case 'quiqqer.projects.setconfig':
+            case 'quiqqer.project.setconfig':
+                try {
+                    return self::checkPermissionList(
+                        $permissions,
+                        'quiqqer.project.setconfig',
+                        $User
+                    );
+                } catch (Exception $Exception) {
+                    return self::checkPermission(
+                        'quiqqer.projects.setconfig',
+                        $User
+                    );
+                }
+
+            case 'quiqqer.projects.editCustomCSS':
+            case 'quiqqer.project.editCustomCSS':
+                try {
+                    return self::checkPermissionList(
+                        $permissions,
+                        'quiqqer.project.editCustomCSS',
+                        $User
+                    );
+                } catch (Exception $Exception) {
+                    return self::checkPermission(
+                        'quiqqer.projects.editCustomCSS',
+                        $User
+                    );
+                }
+
+            case 'quiqqer.projects.editCustomJS':
+            case 'quiqqer.project.editCustomJS':
+                try {
+                    return self::checkPermissionList(
+                        $permissions,
+                        'quiqqer.project.editCustomJS',
+                        $User
+                    );
+                } catch (Exception $Exception) {
+                    return self::checkPermission(
+                        'quiqqer.projects.editCustomJS',
+                        $User
+                    );
+                }
+        }
+
+        return self::checkPermissionList($permissions, $perm, $User);
+    }
+
+    /**
      * Adds a user to the Project permission
      *
-     * @param \QUI\Users\User $User
-     * @param \QUI\Projects\Project $Project
+     * @param User $User
+     * @param Project $Project
      * @param string $permission - name of the
-     * @param boolean|\QUI\Users\User $EditUser
+     * @param boolean|User $EditUser
      *
      * @return boolean
      * @throws QUI\Exception
@@ -979,7 +1097,7 @@ class Permission
     ): bool {
         self::checkProjectPermission('quiqqer.projects.edit', $Project, $EditUser);
 
-        $Manager     = QUI::getPermissionManager();
+        $Manager = QUI::getPermissionManager();
         $permissions = $Manager->getProjectPermissions($Project);
 
         if (!isset($permissions[$permission])) {
@@ -987,7 +1105,7 @@ class Permission
         }
 
         $permList = [];
-        $user     = 'u' . $User->getId();
+        $user = 'u' . $User->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -1012,127 +1130,13 @@ class Permission
     }
 
     /**
-     * Checks if the User have the permission of the Project
-     *
-     * @param string $perm
-     * @param Project $Project
-     * @param \QUI\Users\User|boolean $User - optional
-     *
-     * @return bool
-     *
-     * @throws QUI\Permissions\Exception
-     */
-    public static function checkProjectPermission(
-        string $perm,
-        Project $Project,
-        $User = false
-    ) {
-        if (!$User) {
-            $User = self::getUser();
-        }
-
-        if ($User->isSU()) {
-            return true;
-        }
-
-        if (QUI::getUsers()->isSystemUser($User)) {
-            return true;
-        }
-
-        $Manager     = QUI::getPermissionManager();
-        $permissions = $Manager->getProjectPermissions($Project);
-
-
-        // default project rights, edit, destroy, setconfig, editCustomCSS: has their own special checks
-        // with project and site checks
-        switch ($perm) {
-            case 'quiqqer.projects.edit':
-            case 'quiqqer.project.edit':
-                try {
-                    return self::checkPermissionList(
-                        $permissions,
-                        'quiqqer.project.edit',
-                        $User
-                    );
-                } catch (QUI\Permissions\Exception $Exception) {
-                    return self::checkPermission(
-                        'quiqqer.projects.edit',
-                        $User
-                    );
-                }
-
-            case 'quiqqer.projects.destroy':
-            case 'quiqqer.project.destroy':
-                try {
-                    return self::checkPermissionList(
-                        $permissions,
-                        'quiqqer.project.destroy',
-                        $User
-                    );
-                } catch (QUI\Permissions\Exception $Exception) {
-                    return self::checkPermission(
-                        'quiqqer.projects.destroy',
-                        $User
-                    );
-                }
-
-            case 'quiqqer.projects.setconfig':
-            case 'quiqqer.project.setconfig':
-                try {
-                    return self::checkPermissionList(
-                        $permissions,
-                        'quiqqer.project.setconfig',
-                        $User
-                    );
-                } catch (QUI\Permissions\Exception $Exception) {
-                    return self::checkPermission(
-                        'quiqqer.projects.setconfig',
-                        $User
-                    );
-                }
-
-            case 'quiqqer.projects.editCustomCSS':
-            case 'quiqqer.project.editCustomCSS':
-                try {
-                    return self::checkPermissionList(
-                        $permissions,
-                        'quiqqer.project.editCustomCSS',
-                        $User
-                    );
-                } catch (QUI\Permissions\Exception $Exception) {
-                    return self::checkPermission(
-                        'quiqqer.projects.editCustomCSS',
-                        $User
-                    );
-                }
-
-            case 'quiqqer.projects.editCustomJS':
-            case 'quiqqer.project.editCustomJS':
-                try {
-                    return self::checkPermissionList(
-                        $permissions,
-                        'quiqqer.project.editCustomJS',
-                        $User
-                    );
-                } catch (QUI\Permissions\Exception $Exception) {
-                    return self::checkPermission(
-                        'quiqqer.projects.editCustomJS',
-                        $User
-                    );
-                }
-        }
-
-        return self::checkPermissionList($permissions, $perm, $User);
-    }
-
-    /**
      * Remove an user from the project permission
      *
-     * @param \QUI\Users\User $User
-     * @param \QUI\Projects\Project $Project
+     * @param User $User
+     * @param Project $Project
      * @param string $permission - name of the permission
      *
-     * @throws QUI\Permissions\Exception
+     * @throws Exception
      */
     public static function removeUserFromProjectPermission(
         User $User,
@@ -1141,7 +1145,7 @@ class Permission
     ) {
         self::checkProjectPermission('quiqqer.projects.edit', $Project);
 
-        $Manager     = QUI::getPermissionManager();
+        $Manager = QUI::getPermissionManager();
         $permissions = $Manager->getProjectPermissions($Project);
 
         if (!isset($permissions[$permission])) {
@@ -1149,7 +1153,7 @@ class Permission
         }
 
         $permList = [];
-        $user     = 'u' . $User->getId();
+        $user = 'u' . $User->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -1174,13 +1178,13 @@ class Permission
     /**
      * Remove a group from the project permission
      *
-     * @param \QUI\Groups\Group $Group
-     * @param \QUI\Projects\Project $Project
+     * @param Group $Group
+     * @param Project $Project
      * @param string $permission - name of the permission
      *
      * @return bool
      *
-     * @throws QUI\Permissions\Exception
+     * @throws Exception
      */
     public static function removeGroupFromProjectPermission(
         Group $Group,
@@ -1189,7 +1193,7 @@ class Permission
     ): bool {
         self::checkProjectPermission('quiqqer.projects.edit', $Project);
 
-        $Manager     = QUI::getPermissionManager();
+        $Manager = QUI::getPermissionManager();
         $permissions = $Manager->getProjectPermissions($Project);
 
         if (!isset($permissions[$permission])) {
@@ -1197,7 +1201,7 @@ class Permission
         }
 
         $permList = [];
-        $group    = 'g' . $Group->getId();
+        $group = 'g' . $Group->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -1228,7 +1232,7 @@ class Permission
      *
      * @param string $perm
      * @param \QUI\Projects\Media\Item $MediaItem
-     * @param \QUI\Users\User|boolean $User - optional
+     * @param User|boolean $User - optional
      *
      * @return bool
      */
@@ -1251,11 +1255,11 @@ class Permission
      *
      * @param string $perm
      * @param QUI\Projects\Media\Item $MediaItem
-     * @param \QUI\Users\User|boolean $User - optional
+     * @param User|boolean $User - optional
      *
      * @return boolean
      *
-     * @throws \QUI\Permissions\Exception
+     * @throws Exception
      */
     public static function checkMediaPermission(string $perm, Media\Item $MediaItem, $User = false): bool
     {
@@ -1276,7 +1280,7 @@ class Permission
         }
 
 
-        $Manager     = QUI::getPermissionManager();
+        $Manager = QUI::getPermissionManager();
         $permissions = $Manager->getMediaPermissions($MediaItem);
 
         return self::checkPermissionList($permissions, $perm, $User);
@@ -1289,12 +1293,12 @@ class Permission
      * @param Group $Group
      * @param Media\Item $MediaItem
      * @param string $permission
-     * @param boolean|\QUI\Users\User $EditUser
+     * @param boolean|User $EditUser
      *
      * @return bool
      *
      * @throws QUI\Exception
-     * @throws QUI\Permissions\Exception
+     * @throws Exception
      */
     public static function removeGroupFromMediaPermission(
         Group $Group,
@@ -1309,7 +1313,7 @@ class Permission
         $MediaItem->checkPermission('quiqqer.projects.media.set_permissions', $EditUser);
         $MediaItem->checkPermission('quiqqer.projects.media.edit', $EditUser);
 
-        $Manager     = QUI::getPermissionManager();
+        $Manager = QUI::getPermissionManager();
         $permissions = $Manager->getMediaPermissions($MediaItem);
 
         if (!isset($permissions[$permission])) {
@@ -1317,7 +1321,7 @@ class Permission
         }
 
         $permList = [];
-        $group    = 'g' . $Group->getId();
+        $group = 'g' . $Group->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -1345,15 +1349,15 @@ class Permission
     /**
      * Remove a user from the permission
      *
-     * @param \QUI\Users\User $User
+     * @param User $User
      * @param Media\Item $MediaItem
      * @param string $permission
-     * @param boolean|\QUI\Users\User $EditUser
+     * @param boolean|User $EditUser
      *
      * @return bool
      *
      * @throws QUI\Exception
-     * @throws QUI\Permissions\Exception
+     * @throws Exception
      */
     public static function removeUserFromMediaPermission(
         User $User,
@@ -1368,7 +1372,7 @@ class Permission
         $MediaItem->checkPermission('quiqqer.projects.media.set_permissions', $EditUser);
         $MediaItem->checkPermission('quiqqer.projects.media.edit', $EditUser);
 
-        $Manager     = QUI::getPermissionManager();
+        $Manager = QUI::getPermissionManager();
         $permissions = $Manager->getMediaPermissions($MediaItem);
 
         if (!isset($permissions[$permission])) {
@@ -1376,7 +1380,7 @@ class Permission
         }
 
         $permList = [];
-        $user     = 'u' . $User->getId();
+        $user = 'u' . $User->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -1405,15 +1409,15 @@ class Permission
     /**
      * Add a group to the permission
      *
-     * @param \QUI\Groups\Group $Group
+     * @param Group $Group
      * @param Media\Item $MediaItem
      * @param string $permission - name of the permission
-     * @param boolean|\QUI\Users\User $EditUser
+     * @param boolean|User $EditUser
      *
      * @return bool
      *
      * @throws QUI\Exception
-     * @throws QUI\Permissions\Exception
+     * @throws Exception
      */
     public static function addGroupToMediaPermission(
         Group $Group,
@@ -1428,7 +1432,7 @@ class Permission
         $MediaItem->checkPermission('quiqqer.projects.media.set_permissions', $EditUser);
         $MediaItem->checkPermission('quiqqer.projects.media.edit', $EditUser);
 
-        $Manager     = QUI::getPermissionManager();
+        $Manager = QUI::getPermissionManager();
         $permissions = $Manager->getMediaPermissions($MediaItem);
 
         if (!isset($permissions[$permission])) {
@@ -1436,7 +1440,7 @@ class Permission
         }
 
         $permList = [];
-        $group    = 'g' . $Group->getId();
+        $group = 'g' . $Group->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -1464,15 +1468,15 @@ class Permission
     /**
      * Add a user to the permission
      *
-     * @param \QUI\Users\User $User
+     * @param User $User
      * @param Media\Item $MediaItem
      * @param string $permission - name of the permission
-     * @param boolean|\QUI\Users\User $EditUser
+     * @param boolean|User $EditUser
      *
      * @return bool
      *
      * @throws QUI\Exception
-     * @throws QUI\Permissions\Exception
+     * @throws Exception
      */
     public static function addUserToMediaPermission(
         User $User,
@@ -1487,7 +1491,7 @@ class Permission
         $MediaItem->checkPermission('quiqqer.projects.media.set_permissions', $EditUser);
         $MediaItem->checkPermission('quiqqer.projects.media.edit', $EditUser);
 
-        $Manager     = QUI::getPermissionManager();
+        $Manager = QUI::getPermissionManager();
         $permissions = $Manager->getMediaPermissions($MediaItem);
 
         if (!isset($permissions[$permission])) {
@@ -1495,7 +1499,7 @@ class Permission
         }
 
         $permList = [];
-        $user     = 'u' . $User->getId();
+        $user = 'u' . $User->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));

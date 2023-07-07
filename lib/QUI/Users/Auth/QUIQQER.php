@@ -39,8 +39,24 @@ class QUIQQER extends AbstractAuthenticator
      */
     public function __construct($username = '')
     {
-        $username       = Orthos::clear($username);
+        $username = Orthos::clear($username);
         $this->username = $username;
+    }
+
+    /**
+     * @return Controls\QUIQQERLogin
+     */
+    public static function getLoginControl()
+    {
+        return new Controls\QUIQQERLogin();
+    }
+
+    /**
+     * @return bool
+     */
+    public static function isCLICompatible()
+    {
+        return true;
     }
 
     /**
@@ -71,108 +87,6 @@ class QUIQQER extends AbstractAuthenticator
         }
 
         return $Locale->get('quiqqer/quiqqer', 'quiqqer.auth.description');
-    }
-
-    /**
-     * Authenticate the user
-     *
-     * @param string $password
-     * @return boolean
-     *
-     * @throws QUI\Exception
-     */
-    public function auth($password)
-    {
-        if (!\is_string($this->username) || empty($this->username)) {
-            throw new QUI\Users\Exception(
-                ['quiqqer/quiqqer', 'exception.login.fail.wrong.username.input'],
-                401
-            );
-        }
-
-        if (\is_array($password) && isset($password['password'])) {
-            $password = $password['password'];
-        }
-
-        if (empty($password)) {
-            throw new QUI\Users\Exception(
-                ['quiqqer/quiqqer', 'exception.login.fail.wrong.password.input'],
-                401
-            );
-        }
-
-        if (!\is_string($password) || empty($password)) {
-            throw new QUI\Users\Exception(
-                ['quiqqer/quiqqer', 'exception.login.fail.wrong.password.input'],
-                401
-            );
-        }
-
-        $password = \trim($password);
-
-        $userData = QUI::getDataBase()->fetch([
-            'select' => ['password'],
-            'from'   => QUI::getUsers()->table(),
-            'where'  => [
-                'id' => $this->getUserId()
-            ],
-            'limit'  => 1
-        ]);
-
-        if (empty($userData)
-            || !isset($userData[0]['password'])
-            || empty($userData[0]['password'])
-        ) {
-            throw new QUI\Users\Exception(
-                ['quiqqer/quiqqer', 'exception.login.fail'],
-                401
-            );
-        }
-
-        // get password hash from db
-        $passwordHash = $userData[0]['password'];
-
-        // generate password with given password and salt
-        if (!\password_verify($password, $passwordHash)) {
-            // fallback to old method
-            $salt               = \mb_substr($passwordHash, 0, SALT_LENGTH);
-            $actualPasswordHash = $this->genHash($password, $salt);
-
-            if ($actualPasswordHash !== $passwordHash) {
-                throw new QUI\Users\Exception(
-                    ['quiqqer/quiqqer', 'exception.login.fail'],
-                    401
-                );
-            }
-
-            QUI::getDataBase()->update(
-                QUI::getDBTableName('users'),
-                ['password' => QUI\Security\Password::generateHash($password)],
-                ['id' => $this->getUserId()]
-            );
-        }
-
-        $this->authenticated = true;
-
-        return true;
-    }
-
-    /**
-     * Old genHash method
-     *
-     * @param string $pass
-     * @param string $salt
-     * @return string
-     * @deprecated
-     */
-    protected function genHash($pass, $salt = null)
-    {
-        if ($salt === null) {
-            $randomBytes = \openssl_random_pseudo_bytes(SALT_LENGTH);
-            $salt        = \mb_substr(\bin2hex($randomBytes), 0, SALT_LENGTH);
-        }
-
-        return $salt.\md5($salt.$pass);
     }
 
     /**
@@ -217,22 +131,6 @@ class QUIQQER extends AbstractAuthenticator
      */
 
     /**
-     * @return Controls\QUIQQERLogin
-     */
-    public static function getLoginControl()
-    {
-        return new Controls\QUIQQERLogin();
-    }
-
-    /**
-     * @return bool
-     */
-    public static function isCLICompatible()
-    {
-        return true;
-    }
-
-    /**
      * @param QUI\System\Console $Console
      * @throws QUI\Exception
      */
@@ -261,5 +159,108 @@ class QUIQQER extends AbstractAuthenticator
 
         $this->username = $username;
         $this->auth($password);
+    }
+
+    /**
+     * Authenticate the user
+     *
+     * @param string $password
+     * @return boolean
+     *
+     * @throws QUI\Exception
+     */
+    public function auth($password)
+    {
+        if (!\is_string($this->username) || empty($this->username)) {
+            throw new QUI\Users\Exception(
+                ['quiqqer/quiqqer', 'exception.login.fail.wrong.username.input'],
+                401
+            );
+        }
+
+        if (\is_array($password) && isset($password['password'])) {
+            $password = $password['password'];
+        }
+
+        if (empty($password)) {
+            throw new QUI\Users\Exception(
+                ['quiqqer/quiqqer', 'exception.login.fail.wrong.password.input'],
+                401
+            );
+        }
+
+        if (!\is_string($password) || empty($password)) {
+            throw new QUI\Users\Exception(
+                ['quiqqer/quiqqer', 'exception.login.fail.wrong.password.input'],
+                401
+            );
+        }
+
+        $password = \trim($password);
+
+        $userData = QUI::getDataBase()->fetch([
+            'select' => ['password'],
+            'from' => QUI::getUsers()->table(),
+            'where' => [
+                'id' => $this->getUserId()
+            ],
+            'limit' => 1
+        ]);
+
+        if (
+            empty($userData)
+            || !isset($userData[0]['password'])
+            || empty($userData[0]['password'])
+        ) {
+            throw new QUI\Users\Exception(
+                ['quiqqer/quiqqer', 'exception.login.fail'],
+                401
+            );
+        }
+
+        // get password hash from db
+        $passwordHash = $userData[0]['password'];
+
+        // generate password with given password and salt
+        if (!\password_verify($password, $passwordHash)) {
+            // fallback to old method
+            $salt = \mb_substr($passwordHash, 0, SALT_LENGTH);
+            $actualPasswordHash = $this->genHash($password, $salt);
+
+            if ($actualPasswordHash !== $passwordHash) {
+                throw new QUI\Users\Exception(
+                    ['quiqqer/quiqqer', 'exception.login.fail'],
+                    401
+                );
+            }
+
+            QUI::getDataBase()->update(
+                QUI::getDBTableName('users'),
+                ['password' => QUI\Security\Password::generateHash($password)],
+                ['id' => $this->getUserId()]
+            );
+        }
+
+        $this->authenticated = true;
+
+        return true;
+    }
+
+    /**
+     * Old genHash method
+     *
+     * @param string $pass
+     * @param string $salt
+     * @return string
+     * @deprecated
+     */
+    protected function genHash($pass, $salt = null)
+    {
+        if ($salt === null) {
+            $randomBytes = \openssl_random_pseudo_bytes(SALT_LENGTH);
+            $salt = \mb_substr(\bin2hex($randomBytes), 0, SALT_LENGTH);
+        }
+
+        return $salt . \md5($salt . $pass);
     }
 }

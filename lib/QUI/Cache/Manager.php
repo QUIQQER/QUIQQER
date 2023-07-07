@@ -95,6 +95,43 @@ class Manager
     protected static $currentDriver = null;
 
     /**
+     * Returns explicitly the file system cache
+     *
+     * @return false|Stash\Pool
+     * @deprecated use getDriver
+     */
+    public static function getFileSystemCache()
+    {
+        if (!is_null(self::$FileSystemStash)) {
+            return self::$FileSystemStash;
+        }
+
+        $Config = self::getConfig();
+        $conf = $Config->get('filesystem');
+        $params = [
+            'path' => VAR_DIR . 'cache/stack/'
+        ];
+
+        if (!empty($conf['path']) && is_dir($conf['path'])) {
+            $params['path'] = $conf['path'];
+        }
+
+        try {
+            $handler = new QuiqqerFileDriver($params);
+        } catch (Stash\Exception\RuntimeException $Exception) {
+            return false;
+        }
+
+        $Handler = new Stash\Driver\Composite([
+            'drivers' => [$handler]
+        ]);
+
+        self::$FileSystemStash = new Stash\Pool($Handler);
+
+        return self::$FileSystemStash;
+    }
+
+    /**
      * Cache Settings
      *
      * @return Config
@@ -112,6 +149,82 @@ class Manager
         }
 
         return self::$Config;
+    }
+
+    /**
+     * Returns cached data.
+     * Throws an exception if no data is present in the cache for the given key.
+     *
+     * @param string $name
+     *
+     * @return string|array|object|boolean
+     *
+     * @throws QUI\Cache\Exception
+     */
+    public static function get($name)
+    {
+        if (self::getConfig()->get('general', 'nocache')) {
+            throw new QUI\Cache\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.lib.cache.manager.not.exist'
+                ),
+                404
+            );
+        }
+
+        if (defined('QUIQQER_SETUP')) {
+            throw new QUI\Cache\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.lib.cache.manager.not.exist'
+                ),
+                404
+            );
+        }
+
+        try {
+            $Item = self::getStash($name);
+            $data = $Item->get();
+            $isMiss = $Item->isMiss();
+        } catch (\Exception $Exception) {
+            throw new QUI\Cache\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.lib.cache.manager.not.exist'
+                ),
+                404
+            );
+        }
+
+        /**
+         * @todo
+         *
+         * Do not treat cache misses as missing cache items OR throw other
+         * Exception.
+         */
+        if ($isMiss) {
+            //
+            // auskommentiert by hen, da diese vorgehensweise nicht optimal ist und server zugespamt werden
+            //
+//            QUI\System\Log::addDebug(
+//                'Cache item "'.$name.'" is a miss. This means the item could not be reliably'
+//                .' retrieved from the cache. This does NOT necessarily mean that the item is actually not cached.'
+//                .' But QUIQQER currently handles all cache misses as a non-existing cache entry.'
+//                .' This is behaviour will be fixed in the future. This message is for information'
+//                .' purposes only.'
+//            );
+
+            throw new QUI\Cache\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.lib.cache.manager.not.exist'
+                ),
+                404
+            );
+        }
+
+        return $data;
     }
 
     /**
@@ -169,7 +282,7 @@ class Manager
             'drivers' => self::$handlers
         ]);
 
-        $Stash       = new Stash\Pool($Handler);
+        $Stash = new Stash\Pool($Handler);
         self::$Stash = $Stash;
 
         return self::$Stash->getItem($key);
@@ -182,7 +295,7 @@ class Manager
     {
         $Config = self::getConfig();
 
-        $handlers     = [];
+        $handlers = [];
         $confHandlers = $Config->get('handlers');
 
         if (empty($confHandlers)) {
@@ -265,7 +378,7 @@ class Manager
 
         switch ($driver) {
             case 'apc':
-                $conf   = $Config->get('apc');
+                $conf = $Config->get('apc');
                 $params = [
                     'namespace' => 'pcsg'
                 ];
@@ -328,15 +441,15 @@ class Manager
             case 'memcache':
                 // defaults
                 $defaults = [
-                    'prefix_key'           => 'pcsg',
+                    'prefix_key' => 'pcsg',
                     'libketama_compatible' => true,
-                    'cache_lookups'        => true,
-                    'serializer'           => 'json'
+                    'cache_lookups' => true,
+                    'serializer' => 'json'
                 ];
 
                 // servers
                 $serverCount = $Config->get('memcache', 'servers');
-                $servers     = [];
+                $servers = [];
 
                 for ($i = 1; $i <= $serverCount; $i++) {
                     $section = 'memcache' . $i;
@@ -388,9 +501,9 @@ class Manager
                         QUI\System\Log::LEVEL_ALERT
                     );
                 } else {
-                    $conf       = $Config->get('mongo');
-                    $host       = 'localhost';
-                    $database   = 'local';
+                    $conf = $Config->get('mongo');
+                    $host = 'localhost';
+                    $database = 'local';
                     $collection = 'quiqqer.cache';
 
                     // database server
@@ -420,8 +533,8 @@ class Manager
                     }
 
                     return new QuiqqerMongoDriver([
-                        'mongo'      => $Client,
-                        'database'   => $database,
+                        'mongo' => $Client,
+                        'database' => $database,
                         'collection' => $collection
                     ]);
                 }
@@ -430,7 +543,7 @@ class Manager
         }
 
         // default = filesystem
-        $conf   = $Config->get('filesystem');
+        $conf = $Config->get('filesystem');
         $params = [
             'path' => VAR_DIR . 'cache/stack/'
         ];
@@ -455,7 +568,7 @@ class Manager
             return self::$currentDriver;
         }
 
-        $Config   = self::getConfig();
+        $Config = self::getConfig();
         $handlers = $Config->get('handlers');
 
         if (empty($handlers)) {
@@ -475,43 +588,6 @@ class Manager
         self::$currentDriver = 'filesystem';
 
         return 'filesystem';
-    }
-
-    /**
-     * Returns explicitly the file system cache
-     *
-     * @return false|Stash\Pool
-     * @deprecated use getDriver
-     */
-    public static function getFileSystemCache()
-    {
-        if (!is_null(self::$FileSystemStash)) {
-            return self::$FileSystemStash;
-        }
-
-        $Config = self::getConfig();
-        $conf   = $Config->get('filesystem');
-        $params = [
-            'path' => VAR_DIR . 'cache/stack/'
-        ];
-
-        if (!empty($conf['path']) && is_dir($conf['path'])) {
-            $params['path'] = $conf['path'];
-        }
-
-        try {
-            $handler = new QuiqqerFileDriver($params);
-        } catch (Stash\Exception\RuntimeException $Exception) {
-            return false;
-        }
-
-        $Handler = new Stash\Driver\Composite([
-            'drivers' => [$handler]
-        ]);
-
-        self::$FileSystemStash = new Stash\Pool($Handler);
-
-        return self::$FileSystemStash;
     }
 
     /**
@@ -580,82 +656,6 @@ class Manager
         }
     }
 
-    /**
-     * Returns cached data.
-     * Throws an exception if no data is present in the cache for the given key.
-     *
-     * @param string $name
-     *
-     * @return string|array|object|boolean
-     *
-     * @throws QUI\Cache\Exception
-     */
-    public static function get($name)
-    {
-        if (self::getConfig()->get('general', 'nocache')) {
-            throw new QUI\Cache\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
-                    'exception.lib.cache.manager.not.exist'
-                ),
-                404
-            );
-        }
-
-        if (defined('QUIQQER_SETUP')) {
-            throw new QUI\Cache\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
-                    'exception.lib.cache.manager.not.exist'
-                ),
-                404
-            );
-        }
-
-        try {
-            $Item   = self::getStash($name);
-            $data   = $Item->get();
-            $isMiss = $Item->isMiss();
-        } catch (\Exception $Exception) {
-            throw new QUI\Cache\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
-                    'exception.lib.cache.manager.not.exist'
-                ),
-                404
-            );
-        }
-
-        /**
-         * @todo
-         *
-         * Do not treat cache misses as missing cache items OR throw other
-         * Exception.
-         */
-        if ($isMiss) {
-            //
-            // auskommentiert by hen, da diese vorgehensweise nicht optimal ist und server zugespamt werden
-            //
-//            QUI\System\Log::addDebug(
-//                'Cache item "'.$name.'" is a miss. This means the item could not be reliably'
-//                .' retrieved from the cache. This does NOT necessarily mean that the item is actually not cached.'
-//                .' But QUIQQER currently handles all cache misses as a non-existing cache entry.'
-//                .' This is behaviour will be fixed in the future. This message is for information'
-//                .' purposes only.'
-//            );
-
-            throw new QUI\Cache\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
-                    'exception.lib.cache.manager.not.exist'
-                ),
-                404
-            );
-        }
-
-        return $data;
-    }
-
     // region clearing
 
     /**
@@ -670,6 +670,26 @@ class Manager
             QUI::getEvents()->fireEvent('clearSettingsCache');
         } catch (\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
+        }
+    }
+
+    /**
+     * Clears all or only a given entry from the cache.
+     *
+     * @param string|boolean $key - optional; if no key is given the whole cache is cleared
+     */
+    public static function clear($key = "")
+    {
+        if (self::$noClearing) {
+            return;
+        }
+
+        try {
+            self::getStash($key)->clear();
+
+            QUI::getEvents()->fireEvent('cacheClear', [$key]);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
         }
     }
 
@@ -853,26 +873,6 @@ class Manager
     }
 
     /**
-     * Clears all or only a given entry from the cache.
-     *
-     * @param string|boolean $key - optional; if no key is given the whole cache is cleared
-     */
-    public static function clear($key = "")
-    {
-        if (self::$noClearing) {
-            return;
-        }
-
-        try {
-            self::getStash($key)->clear();
-
-            QUI::getEvents()->fireEvent('cacheClear', [$key]);
-        } catch (\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
-        }
-    }
-
-    /**
      * The purge function removes stale data from the cache backends while leaving current data intact.
      * Depending on the size of the cache and the specific drivers in use this can take some time,
      * so it is best called as part of a separate maintenance task or as part of a cron job.
@@ -944,26 +944,6 @@ class Manager
     //region longtime
 
     /**
-     * Clears all or only a given entry from the longtime cache.
-     *
-     * @param string|boolean $key - optional; if no key is given the whole cache is cleared
-     */
-    public static function longTimeCacheClear($key = "")
-    {
-        if (self::$noClearing) {
-            return;
-        }
-
-        try {
-            LongTermCache::clear($key);
-
-            QUI::getEvents()->fireEvent('longTimeCacheClear', [$key]);
-        } catch (\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
-        }
-    }
-
-    /**
      * clear the complete quiqqer long time cache
      */
     public static function longTimeCacheClearCompleteQuiqqer()
@@ -981,6 +961,26 @@ class Manager
             QUI\Utils\System\File::unlink(LongTermCache::fileSystemPath());
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
+        }
+    }
+
+    /**
+     * Clears all or only a given entry from the longtime cache.
+     *
+     * @param string|boolean $key - optional; if no key is given the whole cache is cleared
+     */
+    public static function longTimeCacheClear($key = "")
+    {
+        if (self::$noClearing) {
+            return;
+        }
+
+        try {
+            LongTermCache::clear($key);
+
+            QUI::getEvents()->fireEvent('longTimeCacheClear', [$key]);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
         }
     }
 

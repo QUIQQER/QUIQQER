@@ -6,8 +6,8 @@
 
 namespace QUI\System\Console\Tools;
 
-use QUI;
 use League\CLImate\CLImate;
+use QUI;
 
 /**
  * Permissions console tool
@@ -99,22 +99,22 @@ class Permissions extends QUI\System\Console\Tool
         $Climate = new CLImate();
 
         $Climate->arguments->add([
-            'help'  => [
-                'longPrefix'  => 'help',
+            'help' => [
+                'longPrefix' => 'help',
                 'description' => QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.permissions.help.description'),
-                'noValue'     => true
+                'noValue' => true
             ],
-            'list'  => [
-                'longPrefix'  => 'list',
+            'list' => [
+                'longPrefix' => 'list',
                 'description' => QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.permissions.list.description'),
-                'noValue'     => true
+                'noValue' => true
             ],
-            'user'  => [
-                'longPrefix'  => 'user',
+            'user' => [
+                'longPrefix' => 'user',
                 'description' => QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.permissions.user.description')
             ],
             'group' => [
-                'longPrefix'  => 'group',
+                'longPrefix' => 'group',
                 'description' => QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.permissions.group.description')
             ]
         ]);
@@ -132,7 +132,7 @@ class Permissions extends QUI\System\Console\Tool
     protected function showList()
     {
         $permissions = QUI::getPermissionManager()->getPermissionList();
-        $data        = [];
+        $data = [];
 
         foreach ($permissions as $permission => $perm) {
             if (!isset($perm['defaultValue'])) {
@@ -146,11 +146,11 @@ class Permissions extends QUI\System\Console\Tool
             }
 
             $data[] = [
-                'permission'   => $permission,
-                'type'         => $perm['type'],
-                'area'         => $perm['area'],
-                'title'        => $title,
-                'src'          => $perm['src'],
+                'permission' => $permission,
+                'type' => $perm['type'],
+                'area' => $perm['area'],
+                'title' => $title,
+                'src' => $perm['src'],
                 'defaultValue' => $perm['defaultValue'],
             ];
         }
@@ -166,7 +166,7 @@ class Permissions extends QUI\System\Console\Tool
      */
     protected function showUser()
     {
-        $user   = $this->getArgument('user');
+        $user = $this->getArgument('user');
         $needle = $this->getArgument('permission');
 
         try {
@@ -177,12 +177,12 @@ class Permissions extends QUI\System\Console\Tool
             exit;
         }
 
-        $Manager         = QUI::getPermissionManager();
+        $Manager = QUI::getPermissionManager();
         $usedPermissions = $Manager->getPermissions($User);
         $userPermissions = $Manager->getCompletePermissionList($User);
-        $permissions     = $Manager->getPermissionList();
+        $permissions = $Manager->getPermissionList();
 
-        $data   = [];
+        $data = [];
         $groups = $User->getGroups();
 
         // helper
@@ -195,7 +195,7 @@ class Permissions extends QUI\System\Console\Tool
             $groups
         ) {
             $value = $userPermissions[$permission];
-            $perm  = $permissions[$permission];
+            $perm = $permissions[$permission];
 
             $title = \explode(' ', $perm['title']);
 
@@ -209,11 +209,11 @@ class Permissions extends QUI\System\Console\Tool
 
             $result = [
                 'permission' => $permission,
-                'title'      => $title,
-                'value'      => $value,
-                'default'    => $perm['defaultValue'],
-                'used'       => QUI\Permissions\Permission::hasPermission($permission, $User),
-                'isSu'       => $User->isSU()
+                'title' => $title,
+                'value' => $value,
+                'default' => $perm['defaultValue'],
+                'used' => QUI\Permissions\Permission::hasPermission($permission, $User),
+                'isSu' => $User->isSU()
             ];
 
             if (!empty($groups)) {
@@ -232,7 +232,7 @@ class Permissions extends QUI\System\Console\Tool
 
         $message = QUI::getLocale()->get('quiqqer/quiqqer', 'console.permissions.user', [
             'username' => $User->getUsername(),
-            'user'     => $User->getName(),
+            'user' => $User->getName(),
         ]);
 
         $this->writeLn();
@@ -259,7 +259,7 @@ class Permissions extends QUI\System\Console\Tool
      */
     protected function showGroup()
     {
-        $group  = $this->getArgument('group');
+        $group = $this->getArgument('group');
         $needle = $this->getArgument('permission');
 
         try {
@@ -270,11 +270,11 @@ class Permissions extends QUI\System\Console\Tool
             exit;
         }
 
-        $data             = [];
-        $Manager          = QUI::getPermissionManager();
-        $usedPermissions  = $Manager->getPermissions($Group);
+        $data = [];
+        $Manager = QUI::getPermissionManager();
+        $usedPermissions = $Manager->getPermissions($Group);
         $groupPermissions = $Manager->getCompletePermissionList($Group);
-        $permissions      = $Manager->getPermissionList();
+        $permissions = $Manager->getPermissionList();
 
         $parsePermission = function ($permission) use (
             $Group,
@@ -284,7 +284,7 @@ class Permissions extends QUI\System\Console\Tool
             $usedPermissions
         ) {
             $value = $groupPermissions[$permission];
-            $perm  = $permissions[$permission];
+            $perm = $permissions[$permission];
 
             $title = \explode(' ', $perm['title']);
 
@@ -298,9 +298,9 @@ class Permissions extends QUI\System\Console\Tool
 
             return [
                 'permission' => $permission,
-                'title'      => $title,
-                'value'      => $value,
-                'default'    => $perm['defaultValue']
+                'title' => $title,
+                'value' => $value,
+                'default' => $perm['defaultValue']
             ];
         };
 

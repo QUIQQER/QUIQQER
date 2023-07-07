@@ -37,17 +37,17 @@ class Search
      */
     public static function search($searchTerm, $searchParams = [], $count = false)
     {
-        $searchUsers  = false;
+        $searchUsers = false;
         $searchGroups = false;
 
         if ($count) {
             $searchResult = [
-                'users'  => 0,
+                'users' => 0,
                 'groups' => 0
             ];
         } else {
             $searchResult = [
-                'users'  => [],
+                'users' => [],
                 'groups' => []
             ];
         }
@@ -92,26 +92,27 @@ class Search
             } else {
                 if (!empty($resultUsers)) {
                     $selectFieldsAvailable = [
-                        'username'  => true,
+                        'username' => true,
                         'usergroup' => true,
-                        'email'     => true,
-                        'active'    => true,
-                        'regdate'   => true,
-                        'su'        => true,
-                        'expire'    => true,
-                        'lastedit'  => true,
+                        'email' => true,
+                        'active' => true,
+                        'regdate' => true,
+                        'su' => true,
+                        'expire' => true,
+                        'lastedit' => true,
                         'firstname' => true,
-                        'lastname'  => true,
+                        'lastname' => true,
                         'usertitle' => true,
-                        'birthday'  => true,
-                        'avatar'    => true,
-                        'lang'      => true,
-                        'company'   => true
+                        'birthday' => true,
+                        'avatar' => true,
+                        'lang' => true,
+                        'company' => true
                     ];
 
                     $selectFields = [];
 
-                    if (isset($searchParams['users']['select'])
+                    if (
+                        isset($searchParams['users']['select'])
                         && !empty($searchParams['users']['select'])
                         && \is_array($searchParams['users']['select'])
                     ) {
@@ -127,10 +128,10 @@ class Search
 
                     $result = QUI::getDataBase()->fetch([
                         'select' => $selectFields,
-                        'from'   => QUI\Users\Manager::table(),
-                        'where'  => [
+                        'from' => QUI\Users\Manager::table(),
+                        'where' => [
                             'id' => [
-                                'type'  => 'IN',
+                                'type' => 'IN',
                                 'value' => $resultUsers
                             ]
                         ]
@@ -160,14 +161,15 @@ class Search
             } else {
                 if (!empty($resultGroups)) {
                     $selectFieldsAvailable = [
-                        'name'   => true,
+                        'name' => true,
                         'parent' => true,
                         'active' => true
                     ];
 
                     $selectFields = [];
 
-                    if (isset($searchParams['groups']['select'])
+                    if (
+                        isset($searchParams['groups']['select'])
                         && !empty($searchParams['groups']['select'])
                         && \is_array($searchParams['groups']['select'])
                     ) {
@@ -183,10 +185,10 @@ class Search
 
                     $result = QUI::getDataBase()->fetch([
                         'select' => $selectFields,
-                        'from'   => QUI\Groups\Manager::table(),
-                        'where'  => [
+                        'from' => QUI\Groups\Manager::table(),
+                        'where' => [
                             'id' => [
-                                'type'  => 'IN',
+                                'type' => 'IN',
                                 'value' => $resultGroups
                             ]
                         ]
@@ -221,7 +223,7 @@ class Search
             $sql = 'SELECT id';
         }
 
-        $sql .= ' FROM '.QUI\Users\Manager::table();
+        $sql .= ' FROM ' . QUI\Users\Manager::table();
 
         // build WHERE
         $where = [];
@@ -229,16 +231,17 @@ class Search
 
         // fields where searchTerm is searched
         $searchFieldsAvailable = [
-            'id'        => true,
-            'username'  => true,
-            'email'     => true,
+            'id' => true,
+            'username' => true,
+            'email' => true,
             'firstname' => true,
-            'lastname'  => true
+            'lastname' => true
         ];
 
         $searchFields = [];
 
-        if (isset($searchParams['searchFields'])
+        if (
+            isset($searchParams['searchFields'])
             && !empty($searchParams['searchFields'])
             && \is_array($searchParams['searchFields'])
         ) {
@@ -258,24 +261,25 @@ class Search
         }
 
         $whereOR = [];
-        $i       = 0;
+        $i = 0;
 
         foreach ($searchFields as $field) {
-            $whereOR[]          = '`'.$field.'` LIKE :search'.$i;
-            $binds['search'.$i] = [
-                'value' => '%'.$searchTerm.'%',
-                'type'  => \PDO::PARAM_STR
+            $whereOR[] = '`' . $field . '` LIKE :search' . $i;
+            $binds['search' . $i] = [
+                'value' => '%' . $searchTerm . '%',
+                'type' => \PDO::PARAM_STR
             ];
 
             $i++;
         }
 
         if (!empty($whereOR)) {
-            $where[] = '('.\implode(' OR ', $whereOR).')';
+            $where[] = '(' . \implode(' OR ', $whereOR) . ')';
         }
 
         // search filter
-        if (isset($searchParams['filter'])
+        if (
+            isset($searchParams['filter'])
             && !empty($searchParams['filter'])
             && \is_array($searchParams['filter'])
         ) {
@@ -286,10 +290,10 @@ class Search
                             case 1:
                             case 0:
                             case -1:
-                                $where[]         = '`active` = :active';
+                                $where[] = '`active` = :active';
                                 $binds['active'] = [
                                     'value' => $value,
-                                    'type'  => \PDO::PARAM_INT
+                                    'type' => \PDO::PARAM_INT
                                 ];
                                 break;
                         }
@@ -297,39 +301,39 @@ class Search
 
                     case 'groups':
                         $groupIds = \explode(',', \trim($value, ','));
-                        $whereOR  = [];
-                        $i        = 0;
+                        $whereOR = [];
+                        $i = 0;
 
                         foreach ($groupIds as $groupId) {
-                            $whereOR[]         = '`usergroup` LIKE :group'.$i;
-                            $binds['group'.$i] = [
-                                'value' => '%,'.$groupId.',%',
-                                'type'  => \PDO::PARAM_STR
+                            $whereOR[] = '`usergroup` LIKE :group' . $i;
+                            $binds['group' . $i] = [
+                                'value' => '%,' . $groupId . ',%',
+                                'type' => \PDO::PARAM_STR
                             ];
 
                             $i++;
                         }
 
-                        $where[] = '('.\implode(' OR ', $whereOR).')';
+                        $where[] = '(' . \implode(' OR ', $whereOR) . ')';
                         break;
 
                     case 'regDateFrom':
-                        $where[]              = '`regdate` >= :regDateFrom';
+                        $where[] = '`regdate` >= :regDateFrom';
                         $binds['regDateFrom'] = [
                             'value' => QUI\Utils\Convert::convertMySqlDatetime(
-                                $value.' 00:00:00'
+                                $value . ' 00:00:00'
                             ),
-                            'type'  => \PDO::PARAM_STR
+                            'type' => \PDO::PARAM_STR
                         ];
                         break;
 
                     case 'regDateTo':
-                        $where[]            = '`regdate` <= :regDateTo';
+                        $where[] = '`regdate` <= :regDateTo';
                         $binds['regDateTo'] = [
                             'value' => QUI\Utils\Convert::convertMySqlDatetime(
-                                $value.' 00:00:00'
+                                $value . ' 00:00:00'
                             ),
-                            'type'  => \PDO::PARAM_STR
+                            'type' => \PDO::PARAM_STR
                         ];
                         break;
                 }
@@ -337,38 +341,39 @@ class Search
         }
 
         if (!empty($where)) {
-            $sql .= " WHERE ".\implode(" AND ", $where);
+            $sql .= " WHERE " . \implode(" AND ", $where);
         }
 
         if (isset($searchParams['sortOn']) && !empty($searchParams['sortOn'])) {
-            $order = "ORDER BY ".Orthos::clear($searchParams['sortOn']);
+            $order = "ORDER BY " . Orthos::clear($searchParams['sortOn']);
 
             if (isset($searchParams['sortBy']) && !empty($searchParams['sortBy'])) {
-                $order .= " ".Orthos::clear($searchParams['sortBy']);
+                $order .= " " . Orthos::clear($searchParams['sortBy']);
             } else {
                 $order .= " ASC";
             }
 
-            $sql .= " ".$order;
+            $sql .= " " . $order;
         }
 
-        if (isset($searchParams['limit'])
+        if (
+            isset($searchParams['limit'])
             && !empty($searchParams['limit'])
             && !$count
         ) {
-            $sql .= " LIMIT ".$searchParams['limit'];
+            $sql .= " LIMIT " . $searchParams['limit'];
         } else {
             if (!$count) {
-                $sql .= " LIMIT ".self::DEFAULT_LIMIT_USERS;
+                $sql .= " LIMIT " . self::DEFAULT_LIMIT_USERS;
             }
         }
 
-        $PDO  = QUI::getDataBase()->getPDO();
+        $PDO = QUI::getDataBase()->getPDO();
         $Stmt = $PDO->prepare($sql);
 
         // bind search values
         foreach ($binds as $var => $bind) {
-            $Stmt->bindValue(':'.$var, $bind['value'], $bind['type']);
+            $Stmt->bindValue(':' . $var, $bind['value'], $bind['type']);
         }
 
         // fetch information for all corresponding passwords
@@ -378,7 +383,7 @@ class Search
         } catch (\Exception $Exception) {
             QUI\System\Log::addError(
                 '\QUI\UsersGrouüs\Search searchUsers() Database error :: '
-                .$Exception->getMessage()
+                . $Exception->getMessage()
             );
 
             return [];
@@ -414,7 +419,7 @@ class Search
             $sql = 'SELECT id';
         }
 
-        $sql .= ' FROM `'.QUI\Groups\Manager::table() .'`';
+        $sql .= ' FROM `' . QUI\Groups\Manager::table() . '`';
 
         // build WHERE
         $where = [];
@@ -422,13 +427,14 @@ class Search
 
         // fields where searchTerm is searched
         $searchFieldsAvailable = [
-            'id'   => true,
+            'id' => true,
             'name' => true
         ];
 
         $searchFields = [];
 
-        if (isset($searchParams['searchFields'])
+        if (
+            isset($searchParams['searchFields'])
             && !empty($searchParams['searchFields'])
             && \is_array($searchParams['searchFields'])
         ) {
@@ -448,24 +454,25 @@ class Search
         }
 
         $whereOR = [];
-        $i       = 0;
+        $i = 0;
 
         foreach ($searchFields as $field) {
-            $whereOR[]          = '`'.$field.'` LIKE :search'.$i;
-            $binds['search'.$i] = [
-                'value' => '%'.$searchTerm.'%',
-                'type'  => \PDO::PARAM_STR
+            $whereOR[] = '`' . $field . '` LIKE :search' . $i;
+            $binds['search' . $i] = [
+                'value' => '%' . $searchTerm . '%',
+                'type' => \PDO::PARAM_STR
             ];
 
             $i++;
         }
 
         if (!empty($whereOR)) {
-            $where[] = '('.\implode(' OR ', $whereOR).')';
+            $where[] = '(' . \implode(' OR ', $whereOR) . ')';
         }
 
         // search filter
-        if (isset($searchParams['filter'])
+        if (
+            isset($searchParams['filter'])
             && !empty($searchParams['filter'])
             && \is_array($searchParams['filter'])
         ) {
@@ -475,10 +482,10 @@ class Search
                         switch ($value) {
                             case 1:
                             case 0:
-                                $where[]         = '`active` = :active';
+                                $where[] = '`active` = :active';
                                 $binds['active'] = [
                                     'value' => $value,
-                                    'type'  => \PDO::PARAM_INT
+                                    'type' => \PDO::PARAM_INT
                                 ];
                                 break;
                         }
@@ -488,38 +495,39 @@ class Search
         }
 
         if (!empty($where)) {
-            $sql .= " WHERE ".\implode(" AND ", $where);
+            $sql .= " WHERE " . \implode(" AND ", $where);
         }
 
         if (isset($searchParams['sortOn']) && !empty($searchParams['sortOn'])) {
-            $order = "ORDER BY ".Orthos::clear($searchParams['sortOn']);
+            $order = "ORDER BY " . Orthos::clear($searchParams['sortOn']);
 
             if (isset($searchParams['sortBy']) && !empty($searchParams['sortBy'])) {
-                $order .= " ".Orthos::clear($searchParams['sortBy']);
+                $order .= " " . Orthos::clear($searchParams['sortBy']);
             } else {
                 $order .= " ASC";
             }
 
-            $sql .= " ".$order;
+            $sql .= " " . $order;
         }
 
-        if (isset($searchParams['limit'])
+        if (
+            isset($searchParams['limit'])
             && !empty($searchParams['limit'])
             && !$count
         ) {
-            $sql .= " LIMIT ".$searchParams['limit'];
+            $sql .= " LIMIT " . $searchParams['limit'];
         } else {
             if (!$count) {
-                $sql .= " LIMIT ".self::DEFAULT_LIMIT_GROUPS;
+                $sql .= " LIMIT " . self::DEFAULT_LIMIT_GROUPS;
             }
         }
 
-        $PDO  = QUI::getDataBase()->getPDO();
+        $PDO = QUI::getDataBase()->getPDO();
         $Stmt = $PDO->prepare($sql);
 
         // bind search values
         foreach ($binds as $var => $bind) {
-            $Stmt->bindValue(':'.$var, $bind['value'], $bind['type']);
+            $Stmt->bindValue(':' . $var, $bind['value'], $bind['type']);
         }
 
         // fetch information for all corresponding passwords
@@ -529,7 +537,7 @@ class Search
         } catch (\Exception $Exception) {
             QUI\System\Log::addError(
                 '\QUI\UsersGrouüs\Search searchUsers() Database error :: '
-                .$Exception->getMessage()
+                . $Exception->getMessage()
             );
 
             return [];
@@ -562,7 +570,7 @@ class Search
      */
     public static function suggestSearch($searchTerm, $searchParams)
     {
-        $searchUsers  = false;
+        $searchUsers = false;
         $searchGroups = false;
         $searchResult = [];
 
@@ -598,10 +606,10 @@ class Search
 
                 $result = QUI::getDataBase()->fetch([
                     'select' => $selectFields,
-                    'from'   => QUI\Users\Manager::table(),
-                    'where'  => [
+                    'from' => QUI\Users\Manager::table(),
+                    'where' => [
                         'id' => [
-                            'type'  => 'IN',
+                            'type' => 'IN',
                             'value' => $resultUsers
                         ]
                     ]
@@ -609,7 +617,7 @@ class Search
 
                 foreach ($result as $row) {
                     $searchResult[] = [
-                        'id'   => 'u'.$row['id'],
+                        'id' => 'u' . $row['id'],
                         'name' => $row['username']
                     ];
                 }
@@ -634,10 +642,10 @@ class Search
 
                 $result = QUI::getDataBase()->fetch([
                     'select' => $selectFields,
-                    'from'   => QUI\Groups\Manager::table(),
-                    'where'  => [
+                    'from' => QUI\Groups\Manager::table(),
+                    'where' => [
                         'id' => [
-                            'type'  => 'IN',
+                            'type' => 'IN',
                             'value' => $resultGroups
                         ]
                     ]
@@ -645,7 +653,7 @@ class Search
 
                 foreach ($result as $row) {
                     $searchResult[] = [
-                        'id'   => 'g'.$row['id'],
+                        'id' => 'g' . $row['id'],
                         'name' => $row['name']
                     ];
                 }

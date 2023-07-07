@@ -36,46 +36,6 @@ class LongTermCache
     //region API
 
     /**
-     * Returns the cached data
-     *
-     * @param string $name
-     * @return string|array|object|boolean
-     *
-     * @throws QUI\Cache\Exception
-     */
-    public static function get($name)
-    {
-        $key = self::generateStorageKey($name);
-
-        try {
-            $Pool   = self::getPool();
-            $Item   = $Pool->getItem($key);
-            $data   = $Item->get();
-            $isMiss = $Item->isMiss();
-        } catch (\Exception $Exception) {
-            throw new QUI\Cache\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
-                    'exception.lib.cache.manager.not.exist'
-                ),
-                404
-            );
-        }
-
-        if ($isMiss) {
-            throw new QUI\Cache\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
-                    'exception.lib.cache.manager.not.exist'
-                ),
-                404
-            );
-        }
-
-        return $data;
-    }
-
-    /**
      * @param $name
      * @param $data
      */
@@ -95,55 +55,12 @@ class LongTermCache
     }
 
     /**
-     * Clears the cache
-     *
-     * @param string $name
+     * @param $name
+     * @return string
      */
-    public static function clear($name = '')
+    protected static function generateStorageKey($name): string
     {
-        $key = self::generateStorageKey($name);
-
-        try {
-            $Pool = self::getPool();
-            $Item = $Pool->getItem($key);
-            $Item->clear();
-        } catch (\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
-        }
-    }
-
-    // endregion
-
-    /**
-     * execute the long time cache setup
-     */
-    public static function setup()
-    {
-        $Config = self::getConfig();
-
-        if ($Config->get('longtime', 'type') === 'filesystem' && !is_dir(self::fileSystemPath())) {
-            QUI\Utils\System\File::mkdir(self::fileSystemPath());
-        }
-    }
-
-    /**
-     * Cache Settings
-     *
-     * @return QUI\Config
-     */
-    public static function getConfig()
-    {
-        if (!self::$Config) {
-            try {
-                self::$Config = QUI::getConfig('etc/cache.ini.php');
-            } catch (QUI\Exception $Exception) {
-                file_put_contents(CMS_DIR . 'etc/cache.ini.php', '');
-
-                self::$Config = QUI::getConfig('etc/cache.ini.php');
-            }
-        }
-
-        return self::$Config;
+        return md5(__FILE__) . '/quiqqer-lt/' . $name;
     }
 
     /**
@@ -158,6 +75,8 @@ class LongTermCache
         return self::$Pool;
     }
 
+    // endregion
+
     /**
      * Return the current driver
      */
@@ -168,7 +87,7 @@ class LongTermCache
         }
 
         $Config = self::getConfig();
-        $type   = $Config->get('longtime', 'type');
+        $type = $Config->get('longtime', 'type');
 
         switch ($type) {
             case 'redis':
@@ -216,9 +135,9 @@ class LongTermCache
                         QUI\System\Log::LEVEL_ALERT
                     );
                 } else {
-                    $conf       = $Config->get('longtime');
-                    $host       = 'localhost';
-                    $database   = 'local';
+                    $conf = $Config->get('longtime');
+                    $host = 'localhost';
+                    $database = 'local';
                     $collection = 'quiqqer.longterm';
 
                     // database server
@@ -248,8 +167,8 @@ class LongTermCache
                     }
 
                     self::$Driver = new QuiqqerMongoDriver([
-                        'mongo'      => $Client,
-                        'database'   => $database,
+                        'mongo' => $Client,
+                        'database' => $database,
                         'collection' => $collection
                     ]);
                 }
@@ -258,7 +177,7 @@ class LongTermCache
         }
 
         if (self::$Driver === null) {
-            $conf   = $Config->get('longtime');
+            $conf = $Config->get('longtime');
             $params = [
                 'path' => self::fileSystemPath()
             ];
@@ -274,12 +193,63 @@ class LongTermCache
     }
 
     /**
-     * @param $name
-     * @return string
+     * Cache Settings
+     *
+     * @return QUI\Config
      */
-    protected static function generateStorageKey($name): string
+    public static function getConfig()
     {
-        return md5(__FILE__) . '/quiqqer-lt/' . $name;
+        if (!self::$Config) {
+            try {
+                self::$Config = QUI::getConfig('etc/cache.ini.php');
+            } catch (QUI\Exception $Exception) {
+                file_put_contents(CMS_DIR . 'etc/cache.ini.php', '');
+
+                self::$Config = QUI::getConfig('etc/cache.ini.php');
+            }
+        }
+
+        return self::$Config;
+    }
+
+    /**
+     * Returns the cached data
+     *
+     * @param string $name
+     * @return string|array|object|boolean
+     *
+     * @throws QUI\Cache\Exception
+     */
+    public static function get($name)
+    {
+        $key = self::generateStorageKey($name);
+
+        try {
+            $Pool = self::getPool();
+            $Item = $Pool->getItem($key);
+            $data = $Item->get();
+            $isMiss = $Item->isMiss();
+        } catch (\Exception $Exception) {
+            throw new QUI\Cache\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.lib.cache.manager.not.exist'
+                ),
+                404
+            );
+        }
+
+        if ($isMiss) {
+            throw new QUI\Cache\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.lib.cache.manager.not.exist'
+                ),
+                404
+            );
+        }
+
+        return $data;
     }
 
     /**
@@ -288,5 +258,35 @@ class LongTermCache
     public static function fileSystemPath(): string
     {
         return VAR_DIR . 'cache/longtime/';
+    }
+
+    /**
+     * Clears the cache
+     *
+     * @param string $name
+     */
+    public static function clear($name = '')
+    {
+        $key = self::generateStorageKey($name);
+
+        try {
+            $Pool = self::getPool();
+            $Item = $Pool->getItem($key);
+            $Item->clear();
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+    }
+
+    /**
+     * execute the long time cache setup
+     */
+    public static function setup()
+    {
+        $Config = self::getConfig();
+
+        if ($Config->get('longtime', 'type') === 'filesystem' && !is_dir(self::fileSystemPath())) {
+            QUI\Utils\System\File::mkdir(self::fileSystemPath());
+        }
     }
 }

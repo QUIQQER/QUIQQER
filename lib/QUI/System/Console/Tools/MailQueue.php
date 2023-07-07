@@ -47,7 +47,7 @@ class MailQueue extends QUI\System\Console\Tool
         switch ($comand) {
             case 'count':
                 $this->writeLn(
-                    $MailQueue->count().' mail(s) in the queue',
+                    $MailQueue->count() . ' mail(s) in the queue',
                     'red'
                 );
 
@@ -66,7 +66,7 @@ class MailQueue extends QUI\System\Console\Tool
                 $this->writeLn('====== Mail Queue ======');
 
                 foreach ($list as $entry) {
-                    $to     = '';
+                    $to = '';
                     $mailTo = \json_decode($entry['mailto'], true);
 
                     if (is_array($mailTo)) {

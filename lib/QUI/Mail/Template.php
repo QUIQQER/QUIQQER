@@ -27,16 +27,28 @@ class Template extends QUI\QDOM
     public function __construct(array $params = [])
     {
         $this->setAttributes([
-            'body'      => '',
-            'Project'   => false,
-            'TplMain'   => 'mails/main.html',
-            'TplMeta'   => 'mails/meta.html',
+            'body' => '',
+            'Project' => false,
+            'TplMain' => 'mails/main.html',
+            'TplMeta' => 'mails/meta.html',
             'TplHeader' => 'mails/header.html',
-            'TplBody'   => 'mails/body.html',
+            'TplBody' => 'mails/body.html',
             'TplFooter' => 'mails/footer.html'
         ]);
 
         $this->setAttributes($params);
+    }
+
+    /**
+     * Return the complete mail as text, without html
+     *
+     * @return string
+     */
+    public function getText(): string
+    {
+        $Html2Text = new Html2Text($this->getHTML());
+
+        return $Html2Text->getText();
     }
 
     /**
@@ -53,7 +65,7 @@ class Template extends QUI\QDOM
 
         // get project logo
         $Project = $this->getProject();
-        $Logo    = null;
+        $Logo = null;
 
         if ($Project->getConfig('emailLogo')) {
             try {
@@ -74,10 +86,10 @@ class Template extends QUI\QDOM
             'lang' => $Project->getLang()
         ]);
 
-        $main   = $Engine->fetch($this->getMainTemplate());
-        $meta   = $Engine->fetch($this->getMetaTemplate());
+        $main = $Engine->fetch($this->getMainTemplate());
+        $meta = $Engine->fetch($this->getMetaTemplate());
         $header = $Engine->fetch($this->getHeaderTemplate());
-        $body   = $Engine->fetch($this->getBodyTemplate());
+        $body = $Engine->fetch($this->getBodyTemplate());
         $footer = $Engine->fetch($this->getFooterTemplate());
 
         $mailBody = str_replace([
@@ -96,15 +108,177 @@ class Template extends QUI\QDOM
     }
 
     /**
-     * Return the complete mail as text, without html
+     * Return the Project
+     *
+     * @return \QUI\Projects\Project
+     */
+    public function getProject(): QUI\Projects\Project
+    {
+        if ($this->getAttribute('Project')) {
+            return $this->getAttribute('Project');
+        }
+
+        return QUI::getProjectManager()->get();
+    }
+
+    /**
+     * Return the meta template path
      *
      * @return string
      */
-    public function getText(): string
+    public function getMainTemplate(): string
     {
-        $Html2Text = new Html2Text($this->getHTML());
+        $Project = $this->getProject();
+        $standardTpl = LIB_DIR . 'templates/mail/main.html';
 
-        return $Html2Text->getText();
+        if (!$Project) {
+            return $standardTpl;
+        }
+
+        // exit project template?
+        $template = $this->getAttribute('TplMain');
+        $projectDir = USR_DIR . $Project->getName() . '/lib/';
+
+        if (file_exists($projectDir . $template)) {
+            return $projectDir . $template;
+        }
+
+        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
+
+        // exist template in opt?
+        if (file_exists($tplPath . $template)) {
+            return $tplPath . $template;
+        }
+
+        return $standardTpl;
+    }
+
+    /**
+     * Return the meta template path
+     *
+     * @return string
+     */
+    public function getMetaTemplate(): string
+    {
+        $Project = $this->getProject();
+        $standardTpl = LIB_DIR . 'templates/mail/meta.html';
+
+        if (!$Project) {
+            return $standardTpl;
+        }
+
+        // exit project template?
+        $template = $this->getAttribute('TplMeta');
+        $projectDir = USR_DIR . $Project->getName() . '/lib/';
+
+        if (file_exists($projectDir . $template)) {
+            return $projectDir . $template;
+        }
+
+        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
+
+        // exist template in opt?
+        if (file_exists($tplPath . $template)) {
+            return $tplPath . $template;
+        }
+
+        return $standardTpl;
+    }
+
+    /**
+     * Return the header template path
+     *
+     * @return string
+     */
+    public function getHeaderTemplate(): string
+    {
+        $Project = $this->getProject();
+        $standardTpl = LIB_DIR . 'templates/mail/header.html';
+
+        if (!$Project) {
+            return $standardTpl;
+        }
+
+        // exit project template?
+        $template = $this->getAttribute('TplHeader');
+        $projectDir = USR_DIR . $Project->getName() . '/lib/';
+
+        if (file_exists($projectDir . $template)) {
+            return $projectDir . $template;
+        }
+
+        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
+
+        // exist template in opt?
+        if (file_exists($tplPath . $template)) {
+            return $tplPath . $template;
+        }
+
+        return $standardTpl;
+    }
+
+    /**
+     * Return the body template path
+     *
+     * @return string
+     */
+    public function getBodyTemplate(): string
+    {
+        $Project = $this->getProject();
+        $standardTpl = LIB_DIR . 'templates/mail/body.html';
+
+        if (!$Project) {
+            return $standardTpl;
+        }
+
+        // exit project template?
+        $template = $this->getAttribute('TplBody');
+        $projectDir = USR_DIR . $Project->getName() . '/lib/';
+
+        if (file_exists($projectDir . $template)) {
+            return $projectDir . $template;
+        }
+
+        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
+
+        // exist template in opt?
+        if (file_exists($tplPath . $template)) {
+            return $tplPath . $template;
+        }
+
+        return $standardTpl;
+    }
+
+    /**
+     * Return the footer template path
+     *
+     * @return string
+     */
+    public function getFooterTemplate(): string
+    {
+        $Project = $this->getProject();
+        $standardTpl = LIB_DIR . 'templates/mail/footer.html';
+
+        if (!$Project) {
+            return $standardTpl;
+        }
+
+        // exit project template?
+        $template = $this->getAttribute('TplFooter');
+        $projectDir = USR_DIR . $Project->getName() . '/lib/';
+
+        if (file_exists($projectDir . $template)) {
+            return $projectDir . $template;
+        }
+
+        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
+
+        // exist template in opt?
+        if (file_exists($tplPath . $template)) {
+            return $tplPath . $template;
+        }
+
+        return $standardTpl;
     }
 
     /**
@@ -165,179 +339,5 @@ class Template extends QUI\QDOM
     public function setFooterTemplate(string $template)
     {
         $this->setAttribute('TplFooter', $template);
-    }
-
-    /**
-     * Return the Project
-     *
-     * @return \QUI\Projects\Project
-     */
-    public function getProject(): QUI\Projects\Project
-    {
-        if ($this->getAttribute('Project')) {
-            return $this->getAttribute('Project');
-        }
-
-        return QUI::getProjectManager()->get();
-    }
-
-    /**
-     * Return the meta template path
-     *
-     * @return string
-     */
-    public function getMainTemplate(): string
-    {
-        $Project     = $this->getProject();
-        $standardTpl = LIB_DIR . 'templates/mail/main.html';
-
-        if (!$Project) {
-            return $standardTpl;
-        }
-
-        // exit project template?
-        $template   = $this->getAttribute('TplMain');
-        $projectDir = USR_DIR . $Project->getName() . '/lib/';
-
-        if (file_exists($projectDir . $template)) {
-            return $projectDir . $template;
-        }
-
-        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
-
-        // exist template in opt?
-        if (file_exists($tplPath . $template)) {
-            return $tplPath . $template;
-        }
-
-        return $standardTpl;
-    }
-
-    /**
-     * Return the meta template path
-     *
-     * @return string
-     */
-    public function getMetaTemplate(): string
-    {
-        $Project     = $this->getProject();
-        $standardTpl = LIB_DIR . 'templates/mail/meta.html';
-
-        if (!$Project) {
-            return $standardTpl;
-        }
-
-        // exit project template?
-        $template   = $this->getAttribute('TplMeta');
-        $projectDir = USR_DIR . $Project->getName() . '/lib/';
-
-        if (file_exists($projectDir . $template)) {
-            return $projectDir . $template;
-        }
-
-        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
-
-        // exist template in opt?
-        if (file_exists($tplPath . $template)) {
-            return $tplPath . $template;
-        }
-
-        return $standardTpl;
-    }
-
-    /**
-     * Return the header template path
-     *
-     * @return string
-     */
-    public function getHeaderTemplate(): string
-    {
-        $Project     = $this->getProject();
-        $standardTpl = LIB_DIR . 'templates/mail/header.html';
-
-        if (!$Project) {
-            return $standardTpl;
-        }
-
-        // exit project template?
-        $template   = $this->getAttribute('TplHeader');
-        $projectDir = USR_DIR . $Project->getName() . '/lib/';
-
-        if (file_exists($projectDir . $template)) {
-            return $projectDir . $template;
-        }
-
-        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
-
-        // exist template in opt?
-        if (file_exists($tplPath . $template)) {
-            return $tplPath . $template;
-        }
-
-        return $standardTpl;
-    }
-
-    /**
-     * Return the body template path
-     *
-     * @return string
-     */
-    public function getBodyTemplate(): string
-    {
-        $Project     = $this->getProject();
-        $standardTpl = LIB_DIR . 'templates/mail/body.html';
-
-        if (!$Project) {
-            return $standardTpl;
-        }
-
-        // exit project template?
-        $template   = $this->getAttribute('TplBody');
-        $projectDir = USR_DIR . $Project->getName() . '/lib/';
-
-        if (file_exists($projectDir . $template)) {
-            return $projectDir . $template;
-        }
-
-        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
-
-        // exist template in opt?
-        if (file_exists($tplPath . $template)) {
-            return $tplPath . $template;
-        }
-
-        return $standardTpl;
-    }
-
-    /**
-     * Return the footer template path
-     *
-     * @return string
-     */
-    public function getFooterTemplate(): string
-    {
-        $Project     = $this->getProject();
-        $standardTpl = LIB_DIR . 'templates/mail/footer.html';
-
-        if (!$Project) {
-            return $standardTpl;
-        }
-
-        // exit project template?
-        $template   = $this->getAttribute('TplFooter');
-        $projectDir = USR_DIR . $Project->getName() . '/lib/';
-
-        if (file_exists($projectDir . $template)) {
-            return $projectDir . $template;
-        }
-
-        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
-
-        // exist template in opt?
-        if (file_exists($tplPath . $template)) {
-            return $tplPath . $template;
-        }
-
-        return $standardTpl;
     }
 }

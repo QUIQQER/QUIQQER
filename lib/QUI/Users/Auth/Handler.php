@@ -49,9 +49,9 @@ class Handler
         }
 
         // <permission name="quiqqer.auth.AUTH.canUse" type="bool" />
-        $Locale      = new QUI\Locale();
+        $Locale = new QUI\Locale();
         $Permissions = new QUI\Permissions\Manager();
-        $User        = QUI::getUserBySession();
+        $User = QUI::getUserBySession();
 
         $Locale->no_translation = true;
 
@@ -61,16 +61,16 @@ class Handler
             }
 
             /* @var $Authenticator AuthenticatorInterface */
-            $Authenticator  = new $authProvider($User->getUsername());
+            $Authenticator = new $authProvider($User->getUsername());
             $permissionName = Helper::parseAuthenticatorToPermission($authProvider);
 
             $Permissions->addPermission([
-                'name'         => $permissionName,
-                'title'        => \str_replace(['[', ']'], '', $Authenticator->getTitle($Locale)),
-                'desc'         => \str_replace(['[', ']'], '', $Authenticator->getDescription($Locale)),
-                'type'         => 'bool',
-                'area'         => '',
-                'src'          => $Package->getName(),
+                'name' => $permissionName,
+                'title' => \str_replace(['[', ']'], '', $Authenticator->getTitle($Locale)),
+                'desc' => \str_replace(['[', ']'], '', $Authenticator->getDescription($Locale)),
+                'type' => 'bool',
+                'area' => '',
+                'src' => $Package->getName(),
                 'defaultvalue' => 0
             ]);
         }
@@ -85,16 +85,6 @@ class Handler
     public function getGlobalAuthenticators()
     {
         return $this->getGlobalFrontendAuthenticators();
-    }
-
-    /**
-     * Return all global active authenticators for the backend authentication
-     *
-     * @return array
-     */
-    public function getGlobalBackendAuthenticators()
-    {
-        return $this->getAuthenticatorFromConfig(QUI::conf('auth_backend'));
     }
 
     /**
@@ -157,31 +147,6 @@ class Handler
     }
 
     /**
-     * Returns a specific authenticator
-     *
-     * @param string $authenticator - name of the authenticator
-     * @param string $username - QUIQQER username of the user
-     *
-     * @return AuthenticatorInterface
-     *
-     * @throws QUI\Users\Auth\Exception
-     */
-    public function getAuthenticator($authenticator, $username)
-    {
-        $authenticators = $this->getAvailableAuthenticators();
-        $authenticators = \array_flip($authenticators);
-
-        if (isset($authenticators[$authenticator])) {
-            return new $authenticator($username);
-        }
-
-        throw new QUI\Users\Auth\Exception(
-            ['quiqqer/quiqqer', 'exception.authenticator.not.found'],
-            404
-        );
-    }
-
-    /**
      * Return all available authenticators
      *
      * @return array
@@ -195,8 +160,8 @@ class Handler
         } catch (QUI\Exception $Exception) {
         }
 
-        $authList  = [];
-        $list      = [];
+        $authList = [];
+        $list = [];
         $installed = QUI::getPackageManager()->getInstalled();
 
         foreach ($installed as $package) {
@@ -234,6 +199,41 @@ class Handler
     }
 
     /**
+     * Return all global active authenticators for the backend authentication
+     *
+     * @return array
+     */
+    public function getGlobalBackendAuthenticators()
+    {
+        return $this->getAuthenticatorFromConfig(QUI::conf('auth_backend'));
+    }
+
+    /**
+     * Returns a specific authenticator
+     *
+     * @param string $authenticator - name of the authenticator
+     * @param string $username - QUIQQER username of the user
+     *
+     * @return AuthenticatorInterface
+     *
+     * @throws QUI\Users\Auth\Exception
+     */
+    public function getAuthenticator($authenticator, $username)
+    {
+        $authenticators = $this->getAvailableAuthenticators();
+        $authenticators = \array_flip($authenticators);
+
+        if (isset($authenticators[$authenticator])) {
+            return new $authenticator($username);
+        }
+
+        throw new QUI\Users\Auth\Exception(
+            ['quiqqer/quiqqer', 'exception.authenticator.not.found'],
+            404
+        );
+    }
+
+    /**
      * Send e-mail to the user to confirm password reset
      *
      * @param QUI\Users\User $User
@@ -259,28 +259,28 @@ class Handler
         $Project = QUI::getRewrite()->getProject();
 
         $PasswordResetVerification = new PasswordResetVerification($User->getId(), [
-            'project'     => $Project->getName(),
+            'project' => $Project->getName(),
             'projectLang' => $Project->getLang()
         ]);
 
         $confirmLink = QUI\Verification\Verifier::startVerification($PasswordResetVerification, true);
 
-        $L      = QUI::getLocale();
-        $lg     = 'quiqqer/quiqqer';
-        $tplDir = QUI::getPackage('quiqqer/quiqqer')->getDir().'lib/templates/mail/auth/';
+        $L = QUI::getLocale();
+        $lg = 'quiqqer/quiqqer';
+        $tplDir = QUI::getPackage('quiqqer/quiqqer')->getDir() . 'lib/templates/mail/auth/';
 
         $Mailer = new QUI\Mail\Mailer();
         $Engine = QUI::getTemplateManager()->getEngine();
 
         $Engine->assign([
             'body' => $L->get($lg, 'mail.auth.password_reset_confirm.body', [
-                'username'    => $User->getUsername(),
-                'date'        => $L->formatDate(\time()),
+                'username' => $User->getUsername(),
+                'date' => $L->formatDate(\time()),
                 'confirmLink' => $confirmLink
             ])
         ]);
 
-        $template = $Engine->fetch($tplDir.'password_reset_confirm.html');
+        $template = $Engine->fetch($tplDir . 'password_reset_confirm.html');
 
         $Mailer->addRecipient($email);
         $Mailer->setSubject(

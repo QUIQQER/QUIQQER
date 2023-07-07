@@ -3,6 +3,7 @@
 /**
  * This file contains \QUI\Interfaces\System\Patch
  */
+
 namespace QUI\Interfaces\System;
 
 /**

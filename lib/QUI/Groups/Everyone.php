@@ -65,16 +65,6 @@ class Everyone extends QUI\Groups\Group
     }
 
     /**
-     * Returns the Group-ID
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return Manager::EVERYONE_ID;
-    }
-
-    /**
      * saves the group
      * All attributes are set in the database
      *
@@ -87,7 +77,7 @@ class Everyone extends QUI\Groups\Group
 
         // check assigned toolbars
         $assignedToolbars = '';
-        $toolbar          = '';
+        $toolbar = '';
 
         if ($this->getAttribute('assigned_toolbar')) {
             $toolbars = explode(',', $this->getAttribute('assigned_toolbar'));
@@ -107,16 +97,26 @@ class Everyone extends QUI\Groups\Group
         QUI::getDataBase()->update(
             Manager::table(),
             [
-                'name'             => 'Everyone',
-                'rights'           => json_encode($this->rights),
-                'active'           => 1,
+                'name' => 'Everyone',
+                'rights' => json_encode($this->rights),
+                'active' => 1,
                 'assigned_toolbar' => $assignedToolbars,
-                'toolbar'          => $toolbar
+                'toolbar' => $toolbar
             ],
             ['id' => $this->getId()]
         );
 
         $this->createCache();
+    }
+
+    /**
+     * Returns the Group-ID
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return Manager::EVERYONE_ID;
     }
 
     /**

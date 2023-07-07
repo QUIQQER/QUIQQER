@@ -24,7 +24,7 @@ class RedisCheck extends QUI\System\Test
         parent::__construct();
 
         $this->setAttributes([
-            'title'       => 'Redis',
+            'title' => 'Redis',
             'description' => ''
         ]);
 
@@ -61,7 +61,7 @@ class RedisCheck extends QUI\System\Test
         }
 
         try {
-            $Redis  = new \Redis();
+            $Redis = new \Redis();
             $server = \parse_url($server);
 
             if (!isset($server['port'])) {

@@ -108,14 +108,14 @@ class Group extends QUI\QDOM
 
         if (!isset($result[0]) && $id === Manager::EVERYONE_ID) {
             QUI::getDataBase()->insert(Manager::table(), [
-                'id'   => Manager::EVERYONE_ID,
+                'id' => Manager::EVERYONE_ID,
                 'name' => 'Everyone'
             ]);
 
             $result = QUI::getGroups()->getGroupData($id);
         } elseif (!isset($result[0]) && $id === Manager::GUEST_ID) {
             QUI::getDataBase()->insert(Manager::table(), [
-                'id'   => Manager::GUEST_ID,
+                'id' => Manager::GUEST_ID,
                 'name' => 'Guest'
             ]);
 
@@ -139,7 +139,7 @@ class Group extends QUI\QDOM
         // Extras are deprected - we need an api
         if (isset($result[0]['extra'])) {
             $extraList = $this->getListOfExtraAttributes();
-            $extras    = [];
+            $extras = [];
             $extraData = json_decode($result[0]['extra'], true);
 
             if (!is_array($extraData)) {
@@ -160,6 +160,127 @@ class Group extends QUI\QDOM
         $this->createCache();
 
         QUI::getEvents()->fireEvent('groupLoad', [$this]);
+    }
+
+    /**
+     * set a group attribute
+     * ID cannot be set
+     *
+     * @param string $key - Attribute name
+     * @param string|boolean|integer|array $value - value
+     * @return Group
+     */
+    public function setAttribute($key, $value)
+    {
+        if ($key != 'id') {
+            parent::setAttribute($key, $value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Returns the Group-ID
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->getAttribute('id');
+    }
+
+    /**
+     * Return the list which extra attributes exist
+     * Plugins could extend the group attributes
+     *
+     * look at
+     * - https://dev.quiqqer.com/quiqqer/quiqqer/wikis/User-Xml
+     * - https://dev.quiqqer.com/quiqqer/quiqqer/wikis/Group-Xml
+     *
+     * @return array
+     *
+     * @throws QUI\Exception
+     */
+    protected function getListOfExtraAttributes()
+    {
+        return Manager::getListOfExtraAttributes();
+    }
+
+    /**
+     * creates the group cache
+     *
+     * @ignore
+     */
+    protected function createCache()
+    {
+        // Cache aufbauen
+        QUI\Cache\Manager::set('quiqqer/groups/group/' . $this->getId(), [
+            'parentids' => $this->getParentIds(),
+            'attributes' => $this->getAttributes(),
+            'rights' => $this->rights
+        ]);
+    }
+
+    /**
+     * Get all parent ids
+     *
+     * @return array
+     */
+    public function getParentIds()
+    {
+        if ($this->parentids) {
+            return $this->parentids;
+        }
+
+        $this->parentids = [];
+
+        $result = QUI::getDataBase()->fetch([
+            'select' => 'id, parent',
+            'from' => Manager::table(),
+            'where' => [
+                'id' => $this->getId()
+            ],
+            'limit' => 1
+        ]);
+
+        $this->parentids[] = $result[0]['parent'];
+
+        if (!empty($result[0]['parent'])) {
+            $this->getParentIdsHelper($result[0]['parent']);
+        }
+
+        return $this->parentids;
+    }
+
+    /**
+     * Helper method for getparents
+     *
+     * @param integer $id
+     *
+     * @ignore
+     */
+    private function getParentIdsHelper($id)
+    {
+        $result = QUI::getDataBase()->fetch([
+            'select' => 'id, parent',
+            'from' => Manager::table(),
+            'where' => [
+                'id' => (int)$id
+            ],
+            'limit' => 1
+        ]);
+
+        if (
+            !isset($result[0])
+            || !isset($result[0]['parent'])
+            || empty($result[0]['parent'])
+        ) {
+            return;
+        }
+
+        $this->parentids[] = $result[0]['parent'];
+
+        $this->getParentIdsHelper($result[0]['parent']);
     }
 
     /**
@@ -190,7 +311,7 @@ class Group extends QUI\QDOM
                 return;
             }
 
-            $PDO   = QUI::getDataBase()->getPDO();
+            $PDO = QUI::getDataBase()->getPDO();
             $table = QUI\Users\Manager::table();
 
             $Statement = $PDO->prepare(
@@ -213,8 +334,8 @@ class Group extends QUI\QDOM
         foreach ($children as $child) {
             QUI::getDataBase()->exec([
                 'delete' => true,
-                'from'   => Manager::table(),
-                'where'  => [
+                'from' => Manager::table(),
+                'where' => [
                     'id' => $child
                 ]
             ]);
@@ -227,8 +348,8 @@ class Group extends QUI\QDOM
         // Sich selbst löschen
         QUI::getDataBase()->exec([
             'delete' => true,
-            'from'   => Manager::table(),
-            'where'  => [
+            'from' => Manager::table(),
+            'where' => [
                 'id' => $this->getId()
             ]
         ]);
@@ -237,47 +358,80 @@ class Group extends QUI\QDOM
     }
 
     /**
-     * set a group attribute
-     * ID cannot be set
+     * return the subgroup ids
      *
-     * @param string $key - Attribute name
-     * @param string|boolean|integer|array $value - value
-     * @return Group
-     */
-    public function setAttribute($key, $value)
-    {
-        if ($key != 'id') {
-            parent::setAttribute($key, $value);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Return the list which extra attributes exist
-     * Plugins could extend the group attributes
-     *
-     * look at
-     * - https://dev.quiqqer.com/quiqqer/quiqqer/wikis/User-Xml
-     * - https://dev.quiqqer.com/quiqqer/quiqqer/wikis/Group-Xml
+     * @param boolean $recursiv - recursiv true / false
+     * @param      $params - SQL Params (limit, order)
      *
      * @return array
-     *
-     * @throws QUI\Exception
      */
-    protected function getListOfExtraAttributes()
+    public function getChildrenIds($recursiv = false, $params = [])
     {
-        return Manager::getListOfExtraAttributes();
+        if ($this->childrenids) {
+            return $this->childrenids;
+        }
+
+
+        $this->childrenids = [];
+
+        $_params = [
+            'select' => 'id',
+            'from' => Manager::table(),
+            'where' => [
+                'parent' => $this->getId()
+            ]
+        ];
+
+        if (isset($params['order'])) {
+            $_params['order'] = $params['order'];
+        }
+
+        if (isset($params['limit'])) {
+            $_params['limit'] = $params['limit'];
+        }
+
+        $result = QUI::getDataBase()->fetch($_params);
+
+        if (!isset($result) || !isset($result[0])) {
+            return $this->childrenids;
+        }
+
+        foreach ($result as $entry) {
+            if (isset($entry['id'])) {
+                $this->childrenids[] = $entry['id'];
+
+                if ($recursiv == true) {
+                    $this->getChildrenIdsHelper($entry['id']);
+                }
+            }
+        }
+
+        return $this->childrenids;
     }
 
     /**
-     * Returns the Group-ID
+     * Helper method for the recursiveness
      *
-     * @return integer
+     * @param integer $id
+     * @throws QUI\Database\Exception
      */
-    public function getId()
+    private function getChildrenIdsHelper(int $id)
     {
-        return $this->getAttribute('id');
+        $result = QUI::getDataBase()->fetch([
+            'select' => 'id',
+            'from' => Manager::table(),
+            'where' => [
+                'parent' => $id
+            ]
+        ]);
+
+        foreach ($result as $entry) {
+            if (isset($entry['id'])) {
+                $this->childrenids[] = $entry['id'];
+
+                $this->getChildrenIdsHelper($entry['id']);
+            }
+        }
     }
 
     /**
@@ -303,7 +457,7 @@ class Group extends QUI\QDOM
 
         if (!QUI\Projects\Media\Utils::isMediaUrl($avatar)) {
             $Project = QUI::getProjectManager()->getStandard();
-            $Media   = $Project->getMedia();
+            $Media = $Project->getMedia();
 
             return $Media->getPlaceholderImage();
         }
@@ -314,7 +468,7 @@ class Group extends QUI\QDOM
         }
 
         $Project = QUI::getProjectManager()->getStandard();
-        $Media   = $Project->getMedia();
+        $Media = $Project->getMedia();
 
         return $Media->getPlaceholderImage();
     }
@@ -330,7 +484,7 @@ class Group extends QUI\QDOM
         $this->rights = QUI::getPermissionManager()->getRightParamsFromGroup($this);
 
         // Pluginerweiterungen
-        $extra      = [];
+        $extra = [];
         $attributes = $this->getListOfExtraAttributes();
 
         foreach ($attributes as $attribute) {
@@ -340,7 +494,8 @@ class Group extends QUI\QDOM
         // avatar
         $avatar = '';
 
-        if ($this->getAttribute('avatar')
+        if (
+            $this->getAttribute('avatar')
             && QUI\Projects\Media\Utils::isMediaUrl($this->getAttribute('avatar'))
         ) {
             $avatar = $this->getAttribute('avatar');
@@ -348,7 +503,7 @@ class Group extends QUI\QDOM
 
         // check assigned toolbars
         $assignedToolbars = '';
-        $toolbar          = '';
+        $toolbar = '';
 
         if ($this->getAttribute('assigned_toolbar')) {
             $toolbars = explode(',', $this->getAttribute('assigned_toolbar'));
@@ -371,12 +526,12 @@ class Group extends QUI\QDOM
         QUI::getDataBase()->update(
             Manager::table(),
             [
-                'name'             => $this->getAttribute('name'),
-                'rights'           => json_encode($this->rights),
-                'extra'            => json_encode($extra),
-                'avatar'           => $avatar,
+                'name' => $this->getAttribute('name'),
+                'rights' => json_encode($this->rights),
+                'extra' => json_encode($extra),
+                'avatar' => $avatar,
                 'assigned_toolbar' => $assignedToolbars,
-                'toolbar'          => $toolbar
+                'toolbar' => $toolbar
             ],
             ['id' => $this->getId()]
         );
@@ -470,26 +625,6 @@ class Group extends QUI\QDOM
     }
 
     /**
-     * Exist the right in the group?
-     *
-     * @param string $right
-     *
-     * @return boolean
-     */
-    public function existsRight($right)
-    {
-        if ($this->existsAttribute($right)) {
-            return true;
-        }
-
-        if (isset($this->rights[$right])) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * set a right to the group
      *
      * @param array $rights
@@ -513,6 +648,26 @@ class Group extends QUI\QDOM
     }
 
     /**
+     * Exist the right in the group?
+     *
+     * @param string $right
+     *
+     * @return boolean
+     */
+    public function existsRight($right)
+    {
+        if ($this->existsAttribute($right)) {
+            return true;
+        }
+
+        if (isset($this->rights[$right])) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Set a new parent
      *
      * @param integer $parentId
@@ -522,14 +677,16 @@ class Group extends QUI\QDOM
      */
     public function setParent($parentId)
     {
-        if ($this->getParent() && $this->getParent()->getId() == $parentId
+        if (
+            $this->getParent() && $this->getParent()->getId() == $parentId
             || $this->getId() == $parentId
         ) {
             return;
         }
 
         // you cant set for the root group, everyoneor guest a parent group
-        if ($this->getId() == QUI::conf('globals', 'root')
+        if (
+            $this->getId() == QUI::conf('globals', 'root')
             || $this->getId() == Manager::EVERYONE_ID
             || $this->getId() == Manager::GUEST_ID
         ) {
@@ -557,8 +714,8 @@ class Group extends QUI\QDOM
                     ],
                     400,
                     [
-                        'groupId'       => $this->getId(),
-                        'newParent'     => $NewParent->getId(),
+                        'groupId' => $this->getId(),
+                        'newParent' => $NewParent->getId(),
                         'currentParent' => $this->getParent()->getId()
                     ]
                 );
@@ -575,6 +732,29 @@ class Group extends QUI\QDOM
         );
 
         QUI::getEvents()->fireEvent('setParent', [$this, $NewParent]);
+    }
+
+    /**
+     * return the parent group
+     *
+     * @param boolean $obj - Parent Objekt (true) oder Parent-ID (false) -> (optional = true)
+     *
+     * @return object|integer|false
+     * @throws QUI\Exception
+     */
+    public function getParent($obj = true)
+    {
+        $ids = $this->getParentIds();
+
+        if (!isset($ids[0])) {
+            return false;
+        }
+
+        if ($obj == true) {
+            return QUI::getGroups()->get($ids[0]);
+        }
+
+        return $ids[0];
     }
 
     /**
@@ -598,6 +778,23 @@ class Group extends QUI\QDOM
     }
 
     /**
+     * Get IDs of all users in the groups
+     *
+     * @return array
+     */
+    public function getUserIds()
+    {
+        $userIds = [];
+        $users = $this->getUsers();
+
+        foreach ($users as $row) {
+            $userIds[] = $row['id'];
+        }
+
+        return $userIds;
+    }
+
+    /**
      * return the users from the group
      *
      * @param array $params - SQL Params
@@ -608,27 +805,10 @@ class Group extends QUI\QDOM
     {
         $id = $this->getId();
 
-        $params['from']  = QUI\Users\Manager::table();
+        $params['from'] = QUI\Users\Manager::table();
         $params['where'] = "usergroup LIKE '%,{$id},%' OR usergroup = {$id}";
 
         return QUI::getDataBase()->fetch($params);
-    }
-
-    /**
-     * Get IDs of all users in the groups
-     *
-     * @return array
-     */
-    public function getUserIds()
-    {
-        $userIds = [];
-        $users   = $this->getUsers();
-
-        foreach ($users as $row) {
-            $userIds[] = $row['id'];
-        }
-
-        return $userIds;
     }
 
     /**
@@ -643,15 +823,15 @@ class Group extends QUI\QDOM
     {
         $result = QUI::getDataBase()->fetch([
             'select' => 'id',
-            'from'   => QUI\Users\Manager::table(),
-            'where'  => [
-                'username'  => $username,
+            'from' => QUI\Users\Manager::table(),
+            'where' => [
+                'username' => $username,
                 'usergroup' => [
-                    'type'  => '%LIKE%',
+                    'type' => '%LIKE%',
                     'value' => ',' . $this->getId() . ','
                 ]
             ],
-            'limit'  => '1'
+            'limit' => '1'
         ]);
 
         if (!isset($result[0])) {
@@ -679,12 +859,12 @@ class Group extends QUI\QDOM
         $_params = [
             'count' => [
                 'select' => 'id',
-                'as'     => 'count'
+                'as' => 'count'
             ],
-            'from'  => QUI\Users\Manager::table(),
+            'from' => QUI\Users\Manager::table(),
             'where' => [
                 'usergroup' => [
-                    'type'  => '%LIKE%',
+                    'type' => '%LIKE%',
                     'value' => "," . $this->getId() . ","
                 ]
             ]
@@ -735,90 +915,6 @@ class Group extends QUI\QDOM
     }
 
     /**
-     * return the parent group
-     *
-     * @param boolean $obj - Parent Objekt (true) oder Parent-ID (false) -> (optional = true)
-     *
-     * @return object|integer|false
-     * @throws QUI\Exception
-     */
-    public function getParent($obj = true)
-    {
-        $ids = $this->getParentIds();
-
-        if (!isset($ids[0])) {
-            return false;
-        }
-
-        if ($obj == true) {
-            return QUI::getGroups()->get($ids[0]);
-        }
-
-        return $ids[0];
-    }
-
-    /**
-     * Get all parent ids
-     *
-     * @return array
-     */
-    public function getParentIds()
-    {
-        if ($this->parentids) {
-            return $this->parentids;
-        }
-
-        $this->parentids = [];
-
-        $result = QUI::getDataBase()->fetch([
-            'select' => 'id, parent',
-            'from'   => Manager::table(),
-            'where'  => [
-                'id' => $this->getId()
-            ],
-            'limit'  => 1
-        ]);
-
-        $this->parentids[] = $result[0]['parent'];
-
-        if (!empty($result[0]['parent'])) {
-            $this->getParentIdsHelper($result[0]['parent']);
-        }
-
-        return $this->parentids;
-    }
-
-    /**
-     * Helper method for getparents
-     *
-     * @param integer $id
-     *
-     * @ignore
-     */
-    private function getParentIdsHelper($id)
-    {
-        $result = QUI::getDataBase()->fetch([
-            'select' => 'id, parent',
-            'from'   => Manager::table(),
-            'where'  => [
-                'id' => (int)$id
-            ],
-            'limit'  => 1
-        ]);
-
-        if (!isset($result[0])
-            || !isset($result[0]['parent'])
-            || empty($result[0]['parent'])
-        ) {
-            return;
-        }
-
-        $this->parentids[] = $result[0]['parent'];
-
-        $this->getParentIdsHelper($result[0]['parent']);
-    }
-
-    /**
      * Have the group subgroups?
      *
      * @return integer
@@ -837,9 +933,9 @@ class Group extends QUI\QDOM
      */
     public function getChildren($params = [])
     {
-        $ids      = $this->getChildrenIds(false, $params);
+        $ids = $this->getChildrenIds(false, $params);
         $children = [];
-        $Groups   = QUI::getGroups();
+        $Groups = QUI::getGroups();
 
         foreach ($ids as $id) {
             try {
@@ -855,83 +951,6 @@ class Group extends QUI\QDOM
         }
 
         return $children;
-    }
-
-    /**
-     * return the subgroup ids
-     *
-     * @param boolean $recursiv - recursiv true / false
-     * @param      $params - SQL Params (limit, order)
-     *
-     * @return array
-     */
-    public function getChildrenIds($recursiv = false, $params = [])
-    {
-        if ($this->childrenids) {
-            return $this->childrenids;
-        }
-
-
-        $this->childrenids = [];
-
-        $_params = [
-            'select' => 'id',
-            'from'   => Manager::table(),
-            'where'  => [
-                'parent' => $this->getId()
-            ]
-        ];
-
-        if (isset($params['order'])) {
-            $_params['order'] = $params['order'];
-        }
-
-        if (isset($params['limit'])) {
-            $_params['limit'] = $params['limit'];
-        }
-
-        $result = QUI::getDataBase()->fetch($_params);
-
-        if (!isset($result) || !isset($result[0])) {
-            return $this->childrenids;
-        }
-
-        foreach ($result as $entry) {
-            if (isset($entry['id'])) {
-                $this->childrenids[] = $entry['id'];
-
-                if ($recursiv == true) {
-                    $this->getChildrenIdsHelper($entry['id']);
-                }
-            }
-        }
-
-        return $this->childrenids;
-    }
-
-    /**
-     * Helper method for the recursiveness
-     *
-     * @param integer $id
-     * @throws QUI\Database\Exception
-     */
-    private function getChildrenIdsHelper(int $id)
-    {
-        $result = QUI::getDataBase()->fetch([
-            'select' => 'id',
-            'from'   => Manager::table(),
-            'where'  => [
-                'parent' => $id
-            ]
-        ]);
-
-        foreach ($result as $entry) {
-            if (isset($entry['id'])) {
-                $this->childrenids[] = $entry['id'];
-
-                $this->getChildrenIdsHelper($entry['id']);
-            }
-        }
     }
 
     /**
@@ -952,7 +971,7 @@ class Group extends QUI\QDOM
         );
 
         $create = true;
-        $newId  = false;
+        $newId = false;
 
         while ($create) {
             $rand = (int)(microtime(true) * 1000000);
@@ -961,8 +980,8 @@ class Group extends QUI\QDOM
 
             $result = QUI::getDataBase()->fetch([
                 'select' => 'id',
-                'from'   => Manager::table(),
-                'where'  => [
+                'from' => Manager::table(),
+                'where' => [
                     'id' => $newId
                 ]
             ]);
@@ -982,8 +1001,8 @@ class Group extends QUI\QDOM
         }
 
         QUI::getDataBase()->insert(Manager::table(), [
-            'id'     => $newId,
-            'name'   => $name,
+            'id' => $newId,
+            'name' => $name,
             'parent' => $this->getId(),
             'active' => 0
         ]);
@@ -996,20 +1015,5 @@ class Group extends QUI\QDOM
         QUI::getEvents()->fireEvent('groupCreate', [$Group]);
 
         return $Group;
-    }
-
-    /**
-     * creates the group cache
-     *
-     * @ignore
-     */
-    protected function createCache()
-    {
-        // Cache aufbauen
-        QUI\Cache\Manager::set('quiqqer/groups/group/' . $this->getId(), [
-            'parentids'  => $this->getParentIds(),
-            'attributes' => $this->getAttributes(),
-            'rights'     => $this->rights
-        ]);
     }
 }

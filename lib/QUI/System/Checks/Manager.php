@@ -49,7 +49,7 @@ class Manager
             $JSON->setAttribute('error', -1);
             $JSON->setAttribute(
                 'message',
-                'Installieren / Aktivieren Sie bitte die PHP Erweiterung JSON.'.
+                'Installieren / Aktivieren Sie bitte die PHP Erweiterung JSON.' .
                 'Weitere Information finden Sie <a href="http://de3.php.net/manual/de/json.setup.php">hier</a>'
             );
         }
@@ -67,7 +67,7 @@ class Manager
             $ZLIB->setAttribute('error', -1);
             $ZLIB->setAttribute(
                 'message',
-                'Installieren / Aktivieren Sie bitte die ZLIB Erweiterung JSON. '.
+                'Installieren / Aktivieren Sie bitte die ZLIB Erweiterung JSON. ' .
                 'Weitere Information finden Sie <a href="http://de3.php.net/manual/de/zlib.setup.php">hier</a>'
             );
         }
@@ -85,9 +85,9 @@ class Manager
             $Tidy->setAttribute('error', 0);
             $Tidy->setAttribute(
                 'message',
-                'Tidy wird für das Cleanup des HTML Codes benötigt. '.
-                'Es wird nicht vorrausgesetzt, jedoch empfehlen wir diese Erweiterung zu'.
-                'aktivieren. Mehr Informationen finden Sie '.
+                'Tidy wird für das Cleanup des HTML Codes benötigt. ' .
+                'Es wird nicht vorrausgesetzt, jedoch empfehlen wir diese Erweiterung zu' .
+                'aktivieren. Mehr Informationen finden Sie ' .
                 '<a href="http://de3.php.net/manual/de/tidy.setup.php">hier</a>'
             );
         }

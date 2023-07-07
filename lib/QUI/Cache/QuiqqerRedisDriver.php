@@ -24,7 +24,7 @@ class QuiqqerRedisDriver extends Redis
         }
 
         $keyString = $this->makeKeyString($key, true);
-        $keyReal   = $this->makeKeyString($key);
+        $keyReal = $this->makeKeyString($key);
 
         $this->redis->incr($keyString); // increment index for children items
         $this->redis->del($keyReal); // remove direct item.

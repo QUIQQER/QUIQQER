@@ -21,23 +21,13 @@ class LocalServer extends QUI\Utils\Singleton
     public function activate()
     {
         $serverDir = $this->getDir();
-        $Packages  = QUI::getPackageManager();
+        $Packages = QUI::getPackageManager();
 
         $Packages->addServer($serverDir, [
             "type" => "artifact"
         ]);
 
         $Packages->setServerStatus($serverDir, 1);
-    }
-
-    /**
-     * deactivate the locale repository,
-     */
-    public function deactivate()
-    {
-        $serverDir = $this->getDir();
-        $Packages  = QUI::getPackageManager();
-        $Packages->removeServer($serverDir);
     }
 
     /**
@@ -48,16 +38,26 @@ class LocalServer extends QUI\Utils\Singleton
         $updatePath = QUI::conf('update', 'updatePath');
 
         if (!empty($updatePath) && \is_dir($updatePath)) {
-            return \rtrim($updatePath, '/').'/';
+            return \rtrim($updatePath, '/') . '/';
         }
 
-        $localeUpdateFolder = VAR_DIR.'update/packages/';
+        $localeUpdateFolder = VAR_DIR . 'update/packages/';
 
         if (!\is_dir($localeUpdateFolder)) {
             File::mkdir($localeUpdateFolder);
         }
 
         return $localeUpdateFolder;
+    }
+
+    /**
+     * deactivate the locale repository,
+     */
+    public function deactivate()
+    {
+        $serverDir = $this->getDir();
+        $Packages = QUI::getPackageManager();
+        $Packages->removeServer($serverDir);
     }
 
     /**
@@ -69,8 +69,8 @@ class LocalServer extends QUI\Utils\Singleton
     public function uploadPackage($file)
     {
         $serverDir = $this->getDir();
-        $info      = File::getInfo($file);
-        $filename  = $info['filename'].'.'.$info['extension'];
+        $info = File::getInfo($file);
+        $filename = $info['filename'] . '.' . $info['extension'];
 
         if ($info['mime_type'] !== 'application/zip') {
             throw new QUI\Exception('File is not a Package Archive');
@@ -80,11 +80,11 @@ class LocalServer extends QUI\Utils\Singleton
             throw new QUI\Exception('Package Archive File not found');
         }
 
-        if (\file_exists($serverDir.$filename)) {
-            unlink($serverDir.$filename);
+        if (\file_exists($serverDir . $filename)) {
+            unlink($serverDir . $filename);
         }
 
-        File::move($file, $serverDir.$filename);
+        File::move($file, $serverDir . $filename);
 
         // add master / dev version as repository
         $version = false;
@@ -101,7 +101,7 @@ class LocalServer extends QUI\Utils\Singleton
 
         $Zip = new \ZipArchive();
 
-        if (!$Zip->open($serverDir.$filename)) {
+        if (!$Zip->open($serverDir . $filename)) {
             return;
         }
 
@@ -117,13 +117,34 @@ class LocalServer extends QUI\Utils\Singleton
         $Zip->close();
 
         QUI::getPackageManager()->addServer(
-            $serverDir.$filename,
+            $serverDir . $filename,
             [
-                'type'    => 'package',
-                'name'    => $composerJson['name'],
+                'type' => 'package',
+                'name' => $composerJson['name'],
                 'version' => $version
             ]
         );
+    }
+
+    /**
+     * Return all not installed packages in the local server
+     *
+     * @return array
+     */
+    public function getNotInstalledPackage()
+    {
+        $result = [];
+        $packages = $this->getPackageList();
+
+        foreach ($packages as $package) {
+            try {
+                QUI::getPackage($package['name']);
+            } catch (QUI\Exception $Exception) {
+                $result[] = $package;
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -139,7 +160,7 @@ class LocalServer extends QUI\Utils\Singleton
             return [];
         }
 
-        $files  = File::readDir($dir);
+        $files = File::readDir($dir);
         $result = [];
 
         \chdir($dir);
@@ -152,7 +173,7 @@ class LocalServer extends QUI\Utils\Singleton
             } catch (\Exception $Exception) {
                 // maybe gitlab package?
                 try {
-                    $packageName  = \pathinfo($package);
+                    $packageName = \pathinfo($package);
                     $composerJson = \file_get_contents(
                         "zip://{$package}#{$packageName['filename']}/composer.json"
                     );
@@ -172,7 +193,7 @@ class LocalServer extends QUI\Utils\Singleton
                 continue;
             }
 
-            if (\is_dir(OPT_DIR.$composerJson['name'])) {
+            if (\is_dir(OPT_DIR . $composerJson['name'])) {
                 continue;
             }
 
@@ -184,27 +205,6 @@ class LocalServer extends QUI\Utils\Singleton
             }
 
             $result[] = $composerJson;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Return all not installed packages in the local server
-     *
-     * @return array
-     */
-    public function getNotInstalledPackage()
-    {
-        $result   = [];
-        $packages = $this->getPackageList();
-
-        foreach ($packages as $package) {
-            try {
-                QUI::getPackage($package['name']);
-            } catch (QUI\Exception $Exception) {
-                $result[] = $package;
-            }
         }
 
         return $result;

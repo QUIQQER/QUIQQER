@@ -36,16 +36,6 @@ class Queue
     const STATUS_ERROR = 3;
 
     /**
-     * Return the table string
-     *
-     * @return string
-     */
-    public static function table(): string
-    {
-        return QUI::getDBTableName('mailqueue');
-    }
-
-    /**
      * Execute the db mail queue setup
      *
      * @throws \QUI\Database\Exception
@@ -56,21 +46,21 @@ class Queue
         $Table = QUI::getDataBase()->table();
 
         $Table->addColumn(self::table(), [
-            'id'           => 'int(11) NOT NULL',
-            'subject'      => 'varchar(1000)',
-            'body'         => 'longtext',
-            'text'         => 'longtext',
-            'from'         => 'text',
-            'fromName'     => 'text',
-            'ishtml'       => 'int(1)',
-            'mailto'       => 'text',
-            'replyto'      => 'text',
-            'cc'           => 'text',
-            'bcc'          => 'text',
+            'id' => 'int(11) NOT NULL',
+            'subject' => 'varchar(1000)',
+            'body' => 'longtext',
+            'text' => 'longtext',
+            'from' => 'text',
+            'fromName' => 'text',
+            'ishtml' => 'int(1)',
+            'mailto' => 'text',
+            'replyto' => 'text',
+            'cc' => 'text',
+            'bcc' => 'text',
             'attachements' => 'text',
-            'status'       => 'int(1) NOT NULL DEFAULT 0',
-            'lastsend'     => 'int(11)',
-            'retry'        => 'int(3) NOT NULL DEFAULT 0'
+            'status' => 'int(1) NOT NULL DEFAULT 0',
+            'lastsend' => 'int(11)',
+            'retry' => 'int(3) NOT NULL DEFAULT 0'
         ]);
 
         $Table->setPrimaryKey(self::table(), 'id');
@@ -78,15 +68,13 @@ class Queue
     }
 
     /**
-     * Return the path of the attachment directory
-     *
-     * @param string|integer $mailId - ID of the Mail Queue Entry
+     * Return the table string
      *
      * @return string
      */
-    public static function getAttachmentDir($mailId): string
+    public static function table(): string
     {
-        return VAR_DIR . 'mailQueue/' . (int)$mailId . '/';
+        return QUI::getDBTableName('mailqueue');
     }
 
     /**
@@ -103,11 +91,11 @@ class Queue
     {
         $params = $Mail->toArray();
 
-        $params['mailto']  = json_encode($params['mailto']);
+        $params['mailto'] = json_encode($params['mailto']);
         $params['replyto'] = json_encode($params['replyto']);
-        $params['cc']      = json_encode($params['cc']);
-        $params['bcc']     = json_encode($params['bcc']);
-        $params['status']  = self::STATUS_ADDED;
+        $params['cc'] = json_encode($params['cc']);
+        $params['bcc'] = json_encode($params['bcc']);
+        $params['status'] = self::STATUS_ADDED;
 
         $attachments = [];
 
@@ -157,6 +145,18 @@ class Queue
     }
 
     /**
+     * Return the path of the attachment directory
+     *
+     * @param string|integer $mailId - ID of the Mail Queue Entry
+     *
+     * @return string
+     */
+    public static function getAttachmentDir($mailId): string
+    {
+        return VAR_DIR . 'mailQueue/' . (int)$mailId . '/';
+    }
+
+    /**
      * Send the next mail from the queue
      *
      * @return boolean
@@ -165,10 +165,10 @@ class Queue
     public function send(): bool
     {
         $params = QUI::getDataBase()->fetch([
-            'from'  => self::table(),
+            'from' => self::table(),
             'where' => [
                 'status' => [
-                    'type'  => 'NOT',
+                    'type' => 'NOT',
                     'value' => self::STATUS_SENDING
                 ]
             ],
@@ -184,111 +184,13 @@ class Queue
         QUI::getDataBase()->update(
             self::table(),
             [
-                'status'   => self::STATUS_SENDING,
+                'status' => self::STATUS_SENDING,
                 'lastsend' => time(),
-                'retry'    => (int)$entry['retry']++
+                'retry' => (int)$entry['retry']++
             ],
             ['id' => $entry['id']]
         );
 
-
-        try {
-            $send = $this->sendMail($entry);
-
-            // successful send
-            if ($send) {
-                QUI::getDataBase()->delete(self::table(), [
-                    'id' => $entry['id']
-                ]);
-
-                return true;
-            }
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::addError(
-                $Exception->getMessage(),
-                ['trace' => $Exception->getTraceAsString()],
-                'mail_queue'
-            );
-        }
-
-        return false;
-    }
-
-    /**
-     * Send all mails from the queue
-     *
-     * @return void
-     * @throws \QUI\Database\Exception
-     */
-    public function sendAll()
-    {
-        $result = QUI::getDataBase()->fetch([
-            'select' => 'id',
-            'from'   => self::table(),
-            'where'  => [
-                'status' => [
-                    'type'  => 'NOT',
-                    'value' => self::STATUS_SENDING
-                ]
-            ]
-        ]);
-
-        foreach ($result as $row) {
-            try {
-                $this->sendById($row['id']);
-            } catch (QUI\Exception $Exception) {
-                QUI\System\Log::addError(
-                    $Exception->getMessage(),
-                    ['trace' => $Exception->getTraceAsString()],
-                    'mail_queue'
-                );
-            }
-        }
-    }
-
-    /**
-     * Send an mail by its mail queue id
-     *
-     * @param integer $id
-     *
-     * @return boolean
-     * @throws QUI\Exception
-     */
-    public function sendById(int $id): bool
-    {
-        $params = QUI::getDataBase()->fetch([
-            'from'  => self::table(),
-            'where' => [
-                'id' => $id
-            ],
-            'limit' => 1
-        ]);
-
-        if (!isset($params[0])) {
-            throw new QUI\Exception(
-                QUI::getLocale()->get(
-                    'system',
-                    'exception.mailqueue.mail.not.found'
-                ),
-                404
-            );
-        }
-
-        if ((int)$params[0]['status'] === self::STATUS_SENDING) {
-            return true;
-        }
-
-        $entry = $params[0];
-
-        QUI::getDataBase()->update(
-            self::table(),
-            [
-                'status'   => self::STATUS_SENDING,
-                'lastsend' => time(),
-                'retry'    => (int)$entry['retry']++
-            ],
-            ['id' => $id]
-        );
 
         try {
             $send = $this->sendMail($entry);
@@ -339,10 +241,10 @@ class Queue
         try {
             $PhpMailer = QUI::getMailManager()->getPHPMailer();
 
-            $mailto  = json_decode($params['mailto'], true);
+            $mailto = json_decode($params['mailto'], true);
             $replyto = json_decode($params['replyto'], true);
-            $cc      = json_decode($params['cc'], true);
-            $bcc     = json_decode($params['bcc'], true);
+            $cc = json_decode($params['cc'], true);
+            $bcc = json_decode($params['bcc'], true);
 
             // mailto
             foreach ($mailto as $address) {
@@ -389,7 +291,7 @@ class Queue
 
             if (!empty($params['attachements'])) {
                 $attachmentFiles = json_decode($params['attachements'], true);
-                $mailQueueDir    = self::getAttachmentDir($params['id']);
+                $mailQueueDir = self::getAttachmentDir($params['id']);
 
                 if (is_dir($mailQueueDir)) {
                     foreach ($attachmentFiles as $fileName) {
@@ -434,10 +336,10 @@ class Queue
             $html = preg_replace('#<source([^>]*)>#i', '', $html);
             $html = str_replace('</picture>', '', $html);
 
-            $PhpMailer->From     = $params['from'];
+            $PhpMailer->From = $params['from'];
             $PhpMailer->FromName = $params['fromName'];
-            $PhpMailer->Subject  = $params['subject'];
-            $PhpMailer->Body     = $html;
+            $PhpMailer->Subject = $params['subject'];
+            $PhpMailer->Body = $html;
 
             try {
                 QUI::getEvents()->fireEvent('mailerSendBegin', [$this, $PhpMailer]);
@@ -482,38 +384,6 @@ class Queue
     }
 
     /**
-     * Return the number of the queue
-     *
-     * @return integer
-     * @throws \QUI\Database\Exception
-     */
-    public function count(): int
-    {
-        $result = QUI::getDataBase()->fetch([
-            'from'  => self::table(),
-            'count' => [
-                'select' => 'id',
-                'as'     => 'count'
-            ]
-        ]);
-
-        return $result[0]['count'];
-    }
-
-    /**
-     * Return the queue list
-     *
-     * @return array
-     * @throws \QUI\Database\Exception
-     */
-    public function getList(): array
-    {
-        return QUI::getDataBase()->fetch([
-            'from' => self::table()
-        ]);
-    }
-
-    /**
      * Get number of mails that have been sent via queue in the last hour
      *
      * @return int
@@ -522,7 +392,7 @@ class Queue
     protected function getMailsSentInLastHour(): int
     {
         $cacheFile = QUI::getPackage('quiqqer/quiqqer')->getVarDir() . 'mailqueue';
-        $time      = time();
+        $time = time();
 
         if (!file_exists($cacheFile)) {
             file_put_contents($cacheFile, "$time-0");
@@ -530,7 +400,7 @@ class Queue
             return 0;
         }
 
-        $mailsSent  = explode('-', file_get_contents($cacheFile));
+        $mailsSent = explode('-', file_get_contents($cacheFile));
         $createTime = (int)$mailsSent[0];
 
         if ((time() - $createTime) > 3600) {
@@ -555,5 +425,135 @@ class Queue
 
         $mailsSentCache = explode('-', file_get_contents($cacheFile));
         file_put_contents($cacheFile, $mailsSentCache[0] . '-' . ($mailsSent + 1));
+    }
+
+    /**
+     * Send all mails from the queue
+     *
+     * @return void
+     * @throws \QUI\Database\Exception
+     */
+    public function sendAll()
+    {
+        $result = QUI::getDataBase()->fetch([
+            'select' => 'id',
+            'from' => self::table(),
+            'where' => [
+                'status' => [
+                    'type' => 'NOT',
+                    'value' => self::STATUS_SENDING
+                ]
+            ]
+        ]);
+
+        foreach ($result as $row) {
+            try {
+                $this->sendById($row['id']);
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addError(
+                    $Exception->getMessage(),
+                    ['trace' => $Exception->getTraceAsString()],
+                    'mail_queue'
+                );
+            }
+        }
+    }
+
+    /**
+     * Send an mail by its mail queue id
+     *
+     * @param integer $id
+     *
+     * @return boolean
+     * @throws QUI\Exception
+     */
+    public function sendById(int $id): bool
+    {
+        $params = QUI::getDataBase()->fetch([
+            'from' => self::table(),
+            'where' => [
+                'id' => $id
+            ],
+            'limit' => 1
+        ]);
+
+        if (!isset($params[0])) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'system',
+                    'exception.mailqueue.mail.not.found'
+                ),
+                404
+            );
+        }
+
+        if ((int)$params[0]['status'] === self::STATUS_SENDING) {
+            return true;
+        }
+
+        $entry = $params[0];
+
+        QUI::getDataBase()->update(
+            self::table(),
+            [
+                'status' => self::STATUS_SENDING,
+                'lastsend' => time(),
+                'retry' => (int)$entry['retry']++
+            ],
+            ['id' => $id]
+        );
+
+        try {
+            $send = $this->sendMail($entry);
+
+            // successful send
+            if ($send) {
+                QUI::getDataBase()->delete(self::table(), [
+                    'id' => $entry['id']
+                ]);
+
+                return true;
+            }
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError(
+                $Exception->getMessage(),
+                ['trace' => $Exception->getTraceAsString()],
+                'mail_queue'
+            );
+        }
+
+        return false;
+    }
+
+    /**
+     * Return the number of the queue
+     *
+     * @return integer
+     * @throws \QUI\Database\Exception
+     */
+    public function count(): int
+    {
+        $result = QUI::getDataBase()->fetch([
+            'from' => self::table(),
+            'count' => [
+                'select' => 'id',
+                'as' => 'count'
+            ]
+        ]);
+
+        return $result[0]['count'];
+    }
+
+    /**
+     * Return the queue list
+     *
+     * @return array
+     * @throws \QUI\Database\Exception
+     */
+    public function getList(): array
+    {
+        return QUI::getDataBase()->fetch([
+            'from' => self::table()
+        ]);
     }
 }

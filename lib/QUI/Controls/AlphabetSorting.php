@@ -41,8 +41,8 @@ class AlphabetSorting extends QUI\Control
      */
     public function getBody()
     {
-        $Engine  = QUI::getTemplateManager()->getEngine();
-        $Site    = $this->getAttribute('Site');
+        $Engine = QUI::getTemplateManager()->getEngine();
+        $Site = $this->getAttribute('Site');
         $Project = $Site->getProject();
 
         $active = 'abc';
@@ -68,7 +68,7 @@ class AlphabetSorting extends QUI\Control
         }
 
         $attributes = $this->getAttributes();
-        $params     = [];
+        $params = [];
 
         foreach ($attributes as $key => $value) {
             if ($key == 'class') {
@@ -90,11 +90,11 @@ class AlphabetSorting extends QUI\Control
         }
 
         $Engine->assign([
-            'active'    => $active,
+            'active' => $active,
             'urlParams' => $params,
-            'anchor'    => $anchor,
-            'Site'      => $Site,
-            'Project'   => $Project
+            'anchor' => $anchor,
+            'Site' => $Site,
+            'Project' => $Project
         ]);
 
         return $Engine->fetch(dirname(__FILE__) . '/AlphabetSorting.html');

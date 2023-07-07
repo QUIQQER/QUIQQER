@@ -68,9 +68,9 @@ class SecurityUpdate extends QUI\System\Console\Tool
         $this->writeLn('');
         $this->logBuffer();
 
-        $self         = $this;
-        $Packages     = QUI::getPackageManager();
-        $dryRun       = true;
+        $self = $this;
+        $Packages = QUI::getPackageManager();
+        $dryRun = true;
         $dryRunOutput = '';
 
         // output events
@@ -102,7 +102,7 @@ class SecurityUpdate extends QUI\System\Console\Tool
         $workingDir = $Composer->getWorkingDir();
 
         $composerOriginal = $workingDir . 'composer.json';
-        $composerBackups  = $workingDir . 'composer-security-update-backup.json';
+        $composerBackups = $workingDir . 'composer-security-update-backup.json';
 
         try {
             if (!file_exists($composerOriginal)) {
@@ -114,8 +114,8 @@ class SecurityUpdate extends QUI\System\Console\Tool
 
             // get all packages
             $VersionParser = new VersionParser();
-            $installed     = QUI::getPackageManager()->getInstalledVersions();
-            $packages      = [];
+            $installed = QUI::getPackageManager()->getInstalledVersions();
+            $packages = [];
 
             foreach ($installed as $package => $v) {
                 $stability = $VersionParser->parseStability($v);
@@ -123,14 +123,14 @@ class SecurityUpdate extends QUI\System\Console\Tool
                 if ($stability === 'stable') {
                     $parts = $VersionParser->normalize($v);
                     $parts = explode('.', $parts);
-                    $v     = $parts[0] . '.' . $parts[1] . '.*';
+                    $v = $parts[0] . '.' . $parts[1] . '.*';
                 }
 
                 $packages[$package] = $v;
             }
 
-            $composerJSON            = json_decode(file_get_contents($composerOriginal), true);
-            $originalRequire         = $composerJSON['require'];
+            $composerJSON = json_decode(file_get_contents($composerOriginal), true);
+            $originalRequire = $composerJSON['require'];
             $composerJSON['require'] = $packages;
 
             // keep composer.json versions
@@ -182,7 +182,7 @@ class SecurityUpdate extends QUI\System\Console\Tool
                     continue;
                 }
 
-                $line  = str_replace('Lock file operations:', '', $line);
+                $line = str_replace('Lock file operations:', '', $line);
                 $lines = explode(',', $line);
 
                 foreach ($lines as $l) {
@@ -220,7 +220,7 @@ class SecurityUpdate extends QUI\System\Console\Tool
 
             $this->logBuffer();
             $wasExecuted = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.execute');
-            $webserver   = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.webserver');
+            $webserver = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.webserver');
 
             $this->writeLn($wasExecuted);
             $this->writeToLog($wasExecuted . PHP_EOL);
@@ -327,10 +327,10 @@ class SecurityUpdate extends QUI\System\Console\Tool
             QUI\System\Log::LEVEL_NOTICE,
             [
                 'params' => [
-                    'clearCache'     => $this->getArgument('clearCache'),
+                    'clearCache' => $this->getArgument('clearCache'),
                     'setDevelopment' => $this->getArgument('setDevelopment'),
-                    'check'          => $this->getArgument('check'),
-                    'set-date'       => $this->getArgument('set-date')
+                    'check' => $this->getArgument('check'),
+                    'set-date' => $this->getArgument('set-date')
                 ]
             ],
             'update',

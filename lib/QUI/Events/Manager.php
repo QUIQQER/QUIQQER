@@ -43,8 +43,10 @@ class Manager implements QUI\Interfaces\Events
         $this->Events = new Event();
 
         try {
-            if (!QUI::$Conf->existValue('globals', 'eventsCreated')
-                || !QUI::$Conf->getValue('globals', 'eventsCreated')) {
+            if (
+                !QUI::$Conf->existValue('globals', 'eventsCreated')
+                || !QUI::$Conf->getValue('globals', 'eventsCreated')
+            ) {
                 $exists = QUI::getDataBase()->table()->exist(self::table());
 
                 QUI::$Conf->setValue('globals', 'eventsCreated', $exists);
@@ -66,7 +68,7 @@ class Manager implements QUI\Interfaces\Events
 
 
             $list = QUI::getDataBase()->fetch([
-                'from'  => self::table(),
+                'from' => self::table(),
                 'where' => [
                     'sitetype' => null
                 ],
@@ -83,10 +85,10 @@ class Manager implements QUI\Interfaces\Events
             }
 
             $list = QUI::getDataBase()->fetch([
-                'from'  => self::table(),
+                'from' => self::table(),
                 'where' => [
                     'sitetype' => [
-                        'type'  => 'NOT',
+                        'type' => 'NOT',
                         'value' => null
                     ]
                 ],
@@ -109,6 +111,39 @@ class Manager implements QUI\Interfaces\Events
     }
 
     /**
+     * Adds an event
+     * If $fn is a string, the event would be save in the database
+     * if you want to register events for the runtime, please use lambda function
+     *
+     * @param string $event - The type of event (e.g. 'complete').
+     * @param string|callable $fn - The function to execute.
+     * @param string $package - Name of the package
+     * @param int $priority - Event priority
+     *
+     * @throws QUI\Exception
+     * @example $EventManager->addEvent('myEvent', function() { });
+     *
+     */
+    public function addEvent($event, $fn, string $package = '', int $priority = 0)
+    {
+        if (!is_string($package)) {
+            $package = '';
+        }
+
+        // add the event to the db
+        if (is_string($fn)) {
+            QUI::getDataBase()->insert(self::table(), [
+                'event' => $event,
+                'callback' => $fn,
+                'package' => $package,
+                'priority' => $priority
+            ]);
+        }
+
+        $this->Events->addEvent($event, $fn, $priority);
+    }
+
+    /**
      * create the event table
      *
      * @throws QUI\Exception
@@ -118,10 +153,10 @@ class Manager implements QUI\Interfaces\Events
         $DBTable = QUI::getDataBase()->table();
 
         $DBTable->addColumn(self::table(), [
-            'event'    => 'VARCHAR(255)',
+            'event' => 'VARCHAR(255)',
             'callback' => 'TEXT NULL',
             'sitetype' => 'TEXT NULL',
-            'package'  => 'TEXT NULL',
+            'package' => 'TEXT NULL',
             'priority' => 'INT DEFAULT 0'
         ]);
 
@@ -183,39 +218,6 @@ class Manager implements QUI\Interfaces\Events
     }
 
     /**
-     * Adds an event
-     * If $fn is a string, the event would be save in the database
-     * if you want to register events for the runtime, please use lambda function
-     *
-     * @param string $event - The type of event (e.g. 'complete').
-     * @param string|callable $fn - The function to execute.
-     * @param string $package - Name of the package
-     * @param int $priority - Event priority
-     *
-     * @throws QUI\Exception
-     * @example $EventManager->addEvent('myEvent', function() { });
-     *
-     */
-    public function addEvent($event, $fn, string $package = '', int $priority = 0)
-    {
-        if (!is_string($package)) {
-            $package = '';
-        }
-
-        // add the event to the db
-        if (is_string($fn)) {
-            QUI::getDataBase()->insert(self::table(), [
-                'event'    => $event,
-                'callback' => $fn,
-                'package'  => $package,
-                'priority' => $priority
-            ]);
-        }
-
-        $this->Events->addEvent($event, $fn, $priority);
-    }
-
-    /**
      * Adds an site event entry
      *
      * @param string $event - The type of event (e.g. 'complete').
@@ -234,7 +236,7 @@ class Manager implements QUI\Interfaces\Events
         }
 
         QUI::getDataBase()->insert(self::table(), [
-            'event'    => $event,
+            'event' => $event,
             'callback' => $fn,
             'sitetype' => $siteType,
             'priority' => (int)$priority
@@ -273,9 +275,9 @@ class Manager implements QUI\Interfaces\Events
 
         if (is_string($fn)) {
             QUI::getDataBase()->delete(self::table(), [
-                'event'    => $event,
+                'event' => $event,
                 'callback' => $fn,
-                'package'  => $package
+                'package' => $package
             ]);
         }
     }

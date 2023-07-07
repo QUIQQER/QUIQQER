@@ -13,7 +13,6 @@ namespace QUI\Interfaces;
  *
  * @author www.pcsg.de (Henning Leutz)
  */
-
 interface Events
 {
     /**

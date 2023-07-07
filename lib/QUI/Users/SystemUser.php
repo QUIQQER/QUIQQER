@@ -30,16 +30,6 @@ class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
-     * @see \QUI\Users\Nobody::getId()
-     */
-    public function getId()
-    {
-        return 5;
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
      * @see \QUI\Users\Nobody::getUniqueId()
      */
     public function getUniqueId()
@@ -84,5 +74,15 @@ class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
         }
 
         return [$Everyone->getId()];
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \QUI\Users\Nobody::getId()
+     */
+    public function getId()
+    {
+        return 5;
     }
 }

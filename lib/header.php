@@ -105,9 +105,10 @@ try {
     header('Status: 503 Service Temporarily Unavailable');
 
     $Template = QUI::getTemplateManager()->getEngine();
-    $file     = LIB_DIR . 'templates/db_error.html';
+    $file = LIB_DIR . 'templates/db_error.html';
 
-    if (QUI::conf('db', 'error_html')
+    if (
+        QUI::conf('db', 'error_html')
         && file_exists(QUI::conf('db', 'error_html'))
     ) {
         $file = QUI::conf('db', 'error_html');
@@ -137,7 +138,8 @@ if (isset($_GET['logout'])) {
     $User->logout();
     $User = QUI::getUsers()->getNobody();
 
-    if (isset($_SERVER['REQUEST_URI'])
+    if (
+        isset($_SERVER['REQUEST_URI'])
         && strpos($_SERVER['REQUEST_URI'], 'logout=1') !== false
     ) {
         header('Location: ' . str_replace('logout=1', '', $_SERVER['REQUEST_URI']));

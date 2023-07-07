@@ -42,19 +42,9 @@ abstract class Child extends QUI\QDOM
      */
     public function __construct($id, Factory $Factory)
     {
-        $this->Events  = new QUI\Events\Event();
+        $this->Events = new QUI\Events\Event();
         $this->Factory = $Factory;
-        $this->id      = (int)$id;
-    }
-
-    /**
-     * Return the Child-ID
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
+        $this->id = (int)$id;
     }
 
     /**
@@ -76,6 +66,16 @@ abstract class Child extends QUI\QDOM
     }
 
     /**
+     * Return the Child-ID
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
      * Delete the CRUD child
      *
      * @throws QUI\ExceptionStack|QUI\Exception
@@ -94,23 +94,6 @@ abstract class Child extends QUI\QDOM
     }
 
     /**
-     * returns a attribute
-     * if the attribute is not set, it returns false
-     *
-     * @param string $name
-     *
-     * @return mixed
-     */
-    public function getAttribute($name)
-    {
-        if (\array_key_exists($name, $this->attributes)) {
-            return $this->attributes[$name];
-        }
-
-        return false;
-    }
-
-    /**
      * Update the CRUD child
      *
      * @throws QUI\ExceptionStack|QUI\Exception
@@ -120,7 +103,7 @@ abstract class Child extends QUI\QDOM
         $this->Events->fireEvent('saveBegin');
         $this->Events->fireEvent('updateBegin');
 
-        $needles   = $this->Factory->getChildAttributes();
+        $needles = $this->Factory->getChildAttributes();
         $savedData = [];
 
         foreach ($needles as $needle) {
@@ -139,5 +122,22 @@ abstract class Child extends QUI\QDOM
 
         $this->Events->fireEvent('saveEnd');
         $this->Events->fireEvent('updateEnd');
+    }
+
+    /**
+     * returns a attribute
+     * if the attribute is not set, it returns false
+     *
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function getAttribute($name)
+    {
+        if (\array_key_exists($name, $this->attributes)) {
+            return $this->attributes[$name];
+        }
+
+        return false;
     }
 }

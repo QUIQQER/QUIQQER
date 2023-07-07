@@ -87,7 +87,7 @@ class Utils
     public static function getTab($gid, $plugin, $tab)
     {
         $Groups = QUI::getGroups();
-        $Group  = $Groups->get($gid);
+        $Group = $Groups->get($gid);
 
         // assign group as global var
         QUI::getTemplateManager()->assignGlobalParam('Group', $Group);
@@ -104,7 +104,7 @@ class Utils
 
         // plugin
         try {
-            $plugin  = \str_replace('plugin.', '', $plugin);
+            $plugin = \str_replace('plugin.', '', $plugin);
             $Package = QUI::getPackage($plugin);
 
             return DOM::getTabHTML(

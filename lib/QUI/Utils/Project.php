@@ -62,7 +62,7 @@ class Project
         $search = $Project->getSitesIds([
             'where' => [
                 'active' => -1,
-                'type'   => $searchType
+                'type' => $searchType
             ],
             'limit' => 1
         ]);
@@ -70,7 +70,7 @@ class Project
         if (empty($search)) {
             try {
                 $searchId = $First->createChild([
-                    'name'  => self::parseForUrl(
+                    'name' => self::parseForUrl(
                         'quiqqer/quiqqer',
                         'projects.defaultstructure.search.name',
                         $Project
@@ -95,7 +95,7 @@ class Project
         $legalNotes = $Project->getSitesIds([
             'where' => [
                 'active' => -1,
-                'type'   => 'quiqqer/sitetypes:types/legalnotes'
+                'type' => 'quiqqer/sitetypes:types/legalnotes'
             ],
             'limit' => 1
         ]);
@@ -103,7 +103,7 @@ class Project
         if (empty($legalNotes)) {
             try {
                 $legalNoteId = $First->createChild([
-                    'name'  => self::parseForUrl(
+                    'name' => self::parseForUrl(
                         'quiqqer/quiqqer',
                         'projects.defaultstructure.legalnotes.name',
                         $Project
@@ -128,7 +128,7 @@ class Project
         $generalTermsAndConditions = $Project->getSitesIds([
             'where' => [
                 'active' => -1,
-                'type'   => 'quiqqer/sitetypes:types/generalTermsAndConditions'
+                'type' => 'quiqqer/sitetypes:types/generalTermsAndConditions'
             ],
             'limit' => 1
         ]);
@@ -136,7 +136,7 @@ class Project
         if (empty($generalTermsAndConditions)) {
             try {
                 $generalTermsAndConditionsId = $First->createChild([
-                    'name'  => self::parseForUrl(
+                    'name' => self::parseForUrl(
                         'quiqqer/quiqqer',
                         'projects.defaultstructure.generalTermsAndConditions.name',
                         $Project
@@ -161,7 +161,7 @@ class Project
         $privacyPolicy = $Project->getSitesIds([
             'where' => [
                 'active' => -1,
-                'type'   => 'quiqqer/sitetypes:types/privacypolicy'
+                'type' => 'quiqqer/sitetypes:types/privacypolicy'
             ],
             'limit' => 1
         ]);
@@ -169,7 +169,7 @@ class Project
         if (empty($privacyPolicy)) {
             try {
                 $privacyPolicyId = $First->createChild([
-                    'name'  => self::parseForUrl(
+                    'name' => self::parseForUrl(
                         'quiqqer/quiqqer',
                         'projects.defaultstructure.privacypolicy.name',
                         $Project
@@ -188,36 +188,6 @@ class Project
                 QUI\System\Log::writeException($Exception);
             }
         }
-    }
-
-    /**
-     * Apply demo data to a project
-     *
-     * @param QUI\Projects\Project $Project
-     * @param string $templateName
-     *
-     * @throws QUI\Exception
-     */
-    public static function applyDemoDataToProject(QUI\Projects\Project $Project, $templateName)
-    {
-        $TemplatePackage = QUI::getPackageManager()->getInstalledPackage($templateName);
-        $Parser          = new DemoDataParser();
-
-        $demoDataArray = [];
-
-        if (\file_exists($TemplatePackage->getDir().'demodata.xml')) {
-            $demoDataArray = $Parser->parse($TemplatePackage, $Project);
-        }
-
-        if (empty($demoDataArray)) {
-            throw new QUI\Demodata\Exceptions\UnsupportedException([
-                'quiqqer/demodata',
-                'exception.template.unsupported'
-            ]);
-        }
-
-        $DemoData = new QUI\Demodata\DemoData();
-        $DemoData->apply($Project, $demoDataArray);
     }
 
     /**
@@ -258,6 +228,36 @@ class Project
         $str = QUI\Projects\Site\Utils::clearUrl($str, $Project);
 
         return $str;
+    }
+
+    /**
+     * Apply demo data to a project
+     *
+     * @param QUI\Projects\Project $Project
+     * @param string $templateName
+     *
+     * @throws QUI\Exception
+     */
+    public static function applyDemoDataToProject(QUI\Projects\Project $Project, $templateName)
+    {
+        $TemplatePackage = QUI::getPackageManager()->getInstalledPackage($templateName);
+        $Parser = new DemoDataParser();
+
+        $demoDataArray = [];
+
+        if (\file_exists($TemplatePackage->getDir() . 'demodata.xml')) {
+            $demoDataArray = $Parser->parse($TemplatePackage, $Project);
+        }
+
+        if (empty($demoDataArray)) {
+            throw new QUI\Demodata\Exceptions\UnsupportedException([
+                'quiqqer/demodata',
+                'exception.template.unsupported'
+            ]);
+        }
+
+        $DemoData = new QUI\Demodata\DemoData();
+        $DemoData->apply($Project, $demoDataArray);
     }
 
     /**

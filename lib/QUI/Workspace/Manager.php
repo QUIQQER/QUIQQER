@@ -27,16 +27,6 @@ use function mb_strlen;
 class Manager
 {
     /**
-     * Return the table string
-     *
-     * @return string
-     */
-    public static function table(): string
-    {
-        return QUI::getDBTableName('users_workspaces');
-    }
-
-    /**
      * Setup for the user workspaces
      */
     public static function setup()
@@ -53,13 +43,13 @@ class Manager
 
         try {
             $Table->addColumn(self::table(), [
-                'id'        => 'int(11) NOT NULL',
-                'uid'       => 'int(11) NOT NULL',
-                'title'     => 'text',
-                'data'      => 'text',
+                'id' => 'int(11) NOT NULL',
+                'uid' => 'int(11) NOT NULL',
+                'title' => 'text',
+                'data' => 'text',
                 'minHeight' => 'int',
-                'minWidth'  => 'int',
-                'standard'  => 'int(1)'
+                'minWidth' => 'int',
+                'standard' => 'int(1)'
             ]);
 
             $Table->setAutoIncrement(self::table(), 'id');
@@ -67,6 +57,16 @@ class Manager
         } catch (Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
         }
+    }
+
+    /**
+     * Return the table string
+     *
+     * @return string
+     */
+    public static function table(): string
+    {
+        return QUI::getDBTableName('users_workspaces');
     }
 
     /**
@@ -138,11 +138,11 @@ class Manager
         $title = Orthos::clear($title);
 
         QUI::getDataBase()->insert(self::table(), [
-            'uid'       => $User->getId(),
-            'title'     => $title,
-            'data'      => $data,
+            'uid' => $User->getId(),
+            'title' => $title,
+            'data' => $data,
             'minHeight' => $minHeight,
-            'minWidth'  => $minWidth
+            'minWidth' => $minWidth
         ]);
 
         return QUI::getDataBase()->getPDO()->lastInsertId('id');
@@ -159,79 +159,13 @@ class Manager
         try {
             QUI::getDataBase()->delete(self::table(), [
                 'uid' => $User->getId(),
-                'id'  => $id
+                'id' => $id
             ]);
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError($Exception, [
                 'trace' => $Exception->getTraceAsString()
             ]);
         }
-    }
-
-    /**
-     * Return the workspaces list from an user
-     *
-     * @param \QUI\Interfaces\Users\User $User
-     *
-     * @return array
-     * @throws \QUI\Database\Exception
-     * @throws \QUI\Exception
-     */
-    public static function getWorkspacesByUser(QUI\Interfaces\Users\User $User): array
-    {
-        $result = QUI::getDataBase()->fetch([
-            'from'  => self::table(),
-            'where' => [
-                'uid' => $User->getId()
-            ]
-        ]);
-
-        if (empty($result) && QUI\Permissions\Permission::isAdmin($User)) {
-            QUI::getUsers()->setDefaultWorkspacesForUsers($User);
-
-            $result = QUI::getDataBase()->fetch([
-                'from'  => self::table(),
-                'where' => [
-                    'uid' => $User->getId()
-                ]
-            ]);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Return a workspace by its id
-     *
-     * @param integer $id - id of the workspace
-     * @param \QUI\Users\User $User
-     *
-     * @return array
-     * @throws \QUI\Exception
-     *
-     */
-    public static function getWorkspaceById(int $id, QUI\Users\User $User): array
-    {
-        $result = QUI::getDataBase()->fetch([
-            'from'  => self::table(),
-            'where' => [
-                'id'  => $id,
-                'uid' => $User->getId()
-            ],
-            'limit' => 1
-        ]);
-
-        if (!isset($result[0])) {
-            throw new QUI\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
-                    'exception.workspace.not.found'
-                ),
-                404
-            );
-        }
-
-        return $result[0];
     }
 
     /**
@@ -246,10 +180,42 @@ class Manager
     public static function getWorkspacesTitlesByUser(QUI\Users\User $User): array
     {
         $workspaces = self::getWorkspacesByUser($User);
-        $result     = [];
+        $result = [];
 
         foreach ($workspaces as $entry) {
             $result[] = $entry['title'];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Return the workspaces list from an user
+     *
+     * @param \QUI\Interfaces\Users\User $User
+     *
+     * @return array
+     * @throws \QUI\Database\Exception
+     * @throws \QUI\Exception
+     */
+    public static function getWorkspacesByUser(QUI\Interfaces\Users\User $User): array
+    {
+        $result = QUI::getDataBase()->fetch([
+            'from' => self::table(),
+            'where' => [
+                'uid' => $User->getId()
+            ]
+        ]);
+
+        if (empty($result) && QUI\Permissions\Permission::isAdmin($User)) {
+            QUI::getUsers()->setDefaultWorkspacesForUsers($User);
+
+            $result = QUI::getDataBase()->fetch([
+                'from' => self::table(),
+                'where' => [
+                    'uid' => $User->getId()
+                ]
+            ]);
         }
 
         return $result;
@@ -281,7 +247,7 @@ class Manager
         }
 
         if (isset($data['data'])) {
-            $data['data']      = json_decode($data['data'], true);
+            $data['data'] = json_decode($data['data'], true);
             $workspace['data'] = json_encode($data['data']);
 
             // text = 65535 single bytes chars,
@@ -292,7 +258,7 @@ class Manager
         }
 
         QUI::getDataBase()->update(self::table(), $workspace, [
-            'id'  => $id,
+            'id' => $id,
             'uid' => $User->getId()
         ]);
 
@@ -300,6 +266,40 @@ class Manager
         if (isset($data['standard']) && (int)$data['standard'] === 1) {
             self::setStandardWorkspace($User, $id);
         }
+    }
+
+    /**
+     * Return a workspace by its id
+     *
+     * @param integer $id - id of the workspace
+     * @param \QUI\Users\User $User
+     *
+     * @return array
+     * @throws \QUI\Exception
+     *
+     */
+    public static function getWorkspaceById(int $id, QUI\Users\User $User): array
+    {
+        $result = QUI::getDataBase()->fetch([
+            'from' => self::table(),
+            'where' => [
+                'id' => $id,
+                'uid' => $User->getId()
+            ],
+            'limit' => 1
+        ]);
+
+        if (!isset($result[0])) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.workspace.not.found'
+                ),
+                404
+            );
+        }
+
+        return $result[0];
     }
 
     /**
@@ -331,7 +331,7 @@ class Manager
             self::table(),
             ['standard' => 1],
             [
-                'id'  => $id,
+                'id' => $id,
                 'uid' => $User->getId()
             ]
         );
@@ -351,7 +351,7 @@ class Manager
         } catch (QUI\Exception $Exception) {
         }
 
-        $panels   = [];
+        $panels = [];
         $xmlFiles = array_merge(
             [SYS_DIR . 'panels.xml'],
             QUI::getPackageManager()->getPackageXMLFiles('panels.xml')

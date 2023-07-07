@@ -27,7 +27,7 @@ class Login extends Control
     public function __construct($options = [])
     {
         $this->setAttributes([
-            'data-qui'       => 'controls/users/Login',
+            'data-qui' => 'controls/users/Login',
             'authenticators' => [] // predefined list of Authenticator classes; if empty = use all authenticators
             // that are configured
         ]);
@@ -55,7 +55,7 @@ class Login extends Control
             $authenticator = [$authenticator];
         }
 
-        $authenticators          = [];
+        $authenticators = [];
         $exclusiveAuthenticators = $this->getAttribute('authenticators');
 
         if (empty($exclusiveAuthenticators)) {
@@ -74,7 +74,7 @@ class Login extends Control
             }
 
             $authenticators[] = [
-                'class'   => $auth,
+                'class' => $auth,
                 'control' => $Control
             ];
         }
@@ -86,10 +86,10 @@ class Login extends Control
         }
 
         $Engine->assign([
-            'passwordReset'  => !empty($_REQUEST['password_reset']),
-            'globalAuth'     => $this->isGlobalAuth,
+            'passwordReset' => !empty($_REQUEST['password_reset']),
+            'globalAuth' => $this->isGlobalAuth,
             'authenticators' => $authenticators,
-            'count'          => \count($authenticators) - 1
+            'count' => \count($authenticators) - 1
         ]);
 
         return $Engine->fetch(\dirname(__FILE__) . '/Login.html');
@@ -147,7 +147,7 @@ class Login extends Control
             return null;
         }
 
-        $User           = QUI::getUsers()->get($uid);
+        $User = QUI::getUsers()->get($uid);
         $authenticators = $User->getAuthenticators();
 
         foreach ($authenticators as $Authenticator) {

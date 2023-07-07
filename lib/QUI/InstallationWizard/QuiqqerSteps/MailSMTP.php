@@ -54,17 +54,17 @@ class MailSMTP extends QUI\InstallationWizard\AbstractInstallationWizardStep
         } catch (QUI\Exception $Exception) {
             return '';
         }
-        
+
         $Engine->assign([
             'urlImageDir' => URL_OPT_DIR . 'quiqqer/quiqqer/bin/images/installation/',
-            'SMTPServer'  => QUI::conf('mail', 'SMTPServer'),
-            'SMTPPort'    => QUI::conf('mail', 'SMTPPort'),
-            'SMTPSecure'  => QUI::conf('mail', 'SMTPSecure'),
-            'SMTPUser'    => QUI::conf('mail', 'SMTPUser'),
-            'SMTPPass'    => QUI::conf('mail', 'SMTPPass'),
+            'SMTPServer' => QUI::conf('mail', 'SMTPServer'),
+            'SMTPPort' => QUI::conf('mail', 'SMTPPort'),
+            'SMTPSecure' => QUI::conf('mail', 'SMTPSecure'),
+            'SMTPUser' => QUI::conf('mail', 'SMTPUser'),
+            'SMTPPass' => QUI::conf('mail', 'SMTPPass'),
 
-            'SMTPSecureSSL_verify_peer'       => QUI::conf('mail', 'SMTPSecureSSL_verify_peer'),
-            'SMTPSecureSSL_verify_peer_name'  => QUI::conf('mail', 'SMTPSecureSSL_verify_peer_name'),
+            'SMTPSecureSSL_verify_peer' => QUI::conf('mail', 'SMTPSecureSSL_verify_peer'),
+            'SMTPSecureSSL_verify_peer_name' => QUI::conf('mail', 'SMTPSecureSSL_verify_peer_name'),
             'SMTPSecureSSL_allow_self_signed' => QUI::conf('mail', 'SMTPSecureSSL_allow_self_signed'),
         ]);
 

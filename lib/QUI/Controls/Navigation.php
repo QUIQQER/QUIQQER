@@ -27,11 +27,11 @@ class Navigation extends QUI\Control
     {
         // defaults values
         $this->setAttributes([
-            'startId'   => 1, // id or site link
-            'homeLink'  => false,
-            'levels'    => false,
-            'homeIcon'  => 'fa-home',
-            'listIcon'  => 'fa-angle-right',
+            'startId' => 1, // id or site link
+            'homeLink' => false,
+            'levels' => false,
+            'homeIcon' => 'fa-home',
+            'listIcon' => 'fa-angle-right',
             'levelIcon' => 'fa-angle-double-down'
         ]);
 
@@ -51,8 +51,8 @@ class Navigation extends QUI\Control
      */
     public function getBody()
     {
-        $Engine   = QUI::getTemplateManager()->getEngine();
-        $Project  = $this->getProject();
+        $Engine = QUI::getTemplateManager()->getEngine();
+        $Project = $this->getProject();
         $activeId = false;
 
         // start
@@ -85,17 +85,17 @@ class Navigation extends QUI\Control
         }
 
         $Engine->assign([
-            'this'        => $this,
-            'Project'     => $this->getProject(),
-            'Site'        => $Site,
-            'homeLink'    => $homeLink = $this->getAttribute('homeLink'),
-            'activeId'    => $activeId,
+            'this' => $this,
+            'Project' => $this->getProject(),
+            'Site' => $Site,
+            'homeLink' => $homeLink = $this->getAttribute('homeLink'),
+            'activeId' => $activeId,
             'navTemplate' => dirname(__FILE__) . '/Navigation.html',
-            'levels'      => $levels,
-            'Rewrite'     => QUI::getRewrite(),
-            'homeIcon'    => $homeIcon = $this->getAttribute('homeIcon'),
-            'listIcon'    => $listIcon = $this->getAttribute('listIcon'),
-            'levelIcon'   => $levelIcon = $this->getAttribute('levelIcon')
+            'levels' => $levels,
+            'Rewrite' => QUI::getRewrite(),
+            'homeIcon' => $homeIcon = $this->getAttribute('homeIcon'),
+            'listIcon' => $listIcon = $this->getAttribute('listIcon'),
+            'levelIcon' => $levelIcon = $this->getAttribute('levelIcon')
         ]);
 
         $html = $Engine->fetch(dirname(__FILE__) . '/Navigation.html');

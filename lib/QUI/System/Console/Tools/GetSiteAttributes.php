@@ -57,26 +57,26 @@ class GetSiteAttributes extends QUI\System\Console\Tool
         $this->writeLn("Site query (MySQL): WHERE ");
         $siteQuery = \trim($this->readInput());
 
-        $sql = "SELECT `id` FROM ".QUI::getDBProjectTableName('sites', $Project);
+        $sql = "SELECT `id` FROM " . QUI::getDBProjectTableName('sites', $Project);
         $sql .= " WHERE $siteQuery";
 
-        $this->writeLn("\nQuerying sites: ".$sql);
+        $this->writeLn("\nQuerying sites: " . $sql);
 
         try {
             $siteIds = QUI::getDataBase()->fetchSQL($sql);
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
-            $this->writeLn("\n\nERROR: Query failed -> ".$Exception->getMessage());
+            $this->writeLn("\n\nERROR: Query failed -> " . $Exception->getMessage());
             exit(1);
         }
 
-        $this->writeLn("Found ".count($siteIds)." sites.");
+        $this->writeLn("Found " . count($siteIds) . " sites.");
 
         // Select site attributes
         $this->writeLn("\n====== Select attributes ======");
 
         $attributesDesc = [
-            'id'  => 'Site ID',
+            'id' => 'Site ID',
             'url' => 'Full Site URL (with protocol)'
         ];
 
@@ -118,7 +118,7 @@ class GetSiteAttributes extends QUI\System\Console\Tool
             exit(0);
         }
 
-        $SystemUser        = QUI::getUsers()->getSystemUser();
+        $SystemUser = QUI::getUsers()->getSystemUser();
         $fetchedAttributes = [];
 
         foreach ($siteIds as $row) {
@@ -129,7 +129,7 @@ class GetSiteAttributes extends QUI\System\Console\Tool
                 $Site = new QUI\Projects\Site\Edit($Project, $siteId);
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
-                $this->write(" ERROR: ".$Exception->getMessage());
+                $this->write(" ERROR: " . $Exception->getMessage());
                 continue;
             }
 
@@ -150,11 +150,11 @@ class GetSiteAttributes extends QUI\System\Console\Tool
         }
 
         // Save to csv
-        $varDir = QUI::getPackage('quiqqer/quiqqer')->getVarDir().'fetchedSiteAttributes/';
+        $varDir = QUI::getPackage('quiqqer/quiqqer')->getVarDir() . 'fetchedSiteAttributes/';
         QUI\Utils\System\File::mkdir($varDir);
 
-        $csvFile = \hash('sha256', \random_bytes(128)).'.csv';
-        $csvFile = $varDir.$csvFile;
+        $csvFile = \hash('sha256', \random_bytes(128)) . '.csv';
+        $csvFile = $varDir . $csvFile;
         QUI\Utils\System\File::mkfile($csvFile);
 
         $fp = \fopen($csvFile, 'w');

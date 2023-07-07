@@ -20,7 +20,7 @@ class Watch
      */
     public static function authenticatorLoginError($event, $params)
     {
-        $userId        = $params[0];
+        $userId = $params[0];
         $authenticator = '-';
 
         if (!empty($params[2])) {
@@ -30,7 +30,7 @@ class Watch
         $username = QUI::getLocale()->get('quiqqer/quiqqer', 'watch.unknown_user');
 
         try {
-            $User     = QUI::getUsers()->get($userId);
+            $User = QUI::getUsers()->get($userId);
             $username = $User->getUsername();
         } catch (\Exception $Exception) {
             // nothing
@@ -40,11 +40,11 @@ class Watch
             'quiqqer/quiqqer',
             'watch.authenticatorLoginError',
             [
-                'userId'        => $userId ?: '-',
-                'username'      => $username,
+                'userId' => $userId ?: '-',
+                'username' => $username,
                 'authenticator' => $authenticator,
-                'ipAddress'     => $_SERVER['REMOTE_ADDR'],
-                'userAgent'     => empty($_SERVER['HTTP_USER_AGENT']) ? '-' : $_SERVER['HTTP_USER_AGENT']
+                'ipAddress' => $_SERVER['REMOTE_ADDR'],
+                'userAgent' => empty($_SERVER['HTTP_USER_AGENT']) ? '-' : $_SERVER['HTTP_USER_AGENT']
             ]
         );
     }

@@ -57,7 +57,12 @@ class Ajax extends QUI\QDOM
      * @var array
      */
     protected static array $callables = [];
-
+    /**
+     * registered permissions from available ajax functions
+     *
+     * @var array
+     */
+    protected static array $permissions = [];
     /**
      * javascript functions to be executed by after a request
      * This functions are registered via Ajax.registerCallback('functionName', callable);
@@ -65,13 +70,6 @@ class Ajax extends QUI\QDOM
      * @var array
      */
     protected array $jsCallbacks = [];
-
-    /**
-     * registered permissions from available ajax functions
-     *
-     * @var array
-     */
-    protected static array $permissions = [];
 
     /**
      * constructor
@@ -141,7 +139,7 @@ class Ajax extends QUI\QDOM
 
         self::$callables[$name] = [
             'callable' => $function,
-            'params'   => $reg_vars
+            'params' => $reg_vars
         ];
 
         if ($user_perm) {
@@ -172,69 +170,6 @@ class Ajax extends QUI\QDOM
     }
 
     /**
-     * Checks the rights if a function has a checkPermissions routine
-     *
-     * @param string|callback $reg_function
-     *
-     * @throws \QUI\Exception
-     * @throws \QUI\Permissions\Exception
-     */
-    public static function checkPermissions($reg_function)
-    {
-        if (!isset(self::$permissions[$reg_function])) {
-            return;
-        }
-
-        $function = self::$permissions[$reg_function];
-
-        if (is_object($function) && get_class($function) === 'Closure') {
-            $function();
-
-            return;
-        }
-
-        if (QUI::isBackend()) {
-            $parts       = explode('_', $reg_function);
-            $pluginParts = array_slice($parts, 1, 2);
-
-            if (isset($pluginParts[0]) && isset($pluginParts[1])) {
-                try {
-                    $Package = null;
-                    $Package = QUI::getPackage($pluginParts[0] . '/' . $pluginParts[1]);
-                } catch (QUI\Exception $Exception) {
-                }
-
-                if ($Package) {
-                    $Package->hasPermission();
-                }
-            }
-        }
-
-        if (is_string($function)) {
-            $function = [$function];
-        }
-
-        foreach ($function as $func) {
-            // if it is a real permission
-            if (strpos($func, '::') === false) {
-                Permissions\Permission::checkPermission($func);
-
-                return;
-            }
-
-            if (strpos($func, 'Permission') === 0) {
-                $func = '\\QUI\\Rights\\' . $func;
-            }
-
-            if (!is_callable($func)) {
-                throw new QUI\Permissions\Exception('Permission denied', 503);
-            }
-
-            call_user_func($func);
-        }
-    }
-
-    /**
      * ajax processing
      *
      * @return string|array - quiqqer XML
@@ -242,7 +177,8 @@ class Ajax extends QUI\QDOM
      */
     public function call()
     {
-        if (!isset($_REQUEST['_rf'])
+        if (
+            !isset($_REQUEST['_rf'])
             || !is_string($_REQUEST['_rf']) && count($_REQUEST['_rf']) > 1
         ) {
             return $this->writeException(
@@ -250,7 +186,7 @@ class Ajax extends QUI\QDOM
             );
         }
 
-        $_rfs   = json_decode($_REQUEST['_rf'], true);
+        $_rfs = json_decode($_REQUEST['_rf'], true);
         $result = [];
 
         if (!is_array($_rfs)) {
@@ -272,7 +208,7 @@ class Ajax extends QUI\QDOM
         // maintenance flag
         $result['maintenance'] = QUI::conf('globals', 'maintenance') ? 1 : 0;
         $result['jsCallbacks'] = $this->jsCallbacks;
-        $result['vMd5']        = md5(QUI::version());
+        $result['vMd5'] = md5(QUI::version());
 
         QUI::getEvents()->fireEvent('ajaxResult', [&$result]);
 
@@ -320,6 +256,122 @@ class Ajax extends QUI\QDOM
         }
 
         return '<quiqqer>' . $encoded . '</quiqqer>';
+    }
+
+    /**
+     * Exceptions xml / json return
+     *
+     * @param \QUI\Exception|\PDOException|\Exception $Exception
+     *
+     * @return array
+     */
+    public function writeException($Exception): array
+    {
+        $return = [];
+        $class = get_class($Exception);
+
+        $data = [];
+
+        if (method_exists($Exception, 'toArray')) {
+            $data = $Exception->toArray();
+        }
+
+        $attributes = array_filter($data, function ($v, $k) {
+            switch ($k) {
+                case 'message':
+                case 'code':
+                case 'type':
+                case 'context':
+                    return false;
+            }
+
+            return is_string($v) || is_array($v) || is_numeric($v) || is_bool($v);
+        }, ARRAY_FILTER_USE_BOTH);
+
+        switch ($class) {
+            case 'PDOException':
+            case 'QUI\\Database\\Exception':
+                // DB Fehler immer loggen
+                if ($this->getAttribute('db_errors')) {
+                    $return['ExceptionDBError']['message'] = $Exception->getMessage();
+                    $return['ExceptionDBError']['code'] = $Exception->getCode();
+                    $return['ExceptionDBError']['type'] = get_class($Exception);
+                } else {
+                    // Standardfehler rausbringen
+                    $return['Exception']['message'] = 'Internal Server Error';
+                    $return['Exception']['code'] = 500;
+                    $return['Exception']['type'] = get_class($Exception);
+                }
+
+                if ((DEVELOPMENT || DEBUG_MODE) && $class != 'PDOException') {
+                    $return['Exception']['context'] = $Exception->getContext();
+                }
+                break;
+
+            case 'QUI\\ExceptionStack':
+                /* @var $Exception \QUI\ExceptionStack */
+                $list = $Exception->getExceptionList();
+
+                if (isset($list[0])) {
+                    /* @var $FirstException \QUI\Exception */
+                    $FirstException = $list[0];
+                    // method nicht mit ausgeben
+                    $message = $FirstException->getMessage();
+                    $end = mb_strripos($message, ' :: ');
+
+                    if ($end) {
+                        $message = mb_substr($message, 0, $end);
+                    }
+
+
+                    $return['Exception']['message'] = $message;
+                    $return['Exception']['code'] = $FirstException->getCode();
+                    $return['Exception']['type'] = $FirstException->getType();
+
+                    if (DEVELOPMENT || DEBUG_MODE) {
+                        $return['Exception']['context'] = $FirstException->getContext();
+                    }
+                }
+
+                break;
+
+            case 'QUI\\Exception':
+            case 'QUI\\Users\\Exception':
+                $return['Exception']['message'] = $Exception->getMessage();
+                $return['Exception']['code'] = $Exception->getCode();
+                $return['Exception']['type'] = $Exception->getType();
+
+                if (DEVELOPMENT || DEBUG_MODE) {
+                    $return['Exception']['context'] = $Exception->getContext();
+                }
+
+                break;
+
+            default:
+                $return['Exception']['message'] = $Exception->getMessage();
+                $return['Exception']['code'] = $Exception->getCode();
+                $return['Exception']['type'] = get_class($Exception);
+                break;
+        }
+
+        if ($Exception instanceof QUI\Users\UserAuthException) {
+            // do nothing
+            // UserAuthException writes its own log (auth.log)
+        } elseif ($class === 'QUI\\Permissions\\Exception') {
+            QUI\System\Log::addInfo($Exception->getMessage());
+        } else {
+            QUI\System\Log::writeDebugException($Exception);
+        }
+
+        $return['Exception']['attributes'] = $attributes;
+
+        // strip tags
+        $return['Exception']['message'] = strip_tags(
+            $return['Exception']['message'],
+            '<div><span><p><br><hr><ul><ol><li><strong><em><b><i><u>'
+        );
+
+        return $return;
     }
 
     /**
@@ -389,7 +441,7 @@ class Ajax extends QUI\QDOM
         try {
             QUI::getEvents()->fireEvent('ajaxCallBefore', [
                 'function' => $_rf,
-                'params'   => $params
+                'params' => $params
             ]);
         } catch (\Exception $Exception) {
             return $this->writeException($Exception);
@@ -415,14 +467,77 @@ class Ajax extends QUI\QDOM
         try {
             QUI::getEvents()->fireEvent('ajaxCall', [
                 'function' => $_rf,
-                'result'   => $return,
-                'params'   => $params
+                'result' => $return,
+                'params' => $params
             ]);
         } catch (\Exception $Exception) {
             return $this->writeException($Exception);
         }
 
         return $return;
+    }
+
+    /**
+     * Checks the rights if a function has a checkPermissions routine
+     *
+     * @param string|callback $reg_function
+     *
+     * @throws \QUI\Exception
+     * @throws \QUI\Permissions\Exception
+     */
+    public static function checkPermissions($reg_function)
+    {
+        if (!isset(self::$permissions[$reg_function])) {
+            return;
+        }
+
+        $function = self::$permissions[$reg_function];
+
+        if (is_object($function) && get_class($function) === 'Closure') {
+            $function();
+
+            return;
+        }
+
+        if (QUI::isBackend()) {
+            $parts = explode('_', $reg_function);
+            $pluginParts = array_slice($parts, 1, 2);
+
+            if (isset($pluginParts[0]) && isset($pluginParts[1])) {
+                try {
+                    $Package = null;
+                    $Package = QUI::getPackage($pluginParts[0] . '/' . $pluginParts[1]);
+                } catch (QUI\Exception $Exception) {
+                }
+
+                if ($Package) {
+                    $Package->hasPermission();
+                }
+            }
+        }
+
+        if (is_string($function)) {
+            $function = [$function];
+        }
+
+        foreach ($function as $func) {
+            // if it is a real permission
+            if (strpos($func, '::') === false) {
+                Permissions\Permission::checkPermission($func);
+
+                return;
+            }
+
+            if (strpos($func, 'Permission') === 0) {
+                $func = '\\QUI\\Rights\\' . $func;
+            }
+
+            if (!is_callable($func)) {
+                throw new QUI\Permissions\Exception('Permission denied', 503);
+            }
+
+            call_user_func($func);
+        }
     }
 
     /**
@@ -437,122 +552,6 @@ class Ajax extends QUI\QDOM
     }
 
     /**
-     * Exceptions xml / json return
-     *
-     * @param \QUI\Exception|\PDOException|\Exception $Exception
-     *
-     * @return array
-     */
-    public function writeException($Exception): array
-    {
-        $return = [];
-        $class  = get_class($Exception);
-
-        $data = [];
-
-        if (method_exists($Exception, 'toArray')) {
-            $data = $Exception->toArray();
-        }
-
-        $attributes = array_filter($data, function ($v, $k) {
-            switch ($k) {
-                case 'message':
-                case 'code':
-                case 'type':
-                case 'context':
-                    return false;
-            }
-
-            return is_string($v) || is_array($v) || is_numeric($v) || is_bool($v);
-        }, ARRAY_FILTER_USE_BOTH);
-
-        switch ($class) {
-            case 'PDOException':
-            case 'QUI\\Database\\Exception':
-                // DB Fehler immer loggen
-                if ($this->getAttribute('db_errors')) {
-                    $return['ExceptionDBError']['message'] = $Exception->getMessage();
-                    $return['ExceptionDBError']['code']    = $Exception->getCode();
-                    $return['ExceptionDBError']['type']    = get_class($Exception);
-                } else {
-                    // Standardfehler rausbringen
-                    $return['Exception']['message'] = 'Internal Server Error';
-                    $return['Exception']['code']    = 500;
-                    $return['Exception']['type']    = get_class($Exception);
-                }
-
-                if ((DEVELOPMENT || DEBUG_MODE) && $class != 'PDOException') {
-                    $return['Exception']['context'] = $Exception->getContext();
-                }
-                break;
-
-            case 'QUI\\ExceptionStack':
-                /* @var $Exception \QUI\ExceptionStack */
-                $list = $Exception->getExceptionList();
-
-                if (isset($list[0])) {
-                    /* @var $FirstException \QUI\Exception */
-                    $FirstException = $list[0];
-                    // method nicht mit ausgeben
-                    $message = $FirstException->getMessage();
-                    $end     = mb_strripos($message, ' :: ');
-
-                    if ($end) {
-                        $message = mb_substr($message, 0, $end);
-                    }
-
-
-                    $return['Exception']['message'] = $message;
-                    $return['Exception']['code']    = $FirstException->getCode();
-                    $return['Exception']['type']    = $FirstException->getType();
-
-                    if (DEVELOPMENT || DEBUG_MODE) {
-                        $return['Exception']['context'] = $FirstException->getContext();
-                    }
-                }
-
-                break;
-
-            case 'QUI\\Exception':
-            case 'QUI\\Users\\Exception':
-                $return['Exception']['message'] = $Exception->getMessage();
-                $return['Exception']['code']    = $Exception->getCode();
-                $return['Exception']['type']    = $Exception->getType();
-
-                if (DEVELOPMENT || DEBUG_MODE) {
-                    $return['Exception']['context'] = $Exception->getContext();
-                }
-
-                break;
-
-            default:
-                $return['Exception']['message'] = $Exception->getMessage();
-                $return['Exception']['code']    = $Exception->getCode();
-                $return['Exception']['type']    = get_class($Exception);
-                break;
-        }
-
-        if ($Exception instanceof QUI\Users\UserAuthException) {
-            // do nothing
-            // UserAuthException writes its own log (auth.log)
-        } elseif ($class === 'QUI\\Permissions\\Exception') {
-            QUI\System\Log::addInfo($Exception->getMessage());
-        } else {
-            QUI\System\Log::writeDebugException($Exception);
-        }
-
-        $return['Exception']['attributes'] = $attributes;
-
-        // strip tags
-        $return['Exception']['message'] = strip_tags(
-            $return['Exception']['message'],
-            '<div><span><p><br><hr><ul><ol><li><strong><em><b><i><u>'
-        );
-
-        return $return;
-    }
-
-    /**
      * Ajax Timeout handling
      */
     public function onShutdown()
@@ -562,7 +561,7 @@ class Ajax extends QUI\QDOM
                 $return = [
                     'Exception' => [
                         'message' => QUI::getLocale()->get('quiqqer/quiqqer', 'exception.timeout'),
-                        'code'    => 504
+                        'code' => 504
                     ]
                 ];
 

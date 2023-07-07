@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * This file contains the \QUI\System\Console\Tools\Project
  */
@@ -8,8 +7,8 @@
 namespace QUI\System\Console\Tools;
 
 use QUI;
-use QUI\Projects\Manager as ProjectsManager;
 use QUI\Bricks\Manager as BricksManager;
+use QUI\Projects\Manager as ProjectsManager;
 
 /**
  * Class Project
@@ -86,7 +85,7 @@ class Project extends QUI\System\Console\Tool
     {
         $create = $this->getArgument('create');
         $delete = $this->getArgument('delete');
-        $copy   = $this->getArgument('copy');
+        $copy = $this->getArgument('copy');
 
         if ($create) {
             $this->createProject();
@@ -107,274 +106,6 @@ class Project extends QUI\System\Console\Tool
         }
 
         $this->outputHelp();
-    }
-
-    /**
-     * Copy project from one language to another.
-     *
-     * @return void
-     */
-    protected function copyProject()
-    {
-        $this->quiqqerBricksInstalled = QUI::getPackageManager()->isInstalled('quiqqer/bricks');
-
-        if ($this->quiqqerBricksInstalled) {
-            $this->BricksManager = BricksManager::init();
-        }
-
-        // project name
-        $projectName = $this->getArgument('projectname');
-
-        if (!$projectName) {
-            $this->writeLn('Enter the name of the project that is to be copied: ');
-            $projectName = $this->readInput();
-        }
-
-        $langFrom = $this->getArgument('lang_from');
-
-        if (!$langFrom) {
-            $this->writeLn('Enter project language that is copied FROM: ');
-            $langFrom = $this->readInput();
-        }
-
-        try {
-            $Project = QUI::getProject($projectName, $langFrom);
-        } catch (\Exception $Exception) {
-            $this->writeLn("ERROR: Could not load project -> ".$Exception->getMessage(), 'red');
-            exit(1);
-        }
-
-        $langTo = $this->getArgument('lang_to');
-
-        if (!$langTo) {
-            $this->writeLn('Enter project language that is copied TO: ');
-            $langTo = $this->readInput();
-        }
-
-        if ($langFrom === $langTo) {
-            $this->writeLn("ERROR: Copy languages must not be identical.", 'red');
-            exit(1);
-        }
-
-        $projectLangs = $Project->getLanguages();
-
-        if (!\in_array($langTo, $projectLangs)) {
-            $this->writeLn("Project lang '${langTo}' does not exist. Adding language...");
-
-            $projectLangs[] = $langTo;
-
-            try {
-                ProjectsManager::setConfigForProject(
-                    $Project->getName(),
-                    [
-                        'lang' => $projectLangs
-                    ]
-                );
-
-                $this->write(" SUCCESS!");
-            } catch (\Exception $Exception) {
-                $this->writeLn("ERROR: ".$Exception->getMessage(), 'red');
-                exit(1);
-            }
-        }
-
-        // Target project cleanup
-        $TargetProject  = QUI::getProjectManager()->getProject($Project->getName(), $langTo);
-        $TargetRootSite = new QUI\Projects\Site\Edit($TargetProject, 1);
-
-        if (!empty($TargetRootSite->getChildrenIds(['active' => '0&1']))) {
-            $this->writeLn(" === ATTENTION ===");
-            $this->writeLn(
-                "The target project is NOT empty and does contain children sites."
-                ." In order for a complete language copy to work it should be empty."
-            );
-
-            $this->writeLn(
-                "\nDelete all sites for project \"".$Project->getName()."\" (language: \"".$langTo."\") now? (Y/n) "
-            );
-
-            $confirm = \mb_strtolower($this->readInput());
-
-            if ($confirm === 'n') {
-                $this->writeLn("Aborting script because target project is not empty.");
-                exit(0);
-            }
-
-            $this->writeLn("\nDeleting all sites in target project...");
-
-            foreach ($TargetRootSite->getChildrenIdsRecursive(['active' => '0&1']) as $siteId) {
-                $Site = new QUI\Projects\Site\Edit($TargetProject, $siteId);
-                $Site->delete();
-                $Site->destroy();
-            }
-
-            $this->write(" SUCCESS!\n\n");
-        }
-
-        // Target project bricks cleanup
-        if ($this->quiqqerBricksInstalled) {
-            $targetProjectBricks = $this->BricksManager->getBricksFromProject($TargetProject);
-
-            if (!empty($targetProjectBricks)) {
-                $this->writeLn(" === ATTENTION ===");
-                $this->writeLn(
-                    "The target project has already existing bricks. Should these bricks be deleted before the"
-                    ." copy process?"
-                );
-
-                $this->writeLn(
-                    "\nDelete all bricks for project \"".$Project->getName()."\" (language: \"".$langTo."\") now? (Y/n) "
-                );
-
-                $confirm = \mb_strtolower($this->readInput());
-
-                if ($confirm !== 'n') {
-                    $this->writeLn("Deleting bricks...");
-
-                    // Fetch brick IDs from database (because Brick class does not offer ->getId())
-                    $result = QUI::getDataBase()->fetch([
-                        'select' => ['id'],
-                        'from'   => $this->BricksManager::getTable(),
-                        'where'  => [
-                            'project' => $TargetProject->getName(),
-                            'lang'    => $TargetProject->getLang()
-                        ]
-                    ]);
-
-                    /** @var QUI\Bricks\Brick $Brick */
-                    foreach ($result as $row) {
-                        $this->BricksManager->deleteBrick($row['id']);
-                    }
-
-                    $this->writeLn(" SUCCESS!");
-                }
-            }
-        }
-
-        $this->writeLn("\n=== Starting copy process ===\n");
-
-        $this->copySiteLevel($Project->firstChild(), $langTo);
-    }
-
-    /**
-     * Takes a $RootSite and creates language copies of all its children.
-     *
-     * @param QUI\Projects\Site $RootSite
-     * @param string $langTo
-     * @param QUI\Projects\Site|null $ParentSite - Parent site of $RootSite
-     */
-    protected function copySiteLevel(QUI\Projects\Site $RootSite, string $langTo, ?QUI\Projects\Site $ParentSite = null)
-    {
-        $Project       = $RootSite->getProject();
-        $TargetProject = QUI::getProjectManager()->getProject($Project->getName(), $langTo);
-
-        $RootSiteCopy = $this->copySite($TargetProject, $RootSite, $ParentSite ? $ParentSite->getId() : null);
-
-        foreach ($RootSite->getChildrenIds(['active' => '0&1']) as $siteId) {
-            $Site = new QUI\Projects\Site\Edit($Project, $siteId);
-
-//            if (!empty($Site->getChildrenIds(['active' => '0&1']))) {
-            $this->copySiteLevel($Site, $langTo, $RootSiteCopy);
-//            }
-
-//            $SiteCopy = $this->copySite($TargetProject, $Site, $ParentSite->getId());
-//
-//            if (!empty($Site->getChildrenIds(['active' => '0&1']))) {
-//                $this->copySiteLevel($Site, $langTo, $SiteCopy);
-//            }
-        }
-    }
-
-    /**
-     * Make a complete language copy of a site including bricks.
-     *
-     * @param QUI\Projects\Project $TargetProject
-     * @param QUI\Projects\Site $Site - The site that is copied
-     * @param int|null $copyParentId (optional) - Parent site id of the copy [default: no parent - $Site is root site (ID 1)]
-     * @return QUI\Projects\Site - Language copy of $Site
-     *
-     * @throws QUI\Exception
-     */
-    protected function copySite(
-        QUI\Projects\Project $TargetProject,
-        QUI\Projects\Site $Site,
-        ?int $copyParentId = null
-    ): QUI\Projects\Site {
-        $this->writeLn("START COPY Site #".$Site->getId());
-
-        $SystemUser = QUI::getUsers()->getSystemUser();
-        $langTo     = $TargetProject->getLang();
-
-        // Temporarily remove tags
-        $Site->setAttribute('quiqqer.tags.tagList', false);
-        $Site->setAttribute('quiqqer.tags.tagGroups', false);
-
-        if (empty($copyParentId)) {
-            $NewSite = new QUI\Projects\Site\Edit($TargetProject, 1);
-            $NewSite->setAttributes($Site->getAttributes());
-
-            $NewSite->save($SystemUser);
-        } else {
-            $NewSite = $Site->copy($copyParentId, $TargetProject);
-        }
-
-        $this->writeLn(" -> Copy successful");
-
-        // Bricks
-        if ($this->quiqqerBricksInstalled) {
-            $this->writeLn(" -> Copying bricks...");
-
-            $siteAreas = $Site->getAttribute('quiqqer.bricks.areas');
-
-            if (!empty($siteAreas)) {
-                $siteAreas    = \json_decode($siteAreas, true);
-                $newSiteAreas = [];
-
-                foreach ($siteAreas as $area => $bricks) {
-                    $newSiteAreas[$area] = [];
-
-                    foreach ($bricks as $brick) {
-                        $Brick = $this->BricksManager->getBrickById($brick['brickId']);
-
-                        $copyBrickId = $this->BricksManager->copyBrick(
-                            $brick['brickId'],
-                            [
-                                'lang' => $langTo
-                            ]
-                        );
-
-                        $newSiteAreas[$area][] = [
-                            'brickId'      => $copyBrickId,
-                            'customfields' => $Brick->getCustomFields(),
-                            'uid'          => ''
-                        ];
-                    }
-                }
-
-                $NewSite->setAttribute('quiqqer.bricks.areas', \json_encode($newSiteAreas));
-                $NewSite->save($SystemUser);
-            }
-
-            $this->writeLn(" -> Bricks copy successful");
-        }
-
-        // Add language link
-        $Edit = new QUI\Projects\Site\Edit($Site->getProject(), $Site->getId());
-        $Edit->addLanguageLink($langTo, $NewSite->getId());
-
-        // Activate
-        if ($Edit->getAttribute('active')) {
-            try {
-                $this->writeLn("-> Activating Site...");
-                $NewSite->activate($SystemUser);
-                $this->write(" SUCCESS!");
-            } catch (\Exception $Exception) {
-                QUI\System\Log::writeException($Exception);
-                $this->write(" ERROR: ".$Exception->getMessage());
-            }
-        }
-
-        return $NewSite;
     }
 
     /**
@@ -432,7 +163,7 @@ class Project extends QUI\System\Console\Tool
             ]);
 
             foreach ($installedTemplates as $installedTemplate) {
-                $this->writeLn('- '.$installedTemplate['name']);
+                $this->writeLn('- ' . $installedTemplate['name']);
             }
 
             $this->writeLn();
@@ -440,11 +171,13 @@ class Project extends QUI\System\Console\Tool
             $template = $this->readInput();
 
             try {
-                $Package      = QUI::getPackageManager()->getInstalledPackage($template);
+                $Package = QUI::getPackageManager()->getInstalledPackage($template);
                 $composerData = $Package->getComposerData();
 
-                if (!isset($composerData['type']) ||
-                    $composerData['type'] !== 'quiqqer-template') {
+                if (
+                    !isset($composerData['type']) ||
+                    $composerData['type'] !== 'quiqqer-template'
+                ) {
                     $this->writeLn('This template doesn \'t exists!', 'red');
                     $this->resetColor();
                     $this->writeLn('', '');
@@ -460,7 +193,7 @@ class Project extends QUI\System\Console\Tool
 
         // demodata
         $this->write('Should demo data be used? [Y/n] :');
-        $demoData    = true;
+        $demoData = true;
         $useDemoData = $this->readInput();
 
         if ($useDemoData === 'n') {
@@ -475,7 +208,7 @@ class Project extends QUI\System\Console\Tool
 
             QUI::getProjectManager()->setConfigForProject($projectName, [
                 'template' => $template,
-                'langs'    => \implode(',', $projectLanguages)
+                'langs' => \implode(',', $projectLanguages)
             ]);
 
             if ($demoData) {
@@ -485,12 +218,12 @@ class Project extends QUI\System\Console\Tool
                 );
             }
         } catch (\Exception $Exception) {
-            $this->writeLn('Could not create project: '.$Exception->getMessage());
+            $this->writeLn('Could not create project: ' . $Exception->getMessage());
 
             return;
         }
 
-        $this->writeLn('Project '.$projectName.' successfuly created.');
+        $this->writeLn('Project ' . $projectName . ' successfuly created.');
         $this->writeLn('');
     }
 
@@ -505,7 +238,7 @@ class Project extends QUI\System\Console\Tool
         $this->writeLnLocale("console.tool.project.delete.prompt.projectname.info", "cyan");
 
         foreach (QUI::getProjectManager()->getProjects() as $projectName) {
-            $this->writeLn(" * ".$projectName);
+            $this->writeLn(" * " . $projectName);
         }
 
         $this->writeLn();
@@ -556,5 +289,275 @@ class Project extends QUI\System\Console\Tool
         $text = QUI::getLocale()->get("quiqqer / quiqqer", $locale);
 
         $this->writeLn($text, $color, $background);
+    }
+
+    /**
+     * Copy project from one language to another.
+     *
+     * @return void
+     */
+    protected function copyProject()
+    {
+        $this->quiqqerBricksInstalled = QUI::getPackageManager()->isInstalled('quiqqer/bricks');
+
+        if ($this->quiqqerBricksInstalled) {
+            $this->BricksManager = BricksManager::init();
+        }
+
+        // project name
+        $projectName = $this->getArgument('projectname');
+
+        if (!$projectName) {
+            $this->writeLn('Enter the name of the project that is to be copied: ');
+            $projectName = $this->readInput();
+        }
+
+        $langFrom = $this->getArgument('lang_from');
+
+        if (!$langFrom) {
+            $this->writeLn('Enter project language that is copied FROM: ');
+            $langFrom = $this->readInput();
+        }
+
+        try {
+            $Project = QUI::getProject($projectName, $langFrom);
+        } catch (\Exception $Exception) {
+            $this->writeLn("ERROR: Could not load project -> " . $Exception->getMessage(), 'red');
+            exit(1);
+        }
+
+        $langTo = $this->getArgument('lang_to');
+
+        if (!$langTo) {
+            $this->writeLn('Enter project language that is copied TO: ');
+            $langTo = $this->readInput();
+        }
+
+        if ($langFrom === $langTo) {
+            $this->writeLn("ERROR: Copy languages must not be identical.", 'red');
+            exit(1);
+        }
+
+        $projectLangs = $Project->getLanguages();
+
+        if (!\in_array($langTo, $projectLangs)) {
+            $this->writeLn("Project lang '${langTo}' does not exist. Adding language...");
+
+            $projectLangs[] = $langTo;
+
+            try {
+                ProjectsManager::setConfigForProject(
+                    $Project->getName(),
+                    [
+                        'lang' => $projectLangs
+                    ]
+                );
+
+                $this->write(" SUCCESS!");
+            } catch (\Exception $Exception) {
+                $this->writeLn("ERROR: " . $Exception->getMessage(), 'red');
+                exit(1);
+            }
+        }
+
+        // Target project cleanup
+        $TargetProject = QUI::getProjectManager()->getProject($Project->getName(), $langTo);
+        $TargetRootSite = new QUI\Projects\Site\Edit($TargetProject, 1);
+
+        if (!empty($TargetRootSite->getChildrenIds(['active' => '0&1']))) {
+            $this->writeLn(" === ATTENTION ===");
+            $this->writeLn(
+                "The target project is NOT empty and does contain children sites."
+                . " In order for a complete language copy to work it should be empty."
+            );
+
+            $this->writeLn(
+                "\nDelete all sites for project \"" . $Project->getName(
+                ) . "\" (language: \"" . $langTo . "\") now? (Y/n) "
+            );
+
+            $confirm = \mb_strtolower($this->readInput());
+
+            if ($confirm === 'n') {
+                $this->writeLn("Aborting script because target project is not empty.");
+                exit(0);
+            }
+
+            $this->writeLn("\nDeleting all sites in target project...");
+
+            foreach ($TargetRootSite->getChildrenIdsRecursive(['active' => '0&1']) as $siteId) {
+                $Site = new QUI\Projects\Site\Edit($TargetProject, $siteId);
+                $Site->delete();
+                $Site->destroy();
+            }
+
+            $this->write(" SUCCESS!\n\n");
+        }
+
+        // Target project bricks cleanup
+        if ($this->quiqqerBricksInstalled) {
+            $targetProjectBricks = $this->BricksManager->getBricksFromProject($TargetProject);
+
+            if (!empty($targetProjectBricks)) {
+                $this->writeLn(" === ATTENTION ===");
+                $this->writeLn(
+                    "The target project has already existing bricks. Should these bricks be deleted before the"
+                    . " copy process?"
+                );
+
+                $this->writeLn(
+                    "\nDelete all bricks for project \"" . $Project->getName(
+                    ) . "\" (language: \"" . $langTo . "\") now? (Y/n) "
+                );
+
+                $confirm = \mb_strtolower($this->readInput());
+
+                if ($confirm !== 'n') {
+                    $this->writeLn("Deleting bricks...");
+
+                    // Fetch brick IDs from database (because Brick class does not offer ->getId())
+                    $result = QUI::getDataBase()->fetch([
+                        'select' => ['id'],
+                        'from' => $this->BricksManager::getTable(),
+                        'where' => [
+                            'project' => $TargetProject->getName(),
+                            'lang' => $TargetProject->getLang()
+                        ]
+                    ]);
+
+                    /** @var QUI\Bricks\Brick $Brick */
+                    foreach ($result as $row) {
+                        $this->BricksManager->deleteBrick($row['id']);
+                    }
+
+                    $this->writeLn(" SUCCESS!");
+                }
+            }
+        }
+
+        $this->writeLn("\n=== Starting copy process ===\n");
+
+        $this->copySiteLevel($Project->firstChild(), $langTo);
+    }
+
+    /**
+     * Takes a $RootSite and creates language copies of all its children.
+     *
+     * @param QUI\Projects\Site $RootSite
+     * @param string $langTo
+     * @param QUI\Projects\Site|null $ParentSite - Parent site of $RootSite
+     */
+    protected function copySiteLevel(QUI\Projects\Site $RootSite, string $langTo, ?QUI\Projects\Site $ParentSite = null)
+    {
+        $Project = $RootSite->getProject();
+        $TargetProject = QUI::getProjectManager()->getProject($Project->getName(), $langTo);
+
+        $RootSiteCopy = $this->copySite($TargetProject, $RootSite, $ParentSite ? $ParentSite->getId() : null);
+
+        foreach ($RootSite->getChildrenIds(['active' => '0&1']) as $siteId) {
+            $Site = new QUI\Projects\Site\Edit($Project, $siteId);
+
+//            if (!empty($Site->getChildrenIds(['active' => '0&1']))) {
+            $this->copySiteLevel($Site, $langTo, $RootSiteCopy);
+//            }
+
+//            $SiteCopy = $this->copySite($TargetProject, $Site, $ParentSite->getId());
+//
+//            if (!empty($Site->getChildrenIds(['active' => '0&1']))) {
+//                $this->copySiteLevel($Site, $langTo, $SiteCopy);
+//            }
+        }
+    }
+
+    /**
+     * Make a complete language copy of a site including bricks.
+     *
+     * @param QUI\Projects\Project $TargetProject
+     * @param QUI\Projects\Site $Site - The site that is copied
+     * @param int|null $copyParentId (optional) - Parent site id of the copy [default: no parent - $Site is root site (ID 1)]
+     * @return QUI\Projects\Site - Language copy of $Site
+     *
+     * @throws QUI\Exception
+     */
+    protected function copySite(
+        QUI\Projects\Project $TargetProject,
+        QUI\Projects\Site $Site,
+        ?int $copyParentId = null
+    ): QUI\Projects\Site {
+        $this->writeLn("START COPY Site #" . $Site->getId());
+
+        $SystemUser = QUI::getUsers()->getSystemUser();
+        $langTo = $TargetProject->getLang();
+
+        // Temporarily remove tags
+        $Site->setAttribute('quiqqer.tags.tagList', false);
+        $Site->setAttribute('quiqqer.tags.tagGroups', false);
+
+        if (empty($copyParentId)) {
+            $NewSite = new QUI\Projects\Site\Edit($TargetProject, 1);
+            $NewSite->setAttributes($Site->getAttributes());
+
+            $NewSite->save($SystemUser);
+        } else {
+            $NewSite = $Site->copy($copyParentId, $TargetProject);
+        }
+
+        $this->writeLn(" -> Copy successful");
+
+        // Bricks
+        if ($this->quiqqerBricksInstalled) {
+            $this->writeLn(" -> Copying bricks...");
+
+            $siteAreas = $Site->getAttribute('quiqqer.bricks.areas');
+
+            if (!empty($siteAreas)) {
+                $siteAreas = \json_decode($siteAreas, true);
+                $newSiteAreas = [];
+
+                foreach ($siteAreas as $area => $bricks) {
+                    $newSiteAreas[$area] = [];
+
+                    foreach ($bricks as $brick) {
+                        $Brick = $this->BricksManager->getBrickById($brick['brickId']);
+
+                        $copyBrickId = $this->BricksManager->copyBrick(
+                            $brick['brickId'],
+                            [
+                                'lang' => $langTo
+                            ]
+                        );
+
+                        $newSiteAreas[$area][] = [
+                            'brickId' => $copyBrickId,
+                            'customfields' => $Brick->getCustomFields(),
+                            'uid' => ''
+                        ];
+                    }
+                }
+
+                $NewSite->setAttribute('quiqqer.bricks.areas', \json_encode($newSiteAreas));
+                $NewSite->save($SystemUser);
+            }
+
+            $this->writeLn(" -> Bricks copy successful");
+        }
+
+        // Add language link
+        $Edit = new QUI\Projects\Site\Edit($Site->getProject(), $Site->getId());
+        $Edit->addLanguageLink($langTo, $NewSite->getId());
+
+        // Activate
+        if ($Edit->getAttribute('active')) {
+            try {
+                $this->writeLn("-> Activating Site...");
+                $NewSite->activate($SystemUser);
+                $this->write(" SUCCESS!");
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+                $this->write(" ERROR: " . $Exception->getMessage());
+            }
+        }
+
+        return $NewSite;
     }
 }

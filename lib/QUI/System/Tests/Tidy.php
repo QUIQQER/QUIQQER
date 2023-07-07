@@ -24,7 +24,7 @@ class Tidy extends QUI\System\Test
         parent::__construct();
 
         $this->setAttributes([
-            'title'       => 'Tidy',
+            'title' => 'Tidy',
             'description' => ''
         ]);
 

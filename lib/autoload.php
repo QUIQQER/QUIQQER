@@ -60,9 +60,11 @@ function exception_error_handler(int $errno, string $errStr, string $errFile, st
         return true;
     }
 
-    if (strpos($errStr, 'session_regenerate_id()') !== false
+    if (
+        strpos($errStr, 'session_regenerate_id()') !== false
         || strpos($errStr, 'session_destroy()') !== false
-        || strpos($errStr, 'Required parameter $permissions follows optional parameter $path') !== false) {
+        || strpos($errStr, 'Required parameter $permissions follows optional parameter $path') !== false
+    ) {
         return true;
     }
 

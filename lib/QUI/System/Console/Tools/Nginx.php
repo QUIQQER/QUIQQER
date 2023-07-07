@@ -40,7 +40,7 @@ class Nginx extends QUI\System\Console\Tool
         $this->setName('quiqqer:nginx')
             ->setDescription('Generate the nginx.conf File.');
 
-        $this->nginxConfDir    = ETC_DIR . "nginx/";
+        $this->nginxConfDir = ETC_DIR . "nginx/";
         $this->nginxConfigFile = $this->nginxConfDir . "nginx.example.conf";
     }
 
@@ -243,34 +243,13 @@ OPTI;
     }
 
     /**
-     * Checks if the nginx config has been modified since the last time generating it.
-     *
-     * @return bool
-     */
-    public function hasModifications(): bool
-    {
-        if (!file_exists($this->nginxConfigFile)) {
-            return true;
-        }
-
-        $oldContent = file_get_contents($this->nginxConfigFile);
-        $content    = $this->template();
-
-        if (trim($oldContent) != trim($content)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * nginx template
      *
      * @return string
      */
     protected function template(): string
     {
-        $quiqqerDir    = CMS_DIR;
+        $quiqqerDir = CMS_DIR;
         $quiqqerUrlDir = URL_DIR;
 
         # Process domain
@@ -563,5 +542,26 @@ NGINX;
         }
 
         return $httpConfiguration;
+    }
+
+    /**
+     * Checks if the nginx config has been modified since the last time generating it.
+     *
+     * @return bool
+     */
+    public function hasModifications(): bool
+    {
+        if (!file_exists($this->nginxConfigFile)) {
+            return true;
+        }
+
+        $oldContent = file_get_contents($this->nginxConfigFile);
+        $content = $this->template();
+
+        if (trim($oldContent) != trim($content)) {
+            return true;
+        }
+
+        return false;
     }
 }

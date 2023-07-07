@@ -48,7 +48,7 @@ class Mail extends QUI\InstallationWizard\AbstractInstallationWizardStep
 
         $Engine->assign([
             'urlImageDir' => URL_OPT_DIR . 'quiqqer/quiqqer/bin/images/installation/',
-            'mail'        => QUI::conf('mail', 'admin_mail')
+            'mail' => QUI::conf('mail', 'admin_mail')
         ]);
 
         return $Engine->fetch(dirname(__FILE__) . '/Mail.html');

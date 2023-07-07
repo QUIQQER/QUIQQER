@@ -17,7 +17,9 @@ class Cleanup extends QUI\System\Console\Tool
         $this->systemTool = true;
 
         $this->setName('cleanup')
-            ->setDescription('Cleans the system. No cache files are deleted, only files that are not needed while the system is running are deleted');
+            ->setDescription(
+                'Cleans the system. No cache files are deleted, only files that are not needed while the system is running are deleted'
+            );
     }
 
     /**
@@ -60,16 +62,16 @@ class Cleanup extends QUI\System\Console\Tool
      */
     public static function clearComposer()
     {
-        $repoDir = VAR_DIR.'composer/repo/';
-        $repos   = QUI\Utils\System\File::readDir($repoDir);
+        $repoDir = VAR_DIR . 'composer/repo/';
+        $repos = QUI\Utils\System\File::readDir($repoDir);
 
         $time = \time() - 2592000; // older than a month
 
         foreach ($repos as $repo) {
-            $files = QUI\Utils\System\File::readDir($repoDir.$repo);
+            $files = QUI\Utils\System\File::readDir($repoDir . $repo);
 
             foreach ($files as $file) {
-                $repoFile = $repoDir.$repo.'/'.$file;
+                $repoFile = $repoDir . $repo . '/' . $file;
 
                 if (!\is_file($repoFile)) {
                     continue;
