@@ -1952,7 +1952,7 @@ class Manager extends QUI\QDOM
         if (!is_string($package) && !is_bool($package)) {
             $package = false;
         }
-        
+
         if (!empty($output) && $Composer->getMode() === QUI\Composer\Composer::MODE_WEB) {
             $Output->write(implode("\n", $output));
         }
