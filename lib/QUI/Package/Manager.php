@@ -1953,10 +1953,12 @@ class Manager extends QUI\QDOM
             $package = false;
         }
 
+        $output = $this->composerUpdateOrInstall($package);
+
         if (!empty($output) && $Composer->getMode() === QUI\Composer\Composer::MODE_WEB) {
             $Output->write(implode("\n", $output));
         }
-
+        
         if ($package) {
             $Output->writeLn('Update done ... run setup for ' . $package);
             $Package = self::getInstalledPackage($package);
