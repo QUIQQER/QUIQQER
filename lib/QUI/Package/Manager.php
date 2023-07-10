@@ -1980,11 +1980,11 @@ class Manager extends QUI\QDOM
         }
 
         if ($package) {
-            $Output->writeLn('Optimisation done ... run setup for ' . $package);
+            $Output->writeLn('Update done ... run setup for ' . $package);
             $Package = self::getInstalledPackage($package);
             $Package->setup();
         } else {
-            $Output->writeLn('Optimisation done ... run complete setup ...');
+            $Output->writeLn('Update done ... run complete setup ...');
             QUI\Setup::all($Output);
         }
 
