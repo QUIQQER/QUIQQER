@@ -1959,18 +1959,32 @@ class Manager extends QUI\QDOM
             $package = false;
         }
 
-        $output = $this->composerUpdateOrInstall($package);
+        if (php_sapi_name() != 'cli') {
+            // show cli loader
+            $Spinner = new QUI\System\Console\Spinner(
+                QUI\System\Console\Spinner::DOTS
+            );
 
-        if (!empty($output) && $Composer->getMode() === QUI\Composer\Composer::MODE_WEB) {
-            $Output->write(implode("\n", $output));
+            $Spinner->run('Updating...', function () use ($package, $Composer, $Output, $Spinner) {
+                $output = $this->composerUpdateOrInstall($package);
+                $Spinner->stop();
+
+                if (!empty($output) && $Composer->getMode() === QUI\Composer\Composer::MODE_WEB) {
+                    $Output->write(implode("\n", $output));
+                }
+            });
+        } else {
+            if (!empty($output) && $Composer->getMode() === QUI\Composer\Composer::MODE_WEB) {
+                $Output->write(implode("\n", $output));
+            }
         }
 
         if ($package) {
-            $Output->writeLn('Optimized done ... run setup for ' . $package);
+            $Output->writeLn('Optimisation done ... run setup for ' . $package);
             $Package = self::getInstalledPackage($package);
             $Package->setup();
         } else {
-            $Output->writeLn('Optimized done ... run complete setup ...');
+            $Output->writeLn('Optimisation done ... run complete setup ...');
             QUI\Setup::all($Output);
         }
 
