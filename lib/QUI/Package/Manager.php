@@ -56,6 +56,7 @@ use function file_get_contents;
 use function file_put_contents;
 use function hex2bin;
 use function http_build_query;
+use function implode;
 use function is_array;
 use function is_bool;
 use function is_dir;
@@ -1958,7 +1959,11 @@ class Manager extends QUI\QDOM
             $package = false;
         }
 
-        $this->composerUpdateOrInstall($package);
+        $output = $this->composerUpdateOrInstall($package);
+
+        if (!empty($output) && $Composer->getMode() === QUI\Composer\Composer::MODE_WEB) {
+            $Output->write(implode("\n", $output));
+        }
 
         if ($package) {
             $Output->writeLn('Optimized done ... run setup for ' . $package);
