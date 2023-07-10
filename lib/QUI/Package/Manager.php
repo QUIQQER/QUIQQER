@@ -1941,12 +1941,6 @@ class Manager extends QUI\QDOM
 
         $this->createComposerBackup();
 
-        // workaround, because mustache create a symlink under some circumstances
-        // so we will delete it
-//        if (file_exists(OPT_DIR.'bin/mustache')) {
-//            QUI::getTemp()->moveToTemp(OPT_DIR.'bin/mustache');
-//        }
-
         if ($mute === true) {
             $Composer->mute();
         }
@@ -1958,25 +1952,9 @@ class Manager extends QUI\QDOM
         if (!is_string($package) && !is_bool($package)) {
             $package = false;
         }
-
-        if (php_sapi_name() === 'cli') {
-            // show cli loader
-            $Spinner = new QUI\System\Console\Spinner(
-                QUI\System\Console\Spinner::DOTS
-            );
-
-            $Spinner->run('Updating...', function () use ($package, $Composer, $Output, $Spinner) {
-                $output = $this->composerUpdateOrInstall($package);
-                $Spinner->stop();
-
-                if (!empty($output) && $Composer->getMode() === QUI\Composer\Composer::MODE_WEB) {
-                    $Output->write(implode("\n", $output));
-                }
-            });
-        } else {
-            if (!empty($output) && $Composer->getMode() === QUI\Composer\Composer::MODE_WEB) {
-                $Output->write(implode("\n", $output));
-            }
+        
+        if (!empty($output) && $Composer->getMode() === QUI\Composer\Composer::MODE_WEB) {
+            $Output->write(implode("\n", $output));
         }
 
         if ($package) {
