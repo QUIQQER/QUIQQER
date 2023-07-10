@@ -1959,7 +1959,7 @@ class Manager extends QUI\QDOM
             $package = false;
         }
 
-        if (php_sapi_name() != 'cli') {
+        if (php_sapi_name() === 'cli') {
             // show cli loader
             $Spinner = new QUI\System\Console\Spinner(
                 QUI\System\Console\Spinner::DOTS
