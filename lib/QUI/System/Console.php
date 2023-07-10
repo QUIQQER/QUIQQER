@@ -25,6 +25,7 @@ use function explode;
 use function fgets;
 use function file_exists;
 use function fileowner;
+use function flush;
 use function implode;
 use function in_array;
 use function is_array;
@@ -33,6 +34,7 @@ use function is_object;
 use function key;
 use function ksort;
 use function ob_end_clean;
+use function ob_flush;
 use function php_sapi_name;
 use function phpversion;
 use function posix_geteuid;
@@ -458,6 +460,11 @@ class Console
     public function writeLn(string $msg = '', $color = false, $bg = false)
     {
         $this->message("\n" . $msg, $color, $bg);
+
+        if (php_sapi_name() === 'cli') {
+            @flush();
+            @ob_flush();
+        }
     }
 
     /**

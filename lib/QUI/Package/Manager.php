@@ -56,7 +56,6 @@ use function file_get_contents;
 use function file_put_contents;
 use function hex2bin;
 use function http_build_query;
-use function implode;
 use function is_array;
 use function is_bool;
 use function is_dir;
@@ -66,6 +65,7 @@ use function is_string;
 use function json_decode;
 use function json_encode;
 use function ksort;
+use function method_exists;
 use function parse_url;
 use function php_sapi_name;
 use function phpversion;
@@ -1956,7 +1956,20 @@ class Manager extends QUI\QDOM
         $output = $this->composerUpdateOrInstall($package);
 
         if (!empty($output) && $Composer->getMode() === QUI\Composer\Composer::MODE_WEB) {
-            $Output->write(implode("\n", $output));
+            foreach ($output as $line) {
+                if (strpos($line, '<warning>') !== false) {
+                    $Output->writeLn(strip_tags($line), 'cyan');
+
+                    // reset color
+                    if (method_exists($Output, 'resetColor')) {
+                        $Output->resetColor();
+                    }
+
+                    continue;
+                }
+
+                $Output->writeLn($line);
+            }
         }
 
         if ($package) {
