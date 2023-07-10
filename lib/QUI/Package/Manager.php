@@ -1958,7 +1958,7 @@ class Manager extends QUI\QDOM
         if (!empty($output) && $Composer->getMode() === QUI\Composer\Composer::MODE_WEB) {
             $Output->write(implode("\n", $output));
         }
-        
+
         if ($package) {
             $Output->writeLn('Update done ... run setup for ' . $package);
             $Package = self::getInstalledPackage($package);
