@@ -65,6 +65,7 @@ use function is_string;
 use function json_decode;
 use function json_encode;
 use function ksort;
+use function method_exists;
 use function parse_url;
 use function php_sapi_name;
 use function phpversion;
@@ -941,11 +942,17 @@ class Manager extends QUI\QDOM
         if (is_null($this->Composer)) {
             $this->Composer = new QUI\Composer\Composer($this->varDir);
 
+            // we want to use everytime the current composer libs
+            $this->Composer->setMode(
+                QUI\Composer\Composer::MODE_WEB
+            );
+            /*
             if (php_sapi_name() != 'cli') {
                 $this->Composer->setMode(QUI\Composer\Composer::MODE_WEB);
             } else {
                 $this->Composer->setMode(QUI\Composer\Composer::MODE_CLI);
             }
+            */
         }
 
         return $this->Composer;
@@ -1934,12 +1941,6 @@ class Manager extends QUI\QDOM
 
         $this->createComposerBackup();
 
-        // workaround, because mustache create a symlink under some circumstances
-        // so we will delete it
-//        if (file_exists(OPT_DIR.'bin/mustache')) {
-//            QUI::getTemp()->moveToTemp(OPT_DIR.'bin/mustache');
-//        }
-
         if ($mute === true) {
             $Composer->mute();
         }
@@ -1952,14 +1953,31 @@ class Manager extends QUI\QDOM
             $package = false;
         }
 
-        $this->composerUpdateOrInstall($package);
+        $output = $this->composerUpdateOrInstall($package);
+
+        if (!empty($output) && $Composer->getMode() === QUI\Composer\Composer::MODE_WEB) {
+            foreach ($output as $line) {
+                if (strpos($line, '<warning>') !== false) {
+                    $Output->writeLn(strip_tags($line), 'cyan');
+
+                    // reset color
+                    if (method_exists($Output, 'resetColor')) {
+                        $Output->resetColor();
+                    }
+
+                    continue;
+                }
+
+                $Output->writeLn($line);
+            }
+        }
 
         if ($package) {
-            $Output->writeLn('Optimized done ... run setup for ' . $package);
+            $Output->writeLn('Update done ... run setup for ' . $package);
             $Package = self::getInstalledPackage($package);
             $Package->setup();
         } else {
-            $Output->writeLn('Optimized done ... run complete setup ...');
+            $Output->writeLn('Update done ... run complete setup ...');
             QUI\Setup::all($Output);
         }
 

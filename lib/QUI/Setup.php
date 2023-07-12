@@ -56,13 +56,12 @@ class Setup
         // not at phpunit
         if (
             !isset($_SERVER['argv'])
-            || (isset($_SERVER['argv'][0])
-                && strpos($_SERVER['argv'][0], 'phpunit') === false)
+            || (isset($_SERVER['argv'][0]) && strpos($_SERVER['argv'][0], 'phpunit') === false)
         ) {
-            // nur Super User darf dies
-            Permissions\Permission::checkSU(
-                QUI::getUserBySession()
-            );
+            // nur Super User und system user darf dies
+            if (!QUI::getUsers()->isSystemUser(QUI::getUserBySession())) {
+                Permissions\Permission::checkSU(QUI::getUserBySession());
+            }
         }
 
         $Output->writeLn('> Start Session setup');
