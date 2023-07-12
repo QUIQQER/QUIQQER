@@ -1443,7 +1443,7 @@ class Manager
         }
 
         $result = $DataBase->fetch([
-            'from' => '',
+            'from' => self::table(),
             'where' => $where,
             'limit' => 1
         ]);
