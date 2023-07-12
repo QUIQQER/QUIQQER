@@ -16,12 +16,12 @@ About QUIQQER
 ![Static Badge](https://img.shields.io/badge/Webserver-Apache-white)
 ![Static Badge](https://img.shields.io/badge/Webserver-NGINX-white)
 
-![Static Badge](https://img.shields.io/badge/Borwser-Chrome-yellow)
-![Static Badge](https://img.shields.io/badge/Borwser-Safari-blue)
-![Static Badge](https://img.shields.io/badge/Borwser-Firefox-orange)
-![Static Badge](https://img.shields.io/badge/Borwser-Edge-blue)
-![Static Badge](https://img.shields.io/badge/Borwser-Opera-red)
-![Static Badge](https://img.shields.io/badge/Borwser-Brave-orange)
+![Static Badge](https://img.shields.io/badge/Browser-Chrome-yellow)
+![Static Badge](https://img.shields.io/badge/Browser-Safari-blue)
+![Static Badge](https://img.shields.io/badge/Browser-Firefox-orange)
+![Static Badge](https://img.shields.io/badge/Browser-Edge-blue)
+![Static Badge](https://img.shields.io/badge/Browser-Opera-red)
+![Static Badge](https://img.shields.io/badge/Browser-Brave-orange)
 
 QUIQQER is an all-in-one Enterprise Content Management System (CMS) designed for convenient backend management, fast
 implementation, and modular design. It goes beyond the capabilities of a traditional CMS by offering a range of useful
