@@ -206,22 +206,19 @@ class Manager
      *
      * @return array
      */
-    public function getPermissions($Obj)
+    public function getPermissions($Obj): array
     {
         $area = $this->objectToArea($Obj);
 
         switch ($area) {
             case 'project':
                 return $this->getProjectPermissions($Obj);
-                break;
 
             case 'site':
                 return $this->getSitePermissions($Obj);
-                break;
 
             case 'media':
                 return $this->getMediaPermissions($Obj);
-                break;
         }
 
         $cache = $this->getDataCacheId($Obj);
@@ -1399,7 +1396,7 @@ class Manager
      *
      * @throws QUI\Database\Exception
      */
-    public function addPermission($params)
+    public function addPermission(array $params)
     {
         $DataBase = QUI::getDataBase();
         $needles = [
@@ -1423,22 +1420,32 @@ class Manager
         }
 
         // if exist update it
-        if (isset($this->cache[$params['name']])) {
-            $DataBase->update(
-                self::table(),
-                [
-                    'title' => trim($params['title']),
-                    'desc' => trim($params['desc']),
-                    'type' => self::parseType($params['type']),
-                    'area' => self::parseArea($params['area']),
-                    'src' => $params['src'],
-                    'defaultvalue' => $params['defaultvalue']
-                ],
-                [
-                    'name' => $params['name']
-                ]
-            );
+        $where = [
+            'name' => $params['name']
+        ];
 
+        $data = [
+            'title' => trim($params['title']),
+            'desc' => trim($params['desc']),
+            'type' => self::parseType($params['type']),
+            'area' => self::parseArea($params['area']),
+            'src' => $params['src'],
+            'defaultvalue' => $params['defaultvalue']
+        ];
+
+        if (isset($this->cache[$params['name']])) {
+            $DataBase->update(self::table(), $data, $where);
+            return;
+        }
+
+        $result = $DataBase->fetch([
+            'from' => '',
+            'where' => $where,
+            'limit' => 1
+        ]);
+
+        if (isset($result[0])) {
+            $DataBase->update(self::table(), $data, $where);
             return;
         }
 
