@@ -260,6 +260,10 @@ class Update extends QUI\System\Console\Tool
                 'red'
             );
 
+            if ($Exception instanceof QUI\Exception) {
+                QUI\System\Log::addError($Exception->getMessage(), $Exception->getContext());
+            }
+
             $this->writeLn(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.error'),
                 'red'
