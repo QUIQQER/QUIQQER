@@ -28,6 +28,8 @@
     "phpmailer\/phpmailer": "~6.0",
     "symfony\/http-foundation": ">=2.3|3.*|4.2.*",
     "symfony\/console": "4.*|5.*|6.*",
+    "symfony/polyfill-php73": "*",
+    "symfony/polyfill-php74": "*",
     "symfony/polyfill-php80": "*",
     "symfony/polyfill-php81": "*",
     "symfony/polyfill-php82": "*",
