@@ -613,6 +613,35 @@ class Manager extends QUI\QDOM
             ];
         }
 
+        // repositories - quiqqer/quiqqer#1260
+        usort($repositories, function ($repoA, $repoB) {
+            if (isset($repoA['packagist'])) {
+                return 1;
+            }
+
+            if (isset($repoB['packagist'])) {
+                return -1;
+            }
+
+            if (!isset($repoA['type'])) {
+                return 1;
+            }
+
+            if (!isset($repoB['type'])) {
+                return -1;
+            }
+
+            if ($repoA['type'] === 'vcs' && $repoB['type'] === 'vcs') {
+                return 0;
+            }
+
+            if ($repoA['type'] === 'vcs' && $repoB['type'] !== 'vcs') {
+                return -1;
+            }
+
+            return 1;
+        });
+
         // license information
         $licenseConfigFile = CMS_DIR . 'etc/license.ini.php';
 
