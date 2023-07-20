@@ -2,8 +2,6 @@
 
 namespace QUI;
 
-use Gettext\GettextTranslator;
-
 use function array_merge;
 
 /**
@@ -15,8 +13,6 @@ class LocaleRuntimeCache
      * @var array Holds all locale vars by language and package
      */
     protected static array $languages = [];
-
-    protected static ?GettextTranslator $GettextTranslator = null;
 
     /**
      * Set global locale group or
