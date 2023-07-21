@@ -44,7 +44,7 @@ class CommandEvents
 
     /**
      * occurs after the update command has been executed,
-     * or after the install command has been executed without a lock file present.
+     * or after install command has been executed without a lock file present.
      *
      * @param Event $Event
      */
@@ -56,6 +56,14 @@ class CommandEvents
                 $Package->setup();
             } catch (QUI\Exception $Package) {
             }
+        }
+
+        // project setups, because of new project default configs
+        $Projects = QUI::getProjectManager();
+        $projects = $Projects->getProjects(true);
+
+        foreach ($projects as $Project) {
+            $Project->setup();
         }
         // @todo system setup, user groups, events and so on
     }

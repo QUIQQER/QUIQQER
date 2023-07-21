@@ -961,12 +961,16 @@ class Manager
      *
      * @param bool $asObject - default = false, true = projects as objects
      * @return array
-     *
-     * @throws QUI\Exception
      */
-    public static function getProjects($asObject = false)
+    public static function getProjects(bool $asObject = false): array
     {
-        $config = self::getConfig()->toArray();
+        try {
+            $config = self::getConfig()->toArray();
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+            return [];
+        }
+        
         $list = [];
 
         foreach ($config as $project => $conf) {
