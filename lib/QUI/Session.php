@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcacheSessionHand
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 
@@ -143,6 +144,7 @@ class Session
         QUI::getEvents()->fireEvent('quiqqerSessionStorageInit', [$this, &$storageOptions]);
 
         if (defined('QUIQQER_SETUP')) {
+            $this->Storage = new MockArraySessionStorage();
             return;
         }
 
