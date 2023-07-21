@@ -9,6 +9,12 @@ namespace QUI\Package\Composer;
 use Composer\Plugin\PreCommandRunEvent;
 use Composer\Script\Event;
 use QUI;
+use QUI\Exception;
+
+use function array_unique;
+use function define;
+use function defined;
+use function php_sapi_name;
 
 /**
  * Class CommandEvents
@@ -18,7 +24,7 @@ class CommandEvents
     /**
      * @var array
      */
-    protected static $packages = [];
+    protected static array $packages = [];
 
     /**
      * Registered a package which has changed
@@ -28,12 +34,12 @@ class CommandEvents
     public static function registerPackageChange($packageName)
     {
         self::$packages[] = $packageName;
-        self::$packages = \array_unique(self::$packages);
+        self::$packages = array_unique(self::$packages);
     }
 
     /**
      * occurs before the update command is executed,
-     * or before the install command is executed without a lock file present.
+     * or before install command is executed without a lock file present.
      *
      * @param Event $Event
      */
@@ -77,7 +83,7 @@ class CommandEvents
      */
     public static function preCommandRun(PreCommandRunEvent $Event)
     {
-        if (\php_sapi_name() !== 'cli') {
+        if (php_sapi_name() !== 'cli') {
             return;
         }
 
@@ -98,23 +104,24 @@ class CommandEvents
 
     /**
      * @param Event $Event
+     * @throws Exception
      */
     protected static function loadQUIQQER(Event $Event)
     {
         $Composer = $Event->getComposer();
         $config = $Composer->getConfig()->all();
 
-        if (!\defined('CMS_DIR')) {
-            \define('CMS_DIR', $config['config']['quiqqer-dir']);
+        if (!defined('CMS_DIR')) {
+            define('CMS_DIR', $config['config']['quiqqer-dir']);
         }
 
-        if (!\defined('ETC_DIR')) {
-            \define('ETC_DIR', $config['config']['quiqqer-dir'] . 'etc/');
+        if (!defined('ETC_DIR')) {
+            define('ETC_DIR', $config['config']['quiqqer-dir'] . 'etc/');
         }
 
-        if (\php_sapi_name() === 'cli') {
+        if (php_sapi_name() === 'cli') {
             if (!defined('SYSTEM_INTERN')) {
-                \define('SYSTEM_INTERN', true);
+                define('SYSTEM_INTERN', true);
             }
 
             QUI\Permissions\Permission::setUser(
