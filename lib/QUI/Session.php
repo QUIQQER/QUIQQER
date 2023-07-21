@@ -29,6 +29,7 @@ use function array_rand;
 use function array_unique;
 use function array_values;
 use function class_exists;
+use function define;
 use function defined;
 use function explode;
 use function file_exists;
@@ -89,6 +90,13 @@ class Session
     {
         $this->table = QUI::getDBTableName('sessions');
 
+        if (defined('QUIQQER_SETUP')) {
+            $this->Storage = new MockArraySessionStorage();
+            $this->Session = new \Symfony\Component\HttpFoundation\Session\Session($this->Storage);
+            define('QUIQQER_SESSION_STARTED', 1);
+            return;
+        }
+
         // symfony files
         $classNativeSessionStorage = '\Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage';
         $classSession = '\Symfony\Component\HttpFoundation\Session\Session';
@@ -142,11 +150,6 @@ class Session
         }
 
         QUI::getEvents()->fireEvent('quiqqerSessionStorageInit', [$this, &$storageOptions]);
-
-        if (defined('QUIQQER_SETUP')) {
-            $this->Storage = new MockArraySessionStorage();
-            return;
-        }
 
         if (!class_exists('NativeSessionStorage')) {
             $fileNativeSessionStorage = $symfonyDir . 'Session/Storage/NativeSessionStorage.php';
@@ -488,6 +491,10 @@ class Session
      */
     public function del(string $var)
     {
+        if (defined('QUIQQER_SETUP')) {
+            return;
+        }
+
         if ($this->Session) {
             $this->Session->remove($var);
         }
