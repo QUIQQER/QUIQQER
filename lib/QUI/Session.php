@@ -28,6 +28,7 @@ use function array_rand;
 use function array_unique;
 use function array_values;
 use function class_exists;
+use function defined;
 use function explode;
 use function file_exists;
 use function headers_sent;
@@ -141,6 +142,9 @@ class Session
 
         QUI::getEvents()->fireEvent('quiqqerSessionStorageInit', [$this, &$storageOptions]);
 
+        if (defined('QUIQQER_SETUP')) {
+            return;
+        }
 
         if (!class_exists('NativeSessionStorage')) {
             $fileNativeSessionStorage = $symfonyDir . 'Session/Storage/NativeSessionStorage.php';
