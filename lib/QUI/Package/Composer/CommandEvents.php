@@ -65,6 +65,8 @@ class CommandEvents
         }
 
         // project setups, because of new project default configs
+        QUI::$PackageManager = null; // to get a new package manager instance
+
         $Projects = QUI::getProjectManager();
         $projects = $Projects->getProjects(true);
 
