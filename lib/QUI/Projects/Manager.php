@@ -970,7 +970,7 @@ class Manager
             QUI\System\Log::addError($Exception->getMessage());
             return [];
         }
-        
+
         $list = [];
 
         foreach ($config as $project => $conf) {
