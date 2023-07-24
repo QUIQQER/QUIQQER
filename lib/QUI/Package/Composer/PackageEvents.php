@@ -10,7 +10,12 @@ use Composer\DependencyResolver\Operation\InstallOperation;
 use Composer\DependencyResolver\Operation\UninstallOperation;
 use Composer\DependencyResolver\Operation\UpdateOperation;
 use Composer\Installer\PackageEvent;
+use Exception;
 use QUI;
+
+use function define;
+use function defined;
+use function php_sapi_name;
 
 /**
  * Class PackageEvents
@@ -45,7 +50,7 @@ class PackageEvents
             $Package->install();
 
             CommandEvents::registerPackageChange($packageName);
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::write(
                 $Exception->getMessage(),
                 $Exception->getCode(),
@@ -69,17 +74,17 @@ class PackageEvents
         $Composer = $Event->getComposer();
         $config = $Composer->getConfig()->all();
 
-        if (!\defined('CMS_DIR')) {
-            \define('CMS_DIR', $config['config']['quiqqer-dir']);
+        if (!defined('CMS_DIR')) {
+            define('CMS_DIR', $config['config']['quiqqer-dir']);
         }
 
-        if (!\defined('ETC_DIR')) {
-            \define('ETC_DIR', $config['config']['quiqqer-dir'] . 'etc/');
+        if (!defined('ETC_DIR')) {
+            define('ETC_DIR', $config['config']['quiqqer-dir'] . 'etc/');
         }
 
-        if (\php_sapi_name() === 'cli') {
+        if (php_sapi_name() === 'cli') {
             if (!defined('SYSTEM_INTERN')) {
-                \define('SYSTEM_INTERN', true);
+                define('SYSTEM_INTERN', true);
             }
 
             QUI\Permissions\Permission::setUser(
@@ -87,7 +92,11 @@ class PackageEvents
             );
         }
 
-        QUI::load();
+        try {
+            QUI::load();
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**
@@ -118,7 +127,7 @@ class PackageEvents
             $Package->onUpdate();
 
             CommandEvents::registerPackageChange($packageName);
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::write(
                 $Exception->getMessage(),
                 $Exception->getCode(),
@@ -151,7 +160,7 @@ class PackageEvents
         try {
             $Package = QUI::getPackage($packageName);
             $Package->uninstall();
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::write(
                 $Exception->getMessage(),
                 $Exception->getCode(),
