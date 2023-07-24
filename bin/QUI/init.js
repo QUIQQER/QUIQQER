@@ -11,9 +11,9 @@
 Object.append(Element.NativeEvents, {
     dragenter: 2,
     dragleave: 2,
-    dragover : 2,
-    dragend  : 2,
-    drop     : 2
+    dragover: 2,
+    dragend: 2,
+    drop: 2
 });
 
 // custome select
@@ -33,33 +33,33 @@ try {
 // require config
 require.config({
     baseUrl: URL_BIN_DIR + 'QUI/',
-    paths  : {
-        "package"    : URL_OPT_DIR,
-        "qui"        : URL_OPT_DIR + 'bin/qui/qui',
-        "locale"     : URL_VAR_DIR + 'locale/bin',
+    paths: {
+        "package": URL_OPT_DIR,
+        "qui": URL_OPT_DIR + 'bin/qui/qui',
+        "locale": URL_VAR_DIR + 'locale/bin',
         "URL_OPT_DIR": URL_OPT_DIR,
         "URL_BIN_DIR": URL_BIN_DIR,
-        "Mustache"   : URL_OPT_DIR + 'bin/quiqqer-asset/mustache/mustache/mustache.min',
+        "Mustache": URL_OPT_DIR + 'bin/quiqqer-asset/mustache/mustache/mustache.min',
 
-        "URI"               : URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/URI',
-        'IPv6'              : URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/IPv6',
-        'punycode'          : URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/punycode',
+        "URI": URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/URI',
+        'IPv6': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/IPv6',
+        'punycode': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/punycode',
         'SecondLevelDomains': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/SecondLevelDomains',
-        'Navigo'            : URL_OPT_DIR + 'bin/quiqqer-asset/navigo/navigo/lib/navigo.min',
-        'HistoryEvents'     : URL_OPT_DIR + 'bin/quiqqer-asset/history-events/history-events/dist/history-events.min',
-        '@popperjs/core'    : URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/lib/tippy/popper.min'
+        'Navigo': URL_OPT_DIR + 'bin/quiqqer-asset/navigo/navigo/lib/navigo.min',
+        'HistoryEvents': URL_OPT_DIR + 'bin/quiqqer-asset/history-events/history-events/dist/history-events.min',
+        '@popperjs/core': URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/lib/tippy/popper.min'
     },
 
     waitSeconds: 0,
-    locale     : USER.lang + "-" + USER.lang,
-    catchError : true,
-    urlArgs    : "d=" + QUIQQER_VERSION.replace(/\./g, '_') + '_' + QUIQQER.lu,
+    locale: USER.lang + "-" + USER.lang,
+    catchError: true,
+    urlArgs: "d=" + QUIQQER_VERSION.replace(/\./g, '_') + '_' + QUIQQER.lu,
 
     map: {
         '*': {
-            'css'  : URL_OPT_DIR + 'bin/qui/qui/lib/css.min.js',
+            'css': URL_OPT_DIR + 'bin/qui/qui/lib/css.min.js',
             'image': URL_OPT_DIR + 'bin/qui/qui/lib/image.min.js',
-            'text' : URL_OPT_DIR + 'bin/qui/qui/lib/text.min.js'
+            'text': URL_OPT_DIR + 'bin/qui/qui/lib/text.min.js'
         }
     }
 });
@@ -89,16 +89,16 @@ if (typeof window.Intl === "undefined") {
 require(requireList, function () {
     "use strict";
 
-    let QUI                     = arguments[0],
-        Locale                  = arguments[1],
-        Ajax                    = arguments[2],
-        Projects                = arguments[3],
-        WSManager               = arguments[4],
-        QUIButton               = arguments[5],
+    let QUI = arguments[0],
+        Locale = arguments[1],
+        Ajax = arguments[2],
+        //Projects = arguments[3],
+        WSManager = arguments[4],
+        //QUIButton = arguments[5],
 
-        QUIContextmenuItem      = arguments[6],
+        QUIContextmenuItem = arguments[6],
         QUIContextmenuSeparator = arguments[7],
-        PanelUtils              = arguments[8];
+        PanelUtils = arguments[8];
 
     Locale.setCurrent(window.USER.lang);
 
@@ -112,22 +112,22 @@ require(requireList, function () {
     });
 
     QUI.setAttributes({
-        'control-loader-type' : 'line-scale',
+        'control-loader-type': 'line-scale',
         'control-loader-color': '#2f8fc8',
 
         'control-desktop-panel-sheet-closetext': Locale.get('quiqqer/quiqqer', 'close'),
-        'control-windows-popup-closetext'      : Locale.get('quiqqer/quiqqer', 'close'),
-        'control-windows-cancel-no-button'     : false,
-        'control-windows-confirm-canceltext'   : Locale.get('quiqqer/quiqqer', 'cancel'),
-        'control-windows-confirm-submittext'   : Locale.get('quiqqer/quiqqer', 'accept'),
-        'control-windows-prompt-canceltext'    : Locale.get('quiqqer/quiqqer', 'cancel'),
-        'control-windows-prompt-submittext'    : Locale.get('quiqqer/quiqqer', 'accept'),
-        'control-windows-submit-canceltext'    : Locale.get('quiqqer/quiqqer', 'cancel'),
-        'control-windows-submit-submittext'    : Locale.get('quiqqer/quiqqer', 'accept'),
+        'control-windows-popup-closetext': Locale.get('quiqqer/quiqqer', 'close'),
+        'control-windows-cancel-no-button': false,
+        'control-windows-confirm-canceltext': Locale.get('quiqqer/quiqqer', 'cancel'),
+        'control-windows-confirm-submittext': Locale.get('quiqqer/quiqqer', 'accept'),
+        'control-windows-prompt-canceltext': Locale.get('quiqqer/quiqqer', 'cancel'),
+        'control-windows-prompt-submittext': Locale.get('quiqqer/quiqqer', 'accept'),
+        'control-windows-submit-canceltext': Locale.get('quiqqer/quiqqer', 'cancel'),
+        'control-windows-submit-submittext': Locale.get('quiqqer/quiqqer', 'accept'),
 
-        'control-task-panel-limit'        : 50,
+        'control-task-panel-limit': 50,
         'control-task-panel-limit-message': Locale.get('quiqqer/quiqqer', 'message.to.much.tasks'),
-        'quiqqer-panel-inject'            : PanelUtils.panelApiInjectionEvent
+        'quiqqer-panel-inject': PanelUtils.panelApiInjectionEvent
     });
 
     QUI.addEvent('onError', function (err, url, line) {
@@ -144,7 +144,7 @@ require(requireList, function () {
         URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/lib/tippy/tippy.min.js',
         'css!' + URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/lib/tippy/tippy.css'
     ], function (tippy) {
-        QUI.addEvent('onParseBegin', function (QUI, Parent) {
+        QUI.addEvent('onParseBegin', function (Instance, Parent) {
             // parse title
             if (!Parent) {
                 return;
@@ -164,9 +164,9 @@ require(requireList, function () {
 
             tippy(titleElms, {
                 animateFill: false,
-                animation  : 'shift-away',
-                allowHTML  : true,
-                content    : function (reference) {
+                animation: 'shift-away',
+                allowHTML: true,
+                content: function (reference) {
                     const title = reference.getAttribute('title');
                     reference.removeAttribute('title');
 
@@ -184,10 +184,10 @@ require(requireList, function () {
 
             tippy(Node, {
                 animateFill: false,
-                animation  : 'shift-away',
-                content    : '<span class="fa fa-circle-o-notch fa-spin"></span>',
-                allowHTML  : true,
-                onShow     : function (TippyInstance) {
+                animation: 'shift-away',
+                content: '<span class="fa fa-circle-o-notch fa-spin"></span>',
+                allowHTML: true,
+                onShow: function (TippyInstance) {
                     Instance.getToolTipText().then(function (text) {
                         if (!text) {
                             TippyInstance.setContent(
@@ -223,8 +223,8 @@ require(requireList, function () {
         );
     });
 
-    let menuLoaded             = false,
-        workspaceLoaded        = false,
+    let menuLoaded = false,
+        workspaceLoaded = false,
         quiqqerLoadedTriggered = false;
 
     const quiqqerIsLoaded = function () {
@@ -261,22 +261,22 @@ require(requireList, function () {
         }
 
         // load the default workspace
-        let doc_size      = document.body.getSize(),
-            Container     = document.getElement('.qui-workspace-container'),
+        let doc_size = document.body.getSize(),
+            Container = document.getElement('.qui-workspace-container'),
             MenuContainer = document.getElement('.qui-menu-container');
 
         let menuY = MenuContainer.getComputedSize().height;
 
         Container.setStyles({
             overflow: 'hidden',
-            height  : doc_size.y - menuY,
-            width   : '100%'
+            height: doc_size.y - menuY,
+            width: '100%'
         });
 
         document.id('wrapper').setStyles({
-            height  : '100%',
+            height: '100%',
             overflow: 'hidden',
-            width   : '100%'
+            width: '100%'
         });
 
         /**
@@ -284,7 +284,7 @@ require(requireList, function () {
          */
         const Workspace = new WSManager({
             autoResize: false,
-            events    : {
+            events: {
                 onLoadWorkspace: function (WS) {
                     WS.load();
                 },
@@ -292,7 +292,7 @@ require(requireList, function () {
                 onWorkspaceLoaded: function (WS) {
                     const createMenu = function (Menu) {
                         const list = WS.getList(),
-                              Bar  = Menu.getChildren();
+                            Bar = Menu.getChildren();
 
                         // logo
                         if (Bar.getChildren('quiqqer')) {
@@ -303,10 +303,10 @@ require(requireList, function () {
 
                                 if (Img) {
                                     Img.setStyles({
-                                        height  : 22,
+                                        height: 22,
                                         position: 'relative',
-                                        top     : 6,
-                                        width   : null
+                                        top: 6,
+                                        width: null
                                     });
                                 }
                             }
@@ -329,6 +329,30 @@ require(requireList, function () {
                             }
                         });
 
+                        // resize panels quiqqer/qsetup#166
+                        (function () {
+                            document.getElements('.qui-column').forEach(function (Node) {
+                                const Column = QUI.Controls.getById(Node.get('data-quiid'));
+
+                                if (!Column) {
+                                    return;
+                                }
+
+                                const ColumnNode = Column.getElm();
+                                const ContentNode = ColumnNode.getElement('.qui-column-content');
+                                const contentSize = ContentNode.getSize();
+                                const panels = ContentNode.getChildren('.qui-panel');
+
+                                const panelHeights = panels.getSize().map((entry) => {
+                                    return entry.y;
+                                }).sum();
+
+                                if (contentSize.y < panelHeights) {
+                                    Column.recalcPanels();
+                                }
+                            });
+                        }).delay(2000);
+
                         if (!Bar.getChildren('profile')) {
                             return;
                         }
@@ -338,7 +362,7 @@ require(requireList, function () {
                         }
 
                         const Workspaces = Bar.getChildren('profile')
-                                              .getChildren('workspaces');
+                            .getChildren('workspaces');
 
                         Workspaces.clear();
 
@@ -358,13 +382,11 @@ require(requireList, function () {
                                 );
                             }
 
-                            console.log(Entry.title);
-
                             Workspaces.appendChild(
                                 new QUIContextmenuItem({
-                                    text  : title,
-                                    wid   : Entry.id,
-                                    icon  : standard ? 'fa fa-check' : 'fa fa-minus',
+                                    text: title,
+                                    wid: Entry.id,
+                                    icon: standard ? 'fa fa-check' : 'fa fa-minus',
                                     events: {
                                         onClick: function (Item) {
                                             WS.loadWorkspace(Item.getAttribute('wid'));
@@ -381,8 +403,8 @@ require(requireList, function () {
 
                         Workspaces.appendChild(
                             new QUIContextmenuItem({
-                                text  : Locale.get('quiqqer/quiqqer', 'menu.workspaces.edit'),
-                                icon  : 'fa fa-edit',
+                                text: Locale.get('quiqqer/quiqqer', 'menu.workspaces.edit'),
+                                icon: 'fa fa-edit',
                                 events: {
                                     onClick: function () {
                                         WS.openWorkspaceEdit();
@@ -415,7 +437,7 @@ require(requireList, function () {
         QUI.addEvent('resize', function () {
             Container.setStyles({
                 height: QUI.getWindowSize().y - menuY,
-                width : QUI.getWindowSize().x
+                width: QUI.getWindowSize().x
             });
 
             Workspace.resize();
