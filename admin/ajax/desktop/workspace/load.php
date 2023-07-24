@@ -3,6 +3,7 @@
 /**
  * Return current workspace
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_desktop_workspace_load',
     function () {
