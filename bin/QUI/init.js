@@ -92,9 +92,9 @@ require(requireList, function () {
     let QUI = arguments[0],
         Locale = arguments[1],
         Ajax = arguments[2],
-        Projects = arguments[3],
+        //Projects = arguments[3],
         WSManager = arguments[4],
-        QUIButton = arguments[5],
+        //QUIButton = arguments[5],
 
         QUIContextmenuItem = arguments[6],
         QUIContextmenuSeparator = arguments[7],
@@ -144,7 +144,7 @@ require(requireList, function () {
         URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/lib/tippy/tippy.min.js',
         'css!' + URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/lib/tippy/tippy.css'
     ], function (tippy) {
-        QUI.addEvent('onParseBegin', function (QUI, Parent) {
+        QUI.addEvent('onParseBegin', function (Instance, Parent) {
             // parse title
             if (!Parent) {
                 return;
