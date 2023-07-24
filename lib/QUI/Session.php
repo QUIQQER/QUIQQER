@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcacheSessionHand
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 
@@ -28,6 +29,8 @@ use function array_rand;
 use function array_unique;
 use function array_values;
 use function class_exists;
+use function define;
+use function defined;
 use function explode;
 use function file_exists;
 use function headers_sent;
@@ -87,6 +90,13 @@ class Session
     {
         $this->table = QUI::getDBTableName('sessions');
 
+        if (defined('QUIQQER_SETUP')) {
+            $this->Storage = new MockArraySessionStorage();
+            $this->Session = new \Symfony\Component\HttpFoundation\Session\Session($this->Storage);
+            define('QUIQQER_SESSION_STARTED', 1);
+            return;
+        }
+
         // symfony files
         $classNativeSessionStorage = '\Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage';
         $classSession = '\Symfony\Component\HttpFoundation\Session\Session';
@@ -140,7 +150,6 @@ class Session
         }
 
         QUI::getEvents()->fireEvent('quiqqerSessionStorageInit', [$this, &$storageOptions]);
-
 
         if (!class_exists('NativeSessionStorage')) {
             $fileNativeSessionStorage = $symfonyDir . 'Session/Storage/NativeSessionStorage.php';
@@ -482,6 +491,10 @@ class Session
      */
     public function del(string $var)
     {
+        if (defined('QUIQQER_SETUP')) {
+            return;
+        }
+
         if ($this->Session) {
             $this->Session->remove($var);
         }
