@@ -111,7 +111,7 @@ try {
 }
 
 if ($Provider->finish()) {
-    echo $Provider->finish();
+    //echo $Provider->finish();
 } else {
     $Provider->write('<script>window.finish();</script>');
 }

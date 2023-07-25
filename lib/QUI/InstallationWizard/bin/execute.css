@@ -7,6 +7,7 @@ body {
     font-family: 'Open Sans', sans-serif;
     font-size: 0.9rem;
     margin: 0;
+    overflow: hidden;
     padding: 40px;
 }
 
@@ -36,13 +37,13 @@ h1 {
     width: 70%;
 }
 
-.wizard-steps > div {
+.wizard-steps-step {
     font-size: 1.2rem;
     position: relative;
     text-align: center;
 }
 
-.wizard-steps > div h3 {
+.wizard-steps-step h3 {
     font-weight: 300;
     font-size: 2.5rem;
 }
@@ -69,4 +70,5 @@ h1 {
     opacity: 0.75;
     position: absolute;
     right: 40px;
+    z-index: 10;
 }
