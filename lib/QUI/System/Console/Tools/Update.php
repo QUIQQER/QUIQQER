@@ -13,11 +13,15 @@ use function date;
 use function error_log;
 use function flush;
 use function is_dir;
+use function method_exists;
 use function ob_flush;
 use function ob_get_contents;
 use function str_pad;
+use function str_replace;
+use function strip_tags;
 use function strlen;
 use function strpos;
+use function strtolower;
 use function trim;
 use function unlink;
 
@@ -184,6 +188,20 @@ class Update extends QUI\System\Console\Tool
         $Maintenance->setArgument('status', 'on');
         $Maintenance->execute();
 
+
+        $changes = $this->checkFileSystemChanges();
+
+        if ($changes) {
+            $this->writeLn('');
+            $this->writeLn('The update has found changes to the file system.', 'red');
+            $this->resetColor();
+
+            if ($this->executedAnywayQuestion() === false) {
+                exit;
+            }
+        }
+
+
         try {
             $Packages->refreshServerList();
 
@@ -222,7 +240,24 @@ class Update extends QUI\System\Console\Tool
                     unlink($localeFiles);
                 }
 
-                $Packages->update(false, false, $this);
+                $CLIOutput = new QUI\System\Console\Output();
+                $CLIOutput->Events->addEvent('onWrite', function ($message) use ($self) {
+                    if (strpos($message, '<warning>') !== false) {
+                        $self->writeLn(strip_tags($message), 'cyan');
+
+                        // reset color
+                        if (method_exists($self, 'resetColor')) {
+                            $self->resetColor();
+                        }
+
+                        return;
+                    }
+
+                    $self->writeLn(strip_tags($message));
+                });
+
+                $Packages->getComposer()->setOutput($CLIOutput);
+                $Packages->update(false, false);
             }
 
             $this->logBuffer();
@@ -334,5 +369,66 @@ class Update extends QUI\System\Console\Tool
         }
 
         error_log($buffer, 3, VAR_DIR . 'log/update-' . date('Y-m-d') . '.log');
+    }
+
+    /**
+     *
+     */
+    protected function checkFileSystemChanges(): bool
+    {
+        $self = $this;
+        $Packages = QUI::getPackageManager();
+        $Composer = $Packages->getComposer();
+        $Composer->unmute();
+
+        $Runner = $Composer->getRunner();
+        $result = [];
+
+        $CLIOutput = new QUI\System\Console\Output();
+        $CLIOutput->Events->addEvent('onWrite', function ($message) use ($self, &$result) {
+            $result[] = $message;
+        });
+
+        $Runner->setOutput($CLIOutput);
+
+        try {
+            $Runner->executeComposer('status', [
+                '-vvv' => true
+            ]);
+        } catch (\QUI\Composer\Exception $Exception) {
+            foreach ($result as $line) {
+                if (strpos($line, '[404]') !== false) {
+                    $path = str_replace('[404] ', '', $line);
+
+                    $this->writeLn(
+                        'The update could not check the following package, there was a problem with the package archive.',
+                        'red'
+                    );
+
+                    $this->writeLn($path);
+                    break;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function executedAnywayQuestion(): bool
+    {
+        $this->writeLn('Should the update be executed anyway? [Y,n]: ');
+        $answer = $this->readInput();
+
+        if (empty($answer)) {
+            return true;
+        }
+
+        if (strtolower($answer) === 'y') {
+            return true;
+        }
+
+        return false;
     }
 }
