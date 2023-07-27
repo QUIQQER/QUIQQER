@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This File contains QUI\Composer\ArrayOutput
  */
