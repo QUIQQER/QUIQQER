@@ -260,11 +260,14 @@ class Update extends QUI\System\Console\Tool
                     $ignore = [
                         'Downloading ',
                         'Reading ',
-                        '[304]] ',
+                        'Importing ',
+                        'Writing ',
+                        'Executing command ',
+                        '[304] ',
                     ];
 
                     foreach ($ignore as $ig) {
-                        if (strpos($message, $ig) !== false) {
+                        if (strpos($message, $ig) === 0) {
                             return;
                         }
                     }
