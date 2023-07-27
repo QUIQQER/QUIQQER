@@ -57,7 +57,7 @@ class CommandEvents
     public static function postUpdate(Event $Event)
     {
         QUI::load();
-        
+
         foreach (self::$packages as $package) {
             try {
                 $Package = QUI::getPackage($package);
