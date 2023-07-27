@@ -11,20 +11,17 @@ use QUI;
 
 use function date;
 use function error_log;
-use function flush;
 use function is_dir;
 use function method_exists;
-use function ob_flush;
-use function ob_get_contents;
 use function str_pad;
 use function str_replace;
 use function strip_tags;
 use function strlen;
 use function strpos;
 use function strtolower;
-use function trim;
 use function unlink;
 
+use const PHP_EOL;
 use const VAR_DIR;
 
 /**
@@ -87,25 +84,22 @@ class Update extends QUI\System\Console\Tool
 
         $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.start'));
         $this->writeLn('');
-        $this->logBuffer();
 
-        $self = $this;
         $Packages = QUI::getPackageManager();
 
         // output events
-        $Packages->getComposer()->addEvent('onOutput', function ($Composer, $output, $type) use ($self) {
+        $Packages->getComposer()->addEvent('onOutput', function ($Composer, $output, $type) {
             if ($this->getArgument('check')) {
                 return;
             }
 
-            $self->write($output);
-            $self->writeToLog($output);
+            $this->write($output);
+            $this->writeToLog($output);
         });
 
         if ($this->getArgument('set-date')) {
             try {
                 QUI::getPackageManager()->setLastUpdateDate();
-                $this->logBuffer();
             } catch (QUI\Exception $Exception) {
                 $this->writeToLog('====== ERROR ======');
                 $this->writeToLog($Exception->getMessage());
@@ -127,7 +121,6 @@ class Update extends QUI\System\Console\Tool
             $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.log.message.update.via.console'));
             $this->writeLn();
             $this->writeLn();
-            $this->logBuffer();
 
             try {
                 $packages = $Packages->getOutdated(true);
@@ -147,8 +140,6 @@ class Update extends QUI\System\Console\Tool
                     QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.no.updates.available'),
                     'green'
                 );
-
-                $this->logBuffer();
 
                 return;
             }
@@ -176,10 +167,7 @@ class Update extends QUI\System\Console\Tool
 
                 $this->write($package['version'], 'cyan');
                 $this->writeLn();
-                $this->logBuffer();
             }
-
-            $this->logBuffer();
 
             return;
         }
@@ -201,7 +189,6 @@ class Update extends QUI\System\Console\Tool
                 exit;
             }
         }
-
 
         try {
             $Packages->refreshServerList();
@@ -242,15 +229,15 @@ class Update extends QUI\System\Console\Tool
                 }
 
                 $CLIOutput = new QUI\System\Console\Output();
-                $CLIOutput->Events->addEvent('onWrite', function ($message) use ($self) {
-                    $self->writeToLog($message . PHP_EOL);
+                $CLIOutput->Events->addEvent('onWrite', function ($message) {
+                    $this->writeToLog($message . PHP_EOL);
 
                     if (strpos($message, '<warning>') !== false) {
-                        $self->writeLn(strip_tags($message), 'cyan');
+                        $this->writeLn(strip_tags($message), 'cyan');
 
                         // reset color
-                        if (method_exists($self, 'resetColor')) {
-                            $self->resetColor();
+                        if (method_exists($this, 'resetColor')) {
+                            $this->resetColor();
                         }
 
                         return;
@@ -272,7 +259,7 @@ class Update extends QUI\System\Console\Tool
                         }
                     }
 
-                    $self->writeLn(strip_tags($message));
+                    $this->writeLn(strip_tags($message));
                 });
 
                 $this->writeLn('QUIQQER Update ...');
@@ -341,7 +328,7 @@ class Update extends QUI\System\Console\Tool
      *
      * @param string $message
      */
-    protected function writeUpdateLog($message)
+    protected function writeUpdateLog(string $message)
     {
         QUI\System\Log::write(
             $message,
@@ -360,19 +347,6 @@ class Update extends QUI\System\Console\Tool
     }
 
     /**
-     * Log the output buffer to the update log
-     */
-    protected function logBuffer()
-    {
-        $buffer = ob_get_contents();
-        $buffer = trim($buffer);
-        $this->writeToLog($buffer);
-
-        @flush();
-        @ob_flush();
-    }
-
-    /**
      * Write buffer to the update log
      *
      * @param string $buffer
@@ -387,11 +361,10 @@ class Update extends QUI\System\Console\Tool
     }
 
     /**
-     *
+     * @return bool
      */
     protected function checkFileSystemChanges(): bool
     {
-        $self = $this;
         $Packages = QUI::getPackageManager();
         $Composer = $Packages->getComposer();
         $Composer->unmute();
@@ -400,8 +373,9 @@ class Update extends QUI\System\Console\Tool
         $result = [];
 
         $CLIOutput = new QUI\System\Console\Output();
-        $CLIOutput->Events->addEvent('onWrite', function ($message) use ($self, &$result) {
+        $CLIOutput->Events->addEvent('onWrite', function ($message) use (&$result) {
             $result[] = $message;
+            $this->writeToLog($message . PHP_EOL);
         });
 
         $Runner->setOutput($CLIOutput);
