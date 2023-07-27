@@ -2040,7 +2040,8 @@ class Manager extends QUI\QDOM
 
         $updateOptions = [
             '--no-autoloader' => false,
-            '--optimize-autoloader' => true
+            '--optimize-autoloader' => true,
+            '--no-interaction' => true
         ];
 
         if (!DEVELOPMENT) {
