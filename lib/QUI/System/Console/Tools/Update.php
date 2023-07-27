@@ -189,6 +189,7 @@ class Update extends QUI\System\Console\Tool
         $Maintenance->execute();
 
 
+        $this->writeLn('Filesystem check ...');
         $changes = $this->checkFileSystemChanges();
 
         if ($changes) {
@@ -242,6 +243,8 @@ class Update extends QUI\System\Console\Tool
 
                 $CLIOutput = new QUI\System\Console\Output();
                 $CLIOutput->Events->addEvent('onWrite', function ($message) use ($self) {
+                    $self->writeToLog($message . PHP_EOL);
+
                     if (strpos($message, '<warning>') !== false) {
                         $self->writeLn(strip_tags($message), 'cyan');
 
@@ -253,14 +256,27 @@ class Update extends QUI\System\Console\Tool
                         return;
                     }
 
+                    
+                    $ignore = [
+                        'Downloading ',
+                        'Reading ',
+                        '[304]] ',
+                    ];
+
+                    foreach ($ignore as $ig) {
+                        if (strpos($message, $ig) !== false) {
+                            return;
+                        }
+                    }
+
                     $self->writeLn(strip_tags($message));
                 });
 
+                $this->writeLn('QUIQQER Update ...');
                 $Packages->getComposer()->setOutput($CLIOutput);
                 $Packages->update(false, false);
             }
 
-            $this->logBuffer();
             $wasExecuted = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.execute');
             $webserver = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.webserver');
 
@@ -285,8 +301,6 @@ class Update extends QUI\System\Console\Tool
 
             QUI\Cache\Manager::clearCompleteQuiqqerCache();
             QUI\Cache\Manager::longTimeCacheClearCompleteQuiqqer();
-
-            $this->logBuffer();
         } catch (Exception $Exception) {
             $this->write(' [error]', 'red');
             $this->writeLn('');
@@ -314,8 +328,6 @@ class Update extends QUI\System\Console\Tool
             $this->resetColor();
             $this->writeLn('');
         }
-
-        $this->logBuffer();
 
         $Maintenance->setArgument('status', 'off');
         $Maintenance->execute();

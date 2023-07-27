@@ -56,8 +56,6 @@ class CommandEvents
      */
     public static function postUpdate(Event $Event)
     {
-        QUI::load();
-
         foreach (self::$packages as $package) {
             try {
                 $Package = QUI::getPackage($package);
@@ -73,7 +71,9 @@ class CommandEvents
         $projects = $Projects->getProjects(true);
 
         foreach ($projects as $Project) {
-            $Project->setup();
+            $Project->setup([
+                'executePackagesSetup' => false
+            ]);
         }
         // @todo system setup, user groups, events and so on
     }
@@ -81,7 +81,7 @@ class CommandEvents
     /**
      * Called before every composer command.
      * Using the commands require or remove causes cache inconsistencies.
-     * Therefore we tell the user how to prevent this.
+     * Therefore, we tell the user how to prevent this.
      *
      * @param PreCommandRunEvent $Event
      */
