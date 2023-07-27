@@ -455,7 +455,13 @@ class QUI
             return self::$Configs[$file];
         }
 
-        $_file = CMS_DIR . $file;
+        if (defined('CMS_DIR')) {
+            $cmsDir = CMS_DIR;
+        } else {
+            $cmsDir = dirname(__FILE__, 6);
+        }
+
+        $_file = $cmsDir . $file;
 
         if (substr($file, -4) !== '.php') {
             $_file .= '.php';
