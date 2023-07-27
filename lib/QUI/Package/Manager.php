@@ -65,7 +65,6 @@ use function is_string;
 use function json_decode;
 use function json_encode;
 use function ksort;
-use function method_exists;
 use function parse_url;
 use function php_sapi_name;
 use function phpversion;
@@ -1982,8 +1981,9 @@ class Manager extends QUI\QDOM
             $package = false;
         }
 
-        $output = $this->composerUpdateOrInstall($package);
+        $this->composerUpdateOrInstall($package);
 
+        /*
         if (!empty($output) && $Composer->getMode() === QUI\Composer\Composer::MODE_WEB) {
             foreach ($output as $line) {
                 if (strpos($line, '<warning>') !== false) {
@@ -2000,6 +2000,7 @@ class Manager extends QUI\QDOM
                 $Output->writeLn($line);
             }
         }
+        */
 
         if ($package) {
             $Output->writeLn('Update done ... run setup for ' . $package);
@@ -2040,7 +2041,8 @@ class Manager extends QUI\QDOM
 
         $updateOptions = [
             '--no-autoloader' => false,
-            '--optimize-autoloader' => true
+            '--optimize-autoloader' => true,
+            '--no-interaction' => true
         ];
 
         if (!DEVELOPMENT) {
