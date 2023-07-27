@@ -256,7 +256,7 @@ class Update extends QUI\System\Console\Tool
                         return;
                     }
 
-                    
+
                     $ignore = [
                         'Downloading ',
                         'Reading ',
