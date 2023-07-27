@@ -6,6 +6,7 @@
  * This file contains QUI
  */
 
+use QUI\System\Log;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -263,7 +264,7 @@ class QUI
 
         if (!defined('SYS_DIR')) {
             /**
-             * SYS_DIR - Path to the etc folder, where all the configurations are located
+             * SYS_DIR - Path to the admin folder, where all the configurations are located
              */
             define('SYS_DIR', dirname(LIB_DIR) . '/admin/');
         }
@@ -294,7 +295,7 @@ class QUI
         if (!defined('ERROR_BACKTRACE')) {
             /**
              * ERROR_BACKTRACE - configuration,
-             * if a backtrace should write in the logs during a error
+             * if a backtrace should write in the logs during an error
              */
             define('ERROR_BACKTRACE', $Config->get('error', 'backtrace'));
         }
@@ -356,7 +357,7 @@ class QUI
             define('URL_VAR_DIR', URL_DIR . str_replace(CMS_DIR, '', VAR_DIR));
         }
 
-        // bugfix: workround: Uncaught Error: Call to undefined function DusanKasan\Knapsack\append()
+        // bugfix: workaround: Uncaught Error: Call to undefined function DusanKasan\Knapsack\append()
         if (!function_exists('\DusanKasan\Knapsack\append')) {
             if (file_exists(OPT_DIR . 'dusank/knapsack/src/collection_functions.php')) {
                 require_once OPT_DIR . 'dusank/knapsack/src/collection_functions.php';
@@ -372,7 +373,7 @@ class QUI
         self::getErrorHandler()->registerShutdown(function () {
             QUI\Utils\System\Debug::marker('END');
 
-            // ram peak, if the ram usage is to high, than write and send a message
+            // ram peak, if the ram usage is too high, than write and send a message
             $peak = memory_get_peak_usage();
             $mem_limit = QUI\Utils\System\File::getBytes(ini_get('memory_limit')) * 0.8;
 
@@ -394,14 +395,14 @@ class QUI
                 }
 
                 $message = "Peak usage: " . $limit . "\n" .
-                    "memory_limit: " . \ini_get('memory_limit') . "\n" .
+                    "memory_limit: " . ini_get('memory_limit') . "\n" .
                     "URI: " . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] . "\n" .
                     "HTTP_REFERER: " . $_SERVER["HTTP_REFERER"];
 
                 if (self::conf('mail', 'admin_mail')) {
                     self::getMailManager()->send(
                         self::conf('mail', 'admin_mail'),
-                        'Memory limit reached at http://' . $_SERVER["HTTP_HOST"],
+                        'Memory limit reached at https://' . $_SERVER["HTTP_HOST"],
                         $message
                     );
                 }
@@ -434,7 +435,12 @@ class QUI
     public static function conf(string $section, string $key = null)
     {
         if (self::$Conf === null) {
-            self::$Conf = self::getConfig('etc/conf.ini.php');
+            try {
+                self::$Conf = self::getConfig('etc/conf.ini.php');
+            } catch (QUI\Exception $Exception) {
+                Log::writeException($Exception);
+                return false;
+            }
         }
 
         return self::$Conf->get($section, $key);
@@ -468,9 +474,9 @@ class QUI
         }
 
         if (!isset(self::$Configs[$file])) {
-            if (!file_exists($_file) || \is_dir($_file)) {
+            if (!file_exists($_file) || is_dir($_file)) {
                 throw new \QUI\Exception(
-                    'Error: Ini Datei: ' . $_file . ' existiert nicht.',
+                    'Error: Ini file does not exists: ' . $_file,
                     404
                 );
             }
@@ -644,7 +650,7 @@ class QUI
      * Return the table name with the QUI Prefix and table params
      *
      * @param string $table
-     * @param \QUI\Projects\Project
+     * @param \QUI\Projects\Project $Project
      * @param boolean $lang - language in the table name? default = true
      *
      * @return string
@@ -676,13 +682,13 @@ class QUI
     }
 
     /**
-     * Returns the datebase Object (old version)
+     * Returns the database Object (old version)
      *
      * @return \QUI\Utils\MyDB
      * @deprecated
      * use getDataBase and PDO or direct getPDO
      */
-    public static function getDB()
+    public static function getDB(): ?\QUI\Utils\MyDB
     {
         if (self::$DataBase === null) {
             self::$DataBase = new \QUI\Utils\MyDB();
@@ -694,7 +700,7 @@ class QUI
     /**
      * Returns the PDO Database object
      *
-     * @return \PDO
+     * @return PDO
      */
     public static function getPDO(): PDO
     {
@@ -723,7 +729,7 @@ class QUI
 
     /**
      * Returns a Project
-     * It use the \QUI\Projects\Manager
+     * It uses the \QUI\Projects\Manager
      *
      * You can also use \QUI\Projects\Manager::getProject()
      *
@@ -950,7 +956,7 @@ class QUI
      */
     public static function getSession()
     {
-        if (\php_sapi_name() === 'cli') {
+        if (php_sapi_name() === 'cli') {
             if (self::$Session === null) {
                 self::$Session = new QUI\System\Console\Session();
             }

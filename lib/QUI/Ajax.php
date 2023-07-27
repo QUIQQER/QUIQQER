@@ -75,7 +75,6 @@ class Ajax extends QUI\QDOM
      * constructor
      *
      * @param array $params
-     * @throws \Exception
      */
     public function __construct(array $params = [])
     {
@@ -83,7 +82,12 @@ class Ajax extends QUI\QDOM
 
         // Shutdown Handling
         $ErrorHandler = QUI::getErrorHandler();
-        $ErrorHandler->registerShutdown([$this, 'onShutdown']);
+
+        try {
+            $ErrorHandler->registerShutdown([$this, 'onShutdown']);
+        } catch (Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**
@@ -173,7 +177,7 @@ class Ajax extends QUI\QDOM
      * ajax processing
      *
      * @return string|array - quiqqer XML
-     * @throws QUI\Exception
+     * @throws Exception
      */
     public function call()
     {
@@ -182,7 +186,7 @@ class Ajax extends QUI\QDOM
             || !is_string($_REQUEST['_rf']) && count($_REQUEST['_rf']) > 1
         ) {
             return $this->writeException(
-                new QUI\Exception('Bad Request', 400)
+                new Exception('Bad Request', 400)
             );
         }
 
@@ -261,7 +265,7 @@ class Ajax extends QUI\QDOM
     /**
      * Exceptions xml / json return
      *
-     * @param \QUI\Exception|\PDOException|\Exception $Exception
+     * @param Exception|\PDOException|\Exception $Exception
      *
      * @return array
      */
@@ -313,7 +317,7 @@ class Ajax extends QUI\QDOM
                 $list = $Exception->getExceptionList();
 
                 if (isset($list[0])) {
-                    /* @var $FirstException \QUI\Exception */
+                    /* @var $FirstException Exception */
                     $FirstException = $list[0];
                     // method nicht mit ausgeben
                     $message = $FirstException->getMessage();
@@ -390,7 +394,7 @@ class Ajax extends QUI\QDOM
             }
 
             return $this->writeException(
-                new QUI\Exception('Bad Request', 400)
+                new Exception('Bad Request', 400)
             );
         }
 
@@ -482,7 +486,7 @@ class Ajax extends QUI\QDOM
      *
      * @param string|callback $reg_function
      *
-     * @throws \QUI\Exception
+     * @throws Exception
      * @throws \QUI\Permissions\Exception
      */
     public static function checkPermissions($reg_function)
@@ -507,7 +511,7 @@ class Ajax extends QUI\QDOM
                 try {
                     $Package = null;
                     $Package = QUI::getPackage($pluginParts[0] . '/' . $pluginParts[1]);
-                } catch (QUI\Exception $Exception) {
+                } catch (Exception $Exception) {
                 }
 
                 if ($Package) {
