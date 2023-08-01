@@ -9,12 +9,13 @@
  *
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_media_rename',
     function ($project, $id, $newname) {
         $Project = QUI\Projects\Manager::getProject($project);
-        $Media   = $Project->getMedia();
-        $Item    = $Media->get($id);
+        $Media = $Project->getMedia();
+        $Item = $Media->get($id);
 
         $Item->rename($newname);
 

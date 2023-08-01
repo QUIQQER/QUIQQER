@@ -10,12 +10,13 @@
  * @return array
  * @throws \QUI\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_media_folder_create',
     function ($project, $parentid, $newfolder) {
         $Project = QUI\Projects\Manager::getProject($project);
-        $Media   = $Project->getMedia();
-        $File    = $Media->get($parentid);
+        $Media = $Project->getMedia();
+        $File = $Media->get($parentid);
 
         if (QUI\Projects\Media\Utils::isFolder($File) === false) {
             throw new QUI\Exception(

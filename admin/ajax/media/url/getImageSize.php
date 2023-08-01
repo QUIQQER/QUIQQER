@@ -1,6 +1,6 @@
 <?php
 
-use \QUI\Projects\Media\Utils as Utils;
+use QUI\Projects\Media\Utils as Utils;
 
 /**
  * Return the rewrited url from an image.php url
@@ -11,12 +11,13 @@ use \QUI\Projects\Media\Utils as Utils;
  *
  * @return string
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_media_url_getImageSize',
     function ($fileurl) {
         if (Utils::isMediaUrl($fileurl) === false) {
             return [
-                'width'  => 0,
+                'width' => 0,
                 'height' => 0
             ];
         }
@@ -25,14 +26,14 @@ QUI::$Ajax->registerFunction(
             $File = Utils::getMediaItemByUrl($fileurl);
 
             return [
-                'width'  => (int)$File->getAttribute('image_width'),
+                'width' => (int)$File->getAttribute('image_width'),
                 'height' => (int)$File->getAttribute('image_height')
             ];
         } catch (QUI\Exception $Exception) {
         }
 
         return [
-            'width'  => 0,
+            'width' => 0,
             'height' => 0
         ];
     },

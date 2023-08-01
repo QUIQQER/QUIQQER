@@ -5,6 +5,7 @@
  *
  * @param $permission - permission
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_permissions_delete',
     function ($permission) {

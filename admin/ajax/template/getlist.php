@@ -5,6 +5,7 @@
  *
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_template_getlist',
     function () {

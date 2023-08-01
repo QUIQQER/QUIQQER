@@ -9,13 +9,14 @@
  * @return string|array
  * @throws \QUI\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_media_deactivate',
     function ($project, $fileid) {
-        $fileid = \json_decode($fileid, true);
+        $fileid = json_decode($fileid, true);
 
         $Project = QUI\Projects\Manager::getProject($project);
-        $Media   = $Project->getMedia();
+        $Media = $Project->getMedia();
 
         if (\is_array($fileid)) {
             $result = [];

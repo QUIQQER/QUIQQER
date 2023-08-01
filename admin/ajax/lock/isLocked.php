@@ -8,6 +8,7 @@
  *
  * @return bool
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_lock_isLocked',
     function ($package, $key) {

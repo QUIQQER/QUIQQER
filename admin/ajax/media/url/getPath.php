@@ -9,6 +9,7 @@
  *
  * @return string
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_media_url_getPath',
     function ($fileurl) {
@@ -19,7 +20,7 @@ QUI::$Ajax->registerFunction(
         try {
             $File = QUI\Projects\Media\Utils::getMediaItemByUrl($fileurl);
 
-            return URL_DIR.$File->getPath();
+            return URL_DIR . $File->getPath();
         } catch (QUI\Exception $Exception) {
         }
 

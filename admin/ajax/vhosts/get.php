@@ -6,6 +6,7 @@
  * @param string $vhost - vhost
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_vhosts_get',
     function ($vhost) {

@@ -3,6 +3,7 @@
 /**
  * switches the maintenance wff
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_maintenance_off',
     function () {

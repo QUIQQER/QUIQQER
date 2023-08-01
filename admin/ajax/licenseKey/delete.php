@@ -5,12 +5,13 @@
  *
  * @return bool - success
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_licenseKey_delete',
     function () {
-        $licenseConfigFile = CMS_DIR.'etc/license.ini.php';
+        $licenseConfigFile = CMS_DIR . 'etc/license.ini.php';
 
-        if (!\file_exists($licenseConfigFile)) {
+        if (!file_exists($licenseConfigFile)) {
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -21,7 +22,7 @@ QUI::$Ajax->registerFunction(
             return false;
         }
 
-        \unlink($licenseConfigFile);
+        unlink($licenseConfigFile);
 
         // re-create composer.json
         QUI::getPackageManager()->refreshServerList();

@@ -7,13 +7,14 @@
  * @param string $params - json array
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_groups_list',
     function ($params) {
         $Groups = QUI::getGroups();
-        $params = \json_decode($params, true);
-        $page   = 1;
-        $limit  = 10;
+        $params = json_decode($params, true);
+        $page = 1;
+        $limit = 10;
 
         $params['start'] = 0;
 
@@ -22,7 +23,7 @@ QUI::$Ajax->registerFunction(
         }
 
         if (isset($params['page'])) {
-            $page            = (int)$params['page'];
+            $page = (int)$params['page'];
             $params['start'] = ($page - 1) * $limit;
         }
 
@@ -31,7 +32,7 @@ QUI::$Ajax->registerFunction(
 
         foreach ($search as $key => $group) {
             try {
-                $Group   = $Groups->get($group['id']);
+                $Group = $Groups->get($group['id']);
                 $isAdmin = $Group->hasPermission('quiqqer.admin');
 
                 $search[$key]['admin'] = $isAdmin ? 1 : 0;
@@ -44,8 +45,8 @@ QUI::$Ajax->registerFunction(
 
         return [
             'total' => $Groups->count($params),
-            'page'  => $page,
-            'data'  => $search
+            'page' => $page,
+            'data' => $search
         ];
     },
     ['params'],

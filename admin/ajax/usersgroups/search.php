@@ -10,10 +10,10 @@
 QUI::$Ajax->registerFunction(
     'ajax_usersgroups_search',
     function ($search, $fields, $params) {
-        $fields = \json_decode($fields, true);
-        $params = \json_decode($params, true);
+        $fields = json_decode($fields, true);
+        $params = json_decode($params, true);
 
-        if (!\is_array($fields)) {
+        if (!is_array($fields)) {
             $fields = [
                 'name' => true,
                 'username' => true,

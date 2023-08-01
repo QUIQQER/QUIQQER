@@ -6,6 +6,7 @@
  * @param string $file
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_uploads_cancel',
     function ($file) {

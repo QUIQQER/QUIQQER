@@ -7,6 +7,7 @@ use QUI\System\License;
  *
  * @return array - Request response
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_licenseKey_activate',
     function () {

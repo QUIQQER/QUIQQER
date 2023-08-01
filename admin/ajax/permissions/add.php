@@ -10,10 +10,11 @@
  *
  * @throws QUI\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_permissions_add',
     function ($permission, $permissiontype, $area) {
-        $Manager     = QUI::getPermissionManager();
+        $Manager = QUI::getPermissionManager();
         $permissions = $Manager->getPermissionList();
 
         if (isset($permissions[$permission])) {
@@ -26,12 +27,12 @@ QUI::$Ajax->registerFunction(
         }
 
         $Manager->addPermission([
-            'name'  => $permission,
+            'name' => $permission,
             'title' => $permission,
-            'desc'  => $permission,
-            'type'  => $permissiontype,
-            'area'  => $area,
-            'src'   => 'user'
+            'desc' => $permission,
+            'type' => $permissiontype,
+            'area' => $area,
+            'src' => 'user'
         ]);
 
         return true;

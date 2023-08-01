@@ -5,6 +5,7 @@
  *
  * @return integer
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_groups_root',
     function () {

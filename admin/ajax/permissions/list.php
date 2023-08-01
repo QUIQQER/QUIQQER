@@ -5,6 +5,7 @@
  *
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_permissions_list',
     function () {

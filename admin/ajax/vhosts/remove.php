@@ -6,6 +6,7 @@
  * @param string $vhost
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_vhosts_remove',
     function ($vhost) {

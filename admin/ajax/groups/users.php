@@ -13,7 +13,7 @@ QUI::$Ajax->registerFunction(
         $params = \json_decode($params, true);
 
         $start = 0;
-        $page  = 1;
+        $page = 1;
         $limit = 20;
 
         $params['start'] = 0;
@@ -23,7 +23,7 @@ QUI::$Ajax->registerFunction(
         }
 
         if (isset($params['page'])) {
-            $page            = (int)$params['page'];
+            $page = (int)$params['page'];
             $params['start'] = ($page - 1) * $limit;
         }
 
@@ -36,7 +36,7 @@ QUI::$Ajax->registerFunction(
                 $start = (int)$params['start'];
             }
 
-            $params['limit'] = $start.', '.$limit;
+            $params['limit'] = $start . ', ' . $limit;
         }
 
         // order
@@ -48,11 +48,11 @@ QUI::$Ajax->registerFunction(
                 case 'lasttname':
                 case 'email':
                 case 'regdate':
-                    $params['order'] = $params['field'].' '.$params['order'];
+                    $params['order'] = $params['field'] . ' ' . $params['order'];
                     break;
 
                 default:
-                    $params['order'] = 'username '.$params['order'];
+                    $params['order'] = 'username ' . $params['order'];
                     break;
             }
         }
@@ -62,18 +62,18 @@ QUI::$Ajax->registerFunction(
         }
 
         // search users
-        $users  = QUI::getGroups()->get($gid)->getUsers($params);
+        $users = QUI::getGroups()->get($gid)->getUsers($params);
         $result = [];
 
         foreach ($users as $user) {
             $result[] = [
-                'id'        => $user['id'],
-                'active'    => $user['active'],
-                'username'  => $user['username'],
-                'email'     => $user['email'],
+                'id' => $user['id'],
+                'active' => $user['active'],
+                'username' => $user['username'],
+                'email' => $user['email'],
                 'firstname' => $user['firstname'],
-                'lastname'  => $user['lastname'],
-                'regdate'   => $user['regdate']
+                'lastname' => $user['lastname'],
+                'regdate' => $user['regdate']
             ];
         }
 
@@ -84,9 +84,9 @@ QUI::$Ajax->registerFunction(
         $count = QUI::getGroups()->get($gid)->getUsers($params);
 
         return [
-            'total' => isset($count[0]['cu']) ? $count[0]['cu'] : 0,
-            'page'  => $page,
-            'data'  => $result
+            'total' => $count[0]['cu'] ?? 0,
+            'page' => $page,
+            'data' => $result
         ];
     },
     ['gid', 'params'],

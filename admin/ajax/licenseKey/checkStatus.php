@@ -8,6 +8,7 @@ use QUI\System\License;
  * @return array
  * @throws QUI\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_licenseKey_checkStatus',
     function () {

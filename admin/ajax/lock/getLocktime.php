@@ -8,6 +8,7 @@
  *
  * @return string
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_lock_getLocktime',
     function ($package, $key) {

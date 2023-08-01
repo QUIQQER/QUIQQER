@@ -5,13 +5,14 @@
  *
  * @param array $params
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_cache_clear',
     function ($params) {
-        $params = \json_decode($params, true);
+        $params = json_decode($params, true);
 
         if (!empty($params['compile'])) {
-            QUI\Utils\System\File::unlink(VAR_DIR.'cache/compile');
+            QUI\Utils\System\File::unlink(VAR_DIR . 'cache/compile');
         }
 
         if (!empty($params['templates']) || !empty($params['quiqqer-template'])) {

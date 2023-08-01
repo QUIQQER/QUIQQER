@@ -1,10 +1,11 @@
 <?php
 
-use QUI\InstallationWizard\ProviderHandler;
-
 /**
  * Cancel the setup for the specific providers
  */
+
+use QUI\InstallationWizard\ProviderHandler;
+
 QUI::$Ajax->registerFunction(
     'ajax_installationWizard_cancel',
     function ($providers) {

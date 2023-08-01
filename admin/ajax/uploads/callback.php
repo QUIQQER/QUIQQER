@@ -3,6 +3,7 @@
 /**
  * Upload callback if a file is finished uploaded
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_uploads_callback',
     function ($File, $callable) {
@@ -10,7 +11,7 @@ QUI::$Ajax->registerFunction(
             return;
         }
 
-        if (!\class_exists($callable)) {
+        if (!class_exists($callable)) {
             return;
         }
 

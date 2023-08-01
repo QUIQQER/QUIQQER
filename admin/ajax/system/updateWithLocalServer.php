@@ -3,6 +3,7 @@
 /**
  * Update the system with the local server
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_updateWithLocalServer',
     function () {
