@@ -1,9 +1,11 @@
 <?php
 
+// phpcs:ignoreFile
+
 QUI::getEvents()->fireEvent('adminRequest');
 
-$languages       = QUI::availableLanguages();
-$packages        = QUI::getPackageManager()->getInstalled();
+$languages = QUI::availableLanguages();
+$packages = QUI::getPackageManager()->getInstalled();
 $defaultLanguage = QUI::conf('globals', 'standardLanguage');
 
 if (!empty($defaultLanguage)) {
@@ -11,7 +13,7 @@ if (!empty($defaultLanguage)) {
 }
 
 $authPackages = [];
-$logo         = QUI::getLocale()->get('quiqqer/quiqqer', 'menu.quiqqer.text');
+$logo = QUI::getLocale()->get('quiqqer/quiqqer', 'menu.quiqqer.text');
 
 foreach ($packages as $package) {
     try {
@@ -58,9 +60,9 @@ foreach ($packages as $package) {
 
     if ($favicon) {
         try {
-            $Favicon    = QUI\Projects\Media\Utils::getImageByUrl($favicon);
+            $Favicon = QUI\Projects\Media\Utils::getImageByUrl($favicon);
             $attributes = $Favicon->getAttributes();
-            $type       = $attributes['mime_type'];
+            $type = $attributes['mime_type'];
 
             ?>
             <link rel="shortcut icon" href="<?php
@@ -201,33 +203,33 @@ foreach ($packages as $package) {
 
     <script type="text/javascript">
 
-        const URL_DIR     = '<?php echo URL_DIR; ?>',
-              URL_BIN_DIR = '<?php echo URL_BIN_DIR; ?>',
-              URL_OPT_DIR = '<?php echo URL_OPT_DIR; ?>',
-              URL_SYS_DIR = '<?php echo URL_SYS_DIR; ?>';
+        const URL_DIR = '<?php echo URL_DIR; ?>',
+            URL_BIN_DIR = '<?php echo URL_BIN_DIR; ?>',
+            URL_OPT_DIR = '<?php echo URL_OPT_DIR; ?>',
+            URL_SYS_DIR = '<?php echo URL_SYS_DIR; ?>';
 
         let LANGUAGE = null;
 
         // require config
         require.config({
-            baseUrl    : '<?php echo URL_BIN_DIR; ?>QUI/',
-            paths      : {
-                "package"    : "<?php echo URL_OPT_DIR; ?>",
-                "qui"        : '<?php echo URL_OPT_DIR; ?>bin/qui/qui',
-                "locale"     : '<?php echo URL_VAR_DIR; ?>locale/bin',
-                "Ajax"       : '<?php echo URL_BIN_DIR; ?>QUI/Ajax',
+            baseUrl: '<?php echo URL_BIN_DIR; ?>QUI/',
+            paths: {
+                "package": "<?php echo URL_OPT_DIR; ?>",
+                "qui": '<?php echo URL_OPT_DIR; ?>bin/qui/qui',
+                "locale": '<?php echo URL_VAR_DIR; ?>locale/bin',
+                "Ajax": '<?php echo URL_BIN_DIR; ?>QUI/Ajax',
                 "URL_OPT_DIR": "<?php echo URL_OPT_DIR; ?>",
                 "URL_BIN_DIR": "<?php echo URL_BIN_DIR; ?>",
 
-                "Mustache"          : URL_OPT_DIR + 'bin/quiqqer-asset/mustache/mustache/mustache.min',
-                "URI"               : URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/URI',
-                'IPv6'              : URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/IPv6',
-                'punycode'          : URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/punycode',
+                "Mustache": URL_OPT_DIR + 'bin/quiqqer-asset/mustache/mustache/mustache.min',
+                "URI": URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/URI',
+                'IPv6': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/IPv6',
+                'punycode': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/punycode',
                 'SecondLevelDomains': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/SecondLevelDomains',
             },
             waitSeconds: 0,
-            catchError : true,
-            map        : {
+            catchError: true,
+            map: {
                 '*': {
                     'css': '<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/css.js'
                 }
@@ -293,7 +295,7 @@ foreach ($packages as $package) {
             'controls/users/Login'
         ].append(QUIQQER_LOCALE || []), function (QUI, Login) {
             QUI.setAttributes({
-                'control-loader-type' : 'line-scale',
+                'control-loader-type': 'line-scale',
                 'control-loader-color': '#2f8fc8'
             });
 
@@ -383,7 +385,7 @@ if (defined('LOGIN_FAILED')) { ?>
 
 <script>
     var LoginContainer = document.getElement('.quiqqer-language-switch'),
-        needle         = [
+        needle = [
             'qui/controls/buttons/Select',
             'Locale'
         ];

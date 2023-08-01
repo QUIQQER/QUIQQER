@@ -8,11 +8,12 @@
  *
  * @throws \QUI\Users\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_users_authenticator_save',
     function ($authenticators) {
-        $User           = QUI::getUserBySession();
-        $authenticators = \json_decode($authenticators, true);
+        $User = QUI::getUserBySession();
+        $authenticators = json_decode($authenticators, true);
 
         if (!$User->isSU()) {
             throw new QUI\Exception([

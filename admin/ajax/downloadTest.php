@@ -2,10 +2,11 @@
 
 /**
  * QUIQQER Download Manager
- * Its only a test, here you can get the main README File ;-)
+ * It's only a test, here you can get the main README File ;-)
  *
  * @throws \QUI\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_downloadTest',
     function () {

@@ -7,6 +7,7 @@ use QUI\Package\Package;
  *
  * @param string $ids - Workspace IDs, json array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_desktop_categories',
     function ($type) {
@@ -17,11 +18,11 @@ QUI::$Ajax->registerFunction(
         } catch (QUI\Exception $Exception) {
         }
 
-        $Settings       = QUI\Utils\XML\Settings::getInstance();
+        $Settings = QUI\Utils\XML\Settings::getInstance();
         $PackageHandler = QUI::getPackageManager();
 
         $categories = [];
-        $packages   = $PackageHandler->getInstalled();
+        $packages = $PackageHandler->getInstalled();
 
         foreach ($packages as $package) {
             $Package = $PackageHandler->getInstalledPackage($package['name']);
