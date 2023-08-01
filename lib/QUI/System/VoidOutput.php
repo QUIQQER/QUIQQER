@@ -11,11 +11,9 @@ class VoidOutput implements SystemOutput
 {
     public function write(string $msg, $color = false, $bg = false)
     {
-        // no output
     }
 
     public function writeLn(string $msg = '', $color = false, $bg = false)
     {
-        // noo output
     }
 }

@@ -6,6 +6,7 @@
  * @param string $file - Path to file, or JSON Array with xml files
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_settings_window',
     function ($file, $windowName) {
@@ -20,7 +21,7 @@ QUI::$Ajax->registerFunction(
         }
 
         $cacheName = 'quiqqer/package/quiqqer/quiqqer/menu/windows/' . md5(json_encode($files));
-        $Settings  = QUI\Utils\XML\Settings::getInstance();
+        $Settings = QUI\Utils\XML\Settings::getInstance();
 
         if ($windowName) {
             $cacheName .= md5($windowName);
@@ -29,9 +30,11 @@ QUI::$Ajax->registerFunction(
         try {
             $result = QUI\Cache\Manager::get($cacheName);
         } catch (QUI\Exception $Exception) {
-            if (!$windowName
+            if (
+                !$windowName
                 && is_array($files)
-                && in_array('packages/quiqqer/quiqqer/admin/settings/cache.xml', $files)) {
+                && in_array('packages/quiqqer/quiqqer/admin/settings/cache.xml', $files)
+            ) {
                 $windowName = 'quiqqer-cache';
             }
 

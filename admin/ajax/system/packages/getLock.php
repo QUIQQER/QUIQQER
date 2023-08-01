@@ -6,6 +6,7 @@
  * @param string $params
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_getLock',
     function ($package) {

@@ -8,6 +8,7 @@
  * @param string|integer $max - Limit of the results
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_search',
     function ($search) {

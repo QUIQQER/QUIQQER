@@ -7,14 +7,15 @@
  *
  * @return string - Name of the project
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_project_create',
     function ($params) {
-        $params   = \json_decode($params, true);
+        $params = json_decode($params, true);
         $template = '';
 
         // @todo check if template is allowed
-        if (isset($params['template']) && !empty($params['template'])) {
+        if (!empty($params['template'])) {
             $template = $params['template'];
             $template = QUI\Utils\Security\Orthos::removeHTML($template);
             $template = QUI\Utils\Security\Orthos::clearPath($template);

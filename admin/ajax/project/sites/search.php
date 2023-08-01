@@ -8,21 +8,22 @@
  * @param string $params - JSON Array, search parameter
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_project_sites_search',
     function ($project, $search, $params) {
-        $params  = \json_decode($params, true);
+        $params = json_decode($params, true);
         $Project = QUI::getProjectManager()->decode($project);
 
-        $sites  = $Project->search($search, $params['fields']);
+        $sites = $Project->search($search, $params['fields']);
         $result = [];
 
         foreach ($sites as $Site) {
             /* @var $Site \QUI\Projects\Site */
             $result[] = [
-                'id'     => $Site->getId(),
-                'name'   => $Site->getAttribute('name'),
-                'title'  => $Site->getAttribute('title'),
+                'id' => $Site->getId(),
+                'name' => $Site->getAttribute('name'),
+                'title' => $Site->getAttribute('title'),
                 'c_date' => $Site->getAttribute('c_date'),
                 'c_user' => $Site->getAttribute('c_user'),
                 'e_date' => $Site->getAttribute('e_date'),
