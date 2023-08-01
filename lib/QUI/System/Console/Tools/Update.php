@@ -244,9 +244,17 @@ class Update extends QUI\System\Console\Tool
                         return;
                     }
 
+                    // pull message
+                    if (strpos($message, '      ') === 0) {
+                        return;
+                    }
 
+                    // ignoring
                     $ignore = [
                         'Downloading ',
+                        '- Downloading ',
+                        '- Upgrading ',
+                        'Pulling in changes',
                         'Reading ',
                         'Importing ',
                         'Writing ',
@@ -254,8 +262,11 @@ class Update extends QUI\System\Console\Tool
                         '[304] ',
                     ];
 
+
                     foreach ($ignore as $ig) {
-                        if (strpos($message, $ig) === 0) {
+                        $trim = trim($message);
+
+                        if (strpos($trim, $ig) === 0) {
                             return;
                         }
                     }
