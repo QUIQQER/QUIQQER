@@ -8,6 +8,7 @@
  * @param string $attributes - JSON Array, child attributes
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_site_children_create',
     function ($project, $id, $attributes) {
@@ -18,7 +19,7 @@ QUI::$Ajax->registerFunction(
         }
 
         $Project = QUI::getProjectManager()->decode($project);
-        $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
+        $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
         $childId = $Site->createChild($attributes);
 
         $Child = new QUI\Projects\Site\Edit($Project, $childId);

@@ -8,18 +8,19 @@
  * @param string $tab
  * @return string
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_site_categories_template',
     function ($project, $id, $tab) {
         $Project = QUI::getProjectManager()->decode($project);
-        $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
+        $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
 
         $templates = QUI::getPackageManager()->searchInstalledPackages(['type' => "quiqqer-template"]);
-        $layouts   = $Project->getLayouts();
+        $layouts = $Project->getLayouts();
 
         $html = QUI\Utils\DOM::getTabHTML($tab, $Site, [
             'templates' => $templates,
-            'layouts'   => $layouts
+            'layouts' => $layouts
         ]);
 
         return QUI\Utils\StringHelper::removeLineBreaks($html);
