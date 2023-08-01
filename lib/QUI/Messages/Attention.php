@@ -16,5 +16,4 @@ use QUI;
  */
 class Attention extends QUI\Messages\Message
 {
-
 }

@@ -6,10 +6,11 @@
  * @param string $email
  * @return boolean
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_users_hasEmail',
     function ($userId) {
-        $User  = QUI::getUsers()->get((int)$userId);
+        $User = QUI::getUsers()->get((int)$userId);
         $email = $User->getAttribute('email');
 
         return !empty($email);

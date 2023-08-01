@@ -8,16 +8,17 @@
  *
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_users_address_getUserByAddress',
     function ($aid) {
         $result = QUI::getDataBase()->fetch([
             'select' => ['id', 'uid'],
-            'from'   => QUI\Users\Manager::tableAddress(),
-            'where'  => [
+            'from' => QUI\Users\Manager::tableAddress(),
+            'where' => [
                 'id' => $aid
             ],
-            'limit'  => 1
+            'limit' => 1
         ]);
 
         if (!isset($result[0])) {
@@ -32,7 +33,7 @@ QUI::$Ajax->registerFunction(
             );
         }
 
-        $uid  = (int)$result[0]['uid'];
+        $uid = (int)$result[0]['uid'];
         $User = QUI::getUsers()->get((int)$uid);
 
         return $User->getId();

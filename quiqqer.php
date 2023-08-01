@@ -7,17 +7,21 @@ if (php_sapi_name() !== 'cli') {
 
 $isComposer = false;
 
-if (!empty($_SERVER['argv'])
+if (
+    !empty($_SERVER['argv'])
     && $_SERVER['argv'][0] === 'quiqqer.php'
     && isset($_SERVER['argv'][1])
-    && $_SERVER['argv'][1] === 'composer') {
+    && $_SERVER['argv'][1] === 'composer'
+) {
     $isComposer = true;
 }
 
-if (!empty($_SERVER['argv'])
+if (
+    !empty($_SERVER['argv'])
     && $_SERVER['argv'][0] === './console'
     && isset($_SERVER['argv'][1])
-    && $_SERVER['argv'][1] === 'composer') {
+    && $_SERVER['argv'][1] === 'composer'
+) {
     $isComposer = true;
 }
 
@@ -26,7 +30,7 @@ if ($isComposer) {
     unset($_SERVER['argv'][1]);
 
     $packagesDir = dirname(__FILE__, 3);
-    $cmsDir      = dirname($packagesDir);
+    $cmsDir = dirname($packagesDir);
 
     $argv = array_values($_SERVER['argv']);
 

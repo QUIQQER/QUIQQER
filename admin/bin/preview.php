@@ -6,30 +6,31 @@
  * @author www.pcsg.de (Henning Leutz)
  */
 
-\define('QUIQQER_SYSTEM', true);
-\define('ETC_DIR', \dirname(\dirname(\dirname(\dirname(\dirname(\dirname(__FILE__)))))).'/etc/');
-\define('QUIQQER_PREVIEW', true);
+define('QUIQQER_SYSTEM', true);
+define('ETC_DIR', dirname(__FILE__, 6) . '/etc/');
+define('QUIQQER_PREVIEW', true);
 
-require_once \dirname(\dirname(\dirname(__FILE__))).'/bootstrap.php';
+require_once dirname(__FILE__, 3) . '/bootstrap.php';
 
 if (!QUI::getUserBySession()->canUseBackend()) {
-    \header("HTTP/1.1 404 Not Found");
+    header("HTTP/1.1 404 Not Found");
     exit;
 }
 
-if (!isset($_POST['project']) ||
+if (
+    !isset($_POST['project']) ||
     !isset($_POST['lang']) &&
     !isset($_POST['id'])
 ) {
-    \header("HTTP/1.1 404 Not Found");
+    header("HTTP/1.1 404 Not Found");
     echo "Site not found";
     exit;
 }
 
-$Rewrite  = QUI::getRewrite();
+$Rewrite = QUI::getRewrite();
 $Response = QUI::getGlobalResponse();
-$Project  = QUI::getProject($_POST['project'], $_POST['lang']);
-$Site     = new QUI\Projects\Site\Edit($Project, $_POST['id']);
+$Project = QUI::getProject($_POST['project'], $_POST['lang']);
+$Site = new QUI\Projects\Site\Edit($Project, $_POST['id']);
 
 $Rewrite->setSite($Site);
 $Rewrite->setPath($Site->getParents());
@@ -59,10 +60,10 @@ foreach ($_POST['siteDataJSON'] as $key => $value) {
 }
 
 $Template = QUI::getTemplateManager();
-$content  = $Template->fetchSite($Site);
-$content  = QUI\Control\Manager::setCSSToHead($content);
+$content = $Template->fetchSite($Site);
+$content = QUI\Control\Manager::setCSSToHead($content);
 
-$Output  = new QUI\Output();
+$Output = new QUI\Output();
 $content = $Output->parse($content);
 
 $_content = $content;

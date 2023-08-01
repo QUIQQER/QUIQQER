@@ -7,6 +7,7 @@
  *
  * @return boolean
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_users_exists',
     function ($username) {

@@ -7,11 +7,12 @@
  *
  * @return integer User-ID
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_users_create',
     function ($username) {
         $Users = QUI::getUsers();
-        $User  = $Users->createChild($username);
+        $User = $Users->createChild($username);
 
         return $User->getId();
     },
