@@ -8,6 +8,7 @@
  * @param $windowName
  * @return String
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_settings_category',
     function ($file, $category, $windowName) {

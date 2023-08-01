@@ -6,32 +6,35 @@
  *
  * @return String
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_phpinfo',
     function () {
-        \ob_start();
-        \phpinfo();
+        ob_start();
+        phpinfo();
 
         $phpinfo = ['phpinfo' => []];
 
-        if (preg_match_all(
-            '#(?:<h2>(?:<a name=".*?">)?(.*?)(?:</a>)?</h2>)|(?:<tr(?: class=".*?")?><t[hd](?: class=".*?")?>(.*?)\s*</t[hd]>(?:<t[hd](?: class=".*?")?>(.*?)\s*</t[hd]>(?:<t[hd](?: class=".*?")?>(.*?)\s*</t[hd]>)?)?</tr>)#s',
-            \ob_get_clean(),
-            $matches,
-            PREG_SET_ORDER
-        )) {
+        if (
+            preg_match_all(
+                '#(?:<h2>(?:<a name=".*?">)?(.*?)(?:</a>)?</h2>)|(?:<tr(?: class=".*?")?><t[hd](?: class=".*?")?>(.*?)\s*</t[hd]>(?:<t[hd](?: class=".*?")?>(.*?)\s*</t[hd]>(?:<t[hd](?: class=".*?")?>(.*?)\s*</t[hd]>)?)?</tr>)#s',
+                \ob_get_clean(),
+                $matches,
+                PREG_SET_ORDER
+            )
+        ) {
             foreach ($matches as $match) {
-                if (\strlen($match[1])) {
+                if (strlen($match[1])) {
                     $phpinfo[$match[1]] = [];
                 } else {
                     if (isset($match[3])) {
-                        $keys = \array_keys($phpinfo);
-                        $end  = \end($keys);
+                        $keys = array_keys($phpinfo);
+                        $end = end($keys);
 
                         $phpinfo[$end][$match[2]] = isset($match[4]) ? [$match[3], $match[4]] : $match[3];
                     } else {
-                        $keys = \array_keys($phpinfo);
-                        $end  = \end($keys);
+                        $keys = array_keys($phpinfo);
+                        $end = end($keys);
 
                         $phpinfo[$end][] = $match[2];
                     }

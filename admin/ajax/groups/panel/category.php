@@ -9,6 +9,7 @@
  *
  * @return string
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_groups_panel_category',
     function ($gid, $plugin, $tab) {

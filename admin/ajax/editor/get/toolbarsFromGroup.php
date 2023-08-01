@@ -7,6 +7,7 @@
  *
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_editor_get_toolbarsFromGroup',
     function ($gid, $assignedToolbars) {

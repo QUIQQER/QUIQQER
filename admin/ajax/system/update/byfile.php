@@ -5,13 +5,14 @@
  *
  * @params \QUI\QDOM $File
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_update_byfile',
     function ($File) {
         /* @var $File \QUI\QDOM */
         $filepath = $File->getAttribute('filepath');
 
-        if (!\file_exists($filepath) && !\is_dir($filepath)) {
+        if (!file_exists($filepath) && !is_dir($filepath)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',

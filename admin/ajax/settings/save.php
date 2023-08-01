@@ -6,11 +6,12 @@
  *
  * @throws \QUI\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_settings_save',
     function ($file, $params) {
         $jsonFiles = json_decode($file, true);
-        $files     = [];
+        $files = [];
 
         if ($jsonFiles) {
             if (is_string($jsonFiles)) {
@@ -41,7 +42,8 @@ QUI::$Ajax->registerFunction(
             }
 
             // csp data
-            if (strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') !== false
+            if (
+                strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') !== false
                 && isset($params['securityHeaders_csp'])
             ) {
                 unset($params['securityHeaders_csp']);
@@ -86,7 +88,7 @@ QUI::$Ajax->registerFunction(
                 }
 
                 $currentNonce = $params['globals']['nonce'];
-                $oldNonce     = QUI::conf('globals', 'nonce');
+                $oldNonce = QUI::conf('globals', 'nonce');
 
                 if ($currentNonce !== $oldNonce) {
                     throw new QUI\Exception('Could not save QUIQQER config');
@@ -133,8 +135,10 @@ QUI::$Ajax->registerFunction(
 
             $webserverConfig = QUI::conf("webserver", "type");
 
-            if ($webserverConfig !== false && is_string($webserverConfig)
-                && strpos($webserverConfig, "apache") !== false) {
+            if (
+                $webserverConfig !== false && is_string($webserverConfig)
+                && strpos($webserverConfig, "apache") !== false
+            ) {
                 continue;
             }
 

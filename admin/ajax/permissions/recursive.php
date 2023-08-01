@@ -8,13 +8,14 @@
  * @param string $permissions - JSON permissions
  * @throws \QUI\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_permissions_recursive',
     function ($params, $btype, $permissions) {
-        $Manager     = QUI::getPermissionManager();
-        $permissions = \json_decode($permissions, true);
-        $params      = \json_decode($params, true);
-        $errors      = 0;
+        $Manager = QUI::getPermissionManager();
+        $permissions = json_decode($permissions, true);
+        $params = json_decode($params, true);
+        $errors = 0;
 
         switch ($btype) {
             case 'classes/projects/project/Site':
@@ -25,7 +26,7 @@ QUI::$Ajax->registerFunction(
                 }
 
                 $Project = QUI::getProject($params['project'], $params['lang']);
-                $Site    = $Project->get($params['id']);
+                $Site = $Project->get($params['id']);
                 break;
 
             default:

@@ -7,14 +7,15 @@
  * @param string $fileid - File-ID
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_media_breadcrumb',
     function ($project, $fileid) {
         $Project = QUI\Projects\Manager::getProject($project);
-        $Media   = $Project->getMedia();
-        $File    = $Media->get($fileid);
+        $Media = $Project->getMedia();
+        $File = $Media->get($fileid);
 
-        $parents    = $File->getParents();
+        $parents = $File->getParents();
         $breadcrumb = [];
 
         // create breadcrumb data

@@ -1,6 +1,5 @@
 <?php
 
-
 QUI::$Ajax->registerFunction(
     'ajax_editor_toolbar_search',
     function ($search) {

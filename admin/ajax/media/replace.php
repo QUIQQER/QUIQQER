@@ -7,11 +7,12 @@
  * @param integer $fileid
  * @param \QUI\QDOM $File
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_media_replace',
     function ($project, $fileid, $File) {
         $Project = QUI\Projects\Manager::getProject($project);
-        $Media   = $Project->getMedia();
+        $Media = $Project->getMedia();
 
         /* @var $File \QUI\QDOM */
         $file = $File->getAttribute('filepath');

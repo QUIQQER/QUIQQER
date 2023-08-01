@@ -6,12 +6,13 @@
  *
  * @return String
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_systemcheckChecksum',
     function ($packageName) {
         $cacheFile = VAR_DIR . "/tmp/requirements_checks_result_package";
 
-        if (!\file_exists($cacheFile)) {
+        if (!file_exists($cacheFile)) {
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'packages.panel.category.systemcheck.checksum.fileNotFound')
             );

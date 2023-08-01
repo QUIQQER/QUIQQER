@@ -1,8 +1,5 @@
 <?php
 
-use QUI\Utils\Grid;
-use QUI\Utils\Security\Orthos;
-
 /**
  * Return the children of a media folder
  *
@@ -12,20 +9,24 @@ use QUI\Utils\Security\Orthos;
  *
  * @return array
  */
+
+use QUI\Utils\Grid;
+use QUI\Utils\Security\Orthos;
+
 QUI::$Ajax->registerFunction(
     'ajax_media_folder_children',
     function ($project, $folderid, $params) {
         $Project = QUI\Projects\Manager::getProject($project);
-        $Media   = $Project->getMedia();
-        $File    = $Media->get($folderid);
+        $Media = $Project->getMedia();
+        $File = $Media->get($folderid);
 
         /* @var $File \QUI\Projects\Media\Folder */
-        $Grid   = new Grid($params);
+        $Grid = new Grid($params);
         $params = Orthos::clearArray(\json_decode($params, true));
 
-        $children        = [];
+        $children = [];
         $showHiddenFiles = !empty($params['showHiddenFiles']) && $params['showHiddenFiles'];
-        $params          = $Grid->parseDBParams($params);
+        $params = $Grid->parseDBParams($params);
 
         if ($showHiddenFiles === false) {
             $params['where']['hidden'] = 0;
@@ -46,7 +47,7 @@ QUI::$Ajax->registerFunction(
         foreach ($_children as $id) {
             try {
                 $Child = $Media->get($id);
-                $data  = QUI\Projects\Media\Utils::parseForMediaCenter($Child);
+                $data = QUI\Projects\Media\Utils::parseForMediaCenter($Child);
 
                 $data['c_user'] = $getUserName($data['c_user']);
                 $data['e_user'] = $getUserName($data['e_user']);
@@ -54,11 +55,11 @@ QUI::$Ajax->registerFunction(
                 $children[] = $data;
             } catch (QUI\Exception $Exception) {
                 $child = [
-                    'id'        => $id,
-                    'name'      => $Exception->getAttribute('name'),
-                    'title'     => $Exception->getAttribute('title'),
+                    'id' => $id,
+                    'name' => $Exception->getAttribute('name'),
+                    'title' => $Exception->getAttribute('title'),
                     'extension' => '',
-                    'error'     => true
+                    'error' => true
                 ];
 
                 $children[] = $child;

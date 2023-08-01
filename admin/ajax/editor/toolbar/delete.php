@@ -5,6 +5,7 @@
  *
  * @param string $toolbar - name of the toolbar
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_editor_toolbar_delete',
     function ($toolbar) {

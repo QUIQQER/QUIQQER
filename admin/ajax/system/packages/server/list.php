@@ -5,6 +5,7 @@
  *
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_server_list',
     function () {
@@ -13,7 +14,7 @@ QUI::$Ajax->registerFunction(
 
         foreach ($list as $server => $params) {
             $active = 0;
-            $type   = '';
+            $type = '';
 
             if (isset($params['active'])) {
                 $active = (int)$params['active'];
@@ -25,7 +26,7 @@ QUI::$Ajax->registerFunction(
 
             $data[] = [
                 'server' => $server,
-                'type'   => $type,
+                'type' => $type,
                 'active' => $active
             ];
         }

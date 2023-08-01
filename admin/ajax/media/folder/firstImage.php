@@ -13,12 +13,13 @@
  *
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_media_folder_firstImage',
     function ($project, $folderId) {
         $Project = QUI\Projects\Manager::getProject($project);
-        $Media   = $Project->getMedia();
-        $File    = $Media->get($folderId);
+        $Media = $Project->getMedia();
+        $File = $Media->get($folderId);
 
         if (!QUI\Projects\Media\Utils::isFolder($File)) {
             throw new QUI\Exception([

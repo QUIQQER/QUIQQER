@@ -3,6 +3,7 @@
 /**
  * switches the maintenance on
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_maintenance_on',
     function () {

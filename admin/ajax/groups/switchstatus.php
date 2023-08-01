@@ -6,12 +6,13 @@
  * @param string $gid - JSON Integer | JSON Array
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_groups_switchstatus',
     function ($gid) {
-        $gid = \json_decode($gid, true);
+        $gid = json_decode($gid, true);
 
-        if (!\is_array($gid)) {
+        if (!is_array($gid)) {
             $gid = [$gid];
         }
 

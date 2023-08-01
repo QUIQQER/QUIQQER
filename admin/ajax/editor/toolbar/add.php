@@ -5,6 +5,7 @@
  *
  * @param string $toolbar - name of the toolbar
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_editor_toolbar_add',
     function ($toolbar) {

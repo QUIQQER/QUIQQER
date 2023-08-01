@@ -5,6 +5,7 @@
  *
  * @return String
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_health_package',
     function ($pkg) {

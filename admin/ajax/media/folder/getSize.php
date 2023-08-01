@@ -9,12 +9,13 @@
  * @return array
  * @throws \QUI\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_media_folder_getSize',
     function ($project, $id) {
         $Project = QUI\Projects\Manager::getProject($project);
-        $Media   = $Project->getMedia();
-        $Folder  = $Media->get($id);
+        $Media = $Project->getMedia();
+        $Folder = $Media->get($id);
 
         if (QUI\Projects\Media\Utils::isFolder($Folder) === false) {
             throw new QUI\Exception(

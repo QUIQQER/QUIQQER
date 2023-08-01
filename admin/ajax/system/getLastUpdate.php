@@ -6,6 +6,7 @@
  * @param string|bool $formatted
  * @return string
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_getLastUpdate',
     function ($formatted) {

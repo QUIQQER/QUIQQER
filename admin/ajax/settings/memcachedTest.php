@@ -5,6 +5,7 @@
  *
  * @param string $data - JSON data
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_settings_memcachedTest',
     function ($data) {
@@ -60,14 +61,15 @@ QUI::$Ajax->registerFunction(
             }
 
             $server = $entry['server'];
-            $port   = $entry['port'];
+            $port = $entry['port'];
 
             $Memcached = new Memcached();
             $Memcached->addServer($server, $port);
 
             $status = $Memcached->getStats();
 
-            if (!isset($status[$server . ":" . $port])
+            if (
+                !isset($status[$server . ":" . $port])
                 || $status[$server . ":" . $port]['pid'] <= 0
             ) {
                 $errors++;
@@ -78,7 +80,7 @@ QUI::$Ajax->registerFunction(
                         'message.session.auth.memcached.error',
                         [
                             'server' => $server,
-                            'port'   => $port
+                            'port' => $port
                         ]
                     )
                 );

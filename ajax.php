@@ -10,7 +10,7 @@ define('QUIQQER_FRONTEND', true);
 header("Content-Type: text/plain");
 header("Cache-Control: no-cache, must-revalidate");
 header("Pragma: no-cache");
-header('Expires: '.gmdate('D, d M Y H:i:s', time() - 60).' GMT');
+header('Expires: ' . gmdate('D, d M Y H:i:s', time() - 60) . ' GMT');
 
 require 'bootstrap.php';
 require 'lib/ajax.php';

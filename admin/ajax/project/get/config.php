@@ -7,6 +7,7 @@
  * @param string $param - optional, wanted config
  * @return array|string
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_project_get_config',
     function ($project, $param) {

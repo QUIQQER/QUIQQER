@@ -7,6 +7,7 @@
  *
  * @return string
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_media_url_rewrited',
     function ($fileurl, $params) {
@@ -17,12 +18,12 @@ QUI::$Ajax->registerFunction(
         if (!isset($params)) {
             $params = [];
         } else {
-            $params = \json_decode($params, true);
+            $params = json_decode($params, true);
         }
 
         try {
-            $File   = QUI\Projects\Media\Utils::getImageByUrl($fileurl);
-            $width  = false;
+            $File = QUI\Projects\Media\Utils::getImageByUrl($fileurl);
+            $width = false;
             $height = false;
 
             if (isset($params['width'])) {

@@ -3,6 +3,7 @@
 /**
  * Return list of packages which needs a setup
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_installationWizard_get',
     function () {

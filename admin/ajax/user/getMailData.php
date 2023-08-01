@@ -8,14 +8,15 @@
  *
  * @throws QUI\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_user_getMailData',
     function ($userId) {
         $User = QUI::getUsers()->get((int)$userId);
 
         return [
-            'name'  => $User->getName(),
-            'lang'  => QUI::getLocale()->get('quiqqer/quiqqer', 'language.'.$User->getLang()),
+            'name' => $User->getName(),
+            'lang' => QUI::getLocale()->get('quiqqer/quiqqer', 'language.' . $User->getLang()),
             'email' => $User->getAttribute('email')
         ];
     },

@@ -6,16 +6,17 @@
  * @param string $params - json array
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_groups_search',
     function ($fields, $params) {
         $Groups = QUI::getGroups();
-        $params = \json_decode($params, true);
-        $fields = \json_decode($fields, true);
-        $query  = [];
-        $page   = 1;
+        $params = json_decode($params, true);
+        $fields = json_decode($fields, true);
+        $query = [];
+        $page = 1;
 
-        if (!\is_array($fields)) {
+        if (!is_array($fields)) {
             $fields = [];
         }
 
@@ -29,7 +30,7 @@ QUI::$Ajax->registerFunction(
 
         foreach ($fields as $field => $value) {
             $query['where_or'][$field] = [
-                'type'  => '%LIKE%',
+                'type' => '%LIKE%',
                 'value' => $value
             ];
         }

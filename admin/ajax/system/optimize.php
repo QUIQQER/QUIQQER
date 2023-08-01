@@ -3,6 +3,7 @@
 /**
  * System Tabellen optimieren
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_optimize',
     function () {

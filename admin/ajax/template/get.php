@@ -16,14 +16,14 @@ QUI::$Ajax->registerFunction(
     'ajax_template_get',
     function ($template, $package, $params = '') {
         $current = QUI::getLocale()->getCurrent();
-        $Engine  = QUI::getTemplateManager()->getEngine(true);
+        $Engine = QUI::getTemplateManager()->getEngine(true);
 
-        if (isset($package) && !empty($package)) {
+        if (!empty($package)) {
             QUI::getPackage($package); // check if package exists
 
             $template = OPT_DIR . $package . '/' . str_replace('_', '/', $template) . '.html';
         } else {
-            $dir      = SYS_DIR . 'template/';
+            $dir = SYS_DIR . 'template/';
             $template = $dir . str_replace('_', '/', $template) . '.html';
         }
 
@@ -55,7 +55,7 @@ QUI::$Ajax->registerFunction(
         $QUI::getLocale()->setCurrent($current);
 
         $Engine->assign([
-            'QUI'    => $QUI,
+            'QUI' => $QUI,
             'params' => $params
         ]);
 

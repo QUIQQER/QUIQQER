@@ -3,6 +3,7 @@
 /**
  * cache purging
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_cache_mongoAvailable',
     function () {
@@ -12,7 +13,7 @@ QUI::$Ajax->registerFunction(
             return false;
         }
 
-        return \class_exists('\MongoDB\Client');
+        return class_exists('\MongoDB\Client');
     },
     false,
     'Permission::checkSU'

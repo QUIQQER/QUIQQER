@@ -6,6 +6,7 @@
  * @param string $project - name of the project
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_vhosts_getHostByProject',
     function ($project) {

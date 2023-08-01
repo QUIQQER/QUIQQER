@@ -17,8 +17,8 @@ QUI::$Ajax->registerFunction(
     'ajax_media_upload',
     function ($project, $parentid, $File) {
         $Project = QUI\Projects\Manager::getProject($project);
-        $Media   = $Project->getMedia();
-        $Folder  = $Media->get((int)$parentid);
+        $Media = $Project->getMedia();
+        $Folder = $Media->get((int)$parentid);
 
         if ($Folder->getType() != 'QUI\\Projects\\Media\\Folder') {
             throw new QUI\Exception(
@@ -35,7 +35,7 @@ QUI::$Ajax->registerFunction(
         }
 
         // check if image must be rotated
-        $fInfo    = finfo_open(FILEINFO_MIME_TYPE);
+        $fInfo = finfo_open(FILEINFO_MIME_TYPE);
         $mimeType = finfo_file($fInfo, $file);
         finfo_close($fInfo);
 
@@ -62,7 +62,7 @@ QUI::$Ajax->registerFunction(
                     // Rotate the image
                     if ($rotation) {
                         $ImageManager = $Media->getImageManager();
-                        $Image        = $ImageManager->make($file);
+                        $Image = $ImageManager->make($file);
 
                         $Image->rotate($rotation);
                         $Image->save();

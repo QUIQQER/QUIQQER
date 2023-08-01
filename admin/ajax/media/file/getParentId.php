@@ -8,12 +8,13 @@
  *
  * @return integer
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_media_file_getParentId',
     function ($project, $fileid) {
         $Project = QUI\Projects\Manager::getProject($project);
-        $Media   = $Project->getMedia();
-        $fileid  = (int)$fileid;
+        $Media = $Project->getMedia();
+        $fileid = (int)$fileid;
 
         try {
             $File = $Media->get((int)$fileid);

@@ -9,16 +9,17 @@
  * @return array
  * @throws \QUI\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_media_folder_recursiveEffects',
     function ($project, $folderId) {
         $Project = QUI\Projects\Manager::getProject($project);
-        $Media   = $Project->getMedia();
-        $Folder  = $Media->get($folderId);
+        $Media = $Project->getMedia();
+        $Folder = $Media->get($folderId);
 
         if (QUI\Projects\Media\Utils::isFolder($Folder) === false) {
             throw new QUI\Exception(
-                'Sie können nur in einem Ordner einen Ordner erstellen'
+                'You can create a folder only in a folder'
             );
         }
 

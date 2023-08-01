@@ -10,6 +10,7 @@
  *
  * @throws QUI\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_user_setAndSendPassword',
     function ($userId, $newPassword, $forceNew) {
@@ -27,7 +28,7 @@ QUI::$Ajax->registerFunction(
 
         // send mail
         $Mailer = new \QUI\Mail\Mailer();
-        $email  = $User->getAttribute('email');
+        $email = $User->getAttribute('email');
 
         if (empty($email)) {
             QUI::getMessagesHandler()->addAttention(
@@ -35,7 +36,7 @@ QUI::$Ajax->registerFunction(
                     'quiqqer/quiqqer',
                     'message.ajax.user.setAndSendPassword.no_mail_sent',
                     [
-                        'user' => $User->getName().' (#'.$User->getId().')'
+                        'user' => $User->getName() . ' (#' . $User->getId() . ')'
                     ]
                 )
             );
@@ -67,8 +68,8 @@ QUI::$Ajax->registerFunction(
             'quiqqer/quiqqer',
             'mails.user.new_password.body',
             [
-                'name'        => $User->getName(),
-                'password'    => $newPassword,
+                'name' => $User->getName(),
+                'password' => $newPassword,
                 'forceNewMsg' => $forceNewMsg
             ]
         );
@@ -81,7 +82,7 @@ QUI::$Ajax->registerFunction(
                 'quiqqer/quiqqer',
                 'message.ajax.user.setAndSendPassword.success',
                 [
-                    'user' => $User->getName().' (#'.$User->getId().')'
+                    'user' => $User->getName() . ' (#' . $User->getId() . ')'
                 ]
             )
         );

@@ -8,12 +8,13 @@
  * @param string $permissions - JSON permissions
  * @throws \QUI\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_permissions_save',
     function ($params, $btype, $permissions) {
-        $Manager     = QUI::getPermissionManager();
+        $Manager = QUI::getPermissionManager();
         $permissions = \json_decode($permissions, true);
-        $params      = \json_decode($params, true);
+        $params = \json_decode($params, true);
 
         switch ($btype) {
             case 'classes/users/User':
@@ -34,7 +35,7 @@ QUI::$Ajax->registerFunction(
                 }
 
                 $Project = QUI::getProject($params['project'], $params['lang']);
-                $Bind    = $Project->get($params['id']);
+                $Bind = $Project->get($params['id']);
                 break;
 
             case 'classes/projects/project/media/File':
@@ -42,8 +43,8 @@ QUI::$Ajax->registerFunction(
             case 'classes/projects/project/media/Image':
             case 'classes/projects/project/media/Item':
                 $Project = QUI::getProject($params['project']);
-                $Media   = $Project->getMedia();
-                $Bind    = $Media->get($params['id']);
+                $Media = $Project->getMedia();
+                $Bind = $Media->get($params['id']);
                 break;
 
             default:
