@@ -9,8 +9,10 @@ namespace QUI\System\Console\Tools;
 use Exception;
 use QUI;
 
+use function count;
 use function date;
 use function error_log;
+use function implode;
 use function is_dir;
 use function method_exists;
 use function str_pad;
@@ -83,7 +85,6 @@ class Update extends QUI\System\Console\Tool
         Cleanup::clearComposer();
 
         $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.start'));
-        $this->writeLn('');
 
         $Packages = QUI::getPackageManager();
 
@@ -177,12 +178,12 @@ class Update extends QUI\System\Console\Tool
         $Maintenance->execute();
 
 
-        $this->writeLn('Filesystem check ...');
+        $this->writeLn('- Filesystem check ...');
         $changes = $this->checkFileSystemChanges();
 
         if ($changes) {
             $this->writeLn('');
-            $this->writeLn('The update has found changes to the file system.', 'red');
+            $this->writeLn('The update has found inconsistencies in the system!', 'yellow');
             $this->resetColor();
 
             if ($this->executedAnywayQuestion() === false) {
@@ -385,18 +386,42 @@ class Update extends QUI\System\Console\Tool
                 '-vvv' => true
             ]);
         } catch (\QUI\Composer\Exception $Exception) {
+            $modified = [];
+
             foreach ($result as $line) {
-                if (strpos($line, '[404]') !== false) {
+                if (strpos($line, '[404] ') !== false) {
                     $path = str_replace('[404] ', '', $line);
 
+                    $this->writeLn();
                     $this->writeLn(
-                        'The update could not check the following package, there was a problem with the package archive.',
+                        '[404] - The update could not check the following package, there was a problem with the package archive.',
                         'red'
                     );
 
                     $this->writeLn($path);
-                    break;
                 }
+
+                if (strpos($line, '[400] ') !== false) {
+                    $path = str_replace('[400] ', '', $line);
+
+                    $this->writeLn();
+                    $this->writeLn(
+                        '[400] - The update could not check the following package, there was a problem with the package archive.',
+                        'red'
+                    );
+
+                    $this->writeLn($path);
+                }
+
+                if (strpos($line, "    M ") !== false) {
+                    $modified[] = $line;
+                }
+            }
+
+            if (count($modified)) {
+                $this->writeLn();
+                $this->writeLn('Modified files:', 'light_green');
+                $this->writeLn(implode("\n", $modified));
             }
 
             return true;
@@ -407,7 +432,7 @@ class Update extends QUI\System\Console\Tool
 
     protected function executedAnywayQuestion(): bool
     {
-        $this->writeLn('Should the update be executed anyway? [Y,n]: ');
+        $this->writeLn('Should the update be executed anyway? [Y,n]: ', 'red');
         $answer = $this->readInput();
 
         if (empty($answer)) {
