@@ -276,7 +276,7 @@ class Update extends QUI\System\Console\Tool
 
                 $this->writeLn('QUIQQER Update ...');
                 $Packages->getComposer()->setOutput($CLIOutput);
-                $Packages->update(false, false);
+                $Packages->update(false, false, $this);
             }
 
             $wasExecuted = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.execute');
