@@ -15,7 +15,7 @@ QUI::$Ajax->registerFunction(
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $ids = json_decode($ids, true);
-        
+
         foreach ($ids as $id) {
             try {
                 $Item = $Media->get((int)$id);
