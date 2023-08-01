@@ -1,12 +1,12 @@
 <?php
 
-use QUI\Package\Package;
-
 /**
  * Delete workspaces
  *
  * @param string $ids - Workspace IDs, json array
  */
+
+use QUI\Package\Package;
 
 QUI::$Ajax->registerFunction(
     'ajax_desktop_categories',
