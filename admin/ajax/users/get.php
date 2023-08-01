@@ -7,14 +7,15 @@
  *
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_users_get',
     function ($uid) {
         try {
-            $User       = QUI::getUsers()->get((int)$uid);
+            $User = QUI::getUsers()->get((int)$uid);
             $attributes = $User->getAttributes();
         } catch (QUI\Exception $Exception) {
-            $User       = QUI::getUsers()->getNobody();
+            $User = QUI::getUsers()->getNobody();
             $attributes = $User->getAttributes();
         }
 

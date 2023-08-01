@@ -7,12 +7,13 @@
  *
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_users_getCategories',
     function ($uid) {
         try {
-            $Users   = QUI::getUsers();
-            $User    = $Users->get((int)$uid);
+            $Users = QUI::getUsers();
+            $User = $Users->get((int)$uid);
             $Toolbar = QUI\Users\Utils::getUserToolbar($User);
 
             return $Toolbar->toArray();

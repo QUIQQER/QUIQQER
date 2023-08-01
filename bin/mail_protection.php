@@ -10,7 +10,7 @@
  */
 
 header("Content-Type: text/html; charset=utf-8");
-header("Cache-Control: public, max-age=". 15 * 60); // 15min public caching für proxys
+header("Cache-Control: public, max-age=" . 15 * 60); // 15min public caching für proxys
 
 ?>
 <!doctype html>

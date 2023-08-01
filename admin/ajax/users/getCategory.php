@@ -9,6 +9,7 @@
  *
  * @return string
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_users_getCategory',
     function ($uid, $plugin, $tab) {

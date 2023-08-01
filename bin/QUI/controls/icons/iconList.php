@@ -4,28 +4,31 @@ if (!isset($_REQUEST['quiid'])) {
     exit;
 }
 
-\define('QUIQQER_SYSTEM', true);
+define('QUIQQER_SYSTEM', true);
 
-$dir = \dirname(\dirname(\dirname(\dirname(\dirname(\dirname(\dirname(__FILE__)))))));
+$dir = dirname(__FILE__, 7);
 
-require $dir.'/header.php';
+require $dir . '/header.php';
 
 $Icons = new QUI\Icons\Handler();
 
 $icons = $Icons->toArray();
 $files = $Icons->getCSSFiles();
 
-\header_remove('X-Frame-Options');
-\header('X-Frame-Options: SAMEORIGIN');
+header_remove('X-Frame-Options');
+header('X-Frame-Options: SAMEORIGIN');
 
 ?>
 <html lang="en">
 <head>
     <title>Icon List</title>
 
-    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-core.js"></script>
-    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-more.js"></script>
-    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/moofx.js"></script>
+    <script src="<?php
+    echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-core.js"></script>
+    <script src="<?php
+    echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-more.js"></script>
+    <script src="<?php
+    echo URL_OPT_DIR; ?>bin/qui/qui/lib/moofx.js"></script>
     <script>
         var QUI_ID = '<?php echo htmlspecialchars($_REQUEST['quiid']); ?>';
     </script>
@@ -97,26 +100,35 @@ $files = $Icons->getCSSFiles();
         }
     </style>
 
-    <?php foreach ($files as $file) { ?>
-        <link href="<?php echo htmlspecialchars($file); ?>"
+    <?php
+    foreach ($files as $file) { ?>
+        <link href="<?php
+        echo htmlspecialchars($file); ?>"
               rel="stylesheet"
               type="text/css"
         />
-    <?php } ?>
+        <?php
+    } ?>
 
 </head>
 <body>
 
 <div class="icons">
-    <?php foreach ($icons as $icon) { ?>
+    <?php
+    foreach ($icons as $icon) { ?>
         <div class="icons-entry"
-             data-icon="<?php echo htmlspecialchars($icon); ?>"
-             title="<?php echo htmlspecialchars($icon); ?>"
+             data-icon="<?php
+             echo htmlspecialchars($icon); ?>"
+             title="<?php
+             echo htmlspecialchars($icon); ?>"
         >
-            <span class="<?php echo htmlspecialchars($icon); ?>"></span>
-            <span class="icon-entry-title"><?php echo htmlspecialchars($icon); ?></span>
+            <span class="<?php
+            echo htmlspecialchars($icon); ?>"></span>
+            <span class="icon-entry-title"><?php
+                echo htmlspecialchars($icon); ?></span>
         </div>
-    <?php } ?>
+        <?php
+    } ?>
 </div>
 
 <script>
@@ -124,7 +136,7 @@ $files = $Icons->getCSSFiles();
         entries = document.body.getElements('.icons-entry');
 
     entries.addEvents({
-        click   : function (event) {
+        click: function (event) {
             var Target = event.target;
 
             if (!Target.hasClass('icons-entry')) {

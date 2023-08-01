@@ -7,15 +7,16 @@
  *
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_users_search',
     function ($params) {
-        $params = \json_decode($params, true);
+        $params = json_decode($params, true);
 
         $Groups = QUI::getGroups();
-        $Users  = QUI::getUsers();
-        $page   = 1;
-        $limit  = 10;
+        $Users = QUI::getUsers();
+        $page = 1;
+        $limit = 10;
 
         $params['start'] = 0;
 
@@ -52,9 +53,9 @@ QUI::$Ajax->registerFunction(
                 }
 
                 try {
-                    $groupnames .= $Groups->getGroupNameById($gid).',';
+                    $groupnames .= $Groups->getGroupNameById($gid) . ',';
                 } catch (QUI\Exception $Exception) {
-                    $groupnames .= $gid.',';
+                    $groupnames .= $gid . ',';
                 }
             }
 
@@ -63,7 +64,7 @@ QUI::$Ajax->registerFunction(
             if (empty($user['regdate'])) {
                 $user['regdate'] = '-';
             } else {
-                $RegDate = \date_create('@'.$user['regdate']);
+                $RegDate = \date_create('@' . $user['regdate']);
 
                 if ($RegDate) {
                     $user['regdate'] = $Locale->formatDate($RegDate->getTimestamp());

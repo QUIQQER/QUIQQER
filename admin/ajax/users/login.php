@@ -1,8 +1,5 @@
 <?php
 
-/**
- *
- */
 QUI::$Ajax->registerFunction(
     'ajax_users_login',
     function ($authenticator, $params, $globalauth) {
@@ -20,7 +17,7 @@ QUI::$Ajax->registerFunction(
         try {
             QUI::getUsers()->authenticate(
                 $authenticator,
-                \json_decode($params, true)
+                json_decode($params, true)
             );
         } catch (QUI\Exception $Exception) {
             if ($Exception->getCode() === 429) {
@@ -45,7 +42,7 @@ QUI::$Ajax->registerFunction(
         }
 
         $Login = new QUI\Users\Controls\Login();
-        $next  = $Login->next();
+        $next = $Login->next();
 
         if (empty($next)) {
             try {
@@ -57,16 +54,15 @@ QUI::$Ajax->registerFunction(
             }
         }
 
-        $control = '';
-        $control .= $Login->create();
+        $control = $Login->create();
         $control .= QUI\Control\Manager::getCSS();
 
         $SessionUser = QUI::getUserBySession();
 
         return [
             'authenticator' => $Login->next(),
-            'control'       => $control,
-            'user'          => [
+            'control' => $control,
+            'user' => [
                 'id' => $SessionUser->getId(),
                 'name' => $SessionUser->getName(),
                 'lang' => $SessionUser->getLang()

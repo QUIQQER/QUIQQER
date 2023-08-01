@@ -9,10 +9,9 @@ use QUI;
  */
 class EncryptionTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testEncrypt()
     {
-        $data   = 'my-test';
+        $data = 'my-test';
         $result = QUI\Security\Encryption::encrypt($data);
 
         $this->assertNotEquals($data, $result);
@@ -20,7 +19,7 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
 
     public function testDecrypt()
     {
-        $data   = 'my-test';
+        $data = 'my-test';
         $result = QUI\Security\Encryption::encrypt($data);
         $result = QUI\Security\Encryption::decrypt($result);
 

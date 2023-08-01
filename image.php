@@ -31,7 +31,7 @@ function getMimeType(string $file): string
 
     if (function_exists('finfo_open') && function_exists('finfo_file')) { // PECL
         $finfo = finfo_open(FILEINFO_MIME);
-        $part  = explode(';', finfo_file($finfo, $file));
+        $part = explode(';', finfo_file($finfo, $file));
 
         return $part[0];
     }
@@ -42,8 +42,8 @@ function getMimeType(string $file): string
 try {
     /* @var $project \QUI\Projects\Project */
     $Project = QUI\Projects\Manager::getProject($_REQUEST['project']);
-    $Media   = $Project->getMedia();
-    $File    = $Media->get((int)$_REQUEST['id']);
+    $Media = $Project->getMedia();
+    $File = $Media->get((int)$_REQUEST['id']);
 
     if (Media\Utils::isFolder($File)) {
         QUI\Utils\System\File::send(
@@ -53,11 +53,12 @@ try {
     }
 
     // Bilder direkt im Browser ausgeben
-    $file    = $File->getAttribute('file');
-    $image   = false;
+    $file = $File->getAttribute('file');
+    $image = false;
     $isAdmin = false;
 
-    if (isset($_SERVER['HTTP_REFERER'])
+    if (
+        isset($_SERVER['HTTP_REFERER'])
         && strpos($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST']) !== false
         && strpos($_SERVER['HTTP_REFERER'], URL_SYS_DIR)
     ) {
@@ -69,17 +70,19 @@ try {
     }
 
     // admin image request
-    if (!isset($_REQUEST['noresize'])
+    if (
+        !isset($_REQUEST['noresize'])
         && !isset($_REQUEST['maxwidth'])
         && !isset($_REQUEST['maxheight'])
         && $isAdmin
     ) {
-        $_REQUEST['maxwidth']  = 500;
+        $_REQUEST['maxwidth'] = 500;
         $_REQUEST['maxheight'] = 500;
     }
 
     // admin output
-    if ($isAdmin
+    if (
+        $isAdmin
         && Media\Utils::isImage($File)
         && QUI::getUsers()->getUserBySession()->canUseBackend()
     ) {
@@ -92,7 +95,7 @@ try {
         }
 
         if (!$_REQUEST['maxwidth'] && !$_REQUEST['maxheight']) {
-            $_REQUEST['maxwidth']  = 500;
+            $_REQUEST['maxwidth'] = 500;
             $_REQUEST['maxheight'] = 500;
         }
 
@@ -157,11 +160,12 @@ try {
     }
 
 
-    if (!isset($_REQUEST['noresize'])
+    if (
+        !isset($_REQUEST['noresize'])
         && Media\Utils::isImage($File)
         && (isset($_REQUEST['maxwidth']) || isset($_REQUEST['maxheight']))
     ) {
-        $maxwidth  = false;
+        $maxwidth = false;
         $maxheight = false;
 
         if (isset($_REQUEST['maxwidth'])) {
