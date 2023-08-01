@@ -16,5 +16,4 @@ use QUI;
  */
 class Success extends QUI\Messages\Message
 {
-
 }

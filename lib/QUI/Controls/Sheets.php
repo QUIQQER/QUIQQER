@@ -17,5 +17,4 @@ use QUI;
  */
 class Sheets extends QUI\Bricks\Controls\Pagination
 {
-
 }

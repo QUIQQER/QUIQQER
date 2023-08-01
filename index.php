@@ -20,7 +20,8 @@ if (!defined('QUIQQER_SYSTEM')) {
 }
 
 // Mailto
-if (isset($_REQUEST['_url'])
+if (
+    isset($_REQUEST['_url'])
     && strpos($_REQUEST['_url'], '[mailto]') !== false
 ) {
     $addr = str_replace('[mailto]', '', $_REQUEST['_url']);
@@ -56,7 +57,7 @@ try {
     }
 
     $Response = QUI::getGlobalResponse();
-    $Request  = QUI::getRequest();
+    $Request = QUI::getRequest();
 
     // UTF 8 Prüfung für umlaute in url
     if (isset($_REQUEST['_url'])) {
@@ -97,7 +98,7 @@ try {
     }
 
     $Project = $Rewrite->getProject();
-    $Site    = $Rewrite->getSite();
+    $Site = $Rewrite->getSite();
 
     QUI::getTemplateManager()->assignGlobalParam('Project', $Project);
     QUI::getTemplateManager()->assignGlobalParam('Site', $Site);
@@ -111,7 +112,8 @@ try {
         $Locale = QUI::getLocale();
     }
 
-    if (defined('LOGIN_FAILED')
+    if (
+        defined('LOGIN_FAILED')
         || isset($_POST['login'])
         || isset($_GET['logout'])
     ) {
@@ -128,7 +130,8 @@ try {
     /**
      * maintenance work
      */
-    if (QUI::conf('globals', 'maintenance')
+    if (
+        QUI::conf('globals', 'maintenance')
         && !(QUI::getUserBySession()->getId() && QUI::getUserBySession()->isSU())
     ) {
         $Response->setStatusCode(Response::HTTP_SERVICE_UNAVAILABLE);
@@ -138,18 +141,18 @@ try {
         $Smarty = QUI::getTemplateManager()->getEngine();
 
         $Smarty->assign([
-            'Project'     => $Project,
-            'URL_DIR'     => URL_DIR,
+            'Project' => $Project,
+            'URL_DIR' => URL_DIR,
             'URL_BIN_DIR' => URL_BIN_DIR,
             'URL_LIB_DIR' => URL_LIB_DIR,
             'URL_VAR_DIR' => URL_VAR_DIR,
             'URL_OPT_DIR' => URL_OPT_DIR,
             'URL_USR_DIR' => URL_USR_DIR,
             'URL_TPL_DIR' => URL_USR_DIR . $Project->getName() . '/',
-            'TPL_DIR'     => OPT_DIR . $Project->getName() . '/',
+            'TPL_DIR' => OPT_DIR . $Project->getName() . '/',
         ]);
 
-        $file  = LIB_DIR . 'templates/maintenance.html';
+        $file = LIB_DIR . 'templates/maintenance.html';
         $pfile = USR_DIR . $Project->getName() . '/lib/maintenance.html';
 
         if (file_exists($pfile)) {
@@ -193,7 +196,8 @@ try {
     }
 
     // if cache exists, and cache should also be used
-    if (CACHE
+    if (
+        CACHE
         && $Site->getAttribute('nocache') != true
         && !QUI::getUsers()->isAuth(QUI::getUserBySession())
         && empty($query)
@@ -204,7 +208,7 @@ try {
     ) {
         try {
             $cache_content = QUI\Cache\Manager::get($siteCachePath);
-            $content       = $Rewrite->outputFilter($cache_content);
+            $content = $Rewrite->outputFilter($cache_content);
 
             if (empty($content)) {
                 throw new QUI\Exception('Empty content at ' . $Site->getId());
@@ -224,7 +228,7 @@ try {
     // Template Content generating
     try {
         $Template = new QUI\Template();
-        $content  = $Template->fetchSite($Site);
+        $content = $Template->fetchSite($Site);
 
         Debug::marker('fetch Template');
 
@@ -242,7 +246,8 @@ try {
         Debug::marker('content done');
 
         // cachefile erstellen
-        if ($Site->getAttribute('nocache') != true
+        if (
+            $Site->getAttribute('nocache') != true
             && !QUI::getUsers()->isAuth(QUI::getUserBySession())
             && empty($query)
             && $Rewrite->getHeaderCode() === 200
