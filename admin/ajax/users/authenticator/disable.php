@@ -7,6 +7,7 @@
  * @param string $authenticator
  * @throws \QUI\Users\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_users_authenticator_disable',
     function ($uid, $authenticator) {
