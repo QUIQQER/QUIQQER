@@ -1,5 +1,6 @@
 <?php
 
+// phpcs:ignoreFile
 if (!isset($_REQUEST['quiid'])) {
     exit;
 }
