@@ -9,11 +9,12 @@
  *
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_site_save',
     function ($project, $id, $attributes) {
         $Project = QUI::getProjectManager()->decode($project);
-        $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
+        $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
 
         QUI::getEvents()->fireEvent('onSiteSaveAjaxBegin', [$Site]);
 
@@ -41,7 +42,7 @@ QUI::$Ajax->registerFunction(
 
             $result = QUI::$Ajax->callRequestFunction('ajax_site_get', [
                 'project' => json_encode($Project->toArray()),
-                'id'      => $id
+                'id' => $id
             ]);
 
             return $result['result'];

@@ -7,12 +7,13 @@
  * @param integer $ids - children ids
  * @param integer $from - Sheet number
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_site_children_sort',
     function ($project, $parent, $ids, $from, $sortType) {
         $Project = QUI::getProjectManager()->decode($project);
-        $ids     = \json_decode($ids, true);
-        $from    = (int)$from;
+        $ids = json_decode($ids, true);
+        $from = (int)$from;
 
         // check permission
         $Parent = $Project->get($parent);
@@ -30,7 +31,7 @@ QUI::$Ajax->registerFunction(
         foreach ($ids as $id) {
             $from = $from + 1;
 
-            if (!\in_array($id, $childrenIds)) {
+            if (!in_array($id, $childrenIds)) {
                 continue;
             }
 

@@ -9,18 +9,19 @@
  *
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_site_getchildren',
     function ($project, $id, $params) {
         $Project = QUI::getProjectManager()->decode($project);
-        $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
-        $params  = \json_decode($params, true);
+        $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
+        $params = json_decode($params, true);
 
-        $Packages   = QUI::getPackageManager();
+        $Packages = QUI::getPackageManager();
         $attributes = false;
 
         if (isset($params['attributes'])) {
-            $attributes = \explode(',', $params['attributes']);
+            $attributes = explode(',', $params['attributes']);
         }
 
         // vorerst kein limit
@@ -34,7 +35,7 @@ QUI::$Ajax->registerFunction(
 
         $result = [];
 
-        for ($i = 0, $len = \count($children); $i < $len; $i++) {
+        for ($i = 0, $len = count($children); $i < $len; $i++) {
             $Child = $children[$i];
             /* @var $Child \QUI\Projects\Site\Edit */
 
@@ -48,11 +49,11 @@ QUI::$Ajax->registerFunction(
 
             $result[$i]['id'] = $Child->getId();
 
-            if (!$attributes || \in_array('has_children', $attributes)) {
+            if (!$attributes || in_array('has_children', $attributes)) {
                 $result[$i]['has_children'] = $Child->hasChildren(true);
             }
 
-            if (!$attributes || \in_array('config', $attributes)) {
+            if (!$attributes || in_array('config', $attributes)) {
                 $result[$i]['config'] = $Child->conf; // old??
             }
 
@@ -61,14 +62,12 @@ QUI::$Ajax->registerFunction(
             }
 
             // Projekt Objekt muss da nicht mit
-            if (isset($result[$i]['project'])
-                && \is_object($result[$i]['project'])
-            ) {
+            if (isset($result[$i]['project']) && is_object($result[$i]['project'])) {
                 unset($result[$i]['project']);
             }
 
             // icon
-            if (!$attributes || \in_array('icon', $attributes)) {
+            if (!$attributes || in_array('icon', $attributes)) {
                 if ($Child->getAttribute('type') != 'standard') {
                     $result[$i]['icon'] = $Packages->getIconBySiteType($Child->getAttribute('type'));
                 }
@@ -76,7 +75,7 @@ QUI::$Ajax->registerFunction(
         }
 
         return [
-            'count'    => $Site->hasChildren(true),
+            'count' => $Site->hasChildren(true),
             'children' => $result
         ];
     },
