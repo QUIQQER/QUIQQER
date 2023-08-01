@@ -9,7 +9,6 @@ use QUI;
  */
 class ManagerTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testCreateChild()
     {
         $User = QUI::getUsers()->createChild('phpunit');
@@ -18,5 +17,4 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         $User->delete();
     }
-
 }
