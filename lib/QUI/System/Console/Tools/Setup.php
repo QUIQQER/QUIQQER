@@ -9,10 +9,7 @@ namespace QUI\System\Console\Tools;
 use QUI;
 
 use function array_map;
-use function flush;
 use function implode;
-use function ob_flush;
-use function ob_get_contents;
 use function trim;
 
 /**
@@ -82,27 +79,5 @@ class Setup extends QUI\System\Console\Tool
 
         $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.setup.message.success'));
         $this->writeLn('');
-    }
-
-    /**
-     * Log the output buffer to the setup log
-     */
-    protected function logBuffer()
-    {
-        $buffer = ob_get_contents();
-        $buffer = trim($buffer);
-
-        if (!empty($buffer)) {
-            QUI\System\Log::write(
-                $buffer,
-                QUI\System\Log::LEVEL_NOTICE,
-                [],
-                'setup',
-                true
-            );
-        }
-
-        flush();
-        ob_flush();
     }
 }
