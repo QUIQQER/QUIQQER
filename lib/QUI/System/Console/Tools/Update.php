@@ -244,9 +244,17 @@ class Update extends QUI\System\Console\Tool
                         return;
                     }
 
+                    // pull message
+                    if (strpos($message, '      ') === 0) {
+                        return;
+                    }
 
+                    // ignoring
                     $ignore = [
                         'Downloading ',
+                        '- Downloading ',
+                        '- Upgrading ',
+                        'Pulling in changes',
                         'Reading ',
                         'Importing ',
                         'Writing ',
@@ -254,8 +262,11 @@ class Update extends QUI\System\Console\Tool
                         '[304] ',
                     ];
 
+
                     foreach ($ignore as $ig) {
-                        if (strpos($message, $ig) === 0) {
+                        $trim = trim($message);
+
+                        if (strpos($trim, $ig) === 0) {
                             return;
                         }
                     }
@@ -265,7 +276,7 @@ class Update extends QUI\System\Console\Tool
 
                 $this->writeLn('QUIQQER Update ...');
                 $Packages->getComposer()->setOutput($CLIOutput);
-                $Packages->update(false, false);
+                $Packages->update(false, false, $this);
             }
 
             $wasExecuted = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.execute');
@@ -433,6 +444,7 @@ class Update extends QUI\System\Console\Tool
     protected function executedAnywayQuestion(): bool
     {
         $this->writeLn('Should the update be executed anyway? [Y,n]: ', 'red');
+        $this->resetColor();
         $answer = $this->readInput();
 
         if (empty($answer)) {
