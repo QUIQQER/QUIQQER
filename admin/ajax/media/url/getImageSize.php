@@ -1,9 +1,7 @@
 <?php
 
-use QUI\Projects\Media\Utils as Utils;
-
 /**
- * Return the rewrited url from an image.php url
+ * Return the rewritten url from an image.php url
  *
  * @param string $fileurl - File url
  * @param string|integer $maxWidth - wanted width of the file
@@ -11,6 +9,8 @@ use QUI\Projects\Media\Utils as Utils;
  *
  * @return string
  */
+
+use QUI\Projects\Media\Utils as Utils;
 
 QUI::$Ajax->registerFunction(
     'ajax_media_url_getImageSize',

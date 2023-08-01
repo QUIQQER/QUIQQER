@@ -1,8 +1,5 @@
 <?php
 
-use QUI\Projects\Media\Utils as MediaUtils;
-use QUI\Utils\Security\Orthos;
-
 /**
  * Send an e-mail to a QUIQQER user
  *
@@ -11,6 +8,9 @@ use QUI\Utils\Security\Orthos;
  *
  * @throws QUI\Exception
  */
+
+use QUI\Projects\Media\Utils as MediaUtils;
+use QUI\Utils\Security\Orthos;
 
 QUI::$Ajax->registerFunction(
     'ajax_user_sendMail',

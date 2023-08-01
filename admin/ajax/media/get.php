@@ -36,7 +36,7 @@ QUI::$Ajax->registerFunction(
         foreach ($_children as $Child) {
             $children[] = QUI\Projects\Media\Utils::parseForMediaCenter($Child);
         }
-        
+
         return [
             'file' => QUI\Projects\Media\Utils::parseForMediaCenter($File),
             'breadcrumb' => $breadcrumb,

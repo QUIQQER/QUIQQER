@@ -7,10 +7,11 @@
  * @param string $params - json array, search params
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_groups_users',
     function ($gid, $params) {
-        $params = \json_decode($params, true);
+        $params = json_decode($params, true);
 
         $start = 0;
         $page = 1;
