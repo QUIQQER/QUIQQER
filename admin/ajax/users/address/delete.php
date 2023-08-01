@@ -8,17 +8,18 @@
  *
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_users_address_delete',
     function ($uid, $aid) {
         if (!isset($uid) || !$uid) {
             $result = QUI::getDataBase()->fetch([
                 'select' => ['id', 'uid'],
-                'from'   => QUI\Users\Manager::tableAddress(),
-                'where'  => [
+                'from' => QUI\Users\Manager::tableAddress(),
+                'where' => [
                     'id' => $aid
                 ],
-                'limit'  => 1
+                'limit' => 1
             ]);
 
             if (!isset($result[0])) {
@@ -28,7 +29,7 @@ QUI::$Ajax->registerFunction(
                         'exception.lib.user.address.not.found',
                         [
                             'addressId' => $aid,
-                            'userId'    => $uid
+                            'userId' => $uid
                         ]
                     )
                 );
@@ -36,8 +37,8 @@ QUI::$Ajax->registerFunction(
 
             $uid = (int)$result[0]['uid'];
         }
-        
-        $User    = QUI::getUsers()->get((int)$uid);
+
+        $User = QUI::getUsers()->get((int)$uid);
         $Address = $User->getAddress((int)$aid);
 
         $Address->delete();

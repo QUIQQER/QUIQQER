@@ -6,6 +6,7 @@
  * @param string $params
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_usersgroups_search',
     function ($search, $fields, $params) {
@@ -14,30 +15,30 @@ QUI::$Ajax->registerFunction(
 
         if (!\is_array($fields)) {
             $fields = [
-                'name'      => true,
-                'username'  => true,
+                'name' => true,
+                'username' => true,
                 'usergroup' => true,
-                'email'     => true,
-                'active'    => true,
-                'regdate'   => true,
-                'su'        => true,
-                'expire'    => true,
-                'lastedit'  => true,
+                'email' => true,
+                'active' => true,
+                'regdate' => true,
+                'su' => true,
+                'expire' => true,
+                'lastedit' => true,
                 'firstname' => true,
-                'lastname'  => true,
+                'lastname' => true,
                 'usertitle' => true,
-                'birthday'  => true,
-                'avatar'    => true,
-                'lang'      => true,
-                'company'   => true
+                'birthday' => true,
+                'avatar' => true,
+                'lang' => true,
+                'company' => true
             ];
         }
 
         $searchParams = [
-            'searchUsers'  => true,
+            'searchUsers' => true,
             'searchGroups' => true,
-            'users'        => ['select' => $fields],
-            'groups'       => ['select' => $fields],
+            'users' => ['select' => $fields],
+            'groups' => ['select' => $fields],
         ];
 
         if (isset($params['limit'])) {

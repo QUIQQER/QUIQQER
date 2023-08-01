@@ -35,7 +35,7 @@ class Message extends QUI\QDOM
     }
 
     /**
-     * Return a the message code
+     * Return the message code
      *
      * @return string
      */

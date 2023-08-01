@@ -9,7 +9,8 @@
 require_once dirname(__FILE__, 4) . '/header.php';
 
 // wenn https vorhanden, dann dahin
-if ((int)$_SERVER['SERVER_PORT'] !== 443
+if (
+    (int)$_SERVER['SERVER_PORT'] !== 443
     && QUI::conf('globals', 'httpshost')
 ) {
     // auf https leiten
@@ -18,7 +19,7 @@ if ((int)$_SERVER['SERVER_PORT'] !== 443
 }
 
 $Users = QUI::getUsers();
-$User  = $Users->getUserBySession();
+$User = $Users->getUserBySession();
 
 if (strpos($_SERVER['SCRIPT_NAME'], 'index.php') !== false) {
     if (!$User->canUseBackend() || !$Users->isAuth($User)) {

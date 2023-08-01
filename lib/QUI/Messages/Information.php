@@ -16,5 +16,4 @@ use QUI;
  */
 class Information extends QUI\Messages\Message
 {
-
 }

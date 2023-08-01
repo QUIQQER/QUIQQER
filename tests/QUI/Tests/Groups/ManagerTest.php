@@ -17,5 +17,4 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $Root = QUI::getGroups()->firstChild();
         $this->assertGreaterThan(10, $Root->getId());
     }
-
 }

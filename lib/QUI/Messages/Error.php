@@ -16,5 +16,4 @@ use QUI;
  */
 class Error extends QUI\Messages\Message
 {
-
 }

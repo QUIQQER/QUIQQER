@@ -6,44 +6,45 @@
  * @param string $params
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_usersgroups_searchGrid',
     function ($search, $fields, $params) {
-        $fields = \json_decode($fields, true);
-        $params = \json_decode($params, true);
-        $limit  = 20; // default
-        $page   = 1;
+        $fields = json_decode($fields, true);
+        $params = json_decode($params, true);
+        $limit = 20; // default
+        $page = 1;
 
-        if (!\is_array($params)) {
+        if (!is_array($params)) {
             $params = [];
         }
 
-        if (!\is_array($fields)) {
+        if (!is_array($fields)) {
             $fields = [
-                'name'      => true,
-                'username'  => true,
+                'name' => true,
+                'username' => true,
                 'usergroup' => true,
-                'email'     => true,
-                'active'    => true,
-                'regdate'   => true,
-                'su'        => true,
-                'expire'    => true,
-                'lastedit'  => true,
+                'email' => true,
+                'active' => true,
+                'regdate' => true,
+                'su' => true,
+                'expire' => true,
+                'lastedit' => true,
                 'firstname' => true,
-                'lastname'  => true,
+                'lastname' => true,
                 'usertitle' => true,
-                'birthday'  => true,
-                'avatar'    => true,
-                'lang'      => true,
-                'company'   => true
+                'birthday' => true,
+                'avatar' => true,
+                'lang' => true,
+                'company' => true
             ];
         }
 
         $searchParams = [
-            'searchUsers'  => true,
+            'searchUsers' => true,
             'searchGroups' => true,
-            'users'        => ['select' => $fields],
-            'groups'       => ['select' => $fields]
+            'users' => ['select' => $fields],
+            'groups' => ['select' => $fields]
         ];
 
         if (isset($params['limit'])) {
@@ -57,12 +58,12 @@ QUI::$Ajax->registerFunction(
         $searchResult = QUI\UsersGroups\Search::search($search, $searchParams);
 
         $Grid = new QUI\Utils\Grid([
-            'max'  => $limit,
+            'max' => $limit,
             'page' => $page
         ]);
 
         return $Grid->getResult(
-            \array_merge($searchResult['groups'], $searchResult['users']),
+            array_merge($searchResult['groups'], $searchResult['users']),
             $page,
             $limit
         );

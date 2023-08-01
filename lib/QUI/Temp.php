@@ -21,7 +21,7 @@ use function system;
 
 /**
  * Temp managed the temp folder
- * It creates temp folders and delete it, provides methods for tempfiles / folders
+ * It creates temp folders and delete it, provides methods for temp files / folders
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
@@ -36,11 +36,11 @@ class Temp
     /**
      * constructor
      *
-     * @param string $tempfolder - opath to the tempfolder
+     * @param string $tempFolder - path to the temp folder
      */
-    public function __construct($tempfolder)
+    public function __construct(string $tempFolder)
     {
-        $this->folder = rtrim($tempfolder, '/') . '/';
+        $this->folder = rtrim($tempFolder, '/') . '/';
 
         if (!is_dir($this->folder)) {
             QUIFile::mkdir($this->folder);
@@ -70,7 +70,7 @@ class Temp
      * @param string $folder - Path to file or folder
      * @throws QUI\Exception
      */
-    public function moveToTemp($folder)
+    public function moveToTemp(string $folder)
     {
         if (!file_exists($folder)) {
             return;
@@ -90,7 +90,7 @@ class Temp
      * @return string - Path to the folder
      * @throws QUI\Exception
      */
-    public function createFolder($name = false)
+    public function createFolder($name = false): string
     {
         if (!empty($name)) {
             $newFolder = $this->folder . $name . '/';

@@ -6,6 +6,7 @@
  * @param string $email
  * @return boolean
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_users_emailExists',
     function ($email) {
