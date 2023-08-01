@@ -444,6 +444,7 @@ class Update extends QUI\System\Console\Tool
     protected function executedAnywayQuestion(): bool
     {
         $this->writeLn('Should the update be executed anyway? [Y,n]: ', 'red');
+        $this->resetColor();
         $answer = $this->readInput();
 
         if (empty($answer)) {
