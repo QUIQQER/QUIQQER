@@ -536,12 +536,17 @@ class Manager
         // read template config
         foreach ($packages as $package) {
             // if the package is a quiqqer template,
+            //
+            // commented out because of: quiqqer/quiqqer#1247
+            //
+            /*
             if ($package['type'] == 'quiqqer-template') {
                 // note only related templates
                 if (!isset($templates[$package['name']])) {
                     continue;
                 }
             }
+            */
 
             // consider inheritance
             $file = OPT_DIR . $package['name'] . '/settings.xml';
