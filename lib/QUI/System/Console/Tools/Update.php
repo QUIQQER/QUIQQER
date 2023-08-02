@@ -21,6 +21,7 @@ use function strip_tags;
 use function strlen;
 use function strpos;
 use function strtolower;
+use function trim;
 use function unlink;
 
 use const PHP_EOL;
@@ -231,47 +232,7 @@ class Update extends QUI\System\Console\Tool
 
                 $CLIOutput = new QUI\System\Console\Output();
                 $CLIOutput->Events->addEvent('onWrite', function ($message) {
-                    $this->writeToLog($message . PHP_EOL);
-
-                    if (strpos($message, '<warning>') !== false) {
-                        $this->writeLn(strip_tags($message), 'cyan');
-
-                        // reset color
-                        if (method_exists($this, 'resetColor')) {
-                            $this->resetColor();
-                        }
-
-                        return;
-                    }
-
-                    // pull message
-                    if (strpos($message, '      ') === 0) {
-                        return;
-                    }
-
-                    // ignoring
-                    $ignore = [
-                        'Downloading ',
-                        '- Downloading ',
-                        '- Upgrading ',
-                        'Pulling in changes',
-                        'Reading ',
-                        'Importing ',
-                        'Writing ',
-                        'Executing command ',
-                        '[304] ',
-                    ];
-
-
-                    foreach ($ignore as $ig) {
-                        $trim = trim($message);
-
-                        if (strpos($trim, $ig) === 0) {
-                            return;
-                        }
-                    }
-
-                    $this->writeLn(strip_tags($message));
+                    self::onCliOutput($message, $this);
                 });
 
                 $this->writeLn('QUIQQER Update ...');
@@ -363,13 +324,59 @@ class Update extends QUI\System\Console\Tool
      *
      * @param string $buffer
      */
-    protected function writeToLog(string $buffer)
+    public static function writeToLog(string $buffer)
     {
         if (empty($buffer)) {
             return;
         }
 
         error_log($buffer, 3, VAR_DIR . 'log/update-' . date('Y-m-d') . '.log');
+    }
+
+    public static function onCliOutput(string $message, QUI\Interfaces\System\SystemOutput $Instance)
+    {
+        self::writeToLog($message . PHP_EOL);
+
+        if (strpos($message, '<warning>') !== false) {
+            $Instance->writeLn(strip_tags($message), 'cyan');
+
+            // reset color
+            if (method_exists($Instance, 'resetColor')) {
+                $Instance->resetColor();
+            }
+
+            return;
+        }
+
+        // pull message
+        if (strpos($message, '      ') === 0) {
+            return;
+        }
+
+        // ignoring
+        $ignore = [
+            'Downloading ',
+            '- Downloading ',
+            '- Upgrading ',
+            'Executing async command ',
+            'Pulling in changes',
+            'Reading ',
+            'Importing ',
+            'Writing ',
+            'Executing command ',
+            '[304] ',
+        ];
+
+
+        foreach ($ignore as $ig) {
+            $trim = trim($message);
+
+            if (strpos($trim, $ig) === 0) {
+                return;
+            }
+        }
+
+        $Instance->writeLn(strip_tags($message));
     }
 
     /**
