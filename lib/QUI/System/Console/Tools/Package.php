@@ -184,19 +184,33 @@ class Package extends QUI\System\Console\Tool
         $this->writeLn();
         $Climate = new CLImate();
 
-        if (empty($package)) {
+        if (empty($package) || $package === '1') {
             $Climate->output->write(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'console.tool.package.message.install.noPackage',
                 )
             );
+
+            exit;
         }
+
+        Update::writeToLog('Install package ' . $package);
 
         try {
             QUI::getPackage($package);
             $this->writeLn('Package already exists');
+            Update::writeToLog('Package already exists');
+            exit;
         } catch (QUI\Exception $Exception) {
+            Update::writeToLog(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'console.tool.package.message.install.execute',
+                    ['package' => $package]
+                )
+            );
+
             $Climate->output->write(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -205,16 +219,19 @@ class Package extends QUI\System\Console\Tool
                 )
             );
 
-            $PackageManager = QUI::getPackageManager();
-            $Composer = $PackageManager->getComposer();
-            $Console = $this;
-
-            $Composer->addEvent('onOutput', function ($self, $data, $type) use ($Console) {
-                $Console->write($data);
+            $CLIOutput = new QUI\System\Console\Output();
+            $CLIOutput->Events->addEvent('onWrite', function ($message) {
+                Update::onCliOutput($message, $this);
             });
 
+            $Packages = QUI::getPackageManager();
+            $Composer = $Packages->getComposer();
+            $Composer->setOutput($CLIOutput);
             $Composer->unmute();
-            $Composer->requirePackage($package);
+
+            $Composer->requirePackage($package, '', [
+                '-vvv' => true
+            ]);
         }
     }
 
