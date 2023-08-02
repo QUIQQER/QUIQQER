@@ -7,12 +7,13 @@
  * @param string $params
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_server_add',
     function ($server, $params) {
         QUI::getPackageManager()->addServer(
             $server,
-            \json_decode($params, true)
+            json_decode($params, true)
         );
 
         QUI::getMessagesHandler()->addSuccess(

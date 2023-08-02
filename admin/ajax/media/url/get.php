@@ -9,11 +9,12 @@
  * @return string
  * @throws \QUI\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_media_url_get',
     function ($project, $fileid) {
         $Project = QUI\Projects\Manager::getProject($project);
-        $Media   = $Project->getMedia();
+        $Media = $Project->getMedia();
 
         return $Media->get($fileid)->getUrl(true);
     },

@@ -5,6 +5,7 @@
  *
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_forwarding_getList',
     function () {

@@ -8,17 +8,18 @@
  *
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_media_get',
     function ($project, $fileid) {
         $Project = QUI\Projects\Manager::getProject($project);
-        $Media   = $Project->getMedia();
-        $File    = $Media->get($fileid);
+        $Media = $Project->getMedia();
+        $File = $Media->get($fileid);
 
-        $parents    = $File->getParents();
+        $parents = $File->getParents();
         $breadcrumb = [];
-        $children   = [];
-        $_children  = [];
+        $children = [];
+        $_children = [];
 
         if ($File->getType() === 'QUI\\Projects\\Media\\Folder') {
             $_children = $File->getChildren();
@@ -36,11 +37,10 @@ QUI::$Ajax->registerFunction(
             $children[] = QUI\Projects\Media\Utils::parseForMediaCenter($Child);
         }
 
-
         return [
-            'file'       => QUI\Projects\Media\Utils::parseForMediaCenter($File),
+            'file' => QUI\Projects\Media\Utils::parseForMediaCenter($File),
             'breadcrumb' => $breadcrumb,
-            'children'   => $children
+            'children' => $children
         ];
     },
     ['project', 'fileid'],

@@ -5,6 +5,7 @@
  *
  * @param string|array $packages - Name of the package
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_install',
     function ($packages) {

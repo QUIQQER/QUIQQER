@@ -5,16 +5,17 @@
  *
  * @param string $project - JSON project data
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_media_create_md5',
     function ($project) {
         $Project = QUI\Projects\Manager::decode($project);
-        $Media   = $Project->getMedia();
+        $Media = $Project->getMedia();
 
         $ids = $Media->getChildrenIds([
             'where' => [
                 'type' => [
-                    'type'  => 'NOT',
+                    'type' => 'NOT',
                     'value' => 'folder'
                 ]
             ]

@@ -7,20 +7,21 @@
  *
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_search_lastEditSites',
     function ($params) {
-        $params   = \json_decode($params, true);
+        $params = json_decode($params, true);
         $projects = QUI::getProjectManager()->getProjects(true);
 
         /* @var $Project QUI\Projects\Project */
 
-        $PDO     = QUI::getDataBase()->getPDO();
+        $PDO = QUI::getDataBase()->getPDO();
         $selects = [];
 
         foreach ($projects as $Project) {
-            $table   = $Project->table();
-            $lang    = $Project->getLang();
+            $table = $Project->table();
+            $lang = $Project->getLang();
             $project = $Project->getName();
 
             $selects[] = "
@@ -34,7 +35,7 @@ QUI::$Ajax->registerFunction(
         }
 
         $query = 'SELECT id, e_date, name, title, project, lang
-                 FROM ('.\implode(' UNION ', $selects).') AS merged
+                 FROM (' . implode(' UNION ', $selects) . ') AS merged
                  ORDER BY e_date DESC LIMIT 0,10';
 
         $Statement = $PDO->prepare($query);

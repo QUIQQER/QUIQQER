@@ -3,36 +3,37 @@
 /**
  * test mail settings
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_mailTest',
     function ($params) {
         $params = json_decode($params, true);
-        $Mail   = QUI::getMailManager()->getPHPMailer();
+        $Mail = QUI::getMailManager()->getPHPMailer();
 
         $Mail->Mailer = 'mail';
 
         if (isset($params['SMTPServer']) && !empty($params['SMTPServer'])) {
-            $Mail->Mailer   = 'smtp';
+            $Mail->Mailer = 'smtp';
             $Mail->SMTPAuth = true;
-            $Mail->Host     = $params['SMTPServer'];
+            $Mail->Host = $params['SMTPServer'];
         }
 
         if (isset($params['SMTPUser']) && !empty($params['SMTPUser'])) {
-            $Mail->Mailer   = 'smtp';
+            $Mail->Mailer = 'smtp';
             $Mail->SMTPAuth = true;
             $Mail->Username = $params['SMTPUser'];
         }
 
         if (isset($params['SMTPPass']) && !empty($params['SMTPPass'])) {
-            $Mail->Mailer   = 'smtp';
+            $Mail->Mailer = 'smtp';
             $Mail->SMTPAuth = true;
             $Mail->Password = $params['SMTPPass'];
         }
 
         if (isset($params['SMTPPort']) && !empty($params['SMTPPort'])) {
-            $Mail->Mailer   = 'smtp';
+            $Mail->Mailer = 'smtp';
             $Mail->SMTPAuth = true;
-            $Mail->Port     = (int)$params['SMTPPort'];
+            $Mail->Port = (int)$params['SMTPPort'];
         }
 
         if (isset($params['SMTPSecure']) && !empty($params['SMTPSecure'])) {
@@ -42,8 +43,8 @@ QUI::$Ajax->registerFunction(
 
                     $Mail->SMTPOptions = [
                         'ssl' => [
-                            'verify_peer'       => (int)$params['SMTPSecureSSL_verify_peer'],
-                            'verify_peer_name'  => (int)$params['SMTPSecureSSL_verify_peer_name'],
+                            'verify_peer' => (int)$params['SMTPSecureSSL_verify_peer'],
+                            'verify_peer_name' => (int)$params['SMTPSecureSSL_verify_peer_name'],
                             'allow_self_signed' => (int)$params['SMTPSecureSSL_allow_self_signed']
                         ]
                     ];
@@ -80,7 +81,7 @@ QUI::$Ajax->registerFunction(
                 'text.mail.body'
             );
 
-            $Mail->SMTPDebug   = 3;
+            $Mail->SMTPDebug = 3;
             $Mail->Debugoutput = function ($str, $level) {
                 QUI\System\Log::writeRecursive(rtrim($str) . PHP_EOL);
                 QUI\Mail\Log::write(rtrim($str));

@@ -6,31 +6,32 @@
  * @param string $package - Name of the package
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_get',
     function ($package) {
-        $Package      = QUI::getPackageManager()->getInstalledPackage($package);
+        $Package = QUI::getPackageManager()->getInstalledPackage($package);
         $composerData = $Package->getComposerData();
-        $lockData     = $Package->getLock();
+        $lockData = $Package->getLock();
 
         $hashData = [];
 
         if (isset($lockData['dist']['reference'])) {
             $hashValue = $lockData['dist']['reference'];
-            $hashData  = [
+            $hashData = [
                 'hash' => [
-                    'full'  => $hashValue,
+                    'full' => $hashValue,
                     'short' => \substr($hashValue, 0, 8)
                 ]
             ];
         }
 
         $standardData = [
-            'name'        => $Package->getName(),
-            'title'       => $Package->getTitle(),
+            'name' => $Package->getName(),
+            'title' => $Package->getTitle(),
             'description' => $Package->getDescription(),
-            'image'       => $Package->getImage(),
-            'preview'     => $Package->getPreviewImages()
+            'image' => $Package->getImage(),
+            'preview' => $Package->getPreviewImages()
         ];
 
         // require sort

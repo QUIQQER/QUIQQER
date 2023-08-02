@@ -6,6 +6,7 @@
  * @param string $toolbar - name of the toolbar
  * @param string $xml - xml content
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_editor_toolbar_save',
     function ($toolbar, $xml) {

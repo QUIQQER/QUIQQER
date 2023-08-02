@@ -6,6 +6,7 @@
  * @param integer $id - Workspace-ID
  * @param string $data - workspace data, json array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_desktop_workspace_save',
     function ($id, $data) {

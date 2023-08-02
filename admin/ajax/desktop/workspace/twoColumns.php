@@ -5,6 +5,7 @@
  *
  * @return string
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_desktop_workspace_twoColumns',
     function () {

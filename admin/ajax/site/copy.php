@@ -9,16 +9,17 @@
  *
  * @return integer - new site id
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_site_copy',
     function ($project, $id, $newParent) {
-        $Project   = QUI::getProjectManager()->decode($project);
-        $Site      = new QUI\Projects\Site\Edit($Project, (int)$id);
-        $newParent = \json_decode($newParent, true);
+        $Project = QUI::getProjectManager()->decode($project);
+        $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
+        $newParent = json_decode($newParent, true);
 
-        if (\is_numeric($newParent)) {
+        if (is_numeric($newParent)) {
             $ParentProject = $Project;
-            $newParentId   = $newParent;
+            $newParentId = $newParent;
         } else {
             $ParentProject = QUI::getProjectManager()->decode(
                 $newParent['project']

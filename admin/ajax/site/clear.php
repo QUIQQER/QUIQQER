@@ -8,6 +8,7 @@
  *
  * @return string
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_site_clear',
     function ($project, $name) {

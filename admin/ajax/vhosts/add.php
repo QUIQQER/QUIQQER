@@ -6,6 +6,7 @@
  * @param string $vhost
  * @return string
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_vhosts_add',
     function ($vhost) {

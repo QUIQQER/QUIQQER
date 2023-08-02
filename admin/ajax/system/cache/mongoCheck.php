@@ -33,7 +33,7 @@ QUI::$Ajax->registerFunction(
         }
 
         if (\strpos($host, 'mongodb://') === false) {
-            $host = 'mongodb://'.$host;
+            $host = 'mongodb://' . $host;
         }
 
         if (!empty($username) && !empty($password)) {
@@ -46,8 +46,8 @@ QUI::$Ajax->registerFunction(
         }
 
         $CacheDriver = new QuiqqerMongoDriver([
-            'mongo'      => $Client,
-            'database'   => $database,
+            'mongo' => $Client,
+            'database' => $database,
             'collection' => $collection
         ]);
 

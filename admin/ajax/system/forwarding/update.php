@@ -7,6 +7,7 @@
  * @param string $target
  * @param int|string $code
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_forwarding_update',
     function ($from, $target, $code) {

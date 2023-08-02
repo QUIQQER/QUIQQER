@@ -6,12 +6,13 @@
  * @param integer $gid - Gruppen-ID
  * @return bool
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_groups_deactivate',
     function ($gid) {
-        $gid = \json_decode($gid, true);
+        $gid = json_decode($gid, true);
 
-        if (!\is_array($gid)) {
+        if (!is_array($gid)) {
             $gid = [$gid];
         }
 

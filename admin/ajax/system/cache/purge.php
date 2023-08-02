@@ -3,6 +3,7 @@
 /**
  * cache purging
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_cache_purge',
     function () {

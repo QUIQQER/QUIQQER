@@ -1,7 +1,5 @@
 <?php
 
-use QUI\System\License;
-
 /**
  * Upload a license key file
  *
@@ -9,6 +7,9 @@ use QUI\System\License;
  *
  * @return void
  */
+
+use QUI\System\License;
+
 QUI::$Ajax->registerFunction(
     'ajax_licenseKey_upload',
     function ($File) {

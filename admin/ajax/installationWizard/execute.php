@@ -1,10 +1,11 @@
 <?php
 
-use QUI\InstallationWizard\ProviderHandler;
-
 /**
  * Execute the setup for the specific provider
  */
+
+use QUI\InstallationWizard\ProviderHandler;
+
 QUI::$Ajax->registerFunction(
     'ajax_installationWizard_execute',
     function ($provider, $data) {

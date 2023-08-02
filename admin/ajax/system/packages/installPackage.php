@@ -1,7 +1,5 @@
 <?php
 
-use QUI\Package\PackageInstallException;
-
 /**
  * Install a wanted package
  * - used via the store
@@ -11,13 +9,16 @@ use QUI\Package\PackageInstallException;
  *
  * @throws PackageInstallException
  */
+
+use QUI\Package\PackageInstallException;
+
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_installPackage',
     function ($packageName, $packageVersion, $server) {
         $Packages = QUI::getPackageManager();
-        $server   = \json_decode($server, true);
+        $server = json_decode($server, true);
 
-        if ($server && \is_array($server)) {
+        if ($server && is_array($server)) {
             foreach ($server as $s) {
                 $Packages->addServer($s['server'], [
                     'type' => $s['type']

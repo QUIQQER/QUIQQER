@@ -5,6 +5,7 @@
  *
  * @return Bool
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_maintenance_status',
     function () {

@@ -8,6 +8,7 @@
  * @return array
  * @deprecated
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_login_login',
     function ($username, $password) {

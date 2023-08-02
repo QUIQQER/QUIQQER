@@ -7,14 +7,15 @@
  * @param string $id
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_site_categories_xml',
     function ($project, $id, $category) {
         $Project = QUI::getProjectManager()->decode($project);
-        $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
-        $type    = $Site->getAttribute('type');
+        $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
+        $type = $Site->getAttribute('type');
 
-        $cacheName = 'quiqqer/package/quiqqer/quiqqer/admin/site/categories/'.$type.'/'.$category;
+        $cacheName = 'quiqqer/package/quiqqer/quiqqer/admin/site/categories/' . $type . '/' . $category;
         $exception = false;
 
         try {
@@ -23,17 +24,17 @@ QUI::$Ajax->registerFunction(
         }
 
 
-        $result   = '';
+        $result = '';
         $Settings = QUI\Utils\XML\Settings::getInstance();
 
         // site type tabs
-        $types = \explode(':', $type);
-        $file  = OPT_DIR.$types[0].'/site.xml';
+        $types = explode(':', $type);
+        $file = OPT_DIR . $types[0] . '/site.xml';
 
-        if (\file_exists($file)) {
+        if (file_exists($file)) {
             try {
                 $Settings->setXMLPath(
-                    "//site/types/type[@type='".$types[1]."']/tab[@name='".$category."']"
+                    "//site/types/type[@type='" . $types[1] . "']/tab[@name='" . $category . "']"
                 );
 
                 $result .= $Settings->getCategoriesHtml($file);
@@ -45,7 +46,7 @@ QUI::$Ajax->registerFunction(
 
             try {
                 $Settings->setXMLPath(
-                    "//site/types/type[@type='".$type."']/tab[@name='".$category."']"
+                    "//site/types/type[@type='" . $type . "']/tab[@name='" . $category . "']"
                 );
 
                 $result .= $Settings->getCategoriesHtml($file);
@@ -56,7 +57,7 @@ QUI::$Ajax->registerFunction(
         }
 
         $packages = QUI::getPackageManager()->getInstalled();
-        $files    = [];
+        $files = [];
 
         foreach ($packages as $package) {
             // templates would be separated
@@ -68,16 +69,16 @@ QUI::$Ajax->registerFunction(
                 continue;
             }
 
-            $file = OPT_DIR.$package['name'].'/site.xml';
+            $file = OPT_DIR . $package['name'] . '/site.xml';
 
-            if (\file_exists($file)) {
+            if (file_exists($file)) {
                 $files[] = $file;
             }
         }
 
-        if (\count($files)) {
+        if (count($files)) {
             try {
-                $Settings->setXMLPath("//site/window/tab[@name='".$category."']");
+                $Settings->setXMLPath("//site/window/tab[@name='" . $category . "']");
 
                 $result .= $Settings->getCategoriesHtml($files);
             } catch (\Exception $Exception) {
@@ -87,7 +88,7 @@ QUI::$Ajax->registerFunction(
 
             try {
                 $Settings->setXMLPath(
-                    "//site/types/type[@type='".$type."']/tab[@name='".$category."']"
+                    "//site/types/type[@type='" . $type . "']/tab[@name='" . $category . "']"
                 );
 
                 $result .= $Settings->getCategoriesHtml($files);

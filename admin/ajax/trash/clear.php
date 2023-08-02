@@ -5,11 +5,12 @@
  *
  * @param string $project - Project data, JSON Array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_trash_clear',
     function ($project) {
         $Project = QUI::getProjectManager()->decode($project);
-        $Trash   = $Project->getTrash();
+        $Trash = $Project->getTrash();
 
         $Trash->clear();
     },

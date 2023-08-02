@@ -6,12 +6,13 @@
  * @param string $project - name of the project
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_project_panel_categories_get',
     function ($project) {
         $Project = QUI::getProjectManager()->decode($project);
 
-        $buttonList  = [];
+        $buttonList = [];
         $settingsXml = QUI::getProjectManager()->getRelatedSettingsXML($Project);
 
         // read template config

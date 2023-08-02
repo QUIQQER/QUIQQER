@@ -1,7 +1,5 @@
 <?php
 
-use QUI\Projects\Media\Utils;
-
 /**
  * Return the data of the fileid
  *
@@ -10,12 +8,15 @@ use QUI\Projects\Media\Utils;
  *
  * @return array
  */
+
+use QUI\Projects\Media\Utils;
+
 QUI::$Ajax->registerFunction(
     'ajax_media_details',
     function ($project, $fileid) {
-        $fileid  = \json_decode($fileid, true);
+        $fileid = json_decode($fileid, true);
         $Project = QUI\Projects\Manager::getProject($project);
-        $Media   = $Project->getMedia();
+        $Media = $Project->getMedia();
 
         if (!\is_array($fileid)) {
             if (Utils::isMediaUrl($fileid)) {

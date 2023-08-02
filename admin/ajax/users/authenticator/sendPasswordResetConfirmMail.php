@@ -1,7 +1,5 @@
 <?php
 
-use QUI\Users\Auth\Handler;
-
 /**
  * Send mail to confirm password reset process
  *
@@ -9,8 +7,10 @@ use QUI\Users\Auth\Handler;
  * @param string $authenticator
  * @return void
  * @throws \QUI\Users\Exception
- *
  */
+
+use QUI\Users\Auth\Handler;
+
 QUI::$Ajax->registerFunction(
     'ajax_users_authenticator_sendPasswordResetConfirmMail',
     function ($email) {

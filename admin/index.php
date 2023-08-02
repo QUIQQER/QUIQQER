@@ -1,15 +1,17 @@
 <?php
 
+// phpcs:ignoreFile
+
 define('QUIQQER_SYSTEM', true);
 require 'header.php';
 
 QUI::getEvents()->fireEvent('adminRequest');
 
 // qui path
-$qui_path   = URL_OPT_DIR . 'bin/qui/';
+$qui_path = URL_OPT_DIR . 'bin/qui/';
 $qui_extend = URL_OPT_DIR . 'bin/qui/extend/';
 
-$config  = QUI::backendGuiConfigs();
+$config = QUI::backendGuiConfigs();
 $Project = null;
 
 try {
@@ -18,7 +20,7 @@ try {
 }
 
 // user avatar
-$User   = QUI::getUserBySession();
+$User = QUI::getUserBySession();
 $Avatar = $User->getAvatar();
 $avatar = '';
 
@@ -50,9 +52,9 @@ echo $User->getLang(); ?>"> <!--<![endif]-->
 
     if ($favicon) {
         try {
-            $Favicon    = QUI\Projects\Media\Utils::getImageByUrl($favicon);
+            $Favicon = QUI\Projects\Media\Utils::getImageByUrl($favicon);
             $attributes = $Favicon->getAttributes();
-            $type       = $attributes['mime_type'];
+            $type = $attributes['mime_type'];
 
             ?>
             <link rel="shortcut icon" href="<?php
@@ -83,9 +85,9 @@ echo $User->getLang(); ?>"> <!--<![endif]-->
     ?>
 
     <link
-        href="//fonts.googleapis.com/css?family=Open+Sans:400,700,400italic"
-        rel="stylesheet"
-        type="text/css"
+            href="//fonts.googleapis.com/css?family=Open+Sans:400,700,400italic"
+            rel="stylesheet"
+            type="text/css"
     />
 
     <meta name="viewport"
@@ -121,17 +123,17 @@ echo $User->getLang(); ?>"> <!--<![endif]-->
     <![endif]-->
 
     <link
-        href="<?php
-        echo $qui_extend; ?>unsemantic/unsemantic-grid-responsive.css"
-        rel="stylesheet"
-        type="text/css"
+            href="<?php
+            echo $qui_extend; ?>unsemantic/unsemantic-grid-responsive.css"
+            rel="stylesheet"
+            type="text/css"
     />
 
     <link
-        href="<?php
-        echo URL_OPT_DIR; ?>quiqqer/messages/bin/messages.css"
-        rel="stylesheet"
-        type="text/css"
+            href="<?php
+            echo URL_OPT_DIR; ?>quiqqer/messages/bin/messages.css"
+            rel="stylesheet"
+            type="text/css"
     />
 
     <link href="<?php
@@ -167,15 +169,15 @@ echo $User->getLang(); ?>"> <!--<![endif]-->
     <script type="text/javascript">
         /* <![CDATA[ */
         var USER = {
-            isSU    : <?php echo $User->isSU() ? 1 : 0; ?>,
-            id      : <?php echo $User->getId() ? $User->getId() : 0; ?>,
-            lang    : "<?php echo $User->getLang(); ?>",
-            name    : "<?php echo $User->getName(); ?>",
-            avatar  : "<?php echo $avatar;?>",
+            isSU: <?php echo $User->isSU() ? 1 : 0; ?>,
+            id: <?php echo $User->getId() ? $User->getId() : 0; ?>,
+            lang: "<?php echo $User->getLang(); ?>",
+            name: "<?php echo $User->getName(); ?>",
+            avatar: "<?php echo $avatar;?>",
             username: "<?php echo $User->getUsername(); ?>"
         };
 
-        var URL_DIR     = "<?php echo URL_DIR; ?>",
+        var URL_DIR = "<?php echo URL_DIR; ?>",
             URL_LIB_DIR = "<?php echo URL_LIB_DIR; ?>",
             URL_BIN_DIR = "<?php echo URL_BIN_DIR; ?>",
             URL_USR_DIR = "<?php echo URL_USR_DIR; ?>",
@@ -185,7 +187,7 @@ echo $User->getLang(); ?>"> <!--<![endif]-->
 
         var PHP = {
             upload_max_filesize: "<?php echo QUI\Utils\System::getUploadMaxFileSize(); ?>",
-            memory_limit       : <?php echo QUI\Utils\System::getMemoryLimit(); ?>
+            memory_limit: <?php echo QUI\Utils\System::getMemoryLimit(); ?>
         };
 
         var QUIQQER_VERSION = "<?php echo QUI::getPackageManager()->getVersion(); ?>";
@@ -203,16 +205,16 @@ echo $User->getLang(); ?>"> <!--<![endif]-->
         ]); ?>;
 
         var QUIQQER = {
-            Rewrite         : {
-                URL_PARAM_SEPARATOR  : "<?php echo QUI\Rewrite::URL_PARAM_SEPARATOR; ?>",
-                URL_SPACE_CHARACTER  : "<?php echo QUI\Rewrite::URL_SPACE_CHARACTER; ?>",
+            Rewrite: {
+                URL_PARAM_SEPARATOR: "<?php echo QUI\Rewrite::URL_PARAM_SEPARATOR; ?>",
+                URL_SPACE_CHARACTER: "<?php echo QUI\Rewrite::URL_SPACE_CHARACTER; ?>",
                 URL_PROJECT_CHARACTER: "<?php echo QUI\Rewrite::URL_PROJECT_CHARACTER; ?>",
-                SUFFIX               : "<?php echo QUI\Rewrite::getDefaultSuffix(); ?>"
+                SUFFIX: "<?php echo QUI\Rewrite::getDefaultSuffix(); ?>"
             },
-            ajax            : '<?php echo URL_SYS_DIR; ?>ajax.php',
+            ajax: '<?php echo URL_SYS_DIR; ?>ajax.php',
             inAdministration: true,
-            lu              : "<?php echo QUI::getPackageManager()->getLastUpdateDate(); ?>",
-            vMd5            : "<?php echo md5(QUI::version()); ?>",
+            lu: "<?php echo QUI::getPackageManager()->getLastUpdateDate(); ?>",
+            vMd5: "<?php echo md5(QUI::version()); ?>",
 
             installPackage: function (packageName, version, server) {
                 return new Promise(function (resolve, reject) {

@@ -9,11 +9,12 @@
  *
  * @throws QUI\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_users_set_password',
     function ($uid, $pw1, $pw2) {
         $Users = QUI::getUsers();
-        $User  = $Users->get((int)$uid);
+        $User = $Users->get((int)$uid);
 
         if ($pw1 != $pw2) {
             throw new QUI\Exception(

@@ -6,11 +6,12 @@
  * @return array
  * @throws \QUI\Users\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_users_authenticator_globalAuthenticators',
     function () {
-        $User      = QUI::getUserBySession();
-        $Auth      = QUI\Users\Auth\Handler::getInstance();
+        $User = QUI::getUserBySession();
+        $Auth = QUI\Users\Auth\Handler::getInstance();
         $available = $Auth->getAvailableAuthenticators();
 
         $list = [];
@@ -21,8 +22,8 @@ QUI::$Ajax->registerFunction(
 
                 /* @var $Authenticator \QUI\Users\AuthenticatorInterface */
                 $list[] = [
-                    'title'         => $Authenticator->getTitle(),
-                    'description'   => $Authenticator->getDescription(),
+                    'title' => $Authenticator->getTitle(),
+                    'description' => $Authenticator->getDescription(),
                     'authenticator' => $authenticator
                 ];
             } catch (\Exception $Exception) {
@@ -31,9 +32,9 @@ QUI::$Ajax->registerFunction(
         }
 
         return [
-            'global'    => [
+            'global' => [
                 'frontend' => $Auth->getGlobalAuthenticators(),
-                'backend'  => $Auth->getGlobalBackendAuthenticators()
+                'backend' => $Auth->getGlobalBackendAuthenticators()
             ],
             'available' => $list
         ];

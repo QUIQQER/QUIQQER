@@ -6,6 +6,7 @@
  *
  * @return String
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_systemcheck',
     function () {

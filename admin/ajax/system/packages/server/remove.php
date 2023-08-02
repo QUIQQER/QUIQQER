@@ -6,6 +6,7 @@
  * @param string $server
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_server_remove',
     function ($server) {

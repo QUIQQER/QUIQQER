@@ -6,6 +6,7 @@
  * @param $permission - name of the permission
  * @return false|string
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_permissions_session_hasPermission',
     function ($permission) {

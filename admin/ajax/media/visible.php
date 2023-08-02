@@ -8,14 +8,13 @@
  *
  * @throws \QUI\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_media_visible',
     function ($project, $ids) {
         $Project = QUI\Projects\Manager::getProject($project);
-        $Media   = $Project->getMedia();
-
-        $ids = \json_decode($ids, true);
-
+        $Media = $Project->getMedia();
+        $ids = json_decode($ids, true);
 
         foreach ($ids as $id) {
             try {

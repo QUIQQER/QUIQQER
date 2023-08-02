@@ -6,6 +6,7 @@
  * @param string $sitetype - name of the sitetype
  * @return string
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_project_types_get_title',
     function ($sitetype) {

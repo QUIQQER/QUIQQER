@@ -7,6 +7,7 @@
  * @param string $status
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_server_status',
     function ($server, $status) {

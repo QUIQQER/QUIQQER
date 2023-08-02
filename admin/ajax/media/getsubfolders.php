@@ -9,13 +9,14 @@
  * @return array
  * @throws \QUI\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_media_getsubfolders',
     function ($project, $fileid, $params) {
         $Project = QUI\Projects\Manager::getProject($project);
-        $Media   = $Project->getMedia();
-        $File    = $Media->get($fileid);
-        $params  = \json_decode($params, true);
+        $Media = $Project->getMedia();
+        $File = $Media->get($fileid);
+        $params = json_decode($params, true);
 
         if (!QUI\Projects\Media\Utils::isFolder($File)) {
             throw new QUI\Exception([
@@ -26,7 +27,7 @@ QUI::$Ajax->registerFunction(
 
         /* @var $File \QUI\Projects\Media\Folder */
         $children = [];
-        $folders  = $File->getFolders($params);
+        $folders = $File->getFolders($params);
 
         // count
         $params['count'] = true;
@@ -41,7 +42,7 @@ QUI::$Ajax->registerFunction(
 
         return [
             'children' => $children,
-            'count'    => $count
+            'count' => $count
         ];
     },
     ['project', 'fileid', 'params'],

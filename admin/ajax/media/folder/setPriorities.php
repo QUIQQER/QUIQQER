@@ -9,12 +9,13 @@
  *
  * @throws \QUI\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_media_folder_setPriorities',
     function ($project, $folderId, $priorities) {
         $Project = QUI\Projects\Manager::getProject($project);
-        $Media   = $Project->getMedia();
-        $Folder  = $Media->get($folderId);
+        $Media = $Project->getMedia();
+        $Folder = $Media->get($folderId);
 
         if (!QUI\Projects\Media\Utils::isFolder($Folder)) {
             throw new QUI\Exception(
@@ -22,7 +23,7 @@ QUI::$Ajax->registerFunction(
             );
         }
 
-        $priorities = \json_decode($priorities, true);
+        $priorities = json_decode($priorities, true);
 
         foreach ($priorities as $priority) {
             try {

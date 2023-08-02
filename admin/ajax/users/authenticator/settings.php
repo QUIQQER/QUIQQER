@@ -8,12 +8,13 @@
  * @return string
  * @throws \QUI\Users\Exception
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_users_authenticator_settings',
     function ($uid, $authenticator) {
-        $User          = QUI::getUsers()->get($uid);
+        $User = QUI::getUsers()->get($uid);
         $Authenticator = $User->getAuthenticator($authenticator);
-        $Settings      = $Authenticator->getSettingsControl();
+        $Settings = $Authenticator->getSettingsControl();
 
         if ($Settings) {
             return $Settings->create();

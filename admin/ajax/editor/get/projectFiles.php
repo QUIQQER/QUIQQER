@@ -7,6 +7,7 @@
  *
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'ajax_editor_get_projectFiles',
     function ($project) {
@@ -14,8 +15,8 @@ QUI::$Ajax->registerFunction(
             $Project = QUI::getProject($project);
         } catch (QUI\Exception $Exception) {
             return [
-                'cssFiles'  => '',
-                'bodyId'    => '',
+                'cssFiles' => '',
+                'bodyId' => '',
                 'bodyClass' => ''
             ];
         }
