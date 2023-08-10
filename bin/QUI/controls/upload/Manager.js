@@ -230,7 +230,7 @@ define('controls/upload/Manager', [
             const cleanupFiles = function (File) {
                 const newFileList = [];
 
-                for (let i = 0, len = self.$files.length; i < len; i++) {
+                for (i = 0, len = self.$files.length; i < len; i++) {
                     if (self.$files[i].$File !== File.$File) {
                         newFileList.push(self.$files[i]);
                     }
