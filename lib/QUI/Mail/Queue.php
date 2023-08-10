@@ -20,6 +20,7 @@ use function json_decode;
 use function json_encode;
 use function preg_replace;
 use function str_replace;
+use function strpos;
 use function time;
 
 /**
@@ -367,6 +368,13 @@ class Queue
 
             return true;
         } catch (Exception $Exception) {
+            $message = $Exception->getMessage();
+
+            if (strpos($message, 'Recipient address rejected:') !== false) {
+                QUI\System\Log::addError($Exception->getMessage());
+                return true;
+            }
+
             QUI\System\Log::writeException($Exception);
             Log::logException($Exception);
 
