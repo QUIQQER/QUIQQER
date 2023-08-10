@@ -1,3 +1,5 @@
+/*jslint bitwise: true */
+
 /**
  * Bulk Upload -> Upload of multiple Files
  *
@@ -20,13 +22,6 @@ define('classes/request/BulkUpload', [
 ], function (QUI, QDOM, ObjectUtils, QUIMath, QUILocale) {
     "use strict";
 
-    /* jshint ignore:start */
-
-    /**
-     * @param str
-     * @param seed
-     * @return {number}
-     */
     const cyrb53 = (str, seed = 0) => {
         let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
 
@@ -44,7 +39,6 @@ define('classes/request/BulkUpload', [
         return 4294967296 * (2097151 & h2) + (h1 >>> 0);
     };
 
-    /* jshint ignore:end */
 
     const STATUS_WAITING = 0;
     const STATUS_RUNNING = 2;
