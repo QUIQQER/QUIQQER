@@ -54,7 +54,8 @@ define('classes/request/BulkUpload', [
             parentId: false,
             project: false,
             phpOnFinish: false,
-            phpOnStart: false
+            phpOnStart: false,
+            params: {}
         },
 
         initialize: function (options) {
@@ -316,9 +317,15 @@ define('classes/request/BulkUpload', [
             if (typeof UploadParams.lang === 'undefined') {
                 UploadParams.lang = QUILocale.getCurrent();
             }
+            
+            const p = Object.keys(UploadParams).reduce((acc, key) => {
+                if (typeof UploadParams[key] !== 'object') {
+                    acc[key] = UploadParams[key];
+                }
+                return acc;
+            }, {});
 
-
-            const url = URL_LIB_DIR + 'QUI/Upload/bin/upload.php?' + Object.toQueryString(UploadParams);
+            const url = URL_LIB_DIR + 'QUI/Upload/bin/upload.php?' + Object.toQueryString(p);
 
             return fetch(url, {
                 method: 'PUT',

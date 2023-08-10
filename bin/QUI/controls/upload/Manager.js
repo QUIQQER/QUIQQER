@@ -36,7 +36,7 @@ define('controls/upload/Manager', [
     return new Class({
 
         Extends: QUIPanel,
-        Type   : 'controls/upload/Manager',
+        Type: 'controls/upload/Manager',
 
         Binds: [
             '$onCreate',
@@ -47,9 +47,9 @@ define('controls/upload/Manager', [
         ],
 
         options: {
-            icon        : 'fa fa-upload',
+            icon: 'fa fa-upload',
             pauseAllowed: true,
-            contextMenu : true
+            contextMenu: true
         },
 
         initialize: function (options) {
@@ -79,8 +79,8 @@ define('controls/upload/Manager', [
             }).inject(this.getContent());
 
             this.addButton({
-                icon  : 'fa fa-trash',
-                title : Locale.get(lg, 'upload.manager.clear'),
+                icon: 'fa fa-trash',
+                title: Locale.get(lg, 'upload.manager.clear'),
                 styles: {
                     'float': 'right'
                 },
@@ -158,8 +158,8 @@ define('controls/upload/Manager', [
             const self = this;
 
             let foundPackageFiles = false,
-                archiveFiles      = [],
-                extract           = false;
+                archiveFiles = [],
+                extract = false;
 
             params = params || {};
 
@@ -183,28 +183,28 @@ define('controls/upload/Manager', [
 
                 for (i = 0, len = archiveFiles.length; i < len; i++) {
                     list = list + '<div>' +
-                           '<input id="upload-file-' + i + '" type="checkbox" value="' + archiveFiles[i].name + '" />' +
-                           '<label for="upload-file-' + i + '" style="line-height: 20px; margin-left: 10px;">' +
-                           Locale.get(lg, 'upload.manager.message.archivfile.label', {
-                               file: archiveFiles[i].name
-                           }) +
-                           '</label>' +
-                           '</div>';
+                        '<input id="upload-file-' + i + '" type="checkbox" value="' + archiveFiles[i].name + '" />' +
+                        '<label for="upload-file-' + i + '" style="line-height: 20px; margin-left: 10px;">' +
+                        Locale.get(lg, 'upload.manager.message.archivfile.label', {
+                            file: archiveFiles[i].name
+                        }) +
+                        '</label>' +
+                        '</div>';
                 }
 
 
                 // ask for extraction
                 new QUIAlert({
-                    title          : Locale.get(lg, 'upload.manager.message.archivfile.title'),
-                    content        : Locale.get(lg, 'upload.manager.message.archivfile.text') + '<br />' + list,
+                    title: Locale.get(lg, 'upload.manager.message.archivfile.title'),
+                    content: Locale.get(lg, 'upload.manager.message.archivfile.text') + '<br />' + list,
                     closeButtonText: Locale.get(lg, 'upload.manager.message.archivfile.btn.start'),
-                    events         : {
+                    events: {
                         onClose: function (Win) {
                             let i, len;
 
-                            const Body      = Win.getContent(),
-                                  checkboxs = Body.getElements('input[type="checkbox"]'),
-                                  extract   = {};
+                            const Body = Win.getContent(),
+                                checkboxs = Body.getElements('input[type="checkbox"]'),
+                                extract = {};
 
 
                             // collect all which must be extract
@@ -291,11 +291,19 @@ define('controls/upload/Manager', [
 
             if (files.length > 1) {
                 require(['classes/request/BulkUpload'], (BulkUpload) => {
+                    const p = Object.keys(params).reduce((acc, key) => {
+                        if (typeof params[key] !== 'object') {
+                            acc[key] = params[key];
+                        }
+                        return acc;
+                    }, {});
+
                     new BulkUpload({
-                        parentId   : params.parentid,
-                        project    : params.project,
+                        parentId: params.parentid,
+                        project: params.project,
                         phpOnFinish: rf,
-                        events     : {
+                        params: p,
+                        events: {
                             onFinish: () => {
                                 this.fireEvent('finished', [this]);
                                 this.fireEvent('complete', [this]);
@@ -332,18 +340,18 @@ define('controls/upload/Manager', [
                 }
 
                 const QUIFile = new UploadFile(files[i], {
-                    phpfunc     : rf,
-                    params      : file_params,
-                    events      : events,
+                    phpfunc: rf,
+                    params: file_params,
+                    events: events,
                     pauseAllowed: this.getAttribute('pauseAllowed'),
-                    contextMenu : this.getAttribute('contextMenu')
+                    contextMenu: this.getAttribute('contextMenu')
                 });
 
                 QUIFile.addEvents({
                     onComplete: onComplete,
-                    onRefresh : onRefresh,
-                    onError   : onError,
-                    onCancel  : onCancel
+                    onRefresh: onRefresh,
+                    onError: onError,
+                    onCancel: onCancel
                 });
 
                 if (file_params.phponstart) {
@@ -366,13 +374,13 @@ define('controls/upload/Manager', [
 
                         Node.setStyles({
                             background: '#fff',
-                            border    : '1px solid #f1f1f1',
-                            bottom    : 10,
-                            boxShadow : '0 0 10px rgba(0, 0, 0, 0.3)',
-                            position  : 'absolute',
-                            right     : 10,
-                            width     : 300,
-                            zIndex    : 1000
+                            border: '1px solid #f1f1f1',
+                            bottom: 10,
+                            boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
+                            position: 'absolute',
+                            right: 10,
+                            width: 300,
+                            zIndex: 1000
                         });
 
                         Node.inject(document.body);
@@ -451,10 +459,10 @@ define('controls/upload/Manager', [
 
                     QUIFile = new UploadFile(params.file, {
                         phpfunc: params.phpfunc,
-                        params : params,
-                        events : {
+                        params: params,
+                        events: {
                             onComplete: func_oncomplete,
-                            onCancel  : func_oncancel
+                            onCancel: func_oncancel
                         }
                     });
 

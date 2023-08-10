@@ -19,7 +19,7 @@ QUI::$Ajax->registerFunction(
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $Folder = $Media->get((int)$parentid);
-
+        
         if ($Folder->getType() != 'QUI\\Projects\\Media\\Folder') {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.is.no.folder')

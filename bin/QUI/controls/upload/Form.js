@@ -994,6 +994,7 @@ define('controls/upload/Form', [
                         project: params.project,
                         phpOnFinish: params.onfinish,
                         phpOnStart: params.onstart,
+                        params: params,
                         events: {
                             onFinish: () => {
                                 this.fireEvent('finished', [this]);
