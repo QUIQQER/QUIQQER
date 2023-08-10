@@ -988,7 +988,7 @@ define('controls/upload/Form', [
             if (files.length >= 2) {
                 require(['classes/request/BulkUpload'], (BulkUpload) => {
                     self.fireEvent('begin', [self]);
-                    
+
                     new BulkUpload({
                         parentId: params.parentid,
                         project: params.project,
