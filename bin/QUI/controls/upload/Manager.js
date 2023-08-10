@@ -200,21 +200,18 @@ define('controls/upload/Manager', [
                     closeButtonText: Locale.get(lg, 'upload.manager.message.archivfile.btn.start'),
                     events: {
                         onClose: function (Win) {
-                            let i, len;
-
                             const Body = Win.getContent(),
                                 checkboxs = Body.getElements('input[type="checkbox"]'),
-                                extract = {};
-
+                                ext = {};
 
                             // collect all which must be extract
                             for (i = 0, len = checkboxs.length; i < len; i++) {
                                 if (checkboxs[i].checked) {
-                                    extract[checkboxs[i].get('value')] = true;
+                                    ext[checkboxs[i].get('value')] = true;
                                 }
                             }
 
-                            params.extract = extract;
+                            params.extract = ext;
 
                             self.uploadFiles(files, rf, params);
                         }
