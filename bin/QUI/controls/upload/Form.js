@@ -770,14 +770,13 @@ define('controls/upload/Form', [
                     onClick: function (Btn, event) {
                         event.stop();
 
-                        const Container = Btn.getAttribute('Container');
                         const fid = Slick.uidOf(Input);
 
                         if (self.$files[fid]) {
                             delete self.$files[fid];
                         }
 
-                        Container.destroy();
+                        Btn.getAttribute('Container').destroy();
 
                         self.$finished = false;
                         self.fireEvent('inputDestroy');
@@ -860,8 +859,8 @@ define('controls/upload/Form', [
          * Removes empty file entries
          */
         cleanup: function () {
-            const emptyUploads = this.$Form.getElements('div.qui-form-upload').filter(function (Upload) {
-                const Input = Upload.getElement('input');
+            const emptyUploads = this.$Form.getElements('div.qui-form-upload').filter(function (UploadNode) {
+                const Input = UploadNode.getElement('input');
 
                 if (typeof Input.files === 'undefined') {
                     return false;
@@ -1150,16 +1149,17 @@ define('controls/upload/Form', [
                 return;
             }
 
+            const msgHandlerOutput = (MH) => {
+                MH.addError(
+                    Locale.get(lg, 'upload.form.message.limit', {
+                        limit: maxUploads
+                    })
+                );
+            };
+
             for (let i = 0, len = files.length; i < len; i++) {
                 if (Object.getLength(this.$files) >= maxUploads) {
-                    QUI.getMessageHandler().then((MH) => {
-                        MH.addError(
-                            Locale.get(lg, 'upload.form.message.limit', {
-                                limit: maxUploads
-                            })
-                        );
-                    });
-
+                    QUI.getMessageHandler().then(msgHandlerOutput);
                     break;
                 }
 
