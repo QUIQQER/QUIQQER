@@ -58,7 +58,7 @@ class Manager
     public function init()
     {
         // if a onstart function
-        if (!empty($_REQUEST['onstart'] && is_callable($_REQUEST['onstart']))) {
+        if (!empty($_REQUEST['onstart']) && is_callable($_REQUEST['onstart'])) {
             $this->callFunction($_REQUEST['onstart'], $_REQUEST);
         }
 

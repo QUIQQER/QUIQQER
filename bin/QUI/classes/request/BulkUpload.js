@@ -1,3 +1,6 @@
+/* jslint bitwise: true */
+/* jshint evil: true */
+
 /**
  * Bulk Upload -> Upload of multiple Files
  *
@@ -37,6 +40,7 @@ define('classes/request/BulkUpload', [
         return 4294967296 * (2097151 & h2) + (h1 >>> 0);
     };
 
+
     const STATUS_WAITING = 0;
     const STATUS_RUNNING = 2;
     const STATUS_DONE = 1;
@@ -44,13 +48,14 @@ define('classes/request/BulkUpload', [
     return new Class({
 
         Extends: QDOM,
-        Type   : 'classes/request/BulkUpload',
+        Type: 'classes/request/BulkUpload',
 
         options: {
-            parentId   : false,
-            project    : false,
+            parentId: false,
+            project: false,
             phpOnFinish: false,
-            phpOnStart : false
+            phpOnStart: false,
+            params: {}
         },
 
         initialize: function (options) {
@@ -104,9 +109,9 @@ define('classes/request/BulkUpload', [
                 }
 
                 this.$files[hash] = {
-                    file  : File,
+                    file: File,
                     status: STATUS_WAITING,
-                    path  : path
+                    path: path
                 };
 
                 this.$size = this.$size + File.size;
@@ -170,14 +175,14 @@ define('classes/request/BulkUpload', [
             const total = Object.getLength(this.$files);
 
             return {
-                total   : total,
-                files   : this.$files,
-                waiting : waiting,
-                running : running,
-                done    : done,
-                size    : this.$size,
+                total: total,
+                files: this.$files,
+                waiting: waiting,
+                running: running,
+                done: done,
+                size: this.$size,
                 uploaded: this.$uploaded,
-                percent : QUIMath.percent(this.$uploaded, this.$size)
+                percent: QUIMath.percent(this.$uploaded, this.$size)
             };
         },
 
@@ -190,7 +195,7 @@ define('classes/request/BulkUpload', [
             const MessageNode = this.$LoadingMessage.getElm();
 
             MessageNode.getElement('.quiqqer-message-loading-progress-bar')
-                       .setStyle('width', progress.percent + '%');
+                .setStyle('width', progress.percent + '%');
         },
 
         /**
@@ -280,11 +285,11 @@ define('classes/request/BulkUpload', [
             // extra params for ajax function
             const UploadParams = ObjectUtils.combine((FileParams || {}), {
                 parentid: this.getAttribute('parentId'),
-                project : this.getAttribute('project'),
+                project: this.getAttribute('project'),
                 onfinish: this.getAttribute('phpOnFinish'),
-                onstart : this.getAttribute('phpOnStart'),
-                file    : JSON.encode({
-                    chunksize : this.$currentChunkSize,
+                onstart: this.getAttribute('phpOnStart'),
+                file: JSON.encode({
+                    chunksize: this.$currentChunkSize,
                     chunkstart: this.$currentRangeStart
                 }),
                 filesize: File.size,
@@ -312,19 +317,25 @@ define('classes/request/BulkUpload', [
             if (typeof UploadParams.lang === 'undefined') {
                 UploadParams.lang = QUILocale.getCurrent();
             }
+            
+            const p = Object.keys(UploadParams).reduce((acc, key) => {
+                if (typeof UploadParams[key] !== 'object') {
+                    acc[key] = UploadParams[key];
+                }
+                return acc;
+            }, {});
 
-
-            const url = URL_LIB_DIR + 'QUI/Upload/bin/upload.php?' + Object.toQueryString(UploadParams);
+            const url = URL_LIB_DIR + 'QUI/Upload/bin/upload.php?' + Object.toQueryString(p);
 
             return fetch(url, {
-                method : 'PUT',
-                cache  : 'no-cache',
+                method: 'PUT',
+                cache: 'no-cache',
                 headers: {
-                    'Content-Type' : 'application/octet-stream',
+                    'Content-Type': 'application/octet-stream',
                     'Content-Range': 'bytes ' + this.$currentRangeStart + '-' + this.$currentRangeEnd + '/' +
-                                     this.$currentFileSize
+                        this.$currentFileSize
                 },
-                body   : data
+                body: data
             }).then((response) => {
                 this.$uploaded = this.$uploaded + (this.$currentRangeEnd - this.$currentRangeStart);
 
@@ -358,10 +369,10 @@ define('classes/request/BulkUpload', [
          * @param {String} responseText - server answer
          */
         $parseResult: function (responseText) {
-            const str   = responseText || '',
-                  len   = str.length,
-                  start = 9,
-                  end   = len - 10;
+            const str = responseText || '',
+                len = str.length,
+                start = 9,
+                end = len - 10;
 
             if (!len) {
                 return;
