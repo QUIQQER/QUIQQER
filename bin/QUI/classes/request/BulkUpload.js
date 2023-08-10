@@ -1,4 +1,5 @@
-/*jslint bitwise: true */
+/* jslint bitwise: true */
+/* jshint evil: true */
 
 /**
  * Bulk Upload -> Upload of multiple Files
