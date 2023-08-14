@@ -192,13 +192,22 @@ class Update extends QUI\System\Console\Tool
             }
         }
 
+        $CLIOutput = new QUI\System\Console\Output();
+        $CLIOutput->Events->addEvent('onWrite', function ($message) {
+            self::onCliOutput($message, $this);
+        });
+
+
         try {
             $Packages->refreshServerList();
 
             $Composer = $Packages->getComposer();
             $Composer->unmute();
+            $Composer->setOutput($CLIOutput);
 
             if ($this->getArgument('package')) {
+                $this->writeLn('Update Package ' . $this->getArgument('package') . '...');
+
                 $Composer->update([
                     'packages' => [
                         $this->getArgument('package')
@@ -229,11 +238,6 @@ class Update extends QUI\System\Console\Tool
                 if ($oldDirsAvailable) {
                     unlink($localeFiles);
                 }
-
-                $CLIOutput = new QUI\System\Console\Output();
-                $CLIOutput->Events->addEvent('onWrite', function ($message) {
-                    self::onCliOutput($message, $this);
-                });
 
                 $this->writeLn('QUIQQER Update ...');
                 $Packages->getComposer()->setOutput($CLIOutput);
@@ -450,12 +454,12 @@ class Update extends QUI\System\Console\Tool
 
     protected function executedAnywayQuestion(): bool
     {
-        $this->writeLn('Should the update be executed anyway? [Y,n]: ', 'red');
+        $this->writeLn('Should the update be executed anyway? [y,N]: ', 'red');
         $this->resetColor();
         $answer = $this->readInput();
 
         if (empty($answer)) {
-            return true;
+            return false;
         }
 
         if (strtolower($answer) === 'y') {
