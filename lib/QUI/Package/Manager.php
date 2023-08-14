@@ -27,6 +27,7 @@ use QUI\Cache\Manager as QUICacheManager;
 use QUI\Projects\Project;
 use QUI\Utils\System\File as QUIFile;
 use Seld\JsonLint\JsonParser;
+use Seld\JsonLint\ParsingException;
 use UnexpectedValueException;
 
 use function array_filter;
@@ -84,6 +85,7 @@ use const CURLOPT_USERAGENT;
 use const DEVELOPMENT;
 use const JSON_PRETTY_PRINT;
 use const OPT_DIR;
+use const PHP_EOL;
 use const PHP_URL_HOST;
 use const VAR_DIR;
 
@@ -421,9 +423,16 @@ class Manager extends QUI\QDOM
         $Parser = new JsonParser();
 
         if (file_exists($this->composer_json)) {
-            $composerJson = $Parser->parse(
-                file_get_contents($this->composer_json)
-            );
+            try {
+                $composerJson = $Parser->parse(
+                    file_get_contents($this->composer_json)
+                );
+            } catch (ParsingException $e) {
+                throw new ParsingException(
+                    'Parsing Error at file ' . $this->composer_json . PHP_EOL . $e->getMessage(),
+                    $e->getDetails()
+                );
+            }
         } else {
             $template = file_get_contents(
                 dirname(__FILE__) . '/composer.tpl'
