@@ -12,6 +12,7 @@ use QUI;
 use function count;
 use function date;
 use function error_log;
+use function explode;
 use function implode;
 use function is_dir;
 use function method_exists;
@@ -188,6 +189,8 @@ class Update extends QUI\System\Console\Tool
             $this->resetColor();
 
             if ($this->executedAnywayQuestion() === false) {
+                $Maintenance->setArgument('status', 'off');
+                $Maintenance->execute();
                 exit;
             }
         }
@@ -196,7 +199,6 @@ class Update extends QUI\System\Console\Tool
         $CLIOutput->Events->addEvent('onWrite', function ($message) {
             self::onCliOutput($message, $this);
         });
-
 
         try {
             $Packages->refreshServerList();
@@ -352,6 +354,25 @@ class Update extends QUI\System\Console\Tool
             return;
         }
 
+        // update message
+        if (strpos($message, 'Updates: ') !== false) {
+            $message = str_replace('Updates: ', '', $message);
+            $updates = explode(',', $message);
+
+            $Instance->writeLn('Updates:', 'yellow');
+
+            foreach ($updates as $update) {
+                $Instance->writeLn('- ' . trim($update), 'purple');
+            }
+
+            // reset color
+            if (method_exists($Instance, 'resetColor')) {
+                $Instance->resetColor();
+            }
+
+            return;
+        }
+
         // pull message
         if (strpos($message, '      ') === 0) {
             return;
@@ -362,6 +383,8 @@ class Update extends QUI\System\Console\Tool
             'Downloading ',
             '- Downloading ',
             '- Upgrading ',
+            '- Syncing ',
+            'Cloning to cache ',
             'Executing async command ',
             'Pulling in changes',
             'Reading ',

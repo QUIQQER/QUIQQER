@@ -712,15 +712,15 @@ class QUI
      *
      * @return \QUI\Database\DB
      */
-    public static function getDataBase(): \QUI\Database\DB
+    public static function getDatabase(): \QUI\Database\DB
     {
         if (!self::$DataBase2 instanceof \QUI\Database\DB) {
             self::$DataBase2 = new \QUI\Database\DB([
-                'driver'   => self::conf('db', 'driver'),
-                'host'     => self::conf('db', 'host'),
-                'user'     => self::conf('db', 'user'),
+                'driver' => self::conf('db', 'driver'),
+                'host' => self::conf('db', 'host'),
+                'user' => self::conf('db', 'user'),
                 'password' => self::conf('db', 'password'),
-                'dbname'   => self::conf('db', 'database')
+                'dbname' => self::conf('db', 'database')
             ]);
         }
 
