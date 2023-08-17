@@ -369,7 +369,7 @@ class Update extends QUI\System\Console\Tool
             if (method_exists($Instance, 'resetColor')) {
                 $Instance->resetColor();
             }
-            
+
             return;
         }
 
