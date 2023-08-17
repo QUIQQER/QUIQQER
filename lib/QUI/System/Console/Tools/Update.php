@@ -383,6 +383,8 @@ class Update extends QUI\System\Console\Tool
             'Downloading ',
             '- Downloading ',
             '- Upgrading ',
+            '  - Syncing ',
+            '    Cloning to cache ',
             'Executing async command ',
             'Pulling in changes',
             'Reading ',
