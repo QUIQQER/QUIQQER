@@ -1764,4 +1764,15 @@ class Project
 
         $this->name = $newName;
     }
+
+    /**
+     * Explicitly set the project template for the runtime.
+     *
+     * @param string $template
+     * @return void
+     */
+    public function setTemplate(string $template): void
+    {
+        $this->template = $template;
+    }
 }
