@@ -23,6 +23,7 @@
   },
   "require": {
     "php": ">=7.4",
+    "psr/event-dispatcher": "^1.0",
     "composer\/composer": "1.9.*|2.*",
     "tedivm\/stash": "0.17.*",
     "phpmailer\/phpmailer": "~6.0",
