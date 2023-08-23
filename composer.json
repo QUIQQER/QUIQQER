@@ -81,7 +81,8 @@
     "quiqqer-asset\/ace-builds": "*"
   },
   "provide": {
-    "psr/http-client-implementation": "1.0"
+    "psr/http-client-implementation": "1.0",
+    "psr/event-dispatcher-implementation": "1.0"
   },
   "scripts": {
     "post-install-cmd": [
