@@ -355,11 +355,19 @@ class Update extends QUI\System\Console\Tool
         }
 
         // update message
-        if (strpos($message, 'Updates: ') !== false) {
+        $update = strpos($message, 'Updates: ') !== false;
+        $install = strpos($message, 'Installs: ') !== false;
+
+        if ($update || $install) {
             $message = str_replace('Updates: ', '', $message);
+            $message = str_replace('Installs: ', '', $message);
             $updates = explode(',', $message);
 
-            $Instance->writeLn('Updates:', 'yellow');
+            if ($update) {
+                $Instance->writeLn('Updates:', 'yellow');
+            } elseif ($install) {
+                $Instance->writeLn('Installs:', 'yellow');
+            }
 
             foreach ($updates as $update) {
                 $Instance->writeLn('- ' . trim($update), 'purple');
