@@ -25,6 +25,7 @@ use function strtolower;
 use function trim;
 use function unlink;
 
+use const CMS_DIR;
 use const PHP_EOL;
 use const VAR_DIR;
 
@@ -477,12 +478,66 @@ class Update extends QUI\System\Console\Tool
                 $this->writeLn(implode("\n", $modified));
             }
 
+
+            // fetch changes
+            $changes = false;
+            $changesList = [];
+            $path = '';
+
+            foreach ($result as $line) {
+                if (strpos($line, 'You have changes in the following dependencies:') !== false) {
+                    $changes = true;
+                    continue;
+                }
+
+                if ($changes === false) {
+                    continue;
+                }
+
+                if (strpos($line, ':') !== false) {
+                    $path = trim($line, ':');
+                    $path = str_replace(CMS_DIR, '', $path);
+
+                    $changesList[$path] = [];
+                    continue;
+                }
+
+                $lines = explode(PHP_EOL, $line);
+
+                if (!empty($lines)) {
+                    foreach ($lines as $l) {
+                        if (!empty(trim($l))) {
+                            $changesList[$path][] = trim($l);
+                        }
+                    }
+                }
+            }
+
+            if (count($changesList)) {
+                $this->writeLn();
+                $this->writeLn('You have changes in the following dependencies:', 'light_green');
+
+                foreach ($changesList as $path => $files) {
+                    $this->writeLn($path, 'yellow');
+                    $this->resetColor();
+
+                    foreach ($files as $file) {
+                        $this->writeLn('- ' . $file);
+                    }
+                }
+            }
+
+            $this->resetColor();
+
             return true;
         }
 
         return false;
     }
 
+    /**
+     * @return bool
+     */
     protected function executedAnywayQuestion(): bool
     {
         $this->writeLn('Should the update be executed anyway? [y,N]: ', 'red');
