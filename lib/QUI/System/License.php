@@ -2,11 +2,32 @@
 
 namespace QUI\System;
 
+use Exception;
 use QUI;
+use QUI\Cache\Manager;
 use QUI\Config;
 use QUI\QDOM;
 use QUI\Security\Encryption;
 use QUI\Utils\System\File;
+
+use function bin2hex;
+use function curl_close;
+use function curl_exec;
+use function curl_init;
+use function curl_setopt_array;
+use function file_exists;
+use function file_get_contents;
+use function hash;
+use function hex2bin;
+use function http_build_query;
+use function implode;
+use function json_decode;
+use function json_encode;
+use function json_last_error;
+use function json_last_error_msg;
+use function rtrim;
+
+use const JSON_ERROR_NONE;
 
 /**
  * Class License
@@ -22,14 +43,15 @@ class License
      * @return void
      *
      * @throws QUI\Exception
+     * @throws Exception
      */
-    public static function registerLicenseFile($File)
+    public static function registerLicenseFile(QDOM $File)
     {
-        $content = \file_get_contents($File->getAttribute('filepath'));
-        $content = \json_decode(hex2bin($content), true);
+        $content = file_get_contents($File->getAttribute('filepath'));
+        $content = json_decode(hex2bin($content), true);
 
-        if (\json_last_error() !== JSON_ERROR_NONE) {
-            throw new QUI\Exception('JSON Error in license data: ' . \json_last_error_msg());
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new QUI\Exception('JSON Error in license data: ' . json_last_error_msg());
         }
 
         $keys = [
@@ -59,7 +81,7 @@ class License
         $licenseConfigFile = CMS_DIR . 'etc/license.ini.php';
         File::mkfile($licenseConfigFile);
 
-        if (!\file_exists($licenseConfigFile)) {
+        if (!file_exists($licenseConfigFile)) {
             throw new QUI\Exception('Could not create license config file "' . $licenseConfigFile . '"');
         }
 
@@ -72,7 +94,7 @@ class License
         $LicenseConfig->set(
             'license',
             'licenseHash',
-            \bin2hex(Encryption::encrypt(\hex2bin($content['licenseHash'])))
+            bin2hex(Encryption::encrypt(hex2bin($content['licenseHash'])))
         );
 
         $LicenseConfig->save($licenseConfigFile);
@@ -86,7 +108,7 @@ class License
         QUI::getPackageManager()->refreshServerList();
 
         // clear license cache
-        \QUI\Cache\Manager::clear('quiqqer_licenses');
+        Manager::clear('quiqqer_licenses');
     }
 
     /**
@@ -94,31 +116,32 @@ class License
      *
      * @return array - Request response
      * @throws QUI\Exception
+     * @throws Exception
      */
-    public static function activateSystem()
+    public static function activateSystem(): array
     {
         $licenseServerUrl = self::getLicenseServerUrl() . 'api/license/activate?';
         $licenseData = self::getLicenseData();
 
-        $licenseServerUrl .= \http_build_query([
+        $licenseServerUrl .= http_build_query([
             'licenseid' => $licenseData['id'],
             'licensehash' => $licenseData['licenseHash'],
             'systemid' => self::getSystemId(),
             'systemhash' => self::getSystemDataHash(),
-            'systemdata' => \bin2hex(\json_encode(self::getSystemData()))
+            'systemdata' => bin2hex(json_encode(self::getSystemData()))
         ]);
 
-        $Curl = \curl_init();
+        $Curl = curl_init();
 
-        \curl_setopt_array($Curl, [
+        curl_setopt_array($Curl, [
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => $licenseServerUrl,
             CURLOPT_USERAGENT => 'QUIQQER'
         ]);
 
-        $response = \curl_exec($Curl);
+        $response = curl_exec($Curl);
 
-        \curl_close($Curl);
+        curl_close($Curl);
 
         if (empty($response)) {
             throw new QUI\Exception([
@@ -127,9 +150,9 @@ class License
             ]);
         }
 
-        $response = \json_decode($response, true);
+        $response = json_decode($response, true);
 
-        if (\json_last_error() !== \JSON_ERROR_NONE) {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             throw new QUI\Exception([
                 'quiqqer/quiqqer',
                 'exception.License.connection_error'
@@ -148,7 +171,7 @@ class License
      *
      * @return string - License server URL (with trailing slash)
      */
-    public static function getLicenseServerUrl()
+    public static function getLicenseServerUrl(): string
     {
         $licenseServerUrl = QUI::conf('license', 'url');
 
@@ -156,31 +179,32 @@ class License
             return 'https://license.quiqqer.com/';
         }
 
-        return \rtrim($licenseServerUrl, '/') . '/';
+        return rtrim($licenseServerUrl, '/') . '/';
     }
 
     /**
      * Get data of license that is currently registered in this system.
      *
      * @return array|false - License data or false if no license data available
+     * @throws Exception
      */
     public static function getLicenseData()
     {
         $licenseConfigFile = CMS_DIR . 'etc/license.ini.php';
 
-        if (!\file_exists($licenseConfigFile)) {
+        if (!file_exists($licenseConfigFile)) {
             return false;
         }
 
         try {
             $LicenseConfig = new Config($licenseConfigFile);
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
             return false;
         }
 
         $data = $LicenseConfig->getSection('license');
-        $data['licenseHash'] = \bin2hex(Encryption::decrypt(\hex2bin($data['licenseHash'])));
+        $data['licenseHash'] = bin2hex(Encryption::decrypt(hex2bin($data['licenseHash'])));
 
         return $data;
     }
@@ -190,7 +214,7 @@ class License
      *
      * @return string
      */
-    public static function getSystemId()
+    public static function getSystemId(): string
     {
         $systemId = QUI::conf('license', 'systemId');
 
@@ -201,7 +225,7 @@ class License
                 $Conf = QUI::getConfig('etc/conf.ini.php');
                 $Conf->set('license', 'systemId', $systemId);
                 $Conf->save();
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
         }
@@ -214,12 +238,12 @@ class License
      *
      * @return string
      */
-    public static function getSystemDataHash()
+    public static function getSystemDataHash(): string
     {
         $data = self::getSystemData();
         $data[] = QUI::conf('globals', 'salt');
 
-        return \hash('sha256', \implode('-', $data));
+        return hash('sha256', implode('-', $data));
     }
 
     /**
@@ -227,7 +251,7 @@ class License
      *
      * @return array
      */
-    protected static function getSystemData()
+    protected static function getSystemData(): array
     {
         // @todo add additional unique identifiers
         return [
@@ -241,30 +265,31 @@ class License
      *
      * @return array - Request response
      * @throws QUI\Exception
+     * @throws Exception
      */
-    public static function deactivateSystem()
+    public static function deactivateSystem(): array
     {
         $licenseServerUrl = self::getLicenseServerUrl() . 'api/license/deactivate?';
         $licenseData = self::getLicenseData();
 
-        $licenseServerUrl .= \http_build_query([
+        $licenseServerUrl .= http_build_query([
             'licenseid' => $licenseData['id'],
             'licensehash' => $licenseData['licenseHash'],
             'systemid' => self::getSystemId(),
-            'systemdata' => \bin2hex(\json_encode(self::getSystemData()))
+            'systemdata' => bin2hex(json_encode(self::getSystemData()))
         ]);
 
-        $Curl = \curl_init();
+        $Curl = curl_init();
 
-        \curl_setopt_array($Curl, [
+        curl_setopt_array($Curl, [
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => $licenseServerUrl,
             CURLOPT_USERAGENT => 'QUIQQER'
         ]);
 
-        $response = \curl_exec($Curl);
+        $response = curl_exec($Curl);
 
-        \curl_close($Curl);
+        curl_close($Curl);
 
         if (empty($response)) {
             throw new QUI\Exception([
@@ -273,9 +298,9 @@ class License
             ]);
         }
 
-        $response = \json_decode($response, true);
+        $response = json_decode($response, true);
 
-        if (\json_last_error() !== \JSON_ERROR_NONE) {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             throw new QUI\Exception([
                 'quiqqer/quiqqer',
                 'exception.License.connection_error'
@@ -294,6 +319,7 @@ class License
      *
      * @return array|false - License data or false if no license available
      * @throws QUI\Exception
+     * @throws Exception
      */
     public static function getStatus()
     {
@@ -304,24 +330,24 @@ class License
             return false;
         }
 
-        $licenseServerUrl .= \http_build_query([
+        $licenseServerUrl .= http_build_query([
             'licenseid' => $licenseData['id'],
             'licensehash' => $licenseData['licenseHash'],
             'systemid' => self::getSystemId(),
             'systemhash' => self::getSystemDataHash()
         ]);
 
-        $Curl = \curl_init();
+        $Curl = curl_init();
 
-        \curl_setopt_array($Curl, [
+        curl_setopt_array($Curl, [
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => $licenseServerUrl,
             CURLOPT_USERAGENT => 'QUIQQER'
         ]);
 
-        $response = \curl_exec($Curl);
+        $response = curl_exec($Curl);
 
-        \curl_close($Curl);
+        curl_close($Curl);
 
         if (empty($response)) {
             throw new QUI\Exception([
@@ -330,9 +356,9 @@ class License
             ]);
         }
 
-        $response = \json_decode($response, true);
+        $response = json_decode($response, true);
 
-        if (\json_last_error() !== \JSON_ERROR_NONE) {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             throw new QUI\Exception([
                 'quiqqer/quiqqer',
                 'exception.License.connection_error'

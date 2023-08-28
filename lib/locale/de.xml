@@ -5543,6 +5543,12 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         <locale name="update.log.message.update.via.console">
             <de><![CDATA[Prüfe nach Aktualisierungen...]]></de>
         </locale>
+        <locale name="update.log.message.licenseActivation">
+            <de><![CDATA[
+                Deine Lizenz ist derzeit nicht aktiviert.
+                Bevor du ein Update startest, ist es notwendig, deine Lizenz zu aktivieren oder zu entfernen.
+            ]]></de>
+        </locale>
         <locale name="security.update">
             <de><![CDATA[Security Updates]]></de>
         </locale>
