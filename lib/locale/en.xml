@@ -5360,6 +5360,12 @@ After logging in you will be prompted to set a new password.
         <locale name="update.log.message.update.via.console">
             <en><![CDATA[Check for updates...]]></en>
         </locale>
+        <locale name="update.log.message.licenseActivation">
+            <en><![CDATA[
+                Your license is currently not activated.
+                Before you start an update, it is necessary to activate or remove your license.
+            ]]></en>
+        </locale>
         <locale name="security.update">
             <en><![CDATA[Security updates]]></en>
         </locale>
