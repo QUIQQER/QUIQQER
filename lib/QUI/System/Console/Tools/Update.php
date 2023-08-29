@@ -16,6 +16,7 @@ use function explode;
 use function implode;
 use function is_dir;
 use function method_exists;
+use function preg_replace;
 use function str_pad;
 use function str_replace;
 use function strip_tags;
@@ -88,6 +89,32 @@ class Update extends QUI\System\Console\Tool
         Cleanup::clearComposer();
 
         $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.start'));
+
+        // check license
+        try {
+            $licenceData = QUI\System\License::getLicenseData();
+
+            if ($licenceData) {
+                $status = QUI\System\License::getStatus();
+
+                if ($status && isset($status['active']) && $status['active'] === false) {
+                    $message = QUI::getLocale()->get('quiqqer/quiqqer', 'update.log.message.licenseActivation');
+                    $message = preg_replace('#([ ]){2,}#', "$1", $message);
+                    $message = str_replace(PHP_EOL . " ", PHP_EOL, $message);
+                    $message = trim($message);
+
+                    $this->writeLn();
+                    $this->writeLn($message, 'red');
+                    $this->writeLn('');
+                    $this->writeLn('');
+                    $this->resetColor();
+                    exit;
+                }
+            }
+        } catch (\Exception $e) {
+            $this->writeLn($e->getMessage(), 'red');
+            $this->resetColor();
+        }
 
         $Packages = QUI::getPackageManager();
 
