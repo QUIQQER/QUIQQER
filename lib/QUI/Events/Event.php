@@ -12,6 +12,8 @@ use function call_user_func;
 use function call_user_func_array;
 use function is_string;
 use function preg_replace;
+use function strpos;
+use function ucfirst;
 use function usort;
 
 /**
@@ -159,8 +161,8 @@ class Event implements QUI\Interfaces\Events
     {
         $results = [];
 
-        if (\strpos($event, 'on') !== 0) {
-            $event = 'on' . \ucfirst($event);
+        if (strpos($event, 'on') !== 0) {
+            $event = 'on' . ucfirst($event);
         }
 
 
