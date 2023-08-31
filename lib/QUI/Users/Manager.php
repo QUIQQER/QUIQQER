@@ -14,6 +14,7 @@ use QUI\Utils\DOM;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\Text\XML;
 
+use function class_implements;
 use function defined;
 use function explode;
 use function file_exists;
@@ -21,6 +22,7 @@ use function func_get_args;
 use function func_num_args;
 use function get_class;
 use function implode;
+use function in_array;
 use function is_numeric;
 use function is_object;
 use function md5;
@@ -288,7 +290,34 @@ class Manager
             return $this->users[$id];
         }
 
-        $User = new User($id, $this);
+        try {
+            $User = new User($id, $this);
+        } catch (QUI\Users\Exception $exception) {
+            try {
+                $userGetResult = QUI::getEvents()->fireEvent('userGet', [$id]);
+
+                if (!empty($userGetResult)) {
+                    $UserInstance = null;
+
+                    foreach ($userGetResult as $entry) {
+                        if ($entry && in_array(QUI\Interfaces\Users\User::class, class_implements($entry))) {
+                            $UserInstance = $entry;
+                        }
+                    }
+
+                    if ($UserInstance && in_array(QUI\Interfaces\Users\User::class, class_implements($UserInstance))) {
+                        $User = $UserInstance;
+                    }
+                }
+            } catch (\Exception $apiException) {
+            }
+
+            if (empty($User)) {
+                throw $exception;
+            }
+        }
+
+
         $uuid = $User->getUniqueId();
 
         $this->usersUUIDs[$uuid] = $User->getId();
@@ -344,6 +373,26 @@ class Manager
             return $this->getNobody();
         }
 
+        try {
+            $result = QUI::getEvents()->fireEvent('userGetBySession');
+
+            if (!empty($result)) {
+                $UserInstance = null;
+
+                foreach ($result as $entry) {
+                    if ($entry && in_array(QUI\Interfaces\Users\User::class, class_implements($entry))) {
+                        $UserInstance = $entry;
+                    }
+                }
+
+                if ($UserInstance && in_array(QUI\Interfaces\Users\User::class, class_implements($UserInstance))) {
+                    $this->Session = $UserInstance;
+                    return $this->Session;
+                }
+            }
+        } catch (\Exception $exception) {
+            QUI\System\Log::addDebug($exception->getMessage());
+        }
 
         $this->multipleCallPrevention = true;
 
