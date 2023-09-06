@@ -1053,7 +1053,7 @@ class User implements QUI\Interfaces\Users\User
      *
      * @return array
      */
-    protected function getListOfExtraAttributes(): array
+    public function getListOfExtraAttributes(): array
     {
         $cache = 'quiqqer/users/user-extra-attributes';
 
@@ -1133,7 +1133,8 @@ class User implements QUI\Interfaces\Users\User
 
             $attributes[] = [
                 'name' => trim($Attribute->nodeValue),
-                'encrypt' => !!$Attribute->getAttribute('encrypt')
+                'encrypt' => !!$Attribute->getAttribute('encrypt'),
+                'no-auto-save' => !!$Attribute->getAttribute('no-auto-save')
             ];
         }
 
