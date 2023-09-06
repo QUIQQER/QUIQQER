@@ -490,10 +490,10 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * This method is useless for nobody
      * \QUI\Users\Nobody cannot have a address
      *
-     * @return false
+     * @return false|Address
      * @ignore
      */
-    public function getStandardAddress(): bool
+    public function getStandardAddress()
     {
         return false;
     }

@@ -1,3 +1,8 @@
+form.qui-xml-panel {
+    display: inline-block;
+    width: 100%;
+}
+
 /*
 .qui-xml-panel input,
 .qui-xml-panel select {

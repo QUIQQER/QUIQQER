@@ -16,8 +16,22 @@ QUI::$Ajax->registerFunction(
         $attributes = json_decode($attributes, true);
         $language = $User->getAttribute('lang');
 
+        $noAutoSave = array_filter($User->getListOfExtraAttributes(), function ($attribute) {
+            if (isset($attribute['no-auto-save']) && $attribute['no-auto-save']) {
+                return true;
+            }
+
+            return false;
+        });
+
+        $noAutoSave = array_map(function ($attribute) {
+            return $attribute['name'];
+        }, $noAutoSave);
+
         foreach ($attributes as $key => $value) {
-            $User->setAttribute($key, $value);
+            if (!in_array($key, $noAutoSave)) {
+                $User->setAttribute($key, $value);
+            }
         }
 
         // aktivieren / deaktivieren
