@@ -619,7 +619,7 @@ class Manager extends QUI\QDOM
             $servers['packagist.org']['active'] = $servers['packagist']['active'];
             unset($servers['packagist']);
         }
-        
+
         if (isset($servers['packagist.org']) && $servers['packagist.org']['active'] == 0) {
             $repositories[] = [
                 'packagist.org' => false
