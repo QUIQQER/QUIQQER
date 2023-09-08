@@ -64,7 +64,8 @@ class Backup
             '--minimal ',
             '--suppress-common-lines ',
             '--ignore-trailing-space ',
-            "'--color=always' "
+            "'--color=always' ",
+            "--exclude=last_update.ini.php ",
         ];
 
         $command = 'diff ' . implode('', $params) . ' ' . $backupFolder . ' ' . ETC_DIR;
