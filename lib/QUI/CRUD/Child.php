@@ -8,6 +8,8 @@ namespace QUI\CRUD;
 
 use QUI;
 
+use function array_key_exists;
+
 /**
  * Class Element
  * Abstraction element for create-read-update-delete
@@ -22,17 +24,17 @@ abstract class Child extends QUI\QDOM
     /**
      * @var integer
      */
-    protected $id;
+    protected int $id;
 
     /**
      * @var QUI\Events\Event
      */
-    protected $Events;
+    protected QUI\Events\Event $Events;
 
     /**
      * @var Factory
      */
-    protected $Factory;
+    protected Factory $Factory;
 
     /**
      * Child constructor.
@@ -40,11 +42,11 @@ abstract class Child extends QUI\QDOM
      * @param integer $id
      * @param Factory $Factory
      */
-    public function __construct($id, Factory $Factory)
+    public function __construct(int $id, Factory $Factory)
     {
         $this->Events = new QUI\Events\Event();
         $this->Factory = $Factory;
-        $this->id = (int)$id;
+        $this->id = $id;
     }
 
     /**
@@ -70,7 +72,7 @@ abstract class Child extends QUI\QDOM
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -107,7 +109,7 @@ abstract class Child extends QUI\QDOM
         $savedData = [];
 
         foreach ($needles as $needle) {
-            if (!\array_key_exists($needle, $this->attributes)) {
+            if (!array_key_exists($needle, $this->attributes)) {
                 continue;
             }
 
@@ -125,7 +127,7 @@ abstract class Child extends QUI\QDOM
     }
 
     /**
-     * returns a attribute
+     * returns an attribute
      * if the attribute is not set, it returns false
      *
      * @param string $name
@@ -134,7 +136,7 @@ abstract class Child extends QUI\QDOM
      */
     public function getAttribute($name)
     {
-        if (\array_key_exists($name, $this->attributes)) {
+        if (array_key_exists($name, $this->attributes)) {
             return $this->attributes[$name];
         }
 

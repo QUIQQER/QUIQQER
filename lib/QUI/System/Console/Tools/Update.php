@@ -223,6 +223,10 @@ class Update extends QUI\System\Console\Tool
             }
         }
 
+        // init backup
+        $etcBackupFolder = QUI\System\Backup::createEtcBackup();
+
+        // start update routines
         $CLIOutput = new QUI\System\Console\Output();
         $CLIOutput->Events->addEvent('onWrite', function ($message) {
             self::onCliOutput($message, $this);
@@ -298,6 +302,24 @@ class Update extends QUI\System\Console\Tool
 
             QUI\Cache\Manager::clearCompleteQuiqqerCache();
             QUI\Cache\Manager::longTimeCacheClearCompleteQuiqqer();
+
+            // check init backup, with current inits
+            $diff = QUI\System\Backup::diff($etcBackupFolder);
+
+            if (!empty($diff)) {
+                $this->write($diff);
+
+                $this->writeLn('There have been changes to the ini files!!!', 'red');
+                $this->writeLn('Should the etc backup be deleted anyway? [Y,n]', 'red');
+                $this->resetColor();
+                $input = $this->readInput();
+
+                if (strtolower($input) === 'y') {
+                    QUI\System\Backup::deleteEtcBackup($etcBackupFolder);
+                }
+            } else {
+                QUI\System\Backup::deleteEtcBackup($etcBackupFolder);
+            }
         } catch (Exception $Exception) {
             $this->write(' [error]', 'red');
             $this->writeLn('');
