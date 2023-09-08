@@ -568,7 +568,7 @@ class Manager extends QUI\QDOM
         $npmServer = [];
 
         foreach ($servers as $server => $params) {
-            if ($server == 'packagist') {
+            if ($server == 'packagist.org') {
                 continue;
             }
 
@@ -615,19 +615,19 @@ class Manager extends QUI\QDOM
             ];
         }
 
-        if (isset($servers['packagist']) && $servers['packagist']['active'] == 0) {
+        if (isset($servers['packagist.org']) && $servers['packagist.org']['active'] == 0) {
             $repositories[] = [
-                'packagist' => false
+                'packagist.org' => false
             ];
         }
 
         // repositories - quiqqer/quiqqer#1260
         usort($repositories, function ($repoA, $repoB) {
-            if (isset($repoA['packagist'])) {
+            if (isset($repoA['packagist.org'])) {
                 return 1;
             }
 
-            if (isset($repoB['packagist'])) {
+            if (isset($repoB['packagist.org'])) {
                 return -1;
             }
 
@@ -791,7 +791,18 @@ class Manager extends QUI\QDOM
     public function getServerList(): array
     {
         try {
-            $servers = QUI::getConfig('etc/source.list.ini.php')->toArray();
+            $Config = QUI::getConfig('etc/source.list.ini.php');
+            $servers = $Config->toArray();
+
+            // replace old packagist entry with new one
+            if (isset($servers['packagist'])) {
+                $Config->setValue('packagist.org', 'active', $servers['packagist']['active']);
+                $Config->del('packagist');
+                $Config->save();
+
+                $Config = QUI::getConfig('etc/source.list.ini.php');
+                $servers = $Config->toArray();
+            }
 
             if (!isset($servers['npm'])) {
                 $servers['npm']['active'] = false;
@@ -802,7 +813,7 @@ class Manager extends QUI\QDOM
             }
 
             // default types
-            $servers['packagist']['type'] = 'composer';
+            $servers['packagist.org']['type'] = 'composer';
             $servers['bower']['type'] = 'bower';
             $servers['npm']['type'] = 'npm';
 
