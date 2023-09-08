@@ -568,7 +568,7 @@ class Manager extends QUI\QDOM
         $npmServer = [];
 
         foreach ($servers as $server => $params) {
-            if ($server == 'packagist') {
+            if ($server == 'packagist.org') {
                 continue;
             }
 
@@ -615,19 +615,24 @@ class Manager extends QUI\QDOM
             ];
         }
 
-        if (isset($servers['packagist']) && $servers['packagist']['active'] == 0) {
+        if (isset($servers['packagist'])) {
+            $servers['packagist.org']['active'] = $servers['packagist']['active'];
+            unset($servers['packagist']);
+        }
+        
+        if (isset($servers['packagist.org']) && $servers['packagist.org']['active'] == 0) {
             $repositories[] = [
-                'packagist' => false
+                'packagist.org' => false
             ];
         }
 
         // repositories - quiqqer/quiqqer#1260
         usort($repositories, function ($repoA, $repoB) {
-            if (isset($repoA['packagist'])) {
+            if (isset($repoA['packagist.org'])) {
                 return 1;
             }
 
-            if (isset($repoB['packagist'])) {
+            if (isset($repoB['packagist.org'])) {
                 return -1;
             }
 
@@ -802,7 +807,7 @@ class Manager extends QUI\QDOM
             }
 
             // default types
-            $servers['packagist']['type'] = 'composer';
+            $servers['packagist.org']['type'] = 'composer';
             $servers['bower']['type'] = 'bower';
             $servers['npm']['type'] = 'npm';
 
