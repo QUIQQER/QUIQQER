@@ -615,11 +615,6 @@ class Manager extends QUI\QDOM
             ];
         }
 
-        if (isset($servers['packagist'])) {
-            $servers['packagist.org']['active'] = $servers['packagist']['active'];
-            unset($servers['packagist']);
-        }
-
         if (isset($servers['packagist.org']) && $servers['packagist.org']['active'] == 0) {
             $repositories[] = [
                 'packagist.org' => false
@@ -796,7 +791,18 @@ class Manager extends QUI\QDOM
     public function getServerList(): array
     {
         try {
-            $servers = QUI::getConfig('etc/source.list.ini.php')->toArray();
+            $Config = QUI::getConfig('etc/source.list.ini.php');
+            $servers = $Config->toArray();
+
+            // replace old packagist entry with new one
+            if (isset($servers['packagist'])) {
+                $Config->setValue('packagist.org', 'active', $servers['packagist']['active']);
+                $Config->del('packagist');
+                $Config->save();
+                
+                $Config = QUI::getConfig('etc/source.list.ini.php');
+                $servers = $Config->toArray();
+            }
 
             if (!isset($servers['npm'])) {
                 $servers['npm']['active'] = false;
