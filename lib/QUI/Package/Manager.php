@@ -799,7 +799,7 @@ class Manager extends QUI\QDOM
                 $Config->setValue('packagist.org', 'active', $servers['packagist']['active']);
                 $Config->del('packagist');
                 $Config->save();
-                
+
                 $Config = QUI::getConfig('etc/source.list.ini.php');
                 $servers = $Config->toArray();
             }
