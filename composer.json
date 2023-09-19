@@ -39,7 +39,7 @@
     "t7systems\/blowfish": "1.0.0",
     "dusank\/knapsack": "8.*|9.*|10.*",
     "league\/climate": "3.*",
-    "ramsey\/uuid": "3.*",
+    "ramsey\/uuid": "^3|^4",
     "neitanod/forceutf8": "*",
     "league/csv": "9.*",
     "masterminds/html5": "^2.0",
