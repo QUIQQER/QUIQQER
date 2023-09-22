@@ -9,10 +9,13 @@ define('controls/system/settings/Config', [
     'qui/QUI',
     'qui/controls/Control',
     'qui/controls/windows/Confirm',
-    'Ajax'
+    'Ajax',
+    'Locale'
 
-], function(QUI, QUIControl, QUIConfirm, Ajax) {
+], function(QUI, QUIControl, QUIConfirm, Ajax, QUILocale) {
     'use strict';
+
+    const lg = 'quiqqer/quiqqer';
 
     return new Class({
 
@@ -53,7 +56,7 @@ define('controls/system/settings/Config', [
                 }
 
                 const selectedVersion = QUIQQER_CONFIG.globals.quiqqer_version;
-                
+
                 // replace last security version number
                 if (selectedVersion.indexOf('dev') === -1) {
                     let parts = selectedVersion.split('.');
@@ -84,7 +87,9 @@ define('controls/system/settings/Config', [
                 });
 
                 new Element('div', {
-                    html: 'Current installed QUIQQER version: ' + QUIQQER_VERSION,
+                    html: QUILocale.get(lg, 'quiqqer.config.current.version', {
+                        version: QUIQQER_VERSION
+                    }),
                     'class': 'messages message-attention',
                     styles: {
                         border: '1px solid rgba(147, 128, 108, 0.25)',

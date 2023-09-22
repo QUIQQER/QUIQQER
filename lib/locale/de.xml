@@ -6376,6 +6376,9 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         <locale name="update.refresh.submit">
             <de><![CDATA[Jetzt neu laden]]></de>
         </locale>
+        <locale name="quiqqer.config.current.version">
+            <de><![CDATA[Aktuell installierte QUIQQER Version: [version]]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/controls" datatype="php,js">
