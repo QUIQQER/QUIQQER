@@ -9,10 +9,10 @@
 
  require(['Ajax'], function(Ajax)
  {
-     Ajax.post('ajax_project_getlist', function(result, Request)
-     {
-         console.info(result);
-     });
+ Ajax.post('ajax_project_getlist', function(result, Request)
+ {
+ console.info(result);
+ });
  });
 
  */
@@ -24,21 +24,23 @@ define('Ajax', [
     'qui/utils/Object',
     'Locale'
 
-], function (QUI, QUIAjax, Bundler, Utils, Locale) {
-    "use strict";
+], function(QUI, QUIAjax, Bundler, Utils, Locale) {
+    'use strict';
 
     // load message handling
-    QUI.getMessageHandler().catch(function () {
+    QUI.getMessageHandler().catch(function() {
         // nothing
     });
 
     let apiPoint = '/ajax.php';
     const AjaxBundler = new Bundler();
 
-    if (typeof QUIQQER !== 'undefined' && "ajax" in QUIQQER) {
+    if (typeof QUIQQER !== 'undefined' && 'ajax' in QUIQQER) {
         apiPoint = QUIQQER.ajax;
-    } else if (typeof URL_SYS_DIR !== 'undefined') {
-        apiPoint = URL_SYS_DIR + 'ajax.php';
+    } else {
+        if (typeof URL_SYS_DIR !== 'undefined') {
+            apiPoint = URL_SYS_DIR + 'ajax.php';
+        }
     }
 
     let REFRESH_WINDOW_OPEN = false;
@@ -55,10 +57,10 @@ define('Ajax', [
 
     const Ajax = {
 
-        $globalJSF : {}, // global javascript callback functions
+        $globalJSF: {}, // global javascript callback functions
         $onprogress: {},
-        $url       : apiPoint,
-        $on401     : false,
+        $url: apiPoint,
+        $on401: false,
 
         /**
          * Send a Request async
@@ -72,18 +74,18 @@ define('Ajax', [
          *
          * @return {Ajax}
          */
-        request: function (call, method, callback, params) {
+        request: function(call, method, callback, params) {
             // if sync, the browser freeze
             let options;
             const self = this,
-                  id   = String.uniqueID();
+                id = String.uniqueID();
 
             method = method || 'post'; // is post, put, get or delete
-            callback = callback || function () {
+            callback = callback || function() {
             };
 
             params = Utils.combine(params, {
-                '_rf'      : call,
+                '_rf': call,
                 '_FRONTEND': window.QUIQQER_FRONTEND || 0
             });
 
@@ -98,14 +100,14 @@ define('Ajax', [
 
             // combine all params, so, they are available in the Request Object
             options = Utils.combine(params, {
-                callback : callback,
-                method   : method,
-                url      : this.$url,
-                async    : true,
+                callback: callback,
+                method: method,
+                url: this.$url,
+                async: true,
                 showError: typeof params.showError !== 'undefined' ? params.showError : true,
                 showLogin: typeof params.showLogin !== 'undefined' ? params.showLogin : true,
-                events   : {
-                    onSuccess: function () {
+                events: {
+                    onSuccess: function() {
                         const args = arguments;
                         const Request = args[args.length - 1];
 
@@ -118,7 +120,7 @@ define('Ajax', [
                         }
 
                         if (this in self.$onprogress &&
-                            "$result" in self.$onprogress[this] &&
+                            '$result' in self.$onprogress[this] &&
                             self.$onprogress[this].$result.jsCallbacks
                         ) {
                             self.$triggerGlobalJavaScriptCallback(
@@ -133,8 +135,8 @@ define('Ajax', [
 
                         // maintenance?
                         if (this in self.$onprogress &&
-                            "$result" in self.$onprogress[this] &&
-                            "maintenance" in self.$onprogress[this].$result &&
+                            '$result' in self.$onprogress[this] &&
+                            'maintenance' in self.$onprogress[this].$result &&
                             parseInt(self.$onprogress[this].$result.maintenance)
                         ) {
                             self.showMaintenanceMessage();
@@ -147,16 +149,16 @@ define('Ajax', [
                         }
                     }.bind(id),
 
-                    onCancel: function (Request) {
+                    onCancel: function(Request) {
                         if (Request.getAttribute('onCancel')) {
                             return Request.getAttribute('onCancel')(Request);
                         }
                     },
 
-                    onError: function (Exception, Request) {
-                        let Response     = null,
+                    onError: function(Exception, Request) {
+                        let Response = null,
                             networkError = true,
-                            tries        = Request.getAttribute('REQUEST_TRIES') || 0;
+                            tries = Request.getAttribute('REQUEST_TRIES') || 0;
 
                         if (typeof Exception.getAttribute !== 'undefined' && Exception.getAttribute('type')) {
                             networkError = false;
@@ -166,14 +168,14 @@ define('Ajax', [
                             Response = self.$onprogress[this];
                         }
 
-                        const requestCallback = function () {
+                        const requestCallback = function() {
                             callback.apply(this, arguments);
                         }.bind(this);
 
                         // maintenance?
                         if (Response &&
-                            "$result" in Response && Response.$result &&
-                            "maintenance" in Response.$result && Response.$result.maintenance &&
+                            '$result' in Response && Response.$result &&
+                            'maintenance' in Response.$result && Response.$result.maintenance &&
                             parseInt(Response.$result && Response.$result.maintenance)
                         ) {
                             self.showMaintenanceMessage();
@@ -181,7 +183,7 @@ define('Ajax', [
 
 
                         if (Response &&
-                            "$result" in Response && Response.$result &&
+                            '$result' in Response && Response.$result &&
                             Response.$result.jsCallbacks
                         ) {
                             self.$triggerGlobalJavaScriptCallback(
@@ -202,7 +204,7 @@ define('Ajax', [
 
                         if (Request.getAttribute('showError') || networkError) {
                             if (tries === TRY_MAX) {
-                                QUI.getMessageHandler().then(function (MessageHandler) {
+                                QUI.getMessageHandler().then(function(MessageHandler) {
                                     MessageHandler.addException(Exception);
                                 });
                             }
@@ -227,8 +229,8 @@ define('Ajax', [
                             return;
                         }
 
-                        if ("QUIQQER" in window &&
-                            "inAdministration" in QUIQQER &&
+                        if ('QUIQQER' in window &&
+                            'inAdministration' in QUIQQER &&
                             QUIQQER.inAdministration &&
                             Exception.getCode() === 440
                         ) {
@@ -250,7 +252,7 @@ define('Ajax', [
 
                             default:
                                 if (Request.getAttribute('showError') !== false) {
-                                    QUI.getMessageHandler().then(function (MessageHandler) {
+                                    QUI.getMessageHandler().then(function(MessageHandler) {
                                         MessageHandler.addException(Exception);
                                     });
                                 }
@@ -268,7 +270,7 @@ define('Ajax', [
                             tries++;
                             Request.setAttribute('REQUEST_TRIES', tries);
 
-                            (function () {
+                            (function() {
                                 options._rf = call;
                                 self.$onprogress[id].send(options);
                             }).delay(TRY_DELAY * tries);
@@ -324,7 +326,7 @@ define('Ajax', [
                     break;
             }
 
-            Done.then(function (result) {
+            Done.then(function(result) {
                 const Request = self.$onprogress[this];
 
                 Request.$result = result;
@@ -347,14 +349,14 @@ define('Ajax', [
          * @param callback
          * @param params
          */
-        $openLogin: function (call, method, callback, params) {
+        $openLogin: function(call, method, callback, params) {
             const self = this;
 
             // check if events exists and login is overwritten
             const events = QUI.$events;
 
             if (typeof events.ajaxLogin !== 'undefined') {
-                const eventResults = events.ajaxLogin.map(function (f) {
+                const eventResults = events.ajaxLogin.map(function(f) {
                     return f(Ajax, call, method, callback, params);
                 });
 
@@ -363,10 +365,10 @@ define('Ajax', [
                 }
             }
 
-            require(['controls/users/LoginWindow'], function (Login) {
+            require(['controls/users/LoginWindow'], function(Login) {
                 new Login({
                     events: {
-                        onSuccess: function () {
+                        onSuccess: function() {
                             self.request(call, method, callback, params);
                         }
                     }
@@ -383,7 +385,7 @@ define('Ajax', [
          * @param {String} fn - Function name
          * @param {Function} callback - Callback function
          */
-        registerGlobalJavaScriptCallback: function (fn, callback) {
+        registerGlobalJavaScriptCallback: function(fn, callback) {
             if (typeOf(callback) === 'function') {
                 this.$globalJSF[fn] = callback;
             }
@@ -395,7 +397,7 @@ define('Ajax', [
          * @param {Array} functionList - list of functions
          * @param response - Request response
          */
-        $triggerGlobalJavaScriptCallback: function (functionList, response) {
+        $triggerGlobalJavaScriptCallback: function(functionList, response) {
             if (typeOf(functionList) !== 'object') {
                 return;
             }
@@ -414,8 +416,8 @@ define('Ajax', [
         /**
          * show a maintenance message
          */
-        showMaintenanceMessage: function () {
-            QUI.getMessageHandler(function (MH) {
+        showMaintenanceMessage: function() {
+            QUI.getMessageHandler(function(MH) {
                 MH.addInformation(
                     Locale.get('quiqqer/quiqqer', 'message.maintenance')
                 );
@@ -433,7 +435,7 @@ define('Ajax', [
          *
          * @return {Ajax}
          */
-        syncRequest: function (call, method, params) {
+        syncRequest: function(call, method, params) {
             const id = String.uniqueID();
 
             method = method || 'post'; // is post, put, get or delete
@@ -445,19 +447,19 @@ define('Ajax', [
             this.$onprogress[id] = new QUIAjax(
                 // combine all params, so, they are available in the Request Object
                 Utils.combine(params, {
-                    method : method,
-                    url    : this.$url,
-                    async  : false,
+                    method: method,
+                    url: this.$url,
+                    async: false,
                     timeout: 5000,
-                    events : {
-                        onCancel: function (Request) {
+                    events: {
+                        onCancel: function(Request) {
                             if (Request.getAttribute('onCancel')) {
                                 return Request.getAttribute('onCancel')(Request);
                             }
                         },
 
-                        onError: function (Exception, Request) {
-                            QUI.getMessageHandler(function (MessageHandler) {
+                        onError: function(Exception, Request) {
+                            QUI.getMessageHandler(function(MessageHandler) {
                                 MessageHandler.addException(Exception);
                             });
 
@@ -488,7 +490,7 @@ define('Ajax', [
          *
          * @return {Ajax}
          */
-        post: function (call, callback, params) {
+        post: function(call, callback, params) {
             return this.request(call, 'post', callback, params);
         },
 
@@ -503,7 +505,7 @@ define('Ajax', [
          *
          * @return {Ajax}
          */
-        get: function (call, callback, params) {
+        get: function(call, callback, params) {
             // chrome cache get request, so we must extend the request
             if (typeof params === 'undefined') {
                 params = {};
@@ -522,7 +524,7 @@ define('Ajax', [
          * @param {String|Array} call - PHP function
          * @param {Object} params     - PHP parameter (optional)
          */
-        parseParams: function (call, params) {
+        parseParams: function(call, params) {
             params = Utils.combine(params, {
                 '_rf': call
             });
@@ -547,7 +549,7 @@ define('Ajax', [
          *
          * @return {Ajax}
          */
-        put: function (call, callback, params) {
+        put: function(call, callback, params) {
             // chrome cache get request, so we must extend the request
             if (typeof params === 'undefined') {
                 params = {};
@@ -569,7 +571,7 @@ define('Ajax', [
          *
          * @return {Ajax}
          */
-        del: function (call, callback, params) {
+        del: function(call, callback, params) {
             // chrome cache get request, so we must extend the request
             if (typeof params === 'undefined') {
                 params = {};
@@ -580,7 +582,7 @@ define('Ajax', [
             return this.request(call, 'delete', callback, params);
         },
 
-        $versionCheck: function (requestResult) {
+        $versionCheck: function(requestResult) {
             if (typeof window.QUIQQER === 'undefined') {
                 return;
             }
@@ -605,9 +607,13 @@ define('Ajax', [
                 return;
             }
 
+            if (typeof requestResult.ajax_settings_save !== 'undefined') {
+                return;
+            }
+
             require([
                 'controls/system/UpdateRefreshWindow'
-            ], function (UpdateRefreshWindow) {
+            ], function(UpdateRefreshWindow) {
                 if (document.getElement('.window-update-refresh-info')) {
                     return;
                 }
@@ -620,10 +626,10 @@ define('Ajax', [
 
                 new UpdateRefreshWindow({
                     events: {
-                        onClose : function () {
+                        onClose: function() {
                             REFRESH_WINDOW_OPEN = false;
                         },
-                        onCancel: function () {
+                        onCancel: function() {
                             REFRESH_WINDOW_CANCELED = true;
                         }
                     }
