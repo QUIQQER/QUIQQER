@@ -11,19 +11,19 @@ define('controls/system/settings/Config', [
     'qui/controls/windows/Confirm',
     'Ajax'
 
-], function (QUI, QUIControl, QUIConfirm, Ajax) {
-    "use strict";
+], function(QUI, QUIControl, QUIConfirm, Ajax) {
+    'use strict';
 
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/system/settings/Config',
+        Type: 'controls/system/settings/Config',
 
         Binds: [
             '$onImport'
         ],
 
-        initialize: function (Panel) {
+        initialize: function(Panel) {
             this.$Panel = Panel;
 
             this.addEvents({
@@ -34,11 +34,11 @@ define('controls/system/settings/Config', [
         /**
          * event : on import
          */
-        $onImport: function () {
-            const self  = this,
-                  Panel = this.$Panel;
+        $onImport: function() {
+            const self = this,
+                Panel = this.$Panel;
 
-            Ajax.get('ajax_system_getQuiqqerVersions', function (versions) {
+            Ajax.get('ajax_system_getQuiqqerVersions', function(versions) {
                 const Select = Panel.getContent().getElement('[name="globals.quiqqer_version"]');
 
                 if (!Select) {
@@ -48,32 +48,52 @@ define('controls/system/settings/Config', [
                 for (let i = 0, len = versions.length; i < len; i++) {
                     new Element('option', {
                         value: versions[i],
-                        html : versions[i]
+                        html: versions[i]
                     }).inject(Select);
                 }
 
+                const selectedVersion = QUIQQER_CONFIG.globals.quiqqer_version;
+                
                 // replace last security version number
-                if (QUIQQER_VERSION.indexOf('dev') === -1) {
-                    let parts = QUIQQER_VERSION.split('.');
-                    let version = parts[0] + '.' + parts[1] + '.*';
+                if (selectedVersion.indexOf('dev') === -1) {
+                    let parts = selectedVersion.split('.');
+                    let version;
+
+                    if ((parts[0] + '.' + parts[1]).indexOf('.*') === -1) {
+                        version = parts[0] + '.' + parts[1] + '.*';
+                    } else {
+                        version = parts[0] + '.' + parts[1];
+                    }
 
                     if (!Select.getElement('[value="' + version + '"]')) {
                         new Element('option', {
                             value: version,
-                            html : version
+                            html: version
                         }).inject(Select);
                     }
 
                     Select.value = version;
                 } else {
-                    Select.value = QUIQQER_VERSION;
+                    Select.value = selectedVersion;
                 }
 
-                Select.addEvent('change', function () {
+                Select.addEvent('change', function() {
                     if (this.value === 'dev-dev') {
                         self.setDevelopment();
                     }
                 });
+
+                new Element('div', {
+                    html: 'Current installed QUIQQER version: ' + QUIQQER_VERSION,
+                    'class': 'messages message-attention',
+                    styles: {
+                        border: '1px solid rgba(147, 128, 108, 0.25)',
+                        display: 'inline-block',
+                        width: '100%',
+                        textAlign: 'center',
+                        padding: '5px'
+                    }
+                }).inject(Select.getParent('label'), 'after');
 
                 Panel.Loader.hide();
             });
@@ -82,16 +102,16 @@ define('controls/system/settings/Config', [
         /**
          * Set the system to development mode
          */
-        setDevelopment: function () {
+        setDevelopment: function() {
             const self = this;
 
             new QUIConfirm({
-                title    : 'Development Modus',
-                maxWidth : 600,
+                title: 'Development Modus',
+                maxWidth: 600,
                 maxHeight: 400,
                 autoclose: false,
-                events   : {
-                    onOpen: function (Win) {
+                events: {
+                    onOpen: function(Win) {
                         const Content = Win.getContent();
 
                         Win.Loader.show();
@@ -105,7 +125,7 @@ define('controls/system/settings/Config', [
                             '<br />'
                         );
 
-                        Ajax.get('ajax_system_packages_list', function (result) {
+                        Ajax.get('ajax_system_packages_list', function(result) {
                             let id = Win.getId();
 
                             result.push(
@@ -118,8 +138,8 @@ define('controls/system/settings/Config', [
                             for (let i = 0, len = result.length; i < len; i++) {
                                 new Element('div', {
                                     html: '<input type="checkbox" value="' + result[i].name + '" id="w' + id + '_' + i +
-                                          '" />' +
-                                          '<label for="w' + id + '_' + i + '">' + result[i].name + '</label>'
+                                        '" />' +
+                                        '<label for="w' + id + '_' + i + '">' + result[i].name + '</label>'
                                 }).inject(Content);
                             }
 
@@ -134,10 +154,10 @@ define('controls/system/settings/Config', [
                         });
                     },
 
-                    onSubmit: function (Win) {
+                    onSubmit: function(Win) {
                         Win.Loader.show();
 
-                        const packages = Win.getContent().getElements('[type="checkbox"]:checked').map(function (Elm) {
+                        const packages = Win.getContent().getElements('[type="checkbox"]:checked').map(function(Elm) {
                             return Elm.get('value');
                         });
 
@@ -146,19 +166,19 @@ define('controls/system/settings/Config', [
                             return;
                         }
 
-                        Ajax.post('ajax_system_packages_setVersion', function () {
+                        Ajax.post('ajax_system_packages_setVersion', function() {
                             Win.close();
                         }, {
                             packages: JSON.encode(packages),
-                            version : 'dev-dev'
+                            version: 'dev-dev'
                         });
                     },
 
-                    onCancel: function () {
-                        self.$Panel
-                            .getContent()
-                            .getElements('[name="globals.quiqqer_version"]')
-                            .set('value', QUIQQER_VERSION);
+                    onCancel: function() {
+                        self.$Panel.getContent().getElements('[name="globals.quiqqer_version"]').set(
+                            'value',
+                            QUIQQER_VERSION
+                        );
                     }
                 }
             }).open();
