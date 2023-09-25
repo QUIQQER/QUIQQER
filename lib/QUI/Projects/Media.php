@@ -691,6 +691,8 @@ class Media extends QUI\QDOM
         $File = $this->get($id);
         $File->deleteCache();
 
+        QUI::getEvents()->fireEvent('mediaReplace', [$this, $File]);
+
         return $File;
     }
 
