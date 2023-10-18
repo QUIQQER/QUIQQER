@@ -592,12 +592,11 @@ class Media extends QUI\QDOM
 
         if ($info['mime_type'] != $data['mime_type']) {
             $name = $info['basename'];
+            $name = trim($name, "_ \t\n\r\0\x0B"); // Trim the default characters and underscores
+            $name = str_replace(' ', '_', $name);
+            $name = preg_replace('#(_){2,}#', "$1", $name);
+            $name = Utils::stripMediaName($name);
         }
-
-        $name = trim($name, "_ \t\n\r\0\x0B"); // Trim the default characters and underscores
-        $name = str_replace(' ', '_', $name);
-        $name = preg_replace('#(_){2,}#', "$1", $name);
-        $name = Utils::stripMediaName($name);
 
         /**
          * get the parent and check, if a file, like the replaced file, exists
