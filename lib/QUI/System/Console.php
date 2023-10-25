@@ -811,8 +811,28 @@ class Console
 
                 QUI::getPackage('quiqqer/cron');
 
+                // locking
+                $lockKey = 'cron-execution';
+                $Package = QUI::getPackage('quiqqer/cron');
+
+                if (QUI\Lock\Locker::isLocked($Package, $lockKey, null, false)) {
+                    $time = QUI\Lock\Locker::getLockTime($Package, $lockKey);
+
+                    if ($time < 0) {
+                        $this->writeLn(
+                            'Crons cannot be executed because another instance is already executing crons.',
+                            'red'
+                        );
+
+                        $this->resetMsg();
+                        $this->writeLn();
+                        exit(1);
+                    }
+                }
+
                 $CronManager = new QUI\Cron\Manager();
                 $CronManager->execute();
+
                 break;
 
             case 'password-reset':

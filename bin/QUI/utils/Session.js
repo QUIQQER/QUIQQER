@@ -4,8 +4,8 @@
  * @module utils/Lock
  * @author www.pcsg.de (Henning Leutz)
  */
-define('utils/Session', ['Ajax'], function (QUIAjax) {
-    "use strict";
+define('utils/Session', ['Ajax'], function(QUIAjax) {
+    'use strict';
 
     return {
         /**
@@ -15,11 +15,11 @@ define('utils/Session', ['Ajax'], function (QUIAjax) {
          * @param {String|Array|Object|Number} value
          * @returns {Promise}
          */
-        set: function (key, value) {
-            return new Promise(function (resolve, reject) {
+        set: function(key, value) {
+            return new Promise((resolve, reject) => {
                 QUIAjax.post('ajax_session_set', resolve, {
-                    key    : key,
-                    value  : JSON.encode(value),
+                    key: key,
+                    value: JSON.encode(value),
                     onError: reject
                 });
             });
@@ -31,10 +31,10 @@ define('utils/Session', ['Ajax'], function (QUIAjax) {
          * @param {String} key
          * @returns {Promise}
          */
-        remove: function (key) {
-            return new Promise(function (resolve, reject) {
+        remove: function(key) {
+            return new Promise((resolve, reject) => {
                 QUIAjax.post('ajax_session_remove', resolve, {
-                    key    : key,
+                    key: key,
                     onError: reject
                 });
             });
@@ -46,16 +46,10 @@ define('utils/Session', ['Ajax'], function (QUIAjax) {
          * @param {String} key
          * @returns {Promise}
          */
-        get: function (key) {
-            return new Promise(function (resolve, reject) {
-                QUIAjax.get('ajax_session_get', function (value) {
-                    try {
-                        resolve(JSON.decode(value));
-                    } catch (e) {
-                        resolve(false);
-                    }
-                }, {
-                    key    : key,
+        get: function(key) {
+            return new Promise((resolve, reject) => {
+                QUIAjax.get('ajax_session_get', resolve, {
+                    key: key,
                     onError: reject
                 });
             });
