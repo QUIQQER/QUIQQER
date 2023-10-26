@@ -12,20 +12,20 @@ define('controls/system/settings/Mail', [
     'Ajax',
     'Locale'
 
-], function (QUI, QUIControl, QUIButton, QUIAjax, QUILocale) {
-    "use strict";
+], function(QUI, QUIControl, QUIButton, QUIAjax, QUILocale) {
+    'use strict';
 
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/system/settings/Config',
+        Type: 'controls/system/settings/Config',
 
         Binds: [
             '$onImport',
             'testMailSettings'
         ],
 
-        initialize: function (Panel) {
+        initialize: function(Panel) {
             this.$Panel = Panel;
 
             this.addEvents({
@@ -36,22 +36,22 @@ define('controls/system/settings/Mail', [
         /**
          * event : on import
          */
-        $onImport: function () {
-            var Panel   = this.$Panel,
+        $onImport: function() {
+            const Panel = this.$Panel,
                 Content = Panel.getContent();
 
-            var Table = Content.getElement('table:last-child');
+            const Table = Content.getElement('table:last-child');
 
             this.showSSLOptions();
 
             new QUIButton({
-                text     : QUILocale.get('quiqqer/quiqqer', 'test.mail.button'),
+                text: QUILocale.get('quiqqer/quiqqer', 'test.mail.button'),
                 textimage: 'fa fa-envelope-o',
-                events   : {
+                events: {
                     onClick: this.testMailSettings
                 },
-                styles   : {
-                    'float'        : 'right',
+                styles: {
+                    'float': 'right',
                     'margin-bottom': 20
                 }
             }).inject(Table, 'after');
@@ -60,28 +60,28 @@ define('controls/system/settings/Mail', [
         /**
          * Show SSL options
          */
-        showSSLOptions: function () {
-            var Panel       = this.$Panel,
-                Content     = Panel.getContent(),
-                Select      = Content.getElement('[name="mail.SMTPSecure"]'),
+        showSSLOptions: function() {
+            const Panel = this.$Panel,
+                Content = Panel.getContent(),
+                Select = Content.getElement('[name="mail.SMTPSecure"]'),
                 ParentTable = Select.getParent('tbody'),
-                ParentTr    = Select.getParent('tr');
+                ParentTr = Select.getParent('tr');
 
-            var newRow = new Element('tr', {
+            const newRow = new Element('tr', {
                 'class': 'ssl-option-row',
-                styles : {
-                    'float' : 'left',
-                    height  : 0,
+                styles: {
+                    'float': 'left',
+                    height: 0,
                     overflow: 'hidden',
                     position: 'relative'
                 }
             });
 
-            var VerifyPeer      = newRow.clone();
-            var VerifyPeerName  = newRow.clone();
-            var AllowSelfSigned = newRow.clone();
+            const VerifyPeer = newRow.clone();
+            const VerifyPeerName = newRow.clone();
+            const AllowSelfSigned = newRow.clone();
 
-            var evenCssClass = ParentTr.hasClass('even');
+            const evenCssClass = ParentTr.hasClass('even');
 
             VerifyPeer.set({
                 html: '<td>' +
@@ -124,18 +124,18 @@ define('controls/system/settings/Mail', [
             VerifyPeerName.inject(ParentTable);
             AllowSelfSigned.inject(ParentTable);
 
-            var config = Panel.$config;
+            const config = Panel.$config;
 
             if (config.mail) {
-                if ("SMTPSecureSSL_allow_self_signed" in config.mail) {
+                if ('SMTPSecureSSL_allow_self_signed' in config.mail) {
                     AllowSelfSigned.getElement('input').checked = parseInt(config.mail.SMTPSecureSSL_allow_self_signed);
                 }
 
-                if ("SMTPSecureSSL_verify_peer" in config.mail) {
+                if ('SMTPSecureSSL_verify_peer' in config.mail) {
                     VerifyPeer.getElement('input').checked = parseInt(config.mail.SMTPSecureSSL_verify_peer);
                 }
 
-                if ("SMTPSecureSSL_verify_peer_name" in config.mail) {
+                if ('SMTPSecureSSL_verify_peer_name' in config.mail) {
                     VerifyPeerName.getElement('input').checked = parseInt(config.mail.SMTPSecureSSL_verify_peer_name);
                 }
             }
@@ -165,23 +165,23 @@ define('controls/system/settings/Mail', [
         /**
          * Hide SSL options
          */
-        hideSSLOptions: function () {
-            var Panel   = this.$Panel,
+        hideSSLOptions: function() {
+            const Panel = this.$Panel,
                 Content = Panel.getContent(),
-                rows    = Content.getElements('.ssl-option-row');
+                rows = Content.getElements('.ssl-option-row');
 
             if (!rows.length) {
                 return;
             }
 
             moofx(rows).animate({
-                height  : 0,
-                opacity : 0,
+                height: 0,
+                opacity: 0,
                 overflow: 'hidden',
                 position: 'relative'
             }, {
                 duration: 250,
-                callback: function () {
+                callback: function() {
                     rows.destroy();
                 }
             });
@@ -190,22 +190,26 @@ define('controls/system/settings/Mail', [
         /**
          * Test current mail settings
          */
-        testMailSettings: function (Button) {
-            var Panel   = this.$Panel,
+        testMailSettings: function(Button) {
+            const Panel = this.$Panel,
                 Content = Panel.getContent(),
-                Form    = Content.getElement('form');
+                Form = Content.getElement('form');
 
-            var params = {
+            let params = {
+                MAILFrom: Form.elements['mail.MAILFrom'].value,
+                MAILFromText: Form.elements['mail.MAILFromText'].value,
+                MAILReplyTo: Form.elements['mail.MAILReplyTo'].value,
+
                 SMTPServer: Form.elements['mail.SMTPServer'].value,
-                SMTPPort  : Form.elements['mail.SMTPPort'].value,
-                SMTPUser  : Form.elements['mail.SMTPUser'].value,
-                SMTPPass  : Form.elements['mail.SMTPPass'].value,
+                SMTPPort: Form.elements['mail.SMTPPort'].value,
+                SMTPUser: Form.elements['mail.SMTPUser'].value,
+                SMTPPass: Form.elements['mail.SMTPPass'].value,
                 SMTPSecure: Form.elements['mail.SMTPSecure'].value
             };
 
             if (Form.elements['mail.SMTPSecure'].value === 'ssl') {
-                params.SMTPSecureSSL_verify_peer       = Form.elements['mail.SMTPSecureSSL_verify_peer'].checked ? 1 : 0;
-                params.SMTPSecureSSL_verify_peer_name  = Form.elements['mail.SMTPSecureSSL_verify_peer_name'].checked ? 1 : 0;
+                params.SMTPSecureSSL_verify_peer = Form.elements['mail.SMTPSecureSSL_verify_peer'].checked ? 1 : 0;
+                params.SMTPSecureSSL_verify_peer_name = Form.elements['mail.SMTPSecureSSL_verify_peer_name'].checked ? 1 : 0;
                 params.SMTPSecureSSL_allow_self_signed = Form.elements['mail.SMTPSecureSSL_allow_self_signed'].checked ? 1 : 0;
             }
 
@@ -215,12 +219,12 @@ define('controls/system/settings/Mail', [
 
             Button.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
-            QUIAjax.get('ajax_system_mailTest', function () {
+            QUIAjax.get('ajax_system_mailTest', function() {
                 Button.setAttribute('textimage', 'fa fa-envelope-o');
             }, {
-                params : JSON.encode(params),
-                onError: function (Error) {
-                    QUI.getMessageHandler().then(function (MH) {
+                params: JSON.encode(params),
+                onError: function(Error) {
+                    QUI.getMessageHandler().then(function(MH) {
                         MH.addError(
                             Error.getMessage()
                         );

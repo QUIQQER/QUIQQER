@@ -112,7 +112,7 @@ class Queue
         // attachments
         $attachmentFiles = [];
 
-        if (is_array($attachments)) {
+        if (is_array($attachments) && !empty($attachments)) {
             $mailQueueDir = self::getAttachmentDir($newMailId);
 
             File::mkdir($mailQueueDir);
