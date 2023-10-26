@@ -405,15 +405,20 @@ class Update extends QUI\System\Console\Tool
         }
 
         // update message
-        $update = strpos($message, 'Updates: ') !== false;
-        $install = strpos($message, 'Installs: ') !== false;
+        $update = strpos($message, 'Update: ') !== false;
+        $updates = strpos($message, 'Updates: ') !== false;
+        $upgrade = strpos($message, ' - Upgrading ') !== false;
 
-        if ($update || $install) {
-            $message = str_replace('Updates: ', '', $message);
-            $message = str_replace('Installs: ', '', $message);
+        $install = strpos($message, 'Install: ') !== false;
+        $installs = strpos($message, 'Installs: ') !== false;
+
+        if ($update || $updates || $install || $installs || $upgrade) {
+            $message = str_replace(['Updates: ', 'Update: '], '', $message);
+            $message = str_replace(['Installs: ', 'Install: '], '', $message);
+            $message = str_replace([' - Upgrading '], '', $message);
             $updates = explode(',', $message);
 
-            if ($update) {
+            if ($update || $updates || $upgrade) {
                 $Instance->writeLn('Updates:', 'yellow');
             } elseif ($install) {
                 $Instance->writeLn('Installs:', 'yellow');
