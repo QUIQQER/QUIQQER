@@ -24,6 +24,7 @@ use function ob_flush;
 use function ob_get_contents;
 use function str_replace;
 use function strpos;
+use function substr_count;
 use function trim;
 use function unlink;
 
@@ -73,30 +74,26 @@ class SecurityUpdate extends QUI\System\Console\Tool
         $dryRun = true;
         $dryRunOutput = '';
 
-        // output events
-        $Packages->getComposer()->addEvent(
-            'onOutput',
-            function ($Composer, $output, $type) use ($self, &$dryRun, &$dryRunOutput) {
-                if ($dryRun) {
-                    $dryRunOutput .= $output;
-                    return;
-                }
-
-                if ($this->getArgument('check')) {
-                    return;
-                }
-
-                $self->write($output);
-                $self->writeToLog($output);
-            }
-        );
-
-        $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'security.update.start'));
-
-        $Packages->refreshServerList();
-
         $Composer = $Packages->getComposer();
         $Composer->unmute();
+
+        // output events
+
+        // start update routines
+        $CLIOutput = new QUI\System\Console\Output();
+        $CLIOutput->Events->addEvent('onWrite', function ($message) use (&$dryRun, &$dryRunOutput) {
+            if ($dryRun) {
+                $dryRunOutput .= $message . PHP_EOL;
+                return;
+            }
+
+            Update::onCliOutput($message, $this);
+        });
+
+        $Composer->setOutput($CLIOutput);
+        $Packages->refreshServerList();
+
+        $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'security.update.start'));
 
         // create security composer
         $workingDir = $Composer->getWorkingDir();
