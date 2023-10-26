@@ -12,18 +12,15 @@ use QUI;
 
 use function copy;
 use function date;
-use function error_log;
 use function explode;
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
-use function flush;
 use function json_decode;
 use function json_encode;
-use function ob_flush;
-use function ob_get_contents;
 use function str_replace;
 use function strpos;
+use function substr_count;
 use function trim;
 use function unlink;
 
@@ -54,49 +51,42 @@ class SecurityUpdate extends QUI\System\Console\Tool
      * (non-PHPdoc)
      *
      * @throws QUI\Exception
+     * @throws Exception
      * @see \QUI\System\Console\Tool::execute()
      */
     public function execute()
     {
-        $this->writeUpdateLog('====== EXECUTE UPDATE ======');
-        $this->writeUpdateLog(QUI::getLocale()->get('quiqqer/quiqqer', 'update.log.message.execute.console'));
-
         Cleanup::clearComposer();
 
         $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'security.update'));
         $this->writeLn('========================');
         $this->writeLn('');
-        $this->logBuffer();
 
         $self = $this;
         $Packages = QUI::getPackageManager();
         $dryRun = true;
         $dryRunOutput = '';
 
-        // output events
-        $Packages->getComposer()->addEvent(
-            'onOutput',
-            function ($Composer, $output, $type) use ($self, &$dryRun, &$dryRunOutput) {
-                if ($dryRun) {
-                    $dryRunOutput .= $output;
-                    return;
-                }
-
-                if ($this->getArgument('check')) {
-                    return;
-                }
-
-                $self->write($output);
-                $self->writeToLog($output);
-            }
-        );
-
-        $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'security.update.start'));
-
-        $Packages->refreshServerList();
-
         $Composer = $Packages->getComposer();
         $Composer->unmute();
+
+        // output events
+
+        // start update routines
+        $CLIOutput = new QUI\System\Console\Output();
+        $CLIOutput->Events->addEvent('onWrite', function ($message) use (&$dryRun, &$dryRunOutput) {
+            if ($dryRun) {
+                $dryRunOutput .= $message . PHP_EOL;
+                return;
+            }
+
+            Update::onCliOutput($message, $this);
+        });
+
+        $Composer->setOutput($CLIOutput);
+        $Packages->refreshServerList();
+
+        $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'security.update.start'));
 
         // create security composer
         $workingDir = $Composer->getWorkingDir();
@@ -218,25 +208,17 @@ class SecurityUpdate extends QUI\System\Console\Tool
 
             $Composer->update();
 
-            $this->logBuffer();
             $wasExecuted = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.execute');
             $webserver = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.webserver');
 
             $this->writeLn($wasExecuted);
-            $this->writeToLog($wasExecuted . PHP_EOL);
-
             $this->writeLn($webserver);
-            $this->writeToLog($webserver . PHP_EOL);
 
             $Htaccess = new Htaccess();
             $Htaccess->execute();
 
             $NGINX = new Nginx();
             $NGINX->execute();
-
-            $this->writeToLog(PHP_EOL);
-            $this->writeToLog('✔️' . PHP_EOL);
-            $this->writeToLog(PHP_EOL);
 
             QUI\Setup::all($this);
 
@@ -245,7 +227,6 @@ class SecurityUpdate extends QUI\System\Console\Tool
 
             QUI\Cache\Manager::clearCompleteQuiqqerCache();
             QUI\Cache\Manager::longTimeCacheClearCompleteQuiqqer();
-            $this->logBuffer();
         } catch (Exception $Exception) {
             $this->write(' [error]', 'red');
             $this->writeLn('');
@@ -274,8 +255,6 @@ class SecurityUpdate extends QUI\System\Console\Tool
             copy($composerBackups, $composerOriginal);
             unlink($composerBackups);
         }
-
-        $this->logBuffer();
 
         // mail
         $mail = $this->getArgument('mail');
@@ -313,55 +292,5 @@ class SecurityUpdate extends QUI\System\Console\Tool
             $Maintenance->setArgument('status', 'off');
             $Maintenance->execute();
         }
-    }
-
-    /**
-     * Write a log to the update file
-     *
-     * @param string $message
-     */
-    protected function writeUpdateLog($message)
-    {
-        QUI\System\Log::write(
-            $message,
-            QUI\System\Log::LEVEL_NOTICE,
-            [
-                'params' => [
-                    'clearCache' => $this->getArgument('clearCache'),
-                    'setDevelopment' => $this->getArgument('setDevelopment'),
-                    'check' => $this->getArgument('check'),
-                    'set-date' => $this->getArgument('set-date')
-                ]
-            ],
-            'update',
-            true
-        );
-    }
-
-    /**
-     * Log the output buffer to the update log
-     */
-    protected function logBuffer()
-    {
-        $buffer = ob_get_contents();
-        $buffer = trim($buffer);
-        $this->writeToLog($buffer);
-
-        @flush();
-        @ob_flush();
-    }
-
-    /**
-     * Write buffer to the update log
-     *
-     * @param string $buffer
-     */
-    protected function writeToLog(string $buffer)
-    {
-        if (empty($buffer)) {
-            return;
-        }
-
-        error_log($buffer, 3, VAR_DIR . 'log/update-' . date('Y-m-d') . '.log');
     }
 }
