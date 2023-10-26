@@ -12,31 +12,43 @@ QUI::$Ajax->registerFunction(
 
         $Mail->Mailer = 'mail';
 
-        if (isset($params['SMTPServer']) && !empty($params['SMTPServer'])) {
+        if (!empty($params['MAILFrom'])) {
+            $Mail->From = $params['MAILFrom'];
+        }
+
+        if (!empty($params['MAILFromText'])) {
+            $Mail->FromName = $params['MAILFromText'];
+        }
+
+        if (!empty($params['MAILReplyTo'])) {
+            $Mail->addReplyTo($params['MAILReplyTo']);
+        }
+
+        if (!empty($params['SMTPServer'])) {
             $Mail->Mailer = 'smtp';
             $Mail->SMTPAuth = true;
             $Mail->Host = $params['SMTPServer'];
         }
 
-        if (isset($params['SMTPUser']) && !empty($params['SMTPUser'])) {
+        if (!empty($params['SMTPUser'])) {
             $Mail->Mailer = 'smtp';
             $Mail->SMTPAuth = true;
             $Mail->Username = $params['SMTPUser'];
         }
 
-        if (isset($params['SMTPPass']) && !empty($params['SMTPPass'])) {
+        if (!empty($params['SMTPPass'])) {
             $Mail->Mailer = 'smtp';
             $Mail->SMTPAuth = true;
             $Mail->Password = $params['SMTPPass'];
         }
 
-        if (isset($params['SMTPPort']) && !empty($params['SMTPPort'])) {
+        if (!empty($params['SMTPPort'])) {
             $Mail->Mailer = 'smtp';
             $Mail->SMTPAuth = true;
             $Mail->Port = (int)$params['SMTPPort'];
         }
 
-        if (isset($params['SMTPSecure']) && !empty($params['SMTPSecure'])) {
+        if (!empty($params['SMTPSecure'])) {
             switch ($params['SMTPSecure']) {
                 case "ssl":
                     $Mail->SMTPSecure = $params['SMTPSecure'];
@@ -71,15 +83,8 @@ QUI::$Ajax->registerFunction(
                 $Mail->addAddress($recipient);
             }
 
-            $Mail->Subject = QUI::getLocale()->get(
-                'quiqqer/quiqqer',
-                'text.mail.subject'
-            );
-
-            $Mail->Body = QUI::getLocale()->get(
-                'quiqqer/quiqqer',
-                'text.mail.body'
-            );
+            $Mail->Subject = QUI::getLocale()->get('quiqqer/quiqqer', 'text.mail.subject');
+            $Mail->Body = QUI::getLocale()->get('quiqqer/quiqqer', 'text.mail.body');
 
             $Mail->SMTPDebug = 3;
             $Mail->Debugoutput = function ($str, $level) {
@@ -102,20 +107,8 @@ QUI::$Ajax->registerFunction(
         // send mail with Mail Template
         try {
             $Mailers = QUI::getMailManager()->getMailer();
-            $Mailers->setSubject(
-                QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
-                    'text.mail.subject'
-                )
-            );
-
-            $Mailers->setBody(
-                QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
-                    'text.mail.body'
-                )
-            );
-
+            $Mailers->setSubject(QUI::getLocale()->get('quiqqer/quiqqer', 'text.mail.subject'));
+            $Mailers->setBody(QUI::getLocale()->get('quiqqer/quiqqer', 'text.mail.body'));
             $Mailers->addRecipient($mailRecipient);
             $Mailers->send();
         } catch (Exception $Exception) {
