@@ -7,6 +7,7 @@
 namespace QUI\Events;
 
 use QUI;
+use QUI\ExceptionStack;
 
 use function is_array;
 use function is_string;
@@ -77,10 +78,10 @@ class Manager implements QUI\Interfaces\Events
 
             foreach ($list as $params) {
                 $this->Events->addEvent(
-                    $params['event'],
-                    $params['callback'],
+                    trim($params['event']),
+                    trim($params['callback']),
                     $params['priority'] ?? 0,
-                    $params['package'] ?? ''
+                    trim($params['package']) ?? ''
                 );
             }
 
@@ -133,9 +134,9 @@ class Manager implements QUI\Interfaces\Events
         // add the event to the db
         if (is_string($fn)) {
             QUI::getDataBase()->insert(self::table(), [
-                'event' => $event,
-                'callback' => $fn,
-                'package' => $package,
+                'event' => trim($event),
+                'callback' => trim($fn),
+                'package' => trim($package),
                 'priority' => $priority
             ]);
         }
@@ -218,7 +219,7 @@ class Manager implements QUI\Interfaces\Events
     }
 
     /**
-     * Adds an site event entry
+     * Adds a site event entry
      *
      * @param string $event - The type of event (e.g. 'complete').
      * @param callable $fn - The function to execute.
@@ -236,10 +237,10 @@ class Manager implements QUI\Interfaces\Events
         }
 
         QUI::getDataBase()->insert(self::table(), [
-            'event' => $event,
-            'callback' => $fn,
-            'sitetype' => $siteType,
-            'priority' => (int)$priority
+            'event' => trim($event),
+            'callback' => trim($fn),
+            'sitetype' => trim($siteType),
+            'priority' => trim($priority)
         ]);
     }
 
@@ -255,7 +256,7 @@ class Manager implements QUI\Interfaces\Events
 
     /**
      * Removes an event from the stack of events
-     * It remove the events from the database, too.
+     * It removes the events from the database, too.
      *
      * @param string $event - The type of event (e.g. 'complete').
      * @param callable|boolean $fn - (optional) The function to remove.
@@ -275,9 +276,9 @@ class Manager implements QUI\Interfaces\Events
 
         if (is_string($fn)) {
             QUI::getDataBase()->delete(self::table(), [
-                'event' => $event,
-                'callback' => $fn,
-                'package' => $package
+                'event' => trim($event),
+                'callback' => trim($fn),
+                'package' => trim($package)
             ]);
         }
     }
@@ -306,18 +307,14 @@ class Manager implements QUI\Interfaces\Events
     }
 
     /**
-     * (non-PHPdoc)
+     * Fire an event with optional arguments
      *
-     * @param string $event - The type of event (e.g. 'onComplete').
-     * @param array|boolean $args - (optional) the argument(s) to pass to the function.
-     *                          The arguments must be in an array.
-     * @param boolean $force - (optional) no recursion check, optional, default = false
-     * @return array
+     * @param string $event The name of the event to fire
+     * @param mixed $args Optional arguments to pass to the event handlers
+     * @param bool $force Whether to force the event handlers to execute even if they are not enabled
      *
-     * @throws QUI\Exception
-     * @throws QUI\ExceptionStack
-     * @see \QUI\Interfaces\Events::fireEvent()
-     *
+     * @return array         An array containing the results of the event handlers
+     * @throws ExceptionStack
      */
     public function fireEvent($event, $args = false, bool $force = false): array
     {
