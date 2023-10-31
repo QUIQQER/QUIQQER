@@ -45,38 +45,6 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
 
         $this->checkPermission('quiqqer.projects.media.view');
 
-        // @todo settings
-        $WHITE_LIST_EXTENSION = [
-            'pdf',
-            'txt',
-            'xml',
-            'doc',
-            'pdt',
-            'xls',
-            'csv',
-            'txt',
-            'swf',
-            'flv',
-            'mp3',
-            'mp4',
-            'ogg',
-            'wav',
-            'mpeg',
-            'avi',
-            'mpg',
-            'divx',
-            'mov',
-            'wmv',
-            'zip',
-            'rar',
-            '7z',
-            'gzip',
-            'tar',
-            'tgz',
-            'ace',
-            'psd'
-        ];
-
         $Media = $this->Media;
         /* @var $Media Media */
 
@@ -98,7 +66,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
 
         $extension = QUI\Utils\StringHelper::pathinfo($original, PATHINFO_EXTENSION);
 
-        if (!in_array($extension, $WHITE_LIST_EXTENSION)) {
+        if (!in_array($extension, Utils::getWhiteListForNoMediaCache())) {
             QUIFile::unlink($cacheFile);
 
             return $original;
