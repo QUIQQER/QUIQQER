@@ -363,7 +363,7 @@ class Package extends QUI\System\Console\Tool
                 'red'
             );
 
-            $this->resetColor();;
+            $this->resetColor();
             $this->writeLn();
             return;
         }
@@ -383,7 +383,7 @@ class Package extends QUI\System\Console\Tool
                 'red'
             );
 
-            $this->resetColor();;
+            $this->resetColor();
             $this->writeLn();
             $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.can.removed'));
             $this->writeLn('========================================');
