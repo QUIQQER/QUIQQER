@@ -10,9 +10,10 @@ use League\CLImate\CLImate;
 use QUI;
 
 use function array_keys;
+use function file_get_contents;
 use function is_array;
+use function json_decode;
 use function ksort;
-use function strtolower;
 
 /**
  * Package console tool
@@ -369,8 +370,8 @@ class Package extends QUI\System\Console\Tool
         }
 
         // check composer json
-        $QUIQQER = QUI::getPackage('quiqqer/quiqqer');
-        $composer = $QUIQQER->getComposerData();
+        $composer = file_get_contents(VAR_DIR . 'composer/composer.json');
+        $composer = json_decode($composer, true);
         $require = $composer['require'];
 
         unset($require['php']);
@@ -387,8 +388,8 @@ class Package extends QUI\System\Console\Tool
             $this->writeLn();
             $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.can.removed'));
             $this->writeLn('========================================');
-            $this->writeLn('');
-            $this->writeLn('');
+            $this->writeLn();
+            $this->writeLn();
 
             $require = array_keys($require);
 
@@ -401,8 +402,16 @@ class Package extends QUI\System\Console\Tool
 
         $Composer = QUI::getPackageManager()->getComposer();
         $Runner = $Composer->getRunner();
-        $Runner->executeComposer('purge', ['packages' => $package]);
 
+        // start update routines
+        $CLIOutput = new QUI\System\Console\Output();
+        $CLIOutput->Events->addEvent('onWrite', function ($message) {
+            Update::onCliOutput($message, $this);
+        });
+
+        $Runner->setOutput($CLIOutput);
+        $Runner->executeComposer('remove', ['packages' => [$package]]);
+        /*
         $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.removing.update'));
         $input = $this->readInput();
 
@@ -412,5 +421,6 @@ class Package extends QUI\System\Console\Tool
 
         $Update = new Update();
         $Update->execute();
+        */
     }
 }
