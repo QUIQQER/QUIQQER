@@ -5364,6 +5364,18 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         <locale name="console.tool.package.message.install.noPackage">
             <de><![CDATA[Bitte gebe ein Paket an welches installiert werden soll. (--install=package)]]></de>
         </locale>
+        <locale name="console.tool.package.cannot.be.removed">
+            <de><![CDATA[Das Paket [package] kann nicht entfernt werden.]]></de>
+        </locale>
+        <locale name="console.tool.package.can.removed">
+            <de><![CDATA[Folgende Pakete können entfernt werden:]]></de>
+        </locale>
+        <locale name="console.tool.package.removing.update">
+            <de><![CDATA[
+            Das Paket [package] ist nun erfolgreich aus der composer.json Datei entfernt worden.
+            Möchtest Du im nächsten Schritt ein Update durchführen? [N,y] :
+            ]]></de>
+        </locale>
         <locale name="user.create.new.username">
             <de><![CDATA[Neuer Benutzer]]></de>
         </locale>

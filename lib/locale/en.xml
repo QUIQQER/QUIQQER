@@ -5187,6 +5187,18 @@ After logging in you will be prompted to set a new password.
         <locale name="console.tool.package.message.install.noPackage">
             <en><![CDATA[Please specify a package which should be installed. (--install=package)]]></en>
         </locale>
+        <locale name="console.tool.package.cannot.be.removed">
+            <en><![CDATA[The package [package] cannot be removed.]]></en>
+        </locale>
+        <locale name="console.tool.package.can.removed">
+            <en><![CDATA[The following packages can be removed:]]></en>
+        </locale>
+        <locale name="console.tool.package.removing.update">
+            <en><![CDATA[
+            The package [package] has now been successfully removed from the composer.json file.
+            Do you want to update in the next step? [N,y] :
+            ]]></en>
+        </locale>
         <locale name="user.create.new.username">
             <en><![CDATA[New User]]></en>
         </locale>        <!-- Authenticator: QUIQQER Login -->

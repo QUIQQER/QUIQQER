@@ -9,8 +9,10 @@ namespace QUI\System\Console\Tools;
 use League\CLImate\CLImate;
 use QUI;
 
+use function array_keys;
 use function is_array;
 use function ksort;
+use function strtolower;
 
 /**
  * Package console tool
@@ -71,6 +73,12 @@ class Package extends QUI\System\Console\Tool
                 QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.purge.description'),
                 false,
                 true
+            )
+            ->addArgument(
+                'remove',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.purge.description'),
+                false,
+                true
             );
     }
 
@@ -119,6 +127,12 @@ class Package extends QUI\System\Console\Tool
 
         if ($this->getArgument('remove')) {
             $this->removePackage($this->getArgument('remove'));
+
+            return;
+        }
+
+        if ($this->getArgument('purge')) {
+            $this->removePackage($this->getArgument('purge'));
 
             return;
         }
@@ -341,6 +355,62 @@ class Package extends QUI\System\Console\Tool
 
     protected function removePackage(string $package)
     {
+        if ($package === 'quiqqer/quiqqer') {
+            $this->writeLn(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.cannot.be.removed', [
+                    'package' => $package
+                ]),
+                'red'
+            );
+
+            $this->resetColor();;
+            $this->writeLn();
+            return;
+        }
+
+        // check composer json
+        $QUIQQER = QUI::getPackage('quiqqer/quiqqer');
+        $composer = $QUIQQER->getComposerData();
+        $require = $composer['require'];
+
+        unset($require['php']);
+
+        if (!isset($require[$package])) {
+            $this->writeLn(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.cannot.be.removed', [
+                    'package' => $package
+                ]),
+                'red'
+            );
+
+            $this->resetColor();;
+            $this->writeLn();
+            $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.can.removed'));
+            $this->writeLn('========================================');
+            $this->writeLn('');
+            $this->writeLn('');
+
+            $require = array_keys($require);
+
+            $Climate = new CLImate();
+            $Climate->columns($require);
+            $Climate->out('');
+            return;
+        }
+
+
         $Composer = QUI::getPackageManager()->getComposer();
+        $Runner = $Composer->getRunner();
+        $Runner->executeComposer('purge', ['packages' => $package]);
+
+        $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.removing.update'));
+        $input = $this->readInput();
+
+        if (strtolower($input) !== 'y') {
+            return;
+        }
+
+        $Update = new Update();
+        $Update->execute();
     }
 }
