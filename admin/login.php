@@ -2,6 +2,8 @@
 
 // phpcs:ignoreFile
 
+use QUI\Projects\Media\Utils;
+
 QUI::getEvents()->fireEvent('adminRequest');
 
 $languages = QUI::availableLanguages();
@@ -14,6 +16,21 @@ if (!empty($defaultLanguage)) {
 
 $authPackages = [];
 $logo = QUI::getLocale()->get('quiqqer/quiqqer', 'menu.quiqqer.text');
+
+$projectLogo = '';
+
+try {
+    $Standard = QUI::getProjectManager()->getStandard();
+
+    $projectLogo = $Standard->getConfig('logo');
+    $projectName = $Standard->getName();
+
+    if (Utils::isMediaUrl($Standard->getConfig('logo'))) {
+        $ProjectImage = Utils::getImageByUrl($Standard->getConfig('logo'));
+        $projectLogo = '<img src="' . $ProjectImage->getSizeCacheUrl() . '" />';
+    }
+} catch (QUI\Exception $exception) {
+}
 
 foreach ($packages as $package) {
     try {
@@ -183,6 +200,31 @@ foreach ($packages as $package) {
             top: 10px;
             right: 10px;
         }
+
+        .project-logo {
+            margin: 0 auto;
+            max-width: 500px;
+            position: relative;
+            width: 90%;
+        }
+
+        .project-logo img:first-child {
+
+        }
+
+        .project-logo img:nth-child(2) {
+            height: 24px;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
+
+        .license {
+            margin: 3rem auto 1rem;
+            max-width: 500px;
+            width: 90%;
+        }
+
     </style>
 
 
@@ -214,18 +256,18 @@ foreach ($packages as $package) {
         require.config({
             baseUrl: '<?php echo URL_BIN_DIR; ?>QUI/',
             paths: {
-                "package": "<?php echo URL_OPT_DIR; ?>",
-                "qui": '<?php echo URL_OPT_DIR; ?>bin/qui/qui',
-                "locale": '<?php echo URL_VAR_DIR; ?>locale/bin',
-                "Ajax": '<?php echo URL_BIN_DIR; ?>QUI/Ajax',
-                "URL_OPT_DIR": "<?php echo URL_OPT_DIR; ?>",
-                "URL_BIN_DIR": "<?php echo URL_BIN_DIR; ?>",
+                'package': "<?php echo URL_OPT_DIR; ?>",
+                'qui': '<?php echo URL_OPT_DIR; ?>bin/qui/qui',
+                'locale': '<?php echo URL_VAR_DIR; ?>locale/bin',
+                'Ajax': '<?php echo URL_BIN_DIR; ?>QUI/Ajax',
+                'URL_OPT_DIR': "<?php echo URL_OPT_DIR; ?>",
+                'URL_BIN_DIR': "<?php echo URL_BIN_DIR; ?>",
 
-                "Mustache": URL_OPT_DIR + 'bin/quiqqer-asset/mustache/mustache/mustache.min',
-                "URI": URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/URI',
+                'Mustache': URL_OPT_DIR + 'bin/quiqqer-asset/mustache/mustache/mustache.min',
+                'URI': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/URI',
                 'IPv6': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/IPv6',
                 'punycode': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/punycode',
-                'SecondLevelDomains': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/SecondLevelDomains',
+                'SecondLevelDomains': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/SecondLevelDomains'
             },
             waitSeconds: 0,
             catchError: true,
@@ -236,21 +278,28 @@ foreach ($packages as $package) {
             }
         });
 
-        function getCurrentLanguage() {
+        function getCurrentLanguage()
+        {
             if (LANGUAGE) {
                 return LANGUAGE;
             }
 
             let lang = 'en';
 
-            if ("language" in navigator) {
+            if ('language' in navigator) {
                 lang = navigator.language;
-            } else if ("browserLanguage" in navigator) {
-                lang = navigator.browserLanguage;
-            } else if ("systemLanguage" in navigator) {
-                lang = navigator.systemLanguage;
-            } else if ("userLanguage" in navigator) {
-                lang = navigator.userLanguage;
+            } else {
+                if ('browserLanguage' in navigator) {
+                    lang = navigator.browserLanguage;
+                } else {
+                    if ('systemLanguage' in navigator) {
+                        lang = navigator.systemLanguage;
+                    } else {
+                        if ('userLanguage' in navigator) {
+                            lang = navigator.userLanguage;
+                        }
+                    }
+                }
             }
 
             LANGUAGE = lang.substr(0, 2);
@@ -258,20 +307,21 @@ foreach ($packages as $package) {
             return LANGUAGE;
         }
 
-        function setLanguage(lang) {
+        function setLanguage(lang)
+        {
             if (!QUIQQER_LANGUAGES.contains(lang)) {
                 lang = QUIQQER_LANGUAGES[0];
             }
 
-            return new Promise(function (resolve) {
+            return new Promise(function(resolve) {
                 require([
                     'qui/QUI',
                     'utils/Session',
                     'Locale',
                     'locale/quiqqer/quiqqer/' + lang
-                ], function (QUI, Session, QUILocale) {
+                ], function(QUI, Session, QUILocale) {
                     QUILocale.setCurrent(lang);
-                    Session.set('quiqqer-user-language', lang).catch(function (err) {
+                    Session.set('quiqqer-user-language', lang).catch(function(err) {
                         // doesn't matter
                     });
 
@@ -293,13 +343,15 @@ foreach ($packages as $package) {
         require([
             'qui/QUI',
             'controls/users/Login'
-        ].append(QUIQQER_LOCALE || []), function (QUI, Login) {
+        ].append(QUIQQER_LOCALE || []), function(QUI, Login) {
             QUI.setAttributes({
                 'control-loader-type': 'line-scale',
                 'control-loader-color': '#2f8fc8'
             });
 
-            setLanguage(getCurrentLanguage()).then(function () {
+            setLanguage(getCurrentLanguage()).then(function() {
+                document.getElement('.login').set('html', '');
+
                 const LogIn = new Login({
                     onSuccess: window.onSuccess
                 }).inject(document.getElement('.login'));
@@ -307,7 +359,7 @@ foreach ($packages as $package) {
 
                 // chrome workaround - because of state saving
                 // sometimes, chrome don't load all events on a back up'd tab
-                (function () {
+                (function() {
                     const Form = LogIn.getElm().getElement('form');
 
                     if (!Form) {
@@ -322,15 +374,16 @@ foreach ($packages as $package) {
             });
         });
 
-        function onSuccess(Login) {
+        function onSuccess(Login)
+        {
             require([
                 'Ajax',
                 'Locale'
-            ], function (QUIAjax, QUILocale) {
+            ], function(QUIAjax, QUILocale) {
                 // check if admin user
-                QUIAjax.get('ajax_user_canUseBackend', function (canUseAdmin) {
+                QUIAjax.get('ajax_user_canUseBackend', function(canUseAdmin) {
                     if (canUseAdmin === false) {
-                        QUI.getMessageHandler().then(function (MH) {
+                        QUI.getMessageHandler().then(function(MH) {
                             MH.addError(
                                 QUILocale.get(
                                     'quiqqer/quiqqer',
@@ -347,7 +400,7 @@ foreach ($packages as $package) {
                         opacity: 0
                     }, {
                         duration: 200,
-                        callback: function () {
+                        callback: function() {
                             window.location.reload();
                         }
                     });
@@ -364,18 +417,37 @@ foreach ($packages as $package) {
 
     <div class="logo">
         <?php
-        echo $logo;
+
+        if (!empty($projectLogo)) {
+            echo '<div class="project-logo">';
+            echo $projectLogo;
+            echo $logo;
+            echo '</div>';
+        } else {
+            echo '<div class="no-project-logo">';
+            echo $logo;
+            echo '</div>';
+        }
+
         ?>
     </div>
 
     <div class="login"></div>
+
+    <div class="license">
+        QUIQQER Copyright(C) <?php
+        echo date('Y'); ?> PCSG - Computer & Internet Service OHG - www.pcsg.de
+        This program comes with ABSOLUTELY NO WARRANTY;
+        This is free software, and you are welcome to redistribute it under certain conditions;
+        visit www.quiqqer.com for details.
+    </div>
 </div>
 
 <?php
 if (defined('LOGIN_FAILED')) { ?>
     <script type="text/javascript">
-        require(['qui/QUI'], function () {
-            QUI.getMessageHandler().then(function (MH) {
+        require(['qui/QUI'], function() {
+            QUI.getMessageHandler().then(function(MH) {
                 MH.addError("<?php echo LOGIN_FAILED; ?>");
             });
         });
@@ -394,10 +466,10 @@ if (defined('LOGIN_FAILED')) { ?>
         needle.push('locale/quiqqer/quiqqer/' + QUIQQER_LANGUAGES[i]);
     }
 
-    require(needle, function (QUISelect, QUILocale) {
+    require(needle, function(QUISelect, QUILocale) {
         const Select = new QUISelect({
             events: {
-                onChange: function () {
+                onChange: function() {
                     setLanguage(Select.getValue());
                 }
             }
@@ -426,7 +498,7 @@ if (defined('LOGIN_FAILED')) { ?>
 
         QUILocale.setCurrent(current);
         Select.setValue(getCurrentLanguage());
-    }, function () {
+    }, function() {
 
     });
 </script>

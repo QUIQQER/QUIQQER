@@ -356,10 +356,10 @@ class Console
         $this->clearMsg();
 
         $licenceText = '
- QUIQQER Copyright(C) ' . $year . '  PCSG - Computer & Internet Service OHG - www . pcsg . de
- This program comes with ABSOLUTELY NO WARRANTY; for details type `./console licence` .
+ QUIQQER Copyright(C) ' . $year . '  PCSG - Computer & Internet Service OHG - www.pcsg.de
+ This program comes with ABSOLUTELY NO WARRANTY; for details type `./console licence`.
  This is free software, and you are welcome to redistribute it under certain conditions;
- visit www . quiqqer . com for details .
+ visit www.quiqqer.com for details.
 
                                ';
 
