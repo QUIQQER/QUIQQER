@@ -66,7 +66,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
 
         $extension = QUI\Utils\StringHelper::pathinfo($original, PATHINFO_EXTENSION);
 
-        if (!in_array($extension, Utils::getWhiteListForNoMediaCache())) {
+        if (in_array($extension, Utils::getWhiteListForNoMediaCache())) {
             QUIFile::unlink($cacheFile);
 
             return $original;
