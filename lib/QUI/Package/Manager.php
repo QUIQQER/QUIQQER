@@ -2284,7 +2284,8 @@ class Manager extends QUI\QDOM
                     'text' => $this->getSiteTypeName(
                         $name . ':' . $Type->getAttribute('type')
                     ),
-                    'childrenType' => $Type->getAttribute('child-type')
+                    'childrenType' => $Type->getAttribute('child-type'),
+                    'childrenNavHide' => $Type->getAttribute('child-navHide')
                 ];
             }
         }
