@@ -478,6 +478,9 @@ class Media extends QUI\QDOM
 
             case "folder":
                 return new Media\Folder($result, $this);
+
+            case "video":
+                return new Media\Video($result, $this);
         }
 
         return new Media\File($result, $this);
