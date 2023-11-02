@@ -314,7 +314,7 @@ class Utils
         ) {
             return 'image';
         }
-        
+
         if (strpos($mime_type, 'video/') !== false) {
             return 'video';
         }
