@@ -1123,7 +1123,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @todo as cron
      */
-    public function getSize(): int
+    public function getSize(): ?int
     {
         return QUI\Utils\System\Folder::getFolderSize($this->getFullPath());
     }
