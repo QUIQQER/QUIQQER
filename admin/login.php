@@ -15,7 +15,7 @@ if (!empty($defaultLanguage)) {
 }
 
 $authPackages = [];
-$logo = QUI::getLocale()->get('quiqqer/quiqqer', 'menu.quiqqer.text');
+$quiqqerLogo = QUI::getLocale()->get('quiqqer/quiqqer', 'menu.quiqqer.text');
 
 $projectLogo = '';
 
@@ -133,6 +133,18 @@ foreach ($packages as $package) {
     ?>
 
     <style type="text/css">
+        :root {
+            --color-primary: #2f8fc6;
+            --color-primary-dark: #0e3145;
+            --color-primary-accent: #fff;
+
+            --text-body: #1e2021;
+            --text-muted: #6d7b86;
+
+            --radius: 1rem;
+            --radius-sm: 0.25rem;
+        }
+
 
         * {
             -webkit-box-sizing: border-box;
@@ -142,87 +154,175 @@ foreach ($packages as $package) {
 
         html, body {
             background: #dedede;
-            color: #333;
+            color: var(--text-body);
             float: left;
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 13px;
+            font-size: 16px;
             margin: 0;
             padding: 0;
             text-align: left;
             width: 100%;
+            line-height: 1.5;
+        }
+
+        h1, h2, h3 {
+            line-height: 1.1;
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        .logo img {
+            max-width: 100px;
         }
 
         .container {
-            background: #fff;
-            box-shadow: 2px 0 5px #999;
-            padding: 40px 0;
-            margin: 50px 0 0;
-            min-height: 380px;
+            min-height: 100vh;
+            min-height: 100svh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #fafafa;
+            background-image: linear-gradient(45deg, #fafafa, #eee);
         }
 
-        .login {
-            margin: 0 auto;
-            max-width: 300px;
+        .box {
+            position: relative;
+            max-width: 1000px;
             width: 100%;
+            display: flex;
+            background-color: #fff;
+            border: 4px solid #fff;
+            -webkit-box-shadow: 0 80px 30px -50px rgba(0,0,0,0.1);
+            box-shadow: 0 80px 30px -50px rgba(0,0,0,0.1);
+            border-radius: var(--radius);
         }
 
-        input {
-            border: 1px solid #999;
-            border-radius: 3px;
-            padding: 5px 10px;
+        .box__aside {
+            padding: 2rem;
+            flex-grow: 1;
+            width: 400px;
+            display: flex;
+            flex-shrink: 0;
+            border-radius: var(--radius);
+            background-position: 80% 100%, 0 -200px;
+            background-repeat: no-repeat, repeat;
+            background-size: 170% auto, 100% 150%;
+
+            color: var(--color-primary-accent);
+            background-image: url(https://img.michael.pcsg.eu/ecoyn/blog/test.svg?9), linear-gradient(-10deg, var(--color-primary), var(--color-primary-dark));
+            background-color: #2f8fc6;
+
+
+            background-position: 80% 100%, 0 0;
+            transition: 1s ease;
+        }
+
+        .box__aside-footer {
+            position: absolute;
+            left: 1rem;
+            bottom: 1rem;
+            color: var(--text-body);
+        }
+
+        .box__aside-footer .logo {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .box__main {
+            padding: 4rem 2rem;
+            flex-grow: 1;
+            position: relative;
+        }
+
+        .mainContent {
+            max-width: 20rem;
+            margin-inline: auto;
+        }
+
+        .mainContent .slogan__login {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .mainContent .logo {
+            text-align: center;
+            margin-top: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        /* login control */
+        .mainContent .quiqqer-login {
+            padding: 0;
+        }
+
+        .mainContent .quiqqer-login-auth label span {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .mainContent input {
+            line-height: 1.5rem;
+            padding: 0.5rem 1.5rem;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: var(--radius-sm);
         }
 
         button[type="submit"],
         button.reset-password {
-            border-color: #538312;
-            background: #64991e;
+            color: var(--color-primary-accent);
+            background-color: var(--color-primary);
+            border-radius: var(--radius-sm);
+            line-height: calc(1.5rem + 2px);
+            font-size: 16px;
             border: none;
-            border-radius: 0;
-            line-height: 30px !important;
-            color: #fff;
+            margin-top: 1rem;
+            padding: 0.5rem 1.5rem;
+        }
+
+        button[type="submit"] {
+            width: 100%;
         }
 
         button[name="cancel"] {
-            line-height: 30px !important;
         }
 
-        .logo {
-            text-align: center;
-        }
 
-        .logo img {
-            margin: 30px auto;
-            max-width: 500px;
-        }
-
+        /* lang switch */
         .quiqqer-language-switch {
             position: absolute;
             top: 10px;
             right: 10px;
+            font-size: 0.875rem;
         }
 
-        .project-logo {
-            margin: 0 auto;
-            max-width: 500px;
-            position: relative;
-            width: 90%;
+        .quiqqer-language-switch > .qui-select {
+            border: none;
+            display: flex;
+            justify-content: flex-end;
         }
 
-        .project-logo img:first-child {
-
+        .quiqqer-language-switch > .qui-select .text {
+            width: auto;
+            margin-right: 0.5em;
         }
 
-        .project-logo img:nth-child(2) {
-            height: 24px;
-            position: absolute;
-            bottom: 0;
-            right: 0;
-        }
+
+
 
         .license {
-            margin: 3rem auto 1rem;
-            max-width: 500px;
-            width: 90%;
+            font-size: 0.75rem;
+            margin-top: 2rem;
+            max-width: 25rem;
+            margin-inline: auto;
+            color: var(--text-muted);
+
         }
 
     </style>
@@ -413,33 +513,54 @@ foreach ($packages as $package) {
 <body>
 
 <div class="container">
-    <div class="quiqqer-language-switch"></div>
+    <div class="box">
+        <div class="box__aside">
+            <div class="slogan__title">
+                <h1>Willkomen in deinem Projekt</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus, numquam.</p>
+            </div>
 
-    <div class="logo">
-        <?php
+            <div class="box__aside-footer">
+                <?php
+                if (!empty($projectLogo)) {
+                    echo '<div class="logo logo--quiqqer"><span class="logo__text">Powered by</span>';
+                    echo $quiqqerLogo;
+                    echo '</div>';
+                }
+                ?>
+            </div>
+        </div>
+        <div class="box__main">
+            <div class="quiqqer-language-switch"></div>
 
-        if (!empty($projectLogo)) {
-            echo '<div class="project-logo">';
-            echo $projectLogo;
-            echo $logo;
-            echo '</div>';
-        } else {
-            echo '<div class="no-project-logo">';
-            echo $logo;
-            echo '</div>';
-        }
+            <div class="mainContent">
+                <?php
 
-        ?>
-    </div>
+                if (!empty($projectLogo)) {
+                    echo '<div class="logo logo--project">';
+                    echo $projectLogo;
+                    echo '</div>';
+                } else {
+                    echo '<div class="logo logo--quiqqer">';
+                    echo $quiqqerLogo;
+                    echo '</div>';
+                }
 
-    <div class="login"></div>
+                ?>
 
-    <div class="license">
-        QUIQQER Copyright(C) <?php
-        echo date('Y'); ?> PCSG - Computer & Internet Service OHG - www.pcsg.de
-        This program comes with ABSOLUTELY NO WARRANTY;
-        This is free software, and you are welcome to redistribute it under certain conditions;
-        visit www.quiqqer.com for details.
+                <p class="slogan__login">Melde dich in dein QUIQQER System an.</p>
+
+                <div class="login"></div>
+            </div>
+
+            <div class="license">
+                QUIQQER Copyright(C) <?php
+                echo date('Y'); ?> PCSG - Computer & Internet Service OHG - www.pcsg.de
+                This program comes with ABSOLUTELY NO WARRANTY;
+                This is free software, and you are welcome to redistribute it under certain conditions;
+                visit www.quiqqer.com for details.
+            </div>
+        </div>
     </div>
 </div>
 
