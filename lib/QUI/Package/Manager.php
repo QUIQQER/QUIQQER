@@ -463,6 +463,10 @@ class Manager extends QUI\QDOM
             "kylekatarnls/update-helper"
         ];
 
+        if (!isset($composerJson->config->{'discard-changes'})) {
+            $composerJson->config->{'discard-changes'} = true;
+        }
+
         if (!isset($composerJson->config->{'allow-plugins'})) {
             $composerJson->config->{'allow-plugins'} = json_decode('{}');
         }
