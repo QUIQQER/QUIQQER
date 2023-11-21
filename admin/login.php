@@ -173,10 +173,6 @@ foreach ($packages as $package) {
             max-width: 100%;
         }
 
-        .logo img {
-            max-width: 100px;
-        }
-
         .container {
             min-height: 100vh;
             min-height: 100svh;
@@ -194,10 +190,10 @@ foreach ($packages as $package) {
             width: 100%;
             display: flex;
             background-color: #fff;
-            /*border: 4px solid #fff;*/
             -webkit-box-shadow: 0 80px 30px -50px rgba(0,0,0,0.1);
             box-shadow: 0 80px 30px -50px rgba(0,0,0,0.1);
             border-radius: var(--radius);
+            min-height: 60vh;
         }
 
         /* aside (left side) */
@@ -244,6 +240,7 @@ foreach ($packages as $package) {
         .box__main {
             padding: 4rem 2rem;
             flex-grow: 1;
+            flex-basis: 500px;
             position: relative;
         }
 
@@ -263,9 +260,14 @@ foreach ($packages as $package) {
             margin-bottom: 3rem;
         }
 
+        .mainContent .logo img {
+            max-height: 100px;
+        }
+
         /* login control */
-        .mainContent .quiqqer-login {
-            padding: 0;
+        .mainContent .login-container {
+            min-height: 260px;
+            display: grid;
         }
 
         .mainContent .quiqqer-login-auth label span {
@@ -320,8 +322,26 @@ foreach ($packages as $package) {
             margin-right: 0.5em;
         }
 
+        /* license */
+        .licenseToggleButton {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
 
-
+        .licenseToggleButton .fa {
+            margin-right: 0.25em;
+        }
 
         .license {
             font-size: 0.75rem;
@@ -329,7 +349,7 @@ foreach ($packages as $package) {
             max-width: 25rem;
             margin-inline: auto;
             color: var(--text-muted);
-
+            overflow: hidden;
         }
 
     </style>
@@ -457,11 +477,11 @@ foreach ($packages as $package) {
             });
 
             setLanguage(getCurrentLanguage()).then(function() {
-                document.getElement('.login').set('html', '');
+                document.getElement('.login-container').set('html', '');
 
                 const LogIn = new Login({
                     onSuccess: window.onSuccess
-                }).inject(document.getElement('.login'));
+                }).inject(document.getElement('.login-container'));
 
 
                 // chrome workaround - because of state saving
@@ -478,6 +498,16 @@ foreach ($packages as $package) {
                         LogIn.refresh();
                     }
                 }).delay(2000);
+            });
+
+            document.querySelector('.licenseToggleButton').addEventListener('click', () => {
+                const License = document.getElement('.license');
+
+                if (License.offsetHeight === 0) {
+                    showLicenseText();
+                } else {
+                    hideLicenseText();
+                }
             });
         });
 
@@ -515,6 +545,43 @@ foreach ($packages as $package) {
             });
         }
 
+        /**
+         * Show license text
+         */
+        function showLicenseText() {
+            const License = document.getElement('.license'),
+                Inner = document.getElement('.license__text');
+
+            Inner.style.visibility = null;
+
+            moofx(License).animate({
+                height: Inner.offsetHeight
+            }, {
+                duration: 300,
+                callback: function() {
+                    License.style.height = null;
+                }
+            });
+        }
+
+        /**
+         * Hide license text
+         */
+        function hideLicenseText() {
+            const License = document.getElement('.license'),
+                Inner = document.getElement('.license__text');
+
+            moofx(License).animate({
+                height: 0
+            }, {
+                duration: 300,
+                callback: function() {
+                    Inner.style.visibility = null;
+
+                }
+            });
+        }
+
     </script>
 </head>
 <body>
@@ -524,7 +591,7 @@ foreach ($packages as $package) {
         <div class="box__aside">
             <div class="slogan__title">
                 <h1>Willkommen in deinem Projekt</h1>
-                <p>Maximiere deine Effizienz mit einem System, das nahtlosen Komfort und modulare Flexibilität vereint.</p>
+                <p>Simple Verwaltung, individuelle Gestaltung, modulare Flexibilität. Der Weg zu deinem digitalen Erfolg.</p>
             </div>
 
             <div class="box__aside-footer">
@@ -557,16 +624,20 @@ foreach ($packages as $package) {
 
                 <p class="slogan__login">Melde dich in dein QUIQQER System an.</p>
 
-                <div class="login"></div>
+                <div class="login-container"></div>
             </div>
 
-            <div class="license">
-                QUIQQER Copyright(C) <?php
-                echo date('Y'); ?> PCSG - Computer & Internet Service OHG - www.pcsg.de
-                This program comes with ABSOLUTELY NO WARRANTY;
-                This is free software, and you are welcome to redistribute it under certain conditions;
-                visit www.quiqqer.com for details.
+            <div class="license" style="height: 0;">
+                <div class="license__text" style="visibility: hidden;">
+                    QUIQQER Copyright(C) <?php
+                    echo date('Y'); ?> PCSG - Computer & Internet Service OHG - www.pcsg.de
+                    This program comes with ABSOLUTELY NO WARRANTY;
+                    This is free software, and you are welcome to redistribute it under certain conditions;
+                    visit www.quiqqer.com for details.
+                </div>
             </div>
+
+            <span role="button" class="licenseToggleButton"><span class="fa fa-copyright"></span> Lizenz</span>
         </div>
     </div>
 </div>
