@@ -194,12 +194,13 @@ foreach ($packages as $package) {
             width: 100%;
             display: flex;
             background-color: #fff;
-            border: 4px solid #fff;
+            /*border: 4px solid #fff;*/
             -webkit-box-shadow: 0 80px 30px -50px rgba(0,0,0,0.1);
             box-shadow: 0 80px 30px -50px rgba(0,0,0,0.1);
             border-radius: var(--radius);
         }
 
+        /* aside (left side) */
         .box__aside {
             padding: 2rem;
             flex-grow: 1;
@@ -228,12 +229,18 @@ foreach ($packages as $package) {
         }
 
         .box__aside-footer .logo {
-            font-size: 0.75rem;
+            font-size: 0.625rem;
             color: var(--text-muted);
             display: flex;
             flex-direction: column;
         }
 
+        .box__aside-footer img {
+            width: 80px;
+            height: 16px;
+        }
+
+        /* main content (right side) */
         .box__main {
             padding: 4rem 2rem;
             flex-grow: 1;
@@ -516,8 +523,8 @@ foreach ($packages as $package) {
     <div class="box">
         <div class="box__aside">
             <div class="slogan__title">
-                <h1>Willkomen in deinem Projekt</h1>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus, numquam.</p>
+                <h1>Willkommen in deinem Projekt</h1>
+                <p>Maximiere deine Effizienz mit einem System, das nahtlosen Komfort und modulare Flexibilität vereint.</p>
             </div>
 
             <div class="box__aside-footer">
