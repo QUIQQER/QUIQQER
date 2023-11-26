@@ -71,6 +71,9 @@ foreach ($packages as $package) {
         QUIQQER Content Management System - <?php
         echo HOST ?> -
     </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1,maximum-scale=1"/>
+
     <!-- favicon -->
     <?php
     $favicon = QUI::conf('globals', 'favicon');
@@ -138,6 +141,9 @@ foreach ($packages as $package) {
             --color-primary-dark: #0e3145;
             --color-primary-accent: #fff;
 
+            --color-secondary: #44565f;
+            --color-secondary-accent: #fff;
+
             --text-body: #1e2021;
             --text-muted: #6d7b86;
 
@@ -153,9 +159,8 @@ foreach ($packages as $package) {
         }
 
         html, body {
-            background: #dedede;
+            background: #ffffff;
             color: var(--text-body);
-            float: left;
             font-family: Arial, Helvetica, sans-serif;
             font-size: 16px;
             margin: 0;
@@ -176,68 +181,79 @@ foreach ($packages as $package) {
         .container {
             min-height: 100vh;
             min-height: 100svh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-color: #fafafa;
-            background-image: linear-gradient(45deg, #fafafa, #eee);
         }
 
-        .box {
+        .loginBox {
             position: relative;
             max-width: 1000px;
             width: 100%;
-            display: flex;
             background-color: #fff;
-            -webkit-box-shadow: 0 80px 30px -50px rgba(0,0,0,0.1);
-            box-shadow: 0 80px 30px -50px rgba(0,0,0,0.1);
-            border-radius: var(--radius);
-            min-height: 60vh;
+        }
+
+        @media screen and (min-width: 768px) {
+            .container {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                background-color: #fafafa;
+                background-image: linear-gradient(45deg, #fafafa, #eee);
+            }
+
+            .loginBox {
+                display: flex;
+                -webkit-box-shadow: 0 80px 30px -50px rgba(0,0,0,0.1);
+                box-shadow: 0 80px 30px -50px rgba(0,0,0,0.1);
+                border-radius: var(--radius);
+                min-height: min(90vh, 720px);
+            }
         }
 
         /* aside (left side) */
-        .box__aside {
+        .loginBox__aside {
             padding: 2rem;
             flex-grow: 1;
             width: 400px;
             display: flex;
-            flex-shrink: 0;
             border-radius: var(--radius);
-            background-position: 80% 100%, 0 -200px;
             background-repeat: no-repeat, repeat;
-            background-size: 170% auto, 100% 150%;
-
+            background-size: 100% auto, 100% 150%;
             color: var(--color-primary-accent);
-            background-image: url(https://img.michael.pcsg.eu/ecoyn/blog/test.svg?9), linear-gradient(-10deg, var(--color-primary), var(--color-primary-dark));
+            background-image: url('<?php echo URL_BIN_DIR . 'images/admin-login-image.svg'; ?>'), linear-gradient(-10deg, var(--color-primary), var(--color-primary-dark));
             background-color: #2f8fc6;
-
-
-            background-position: 80% 100%, 0 0;
+            background-position: 80% bottom, 0 0;
             transition: 1s ease;
         }
 
-        .box__aside-footer {
+        @media screen and (max-width: 767px) {
+            .loginBox__aside {
+                display: none;
+            }
+        }
+
+        .loginBox__aside-footer {
             position: absolute;
             left: 1rem;
             bottom: 1rem;
             color: var(--text-body);
         }
 
-        .box__aside-footer .logo {
+        .loginBox__aside-footer .logo,
+        .loginBox__main-footer .logo {
             font-size: 0.625rem;
             color: var(--text-muted);
             display: flex;
             flex-direction: column;
         }
 
-        .box__aside-footer img {
+        .loginBox__aside-footer img,
+        .loginBox__main-footer img {
             width: 80px;
             height: 16px;
         }
 
         /* main content (right side) */
-        .box__main {
+        .loginBox__main {
             padding: 4rem 2rem;
             flex-grow: 1;
             flex-basis: 500px;
@@ -250,7 +266,7 @@ foreach ($packages as $package) {
         }
 
         .mainContent .slogan__login {
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
             text-align: center;
         }
 
@@ -275,16 +291,15 @@ foreach ($packages as $package) {
             font-size: 0.875rem;
         }
 
-        .mainContent input {
+        .mainContent .login-container input {
             line-height: 1.5rem;
-            padding: 0.5rem 1.5rem;
+            padding: 0.5rem 1rem;
             background: #fff;
             border: 1px solid #ddd;
             border-radius: var(--radius-sm);
         }
 
-        button[type="submit"],
-        button.reset-password {
+        .mainContent .login-container button {
             color: var(--color-primary-accent);
             background-color: var(--color-primary);
             border-radius: var(--radius-sm);
@@ -293,15 +308,18 @@ foreach ($packages as $package) {
             border: none;
             margin-top: 1rem;
             padding: 0.5rem 1.5rem;
-        }
-
-        button[type="submit"] {
             width: 100%;
         }
 
-        button[name="cancel"] {
+        .mainContent .login-container button[type="reset"],
+        .mainContent .login-container button[name="cancel"] {
+            background-color: var(--color-secondary);
+            color: var(--color-secondary-accent);
         }
 
+        .mainContent .login-container button.reset-password {
+            margin-top: calc(1rem - 10px);
+        }
 
         /* lang switch */
         .quiqqer-language-switch {
@@ -322,11 +340,24 @@ foreach ($packages as $package) {
             margin-right: 0.5em;
         }
 
-        /* license */
-        .licenseToggleButton {
+        /* main footer */
+        .loginBox__main-footer {
             position: absolute;
             bottom: 1rem;
             right: 1rem;
+            width: calc(100% - 2rem);
+            display: flex;
+        }
+
+        @media screen and (min-width: 768px) {
+            .loginBox__main-footer .logo {
+                display: none;
+            }
+        }
+
+        /* license */
+        .licenseToggleButton {
+            margin-left: auto;
             font-size: 0.75rem;
             color: var(--text-muted);
             cursor: pointer;
@@ -350,6 +381,17 @@ foreach ($packages as $package) {
             margin-inline: auto;
             color: var(--text-muted);
             overflow: hidden;
+        }
+
+        @media screen and (max-width: 767px) {
+            .loginBox__main {
+                min-height: 100vh;
+                min-height: 100svh;
+            }
+
+            .mainContent .logo {
+                margin-bottom: 2rem;
+            }
         }
 
     </style>
@@ -587,14 +629,16 @@ foreach ($packages as $package) {
 <body>
 
 <div class="container">
-    <div class="box">
-        <div class="box__aside">
+    <div class="loginBox">
+        <div class="loginBox__aside">
             <div class="slogan__title">
                 <h1>Willkommen in deinem Projekt</h1>
+<!--                <h1>--><?php //echo QUI::getLocale()->get('quiqqer/quiqqer', 'loginBox.aside.title')?><!--</h1>-->
+
                 <p>Simple Verwaltung, individuelle Gestaltung, modulare Flexibilität. Der Weg zu deinem digitalen Erfolg.</p>
             </div>
 
-            <div class="box__aside-footer">
+            <div class="loginBox__aside-footer">
                 <?php
                 if (!empty($projectLogo)) {
                     echo '<div class="logo logo--quiqqer"><span class="logo__text">Powered by</span>';
@@ -604,7 +648,7 @@ foreach ($packages as $package) {
                 ?>
             </div>
         </div>
-        <div class="box__main">
+        <div class="loginBox__main">
             <div class="quiqqer-language-switch"></div>
 
             <div class="mainContent">
@@ -637,7 +681,17 @@ foreach ($packages as $package) {
                 </div>
             </div>
 
-            <span role="button" class="licenseToggleButton"><span class="fa fa-copyright"></span> Lizenz</span>
+            <div class="loginBox__main-footer">
+                <?php
+                if (!empty($projectLogo)) {
+                    echo '<div class="logo logo--quiqqer"><span class="logo__text">Powered by</span>';
+                    echo $quiqqerLogo;
+                    echo '</div>';
+                }
+                ?>
+
+                <span role="button" class="licenseToggleButton"><span class="fa fa-copyright"></span> Lizenz</span>
+            </div>
         </div>
     </div>
 </div>
