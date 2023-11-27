@@ -1345,10 +1345,21 @@
         </locale>
 
         <locale name="loginBox.aside.title">
-            <de><![CDATA[Willkommen in deinem Projekt]]></de>
+            <de><![CDATA[Willkommen zurück!]]></de>
         </locale>
         <locale name="loginBox.aside.slogan">
-            <de><![CDATA[Simple Verwaltung, individuelle Gestaltung, modulare Flexibilität. Der Weg zu deinem digitalen Erfolg.]]></de>
+            <de><![CDATA[
+            Einfache Verwaltung, individuelle Anpassungsmöglichkeiten und modulare Flexibilität – dein Schlüssel zum digitalen Erfolg.
+            ]]></de>
+        </locale>
+        <locale name="loginBox.header.text">
+            <de><![CDATA[Melde dich an, um auf dein QUIQQER-System zuzugreifen.]]></de>
+        </locale>
+        <locale name="loginBox.powered">
+            <de><![CDATA[Powered by]]></de>
+        </locale>
+        <locale name="loginBox.license">
+            <de><![CDATA[Lizenz]]></de>
         </locale>
 
         <locale name="login.title">

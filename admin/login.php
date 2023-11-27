@@ -202,8 +202,8 @@ foreach ($packages as $package) {
 
             .loginBox {
                 display: flex;
-                -webkit-box-shadow: 0 80px 30px -50px rgba(0,0,0,0.1);
-                box-shadow: 0 80px 30px -50px rgba(0,0,0,0.1);
+                -webkit-box-shadow: 0 80px 30px -50px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 80px 30px -50px rgba(0, 0, 0, 0.1);
                 border-radius: var(--radius);
                 min-height: min(90vh, 720px);
             }
@@ -248,7 +248,6 @@ foreach ($packages as $package) {
 
         .loginBox__aside-footer img,
         .loginBox__main-footer img {
-            width: 80px;
             height: 16px;
         }
 
@@ -494,6 +493,31 @@ foreach ($packages as $package) {
                         // doesn't matter
                     });
 
+                    document.getElements('.slogan__login').set(
+                        'html',
+                        QUILocale.get('quiqqer/quiqqer', 'loginBox.header.text')
+                    );
+
+                    document.getElements('.slogan__title h1').set(
+                        'html',
+                        QUILocale.get('quiqqer/quiqqer', 'loginBox.aside.title')
+                    );
+
+                    document.getElements('.slogan__title p').set(
+                        'html',
+                        QUILocale.get('quiqqer/quiqqer', 'loginBox.aside.slogan')
+                    );
+
+                    document.getElements('.logo__text').set(
+                        'html',
+                        QUILocale.get('quiqqer/quiqqer', 'loginBox.powered')
+                    );
+
+                    document.getElements('.licenseToggleButton-license').set(
+                        'html',
+                        QUILocale.get('quiqqer/quiqqer', 'loginBox.license')
+                    );
+
                     const LoginElement = document.getElement('.quiqqer-login');
 
                     if (!LoginElement) {
@@ -590,7 +614,8 @@ foreach ($packages as $package) {
         /**
          * Show license text
          */
-        function showLicenseText() {
+        function showLicenseText()
+        {
             const License = document.getElement('.license'),
                 Inner = document.getElement('.license__text');
 
@@ -609,7 +634,8 @@ foreach ($packages as $package) {
         /**
          * Hide license text
          */
-        function hideLicenseText() {
+        function hideLicenseText()
+        {
             const License = document.getElement('.license'),
                 Inner = document.getElement('.license__text');
 
@@ -632,10 +658,13 @@ foreach ($packages as $package) {
     <div class="loginBox">
         <div class="loginBox__aside">
             <div class="slogan__title">
-                <h1>Willkommen in deinem Projekt</h1>
-<!--                <h1>--><?php //echo QUI::getLocale()->get('quiqqer/quiqqer', 'loginBox.aside.title')?><!--</h1>-->
+                <h1>
+                    <span class="fa fa-spinner fa-spin"></span>
+                </h1>
 
-                <p>Simple Verwaltung, individuelle Gestaltung, modulare Flexibilität. Der Weg zu deinem digitalen Erfolg.</p>
+                <p>
+                    <span class="fa fa-spinner fa-spin"></span>
+                </p>
             </div>
 
             <div class="loginBox__aside-footer">
@@ -666,7 +695,9 @@ foreach ($packages as $package) {
 
                 ?>
 
-                <p class="slogan__login">Melde dich in dein QUIQQER System an.</p>
+                <p class="slogan__login">
+                    <span class="fa fa-spinner fa-spin"></span>
+                </p>
 
                 <div class="login-container"></div>
             </div>
@@ -690,7 +721,10 @@ foreach ($packages as $package) {
                 }
                 ?>
 
-                <span role="button" class="licenseToggleButton"><span class="fa fa-copyright"></span> Lizenz</span>
+                <span role="button" class="licenseToggleButton">
+                    <span class="fa fa-copyright"></span>
+                    <span class="licenseToggleButton-license"></span>
+                </span>
             </div>
         </div>
     </div>

@@ -1336,10 +1336,21 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         </locale>
 
         <locale name="loginBox.aside.title">
-            <de><![CDATA[Welcome to your project]]></de>
+            <en><![CDATA[Welcome back!]]></en>
         </locale>
         <locale name="loginBox.aside.slogan">
-            <de><![CDATA[Simple administration, individual design, modular flexibility. The way to your digital success.]]></de>
+            <en><![CDATA[
+            Simple administration, individual customization options and modular flexibility - your key to digital success.
+            ]]></en>
+        </locale>
+        <locale name="loginBox.header.text">
+            <en><![CDATA[Log in to access your QUIQQER system.]]></en>
+        </locale>
+        <locale name="loginBox.powered">
+            <en><![CDATA[Powered by]]></en>
+        </locale>
+        <locale name="loginBox.license">
+            <en><![CDATA[License]]></en>
         </locale>
 
         <locale name="login.title">
