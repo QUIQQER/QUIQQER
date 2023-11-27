@@ -1343,6 +1343,14 @@
         <locale name="system.vhost.label.httpshost">
             <de><![CDATA[HTTPS-Host]]></de>
         </locale>
+
+        <locale name="loginBox.aside.title">
+            <de><![CDATA[Willkommen in deinem Projekt]]></de>
+        </locale>
+        <locale name="loginBox.aside.slogan">
+            <de><![CDATA[Simple Verwaltung, individuelle Gestaltung, modulare Flexibilität. Der Weg zu deinem digitalen Erfolg.]]></de>
+        </locale>
+
         <locale name="login.title">
             <de><![CDATA[Login]]></de>
         </locale>

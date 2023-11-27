@@ -2,12 +2,11 @@
     background: #fff;
     min-height: 180px;
     overflow: auto;
-    padding: 20px;
+    padding-block: 20px;
     position: relative;
 }
 
 .quiqqer-login form {
-    float: left;
     position: relative;
     top: 0;
     width: 100%;

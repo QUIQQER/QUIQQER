@@ -1334,6 +1334,14 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="system.vhost.label.httpshost">
             <en><![CDATA[HTTPS-Host]]></en>
         </locale>
+
+        <locale name="loginBox.aside.title">
+            <de><![CDATA[Welcome to your project]]></de>
+        </locale>
+        <locale name="loginBox.aside.slogan">
+            <de><![CDATA[Simple administration, individual design, modular flexibility. The way to your digital success.]]></de>
+        </locale>
+
         <locale name="login.title">
             <en><![CDATA[Login]]></en>
         </locale>

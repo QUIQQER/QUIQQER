@@ -73,7 +73,9 @@ define('controls/users/Login', [
             this.$Elm = this.parent();
             this.$Elm.addClass('quiqqer-login');
 
-            this.Loader = new QUILoader().inject(this.getElm());
+            this.Loader = new QUILoader({
+                'type' : 'fa-circle-o-notch'
+            }).inject(this.getElm());
 
             return this.$Elm;
         },
@@ -172,70 +174,72 @@ define('controls/users/Login', [
          * @return {Promise}
          */
         $buildAuthenticator: function (html) {
-            const Container = new Element('div', {
-                html: html
-            });
-
-            const elements = Container.getChildren(),
-                  forms    = Container.getElements('form'),
-
-                  children = elements.filter(function (Node) {
-                      return !Node.get('data-qui');
-                  });
-
-            if (!forms.length) {
-                QUIAjax.post('ajax_user_logout', function () {
-                    window.location.reload();
+                const Container = new Element('div', {
+                    html: html
                 });
 
-                return Promise.resolve();
-            }
+                const elements = Container.getChildren(),
+                    forms = Container.getElements('form'),
 
-            forms.setStyle('opacity', 0);
-            forms.inject(this.getElm());
+                    children = elements.filter(function(Node) {
+                        return !Node.get('data-qui');
+                    });
 
-            for (let i = 1, len = forms.length; i < len; i++) {
-                new Element('div', {
-                    'class': 'quiqqer-login-or',
-                    html   : '<span>' + QUILocale.get('quiqqer/quiqqer', 'controls.users.auth.login.or') + '</span>'
-                }).inject(forms[i], 'before');
-            }
+                if (
+                    !forms.length
+                ) {
+                    QUIAjax.post('ajax_user_logout', function() {
+                        window.location.reload();
+                    });
 
-            this.$forms = forms;
-            this.$refreshForm();
-
-            children.each(function (Child) {
-                Child.inject(forms[0]);
-            });
-
-            return QUI.parse(forms).then(function () {
-                this.Loader.hide();
-
-                const Node = this.getElm().getElement('[data-qui="controls/users/auth/QUIQQERLogin"]');
-
-                if (Node && Node.get('data-quiid')) {
-                    const Control = QUI.Controls.getById(Node.get('data-quiid'));
-
-                    if (Control) {
-                        Control.addEvents({
-                            onShowPassword     : this.$onShowPassword,
-                            onShowPasswordReset: this.onShowPasswordReset
-                        });
-                    }
+                    return Promise.resolve();
                 }
 
-                forms.setStyle('top', 20);
+                forms.setStyle('opacity', 0);
+                forms.inject(this.getElm());
 
-                moofx(forms).animate({
-                    opacity: 1,
-                    top    : 0
-                }, {
-                    duration: 200,
-                    callback: function () {
-                        forms[0].elements[0].focus();
-                    }
+                for (let i = 1, len = forms.length; i < len; i++) {
+                    new Element('div', {
+                        'class': 'quiqqer-login-or',
+                        html   : '<span>' + QUILocale.get('quiqqer/quiqqer', 'controls.users.auth.login.or') + '</span>'
+                    }).inject(forms[i], 'before');
+                }
+
+                this.$forms = forms;
+                this.$refreshForm();
+
+                children.each(function(Child) {
+                    Child.inject(forms[0]);
                 });
-            }.bind(this));
+
+                return QUI.parse(forms).then(function() {
+                    this.Loader.hide();
+
+                    const Node = this.getElm().getElement('[data-qui="controls/users/auth/QUIQQERLogin"]');
+
+                    if (Node && Node.get('data-quiid')) {
+                        const Control = QUI.Controls.getById(Node.get('data-quiid'));
+
+                        if (Control) {
+                            Control.addEvents({
+                                onShowPassword     : this.$onShowPassword,
+                                onShowPasswordReset: this.onShowPasswordReset
+                            });
+                        }
+                    }
+
+                    forms.setStyle('top', 20);
+
+                    moofx(forms).animate({
+                        opacity: 1,
+                        top    : 0
+                    }, {
+                        duration: 500,
+                        callback: function() {
+                            forms[0].elements[0].focus();
+                        }
+                    });
+                }.bind(this));
         },
 
         /**
