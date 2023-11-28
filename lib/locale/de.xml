@@ -1343,6 +1343,25 @@
         <locale name="system.vhost.label.httpshost">
             <de><![CDATA[HTTPS-Host]]></de>
         </locale>
+
+        <locale name="loginBox.aside.title">
+            <de><![CDATA[Willkommen zurück!]]></de>
+        </locale>
+        <locale name="loginBox.aside.slogan">
+            <de><![CDATA[
+            Einfache Verwaltung, individuelle Anpassungsmöglichkeiten und modulare Flexibilität – dein Schlüssel zum digitalen Erfolg.
+            ]]></de>
+        </locale>
+        <locale name="loginBox.header.text">
+            <de><![CDATA[Melde dich an, um auf dein QUIQQER-System zuzugreifen.]]></de>
+        </locale>
+        <locale name="loginBox.powered">
+            <de><![CDATA[Powered by]]></de>
+        </locale>
+        <locale name="loginBox.license">
+            <de><![CDATA[Lizenz]]></de>
+        </locale>
+
         <locale name="login.title">
             <de><![CDATA[Login]]></de>
         </locale>
@@ -5363,6 +5382,18 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         </locale>
         <locale name="console.tool.package.message.install.noPackage">
             <de><![CDATA[Bitte gebe ein Paket an welches installiert werden soll. (--install=package)]]></de>
+        </locale>
+        <locale name="console.tool.package.cannot.be.removed">
+            <de><![CDATA[Das Paket [package] kann nicht entfernt werden.]]></de>
+        </locale>
+        <locale name="console.tool.package.can.removed">
+            <de><![CDATA[Folgende Pakete können entfernt werden:]]></de>
+        </locale>
+        <locale name="console.tool.package.removing.update">
+            <de><![CDATA[
+            Das Paket [package] ist nun erfolgreich aus der composer.json Datei entfernt worden.
+            Möchtest Du im nächsten Schritt ein Update durchführen? [N,y] :
+            ]]></de>
         </locale>
         <locale name="user.create.new.username">
             <de><![CDATA[Neuer Benutzer]]></de>

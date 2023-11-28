@@ -10,7 +10,9 @@
 QUI::$Ajax->registerFunction(
     'ajax_system_systemcheckChecksum',
     function ($packageName) {
-        $cacheFile = VAR_DIR . "/tmp/requirements_checks_result_package";
+        $Package = QUI::getPackage('quiqqer/requirements');
+        $dir = $Package->getVarDir();
+        $cacheFile = $dir . "requirements_checks_result_package";
 
         if (!file_exists($cacheFile)) {
             QUI::getMessagesHandler()->addError(
@@ -20,7 +22,7 @@ QUI::$Ajax->registerFunction(
             return false;
         }
 
-        $packages = \json_decode(\file_get_contents($cacheFile), true);
+        $packages = json_decode(file_get_contents($cacheFile), true);
 
         if (!isset($packages[$packageName])) {
             QUI::getMessagesHandler()->addError(

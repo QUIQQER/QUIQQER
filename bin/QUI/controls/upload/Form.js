@@ -32,8 +32,8 @@ define('controls/upload/Form', [
 
     'css!controls/upload/Form.css'
 
-], function (QUI, QUIControl, QUIProgressbar, QUIButton, QUILoader, MediaUtils, Upload, Locale) {
-    "use strict";
+], function(QUI, QUIControl, QUIProgressbar, QUIButton, QUILoader, MediaUtils, Upload, Locale) {
+    'use strict';
 
     const lg = 'quiqqer/quiqqer';
     let delayClick = false;
@@ -82,7 +82,7 @@ define('controls/upload/Form', [
          * @fires onSubmit [FileList, this]
          * @fires onChange [FileList, this]
          */
-        initialize: function (options) {
+        initialize: function(options) {
             if (typeof options === 'undefined') {
                 options = {};
             }
@@ -125,7 +125,7 @@ define('controls/upload/Form', [
 
             this.addEvents({
                 onInject: this.$onInject,
-                onDestroy: function () {
+                onDestroy: function() {
                     if (self.$Form) {
                         self.$Form.destroy();
                     }
@@ -135,7 +135,7 @@ define('controls/upload/Form', [
                     }
                 },
 
-                onInputDestroy: function () {
+                onInputDestroy: function() {
                     const elms = self.$Form.getElements('input[type="file"]');
 
                     if (!elms.length) {
@@ -143,7 +143,7 @@ define('controls/upload/Form', [
                             display: null
                         });
 
-                        (function () {
+                        (function() {
                             self.$Form.setStyle('cursor', 'pointer');
                             self.$formClick = false;
                         }).delay(100);
@@ -176,7 +176,7 @@ define('controls/upload/Form', [
          * @param {String} param         - param name
          * @param {String|Number|Boolean} value - param value
          */
-        setParam: function (param, value) {
+        setParam: function(param, value) {
             this.$params[param] = value;
         },
 
@@ -185,7 +185,7 @@ define('controls/upload/Form', [
          *
          * @param {Object} params - list of params
          */
-        setParams: function (params) {
+        setParams: function(params) {
             for (const n in params) {
                 if (params.hasOwnProperty(n)) {
                     this.setParam(n, params[n]);
@@ -198,7 +198,7 @@ define('controls/upload/Form', [
          *
          * @return {Boolean|Number|String|Object} Form parameter
          */
-        getParam: function (n) {
+        getParam: function(n) {
             if (typeof this.$params[n] !== 'undefined') {
                 return this.$params[n];
             }
@@ -211,14 +211,14 @@ define('controls/upload/Form', [
          *
          * @return {Object} list of params
          */
-        getParams: function () {
+        getParams: function() {
             return this.$params;
         },
 
         /**
          * refreshs the info display
          */
-        refreshDisplay: function () {
+        refreshDisplay: function() {
             if (this.$SendButton) {
                 this.$SendButton.disable();
                 this.$SendButton.getElm().removeClass('btn-green');
@@ -248,7 +248,7 @@ define('controls/upload/Form', [
          * @method controls/upload/Form#create
          * @return {HTMLElement|Element} Form
          */
-        create: function () {
+        create: function() {
             const self = this;
 
             this.$Elm = new Element('div', {
@@ -296,14 +296,14 @@ define('controls/upload/Form', [
             this.$Form.setStyle('cursor', 'pointer');
             this.$formClick = false;
 
-            this.$Form.addEvent('click', function (event) {
+            this.$Form.addEvent('click', function(event) {
                 if (self.$formClick || delayClick) {
                     return;
                 }
 
                 delayClick = true;
 
-                (function () {
+                (function() {
                     delayClick = false;
                 }).delay(100);
 
@@ -333,7 +333,7 @@ define('controls/upload/Form', [
                 textimage: 'fa fa-hand-o-up',
                 text: Locale.get(lg, 'upload.form.btn.add.text'),
                 events: {
-                    onClick: function () {
+                    onClick: function() {
                         self.cleanup();
 
                         const Input = self.addInput();
@@ -342,7 +342,7 @@ define('controls/upload/Form', [
                             self.$formClick = true;
                             Input.click();
 
-                            (function () {
+                            (function() {
                                 self.$formClick = false;
                             }).delay(200);
                         }
@@ -363,7 +363,7 @@ define('controls/upload/Form', [
                     title: Locale.get(lg, 'upload.form.btn.send.title'),
                     disabled: true,
                     events: {
-                        onClick: function () {
+                        onClick: function() {
                             self.submit();
                         }
                     },
@@ -382,7 +382,7 @@ define('controls/upload/Form', [
                     alt: Locale.get(lg, 'upload.form.btn.cancel.alt'),
                     title: Locale.get(lg, 'upload.form.btn.cancel.title'),
                     events: {
-                        onClick: function () {
+                        onClick: function() {
                             self.fireEvent('cancel');
                         }
                     },
@@ -401,14 +401,14 @@ define('controls/upload/Form', [
         /**
          * event: on inject
          */
-        $onInject: function () {
+        $onInject: function() {
             this.resize();
         },
 
         /**
          * resize the form
          */
-        resize: function () {
+        resize: function() {
             const buttonsHeight = this.$Buttons.getSize().y;
             const inforHeight = this.$Info.getSize().y;
             const height = buttonsHeight + inforHeight;
@@ -419,7 +419,7 @@ define('controls/upload/Form', [
         /**
          * Create the icon view
          */
-        $createIconView: function () {
+        $createIconView: function() {
             if (this.getAttribute('typeOfLook') !== 'Icon') {
                 return;
             }
@@ -430,9 +430,9 @@ define('controls/upload/Form', [
 
             const IconForm = new Element('form', {
                 'class': 'controls-upload-form-icon',
-                action: "",
-                acceptCharset: "utf-8",
-                enctype: "multipart/form-data",
+                action: '',
+                acceptCharset: 'utf-8',
+                enctype: 'multipart/form-data',
                 html: '<input type="file" />'
             }).inject(this.$Elm);
 
@@ -446,14 +446,14 @@ define('controls/upload/Form', [
 
             UploadIcon.addClass('controls-upload-icon');
             UploadIcon.addClass(this.getAttribute('typeOfLookIcon'));
-            UploadIcon.addEvent('click', function (e) {
+            UploadIcon.addEvent('click', function(e) {
                 e.stop();
 
                 if (e.target.nodeName === 'INPUT') {
                     return;
                 }
 
-                require(['qui/utils/Elements'], function (ElementUtils) {
+                require(['qui/utils/Elements'], function(ElementUtils) {
                     ElementUtils.simulateEvent(
                         IconForm.getElement('input'),
                         'click'
@@ -470,7 +470,7 @@ define('controls/upload/Form', [
                         Locale.get(lg, 'control.upload.icon.submit') +
                         '</span>',
                     events: {
-                        click: function (e) {
+                        click: function(e) {
                             e.stop();
 
                             if (!Input.files.length) {
@@ -491,7 +491,7 @@ define('controls/upload/Form', [
         /**
          * create the single view
          */
-        $createSingleView: function () {
+        $createSingleView: function() {
             if (this.getAttribute('typeOfLook') !== 'Single') {
                 return;
             }
@@ -505,9 +505,9 @@ define('controls/upload/Form', [
 
             const IconForm = new Element('form', {
                 'class': 'controls-upload-form-single',
-                action: "",
-                acceptCharset: "utf-8",
-                enctype: "multipart/form-data",
+                action: '',
+                acceptCharset: 'utf-8',
+                enctype: 'multipart/form-data',
                 html: '<input type="file" />'
             }).inject(this.$Elm);
 
@@ -518,7 +518,7 @@ define('controls/upload/Form', [
             const self = this;
             const Input = IconForm.getElement('input');
 
-            Input.addEvent('change', function () {
+            Input.addEvent('change', function() {
                 if (!Input.files.length) {
                     return;
                 }
@@ -560,14 +560,14 @@ define('controls/upload/Form', [
                     '   </span>' +
                     '</div>',
                 events: {
-                    click: function (e) {
+                    click: function(e) {
                         e.stop();
 
                         if (e.target.nodeName === 'INPUT') {
                             return;
                         }
 
-                        require(['qui/utils/Elements'], function (ElementUtils) {
+                        require(['qui/utils/Elements'], function(ElementUtils) {
                             ElementUtils.simulateEvent(Input, 'click');
                         });
                     }
@@ -587,7 +587,7 @@ define('controls/upload/Form', [
                     Locale.get(lg, 'control.upload.icon.submit') +
                     '</span>',
                 events: {
-                    click: function (e) {
+                    click: function(e) {
                         e.stop();
 
                         if (!Input.files.length) {
@@ -605,14 +605,14 @@ define('controls/upload/Form', [
          *
          * @param file
          */
-        $imagePreview: function (file) {
+        $imagePreview: function(file) {
             // preview
             const reader = new FileReader();
             const Preview = this.getElm().getElement(
                 '.controls-upload-form-single-container-preview'
             );
 
-            reader.onload = function (e) {
+            reader.onload = function(e) {
                 Preview.setStyle('background-image', 'url("' + e.target.result + '")');
             };
 
@@ -622,7 +622,7 @@ define('controls/upload/Form', [
         /**
          * enable the upload form
          */
-        enable: function () {
+        enable: function() {
             this.$enabled = true;
             this.$Add.enable();
             this.getElm().removeClass('controls-upload-form-disabled');
@@ -631,7 +631,7 @@ define('controls/upload/Form', [
         /**
          * disable the upload form
          */
-        disable: function () {
+        disable: function() {
             this.$enabled = false;
             this.$Add.disable();
             this.getElm().addClass('controls-upload-form-disabled');
@@ -642,9 +642,9 @@ define('controls/upload/Form', [
          *
          * @return {HTMLElement}
          */
-        createForm: function () {
+        createForm: function() {
             const Form = new Element('form', {
-                enctype: "multipart/form-data",
+                enctype: 'multipart/form-data',
                 method: this.getAttribute('method'),
                 action: this.getAttribute('action'),
                 target: 'upload' + this.getId()
@@ -652,7 +652,7 @@ define('controls/upload/Form', [
 
             const self = this;
 
-            Form.addEvent('submit', function (event) {
+            Form.addEvent('submit', function(event) {
                 if (typeof FileReader === 'undefined') {
                     return true;
                 }
@@ -671,7 +671,7 @@ define('controls/upload/Form', [
          *
          * @return {Boolean|HTMLInputElement}
          */
-        addInput: function () {
+        addInput: function() {
             if (!this.$Form) {
                 return false;
             }
@@ -698,7 +698,7 @@ define('controls/upload/Form', [
             const Container = new Element('div.qui-form-upload');
 
             Container.addEvents({
-                mouseenter: function () {
+                mouseenter: function() {
                     const Button = Container.getElement('button');
                     const Btn = QUI.Controls.getById(Button.get('data-quiid'));
 
@@ -706,7 +706,7 @@ define('controls/upload/Form', [
                     Container.getElement('button').setStyle('display', null);
                 },
 
-                mouseleave: function () {
+                mouseleave: function() {
                     const Button = Container.getElement('button');
                     const Btn = QUI.Controls.getById(Button.get('data-quiid'));
 
@@ -716,8 +716,8 @@ define('controls/upload/Form', [
             });
 
             const Input = new Element('input', {
-                type: "file",
-                name: "files",
+                type: 'file',
+                name: 'files',
                 multiple: !!this.getAttribute('multiple'),
                 events: {
                     change: this.$onInputChange.bind(this)
@@ -740,7 +740,7 @@ define('controls/upload/Form', [
                 alt: Locale.get(lg, 'upload.form.btn.change.alt'),
                 title: Locale.get(lg, 'upload.form.btn.change.title'),
                 events: {
-                    click: function (event) {
+                    click: function(event) {
                         event.stop();
 
                         let Target = event.target;
@@ -767,7 +767,7 @@ define('controls/upload/Form', [
                     display: 'none'
                 },
                 events: {
-                    onClick: function (Btn, event) {
+                    onClick: function(Btn, event) {
                         event.stop();
 
                         const fid = Slick.uidOf(Input);
@@ -796,7 +796,7 @@ define('controls/upload/Form', [
          * @param {File} File
          * @param {HTMLElement} [Input] - (optional), Parent Element
          */
-        addUpload: function (File, Input) {
+        addUpload: function(File, Input) {
             const self = this;
 
             if (this.$enabled === false) {
@@ -844,7 +844,7 @@ define('controls/upload/Form', [
             moofx(this.$BgText).animate({
                 opacity: 0
             }, {
-                callback: function () {
+                callback: function() {
                     self.$BgText.setStyle('display', 'none');
                     self.$Form.setStyle('cursor', null);
                     self.$formClick = true;
@@ -858,8 +858,8 @@ define('controls/upload/Form', [
          * Cleanup the form
          * Removes empty file entries
          */
-        cleanup: function () {
-            const emptyUploads = this.$Form.getElements('div.qui-form-upload').filter(function (UploadNode) {
+        cleanup: function() {
+            const emptyUploads = this.$Form.getElements('div.qui-form-upload').filter(function(UploadNode) {
                 const Input = UploadNode.getElement('input');
 
                 if (typeof Input.files === 'undefined') {
@@ -889,7 +889,7 @@ define('controls/upload/Form', [
          *
          * @return {HTMLElement}
          */
-        createInfo: function () {
+        createInfo: function() {
             this.$Info = new Element('div', {
                 html: '<div class="file-name">' +
                     Locale.get(lg, 'upload.form.info.text') +
@@ -913,7 +913,7 @@ define('controls/upload/Form', [
          *
          * @method controls/upload/Form#submit
          */
-        submit: function () {
+        submit: function() {
             const self = this;
 
             if (this.$enabled === false) {
@@ -945,7 +945,7 @@ define('controls/upload/Form', [
                 }).inject(this.$Form);
 
                 // send upload to the upload manager
-                require(['UploadManager'], function (UploadManager) {
+                require(['UploadManager'], function(UploadManager) {
                     UploadManager.injectForm(this);
                 });
 
@@ -970,7 +970,7 @@ define('controls/upload/Form', [
                 onComplete: this.finish.bind(this)
             };
 
-            if ("extract" in params && params.extract) {
+            if ('extract' in params && params.extract) {
                 const extract = {};
 
                 for (let i = 0, len = files.length; i < len; i++) {
@@ -1007,7 +1007,7 @@ define('controls/upload/Form', [
                 return;
             }
 
-            require(['UploadManager'], function (UploadManager) {
+            require(['UploadManager'], function(UploadManager) {
                 self.fireEvent('begin', [self]);
 
                 UploadManager.addEvents({
@@ -1037,7 +1037,7 @@ define('controls/upload/Form', [
          * @param {controls/upload/Form} File
          * @param {Object|Array|String|Boolean} result - result of the upload
          */
-        finish: function (File, result) {
+        finish: function(File, result) {
             if (this.$Progress) {
                 this.$Progress.set(100);
             }
@@ -1057,7 +1057,7 @@ define('controls/upload/Form', [
                 return;
             }
 
-            require(['UploadManager'], function (UploadManager) {
+            require(['UploadManager'], function(UploadManager) {
                 const files = UploadManager.$files;
 
                 for (let i = 0, len = files.length; i < len; i++) {
@@ -1077,7 +1077,7 @@ define('controls/upload/Form', [
          *
          * @return {File|null}
          */
-        getFile: function () {
+        getFile: function() {
             const files = this.getFiles();
 
             if (files[0]) {
@@ -1092,7 +1092,7 @@ define('controls/upload/Form', [
          *
          * @return {Array}
          */
-        getFiles: function () {
+        getFiles: function() {
             const result = [],
                 files = this.$files;
 
@@ -1110,7 +1110,7 @@ define('controls/upload/Form', [
          *
          * @param {DOMEvent} event
          */
-        $onInputChange: function (event) {
+        $onInputChange: function(event) {
             const Target = event.target,
                 files = Target.files;
 
@@ -1161,7 +1161,7 @@ define('controls/upload/Form', [
             };
 
             for (let i = 0, len = files.length; i < len; i++) {
-                if (Object.getLength(this.$files) >= maxUploads) {
+                if (maxUploads && Object.getLength(this.$files) >= maxUploads) {
                     QUI.getMessageHandler().then(msgHandlerOutput);
                     break;
                 }
@@ -1183,14 +1183,14 @@ define('controls/upload/Form', [
         /**
          * Initialize the DragDrop events if drag drop supported
          */
-        $dragDropInit: function () {
+        $dragDropInit: function() {
             const self = this;
 
             const Up = new Upload([this.$Form]);
 
             Up.addEvents({
 
-                onDragenter: function (event, Elm) {
+                onDragenter: function(event, Elm) {
                     console.log('drag enter');
 
                     if (self.$enabled === false) {
@@ -1210,7 +1210,7 @@ define('controls/upload/Form', [
                     event.stop();
                 },
 
-                onDragleave: function (event, Elm) {
+                onDragleave: function(event, Elm) {
                     console.log('drag leave');
 
                     if (self.$enabled === false) {
@@ -1229,7 +1229,7 @@ define('controls/upload/Form', [
                     ]);
                 },
 
-                onDragend: function (event, Elm) {
+                onDragend: function(event, Elm) {
                     console.log('drag end');
 
                     if (self.$enabled === false) {
@@ -1248,7 +1248,7 @@ define('controls/upload/Form', [
                     ]);
                 },
 
-                onDrop: function (event, files, Elm) {
+                onDrop: function(event, files, Elm) {
                     if (self.$enabled === false) {
                         return;
                     }
@@ -1265,7 +1265,7 @@ define('controls/upload/Form', [
 
                     if (self.getAttribute('maxuploads') !== false &&
                         files.length > self.getAttribute('maxuploads')) {
-                        QUI.getMessageHandler().then(function (MH) {
+                        QUI.getMessageHandler().then(function(MH) {
                             MH.addError(
                                 Locale.get(lg, 'upload.form.message.limit', {
                                     limit: self.getAttribute('maxuploads')
@@ -1302,7 +1302,7 @@ define('controls/upload/Form', [
         /**
          * event : upload refresh
          */
-        $onFileUploadRefresh: function (UploadManager, percent) {
+        $onFileUploadRefresh: function(UploadManager, percent) {
             if (!this.$Progress) {
                 return;
             }
@@ -1313,7 +1313,7 @@ define('controls/upload/Form', [
         /**
          * Event, if one upload file is finish
          */
-        $onFileUploadFinish: function () {
+        $onFileUploadFinish: function() {
 
         },
 
@@ -1321,7 +1321,7 @@ define('controls/upload/Form', [
          * @param UploadManager
          * @param File
          */
-        $onFileUploadCancel: function (UploadManager, File) {
+        $onFileUploadCancel: function(UploadManager, File) {
             this.fireEvent('cancel', [
                 this,
                 File
@@ -1333,7 +1333,7 @@ define('controls/upload/Form', [
          *
          * @param {Object} Error - qui/controls/messages/Error
          */
-        $onError: function (Error) {
+        $onError: function(Error) {
             if (this.$Progress) {
                 this.$Progress.hide();
             }
@@ -1359,7 +1359,7 @@ define('controls/upload/Form', [
                     background: 'url(' + URL_BIN_DIR + '16x16/error.png) no-repeat left center'
                 },
                 events: {
-                    click: function () {
+                    click: function() {
                         const Old = self.getElm();
 
                         Old.set('html', '');
@@ -1370,7 +1370,7 @@ define('controls/upload/Form', [
                 }
             }).inject(this.$Info);
 
-            QUI.getMessageHandler().then(function (MH) {
+            QUI.getMessageHandler().then(function(MH) {
                 MH.add(Error);
             });
 
@@ -1385,7 +1385,7 @@ define('controls/upload/Form', [
          *
          * @return {void}
          */
-        $filterEmptyUploadElements: function () {
+        $filterEmptyUploadElements: function() {
             let elms = this.$Form.getElements('div.qui-form-upload');
 
             // Remove empty inputs

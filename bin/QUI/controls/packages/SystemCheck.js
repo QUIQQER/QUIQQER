@@ -17,16 +17,15 @@ define('controls/packages/SystemCheck', [
 
     'css!controls/packages/SystemCheck.css'
 
+], function(QUI, QUIButton, QUIControl, QUIPopup, QUIConfirm, QUILoader, QUIAjax, QUILocale) {
+    'use strict';
 
-], function (QUI, QUIButton, QUIControl, QUIPopup, QUIConfirm, QUILoader, QUIAjax, QUILocale) {
-    "use strict";
-
-    var lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/quiqqer';
 
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/packages/SystemCheck',
+        Type: 'controls/packages/SystemCheck',
 
         Binds: [
             '$onInject',
@@ -39,7 +38,7 @@ define('controls/packages/SystemCheck', [
             'confirmSystemCheckExec'
         ],
 
-        initialize: function (options) {
+        initialize: function(options) {
             this.parent(options);
 
             this.Loader = new QUILoader();
@@ -56,10 +55,10 @@ define('controls/packages/SystemCheck', [
          *
          * @returns {HTMLDivElement}
          */
-        create: function () {
+        create: function() {
             this.$Elm = new Element('div', {
                 'class': 'qui-control-packages-systemcheck',
-                'html' : '<div class="qui-control-packages-systemcheck-container"></div>'
+                'html': '<div class="qui-control-packages-systemcheck-container"></div>'
             });
 
             return this.$Elm;
@@ -68,9 +67,7 @@ define('controls/packages/SystemCheck', [
         /**
          * event : on inject
          */
-        $onInject: function () {
-            var self = this;
-
+        $onInject: function() {
             // title bar
             this.TitleBar = new Element('div', {
                 'class': 'qui-control-packages-systemcheck-title'
@@ -78,63 +75,64 @@ define('controls/packages/SystemCheck', [
 
             // system check button
             new QUIButton({
-                name  : 'Run System Check',
-                text  : QUILocale.get(lg, 'packages.panel.category.systemcheck.execbutton'),
+                name: 'Run System Check',
+                text: QUILocale.get(lg, 'packages.panel.category.systemcheck.execbutton'),
                 events: {
-                    onClick: self.confirmSystemCheckExec
+                    onClick: this.confirmSystemCheckExec
                 }
             }).inject(this.TitleBar);
 
             // phpinfo button
             new QUIButton({
-                name  : 'phpinfo',
-                text  : QUILocale.get(lg, 'packages.panel.category.systemcheck.phpinfo'),
+                name: 'phpinfo',
+                text: QUILocale.get(lg, 'packages.panel.category.systemcheck.phpinfo'),
                 events: {
-                    onClick: self.openPHPInfoWindow
+                    onClick: this.openPHPInfoWindow
                 }
             }).inject(this.TitleBar);
 
             // system check result container
             this.ResultContainer = new Element('div', {
                 'class': 'qui-control-packages-systemcheck-resultcontainer',
-                html   : "<div class='messages-message box message-information'>" +
-                         QUILocale.get(lg, 'packages.panel.category.systemcheck.textinfo') +
-                         "</div>"
+                html: '<div class=\'messages-message box message-information\'>' +
+                    QUILocale.get(lg, 'packages.panel.category.systemcheck.textinfo') +
+                    '</div>'
             }).inject(this.$Elm);
 
-            this.getSystemCheckResultsFromCache().then(function (resultHtml) {
-                self.ResultContainer.innerHTML += resultHtml;
-                self.$setSystemCheckEvents();
+            this.getSystemCheckResultsFromCache().then((resultHtml) => {
+                this.ResultContainer.innerHTML += resultHtml;
+                this.$setSystemCheckEvents();
             });
 
-            self.fireEvent('load', [this]);
+            this.fireEvent('load', [this]);
         },
-
 
         /**
          * Opens a confirm dialog to start the system check
          */
-        confirmSystemCheckExec: function () {
+        confirmSystemCheckExec: function() {
             new QUIConfirm({
-                icon       : 'fa fa-info-circle',
-                texticon   : false,
-                title      : QUILocale.get(lg, 'packages.panel.category.systemcheck.execbutton'),
+                icon: 'fa fa-info-circle',
+                texticon: false,
+                maxheight: 500,
+                maxWidth: 600,
+                title: QUILocale.get(lg, 'packages.panel.category.systemcheck.execbutton'),
+                text: QUILocale.get(lg, 'packages.panel.category.systemcheck.execbutton'),
                 information: QUILocale.get(lg, 'packages.panel.category.systemcheck.confirm.info'),
-                ok_button  : {
-                    text     : QUILocale.get(lg, 'packages.panel.category.systemcheck.confirm.button.ok.text'),
+                ok_button: {
+                    text: QUILocale.get(lg, 'packages.panel.category.systemcheck.confirm.button.ok.text'),
                     textimage: 'fa fa-play'
                 },
-                events     : {
+                events: {
                     onSubmit: this.execSystemCheck
                 }
             }).open();
         },
 
-
         /**
          * Execute system check and parse unknown packages
          */
-        execSystemCheck: function () {
+        execSystemCheck: function() {
             this.Loader.inject(this.$Elm);
 
             this.Loader.show(QUILocale.get(
@@ -144,11 +142,14 @@ define('controls/packages/SystemCheck', [
             this.runSystemCheck().then(() => {
                 this.$setSystemCheckEvents();
                 this.Loader.hide();
+            }).catch(() => {
+                this.Loader.hide();
             });
         },
 
-        $setSystemCheckEvents: function () {
+        $setSystemCheckEvents: function() {
             const checksums = this.$Elm.getElement('.test-message-checkSum');
+
             const click = (PackageElm) => {
                 if (!PackageElm.hasClass('unknown-packages-warning')) {
                     PackageElm.addEvent('click', this.$packageClick);
@@ -163,24 +164,24 @@ define('controls/packages/SystemCheck', [
          *
          * @returns {Promise}
          */
-        runSystemCheck: function () {
-            var self = this;
-            return new Promise(function (resolve) {
-                QUIAjax.get('ajax_system_systemcheck', function (result) {
-                    self.ResultContainer.set('html', result);
+        runSystemCheck: function() {
+            return new Promise((resolve, reject) => {
+                QUIAjax.get('ajax_system_systemcheck', (result) => {
+                    this.ResultContainer.set('html', result);
                     resolve();
+                }, {
+                    onError: reject
                 });
             });
         },
-
 
         /**
          * Returns a promise resolving with the test results from cache.
          *
          * @return {Promise}
          */
-        getSystemCheckResultsFromCache: function () {
-            return new Promise(function (resolve) {
+        getSystemCheckResultsFromCache: function() {
+            return new Promise(function(resolve) {
                 QUIAjax.get('ajax_system_systemcheckResultsFromCache', resolve);
             });
         },
@@ -188,21 +189,21 @@ define('controls/packages/SystemCheck', [
         /**
          * Open window with php info
          */
-        openPHPInfoWindow: function () {
-            var self = this;
+        openPHPInfoWindow: function() {
+            const self = this;
 
             new QUIPopup({
-                'class'        : 'qui-control-packages-systemcheck-phpinfo',
-                maxWidth       : 900,
-                maxHeight      : 700,
-                title          : QUILocale.get(lg, 'packages.panel.category.systemcheck.phpinfo'),
+                'class': 'qui-control-packages-systemcheck-phpinfo',
+                maxWidth: 900,
+                maxHeight: 700,
+                title: QUILocale.get(lg, 'packages.panel.category.systemcheck.phpinfo'),
                 closeButtonText: QUILocale.get(lg, 'close'),
-                events         : {
-                    onOpen: function (Win) {
-                        var Content = Win.getContent();
-                        self.getPHPInfo().then(function (response) {
+                events: {
+                    onOpen: function(Win) {
+                        const Content = Win.getContent();
+                        self.getPHPInfo().then(function(response) {
                             Content.set('html', response);
-                        }).catch(function () {
+                        }).catch(function() {
                             Content.set(
                                 'html',
                                 QUILocale.get(lg, 'packages.panel.category.systemcheck.phpinfo.error')
@@ -218,9 +219,9 @@ define('controls/packages/SystemCheck', [
          *
          * @returns {Promise}
          */
-        getPHPInfo: function () {
-            return new Promise(function (resolve, reject) {
-                QUIAjax.get('ajax_system_phpinfo', function (result) {
+        getPHPInfo: function() {
+            return new Promise(function(resolve, reject) {
+                QUIAjax.get('ajax_system_phpinfo', function(result) {
                     resolve(result);
                 }, {
                     onError: reject
@@ -233,20 +234,19 @@ define('controls/packages/SystemCheck', [
          *
          * @param {Object} event
          */
-        $packageClick: function (event) {
+        $packageClick: function(event) {
+            let packageName = event.target.getParent().getAttribute('data-package');
 
-            var packageName = event.target.getParent().getAttribute('data-package');
-
-            this.getChecksumForPackage(packageName).then(function (response) {
+            this.getChecksumForPackage(packageName).then(function(response) {
                 new QUIPopup({
-                    'class'        : 'qui-control-packages-systemcheck-checksum',
-                    maxWidth       : 900,
-                    maxHeight      : 700,
-                    title          : packageName,
+                    'class': 'qui-control-packages-systemcheck-checksum',
+                    maxWidth: 900,
+                    maxHeight: 700,
+                    title: packageName,
                     closeButtonText: QUILocale.get(lg, 'close'),
-                    events         : {
-                        onOpen: function (Win) {
-                            var message = QUILocale.get(lg, 'packages.panel.category.systemcheck.checksum.popupText');
+                    events: {
+                        onOpen: function(Win) {
+                            const message = QUILocale.get(lg, 'packages.panel.category.systemcheck.checksum.popupText');
 
                             Win.getContent().set(
                                 'html',
@@ -255,12 +255,12 @@ define('controls/packages/SystemCheck', [
                         }
                     }
                 }).open();
-            }).catch(function (ajaxError) {
+            }).catch(function(ajaxError) {
                 if (ajaxError) {
                     return;
                 }
 
-                QUI.getMessageHandler().then(function (MH) {
+                QUI.getMessageHandler().then(function(MH) {
                     MH.setAttribute('displayTimeMessages', 6000);
                     MH.addError(
                         QUILocale.get(lg, 'packages.panel.category.systemcheck.checksum.error')
@@ -275,9 +275,9 @@ define('controls/packages/SystemCheck', [
          * @param packageName
          * @returns {Promise}
          */
-        getChecksumForPackage: function (packageName) {
-            return new Promise(function (resolve, reject) {
-                QUIAjax.get('ajax_system_systemcheckChecksum', function (result) {
+        getChecksumForPackage: function(packageName) {
+            return new Promise(function(resolve, reject) {
+                QUIAjax.get('ajax_system_systemcheckChecksum', function(result) {
                     if (!result) {
                         reject(true);
                         return;
@@ -285,9 +285,9 @@ define('controls/packages/SystemCheck', [
 
                     resolve(result);
                 }, {
-                    'package'  : 'quiqqer/quiqqer',
+                    'package': 'quiqqer/quiqqer',
                     packageName: packageName,
-                    onError    : reject
+                    onError: reject
                 });
             });
         }

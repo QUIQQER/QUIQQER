@@ -19,6 +19,8 @@ use function ceil;
 use function count;
 use function explode;
 use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
 use function htmlspecialchars;
 use function implode;
 use function intval;
@@ -36,6 +38,8 @@ use function strrpos;
 use function substr;
 use function substr_count;
 use function trim;
+
+use const PHP_EOL;
 
 /**
  * Helper for the Media Center Manager
@@ -309,6 +313,10 @@ class Utils
             && strpos($mime_type, 'vnd.adobe') === false
         ) {
             return 'image';
+        }
+
+        if (strpos($mime_type, 'video/') !== false) {
+            return 'video';
         }
 
         return 'file';
@@ -1406,5 +1414,58 @@ class Utils
         }
 
         return $result;
+    }
+
+    /**
+     * Returns the whitelist of file extensions that are exempt from media caching.
+     * If the noMediaCache.ini.php file does not exist, a default whitelist is created and saved to the file.
+     *
+     * @return array - Array of file extensions
+     */
+    public static function getWhiteListForNoMediaCache(): array
+    {
+        $file = ETC_DIR . 'noMediaCache.ini.php';
+
+        if (!file_exists($file)) {
+            $defaultList = [
+                'pdf',
+                'txt',
+                'xml',
+                'doc',
+                'pdt',
+                'xls',
+                'csv',
+                'txt',
+                'swf',
+                'flv',
+                'mp3',
+                'mp4',
+                'ogg',
+                'wav',
+                'mpeg',
+                'avi',
+                'mpg',
+                'divx',
+                'mov',
+                'wmv',
+                'zip',
+                'rar',
+                '7z',
+                'gzip',
+                'tar',
+                'tgz',
+                'ace',
+                'psd'
+            ];
+
+            file_put_contents($file, ';<?php exit; ?>' . PHP_EOL . implode(PHP_EOL, $defaultList));
+        }
+
+        $extensions = file_get_contents($file);
+        $extensions = str_replace(';<?php exit; ?>', '', $extensions);
+        $extensions = trim($extensions);
+        $extensions = explode(PHP_EOL, $extensions);
+
+        return $extensions;
     }
 }

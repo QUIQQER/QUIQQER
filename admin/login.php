@@ -2,6 +2,8 @@
 
 // phpcs:ignoreFile
 
+use QUI\Projects\Media\Utils;
+
 QUI::getEvents()->fireEvent('adminRequest');
 
 $languages = QUI::availableLanguages();
@@ -13,7 +15,22 @@ if (!empty($defaultLanguage)) {
 }
 
 $authPackages = [];
-$logo = QUI::getLocale()->get('quiqqer/quiqqer', 'menu.quiqqer.text');
+$quiqqerLogo = QUI::getLocale()->get('quiqqer/quiqqer', 'menu.quiqqer.text');
+
+$projectLogo = '';
+
+try {
+    $Standard = QUI::getProjectManager()->getStandard();
+
+    $projectLogo = $Standard->getConfig('logo');
+    $projectName = $Standard->getName();
+
+    if (Utils::isMediaUrl($Standard->getConfig('logo'))) {
+        $ProjectImage = Utils::getImageByUrl($Standard->getConfig('logo'));
+        $projectLogo = '<img src="' . $ProjectImage->getSizeCacheUrl() . '" />';
+    }
+} catch (QUI\Exception $exception) {
+}
 
 foreach ($packages as $package) {
     try {
@@ -54,6 +71,9 @@ foreach ($packages as $package) {
         QUIQQER Content Management System - <?php
         echo HOST ?> -
     </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1,maximum-scale=1"/>
+
     <!-- favicon -->
     <?php
     $favicon = QUI::conf('globals', 'favicon');
@@ -116,6 +136,21 @@ foreach ($packages as $package) {
     ?>
 
     <style type="text/css">
+        :root {
+            --color-primary: #2f8fc6;
+            --color-primary-dark: #0e3145;
+            --color-primary-accent: #fff;
+
+            --color-secondary: #44565f;
+            --color-secondary-accent: #fff;
+
+            --text-body: #1e2021;
+            --text-muted: #6d7b86;
+
+            --radius: 1rem;
+            --radius-sm: 0.25rem;
+        }
+
 
         * {
             -webkit-box-sizing: border-box;
@@ -124,65 +159,241 @@ foreach ($packages as $package) {
         }
 
         html, body {
-            background: #dedede;
-            color: #333;
-            float: left;
+            background: #ffffff;
+            color: var(--text-body);
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 13px;
+            font-size: 16px;
             margin: 0;
             padding: 0;
             text-align: left;
             width: 100%;
+            line-height: 1.5;
+        }
+
+        h1, h2, h3 {
+            line-height: 1.1;
+        }
+
+        img {
+            max-width: 100%;
         }
 
         .container {
-            background: #fff;
-            box-shadow: 2px 0 5px #999;
-            padding: 40px 0;
-            margin: 50px 0 0;
-            min-height: 380px;
+            min-height: 100vh;
+            min-height: 100svh;
         }
 
-        .login {
-            margin: 0 auto;
-            max-width: 300px;
+        .loginBox {
+            position: relative;
+            max-width: 1000px;
             width: 100%;
+            background-color: #fff;
         }
 
-        input {
-            border: 1px solid #999;
-            border-radius: 3px;
-            padding: 5px 10px;
+        @media screen and (min-width: 768px) {
+            .container {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                background-color: #fafafa;
+                background-image: linear-gradient(45deg, #fafafa, #eee);
+            }
+
+            .loginBox {
+                display: flex;
+                -webkit-box-shadow: 0 80px 30px -50px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 80px 30px -50px rgba(0, 0, 0, 0.1);
+                border-radius: var(--radius);
+                min-height: min(90vh, 720px);
+            }
         }
 
-        button[type="submit"],
-        button.reset-password {
-            border-color: #538312;
-            background: #64991e;
-            border: none;
-            border-radius: 0;
-            line-height: 30px !important;
-            color: #fff;
+        /* aside (left side) */
+        .loginBox__aside {
+            padding: 2rem;
+            flex-grow: 1;
+            width: 400px;
+            display: flex;
+            border-radius: var(--radius);
+            background-repeat: no-repeat, repeat;
+            background-size: 100% auto, 100% 150%;
+            color: var(--color-primary-accent);
+            background-image: url('<?php echo URL_BIN_DIR . 'images/admin-login-image.svg'; ?>'), linear-gradient(-10deg, var(--color-primary), var(--color-primary-dark));
+            background-color: #2f8fc6;
+            background-position: 80% bottom, 0 0;
+            transition: 1s ease;
         }
 
-        button[name="cancel"] {
-            line-height: 30px !important;
+        @media screen and (max-width: 767px) {
+            .loginBox__aside {
+                display: none;
+            }
         }
 
-        .logo {
+        .loginBox__aside-footer {
+            position: absolute;
+            left: 1rem;
+            bottom: 1rem;
+            color: var(--text-body);
+        }
+
+        .loginBox__aside-footer .logo,
+        .loginBox__main-footer .logo {
+            font-size: 0.625rem;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .loginBox__aside-footer img,
+        .loginBox__main-footer img {
+            height: 24px;
+        }
+
+        /* main content (right side) */
+        .loginBox__main {
+            padding: 4rem 2rem;
+            flex-grow: 1;
+            flex-basis: 500px;
+            position: relative;
+        }
+
+        .mainContent {
+            max-width: 20rem;
+            margin-inline: auto;
+        }
+
+        .mainContent .slogan__login {
+            margin-bottom: 1rem;
             text-align: center;
         }
 
-        .logo img {
-            margin: 30px auto;
-            max-width: 500px;
+        .mainContent .logo {
+            text-align: center;
+            margin-top: 1rem;
+            margin-bottom: 3rem;
         }
 
+        .mainContent .logo img {
+            max-height: 100px;
+        }
+
+        /* login control */
+        .mainContent .login-container {
+            min-height: 260px;
+            display: grid;
+        }
+
+        .mainContent .quiqqer-login-auth label span {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .mainContent .login-container input {
+            line-height: 1.5rem;
+            padding: 0.5rem 1rem;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: var(--radius-sm);
+        }
+
+        .mainContent .login-container button {
+            color: var(--color-primary-accent);
+            background-color: var(--color-primary);
+            border-radius: var(--radius-sm);
+            line-height: calc(1.5rem + 2px);
+            font-size: 16px;
+            border: none;
+            margin-top: 1rem;
+            padding: 0.5rem 1.5rem;
+            width: 100%;
+        }
+
+        .mainContent .login-container button[type="reset"],
+        .mainContent .login-container button[name="cancel"] {
+            background-color: var(--color-secondary);
+            color: var(--color-secondary-accent);
+        }
+
+        .mainContent .login-container button.reset-password {
+            margin-top: calc(1rem - 10px);
+        }
+
+        /* lang switch */
         .quiqqer-language-switch {
             position: absolute;
             top: 10px;
             right: 10px;
+            font-size: 0.875rem;
         }
+
+        .quiqqer-language-switch > .qui-select {
+            border: none;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .quiqqer-language-switch > .qui-select .text {
+            width: auto;
+            margin-right: 0.5em;
+        }
+
+        /* main footer */
+        .loginBox__main-footer {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            width: calc(100% - 2rem);
+            display: flex;
+        }
+
+        @media screen and (min-width: 768px) {
+            .loginBox__main-footer .logo {
+                display: none;
+            }
+        }
+
+        /* license */
+        .licenseToggleButton {
+            margin-left: auto;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .licenseToggleButton .fa {
+            margin-right: 0.25em;
+        }
+
+        .license {
+            font-size: 0.75rem;
+            margin-top: 2rem;
+            max-width: 25rem;
+            margin-inline: auto;
+            color: var(--text-muted);
+            overflow: hidden;
+        }
+
+        @media screen and (max-width: 767px) {
+            .loginBox__main {
+                min-height: 100vh;
+                min-height: 100svh;
+            }
+
+            .mainContent .logo {
+                margin-bottom: 2rem;
+            }
+        }
+
     </style>
 
 
@@ -214,18 +425,18 @@ foreach ($packages as $package) {
         require.config({
             baseUrl: '<?php echo URL_BIN_DIR; ?>QUI/',
             paths: {
-                "package": "<?php echo URL_OPT_DIR; ?>",
-                "qui": '<?php echo URL_OPT_DIR; ?>bin/qui/qui',
-                "locale": '<?php echo URL_VAR_DIR; ?>locale/bin',
-                "Ajax": '<?php echo URL_BIN_DIR; ?>QUI/Ajax',
-                "URL_OPT_DIR": "<?php echo URL_OPT_DIR; ?>",
-                "URL_BIN_DIR": "<?php echo URL_BIN_DIR; ?>",
+                'package': "<?php echo URL_OPT_DIR; ?>",
+                'qui': '<?php echo URL_OPT_DIR; ?>bin/qui/qui',
+                'locale': '<?php echo URL_VAR_DIR; ?>locale/bin',
+                'Ajax': '<?php echo URL_BIN_DIR; ?>QUI/Ajax',
+                'URL_OPT_DIR': "<?php echo URL_OPT_DIR; ?>",
+                'URL_BIN_DIR': "<?php echo URL_BIN_DIR; ?>",
 
-                "Mustache": URL_OPT_DIR + 'bin/quiqqer-asset/mustache/mustache/mustache.min',
-                "URI": URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/URI',
+                'Mustache': URL_OPT_DIR + 'bin/quiqqer-asset/mustache/mustache/mustache.min',
+                'URI': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/URI',
                 'IPv6': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/IPv6',
                 'punycode': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/punycode',
-                'SecondLevelDomains': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/SecondLevelDomains',
+                'SecondLevelDomains': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/SecondLevelDomains'
             },
             waitSeconds: 0,
             catchError: true,
@@ -236,21 +447,28 @@ foreach ($packages as $package) {
             }
         });
 
-        function getCurrentLanguage() {
+        function getCurrentLanguage()
+        {
             if (LANGUAGE) {
                 return LANGUAGE;
             }
 
             let lang = 'en';
 
-            if ("language" in navigator) {
+            if ('language' in navigator) {
                 lang = navigator.language;
-            } else if ("browserLanguage" in navigator) {
-                lang = navigator.browserLanguage;
-            } else if ("systemLanguage" in navigator) {
-                lang = navigator.systemLanguage;
-            } else if ("userLanguage" in navigator) {
-                lang = navigator.userLanguage;
+            } else {
+                if ('browserLanguage' in navigator) {
+                    lang = navigator.browserLanguage;
+                } else {
+                    if ('systemLanguage' in navigator) {
+                        lang = navigator.systemLanguage;
+                    } else {
+                        if ('userLanguage' in navigator) {
+                            lang = navigator.userLanguage;
+                        }
+                    }
+                }
             }
 
             LANGUAGE = lang.substr(0, 2);
@@ -258,22 +476,48 @@ foreach ($packages as $package) {
             return LANGUAGE;
         }
 
-        function setLanguage(lang) {
+        function setLanguage(lang)
+        {
             if (!QUIQQER_LANGUAGES.contains(lang)) {
                 lang = QUIQQER_LANGUAGES[0];
             }
 
-            return new Promise(function (resolve) {
+            return new Promise(function(resolve) {
                 require([
                     'qui/QUI',
                     'utils/Session',
                     'Locale',
                     'locale/quiqqer/quiqqer/' + lang
-                ], function (QUI, Session, QUILocale) {
+                ], function(QUI, Session, QUILocale) {
                     QUILocale.setCurrent(lang);
-                    Session.set('quiqqer-user-language', lang).catch(function (err) {
+                    Session.set('quiqqer-user-language', lang).catch(function(err) {
                         // doesn't matter
                     });
+
+                    document.getElements('.slogan__login').set(
+                        'html',
+                        QUILocale.get('quiqqer/quiqqer', 'loginBox.header.text')
+                    );
+
+                    document.getElements('.slogan__title h1').set(
+                        'html',
+                        QUILocale.get('quiqqer/quiqqer', 'loginBox.aside.title')
+                    );
+
+                    document.getElements('.slogan__title p').set(
+                        'html',
+                        QUILocale.get('quiqqer/quiqqer', 'loginBox.aside.slogan')
+                    );
+
+                    document.getElements('.logo__text').set(
+                        'html',
+                        QUILocale.get('quiqqer/quiqqer', 'loginBox.powered')
+                    );
+
+                    document.getElements('.licenseToggleButton-license').set(
+                        'html',
+                        QUILocale.get('quiqqer/quiqqer', 'loginBox.license')
+                    );
 
                     const LoginElement = document.getElement('.quiqqer-login');
 
@@ -293,21 +537,23 @@ foreach ($packages as $package) {
         require([
             'qui/QUI',
             'controls/users/Login'
-        ].append(QUIQQER_LOCALE || []), function (QUI, Login) {
+        ].append(QUIQQER_LOCALE || []), function(QUI, Login) {
             QUI.setAttributes({
                 'control-loader-type': 'line-scale',
                 'control-loader-color': '#2f8fc8'
             });
 
-            setLanguage(getCurrentLanguage()).then(function () {
+            setLanguage(getCurrentLanguage()).then(function() {
+                document.getElement('.login-container').set('html', '');
+
                 const LogIn = new Login({
                     onSuccess: window.onSuccess
-                }).inject(document.getElement('.login'));
+                }).inject(document.getElement('.login-container'));
 
 
                 // chrome workaround - because of state saving
                 // sometimes, chrome don't load all events on a back up'd tab
-                (function () {
+                (function() {
                     const Form = LogIn.getElm().getElement('form');
 
                     if (!Form) {
@@ -320,17 +566,28 @@ foreach ($packages as $package) {
                     }
                 }).delay(2000);
             });
+
+            document.querySelector('.licenseToggleButton').addEventListener('click', () => {
+                const License = document.getElement('.license');
+
+                if (License.offsetHeight === 0) {
+                    showLicenseText();
+                } else {
+                    hideLicenseText();
+                }
+            });
         });
 
-        function onSuccess(Login) {
+        function onSuccess(Login)
+        {
             require([
                 'Ajax',
                 'Locale'
-            ], function (QUIAjax, QUILocale) {
+            ], function(QUIAjax, QUILocale) {
                 // check if admin user
-                QUIAjax.get('ajax_user_canUseBackend', function (canUseAdmin) {
+                QUIAjax.get('ajax_user_canUseBackend', function(canUseAdmin) {
                     if (canUseAdmin === false) {
-                        QUI.getMessageHandler().then(function (MH) {
+                        QUI.getMessageHandler().then(function(MH) {
                             MH.addError(
                                 QUILocale.get(
                                     'quiqqer/quiqqer',
@@ -347,11 +604,50 @@ foreach ($packages as $package) {
                         opacity: 0
                     }, {
                         duration: 200,
-                        callback: function () {
+                        callback: function() {
                             window.location.reload();
                         }
                     });
                 });
+            });
+        }
+
+        /**
+         * Show license text
+         */
+        function showLicenseText()
+        {
+            const License = document.getElement('.license'),
+                Inner = document.getElement('.license__text');
+
+            Inner.style.visibility = null;
+
+            moofx(License).animate({
+                height: Inner.offsetHeight
+            }, {
+                duration: 300,
+                callback: function() {
+                    License.style.height = null;
+                }
+            });
+        }
+
+        /**
+         * Hide license text
+         */
+        function hideLicenseText()
+        {
+            const License = document.getElement('.license'),
+                Inner = document.getElement('.license__text');
+
+            moofx(License).animate({
+                height: 0
+            }, {
+                duration: 300,
+                callback: function() {
+                    Inner.style.visibility = null;
+
+                }
             });
         }
 
@@ -360,22 +656,86 @@ foreach ($packages as $package) {
 <body>
 
 <div class="container">
-    <div class="quiqqer-language-switch"></div>
+    <div class="loginBox">
+        <div class="loginBox__aside">
+            <div class="slogan__title">
+                <h1>
+                    <span class="fa fa-spinner fa-spin"></span>
+                </h1>
 
-    <div class="logo">
-        <?php
-        echo $logo;
-        ?>
+                <p>
+                    <span class="fa fa-spinner fa-spin"></span>
+                </p>
+            </div>
+
+            <div class="loginBox__aside-footer">
+                <?php
+                if (!empty($projectLogo)) {
+                    echo '<div class="logo logo--quiqqer"><span class="logo__text">Powered by</span>';
+                    echo $quiqqerLogo;
+                    echo '</div>';
+                }
+                ?>
+            </div>
+        </div>
+        <div class="loginBox__main">
+            <div class="quiqqer-language-switch"></div>
+
+            <div class="mainContent">
+                <?php
+
+                if (!empty($projectLogo)) {
+                    echo '<div class="logo logo--project">';
+                    echo $projectLogo;
+                    echo '</div>';
+                } else {
+                    echo '<div class="logo logo--quiqqer">';
+                    echo $quiqqerLogo;
+                    echo '</div>';
+                }
+
+                ?>
+
+                <p class="slogan__login">
+                    <span class="fa fa-spinner fa-spin"></span>
+                </p>
+
+                <div class="login-container"></div>
+            </div>
+
+            <div class="license" style="height: 0;">
+                <div class="license__text" style="visibility: hidden;">
+                    QUIQQER Copyright(C) <?php
+                    echo date('Y'); ?> PCSG - Computer & Internet Service OHG - www.pcsg.de
+                    This program comes with ABSOLUTELY NO WARRANTY;
+                    This is free software, and you are welcome to redistribute it under certain conditions;
+                    visit www.quiqqer.com for details.
+                </div>
+            </div>
+
+            <div class="loginBox__main-footer">
+                <?php
+                if (!empty($projectLogo)) {
+                    echo '<div class="logo logo--quiqqer"><span class="logo__text">Powered by</span>';
+                    echo $quiqqerLogo;
+                    echo '</div>';
+                }
+                ?>
+
+                <span role="button" class="licenseToggleButton">
+                    <span class="fa fa-copyright"></span>
+                    <span class="licenseToggleButton-license"></span>
+                </span>
+            </div>
+        </div>
     </div>
-
-    <div class="login"></div>
 </div>
 
 <?php
 if (defined('LOGIN_FAILED')) { ?>
     <script type="text/javascript">
-        require(['qui/QUI'], function () {
-            QUI.getMessageHandler().then(function (MH) {
+        require(['qui/QUI'], function() {
+            QUI.getMessageHandler().then(function(MH) {
                 MH.addError("<?php echo LOGIN_FAILED; ?>");
             });
         });
@@ -394,10 +754,10 @@ if (defined('LOGIN_FAILED')) { ?>
         needle.push('locale/quiqqer/quiqqer/' + QUIQQER_LANGUAGES[i]);
     }
 
-    require(needle, function (QUISelect, QUILocale) {
+    require(needle, function(QUISelect, QUILocale) {
         const Select = new QUISelect({
             events: {
-                onChange: function () {
+                onChange: function() {
                     setLanguage(Select.getValue());
                 }
             }
@@ -426,7 +786,7 @@ if (defined('LOGIN_FAILED')) { ?>
 
         QUILocale.setCurrent(current);
         Select.setValue(getCurrentLanguage());
-    }, function () {
+    }, function() {
 
     });
 </script>

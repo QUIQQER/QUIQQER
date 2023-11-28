@@ -172,7 +172,6 @@ class CommandEvents
         $var_dir = $config['globals']['var_dir'];
         $lib_dir = dirname(__FILE__, 4) . '/';
 
-
         if (!defined('LIB_DIR')) {
             define('LIB_DIR', $lib_dir);
         }
@@ -223,6 +222,14 @@ class CommandEvents
 
         if (!defined('URL_VAR_DIR')) {
             define('URL_VAR_DIR', URL_DIR . str_replace(CMS_DIR, '', VAR_DIR));
+        }
+
+        if (!defined('QUI_DB_PRFX')) {
+            if (!empty($config['db']['prfx'])) {
+                define('QUI_DB_PRFX', $config['db']['prfx']);
+            } else {
+                define('QUI_DB_PRFX', '');
+            }
         }
     }
 }
