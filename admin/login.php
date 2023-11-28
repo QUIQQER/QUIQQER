@@ -244,11 +244,12 @@ foreach ($packages as $package) {
             color: var(--text-muted);
             display: flex;
             flex-direction: column;
+            align-items: flex-start;
         }
 
         .loginBox__aside-footer img,
         .loginBox__main-footer img {
-            height: 16px;
+            height: 24px;
         }
 
         /* main content (right side) */
