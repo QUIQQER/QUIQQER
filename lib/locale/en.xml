@@ -1334,6 +1334,25 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="system.vhost.label.httpshost">
             <en><![CDATA[HTTPS-Host]]></en>
         </locale>
+
+        <locale name="loginBox.aside.title">
+            <en><![CDATA[Welcome back!]]></en>
+        </locale>
+        <locale name="loginBox.aside.slogan">
+            <en><![CDATA[
+            Simple administration, individual customization options and modular flexibility - your key to digital success.
+            ]]></en>
+        </locale>
+        <locale name="loginBox.header.text">
+            <en><![CDATA[Log in to access your QUIQQER system.]]></en>
+        </locale>
+        <locale name="loginBox.powered">
+            <en><![CDATA[Powered by]]></en>
+        </locale>
+        <locale name="loginBox.license">
+            <en><![CDATA[License]]></en>
+        </locale>
+
         <locale name="login.title">
             <en><![CDATA[Login]]></en>
         </locale>
@@ -5186,6 +5205,18 @@ After logging in you will be prompted to set a new password.
         </locale>
         <locale name="console.tool.package.message.install.noPackage">
             <en><![CDATA[Please specify a package which should be installed. (--install=package)]]></en>
+        </locale>
+        <locale name="console.tool.package.cannot.be.removed">
+            <en><![CDATA[The package [package] cannot be removed.]]></en>
+        </locale>
+        <locale name="console.tool.package.can.removed">
+            <en><![CDATA[The following packages can be removed:]]></en>
+        </locale>
+        <locale name="console.tool.package.removing.update">
+            <en><![CDATA[
+            The package [package] has now been successfully removed from the composer.json file.
+            Do you want to update in the next step? [N,y] :
+            ]]></en>
         </locale>
         <locale name="user.create.new.username">
             <en><![CDATA[New User]]></en>

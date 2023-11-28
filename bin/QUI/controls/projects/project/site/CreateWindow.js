@@ -16,57 +16,59 @@ define('controls/projects/project/site/CreateWindow', [
 
     'text!controls/projects/project/site/CreateWindow.html'
 
-], function (QUI, QUIControl, QUIConfirm, TypeInput, QUILocale, Mustache, QUIAjax, template) {
-    "use strict";
+], function(QUI, QUIControl, QUIConfirm, TypeInput, QUILocale, Mustache, QUIAjax, template) {
+    'use strict';
 
     const lg = 'quiqqer/quiqqer';
 
     return new Class({
 
         Extends: QUIConfirm,
-        Type   : 'controls/projects/project/site/CreateWindow',
+        Type: 'controls/projects/project/site/CreateWindow',
 
         Binds: [
             '$onOpen',
             '$onSubmit'
         ],
 
-        initialize: function (options) {
+        initialize: function(options) {
             this.parent(options);
 
             this.setAttributes({
-                title    : QUILocale.get(lg, 'projects.project.site.panel.window.create.title'),
-                text     : QUILocale.get(lg, 'projects.project.site.panel.window.create.text'),
+                title: QUILocale.get(lg, 'projects.project.site.panel.window.create.title'),
+                text: QUILocale.get(lg, 'projects.project.site.panel.window.create.text'),
                 titleicon: 'fa fa-file',
-                icon     : 'fa fa-file',
-                maxWidth : 600,
+                icon: 'fa fa-file',
+                maxWidth: 600,
                 maxHeight: 500,
                 autoclose: false,
 
-                cancel_button     : false,
+                cancel_button: false,
                 backgroundClosable: false
             });
 
             this.$Site = this.getAttribute('Site');
 
             this.addEvents({
-                onOpen  : this.$onOpen,
+                onOpen: this.$onOpen,
                 onSubmit: this.$onSubmit
             });
         },
 
-        $onOpen: function (Win) {
+        $onOpen: function(Win) {
             Win.Loader.show();
 
             Win.getContent().set('html', Mustache.render(template, {
-                header  : QUILocale.get(lg, 'projects.project.site.window.create.header', {
+                header: QUILocale.get(lg, 'projects.project.site.window.create.header', {
                     name: this.$Site.getAttribute('name'),
-                    id  : this.$Site.getId()
+                    id: this.$Site.getId()
                 }),
-                title   : QUILocale.get(lg, 'projects.project.site.window.create.inputTitle'),
+                title: QUILocale.get(lg, 'projects.project.site.window.create.inputTitle'),
                 seoTitle: QUILocale.get(lg, 'projects.project.site.window.create.seoTitle'),
                 siteType: QUILocale.get(lg, 'projects.project.site.panel.information.type'),
-                layout  : QUILocale.get(lg, 'projects.project.site.panel.information.layout')
+                layout: QUILocale.get(lg, 'projects.project.site.panel.information.layout'),
+                navHide: QUILocale.get(lg, 'projects.project.site.panel.extras.nav_hide'),
+                navHideDesc: QUILocale.get(lg, 'projects.project.site.panel.extras.nav_hide.description')
             }));
 
             const Layouts = Win.getContent().getElement('[name="layout"]');
@@ -75,22 +77,23 @@ define('controls/projects/project/site/CreateWindow', [
             QUIAjax.get([
                 'ajax_project_get_layouts',
                 'ajax_site_children_getChildType',
-            ], (layouts, childType) => {
+                'ajax_site_children_getChildNavHide'
+            ], (layouts, childType, navHide) => {
                 new Element('option', {
-                    html : '',
+                    html: '',
                     value: ''
                 }).inject(Layouts);
 
                 for (let i = 0, len = layouts.length; i < len; i++) {
                     new Element('option', {
-                        html : layouts[i].title,
+                        html: layouts[i].title,
                         value: layouts[i].type
                     }).inject(Layouts);
                 }
 
                 const TypeInstance = new TypeInput({
                     project: this.$Site.getProject().getName(),
-                    value  : childType
+                    value: childType
                 }, SiteType);
 
                 TypeInstance.create();
@@ -100,16 +103,17 @@ define('controls/projects/project/site/CreateWindow', [
                     this.$Site
                 ]);
 
+                Win.getContent().getElement('[name="navHide"]').checked = !!navHide;
                 Win.getContent().getElement('[name="title"]').focus();
                 Win.resize();
                 Win.Loader.hide();
             }, {
                 project: this.$Site.getProject().encode(),
-                siteId : this.$Site.getId()
+                siteId: this.$Site.getId()
             });
         },
 
-        $onSubmit: function (Win) {
+        $onSubmit: function(Win) {
             Win.Loader.show();
 
             const Project = this.$Site.getProject();
@@ -148,16 +152,16 @@ define('controls/projects/project/site/CreateWindow', [
 
                 Win.close();
             }, {
-                project   : this.$Site.getProject().encode(),
-                id        : this.$Site.getId(),
+                project: this.$Site.getProject().encode(),
+                id: this.$Site.getId(),
                 attributes: JSON.encode({
-                    title                    : title,
-                    type                     : type,
-                    layout                   : layout,
+                    title: title,
+                    type: type,
+                    layout: layout,
                     'quiqqer.meta.site.title': Form.elements.seotitle.value
                 }),
 
-                onError: function () {
+                onError: function() {
                     Win.Loader.hide();
                 }
             });

@@ -8,7 +8,14 @@
 
 namespace QUI\System\Console\Tools;
 
+use League\CLImate\CLImate;
 use QUI;
+
+use function implode;
+use function is_numeric;
+use function json_decode;
+
+use const PHP_EOL;
 
 /**
  * MailQueue Console Manager
@@ -24,7 +31,15 @@ class MailQueue extends QUI\System\Console\Tool
     public function __construct()
     {
         $this->setName('quiqqer:mailqueue')
-            ->setDescription('Functions for the mail queue');
+            ->setDescription(
+                'The tool provides a detailed view of the emails in the queue, ' .
+                'including status information, recipient and subject.'
+            )
+            ->addArgument('count', 'Number of mails in the queue', false, true)
+            ->addArgument('send', 'Sends the mails in the queue', false, true)
+            ->addArgument('list', 'List mails in queue', false, true)
+            ->addArgument('delete', 'Deletes a mail in the queue [--id=]', false, true)
+            ->addArgument('clear', 'Deletes the complete queue', false, true);
     }
 
     /**
@@ -34,53 +49,135 @@ class MailQueue extends QUI\System\Console\Tool
      */
     public function execute()
     {
-        $this->writeLn('What would you execute?');
-        $this->writeLn('- count : Number of mails in the queue');
-        $this->writeLn('- send : sends the mails in the queue, step by step');
-        $this->writeLn('- list : list the queue');
-
-        $this->writeLn('Command: ');
-        $comand = $this->readInput();
-
         $MailQueue = new QUI\Mail\Queue();
 
-        switch ($comand) {
-            case 'count':
-                $this->writeLn(
-                    $MailQueue->count() . ' mail(s) in the queue',
-                    'red'
+        if ($this->getArgument('count')) {
+            $this->writeLn($MailQueue->count() . ' mail(s) in the queue');
+            $this->writeLn('');
+            return;
+        }
+
+        if ($this->getArgument('send')) {
+            $this->writeLn('Send mail ...');
+            $MailQueue->send();
+            return;
+        }
+
+        if ($this->getArgument('clear')) {
+            $this->writeLn(
+                'Attention: You are about to delete the entire mail queue. ' .
+                'Please note that this process is irreversible and cannot be undone.' .
+                PHP_EOL .
+                'Are you sure you want to delete the entire queue?' .
+                PHP_EOL .
+                'If so, please confirm with "YES": ',
+                'red'
+            );
+
+            $this->resetColor();
+            $input = $this->readInput();
+
+            if ($input === 'YES') {
+                QUI::getDataBase()->fetchSQL(
+                    'TRUNCATE ' . QUI\Mail\Queue::table() . ';'
                 );
 
+                $this->writeLn('The queue has been successfully cleared');
+                $this->writeLn();
+            } else {
+                $this->writeLn('The queue has not been cleared', 'yellow');
+                $this->writeLn();
+            }
+
+            return;
+        }
+
+        if ($this->getArgument('delete')) {
+            $mailId = $this->getArgument('id');
+
+            if (empty($mailId)) {
+                $this->writeLn('please enter an email id: ');
+                $mailId = $this->readInput();
+            }
+
+            if (empty($mailId) && !is_numeric($mailId)) {
+                $this->writeLn('No mail ID specified');
+                return;
+            }
+
+            try {
+                QUI::getDataBase()->delete(
+                    QUI\Mail\Queue::table(),
+                    ['id' => $mailId]
+                );
+
+                $this->writeLn('Mail was successfully deleted');
+                $this->writeLn();
+            } catch (\Exception $exception) {
+                $this->writeLn($exception->getMessage(), 'red');
                 $this->resetColor();
-                $this->writeLn('');
-                break;
+                $this->writeLn();
+            }
 
-            case 'send':
-                $this->writeLn('Send mail ...');
-                $MailQueue->send();
-                break;
+            return;
+        }
 
-            case 'list':
-                $list = $MailQueue->getList();
+        if ($this->getArgument('list')) {
+            $list = $MailQueue->getList();
 
-                $this->writeLn('====== Mail Queue ======');
+            $this->writeLn('Mail Queue:');
+            $this->writeLn('');
+            $this->writeLn('');
 
-                foreach ($list as $entry) {
-                    $to = '';
-                    $mailTo = \json_decode($entry['mailto'], true);
+            $Climate = new CLImate();
+            $data = [
+                [
+                    'ID',
+                    'To',
+                    'Subject',
+                    'Status',
+                    'Last send',
+                    'Retries'
+                ]
+            ];
 
-                    if (is_array($mailTo)) {
-                        $to = key($mailTo);
-                    }
+            foreach ($list as $entry) {
+                $mailto = json_decode($entry['mailto'], true);
+                $mailto = implode(',', $mailto);
 
-                    $this->writeLn("#{$entry['id']} - {$to} - {$entry['subject']}");
+                switch ((int)$entry['status']) {
+                    case QUI\Mail\Queue::STATUS_ADDED:
+                        $status = 'added';
+                        break;
+                    case QUI\Mail\Queue::STATUS_SENT:
+                        $status = 'sent';
+                        break;
+                    case QUI\Mail\Queue::STATUS_SENDING:
+                        $status = 'sending';
+                        break;
+                    case QUI\Mail\Queue::STATUS_ERROR:
+                        $status = 'error';
+                        break;
+
+                    default:
+                        $status = 'unknown';
                 }
 
-                $this->writeLn('');
-                break;
+                $data[] = [
+                    $entry['id'],
+                    $mailto,
+                    $entry['subject'],
+                    $status,
+                    QUI::getLocale()->formatDate($entry['lastsend']),
+                    $entry['retry'],
+                ];
+            }
 
-            default:
-                $this->outputHelp();
+            $Climate->table($data);
+            $this->writeLn();
+            return;
         }
+
+        $this->outputHelp();
     }
 }

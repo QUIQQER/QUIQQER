@@ -72,10 +72,13 @@ class Site
     }
 
     /**
-     * @param \QUI\Projects\Site $Site
-     * @return string
+     * Get the child type of given site.
+     *
+     * @param QUI\Projects\Site $Site The site object to get the child type from.
+     *
+     * @return string The child type of the site.
      */
-    public static function getChildType(\QUI\Projects\Site $Site): string
+    public static function getChildType(QUI\Projects\Site $Site): string
     {
         $Project = $Site->getProject();
         $siteTypes = QUI::getPackageManager()->getAvailableSiteTypes($Project);
@@ -99,11 +102,42 @@ class Site
     }
 
     /**
+     * Returns the value of the childrenNavHide attribute for the given Site.
+     * If the attribute is not set, returns 0.
+     *
+     * @param QUI\Projects\Site $Site The Site object for which to get the childrenNavHide value
+     *
+     * @return int The value of the childrenNavHide attribute for the Site
+     */
+    public static function getChildNaveHide(QUI\Projects\Site $Site): int
+    {
+        $Project = $Site->getProject();
+        $siteTypes = QUI::getPackageManager()->getAvailableSiteTypes($Project);
+        $currentType = $Site->getAttribute('type');
+
+        foreach ($siteTypes as $module) {
+            foreach ($module as $siteType) {
+                if (!isset($siteType['type'])) {
+                    continue;
+                }
+
+                if ($currentType === $siteType['type']) {
+                    if (isset($siteType['childrenNavHide'])) {
+                        return (int)$siteType['childrenNavHide'];
+                    }
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    /**
      * Tries to find the matching site based on a URL
      *
      * @param $url
      *
-     * @return \QUI\Projects\Site
+     * @return QUI\Projects\Site
      * @throws \QUI\Exception
      */
     public static function getSiteByUrl($url): QUI\Projects\Site

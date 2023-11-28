@@ -22,7 +22,7 @@
     "url": "http:\/\/www.quiqqer.com"
   },
   "require": {
-    "php": ">=7.4",
+    "php": "^8|^9",
     "composer\/composer": "1.9.*|2.*",
     "tedivm\/stash": "0.17.*",
     "phpmailer\/phpmailer": "~6.0",
@@ -50,7 +50,7 @@
     "quiqqer\/dashboard": "1.*|dev-master|dev-dev",
     "quiqqer\/qui": ">=1.5|dev-master|dev-dev",
     "quiqqer\/qui-php": ">=0.12|dev-master|dev-dev",
-    "quiqqer\/smarty3": "1.*|dev-master|dev-dev",
+    "quiqqer\/smarty": "^3|^4",
     "quiqqer\/ckeditor4": "2.*|1.*|dev-master|dev-dev",
     "quiqqer\/calendar-controls": "1.*|dev-master|dev-dev",
     "quiqqer\/countries": "1.*|dev-master|dev-dev",

@@ -5,15 +5,45 @@ if (php_sapi_name() !== 'cli') {
     exit;
 }
 
-$isComposer = false;
+$isComposerMode = false;
+$isRepairMode = false;
 
+// repair mode
+if (
+    !empty($_SERVER['argv'])
+    && $_SERVER['argv'][0] === 'quiqqer.php'
+    && isset($_SERVER['argv'][1])
+    && $_SERVER['argv'][1] === 'repair'
+) {
+    $isRepairMode = true;
+}
+
+if (
+    !empty($_SERVER['argv'])
+    && $_SERVER['argv'][0] === './console'
+    && isset($_SERVER['argv'][1])
+    && $_SERVER['argv'][1] === 'repair'
+) {
+    $isRepairMode = true;
+}
+
+if ($isRepairMode) {
+    unset($_SERVER['argv'][0]);
+    unset($_SERVER['argv'][1]);
+
+    require 'lib/repair.php';
+    exit;
+}
+
+
+// composer mode
 if (
     !empty($_SERVER['argv'])
     && $_SERVER['argv'][0] === 'quiqqer.php'
     && isset($_SERVER['argv'][1])
     && $_SERVER['argv'][1] === 'composer'
 ) {
-    $isComposer = true;
+    $isComposerMode = true;
 }
 
 if (
@@ -22,10 +52,10 @@ if (
     && isset($_SERVER['argv'][1])
     && $_SERVER['argv'][1] === 'composer'
 ) {
-    $isComposer = true;
+    $isComposerMode = true;
 }
 
-if ($isComposer) {
+if ($isComposerMode) {
     unset($_SERVER['argv'][0]);
     unset($_SERVER['argv'][1]);
 
