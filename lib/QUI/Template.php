@@ -20,6 +20,8 @@ use function implode;
 use function is_array;
 use function realpath;
 use function str_replace;
+use function strpos;
+use function trim;
 
 use const ETC_DIR;
 use const PHP_EOL;
@@ -359,28 +361,8 @@ class Template extends QUI\QDOM
 
         $engine = QUI::conf('template', 'engine');
 
-        if (!isset($this->engines[$engine])) {
-            // smarty 4 workaround
-            if (class_exists('QUI\Smarty\Smarty4')) {
-                $Config = QUI::getConfig('etc/conf.ini.php');
-                $Config->setValue('template', 'engine', 'smarty4');
-                $Config->save();
-
-                $templateIni = ETC_DIR . 'templates.ini.php';
-                $iniContent = file_get_contents($templateIni);
-
-                file_put_contents(
-                    $templateIni,
-                    trim($iniContent) . PHP_EOL . 'smarty4="QUI\Smarty\Smarty4"'
-                );
-
-                self::getConfig()->reload();
-
-                $engine = 'smarty4';
-                $this->engines = self::getConfig()->toArray();
-            } else {
-                throw new QUI\Exception('Template Engine not found!');
-            }
+        if (!isset($this->engines[$engine]) || !class_exists($this->engines[$engine])) {
+            $engine = $this->checkSmarty4Engine($engine);
         }
 
         /* @var $Engine QUI\Interfaces\Template\EngineInterface */
@@ -402,6 +384,42 @@ class Template extends QUI\QDOM
         }
 
         return $Engine;
+    }
+
+    /**
+     * Check if the given template engine is Smarty4 and perform necessary actions
+     *
+     * @param mixed $engine - The template engine to check
+     * @return string - Returns the name of the template engine if successful
+     * @throws QUI\Exception - Throws an exception if the template engine is not found
+     */
+    protected function checkSmarty4Engine($engine): string
+    {
+        // smarty 4 workaround
+        if ($engine === 'smarty3' && class_exists('QUI\Smarty\Smarty4')) {
+            $Config = QUI::getConfig('etc/conf.ini.php');
+            $Config->setValue('template', 'engine', 'smarty4');
+            $Config->save();
+
+            QUI::$Conf->reload();
+
+            $templateIni = ETC_DIR . 'templates.ini.php';
+            $iniContent = file_get_contents($templateIni);
+
+            if (strpos($templateIni, 'QUI\\Smarty\\Smarty4') === false) {
+                file_put_contents(
+                    $templateIni,
+                    trim($iniContent) . PHP_EOL . 'smarty4="QUI\Smarty\Smarty4"'
+                );
+            }
+
+            $this->getConfig()->reload();
+            $this->load();
+
+            return 'smarty4';
+        }
+
+        throw new QUI\Exception('Template Engine not found!');
     }
 
     /**
