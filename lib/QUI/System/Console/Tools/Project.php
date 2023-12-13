@@ -46,7 +46,7 @@ class Project extends QUI\System\Console\Tool
             'copy',
             'Copy a project from one language to another',
             false,
-            false
+            true
         );
 
         $this->addArgument(
