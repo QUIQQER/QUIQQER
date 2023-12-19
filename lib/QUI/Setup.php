@@ -6,6 +6,7 @@
 
 namespace QUI;
 
+use Exception;
 use IntlDateFormatter;
 use QUI;
 use QUI\Projects\Project;
@@ -17,7 +18,6 @@ use function file_exists;
 use function file_put_contents;
 use function is_array;
 use function is_dir;
-use function strpos;
 use function system;
 use function unlink;
 
@@ -36,8 +36,9 @@ class Setup
      *
      * @throws QUI\Exception
      * @throws QUI\ExceptionStack
+     * @throws Exception
      */
-    public static function all(?QUI\Interfaces\System\SystemOutput $Output = null)
+    public static function all(?QUI\Interfaces\System\SystemOutput $Output = null): void
     {
         if (!$Output) {
             $Output = new QUI\System\VoidOutput();
@@ -56,7 +57,7 @@ class Setup
         // not at phpunit
         if (
             !isset($_SERVER['argv'])
-            || (isset($_SERVER['argv'][0]) && strpos($_SERVER['argv'][0], 'phpunit') === false)
+            || (isset($_SERVER['argv'][0]) && !str_contains($_SERVER['argv'][0], 'phpunit'))
         ) {
             // nur Super User und system user darf dies
             if (!QUI::getUsers()->isSystemUser(QUI::getUserBySession())) {
@@ -66,8 +67,6 @@ class Setup
 
         $Output->writeLn('> Start Session setup');
         QUI::getSession()->setup();
-
-        $now = date('H:i:s');
 
         $Output->writeLn('> Create directories');
         self::makeDirectories();
@@ -106,7 +105,7 @@ class Setup
      * @throws QUI\Exception
      * @throws QUI\ExceptionStack
      */
-    public static function makeDirectories()
+    public static function makeDirectories(): void
     {
         QUI::getEvents()->fireEvent('setupMakeDirectoriesBegin');
 
@@ -144,7 +143,7 @@ class Setup
      * Generate the main files,
      * the main link only to the internal quiqqer/quiqqer files
      */
-    public static function generateFileLinks()
+    public static function generateFileLinks(): void
     {
         $date = date('Y-m-d H:i:s');
 
@@ -171,7 +170,13 @@ class Setup
   *
   * Generated File via QUIQQER
   * Date: {$date}
+  * 
+  * This file was auto-generated and will be overwritten. Any changes to this file will be lost.
+  * 
+  * To change the PHP version in the first/shebang line, use the QUIQQER administration: 
+  * -> Settings > QUIQQER > System > CLI PHP Command          
   */
+
 
 EOF;
 
@@ -313,7 +318,7 @@ EOT;
         // quiqqer.php is not needed anymore -> use ./console
         ////////
         $content = $fileHeader .
-            "define('CMS_DIR', '{$CMS_DIR}');\n" .
+            "define('CMS_DIR', '$CMS_DIR');\n" .
             "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';\n";
 
         file_put_contents($quiqqer, $content);
@@ -328,13 +333,13 @@ EOT;
             $phpCommand = 'php';
         }
 
-        $content = "#!/usr/bin/env {$phpCommand}\n" .
+        $content = "#!/usr/bin/env $phpCommand\n" .
             $fileHeader .
-            "define('CMS_DIR', '{$CMS_DIR}');\n" .
+            "define('CMS_DIR', '$CMS_DIR');\n" .
             "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';\n";
 
         file_put_contents($console, $content);
-        system("chmod +x {$console}");
+        system("chmod +x $console");
     }
 
     /**
@@ -348,7 +353,7 @@ EOT;
      * @throws QUI\Exception
      * @throws QUI\ExceptionStack
      */
-    public static function executeMainSystemSetup()
+    public static function executeMainSystemSetup(): void
     {
         QUI::getEvents()->fireEvent('setupMainSystemBegin');
 
@@ -378,7 +383,7 @@ EOT;
      * @throws QUI\Exception
      * @throws QUI\ExceptionStack
      */
-    public static function executeCommunicationSetup()
+    public static function executeCommunicationSetup(): void
     {
         QUI::getEvents()->fireEvent('setupCommunicationBegin');
 
@@ -403,7 +408,7 @@ EOT;
      * @throws QUI\Exception
      * @throws QUI\ExceptionStack
      */
-    public static function makeHeaderFiles()
+    public static function makeHeaderFiles(): void
     {
         QUI::getEvents()->fireEvent('setupMakeHeaderFilesBegin');
 
@@ -427,10 +432,8 @@ EOT;
      * Execute for each project the setup
      *
      * @param array $setupOptions - options for the package setup [executePackageSetup]
-     *
-     * @throws QUI\Exception
      */
-    public static function executeEachProjectSetup($setupOptions = [])
+    public static function executeEachProjectSetup(array $setupOptions = []): void
     {
         $projects = Projects\Manager::getProjects(true);
 
@@ -442,7 +445,7 @@ EOT;
         foreach ($projects as $Project) {
             try {
                 $Project->setup($setupOptions);
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
         }
@@ -456,11 +459,12 @@ EOT;
      *
      * @throws QUI\Exception
      * @throws QUI\ExceptionStack
+     * @throws Exception
      */
     public static function executeEachPackageSetup(
-        $setupOptions = [],
+        array $setupOptions = [],
         ?QUI\Interfaces\System\SystemOutput $Output = null
-    ) {
+    ): void {
         if (!$Output) {
             $Output = new QUI\System\VoidOutput();
         }
@@ -508,7 +512,7 @@ EOT;
 
                 try {
                     $Package = $PackageManager->getInstalledPackage($packageName);
-                } catch (QUI\Exception $Exception) {
+                } catch (QUI\Exception) {
                     continue;
                 }
 
@@ -533,7 +537,7 @@ EOT;
     /**
      * Import all important permissions
      */
-    public static function importPermissions()
+    public static function importPermissions(): void
     {
         QUI\Permissions\Manager::importPermissionsForGroups();
     }
@@ -546,7 +550,7 @@ EOT;
      *
      * @throws QUI\Exception
      */
-    public static function finish()
+    public static function finish(): void
     {
         QUI\Translator::create();
 
