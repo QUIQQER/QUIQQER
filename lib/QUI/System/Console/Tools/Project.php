@@ -286,7 +286,7 @@ class Project extends QUI\System\Console\Tool
      */
     protected function writeLnLocale($locale, $color = false, $background = false)
     {
-        $text = QUI::getLocale()->get("quiqqer / quiqqer", $locale);
+        $text = QUI::getLocale()->get("quiqqer/quiqqer", $locale);
 
         $this->writeLn($text, $color, $background);
     }
