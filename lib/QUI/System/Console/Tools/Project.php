@@ -31,16 +31,21 @@ class Project extends QUI\System\Console\Tool
             ->addArgument(
                 'create',
                 'Create a new project',
-                'c',
+                false,
                 true
             )
             ->addArgument(
                 'delete',
                 'Delete a project',
-                'd',
+                false,
                 true
             )
-            ->addArgument('projectname', 'Name of the project', 'p', true);
+            ->addArgument(
+                'projectname',
+                'Name of the project',
+                false,
+                true
+            );
 
         $this->addArgument(
             'copy',
