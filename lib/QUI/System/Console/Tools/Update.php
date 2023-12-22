@@ -338,12 +338,7 @@ class Update extends QUI\System\Console\Tool
             );
 
             $this->writeLn('');
-
-            $this->writeLn(
-                'php var/composer/composer.phar --working-dir="' . VAR_DIR . 'composer" update',
-                'red'
-            );
-
+            $this->writeLn('./console repair', 'red');
             $this->resetColor();
             $this->writeLn('');
         }
