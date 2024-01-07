@@ -7,13 +7,13 @@
     {
       "name": "PCSG",
       "email": "info@pcsg.de",
-      "homepage": "https:\/\/www.pcsg.de",
+      "homepage": "https://www.pcsg.de",
       "role": "Developer"
     }
   ],
   "support": {
     "email": "support@pcsg.de",
-    "url": "http:\/\/www.quiqqer.com"
+    "url": "https://www.quiqqer.com"
   },
   "require": {
     "php": "^8|^9",
@@ -93,15 +93,15 @@
   "repositories": [
     {
       "type": "composer",
-      "url": "https:\/\/composer.quiqqer.com\/"
+      "url": "https://composer.quiqqer.com"
     },
     {
       "type": "composer",
-      "url": "https:\/\/assets.quiqqer.com\/"
+      "url": "https://assets.quiqqer.com"
     },
     {
       "type": "composer",
-      "url": "https:\/\/update.quiqqer.com\/"
+      "url": "https://update.quiqqer.com"
     },
     {
       "packagist.org": false
