@@ -76,6 +76,7 @@
     "quiqqer/translator": "^1.9",
     "quiqqer/utils": "^1.22",
     "ramsey/uuid": "^3|^4",
+    "seld/jsonlint": "^1",
     "symfony/console": "^4|^5|^6",
     "symfony/http-foundation": ">=2.3",
     "symfony/polyfill-php81": "^1",
