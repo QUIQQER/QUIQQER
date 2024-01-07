@@ -1,7 +1,1 @@
 .idea/
-etc/
-media/
-var/
-.htaccess
-!ajax/media/
-!bin/QUI/controls/projects/project/media
