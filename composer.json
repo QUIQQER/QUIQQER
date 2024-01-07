@@ -63,7 +63,7 @@
     "quiqqer/utils": "^1.22",
     "ramsey/uuid": "^3|^4",
     "symfony/console": "^4|^5|^6",
-    "symfony/http-foundation": "^2.3|^3|^4.2",
+    "symfony/http-foundation": ">=2.3",
     "symfony/polyfill-php81": "^1",
     "symfony/polyfill-php82": "^1",
     "symfony/polyfill-php83": "^1",
