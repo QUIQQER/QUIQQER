@@ -90,11 +90,6 @@
       "lib/classmap/"
     ]
   },
-  "autoload-dev": {
-    "psr-4": {
-      "QUI\\Tests\\": "tests\/QUI\/"
-    }
-  },
   "funding": [
     {
       "type": "github",
