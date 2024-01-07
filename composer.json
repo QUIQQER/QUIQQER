@@ -27,7 +27,7 @@
     "monolog/monolog": "^2",
     "neitanod/forceutf8": "^2",
     "oomphinc/composer-installers-extender": "^2",
-    "phpmailer/phpmailer": "~6.0",
+    "phpmailer/phpmailer": "^6",
     "quiqqer-asset/ace-builds": "^1",
     "quiqqer-asset/animejs": "^3",
     "quiqqer-asset/downloadjs": "^1",
