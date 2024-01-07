@@ -5,15 +5,9 @@
   "license": "GPL-3.0-or-later",
   "authors": [
     {
-      "name": "Henning Leutz",
-      "email": "leutz@pcsg.de",
-      "homepage": "http:\/\/www.pcsg.de",
-      "role": "Developer"
-    },
-    {
-      "name": "Moritz Scholz",
-      "email": "scholz@pcsg.de",
-      "homepage": "http:\/\/www.pcsg.de",
+      "name": "PCSG",
+      "email": "info@pcsg.de",
+      "homepage": "https:\/\/www.pcsg.de",
       "role": "Developer"
     }
   ],
