@@ -95,5 +95,22 @@
       "type": "github",
       "url": "https://github.com/sponsors/pcsg"
     }
+  ],
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https:\/\/composer.quiqqer.com\/"
+    },
+    {
+      "type": "composer",
+      "url": "https:\/\/assets.quiqqer.com\/"
+    },
+    {
+      "type": "composer",
+      "url": "https:\/\/update.quiqqer.com\/"
+    },
+    {
+      "packagist.org": false
+    }
   ]
 }
