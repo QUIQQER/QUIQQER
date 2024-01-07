@@ -17,7 +17,7 @@
   },
   "require": {
     "php": "^8",
-    "composer/composer": "1.9.*|2.*",
+    "composer/composer": "2.*",
     "dusank/knapsack": "8.*|9.*|10.*",
     "html2text/html2text": "4.*",
     "intervention/image": "2.*",
