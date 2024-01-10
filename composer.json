@@ -6,13 +6,13 @@
   "authors": [
     {
       "name": "PCSG - Computer & Internet Service OHG",
-      "email": "info@pcsg.de",
+      "email": "info@quiqqer.com",
       "homepage": "https://www.pcsg.de",
       "role": "Developer"
     }
   ],
   "support": {
-    "email": "support@pcsg.de",
+    "email": "info@quiqqer.com",
     "url": "https://www.quiqqer.com"
   },
   "require": {
