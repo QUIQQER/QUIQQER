@@ -52,7 +52,6 @@
     "quiqqer-asset/requirejs": "^2",
     "quiqqer-asset/urijs": "^1",
     "quiqqer/backendsearch": "^1",
-    "quiqqer/bricks": "^1",
     "quiqqer/calendar-controls": "^1",
     "quiqqer/ckeditor4": "^2|^1",
     "quiqqer/colorpicker": "^1.1",
