@@ -25,7 +25,6 @@
     "ext-libxml": "*",
     "ext-mbstring": "*",
     "ext-openssl": "*",
-    "ext-pcntl": "*",
     "ext-pdo": "*",
     "ext-posix": "*",
     "ext-zip": "*",
