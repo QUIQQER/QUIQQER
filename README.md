@@ -10,7 +10,6 @@ About QUIQQER
 
 ![Static Badge](https://img.shields.io/badge/PHP-^8.1-purple)
 ![Static Badge](https://img.shields.io/badge/PHP-PSR-purple)
-![Static Badge](https://img.shields.io/badge/MySQL-5.6.*-blue)
 ![Static Badge](https://img.shields.io/badge/MySQL-8.*-blue)
 ![Static Badge](https://img.shields.io/badge/Webserver-Apache-white)
 ![Static Badge](https://img.shields.io/badge/Webserver-NGINX-white)
