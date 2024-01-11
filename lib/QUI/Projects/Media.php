@@ -646,7 +646,7 @@ class Media extends QUI\QDOM
         }
 
         // delete the file
-        if (isset($data['file']) && !empty($data['file'])) {
+        if (!empty($data['file'])) {
             QUI\Utils\System\File::unlink(
                 $this->getFullPath() . $data['file']
             );
