@@ -624,7 +624,7 @@ class Media extends QUI\QDOM
         $imageType = Utils::getMediaTypeByMimeType($info['mime_type']);
 
         if ($imageType === 'image') {
-            $maxConfigSize = $this->getProject()->getConfig('media_maxUploadSize');
+            $maxConfigSize = (int)$this->getProject()->getConfig('media_maxUploadSize');
             $info = FileUtils::getInfo($file, ['imagesize' => true]);
 
             // create image
