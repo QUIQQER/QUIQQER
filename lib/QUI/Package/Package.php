@@ -522,11 +522,7 @@ class Package extends QUI\QDOM
     {
         $composer = $this->getComposerData();
 
-        if (isset($composer['version'])) {
-            return $composer['version'];
-        }
-
-        return '';
+        return $composer['version'] ?? '';
     }
 
     /**
@@ -601,11 +597,7 @@ class Package extends QUI\QDOM
     {
         $composer = $this->getComposerData();
 
-        if (isset($composer['require'])) {
-            return $composer['require'];
-        }
-
-        return [];
+        return $composer['require'] ?? [];
     }
 
     /**
