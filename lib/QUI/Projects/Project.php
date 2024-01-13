@@ -97,18 +97,6 @@ class Project
      */
     private $config;
     /**
-     * project name
-     *
-     * @var string
-     */
-    private $name;
-    /**
-     * Project language
-     *
-     * @var string
-     */
-    private $lang;
-    /**
      * default language
      *
      * @var string
@@ -120,12 +108,6 @@ class Project
      * @var array
      */
     private $langs;
-    /**
-     * template of the project
-     *
-     * @var array
-     */
-    private $template;
     /**
      * loaded sites
      *
@@ -154,12 +136,11 @@ class Project
      *
      * @throws QUI\Exception
      */
-    public function __construct($name, $lang = false, $template = false)
-    {
-        $this->name = $name;
-        $this->lang = $lang;
-        $this->template = $template;
-
+    public function __construct(
+        private $name,
+        private $lang = false,
+        private $template = false
+    ) {
         try {
             $this->refresh();
         } catch (QUI\Exception $Exception) {
