@@ -974,9 +974,9 @@ class Group extends QUI\QDOM
         $newId = false;
 
         while ($create) {
-            $rand = (int)(microtime(true) * 1000000);
+            $rand = (int)(microtime(true) * 1_000_000);
             mt_srand($rand);
-            $newId = mt_rand(10, 1000000000);
+            $newId = mt_rand(10, 1_000_000_000);
 
             $result = QUI::getDataBase()->fetch([
                 'select' => 'id',
