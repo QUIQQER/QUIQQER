@@ -611,7 +611,7 @@ class Group extends QUI\QDOM
      */
     public function hasPermission($permission)
     {
-        return isset($this->rights[$permission]) ? $this->rights[$permission] : false;
+        return $this->rights[$permission] ?? false;
     }
 
     /**

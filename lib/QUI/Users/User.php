@@ -874,7 +874,7 @@ class User implements QUI\Interfaces\Users\User
     {
         $list = QUI::getPermissionManager()->getUserPermissionData($this);
 
-        return isset($list[$permission]) ? $list[$permission] : false;
+        return $list[$permission] ?? false;
     }
 
     /**
