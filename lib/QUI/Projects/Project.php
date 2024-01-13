@@ -60,7 +60,7 @@ use const USR_DIR;
  * <li>806 - Project Error: Project language not found</li>
  * </ul>
  */
-class Project
+class Project implements \Stringable
 {
     /**
      * caching files
@@ -512,7 +512,7 @@ class Project
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return 'Object ' . get_class($this) . '(' . $this->name . ',' . $this->lang . ')';
     }

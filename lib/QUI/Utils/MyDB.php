@@ -16,7 +16,7 @@ use QUI;
  *
  * @deprecated
  */
-class MyDB
+class MyDB implements \Stringable
 {
     /**
      * internal db object
@@ -46,7 +46,7 @@ class MyDB
     /**
      * Tostring Magic
      */
-    public function __toString()
+    public function __toString(): string
     {
         return 'MyDB()';
     }

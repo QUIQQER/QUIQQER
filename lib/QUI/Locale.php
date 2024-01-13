@@ -42,7 +42,7 @@ use function usort;
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  */
-class Locale
+class Locale implements \Stringable
 {
     /**
      * no translation flag
@@ -89,7 +89,7 @@ class Locale
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return 'Locale()';
     }
