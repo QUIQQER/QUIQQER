@@ -492,7 +492,7 @@ class Rewrite
 
                 try {
                     $file = $Item->createSizeCache($width, $height);
-                } catch (QUI\Permissions\Exception $Exception) {
+                } catch (QUI\Permissions\Exception) {
                     http_response_code(Response::HTTP_FORBIDDEN);
 
                     $file = OPT_DIR . 'quiqqer/quiqqer/bin/images/deny.svg';
@@ -504,7 +504,7 @@ class Rewrite
                 try {
                     /* @var $Item File */
                     $file = $Item->createCache();
-                } catch (QUI\Permissions\Exception $Exception) {
+                } catch (QUI\Permissions\Exception) {
                     http_response_code(Response::HTTP_FORBIDDEN);
 
                     $file = OPT_DIR . 'quiqqer/quiqqer/bin/images/deny.svg';
@@ -588,7 +588,7 @@ class Rewrite
             // URL Parameter filtern
             try {
                 $this->site = $this->getSiteByUrl($_REQUEST['_url']);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 $Site = $this->existRegisterPath(
                     $_REQUEST['_url'],
                     $this->getProject()
@@ -856,7 +856,7 @@ class Rewrite
                 );
 
                 return $Project->get($vhosts[404]['id']);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -927,7 +927,7 @@ class Rewrite
 
         try {
             $Project = QUI\Projects\Manager::get();
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             $Project = false;
         }
 
@@ -993,7 +993,7 @@ class Rewrite
                 $this->lang,
                 $template
             );
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             // nothing todo
             $Project = false;
         }
@@ -1121,7 +1121,7 @@ class Rewrite
                     $this->setIntoPath($Child);
                 }
             }
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
             $Child = QUI\Utils\Site::getSiteByUrl($url);
         }
 

@@ -79,7 +79,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
             ]);
 
             $data = QUI::getDataBase()->fetch($query);
-        } catch (QUI\Database\Exception $Exception) {
+        } catch (QUI\Database\Exception) {
             return $Grid->parseResult([], 0);
         }
 

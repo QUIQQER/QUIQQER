@@ -931,7 +931,7 @@ class Console
 
         try {
             $User = QUI::getUsers()->getUserByName($username);
-        } catch (Exception $Exception) {
+        } catch (Exception) {
             $this->writeLn(
                 QUI::getLocale()->get(
                     "quiqqer/quiqqer",

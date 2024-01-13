@@ -55,7 +55,7 @@ class Permission
     {
         try {
             return self::checkPermission($perm, $User);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return false;
@@ -236,7 +236,7 @@ class Permission
 
         try {
             return self::checkPermission('quiqqer.admin', $User);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return false;
@@ -506,7 +506,7 @@ class Permission
     {
         try {
             return self::checkSitePermission($perm, $Site, $User);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return false;
@@ -1007,7 +1007,7 @@ class Permission
                         'quiqqer.project.edit',
                         $User
                     );
-                } catch (Exception $Exception) {
+                } catch (Exception) {
                     return self::checkPermission(
                         'quiqqer.projects.edit',
                         $User
@@ -1022,7 +1022,7 @@ class Permission
                         'quiqqer.project.destroy',
                         $User
                     );
-                } catch (Exception $Exception) {
+                } catch (Exception) {
                     return self::checkPermission(
                         'quiqqer.projects.destroy',
                         $User
@@ -1037,7 +1037,7 @@ class Permission
                         'quiqqer.project.setconfig',
                         $User
                     );
-                } catch (Exception $Exception) {
+                } catch (Exception) {
                     return self::checkPermission(
                         'quiqqer.projects.setconfig',
                         $User
@@ -1052,7 +1052,7 @@ class Permission
                         'quiqqer.project.editCustomCSS',
                         $User
                     );
-                } catch (Exception $Exception) {
+                } catch (Exception) {
                     return self::checkPermission(
                         'quiqqer.projects.editCustomCSS',
                         $User
@@ -1067,7 +1067,7 @@ class Permission
                         'quiqqer.project.editCustomJS',
                         $User
                     );
-                } catch (Exception $Exception) {
+                } catch (Exception) {
                     return self::checkPermission(
                         'quiqqer.projects.editCustomJS',
                         $User
@@ -1244,7 +1244,7 @@ class Permission
 
         try {
             return self::checkMediaPermission($perm, $MediaItem, $User);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return false;

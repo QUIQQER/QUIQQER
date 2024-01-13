@@ -13,7 +13,7 @@ QUI::$Ajax->registerFunction(
     function ($project) {
         try {
             $Project = QUI::getProject($project);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return [
                 'cssFiles' => '',
                 'bodyId' => '',

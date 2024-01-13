@@ -396,7 +396,7 @@ class Project
     {
         try {
             return (int)QUI\Cache\Manager::get($this->getEDateCacheName());
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return 0;
@@ -1376,7 +1376,7 @@ class Project
                         release_to = '';
                 "
                 );
-            } catch (PDOException $Exception) {
+            } catch (PDOException) {
             }
 
             if (!$Table->issetPrimaryKey($table, 'id')) {

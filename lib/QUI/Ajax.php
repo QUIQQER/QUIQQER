@@ -511,7 +511,7 @@ class Ajax extends QUI\QDOM
                 try {
                     $Package = null;
                     $Package = QUI::getPackage($pluginParts[0] . '/' . $pluginParts[1]);
-                } catch (Exception $Exception) {
+                } catch (Exception) {
                 }
 
                 if ($Package) {

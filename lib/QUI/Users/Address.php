@@ -500,7 +500,7 @@ class Address extends QUI\QDOM
             return QUI\Countries\Manager::get(
                 $this->getAttribute('country')
             );
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         throw new QUI\Users\Exception(

@@ -527,7 +527,7 @@ class Session
                 ],
                 'limit' => 1
             ]);
-        } catch (QUI\Database\Exception $Exception) {
+        } catch (QUI\Database\Exception) {
             return 0;
         }
 
@@ -555,7 +555,7 @@ class Session
                 ],
                 'limit' => 1
             ]);
-        } catch (QUI\Database\Exception $Exception) {
+        } catch (QUI\Database\Exception) {
             return false;
         }
 

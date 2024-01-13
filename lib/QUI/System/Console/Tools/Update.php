@@ -488,7 +488,7 @@ class Update extends QUI\System\Console\Tool
             $Runner->executeComposer('status', [
                 '-vvv' => true
             ]);
-        } catch (\QUI\Composer\Exception $Exception) {
+        } catch (\QUI\Composer\Exception) {
             $modified = [];
 
             foreach ($result as $line) {

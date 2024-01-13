@@ -1219,7 +1219,7 @@ class Utils
                     'type' => 'folder'
                 ]
             ]);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return 0;
         }
 
@@ -1252,7 +1252,7 @@ class Utils
                     ]
                 ]
             ]);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return 0;
         }
 
@@ -1355,7 +1355,7 @@ class Utils
 
         try {
             $result = QUI::getDataBase()->fetchSQL($query);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return [];
         }
 

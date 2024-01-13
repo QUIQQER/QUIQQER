@@ -97,7 +97,7 @@ if (isset($_REQUEST['watermark'])) {
         }
 
         $Image->insert($WatermarkImage, $watermarkPosition);
-    } catch (QUI\Exception $Exception) {
+    } catch (QUI\Exception) {
     }
 }
 

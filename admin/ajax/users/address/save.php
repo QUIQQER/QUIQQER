@@ -45,7 +45,7 @@ QUI::$Ajax->registerFunction(
 
         try {
             $Address = $User->getAddress((int)$aid);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             $Address = $User->addAddress($data);
         }
 

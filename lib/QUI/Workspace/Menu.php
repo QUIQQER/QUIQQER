@@ -198,7 +198,7 @@ class Menu
             foreach ($packages as $package) {
                 try {
                     $Package = QUI::getPackage($package['name']);
-                } catch (QUI\Exception $Exception) {
+                } catch (QUI\Exception) {
                     continue;
                 }
 
@@ -305,7 +305,7 @@ class Menu
         foreach ($packages as $package) {
             try {
                 $Package = QUI::getPackage($package['name']);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 continue;
             }
 
