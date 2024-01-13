@@ -153,7 +153,7 @@ class Console
     /**
      * Console parameter
      */
-    private array $argv;
+    private readonly array $argv;
 
     /**
      * constructor

@@ -66,7 +66,7 @@ class Session
     /**
      * Database table
      */
-    private string $table;
+    private readonly string $table;
 
     /**
      * constructor
