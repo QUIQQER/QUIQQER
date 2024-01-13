@@ -208,13 +208,11 @@ class MyDB
      */
     public function getOneData($table, $field, $fieldAndId)
     {
-        return $this->getData(
-            array(
-                'select' => $field,
-                'from' => $table,
-                'where' => $fieldAndId
-            )
-        );
+        return $this->getData([
+            'select' => $field,
+            'from' => $table,
+            'where' => $fieldAndId
+        ]);
     }
 
     /**
@@ -230,13 +228,11 @@ class MyDB
      */
     public function updateData($table, $fieldValue, $fieldAndId)
     {
-        return $this->DB->exec(
-            array(
-                'update' => $table,
-                'set' => $fieldValue,
-                'where' => $fieldAndId
-            )
-        );
+        return $this->DB->exec([
+            'update' => $table,
+            'set' => $fieldValue,
+            'where' => $fieldAndId
+        ]);
     }
 
     /**
@@ -261,12 +257,10 @@ class MyDB
      */
     public function addData($table, $FieldValue)
     {
-        return $this->insert(
-            array(
-                'insert' => $table,
-                'set' => $FieldValue
-            )
-        );
+        return $this->insert([
+            'insert' => $table,
+            'set' => $FieldValue
+        ]);
     }
 
     /**
@@ -293,13 +287,11 @@ class MyDB
      */
     public function deleteData($table, $fieldAndId)
     {
-        return $this->DB->exec(
-            array(
-                'delete' => true,
-                'from' => $table,
-                'where' => $fieldAndId
-            )
-        );
+        return $this->DB->exec([
+            'delete' => true,
+            'from' => $table,
+            'where' => $fieldAndId
+        ]);
     }
 
     /**

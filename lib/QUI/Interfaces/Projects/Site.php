@@ -99,7 +99,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @return array;
      */
-    public function getChildren($params = array(), $load = false);
+    public function getChildren($params = [], $load = false);
 
     /**
      * Liefert die nächstfolgende Seite
@@ -142,7 +142,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @return QUI\Projects\Site | false
      */
-    public function firstChild($params = array());
+    public function firstChild($params = []);
 
     /**
      * Gibt die Kinder zurück achtet aber auf "Nicht in Navigation anzeigen" und Rechte
@@ -151,7 +151,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @return array
      */
-    public function getNavigation($params = array());
+    public function getNavigation($params = []);
 
     /**
      * Gibt ein Kind zurück welches den Namen hat
@@ -183,7 +183,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @return array
      */
-    public function getChildrenIds($params = array());
+    public function getChildrenIds($params = []);
 
     /**
      * Return ALL children ids under the site
@@ -192,7 +192,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @return array
      */
-    public function getChildrenIdsRecursive($params = array());
+    public function getChildrenIdsRecursive($params = []);
 
     /**
      * Gibt zurück ob Site Kinder besitzt
@@ -218,7 +218,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @return string
      */
-    public function getUrl($params = array(), $rewrited = false);
+    public function getUrl($params = [], $rewrited = false);
 
     /**
      * Gibt eine sprechenden URL zurück
@@ -235,7 +235,7 @@ interface Site extends QUI\QDOMInterface
      * @param array $params
      * @return mixed
      */
-    public function getUrlRewritten($params = array());
+    public function getUrlRewritten($params = []);
 
     /**
      * Return the Parent id from the site object

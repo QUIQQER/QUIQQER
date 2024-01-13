@@ -24,5 +24,5 @@ interface Trash
      *
      * @return array
      */
-    public function getList($params = array());
+    public function getList($params = []);
 }
