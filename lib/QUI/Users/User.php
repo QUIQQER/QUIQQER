@@ -856,7 +856,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getType()
     {
-        return get_class($this);
+        return $this::class;
     }
 
     /**

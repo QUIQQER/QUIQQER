@@ -205,7 +205,7 @@ class Permission
             $UserToCheck = self::getUser();
         }
 
-        if (get_class($UserToCheck) !== 'QUI\\Users\\User') {
+        if ($UserToCheck::class !== 'QUI\\Users\\User') {
             if (!$User) {
                 QUI::getUsers()->checkUserSession();
             }

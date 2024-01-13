@@ -151,8 +151,8 @@ class Login extends Control
         $authenticators = $User->getAuthenticators();
 
         foreach ($authenticators as $Authenticator) {
-            if (QUI::getSession()->get('auth-' . \get_class($Authenticator)) !== 1) {
-                return \get_class($Authenticator);
+            if (QUI::getSession()->get('auth-' . $Authenticator::class) !== 1) {
+                return $Authenticator::class;
             }
         }
 

@@ -556,7 +556,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getEdit(): ?Site\Edit
     {
-        if (get_class($this) == 'QUI\Projects\Site\Edit') {
+        if ($this::class == 'QUI\Projects\Site\Edit') {
             /* @var QUI\Projects\Site\Edit $this */
             return $this;
         }
