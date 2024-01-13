@@ -1238,7 +1238,6 @@ class Project implements \Stringable
             unset($sql['select']);
         } else {
             $sql['select'] = 'id';
-            unset($sql['count']);
         }
 
         if (isset($params['limit'])) {
