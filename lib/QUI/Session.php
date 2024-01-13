@@ -122,7 +122,7 @@ class Session
             $randomCharacters = array_rand($alphabetAsKeys, 5);
 
             // Implode the array of characters to a string
-            $sessionName = implode($randomCharacters);
+            $sessionName = implode('', $randomCharacters);
 
             QUI::$Conf->set('session', 'name', $sessionName);
             QUI::$Conf->save();

@@ -292,6 +292,7 @@ class Output extends Singleton
             $Body = $Dom->getElementsByTagName('body')[0];
 
             $result = implode(
+                '',
                 array_map(
                     [$Body->ownerDocument, "saveHTML"],
                     iterator_to_array($Body->childNodes)
