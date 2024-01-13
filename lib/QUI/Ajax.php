@@ -393,7 +393,7 @@ class Ajax extends QUI\QDOM
 
         // Rechte prüfung
         try {
-            $this->checkPermissions($_rf);
+            static::checkPermissions($_rf);
         } catch (\Exception $Exception) {
             return $this->writeException($Exception);
         }

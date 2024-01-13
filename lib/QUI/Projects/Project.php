@@ -434,7 +434,7 @@ class Project implements \Stringable
      */
     public function getCachePath()
     {
-        return $this->getProjectCachePath($this->getName());
+        return static::getProjectCachePath($this->getName());
     }
 
     /**
@@ -748,10 +748,7 @@ class Project implements \Stringable
      */
     public function getCacheLanguagePath()
     {
-        return $this->getProjectLanguageCachePath(
-            $this->getName(),
-            $this->getLang()
-        );
+        return static::getProjectLanguageCachePath($this->getName(), $this->getLang());
     }
 
     /**

@@ -123,15 +123,15 @@ class Update extends QUI\System\Console\Tool
             }
 
             $this->write($output);
-            $this->writeToLog($output);
+            static::writeToLog($output);
         });
 
         if ($this->getArgument('set-date')) {
             try {
                 QUI::getPackageManager()->setLastUpdateDate();
             } catch (QUI\Exception $Exception) {
-                $this->writeToLog('====== ERROR ======');
-                $this->writeToLog($Exception->getMessage());
+                static::writeToLog('====== ERROR ======');
+                static::writeToLog($Exception->getMessage());
             }
 
             return;
@@ -141,8 +141,8 @@ class Update extends QUI\System\Console\Tool
             try {
                 $Packages->clearComposerCache();
             } catch (QUI\Exception $Exception) {
-                $this->writeToLog('====== ERROR ======');
-                $this->writeToLog($Exception->getMessage());
+                static::writeToLog('====== ERROR ======');
+                static::writeToLog($Exception->getMessage());
             }
         }
 
@@ -154,8 +154,8 @@ class Update extends QUI\System\Console\Tool
             try {
                 $packages = $Packages->getOutdated(true);
             } catch (Exception $Exception) {
-                $this->writeToLog('====== ERROR ======');
-                $this->writeToLog($Exception->getMessage());
+                static::writeToLog('====== ERROR ======');
+                static::writeToLog($Exception->getMessage());
 
                 return;
             }
@@ -280,10 +280,10 @@ class Update extends QUI\System\Console\Tool
             $webserver = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.webserver');
 
             $this->writeLn($wasExecuted);
-            $this->writeToLog($wasExecuted . PHP_EOL);
+            static::writeToLog($wasExecuted . PHP_EOL);
 
             $this->writeLn($webserver);
-            $this->writeToLog($webserver . PHP_EOL);
+            static::writeToLog($webserver . PHP_EOL);
 
             $Htaccess = new Htaccess();
             $Htaccess->execute();
@@ -291,9 +291,9 @@ class Update extends QUI\System\Console\Tool
             $NGINX = new Nginx();
             $NGINX->execute();
 
-            $this->writeToLog(PHP_EOL);
-            $this->writeToLog('✔️' . PHP_EOL);
-            $this->writeToLog(PHP_EOL);
+            static::writeToLog(PHP_EOL);
+            static::writeToLog('✔️' . PHP_EOL);
+            static::writeToLog(PHP_EOL);
 
             // setup set the last update date
             QUI::getPackageManager()->setLastUpdateDate();
@@ -477,7 +477,7 @@ class Update extends QUI\System\Console\Tool
         $CLIOutput = new QUI\System\Console\Output();
         $CLIOutput->Events->addEvent('onWrite', function ($message) use (&$result) {
             $result[] = $message;
-            $this->writeToLog($message . PHP_EOL);
+            static::writeToLog($message . PHP_EOL);
         });
 
         $Runner->setOutput($CLIOutput);
