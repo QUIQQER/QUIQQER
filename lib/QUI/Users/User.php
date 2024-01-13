@@ -299,7 +299,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getId()
     {
-        return $this->id ? $this->id : false;
+        return $this->id ?: false;
     }
 
     /**
@@ -1325,7 +1325,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getUsername()
     {
-        return $this->name ? $this->name : false;
+        return $this->name ?: false;
     }
 
     /**
@@ -1492,7 +1492,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getUniqueId()
     {
-        return $this->uuid ? $this->uuid : '';
+        return $this->uuid ?: '';
     }
 
     /**
