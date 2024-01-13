@@ -1276,10 +1276,6 @@ class Project implements \Stringable
      */
     public function setup($setupOptions = [])
     {
-        if (!isset($setupOptions)) {
-            $setupOptions = [];
-        }
-
         if (!isset($setupOptions['executePackagesSetup'])) {
             $setupOptions['executePackagesSetup'] = true;
         }
