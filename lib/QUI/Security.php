@@ -36,7 +36,7 @@ class Security
             return '';
         }
 
-        $Cipher = new Blowfish(QUI::conf('globals', 'salt'));
+        $Cipher = new Blowfish();
 
         return $Cipher->encrypt($str);
     }
@@ -55,7 +55,7 @@ class Security
             return '';
         }
 
-        $Cipher = new Blowfish(QUI::conf('globals', 'salt'));
+        $Cipher = new Blowfish();
 
         return $Cipher->decrypt($str);
     }
