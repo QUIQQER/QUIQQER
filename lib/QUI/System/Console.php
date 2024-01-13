@@ -978,7 +978,7 @@ class Console
         }
 
         // Change the password!
-        $password = Orthos::getPassword(rand(8, 14));
+        $password = Orthos::getPassword(random_int(8, 14));
         $User->setPassword($password, QUI::getUsers()->getSystemUser());
 
         $this->writeLn(
