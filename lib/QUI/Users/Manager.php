@@ -1759,10 +1759,6 @@ class Manager
                 $query .= ' WHERE (';
                 $binds[':search'] = '%' . $search . '%';
 
-                if (empty($search)) {
-                    $binds[':search'] = '%';
-                }
-
                 foreach ($fields as $field => $value) {
                     if (!isset($allowOrderFields[$field])) {
                         continue;
