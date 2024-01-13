@@ -7,7 +7,7 @@
 namespace QUI;
 
 use Html2Text\Html2Text;
-use PHPMailer;
+use PHPMailer\PHPMailer\PHPMailer;
 use QUI;
 use QUI\Mail\Mailer;
 
