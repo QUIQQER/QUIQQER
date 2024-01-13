@@ -436,7 +436,7 @@ class Manager extends QUI\QDOM
             }
         } else {
             $template = file_get_contents(
-                dirname(__FILE__) . '/composer.tpl'
+                __DIR__ . '/composer.tpl'
             );
 
             $composerJson = $Parser->parse($template);

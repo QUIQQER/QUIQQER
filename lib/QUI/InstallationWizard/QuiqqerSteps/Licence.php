@@ -60,6 +60,6 @@ class Licence extends QUI\InstallationWizard\AbstractInstallationWizardStep
             'urlImageDir' => URL_OPT_DIR . 'quiqqer/quiqqer/bin/images/installation/'
         ]);
 
-        return $Engine->fetch(dirname(__FILE__) . '/Licence.html');
+        return $Engine->fetch(__DIR__ . '/Licence.html');
     }
 }

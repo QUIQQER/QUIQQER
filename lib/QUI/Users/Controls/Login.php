@@ -92,7 +92,7 @@ class Login extends Control
             'count' => \count($authenticators) - 1
         ]);
 
-        return $Engine->fetch(\dirname(__FILE__) . '/Login.html');
+        return $Engine->fetch(__DIR__ . '/Login.html');
     }
 
     /**

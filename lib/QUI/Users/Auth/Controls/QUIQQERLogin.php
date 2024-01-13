@@ -23,7 +23,7 @@ class QUIQQERLogin extends Control
         parent::__construct($options);
 
         $this->addCSSClass('quiqqer-login-auth');
-        $this->addCSSFile(dirname(__FILE__) . '/QUIQQERLogin.css');
+        $this->addCSSFile(__DIR__ . '/QUIQQERLogin.css');
 
         $this->setJavaScriptControl('controls/users/auth/QUIQQERLogin');
     }
@@ -55,6 +55,6 @@ class QUIQQERLogin extends Control
             'showPasswordReset' => $showPasswordReset
         ]);
 
-        return $Engine->fetch(\dirname(__FILE__) . '/QUIQQERLogin.html');
+        return $Engine->fetch(__DIR__ . '/QUIQQERLogin.html');
     }
 }

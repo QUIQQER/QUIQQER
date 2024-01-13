@@ -105,7 +105,7 @@ class Form extends QUI\QDOM
             $Engine->assign('allowedFileTypes', \json_encode($allowedFileTypes));
         }
 
-        return $Engine->fetch(\dirname(__FILE__) . '/Form.html');
+        return $Engine->fetch(__DIR__ . '/Form.html');
     }
 
     /**

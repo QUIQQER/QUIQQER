@@ -68,6 +68,6 @@ class MailSMTP extends QUI\InstallationWizard\AbstractInstallationWizardStep
             'SMTPSecureSSL_allow_self_signed' => QUI::conf('mail', 'SMTPSecureSSL_allow_self_signed'),
         ]);
 
-        return $Engine->fetch(dirname(__FILE__) . '/MailSMTP.html');
+        return $Engine->fetch(__DIR__ . '/MailSMTP.html');
     }
 }

@@ -110,7 +110,7 @@ class Manager
         $toolbars = File::readDir($path);
 
         if (empty($toolbars)) {
-            $defaultBarDir = dirname(__FILE__) . '/toolbars/';
+            $defaultBarDir = __DIR__ . '/toolbars/';
             $toolbars = File::readDir($defaultBarDir);
 
             foreach ($toolbars as $toolbar) {

@@ -29,7 +29,7 @@ class AlphabetSorting extends QUI\Control
         parent::__construct($attributes);
 
         $this->addCSSFile(
-            dirname(__FILE__) . '/AlphabetSorting.css'
+            __DIR__ . '/AlphabetSorting.css'
         );
 
         $this->setAttribute('class', 'quiqqer-alphabetSorting grid-100 grid-parent');
@@ -97,6 +97,6 @@ class AlphabetSorting extends QUI\Control
             'Project' => $Project
         ]);
 
-        return $Engine->fetch(dirname(__FILE__) . '/AlphabetSorting.html');
+        return $Engine->fetch(__DIR__ . '/AlphabetSorting.html');
     }
 }
