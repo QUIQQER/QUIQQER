@@ -27,7 +27,7 @@ if (strpos($_SERVER['SCRIPT_NAME'], 'index.php') !== false) {
             $User->logout();
         }
 
-        require_once 'login.php';
+        require_once __DIR__ . '/login.php';
         exit;
     }
 }
