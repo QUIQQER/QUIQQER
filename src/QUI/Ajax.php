@@ -462,7 +462,7 @@ class Ajax extends QUI\QDOM
 
         $function = self::$permissions[$reg_function];
 
-        if (is_object($function) && $function::class === 'Closure') {
+        if ($function instanceof \Closure) {
             $function();
 
             return;
