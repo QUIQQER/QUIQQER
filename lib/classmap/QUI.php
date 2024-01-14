@@ -225,7 +225,7 @@ class QUI
             /**
              * DEVELOPMENT - setting if the system is in development mode or not
              */
-            define("DEVELOPMENT", !!$config['globals']['development']);
+            define("DEVELOPMENT", (bool) $config['globals']['development']);
         }
 
         $var_dir = $config['globals']['var_dir'];
