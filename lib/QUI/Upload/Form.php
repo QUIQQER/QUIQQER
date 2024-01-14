@@ -80,7 +80,7 @@ class Form extends QUI\QDOM
             'this' => $this,
             'name' => $this->getAttribute('name'),
             'id' => QUI\Utils\Uuid::get(),
-            'uploads' => \intval($this->getAttribute('uploads')),
+            'uploads' => (int) $this->getAttribute('uploads'),
             'contextMenu' => $this->phpBool2JsBool((bool) $this->getAttribute('contextMenu')),
             'multiple' => $this->phpBool2JsBool((bool) $this->getAttribute('multiple')),
             'sendbutton' => $this->phpBool2JsBool((bool) $this->getAttribute('sendbutton')),

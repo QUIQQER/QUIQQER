@@ -1224,7 +1224,7 @@ class Utils
         }
 
         if (isset($result[0])) {
-            return intval($result[0]['id']);
+            return (int) $result[0]['id'];
         }
 
         return 0;
@@ -1257,7 +1257,7 @@ class Utils
         }
 
         if (isset($result[0])) {
-            return intval($result[0]['id']);
+            return (int) $result[0]['id'];
         }
 
         return 0;
@@ -1362,7 +1362,7 @@ class Utils
         $return = [];
 
         foreach ($result as $element) {
-            $return[$element['mime_type']] = intval($element['count']);
+            $return[$element['mime_type']] = (int) $element['count'];
         }
 
         return $return;
