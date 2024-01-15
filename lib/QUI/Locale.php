@@ -375,7 +375,7 @@ class Locale
         $Formatter = new NumberFormatter($localeCode[0], $format);
 
         if (is_string($number)) {
-            $number = floatval($number);
+            $number = (float) $number;
         }
 
         $decimalSeparator = self::get('quiqqer/quiqqer', 'numberFormat.decimal_separator');
