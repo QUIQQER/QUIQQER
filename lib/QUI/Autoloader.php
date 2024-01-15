@@ -145,6 +145,6 @@ class Autoloader
             }
         }
 
-        return !!self::$ComposerLoader->loadClass($classname);
+        return (bool) self::$ComposerLoader->loadClass($classname);
     }
 }
