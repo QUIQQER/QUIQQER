@@ -8,7 +8,7 @@ define('QUIQQER_AJAX', true);
 define('QUIQQER_SYSTEM', true);
 define('QUIQQER_BACKEND', true);
 
-require_once 'header.php';
+require_once __DIR__ . '/header.php';
 
 header("Content-Type: text/plain");
 
@@ -18,4 +18,4 @@ header("Pragma: no-cache");
 header('Expires: ' . gmdate('D, d M Y H:i:s', time() - 60) . ' GMT');
 
 //require '../bootstrap.php';
-require '../lib/ajax.php';
+require __DIR__ . '/../lib/ajax.php';

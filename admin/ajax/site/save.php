@@ -38,7 +38,7 @@ QUI::$Ajax->registerFunction(
         QUI::getEvents()->fireEvent('onSiteSaveAjaxEnd', [$Site]);
 
         try {
-            require_once 'get.php';
+            require_once __DIR__ . '/get.php';
 
             $result = QUI::$Ajax->callRequestFunction('ajax_site_get', [
                 'project' => json_encode($Project->toArray()),
