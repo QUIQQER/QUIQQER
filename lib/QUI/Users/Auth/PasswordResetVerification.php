@@ -43,7 +43,7 @@ class PasswordResetVerification extends AbstractVerification
             $newPassword = QUI\Security\Password::generateRandom();
 
             // check if user has to set new password
-            if (\boolval(QUI::conf('auth_settings', 'forceNewPasswordOnReset'))) {
+            if ((bool) QUI::conf('auth_settings', 'forceNewPasswordOnReset')) {
                 $User->setAttribute('quiqqer.set.new.password', true);
             }
 
