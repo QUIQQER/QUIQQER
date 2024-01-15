@@ -235,18 +235,9 @@ class SecurityUpdate extends QUI\System\Console\Tool
                 'red'
             );
 
-            $this->writeLn(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.error'),
-                'red'
-            );
-
+            $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.error'), 'red');
             $this->writeLn('');
-
-            $this->writeLn(
-                'php var/composer/composer.phar --working-dir="' . VAR_DIR . 'composer" update',
-                'red'
-            );
-
+            $this->writeLn('./console repair', 'red');
             $this->resetColor();
             $this->writeLn('');
         } finally {

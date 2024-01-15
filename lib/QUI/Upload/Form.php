@@ -81,11 +81,11 @@ class Form extends QUI\QDOM
             'name' => $this->getAttribute('name'),
             'id' => QUI\Utils\Uuid::get(),
             'uploads' => \intval($this->getAttribute('uploads')),
-            'contextMenu' => $this->phpBool2JsBool(\boolval($this->getAttribute('contextMenu'))),
-            'multiple' => $this->phpBool2JsBool(\boolval($this->getAttribute('multiple'))),
-            'sendbutton' => $this->phpBool2JsBool(\boolval($this->getAttribute('sendbutton'))),
-            'hasFile' => $this->phpBool2JsBool(\boolval($this->getAttribute('hasFile'))),
-            'deleteFile' => $this->phpBool2JsBool(\boolval($this->getAttribute('deleteFile'))),
+            'contextMenu' => $this->phpBool2JsBool((bool) $this->getAttribute('contextMenu')),
+            'multiple' => $this->phpBool2JsBool((bool) $this->getAttribute('multiple')),
+            'sendbutton' => $this->phpBool2JsBool((bool) $this->getAttribute('sendbutton')),
+            'hasFile' => $this->phpBool2JsBool((bool) $this->getAttribute('hasFile')),
+            'deleteFile' => $this->phpBool2JsBool((bool) $this->getAttribute('deleteFile')),
             'callable' => \str_replace('\\', '\\\\', $this->getType()),
             'typeOfLook' => $typeOfLook
         ]);
