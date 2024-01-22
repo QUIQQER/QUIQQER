@@ -47,7 +47,7 @@ class Media extends QUI\QDOM
     /**
      * internal project object
      *
-     * @var \QUI\Projects\Project
+     * @var QUI\Projects\Project
      */
     protected Project $Project;
     /**
@@ -60,7 +60,7 @@ class Media extends QUI\QDOM
     /**
      * constructor
      *
-     * @param \QUI\Projects\Project $Project
+     * @param QUI\Projects\Project $Project
      */
     public function __construct(Project $Project)
     {
@@ -111,7 +111,7 @@ class Media extends QUI\QDOM
     /**
      * Return the project of the media
      *
-     * @return \QUI\Projects\Project
+     * @return QUI\Projects\Project
      */
     public function getProject(): Project
     {
@@ -423,8 +423,8 @@ class Media extends QUI\QDOM
      *
      * @param integer $id - media id
      *
-     * @return \QUI\Projects\Media\Item|\QUI\Projects\Media\Image|\QUI\Projects\Media\File|\QUI\Projects\Media\Folder
-     * @throws \QUI\Exception
+     * @return QUI\Projects\Media\Item|QUI\Projects\Media\Image|QUI\Projects\Media\File|QUI\Projects\Media\Folder
+     * @throws QUI\Exception
      */
     public function get(int $id)
     {
@@ -468,7 +468,7 @@ class Media extends QUI\QDOM
      *
      * @param array $result
      *
-     * @return \QUI\Projects\Media\Item
+     * @return QUI\Projects\Media\Item
      */
     public function parseResultToItem(array $result)
     {
@@ -561,7 +561,7 @@ class Media extends QUI\QDOM
      * @param string $file - Path to the new file
      *
      * @return QUI\Interfaces\Projects\Media\File
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
     public function replace(int $id, string $file)
     {
@@ -610,7 +610,7 @@ class Media extends QUI\QDOM
             throw new QUI\Exception('No Parent found.', 404);
         }
 
-        /* @var $Parent \QUI\Projects\Media\Folder */
+        /* @var $Parent QUI\Projects\Media\Folder */
         $Parent = $this->get($parentId);
 
         if ($data['name'] != $name && $Parent->childWithNameExists($name)) {
@@ -624,7 +624,7 @@ class Media extends QUI\QDOM
         $imageType = Utils::getMediaTypeByMimeType($info['mime_type']);
 
         if ($imageType === 'image') {
-            $maxConfigSize = $this->getProject()->getConfig('media_maxUploadSize');
+            $maxConfigSize = (int)$this->getProject()->getConfig('media_maxUploadSize');
             $info = FileUtils::getInfo($file, ['imagesize' => true]);
 
             // create image
@@ -646,7 +646,7 @@ class Media extends QUI\QDOM
         }
 
         // delete the file
-        if (isset($data['file']) && !empty($data['file'])) {
+        if (!empty($data['file'])) {
             QUI\Utils\System\File::unlink(
                 $this->getFullPath() . $data['file']
             );

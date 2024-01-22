@@ -9,11 +9,37 @@
 QUI::$Ajax->registerFunction(
     'ajax_system_getQuiqqerVersions',
     function () {
-        return [
-            "1.*",
-            "dev-master",
-            "dev-dev"
-        ];
+        $packages = @file_get_contents('https://update.quiqqer.com/packages.json');
+        $packages = json_decode($packages, true);
+        $versions = [];
+        $highestMinors = [];
+
+        if (isset($packages['packages']['quiqqer/quiqqer'])) {
+            $quiqqer = $packages['packages']['quiqqer/quiqqer'];
+            $versionList = array_keys($quiqqer);
+
+            foreach ($versionList as $version) {
+                [$major, $minor] = explode('.', $version) + [null, null];
+
+                if ($major === null || $minor === null) {
+                    continue;
+                }
+
+                if (!array_key_exists($major, $highestMinors) || $minor > $highestMinors[$major]) {
+                    $highestMinors[$major] = $minor;
+                }
+            }
+        }
+
+        foreach ($highestMinors as $major => $minor) {
+            $versions[] = $major . ".*";
+            $versions[] = $major . "." . $minor . ".*";
+        }
+
+        $versions[] = "dev-master";
+        $versions[] = "dev-dev";
+
+        return $versions;
     },
     false,
     [

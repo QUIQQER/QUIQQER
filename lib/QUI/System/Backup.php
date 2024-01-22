@@ -63,10 +63,14 @@ class Backup
             '-ar ',
             '--minimal ',
             '--suppress-common-lines ',
-            '--ignore-trailing-space ',
             "'--color=always' ",
             "'--exclude=last_update.ini.php' ",
         ];
+
+        // "--ignore-trailing-space" does not exist on Darwin/macOS and FreeBSD, it's enabled by default
+        if (!stristr(php_uname('s'), 'Darwin') && !stristr(php_uname('s'), 'FreeBSD')) {
+            $params[] = '--ignore-trailing-space ';
+        }
 
         $command = 'diff ' . implode('', $params) . ' ' . $backupFolder . ' ' . ETC_DIR;
         $result = shell_exec($command);

@@ -43,9 +43,9 @@ class QUIQQERLogin extends Control
 
         if (QUI\Users\Auth\Handler::getInstance()->isQuiqqerVerificationPackageInstalled()) {
             if (!empty($_REQUEST['isAdminLogin']) || QUI::isBackend()) {
-                $showPasswordReset = \boolval(QUI::conf('auth_settings', 'showResetPasswordBackend'));
+                $showPasswordReset = (bool) QUI::conf('auth_settings', 'showResetPasswordBackend');
             } else {
-                $showPasswordReset = \boolval(QUI::conf('auth_settings', 'showResetPasswordFrontend'));
+                $showPasswordReset = (bool) QUI::conf('auth_settings', 'showResetPasswordFrontend');
             }
         }
 

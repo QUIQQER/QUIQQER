@@ -481,7 +481,7 @@ class User implements QUI\Interfaces\Users\User
                 // only a super user can set a superuser
                 if (QUI::getUsers()->existsSession() && QUI::getUsers()->getUserBySession()->isSU()) {
                     if (is_numeric($value)) {
-                        $this->su = !!(int)$value;
+                        $this->su = (bool) (int)$value;
                     } else {
                         $this->su = (bool)$value;
                     }
@@ -1133,8 +1133,8 @@ class User implements QUI\Interfaces\Users\User
 
             $attributes[] = [
                 'name' => trim($Attribute->nodeValue),
-                'encrypt' => !!$Attribute->getAttribute('encrypt'),
-                'no-auto-save' => !!$Attribute->getAttribute('no-auto-save')
+                'encrypt' => (bool) $Attribute->getAttribute('encrypt'),
+                'no-auto-save' => (bool) $Attribute->getAttribute('no-auto-save')
             ];
         }
 

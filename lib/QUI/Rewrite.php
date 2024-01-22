@@ -635,7 +635,8 @@ class Rewrite
             $site_params = $this->site_params;
 
             if (isset($site_params[1])) {
-                for ($i = 1; $i < count($site_params); $i++) {
+                $counter = count($site_params);
+                for ($i = 1; $i < $counter; $i++) {
                     if ($i % 2 != 0) {
                         $value = false;
 

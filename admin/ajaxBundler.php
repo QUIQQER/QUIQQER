@@ -14,7 +14,7 @@ if (isset($_REQUEST['_FRONTEND']) && !(int)$_REQUEST['_FRONTEND']) {
     define('QUIQQER_FRONTEND', true);
 }
 
-require_once 'header.php';
+require_once __DIR__ . '/header.php';
 
 $User = QUI::getUserBySession();
 

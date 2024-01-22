@@ -627,6 +627,7 @@ macht mehr kaputt als ganz
 
 .exportItemDiv {
     border: 1px solid #DDDDDD;
+    display: flex;
     float: left;
     margin: 3px;
     padding: 4px;
@@ -640,6 +641,9 @@ macht mehr kaputt als ganz
 
 .exportItemDiv span {
     float: left;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .exportTextsDiv {

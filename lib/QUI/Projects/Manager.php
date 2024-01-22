@@ -1208,7 +1208,7 @@ class Manager
         $targetDir = CMS_DIR . 'media/sites/' . $newName;
 
         if (is_dir($sourceDir)) {
-            rename($sourceDir, $targetDir);
+            QUI\Utils\System\File::move($sourceDir, $targetDir);
         }
 
         // ----------------------------- //
@@ -1218,7 +1218,7 @@ class Manager
         $targetDir = USR_DIR . $newName;
 
         if (is_dir($sourceDir)) {
-            rename($sourceDir, $targetDir);
+            QUI\Utils\System\File::move($sourceDir, $targetDir);
         }
 
         // -----------------------------//
