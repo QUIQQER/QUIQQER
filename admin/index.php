@@ -3,7 +3,7 @@
 // phpcs:ignoreFile
 
 define('QUIQQER_SYSTEM', true);
-require 'header.php';
+require __DIR__ . '/header.php';
 
 QUI::getEvents()->fireEvent('adminRequest');
 

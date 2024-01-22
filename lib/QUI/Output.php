@@ -21,6 +21,7 @@ use function count;
 use function explode;
 use function file_exists;
 use function html_entity_decode;
+use function htmlentities;
 use function http_build_query;
 use function implode;
 use function ini_get;
@@ -32,7 +33,6 @@ use function iterator_to_array;
 use function libxml_clear_errors;
 use function libxml_use_internal_errors;
 use function ltrim;
-use function mb_convert_encoding;
 use function md5;
 use function parse_str;
 use function parse_url;
@@ -47,6 +47,7 @@ use function urldecode;
 
 use const ENT_HTML5;
 use const ENT_NOQUOTES;
+use const ENT_QUOTES;
 
 /**
  * Class Output
@@ -232,11 +233,7 @@ class Output extends Singleton
                 $HTML5 = new HTML5();
 
                 $d = $HTML5->loadHTML(
-                    mb_convert_encoding(
-                        $html,
-                        'HTML-ENTITIES',
-                        'UTF-8'
-                    )
+                    htmlentities($html, ENT_QUOTES | ENT_HTML5, 'UTF-8')
                 );
 
                 $p = $d->getElementsByTagName('picture');
