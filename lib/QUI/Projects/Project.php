@@ -1729,7 +1729,7 @@ class Project
         $targetDir = CMS_DIR . "media/sites/" . $newName;
 
         if (is_dir($sourceDir)) {
-            rename($sourceDir, $targetDir);
+            QUI\Utils\System\File::move($sourceDir, $targetDir);
         }
 
         // ----------------------------- //
@@ -1739,7 +1739,7 @@ class Project
         $targetDir = USR_DIR . $newName;
 
         if (is_dir($sourceDir)) {
-            rename($sourceDir, $targetDir);
+            QUI\Utils\System\File::move($sourceDir, $targetDir);
         }
 
         // ----------------------------- //
