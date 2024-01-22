@@ -12,7 +12,7 @@ use QUI\Utils\Security\Orthos;
 QUI::$Ajax->registerFunction(
     'ajax_email_validate',
     function ($mail) {
-        return boolval(Orthos::checkMailSyntax($mail));
+        return (bool) Orthos::checkMailSyntax($mail);
     },
     ['mail'],
     'Permission::checkUser'

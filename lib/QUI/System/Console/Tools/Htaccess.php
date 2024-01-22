@@ -358,8 +358,9 @@ class Htaccess extends QUI\System\Console\Tool
         // Read old htaccess content and remove header
         $oldHtaccessContent = trim(file_get_contents($htaccessFile));
         $lines = explode(PHP_EOL, $oldHtaccessContent);
+        $counter = count($lines);
 
-        for ($i = 0; $i < count($lines); $i++) {
+        for ($i = 0; $i < $counter; $i++) {
             $line = $lines[$i];
             if (substr($line, 0, 1) === "#") {
                 unset($lines[$i]);

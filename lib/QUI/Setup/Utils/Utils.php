@@ -18,12 +18,7 @@ class Utils
      */
     public static function getAvailableLanguages(): array
     {
-        $langs = [];
-
-        $langs[] = 'de';
-        $langs[] = 'en';
-
-        return $langs;
+        return ['de', 'en'];
     }
 
     /**
