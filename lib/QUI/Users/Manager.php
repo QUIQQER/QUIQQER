@@ -401,7 +401,7 @@ class Manager
             $this->checkUserSession();
             $this->Session = $this->get(QUI::getSession()->get('uid'));
         } catch (QUI\Exception $Exception) {
-            if (DEBUG_MODE) {
+            if (defined('DEBUG_MODE') && DEBUG_MODE) {
                 QUI\System\Log::writeDebugException($Exception);
             }
 

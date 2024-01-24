@@ -506,7 +506,9 @@ class Manager extends QUI\QDOM
             ],
             "installer-types" => ["component"],
             "installer-paths" => [
-                OPT_DIR . 'bin/{$name}/' => ["type:component"]
+                OPT_DIR . 'bin/{$name}/' => [
+                    "type:component"
+                ]
             ]
         ];
 
