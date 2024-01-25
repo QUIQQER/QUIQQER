@@ -43,6 +43,10 @@ class Manager implements QUI\Interfaces\Events
     {
         $this->Events = new Event();
 
+        if (!QUI::$Conf) {
+            return;
+        }
+
         try {
             if (
                 !QUI::$Conf->existValue('globals', 'eventsCreated')

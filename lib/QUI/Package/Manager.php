@@ -71,6 +71,7 @@ use function php_sapi_name;
 use function phpversion;
 use function print_r;
 use function rtrim;
+use function str_contains;
 use function str_replace;
 use function strcmp;
 use function strip_tags;
@@ -467,6 +468,10 @@ class Manager extends QUI\QDOM
             $composerJson->config->{'discard-changes'} = true;
         }
 
+        if (!isset($composerJson->config->{'sort-packages'})) {
+            $composerJson->config->{'sort-packages'} = true;
+        }
+
         if (!isset($composerJson->config->{'allow-plugins'})) {
             $composerJson->config->{'allow-plugins'} = json_decode('{}');
         }
@@ -506,7 +511,9 @@ class Manager extends QUI\QDOM
             ],
             "installer-types" => ["component"],
             "installer-paths" => [
-                OPT_DIR . 'bin/{$name}/' => ["type:component"]
+                OPT_DIR . 'bin/{$name}/' => [
+                    "type:component"
+                ]
             ]
         ];
 
@@ -1575,11 +1582,11 @@ class Manager extends QUI\QDOM
         $show = $this->getComposer()->show($package);
 
         foreach ($show as $k => $line) {
-            if (strpos($line, ' < info>') === false) {
+            if (!str_contains($line, ' <info>')) {
                 continue;
             }
 
-            if (strpos($line, ':') === false) {
+            if (!str_contains($line, ':')) {
                 continue;
             }
 
@@ -1597,7 +1604,7 @@ class Manager extends QUI\QDOM
 
             if ($line == 'requires') {
                 $_temp = $show;
-                $result['require '] = array_slice($_temp, $k + 1);
+                $result['require'] = array_slice($_temp, $k + 1);
 
                 continue;
             }
@@ -1760,7 +1767,7 @@ class Manager extends QUI\QDOM
      * Refresh the server list in the var dir
      * @throws Exception
      */
-    public function refreshServerList()
+    public function refreshServerList(): void
     {
         $this->createComposerJSON();
     }
