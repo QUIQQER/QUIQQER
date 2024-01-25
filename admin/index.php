@@ -110,7 +110,7 @@ echo $User->getLang(); ?>"> <!--<![endif]-->
 
     <?php
 
-    echo QUI\FontAwesome\EventHandler::fontawesome(false, false);
+    echo QUI\FontAwesome\FontAwesome::getLinkHtml(6);
 
     ?>
 
@@ -216,25 +216,25 @@ echo $User->getLang(); ?>"> <!--<![endif]-->
             lu: "<?php echo QUI::getPackageManager()->getLastUpdateDate(); ?>",
             vMd5: "<?php echo md5(QUI::version()); ?>",
 
-            installPackage: function (packageName, version, server) {
-                return new Promise(function (resolve, reject) {
-                    require(['Packages'], function (Packages) {
+            installPackage: function(packageName, version, server) {
+                return new Promise(function(resolve, reject) {
+                    require(['Packages'], function(Packages) {
                         Packages.installPackage(packageName, version, server).then(resolve, reject);
                     });
                 });
             },
 
-            updatePackage: function (packageName, version) {
-                return new Promise(function (resolve, reject) {
-                    require(['Packages'], function (Packages) {
+            updatePackage: function(packageName, version) {
+                return new Promise(function(resolve, reject) {
+                    require(['Packages'], function(Packages) {
                         Packages.update(packageName, version).then(resolve, reject);
                     });
                 });
             },
 
-            getPackage: function (packageName) {
-                return new Promise(function (resolve, reject) {
-                    require(['Packages'], function (Packages) {
+            getPackage: function(packageName) {
+                return new Promise(function(resolve, reject) {
+                    require(['Packages'], function(Packages) {
                         Packages.getPackage(packageName).then(resolve, reject);
                     });
                 });
