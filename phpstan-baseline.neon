@@ -11,94 +11,9 @@ parameters:
 			path: lib/QUI/Cache/QuiqqerMongoDriver.php
 
 		-
-			message: "#^Used constant OPT_DIR not found\\.$#"
-			count: 1
-			path: lib/QUI/Editor/Manager.php
-
-		-
-			message: "#^Used constant URL_DIR not found\\.$#"
-			count: 1
-			path: lib/QUI/Editor/Manager.php
-
-		-
-			message: "#^Used constant USR_DIR not found\\.$#"
-			count: 1
-			path: lib/QUI/Editor/Manager.php
-
-		-
-			message: "#^Used constant CMS_DIR not found\\.$#"
-			count: 1
-			path: lib/QUI/Package/Composer/CommandEvents.php
-
-		-
-			message: "#^Used constant LIB_DIR not found\\.$#"
-			count: 1
-			path: lib/QUI/Package/Composer/CommandEvents.php
-
-		-
-			message: "#^Used constant OPT_DIR not found\\.$#"
-			count: 1
-			path: lib/QUI/Package/Composer/CommandEvents.php
-
-		-
-			message: "#^Used constant URL_DIR not found\\.$#"
-			count: 1
-			path: lib/QUI/Package/Composer/CommandEvents.php
-
-		-
-			message: "#^Used constant USR_DIR not found\\.$#"
-			count: 1
-			path: lib/QUI/Package/Composer/CommandEvents.php
-
-		-
-			message: "#^Used constant VAR_DIR not found\\.$#"
-			count: 1
-			path: lib/QUI/Package/Composer/CommandEvents.php
-
-		-
-			message: "#^Used constant DEVELOPMENT not found\\.$#"
-			count: 1
-			path: lib/QUI/Package/Manager.php
-
-		-
-			message: "#^Used constant OPT_DIR not found\\.$#"
-			count: 1
-			path: lib/QUI/Package/Manager.php
-
-		-
-			message: "#^Used constant VAR_DIR not found\\.$#"
-			count: 1
-			path: lib/QUI/Package/Manager.php
-
-		-
 			message: "#^Undefined variable\\: \\$Group$#"
 			count: 1
 			path: lib/QUI/Permissions/PermissionOrder.php
-
-		-
-			message: "#^Used constant URL_DIR not found\\.$#"
-			count: 1
-			path: lib/QUI/Projects/Media/Image.php
-
-		-
-			message: "#^Used constant VAR_DIR not found\\.$#"
-			count: 1
-			path: lib/QUI/Projects/Media/Image.php
-
-		-
-			message: "#^Used constant URL_DIR not found\\.$#"
-			count: 1
-			path: lib/QUI/Projects/Media/Item.php
-
-		-
-			message: "#^Used constant VAR_DIR not found\\.$#"
-			count: 1
-			path: lib/QUI/Projects/Media/Item.php
-
-		-
-			message: "#^Used constant USR_DIR not found\\.$#"
-			count: 1
-			path: lib/QUI/Projects/Project.php
 
 		-
 			message: "#^Parameter \\$Server of method QUI\\\\Projects\\\\RestProvider\\:\\:register\\(\\) has invalid type QUI\\\\REST\\\\Server\\.$#"
@@ -106,32 +21,12 @@ parameters:
 			path: lib/QUI/Projects/RestProvider.php
 
 		-
-			message: "#^Used constant URL_DIR not found\\.$#"
-			count: 1
-			path: lib/QUI/Rewrite.php
-
-		-
 			message: "#^Instantiated class Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\Storage\\\\Handler\\\\MemcacheSessionHandler not found\\.$#"
 			count: 1
 			path: lib/QUI/Session.php
 
 		-
-			message: "#^Used constant VAR_DIR not found\\.$#"
-			count: 1
-			path: lib/QUI/System/Backup.php
-
-		-
-			message: "#^Used constant VAR_DIR not found\\.$#"
-			count: 1
-			path: lib/QUI/System/Console/Tools/SecurityUpdate.php
-
-		-
-			message: "#^Used constant CMS_DIR not found\\.$#"
-			count: 1
-			path: lib/QUI/System/Console/Tools/Update.php
-
-		-
-			message: "#^Used constant VAR_DIR not found\\.$#"
+			message: "#^Variable \\$lines in empty\\(\\) always exists and is not falsy\\.$#"
 			count: 1
 			path: lib/QUI/System/Console/Tools/Update.php
 
@@ -169,3 +64,13 @@ parameters:
 			message: "#^Call to static method getDefaultCurrency\\(\\) on an unknown class QUI\\\\ERP\\\\Currency\\\\Handler\\.$#"
 			count: 1
 			path: lib/QUI/Users/User.php
+
+		-
+			message: "#^Variable \\$where in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 2
+			path: lib/QUI/UsersGroups/Search.php
+
+		-
+			message: "#^Variable \\$whereOR in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 2
+			path: lib/QUI/UsersGroups/Search.php
