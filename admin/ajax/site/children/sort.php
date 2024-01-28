@@ -19,6 +19,10 @@ QUI::$Ajax->registerFunction(
         $Parent = $Project->get($parent);
         $Parent->checkPermission('quiqqer.projects.site.edit');
 
+        if (!$Parent instanceof \QUI\Projects\Site\Edit) {
+            return;
+        }
+
         if (!empty($sortType)) {
             $Parent->setAttribute('order_type', $sortType);
             $Parent->save();
