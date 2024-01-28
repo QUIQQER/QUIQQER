@@ -981,8 +981,8 @@ class Package extends QUI\QDOM
      */
     public function destroy()
     {
-        QUI::getPermissionManager()->removePermission($this->getPermissionName());
-        QUI::getPermissionManager()->removePermission($this->getPermissionName('header'));
+        QUI::getPermissionManager()->deletePermission($this->getPermissionName());
+        QUI::getPermissionManager()->deletePermission($this->getPermissionName('header'));
 
         QUI::getEvents()->fireEvent('packageDestroy', [$this->getName()]);
         QUI::getEvents()->fireEvent(
