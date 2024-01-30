@@ -23,10 +23,10 @@ class CHMOD extends QUI\System\Test
     {
         parent::__construct();
 
-        $this->setAttributes(array(
+        $this->setAttributes([
             'title' => 'QUIQQER Directory writable',
             'description' => ''
-        ));
+        ]);
 
         $this->isRequired = self::TEST_IS_REQUIRED;
     }

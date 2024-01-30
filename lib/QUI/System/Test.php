@@ -32,10 +32,10 @@ abstract class Test extends QUI\QDOM implements QUI\Interfaces\System\Test
      */
     public function __construct()
     {
-        $this->setAttributes(array(
+        $this->setAttributes([
             'title' => '',
             'description' => ''
-        ));
+        ]);
     }
 
     /**

@@ -23,10 +23,10 @@ class Curl extends QUI\System\Test
     {
         parent::__construct();
 
-        $this->setAttributes(array(
+        $this->setAttributes([
             'title' => 'curl test',
             'description' => ''
-        ));
+        ]);
 
         $this->isRequired = self::TEST_IS_REQUIRED;
     }
