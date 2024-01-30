@@ -30,6 +30,13 @@ use function trim;
 class Mailer extends QUI\QDOM
 {
     /**
+     * Static flag in the Mailer class to control the runtime behavior of mail sending.
+     *
+     * @var bool $DISABLE_MAIL_SENDING Indicates whether mail sending is enabled (false) or disabled (true) during runtime.
+     */
+    public static bool $DISABLE_MAIL_SENDING = false;
+
+    /**
      * Mail template
      *
      * @var Template|null
@@ -141,6 +148,10 @@ class Mailer extends QUI\QDOM
      */
     public function send(): bool
     {
+        if (Mailer::$DISABLE_MAIL_SENDING) {
+            return true;
+        }
+
         try {
             QUI::getEvents()->fireEvent('mailerSendInit', [
                 $this
