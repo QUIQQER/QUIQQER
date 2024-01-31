@@ -1,3 +1,19 @@
 include:
   - project: 'quiqqer/stabilization/semantic-release'
     file: '/ci-templates/.gitlab-ci.yml'
+
+variables:
+  PACKAGE_NAME: "quiqqer/quiqqer"
+
+stages:
+  - test
+
+phpunit:
+  image: pcsgjan/quiqqer:dev
+  stage: test
+  before_script:
+    - git config --global --add safe.directory ${CI_PROJECT_DIR}
+    - cd /var/www
+  script:
+    - ./console composer config repositories.local path ${CI_PROJECT_DIR}
+    - COMPOSER_MIRROR_PATH_REPOS=1 ./console composer require ${PACKAGE_NAME}:@dev
