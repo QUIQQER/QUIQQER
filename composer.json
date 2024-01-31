@@ -61,7 +61,7 @@
     "quiqqer/dashboard": "^1",
     "quiqqer/demodata": "^1",
     "quiqqer/diashow": "^1",
-    "quiqqer/fontawesome": "^4.8",
+    "quiqqer/fontawesome": "^5",
     "quiqqer/lockclient": "^1",
     "quiqqer/log": "^1.6",
     "quiqqer/login-logger": "^1",
