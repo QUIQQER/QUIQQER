@@ -597,7 +597,7 @@ class Locale
      */
     public function existsLang($language): bool
     {
-        return in_array(QUI::availableLanguages(), $language);
+        return in_array($language, QUI::availableLanguages());
     }
 
     /**
