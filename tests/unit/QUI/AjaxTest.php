@@ -8,48 +8,89 @@ class AjaxTest extends TestCase
 {
     public function testRegisterAndGetFunction()
     {
-      $testFunction = function() {};
-      $testFunctionName = 'test_function';
+        $testFunction = function () {
+        };
+        $testFunctionName = 'test_function';
 
-      $sut = new Ajax();
-      $sut::registerFunction($testFunctionName, $testFunction);
+        $sut = new Ajax();
+        $sut::registerFunction($testFunctionName, $testFunction);
 
-      $this->assertArrayHasKey($testFunctionName, $sut::getRegisteredCallables());
-      $this->assertEquals($testFunction, $sut::getRegisteredCallables()[$testFunctionName]['callable']);
+        $this->assertArrayHasKey($testFunctionName, $sut::getRegisteredCallables());
+        $this->assertEquals($testFunction, $sut::getRegisteredCallables()[$testFunctionName]['callable']);
     }
 
     public function testRegisterAndGetCallable()
     {
-      $sut = new Ajax();
-      $regVars = ['var1', 'var2'];
-      $testFunction = 'test_function';
+        $sut = new Ajax();
+        $regVars = ['var1', 'var2'];
+        $testFunction = 'test_function';
 
-      $sut::register($testFunction, $regVars);
+        $sut::register($testFunction, $regVars);
 
-      $this->assertArrayHasKey($testFunction, $sut::getRegisteredFunctions());
-      $this->assertEquals($regVars, $sut::getRegisteredFunctions()[$testFunction]);
+        $this->assertArrayHasKey($testFunction, $sut::getRegisteredFunctions());
+        $this->assertEquals($regVars, $sut::getRegisteredFunctions()[$testFunction]);
     }
 
     public function testWriteExceptionReturnsWellFormedArray()
     {
-      $message = 'test';
-      $code = 123;
-      $testException = new \Exception(message: $message, code: $code);
+        $message = 'test';
+        $code = 123;
+        $testException = new \Exception(message: $message, code: $code);
 
-      $sut = (new Ajax())->writeException($testException);
+        $sut = (new Ajax())->writeException($testException);
 
-      $this->assertEquals($message, $sut['Exception']['message']);
-      $this->assertEquals($code, $sut['Exception']['code']);
-      $this->assertEquals($testException::class, $sut['Exception']['type']);
+        $this->assertEquals($message, $sut['Exception']['message']);
+        $this->assertEquals($code, $sut['Exception']['code']);
+        $this->assertEquals($testException::class, $sut['Exception']['type']);
     }
 
     public function testWriteExceptionRemovesHtmlFromMessage()
     {
-      $messageToTest = '<iframe></iframe><p>myP</p><div>myDiv</div><h1>myH1</h1>';
-      $cleanedMessage = '<p>myP</p><div>myDiv</div>myH1';
+        $messageToTest = '<iframe></iframe><p>myP</p><div>myDiv</div><h1>myH1</h1>';
+        $cleanedMessage = '<p>myP</p><div>myDiv</div>myH1';
 
-      $sut = (new Ajax())->writeException(new \Exception(message: $messageToTest));
+        $sut = (new Ajax())->writeException(new \Exception(message: $messageToTest));
 
-      $this->assertEquals($cleanedMessage, $sut['Exception']['message']);
+        $this->assertEquals($cleanedMessage, $sut['Exception']['message']);
+    }
+
+    public function testCallRequestFunctionWithUnregisteredFunctionWritesException()
+    {
+        $ajax = new Ajax();
+
+        $sut = $ajax->callRequestFunction('undefined_function');
+
+        $this->assertArrayHasKey('Exception', $sut);
+    }
+
+    public function testCallRequestFunctionWithoutPermissionsWritesException()
+    {
+        $ajax = new Ajax();
+        $testFunctionName = 'test_function';
+
+        $ajax::registerFunction($testFunctionName, function () {
+        }, false, 'test_permission');
+
+        $sut = $ajax->callRequestFunction($testFunctionName);
+
+        $this->assertArrayHasKey('Exception', $sut);
+    }
+
+    public function testCallRequestFunctionWritesFunctionsResult()
+    {
+        $ajax = new Ajax();
+        $testFunctionName = 'test_function';
+        $testResultValue = 'test_result';
+
+        $ajax::registerFunction(
+            $testFunctionName,
+            function () use ($testResultValue) {
+                return $testResultValue;
+            }
+        );
+
+        $sut = $ajax->callRequestFunction($testFunctionName)['result'];
+
+        $this->assertEquals($testResultValue, $sut);
     }
 }
