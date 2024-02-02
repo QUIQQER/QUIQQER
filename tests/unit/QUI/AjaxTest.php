@@ -2,8 +2,10 @@
 
 namespace QUI;
 
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\TestCase;
 
+#[RunTestsInSeparateProcesses]
 class AjaxTest extends TestCase
 {
     public function testRegisterAndGetFunction()
