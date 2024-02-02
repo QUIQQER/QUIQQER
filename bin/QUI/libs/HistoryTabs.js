@@ -6,7 +6,6 @@
  */
 define('libs/HistoryTabs', [
     'HistoryEvents',
-    'Navigo'
 ], function () {
     "use strict";
 

@@ -46,7 +46,6 @@
     "quiqqer-asset/history-events": "*",
     "quiqqer-asset/intl": "^1",
     "quiqqer-asset/mustache": "^4",
-    "quiqqer-asset/navigo": "*",
     "quiqqer-asset/nouislider": "^15",
     "quiqqer-asset/requirejs": "^2",
     "quiqqer-asset/urijs": "^1",
