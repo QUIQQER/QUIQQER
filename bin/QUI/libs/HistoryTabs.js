@@ -4,9 +4,7 @@
  *
  * @author www.pcsg.de (Henning Leutz)
  */
-define('libs/HistoryTabs', [
-    'HistoryEvents',
-], function () {
+define('libs/HistoryTabs', [], function () {
     "use strict";
 
     var CHANGING = false;

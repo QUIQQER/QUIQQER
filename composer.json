@@ -43,7 +43,6 @@
     "quiqqer-asset/ace-builds": "^1",
     "quiqqer-asset/animejs": "^3",
     "quiqqer-asset/downloadjs": "^1",
-    "quiqqer-asset/history-events": "*",
     "quiqqer-asset/intl": "^1",
     "quiqqer-asset/mustache": "^4",
     "quiqqer-asset/nouislider": "^15",
