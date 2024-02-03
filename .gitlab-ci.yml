@@ -17,3 +17,8 @@ phpunit:
   script:
     - ./console composer config repositories.local path ${CI_PROJECT_DIR}
     - COMPOSER_MIRROR_PATH_REPOS=1 ./console composer require ${PACKAGE_NAME}:@dev
+    - cd packages/${PACKAGE_NAME}
+    - curl -sSL --output /tmp/phive.phar "https://phar.io/releases/phive.phar"
+    - chmod +x /tmp/phive.phar
+    - /tmp/phive.phar install
+    - ./tools/phpunit
