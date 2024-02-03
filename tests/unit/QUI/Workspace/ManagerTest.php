@@ -43,10 +43,8 @@ class ManagerTest extends TestCase
 
     public function testAddAndGetWorkspace()
     {
-        $this->markTestSkipped('Test skipped: getWorkspaceById does not accept user interface, making testing harder (see quiqqer/quiqqer#1336)');
-
         $sut = new Manager();
-        $testUser = \QUI::getUsers()->getSystemUser();
+        $testUser = $this->createUserStub();
         $testTitle = 'test_title';
         $testData = 'test_data';
         $testMinHeight = 123;
@@ -72,10 +70,8 @@ class ManagerTest extends TestCase
 
     public function testSaveWorkspace()
     {
-        $this->markTestSkipped('Test skipped: getWorkspaceById does not accept user interface, making testing harder (see quiqqer/quiqqer#1336)');
-
         $sut = new Manager();
-        $testUser = \QUI::getUsers()->getSystemUser();
+        $testUser = $this->createUserStub();
         $testWorkspaceId = $sut::addWorkspace(
             User: $testUser,
             title: 'test_title',
@@ -116,10 +112,8 @@ class ManagerTest extends TestCase
 
     public function testDeleteWorkspace()
     {
-        $this->markTestSkipped('Test skipped: getWorkspaceById does not accept user interface, making testing harder (see quiqqer/quiqqer#1336)');
-
         $sut = new Manager();
-        $testUser = \QUI::getUsers()->getSystemUser();
+        $testUser = $this->createUserStub();
         $testWorkspaceId = $sut::addWorkspace(
             User: $testUser,
             title: 'test_title',
@@ -139,7 +133,7 @@ class ManagerTest extends TestCase
 
         // Arrange
         $sut = new Manager();
-        $testUser = \QUI::getUsers()->getSystemUser();
+        $testUser = \QUI::getUsers()->getSystemUser();  // cant use user stub here as the user has to be an admin
         $testWorkspaceToBecomeStandardId = $sut::addWorkspace(
             User: $testUser,
             title: 'test_title_to_become_standard',
