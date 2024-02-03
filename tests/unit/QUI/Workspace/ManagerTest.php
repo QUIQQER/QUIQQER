@@ -4,6 +4,7 @@ namespace QUI\Workspace;
 
 use PHPUnit\Framework\TestCase;
 use QUI\Exception;
+use QUI\Users\User;
 
 class ManagerTest extends TestCase
 {
@@ -20,6 +21,24 @@ class ManagerTest extends TestCase
     public function testGetWorkspacesByUser()
     {
         $this->markTestIncomplete('Decide if this has to be tested or if it is trivial');
+    }
+
+    public function testGetWorkspaceByInvalidIdAndUserThrowsException()
+    {
+        $sut = new Manager();
+        $testUser = $this->createUserStub();
+
+        $this->expectException(Exception::class);
+        $sut::getWorkspaceById(99999999, $testUser);
+    }
+
+    public function testAddWorkspaceWithInvalidUserThrowsException()
+    {
+        $sut = new Manager();
+        $testUser = $this->createStub(\QUI\Interfaces\Users\User::class);
+
+        $this->expectException(Exception::class);
+        $sut::addWorkspace($testUser, 'title', 'data', 100, 100);
     }
 
     public function testAddAndGetWorkspace()
@@ -86,6 +105,15 @@ class ManagerTest extends TestCase
         $sut::deleteWorkspace($testWorkspaceId, $testUser);
     }
 
+    public function testSaveWorkspaceWithBigData()
+    {
+        $sut = new Manager();
+        $testUser = $this->createUserStub();
+
+        $this->expectException(Exception::class);
+        $sut::saveWorkspace($testUser, 1, ['data' => str_repeat('a', 30000)]);
+    }
+
     public function testDeleteWorkspace()
     {
         $this->markTestSkipped('Test skipped: getWorkspaceById does not accept user interface, making testing harder (see quiqqer/quiqqer#1336)');
@@ -145,5 +173,16 @@ class ManagerTest extends TestCase
     public function testGetAvailablePanels()
     {
         $this->markTestIncomplete('Figure out how to test this');
+    }
+
+    protected function createUserStub(?int $userId = null): User
+    {
+        if (is_null($userId)) {
+            $userId = random_int(9999, 999999);
+        }
+
+        return $this->createConfiguredStub(User::class, [
+            'getId' => $userId
+        ]);
     }
 }
