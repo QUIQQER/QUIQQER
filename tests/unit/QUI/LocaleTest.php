@@ -147,4 +147,44 @@ class LocaleTest extends TestCase
     $this->assertEquals($expectedGroup, $sut[0]);
     $this->assertEquals($expectedVariable, $sut[1]);
   }
+
+    public function testGet()
+    {
+        $this->markTestIncomplete('Figure out how to test this');
+    }
+
+    public function testGetHelper()
+    {
+        $this->markTestIncomplete('Figure out how to test this');
+    }
+
+    public function testInitConfig()
+    {
+        $this->markTestIncomplete('Figure out how to test this');
+    }
+
+    public function testGetTranslationsFile()
+    {
+        $this->markTestIncomplete('Figure out how to test this');
+    }
+
+    public function testGetLocalesByLand()
+    {
+        $this->markTestIncomplete('Figure out how to test this');
+    }
+
+    public function testGetByLang()
+    {
+        $this->markTestIncomplete('Figure out how to test this');
+    }
+
+    public function testParseLocaleString()
+    {
+        $this->markTestIncomplete('Figure out how to test this');
+    }
+
+    public function testParseLocaleArray()
+    {
+        $this->markTestIncomplete('Figure out how to test this');
+    }
 }
