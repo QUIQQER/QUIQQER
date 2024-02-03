@@ -5,9 +5,6 @@ include:
 variables:
   PACKAGE_NAME: "quiqqer/quiqqer"
 
-stages:
-  - test
-
 phpunit:
   image: pcsgjan/quiqqer:dev
   stage: test
