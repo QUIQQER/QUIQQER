@@ -17,4 +17,4 @@ phpunit:
     - cd packages/${PACKAGE_NAME}
     - curl -sSL --output /tmp/phpunit.phar "https://phar.phpunit.de/phpunit-10.phar"
     - chmod +x /tmp/phpunit.phar
-    - /tmp/phpunit
+    - /tmp/phpunit.phar
