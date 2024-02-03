@@ -15,7 +15,6 @@ phpunit:
     - ./console composer config repositories.local path ${CI_PROJECT_DIR}
     - COMPOSER_MIRROR_PATH_REPOS=1 ./console composer require ${PACKAGE_NAME}:@dev
     - cd packages/${PACKAGE_NAME}
-    - curl -sSL --output /tmp/phive.phar "https://phar.io/releases/phive.phar"
-    - chmod +x /tmp/phive.phar
-    - /tmp/phive.phar --force-accept-unsigned install
-    - ./tools/phpunit
+    - curl -sSL --output /tmp/phpunit.phar "https://phar.phpunit.de/phpunit-10.phar"
+    - chmod +x /tmp/phpunit.phar
+    - /tmp/phpunit
