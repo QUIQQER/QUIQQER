@@ -17,5 +17,5 @@ phpunit:
     - cd packages/${PACKAGE_NAME}
     - curl -sSL --output /tmp/phive.phar "https://phar.io/releases/phive.phar"
     - chmod +x /tmp/phive.phar
-    - /tmp/phive.phar install
+    - /tmp/phive.phar --force-accept-unsigned install
     - ./tools/phpunit
