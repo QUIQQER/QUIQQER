@@ -96,4 +96,14 @@ class AjaxTest extends TestCase
 
         $this->assertEquals($testParameterValue, $result);
     }
+
+    public function testCall()
+    {
+        $this->markTestIncomplete('Figure out how to test this');
+    }
+
+    public function testPermissions()
+    {
+        $this->markTestIncomplete('Figure out how to test this');
+    }
 }
