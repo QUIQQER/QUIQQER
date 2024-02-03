@@ -80,19 +80,20 @@ class AjaxTest extends TestCase
 
     public function testCallRequestFunctionWritesFunctionsResult()
     {
-        $ajax = new Ajax();
+        $sut = new Ajax();
         $testFunctionName = 'test_function';
-        $testResultValue = 'test_result';
+        $testParameterValue = 'test_parameter_value';
 
-        $ajax::registerFunction(
+        $sut::registerFunction(
             $testFunctionName,
-            function () use ($testResultValue) {
-                return $testResultValue;
-            }
+            function ($testParameter) {
+                return $testParameter;
+            },
+            ['testParameter']
         );
 
-        $sut = $ajax->callRequestFunction($testFunctionName)['result'];
+        $result = $sut->callRequestFunction($testFunctionName, ['testParameter' => $testParameterValue])['result'];
 
-        $this->assertEquals($testResultValue, $sut);
+        $this->assertEquals($testParameterValue, $result);
     }
 }
