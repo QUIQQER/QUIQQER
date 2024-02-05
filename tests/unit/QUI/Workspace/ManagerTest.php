@@ -129,7 +129,9 @@ class ManagerTest extends TestCase
 
     public function testSetStandardWorkspace()
     {
-        $this->markTestSkipped('Test skipped: getWorkspaceById does not accept user interface, making testing harder (see quiqqer/quiqqer#1336)');
+        $this->markTestSkipped(
+            'Test skipped: getWorkspaceById does not accept user interface, making testing harder (see quiqqer/quiqqer#1336)'
+        );
 
         // Arrange
         $sut = new Manager();
@@ -157,7 +159,7 @@ class ManagerTest extends TestCase
         $testWorkspace = $sut::getWorkspaceById($testWorkspaceId, $testUser);
         $testWorkspaceToBecomeStandard = $sut::getWorkspaceById($testWorkspaceToBecomeStandardId, $testUser);
         $this->assertEquals(1, $testWorkspaceToBecomeStandard['standard']);
-        $this->assertEquals(0 ,$testWorkspace['standard']);
+        $this->assertEquals(0, $testWorkspace['standard']);
 
         // Cleanup
         $sut::deleteWorkspace($testWorkspaceId, $testUser);
