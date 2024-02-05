@@ -13,7 +13,7 @@ phpunit:
     - cd /var/www
   script:
     - ./console composer config repositories.local path ${CI_PROJECT_DIR}
-    - COMPOSER_MIRROR_PATH_REPOS=1 ./console composer require ${PACKAGE_NAME}:@dev
+    - COMPOSER_MIRROR_PATH_REPOS=1 ./console composer require ${PACKAGE_NAME}:dev-${CI_COMMIT_SHA}@dev
     - cd packages/${PACKAGE_NAME}
     - curl -sSL --output /tmp/phpunit.phar "https://phar.phpunit.de/phpunit-10.phar"
     - chmod +x /tmp/phpunit.phar
