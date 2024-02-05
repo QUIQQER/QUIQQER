@@ -2913,6 +2913,12 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="grid.is.empty">
             <en><![CDATA[The table contains no data]]></en>
         </locale>
+        <locale name="grid.sizing.button.title">
+            <en><![CDATA[Compact mode - reduce table size]]></en>
+        </locale>
+        <locale name="grid.sizing.button.title.small">
+            <en><![CDATA[Normal mode - enlarge the table]]></en>
+        </locale>
         <locale name="grid.export.button.title">
             <en><![CDATA[Export the data]]></en>
         </locale>
@@ -2943,13 +2949,26 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="window.grid.sorting.submit">
             <en><![CDATA[Customize]]></en>
         </locale>
+
+        <locale name="window.grid.sorting.title">
+            <en><![CDATA[Customize the table according to your needs]]></en>
+        </locale>
         <locale name="window.grid.sorting.description" html="true">
             <en><![CDATA[
-            <p>Customize the table according to your needs.</p>
             <p>You can easily change the order of the columns using the drag-and-drop feature, or turn
-            unwanted columns on or off. So you can change the table according to your ideas</p>.
+            unwanted columns on or off. So you can change the table according to your ideas</p>
             ]]></en>
         </locale>
+        <locale name="window.grid.sorting.btn.text">
+            <en><![CDATA[Reset view]]></en>
+        </locale>
+        <locale name="window.grid.sorting.errorMsg">
+            <en><![CDATA[Please activate the checkbox first, and then click on the button.]]></en>
+        </locale>
+        <locale name="window.grid.sorting.hint">
+            <en><![CDATA[Clicking on the button resets the table to the default settings.]]></en>
+        </locale>
+
         <locale name="controls.group.table.btns.adduser">
             <en><![CDATA[Add user(s)]]></en>
         </locale>
