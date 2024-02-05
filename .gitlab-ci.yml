@@ -10,7 +10,7 @@ phpunit:
   stage: test
   before_script:
     - git config --global --add safe.directory ${CI_PROJECT_DIR}
-    - QUIQQER_LATEST_RELEASE=`git -C ${CI_PROJECT_DIR} describe --tags --abbrev=0`
+    - QUIQQER_LATEST_RELEASE=`git -C ${CI_PROJECT_DIR} describe --tags --abbrev=0 ${CI_DEFAULT_BRANCH}`
     - cd /var/www
   script:
     - ./console composer config repositories.local path ${CI_PROJECT_DIR}
