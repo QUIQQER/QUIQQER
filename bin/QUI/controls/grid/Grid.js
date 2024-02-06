@@ -103,6 +103,7 @@ define('controls/grid/Grid', [
             sortBy       : 'ASC',
             filterHide   : true,
             filterHideCls: 'hide',
+            tablesizing: 'normal', // 'normal', 'small'
 
             storageKey  : false, // if storage key is set, the grid settings (column model) are saved in the locale storage
             configurable: true, // table is configurable, user is able to dragdrop columns, storage key must be set
@@ -179,6 +180,9 @@ define('controls/grid/Grid', [
         initialize: function (container, options) {
             this.$gridHash = 0;
 
+            this.tableSizing = 'normal';
+            this.lastCellRightSpacing = 40;
+
             // column model
             if (typeof options.columnModel !== 'undefined') {
                 this.$columnModel = options.columnModel;
@@ -188,6 +192,9 @@ define('controls/grid/Grid', [
             }
 
             this.$originalColumns = this.$columnModel;
+            // store initial columns model to reset the grid if needed with resetGrid() function
+            // todo @michael.daniel it does not work as excepted
+            this.$initialColumnsModel = Array.from(this.$columnModel);
 
             this.parent(options);
 
@@ -197,6 +204,16 @@ define('controls/grid/Grid', [
             }
 
             this.container = typeOf(container) === 'string' ? document.id(container) : container;
+
+            if (typeof options.tablesizing !== 'undefined' && options.tablesizing) {
+                this.setAttribute('tablesizing', options.tablesizing);
+            }
+
+            if (this.getAttribute('tablesizing') === 'small') {
+                this.tableSizing = 'small';
+                this.container.style.setProperty('--_grid-sizingMultiplier', 0.5);
+            }
+
             this.$disabled = false;
 
             this._stopdrag = false;
@@ -310,7 +327,6 @@ define('controls/grid/Grid', [
 
             // Setup header
             t.container.getElements('.th').each(function (el, i) {
-                //alert(el.dataType);
                 const dataType = el.retrieve('dataType');
 
                 if (!dataType) {
@@ -543,7 +559,7 @@ define('controls/grid/Grid', [
 
             const td       = li.getElements('div.td')[c],
                   data     = this.$data[sels[0]],
-                  width    = parseInt(td.getStyle('width')) - 5,
+                  width    = parseInt(td.getStyle('width')),
                   html     = data[colmod.dataIndex],
                   editType = colmod.editType ? colmod.editType : this.getAttribute('editType');
 
@@ -1028,7 +1044,7 @@ define('controls/grid/Grid', [
                 (typeof section === 'undefined' || !section)) {
                 const li2 = new Element('li.section', {
                     styles: {
-                        width: this.sumWidth + 2 * this.visibleColumns
+                        width: this.sumWidth + this.lastCellRightSpacing
                     }
                 });
 
@@ -1694,13 +1710,13 @@ define('controls/grid/Grid', [
             container.getElement('.pDiv').setStyle('width', width);
 
             // Height
-            bodyEl.setStyle('height', this.getBodyHeight());
+//            bodyEl.setStyle('height', this.getBodyHeight());
 
 
             if (gBlock) {
                 gBlock.setStyles({
                     width : this.getAttribute('width'),
-                    height: bodyEl.getSize().y
+//                    height: bodyEl.getSize().y
                 });
             }
         },
@@ -1744,12 +1760,13 @@ define('controls/grid/Grid', [
                 scrollX       = container.getElement('div.bDiv').getScroll().x,
 
                 cModel        = this.$columnModel,
-                browser       = false, //Browser.Engine.trident,
-                cWidth        = 0;
+                browser       = false; //Browser.Engine.trident;
 
             if (typeof browser === 'undefined') {
                 browser = false;
             }
+
+            let gridTemplateColumns = '';
 
             for (c = 0, oclen = cModel.length; c < oclen; c++) {
                 columnModel = cModel[c];
@@ -1759,13 +1776,17 @@ define('controls/grid/Grid', [
                     continue;
                 }
 
-                dragSt.setStyle('left', dragTempWidth + columnModel.width + cWidth + (browser ? 1 : 1) - scrollX);
-                cWidth++;
+                dragSt.setStyle('left', dragTempWidth + columnModel.width - scrollX);
 
                 if (!columnModel.hidden) {
                     dragTempWidth += columnModel.width;
+
+                    gridTemplateColumns += columnModel.width + 'px ';
                 }
             }
+
+            this.container.style.setProperty('--grid-gridTemplateColumns', gridTemplateColumns);
+
 
             if (this.getAttribute('storageKey')) {
                 this.$saveToStorage();
@@ -1784,10 +1805,7 @@ define('controls/grid/Grid', [
                 dragSt         = cDrag.getElements('div')[colindex],
                 browser        = false, //Browser.Engine.trident,
                 cModel         = this.$columnModel,
-
                 pos            = 0,
-
-                visibleColumns = t.visibleColumns,
                 elements       = t.ulBody.getElements('li.tr');
 
             t.sumWidth = 0;
@@ -1800,7 +1818,7 @@ define('controls/grid/Grid', [
                 columnModel = cModel[c];
 
                 if (c === colindex) {
-                    pos = parseInt(dragSt.getStyle('left')) + scrollX - this.sumWidth - (browser ? -1 : 1); // zato sto je u dragSt.left +2
+                    pos = parseInt(dragSt.getStyle('left')) + scrollX - this.sumWidth;
                 } else if (!columnModel.hidden) {
                     t.sumWidth += columnModel.width;
                 }
@@ -1810,30 +1828,21 @@ define('controls/grid/Grid', [
                 pos = 30;
             }
 
-            cModel[colindex].width = pos - 2; // -2 fix by mor
+            cModel[colindex].width = pos;
             t.sumWidth += pos;
 
-            t.ulBody.setStyle('width', t.sumWidth + visibleColumns * (browser ? 1 : 1));
+            t.ulBody.setStyle('width', t.sumWidth + this.lastCellRightSpacing);
             const hDivBox = document.id(t.options.name + '_hDivBox');
 
-            hDivBox.setStyle('width', t.sumWidth + visibleColumns * 2);
+            hDivBox.setStyle('width', t.sumWidth + this.lastCellRightSpacing);
 
             // header
             const columns = hDivBox.getElements('div.th');
             const columnObj = columns[colindex];
 
-            columnObj.setStyle('width', pos - (browser ? 6 : 6));
-
             // sve kolone u body
-            elements.each(function (el) {
-                el.setStyle('width', t.sumWidth + 2 * visibleColumns);
-
-                if (!el.hasClass('section')) {
-                    const columns   = el.getElements('div.td'),
-                          columnObj = columns[colindex];
-
-                    columnObj.setStyle('width', pos - (browser ? 6 : 6));
-                }
+            elements.each((el) => {
+                el.setStyle('width', t.sumWidth + this.lastCellRightSpacing);
             });
 
             t.rePosDrag();
@@ -1844,7 +1853,7 @@ define('controls/grid/Grid', [
         },
 
         onColumnDragging: function (target) {
-            target.setStyle('top', -1);
+            target.setStyle('top', 0);
         },
 
         overDragColumn: function (evt) {
@@ -1861,8 +1870,13 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            let Target      = evt.target,
-                colindex    = Target.getAttribute('column'),
+            let Target      = evt.target;
+
+            if (Target.nodeName === 'SPAN') {
+                Target = Target.parentNode;
+            }
+
+            let colindex    = Target.getAttribute('column'),
                 columnModel = this.$columnModel[colindex] || {},
                 colSort     = this.getAttribute('sortBy');
 
@@ -1913,6 +1927,7 @@ define('controls/grid/Grid', [
             evt.target.removeClass(columnModel.sort);
         },
 
+        // we probably do not need this function anymore (by @michael.daniel)
         getBodyHeight: function () {
             let height = this.getAttribute('height');
 
@@ -1928,7 +1943,8 @@ define('controls/grid/Grid', [
                 height = height - 26;
             }
 
-            return (height - 2);
+//            return (height - 2);
+            return height;
         },
 
         /**
@@ -1949,25 +1965,27 @@ define('controls/grid/Grid', [
                 moofx(this.container).animate({
                     height: height
                 }, {
-                    duration: 100,
-                    callback: function () {
-                        const bDiv = this.container.getElement('.bDiv');
-
-                        if (bDiv) {
-                            moofx(bDiv).animate({
-                                height: this.getBodyHeight()
-                            }, {
-                                duration: 200,
-                                callback: function () {
-                                    resolve();
-                                }
-                            });
-
-                            return;
-                        }
-
-                        resolve();
-                    }.bind(this)
+                    duration: 200,
+                    callback: resolve
+                    // we probably do not need this callback function anymore (by @michael.daniel)
+//                    callback: function () {
+//                        const bDiv = this.container.getElement('.bDiv');
+//
+//                        if (bDiv) {
+//                            moofx(bDiv).animate({
+//                                height: this.getBodyHeight()
+//                            }, {
+//                                duration: 200,
+//                                callback: function () {
+//                                    resolve();
+//                                }
+//                            });
+//
+//                            return;
+//                        }
+//
+//                        resolve();
+//                    }.bind(this)
                 });
             }.bind(this));
         },
@@ -2053,7 +2071,7 @@ define('controls/grid/Grid', [
                     this.getAttribute('accordionRenderer') && !this.getAttribute('accordionLiveRenderer')) {
                     const li2 = new Element('li.section');
                     li2.addClass('section-' + r);
-                    li2.setStyle('width', this.sumWidth + 2 * this.visibleColumns);
+                    li2.setStyle('width', this.sumWidth + this.lastCellRightSpacing);
 
                     this.ulBody.appendChild(li2);
 
@@ -2090,7 +2108,7 @@ define('controls/grid/Grid', [
 
             const li = new Element('li.tr', {
                 styles: {
-                    width: t.sumWidth + 2 * t.visibleColumns
+                    width: t.sumWidth + this.lastCellRightSpacing
                 }
             });
 
@@ -2116,10 +2134,7 @@ define('controls/grid/Grid', [
                 columnData = this.$data[r][columnDataIndex] || false;
 
                 div = new Element('div.td', {
-                    'data-index': columnModel.dataIndex || '',
-                    styles      : {
-                        width: (columnModel.width - 6).abs()
-                    }
+                    'data-index': columnModel.dataIndex || ''
                 });
 
                 if (columnModel.className) {
@@ -2326,9 +2341,8 @@ define('controls/grid/Grid', [
             const t = this;
 
             let container   = t.container,
-                browser     = false, // Browser.Engine.trident,
                 options     = t.getAttributes(),
-                width       = options.width ? options.width - (browser ? 2 : 2) : '', //-2 radi bordera
+                width       = options.width ? options.width : '', //-2 radi bordera
                 columnCount = this.$columnModel ? this.$columnModel.length : 0,
                 tDiv        = null;
 
@@ -2346,12 +2360,15 @@ define('controls/grid/Grid', [
 
             container.addClass('omnigrid');
 
+            const Styles = window.getComputedStyle(this.container);
+
+            this.lastCellRightSpacing = parseInt(Styles.getPropertyValue('--_grid-lastCell-rightSpacing'));
+
             // Toolbar
             if (this.getAttribute('buttons')) {
                 tDiv = new Element('div.tDiv', {
                     styles: {
-                        width : width,
-                        height: 40
+                        width : width
                     }
                 });
 
@@ -2476,6 +2493,8 @@ define('controls/grid/Grid', [
 
             const sortBy = this.getAttribute('sortBy');
 
+            let gridTemplateColumns = '';
+
             for (i = 0; i < columnCount; i++) {
                 columnModel = this.$columnModel[i] || {};
 
@@ -2504,15 +2523,16 @@ define('controls/grid/Grid', [
                 if (sortable) {
                     div.addEvents({
                         click    : t.clickHeaderColumn.bind(this),
-                        mouseout : t.outHeaderColumn.bind(this),
-                        mouseover: t.overHeaderColumn.bind(this)
+                        mouseleave : t.outHeaderColumn.bind(this),
+                        mouseenter: t.overHeaderColumn.bind(this)
                     });
                 } else {
                     div.setStyle('cursor', 'default');
                 }
 
                 div.store('dataType', columnModel.dataType);
-                div.setStyle('width', (columnModel.width - (browser ? 6 : 6)).abs());
+
+                gridTemplateColumns += columnModel.width + 'px ';
 
                 hDivBox.appendChild(div);
 
@@ -2531,7 +2551,7 @@ define('controls/grid/Grid', [
                       title  = columnModel.title;
 
                 if (header) {
-                    div.innerHTML = header;
+                    div.innerHTML = '<span class="test">' + header + '</span>';
                 }
 
                 if (title) {
@@ -2543,7 +2563,10 @@ define('controls/grid/Grid', [
                 }
             }
 
-            hDivBox.setStyle('width', t.sumWidth + t.visibleColumns * 2);
+            // this set the width of each column (using css grid)
+            this.container.style.setProperty('--grid-gridTemplateColumns', gridTemplateColumns);
+
+            hDivBox.setStyle('width', t.sumWidth + this.lastCellRightSpacing);
 
             if (this.getAttribute('showHeader') === false) {
                 hDiv.setStyle('display', 'none');
@@ -2556,31 +2579,29 @@ define('controls/grid/Grid', [
             /* omni grid version + cWidth = -2; by mor*/
             if (this.getAttribute('resizeColumns')) {
                 const cDrag = new Element('div.cDrag');
-                let toolbarHeight = 0;
 
-                if (tDiv) {
-                    toolbarHeight = parseInt(tDiv.getStyle('height'));
+                if (container.querySelector('.hDiv')) {
+                    container.querySelector('.hDiv').appendChild(cDrag);
+                } else {
+                    container.appendChild(cDrag);
                 }
 
-                cDrag.setStyle('top', toolbarHeight);
-                container.appendChild(cDrag);
-
                 let dragTempWidth = 0;
-                let cWidth = -2;
+                let cWidth = -3;
 
                 for (i = 0; i < columnCount; i++) {
                     columnModel = this.$columnModel[i] || {};
-                    const dragSt = new Element('div');
-                    const headerHeight = options.showHeader ? 24 + 2 : 0; // +2 border
+                    const dragSt = new Element('div', {
+                        'class' : 'dragElm'
+                    });
 
                     if (typeof columnModel.width === 'undefined') {
                         columnModel.width = 100;
                     }
 
                     dragSt.setStyles({
-                        top    : 1,
-                        left   : dragTempWidth + cWidth + columnModel.width,
-                        height : headerHeight,
+                        top    : 0,
+                        left   : dragTempWidth + columnModel.width,
                         display: 'block'
                     });
 
@@ -2602,17 +2623,12 @@ define('controls/grid/Grid', [
                     } else {
                         dragTempWidth += columnModel.width;
                     }
-
-                    cWidth++;
                 }
             }
 
             // Body
             const bDiv = new Element('div.bDiv', {
-                id    : this.getAttribute('name') + '_bDiv',
-                styles: {
-                    'height': this.getBodyHeight() - 3
-                }
+                id: this.getAttribute('name') + '_bDiv'
             });
 
             if (this.getAttribute('width')) {
@@ -2627,7 +2643,7 @@ define('controls/grid/Grid', [
 
             t.ulBody = new Element('ul', {
                 styles: {
-                    width: t.sumWidth + t.visibleColumns * (browser ? 1 : 1)
+                    width: t.sumWidth + this.lastCellRightSpacing
                 }
             });
 
@@ -2638,8 +2654,7 @@ define('controls/grid/Grid', [
 
                 const pDiv = new Element('div.pDiv', {
                     styles: {
-                        width : width,
-                        height: 30
+                        width : width
                     }
                 });
 
@@ -2673,7 +2688,7 @@ define('controls/grid/Grid', [
 
                     h = h +
                         '<div class="btnseparator"></div><div class="pGroup"><div class="pFirst pButton"></div><div class="pPrev pButton"></div></div>';
-                    h = h + '<div class="btnseparator"></div><div class="pGroup">' +
+                    h = h + '<div class="pGroup">' +
                         '<span class="pcontrol">' +
                         '<input class="cpage" type="text" value="1" size="4" style="text-align:center" /> ' +
                         '<span>/</span> ' +
@@ -2681,7 +2696,7 @@ define('controls/grid/Grid', [
                         '</span>' +
                         '</div>';
                     h = h +
-                        '<div class="btnseparator"></div><div class="pGroup"><div class="pNext pButton"></div><div class="pLast pButton"></div></div>';
+                        '<div class="pGroup"><div class="pNext pButton"></div><div class="pLast pButton"></div></div>';
                     h = h +
                         '<div class="btnseparator"></div><div class="pGroup"><div class="pReload pButton"></div></div>';
                     h = h + '<div class="btnseparator"></div><div class="pGroup"><span class="pPageStat"></span></div>';
@@ -2690,8 +2705,8 @@ define('controls/grid/Grid', [
                 if (options.multipleSelection) {
                     h = h + '<div class="btnseparator"></div>' +
                         '<div class="pGroup">' +
-                        '<div class="pSelectAll" title="Alle auswählen"></div>' +
-                        '<div class="pUnselectAll" title="Auswahl aufheben"></div>' +
+                        '<div class="pSelectAll pButton" title="Alle auswählen"></div>' +
+                        '<div class="pUnselectAll pButton" title="Auswahl aufheben"></div>' +
                         '</div>';
                 }
 
@@ -2710,16 +2725,36 @@ define('controls/grid/Grid', [
                     h = h + '</div>';
                 }
 
-                if (options.exportData) {
-                    h = h + '<div class="btnseparator"></div>' +
-                        '<div class="pGroup">' +
-                        '   <div class="pExport pButton" title="' +
-                        QUILocale.get('quiqqer/quiqqer', 'grid.export.button.title') + '">' +
-                        '   </div>' +
-                        '</div>';
+                pDiv2.innerHTML = h;
+
+                const RightButtons = new Element('div', {
+                        'class' : 'pGroup pGroup--alignRight'
+                }).inject(pDiv2);
+
+                if (this.getAttribute('storageKey')) {
+                    const SizingBtn = new Element('div', {
+                        'class' : 'pSizing pButton',
+                        title : QUILocale.get('quiqqer/quiqqer', 'grid.compact.button.title'),
+                        'data-qui-tablesizing': 'normal',
+                        events : {
+                            click: this.resizeTablePerButtonClick.bind(this)
+                        }
+                    });
+
+                    if (this.tableSizing === 'small') {
+                        SizingBtn.title = QUILocale.get('quiqqer/quiqqer', 'grid.compact.button.title.small');
+                        SizingBtn.setAttribute('data-qui-tableSizing', 'small');
+                    }
+
+                    RightButtons.appendChild(SizingBtn);
                 }
 
-                pDiv2.innerHTML = h;
+                if (options.exportData) {
+                    RightButtons.appendHTML(
+                    '<div class="pExport pButton" title="' +
+                    QUILocale.get('quiqqer/quiqqer', 'grid.export.button.title') + '">' +
+                    '</div>');
+                }
 
                 let o;
 
@@ -2783,17 +2818,17 @@ define('controls/grid/Grid', [
                 }
 
                 if (this.getAttribute('configurable') && this.getAttribute('storageKey')) {
-                    new Element('button', {
+                    new Element('button.pButton', {
                         styles: {
                             cursor: 'pointer',
                             float : 'right',
                             margin: 0
                         },
-                        html  : '<span class="fa fa-sort"></span>',
+                        html  : '<span class="fa fa-gear"></span>',
                         events: {
                             click: this.openSortWindow
                         }
-                    }).inject(pDiv2);
+                    }).inject(RightButtons);
                 }
             }
         },
@@ -2988,30 +3023,43 @@ define('controls/grid/Grid', [
         },
 
         altRow: function () {
-            let i, len;
+            if (!this.getAttribute('alternaterows')) {
+                return;
+            }
+
+            let i, len, hiddenCounter = 0;
             const elements = this.elements;
 
             for (i = 0, len = elements.length; i < len; i++) {
-                if (i % 2) {
-                    elements[i].removeClass('erow');
+                if (elements[i].classList.contains('hide')) {
+                    hiddenCounter++;
                     continue;
                 }
 
-                elements[i].addClass('erow');
+                if ((i - hiddenCounter) % 2) {
+                    elements[i].addClass('erow');
+                    continue;
+                }
+
+                elements[i].removeClass('erow');
             }
         },
 
         filteredAltRow: function () {
+            if (!this.getAttribute('alternaterows')) {
+                return;
+            }
+
             let i, len;
             const elements = this.ulBody.getElements('.' + this.getAttribute('filterSelectedCls'));
 
             for (i = 0, len = elements.length; i < len; i++) {
                 if (i % 2) {
-                    elements[i].removeClass('erow');
+                    elements[i].addClass('erow');
                     continue;
                 }
 
-                elements[i].addClass('erow');
+                elements[i].removeClass('erow');
             }
         },
 
@@ -3084,6 +3132,7 @@ define('controls/grid/Grid', [
                 }
             }
 
+            this.altRow();
             this.filtered = true;
         },
 
@@ -3250,6 +3299,37 @@ define('controls/grid/Grid', [
             }).open();
 
             return false;
+        },
+
+        /**
+         * Simple resize table design, change button icon and button title
+         * @param event
+         */
+        resizeTablePerButtonClick: function(event) {
+            let Btn = event.target;
+
+            if (!Btn.classList.contains('pSizing')) {
+                Btn = Btn.getParent('pSizing');
+            }
+
+            if (Btn.getProperty('data-qui-tableSizing') === 'small') {
+                Btn.setProperty('data-qui-tableSizing', 'normal');
+                Btn.title = QUILocale.get('quiqqer/quiqqer', 'grid.sizing.button.title');
+                this.container.style.setProperty('--_grid-sizingMultiplier', 1);
+//                this.setAttribute('tablesizing', 'normal');
+                this.tableSizing = 'normal';
+                this.$saveToStorage();
+
+                return;
+            }
+
+            Btn.setProperty('data-qui-tableSizing', 'small');
+            Btn.title = QUILocale.get('quiqqer/quiqqer', 'grid.sizing.button.title.small');
+            this.container.style.setProperty('--_grid-sizingMultiplier', 0.5);
+//            this.setAttribute('tablesizing', 'small');
+            this.tableSizing = 'small';
+
+            this.$saveToStorage();
         },
 
         setExportData: function () {
@@ -3582,7 +3662,8 @@ define('controls/grid/Grid', [
                 column : this.$columnModel,
                 perPage: this.getAttribute('perPage'),
                 sortOn : this.getAttribute('sortOn'),
-                sortBy : this.getAttribute('sortBy')
+                sortBy : this.getAttribute('sortBy'),
+                tableSizing: this.tableSizing
             }));
         },
 
@@ -3630,6 +3711,10 @@ define('controls/grid/Grid', [
                 if (typeof storage.sortBy !== 'undefined') {
                     this.setAttribute('sortBy', storage.sortBy);
                 }
+
+                if (typeof storage.tableSizing !== 'undefined') {
+                    this.setAttribute('tablesizing', storage.tableSizing);
+                }
             } else {
                 this.$saveToStorage();
             }
@@ -3640,11 +3725,16 @@ define('controls/grid/Grid', [
          * - the user are able to sort the grid titles (columns)
          */
         openSortWindow: function () {
+            require([
+                'Mustache',
+                'text!controls/grid/Grid.SettingsWindow.html'
+            ], (Mustache, template) => {
             new QUIConfirm({
+                'class' : 'grid-settingsWindow',
                 icon     : 'fa fa-sort',
                 title    : QUILocale.get(lg, 'window.grid.sorting.title'),
                 maxHeight: 800,
-                maxWidth : 800,
+                maxWidth : 700,
                 ok_button: {
                     text     : QUILocale.get(lg, 'window.grid.sorting.submit'),
                     textimage: 'fa fa-check'
@@ -3652,18 +3742,30 @@ define('controls/grid/Grid', [
                 events   : {
                     onOpen: (Win) => {
                         Win.Loader.show();
-
                         const Content = Win.getContent();
                         Content.addClass('grid-dd');
-                        Content.set('html', '');
 
-                        new Element('div', {
-                            html  : QUILocale.get(lg, 'window.grid.sorting.description'),
-                            styles: {
-                                marginBottom: '2rem',
-                                textAlign   : 'center'
+                        Content.set('html', Mustache.render(template, {
+                            title: QUILocale.get(lg, 'window.grid.sorting.title'),
+                            description: QUILocale.get(lg, 'window.grid.sorting.description'),
+                            btnText: QUILocale.get(lg, 'window.grid.sorting.btn.text'),
+                            errorMsg: QUILocale.get(lg, 'window.grid.sorting.errorMsg'),
+                            hint: QUILocale.get(lg, 'window.grid.sorting.hint'),
+                        }));
+
+                        const ResetBtn = Content.querySelector('[name="resetGridBtn"]'),
+                            ErrorContainer = Content.querySelector('.error'),
+                            Checkbox = Content.querySelector('[name="resetGridCheckbox"]');
+
+                        ResetBtn.addEventListener('click', () => {
+                            if (!Checkbox.checked) {
+                                ErrorContainer.style.display = null;
+                                return;
                             }
-                        }).inject(Content);
+
+                            this.resetGrid();
+                            Win.close();
+                        });
 
                         const List = new Element('ul').inject(Content);
 
@@ -3785,6 +3887,30 @@ define('controls/grid/Grid', [
                     }
                 }
             }).open();
+            });
+        },
+
+        /**
+         * Reset view of grid table.
+         * Get all data, that user can adjust, to its default values
+         */
+        resetGrid: function() {
+//            this.setAttribute('tablesizing', 'normal');
+            this.tableSizing = this.getAttribute('tablesizing');
+            this.container.style.setProperty('--_grid-sizingMultiplier', null);
+            this.setAttribute('perPage', 100);
+            this.setAttribute('page', 1);
+
+            if (!this.getAttribute('storageKey')) {
+                return;
+            }
+
+            QUI.Storage.remove(this.getAttribute('storageKey'));
+
+            this.$columnModel = this.$initialColumnsModel;
+            this.draw();
+            this.resize();
+            this.refresh();
         }
     });
 });

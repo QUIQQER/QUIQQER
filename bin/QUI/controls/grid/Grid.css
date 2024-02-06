@@ -1,41 +1,93 @@
 /* ******************************************************* */
 
 .omnigrid {
-    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-    font-size: 11px;
+    --_grid-fontFamily: var(--grid-fontFamily, Verdana, Geneva, Arial, Helvetica, sans-serif);
+    --_grid-fontSize: var(--grid-fontSize, 11px);
+    --_grid-fontColor: var(--grid-fontColor, inherit);
+
+    /* cell */
+    --_grid-cellPaddingLeft: var(--grid-cellPaddingLeft, 1rem);
+    --_grid-cellPaddingRight: var(--grid-cellPaddingRight, 1rem);
+    --_grid-cellPaddingTop: var(--grid-cellPaddingTop, 0.75rem);
+    --_grid-cellPaddingBottom: var(--grid-cellPaddingBottom, 0.75rem);
+    --_grid-cellBorderLeftWidth: var(--grid-cellBorderLeftWidth, 1px);
+    --_grid-cellBorderLeftColor: var(--grid-cellBorderLeftColor, transparent);
+    --_grid-cellBorderRightWidth: var(--grid-cellBorderRightWidth, 0px);
+    --_grid-cellBorderRightColor: var(--grid-cellBorderRightColor, transparent);
+    --_grid-lastCell-rightSpacing: var(--grid-lastCell-rightSpacing, 40px);
+
+    /**
+     Control sizing of the grid table. This value affect top and bottom cell padding.
+     Value less than 1 results in compacter table. Recommended values are between 0.5 and 1.5.
+     */
+    --_grid-sizingMultiplier: var(--grid-sizingMultiplier, 1);
+
+    --_grid-dragElmWidth: var(--grid-dragElmWidth, 8px);
+    --_grid-dragElmColor: var(--grid-dragElmColor, #333);
+
+    /* header (hDiv) */
+    --_grid-hBg: var(--grid-hBg, #eee);
+    --_grid-hBgHover: var(--grid-hBgHover, rgba(0,0,0,0.05));
+    --_grid-hBorderColor: var(--grid-hBorderColor, #ddd);
+    --_grid-hBorderWidth: var(--grid-hBorderWidth, 0);
+
+    /* body (bDiv) */
+    --_grid-bBg: var(--grid-bBg, #ffffff);
+
+    font-family: var(--_grid-fontFamily);
+    font-size: var(--_grid-fontSize);
     position: relative;
     border: 0 solid #eee;
     overflow: hidden;
-    color: #000;
+    color: var(--_grid-fontColor);
     clear: both;
 }
 
 .omnigrid div.hDivBox {
     position: relative;
     overflow: hidden;
+
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: var(--grid-gridTemplateColumns);
+}
+
+.omnigrid .bDiv .tr {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: var(--grid-gridTemplateColumns);
+}
+
+.omnigrid {
+    display: flex;
+    flex-flow: column;
+}
+
+.tDiv, .hDiv, .pDiv {
+    flex-shrink: 0;
 }
 
 .omnigrid div.hDiv {
-    background: #FAFAFA;
+    background: var(--_grid-hBg);
     position: relative;
-    border: 1px solid #E2E8F0;
-    border-bottom: 2px solid #E2E8F0;
+    border-bottom: var(--_grid-hBorderWidth) solid var(--_grid-hBorderColor);
     overflow: hidden;
 }
 
 .omnigrid div.bDiv {
-    border: 1px solid #E2E8F0;
     border-top: 0;
-    background: #fff;
+    background: var(--_grid-bBg);
     overflow: auto;
     position: relative;
+
+    flex-grow: 1;
 }
 
 .omnigrid div.hDiv .th,
 .omnigrid div.bDiv .td {
     text-align: left;
-    border-right: 1px solid #ddd;
-    border-left: 1px solid #fff;
+    border-right: var(--_grid-cellBorderRightWidth) solid var(--_grid-cellBorderRightColor);
+    border-left: var(--_grid-cellBorderLeftWidth) solid var(--_grid-cellBorderLeftColor);
     vertical-align: top !important;
 
     display: inline-block;
@@ -44,11 +96,21 @@
     white-space: nowrap;
     overflow: hidden;
 
-    padding-left: 5px;
+    /*padding-left: 5px;*/
+    padding-top: calc(var(--_grid-sizingMultiplier) * var(--_grid-cellPaddingBottom));
+    padding-bottom: calc(var(--_grid-sizingMultiplier) * var(--_grid-cellPaddingBottom));
+    padding-left: calc(var(--_grid-sizingMultiplier) * 0.5 * var(--_grid-cellPaddingLeft));
+    padding-right: calc(var(--_grid-sizingMultiplier) * 0.5 * var(--_grid-cellPaddingRight));
     -moz-user-select: text;
     cursor: pointer;
+    text-overflow: ellipsis;
 
     box-sizing: content-box;
+}
+
+.omnigrid div.hDiv .th:first-child,
+.omnigrid div.bDiv .td:first-child {
+    border-left: none;
 }
 
 .grid-align-right {
@@ -58,8 +120,6 @@
 }
 
 .grid-align-center {
-    padding-left: 2px !important;
-    padding-right: 3px;
     text-align: center !important;
 }
 
@@ -75,15 +135,24 @@
 }
 
 .omnigrid div.hDiv div.th {
-    border-bottom: 1px solid #E2E8F0;
+    border-bottom: 1px solid var(--grid-hBorderColor);
     line-height: 24px;
     min-height: 24px;
+    font-weight: bold;
+    border-left-style: dashed;
+    border-right-style: dashed;
+
+    display: flex;
+}
+
+.omnigrid div.hDiv:hover div.th {
+    border-left-color: #ccc;
+    border-right-color: #ccc;
 }
 
 .omnigrid div.bDiv .td {
     line-height: 27px;
     min-height: 24px;
-    /*background-color:red;*/
 }
 
 .omnigrid div.bDiv .td.clickable:hover {
@@ -100,7 +169,6 @@
 .omnigrid div.bDiv ul {
     margin: 0;
     padding: 0;
-    border-bottom: 1px solid #DDDDDD;
     overflow: hidden;
     position: absolute;
     top: 0;
@@ -114,24 +182,20 @@
     padding: 0;
     list-style: none;
     overflow: hidden;
-    border-bottom: 1px solid #fff;
 
     min-width: 100%;
 }
 
 .omnigrid li.erow {
     background-color: #f7f7f7;
-    border-bottom: 1px solid #f7f7f7;
 }
 
 .omnigrid li.selected {
     background-color: #d9e6f4 !important;
-    /*color: #fff;*/
 }
 
 .omnigrid li.over {
     background-color: #eaeff4;
-    /*color: #fff;*/
 }
 
 .omnigrid .data-empty {
@@ -202,12 +266,9 @@
 /* ************************************** */
 
 .omnigrid div.tDiv {
-    background: #EFEFEF;
-    border: 1px solid #E2E8F0;
-    border-bottom: 0;
-    height: 25px;
     overflow: hidden;
     position: relative;
+    margin-bottom: 0.5rem;
 }
 
 .omnigrid div.fbutton {
@@ -257,140 +318,158 @@
 /* ************************************** */
 /* ************** Filter **************** */
 /* ************************************** */
-
 .omnigrid li.hide {
-    display: none;
-    /*
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=15)";
-    filter: alpha(opacity=15);
-    -moz-opacity: 0.15;
-    -khtml-opacity: 0.15;
-    opacity: 0.15;
-    */
-}
-
-.omnigrid li.filter {
-
+    display: none !important;
 }
 
 /* ************************************** */
 /* ************** Columns size drag ***** */
 /* ************************************** */
-
 .omnigrid div.cDrag {
     float: left;
     position: absolute;
     z-index: 2;
     overflow: visible;
+
+    height: 100%;
+    top: 0;
 }
 
-.omnigrid div.cDrag div {
-    float: left;
+/**
+  1. Position the drag element between two cells
+ */
+.omnigrid div.cDrag .dragElm {
     background: none;
     display: block;
     position: absolute;
-    height: 24px;
-    width: 5px;
+    height: 100%;
+    width: var(--_grid-dragElmWidth);
+    margin-left: calc(var(--_grid-dragElmWidth) / -2); /* 1 */
     cursor: col-resize;
 
 }
 
-.omnigrid div.cDrag div.dragging {
-    background: url("omnigrid/line.gif") repeat-y 2px center;
+.omnigrid div.cDrag .dragElm.dragging {
+    background-image: linear-gradient(90deg, transparent calc(50% - 1px), black calc(50% - 1px), black calc(50% + 1px), transparent calc(50% + 1px));
+
 }
 
 /* ************************************** */
 /* ************** Sort ****************** */
 /* ************************************** */
-
-.omnigrid div.hDiv div.DESC {
-    background: url("omnigrid/dn.png") no-repeat center top;
-    border-bottom: 1px solid orange !important;
+.omnigrid div.hDiv div.DESC,
+.omnigrid div.hDiv div.ASC {
+    background-color: var(--_grid-hBgHover);
+    position: relative;;
 }
 
-.omnigrid div.hDiv div.ASC {
-    background: url("omnigrid/up.png") no-repeat center top;
-    border-bottom: 1px solid orange !important;
+.omnigrid div.hDiv div.DESC:after,
+.omnigrid div.hDiv div.ASC:after {
+    font-family: 'FontAwesome';
+    margin-left: 0.5rem;
+}
+
+.omnigrid div.hDiv div.DESC:after {
+    content: "\f0dd";
+}
+
+.omnigrid div.hDiv div.ASC:after {
+    content: "\f0d8";
 }
 
 /* ************************************** */
 /* ************** Pagination ************ */
 /* ************************************** */
-
-.omnigrid div.pDiv {
+.omnigrid .pDiv {
     background: #EFEFEF;
-    border: 1px solid #E2E8F0;
-    border-top: 0;
-    line-height: 20px;
     overflow: hidden;
     white-space: nowrap;
+    line-height: 1.5;
+    font-size: 0.95em;
+    padding-inline: 0.5rem;
+    --inputPadding: 0.25rem 0.75rem;
 }
 
-.omnigrid div.pDiv div.pDiv2 {
-    float: left;
+.omnigrid .pDiv2 {
     width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
 }
 
-div.pGroup {
-    float: left;
-    background: none;
-    height: 24px;
-    margin: 0 5px;
+.omnigrid .pGroup {
+    padding-block: 0.5rem;
 }
 
-.omnigrid div.pDiv .pPageStat,
-.omnigrid div.pDiv .pcontrol {
-    position: relative;
-    top: 0;
+.pGroup--alignRight {
+    margin-left: auto;
+}
+
+.omnigrid .pDiv .pcontrol {
     overflow: visible;
-    font-size: 10px;
     color: #777777;
 }
 
-.omnigrid div.pDiv select {
-    font-size: 10px;
-    line-height: 14px;
-    margin-top: 2px;
-    padding: 2px 5px;
+.omnigrid .pDiv .pPageStat {
+    opacity: 0.5;
+    overflow: visible;
 }
 
-.omnigrid div.pDiv input {
-    font-size: 10px;
-    float: left;
-    line-height: 14px;
-    padding: 2px 5px;
+.omnigrid .pDiv select {
+    line-height: inherit;
+    padding: var(--inputPadding);
+    padding-right: 2em;
+    height: initial;
+    font-size: inherit;
+}
+
+.omnigrid .pDiv input {
+    line-height: inherit;
+    padding: var(--inputPadding);
     position: relative;
-    top: 2px;
-    vertical-align: text-top;
+    font-size: inherit;
 }
 
-.omnigrid div.pDiv span {
-    line-height: 24px;
+.omnigrid .pDiv span {
     padding: 0 2px;
 }
 
-.omnigrid div.pDiv .btnseparator {
+.omnigrid .pDiv .btnseparator {
     height: 19px;
 }
 
-.omnigrid div.pDiv div.pButton {
-    border: 0;
+.omnigrid .pDiv .pButton {
     cursor: pointer;
-    float: left;
-    line-height: 24px;
+    padding: var(--inputPadding);
+    line-height: inherit;
+    border-radius: 0.5rem;
+    opacity: 0.5;
+    aspect-ratio: 1/1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75em;
+    font-size: 1.25em;
+    font-weight: inherit;
+    background-color: transparent;
+    color: inherit;
 }
 
-.omnigrid div.pDiv div.pButton:hover,
-.omnigrid div.pDiv div.pButton.pBtnOver {
-    background-position: -16px 0;
+.omnigrid .pDiv .pButton:hover {
+    background-color: rgba(0,0,0,0.075);
+    opacity: 1;
 }
 
-.omnigrid2 div.pDiv div.pButton:hover,
-.omnigrid2 div.pDiv div.pButton.pBtnOver {
-    width: 14px;
-    height: 14px;
+.omnigrid .pDiv .pButton > .fa {
+    margin: 0;
+    line-height: inherit;
+}
+
+.omnigrid2 .pDiv .pButton:hover,
+.omnigrid2 .pDiv .pButton.pBtnOver {
     border: 1px solid #E2E8F0;
     cursor: pointer;
+    padding: var(--inputPadding);
 }
 
 .omnigrid .pSearch {
@@ -403,26 +482,14 @@ div.pGroup {
 .omnigrid .pLast,
 .omnigrid .pReload,
 .omnigrid .pExport,
+.omnigrid .pSizing,
 .omnigrid .pSort {
-    color: #A0AEC0;
     display: inline-block;
     font: normal normal normal 14px/1 FontAwesome;
     text-align: center;
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    width: 32px;
-}
-
-
-.omnigrid .pFirst:hover,
-.omnigrid .pPrev:hover,
-.omnigrid .pNext:hover,
-.omnigrid .pLast:hover,
-.omnigrid .pReload:hover,
-.omnigrid .pExport:hover,
-.omnigrid .pSort:hover {
-    color: #4A5568;
 }
 
 .omnigrid .pSort {
@@ -431,63 +498,48 @@ div.pGroup {
 }
 
 .omnigrid .pFirst:after {
-    content: "\f048";
-    /*background: url("omnigrid/first.gif") no-repeat;*/
-}
-
-.omnigrid .pPrev {
-    -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2)";
-    -webkit-transform: rotate(180deg);
-    -ms-transform: rotate(180deg);
-    transform: rotate(180deg);
+    content: "\f049";
 }
 
 .omnigrid .pPrev:after {
-    content: "\f04b";
-    /*background: url("omnigrid/prev.gif") no-repeat;*/
+    content: "\f048";
 }
 
 .omnigrid .pNext:after {
-    content: "\f04b";
-    /*background: url("omnigrid/next.gif") no-repeat;*/
+    content: "\f051";
 }
 
 .omnigrid .pLast:after {
-    content: "\f051";
-    /*background: url("omnigrid/last.gif") no-repeat;*/
+    content: "\f050";
 }
 
 .omnigrid .pReload:after {
     content: "\f021";
-    /*background: url("omnigrid/refresh.gif") no-repeat;*/
 }
 
 .omnigrid .pExport:after {
     content: "\f019";
-    /*background: url("omnigrid/export.png") no-repeat;*/
+}
+
+.omnigrid .pSizing[data-qui-tableSizing="normal"]:after {
+    content: "\f00a";
+}
+
+.omnigrid .pSizing[data-qui-tableSizing="small"]:after {
+    content: "\f009";
 }
 
 .omnigrid .pSelectAll {
-    background: url("omnigrid/selAll.png") no-repeat;
-    margin-right: 2px;
-    margin-top: 3px;
-
-    width: 16px;
-    height: 16px;
-    border: 1px solid #E2E8F0;
-    cursor: pointer;
-    float: left;
+    background: url("omnigrid/selAll.png") no-repeat center;
 }
 
 .omnigrid .pUnselectAll {
-    background: url("omnigrid/selNone.png") no-repeat;
+    background: url("omnigrid/selNone.png") no-repeat center;
+}
 
-    width: 16px;
-    height: 16px;
-    border: 1px solid #E2E8F0;
-    cursor: pointer;
-    float: left;
-    margin-top: 3px;
+.omnigrid .pSelectAll:after,
+.omnigrid .pUnselectAll:after {
+    content: '';
 }
 
 /* ************************************************************************************ */
@@ -519,11 +571,15 @@ div.pGroup {
 /* *************************************** */
 
 .omnigrid input.inline {
-    padding: 1px 2px 1px 2px;
+    font-family: inherit;
+    font-size: inherit;
+    /*padding: 1px 2px 1px 2px;*/
 }
 
 .omnigrid textarea.inline {
-    padding: 1px 2px 1px 2px;
+    font-family: inherit;
+    font-size: inherit;
+    /*padding: 1px 2px 1px 2px;*/
 }
 
 /* **** Section Table **** */
@@ -536,71 +592,6 @@ div.pGroup {
     color: #CC00FF;
     text-transform: uppercase;
 }
-
-/*
-
-macht mehr kaputt als ganz
-
-
-.section table {
-    border-collapse: collapse;
-    border: 0 solid;
-    font: normal 11px verdana, arial, helvetica, sans-serif;
-    color: #363636;
-    background: #f6f6f6;
-    text-align: left;
-    width: 100%;
-}
-
-.section thead, .section tfoot {
-    background: url("omnigrid/fhbg.gif") repeat-x;
-    text-align: left;
-    height: 24px;
-}
-
-.section tfoot th {
-    padding: 5px;
-}
-
-.section thead th {
-    padding: 5px;
-    border-right: 1px solid #DDDDDD;
-}
-
-.section table a {
-    color: #333333;
-    text-decoration: none;
-}
-
-.section tbody > tr:hover {
-    background: #D9E6F4 !important;
-}
-
-.section tr.sectr1 {
-    background: #f1f1f1;
-}
-
-.section tr.sectr2 {
-    background: #fff;
-}
-
-.section td .sums {
-    margin-right: 80px;
-}
-
-.section tbody td {
-    padding: 3px 10px;
-    border-right: 1px solid #DDDDDD;
-}
-
-.section tbody td .description {
-    font-size: 80%;
-}
-
-.section tbody th {
-    padding: 5px;
-}
-*/
 
 /* export */
 .exportSelectDiv {
@@ -681,11 +672,6 @@ macht mehr kaputt als ganz
     margin: 5px;
 }
 
-/*
-.omnigrid .bDiv button span {
-    padding: 0;
-}*/
-
 .omnigrid .qui-buttons-separator {
     border-right: 2px solid #CCCFD5;
     float: left;
@@ -723,18 +709,52 @@ macht mehr kaputt als ganz
     font-size: 12px !important;
 }
 
+/**************************************/
+/* Grid settings window / sort window */
+/**************************************/
+.grid-settingsWindow .resetGrid-container {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+.grid-settingsWindow .resetGrid-container input[name="resetGridCheckbox"] {
+    vertical-align: middle;
+}
+
+:where(.grid-settingsWindow .resetGrid-container .btn) {
+    background: #dc4139;
+    border-color: #dc4139;
+    color: #fff;
+    border-style: solid;
+    border-radius: 0.25em;
+    cursor: pointer;
+}
+
+:where(.grid-settingsWindow .resetGrid-container .btn:focus) {
+    box-shadow: none;
+}
+
+.grid-settingsWindow .resetGrid-container .error > .fa {
+    vertical-align: middle;
+    margin-right: 0.5rem;
+    margin-left: 0.25rem;
+    transform: scaleX(-1);
+}
+
+.grid-settingsWindow .resetGrid-container__desc {
+    display: block;
+    margin-top: 0.5rem;
+}
 
 .grid-dd {
-    float: left;
-    margin-bottom: 20px;
+    margin-bottom: 1rem;
     position: relative;
     width: 100%;
 }
 
 .grid-dd ul {
     border-top: 1px solid #dedede;
-    margin: 0 auto;
-    max-width: 500px;
+    margin: 0;
     padding: 0;
     position: relative;
     width: 100%;
