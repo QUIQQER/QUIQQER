@@ -68,6 +68,12 @@ echo '|  Try to update and repair QUIQQER  |' . PHP_EOL;
 echo '======================================' . PHP_EOL;
 echo PHP_EOL;
 
+system($composerCommand . ' clear-cache');
+
+if (file_exists($composerDir . 'composer.lock')) {
+    unlink($composerDir . 'composer.lock');
+}
+
 system($composerCommand . ' update --no-scripts -v');
 chdir(CMS_DIR);
 
