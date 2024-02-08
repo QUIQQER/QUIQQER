@@ -14,7 +14,6 @@
     --_grid-cellBorderLeftColor: var(--grid-cellBorderLeftColor, transparent);
     --_grid-cellBorderRightWidth: var(--grid-cellBorderRightWidth, 0px);
     --_grid-cellBorderRightColor: var(--grid-cellBorderRightColor, transparent);
-    --_grid-lastCell-rightSpacing: var(--grid-lastCell-rightSpacing, 40px);
 
     /**
      Control sizing of the grid table. This value affect top and bottom cell padding.

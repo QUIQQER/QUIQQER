@@ -104,6 +104,7 @@ define('controls/grid/Grid', [
             filterHide   : true,
             filterHideCls: 'hide',
             tablesizing: 'normal', // 'normal', 'small'
+            lastCellRightSpacing: 40, // spacing from the last cell to the right border of the table, useful for resizing by dragging
 
             storageKey  : false, // if storage key is set, the grid settings (column model) are saved in the locale storage
             configurable: true, // table is configurable, user is able to dragdrop columns, storage key must be set
@@ -182,6 +183,10 @@ define('controls/grid/Grid', [
 
             this.tableSizing = 'normal';
             this.lastCellRightSpacing = 40;
+
+            if (!options.lastCellRightSpacing !== 'undefined') {
+                this.lastCellRightSpacing = parseInt(options.lastCellRightSpacing);
+            }
 
             // column model
             if (typeof options.columnModel !== 'undefined') {
@@ -2360,10 +2365,6 @@ define('controls/grid/Grid', [
 
             container.addClass('omnigrid');
 
-            const Styles = window.getComputedStyle(this.container);
-
-            this.lastCellRightSpacing = parseInt(Styles.getPropertyValue('--_grid-lastCell-rightSpacing'));
-
             // Toolbar
             if (this.getAttribute('buttons')) {
                 tDiv = new Element('div.tDiv', {
@@ -2576,7 +2577,6 @@ define('controls/grid/Grid', [
                 container.setStyle('height', options.height + 2);
             }
 
-            /* omni grid version + cWidth = -2; by mor*/
             if (this.getAttribute('resizeColumns')) {
                 const cDrag = new Element('div.cDrag');
 
