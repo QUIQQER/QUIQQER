@@ -184,7 +184,7 @@ define('controls/grid/Grid', [
             this.tableSizing = 'normal';
             this.lastCellRightSpacing = 40;
 
-            if (!options.lastCellRightSpacing !== 'undefined') {
+            if (typeof options.lastCellRightSpacing !== 'undefined') {
                 this.lastCellRightSpacing = parseInt(options.lastCellRightSpacing);
             }
 
@@ -2364,6 +2364,10 @@ define('controls/grid/Grid', [
             }
 
             container.addClass('omnigrid');
+
+            if (this.getAttribute('height')) {
+                this.setHeight(this.getAttribute('height'));
+            }
 
             // Toolbar
             if (this.getAttribute('buttons')) {
