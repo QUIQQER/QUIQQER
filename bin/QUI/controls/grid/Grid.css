@@ -60,7 +60,11 @@
     grid-auto-flow: column;
     grid-template-columns: var(--grid-gridTemplateColumns);
     border-bottom: var(--_grid-cellBorderBottomWidth) solid var(--_grid-cellBorderBottomColor);
-    }
+}
+
+.omnigrid .bDiv .tr + .tr:last-child {
+    border-bottom: none;
+}
 
 .omnigrid {
     display: flex;
