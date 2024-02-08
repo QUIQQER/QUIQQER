@@ -14,6 +14,8 @@
     --_grid-cellBorderLeftColor: var(--grid-cellBorderLeftColor, transparent);
     --_grid-cellBorderRightWidth: var(--grid-cellBorderRightWidth, 0px);
     --_grid-cellBorderRightColor: var(--grid-cellBorderRightColor, transparent);
+    --_grid-cellBorderBottomWidth: var(--grid-cellBorderBottomWidth, 1px);
+    --_grid-cellBorderBottomColor: var(--grid-cellBorderBottomColor, #f1f1f1);
 
     /**
      Control sizing of the grid table. This value affect top and bottom cell padding.
@@ -32,6 +34,8 @@
 
     /* body (bDiv) */
     --_grid-bBg: var(--grid-bBg, #ffffff);
+    --_grid-bCellBottomColor: var(--_grid-bCellBottomColor, #f1f1f1);
+    --_grid-bCellBottom: var(--_grid-bCellBottomColor, #f1f1f1);
 
     font-family: var(--_grid-fontFamily);
     font-size: var(--_grid-fontSize);
@@ -55,7 +59,8 @@
     display: grid;
     grid-auto-flow: column;
     grid-template-columns: var(--grid-gridTemplateColumns);
-}
+    border-bottom: var(--_grid-cellBorderBottomWidth) solid var(--_grid-cellBorderBottomColor);
+    }
 
 .omnigrid {
     display: flex;
