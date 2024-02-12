@@ -701,9 +701,10 @@
  ***********************************************/
 
 .omnigrid .qui-switch {
-    border: 2px solid #ddd;
-    box-shadow: none;
-    margin: 3px 0;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    box-shadow: 0 0 0px 1px #ddd;
 }
 
 .qui-switch-button {
