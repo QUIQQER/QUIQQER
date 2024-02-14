@@ -41,10 +41,10 @@ $etcDir = CMS_DIR . 'etc/';
 $iniFile = parse_ini_file($etcDir . 'conf.ini.php', true);
 
 $varDir = $iniFile['globals']['var_dir'];
-$phpExec = $iniFile['globals']['phpCommand'];
+$phpExec = 'php';
 
-if (empty($phpExec)) {
-    $phpExec = 'php';
+if (!empty($iniFile['globals']['phpCommand'])) {
+    $phpExec = $iniFile['globals']['phpCommand'];
 }
 
 $composerDir = $varDir . 'composer/';
