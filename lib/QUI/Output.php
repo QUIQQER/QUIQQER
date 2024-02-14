@@ -21,7 +21,6 @@ use function count;
 use function explode;
 use function file_exists;
 use function html_entity_decode;
-use function htmlentities;
 use function http_build_query;
 use function implode;
 use function ini_get;
@@ -47,7 +46,6 @@ use function urldecode;
 
 use const ENT_HTML5;
 use const ENT_NOQUOTES;
-use const ENT_QUOTES;
 
 /**
  * Class Output
@@ -231,11 +229,13 @@ class Output extends Singleton
                 }
 
                 $HTML5 = new HTML5();
-
-                $d = $HTML5->loadHTML(
-                    htmlentities($html, ENT_QUOTES | ENT_HTML5, 'UTF-8')
+                $html = mb_convert_encoding(
+                    $html,
+                    'HTML-ENTITIES',
+                    'UTF-8'
                 );
 
+                $d = $HTML5->loadHTML($html);
                 $p = $d->getElementsByTagName('picture');
 
                 if ($p->length) {
