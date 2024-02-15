@@ -1036,7 +1036,7 @@ class Project
                 $this->TABLE
             ],
             'order' => $order,
-            'limit' => isset($params['limit']) ? $params['limit'] : false,
+            'limit' => $params['limit'] ?? false,
             'where' => $where
         ]);
 
