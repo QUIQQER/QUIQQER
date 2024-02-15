@@ -1293,7 +1293,7 @@ class Edit extends Site
             return false;
         }
 
-        return (int)$result[0]['count'] ? (int)$result[0]['count'] : false;
+        return (int)$result[0]['count'] ?: false;
     }
 
     /**
