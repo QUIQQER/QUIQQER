@@ -41,10 +41,10 @@ $etcDir = CMS_DIR . 'etc/';
 $iniFile = parse_ini_file($etcDir . 'conf.ini.php', true);
 
 $varDir = $iniFile['globals']['var_dir'];
-$phpExec = $iniFile['globals']['phpCommand'];
+$phpExec = 'php';
 
-if (empty($phpExec)) {
-    $phpExec = 'php';
+if (!empty($iniFile['globals']['phpCommand'])) {
+    $phpExec = $iniFile['globals']['phpCommand'];
 }
 
 $composerDir = $varDir . 'composer/';
@@ -67,6 +67,12 @@ echo '======================================' . PHP_EOL;
 echo '|  Try to update and repair QUIQQER  |' . PHP_EOL;
 echo '======================================' . PHP_EOL;
 echo PHP_EOL;
+
+system($composerCommand . ' clear-cache');
+
+if (file_exists($composerDir . 'composer.lock')) {
+    unlink($composerDir . 'composer.lock');
+}
 
 system($composerCommand . ' update --no-scripts -v');
 chdir(CMS_DIR);

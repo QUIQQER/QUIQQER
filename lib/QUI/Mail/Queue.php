@@ -20,7 +20,6 @@ use function json_decode;
 use function json_encode;
 use function preg_replace;
 use function str_replace;
-use function strpos;
 use function time;
 
 /**
@@ -165,6 +164,10 @@ class Queue
      */
     public function send(): bool
     {
+        if (Mailer::$DISABLE_MAIL_SENDING) {
+            return true;
+        }
+
         $params = QUI::getDataBase()->fetch([
             'from' => self::table(),
             'where' => [
@@ -225,6 +228,10 @@ class Queue
      */
     protected function sendMail(array $params): bool
     {
+        if (Mailer::$DISABLE_MAIL_SENDING) {
+            return true;
+        }
+
         try {
             QUI::getEvents()->fireEvent('mailerSendInit', [
                 $this
@@ -243,7 +250,7 @@ class Queue
             $PhpMailer = QUI::getMailManager()->getPHPMailer();
 
             $mailto = json_decode($params['mailto'], true);
-            $replyto = json_decode($params['replyto'], true);
+            $replyTo = json_decode($params['replyto'], true);
             $cc = json_decode($params['cc'], true);
             $bcc = json_decode($params['bcc'], true);
 
@@ -258,7 +265,7 @@ class Queue
             }
 
             // reply
-            foreach ($replyto as $entry) {
+            foreach ($replyTo as $entry) {
                 if (is_array($entry)) {
                     $PhpMailer->addAddress($entry[0], $entry[1]);
                     continue;
@@ -370,7 +377,7 @@ class Queue
         } catch (Exception $Exception) {
             $message = $Exception->getMessage();
 
-            if (strpos($message, 'Recipient address rejected:') !== false) {
+            if (str_contains($message, 'Recipient address rejected:')) {
                 QUI\System\Log::addError($Exception->getMessage());
                 return true;
             }
@@ -443,6 +450,10 @@ class Queue
      */
     public function sendAll()
     {
+        if (Mailer::$DISABLE_MAIL_SENDING) {
+            return;
+        }
+
         $result = QUI::getDataBase()->fetch([
             'select' => 'id',
             'from' => self::table(),
@@ -477,6 +488,10 @@ class Queue
      */
     public function sendById(int $id): bool
     {
+        if (Mailer::$DISABLE_MAIL_SENDING) {
+            return true;
+        }
+
         $params = QUI::getDataBase()->fetch([
             'from' => self::table(),
             'where' => [

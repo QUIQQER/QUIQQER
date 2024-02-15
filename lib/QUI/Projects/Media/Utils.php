@@ -246,11 +246,7 @@ class Utils
             'mp3' => URL_BIN_DIR . '80x80/extensions/sound.png',
         ];
 
-        if (isset($extensions[$size][$ext])) {
-            return $extensions[$size][$ext];
-        }
-
-        return URL_BIN_DIR . $size . '/extensions/empty.png';
+        return $extensions[$size][$ext] ?? URL_BIN_DIR . $size . '/extensions/empty.png';
     }
 
     /**
@@ -1224,7 +1220,7 @@ class Utils
         }
 
         if (isset($result[0])) {
-            return intval($result[0]['id']);
+            return (int) $result[0]['id'];
         }
 
         return 0;
@@ -1257,7 +1253,7 @@ class Utils
         }
 
         if (isset($result[0])) {
-            return intval($result[0]['id']);
+            return (int) $result[0]['id'];
         }
 
         return 0;
@@ -1362,7 +1358,7 @@ class Utils
         $return = [];
 
         foreach ($result as $element) {
-            $return[$element['mime_type']] = intval($element['count']);
+            $return[$element['mime_type']] = (int) $element['count'];
         }
 
         return $return;

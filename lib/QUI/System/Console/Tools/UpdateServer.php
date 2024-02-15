@@ -32,7 +32,7 @@ class UpdateServer extends QUI\System\Console\Tool
         $this->addExample('./console quiqqer:update-server --add=git@dev.quiqqer.com:quiqqer/quiqqer.git --type=vcs');
         $this->addExample('./console quiqqer:update-server --remove=git@dev.quiqqer.com:quiqqer/quiqqer.git');
 
-        $this->isSystemTool(true);
+        $this->isSystemTool();
     }
 
     public function execute()

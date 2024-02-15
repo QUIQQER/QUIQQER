@@ -62,11 +62,7 @@ class Session
      */
     public function get($name)
     {
-        if (isset($this->params[$name])) {
-            return $this->params[$name];
-        }
-
-        return false;
+        return $this->params[$name] ?? false;
     }
 
     /**

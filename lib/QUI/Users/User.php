@@ -299,7 +299,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getId()
     {
-        return $this->id ? $this->id : false;
+        return $this->id ?: false;
     }
 
     /**
@@ -313,11 +313,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getAttribute($var)
     {
-        if (isset($this->settings[$var])) {
-            return $this->settings[$var];
-        }
-
-        return false;
+        return $this->settings[$var] ?? false;
     }
 
     /**
@@ -874,7 +870,7 @@ class User implements QUI\Interfaces\Users\User
     {
         $list = QUI::getPermissionManager()->getUserPermissionData($this);
 
-        return isset($list[$permission]) ? $list[$permission] : false;
+        return $list[$permission] ?? false;
     }
 
     /**
@@ -1325,7 +1321,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getUsername()
     {
-        return $this->name ? $this->name : false;
+        return $this->name ?: false;
     }
 
     /**
@@ -1492,7 +1488,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getUniqueId()
     {
-        return $this->uuid ? $this->uuid : '';
+        return $this->uuid ?: '';
     }
 
     /**

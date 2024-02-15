@@ -666,11 +666,7 @@ class Console
     {
         $argument = trim($argument, '-');
 
-        if (isset($this->arguments[$argument])) {
-            return $this->arguments[$argument];
-        }
-
-        return null;
+        return $this->arguments[$argument] ?? null;
     }
 
     /**

@@ -23,10 +23,10 @@ class PHPVersion extends QUI\System\Test
     {
         parent::__construct();
 
-        $this->setAttributes(array(
+        $this->setAttributes([
             'title' => 'QUIQQER - PHP Version - Higher 5.3',
             'description' => ''
-        ));
+        ]);
 
         $this->isRequired = self::TEST_IS_REQUIRED;
     }

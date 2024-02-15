@@ -883,11 +883,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $children = $this->getChildren($params);
 
-        if (isset($children[0])) {
-            return $children[0];
-        }
-
-        return false;
+        return $children[0] ?? false;
     }
 
     /**

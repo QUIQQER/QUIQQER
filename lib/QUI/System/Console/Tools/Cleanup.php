@@ -65,7 +65,7 @@ class Cleanup extends QUI\System\Console\Tool
         $repoDir = VAR_DIR . 'composer/repo/';
         $repos = QUI\Utils\System\File::readDir($repoDir);
 
-        $time = \time() - 2592000; // older than a month
+        $time = \time() - 2_592_000; // older than a month
 
         foreach ($repos as $repo) {
             $files = QUI\Utils\System\File::readDir($repoDir . $repo);

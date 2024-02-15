@@ -248,7 +248,7 @@ class Headers
      * @param bool $preload
      */
     public function hsts(
-        int $maxAge = 31536000,
+        int $maxAge = 31_536_000,
         bool $subDomains = false,
         bool $preload = false
     ) {
