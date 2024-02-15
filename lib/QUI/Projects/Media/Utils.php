@@ -246,11 +246,7 @@ class Utils
             'mp3' => URL_BIN_DIR . '80x80/extensions/sound.png',
         ];
 
-        if (isset($extensions[$size][$ext])) {
-            return $extensions[$size][$ext];
-        }
-
-        return URL_BIN_DIR . $size . '/extensions/empty.png';
+        return $extensions[$size][$ext] ?? URL_BIN_DIR . $size . '/extensions/empty.png';
     }
 
     /**

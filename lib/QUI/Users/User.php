@@ -313,11 +313,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getAttribute($var)
     {
-        if (isset($this->settings[$var])) {
-            return $this->settings[$var];
-        }
-
-        return false;
+        return $this->settings[$var] ?? false;
     }
 
     /**

@@ -2427,11 +2427,7 @@ class Manager extends QUI\QDOM
     {
         $data = $this->getSiteXMLDataByType($type);
 
-        if (isset($data['icon'])) {
-            return $data['icon'];
-        }
-
-        return '';
+        return $data['icon'] ?? '';
     }
 
     /**
