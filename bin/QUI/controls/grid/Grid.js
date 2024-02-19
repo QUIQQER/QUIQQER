@@ -90,47 +90,47 @@ define('controls/grid/Grid', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/grid/Grid',
+        Type: 'controls/grid/Grid',
 
         options: {
-            name                : false,
-            alternaterows       : true,
-            showHeader          : true,
-            sortHeader          : true,
-            resizeColumns       : true,
-            selectable          : true,
-            serverSort          : false,
-            sortOn              : null,
-            sortBy              : 'ASC',
-            filterHide          : true,
-            filterHideCls       : 'hide',
-            tablesizing         : 'normal', // 'normal', 'small'
+            name: false,
+            alternaterows: true,
+            showHeader: true,
+            sortHeader: true,
+            resizeColumns: true,
+            selectable: true,
+            serverSort: false,
+            sortOn: null,
+            sortBy: 'ASC',
+            filterHide: true,
+            filterHideCls: 'hide',
+            tablesizing: 'normal', // 'normal', 'small'
             lastCellRightSpacing: 40, // spacing from the last cell to the right border of the table, useful for resizing by dragging
 
-            storageKey  : false, // if storage key is set, the grid settings (column model) are saved in the locale storage
+            storageKey: false, // if storage key is set, the grid settings (column model) are saved in the locale storage
             configurable: true, // table is configurable, user is able to dragdrop columns, storage key must be set
 
             filterSelectedCls: 'filter',
             multipleSelection: false,
-            editable         : false,   // Grid.addEvent('editcomplete', function(data) // selectable muss "true" sein!
-            editondblclick   : false,
-            editType         : 'input', // textarea | input
-            resizeHeaderOnly : false,
+            editable: false,   // Grid.addEvent('editcomplete', function(data) // selectable muss "true" sein!
+            editondblclick: false,
+            editType: 'input', // textarea | input
+            resizeHeaderOnly: false,
 
             // accordion
-            accordion              : false,
-            openAccordionOnClick   : true,
-            accordionRenderer      : null,
-            accordionLiveRenderer  : null,
-            autoSectionToggle      : true, // if true just one section can be open/visible
-            showtoggleicon         : true,
-            toggleiconTitle        : 'Details',
+            accordion: false,
+            openAccordionOnClick: true,
+            accordionRenderer: null,
+            accordionLiveRenderer: null,
+            autoSectionToggle: true, // if true just one section can be open/visible
+            showtoggleicon: true,
+            toggleiconTitle: 'Details',
             openAccordionOnDblClick: false,
 
             // pagination
-            url           : null,
-            pagination    : false,
-            page          : 1,
+            url: null,
+            pagination: false,
+            page: 1,
             perPageOptions: [
                 5,
                 10,
@@ -147,36 +147,36 @@ define('controls/grid/Grid', [
                 2500,
                 5000
             ],
-            perPage       : 100,
-            filterInput   : true,
+            perPage: 100,
+            filterInput: true,
             // dataProvider
             dataProvider: null,
 
             //export
-            exportName    : false,
-            exportData    : false,
-            exportTypes   : {
-                pdf  : true,
-                csv  : true,
-                json : true,
+            exportName: false,
+            exportData: false,
+            exportTypes: {
+                pdf: true,
+                csv: true,
+                json: true,
                 print: false
             }, // {print : 'Drucken', pdf : 'PDF', csv : 'CSV', json : 'JSON'},
             exportRenderer: null, // function(data){data.type data.data data.Grid}
-            exportBinUrl  : URL_OPT_DIR + 'quiqqer/quiqqer/lib/QUI/Export/bin/export.php',
+            exportBinUrl: URL_OPT_DIR + 'quiqqer/quiqqer/lib/QUI/Export/bin/export.php',
 
             // drag & Drop
-            dragdrop         : false,
-            droppables       : [],
+            dragdrop: false,
+            droppables: [],
             dragDropDataIndex: '',
-            dragDropClass    : false
+            dragDropClass: false
         },
 
         Binds: [
             'openSortWindow'
         ],
 
-        $data          : false,
-        $columnModel   : false,
+        $data: false,
+        $columnModel: false,
         $refreshDelayID: null,
 
         initialize: function(container, options) {
@@ -241,16 +241,16 @@ define('controls/grid/Grid', [
             }
 
             this.container.set({
-                'tabindex'  : '-1',
-                styles      : {
+                'tabindex': '-1',
+                styles: {
                     'MozOutline': 'none',
-                    'outline'   : 0
+                    'outline': 0
                 },
-                events      : {
-                    focus    : this.focus.bind(this),
-                    blur     : this.blur.bind(this),
+                events: {
+                    focus: this.focus.bind(this),
+                    blur: this.blur.bind(this),
                     mousedown: this.mousedown.bind(this),
-                    mouseup  : this.mouseup.bind(this)
+                    mouseup: this.mouseup.bind(this)
                 },
                 'data-quiid': this.getId()
             });
@@ -291,7 +291,7 @@ define('controls/grid/Grid', [
 
             this.container.empty();
             this.container.setStyles({
-                width : '',
+                width: '',
                 height: ''
             });
 
@@ -341,7 +341,8 @@ define('controls/grid/Grid', [
                 }
 
                 el.getdate = function(str) {
-                    function fixYear(yr) {
+                    function fixYear(yr)
+                    {
                         yr = +yr;
 
                         if (yr < 50) {
@@ -388,7 +389,8 @@ define('controls/grid/Grid', [
                 };
 
                 el.stripHTML = function(str) {
-                    const tmp = str.replace(/(<.*['"])([^'"]*)(['"]>)/g,
+                    const tmp = str.replace(
+                        /(<.*['"])([^'"]*)(['"]>)/g,
                         function(x, p1, p2, p3) {
                             return p1 + p3;
                         }
@@ -512,7 +514,7 @@ define('controls/grid/Grid', [
         getPaginationData: function() {
             return {
                 perPage: this.getAttribute('perPage'),
-                page   : this.getAttribute('page')
+                page: this.getAttribute('page')
             };
         },
 
@@ -576,12 +578,12 @@ define('controls/grid/Grid', [
 
             const input = new Element(editType, {
                 'class': 'inline',
-                style  : 'width: ' + width + 'px; height: auto;',
-                value  : html,
-                title  : 'Doppelklick oder Enter um die Änderungen zu übernehmen', // #locale
-                events : {
-                    keyup   : t.finishEditing.bind(this),
-                    blur    : t.finishEditing.bind(this),
+                style: 'width: ' + width + 'px; height: auto;',
+                value: html,
+                title: 'Doppelklick oder Enter um die Änderungen zu übernehmen', // #locale
+                events: {
+                    keyup: t.finishEditing.bind(this),
+                    blur: t.finishEditing.bind(this),
                     dblclick: t.finishEditing.bind(this)
                 }
             });
@@ -594,11 +596,11 @@ define('controls/grid/Grid', [
             input.focus();
 
             t.inlineEditSafe = {
-                row        : sels[0],
+                row: sels[0],
                 columnModel: colmod,
-                td         : td,
-                input      : input,
-                oldvalue   : html
+                td: td,
+                input: input,
+                oldvalue: html
             };
 
             t.inlineeditmode = true;
@@ -773,8 +775,8 @@ define('controls/grid/Grid', [
             }
 
             this.fireEvent('mouseOver', {
-                target : this,
-                row    : li.retrieve('row'),
+                target: this,
+                row: li.retrieve('row'),
                 element: li
             });
         },
@@ -795,8 +797,8 @@ define('controls/grid/Grid', [
             }
 
             this.fireEvent('mouseOut', {
-                target : this,
-                row    : li.retrieve('row'),
+                target: this,
+                row: li.retrieve('row'),
                 element: li
             });
         },
@@ -930,11 +932,11 @@ define('controls/grid/Grid', [
             t.fireEvent('click', [
                 {
                     indices: t.selected,
-                    target : t,
-                    row    : row,
+                    target: t,
+                    row: row,
                     element: li,
-                    cell   : t.getTdParent(evt.target),
-                    evt    : evt
+                    cell: t.getTdParent(evt.target),
+                    evt: evt
                 },
                 this
             ]);
@@ -973,7 +975,7 @@ define('controls/grid/Grid', [
 
                 const obj = this.edit({
                     columnIndex: i,
-                    li         : li
+                    li: li
                 });
 
                 if (obj) {
@@ -999,10 +1001,10 @@ define('controls/grid/Grid', [
             }
 
             const eventparams = {
-                row    : row,
-                target : this,
+                row: row,
+                target: this,
                 element: li,
-                cell   : this.getTdParent(evt.target)
+                cell: this.getTdParent(evt.target)
             };
 
             this.fireEvent('dblClick', eventparams);
@@ -1023,11 +1025,11 @@ define('controls/grid/Grid', [
             event.stop();
 
             this.fireEvent('contextMenu', {
-                row    : li.retrieve('row'),
-                target : this,
-                event  : event,
+                row: li.retrieve('row'),
+                target: this,
+                event: event,
                 element: li,
-                cell   : this.getTdParent(event.target)
+                cell: this.getTdParent(event.target)
             });
         },
 
@@ -1098,9 +1100,9 @@ define('controls/grid/Grid', [
 
                 this.getAttribute('accordionLiveRenderer')({
                     parent: section,
-                    row   : li.retrieve('row'),
-                    grid  : this,
-                    event : event
+                    row: li.retrieve('row'),
+                    grid: this,
+                    event: event
                 });
 
                 this.hideLoader();
@@ -1126,7 +1128,8 @@ define('controls/grid/Grid', [
         },
 
         unique: function(a, asNumber) {
-            function om_sort_number(a, b) {
+            function om_sort_number(a, b)
+            {
                 return a - b;
             }
 
@@ -1152,7 +1155,7 @@ define('controls/grid/Grid', [
             // pagination
             if (this.getAttribute('pagination')) {
                 data = {
-                    page   : this.getAttribute('page'),
+                    page: this.getAttribute('page'),
                     perpage: this.getAttribute('perPage')
                 };
             }
@@ -1179,7 +1182,7 @@ define('controls/grid/Grid', [
             }
 
             const request = new Request.JSON({
-                url : (url !== null) ? url : options.url,
+                url: (url !== null) ? url : options.url,
                 data: data
             });
 
@@ -1278,9 +1281,9 @@ define('controls/grid/Grid', [
         dataLoader: function() {
             this.setAttribute('page', 1);
             this.onLoadData({
-                data   : {},
-                total  : 0,
-                page   : 1,
+                data: {},
+                total: 0,
+                page: 1,
                 perPage: 0
             });
 
@@ -1463,13 +1466,13 @@ define('controls/grid/Grid', [
 
             gBlock = new Element('div.gBlock', {
                 styles: {
-                    position  : 'absolute',
-                    top       : 0,
-                    left      : 0,
-                    zIndex    : 999,
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    zIndex: 999,
                     background: 'rgba(255, 255, 255, 0.5)',
-                    width     : '100%',
-                    height    : '100%'
+                    width: '100%',
+                    height: '100%'
                 }
             });
 
@@ -1517,7 +1520,7 @@ define('controls/grid/Grid', [
             //this.resetButtons();
             this.fireEvent('click', {
                 indices: this.selected,
-                target : this
+                target: this
             });
         },
 
@@ -1672,15 +1675,15 @@ define('controls/grid/Grid', [
                 const dataType = typeof (this.$data[0][cn]) === 'number' ? 'number' : 'string';
 
                 this.$columnModel.push({
-                    header   : cn,
+                    header: cn,
                     dataIndex: cn,
-                    dataType : dataType,
-                    editable : true
+                    dataType: dataType,
+                    editable: true
                 });
             }
 
             this.fireEvent('autoColumModel', {
-                target     : this,
+                target: this,
                 columnModel: this.$columnModel
             });
 
@@ -2051,7 +2054,7 @@ define('controls/grid/Grid', [
                 if (!DataEmpty) {
                     new Element('div', {
                         'class': 'data-empty',
-                        html   : '<div class="data-empty-cell">' +
+                        html: '<div class="data-empty-cell">' +
                             QUILocale.get('quiqqer/quiqqer', 'grid.is.empty') +
                             '</div>'
                     }).inject(this.container.getElement('.bDiv'));
@@ -2083,8 +2086,8 @@ define('controls/grid/Grid', [
                     if (this.getAttribute('accordionRenderer')) {
                         this.getAttribute('accordionRenderer')({
                             parent: li2,
-                            row   : r,
-                            grid  : this
+                            row: r,
+                            grid: this
                         });
                     }
                 }
@@ -2160,9 +2163,9 @@ define('controls/grid/Grid', [
 
                 if (columnModel.onMouseOver) {
                     div.onmouseover = t.onMouseOver.bind(t, {
-                        element    : div,
+                        element: div,
                         columnModel: columnModel,
-                        data       : this.$data[r]
+                        data: this.$data[r]
                     });
                 }
 
@@ -2208,9 +2211,9 @@ define('controls/grid/Grid', [
 
                     input.onclick = func_input_click.bind(this, {
                         columnModel: columnModel,
-                        row        : r,
-                        list       : t,
-                        input      : input
+                        row: r,
+                        list: t,
+                        input: input
                     });
 
                     div.appendChild(input);
@@ -2305,7 +2308,7 @@ define('controls/grid/Grid', [
 
                 if (firstVisible === c && o.accordion && o.showtoggleicon) {
                     Toggle = new Element('div.toggleicon', {
-                        title : o.toggleiconTitle,
+                        title: o.toggleiconTitle,
                         events: {
                             click: function(event) {
                                 t.toggleIconClick(event);
@@ -2331,12 +2334,12 @@ define('controls/grid/Grid', [
             ]);
 
             el.addEvents({
-                'mouseover'  : this.onRowMouseOver.bind(this),
-                'mouseout'   : this.onRowMouseOut.bind(this),
-                'mousedown'  : this.onRowMouseDown.bind(this),
-                'mouseup'    : this.onRowMouseUp.bind(this),
-                'click'      : this.onRowClick.bind(this),
-                'dblclick'   : this.onRowDblClick.bind(this),
+                'mouseover': this.onRowMouseOver.bind(this),
+                'mouseout': this.onRowMouseOut.bind(this),
+                'mousedown': this.onRowMouseDown.bind(this),
+                'mouseup': this.onRowMouseUp.bind(this),
+                'click': this.onRowClick.bind(this),
+                'dblclick': this.onRowDblClick.bind(this),
                 'contextmenu': this.onRowContext.bind(this)
             });
         },
@@ -2382,8 +2385,8 @@ define('controls/grid/Grid', [
 
                 // button drop down
                 this.$Menu = new QUIButton({
-                    textimage   : 'fa fa-navicon',
-                    text        : QUILocale.get('quiqqer/quiqqer', 'control.grid.menu.button'),
+                    textimage: 'fa fa-navicon',
+                    text: QUILocale.get('quiqqer/quiqqer', 'control.grid.menu.button'),
                     dropDownIcon: false
                 }).inject(tDiv);
 
@@ -2432,8 +2435,8 @@ define('controls/grid/Grid', [
                     node.addClass('btn-silver');
 
                     const Item = new QUIContextItem({
-                        text  : Btn.getAttribute('text'),
-                        icon  : Btn.getAttribute('icon') || Btn.getAttribute('textimage') || Btn.getAttribute('image'),
+                        text: Btn.getAttribute('text'),
+                        icon: Btn.getAttribute('icon') || Btn.getAttribute('textimage') || Btn.getAttribute('image'),
                         events: {
                             onClick: itemClick.bind(Btn)
                         }
@@ -2441,8 +2444,8 @@ define('controls/grid/Grid', [
 
                     Btn.addEvents({
                         onDisable: itemDisable.bind(Item),
-                        onNormal : itemNormal.bind(Item),
-                        onEnable : itemNormal.bind(Item),
+                        onNormal: itemNormal.bind(Item),
+                        onEnable: itemNormal.bind(Item),
 
                         onSetAttribute: function(key, value) {
                             if (key === 'text') {
@@ -2528,7 +2531,7 @@ define('controls/grid/Grid', [
 
                 if (sortable) {
                     div.addEvents({
-                        click     : t.clickHeaderColumn.bind(this),
+                        click: t.clickHeaderColumn.bind(this),
                         mouseleave: t.outHeaderColumn.bind(this),
                         mouseenter: t.overHeaderColumn.bind(this)
                     });
@@ -2605,8 +2608,8 @@ define('controls/grid/Grid', [
                     }
 
                     dragSt.setStyles({
-                        top    : 0,
-                        left   : dragTempWidth + columnModel.width,
+                        top: 0,
+                        left: dragTempWidth + columnModel.width,
                         display: 'block'
                     });
 
@@ -2736,10 +2739,10 @@ define('controls/grid/Grid', [
 
                 if (this.getAttribute('storageKey')) {
                     const SizingBtn = new Element('div', {
-                        'class'               : 'pSizing pButton',
-                        title                 : QUILocale.get('quiqqer/quiqqer', 'grid.compact.button.title'),
+                        'class': 'pSizing pButton',
+                        title: QUILocale.get('quiqqer/quiqqer', 'grid.compact.button.title'),
                         'data-qui-tablesizing': 'normal',
-                        events                : {
+                        events: {
                             click: this.resizeTablePerButtonClick.bind(this)
                         }
                     });
@@ -2788,7 +2791,7 @@ define('controls/grid/Grid', [
 
                 if ((o = pDiv2.getElement('input.cpage'))) {
                     pDiv2.getElement('input').addEvents({
-                        keydown  : this.pageChange.bind(this),
+                        keydown: this.pageChange.bind(this),
                         mousedown: function() {
                             this.focus();
                         }
@@ -2798,7 +2801,7 @@ define('controls/grid/Grid', [
                 if (this.getAttribute('filterInput')) {
                     if ((o = pDiv2.getElement('input.cfilter'))) {
                         pDiv2.getElement('input.cfilter').addEvents({
-                            keyup    : this.filerData.bind(this), // goto 1 & refresh
+                            keyup: this.filerData.bind(this), // goto 1 & refresh
                             mousedown: function() {
                                 this.focus();
                             }
@@ -2824,10 +2827,10 @@ define('controls/grid/Grid', [
                     new Element('button.pButton', {
                         styles: {
                             cursor: 'pointer',
-                            float : 'right',
+                            float: 'right',
                             margin: 0
                         },
-                        html  : '<span class="fa fa-gear"></span>',
+                        html: '<span class="fa fa-gear"></span>',
                         events: {
                             click: this.openSortWindow
                         }
@@ -3164,16 +3167,16 @@ define('controls/grid/Grid', [
             const self = this;
 
             new QUIConfirm({
-                icon     : 'fa fa-download',
-                title    : '',
+                icon: 'fa fa-download',
+                title: '',
                 maxHeight: 500,
-                maxWidth : 800,
+                maxWidth: 800,
                 autoclose: false,
-                events   : {
+                events: {
                     onOpen: function(Win) {
                         Win.$exportTypes = [];
 
-                        let c, len, columnModel, header, dataIndex;
+                        let c, i, len, columnModel, header, dataIndex;
 
                         const options = self.getAttributes(),
                             Content = Win.getContent();
@@ -3205,10 +3208,10 @@ define('controls/grid/Grid', [
                                 }),
                                 input = new Element('input', {
                                     'class': 'export_' + dataIndex,
-                                    type   : 'checkbox',
+                                    type: 'checkbox',
                                     checked: 'checked',
-                                    value  : dataIndex,
-                                    name   : dataIndex
+                                    value: dataIndex,
+                                    name: dataIndex
                                 });
 
                             div.appendChild(input);
@@ -3219,7 +3222,7 @@ define('controls/grid/Grid', [
 
                         // export type
                         new Element('div', {
-                            html  : QUILocale.get('quiqqer/quiqqer', 'grid.export.message.exportType'),
+                            html: QUILocale.get('quiqqer/quiqqer', 'grid.export.message.exportType'),
                             styles: {
                                 marginTop: 10
                             }
@@ -3228,14 +3231,21 @@ define('controls/grid/Grid', [
                         let fileImage, Button,
                             types = options.exportTypes;
 
-                        for (const exportType in types) {
-                            if (!types.hasOwnProperty(exportType)) {
-                                continue;
+                        if (typeOf(types) === 'object') {
+                            const typeArray = [];
+                            for (let exportType in types) {
+                                if (typeOf(types[exportType]) === 'boolean' && types[exportType]) {
+                                    typeArray.push(exportType);
+                                }
                             }
 
-                            if (!exportType) {
-                                continue;
-                            }
+                            types = typeArray;
+                        }
+
+                        let exportType;
+
+                        for (let i = 0, len = types.length; i < len; i++) {
+                            exportType = types[i];
 
                             switch (exportType) {
                                 case 'csv':
@@ -3259,15 +3269,15 @@ define('controls/grid/Grid', [
                             }
 
                             Button = new QUIButton({
-                                name      : exportType,
-                                text      : QUILocale.get('quiqqer/quiqqer', 'grid.export.type.' + exportType),
-                                textimage : fileImage,
+                                name: exportType,
+                                text: QUILocale.get('quiqqer/quiqqer', 'grid.export.type.' + exportType),
+                                textimage: fileImage,
                                 exportType: exportType,
-                                styles    : {
+                                styles: {
                                     marginRight: 10,
-                                    marginTop  : 10
+                                    marginTop: 10
                                 },
-                                events    : {
+                                events: {
                                     click: function(Instance) {
                                         Win.$exportTypes.forEach(function(Btn) {
                                             Btn.setNormal();
@@ -3340,7 +3350,7 @@ define('controls/grid/Grid', [
 
             const data = {
                 header: {},
-                data  : []
+                data: []
             };
 
             for (c = 0, len = this.$columnModel.length; c < len; c++) {
@@ -3359,7 +3369,7 @@ define('controls/grid/Grid', [
                 }
 
                 data.header[dataIndex] = {
-                    header   : header,
+                    header: header,
                     dataIndex: dataIndex
                 };
             }
@@ -3434,12 +3444,12 @@ define('controls/grid/Grid', [
                 this.showLoader();
 
                 fetch(exportUrl, {
-                    method : 'POST',
+                    method: 'POST',
                     headers: {
-                        'Accept'      : 'application/json',
+                        'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     },
-                    body   : JSON.stringify(tempData)
+                    body: JSON.stringify(tempData)
                 }).then(function(Response) {
                     const Headers = Response.headers;
 
@@ -3512,18 +3522,18 @@ define('controls/grid/Grid', [
             this.selectRow(li);
 
             this.Drag = new Element('div.class', {
-                'class'   : this.getAttribute('dragDropClass') || 'omni-drag-drop',
+                'class': this.getAttribute('dragDropClass') || 'omni-drag-drop',
                 'data-row': row.toString(),
-                html      : html,
-                styles    : {
-                    position    : 'absolute',
-                    top         : (my - 15),
-                    left        : (mx - 40),
-                    zIndex      : 1000,
+                html: html,
+                styles: {
+                    position: 'absolute',
+                    top: (my - 15),
+                    left: (mx - 40),
+                    zIndex: 1000,
                     'MozOutline': 'none',
-                    outline     : 0
+                    outline: 0
                 },
-                tabindex  : '-1'
+                tabindex: '-1'
             }).inject(document.body);
 
             this.Drag.addEvent('mouseup', function() {
@@ -3580,7 +3590,7 @@ define('controls/grid/Grid', [
 
             }).start({
                 target: this.getElm(),
-                page  : {
+                page: {
                     x: mx,
                     y: my
                 }
@@ -3661,10 +3671,10 @@ define('controls/grid/Grid', [
             QUI.Storage.set(this.getAttribute('storageKey') + '-key', this.$gridHash);
 
             QUI.Storage.set(this.getAttribute('storageKey'), JSON.encode({
-                column     : this.$columnModel,
-                perPage    : this.getAttribute('perPage'),
-                sortOn     : this.getAttribute('sortOn'),
-                sortBy     : this.getAttribute('sortBy'),
+                column: this.$columnModel,
+                perPage: this.getAttribute('perPage'),
+                sortOn: this.getAttribute('sortOn'),
+                sortBy: this.getAttribute('sortBy'),
                 tableSizing: this.tableSizing
             }));
         },
@@ -3732,27 +3742,27 @@ define('controls/grid/Grid', [
                 'text!controls/grid/Grid.SettingsWindow.html'
             ], (Mustache, template) => {
                 new QUIConfirm({
-                    'class'  : 'grid-settingsWindow',
-                    icon     : 'fa fa-sort',
-                    title    : QUILocale.get(lg, 'window.grid.sorting.title'),
+                    'class': 'grid-settingsWindow',
+                    icon: 'fa fa-sort',
+                    title: QUILocale.get(lg, 'window.grid.sorting.title'),
                     maxHeight: 800,
-                    maxWidth : 700,
+                    maxWidth: 700,
                     ok_button: {
-                        text     : QUILocale.get(lg, 'window.grid.sorting.submit'),
+                        text: QUILocale.get(lg, 'window.grid.sorting.submit'),
                         textimage: 'fa fa-check'
                     },
-                    events   : {
+                    events: {
                         onOpen: (Win) => {
                             Win.Loader.show();
                             const Content = Win.getContent();
                             Content.addClass('grid-dd');
 
                             Content.set('html', Mustache.render(template, {
-                                title      : QUILocale.get(lg, 'window.grid.sorting.title'),
+                                title: QUILocale.get(lg, 'window.grid.sorting.title'),
                                 description: QUILocale.get(lg, 'window.grid.sorting.description'),
-                                btnText    : QUILocale.get(lg, 'window.grid.sorting.btn.text'),
-                                errorMsg   : QUILocale.get(lg, 'window.grid.sorting.errorMsg'),
-                                hint       : QUILocale.get(lg, 'window.grid.sorting.hint')
+                                btnText: QUILocale.get(lg, 'window.grid.sorting.btn.text'),
+                                errorMsg: QUILocale.get(lg, 'window.grid.sorting.errorMsg'),
+                                hint: QUILocale.get(lg, 'window.grid.sorting.hint')
                             }));
 
                             const ResetBtn = Content.querySelector('[name="resetGridBtn"]'),
@@ -3784,22 +3794,22 @@ define('controls/grid/Grid', [
                                     }
 
                                     let Entry = new Element('li', {
-                                        html        : header,
+                                        html: header,
                                         'data-index': data.dataIndex
                                     }).inject(List);
 
                                     new Element('input', {
-                                        type   : 'checkbox',
+                                        type: 'checkbox',
                                         checked: columns.indexOf(data.dataIndex) !== -1
                                     }).inject(Entry);
                                 });
 
                                 new Sortables(List, {
                                     revert: {
-                                        duration  : 500,
+                                        duration: 500,
                                         transition: 'elastic:out'
                                     },
-                                    clone : function(event) {
+                                    clone: function(event) {
                                         let Target = event.target;
 
                                         if (Target.nodeName !== 'LI') {
@@ -3812,11 +3822,11 @@ define('controls/grid/Grid', [
                                         return new Element('div', {
                                             styles: {
                                                 background: 'rgba(0,0,0,0.5)',
-                                                height    : size.y,
-                                                top       : pos.y,
-                                                width     : size.x,
-                                                zIndex    : 1000,
-                                                position  : 'absolute'
+                                                height: size.y,
+                                                top: pos.y,
+                                                width: size.x,
+                                                zIndex: 1000,
+                                                position: 'absolute'
                                             }
                                         });
                                     },
@@ -3827,9 +3837,9 @@ define('controls/grid/Grid', [
                                         element.addClass('grid-dd-active');
 
                                         Ul.setStyles({
-                                            height  : Ul.getSize().y,
+                                            height: Ul.getSize().y,
                                             overflow: 'hidden',
-                                            width   : Ul.getSize().x
+                                            width: Ul.getSize().x
                                         });
                                     },
 
@@ -3839,9 +3849,9 @@ define('controls/grid/Grid', [
                                         element.removeClass('grid-dd-active');
 
                                         Ul.setStyles({
-                                            height  : null,
+                                            height: null,
                                             overflow: null,
-                                            width   : null
+                                            width: null
                                         });
                                     }
                                 });
