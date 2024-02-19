@@ -6,7 +6,7 @@ variables:
   PACKAGE_NAME: "quiqqer/quiqqer"
 
 phpunit:
-  image: quiqqer/testing:entrypoint
+  image: quiqqer/testing:dev
   stage: test
   before_script:
     # Install phpunit
