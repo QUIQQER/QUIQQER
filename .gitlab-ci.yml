@@ -14,6 +14,7 @@ phpunit:
     - git -C ${CI_PROJECT_DIR} tag --list
     - git -C ${CI_PROJECT_DIR} branch -avv
     - QUIQQER_LATEST_RELEASE=`git -C ${CI_PROJECT_DIR} describe --tags --abbrev=0 remotes/origin/${CI_DEFAULT_BRANCH}`
+    - echo "Latest Release: $QUIQQER_LATEST_RELEASE"
     - cd /var/www/html
   script:
     - ./console composer config repositories.local path ${CI_PROJECT_DIR}
