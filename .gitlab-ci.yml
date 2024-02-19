@@ -10,6 +10,7 @@ phpunit:
   stage: test
   before_script:
     - git config --global --add safe.directory ${CI_PROJECT_DIR}
+    - git -C ${CI_PROJECT_DIR} fetch origin ${CI_DEFAULT_BRANCH}
     - QUIQQER_LATEST_RELEASE=`git -C ${CI_PROJECT_DIR} describe --tags --abbrev=0 ${CI_DEFAULT_BRANCH}`
     - cd /var/www/html
   script:
