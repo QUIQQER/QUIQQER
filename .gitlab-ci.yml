@@ -14,8 +14,6 @@ phpunit:
     - cd /var/www/html
   script:
     - ./console composer config repositories.local path ${CI_PROJECT_DIR}
-    - service mariadb status
-    - ./console update
     - COMPOSER_MIRROR_PATH_REPOS=1 ./console composer require ${PACKAGE_NAME}:"dev-${CI_COMMIT_SHA}@dev as ${QUIQQER_LATEST_RELEASE}"
     - cd packages/${PACKAGE_NAME}
     - curl -sSL --output /tmp/phpunit.phar "https://phar.phpunit.de/phpunit-10.phar"
