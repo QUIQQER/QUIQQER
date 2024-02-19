@@ -6,7 +6,7 @@ variables:
   PACKAGE_NAME: "quiqqer/quiqqer"
 
 phpunit:
-  image: pcsgjan/quiqqer:dev
+  image: quiqqer/testing:dev
   stage: test
   before_script:
     - git config --global --add safe.directory ${CI_PROJECT_DIR}
