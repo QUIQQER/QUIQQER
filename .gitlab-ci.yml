@@ -13,7 +13,7 @@ phpunit:
     - git -C ${CI_PROJECT_DIR} fetch origin ${CI_DEFAULT_BRANCH}
     - git -C ${CI_PROJECT_DIR} tag --list
     - git -C ${CI_PROJECT_DIR} branch -avv
-    - QUIQQER_LATEST_RELEASE=`git -C ${CI_PROJECT_DIR} describe --tags --abbrev=0 ${CI_DEFAULT_BRANCH}`
+    - QUIQQER_LATEST_RELEASE=`git -C ${CI_PROJECT_DIR} describe --tags --abbrev=0 remotes/origin/${CI_DEFAULT_BRANCH}`
     - cd /var/www/html
   script:
     - ./console composer config repositories.local path ${CI_PROJECT_DIR}
