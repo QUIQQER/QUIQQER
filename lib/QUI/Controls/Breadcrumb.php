@@ -81,8 +81,8 @@ class Breadcrumb extends QUI\Control
                 break;
         }
 
-        $this->addCSSFile(dirname(__FILE__) . $css);
+        $this->addCSSFile(__DIR__ . $css);
 
-        return $Engine->fetch(dirname(__FILE__) . $template);
+        return $Engine->fetch(__DIR__ . $template);
     }
 }

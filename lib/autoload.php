@@ -11,8 +11,8 @@
  * @licence For copyright and license information, please view the /README.md
  */
 
-require dirname(__FILE__) . '/QUI/Autoloader.php';
-require dirname(__FILE__) . '/polyfills.php';
+require __DIR__ . '/QUI/Autoloader.php';
+require __DIR__ . '/polyfills.php';
 
 /**
  * Main QUIQQER Autoload function

@@ -146,7 +146,7 @@ class QuiqqerProvider extends AbstractInstallationWizard
                 $Editor->activate();
                 $Config->setValue('installationWizard', 'editorId', $Editor->getId());
 
-                $permissions = file_get_contents(dirname(__FILE__) . '/permissions.editor.json');
+                $permissions = file_get_contents(__DIR__ . '/permissions.editor.json');
 
                 QUI::getDataBase()->update(
                     $table2groups,
@@ -165,7 +165,7 @@ class QuiqqerProvider extends AbstractInstallationWizard
                 $sysAdmin->activate();
                 $Config->setValue('installationWizard', 'sysAdminId', $sysAdmin->getId());
 
-                $permissions = file_get_contents(dirname(__FILE__) . '/permissions.sysadmin.json');
+                $permissions = file_get_contents(__DIR__ . '/permissions.sysadmin.json');
 
                 QUI::getDataBase()->update(
                     $table2groups,

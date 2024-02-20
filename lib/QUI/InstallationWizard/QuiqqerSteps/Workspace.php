@@ -16,7 +16,7 @@ class Workspace extends QUI\InstallationWizard\AbstractInstallationWizardStep
     {
         parent::__construct($attributes);
 
-        $this->addCSSFile(dirname(__FILE__) . '/Workspace.css');
+        $this->addCSSFile(__DIR__ . '/Workspace.css');
         $this->setJavaScriptControl('controls/installation/Workspace');
     }
 
@@ -62,6 +62,6 @@ class Workspace extends QUI\InstallationWizard\AbstractInstallationWizardStep
             'urlImageDir' => URL_OPT_DIR . 'quiqqer/quiqqer/bin/images/installation/'
         ]);
 
-        return $Engine->fetch(dirname(__FILE__) . '/Workspace.html');
+        return $Engine->fetch(__DIR__ . '/Workspace.html');
     }
 }
