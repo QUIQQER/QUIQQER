@@ -50,7 +50,7 @@ class Bundler
                 $result[$request['rid']]['Exception'] = [
                     'message' => $Exception->getMessage(),
                     'code' => $Exception->getCode(),
-                    'type' => \get_class($Exception)
+                    'type' => $Exception::class
                 ];
             }
         }
@@ -64,7 +64,7 @@ class Bundler
             $result['Exception'] = [
                 'message' => $Exception->getMessage(),
                 'code' => $Exception->getCode(),
-                'type' => \get_class($Exception)
+                'type' => $Exception::class
             ];
 
             return \json_encode($result);

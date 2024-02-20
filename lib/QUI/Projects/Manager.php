@@ -97,7 +97,7 @@ class Manager
         $Project = $project;
         $handedParams = $params;
 
-        if (is_string($Project) || get_class($Project) != Project::class) {
+        if (is_string($Project) || $Project::class != Project::class) {
             $Project = self::getProject($project);
         }
 

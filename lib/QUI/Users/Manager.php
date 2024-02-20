@@ -585,7 +585,7 @@ class Manager
             return false;
         }
 
-        if (get_class($User) === User::class) {
+        if ($User::class === User::class) {
             return true;
         }
 
@@ -609,7 +609,7 @@ class Manager
             return false;
         }
 
-        if (get_class($User) === SystemUser::class) {
+        if ($User::class === SystemUser::class) {
             return true;
         }
 
@@ -1333,7 +1333,7 @@ class Manager
         }
 
         if (
-            $Session->get('auth-' . get_class($Authenticator))
+            $Session->get('auth-' . $Authenticator::class)
             && $Session->get('username')
             && $Session->get('uid')
         ) {
@@ -1389,7 +1389,7 @@ class Manager
         }
 
         $Session->set(
-            'auth-' . get_class($Authenticator),
+            'auth-' . $Authenticator::class,
             1
         );
 
@@ -1409,7 +1409,7 @@ class Manager
             return false;
         }
 
-        if (get_class($User) === Nobody::class) {
+        if ($User::class === Nobody::class) {
             return true;
         }
 

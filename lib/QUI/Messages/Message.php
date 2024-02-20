@@ -28,7 +28,7 @@ class Message extends QUI\QDOM
             'message' => '',
             'code' => '',
             'time' => \time(),
-            'mtype' => \get_class($this)
+            'mtype' => $this::class
         ]);
 
         $this->setAttributes($params);

@@ -1175,7 +1175,7 @@ class Edit extends Site
             $Project = $this->getProject();
         }
 
-        if (\get_class($Project) != Project::class) {
+        if ($Project::class != Project::class) {
             throw new QUI\Exception(
                 'Site copy: Project not found',
                 404

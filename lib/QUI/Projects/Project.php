@@ -495,7 +495,7 @@ class Project implements \Stringable
      */
     public function __toString(): string
     {
-        return 'Object ' . get_class($this) . '(' . $this->name . ',' . $this->lang . ')';
+        return 'Object ' . $this::class . '(' . $this->name . ',' . $this->lang . ')';
     }
 
     /**

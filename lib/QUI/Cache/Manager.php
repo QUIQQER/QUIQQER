@@ -603,7 +603,7 @@ class Manager
             $handlers = self::$handlers;
 
             foreach ($handlers as $Handler) {
-                if (get_class($Handler) == $type) {
+                if ($Handler::class == $type) {
                     return $Handler;
                 }
             }

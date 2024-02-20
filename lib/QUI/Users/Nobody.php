@@ -324,7 +324,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      */
     public function getType(): string
     {
-        return get_class($this);
+        return $this::class;
     }
 
     /**
