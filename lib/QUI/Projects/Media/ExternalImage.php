@@ -16,19 +16,8 @@ use QUI\Projects\Project;
  */
 class ExternalImage implements QUI\Interfaces\Projects\Media\File
 {
-    /**
-     * @var string
-     */
-    protected string $image = '';
-
-    /**
-     * ExternalImage constructor.
-     *
-     * @param $image
-     */
-    public function __construct($image)
+    public function __construct(protected string $image)
     {
-        $this->image = $image;
     }
 
     /**

@@ -45,26 +45,15 @@ class Media extends QUI\QDOM
      */
     protected static $mediaPermissions = null;
     /**
-     * internal project object
-     *
-     * @var QUI\Projects\Project
-     */
-    protected Project $Project;
-    /**
      * internal child cache
      *
      * @var array
      */
     protected array $children = [];
 
-    /**
-     * constructor
-     *
-     * @param QUI\Projects\Project $Project
-     */
-    public function __construct(Project $Project)
-    {
-        $this->Project = $Project;
+    public function __construct(
+        protected Project $Project
+    ) {
     }
 
     /**
