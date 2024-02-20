@@ -575,7 +575,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                 $Project = $this->getProject();
 
                 return Utils::getImageByUrl($Project->getConfig('media_watermark'));
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
 
             return false;
@@ -583,7 +583,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
         try {
             return Utils::getImageByUrl($imageEffects['watermark']);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return false;
@@ -876,7 +876,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $this->setAttribute('image_width', $imageWidth);
             $this->setAttribute('image_height', $imageHeight);
             $this->deleteCache();
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             $this->deactivate();
         }
     }

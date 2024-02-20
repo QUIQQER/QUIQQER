@@ -360,7 +360,7 @@ class Manager
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         $config = [
@@ -642,7 +642,7 @@ class Manager
                 if ($Parent) {
                     $result[] = $Parent->getName();
                 }
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 // nothing
             }
         }
@@ -727,7 +727,7 @@ class Manager
                         $lang,
                         $conf['template']
                     );
-                } catch (QUI\Exception $Exception) {
+                } catch (QUI\Exception) {
                 }
             }
         }
@@ -999,7 +999,7 @@ class Manager
                 } else {
                     $list[] = $project;
                 }
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 

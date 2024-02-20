@@ -51,7 +51,7 @@ class MailSMTP extends QUI\InstallationWizard\AbstractInstallationWizardStep
     {
         try {
             $Engine = QUI::getTemplateManager()->getEngine();
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return '';
         }
 

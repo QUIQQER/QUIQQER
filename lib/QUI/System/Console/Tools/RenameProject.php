@@ -57,7 +57,7 @@ class RenameProject extends Tool
 
         try {
             Project::validateProjectName($this->newProjectName);
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
             $this->writeLnLocale("console.tool.project.rename.validation.invalid.signs", "light_red");
             $this->resetColor();
             $this->newProjectName = $this->purgeProjectName($this->newProjectName);

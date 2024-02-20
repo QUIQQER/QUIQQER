@@ -9,7 +9,7 @@ QUI::$Ajax->registerFunction(
     function () {
         try {
             QUI::getPackage('mongodb/mongodb');
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return false;
         }
 

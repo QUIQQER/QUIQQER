@@ -542,7 +542,7 @@ class Output extends Singleton
             try {
                 $Project = QUI::getProject($project, $lang);
                 /* @var $Project Project */
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 return '';
             }
         }
@@ -756,7 +756,7 @@ class Output extends Singleton
     {
         try {
             $url = MediaUtils::getRewrittenUrl('image.php?' . $output[3]);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             $url = '';
         }
 
@@ -809,7 +809,7 @@ class Output extends Singleton
             try {
                 $Image = MediaUtils::getElement($src);
                 $src = $Image->getUrl();
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -825,7 +825,7 @@ class Output extends Singleton
                     $src = $Image->getUrl();
                     $att['data-src'] = $Image->getUrl();
                 }
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -885,7 +885,7 @@ class Output extends Singleton
 
         try {
             $MediaItem = MediaUtils::getMediaItemByUrl('image.php?' . $components);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return '';
         }
 

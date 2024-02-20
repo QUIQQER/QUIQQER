@@ -141,7 +141,7 @@ class Utils
                 if (Auth\Helper::hasUserPermissionToUseAuthenticator($User, $authenticator)) {
                     $userAuthenticators[] = new $authenticator($User->getName());
                 }
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -177,7 +177,7 @@ class Utils
                 $tab,
                 OPT_DIR . $Package->getName() . '/user.xml'
             );
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
 

@@ -139,7 +139,7 @@ class LocalServer extends QUI\Utils\Singleton
         foreach ($packages as $package) {
             try {
                 QUI::getPackage($package['name']);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 $result[] = $package;
             }
         }

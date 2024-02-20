@@ -14,7 +14,7 @@ QUI::$Ajax->registerFunction(
         try {
             $User = QUI::getUsers()->get((int)$uid);
             $attributes = $User->getAttributes();
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             $User = QUI::getUsers()->getNobody();
             $attributes = $User->getAttributes();
         }

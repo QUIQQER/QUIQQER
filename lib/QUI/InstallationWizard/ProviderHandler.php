@@ -67,7 +67,7 @@ class ProviderHandler
                 }
 
                 $list = array_merge($list, $Package->getProvider('installationWizard'));
-            } catch (QUI\Exception $exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -99,7 +99,7 @@ class ProviderHandler
     {
         try {
             return (int)self::getConfig()->get('status', get_class($Provider));
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return self::STATUS_SET_UP_NOT_STARTED;
         }
     }

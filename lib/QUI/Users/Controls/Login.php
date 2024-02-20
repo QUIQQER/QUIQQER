@@ -81,7 +81,7 @@ class Login extends Control
 
         try {
             $Engine = QUI::getTemplateManager()->getEngine();
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return '';
         }
 

@@ -31,7 +31,7 @@ class Helper
         try {
             self::checkUserPermissionToUseAuthenticator($User, $authenticator);
             return true;
-        } catch (QUI\Permissions\Exception $Exception) {
+        } catch (QUI\Permissions\Exception) {
         }
 
         return false;

@@ -35,7 +35,7 @@ QUI::$Ajax->registerFunction(
 
             try {
                 $attr['e_username'] = QUI::getUsers()->get($attr['e_user'])->getName();
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 $attr['e_username'] = '---';
             }
 

@@ -72,9 +72,9 @@ define('DEBUG_MEMORY', false);
 try {
     QUI\Cache\Manager::set('qui_cache_test', 1);
     define('CHECK_CACHE', QUI\Cache\Manager::get('qui_cache_test'));
-} catch (QUI\Cache\Exception $e) {
+} catch (QUI\Cache\Exception) {
     define('CHECK_CACHE', false);
-} catch (Stash\Exception\InvalidArgumentException $e) {
+} catch (Stash\Exception\InvalidArgumentException) {
     define('CHECK_CACHE', false);
 }
 

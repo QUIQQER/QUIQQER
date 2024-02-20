@@ -20,7 +20,7 @@ QUI::$Ajax->registerFunction(
             if ($params) {
                 $Control->setAttributes($params);
             }
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'control.not.found'),
                 404

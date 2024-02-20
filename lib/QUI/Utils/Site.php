@@ -224,7 +224,7 @@ class Site
 
         try {
             return QUI\Projects\Site\Utils::getSiteByUrl($Project, $url);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             throw new QUI\Exception('Site not found', 404);
         }
     }

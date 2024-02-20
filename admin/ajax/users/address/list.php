@@ -18,7 +18,7 @@ QUI::$Ajax->registerFunction(
 
         try {
             $Standard = $User->getStandardAddress();
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             if (\count($addresses)) {
                 $Standard = \current($addresses);
             }

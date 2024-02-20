@@ -115,7 +115,7 @@ class Canonical
                 $CanonicalSite = QUI\Projects\Site\Utils::getSiteByLink($canonical);
                 $canonical = $CanonicalSite->getUrlRewritten();
                 $canonical = ltrim($canonical, '/');
-            } catch (\Exception $Exception) {
+            } catch (\Exception) {
             }
         }
 

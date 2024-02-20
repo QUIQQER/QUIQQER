@@ -84,7 +84,7 @@ class ModRewrite extends QUI\System\Test
                 'http://' . $host . '/' . URL_SYS_DIR
                 . '/ajax.php?_rf=["ajax_system_modRewrite"]'
             );
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return self::STATUS_ERROR;
         }
 
