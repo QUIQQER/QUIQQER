@@ -74,7 +74,7 @@
     "ramsey/uuid": "^3|^4",
     "seld/jsonlint": "^1",
     "symfony/console": "^4|^5|^6",
-    "symfony/http-foundation": ">=2.3 <=7",
+    "symfony/http-foundation": "2.3 - 7",
     "symfony/polyfill-php82": "^1",
     "symfony/polyfill-php83": "^1",
     "t7systems/blowfish": "1.0.0",
