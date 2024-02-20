@@ -18,7 +18,7 @@ phpunit:
     - QUIQQER_LATEST_RELEASE=`git -C ${CI_PROJECT_DIR} describe --tags --abbrev=0 remotes/origin/${CI_DEFAULT_BRANCH}`
     - cd /var/www/html
     - ./console composer config repositories.local path ${CI_PROJECT_DIR}
-    - COMPOSER_MIRROR_PATH_REPOS=1 ./console composer require ${PACKAGE_NAME}:"dev-${CI_COMMIT_SHA}@dev as ${QUIQQER_LATEST_RELEASE}"
+    - COMPOSER_MIRROR_PATH_REPOS=1 ./console composer require --with-all-dependencies ${PACKAGE_NAME}:"dev-${CI_COMMIT_SHA}@dev as ${QUIQQER_LATEST_RELEASE}"
     # Enter source code directory in QUIQQER system
     - cd /var/www/html/packages/${PACKAGE_NAME}
   script:
