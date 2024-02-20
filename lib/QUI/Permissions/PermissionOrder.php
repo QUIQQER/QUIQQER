@@ -88,7 +88,7 @@ class PermissionOrder
         /* @var $Object Group */
         foreach ($list as $Object) {
             $hasPermissionResult = $Object->hasPermission($permission);
-            
+
             if ($hasPermissionResult === false) {
                 continue;
             }
