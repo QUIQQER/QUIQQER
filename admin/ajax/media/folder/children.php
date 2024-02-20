@@ -37,7 +37,7 @@ QUI::$Ajax->registerFunction(
         $getUserName = function ($uid) {
             try {
                 return QUI::getUsers()->get($uid)->getName();
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
 
             return '---';

@@ -34,7 +34,7 @@ QUI::$Ajax->registerFunction(
             QUI::getMessagesHandler()->addError($Exception->getMessage());
 
             return false;
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
             return false;
         }
 

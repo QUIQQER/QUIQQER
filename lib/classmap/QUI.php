@@ -611,7 +611,7 @@ class QUI
         try {
             $vhosts = self::getConfig('etc/vhosts.ini.php');
             self::$vhosts = $vhosts->toArray();
-        } catch (\QUI\Exception $Exception) {
+        } catch (\QUI\Exception) {
             self::$vhosts = [];
         }
 

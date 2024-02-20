@@ -217,7 +217,7 @@ class Package extends QUI\System\Console\Tool
             $this->writeLn('Package already exists');
             Update::writeToLog('Package already exists');
             exit;
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             Update::writeToLog(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',

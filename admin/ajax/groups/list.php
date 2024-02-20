@@ -37,7 +37,7 @@ QUI::$Ajax->registerFunction(
 
                 $search[$key]['admin'] = $isAdmin ? 1 : 0;
                 $search[$key]['users'] = $Group->countUser();
-            } catch (QUI\Exception $Group) {
+            } catch (QUI\Exception) {
                 $search[$key]['admin'] = 0;
                 $search[$key]['users'] = 0;
             }

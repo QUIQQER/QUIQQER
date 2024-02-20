@@ -383,7 +383,7 @@ class Htaccess extends QUI\System\Console\Tool
             if ($version[1] <= 2) {
                 $oldTemplate = true;
             }
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
             $this->writeLn("Please select your Apache Version.");
             $this->writeLn("[1] Apache 2.3 and higher.");
             $this->writeLn("[2] Apache 2.2 and lower.");

@@ -106,14 +106,14 @@ class QUIQQER extends AbstractAuthenticator
         if (QUI::conf('globals', 'emaillogin') && \strpos($this->username, '@') !== false) {
             try {
                 $User = QUI::getUsers()->getUserByMail($this->username);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 
         if ($User === false) {
             try {
                 $User = QUI::getUsers()->getUserByName($this->username);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 throw new QUI\Users\Exception(
                     ['quiqqer/quiqqer', 'exception.login.fail.user.not.found'],
                     404

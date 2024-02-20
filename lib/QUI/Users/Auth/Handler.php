@@ -173,7 +173,7 @@ class Handler
                 }
 
                 $list = \array_merge($list, $Package->getProvider('auth'));
-            } catch (QUI\Exception $exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -302,7 +302,7 @@ class Handler
 
         try {
             QUI::getPackage('quiqqer/verification');
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
             $isInstalled = false;
         }
 

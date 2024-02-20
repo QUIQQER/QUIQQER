@@ -96,10 +96,10 @@ class Locker
 
             try {
                 return QUI::getUsers()->get($uid)->getAttributes();
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 return $uid;
             }
-        } catch (QUI\Lock\Exception $Exception) {
+        } catch (QUI\Lock\Exception) {
         }
 
         return false;
@@ -142,7 +142,7 @@ class Locker
     {
         try {
             return QUI\Cache\Manager::getStash($name);
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
             throw new QUI\Lock\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',

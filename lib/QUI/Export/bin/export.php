@@ -1,6 +1,6 @@
 <?php
 
-$dir = str_replace('quiqqer/quiqqer/lib/QUI/Export/bin', '', dirname(__FILE__));
+$dir = str_replace('quiqqer/quiqqer/lib/QUI/Export/bin', '', __DIR__);
 define('QUIQQER_SYSTEM', true);
 define('QUIQQER_AJAX', true);
 

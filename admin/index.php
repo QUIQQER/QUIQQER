@@ -79,7 +79,7 @@ echo $User->getLang(); ?>"> <!--<![endif]-->
                   type="<?php
                   echo $type; ?>">
             <?php
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
     }
     ?>
@@ -253,7 +253,7 @@ echo $User->getLang(); ?>"> <!--<![endif]-->
 
     try {
         $files = QUI\Translator::getJSTranslationFiles($User->getLang());
-    } catch (QUI\Exception $Exception) {
+    } catch (QUI\Exception) {
     }
 
     $locales = [];

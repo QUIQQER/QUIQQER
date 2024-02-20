@@ -97,18 +97,6 @@ class Project implements \Stringable
      */
     private $config;
     /**
-     * project name
-     *
-     * @var string
-     */
-    private $name;
-    /**
-     * Project language
-     *
-     * @var string
-     */
-    private $lang;
-    /**
      * default language
      *
      * @var string
@@ -120,12 +108,6 @@ class Project implements \Stringable
      * @var array
      */
     private $langs;
-    /**
-     * template of the project
-     *
-     * @var array
-     */
-    private $template;
     /**
      * loaded sites
      *
@@ -154,12 +136,11 @@ class Project implements \Stringable
      *
      * @throws QUI\Exception
      */
-    public function __construct($name, $lang = false, $template = false)
-    {
-        $this->name = $name;
-        $this->lang = $lang;
-        $this->template = $template;
-
+    public function __construct(
+        private $name,
+        private $lang = false,
+        private $template = false
+    ) {
         try {
             $this->refresh();
         } catch (QUI\Exception $Exception) {
@@ -396,7 +377,7 @@ class Project implements \Stringable
     {
         try {
             return (int)QUI\Cache\Manager::get($this->getEDateCacheName());
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return 0;
@@ -1376,7 +1357,7 @@ class Project implements \Stringable
                         release_to = '';
                 "
                 );
-            } catch (PDOException $Exception) {
+            } catch (PDOException) {
             }
 
             if (!$Table->issetPrimaryKey($table, 'id')) {

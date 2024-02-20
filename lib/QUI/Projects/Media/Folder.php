@@ -265,7 +265,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             $this->getChildByName($name);
 
             return true;
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return false;
@@ -509,7 +509,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
             try {
                 $children = $this->getChildByName($new_name);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 $children = false;
             }
 
@@ -993,7 +993,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
             try {
                 $fetch = QUI::getDataBase()->fetch($dbQuery);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 return 0;
             }
 
@@ -1515,7 +1515,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
                 try {
                     $NewFolder = $this->getChildByName($foldername);
-                } catch (QUI\Exception $Exception) {
+                } catch (QUI\Exception) {
                     $NewFolder = $this->createFolder($foldername);
                 }
 

@@ -109,7 +109,7 @@ class Utils
                 $tab,
                 OPT_DIR . $Package->getName() . '/group.xml'
             );
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return '';

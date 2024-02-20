@@ -43,7 +43,7 @@ class QuiqqerFileDriver extends FileSystem
         if (is_dir($path)) {
             try {
                 QUI::getTemp()->moveToTemp($path);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 return false;
             }
 

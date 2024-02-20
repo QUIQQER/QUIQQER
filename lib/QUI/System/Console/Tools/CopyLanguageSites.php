@@ -180,7 +180,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
 
         try {
             $TargetProject->get($targetParentId);
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
             $this->writeLn("Could not load source site $targetParentId ($targetLang)");
         }
 

@@ -72,7 +72,7 @@ class CommandEvents
             try {
                 $Package = QUI::getPackage($package);
                 $Package->setup();
-            } catch (QUI\Exception $Package) {
+            } catch (QUI\Exception) {
             }
         }
 

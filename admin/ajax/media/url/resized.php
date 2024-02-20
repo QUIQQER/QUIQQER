@@ -34,7 +34,7 @@ QUI::$Ajax->registerFunction(
 
             /* @var $File \QUI\Projects\Media\Image */
             return $File->getSizeCacheUrl($maxWidth, $maxHeight);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return $fileurl;

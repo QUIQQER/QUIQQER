@@ -118,7 +118,7 @@ class Manager
 
         try {
             $handler = new QuiqqerFileDriver($params);
-        } catch (Stash\Exception\RuntimeException $Exception) {
+        } catch (Stash\Exception\RuntimeException) {
             return false;
         }
 
@@ -141,7 +141,7 @@ class Manager
         if (!self::$Config) {
             try {
                 self::$Config = QUI::getConfig('etc/cache.ini.php');
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 file_put_contents(CMS_DIR . 'etc/cache.ini.php', '');
 
                 self::$Config = QUI::getConfig('etc/cache.ini.php');
@@ -187,7 +187,7 @@ class Manager
             $Item = self::getStash($name);
             $data = $Item->get();
             $isMiss = $Item->isMiss();
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
             throw new QUI\Cache\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -313,7 +313,7 @@ class Manager
                 case 'apc':
                     try {
                         array_unshift($handlers, self::getDriver([], 'apc'));
-                    } catch (Stash\Exception\RuntimeException $Exception) {
+                    } catch (Stash\Exception\RuntimeException) {
                     }
 
                     break;
@@ -321,7 +321,7 @@ class Manager
                 case 'filesystem':
                     try {
                         $handlers[] = self::getDriver([], 'filesystem');
-                    } catch (Stash\Exception\RuntimeException $Exception) {
+                    } catch (Stash\Exception\RuntimeException) {
                     }
 
                     break;
@@ -329,7 +329,7 @@ class Manager
                 case 'redis':
                     try {
                         $handlers[] = self::getDriver([], 'redis');
-                    } catch (Stash\Exception\RuntimeException $Exception) {
+                    } catch (Stash\Exception\RuntimeException) {
                     }
 
                     break;
@@ -337,7 +337,7 @@ class Manager
                 case 'memcache':
                     try {
                         array_unshift($handlers, self::getDriver([], 'memcache'));
-                    } catch (Stash\Exception\RuntimeException $Exception) {
+                    } catch (Stash\Exception\RuntimeException) {
                     }
 
                     break;
@@ -345,7 +345,7 @@ class Manager
                 case 'mongo':
                     try {
                         array_unshift($handlers, self::getDriver([], 'mongo'));
-                    } catch (Stash\Exception\RuntimeException $Exception) {
+                    } catch (Stash\Exception\RuntimeException) {
                     }
 
                     break;
@@ -397,7 +397,7 @@ class Manager
 
                 try {
                     return new Stash\Driver\Apc($params);
-                } catch (Stash\Exception\RuntimeException $Exception) {
+                } catch (Stash\Exception\RuntimeException) {
                 }
 
                 break;
@@ -433,7 +433,7 @@ class Manager
                     return new QuiqqerRedisDriver([
                         'servers' => $servers
                     ]);
-                } catch (Stash\Exception\RuntimeException $Exception) {
+                } catch (Stash\Exception\RuntimeException) {
                 }
 
                 break;
@@ -487,7 +487,7 @@ class Manager
 
                 try {
                     return new Stash\Driver\Memcache($defaults);
-                } catch (Stash\Exception\RuntimeException $Exception) {
+                } catch (Stash\Exception\RuntimeException) {
                 }
 
                 break;

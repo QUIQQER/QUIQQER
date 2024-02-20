@@ -812,7 +812,7 @@ class Utils
                     ]);
 
                     $ids = array_merge($ids, $children);
-                } catch (Exception $Exception) {
+                } catch (Exception) {
                 }
             }
 

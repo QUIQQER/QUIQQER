@@ -245,7 +245,7 @@ class Bundler
 
         try {
             $Project = QUI::getProjectManager()->decode($request['params']['project']);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             $Project = QUI::getProjectManager()->getProject(
                 $request['params']['project']
             );

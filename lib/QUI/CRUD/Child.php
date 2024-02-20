@@ -22,19 +22,9 @@ use function array_key_exists;
 abstract class Child extends QUI\QDOM
 {
     /**
-     * @var integer|string
-     */
-    protected $id;
-
-    /**
      * @var QUI\Events\Event
      */
     protected QUI\Events\Event $Events;
-
-    /**
-     * @var Factory
-     */
-    protected Factory $Factory;
 
     /**
      * Child constructor.
@@ -42,11 +32,9 @@ abstract class Child extends QUI\QDOM
      * @param integer|string $id
      * @param Factory $Factory
      */
-    public function __construct($id, Factory $Factory)
+    public function __construct(protected $id, protected Factory $Factory)
     {
         $this->Events = new QUI\Events\Event();
-        $this->Factory = $Factory;
-        $this->id = $id;
     }
 
     /**

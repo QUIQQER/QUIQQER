@@ -19,7 +19,7 @@ class Uuid
     {
         try {
             $UUID = \Ramsey\Uuid\Uuid::uuid1();
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
             $UUID = \Ramsey\Uuid\Uuid::uuid3(
                 \Ramsey\Uuid\Uuid::NAMESPACE_DNS,
                 \microtime(true) . \uniqid()
