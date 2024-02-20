@@ -21,25 +21,13 @@ use function strpos;
 class Canonical
 {
     /**
-     * Internal Site
-     *
-     * @var QUI\Interfaces\Projects\Site
-     */
-    protected QUI\Interfaces\Projects\Site $Site;
-
-    /**
      * @var bool
      */
     protected bool $considerGetParams = false;
 
-    /**
-     * construct
-     *
-     * @param QUI\Interfaces\Projects\Site $Site
-     */
-    public function __construct(QUI\Interfaces\Projects\Site $Site)
-    {
-        $this->Site = $Site;
+    public function __construct(
+        protected QUI\Interfaces\Projects\Site $Site
+    ) {
     }
 
     /**

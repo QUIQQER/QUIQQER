@@ -138,7 +138,7 @@ function exception_error_handler(int $errno, string $errStr, string $errFile, st
  *
  * @param Exception $Exception
  */
-function exception_handler(Exception $Exception)
+function exception_handler(\Throwable $Exception)
 {
     QUI::getErrorHandler()->writeErrorToLog(
         $Exception->getCode(),

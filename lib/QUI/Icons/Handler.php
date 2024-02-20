@@ -8,6 +8,11 @@ namespace QUI\Icons;
 
 use QUI;
 
+use function array_flip;
+use function is_null;
+use function json_encode;
+use function trim;
+
 /**
  * Class Handler
  * Icon handler for css class icons like font awesome
@@ -15,21 +20,21 @@ use QUI;
 class Handler
 {
     /**
-     * @var Handler
+     * @var ?Handler
      */
-    protected static $Instance = null;
+    protected static ?Handler $Instance = null;
 
     /**
      * @var array
      */
-    protected $list = [];
+    protected array $list = [];
 
     /**
      * list of needed css files
      *
      * @var array
      */
-    protected $files = [];
+    protected array $files = [];
 
     /**
      * Handler constructor.
@@ -44,9 +49,9 @@ class Handler
      *
      * @return Handler
      */
-    public static function getInstance()
+    public static function getInstance(): ?Handler
     {
-        if (\is_null(self::$Instance)) {
+        if (is_null(self::$Instance)) {
             self::$Instance = new self();
         }
 
@@ -62,7 +67,7 @@ class Handler
      *
      * @param string $file
      */
-    public function addCSSFile($file)
+    public function addCSSFile($file): void
     {
         $this->files[] = $file;
     }
@@ -72,7 +77,7 @@ class Handler
      *
      * @return array
      */
-    public function getCSSFiles()
+    public function getCSSFiles(): array
     {
         return $this->files;
     }
@@ -84,7 +89,7 @@ class Handler
     /**
      * @param array $icons
      */
-    public function addIcons(array $icons)
+    public function addIcons(array $icons): void
     {
         foreach ($icons as $icon) {
             $this->addIcon($icon);
@@ -94,9 +99,9 @@ class Handler
     /**
      * @param $iconClass
      */
-    public function addIcon($iconClass)
+    public function addIcon($iconClass): void
     {
-        $this->list[] = \trim($iconClass);
+        $this->list[] = trim($iconClass);
     }
 
     /**
@@ -105,9 +110,9 @@ class Handler
      * @param $value
      * @return bool
      */
-    public function isIcon($value)
+    public function isIcon($value): bool
     {
-        $classes = \array_flip($this->list);
+        $classes = array_flip($this->list);
 
         return isset($classes[$value]);
     }
@@ -117,21 +122,21 @@ class Handler
      */
 
     /**
-     * Return the list as anjson array
+     * Return the list as an json array
      *
      * @return string
      */
-    public function toJSON()
+    public function toJSON(): string
     {
-        return \json_encode($this->toArray());
+        return json_encode($this->toArray());
     }
 
     /**
-     * Return the list as anjson array
+     * Return the list as an json array
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->list;
     }

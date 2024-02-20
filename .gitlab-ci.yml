@@ -6,16 +6,20 @@ variables:
   PACKAGE_NAME: "quiqqer/quiqqer"
 
 phpunit:
-  image: pcsgjan/quiqqer:dev
+  image: quiqqer/testing:dev
   stage: test
   before_script:
-    - git config --global --add safe.directory ${CI_PROJECT_DIR}
-    - QUIQQER_LATEST_RELEASE=`git -C ${CI_PROJECT_DIR} describe --tags --abbrev=0 ${CI_DEFAULT_BRANCH}`
-    - cd /var/www
-  script:
-    - ./console composer config repositories.local path ${CI_PROJECT_DIR}
-    - COMPOSER_MIRROR_PATH_REPOS=1 ./console composer require ${PACKAGE_NAME}:"dev-${CI_COMMIT_SHA}@dev as ${QUIQQER_LATEST_RELEASE}"
-    - cd packages/${PACKAGE_NAME}
+    # Install phpunit
     - curl -sSL --output /tmp/phpunit.phar "https://phar.phpunit.de/phpunit-10.phar"
     - chmod +x /tmp/phpunit.phar
+    # Configure git
+    - git config --global --add safe.directory ${CI_PROJECT_DIR}
+    # Load source code into QUIQQER system
+    - QUIQQER_LATEST_RELEASE=`git -C ${CI_PROJECT_DIR} describe --tags --abbrev=0 remotes/origin/${CI_DEFAULT_BRANCH}`
+    - cd /var/www/html
+    - ./console composer config repositories.local path ${CI_PROJECT_DIR}
+    - COMPOSER_MIRROR_PATH_REPOS=1 ./console composer require ${PACKAGE_NAME}:"dev-${CI_COMMIT_SHA}@dev as ${QUIQQER_LATEST_RELEASE}"
+    # Enter source code directory in QUIQQER system
+    - cd /var/www/html/packages/${PACKAGE_NAME}
+  script:
     - /tmp/phpunit.phar

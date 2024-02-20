@@ -22,22 +22,9 @@ use function json_decode;
  */
 class Trash implements QUI\Interfaces\Projects\Trash
 {
-    /**
-     * The media
-     *
-     * @var QUI\Projects\Media
-     */
-    protected Media $Media;
-
-    /**
-     * Konstruktor
-     *
-     * @param QUI\Projects\Media $Media
-     */
-    public function __construct(Media $Media)
-    {
-        $this->Media = $Media;
-
+    public function __construct(
+        protected Media $Media
+    ) {
         QUI\Utils\System\File::mkdir($this->getPath());
     }
 
