@@ -13,6 +13,7 @@ phpunit:
     paths:
       - tools/
   before_script:
+    - whoami
     - pwd
     - ls -la
     # Install tools
