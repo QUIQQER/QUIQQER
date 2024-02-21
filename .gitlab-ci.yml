@@ -16,6 +16,7 @@ phpunit:
     - whoami
     - pwd
     - touch test.test.test
+    - echo "test" >> phive.xml
     - ls -la
     # Install tools
     - phive --no-progress install --copy --trust-gpg-keys 4AA394086372C20A,51C67305FFC2E5C0,033E5F8D801A2F8D
