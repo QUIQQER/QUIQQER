@@ -9,7 +9,9 @@ phpunit:
   image: quiqqer/testing:dev
   stage: test
   cache:
-    key: $CI_COMMIT_REF_SLUG
+    key:
+      files: 
+        - phive.xml
     paths:
       - tools
       - phive-home
