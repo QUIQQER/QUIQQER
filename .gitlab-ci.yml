@@ -13,12 +13,9 @@ phpunit:
     paths:
       - tools/
   before_script:
-    # Install tools
-    - ls -la tools
-#    - sudo phive --no-progress install --copy --trust-gpg-keys 4AA394086372C20A,51C67305FFC2E5C0,033E5F8D801A2F8D
-    - sudo phive --no-progress update
+    # Install tools (phive requires root at the moment, see https://github.com/phar-io/phive/issues/421)
+    - sudo phive --no-progress install --copy --trust-gpg-keys 4AA394086372C20A,51C67305FFC2E5C0,033E5F8D801A2F8D
     - sudo chown www-data:www-data tools
-    - ls -la tools
     # Configure git
     - git config --global --add safe.directory ${CI_PROJECT_DIR}
     # Load source code into QUIQQER system
