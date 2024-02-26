@@ -6,10 +6,10 @@ variables:
   PACKAGE_NAME: "quiqqer/quiqqer"
 
 phpunit:
-  image: $QUIQQER_TESTING_IMAGE
+  image: quiqqer/testing:php-$PHP_VERSION_TO_TEST
   parallel:
     matrix:
-      - QUIQQER_TESTING_IMAGE: ["quiqqer/testing:php-8.1", "quiqqer/testing:php-8.2", "quiqqer/testing:php-8.3"]
+      - PHP_VERSION_TO_TEST: ["8.1", "8.2", "8.3"]
   stage: test
   cache:
     key:
