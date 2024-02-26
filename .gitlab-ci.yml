@@ -19,7 +19,6 @@ phpunit:
       - tools
       - phive-home
   before_script:
-    - php -v
     # Install tools (phive requires root at the moment, see https://github.com/phar-io/phive/issues/421)
     - sudo phive --no-progress --home phive-home install --trust-gpg-keys 4AA394086372C20A,51C67305FFC2E5C0,033E5F8D801A2F8D
     - sudo chown www-data:www-data tools phive-home -R
