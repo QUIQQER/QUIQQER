@@ -65,7 +65,7 @@ class Manager extends QUI\QDOM
             self::$getListOfExtraAttributes = QUI\Cache\Manager::get($cache);
 
             return self::$getListOfExtraAttributes;
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         $list = QUI::getPackageManager()->getInstalled();
@@ -333,7 +333,7 @@ class Manager extends QUI\QDOM
         foreach ($ids as $id) {
             try {
                 $result[] = $this->get((int)$id['id']);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 // nothing
             }
         }

@@ -399,7 +399,7 @@ class Package extends QUI\QDOM
 
         try {
             return QUI::getPackage($packageData['template_parent']);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return false;
         }
     }

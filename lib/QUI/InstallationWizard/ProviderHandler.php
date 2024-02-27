@@ -67,7 +67,7 @@ class ProviderHandler
                 }
 
                 $list = array_merge($list, $Package->getProvider('installationWizard'));
-            } catch (QUI\Exception $exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -98,8 +98,8 @@ class ProviderHandler
     public static function getProviderStatus(InstallationWizardInterface $Provider): int
     {
         try {
-            return (int)self::getConfig()->get('status', get_class($Provider));
-        } catch (QUI\Exception $Exception) {
+            return (int)self::getConfig()->get('status', $Provider::class);
+        } catch (QUI\Exception) {
             return self::STATUS_SET_UP_NOT_STARTED;
         }
     }
@@ -128,7 +128,7 @@ class ProviderHandler
      */
     public static function setProviderStatus(InstallationWizardInterface $Provider, int $status)
     {
-        self::getConfig()->set('status', get_class($Provider), $status);
+        self::getConfig()->set('status', $Provider::class, $status);
         self::getConfig()->save();
     }
 }

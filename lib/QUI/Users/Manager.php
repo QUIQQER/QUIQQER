@@ -309,7 +309,7 @@ class Manager
                         $User = $UserInstance;
                     }
                 }
-            } catch (\Exception $apiException) {
+            } catch (\Exception) {
             }
 
             if (empty($User)) {
@@ -343,7 +343,7 @@ class Manager
 
         try {
             $_User = $this->getUserBySession();
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return false;
         }
 
@@ -585,7 +585,7 @@ class Manager
             return false;
         }
 
-        if (get_class($User) === User::class) {
+        if ($User::class === User::class) {
             return true;
         }
 
@@ -609,7 +609,7 @@ class Manager
             return false;
         }
 
-        if (get_class($User) === SystemUser::class) {
+        if ($User::class === SystemUser::class) {
             return true;
         }
 
@@ -888,7 +888,7 @@ class Manager
                         'exception.lib.user.exist'
                     )
                 );
-            } catch (\Exception $Exception) {
+            } catch (\Exception) {
                 // uuid does not exist - this is good
             }
 
@@ -915,7 +915,7 @@ class Manager
                         'exception.lib.user.exist'
                     )
                 );
-            } catch (\Exception $Exception) {
+            } catch (\Exception) {
                 // id does not exist - this is good
             }
 
@@ -1009,7 +1009,7 @@ class Manager
         foreach ($ids as $id) {
             try {
                 $result[] = $this->get((int)$id['id']);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 // nothing
             }
         }
@@ -1075,7 +1075,7 @@ class Manager
             try {
                 $User = self::getUserByName($authData['username']);
                 $userId = $User->getId();
-            } catch (\Exception $Exception) {
+            } catch (\Exception) {
                 // nothing
             }
         }
@@ -1316,7 +1316,7 @@ class Manager
             try {
                 $User = self::getUserByName($username);
                 $userId = $User->getId();
-            } catch (\Exception $Exception) {
+            } catch (\Exception) {
                 // nothing
             }
         }
@@ -1333,7 +1333,7 @@ class Manager
         }
 
         if (
-            $Session->get('auth-' . get_class($Authenticator))
+            $Session->get('auth-' . $Authenticator::class)
             && $Session->get('username')
             && $Session->get('uid')
         ) {
@@ -1359,7 +1359,7 @@ class Manager
                 $Exception->getCode(),
                 $Exception->getContext()
             );
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
             QUI\System\Log::write(
                 'Login failed: ' . $username,
                 QUI\System\Log::LEVEL_WARNING,
@@ -1389,7 +1389,7 @@ class Manager
         }
 
         $Session->set(
-            'auth-' . get_class($Authenticator),
+            'auth-' . $Authenticator::class,
             1
         );
 
@@ -1409,7 +1409,7 @@ class Manager
             return false;
         }
 
-        if (get_class($User) === Nobody::class) {
+        if ($User::class === Nobody::class) {
             return true;
         }
 
@@ -1436,7 +1436,7 @@ class Manager
         foreach ($result as $entry) {
             try {
                 $Users[] = $this->get((int)$entry['id']);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 // nothing
             }
         }

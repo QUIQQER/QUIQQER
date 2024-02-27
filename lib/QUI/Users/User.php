@@ -280,7 +280,7 @@ class User implements QUI\Interfaces\Users\User
         if (!$this->lang) {
             try {
                 $this->lang = QUI\Projects\Manager::get()->getAttribute('lang');
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -535,7 +535,7 @@ class User implements QUI\Interfaces\Users\User
                 if ($this->isLoaded === true) {
                     try {
                         $this->getStandardAddress()->editMail(0, $value);
-                    } catch (QUI\Exception $Exception) {
+                    } catch (QUI\Exception) {
                         if (empty($value)) {
                             $this->getStandardAddress()->clearMail();
                         }
@@ -619,7 +619,7 @@ class User implements QUI\Interfaces\Users\User
                 $this->StandardAddress = $this->getAddress($this->getAttribute('address'));
 
                 return $this->StandardAddress;
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -856,7 +856,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getType()
     {
-        return get_class($this);
+        return $this::class;
     }
 
     /**
@@ -1100,7 +1100,7 @@ class User implements QUI\Interfaces\Users\User
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         $Dom = QUI\Utils\Text\XML::getDomFromXml($file);
@@ -1149,7 +1149,7 @@ class User implements QUI\Interfaces\Users\User
         try {
             $Groups = QUI::getGroups();
             $Group = $Groups->get($groupId);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return;
         }
 
@@ -1195,7 +1195,7 @@ class User implements QUI\Interfaces\Users\User
                 foreach ($groupIds as $id) {
                     try {
                         $this->Group[] = QUI::getGroups()->get($id);
-                    } catch (QUI\Exception $Exception) {
+                    } catch (QUI\Exception) {
                     }
                 }
             }
@@ -1257,7 +1257,7 @@ class User implements QUI\Interfaces\Users\User
                 try {
                     $this->Group[] = $Groups->get($g);
                     $aTmp[] = $g;
-                } catch (QUI\Exception $Exception) {
+                } catch (QUI\Exception) {
                     // nothing
                 }
             }
@@ -1272,7 +1272,7 @@ class User implements QUI\Interfaces\Users\User
             try {
                 $this->Group[] = $Groups->get($groups);
                 $this->groups = ',' . $groups . ',';
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
     }
@@ -1563,7 +1563,7 @@ class User implements QUI\Interfaces\Users\User
             if ($Standard) {
                 return $Standard->getCountry();
             }
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         // apache fallback falls möglich
@@ -1572,7 +1572,7 @@ class User implements QUI\Interfaces\Users\User
                 return QUI\Countries\Manager::get(
                     $_SERVER["GEOIP_COUNTRY_CODE"]
                 );
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -1713,7 +1713,7 @@ class User implements QUI\Interfaces\Users\User
                 if (!empty($addressCompany)) {
                     $params['companyName'] = $addressCompany;
                 }
-            } catch (\Exception $Exception) {
+            } catch (\Exception) {
             }
         }
 
@@ -1721,7 +1721,7 @@ class User implements QUI\Interfaces\Users\User
             $Image = QUI\Projects\Media\Utils::getImageByUrl($this->getAttribute('avatar'));
 
             $params['avatar'] = $Image->getUrl();
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return $params;
@@ -1837,7 +1837,7 @@ class User implements QUI\Interfaces\Users\User
 
         try {
             return QUI\Projects\Media\Utils::getImageByUrl($avatar);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         $Project = QUI::getProjectManager()->getStandard();
@@ -1925,7 +1925,7 @@ class User implements QUI\Interfaces\Users\User
             ]);
 
             return true;
-        } catch (QUI\Users\Exception $Exception) {
+        } catch (QUI\Users\Exception) {
             // 401 -> wrong password
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);

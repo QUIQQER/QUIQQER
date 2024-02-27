@@ -235,7 +235,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             $this->decode(
                 QUI\Cache\Manager::get($this->getCacheName())
             );
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             $this->refresh();
             $this->createCache();
         }
@@ -556,7 +556,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getEdit(): ?Site\Edit
     {
-        if (get_class($this) == 'QUI\Projects\Site\Edit') {
+        if ($this::class == 'QUI\Projects\Site\Edit') {
             /* @var QUI\Projects\Site\Edit $this */
             return $this;
         }
@@ -615,7 +615,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             $_Project->get($lang_id);
 
             return true;
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             // nothing
         }
 
@@ -651,7 +651,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
                 $result[$lang] = false;
             }
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return $result;
@@ -1016,7 +1016,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         try {
             $dbCache = QUI\Cache\Manager::get($cacheDbPackageCacheName);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             $dbCache = [];
 
             $PackageManager = QUI::getPackageManager();
@@ -1076,7 +1076,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
             try {
                 $noCache = QUI\Cache\Manager::get($cacheName);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 $noCache = 0;
                 $siteXml = OPT_DIR . $package . '/' . QUI\Package\Package::SITE_XML;
 
@@ -1242,7 +1242,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         try {
             return $this->getProject()->get($last);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return false;
@@ -1415,7 +1415,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                         $Edit->deleteLinked($pid);
                     }
                 }
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -1839,7 +1839,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 if ($id == 0) {
                     $search = false;
                 }
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 $search = false;
             }
         }
@@ -1875,7 +1875,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 if ($id == 0) {
                     $search = false;
                 }
-            } catch (QUI\Exception $e) {
+            } catch (QUI\Exception) {
                 $search = false;
             }
         }

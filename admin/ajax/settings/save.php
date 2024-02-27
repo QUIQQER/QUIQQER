@@ -145,7 +145,7 @@ QUI::$Ajax->registerFunction(
             # Compare new and old .htaccess
             try {
                 $webServer = QUI\Utils\System\Webserver::detectInstalledWebserver();
-            } catch (Exception $Exception) {
+            } catch (Exception) {
                 $webServer = "";
             }
 

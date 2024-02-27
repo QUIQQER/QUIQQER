@@ -145,7 +145,7 @@ class SecurityUpdate extends QUI\System\Console\Tool
 
                 try {
                     $version = $VersionParser->normalize($v);
-                } catch (\RuntimeException $e) {
+                } catch (\RuntimeException) {
                     continue;
                 }
 

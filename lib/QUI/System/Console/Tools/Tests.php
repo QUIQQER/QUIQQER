@@ -82,7 +82,7 @@ class Tests extends QUI\System\Console\Tool
             /* @var $Test \QUI\Interfaces\System\Test */
             try {
                 $result = $Test->execute();
-            } catch (\ErrorException $Exception) {
+            } catch (\ErrorException) {
                 $result = QUI\System\Test::STATUS_ERROR;
             }
 

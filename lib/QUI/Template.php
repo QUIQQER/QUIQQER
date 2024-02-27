@@ -784,7 +784,7 @@ class Template extends QUI\QDOM
             $files = QUI\Translator::getJSTranslationFiles(
                 $Project->getLang()
             );
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         $locales = [];
@@ -977,7 +977,7 @@ class Template extends QUI\QDOM
                     $templates[] = OPT_DIR . $Parent->getName();
                 }
             }
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         $this->templates[$name] = $templates;

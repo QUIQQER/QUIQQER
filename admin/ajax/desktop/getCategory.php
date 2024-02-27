@@ -15,7 +15,7 @@ QUI::$Ajax->registerFunction(
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         $Settings = QUI\Utils\XML\Settings::getInstance();

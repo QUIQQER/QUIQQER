@@ -29,7 +29,7 @@ try {
         $ProjectImage = Utils::getImageByUrl($Standard->getConfig('logo'));
         $projectLogo = '<img src="' . $ProjectImage->getSizeCacheUrl() . '" />';
     }
-} catch (QUI\Exception $exception) {
+} catch (QUI\Exception) {
 }
 
 foreach ($packages as $package) {
@@ -45,7 +45,7 @@ foreach ($packages as $package) {
         if (!empty($auth)) {
             $authPackages[] = $Package->getName();
         }
-    } catch (QUI\Exception $Exception) {
+    } catch (QUI\Exception) {
     }
 }
 
@@ -107,7 +107,7 @@ foreach ($packages as $package) {
                   type="<?php
                   echo $type; ?>">
             <?php
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
     }
     ?>

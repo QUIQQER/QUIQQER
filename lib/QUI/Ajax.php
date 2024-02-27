@@ -272,7 +272,7 @@ class Ajax extends QUI\QDOM
     public function writeException($Exception): array
     {
         $return = [];
-        $class = get_class($Exception);
+        $class = $Exception::class;
 
         $data = [];
 
@@ -299,12 +299,12 @@ class Ajax extends QUI\QDOM
                 if ($this->getAttribute('db_errors')) {
                     $return['ExceptionDBError']['message'] = $Exception->getMessage();
                     $return['ExceptionDBError']['code'] = $Exception->getCode();
-                    $return['ExceptionDBError']['type'] = get_class($Exception);
+                    $return['ExceptionDBError']['type'] = $Exception::class;
                 } else {
                     // Standardfehler rausbringen
                     $return['Exception']['message'] = 'Internal Server Error';
                     $return['Exception']['code'] = 500;
-                    $return['Exception']['type'] = get_class($Exception);
+                    $return['Exception']['type'] = $Exception::class;
                 }
 
                 if ((DEVELOPMENT || DEBUG_MODE) && $class != 'PDOException') {
@@ -354,7 +354,7 @@ class Ajax extends QUI\QDOM
             default:
                 $return['Exception']['message'] = $Exception->getMessage();
                 $return['Exception']['code'] = $Exception->getCode();
-                $return['Exception']['type'] = get_class($Exception);
+                $return['Exception']['type'] = $Exception::class;
                 break;
         }
 
@@ -497,7 +497,7 @@ class Ajax extends QUI\QDOM
 
         $function = self::$permissions[$reg_function];
 
-        if (is_object($function) && get_class($function) === 'Closure') {
+        if (is_object($function) && $function::class === 'Closure') {
             $function();
 
             return;
@@ -511,7 +511,7 @@ class Ajax extends QUI\QDOM
                 try {
                     $Package = null;
                     $Package = QUI::getPackage($pluginParts[0] . '/' . $pluginParts[1]);
-                } catch (Exception $Exception) {
+                } catch (Exception) {
                 }
 
                 if ($Package) {

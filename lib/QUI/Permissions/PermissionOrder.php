@@ -85,22 +85,16 @@ class PermissionOrder
     {
         $result = null;
 
-        /* @var $Group Group */
+        /* @var $Object Group */
         foreach ($list as $Object) {
-            if (QUI::getGroups()->isGroup($Object)) {
-                /* @var $Object Group */
-                $hasPermissionResult = $Object->hasPermission($permission);
-            } else {
-                /* @var $Object User */
-                $hasPermissionResult = $Object->hasPermission($permission);
-            }
+            $hasPermissionResult = $Object->hasPermission($permission);
 
             if ($hasPermissionResult === false) {
                 continue;
             }
 
             if ($result === null || (int)$hasPermissionResult < $result) {
-                $result = (int)$Group->hasPermission($permission);
+                $result = (int)$Object->hasPermission($permission);
             }
         }
 

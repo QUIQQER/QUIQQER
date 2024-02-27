@@ -122,7 +122,7 @@ class Session
             $randomCharacters = array_rand($alphabetAsKeys, 5);
 
             // Implode the array of characters to a string
-            $sessionName = implode($randomCharacters);
+            $sessionName = implode('', $randomCharacters);
 
             QUI::$Conf->set('session', 'name', $sessionName);
             QUI::$Conf->save();
@@ -527,7 +527,7 @@ class Session
                 ],
                 'limit' => 1
             ]);
-        } catch (QUI\Database\Exception $Exception) {
+        } catch (QUI\Database\Exception) {
             return 0;
         }
 
@@ -555,7 +555,7 @@ class Session
                 ],
                 'limit' => 1
             ]);
-        } catch (QUI\Database\Exception $Exception) {
+        } catch (QUI\Database\Exception) {
             return false;
         }
 

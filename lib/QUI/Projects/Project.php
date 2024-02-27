@@ -377,7 +377,7 @@ class Project implements \Stringable
     {
         try {
             return (int)QUI\Cache\Manager::get($this->getEDateCacheName());
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return 0;
@@ -495,7 +495,7 @@ class Project implements \Stringable
      */
     public function __toString(): string
     {
-        return 'Object ' . get_class($this) . '(' . $this->name . ',' . $this->lang . ')';
+        return 'Object ' . $this::class . '(' . $this->name . ',' . $this->lang . ')';
     }
 
     /**
@@ -1357,7 +1357,7 @@ class Project implements \Stringable
                         release_to = '';
                 "
                 );
-            } catch (PDOException $Exception) {
+            } catch (PDOException) {
             }
 
             if (!$Table->issetPrimaryKey($table, 'id')) {

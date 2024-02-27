@@ -6,12 +6,22 @@ variables:
   PACKAGE_NAME: "quiqqer/quiqqer"
 
 phpunit:
-  image: quiqqer/testing:dev
+  image: quiqqer/testing:php-$PHP_VERSION_TO_TEST
+  parallel:
+    matrix:
+      - PHP_VERSION_TO_TEST: ["8.1", "8.2", "8.3"]
   stage: test
+  cache:
+    key:
+      files: 
+        - phive.xml
+    paths:
+      - tools
+      - phive-home
   before_script:
-    # Install phpunit
-    - curl -sSL --output /tmp/phpunit.phar "https://phar.phpunit.de/phpunit-10.phar"
-    - chmod +x /tmp/phpunit.phar
+    # Install tools (phive requires root at the moment, see https://github.com/phar-io/phive/issues/421)
+    - sudo phive --no-progress --home phive-home install --trust-gpg-keys 4AA394086372C20A,51C67305FFC2E5C0,033E5F8D801A2F8D
+    - sudo chown www-data:www-data tools phive-home -R
     # Configure git
     - git config --global --add safe.directory ${CI_PROJECT_DIR}
     # Load source code into QUIQQER system
@@ -22,4 +32,4 @@ phpunit:
     # Enter source code directory in QUIQQER system
     - cd /var/www/html/packages/${PACKAGE_NAME}
   script:
-    - /tmp/phpunit.phar
+    - ./tools/phpunit

@@ -208,7 +208,7 @@ class Edit extends Site
     {
         try {
             $this->checkPermission('quiqqer.projects.site.edit', $User);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             throw new QUI\Exception(
                 QUI::getLocale()
                     ->get('quiqqer/quiqqer', 'exception.permissions.edit')
@@ -655,7 +655,7 @@ class Edit extends Site
         if ($mid) {
             try {
                 $User = QUI::getUsers()->get((int)$mid);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
 
             if (isset($User)) {
@@ -1092,7 +1092,7 @@ class Edit extends Site
         try {
             // Prüfen ob der Benutzer die Seite bearbeiten darf
             $this->checkPermission('quiqqer.projects.site.edit', $User);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -1175,7 +1175,7 @@ class Edit extends Site
             $Project = $this->getProject();
         }
 
-        if (\get_class($Project) != Project::class) {
+        if ($Project::class != Project::class) {
             throw new QUI\Exception(
                 'Site copy: Project not found',
                 404
@@ -1577,7 +1577,7 @@ class Edit extends Site
 
         try {
             $this->checkPermission('quiqqer.projects.site.edit');
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return false;
         }
 

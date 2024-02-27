@@ -99,7 +99,7 @@ class QuiqqerMongoDriver extends AbstractDriver
                     'data' => serialize($data),
                     'expiration' => $expiration
                 ], ['upsert' => true]);
-            } catch (BulkWriteException $ignored) {
+            } catch (BulkWriteException) {
                 // As of right now, BulkWriteException can be thrown by
                 // replaceOne in high-throughput environments where race
                 // conditions can occur

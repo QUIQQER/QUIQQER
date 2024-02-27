@@ -252,7 +252,7 @@ class Project extends QUI\System\Console\Tool
 
         try {
             $Project = QUI::getProject($projectName);
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
             $this->writeLnLocale("console.tool.project.delete.project.not.found", "light_red");
             $this->writeLn("");
             exit;

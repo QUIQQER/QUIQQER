@@ -241,7 +241,7 @@ class Update
                 try {
                     $Package = QUI::getPackage($package_dir . '/' . $sub);
                     $Package->clearCache();
-                } catch (QUI\Exception $Exception) {
+                } catch (QUI\Exception) {
                 }
             }
         }

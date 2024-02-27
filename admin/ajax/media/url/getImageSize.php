@@ -29,7 +29,7 @@ QUI::$Ajax->registerFunction(
                 'width' => (int)$File->getAttribute('image_width'),
                 'height' => (int)$File->getAttribute('image_height')
             ];
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return [

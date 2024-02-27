@@ -63,7 +63,7 @@ class PermissionDenied extends QUI\Projects\Site
                 ],
                 'limit' => '1'
             ]);
-        } catch (Exception $exception) {
+        } catch (Exception) {
             return;
         }
 

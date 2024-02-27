@@ -31,7 +31,7 @@ class Helper
         try {
             self::checkUserPermissionToUseAuthenticator($User, $authenticator);
             return true;
-        } catch (QUI\Permissions\Exception $Exception) {
+        } catch (QUI\Permissions\Exception) {
         }
 
         return false;
@@ -54,7 +54,7 @@ class Helper
         }
 
         if (\is_object($authenticator)) {
-            $authenticator = \get_class($authenticator);
+            $authenticator = $authenticator::class;
         }
 
         $permission = self::parseAuthenticatorToPermission($authenticator);
@@ -75,7 +75,7 @@ class Helper
     public static function parseAuthenticatorToPermission($authenticator, $permission = '')
     {
         if (\is_object($authenticator)) {
-            $authenticator = \get_class($authenticator);
+            $authenticator = $authenticator::class;
         }
 
         if (empty($permission)) {

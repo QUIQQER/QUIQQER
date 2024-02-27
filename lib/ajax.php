@@ -78,12 +78,12 @@ foreach ($_rf_files as $key => $file) {
 if (isset($_REQUEST['project'])) {
     try {
         $Project = QUI::getProjectManager()->decode($_REQUEST['project']);
-    } catch (QUI\Exception $Exception) {
+    } catch (QUI\Exception) {
         try {
             $Project = QUI::getProjectManager()->getProject(
                 $_REQUEST['project']
             );
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             $Project = QUI::getProjectManager()->getStandard();
         }
     }

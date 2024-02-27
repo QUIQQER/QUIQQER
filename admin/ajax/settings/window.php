@@ -29,7 +29,7 @@ QUI::$Ajax->registerFunction(
 
         try {
             $result = QUI\Cache\Manager::get($cacheName);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             if (
                 !$windowName
                 && is_array($files)

@@ -21,7 +21,7 @@ QUI::$Ajax->registerFunction(
             $File = QUI\Projects\Media\Utils::getMediaItemByUrl($fileurl);
 
             return URL_DIR . $File->getPath();
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return $fileurl;

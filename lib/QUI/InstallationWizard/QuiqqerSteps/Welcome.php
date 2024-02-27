@@ -42,7 +42,7 @@ class Welcome extends QUI\InstallationWizard\AbstractInstallationWizardStep
     {
         try {
             $Engine = QUI::getTemplateManager()->getEngine();
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return '';
         }
 
@@ -50,6 +50,6 @@ class Welcome extends QUI\InstallationWizard\AbstractInstallationWizardStep
             'urlImageDir' => URL_OPT_DIR . 'quiqqer/quiqqer/bin/images/installation/'
         ]);
 
-        return $Engine->fetch(dirname(__FILE__) . '/Welcome.html');
+        return $Engine->fetch(__DIR__ . '/Welcome.html');
     }
 }

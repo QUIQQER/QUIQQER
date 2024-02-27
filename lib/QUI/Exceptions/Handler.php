@@ -233,7 +233,7 @@ class Handler extends QUI\QDOM
                     ),
                     $err_msg
                 );
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 

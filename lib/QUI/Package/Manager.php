@@ -436,7 +436,7 @@ class Manager extends QUI\QDOM
             }
         } else {
             $template = file_get_contents(
-                dirname(__FILE__) . '/composer.tpl'
+                __DIR__ . '/composer.tpl'
             );
 
             $composerJson = $Parser->parse($template);
@@ -829,7 +829,7 @@ class Manager extends QUI\QDOM
             $servers['npm']['type'] = 'npm';
 
             return $servers;
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return [];
@@ -1098,7 +1098,7 @@ class Manager extends QUI\QDOM
                 $result[$key]['title'] = $Package->getTitle();
                 $result[$key]['description'] = $Package->getDescription();
                 $result[$key]['image'] = $Package->getImage();
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -1124,7 +1124,7 @@ class Manager extends QUI\QDOM
 
         try {
             return QUI\Cache\LongTermCache::get(self::CACHE_KEY_PACKAGE_FOLDER_SIZE);
-        } catch (QUI\Cache\Exception $Exception) {
+        } catch (QUI\Cache\Exception) {
             return null;
         }
     }
@@ -1167,7 +1167,7 @@ class Manager extends QUI\QDOM
     {
         try {
             $timestamp = QUI\Cache\LongTermCache::get(self::CACHE_KEY_PACKAGE_FOLDER_SIZE_TIMESTAMP);
-        } catch (QUI\Cache\Exception $Exception) {
+        } catch (QUI\Cache\Exception) {
             $timestamp = null;
         }
 
@@ -1303,7 +1303,7 @@ class Manager extends QUI\QDOM
             $this->getInstalledPackage($packageName);
 
             $this->installed[$packageName] = true;
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             $this->installed[$packageName] = false;
         }
 
@@ -2362,7 +2362,7 @@ class Manager extends QUI\QDOM
 
         try {
             return QUI\Cache\LongTermCache::get($cache);
-        } catch (QUI\Cache\Exception $Exception) {
+        } catch (QUI\Cache\Exception) {
         }
 
         if (strpos($type, ':') === false) {

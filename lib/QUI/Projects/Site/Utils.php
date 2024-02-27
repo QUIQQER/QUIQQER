@@ -602,7 +602,7 @@ class Utils
      */
     public static function isSiteObject($Site): bool
     {
-        switch (get_class($Site)) {
+        switch ($Site::class) {
             case 'QUI\\Projects\\Site':
             case 'QUI\\Projects\\Site\\Edit':
             case 'QUI\\Projects\\Site\\OnlyDB':
@@ -812,7 +812,7 @@ class Utils
                     ]);
 
                     $ids = array_merge($ids, $children);
-                } catch (Exception $Exception) {
+                } catch (Exception) {
                 }
             }
 

@@ -8,7 +8,7 @@ if (!isset($_REQUEST['id']) || !isset($_REQUEST['project'])) {
     exit;
 }
 
-$dir = str_replace('quiqqer/quiqqer/lib/QUI/Projects/Media/bin', '', dirname(__FILE__));
+$dir = str_replace('quiqqer/quiqqer/lib/QUI/Projects/Media/bin', '', __DIR__);
 define('QUIQQER_SYSTEM', true);
 
 require_once $dir . '/header.php';
@@ -97,7 +97,7 @@ if (isset($_REQUEST['watermark'])) {
         }
 
         $Image->insert($WatermarkImage, $watermarkPosition);
-    } catch (QUI\Exception $Exception) {
+    } catch (QUI\Exception) {
     }
 }
 
