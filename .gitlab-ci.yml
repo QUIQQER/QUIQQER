@@ -26,11 +26,8 @@ phpunit:
     - sudo phive --no-progress --home phive-home install --trust-gpg-keys 4AA394086372C20A,51C67305FFC2E5C0,033E5F8D801A2F8D
     # Set permissions to current user
     - sudo chown $(whoami) "${CI_PROJECT_DIR}" -R
-    # Load source code into QUIQQER system
-    - QUIQQER_LATEST_RELEASE=`git -C ${CI_PROJECT_DIR} describe --tags --abbrev=0 remotes/origin/${CI_DEFAULT_BRANCH}`
-    - cd /var/www/html
-    - ./console composer config repositories.local path ${CI_PROJECT_DIR}
-    - COMPOSER_MIRROR_PATH_REPOS=1 ./console composer require ${PACKAGE_NAME}:"dev-${CI_COMMIT_SHA}@dev as ${QUIQQER_LATEST_RELEASE}"
+    # Install package into QUIQQER system
+    - install-quiqqer-package-from-folder "${CI_PROJECT_DIR}" "${PACKAGE_NAME}"
     # Enter source code directory in QUIQQER system
     - cd "${QUIQQER_PACKAGE_DIRECTORY}"
   script:
