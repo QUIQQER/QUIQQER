@@ -172,6 +172,7 @@
     float: left;
     margin: 0;
     padding: 0;
+    max-height: 40px;
 }
 
 .omnigrid div.bDiv ul {
