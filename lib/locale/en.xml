@@ -2937,11 +2937,32 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="grid.export.type.print">
             <en><![CDATA[Print]]></en>
         </locale>
+        <locale name="grid.export.nav.fields">
+            <en><![CDATA[Fields]]></en>
+        </locale>
+        <locale name="grid.export.nav.export">
+            <en><![CDATA[File format]]></en>
+        </locale>
+        <locale name="grid.export.message.title">
+            <en><![CDATA[Select fields]]></en>
+        </locale>
         <locale name="grid.export.message">
-            <en><![CDATA[Please select the fields to be exported:]]></en>
+            <en><![CDATA[Please select the fields to be exported.]]></en>
+        </locale>
+        <locale name="grid.export.item.noLabel">
+            <en><![CDATA[No label]]></en>
+        </locale>
+        <locale name="grid.export.message.exportType.title">
+            <en><![CDATA[Select file format]]></en>
         </locale>
         <locale name="grid.export.message.exportType">
-            <en><![CDATA[Please select the type of export:]]></en>
+            <en><![CDATA[Please select the file format in which the data is to be exported.]]></en>
+        </locale>
+        <locale name="grid.export.button.next">
+            <en><![CDATA[Next]]></en>
+        </locale>
+        <locale name="grid.export.button.download">
+            <en><![CDATA[Download]]></en>
         </locale>
         <locale name="window.grid.sorting.title">
             <en><![CDATA[Customize table]]></en>
