@@ -111,7 +111,7 @@
     padding-right: calc(var(--_grid-sizingMultiplier) * 0.5 * var(--_grid-cellPaddingRight));
     -moz-user-select: text;
     cursor: pointer;
-    text-overflow: ellipsis;
+    overflow: hidden;
 
     box-sizing: content-box;
 }
@@ -119,6 +119,11 @@
 .omnigrid div.hDiv .th:first-child,
 .omnigrid div.bDiv .td:first-child {
     border-left: none;
+}
+
+.omnigrid div.hDiv .th .header-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .grid-align-right {
@@ -278,6 +283,10 @@
     overflow: hidden;
     position: relative;
     margin-bottom: 0.5rem;
+
+    display: flex;
+    gap: 1em;
+    padding: 2px;
 }
 
 .omnigrid div.fbutton {
@@ -621,14 +630,13 @@
 .omnigrid button {
     border: 0 none;
     white-space: nowrap;
-    margin: 5px;
+    /*margin: 5px;*/
 }
 
 .omnigrid .qui-buttons-separator {
     border-right: 2px solid #CCCFD5;
     float: left;
     height: 30px;
-    margin: 5px 5px 0 5px;
 }
 
 .omnigrid .grid-disabled {
