@@ -757,6 +757,9 @@
 .qui-window-sidebar {
     display: flex;
     height: 100%;
+
+    container-name: windowContent;
+    container-type: inline-size;
 }
 
 .qui-window-sidebar__aside {
@@ -765,6 +768,12 @@
     width: max(30%, 250px);
     background: #f2f2f2;
     padding: 1rem;
+}
+
+@container windowContent (max-width: 500px) {
+    .qui-window-sidebar__aside {
+        display: none;
+    }
 }
 
 ul.nav {
