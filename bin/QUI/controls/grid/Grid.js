@@ -2541,8 +2541,6 @@ define('controls/grid/Grid', [
 
                 div.store('dataType', columnModel.dataType);
 
-                let width = columnModel.width + 'px ';
-
                 hDivBox.appendChild(div);
 
                 if (typeof columnModel.styles !== 'undefined') {
@@ -2551,13 +2549,11 @@ define('controls/grid/Grid', [
 
                 if (typeof columnModel.hidden !== 'undefined' && columnModel.hidden) {
                     div.setStyle('display', 'none');
-                    width = '0px ';
                 } else {
                     t.sumWidth += columnModel.width;
                     t.visibleColumns++;
+                    gridTemplateColumns += columnModel.width + 'px ';
                 }
-
-                gridTemplateColumns += width;
 
                 const header = columnModel.header,
                     title = columnModel.title;
