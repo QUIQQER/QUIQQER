@@ -10,6 +10,9 @@ phpunit:
   parallel:
     matrix:
       - PHP_VERSION_TO_TEST: ["8.1", "8.2", "8.3"]
+  variables:
+    PHPUNIT_REPORT_PATH: "${CI_PROJECT_DIR}/phpunit-report.xml"
+    QUIQQER_PACKAGE_DIRECTORY: "/var/www/html/packages/${PACKAGE_NAME}"
   stage: test
   cache:
     key:
@@ -21,15 +24,20 @@ phpunit:
   before_script:
     # Install tools (phive requires root at the moment, see https://github.com/phar-io/phive/issues/421)
     - sudo phive --no-progress --home phive-home install --trust-gpg-keys 4AA394086372C20A,51C67305FFC2E5C0,033E5F8D801A2F8D
-    - sudo chown www-data:www-data tools phive-home -R
-    # Configure git
-    - git config --global --add safe.directory ${CI_PROJECT_DIR}
+    # Set permissions to current user
+    - sudo chown $(whoami) "${CI_PROJECT_DIR}" -R
     # Load source code into QUIQQER system
     - QUIQQER_LATEST_RELEASE=`git -C ${CI_PROJECT_DIR} describe --tags --abbrev=0 remotes/origin/${CI_DEFAULT_BRANCH}`
     - cd /var/www/html
     - ./console composer config repositories.local path ${CI_PROJECT_DIR}
     - COMPOSER_MIRROR_PATH_REPOS=1 ./console composer require ${PACKAGE_NAME}:"dev-${CI_COMMIT_SHA}@dev as ${QUIQQER_LATEST_RELEASE}"
     # Enter source code directory in QUIQQER system
-    - cd /var/www/html/packages/${PACKAGE_NAME}
+    - cd "${QUIQQER_PACKAGE_DIRECTORY}"
   script:
-    - ./tools/phpunit
+    - ./tools/phpunit --log-junit "${PHPUNIT_REPORT_PATH}"
+    # Turn absolute paths into relative paths, so that links in the report artifact work correctly
+    - sed -i "s|${QUIQQER_PACKAGE_DIRECTORY}/||g" "${PHPUNIT_REPORT_PATH}"
+  artifacts:
+      when: always
+      reports:
+        junit: ${PHPUNIT_REPORT_PATH}
