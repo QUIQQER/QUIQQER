@@ -38,7 +38,7 @@ phpunit:
     - ls -la "${CI_PROJECT_DIR}"
     - ./tools/phpunit --log-junit "${PHPUNIT_REPORT_PATH}"
     # Turn absolute paths into relative paths, so that links in the report artifact work correctly
-    - sed -i 's+${QUIQQER_PACKAGE_DIRECTORY}/++g'
+    - sed -i 's+${QUIQQER_PACKAGE_DIRECTORY}/++g' "${PHPUNIT_REPORT_PATH}"
   artifacts:
       when: always
       reports:
