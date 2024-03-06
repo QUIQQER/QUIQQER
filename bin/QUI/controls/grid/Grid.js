@@ -2559,7 +2559,7 @@ define('controls/grid/Grid', [
                     title = columnModel.title;
 
                 if (header) {
-                    div.innerHTML = '<span class="test">' + header + '</span>';
+                    div.innerHTML = '<span class="header-text">' + header + '</span>';
                 }
 
                 if (title) {
