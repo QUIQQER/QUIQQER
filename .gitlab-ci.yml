@@ -12,6 +12,7 @@ phpunit:
       - PHP_VERSION_TO_TEST: ["8.1", "8.2", "8.3"]
   variables:
     PHPUNIT_REPORT_PATH: "${CI_PROJECT_DIR}/phpunit-report.xml"
+    QUIQQER_PACKAGE_DIRECTORY: "/var/www/html/packages/${PACKAGE_NAME}"
   stage: test
   cache:
     key:
@@ -31,11 +32,13 @@ phpunit:
     - ./console composer config repositories.local path ${CI_PROJECT_DIR}
     - COMPOSER_MIRROR_PATH_REPOS=1 ./console composer require ${PACKAGE_NAME}:"dev-${CI_COMMIT_SHA}@dev as ${QUIQQER_LATEST_RELEASE}"
     # Enter source code directory in QUIQQER system
-    - cd /var/www/html/packages/${PACKAGE_NAME}
+    - cd "${QUIQQER_PACKAGE_DIRECTORY}"
   script:
     - whoami
     - ls -la "${CI_PROJECT_DIR}"
     - ./tools/phpunit --log-junit "${PHPUNIT_REPORT_PATH}"
+    # Turn absolute paths into relative paths, so that links in the report artifact work correctly
+    - sed -i 's+${QUIQQER_PACKAGE_DIRECTORY}/++g'
   artifacts:
       when: always
       reports:
