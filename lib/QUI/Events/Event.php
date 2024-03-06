@@ -7,11 +7,14 @@
 namespace QUI\Events;
 
 use QUI;
+use ReflectionMethod;
 
 use function call_user_func;
 use function call_user_func_array;
+use function explode;
 use function is_string;
 use function preg_replace;
+use function str_contains;
 use function strpos;
 use function ucfirst;
 use function usort;
@@ -218,6 +221,19 @@ class Event implements QUI\Interfaces\Events
                 if ($args === false) {
                     $results[$fn] = call_user_func($fn);
                     continue;
+                }
+
+                if (str_contains($fn, '::')) {
+                    $parts = explode('::', $fn);
+                    $className = $parts[0];
+                    $methodName = $parts[1];
+
+                    $reflectionMethod = new ReflectionMethod($className, $methodName);
+
+                    if (!$reflectionMethod->getNumberOfParameters()) {
+                        $results[$fn] = call_user_func($fn);
+                        continue;
+                    }
                 }
 
                 $results[$fn] = call_user_func_array($fn, $args);

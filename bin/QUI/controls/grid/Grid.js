@@ -2355,7 +2355,7 @@ define('controls/grid/Grid', [
                 columnCount = this.$columnModel ? this.$columnModel.length : 0,
                 tDiv = null;
 
-            t.removeAll();        // reset variables and only empty ulBody
+            t.removeAll();     // reset variables and only empty ulBody
             container.empty(); // empty all
 
             // Container
@@ -2541,8 +2541,6 @@ define('controls/grid/Grid', [
 
                 div.store('dataType', columnModel.dataType);
 
-                gridTemplateColumns += columnModel.width + 'px ';
-
                 hDivBox.appendChild(div);
 
                 if (typeof columnModel.styles !== 'undefined') {
@@ -2554,13 +2552,14 @@ define('controls/grid/Grid', [
                 } else {
                     t.sumWidth += columnModel.width;
                     t.visibleColumns++;
+                    gridTemplateColumns += columnModel.width + 'px ';
                 }
 
                 const header = columnModel.header,
                     title = columnModel.title;
 
                 if (header) {
-                    div.innerHTML = '<span class="test">' + header + '</span>';
+                    div.innerHTML = '<span class="header-text">' + header + '</span>';
                 }
 
                 if (title) {
@@ -3163,155 +3162,232 @@ define('controls/grid/Grid', [
             }
         },
 
+        /**
+         * Export window
+         */
         getExportSelect: function() {
             const self = this;
 
-            new QUIConfirm({
-                icon: 'fa fa-download',
-                title: '',
-                maxHeight: 500,
-                maxWidth: 800,
-                autoclose: false,
-                events: {
-                    onOpen: function(Win) {
-                        Win.$exportTypes = [];
+            require([
+                'Mustache',
+                'text!controls/grid/Grid.ExportWindow.html'
+            ], (Mustache, template) => {
+                let WinContent = null,
+                    currentNav = 1,
+                    currentContent = 1;
 
-                        let c, i, len, columnModel, header, dataIndex;
+                const toggleContent= function(next) {
+                    hideContent(currentContent);
+                    showContent(next);
 
-                        const options = self.getAttributes(),
-                            Content = Win.getContent();
+                    currentContent = next;
+                }
+                const hideContent = function(index) {
+                    const Content = WinContent.querySelector('.contentSlider__items [data-qui-index="' + index + '"]');
+                    Content.style.display = 'none';
+                    Content.classList.remove('active');
+                }
 
-                        Content.set('html', '');
+                const showContent = function(index) {
+                    const Content = WinContent.querySelector('.contentSlider__items [data-qui-index="' + index + '"]');
+                    Content.style.display = null;
+                    Content.classList.add('active');
+                }
 
-                        const exportBarDiv = new Element('div.exportSelectBtnDiv'),
-                            exportDataDiv = new Element('div.exportItemsDiv'),
-                            exportTextDiv = new Element('div.exportTextsDiv', {
-                                html: QUILocale.get('quiqqer/quiqqer', 'grid.export.message')
+                const toggleNav = function(index) {
+                    WinContent.getElements('.nav button').forEach((Btn) => {
+                        Btn.classList.remove('active');
+                    });
+
+                    WinContent.getElement('.nav button[data-qui-index="' + index + '"]').classList.add('active');
+                    currentNav = index;
+                }
+
+                const onOpen = function(Win) {
+                    Win.$exportTypes = [];
+                    Win.$exportTypes2 = [];
+
+                    let c, i, len, columnModel, header, dataIndex;
+
+                    const options = self.getAttributes();
+
+                    WinContent = Win.getContent();
+
+                    WinContent.set('html', '');
+
+                    WinContent.style.padding = 0;
+                    WinContent.set('html', Mustache.render(template, {
+                        'navFields': QUILocale.get('quiqqer/quiqqer', 'grid.export.nav.fields'),
+                        'navExport': QUILocale.get('quiqqer/quiqqer', 'grid.export.nav.export'),
+                        'contentFieldsTitle': QUILocale.get('quiqqer/quiqqer', 'grid.export.message.title'),
+                        'contentFieldsDesc': QUILocale.get('quiqqer/quiqqer', 'grid.export.message'),
+                        'contentExportTitle': QUILocale.get('quiqqer/quiqqer', 'grid.export.message.exportType.title'),
+                        'contentExportDesc': QUILocale.get('quiqqer/quiqqer', 'grid.export.message.exportType'),
+                        'btnNext': QUILocale.get('quiqqer/quiqqer', 'grid.export.button.next'),
+                        'btnDownload': QUILocale.get('quiqqer/quiqqer', 'grid.export.button.download')
+                    }));
+
+                    /* nav buttons */
+                    WinContent.getElements('.nav button').forEach((Btn) => {
+                        Btn.addEventListener('click', (event) => {
+                            let Btn = event.target;
+
+                            if (Btn.nodeName !== 'BUTTON') {
+                                Btn = Btn.getParent('button');
+                            }
+
+                            toggleContent(Btn.get('data-qui-index'));
+                            toggleNav(Btn.get('data-qui-index'));
+                        });
+                    });
+
+                    /* next btn */
+                    WinContent.getElement('[data-qui-type="next"]').addEvent('click', () => {
+                        toggleContent(2);
+                        toggleNav(2);
+                    });
+
+                    /* download button */
+                    const DownloadBtn = WinContent.getElement('[data-qui-type="download"]');
+                    DownloadBtn.addEventListener('click', () => {
+                        Win.submit();
+                    });
+
+                    /* content: fields */
+                    const FieldsList = WinContent.getElement('.export-list');
+
+                    for (c = 0, len = self.$columnModel.length; c < len; c++) {
+                        columnModel = self.$columnModel[c];
+                        header = columnModel.header;
+                        dataIndex = columnModel.dataIndex;
+
+                        if (self.exportable(columnModel) === false) {
+                            continue;
+                        }
+
+                        const label = new Element('label.export-item', {
+                            title: header
+                            }),
+                            span = new Element('span.export-item__text', {
+                                html: header
+                            }),
+                            input = new Element('input', {
+                                'class': 'export_' + dataIndex,
+                                type   : 'checkbox',
+                                checked: 'checked',
+                                value  : dataIndex,
+                                name   : dataIndex
                             });
 
-                        Content.appendChild(exportTextDiv);
-                        Content.appendChild(exportDataDiv);
-                        Content.appendChild(exportBarDiv);
-
-                        for (c = 0, len = self.$columnModel.length; c < len; c++) {
-                            columnModel = self.$columnModel[c];
-                            header = columnModel.header;
-                            dataIndex = columnModel.dataIndex;
-
-                            if (self.exportable(columnModel) === false) {
-                                continue;
-                            }
-
-                            const div = new Element('div.exportItemDiv'),
-                                span = new Element('span', {
-                                    html: header
-                                }),
-                                input = new Element('input', {
-                                    'class': 'export_' + dataIndex,
-                                    type: 'checkbox',
-                                    checked: 'checked',
-                                    value: dataIndex,
-                                    name: dataIndex
-                                });
-
-                            div.appendChild(input);
-                            div.appendChild(span);
-
-                            exportDataDiv.appendChild(div);
+                        if (header === '' || header === '&nbsp;') {
+                            label.title = QUILocale.get('quiqqer/quiqqer', 'grid.export.item.noLabel');
+                            span.innerHTML = QUILocale.get('quiqqer/quiqqer', 'grid.export.item.noLabel');
+                            span.classList.add('export-item__text--noLabel');
                         }
 
-                        // export type
-                        new Element('div', {
-                            html: QUILocale.get('quiqqer/quiqqer', 'grid.export.message.exportType'),
-                            styles: {
-                                marginTop: 10
+                        label.appendChild(input);
+                        label.appendChild(span);
+
+                        FieldsList.appendChild(label);
+                    }
+
+                    /* content: export types */
+                    const ExportTypeList = WinContent.querySelector('.export-fileFormat__items');
+
+                    let fileImage, Label, Input, types = options.exportTypes;
+
+                    if (typeOf(types) === 'object') {
+                        const typeArray = [];
+
+                        for (let exportType in types) {
+                            if (typeOf(types[exportType]) === 'boolean' && types[exportType]) {
+                                typeArray.push(exportType);
                             }
-                        }).inject(exportBarDiv);
-
-                        let fileImage, Button,
-                            types = options.exportTypes;
-
-                        if (typeOf(types) === 'object') {
-                            const typeArray = [];
-                            for (let exportType in types) {
-                                if (typeOf(types[exportType]) === 'boolean' && types[exportType]) {
-                                    typeArray.push(exportType);
-                                }
-                            }
-
-                            types = typeArray;
                         }
 
-                        let exportType;
+                        types = typeArray;
+                    }
 
-                        for (let i = 0, len = types.length; i < len; i++) {
-                            exportType = types[i];
+                    let exportType;
 
-                            switch (exportType) {
-                                case 'csv':
-                                    fileImage = 'fa fa-text-o';
-                                    break;
+                    for (let i = 0, len = types.length; i < len; i++) {
+                        exportType = types[i];
 
-                                case 'json':
-                                    fileImage = 'fa fa-code-o';
-                                    break;
+                        switch (exportType) {
+                            case 'csv':
+                                fileImage = 'fa fa-file-lines';
+                                break;
 
-                                case 'xls':
-                                    fileImage = 'fa fa-excel-o';
-                                    break;
+                            case 'json':
+                                fileImage = 'fa fa-code';
+                                break;
 
-                                case 'pdf':
-                                    fileImage = 'fa fa-pdf-o';
-                                    break;
+                            case 'xls':
+                                fileImage = 'fa fa-file-excel';
+                                break;
 
-                                default:
-                                    fileImage = 'fa fa-file';
-                            }
+                            case 'pdf':
+                                fileImage = 'fa fa-file-pdf';
+                                break;
 
-                            Button = new QUIButton({
-                                name: exportType,
-                                text: QUILocale.get('quiqqer/quiqqer', 'grid.export.type.' + exportType),
-                                textimage: fileImage,
-                                exportType: exportType,
-                                styles: {
-                                    marginRight: 10,
-                                    marginTop: 10
-                                },
-                                events: {
-                                    click: function(Instance) {
-                                        Win.$exportTypes.forEach(function(Btn) {
-                                            Btn.setNormal();
-                                        });
-
-                                        Instance.setActive();
-                                    }
-                                }
-                            });
-
-                            Win.$exportTypes.push(Button);
-                            Button.inject(exportBarDiv);
+                            default:
+                                fileImage = 'fa fa-file';
                         }
-                    },
 
-                    onSubmit: function(Win) {
-                        const active = Win.$exportTypes.filter(function(Btn) {
-                            return Btn.isActive();
+                        Label = new Element('label.export-fileFormat__item', {
+                            html: '<span class="' + fileImage + '"></span> ' +
+                                '<div class="label"><span class="text">' +
+                                QUILocale.get('quiqqer/quiqqer', 'grid.export.type.' + exportType) + '</span></div>'
                         });
 
-                        if (!active.length) {
-                            return;
-                        }
+                        Input = new Element('input', {
+                            type: 'radio',
+                            name: 'exportType',
+                            value: exportType,
+                            events: {
+                                change: () => {
+                                    DownloadBtn.disabled = null;
+                                }
+                            }
+                        });
 
-                        self.exportGrid(
-                            active[0].getAttribute('exportType')
-                        );
-
-                        Win.close();
+                        Label.querySelector('.label').prepend(Input);
+                        ExportTypeList.appendChild(Label);
+                        Win.$exportTypes.push(Input);
                     }
-                }
-            }).open();
+                };
 
-            return false;
+                new QUIConfirm({
+                    'class'  : 'qui-window-popup--exportType',
+                    icon     : 'fa fa-download',
+                    title    : '',
+                    maxHeight: 600,
+                    maxWidth : 800,
+                    autoclose: false,
+                    buttons  : false,
+                    events   : {
+                        onOpen  : onOpen,
+                        onSubmit: function(Win) {
+                            const active = Win.$exportTypes.filter(function(Input) {
+                                return Input.checked;
+                            });
+
+                            if (!active.length) {
+                                return;
+                            }
+
+                            self.exportGrid(
+                                active[0].getAttribute('value')
+                            );
+
+                            Win.close();
+                        }
+                    }
+                }).open();
+
+                return false;
+            });
+
         },
 
         /**
@@ -3362,7 +3438,7 @@ define('controls/grid/Grid', [
                     continue;
                 }
 
-                Checkbox = document.body.getElement('.exportItemDiv .export_' + dataIndex);
+                Checkbox = document.body.getElement('.qui-window-popup--exportType .export-list .export_' + dataIndex);
 
                 if (!Checkbox || !Checkbox.checked) {
                     continue;
@@ -3415,8 +3491,7 @@ define('controls/grid/Grid', [
             let self = this,
                 data = this.setExportData(),
                 exportUrl = this.getAttribute('exportBinUrl'),
-                exportName = this.getAttribute('exportName')
-            ;
+                exportName = this.getAttribute('exportName');
 
             if (!exportName) {
                 let Now = new Date();

@@ -2968,11 +2968,32 @@
         <locale name="grid.export.type.print">
             <de><![CDATA[Drucken]]></de>
         </locale>
+        <locale name="grid.export.nav.fields">
+            <de><![CDATA[Felderauswahl]]></de>
+        </locale>
+        <locale name="grid.export.nav.export">
+            <de><![CDATA[Dateiformat]]></de>
+        </locale>
+        <locale name="grid.export.message.title">
+            <de><![CDATA[Felder auswählen]]></de>
+        </locale>
         <locale name="grid.export.message">
-            <de><![CDATA[Bitte wähle die Felder aus die exportiert werden sollen:]]></de>
+            <de><![CDATA[Bitte wähle die Felder aus die exportiert werden sollen.]]></de>
+        </locale>
+        <locale name="grid.export.item.noLabel">
+            <de><![CDATA[Keine Beschriftung]]></de>
+        </locale>
+        <locale name="grid.export.message.exportType.title">
+            <de><![CDATA[Dateiformat auswählen]]></de>
         </locale>
         <locale name="grid.export.message.exportType">
-            <de><![CDATA[Bitte wähle die Art des Exports aus:]]></de>
+            <de><![CDATA[Bitte wähle das Dateiformat aus, in dem die Daten exportiert werden sollen.]]></de>
+        </locale>
+        <locale name="grid.export.button.next">
+            <de><![CDATA[Weiter]]></de>
+        </locale>
+        <locale name="grid.export.button.download">
+            <de><![CDATA[Herunterladen]]></de>
         </locale>
         <locale name="window.grid.sorting.title">
             <de><![CDATA[Tabelle anpassen]]></de>

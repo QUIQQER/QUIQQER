@@ -111,7 +111,7 @@
     padding-right: calc(var(--_grid-sizingMultiplier) * 0.5 * var(--_grid-cellPaddingRight));
     -moz-user-select: text;
     cursor: pointer;
-    text-overflow: ellipsis;
+    overflow: hidden;
 
     box-sizing: content-box;
 }
@@ -119,6 +119,11 @@
 .omnigrid div.hDiv .th:first-child,
 .omnigrid div.bDiv .td:first-child {
     border-left: none;
+}
+
+.omnigrid div.hDiv .th .header-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .grid-align-right {
@@ -172,6 +177,7 @@
     float: left;
     margin: 0;
     padding: 0;
+    max-height: 40px;
 }
 
 .omnigrid div.bDiv ul {
@@ -277,6 +283,10 @@
     overflow: hidden;
     position: relative;
     margin-bottom: 0.5rem;
+
+    display: flex;
+    gap: 1em;
+    padding: 2px;
 }
 
 .omnigrid div.fbutton {
@@ -601,63 +611,6 @@
     text-transform: uppercase;
 }
 
-/* export */
-.exportSelectDiv {
-    width: 420px;
-    height: 250px;
-    position: absolute;
-    left: 35%;
-    top: 10%;
-    z-index: 10000;
-    border: 3px solid #DDDDDD;
-    background: #fff;
-    padding: 5px;
-}
-
-.exportItemsDiv {
-    display: inline-block;
-    width: 100%;
-}
-
-.exportSelectBtnDiv {
-    display: inline-block;
-    width: 100%;
-}
-
-.exportItemDiv {
-    border: 1px solid #DDDDDD;
-    display: flex;
-    float: left;
-    margin: 3px;
-    padding: 4px;
-    width: 180px;
-}
-
-.exportItemDiv input {
-    float: left;
-    margin: 2px 5px;
-}
-
-.exportItemDiv span {
-    float: left;
-    overflow: hidden !important;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.exportTextsDiv {
-    padding: 5px 0 10px 10px;
-    width: 100%;
-}
-
-.exportFrame {
-    padding: 5px 3px 3px 10px;
-    width: 10px;
-    height: 10px;
-    position: absolute;
-    left: -100px;
-    top: -100px;
-}
 
 /** Drag and Drop Element
  ***********************************************/
@@ -677,14 +630,13 @@
 .omnigrid button {
     border: 0 none;
     white-space: nowrap;
-    margin: 5px;
+    /*margin: 5px;*/
 }
 
 .omnigrid .qui-buttons-separator {
     border-right: 2px solid #CCCFD5;
     float: left;
     height: 30px;
-    margin: 5px 5px 0 5px;
 }
 
 .omnigrid .grid-disabled {
@@ -804,4 +756,219 @@
 .grid-dd-active .grid-dd-placeholder {
     background: #2f8fc6;
     color: #fff;
+}
+
+/**********/
+/* Export */
+/**********/
+
+/* export: aside */
+.qui-window-sidebar {
+    display: flex;
+    height: 100%;
+
+    container-name: windowContent;
+    container-type: inline-size;
+}
+
+.qui-window-sidebar__aside {
+    flex-shrink: 0;
+    flex-grow: 0;
+    width: max(30%, 250px);
+    background: #f2f2f2;
+    padding: 1rem;
+}
+
+@container windowContent (max-width: 500px) {
+    .qui-window-sidebar__aside {
+        display: none;
+    }
+}
+
+ul.nav {
+    margin: 0;
+    padding: 0;
+}
+
+li.nav__item {
+    list-style: none;
+    margin-bottom: 0.5rem;
+}
+
+.nav__link {
+    border-radius: var(--border-radius, 0.75rem);
+    padding: 1rem;
+    border: none;
+    background: none;
+    width: 100%;
+    color: inherit;
+    text-align: left;
+    display: flex;
+    align-items: baseline;
+}
+
+.nav__link:hover,
+.nav__link:active,
+.nav__link:focus {
+    border: none;
+    background: none;
+    color: inherit;
+}
+
+.nav__link.active {
+    color: inherit;
+    background-color: #fff;
+}
+
+.nav__link > .fa {
+    margin-right: 0.5em;
+    flex-shrink: 0;
+}
+
+/* export: main */
+.qui-window-sidebar__main {
+    display: flex;
+    padding: 1rem;
+    flex-grow: 1;
+}
+
+.qui-window-sidebar__main .desc {
+    margin-bottom: 1.5em;
+}
+
+.export-listWrapper {
+    overflow: auto;
+}
+
+.export-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.5rem;
+}
+
+.export-item {
+    border-radius: 0.5rem;
+    background: #f2f2f2;
+    border: none;
+    padding: 0.25rem 0.75rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.25em;
+    margin-bottom: 0;
+    overflow: hidden;
+}
+
+.export-button {
+    margin-top: auto;
+    text-align: right;
+    padding-top: 1rem;
+}
+
+.export-button > button {
+    width: 100%;
+}
+
+/* default button styling */
+:where(.export-button > button) {
+    border: none;
+    border-radius: 3px;
+    background: #ededed;
+    color: #606060;
+    cursor: pointer;
+    float: left;
+    line-height: 30px;
+    margin: 0;
+    padding: 0 10px;
+    position: relative;
+    -webkit-transition: all 0.2s ease;
+    -moz-transition: all 0.2s ease;
+    -ms-transition: all 0.2s ease;
+    -o-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 2px #999;
+    -moz-box-shadow: 0 0 2px #999;
+    -webkit-box-shadow: 0 0 2px #999;
+}
+
+:where(.export-button > button:disabled) {
+    cursor: not-allowed;
+}
+
+.export-button > button > .fa {
+    margin-left: 0.5em;
+}
+
+/* content slider */
+.contentSlider__items {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+}
+
+.contentSlider__item {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.export-item__text {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.export-item__text--noLabel {
+    opacity: 0.5;
+    font-style: italic;
+    font-size: 0.8rem;
+}
+
+/* export: file format */
+.export-fileFormat__items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.5rem;
+}
+
+label.export-fileFormat__item {
+    margin-bottom: 0;
+    background: #f8f8f8;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;;
+}
+
+.export-fileFormat__item > .fa {
+    font-size: 2em;
+}
+
+.export-fileFormat__item > .label {
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
+}
+
+.export-fileFormat__item > .text {
+    letter-spacing: 2px;
+    font-family: monospace;
+    opacity: 0.5;
+}
+
+.export-fileFormat__item:has(input:checked) {
+    outline: 2px solid;
+    outline-offset: -2px;
+}
+
+/* ??? */
+.exportFrame {
+    padding: 5px 3px 3px 10px;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    left: -100px;
+    top: -100px;
 }

@@ -11,6 +11,7 @@ use QUI\Interfaces\Users\User as QUIUserInterface;
 use QUI\Utils\Security\Orthos as Orthos;
 
 use function current;
+use function is_array;
 use function json_decode;
 
 /**
@@ -131,7 +132,7 @@ class Address extends QUI\QDOM
      */
     public function addPhone($phone)
     {
-        if (!\is_array($phone)) {
+        if (!is_array($phone)) {
             return;
         }
 
@@ -173,13 +174,13 @@ class Address extends QUI\QDOM
      */
     public function getPhoneList(): array
     {
-        if (\is_array($this->getAttribute('phone'))) {
+        if (is_array($this->getAttribute('phone'))) {
             return $this->getAttribute('phone');
         }
 
         $result = json_decode($this->getAttribute('phone'), true);
 
-        if (\is_array($result)) {
+        if (is_array($result)) {
             return $result;
         }
 
@@ -240,7 +241,7 @@ class Address extends QUI\QDOM
     {
         $index = (int)$index;
 
-        if (!\is_array($phone)) {
+        if (!is_array($phone)) {
             $phone = [
                 'no' => Orthos::clear($phone),
                 'type' => 'tel'
@@ -435,9 +436,13 @@ class Address extends QUI\QDOM
      */
     public function getMailList(): array
     {
+        if (is_array($this->getAttribute('mail'))) {
+            return $this->getAttribute('mail');
+        }
+
         $result = json_decode($this->getAttribute('mail'), true);
 
-        if (\is_array($result)) {
+        if (is_array($result)) {
             return $result;
         }
 
@@ -915,7 +920,7 @@ class Address extends QUI\QDOM
             return;
         }
 
-        if (\is_array($value)) {
+        if (is_array($value)) {
             return;
         }
 

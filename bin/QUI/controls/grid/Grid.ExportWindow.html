@@ -1,0 +1,44 @@
+<div class="qui-window-sidebar">
+    <div class="qui-window-sidebar__aside">
+        <ul class="nav">
+            <li class="nav__item">
+                <button class="nav__link active" data-qui-index="1">
+                    <i class="fa fa-regular fa-clone fa-fw"></i> {{navFields}}
+                </button>
+            </li>
+            <li class="nav__item">
+                <button class="nav__link" data-qui-index="2">
+                    <i class="fa fa-regular fa-file fa-fw"></i> {{navExport}}
+                </button>
+            </li>
+        </ul>
+    </div>
+    <div class="qui-window-sidebar__main">
+        <div class="contentSlider__items">
+            <div class="contentSlider__item" data-qui-index="1">
+            <h4 class="title">{{contentFieldsTitle}}</h4>
+            <p class="desc">{{contentFieldsDesc}}</p>
+
+                <div class="export-listWrapper">
+                    <div class="export-list"></div>
+                </div>
+
+                <div class="export-button">
+                    <button data-qui-type="next" class="btn btn-primary">{{btnNext}} <span class="fa fa-solid fa-arrow-right-long"></span></button>
+                </div>
+            </div>
+            <div class="contentSlider__item" data-qui-index="2" style="display: none;">
+                <h4 class="title">{{contentExportTitle}}</h4>
+                <p class="desc">{{contentExportDesc}}</p>
+
+                <div class="export-listWrapper">
+                    <div class="export-fileFormat__items"></div>
+                </div>
+
+                <div class="export-button">
+                    <button data-qui-type="download" class="btn btn-primary" disabled>{{btnDownload}} <span class="fa fa-solid fa-download"></span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
