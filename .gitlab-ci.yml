@@ -34,6 +34,8 @@ phpunit:
     # Enter source code directory in QUIQQER system
     - cd /var/www/html/packages/${PACKAGE_NAME}
   script:
+    - whoami
+    - ls -la "${CI_PROJECT_DIR}"
     - ./tools/phpunit --log-junit "${PHPUNIT_REPORT_PATH}"
   artifacts:
       when: always
