@@ -13,6 +13,10 @@
 QUI::$Ajax->registerFunction(
     'ajax_users_set_password',
     function ($uid, $pw1, $pw2) {
+        if (empty($pw1) || empty($pw2)) {
+            return;
+        }
+
         $Users = QUI::getUsers();
         $User = $Users->get((int)$uid);
 
