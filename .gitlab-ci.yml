@@ -10,6 +10,8 @@ phpunit:
   parallel:
     matrix:
       - PHP_VERSION_TO_TEST: ["8.1", "8.2", "8.3"]
+  variables:
+    PHPUNIT_REPORT_PATH: "${CI_PROJECT_DIR}/phpunit-report.xml"
   stage: test
   cache:
     key:
@@ -32,4 +34,8 @@ phpunit:
     # Enter source code directory in QUIQQER system
     - cd /var/www/html/packages/${PACKAGE_NAME}
   script:
-    - ./tools/phpunit
+    - ./tools/phpunit --log-junit "${PHPUNIT_REPORT_PATH}"
+  artifacts:
+      when: always
+      reports:
+        junit: ${PHPUNIT_REPORT_PATH}
