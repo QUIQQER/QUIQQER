@@ -2170,7 +2170,7 @@ define('controls/grid/Grid', [
                 }
 
                 // set column data as title of the cell
-                if (columnModel.title && columnData) {
+                if (columnData) {
                     let text = columnData;
 
                     if (typeof columnData !== 'string') {
