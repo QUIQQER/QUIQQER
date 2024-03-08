@@ -2169,8 +2169,17 @@ define('controls/grid/Grid', [
                     });
                 }
 
-                if (columnModel.title) {
-                    div.title = rowdata[columnModel.title];
+                // set column data as title of the cell
+                if (columnModel.title && columnData) {
+                    let text = columnData;
+
+                    if (typeof columnData !== 'string') {
+                        text = columnData.innerText || columnData.textContent;
+                    }
+
+                    if (text) {
+                        div.title = text;
+                    }
                 }
 
                 if (columnModel.dataType === 'button' && columnData) {
