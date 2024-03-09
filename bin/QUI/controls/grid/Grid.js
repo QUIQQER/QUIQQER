@@ -105,6 +105,8 @@ define('controls/grid/Grid', [
             filterHide: true,
             filterHideCls: 'hide',
             tablesizing: 'normal', // 'normal', 'small'
+            design: 'simple', // 'simple', 'clean'
+            border: 'column', // 'none', 'column', 'row', 'all'
             lastCellRightSpacing: 40, // spacing from the last cell to the right border of the table, useful for resizing by dragging
 
             storageKey: false, // if storage key is set, the grid settings (column model) are saved in the locale storage
@@ -2377,6 +2379,34 @@ define('controls/grid/Grid', [
             }
 
             container.addClass('omnigrid');
+
+            if (options.design) {
+                switch (options.design) {
+                    case 'simple':
+                    case 'clean':
+                        container.addClass('omnigrid--design-' + options.design);
+                        break;
+
+                    default: {
+                        container.addClass('omnigrid--design-simple');
+                    }
+                }
+            }
+
+            if (options.border) {
+                switch (options.border) {
+                    case 'none':
+                    case 'column':
+                    case 'row':
+                    case 'all':
+                        container.addClass('omnigrid--border-' + options.border);
+                        break;
+
+                    default: {
+                        container.addClass('omnigrid--border-column');
+                    }
+                }
+            }
 
             if (this.getAttribute('height')) {
                 this.setHeight(this.getAttribute('height'));
