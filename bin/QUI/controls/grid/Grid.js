@@ -161,7 +161,7 @@ define('controls/grid/Grid', [
                 pdf: true,
                 csv: true,
                 json: true,
-                print: false
+                print: true
             }, // {print : 'Drucken', pdf : 'PDF', csv : 'CSV', json : 'JSON'},
             exportRenderer: null, // function(data){data.type data.data data.Grid}
             exportBinUrl: URL_OPT_DIR + 'quiqqer/quiqqer/lib/QUI/Export/bin/export.php',
@@ -3215,23 +3215,23 @@ define('controls/grid/Grid', [
                     currentNav = 1,
                     currentContent = 1;
 
-                const toggleContent= function(next) {
+                const toggleContent = function(next) {
                     hideContent(currentContent);
                     showContent(next);
 
                     currentContent = next;
-                }
+                };
                 const hideContent = function(index) {
                     const Content = WinContent.querySelector('.contentSlider__items [data-qui-index="' + index + '"]');
                     Content.style.display = 'none';
                     Content.classList.remove('active');
-                }
+                };
 
                 const showContent = function(index) {
                     const Content = WinContent.querySelector('.contentSlider__items [data-qui-index="' + index + '"]');
                     Content.style.display = null;
                     Content.classList.add('active');
-                }
+                };
 
                 const toggleNav = function(index) {
                     WinContent.getElements('.nav button').forEach((Btn) => {
@@ -3240,7 +3240,7 @@ define('controls/grid/Grid', [
 
                     WinContent.getElement('.nav button[data-qui-index="' + index + '"]').classList.add('active');
                     currentNav = index;
-                }
+                };
 
                 const onOpen = function(Win) {
                     Win.$exportTypes = [];
@@ -3305,17 +3305,17 @@ define('controls/grid/Grid', [
                         }
 
                         const label = new Element('label.export-item', {
-                            title: header
+                                title: header
                             }),
                             span = new Element('span.export-item__text', {
                                 html: header
                             }),
                             input = new Element('input', {
                                 'class': 'export_' + dataIndex,
-                                type   : 'checkbox',
+                                type: 'checkbox',
                                 checked: 'checked',
-                                value  : dataIndex,
-                                name   : dataIndex
+                                value: dataIndex,
+                                name: dataIndex
                             });
 
                         if (header === '' || header === '&nbsp;') {
@@ -3369,6 +3369,10 @@ define('controls/grid/Grid', [
                                 fileImage = 'fa fa-file-pdf';
                                 break;
 
+                            case 'print':
+                                fileImage = 'fa fa-print';
+                                break;
+
                             default:
                                 fileImage = 'fa fa-file';
                         }
@@ -3397,15 +3401,15 @@ define('controls/grid/Grid', [
                 };
 
                 new QUIConfirm({
-                    'class'  : 'qui-window-popup--exportType',
-                    icon     : 'fa fa-download',
-                    title    : '',
+                    'class': 'qui-window-popup--exportType',
+                    icon: 'fa fa-download',
+                    title: '',
                     maxHeight: 600,
-                    maxWidth : 800,
+                    maxWidth: 800,
                     autoclose: false,
-                    buttons  : false,
-                    events   : {
-                        onOpen  : onOpen,
+                    buttons: false,
+                    events: {
+                        onOpen: onOpen,
                         onSubmit: function(Win) {
                             const active = Win.$exportTypes.filter(function(Input) {
                                 return Input.checked;
@@ -3554,44 +3558,63 @@ define('controls/grid/Grid', [
                 name: exportName
             };
 
-            if (type !== 'print') {
-                this.showLoader();
 
-                fetch(exportUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(tempData)
-                }).then(function(Response) {
-                    const Headers = Response.headers;
+            this.showLoader();
 
-                    let filename = Headers.get('Content-Disposition');
-                    const start = filename.indexOf('filename="') + ('filename="').length;
-                    const end = filename.indexOf('"', start);
+            fetch(exportUrl, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(tempData)
+            }).then(function(response) {
+                console.log(type);
 
-                    filename = filename.substr(start, end - start);
-
-                    return Response.blob().then(function(blob) {
-                        require([
-                            URL_OPT_DIR + 'bin/quiqqer-asset/downloadjs/downloadjs/download.js'
-                        ], function(download) {
-                            self.hideLoader();
-
-                            download(blob, filename, Headers.get('Content-Type'));
+                if (type === 'print') {
+                    return response.text().then((data) => {
+                        require(['qui/controls/elements/Sandbox'], (Sandbox) => {
+                            new Sandbox({
+                                content: data,
+                                styles: {
+                                    left: 0,
+                                    position: 'absolute',
+                                    top: 0
+                                },
+                                events: {
+                                    onLoad: function(Box) {
+                                        Box.getElm().contentWindow.print();
+                                    }
+                                }
+                            }).inject(document.body);
                         });
+
+                        self.hideLoader();
                     });
-                }).catch(function(e) {
-                    self.hideLoader();
+                }
 
-                    console.error(e);
+                const Headers = response.headers;
+
+                let filename = Headers.get('Content-Disposition');
+                const start = filename.indexOf('filename="') + ('filename="').length;
+                const end = filename.indexOf('"', start);
+
+                filename = filename.substr(start, end - start);
+
+                return response.blob().then(function(blob) {
+                    require([
+                        URL_OPT_DIR + 'bin/quiqqer-asset/downloadjs/downloadjs/download.js'
+                    ], function(download) {
+                        self.hideLoader();
+
+                        download(blob, filename, Headers.get('Content-Type'));
+                    });
                 });
+            }).catch(function(e) {
+                self.hideLoader();
 
-                return;
-            }
-
-            // @todo print funktion bauen
+                console.error(e);
+            });
         },
 
         /**

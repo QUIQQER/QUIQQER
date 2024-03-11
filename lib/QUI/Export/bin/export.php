@@ -28,6 +28,29 @@ if (
     exit;
 }
 
+if (isset($body['type']) && $body['type'] === 'pdf') {
+    ob_start();
+    require_once 'exportPrint.php';
+    $output = ob_get_clean();
+
+    $Document = new \QUI\HtmlToPdf\Document();
+    $Document->setContentHTML($output);
+    $pdfFile = $Document->createPDF();
+    $name = 'export';
+
+    if (!empty($body['name'])) {
+        $name = $body['name'];
+    }
+
+    QUI\Utils\System\File::send($pdfFile, 0, $name . '.pdf');
+    exit;
+}
+
+if (isset($body['type']) && $body['type'] === 'print') {
+    require_once 'exportPrint.php';
+    exit;
+}
+
 $type = 'csv';
 $enclosure = "\x1f";
 
@@ -82,7 +105,7 @@ if (!empty($body['name'])) {
 // export
 try {
     $Writer = League\Csv\Writer::createFromFileObject(new SplTempFileObject());
-    $Writer->setNewline("\r\n"); //use windows line endings for compatibility with some csv libraries
+    $Writer->setEndOfLine("\r\n"); //use windows line endings for compatibility with some csv libraries
     //$Writer->setDelimiter(",");
     //$Writer->setEnclosure($enclosure);
 
@@ -93,7 +116,7 @@ try {
         $filename = $name . '.xml';
 
         $Writer->insertAll($data);
-        $Reader = League\Csv\Reader::createFromString($Writer->getContent());
+        $Reader = League\Csv\Reader::createFromString($Writer->toString());
         $Dom = (new League\Csv\XMLConverter())->convert($Reader);
         $output = $Dom->saveXML();
     } elseif ($type === 'json') {
@@ -110,7 +133,7 @@ try {
 
         $Writer->insertAll($data);
 
-        $output = $Writer->getContent();
+        $output = $Writer->toString();
         $output = str_replace($enclosure, '', $output);
         $output = iconv('utf-8', 'utf-16//IGNORE', $output);
     }
