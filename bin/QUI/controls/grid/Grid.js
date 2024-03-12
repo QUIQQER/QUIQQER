@@ -3531,11 +3531,14 @@ define('controls/grid/Grid', [
                 columnModel.dataType === 'checkbox');
         },
 
-        exportGrid: function(type) {
+        exportGrid: function(type, data) {
             let self = this,
-                data = this.setExportData(),
                 exportUrl = this.getAttribute('exportBinUrl'),
                 exportName = this.getAttribute('exportName');
+
+            if (typeof data === 'undefined') {
+                data = this.setExportData();
+            }
 
             if (!exportName) {
                 let Now = new Date();
