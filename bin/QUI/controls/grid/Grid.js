@@ -3569,8 +3569,6 @@ define('controls/grid/Grid', [
 
             this.showLoader();
 
-            console.warn(tempData);
-
             fetch(exportUrl, {
                 method: 'POST',
                 headers: {
