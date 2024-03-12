@@ -1847,11 +1847,6 @@ define('controls/grid/Grid', [
 
             hDivBox.setStyle('width', t.sumWidth + this.lastCellRightSpacing);
 
-            // header
-            const columns = hDivBox.getElements('div.th');
-            const columnObj = columns[colindex];
-
-            // sve kolone u body
             elements.each((el) => {
                 el.setStyle('width', t.sumWidth + this.lastCellRightSpacing);
             });
@@ -2634,7 +2629,6 @@ define('controls/grid/Grid', [
                 }
 
                 let dragTempWidth = 0;
-                let cWidth = -3;
 
                 for (i = 0; i < columnCount; i++) {
                     columnModel = this.$columnModel[i] || {};
@@ -3247,7 +3241,7 @@ define('controls/grid/Grid', [
                     Win.$exportTypes = [];
                     Win.$exportTypes2 = [];
 
-                    let c, i, len, columnModel, header, dataIndex;
+                    let c, len, columnModel, header, dataIndex;
 
                     const options = self.getAttributes();
 
