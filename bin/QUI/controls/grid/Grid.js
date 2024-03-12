@@ -3574,8 +3574,6 @@ define('controls/grid/Grid', [
                 },
                 body: JSON.stringify(tempData)
             }).then(function(response) {
-                console.log(type);
-
                 if (type === 'print') {
                     return response.text().then((data) => {
                         require(['qui/controls/elements/Sandbox'], (Sandbox) => {
