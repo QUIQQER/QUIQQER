@@ -2995,6 +2995,9 @@
         <locale name="grid.export.button.download">
             <de><![CDATA[Herunterladen]]></de>
         </locale>
+        <locale name="grid.export.button.print">
+            <de><![CDATA[Drucken]]></de>
+        </locale>
         <locale name="window.grid.sorting.title">
             <de><![CDATA[Tabelle anpassen]]></de>
         </locale>
