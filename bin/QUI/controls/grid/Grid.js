@@ -3202,6 +3202,11 @@ define('controls/grid/Grid', [
         getExportSelect: function() {
             const self = this;
 
+            const btnInnerHTMLDownload = QUILocale.get('quiqqer/quiqqer', 'grid.export.button.download') +
+                ' <span class="fa fa-solid fa-download"></span>';
+            const btnInnerHTMLPrint = QUILocale.get('quiqqer/quiqqer', 'grid.export.button.print') +
+                ' <span class="fa fa-solid fa-print"></span>';
+
             require([
                 'Mustache',
                 'text!controls/grid/Grid.ExportWindow.html'
@@ -3258,7 +3263,7 @@ define('controls/grid/Grid', [
                         'contentExportTitle': QUILocale.get('quiqqer/quiqqer', 'grid.export.message.exportType.title'),
                         'contentExportDesc': QUILocale.get('quiqqer/quiqqer', 'grid.export.message.exportType'),
                         'btnNext': QUILocale.get('quiqqer/quiqqer', 'grid.export.button.next'),
-                        'btnDownload': QUILocale.get('quiqqer/quiqqer', 'grid.export.button.download')
+                        'btn': btnInnerHTMLDownload
                     }));
 
                     /* nav buttons */
@@ -3383,8 +3388,18 @@ define('controls/grid/Grid', [
                             name: 'exportType',
                             value: exportType,
                             events: {
-                                change: () => {
+                                change: (event) => {
                                     DownloadBtn.disabled = null;
+
+                                    if (!event || !event.target.nodeName === 'INPUT') {
+                                        return;
+                                    }
+
+                                    if (event.target.value === 'print') {
+                                        DownloadBtn.innerHTML = btnInnerHTMLPrint;
+                                    } else {
+                                        DownloadBtn.innerHTML = btnInnerHTMLDownload;
+                                    }
                                 }
                             }
                         });
