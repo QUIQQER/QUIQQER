@@ -2,19 +2,8 @@ includes:
     - phpstan-baseline.neon
 parameters:
     level: 1
+    bootstrapFiles:
+        - tests/bootstrap.php
     paths:
         - lib
         - admin
-    ignoreErrors:
-        -
-            message: "#^(Used )?Constant (LIB_DIR|VAR_DIR|OPT_DIR|SYS_DIR|USR_DIR|CMS_DIR|URL_DIR|BIN_DIR)+ not found\\.$#i"
-        -
-            message: "#^(Used )?Constant (URL_OPT_DIR|URL_USR_DIR|URL_VAR_DIR|URL_LIB_DIR|URL_BIN_DIR|URL_SYS_DIR)+ not found\\.$#i"
-        -
-            message: "#^(Used )?Constant QUI_DB_PRFX not found\\.$#i"
-        -
-            message: "#^(Used )?Constant DEVELOPMENT not found\\.$#i"
-        -
-            message: "#^(Used )?Constant DEBUG_MODE not found\\.$#i"
-        -
-            message: "#^(Used )?Constant HOST not found\\.$#i"
