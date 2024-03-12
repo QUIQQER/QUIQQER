@@ -3550,6 +3550,15 @@ define('controls/grid/Grid', [
                 return;
             }
 
+            // parse html nodes to string data
+            for (let i = 0, len = data.data.length; i < len; i++) {
+                for (let prop in data.data[i]) {
+                    if (data.data[i].hasOwnProperty(prop)) {
+                        data.data[i][prop] = this.convertToHTMLString(data.data[i][prop]);
+                    }
+                }
+            }
+
             const tempData = {
                 data: data,
                 type: type,
@@ -3559,6 +3568,8 @@ define('controls/grid/Grid', [
 
 
             this.showLoader();
+
+            console.warn(tempData);
 
             fetch(exportUrl, {
                 method: 'POST',
@@ -3615,6 +3626,24 @@ define('controls/grid/Grid', [
 
                 console.error(e);
             });
+        },
+
+        convertToHTMLString: function(obj) {
+            if (typeof obj !== 'object' || obj === null) {
+                return obj;
+            }
+
+            if (obj.nodeType) {
+                return obj.outerHTML;
+            }
+
+            for (let key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    obj[key] = this.convertToHTMLString(obj[key]);
+                }
+            }
+
+            return obj;
         },
 
         /**
