@@ -56,10 +56,22 @@ foreach ($body['data']['data'] as $key => $entry) {
     $data[] = $entry;
 }
 
+// css file
+if (!isset($body['cssFile']) || !$body['cssFile']) {
+    $cssFile = HOST . URL_OPT_DIR . 'quiqqer/quiqqer/lib/QUI/Export/bin/exportPrint.css';
+} else {
+    if (!str_starts_with($body['cssFile'], 'http')) {
+        $body['cssFile'] = HOST . $body['cssFile'];
+    }
 
+    $cssFile = HOST . $body['cssFile'];
+}
+
+// render
 $Smarty = QUI::getTemplateManager()->getEngine();
 
 $Smarty->assign([
+    'cssFile' => $cssFile,
     'header' => $header,
     'data' => $data
 ]);

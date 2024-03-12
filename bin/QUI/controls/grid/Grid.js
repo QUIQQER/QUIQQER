@@ -157,6 +157,7 @@ define('controls/grid/Grid', [
             //export
             exportName: false,
             exportData: false,
+            exportCssFile: false,
             exportTypes: {
                 pdf: true,
                 csv: true,
@@ -3555,7 +3556,8 @@ define('controls/grid/Grid', [
             const tempData = {
                 data: data,
                 type: type,
-                name: exportName
+                name: exportName,
+                cssFile: this.getAttribute('exportCssFile')
             };
 
 
@@ -3577,13 +3579,16 @@ define('controls/grid/Grid', [
                             new Sandbox({
                                 content: data,
                                 styles: {
+                                    height: 100,
                                     left: 0,
                                     position: 'absolute',
-                                    top: 0
+                                    top: -110
                                 },
                                 events: {
                                     onLoad: function(Box) {
-                                        Box.getElm().contentWindow.print();
+                                        (() => {
+                                            Box.getElm().contentWindow.print();
+                                        }).delay(500);
                                     }
                                 }
                             }).inject(document.body);
