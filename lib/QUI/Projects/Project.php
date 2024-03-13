@@ -1238,7 +1238,6 @@ class Project implements \Stringable
             unset($sql['select']);
         } else {
             $sql['select'] = 'id';
-            unset($sql['count']);
         }
 
         if (isset($params['limit'])) {
@@ -1277,10 +1276,6 @@ class Project implements \Stringable
      */
     public function setup($setupOptions = [])
     {
-        if (!isset($setupOptions)) {
-            $setupOptions = [];
-        }
-
         if (!isset($setupOptions['executePackagesSetup'])) {
             $setupOptions['executePackagesSetup'] = true;
         }

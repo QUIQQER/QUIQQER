@@ -392,7 +392,7 @@ class Group extends QUI\QDOM
 
         $result = QUI::getDataBase()->fetch($_params);
 
-        if (!isset($result) || !isset($result[0])) {
+        if (!isset($result[0])) {
             return $this->childrenids;
         }
 

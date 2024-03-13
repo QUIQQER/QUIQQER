@@ -518,7 +518,7 @@ class Utils
                 continue;
             }
 
-            if (is_array($value) && $key === 'alt') {
+            if (is_array($value) && $key === 'alt' && isset($Image) && $Image instanceof Item) {
                 $value = $Image->getAlt();
             } elseif (!is_string($value)) {
                 continue;

@@ -52,6 +52,8 @@ class SetSiteAttributes extends QUI\System\Console\Tool
         } catch (\Exception $Exception) {
             $this->writeLn("Could not load project $projectname ($projectlang)");
             $this->execute();
+
+            return;
         }
 
         $this->writeLn("Site query (MySQL): WHERE ");

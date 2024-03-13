@@ -1298,7 +1298,7 @@ class Rewrite
 
         if ($start == true) {
             if (
-                isset($path) && is_array($path)
+                is_array($path)
                 && (!isset($path[0]) || $path[0]->getId() != 1)
             ) {
                 array_unshift($path, $this->first_child);

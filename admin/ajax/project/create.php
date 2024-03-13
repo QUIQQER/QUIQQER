@@ -28,7 +28,7 @@ QUI::$Ajax->registerFunction(
             $template
         );
 
-        if (isset($params['demodata']) && $params['demodata'] && isset($template)) {
+        if (isset($params['demodata']) && $params['demodata'] && !empty($template)) {
             QUI\Utils\Project::applyDemoDataToProject($Project, $template);
         }
 

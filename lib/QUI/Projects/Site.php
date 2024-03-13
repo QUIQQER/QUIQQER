@@ -1773,6 +1773,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         $this->Events->fireEvent('getUrlRewritten', [$this, &$eventResult]);
         QUI::getEvents()->fireEvent('siteGetUrlRewritten', [$this, &$eventResult]);
 
+        // @phpstan-ignore-next-line ($eventResult is passed by reference to events and thus may not always be false)
         if (!empty($eventResult)) {
             return $eventResult;
         }
