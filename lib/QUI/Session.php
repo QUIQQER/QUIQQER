@@ -214,9 +214,9 @@ class Session
      * Set a variable to the session
      *
      * @param string $name - Name og the variable
-     * @param string $value - value of the variable
+     * @param mixed $value - value of the variable
      */
-    public function set(string $name, string $value): void
+    public function set(string $name, mixed $value): void
     {
         if ($this->Session) {
             $this->Session->set($name, $value);
