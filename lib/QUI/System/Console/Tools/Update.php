@@ -21,7 +21,6 @@ use function str_pad;
 use function str_replace;
 use function strip_tags;
 use function strlen;
-use function strpos;
 use function strtolower;
 use function trim;
 use function unlink;
@@ -78,10 +77,9 @@ class Update extends QUI\System\Console\Tool
     /**
      * (non-PHPdoc)
      *
-     * @throws QUI\Exception
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         $this->writeUpdateLog('====== EXECUTE UPDATE ======');
         $this->writeUpdateLog(QUI::getLocale()->get('quiqqer/quiqqer', 'update.log.message.execute.console'));
@@ -105,13 +103,13 @@ class Update extends QUI\System\Console\Tool
 
                     $this->writeLn();
                     $this->writeLn($message, 'red');
-                    $this->writeLn('');
-                    $this->writeLn('');
+                    $this->writeLn();
+                    $this->writeLn();
                     $this->resetColor();
                     exit;
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->writeLn($e->getMessage(), 'red');
             $this->resetColor();
         }
@@ -187,13 +185,13 @@ class Update extends QUI\System\Console\Tool
 
             foreach ($packages as $package) {
                 $this->write(
-                    str_pad($package['package'], $nameLength + 2, ' '),
+                    str_pad($package['package'], $nameLength + 2),
                     'green'
                 );
 
                 $this->resetColor();
                 $this->write(
-                    str_pad($package['oldVersion'], $versionLength + 2, ' ') . ' -> '
+                    str_pad($package['oldVersion'], $versionLength + 2) . ' -> '
                 );
 
                 $this->write($package['version'], 'cyan');
@@ -212,7 +210,7 @@ class Update extends QUI\System\Console\Tool
         $changes = $this->checkFileSystemChanges();
 
         if ($changes) {
-            $this->writeLn('');
+            $this->writeLn();
             $this->writeLn('The update has found inconsistencies in the system!', 'yellow');
             $this->resetColor();
 
@@ -263,7 +261,7 @@ class Update extends QUI\System\Console\Tool
                     }
 
                     // delete old dirs
-                    if (is_dir($localeDir . $entry) && strpos($entry, '_') !== false) {
+                    if (is_dir($localeDir . $entry) && str_contains($entry, '_')) {
                         QUI\Utils\System\File::deleteDir($localeDir . $entry);
                         $oldDirsAvailable = true;
                     }
@@ -322,7 +320,7 @@ class Update extends QUI\System\Console\Tool
             }
         } catch (Exception $Exception) {
             $this->write(' [error]', 'red');
-            $this->writeLn('');
+            $this->writeLn();
             $this->writeLn(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.error.1') . '::' . $Exception->getMessage(),
                 'red'
@@ -337,10 +335,10 @@ class Update extends QUI\System\Console\Tool
                 'red'
             );
 
-            $this->writeLn('');
+            $this->writeLn();
             $this->writeLn('./console repair', 'red');
             $this->resetColor();
-            $this->writeLn('');
+            $this->writeLn();
         }
 
         $Maintenance->setArgument('status', 'off');
@@ -352,7 +350,7 @@ class Update extends QUI\System\Console\Tool
      *
      * @param string $message
      */
-    protected function writeUpdateLog(string $message)
+    protected function writeUpdateLog(string $message): void
     {
         QUI\System\Log::write(
             $message,
@@ -375,7 +373,7 @@ class Update extends QUI\System\Console\Tool
      *
      * @param string $buffer
      */
-    public static function writeToLog(string $buffer)
+    public static function writeToLog(string $buffer): void
     {
         if (empty($buffer)) {
             return;
@@ -384,11 +382,11 @@ class Update extends QUI\System\Console\Tool
         error_log($buffer, 3, VAR_DIR . 'log/update-' . date('Y-m-d') . '.log');
     }
 
-    public static function onCliOutput(string $message, QUI\Interfaces\System\SystemOutput $Instance)
+    public static function onCliOutput(string $message, QUI\Interfaces\System\SystemOutput $Instance): void
     {
         self::writeToLog($message . PHP_EOL);
 
-        if (strpos($message, '<warning>') !== false) {
+        if (str_contains($message, '<warning>')) {
             $Instance->writeLn(strip_tags($message), 'cyan');
 
             // reset color
@@ -400,12 +398,12 @@ class Update extends QUI\System\Console\Tool
         }
 
         // update message
-        $update = strpos($message, 'Update: ') !== false;
-        $updates = strpos($message, 'Updates: ') !== false;
-        $upgrade = strpos($message, ' - Upgrading ') !== false;
+        $update = str_contains($message, 'Update: ');
+        $updates = str_contains($message, 'Updates: ');
+        $upgrade = str_contains($message, ' - Upgrading ');
 
-        $install = strpos($message, 'Install: ') !== false;
-        $installs = strpos($message, 'Installs: ') !== false;
+        $install = str_contains($message, 'Install: ');
+        $installs = str_contains($message, 'Installs: ');
 
         if ($update || $updates || $install || $installs || $upgrade) {
             $message = str_replace(['Updates: ', 'Update: '], '', $message);
@@ -432,7 +430,7 @@ class Update extends QUI\System\Console\Tool
         }
 
         // pull message
-        if (strpos($message, '      ') === 0) {
+        if (str_starts_with($message, '      ')) {
             return;
         }
 
@@ -456,7 +454,7 @@ class Update extends QUI\System\Console\Tool
         foreach ($ignore as $ig) {
             $trim = trim($message);
 
-            if (strpos($trim, $ig) === 0) {
+            if (str_starts_with($trim, $ig)) {
                 return;
             }
         }
@@ -492,7 +490,7 @@ class Update extends QUI\System\Console\Tool
             $modified = [];
 
             foreach ($result as $line) {
-                if (strpos($line, '[404] ') !== false) {
+                if (str_contains($line, '[404] ')) {
                     $path = str_replace('[404] ', '', $line);
 
                     $this->writeLn();
@@ -504,7 +502,7 @@ class Update extends QUI\System\Console\Tool
                     $this->writeLn($path);
                 }
 
-                if (strpos($line, '[400] ') !== false) {
+                if (str_contains($line, '[400] ')) {
                     $path = str_replace('[400] ', '', $line);
 
                     $this->writeLn();
@@ -516,7 +514,7 @@ class Update extends QUI\System\Console\Tool
                     $this->writeLn($path);
                 }
 
-                if (strpos($line, "    M ") !== false) {
+                if (str_contains($line, "    M ")) {
                     $modified[] = $line;
                 }
             }
@@ -534,7 +532,7 @@ class Update extends QUI\System\Console\Tool
             $path = '';
 
             foreach ($result as $line) {
-                if (strpos($line, 'You have changes in the following dependencies:') !== false) {
+                if (str_contains($line, 'You have changes in the following dependencies:')) {
                     $changes = true;
                     continue;
                 }
@@ -543,7 +541,7 @@ class Update extends QUI\System\Console\Tool
                     continue;
                 }
 
-                if (strpos($line, ':') !== false) {
+                if (str_contains($line, ':')) {
                     $path = trim($line, ':');
                     $path = str_replace(CMS_DIR, '', $path);
 
@@ -553,11 +551,9 @@ class Update extends QUI\System\Console\Tool
 
                 $lines = explode(PHP_EOL, $line);
 
-                if (!empty($lines)) {
-                    foreach ($lines as $l) {
-                        if (!empty(trim($l))) {
-                            $changesList[$path][] = trim($l);
-                        }
+                foreach ($lines as $l) {
+                    if (!empty(trim($l))) {
+                        $changesList[$path][] = trim($l);
                     }
                 }
             }

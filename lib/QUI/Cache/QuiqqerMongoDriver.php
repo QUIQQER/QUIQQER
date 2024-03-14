@@ -10,6 +10,8 @@ use MongoDB\BSON\Regex;
 use MongoDB\Client;
 use MongoDB\Collection;
 use MongoDB\Driver\Exception\BulkWriteException;
+use QUI;
+use QUI\Exception;
 use Stash\Driver\AbstractDriver;
 use Stash\Exception\InvalidArgumentException;
 
@@ -33,10 +35,21 @@ class QuiqqerMongoDriver extends AbstractDriver
 
     /**
      * QuiqqerMongoDriver constructor.
+     *
      * @param array $options
+     * @throws Exception
      */
     public function __construct(array $options = [])
     {
+        if (!self::isAvailable()) {
+            throw new QUI\Exception(
+                'Mongo DB Driver not found. ' .
+                'Please install MongoDB\Client (php MongoDB extension) and the mongodb/mongodb package.' .
+                'Otherwise don\'t use MongoDB as caching method',
+                QUI\System\Log::LEVEL_ALERT
+            );
+        }
+
         parent::__construct($options);
 
         // workaround for mongo auto loading, // load mongo functions
@@ -52,7 +65,7 @@ class QuiqqerMongoDriver extends AbstractDriver
     /**
      * {@inheritdoc}
      */
-    public static function isAvailable()
+    public static function isAvailable(): bool
     {
         return class_exists('\MongoDB\Client', false);
     }
@@ -60,7 +73,7 @@ class QuiqqerMongoDriver extends AbstractDriver
     /**
      * {@inheritdoc}
      */
-    public function getData($key)
+    public function getData($key): bool|array
     {
         $doc = $this->collection->findOne([
             '_id' => self::mapKey($key)
@@ -80,7 +93,7 @@ class QuiqqerMongoDriver extends AbstractDriver
      * @param array $key
      * @return string
      */
-    private static function mapKey($key)
+    private static function mapKey(array $key): string
     {
         return implode('/', $key);
     }
@@ -88,8 +101,9 @@ class QuiqqerMongoDriver extends AbstractDriver
     /**
      * {@inheritdoc}
      */
-    public function storeData($key, $data, $expiration)
+    public function storeData($key, $data, $expiration): bool
     {
+        /* @phpstan-ignore-next-line */
         if ($this->collection instanceof Collection) {
             $id = self::mapKey($key);
 
@@ -112,7 +126,7 @@ class QuiqqerMongoDriver extends AbstractDriver
     /**
      * {@inheritdoc}
      */
-    public function clear($key = null)
+    public function clear($key = null): bool
     {
         if (!$key) {
             $this->collection->drop();
@@ -122,6 +136,7 @@ class QuiqqerMongoDriver extends AbstractDriver
 
         $preg = "^" . preg_quote(self::mapKey($key));
 
+        /* @phpstan-ignore-next-line */
         if ($this->collection instanceof Collection) {
             $this->collection->deleteMany([
                 '_id' => new Regex($preg, '')
@@ -134,8 +149,9 @@ class QuiqqerMongoDriver extends AbstractDriver
     /**
      * {@inheritdoc}
      */
-    public function purge()
+    public function purge(): bool
     {
+        /* @phpstan-ignore-next-line */
         if ($this->collection instanceof Collection) {
             $this->collection->deleteMany([
                 'expiration' => ['$lte' => time()]
@@ -153,13 +169,14 @@ class QuiqqerMongoDriver extends AbstractDriver
      * @throws InvalidArgumentException
      * @throws \Exception
      */
-    public function setOptions(array $options = [])
+    public function setOptions(array $options = []): void
     {
         $options += $this->getDefaultOptions();
 
         /* @var $client Client */
         $Client = $options['mongo'];
 
+        /* @phpstan-ignore-next-line */
         if (!($Client instanceof Client)) {
             throw new \InvalidArgumentException(
                 'MongoDB\Driver\Manager instance required'
@@ -179,7 +196,7 @@ class QuiqqerMongoDriver extends AbstractDriver
     /**
      * {@inheritdoc}
      */
-    public function getDefaultOptions()
+    public function getDefaultOptions(): array
     {
         return [
             'mongo' => 'quiqqer',
@@ -191,7 +208,7 @@ class QuiqqerMongoDriver extends AbstractDriver
     /**
      * {@inheritdoc}
      */
-    public function isPersistent()
+    public function isPersistent(): bool
     {
         return true;
     }

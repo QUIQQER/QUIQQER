@@ -216,7 +216,7 @@ class Session
      * @param string $name - Name og the variable
      * @param string $value - value of the variable
      */
-    public function set(string $name, $value)
+    public function set(string $name, string $value): void
     {
         if ($this->Session) {
             $this->Session->set($name, $value);
@@ -230,7 +230,7 @@ class Session
      *
      * @throws QUI\Exception
      */
-    protected function getStorage()
+    protected function getStorage(): SessionHandlerInterface
     {
         $sessionType = QUI::conf('session', 'type');
 
@@ -336,6 +336,7 @@ class Session
                 $Memcache->addserver($server, $port);
             }
 
+            /* @phpstan-ignore-next-line */
             return new MemcacheSessionHandler($Memcache);
         } elseif ($sessionType == 'memcache' && !class_exists('Memcache')) {
             Log::addWarning('Memcache not installed');
