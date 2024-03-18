@@ -134,7 +134,7 @@ interface User
      * @param string $right
      * @param array|boolean $ruleset - (optional), you can specific a ruleset, a rules = array with rights
      *
-     * @return boolean
+     * @return bool|int|string
      */
     public function getPermission($right, $ruleset = false);
 

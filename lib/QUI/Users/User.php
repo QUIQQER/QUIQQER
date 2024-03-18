@@ -18,7 +18,6 @@ use function count;
 use function date;
 use function explode;
 use function file_exists;
-use function get_class;
 use function implode;
 use function in_array;
 use function is_array;
@@ -477,7 +476,7 @@ class User implements QUI\Interfaces\Users\User
                 // only a super user can set a superuser
                 if (QUI::getUsers()->existsSession() && QUI::getUsers()->getUserBySession()->isSU()) {
                     if (is_numeric($value)) {
-                        $this->su = (bool) (int)$value;
+                        $this->su = (bool)(int)$value;
                     } else {
                         $this->su = (bool)$value;
                     }
@@ -1129,8 +1128,8 @@ class User implements QUI\Interfaces\Users\User
 
             $attributes[] = [
                 'name' => trim($Attribute->nodeValue),
-                'encrypt' => (bool) $Attribute->getAttribute('encrypt'),
-                'no-auto-save' => (bool) $Attribute->getAttribute('no-auto-save')
+                'encrypt' => (bool)$Attribute->getAttribute('encrypt'),
+                'no-auto-save' => (bool)$Attribute->getAttribute('no-auto-save')
             ];
         }
 
@@ -1470,11 +1469,11 @@ class User implements QUI\Interfaces\Users\User
      * @param string $right
      * @param array|boolean $ruleset - optional, you can specific a ruleset, a rules = array with rights
      *
-     * @return boolean
+     * @return bool|int|string
      * @see QUI\Interfaces\Users\User::getPermission()
      *
      */
-    public function getPermission($right, $ruleset = false)
+    public function getPermission($right, $ruleset = false): bool|int|string
     {
         //@todo Benutzer muss erster prüfen ob bei ihm das recht seperat gesetzt ist
 
