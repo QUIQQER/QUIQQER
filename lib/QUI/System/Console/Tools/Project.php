@@ -346,7 +346,7 @@ class Project extends QUI\System\Console\Tool
         $projectLangs = $Project->getLanguages();
 
         if (!\in_array($langTo, $projectLangs)) {
-            $this->writeLn("Project lang '${langTo}' does not exist. Adding language...");
+            $this->writeLn("Project lang '{$langTo}' does not exist. Adding language...");
 
             $projectLangs[] = $langTo;
 
