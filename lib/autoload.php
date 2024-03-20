@@ -22,12 +22,14 @@ require __DIR__ . '/polyfills.php';
  * @return boolean
  */
 
-// unregister other autoload functions (all must run over quiqqer)
-$fs = spl_autoload_functions();
+if (QUI\Autoloader::shouldOtherAutoloadersBeUnregistered()) {
+    // unregister other autoload functions (all must run over quiqqer)
+    $autoloaderFunctions = spl_autoload_functions();
 
-if (is_array($fs)) {
-    foreach ($fs as $f) {
-        spl_autoload_unregister($f);
+    if (is_array($autoloaderFunctions)) {
+        foreach ($autoloaderFunctions as $autoloaderFunction) {
+            spl_autoload_unregister($autoloaderFunction);
+        }
     }
 }
 
