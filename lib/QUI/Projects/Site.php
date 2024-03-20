@@ -311,7 +311,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getCachePath(): string
     {
-        return static::getSiteCachePath($this->getProject()->getName(), $this->getProject()->getLang(), $this->getId());
+        return self::getSiteCachePath($this->getProject()->getName(), $this->getProject()->getLang(), $this->getId());
     }
 
     /**

@@ -287,7 +287,7 @@ class Manager
             return 'groups';
         }
 
-        return static::classToArea($Object::class);
+        return self::classToArea($Object::class);
     }
 
     /**
