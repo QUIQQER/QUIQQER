@@ -182,13 +182,6 @@ class QUIQQER extends AbstractAuthenticator
             $password = $password['password'];
         }
 
-        if (empty($password)) {
-            throw new QUI\Users\Exception(
-                ['quiqqer/quiqqer', 'exception.login.fail.wrong.password.input'],
-                401
-            );
-        }
-
         if (!\is_string($password) || empty($password)) {
             throw new QUI\Users\Exception(
                 ['quiqqer/quiqqer', 'exception.login.fail.wrong.password.input'],

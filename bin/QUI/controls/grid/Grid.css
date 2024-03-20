@@ -1,21 +1,19 @@
-/* ******************************************************* */
-
 .omnigrid {
     --_grid-fontFamily: var(--grid-fontFamily, Verdana, Geneva, Arial, Helvetica, sans-serif);
     --_grid-fontSize: var(--grid-fontSize, 11px);
     --_grid-fontColor: var(--grid-fontColor, inherit);
+
+    --_grid-border-color: var(--grid-border-color, rgba(0, 0, 0, 0.05));
+    --_grid-border-width: var(--grid-border-width, 1px);
 
     /* cell */
     --_grid-cellPaddingLeft: var(--grid-cellPaddingLeft, 1rem);
     --_grid-cellPaddingRight: var(--grid-cellPaddingRight, 1rem);
     --_grid-cellPaddingTop: var(--grid-cellPaddingTop, 0.75rem);
     --_grid-cellPaddingBottom: var(--grid-cellPaddingBottom, 0.75rem);
-    --_grid-cellBorderLeftWidth: var(--grid-cellBorderLeftWidth, 1px);
-    --_grid-cellBorderLeftColor: var(--grid-cellBorderLeftColor, transparent);
-    --_grid-cellBorderRightWidth: var(--grid-cellBorderRightWidth, 0px);
-    --_grid-cellBorderRightColor: var(--grid-cellBorderRightColor, transparent);
-    --_grid-cellBorderBottomWidth: var(--grid-cellBorderBottomWidth, 1px);
-    --_grid-cellBorderBottomColor: var(--grid-cellBorderBottomColor, #f1f1f1);
+
+    /* body (bDiv) */
+    --_grid-bBg: var(--grid-bBg, #ffffff);
 
     /**
      Control sizing of the grid table. This value affect top and bottom cell padding.
@@ -26,17 +24,6 @@
     --_grid-dragElmWidth: var(--grid-dragElmWidth, 8px);
     --_grid-dragElmColor: var(--grid-dragElmColor, #333);
 
-    /* header (hDiv) */
-    --_grid-hBg: var(--grid-hBg, #eee);
-    --_grid-hBgHover: var(--grid-hBgHover, rgba(0,0,0,0.05));
-    --_grid-hBorderColor: var(--grid-hBorderColor, #ddd);
-    --_grid-hBorderWidth: var(--grid-hBorderWidth, 0);
-
-    /* body (bDiv) */
-    --_grid-bBg: var(--grid-bBg, #ffffff);
-    --_grid-bCellBottomColor: var(--_grid-bCellBottomColor, #f1f1f1);
-    --_grid-bCellBottom: var(--_grid-bCellBottomColor, #f1f1f1);
-
     font-family: var(--_grid-fontFamily);
     font-size: var(--_grid-fontSize);
     position: relative;
@@ -46,6 +33,84 @@
     clear: both;
 }
 
+/* template: simple */
+.omnigrid--design-simple {
+    --_grid-oddRow-bg: #f7f7f7;
+
+    /* header (hDiv) */
+    --_grid-hBg: var(--grid-hBg, #eee);
+    --_grid-hBgHover: var(--grid-hBgHover, rgba(0, 0, 0, 0.05));
+    --_grid-hBorderColor: var(--grid-hBorderColor, #ddd);
+    --_grid-hBorderWidth: var(--grid-hBorderWidth, 0);
+}
+
+/* template: clean */
+.omnigrid--design-clean {
+    --_grid-oddRow-bg: transparent;
+
+    /* header (hDiv) */
+    --_grid-hBg: var(--grid-hBg, #eee);
+    --_grid-hBgHover: var(--grid-hBgHover, rgba(0, 0, 0, 0.05));
+    --_grid-hBorderColor: var(--grid-hBorderColor, #ddd);
+    --_grid-hBorderWidth: var(--grid-hBorderWidth, 0);
+}
+
+/* border: none */
+.omnigrid--border-none {
+    /* cell */
+    --_grid-cellBorderLeftWidth: var(--grid-cellBorderLeftWidth, var(--_grid-border-width));
+    --_grid-cellBorderLeftColor: var(--grid-cellBorderLeftColor, transparent);
+    --_grid-cellBorderRightWidth: var(--grid-cellBorderRightWidth, 0);
+    --_grid-cellBorderRightColor: var(--grid-cellBorderRightColor, transparent);
+    --_grid-cellBorderBottomWidth: var(--grid-cellBorderBottomWidth, 0);
+    --_grid-cellBorderBottomColor: var(--grid-cellBorderBottomColor, transparent);
+
+    /* header (hDiv) */
+    --_grid-hBorderColor: var(--grid-hBorderColor, #ddd);
+    --_grid-hBorderWidth: var(--grid-hBorderWidth, 0);
+
+    /* body (bDiv) */
+    --_grid-bCellBottomColor: var(--_grid-bCellBottomColor, #f1f1f1);
+    --_grid-bCellBottom: var(--_grid-bCellBottomColor, #f1f1f1);
+}
+
+/* border: column */
+.omnigrid--border-column {
+    /* cell */
+    --_grid-cellBorderLeftWidth: var(--grid-cellBorderLeftWidth, var(--_grid-border-width));
+    --_grid-cellBorderLeftColor: var(--grid-cellBorderLeftColor, var(--_grid-border-color));
+    --_grid-cellBorderRightWidth: var(--grid-cellBorderRightWidth, 0px);
+    --_grid-cellBorderRightColor: var(--grid-cellBorderRightColor, transparent);
+    --_grid-cellBorderBottomWidth: var(--grid-cellBorderBottomWidth, 0);
+    --_grid-cellBorderBottomColor: var(--grid-cellBorderBottomColor, transparent);
+}
+
+/* border: row */
+.omnigrid--border-row {
+    /* cell */
+    --_grid-cellBorderLeftWidth: var(--grid-cellBorderLeftWidth, var(--_grid-border-width));
+    --_grid-cellBorderLeftColor: var(--grid-cellBorderLeftColor, transparent);
+    --_grid-cellBorderRightWidth: var(--grid-cellBorderRightWidth, 0);
+    --_grid-cellBorderRightColor: var(--grid-cellBorderRightColor, transparent);
+    --_grid-cellBorderBottomWidth: var(--grid-cellBorderBottomWidth, var(--_grid-border-width));
+    --_grid-cellBorderBottomColor: var(--grid-cellBorderBottomColor, var(--_grid-border-color));
+}
+
+/* border: all */
+.omnigrid--border-all {
+    /* cell */
+    --_grid-cellBorderLeftWidth: var(--grid-cellBorderLeftWidth, 1px);
+    --_grid-cellBorderLeftColor: var(--grid-cellBorderLeftColor, var(--_grid-border-color));
+    --_grid-cellBorderRightWidth: var(--grid-cellBorderRightWidth, 0);
+    --_grid-cellBorderRightColor: var(--grid-cellBorderRightColor, transparent);
+    --_grid-cellBorderBottomWidth: var(--grid-cellBorderBottomWidth, 1px);
+    --_grid-cellBorderBottomColor: var(--grid-cellBorderBottomColor, var(--_grid-border-color));
+}
+
+
+
+
+/* grid */
 .omnigrid div.hDivBox {
     position: relative;
     overflow: hidden;
@@ -60,10 +125,6 @@
     grid-auto-flow: column;
     grid-template-columns: var(--grid-gridTemplateColumns);
     border-bottom: var(--_grid-cellBorderBottomWidth) solid var(--_grid-cellBorderBottomColor);
-}
-
-.omnigrid .bDiv .tr + .tr:last-child {
-    border-bottom: none;
 }
 
 .omnigrid {
@@ -103,23 +164,33 @@
 
     white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
 
-    /*padding-left: 5px;*/
     padding-top: calc(var(--_grid-sizingMultiplier) * var(--_grid-cellPaddingBottom));
     padding-bottom: calc(var(--_grid-sizingMultiplier) * var(--_grid-cellPaddingBottom));
-    padding-left: calc(var(--_grid-sizingMultiplier) * 0.5 * var(--_grid-cellPaddingLeft));
-    padding-right: calc(var(--_grid-sizingMultiplier) * 0.5 * var(--_grid-cellPaddingRight));
+    padding-left: calc(var(--_grid-sizingMultiplier) * 0.75 * var(--_grid-cellPaddingLeft));
+    padding-right: calc(var(--_grid-sizingMultiplier) * 0.75 * var(--_grid-cellPaddingRight));
     -moz-user-select: text;
     cursor: pointer;
-    overflow: hidden;
 
     box-sizing: content-box;
 }
 
-.omnigrid div.hDiv .th:first-child,
-.omnigrid div.bDiv .td:first-child {
+.omnigrid:not(.omnigrid--border-all) div.hDiv .th:first-child,
+.omnigrid:not(.omnigrid--border-all) div.bDiv .td:first-child {
     border-left: none;
 }
+
+/* border: all */
+.omnigrid--border-all .hDiv {
+    border-top: var(--_grid-border-width) solid var(--_grid-border-color);
+}
+
+.omnigrid--border-all .hDivBox,
+.omnigrid--border-all .tr {
+    border-right: var(--_grid-border-width) solid var(--_grid-border-color);
+}
+/* END border: all */
 
 .omnigrid div.hDiv .th .header-text {
     overflow: hidden;
@@ -152,15 +223,20 @@
     line-height: 24px;
     min-height: 24px;
     font-weight: bold;
-    border-left-style: dashed;
-    border-right-style: dashed;
-
     display: flex;
 }
 
-.omnigrid div.hDiv:hover div.th {
-    border-left-color: #ccc;
-    border-right-color: #ccc;
+/*  design / template: clean */
+.omnigrid--border-none div.hDiv div.th,
+.omnigrid--border-row div.hDiv div.th {
+    border-left-style: dashed;
+    border-right-style: dashed;
+}
+
+.omnigrid--border-none div.hDiv:hover div.th,
+.omnigrid--border-row div.hDiv:hover div.th {
+    border-left-color: var(--_grid-hBorderColor);
+    border-right-color: var(--_grid-hBorderColor);
 }
 
 .omnigrid div.bDiv .td {
@@ -201,7 +277,7 @@
 }
 
 .omnigrid li.erow {
-    background-color: #f7f7f7;
+    background-color: var(--_grid-oddRow-bg);
 }
 
 .omnigrid li.selected {
@@ -474,7 +550,7 @@
 }
 
 .omnigrid .pDiv .pButton:hover {
-    background-color: rgba(0,0,0,0.075);
+    background-color: rgba(0, 0, 0, 0.075);
     opacity: 1;
 }
 
@@ -657,6 +733,9 @@
     top: 50%;
     transform: translateY(-50%);
     box-shadow: 0 0 0px 1px #ddd;
+
+    display: flex;
+    flex-wrap: nowrap;
 }
 
 .qui-switch-button {

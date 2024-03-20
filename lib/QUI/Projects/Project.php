@@ -434,7 +434,7 @@ class Project implements \Stringable
      */
     public function getCachePath()
     {
-        return $this->getProjectCachePath($this->getName());
+        return self::getProjectCachePath($this->getName());
     }
 
     /**
@@ -748,10 +748,7 @@ class Project implements \Stringable
      */
     public function getCacheLanguagePath()
     {
-        return $this->getProjectLanguageCachePath(
-            $this->getName(),
-            $this->getLang()
-        );
+        return self::getProjectLanguageCachePath($this->getName(), $this->getLang());
     }
 
     /**
@@ -1238,7 +1235,6 @@ class Project implements \Stringable
             unset($sql['select']);
         } else {
             $sql['select'] = 'id';
-            unset($sql['count']);
         }
 
         if (isset($params['limit'])) {
@@ -1277,10 +1273,6 @@ class Project implements \Stringable
      */
     public function setup($setupOptions = [])
     {
-        if (!isset($setupOptions)) {
-            $setupOptions = [];
-        }
-
         if (!isset($setupOptions['executePackagesSetup'])) {
             $setupOptions['executePackagesSetup'] = true;
         }

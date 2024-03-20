@@ -2964,6 +2964,9 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="grid.export.button.download">
             <en><![CDATA[Download]]></en>
         </locale>
+        <locale name="grid.export.button.print">
+            <en><![CDATA[Print]]></en>
+        </locale>
         <locale name="window.grid.sorting.title">
             <en><![CDATA[Customize table]]></en>
         </locale>

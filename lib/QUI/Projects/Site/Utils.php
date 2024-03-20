@@ -55,12 +55,6 @@ class Utils
      */
     public static function checkName(string $name): bool
     {
-        if (!isset($name)) {
-            throw new Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.url.missing.title')
-            );
-        }
-
         if (strlen($name) <= 2) {
             throw new Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.url.2.signs'),

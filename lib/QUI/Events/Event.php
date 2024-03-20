@@ -8,14 +8,15 @@ namespace QUI\Events;
 
 use QUI;
 use ReflectionMethod;
+use Throwable;
 
 use function call_user_func;
 use function call_user_func_array;
 use function explode;
+use function is_array;
 use function is_string;
 use function preg_replace;
 use function str_contains;
-use function strpos;
 use function ucfirst;
 use function usort;
 
@@ -33,24 +34,24 @@ class Event implements QUI\Interfaces\Events
      *
      * @var array
      */
-    protected $events = [];
+    protected array $events = [];
 
     /**
      * @var array
      */
-    protected $currentRunning = [];
+    protected array $currentRunning = [];
 
     /**
      * @var array
      */
-    protected $ignore = [];
+    protected array $ignore = [];
 
     /**
      * (non-PHPdoc)
      *
      * @see \QUI\Interfaces\Events::getList()
      */
-    public function getList()
+    public function getList(): array
     {
         return $this->events;
     }
@@ -62,10 +63,10 @@ class Event implements QUI\Interfaces\Events
      * @see \QUI\Interfaces\Events::addEvents()
      *
      */
-    public function addEvents(array $events)
+    public function addEvents(array $events): void
     {
         foreach ($events as $event => $fn) {
-            if (\is_array($fn)) {
+            if (is_array($fn)) {
                 $this->addEvent($event, $fn[0], $fn[1], $fn[2]);
                 continue;
             }
@@ -85,7 +86,7 @@ class Event implements QUI\Interfaces\Events
      * @see \QUI\Interfaces\Events::addEvent()
      *
      */
-    public function addEvent($event, $fn, $priority = 0, $package = '')
+    public function addEvent($event, $fn, int $priority = 0, string $package = ''): void
     {
         if (!isset($this->events[$event])) {
             $this->events[$event] = [];
@@ -112,7 +113,7 @@ class Event implements QUI\Interfaces\Events
      * @see \QUI\Interfaces\Events::removeEvents()
      *
      */
-    public function removeEvents(array $events)
+    public function removeEvents(array $events): void
     {
         foreach ($events as $event => $fn) {
             $this->removeEvent($event, $fn);
@@ -127,7 +128,7 @@ class Event implements QUI\Interfaces\Events
      * @see \QUI\Interfaces\Events::removeEvent()
      *
      */
-    public function removeEvent($event, $fn = false)
+    public function removeEvent($event, $fn = false): void
     {
         if (!isset($this->events[$event])) {
             return;
@@ -160,11 +161,11 @@ class Event implements QUI\Interfaces\Events
      * @see \QUI\Interfaces\Events::fireEvent()
      *
      */
-    public function fireEvent($event, $args = false, $force = false)
+    public function fireEvent($event, $args = false, bool $force = false): array
     {
         $results = [];
 
-        if (strpos($event, 'on') !== 0) {
+        if (!str_starts_with($event, 'on')) {
             $event = 'on' . ucfirst($event);
         }
 
@@ -251,7 +252,7 @@ class Event implements QUI\Interfaces\Events
                 );
 
                 $Stack->addException($Clone);
-            } catch (\Throwable $Exception) {
+            } catch (Throwable $Exception) {
                 $message = $Exception->getMessage();
 
                 if (is_string($fn)) {
@@ -287,7 +288,7 @@ class Event implements QUI\Interfaces\Events
      *
      * @param $packageName
      */
-    public function ignore($packageName)
+    public function ignore($packageName): void
     {
         $this->ignore[$packageName] = true;
     }
@@ -295,7 +296,7 @@ class Event implements QUI\Interfaces\Events
     /**
      * Resets the ignore list
      */
-    public function clearIgnore()
+    public function clearIgnore(): void
     {
         $this->ignore = [];
     }

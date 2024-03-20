@@ -105,6 +105,8 @@ define('controls/grid/Grid', [
             filterHide: true,
             filterHideCls: 'hide',
             tablesizing: 'normal', // 'normal', 'small'
+            design: 'simple', // 'simple', 'clean'
+            border: 'column', // 'none', 'column', 'row', 'all'
             lastCellRightSpacing: 40, // spacing from the last cell to the right border of the table, useful for resizing by dragging
 
             storageKey: false, // if storage key is set, the grid settings (column model) are saved in the locale storage
@@ -155,11 +157,12 @@ define('controls/grid/Grid', [
             //export
             exportName: false,
             exportData: false,
+            exportCssFile: false,
             exportTypes: {
                 pdf: true,
                 csv: true,
                 json: true,
-                print: false
+                print: true
             }, // {print : 'Drucken', pdf : 'PDF', csv : 'CSV', json : 'JSON'},
             exportRenderer: null, // function(data){data.type data.data data.Grid}
             exportBinUrl: URL_OPT_DIR + 'quiqqer/quiqqer/lib/QUI/Export/bin/export.php',
@@ -1844,11 +1847,6 @@ define('controls/grid/Grid', [
 
             hDivBox.setStyle('width', t.sumWidth + this.lastCellRightSpacing);
 
-            // header
-            const columns = hDivBox.getElements('div.th');
-            const columnObj = columns[colindex];
-
-            // sve kolone u body
             elements.each((el) => {
                 el.setStyle('width', t.sumWidth + this.lastCellRightSpacing);
             });
@@ -2169,8 +2167,17 @@ define('controls/grid/Grid', [
                     });
                 }
 
-                if (columnModel.title) {
-                    div.title = rowdata[columnModel.title];
+                // set column data as title of the cell
+                if (columnData) {
+                    let text = columnData;
+
+                    if (typeof columnData !== 'string') {
+                        text = columnData.innerText || columnData.textContent;
+                    }
+
+                    if (text) {
+                        div.title = text;
+                    }
                 }
 
                 if (columnModel.dataType === 'button' && columnData) {
@@ -2368,6 +2375,34 @@ define('controls/grid/Grid', [
             }
 
             container.addClass('omnigrid');
+
+            if (options.design) {
+                switch (options.design) {
+                    case 'simple':
+                    case 'clean':
+                        container.addClass('omnigrid--design-' + options.design);
+                        break;
+
+                    default: {
+                        container.addClass('omnigrid--design-simple');
+                    }
+                }
+            }
+
+            if (options.border) {
+                switch (options.border) {
+                    case 'none':
+                    case 'column':
+                    case 'row':
+                    case 'all':
+                        container.addClass('omnigrid--border-' + options.border);
+                        break;
+
+                    default: {
+                        container.addClass('omnigrid--border-column');
+                    }
+                }
+            }
 
             if (this.getAttribute('height')) {
                 this.setHeight(this.getAttribute('height'));
@@ -2594,7 +2629,6 @@ define('controls/grid/Grid', [
                 }
 
                 let dragTempWidth = 0;
-                let cWidth = -3;
 
                 for (i = 0; i < columnCount; i++) {
                     columnModel = this.$columnModel[i] || {};
@@ -3168,6 +3202,11 @@ define('controls/grid/Grid', [
         getExportSelect: function() {
             const self = this;
 
+            const btnInnerHTMLDownload = QUILocale.get('quiqqer/quiqqer', 'grid.export.button.download') +
+                ' <span class="fa fa-solid fa-download"></span>';
+            const btnInnerHTMLPrint = QUILocale.get('quiqqer/quiqqer', 'grid.export.button.print') +
+                ' <span class="fa fa-solid fa-print"></span>';
+
             require([
                 'Mustache',
                 'text!controls/grid/Grid.ExportWindow.html'
@@ -3176,23 +3215,23 @@ define('controls/grid/Grid', [
                     currentNav = 1,
                     currentContent = 1;
 
-                const toggleContent= function(next) {
+                const toggleContent = function(next) {
                     hideContent(currentContent);
                     showContent(next);
 
                     currentContent = next;
-                }
+                };
                 const hideContent = function(index) {
                     const Content = WinContent.querySelector('.contentSlider__items [data-qui-index="' + index + '"]');
                     Content.style.display = 'none';
                     Content.classList.remove('active');
-                }
+                };
 
                 const showContent = function(index) {
                     const Content = WinContent.querySelector('.contentSlider__items [data-qui-index="' + index + '"]');
                     Content.style.display = null;
                     Content.classList.add('active');
-                }
+                };
 
                 const toggleNav = function(index) {
                     WinContent.getElements('.nav button').forEach((Btn) => {
@@ -3201,13 +3240,13 @@ define('controls/grid/Grid', [
 
                     WinContent.getElement('.nav button[data-qui-index="' + index + '"]').classList.add('active');
                     currentNav = index;
-                }
+                };
 
                 const onOpen = function(Win) {
                     Win.$exportTypes = [];
                     Win.$exportTypes2 = [];
 
-                    let c, i, len, columnModel, header, dataIndex;
+                    let c, len, columnModel, header, dataIndex;
 
                     const options = self.getAttributes();
 
@@ -3224,7 +3263,7 @@ define('controls/grid/Grid', [
                         'contentExportTitle': QUILocale.get('quiqqer/quiqqer', 'grid.export.message.exportType.title'),
                         'contentExportDesc': QUILocale.get('quiqqer/quiqqer', 'grid.export.message.exportType'),
                         'btnNext': QUILocale.get('quiqqer/quiqqer', 'grid.export.button.next'),
-                        'btnDownload': QUILocale.get('quiqqer/quiqqer', 'grid.export.button.download')
+                        'btn': btnInnerHTMLDownload
                     }));
 
                     /* nav buttons */
@@ -3266,17 +3305,17 @@ define('controls/grid/Grid', [
                         }
 
                         const label = new Element('label.export-item', {
-                            title: header
+                                title: header
                             }),
                             span = new Element('span.export-item__text', {
                                 html: header
                             }),
                             input = new Element('input', {
                                 'class': 'export_' + dataIndex,
-                                type   : 'checkbox',
+                                type: 'checkbox',
                                 checked: 'checked',
-                                value  : dataIndex,
-                                name   : dataIndex
+                                value: dataIndex,
+                                name: dataIndex
                             });
 
                         if (header === '' || header === '&nbsp;') {
@@ -3330,6 +3369,10 @@ define('controls/grid/Grid', [
                                 fileImage = 'fa fa-file-pdf';
                                 break;
 
+                            case 'print':
+                                fileImage = 'fa fa-print';
+                                break;
+
                             default:
                                 fileImage = 'fa fa-file';
                         }
@@ -3345,8 +3388,18 @@ define('controls/grid/Grid', [
                             name: 'exportType',
                             value: exportType,
                             events: {
-                                change: () => {
+                                change: (event) => {
                                     DownloadBtn.disabled = null;
+
+                                    if (!event || !event.target.nodeName === 'INPUT') {
+                                        return;
+                                    }
+
+                                    if (event.target.value === 'print') {
+                                        DownloadBtn.innerHTML = btnInnerHTMLPrint;
+                                    } else {
+                                        DownloadBtn.innerHTML = btnInnerHTMLDownload;
+                                    }
                                 }
                             }
                         });
@@ -3358,15 +3411,15 @@ define('controls/grid/Grid', [
                 };
 
                 new QUIConfirm({
-                    'class'  : 'qui-window-popup--exportType',
-                    icon     : 'fa fa-download',
-                    title    : '',
+                    'class': 'qui-window-popup--exportType',
+                    icon: 'fa fa-download',
+                    title: '',
                     maxHeight: 600,
-                    maxWidth : 800,
+                    maxWidth: 800,
                     autoclose: false,
-                    buttons  : false,
-                    events   : {
-                        onOpen  : onOpen,
+                    buttons: false,
+                    events: {
+                        onOpen: onOpen,
                         onSubmit: function(Win) {
                             const active = Win.$exportTypes.filter(function(Input) {
                                 return Input.checked;
@@ -3487,11 +3540,14 @@ define('controls/grid/Grid', [
                 columnModel.dataType === 'checkbox');
         },
 
-        exportGrid: function(type) {
+        exportGrid: function(type, data) {
             let self = this,
-                data = this.setExportData(),
                 exportUrl = this.getAttribute('exportBinUrl'),
                 exportName = this.getAttribute('exportName');
+
+            if (typeof data === 'undefined') {
+                data = this.setExportData();
+            }
 
             if (!exportName) {
                 let Now = new Date();
@@ -3509,50 +3565,98 @@ define('controls/grid/Grid', [
                 return;
             }
 
+            // parse html nodes to string data
+            for (let i = 0, len = data.data.length; i < len; i++) {
+                for (let prop in data.data[i]) {
+                    if (data.data[i].hasOwnProperty(prop)) {
+                        data.data[i][prop] = this.convertToHTMLString(data.data[i][prop]);
+                    }
+                }
+            }
+
             const tempData = {
                 data: data,
                 type: type,
-                name: exportName
+                name: exportName,
+                cssFile: this.getAttribute('exportCssFile')
             };
 
-            if (type !== 'print') {
-                this.showLoader();
 
-                fetch(exportUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(tempData)
-                }).then(function(Response) {
-                    const Headers = Response.headers;
+            this.showLoader();
 
-                    let filename = Headers.get('Content-Disposition');
-                    const start = filename.indexOf('filename="') + ('filename="').length;
-                    const end = filename.indexOf('"', start);
-
-                    filename = filename.substr(start, end - start);
-
-                    return Response.blob().then(function(blob) {
-                        require([
-                            URL_OPT_DIR + 'bin/quiqqer-asset/downloadjs/downloadjs/download.js'
-                        ], function(download) {
-                            self.hideLoader();
-
-                            download(blob, filename, Headers.get('Content-Type'));
+            fetch(exportUrl, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(tempData)
+            }).then(function(response) {
+                if (type === 'print') {
+                    return response.text().then((data) => {
+                        require(['qui/controls/elements/Sandbox'], (Sandbox) => {
+                            new Sandbox({
+                                content: data,
+                                styles: {
+                                    height: 100,
+                                    left: 0,
+                                    position: 'absolute',
+                                    top: -110
+                                },
+                                events: {
+                                    onLoad: function(Box) {
+                                        (() => {
+                                            Box.getElm().contentWindow.print();
+                                        }).delay(500);
+                                    }
+                                }
+                            }).inject(document.body);
                         });
+
+                        self.hideLoader();
                     });
-                }).catch(function(e) {
-                    self.hideLoader();
+                }
 
-                    console.error(e);
+                const Headers = response.headers;
+
+                let filename = Headers.get('Content-Disposition');
+                const start = filename.indexOf('filename="') + ('filename="').length;
+                const end = filename.indexOf('"', start);
+
+                filename = filename.substr(start, end - start);
+
+                return response.blob().then(function(blob) {
+                    require([
+                        URL_OPT_DIR + 'bin/quiqqer-asset/downloadjs/downloadjs/download.js'
+                    ], function(download) {
+                        self.hideLoader();
+
+                        download(blob, filename, Headers.get('Content-Type'));
+                    });
                 });
+            }).catch(function(e) {
+                self.hideLoader();
 
-                return;
+                console.error(e);
+            });
+        },
+
+        convertToHTMLString: function(obj) {
+            if (typeof obj !== 'object' || obj === null) {
+                return obj;
             }
 
-            // @todo print funktion bauen
+            if (obj.nodeType) {
+                return obj.outerHTML;
+            }
+
+            for (let key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    obj[key] = this.convertToHTMLString(obj[key]);
+                }
+            }
+
+            return obj;
         },
 
         /**

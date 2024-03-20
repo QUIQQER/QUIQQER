@@ -161,4 +161,9 @@ class PermissionOrder
 
         return $result;
     }
+
+    public static function __callStatic(string $name, array $arguments)
+    {
+        // TODO: Implement __callStatic() method.
+    }
 }

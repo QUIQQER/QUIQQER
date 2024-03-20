@@ -178,7 +178,6 @@ class Permissions extends QUI\System\Console\Tool
         }
 
         $Manager = QUI::getPermissionManager();
-        $usedPermissions = $Manager->getPermissions($User);
         $userPermissions = $Manager->getCompletePermissionList($User);
         $permissions = $Manager->getPermissionList();
 
@@ -191,7 +190,6 @@ class Permissions extends QUI\System\Console\Tool
             $Manager,
             $permissions,
             $userPermissions,
-            $usedPermissions,
             $groups
         ) {
             $value = $userPermissions[$permission];
@@ -272,16 +270,12 @@ class Permissions extends QUI\System\Console\Tool
 
         $data = [];
         $Manager = QUI::getPermissionManager();
-        $usedPermissions = $Manager->getPermissions($Group);
         $groupPermissions = $Manager->getCompletePermissionList($Group);
         $permissions = $Manager->getPermissionList();
 
         $parsePermission = function ($permission) use (
-            $Group,
-            $Manager,
             $permissions,
             $groupPermissions,
-            $usedPermissions
         ) {
             $value = $groupPermissions[$permission];
             $perm = $permissions[$permission];

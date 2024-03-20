@@ -1,0 +1,9 @@
+includes:
+    - phpstan-baseline.neon
+parameters:
+    level: 1
+    bootstrapFiles:
+        - tests/bootstrap.php
+    paths:
+        - lib
+        - admin

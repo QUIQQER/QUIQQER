@@ -6,6 +6,7 @@
 
 namespace QUI;
 
+use PDOException;
 use QUI;
 
 use function array_filter;
@@ -17,7 +18,6 @@ use function count;
 use function defined;
 use function explode;
 use function function_exists;
-use function get_class;
 use function is_array;
 use function is_bool;
 use function is_callable;
@@ -32,7 +32,6 @@ use function mb_substr;
 use function md5;
 use function method_exists;
 use function strip_tags;
-use function strpos;
 use function utf8_encode;
 
 /**
@@ -65,7 +64,7 @@ class Ajax extends QUI\QDOM
     protected static array $permissions = [];
     /**
      * javascript functions to be executed by after a request
-     * This functions are registered via Ajax.registerCallback('functionName', callable);
+     * These functions are registered via Ajax.registerCallback('functionName', callable);
      *
      * @var array
      */
@@ -94,15 +93,15 @@ class Ajax extends QUI\QDOM
      * Registered a function which is available via ajax
      *
      * @param string $reg_function - Function which is callable via ajax
-     * @param array|boolean $reg_vars - Variables of the function
+     * @param boolean|array $reg_vars - Variables of the function
      * @param bool|string $user_perm - rights, optional
      *
      * @return bool
      */
     public static function register(
         string $reg_function,
-        $reg_vars = [],
-        $user_perm = false
+        bool|array $reg_vars = [],
+        bool|string $user_perm = false
     ): bool {
         if (!is_array($reg_vars)) {
             $reg_vars = [];
@@ -122,16 +121,16 @@ class Ajax extends QUI\QDOM
      *
      * @param string $name - Name of the function
      * @param callable $function - Function
-     * @param array|bool $reg_vars - Variables of the function
-     * @param bool|false|array|string $user_perm - (optional) permissions / rights
+     * @param bool|array $reg_vars - Variables of the function
+     * @param bool|array|string $user_perm - (optional) permissions / rights
      *
      * @return bool
      */
     public static function registerFunction(
         string $name,
         callable $function,
-        $reg_vars = [],
-        $user_perm = false
+        bool|array $reg_vars = [],
+        bool|array|string $user_perm = false
     ): bool {
         if (!is_callable($function)) {
             return false;
@@ -179,7 +178,7 @@ class Ajax extends QUI\QDOM
      * @return string|array - quiqqer XML
      * @throws Exception
      */
-    public function call()
+    public function call(): array|string
     {
         if (
             !isset($_REQUEST['_rf'])
@@ -234,9 +233,8 @@ class Ajax extends QUI\QDOM
 
         // json errors bekommen
         if (function_exists('json_last_error')) {
-            switch (json_last_error()) {
-                case JSON_ERROR_UTF8:
-                    $encoded = json_encode($utf8ize($result));
+            if (json_last_error() == JSON_ERROR_UTF8) {
+                $encoded = json_encode($utf8ize($result));
             }
 
             switch (json_last_error()) {
@@ -265,11 +263,11 @@ class Ajax extends QUI\QDOM
     /**
      * Exceptions xml / json return
      *
-     * @param Exception|\PDOException|\Exception $Exception
+     * @param PDOException|Exception|\Exception $Exception
      *
      * @return array
      */
-    public function writeException($Exception): array
+    public function writeException(PDOException|\Exception|Exception $Exception): array
     {
         $return = [];
         $class = $Exception::class;
@@ -281,15 +279,10 @@ class Ajax extends QUI\QDOM
         }
 
         $attributes = array_filter($data, function ($v, $k) {
-            switch ($k) {
-                case 'message':
-                case 'code':
-                case 'type':
-                case 'context':
-                    return false;
-            }
-
-            return is_string($v) || is_array($v) || is_numeric($v) || is_bool($v);
+            return match ($k) {
+                'message', 'code', 'type', 'context' => false,
+                default => is_string($v) || is_array($v) || is_numeric($v) || is_bool($v),
+            };
         }, ARRAY_FILTER_USE_BOTH);
 
         switch ($class) {
@@ -313,7 +306,7 @@ class Ajax extends QUI\QDOM
                 break;
 
             case 'QUI\\ExceptionStack':
-                /* @var $Exception \QUI\ExceptionStack */
+                /* @var $Exception ExceptionStack */
                 $list = $Exception->getExceptionList();
 
                 if (isset($list[0])) {
@@ -382,11 +375,11 @@ class Ajax extends QUI\QDOM
      * Internal call of an ajax function
      *
      * @param string $_rf
-     * @param array|boolean|mixed $values
+     * @param mixed $values
      *
      * @return array - the result
      */
-    public function callRequestFunction(string $_rf, $values = false): array
+    public function callRequestFunction(string $_rf, mixed $values = false): array
     {
         if (!isset(self::$functions[$_rf]) && !isset(self::$callables[$_rf])) {
             if (defined('DEVELOPMENT') && DEVELOPMENT) {
@@ -400,7 +393,7 @@ class Ajax extends QUI\QDOM
 
         // Rechte prüfung
         try {
-            $this->checkPermissions($_rf);
+            self::checkPermissions($_rf);
         } catch (\Exception $Exception) {
             return $this->writeException($Exception);
         }
@@ -484,12 +477,12 @@ class Ajax extends QUI\QDOM
     /**
      * Checks the rights if a function has a checkPermissions routine
      *
-     * @param string|callback $reg_function
+     * @param callback|string $reg_function
      *
      * @throws Exception
      * @throws \QUI\Permissions\Exception
      */
-    public static function checkPermissions($reg_function)
+    public static function checkPermissions(callable|string $reg_function): void
     {
         if (!isset(self::$permissions[$reg_function])) {
             return;
@@ -514,9 +507,7 @@ class Ajax extends QUI\QDOM
                 } catch (Exception) {
                 }
 
-                if ($Package) {
-                    $Package->hasPermission();
-                }
+                $Package?->hasPermission();
             }
         }
 
@@ -526,13 +517,13 @@ class Ajax extends QUI\QDOM
 
         foreach ($function as $func) {
             // if it is a real permission
-            if (strpos($func, '::') === false) {
+            if (!str_contains($func, '::')) {
                 Permissions\Permission::checkPermission($func);
 
                 return;
             }
 
-            if (strpos($func, 'Permission') === 0) {
+            if (str_starts_with($func, 'Permission')) {
                 $func = '\\QUI\\Rights\\' . $func;
             }
 
@@ -550,7 +541,7 @@ class Ajax extends QUI\QDOM
      * @param string $javascriptFunctionName - name of the javascript callback function
      * @param array $params - optional, params for the javascript callback function
      */
-    public function triggerGlobalJavaScriptCallback(string $javascriptFunctionName, array $params = [])
+    public function triggerGlobalJavaScriptCallback(string $javascriptFunctionName, array $params = []): void
     {
         $this->jsCallbacks[$javascriptFunctionName] = $params;
     }
@@ -558,19 +549,17 @@ class Ajax extends QUI\QDOM
     /**
      * Ajax Timeout handling
      */
-    public function onShutdown()
+    public function onShutdown(): void
     {
-        switch (connection_status()) {
-            case 2:
-                $return = [
-                    'Exception' => [
-                        'message' => QUI::getLocale()->get('quiqqer/quiqqer', 'exception.timeout'),
-                        'code' => 504
-                    ]
-                ];
+        if (connection_status() == 2) {
+            $return = [
+                'Exception' => [
+                    'message' => QUI::getLocale()->get('quiqqer/quiqqer', 'exception.timeout'),
+                    'code' => 504
+                ]
+            ];
 
-                echo '<quiqqer>' . json_encode($return) . '</quiqqer>';
-                break;
+            echo '<quiqqer>' . json_encode($return) . '</quiqqer>';
         }
     }
 
