@@ -12,6 +12,7 @@ use QUI\Utils\Security\Orthos as Orthos;
 
 use function current;
 use function is_array;
+use function is_numeric;
 use function json_decode;
 
 /**
@@ -50,19 +51,26 @@ class Address extends QUI\QDOM
      * constructor
      *
      * @param QUIUserInterface $User - User
-     * @param integer $id - Address id
+     * @param integer|string $id - Address id or uuid
      *
      * @throws \QUI\Users\Exception
      */
-    public function __construct(QUIUserInterface $User, int $id)
+    public function __construct(QUIUserInterface $User, int|string $id)
     {
         try {
+            $where = [
+                'uid' => $User->getId()
+            ];
+
+            if (is_numeric($id)) {
+                $where['id'] = (int)$id;
+            } else {
+                $where['uuid'] = $id;
+            }
+
             $result = QUI::getDataBase()->fetch([
                 'from' => Manager::tableAddress(),
-                'where' => [
-                    'id' => $id,
-                    'uid' => $User->getId()
-                ],
+                'where' => $where,
                 'limit' => '1'
             ]);
         } catch (QUI\Exception $Exception) {

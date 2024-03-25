@@ -777,6 +777,7 @@ class User implements QUI\Interfaces\Users\User
         }
 
         $_params['uid'] = $this->getId();
+        $_params['uuid'] = QUI\Utils\Uuid::get();
 
         QUI::getDataBase()->insert(
             Manager::tableAddress(),
