@@ -11,6 +11,7 @@ use QUI\Interfaces\Users\User as QUIUserInterface;
 use QUI\Utils\Security\Orthos as Orthos;
 
 use function current;
+use function date;
 use function is_array;
 use function is_numeric;
 use function json_decode;
@@ -576,7 +577,8 @@ class Address extends QUI\QDOM
                     'country' => $cleanupAttributes($this->getAttribute('country')),
                     'mail' => $mail,
                     'phone' => $phone,
-                    'custom_data' => \json_encode($this->getCustomData())
+                    'custom_data' => \json_encode($this->getCustomData()),
+                    'e_date' => date('Y-m-d H:i:s')
                 ],
                 [
                     'id' => $this->id

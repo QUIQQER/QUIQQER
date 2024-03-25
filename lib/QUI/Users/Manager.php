@@ -15,6 +15,7 @@ use QUI\Utils\Security\Orthos;
 use QUI\Utils\Text\XML;
 
 use function class_implements;
+use function date;
 use function defined;
 use function explode;
 use function file_exists;
@@ -251,7 +252,7 @@ class Manager
 
         $DataBase->table()->setUniqueColumns($table, 'uuid');
 
-        // addresses without uuid
+        // addresses
         $tableAddresses = $this::tableAddress();
 
         if (!$DataBase->table()->existColumnInTable($tableAddresses, 'uuid')) {
