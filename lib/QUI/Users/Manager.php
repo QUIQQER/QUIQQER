@@ -254,6 +254,7 @@ class Manager
 
         // addresses
         $tableAddresses = $this::tableAddress();
+        $setAddressUuidColumnToUnique = false;
 
         if (!$DataBase->table()->existColumnInTable($tableAddresses, 'uuid')) {
             $DataBase->table()->addColumn(
@@ -263,7 +264,7 @@ class Manager
                 ]
             );
 
-            $DataBase->table()->setUniqueColumns($tableAddresses, 'uuid');
+            $setAddressUuidColumnToUnique = true;
 
             $sql = "ALTER TABLE `{$table}` MODIFY `address` VARCHAR(50) NOT NULL";
             $DataBase->execSQL($sql);
@@ -296,6 +297,10 @@ class Manager
                     'address' => $entry['id']
                 ]
             );
+        }
+
+        if ($setAddressUuidColumnToUnique) {
+            $DataBase->table()->setUniqueColumns($tableAddresses, 'uuid');
         }
     }
 
