@@ -9,8 +9,8 @@
  * @fires onAdd [this, File]
  * @fires onBegin [this]
  * @fires onCancel [this, File]
- * @fires onComplete [this]
- * @fires onFinished [this]
+ * @fires onComplete [this, uploadedFiles]
+ * @fires onFinished [this, uploadedFiles]
  * @fires onSubmit [Array, this]
  * @fires onInputDestroy
  * @fires onDragenter [event, DOMNode, controls/upload/Form]
@@ -996,9 +996,9 @@ define('controls/upload/Form', [
                         phpOnStart: params.onstart,
                         params: params,
                         events: {
-                            onFinish: () => {
-                                this.fireEvent('finished', [this]);
-                                this.fireEvent('complete', [this]);
+                            onFinish: (Instance, uploadedFiles) => {
+                                this.fireEvent('finished', [this, uploadedFiles]);
+                                this.fireEvent('complete', [this, uploadedFiles]);
                             }
                         }
                     }).upload(files);
@@ -1191,8 +1191,6 @@ define('controls/upload/Form', [
             Up.addEvents({
 
                 onDragenter: function(event, Elm) {
-                    console.log('drag enter');
-
                     if (self.$enabled === false) {
                         return;
                     }
@@ -1211,8 +1209,6 @@ define('controls/upload/Form', [
                 },
 
                 onDragleave: function(event, Elm) {
-                    console.log('drag leave');
-
                     if (self.$enabled === false) {
                         return;
                     }
@@ -1230,8 +1226,6 @@ define('controls/upload/Form', [
                 },
 
                 onDragend: function(event, Elm) {
-                    console.log('drag end');
-
                     if (self.$enabled === false) {
                         return;
                     }

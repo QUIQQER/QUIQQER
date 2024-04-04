@@ -7,7 +7,7 @@
  * @module classes/request/Upload
  * @author www.pcsg.de (Henning Leutz)
  *
- * @event onFinish [this]
+ * @event onFinish [this, uploadedFiles]
  * @event onUploadPartStart [this]
  * @event onUploadPartEnd [this]
  * @event onRefresh [this] - is triggered after one complete file upload
@@ -20,8 +20,8 @@ define('classes/request/BulkUpload', [
     'qui/utils/Math',
     'Locale'
 
-], function (QUI, QDOM, ObjectUtils, QUIMath, QUILocale) {
-    "use strict";
+], function(QUI, QDOM, ObjectUtils, QUIMath, QUILocale) {
+    'use strict';
 
     const cyrb53 = (str, seed = 0) => {
         let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
@@ -58,13 +58,14 @@ define('classes/request/BulkUpload', [
             params: {}
         },
 
-        initialize: function (options) {
+        initialize: function(options) {
             this.parent(options);
 
             this.$size = 0;
             this.$uploaded = 0;
 
             this.$files = {};
+            this.$result = [];
 
             this.$currentChunkSize = (1024 * 256); // 256kb
             this.$currentRangeStart = 0;
@@ -77,7 +78,7 @@ define('classes/request/BulkUpload', [
             this.$LoadingMessage = null;
         },
 
-        $calc: function (files) {
+        $calc: function(files) {
             this.$size = 0;
 
             if (!files.length) {
@@ -129,7 +130,7 @@ define('classes/request/BulkUpload', [
          *
          * @return {*}
          */
-        getFileEntry: function () {
+        getFileEntry: function() {
             return this.$files[this.$currentHash];
         },
 
@@ -137,7 +138,7 @@ define('classes/request/BulkUpload', [
          * starts the upload
          * @param files
          */
-        upload: function (files) {
+        upload: function(files) {
             this.$calc(files);
             QUI.fireEvent('upload', [this]);
             this.$run();
@@ -147,7 +148,7 @@ define('classes/request/BulkUpload', [
          * Returns the current progress
          * @return {{running: number, total: *, waiting: number, size: (*|number), uploaded: (boolean|number|*), files: ([]|*), done: number, percent: *}}
          */
-        getProgress: function () {
+        getProgress: function() {
             let waiting = 0;
             let running = 0;
             let done = 0;
@@ -186,7 +187,7 @@ define('classes/request/BulkUpload', [
             };
         },
 
-        $refreshLoadingMessage: function () {
+        $refreshLoadingMessage: function() {
             if (!this.$LoadingMessage) {
                 return;
             }
@@ -194,21 +195,20 @@ define('classes/request/BulkUpload', [
             const progress = this.getProgress();
             const MessageNode = this.$LoadingMessage.getElm();
 
-            MessageNode.getElement('.quiqqer-message-loading-progress-bar')
-                .setStyle('width', progress.percent + '%');
+            MessageNode.getElement('.quiqqer-message-loading-progress-bar').setStyle('width', progress.percent + '%');
         },
 
         /**
          * internal upload starting
          */
-        $run: function () {
+        $run: function() {
             if (!this.$CurrentFile) {
                 this.$CurrentFile = this.$getNextFile();
             }
 
             if (!this.$CurrentFile) {
                 // all is uploaded
-                this.fireEvent('finish', [this]);
+                this.fireEvent('finish', [this, this.$result]);
                 return;
             }
 
@@ -225,7 +225,7 @@ define('classes/request/BulkUpload', [
          *
          * @return {boolean}
          */
-        $getNextFile: function () {
+        $getNextFile: function() {
             for (let filehash in this.$files) {
                 if (!this.$files.hasOwnProperty(filehash)) {
                     continue;
@@ -243,7 +243,7 @@ define('classes/request/BulkUpload', [
             return false;
         },
 
-        $uploadFile: function (File) {
+        $uploadFile: function(File) {
             if (typeof File !== 'undefined') {
                 this.$currentRangeStart = 0;
                 this.$currentFileSize = File.size;
@@ -270,7 +270,7 @@ define('classes/request/BulkUpload', [
             });
         },
 
-        $uploadFilePart: function (File) {
+        $uploadFilePart: function(File) {
             this.getFileEntry().status = STATUS_RUNNING;
 
             // the file part
@@ -317,7 +317,7 @@ define('classes/request/BulkUpload', [
             if (typeof UploadParams.lang === 'undefined') {
                 UploadParams.lang = QUILocale.getCurrent();
             }
-            
+
             const p = Object.keys(UploadParams).reduce((acc, key) => {
                 if (typeof UploadParams[key] !== 'object') {
                     acc[key] = UploadParams[key];
@@ -357,7 +357,7 @@ define('classes/request/BulkUpload', [
                 return response.text().then((text) => {
                     this.$parseResult(text);
                 });
-            }).catch(function (err) {
+            }).catch(function(err) {
                 console.error(err);
             });
         },
@@ -368,7 +368,7 @@ define('classes/request/BulkUpload', [
          *
          * @param {String} responseText - server answer
          */
-        $parseResult: function (responseText) {
+        $parseResult: function(responseText) {
             const str = responseText || '',
                 len = str.length,
                 start = 9,
@@ -380,29 +380,11 @@ define('classes/request/BulkUpload', [
 
             if (!str.match('<quiqqer>') || !str.match('</quiqqer>')) {
                 this.$error = true;
-                /*
-                return this.fireEvent('error', [
-                    new MessageError({
-                        message: 'No QUIQQER XML',
-                        code   : 500
-                    }),
-                    this
-                ]);
-                 */
             }
 
             if (str.substring(0, start) !== '<quiqqer>' ||
                 str.substring(end, len) !== '</quiqqer>') {
                 this.$error = true;
-                /*
-                return this.fireEvent('error', [
-                    new MessageError({
-                        message: 'No QUIQQER XML',
-                        code   : 500
-                    }),
-                    this
-                ]);
-                */
             }
 
             // callback
@@ -413,37 +395,14 @@ define('classes/request/BulkUpload', [
             if (result.Exception) {
                 this.$error = true;
                 this.$execute = false;
-
-                /*
-                return this.fireEvent('error', [
-                    new MessageError({
-                        message: result.Exception.message || '',
-                        code   : result.Exception.code || 0,
-                        type   : result.Exception.type || 'Exception'
-                    }),
-                    this
-                ]);
-                */
             }
 
-            // result parsing
             if (result.Exception) {
                 this.$error = true;
-
-                /*
-                this.fireEvent('error', [
-                    new MessageError({
-                        message: result.Exception.message || '',
-                        code   : result.Exception.code || 0,
-                        type   : result.Exception.type || 'Exception'
-                    }),
-                    this
-                ]);
-                */
             }
 
             if (result.result) {
-                this.$result = result.result;
+                this.$result.push(result.result);
             }
         }
     });
