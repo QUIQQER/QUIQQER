@@ -15,6 +15,7 @@ use QUI\Utils\Security\Orthos;
 use QUI\Utils\Text\XML;
 
 use function class_implements;
+use function date;
 use function defined;
 use function explode;
 use function file_exists;
@@ -250,6 +251,52 @@ class Manager
         }
 
         $DataBase->table()->setUniqueColumns($table, 'uuid');
+
+        // addresses
+        $tableAddresses = $this::tableAddress();
+
+        if (!$DataBase->table()->existColumnInTable($tableAddresses, 'uuid')) {
+            $DataBase->table()->addColumn(
+                $tableAddresses,
+                [
+                    'uuid' => 'VARCHAR(50) NOT NULL'
+                ]
+            );
+
+            $DataBase->table()->setUniqueColumns($tableAddresses, 'uuid');
+
+            $sql = "ALTER TABLE `{$table}` MODIFY `address` VARCHAR(50) NOT NULL";
+            $DataBase->execSQL($sql);
+        }
+
+        $list = QUI::getDataBase()->fetch([
+            'select' => ['id'],
+            'from' => $tableAddresses,
+            'where' => [
+                'uuid' => ''
+            ]
+        ]);
+
+        foreach ($list as $entry) {
+            $addressUuid = QUI\Utils\Uuid::get();
+
+            $DataBase->update($tableAddresses, [
+                'uuid' => $addressUuid
+            ], [
+                'id' => $entry['id']
+            ]);
+
+            // Update references in users table
+            $DataBase->update(
+                $table,
+                [
+                    'address' => $addressUuid
+                ],
+                [
+                    'address' => $entry['id']
+                ]
+            );
+        }
     }
 
     /**

@@ -413,7 +413,7 @@ class Template extends QUI\QDOM
                 );
             }
 
-            $this->getConfig()->reload();
+            static::getConfig()->reload();
             $this->load();
 
             return 'smarty4';
