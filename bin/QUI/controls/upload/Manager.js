@@ -22,8 +22,8 @@ define('controls/upload/Manager', [
 
     'css!controls/upload/Manager.css'
 
-], function (QUI, QUIPanel, QUIProgressbar, QUIAlert, MathUtils, UploadFile, Ajax, Locale) {
-    "use strict";
+], function(QUI, QUIPanel, QUIProgressbar, QUIAlert, MathUtils, UploadFile, Ajax, Locale) {
+    'use strict';
 
     const lg = 'quiqqer/quiqqer';
 
@@ -52,7 +52,7 @@ define('controls/upload/Manager', [
             contextMenu: true
         },
 
-        initialize: function (options) {
+        initialize: function(options) {
             this.parent(options);
 
             this.$files = [];
@@ -73,7 +73,7 @@ define('controls/upload/Manager', [
         /**
          * event : onCreate
          */
-        $onCreate: function () {
+        $onCreate: function() {
             this.$Container = new Element('div', {
                 'class': 'upload-manager'
             }).inject(this.getContent());
@@ -93,14 +93,14 @@ define('controls/upload/Manager', [
         /**
          * event: on inject
          */
-        $onInject: function () {
+        $onInject: function() {
             this.setAttribute('title', Locale.get(lg, 'upload.manager.title'));
         },
 
         /**
          * Clear all upload
          */
-        clear: function () {
+        clear: function() {
             for (let i = 0, len = this.$files.length; i < len; i++) {
                 this.$files[i].getElm().destroy();
             }
@@ -114,8 +114,8 @@ define('controls/upload/Manager', [
          *
          * @param {Array} message -
          */
-        sendMessage: function (message) {
-            QUI.getMessageHandler(function (MH) {
+        sendMessage: function(message) {
+            QUI.getMessageHandler(function(MH) {
                 MH.add(MH.parse(message));
             });
         },
@@ -125,7 +125,7 @@ define('controls/upload/Manager', [
          *
          * @param {Number|String} uploadid
          */
-        isFinish: function (uploadid) {
+        isFinish: function(uploadid) {
             // uploadid
             if (this.$uploads[uploadid]) {
                 this.$uploads[uploadid].finish();
@@ -141,7 +141,7 @@ define('controls/upload/Manager', [
          * @param {String} rf - php request function
          * @param {object} params - the params what would be send, too
          */
-        uploadFiles: function (files, rf, params) {
+        uploadFiles: function(files, rf, params) {
             if (typeof files === 'undefined') {
                 return;
             }
@@ -199,7 +199,7 @@ define('controls/upload/Manager', [
                     content: Locale.get(lg, 'upload.manager.message.archivfile.text') + '<br />' + list,
                     closeButtonText: Locale.get(lg, 'upload.manager.message.archivfile.btn.start'),
                     events: {
-                        onClose: function (Win) {
+                        onClose: function(Win) {
                             const Body = Win.getContent(),
                                 checkboxs = Body.getElements('input[type="checkbox"]'),
                                 ext = {};
@@ -227,7 +227,7 @@ define('controls/upload/Manager', [
 
             this.$maxPercent = files.length * 100;
 
-            const cleanupFiles = function (File) {
+            const cleanupFiles = function(File) {
                 const newFileList = [];
 
                 for (i = 0, len = self.$files.length; i < len; i++) {
@@ -239,7 +239,7 @@ define('controls/upload/Manager', [
                 self.$files = newFileList;
             };
 
-            const onComplete = function (File) {
+            const onComplete = function(File) {
                 cleanupFiles(File);
                 self.fireEvent('fileComplete', [
                     self,
@@ -247,12 +247,12 @@ define('controls/upload/Manager', [
                 ]);
 
                 if (File.getElm().getParent() === document.body) {
-                    (function () {
+                    (function() {
                         moofx(File.getElm()).animate({
                             opacity: 0
                         }, {
                             duration: 200,
-                            callback: function () {
+                            callback: function() {
                                 File.getElm().destroy();
                             }
                         });
@@ -260,12 +260,12 @@ define('controls/upload/Manager', [
                 }
             };
 
-            const onRefresh = function (File, percent) {
+            const onRefresh = function(File, percent) {
                 self.$uploadPerCents[File.getId()] = percent;
                 self.$onFileUploadRefresh();
             };
 
-            const onError = function (Exception, File) {
+            const onError = function(Exception, File) {
                 cleanupFiles(File);
 
                 if ('error' in self.$events) {
@@ -273,12 +273,12 @@ define('controls/upload/Manager', [
                     return;
                 }
 
-                QUI.getMessageHandler(function (MessageHandler) {
+                QUI.getMessageHandler(function(MessageHandler) {
                     MessageHandler.add(Exception);
                 });
             };
 
-            const onCancel = function (File) {
+            const onCancel = function(File) {
                 cleanupFiles(File);
                 self.fireEvent('fileCancel', [
                     self,
@@ -286,108 +286,42 @@ define('controls/upload/Manager', [
                 ]);
             };
 
-            if (files.length > 1) {
-                require(['classes/request/BulkUpload'], (BulkUpload) => {
-                    const p = Object.keys(params).reduce((acc, key) => {
-                        if (typeof params[key] !== 'object') {
-                            acc[key] = params[key];
-                        }
-                        return acc;
-                    }, {});
 
-                    new BulkUpload({
-                        parentId: params.parentid,
-                        project: params.project,
-                        phpOnFinish: rf,
-                        params: p,
-                        events: {
-                            onFinish: () => {
-                                this.fireEvent('finished', [this]);
-                                this.fireEvent('complete', [this]);
-
-                                if (typeof params.onComplete === 'function') {
-                                    params.onComplete();
-                                }
-
-                                if (typeof params.events !== 'undefined' &&
-                                    typeof params.events.onComplete === 'function') {
-                                    params.events.onComplete();
-                                }
-
-                                this.fireEvent('fileUploadRefresh', [
-                                    this,
-                                    100
-                                ]);
-                            }
-                        }
-                    }).upload(files);
-                });
-
-                return;
-            }
-
-            for (i = 0, len = files.length; i < len; i++) {
-                file_params = Object.clone(params);
-                file_params.extract = !!(extract && extract[files[i].name]);
-
-                if (typeof file_params.events !== 'undefined') {
-                    events = file_params.events;
-
-                    delete file_params.events;
-                }
-
-                const QUIFile = new UploadFile(files[i], {
-                    phpfunc: rf,
-                    params: file_params,
-                    events: events,
-                    pauseAllowed: this.getAttribute('pauseAllowed'),
-                    contextMenu: this.getAttribute('contextMenu')
-                });
-
-                QUIFile.addEvents({
-                    onComplete: onComplete,
-                    onRefresh: onRefresh,
-                    onError: onError,
-                    onCancel: onCancel
-                });
-
-                if (file_params.phponstart) {
-                    QUIFile.setAttribute('phponstart', file_params.phponstart);
-                }
-
-                this.$files.push(QUIFile);
-
-                if (this.$Container) {
-                    QUIFile.inject(this.$Container, 'top');
-                } else {
-                    // exist upload container? ... not nice but functional
-                    Container = document.getElement('.qui-panel-content .upload-manager');
-
-                    if (Container) {
-                        QUIFile.inject(Container, 'top');
-                    } else {
-                        // @todo multiple anzeige umsetzen
-                        const Node = QUIFile.create();
-
-                        Node.setStyles({
-                            background: '#fff',
-                            border: '1px solid #f1f1f1',
-                            bottom: 10,
-                            boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
-                            position: 'absolute',
-                            right: 10,
-                            width: 300,
-                            zIndex: 1000
-                        });
-
-                        Node.inject(document.body);
+            require(['classes/request/BulkUpload'], (BulkUpload) => {
+                const p = Object.keys(params).reduce((acc, key) => {
+                    if (typeof params[key] !== 'object') {
+                        acc[key] = params[key];
                     }
-                }
+                    return acc;
+                }, {});
 
-                QUIFile.upload();
+                new BulkUpload({
+                    parentId: params.parentid,
+                    project: params.project,
+                    phpOnFinish: rf,
+                    params: p,
+                    events: {
+                        onFinish: (BulkUploadInstance, uploadedFiles) => {
+                            this.fireEvent('finished', [this, uploadedFiles]);
+                            this.fireEvent('complete', [this, uploadedFiles]);
 
-                events = false;
-            }
+                            if (typeof params.onComplete === 'function') {
+                                params.onComplete(uploadedFiles);
+                            }
+
+                            if (typeof params.events !== 'undefined' &&
+                                typeof params.events.onComplete === 'function') {
+                                params.events.onComplete(uploadedFiles);
+                            }
+
+                            this.fireEvent('fileUploadRefresh', [
+                                this,
+                                100
+                            ]);
+                        }
+                    }
+                }).upload(files);
+            });
         },
 
         /**
@@ -395,7 +329,7 @@ define('controls/upload/Manager', [
          *
          * @param {controls/upload/Form} Form - Upload form object
          */
-        injectForm: function (Form) {
+        injectForm: function(Form) {
             if (this.$Container) {
                 Form.createInfo().inject(this.$Container, 'top');
             }
@@ -408,8 +342,8 @@ define('controls/upload/Manager', [
          *
          * @method controls/upload/Manager#getUnfinishedUploads
          */
-        getUnfinishedUploads: function () {
-            Ajax.get('ajax_uploads_unfinished', function (files) {
+        getUnfinishedUploads: function() {
+            Ajax.get('ajax_uploads_unfinished', function(files) {
                 if (!files.length) {
                     return;
                 }
@@ -417,22 +351,22 @@ define('controls/upload/Manager', [
                 let i, len, QUIFile, params,
                     func_oncancel, func_oncomplete;
 
-                QUI.getMessageHandler(function (MH) {
+                QUI.getMessageHandler(function(MH) {
                     MH.addInformation(
                         Locale.get(lg, 'upload.manager.message.not.finish')
                     );
                 });
 
                 // events
-                func_oncancel = function (File) {
-                    Ajax.post('ajax_uploads_cancel', function () {
+                func_oncancel = function(File) {
+                    Ajax.post('ajax_uploads_cancel', function() {
                         File.destroy();
                     }, {
                         file: File.getFilename()
                     });
                 };
 
-                func_oncomplete = function () {
+                func_oncomplete = function() {
 
                 };
 
@@ -476,7 +410,7 @@ define('controls/upload/Manager', [
          * event : on file upload refresh
          * display the percent of the upload
          */
-        $onFileUploadRefresh: function () {
+        $onFileUploadRefresh: function() {
             const percent = MathUtils.percent(
                 Object.values(this.$uploadPerCents).sum(),
                 this.$maxPercent
