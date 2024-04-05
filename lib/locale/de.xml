@@ -130,6 +130,9 @@
         <locale name="numberFormat.grouping_separator">
             <de><![CDATA[.]]></de>
         </locale>
+        <locale name="permission.permission._header">
+            <de><![CDATA[Rechte]]></de>
+        </locale>
         <locale name="permission.quiqqer._header">
             <de><![CDATA[QUIQQER]]></de>
         </locale>
@@ -3020,7 +3023,8 @@
             <de><![CDATA[Bitte zuerst das Kästchen aktivieren und dann auf die Schaltfläche klicken.]]></de>
         </locale>
         <locale name="window.grid.sorting.hint">
-            <de><![CDATA[Beim Klick auf die Schaltfläche wird die Tabelle auf die Voreinstellungen zurückgesetzt.]]></de>
+            <de>
+                <![CDATA[Beim Klick auf die Schaltfläche wird die Tabelle auf die Voreinstellungen zurückgesetzt.]]></de>
         </locale>
         <locale name="controls.group.table.btns.adduser">
             <de><![CDATA[Benutzer hinzufügen]]></de>
