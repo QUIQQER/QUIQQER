@@ -50,7 +50,6 @@ use function date;
 use function date_interval_create_from_date_string;
 use function define;
 use function defined;
-use function dirname;
 use function explode;
 use function file_exists;
 use function file_get_contents;
@@ -451,8 +450,8 @@ class Manager extends QUI\QDOM
             $composerJson->config = json_decode('{}');
         }
 
-        $composerJson->config->{"vendor-dir"} = OPT_DIR;
-        $composerJson->config->{"cache-dir"} = $this->varDir;
+        $composerJson->config->{"vendor-dir"} = rtrim(OPT_DIR, DIRECTORY_SEPARATOR);
+        $composerJson->config->{"cache-dir"} = $this->varDir . 'cache';
         $composerJson->config->{"component-dir"} = OPT_DIR . 'bin';
         $composerJson->config->{"quiqqer-dir"} = CMS_DIR;
         $composerJson->config->{"secure-http"} = true;
