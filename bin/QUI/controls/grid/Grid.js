@@ -129,6 +129,16 @@ define('controls/grid/Grid', [
             toggleiconTitle: 'Details',
             openAccordionOnDblClick: false,
 
+            // buttons
+            // [
+            //   {
+            //    ...
+            //    position: 'left', // 'left' (default), 'center', 'right'
+            //    order: 10         // number, 10 is default
+            //   }
+            // ]
+            buttons: [],
+
             // pagination
             url: null,
             pagination: false,
@@ -2416,6 +2426,16 @@ define('controls/grid/Grid', [
                     }
                 });
 
+                const ToolbarLeft = new Element('div', {
+                    'data-position': 'left'
+                }).inject(tDiv);
+                const ToolbarCenter = new Element('div', {
+                    'data-position': 'center'
+                }).inject(tDiv);
+                const ToolbarRight = new Element('div', {
+                    'data-position': 'right'
+                }).inject(tDiv);
+
                 container.appendChild(tDiv);
 
                 // button drop down
@@ -2423,7 +2443,9 @@ define('controls/grid/Grid', [
                     textimage: 'fa fa-navicon',
                     text: QUILocale.get('quiqqer/quiqqer', 'control.grid.menu.button'),
                     dropDownIcon: false
-                }).inject(tDiv);
+                }).inject(ToolbarRight);
+
+                this.$Menu.getElm().style.setProperty('--_order', 1000);
 
                 const bt = this.getAttribute('buttons');
 
@@ -2446,8 +2468,26 @@ define('controls/grid/Grid', [
                 for (i = 0, len = bt.length; i < len; i++) {
                     bt[i].type = bt[i].type || '';
 
+
                     if (bt[i].type === 'separator') {
-                        new QUISeparator().inject(tDiv);
+                        const Separator = new QUISeparator();
+
+                        if (bt[i].order) {
+                            Separator.getElm().style.setProperty('--_order', bt[i].order);
+                        }
+
+                        switch (bt[i].position) {
+                            case 'left':
+                            case 'center':
+                            case 'right':
+                                Separator.inject(
+                                    tDiv.querySelector('[data-position="' + bt[i].position + '"]')
+                                );
+                                break;
+                            default:
+                                Separator.inject(ToolbarLeft);
+                        }
+
                         continue;
                     }
 
@@ -2462,12 +2502,27 @@ define('controls/grid/Grid', [
 
                     bt[Btn.getAttribute('name')] = Btn;
 
-                    Btn.inject(tDiv);
+                    switch (bt[i].position) {
+                        case 'left':
+                        case 'center':
+                        case 'right':
+                            Btn.inject(
+                                tDiv.querySelector('[data-position="' + bt[i].position + '"]')
+                            );
+                            break;
+                        default:
+                            Btn.inject(ToolbarLeft);
+
+                    }
 
                     node = Btn.getElm();
                     node.removeProperty('tabindex'); // focus eigenschaft nehmen
                     node.type = 'button';
                     node.addClass('btn-silver');
+
+                    if (bt[i].order) {
+                        node.style.setProperty('--_order', bt[i].order);
+                    }
 
                     const Item = new QUIContextItem({
                         text: Btn.getAttribute('text'),

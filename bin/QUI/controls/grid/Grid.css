@@ -362,8 +362,29 @@
 
     display: flex;
     gap: 1em;
+}
+
+.tDiv > :is([data-position="left"], [data-position="center"], [data-position="right"]) {
+    flex-grow: 1;
+    display: flex;
+    gap: 1em;
     padding: 2px;
 }
+
+/*
+ 1. let grow the center div to push left and right box to the edges
+*/
+.tDiv > [data-position="center"] {
+    flex-grow: 999; /* 1 */
+    justify-content: center;
+}
+
+:is([data-position="left"], [data-position="center"], [data-position="right"]) > * {
+    --_order: var(--order, 10);
+
+    order: var(--_order);
+}
+
 
 .omnigrid div.fbutton {
     margin-top: 1px;
