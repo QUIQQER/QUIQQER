@@ -108,7 +108,12 @@
 }
 
 
-
+/* grid caption */
+.omnigrid__caption,
+.omnigrid__caption-title,
+.omnigrid__caption-description {
+    margin-bottom: 0.5rem;
+}
 
 /* grid */
 .omnigrid div.hDivBox {
@@ -190,6 +195,7 @@
 .omnigrid--border-all .tr {
     border-right: var(--_grid-border-width) solid var(--_grid-border-color);
 }
+
 /* END border: all */
 
 .omnigrid div.hDiv .th .header-text {

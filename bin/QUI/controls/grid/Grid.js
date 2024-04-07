@@ -93,6 +93,10 @@ define('controls/grid/Grid', [
         Type: 'controls/grid/Grid',
 
         options: {
+            title: '',
+            titletagnode: '', // 'h3.omnigrid__caption-title' ist default | any valid css selector, e.g.:
+                         // 'div', 'h1.my_css_class', 'h2#id_attr.my_css_class.one_more_my_class'
+            description: '', // html allowed
             name: false,
             alternaterows: true,
             showHeader: true,
@@ -2417,6 +2421,34 @@ define('controls/grid/Grid', [
             if (this.getAttribute('height')) {
                 this.setHeight(this.getAttribute('height'));
             }
+
+            // table title and description
+            let title = this.getAttribute('title') ? this.getAttribute('title') : '',
+                titleTagNode = this.getAttribute('titletagnode') ? this.getAttribute('titletagnode') : '',
+                desc = this.getAttribute('description') ? this.getAttribute('description') : '';
+
+            if (title || desc) {
+                const Caption = new Element('div.omnigrid__caption').inject(container);
+
+                if (title) {
+                    let htmlTag = 'h3.omnigrid__caption-title';
+
+                    if (titleTagNode) {
+                        htmlTag = titleTagNode + '.omnigrid__caption-title';
+                    }
+
+                    new Element(htmlTag, {
+                        text: title
+                    }).inject(Caption);
+                }
+
+                if (desc) {
+                    new Element('div.omnigrid__caption-description', {
+                        html: desc
+                    }).inject(Caption);
+                }
+            }
+
 
             // Toolbar
             if (this.getAttribute('buttons')) {
