@@ -333,6 +333,14 @@ class Manager
                 'limit' => 1
             ]);
 
+            if (empty($result)) {
+                QUI\System\Log::addNotice(
+                    "Found orphaned address ID #{$entry['id']}. User #{$entry['uid']}"
+                    . " referenced by address does not exist."
+                );
+                continue;
+            }
+
             // Update user uuid
             $DataBase->update(
                 $tableAddresses,
