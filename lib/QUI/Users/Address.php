@@ -845,6 +845,7 @@ class Address extends QUI\QDOM
     {
         $attributes = $this->getAttributes();
         $attributes['id'] = $this->getId();
+        $attributes['uuid'] = $this->getUuid();
 
         return \json_encode($attributes);
     }
