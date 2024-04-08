@@ -799,7 +799,7 @@ class User implements QUI\Interfaces\Users\User
         }
 
         if (count($this->getAddressList()) === 1) {
-            $this->setAttribute('address', $CreatedAddress->getId());
+            $this->setAttribute('address', $CreatedAddress->getUuid());
             $this->save($ParentUser);
         }
 

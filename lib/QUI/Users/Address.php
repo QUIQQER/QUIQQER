@@ -41,6 +41,8 @@ class Address extends QUI\QDOM
      */
     protected $id = false;
 
+    protected string $uuid;
+
     /**
      * Custom address data
      *
@@ -108,6 +110,7 @@ class Address extends QUI\QDOM
         }
 
         $data = current($result);
+        $this->uuid = $data['uuid'];
 
         unset($data['id']);
         unset($data['uid']);
@@ -127,6 +130,14 @@ class Address extends QUI\QDOM
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUuid(): string
+    {
+        return $this->uuid;
     }
 
     /**
