@@ -678,7 +678,7 @@ class User implements QUI\Interfaces\Users\User
             'from' => Manager::tableAddress(),
             'select' => 'id',
             'where' => [
-                'uid' => $this->getId()
+                'userUuid' => $this->getUniqueId()
             ]
         ]);
 
@@ -726,7 +726,7 @@ class User implements QUI\Interfaces\Users\User
             'count' => 'count',
             'from' => Manager::tableAddress(),
             'where' => [
-                'uid' => $this->getId()
+                'userUuid' => $this->getUniqueId()
             ]
         ]);
 
@@ -777,6 +777,7 @@ class User implements QUI\Interfaces\Users\User
         }
 
         $_params['uid'] = $this->getId();
+        $_params['userUuid'] = $this->getUniqueId();
         $_params['uuid'] = QUI\Utils\Uuid::get();
 
         QUI::getDataBase()->insert(

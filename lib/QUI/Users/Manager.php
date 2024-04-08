@@ -15,13 +15,11 @@ use QUI\Utils\Security\Orthos;
 use QUI\Utils\Text\XML;
 
 use function class_implements;
-use function date;
 use function defined;
 use function explode;
 use function file_exists;
 use function func_get_args;
 use function func_num_args;
-use function get_class;
 use function implode;
 use function in_array;
 use function is_numeric;
@@ -32,6 +30,7 @@ use function preg_replace;
 use function print_r;
 use function round;
 use function serialize;
+use function str_contains;
 use function strpos;
 use function strtotime;
 use function substr;
@@ -235,14 +234,14 @@ class Manager
         }
 
         // users with no uuid
-        $list = QUI::getDataBase()->fetch([
+        $addressesWithoutUuid = QUI::getDataBase()->fetch([
             'from' => $table,
             'where' => [
                 'uuid' => ''
             ]
         ]);
 
-        foreach ($list as $entry) {
+        foreach ($addressesWithoutUuid as $entry) {
             $DataBase->update($table, [
                 'uuid' => QUI\Utils\Uuid::get()
             ], [
@@ -265,12 +264,25 @@ class Manager
             );
 
             $setAddressUuidColumnToUnique = true;
+        }
 
+        if (!$DataBase->table()->existColumnInTable($tableAddresses, 'userUuid')) {
+            $DataBase->table()->addColumn(
+                $tableAddresses,
+                [
+                    'userUuid' => 'VARCHAR(50) NOT NULL'
+                ]
+            );
+        }
+
+        $usersAddressColumn = $DataBase->table()->getColumn($table, 'address');
+
+        if (!str_contains($usersAddressColumn['Type'], 'varchar')) {
             $sql = "ALTER TABLE `{$table}` MODIFY `address` VARCHAR(50) NOT NULL";
             $DataBase->execSQL($sql);
         }
 
-        $list = QUI::getDataBase()->fetch([
+        $addressesWithoutUuid = QUI::getDataBase()->fetch([
             'select' => ['id'],
             'from' => $tableAddresses,
             'where' => [
@@ -278,7 +290,7 @@ class Manager
             ]
         ]);
 
-        foreach ($list as $entry) {
+        foreach ($addressesWithoutUuid as $entry) {
             $addressUuid = QUI\Utils\Uuid::get();
 
             $DataBase->update($tableAddresses, [
@@ -301,6 +313,36 @@ class Manager
 
         if ($setAddressUuidColumnToUnique) {
             $DataBase->table()->setUniqueColumns($tableAddresses, 'uuid');
+        }
+
+        $addressesWithoutUserUuid = QUI::getDataBase()->fetch([
+            'select' => ['id', 'uid'],
+            'from' => $tableAddresses,
+            'where' => [
+                'userUuid' => ''
+            ]
+        ]);
+
+        foreach ($addressesWithoutUserUuid as $entry) {
+            $result = $DataBase->fetch([
+                'select' => ['uuid'],
+                'from' => $table,
+                'where' => [
+                    'id' => $entry['uid']
+                ],
+                'limit' => 1
+            ]);
+
+            // Update user uuid
+            $DataBase->update(
+                $tableAddresses,
+                [
+                    'userUuid' => $result[0]['uuid']
+                ],
+                [
+                    'id' => $entry['id']
+                ]
+            );
         }
     }
 

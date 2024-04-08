@@ -60,7 +60,7 @@ class Address extends QUI\QDOM
     {
         try {
             $where = [
-                'uid' => $User->getId()
+                'userUuid' => $User->getUniqueId()
             ];
 
             if (is_numeric($id)) {
