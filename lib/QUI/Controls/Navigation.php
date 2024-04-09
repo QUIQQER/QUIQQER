@@ -38,7 +38,7 @@ class Navigation extends QUI\Control
         parent::__construct($attributes);
 
         $this->addCSSFile(
-            dirname(__FILE__) . '/Navigation.css'
+            __DIR__ . '/Navigation.css'
         );
 
         $this->setAttribute('class', 'quiqqer-navigation grid-100');
@@ -90,7 +90,7 @@ class Navigation extends QUI\Control
             'Site' => $Site,
             'homeLink' => $homeLink = $this->getAttribute('homeLink'),
             'activeId' => $activeId,
-            'navTemplate' => dirname(__FILE__) . '/Navigation.html',
+            'navTemplate' => __DIR__ . '/Navigation.html',
             'levels' => $levels,
             'Rewrite' => QUI::getRewrite(),
             'homeIcon' => $homeIcon = $this->getAttribute('homeIcon'),
@@ -98,7 +98,7 @@ class Navigation extends QUI\Control
             'levelIcon' => $levelIcon = $this->getAttribute('levelIcon')
         ]);
 
-        $html = $Engine->fetch(dirname(__FILE__) . '/Navigation.html');
+        $html = $Engine->fetch(__DIR__ . '/Navigation.html');
         $html = '<nav>' . $html . '</nav>';
 
         return $html;

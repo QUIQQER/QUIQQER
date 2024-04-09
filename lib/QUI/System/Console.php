@@ -666,11 +666,7 @@ class Console
     {
         $argument = trim($argument, '-');
 
-        if (isset($this->arguments[$argument])) {
-            return $this->arguments[$argument];
-        }
-
-        return null;
+        return $this->arguments[$argument] ?? null;
     }
 
     /**
@@ -931,7 +927,7 @@ class Console
 
         try {
             $User = QUI::getUsers()->getUserByName($username);
-        } catch (Exception $Exception) {
+        } catch (Exception) {
             $this->writeLn(
                 QUI::getLocale()->get(
                     "quiqqer/quiqqer",
@@ -978,7 +974,7 @@ class Console
         }
 
         // Change the password!
-        $password = Orthos::getPassword(rand(8, 14));
+        $password = Orthos::getPassword(random_int(8, 14));
         $User->setPassword($password, QUI::getUsers()->getSystemUser());
 
         $this->writeLn(

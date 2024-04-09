@@ -7,8 +7,9 @@
 namespace QUI;
 
 use Html2Text\Html2Text;
-use PHPMailer;
+use PHPMailer\PHPMailer\PHPMailer;
 use QUI;
+use QUI\Mail\Mailer;
 
 use function file_exists;
 use function is_array;
@@ -176,6 +177,10 @@ class Mail
      */
     public function send(array $mailconf): bool
     {
+        if (Mailer::$DISABLE_MAIL_SENDING) {
+            return true;
+        }
+
         if (!isset($mailconf['MailTo'])) {
             throw new QUI\Exception(
                 'Mail Error: send() Fehlender Paramater MailTo',

@@ -233,7 +233,7 @@ class EventHandler
 
         try {
             $User = QUI::getUsers()->get((int)$userId);
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
             // do nothing if user cannot be found
             return;
         }

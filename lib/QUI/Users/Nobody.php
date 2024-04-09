@@ -324,7 +324,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      */
     public function getType(): string
     {
-        return get_class($this);
+        return $this::class;
     }
 
     /**
@@ -446,7 +446,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
                 return QUI\Countries\Manager::get(
                     QUI::getSession()->get('country')
                 );
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -456,7 +456,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
                 QUI::getSession()->set('country', $_SERVER["GEOIP_COUNTRY_CODE"]);
 
                 return QUI\Countries\Manager::get($_SERVER["GEOIP_COUNTRY_CODE"]);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 QUI::getSession()->del('country');
             }
         }
@@ -466,7 +466,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
                 QUI::getSession()->set('country', QUI::conf('globals', 'country'));
 
                 return QUI\Countries\Manager::get(QUI::conf('globals', 'country'));
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 QUI::getSession()->del('country');
             }
         }
@@ -479,7 +479,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
                 return QUI\Countries\Manager::get(
                     QUI::conf('globals', 'defaultCountry')
                 );
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -558,12 +558,12 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @param string $right
      * @param array|boolean $ruleset - optional, you can specific a ruleset, a rules = array with rights
      *
-     * @return boolean
+     * @return boolean|int
      *
      * @see \QUI\Interfaces\Users\User::getPermission()
      *
      */
-    public function getPermission($right, $ruleset = false): bool
+    public function getPermission($right, $ruleset = false): bool|int|string
     {
         return QUI::getPermissionManager()->getUserPermission($this, $right, $ruleset);
     }

@@ -47,7 +47,7 @@ QUI::$Ajax->registerFunction(
             }
 
             return $url;
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return $fileurl;

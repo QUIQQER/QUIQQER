@@ -121,7 +121,7 @@ class LongTermCache
                     self::$Driver = new QuiqqerRedisDriver([
                         'servers' => $servers
                     ]);
-                } catch (Stash\Exception\RuntimeException $Exception) {
+                } catch (Stash\Exception\RuntimeException) {
                 }
 
                 break;
@@ -202,7 +202,7 @@ class LongTermCache
         if (!self::$Config) {
             try {
                 self::$Config = QUI::getConfig('etc/cache.ini.php');
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 file_put_contents(CMS_DIR . 'etc/cache.ini.php', '');
 
                 self::$Config = QUI::getConfig('etc/cache.ini.php');
@@ -229,7 +229,7 @@ class LongTermCache
             $Item = $Pool->getItem($key);
             $data = $Item->get();
             $isMiss = $Item->isMiss();
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
             throw new QUI\Cache\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',

@@ -287,7 +287,7 @@ class Manager
             return 'groups';
         }
 
-        return $this->classToArea(get_class($Object));
+        return self::classToArea($Object::class);
     }
 
     /**
@@ -527,7 +527,7 @@ class Manager
         }
 
         QUI\System\Log::addInfo(
-            'Permission Area ' . get_class($Obj) . ' not found'
+            'Permission Area ' . $Obj::class . ' not found'
         );
 
         return '__NULL__';

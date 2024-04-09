@@ -399,7 +399,7 @@ class Package extends QUI\QDOM
 
         try {
             return QUI::getPackage($packageData['template_parent']);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return false;
         }
     }
@@ -522,11 +522,7 @@ class Package extends QUI\QDOM
     {
         $composer = $this->getComposerData();
 
-        if (isset($composer['version'])) {
-            return $composer['version'];
-        }
-
-        return '';
+        return $composer['version'] ?? '';
     }
 
     /**
@@ -601,11 +597,7 @@ class Package extends QUI\QDOM
     {
         $composer = $this->getComposerData();
 
-        if (isset($composer['require'])) {
-            return $composer['require'];
-        }
-
-        return [];
+        return $composer['require'] ?? [];
     }
 
     /**
@@ -989,8 +981,8 @@ class Package extends QUI\QDOM
      */
     public function destroy()
     {
-        QUI::getPermissionManager()->removePermission($this->getPermissionName());
-        QUI::getPermissionManager()->removePermission($this->getPermissionName('header'));
+        QUI::getPermissionManager()->deletePermission($this->getPermissionName());
+        QUI::getPermissionManager()->deletePermission($this->getPermissionName('header'));
 
         QUI::getEvents()->fireEvent('packageDestroy', [$this->getName()]);
         QUI::getEvents()->fireEvent(

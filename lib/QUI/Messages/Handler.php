@@ -98,7 +98,7 @@ class Handler
             QUI::getDataBase()->delete(self::table(), [
                 'uid' => $User->getId()
             ]);
-        } catch (QUI\DataBase\Exception $Exception) {
+        } catch (QUI\Database\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
 
             return [];
@@ -163,7 +163,7 @@ class Handler
     /**
      * Add a message to the handler
      *
-     * @param \QUi\Messages\Message $Message
+     * @param Message $Message
      */
     public function addMessage($Message)
     {
@@ -232,7 +232,7 @@ class Handler
      * Send a message to an user and save it to the database
      *
      * @param QUI\Interfaces\Users\User $User
-     * @param \QUI\Messages\Message $Message
+     * @param Message $Message
      */
     public function sendMessage(QUI\Interfaces\Users\User $User, Message $Message)
     {
@@ -251,7 +251,7 @@ class Handler
                 'mtime' => (int)$Message->getAttribute('time'),
                 'mtype' => $Message->getType()
             ]);
-        } catch (QUI\DataBase\Exception $Exception) {
+        } catch (QUI\Database\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
     }

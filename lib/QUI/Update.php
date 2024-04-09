@@ -46,7 +46,7 @@ if (!function_exists('glob_recursive')) {
         foreach (glob(dirname($pattern) . '/*', GLOB_ONLYDIR | GLOB_NOSORT) as $dir) {
             $files = array_merge(
                 $files,
-                \glob_recursive($dir . '/' . basename($pattern), $flags)
+                glob_recursive($dir . '/' . basename($pattern), $flags)
             );
         }
 
@@ -241,7 +241,7 @@ class Update
                 try {
                     $Package = QUI::getPackage($package_dir . '/' . $sub);
                     $Package->clearCache();
-                } catch (QUI\Exception $Exception) {
+                } catch (QUI\Exception) {
                 }
             }
         }

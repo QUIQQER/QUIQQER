@@ -81,7 +81,7 @@ class Login extends Control
 
         try {
             $Engine = QUI::getTemplateManager()->getEngine();
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return '';
         }
 
@@ -92,7 +92,7 @@ class Login extends Control
             'count' => \count($authenticators) - 1
         ]);
 
-        return $Engine->fetch(\dirname(__FILE__) . '/Login.html');
+        return $Engine->fetch(__DIR__ . '/Login.html');
     }
 
     /**
@@ -151,8 +151,8 @@ class Login extends Control
         $authenticators = $User->getAuthenticators();
 
         foreach ($authenticators as $Authenticator) {
-            if (QUI::getSession()->get('auth-' . \get_class($Authenticator)) !== 1) {
-                return \get_class($Authenticator);
+            if (QUI::getSession()->get('auth-' . $Authenticator::class) !== 1) {
+                return $Authenticator::class;
             }
         }
 

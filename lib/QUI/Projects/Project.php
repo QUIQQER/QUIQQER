@@ -60,7 +60,7 @@ use const USR_DIR;
  * <li>806 - Project Error: Project language not found</li>
  * </ul>
  */
-class Project
+class Project implements \Stringable
 {
     /**
      * caching files
@@ -97,18 +97,6 @@ class Project
      */
     private $config;
     /**
-     * project name
-     *
-     * @var string
-     */
-    private $name;
-    /**
-     * Project language
-     *
-     * @var string
-     */
-    private $lang;
-    /**
      * default language
      *
      * @var string
@@ -120,12 +108,6 @@ class Project
      * @var array
      */
     private $langs;
-    /**
-     * template of the project
-     *
-     * @var array
-     */
-    private $template;
     /**
      * loaded sites
      *
@@ -154,12 +136,11 @@ class Project
      *
      * @throws QUI\Exception
      */
-    public function __construct($name, $lang = false, $template = false)
-    {
-        $this->name = $name;
-        $this->lang = $lang;
-        $this->template = $template;
-
+    public function __construct(
+        private $name,
+        private $lang = false,
+        private $template = false
+    ) {
         try {
             $this->refresh();
         } catch (QUI\Exception $Exception) {
@@ -396,7 +377,7 @@ class Project
     {
         try {
             return (int)QUI\Cache\Manager::get($this->getEDateCacheName());
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return 0;
@@ -453,7 +434,7 @@ class Project
      */
     public function getCachePath()
     {
-        return $this->getProjectCachePath($this->getName());
+        return self::getProjectCachePath($this->getName());
     }
 
     /**
@@ -512,9 +493,9 @@ class Project
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
-        return 'Object ' . get_class($this) . '(' . $this->name . ',' . $this->lang . ')';
+        return 'Object ' . $this::class . '(' . $this->name . ',' . $this->lang . ')';
     }
 
     /**
@@ -767,10 +748,7 @@ class Project
      */
     public function getCacheLanguagePath()
     {
-        return $this->getProjectLanguageCachePath(
-            $this->getName(),
-            $this->getLang()
-        );
+        return self::getProjectLanguageCachePath($this->getName(), $this->getLang());
     }
 
     /**
@@ -1036,7 +1014,7 @@ class Project
                 $this->TABLE
             ],
             'order' => $order,
-            'limit' => isset($params['limit']) ? $params['limit'] : false,
+            'limit' => $params['limit'] ?? false,
             'where' => $where
         ]);
 
@@ -1257,7 +1235,6 @@ class Project
             unset($sql['select']);
         } else {
             $sql['select'] = 'id';
-            unset($sql['count']);
         }
 
         if (isset($params['limit'])) {
@@ -1296,10 +1273,6 @@ class Project
      */
     public function setup($setupOptions = [])
     {
-        if (!isset($setupOptions)) {
-            $setupOptions = [];
-        }
-
         if (!isset($setupOptions['executePackagesSetup'])) {
             $setupOptions['executePackagesSetup'] = true;
         }
@@ -1376,7 +1349,7 @@ class Project
                         release_to = '';
                 "
                 );
-            } catch (PDOException $Exception) {
+            } catch (PDOException) {
             }
 
             if (!$Table->issetPrimaryKey($table, 'id')) {

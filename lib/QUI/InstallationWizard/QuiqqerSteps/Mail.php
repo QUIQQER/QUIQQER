@@ -42,7 +42,7 @@ class Mail extends QUI\InstallationWizard\AbstractInstallationWizardStep
     {
         try {
             $Engine = QUI::getTemplateManager()->getEngine();
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return '';
         }
 
@@ -51,6 +51,6 @@ class Mail extends QUI\InstallationWizard\AbstractInstallationWizardStep
             'mail' => QUI::conf('mail', 'admin_mail')
         ]);
 
-        return $Engine->fetch(dirname(__FILE__) . '/Mail.html');
+        return $Engine->fetch(__DIR__ . '/Mail.html');
     }
 }

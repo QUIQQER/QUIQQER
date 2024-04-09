@@ -26,9 +26,7 @@ class Utils
      */
     public static function getGroupToolbar($Group)
     {
-        $Tabbar = new QUI\Controls\Toolbar\Bar(array(
-            'name' => 'UserToolbar'
-        ));
+        $Tabbar = new QUI\Controls\Toolbar\Bar(['name' => 'UserToolbar']);
 
         DOM::addTabsToToolbar(
             XML::getTabsFromXml(OPT_DIR . 'quiqqer/quiqqer/group.xml'),
@@ -111,7 +109,7 @@ class Utils
                 $tab,
                 OPT_DIR . $Package->getName() . '/group.xml'
             );
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return '';

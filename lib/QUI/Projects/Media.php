@@ -45,26 +45,15 @@ class Media extends QUI\QDOM
      */
     protected static $mediaPermissions = null;
     /**
-     * internal project object
-     *
-     * @var QUI\Projects\Project
-     */
-    protected Project $Project;
-    /**
      * internal child cache
      *
      * @var array
      */
     protected array $children = [];
 
-    /**
-     * constructor
-     *
-     * @param QUI\Projects\Project $Project
-     */
-    public function __construct(Project $Project)
-    {
-        $this->Project = $Project;
+    public function __construct(
+        protected Project $Project
+    ) {
     }
 
     /**
@@ -101,7 +90,7 @@ class Media extends QUI\QDOM
                 );
 
                 return $Image->getUrl(true);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -134,7 +123,7 @@ class Media extends QUI\QDOM
                 );
 
                 return $Image->getUrl(true);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -155,7 +144,7 @@ class Media extends QUI\QDOM
                 return Utils::getImageByUrl(
                     $Project->getConfig('logo')
                 );
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -176,7 +165,7 @@ class Media extends QUI\QDOM
                 return Utils::getImageByUrl(
                     $Project->getConfig('placeholder')
                 );
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -529,7 +518,7 @@ class Media extends QUI\QDOM
 
         try {
             $id = QUI\Cache\LongTermCache::get($cache);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             $table = $this->getTable();
 
             $result = QUI::getDataBase()->fetch([
@@ -720,7 +709,7 @@ class Media extends QUI\QDOM
                 ],
                 'limit' => 1
             ]);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return false;
         }
 
@@ -821,7 +810,7 @@ class Media extends QUI\QDOM
                 if ($Image instanceof QUI\Projects\Media\Image) {
                     $Image->updateExternalImage();
                 }
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
     }

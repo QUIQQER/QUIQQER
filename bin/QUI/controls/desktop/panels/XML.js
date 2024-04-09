@@ -18,8 +18,8 @@ define('controls/desktop/panels/XML', [
 
     'css!controls/desktop/panels/XML.css'
 
-], function (QUI, QUIPanel, QUIButton, QUISeparator, QUIObjectUtils, Ajax, QUILocale, ControlUtils) {
-    "use strict";
+], function(QUI, QUIPanel, QUIButton, QUISeparator, QUIObjectUtils, Ajax, QUILocale, ControlUtils) {
+    'use strict';
 
     /**
      * @class controls/desktop/panels/XML
@@ -29,7 +29,7 @@ define('controls/desktop/panels/XML', [
     return new Class({
 
         Extends: QUIPanel,
-        Type   : 'controls/desktop/panels/XML',
+        Type: 'controls/desktop/panels/XML',
 
         Binds: [
             '$onCreate',
@@ -41,10 +41,11 @@ define('controls/desktop/panels/XML', [
 
         options: {
             category: false,  // which category should be open at the start
-            name    : false   // name of the window = xml window name
+            name: false,
+            'alphabetical-order': true
         },
 
-        initialize: function (xmlfile, options) {
+        initialize: function(xmlfile, options) {
             this.$file = xmlfile;
             this.$config = null;
             this.$Control = null;
@@ -61,12 +62,12 @@ define('controls/desktop/panels/XML', [
          * @method qui/controls/desktop/Tasks#serialize
          * @return {Object}
          */
-        serialize: function () {
+        serialize: function() {
             return {
                 attributes: this.getAttributes(),
-                type      : this.getType(),
-                file      : this.$file,
-                config    : this.$config
+                type: this.getType(),
+                file: this.$file,
+                config: this.$config
             };
         },
 
@@ -76,7 +77,7 @@ define('controls/desktop/panels/XML', [
          * @method qui/controls/desktop/Tasks#unserialize
          * @param {Object} data
          */
-        unserialize: function (data) {
+        unserialize: function(data) {
             this.setAttributes(data.attributes);
 
             this.$file = data.file;
@@ -92,24 +93,25 @@ define('controls/desktop/panels/XML', [
          * Return the path of the xml file
          * @returns {String} - xml file
          */
-        getFile: function () {
+        getFile: function() {
             return this.$file;
         },
 
         /**
          * Internal creation
          */
-        $onCreate: function () {
+        $onCreate: function() {
             const self = this;
 
             this.Loader.show();
+            this.getElm().addClass('quiqqer-xml-panel');
 
             Ajax.get([
                 'ajax_settings_window',
                 'ajax_settings_get'
-            ], function (result, config) {
+            ], (result, config) => {
                 const categories = result.categories || [],
-                      buttons    = result.buttons || [];
+                    buttons = result.buttons || [];
 
                 if (typeof result.categories !== 'undefined') {
                     delete result.categories;
@@ -126,6 +128,15 @@ define('controls/desktop/panels/XML', [
 
                 // load categories
                 let i, len, Category;
+                console.log(categories);
+                if (this.getAttribute('alphabetical-order')) {
+                    categories.sort(function(a, b) {
+                        const aIndex = 'index' in a && a.index !== '' ? a.index : Infinity;
+                        const bIndex = 'index' in b && b.index !== '' ? b.index : Infinity;
+
+                        return aIndex - bIndex || a.text.localeCompare(b.text);
+                    });
+                }
 
                 for (i = 0, len = categories.length; i < len; i++) {
                     Category = new QUIButton(categories[i]);
@@ -139,19 +150,19 @@ define('controls/desktop/panels/XML', [
 
                 // load buttons
                 self.addButton({
-                    name     : 'save',
-                    text     : QUILocale.get('quiqqer/quiqqer', 'desktop.panels.xml.btn.save'),
+                    name: 'save',
+                    text: QUILocale.get('quiqqer/quiqqer', 'desktop.panels.xml.btn.save'),
                     textimage: 'fa fa-save',
-                    events   : {
+                    events: {
                         onClick: self.save
                     }
                 });
 
                 self.addButton({
-                    name     : 'reload',
-                    text     : QUILocale.get('quiqqer/quiqqer', 'desktop.panels.xml.btn.cancel'),
+                    name: 'reload',
+                    text: QUILocale.get('quiqqer/quiqqer', 'desktop.panels.xml.btn.cancel'),
                     textimage: 'fa fa-ban',
-                    events   : {
+                    events: {
                         onClick: self.$onCreate
                     }
                 });
@@ -175,7 +186,7 @@ define('controls/desktop/panels/XML', [
                 self.setAttribute(
                     'title',
                     QUILocale.get('quiqqer/quiqqer', 'panel.settings.title', {
-                        title   : self.$title,
+                        title: self.$title,
                         category: ''
                     })
                 );
@@ -196,7 +207,7 @@ define('controls/desktop/panels/XML', [
 
                 self.getCategoryBar().firstChild().click();
             }, {
-                file      : JSON.encode(this.$file),
+                file: JSON.encode(this.$file),
                 windowName: this.getAttribute('name')
             });
         },
@@ -206,7 +217,7 @@ define('controls/desktop/panels/XML', [
          *
          * @param {Object} Category - qui/controls/buttons/Button
          */
-        loadCategory: function (Category) {
+        loadCategory: function(Category) {
             const self = this;
 
             this.Loader.show();
@@ -217,7 +228,7 @@ define('controls/desktop/panels/XML', [
                 file = this.$file;
             }
 
-            Ajax.get('ajax_settings_category', function (result) {
+            Ajax.get('ajax_settings_category', function(result) {
                 const Body = self.getBody();
 
                 if (!result) {
@@ -232,9 +243,9 @@ define('controls/desktop/panels/XML', [
                 // set the form
                 var i, len, Elm, value;
 
-                var Form     = Body.getElement('form'),
+                var Form = Body.getElement('form'),
                     elements = Form.elements,
-                    config   = self.$config;
+                    config = self.$config;
 
                 for (i = 0, len = elements.length; i < len; i++) {
                     Elm = elements[i];
@@ -256,7 +267,7 @@ define('controls/desktop/panels/XML', [
                 Promise.all([
                     QUI.parse(Body),
                     ControlUtils.parse(Body)
-                ]).then(function () {
+                ]).then(function() {
 
                     var i, len, Node, Control, nodeName;
                     var quiElements = Body.getElements('[data-quiid]');
@@ -277,7 +288,7 @@ define('controls/desktop/panels/XML', [
                             continue;
                         }
 
-                        if (!("setValue" in Control)) {
+                        if (!('setValue' in Control)) {
                             continue;
                         }
 
@@ -295,27 +306,29 @@ define('controls/desktop/panels/XML', [
                         return;
                     }
 
-                    require([Category.getAttribute('require')], function (R) {
+                    require([Category.getAttribute('require')], function(R) {
                         var type = typeOf(R);
 
                         if (type === 'function') {
                             R(self);
 
-                        } else if (type === 'class') {
-                            self.$Control = new R(self);
+                        } else {
+                            if (type === 'class') {
+                                self.$Control = new R(self);
 
-                            if (self.getContent().get('html') === '') {
-                                self.$Control.inject(Form);
+                                if (self.getContent().get('html') === '') {
+                                    self.$Control.inject(Form);
 
-                            } else {
-                                self.$Control.imports(Form);
+                                } else {
+                                    self.$Control.imports(Form);
+                                }
                             }
                         }
 
                         self.Loader.hide();
 
-                    }, function (err) {
-                        QUI.getMessageHandler(function (MH) {
+                    }, function(err) {
+                        QUI.getMessageHandler(function(MH) {
                             MH.addAttention(
                                 'Some error occured. Control could not be loaded: ' +
                                 Category.getAttribute('require')
@@ -329,8 +342,8 @@ define('controls/desktop/panels/XML', [
                 });
 
             }, {
-                file      : JSON.encode(file),
-                category  : Category.getAttribute('name'),
+                file: JSON.encode(file),
+                category: Category.getAttribute('name'),
                 windowName: this.getAttribute('name')
             });
         },
@@ -340,16 +353,16 @@ define('controls/desktop/panels/XML', [
          *
          * @param {Boolean} [clear] - Clear the html, default = true
          */
-        unloadCategory: function (clear) {
+        unloadCategory: function(clear) {
             let i, len, Elm, name, tok, namespace;
 
             if (typeof clear === 'undefined') {
                 clear = true;
             }
 
-            const Body   = this.getBody(),
-                  Form   = Body.getElement('form'),
-                  values = {};
+            const Body = this.getBody(),
+                Form = Body.getElement('form'),
+                values = {};
 
             if (Form) {
                 for (i = 0, len = Form.elements.length; i < len; i++) {
@@ -408,9 +421,9 @@ define('controls/desktop/panels/XML', [
          *
          * @param {Object} Category - qui/controls/buttons/Button
          */
-        $onCategoryActive: function (Category) {
+        $onCategoryActive: function(Category) {
             if (Category.getAttribute('click') && Category.getAttribute('click') !== '') {
-                require([Category.getAttribute('click')], function (f) {
+                require([Category.getAttribute('click')], function(f) {
                     f();
                 });
 
@@ -418,7 +431,7 @@ define('controls/desktop/panels/XML', [
                 const OldCategory = this.getActiveCategory();
                 this.unloadCategory();
 
-                setTimeout(function () {
+                setTimeout(function() {
                     OldCategory.click();
                 }, 200);
 
@@ -428,7 +441,7 @@ define('controls/desktop/panels/XML', [
             this.setAttribute(
                 'title',
                 QUILocale.get('quiqqer/quiqqer', 'panel.settings.title', {
-                    title   : this.$title,
+                    title: this.$title,
                     category: Category.getAttribute('title')
                 })
             );
@@ -442,13 +455,13 @@ define('controls/desktop/panels/XML', [
         /**
          * Send the configuration to the server
          */
-        save: function () {
+        save: function() {
             this.unloadCategory(false);
 
             const inList = {};
 
             // filter controls with save method
-            const saveable = QUI.Controls.getControlsInElement(this.getBody()).filter(function (Control) {
+            const saveable = QUI.Controls.getControlsInElement(this.getBody()).filter(function(Control) {
                 if (Control.getId() in inList) {
                     return false;
                 }
@@ -461,9 +474,9 @@ define('controls/desktop/panels/XML', [
                 return true;
             });
 
-            let promises = saveable.map(function (Control) {
+            let promises = saveable.map(function(Control) {
                 return Control.save();
-            }).filter(function (Promise) {
+            }).filter(function(Promise) {
                 return typeof Promise.then === 'function';
             });
 
@@ -471,15 +484,15 @@ define('controls/desktop/panels/XML', [
                 promises = [Promise.resolve()];
             }
 
-            Promise.all(promises).then(function () {
+            Promise.all(promises).then(function() {
                 var Save = this.getButtonBar().getElement('save');
 
                 Save.setAttribute('textimage', 'fa fa-refresh fa-spin');
 
-                Ajax.post('ajax_settings_save', function () {
+                Ajax.post('ajax_settings_save', function() {
                     Save.setAttribute('textimage', 'fa fa-save');
                 }, {
-                    file  : JSON.encode(this.$file),
+                    file: JSON.encode(this.$file),
                     params: JSON.encode(this.$config)
                 });
 

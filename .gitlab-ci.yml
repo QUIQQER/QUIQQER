@@ -1,3 +1,38 @@
 include:
   - project: 'quiqqer/stabilization/semantic-release'
     file: '/ci-templates/.gitlab-ci.yml'
+
+variables:
+  PACKAGE_NAME: "quiqqer/quiqqer"
+
+phpunit:
+  image: quiqqer/testing:php-$PHP_VERSION_TO_TEST
+  parallel:
+    matrix:
+      - PHP_VERSION_TO_TEST: ["8.1", "8.2", "8.3"]
+  variables:
+    PHPUNIT_REPORT_PATH: "${CI_PROJECT_DIR}/phpunit-report.xml"
+    QUIQQER_PACKAGE_DIRECTORY: "/var/www/html/packages/${PACKAGE_NAME}"
+  stage: test
+  cache:
+    key:
+      files: 
+        - phive.xml
+    paths:
+      - tools
+      - .phive-home
+  before_script:
+    # Install tools (phive requires root at the moment, see https://github.com/phar-io/phive/issues/421)
+    - phive --no-progress --home .phive-home install --temporary --trust-gpg-keys 4AA394086372C20A,51C67305FFC2E5C0,033E5F8D801A2F8D
+    # Install package into QUIQQER system
+    - quiqqer-ci-install-package-from-folder "${CI_PROJECT_DIR}" "${PACKAGE_NAME}"
+    # Enter source code directory in QUIQQER system
+    - cd "${QUIQQER_PACKAGE_DIRECTORY}"
+  script:
+    - ./tools/phpunit --log-junit "${PHPUNIT_REPORT_PATH}"
+    # Turn absolute paths into relative paths, so that links in the report artifact work correctly
+    - sed -i "s|${QUIQQER_PACKAGE_DIRECTORY}/||g" "${PHPUNIT_REPORT_PATH}"
+  artifacts:
+      when: always
+      reports:
+        junit: ${PHPUNIT_REPORT_PATH}

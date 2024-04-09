@@ -122,7 +122,7 @@ class Session
             $randomCharacters = array_rand($alphabetAsKeys, 5);
 
             // Implode the array of characters to a string
-            $sessionName = implode($randomCharacters);
+            $sessionName = implode('', $randomCharacters);
 
             QUI::$Conf->set('session', 'name', $sessionName);
             QUI::$Conf->save();
@@ -214,9 +214,9 @@ class Session
      * Set a variable to the session
      *
      * @param string $name - Name og the variable
-     * @param string $value - value of the variable
+     * @param mixed $value - value of the variable
      */
-    public function set(string $name, $value)
+    public function set(string $name, mixed $value): void
     {
         if ($this->Session) {
             $this->Session->set($name, $value);
@@ -230,7 +230,7 @@ class Session
      *
      * @throws QUI\Exception
      */
-    protected function getStorage()
+    protected function getStorage(): SessionHandlerInterface
     {
         $sessionType = QUI::conf('session', 'type');
 
@@ -336,6 +336,7 @@ class Session
                 $Memcache->addserver($server, $port);
             }
 
+            /* @phpstan-ignore-next-line */
             return new MemcacheSessionHandler($Memcache);
         } elseif ($sessionType == 'memcache' && !class_exists('Memcache')) {
             Log::addWarning('Memcache not installed');
@@ -527,7 +528,7 @@ class Session
                 ],
                 'limit' => 1
             ]);
-        } catch (QUI\Database\Exception $Exception) {
+        } catch (QUI\Database\Exception) {
             return 0;
         }
 
@@ -555,7 +556,7 @@ class Session
                 ],
                 'limit' => 1
             ]);
-        } catch (QUI\Database\Exception $Exception) {
+        } catch (QUI\Database\Exception) {
             return false;
         }
 

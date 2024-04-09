@@ -130,6 +130,9 @@
         <locale name="numberFormat.grouping_separator">
             <de><![CDATA[.]]></de>
         </locale>
+        <locale name="permission.permission._header">
+            <de><![CDATA[Rechte]]></de>
+        </locale>
         <locale name="permission.quiqqer._header">
             <de><![CDATA[QUIQQER]]></de>
         </locale>
@@ -2944,6 +2947,12 @@
         <locale name="grid.is.empty">
             <de><![CDATA[Die Tabelle enthält keine Daten]]></de>
         </locale>
+        <locale name="grid.sizing.button.title">
+            <de><![CDATA[Kompaktmodus - Tabelle verkleinern]]></de>
+        </locale>
+        <locale name="grid.sizing.button.title.small">
+            <de><![CDATA[Normalmodus - Tabelle vergrößern]]></de>
+        </locale>
         <locale name="grid.export.button.title">
             <de><![CDATA[Daten exportieren]]></de>
         </locale>
@@ -2962,11 +2971,35 @@
         <locale name="grid.export.type.print">
             <de><![CDATA[Drucken]]></de>
         </locale>
+        <locale name="grid.export.nav.fields">
+            <de><![CDATA[Felderauswahl]]></de>
+        </locale>
+        <locale name="grid.export.nav.export">
+            <de><![CDATA[Dateiformat]]></de>
+        </locale>
+        <locale name="grid.export.message.title">
+            <de><![CDATA[Felder auswählen]]></de>
+        </locale>
         <locale name="grid.export.message">
-            <de><![CDATA[Bitte wähle die Felder aus die exportiert werden sollen:]]></de>
+            <de><![CDATA[Bitte wähle die Felder aus die exportiert werden sollen.]]></de>
+        </locale>
+        <locale name="grid.export.item.noLabel">
+            <de><![CDATA[Keine Beschriftung]]></de>
+        </locale>
+        <locale name="grid.export.message.exportType.title">
+            <de><![CDATA[Dateiformat auswählen]]></de>
         </locale>
         <locale name="grid.export.message.exportType">
-            <de><![CDATA[Bitte wähle die Art des Exports aus:]]></de>
+            <de><![CDATA[Bitte wähle das Dateiformat aus, in dem die Daten exportiert werden sollen.]]></de>
+        </locale>
+        <locale name="grid.export.button.next">
+            <de><![CDATA[Weiter]]></de>
+        </locale>
+        <locale name="grid.export.button.download">
+            <de><![CDATA[Herunterladen]]></de>
+        </locale>
+        <locale name="grid.export.button.print">
+            <de><![CDATA[Drucken]]></de>
         </locale>
         <locale name="window.grid.sorting.title">
             <de><![CDATA[Tabelle anpassen]]></de>
@@ -2974,12 +3007,24 @@
         <locale name="window.grid.sorting.submit">
             <de><![CDATA[Anpassen]]></de>
         </locale>
+        <locale name="window.grid.sorting.title">
+            <de><![CDATA[Passe die Tabelle individuell nach deinen Bedürfnissen an]]></de>
+        </locale>
         <locale name="window.grid.sorting.description" html="true">
             <de><![CDATA[
-            <p>Passe die Tabelle individuell nach deinen Bedürfnissen an.</p>
             <p>Du kannst die Reihenfolge der Spalten einfach per Drag-and-Drop-Funktion ändern oder
             unerwünschte Spalten ein- oder ausschalten. Somit kannst du die Tabelle ganz nach deinen Vorstellungen verändern</p>
             ]]></de>
+        </locale>
+        <locale name="window.grid.sorting.btn.text">
+            <de><![CDATA[Ansicht zurücksetzen]]></de>
+        </locale>
+        <locale name="window.grid.sorting.errorMsg">
+            <de><![CDATA[Bitte zuerst das Kästchen aktivieren und dann auf die Schaltfläche klicken.]]></de>
+        </locale>
+        <locale name="window.grid.sorting.hint">
+            <de>
+                <![CDATA[Beim Klick auf die Schaltfläche wird die Tabelle auf die Voreinstellungen zurückgesetzt.]]></de>
         </locale>
         <locale name="controls.group.table.btns.adduser">
             <de><![CDATA[Benutzer hinzufügen]]></de>

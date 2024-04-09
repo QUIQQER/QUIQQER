@@ -43,6 +43,10 @@ class Manager implements QUI\Interfaces\Events
     {
         $this->Events = new Event();
 
+        if (!QUI::$Conf) {
+            return;
+        }
+
         try {
             if (
                 !QUI::$Conf->existValue('globals', 'eventsCreated')
@@ -97,7 +101,7 @@ class Manager implements QUI\Interfaces\Events
             ]);
 
             $this->siteEvents = $list;
-        } catch (QUI\Database\Exception $Exception) {
+        } catch (QUI\Database\Exception) {
         }
     }
 
@@ -113,7 +117,7 @@ class Manager implements QUI\Interfaces\Events
 
     /**
      * Adds an event
-     * If $fn is a string, the event would be save in the database
+     * If $fn is a string, the event would save via the database
      * if you want to register events for the runtime, please use lambda function
      *
      * @param string $event - The type of event (e.g. 'complete').
@@ -125,7 +129,7 @@ class Manager implements QUI\Interfaces\Events
      * @example $EventManager->addEvent('myEvent', function() { });
      *
      */
-    public function addEvent($event, $fn, string $package = '', int $priority = 0)
+    public function addEvent($event, $fn, string $package = '', int $priority = 0): void
     {
         if (!is_string($package)) {
             $package = '';
@@ -149,7 +153,7 @@ class Manager implements QUI\Interfaces\Events
      *
      * @throws QUI\Exception
      */
-    public static function setup()
+    public static function setup(): void
     {
         $DBTable = QUI::getDataBase()->table();
 
@@ -170,10 +174,10 @@ class Manager implements QUI\Interfaces\Events
     /**
      * clear all events
      *
-     * @param string|bool $package - name of the package, default = false => complete clear
+     * @param bool|string $package - name of the package, default = false => complete clear
      * @throws QUI\Exception
      */
-    public static function clear($package = false)
+    public static function clear(bool|string $package = false): void
     {
         if (empty($package) || !is_string($package)) {
             QUI::getDataBase()->table()->truncate(
@@ -230,7 +234,7 @@ class Manager implements QUI\Interfaces\Events
      * @example $EventManager->addEvent('onSave', '\Namespace\Class::exec', 'quiqqer/blog:blog/entry' });
      *
      */
-    public function addSiteEvent(string $event, callable $fn, string $siteType, int $priority = 0)
+    public function addSiteEvent(string $event, callable $fn, string $siteType, int $priority = 0): void
     {
         if (!is_string($fn)) {
             return;
@@ -249,7 +253,7 @@ class Manager implements QUI\Interfaces\Events
      *
      * @param array $events
      */
-    public function addEvents(array $events)
+    public function addEvents(array $events): void
     {
         $this->Events->addEvents($events);
     }
@@ -264,7 +268,7 @@ class Manager implements QUI\Interfaces\Events
      *
      * @throws QUI\Exception
      */
-    public function removeEvent($event, $fn = false, string $package = '')
+    public function removeEvent($event, $fn = false, string $package = ''): void
     {
         $this->Events->removeEvent($event, $fn);
 
@@ -287,7 +291,7 @@ class Manager implements QUI\Interfaces\Events
      * @param QUI\Package\Package $Package
      * @throws QUI\Exception
      */
-    public function removePackageEvents(QUI\Package\Package $Package)
+    public function removePackageEvents(QUI\Package\Package $Package): void
     {
         QUI::getDataBase()->delete(self::table(), [
             'package' => $Package->getName()
@@ -301,7 +305,7 @@ class Manager implements QUI\Interfaces\Events
      *
      * @param array $events - [optional] If not passed removes all events of all types.
      */
-    public function removeEvents(array $events)
+    public function removeEvents(array $events): void
     {
         $this->Events->removeEvents($events);
     }
@@ -338,7 +342,7 @@ class Manager implements QUI\Interfaces\Events
      *
      * @param $packageName
      */
-    public function ignore($packageName)
+    public function ignore($packageName): void
     {
         $this->Events->ignore($packageName);
     }
@@ -346,7 +350,7 @@ class Manager implements QUI\Interfaces\Events
     /**
      * Resets the ignore list
      */
-    public function clearIgnore()
+    public function clearIgnore(): void
     {
         $this->Events->clearIgnore();
     }

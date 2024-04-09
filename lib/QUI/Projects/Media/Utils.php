@@ -246,11 +246,7 @@ class Utils
             'mp3' => URL_BIN_DIR . '80x80/extensions/sound.png',
         ];
 
-        if (isset($extensions[$size][$ext])) {
-            return $extensions[$size][$ext];
-        }
-
-        return URL_BIN_DIR . $size . '/extensions/empty.png';
+        return $extensions[$size][$ext] ?? URL_BIN_DIR . $size . '/extensions/empty.png';
     }
 
     /**
@@ -522,7 +518,7 @@ class Utils
                 continue;
             }
 
-            if (is_array($value) && $key === 'alt') {
+            if (is_array($value) && $key === 'alt' && isset($Image) && $Image instanceof Item) {
                 $value = $Image->getAlt();
             } elseif (!is_string($value)) {
                 continue;
@@ -1219,12 +1215,12 @@ class Utils
                     'type' => 'folder'
                 ]
             ]);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return 0;
         }
 
         if (isset($result[0])) {
-            return intval($result[0]['id']);
+            return (int) $result[0]['id'];
         }
 
         return 0;
@@ -1252,12 +1248,12 @@ class Utils
                     ]
                 ]
             ]);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return 0;
         }
 
         if (isset($result[0])) {
-            return intval($result[0]['id']);
+            return (int) $result[0]['id'];
         }
 
         return 0;
@@ -1355,14 +1351,14 @@ class Utils
 
         try {
             $result = QUI::getDataBase()->fetchSQL($query);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return [];
         }
 
         $return = [];
 
         foreach ($result as $element) {
-            $return[$element['mime_type']] = intval($element['count']);
+            $return[$element['mime_type']] = (int) $element['count'];
         }
 
         return $return;

@@ -18,7 +18,6 @@ use function count;
 use function date;
 use function explode;
 use function file_exists;
-use function get_class;
 use function implode;
 use function in_array;
 use function is_array;
@@ -280,7 +279,7 @@ class User implements QUI\Interfaces\Users\User
         if (!$this->lang) {
             try {
                 $this->lang = QUI\Projects\Manager::get()->getAttribute('lang');
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -299,7 +298,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getId()
     {
-        return $this->id ? $this->id : false;
+        return $this->id ?: false;
     }
 
     /**
@@ -313,11 +312,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getAttribute($var)
     {
-        if (isset($this->settings[$var])) {
-            return $this->settings[$var];
-        }
-
-        return false;
+        return $this->settings[$var] ?? false;
     }
 
     /**
@@ -481,7 +476,7 @@ class User implements QUI\Interfaces\Users\User
                 // only a super user can set a superuser
                 if (QUI::getUsers()->existsSession() && QUI::getUsers()->getUserBySession()->isSU()) {
                     if (is_numeric($value)) {
-                        $this->su = (bool) (int)$value;
+                        $this->su = (bool)(int)$value;
                     } else {
                         $this->su = (bool)$value;
                     }
@@ -539,7 +534,7 @@ class User implements QUI\Interfaces\Users\User
                 if ($this->isLoaded === true) {
                     try {
                         $this->getStandardAddress()->editMail(0, $value);
-                    } catch (QUI\Exception $Exception) {
+                    } catch (QUI\Exception) {
                         if (empty($value)) {
                             $this->getStandardAddress()->clearMail();
                         }
@@ -623,7 +618,7 @@ class User implements QUI\Interfaces\Users\User
                 $this->StandardAddress = $this->getAddress($this->getAttribute('address'));
 
                 return $this->StandardAddress;
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -683,7 +678,7 @@ class User implements QUI\Interfaces\Users\User
             'from' => Manager::tableAddress(),
             'select' => 'id',
             'where' => [
-                'uid' => $this->getId()
+                'userUuid' => $this->getUniqueId()
             ]
         ]);
 
@@ -731,7 +726,7 @@ class User implements QUI\Interfaces\Users\User
             'count' => 'count',
             'from' => Manager::tableAddress(),
             'where' => [
-                'uid' => $this->getId()
+                'userUuid' => $this->getUniqueId()
             ]
         ]);
 
@@ -782,6 +777,8 @@ class User implements QUI\Interfaces\Users\User
         }
 
         $_params['uid'] = $this->getId();
+        $_params['userUuid'] = $this->getUniqueId();
+        $_params['uuid'] = QUI\Utils\Uuid::get();
 
         QUI::getDataBase()->insert(
             Manager::tableAddress(),
@@ -802,7 +799,7 @@ class User implements QUI\Interfaces\Users\User
         }
 
         if (count($this->getAddressList()) === 1) {
-            $this->setAttribute('address', $CreatedAddress->getId());
+            $this->setAttribute('address', $CreatedAddress->getUuid());
             $this->save($ParentUser);
         }
 
@@ -860,7 +857,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getType()
     {
-        return get_class($this);
+        return $this::class;
     }
 
     /**
@@ -874,7 +871,7 @@ class User implements QUI\Interfaces\Users\User
     {
         $list = QUI::getPermissionManager()->getUserPermissionData($this);
 
-        return isset($list[$permission]) ? $list[$permission] : false;
+        return $list[$permission] ?? false;
     }
 
     /**
@@ -1028,7 +1025,7 @@ class User implements QUI\Interfaces\Users\User
                 'lastedit' => date("Y-m-d H:i:s"),
                 'expire' => $expire,
                 'shortcuts' => $this->getAttribute('shortcuts'),
-                'address' => (int)$this->getAttribute('address'),
+                'address' => !empty($this->getAttribute('address')) ? $this->getAttribute('address') : null,
                 'company' => $this->isCompany() ? 1 : 0,
                 'toolbar' => $toolbar,
                 'assigned_toolbar' => $assignedToolbars,
@@ -1104,7 +1101,7 @@ class User implements QUI\Interfaces\Users\User
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         $Dom = QUI\Utils\Text\XML::getDomFromXml($file);
@@ -1133,8 +1130,8 @@ class User implements QUI\Interfaces\Users\User
 
             $attributes[] = [
                 'name' => trim($Attribute->nodeValue),
-                'encrypt' => (bool) $Attribute->getAttribute('encrypt'),
-                'no-auto-save' => (bool) $Attribute->getAttribute('no-auto-save')
+                'encrypt' => (bool)$Attribute->getAttribute('encrypt'),
+                'no-auto-save' => (bool)$Attribute->getAttribute('no-auto-save')
             ];
         }
 
@@ -1153,7 +1150,7 @@ class User implements QUI\Interfaces\Users\User
         try {
             $Groups = QUI::getGroups();
             $Group = $Groups->get($groupId);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return;
         }
 
@@ -1199,7 +1196,7 @@ class User implements QUI\Interfaces\Users\User
                 foreach ($groupIds as $id) {
                     try {
                         $this->Group[] = QUI::getGroups()->get($id);
-                    } catch (QUI\Exception $Exception) {
+                    } catch (QUI\Exception) {
                     }
                 }
             }
@@ -1261,7 +1258,7 @@ class User implements QUI\Interfaces\Users\User
                 try {
                     $this->Group[] = $Groups->get($g);
                     $aTmp[] = $g;
-                } catch (QUI\Exception $Exception) {
+                } catch (QUI\Exception) {
                     // nothing
                 }
             }
@@ -1276,7 +1273,7 @@ class User implements QUI\Interfaces\Users\User
             try {
                 $this->Group[] = $Groups->get($groups);
                 $this->groups = ',' . $groups . ',';
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
     }
@@ -1325,7 +1322,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getUsername()
     {
-        return $this->name ? $this->name : false;
+        return $this->name ?: false;
     }
 
     /**
@@ -1474,11 +1471,11 @@ class User implements QUI\Interfaces\Users\User
      * @param string $right
      * @param array|boolean $ruleset - optional, you can specific a ruleset, a rules = array with rights
      *
-     * @return boolean
+     * @return bool|int|string
      * @see QUI\Interfaces\Users\User::getPermission()
      *
      */
-    public function getPermission($right, $ruleset = false)
+    public function getPermission($right, $ruleset = false): bool|int|string
     {
         //@todo Benutzer muss erster prüfen ob bei ihm das recht seperat gesetzt ist
 
@@ -1492,7 +1489,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getUniqueId()
     {
-        return $this->uuid ? $this->uuid : '';
+        return $this->uuid ?: '';
     }
 
     /**
@@ -1567,7 +1564,7 @@ class User implements QUI\Interfaces\Users\User
             if ($Standard) {
                 return $Standard->getCountry();
             }
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         // apache fallback falls möglich
@@ -1576,7 +1573,7 @@ class User implements QUI\Interfaces\Users\User
                 return QUI\Countries\Manager::get(
                     $_SERVER["GEOIP_COUNTRY_CODE"]
                 );
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -1717,7 +1714,7 @@ class User implements QUI\Interfaces\Users\User
                 if (!empty($addressCompany)) {
                     $params['companyName'] = $addressCompany;
                 }
-            } catch (\Exception $Exception) {
+            } catch (\Exception) {
             }
         }
 
@@ -1725,7 +1722,7 @@ class User implements QUI\Interfaces\Users\User
             $Image = QUI\Projects\Media\Utils::getImageByUrl($this->getAttribute('avatar'));
 
             $params['avatar'] = $Image->getUrl();
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return $params;
@@ -1841,7 +1838,7 @@ class User implements QUI\Interfaces\Users\User
 
         try {
             return QUI\Projects\Media\Utils::getImageByUrl($avatar);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         $Project = QUI::getProjectManager()->getStandard();
@@ -1929,7 +1926,7 @@ class User implements QUI\Interfaces\Users\User
             ]);
 
             return true;
-        } catch (QUI\Users\Exception $Exception) {
+        } catch (QUI\Users\Exception) {
             // 401 -> wrong password
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);

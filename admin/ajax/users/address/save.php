@@ -45,7 +45,7 @@ QUI::$Ajax->registerFunction(
 
         try {
             $Address = $User->getAddress((int)$aid);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             $Address = $User->addAddress($data);
         }
 
@@ -75,7 +75,7 @@ QUI::$Ajax->registerFunction(
         $Address->save();
 
         if (isset($data['standard']) && $data['standard'] === 1) {
-            $User->setAttribute('address', $Address->getId());
+            $User->setAttribute('address', $Address->getUuid());
             $User->save();
         }
 

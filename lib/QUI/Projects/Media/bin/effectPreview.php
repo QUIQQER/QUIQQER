@@ -8,7 +8,7 @@ if (!isset($_REQUEST['id']) || !isset($_REQUEST['project'])) {
     exit;
 }
 
-$dir = str_replace('quiqqer/quiqqer/lib/QUI/Projects/Media/bin', '', dirname(__FILE__));
+$dir = str_replace('quiqqer/quiqqer/lib/QUI/Projects/Media/bin', '', __DIR__);
 define('QUIQQER_SYSTEM', true);
 
 require_once $dir . '/header.php';
@@ -29,15 +29,15 @@ if (isset($_REQUEST['greyscale']) && (int)$_REQUEST['greyscale']) {
 }
 
 if (isset($_REQUEST['brightness']) && is_numeric($_REQUEST['brightness'])) {
-    $Image->brightness(intval($_REQUEST['brightness']));
+    $Image->brightness((int) $_REQUEST['brightness']);
 }
 
 if (isset($_REQUEST['blur']) && is_numeric($_REQUEST['blur'])) {
-    $Image->blur(intval($_REQUEST['blur']));
+    $Image->blur((int) $_REQUEST['blur']);
 }
 
 if (isset($_REQUEST['contrast']) && is_numeric($_REQUEST['contrast'])) {
-    $contrast = intval($_REQUEST['contrast']);
+    $contrast = (int) $_REQUEST['contrast'];
 
     if ($contrast !== 0) {
         $Image->contrast($contrast);
@@ -97,7 +97,7 @@ if (isset($_REQUEST['watermark'])) {
         }
 
         $Image->insert($WatermarkImage, $watermarkPosition);
-    } catch (QUI\Exception $Exception) {
+    } catch (QUI\Exception) {
     }
 }
 

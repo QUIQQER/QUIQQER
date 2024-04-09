@@ -55,12 +55,6 @@ class Utils
      */
     public static function checkName(string $name): bool
     {
-        if (!isset($name)) {
-            throw new Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.url.missing.title')
-            );
-        }
-
         if (strlen($name) <= 2) {
             throw new Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.url.2.signs'),
@@ -602,7 +596,7 @@ class Utils
      */
     public static function isSiteObject($Site): bool
     {
-        switch (get_class($Site)) {
+        switch ($Site::class) {
             case 'QUI\\Projects\\Site':
             case 'QUI\\Projects\\Site\\Edit':
             case 'QUI\\Projects\\Site\\OnlyDB':
@@ -812,7 +806,7 @@ class Utils
                     ]);
 
                     $ids = array_merge($ids, $children);
-                } catch (Exception $Exception) {
+                } catch (Exception) {
                 }
             }
 

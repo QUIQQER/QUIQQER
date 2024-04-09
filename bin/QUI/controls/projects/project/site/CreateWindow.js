@@ -158,6 +158,7 @@ define('controls/projects/project/site/CreateWindow', [
                     title: title,
                     type: type,
                     layout: layout,
+                    nav_hide: Win.getContent().getElement('[name="navHide"]').checked ? 1 : 0,
                     'quiqqer.meta.site.title': Form.elements.seotitle.value
                 }),
 

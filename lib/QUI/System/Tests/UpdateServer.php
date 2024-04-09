@@ -23,10 +23,10 @@ class UpdateServer extends QUI\System\Test
     {
         parent::__construct();
 
-        $this->setAttributes(array(
+        $this->setAttributes([
             'title' => 'Update Server: composer.quiqqer.com AND update.composer.com',
             'description' => ''
-        ));
+        ]);
 
         $this->isRequired = self::TEST_IS_OPTIONAL;
     }

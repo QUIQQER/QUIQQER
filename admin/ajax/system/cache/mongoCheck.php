@@ -11,7 +11,7 @@ QUI::$Ajax->registerFunction(
     function ($host, $database, $collection, $username, $password) {
         try {
             QUI::getPackage('mongodb/mongodb');
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             throw new QUI\Exception('MongoDB Client not installed');
         }
 

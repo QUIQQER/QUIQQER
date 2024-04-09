@@ -110,7 +110,7 @@ class Manager
         $toolbars = File::readDir($path);
 
         if (empty($toolbars)) {
-            $defaultBarDir = dirname(__FILE__) . '/toolbars/';
+            $defaultBarDir = __DIR__ . '/toolbars/';
             $toolbars = File::readDir($defaultBarDir);
 
             foreach ($toolbars as $toolbar) {
@@ -756,7 +756,7 @@ class Manager
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         $Dom = XML::getDomFromXml($file);

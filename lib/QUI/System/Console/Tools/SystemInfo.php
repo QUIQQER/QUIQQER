@@ -39,7 +39,7 @@ class SystemInfo extends QUI\System\Console\Tool
         $this->writeLn('');
         $this->writeLn('');
 
-        $print = array_flip(array(
+        $print = array_flip([
             'name',
             'type',
             'description',
@@ -48,7 +48,7 @@ class SystemInfo extends QUI\System\Console\Tool
             'authors',
             'support',
             'require'
-        ));
+        ]);
 
         foreach ($data as $key => $value) {
             if (!isset($print[$key])) {

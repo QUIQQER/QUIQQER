@@ -1,41 +1,167 @@
-/* ******************************************************* */
-
 .omnigrid {
-    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-    font-size: 11px;
+    --_grid-fontFamily: var(--grid-fontFamily, Verdana, Geneva, Arial, Helvetica, sans-serif);
+    --_grid-fontSize: var(--grid-fontSize, 11px);
+    --_grid-fontColor: var(--grid-fontColor, inherit);
+
+    --_grid-border-color: var(--grid-border-color, rgba(0, 0, 0, 0.05));
+    --_grid-border-width: var(--grid-border-width, 1px);
+
+    /* cell */
+    --_grid-cellPaddingLeft: var(--grid-cellPaddingLeft, 1rem);
+    --_grid-cellPaddingRight: var(--grid-cellPaddingRight, 1rem);
+    --_grid-cellPaddingTop: var(--grid-cellPaddingTop, 0.75rem);
+    --_grid-cellPaddingBottom: var(--grid-cellPaddingBottom, 0.75rem);
+
+    /* body (bDiv) */
+    --_grid-bBg: var(--grid-bBg, #ffffff);
+
+    /**
+     Control sizing of the grid table. This value affect top and bottom cell padding.
+     Value less than 1 results in compacter table. Recommended values are between 0.5 and 1.5.
+     */
+    --_grid-sizingMultiplier: var(--grid-sizingMultiplier, 1);
+
+    --_grid-dragElmWidth: var(--grid-dragElmWidth, 8px);
+    --_grid-dragElmColor: var(--grid-dragElmColor, #333);
+
+    font-family: var(--_grid-fontFamily);
+    font-size: var(--_grid-fontSize);
     position: relative;
     border: 0 solid #eee;
     overflow: hidden;
-    color: #000;
+    color: var(--_grid-fontColor);
     clear: both;
 }
 
+/* template: simple */
+.omnigrid--design-simple {
+    --_grid-oddRow-bg: #f7f7f7;
+
+    /* header (hDiv) */
+    --_grid-hBg: var(--grid-hBg, #eee);
+    --_grid-hBgHover: var(--grid-hBgHover, rgba(0, 0, 0, 0.05));
+    --_grid-hBorderColor: var(--grid-hBorderColor, #ddd);
+    --_grid-hBorderWidth: var(--grid-hBorderWidth, 0);
+}
+
+/* template: clean */
+.omnigrid--design-clean {
+    --_grid-oddRow-bg: transparent;
+
+    /* header (hDiv) */
+    --_grid-hBg: var(--grid-hBg, #eee);
+    --_grid-hBgHover: var(--grid-hBgHover, rgba(0, 0, 0, 0.05));
+    --_grid-hBorderColor: var(--grid-hBorderColor, #ddd);
+    --_grid-hBorderWidth: var(--grid-hBorderWidth, 0);
+}
+
+/* border: none */
+.omnigrid--border-none {
+    /* cell */
+    --_grid-cellBorderLeftWidth: var(--grid-cellBorderLeftWidth, var(--_grid-border-width));
+    --_grid-cellBorderLeftColor: var(--grid-cellBorderLeftColor, transparent);
+    --_grid-cellBorderRightWidth: var(--grid-cellBorderRightWidth, 0);
+    --_grid-cellBorderRightColor: var(--grid-cellBorderRightColor, transparent);
+    --_grid-cellBorderBottomWidth: var(--grid-cellBorderBottomWidth, 0);
+    --_grid-cellBorderBottomColor: var(--grid-cellBorderBottomColor, transparent);
+
+    /* header (hDiv) */
+    --_grid-hBorderColor: var(--grid-hBorderColor, #ddd);
+    --_grid-hBorderWidth: var(--grid-hBorderWidth, 0);
+
+    /* body (bDiv) */
+    --_grid-bCellBottomColor: var(--_grid-bCellBottomColor, #f1f1f1);
+    --_grid-bCellBottom: var(--_grid-bCellBottomColor, #f1f1f1);
+}
+
+/* border: column */
+.omnigrid--border-column {
+    /* cell */
+    --_grid-cellBorderLeftWidth: var(--grid-cellBorderLeftWidth, var(--_grid-border-width));
+    --_grid-cellBorderLeftColor: var(--grid-cellBorderLeftColor, var(--_grid-border-color));
+    --_grid-cellBorderRightWidth: var(--grid-cellBorderRightWidth, 0px);
+    --_grid-cellBorderRightColor: var(--grid-cellBorderRightColor, transparent);
+    --_grid-cellBorderBottomWidth: var(--grid-cellBorderBottomWidth, 0);
+    --_grid-cellBorderBottomColor: var(--grid-cellBorderBottomColor, transparent);
+}
+
+/* border: row */
+.omnigrid--border-row {
+    /* cell */
+    --_grid-cellBorderLeftWidth: var(--grid-cellBorderLeftWidth, var(--_grid-border-width));
+    --_grid-cellBorderLeftColor: var(--grid-cellBorderLeftColor, transparent);
+    --_grid-cellBorderRightWidth: var(--grid-cellBorderRightWidth, 0);
+    --_grid-cellBorderRightColor: var(--grid-cellBorderRightColor, transparent);
+    --_grid-cellBorderBottomWidth: var(--grid-cellBorderBottomWidth, var(--_grid-border-width));
+    --_grid-cellBorderBottomColor: var(--grid-cellBorderBottomColor, var(--_grid-border-color));
+}
+
+/* border: all */
+.omnigrid--border-all {
+    /* cell */
+    --_grid-cellBorderLeftWidth: var(--grid-cellBorderLeftWidth, 1px);
+    --_grid-cellBorderLeftColor: var(--grid-cellBorderLeftColor, var(--_grid-border-color));
+    --_grid-cellBorderRightWidth: var(--grid-cellBorderRightWidth, 0);
+    --_grid-cellBorderRightColor: var(--grid-cellBorderRightColor, transparent);
+    --_grid-cellBorderBottomWidth: var(--grid-cellBorderBottomWidth, 1px);
+    --_grid-cellBorderBottomColor: var(--grid-cellBorderBottomColor, var(--_grid-border-color));
+}
+
+
+/* grid caption */
+.omnigrid__caption,
+.omnigrid__caption-title,
+.omnigrid__caption-description {
+    margin-bottom: 0.5rem;
+}
+
+/* grid */
 .omnigrid div.hDivBox {
     position: relative;
     overflow: hidden;
+
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: var(--grid-gridTemplateColumns);
+}
+
+.omnigrid .bDiv .tr {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: var(--grid-gridTemplateColumns);
+    border-bottom: var(--_grid-cellBorderBottomWidth) solid var(--_grid-cellBorderBottomColor);
+}
+
+.omnigrid {
+    display: flex;
+    flex-flow: column;
+}
+
+.tDiv, .hDiv, .pDiv {
+    flex-shrink: 0;
 }
 
 .omnigrid div.hDiv {
-    background: #FAFAFA;
+    background: var(--_grid-hBg);
     position: relative;
-    border: 1px solid #E2E8F0;
-    border-bottom: 2px solid #E2E8F0;
+    border-bottom: var(--_grid-hBorderWidth) solid var(--_grid-hBorderColor);
     overflow: hidden;
 }
 
 .omnigrid div.bDiv {
-    border: 1px solid #E2E8F0;
     border-top: 0;
-    background: #fff;
+    background: var(--_grid-bBg);
     overflow: auto;
     position: relative;
+
+    flex-grow: 1;
 }
 
 .omnigrid div.hDiv .th,
 .omnigrid div.bDiv .td {
     text-align: left;
-    border-right: 1px solid #ddd;
-    border-left: 1px solid #fff;
+    border-right: var(--_grid-cellBorderRightWidth) solid var(--_grid-cellBorderRightColor);
+    border-left: var(--_grid-cellBorderLeftWidth) solid var(--_grid-cellBorderLeftColor);
     vertical-align: top !important;
 
     display: inline-block;
@@ -43,12 +169,38 @@
 
     white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
 
-    padding-left: 5px;
+    padding-top: calc(var(--_grid-sizingMultiplier) * var(--_grid-cellPaddingBottom));
+    padding-bottom: calc(var(--_grid-sizingMultiplier) * var(--_grid-cellPaddingBottom));
+    padding-left: calc(var(--_grid-sizingMultiplier) * 0.75 * var(--_grid-cellPaddingLeft));
+    padding-right: calc(var(--_grid-sizingMultiplier) * 0.75 * var(--_grid-cellPaddingRight));
     -moz-user-select: text;
     cursor: pointer;
 
     box-sizing: content-box;
+}
+
+.omnigrid:not(.omnigrid--border-all) div.hDiv .th:first-child,
+.omnigrid:not(.omnigrid--border-all) div.bDiv .td:first-child {
+    border-left: none;
+}
+
+/* border: all */
+.omnigrid--border-all .hDiv {
+    border-top: var(--_grid-border-width) solid var(--_grid-border-color);
+}
+
+.omnigrid--border-all .hDivBox,
+.omnigrid--border-all .tr {
+    border-right: var(--_grid-border-width) solid var(--_grid-border-color);
+}
+
+/* END border: all */
+
+.omnigrid div.hDiv .th .header-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .grid-align-right {
@@ -58,8 +210,6 @@
 }
 
 .grid-align-center {
-    padding-left: 2px !important;
-    padding-right: 3px;
     text-align: center !important;
 }
 
@@ -75,15 +225,29 @@
 }
 
 .omnigrid div.hDiv div.th {
-    border-bottom: 1px solid #E2E8F0;
+    border-bottom: 1px solid var(--grid-hBorderColor);
     line-height: 24px;
     min-height: 24px;
+    font-weight: bold;
+    display: flex;
+}
+
+/*  design / template: clean */
+.omnigrid--border-none div.hDiv div.th,
+.omnigrid--border-row div.hDiv div.th {
+    border-left-style: dashed;
+    border-right-style: dashed;
+}
+
+.omnigrid--border-none div.hDiv:hover div.th,
+.omnigrid--border-row div.hDiv:hover div.th {
+    border-left-color: var(--_grid-hBorderColor);
+    border-right-color: var(--_grid-hBorderColor);
 }
 
 .omnigrid div.bDiv .td {
     line-height: 27px;
     min-height: 24px;
-    /*background-color:red;*/
 }
 
 .omnigrid div.bDiv .td.clickable:hover {
@@ -95,12 +259,12 @@
     float: left;
     margin: 0;
     padding: 0;
+    max-height: 40px;
 }
 
 .omnigrid div.bDiv ul {
     margin: 0;
     padding: 0;
-    border-bottom: 1px solid #DDDDDD;
     overflow: hidden;
     position: absolute;
     top: 0;
@@ -114,24 +278,20 @@
     padding: 0;
     list-style: none;
     overflow: hidden;
-    border-bottom: 1px solid #fff;
 
     min-width: 100%;
 }
 
 .omnigrid li.erow {
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #f7f7f7;
+    background-color: var(--_grid-oddRow-bg);
 }
 
 .omnigrid li.selected {
     background-color: #d9e6f4 !important;
-    /*color: #fff;*/
 }
 
 .omnigrid li.over {
     background-color: #eaeff4;
-    /*color: #fff;*/
 }
 
 .omnigrid .data-empty {
@@ -202,13 +362,35 @@
 /* ************************************** */
 
 .omnigrid div.tDiv {
-    background: #EFEFEF;
-    border: 1px solid #E2E8F0;
-    border-bottom: 0;
-    height: 25px;
     overflow: hidden;
     position: relative;
+    margin-bottom: 0.5rem;
+
+    display: flex;
+    gap: 1em;
 }
+
+.tDiv > :is([data-position="left"], [data-position="center"], [data-position="right"]) {
+    flex-grow: 1;
+    display: flex;
+    gap: 1em;
+    padding: 2px;
+}
+
+/*
+ 1. let grow the center div to push left and right box to the edges
+*/
+.tDiv > [data-position="center"] {
+    flex-grow: 999; /* 1 */
+    justify-content: center;
+}
+
+:is([data-position="left"], [data-position="center"], [data-position="right"]) > * {
+    --_order: var(--order, 10);
+
+    order: var(--_order);
+}
+
 
 .omnigrid div.fbutton {
     margin-top: 1px;
@@ -257,140 +439,158 @@
 /* ************************************** */
 /* ************** Filter **************** */
 /* ************************************** */
-
 .omnigrid li.hide {
-    display: none;
-    /*
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=15)";
-    filter: alpha(opacity=15);
-    -moz-opacity: 0.15;
-    -khtml-opacity: 0.15;
-    opacity: 0.15;
-    */
-}
-
-.omnigrid li.filter {
-
+    display: none !important;
 }
 
 /* ************************************** */
 /* ************** Columns size drag ***** */
 /* ************************************** */
-
 .omnigrid div.cDrag {
     float: left;
     position: absolute;
     z-index: 2;
     overflow: visible;
+
+    height: 100%;
+    top: 0;
 }
 
-.omnigrid div.cDrag div {
-    float: left;
+/**
+  1. Position the drag element between two cells
+ */
+.omnigrid div.cDrag .dragElm {
     background: none;
     display: block;
     position: absolute;
-    height: 24px;
-    width: 5px;
+    height: 100%;
+    width: var(--_grid-dragElmWidth);
+    margin-left: calc(var(--_grid-dragElmWidth) / -2); /* 1 */
     cursor: col-resize;
 
 }
 
-.omnigrid div.cDrag div.dragging {
-    background: url("omnigrid/line.gif") repeat-y 2px center;
+.omnigrid div.cDrag .dragElm.dragging {
+    background-image: linear-gradient(90deg, transparent calc(50% - 1px), black calc(50% - 1px), black calc(50% + 1px), transparent calc(50% + 1px));
+
 }
 
 /* ************************************** */
 /* ************** Sort ****************** */
 /* ************************************** */
-
-.omnigrid div.hDiv div.DESC {
-    background: url("omnigrid/dn.png") no-repeat center top;
-    border-bottom: 1px solid orange !important;
+.omnigrid div.hDiv div.DESC,
+.omnigrid div.hDiv div.ASC {
+    background-color: var(--_grid-hBgHover);
+    position: relative;;
 }
 
-.omnigrid div.hDiv div.ASC {
-    background: url("omnigrid/up.png") no-repeat center top;
-    border-bottom: 1px solid orange !important;
+.omnigrid div.hDiv div.DESC:after,
+.omnigrid div.hDiv div.ASC:after {
+    font-family: 'FontAwesome';
+    margin-left: 0.5rem;
+}
+
+.omnigrid div.hDiv div.DESC:after {
+    content: "\f0dd";
+}
+
+.omnigrid div.hDiv div.ASC:after {
+    content: "\f0d8";
 }
 
 /* ************************************** */
 /* ************** Pagination ************ */
 /* ************************************** */
-
-.omnigrid div.pDiv {
+.omnigrid .pDiv {
     background: #EFEFEF;
-    border: 1px solid #E2E8F0;
-    border-top: 0;
-    line-height: 20px;
     overflow: hidden;
     white-space: nowrap;
+    line-height: 1.5;
+    font-size: 0.95em;
+    padding-inline: 0.5rem;
+    --inputPadding: 0.25rem 0.75rem;
 }
 
-.omnigrid div.pDiv div.pDiv2 {
-    float: left;
+.omnigrid .pDiv2 {
     width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
 }
 
-div.pGroup {
-    float: left;
-    background: none;
-    height: 24px;
-    margin: 0 5px;
+.omnigrid .pGroup {
+    padding-block: 0.5rem;
 }
 
-.omnigrid div.pDiv .pPageStat,
-.omnigrid div.pDiv .pcontrol {
-    position: relative;
-    top: 0;
+.pGroup--alignRight {
+    margin-left: auto;
+}
+
+.omnigrid .pDiv .pcontrol {
     overflow: visible;
-    font-size: 10px;
     color: #777777;
 }
 
-.omnigrid div.pDiv select {
-    font-size: 10px;
-    line-height: 14px;
-    margin-top: 2px;
-    padding: 2px 5px;
+.omnigrid .pDiv .pPageStat {
+    opacity: 0.5;
+    overflow: visible;
 }
 
-.omnigrid div.pDiv input {
-    font-size: 10px;
-    float: left;
-    line-height: 14px;
-    padding: 2px 5px;
+.omnigrid .pDiv select {
+    line-height: inherit;
+    padding: var(--inputPadding);
+    padding-right: 2em;
+    height: initial;
+    font-size: inherit;
+}
+
+.omnigrid .pDiv input {
+    line-height: inherit;
+    padding: var(--inputPadding);
     position: relative;
-    top: 2px;
-    vertical-align: text-top;
+    font-size: inherit;
 }
 
-.omnigrid div.pDiv span {
-    line-height: 24px;
+.omnigrid .pDiv span {
     padding: 0 2px;
 }
 
-.omnigrid div.pDiv .btnseparator {
+.omnigrid .pDiv .btnseparator {
     height: 19px;
 }
 
-.omnigrid div.pDiv div.pButton {
-    border: 0;
+.omnigrid .pDiv .pButton {
     cursor: pointer;
-    float: left;
-    line-height: 24px;
+    padding: var(--inputPadding);
+    line-height: inherit;
+    border-radius: 0.5rem;
+    opacity: 0.5;
+    aspect-ratio: 1/1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75em;
+    font-size: 1.25em;
+    font-weight: inherit;
+    background-color: transparent;
+    color: inherit;
 }
 
-.omnigrid div.pDiv div.pButton:hover,
-.omnigrid div.pDiv div.pButton.pBtnOver {
-    background-position: -16px 0;
+.omnigrid .pDiv .pButton:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+    opacity: 1;
 }
 
-.omnigrid2 div.pDiv div.pButton:hover,
-.omnigrid2 div.pDiv div.pButton.pBtnOver {
-    width: 14px;
-    height: 14px;
+.omnigrid .pDiv .pButton > .fa {
+    margin: 0;
+    line-height: inherit;
+}
+
+.omnigrid2 .pDiv .pButton:hover,
+.omnigrid2 .pDiv .pButton.pBtnOver {
     border: 1px solid #E2E8F0;
     cursor: pointer;
+    padding: var(--inputPadding);
 }
 
 .omnigrid .pSearch {
@@ -403,26 +603,14 @@ div.pGroup {
 .omnigrid .pLast,
 .omnigrid .pReload,
 .omnigrid .pExport,
+.omnigrid .pSizing,
 .omnigrid .pSort {
-    color: #A0AEC0;
     display: inline-block;
     font: normal normal normal 14px/1 FontAwesome;
     text-align: center;
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    width: 32px;
-}
-
-
-.omnigrid .pFirst:hover,
-.omnigrid .pPrev:hover,
-.omnigrid .pNext:hover,
-.omnigrid .pLast:hover,
-.omnigrid .pReload:hover,
-.omnigrid .pExport:hover,
-.omnigrid .pSort:hover {
-    color: #4A5568;
 }
 
 .omnigrid .pSort {
@@ -431,63 +619,48 @@ div.pGroup {
 }
 
 .omnigrid .pFirst:after {
-    content: "\f048";
-    /*background: url("omnigrid/first.gif") no-repeat;*/
-}
-
-.omnigrid .pPrev {
-    -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2)";
-    -webkit-transform: rotate(180deg);
-    -ms-transform: rotate(180deg);
-    transform: rotate(180deg);
+    content: "\f049";
 }
 
 .omnigrid .pPrev:after {
-    content: "\f04b";
-    /*background: url("omnigrid/prev.gif") no-repeat;*/
+    content: "\f048";
 }
 
 .omnigrid .pNext:after {
-    content: "\f04b";
-    /*background: url("omnigrid/next.gif") no-repeat;*/
+    content: "\f051";
 }
 
 .omnigrid .pLast:after {
-    content: "\f051";
-    /*background: url("omnigrid/last.gif") no-repeat;*/
+    content: "\f050";
 }
 
 .omnigrid .pReload:after {
     content: "\f021";
-    /*background: url("omnigrid/refresh.gif") no-repeat;*/
 }
 
 .omnigrid .pExport:after {
     content: "\f019";
-    /*background: url("omnigrid/export.png") no-repeat;*/
+}
+
+.omnigrid .pSizing[data-qui-tableSizing="normal"]:after {
+    content: "\f00a";
+}
+
+.omnigrid .pSizing[data-qui-tableSizing="small"]:after {
+    content: "\f009";
 }
 
 .omnigrid .pSelectAll {
-    background: url("omnigrid/selAll.png") no-repeat;
-    margin-right: 2px;
-    margin-top: 3px;
-
-    width: 16px;
-    height: 16px;
-    border: 1px solid #E2E8F0;
-    cursor: pointer;
-    float: left;
+    background: url("omnigrid/selAll.png") no-repeat center;
 }
 
 .omnigrid .pUnselectAll {
-    background: url("omnigrid/selNone.png") no-repeat;
+    background: url("omnigrid/selNone.png") no-repeat center;
+}
 
-    width: 16px;
-    height: 16px;
-    border: 1px solid #E2E8F0;
-    cursor: pointer;
-    float: left;
-    margin-top: 3px;
+.omnigrid .pSelectAll:after,
+.omnigrid .pUnselectAll:after {
+    content: '';
 }
 
 /* ************************************************************************************ */
@@ -519,11 +692,15 @@ div.pGroup {
 /* *************************************** */
 
 .omnigrid input.inline {
-    padding: 1px 2px 1px 2px;
+    font-family: inherit;
+    font-size: inherit;
+    /*padding: 1px 2px 1px 2px;*/
 }
 
 .omnigrid textarea.inline {
-    padding: 1px 2px 1px 2px;
+    font-family: inherit;
+    font-size: inherit;
+    /*padding: 1px 2px 1px 2px;*/
 }
 
 /* **** Section Table **** */
@@ -537,128 +714,6 @@ div.pGroup {
     text-transform: uppercase;
 }
 
-/*
-
-macht mehr kaputt als ganz
-
-
-.section table {
-    border-collapse: collapse;
-    border: 0 solid;
-    font: normal 11px verdana, arial, helvetica, sans-serif;
-    color: #363636;
-    background: #f6f6f6;
-    text-align: left;
-    width: 100%;
-}
-
-.section thead, .section tfoot {
-    background: url("omnigrid/fhbg.gif") repeat-x;
-    text-align: left;
-    height: 24px;
-}
-
-.section tfoot th {
-    padding: 5px;
-}
-
-.section thead th {
-    padding: 5px;
-    border-right: 1px solid #DDDDDD;
-}
-
-.section table a {
-    color: #333333;
-    text-decoration: none;
-}
-
-.section tbody > tr:hover {
-    background: #D9E6F4 !important;
-}
-
-.section tr.sectr1 {
-    background: #f1f1f1;
-}
-
-.section tr.sectr2 {
-    background: #fff;
-}
-
-.section td .sums {
-    margin-right: 80px;
-}
-
-.section tbody td {
-    padding: 3px 10px;
-    border-right: 1px solid #DDDDDD;
-}
-
-.section tbody td .description {
-    font-size: 80%;
-}
-
-.section tbody th {
-    padding: 5px;
-}
-*/
-
-/* export */
-.exportSelectDiv {
-    width: 420px;
-    height: 250px;
-    position: absolute;
-    left: 35%;
-    top: 10%;
-    z-index: 10000;
-    border: 3px solid #DDDDDD;
-    background: #fff;
-    padding: 5px;
-}
-
-.exportItemsDiv {
-    display: inline-block;
-    width: 100%;
-}
-
-.exportSelectBtnDiv {
-    display: inline-block;
-    width: 100%;
-}
-
-.exportItemDiv {
-    border: 1px solid #DDDDDD;
-    display: flex;
-    float: left;
-    margin: 3px;
-    padding: 4px;
-    width: 180px;
-}
-
-.exportItemDiv input {
-    float: left;
-    margin: 2px 5px;
-}
-
-.exportItemDiv span {
-    float: left;
-    overflow: hidden !important;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.exportTextsDiv {
-    padding: 5px 0 10px 10px;
-    width: 100%;
-}
-
-.exportFrame {
-    padding: 5px 3px 3px 10px;
-    width: 10px;
-    height: 10px;
-    position: absolute;
-    left: -100px;
-    top: -100px;
-}
 
 /** Drag and Drop Element
  ***********************************************/
@@ -678,19 +733,13 @@ macht mehr kaputt als ganz
 .omnigrid button {
     border: 0 none;
     white-space: nowrap;
-    margin: 5px;
+    /*margin: 5px;*/
 }
-
-/*
-.omnigrid .bDiv button span {
-    padding: 0;
-}*/
 
 .omnigrid .qui-buttons-separator {
     border-right: 2px solid #CCCFD5;
     float: left;
     height: 30px;
-    margin: 5px 5px 0 5px;
 }
 
 .omnigrid .grid-disabled {
@@ -707,9 +756,13 @@ macht mehr kaputt als ganz
  ***********************************************/
 
 .omnigrid .qui-switch {
-    border: 2px solid #ddd;
-    box-shadow: none;
-    margin: 3px 0;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    box-shadow: 0 0 0px 1px #ddd;
+
+    display: flex;
+    flex-wrap: nowrap;
 }
 
 .qui-switch-button {
@@ -723,18 +776,52 @@ macht mehr kaputt als ganz
     font-size: 12px !important;
 }
 
+/**************************************/
+/* Grid settings window / sort window */
+/**************************************/
+.grid-settingsWindow .resetGrid-container {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+.grid-settingsWindow .resetGrid-container input[name="resetGridCheckbox"] {
+    vertical-align: middle;
+}
+
+:where(.grid-settingsWindow .resetGrid-container .btn) {
+    background: #dc4139;
+    border-color: #dc4139;
+    color: #fff;
+    border-style: solid;
+    border-radius: 0.25em;
+    cursor: pointer;
+}
+
+:where(.grid-settingsWindow .resetGrid-container .btn:focus) {
+    box-shadow: none;
+}
+
+.grid-settingsWindow .resetGrid-container .error > .fa {
+    vertical-align: middle;
+    margin-right: 0.5rem;
+    margin-left: 0.25rem;
+    transform: scaleX(-1);
+}
+
+.grid-settingsWindow .resetGrid-container__desc {
+    display: block;
+    margin-top: 0.5rem;
+}
 
 .grid-dd {
-    float: left;
-    margin-bottom: 20px;
+    margin-bottom: 1rem;
     position: relative;
     width: 100%;
 }
 
 .grid-dd ul {
     border-top: 1px solid #dedede;
-    margin: 0 auto;
-    max-width: 500px;
+    margin: 0;
     padding: 0;
     position: relative;
     width: 100%;
@@ -775,4 +862,297 @@ macht mehr kaputt als ganz
 .grid-dd-active .grid-dd-placeholder {
     background: #2f8fc6;
     color: #fff;
+}
+
+/**********/
+/* Export */
+/**********/
+
+/* export: aside */
+.qui-window-sidebar {
+    display: flex;
+    height: 100%;
+
+    container-name: windowContent;
+    container-type: inline-size;
+}
+
+.qui-window-sidebar__aside {
+    flex-shrink: 0;
+    flex-grow: 0;
+    width: max(30%, 250px);
+    background: #f2f2f2;
+    padding: 1rem;
+}
+
+@container windowContent (max-width: 500px) {
+    .qui-window-sidebar__aside {
+        display: none;
+    }
+}
+
+ul.nav {
+    margin: 0;
+    padding: 0;
+}
+
+li.nav__item {
+    list-style: none;
+    margin-bottom: 0.5rem;
+}
+
+.nav__link {
+    border-radius: var(--border-radius, 0.75rem);
+    padding: 1rem;
+    border: none;
+    background: none;
+    width: 100%;
+    color: inherit;
+    text-align: left;
+    display: flex;
+    align-items: baseline;
+}
+
+.nav__link:hover,
+.nav__link:active,
+.nav__link:focus {
+    border: none;
+    background: none;
+    color: inherit;
+}
+
+.nav__link.active {
+    color: inherit;
+    background-color: #fff;
+}
+
+.nav__link > .fa {
+    margin-right: 0.5em;
+    flex-shrink: 0;
+}
+
+/* export: main */
+.qui-window-sidebar__main {
+    display: flex;
+    padding: 1rem;
+    flex-grow: 1;
+}
+
+.qui-window-sidebar__main .desc {
+    margin-bottom: 1.5em;
+}
+
+.export-listWrapper {
+    overflow: auto;
+}
+
+.export-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.5rem;
+}
+
+.export-item {
+    border-radius: 0.5rem;
+    background: #f2f2f2;
+    border: none;
+    padding: 0.25rem 0.75rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.25em;
+    margin-bottom: 0;
+    overflow: hidden;
+}
+
+.export-button {
+    margin-top: auto;
+    text-align: right;
+    padding-top: 1rem;
+}
+
+.export-button > button {
+    width: 100%;
+}
+
+/* default button styling */
+:where(.export-button > button) {
+    border: none;
+    border-radius: 3px;
+    background: #ededed;
+    color: #606060;
+    cursor: pointer;
+    float: left;
+    line-height: 30px;
+    margin: 0;
+    padding: 0 10px;
+    position: relative;
+    -webkit-transition: all 0.2s ease;
+    -moz-transition: all 0.2s ease;
+    -ms-transition: all 0.2s ease;
+    -o-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 2px #999;
+    -moz-box-shadow: 0 0 2px #999;
+    -webkit-box-shadow: 0 0 2px #999;
+}
+
+:where(.export-button > button:disabled) {
+    cursor: not-allowed;
+}
+
+.export-button > button > .fa {
+    margin-left: 0.5em;
+}
+
+/* content slider */
+.contentSlider__items {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+}
+
+.contentSlider__item {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.export-item__text {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.export-item__text--noLabel {
+    opacity: 0.5;
+    font-style: italic;
+    font-size: 0.8rem;
+}
+
+/* export: file format */
+.export-fileFormat__items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.5rem;
+}
+
+label.export-fileFormat__item {
+    margin-bottom: 0;
+    background: #f8f8f8;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;;
+}
+
+.export-fileFormat__item > .fa {
+    font-size: 2em;
+}
+
+.export-fileFormat__item > .label {
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
+}
+
+.export-fileFormat__item > .text {
+    letter-spacing: 2px;
+    font-family: monospace;
+    opacity: 0.5;
+}
+
+.export-fileFormat__item:has(input:checked) {
+    outline: 2px solid;
+    outline-offset: -2px;
+}
+
+/* ??? */
+.exportFrame {
+    padding: 5px 3px 3px 10px;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    left: -100px;
+    top: -100px;
+}
+
+/****************/
+/* Flash effect */
+/***************/
+.flash-animation {
+    --_animation-duration: var(--animation-duration, 3s);
+    --_animation-timing: var(--animation-timing, linear);
+    --_animation-delay: var(--animation-delay, 0.25s);
+    --_flash-color-bg-fallback: 255,255,160;
+    --_flash-color-bg: var(--flash-color-bg, var(--_flash-color-bg-fallback));
+    --_flash-color-text-fallback: 226,226,158;
+    --_flash-color-text: var(--flash-color-text, var(--_flash-color-text-fallback));
+
+    position: relative;
+    overflow: visible !important;
+    animation-name: flash-text;
+    animation-delay: var(--_animation-delay);
+    animation-duration: var(--_animation-duration);
+    animation-timing-function: var(--_animation-timing);
+}
+
+.flash-animation > .td {
+    position: relative;
+}
+
+.flash-animation:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+
+    animation-name: flash-bg;
+    animation-delay: var(--_animation-delay);
+    animation-duration: var(--_animation-duration);
+    animation-timing-function: var(--_animation-timing);
+}
+
+@keyframes flash-bg {
+    0% {
+        background-color: rgba(var(--_flash-color-bg), 0);
+        box-shadow: 0 0 0 0 rgba(var(--_flash-color-bg), 1);
+    }
+
+    5% {
+        background-color: rgba(var(--_flash-color-bg), 1);
+        box-shadow: 0 0 0 2px rgba(var(--_flash-color-bg), 1);
+    }
+
+    10% {
+        background-color: rgba(var(--_flash-color-bg), 1);
+        box-shadow: 0 0 0 10px rgba(var(--_flash-color-bg), 1);
+    }
+
+    25% {
+        box-shadow: 0 0 0 15px rgba(var(--_flash-color-bg), 0.3);
+    }
+
+    40% {
+        box-shadow: 0 0 0 20px rgba(var(--_flash-color-bg), 0);
+    }
+
+    100% {
+        background-color: rgba(var(--_flash-color-bg), 0);
+        box-shadow: 0 0 0 60px rgba(var(--_flash-color-bg), 0);
+    }
+}
+
+@keyframes flash-text {
+    0%, 2%, 30%, 100% {
+        color: inherit;
+    }
+
+    5%, 8% {
+        color: rgba(var(--_flash-color-text), 0.5);
+    }
 }

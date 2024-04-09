@@ -100,7 +100,7 @@ class Group extends QUI\QDOM
             if (!empty($cache)) {
                 return;
             }
-        } catch (QUI\Cache\Exception $Exception) {
+        } catch (QUI\Cache\Exception) {
         }
 
 
@@ -392,7 +392,7 @@ class Group extends QUI\QDOM
 
         $result = QUI::getDataBase()->fetch($_params);
 
-        if (!isset($result) || !isset($result[0])) {
+        if (!isset($result[0])) {
             return $this->childrenids;
         }
 
@@ -464,7 +464,7 @@ class Group extends QUI\QDOM
 
         try {
             return QUI\Projects\Media\Utils::getImageByUrl($avatar);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         $Project = QUI::getProjectManager()->getStandard();
@@ -611,7 +611,7 @@ class Group extends QUI\QDOM
      */
     public function hasPermission($permission)
     {
-        return isset($this->rights[$permission]) ? $this->rights[$permission] : false;
+        return $this->rights[$permission] ?? false;
     }
 
     /**
@@ -945,7 +945,7 @@ class Group extends QUI\QDOM
                     $Child->getAttributes(),
                     ['hasChildren' => $Child->hasChildren()]
                 );
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 // nothing
             }
         }
@@ -974,9 +974,9 @@ class Group extends QUI\QDOM
         $newId = false;
 
         while ($create) {
-            $rand = (int)(microtime(true) * 1000000);
+            $rand = (int)(microtime(true) * 1_000_000);
             mt_srand($rand);
-            $newId = mt_rand(10, 1000000000);
+            $newId = mt_rand(10, 1_000_000_000);
 
             $result = QUI::getDataBase()->fetch([
                 'select' => 'id',

@@ -12,7 +12,7 @@ QUI::$Ajax->registerFunction(
     function ($project) {
         try {
             $Project = QUI::getProjectManager()->decode($project);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             $Project = false;
         }
 

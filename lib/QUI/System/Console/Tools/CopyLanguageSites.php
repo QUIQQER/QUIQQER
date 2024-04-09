@@ -131,6 +131,8 @@ class CopyLanguageSites extends QUI\System\Console\Tool
         } catch (\Exception $Exception) {
             $this->writeLn("Could not load project $projectname ($source_lang)");
             $this->execute();
+
+            return;
         }
 
         // source parent id
@@ -164,6 +166,8 @@ class CopyLanguageSites extends QUI\System\Console\Tool
         } catch (\Exception $Exception) {
             $this->writeLn("Could not load project $projectname ($targetLang)");
             $this->execute();
+
+            return;
         }
 
         // target parent id
@@ -180,7 +184,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
 
         try {
             $TargetProject->get($targetParentId);
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
             $this->writeLn("Could not load source site $targetParentId ($targetLang)");
         }
 

@@ -80,7 +80,7 @@ class Manager
             return false;
         }
 
-        if (is_object($function) && get_class((object)$function) === 'Closure') {
+        if (is_object($function) && ((object)$function)::class === 'Closure') {
             return $function();
         }
 
@@ -352,11 +352,7 @@ class Manager
                 );
             }
 
-            if (isset($result['result'])) {
-                return $result['result'];
-            }
-
-            return true;
+            return $result['result'] ?? true;
         }
 
         return '';

@@ -52,7 +52,7 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
             'logo' => $this->getLogo(),
             'status' => $this->getStatus(),
             'steps' => $steps,
-            'class' => get_class($this),
+            'class' => $this::class,
             'finishButton' => $this->getFinishButtonText($Locale)
         ];
     }

@@ -8,10 +8,8 @@ Copyright PCSG OhG - www.pcsg.de - www.quiqqer.com
 About QUIQQER
 --------
 
-![Static Badge](https://img.shields.io/badge/PHP-7.*-purple)
-![Static Badge](https://img.shields.io/badge/PHP-8.*-purple)
+![Static Badge](https://img.shields.io/badge/PHP-^8.1-purple)
 ![Static Badge](https://img.shields.io/badge/PHP-PSR-purple)
-![Static Badge](https://img.shields.io/badge/MySQL-5.6.*-blue)
 ![Static Badge](https://img.shields.io/badge/MySQL-8.*-blue)
 ![Static Badge](https://img.shields.io/badge/Webserver-Apache-white)
 ![Static Badge](https://img.shields.io/badge/Webserver-NGINX-white)
@@ -123,7 +121,6 @@ Thank you
 QUIQQER owes its existence and success to the dedicated efforts of numerous developers and projects. We would like to
 express our gratitude to the following software packages and their contributors:
 
--
 - Composer (http://getcomposer.org)
 - MooTools (http://mootools.net/)
 - requirejs (requirejs.org/)
@@ -131,7 +128,7 @@ express our gratitude to the following software packages and their contributors:
 - moofx (https://github.com/kamicane/moofx/)
 - Font Awesome (http://fontawesome.io/)
 - Basis and idea for the QUIQQER Font: http://fontfabric.com/multicolore-free-fonts/
-- All the Webstuff (PHP, Apache, NGINX, MySQL/MarieDB)
+- All the Webstuff (PHP, Apache, NGINX, MySQL/MariaDB)
 
 We acknowledge that this list may not encompass all the contributions that have influenced QUIQQER, and we apologize for
 any omissions. We extend our sincere appreciation to all the developers and contributors who have played a part in the

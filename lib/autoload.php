@@ -11,8 +11,8 @@
  * @licence For copyright and license information, please view the /README.md
  */
 
-require dirname(__FILE__) . '/QUI/Autoloader.php';
-require dirname(__FILE__) . '/polyfills.php';
+require __DIR__ . '/QUI/Autoloader.php';
+require __DIR__ . '/polyfills.php';
 
 /**
  * Main QUIQQER Autoload function
@@ -22,12 +22,14 @@ require dirname(__FILE__) . '/polyfills.php';
  * @return boolean
  */
 
-// unregister other autoload functions (all must run over quiqqer)
-$fs = spl_autoload_functions();
+if (QUI\Autoloader::shouldOtherAutoloadersBeUnregistered()) {
+    // unregister other autoload functions (all must run over quiqqer)
+    $autoloaderFunctions = spl_autoload_functions();
 
-if (is_array($fs)) {
-    foreach ($fs as $f) {
-        spl_autoload_unregister($f);
+    if (is_array($autoloaderFunctions)) {
+        foreach ($autoloaderFunctions as $autoloaderFunction) {
+            spl_autoload_unregister($autoloaderFunction);
+        }
     }
 }
 
@@ -138,7 +140,7 @@ function exception_error_handler(int $errno, string $errStr, string $errFile, st
  *
  * @param Exception $Exception
  */
-function exception_handler(Exception $Exception)
+function exception_handler(\Throwable $Exception)
 {
     QUI::getErrorHandler()->writeErrorToLog(
         $Exception->getCode(),

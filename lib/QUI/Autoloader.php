@@ -47,16 +47,28 @@ class Autoloader
      */
     public static function checkAutoloader()
     {
-        $fs = spl_autoload_functions();
-
-        foreach ($fs as $f) {
-            // remove composer
-            if (is_array($f) && $f[0] instanceof ClassLoader) {
-                spl_autoload_unregister($f);
-            }
+        if (static::shouldOtherAutoloadersBeUnregistered()) {
+            static::unregisterOtherAutoloaders();
         }
 
         self::init();
+    }
+
+    private static function unregisterOtherAutoloaders(): void
+    {
+        $autoloaderFunctions = spl_autoload_functions();
+
+        foreach ($autoloaderFunctions as $autoloaderFunction) {
+            if (!is_array($autoloaderFunction)) {
+                return;
+            }
+
+            if (!$autoloaderFunction[0] instanceof ClassLoader) {
+                return;
+            }
+
+            spl_autoload_unregister($autoloaderFunction);
+        }
     }
 
     /**
@@ -146,5 +158,14 @@ class Autoloader
         }
 
         return (bool) self::$ComposerLoader->loadClass($classname);
+    }
+
+    public static function shouldOtherAutoloadersBeUnregistered(): bool
+    {
+        if (getenv('QUIQQER_OTHER_AUTOLOADERS') === 'KEEP') {
+            return false;
+        }
+
+        return true;
     }
 }

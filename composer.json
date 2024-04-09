@@ -1,94 +1,84 @@
 {
-  "name": "quiqqer\/quiqqer",
+  "name": "quiqqer/quiqqer",
   "type": "quiqqer-system",
   "description": "A modular based management system written in JavaScript and PHP",
   "license": "GPL-3.0-or-later",
   "authors": [
     {
-      "name": "Henning Leutz",
-      "email": "leutz@pcsg.de",
-      "homepage": "http:\/\/www.pcsg.de",
-      "role": "Developer"
-    },
-    {
-      "name": "Moritz Scholz",
-      "email": "scholz@pcsg.de",
-      "homepage": "http:\/\/www.pcsg.de",
+      "name": "PCSG - Computer & Internet Service OHG",
+      "email": "info@quiqqer.com",
+      "homepage": "https://www.pcsg.de",
       "role": "Developer"
     }
   ],
   "support": {
-    "email": "support@pcsg.de",
-    "url": "http:\/\/www.quiqqer.com"
+    "email": "info@quiqqer.com",
+    "url": "https://www.quiqqer.com"
   },
   "require": {
-    "php": "^8|^9",
-    "composer\/composer": "1.9.*|2.*",
-    "tedivm\/stash": "0.17.*",
-    "phpmailer\/phpmailer": "~6.0",
-    "symfony\/http-foundation": ">=2.3|3.*|4.2.*",
-    "symfony\/console": "4.*|5.*|6.*",
-    "symfony/polyfill-php73": "*",
-    "symfony/polyfill-php74": "*",
-    "symfony/polyfill-php80": "*",
-    "symfony/polyfill-php81": "*",
-    "symfony/polyfill-php82": "*",
-    "symfony/polyfill-php83": "*",
-    "html2text\/html2text": "4.*",
-    "intervention\/image": "2.*",
-    "t7systems\/blowfish": "1.0.0",
-    "dusank\/knapsack": "8.*|9.*|10.*",
-    "league\/climate": "3.*",
-    "ramsey\/uuid": "^3|^4",
-    "neitanod/forceutf8": "*",
-    "league/csv": "9.*",
-    "masterminds/html5": "^2.0",
-    "oomphinc/composer-installers-extender": "^2.0",
-    "monolog\/monolog": "2.*",
-    "quiqqer\/composer": ">=1.4.2|dev-master|dev-dev",
-    "quiqqer\/controls": "^1.1.1|dev-master|dev-dev",
-    "quiqqer\/dashboard": "1.*|dev-master|dev-dev",
-    "quiqqer\/qui": ">=1.5|dev-master|dev-dev",
-    "quiqqer\/qui-php": ">=0.12|dev-master|dev-dev",
-    "quiqqer\/smarty": "^3|^4",
-    "quiqqer\/ckeditor4": "2.*|1.*|dev-master|dev-dev",
-    "quiqqer\/calendar-controls": "1.*|dev-master|dev-dev",
-    "quiqqer\/countries": "1.*|dev-master|dev-dev",
-    "quiqqer\/colorpicker": ">=1.1|dev-master|dev-dev",
-    "quiqqer\/translator": ">=1.9|dev-master|dev-dev",
-    "quiqqer\/utils": ">=1.22|dev-master|dev-dev",
-    "quiqqer\/cron": "^1.10.2|dev-master|dev-dev",
-    "quiqqer\/log": ">=1.6|dev-master|dev-dev",
-    "quiqqer\/login-logger": "1.*|dev-master|dev-dev",
-    "quiqqer\/diashow": ">=0.9|dev-master|dev-dev",
-    "quiqqer\/lockclient": "1.*|dev-master|dev-dev",
-    "quiqqer\/messages": "1.*|dev-master|dev-dev",
-    "quiqqer\/meta": "^2.1.0|dev-master|dev-dev",
-    "quiqqer\/fontawesome": ">=4.8|dev-master|dev-dev",
-    "quiqqer\/backendsearch": "1.*|dev-master|dev-dev",
-    "quiqqer\/requirements": "3.*|dev-master|dev-dev",
-    "quiqqer\/demodata": "^1.0|dev-master|dev-dev",
-    "quiqqer-asset/animejs": "*",
-    "quiqqer-asset\/intl": "1.*",
-    "quiqqer-asset\/nouislider": ">=15",
-    "quiqqer-asset\/mustache": "4.*",
-    "quiqqer-asset\/urijs": "1.*",
-    "quiqqer-asset\/downloadjs": "1.*",
-    "quiqqer-asset\/requirejs": "2.*",
-    "quiqqer-asset\/navigo": "*",
-    "quiqqer-asset\/history-events": "*",
-    "quiqqer-asset\/ace-builds": "*"
-  },
-  "provide": {
-    "psr/http-client-implementation": "1.0"
-  },
-  "scripts": {
-    "post-install-cmd": [
-      "QUI\\Update::onInstall"
-    ],
-    "post-update-cmd": [
-      "QUI\\Update::onUpdate"
-    ]
+    "php": "^8.1",
+    "ext-curl": "*",
+    "ext-dom": "*",
+    "ext-filter": "*",
+    "ext-iconv": "*",
+    "ext-intl": "*",
+    "ext-libxml": "*",
+    "ext-mbstring": "*",
+    "ext-openssl": "*",
+    "ext-pdo": "*",
+    "ext-posix": "*",
+    "ext-zip": "*",
+    "composer/composer": "^2",
+    "composer/semver": "^3",
+    "dusank/knapsack": "^8|^9|^10",
+    "html2text/html2text": "^4",
+    "intervention/image": "^2",
+    "league/climate": "^3",
+    "league/csv": "^9",
+    "masterminds/html5": "^2",
+    "monolog/monolog": "^2|^3",
+    "neitanod/forceutf8": "^2",
+    "oomphinc/composer-installers-extender": "^2",
+    "phpmailer/phpmailer": "^6",
+    "quiqqer-asset/ace-builds": "^1",
+    "quiqqer-asset/animejs": "^3",
+    "quiqqer-asset/downloadjs": "^1",
+    "quiqqer-asset/intl": "^1",
+    "quiqqer-asset/mustache": "^4",
+    "quiqqer-asset/nouislider": "^15",
+    "quiqqer-asset/requirejs": "^2",
+    "quiqqer-asset/urijs": "^1",
+    "quiqqer/backendsearch": "^1",
+    "quiqqer/calendar-controls": "^1",
+    "quiqqer/ckeditor4": "^2|^1",
+    "quiqqer/colorpicker": "^1.1",
+    "quiqqer/composer": "^1.4.2",
+    "quiqqer/controls": "^1.1.1",
+    "quiqqer/countries": "^1",
+    "quiqqer/cron": "^1.10.2",
+    "quiqqer/dashboard": "^1",
+    "quiqqer/demodata": "^1",
+    "quiqqer/diashow": "^1",
+    "quiqqer/fontawesome": "^5",
+    "quiqqer/lockclient": "^1",
+    "quiqqer/log": "^1.6",
+    "quiqqer/login-logger": "^1",
+    "quiqqer/messages": "^1",
+    "quiqqer/meta": "^2.1",
+    "quiqqer/qui": "^1.5",
+    "quiqqer/qui-php": "^1",
+    "quiqqer/requirements": "^3",
+    "quiqqer/smarty": "^3|^4",
+    "quiqqer/translator": "^1.9",
+    "quiqqer/utils": "^1.22",
+    "ramsey/uuid": "^3|^4",
+    "seld/jsonlint": "^1",
+    "symfony/console": "^4|^5|^6",
+    "symfony/http-foundation": "2.3 - 7",
+    "symfony/polyfill-php82": "^1",
+    "symfony/polyfill-php83": "^1",
+    "t7systems/blowfish": "1.0.0",
+    "tedivm/stash": "^0.17"
   },
   "autoload": {
     "psr-0": {
@@ -98,15 +88,34 @@
       "lib/classmap/"
     ]
   },
-  "autoload-dev": {
-    "psr-4": {
-      "QUI\\Tests\\": "tests\/QUI\/"
-    }
-  },
   "funding": [
     {
       "type": "github",
       "url": "https://github.com/sponsors/pcsg"
     }
-  ]
+  ],
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://composer.quiqqer.com"
+    },
+    {
+      "type": "composer",
+      "url": "https://assets.quiqqer.com"
+    },
+    {
+      "type": "composer",
+      "url": "https://update.quiqqer.com"
+    },
+    {
+      "packagist.org": false
+    }
+  ],
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": {
+      "composer/installers": false,
+      "oomphinc/composer-installers-extender": false
+    }
+  }
 }

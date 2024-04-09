@@ -42,7 +42,7 @@ class Defaults extends QUI\System\Console\Tool
             try {
                 $User = QUI::getUsers()->get($uid['id']);
                 $User->save();
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 

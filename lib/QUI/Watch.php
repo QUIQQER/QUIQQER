@@ -32,7 +32,7 @@ class Watch
         try {
             $User = QUI::getUsers()->get($userId);
             $username = $User->getUsername();
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
             // nothing
         }
 

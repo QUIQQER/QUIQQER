@@ -11,7 +11,9 @@ use QUI\Interfaces\Users\User as QUIUserInterface;
 use QUI\Utils\Security\Orthos as Orthos;
 
 use function current;
+use function date;
 use function is_array;
+use function is_numeric;
 use function json_decode;
 
 /**
@@ -39,6 +41,8 @@ class Address extends QUI\QDOM
      */
     protected $id = false;
 
+    protected ?string $uuid = null;
+
     /**
      * Custom address data
      *
@@ -50,19 +54,26 @@ class Address extends QUI\QDOM
      * constructor
      *
      * @param QUIUserInterface $User - User
-     * @param integer $id - Address id
+     * @param integer|string $id - Address id or uuid
      *
      * @throws \QUI\Users\Exception
      */
-    public function __construct(QUIUserInterface $User, int $id)
+    public function __construct(QUIUserInterface $User, int|string $id)
     {
         try {
+            $where = [
+                'userUuid' => $User->getUniqueId()
+            ];
+
+            if (is_numeric($id)) {
+                $where['id'] = (int)$id;
+            } else {
+                $where['uuid'] = $id;
+            }
+
             $result = QUI::getDataBase()->fetch([
                 'from' => Manager::tableAddress(),
-                'where' => [
-                    'id' => $id,
-                    'uid' => $User->getId()
-                ],
+                'where' => $where,
                 'limit' => '1'
             ]);
         } catch (QUI\Exception $Exception) {
@@ -99,6 +110,7 @@ class Address extends QUI\QDOM
         }
 
         $data = current($result);
+        $this->uuid = $data['uuid'];
 
         unset($data['id']);
         unset($data['uid']);
@@ -118,6 +130,14 @@ class Address extends QUI\QDOM
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUuid(): ?string
+    {
+        return $this->uuid;
     }
 
     /**
@@ -505,7 +525,7 @@ class Address extends QUI\QDOM
             return QUI\Countries\Manager::get(
                 $this->getAttribute('country')
             );
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         throw new QUI\Users\Exception(
@@ -568,7 +588,8 @@ class Address extends QUI\QDOM
                     'country' => $cleanupAttributes($this->getAttribute('country')),
                     'mail' => $mail,
                     'phone' => $phone,
-                    'custom_data' => \json_encode($this->getCustomData())
+                    'custom_data' => \json_encode($this->getCustomData()),
+                    'e_date' => date('Y-m-d H:i:s')
                 ],
                 [
                     'id' => $this->id
@@ -824,6 +845,7 @@ class Address extends QUI\QDOM
     {
         $attributes = $this->getAttributes();
         $attributes['id'] = $this->getId();
+        $attributes['uuid'] = $this->getUuid();
 
         return \json_encode($attributes);
     }

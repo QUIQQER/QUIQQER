@@ -82,7 +82,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
 
         try {
             QUIFile::copy($original, $cacheFile);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             // nothing
         }
 

@@ -58,7 +58,7 @@ class Licence extends QUI\System\Console\Tool
                         } elseif (isset($composer['licence'])) {
                             $license = $composer['licence'];
                         }
-                    } catch (QUI\Exception $Exception) {
+                    } catch (QUI\Exception) {
                     }
                 }
 

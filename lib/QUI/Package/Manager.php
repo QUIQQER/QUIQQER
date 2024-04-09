@@ -50,7 +50,6 @@ use function date;
 use function date_interval_create_from_date_string;
 use function define;
 use function defined;
-use function dirname;
 use function explode;
 use function file_exists;
 use function file_get_contents;
@@ -71,6 +70,7 @@ use function php_sapi_name;
 use function phpversion;
 use function print_r;
 use function rtrim;
+use function str_contains;
 use function str_replace;
 use function strcmp;
 use function strip_tags;
@@ -83,6 +83,7 @@ use const CURLOPT_RETURNTRANSFER;
 use const CURLOPT_URL;
 use const CURLOPT_USERAGENT;
 use const DEVELOPMENT;
+use const DIRECTORY_SEPARATOR;
 use const JSON_PRETTY_PRINT;
 use const OPT_DIR;
 use const PHP_EOL;
@@ -435,7 +436,7 @@ class Manager extends QUI\QDOM
             }
         } else {
             $template = file_get_contents(
-                dirname(__FILE__) . '/composer.tpl'
+                __DIR__ . '/composer.tpl'
             );
 
             $composerJson = $Parser->parse($template);
@@ -450,8 +451,8 @@ class Manager extends QUI\QDOM
             $composerJson->config = json_decode('{}');
         }
 
-        $composerJson->config->{"vendor-dir"} = OPT_DIR;
-        $composerJson->config->{"cache-dir"} = $this->varDir;
+        $composerJson->config->{"vendor-dir"} = rtrim(OPT_DIR, DIRECTORY_SEPARATOR);
+        $composerJson->config->{"cache-dir"} = rtrim($this->varDir, DIRECTORY_SEPARATOR);
         $composerJson->config->{"component-dir"} = OPT_DIR . 'bin';
         $composerJson->config->{"quiqqer-dir"} = CMS_DIR;
         $composerJson->config->{"secure-http"} = true;
@@ -465,6 +466,10 @@ class Manager extends QUI\QDOM
 
         if (!isset($composerJson->config->{'discard-changes'})) {
             $composerJson->config->{'discard-changes'} = true;
+        }
+
+        if (!isset($composerJson->config->{'sort-packages'})) {
+            $composerJson->config->{'sort-packages'} = true;
         }
 
         if (!isset($composerJson->config->{'allow-plugins'})) {
@@ -506,7 +511,9 @@ class Manager extends QUI\QDOM
             ],
             "installer-types" => ["component"],
             "installer-paths" => [
-                OPT_DIR . 'bin/{$name}/' => ["type:component"]
+                OPT_DIR . 'bin/{$name}/' => [
+                    "type:component"
+                ]
             ]
         ];
 
@@ -822,7 +829,7 @@ class Manager extends QUI\QDOM
             $servers['npm']['type'] = 'npm';
 
             return $servers;
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         return [];
@@ -1091,7 +1098,7 @@ class Manager extends QUI\QDOM
                 $result[$key]['title'] = $Package->getTitle();
                 $result[$key]['description'] = $Package->getDescription();
                 $result[$key]['image'] = $Package->getImage();
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
             }
         }
 
@@ -1117,7 +1124,7 @@ class Manager extends QUI\QDOM
 
         try {
             return QUI\Cache\LongTermCache::get(self::CACHE_KEY_PACKAGE_FOLDER_SIZE);
-        } catch (QUI\Cache\Exception $Exception) {
+        } catch (QUI\Cache\Exception) {
             return null;
         }
     }
@@ -1160,7 +1167,7 @@ class Manager extends QUI\QDOM
     {
         try {
             $timestamp = QUI\Cache\LongTermCache::get(self::CACHE_KEY_PACKAGE_FOLDER_SIZE_TIMESTAMP);
-        } catch (QUI\Cache\Exception $Exception) {
+        } catch (QUI\Cache\Exception) {
             $timestamp = null;
         }
 
@@ -1296,7 +1303,7 @@ class Manager extends QUI\QDOM
             $this->getInstalledPackage($packageName);
 
             $this->installed[$packageName] = true;
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             $this->installed[$packageName] = false;
         }
 
@@ -1575,11 +1582,11 @@ class Manager extends QUI\QDOM
         $show = $this->getComposer()->show($package);
 
         foreach ($show as $k => $line) {
-            if (strpos($line, ' < info>') === false) {
+            if (!str_contains($line, ' <info>')) {
                 continue;
             }
 
-            if (strpos($line, ':') === false) {
+            if (!str_contains($line, ':')) {
                 continue;
             }
 
@@ -1597,7 +1604,7 @@ class Manager extends QUI\QDOM
 
             if ($line == 'requires') {
                 $_temp = $show;
-                $result['require '] = array_slice($_temp, $k + 1);
+                $result['require'] = array_slice($_temp, $k + 1);
 
                 continue;
             }
@@ -1760,7 +1767,7 @@ class Manager extends QUI\QDOM
      * Refresh the server list in the var dir
      * @throws Exception
      */
-    public function refreshServerList()
+    public function refreshServerList(): void
     {
         $this->createComposerJSON();
     }
@@ -2355,7 +2362,7 @@ class Manager extends QUI\QDOM
 
         try {
             return QUI\Cache\LongTermCache::get($cache);
-        } catch (QUI\Cache\Exception $Exception) {
+        } catch (QUI\Cache\Exception) {
         }
 
         if (strpos($type, ':') === false) {
@@ -2420,11 +2427,7 @@ class Manager extends QUI\QDOM
     {
         $data = $this->getSiteXMLDataByType($type);
 
-        if (isset($data['icon'])) {
-            return $data['icon'];
-        }
-
-        return '';
+        return $data['icon'] ?? '';
     }
 
     /**

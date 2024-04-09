@@ -20,7 +20,6 @@ use function explode;
 use function file_exists;
 use function func_get_args;
 use function func_num_args;
-use function get_class;
 use function implode;
 use function in_array;
 use function is_numeric;
@@ -31,6 +30,7 @@ use function preg_replace;
 use function print_r;
 use function round;
 use function serialize;
+use function str_contains;
 use function strpos;
 use function strtotime;
 use function substr;
@@ -234,14 +234,14 @@ class Manager
         }
 
         // users with no uuid
-        $list = QUI::getDataBase()->fetch([
+        $addressesWithoutUuid = QUI::getDataBase()->fetch([
             'from' => $table,
             'where' => [
                 'uuid' => ''
             ]
         ]);
 
-        foreach ($list as $entry) {
+        foreach ($addressesWithoutUuid as $entry) {
             $DataBase->update($table, [
                 'uuid' => QUI\Utils\Uuid::get()
             ], [
@@ -250,6 +250,108 @@ class Manager
         }
 
         $DataBase->table()->setUniqueColumns($table, 'uuid');
+
+        // addresses
+        $tableAddresses = $this::tableAddress();
+        $setAddressUuidColumnToUnique = false;
+
+        if (!$DataBase->table()->existColumnInTable($tableAddresses, 'uuid')) {
+            $DataBase->table()->addColumn(
+                $tableAddresses,
+                [
+                    'uuid' => 'VARCHAR(50) NOT NULL'
+                ]
+            );
+
+            $setAddressUuidColumnToUnique = true;
+        }
+
+        if (!$DataBase->table()->existColumnInTable($tableAddresses, 'userUuid')) {
+            $DataBase->table()->addColumn(
+                $tableAddresses,
+                [
+                    'userUuid' => 'VARCHAR(50) NOT NULL'
+                ]
+            );
+        }
+
+        $usersAddressColumn = $DataBase->table()->getColumn($table, 'address');
+
+        if (!str_contains($usersAddressColumn['Type'], 'varchar')) {
+            $sql = "ALTER TABLE `{$table}` MODIFY `address` VARCHAR(50) NOT NULL";
+            $DataBase->execSQL($sql);
+        }
+
+        $addressesWithoutUuid = QUI::getDataBase()->fetch([
+            'select' => ['id'],
+            'from' => $tableAddresses,
+            'where' => [
+                'uuid' => ''
+            ]
+        ]);
+
+        foreach ($addressesWithoutUuid as $entry) {
+            $addressUuid = QUI\Utils\Uuid::get();
+
+            $DataBase->update($tableAddresses, [
+                'uuid' => $addressUuid
+            ], [
+                'id' => $entry['id']
+            ]);
+
+            // Update references in users table
+            $DataBase->update(
+                $table,
+                [
+                    'address' => $addressUuid
+                ],
+                [
+                    'address' => $entry['id']
+                ]
+            );
+        }
+
+        if ($setAddressUuidColumnToUnique) {
+            $DataBase->table()->setUniqueColumns($tableAddresses, 'uuid');
+        }
+
+        $addressesWithoutUserUuid = QUI::getDataBase()->fetch([
+            'select' => ['id', 'uid'],
+            'from' => $tableAddresses,
+            'where' => [
+                'userUuid' => ''
+            ]
+        ]);
+
+        foreach ($addressesWithoutUserUuid as $entry) {
+            $result = $DataBase->fetch([
+                'select' => ['uuid'],
+                'from' => $table,
+                'where' => [
+                    'id' => $entry['uid']
+                ],
+                'limit' => 1
+            ]);
+
+            if (empty($result)) {
+                QUI\System\Log::addNotice(
+                    "Found orphaned address ID #{$entry['id']}. User #{$entry['uid']}"
+                    . " referenced by address does not exist."
+                );
+                continue;
+            }
+
+            // Update user uuid
+            $DataBase->update(
+                $tableAddresses,
+                [
+                    'userUuid' => $result[0]['uuid']
+                ],
+                [
+                    'id' => $entry['id']
+                ]
+            );
+        }
     }
 
     /**
@@ -309,7 +411,7 @@ class Manager
                         $User = $UserInstance;
                     }
                 }
-            } catch (\Exception $apiException) {
+            } catch (\Exception) {
             }
 
             if (empty($User)) {
@@ -343,7 +445,7 @@ class Manager
 
         try {
             $_User = $this->getUserBySession();
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return false;
         }
 
@@ -401,7 +503,7 @@ class Manager
             $this->checkUserSession();
             $this->Session = $this->get(QUI::getSession()->get('uid'));
         } catch (QUI\Exception $Exception) {
-            if (DEBUG_MODE) {
+            if (defined('DEBUG_MODE') && DEBUG_MODE) {
                 QUI\System\Log::writeDebugException($Exception);
             }
 
@@ -585,7 +687,7 @@ class Manager
             return false;
         }
 
-        if (get_class($User) === User::class) {
+        if ($User::class === User::class) {
             return true;
         }
 
@@ -609,7 +711,7 @@ class Manager
             return false;
         }
 
-        if (get_class($User) === SystemUser::class) {
+        if ($User::class === SystemUser::class) {
             return true;
         }
 
@@ -888,7 +990,7 @@ class Manager
                         'exception.lib.user.exist'
                     )
                 );
-            } catch (\Exception $Exception) {
+            } catch (\Exception) {
                 // uuid does not exist - this is good
             }
 
@@ -915,7 +1017,7 @@ class Manager
                         'exception.lib.user.exist'
                     )
                 );
-            } catch (\Exception $Exception) {
+            } catch (\Exception) {
                 // id does not exist - this is good
             }
 
@@ -1009,7 +1111,7 @@ class Manager
         foreach ($ids as $id) {
             try {
                 $result[] = $this->get((int)$id['id']);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 // nothing
             }
         }
@@ -1075,7 +1177,7 @@ class Manager
             try {
                 $User = self::getUserByName($authData['username']);
                 $userId = $User->getId();
-            } catch (\Exception $Exception) {
+            } catch (\Exception) {
                 // nothing
             }
         }
@@ -1316,7 +1418,7 @@ class Manager
             try {
                 $User = self::getUserByName($username);
                 $userId = $User->getId();
-            } catch (\Exception $Exception) {
+            } catch (\Exception) {
                 // nothing
             }
         }
@@ -1333,7 +1435,7 @@ class Manager
         }
 
         if (
-            $Session->get('auth-' . get_class($Authenticator))
+            $Session->get('auth-' . $Authenticator::class)
             && $Session->get('username')
             && $Session->get('uid')
         ) {
@@ -1359,7 +1461,7 @@ class Manager
                 $Exception->getCode(),
                 $Exception->getContext()
             );
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
             QUI\System\Log::write(
                 'Login failed: ' . $username,
                 QUI\System\Log::LEVEL_WARNING,
@@ -1389,7 +1491,7 @@ class Manager
         }
 
         $Session->set(
-            'auth-' . get_class($Authenticator),
+            'auth-' . $Authenticator::class,
             1
         );
 
@@ -1409,7 +1511,7 @@ class Manager
             return false;
         }
 
-        if (get_class($User) === Nobody::class) {
+        if ($User::class === Nobody::class) {
             return true;
         }
 
@@ -1436,7 +1538,7 @@ class Manager
         foreach ($result as $entry) {
             try {
                 $Users[] = $this->get((int)$entry['id']);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 // nothing
             }
         }
@@ -1758,10 +1860,6 @@ class Manager
             } else {
                 $query .= ' WHERE (';
                 $binds[':search'] = '%' . $search . '%';
-
-                if (empty($search)) {
-                    $binds[':search'] = '%';
-                }
 
                 foreach ($fields as $field => $value) {
                     if (!isset($allowOrderFields[$field])) {

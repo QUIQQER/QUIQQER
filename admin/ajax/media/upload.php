@@ -69,7 +69,7 @@ QUI::$Ajax->registerFunction(
                     }
                 }
             }
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
         }
 
         $params = $File->getAttribute('params');

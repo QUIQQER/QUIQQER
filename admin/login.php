@@ -29,7 +29,7 @@ try {
         $ProjectImage = Utils::getImageByUrl($Standard->getConfig('logo'));
         $projectLogo = '<img src="' . $ProjectImage->getSizeCacheUrl() . '" />';
     }
-} catch (QUI\Exception $exception) {
+} catch (QUI\Exception) {
 }
 
 foreach ($packages as $package) {
@@ -45,7 +45,7 @@ foreach ($packages as $package) {
         if (!empty($auth)) {
             $authPackages[] = $Package->getName();
         }
-    } catch (QUI\Exception $Exception) {
+    } catch (QUI\Exception) {
     }
 }
 
@@ -107,7 +107,7 @@ foreach ($packages as $package) {
                   type="<?php
                   echo $type; ?>">
             <?php
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
     }
     ?>
@@ -381,6 +381,11 @@ foreach ($packages as $package) {
             margin-inline: auto;
             color: var(--text-muted);
             overflow: hidden;
+        }
+
+        .license__text > a {
+            color: inherit;
+            text-decoration: underline;
         }
 
         @media screen and (max-width: 767px) {
@@ -706,10 +711,10 @@ foreach ($packages as $package) {
             <div class="license" style="height: 0;">
                 <div class="license__text" style="visibility: hidden;">
                     QUIQQER Copyright(C) <?php
-                    echo date('Y'); ?> PCSG - Computer & Internet Service OHG - www.pcsg.de
+                    echo date('Y'); ?> PCSG - Computer & Internet Service OHG - <a href="https://www.pcsg.de" target="_blank">www.pcsg.de</a>.
                     This program comes with ABSOLUTELY NO WARRANTY;
                     This is free software, and you are welcome to redistribute it under certain conditions;
-                    visit www.quiqqer.com for details.
+                    Visit <a href="https://www.quiqqer.com" target="_blank">www.quiqqer.com</a> for details.
                 </div>
             </div>
 
