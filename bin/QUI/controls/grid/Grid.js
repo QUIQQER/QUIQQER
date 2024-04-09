@@ -189,7 +189,8 @@ define('controls/grid/Grid', [
         },
 
         Binds: [
-            'openSortWindow'
+            'openSortWindow',
+            'highlightRow'
         ],
 
         $data: false,
@@ -4188,6 +4189,32 @@ define('controls/grid/Grid', [
             this.draw();
             this.resize();
             this.refresh();
+        },
+
+        /**
+         * Highlight for a short moment a row, i.e. after editing a row.
+         * This method sets a `flash-effect` css class, with performs the animation.
+         * You can control the animation by using css variables.
+         *
+         * @param rowId | number
+         */
+        highlightRow: function(rowId) {
+            if (!rowId || rowId < 0) {
+                return;
+            }
+
+            const EditableRow = this.getElm().getElement('[data-row="' + rowId + '"]');
+
+            if (!EditableRow) {
+                return;
+            }
+
+            EditableRow.classList.remove('flash-animation');
+            
+            setTimeout(() => {
+                EditableRow.classList.add('flash-animation');
+            }, 50);
+
         }
     });
 });
