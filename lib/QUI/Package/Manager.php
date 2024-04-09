@@ -50,7 +50,6 @@ use function date;
 use function date_interval_create_from_date_string;
 use function define;
 use function defined;
-use function dirname;
 use function explode;
 use function file_exists;
 use function file_get_contents;
@@ -84,6 +83,7 @@ use const CURLOPT_RETURNTRANSFER;
 use const CURLOPT_URL;
 use const CURLOPT_USERAGENT;
 use const DEVELOPMENT;
+use const DIRECTORY_SEPARATOR;
 use const JSON_PRETTY_PRINT;
 use const OPT_DIR;
 use const PHP_EOL;
@@ -451,8 +451,8 @@ class Manager extends QUI\QDOM
             $composerJson->config = json_decode('{}');
         }
 
-        $composerJson->config->{"vendor-dir"} = OPT_DIR;
-        $composerJson->config->{"cache-dir"} = $this->varDir;
+        $composerJson->config->{"vendor-dir"} = rtrim(OPT_DIR, DIRECTORY_SEPARATOR);
+        $composerJson->config->{"cache-dir"} = rtrim($this->varDir, DIRECTORY_SEPARATOR);
         $composerJson->config->{"component-dir"} = OPT_DIR . 'bin';
         $composerJson->config->{"quiqqer-dir"} = CMS_DIR;
         $composerJson->config->{"secure-http"} = true;

@@ -108,7 +108,12 @@
 }
 
 
-
+/* grid caption */
+.omnigrid__caption,
+.omnigrid__caption-title,
+.omnigrid__caption-description {
+    margin-bottom: 0.5rem;
+}
 
 /* grid */
 .omnigrid div.hDivBox {
@@ -190,6 +195,7 @@
 .omnigrid--border-all .tr {
     border-right: var(--_grid-border-width) solid var(--_grid-border-color);
 }
+
 /* END border: all */
 
 .omnigrid div.hDiv .th .header-text {
@@ -362,8 +368,29 @@
 
     display: flex;
     gap: 1em;
+}
+
+.tDiv > :is([data-position="left"], [data-position="center"], [data-position="right"]) {
+    flex-grow: 1;
+    display: flex;
+    gap: 1em;
     padding: 2px;
 }
+
+/*
+ 1. let grow the center div to push left and right box to the edges
+*/
+.tDiv > [data-position="center"] {
+    flex-grow: 999; /* 1 */
+    justify-content: center;
+}
+
+:is([data-position="left"], [data-position="center"], [data-position="right"]) > * {
+    --_order: var(--order, 10);
+
+    order: var(--_order);
+}
+
 
 .omnigrid div.fbutton {
     margin-top: 1px;
@@ -1050,4 +1077,82 @@ label.export-fileFormat__item {
     position: absolute;
     left: -100px;
     top: -100px;
+}
+
+/****************/
+/* Flash effect */
+/***************/
+.flash-animation {
+    --_animation-duration: var(--animation-duration, 3s);
+    --_animation-timing: var(--animation-timing, linear);
+    --_animation-delay: var(--animation-delay, 0.25s);
+    --_flash-color-bg-fallback: 255,255,160;
+    --_flash-color-bg: var(--flash-color-bg, var(--_flash-color-bg-fallback));
+    --_flash-color-text-fallback: 226,226,158;
+    --_flash-color-text: var(--flash-color-text, var(--_flash-color-text-fallback));
+
+    position: relative;
+    overflow: visible !important;
+    animation-name: flash-text;
+    animation-delay: var(--_animation-delay);
+    animation-duration: var(--_animation-duration);
+    animation-timing-function: var(--_animation-timing);
+}
+
+.flash-animation > .td {
+    position: relative;
+}
+
+.flash-animation:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+
+    animation-name: flash-bg;
+    animation-delay: var(--_animation-delay);
+    animation-duration: var(--_animation-duration);
+    animation-timing-function: var(--_animation-timing);
+}
+
+@keyframes flash-bg {
+    0% {
+        background-color: rgba(var(--_flash-color-bg), 0);
+        box-shadow: 0 0 0 0 rgba(var(--_flash-color-bg), 1);
+    }
+
+    5% {
+        background-color: rgba(var(--_flash-color-bg), 1);
+        box-shadow: 0 0 0 2px rgba(var(--_flash-color-bg), 1);
+    }
+
+    10% {
+        background-color: rgba(var(--_flash-color-bg), 1);
+        box-shadow: 0 0 0 10px rgba(var(--_flash-color-bg), 1);
+    }
+
+    25% {
+        box-shadow: 0 0 0 15px rgba(var(--_flash-color-bg), 0.3);
+    }
+
+    40% {
+        box-shadow: 0 0 0 20px rgba(var(--_flash-color-bg), 0);
+    }
+
+    100% {
+        background-color: rgba(var(--_flash-color-bg), 0);
+        box-shadow: 0 0 0 60px rgba(var(--_flash-color-bg), 0);
+    }
+}
+
+@keyframes flash-text {
+    0%, 2%, 30%, 100% {
+        color: inherit;
+    }
+
+    5%, 8% {
+        color: rgba(var(--_flash-color-text), 0.5);
+    }
 }

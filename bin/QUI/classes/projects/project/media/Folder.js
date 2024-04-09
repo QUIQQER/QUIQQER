@@ -10,8 +10,8 @@ define('classes/projects/project/media/Folder', [
     'Ajax',
     'UploadManager'
 
-], function (MediaItem, Ajax, UploadManager) {
-    "use strict";
+], function(MediaItem, Ajax, UploadManager) {
+    'use strict';
 
     /**
      * @class classes/projects/project/media/Folder
@@ -21,7 +21,7 @@ define('classes/projects/project/media/Folder', [
     return new Class({
 
         Extends: MediaItem,
-        Type   : 'classes/projects/project/media/Folder',
+        Type: 'classes/projects/project/media/Folder',
 
         /**
          * create a sub folder
@@ -31,9 +31,9 @@ define('classes/projects/project/media/Folder', [
          * @param {String} newfolder    - New folder name
          * @param {Function} oncomplete - callback( new_folder_id ) function
          */
-        createFolder: function (newfolder, oncomplete) {
-            return new Promise(function (resolve, reject) {
-                Ajax.post('ajax_media_folder_create', function (result) {
+        createFolder: function(newfolder, oncomplete) {
+            return new Promise(function(resolve, reject) {
+                Ajax.post('ajax_media_folder_create', function(result) {
                     var items = this.getMedia().$parseResultToItem(result);
 
                     if (typeof oncomplete === 'function') {
@@ -42,10 +42,10 @@ define('classes/projects/project/media/Folder', [
 
                     resolve(items);
                 }.bind(this), {
-                    project  : this.getMedia().getProject().getName(),
-                    parentid : this.getId(),
+                    project: this.getMedia().getProject().getName(),
+                    parentid: this.getId(),
                     newfolder: newfolder,
-                    onError  : reject
+                    onError: reject
                 });
 
             }.bind(this));
@@ -61,21 +61,21 @@ define('classes/projects/project/media/Folder', [
          *
          * @return Promise
          */
-        getChildren: function (oncomplete, params) {
-            return new Promise(function (resolve, reject) {
+        getChildren: function(oncomplete, params) {
+            return new Promise(function(resolve, reject) {
                 params = params || {};
 
-                Ajax.get('ajax_media_folder_children', function (result) {
+                Ajax.get('ajax_media_folder_children', function(result) {
                     if (typeof oncomplete === 'function') {
                         oncomplete(result);
                     }
 
                     resolve(result);
                 }, {
-                    project : this.getMedia().getProject().getName(),
+                    project: this.getMedia().getProject().getName(),
                     folderid: this.getId(),
-                    params  : JSON.encode(params),
-                    onError : reject
+                    params: JSON.encode(params),
+                    onError: reject
                 });
             }.bind(this));
         },
@@ -85,14 +85,14 @@ define('classes/projects/project/media/Folder', [
          *
          * @return {Promise}
          */
-        getSize: function () {
-            return new Promise(function (resolve, reject) {
+        getSize: function() {
+            return new Promise((resolve, reject) => {
                 Ajax.get('ajax_media_folder_getSize', resolve, {
                     project: this.getMedia().getProject().getName(),
-                    id     : this.getId(),
+                    id: this.getId(),
                     onError: reject
                 });
-            }.bind(this));
+            });
         },
 
         /**
@@ -105,22 +105,22 @@ define('classes/projects/project/media/Folder', [
          *
          * @return Promise
          */
-        uploadFiles: function (files, onfinish) {
-            return new Promise(function (resolve) {
+        uploadFiles: function(files, onfinish) {
+            return new Promise((resolve) => {
                 UploadManager.uploadFiles(files, 'ajax_media_upload', {
-                    project : this.getMedia().getProject().getName(),
+                    project: this.getMedia().getProject().getName(),
                     parentid: this.getId(),
-                    events  : {
-                        onComplete: function (Upload, Img) {
+                    events: {
+                        onComplete: function(uploadedFiles) {
                             if (typeof onfinish === 'function') {
-                                onfinish(Img);
+                                onfinish(uploadedFiles);
                             }
 
-                            resolve(Img);
+                            resolve(uploadedFiles);
                         }
                     }
                 });
-            }.bind(this));
+            });
         },
 
         /**
@@ -128,9 +128,9 @@ define('classes/projects/project/media/Folder', [
          *
          * @method classes/projects/project/media/Folder#download
          */
-        download: function () {
+        download: function() {
             var url = Ajax.$url + '?' + Ajax.parseParams('ajax_media_folder_download', {
-                project : this.getMedia().getProject().getName(),
+                project: this.getMedia().getProject().getName(),
                 folderId: this.getId()
             });
 
@@ -139,16 +139,16 @@ define('classes/projects/project/media/Folder', [
 
             if (!Frame) {
                 new Element('iframe#download-frame', {
-                    src   : url,
+                    src: url,
                     styles: {
                         position: 'absolute',
-                        width   : 100,
-                        height  : 100,
-                        left    : 0,
-                        top     : 0
+                        width: 100,
+                        height: 100,
+                        left: 0,
+                        top: 0
                     },
                     events: {
-                        load: function () {
+                        load: function() {
                             this.destroy();
                         }
                     }
@@ -166,7 +166,7 @@ define('classes/projects/project/media/Folder', [
          *
          * @method classes/projects/project/media/Folder#replace
          */
-        replace: function () {
+        replace: function() {
             // nothing, you cannot replace a folder
         }
     });

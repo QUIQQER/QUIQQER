@@ -130,6 +130,9 @@
         <locale name="numberFormat.grouping_separator">
             <en><![CDATA[,]]></en>
         </locale>
+        <locale name="permission.permission._header">
+            <en><![CDATA[Permissions]]></en>
+        </locale>
         <locale name="permission.quiqqer._header">
             <en><![CDATA[QUIQQER]]></en>
         </locale>

@@ -93,6 +93,10 @@ define('controls/grid/Grid', [
         Type: 'controls/grid/Grid',
 
         options: {
+            title: '',
+            titletagnode: '', // 'h3.omnigrid__caption-title' ist default | any valid css selector, e.g.:
+                         // 'div', 'h1.my_css_class', 'h2#id_attr.my_css_class.one_more_my_class'
+            description: '', // html allowed
             name: false,
             alternaterows: true,
             showHeader: true,
@@ -128,6 +132,16 @@ define('controls/grid/Grid', [
             showtoggleicon: true,
             toggleiconTitle: 'Details',
             openAccordionOnDblClick: false,
+
+            // buttons
+            // [
+            //   {
+            //    ...
+            //    position: 'left', // 'left' (default), 'center', 'right'
+            //    order: 10         // number, 10 is default
+            //   }
+            // ]
+            buttons: [],
 
             // pagination
             url: null,
@@ -175,7 +189,8 @@ define('controls/grid/Grid', [
         },
 
         Binds: [
-            'openSortWindow'
+            'openSortWindow',
+            'highlightRow'
         ],
 
         $data: false,
@@ -2408,6 +2423,34 @@ define('controls/grid/Grid', [
                 this.setHeight(this.getAttribute('height'));
             }
 
+            // table title and description
+            let title = this.getAttribute('title') ? this.getAttribute('title') : '',
+                titleTagNode = this.getAttribute('titletagnode') ? this.getAttribute('titletagnode') : '',
+                desc = this.getAttribute('description') ? this.getAttribute('description') : '';
+
+            if (title || desc) {
+                const Caption = new Element('div.omnigrid__caption').inject(container);
+
+                if (title) {
+                    let htmlTag = 'h3.omnigrid__caption-title';
+
+                    if (titleTagNode) {
+                        htmlTag = titleTagNode + '.omnigrid__caption-title';
+                    }
+
+                    new Element(htmlTag, {
+                        text: title
+                    }).inject(Caption);
+                }
+
+                if (desc) {
+                    new Element('div.omnigrid__caption-description', {
+                        html: desc
+                    }).inject(Caption);
+                }
+            }
+
+
             // Toolbar
             if (this.getAttribute('buttons')) {
                 tDiv = new Element('div.tDiv', {
@@ -2416,6 +2459,16 @@ define('controls/grid/Grid', [
                     }
                 });
 
+                const ToolbarLeft = new Element('div', {
+                    'data-position': 'left'
+                }).inject(tDiv);
+                const ToolbarCenter = new Element('div', {
+                    'data-position': 'center'
+                }).inject(tDiv);
+                const ToolbarRight = new Element('div', {
+                    'data-position': 'right'
+                }).inject(tDiv);
+
                 container.appendChild(tDiv);
 
                 // button drop down
@@ -2423,7 +2476,9 @@ define('controls/grid/Grid', [
                     textimage: 'fa fa-navicon',
                     text: QUILocale.get('quiqqer/quiqqer', 'control.grid.menu.button'),
                     dropDownIcon: false
-                }).inject(tDiv);
+                }).inject(ToolbarRight);
+
+                this.$Menu.getElm().style.setProperty('--_order', 1000);
 
                 const bt = this.getAttribute('buttons');
 
@@ -2446,8 +2501,26 @@ define('controls/grid/Grid', [
                 for (i = 0, len = bt.length; i < len; i++) {
                     bt[i].type = bt[i].type || '';
 
+
                     if (bt[i].type === 'separator') {
-                        new QUISeparator().inject(tDiv);
+                        const Separator = new QUISeparator();
+
+                        if (bt[i].order) {
+                            Separator.getElm().style.setProperty('--_order', bt[i].order);
+                        }
+
+                        switch (bt[i].position) {
+                            case 'left':
+                            case 'center':
+                            case 'right':
+                                Separator.inject(
+                                    tDiv.querySelector('[data-position="' + bt[i].position + '"]')
+                                );
+                                break;
+                            default:
+                                Separator.inject(ToolbarLeft);
+                        }
+
                         continue;
                     }
 
@@ -2462,12 +2535,27 @@ define('controls/grid/Grid', [
 
                     bt[Btn.getAttribute('name')] = Btn;
 
-                    Btn.inject(tDiv);
+                    switch (bt[i].position) {
+                        case 'left':
+                        case 'center':
+                        case 'right':
+                            Btn.inject(
+                                tDiv.querySelector('[data-position="' + bt[i].position + '"]')
+                            );
+                            break;
+                        default:
+                            Btn.inject(ToolbarLeft);
+
+                    }
 
                     node = Btn.getElm();
                     node.removeProperty('tabindex'); // focus eigenschaft nehmen
                     node.type = 'button';
                     node.addClass('btn-silver');
+
+                    if (bt[i].order) {
+                        node.style.setProperty('--_order', bt[i].order);
+                    }
 
                     const Item = new QUIContextItem({
                         text: Btn.getAttribute('text'),
@@ -4101,6 +4189,32 @@ define('controls/grid/Grid', [
             this.draw();
             this.resize();
             this.refresh();
+        },
+
+        /**
+         * Highlight for a short moment a row, i.e. after editing a row.
+         * This method sets a `flash-effect` css class, with performs the animation.
+         * You can control the animation by using css variables.
+         *
+         * @param rowId | number
+         */
+        highlightRow: function(rowId) {
+            if (!rowId || rowId < 0) {
+                return;
+            }
+
+            const EditableRow = this.getElm().getElement('[data-row="' + rowId + '"]');
+
+            if (!EditableRow) {
+                return;
+            }
+
+            EditableRow.classList.remove('flash-animation');
+            
+            setTimeout(() => {
+                EditableRow.classList.add('flash-animation');
+            }, 50);
+
         }
     });
 });
