@@ -2553,8 +2553,8 @@ define('controls/grid/Grid', [
                     node.type = 'button';
                     node.addClass('btn-silver');
 
-                    if (bt[i].order) {
-                        node.style.setProperty('--_order', bt[i].order);
+                    if (Btn.getAttribute('order')) {
+                        node.style.setProperty('--_order', Btn.getAttribute('order'));
                     }
 
                     const Item = new QUIContextItem({
