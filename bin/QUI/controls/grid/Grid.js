@@ -2535,12 +2535,12 @@ define('controls/grid/Grid', [
 
                     bt[Btn.getAttribute('name')] = Btn;
 
-                    switch (bt[i].position) {
+                    switch (Btn.getAttribute('position')) {
                         case 'left':
                         case 'center':
                         case 'right':
                             Btn.inject(
-                                tDiv.querySelector('[data-position="' + bt[i].position + '"]')
+                                tDiv.querySelector('[data-position="' + Btn.getAttribute('position') + '"]')
                             );
                             break;
                         default:
