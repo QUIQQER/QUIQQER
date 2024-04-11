@@ -149,7 +149,7 @@ class User implements QUI\Interfaces\Users\User
     /**
      * User manager
      *
-     * @var \QUI\Users\Manager
+     * @var Manager
      */
     protected $Users;
 
@@ -196,12 +196,12 @@ class User implements QUI\Interfaces\Users\User
     /**
      * constructor
      *
-     * @param integer $id - ID of the user
-     * @param \QUI\Users\Manager $Users - the user manager
+     * @param int|string $id - ID of the user
+     * @param Manager $Users - the user manager
      *
-     * @throws \QUI\Users\Exception
+     * @throws QUI\Users\Exception
      */
-    public function __construct($id, Manager $Users)
+    public function __construct(int|string $id, Manager $Users)
     {
         $this->isLoaded = false;
         $this->Users = $Users;

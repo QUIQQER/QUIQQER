@@ -39,17 +39,15 @@ define('classes/users/Manager', [
          * Return a user
          *
          * @method classes/users/Manager#get
-         * @param {Number} uid - Id of the User
+         * @param {Number|String} uid - Id of the User
          * @return {Object} User - controls/users/User
          */
         get: function (uid) {
-            uid = parseInt(uid);
-
-            if (uid === 0) {
+            if (uid === 0 || uid === false || uid === "0") {
                 return new Nobody();
             }
 
-            if (uid === 5) {
+            if (uid === 5 || uid === "5") {
                 return new SystemUser();
             }
 

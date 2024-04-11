@@ -367,14 +367,16 @@ class Manager
     /**
      * Get the user by id or uuid
      *
-     * @param integer|string $id - Could be user-id or user uuid
+     * @param int|string $id - Could be user-id or user uuid
      * @return QUI\Users\User|Nobody|SystemUser|false
      *
      * @throws QUI\Users\Exception
      */
-    public function get($id)
+    public function get(int|string $id)
     {
         if (is_numeric($id)) {
+            $id = (int)$id;
+
             if (!$id) {
                 return new Nobody();
             }

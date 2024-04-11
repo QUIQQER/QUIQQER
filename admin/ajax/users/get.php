@@ -12,7 +12,7 @@ QUI::$Ajax->registerFunction(
     'ajax_users_get',
     function ($uid) {
         try {
-            $User = QUI::getUsers()->get((int)$uid);
+            $User = QUI::getUsers()->get($uid);
             $attributes = $User->getAttributes();
         } catch (QUI\Exception) {
             $User = QUI::getUsers()->getNobody();
