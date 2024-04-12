@@ -45,14 +45,14 @@ spl_autoload_register(function ($className) {
  * @param integer $errno
  * @param string $errStr
  * @param string $errFile
- * @param string $errLine
+ * @param integer $errLine
  *
  * @return boolean
  * @throws ErrorException
  * @author www.pcsg.de (Henning Leutz)
  *
  */
-function exception_error_handler(int $errno, string $errStr, string $errFile, string $errLine): bool
+function exception_error_handler(int $errno, string $errStr, string $errFile, int $errLine): bool
 {
     if ($errStr == 'json_encode(): Invalid UTF-8 sequence in argument') {
         QUI::getErrorHandler()->setAttribute('show_request', true);
