@@ -968,9 +968,9 @@ class User implements QUIUserInterface
             $superUsers = QUI::getUsers()->getUsers([
                 'where' => [
                     'su' => 1,
-                    'id' => [
+                    'uuid' => [
                         'type' => 'NOT',
-                        'value' => $this->getId()
+                        'value' => $this->getUUID()
                     ]
                 ],
                 'limit' => 1
@@ -1018,7 +1018,7 @@ class User implements QUIUserInterface
                 'lastLoginAttempt' => $this->getAttribute('lastLoginAttempt') ?: null,
                 'failedLogins' => $this->getAttribute('failedLogins') ?: 0
             ],
-            ['id' => $this->getId()]
+            ['uuid' => $this->getUUID()]
         );
 
         $this->getStandardAddress()->save($PermissionUser);
@@ -1209,16 +1209,12 @@ class User implements QUIUserInterface
             $this->Group = [];
 
             foreach ($groups as $group) {
-                $tg = $Groups->get($group);
-
-                if ($tg) {
-                    $this->Group[] = $tg;
-                    $aTmp[] = $group;
-                }
+                $Group = $Groups->get($group);
+                $this->Group[] = $Group;
+                $aTmp[] = $Group->getUUID();
             }
 
             $this->groups = ',' . implode(',', $aTmp) . ',';
-
             return;
         }
 
@@ -1232,22 +1228,23 @@ class User implements QUIUserInterface
                 }
 
                 try {
-                    $this->Group[] = $Groups->get($g);
-                    $aTmp[] = $g;
+                    $Group = $Groups->get($g);
+                    $this->Group[] = $Group;
+                    $aTmp[] = $Group->getUUID();
                 } catch (QUI\Exception) {
                     // nothing
                 }
             }
 
             $this->groups = ',' . implode(',', $aTmp) . ',';
-
             return;
         }
 
 
         if (is_string($groups)) {
             try {
-                $this->Group[] = $Groups->get($groups);
+                $Group = $Groups->get($groups);
+                $this->Group[] = $Group->getUUID();
                 $this->groups = ',' . $groups . ',';
             } catch (QUI\Exception) {
             }
@@ -1268,8 +1265,8 @@ class User implements QUIUserInterface
                     'from' => Manager::table(),
                     'where' => [
                         'email' => $email,
-                        'id' => [
-                            'value' => $this->getId(),
+                        'uuid' => [
+                            'value' => $this->getUUID(),
                             'type' => 'NOT'
                         ]
                     ],
@@ -1369,7 +1366,7 @@ class User implements QUIUserInterface
         if (class_exists('QUI\Watcher')) {
             QUI\Watcher::addString(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'user.enable.authenticator', [
-                    'id' => $this->getId()
+                    'id' => $this->getUUID()
                 ]),
                 '',
                 ['authenticator' => $authenticator]
@@ -1415,7 +1412,7 @@ class User implements QUIUserInterface
         if (class_exists('QUI\Watcher')) {
             QUI\Watcher::addString(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'user.disable.authenticator', [
-                    'id' => $this->getId()
+                    'id' => $this->getUUID()
                 ]),
                 '',
                 [
@@ -1612,8 +1609,8 @@ class User implements QUIUserInterface
         $new_gr = [];
 
         foreach ($groups as $UserGroup) {
-            if ($UserGroup->getId() != $Group->getId()) {
-                $new_gr[] = $UserGroup->getId();
+            if ($UserGroup->getUUID() != $Group->getUUID()) {
+                $new_gr[] = $UserGroup->getUUID();
             }
         }
 
@@ -2015,6 +2012,7 @@ class User implements QUIUserInterface
      * @throws Exception
      * @throws ExceptionStack
      * @throws QUI\Permissions\Exception
+     * @throws QUI\Users\Exception
      */
     public function activate(
         string $code = '',

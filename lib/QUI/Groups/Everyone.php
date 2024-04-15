@@ -8,6 +8,8 @@ namespace QUI\Groups;
 
 use QUI;
 
+use QUI\Exception;
+
 use function array_filter;
 use function explode;
 use function json_encode;
@@ -29,10 +31,10 @@ class Everyone extends QUI\Groups\Group
     }
 
     /**
-     * Deletes the group and sub-groups
+     * Deletes the group and subgroups
      *
-     * @return boolean
-     * @throws \QUI\Exception
+     * @return void
+     * @throws Exception
      */
     public function delete(): void
     {
@@ -93,7 +95,6 @@ class Everyone extends QUI\Groups\Group
             $toolbar = $this->getAttribute('toolbar');
         }
 
-        // Felder bekommen
         QUI::getDataBase()->update(
             Manager::table(),
             [
@@ -128,6 +129,7 @@ class Everyone extends QUI\Groups\Group
 
     /**
      * deactivate the group
+     * @throws Exception
      */
     public function deactivate(): void
     {
@@ -167,11 +169,11 @@ class Everyone extends QUI\Groups\Group
      *
      * @param boolean $obj - Parent Object (true) oder Parent-ID (false) -> (optional = true)
      *
-     * @return object|integer|false
+     * @return Everyone|Group|Guest|null
      */
-    public function getParent(bool $obj = true): object|bool|int
+    public function getParent(bool $obj = true): null|Group|Guest|Everyone
     {
-        return false;
+        return null;
     }
 
     /**
@@ -195,7 +197,7 @@ class Everyone extends QUI\Groups\Group
     }
 
     /**
-     * Returns the sub groups
+     * Returns the subgroups
      *
      * @param array $params - Where Parameter
      *

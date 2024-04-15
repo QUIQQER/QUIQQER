@@ -7,7 +7,6 @@
 namespace QUI\Groups;
 
 use QUI;
-
 use QUI\Exception;
 
 use function json_encode;
@@ -150,11 +149,11 @@ class Guest extends QUI\Groups\Group
      *
      * @param boolean $obj - Parent Object (true) oder Parent-ID (false) -> (optional = true)
      *
-     * @return object|bool|int
+     * @return Everyone|Group|Guest|null
      */
-    public function getParent(bool $obj = true): object|bool|int
+    public function getParent(bool $obj = true): Guest|Group|Everyone|null
     {
-        return false;
+        return null;
     }
 
     /**
