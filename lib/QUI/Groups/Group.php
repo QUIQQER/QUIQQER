@@ -132,7 +132,7 @@ class Group extends QUI\QDOM
         $id = (int)$result[0]['id'];
 
         // create uuid for group. if not exists
-        if (empty($result[0]['uuid'])) {
+        if (empty($result[0]['uuid']) && $result[0]['uuid'] !== "0") {
             $uuid = QUI\Utils\Uuid::get();
 
             if ($id === 0) {
@@ -162,6 +162,12 @@ class Group extends QUI\QDOM
             QUI::getDatabase()->update(
                 Manager::table(),
                 ['parent' => $Group->getUUID()],
+                ['id' => $result[0]['id']]
+            );
+        } elseif (is_numeric($result[0]['parent']) && (int)$result[0]['parent'] === 0) {
+            QUI::getDatabase()->update(
+                Manager::table(),
+                ['parent' => NULL],
                 ['id' => $result[0]['id']]
             );
         }
@@ -445,7 +451,7 @@ class Group extends QUI\QDOM
         $this->childrenIds = [];
 
         $_params = [
-            'select' => 'id,uuid',
+            'select' => 'uuid,parent',
             'from' => Manager::table(),
             'where' => [
                 'parent' => $this->getUUID()
@@ -797,6 +803,10 @@ class Group extends QUI\QDOM
      */
     public function getParent(): Group|Everyone|Guest|null
     {
+        if ($this->getAttribute('parent') === null) {
+            return null;
+        }
+
         if ($this->getAttribute('parent')) {
             return QUI::getGroups()->get($this->getAttribute('parent'));
         }
@@ -1011,6 +1021,13 @@ class Group extends QUI\QDOM
         $Groups = QUI::getGroups();
 
         foreach ($ids as $id) {
+            if (
+                is_numeric($id)
+                && ((int)$id === Manager::GUEST_ID || (int)$id === Manager::EVERYONE_ID)
+            ) {
+                continue;
+            }
+
             try {
                 $Child = $Groups->get($id);
 

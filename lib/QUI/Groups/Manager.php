@@ -140,7 +140,10 @@ class Manager extends QUI\QDOM
             return $this->groups[$id];
         }
 
-        $this->groups[$id] = new Group($id);
+        $Group = new Group($id);
+        $id = $Group->getUUID();
+
+        $this->groups[$id] = $Group;
 
         return $this->groups[$id];
     }
@@ -202,7 +205,7 @@ class Manager extends QUI\QDOM
 
         $DataBase = QUI::getDataBase();
         $DataBase->execSQL(
-            "ALTER TABLE `" . self::table() . "` CHANGE `parent` `parent` VARCHAR(50) NOT NULL DEFAULT '0';"
+            "ALTER TABLE `" . self::table() . "` CHANGE `parent` `parent` VARCHAR(50) NULL DEFAULT NULL;"
         );
 
         $Table = $DataBase->table();
