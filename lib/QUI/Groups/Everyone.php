@@ -7,7 +7,6 @@
 namespace QUI\Groups;
 
 use QUI;
-
 use QUI\Exception;
 
 use function array_filter;
