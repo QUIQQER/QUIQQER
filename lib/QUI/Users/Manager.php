@@ -1566,7 +1566,7 @@ class Manager
      */
     public function unsetUserInstance(QUIUserInterface $User): void
     {
-        $uuid = $User->getUniqueId();
+        $uuid = $User->getUUID();
         $id = $User->getId();
 
         if (isset($this->users[$id])) {

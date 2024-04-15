@@ -1128,7 +1128,7 @@ class User implements QUIUserInterface
     /**
      * Add the user to a group
      *
-     * @param integer $groupId
+     * @param integer|string $groupId
      * @throws QUI\Exception
      */
     public function addToGroup(int|string $groupId): void
@@ -1148,13 +1148,13 @@ class User implements QUIUserInterface
 
         foreach ($groups as $UserGroup) {
             /* @var $UserGroup QUI\Groups\Group */
-            if (isset($_tmp[$UserGroup->getId()])) {
+            if (isset($_tmp[$UserGroup->getUUID()])) {
                 continue;
             }
 
-            $_tmp[$UserGroup->getId()] = true;
+            $_tmp[$UserGroup->getUUID()] = true;
 
-            $newGroups[] = $UserGroup->getId();
+            $newGroups[] = $UserGroup->getUUID();
         }
 
         $this->setGroups($newGroups);

@@ -8,6 +8,8 @@ namespace QUI\Groups;
 
 use QUI;
 
+use QUI\Exception;
+
 use function json_encode;
 
 /**
@@ -27,12 +29,12 @@ class Guest extends QUI\Groups\Group
     }
 
     /**
-     * Deletes the group and sub-groups
+     * Deletes the group and subgroups
      *
-     * @return boolean
-     * @throws \QUI\Exception
+     * @return void
+     * @throws Exception
      */
-    public function delete()
+    public function delete(): void
     {
         throw new QUI\Exception(
             QUI::getLocale()->get(
@@ -65,10 +67,9 @@ class Guest extends QUI\Groups\Group
      * saves the group
      * All attributes are set in the database
      */
-    public function save()
+    public function save(): void
     {
-        $this->rights = QUI::getPermissionManager()
-            ->getRightParamsFromGroup($this);
+        $this->rights = QUI::getPermissionManager()->getRightParamsFromGroup($this);
 
         // Felder bekommen
         QUI::getDataBase()->update(
@@ -89,8 +90,14 @@ class Guest extends QUI\Groups\Group
      * Returns the Group-ID
      *
      * @return integer
+     * @deprecated
      */
-    public function getId()
+    public function getId(): int
+    {
+        return Manager::GUEST_ID;
+    }
+
+    public function getUUID(): string
     {
         return Manager::GUEST_ID;
     }
@@ -98,14 +105,14 @@ class Guest extends QUI\Groups\Group
     /**
      * Activate the group
      */
-    public function activate()
+    public function activate(): void
     {
     }
 
     /**
      * deactivate the group
      */
-    public function deactivate()
+    public function deactivate(): void
     {
         throw new QUI\Exception(
             QUI::getLocale()->get(
@@ -120,7 +127,7 @@ class Guest extends QUI\Groups\Group
      *
      * @return boolean
      */
-    public function isActive()
+    public function isActive(): bool
     {
         return true;
     }
@@ -128,12 +135,12 @@ class Guest extends QUI\Groups\Group
     /**
      * Checks if the ID is from a parent group
      *
-     * @param integer $id - ID from parent
+     * @param int|string $id - ID from parent
      * @param boolean $recursive - checks recursive or not
      *
      * @return boolean
      */
-    public function isParent(int $id, bool $recursive = false)
+    public function isParent(int|string $id, bool $recursive = false): bool
     {
         return false;
     }
@@ -141,12 +148,11 @@ class Guest extends QUI\Groups\Group
     /**
      * return the parent group
      *
-     * @param boolean $obj - Parent Objekt (true) oder Parent-ID (false) -> (optional = true)
+     * @param boolean $obj - Parent Object (true) oder Parent-ID (false) -> (optional = true)
      *
-     * @return object|integer|false
-     * @throws \QUI\Exception
+     * @return object|bool|int
      */
-    public function getParent(bool $obj = true)
+    public function getParent(bool $obj = true): object|bool|int
     {
         return false;
     }
@@ -156,7 +162,7 @@ class Guest extends QUI\Groups\Group
      *
      * @return array
      */
-    public function getParentIds()
+    public function getParentIds(): array
     {
         return [];
     }
@@ -166,7 +172,7 @@ class Guest extends QUI\Groups\Group
      *
      * @return integer
      */
-    public function hasChildren()
+    public function hasChildren(): int
     {
         return 0;
     }
@@ -178,7 +184,7 @@ class Guest extends QUI\Groups\Group
      *
      * @return array
      */
-    public function getChildren(array $params = [])
+    public function getChildren(array $params = []): array
     {
         return [];
     }
@@ -186,12 +192,12 @@ class Guest extends QUI\Groups\Group
     /**
      * return the subgroup ids
      *
-     * @param boolean $recursiv - recursiv true / false
+     * @param boolean $recursive - recursive true / false
      * @param array $params - SQL Params (limit, order)
      *
-     * @return array
+     * @return array|null
      */
-    public function getChildrenIds(bool $recursiv = false, array $params = [])
+    public function getChildrenIds(bool $recursive = false, array $params = []): ?array
     {
         return [];
     }
