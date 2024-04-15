@@ -126,13 +126,6 @@ try {
         $output = json_encode($data);
     } else {
         $filename = $name . '.csv';
-
-        // normalerweise wird das hier nicht gebraucht:
-        //
-        //foreach ($data as $key => $entry) {
-        //  $data[$key] = str_replace('"', "'", $entry);
-        //}
-
         $Writer->insertAll($data);
 
         $output = $Writer->toString();
