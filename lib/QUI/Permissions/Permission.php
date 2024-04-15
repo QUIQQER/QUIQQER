@@ -9,18 +9,16 @@ namespace QUI\Permissions;
 use QUI;
 use QUI\Groups\Group;
 use QUI\Projects\Media;
+use QUI\Projects\Media\Item;
 use QUI\Projects\Project;
 use QUI\Projects\Site;
 use QUI\Projects\Site\Edit;
-use QUI\Users\User;
+use QUI\Interfaces\Users\User;
 
 use function array_flip;
 use function explode;
-use function get_class;
 use function implode;
-use function is_array;
 use function is_null;
-use function strpos;
 use function substr;
 use function trim;
 
@@ -28,7 +26,7 @@ use function trim;
  * Provides methods for quick rights checking
  *
  * all methods with check throws Exceptions
- * all methods with is or has return the permission value
+ * all methods with is or has returned the permission value
  *     it makes a check and capture the exceptions
  *
  * all methods with get return the permission entries
@@ -47,11 +45,11 @@ class Permission
      * has the User the permission
      *
      * @param string $perm
-     * @param User|boolean $User
+     * @param boolean|User $User
      *
      * @return false|string|permission
      */
-    public static function hasPermission(string $perm, $User = false)
+    public static function hasPermission(string $perm, bool|User $User = false): Permission|bool|string
     {
         try {
             return self::checkPermission($perm, $User);
@@ -65,13 +63,13 @@ class Permission
      * Checks whether the user has the permission
      *
      * @param string $perm
-     * @param User|boolean|null $User - optional
+     * @param boolean|User|null $User - optional
      *
      * @return false|string|permission
      *
      * @throws Exception
      */
-    public static function checkPermission(string $perm, $User = false)
+    public static function checkPermission(string $perm, bool|User|null $User = false): Permission|bool|string
     {
         if (!$User) {
             $User = self::getUser();
@@ -99,7 +97,7 @@ class Permission
             foreach ($groups as $Group) {
                 $permissions = $Manager->getPermissions($Group);
 
-                if (isset($permissions[$perm]) && !empty($permissions[$perm])) {
+                if (!empty($permissions[$perm])) {
                     return $permissions[$perm];
                 }
             }
@@ -115,9 +113,9 @@ class Permission
     }
 
     /**
-     * @return QUI\Interfaces\Users\User
+     * @return QUI\Interfaces\Users\User|null
      */
-    protected static function getUser()
+    protected static function getUser(): QUI\Interfaces\Users\User|null
     {
         if (!is_null(self::$User)) {
             return self::$User;
@@ -133,7 +131,7 @@ class Permission
      *
      * @param QUI\Interfaces\Users\User $User
      */
-    public static function setUser(QUI\Interfaces\Users\User $User)
+    public static function setUser(QUI\Interfaces\Users\User $User): void
     {
         self::$User = $User;
     }
@@ -141,11 +139,11 @@ class Permission
     /**
      * Checks, if the user has the SuperUser flag
      *
-     * @param User|boolean $User - optional
+     * @param boolean|User $User - optional
      *
      * @return boolean
      */
-    public static function isSU($User = false): bool
+    public static function isSU(bool|User $User = false): bool
     {
         if (!$User) {
             $User = self::getUser();
@@ -157,11 +155,11 @@ class Permission
     /**
      * Checks if the user is allowed to enter the admin area
      *
-     * @param User|boolean $User - optional
+     * @param boolean|User $User - optional
      *
      * @throws \QUI\Exception
      */
-    public static function checkAdminUser($User = false)
+    public static function checkAdminUser(bool|User $User = false): void
     {
         $UserToCheck = false;
 
@@ -192,12 +190,12 @@ class Permission
     /**
      * Checks if the object is also a user object
      *
-     * @param User|boolean $User - optional
+     * @param boolean|User $User - optional
      *
      * @throws Exception
      * @throws \QUI\Exception
      */
-    public static function checkUser($User = false)
+    public static function checkUser(bool|User $User = false): void
     {
         $UserToCheck = $User;
 
@@ -224,11 +222,10 @@ class Permission
     /**
      * Checks, if the user is an admin user
      *
-     * @param User|boolean $User - optional
-     *
+     * @param boolean|User $User - optional
      * @return boolean
      */
-    public static function isAdmin($User = false)
+    public static function isAdmin(bool|User $User = false): bool
     {
         if (!$User) {
             $User = self::getUser();
@@ -246,12 +243,12 @@ class Permission
      * Checks if the user is a SuperUser
      * if not, it throws an exception
      *
-     * @param User|boolean $User - optional
+     * @param boolean|User $User - optional
      *
      * @throws Exception
      * @throws \QUI\Exception
      */
-    public static function checkSU($User = false)
+    public static function checkSU(bool|User $User = false): void
     {
         $UserToCheck = false;
 
@@ -283,11 +280,11 @@ class Permission
      * Checks if the permission is set
      *
      * @param string $perm
-     * @param User|boolean $User - optional
+     * @param boolean|User $User - optional
      *
      * @return boolean
      */
-    public static function existsPermission(string $perm, $User = false): bool
+    public static function existsPermission(string $perm, bool|User $User = false): bool
     {
         if (!$User) {
             $User = self::getUser();
@@ -318,7 +315,7 @@ class Permission
      * Add a user to the permission
      *
      * @param User $User
-     * @param Site|Edit $Site
+     * @param Edit|Site $Site
      * @param string $permission - name of the permission
      * @param boolean|User $EditUser
      *
@@ -329,9 +326,9 @@ class Permission
      */
     public static function addUserToSitePermission(
         User $User,
-        $Site,
+        Edit|Site $Site,
         string $permission,
-        $EditUser = false
+        bool|User $EditUser = false
     ): bool {
         if (!QUI\Projects\Site\Utils::isSiteObject($Site)) {
             return false;
@@ -380,7 +377,7 @@ class Permission
      * Add a group to the permission
      *
      * @param Group $Group
-     * @param Site|Edit $Site
+     * @param Edit|Site $Site
      * @param string $permission - name of the permission
      * @param boolean|User $EditUser
      *
@@ -391,9 +388,9 @@ class Permission
      */
     public static function addGroupToSitePermission(
         Group $Group,
-        $Site,
+        Edit|Site $Site,
         string $permission,
-        $EditUser
+        bool|User $EditUser
     ): bool {
         if (!QUI\Projects\Site\Utils::isSiteObject($Site)) {
             return false;
@@ -439,11 +436,11 @@ class Permission
      * Checks if the permission exists in the Site
      *
      * @param string $perm
-     * @param Site|Edit $Site
+     * @param Edit|Site $Site
      *
      * @return bool
      */
-    public static function existsSitePermission(string $perm, $Site): bool
+    public static function existsSitePermission(string $perm, Edit|Site $Site): bool
     {
         $Manager = QUI::getPermissionManager();
         $permissions = $Manager->getSitePermissions($Site);
@@ -454,12 +451,12 @@ class Permission
     /**
      * Return the Site Permission
      *
-     * @param Site|Edit $Site
+     * @param Edit|Site $Site
      * @param string $perm
      *
      * @return mixed|boolean
      */
-    public static function getSitePermission($Site, string $perm)
+    public static function getSitePermission(Edit|Site $Site, string $perm): mixed
     {
         $Manager = QUI::getPermissionManager();
         $permissions = $Manager->getSitePermissions($Site);
@@ -476,7 +473,7 @@ class Permission
      *
      * @return mixed|boolean
      */
-    public static function getPermission(string $perm, QUI\Interfaces\Users\User $User = null)
+    public static function getPermission(string $perm, QUI\Interfaces\Users\User $User = null): mixed
     {
         if ($User === null) {
             $User = self::getUser();
@@ -486,7 +483,7 @@ class Permission
         $permissions = $Manager->getPermissions($User);
 
         // first check user permission
-        if (isset($permissions[$perm]) && !empty($permissions[$perm])) {
+        if (!empty($permissions[$perm])) {
             return $permissions[$perm];
         }
 
@@ -498,12 +495,15 @@ class Permission
      *
      * @param string $perm
      * @param Site $Site
-     * @param User|boolean $User - optional
+     * @param boolean|User $User - optional
      *
      * @return bool
      */
-    public static function hasSitePermission(string $perm, Site $Site, $User = false)
-    {
+    public static function hasSitePermission(
+        string $perm,
+        Site $Site,
+        bool|User $User = false
+    ): bool {
         try {
             return self::checkSitePermission($perm, $Site, $User);
         } catch (QUI\Exception) {
@@ -516,14 +516,14 @@ class Permission
      * Checks if the User have the permission of the Site
      *
      * @param string $perm
-     * @param Site|Edit $Site
-     * @param User|boolean $User - optional
+     * @param Edit|Site $Site
+     * @param boolean|User $User - optional
      *
      * @return boolean
      *
      * @throws Exception
      */
-    public static function checkSitePermission(string $perm, $Site, $User = false)
+    public static function checkSitePermission(string $perm, Edit|Site $Site, bool|User $User = false): bool
     {
         if (!$User) {
             $User = self::getUser();
@@ -563,7 +563,7 @@ class Permission
                         $User
                     );
                 }
-                break;
+
             case 'quiqqer.projects.site.edit':
             case 'quiqqer.projects.sites.edit':
                 try {
@@ -583,7 +583,7 @@ class Permission
                         $User
                     );
                 }
-                break;
+
             case 'quiqqer.projects.site.del':
             case 'quiqqer.projects.sites.del':
                 try {
@@ -603,7 +603,7 @@ class Permission
                         $User
                     );
                 }
-                break;
+
             case 'quiqqer.projects.site.new':
             case 'quiqqer.projects.sites.new':
                 try {
@@ -633,14 +633,17 @@ class Permission
      *
      * @param array $permissions - list of permissions
      * @param string $perm
-     * @param User|boolean $User
+     * @param boolean|User $User
      *
      * @return boolean
      *
      * @throws Exception
      */
-    public static function checkPermissionList(array $permissions, string $perm, $User = false): bool
-    {
+    public static function checkPermissionList(
+        array $permissions,
+        string $perm,
+        bool|User $User = false
+    ): bool {
         if (!isset($permissions[$perm])) {
             QUI\System\Log::addNotice(
                 'Permission missing: ' . $perm
@@ -661,7 +664,7 @@ class Permission
                 ),
                 403,
                 [
-                    'userid' => $User->getId(),
+                    'userid' => $User->getUUID(),
                     'username' => $User->getName(),
                     'permission' => $permissions
 
@@ -686,19 +689,15 @@ class Permission
 
         switch ($perm_data['type']) {
             case 'bool':
-                if ((bool)$perm_value) {
+                if ($perm_value) {
                     $check = true;
                 }
                 break;
 
             case 'group':
                 $group_ids = $User->getGroups(false);
-                $group_ids = explode(',', $group_ids);
 
-                if (
-                    strpos($perm_value, 'g') !== false
-                    || strpos($perm_value, 'u') !== false
-                ) {
+                if (str_contains($perm_value, 'g') || str_contains($perm_value, 'u')) {
                     $perm_value = (int)substr($perm_value, 1);
                 }
 
@@ -714,13 +713,21 @@ class Permission
                 if ((int)$perm_value == $User->getId()) {
                     $check = true;
                 }
+
+                if ($perm_value == $User->getUUID()) {
+                    $check = true;
+                }
                 break;
 
             case 'users':
-                $uids = explode(',', $perm_value);
+                $uIds = explode(',', $perm_value);
 
-                foreach ($uids as $uid) {
+                foreach ($uIds as $uid) {
                     if ((int)$uid == $User->getId()) {
+                        $check = true;
+                    }
+
+                    if ($uid == $User->getUUID()) {
                         $check = true;
                     }
                 }
@@ -730,12 +737,6 @@ class Permission
             case 'users_and_groups':
                 // groups ids from the user
                 $group_ids = $User->getGroups(false);
-
-                if (!is_array($group_ids)) {
-                    $group_ids = explode(',', $group_ids);
-                }
-
-
                 $user_group_ids = [];
 
                 foreach ($group_ids as $gid) {
@@ -748,10 +749,7 @@ class Permission
                     $real_id = $id;
                     $type = 'g';
 
-                    if (
-                        strpos($id, 'g') !== false
-                        || strpos($id, 'u') !== false
-                    ) {
+                    if (str_contains($id, 'g') || str_contains($id, 'u')) {
                         $real_id = (int)substr($id, 1);
                         $type = substr($id, 0, 1);
                     }
@@ -793,7 +791,7 @@ class Permission
      * Remove a group from the permission
      *
      * @param Group $Group
-     * @param Site|Edit $Site
+     * @param Edit|Site $Site
      * @param string $permission
      * @param boolean|User $EditUser
      *
@@ -804,9 +802,9 @@ class Permission
      */
     public static function removeGroupFromSitePermission(
         Group $Group,
-        $Site,
+        Edit|Site $Site,
         string $permission,
-        $EditUser = false
+        bool|User $EditUser = false
     ): bool {
         if (!QUI\Projects\Site\Utils::isSiteObject($Site)) {
             return false;
@@ -831,7 +829,7 @@ class Permission
 
         $flip = array_flip($permList);
 
-        // user is in the permissions, than unset it
+        // user is in the permissions, then unset it
         if (isset($flip[$group])) {
             unset($flip[$group]);
         }
@@ -922,13 +920,13 @@ class Permission
      *
      * @return bool
      *
-     * @throws Exception
+     * @throws Exception|QUI\Database\Exception
      */
     public static function addGroupToProjectPermission(
         Group $Group,
         Project $Project,
         string $permission,
-        $EditUser = false
+        bool|User $EditUser = false
     ): bool {
         self::checkProjectPermission('quiqqer.projects.edit', $Project, $EditUser);
 
@@ -969,7 +967,7 @@ class Permission
      *
      * @param string $perm
      * @param Project $Project
-     * @param User|boolean $User - optional
+     * @param boolean|User $User - optional
      *
      * @return bool
      *
@@ -978,8 +976,8 @@ class Permission
     public static function checkProjectPermission(
         string $perm,
         Project $Project,
-        $User = false
-    ) {
+        bool|User $User = false
+    ): bool {
         if (!$User) {
             $User = self::getUser();
         }
@@ -1093,7 +1091,7 @@ class Permission
         User $User,
         Project $Project,
         string $permission,
-        $EditUser = false
+        bool|User $EditUser = false
     ): bool {
         self::checkProjectPermission('quiqqer.projects.edit', $Project, $EditUser);
 
@@ -1130,19 +1128,19 @@ class Permission
     }
 
     /**
-     * Remove an user from the project permission
+     * Remove a user from the project permission
      *
      * @param User $User
      * @param Project $Project
      * @param string $permission - name of the permission
      *
-     * @throws Exception
+     * @throws Exception|QUI\Database\Exception
      */
     public static function removeUserFromProjectPermission(
         User $User,
         Project $Project,
         string $permission
-    ) {
+    ): void {
         self::checkProjectPermission('quiqqer.projects.edit', $Project);
 
         $Manager = QUI::getPermissionManager();
@@ -1161,7 +1159,7 @@ class Permission
 
         $flip = array_flip($permList);
 
-        // user is in the permissions, than unset it
+        // user is in the permissions, then unset it
         if (isset($flip[$user])) {
             unset($flip[$user]);
         }
@@ -1209,7 +1207,7 @@ class Permission
 
         $flip = array_flip($permList);
 
-        // user is in the permissions, than unset it
+        // user is in the permissions, then unset it
         if (isset($flip[$group])) {
             unset($flip[$group]);
         }
@@ -1231,12 +1229,12 @@ class Permission
      * has the User the permission for the media item?
      *
      * @param string $perm
-     * @param \QUI\Projects\Media\Item $MediaItem
-     * @param User|boolean $User - optional
+     * @param Item $MediaItem
+     * @param boolean|User $User - optional
      *
      * @return bool
      */
-    public static function hasMediaPermission(string $perm, Media\Item $MediaItem, $User = false): bool
+    public static function hasMediaPermission(string $perm, Item $MediaItem, bool|User $User = false): bool
     {
         if (Media::useMediaPermissions() === false) {
             return true;
@@ -1254,15 +1252,18 @@ class Permission
      * Checks if the User have the permission of the Site
      *
      * @param string $perm
-     * @param QUI\Projects\Media\Item $MediaItem
-     * @param User|boolean $User - optional
+     * @param Item $MediaItem
+     * @param boolean|User $User - optional
      *
      * @return boolean
      *
      * @throws Exception
      */
-    public static function checkMediaPermission(string $perm, Media\Item $MediaItem, $User = false): bool
-    {
+    public static function checkMediaPermission(
+        string $perm,
+        Item $MediaItem,
+        bool|User $User = false
+    ): bool {
         if (Media::useMediaPermissions() === false) {
             return true;
         }
@@ -1291,7 +1292,7 @@ class Permission
      * Remove a group from the permission
      *
      * @param Group $Group
-     * @param Media\Item $MediaItem
+     * @param Item $MediaItem
      * @param string $permission
      * @param boolean|User $EditUser
      *
@@ -1302,9 +1303,9 @@ class Permission
      */
     public static function removeGroupFromMediaPermission(
         Group $Group,
-        Media\Item $MediaItem,
+        Item $MediaItem,
         string $permission,
-        $EditUser = false
+        bool|User $EditUser = false
     ): bool {
         if (!QUI\Projects\Media\Utils::isItem($MediaItem)) {
             return false;
@@ -1329,7 +1330,7 @@ class Permission
 
         $flip = array_flip($permList);
 
-        // user is in the permissions, than unset it
+        // user is in the permissions, then unset it
         if (isset($flip[$group])) {
             unset($flip[$group]);
         }
@@ -1350,7 +1351,7 @@ class Permission
      * Remove a user from the permission
      *
      * @param User $User
-     * @param Media\Item $MediaItem
+     * @param Item $MediaItem
      * @param string $permission
      * @param boolean|User $EditUser
      *
@@ -1361,7 +1362,7 @@ class Permission
      */
     public static function removeUserFromMediaPermission(
         User $User,
-        Media\Item $MediaItem,
+        Item $MediaItem,
         string $permission,
         $EditUser = false
     ): bool {
@@ -1388,7 +1389,7 @@ class Permission
 
         $flip = array_flip($permList);
 
-        // user is in the permissions, than unset it
+        // user is in the permissions, then unset it
         if (isset($flip[$user])) {
             unset($flip[$user]);
         }
@@ -1410,7 +1411,7 @@ class Permission
      * Add a group to the permission
      *
      * @param Group $Group
-     * @param Media\Item $MediaItem
+     * @param Item $MediaItem
      * @param string $permission - name of the permission
      * @param boolean|User $EditUser
      *
@@ -1421,7 +1422,7 @@ class Permission
      */
     public static function addGroupToMediaPermission(
         Group $Group,
-        Media\Item $MediaItem,
+        Item $MediaItem,
         string $permission,
         $EditUser
     ): bool {
@@ -1469,7 +1470,7 @@ class Permission
      * Add a user to the permission
      *
      * @param User $User
-     * @param Media\Item $MediaItem
+     * @param Item $MediaItem
      * @param string $permission - name of the permission
      * @param boolean|User $EditUser
      *
@@ -1480,9 +1481,9 @@ class Permission
      */
     public static function addUserToMediaPermission(
         User $User,
-        Media\Item $MediaItem,
+        Item $MediaItem,
         string $permission,
-        $EditUser = false
+        bool|User $EditUser = false
     ): bool {
         if (!QUI\Projects\Media\Utils::isItem($MediaItem)) {
             return false;

@@ -26,11 +26,11 @@ use function usort;
 class Menu
 {
     /**
-     * Clear the menu cache for an user
+     * Clear the menu cache for a user
      *
      * @param QUI\Interfaces\Users\User $User
      */
-    public static function clearMenuCache(QUI\Interfaces\Users\User $User)
+    public static function clearMenuCache(QUI\Interfaces\Users\User $User): void
     {
         QUI\Cache\Manager::clear(
             'settings/backend-menu/' . $User->getId() . '/'
@@ -51,20 +51,14 @@ class Menu
             if (!empty($cache)) {
                 return $cache;
             }
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
-        try {
-            return $this->createMenu();
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
-        }
-
-        return [];
+        return $this->createMenu();
     }
 
     /**
-     * Cachename for the menu
+     * Cache name for the menu
      * The name of the menu cache is user dependent
      */
     protected function getCacheName(): string
@@ -79,7 +73,6 @@ class Menu
      * no caches use
      *
      * @return array
-     * @throws QUI\Exception
      */
     public function createMenu(): array
     {
@@ -112,7 +105,6 @@ class Menu
         }
 
         if ($Menu->getElementByName('extras')) {
-            // Benutzerverwaltung
             $canSeeGroups = Permission::hasPermission('quiqqer.admin.groups.view');
             $canSeeUsers = Permission::hasPermission('quiqqer.admin.users.view');
             $canSeePermissions = false;
@@ -144,7 +136,6 @@ class Menu
                 $Rights->removeChild('permissions');
             }
 
-            // Projektverwaltung
             if (!$User->isSU()) {
                 $Extras->removeChild('projects');
             }
@@ -179,7 +170,7 @@ class Menu
             );
         }
 
-        // read the settings.xml's
+        // read the settings.xml`s
         if (Permission::hasPermission('quiqqer.settings')) {
             $files = [];
 
@@ -270,7 +261,6 @@ class Menu
                         $windowList[$winName] = $Item;
                     }
 
-                    // titel
                     /* @var $Title DOMElement */
                     if (!$Item->getAttribute('text')) {
                         $this->setWindowTitle($Item, $Window);
@@ -299,7 +289,7 @@ class Menu
             }
         }
 
-        // read the menu.xml's
+        // read the menu.xml`s
         $packages = QUI::getPackageManager()->getInstalled();
 
         foreach ($packages as $package) {
@@ -348,7 +338,7 @@ class Menu
      * @param Menuitem $MenuItem
      * @param DOMElement $Node
      */
-    public function setWindowTitle(Menuitem $MenuItem, DOMElement $Node)
+    public function setWindowTitle(Menuitem $MenuItem, DOMElement $Node): void
     {
         if ($MenuItem->getAttribute('text')) {
             return;
@@ -373,7 +363,7 @@ class Menu
      * @param Menuitem $MenuItem
      * @param DOMElement $Node
      */
-    public function setWindowIcon(Menuitem $MenuItem, DOMElement $Node)
+    public function setWindowIcon(Menuitem $MenuItem, DOMElement $Node): void
     {
         if ($MenuItem->getAttribute('icon')) {
             return;

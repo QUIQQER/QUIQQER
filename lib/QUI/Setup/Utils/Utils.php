@@ -64,14 +64,13 @@ class Utils
      *
      * @return bool|string
      */
-    public static function getDirMD5($dir)
+    public static function getDirMD5($dir): bool|string
     {
         if (!is_dir($dir)) {
             return false;
         }
 
         $fileHashes = [];
-
         $directory = dir($dir);
 
         while (($entry = $directory->read()) !== false) {
@@ -124,9 +123,8 @@ class Utils
         ];
 
         $name = str_replace($forbiddenCharacters, '', $name);
-        $name = trim($name);
 
-        return $name;
+        return trim($name);
     }
 
     /**

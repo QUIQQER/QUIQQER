@@ -17,7 +17,6 @@ use function is_array;
 use function spl_autoload_functions;
 use function spl_autoload_unregister;
 use function str_replace;
-use function strpos;
 use function substr;
 
 /**
@@ -45,7 +44,7 @@ class Autoloader
      *
      * @return void
      */
-    public static function checkAutoloader()
+    public static function checkAutoloader(): void
     {
         if (static::shouldOtherAutoloadersBeUnregistered()) {
             static::unregisterOtherAutoloaders();
@@ -78,7 +77,7 @@ class Autoloader
      *
      * @return void
      */
-    public static function init()
+    public static function init(): void
     {
         if (self::$ComposerLoader) {
             return;
@@ -132,7 +131,7 @@ class Autoloader
         }
 
         // Projects
-        if (strpos($classname, 'Projects\\') === 0) {
+        if (str_starts_with($classname, 'Projects\\')) {
             if (class_exists($classname, false)) {
                 return true;
             }
@@ -157,7 +156,7 @@ class Autoloader
             }
         }
 
-        return (bool) self::$ComposerLoader->loadClass($classname);
+        return (bool)self::$ComposerLoader->loadClass($classname);
     }
 
     public static function shouldOtherAutoloadersBeUnregistered(): bool

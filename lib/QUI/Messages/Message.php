@@ -1,12 +1,15 @@
 <?php
 
 /**
- * This file containes QUI\Messages\Message
+ * This file contains QUI\Messages\Message
  */
 
 namespace QUI\Messages;
 
 use QUI;
+
+use function md5;
+use function time;
 
 /**
  * A message
@@ -21,13 +24,13 @@ class Message extends QUI\QDOM
      *
      * @param array $params
      */
-    public function __construct($params = [])
+    public function __construct(array $params = [])
     {
         // defaults
         $this->setAttributes([
             'message' => '',
             'code' => '',
-            'time' => \time(),
+            'time' => time(),
             'mtype' => $this::class
         ]);
 
@@ -39,7 +42,7 @@ class Message extends QUI\QDOM
      *
      * @return string
      */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->getAttribute('code');
     }
@@ -49,17 +52,17 @@ class Message extends QUI\QDOM
      *
      * @return string
      */
-    public function getHash()
+    public function getHash(): string
     {
-        return \md5($this->getMessage());
+        return md5($this->getMessage());
     }
 
     /**
-     * Return a the message text
+     * Return the message text
      *
      * @return string
      */
-    public function getMessage()
+    public function getMessage(): string
     {
         return $this->getAttribute('message');
     }

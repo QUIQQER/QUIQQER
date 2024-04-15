@@ -8,6 +8,7 @@ namespace QUI\Workspace;
 
 use Exception;
 use QUI;
+use QUI\Interfaces\Users\User;
 use QUI\Utils\Security\Orthos;
 
 use function array_merge;
@@ -16,6 +17,7 @@ use function file_get_contents;
 use function json_decode;
 use function json_encode;
 use function mb_strlen;
+use function stripos;
 
 /**
  * Workspace Manager
@@ -29,14 +31,14 @@ class Manager
     /**
      * Setup for the user workspaces
      */
-    public static function setup()
+    public static function setup(): void
     {
         $Table = QUI::getDataBase()->table();
 
         if ($Table->existColumnInTable(self::table(), 'data')) {
             $column = $Table->getColumn(self::table(), 'data');
 
-            if (\stripos($column['Type'], 'text') !== false) {
+            if (stripos($column['Type'], 'text') !== false) {
                 return;
             }
         }
@@ -74,7 +76,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function cleanup()
+    public static function cleanup(): void
     {
         try {
             $entries = QUI::getDataBase()->fetch([
@@ -114,7 +116,7 @@ class Manager
     /**
      * Add a workspace
      *
-     * @param \QUI\Interfaces\Users\User $User
+     * @param User $User
      * @param string $title - title of the workspace
      * @param string $data - Workspace profile
      * @param integer $minHeight - minimum height of the workspace
@@ -125,7 +127,7 @@ class Manager
      * @throws QUI\Exception
      */
     public static function addWorkspace(
-        QUI\Interfaces\Users\User $User,
+        User $User,
         string $title,
         string $data,
         int $minHeight,
@@ -152,9 +154,9 @@ class Manager
      * Delete a workspace
      *
      * @param integer $id - Workspace ID
-     * @param QUI\Interfaces\Users\User $User - User of the Workspace
+     * @param User $User - User of the Workspace
      */
-    public static function deleteWorkspace(int $id, QUI\Interfaces\Users\User $User)
+    public static function deleteWorkspace(int $id, User $User): void
     {
         try {
             QUI::getDataBase()->delete(self::table(), [
@@ -171,11 +173,11 @@ class Manager
     /**
      * Return the titles of the users workspaces
      *
-     * @param \QUI\Users\User $User
+     * @param QUI\Users\User $User
      *
      * @return array
-     * @throws \QUI\Database\Exception
-     * @throws \QUI\Exception
+     * @throws QUI\Database\Exception
+     * @throws QUI\Exception
      */
     public static function getWorkspacesTitlesByUser(QUI\Users\User $User): array
     {
@@ -190,15 +192,15 @@ class Manager
     }
 
     /**
-     * Return the workspaces list from an user
+     * Return the workspaces list from a user
      *
-     * @param \QUI\Interfaces\Users\User $User
+     * @param User $User
      *
      * @return array
-     * @throws \QUI\Database\Exception
-     * @throws \QUI\Exception
+     * @throws QUI\Database\Exception
+     * @throws QUI\Exception
      */
-    public static function getWorkspacesByUser(QUI\Interfaces\Users\User $User): array
+    public static function getWorkspacesByUser(User $User): array
     {
         $result = QUI::getDataBase()->fetch([
             'from' => self::table(),
@@ -224,13 +226,13 @@ class Manager
     /**
      * Saves a workspace
      *
-     * @param \QUI\Users\User $User
+     * @param QUI\Users\User $User
      * @param integer $id
      * @param array $data
      *
      * @throws QUI\Exception
      */
-    public static function saveWorkspace(QUI\Users\User $User, int $id, array $data = [])
+    public static function saveWorkspace(QUI\Users\User $User, int $id, array $data = []): void
     {
         $workspace = self::getWorkspaceById($id, $User);
 
@@ -272,10 +274,10 @@ class Manager
      * Return a workspace by its id
      *
      * @param integer $id - id of the workspace
-     * @param \QUI\Users\User $User
+     * @param QUI\Users\User $User
      *
      * @return array
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      *
      */
     public static function getWorkspaceById(int $id, QUI\Users\User $User): array
@@ -305,11 +307,11 @@ class Manager
     /**
      * Set the workspace to the standard workspace
      *
-     * @param QUI\Interfaces\Users\User $User
+     * @param User $User
      * @param integer $id
-     * @throws \QUI\Database\Exception
+     * @throws QUI\Database\Exception
      */
-    public static function setStandardWorkspace(QUI\Interfaces\Users\User $User, int $id)
+    public static function setStandardWorkspace(User $User, int $id): void
     {
         if (!QUI::getUsers()->isUser($User)) {
             return;
@@ -348,7 +350,7 @@ class Manager
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         $panels = [];
