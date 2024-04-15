@@ -15,8 +15,9 @@ QUI::$Ajax->registerFunction(
         $result = QUI::getDataBase()->fetch([
             'select' => ['id', 'uid'],
             'from' => QUI\Users\Manager::tableAddress(),
-            'where' => [
-                'id' => $aid
+            'where_or' => [
+                'id' => $aid,
+                'uuid' => $aid
             ],
             'limit' => 1
         ]);
@@ -33,10 +34,9 @@ QUI::$Ajax->registerFunction(
             );
         }
 
-        $uid = (int)$result[0]['uid'];
-        $User = QUI::getUsers()->get((int)$uid);
+        $User = QUI::getUsers()->get($result[0]['uid']);
 
-        return $User->getId();
+        return $User->getUUID();
     },
     ['aid'],
     ['Permission::checkAdminUser']

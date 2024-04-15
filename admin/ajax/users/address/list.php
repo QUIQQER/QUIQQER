@@ -11,7 +11,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_users_address_list',
     function ($uid) {
-        $User = QUI::getUsers()->get((int)$uid);
+        $User = QUI::getUsers()->get($uid);
         $addresses = $User->getAddressList();
         $result = [];
         $Standard = null;
@@ -28,8 +28,9 @@ QUI::$Ajax->registerFunction(
             /* @var $Address \QUI\Users\Address */
             $entry = $Address->getAttributes();
             $entry['id'] = $Address->getId();
+            $entry['uuid'] = $Address->getUuid();
             $entry['text'] = $Address->getText();
-            $entry['uid'] = $User->getId();
+            $entry['uid'] = $User->getUUID();
             $entry['default'] = 0;
 
             if ($Standard && $Standard->getId() === $Address->getId()) {

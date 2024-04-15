@@ -10,11 +10,23 @@ use QUI;
 use QUI\Interfaces\Users\User as QUIUserInterface;
 use QUI\Utils\Security\Orthos as Orthos;
 
+use function array_key_exists;
+use function count;
 use function current;
 use function date;
+use function file_exists;
+use function implode;
+use function in_array;
 use function is_array;
+use function is_bool;
+use function is_null;
 use function is_numeric;
+use function is_string;
 use function json_decode;
+use function json_encode;
+use function preg_replace;
+use function reset;
+use function trim;
 
 /**
  * User Address
@@ -28,18 +40,11 @@ use function json_decode;
 class Address extends QUI\QDOM
 {
     /**
-     * The user
-     *
-     * @var QUIUserInterface|null
-     */
-    protected ?QUIUserInterface $User = null;
-
-    /**
      * Address-ID
      *
-     * @var integer
+     * @var ?integer
      */
-    protected $id = false;
+    protected ?int $id = null;
 
     protected ?string $uuid = null;
 
@@ -56,13 +61,13 @@ class Address extends QUI\QDOM
      * @param QUIUserInterface $User - User
      * @param integer|string $id - Address id or uuid
      *
-     * @throws \QUI\Users\Exception
+     * @throws Exception
      */
-    public function __construct(QUIUserInterface $User, int|string $id)
+    public function __construct(protected QUIUserInterface $User, int|string $id)
     {
         try {
             $where = [
-                'userUuid' => $User->getUniqueId()
+                'userUuid' => $User->getUUID()
             ];
 
             if (is_numeric($id)) {
@@ -74,13 +79,13 @@ class Address extends QUI\QDOM
             $result = QUI::getDataBase()->fetch([
                 'from' => Manager::tableAddress(),
                 'where' => $where,
-                'limit' => '1'
+                'limit' => 1
             ]);
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::writeDebugException($Exception);
             QUI\System\Log::addWarning($Exception->getMessage());
 
-            throw new QUI\Users\Exception(
+            throw new Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'exception.lib.user.address.not.found',
@@ -93,11 +98,14 @@ class Address extends QUI\QDOM
             );
         }
 
-        $this->User = $User;
-        $this->id = $id;
+        if (is_numeric($id)) {
+            $this->id = $id;
+        } else {
+            $this->uuid = $id;
+        }
 
         if (!isset($result[0])) {
-            throw new QUI\Users\Exception(
+            throw new Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'exception.lib.user.address.not.found',
@@ -111,6 +119,7 @@ class Address extends QUI\QDOM
 
         $data = current($result);
         $this->uuid = $data['uuid'];
+        $this->id = (int)$data['id'];
 
         unset($data['id']);
         unset($data['uid']);
@@ -127,7 +136,7 @@ class Address extends QUI\QDOM
      *
      * @return integer
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -141,21 +150,17 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * Add an phone number
+     * Add a phone number
      *
      * @param array $phone
      *
-     * @example addPhone(array(
+     * @example addPhone([
      *     'no'   => '555 29 29',
      *     'type' => 'tel'
-     * ));
+     * ]);
      */
-    public function addPhone($phone)
+    public function addPhone(array $phone): void
     {
-        if (!is_array($phone)) {
-            return;
-        }
-
         if (!isset($phone['no'])) {
             return;
         }
@@ -182,7 +187,7 @@ class Address extends QUI\QDOM
 
         $list[] = $phone;
 
-        $this->setAttribute('phone', \json_encode($list));
+        $this->setAttribute('phone', json_encode($list));
     }
 
     //region attributes
@@ -227,7 +232,7 @@ class Address extends QUI\QDOM
      *
      * @return mixed|null
      */
-    public function getAddressSuffix()
+    public function getAddressSuffix(): mixed
     {
         if (!empty($this->attributes['suffix'])) {
             return $this->attributes['suffix'];
@@ -242,9 +247,9 @@ class Address extends QUI\QDOM
      * @param string $key
      * @return mixed|null - Null if no entry set
      */
-    public function getCustomDataEntry(string $key)
+    public function getCustomDataEntry(string $key): mixed
     {
-        if (\array_key_exists($key, $this->customData)) {
+        if (array_key_exists($key, $this->customData)) {
             return $this->customData[$key];
         }
 
@@ -257,10 +262,8 @@ class Address extends QUI\QDOM
      * @param integer $index
      * @param array|string $phone - [no => '+0049 929292', 'type' => 'fax'] or '+0049 929292'
      */
-    public function editPhone($index, $phone)
+    public function editPhone(int $index, array|string $phone): void
     {
-        $index = (int)$index;
-
         if (!is_array($phone)) {
             $phone = [
                 'no' => Orthos::clear($phone),
@@ -283,13 +286,13 @@ class Address extends QUI\QDOM
             'type' => Orthos::clear($phone['type'])
         ];
 
-        $this->setAttribute('phone', \json_encode($list));
+        $this->setAttribute('phone', json_encode($list));
     }
 
     /**
      * @param $number
      */
-    public function editMobile($number)
+    public function editMobile($number): void
     {
         $list = $this->getPhoneList();
         $edited = false;
@@ -310,13 +313,13 @@ class Address extends QUI\QDOM
             ];
         }
 
-        $this->setAttribute('phone', \json_encode($list));
+        $this->setAttribute('phone', json_encode($list));
     }
 
     /**
      * @param $number
      */
-    public function editFax($number)
+    public function editFax($number): void
     {
         $list = $this->getPhoneList();
         $edited = false;
@@ -337,13 +340,13 @@ class Address extends QUI\QDOM
             ];
         }
 
-        $this->setAttribute('phone', \json_encode($list));
+        $this->setAttribute('phone', json_encode($list));
     }
 
     /**
      * Delete the complete phone list
      */
-    public function clearPhone()
+    public function clearPhone(): void
     {
         $this->setAttribute('phone', []);
     }
@@ -425,12 +428,12 @@ class Address extends QUI\QDOM
      *
      * @param string $mail - new mail address
      *
-     * @throws QUI\Users\Exception
+     * @throws Exception
      */
-    public function addMail($mail)
+    public function addMail(string $mail): void
     {
-        if (Orthos::checkMailSyntax($mail) == false) {
-            throw new QUI\Users\Exception(
+        if (!Orthos::checkMailSyntax($mail)) {
+            throw new Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'exception.lib.user.address.mail.wrong.syntax'
@@ -440,13 +443,13 @@ class Address extends QUI\QDOM
 
         $list = $this->getMailList();
 
-        if (\in_array($mail, $list)) {
+        if (in_array($mail, $list)) {
             return;
         }
 
         $list[] = $mail;
 
-        $this->setAttribute('mail', \json_encode($list));
+        $this->setAttribute('mail', json_encode($list));
     }
 
     /**
@@ -472,7 +475,7 @@ class Address extends QUI\QDOM
     /**
      * Clear mail addresses
      */
-    public function clearMail()
+    public function clearMail(): void
     {
         $this->setAttribute('mail', json_encode([]));
     }
@@ -483,12 +486,12 @@ class Address extends QUI\QDOM
      * @param integer $index - index of the mail
      * @param string $mail - E-Mail (eq: my@mail.com)
      *
-     * @throws QUI\Users\Exception
+     * @throws Exception
      */
-    public function editMail($index, $mail)
+    public function editMail(int $index, string $mail): void
     {
-        if (Orthos::checkMailSyntax($mail) == false) {
-            throw new QUI\Users\Exception(
+        if (!Orthos::checkMailSyntax($mail)) {
+            throw new Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'exception.lib.user.address.mail.wrong.syntax'
@@ -496,24 +499,22 @@ class Address extends QUI\QDOM
             );
         }
 
-        $index = (int)$index;
         $list = $this->getMailList();
-
         $list[$index] = $mail;
 
-        $this->setAttribute('mail', \json_encode($list));
+        $this->setAttribute('mail', json_encode($list));
     }
 
     /**
      * Return the address country
      *
      * @return QUI\Countries\Country
-     * @throws QUI\Users\Exception
+     * @throws Exception
      */
     public function getCountry(): QUI\Countries\Country
     {
         if ($this->getAttribute('country') === false) {
-            throw new QUI\Users\Exception(
+            throw new Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'exception.lib.user.address.no.country'
@@ -528,7 +529,7 @@ class Address extends QUI\QDOM
         } catch (QUI\Exception) {
         }
 
-        throw new QUI\Users\Exception(
+        throw new Exception(
             QUI::getLocale()->get(
                 'quiqqer/quiqqer',
                 'exception.lib.user.address.no.country'
@@ -542,13 +543,13 @@ class Address extends QUI\QDOM
      * @param null|QUIUserInterface $PermissionUser
      * @throws QUI\Permissions\Exception
      */
-    public function save($PermissionUser = null)
+    public function save(?QUIUserInterface $PermissionUser = null): void
     {
         if (!$this->getUser()) {
             return;
         }
 
-        if (\is_null($PermissionUser)) {
+        if (is_null($PermissionUser)) {
             $PermissionUser = QUI::getUserBySession();
         }
 
@@ -562,15 +563,13 @@ class Address extends QUI\QDOM
             QUI\System\Log::writeException($Exception);
         }
 
-        $mail = \json_encode($this->getMailList());
-        $phone = \json_encode($this->getPhoneList());
+        $mail = json_encode($this->getMailList());
+        $phone = json_encode($this->getPhoneList());
 
         $cleanupAttributes = function ($str) {
             $str = Orthos::removeHTML($str);
             $str = Orthos::clearFormRequest($str);
-            $str = Orthos::clearPath($str);
-
-            return $str;
+            return Orthos::clearPath($str);
         };
 
         try {
@@ -588,7 +587,7 @@ class Address extends QUI\QDOM
                     'country' => $cleanupAttributes($this->getAttribute('country')),
                     'mail' => $mail,
                     'phone' => $phone,
-                    'custom_data' => \json_encode($this->getCustomData()),
+                    'custom_data' => json_encode($this->getCustomData()),
                     'e_date' => date('Y-m-d H:i:s')
                 ],
                 [
@@ -605,8 +604,8 @@ class Address extends QUI\QDOM
             if ($User->getStandardAddress()->getId() === $this->getId()) {
                 $mailList = $this->getMailList();
 
-                if (\count($mailList)) {
-                    $email = \reset($mailList);
+                if (count($mailList)) {
+                    $email = reset($mailList);
                     $User->setAttribute('email', $cleanupAttributes($email));
                 }
 
@@ -627,7 +626,7 @@ class Address extends QUI\QDOM
     /**
      * @return QUIUserInterface
      */
-    public function getUser(): ?QUIUserInterface
+    public function getUser(): QUIUserInterface
     {
         return $this->User;
     }
@@ -648,7 +647,7 @@ class Address extends QUI\QDOM
      * @param array $entries
      * @return void
      */
-    public function setCustomData($entries)
+    public function setCustomData(array $entries): void
     {
         foreach ($entries as $k => $v) {
             $this->setCustomDataEntry($k, $v);
@@ -660,7 +659,7 @@ class Address extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    public function delete()
+    public function delete(): void
     {
         QUI::getDataBase()->exec([
             'delete' => true,
@@ -678,7 +677,7 @@ class Address extends QUI\QDOM
      * @param array $options - options
      * @return string
      */
-    public function render($options = []): string
+    public function render(array $options = []): string
     {
         return $this->getDisplay($options);
     }
@@ -689,7 +688,7 @@ class Address extends QUI\QDOM
      * @param array $options - options ['mail' => true, 'tel' => true]
      * @return string - HTML <address>
      */
-    public function getDisplay($options = []): string
+    public function getDisplay(array $options = []): string
     {
         try {
             $Engine = QUI::getTemplateManager()->getEngine(true);
@@ -718,7 +717,7 @@ class Address extends QUI\QDOM
 
         $template = $this->getAttribute('template');
 
-        if (\file_exists($template)) {
+        if (file_exists($template)) {
             return $Engine->fetch($template);
         }
 
@@ -771,9 +770,9 @@ class Address extends QUI\QDOM
         }
 
         // build parts
-        $part[0] = \trim(\implode(' ', $part[0]));
-        $part[1] = \trim(\implode(' ', $part[1]));
-        $part[2] = \trim(\implode(' ', $part[2]));
+        $part[0] = trim(implode(' ', $part[0]));
+        $part[1] = trim(implode(' ', $part[1]));
+        $part[2] = trim(implode(' ', $part[2]));
 
         if (empty($part[2])) {
             unset($part[2]);
@@ -787,7 +786,7 @@ class Address extends QUI\QDOM
             unset($part[0]);
         }
 
-        $address = \implode('; ', $part);
+        $address = implode('; ', $part);
         $company = $this->getAttribute('company');
 
         if (!empty($company)) {
@@ -830,10 +829,10 @@ class Address extends QUI\QDOM
             $salutation = '';
         }
 
-        $result = "{$salutation} {$firstName} {$lastName}";
-        $result = \preg_replace('/[  ]{2,}/', ' ', $result);
+        $result = "$salutation $firstName $lastName";
+        $result = preg_replace('/[  ]{2,}/', ' ', $result);
 
-        return \trim($result);
+        return trim($result);
     }
 
     /**
@@ -847,16 +846,17 @@ class Address extends QUI\QDOM
         $attributes['id'] = $this->getId();
         $attributes['uuid'] = $this->getUuid();
 
-        return \json_encode($attributes);
+        return json_encode($attributes);
     }
 
     /**
      * @return array
      */
-    public function getAttributes(): array
+    public function getAttributes()
     {
         $attributes = parent::getAttributes();
         $attributes['suffix'] = $this->getAddressSuffix();
+        $attributes['uuid'] = $this->getUuid();
 
         return $attributes;
     }
@@ -868,9 +868,9 @@ class Address extends QUI\QDOM
      * @param bool $compareCustomData (optional) - Consider custom data on comparison [default: false]
      * @return bool
      */
-    public function equals(Address $Address, $compareCustomData = false): bool
+    public function equals(Address $Address, bool $compareCustomData = false): bool
     {
-        if ($this->getId() === $Address->getId()) {
+        if ($this->getUuid() === $Address->getUuid()) {
             return true;
         }
 
@@ -878,21 +878,21 @@ class Address extends QUI\QDOM
         $dataOther = $Address->getAttributes();
 
         // always ignore internal custom_data attribute
-        if (\array_key_exists('custom_data', $dataThis)) {
+        if (array_key_exists('custom_data', $dataThis)) {
             unset($dataThis['custom_data']);
         }
 
-        if (\array_key_exists('custom_data', $dataOther)) {
+        if (array_key_exists('custom_data', $dataOther)) {
             unset($dataOther['custom_data']);
         }
 
         // consider actual custom data
         if (!$compareCustomData) {
-            if (\array_key_exists('customData', $dataThis)) {
+            if (array_key_exists('customData', $dataThis)) {
                 unset($dataThis['customData']);
             }
 
-            if (\array_key_exists('customData', $dataOther)) {
+            if (array_key_exists('customData', $dataOther)) {
                 unset($dataOther['customData']);
             }
         }
@@ -920,11 +920,11 @@ class Address extends QUI\QDOM
     //region address suffix - Address suffix
 
     /**
-     * Add a address suffix to the address
+     * Add an address suffix to the address
      *
      * @param string $suffix
      */
-    public function setAddressSuffix(string $suffix)
+    public function setAddressSuffix(string $suffix): void
     {
         $this->setCustomDataEntry('address-suffix', $suffix);
     }
@@ -933,20 +933,12 @@ class Address extends QUI\QDOM
      * Set custom data entry
      *
      * @param string $key
-     * @param integer|float|bool|string $value
+     * @param float|bool|integer|string $value
      * @return void
      */
-    public function setCustomDataEntry(string $key, $value)
+    public function setCustomDataEntry(string $key, float|bool|int|string $value): void
     {
-        if (\is_object($value)) {
-            return;
-        }
-
-        if (is_array($value)) {
-            return;
-        }
-
-        if (!\is_numeric($value) && !\is_string($value) && !\is_bool($value)) {
+        if (!is_numeric($value) && !is_string($value) && !is_bool($value)) {
             return;
         }
 

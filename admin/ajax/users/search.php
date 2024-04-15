@@ -44,7 +44,7 @@ QUI::$Ajax->registerFunction(
                 continue;
             }
 
-            $usergroups = \explode(',', \trim($user['usergroup'], ','));
+            $usergroups = explode(',', trim($user['usergroup'], ','));
             $groupnames = '';
 
             foreach ($usergroups as $gid) {
@@ -59,12 +59,12 @@ QUI::$Ajax->registerFunction(
                 }
             }
 
-            $user['usergroup'] = \trim($groupnames, ',');
+            $user['usergroup'] = trim($groupnames, ',');
 
             if (empty($user['regdate'])) {
                 $user['regdate'] = '-';
             } else {
-                $RegDate = \date_create('@' . $user['regdate']);
+                $RegDate = date_create('@' . $user['regdate']);
 
                 if ($RegDate) {
                     $user['regdate'] = $Locale->formatDate($RegDate->getTimestamp());
@@ -72,7 +72,7 @@ QUI::$Ajax->registerFunction(
             }
 
             if (!empty($user['lastedit'])) {
-                $LastEdit = \date_create($user['lastedit']);
+                $LastEdit = date_create($user['lastedit']);
 
                 if ($LastEdit) {
                     $user['lastedit'] = $Locale->formatDate($LastEdit->getTimestamp());

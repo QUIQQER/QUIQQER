@@ -654,7 +654,7 @@ class Edit extends Site
 
         if ($mid) {
             try {
-                $User = QUI::getUsers()->get((int)$mid);
+                $User = QUI::getUsers()->get($mid);
             } catch (QUI\Exception) {
             }
 

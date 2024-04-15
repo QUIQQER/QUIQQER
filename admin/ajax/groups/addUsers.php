@@ -15,7 +15,7 @@ QUI::$Ajax->registerFunction(
         $Group = QUI::getGroups()->get((int)$gid);
 
         foreach ($userIds as $userId) {
-            $User = QUI::getUsers()->get((int)$userId);
+            $User = QUI::getUsers()->get($userId);
             $Group->addUser($User);
             $User->save();
         }

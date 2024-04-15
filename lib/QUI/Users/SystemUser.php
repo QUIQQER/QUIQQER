@@ -18,7 +18,7 @@ use QUI;
 class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
 {
     /**
-     * construtcor
+     * constructor
      */
     public function __construct()
     {
@@ -28,21 +28,23 @@ class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see \QUI\Users\Nobody::getUniqueId()
+     * @return int|string
      */
-    public function getUniqueId()
+    public function getUniqueId(): int|string
     {
-        return '5';
+        return $this->getUUID();
     }
 
     /**
-     * (non-PHPdoc)
-     *
+     * @return string|int
+     */
+    public function getUUID(): string|int
+    {
+        return "5";
+    }
+
+    /**
      * @return string
-     * @see \QUI\Interfaces\Users\User::getUsername()
-     *
      */
     public function getUsername(): string
     {
@@ -50,11 +52,7 @@ class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
     }
 
     /**
-     * (non-PHPdoc)
-     *
      * @return string
-     * @see \QUI\Interfaces\Users\User::getName()
-     *
      */
     public function getName(): string
     {
@@ -62,10 +60,10 @@ class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
     }
 
     /**
-     * @param bool|true $array
+     * @param bool $array
      * @return array
      */
-    public function getGroups($array = true): array
+    public function getGroups(bool $array = true): array
     {
         $Everyone = new QUI\Groups\Everyone();
 
@@ -77,11 +75,9 @@ class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see \QUI\Users\Nobody::getId()
+     * @return false|int
      */
-    public function getId()
+    public function getId(): false|int
     {
         return 5;
     }

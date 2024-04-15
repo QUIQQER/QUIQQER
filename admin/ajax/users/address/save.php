@@ -19,8 +19,9 @@ QUI::$Ajax->registerFunction(
             $result = QUI::getDataBase()->fetch([
                 'select' => ['id', 'uid'],
                 'from' => QUI\Users\Manager::tableAddress(),
-                'where' => [
-                    'id' => $aid
+                'where_or' => [
+                    'id' => $aid,
+                    'uuid' => $aid
                 ],
                 'limit' => 1
             ]);
@@ -41,10 +42,10 @@ QUI::$Ajax->registerFunction(
             $uid = (int)$result[0]['uid'];
         }
 
-        $User = QUI::getUsers()->get((int)$uid);
+        $User = QUI::getUsers()->get($uid);
 
         try {
-            $Address = $User->getAddress((int)$aid);
+            $Address = $User->getAddress($aid);
         } catch (QUI\Exception) {
             $Address = $User->addAddress($data);
         }
@@ -83,7 +84,7 @@ QUI::$Ajax->registerFunction(
             $User->save();
         }
 
-        return $Address->getId();
+        return $Address->getUuid();
     },
     ['uid', 'aid', 'data'],
     ['Permission::checkAdminUser', 'quiqqer.admin.users.edit']

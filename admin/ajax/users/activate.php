@@ -1,10 +1,9 @@
 <?php
 
 /**
- * Benutzer aktivieren
+ * User activation
  *
  * @param integer|array|string $uid
- *
  * @return array
  */
 
@@ -24,7 +23,7 @@ QUI::$Ajax->registerFunction(
         foreach ($uid as $_uid) {
             try {
                 $User = $Users->get($_uid);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 continue;
             }
 
@@ -47,13 +46,13 @@ QUI::$Ajax->registerFunction(
             }
         }
 
-        if (\count($activated)) {
+        if (count($activated)) {
             QUI::getMessagesHandler()->addSuccess(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'message.users.activated',
                     [
-                        'users' => \implode(',', $activated)
+                        'users' => implode(',', $activated)
                     ]
                 )
             );

@@ -8,6 +8,12 @@ namespace QUI\Utils;
 
 use QUI;
 
+use function array_flip;
+use function explode;
+use function implode;
+use function is_string;
+use function substr;
+
 /**
  * Helper for users group strings
  * UG-Strings = u19939939,g9929299299,g999929929292,u882828282
@@ -21,7 +27,7 @@ class UserGroups
      * @param array $array
      * @return string
      */
-    public static function parseUGArrayToString($array)
+    public static function parseUGArrayToString(array $array): string
     {
         $result = '';
 
@@ -44,7 +50,7 @@ class UserGroups
             $list[] = 'g' . $gid;
         }
 
-        return \implode(',', $list);
+        return implode(',', $list);
     }
 
     /**
@@ -53,23 +59,19 @@ class UserGroups
      * @param QUI\Interfaces\Users\User $User
      * @return string
      */
-    public static function getUserGroupStringFromUser(QUI\Interfaces\Users\User $User)
+    public static function getUserGroupStringFromUser(QUI\Interfaces\Users\User $User): string
     {
         $result = [];
+        $result[] = 'u' . $User->getUUID();
+
         $groups = $User->getGroups();
-
-        if (!\is_array($groups)) {
-            $groups = [];
-        }
-
-        $result[] = 'u' . $User->getId();
 
         /* @var $Group QUI\Groups\Group */
         foreach ($groups as $Group) {
             $result[] = 'g' . $Group->getId();
         }
 
-        return \implode(',', $result);
+        return implode(',', $result);
     }
 
     /**
@@ -80,9 +82,9 @@ class UserGroups
      * @param $ugString
      * @return bool
      */
-    public static function isUserInUserGroupString(QUI\Interfaces\Users\User $User, $ugString)
+    public static function isUserInUserGroupString(QUI\Interfaces\Users\User $User, $ugString): bool
     {
-        if (!\is_string($ugString)) {
+        if (!is_string($ugString)) {
             return false;
         }
 
@@ -94,9 +96,13 @@ class UserGroups
             if ($uid == $User->getId()) {
                 return true;
             }
+
+            if ($uid == $User->getUUID()) {
+                return true;
+            }
         }
 
-        $userGroups = \array_flip($User->getGroups(false));
+        $userGroups = array_flip($User->getGroups(false));
 
         foreach ($groups as $gid) {
             if (isset($userGroups[$gid])) {
@@ -113,31 +119,27 @@ class UserGroups
      * @param string $str
      * @return array
      */
-    public static function parseUsersGroupsString($str)
+    public static function parseUsersGroupsString(string $str): array
     {
         $result = [
             'users' => [],
             'groups' => []
         ];
 
-        if (!\is_string($str)) {
-            return $result;
-        }
-
         if (empty($str)) {
             $ugs = [];
         } else {
-            $ugs = \explode(',', $str);
+            $ugs = explode(',', $str);
         }
 
         foreach ($ugs as $ug) {
-            if (\strpos($ug, 'g') !== false) {
-                $result['groups'][] = (int)\substr($ug, 1);
+            if (str_contains($ug, 'g')) {
+                $result['groups'][] = (int)substr($ug, 1);
                 continue;
             }
 
-            if (\strpos($ug, 'u') !== false) {
-                $result['users'][] = (int)\substr($ug, 1);
+            if (str_contains($ug, 'u')) {
+                $result['users'][] = substr($ug, 1);
             }
         }
 
@@ -145,21 +147,17 @@ class UserGroups
     }
 
     /**
-     * is the string an UG-String
+     * is the string a UG-String
      *
      * @param string $ugString
      * @return bool
      */
-    public static function isUserGroupString($ugString)
+    public static function isUserGroupString(string $ugString): bool
     {
-        if (!\is_string($ugString)) {
-            return false;
-        }
-
-        $ugString = \explode(',', $ugString);
+        $ugString = explode(',', $ugString);
 
         foreach ($ugString as $entry) {
-            if (\strpos($entry, 'g') === false && \strpos($entry, 'u') === false) {
+            if (!str_contains($entry, 'g') && !str_contains($entry, 'u')) {
                 return false;
             }
         }

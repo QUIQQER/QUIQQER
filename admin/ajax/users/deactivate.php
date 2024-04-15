@@ -1,10 +1,9 @@
 <?php
 
 /**
- * Benutzer deaktivieren
+ * user deactivation
  *
  * @param integer|array|string $uid
- *
  * @return array
  */
 
@@ -24,7 +23,7 @@ QUI::$Ajax->registerFunction(
         foreach ($uid as $_uid) {
             try {
                 $User = $Users->get($_uid);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 continue;
             }
 
@@ -53,7 +52,7 @@ QUI::$Ajax->registerFunction(
                     'quiqqer/quiqqer',
                     'message.users.deactivated',
                     [
-                        'users' => \implode(',', $deactivated)
+                        'users' => implode(',', $deactivated)
                     ]
                 )
             );

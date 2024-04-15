@@ -71,7 +71,7 @@ class Everyone extends QUI\Groups\Group
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
-    public function save()
+    public function save(): void
     {
         $this->rights = QUI::getPermissionManager()->getRightParamsFromGroup($this);
 
@@ -153,11 +153,11 @@ class Everyone extends QUI\Groups\Group
      * Checks if the ID is from a parent group
      *
      * @param integer $id - ID from parent
-     * @param boolean $recursiv - checks recursive or not
+     * @param boolean $recursive - checks recursive or not
      *
      * @return boolean
      */
-    public function isParent($id, $recursiv = false)
+    public function isParent(int $id, bool $recursive = false)
     {
         return false;
     }
@@ -170,7 +170,7 @@ class Everyone extends QUI\Groups\Group
      * @return object|integer|false
      * @throws \QUI\Exception
      */
-    public function getParent($obj = true)
+    public function getParent(bool $obj = true)
     {
         return false;
     }
@@ -202,7 +202,7 @@ class Everyone extends QUI\Groups\Group
      *
      * @return array
      */
-    public function getChildren($params = [])
+    public function getChildren(array $params = [])
     {
         return [];
     }
@@ -211,11 +211,11 @@ class Everyone extends QUI\Groups\Group
      * return the subgroup ids
      *
      * @param boolean $recursiv - recursiv true / false
-     * @param      $params - SQL Params (limit, order)
+     * @param array $params - SQL Params (limit, order)
      *
      * @return array
      */
-    public function getChildrenIds($recursiv = false, $params = [])
+    public function getChildrenIds(bool $recursiv = false, array $params = [])
     {
         return [];
     }
