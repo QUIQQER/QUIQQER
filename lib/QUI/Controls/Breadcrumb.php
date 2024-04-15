@@ -8,8 +8,6 @@ namespace QUI\Controls;
 
 use QUI;
 
-use function dirname;
-
 /**
  * Alphabet sorting
  *
@@ -22,7 +20,7 @@ class Breadcrumb extends QUI\Control
      * constructor
      * @param array $attributes
      */
-    public function __construct($attributes = [])
+    public function __construct(array $attributes = [])
     {
         // default options
         $this->setAttributes([
@@ -37,10 +35,10 @@ class Breadcrumb extends QUI\Control
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \QUI\Control::create()
+     * @return string
+     * @throws QUI\Exception
      */
-    public function getBody()
+    public function getBody(): string
     {
         $Engine = QUI::getTemplateManager()->getEngine();
 

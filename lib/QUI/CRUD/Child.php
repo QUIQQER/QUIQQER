@@ -32,7 +32,7 @@ abstract class Child extends QUI\QDOM
      * @param integer|string $id
      * @param Factory $Factory
      */
-    public function __construct(protected $id, protected Factory $Factory)
+    public function __construct(protected int|string $id, protected Factory $Factory)
     {
         $this->Events = new QUI\Events\Event();
     }
@@ -42,7 +42,7 @@ abstract class Child extends QUI\QDOM
      *
      * @throws QUI\Database\Exception
      */
-    public function refresh()
+    public function refresh(): void
     {
         $data = $this->Factory->getChildrenData([
             'where' => [
@@ -60,7 +60,7 @@ abstract class Child extends QUI\QDOM
      *
      * @return int|string
      */
-    public function getId()
+    public function getId(): int|string
     {
         return $this->id;
     }
@@ -70,7 +70,7 @@ abstract class Child extends QUI\QDOM
      *
      * @throws QUI\ExceptionStack|QUI\Exception
      */
-    public function delete()
+    public function delete(): void
     {
         $this->Events->fireEvent('deleteBegin');
 
@@ -88,7 +88,7 @@ abstract class Child extends QUI\QDOM
      *
      * @throws QUI\ExceptionStack|QUI\Exception
      */
-    public function update()
+    public function update(): void
     {
         $this->Events->fireEvent('saveBegin');
         $this->Events->fireEvent('updateBegin');
@@ -122,7 +122,7 @@ abstract class Child extends QUI\QDOM
      *
      * @return mixed
      */
-    public function getAttribute($name)
+    public function getAttribute(string $name): mixed
     {
         if (array_key_exists($name, $this->attributes)) {
             return $this->attributes[$name];

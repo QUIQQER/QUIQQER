@@ -8,7 +8,6 @@ namespace QUI\Controls;
 
 use QUI;
 
-use function dirname;
 use function is_int;
 use function is_string;
 
@@ -24,7 +23,7 @@ class AlphabetSorting extends QUI\Control
      * constructor
      * @param array $attributes
      */
-    public function __construct($attributes = [])
+    public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
 
@@ -36,10 +35,10 @@ class AlphabetSorting extends QUI\Control
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \QUI\Control::create()
+     * @return string
+     * @throws QUI\Exception
      */
-    public function getBody()
+    public function getBody(): string
     {
         $Engine = QUI::getTemplateManager()->getEngine();
         $Site = $this->getAttribute('Site');

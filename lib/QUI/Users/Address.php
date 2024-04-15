@@ -216,7 +216,7 @@ class Address extends QUI\QDOM
      * @param string $name
      * @return false|mixed|null
      */
-    public function getAttribute($name)
+    public function getAttribute(string $name): mixed
     {
         if ($name === 'suffix') {
             return $this->getAddressSuffix();
@@ -852,7 +852,7 @@ class Address extends QUI\QDOM
     /**
      * @return array
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         $attributes = parent::getAttributes();
         $attributes['suffix'] = $this->getAddressSuffix();

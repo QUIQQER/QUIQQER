@@ -57,7 +57,7 @@ abstract class Item extends QUI\QDOM
      *
      * @var bool|array
      */
-    protected $effects = false;
+    protected array|bool $effects = false;
 
     /**
      * internal media object
@@ -71,34 +71,34 @@ abstract class Item extends QUI\QDOM
      *
      * @var integer
      */
-    protected $parent_id = false;
+    protected int|bool $parent_id = false;
 
     /**
      * Path to the real file
      *
      * @var string
      */
-    protected $file;
+    protected string $file;
 
     /**
      * @var array
      */
-    protected $pathHistory = null;
+    protected ?array $pathHistory = null;
 
     /**
      * @var array
      */
-    protected $title = [];
+    protected array $title = [];
 
     /**
      * @var array
      */
-    protected $description = [];
+    protected array $description = [];
 
     /**
-     * @var array|mixed
+     * @var array
      */
-    protected $alt = [];
+    protected array $alt = [];
 
     /**
      * constructor
@@ -170,7 +170,7 @@ abstract class Item extends QUI\QDOM
      * @param string $name
      * @return mixed
      */
-    public function getAttribute($name)
+    public function getAttribute(string $name): mixed
     {
         if ($name === 'title') {
             return json_encode($this->title);
@@ -192,10 +192,9 @@ abstract class Item extends QUI\QDOM
      * -> this method considers multilingual attributes
      *
      * @param string $name
-     * @param array|bool|object|string $val
-     * @return QUI\QDOM|void
+     * @param mixed $val
      */
-    public function setAttribute($name, $val)
+    public function setAttribute(string $name, mixed $val): void
     {
         if (
             $name !== 'title'
@@ -340,7 +339,7 @@ abstract class Item extends QUI\QDOM
      *
      * @return array
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         $attributes = parent::getAttributes();
 
