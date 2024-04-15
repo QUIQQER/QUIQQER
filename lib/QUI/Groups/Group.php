@@ -7,7 +7,6 @@
 namespace QUI\Groups;
 
 use QUI;
-
 use QUI\Database\Exception;
 
 use function array_filter;
@@ -243,8 +242,7 @@ class Group extends QUI\QDOM
      */
     protected function createCache(): void
     {
-        // Cache aufbauen
-        QUI\Cache\Manager::set('quiqqer/groups/group/' . $this->getId(), [
+        QUI\Cache\Manager::set('quiqqer/groups/group/' . $this->getUUID(), [
             'parentids' => $this->getParentIds(),
             'attributes' => $this->getAttributes(),
             'rights' => $this->rights
@@ -256,7 +254,7 @@ class Group extends QUI\QDOM
      *
      * @return array
      */
-    public function getParentIds(): ?array
+    public function getParentIds(): array
     {
         if ($this->parentIds) {
             return $this->parentIds;
@@ -299,8 +297,9 @@ class Group extends QUI\QDOM
         $result = QUI::getDataBase()->fetch([
             'select' => 'id, parent',
             'from' => Manager::table(),
-            'where' => [
-                'id' => (int)$id
+            'where_or' => [
+                'id' => (int)$id,
+                'uuid' => $id
             ],
             'limit' => 1
         ]);
@@ -315,10 +314,9 @@ class Group extends QUI\QDOM
     }
 
     /**
-     * Deletes the group and sub-groups
+     * Deletes the group and subgroups
      *
      * @throws QUI\Exception
-     * @todo alle Beziehungen in den Seiten müssen neu gesetzt werden
      */
     public function delete(): void
     {
