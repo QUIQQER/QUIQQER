@@ -73,10 +73,8 @@ class Event implements QUI\Interfaces\Events
     /**
      * @param string $event - The type of event (e.g. 'complete').
      * @param callable $fn - The function to execute.
-     * @param int $priority - optional, Priority of the event
-     * @param string $package - optional, name of the package
      */
-    public function addEvent($event, $fn, int $priority = 0, string $package = ''): void
+    public function addEvent(string $event, callable $fn): void
     {
         if (!isset($this->events[$event])) {
             $this->events[$event] = [];
@@ -110,7 +108,7 @@ class Event implements QUI\Interfaces\Events
      * @param string $event - The type of event (e.g. 'complete').
      * @param callable|boolean $fn - (optional) The function to remove.
      */
-    public function removeEvent($event, $fn = false): void
+    public function removeEvent(string $event, callable|bool $fn = false): void
     {
         if (!isset($this->events[$event])) {
             return;
@@ -131,15 +129,14 @@ class Event implements QUI\Interfaces\Events
 
     /**
      * @param string $event - The type of event (e.g. 'onComplete').
-     * @param array|boolean $args - (optional) the argument(s) to pass to the function.
+     * @param boolean|array $args - (optional) the argument(s) to pass to the function.
      *                            The arguments must be in an array.
-     * @param boolean $force - (optional) no recursion check, optional, default = false
      *
      * @return array - Event results, associative array
      *
      * @throws QUI\ExceptionStack
      */
-    public function fireEvent($event, $args = false, bool $force = false): array
+    public function fireEvent(string $event, bool|array $args = false): array
     {
         $results = [];
 

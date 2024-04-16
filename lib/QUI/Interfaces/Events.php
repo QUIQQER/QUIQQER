@@ -19,7 +19,7 @@ interface Events
      * Return all registered events
      * @return array
      */
-    public function getList();
+    public function getList(): array;
 
     /**
      * Adds an event to the Class instance's event stack.
@@ -27,7 +27,7 @@ interface Events
      * @param string $event - The type of event (e.g. 'complete').
      * @param callable $fn - Function which should be executed
      */
-    public function addEvent($event, $fn);
+    public function addEvent(string $event, callable $fn);
 
     /**
      * The same as addEvent, but accepts an array to add multiple events at once.
@@ -42,7 +42,7 @@ interface Events
      * @param string $event - The type of event (e.g. 'complete').
      * @param callable|bool $fn - (optional) Function which should be removed
      */
-    public function removeEvent($event, $fn = false);
+    public function removeEvent(string $event, callable|bool $fn = false);
 
     /**
      * Removes all events of the given type from the stack of events of a Class instance.
@@ -56,8 +56,8 @@ interface Events
      * Fires all events of the specified type in the Class instance.
      *
      * @param string $event - The type of event (e.g. 'onComplete').
-     * @param array|bool $args - (optional) the argument(s) to pass to the function.
+     * @param bool|array $args - (optional) the argument(s) to pass to the function.
      *                        The arguments must be in an array.
      */
-    public function fireEvent($event, $args = false);
+    public function fireEvent(string $event, bool|array $args = false);
 }
