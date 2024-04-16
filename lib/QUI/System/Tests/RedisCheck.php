@@ -8,7 +8,6 @@ namespace QUI\System\Tests;
 
 use Exception;
 use QUI;
-
 use Redis;
 
 use function class_exists;

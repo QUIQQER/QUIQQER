@@ -7,7 +7,6 @@
 namespace QUI\System\Checks;
 
 use QUI;
-
 use QUI\Exception;
 
 use function array_merge;
