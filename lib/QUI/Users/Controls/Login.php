@@ -8,7 +8,6 @@ namespace QUI\Users\Controls;
 
 use QUI;
 use QUI\Control;
-
 use QUI\Database\Exception;
 use QUI\ExceptionStack;
 
