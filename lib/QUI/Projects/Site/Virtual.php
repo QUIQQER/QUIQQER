@@ -9,7 +9,6 @@ namespace QUI\Projects\Site;
 use QUI;
 use QUI\Exception;
 use QUI\Interfaces\Projects\Site;
-
 use QUI\Projects\Project;
 
 use function json_decode;
