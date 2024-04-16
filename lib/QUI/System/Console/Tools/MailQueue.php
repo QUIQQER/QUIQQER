@@ -11,6 +11,8 @@ namespace QUI\System\Console\Tools;
 use League\CLImate\CLImate;
 use QUI;
 
+use QUI\Database\Exception;
+
 use function implode;
 use function is_numeric;
 use function json_decode;
@@ -45,15 +47,16 @@ class MailQueue extends QUI\System\Console\Tool
     /**
      * (non-PHPdoc)
      *
+     * @throws Exception
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         $MailQueue = new QUI\Mail\Queue();
 
         if ($this->getArgument('count')) {
             $this->writeLn($MailQueue->count() . ' mail(s) in the queue');
-            $this->writeLn('');
+            $this->writeLn();
             return;
         }
 
@@ -126,8 +129,8 @@ class MailQueue extends QUI\System\Console\Tool
             $list = $MailQueue->getList();
 
             $this->writeLn('Mail Queue:');
-            $this->writeLn('');
-            $this->writeLn('');
+            $this->writeLn();
+            $this->writeLn();
 
             $Climate = new CLImate();
             $data = [
@@ -145,23 +148,13 @@ class MailQueue extends QUI\System\Console\Tool
                 $mailto = json_decode($entry['mailto'], true);
                 $mailto = implode(',', $mailto);
 
-                switch ((int)$entry['status']) {
-                    case QUI\Mail\Queue::STATUS_ADDED:
-                        $status = 'added';
-                        break;
-                    case QUI\Mail\Queue::STATUS_SENT:
-                        $status = 'sent';
-                        break;
-                    case QUI\Mail\Queue::STATUS_SENDING:
-                        $status = 'sending';
-                        break;
-                    case QUI\Mail\Queue::STATUS_ERROR:
-                        $status = 'error';
-                        break;
-
-                    default:
-                        $status = 'unknown';
-                }
+                $status = match ((int)$entry['status']) {
+                    QUI\Mail\Queue::STATUS_ADDED => 'added',
+                    QUI\Mail\Queue::STATUS_SENT => 'sent',
+                    QUI\Mail\Queue::STATUS_SENDING => 'sending',
+                    QUI\Mail\Queue::STATUS_ERROR => 'error',
+                    default => 'unknown',
+                };
 
                 $data[] = [
                     $entry['id'],

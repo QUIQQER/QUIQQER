@@ -6,6 +6,7 @@
 
 namespace QUI\System\Console\Tools;
 
+use Exception;
 use QUI;
 
 use function array_map;
@@ -35,9 +36,10 @@ class Setup extends QUI\System\Console\Tool
      * (non-PHPdoc)
      *
      * @throws QUI\Exception
+     * @throws Exception
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         QUI\System\Log::write(
             '====== EXECUTE SETUP ======',
@@ -72,12 +74,12 @@ class Setup extends QUI\System\Console\Tool
         $data = implode("\n", $data);
 
         $this->writeLn($data);
-        $this->writeLn('');
+        $this->writeLn();
 
         $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.setup.start.message'));
         QUI\Setup::all($this);
 
         $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.setup.message.success'));
-        $this->writeLn('');
+        $this->writeLn();
     }
 }

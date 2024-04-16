@@ -3,6 +3,7 @@
 namespace QUI\System\Console\Tools;
 
 use QUI;
+use QUI\Exception;
 
 /**
  * Update-Server Console Manager
@@ -31,24 +32,24 @@ class UpdateServer extends QUI\System\Console\Tool
 
         $this->addExample('./console quiqqer:update-server --add=git@dev.quiqqer.com:quiqqer/quiqqer.git --type=vcs');
         $this->addExample('./console quiqqer:update-server --remove=git@dev.quiqqer.com:quiqqer/quiqqer.git');
-
-        $this->isSystemTool();
     }
 
-    public function execute()
+    public function execute(): void
     {
         if ($this->getArgument('add')) {
-            return $this->addServer();
+            $this->addServer();
+            return;
         }
 
         if ($this->getArgument('remove')) {
-            return $this->removeServer();
+            $this->removeServer();
+            return;
         }
 
-        return $this->showHelp();
+        $this->showHelp();
     }
 
-    protected function addServer()
+    protected function addServer(): void
     {
         $server = $this->getArgument('add');
 
@@ -81,7 +82,10 @@ class UpdateServer extends QUI\System\Console\Tool
         );
     }
 
-    protected function removeServer()
+    /**
+     * @throws Exception
+     */
+    protected function removeServer(): void
     {
         $server = $this->getArgument('remove');
 
@@ -103,7 +107,7 @@ class UpdateServer extends QUI\System\Console\Tool
         );
     }
 
-    protected function showHelp()
+    protected function showHelp(): void
     {
         $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.updateserver.help'));
     }

@@ -6,6 +6,7 @@
 
 namespace QUI\System\Console\Tools;
 
+use Exception;
 use QUI;
 
 use function count;
@@ -30,7 +31,7 @@ use function trim;
 class Htaccess extends QUI\System\Console\Tool
 {
     /**
-     * Konstruktor
+     * Constructor
      */
     public function __construct()
     {
@@ -45,7 +46,7 @@ class Htaccess extends QUI\System\Console\Tool
      *
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         $this->writeLn('Generating HTACCESS ...');
 
@@ -138,7 +139,7 @@ class Htaccess extends QUI\System\Console\Tool
         $this->resetColor();
     }
 
-    protected function templateOld()
+    protected function templateOld(): string
     {
         $URL_DIR = URL_DIR;
         $URL_LIB_DIR = URL_LIB_DIR;
@@ -362,7 +363,7 @@ class Htaccess extends QUI\System\Console\Tool
 
         for ($i = 0; $i < $counter; $i++) {
             $line = $lines[$i];
-            if (substr($line, 0, 1) === "#") {
+            if (str_starts_with($line, "#")) {
                 unset($lines[$i]);
                 continue;
             }
@@ -383,7 +384,7 @@ class Htaccess extends QUI\System\Console\Tool
             if ($version[1] <= 2) {
                 $oldTemplate = true;
             }
-        } catch (\Exception) {
+        } catch (Exception) {
             $this->writeLn("Please select your Apache Version.");
             $this->writeLn("[1] Apache 2.3 and higher.");
             $this->writeLn("[2] Apache 2.2 and lower.");
