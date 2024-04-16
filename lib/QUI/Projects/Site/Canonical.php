@@ -7,7 +7,6 @@
 namespace QUI\Projects\Site;
 
 use QUI;
-
 use QUI\Exception;
 
 use function ltrim;

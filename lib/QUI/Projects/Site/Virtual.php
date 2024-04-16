@@ -7,9 +7,10 @@
 namespace QUI\Projects\Site;
 
 use QUI;
-
 use QUI\Exception;
 use QUI\Interfaces\Projects\Site;
+
+use QUI\Projects\Project;
 
 use function json_decode;
 use function json_encode;
@@ -26,24 +27,24 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * @var null|QUI\Projects\Site
      */
-    protected $Parent = null;
+    protected ?QUI\Projects\Site $Parent = null;
 
     /**
      * Project
      *
-     * @var null
+     * @var QUI\Projects\Project|null
      */
-    protected $Project = null;
+    protected ?QUI\Projects\Project $Project = null;
 
     /**
      * @param array $attributes
-     * @param QUI\Projects\Project $Project
-     * @param QUI\Projects\Site $Parent
+     * @param Project|null $Project
+     * @param QUI\Projects\Site|null $Parent
      *
-     * @throws QUI\Exception
+     * @throws Exception
      */
     public function __construct(
-        $attributes = [],
+        array $attributes = [],
         QUI\Projects\Project $Project = null,
         QUI\Projects\Site $Parent = null
     ) {
@@ -153,7 +154,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *                      $params['limit']
      * @param boolean $load - Legt fest ob die Kinder die Plugins laden sollen
      *
-     * @return array;
+     * @return int|array ;
      */
     public function getChildren(array $params = [], bool $load = false): int|array
     {
@@ -215,7 +216,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @param array $params
      *
-     * @return array
+     * @return int|array
      */
     public function getNavigation(array $params = []): int|array
     {
@@ -300,7 +301,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @todo move to Site/Edit
      */
-    public function delete()
+    public function delete(): bool
     {
         return false;
     }
@@ -330,6 +331,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Return the Parent id from the site object
      *
      * @return integer
+     * @throws Exception
      */
     public function getParentId(): int
     {
@@ -342,9 +344,9 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * Return the ID of the site,
-     * or the ID of the sibling (linked) site of another languager
+     * or the ID of the sibling (linked) site of another language
      *
-     * @param boolean|string $lang - optional, if it is set, then the language of the wanted linked sibling site
+     * @param boolean|string $lang - optional, if it is set, then the language of the wanted to be linked sibling site
      *
      * @return integer
      */
@@ -362,6 +364,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * ->Parent
      *
      * @return array
+     * @throws Exception
      */
     public function getParentIds(): array
     {
@@ -413,6 +416,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Site->Parent->ParentParent->ParentParentParent
      *
      * @return array
+     * @throws Exception
      */
     public function getParents(): array
     {
@@ -482,8 +486,6 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @param string $permission - name of the permission
      * @param QUI\Users\User|boolean $User - optional
-     *
-     * @throws QUI\Exception
      */
     public function checkPermission(string $permission, $User = false)
     {
