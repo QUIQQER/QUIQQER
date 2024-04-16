@@ -18,19 +18,19 @@ interface SystemOutput
      * Writes a new line
      *
      * @param string $msg
-     * @param string|bool $color
-     * @param string|bool $bg
+     * @param bool|string $color
+     * @param bool|string $bg
      * @return void
      */
-    public function writeLn(string $msg = '', $color = false, $bg = false);
+    public function writeLn(string $msg = '', bool|string $color = false, bool|string $bg = false): void;
 
     /**
      * Writes an output
      *
      * @param string $msg
-     * @param string|bool $color
-     * @param string|bool $bg
+     * @param bool|string $color
+     * @param bool|string $bg
      * @return void
      */
-    public function write(string $msg, $color = false, $bg = false);
+    public function write(string $msg, bool|string $color = false, bool|string $bg = false): void;
 }

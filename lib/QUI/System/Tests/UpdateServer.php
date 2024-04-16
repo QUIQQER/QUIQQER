@@ -36,7 +36,7 @@ class UpdateServer extends QUI\System\Test
      *
      * @return self::STATUS_OK|self::STATUS_ERROR
      */
-    public function execute()
+    public function execute(): int
     {
         $servers = QUI::getPackageManager()->getServerList();
 
@@ -44,11 +44,11 @@ class UpdateServer extends QUI\System\Test
         $composerServer = false;
 
         foreach ($servers as $server => $serverData) {
-            if ($server == 'http://update.quiqqer.com/') {
+            if ($server == 'https://update.quiqqer.com/') {
                 $updateServer = true;
             }
 
-            if ($server == 'http://composer.quiqqer.com/') {
+            if ($server == 'https://composer.quiqqer.com/') {
                 $composerServer = true;
             }
         }

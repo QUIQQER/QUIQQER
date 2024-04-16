@@ -23,7 +23,7 @@ class Backup
     /**
      * @return false|string
      */
-    public static function createEtcBackup()
+    public static function createEtcBackup(): bool|string
     {
         $uuid = Uuid::get();
         $cpIsEnabled = System::isSystemFunctionCallable('cp');
@@ -40,7 +40,7 @@ class Backup
         return $uuid;
     }
 
-    public static function deleteEtcBackup($folder)
+    public static function deleteEtcBackup($folder): void
     {
         $backupFolder = VAR_DIR . 'backup/etc/' . $folder;
 
@@ -81,8 +81,7 @@ class Backup
         $result = str_replace('diff', "\nFile: ", $result);
         $result = str_replace($params, '', $result);
         $result = str_replace("''", '', $result);
-        $result = ltrim($result);
 
-        return $result;
+        return ltrim($result);
     }
 }

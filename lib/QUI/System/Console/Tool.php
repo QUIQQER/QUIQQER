@@ -227,10 +227,10 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      * Output a line to the parent
      *
      * @param string $msg - (optional) Message
-     * @param string|boolean $color - (optional) Text color
-     * @param string|boolean $bg - (optional) Background color
+     * @param boolean|string $color - (optional) Text color
+     * @param boolean|string $bg - (optional) Background color
      */
-    public function writeLn(string $msg = '', $color = false, $bg = false)
+    public function writeLn(string $msg = '', bool|string $color = false, bool|string $bg = false)
     {
         if ($this->getAttribute('parent')) {
             $this->getAttribute('parent')->writeLn($msg, $color, $bg);
@@ -322,10 +322,10 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      * Alternative to ->message()
      *
      * @param string $msg - Message
-     * @param string|boolean $color - optional, Text color
-     * @param string|boolean $bg - optional, Background color
+     * @param boolean|string $color - optional, Text color
+     * @param boolean|string $bg - optional, Background color
      */
-    public function write(string $msg, $color = false, $bg = false)
+    public function write(string $msg, bool|string $color = false, bool|string $bg = false)
     {
         $this->message($msg, $color, $bg);
     }
