@@ -62,26 +62,27 @@ class Manager
      * @var bool
      */
     protected bool $multipleCallPrevention = false;
-    /**
-     * @var ?QUI\Projects\Project (active internal project)
-     */
-    private ?QUI\Projects\Project $Project = null;
+
     /**
      * @var array - list of users (cache)
      */
     private array $users = [];
+
     /**
      * @var array
      */
     private array $usersUUIDs = [];
+
     /**
      * @var null|Nobody
      */
     private ?Nobody $Nobody = null;
+
     /**
      * @var null|SystemUser
      */
     private ?SystemUser $SystemUser = null;
+
     /**
      * @var null|QUIUserInterface
      */
@@ -426,7 +427,7 @@ class Manager
 
         $uuid = $User->getUUID();
 
-        $this->usersUUIDs[$uuid] = $User->getId();
+        $this->usersUUIDs[$uuid] = $User->getUUID();
         $this->users[$id] = $User;
 
         return $User;
@@ -1152,7 +1153,7 @@ class Manager
         if (!empty($authData['username'])) {
             try {
                 $User = self::getUserByName($authData['username']);
-                $userId = $User->getId();
+                $userId = $User->getUUID();
             } catch (\Exception) {
                 // nothing
             }
@@ -1397,7 +1398,7 @@ class Manager
         if (!empty($username)) {
             try {
                 $User = self::getUserByName($username);
-                $userId = $User->getId();
+                $userId = $User->getUUID();
             } catch (\Exception) {
                 // nothing
             }

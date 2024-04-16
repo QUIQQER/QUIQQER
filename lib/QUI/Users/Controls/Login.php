@@ -9,22 +9,32 @@ namespace QUI\Users\Controls;
 use QUI;
 use QUI\Control;
 
+use QUI\Database\Exception;
+use QUI\ExceptionStack;
+
+use function count;
+use function forward_static_call;
+use function in_array;
+use function is_array;
+use function is_null;
+use function usort;
+
 /**
  * Class Login
- * Main Login Control - Log in an user with all authentications
+ * Main Login Control - Log in a user with all authentications
  */
 class Login extends Control
 {
     /**
      * @var bool
      */
-    protected $isGlobalAuth = false;
+    protected bool $isGlobalAuth = false;
 
     /**
      * Login constructor.
      * @param array $options
      */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         $this->setAttributes([
             'data-qui' => 'controls/users/Login',
@@ -41,17 +51,19 @@ class Login extends Control
     /**
      * @return string
      *
-     * @throws QUI\Users\Exception
+     * @throws Exception
+     * @throws ExceptionStack
+     * @throws QUI\Exception
      */
-    public function getBody()
+    public function getBody(): string
     {
         $authenticator = $this->next();
 
-        if (\is_null($authenticator)) {
+        if (is_null($authenticator)) {
             return '';
         }
 
-        if (!\is_array($authenticator)) {
+        if (!is_array($authenticator)) {
             $authenticator = [$authenticator];
         }
 
@@ -62,14 +74,14 @@ class Login extends Control
             $exclusiveAuthenticators = [];
         }
 
-        foreach ($authenticator as $k => $auth) {
-            if (!empty($exclusiveAuthenticators) && !\in_array($auth, $exclusiveAuthenticators)) {
+        foreach ($authenticator as $auth) {
+            if (!empty($exclusiveAuthenticators) && !in_array($auth, $exclusiveAuthenticators)) {
                 continue;
             }
 
-            $Control = \forward_static_call([$auth, 'getLoginControl']);
+            $Control = forward_static_call([$auth, 'getLoginControl']);
 
-            if (\is_null($Control)) {
+            if (is_null($Control)) {
                 continue;
             }
 
@@ -89,7 +101,7 @@ class Login extends Control
             'passwordReset' => !empty($_REQUEST['password_reset']),
             'globalAuth' => $this->isGlobalAuth,
             'authenticators' => $authenticators,
-            'count' => \count($authenticators) - 1
+            'count' => count($authenticators) - 1
         ]);
 
         return $Engine->fetch(__DIR__ . '/Login.html');
@@ -100,9 +112,11 @@ class Login extends Control
      *
      * @return array|string|null
      *
-     * @throws QUI\Users\Exception
+     * @throws Exception
+     * @throws QUI\Exception
+     * @throws ExceptionStack
      */
-    public function next()
+    public function next(): array|string|null
     {
         if (QUI::isFrontend()) {
             $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
@@ -124,7 +138,7 @@ class Login extends Control
 
         if (!empty($globals)) {
             // sort globals (QUIQQER Login has to be first!)
-            \usort($globals, function ($a, $b) {
+            usort($globals, function ($a, $b) {
                 if ($a === QUI\Users\Auth\QUIQQER::class) {
                     return -1;
                 }

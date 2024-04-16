@@ -80,11 +80,12 @@ class Nobody extends QUI\QDOM implements User
             return [$Guest, $Everyone];
         }
 
-        return [$Guest->getId(), $Everyone->getId()];
+        return [$Guest->getUUID(), $Everyone->getUUID()];
     }
 
     /**
      * @return bool|int
+     * @deprecated
      */
     public function getId(): false|int
     {
@@ -288,6 +289,7 @@ class Nobody extends QUI\QDOM implements User
     }
 
     /**
+     * @deprecated
      * @return int|string
      */
     public function getUniqueId(): int|string

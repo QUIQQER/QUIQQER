@@ -7,6 +7,7 @@
 namespace QUI\Events;
 
 use QUI;
+use QUI\Database\Exception;
 use QUI\ExceptionStack;
 
 use function is_array;
@@ -121,19 +122,14 @@ class Manager implements QUI\Interfaces\Events
      * if you want to register events for the runtime, please use lambda function
      *
      * @param string $event - The type of event (e.g. 'complete').
-     * @param callable $fn - The function to execute.
-     *
-     * @throws QUI\Exception
+     * @param callable|string $fn - The function to execute.
+     * @param int $priority
+     * @param string $package
+     * @throws Exception
      * @example $EventManager->addEvent('myEvent', function() { });
-     *
      */
-    public function addEvent(string $event, callable $fn): void
+    public function addEvent(string $event, callable|string $fn, int $priority = 0, string $package = ''): void
     {
-        if (!is_string($package)) {
-            $package = '';
-        }
-
-        // add the event to the db
         if (is_string($fn)) {
             QUI::getDataBase()->insert(self::table(), [
                 'event' => trim($event),
@@ -224,15 +220,14 @@ class Manager implements QUI\Interfaces\Events
      * Adds a site event entry
      *
      * @param string $event - The type of event (e.g. 'complete').
-     * @param callable $fn - The function to execute.
+     * @param callable|string $fn - The function to execute.
      * @param string $siteType - type of the site
      * @param int $priority - Event priority
      *
-     * @throws QUI\Exception
+     * @throws Exception
      * @example $EventManager->addEvent('onSave', '\Namespace\Class::exec', 'quiqqer/blog:blog/entry' });
-     *
      */
-    public function addSiteEvent(string $event, callable $fn, string $siteType, int $priority = 0): void
+    public function addSiteEvent(string $event, callable|string $fn, string $siteType, int $priority = 0): void
     {
         if (!is_string($fn)) {
             return;
@@ -265,7 +260,7 @@ class Manager implements QUI\Interfaces\Events
      *
      * @throws QUI\Exception
      */
-    public function removeEvent(string $event, callable|bool $fn = false): void
+    public function removeEvent(string $event, callable|bool $fn = false, string $package = ''): void
     {
         $this->Events->removeEvent($event, $fn);
 
@@ -316,7 +311,7 @@ class Manager implements QUI\Interfaces\Events
      * @return array         An array containing the results of the event handlers
      * @throws ExceptionStack
      */
-    public function fireEvent(string $event, bool|array $args = false): array
+    public function fireEvent(string $event, bool|array $args = false, bool $force = false): array
     {
         // event onFireEvent
         $fireArgs = $args;

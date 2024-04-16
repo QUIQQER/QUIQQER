@@ -99,7 +99,7 @@ class Everyone extends QUI\Groups\Group
                 'assigned_toolbar' => $assignedToolbars,
                 'toolbar' => $toolbar
             ],
-            ['id' => $this->getId()]
+            ['uuid' => $this->getUUID()]
         );
 
         $this->createCache();
@@ -109,8 +109,14 @@ class Everyone extends QUI\Groups\Group
      * Returns the Group-ID
      *
      * @return integer
+     * @deprecated
      */
     public function getId(): int
+    {
+        return Manager::EVERYONE_ID;
+    }
+
+    public function getUUID(): string
     {
         return Manager::EVERYONE_ID;
     }

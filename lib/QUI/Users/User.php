@@ -262,6 +262,15 @@ class User implements QUIUserInterface
             return $this->lang;
         }
 
+        if (
+            $this->getUUID() === QUI::getUserBySession()->getUUID()
+            && QUI::getSession()->get('quiqqer-user-language')
+        ) {
+            $this->lang = QUI::getSession()->get('quiqqer-user-language');
+
+            return $this->lang;
+        }
+
         $lang = QUI::getLocale()->getCurrent();
         $languages = QUI::availableLanguages();
 
@@ -817,6 +826,10 @@ class User implements QUIUserInterface
         }
 
         if ($SessionUser->getId() == $this->getId()) {
+            return true;
+        }
+
+        if ($SessionUser->getUUID() == $this->getUUID()) {
             return true;
         }
 
@@ -1673,6 +1686,7 @@ class User implements QUIUserInterface
     {
         $params = $this->settings;
         $params['id'] = $this->getId();
+        $params['uuid'] = $this->getUUID();
         $params['active'] = $this->active;
         $params['deleted'] = $this->deleted;
         $params['admin'] = $this->canUseBackend();
@@ -1966,7 +1980,7 @@ class User implements QUIUserInterface
         QUI::getDataBase()->update(
             Manager::table(),
             ['password' => $newPassword],
-            ['id' => $this->getId()]
+            ['uuid' => $this->getUUID()]
         );
     }
 
@@ -2072,7 +2086,7 @@ class User implements QUIUserInterface
         QUI::getDataBase()->update(
             Manager::table(),
             ['active' => 1],
-            ['id' => $this->getId()]
+            ['uuid' => $this->getUUID()]
         );
 
         $this->active = true;
@@ -2081,7 +2095,7 @@ class User implements QUIUserInterface
             QUI::getEvents()->fireEvent('userActivate', [$this]);
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage(), [
-                'UserId' => $this->getId(),
+                'UserId' => $this->getUUID(),
                 'ExceptionType' => $Exception->getType()
             ]);
         }
@@ -2098,7 +2112,7 @@ class User implements QUIUserInterface
     }
 
     /**
-     * @param null $PermissionUser (optional) - Executing User
+     * @param QUIUserInterface|null $PermissionUser (optional) - Executing User
      * @return bool
      *
      * @throws Exception
@@ -2117,7 +2131,7 @@ class User implements QUIUserInterface
         QUI::getDataBase()->update(
             Manager::table(),
             ['active' => 0],
-            ['id' => $this->getId()]
+            ['uuid' => $this->getUUID()]
         );
 
         $this->active = false;
@@ -2155,7 +2169,7 @@ class User implements QUIUserInterface
         }
 
         // Check if user can delete himself
-        if (QUI::getUserBySession()->getId() === $this->getId()) {
+        if (QUI::getUserBySession()->getUUID() === $this->getUUID()) {
             $this->checkPermission('quiqqer.users.delete_self');
         }
 
@@ -2212,7 +2226,9 @@ class User implements QUIUserInterface
      */
     public function logout(): void
     {
-        if (!$this->getId()) {
+        $uuid = $this->getUUID();
+
+        if (empty($uuid)) {
             return;
         }
 
@@ -2222,7 +2238,7 @@ class User implements QUIUserInterface
         $Users = QUI::getUsers();
         $SessUser = $Users->getUserBySession();
 
-        if ($SessUser->getId() == $this->getId()) {
+        if ($SessUser->getUUID() == $this->getUUID()) {
             $Session = QUI::getSession();
             $Session->destroy();
         }
@@ -2278,7 +2294,7 @@ class User implements QUIUserInterface
                 'activation' => '',
                 'expire' => null
             ],
-            ['id' => $this->getId()]
+            ['uuid' => $this->getUUID()]
         );
 
         $this->logout();
@@ -2287,9 +2303,9 @@ class User implements QUIUserInterface
             'User disabled.',
             QUI\System\Log::LEVEL_INFO,
             [
-                'deletedUserId' => $this->getId(),
+                'deletedUserId' => $this->getUUID(),
                 'deletedUsername' => $this->getUsername(),
-                'executeUserId' => $SessionUser->getId(),
+                'executeUserId' => $SessionUser->getUUID(),
                 'executeUsername' => $SessionUser->getUsername()
             ],
             'user'
@@ -2320,7 +2336,7 @@ class User implements QUIUserInterface
 
         QUI::getDataBase()->delete(
             Manager::table(),
-            ['id' => $this->getId()]
+            ['uuid' => $this->getUUID()]
         );
 
         // delete all workspaces of this user
@@ -2336,9 +2352,9 @@ class User implements QUIUserInterface
             'User deleted.',
             QUI\System\Log::LEVEL_INFO,
             [
-                'deletedUserId' => $this->getId(),
+                'deletedUserId' => $this->getUUID(),
                 'deletedUsername' => $this->getUsername(),
-                'executeUserId' => $PermissionUser->getId(),
+                'executeUserId' => $PermissionUser->getUUID(),
                 'executeUsername' => $PermissionUser->getUsername()
             ],
             'user'
@@ -2373,7 +2389,7 @@ class User implements QUIUserInterface
             return true;
         }
 
-        if ($SessionUser->getId() == $this->getId()) {
+        if ($SessionUser->getUUID() == $this->getUUID()) {
             return true;
         }
 
@@ -2431,6 +2447,6 @@ class User implements QUIUserInterface
      */
     public function isOnline(): bool
     {
-        return QUI::getSession()->isUserOnline($this->getId());
+        return QUI::getSession()->isUserOnline($this->getUUID());
     }
 }
