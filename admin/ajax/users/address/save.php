@@ -39,7 +39,7 @@ QUI::$Ajax->registerFunction(
                 );
             }
 
-            $uid = (int)$result[0]['uid'];
+            $uid = $result[0]['uid'];
         }
 
         $User = QUI::getUsers()->get($uid);
