@@ -49,7 +49,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      * @return array
      * @throws Exception
      */
-    public function getList($params = []): array
+    public function getList(array $params = []): array
     {
         // create grid
         $Grid = new QUI\Utils\Grid();
