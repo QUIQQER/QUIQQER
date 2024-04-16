@@ -9,7 +9,6 @@ namespace QUI\System\Console\Tools;
 use Composer\Semver\VersionParser;
 use Exception;
 use QUI;
-
 use RuntimeException;
 
 use function copy;

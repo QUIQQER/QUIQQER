@@ -10,7 +10,6 @@ namespace QUI\System\Console\Tools;
 
 use League\CLImate\CLImate;
 use QUI;
-
 use QUI\Database\Exception;
 
 use function implode;

@@ -8,7 +8,6 @@ namespace QUI\System\Console\Tools;
 
 use QUI;
 use QUI\Exception;
-
 use QUI\Interfaces\System\Test;
 
 use function class_exists;

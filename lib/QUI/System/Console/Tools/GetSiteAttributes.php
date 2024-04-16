@@ -8,7 +8,6 @@ namespace QUI\System\Console\Tools;
 
 use Exception;
 use QUI;
-
 use Random\RandomException;
 
 use function array_unique;
