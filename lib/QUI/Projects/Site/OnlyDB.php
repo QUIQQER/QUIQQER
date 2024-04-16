@@ -7,6 +7,10 @@
 namespace QUI\Projects\Site;
 
 use QUI;
+use QUI\Exception;
+use QUI\Projects\Project;
+
+use function json_decode;
 
 /**
  * This object is only used to get data purely from the DataBase
@@ -20,18 +24,16 @@ class OnlyDB extends QUI\Projects\Site
     /**
      * constructor
      *
-     * @param \QUI\Projects\Project $Project
+     * @param Project $Project
      * @param integer $id - Site ID
      *
      * @throws QUI\Exception
      */
-    public function __construct(QUI\Projects\Project $Project, $id)
+    public function __construct(Project $Project, int $id)
     {
         $this->TABLE = $Project->table();
         $this->RELTABLE = $Project->table() . '_relations';
         $this->RELLANGTABLE = $Project->getAttribute('name') . '_multilingual';
-
-        $id = (int)$id;
 
         if (empty($id)) {
             throw new QUI\Exception('Site Error; No ID given:' . $id, 400);
@@ -51,8 +53,9 @@ class OnlyDB extends QUI\Projects\Site
 
     /**
      * Hohlt sich die Daten frisch us der DB
+     * @throws Exception
      */
-    public function refresh()
+    public function refresh(): void
     {
         $result = QUI::getDataBase()->fetch([
             'from' => $this->TABLE,
@@ -88,7 +91,7 @@ class OnlyDB extends QUI\Projects\Site
 
         /* deprecated */
         if (isset($result[0]['extra'])) {
-            $extra = \json_decode($result[0]['extra'], true);
+            $extra = json_decode($result[0]['extra'], true);
 
             foreach ($extra as $key => $value) {
                 $this->setAttribute($key, $value);

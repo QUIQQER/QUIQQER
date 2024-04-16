@@ -7,6 +7,9 @@
 namespace QUI\Projects;
 
 use QUI;
+use QUI\Database\Exception;
+
+use function is_array;
 
 /**
  * Trash from a Project
@@ -19,14 +22,14 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
     /**
      * The Project of the trash
      *
-     * @var \QUI\Projects\Project
+     * @var Project|null
      */
-    protected $Project = null;
+    protected ?Project $Project = null;
 
     /**
-     * Konstruktor
+     * Constructor
      *
-     * @param \QUI\Projects\Project $Project
+     * @param Project $Project
      */
     public function __construct(Project $Project)
     {
@@ -44,8 +47,9 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      * - page
      *
      * @return array
+     * @throws Exception
      */
-    public function getList($params = [])
+    public function getList($params = []): array
     {
         // create grid
         $Grid = new QUI\Utils\Grid();
@@ -62,29 +66,17 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
          * Order and Sort
          */
         if (isset($params['order'])) {
-            switch ($params['order']) {
-                case 'name':
-                case 'title':
-                case 'type':
-                    $_params['order'] = $params['order'];
-                    break;
-
-                default:
-                    $_params['order'] = 'id';
-                    break;
-            }
+            $_params['order'] = match ($params['order']) {
+                'name', 'title', 'type' => $params['order'],
+                default => 'id',
+            };
         }
 
         if (isset($params['sort'])) {
-            switch ($params['sort']) {
-                case 'ASC':
-                    $_params['order'] = $_params['order'] . ' ASC';
-                    break;
-
-                default:
-                    $_params['order'] = $_params['order'] . ' DESC';
-                    break;
-            }
+            $_params['order'] = match ($params['sort']) {
+                'ASC' => $_params['order'] . ' ASC',
+                default => $_params['order'] . ' DESC',
+            };
         }
 
         /**
@@ -122,8 +114,9 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
 
     /**
      * Clear complete trash
+     * @throws QUI\Exception
      */
-    public function clear()
+    public function clear(): void
     {
         $ids = $this->Project->getSitesIds([
             'where' => [
@@ -142,10 +135,11 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      * Zerstört die gewünschten Seiten im Trash
      *
      * @param array $ids
+     * @throws QUI\Exception
      */
-    public function destroy($ids = [])
+    public function destroy(array $ids = []): void
     {
-        if (!\is_array($ids)) {
+        if (!is_array($ids)) {
             return;
         }
 
@@ -158,15 +152,15 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
     /**
      * Stellt die gewünschten Seiten wieder her
      *
-     * @param \QUI\Projects\Project $Project
+     * @param Project $Project
      * @param array $ids
      * @param integer $parentid
      *
      * @throws QUI\Exception
      */
-    public function restore(Project $Project, $ids, $parentid)
+    public function restore(Project $Project, array $ids, int $parentid): void
     {
-        $Parent = new Site\Edit($Project, (int)$parentid);
+        $Parent = new Site\Edit($Project, $parentid);
 
         foreach ($ids as $id) {
             $Site = new Site\Edit($Project, $id);

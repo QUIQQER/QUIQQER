@@ -13,12 +13,12 @@ use PDOException;
 use QUI;
 use QUI\Groups\Group;
 use QUI\Permissions\Permission;
+use QUI\Projects\Site\Edit;
 use QUI\Projects\Site\PermissionDenied;
 use QUI\Users\User;
 use QUI\Utils\Text\XML;
 
 use function array_merge;
-use function array_push;
 use function array_reverse;
 use function array_unique;
 use function date;
@@ -28,17 +28,14 @@ use function explode;
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
-use function get_class;
 use function in_array;
 use function is_array;
 use function is_dir;
 use function is_string;
 use function is_writable;
 use function json_encode;
-use function rename;
 use function str_replace;
 use function strlen;
-use function strpos;
 use function substr;
 
 use const USR_DIR;
@@ -67,79 +64,74 @@ class Project implements \Stringable
      *
      * @var array
      */
-    protected $cache_files = [];
+    protected array $cache_files = [];
     /**
-     * @var null
+     * @var Media|null
      */
-    protected $Media = null;
+    protected ?Media $Media = null;
     /**
      * The project site table
      *
      * @var string
      */
-    private $TABLE;
+    private string $TABLE;
     /**
      * The project site relation table
      *
      * @var string
      */
-    private $RELTABLE;
+    private string $RELTABLE;
     /**
      * The project site relation language table
      *
      * @var string
      */
-    private $RELLANGTABLE;
+    private string $RELLANGTABLE;
     /**
      * configuration
      *
      * @var array
      */
-    private $config;
+    private array $config;
     /**
      * default language
      *
      * @var string
      */
-    private $default_lang;
+    private string $default_lang;
     /**
      * All languages of the project
      *
      * @var array
      */
-    private $langs;
+    private array $langs;
     /**
      * loaded sites
      *
      * @var array
      */
-    private $children = [];
-    /**
-     * loaded edit_sites
-     *
-     * @var array
-     */
-    private $children_tmp = [];
+    private array $children = [];
+
     /**
      * first child
      *
-     * @var Site
+     * @var Site|QUI\Projects\Site\Edit|null
      */
-    private $firstchild = null;
+    private Site|QUI\Projects\Site\Edit|null $firstchild = null;
 
     /**
-     * Konstruktor eines Projektes
+     * Constructor
      *
      * @param string $name - Name of the Project
-     * @param string|boolean $lang - (optional) Language of the Project - optional
-     * @param string|boolean $template - (optional) Template of the Project
+     * @param boolean|string $lang - (optional) Language of the Project - optional
+     * @param boolean|string $template - (optional) Template of the Project
      *
      * @throws QUI\Exception
      */
     public function __construct(
-        private $name,
-        private $lang = false,
-        private $template = false
+        private string $name,
+        private bool|string $lang = false,
+        private bool|string $template = false
     ) {
         try {
             $this->refresh();
@@ -159,15 +151,14 @@ class Project implements \Stringable
      *
      * @throws QUI\Exception
      */
-    public function refresh()
+    public function refresh(): void
     {
         $config = Manager::getConfig()->toArray();
 
-        $name = (string)$this->name;
+        $name = $this->name;
         $lang = (string)$this->lang;
         $template = (string)$this->template;
 
-        // Konfiguration einlesen
         if (!isset($config[$name])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
@@ -182,7 +173,6 @@ class Project implements \Stringable
         $this->config = $config[$name];
         $this->name = $name;
 
-        // Langs
         if (!isset($this->config['langs'])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
@@ -209,7 +199,7 @@ class Project implements \Stringable
         $this->default_lang = $this->config['default_lang'];
 
         // Sprache
-        if ($lang != false) {
+        if ($lang) {
             if (!in_array($lang, $this->langs)) {
                 throw new QUI\Exception(
                     QUI::getLocale()->get(
@@ -225,7 +215,6 @@ class Project implements \Stringable
 
             $this->lang = $lang;
         } else {
-            // Falls keine Sprache angegeben wurde wird die Standardsprache verwendet
             if (!isset($this->config['default_lang'])) {
                 throw new QUI\Exception(
                     QUI::getLocale()->get(
@@ -289,11 +278,11 @@ class Project implements \Stringable
     }
 
     /**
-     * Projekt Array Notation
+     * Project Array Notation
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'name' => $this->getAttribute('name'),
@@ -302,50 +291,29 @@ class Project implements \Stringable
     }
 
     /**
-     * Namen des Projektes
+     * Name of the project
      *
      * @param string $att -
      *                    name = Name des Projectes
      *                    lang = Aktuelle Sprache
      *                    db_table = Standard Datebanktabelle, please use this->table()
      *
-     * @return string|false|array
+     * @return string|int|bool|array
      */
-    public function getAttribute($att)
+    public function getAttribute(string $att): string|int|bool|array
     {
-        switch ($att) {
-            case "name":
-                return $this->getName();
-
-            case "lang":
-                return $this->getLang();
-
-            case "e_date":
-                return $this->getLastEditDate();
-
-            case "config":
-                return $this->config;
-
-            case "default_lang":
-                return $this->default_lang;
-
-            case "langs":
-                return $this->langs;
-
-            case "template":
-                return $this->template;
-
-            case "db_table":
-                # Anzeigen demo_de_sites
-                return $this->name . '_' . $this->lang . '_sites';
-
-            case "media_table":
-                # Anzeigen demo_de_sites
-                return $this->name . '_de_media';
-
-            default:
-                return false;
-        }
+        return match ($att) {
+            "name" => $this->getName(),
+            "lang" => $this->getLang(),
+            "e_date" => $this->getLastEditDate(),
+            "config" => $this->config,
+            "default_lang" => $this->default_lang,
+            "langs" => $this->langs,
+            "template" => $this->template,
+            "db_table" => $this->name . '_' . $this->lang . '_sites',
+            "media_table" => $this->name . '_de_media',
+            default => false,
+        };
     }
 
     /**
@@ -353,7 +321,7 @@ class Project implements \Stringable
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -363,7 +331,7 @@ class Project implements \Stringable
      *
      * @return string
      */
-    public function getLang()
+    public function getLang(): string
     {
         return $this->lang;
     }
@@ -386,18 +354,18 @@ class Project implements \Stringable
     /**
      * Return a site
      *
-     * @param integer $id - ID der Seite
+     * @param integer $id - ID of the Site
      *
      * @return Site|Site\Edit
      * @throws QUI\Exception
      */
-    public function get($id)
+    public function get(int $id): Site\Edit|Site
     {
         if (
             (defined('ADMIN') && ADMIN == 1)
             || (defined('QUIQQER_CONSOLE') && QUIQQER_CONSOLE == 1)
         ) {
-            return new Site\Edit($this, (int)$id);
+            return new Site\Edit($this, $id);
         }
 
         if (isset($this->children[$id])) {
@@ -405,17 +373,16 @@ class Project implements \Stringable
         }
 
         try {
-            $Site = new Site($this, (int)$id);
+            $Site = new Site($this, $id);
         } catch (QUI\Exception $Exception) {
             if ($Exception->getCode() !== 403) {
                 throw $Exception;
             }
 
-            $Site = new PermissionDenied($this, (int)$id);
+            $Site = new PermissionDenied($this, $id);
         }
 
         $this->children[$id] = $Site;
-
         return $Site;
     }
 
@@ -432,7 +399,7 @@ class Project implements \Stringable
      *
      * @return string
      */
-    public function getCachePath()
+    public function getCachePath(): string
     {
         return self::getProjectCachePath($this->getName());
     }
@@ -443,7 +410,7 @@ class Project implements \Stringable
      * @param string $projectName
      * @return string
      */
-    public static function getProjectCachePath($projectName)
+    public static function getProjectCachePath(string $projectName): string
     {
         return 'quiqqer/projects/' . $projectName;
     }
@@ -451,11 +418,11 @@ class Project implements \Stringable
     /**
      * Gibt die gesuchte Einstellung vom Projekt zurück
      *
-     * @param string|boolean $name - name of the config, default = false, returns complete configs
+     * @param boolean|string $name - name of the config, default = false, returns complete configs
      *
-     * @return false|string|array
+     * @return mixed
      */
-    public function getConfig($name = false)
+    public function getConfig(bool|string $name = false): mixed
     {
         if (!$name) {
             return $this->config;
@@ -466,26 +433,19 @@ class Project implements \Stringable
         }
 
         // default Werte
-        switch ($name) {
-            case "sheets": // Blätterfunktion
-                return 5;
-                break;
-
-            case "archive": // Archiveinträge
-                return 10;
-                break;
-        }
-
-        return false;
+        return match ($name) {
+            "sheets" => 5,
+            "archive" => 10,
+            default => false,
+        };
     }
 
     /**
-     * Destruktor
+     * Destructor
      */
     public function __destruct()
     {
         unset($this->config);
-        unset($this->children_tmp);
     }
 
     /**
@@ -503,7 +463,7 @@ class Project implements \Stringable
      *
      * @return string
      */
-    public function toJSON()
+    public function toJSON(): string
     {
         return json_encode($this->toArray());
     }
@@ -513,7 +473,7 @@ class Project implements \Stringable
      *
      * @return array
      */
-    public function getLanguages()
+    public function getLanguages(): array
     {
         $languages = $this->getAttribute('langs');
 
@@ -534,7 +494,7 @@ class Project implements \Stringable
      *
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         $group = 'project/' . $this->getName();
 
@@ -549,12 +509,12 @@ class Project implements \Stringable
      * Durchsucht das Projekt nach Seiten
      *
      * @param string $search - Suchwort
-     * @param array|boolean $select - (optional) in welchen Feldern gesucht werden soll
+     * @param boolean|array $select - (optional) in welchen Feldern gesucht werden soll
      *                                array('name', 'title', 'short', 'content')
      *
      * @return array
      */
-    public function search($search, $select = false)
+    public function search(string $search, bool|array $select = false): array
     {
         $query = 'SELECT id FROM ' . $this->table();
         $where = ' WHERE name LIKE :search';
@@ -584,7 +544,7 @@ class Project implements \Stringable
         $PDO = QUI::getDataBase()->getPDO();
         $Statement = $PDO->prepare($query);
 
-        $Statement->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
+        $Statement->bindValue(':search', '%' . $search . '%');
         $Statement->execute();
 
         $dbResult = $Statement->fetchAll(PDO::FETCH_ASSOC);
@@ -604,7 +564,7 @@ class Project implements \Stringable
     /**
      * @return string
      */
-    public function table()
+    public function table(): string
     {
         return QUI::getDBTableName($this->name . '_' . $this->lang . '_sites');
     }
@@ -612,7 +572,7 @@ class Project implements \Stringable
     /**
      * @return bool
      */
-    public function hasVHost()
+    public function hasVHost(): bool
     {
         $Hosts = QUI::getRewrite()->getVHosts();
 
@@ -648,7 +608,7 @@ class Project implements \Stringable
      *
      * @return string
      */
-    public function getHost()
+    public function getHost(): string
     {
         if (isset($this->config['vhost'])) {
             return $this->config['vhost'];
@@ -672,7 +632,7 @@ class Project implements \Stringable
      *
      * @return QUI\Projects\Trash
      */
-    public function getTrash()
+    public function getTrash(): Trash
     {
         return new Trash($this);
     }
@@ -682,7 +642,7 @@ class Project implements \Stringable
      *
      * @return array
      */
-    public function getAllAttributes()
+    public function getAllAttributes(): array
     {
         return [
             'config' => $this->config,
@@ -699,11 +659,11 @@ class Project implements \Stringable
      *
      * @$pluginload boolean
      *
-     * @return Site
+     * @return Edit|Site
      *
      * @throws QUI\Exception
      */
-    public function firstChild()
+    public function firstChild(): Site\Edit|Site
     {
         if ($this->firstchild === null) {
             $this->firstchild = $this->get(1);
@@ -718,11 +678,9 @@ class Project implements \Stringable
      * @param boolean $link - Clears the site link cache
      * @param boolean $site - Clears the site cache
      *
-     * @throws QUI\Exception
-     *
      * @todo muss überarbeitet werden
      */
-    public function clearCache($link = true, $site = true)
+    public function clearCache(bool $link = true, bool $site = true): void
     {
         $cachePath = $this->getCacheLanguagePath();
 
@@ -746,7 +704,7 @@ class Project implements \Stringable
      *
      * @return string
      */
-    public function getCacheLanguagePath()
+    public function getCacheLanguagePath(): string
     {
         return self::getProjectLanguageCachePath($this->getName(), $this->getLang());
     }
@@ -764,57 +722,11 @@ class Project implements \Stringable
     }
 
     /**
-     * Return the name of a site
-     *
-     * @param integer $id
-     *
-     * @return string
-     * @deprecated
-     */
-    public function getNameById($id)
-    {
-        $result = QUI::getDataBase()->fetch([
-            'select' => 'name',
-            'from' => $this->TABLE,
-            'where' => [
-                'id' => $id
-            ],
-            'limit' => '1'
-        ]);
-
-        if (isset($result[0]) && is_array($result)) {
-            return $result[0]['name'];
-        }
-
-        return '';
-    }
-
-    /**
-     * Return a new id
-     * - this id is not created
-     *
-     * @deprecated
-     */
-    public function getNewId()
-    {
-        $maxId = QUI::getDataBase()->fetch([
-            'select' => 'id',
-            'from' => $this->table(),
-            'limit' => '0,1',
-            'order' => [
-                'id' => 'DESC'
-            ]
-        ]);
-
-        return (int)$maxId[0]['id'] + 1;
-    }
-
-    /**
      * Return all available layouts
      *
      * @return array
      */
-    public function getLayouts()
+    public function getLayouts(): array
     {
         $VHosts = new QUI\System\VhostManager();
         $vhostList = $VHosts->getHostsByProject($this->getName());
@@ -844,7 +756,7 @@ class Project implements \Stringable
         foreach ($vhostList as $vhost) {
             $hostData = $VHosts->getVhost($vhost);
 
-            if (isset($hostData['template']) && !empty($hostData['template'])) {
+            if (!empty($hostData['template'])) {
                 $siteXMLs[] = OPT_DIR . $hostData['template'] . '/site.xml';
             }
         }
@@ -908,8 +820,9 @@ class Project implements \Stringable
      * @param boolean $ssl - mit oder ohne ssl
      *
      * @return boolean | string
+     * @throws QUI\Exception
      */
-    public function getVHost($with_protocol = false, $ssl = false)
+    public function getVHost(bool $with_protocol = false, bool $ssl = false): bool|string
     {
         if (QUI::conf("webserver", "forceHttps")) {
             $ssl = true;
@@ -930,10 +843,7 @@ class Project implements \Stringable
                 $params['project'] == $this->getAttribute('name')
                 && $params['lang'] == $this->getAttribute('lang')
             ) {
-                if (
-                    $ssl && isset($params['httpshost'])
-                    && !empty($params['httpshost'])
-                ) {
+                if ($ssl && !empty($params['httpshost'])) {
                     return $with_protocol ? 'https://' . $params['httpshost'] : $params['httpshost'];
                 }
 
@@ -941,7 +851,7 @@ class Project implements \Stringable
                     return $with_protocol ? 'https://' . $url : $url;
                 }
 
-                return $with_protocol ? 'http://' . $url : $url;
+                return $with_protocol ? 'https://' . $url : $url;
             }
         }
 
@@ -958,11 +868,12 @@ class Project implements \Stringable
      * Return the children ids from a site
      *
      * @param integer $parentid - The parent site ID
-     * @param array $params - extra db statemens, like order, where, count, limit
+     * @param array $params - extra db statements, like order, where, count, limit
      *
      * @return array|integer
+     * @throws QUI\Database\Exception
      */
-    public function getChildrenIdsFrom($parentid, $params = [])
+    public function getChildrenIdsFrom(int $parentid, array $params = []): array|int
     {
         $where_1 = [
             $this->RELTABLE . '.parent' => $parentid,
@@ -995,7 +906,7 @@ class Project implements \Stringable
         $order = $this->TABLE . '.order_field';
 
         if (isset($params['order'])) {
-            if (strpos($params['order'], '.') !== false) {
+            if (str_contains($params['order'], '.')) {
                 $order = $this->TABLE . '.' . $params['order'];
             } else {
                 $order = $params['order'];
@@ -1039,9 +950,10 @@ class Project implements \Stringable
      * @param integer $id
      *
      * @return integer
+     * @throws QUI\Database\Exception
      * @deprecated
      */
-    public function getParentId($id)
+    public function getParentId(int $id): int
     {
         return $this->getParentIdFrom($id);
     }
@@ -1051,9 +963,10 @@ class Project implements \Stringable
      *
      * @param integer $id - Child id
      *
-     * @return integer Id of the Parent
+     * @return integer ID of the Parent
+     * @throws QUI\Database\Exception
      */
-    public function getParentIdFrom($id)
+    public function getParentIdFrom(int $id): int
     {
         if ($id <= 0) {
             return 0;
@@ -1063,7 +976,7 @@ class Project implements \Stringable
             'select' => 'parent',
             'from' => $this->RELTABLE,
             'where' => [
-                'child' => (int)$id
+                'child' => $id
             ],
             'order' => 'oparent ASC',
             'limit' => '1'
@@ -1083,14 +996,15 @@ class Project implements \Stringable
      * @param boolean $reverse - revers the result
      *
      * @return array
+     * @throws QUI\Database\Exception
      */
-    public function getParentIds($id, $reverse = false)
+    public function getParentIds(int $id, bool $reverse = false): array
     {
         $ids = [];
         $pid = $this->getParentIdFrom($id);
 
         while ($pid != 1) {
-            array_push($ids, $pid);
+            $ids[] = $pid;
             $pid = $this->getParentIdFrom($pid);
         }
 
@@ -1104,23 +1018,24 @@ class Project implements \Stringable
     /**
      * Alle Seiten bekommen
      *
-     * @param array|boolean $params
+     * @param boolean|array $params
      *
      * @return array|integer - if count is given, return is an integer, otherwise an array
+     * @throws QUI\Database\Exception
      */
-    public function getSites($params = false)
+    public function getSites(bool|array $params = false): array|int
     {
         // Falls kein Query dann alle Seiten hohlen
         // @notice - Kann performancefressend sein
 
         $s = $this->getSitesIds($params);
 
-        if (empty($s) || !is_array($s)) {
+        if (empty($s)) {
             return [];
         }
 
         if (isset($params['count'])) {
-            if (isset($s[0]) && isset($s[0]['count'])) {
+            if (isset($s[0]['count'])) {
                 return $s[0]['count'];
             }
 
@@ -1146,9 +1061,10 @@ class Project implements \Stringable
      * @param array $params
      *
      * @return array
+     * @throws QUI\Database\Exception
      * @todo Muss mal echt überarbeitet werden, bad code
      */
-    public function getSitesIds($params = [])
+    public function getSitesIds(array $params = []): array
     {
         if (empty($params) || !is_array($params)) {
             // Falls kein Query dann alle Seiten hohlen
@@ -1271,7 +1187,7 @@ class Project implements \Stringable
      * @throws QUI\ExceptionStack
      * @throws QUI\DataBase\Exception
      */
-    public function setup($setupOptions = [])
+    public function setup(array $setupOptions = []): void
     {
         if (!isset($setupOptions['executePackagesSetup'])) {
             $setupOptions['executePackagesSetup'] = true;
@@ -1323,7 +1239,7 @@ class Project implements \Stringable
 
             // fix for old tables
             $DataBase->getPDO()->exec(
-                "ALTER TABLE `{$table}` 
+                "ALTER TABLE `$table` 
                 CHANGE `name` `name` VARCHAR(255) NOT NULL,
                 CHANGE `order_type` `order_type` VARCHAR(255) NULL DEFAULT NULL,
                 CHANGE `release_from` `release_from` DATETIME NULL DEFAULT NULL,
@@ -1336,13 +1252,13 @@ class Project implements \Stringable
             try {
                 $DataBase->getPDO()->exec(
                     "
-                    UPDATE `{$table}` 
+                    UPDATE `$table` 
                     SET release_from = null 
                     WHERE 
                         release_from = '0000-00-00 00:00:00' OR 
                         release_from = '';
                     
-                    UPDATE `{$table}` 
+                    UPDATE `$table` 
                     SET release_to = null 
                     WHERE 
                         release_to = '0000-00-00 00:00:00' OR
@@ -1475,7 +1391,7 @@ class Project implements \Stringable
      *
      * @return QUI\Projects\Media
      */
-    public function getMedia()
+    public function getMedia(): Media
     {
         if ($this->Media === null) {
             $this->Media = new QUI\Projects\Media($this);
@@ -1489,12 +1405,12 @@ class Project implements \Stringable
      *
      * @param integer $date
      */
-    public function setEditDate($date)
+    public function setEditDate(int $date): void
     {
         try {
             QUI\Cache\Manager::set(
                 $this->getEDateCacheName(),
-                (int)$date
+                $date
             );
         } catch (Exception $Exception) {
             QUI\System\Log::writeDebugException($Exception);
@@ -1508,7 +1424,7 @@ class Project implements \Stringable
      *
      * @throws QUI\Exception
      */
-    public function setCustomCSS($css)
+    public function setCustomCSS(string $css): void
     {
         Permission::checkProjectPermission(
             'quiqqer.projects.editCustomCSS',
@@ -1551,7 +1467,7 @@ class Project implements \Stringable
      *
      * @throws QUI\Exception
      */
-    public function setCustomJavaScript($javascript)
+    public function setCustomJavaScript(string $javascript): void
     {
         Permission::checkProjectPermission(
             'quiqqer.projects.editCustomJS',
@@ -1592,27 +1508,27 @@ class Project implements \Stringable
      */
 
     /**
-     * Add an user to the project permission
+     * Add a user to the project permission
      *
      * @param string $permission - name of the permission
      * @param User $User - User Object
      *
      * @throws QUI\Exception
      */
-    public function addUserToPermission(User $User, $permission)
+    public function addUserToPermission(User $User, string $permission): void
     {
         Permission::addUserToProjectPermission($User, $this, $permission);
     }
 
     /**
-     * Add an group to the project permission
+     * Add a group to the project permission
      *
      * @param string $permission - name of the permission
      * @param Group $Group - Group Object
      *
      * @throws QUI\Exception
      */
-    public function addGroupToPermission(Group $Group, $permission)
+    public function addGroupToPermission(Group $Group, string $permission): void
     {
         Permission::addGroupToProjectPermission($Group, $this, $permission);
     }
@@ -1625,7 +1541,7 @@ class Project implements \Stringable
      *
      * @throws QUI\Exception
      */
-    public function removeUserFromPermission(User $User, $permission)
+    public function removeUserFromPermission(User $User, string $permission): void
     {
         Permission::removeUserFromProjectPermission($User, $this, $permission);
     }
@@ -1636,7 +1552,7 @@ class Project implements \Stringable
      * @param $newName
      * @throws QUI\Exception
      */
-    public function rename($newName)
+    public function rename($newName): void
     {
         QUI\Utils\Project::validateProjectName($newName);
 
@@ -1675,7 +1591,7 @@ class Project implements \Stringable
         }
 
         foreach ($tables as $oldTableName) {
-            if (strpos($oldTableName . "_", $this->name) === false) {
+            if (!str_contains($oldTableName . "_", $this->name)) {
                 continue;
             }
 

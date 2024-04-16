@@ -8,9 +8,10 @@ namespace QUI\Projects\Site;
 
 use QUI;
 
+use QUI\Exception;
+
 use function ltrim;
 use function parse_url;
-use function strpos;
 
 /**
  * Canonical meta helper
@@ -34,6 +35,7 @@ class Canonical
      * Return the meta tag, if it is allowed
      *
      * @return string
+     * @throws Exception
      */
     public function output(): string
     {
@@ -71,7 +73,7 @@ class Canonical
             $httpsHost = $Project->getVHost(true, true);
             $httpsHostExists = false;
 
-            if (strpos($httpsHost, 'https:') !== false) {
+            if (str_contains($httpsHost, 'https:')) {
                 $httpsHostExists = true;
             }
 
@@ -86,7 +88,7 @@ class Canonical
                 return $this->getLinkRel($httpsHost . $this->Site->getCanonical());
             }
 
-            if (strpos($_REQUEST['_url'], QUI\Rewrite::URL_PARAM_SEPARATOR) !== false) {
+            if (str_contains($_REQUEST['_url'], QUI\Rewrite::URL_PARAM_SEPARATOR)) {
                 return $this->getLinkRel($httpsHost . $this->Site->getCanonical());
             }
 
@@ -121,7 +123,7 @@ class Canonical
 
         $httpsHostExists = false;
 
-        if (strpos($httpsHost, 'https:') !== false) {
+        if (str_contains($httpsHost, 'https:')) {
             $httpsHostExists = true;
         }
 
@@ -145,7 +147,7 @@ class Canonical
 
 
         // fix doppelter HOST im canonical https://dev.quiqqer.com/quiqqer/quiqqer/issues/574
-        if (strpos($canonical, 'https:') !== false || strpos($canonical, 'http:') !== false) {
+        if (str_contains($canonical, 'https:') || str_contains($canonical, 'http:')) {
             return $this->getLinkRel($canonical);
         }
 
@@ -156,7 +158,7 @@ class Canonical
      * @param $url
      * @return array|false|int|string|null
      */
-    protected function removeHost($url)
+    protected function removeHost($url): bool|int|array|string|null
     {
         return parse_url($url, PHP_URL_PATH);
     }
@@ -176,7 +178,7 @@ class Canonical
     /**
      * Consider get Parameter at the canonical request check
      */
-    public function considerGetParameterOn()
+    public function considerGetParameterOn(): void
     {
         $this->considerGetParams = true;
     }
@@ -184,7 +186,7 @@ class Canonical
     /**
      * Get parameters are not considered at the request check
      */
-    public function considerGetParameterOff()
+    public function considerGetParameterOff(): void
     {
         $this->considerGetParams = false;
     }
