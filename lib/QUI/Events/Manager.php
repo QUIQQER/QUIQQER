@@ -121,15 +121,13 @@ class Manager implements QUI\Interfaces\Events
      * if you want to register events for the runtime, please use lambda function
      *
      * @param string $event - The type of event (e.g. 'complete').
-     * @param string|callable $fn - The function to execute.
-     * @param string $package - Name of the package
-     * @param int $priority - Event priority
+     * @param callable $fn - The function to execute.
      *
      * @throws QUI\Exception
      * @example $EventManager->addEvent('myEvent', function() { });
      *
      */
-    public function addEvent($event, $fn, string $package = '', int $priority = 0): void
+    public function addEvent(string $event, callable $fn): void
     {
         if (!is_string($package)) {
             $package = '';
@@ -264,11 +262,10 @@ class Manager implements QUI\Interfaces\Events
      *
      * @param string $event - The type of event (e.g. 'complete').
      * @param callable|boolean $fn - (optional) The function to remove.
-     * @param string $package - Name of the package
      *
      * @throws QUI\Exception
      */
-    public function removeEvent($event, $fn = false, string $package = ''): void
+    public function removeEvent(string $event, callable|bool $fn = false): void
     {
         $this->Events->removeEvent($event, $fn);
 
@@ -314,13 +311,12 @@ class Manager implements QUI\Interfaces\Events
      * Fire an event with optional arguments
      *
      * @param string $event The name of the event to fire
-     * @param mixed $args Optional arguments to pass to the event handlers
-     * @param bool $force Whether to force the event handlers to execute even if they are not enabled
+     * @param bool|array $args Optional arguments to pass to the event handlers
      *
      * @return array         An array containing the results of the event handlers
      * @throws ExceptionStack
      */
-    public function fireEvent($event, $args = false, bool $force = false): array
+    public function fireEvent(string $event, bool|array $args = false): array
     {
         // event onFireEvent
         $fireArgs = $args;
