@@ -399,14 +399,22 @@ class Media extends QUI\QDOM
     /**
      * Return the first child in the media
      *
-     * @return QUI\Interfaces\Projects\Media\File
+     * @return QUI\Projects\Media\Folder
      *
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
-    public function firstChild(): QUI\Interfaces\Projects\Media\File
+    public function firstChild(): QUI\Projects\Media\Folder
     {
-        return $this->get(1);
+        $Folder = $this->get(1);
+
+        if ($Folder instanceof QUI\Projects\Media\Folder) {
+            return $Folder;
+        }
+
+        return new QUI\Projects\Media\Folder([
+            'id' => 1
+        ], $this);
     }
 
     /**

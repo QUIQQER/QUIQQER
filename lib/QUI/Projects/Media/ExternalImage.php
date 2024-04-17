@@ -370,4 +370,8 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
     }
 
     //endregion
+    public function isActive(): bool
+    {
+        return true;
+    }
 }

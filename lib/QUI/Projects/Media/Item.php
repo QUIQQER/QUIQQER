@@ -62,14 +62,14 @@ abstract class Item extends QUI\QDOM
     /**
      * internal media object
      *
-     * @var QUI\Projects\Media|null
+     * @var Media|null
      */
-    protected ?QUI\Projects\Media $Media = null;
+    protected ?Media $Media = null;
 
     /**
      * internal parent id (use ->getParentId())
      *
-     * @var integer
+     * @var int|bool
      */
     protected int|bool $parent_id = false;
 
@@ -81,7 +81,7 @@ abstract class Item extends QUI\QDOM
     protected string $file;
 
     /**
-     * @var array
+     * @var array|null
      */
     protected ?array $pathHistory = null;
 
@@ -104,9 +104,9 @@ abstract class Item extends QUI\QDOM
      * constructor
      *
      * @param array $params - item attributes
-     * @param \QUI\Projects\Media $Media - Media of the file
+     * @param Media $Media - Media of the file
      */
-    public function __construct($params, Media $Media)
+    public function __construct(array $params, Media $Media)
     {
         $params['id'] = (int)$params['id'];
         $params['hidden'] = (int)$params['hidden'];
@@ -136,7 +136,7 @@ abstract class Item extends QUI\QDOM
 
         if (!file_exists($this->file)) {
             QUI::getMessagesHandler()->addAttention(
-                'File ' . $this->file . ' (' . $this->getId() . ') doesn\'t exist'
+                'File ' . $this->file . ' (' . $this->getId() . ') doesn`t exist'
             );
 
             return;
@@ -212,7 +212,7 @@ abstract class Item extends QUI\QDOM
         $languages = QUI::availableLanguages();
         $result = [];
 
-        // its already an array
+        // it's already an array
         if (is_array($val)) {
             foreach ($languages as $language) {
                 if (isset($val[$language])) {
@@ -249,7 +249,7 @@ abstract class Item extends QUI\QDOM
      * @param string $type
      * @param array $val
      */
-    protected function setMultilingualArray(string $type, array $val)
+    protected function setMultilingualArray(string $type, array $val): void
     {
         switch ($type) {
             case 'title':
@@ -286,7 +286,7 @@ abstract class Item extends QUI\QDOM
     /**
      * Returns the url from the file
      *
-     * @param boolean $rewritten - false = image.php, true = rewrited URL
+     * @param boolean $rewritten - false = image.php, true = rewrote URL
      *
      * @return string
      */
@@ -326,7 +326,7 @@ abstract class Item extends QUI\QDOM
     /**
      * Return the Media of the item
      *
-     * @return QUI\Projects\Media
+     * @return Media
      */
     public function getMedia(): Media
     {
@@ -390,7 +390,7 @@ abstract class Item extends QUI\QDOM
      *      setTitle('text', 'language')     - set this title to the wanted languages
      *      setTitle(['de' => 'text', 'en' => 'text'])  - set the language array
      */
-    public function setTitle(...$params)
+    public function setTitle(...$params): void
     {
         $this->setMultilingualParams($params, 'title');
     }
@@ -408,7 +408,7 @@ abstract class Item extends QUI\QDOM
      * @param $params
      * @param $type
      */
-    protected function setMultilingualParams($params, $type)
+    protected function setMultilingualParams($params, $type): void
     {
         $languages = QUI::availableLanguages();
 
@@ -457,7 +457,7 @@ abstract class Item extends QUI\QDOM
      * @param null|QUI\Locale $Locale
      * @return mixed
      */
-    public function getDescription(QUI\Locale $Locale = null)
+    public function getDescription(QUI\Locale $Locale = null): mixed
     {
         if ($Locale === null) {
             $Locale = QUI::getLocale();
@@ -492,7 +492,7 @@ abstract class Item extends QUI\QDOM
      *
      * @param mixed ...$params
      */
-    public function setDescription(...$params)
+    public function setDescription(...$params): void
     {
         $this->setMultilingualParams($params, 'short');
     }
@@ -538,7 +538,7 @@ abstract class Item extends QUI\QDOM
      *
      * @param mixed ...$params
      */
-    public function setAlt(...$params)
+    public function setAlt(...$params): void
     {
         $this->setMultilingualParams($params, 'alt');
     }
@@ -550,14 +550,14 @@ abstract class Item extends QUI\QDOM
      *
      * @throws Exception
      */
-    public function activate(QUI\Interfaces\Users\User $PermissionUser = null)
+    public function activate(QUI\Interfaces\Users\User $PermissionUser = null): void
     {
         $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
         try {
             // activate the parents, otherwise the file is not accessible
             $this->getParent()->activate($PermissionUser);
-        } catch (Exception $Exception) {
+        } catch (Exception) {
             // has no parent
         }
 
@@ -593,11 +593,11 @@ abstract class Item extends QUI\QDOM
      * Shortcut for QUI\Permissions\Permission::checkSitePermission
      *
      * @param string $permission - name of the permission
-     * @param User|boolean $User - optional
+     * @param QUI\Interfaces\Users\User|null $User - optional
      *
      * @throws QUI\Permissions\Exception
      */
-    public function checkPermission(string $permission, $User = false)
+    public function checkPermission(string $permission, QUI\Interfaces\Users\User $User = null): void
     {
         if (Media::useMediaPermissions() === false) {
             return;
@@ -653,13 +653,13 @@ abstract class Item extends QUI\QDOM
 
     /**
      * Deactivate the file
-     * the file is no longer public
+     * - the file is no longer public
      *
      * @param QUI\Interfaces\Users\User|null $PermissionUser
      *
      * @throws Exception
      */
-    public function deactivate(QUI\Interfaces\Users\User $PermissionUser = null)
+    public function deactivate(QUI\Interfaces\Users\User $PermissionUser = null): void
     {
         $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
@@ -689,10 +689,9 @@ abstract class Item extends QUI\QDOM
      * @param QUI\Interfaces\Users\User|null $PermissionUser
      * @throws Exception
      */
-    public function delete(QUI\Interfaces\Users\User $PermissionUser = null)
+    public function delete(QUI\Interfaces\Users\User $PermissionUser = null): void
     {
         $this->checkPermission('quiqqer.projects.media.del', $PermissionUser);
-
 
         if ($this->isDeleted()) {
             throw new Exception(
@@ -826,7 +825,7 @@ abstract class Item extends QUI\QDOM
      * @param QUI\Interfaces\Users\User|null $PermissionUser
      * @throws Exception
      */
-    public function destroy(QUI\Interfaces\Users\User $PermissionUser = null)
+    public function destroy(QUI\Interfaces\Users\User $PermissionUser = null): void
     {
         $this->checkPermission('quiqqer.projects.media.del', $PermissionUser);
 
@@ -891,7 +890,7 @@ abstract class Item extends QUI\QDOM
      *
      * @throws Exception
      */
-    public function moveTo(Folder $Folder, QUI\Interfaces\Users\User $PermissionUser = null)
+    public function moveTo(Folder $Folder, QUI\Interfaces\Users\User $PermissionUser = null): void
     {
         $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
@@ -994,7 +993,7 @@ abstract class Item extends QUI\QDOM
      *
      * @throws Exception
      */
-    public function save(QUI\Interfaces\Users\User $PermissionUser = null)
+    public function save(QUI\Interfaces\Users\User $PermissionUser = null): void
     {
         // permission check
         if (Media::useMediaPermissions()) {
@@ -1014,7 +1013,7 @@ abstract class Item extends QUI\QDOM
 
         $image_effects = $this->getEffects();
 
-        if (is_string($image_effects) || is_bool($image_effects)) {
+        if (is_bool($image_effects)) {
             $image_effects = [];
         }
 
@@ -1045,7 +1044,7 @@ abstract class Item extends QUI\QDOM
         if ($this->getAttribute('mime_type') == 'text/html') {
             $content = file_get_contents($this->getFullPath());
 
-            if (strpos($content, '<svg') !== false && strpos($content, '</svg>')) {
+            if (str_contains($content, '<svg') && strpos($content, '</svg>')) {
                 file_put_contents(
                     $this->getFullPath(),
                     '<?xml version="1.0" encoding="UTF-8"?>' .
@@ -1141,7 +1140,7 @@ abstract class Item extends QUI\QDOM
      *
      * @throws Exception
      */
-    public function rename(string $newName, QUI\Interfaces\Users\User $PermissionUser = null)
+    public function rename(string $newName, QUI\Interfaces\Users\User $PermissionUser = null): void
     {
         $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
@@ -1259,7 +1258,7 @@ abstract class Item extends QUI\QDOM
     /**
      * @param string $path
      */
-    public function addToPathHistory(string $path)
+    public function addToPathHistory(string $path): void
     {
         $this->getPathHistory();
 
@@ -1267,7 +1266,7 @@ abstract class Item extends QUI\QDOM
     }
 
     /**
-     * @return array
+     * @return array|null
      */
     public function getPathHistory(): ?array
     {
@@ -1295,9 +1294,9 @@ abstract class Item extends QUI\QDOM
     /**
      * Return the effects of the item
      *
-     * @return array
+     * @return bool|array
      */
-    public function getEffects()
+    public function getEffects(): bool|array
     {
         if (is_array($this->effects)) {
             return $this->effects;
@@ -1323,7 +1322,7 @@ abstract class Item extends QUI\QDOM
      *
      * @param array $effects
      */
-    public function setEffects(array $effects = [])
+    public function setEffects(array $effects = []): void
     {
         $this->effects = $effects;
     }
@@ -1333,10 +1332,10 @@ abstract class Item extends QUI\QDOM
     // region Effect methods
 
     /**
-     * @param string|array $value
+     * @param array|string $value
      * @return string
      */
-    protected function saveMultilingualField($value): string
+    protected function saveMultilingualField(array|string $value): string
     {
         if (is_array($value)) {
             return json_encode($value);
@@ -1381,7 +1380,7 @@ abstract class Item extends QUI\QDOM
      *
      * @param mixed ...$params
      */
-    public function setShort(...$params)
+    public function setShort(...$params): void
     {
         $this->setDescription($params);
     }
@@ -1433,13 +1432,13 @@ abstract class Item extends QUI\QDOM
     /**
      * Returns information about a file path
      *
-     * @param array|boolean $options - If present, specifies a specific element to be returned;
+     * @param boolean|array $options - If present, specifies a specific element to be returned;
      *                                  one of:
      *                                  PATHINFO_DIRNAME, PATHINFO_BASENAME,
      *                                  PATHINFO_EXTENSION or PATHINFO_FILENAME.
      * @return array|string
      */
-    public function getPathinfo($options = false)
+    public function getPathinfo(bool|array $options = false): array|string
     {
         if (!$options) {
             return pathinfo($this->getFullPath());
@@ -1456,19 +1455,18 @@ abstract class Item extends QUI\QDOM
      * Set an item effect
      *
      * @param string $effect - Name of the effect
-     * @param string|integer|float $value - Value of the effect
+     * @param float|integer|string $value - Value of the effect
      */
-    public function setEffect(string $effect, $value)
+    public function setEffect(string $effect, float|int|string $value): void
     {
         $this->getEffects();
-
         $this->effects[$effect] = $value;
     }
 
     /**
      * Set the media item to hidden
      */
-    public function setHidden()
+    public function setHidden(): void
     {
         $this->setAttribute('hidden', true);
     }
@@ -1476,7 +1474,7 @@ abstract class Item extends QUI\QDOM
     /**
      * Set the media item from hidden to visible
      */
-    public function setVisible()
+    public function setVisible(): void
     {
         $this->setAttribute('hidden', false);
     }
@@ -1513,11 +1511,11 @@ abstract class Item extends QUI\QDOM
      * Shortcut for QUI\Permissions\Permission::hasSitePermission
      *
      * @param string $permission - name of the permission
-     * @param User|boolean $User - optional
+     * @param QUI\Interfaces\Users\User |null $User - optional
      *
      * @return boolean
      */
-    public function hasPermission(string $permission, $User = false)
+    public function hasPermission(string $permission, QUI\Interfaces\Users\User $User = null): bool
     {
         if (Media::useMediaPermissions() === false) {
             return true;
@@ -1539,30 +1537,36 @@ abstract class Item extends QUI\QDOM
     }
 
     /**
-     * Add an user to the permission
+     * Add a user to the permission
      *
      * @param string $permission - name of the permission
      * @param User $User - User Object
-     * @param boolean|User $EditUser
+     * @param null|User $EditUser
      *
      * @throws Exception
      */
-    public function addUserToPermission(User $User, string $permission, $EditUser = false)
-    {
+    public function addUserToPermission(
+        QUI\Interfaces\Users\User $User,
+        string $permission,
+        QUI\Interfaces\Users\User $EditUser = null
+    ): void {
         Permission::addUserToMediaPermission($User, $this, $permission, $EditUser);
     }
 
     /**
-     * add an group to the permission
+     * add a group to the permission
      *
      * @param Group $Group
      * @param string $permission
-     * @param boolean|User $EditUser
+     * @param null|User $EditUser
      *
      * @throws Exception
      */
-    public function addGroupToPermission(Group $Group, string $permission, $EditUser = false)
-    {
+    public function addGroupToPermission(
+        Group $Group,
+        string $permission,
+        QUI\Interfaces\Users\User $EditUser = null
+    ): void {
         Permission::addGroupToMediaPermission($Group, $this, $permission, $EditUser);
     }
 
@@ -1573,16 +1577,19 @@ abstract class Item extends QUI\QDOM
     //region Path history
 
     /**
-     * Remove an user from the permission
+     * Remove a user from the permission
      *
      * @param string $permission - name of the permission
      * @param User $User - User Object#
-     * @param boolean|User $EditUser
+     * @param null|User $EditUser
      *
      * @throws Exception
      */
-    public function removeUserFromSitePermission(User $User, string $permission, $EditUser = false)
-    {
+    public function removeUserFromSitePermission(
+        User $User,
+        string $permission,
+        QUI\Interfaces\Users\User $EditUser = null
+    ): void {
         Permission::removeUserFromMediaPermission($User, $this, $permission, $EditUser);
     }
 
@@ -1591,12 +1598,15 @@ abstract class Item extends QUI\QDOM
      *
      * @param Group $Group
      * @param string $permission - name of the permission
-     * @param boolean|User $EditUser
+     * @param null|User $EditUser
      *
      * @throws Exception
      */
-    public function removeGroupFromSitePermission(Group $Group, string $permission, $EditUser = false)
-    {
+    public function removeGroupFromSitePermission(
+        Group $Group,
+        string $permission,
+        QUI\Interfaces\Users\User $EditUser = null
+    ): void {
         Permission::removeGroupFromMediaPermission($Group, $this, $permission, $EditUser);
     }
 
