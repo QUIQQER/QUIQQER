@@ -49,8 +49,10 @@ class Permission
      *
      * @return false|string|permission
      */
-    public static function hasPermission(string $perm, bool|User $User = false): Permission|bool|string
-    {
+    public static function hasPermission(
+        string $perm,
+        bool|User $User = null
+    ): Permission|bool|string {
         try {
             return self::checkPermission($perm, $User);
         } catch (QUI\Exception) {
@@ -69,8 +71,10 @@ class Permission
      *
      * @throws Exception
      */
-    public static function checkPermission(string $perm, bool|User|null $User = false): Permission|bool|string
-    {
+    public static function checkPermission(
+        string $perm,
+        bool|User|null $User = null
+    ): Permission|bool|string {
         if (!$User) {
             $User = self::getUser();
         }
@@ -143,7 +147,7 @@ class Permission
      *
      * @return boolean
      */
-    public static function isSU(bool|User $User = false): bool
+    public static function isSU(bool|User $User = null): bool
     {
         if (!$User) {
             $User = self::getUser();
@@ -159,7 +163,7 @@ class Permission
      *
      * @throws \QUI\Exception
      */
-    public static function checkAdminUser(bool|User $User = false): void
+    public static function checkAdminUser(bool|User $User = null): void
     {
         $UserToCheck = false;
 
@@ -195,7 +199,7 @@ class Permission
      * @throws Exception
      * @throws \QUI\Exception
      */
-    public static function checkUser(bool|User $User = false): void
+    public static function checkUser(bool|User $User = null): void
     {
         $UserToCheck = $User;
 
@@ -225,7 +229,7 @@ class Permission
      * @param boolean|User $User - optional
      * @return boolean
      */
-    public static function isAdmin(bool|User $User = false): bool
+    public static function isAdmin(bool|User $User = null): bool
     {
         if (!$User) {
             $User = self::getUser();
@@ -248,7 +252,7 @@ class Permission
      * @throws Exception
      * @throws \QUI\Exception
      */
-    public static function checkSU(bool|User $User = false): void
+    public static function checkSU(bool|User $User = null): void
     {
         $UserToCheck = false;
 
@@ -284,7 +288,7 @@ class Permission
      *
      * @return boolean
      */
-    public static function existsPermission(string $perm, bool|User $User = false): bool
+    public static function existsPermission(string $perm, bool|User $User = null): bool
     {
         if (!$User) {
             $User = self::getUser();
@@ -390,7 +394,7 @@ class Permission
         Group $Group,
         Edit|Site $Site,
         string $permission,
-        bool|User $EditUser
+        bool|User $EditUser = null
     ): bool {
         if (!QUI\Projects\Site\Utils::isSiteObject($Site)) {
             return false;
@@ -502,7 +506,7 @@ class Permission
     public static function hasSitePermission(
         string $perm,
         Site $Site,
-        bool|User $User = false
+        bool|User $User = null
     ): bool {
         try {
             return self::checkSitePermission($perm, $Site, $User);
@@ -523,8 +527,11 @@ class Permission
      *
      * @throws Exception
      */
-    public static function checkSitePermission(string $perm, Edit|Site $Site, bool|User $User = false): bool
-    {
+    public static function checkSitePermission(
+        string $perm,
+        Edit|Site $Site,
+        bool|User $User = null
+    ): bool {
         if (!$User) {
             $User = self::getUser();
         }
@@ -642,7 +649,7 @@ class Permission
     public static function checkPermissionList(
         array $permissions,
         string $perm,
-        bool|User $User = false
+        bool|User $User = null
     ): bool {
         if (!isset($permissions[$perm])) {
             QUI\System\Log::addNotice(
@@ -976,7 +983,7 @@ class Permission
     public static function checkProjectPermission(
         string $perm,
         Project $Project,
-        bool|User $User = false
+        bool|User $User = null
     ): bool {
         if (!$User) {
             $User = self::getUser();
@@ -1234,8 +1241,11 @@ class Permission
      *
      * @return bool
      */
-    public static function hasMediaPermission(string $perm, Item $MediaItem, bool|User $User = false): bool
-    {
+    public static function hasMediaPermission(
+        string $perm,
+        Item $MediaItem,
+        bool|User $User = null
+    ): bool {
         if (Media::useMediaPermissions() === false) {
             return true;
         }
@@ -1262,7 +1272,7 @@ class Permission
     public static function checkMediaPermission(
         string $perm,
         Item $MediaItem,
-        bool|User $User = false
+        bool|User $User = null
     ): bool {
         if (Media::useMediaPermissions() === false) {
             return true;

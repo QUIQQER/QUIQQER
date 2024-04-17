@@ -38,7 +38,6 @@ use function mb_strpos;
 use function md5;
 use function rtrim;
 use function str_replace;
-use function strpos;
 use function urlencode;
 
 /**
