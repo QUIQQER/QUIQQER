@@ -76,7 +76,7 @@ QUI::$Ajax->registerFunction(
         $Address->save();
 
         if (isset($data['standard']) && $data['standard'] === 1) {
-            $User->setAttribute('address', $Address->getUuid());
+            $User->setAttribute('address', $Address->getUUID());
             $User->save();
         }
 
@@ -84,7 +84,7 @@ QUI::$Ajax->registerFunction(
             $User->save();
         }
 
-        return $Address->getUuid();
+        return $Address->getUUID();
     },
     ['uid', 'aid', 'data'],
     ['Permission::checkAdminUser', 'quiqqer.admin.users.edit']

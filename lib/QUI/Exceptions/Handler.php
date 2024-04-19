@@ -23,6 +23,7 @@ use function is_callable;
 use function ob_end_clean;
 use function ob_get_contents;
 use function ob_start;
+use function print_r;
 use function register_shutdown_function;
 
 /**
@@ -137,16 +138,16 @@ class Handler extends QUI\QDOM
     /**
      * Writes the error to the log
      *
-     * @param integer $errno - Fehlercode
-     * @param string $errstr - Fehler
-     * @param string $errfile - (optional) Datei in welcher der Fehler auftaucht
-     * @param integer|string $errline - (optional) Zeile in welcher der Fehler auftaucht
+     * @param integer $errno - error code
+     * @param string $errStr - error
+     * @param string $errFile - (optional) Datei in welcher der Fehler auftaucht
+     * @param integer|string $errLine - (optional) Zeile in welcher der Fehler auftaucht
      */
     public function writeErrorToLog(
-        $errno,
-        $errstr,
-        $errfile = '',
-        $errline = ''
+        int $errno,
+        string $errStr,
+        string $errFile = '',
+        int|string $errLine = ''
     ): void {
         if (!$this->getAttribute('ERROR_' . $errno)) {
             return;
@@ -156,8 +157,6 @@ class Handler extends QUI\QDOM
 
         if ($this->getAttribute('logdir')) {
             $log = $this->getAttribute('logdir') . 'error' . date('-Y-m-d') . '.log';
-
-            // Log Verzeichnis erstellen
             QUI\Utils\System\File::mkdir($this->getAttribute('logdir'));
         }
 
@@ -195,24 +194,23 @@ class Handler extends QUI\QDOM
             unset($_REQUEST['HTTP_USER_AGENT']);
             unset($_REQUEST['_url']);
 
-            $err_msg .= '$_REQUEST: ' . \print_r($_REQUEST, true) . "\n\n";
+            $err_msg .= '$_REQUEST: ' . print_r($_REQUEST, true) . "\n\n";
         }
 
-        $err_msg .= "\nMessage:\n" . $errstr . "\n";
+        $err_msg .= "\nMessage:\n" . $errStr . "\n";
 
         if ($errno) {
             $err_msg .= "Error No: ERROR_" . $errno . "\n";
         }
 
-        if ($errfile) {
-            $err_msg .= "Error File:" . $errfile . "\n";
+        if ($errFile) {
+            $err_msg .= "Error File:" . $errFile . "\n";
         }
 
-        if ($errline) {
-            $err_msg .= "Error Line:" . $errline . "\n";
+        if ($errLine) {
+            $err_msg .= "Error Line:" . $errLine . "\n";
         }
 
-        // Nutzerdaten
         if (isset($_SERVER['SERVER_ADDR'])) {
             $err_msg .= "IP: " . $_SERVER['SERVER_ADDR'] . "\n";
             $err_msg .= "Host: " . gethostbyaddr($_SERVER['SERVER_ADDR']) . "\n";

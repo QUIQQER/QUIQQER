@@ -139,6 +139,6 @@ try {
 
     echo $output;
     exit;
-} catch (\Exception $Exception) {
+} catch (Exception $Exception) {
     QUI\System\Log::writeDebugException($Exception);
 }

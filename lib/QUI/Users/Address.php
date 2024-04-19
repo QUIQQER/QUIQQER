@@ -135,6 +135,7 @@ class Address extends QUI\QDOM
      * Return the ID of the address
      *
      * @return integer
+     * @deprecated
      */
     public function getId(): int
     {
@@ -144,7 +145,7 @@ class Address extends QUI\QDOM
     /**
      * @return string|null
      */
-    public function getUuid(): ?string
+    public function getUUID(): ?string
     {
         return $this->uuid;
     }
@@ -844,7 +845,7 @@ class Address extends QUI\QDOM
     {
         $attributes = $this->getAttributes();
         $attributes['id'] = $this->getId();
-        $attributes['uuid'] = $this->getUuid();
+        $attributes['uuid'] = $this->getUUID();
 
         return json_encode($attributes);
     }
@@ -856,7 +857,7 @@ class Address extends QUI\QDOM
     {
         $attributes = parent::getAttributes();
         $attributes['suffix'] = $this->getAddressSuffix();
-        $attributes['uuid'] = $this->getUuid();
+        $attributes['uuid'] = $this->getUUID();
 
         return $attributes;
     }
@@ -870,7 +871,7 @@ class Address extends QUI\QDOM
      */
     public function equals(Address $Address, bool $compareCustomData = false): bool
     {
-        if ($this->getUuid() === $Address->getUuid()) {
+        if ($this->getUUID() === $Address->getUUID()) {
             return true;
         }
 

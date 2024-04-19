@@ -14,7 +14,6 @@ use QUI\Utils\Text\XML;
 use function explode;
 use function file_exists;
 use function str_replace;
-use function strpos;
 
 /**
  * Helper for users

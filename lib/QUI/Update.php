@@ -39,7 +39,7 @@ if (!function_exists('glob_recursive')) {
      * @param int $flags
      * @return array
      */
-    function glob_recursive($pattern, $flags = 0)
+    function glob_recursive($pattern, int $flags = 0): array
     {
         $files = glob($pattern, $flags);
 
@@ -72,7 +72,7 @@ class Update
      * @throws Exception
      * @todo implement the installation
      */
-    public static function onInstall(Event $Event)
+    public static function onInstall(Event $Event): void
     {
         $IO = $Event->getIO();
 
@@ -90,7 +90,7 @@ class Update
      * @throws QUI\Exception
      * @throws \Exception
      */
-    public static function onUpdate(Event $Event)
+    public static function onUpdate(Event $Event): void
     {
         // clear package cache
         QUI::getEvents()->fireEvent('updateBegin');
@@ -138,7 +138,7 @@ class Update
         // session table
         QUI::getSession()->setup();
 
-        // rights setup, so we have all importend tables
+        // rights setup, so we have all important tables
         QUI\Permissions\Manager::setup();
 
         // WYSIWYG Setup
@@ -182,7 +182,7 @@ class Update
             }
         }
 
-        // than we need translations
+        // Then we need translations
         self::importAllLocaleXMLs($Composer);
 
 
@@ -274,15 +274,15 @@ class Update
 
     /**
      * Database setup
-     * Reads the database.xml and create the definit tables
+     * Reads the database.xml and create the tables
      *
-     * @param string $xml_file - path to an database.xml
+     * @param string $xml_file - path to a database.xml
      * @param $IO - Composer InputOutput
      *
      * @throws QUI\Exception
      * @throws \Exception
      */
-    public static function importDatabase(string $xml_file, $IO = null)
+    public static function importDatabase(string $xml_file, $IO = null): void
     {
         if (!file_exists($xml_file)) {
             return;
@@ -294,13 +294,13 @@ class Update
     }
 
     /**
-     * Reimportation from all locale.xml files
+     * Importation from all locale.xml files
      *
-     * @param Composer $Composer - optional
+     * @param Composer|null $Composer - optional
      *
      * @throws QUI\Exception
      */
-    public static function importAllLocaleXMLs($Composer = null)
+    public static function importAllLocaleXMLs(Composer $Composer = null): void
     {
         $packages_dir = false;
 
@@ -386,12 +386,12 @@ class Update
      * Locale setup - translations
      * Reads the locale.xml and import it
      *
-     * @param string $xml_file - path to an locale.xml
+     * @param string $xml_file - path to a locale.xml
      * @param $IO - Composer InputOutput
      *
      * @throws QUI\Exception
      */
-    public static function importLocale(string $xml_file, $IO = null)
+    public static function importLocale(string $xml_file, $IO = null): void
     {
         if (!file_exists($xml_file)) {
             return;
@@ -403,14 +403,14 @@ class Update
     }
 
     /**
-     * Import / register the template engines in an xml file and register it
+     * Import / register the template engines in a xml file and register it
      *
      * @param string $xml_file - path to an engine.xml
      * @param $IO - Composer InputOutput
      *
      * @throws QUI\Exception
      */
-    public static function importTemplateEngines(string $xml_file, $IO = null)
+    public static function importTemplateEngines(string $xml_file, $IO = null): void
     {
         if (!file_exists($xml_file)) {
             return;
@@ -440,7 +440,7 @@ class Update
      * @param $IO - Composer InputOutput
      * @throws Exception
      */
-    public static function importEditors(string $xml_file, $IO = null)
+    public static function importEditors(string $xml_file, $IO = null): void
     {
         if (!file_exists($xml_file)) {
             return;
@@ -465,12 +465,12 @@ class Update
 
     /**
      * Import / register the menu items
-     * it create a cache file for the package
+     * it creates a cache file for the package
      *
      * @param string $xml_file - path to an engine.xml
      * @param $IO - Composer InputOutput
      */
-    public static function importMenu(string $xml_file, $IO = null)
+    public static function importMenu(string $xml_file, $IO = null): void
     {
         if (!file_exists($xml_file)) {
             return;
@@ -506,11 +506,11 @@ class Update
      * Permissions import
      * Reads the permissions.xml and import it
      *
-     * @param string $xml_file - path to an locale.xml
+     * @param string $xml_file - path to a locale.xml
      * @param string $src - Source for the permissions
      * @param $IO - Composer InputOutput
      */
-    public static function importPermissions(string $xml_file, string $src = '', $IO = null)
+    public static function importPermissions(string $xml_file, string $src = '', $IO = null): void
     {
         if (!file_exists($xml_file)) {
             return;
@@ -528,7 +528,7 @@ class Update
      * @param string $packageName - optional, Name of the package
      * @throws Exception
      */
-    public static function importEvents(string $xml_file, string $packageName = '')
+    public static function importEvents(string $xml_file, string $packageName = ''): void
     {
         if (!file_exists($xml_file)) {
             return;
@@ -554,8 +554,8 @@ class Update
             $Events->addEvent(
                 $Event->getAttribute('on'),
                 $Event->getAttribute('fire'),
-                $packageName,
-                $priority
+                $priority,
+                $packageName
             );
         }
     }
@@ -567,7 +567,7 @@ class Update
      * @param $IO - (optional)  Composer InputOutput
      * @throws Exception
      */
-    public static function importSiteEvents(string $xml_file, $IO = null)
+    public static function importSiteEvents(string $xml_file, $IO = null): void
     {
         if (!file_exists($xml_file)) {
             return;
@@ -584,15 +584,15 @@ class Update
     }
 
     /**
-     * Reimportation from all menu.xml files
+     * Importation from all menu.xml files
      * Read all packages and import the menu.xml files to the quiqqer system
      *
-     * @param Composer $Composer - optional
+     * @param Composer|null $Composer - optional
      *
      * @throws QUI\Exception
      * @deprecated
      */
-    public static function importAllMenuXMLs($Composer = null)
+    public static function importAllMenuXMLs(Composer $Composer = null): void
     {
         $packages_dir = false;
 
@@ -642,10 +642,10 @@ class Update
     }
 
     /**
-     * Reimportation from all permissions.xml files
+     * Importation from all permissions.xml files
      * Read all packages and import the permissions.xml files to the quiqqer system
      */
-    public static function importAllPermissionsXMLs()
+    public static function importAllPermissionsXMLs(): void
     {
         $packages = QUIFile::readDir(OPT_DIR);
 
@@ -695,7 +695,7 @@ class Update
      *
      * @return string
      */
-    public static function getLogFile()
+    public static function getLogFile(): string
     {
         return VAR_DIR . 'log/error' . date('-Y-m-d') . '.log';
     }

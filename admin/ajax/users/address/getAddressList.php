@@ -37,7 +37,7 @@ QUI::$Ajax->registerFunction(
                 $attributes = $Address->getAttributes();
                 $attributes['text'] = $Address->getText();
                 $attributes['id'] = $Address->getId();
-                $attributes['uuid'] = $Address->getUuid();
+                $attributes['uuid'] = $Address->getUUID();
 
                 $list[] = $attributes;
             } catch (QUI\Exception $Exception) {

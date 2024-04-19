@@ -120,14 +120,7 @@ class Manager
      */
     public static function getProfileTemplate(): string
     {
-        try {
-            $Engine = QUI::getTemplateManager()->getEngine(true);
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
-
-            return '';
-        }
-
+        $Engine = QUI::getTemplateManager()->getEngine(true);
         $packages = QUI::getPackageManager()->getInstalled();
         $extend = '';
 
@@ -146,11 +139,7 @@ class Manager
 
             /* @var $Tab DOMElement */
             foreach ($tabs as $Tab) {
-                try {
-                    $extend .= DOM::parseCategoryToHTML($Tab);
-                } catch (QUI\Exception $Exception) {
-                    QUI\System\Log::writeDebugException($Exception);
-                }
+                $extend .= DOM::parseCategoryToHTML($Tab);
             }
         }
 
@@ -791,7 +780,7 @@ class Manager
             }
         }
 
-        $User->addToGroup($Everyone->getId());
+        $User->addToGroup($Everyone->getUUID());
         $User->save($ParentUser);
 
         QUI::getEvents()->fireEvent('userCreate', [$User]);
@@ -1019,7 +1008,7 @@ class Manager
             }
         }
 
-        $User->addToGroup($Everyone->getId());
+        $User->addToGroup($Everyone->getUUID());
         $User->save($PermissionUser);
 
         QUI::getEvents()->fireEvent('userCreate', [$User]);

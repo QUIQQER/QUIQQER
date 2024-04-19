@@ -69,42 +69,49 @@ class Project implements \Stringable
      * @var Media|null
      */
     protected ?Media $Media = null;
+
     /**
      * The project site table
      *
      * @var string
      */
     private string $TABLE;
+
     /**
      * The project site relation table
      *
      * @var string
      */
     private string $RELTABLE;
+
     /**
      * The project site relation language table
      *
      * @var string
      */
     private string $RELLANGTABLE;
+
     /**
      * configuration
      *
      * @var array
      */
     private array $config;
+
     /**
      * default language
      *
      * @var string
      */
     private string $default_lang;
+
     /**
      * All languages of the project
      *
      * @var array
      */
     private array $langs;
+
     /**
      * loaded sites
      *
@@ -817,10 +824,9 @@ class Project implements \Stringable
      * VHost zurück geben
      *
      * @param boolean $with_protocol - Mit oder ohne http -> standard = ohne
-     * @param boolean $ssl - mit oder ohne ssl
+     * @param boolean $ssl - with or without ssl
      *
-     * @return boolean | string
-     * @throws QUI\Exception
+     * @return boolean|string
      */
     public function getVHost(bool $with_protocol = false, bool $ssl = false): bool|string
     {
@@ -855,7 +861,12 @@ class Project implements \Stringable
             }
         }
 
-        $StandardProject = QUI::getProjectManager()->getStandard();
+        try {
+            $StandardProject = QUI::getProjectManager()->getStandard();
+        } catch (Exception $exception) {
+            QUI\System\Log::addError($exception->getMessage());
+            return HOST;
+        }
 
         if ($StandardProject->getName() === $this->getName()) {
             return HOST;

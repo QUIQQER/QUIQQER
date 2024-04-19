@@ -8,7 +8,6 @@ namespace QUI\Mail;
 
 use Html2Text\Html2Text;
 use QUI;
-use QUI\Exception;
 use QUI\Projects\Project;
 
 use function file_exists;

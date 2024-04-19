@@ -206,9 +206,8 @@ class Utils
 
         $result = $apache22 ? $result + 1 : $result;
         $result = $apache24 ? $result + 2 : $result;
-        $result = $nginx ? $result + 4 : $result;
 
-        return $result;
+        return $nginx ? $result + 4 : $result;
     }
 
     /**

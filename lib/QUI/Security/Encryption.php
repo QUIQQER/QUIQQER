@@ -6,7 +6,17 @@
 
 namespace QUI\Security;
 
+use Exception;
 use QUI;
+
+use function bin2hex;
+use function explode;
+use function hex2bin;
+use function openssl_cipher_iv_length;
+use function openssl_decrypt;
+use function openssl_encrypt;
+use function openssl_random_pseudo_bytes;
+use function substr;
 
 /**
  * Class Encryption
@@ -18,15 +28,14 @@ class Encryption
     /**
      * Decrypts data (Entschlüsselt Daten)
      *
-     * @param string $data
+     * @param string|null $data
      * @return string
-     *
-     * @throws \Exception
+     * @throws QUI\Exception
      */
-    public static function decrypt($data)
+    public static function decrypt(string|null $data): string
     {
         if (empty($data)) {
-            return $data;
+            return $data ?? '';
         }
 
         $Config = QUI::getConfig('etc/conf.ini.php');
@@ -43,21 +52,21 @@ class Encryption
         /**
          * multi key support
          */
-        if (\strpos($iv, ',') !== false) {
-            $ivs = \explode(',', trim($iv));
+        if (str_contains($iv, ',')) {
+            $ivs = explode(',', trim($iv));
         } else {
             $ivs[] = trim($iv);
         }
 
         foreach ($ivs as $iv) {
             try {
-                $iv = @\hex2bin($iv);
-                $data = \openssl_decrypt($givenData, 'aes-256-cbc', $salt, 0, $iv);
+                $iv = @hex2bin($iv);
+                $data = openssl_decrypt($givenData, 'aes-256-cbc', $salt, 0, $iv);
 
                 if ($data !== false) {
-                    return \substr($data, -$sl) . \substr($data, 0, -$sl);
+                    return substr($data, -$sl) . substr($data, 0, -$sl);
                 }
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
         }
@@ -68,11 +77,10 @@ class Encryption
     /**
      * Encrypts data (Verschlüsselt Daten)
      *
-     * @param string $data
+     * @param string|null $data
      * @return string
-     * @throws QUI\Exception
      */
-    public static function encrypt($data)
+    public static function encrypt(string|null $data): string
     {
         $Config = QUI::getConfig('etc/conf.ini.php');
 
@@ -81,31 +89,31 @@ class Encryption
         $iv = $Config->getValue('openssl', 'iv');
 
         if ($iv === false) {
-            $iv = \openssl_random_pseudo_bytes(\openssl_cipher_iv_length('aes-256-cbc'));
+            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
 
             QUI::getConfig('etc/conf.ini.php')->setValue(
                 'openssl',
                 'iv',
-                \bin2hex($iv)
+                bin2hex($iv)
             );
 
             QUI::getConfig('etc/conf.ini.php')->setValue(
                 'openssl',
                 'length',
-                \openssl_cipher_iv_length('aes-256-cbc')
+                openssl_cipher_iv_length('aes-256-cbc')
             );
 
             QUI::getConfig('etc/conf.ini.php')->save();
         } else {
-            if (\strpos($iv, ',') !== false) {
-                $iv = \explode(',', trim($iv))[0];
+            if (str_contains($iv, ',')) {
+                $iv = explode(',', trim($iv))[0];
             }
 
-            $iv = \hex2bin($iv);
+            $iv = hex2bin($iv);
         }
 
-        $data = \substr($data, $sl) . \substr($data, 0, $sl);
+        $data = substr($data, $sl) . substr($data, 0, $sl);
 
-        return \openssl_encrypt($data, 'aes-256-cbc', $salt, 0, $iv);
+        return openssl_encrypt($data, 'aes-256-cbc', $salt, 0, $iv);
     }
 }

@@ -360,7 +360,6 @@ class Manager
      * Return the permissions data of an object
      *
      * @param mixed $Obj
-     *
      * @return array
      */
     protected function getData(mixed $Obj): array
@@ -424,7 +423,6 @@ class Manager
 
         if ($area === 'site') {
             /* @var $Obj QUI\Projects\Site */
-            /* @var $Project Project */
             $Project = $Obj->getProject();
 
             try {
@@ -497,11 +495,11 @@ class Manager
             switch ($area) {
                 case 'user':
                     /* @var $Obj User */
-                    return 'permission2user_' . $Obj->getId();
+                    return 'permission2user_' . $Obj->getUUID();
 
                 case 'groups':
                     /* @var $Obj Group */
-                    return 'permission2groups_' . $Obj->getId();
+                    return 'permission2groups_' . $Obj->getUUID();
 
                 case 'project':
                     /* @var $Obj Project */
@@ -822,7 +820,7 @@ class Manager
      * @param array $permissions
      * @param QUI\Interfaces\Users\User|null $EditUser
      *
-     * @throws Exception|\QUI\Permissions\Exception
+     * @throws Exception
      */
     public function setProjectPermissions(
         Project $Project,
@@ -1024,16 +1022,17 @@ class Manager
                     if (QUI::getGroups()->isGroup($PermValue)) {
                         /* @var $PermValue QUI\Groups\Group */
                         $permissionValues[] = 'g' . $PermValue->getId();
+                        $permissionValues[] = 'g' . $PermValue->getUUID();
                     }
                 }
 
                 $permissionValue = implode(',', $permissionValues);
             } elseif (QUI::getUsers()->isUser($Perm)) {
                 /* @var $Perm User */
-                $permissionValue = 'u' . $Perm->getId();
+                $permissionValue = 'u' . $Perm->getUUID();
             } elseif (QUI::getGroups()->isGroup($Perm)) {
                 /* @var $Perm QUI\Groups\Group */
-                $permissionValue = 'g' . $Perm->getId();
+                $permissionValue = 'g' . $Perm->getUUID();
             } else {
                 continue;
             }
@@ -1066,14 +1065,18 @@ class Manager
     /**
      * Add a new permission entry for site
      *
-     * @param QUI\Projects\Site|QUI\Projects\Site\Edit|QUI\Projects\Site\OnlyDB $Site
+     * @param QUI\Interfaces\Projects\Site $Site
      * @param string $permission
-     * @param string|integer $value
+     * @param integer|string $value
      *
+     * @throws Exception
      * @throws QUI\Exception
      */
-    protected function addSitePermission($Site, string $permission, $value)
-    {
+    protected function addSitePermission(
+        QUI\Interfaces\Projects\Site $Site,
+        string $permission,
+        int|string $value
+    ): void {
         $Project = $Site->getProject();
         $table = self::table();
 
@@ -1089,14 +1092,18 @@ class Manager
     /**
      * Updates the permission entry for the site
      *
-     * @param QUI\Projects\Site|QUI\Projects\Site\Edit|QUI\Projects\Site\OnlyDB $Site
+     * @param QUI\Interfaces\Projects\Site $Site
      * @param string $permission
-     * @param string|integer $value
+     * @param integer|string $value
      *
+     * @throws Exception
      * @throws QUI\Exception
      */
-    protected function setSitePermission($Site, string $permission, $value)
-    {
+    protected function setSitePermission(
+        QUI\Interfaces\Projects\Site $Site,
+        string $permission,
+        int|string $value
+    ): void {
         $Project = $Site->getProject();
         $table = self::table();
 
@@ -1219,12 +1226,15 @@ class Manager
      *
      * @param QUI\Projects\Media\Item $MediaItem
      * @param string $permission
-     * @param string|integer $value
+     * @param integer|string $value
      *
      * @throws QUI\Exception
      */
-    protected function addMediaPermission(QUI\Projects\Media\Item $MediaItem, string $permission, $value)
-    {
+    protected function addMediaPermission(
+        QUI\Projects\Media\Item $MediaItem,
+        string $permission,
+        int|string $value
+    ): void {
         $Media = $MediaItem->getMedia();
         $Project = $Media->getProject();
         $table = self::table();
@@ -1242,12 +1252,15 @@ class Manager
      *
      * @param QUI\Projects\Media\Item $MediaItem
      * @param string $permission
-     * @param string|integer $value
+     * @param integer|string $value
      *
      * @throws QUI\Exception
      */
-    protected function setMediaPermission(QUI\Projects\Media\Item $MediaItem, string $permission, $value)
-    {
+    protected function setMediaPermission(
+        QUI\Projects\Media\Item $MediaItem,
+        string $permission,
+        int|string $value
+    ): void {
         $Media = $MediaItem->getMedia();
         $Project = $Media->getProject();
         $table = self::table();
@@ -1280,7 +1293,7 @@ class Manager
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function deletePermission(string $permission)
+    public function deletePermission(string $permission): void
     {
         $permissions = $this->getPermissionList();
 
@@ -1321,7 +1334,7 @@ class Manager
      *                            eq: system, plugin-name, user
      *
      */
-    public function importPermissionsFromXml(string $xmlFile, string $src = '')
+    public function importPermissionsFromXml(string $xmlFile, string $src = ''): void
     {
         $rootPermissions = [];
         $permissions = QUI\Utils\Text\XML::getPermissionsFromXml($xmlFile);
@@ -1337,13 +1350,13 @@ class Manager
         try {
             $RootGroup = QUI::getGroups()->get(QUI::conf('globals', 'root'));
             $rootPermissions = $this->getPermissions($RootGroup);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         try {
             $Everyone = QUI::getGroups()->get(QUI\Groups\Manager::EVERYONE_ID);
             $everyonePermissions = $this->getPermissions($Everyone);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         foreach ($permissions as $permission) {
@@ -1411,7 +1424,7 @@ class Manager
      *
      * @throws QUI\Database\Exception
      */
-    public function addPermission(array $params)
+    public function addPermission(array $params): void
     {
         $DataBase = QUI::getDataBase();
         $needles = [
@@ -1487,20 +1500,10 @@ class Manager
      */
     public static function parseType(string $type): string
     {
-        switch ($type) {
-            case 'bool':
-            case 'string':
-            case 'int':
-            case 'array':
-            case 'group':
-            case 'groups':
-            case 'user':
-            case 'users':
-            case 'users_and_groups':
-                return $type;
-        }
-
-        return 'bool';
+        return match ($type) {
+            'bool', 'string', 'int', 'array', 'group', 'groups', 'user', 'users', 'users_and_groups' => $type,
+            default => 'bool',
+        };
     }
 
     /**
@@ -1512,17 +1515,10 @@ class Manager
      */
     public static function parseArea(string $area): string
     {
-        switch ($area) {
-            case 'global':
-            case 'user':
-            case 'groups':
-            case 'site':
-            case 'project':
-            case 'media':
-                return $area;
-        }
-
-        return '';
+        return match ($area) {
+            'global', 'user', 'groups', 'site', 'project', 'media' => $area,
+            default => '',
+        };
     }
 
     /**
@@ -1532,7 +1528,7 @@ class Manager
      * @param QUI\Package\Package $Package
      * @throws Exception
      */
-    public function deletePermissionsFromPackage(QUI\Package\Package $Package)
+    public function deletePermissionsFromPackage(QUI\Package\Package $Package): void
     {
         // remove from cache
         $result = QUI::getDataBase()->fetch([
@@ -1564,7 +1560,7 @@ class Manager
      * @return false|array
      * @throws QUI\Exception
      */
-    public function getPermissionData(string $permission)
+    public function getPermissionData(string $permission): bool|array
     {
         if (!isset($this->cache[$permission])) {
             throw new QUI\Exception('Permission not found');
@@ -1585,7 +1581,7 @@ class Manager
      *
      * @return array
      */
-    public function getCompletePermissionList($Obj)
+    public function getCompletePermissionList(mixed $Obj): array
     {
         $cache = 'quiqqer/permissions/' . $this->getDataCacheId($Obj) . '/complete';
 
@@ -1760,11 +1756,11 @@ class Manager
      * @param $User
      * @return array
      */
-    public function getUserPermissionData($User)
+    public function getUserPermissionData($User): array
     {
         $userPermissions = $this->getData($User);
 
-        if (isset($userPermissions[0]) && isset($userPermissions[0]['permissions'])) {
+        if (isset($userPermissions[0]['permissions'])) {
             $userPermissions = json_decode(
                 $userPermissions[0]['permissions'],
                 true
@@ -1786,9 +1782,8 @@ class Manager
      *
      * @return array
      * @todo das muss vielleicht überdacht werden
-     *
      */
-    public function getRightParamsFromGroup(Group $Group)
+    public function getRightParamsFromGroup(Group $Group): array
     {
         $result = [];
         $rights = QUI::getDataBase()->fetch([
@@ -1810,7 +1805,6 @@ class Manager
                     break;
 
                 case 'groups':
-                    // kommasepariert und zahlen
                     $val = preg_replace('/[^0-9,]/', '', $val);
                     break;
 

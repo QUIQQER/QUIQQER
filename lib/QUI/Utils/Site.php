@@ -8,6 +8,8 @@ namespace QUI\Utils;
 
 use QUI;
 
+use QUI\Exception;
+
 use function explode;
 use function implode;
 use function ltrim;
@@ -27,25 +29,12 @@ use function substr;
 class Site
 {
     /**
-     * Alias for setRecursiveAttribute
+     * Set an attribute recursive from its parents if the attribute is not set
      *
-     * @param \QUI\Interfaces\Projects\Site $Site
-     * @param $attribute
-     *
-     * @deprecated use setRecursiveAttribute
-     */
-    public static function setRecursivAttribute(\QUI\Interfaces\Projects\Site $Site, $attribute)
-    {
-        self::setRecursiveAttribute($Site, $attribute);
-    }
-
-    /**
-     * Set a attribute recursive from its parents if the attribute is not set
-     *
-     * @param \QUI\Interfaces\Projects\Site $Site
+     * @param QUI\Interfaces\Projects\Site $Site
      * @param string $attribute
      */
-    public static function setRecursiveAttribute(\QUI\Interfaces\Projects\Site $Site, string $attribute)
+    public static function setRecursiveAttribute(QUI\Interfaces\Projects\Site $Site, string $attribute): void
     {
         $value = $Site->getAttribute($attribute);
 
@@ -138,12 +127,12 @@ class Site
      * @param $url
      *
      * @return QUI\Projects\Site
-     * @throws \QUI\Exception
+     * @throws Exception
      */
     public static function getSiteByUrl($url): QUI\Projects\Site
     {
         if (empty($url)) {
-            throw new QUI\Exception('Site not found', 404);
+            throw new Exception('Site not found', 404);
         }
 
         $project = '';
@@ -224,8 +213,8 @@ class Site
 
         try {
             return QUI\Projects\Site\Utils::getSiteByUrl($Project, $url);
-        } catch (QUI\Exception) {
-            throw new QUI\Exception('Site not found', 404);
+        } catch (Exception) {
+            throw new Exception('Site not found', 404);
         }
     }
 }

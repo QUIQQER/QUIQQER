@@ -6,6 +6,7 @@
 
 namespace QUI\Messages;
 
+use Exception;
 use QUI;
 
 /**
@@ -31,7 +32,7 @@ class Handler
                 'mcode' => 'varchar(5)',
                 'mtime' => 'int(11)'
             ]);
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
     }
@@ -73,7 +74,7 @@ class Handler
     }
 
     /**
-     * Return all new messages for an user and delete it in the queue
+     * Return all new messages for a user and delete it in the queue
      *
      * @param QUI\Interfaces\Users\User $User
      *
@@ -147,7 +148,7 @@ class Handler
     }
 
     /**
-     * Add an information for an user
+     * Add an information for a user
      *
      * @param string $str
      */
@@ -171,7 +172,7 @@ class Handler
     }
 
     /**
-     * Add an error for an user
+     * Add an error for a user
      *
      * @param string $str
      */
@@ -185,7 +186,7 @@ class Handler
     }
 
     /**
-     * Add a information for an user
+     * Add an information for a user
      *
      * @param string $str
      */
@@ -199,7 +200,7 @@ class Handler
     }
 
     /**
-     * Add a success message for an user
+     * Add a success message for a user
      *
      * @param string $str
      */
@@ -273,7 +274,7 @@ class Handler
     }
 
     /**
-     * Send a information to an user and save it to the database
+     * Send an information to a user and save it to the database
      *
      * @param QUI\Interfaces\Users\User $User
      * @param string $str
@@ -289,7 +290,7 @@ class Handler
     }
 
     /**
-     * Send a success message to an user and save it to the database
+     * Send a success message to a user and save it to the database
      *
      * @param QUI\Interfaces\Users\User $User
      * @param string $str

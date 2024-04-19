@@ -90,11 +90,7 @@ class Login extends Control
             ];
         }
 
-        try {
-            $Engine = QUI::getTemplateManager()->getEngine();
-        } catch (QUI\Exception) {
-            return '';
-        }
+        $Engine = QUI::getTemplateManager()->getEngine();
 
         $Engine->assign([
             'passwordReset' => !empty($_REQUEST['password_reset']),

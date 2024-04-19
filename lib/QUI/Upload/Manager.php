@@ -7,7 +7,9 @@
 namespace QUI\Upload;
 
 use QUI;
+use QUI\Exception;
 use QUI\Permissions\Permission;
+use QUI\QDOM;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\System\File;
 use QUI\Utils\System\File as QUIFile;
@@ -24,7 +26,6 @@ use function flush;
 use function fnmatch;
 use function fopen;
 use function fwrite;
-use function get_class;
 use function implode;
 use function is_array;
 use function is_callable;
@@ -36,7 +37,6 @@ use function move_uploaded_file;
 use function ob_flush;
 use function realpath;
 use function str_replace;
-use function strpos;
 use function substr;
 use function trim;
 
@@ -52,12 +52,11 @@ class Manager
     /**
      * Initialized the upload
      *
-     * @return string
-     * @throws \QUI\Exception
+     * @return bool|string
+     * @throws Exception
      */
-    public function init()
+    public function init(): bool|string
     {
-        // if a onstart function
         if (!empty($_REQUEST['onstart']) && is_callable($_REQUEST['onstart'])) {
             $this->callFunction($_REQUEST['onstart'], $_REQUEST);
         }
@@ -68,24 +67,20 @@ class Manager
     /**
      * call a function
      *
-     * @param string|callback $function - Function
+     * @param callback|string $function - Function
      * @param array $params - function parameter
      *
      * @return mixed
-     * @throws \QUI\Exception
+     * @throws Exception
      */
-    protected function callFunction($function, array $params = [])
+    protected function callFunction(callable|string $function, array $params = []): mixed
     {
-        if ($function === false) {
-            return false;
-        }
-
-        if (is_object($function) && ((object)$function)::class === 'Closure') {
+        if (is_object($function) && ($function)::class === 'Closure') {
             return $function();
         }
 
-        if (strpos($function, 'ajax_') === 0) {
-            // if the function is a ajax_function
+        if (str_starts_with($function, 'ajax_')) {
+            // if the function is an ajax_function
             $_rf_file = OPT_DIR . 'quiqqer/quiqqer/admin/' . str_replace('_', '/', $function) . '.php';
             $_rf_file = Orthos::clearPath(realpath($_rf_file));
 
@@ -100,7 +95,7 @@ class Manager
             return QUI::getAjax()->callRequestFunction($function, $_REQUEST);
         }
 
-        if (strpos($function, 'package_') === 0) {
+        if (str_starts_with($function, 'package_')) {
             $dir = OPT_DIR;
             $file = substr(str_replace('_', '/', $function), 8) . '.php';
 
@@ -118,7 +113,7 @@ class Manager
             return QUI::getAjax()->callRequestFunction($function, $_REQUEST);
         }
 
-        throw new QUI\Exception(
+        throw new Exception(
             'Function ' . $function . ' not found',
             404
         );
@@ -128,10 +123,11 @@ class Manager
      * Upload the file data,
      * read the PUT data and write it to the filesystem or read the $_FILES
      *
-     * @return string
-     * @throws QUI\Exception
+     * @return bool|string
+     * @throws Exception
+     * @throws QUI\Permissions\Exception
      */
-    public function upload()
+    public function upload(): bool|string
     {
         QUIFile::mkdir($this->getUserUploadDir());
 
@@ -216,14 +212,14 @@ class Manager
 
 
         if ($this->checkFnMatch($configAllowedTypes, $fileType) === false) {
-            throw new QUI\Exception([
+            throw new Exception([
                 'quiqqer/quiqqer',
                 'exception.upload.not.allowed.mimetype'
             ]);
         }
 
         if ($this->checkFnMatch($configAllowedEndings, $filename) === false) {
-            throw new QUI\Exception([
+            throw new Exception([
                 'quiqqer/quiqqer',
                 'exception.upload.not.allowed.ending'
             ]);
@@ -235,7 +231,7 @@ class Manager
         if (!$filename) {
             try {
                 $this->formUpload($onfinish, $params);
-            } catch (QUI\Exception $Exception) {
+            } catch (Exception $Exception) {
                 $this->flushMessage($Exception->toArray());
 
                 return '';
@@ -263,7 +259,7 @@ class Manager
             $file = json_decode($_REQUEST['file'], true);
         }
 
-        if (isset($file) && isset($file['chunkstart']) && $file['chunkstart'] == 0) {
+        if (isset($file['chunkstart']) && $file['chunkstart'] == 0) {
             $this->delete($filename);
         }
 
@@ -300,7 +296,7 @@ class Manager
         if ($configMaxFileSize && (int)$fileinfo['filesize'] > $configMaxFileSize) {
             QUIFile::unlink($tmp_name);
 
-            throw new QUI\Exception([
+            throw new Exception([
                 'quiqqer/quiqqer',
                 'exception.media.upload.fileSize.is.to.big',
                 [
@@ -346,7 +342,7 @@ class Manager
             QUIFile::unlink($tmp_name);
 
             if (isset($result['Exception'])) {
-                throw new QUI\Exception(
+                throw new Exception(
                     $result['Exception']['message'],
                     $result['Exception']['code']
                 );
@@ -361,13 +357,12 @@ class Manager
     /**
      * Return the Path to the User upload directory
      *
-     * @param \QUI\Users\User|boolean $User - optional, standard is the session user
-     *
+     * @param QUI\Interfaces\Users\User|null $User |boolean $User - optional, standard is the session user
      * @return string
      *
      * @throws QUI\Permissions\Exception
      */
-    protected function getUserUploadDir($User = false): string
+    protected function getUserUploadDir(QUI\Interfaces\Users\User $User = null): string
     {
         if (!QUI::getUsers()->isUser($User)) {
             $User = QUI::getUserBySession();
@@ -376,7 +371,7 @@ class Manager
         $this->checkUserPermissions($User);
 
         // for nobody, we use the session id
-        if (!$User->getId()) {
+        if ($User instanceof QUI\Users\Nobody) {
             $Session = QUI::getSession();
             $uuid = $Session->get('uuid');
 
@@ -387,17 +382,17 @@ class Manager
 
             $id = $uuid;
         } else {
-            $id = $User->getUniqueId();
+            $id = $User->getUUID();
         }
 
         return $this->getDir() . $id . '/';
     }
 
     /**
-     * @param null $User
+     * @param QUI\Interfaces\Users\User|null $User
      * @throws QUI\Permissions\Exception
      */
-    protected function checkUserPermissions($User = null)
+    protected function checkUserPermissions(QUI\Interfaces\Users\User $User = null): void
     {
         $SessionUser = QUI::getUserBySession();
 
@@ -413,7 +408,7 @@ class Manager
             $User = QUI::getUserBySession();
         }
 
-        if ($SessionUser->getId() !== $User->getId()) {
+        if ($SessionUser->getUUID() !== $User->getUUID()) {
             throw new QUI\Permissions\Exception([
                 'quiqqer/quiqqer',
                 'exceptions.upload.no.permissions.'
@@ -456,15 +451,15 @@ class Manager
      * Internal form upload method
      * If the upload is not over HTML5
      *
-     * @param string|callback $onfinish - Function
-     * @param $params - extra params for the \QUI\QDOM File Object
+     * @param callback|string $onfinish - Function
+     * @param mixed $params - extra params for the \QUI\QDOM File Object
      *
-     * @throws \QUI\Exception
+     * @throws Exception
      */
-    protected function formUpload($onfinish, $params)
+    protected function formUpload(callable|string $onfinish, mixed $params): void
     {
         if (empty($_FILES) || !isset($_FILES['files'])) {
-            throw new QUI\Exception(
+            throw new Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.no.data'),
                 400
             );
@@ -485,7 +480,7 @@ class Manager
             $file = $uploadDir . $filename;
 
             if (!move_uploaded_file($list["tmp_name"], $file)) {
-                throw new QUI\Exception(
+                throw new Exception(
                     QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.move', [
                         'file' => $file
                     ])
@@ -498,7 +493,7 @@ class Manager
             }
 
             if (!isset($File)) {
-                $File = new QUI\QDOM();
+                $File = new QDOM();
                 $File->setAttribute('name', $filename);
                 $File->setAttribute('filepath', $file);
             }
@@ -529,13 +524,12 @@ class Manager
                 ]);
             }
 
-            // extract if the the extract file is set
             if (isset($_REQUEST['extract']) && $_REQUEST['extract']) {
                 $File = $this->extract($file);
             }
 
             if (!isset($File)) {
-                $File = new QUI\QDOM();
+                $File = new QDOM();
                 $File->setAttribute('name', $filename);
                 $File->setAttribute('filepath', $file);
             }
@@ -558,7 +552,7 @@ class Manager
      * @param integer $error
      *
      * @return bool
-     * @throws \QUI\Exception
+     * @throws Exception
      */
     protected function checkUpload(int $error): bool
     {
@@ -568,27 +562,27 @@ class Manager
                 return true;
 
             case UPLOAD_ERR_INI_SIZE:
-                throw new QUI\Exception(
+                throw new Exception(
                     QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.max.filesize')
                 );
 
             case UPLOAD_ERR_FORM_SIZE:
-                throw new QUI\Exception(
+                throw new Exception(
                     QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.max.form.filesize')
                 );
 
             case UPLOAD_ERR_PARTIAL:
-                throw new QUI\Exception(
+                throw new Exception(
                     QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.partially.uploaded')
                 );
 
             case UPLOAD_ERR_NO_FILE:
-                throw new QUI\Exception(
+                throw new Exception(
                     QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.no.data')
                 );
 
             case UPLOAD_ERR_NO_TMP_DIR:
-                throw new QUI\Exception(
+                throw new Exception(
                     QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.missing.temp')
                 );
         }
@@ -597,21 +591,21 @@ class Manager
     }
 
     /**
-     * Extract the Archiv
+     * Extract the Archive
      *
      * @param string $filename
      *
-     * @return \QUI\QDOM
+     * @return QDOM
      *
-     * @throws \QUI\Exception
+     * @throws Exception
      * @todo more archive types
      */
-    protected function extract(string $filename): QUI\QDOM
+    protected function extract(string $filename): QDOM
     {
         $fileInfo = QUIFile::getInfo($filename);
 
         if ($fileInfo['mime_type'] != 'application/zip') {
-            throw new QUI\Exception(
+            throw new Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.unsupported.archive')
             );
         }
@@ -623,7 +617,7 @@ class Manager
 
         QUI\Archiver\Zip::unzip($filename, $to);
 
-        $File = new QUI\QDOM();
+        $File = new QDOM();
         $File->setAttribute('name', $fileInfo['filename']);
         $File->setAttribute('filepath', $to);
 
@@ -635,7 +629,7 @@ class Manager
      *
      * @param array|string $message
      */
-    public function flushMessage($message)
+    public function flushMessage(array|string $message): void
     {
         $message = '<script type="text/javascript">
             let UploadManager = false;
@@ -662,7 +656,7 @@ class Manager
      *
      * @param string $call - eq: alert(1);
      */
-    public function flushAction(string $call)
+    public function flushAction(string $call): void
     {
         $message = '<script type="text/javascript">
             let UploadManager = false;
@@ -689,9 +683,9 @@ class Manager
      *
      * @param string $filename
      *
-     * @throws \QUI\Exception
+     * @throws Exception
      */
-    protected function delete(string $filename)
+    protected function delete(string $filename): void
     {
         $file = $this->getUserUploadDir() . $filename;
         $conf = $this->getUserUploadDir() . $filename . '.json';
@@ -706,9 +700,9 @@ class Manager
      * @param string $filename - filename
      * @param array $params - optional
      *
-     * @throws \QUI\Exception
+     * @throws Exception
      */
-    protected function add(string $filename, array $params)
+    protected function add(string $filename, array $params): void
     {
         $conf = $this->getUserUploadDir() . $filename . '.json';
 
@@ -731,15 +725,15 @@ class Manager
      *
      * @param string $filename
      *
-     * @return \QUI\QDOM
-     * @throws \QUI\Exception
+     * @return QDOM
+     * @throws Exception
      */
-    protected function getFileData(string $filename): QUI\QDOM
+    protected function getFileData(string $filename): QDOM
     {
         $conf = $this->getUserUploadDir() . $filename . '.json';
 
         if (!file_exists($conf)) {
-            throw new QUI\Exception(
+            throw new Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.not.found'),
                 404
             );
@@ -750,18 +744,18 @@ class Manager
             true
         );
 
-        $File = new QUI\QDOM();
+        $File = new QDOM();
         $File->setAttributes($data);
 
         return $File;
     }
 
     /**
-     * Flush a exception to the UploadManager
+     * Flush an exception to the UploadManager
      *
-     * @param QUI\Exception $Exception
+     * @param Exception $Exception
      */
-    public function flushException(QUI\Exception $Exception)
+    public function flushException(Exception $Exception): void
     {
         $message = [
             'Exception' => $Exception->toArray()
@@ -777,24 +771,24 @@ class Manager
      *
      * @param string $filename - the filename of the file
      *
-     * @throws \QUI\Exception
+     * @throws Exception
      */
-    public function cancel(string $filename)
+    public function cancel(string $filename): void
     {
         $this->delete($filename);
     }
 
     /**
      * Get unfinished uploads from a specific user
-     * so you can resume the upload
+     * so, you can resume the upload
      *
-     * @param \QUI\Users\User|boolean $User - optional, if false = the session user
-     *
+     * @param QUI\Interfaces\Users\User|null $User - optional, if null = the session user
      * @return array
      *
-     * @throws \QUI\Exception
+     * @throws Exception
+     * @throws QUI\Permissions\Exception
      */
-    public function getUnfinishedUploadsFromUser($User = false): array
+    public function getUnfinishedUploadsFromUser(QUI\Interfaces\Users\User $User = null): array
     {
         if (!QUI::getUsers()->isUser($User)) {
             $User = QUI::getUserBySession();
@@ -828,7 +822,7 @@ class Manager
                 }
 
                 $result[] = $attributes;
-            } catch (QUI\Exception $Exception) {
+            } catch (Exception $Exception) {
                 if ($Exception->getCode() === 404) {
                     QUIFile::unlink($dir . $file);
                 }
