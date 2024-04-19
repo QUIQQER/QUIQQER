@@ -9,7 +9,6 @@ namespace QUI\Package;
 use Exception;
 use QUI;
 use QUI\Utils\System\File;
-
 use ZipArchive;
 
 use function chdir;
