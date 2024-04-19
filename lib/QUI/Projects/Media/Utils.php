@@ -1052,11 +1052,10 @@ class Utils
     /**
      * Is the variable a folder object?
      *
-     * @param string|boolean|object $Unknown
-     *
+     * @param mixed $Unknown
      * @return boolean
      */
-    public static function isFolder($Unknown): bool
+    public static function isFolder(mixed $Unknown): bool
     {
         if (!is_object($Unknown)) {
             return false;
@@ -1076,10 +1075,10 @@ class Utils
     /**
      * Is the object a media item
      *
-     * @param $Unknown
+     * @param mixed $Unknown
      * @return bool
      */
-    public static function isItem($Unknown): bool
+    public static function isItem(mixed $Unknown): bool
     {
         if (!is_object($Unknown)) {
             return false;

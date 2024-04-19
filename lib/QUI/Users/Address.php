@@ -91,7 +91,7 @@ class Address extends QUI\QDOM
                     'exception.lib.user.address.not.found',
                     [
                         'addressId' => $id,
-                        'userId' => $User->getId()
+                        'userId' => $User->getUUID()
                     ]
                 ),
                 404
@@ -111,7 +111,7 @@ class Address extends QUI\QDOM
                     'exception.lib.user.address.not.found',
                     [
                         'addressId' => $id,
-                        'userId' => $User->getId()
+                        'userId' => $User->getUUID()
                     ]
                 )
             );
