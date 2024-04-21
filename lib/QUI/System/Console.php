@@ -37,7 +37,6 @@ use function php_sapi_name;
 use function phpversion;
 use function posix_geteuid;
 use function posix_getpwuid;
-use function rand;
 use function realpath;
 use function sort;
 use function str_replace;
@@ -62,15 +61,15 @@ class Console
     /**
      * The current text color
      *
-     * @var string
+     * @var string|bool
      */
-    protected $current_color = false;
+    protected string|bool $current_color = false;
     /**
      * the current background color
      *
-     * @var string
+     * @var string|bool
      */
-    protected $current_bg = false;
+    protected string|bool $current_bg = false;
     /**
      * All available text colors
      *
@@ -167,7 +166,7 @@ class Console
 
     /**
      * constructor
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
     public function __construct()
     {
@@ -504,7 +503,7 @@ class Console
      * Read all tools and include it
      *
      * @return void
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
     private function read(): void
     {

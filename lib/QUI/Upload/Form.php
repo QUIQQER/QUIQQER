@@ -5,6 +5,9 @@ namespace QUI\Upload;
 use QUI;
 use QUI\Permissions\Permission;
 
+use function json_encode;
+use function str_replace;
+
 /**
  * Class Form
  */
@@ -15,7 +18,7 @@ class Form extends QUI\QDOM
      *
      * @param array $params
      */
-    public function __construct($params = [])
+    public function __construct(array $params = [])
     {
         // defaults
         $this->setAttributes([
@@ -59,34 +62,27 @@ class Form extends QUI\QDOM
     /**
      * Return the generated JS control
      */
-    public function create()
+    public function create(): string
     {
         $Engine = QUI::getTemplateManager()->getEngine();
 
-        switch ($this->getAttribute('typeOfLook')) {
-            case 'DragDrop':
-            case 'Icon':
-            case 'Single':
-                $typeOfLook = $this->getAttribute('typeOfLook');
-                break;
-
-            default:
-                $typeOfLook = 'DragDrop';
-                break;
-        }
+        $typeOfLook = match ($this->getAttribute('typeOfLook')) {
+            'DragDrop', 'Icon', 'Single' => $this->getAttribute('typeOfLook'),
+            default => 'DragDrop',
+        };
 
 
         $Engine->assign([
             'this' => $this,
             'name' => $this->getAttribute('name'),
             'id' => QUI\Utils\Uuid::get(),
-            'uploads' => (int) $this->getAttribute('uploads'),
-            'contextMenu' => $this->phpBool2JsBool((bool) $this->getAttribute('contextMenu')),
-            'multiple' => $this->phpBool2JsBool((bool) $this->getAttribute('multiple')),
-            'sendbutton' => $this->phpBool2JsBool((bool) $this->getAttribute('sendbutton')),
-            'hasFile' => $this->phpBool2JsBool((bool) $this->getAttribute('hasFile')),
-            'deleteFile' => $this->phpBool2JsBool((bool) $this->getAttribute('deleteFile')),
-            'callable' => \str_replace('\\', '\\\\', $this->getType()),
+            'uploads' => (int)$this->getAttribute('uploads'),
+            'contextMenu' => $this->phpBool2JsBool((bool)$this->getAttribute('contextMenu')),
+            'multiple' => $this->phpBool2JsBool((bool)$this->getAttribute('multiple')),
+            'sendbutton' => $this->phpBool2JsBool((bool)$this->getAttribute('sendbutton')),
+            'hasFile' => $this->phpBool2JsBool((bool)$this->getAttribute('hasFile')),
+            'deleteFile' => $this->phpBool2JsBool((bool)$this->getAttribute('deleteFile')),
+            'callable' => str_replace('\\', '\\\\', $this->getType()),
             'typeOfLook' => $typeOfLook
         ]);
 
@@ -102,7 +98,7 @@ class Form extends QUI\QDOM
         if (!$allowedFileTypes) {
             $Engine->assign('allowedFileTypes', '[]');
         } else {
-            $Engine->assign('allowedFileTypes', \json_encode($allowedFileTypes));
+            $Engine->assign('allowedFileTypes', json_encode($allowedFileTypes));
         }
 
         return $Engine->fetch(__DIR__ . '/Form.html');
@@ -114,7 +110,7 @@ class Form extends QUI\QDOM
      * @param $var
      * @return string
      */
-    public function phpBool2JsBool($var)
+    public function phpBool2JsBool($var): string
     {
         return $var ? 'true' : 'false';
     }

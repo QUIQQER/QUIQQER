@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Benutzer speichern
+ * save user
  *
- * @param integer $uid - Benutzer-ID
+ * @param integer|string $uid - user id or user hash
  * @param string $attributes - JSON String of Attributes
  *
  * @return boolean
@@ -34,7 +34,7 @@ QUI::$Ajax->registerFunction(
             }
         }
 
-        // aktivieren / deaktivieren
+        // activation / deactivation
         if (isset($attributes['active'])) {
             if ((int)$attributes['active'] === 1) {
                 if (!$User->isActive()) {

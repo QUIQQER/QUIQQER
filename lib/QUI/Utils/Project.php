@@ -9,6 +9,10 @@ namespace QUI\Utils;
 use QUI;
 use QUI\Demodata\Parser\DemoDataParser;
 
+use function file_exists;
+use function implode;
+use function preg_match;
+
 /**
  * Class Project
  */
@@ -19,7 +23,7 @@ class Project
      *
      * @param QUI\Projects\Project $Project
      */
-    public static function createDefaultStructure(QUI\Projects\Project $Project)
+    public static function createDefaultStructure(QUI\Projects\Project $Project): void
     {
         $languages = $Project->getLanguages();
 
@@ -40,7 +44,7 @@ class Project
      * @param QUI\Projects\Project $Project
      * @throws QUI\Exception
      */
-    protected static function createDefaultStructureForProjectLanguage(QUI\Projects\Project $Project)
+    protected static function createDefaultStructureForProjectLanguage(QUI\Projects\Project $Project): void
     {
         $First = $Project->firstChild();
         $First = $First->getEdit();
@@ -56,7 +60,7 @@ class Project
         try {
             QUI::getPackage('quiqqer/search');
             $searchType = 'quiqqer/sitetypes:types/search';
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         $search = $Project->getSitesIds([
@@ -197,9 +201,9 @@ class Project
      * @param string $var
      * @param QUI\Projects\Project $Project
      *
-     * @return array|string
+     * @return string
      */
-    protected static function parseForUrl($group, $var, QUI\Projects\Project $Project)
+    protected static function parseForUrl(string $group, string $var, QUI\Projects\Project $Project): string
     {
         // quiqqer/quiqqer#825
         $language = $Project->getLang();
@@ -218,16 +222,15 @@ class Project
                 QUI::getLocale()->getByLang($language, $group, $var);
             }
 
-            // if en doesn't exists, we use the first available language
+            // if en doesn't exist, we use the first available language
             if (!QUI::getLocale()->exists($language)) {
                 $language = QUI::availableLanguages()[0];
             }
         }
 
         $str = QUI::getLocale()->getByLang($language, $group, $var);
-        $str = QUI\Projects\Site\Utils::clearUrl($str, $Project);
 
-        return $str;
+        return QUI\Projects\Site\Utils::clearUrl($str, $Project);
     }
 
     /**
@@ -238,14 +241,14 @@ class Project
      *
      * @throws QUI\Exception
      */
-    public static function applyDemoDataToProject(QUI\Projects\Project $Project, $templateName)
+    public static function applyDemoDataToProject(QUI\Projects\Project $Project, string $templateName): void
     {
         $TemplatePackage = QUI::getPackageManager()->getInstalledPackage($templateName);
         $Parser = new DemoDataParser();
 
         $demoDataArray = [];
 
-        if (\file_exists($TemplatePackage->getDir() . 'demodata.xml')) {
+        if (file_exists($TemplatePackage->getDir() . 'demodata.xml')) {
             $demoDataArray = $Parser->parse($TemplatePackage, $Project);
         }
 
@@ -268,7 +271,7 @@ class Project
      * @return bool
      * @throws QUI\Exception
      */
-    public static function validateProjectName($projectName)
+    public static function validateProjectName($projectName): bool
     {
         $forbiddenSigns = [
             '-',
@@ -292,13 +295,13 @@ class Project
             '"'
         ];
 
-        if (\preg_match("@[-.,:;#`!§$%&/?<>\=\'\" ]@", $projectName)) {
+        if (preg_match("@[-.,:;#`!§$%&/?<>\=\'\" ]@", $projectName)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'exception.project.not.allowed.signs',
                     [
-                        'signs' => \implode(' ', $forbiddenSigns)
+                        'signs' => implode(' ', $forbiddenSigns)
                     ]
                 ),
                 802

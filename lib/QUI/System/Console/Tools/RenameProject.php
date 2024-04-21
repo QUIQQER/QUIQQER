@@ -7,17 +7,21 @@
 namespace QUI\System\Console\Tools;
 
 use QUI;
+use QUI\Exception;
 use QUI\System\Console\Tool;
 use QUI\Utils\Project;
+
+use function str_replace;
+use function trim;
 
 /**
  * Class RenameProject
  */
 class RenameProject extends Tool
 {
-    protected $oldProjectName;
-    protected $newProjectName;
-    protected $Project;
+    protected string $oldProjectName;
+    protected string $newProjectName;
+    protected QUI\Projects\Project $Project;
 
     /**
      * RenameProject constructor.
@@ -32,8 +36,9 @@ class RenameProject extends Tool
 
     /**
      * Executes the tools steps
+     * @throws Exception
      */
-    public function execute()
+    public function execute(): void
     {
         $this->writeLnLocale("console.tool.project.rename.prompt.projectname.info", "cyan");
 
@@ -42,18 +47,18 @@ class RenameProject extends Tool
         }
 
         $this->writeLnLocale("console.tool.project.rename.prompt.projectname", "light_cyan");
-        $this->oldProjectName = \trim($this->readInput());
+        $this->oldProjectName = trim($this->readInput());
 
         try {
             $this->Project = QUI::getProject($this->oldProjectName);
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
             $this->writeLnLocale("console.tool.project.rename.project.not.found", "white");
-            $this->writeLn("");
+            $this->writeLn();
             exit;
         }
 
         $this->writeLnLocale("console.tool.project.rename.prompt.new.name", "light_cyan");
-        $this->newProjectName = \trim($this->readInput());
+        $this->newProjectName = trim($this->readInput());
 
         try {
             Project::validateProjectName($this->newProjectName);
@@ -73,17 +78,17 @@ class RenameProject extends Tool
         QUI::getProjectManager()->rename($this->oldProjectName, $this->newProjectName);
 
         $this->writeLnLocale("console.tool.project.rename.finished.success");
-        $this->writeLn("");
+        $this->writeLn();
     }
 
     /**
      * Prints a line to the output while using a locale variable of the 'quiqqer/quiqqer' group
      *
      * @param $locale
-     * @param bool $color
-     * @param bool $background
+     * @param bool|string $color
+     * @param bool|string $background
      */
-    protected function writeLnLocale($locale, $color = false, $background = false)
+    protected function writeLnLocale($locale, bool|string $color = false, bool|string $background = false): void
     {
         $text = QUI::getLocale()->get("quiqqer/quiqqer", $locale);
 
@@ -95,9 +100,9 @@ class RenameProject extends Tool
      *
      * @param $name
      *
-     * @return mixed
+     * @return array|string|string[]
      */
-    protected function purgeProjectName($name)
+    protected function purgeProjectName($name): array|string
     {
         $forbiddenCharacters = [
             '-',
@@ -122,6 +127,6 @@ class RenameProject extends Tool
             ' '
         ];
 
-        return \str_replace($forbiddenCharacters, "", $name);
+        return str_replace($forbiddenCharacters, "", $name);
     }
 }

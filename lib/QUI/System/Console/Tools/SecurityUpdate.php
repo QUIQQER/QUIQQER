@@ -9,6 +9,7 @@ namespace QUI\System\Console\Tools;
 use Composer\Semver\VersionParser;
 use Exception;
 use QUI;
+use RuntimeException;
 
 use function copy;
 use function date;
@@ -19,7 +20,6 @@ use function file_put_contents;
 use function json_decode;
 use function json_encode;
 use function str_replace;
-use function strpos;
 use function substr_count;
 use function trim;
 use function unlink;
@@ -54,15 +54,14 @@ class SecurityUpdate extends QUI\System\Console\Tool
      * @throws Exception
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         Cleanup::clearComposer();
 
         $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'security.update'));
         $this->writeLn('========================');
-        $this->writeLn('');
+        $this->writeLn();
 
-        $self = $this;
         $Packages = QUI::getPackageManager();
         $dryRun = true;
         $dryRunOutput = '';
@@ -139,13 +138,13 @@ class SecurityUpdate extends QUI\System\Console\Tool
                     continue;
                 }
 
-                if (strpos($v, '*') !== false) {
+                if (str_contains($v, '*')) {
                     continue;
                 }
 
                 try {
                     $version = $VersionParser->normalize($v);
-                } catch (\RuntimeException) {
+                } catch (RuntimeException) {
                     continue;
                 }
 
@@ -168,7 +167,7 @@ class SecurityUpdate extends QUI\System\Console\Tool
             $isUpdateAvailable = false;
 
             foreach ($dryRunOutput as $line) {
-                if (strpos($line, 'Lock file operations:') === false) {
+                if (!str_contains($line, 'Lock file operations:')) {
                     continue;
                 }
 
@@ -177,7 +176,7 @@ class SecurityUpdate extends QUI\System\Console\Tool
 
                 foreach ($lines as $l) {
                     // line formed like: "0 updates"
-                    if (strpos(trim($l), '0') === 0) {
+                    if (str_starts_with(trim($l), '0')) {
                         continue;
                     }
 
@@ -229,17 +228,17 @@ class SecurityUpdate extends QUI\System\Console\Tool
             QUI\Cache\Manager::longTimeCacheClearCompleteQuiqqer();
         } catch (Exception $Exception) {
             $this->write(' [error]', 'red');
-            $this->writeLn('');
+            $this->writeLn();
             $this->writeLn(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.error.1') . '::' . $Exception->getMessage(),
                 'red'
             );
 
             $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.error'), 'red');
-            $this->writeLn('');
+            $this->writeLn();
             $this->writeLn('./console repair', 'red');
             $this->resetColor();
-            $this->writeLn('');
+            $this->writeLn();
         } finally {
             // reset the composer jsons
             unlink($composerOriginal);

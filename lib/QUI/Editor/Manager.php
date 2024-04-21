@@ -24,13 +24,11 @@ use function array_flip;
 use function array_merge;
 use function array_unique;
 use function class_exists;
-use function dirname;
 use function explode;
 use function file_exists;
 use function file_put_contents;
 use function implode;
 use function in_array;
-use function is_array;
 use function is_dir;
 use function libxml_get_errors;
 use function libxml_use_internal_errors;
@@ -42,7 +40,6 @@ use function rename;
 use function sort;
 use function str_ireplace;
 use function str_replace;
-use function strpos;
 use function trim;
 use function unlink;
 
@@ -83,7 +80,7 @@ class Manager
      * @throws QUI\Exception
      * @throws QUI\DataBase\Exception
      */
-    public static function setup()
+    public static function setup(): void
     {
         QUIFile::mkdir(self::getToolbarsPath());
 
@@ -141,7 +138,7 @@ class Manager
                 ]
             );
 
-            // Set "minimal.xml" as new default toolbar for the everyone group
+            // Set "minimal.xml" as new default toolbar for everyone group
             if (in_array("minimal.xml", $toolbars)) {
                 QUI::getDataBase()->update(
                     QUI::getDBTableName("groups"),
@@ -181,11 +178,11 @@ class Manager
      * Register a js editor
      *
      * @param string $name - name of the editor
-     * @param string $package - js modul/package name
+     * @param string $package - js module/package name
      *
      * @throws QUI\Exception
      */
-    public static function registerEditor(string $name, string $package)
+    public static function registerEditor(string $name, string $package): void
     {
         $Conf = QUI::getConfig('etc/wysiwyg/editors.ini.php');
         $Conf->setValue($name, null, $package);
@@ -209,9 +206,9 @@ class Manager
     }
 
     /**
-     * Return the main editor manager (wyiswyg) config object
+     * Return the main editor manager (WYSIWYG) config object
      *
-     * @return Config
+     * @return Config|null
      *
      * @throws QUI\Exception
      */
@@ -227,7 +224,7 @@ class Manager
     /**
      * Return all available toolbars
      *
-     * @return array
+     * @return array|null
      */
     public static function getToolbars(): ?array
     {
@@ -253,12 +250,12 @@ class Manager
     public static function search($search): array
     {
         return array_filter(self::getToolbars(), function ($toolbar) use ($search) {
-            return strpos($toolbar, $search) !== false;
+            return str_contains($toolbar, $search);
         });
     }
 
     /**
-     * Return all available toolbars for an user
+     * Return all available toolbars for a user
      *
      * @param QUI\Interfaces\Users\User $User
      *
@@ -268,10 +265,6 @@ class Manager
     {
         $result = [];
         $groups = $User->getGroups();
-
-        if (!is_array($groups)) {
-            $groups = [];
-        }
 
         /* @var $Group QUI\Groups\Group */
         foreach ($groups as $Group) {
@@ -357,6 +350,7 @@ class Manager
      * @param Project $Project
      *
      * @return array
+     * @throws QUI\Exception
      */
     public static function getSettings(Project $Project): array
     {
@@ -365,7 +359,7 @@ class Manager
 
         try {
             return QUI\Cache\Manager::get($cacheName);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         // css files
@@ -380,8 +374,8 @@ class Manager
         if (file_exists($file)) {
             $files = XML::getWysiwygCSSFromXml($file);
 
-            foreach ($files as $cssfile) {
-                $css[] = URL_USR_DIR . $project . '/' . $cssfile;
+            foreach ($files as $cssFile) {
+                $css[] = URL_USR_DIR . $project . '/' . $cssFile;
             }
 
             // id and css class
@@ -456,9 +450,9 @@ class Manager
                 foreach ($cssFiles as $cssFile) {
                     // external file
                     if (
-                        strpos($cssFile, '//') === 0
-                        || strpos($cssFile, 'https://') === 0
-                        || strpos($cssFile, 'http://') === 0
+                        str_starts_with($cssFile, '//')
+                        || str_starts_with($cssFile, 'https://')
+                        || str_starts_with($cssFile, 'http://')
                     ) {
                         $css[] = $cssFile;
                         continue;
@@ -518,9 +512,9 @@ class Manager
             foreach ($cssFiles as $cssFile) {
                 // external file
                 if (
-                    strpos($cssFile, '//') === 0
-                    || strpos($cssFile, 'https://') === 0
-                    || strpos($cssFile, 'http://') === 0
+                    str_starts_with($cssFile, '//')
+                    || str_starts_with($cssFile, 'https://')
+                    || str_starts_with($cssFile, 'http://')
                 ) {
                     $css[] = $cssFile;
                     continue;
@@ -552,28 +546,11 @@ class Manager
     }
 
     /**
-     * Return the available styles
-     *
-     * @param Project|boolean $Project - (optional)
-     *
-     * @return array
-     */
-    public static function getStyles($Project = false): array
-    {
-        $styles = [];
-
-        if ($Project) {
-        }
-
-        return $styles;
-    }
-
-    /**
      * Delete a toolbar
      *
      * @param string $toolbar - Name of the tools (toolbar.xml)
      */
-    public static function deleteToolbar(string $toolbar)
+    public static function deleteToolbar(string $toolbar): void
     {
         QUI\Permissions\Permission::hasPermission(
             'quiqqer.editors.toolbar.delete'
@@ -596,7 +573,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function addToolbar(string $toolbar)
+    public static function addToolbar(string $toolbar): void
     {
         QUI\Permissions\Permission::hasPermission(
             'quiqqer.editors.toolbar.add'
@@ -627,7 +604,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function saveToolbar(string $toolbar, string $xml)
+    public static function saveToolbar(string $toolbar, string $xml): void
     {
         QUI\Permissions\Permission::hasPermission(
             'quiqqer.editors.toolbar.save'
@@ -678,7 +655,7 @@ class Manager
     }
 
     /**
-     * Return the toolbar buttons for an user
+     * Return the toolbar buttons for a user
      * Used the right user toolbar
      *
      * @return array
@@ -692,7 +669,7 @@ class Manager
             return [];
         }
 
-        // Benutzer spezifische Toolbar
+        // user
         $toolbar = $User->getAttribute('toolbar');
         $toolbarPath = self::getToolbarsPath();
 
@@ -704,7 +681,7 @@ class Manager
             }
         }
 
-        // Gruppenspezifische Toolbar
+        // group
         $groups = $User->getGroups();
 
         /* @var $Group QUI\Groups\Group */
@@ -734,7 +711,7 @@ class Manager
             return [];
         }
 
-        if (strpos($toolbar, '.xml') !== false) {
+        if (str_contains($toolbar, '.xml')) {
             if (file_exists($toolbarPath . $toolbar)) {
                 return self::parseXmlFileToArray($toolbarPath . $toolbar);
             }
@@ -797,7 +774,7 @@ class Manager
      *
      * @return boolean|array
      */
-    public static function parseXMLLineNode(DOMNode $Node)
+    public static function parseXMLLineNode(DOMNode $Node): bool|array
     {
         if ($Node->nodeName != 'line') {
             return false;
@@ -828,7 +805,7 @@ class Manager
      *
      * @return boolean|array
      */
-    public static function parseXMLGroupNode(DOMNode $Node)
+    public static function parseXMLGroupNode(DOMNode $Node): bool|array
     {
         if ($Node->nodeName != 'group') {
             return false;
@@ -868,7 +845,6 @@ class Manager
      */
     public function load(string $html): string
     {
-        // Bilder umschreiben
         $html = preg_replace_callback(
             '#(src)="([^"]*)"#',
             [$this, "cleanAdminSrc"],
@@ -898,7 +874,6 @@ class Manager
      */
     public function prepareHTMLForSave(string $html): string
     {
-        // Bilder umschreiben
         $html = preg_replace_callback(
             '#(src)="([^"]*)"#',
             [$this, "cleanSrc"],
@@ -919,26 +894,21 @@ class Manager
 
         $html = $this->cleanHTML($html);
 
-        // Zeilenumbrüche in HTML löschen
-        $html = preg_replace_callback(
+        // remove line breaks in html
+        return preg_replace_callback(
             '#(<)(.*?)(>)#',
             [$this, "deleteLineBreaksInHtml"],
             $html
         );
-
-        return $html;
     }
 
     /**
      * Cleanup HTML
      *
      * @param string $html
-     *
      * @return string
-     * @uses Tidy, if enabled
-     *
      */
-    public function cleanHTML(string $html)
+    public function cleanHTML(string $html): string
     {
         $html = preg_replace('/<!--\[if gte mso.*?-->/s', '', $html);
 
@@ -964,7 +934,7 @@ class Manager
 
             $Tidy->parseString($html, $config, 'utf8');
             $Tidy->cleanRepair();
-            $html = $Tidy;
+            $html = $Tidy->html();
         }
 
         return $html;
@@ -979,7 +949,7 @@ class Manager
      */
     public function cleanSrc(array $html): string
     {
-        if (isset($html[2]) && strpos($html[2], 'image.php') !== false) {
+        if (isset($html[2]) && str_contains($html[2], 'image.php')) {
             $html[2] = str_replace('&amp;', '&', $html[2]);
             $src_ = explode('image.php?', $html[2]);
 
@@ -998,14 +968,14 @@ class Manager
      */
     public function cleanHref(array $html): string
     {
-        if (isset($html[2]) && strpos($html[2], 'index.php') !== false) {
+        if (isset($html[2]) && str_contains($html[2], 'index.php')) {
             $index = explode('index.php?', $html[2]);
 
             return $html[1] . '="index.php?' . $index[1] . '"';
         }
 
 
-        if (isset($html[2]) && strpos($html[2], 'image.php') !== false) {
+        if (isset($html[2]) && str_contains($html[2], 'image.php')) {
             $index = explode('image.php?', $html[2]);
 
             return ' ' . $html[1] . '="image.php?' . $index[1] . '"';
@@ -1023,7 +993,7 @@ class Manager
      */
     public function cleanAdminSrc(array $html): string
     {
-        if (isset($html[2]) && strpos($html[2], 'image.php') !== false) {
+        if (isset($html[2]) && str_contains($html[2], 'image.php')) {
             $src_ = explode('image.php?', $html[2]);
 
             return ' ' . $html[1] . '="' . URL_DIR . 'image.php?' . $src_[1] . '" ';

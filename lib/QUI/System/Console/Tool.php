@@ -9,6 +9,10 @@ namespace QUI\System\Console;
 use League\CLImate\CLImate;
 use QUI;
 
+use function count;
+use function ltrim;
+use function php_sapi_name;
+
 /**
  * Parent class for a console tool
  *
@@ -22,33 +26,33 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      *
      * @var array
      */
-    protected $paramsList = [];
+    protected array $paramsList = [];
 
     /**
      * Console parameter, values of the parameter / arguments
      *
      * @var array
      */
-    protected $params;
+    protected array $params;
 
     /**
      * @var array
      */
-    protected $examples = [];
+    protected array $examples = [];
 
     /**
      * @var bool
      */
-    protected $systemTool = true;
+    protected bool $systemTool = true;
 
     /**
      * Set the name of the Tool
      *
      * @param string $name
      *
-     * @return Tool this
+     * @return Tool
      */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->setAttribute('name', $name);
 
@@ -60,9 +64,9 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      *
      * @param string $description
      *
-     * @return Tool this
+     * @return Tool
      */
-    public function setDescription($description)
+    public function setDescription(string $description): self
     {
         $this->setAttribute('description', $description);
 
@@ -73,11 +77,10 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      * Set the help of the Tool
      *
      * @param string $help
-     *
-     * @return Tool this
-     * @deprecated use addArgument for argument desriptions
+     * @return Tool
+     * @deprecated use addArgument for argument descriptions
      */
-    public function setHelp($help)
+    public function setHelp(string $help): self
     {
         $this->setAttribute('help', $help);
 
@@ -92,22 +95,22 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      *
      * @param string $name - Name of the argument
      * @param string $description - Description of the argument
-     * @param string|boolean $short - optional, shortcut
+     * @param boolean|string $short - optional, shortcut
      * @param boolean $optional - optional, Argument is optional
      *
-     * @return Tool this
+     * @return Tool
      */
     public function addArgument(
-        $name,
-        $description,
-        $short = false,
-        $optional = false
-    ) {
+        string $name,
+        string $description,
+        bool|string $short = false,
+        bool $optional = false
+    ): self {
         $this->paramsList[$name] = [
             'param' => $name,
             'description' => $description,
             'short' => $short,
-            'optional' => (bool)$optional
+            'optional' => $optional
         ];
 
         return $this;
@@ -117,11 +120,11 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      * Set value of an argument
      *
      * @param string $name
-     * @param string|boolean $value
+     * @param boolean|string $value
      *
-     * @return Tool this
+     * @return Tool
      */
-    public function setArgument($name, $value)
+    public function setArgument(string $name, bool|string $value): self
     {
         $this->params[$name] = $value;
 
@@ -131,7 +134,7 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
     /**
      * @param $example
      */
-    public function addExample($example)
+    public function addExample($example): void
     {
         $this->examples[] = $example;
     }
@@ -141,7 +144,7 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      *
      * @return string|boolean
      */
-    public function getName()
+    public function getName(): bool|string
     {
         return $this->getAttribute('name');
     }
@@ -151,7 +154,7 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      *
      * @return string|boolean
      */
-    public function getDescription()
+    public function getDescription(): bool|string
     {
         return $this->getAttribute('description');
     }
@@ -161,7 +164,7 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      *
      * @return $this
      */
-    public function outputHelp()
+    public function outputHelp(): static
     {
         $this->writeLn($this->getAttribute('description'));
         $this->writeLn();
@@ -170,7 +173,7 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
         $this->writeLn($this->getAttribute('name'), 'purple');
         $this->writeLn();
 
-        if (\count($this->examples)) {
+        if (count($this->examples)) {
             $this->writeLn('Examples:', 'brown');
             $this->resetColor();
 
@@ -199,18 +202,18 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
         $data = [];
 
         foreach ($this->paramsList as $param) {
-            $argv = '--' . \ltrim($param['param'], '-');
+            $argv = '--' . ltrim($param['param'], '-');
             $description = '';
 
-            if (isset($param['short']) && !empty($param['short'])) {
-                $argv .= ' (-' . \ltrim($param['short'], '-') . ')';
+            if (!empty($param['short'])) {
+                $argv .= ' (-' . ltrim($param['short'], '-') . ')';
             }
 
-            if (isset($param['description']) && !empty($param['description'])) {
+            if (!empty($param['description'])) {
                 $description .= $param['description'];
             }
 
-            if (isset($param['optional']) && !empty($param['optional'])) {
+            if (!empty($param['optional'])) {
                 $description .= ' (optional)';
             }
 
@@ -227,10 +230,10 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      * Output a line to the parent
      *
      * @param string $msg - (optional) Message
-     * @param string|boolean $color - (optional) Text color
-     * @param string|boolean $bg - (optional) Background color
+     * @param boolean|string $color - (optional) Text color
+     * @param boolean|string $bg - (optional) Background color
      */
-    public function writeLn(string $msg = '', $color = false, $bg = false)
+    public function writeLn(string $msg = '', bool|string $color = false, bool|string $bg = false): void
     {
         if ($this->getAttribute('parent')) {
             $this->getAttribute('parent')->writeLn($msg, $color, $bg);
@@ -240,7 +243,7 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
     /**
      * Reset the color
      */
-    public function resetColor()
+    public function resetColor(): void
     {
         if ($this->getAttribute('parent')) {
             $this->getAttribute('parent')->clearMsg();
@@ -251,19 +254,19 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      * Return the value of an argument
      * If the argument is not set and the user are in the cli, then a user input is required (->readInput())
      *
-     * An argument can looks like: --argument, argument, -shortArgument
+     * An argument can look like: --argument, argument, -shortArgument
      *
-     * @param string
+     * @param string $name
      *
      * @return string|bool
      */
-    public function getArgument($name)
+    public function getArgument(string $name): bool|string
     {
         if (isset($this->params[$name])) {
             return $this->params[$name];
         }
 
-        $name = \ltrim($name, '-');
+        $name = ltrim($name, '-');
 
         if (isset($this->params[$name])) {
             return $this->params[$name];
@@ -291,13 +294,13 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
 
         // if cli, read user input
         if (
-            \php_sapi_name() == 'cli' &&
+            php_sapi_name() == 'cli' &&
             (isset($paramData['optional']) && $paramData['optional'] === false)
         ) {
-            $this->writeLn('');
+            $this->writeLn();
             $this->writeLn('Missing Argument', 'brown');
 
-            $this->writeLn('');
+            $this->writeLn();
             $this->write('--' . $name . ': ', 'green');
 
             $this->resetColor();
@@ -322,10 +325,10 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      * Alternative to ->message()
      *
      * @param string $msg - Message
-     * @param string|boolean $color - optional, Text color
-     * @param string|boolean $bg - optional, Background color
+     * @param boolean|string $color - optional, Text color
+     * @param boolean|string $bg - optional, Background color
      */
-    public function write(string $msg, $color = false, $bg = false)
+    public function write(string $msg, bool|string $color = false, bool|string $bg = false): void
     {
         $this->message($msg, $color, $bg);
     }
@@ -334,10 +337,10 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      * Print a message
      *
      * @param string $msg - Message
-     * @param string|boolean $color - optional, Text color
-     * @param string|boolean $bg - optional, Background color
+     * @param boolean|string $color - optional, Text color
+     * @param boolean|string $bg - optional, Background color
      */
-    public function message($msg, $color = false, $bg = false)
+    public function message(string $msg, bool|string $color = false, bool|string $bg = false): void
     {
         if ($this->getAttribute('parent')) {
             $this->getAttribute('parent')->message($msg, $color, $bg);
@@ -349,7 +352,7 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      *
      * @return string
      */
-    public function readInput()
+    public function readInput(): string
     {
         if ($this->getAttribute('parent')) {
             return $this->getAttribute('parent')->readInput();
@@ -361,7 +364,7 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
     /**
      * Execute the Tool
      */
-    public function execute()
+    public function execute(): void
     {
     }
 
@@ -371,7 +374,7 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      *
      * @return bool
      */
-    public function isSystemTool()
+    public function isSystemTool(): bool
     {
         return $this->systemTool;
     }

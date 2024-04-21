@@ -7,13 +7,13 @@
 namespace QUI\Users;
 
 use QUI;
+use QUI\Controls\Toolbar\Bar;
 use QUI\Utils\DOM;
 use QUI\Utils\Text\XML;
 
 use function explode;
 use function file_exists;
 use function str_replace;
-use function strpos;
 
 /**
  * Helper for users
@@ -28,11 +28,11 @@ class Utils
      *
      * @param QUI\Interfaces\Users\User $User
      *
-     * @return \QUI\Controls\Toolbar\Bar
+     * @return Bar
      */
-    public static function getUserToolbar(QUI\Interfaces\Users\User $User): QUI\Controls\Toolbar\Bar
+    public static function getUserToolbar(QUI\Interfaces\Users\User $User): Bar
     {
-        $TabBar = new QUI\Controls\Toolbar\Bar([
+        $TabBar = new Bar([
             'name' => 'UserToolbar'
         ]);
 
@@ -123,7 +123,7 @@ class Utils
      *
      * @todo kick <tab> as xml in user.xml
      */
-    public static function getTab($uid, string $plugin, string $tab): string
+    public static function getTab(int|string $uid, string $plugin, string $tab): string
     {
         $Users = QUI::getUsers();
         $User = $Users->get($uid);
@@ -158,7 +158,7 @@ class Utils
 
 
         // project
-        if (strpos($plugin, 'project.') !== false) {
+        if (str_contains($plugin, 'project.')) {
             $project = explode('project.', $plugin);
 
             return DOM::getTabHTML(

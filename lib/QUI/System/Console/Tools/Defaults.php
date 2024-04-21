@@ -7,6 +7,7 @@
 namespace QUI\System\Console\Tools;
 
 use QUI;
+use QUI\Exception;
 
 /**
  *
@@ -17,7 +18,7 @@ use QUI;
 class Defaults extends QUI\System\Console\Tool
 {
     /**
-     * Konstruktor
+     * Constructor
      */
     public function __construct()
     {
@@ -28,9 +29,10 @@ class Defaults extends QUI\System\Console\Tool
     /**
      * (non-PHPdoc)
      *
+     * @throws Exception
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         $Groups = QUI::getGroups();
         $Groups->setup();
@@ -114,7 +116,7 @@ class Defaults extends QUI\System\Console\Tool
 
 
         $this->resetColor();
-        $this->writeLn('');
+        $this->writeLn();
 
         QUI\Cache\Manager::clearCompleteQuiqqerCache();
 

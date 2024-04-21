@@ -7,6 +7,7 @@
 namespace QUI\Groups;
 
 use QUI;
+use QUI\Exception;
 
 use function array_filter;
 use function explode;
@@ -29,12 +30,12 @@ class Everyone extends QUI\Groups\Group
     }
 
     /**
-     * Deletes the group and sub-groups
+     * Deletes the group and subgroups
      *
-     * @return boolean
-     * @throws \QUI\Exception
+     * @return void
+     * @throws Exception
      */
-    public function delete()
+    public function delete(): void
     {
         throw new QUI\Exception(
             QUI::getLocale()->get(
@@ -48,20 +49,16 @@ class Everyone extends QUI\Groups\Group
      * set a group attribute
      * ID cannot be set
      *
-     * @param string $key - Attribute name
-     * @param string|boolean|integer|array $value - value
-     *
-     * @return Everyone
+     * @param string $name - Attribute name
+     * @param mixed $val - value
      */
-    public function setAttribute($key, $value)
+    public function setAttribute(string $name, mixed $val): void
     {
-        if ($key == 'id') {
-            return $this;
+        if ($name == 'id') {
+            return;
         }
 
-        parent::setAttribute($key, $value);
-
-        return $this;
+        parent::setAttribute($name, $val);
     }
 
     /**
@@ -71,7 +68,7 @@ class Everyone extends QUI\Groups\Group
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
-    public function save()
+    public function save(): void
     {
         $this->rights = QUI::getPermissionManager()->getRightParamsFromGroup($this);
 
@@ -93,7 +90,6 @@ class Everyone extends QUI\Groups\Group
             $toolbar = $this->getAttribute('toolbar');
         }
 
-        // Felder bekommen
         QUI::getDataBase()->update(
             Manager::table(),
             [
@@ -103,7 +99,7 @@ class Everyone extends QUI\Groups\Group
                 'assigned_toolbar' => $assignedToolbars,
                 'toolbar' => $toolbar
             ],
-            ['id' => $this->getId()]
+            ['uuid' => $this->getUUID()]
         );
 
         $this->createCache();
@@ -113,8 +109,14 @@ class Everyone extends QUI\Groups\Group
      * Returns the Group-ID
      *
      * @return integer
+     * @deprecated
      */
-    public function getId()
+    public function getId(): int
+    {
+        return Manager::EVERYONE_ID;
+    }
+
+    public function getUUID(): string
     {
         return Manager::EVERYONE_ID;
     }
@@ -122,14 +124,15 @@ class Everyone extends QUI\Groups\Group
     /**
      * Activate the group
      */
-    public function activate()
+    public function activate(): void
     {
     }
 
     /**
      * deactivate the group
+     * @throws Exception
      */
-    public function deactivate()
+    public function deactivate(): void
     {
         throw new QUI\Exception(
             QUI::getLocale()->get(
@@ -144,7 +147,7 @@ class Everyone extends QUI\Groups\Group
      *
      * @return boolean
      */
-    public function isActive()
+    public function isActive(): bool
     {
         return true;
     }
@@ -152,12 +155,12 @@ class Everyone extends QUI\Groups\Group
     /**
      * Checks if the ID is from a parent group
      *
-     * @param integer $id - ID from parent
-     * @param boolean $recursiv - checks recursive or not
+     * @param int|string $id - ID from parent
+     * @param boolean $recursive - checks recursive or not
      *
      * @return boolean
      */
-    public function isParent($id, $recursiv = false)
+    public function isParent(int|string $id, bool $recursive = false): bool
     {
         return false;
     }
@@ -165,14 +168,13 @@ class Everyone extends QUI\Groups\Group
     /**
      * return the parent group
      *
-     * @param boolean $obj - Parent Objekt (true) oder Parent-ID (false) -> (optional = true)
+     * @param boolean $obj - Parent Object (true) oder Parent-ID (false) -> (optional = true)
      *
-     * @return object|integer|false
-     * @throws \QUI\Exception
+     * @return Everyone|Group|Guest|null
      */
-    public function getParent($obj = true)
+    public function getParent(bool $obj = true): null|Group|Guest|Everyone
     {
-        return false;
+        return null;
     }
 
     /**
@@ -180,7 +182,7 @@ class Everyone extends QUI\Groups\Group
      *
      * @return array
      */
-    public function getParentIds()
+    public function getParentIds(): array
     {
         return [];
     }
@@ -190,19 +192,19 @@ class Everyone extends QUI\Groups\Group
      *
      * @return integer
      */
-    public function hasChildren()
+    public function hasChildren(): int
     {
         return 0;
     }
 
     /**
-     * Returns the sub groups
+     * Returns the subgroups
      *
      * @param array $params - Where Parameter
      *
      * @return array
      */
-    public function getChildren($params = [])
+    public function getChildren(array $params = []): array
     {
         return [];
     }
@@ -210,12 +212,12 @@ class Everyone extends QUI\Groups\Group
     /**
      * return the subgroup ids
      *
-     * @param boolean $recursiv - recursiv true / false
-     * @param      $params - SQL Params (limit, order)
+     * @param bool $recursive
+     * @param array $params - SQL Params (limit, order)
      *
-     * @return array
+     * @return array|null
      */
-    public function getChildrenIds($recursiv = false, $params = [])
+    public function getChildrenIds(bool $recursive = false, array $params = []): ?array
     {
         return [];
     }

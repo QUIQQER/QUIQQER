@@ -6,8 +6,12 @@
 
 namespace QUI\System\Console\Tools;
 
+use Exception;
 use League\CLImate\CLImate;
 use QUI;
+
+use function count;
+use function explode;
 
 /**
  * Permissions console tool
@@ -55,10 +59,10 @@ class Permissions extends QUI\System\Console\Tool
     /**
      * (non-PHPdoc)
      *
-     * @throws \Exception
+     * @throws Exception
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         if ($this->getArgument('help')) {
             $this->showHelp();
@@ -90,9 +94,9 @@ class Permissions extends QUI\System\Console\Tool
     /**
      * Prints the help
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    protected function showHelp()
+    protected function showHelp(): never
     {
         $this->writeLn();
 
@@ -129,7 +133,7 @@ class Permissions extends QUI\System\Console\Tool
     /**
      * Shows a complete list from all available permissions
      */
-    protected function showList()
+    protected function showList(): void
     {
         $permissions = QUI::getPermissionManager()->getPermissionList();
         $data = [];
@@ -139,9 +143,9 @@ class Permissions extends QUI\System\Console\Tool
                 $perm['defaultValue'] = '';
             }
 
-            $title = \explode(' ', $perm['title']);
+            $title = explode(' ', $perm['title']);
 
-            if (\count($title) === 2) {
+            if (count($title) === 2) {
                 $title = QUI::getLocale()->get($title[0], $title[1]);
             }
 
@@ -164,7 +168,7 @@ class Permissions extends QUI\System\Console\Tool
     /**
      * Shows a permission list from a specific user
      */
-    protected function showUser()
+    protected function showUser(): void
     {
         $user = $this->getArgument('user');
         $needle = $this->getArgument('permission');
@@ -195,9 +199,9 @@ class Permissions extends QUI\System\Console\Tool
             $value = $userPermissions[$permission];
             $perm = $permissions[$permission];
 
-            $title = \explode(' ', $perm['title']);
+            $title = explode(' ', $perm['title']);
 
-            if (\count($title) === 2) {
+            if (count($title) === 2) {
                 $title = QUI::getLocale()->get($title[0], $title[1]);
             }
 
@@ -255,7 +259,7 @@ class Permissions extends QUI\System\Console\Tool
     /**
      * Shows a permission list from a specific group
      */
-    protected function showGroup()
+    protected function showGroup(): void
     {
         $group = $this->getArgument('group');
         $needle = $this->getArgument('permission');
@@ -280,9 +284,9 @@ class Permissions extends QUI\System\Console\Tool
             $value = $groupPermissions[$permission];
             $perm = $permissions[$permission];
 
-            $title = \explode(' ', $perm['title']);
+            $title = explode(' ', $perm['title']);
 
-            if (\count($title) === 2) {
+            if (count($title) === 2) {
                 $title = QUI::getLocale()->get($title[0], $title[1]);
             }
 

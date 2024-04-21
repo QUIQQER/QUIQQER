@@ -524,7 +524,7 @@ class Ajax extends QUI\QDOM
             }
 
             if (str_starts_with($func, 'Permission')) {
-                $func = '\\QUI\\Rights\\' . $func;
+                $func = '\\QUI\Permissions\\' . $func;
             }
 
             if (!is_callable($func)) {

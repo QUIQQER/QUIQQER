@@ -88,7 +88,7 @@ class Package extends QUI\System\Console\Tool
      *
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         if ($this->getArgument('help')) {
             $this->outputHelp();
@@ -144,7 +144,7 @@ class Package extends QUI\System\Console\Tool
     /**
      * Show the package list with its versions
      */
-    protected function showList()
+    protected function showList(): void
     {
         $installed = QUI::getPackageManager()->getInstalledVersions();
 
@@ -170,7 +170,7 @@ class Package extends QUI\System\Console\Tool
      *
      * @param string $package
      */
-    protected function executePackageSetup(string $package)
+    protected function executePackageSetup(string $package): void
     {
         $this->writeLn();
         $Climate = new CLImate();
@@ -194,7 +194,7 @@ class Package extends QUI\System\Console\Tool
      *
      * @param string $package
      */
-    protected function installPackage(string $package)
+    protected function installPackage(string $package): void
     {
         $this->writeLn();
         $Climate = new CLImate();
@@ -255,7 +255,7 @@ class Package extends QUI\System\Console\Tool
      *
      * @param string $package
      */
-    protected function showPackageInformation(string $package)
+    protected function showPackageInformation(string $package): void
     {
         $this->writeLn();
         $Climate = new CLImate();
@@ -321,7 +321,7 @@ class Package extends QUI\System\Console\Tool
         }
     }
 
-    protected function searchPackage($search)
+    protected function searchPackage($search): void
     {
         $this->writeLn();
 
@@ -354,7 +354,7 @@ class Package extends QUI\System\Console\Tool
         });
     }
 
-    protected function removePackage(string $package)
+    protected function removePackage(string $package): void
     {
         if ($package === 'quiqqer/quiqqer') {
             $this->writeLn(
@@ -411,16 +411,5 @@ class Package extends QUI\System\Console\Tool
 
         $Runner->setOutput($CLIOutput);
         $Runner->executeComposer('remove', ['packages' => [$package]]);
-        /*
-        $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.removing.update'));
-        $input = $this->readInput();
-
-        if (strtolower($input) !== 'y') {
-            return;
-        }
-
-        $Update = new Update();
-        $Update->execute();
-        */
     }
 }

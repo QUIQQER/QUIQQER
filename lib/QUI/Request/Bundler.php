@@ -6,8 +6,18 @@
 
 namespace QUI\Request;
 
+use Exception;
 use QUI;
 use QUI\Utils\Security\Orthos;
+
+use function file_exists;
+use function is_array;
+use function json_decode;
+use function json_encode;
+use function realpath;
+use function str_replace;
+
+use const JSON_THROW_ON_ERROR;
 
 /**
  * Class Bundler
@@ -21,7 +31,7 @@ class Bundler
      *
      * @var array
      */
-    protected $includes = [];
+    protected array $includes = [];
 
     /**
      * Bundler constructor.
@@ -34,7 +44,7 @@ class Bundler
     /**
      * Read the $_REQUEST and create the response
      */
-    public function response()
+    public function response(): bool|string
     {
         if (!isset($_REQUEST['quiqqerBundle'])) {
             return '';
@@ -46,7 +56,7 @@ class Bundler
         foreach ($requests as $request) {
             try {
                 $result[$request['rid']] = $this->parseRequest($request);
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 $result[$request['rid']]['Exception'] = [
                     'message' => $Exception->getMessage(),
                     'code' => $Exception->getCode(),
@@ -56,8 +66,8 @@ class Bundler
         }
 
         try {
-            return \json_encode($result, \JSON_THROW_ON_ERROR);
-        } catch (\Exception $Exception) {
+            return json_encode($result, JSON_THROW_ON_ERROR);
+        } catch (Exception $Exception) {
             QUI\System\Log::writeRecursive($result);
             QUI\System\Log::writeException($Exception);
 
@@ -67,7 +77,7 @@ class Bundler
                 'type' => $Exception::class
             ];
 
-            return \json_encode($result);
+            return json_encode($result);
         }
     }
 
@@ -78,19 +88,19 @@ class Bundler
      * @return array
      * @throws QUI\Exception
      */
-    protected function parseRequest($request)
+    protected function parseRequest(array $request): array
     {
         if (!isset($request['request'])) {
             throw new QUI\Exception('Bad Request', 400);
         }
 
         foreach ($request['params'] as $k => $value) {
-            $request['params'][$k] = \json_decode($value, true);
+            $request['params'][$k] = json_decode($value, true);
         }
 
         $function = $request['request'];
 
-        if (!\is_array($function)) {
+        if (!is_array($function)) {
             $function = [$function];
         }
 
@@ -131,11 +141,11 @@ class Bundler
     /**
      * Include normal files
      *
-     * @param string $function - name of the function
+     * @param string|array $function - name of the function
      */
-    protected function includes($function)
+    protected function includes(string|array $function): void
     {
-        if (\is_array($function)) {
+        if (is_array($function)) {
             foreach ($function as $f) {
                 $this->includes($f);
             }
@@ -148,13 +158,13 @@ class Bundler
         }
 
         // admin ajax
-        $file = OPT_DIR . 'quiqqer/quiqqer/admin/' . \str_replace('_', '/', $function) . '.php';
+        $file = OPT_DIR . 'quiqqer/quiqqer/admin/' . str_replace('_', '/', $function) . '.php';
         $file = Orthos::clearPath($file);
-        $file = \realpath($file);
+        $file = realpath($file);
 
         $dir = OPT_DIR . 'quiqqer/quiqqer/admin/';
 
-        if (\strpos($file, $dir) !== false && \file_exists($file)) {
+        if (str_contains($file, $dir) && file_exists($file)) {
             require_once $file;
 
             $this->includes[$function] = $file;
@@ -163,32 +173,30 @@ class Bundler
         }
 
 
-        $file = CMS_DIR . \str_replace('_', '/', $function) . '.php';
+        $file = CMS_DIR . str_replace('_', '/', $function) . '.php';
         $file = Orthos::clearPath($file);
-        $file = \realpath($file);
+        $file = realpath($file);
 
-        if (\strpos($file, CMS_DIR) !== false && \file_exists($file)) {
+        if (str_contains($file, CMS_DIR) && file_exists($file)) {
             require_once $file;
 
             $this->includes[$function] = $file;
-
-            return;
         }
     }
 
     /**
      * Include package files
      *
-     * @param string $function - name of the function
+     * @param string|array $function - name of the function
      * @param array $request - Request data
      */
-    protected function includesPackage($function, $request)
+    protected function includesPackage(string|array $function, array $request): void
     {
         if (!isset($request['params']['package'])) {
             return;
         }
 
-        if (\is_array($function)) {
+        if (is_array($function)) {
             foreach ($function as $f) {
                 $this->includesPackage($f, $request);
             }
@@ -203,14 +211,14 @@ class Bundler
         $package = $request['params']['package'];
         $dir = OPT_DIR;
 
-        $firstpart = 'package_' . \str_replace('/', '_', $package);
-        $ending = \str_replace($firstpart, '', $function);
+        $firstpart = 'package_' . str_replace('/', '_', $package);
+        $ending = str_replace($firstpart, '', $function);
 
-        $file = $dir . $package . \str_replace('_', '/', $ending) . '.php';
+        $file = $dir . $package . str_replace('_', '/', $ending) . '.php';
         $file = Orthos::clearPath($file);
-        $file = \realpath($file);
+        $file = realpath($file);
 
-        if (\strpos($file, $dir) !== false && \file_exists($file)) {
+        if (str_contains($file, $dir) && file_exists($file)) {
             require_once $file;
         }
 
@@ -220,18 +228,18 @@ class Bundler
     /**
      * Include projects files
      *
-     * @param string $function - name of the function
+     * @param string|array $function - name of the function
      * @param array $request - Request data
      *
      * @throws QUI\Exception
      */
-    protected function includesProject($function, $request)
+    protected function includesProject(string|array $function, array $request): void
     {
         if (!isset($request['params']['project'])) {
             return;
         }
 
-        if (\is_array($function)) {
+        if (is_array($function)) {
             foreach ($function as $f) {
                 $this->includesProject($f, $request);
             }
@@ -254,14 +262,14 @@ class Bundler
         $projectDir = USR_DIR . $Project->getName();
         $firstpart = 'project_' . $Project->getName() . '_';
 
-        $file = \str_replace($firstpart, '', $function);
-        $file = $projectDir . '/lib/' . \str_replace('_', '/', $file) . '.php';
+        $file = str_replace($firstpart, '', $function);
+        $file = $projectDir . '/lib/' . str_replace('_', '/', $file) . '.php';
         $file = Orthos::clearPath($file);
-        $file = \realpath($file);
+        $file = realpath($file);
 
         $dir = $projectDir . '/lib/';
 
-        if (\strpos($file, $dir) !== false && \file_exists($file)) {
+        if (str_contains($file, $dir) && file_exists($file)) {
             require_once $file;
         }
 

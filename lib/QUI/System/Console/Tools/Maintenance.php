@@ -6,6 +6,7 @@
 
 namespace QUI\System\Console\Tools;
 
+use Exception;
 use QUI;
 
 use function file_exists;
@@ -20,7 +21,7 @@ use function file_put_contents;
 class Maintenance extends QUI\System\Console\Tool
 {
     /**
-     * Konstruktor
+     * Constructor
      */
     public function __construct()
     {
@@ -33,7 +34,7 @@ class Maintenance extends QUI\System\Console\Tool
      *
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         try {
             $this->writeLn('Set maintenance: ');
@@ -85,8 +86,8 @@ class Maintenance extends QUI\System\Console\Tool
 
             $Config->save();
 
-            $this->writeLn('');
-        } catch (\Exception $Exception) {
+            $this->writeLn();
+        } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
     }

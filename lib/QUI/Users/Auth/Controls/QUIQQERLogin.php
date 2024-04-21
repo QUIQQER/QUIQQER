@@ -18,7 +18,7 @@ class QUIQQERLogin extends Control
      * QUIQQERLogin constructor.
      * @param array $options
      */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
 
@@ -31,21 +31,16 @@ class QUIQQERLogin extends Control
     /**
      * @return string
      */
-    public function getBody()
+    public function getBody(): string
     {
-        try {
-            $Engine = QUI::getTemplateManager()->getEngine();
-        } catch (QUI\Exception) {
-            return '';
-        }
-
+        $Engine = QUI::getTemplateManager()->getEngine();
         $showPasswordReset = false;
 
         if (QUI\Users\Auth\Handler::getInstance()->isQuiqqerVerificationPackageInstalled()) {
             if (!empty($_REQUEST['isAdminLogin']) || QUI::isBackend()) {
-                $showPasswordReset = (bool) QUI::conf('auth_settings', 'showResetPasswordBackend');
+                $showPasswordReset = (bool)QUI::conf('auth_settings', 'showResetPasswordBackend');
             } else {
-                $showPasswordReset = (bool) QUI::conf('auth_settings', 'showResetPasswordFrontend');
+                $showPasswordReset = (bool)QUI::conf('auth_settings', 'showResetPasswordFrontend');
             }
         }
 

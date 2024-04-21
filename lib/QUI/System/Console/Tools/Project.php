@@ -6,9 +6,18 @@
 
 namespace QUI\System\Console\Tools;
 
+use Exception;
 use QUI;
 use QUI\Bricks\Manager as BricksManager;
 use QUI\Projects\Manager as ProjectsManager;
+
+use function count;
+use function explode;
+use function implode;
+use function in_array;
+use function json_decode;
+use function json_encode;
+use function mb_strtolower;
 
 /**
  * Class Project
@@ -20,7 +29,7 @@ class Project extends QUI\System\Console\Tool
     protected BricksManager $BricksManager;
 
     /**
-     * Konstruktor
+     * Constructor
      */
     public function __construct()
     {
@@ -56,16 +65,12 @@ class Project extends QUI\System\Console\Tool
 
         $this->addArgument(
             'lang_from',
-            'Copy project -> From language',
-            false,
-            false
+            'Copy project -> From language'
         );
 
         $this->addArgument(
             'lang_to',
-            'Copy project -> To language',
-            false,
-            false
+            'Copy project -> To language'
         );
 
         $this->addExample(
@@ -86,7 +91,7 @@ class Project extends QUI\System\Console\Tool
      *
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         $create = $this->getArgument('create');
         $delete = $this->getArgument('delete');
@@ -116,7 +121,7 @@ class Project extends QUI\System\Console\Tool
     /**
      * Create a new project
      */
-    protected function createProject()
+    protected function createProject(): void
     {
         // project name
         $projectName = $this->getArgument('projectname');
@@ -132,7 +137,7 @@ class Project extends QUI\System\Console\Tool
             $this->resetColor();
             $this->writeLn('', '');
             exit;
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         // project languages
@@ -143,12 +148,12 @@ class Project extends QUI\System\Console\Tool
             $projectLanguages = $this->readInput();
         }
 
-        $projectLanguages = \explode(',', $projectLanguages);
+        $projectLanguages = explode(',', $projectLanguages);
 
         // project standard language
         $projectLanguage = $this->getArgument('projectlang');
 
-        if (!$projectLanguage && \count($projectLanguages) === 1) {
+        if (!$projectLanguage && count($projectLanguages) === 1) {
             $projectLanguage = $projectLanguages[0];
         }
 
@@ -213,7 +218,7 @@ class Project extends QUI\System\Console\Tool
 
             QUI::getProjectManager()->setConfigForProject($projectName, [
                 'template' => $template,
-                'langs' => \implode(',', $projectLanguages)
+                'langs' => implode(',', $projectLanguages)
             ]);
 
             if ($demoData) {
@@ -222,24 +227,24 @@ class Project extends QUI\System\Console\Tool
                     $template
                 );
             }
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             $this->writeLn('Could not create project: ' . $Exception->getMessage());
 
             return;
         }
 
         $this->writeLn('Project ' . $projectName . ' successfuly created.');
-        $this->writeLn('');
+        $this->writeLn();
     }
 
     /**
      * Delete a project
      */
-    protected function deleteProject()
+    protected function deleteProject(): void
     {
         $this->writeLnLocale("console.tool.project.delete.warning.header", "yellow");
         $this->writeLnLocale("console.tool.project.delete.warning", "white");
-        $this->writeLn("");
+        $this->writeLn();
         $this->writeLnLocale("console.tool.project.delete.prompt.projectname.info", "cyan");
 
         foreach (QUI::getProjectManager()->getProjects() as $projectName) {
@@ -252,16 +257,16 @@ class Project extends QUI\System\Console\Tool
 
         try {
             $Project = QUI::getProject($projectName);
-        } catch (\Exception) {
+        } catch (Exception) {
             $this->writeLnLocale("console.tool.project.delete.project.not.found", "light_red");
-            $this->writeLn("");
+            $this->writeLn();
             exit;
         }
 
         // Check if this project is the only one
         if (QUI::getProjectManager()->count() == 1) {
             $this->writeLnLocale("console.tool.project.delete.project.delete.last.project", "light_red");
-            $this->writeLn("");
+            $this->writeLn();
             exit;
         }
 
@@ -272,24 +277,24 @@ class Project extends QUI\System\Console\Tool
 
         if ($confirm != $projectName) {
             $this->writeLnLocale("console.tool.project.delete.error.confirm.mismatch", "light_red");
-            $this->writeLn("");
+            $this->writeLn();
             exit;
         }
 
         QUI::getProjectManager()->deleteProject($Project);
 
         $this->writeLnLocale("console.tool.project.delete.success.finished", "light_green");
-        $this->writeLn("");
+        $this->writeLn();
     }
 
     /**
      * Prints a line to the output while using a locale variable of the 'quiqqer/quiqqer' group
      *
      * @param $locale
-     * @param bool $color
-     * @param bool $background
+     * @param bool|string $color
+     * @param bool|string $background
      */
-    protected function writeLnLocale($locale, $color = false, $background = false)
+    protected function writeLnLocale($locale, bool|string $color = false, bool|string $background = false): void
     {
         $text = QUI::getLocale()->get("quiqqer/quiqqer", $locale);
 
@@ -300,8 +305,9 @@ class Project extends QUI\System\Console\Tool
      * Copy project from one language to another.
      *
      * @return void
+     * @throws QUI\Exception
      */
-    protected function copyProject()
+    protected function copyProject(): void
     {
         $this->quiqqerBricksInstalled = QUI::getPackageManager()->isInstalled('quiqqer/bricks');
 
@@ -326,7 +332,7 @@ class Project extends QUI\System\Console\Tool
 
         try {
             $Project = QUI::getProject($projectName, $langFrom);
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             $this->writeLn("ERROR: Could not load project -> " . $Exception->getMessage(), 'red');
             exit(1);
         }
@@ -345,8 +351,8 @@ class Project extends QUI\System\Console\Tool
 
         $projectLangs = $Project->getLanguages();
 
-        if (!\in_array($langTo, $projectLangs)) {
-            $this->writeLn("Project lang '{$langTo}' does not exist. Adding language...");
+        if (!in_array($langTo, $projectLangs)) {
+            $this->writeLn("Project lang '$langTo' does not exist. Adding language...");
 
             $projectLangs[] = $langTo;
 
@@ -359,7 +365,7 @@ class Project extends QUI\System\Console\Tool
                 );
 
                 $this->write(" SUCCESS!");
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 $this->writeLn("ERROR: " . $Exception->getMessage(), 'red');
                 exit(1);
             }
@@ -381,7 +387,7 @@ class Project extends QUI\System\Console\Tool
                 ) . "\" (language: \"" . $langTo . "\") now? (Y/n) "
             );
 
-            $confirm = \mb_strtolower($this->readInput());
+            $confirm = mb_strtolower($this->readInput());
 
             if ($confirm === 'n') {
                 $this->writeLn("Aborting script because target project is not empty.");
@@ -415,7 +421,7 @@ class Project extends QUI\System\Console\Tool
                     ) . "\" (language: \"" . $langTo . "\") now? (Y/n) "
                 );
 
-                $confirm = \mb_strtolower($this->readInput());
+                $confirm = mb_strtolower($this->readInput());
 
                 if ($confirm !== 'n') {
                     $this->writeLn("Deleting bricks...");
@@ -451,26 +457,21 @@ class Project extends QUI\System\Console\Tool
      * @param QUI\Projects\Site $RootSite
      * @param string $langTo
      * @param QUI\Projects\Site|null $ParentSite - Parent site of $RootSite
+     * @throws QUI\Exception
      */
-    protected function copySiteLevel(QUI\Projects\Site $RootSite, string $langTo, ?QUI\Projects\Site $ParentSite = null)
-    {
+    protected function copySiteLevel(
+        QUI\Projects\Site $RootSite,
+        string $langTo,
+        ?QUI\Projects\Site $ParentSite = null
+    ): void {
         $Project = $RootSite->getProject();
         $TargetProject = QUI::getProjectManager()->getProject($Project->getName(), $langTo);
 
-        $RootSiteCopy = $this->copySite($TargetProject, $RootSite, $ParentSite ? $ParentSite->getId() : null);
+        $RootSiteCopy = $this->copySite($TargetProject, $RootSite, $ParentSite?->getId());
 
         foreach ($RootSite->getChildrenIds(['active' => '0&1']) as $siteId) {
             $Site = new QUI\Projects\Site\Edit($Project, $siteId);
-
-//            if (!empty($Site->getChildrenIds(['active' => '0&1']))) {
             $this->copySiteLevel($Site, $langTo, $RootSiteCopy);
-//            }
-
-//            $SiteCopy = $this->copySite($TargetProject, $Site, $ParentSite->getId());
-//
-//            if (!empty($Site->getChildrenIds(['active' => '0&1']))) {
-//                $this->copySiteLevel($Site, $langTo, $SiteCopy);
-//            }
         }
     }
 
@@ -516,7 +517,7 @@ class Project extends QUI\System\Console\Tool
             $siteAreas = $Site->getAttribute('quiqqer.bricks.areas');
 
             if (!empty($siteAreas)) {
-                $siteAreas = \json_decode($siteAreas, true);
+                $siteAreas = json_decode($siteAreas, true);
                 $newSiteAreas = [];
 
                 foreach ($siteAreas as $area => $bricks) {
@@ -527,9 +528,7 @@ class Project extends QUI\System\Console\Tool
 
                         $copyBrickId = $this->BricksManager->copyBrick(
                             $brick['brickId'],
-                            [
-                                'lang' => $langTo
-                            ]
+                            ['lang' => $langTo]
                         );
 
                         $newSiteAreas[$area][] = [
@@ -540,7 +539,7 @@ class Project extends QUI\System\Console\Tool
                     }
                 }
 
-                $NewSite->setAttribute('quiqqer.bricks.areas', \json_encode($newSiteAreas));
+                $NewSite->setAttribute('quiqqer.bricks.areas', json_encode($newSiteAreas));
                 $NewSite->save($SystemUser);
             }
 
@@ -557,7 +556,7 @@ class Project extends QUI\System\Console\Tool
                 $this->writeLn("-> Activating Site...");
                 $NewSite->activate($SystemUser);
                 $this->write(" SUCCESS!");
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
                 $this->write(" ERROR: " . $Exception->getMessage());
             }

@@ -8,6 +8,7 @@ namespace QUI\Projects\Site;
 
 use Exception;
 use QUI;
+use QUI\Projects\Project;
 
 /**
  * This object is only used to if a Site is requested and the current user
@@ -21,12 +22,13 @@ class PermissionDenied extends QUI\Projects\Site
     /**
      * constructor
      *
-     * @param \QUI\Projects\Project $Project
+     * @param Project $Project
      * @param integer $id - Site ID
      *
      * @throws QUI\Exception
+     * @throws Exception
      */
-    public function __construct(QUI\Projects\Project $Project, int $id)
+    public function __construct(Project $Project, int $id)
     {
         $this->TABLE = $Project->table();
         $this->RELTABLE = $Project->table() . '_relations';
@@ -52,8 +54,9 @@ class PermissionDenied extends QUI\Projects\Site
      * Get data from start Site (ID: 1)
      *
      * @return void
+     * @throws Exception
      */
-    public function refresh()
+    public function refresh(): void
     {
         try {
             $result = QUI::getDataBase()->fetch([
@@ -110,7 +113,7 @@ class PermissionDenied extends QUI\Projects\Site
      * @inheritdoc
      * @return QUI\Projects\Site
      */
-    public function load($plugin = false): QUI\Projects\Site
+    public function load(bool|string $plugin = false): QUI\Projects\Site
     {
         return $this;
     }

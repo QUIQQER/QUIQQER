@@ -6,8 +6,20 @@
 
 namespace QUI\Groups;
 
+use DOMElement;
 use QUI;
+use QUI\Exception;
+use QUI\Update;
 use QUI\Utils\Security\Orthos;
+
+use function array_filter;
+use function array_merge;
+use function file_exists;
+use function in_array;
+use function is_array;
+use function is_numeric;
+use function is_object;
+use function trim;
 
 /**
  * Group Manager
@@ -17,43 +29,36 @@ use QUI\Utils\Security\Orthos;
  */
 class Manager extends QUI\QDOM
 {
-    const TYPE_BOOL = 1;
-    const TYPE_TEXT = 2;
-    const TYPE_INT = 3;
-    const TYPE_VARCHAR = 4;
-
     const GUEST_ID = 0;
     const EVERYONE_ID = 1;
-    protected static $getListOfExtraAttributes = null;
+    protected static ?array $getListOfExtraAttributes = null;
+
     /**
-     * @var Everyone
+     * @var Everyone|null
      */
-    protected $Everyone = null;
+    protected ?Everyone $Everyone = null;
+
     /**
-     * @var Guest
+     * @var Guest|null
      */
-    protected $Guest = null;
+    protected ?Guest $Guest = null;
+
     /**
      * internal group cache
      *
      * @var array
      */
-    protected $groups;
+    protected array $groups;
+
     /**
      * @var array
      */
-    protected $data = [];
-    /**
-     * Files that are to be loaded in the admin area
-     *
-     * @var array
-     */
-    protected $adminjsfiles = [];
+    protected array $data = [];
 
     /**
      * @return array|bool|object|string|null
      */
-    public static function getListOfExtraAttributes()
+    public static function getListOfExtraAttributes(): object|bool|array|string|null
     {
         if (self::$getListOfExtraAttributes !== null) {
             return self::$getListOfExtraAttributes;
@@ -75,11 +80,11 @@ class Manager extends QUI\QDOM
             $plugin = $entry['name'];
             $userXml = OPT_DIR . $plugin . '/group.xml';
 
-            if (!\file_exists($userXml)) {
+            if (!file_exists($userXml)) {
                 continue;
             }
 
-            $attributes = \array_merge(
+            $attributes = array_merge(
                 $attributes,
                 self::readAttributesFromGroupXML($userXml)
             );
@@ -95,17 +100,18 @@ class Manager extends QUI\QDOM
     /**
      * Return a group by ID
      *
-     * @param integer $id - ID of the Group
+     * @param integer|string $id - ID of the Group
+     * @return Group|Everyone|Guest
      *
-     * @return QUI\Groups\Group
-     *
-     * @throws QUI\Exception
+     * @throws Exception
      */
-    public function get($id)
+    public function get(int|string $id): Group|Everyone|Guest
     {
-        $id = (int)$id;
+        if (is_numeric($id)) {
+            $id = (int)$id;
+        }
 
-        if ($id === 1) {
+        if ($id === Manager::EVERYONE_ID) {
             if ($this->Everyone === null) {
                 $this->Everyone = new Everyone();
             }
@@ -113,7 +119,7 @@ class Manager extends QUI\QDOM
             return $this->Everyone;
         }
 
-        if ($id === 0) {
+        if ($id === Manager::GUEST_ID) {
             if ($this->Guest === null) {
                 $this->Guest = new Guest();
             }
@@ -134,20 +140,23 @@ class Manager extends QUI\QDOM
             return $this->groups[$id];
         }
 
-        $this->groups[$id] = new Group($id);
+        $Group = new Group($id);
+        $id = $Group->getUUID();
+
+        $this->groups[$id] = $Group;
 
         return $this->groups[$id];
     }
 
     /**
-     * Read an user.xml and return the attributes,
+     * Read a user.xml and return the attributes,
      * if some extra attributes defined
      *
      * @param string $file
      *
      * @return array
      */
-    protected static function readAttributesFromGroupXML($file)
+    protected static function readAttributesFromGroupXML(string $file): array
     {
         $Dom = QUI\Utils\Text\XML::getDomFromXml($file);
         $Attr = $Dom->getElementsByTagName('attributes');
@@ -156,7 +165,7 @@ class Manager extends QUI\QDOM
             return [];
         }
 
-        /* @var $Attributes \DOMElement */
+        /* @var $Attributes DOMElement */
         $Attributes = $Attr->item(0);
         $list = $Attributes->getElementsByTagName('attribute');
 
@@ -173,7 +182,7 @@ class Manager extends QUI\QDOM
                 continue;
             }
 
-            $attributes[] = \trim($Attribute->nodeValue);
+            $attributes[] = trim($Attribute->nodeValue);
         }
 
         return $attributes;
@@ -182,11 +191,24 @@ class Manager extends QUI\QDOM
     /**
      * Setup for groups
      */
-    public function setup()
+    public function setup(): void
     {
-        $DataBase = QUI::getDataBase();
-        $Table = $DataBase->table();
+        // read database xml, because we need the newest groups db
+        $dbFields = QUI\Utils\Text\XML::getDataBaseFromXml(OPT_DIR . 'quiqqer/quiqqer/database.xml');
+        unset($dbFields['projects']);
 
+        $dbFields['globals'] = array_filter($dbFields['globals'], function ($entry) {
+            return $entry['suffix'] === 'groups';
+        });
+
+        QUI\Utils\Text\XML::importDataBase($dbFields);
+
+        $DataBase = QUI::getDataBase();
+        $DataBase->execSQL(
+            "ALTER TABLE `" . self::table() . "` CHANGE `parent` `parent` VARCHAR(50) NULL DEFAULT NULL;"
+        );
+
+        $Table = $DataBase->table();
         $Table->setPrimaryKey(self::table(), 'id');
         $Table->setIndex(self::table(), 'parent');
 
@@ -255,7 +277,7 @@ class Manager extends QUI\QDOM
      *
      * @return string
      */
-    public static function table()
+    public static function table(): string
     {
         return QUI::getDBTableName('groups');
     }
@@ -264,8 +286,9 @@ class Manager extends QUI\QDOM
      * Returns the first group
      *
      * @return QUI\Groups\Group
+     * @throws Exception
      */
-    public function firstChild()
+    public function firstChild(): Group
     {
         return $this->get(QUI::conf('globals', 'root'));
     }
@@ -276,25 +299,30 @@ class Manager extends QUI\QDOM
      * @param integer|string $groupId
      * @return array
      */
-    public function getGroupData($groupId)
+    public function getGroupData(int|string $groupId): array
     {
         if (isset($this->data[$groupId])) {
             return $this->data[$groupId];
         }
 
-        $groupId = (int)$groupId;
-
-        $result = QUI::getDataBase()->fetch([
-            'from' => self::table(),
-            'where' => [
-                'id' => $groupId
-            ],
-            'limit' => 1
-        ]);
-
-        if (isset($result[0]) && ($groupId === 1 || $groupId === 0)) {
-            $this->data[$groupId] = $result;
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'from' => self::table(),
+                'where_or' => [
+                    'id' => (int)$groupId,
+                    'uuid' => $groupId
+                ],
+                'limit' => 1
+            ]);
+        } catch (QUI\Exception) {
         }
+
+        if (!isset($result[0])) {
+            return [];
+        }
+
+        $uuid = $result[0]['uuid'];
+        $this->data[$uuid] = $result;
 
         return $result;
     }
@@ -302,11 +330,12 @@ class Manager extends QUI\QDOM
     /**
      * Return the name of a group
      *
-     * @param integer $id - ID of the Group
+     * @param integer|string $id - ID of the Group
      *
      * @return string
+     * @throws Exception
      */
-    public function getGroupNameById($id)
+    public function getGroupNameById(int|string $id): string
     {
         return $this->get($id)->getAttribute('name');
     }
@@ -318,9 +347,9 @@ class Manager extends QUI\QDOM
      *
      * @return array
      */
-    public function getAllGroups($objects = false)
+    public function getAllGroups(bool $objects = false): array
     {
-        if ($objects == false) {
+        if (!$objects) {
             return QUI::getDataBase()->fetch([
                 'from' => self::table(),
                 'order' => 'name'
@@ -332,7 +361,7 @@ class Manager extends QUI\QDOM
 
         foreach ($ids as $id) {
             try {
-                $result[] = $this->get((int)$id['id']);
+                $result[] = $this->get($id['id']);
             } catch (QUI\Exception) {
                 // nothing
             }
@@ -346,25 +375,23 @@ class Manager extends QUI\QDOM
      *
      * @return array
      */
-    public function getAllGroupIds()
+    public function getAllGroupIds(): array
     {
-        $result = QUI::getDataBase()->fetch([
-            'select' => 'id',
+        return QUI::getDataBase()->fetch([
+            'select' => 'id, uuid',
             'from' => self::table(),
             'order' => 'name'
         ]);
-
-        return $result;
     }
 
     /**
-     * Search / Scanns the groups
+     * Search groups
      *
      * @param array $params - QUI\Database\DB params
      *
      * @return array
      */
-    public function search($params = [])
+    public function search(array $params = []): array
     {
         return $this->searchHelper($params);
     }
@@ -377,7 +404,7 @@ class Manager extends QUI\QDOM
      * @return array
      * @ignore
      */
-    protected function searchHelper($params)
+    protected function searchHelper(array $params): array
     {
         $DataBase = QUI::getDataBase();
         $params = Orthos::clearArray($params);
@@ -429,7 +456,7 @@ class Manager extends QUI\QDOM
             isset($params['order'])
             && isset($params['field'])
             && $params['field']
-            && \in_array($params['field'], $allowOrderFields)
+            && in_array($params['field'], $allowOrderFields)
         ) {
             $_fields['order'] = $params['field'] . ' ' . $params['order'];
         }
@@ -452,7 +479,7 @@ class Manager extends QUI\QDOM
         } elseif (
             isset($params['search'])
             && isset($params['searchSettings'])
-            && \is_array($params['searchSettings'])
+            && is_array($params['searchSettings'])
         ) {
             foreach ($params['searchSettings'] as $field) {
                 if (!isset($allowSearchFields[$field])) {
@@ -476,9 +503,9 @@ class Manager extends QUI\QDOM
      *
      * @return boolean
      */
-    public function isGroup($Group)
+    public function isGroup(mixed $Group): bool
     {
-        if (!\is_object($Group)) {
+        if (!is_object($Group)) {
             return false;
         }
 
@@ -492,7 +519,7 @@ class Manager extends QUI\QDOM
      *
      * @return integer
      */
-    public function count($params = [])
+    public function count(array $params = []): int
     {
         $params['count'] = true;
 
@@ -501,7 +528,7 @@ class Manager extends QUI\QDOM
 
         $result = $this->searchHelper($params);
 
-        if (isset($result[0]) && isset($result[0]['count'])) {
+        if (isset($result[0]['count'])) {
             return (int)$result[0]['count'];
         }
 

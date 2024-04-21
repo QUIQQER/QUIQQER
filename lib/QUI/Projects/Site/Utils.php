@@ -10,6 +10,7 @@ use DOMElement;
 use DOMXPath;
 use QUI;
 use QUI\Exception;
+use QUI\Interfaces\Projects\Site;
 use QUI\Projects;
 use QUI\Projects\Project;
 use QUI\Utils\DOM;
@@ -22,7 +23,6 @@ use function count;
 use function explode;
 use function file_exists;
 use function function_exists;
-use function get_class;
 use function html_entity_decode;
 use function is_array;
 use function is_numeric;
@@ -34,7 +34,6 @@ use function preg_replace;
 use function realpath;
 use function str_replace;
 use function strlen;
-use function strpos;
 use function trim;
 
 /**
@@ -174,7 +173,7 @@ class Utils
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (Exception $Exception) {
+        } catch (Exception) {
         }
 
         $dbXmlList = self::getDataBaseXMLListForSite($Site);
@@ -270,7 +269,7 @@ class Utils
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (Exception $Exception) {
+        } catch (Exception) {
         }
 
         $dbXmlList = QUI::getPackageManager()->getPackageDatabaseXmlList();
@@ -347,7 +346,7 @@ class Utils
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (Exception $Exception) {
+        } catch (Exception) {
         }
 
 
@@ -439,14 +438,14 @@ class Utils
     }
 
     /**
-     * Return the extra settings from site.xml's
+     * Return the extra settings from site.xml`s
      *
-     * @param QUI\Projects\Site|QUI\Projects\Site\Edit $Site
+     * @param QUI\Interfaces\Projects\Site $Site
      * @param string $current
      *
      * @return string
      */
-    public static function getExtraSettingsForSite($Site, string $current = ''): string
+    public static function getExtraSettingsForSite(QUI\Interfaces\Projects\Site $Site, string $current = ''): string
     {
         if (empty($current)) {
             $current = QUI::getLocale()->getCurrent();
@@ -457,7 +456,7 @@ class Utils
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (Exception $Exception) {
+        } catch (Exception) {
         }
 
 
@@ -538,20 +537,19 @@ class Utils
     }
 
     /**
-     * Return the admin site modules from site.xml's
+     * Return the admin site modules from site.xml`s
      *
      * @param QUI\Projects\Site|QUI\Projects\Site\Edit $Site
-     *
      * @return array|boolean
      */
-    public static function getAdminSiteModulesFromSite($Site)
+    public static function getAdminSiteModulesFromSite(Edit|Projects\Site $Site): bool|array
     {
         $siteType = $Site->getAttribute('type');
         $cache = $Site->getCachePath() . '/xml-admin-modules/' . $siteType;
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (Exception $Exception) {
+        } catch (Exception) {
         }
 
         // site type extra xml
@@ -590,11 +588,10 @@ class Utils
     /**
      * is the object one of the site objects
      *
-     * @param QUI\Projects\Site|QUI\Projects\Site\Edit|QUI\Projects\Site\OnlyDB $Site
-     *
+     * @param Site $Site
      * @return boolean
      */
-    public static function isSiteObject($Site): bool
+    public static function isSiteObject(QUI\Interfaces\Projects\Site $Site): bool
     {
         switch ($Site::class) {
             case 'QUI\\Projects\\Site':
@@ -672,19 +669,19 @@ class Utils
      */
     public static function isSiteLink(string $link): bool
     {
-        if (strpos($link, 'index.php') === false) {
+        if (!str_contains($link, 'index.php')) {
             return false;
         }
 
-        if (strpos($link, 'project=') === false) {
+        if (!str_contains($link, 'project=')) {
             return false;
         }
 
-        if (strpos($link, 'lang=') === false) {
+        if (!str_contains($link, 'lang=')) {
             return false;
         }
 
-        if (strpos($link, 'id=') === false) {
+        if (!str_contains($link, 'id=')) {
             return false;
         }
 
@@ -719,17 +716,18 @@ class Utils
 
     /**
      * Return sites from a site list
-     * sitelist from controls/projects/project/site/Select
+     * site list from controls/projects/project/site/Select
      *
      * @param Project $Project - Project of the sites
      * @param array|string $list - list from controls/projects/project/site/Select
      * @param array $params - order / sort params
      *
      * @return array
+     * @throws QUI\Database\Exception
      */
     public static function getSitesByInputList(
         Project $Project,
-        $list,
+        array|string $list,
         array $params = []
     ): array {
         $limit = 2;
@@ -769,9 +767,9 @@ class Utils
             }
 
             if (
-                strpos($sitetypeEntry, 'p') === 0
-                && strpos($sitetypeEntry, '/') === false
-                && strpos($sitetypeEntry, ':') === false
+                str_starts_with($sitetypeEntry, 'p')
+                && !str_contains($sitetypeEntry, '/')
+                && !str_contains($sitetypeEntry, ':')
             ) {
                 $parents[] = str_replace('p', '', $sitetypeEntry);
                 continue;

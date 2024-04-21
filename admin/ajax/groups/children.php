@@ -12,9 +12,8 @@ QUI::$Ajax->registerFunction(
     function ($gid) {
         $Groups = QUI::getGroups();
         $Group = $Groups->get($gid);
-        $children = $Group->getChildren();
 
-        return $children;
+        return $Group->getChildren();
     },
     ['gid'],
     'Permission::checkAdminUser'

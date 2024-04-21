@@ -9,8 +9,6 @@ namespace QUI\Controls;
 use QUI;
 use QUI\Projects\Site\Utils;
 
-use function dirname;
-
 /**
  * Class Navigation
  *
@@ -23,7 +21,7 @@ class Navigation extends QUI\Control
      *
      * @param array $attributes
      */
-    public function __construct($attributes = [])
+    public function __construct(array $attributes = [])
     {
         // defaults values
         $this->setAttributes([
@@ -45,11 +43,10 @@ class Navigation extends QUI\Control
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see \QUI\Control::create()
+     * @return string
+     * @throws QUI\Exception
      */
-    public function getBody()
+    public function getBody(): string
     {
         $Engine = QUI::getTemplateManager()->getEngine();
         $Project = $this->getProject();

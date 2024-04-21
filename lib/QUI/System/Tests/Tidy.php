@@ -8,6 +8,8 @@ namespace QUI\System\Tests;
 
 use QUI;
 
+use function class_exists;
+
 /**
  * Tidy Test
  *
@@ -36,9 +38,9 @@ class Tidy extends QUI\System\Test
      *
      * @return int self::STATUS_OK|self::STATUS_ERROR
      */
-    public function execute()
+    public function execute(): int
     {
-        if (\class_exists('tidy')) {
+        if (class_exists('tidy')) {
             return self::STATUS_OK;
         }
 

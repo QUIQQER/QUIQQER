@@ -7,6 +7,7 @@
 namespace QUI\System\Console\Tools;
 
 use QUI;
+use QUI\Exception;
 
 /**
  * Print the system info - quiqqer version and so on
@@ -17,7 +18,7 @@ use QUI;
 class SystemInfo extends QUI\System\Console\Tool
 {
     /**
-     * Konstruktor
+     * Constructor
      */
     public function __construct()
     {
@@ -28,16 +29,17 @@ class SystemInfo extends QUI\System\Console\Tool
     /**
      * (non-PHPdoc)
      *
+     * @throws Exception
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         $Package = QUI::getPackageManager()->getInstalledPackage('quiqqer/quiqqer');
         $data = $Package->getComposerData();
 
         $this->writeLn('QUIQQER Info');
-        $this->writeLn('');
-        $this->writeLn('');
+        $this->writeLn();
+        $this->writeLn();
 
         $print = array_flip([
             'name',
@@ -59,13 +61,13 @@ class SystemInfo extends QUI\System\Console\Tool
                 $this->write(sprintf("%-10s", $key), 'green');
                 $this->resetColor();
                 $this->write("\t\t" . $value);
-                $this->writeLn('');
+                $this->writeLn();
 
                 continue;
             }
 
             $this->writeLn($key, 'green');
-            $this->writeLn('');
+            $this->writeLn();
             $this->resetColor();
 
             if ($key == 'authors') {
@@ -74,7 +76,7 @@ class SystemInfo extends QUI\System\Console\Tool
                         $this->printArrayEntry($_key, $_value, "%-15s");
                     }
 
-                    $this->writeLn('');
+                    $this->writeLn();
                 }
 
                 continue;
@@ -89,7 +91,7 @@ class SystemInfo extends QUI\System\Console\Tool
         $serverList = QUI::getPackageManager()->getServerList();
 
         $this->writeLn('Server-List', 'green');
-        $this->writeLn('');
+        $this->writeLn();
         $this->resetColor();
 
         foreach ($serverList as $server => $data) {
@@ -108,11 +110,11 @@ class SystemInfo extends QUI\System\Console\Tool
             }
         }
 
-        $this->writeLn('');
+        $this->writeLn();
 
         // installed packages
         $this->writeLn('Installed packages', 'green');
-        $this->writeLn('');
+        $this->writeLn();
         $this->resetColor();
 
         $packages = QUI::getPackageManager()->getInstalled();
@@ -124,8 +126,8 @@ class SystemInfo extends QUI\System\Console\Tool
             $this->writeLn($str);
         }
 
-        $this->writeLn('');
-        $this->writeLn('');
+        $this->writeLn();
+        $this->writeLn();
     }
 
     /**
@@ -135,11 +137,11 @@ class SystemInfo extends QUI\System\Console\Tool
      * @param string $value
      * @param string $format - http://php.net/manual/de/function.sprintf.php
      */
-    protected function printArrayEntry($key, $value, $format = "%-25s")
+    protected function printArrayEntry(string $key, string $value, string $format = "%-25s"): void
     {
         $this->write(sprintf($format, $key), 'purple');
         $this->resetColor();
         $this->write("\t\t" . $value);
-        $this->writeLn('');
+        $this->writeLn();
     }
 }

@@ -7,7 +7,19 @@
 namespace QUI\Users\Auth;
 
 use QUI;
+use QUI\Database\Exception;
 use QUI\Users\AuthenticatorInterface;
+
+use function array_flip;
+use function array_merge;
+use function class_exists;
+use function class_implements;
+use function is_null;
+use function str_replace;
+use function strcmp;
+use function time;
+use function trim;
+use function usort;
 
 /**
  * Class Handler
@@ -18,18 +30,18 @@ class Handler
     /**
      * global instance
      *
-     * @var Handler
+     * @var Handler|null
      */
-    protected static $Instance;
+    protected static ?Handler $Instance = null;
 
     /**
      * Return the global QUI\Users\Auth\Handler instance
      *
      * @return Handler
      */
-    public static function getInstance()
+    public static function getInstance(): Handler
     {
-        if (\is_null(self::$Instance)) {
+        if (is_null(self::$Instance)) {
             self::$Instance = new self();
         }
 
@@ -38,8 +50,9 @@ class Handler
 
     /**
      * @param QUI\Package\Package $Package
+     * @throws Exception
      */
-    public static function onPackageSetup(QUI\Package\Package $Package)
+    public static function onPackageSetup(QUI\Package\Package $Package): void
     {
         // create auth provider as user permissions
         $authProviders = $Package->getProvider('auth');
@@ -56,7 +69,7 @@ class Handler
         $Locale->no_translation = true;
 
         foreach ($authProviders as $authProvider) {
-            if (\trim($authProvider, '\\') == QUIQQER::class) {
+            if (trim($authProvider, '\\') == QUIQQER::class) {
                 continue;
             }
 
@@ -66,8 +79,8 @@ class Handler
 
             $Permissions->addPermission([
                 'name' => $permissionName,
-                'title' => \str_replace(['[', ']'], '', $Authenticator->getTitle($Locale)),
-                'desc' => \str_replace(['[', ']'], '', $Authenticator->getDescription($Locale)),
+                'title' => str_replace(['[', ']'], '', $Authenticator->getTitle($Locale)),
+                'desc' => str_replace(['[', ']'], '', $Authenticator->getDescription($Locale)),
                 'type' => 'bool',
                 'area' => '',
                 'src' => $Package->getName(),
@@ -82,7 +95,7 @@ class Handler
      *
      * @return array
      */
-    public function getGlobalAuthenticators()
+    public function getGlobalAuthenticators(): array
     {
         return $this->getGlobalFrontendAuthenticators();
     }
@@ -92,7 +105,7 @@ class Handler
      *
      * @return array
      */
-    public function getGlobalFrontendAuthenticators()
+    public function getGlobalFrontendAuthenticators(): array
     {
         return $this->getAuthenticatorFromConfig(QUI::conf('auth_frontend'));
     }
@@ -101,7 +114,7 @@ class Handler
      * @param array $authenticators
      * @return array
      */
-    protected function getAuthenticatorFromConfig($authenticators = [])
+    protected function getAuthenticatorFromConfig(array $authenticators = []): array
     {
         if (empty($authenticators)) {
             return [
@@ -112,7 +125,7 @@ class Handler
         $result = [];
 
         $available = $this->getAvailableAuthenticators();
-        $available = \array_flip($available);
+        $available = array_flip($available);
 
         foreach ($authenticators as $authenticator => $status) {
             if ($status != 1) {
@@ -131,7 +144,7 @@ class Handler
         }
 
         // sorting
-        \usort($result, function ($a, $b) {
+        usort($result, function ($a, $b) {
             if ($a == QUIQQER::class) {
                 return 1;
             }
@@ -140,7 +153,7 @@ class Handler
                 return 1;
             }
 
-            return \strcmp($a, $b);
+            return strcmp($a, $b);
         });
 
         return $result;
@@ -151,13 +164,13 @@ class Handler
      *
      * @return array
      */
-    public function getAvailableAuthenticators()
+    public function getAvailableAuthenticators(): array
     {
         $cache = 'quiqqer/permissions/authenticator/available';
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         $authList = [];
@@ -172,21 +185,21 @@ class Handler
                     continue;
                 }
 
-                $list = \array_merge($list, $Package->getProvider('auth'));
+                $list = array_merge($list, $Package->getProvider('auth'));
             } catch (QUI\Exception) {
             }
         }
 
         foreach ($list as $provider) {
             try {
-                if (!\class_exists($provider)) {
+                if (!class_exists($provider)) {
                     continue;
                 }
 
-                $interfaces = \class_implements($provider);
+                $interfaces = class_implements($provider);
 
                 if (isset($interfaces['QUI\Users\AuthenticatorInterface'])) {
-                    $authList[] = \trim($provider, '\\');
+                    $authList[] = trim($provider, '\\');
                 }
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
@@ -203,7 +216,7 @@ class Handler
      *
      * @return array
      */
-    public function getGlobalBackendAuthenticators()
+    public function getGlobalBackendAuthenticators(): array
     {
         return $this->getAuthenticatorFromConfig(QUI::conf('auth_backend'));
     }
@@ -213,15 +226,14 @@ class Handler
      *
      * @param string $authenticator - name of the authenticator
      * @param string $username - QUIQQER username of the user
-     *
      * @return AuthenticatorInterface
      *
      * @throws QUI\Users\Auth\Exception
      */
-    public function getAuthenticator($authenticator, $username)
+    public function getAuthenticator(string $authenticator, string $username): AuthenticatorInterface
     {
         $authenticators = $this->getAvailableAuthenticators();
-        $authenticators = \array_flip($authenticators);
+        $authenticators = array_flip($authenticators);
 
         if (isset($authenticators[$authenticator])) {
             return new $authenticator($username);
@@ -240,8 +252,9 @@ class Handler
      * @return void
      *
      * @throws QUI\Exception
+     * @throws \PHPMailer\PHPMailer\Exception
      */
-    public function sendPasswordResetVerificationMail($User)
+    public function sendPasswordResetVerificationMail(QUI\Users\User $User): void
     {
         if (!$this->isQuiqqerVerificationPackageInstalled()) {
             throw new QUI\Exception([
@@ -258,7 +271,7 @@ class Handler
 
         $Project = QUI::getRewrite()->getProject();
 
-        $PasswordResetVerification = new PasswordResetVerification($User->getId(), [
+        $PasswordResetVerification = new PasswordResetVerification($User->getUUID(), [
             'project' => $Project->getName(),
             'projectLang' => $Project->getLang()
         ]);
@@ -275,7 +288,7 @@ class Handler
         $Engine->assign([
             'body' => $L->get($lg, 'mail.auth.password_reset_confirm.body', [
                 'username' => $User->getUsername(),
-                'date' => $L->formatDate(\time()),
+                'date' => $L->formatDate(time()),
                 'confirmLink' => $confirmLink
             ])
         ]);
@@ -296,7 +309,7 @@ class Handler
      *
      * @return bool
      */
-    public function isQuiqqerVerificationPackageInstalled()
+    public function isQuiqqerVerificationPackageInstalled(): bool
     {
         $isInstalled = true;
 

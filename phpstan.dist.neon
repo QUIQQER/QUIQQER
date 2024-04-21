@@ -1,0 +1,10 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 0
+    paths:
+        - lib
+        - admin/ajax
+    bootstrapFiles:
+        - tests/phpstan-bootstrap.php

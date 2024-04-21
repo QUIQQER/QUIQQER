@@ -3,6 +3,7 @@
 namespace QUI\System;
 
 use QUI;
+use QUI\Exception;
 
 use function array_merge;
 use function array_unique;
@@ -103,7 +104,7 @@ class CSP
      *
      * @return CSP
      */
-    public static function getInstance(): ?CSP
+    public static function getInstance(): CSP
     {
         if (is_null(self::$Instance)) {
             self::$Instance = new CSP();
@@ -114,8 +115,9 @@ class CSP
 
     /**
      * Delete all CSP directive entries
+     * @throws Exception
      */
-    public function clearCSPDirectives()
+    public function clearCSPDirectives(): void
     {
         $this->getConfig()->del('securityHeaders_csp');
         $this->getConfig()->save();
@@ -123,16 +125,18 @@ class CSP
 
     /**
      * @return QUI\Config
+     * @throws Exception
      */
-    protected function getConfig()
+    protected function getConfig(): QUI\Config
     {
         return QUI::getConfig('etc/conf.ini.php');
     }
 
     /**
      * Cleanups the CSP rules
+     * @throws Exception
      */
-    public function cleanup()
+    public function cleanup(): void
     {
         $Config = $this->getConfig();
         $list = $this->getCSPDirectiveConfig();
@@ -148,6 +152,7 @@ class CSP
 
     /**
      * @return array
+     * @throws Exception
      */
     public function getCSPDirectiveConfig(): array
     {
@@ -234,7 +239,7 @@ class CSP
      *
      * @throws QUI\Exception
      */
-    public function setCSPDirectiveToConfig($directive, $value)
+    public function setCSPDirectiveToConfig($directive, $value): void
     {
         if (!$this->isDirectiveAllowed($directive)) {
             throw new QUI\Exception('Directive is not allowed');

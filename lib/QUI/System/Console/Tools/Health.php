@@ -17,7 +17,7 @@ use QUI;
 class Health extends QUI\System\Console\Tool
 {
     /**
-     * Konstruktor
+     * Constructor
      */
     public function __construct()
     {
@@ -29,7 +29,7 @@ class Health extends QUI\System\Console\Tool
      *
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         $this->write('Checking system health');
 
@@ -42,7 +42,7 @@ class Health extends QUI\System\Console\Tool
             $this->writeLn($Exception->getMessage(), 'red');
         }
 
-        $this->writeLn('');
+        $this->writeLn();
         $this->resetColor();
     }
 }

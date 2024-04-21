@@ -6,6 +6,7 @@
 
 namespace QUI\Mail;
 
+use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use QUI;
 
@@ -36,9 +37,9 @@ class Manager
      * @param string $body
      *
      * @throws QUI\Exception
-     * @throws \PHPMailer\PHPMailer\Exception
+     * @throws Exception
      */
-    public function send(string $to, string $subject, string $body)
+    public function send(string $to, string $subject, string $body): void
     {
         $Mailer = new Mailer();
 
@@ -96,11 +97,11 @@ class Manager
             $Mail->Username = $config['SMTPUser'];
             $Mail->Password = $config['SMTPPass'];
 
-            if (isset($config['SMTPPort']) && !empty($config['SMTPPort'])) {
+            if (!empty($config['SMTPPort'])) {
                 $Mail->Port = (int)$config['SMTPPort'];
             }
 
-            if (isset($config['SMTPDebug']) && !empty($config['SMTPDebug'])) {
+            if (!empty($config['SMTPDebug'])) {
                 $Mail->SMTPDebug = (int)$config['SMTPDebug'];
 
                 $Mail->Debugoutput = function ($str, $level) {

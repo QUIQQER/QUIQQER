@@ -64,7 +64,7 @@ interface File
      *
      * @return string - \QUI\Projects\Media\Image | \QUI\Projects\Media\Folder | \QUI\Projects\Media\File
      */
-    public function getType();
+    public function getType(): string;
 
     /**
      * Return the URL of the File, relative to the host
@@ -80,6 +80,11 @@ interface File
      * @throws Exception
      */
     public function activate(QUI\Interfaces\Users\User $PermissionUser = null);
+
+    /**
+     * @return bool
+     */
+    public function isActive(): bool;
 
     /**
      * Deactivate the file
@@ -155,4 +160,11 @@ interface File
      * @return Project
      */
     public function getProject(): Project;
+
+    /**
+     * @param string $permission
+     * @param User|null $User
+     * @return void
+     */
+    public function checkPermission(string $permission, QUI\Interfaces\Users\User $User = null): void;
 }

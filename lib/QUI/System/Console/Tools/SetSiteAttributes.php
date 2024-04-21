@@ -6,7 +6,13 @@
 
 namespace QUI\System\Console\Tools;
 
+use Exception;
 use QUI;
+
+use function mb_strpos;
+use function mb_strtolower;
+use function str_replace;
+use function trim;
 
 /**
  * Set attributes for a selection of Sites
@@ -16,7 +22,7 @@ use QUI;
 class SetSiteAttributes extends QUI\System\Console\Tool
 {
     /**
-     * Konstruktor
+     * Constructor
      */
     public function __construct()
     {
@@ -37,9 +43,10 @@ class SetSiteAttributes extends QUI\System\Console\Tool
     /**
      * (non-PHPdoc)
      *
+     * @throws QUI\Exception
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         $Projects = QUI::getProjectManager();
 
@@ -49,7 +56,7 @@ class SetSiteAttributes extends QUI\System\Console\Tool
 
         try {
             $Project = $Projects->getProject($projectname, $projectlang);
-        } catch (\Exception $Exception) {
+        } catch (Exception) {
             $this->writeLn("Could not load project $projectname ($projectlang)");
             $this->execute();
 
@@ -57,7 +64,7 @@ class SetSiteAttributes extends QUI\System\Console\Tool
         }
 
         $this->writeLn("Site query (MySQL): WHERE ");
-        $siteQuery = \trim($this->readInput());
+        $siteQuery = trim($this->readInput());
 
         $sql = "SELECT `id` FROM " . QUI::getDBProjectTableName('sites', $Project);
         $sql .= " WHERE $siteQuery";
@@ -66,7 +73,7 @@ class SetSiteAttributes extends QUI\System\Console\Tool
 
         try {
             $siteIds = QUI::getDataBase()->fetchSQL($sql);
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
             $this->writeLn("\n\nERROR: Query failed -> " . $Exception->getMessage());
             exit(1);
@@ -94,17 +101,17 @@ class SetSiteAttributes extends QUI\System\Console\Tool
 
         do {
             $this->writeLn("\nSet attribute (key): ");
-            $attrKey = \trim($this->readInput());
+            $attrKey = trim($this->readInput());
 
             $this->writeLn("Value: ");
-            $attrVal = \trim($this->readInput());
+            $attrVal = trim($this->readInput());
 
             $attributes[$attrKey] = $attrVal;
 
             $this->writeLn("Set another attribute? (Y/n): ");
             $setNew = $this->readInput();
 
-            if (\mb_strtolower($setNew) === 'n') {
+            if (mb_strtolower($setNew) === 'n') {
                 break;
             }
         } while (true);
@@ -119,7 +126,7 @@ class SetSiteAttributes extends QUI\System\Console\Tool
         $this->writeLn("\nIs this OK? (Y/n): ");
         $confirm = $this->readInput();
 
-        if (\mb_strtolower($confirm) === 'n') {
+        if (mb_strtolower($confirm) === 'n') {
             $this->writeLn("Exit.");
             exit(0);
         }
@@ -133,7 +140,7 @@ class SetSiteAttributes extends QUI\System\Console\Tool
             try {
                 $Site = new QUI\Projects\Site\Edit($Project, $siteId);
                 $this->write(" OK!");
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
                 $this->write(" ERROR: " . $Exception->getMessage());
                 continue;
@@ -144,18 +151,18 @@ class SetSiteAttributes extends QUI\System\Console\Tool
 
                 foreach ($placeholderDesc as $placeholder => $desc) {
                     $placeholder = '[' . $placeholder . ']';
-                    if (\mb_strpos($v, $placeholder) === false) {
+                    if (mb_strpos($v, $placeholder) === false) {
                         continue;
                     }
 
                     switch ($placeholder) {
                         case '[id]':
-                            $v = \str_replace($placeholder, $Site->getId(), $v);
+                            $v = str_replace($placeholder, $Site->getId(), $v);
                             $output = $v;
                             break;
 
                         case '[title]':
-                            $v = \str_replace($placeholder, $Site->getAttribute('title'), $v);
+                            $v = str_replace($placeholder, $Site->getAttribute('title'), $v);
                             $output = $v;
                             break;
 
@@ -180,7 +187,7 @@ class SetSiteAttributes extends QUI\System\Console\Tool
                     $Site->save($SystemUser);
 
                     $this->write(" OK!");
-                } catch (\Exception $Exception) {
+                } catch (Exception $Exception) {
                     QUI\System\Log::writeException($Exception);
                     $this->write(" ERROR: " . $Exception->getMessage());
                 }

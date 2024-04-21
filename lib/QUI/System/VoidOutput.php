@@ -9,11 +9,11 @@ use QUI\Interfaces\System\SystemOutput;
  */
 class VoidOutput implements SystemOutput
 {
-    public function write(string $msg, $color = false, $bg = false)
+    public function write(string $msg, bool|string $color = false, bool|string $bg = false): void
     {
     }
 
-    public function writeLn(string $msg = '', $color = false, $bg = false)
+    public function writeLn(string $msg = '', bool|string $color = false, bool|string $bg = false): void
     {
     }
 }

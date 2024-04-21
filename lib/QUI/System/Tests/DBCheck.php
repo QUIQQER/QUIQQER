@@ -6,10 +6,28 @@
 
 namespace QUI\System\Tests;
 
+use Exception;
 use QUI;
+use QUI\Database\Tables;
+use QUI\Projects\Project;
 use QUI\Utils\StringHelper as StringHelper;
 use QUI\Utils\System\File as SystemFile;
 use QUI\Utils\Text\XML;
+
+use function array_diff;
+use function array_intersect;
+use function array_keys;
+use function count;
+use function defined;
+use function explode;
+use function file_exists;
+use function implode;
+use function in_array;
+use function is_dir;
+use function mb_strpos;
+use function preg_replace;
+use function str_replace;
+use function trim;
 
 /**
  * Database Check - Compares existing QUIQQER database tables with database.xml files
@@ -21,19 +39,19 @@ use QUI\Utils\Text\XML;
 class DBCheck extends QUI\System\Test
 {
     /**
-     * @var \QUI\Database\Tables
+     * @var Tables|null
      */
-    protected $Tables = null;
+    protected ?Tables $Tables = null;
 
     /**
      * @var bool
      */
-    protected $error = false;
+    protected bool $error = false;
 
     /**
      * @var array
      */
-    protected $errors = [];
+    protected array $errors = [];
 
     /**
      * Constructor
@@ -56,9 +74,9 @@ class DBCheck extends QUI\System\Test
      *
      * @return integer
      */
-    public function execute()
+    public function execute(): int
     {
-        if (\defined('OPT_DIR')) {
+        if (defined('OPT_DIR')) {
             $packages_dir = OPT_DIR;
         } else {
             return self::STATUS_ERROR;
@@ -77,20 +95,20 @@ class DBCheck extends QUI\System\Test
             $list = SystemFile::readDir($package_dir);
 
             foreach ($list as $sub) {
-                if (!\is_dir($package_dir . '/' . $sub)) {
+                if (!is_dir($package_dir . '/' . $sub)) {
                     continue;
                 }
 
                 $databaseXml = $package_dir . '/' . $sub . '/database.xml';
 
-                if (!\file_exists($databaseXml)) {
+                if (!file_exists($databaseXml)) {
                     continue;
                 }
 
                 try {
                     $this->checkIntegrity($databaseXml);
                     $this->outputError($databaseXml);
-                } catch (\Exception $Exception) {
+                } catch (Exception $Exception) {
                     QUI\System\Log::addWarning($databaseXml);
                     QUI\System\Log::addWarning($Exception->getMessage());
                     QUI\System\Log::addWarning($Exception->getTraceAsString());
@@ -110,7 +128,7 @@ class DBCheck extends QUI\System\Test
      *
      * @param $xmlFile
      */
-    protected function checkIntegrity($xmlFile)
+    protected function checkIntegrity($xmlFile): void
     {
         $content = XML::getDataBaseFromXml($xmlFile);
 
@@ -152,10 +170,10 @@ class DBCheck extends QUI\System\Test
             // check language dependent project tables
             if (!empty($langTables)) {
                 foreach ($projects as $Project) {
-                    /* @var $Project \QUI\Projects\Project */
-                    $langs = $Project->getAttribute('langs');
+                    /* @var $Project Project */
+                    $languages = $Project->getAttribute('langs');
 
-                    foreach ($langs as $lang) {
+                    foreach ($languages as $lang) {
                         foreach ($langTables as $tblData) {
                             $projectTable = QUI::getDBProjectTableName(
                                 $tblData['table'],
@@ -190,12 +208,12 @@ class DBCheck extends QUI\System\Test
     /**
      * Extracts check relevant data from xml table information
      *
-     * @param      $info
+     * @param array $info
      * @param boolean $isGlobal (optional) - is a global table
      *
      * @return array
      */
-    protected function extractTableData($info, $isGlobal = false)
+    protected function extractTableData(array $info, bool $isGlobal = false): array
     {
         $primaryKeys = [];
         $checkData = [
@@ -213,7 +231,7 @@ class DBCheck extends QUI\System\Test
             foreach ($info['fields'] as $column => $structure) {
                 $structure = StringHelper::toLower($structure);
 
-                if (\mb_strpos($structure, 'primary key') !== false) {
+                if (mb_strpos($structure, 'primary key') !== false) {
                     $primaryKeys[] = $column;
                 }
             }
@@ -231,7 +249,7 @@ class DBCheck extends QUI\System\Test
             foreach ($info['fields'] as $column => $structure) {
                 $structure = StringHelper::toLower($structure);
 
-                if (\mb_strpos($structure, 'auto_increment') !== false) {
+                if (mb_strpos($structure, 'auto_increment') !== false) {
                     $checkData['auto_inc'] = $column;
                     break; // @todo sobald auto_inc auch für mehrere felder definiert werden kann, anpassen
                 }
@@ -241,7 +259,7 @@ class DBCheck extends QUI\System\Test
         // check if user can set individual primary keys
         if (!$isGlobal && empty($info['no-site-reference'])) {
             if (empty($info['no-project-lang']) && !empty($primaryKeys)) {
-                if (!(\count($primaryKeys) === 1 && \in_array('id', $primaryKeys))) {
+                if (!(count($primaryKeys) === 1 && in_array('id', $primaryKeys))) {
                     $this->addError(
                         $checkData['table'],
                         "---",
@@ -257,8 +275,8 @@ class DBCheck extends QUI\System\Test
             }
 
             // assume the xml file declares an id key
-            // although technically it is created by the system in this special case
-            if (!\in_array('id', $primaryKeys)) {
+            // although, technically it is created by the system in this special case
+            if (!in_array('id', $primaryKeys)) {
                 $checkData['primaryKeys'][] = 'id';
                 $checkData['fields']['id'] = 'BIGINT(20) NOT NULL PRIMARY KEY';
             }
@@ -272,7 +290,7 @@ class DBCheck extends QUI\System\Test
      * @param string $dbTable
      * @param string $error
      */
-    protected function addError($table, $dbTable, $error)
+    protected function addError(string $table, string $dbTable, string $error): void
     {
         $this->errors[] = [
             'table' => $table,
@@ -289,7 +307,7 @@ class DBCheck extends QUI\System\Test
      * @param string $table - name of the table in the database
      * @param array $tblData - the data extracted form the database.xml
      */
-    protected function checkTableIntegrity($table, $tblData)
+    protected function checkTableIntegrity(string $table, array $tblData): void
     {
         // xml data
         $tbl = $tblData['table'];
@@ -340,14 +358,14 @@ class DBCheck extends QUI\System\Test
         }
 
         // compare primary keys
-        $keyCompare = \array_intersect($primaryKeys, $dbKeys);
+        $keyCompare = array_intersect($primaryKeys, $dbKeys);
 
         if (
-            \count($primaryKeys) !== \count($dbKeys)
-            || \count($keyCompare) !== \count($primaryKeys)
+            count($primaryKeys) !== count($dbKeys)
+            || count($keyCompare) !== count($primaryKeys)
         ) {
-            $_dbKeys = empty($dbKeys) ? '(none)' : \implode(',', $dbKeys);
-            $_prKeys = empty($primaryKeys) ? '(none)' : \implode(',', $primaryKeys);
+            $_dbKeys = empty($dbKeys) ? '(none)' : implode(',', $dbKeys);
+            $_prKeys = empty($primaryKeys) ? '(none)' : implode(',', $primaryKeys);
 
             $this->addError(
                 $tbl,
@@ -360,8 +378,8 @@ class DBCheck extends QUI\System\Test
 
 
         // check if xml file declares fields that are not present in the database table
-        $xmlFieldsDiff = \array_diff(
-            \array_keys($fields),
+        $xmlFieldsDiff = array_diff(
+            array_keys($fields),
             $dbFields
         );
 
@@ -372,11 +390,11 @@ class DBCheck extends QUI\System\Test
                 "Missing table fields -> " .
                 "The XML file declares table fields that are " .
                 "missing in the database table: " .
-                \implode(',', $xmlFieldsDiff)
+                implode(',', $xmlFieldsDiff)
             );
         }
 
-        // collect detailled column information from database
+        // collect detailed column information from database
         $dbFieldsData = $this->Tables->getFieldsInfos($table);
 
         foreach ($dbFieldsData as $field) {
@@ -392,7 +410,7 @@ class DBCheck extends QUI\System\Test
             /*** NULL/NOT NULL check ***/
             $nullable = true;
 
-            if (\mb_strpos($fieldData, 'not null') !== false) {
+            if (mb_strpos($fieldData, 'not null') !== false) {
                 $nullable = false;
             }
 
@@ -453,19 +471,19 @@ class DBCheck extends QUI\System\Test
             ];
 
             // clear xml field data of already checked content
-            $fieldData = \str_replace($notNeeded, '', $fieldData);
-            $isDatatype = \str_replace($notNeeded, '', $isDatatype);
+            $fieldData = str_replace($notNeeded, '', $fieldData);
+            $isDatatype = str_replace($notNeeded, '', $isDatatype);
 
-            if (\strpos($fieldData, 'default') !== false) {
-                $fieldData = \explode('default', $fieldData);
+            if (str_contains($fieldData, 'default')) {
+                $fieldData = explode('default', $fieldData);
                 $fieldData = $fieldData[0];
             }
 
-            $fieldData = \trim($fieldData);
-            $isDatatype = \trim($isDatatype);
+            $fieldData = trim($fieldData);
+            $isDatatype = trim($isDatatype);
 
             // correct things like "varchar( 20 )" to "varchar(20)" to match the column information
-            $fieldData = \preg_replace('#\(\D*(\d+)\D*\)#i', '($1)', $fieldData);
+            $fieldData = preg_replace('#\(\D*(\d+)\D*\)#i', '($1)', $fieldData);
 
             if (
                 $fieldData === 'int'
@@ -473,7 +491,7 @@ class DBCheck extends QUI\System\Test
                 || $fieldData === 'smallint'
             ) {
                 // int(10) = int
-                if (\strpos($isDatatype, $fieldData . '(') !== false) {
+                if (str_contains($isDatatype, $fieldData . '(')) {
                     continue;
                 }
             }
@@ -482,7 +500,7 @@ class DBCheck extends QUI\System\Test
                 continue;
             }
 
-            if (\mb_strpos($fieldData, $isDatatype) === false) {
+            if (mb_strpos($fieldData, $isDatatype) === false) {
                 $this->addError(
                     $tbl,
                     $table,
@@ -498,7 +516,7 @@ class DBCheck extends QUI\System\Test
     /**
      * @param string $xmlFile
      */
-    protected function outputError($xmlFile)
+    protected function outputError(string $xmlFile): void
     {
         if (empty($this->errors)) {
             return;

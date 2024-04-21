@@ -6,6 +6,7 @@
 
 namespace QUI\System\Console;
 
+use Exception;
 use QUI\Events\Event;
 use QUI\System\Log;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
@@ -57,7 +58,7 @@ class Output extends \Symfony\Component\Console\Output\Output
      * @param string $message - The message that should be written
      * @param bool $newline - true, if the current line should be finished.
      */
-    protected function doWrite($message, $newline)
+    protected function doWrite($message, $newline): void
     {
         $this->curLine .= $message;
 
@@ -75,7 +76,7 @@ class Output extends \Symfony\Component\Console\Output\Output
 
         try {
             $this->Events->fireEvent('write', [$message]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::addDebug($e->getMessage());
         }
     }
@@ -92,7 +93,7 @@ class Output extends \Symfony\Component\Console\Output\Output
     /**
      * Clears all lines of the output
      */
-    public function clearLines()
+    public function clearLines(): void
     {
         $this->lines = [];
     }

@@ -3,7 +3,11 @@
 namespace QUI\Users\Auth;
 
 use QUI;
+use QUI\Exception;
+use QUI\Interfaces\Users\User;
 use QUI\Verification\AbstractVerification;
+
+use function current;
 
 class PasswordResetVerification extends AbstractVerification
 {
@@ -12,7 +16,7 @@ class PasswordResetVerification extends AbstractVerification
      *
      * @var QUI\Projects\Project
      */
-    protected $Project;
+    protected QUI\Projects\Project $Project;
 
     /**
      * PasswordResetVerification constructor.
@@ -33,7 +37,7 @@ class PasswordResetVerification extends AbstractVerification
      *
      * @return void
      */
-    public function onSuccess()
+    public function onSuccess(): void
     {
         $Users = QUI::getUsers();
         $SystemUser = $Users->getSystemUser();
@@ -43,7 +47,7 @@ class PasswordResetVerification extends AbstractVerification
             $newPassword = QUI\Security\Password::generateRandom();
 
             // check if user has to set new password
-            if ((bool) QUI::conf('auth_settings', 'forceNewPasswordOnReset')) {
+            if (QUI::conf('auth_settings', 'forceNewPasswordOnReset')) {
                 $User->setAttribute('quiqqer.set.new.password', true);
             }
 
@@ -63,11 +67,13 @@ class PasswordResetVerification extends AbstractVerification
     /**
      * Send mail with temporary password to user
      *
-     * @param QUI\Users\User $User
+     * @param User $User
      * @param string $newPass
      * @return void
+     * @throws Exception
+     * @throws \PHPMailer\PHPMailer\Exception
      */
-    protected function sendNewUserPasswordMail($User, $newPass)
+    protected function sendNewUserPasswordMail(QUI\Interfaces\Users\User $User, string $newPass): void
     {
         $email = $User->getAttribute('email');
 
@@ -106,7 +112,7 @@ class PasswordResetVerification extends AbstractVerification
      * @return int|false - duration in minutes;
      * if this method returns false use the module setting default value
      */
-    public function getValidDuration()
+    public function getValidDuration(): bool|int
     {
         return (int)QUI::conf('auth_settings', 'passwordResetLinkValidTime');
     }
@@ -126,7 +132,7 @@ class PasswordResetVerification extends AbstractVerification
      *
      * @return string
      */
-    public function getSuccessMessage()
+    public function getSuccessMessage(): string
     {
         return QUI::getLocale()->get(
             'quiqqer/quiqqer',
@@ -140,7 +146,7 @@ class PasswordResetVerification extends AbstractVerification
      * @param string $reason - The reason for the error (see \QUI\Verification\Verifier::REASON_)
      * @return string
      */
-    public function getErrorMessage($reason)
+    public function getErrorMessage($reason): string
     {
         return QUI::getLocale()->get(
             'quiqqer/quiqqer',
@@ -152,8 +158,9 @@ class PasswordResetVerification extends AbstractVerification
      * Automatically redirect the user to this URL on successful verification
      *
      * @return string|false - If this method returns false, no redirection takes place
+     * @throws QUI\Database\Exception
      */
-    public function getOnSuccessRedirectUrl()
+    public function getOnSuccessRedirectUrl(): bool|string
     {
         $result = $this->Project->getSites([
             'where' => [
@@ -166,7 +173,7 @@ class PasswordResetVerification extends AbstractVerification
             return false;
         }
 
-        $LoginSite = \current($result);
+        $LoginSite = current($result);
 
         return $LoginSite->getUrlRewritten([], [
             'password_reset' => '1'
@@ -178,7 +185,7 @@ class PasswordResetVerification extends AbstractVerification
      *
      * @return string|false - If this method returns false, no redirection takes place
      */
-    public function getOnErrorRedirectUrl()
+    public function getOnErrorRedirectUrl(): bool|string
     {
         return false;
     }

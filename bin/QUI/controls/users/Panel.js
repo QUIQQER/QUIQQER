@@ -812,7 +812,7 @@ define('controls/users/Panel', [
                 id = User.getId();
 
             for (let i = 0, len = data.length; i < len; i++) {
-                if (parseInt(data[i].id) === id) {
+                if (data[i].id == id) {
                     Grid.setDataByRow(i, this.userToGridData(User));
                 }
             }
@@ -976,7 +976,7 @@ define('controls/users/Panel', [
                 id = User.getId();
 
             for (let i = 0, len = data.length; i < len; i++) {
-                if (parseInt(data[i].id) === id) {
+                if (data[i].id == id) {
                     return Grid.getDataByRow(i).status;
                 }
             }

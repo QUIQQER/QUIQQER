@@ -7,6 +7,7 @@
 namespace QUI;
 
 use QUI;
+use QUI\Projects\Project;
 use QUI\Utils\Security\Orthos;
 
 use function class_exists;
@@ -20,7 +21,6 @@ use function implode;
 use function is_array;
 use function realpath;
 use function str_replace;
-use function strpos;
 use function trim;
 
 use const ETC_DIR;
@@ -44,14 +44,14 @@ class Template extends QUI\QDOM
     protected array $engines = [];
 
     /**
-     * Header extentions
+     * Header extensions
      *
      * @var array
      */
     protected array $header = [];
 
     /**
-     * Footer extentions
+     * Footer extensions
      *
      * @var array
      */
@@ -122,7 +122,7 @@ class Template extends QUI\QDOM
      * @param string $class - must a class that implements QUI\Interfaces\Template\EngineInterface
      * @throws QUI\Exception
      */
-    public static function registerEngine(string $name, string $class)
+    public static function registerEngine(string $name, string $class): void
     {
         $Conf = self::getConfig();
         $Conf->setValue($name, null, $class);
@@ -160,7 +160,7 @@ class Template extends QUI\QDOM
      * @param string $cssPath
      * @param int $priority
      */
-    public function extendHeaderWithCSSFile(string $cssPath, int $priority = 3)
+    public function extendHeaderWithCSSFile(string $cssPath, int $priority = 3): void
     {
         $this->extendHeader(
             '<link href="' . $cssPath . '" rel="stylesheet" type="text/css" />',
@@ -174,7 +174,7 @@ class Template extends QUI\QDOM
      * @param string $str
      * @param integer $priority
      */
-    public function extendHeader(string $str, int $priority = 3)
+    public function extendHeader(string $str, int $priority = 3): void
     {
         if (!isset($this->header[$priority])) {
             $this->header[$priority] = '';
@@ -195,7 +195,7 @@ class Template extends QUI\QDOM
         string $jsPath,
         bool $async = true,
         int $priority = 3
-    ) {
+    ): void {
         if ($async) {
             $this->extendHeader(
                 '<script src="' . $jsPath . '" async></script>',
@@ -222,7 +222,7 @@ class Template extends QUI\QDOM
         string $jsPath,
         bool $async = true,
         int $priority = 3
-    ) {
+    ): void {
         if ($async) {
             $this->extendFooter(
                 '<script src="' . $jsPath . '" async></script>',
@@ -247,7 +247,7 @@ class Template extends QUI\QDOM
     public function extendFooter(
         string $str,
         int $priority = 3
-    ) {
+    ): void {
         if (!isset($this->footer[$priority])) {
             $this->footer[$priority] = '';
         }
@@ -269,11 +269,11 @@ class Template extends QUI\QDOM
     }
 
     /**
-     * Add a javascript module, that laoded at the onload event
+     * Add a javascript module, that loaded at the onload event
      *
      * @param string $module
      */
-    public function addOnloadJavaScriptModule(string $module)
+    public function addOnloadJavaScriptModule(string $module): void
     {
         $this->onLoadModules[] = $module;
     }
@@ -345,13 +345,10 @@ class Template extends QUI\QDOM
 
     /**
      * Get the standard template engine
-     *
      * if $admin=true, admin template plugins were loaded
      *
-     * @param boolean $admin - (optional) is the template for the admin or frontend? <- param depricated
-     *
+     * @param bool $admin - (optional) is the template for the admin or frontend? <- param deprecated
      * @return QUI\Interfaces\Template\EngineInterface
-     * @throws QUI\Exception
      */
     public function getEngine(bool $admin = false): Interfaces\Template\EngineInterface
     {
@@ -370,14 +367,18 @@ class Template extends QUI\QDOM
         $implements = class_implements($Engine);
 
         if (!isset($implements['QUI\Interfaces\Template\EngineInterface'])) {
-            throw new QUI\Exception(
+            QUI\System\Log::addError(
                 'The Template Engine implements not from QUI\Interfaces\Template\EngineInterface'
             );
         }
 
         $Engine->assign('__TEMPLATE__', $this);
 
-        QUI::getTemplateManager()->assignGlobalParam('Project', QUI::getRewrite()->getProject());
+        try {
+            QUI::getTemplateManager()->assignGlobalParam('Project', QUI::getRewrite()->getProject());
+        } catch (\Exception $exception) {
+            QUI\System\Log::addError($exception->getMessage());
+        }
 
         if (!empty($this->assigned)) {
             $Engine->assign($this->assigned);
@@ -391,43 +392,45 @@ class Template extends QUI\QDOM
      *
      * @param mixed $engine - The template engine to check
      * @return string - Returns the name of the template engine if successful
-     * @throws QUI\Exception - Throws an exception if the template engine is not found
      */
-    protected function checkSmarty4Engine($engine): string
+    protected function checkSmarty4Engine(mixed $engine): string
     {
         // smarty 4 workaround
         if ($engine === 'smarty3' && class_exists('QUI\Smarty\Smarty4')) {
-            $Config = QUI::getConfig('etc/conf.ini.php');
-            $Config->setValue('template', 'engine', 'smarty4');
-            $Config->save();
+            try {
+                $Config = QUI::getConfig('etc/conf.ini.php');
+                $Config->setValue('template', 'engine', 'smarty4');
+                $Config->save();
 
-            QUI::$Conf->reload();
+                QUI::$Conf->reload();
 
-            $templateIni = ETC_DIR . 'templates.ini.php';
-            $iniContent = file_get_contents($templateIni);
+                $templateIni = ETC_DIR . 'templates.ini.php';
+                $iniContent = file_get_contents($templateIni);
 
-            if (strpos($templateIni, 'QUI\\Smarty\\Smarty4') === false) {
-                file_put_contents(
-                    $templateIni,
-                    trim($iniContent) . PHP_EOL . 'smarty4="QUI\Smarty\Smarty4"'
-                );
+                if (!str_contains($templateIni, 'QUI\\Smarty\\Smarty4')) {
+                    file_put_contents(
+                        $templateIni,
+                        trim($iniContent) . PHP_EOL . 'smarty4="QUI\Smarty\Smarty4"'
+                    );
+                }
+
+                static::getConfig()->reload();
+                $this->load();
+
+                return 'smarty4';
+            } catch (\Exception $exception) {
+                QUI\System\Log::addError($exception->getMessage());
             }
-
-            static::getConfig()->reload();
-            $this->load();
-
-            return 'smarty4';
         }
 
-        throw new QUI\Exception('Template Engine not found!');
+        QUI\System\Log::addError('Template Engine not found!');
+        return '';
     }
 
     /**
      * Load the registered engines
-     *
-     * @throws QUI\Exception
      */
-    public function load()
+    public function load(): void
     {
         $this->engines = self::getConfig()->toArray();
     }
@@ -439,7 +442,7 @@ class Template extends QUI\QDOM
      * @param string $param
      * @param mixed $value
      */
-    public function assignGlobalParam(string $param, $value)
+    public function assignGlobalParam(string $param, mixed $value): void
     {
         $this->assigned[$param] = $value;
     }
@@ -447,15 +450,14 @@ class Template extends QUI\QDOM
     /**
      * Prepares the contents of a template
      *
-     * @param QUI\Projects\Site|QUI\Projects\Site\Edit $Site
+     * @param QUI\Interfaces\Projects\Site $Site
      *
      * @return string
      *
      * @throws QUI\Exception
      */
-    public function fetchSite($Site): string
+    public function fetchSite(Interfaces\Projects\Site $Site): string
     {
-        /* @var $Site QUI\Projects\Site */
         $Project = $Site->getProject();
         $Engine = $this->getEngine();
 
@@ -490,7 +492,6 @@ class Template extends QUI\QDOM
         $this->setAttribute('Site', $Site);
         $this->setAttribute('Engine', $Engine);
 
-        // Zuweisungen
         $Engine->assign([
             'URL_DIR' => URL_DIR,
             'URL_BIN_DIR' => URL_BIN_DIR,
@@ -516,9 +517,6 @@ class Template extends QUI\QDOM
         $default_tpl = LIB_DIR . 'templates/index.html';
         $project_tpl = USR_DIR . $Project->getName() . '/lib/index.html';
         $project_index = USR_DIR . $Project->getName() . '/lib/index.php';
-
-        //        $template_tpl   = false;
-        //        $template_index = false;
 
         $tpl = $default_tpl;
 
@@ -664,9 +662,8 @@ class Template extends QUI\QDOM
         // footer extend
         $footer = $this->footer;
         $footerExtend = implode('', $footer);
-        $result = str_replace('</body>', $footerExtend . '</body>', $result);
 
-        return $result;
+        return str_replace('</body>', $footerExtend . '</body>', $result);
     }
 
     /**
@@ -726,7 +723,7 @@ class Template extends QUI\QDOM
     }
 
     /**
-     * Return the a html header
+     * Return the html header
      * With all important meta entries and quiqqer libraries
      *
      * @return string
@@ -906,7 +903,7 @@ class Template extends QUI\QDOM
      *
      * @return string|false
      */
-    public function getLayoutType()
+    public function getLayoutType(): bool|string
     {
         $Project = $this->getAttribute('Project');
         $Site = $this->getAttribute('Site');
@@ -946,10 +943,10 @@ class Template extends QUI\QDOM
      * Return all project templates which have a site.xml
      * -> consider template inheritance
      *
-     * @param QUI\Projects\Project $Project
-     * @return array
+     * @param Project $Project
+     * @return bool|array
      */
-    protected function getProjectTemplates($Project)
+    protected function getProjectTemplates(Projects\Project $Project): bool|array
     {
         $name = $Project->getName();
 

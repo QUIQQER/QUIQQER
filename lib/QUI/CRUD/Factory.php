@@ -8,9 +8,12 @@ namespace QUI\CRUD;
 
 use QUI;
 
+use function array_key_exists;
+use function is_array;
+
 /**
  * Class Factory
- * Abstration factory for create-read-update-delete
+ * Abstraction factory for create-read-update-delete
  *
  * @event onCreateBegin
  * @event onCreateEnd
@@ -20,7 +23,7 @@ abstract class Factory extends QUI\Utils\Singleton
     /**
      * @var QUI\Events\Event
      */
-    protected $Events;
+    protected QUI\Events\Event $Events;
 
     /**
      * Factory constructor.
@@ -38,7 +41,7 @@ abstract class Factory extends QUI\Utils\Singleton
      *
      * @throws QUI\Database\Exception
      */
-    public function countChildren($queryParams = [])
+    public function countChildren(array $queryParams = []): int
     {
         $query = [
             'from' => $this->getDataBaseTableName(),
@@ -48,7 +51,7 @@ abstract class Factory extends QUI\Utils\Singleton
             ]
         ];
 
-        if (!\is_array($queryParams)) {
+        if (!is_array($queryParams)) {
             $queryParams = [];
         }
 
@@ -62,7 +65,7 @@ abstract class Factory extends QUI\Utils\Singleton
 
         $count = QUI::getDataBase()->fetch($query);
 
-        if (isset($count[0]) && isset($count[0]['id'])) {
+        if (isset($count[0]['id'])) {
             return (int)$count[0]['id'];
         }
 
@@ -72,7 +75,7 @@ abstract class Factory extends QUI\Utils\Singleton
     /**
      * @return string
      */
-    abstract public function getDataBaseTableName();
+    abstract public function getDataBaseTableName(): string;
 
     /**
      * Create a new child
@@ -82,12 +85,12 @@ abstract class Factory extends QUI\Utils\Singleton
      *
      * @throws QUI\Exception
      */
-    public function createChild($data = [])
+    public function createChild(array $data = []): Child
     {
         $attributes = $this->getChildAttributes();
         $childData = [];
 
-        if (!\is_array($data)) {
+        if (!is_array($data)) {
             $data = [];
         }
 
@@ -96,7 +99,7 @@ abstract class Factory extends QUI\Utils\Singleton
                 continue;
             }
 
-            if (\array_key_exists($attribute, $data)) {
+            if (array_key_exists($attribute, $data)) {
                 $childData[$attribute] = $data[$attribute];
             } else {
                 $childData[$attribute] = '';
@@ -121,17 +124,17 @@ abstract class Factory extends QUI\Utils\Singleton
     /**
      * @return array
      */
-    abstract public function getChildAttributes();
+    abstract public function getChildAttributes(): array;
 
     /**
      * Return a child
      *
-     * @param integer $id
+     * @param int|string $id
      * @return QUI\CRUD\Child
      *
      * @throws QUI\Exception
      */
-    public function getChild($id)
+    public function getChild(int|string $id): Child
     {
         $childClass = $this->getChildClass();
 
@@ -162,7 +165,7 @@ abstract class Factory extends QUI\Utils\Singleton
     /**
      * @return string
      */
-    abstract public function getChildClass();
+    abstract public function getChildClass(): string;
 
     /**
      * Return the children
@@ -173,7 +176,7 @@ abstract class Factory extends QUI\Utils\Singleton
      *
      * @throws QUI\Database\Exception
      */
-    public function getChildren($queryParams = [])
+    public function getChildren(array $queryParams = []): array
     {
         $result = [];
 
@@ -201,13 +204,13 @@ abstract class Factory extends QUI\Utils\Singleton
      *
      * @throws QUI\Database\Exception
      */
-    public function getChildrenData($queryParams = [])
+    public function getChildrenData(array $queryParams = []): array
     {
         $query = [
             'from' => $this->getDataBaseTableName()
         ];
 
-        if (!\is_array($queryParams)) {
+        if (!is_array($queryParams)) {
             $queryParams = [];
         }
 

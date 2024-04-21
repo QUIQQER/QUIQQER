@@ -36,7 +36,7 @@ class PackageEvents
      *
      * @param PackageEvent $Event
      */
-    public static function postPackageInstall(PackageEvent $Event)
+    public static function postPackageInstall(PackageEvent $Event): void
     {
         self::loadQUIQQER($Event);
 
@@ -69,7 +69,7 @@ class PackageEvents
     /**
      * @param PackageEvent $Event
      */
-    protected static function loadQUIQQER(PackageEvent $Event)
+    protected static function loadQUIQQER(PackageEvent $Event): void
     {
         $Composer = $Event->getComposer();
         $config = $Composer->getConfig()->all();
@@ -113,7 +113,7 @@ class PackageEvents
      *
      * @param PackageEvent $Event
      */
-    public static function postPackageUpdate(PackageEvent $Event)
+    public static function postPackageUpdate(PackageEvent $Event): void
     {
         self::loadQUIQQER($Event);
 
@@ -148,7 +148,7 @@ class PackageEvents
      *
      * @param PackageEvent $Event
      */
-    public static function prePackageUninstall(PackageEvent $Event)
+    public static function prePackageUninstall(PackageEvent $Event): void
     {
         self::loadQUIQQER($Event);
 
@@ -181,7 +181,7 @@ class PackageEvents
      *
      * @param PackageEvent $Event
      */
-    public static function postPackageUninstall(PackageEvent $Event)
+    public static function postPackageUninstall(PackageEvent $Event): void
     {
         QUI\Cache\Manager::clearPackagesCache();
         QUI\Cache\Manager::clearSettingsCache();

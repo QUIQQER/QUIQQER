@@ -3,13 +3,14 @@
 namespace QUI\Package;
 
 use QUI;
+use QUI\Exception;
 
 /**
  * Class PackageNotLicensedException
  *
  * Is thrown when a package license is required but not existing.
  */
-class PackageNotLicensedException extends \QUI\Exception
+class PackageNotLicensedException extends Exception
 {
     /**
      * @var int
@@ -20,8 +21,8 @@ class PackageNotLicensedException extends \QUI\Exception
      * Constructor
      *
      * @param string $package - The concerned package
-     * @param string|array $message (optional) - If omitted, use default message
-     * @param string $url (optional) - Package download URL
+     * @param null $message (optional) - If omitted, use default message
+     * @param string|null $url (optional) - Package download URL
      */
     public function __construct(string $package, $message = null, string $url = null)
     {
@@ -35,7 +36,7 @@ class PackageNotLicensedException extends \QUI\Exception
             );
         }
 
-        parent::__construct($message, $this->code, []);
+        parent::__construct($message, $this->code);
 
         $this->setAttribute('package', $package);
         $this->setAttribute('url', $url);

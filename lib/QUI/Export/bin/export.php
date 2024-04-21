@@ -1,8 +1,10 @@
 <?php
 
+use QUI\HtmlToPdf\Document;
+
 $dir = str_replace('quiqqer/quiqqer/lib/QUI/Export/bin', '', __DIR__);
-define('QUIQQER_SYSTEM', true);
-define('QUIQQER_AJAX', true);
+const QUIQQER_SYSTEM = true;
+const QUIQQER_AJAX = true;
 
 require_once $dir . 'header.php';
 
@@ -33,7 +35,7 @@ if (isset($body['type']) && $body['type'] === 'pdf') {
     require_once 'exportPrint.php';
     $output = ob_get_clean();
 
-    $Document = new \QUI\HtmlToPdf\Document();
+    $Document = new Document();
     $Document->setContentHTML($output);
     $pdfFile = $Document->createPDF();
     $name = 'export';
@@ -124,13 +126,6 @@ try {
         $output = json_encode($data);
     } else {
         $filename = $name . '.csv';
-
-        // normalerweise wird das hier nicht gebraucht:
-        //
-        //foreach ($data as $key => $entry) {
-        //  $data[$key] = str_replace('"', "'", $entry);
-        //}
-
         $Writer->insertAll($data);
 
         $output = $Writer->toString();
@@ -144,8 +139,6 @@ try {
 
     echo $output;
     exit;
-} catch (QUI\Exception $Exception) {
-    QUI\System\Log::writeDebugException($Exception);
-} catch (\Exception $Exception) {
+} catch (Exception $Exception) {
     QUI\System\Log::writeDebugException($Exception);
 }
