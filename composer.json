@@ -31,6 +31,7 @@
     "composer/composer": "^2",
     "composer/semver": "^3",
     "dusank/knapsack": "^8|^9|^10",
+    "doctrine/dbal": "^4",
     "html2text/html2text": "^4",
     "intervention/image": "^2",
     "league/climate": "^3",

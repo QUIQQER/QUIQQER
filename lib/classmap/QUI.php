@@ -6,6 +6,11 @@
  * This file contains QUI
  */
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
+use QUI\Database\DB;
+use QUI\Exception;
 use QUI\System\Log;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -57,9 +62,14 @@ class QUI
     /**
      * QUI getDataBase object, use \QUI::getDataBase();
      *
-     * @var \QUI\Database\DB|null
+     * @var DB|null
      */
-    public static ?\QUI\Database\DB $DataBase2 = null;
+    public static ?DB $DataBase2 = null;
+
+    /**
+     * @var Connection|null
+     */
+    protected static ?Connection $QueryBuilder = null;
 
     /**
      * QUI Error Handler, use \QUI::getErrorHandler();
@@ -225,7 +235,7 @@ class QUI
             /**
              * DEVELOPMENT - setting if the system is in development mode or not
              */
-            define("DEVELOPMENT", (bool) $config['globals']['development']);
+            define("DEVELOPMENT", (bool)$config['globals']['development']);
         }
 
         $var_dir = $config['globals']['var_dir'];
@@ -701,26 +711,31 @@ class QUI
      * Returns the PDO Database object
      *
      * @return PDO
+     * @throws Exception
+     * @throws \Doctrine\DBAL\Exception
      */
     public static function getPDO(): PDO
     {
-        return self::getDataBase()->getPDO();
+        $Native = self::getDataBaseConnection()->getNativeConnection();
+
+        if ($Native instanceof PDO) {
+            return $Native;
+        }
+
+        throw new QUI\Exception('PDO not found');
     }
 
     /**
      * Returns the Database object
      *
-     * @return \QUI\Database\DB
+     * @return DB
+     * @deprecated
      */
-    public static function getDatabase(): \QUI\Database\DB
+    public static function getDataBase(): DB
     {
-        if (!self::$DataBase2 instanceof \QUI\Database\DB) {
-            self::$DataBase2 = new \QUI\Database\DB([
-                'driver' => self::conf('db', 'driver'),
-                'host' => self::conf('db', 'host'),
-                'user' => self::conf('db', 'user'),
-                'password' => self::conf('db', 'password'),
-                'dbname' => self::conf('db', 'database')
+        if (!(self::$DataBase2 instanceof DB)) {
+            self::$DataBase2 = new DB([
+                'doctrine' => self::getDataBaseConnection()
             ]);
         }
 
@@ -1075,4 +1090,49 @@ class QUI
     {
         return defined('QUIQQER_CONSOLE') && QUIQQER_CONSOLE;
     }
+
+    //region Doctrine
+
+    /**
+     * Returns the doctrine DBAL Connection Object
+     *
+     * @return Connection
+     */
+    public static function getDataBaseConnection(): Connection
+    {
+        if (!self::$QueryBuilder instanceof DB) {
+            self::$QueryBuilder = Doctrine\DBAL\DriverManager::getConnection([
+                'dbname' => self::conf('db', 'database'),
+                'driver' => 'pdo_' . self::conf('db', 'driver'),
+                'host' => self::conf('db', 'host'),
+                'user' => self::conf('db', 'user'),
+                'password' => self::conf('db', 'password')
+            ]);
+        }
+
+        return self::$QueryBuilder;
+    }
+
+    /**
+     * Returns a doctrine query builder
+     *
+     * @return QueryBuilder
+     */
+    public static function getQueryBuilder(): QueryBuilder
+    {
+        return self::getDataBaseConnection()->createQueryBuilder();
+    }
+
+    /**
+     * Returns a doctrine schema manager
+     *
+     * @return AbstractSchemaManager
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public static function getSchemaManager(): AbstractSchemaManager
+    {
+        return self::getDataBaseConnection()->createSchemaManager();
+    }
+
+    //endregion
 }
