@@ -119,12 +119,12 @@ class Manager
 
 
         $DBTable->addColumn($table2users, [
-            'user_id' => 'int(11) NOT NULL',
+            'user_id' => 'varchar(50) NOT NULL',
             'permissions' => 'MEDIUMTEXT'
         ]);
 
         $DBTable->addColumn($table2groups, [
-            'group_id' => 'int(11) NOT NULL',
+            'group_id' => 'varchar(50) NOT NULL',
             'permissions' => 'MEDIUMTEXT'
         ]);
 
