@@ -140,7 +140,7 @@ class Manager
         $title = Orthos::clear($title);
 
         QUI::getDataBase()->insert(self::table(), [
-            'uid' => $User->getId(),
+            'uid' => $User->getUUID(),
             'title' => $title,
             'data' => $data,
             'minHeight' => $minHeight,
@@ -160,7 +160,7 @@ class Manager
     {
         try {
             QUI::getDataBase()->delete(self::table(), [
-                'uid' => $User->getId(),
+                'uid' => $User->getUUID(),
                 'id' => $id
             ]);
         } catch (QUI\Exception $Exception) {
@@ -205,7 +205,7 @@ class Manager
         $result = QUI::getDataBase()->fetch([
             'from' => self::table(),
             'where' => [
-                'uid' => $User->getId()
+                'uid' => $User->getUUID()
             ]
         ]);
 
@@ -215,7 +215,7 @@ class Manager
             $result = QUI::getDataBase()->fetch([
                 'from' => self::table(),
                 'where' => [
-                    'uid' => $User->getId()
+                    'uid' => $User->getUUID()
                 ]
             ]);
         }
@@ -261,7 +261,7 @@ class Manager
 
         QUI::getDataBase()->update(self::table(), $workspace, [
             'id' => $id,
-            'uid' => $User->getId()
+            'uid' => $User->getUUID()
         ]);
 
 
@@ -286,7 +286,7 @@ class Manager
             'from' => self::table(),
             'where' => [
                 'id' => $id,
-                'uid' => $User->getId()
+                'uid' => $User->getUUID()
             ],
             'limit' => 1
         ]);
@@ -325,7 +325,7 @@ class Manager
         QUI::getDataBase()->update(
             self::table(),
             ['standard' => 0],
-            ['uid' => $User->getId()]
+            ['uid' => $User->getUUID()]
         );
 
         // standard
@@ -334,7 +334,7 @@ class Manager
             ['standard' => 1],
             [
                 'id' => $id,
-                'uid' => $User->getId()
+                'uid' => $User->getUUID()
             ]
         );
     }

@@ -252,16 +252,7 @@ class User implements QUIUserInterface
         if ($this->lang !== null) {
             return $this->lang;
         }
-
-        if (
-            $this->getId() === QUI::getUserBySession()->getId()
-            && QUI::getSession()->get('quiqqer-user-language')
-        ) {
-            $this->lang = QUI::getSession()->get('quiqqer-user-language');
-
-            return $this->lang;
-        }
-
+        
         if (
             $this->getUUID() === QUI::getUserBySession()->getUUID()
             && QUI::getSession()->get('quiqqer-user-language')
@@ -673,7 +664,7 @@ class User implements QUIUserInterface
     {
         $result = QUI::getDataBase()->fetch([
             'from' => Manager::tableAddress(),
-            'select' => 'id',
+            'select' => 'id,uuid',
             'where' => [
                 'userUuid' => $this->getUUID()
             ]
@@ -686,10 +677,8 @@ class User implements QUIUserInterface
         $list = [];
 
         foreach ($result as $entry) {
-            $id = (int)$entry['id'];
-
             try {
-                $list[$id] = $this->getAddress($id);
+                $list[$entry['uuid']] = $this->getAddress($entry['uuid']);
             } catch (QUI\Users\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }

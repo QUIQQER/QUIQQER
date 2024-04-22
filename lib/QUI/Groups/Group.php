@@ -416,7 +416,7 @@ class Group extends QUI\QDOM
             $deleteGidInUsers($child);
         }
 
-        $deleteGidInUsers($this->getId());
+        $deleteGidInUsers($this->getUUID());
 
         QUI::getDataBase()->exec([
             'delete' => true,
@@ -426,7 +426,7 @@ class Group extends QUI\QDOM
             ]
         ]);
 
-        QUI\Cache\Manager::clear('qui/groups/group/' . $this->getId());
+        QUI\Cache\Manager::clear('qui/groups/group/' . $this->getUUID());
     }
 
     /**
@@ -864,15 +864,11 @@ class Group extends QUI\QDOM
      */
     public function getUsers(array $params = []): array
     {
-        $id = $this->getId();
         $uuid = $this->getUUID();
 
         $params['from'] = QUI\Users\Manager::table();
         $params['where'] = trim(
-            "
-                usergroup LIKE '%,$id,%' OR usergroup = $id OR 
-                usergroup LIKE '%,$uuid,%' OR usergroup = $uuid
-            "
+            "usergroup LIKE '%,$uuid,%' OR usergroup = $uuid"
         );
 
         try {

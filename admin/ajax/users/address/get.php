@@ -44,7 +44,7 @@ QUI::$Ajax->registerFunction(
         $address = $Address->getAttributes();
         $Standard = $User->getStandardAddress();
 
-        if ($Standard && $Standard->getId() == $Address->getId()) {
+        if ($Standard && $Standard->getUUID() == $Address->getUUID()) {
             $address['default'] = 1;
         } else {
             $address['default'] = 0;

@@ -38,7 +38,7 @@ QUI::$Ajax->registerFunction(
                     'quiqqer/quiqqer',
                     'message.ajax.user.setAndSendPassword.no_mail_sent',
                     [
-                        'user' => $User->getName() . ' (#' . $User->getId() . ')'
+                        'user' => $User->getName() . ' (#' . $User->getUUID() . ')'
                     ]
                 )
             );
@@ -84,7 +84,7 @@ QUI::$Ajax->registerFunction(
                 'quiqqer/quiqqer',
                 'message.ajax.user.setAndSendPassword.success',
                 [
-                    'user' => $User->getName() . ' (#' . $User->getId() . ')'
+                    'user' => $User->getName() . ' (#' . $User->getUUID() . ')'
                 ]
             )
         );

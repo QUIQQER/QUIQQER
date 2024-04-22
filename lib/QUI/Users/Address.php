@@ -592,7 +592,7 @@ class Address extends QUI\QDOM
                     'e_date' => date('Y-m-d H:i:s')
                 ],
                 [
-                    'id' => $this->id
+                    'uuid' => $this->getUUID()
                 ]
             );
         } catch (QUI\Exception $Exception) {
@@ -602,7 +602,7 @@ class Address extends QUI\QDOM
 
         try {
             // update user firstname lastname, if this address is the default address
-            if ($User->getStandardAddress()->getId() === $this->getId()) {
+            if ($User->getStandardAddress()->getUUID() === $this->getUUID()) {
                 $mailList = $this->getMailList();
 
                 if (count($mailList)) {
@@ -666,7 +666,6 @@ class Address extends QUI\QDOM
             'delete' => true,
             'from' => Manager::tableAddress(),
             'where' => [
-                'id' => $this->getId(),
                 'uid' => $this->User->getId()
             ]
         ]);

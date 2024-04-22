@@ -75,7 +75,7 @@ class Guest extends QUI\Groups\Group
                 'rights' => json_encode($this->rights),
                 'active' => 1
             ],
-            ['id' => $this->getId()]
+            ['uuid' => $this->getUUID()]
         );
 
         $this->createCache();

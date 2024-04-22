@@ -93,10 +93,6 @@ class UserGroups
         $groups = $ugString['groups'];
 
         foreach ($users as $uid) {
-            if ($uid == $User->getId()) {
-                return true;
-            }
-
             if ($uid == $User->getUUID()) {
                 return true;
             }

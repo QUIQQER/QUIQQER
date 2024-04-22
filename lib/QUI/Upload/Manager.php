@@ -714,7 +714,7 @@ class Manager
             $conf,
             json_encode([
                 'file' => $filename,
-                'user' => QUI::getUserBySession()->getId(),
+                'user' => QUI::getUserBySession()->getUUID(),
                 'params' => $params
             ])
         );

@@ -250,13 +250,13 @@ class Manager
      */
     public function isAuth(QUIUserInterface $User): bool
     {
-        if (!is_object($User) || !$User->getId()) {
+        if (!is_object($User) || !$User->getUUID()) {
             return false;
         }
 
         $_User = $this->getUserBySession();
 
-        if ($User->getId() == $_User->getId()) {
+        if ($User->getUUID() == $_User->getUUID()) {
             return true;
         }
 
@@ -893,7 +893,7 @@ class Manager
 
         foreach ($ids as $id) {
             try {
-                $result[] = $this->get((int)$id['id']);
+                $result[] = $this->get($id['uuid']);
             } catch (QUI\Exception) {
                 // nothing
             }
@@ -911,7 +911,7 @@ class Manager
     {
         try {
             $result = QUI::getDataBase()->fetch([
-                'select' => 'id',
+                'select' => 'id,uuid',
                 'from' => self::table(),
                 'order' => 'username'
             ]);
@@ -998,10 +998,10 @@ class Manager
         // check user data
         $userData = QUI::getDataBase()->fetch(
             [
-                'select' => ['id', 'expire', 'secHash', 'active'],
+                'select' => ['id', 'uuid', 'expire', 'secHash', 'active'],
                 'from' => self::table(),
                 'where' => [
-                    'id' => $userId
+                    'uuid' => $userId
                 ],
                 'limit' => 1
             ]
@@ -1114,7 +1114,7 @@ class Manager
                 'user_agent' => $userAgent,
                 'secHash' => $this->getSecHash()
             ],
-            ['id' => $userId]
+            ['uuid' => $userId]
         );
 
         $User->refresh();
@@ -1140,7 +1140,7 @@ class Manager
     {
         try {
             $result = QUI::getDataBase()->fetch([
-                'select' => 'id',
+                'select' => 'id,uuid',
                 'from' => self::table(),
                 'where' => [
                     'username' => $username
@@ -1169,7 +1169,7 @@ class Manager
             );
         }
 
-        return $this->get((int)$result[0]['id']);
+        return $this->get($result[0]['uuid']);
     }
 
     /**
@@ -1273,7 +1273,7 @@ class Manager
         if (!$Session->get('uid')) {
             $Session->set(
                 'uid',
-                $Authenticator->getUser()->getId()
+                $Authenticator->getUser()->getUUID()
             );
         }
 
@@ -1324,7 +1324,7 @@ class Manager
 
         foreach ($result as $entry) {
             try {
-                $Users[] = $this->get((int)$entry['id']);
+                $Users[] = $this->get($entry['uuid']);
             } catch (QUI\Exception) {
                 // nothing
             }
@@ -1342,7 +1342,7 @@ class Manager
      */
     public function getUserIds(array $params = []): array
     {
-        $params['select'] = 'id';
+        $params['select'] = 'id,uuid';
         $params['from'] = self::table();
 
         try {
@@ -1400,7 +1400,7 @@ class Manager
     {
         try {
             $result = QUI::getDataBase()->fetch([
-                'select' => 'id',
+                'select' => 'id,uuid',
                 'from' => self::table(),
                 'where' => [
                     'email' => $email
@@ -1429,7 +1429,7 @@ class Manager
             );
         }
 
-        return $this->get($result[0]['id']);
+        return $this->get($result[0]['uuid']);
     }
 
     /**
@@ -1539,6 +1539,7 @@ class Manager
 
         $allowOrderFields = [
             'id' => true,
+            'uuid' => true,
             'email' => true,
             'username' => true,
             'usergroup' => true,
@@ -1680,10 +1681,10 @@ class Manager
                 $subQuery = [];
 
                 foreach ($groups as $groupId) {
-                    if ((int)$groupId > 0) {
+                    if ($groupId != 0) {
                         $subQuery[] = 'usergroup LIKE :' . $groupId . ' ';
 
-                        $binds[':' . $groupId] = '%,' . (int)$groupId . ',%';
+                        $binds[':' . $groupId] = '%,' . $groupId . ',%';
                     }
                 }
 
@@ -1692,9 +1693,9 @@ class Manager
 
             if ($filter_groups_exclude) {
                 foreach ($filter['filter_groups_exclude'] as $groupId) {
-                    if ((int)$groupId > 0) {
+                    if ($groupId != 0) {
                         $query .= ' AND usergroup NOT LIKE :' . $groupId . ' ';
-                        $binds[':' . $groupId] = '%,' . (int)$groupId . ',%';
+                        $binds[':' . $groupId] = '%,' . $groupId . ',%';
                     }
                 }
             }

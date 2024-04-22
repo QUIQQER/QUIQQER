@@ -33,7 +33,7 @@ class Menu
     public static function clearMenuCache(QUI\Interfaces\Users\User $User): void
     {
         QUI\Cache\Manager::clear(
-            'settings/backend-menu/' . $User->getId() . '/'
+            'settings/backend-menu/' . $User->getUUID() . '/'
         );
     }
 
@@ -65,7 +65,7 @@ class Menu
     {
         $User = QUI::getUserBySession();
 
-        return 'settings/backend-menu/' . $User->getId() . '/' . $User->getLang();
+        return 'settings/backend-menu/' . $User->getUUID() . '/' . $User->getLang();
     }
 
     /**

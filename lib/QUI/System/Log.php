@@ -91,7 +91,7 @@ class Log
 
         if (defined('QUIQQER_SESSION_STARTED')) {
             $User = QUI::getUserBySession();
-            $context['userId'] = $User->getId();
+            $context['userId'] = $User->getUUID();
             $context['username'] = $User->getUsername();
         }
 

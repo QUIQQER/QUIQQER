@@ -208,7 +208,7 @@ class QUIQQER extends AbstractAuthenticator
             'select' => ['password'],
             'from' => QUI::getUsers()->table(),
             'where' => [
-                'id' => $this->getUserId()
+                'uuid' => $this->getUserUUID()
             ],
             'limit' => 1
         ]);
@@ -239,7 +239,7 @@ class QUIQQER extends AbstractAuthenticator
             QUI::getDataBase()->update(
                 QUI::getDBTableName('users'),
                 ['password' => QUI\Security\Password::generateHash($authParams)],
-                ['id' => $this->getUserId()]
+                ['uuid' => $this->getUserUUID()]
             );
         }
 

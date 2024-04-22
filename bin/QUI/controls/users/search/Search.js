@@ -127,7 +127,7 @@ define('controls/users/search/Search', [
                     {
                         header   : QUILocale.get(lg, 'user_id'),
                         dataIndex: 'id',
-                        dataType : 'integer',
+                        dataType : 'string',
                         width    : 150
                     },
                     {

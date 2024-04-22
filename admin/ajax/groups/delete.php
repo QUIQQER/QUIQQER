@@ -25,7 +25,7 @@ QUI::$Ajax->registerFunction(
         foreach ($gids as $gid) {
             try {
                 $groupName = $Groups->get($gid)->getName();
-                $groupId = $Groups->get($gid)->getId();
+                $groupId = $Groups->get($gid)->getUUID();
 
                 $Groups->get($gid)->delete();
 

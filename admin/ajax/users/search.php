@@ -39,6 +39,8 @@ QUI::$Ajax->registerFunction(
         $Locale = QUI::getLocale();
 
         foreach ($search as $user) {
+            $user['id'] = $user['uuid'];
+
             if (!isset($user['usergroup'])) {
                 $result[] = $user;
                 continue;
