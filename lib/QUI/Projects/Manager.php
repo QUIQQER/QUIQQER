@@ -827,8 +827,8 @@ class Manager
             'active' => 1,
             'deleted' => 0,
             'c_date' => date('Y-m-d H:i:s'),
-            'c_user' => QUI::getUserBySession()->getId(),
-            'e_user' => QUI::getUserBySession()->getId(),
+            'c_user' => QUI::getUserBySession()->getUUID(),
+            'e_user' => QUI::getUserBySession()->getUUID(),
             'nav_hide' => 0
         ]);
 
@@ -875,8 +875,8 @@ class Manager
             'active' => 1,
             'deleted' => 0,
             'c_date' => date('Y-m-d H:i:s'),
-            'c_user' => QUI::getUserBySession()->getId(),
-            'e_user' => QUI::getUserBySession()->getId(),
+            'c_user' => QUI::getUserBySession()->getUUID(),
+            'e_user' => QUI::getUserBySession()->getUUID(),
             'pathHash' => md5('')
         ]);
 

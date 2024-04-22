@@ -1308,7 +1308,7 @@ class Project implements \Stringable
                     'title' => 'Start',
                     'type' => 'standard',
                     'c_date' => date('Y-m-d H:i:s'),
-                    'c_user' => $User->getId(),
+                    'c_user' => $User->getUUID(),
                     'c_user_ip' => QUI\Utils\System::getClientIP()
                 ]);
             }

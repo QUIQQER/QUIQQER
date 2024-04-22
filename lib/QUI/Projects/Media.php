@@ -267,7 +267,7 @@ class Media extends QUI\QDOM
                 'name' => 'Media',
                 'title' => 'Media',
                 'c_date' => date('Y-m-d H:i:s'),
-                'c_user' => QUI::getUserBySession()->getId(),
+                'c_user' => QUI::getUserBySession()->getUUID(),
                 'type' => 'folder'
             ]);
         } else {
