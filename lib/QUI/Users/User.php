@@ -252,7 +252,7 @@ class User implements QUIUserInterface
         if ($this->lang !== null) {
             return $this->lang;
         }
-        
+
         if (
             $this->getUUID() === QUI::getUserBySession()->getUUID()
             && QUI::getSession()->get('quiqqer-user-language')
