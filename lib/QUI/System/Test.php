@@ -25,7 +25,7 @@ abstract class Test extends QUI\QDOM implements QUI\Interfaces\System\Test
     /**
      * @var int
      */
-    protected $isRequired = self::TEST_IS_REQUIRED;
+    protected int $isRequired = self::TEST_IS_REQUIRED;
 
     /**
      * Constructor
