@@ -75,7 +75,7 @@ QUI::$Ajax->registerFunction(
         $Address->save();
 
         if (isset($data['standard']) && $data['standard'] === 1) {
-            $User->setAttribute('address', $Address->getUuid());
+            $User->setAttribute('address', $Address->getId());
             $User->save();
         }
 

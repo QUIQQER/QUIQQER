@@ -25,7 +25,7 @@
             <field type="TEXT NULL">avatar</field>
             <field type="TEXT NULL">extra</field>
             <field type="VARCHAR(2) DEFAULT NULL">lang</field>
-            <field type="VARCHAR(50) NULL DEFAULT NULL">address</field>
+            <field type="INT(11) DEFAULT NULL">address</field>
             <field type="TINYTEXT NULL">secHash</field>
             <field type="TEXT NULL">toolbar</field>
             <field type="TEXT NULL">assigned_toolbar</field>
@@ -157,9 +157,7 @@
         <!-- Addresses -->
         <table name="users_address">
             <field type="INT(11) NOT NULL">id</field>
-            <field type="VARCHAR(50) NOT NULL">uuid</field>
             <field type="INT(11) NOT NULL">uid</field>
-            <field type="VARCHAR(50) NOT NULL">userUuid</field>
             <field type="VARCHAR(255)">salutation</field>
             <field type="VARCHAR(255)">firstname</field>
             <field type="VARCHAR(255)">lastname</field>
@@ -172,8 +170,6 @@
             <field type="TEXT NULL">city</field>
             <field type="TEXT NULL">country</field>
             <field type="TEXT NULL">custom_data</field>
-            <field type="DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP">c_date</field>
-            <field type="DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP">e_date</field>
 
             <primary>id</primary>
             <auto_increment>id</auto_increment>
