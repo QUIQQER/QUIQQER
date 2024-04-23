@@ -777,7 +777,7 @@ class Group extends QUI\QDOM
                     [
                         'groupId' => $this->getUUID(),
                         'newParent' => $NewParent->getUUID(),
-                        'currentParent' => $this->getParent()->getUUID()
+                        'currentParent' => $this->getParent()?->getUUID()
                     ]
                 );
             }
@@ -798,10 +798,10 @@ class Group extends QUI\QDOM
     /**
      * return the parent group
      **
-     * @return Group|Everyone|Guest
+     * @return Group|Everyone|Guest|null
      * @throws QUI\Exception
      */
-    public function getParent(): Group|Everyone|Guest
+    public function getParent(): Group|Everyone|Guest|null
     {
         if ($this->getAttribute('parent') === null) {
             return null;
@@ -817,7 +817,7 @@ class Group extends QUI\QDOM
             return QUI::getGroups()->get($ids[0]);
         }
 
-        return $ids[0];
+        return null;
     }
 
     /**
