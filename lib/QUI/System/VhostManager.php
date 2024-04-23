@@ -64,7 +64,7 @@ class VhostManager
             );
         }
 
-        $Config->setSection($vhost, []);
+        $Config->setSection($vhost);
         $Config->save();
 
         $this->repair();
