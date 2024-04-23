@@ -45,7 +45,7 @@ class License
      * @throws QUI\Exception
      * @throws Exception
      */
-    public static function registerLicenseFile(QDOM $File)
+    public static function registerLicenseFile(QDOM $File): void
     {
         $content = file_get_contents($File->getAttribute('filepath'));
         $content = json_decode(hex2bin($content), true);
@@ -188,7 +188,7 @@ class License
      * @return array|false - License data or false if no license data available
      * @throws Exception
      */
-    public static function getLicenseData()
+    public static function getLicenseData(): bool|array
     {
         $licenseConfigFile = CMS_DIR . 'etc/license.ini.php';
 
@@ -321,7 +321,7 @@ class License
      * @throws QUI\Exception
      * @throws Exception
      */
-    public static function getStatus()
+    public static function getStatus(): bool|array
     {
         $licenseServerUrl = self::getLicenseServerUrl() . 'api/license/status?';
         $licenseData = self::getLicenseData();
