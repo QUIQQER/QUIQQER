@@ -44,11 +44,11 @@ class UpdateServer extends QUI\System\Test
         $composerServer = false;
 
         foreach ($servers as $server => $serverData) {
-            if ($server == 'http://update.quiqqer.com/') {
+            if ($server == 'https://update.quiqqer.com/') {
                 $updateServer = true;
             }
 
-            if ($server == 'http://composer.quiqqer.com/') {
+            if ($server == 'https://composer.quiqqer.com/') {
                 $composerServer = true;
             }
         }
