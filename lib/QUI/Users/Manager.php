@@ -20,6 +20,7 @@ use function explode;
 use function file_exists;
 use function func_get_args;
 use function func_num_args;
+use function get_class;
 use function implode;
 use function in_array;
 use function is_numeric;
@@ -30,7 +31,6 @@ use function preg_replace;
 use function print_r;
 use function round;
 use function serialize;
-use function str_contains;
 use function strpos;
 use function strtotime;
 use function substr;
@@ -234,14 +234,14 @@ class Manager
         }
 
         // users with no uuid
-        $addressesWithoutUuid = QUI::getDataBase()->fetch([
+        $list = QUI::getDataBase()->fetch([
             'from' => $table,
             'where' => [
                 'uuid' => ''
             ]
         ]);
 
-        foreach ($addressesWithoutUuid as $entry) {
+        foreach ($list as $entry) {
             $DataBase->update($table, [
                 'uuid' => QUI\Utils\Uuid::get()
             ], [
@@ -250,108 +250,6 @@ class Manager
         }
 
         $DataBase->table()->setUniqueColumns($table, 'uuid');
-
-        // addresses
-        $tableAddresses = $this::tableAddress();
-        $setAddressUuidColumnToUnique = false;
-
-        if (!$DataBase->table()->existColumnInTable($tableAddresses, 'uuid')) {
-            $DataBase->table()->addColumn(
-                $tableAddresses,
-                [
-                    'uuid' => 'VARCHAR(50) NOT NULL'
-                ]
-            );
-
-            $setAddressUuidColumnToUnique = true;
-        }
-
-        if (!$DataBase->table()->existColumnInTable($tableAddresses, 'userUuid')) {
-            $DataBase->table()->addColumn(
-                $tableAddresses,
-                [
-                    'userUuid' => 'VARCHAR(50) NOT NULL'
-                ]
-            );
-        }
-
-        $usersAddressColumn = $DataBase->table()->getColumn($table, 'address');
-
-        if (!str_contains($usersAddressColumn['Type'], 'varchar')) {
-            $sql = "ALTER TABLE `{$table}` MODIFY `address` VARCHAR(50) NOT NULL";
-            $DataBase->execSQL($sql);
-        }
-
-        $addressesWithoutUuid = QUI::getDataBase()->fetch([
-            'select' => ['id'],
-            'from' => $tableAddresses,
-            'where' => [
-                'uuid' => ''
-            ]
-        ]);
-
-        foreach ($addressesWithoutUuid as $entry) {
-            $addressUuid = QUI\Utils\Uuid::get();
-
-            $DataBase->update($tableAddresses, [
-                'uuid' => $addressUuid
-            ], [
-                'id' => $entry['id']
-            ]);
-
-            // Update references in users table
-            $DataBase->update(
-                $table,
-                [
-                    'address' => $addressUuid
-                ],
-                [
-                    'address' => $entry['id']
-                ]
-            );
-        }
-
-        if ($setAddressUuidColumnToUnique) {
-            $DataBase->table()->setUniqueColumns($tableAddresses, 'uuid');
-        }
-
-        $addressesWithoutUserUuid = QUI::getDataBase()->fetch([
-            'select' => ['id', 'uid'],
-            'from' => $tableAddresses,
-            'where' => [
-                'userUuid' => ''
-            ]
-        ]);
-
-        foreach ($addressesWithoutUserUuid as $entry) {
-            $result = $DataBase->fetch([
-                'select' => ['uuid'],
-                'from' => $table,
-                'where' => [
-                    'id' => $entry['uid']
-                ],
-                'limit' => 1
-            ]);
-
-            if (empty($result)) {
-                QUI\System\Log::addNotice(
-                    "Found orphaned address ID #{$entry['id']}. User #{$entry['uid']}"
-                    . " referenced by address does not exist."
-                );
-                continue;
-            }
-
-            // Update user uuid
-            $DataBase->update(
-                $tableAddresses,
-                [
-                    'userUuid' => $result[0]['uuid']
-                ],
-                [
-                    'id' => $entry['id']
-                ]
-            );
-        }
     }
 
     /**

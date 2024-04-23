@@ -2535,12 +2535,12 @@ define('controls/grid/Grid', [
 
                     bt[Btn.getAttribute('name')] = Btn;
 
-                    switch (bt[i].position) {
+                    switch (Btn.getAttribute('position')) {
                         case 'left':
                         case 'center':
                         case 'right':
                             Btn.inject(
-                                tDiv.querySelector('[data-position="' + bt[i].position + '"]')
+                                tDiv.querySelector('[data-position="' + Btn.getAttribute('position') + '"]')
                             );
                             break;
                         default:
@@ -2553,8 +2553,8 @@ define('controls/grid/Grid', [
                     node.type = 'button';
                     node.addClass('btn-silver');
 
-                    if (bt[i].order) {
-                        node.style.setProperty('--_order', bt[i].order);
+                    if (Btn.getAttribute('order')) {
+                        node.style.setProperty('--_order', Btn.getAttribute('order'));
                     }
 
                     const Item = new QUIContextItem({

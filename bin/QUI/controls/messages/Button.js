@@ -825,6 +825,10 @@ define('controls/messages/Button', [
 
                     this.$closeMessage(MessageNode).then(() => {
                         require(['Projects'], (Projects) => {
+                            if (!File.getAttribute('project')) {
+                                return;
+                            }
+
                             const Project = Projects.get(File.getAttribute('project'));
                             const Media = Project.getMedia();
 

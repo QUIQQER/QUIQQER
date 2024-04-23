@@ -678,7 +678,7 @@ class User implements QUI\Interfaces\Users\User
             'from' => Manager::tableAddress(),
             'select' => 'id',
             'where' => [
-                'userUuid' => $this->getUniqueId()
+                'uid' => $this->getId()
             ]
         ]);
 
@@ -726,7 +726,7 @@ class User implements QUI\Interfaces\Users\User
             'count' => 'count',
             'from' => Manager::tableAddress(),
             'where' => [
-                'userUuid' => $this->getUniqueId()
+                'uid' => $this->getId()
             ]
         ]);
 
@@ -777,8 +777,6 @@ class User implements QUI\Interfaces\Users\User
         }
 
         $_params['uid'] = $this->getId();
-        $_params['userUuid'] = $this->getUniqueId();
-        $_params['uuid'] = QUI\Utils\Uuid::get();
 
         QUI::getDataBase()->insert(
             Manager::tableAddress(),
@@ -799,7 +797,7 @@ class User implements QUI\Interfaces\Users\User
         }
 
         if (count($this->getAddressList()) === 1) {
-            $this->setAttribute('address', $CreatedAddress->getUuid());
+            $this->setAttribute('address', $CreatedAddress->getId());
             $this->save($ParentUser);
         }
 
@@ -1025,7 +1023,7 @@ class User implements QUI\Interfaces\Users\User
                 'lastedit' => date("Y-m-d H:i:s"),
                 'expire' => $expire,
                 'shortcuts' => $this->getAttribute('shortcuts'),
-                'address' => !empty($this->getAttribute('address')) ? $this->getAttribute('address') : null,
+                'address' => (int)$this->getAttribute('address'),
                 'company' => $this->isCompany() ? 1 : 0,
                 'toolbar' => $toolbar,
                 'assigned_toolbar' => $assignedToolbars,
