@@ -335,11 +335,13 @@ class Menu
      * Set window title / menu item title
      * only if no title is set
      *
-     * @param MenuItem $MenuItem
+     * @param QUI\Controls\Contextmenu\MenuItem $MenuItem
      * @param DOMElement $Node
      */
-    public function setWindowTitle(MenuItem $MenuItem, DOMElement $Node): void
-    {
+    public function setWindowTitle(
+        QUI\Controls\Contextmenu\MenuItem $MenuItem,
+        DOMElement $Node
+    ): void {
         if ($MenuItem->getAttribute('text')) {
             return;
         }
@@ -360,11 +362,13 @@ class Menu
      * Set window icon / menu item icon
      * only if no icon is set
      *
-     * @param MenuItem $MenuItem
+     * @param QUI\Controls\Contextmenu\MenuItem $MenuItem
      * @param DOMElement $Node
      */
-    public function setWindowIcon(MenuItem $MenuItem, DOMElement $Node): void
-    {
+    public function setWindowIcon(
+        QUI\Controls\Contextmenu\MenuItem $MenuItem,
+        DOMElement $Node
+    ): void {
         if ($MenuItem->getAttribute('icon')) {
             return;
         }
