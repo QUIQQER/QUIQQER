@@ -18,7 +18,7 @@ QUI::$Ajax->registerFunction(
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
 
-        if (\is_array($fileid)) {
+        if (is_array($fileid)) {
             $result = [];
 
             foreach ($fileid as $id) {

@@ -10,6 +10,7 @@
  * @return array
  */
 
+use QUI\Projects\Media\Folder;
 use QUI\Utils\Grid;
 use QUI\Utils\Security\Orthos;
 
@@ -20,12 +21,12 @@ QUI::$Ajax->registerFunction(
         $Media = $Project->getMedia();
         $File = $Media->get($folderid);
 
-        /* @var $File \QUI\Projects\Media\Folder */
-        $params = Orthos::clearArray(\json_decode($params, true));
+        /* @var $File Folder */
+        $params = Orthos::clearArray(json_decode($params, true));
         $Grid = new Grid($params);
 
         $children = [];
-        $showHiddenFiles = !empty($params['showHiddenFiles']) && $params['showHiddenFiles'];
+        $showHiddenFiles = !empty($params['showHiddenFiles']);
         $params = $Grid->parseDBParams($params);
 
         if ($showHiddenFiles === false) {
@@ -63,7 +64,7 @@ QUI::$Ajax->registerFunction(
                 ];
 
                 $children[] = $child;
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
         }

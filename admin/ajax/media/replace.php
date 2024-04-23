@@ -5,8 +5,10 @@
  *
  * @param string $project - name of the project
  * @param integer $fileid
- * @param \QUI\QDOM $File
+ * @param QDOM $File
  */
+
+use QUI\QDOM;
 
 QUI::$Ajax->registerFunction(
     'ajax_media_replace',
@@ -14,7 +16,7 @@ QUI::$Ajax->registerFunction(
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
 
-        /* @var $File \QUI\QDOM */
+        /* @var $File QDOM */
         $file = $File->getAttribute('filepath');
 
         if (!file_exists($file)) {

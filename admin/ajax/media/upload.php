@@ -5,13 +5,14 @@
  *
  * @param string $project - Name of the project
  * @param integer|string $parentid
- * @param \QUI\QDOM $File
+ * @param QDOM $File
  *
  * @throws \QUI\Exception
  */
 
 use QUI\Projects\Media\Folder;
 use QUI\Projects\Media\Utils;
+use QUI\QDOM;
 
 QUI::$Ajax->registerFunction(
     'ajax_media_upload',
@@ -69,13 +70,13 @@ QUI::$Ajax->registerFunction(
                     }
                 }
             }
-        } catch (\Exception) {
+        } catch (Exception) {
         }
 
         $params = $File->getAttribute('params');
 
         // if file has a folder in original file path
-        if (!empty($params) && !empty($params['filepath']) && strpos($params['filepath'], '/') !== false) {
+        if (!empty($params) && !empty($params['filepath']) && str_contains($params['filepath'], '/')) {
             $path = trim($params['filepath'], '/');
             $path = explode('/', $path);
 
