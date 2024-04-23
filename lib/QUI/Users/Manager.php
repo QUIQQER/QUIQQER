@@ -1692,11 +1692,15 @@ class Manager
             }
 
             if ($filter_groups_exclude) {
+                $i = 0;
+
                 foreach ($filter['filter_groups_exclude'] as $groupId) {
                     if ($groupId != 0) {
-                        $query .= ' AND usergroup NOT LIKE :' . $groupId . ' ';
-                        $binds[':' . $groupId] = '%,' . $groupId . ',%';
+                        $query .= ' AND usergroup NOT LIKE :group' . $i . ' ';
+                        $binds[':group' . $i] = '%,' . $groupId . ',%';
                     }
+
+                    $i++;
                 }
             }
 
