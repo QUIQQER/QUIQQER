@@ -160,4 +160,11 @@ interface File
      * @return Project
      */
     public function getProject(): Project;
+
+    /**
+     * @param string $permission
+     * @param User|null $User
+     * @return void
+     */
+    public function checkPermission(string $permission, QUI\Interfaces\Users\User $User = null): void;
 }
