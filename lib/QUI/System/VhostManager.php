@@ -33,9 +33,9 @@ class VhostManager
     /**
      * Config
      *
-     * @var \QUI\Config
+     * @var Config|null
      */
-    protected $Config = null;
+    protected ?Config $Config = null;
 
     /**
      * Add a vhost
@@ -45,7 +45,7 @@ class VhostManager
      * @return string - clean vhost
      * @throws Exception
      */
-    public function addVhost($vhost)
+    public function addVhost(string $vhost): string
     {
         if (str_contains($vhost, '://')) {
             $parts = explode('://', $vhost);
@@ -75,10 +75,10 @@ class VhostManager
     /**
      * Return the config
      *
-     * @return \QUI\Config
-     * @throws QUI\Exception
+     * @return Config|null
+     * @throws Exception
      */
-    protected function getConfig()
+    protected function getConfig(): ?Config
     {
         if (!file_exists(ETC_DIR . 'vhosts.ini.php')) {
             file_put_contents(ETC_DIR . 'vhosts.ini.php', '');
@@ -94,7 +94,7 @@ class VhostManager
      * eq. search empty language entries
      * @throws Exception
      */
-    public function repair()
+    public function repair(): void
     {
         $Config = $this->getConfig();
         $list = $this->getList();
@@ -150,7 +150,7 @@ class VhostManager
      * @return array
      * @throws Exception
      */
-    public function getList()
+    public function getList(): array
     {
         return $this->getConfig()->toArray();
     }
@@ -164,7 +164,7 @@ class VhostManager
      * @return string
      * @throws Exception
      */
-    public function getHostByProject($projectName, $projectLang)
+    public function getHostByProject(string $projectName, string $projectLang): string
     {
         $config = $this->getList();
 
@@ -199,7 +199,7 @@ class VhostManager
      *
      * @throws Exception
      */
-    public function editVhost($vhost, array $data)
+    public function editVhost(string $vhost, array $data): void
     {
         $Config = $this->getConfig();
 
@@ -288,7 +288,7 @@ class VhostManager
      *
      * @throws Exception
      */
-    public function removeVhost($vhost)
+    public function removeVhost(string $vhost): void
     {
         $Config = $this->getConfig();
 
@@ -316,7 +316,7 @@ class VhostManager
      *
      * @throws Exception
      */
-    public function getVhost($vhost)
+    public function getVhost(string $vhost): bool|array
     {
         return $this->getConfig()->getSection($vhost);
     }
@@ -329,7 +329,7 @@ class VhostManager
      *
      * @throws Exception
      */
-    public function getHostsByProject($projectName)
+    public function getHostsByProject(string $projectName): array
     {
         $config = $this->getList();
         $list = [];
@@ -354,7 +354,7 @@ class VhostManager
      * @return QUI\Projects\Project|false - Project or false if no project not found
      * @throws Exception
      */
-    public function getProjectByHost($vhost)
+    public function getProjectByHost(string $vhost): bool|QUI\Projects\Project
     {
         foreach ($this->getList() as $host => $data) {
             if ($host !== $vhost) {
@@ -375,7 +375,7 @@ class VhostManager
      * @return array
      * @throws Exception
      */
-    public function getRegisteredDomains($includeWWW = false)
+    public function getRegisteredDomains(bool $includeWWW = false): array
     {
         $domains = [];
 
