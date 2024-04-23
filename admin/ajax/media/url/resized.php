@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Return the rewrited url from an image.php url
+ * Return the rewritten resized url from an image.php url
  *
  * @param string $fileurl - File url
  * @param string|integer $maxWidth - wanted width of the file
@@ -10,6 +10,7 @@
  * @return string
  */
 
+use QUI\Projects\Media\Image;
 use QUI\Projects\Media\Utils as Utils;
 
 QUI::$Ajax->registerFunction(
@@ -32,7 +33,7 @@ QUI::$Ajax->registerFunction(
                 );
             }
 
-            /* @var $File \QUI\Projects\Media\Image */
+            /* @var $File Image */
             return $File->getSizeCacheUrl($maxWidth, $maxHeight);
         } catch (QUI\Exception) {
         }

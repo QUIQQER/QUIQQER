@@ -11,6 +11,8 @@
  * @throws \QUI\Exception
  */
 
+use QUI\Projects\Media\Folder;
+
 QUI::$Ajax->registerFunction(
     'ajax_media_folder_create',
     function ($project, $parentid, $newfolder) {
@@ -24,7 +26,7 @@ QUI::$Ajax->registerFunction(
             );
         }
 
-        /* @var $File \QUI\Projects\Media\Folder */
+        /* @var $File Folder */
         $Folder = $File->createFolder($newfolder);
 
         return QUI\Projects\Media\Utils::parseForMediaCenter($Folder);

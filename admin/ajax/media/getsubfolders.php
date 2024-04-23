@@ -10,6 +10,8 @@
  * @throws \QUI\Exception
  */
 
+use QUI\Projects\Media\Folder;
+
 QUI::$Ajax->registerFunction(
     'ajax_media_getsubfolders',
     function ($project, $fileid, $params) {
@@ -25,7 +27,7 @@ QUI::$Ajax->registerFunction(
             ]);
         }
 
-        /* @var $File \QUI\Projects\Media\Folder */
+        /* @var $File Folder */
         $children = [];
         $folders = $File->getFolders($params);
 

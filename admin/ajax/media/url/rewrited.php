@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Return the rewrited url from an image.php url
+ * Return the rewritten url from an image.php url
  *
  * @param string $fileurl - image.php string
  *

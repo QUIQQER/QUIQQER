@@ -9,6 +9,8 @@
  * @throws \QUI\Exception
  */
 
+use QUI\Projects\Media\Folder;
+
 QUI::$Ajax->registerFunction(
     'ajax_media_folder_download',
     function ($project, $folderId) {
@@ -22,7 +24,7 @@ QUI::$Ajax->registerFunction(
         }
 
         try {
-            /* @var $File \QUI\Projects\Media\Folder */
+            /* @var $File Folder */
             $zipFile = $File->createZIP();
 
             QUI\Utils\System\File::downloadHeader($zipFile);

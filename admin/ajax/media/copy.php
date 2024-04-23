@@ -10,6 +10,8 @@
  * @throws \QUI\Exception
  */
 
+use QUI\Projects\Media\Folder;
+
 QUI::$Ajax->registerFunction(
     'ajax_media_copy',
     function ($project, $to, $ids) {
@@ -25,7 +27,7 @@ QUI::$Ajax->registerFunction(
             );
         }
 
-        /* @var $Folder \QUI\Projects\Media\Folder */
+        /* @var $Folder Folder */
         foreach ($ids as $id) {
             try {
                 $Item = $Media->get((int)$id);

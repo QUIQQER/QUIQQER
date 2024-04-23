@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Delete cache of an media item
+ * Delete cache of a media item
  */
 
 QUI::$Ajax->registerFunction(

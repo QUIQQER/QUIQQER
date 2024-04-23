@@ -18,7 +18,7 @@ QUI::$Ajax->registerFunction(
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
 
-        if (!\is_array($fileid)) {
+        if (!is_array($fileid)) {
             if (Utils::isMediaUrl($fileid)) {
                 $File = Utils::getMediaItemByUrl($fileid);
             } else {
@@ -29,7 +29,7 @@ QUI::$Ajax->registerFunction(
 
             try {
                 $attr['c_username'] = QUI::getUsers()->get($attr['c_user'])->getName();
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 $attr['c_username'] = '---';
             }
 
