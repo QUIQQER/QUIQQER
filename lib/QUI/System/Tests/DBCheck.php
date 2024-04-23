@@ -39,19 +39,19 @@ use function trim;
 class DBCheck extends QUI\System\Test
 {
     /**
-     * @var \QUI\Database\Tables
+     * @var Tables|null
      */
-    protected $Tables = null;
+    protected ?Tables $Tables = null;
 
     /**
      * @var bool
      */
-    protected $error = false;
+    protected bool $error = false;
 
     /**
      * @var array
      */
-    protected $errors = [];
+    protected array $errors = [];
 
     /**
      * Constructor
@@ -208,12 +208,12 @@ class DBCheck extends QUI\System\Test
     /**
      * Extracts check relevant data from xml table information
      *
-     * @param      $info
+     * @param array $info
      * @param boolean $isGlobal (optional) - is a global table
      *
      * @return array
      */
-    protected function extractTableData($info, $isGlobal = false)
+    protected function extractTableData(array $info, bool $isGlobal = false): array
     {
         $primaryKeys = [];
         $checkData = [
@@ -290,7 +290,7 @@ class DBCheck extends QUI\System\Test
      * @param string $dbTable
      * @param string $error
      */
-    protected function addError($table, $dbTable, $error)
+    protected function addError(string $table, string $dbTable, string $error): void
     {
         $this->errors[] = [
             'table' => $table,
@@ -307,7 +307,7 @@ class DBCheck extends QUI\System\Test
      * @param string $table - name of the table in the database
      * @param array $tblData - the data extracted form the database.xml
      */
-    protected function checkTableIntegrity($table, $tblData)
+    protected function checkTableIntegrity(string $table, array $tblData): void
     {
         // xml data
         $tbl = $tblData['table'];
@@ -516,7 +516,7 @@ class DBCheck extends QUI\System\Test
     /**
      * @param string $xmlFile
      */
-    protected function outputError($xmlFile)
+    protected function outputError(string $xmlFile): void
     {
         if (empty($this->errors)) {
             return;
