@@ -61,15 +61,15 @@ class Console
     /**
      * The current text color
      *
-     * @var string
+     * @var string|bool
      */
-    protected $current_color = false;
+    protected string|bool $current_color = false;
     /**
      * the current background color
      *
-     * @var string
+     * @var string|bool
      */
-    protected $current_bg = false;
+    protected string|bool $current_bg = false;
     /**
      * All available text colors
      *
