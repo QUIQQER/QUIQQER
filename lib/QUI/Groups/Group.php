@@ -363,7 +363,7 @@ class Group extends QUI\QDOM
      */
     public function delete(): void
     {
-        // @todo uuid
+        // @todo remove getId in QUIQQER V3
         if (
             (int)QUI::conf('globals', 'root') === $this->getId()
             || QUI::conf('globals', 'root') === $this->getUUID()
@@ -381,7 +381,7 @@ class Group extends QUI\QDOM
          *
          * @param int|string $groupId
          */
-        $deleteGidInUsers = function ($groupId) {
+        $deleteGidInUsers = function (int|string $groupId) {
             if (!is_int($groupId)) {
                 return;
             }
@@ -746,6 +746,7 @@ class Group extends QUI\QDOM
      */
     public function setParent(int|string $parentId): void
     {
+        // @todo remove getId in QUIQQER V3
         // you can't set for the root group, everyone or guest a parent group
         if (
             $this->getId() == QUI::conf('globals', 'root')
@@ -867,18 +868,22 @@ class Group extends QUI\QDOM
         $id = $this->getId();
         $uuid = $this->getUUID();
 
-        $params['from'] = QUI\Users\Manager::table();
-        $params['where'] = trim(
-            "
-                usergroup LIKE '%,$id,%' OR usergroup = $id OR 
-                usergroup LIKE '%,$uuid,%' OR usergroup = $uuid
-            "
-        );
-
         try {
-            return QUI::getDataBase()->fetch($params);
-        } catch (\Exception $exception) {
-            QUI\System\Log::addError($exception->getMessage());
+            $query = QUI::getQueryBuilder()
+                ->select('*')
+                ->from(QUI\Users\Manager::table())
+                ->where('usergroup LIKE :groupLike OR usergroup = :groupEqual')
+                ->setParameter('groupLike', '%,' . $uuid . ',%')
+                ->setParameter('groupEqual', $uuid);
+
+            QUI\Utils\Doctrine::parseDbArrayToQueryBuilder($query, $params);
+
+            return $query->executeQuery()->fetchAllAssociative();
+        } catch (\Exception $e) {
+            QUI\System\Log::addError($e->getMessage());
+            return [];
+        } catch (\Doctrine\DBAL\Exception $e) {
+            QUI\System\Log::addError($e->getMessage());
             return [];
         }
     }
@@ -893,7 +898,6 @@ class Group extends QUI\QDOM
      */
     public function getUserByName(string $username): QUI\Users\User
     {
-        // @todo uuid
         $result = QUI::getDataBase()->fetch([
             'select' => 'id,uuid',
             'from' => QUI\Users\Manager::table(),
@@ -901,7 +905,7 @@ class Group extends QUI\QDOM
                 'username' => $username,
                 'usergroup' => [
                     'type' => '%LIKE%',
-                    'value' => ',' . $this->getId() . ','
+                    'value' => ',' . $this->getUUID() . ','
                 ]
             ],
             'limit' => 1
