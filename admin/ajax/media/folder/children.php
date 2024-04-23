@@ -21,8 +21,8 @@ QUI::$Ajax->registerFunction(
         $File = $Media->get($folderid);
 
         /* @var $File \QUI\Projects\Media\Folder */
-        $Grid = new Grid($params);
         $params = Orthos::clearArray(\json_decode($params, true));
+        $Grid = new Grid($params);
 
         $children = [];
         $showHiddenFiles = !empty($params['showHiddenFiles']) && $params['showHiddenFiles'];
