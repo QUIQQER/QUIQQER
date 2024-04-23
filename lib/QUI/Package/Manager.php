@@ -452,7 +452,7 @@ class Manager extends QUI\QDOM
         }
 
         $composerJson->config->{"vendor-dir"} = rtrim(OPT_DIR, DIRECTORY_SEPARATOR);
-        $composerJson->config->{"cache-dir"} = rtrim($this->varDir, DIRECTORY_SEPARATOR);
+        $composerJson->config->{"cache-dir"} = $this->varDir . 'cache';
         $composerJson->config->{"component-dir"} = OPT_DIR . 'bin';
         $composerJson->config->{"quiqqer-dir"} = CMS_DIR;
         $composerJson->config->{"secure-http"} = true;
