@@ -43,7 +43,7 @@ abstract class Test extends QUI\QDOM implements QUI\Interfaces\System\Test
      *
      * @return bool
      */
-    public function isRequired()
+    public function isRequired(): bool
     {
         return ($this->isRequired == self::TEST_IS_REQUIRED);
     }
@@ -53,7 +53,7 @@ abstract class Test extends QUI\QDOM implements QUI\Interfaces\System\Test
      *
      * @return bool
      */
-    public function isOptional()
+    public function isOptional(): bool
     {
         return ($this->isRequired == self::TEST_IS_OPTIONAL);
     }
@@ -63,7 +63,7 @@ abstract class Test extends QUI\QDOM implements QUI\Interfaces\System\Test
      *
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->getAttribute('title');
     }
@@ -73,7 +73,7 @@ abstract class Test extends QUI\QDOM implements QUI\Interfaces\System\Test
      *
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->getAttribute('description');
     }

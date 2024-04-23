@@ -36,7 +36,7 @@ class UpdateServer extends QUI\System\Test
      *
      * @return self::STATUS_OK|self::STATUS_ERROR
      */
-    public function execute()
+    public function execute(): int
     {
         $servers = QUI::getPackageManager()->getServerList();
 

@@ -21,24 +21,24 @@ interface Test
     /**
      * @return boolean
      */
-    public function isRequired();
+    public function isRequired(): bool;
 
     /**
      * @return boolean
      */
-    public function isOptional();
+    public function isOptional(): bool;
 
     /**
      * Return the name of the Test
      *
-     * @return mixed
+     * @return string
      */
-    public function getTitle();
+    public function getTitle(): string;
 
     /**
      * Return the description of the Test
      *
      * @return string
      */
-    public function getDescription();
+    public function getDescription(): string;
 }
