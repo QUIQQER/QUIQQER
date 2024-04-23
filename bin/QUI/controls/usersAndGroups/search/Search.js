@@ -109,7 +109,7 @@ define('controls/usersAndGroups/search/Search', [
                     },
                     {
                         header   : QUILocale.get(lg, 'id'),
-                        dataIndex: 'id',
+                        dataIndex: 'uuid',
                         dataType : 'integer',
                         width    : 150
                     },
