@@ -83,7 +83,7 @@ class ModRewrite extends QUI\System\Test
      *
      * @return int self::STATUS_OK|self::STATUS_ERROR
      */
-    protected function checkViaHTTP()
+    protected function checkViaHTTP(): int
     {
         try {
             $Project = QUI::getProjectManager()->getStandard();
