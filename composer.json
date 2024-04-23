@@ -66,7 +66,7 @@
     "quiqqer/messages": "^1",
     "quiqqer/meta": "^2.1",
     "quiqqer/qui": "^1.5",
-    "quiqqer/qui-php": "^1",
+    "quiqqer/qui-php": "^2",
     "quiqqer/requirements": "^3",
     "quiqqer/smarty": "^3|^4",
     "quiqqer/translator": "^1.9",
