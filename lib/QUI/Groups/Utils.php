@@ -32,16 +32,16 @@ class Utils
      */
     public static function getGroupToolbar(Group $Group): Bar
     {
-        $Tabbar = new QUI\Controls\Toolbar\Bar(['name' => 'UserToolbar']);
+        $TabBar = new Bar(['name' => 'UserToolbar']);
 
         DOM::addTabsToToolbar(
             XML::getTabsFromXml(OPT_DIR . 'quiqqer/quiqqer/group.xml'),
-            $Tabbar,
+            $TabBar,
             'quiqqer/quiqqer'
         );
 
         /**
-         * user extention from plugins
+         * user extension from plugins
          */
         $list = QUI::getPackageManager()->getInstalled();
 
@@ -58,7 +58,7 @@ class Utils
 
             DOM::addTabsToToolbar(
                 XML::getTabsFromXml($userXml),
-                $Tabbar,
+                $TabBar,
                 $entry['name']
             );
         }
@@ -71,12 +71,12 @@ class Utils
         foreach ($projects as $project) {
             DOM::addTabsToToolbar(
                 XML::getTabsFromXml(USR_DIR . 'lib/' . $project . '/group.xml'),
-                $Tabbar,
+                $TabBar,
                 'project.' . $project
             );
         }
 
-        return $Tabbar;
+        return $TabBar;
     }
 
     /**
