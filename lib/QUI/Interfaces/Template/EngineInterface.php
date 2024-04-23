@@ -6,6 +6,7 @@
 
 namespace QUI\Interfaces\Template;
 
+use QUI\Locale;
 use QUI\Projects\Site\Canonical;
 
 /**
@@ -23,7 +24,7 @@ interface EngineInterface
      *
      * @return string
      */
-    public function fetch($template);
+    public function fetch(string $template): string;
 
     /**
      * Assign a Variable to the engine
@@ -31,7 +32,7 @@ interface EngineInterface
      * @param array|string $var
      * @param mixed $value - optional
      */
-    public function assign($var, $value = false);
+    public function assign(array|string $var, mixed $value = false);
 
     /**
      * Return the value of a template variable
@@ -39,27 +40,27 @@ interface EngineInterface
      * @param string $variableName
      * @return mixed
      */
-    public function getTemplateVariable($variableName);
+    public function getTemplateVariable(string $variableName): mixed;
 
     /**
      * Return the current template canonical object
      *
      * @return Canonical
      */
-    public function getCanonical();
+    public function getCanonical(): Canonical;
 
     /**
      * Set a locale object to the engine
      *
-     * @param \QUI\Locale $Locale
-     * @return mixed
+     * @param Locale $Locale
+     * @return void
      */
-    public function setLocale(\QUI\Locale $Locale);
+    public function setLocale(Locale $Locale): void;
 
     /**
      * Return the engine locale object
      *
-     * @return \QUI\Locale|null
+     * @return Locale|null
      */
-    public function getLocale();
+    public function getLocale(): ?Locale;
 }
