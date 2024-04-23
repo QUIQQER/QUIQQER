@@ -36,7 +36,7 @@ class CHMOD extends QUI\System\Test
      *
      * @return self::STATUS_OK|self::STATUS_ERROR
      */
-    public function execute()
+    public function execute(): int
     {
         // check if cms dir is writable
         if (is_writable(CMS_DIR)) {

@@ -38,7 +38,7 @@ class Tidy extends QUI\System\Test
      *
      * @return int self::STATUS_OK|self::STATUS_ERROR
      */
-    public function execute()
+    public function execute(): int
     {
         if (class_exists('tidy')) {
             return self::STATUS_OK;

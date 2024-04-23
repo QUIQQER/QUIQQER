@@ -36,7 +36,7 @@ class Curl extends QUI\System\Test
      *
      * @return self::STATUS_OK|self::STATUS_ERROR
      */
-    public function execute()
+    public function execute(): int
     {
         if (function_exists('curl_version') && function_exists('curl_init')) {
             return self::STATUS_OK;

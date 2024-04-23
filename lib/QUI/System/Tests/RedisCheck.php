@@ -41,7 +41,7 @@ class RedisCheck extends QUI\System\Test
      *
      * @return int self::STATUS_OK|self::STATUS_ERROR
      */
-    public function execute()
+    public function execute(): int
     {
         return self::checkServer();
     }

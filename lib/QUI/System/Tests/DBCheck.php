@@ -74,7 +74,7 @@ class DBCheck extends QUI\System\Test
      *
      * @return integer
      */
-    public function execute()
+    public function execute(): int
     {
         if (defined('OPT_DIR')) {
             $packages_dir = OPT_DIR;
@@ -128,7 +128,7 @@ class DBCheck extends QUI\System\Test
      *
      * @param $xmlFile
      */
-    protected function checkIntegrity($xmlFile)
+    protected function checkIntegrity($xmlFile): void
     {
         $content = XML::getDataBaseFromXml($xmlFile);
 

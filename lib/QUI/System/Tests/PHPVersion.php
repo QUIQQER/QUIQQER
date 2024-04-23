@@ -36,7 +36,7 @@ class PHPVersion extends QUI\System\Test
      *
      * @return self::STATUS_OK|self::STATUS_ERROR
      */
-    public function execute()
+    public function execute(): int
     {
         if (version_compare(phpversion(), '5.3', '<')) {
             return self::STATUS_ERROR;

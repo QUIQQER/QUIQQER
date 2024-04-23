@@ -38,7 +38,7 @@ class Json extends QUI\System\Test
      *
      * @return int self::STATUS_OK|self::STATUS_ERROR
      */
-    public function execute()
+    public function execute(): int
     {
         if (function_exists('json_decode') && function_exists('json_encode')) {
             return self::STATUS_OK;
