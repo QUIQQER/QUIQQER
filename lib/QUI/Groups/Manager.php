@@ -29,11 +29,6 @@ use function trim;
  */
 class Manager extends QUI\QDOM
 {
-    const TYPE_BOOL = 1;
-    const TYPE_TEXT = 2;
-    const TYPE_INT = 3;
-    const TYPE_VARCHAR = 4;
-
     const GUEST_ID = 0;
     const EVERYONE_ID = 1;
     protected static ?array $getListOfExtraAttributes = null;
