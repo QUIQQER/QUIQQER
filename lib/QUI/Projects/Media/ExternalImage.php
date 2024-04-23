@@ -370,8 +370,21 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
     }
 
     //endregion
+
+    /**
+     * @return bool
+     */
     public function isActive(): bool
     {
         return true;
+    }
+
+    /**
+     * @param string $permission
+     * @param QUI\Interfaces\Users\User|null $User
+     * @return void
+     */
+    public function checkPermission(string $permission, QUI\Interfaces\Users\User $User = null): void
+    {
     }
 }
