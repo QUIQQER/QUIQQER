@@ -30,7 +30,7 @@ class Utils
      * @param Group $Group
      * @return Bar
      */
-    public static function getGroupToolbar($Group)
+    public static function getGroupToolbar(Group $Group): Bar
     {
         $Tabbar = new QUI\Controls\Toolbar\Bar(['name' => 'UserToolbar']);
 
@@ -82,14 +82,14 @@ class Utils
     /**
      * Tab contents of a group Tab / Button
      *
-     * @param integer $gid - Group ID
+     * @param integer|string $gid - Group ID
      * @param string $plugin - Plugin
-     * @param string $tab - Tabname
+     * @param string $tab - Tab name
      *
      * @return string
      * @throws Exception
      */
-    public static function getTab($gid, $plugin, $tab)
+    public static function getTab(int|string $gid, string $plugin, string $tab): string
     {
         $Groups = QUI::getGroups();
         $Group = $Groups->get($gid);
