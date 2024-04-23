@@ -44,17 +44,17 @@ class Headers
     /**
      * @var bool
      */
-    protected $xFrameOptions = false;
+    protected string|array|bool $xFrameOptions = false;
 
     /**
      * @var bool
      */
-    protected $xContentTypeOptions = "nosniff";
+    protected string|array|bool $xContentTypeOptions = "nosniff";
 
     /**
      * @var bool
      */
-    protected $xXSSProtection = "1; mode=block";
+    protected string|array|bool $xXSSProtection = "1; mode=block";
 
     /**
      * Headers constructor.
