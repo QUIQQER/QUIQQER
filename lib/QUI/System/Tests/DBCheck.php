@@ -170,10 +170,10 @@ class DBCheck extends QUI\System\Test
             // check language dependent project tables
             if (!empty($langTables)) {
                 foreach ($projects as $Project) {
-                    /* @var $Project \QUI\Projects\Project */
-                    $langs = $Project->getAttribute('langs');
+                    /* @var $Project Project */
+                    $languages = $Project->getAttribute('langs');
 
-                    foreach ($langs as $lang) {
+                    foreach ($languages as $lang) {
                         foreach ($langTables as $tblData) {
                             $projectTable = QUI::getDBProjectTableName(
                                 $tblData['table'],
