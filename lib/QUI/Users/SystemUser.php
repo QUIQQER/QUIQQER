@@ -71,7 +71,7 @@ class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
             return [$Everyone];
         }
 
-        return [$Everyone->getId()];
+        return [$Everyone->getUUID()];
     }
 
     /**
