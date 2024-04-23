@@ -43,7 +43,7 @@ class Health
      *
      * @return array
      */
-    public static function systemCheck()
+    public static function systemCheck(): array
     {
         $File = new QUI\Utils\System\File();
         $md5 = CMS_DIR . 'checklist.md5';
@@ -77,13 +77,13 @@ class Health
     /**
      * compare the folder with a file list array
      *
-     * @param string $md5Checkfile - path to the md5 checkfile
+     * @param string $md5CheckFile - path to the md5 check file
      * @param array $fileList - file list array
      * @param string $dir - directory
      *
      * @return array
      */
-    public static function checkArray($md5Checkfile, $fileList, $dir)
+    public static function checkArray(string $md5CheckFile, array $fileList, string $dir): array
     {
         $md5Entries = file($md5CheckFile);
         $md5List = [];
@@ -137,7 +137,7 @@ class Health
      * @return array
      * @throws Exception
      */
-    public static function packageCheck($plugin)
+    public static function packageCheck(string $plugin): array
     {
         $dir = OPT_DIR . $plugin;
         $md5 = $dir . '/checklist.md5';
@@ -146,15 +146,15 @@ class Health
     }
 
     /**
-     * compare the folder with the checkfile
+     * compare the folder with the check file
      *
-     * @param string $md5Checkfile - path to the md5 checkfile
+     * @param string $md5CheckFile - path to the md5 check file
      * @param string $dir - dir name, path to the dir
      *
      * @return array
      * @throws Exception
      */
-    public static function check($md5Checkfile, $dir)
+    public static function check(string $md5CheckFile, string $dir): array
     {
         if (!file_exists($md5CheckFile)) {
             throw new Exception(
@@ -171,7 +171,7 @@ class Health
         $File = new QUI\Utils\System\File();
         $dirList = $File->readDirRecursiv($dir);
 
-        return self::checkArray($md5Checkfile, $dirList, $dir);
+        return self::checkArray($md5CheckFile, $dirList, $dir);
     }
 
     /**
@@ -179,7 +179,7 @@ class Health
      *
      * @throws Exception
      */
-    public static function checkWritable()
+    public static function checkWritable(): void
     {
         // check files
         $md5hashFile = CMS_DIR . 'checklist.md5';
