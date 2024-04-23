@@ -1130,7 +1130,7 @@ class User implements QUIUserInterface
     /**
      * Add the user to a group
      *
-     * @param integer $groupId
+     * @param integer|string $groupId
      * @throws QUI\Exception
      */
     public function addToGroup(int|string $groupId): void
@@ -1150,13 +1150,13 @@ class User implements QUIUserInterface
 
         foreach ($groups as $UserGroup) {
             /* @var $UserGroup QUI\Groups\Group */
-            if (isset($_tmp[$UserGroup->getId()])) {
+            if (isset($_tmp[$UserGroup->getUUID()])) {
                 continue;
             }
 
-            $_tmp[$UserGroup->getId()] = true;
+            $_tmp[$UserGroup->getUUID()] = true;
 
-            $newGroups[] = $UserGroup->getId();
+            $newGroups[] = $UserGroup->getUUID();
         }
 
         $this->setGroups($newGroups);
@@ -1211,16 +1211,12 @@ class User implements QUIUserInterface
             $this->Group = [];
 
             foreach ($groups as $group) {
-                $tg = $Groups->get($group);
-
-                if ($tg) {
-                    $this->Group[] = $tg;
-                    $aTmp[] = $group;
-                }
+                $Group = $Groups->get($group);
+                $this->Group[] = $Group;
+                $aTmp[] = $Group->getUUID();
             }
 
             $this->groups = ',' . implode(',', $aTmp) . ',';
-
             return;
         }
 
@@ -1234,22 +1230,23 @@ class User implements QUIUserInterface
                 }
 
                 try {
-                    $this->Group[] = $Groups->get($g);
-                    $aTmp[] = $g;
+                    $Group = $Groups->get($g);
+                    $this->Group[] = $Group;
+                    $aTmp[] = $Group->getUUID();
                 } catch (QUI\Exception) {
                     // nothing
                 }
             }
 
             $this->groups = ',' . implode(',', $aTmp) . ',';
-
             return;
         }
 
 
         if (is_string($groups)) {
             try {
-                $this->Group[] = $Groups->get($groups);
+                $Group = $Groups->get($groups);
+                $this->Group[] = $Group->getUUID();
                 $this->groups = ',' . $groups . ',';
             } catch (QUI\Exception) {
             }
@@ -1614,8 +1611,8 @@ class User implements QUIUserInterface
         $new_gr = [];
 
         foreach ($groups as $UserGroup) {
-            if ($UserGroup->getId() != $Group->getId()) {
-                $new_gr[] = $UserGroup->getId();
+            if ($UserGroup->getUUID() != $Group->getUUID()) {
+                $new_gr[] = $UserGroup->getUUID();
             }
         }
 

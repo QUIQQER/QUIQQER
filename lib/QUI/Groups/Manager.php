@@ -9,8 +9,10 @@ namespace QUI\Groups;
 use DOMElement;
 use QUI;
 use QUI\Exception;
+use QUI\Update;
 use QUI\Utils\Security\Orthos;
 
+use function array_filter;
 use function array_merge;
 use function file_exists;
 use function in_array;
@@ -110,7 +112,9 @@ class Manager extends QUI\QDOM
      */
     public function get(int|string $id): Group|Everyone|Guest
     {
-        $id = (int)$id;
+        if (is_numeric($id)) {
+            $id = (int)$id;
+        }
 
         if ($id === 1) {
             if ($this->Everyone === null) {
@@ -141,7 +145,10 @@ class Manager extends QUI\QDOM
             return $this->groups[$id];
         }
 
-        $this->groups[$id] = new Group($id);
+        $Group = new Group($id);
+        $id = $Group->getUUID();
+
+        $this->groups[$id] = $Group;
 
         return $this->groups[$id];
     }
@@ -191,9 +198,22 @@ class Manager extends QUI\QDOM
      */
     public function setup(): void
     {
-        $DataBase = QUI::getDataBase();
-        $Table = $DataBase->table();
+        // read database xml, because we need the newest groups db
+        $dbFields = QUI\Utils\Text\XML::getDataBaseFromXml(OPT_DIR . 'quiqqer/quiqqer/database.xml');
+        unset($dbFields['projects']);
 
+        $dbFields['globals'] = array_filter($dbFields['globals'], function ($entry) {
+            return $entry['suffix'] === 'groups';
+        });
+
+        QUI\Utils\Text\XML::importDataBase($dbFields);
+
+        $DataBase = QUI::getDataBase();
+        $DataBase->execSQL(
+            "ALTER TABLE `" . self::table() . "` CHANGE `parent` `parent` VARCHAR(50) NULL DEFAULT NULL;"
+        );
+
+        $Table = $DataBase->table();
         $Table->setPrimaryKey(self::table(), 'id');
         $Table->setIndex(self::table(), 'parent');
 
@@ -271,6 +291,7 @@ class Manager extends QUI\QDOM
      * Returns the first group
      *
      * @return QUI\Groups\Group
+     * @throws Exception
      */
     public function firstChild(): Group
     {
@@ -289,19 +310,12 @@ class Manager extends QUI\QDOM
             return $this->data[$groupId];
         }
 
-        if (
-            is_numeric($groupId)
-            && ((int)$groupId === 1 || (int)$groupId === 0)
-        ) {
-            return [];
-        }
-
         try {
             $result = QUI::getDataBase()->fetch([
                 'from' => self::table(),
                 'where_or' => [
                     'id' => (int)$groupId,
-                    'uuid' => $groupId,
+                    'uuid' => $groupId
                 ],
                 'limit' => 1
             ]);
@@ -324,6 +338,7 @@ class Manager extends QUI\QDOM
      * @param integer|string $id - ID of the Group
      *
      * @return string
+     * @throws Exception
      */
     public function getGroupNameById(int|string $id): string
     {
@@ -351,7 +366,7 @@ class Manager extends QUI\QDOM
 
         foreach ($ids as $id) {
             try {
-                $result[] = $this->get((int)$id['id']);
+                $result[] = $this->get($id['id']);
             } catch (QUI\Exception) {
                 // nothing
             }
@@ -368,7 +383,7 @@ class Manager extends QUI\QDOM
     public function getAllGroupIds(): array
     {
         return QUI::getDataBase()->fetch([
-            'select' => 'id',
+            'select' => 'id, uuid',
             'from' => self::table(),
             'order' => 'name'
         ]);

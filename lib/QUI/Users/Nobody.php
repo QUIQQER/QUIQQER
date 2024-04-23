@@ -80,7 +80,7 @@ class Nobody extends QUI\QDOM implements User
             return [$Guest, $Everyone];
         }
 
-        return [$Guest->getId(), $Everyone->getId()];
+        return [$Guest->getUUID(), $Everyone->getUUID()];
     }
 
     /**

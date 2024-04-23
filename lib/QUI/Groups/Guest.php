@@ -70,7 +70,6 @@ class Guest extends QUI\Groups\Group
         $this->rights = QUI::getPermissionManager()
             ->getRightParamsFromGroup($this);
 
-        // Felder bekommen
         QUI::getDataBase()->update(
             Manager::table(),
             [
@@ -172,7 +171,7 @@ class Guest extends QUI\Groups\Group
     }
 
     /**
-     * Returns the sub groups
+     * Returns the subgroups
      *
      * @param array $params - Where Parameter
      *

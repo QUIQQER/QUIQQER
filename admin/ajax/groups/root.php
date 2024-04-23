@@ -12,7 +12,7 @@ QUI::$Ajax->registerFunction(
         require_once __DIR__ . '/get.php';
 
         $result = QUI::$Ajax->callRequestFunction('ajax_groups_get', [
-            'gid' => (int)QUI::conf('globals', 'root')
+            'gid' => QUI::conf('globals', 'root')
         ]);
 
         return $result['result'];
