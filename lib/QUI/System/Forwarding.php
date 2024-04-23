@@ -3,6 +3,7 @@
 namespace QUI\System;
 
 use DusanKasan\Knapsack\Collection;
+use JetBrains\PhpStorm\NoReturn;
 use QUI;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,11 +23,11 @@ class Forwarding
      *
      * @param string $from
      * @param string $target
-     * @param string|int $httpCode
+     * @param int|string $httpCode
      *
      * @throws QUI\Exception
      */
-    public static function create(string $from, string $target, $httpCode = 301)
+    public static function create(string $from, string $target, int|string $httpCode = 301): void
     {
         $config = self::getConfig()->toArray();
 
@@ -67,11 +68,11 @@ class Forwarding
      *
      * @param string $from
      * @param string $target
-     * @param string|int $httpCode
+     * @param int|string $httpCode
      *
      * @throws QUI\Exception
      */
-    public static function update(string $from, string $target, $httpCode = 301)
+    public static function update(string $from, string $target, int|string $httpCode = 301): void
     {
         $config = self::getConfig()->toArray();
 
@@ -97,10 +98,10 @@ class Forwarding
     /**
      * Löscht ein forwarding eintrag
      *
-     * @param string|array $from
+     * @param array|string $from
      * @throws QUI\Exception
      */
-    public static function delete($from)
+    public static function delete(array|string $from): void
     {
         if (is_array($from)) {
             foreach ($from as $f) {
@@ -136,7 +137,7 @@ class Forwarding
      *
      * @param Request $Request
      */
-    public static function forward(Request $Request)
+    public static function forward(Request $Request): void
     {
         $list = [];
 
@@ -176,7 +177,7 @@ class Forwarding
      *
      * @param array $data
      */
-    protected static function redirect(array $data)
+    #[NoReturn] protected static function redirect(array $data): void
     {
         $target = $data['target'];
         $code = (int)$data['code'];
