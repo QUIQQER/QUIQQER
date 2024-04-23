@@ -111,7 +111,7 @@ class Manager extends QUI\QDOM
             $id = (int)$id;
         }
 
-        if ($id === 1) {
+        if ($id === Manager::EVERYONE_ID) {
             if ($this->Everyone === null) {
                 $this->Everyone = new Everyone();
             }
@@ -119,7 +119,7 @@ class Manager extends QUI\QDOM
             return $this->Everyone;
         }
 
-        if ($id === 0) {
+        if ($id === Manager::GUEST_ID) {
             if ($this->Guest === null) {
                 $this->Guest = new Guest();
             }
