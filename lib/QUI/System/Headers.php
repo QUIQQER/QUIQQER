@@ -114,7 +114,7 @@ class Headers
      *
      * @param integer $maxAge
      */
-    public function hstsMaxAge(int $maxAge)
+    public function hstsMaxAge(int $maxAge): void
     {
         $this->hsts['max-age'] = $maxAge;
     }
@@ -125,7 +125,7 @@ class Headers
      *
      * @param bool $mode
      */
-    public function hstsSubdomains(bool $mode = true)
+    public function hstsSubdomains(bool $mode = true): void
     {
         $this->hsts['subdomains'] = $mode;
     }
@@ -140,7 +140,7 @@ class Headers
      *
      * @param bool $mode
      */
-    public function hstsPreload(bool $mode = true)
+    public function hstsPreload(bool $mode = true): void
     {
         $this->hsts['preload'] = $mode;
     }
@@ -152,7 +152,7 @@ class Headers
      * @param string $directive - optional, (default = default) CSP directive,
      *                            value can be an entry from the CSP directive list
      */
-    public function cspAdd(string $value, string $directive = 'default')
+    public function cspAdd(string $value, string $directive = 'default'): void
     {
         if (CSP::getInstance()->isDirectiveAllowed($directive) === false) {
             return;
@@ -174,7 +174,7 @@ class Headers
     /**
      * Set the headers to the request object
      */
-    public function compile()
+    public function compile(): void
     {
         $Response = $this->getResponse();
 
@@ -228,7 +228,7 @@ class Headers
     /**
      * Return the response object
      *
-     * @return Response
+     * @return Response|null
      */
     public function getResponse(): ?Response
     {
@@ -251,7 +251,7 @@ class Headers
         int $maxAge = 31_536_000,
         bool $subDomains = false,
         bool $preload = false
-    ) {
+    ): void {
         $this->hsts['max-age'] = $maxAge;
         $this->hsts['subdomains'] = $subDomains;
         $this->hsts['preload'] = $preload;
@@ -262,7 +262,7 @@ class Headers
      *
      * @param string $cspValue
      */
-    public function cspRemove(string $cspValue)
+    public function cspRemove(string $cspValue): void
     {
         $new = [];
 
