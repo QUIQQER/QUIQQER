@@ -27,13 +27,13 @@ class Login extends Control
     /**
      * @var bool
      */
-    protected $isGlobalAuth = false;
+    protected bool $isGlobalAuth = false;
 
     /**
      * Login constructor.
      * @param array $options
      */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         $this->setAttributes([
             'data-qui' => 'controls/users/Login',
@@ -54,7 +54,7 @@ class Login extends Control
      * @throws ExceptionStack
      * @throws QUI\Exception
      */
-    public function getBody()
+    public function getBody(): string
     {
         $authenticator = $this->next();
 
@@ -111,7 +111,7 @@ class Login extends Control
      * @throws QUI\Exception
      * @throws ExceptionStack
      */
-    public function next()
+    public function next(): array|string|null
     {
         if (QUI::isFrontend()) {
             $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
