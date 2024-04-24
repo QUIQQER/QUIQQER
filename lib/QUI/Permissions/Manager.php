@@ -8,14 +8,17 @@ namespace QUI\Permissions;
 
 use QUI;
 use QUI\Database\Exception;
+use QUI\ExceptionStack;
 use QUI\Groups\Group;
 use QUI\Interfaces\Projects\Media\File;
+use QUI\Projects\Media\Item;
 use QUI\Projects\Project;
+use QUI\Projects\Site;
+use QUI\Projects\Site\Edit;
 use QUI\Users\User;
 use QUI\Utils\Security\Orthos;
 
 use function count;
-use function get_class;
 use function implode;
 use function is_array;
 use function is_callable;
@@ -91,7 +94,7 @@ class Manager
      *
      * @throws QUI\Database\Exception
      */
-    public static function setup()
+    public static function setup(): void
     {
         $DBTable = QUI::getDataBase()->table();
         $table = self::table();
@@ -102,7 +105,6 @@ class Manager
         $table2projects = $table . '2projects';
         $table2media = $table . '2media';
 
-        // Haupttabelle anlegen
         $DBTable->addColumn($table, [
             'name' => 'varchar(100) NOT NULL',
             'type' => 'varchar(20)  NOT NULL',
@@ -156,7 +158,7 @@ class Manager
     /**
      * Search all groups and set the default permissions if the permissions not exists
      */
-    public static function importPermissionsForGroups()
+    public static function importPermissionsForGroups(): void
     {
         $Groups = QUI::getGroups();
         $groups = $Groups->search();
@@ -183,8 +185,10 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function importPermissionsForGroup(Group $Group, QUI\Interfaces\Users\User $ParentUser = null)
-    {
+    public static function importPermissionsForGroup(
+        Group $Group,
+        QUI\Interfaces\Users\User $ParentUser = null
+    ): void {
         $Manager = QUI::getPermissionManager();
         $permissions = $Manager->getPermissions($Group);
 
@@ -203,11 +207,10 @@ class Manager
      * Return the current permissions from a group, user, site, project or media
      * Returns the set permissions
      *
-     * @param QUI\Groups\Group|QUI\Interfaces\Users\User|Project|QUI\Projects\Site $Obj
-     *
+     * @param mixed $Obj
      * @return array
      */
-    public function getPermissions($Obj): array
+    public function getPermissions(mixed $Obj): array
     {
         $area = $this->objectToArea($Obj);
 
@@ -277,7 +280,7 @@ class Manager
      * @param mixed $Object
      * @return string
      */
-    protected function objectToArea($Object): string
+    protected function objectToArea(mixed $Object): string
     {
         if ($Object instanceof QUI\Interfaces\Users\User) {
             return 'user';
@@ -359,7 +362,7 @@ class Manager
      * @param mixed $Obj
      * @return array
      */
-    protected function getData($Obj): array
+    protected function getData(mixed $Obj): array
     {
         $DataBase = QUI::getDataBase();
 
@@ -484,7 +487,7 @@ class Manager
      *
      * @return string
      */
-    protected function getDataCacheId($Obj): string
+    protected function getDataCacheId(mixed $Obj): string
     {
         $area = $this->objectToArea($Obj);
 
@@ -534,11 +537,11 @@ class Manager
     /**
      * Return all available permissions
      *
-     * @param string|boolean $area - optional, specified the area of the permissions
+     * @param boolean|string $area - optional, specified the area of the permissions
      *
      * @return array
      */
-    public function getPermissionList($area = false): array
+    public function getPermissionList(bool|string $area = false): array
     {
         if (!$area) {
             return $this->cache;
@@ -577,11 +580,11 @@ class Manager
     /**
      * Return the permissions from a site
      *
-     * @param QUI\Projects\Site|QUI\Projects\Site\Edit $Site
+     * @param QUI\Interfaces\Projects\Site $Site
      *
      * @return array
      */
-    public function getSitePermissions($Site): array
+    public function getSitePermissions(QUI\Interfaces\Projects\Site $Site): array
     {
         if (QUI\Projects\Site\Utils::isSiteObject($Site) === false) {
             return [];
@@ -636,17 +639,21 @@ class Manager
     /**
      * Set the permissions for an object
      *
-     * @param User|QUI\Groups\Group|
-     *                           QUI\Projects\Project|QUI\Projects\Site|QUI\Projects\Site\Edit $Obj
+     * @param User|Group|Project|Site|Edit $Obj
      * @param array $permissions - Array of permissions
-     * @param boolean|User $EditUser - Edit user
+     * @param QUI\Interfaces\Users\User|null $EditUser - Edit user
      *
+     * @throws Exception
      * @throws QUI\Exception
-     *
+     * @throws ExceptionStack
+     * @throws Exception
      * @todo  permissions for project
      */
-    public function setPermissions($Obj, $permissions, $EditUser = false)
-    {
+    public function setPermissions(
+        mixed $Obj,
+        array $permissions,
+        QUI\Interfaces\Users\User $EditUser = null
+    ): void {
         if (empty($permissions)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.permissions.are.empty')
@@ -811,15 +818,15 @@ class Manager
      *
      * @param Project $Project
      * @param array $permissions
-     * @param boolean|User $EditUser
+     * @param QUI\Interfaces\Users\User|null $EditUser
      *
      * @throws Exception
      */
     public function setProjectPermissions(
         Project $Project,
         array $permissions,
-        $EditUser = false
-    ) {
+        QUI\Interfaces\Users\User $EditUser = null
+    ): void {
         $data = [];
         $_data = $this->getData($Project);
         $list = $this->getPermissionList('project');
@@ -866,11 +873,11 @@ class Manager
      * Cleanup the value for the type
      *
      * @param string $type
-     * @param string|integer|array $val
+     * @param integer|array|string $val
      *
-     * @return string|integer
+     * @return int|bool|array|string
      */
-    protected function cleanValue(string $type, $val)
+    protected function cleanValue(string $type, int|array|string $val): int|bool|array|string
     {
         switch ($type) {
             case 'int':
@@ -913,14 +920,14 @@ class Manager
      *
      * @param Project $Project
      * @param string $permission
-     * @param string|integer $value
+     * @param integer|string $value
      * @throws Exception
      */
     protected function addProjectPermission(
         Project $Project,
         string $permission,
-        $value
-    ) {
+        int|string $value
+    ): void {
         QUI::getDataBase()->insert(
             self::table() . '2projects',
             [
@@ -937,14 +944,14 @@ class Manager
      *
      * @param Project $Project
      * @param string $permission
-     * @param string|integer $value
+     * @param integer|string $value
      * @throws Exception
      */
     protected function setProjectPermission(
         Project $Project,
         string $permission,
-        $value
-    ) {
+        int|string $value
+    ): void {
         QUI::getDataBase()->update(
             self::table() . '2projects',
             ['value' => $value],
@@ -968,15 +975,18 @@ class Manager
     /**
      * Set the permissions for a site object
      *
-     * @param QUI\Projects\Site|QUI\Projects\Site\Edit|QUI\Projects\Site\OnlyDB $Site
+     * @param QUI\Interfaces\Projects\Site $Site
      * @param array $permissions - Array of permissions
-     * @param boolean|User $EditUser - Edit user
+     * @param QUI\Interfaces\Users\User|null $EditUser - Edit user
      *
      * @throws QUI\Exception
-     * @throws QUI\Permissions\Exception
+     * @throws Exception
      */
-    public function setSitePermissions($Site, array $permissions, $EditUser = false)
-    {
+    public function setSitePermissions(
+        QUI\Interfaces\Projects\Site $Site,
+        array $permissions,
+        QUI\Interfaces\Users\User $EditUser = null
+    ): void {
         if (QUI\Projects\Site\Utils::isSiteObject($Site) === false) {
             return;
         }
@@ -1054,15 +1064,18 @@ class Manager
     /**
      * Add a new permission entry for site
      *
-     * @param QUI\Projects\Site|QUI\Projects\Site\Edit|QUI\Projects\Site\OnlyDB $Site
+     * @param QUI\Interfaces\Projects\Site $Site
      * @param string $permission
-     * @param string|integer $value
+     * @param integer|string $value
      *
      * @throws Exception
      * @throws QUI\Exception
      */
-    protected function addSitePermission($Site, string $permission, $value)
-    {
+    protected function addSitePermission(
+        QUI\Interfaces\Projects\Site $Site,
+        string $permission,
+        int|string $value
+    ): void {
         $Project = $Site->getProject();
         $table = self::table();
 
@@ -1078,15 +1091,18 @@ class Manager
     /**
      * Updates the permission entry for the site
      *
-     * @param QUI\Projects\Site|QUI\Projects\Site\Edit|QUI\Projects\Site\OnlyDB $Site
+     * @param QUI\Interfaces\Projects\Site $Site
      * @param string $permission
-     * @param string|integer $value
+     * @param integer|string $value
      *
      * @throws Exception
      * @throws QUI\Exception
      */
-    protected function setSitePermission($Site, string $permission, $value)
-    {
+    protected function setSitePermission(
+        QUI\Interfaces\Projects\Site $Site,
+        string $permission,
+        int|string $value
+    ): void {
         $Project = $Site->getProject();
         $table = self::table();
 
@@ -1114,15 +1130,18 @@ class Manager
     /**
      * Set the permissions for a site object
      *
-     * @param QUI\Projects\Media\Item $MediaItem
+     * @param Item $MediaItem
      * @param array $permissions - Array of permissions
-     * @param boolean|User $EditUser - Edit user
+     * @param QUI\Interfaces\Users\User|null $EditUser - Edit user
      *
      * @throws QUI\Exception
-     * @throws QUI\Permissions\Exception
+     * @throws Exception
      */
-    public function setMediaPermissions(QUI\Projects\Media\Item $MediaItem, array $permissions, $EditUser = false)
-    {
+    public function setMediaPermissions(
+        QUI\Projects\Media\Item $MediaItem,
+        array $permissions,
+        QUI\Interfaces\Users\User $EditUser = null
+    ): void {
         if (QUI\Projects\Media\Utils::isItem($MediaItem) === false) {
             return;
         }
@@ -1206,12 +1225,15 @@ class Manager
      *
      * @param QUI\Projects\Media\Item $MediaItem
      * @param string $permission
-     * @param string|integer $value
+     * @param integer|string $value
      *
      * @throws QUI\Exception
      */
-    protected function addMediaPermission(QUI\Projects\Media\Item $MediaItem, string $permission, $value)
-    {
+    protected function addMediaPermission(
+        QUI\Projects\Media\Item $MediaItem,
+        string $permission,
+        int|string $value
+    ): void {
         $Media = $MediaItem->getMedia();
         $Project = $Media->getProject();
         $table = self::table();
@@ -1229,12 +1251,15 @@ class Manager
      *
      * @param QUI\Projects\Media\Item $MediaItem
      * @param string $permission
-     * @param string|integer $value
+     * @param integer|string $value
      *
      * @throws QUI\Exception
      */
-    protected function setMediaPermission(QUI\Projects\Media\Item $MediaItem, string $permission, $value)
-    {
+    protected function setMediaPermission(
+        QUI\Projects\Media\Item $MediaItem,
+        string $permission,
+        int|string $value
+    ): void {
         $Media = $MediaItem->getMedia();
         $Project = $Media->getProject();
         $table = self::table();
@@ -1267,7 +1292,7 @@ class Manager
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function deletePermission(string $permission)
+    public function deletePermission(string $permission): void
     {
         $permissions = $this->getPermissionList();
 
@@ -1308,7 +1333,7 @@ class Manager
      *                            eq: system, plugin-name, user
      *
      */
-    public function importPermissionsFromXml(string $xmlFile, string $src = '')
+    public function importPermissionsFromXml(string $xmlFile, string $src = ''): void
     {
         $rootPermissions = [];
         $permissions = QUI\Utils\Text\XML::getPermissionsFromXml($xmlFile);
@@ -1398,7 +1423,7 @@ class Manager
      *
      * @throws QUI\Database\Exception
      */
-    public function addPermission(array $params)
+    public function addPermission(array $params): void
     {
         $DataBase = QUI::getDataBase();
         $needles = [
@@ -1519,7 +1544,7 @@ class Manager
      * @param QUI\Package\Package $Package
      * @throws Exception
      */
-    public function deletePermissionsFromPackage(QUI\Package\Package $Package)
+    public function deletePermissionsFromPackage(QUI\Package\Package $Package): void
     {
         // remove from cache
         $result = QUI::getDataBase()->fetch([
@@ -1551,7 +1576,7 @@ class Manager
      * @return false|array
      * @throws QUI\Exception
      */
-    public function getPermissionData(string $permission)
+    public function getPermissionData(string $permission): bool|array
     {
         if (!isset($this->cache[$permission])) {
             throw new QUI\Exception('Permission not found');
@@ -1572,7 +1597,7 @@ class Manager
      *
      * @return array
      */
-    public function getCompletePermissionList($Obj)
+    public function getCompletePermissionList(mixed $Obj): array
     {
         $cache = 'quiqqer/permissions/' . $this->getDataCacheId($Obj) . '/complete';
 
@@ -1635,14 +1660,16 @@ class Manager
     /**
      * Remove all permissions from the site
      *
-     * @param QUI\Projects\Site|QUI\Projects\Site\Edit|QUI\Projects\Site\OnlyDB $Site
-     * @param boolean|User $EditUser
+     * @param QUI\Interfaces\Projects\Site $Site
+     * @param QUI\Interfaces\Users\User|null $EditUser
      *
+     * @throws Exception
      * @throws QUI\Exception
-     * @throws QUI\Permissions\Exception
      */
-    public function removeSitePermissions($Site, $EditUser = false)
-    {
+    public function removeSitePermissions(
+        QUI\Interfaces\Projects\Site $Site,
+        QUI\Interfaces\Users\User $EditUser = null
+    ): void {
         $Site->checkPermission('quiqqer.projects.site.edit', $EditUser);
 
 
@@ -1671,7 +1698,7 @@ class Manager
      *
      * @param QUI\Interfaces\Users\User $User
      * @param string $permission
-     * @param callback|string|boolean $ruleset
+     * @param callback|boolean|string $ruleset
      *
      * @return mixed
      *
@@ -1686,8 +1713,11 @@ class Manager
      * @example
      * $right = $User->getPermission($perm, 'maxInteger');
      */
-    public function getUserPermission($User, $permission, $ruleset = false)
-    {
+    public function getUserPermission(
+        QUI\Interfaces\Users\User $User,
+        string $permission,
+        callable|bool|string $ruleset = false
+    ): mixed {
         /* @var $User User */
         $usersAndGroups = $User->getGroups();
         $result = false;
@@ -1745,7 +1775,7 @@ class Manager
      * @param $User
      * @return array
      */
-    public function getUserPermissionData($User)
+    public function getUserPermissionData($User): array
     {
         $userPermissions = $this->getData($User);
 
@@ -1772,7 +1802,7 @@ class Manager
      * @return array
      * @todo das muss vielleicht überdacht werden
      */
-    public function getRightParamsFromGroup(Group $Group)
+    public function getRightParamsFromGroup(Group $Group): array
     {
         $result = [];
         $rights = QUI::getDataBase()->fetch([
@@ -1819,14 +1849,15 @@ class Manager
     /**
      * Remove all permissions from the site
      *
-     * @param QUI\Projects\Media\Item $MediaItem
-     * @param boolean|User $EditUser
+     * @param QUI\Interfaces\Projects\Media\File $MediaItem
+     * @param QUI\Interfaces\Users\User|null $EditUser
      *
      * @throws QUI\Exception
-     * @throws QUI\Permissions\Exception
      */
-    public function removeMediaPermissions($MediaItem, $EditUser = false)
-    {
+    public function removeMediaPermissions(
+        QUI\Interfaces\Projects\Media\File $MediaItem,
+        QUI\Interfaces\Users\User $EditUser = null
+    ): void {
         $MediaItem->checkPermission('quiqqer.projects.media.edit', $EditUser);
 
         $Media = $MediaItem->getMedia();
