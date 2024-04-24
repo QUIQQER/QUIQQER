@@ -220,15 +220,14 @@ class Manager implements QUI\Interfaces\Events
      * Adds a site event entry
      *
      * @param string $event - The type of event (e.g. 'complete').
-     * @param callable $fn - The function to execute.
+     * @param callable|string $fn - The function to execute.
      * @param string $siteType - type of the site
      * @param int $priority - Event priority
      *
-     * @throws QUI\Exception
+     * @throws Exception
      * @example $EventManager->addEvent('onSave', '\Namespace\Class::exec', 'quiqqer/blog:blog/entry' });
-     *
      */
-    public function addSiteEvent(string $event, callable $fn, string $siteType, int $priority = 0): void
+    public function addSiteEvent(string $event, callable|string $fn, string $siteType, int $priority = 0): void
     {
         if (!is_string($fn)) {
             return;
@@ -261,7 +260,7 @@ class Manager implements QUI\Interfaces\Events
      *
      * @throws QUI\Exception
      */
-    public function removeEvent(string $event, callable|bool $fn = false): void
+    public function removeEvent(string $event, callable|bool $fn = false, string $package = ''): void
     {
         $this->Events->removeEvent($event, $fn);
 
