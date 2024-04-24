@@ -1733,10 +1733,7 @@ class Manager
             } else {
                 $userPermissions = $this->getData($User);
 
-                if (
-                    isset($userPermissions[0])
-                    && isset($userPermissions[0]['permissions'])
-                ) {
+                if (isset($userPermissions[0]['permissions'])) {
                     $userPermissions = json_decode(
                         $userPermissions[0]['permissions'],
                         true
