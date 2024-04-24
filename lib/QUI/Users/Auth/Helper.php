@@ -7,6 +7,8 @@
 namespace QUI\Users\Auth;
 
 use QUI;
+use QUI\Interfaces\Users\User;
+use QUI\Permissions\Exception;
 use QUI\Users\AuthenticatorInterface;
 
 use function is_object;
@@ -19,14 +21,16 @@ use function str_replace;
 class Helper
 {
     /**
-     * has the the user the permission to user the authenticator
+     * has the user the permission to user the authenticator
      *
-     * @param QUI\Interfaces\Users\User|null|false $User - User
+     * @param User|null $User - User
      * @param string|AuthenticatorInterface $authenticator - Name of the authenticator class
      * @return bool
      */
-    public static function hasUserPermissionToUseAuthenticator($User, $authenticator)
-    {
+    public static function hasUserPermissionToUseAuthenticator(
+        QUI\Interfaces\Users\User|null $User,
+        AuthenticatorInterface|string $authenticator
+    ): bool {
         if (!QUI::getUsers()->isUser($User)) {
             return false;
         }
@@ -43,12 +47,14 @@ class Helper
     /**
      * Check if the user has the permission to user the authenticator
      *
-     * @param QUI\Interfaces\Users\User|null|false $User - User
+     * @param User|null $User - User
      * @param string|AuthenticatorInterface $authenticator - Name of the authenticator class
-     * @throws QUI\Permissions\Exception
+     * @throws Exception
      */
-    public static function checkUserPermissionToUseAuthenticator($User, $authenticator)
-    {
+    public static function checkUserPermissionToUseAuthenticator(
+        User|null $User,
+        AuthenticatorInterface|string $authenticator
+    ): void {
         if (!QUI::getUsers()->isUser($User)) {
             throw new QUI\Permissions\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.no.permission'),
@@ -75,9 +81,11 @@ class Helper
      * @param string $permission - optional, wanted permission, eq: permissionName
      * @return string
      */
-    public static function parseAuthenticatorToPermission($authenticator, $permission = '')
-    {
-        if (\is_object($authenticator)) {
+    public static function parseAuthenticatorToPermission(
+        AuthenticatorInterface|string $authenticator,
+        string $permission = ''
+    ): string {
+        if (is_object($authenticator)) {
             $authenticator = $authenticator::class;
         }
 
