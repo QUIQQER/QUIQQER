@@ -349,7 +349,6 @@ class Template extends QUI\QDOM
      *
      * @param bool $admin - (optional) is the template for the admin or frontend? <- param deprecated
      * @return QUI\Interfaces\Template\EngineInterface
-     * @throws QUI\Exception
      */
     public function getEngine(bool $admin = false): Interfaces\Template\EngineInterface
     {
@@ -368,14 +367,18 @@ class Template extends QUI\QDOM
         $implements = class_implements($Engine);
 
         if (!isset($implements['QUI\Interfaces\Template\EngineInterface'])) {
-            throw new QUI\Exception(
+            QUI\System\Log::addError(
                 'The Template Engine implements not from QUI\Interfaces\Template\EngineInterface'
             );
         }
 
         $Engine->assign('__TEMPLATE__', $this);
 
-        QUI::getTemplateManager()->assignGlobalParam('Project', QUI::getRewrite()->getProject());
+        try {
+            QUI::getTemplateManager()->assignGlobalParam('Project', QUI::getRewrite()->getProject());
+        } catch (\Exception $exception) {
+            QUI\System\Log::addError($exception->getMessage());
+        }
 
         if (!empty($this->assigned)) {
             $Engine->assign($this->assigned);
@@ -389,20 +392,20 @@ class Template extends QUI\QDOM
      *
      * @param mixed $engine - The template engine to check
      * @return string - Returns the name of the template engine if successful
-     * @throws QUI\Exception - Throws an exception if the template engine is not found
      */
     protected function checkSmarty4Engine(mixed $engine): string
     {
         // smarty 4 workaround
         if ($engine === 'smarty3' && class_exists('QUI\Smarty\Smarty4')) {
-            $Config = QUI::getConfig('etc/conf.ini.php');
-            $Config->setValue('template', 'engine', 'smarty4');
-            $Config->save();
+            try {
+                $Config = QUI::getConfig('etc/conf.ini.php');
+                $Config->setValue('template', 'engine', 'smarty4');
+                $Config->save();
 
-            QUI::$Conf->reload();
+                QUI::$Conf->reload();
 
-            $templateIni = ETC_DIR . 'templates.ini.php';
-            $iniContent = file_get_contents($templateIni);
+                $templateIni = ETC_DIR . 'templates.ini.php';
+                $iniContent = file_get_contents($templateIni);
 
                 if (!str_contains($templateIni, 'QUI\\Smarty\\Smarty4')) {
                     file_put_contents(
@@ -411,19 +414,21 @@ class Template extends QUI\QDOM
                     );
                 }
 
-            static::getConfig()->reload();
-            $this->load();
+                static::getConfig()->reload();
+                $this->load();
 
-            return 'smarty4';
+                return 'smarty4';
+            } catch (\Exception $exception) {
+                QUI\System\Log::addError($exception->getMessage());
+            }
         }
 
-        throw new QUI\Exception('Template Engine not found!');
+        QUI\System\Log::addError('Template Engine not found!');
+        return '';
     }
 
     /**
      * Load the registered engines
-     *
-     * @throws QUI\Exception
      */
     public function load(): void
     {
