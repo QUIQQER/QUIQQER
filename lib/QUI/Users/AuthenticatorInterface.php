@@ -6,6 +6,10 @@
 
 namespace QUI\Users;
 
+use QUI\Control;
+use QUI\Locale;
+use QUI\System\Console;
+
 /**
  * Interface for external authentication
  *
@@ -15,63 +19,63 @@ namespace QUI\Users;
 interface AuthenticatorInterface
 {
     /**
-     * @param string|array|integer $user - name of the user, or user id
+     * @param array|integer|string $user - name of the user, or user id
      */
-    public function __construct($user = '');
+    public function __construct(array|int|string $user = '');
 
     /**
      * Return the login control
      *
-     * @return \QUI\Control|null
+     * @return Control|null
      */
-    public static function getLoginControl();
+    public static function getLoginControl(): ?Control;
 
     /**
      * Return the password reset control
      *
-     * @return \QUI\Control|null
+     * @return Control|null
      */
-    public static function getPasswordResetControl();
+    public static function getPasswordResetControl(): ?Control;
 
     /**
      * Return the settings control (eq: for administration)
      *
-     * @return \QUI\Control|null
+     * @return Control|null
      */
-    public static function getSettingsControl();
+    public static function getSettingsControl(): ?Control;
 
     /**
      * @return bool
      */
-    public static function isCLICompatible();
+    public static function isCLICompatible(): bool;
 
     /**
      * Authenticate the user
      *
      * @param string|array|integer $authParams
      *
-     * @throws \QUI\Users\Exception
+     * @throws Exception
      */
-    public function auth($authParams);
+    public function auth(string|array|int $authParams);
 
     /**
      * Return the user object
      *
      * @return \QUI\Interfaces\Users\User
      */
-    public function getUser();
+    public function getUser(): \QUI\Interfaces\Users\User;
 
     /**
-     * @param null|\QUI\Locale $Locale
+     * @param Locale|null $Locale
      * @return string
      */
-    public function getTitle($Locale = null);
+    public function getTitle(Locale $Locale = null): string;
 
     /**
-     * @param null|\QUI\Locale $Locale
+     * @param Locale|null $Locale
      * @return string
      */
-    public function getDescription($Locale = null);
+    public function getDescription(Locale $Locale = null): string;
 
     /**
      * CLI
@@ -82,12 +86,12 @@ interface AuthenticatorInterface
      *
      * @return integer|boolean
      */
-    public function getUserId();
+    public function getUserId(): bool|int;
 
     /**
      * The CLI Authentication, only if isCLICompatible returns true
      *
-     * @param \QUI\System\Console $Console
+     * @param Console $Console
      */
-    public function cliAuthentication(\QUI\System\Console $Console);
+    public function cliAuthentication(Console $Console);
 }

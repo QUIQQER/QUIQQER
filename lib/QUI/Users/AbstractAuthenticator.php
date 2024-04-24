@@ -7,6 +7,8 @@
 namespace QUI\Users;
 
 use QUI;
+use QUI\Control;
+use QUI\System\Console;
 
 /**
  * Parent class for external Authenticator
@@ -19,9 +21,9 @@ abstract class AbstractAuthenticator implements QUI\Users\AuthenticatorInterface
     /**
      * Return the login control
      *
-     * @return \QUI\Control|null
+     * @return Control|null
      */
-    public static function getLoginControl()
+    public static function getLoginControl(): ?Control
     {
         return null;
     }
@@ -29,9 +31,9 @@ abstract class AbstractAuthenticator implements QUI\Users\AuthenticatorInterface
     /**
      * Return the password reset control
      *
-     * @return \QUI\Control|null
+     * @return Control|null
      */
-    public static function getPasswordResetControl()
+    public static function getPasswordResetControl(): ?Control
     {
         return null;
     }
@@ -39,9 +41,9 @@ abstract class AbstractAuthenticator implements QUI\Users\AuthenticatorInterface
     /**
      * Return the settings control (eq: for administration)
      *
-     * @return \QUI\Control|null
+     * @return Control|null
      */
-    public static function getSettingsControl()
+    public static function getSettingsControl(): ?Control
     {
         return null;
     }
@@ -49,7 +51,7 @@ abstract class AbstractAuthenticator implements QUI\Users\AuthenticatorInterface
     /**
      * @return bool
      */
-    public static function isCLICompatible()
+    public static function isCLICompatible(): bool
     {
         return false;
     }
@@ -59,7 +61,7 @@ abstract class AbstractAuthenticator implements QUI\Users\AuthenticatorInterface
      *
      * @return integer
      */
-    public function getUserId()
+    public function getUserId(): int
     {
         return $this->getUser()->getId();
     }
@@ -67,10 +69,9 @@ abstract class AbstractAuthenticator implements QUI\Users\AuthenticatorInterface
     /**
      * The CLI Authentication, only if isCLICompatible returns true
      *
-     * @param \QUI\System\Console $Console
+     * @param Console $Console
      */
-    public function cliAuthentication(\QUI\System\Console $Console)
+    public function cliAuthentication(Console $Console): void
     {
-        return;
     }
 }
