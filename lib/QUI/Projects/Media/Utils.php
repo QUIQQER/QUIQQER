@@ -273,11 +273,11 @@ class Utils
     /**
      * Is the variable an image object?
      *
-     * @param string|boolean|object $Unknown
+     * @param object|boolean|string $Unknown
      *
      * @return boolean
      */
-    public static function isImage($Unknown): bool
+    public static function isImage(object|bool|string $Unknown): bool
     {
         if (!is_object($Unknown)) {
             return false;
@@ -646,7 +646,7 @@ class Utils
      * @return Image
      * @throws QUI\Exception
      */
-    public static function getImageByUrl($url): Image
+    public static function getImageByUrl(mixed $url): Image
     {
         if (!is_string($url)) {
             throw new QUI\Exception(
@@ -700,10 +700,10 @@ class Utils
      *
      * @param mixed $url - image.php? url
      *
-     * @return Item
+     * @return QUI\Interfaces\Projects\Media\File
      * @throws QUI\Exception
      */
-    public static function getMediaItemByUrl($url): Item
+    public static function getMediaItemByUrl(mixed $url): QUI\Interfaces\Projects\Media\File
     {
         if (!is_string($url)) {
             throw new QUI\Exception(
@@ -737,10 +737,10 @@ class Utils
      *
      * @param string $url - cache url, or real path of the file
      *
-     * @return Item
+     * @return QUI\Interfaces\Projects\Media\File
      * @throws QUI\Exception
      */
-    public static function getElement(string $url): Item
+    public static function getElement(string $url): QUI\Interfaces\Projects\Media\File
     {
         $filePath = self::getRealFileDataFromCacheUrl($url);
         $Project = QUI::getProject($filePath['project']);
@@ -994,7 +994,7 @@ class Utils
      *
      * @throws QUI\Exception
      */
-    public static function checkMediaName(string $filename)
+    public static function checkMediaName(string $filename): void
     {
         // Prüfung des Namens - Sonderzeichen
         if (preg_match('/[^0-9_a-zA-Z \-.]/', $filename)) {
@@ -1067,11 +1067,10 @@ class Utils
     /**
      * Is the variable a folder object?
      *
-     * @param string|boolean|object $Unknown
-     *
+     * @param mixed $Unknown
      * @return boolean
      */
-    public static function isFolder($Unknown): bool
+    public static function isFolder(mixed $Unknown): bool
     {
         if (!is_object($Unknown)) {
             return false;
@@ -1091,10 +1090,10 @@ class Utils
     /**
      * Is the object a media item
      *
-     * @param $Unknown
+     * @param mixed $Unknown
      * @return bool
      */
-    public static function isItem($Unknown): bool
+    public static function isItem(mixed $Unknown): bool
     {
         if (!is_object($Unknown)) {
             return false;
@@ -1111,19 +1110,17 @@ class Utils
      * Check the upload params if a replacement can do
      *
      * @param QUI\Projects\Media $Media
-     * @param integer $fileid - The File which will be replaced
-     * @param array $uploadparams - Array with file information array('name' => '', 'type' => '')
+     * @param integer $fileId - The File which will be replaced
+     * @param array $uploadParams - Array with file information array('name' => '', 'type' => '')
      *
      * @throws QUI\Exception
      */
-    public static function checkReplace(QUI\Projects\Media $Media, $fileid, $uploadparams)
+    public static function checkReplace(QUI\Projects\Media $Media, int $fileId, array $uploadParams): void
     {
-        $fileid = (int)$fileid;
-
         $result = QUI::getDataBase()->fetch([
             'from' => $Media->getTable(),
             'where' => [
-                'id' => $fileid
+                'id' => $fileId
             ],
             'limit' => 1
         ]);
@@ -1133,7 +1130,7 @@ class Utils
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'exception.file.not.found',
-                    ['file' => $fileid]
+                    ['file' => $fileId]
                 ),
                 ErrorCodes::FILE_NOT_FOUND
             );
@@ -1143,24 +1140,24 @@ class Utils
 
         // if the mimetype is the same, no check for renaming
         // so, the check is finish
-        if ($data['mime_type'] == $uploadparams['type']) {
+        if ($data['mime_type'] == $uploadParams['type']) {
             return;
         }
 
-        $File = $Media->get($fileid);
+        $File = $Media->get($fileId);
 
-        if ($File->getAttribute('name') == $uploadparams['name']) {
+        if ($File->getAttribute('name') == $uploadParams['name']) {
             return;
         }
 
         $Parent = $File->getParent();
 
-        if ($Parent->fileWithNameExists($uploadparams['name'])) {
+        if ($Parent->fileWithNameExists($uploadParams['name'])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'exception.media.file.already.exists',
-                    ['filename' => $uploadparams['name']]
+                    ['filename' => $uploadParams['name']]
                 ),
                 ErrorCodes::FILE_ALREADY_EXISTS
             );
@@ -1174,9 +1171,8 @@ class Utils
      *
      * @return string
      */
-    public static function generateMD5($File): string
+    public static function generateMD5(Image|File $File): string
     {
-        /* @var $File Image */
         return md5_file($File->getFullPath());
     }
 
@@ -1187,9 +1183,8 @@ class Utils
      *
      * @return string
      */
-    public static function generateSHA1($File): string
+    public static function generateSHA1(Image|File $File): string
     {
-        /* @var $File Image */
         return sha1_file($File->getFullPath());
     }
 
@@ -1299,7 +1294,7 @@ class Utils
      *
      * @return int|null
      */
-    public static function getMediaCacheFolderSizeForProject(QUI\Projects\Project $Project, $force = false): ?int
+    public static function getMediaCacheFolderSizeForProject(QUI\Projects\Project $Project, bool $force = false): ?int
     {
         return QUI\Utils\System\Folder::getFolderSize($Project->getMedia()->getFullCachePath(), $force);
     }
