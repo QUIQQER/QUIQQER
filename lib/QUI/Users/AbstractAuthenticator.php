@@ -67,6 +67,16 @@ abstract class AbstractAuthenticator implements QUI\Users\AuthenticatorInterface
     }
 
     /**
+     * Return the UUID of the user
+     *
+     * @return string
+     */
+    public function getUserUUID(): string
+    {
+        return $this->getUser()->getUUID();
+    }
+
+    /**
      * The CLI Authentication, only if isCLICompatible returns true
      *
      * @param Console $Console
