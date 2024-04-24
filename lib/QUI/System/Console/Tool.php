@@ -50,9 +50,9 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      *
      * @param string $name
      *
-     * @return Tool this
+     * @return Tool
      */
-    public function setName(string $name): static
+    public function setName(string $name): self
     {
         $this->setAttribute('name', $name);
 
@@ -64,9 +64,9 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      *
      * @param string $description
      *
-     * @return Tool this
+     * @return Tool
      */
-    public function setDescription(string $description): static
+    public function setDescription(string $description): self
     {
         $this->setAttribute('description', $description);
 
@@ -77,11 +77,10 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      * Set the help of the Tool
      *
      * @param string $help
-     *
-     * @return Tool this
+     * @return Tool
      * @deprecated use addArgument for argument descriptions
      */
-    public function setHelp(string $help): static
+    public function setHelp(string $help): self
     {
         $this->setAttribute('help', $help);
 
@@ -99,14 +98,14 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      * @param boolean|string $short - optional, shortcut
      * @param boolean $optional - optional, Argument is optional
      *
-     * @return Tool this
+     * @return Tool
      */
     public function addArgument(
         string $name,
         string $description,
         bool|string $short = false,
         bool $optional = false
-    ): static {
+    ): self {
         $this->paramsList[$name] = [
             'param' => $name,
             'description' => $description,
@@ -123,9 +122,9 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      * @param string $name
      * @param boolean|string $value
      *
-     * @return Tool this
+     * @return Tool
      */
-    public function setArgument(string $name, bool|string $value): static
+    public function setArgument(string $name, bool|string $value): self
     {
         $this->params[$name] = $value;
 
