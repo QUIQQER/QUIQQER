@@ -9,7 +9,7 @@ namespace QUI\Workspace;
 use DOMElement;
 use QUI;
 use QUI\Controls\Contextmenu\Bar;
-use QUI\Controls\Contextmenu\Menuitem;
+use QUI\Controls\Contextmenu\MenuItem;
 use QUI\Permissions\Permission;
 use QUI\Utils\Text\XML;
 
@@ -157,7 +157,7 @@ class Menu
             }
 
             $Projects->appendChild(
-                new Menuitem([
+                new MenuItem([
                     'text' => $project,
                     'icon' => 'fa fa-home',
                     'onclick' => '',
@@ -227,7 +227,7 @@ class Menu
                     $menuParent = $Window->getAttribute('menu-parent');
 
                     if (isset($windowList[$winName])) {
-                        /* @var $Item Menuitem */
+                        /* @var $Item MenuItem */
                         $Item = $windowList[$winName];
                         $files = $Item->getAttribute('qui-xml-file');
 
@@ -245,7 +245,7 @@ class Menu
                     }
 
 
-                    $Item = new Menuitem();
+                    $Item = new MenuItem();
 
                     $Item->setAttribute(
                         'name',
@@ -335,10 +335,10 @@ class Menu
      * Set window title / menu item title
      * only if no title is set
      *
-     * @param Menuitem $MenuItem
+     * @param MenuItem $MenuItem
      * @param DOMElement $Node
      */
-    public function setWindowTitle(Menuitem $MenuItem, DOMElement $Node): void
+    public function setWindowTitle(MenuItem $MenuItem, DOMElement $Node): void
     {
         if ($MenuItem->getAttribute('text')) {
             return;
@@ -360,10 +360,10 @@ class Menu
      * Set window icon / menu item icon
      * only if no icon is set
      *
-     * @param Menuitem $MenuItem
+     * @param MenuItem $MenuItem
      * @param DOMElement $Node
      */
-    public function setWindowIcon(Menuitem $MenuItem, DOMElement $Node): void
+    public function setWindowIcon(MenuItem $MenuItem, DOMElement $Node): void
     {
         if ($MenuItem->getAttribute('icon')) {
             return;
