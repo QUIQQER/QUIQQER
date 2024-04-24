@@ -312,7 +312,7 @@ class Manager implements QUI\Interfaces\Events
      * @return array         An array containing the results of the event handlers
      * @throws ExceptionStack
      */
-    public function fireEvent(string $event, bool|array $args = false): array
+    public function fireEvent(string $event, bool|array $args = false, bool $force = false): array
     {
         // event onFireEvent
         $fireArgs = $args;

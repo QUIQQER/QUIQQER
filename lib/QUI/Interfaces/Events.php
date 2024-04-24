@@ -61,5 +61,5 @@ interface Events
      * @param bool|array $args - (optional) the argument(s) to pass to the function.
      *                        The arguments must be in an array.
      */
-    public function fireEvent(string $event, bool|array $args = false);
+    public function fireEvent(string $event, bool|array $args = false, bool $force = false);
 }
