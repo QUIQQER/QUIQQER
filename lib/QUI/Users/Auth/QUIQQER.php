@@ -31,29 +31,28 @@ class QUIQQER extends AbstractAuthenticator
 {
     /**
      * User object
-     * @var false|QUI\Users\User
+     * @var ?User
      */
-    protected $User = null;
+    protected ?User $User = null;
 
     /**
      * Name of the user
-     * @var string
+     * @var string|null
      */
-    protected $username = null;
+    protected ?string $username = null;
 
     /**
      * @var bool
      */
-    protected $authenticated = false;
+    protected bool $authenticated = false;
 
     /**
-     * @param string $username
-     * @throws QUI\Exception
+     * @param array|int|string $user
      */
-    public function __construct($username = '')
+    public function __construct(array|int|string $user = '')
     {
-        $username = Orthos::clear($username);
-        $this->username = $username;
+        $user = Orthos::clear($user);
+        $this->username = $user;
     }
 
     /**
@@ -253,11 +252,11 @@ class QUIQQER extends AbstractAuthenticator
      * Old genHash method
      *
      * @param string $pass
-     * @param string $salt
+     * @param string|null $salt
      * @return string
      * @deprecated
      */
-    protected function genHash($pass, $salt = null)
+    protected function genHash(string $pass, string $salt = null): string
     {
         if ($salt === null) {
             $randomBytes = openssl_random_pseudo_bytes(SALT_LENGTH);
