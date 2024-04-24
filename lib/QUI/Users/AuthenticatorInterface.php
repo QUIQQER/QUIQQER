@@ -89,6 +89,11 @@ interface AuthenticatorInterface
     public function getUserId(): bool|int;
 
     /**
+     * @return string
+     */
+    public function getUserUUID(): string;
+
+    /**
      * The CLI Authentication, only if isCLICompatible returns true
      *
      * @param Console $Console
