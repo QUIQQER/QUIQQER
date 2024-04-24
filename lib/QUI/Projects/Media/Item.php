@@ -597,7 +597,7 @@ abstract class Item extends QUI\QDOM
      *
      * @throws QUI\Permissions\Exception
      */
-    public function checkPermission(string $permission, $User = false)
+    public function checkPermission(string $permission, QUI\Interfaces\Users\User $User = null): void
     {
         if (Media::useMediaPermissions() === false) {
             return;
