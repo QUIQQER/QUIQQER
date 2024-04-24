@@ -29,6 +29,7 @@ class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
 
     /**
      * @return int|string
+     * @deprecated
      */
     public function getUniqueId(): int|string
     {
