@@ -18,7 +18,7 @@ class QUIQQERLogin extends Control
      * QUIQQERLogin constructor.
      * @param array $options
      */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
 
@@ -31,7 +31,7 @@ class QUIQQERLogin extends Control
     /**
      * @return string
      */
-    public function getBody()
+    public function getBody(): string
     {
         $Engine = QUI::getTemplateManager()->getEngine();
         $showPasswordReset = false;
