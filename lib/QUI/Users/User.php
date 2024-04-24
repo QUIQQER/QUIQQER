@@ -1448,7 +1448,7 @@ class User implements QUIUserInterface
      * @return bool|int|string
      * @throws QUI\Exception
      */
-    public function getPermission(string $right, bool|array $ruleset = false): bool|int|string
+    public function getPermission(string $right, callable|bool|string $ruleset = false): bool|int|string
     {
         //@todo Benutzer muss erster prüfen ob bei ihm das recht seperat gesetzt ist
 
