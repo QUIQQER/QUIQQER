@@ -67,18 +67,22 @@ class Manager
      * @var array - list of users (cache)
      */
     private array $users = [];
+
     /**
      * @var array
      */
     private array $usersUUIDs = [];
+
     /**
      * @var null|Nobody
      */
     private ?Nobody $Nobody = null;
+
     /**
      * @var null|SystemUser
      */
     private ?SystemUser $SystemUser = null;
+
     /**
      * @var null|QUIUserInterface
      */
