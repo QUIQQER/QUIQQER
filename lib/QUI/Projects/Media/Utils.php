@@ -812,25 +812,10 @@ class Utils
     }
 
     /**
-     * @param $output
-     * @param array $size
-     * @return string
-     *
-     * @throws QUI\Exception
-     *
-     * @deprecated use getRewrittenUrl
-     */
-    public static function getRewritedUrl($output, array $size = []): string
-    {
-        return self::getRewrittenUrl($output, $size);
-    }
-
-    /**
-     * Return the rewritten url from a image.php? url
+     * Return the rewritten url from an image.php? url
      *
      * @param string $output
      * @param array $size
-     *
      * @return string
      *
      * @throws QUI\Exception
