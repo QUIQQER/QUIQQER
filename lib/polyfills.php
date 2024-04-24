@@ -11,7 +11,7 @@ if (!function_exists('array_key_first')) {
      * @param array $arr
      * @return int|string|null
      */
-    function array_key_first(array $arr)
+    function array_key_first(array $arr): int|string|null
     {
         foreach ($arr as $key => $unused) {
             return $key;
@@ -26,15 +26,15 @@ if (!function_exists("array_key_last")) {
      * https://www.php.net/manual/de/function.array-key-last.php#123016
      *
      * @param $array
-     * @return mixed|null
+     * @return int|string|null
      */
-    function array_key_last($array)
+    function array_key_last($array): int|string|null
     {
-        if (!\is_array($array) || empty($array)) {
+        if (!is_array($array) || empty($array)) {
             return null;
         }
 
-        return \array_keys($array)[\count($array) - 1];
+        return array_keys($array)[count($array) - 1];
     }
 }
 
