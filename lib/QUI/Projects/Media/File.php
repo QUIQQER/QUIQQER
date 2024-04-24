@@ -26,14 +26,10 @@ use function sha1_file;
 class File extends Item implements QUI\Interfaces\Projects\Media\File
 {
     /**
-     * (non-PHPdoc)
-     *
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
-     *
-     * @see QUI\Interfaces\Projects\Media\File::createCache
      */
-    public function createCache()
+    public function createCache(): bool|string
     {
         if (Media::$globalDisableMediaCacheCreation) {
             return false;
@@ -98,7 +94,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @throws Exception if the cache file cannot be deleted.
      */
-    public function deleteCache()
+    public function deleteCache(): void
     {
         $media = $this->Media;
         $cacheDirectory = CMS_DIR . $media->getCacheDir();
@@ -116,7 +112,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
-    public function generateMD5()
+    public function generateMD5(): void
     {
         if (!file_exists($this->getFullPath())) {
             throw new QUI\Exception(
@@ -143,7 +139,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @throws QUI\Exception
      */
-    public function generateSHA1()
+    public function generateSHA1(): void
     {
         if (!file_exists($this->getFullPath())) {
             throw new QUI\Exception(
