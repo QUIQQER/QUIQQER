@@ -1481,7 +1481,7 @@ class Rewrite
          */
         $triggerEvent = function ($eventName, QUI\Interfaces\Projects\Site $Site) {
             try {
-                QUI::getEvents()->fireEvent($eventName, [$Site], true);
+                QUI::getEvents()->fireEvent($eventName, [$Site]);
             } catch (QUI\ExceptionStack $Exception) {
                 $list = $Exception->getExceptionList();
 
