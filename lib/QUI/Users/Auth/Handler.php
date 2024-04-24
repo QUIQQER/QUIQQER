@@ -30,16 +30,16 @@ class Handler
     /**
      * global instance
      *
-     * @var Handler
+     * @var Handler|null
      */
-    protected static $Instance;
+    protected static ?Handler $Instance = null;
 
     /**
      * Return the global QUI\Users\Auth\Handler instance
      *
      * @return Handler
      */
-    public static function getInstance()
+    public static function getInstance(): Handler
     {
         if (is_null(self::$Instance)) {
             self::$Instance = new self();
@@ -52,7 +52,7 @@ class Handler
      * @param QUI\Package\Package $Package
      * @throws Exception
      */
-    public static function onPackageSetup(QUI\Package\Package $Package)
+    public static function onPackageSetup(QUI\Package\Package $Package): void
     {
         // create auth provider as user permissions
         $authProviders = $Package->getProvider('auth');
@@ -95,7 +95,7 @@ class Handler
      *
      * @return array
      */
-    public function getGlobalAuthenticators()
+    public function getGlobalAuthenticators(): array
     {
         return $this->getGlobalFrontendAuthenticators();
     }
@@ -105,7 +105,7 @@ class Handler
      *
      * @return array
      */
-    public function getGlobalFrontendAuthenticators()
+    public function getGlobalFrontendAuthenticators(): array
     {
         return $this->getAuthenticatorFromConfig(QUI::conf('auth_frontend'));
     }
@@ -114,7 +114,7 @@ class Handler
      * @param array $authenticators
      * @return array
      */
-    protected function getAuthenticatorFromConfig($authenticators = [])
+    protected function getAuthenticatorFromConfig(array $authenticators = []): array
     {
         if (empty($authenticators)) {
             return [
@@ -164,7 +164,7 @@ class Handler
      *
      * @return array
      */
-    public function getAvailableAuthenticators()
+    public function getAvailableAuthenticators(): array
     {
         $cache = 'quiqqer/permissions/authenticator/available';
 
@@ -216,7 +216,7 @@ class Handler
      *
      * @return array
      */
-    public function getGlobalBackendAuthenticators()
+    public function getGlobalBackendAuthenticators(): array
     {
         return $this->getAuthenticatorFromConfig(QUI::conf('auth_backend'));
     }
@@ -230,7 +230,7 @@ class Handler
      *
      * @throws QUI\Users\Auth\Exception
      */
-    public function getAuthenticator($authenticator, $username)
+    public function getAuthenticator(string $authenticator, string $username): AuthenticatorInterface
     {
         $authenticators = $this->getAvailableAuthenticators();
         $authenticators = array_flip($authenticators);
@@ -254,7 +254,7 @@ class Handler
      * @throws QUI\Exception
      * @throws \PHPMailer\PHPMailer\Exception
      */
-    public function sendPasswordResetVerificationMail($User)
+    public function sendPasswordResetVerificationMail(QUI\Users\User $User): void
     {
         if (!$this->isQuiqqerVerificationPackageInstalled()) {
             throw new QUI\Exception([
@@ -309,7 +309,7 @@ class Handler
      *
      * @return bool
      */
-    public function isQuiqqerVerificationPackageInstalled()
+    public function isQuiqqerVerificationPackageInstalled(): bool
     {
         $isInstalled = true;
 
