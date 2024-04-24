@@ -289,6 +289,7 @@ class Nobody extends QUI\QDOM implements User
     }
 
     /**
+     * @deprecated
      * @return int|string
      */
     public function getUniqueId(): int|string
