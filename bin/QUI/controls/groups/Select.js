@@ -16,10 +16,10 @@ define('controls/groups/Select', [
 
     'css!controls/groups/Select.css'
 
-], function (QUIControl, QUIElementSelect, QUILocale, Groups) {
-    "use strict";
+], function(QUIControl, QUIElementSelect, QUILocale, Groups) {
+    'use strict';
 
-    var lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/quiqqer';
 
     /**
      * @class controls/groups/Select
@@ -32,14 +32,14 @@ define('controls/groups/Select', [
     return new Class({
 
         Extends: QUIElementSelect,
-        Type   : 'controls/groups/Select',
+        Type: 'controls/groups/Select',
 
         Binds: [
             '$onSearchButtonClick',
             'groupSearch'
         ],
 
-        initialize: function (options) {
+        initialize: function(options) {
             this.parent(options);
 
             this.setAttribute('Search', this.groupSearch);
@@ -62,22 +62,22 @@ define('controls/groups/Select', [
          * @param {String} value
          * @returns {Promise}
          */
-        groupSearch: function (value) {
-            return new Promise(function (resolve) {
+        groupSearch: function(value) {
+            return new Promise(function(resolve) {
                 Groups.search({
                     order: 'ASC',
                     limit: 5
                 }, {
-                    id  : value,
+                    id: value,
                     name: value
-                }).then(function (result) {
-                    var data = [];
+                }).then(function(result) {
+                    const data = [];
 
-                    for (var i = 0, len = result.data.length; i < len; i++) {
+                    for (let i = 0, len = result.data.length; i < len; i++) {
                         data.push({
-                            id   : result.data[i].id,
+                            id: result.data[i].id,
                             title: result.data[i].name,
-                            icon : 'icon-group'
+                            icon: 'icon-group'
                         });
                     }
 
@@ -92,21 +92,21 @@ define('controls/groups/Select', [
          * @param {Object} Select
          * @param {Object} Btn
          */
-        $onSearchButtonClick: function (Select, Btn) {
-            var oldIcon = Btn.getAttribute('icon');
+        $onSearchButtonClick: function(Select, Btn) {
+            const oldIcon = Btn.getAttribute('icon');
 
             Btn.setAttribute('icon', 'fa fa-spinner fa-spin');
             Btn.disable();
 
             require([
                 'controls/groups/sitemap/Window'
-            ], function (Window) {
+            ], function(Window) {
                 new Window({
                     autoclose: true,
-                    multiple : this.getAttribute('multiple'),
-                    events   : {
-                        onSubmit: function (Win, groupIds) {
-                            for (var i = 0, len = groupIds.length; i < len; i++) {
+                    multiple: this.getAttribute('multiple'),
+                    events: {
+                        onSubmit: function(Win, groupIds) {
+                            for (let i = 0, len = groupIds.length; i < len; i++) {
                                 this.addItem(groupIds[i]);
                             }
                         }.bind(this)
