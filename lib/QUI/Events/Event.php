@@ -142,8 +142,11 @@ class Event implements QUI\Interfaces\Events
      *
      * @throws QUI\ExceptionStack
      */
-    public function fireEvent(string $event, bool|array $args = false): array
-    {
+    public function fireEvent(
+        string $event,
+        bool|array $args = false,
+        bool $force = false
+    ): array {
         $results = [];
 
         if (!str_starts_with($event, 'on')) {
