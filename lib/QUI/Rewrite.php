@@ -7,12 +7,12 @@
 namespace QUI;
 
 use QUI;
+use QUI\Database\Exception;
 use QUI\Projects\Media\File;
 use QUI\Projects\Media\Image;
 use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Projects\Project;
 use QUI\Projects\Site;
-use QUI\Projects\Site\Edit;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -77,7 +77,7 @@ class Rewrite
     const URL_PROJECT_CHARACTER = '^';
     const URL_DEFAULT_SUFFIX = '.html';
 
-    public static $SUFFIX = false;
+    public static bool $SUFFIX = false;
 
     /**
      * site request parameter
@@ -85,36 +85,43 @@ class Rewrite
      * @var array
      */
     public array $site_params = [];
+
     /**
-     * @var null
+     * @var null|array
      */
-    protected $registerPaths = null;
+    protected ?array $registerPaths = null;
+
     /**
      * @var Output
      */
     protected Output $Output;
+
     /**
      * @var Events\Event
      */
     protected QUI\Events\Event $Events;
+
     /**
      * active project
      *
-     * @var Project
+     * @var ?Project
      */
-    private $project;
+    private ?Project $project = null;
+
     /**
      * active project
      *
      * @var string
      */
     private string $project_str = '';
+
     /**
      * active template
      *
-     * @var string
+     * @var string|bool
      */
-    private $template_str = false;
+    private string|bool $template_str = false;
+
     /**
      * if project prefix is set
      *
@@ -124,21 +131,21 @@ class Rewrite
     /**
      * project lang
      *
-     * @var string
+     * @var string|bool
      */
-    private $lang = false;
+    private string|bool $lang = false;
     /**
      * active site
      *
-     * @var Site
+     * @var QUI\Interfaces\Projects\Site|null
      */
-    private $site = null;
+    private ?QUI\Interfaces\Projects\Site $site = null;
     /**
      * first site of the project
      *
-     * @var Site
+     * @var QUI\Interfaces\Projects\Site
      */
-    private $first_child;
+    private QUI\Interfaces\Projects\Site $first_child;
     /**
      * current site path
      *
@@ -154,9 +161,9 @@ class Rewrite
     /**
      * loaded vhosts
      *
-     * @var array
+     * @var array|bool
      */
-    private $vhosts = false;
+    private array|bool $vhosts = false;
     /**
      * current suffix, (.html, .pdf, .print)
      *
@@ -213,9 +220,9 @@ class Rewrite
     /**
      * Return the default suffix eq: .html or ''
      *
-     * @return string
+     * @return bool|string
      */
-    public static function getDefaultSuffix()
+    public static function getDefaultSuffix(): bool|string
     {
         if (self::$SUFFIX !== false) {
             return self::$SUFFIX;
@@ -237,7 +244,7 @@ class Rewrite
      *
      * @throws QUI\Exception
      */
-    public function exec()
+    public function exec(): void
     {
         if (!isset($_REQUEST['_url'])) {
             $_REQUEST['_url'] = '';
@@ -793,7 +800,7 @@ class Rewrite
      * @return Site
      * @throws QUI\Exception
      */
-    public function getErrorSite()
+    public function getErrorSite(): Site
     {
         $vhosts = $this->getVHosts();
 
@@ -935,7 +942,7 @@ class Rewrite
      *
      * @return Project|false
      */
-    protected function getProjectByVhost()
+    protected function getProjectByVhost(): bool|Project
     {
         $vhosts = $this->getVHosts();
 
@@ -1009,7 +1016,7 @@ class Rewrite
      *
      * @param Interfaces\Projects\Site $Site - seite die hinzugefügt wird
      */
-    private function setIntoPath(Interfaces\Projects\Site $Site)
+    private function setIntoPath(Interfaces\Projects\Site $Site): void
     {
         $this->path[] = $Site;
         $this->ids_in_path[] = $Site->getId();
@@ -1020,12 +1027,11 @@ class Rewrite
      *
      * @param string $url
      * @param boolean $setPath
-     *
      * @return Site|false
      *
      * @throws QUI\Exception
      */
-    public function getSiteByUrl(string $url, bool $setPath = true)
+    public function getSiteByUrl(string $url, bool $setPath = true): bool|QUI\Interfaces\Projects\Site
     {
         // Sprache raus
         if ($url == '') {
@@ -1114,9 +1120,10 @@ class Rewrite
      * @param string $path
      * @param Project $Project
      *
-     * @return Site|false
+     * @return QUI\Interfaces\Projects\Site|false
+     * @throws Exception
      */
-    public function existRegisterPath(string $path, Project $Project)
+    public function existRegisterPath(string $path, Project $Project): bool|QUI\Interfaces\Projects\Site
     {
         if ($this->registerPaths === null) {
             $table = QUI::getDBProjectTableName('paths', $Project);
@@ -1161,7 +1168,7 @@ class Rewrite
      *
      * @return string|boolean
      */
-    public function getParam(string $name)
+    public function getParam(string $name): bool|string
     {
         $result = '';
 
@@ -1235,11 +1242,11 @@ class Rewrite
     /**
      * Gibt die aktuelle Seite zurück
      *
-     * @return Site|null
+     * @return QUI\Interfaces\Projects\Site|null
      *
      * @throws QUI\Exception
      */
-    public function getSite(): ?Site
+    public function getSite(): ?QUI\Interfaces\Projects\Site
     {
         if (isset($this->site) && is_object($this->site)) {
             return $this->site;
@@ -1253,9 +1260,9 @@ class Rewrite
     /**
      * Aktuelles Site Objekt überschreiben
      *
-     * @param Site|Edit|QUI\Projects\Site\Virtual $Site
+     * @param QUI\Interfaces\Projects\Site $Site
      */
-    public function setSite($Site)
+    public function setSite(QUI\Interfaces\Projects\Site $Site): void
     {
         $this->site = $Site;
     }
@@ -1296,7 +1303,7 @@ class Rewrite
      *
      * @param array $path
      */
-    public function setPath(array $path)
+    public function setPath(array $path): void
     {
         $this->path = $path;
     }
@@ -1314,9 +1321,9 @@ class Rewrite
     }
 
     /**
-     * @param Site|QUI\Projects\Site\Virtual $Site
+     * @param QUI\Interfaces\Projects\Site $Site
      */
-    public function addSiteToPath($Site)
+    public function addSiteToPath(QUI\Interfaces\Projects\Site $Site): void
     {
         $this->path[] = $Site;
         $this->ids_in_path[] = $Site->getId();
@@ -1373,7 +1380,7 @@ class Rewrite
      *
      * @param string $str
      */
-    public function setOutputContent(string $str)
+    public function setOutputContent(string $str): void
     {
         $this->output_content = $str;
     }
@@ -1420,12 +1427,12 @@ class Rewrite
     /**
      * Register a rewrite path
      *
-     * @param string|array $paths
-     * @param Site|Edit $Site
+     * @param array|string $paths
+     * @param QUI\Interfaces\Projects\Site $Site
      *
      * @throws QUI\Exception
      */
-    public function registerPath($paths, $Site)
+    public function registerPath(array|string $paths, QUI\Interfaces\Projects\Site $Site): void
     {
         $Project = $Site->getProject();
         $table = QUI::getDBProjectTableName('paths', $Project);
@@ -1478,9 +1485,9 @@ class Rewrite
          * Helper for site event triggering
          *
          * @param $eventName
-         * @param $Site
+         * @param Interfaces\Projects\Site $Site
          */
-        $triggerEvent = function ($eventName, $Site) {
+        $triggerEvent = function ($eventName, QUI\Interfaces\Projects\Site $Site) {
             try {
                 QUI::getEvents()->fireEvent($eventName, [$Site], true);
             } catch (QUI\ExceptionStack $Exception) {
@@ -1519,11 +1526,11 @@ class Rewrite
     /**
      * Unregister a rewrite path
      *
-     * @param Site|Edit $Site
+     * @param QUI\Interfaces\Projects\Site $Site
      *
      * @throws QUI\Exception
      */
-    public function unregisterPath($Site)
+    public function unregisterPath(QUI\Interfaces\Projects\Site $Site): void
     {
         $Project = $Site->getProject();
         $table = QUI::getDBProjectTableName('paths', $Project);
