@@ -25,9 +25,11 @@ interface Events
      * Adds an event to the Class instance's event stack.
      *
      * @param string $event - The type of event (e.g. 'complete').
-     * @param callable $fn - Function which should be executed
+     * @param callable|string $fn - Function which should be executed
+     * @param int $priority
+     * @param string $package
      */
-    public function addEvent(string $event, callable $fn);
+    public function addEvent(string $event, callable|string $fn, int $priority = 0, string $package = '');
 
     /**
      * The same as addEvent, but accepts an array to add multiple events at once.
