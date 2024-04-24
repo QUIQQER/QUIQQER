@@ -693,7 +693,6 @@ abstract class Item extends QUI\QDOM
     {
         $this->checkPermission('quiqqer.projects.media.del', $PermissionUser);
 
-
         if ($this->isDeleted()) {
             throw new Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.already.deleted'),
@@ -1461,7 +1460,6 @@ abstract class Item extends QUI\QDOM
     public function setEffect(string $effect, float|int|string $value): void
     {
         $this->getEffects();
-
         $this->effects[$effect] = $value;
     }
 
