@@ -109,17 +109,16 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Create a cache file with the new width and height
      *
-     * @param integer|boolean $width - (optional)
-     * @param integer|boolean $height - (optional)
+     * @param boolean|integer $width - (optional)
+     * @param boolean|integer $height - (optional)
      *
-     * @return string - URL to the cache file
+     * @return bool|string - URL to the cache file
      *
      * @throws QUI\Exception
      * @throws ExceptionStack
      * @throws QUI\Permissions\Exception
-     * @throws QUI\Exception
      */
-    public function createSizeCache($width = false, $height = false)
+    public function createSizeCache(bool|int $width = false, bool|int $height = false): bool|string
     {
         if (!$this->getAttribute('active')) {
             return false;
@@ -309,15 +308,16 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the image path
      *
-     * @param string|boolean $maxWidth - (optional)
-     * @param string|boolean $maxHeight - (optional)
-     *
+     * @param bool|string|int $maxWidth - (optional)
+     * @param bool|string|int $maxHeight - (optional)
      * @return string
      *
      * @throws QUI\Exception
      */
-    public function getSizeCachePath($maxWidth = false, $maxHeight = false): string
-    {
+    public function getSizeCachePath(
+        bool|string|int $maxWidth = false,
+        bool|string|int $maxHeight = false
+    ): string {
         $Media = $this->Media;
         /* @var $Media QUI\Projects\Media */
         $cacheDir = CMS_DIR . $Media->getCacheDir();
@@ -406,15 +406,17 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the Image specific max resize params
      *
-     * @param boolean|integer $maxWidth - (optional)
-     * @param boolean|integer $maxHeight - (optional)
+     * @param bool|string|int $maxWidth - (optional)
+     * @param bool|string|int $maxHeight - (optional)
      *
      * @return array - array('width' => 100, 'height' => 100)
      *
      * @throws QUI\Exception
      */
-    public function getResizeSize($maxWidth = false, $maxHeight = false): array
-    {
+    public function getResizeSize(
+        bool|string|int $maxWidth = false,
+        bool|string|int $maxHeight = false
+    ): array {
         if ($this->getAttribute('mime_type') == 'image/svg+xml') {
             return [
                 'width' => false,
@@ -558,7 +560,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @return Image|boolean
      */
-    public function getWatermark()
+    public function getWatermark(): Image|bool
     {
         // own watermark?
         $imageEffects = $this->getEffects();
@@ -596,7 +598,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @return Image|boolean
      */
-    public function getWatermarkPosition()
+    public function getWatermarkPosition(): Image|bool
     {
         $imageEffects = $this->getEffects();
 
@@ -617,7 +619,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * @return array|bool|false|string
      */
-    public function getWatermarkRatio()
+    public function getWatermarkRatio(): bool|array|string
     {
         $imageEffects = $this->getEffects();
 
@@ -641,7 +643,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @return integer|false
      * @throws QUI\Exception
      */
-    public function getHeight()
+    public function getHeight(): bool|int
     {
         if ($this->getAttribute('image_height')) {
             return (int)$this->getAttribute('image_height');
@@ -664,7 +666,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @return integer|false
      * @throws QUI\Exception
      */
-    public function getWidth()
+    public function getWidth(): bool|int
     {
         if ($this->getAttribute('image_width')) {
             return (int)$this->getAttribute('image_width');
@@ -684,15 +686,17 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the image url
      *
-     * @param string|boolean $maxWidth - (optional) width
-     * @param string|boolean $maxHeight - (optional) height
+     * @param bool|string|int $maxWidth - (optional) width
+     * @param bool|string|int $maxHeight - (optional) height
      *
      * @return string
      *
      * @throws QUI\Exception
      */
-    public function getSizeCacheUrl($maxWidth = false, $maxHeight = false): string
-    {
+    public function getSizeCacheUrl(
+        bool|string|int $maxWidth = false,
+        bool|string|int $maxHeight = false
+    ): string {
         $cachePath = $this->getSizeCachePath($maxWidth, $maxHeight);
         $cacheUrl = str_replace(CMS_DIR, URL_DIR, $cachePath);
 
@@ -734,14 +738,14 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * Creates a cache file and takes into account the maximum sizes
      * return the media url
      *
-     * @param integer|boolean $maxWidth
-     * @param integer|boolean $maxHeight
+     * @param bool|string|int $maxWidth
+     * @param bool|string|int $maxHeight
      *
      * @return string - Path to the file
      *
      * @throws QUI\Exception
      */
-    public function createSizeCacheUrl($maxWidth = false, $maxHeight = false): string
+    public function createSizeCacheUrl(bool|string|int $maxWidth = false, bool|string|int $maxHeight = false): string
     {
         $params = $this->getResizeSize($maxWidth, $maxHeight);
 
@@ -756,17 +760,19 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Creates a cache file and takes into account the maximum sizes
      *
-     * @param integer|boolean $maxWidth
-     * @param integer|boolean $maxHeight
+     * @param bool|string|int $maxWidth
+     * @param bool|string|int $maxHeight
      *
-     * @return string - Path to the file
+     * @return bool|string - Path to the file
      *
      * @throws ExceptionStack
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function createResizeCache($maxWidth = false, $maxHeight = false)
-    {
+    public function createResizeCache(
+        bool|string|int $maxWidth = false,
+        bool|string|int $maxHeight = false
+    ): bool|string {
         $params = $this->getResizeSize($maxWidth, $maxHeight);
 
         return $this->createSizeCache(
@@ -780,7 +786,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @throws QUI\Exception
      */
-    public function generateMD5()
+    public function generateMD5(): void
     {
         if (!file_exists($this->getFullPath())) {
             throw new QUI\Exception(
@@ -807,7 +813,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @throws QUI\Exception
      */
-    public function generateSHA1()
+    public function generateSHA1(): void
     {
         if (!file_exists($this->getFullPath())) {
             throw new QUI\Exception(
@@ -837,7 +843,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @return void
      * @throws QUI\Exception
      */
-    public function updateExternalImage()
+    public function updateExternalImage(): void
     {
         $SessionUser = QUI::getUserBySession();
         $external = $this->getAttribute('external');
@@ -891,7 +897,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws QUI\Exception
      * @see QUI\Interfaces\Projects\Media\File::deleteCache()
      */
-    public function deleteCache()
+    public function deleteCache(): void
     {
         $Media = $this->Media;
         $cdir = CMS_DIR . $Media->getCacheDir();
@@ -922,7 +928,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Delete the admin cache
      */
-    public function deleteAdminCache()
+    public function deleteAdminCache(): void
     {
         $Media = $this->Media;
         $Project = $Media->getProject();
