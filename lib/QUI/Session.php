@@ -256,7 +256,6 @@ class Session
                 $cluster = explode(',', $redisCluster['cluster']);
                 $timeout = null;
                 $readTimeout = null;
-                $persistent = false;
 
                 $cluster = array_unique($cluster);
 
@@ -266,7 +265,7 @@ class Session
                         $cluster,
                         $timeout,
                         $readTimeout,
-                        $persistent
+                        false
                     );
                 } catch (RedisClusterException $Exception) {
                     Log::addAlert($Exception->getMessage());
