@@ -3,7 +3,6 @@
 namespace QUI\System;
 
 use DusanKasan\Knapsack\Collection;
-use JetBrains\PhpStorm\NoReturn;
 use QUI;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -177,7 +176,7 @@ class Forwarding
      *
      * @param array $data
      */
-    #[NoReturn] protected static function redirect(array $data): void
+    protected static function redirect(array $data): never
     {
         $target = $data['target'];
         $code = (int)$data['code'];

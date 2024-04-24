@@ -7,7 +7,6 @@
 namespace QUI\System\Console\Tools;
 
 use Exception;
-use JetBrains\PhpStorm\NoReturn;
 use League\CLImate\CLImate;
 use QUI;
 
@@ -97,7 +96,7 @@ class Permissions extends QUI\System\Console\Tool
      *
      * @throws Exception
      */
-    #[NoReturn] protected function showHelp(): void
+    protected function showHelp(): never
     {
         $this->writeLn();
 
