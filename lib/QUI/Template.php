@@ -662,9 +662,8 @@ class Template extends QUI\QDOM
         // footer extend
         $footer = $this->footer;
         $footerExtend = implode('', $footer);
-        $result = str_replace('</body>', $footerExtend . '</body>', $result);
 
-        return $result;
+        return str_replace('</body>', $footerExtend . '</body>', $result);
     }
 
     /**
