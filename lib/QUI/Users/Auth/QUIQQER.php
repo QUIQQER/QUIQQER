@@ -191,18 +191,18 @@ class QUIQQER extends AbstractAuthenticator
             );
         }
 
-        if (\is_array($password) && isset($password['password'])) {
-            $password = $password['password'];
+        if (is_array($authParams) && isset($authParams['password'])) {
+            $authParams = $authParams['password'];
         }
 
-        if (!\is_string($password) || empty($password)) {
+        if (!is_string($authParams) || empty($authParams)) {
             throw new QUI\Users\Exception(
                 ['quiqqer/quiqqer', 'exception.login.fail.wrong.password.input'],
                 401
             );
         }
 
-        $password = \trim($password);
+        $authParams = trim($authParams);
 
         $userData = QUI::getDataBase()->fetch([
             'select' => ['password'],
@@ -224,10 +224,10 @@ class QUIQQER extends AbstractAuthenticator
         $passwordHash = $userData[0]['password'];
 
         // generate password with given password and salt
-        if (!\password_verify($password, $passwordHash)) {
+        if (!password_verify($authParams, $passwordHash)) {
             // fallback to old method
-            $salt = \mb_substr($passwordHash, 0, SALT_LENGTH);
-            $actualPasswordHash = $this->genHash($password, $salt);
+            $salt = mb_substr($passwordHash, 0, SALT_LENGTH);
+            $actualPasswordHash = $this->genHash($authParams, $salt);
 
             if ($actualPasswordHash !== $passwordHash) {
                 throw new QUI\Users\Exception(
@@ -238,7 +238,7 @@ class QUIQQER extends AbstractAuthenticator
 
             QUI::getDataBase()->update(
                 QUI::getDBTableName('users'),
-                ['password' => QUI\Security\Password::generateHash($password)],
+                ['password' => QUI\Security\Password::generateHash($authParams)],
                 ['uuid' => $this->getUserUUID()]
             );
         }
