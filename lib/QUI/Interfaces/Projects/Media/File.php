@@ -82,6 +82,11 @@ interface File
     public function activate(QUI\Interfaces\Users\User $PermissionUser = null);
 
     /**
+     * @return bool
+     */
+    public function isActive(): bool;
+
+    /**
      * Deactivate the file
      *
      * @param QUI\Interfaces\Users\User|null $PermissionUser
