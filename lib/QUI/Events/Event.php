@@ -72,10 +72,16 @@ class Event implements QUI\Interfaces\Events
 
     /**
      * @param string $event - The type of event (e.g. 'complete').
-     * @param callable $fn - The function to execute.
+     * @param callable|string $fn - The function to execute.
+     * @param int $priority
+     * @param string $package
      */
-    public function addEvent(string $event, callable $fn): void
-    {
+    public function addEvent(
+        string $event,
+        callable|string $fn,
+        int $priority = 0,
+        string $package = ''
+    ): void {
         if (!isset($this->events[$event])) {
             $this->events[$event] = [];
         }

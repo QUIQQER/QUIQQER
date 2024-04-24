@@ -7,6 +7,7 @@
 namespace QUI\Events;
 
 use QUI;
+use QUI\Database\Exception;
 use QUI\ExceptionStack;
 
 use function is_array;
@@ -121,19 +122,14 @@ class Manager implements QUI\Interfaces\Events
      * if you want to register events for the runtime, please use lambda function
      *
      * @param string $event - The type of event (e.g. 'complete').
-     * @param callable $fn - The function to execute.
-     *
-     * @throws QUI\Exception
+     * @param callable|string $fn - The function to execute.
+     * @param int $priority
+     * @param string $package
+     * @throws Exception
      * @example $EventManager->addEvent('myEvent', function() { });
-     *
      */
-    public function addEvent(string $event, callable $fn): void
+    public function addEvent(string $event, callable|string $fn, int $priority = 0, string $package = ''): void
     {
-        if (!is_string($package)) {
-            $package = '';
-        }
-
-        // add the event to the db
         if (is_string($fn)) {
             QUI::getDataBase()->insert(self::table(), [
                 'event' => trim($event),
