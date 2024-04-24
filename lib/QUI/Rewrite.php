@@ -1271,11 +1271,9 @@ class Rewrite
      * Den aktuelle Pfad bekommen
      *
      * @param boolean $start - where to start
-     * @param boolean $me - Pfad mit der aktuellen Seite ausgeben
-     *
      * @return array
      */
-    public function getPath($start = true, $me = true)
+    public function getPath(bool $start = true): array
     {
         $path = $this->path;
 
@@ -1283,16 +1281,10 @@ class Rewrite
             return [];
         }
 
-        if ($start == true) {
-            if (
-                is_array($path)
-                && (!isset($path[0]) || $path[0]->getId() != 1)
-            ) {
+        if ($start) {
+            if ($path[0]->getId() != 1) {
                 array_unshift($path, $this->first_child);
             }
-        }
-
-        if ($me == false) {
         }
 
         return $path;
