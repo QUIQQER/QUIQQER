@@ -67,13 +67,13 @@ class Session
      *
      * @var \Symfony\Component\HttpFoundation\Session\Session
      */
-    private $Session = false;
+    private mixed $Session = false;
     /**
      * Storage handler
      *
      * @var PdoSessionHandler
      */
-    private $Storage = false;
+    private mixed $Storage = false;
     /**
      * Database table
      *
@@ -363,7 +363,7 @@ class Session
     /**
      * Start the session
      */
-    public function start()
+    public function start(): void
     {
         if (!$this->Session) {
             return;
@@ -413,7 +413,7 @@ class Session
     /**
      * Destroy the whole session
      */
-    public function destroy()
+    public function destroy(): void
     {
         if (!$this->Session) {
             return;
@@ -426,7 +426,7 @@ class Session
     /**
      * refresh the session and extend the session time
      */
-    public function refresh()
+    public function refresh(): void
     {
         if ($this->Session) {
             $this->Session->migrate();
@@ -438,7 +438,7 @@ class Session
      *
      * @throws \Exception
      */
-    public static function setup()
+    public static function setup(): void
     {
         $DBTable = QUI::getDataBase()->table();
 
@@ -462,7 +462,7 @@ class Session
      *
      * @return mixed
      */
-    public function get(string $name)
+    public function get(string $name): mixed
     {
         if ($this->Session) {
             return $this->Session->get($name, false);
@@ -490,7 +490,7 @@ class Session
      *
      * @param string $var - name of the variable
      */
-    public function del(string $var)
+    public function del(string $var): void
     {
         if (defined('QUIQQER_SETUP')) {
             return;
@@ -506,7 +506,7 @@ class Session
      *
      * @param string $var
      */
-    public function remove(string $var)
+    public function remove(string $var): void
     {
         $this->del($var);
     }
@@ -542,12 +542,12 @@ class Session
     /**
      * Is the user online?
      *
-     * @param integer $uid
+     * @param int|string $uid
      *
      * @return boolean
      * @todo is not working
      */
-    public function isUserOnline(int $uid): bool
+    public function isUserOnline(int|string $uid): bool
     {
         try {
             $result = QUI::getDataBase()->fetch([
@@ -567,9 +567,9 @@ class Session
     /**
      * Return the symfony session
      *
-     * @return \Symfony\Component\HttpFoundation\Session\Session
+     * @return \Symfony\Component\HttpFoundation\Session\Session|bool
      */
-    public function getSymfonySession()
+    public function getSymfonySession(): \Symfony\Component\HttpFoundation\Session\Session|bool
     {
         return $this->Session;
     }
