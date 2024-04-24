@@ -373,7 +373,7 @@ class Utils
             $originalSrc = urldecode($src);
             $Image = Utils::getElement($originalSrc);
 
-            if (!self::isImage($Image)) {
+            if (!($Image instanceof Image)) {
                 return '';
             }
 
@@ -892,7 +892,7 @@ class Utils
             $Media = $Project->getMedia();
             $Obj = $Media->get((int)$id);
 
-            if ($Obj->getType() == 'IMAGE') {
+            if ($Obj instanceof Image) {
                 if (!isset($size['width'])) {
                     $size['width'] = false;
                 }
