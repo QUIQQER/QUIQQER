@@ -150,11 +150,11 @@ interface User
      * Has the user the right?
      *
      * @param string $right
-     * @param boolean|array $ruleset - (optional), you can specify a ruleset, a rules = array with rights
+     * @param boolean|array|string $ruleset - (optional), you can specify a ruleset, a rules = array with rights
      *
      * @return mixed
      */
-    public function getPermission(string $right, bool|array $ruleset = false): mixed;
+    public function getPermission(string $right, callable|bool|string $ruleset = false): mixed;
 
     /**
      * set a group to the user

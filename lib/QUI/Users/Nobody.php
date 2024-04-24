@@ -289,8 +289,8 @@ class Nobody extends QUI\QDOM implements User
     }
 
     /**
-     * @deprecated
      * @return int|string
+     * @deprecated
      */
     public function getUniqueId(): int|string
     {
@@ -504,7 +504,7 @@ class Nobody extends QUI\QDOM implements User
      *
      * @throws Exception
      */
-    public function getPermission(string $right, bool|array $ruleset = false): bool|int|string
+    public function getPermission(string $right, callable|bool|string $ruleset = false): bool|int|string
     {
         return QUI::getPermissionManager()->getUserPermission($this, $right, $ruleset);
     }
