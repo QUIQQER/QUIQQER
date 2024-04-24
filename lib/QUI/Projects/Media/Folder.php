@@ -1508,12 +1508,12 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         foreach ($files as $file) {
             // subfolders
             if (is_dir($path . '/' . $file)) {
-                $foldername = MediaUtils::stripFolderName($file);
+                $folderName = MediaUtils::stripFolderName($file);
 
                 try {
-                    $NewFolder = $this->getChildByName($foldername);
+                    $NewFolder = $this->getChildByName($folderName);
                 } catch (QUI\Exception) {
-                    $NewFolder = $this->createFolder($foldername);
+                    $NewFolder = $this->createFolder($folderName);
                 }
 
                 $NewFolder->uploadFolder($path . '/' . $file);
