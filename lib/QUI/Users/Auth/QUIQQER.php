@@ -7,7 +7,10 @@
 namespace QUI\Users\Auth;
 
 use QUI;
+use QUI\Interfaces\Users\User;
+use QUI\Locale;
 use QUI\Users\AbstractAuthenticator;
+use QUI\Users\Exception;
 use QUI\Utils\Security\Orthos;
 
 use function bin2hex;
@@ -56,7 +59,7 @@ class QUIQQER extends AbstractAuthenticator
     /**
      * @return Controls\QUIQQERLogin
      */
-    public static function getLoginControl()
+    public static function getLoginControl(): Controls\QUIQQERLogin
     {
         return new Controls\QUIQQERLogin();
     }
@@ -64,7 +67,7 @@ class QUIQQER extends AbstractAuthenticator
     /**
      * @return bool
      */
-    public static function isCLICompatible()
+    public static function isCLICompatible(): bool
     {
         return true;
     }
@@ -72,10 +75,10 @@ class QUIQQER extends AbstractAuthenticator
     /**
      * Return the auth title
      *
-     * @param null|\QUI\Locale $Locale
+     * @param Locale|null $Locale
      * @return string
      */
-    public function getTitle($Locale = null)
+    public function getTitle(Locale $Locale = null): string
     {
         if (is_null($Locale)) {
             $Locale = QUI::getLocale();
@@ -87,10 +90,10 @@ class QUIQQER extends AbstractAuthenticator
     /**
      * Return the auth title
      *
-     * @param null|\QUI\Locale $Locale
+     * @param Locale|null $Locale
      * @return string
      */
-    public function getDescription($Locale = null)
+    public function getDescription(Locale $Locale = null): string
     {
         if (is_null($Locale)) {
             $Locale = QUI::getLocale();
@@ -102,10 +105,10 @@ class QUIQQER extends AbstractAuthenticator
     /**
      * Return the user object
      *
-     * @return \QUI\Interfaces\Users\User
-     * @throws QUI\Users\Exception
+     * @return User
+     * @throws Exception
      */
-    public function getUser()
+    public function getUser(): User
     {
         if (!is_null($this->User)) {
             return $this->User;
@@ -144,7 +147,7 @@ class QUIQQER extends AbstractAuthenticator
      * @param QUI\System\Console $Console
      * @throws QUI\Exception
      */
-    public function cliAuthentication(QUI\System\Console $Console)
+    public function cliAuthentication(QUI\System\Console $Console): void
     {
         $username = $Console->getArgument('username');
         $password = $Console->getArgument('password');
@@ -174,12 +177,13 @@ class QUIQQER extends AbstractAuthenticator
     /**
      * Authenticate the user
      *
-     * @param string $password
+     * @param string|int|array $authParams
      * @return boolean
      *
-     * @throws QUI\Exception
+     * @throws Exception
+     * @throws QUI\Database\Exception
      */
-    public function auth($password)
+    public function auth(string|int|array $authParams): bool
     {
         if (!is_string($this->username) || empty($this->username)) {
             throw new QUI\Users\Exception(
