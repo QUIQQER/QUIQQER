@@ -85,6 +85,7 @@ class Nobody extends QUI\QDOM implements User
 
     /**
      * @return bool|int
+     * @deprecated
      */
     public function getId(): false|int
     {
