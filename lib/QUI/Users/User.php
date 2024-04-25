@@ -160,40 +160,40 @@ class User implements QUIUserInterface
      *
      * @var string
      */
-    protected $password;
+    protected string $password;
 
     /**
      * Extra fields
      *
      * @var array
      */
-    protected $extra = [];
+    protected array $extra = [];
 
     /**
      * user plugins
      *
      * @var array
      */
-    protected $plugins = [];
+    protected array $plugins = [];
 
     /**
      * User addresses
      *
      * @var array
      */
-    protected $address_list = [];
+    protected array $address_list = [];
 
     /**
      * @var null|Address
      */
-    protected $StandardAddress = null;
+    protected ?Address $StandardAddress = null;
 
     /**
      * construct loading flag
      *
      * @var bool
      */
-    protected $isLoaded = true;
+    protected bool $isLoaded = true;
 
     /**
      * constructor
@@ -570,7 +570,7 @@ class User implements QUIUserInterface
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function getStandardAddress()
+    public function getStandardAddress(): bool|Address
     {
         $Address = $this->getStandardAddressHelper();
         $mailList = $Address->getMailList();
@@ -660,7 +660,7 @@ class User implements QUIUserInterface
      * @return array
      * @throws Exception
      */
-    public function getAddressList()
+    public function getAddressList(): array
     {
         $result = QUI::getDataBase()->fetch([
             'from' => Manager::tableAddress(),
@@ -691,7 +691,7 @@ class User implements QUIUserInterface
      * Add an address to the user
      *
      * @param array $params
-     * @param QUI\Interfaces\Users\User $ParentUser - Edit user [default: Session user]
+     * @param QUIUserInterface|null $ParentUser - Edit user [default: Session user]
      *
      * @return QUI\Users\Address
      *
@@ -699,7 +699,7 @@ class User implements QUIUserInterface
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function addAddress($params = [], $ParentUser = null)
+    public function addAddress(array $params = [], QUIUserInterface $ParentUser = null): Address
     {
         if (is_null($ParentUser)) {
             $ParentUser = QUI::getUserBySession();
@@ -796,12 +796,12 @@ class User implements QUIUserInterface
      * Checks the edit permissions
      * Can the user be edited by the current user?
      *
-     * @param QUI\Users\User|boolean $ParentUser
+     * @param ?QUIUserInterface $ParentUser
      *
      * @return boolean - true
      * @throws QUI\Permissions\Exception
      */
-    public function checkEditPermission($ParentUser = false)
+    public function checkEditPermission(QUIUserInterface $ParentUser = null): bool
     {
         $Users = QUI::getUsers();
         $SessionUser = $Users->getUserBySession();
@@ -855,7 +855,7 @@ class User implements QUIUserInterface
      *
      * @return boolean|string
      */
-    public function hasPermission($permission)
+    public function hasPermission(string $permission): bool|string
     {
         $list = QUI::getPermissionManager()->getUserPermissionData($this);
 
@@ -1082,7 +1082,7 @@ class User implements QUIUserInterface
      *
      * @return array
      */
-    protected function readAttributesFromUserXML($file): array
+    protected function readAttributesFromUserXML(string $file): array
     {
         $cache = 'quiqqer/users/user-extra-attributes/' . md5($file);
 
@@ -1259,7 +1259,7 @@ class User implements QUIUserInterface
     /**
      * @throws QUI\Users\Exception
      */
-    protected function checkUserMail()
+    protected function checkUserMail(): void
     {
         // check if duplicated emails are exists
         try {
@@ -1318,7 +1318,7 @@ class User implements QUIUserInterface
      *
      * @return array
      */
-    public function getAuthenticators()
+    public function getAuthenticators(): array
     {
         $result = [];
 
@@ -1342,10 +1342,10 @@ class User implements QUIUserInterface
      * Enables an authenticator for the user
      *
      * @param string $authenticator - Name of the authenticator
-     * @param QUI\Interfaces\Users\User|boolean $ParentUser - optional, the saving user, default = session user
-     * @throws QUI\Users\Exception
+     * @param ?QUIUserInterface $ParentUser - optional, the saving user, default = session user
+     * @throws QUI\Users\Exception|QUI\Exception
      */
-    public function enableAuthenticator($authenticator, $ParentUser = false)
+    public function enableAuthenticator(string $authenticator, QUIUserInterface $ParentUser = null): void
     {
         $available = Auth\Handler::getInstance()->getAvailableAuthenticators();
         $available = array_flip($available);
@@ -1386,12 +1386,12 @@ class User implements QUIUserInterface
      * Disables an authenticator from the user
      *
      * @param $authenticator
-     * @param QUI\Interfaces\Users\User|boolean $ParentUser - optional, the saving user, default = session user
+     * @param QUIUserInterface|null $ParentUser - optional, the saving user, default = session user
      *
      * @throws QUI\Exception
      * @throws Exception
      */
-    public function disableAuthenticator($authenticator, $ParentUser = false)
+    public function disableAuthenticator($authenticator, QUIUserInterface $ParentUser = null): void
     {
         $available = Auth\Handler::getInstance()->getAvailableAuthenticators();
         $available = array_flip($available);
@@ -1435,7 +1435,7 @@ class User implements QUIUserInterface
      * @param string $authenticator - name of the authenticator
      * @return bool
      */
-    public function hasAuthenticator($authenticator)
+    public function hasAuthenticator(string $authenticator): bool
     {
         if (!Auth\Helper::hasUserPermissionToUseAuthenticator($this, $authenticator)) {
             return false;
@@ -1570,10 +1570,11 @@ class User implements QUIUserInterface
      * Return the current instance address
      * -> Standard Address, Delivery Address or Invoice Address
      *
-     * @return Address
-     * @throws Exception
+     * @return bool|Address
+     * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
      */
-    public function getCurrentAddress()
+    public function getCurrentAddress(): bool|Address
     {
         $CurrentAddress = $this->getAttribute('CurrentAddress');
 
@@ -1589,7 +1590,7 @@ class User implements QUIUserInterface
      *
      * @return void
      */
-    public function clearGroups()
+    public function clearGroups(): void
     {
         $this->Group = [];
         $this->groups = '';
@@ -1626,7 +1627,7 @@ class User implements QUIUserInterface
      * @throws QUI\Exception
      * @deprecated use addToGroup
      */
-    public function addGroup($gid)
+    public function addGroup(int $gid): void
     {
         $this->addToGroup($gid);
     }
@@ -1663,7 +1664,7 @@ class User implements QUIUserInterface
     /**
      * @deprecated use getAttributes
      */
-    public function getAllAttributes()
+    public function getAllAttributes(): array
     {
         return self::getAttributes();
     }
@@ -1730,7 +1731,7 @@ class User implements QUIUserInterface
     /**
      * @deprecated
      */
-    public function isAdmin()
+    public function isAdmin(): bool
     {
         return $this->canUseBackend();
     }
@@ -1834,13 +1835,17 @@ class User implements QUIUserInterface
      *
      * @param string $newPassword
      * @param string $oldPassword
-     * @param bool|QUI\Interfaces\Users\User $ParentUser
+     * @param QUIUserInterface|null $ParentUser
+     *
      * @throws QUI\Users\Exception
      * @throws QUI\Permissions\Exception|ExceptionStack
      * @throws Exception
      */
-    public function changePassword($newPassword, $oldPassword, $ParentUser = false)
-    {
+    public function changePassword(
+        string $newPassword,
+        string $oldPassword,
+        QUIUserInterface $ParentUser = null
+    ): void {
         $this->checkEditPermission($ParentUser);
 
         $newPassword = trim($newPassword);
@@ -1923,7 +1928,7 @@ class User implements QUIUserInterface
      *
      * @throws QUI\Users\Exception
      */
-    public function getAuthenticator($authenticator)
+    public function getAuthenticator(string $authenticator): AuthenticatorInterface
     {
         $Handler = Auth\Handler::getInstance();
         $available = $Handler->getAvailableAuthenticators();
@@ -1959,7 +1964,7 @@ class User implements QUIUserInterface
      * @param string $password
      * @throws Exception
      */
-    protected function updatePassword($password)
+    protected function updatePassword(string $password): void
     {
         $newPassword = QUI\Security\Password::generateHash($password);
         $this->password = $newPassword;
@@ -1973,7 +1978,7 @@ class User implements QUIUserInterface
 
     /**
      * @param string $new - new password
-     * @param QUI\Interfaces\Users\User|boolean $ParentUser
+     * @param QUIUserInterface|null $PermissionUser
      *
      * @throws ExceptionStack
      * @throws QUI\Permissions\Exception
@@ -2135,7 +2140,7 @@ class User implements QUIUserInterface
      * @throws QUI\Users\Exception
      * @throws QUI\Exception
      */
-    protected function canBeDeleted()
+    protected function canBeDeleted(): bool
     {
         // wenn benutzer deaktiviert ist, fällt die prüfung weg, da er bereits deaktiviert ist
         if (!$this->isActive()) {
@@ -2202,7 +2207,7 @@ class User implements QUIUserInterface
      *
      * @throws QUI\Permissions\Exception
      */
-    public function checkPermission($permission)
+    public function checkPermission($permission): void
     {
         QUI\Permissions\Permission::checkPermission($permission, $this);
     }
@@ -2354,14 +2359,14 @@ class User implements QUIUserInterface
      * Checks the delete permissions
      * Can the user be deleted by the current user?
      *
-     * @param QUI\Users\User|boolean $ParentUser
+     * @param QUI\Users\User|null $ParentUser
      *
      * @return boolean - true
      *
      * @throws QUI\Permissions\Exception
      * @throws QUI\Exception
      */
-    public function checkDeletePermission($ParentUser = false)
+    public function checkDeletePermission(QUIUserInterface $ParentUser = null): bool
     {
         $this->canBeDeleted();
 
