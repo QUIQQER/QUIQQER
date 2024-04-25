@@ -63,9 +63,9 @@ class Manager
      */
     protected bool $multipleCallPrevention = false;
     /**
-     * @var QUI\Projects\Project (active internal project)
+     * @var ?QUI\Projects\Project (active internal project)
      */
-    private $Project = false;
+    private ?QUI\Projects\Project $Project = null;
     /**
      * @var array - list of users (cache)
      */
@@ -167,7 +167,7 @@ class Manager
      * @throws QUI\DataBase\Exception
      * @throws \Exception
      */
-    public function setup()
+    public function setup(): void
     {
         $DataBase = QUI::getDataBase();
         $table = self::table();
@@ -368,13 +368,13 @@ class Manager
      * Get the user by id or uuid
      *
      * @param int|string $id - Could be user-id or user uuid
-     * @return QUI\Users\User|Nobody|SystemUser|false
+     * @return User
      *
      * @throws Exception
      * @throws QUI\Exception
      * @throws ExceptionStack
      */
-    public function get(int|string $id)
+    public function get(int|string $id): QUI\Interfaces\Users\User
     {
         if (is_numeric($id)) {
             $id = (int)$id;
@@ -459,9 +459,9 @@ class Manager
     /**
      * Get the Session user
      *
-     * @return QUI\Interfaces\Users\User
+     * @return QUIUserInterface
      */
-    public function getUserBySession()
+    public function getUserBySession(): QUIUserInterface
     {
         if (defined('SYSTEM_INTERN')) {
             return $this->getSystemUser();
@@ -516,9 +516,9 @@ class Manager
     /**
      * Return the System user
      *
-     * @return QUI\Users\SystemUser
+     * @return SystemUser
      */
-    public function getSystemUser(): ?SystemUser
+    public function getSystemUser(): SystemUser
     {
         if ($this->SystemUser === null) {
             $this->SystemUser = new SystemUser();
@@ -530,9 +530,9 @@ class Manager
     /**
      * Return the Nobody user
      *
-     * @return QUI\Users\Nobody
+     * @return Nobody
      */
-    public function getNobody(): ?Nobody
+    public function getNobody(): Nobody
     {
         if ($this->Nobody === null) {
             $this->Nobody = new Nobody();
@@ -547,7 +547,7 @@ class Manager
      * @throws QUI\Users\Exception
      * @throws QUI\Exception
      */
-    public function checkUserSession()
+    public function checkUserSession(): void
     {
         // max_life_time check
         $Session = QUI::getSession();
@@ -681,7 +681,7 @@ class Manager
      *
      * @return boolean
      */
-    public function isUser($User): bool
+    public function isUser(mixed $User): bool
     {
         if (!is_object($User)) {
             return false;
@@ -705,7 +705,7 @@ class Manager
      *
      * @return boolean
      */
-    public function isSystemUser($User): bool
+    public function isSystemUser(mixed $User): bool
     {
         if (!is_object($User)) {
             return false;
@@ -748,15 +748,17 @@ class Manager
     /**
      * Create a new User
      *
-     * @param string|boolean $username - (optional), new username
+     * @param boolean|string $username - (optional), new username
      * @param QUI\Interfaces\Users\User|null $ParentUser - (optional), Parent User, which create the user
      *
-     * @return QUI\Users\User
+     * @return QUIUserInterface
      * @throws QUI\Users\Exception
      * @throws QUI\Exception
      */
-    public function createChild($username = false, QUIUserInterface $ParentUser = null)
-    {
+    public function createChild(
+        bool|string $username = false,
+        QUIUserInterface $ParentUser = null
+    ): QUIUserInterface {
         // check, is the user allowed to create new users
         QUI\Permissions\Permission::checkPermission(
             'quiqqer.admin.users.create',
@@ -880,8 +882,7 @@ class Manager
      * Delete illegal characters from the name
      *
      * @param string $username
-     *
-     * @return boolean
+     * @return string
      */
     public static function clearUsername(string $username): string
     {
@@ -892,10 +893,10 @@ class Manager
      * Set the default workspace for a user
      * The user must have administration permissions
      *
-     * @param QUI\Interfaces\Users\User $User
+     * @param QUIUserInterface $User
      * @throws QUI\Exception
      */
-    public function setDefaultWorkspacesForUsers(QUI\Interfaces\Users\User $User)
+    public function setDefaultWorkspacesForUsers(QUIUserInterface $User): void
     {
         if (!QUI\Permissions\Permission::isAdmin($User)) {
             return;
@@ -928,7 +929,7 @@ class Manager
      *
      * @param array $attributes
      * @param QUIUserInterface|null $PermissionUser
-     * @return User
+     * @return QUIUserInterface
      *
      * @throws Exception
      * @throws QUI\Database\Exception
@@ -936,8 +937,10 @@ class Manager
      * @throws QUI\ExceptionStack
      * @throws QUI\Permissions\Exception
      */
-    public function createChildWithAttributes(array $attributes = [], ?QUIUserInterface $PermissionUser = null): User
-    {
+    public function createChildWithAttributes(
+        array $attributes = [],
+        ?QUIUserInterface $PermissionUser = null
+    ): QUIUserInterface {
         // check, is the user allowed to create new users
         QUI\Permissions\Permission::checkPermission(
             'quiqqer.admin.users.create',
@@ -1144,13 +1147,13 @@ class Manager
     /**
      * Logged in a user
      *
-     * @param string|array|integer $authData - Authentication data, passwords, keys, hashes etc
+     * @param array|integer|string $authData - Authentication data, passwords, keys, hashes etc
      *
-     * @return QUI\Interfaces\Users\User
+     * @return QUIUserInterface|null
      * @throws QUI\Users\Exception
      * @throws \Exception
      */
-    public function login($authData = [])
+    public function login(array|int|string $authData = []): QUIUserInterface|null
     {
         if (QUI::getSession()->get('auth') && QUI::getSession()->get('uid')) {
             $userId = QUI::getSession()->get('uid');
@@ -1348,10 +1351,12 @@ class Manager
      *
      * @param string $username - Username
      *
-     * @return QUI\Users\User
-     * @throws QUI\Users\Exception
+     * @return QUIUserInterface|User
+     * @throws Exception
+     * @throws ExceptionStack
+     * @throws QUI\Exception
      */
-    public function getUserByName(string $username)
+    public function getUserByName(string $username): QUIUserInterface|User
     {
         try {
             $result = QUI::getDataBase()->fetch([
@@ -1398,8 +1403,10 @@ class Manager
      * @throws QUI\Exception
      * @throws QUI\ExceptionStack
      */
-    public function authenticate($authenticator, array $params = []): bool
-    {
+    public function authenticate(
+        AuthenticatorInterface|AbstractAuthenticator|string $authenticator,
+        array $params = []
+    ): bool {
         $username = '';
         $Session = QUI::getSession();
 
@@ -1505,7 +1512,7 @@ class Manager
      *
      * @return boolean
      */
-    public function isNobodyUser($User): bool
+    public function isNobodyUser(mixed $User): bool
     {
         if (!is_object($User)) {
             return false;
@@ -1581,10 +1588,10 @@ class Manager
      * this method is used for a cleanup of the ram.
      * individual user instances can be removed from the internal ram cache.
      *
-     * @param \QUI\Interfaces\Users\User $User
+     * @param QUIUserInterface $User
      * @return void
      */
-    public function unsetUserInstance(QUI\Interfaces\Users\User $User)
+    public function unsetUserInstance(QUIUserInterface $User): void
     {
         $uuid = $User->getUUID();
         $id = $User->getId();
@@ -1603,10 +1610,13 @@ class Manager
      *
      * @param string $email - User E-Mail
      *
-     * @return QUI\Users\User
-     * @throws QUI\Users\Exception
+     * @return QUIUserInterface
+     *
+     * @throws Exception
+     * @throws ExceptionStack
+     * @throws QUI\Exception
      */
-    public function getUserByMail(string $email)
+    public function getUserByMail(string $email): QUIUserInterface
     {
         try {
             $result = QUI::getDataBase()->fetch([
@@ -1645,10 +1655,10 @@ class Manager
     /**
      * @param string $username
      *
-     * @return string
+     * @return bool
      * @deprecated use usernameExists()
      */
-    public function existsUsername(string $username)
+    public function existsUsername(string $username): bool
     {
         return $this->usernameExists($username);
     }
@@ -1656,10 +1666,10 @@ class Manager
     /**
      * @param string $username
      *
-     * @return string
+     * @return bool
      * @deprecated use existsUsername
      */
-    public function checkUsername(string $username)
+    public function checkUsername(string $username): bool
     {
         return $this->usernameExists($username);
     }
@@ -1667,10 +1677,10 @@ class Manager
     /**
      * @param string $email
      *
-     * @return string
+     * @return bool
      * @deprecated use emailExists
      */
-    public function existEmail(string $email)
+    public function existEmail(string $email): bool
     {
         return $this->emailExists($email);
     }
@@ -1705,7 +1715,7 @@ class Manager
     /**
      * Delete the user
      *
-     * @param integer $id
+     * @param integer|string $id - user id or user uuid
      *
      * @return boolean
      *
@@ -1714,7 +1724,7 @@ class Manager
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function deleteUser(int $id): bool
+    public function deleteUser(int|string $id): bool
     {
         return $this->get($id)->delete();
     }
@@ -1724,11 +1734,11 @@ class Manager
      *
      * @param array $params
      *
-     * @return array
+     * @return array|int
      *
-     * @throws QUI\DataBase\Exception
+     * @throws Exception
      */
-    public function search(array $params)
+    public function search(array $params): array|int
     {
         return $this->execSearch($params);
     }
@@ -1741,9 +1751,8 @@ class Manager
      *
      * @throws QUI\Database\Exception
      * @todo where params
-     *
      */
-    protected function execSearch(array $params)
+    protected function execSearch(array $params): array|int
     {
         $PDO = QUI::getDataBase()->getPDO();
         $params = Orthos::clearArray($params);
@@ -1992,12 +2001,11 @@ class Manager
      * User count
      *
      * @param array $params - Search parameter
-     *
      * @return integer
      *
      * @throws QUI\DataBase\Exception
      */
-    public function count(array $params = [])
+    public function count(array $params = []): int
     {
         $params['count'] = true;
 
@@ -2009,7 +2017,7 @@ class Manager
             unset($params['start']);
         }
 
-        return $this->execSearch($params);
+        return (int)$this->execSearch($params);
     }
 
     /**
