@@ -138,7 +138,7 @@ class Update
         // session table
         QUI::getSession()->setup();
 
-        // rights setup, so we have all importend tables
+        // rights setup, so we have all important tables
         QUI\Permissions\Manager::setup();
 
         // WYSIWYG Setup
@@ -182,7 +182,7 @@ class Update
             }
         }
 
-        // than we need translations
+        // Then we need translations
         self::importAllLocaleXMLs($Composer);
 
 
@@ -274,9 +274,9 @@ class Update
 
     /**
      * Database setup
-     * Reads the database.xml and create the definit tables
+     * Reads the database.xml and create the tables
      *
-     * @param string $xml_file - path to an database.xml
+     * @param string $xml_file - path to a database.xml
      * @param $IO - Composer InputOutput
      *
      * @throws QUI\Exception
@@ -294,7 +294,7 @@ class Update
     }
 
     /**
-     * Reimportation from all locale.xml files
+     * Importation from all locale.xml files
      *
      * @param Composer $Composer - optional
      *
@@ -386,7 +386,7 @@ class Update
      * Locale setup - translations
      * Reads the locale.xml and import it
      *
-     * @param string $xml_file - path to an locale.xml
+     * @param string $xml_file - path to a locale.xml
      * @param $IO - Composer InputOutput
      *
      * @throws QUI\Exception
@@ -403,7 +403,7 @@ class Update
     }
 
     /**
-     * Import / register the template engines in an xml file and register it
+     * Import / register the template engines in a xml file and register it
      *
      * @param string $xml_file - path to an engine.xml
      * @param $IO - Composer InputOutput
@@ -465,7 +465,7 @@ class Update
 
     /**
      * Import / register the menu items
-     * it create a cache file for the package
+     * it creates a cache file for the package
      *
      * @param string $xml_file - path to an engine.xml
      * @param $IO - Composer InputOutput
@@ -506,7 +506,7 @@ class Update
      * Permissions import
      * Reads the permissions.xml and import it
      *
-     * @param string $xml_file - path to an locale.xml
+     * @param string $xml_file - path to a locale.xml
      * @param string $src - Source for the permissions
      * @param $IO - Composer InputOutput
      */
@@ -584,7 +584,7 @@ class Update
     }
 
     /**
-     * Reimportation from all menu.xml files
+     * Importation from all menu.xml files
      * Read all packages and import the menu.xml files to the quiqqer system
      *
      * @param Composer $Composer - optional
@@ -642,7 +642,7 @@ class Update
     }
 
     /**
-     * Reimportation from all permissions.xml files
+     * Importation from all permissions.xml files
      * Read all packages and import the permissions.xml files to the quiqqer system
      */
     public static function importAllPermissionsXMLs()

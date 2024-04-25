@@ -44,14 +44,14 @@ class Template extends QUI\QDOM
     protected array $engines = [];
 
     /**
-     * Header extentions
+     * Header extensions
      *
      * @var array
      */
     protected array $header = [];
 
     /**
-     * Footer extentions
+     * Footer extensions
      *
      * @var array
      */
@@ -269,7 +269,7 @@ class Template extends QUI\QDOM
     }
 
     /**
-     * Add a javascript module, that laoded at the onload event
+     * Add a javascript module, that loaded at the onload event
      *
      * @param string $module
      */
@@ -490,7 +490,6 @@ class Template extends QUI\QDOM
         $this->setAttribute('Site', $Site);
         $this->setAttribute('Engine', $Engine);
 
-        // Zuweisungen
         $Engine->assign([
             'URL_DIR' => URL_DIR,
             'URL_BIN_DIR' => URL_BIN_DIR,
@@ -516,9 +515,6 @@ class Template extends QUI\QDOM
         $default_tpl = LIB_DIR . 'templates/index.html';
         $project_tpl = USR_DIR . $Project->getName() . '/lib/index.html';
         $project_index = USR_DIR . $Project->getName() . '/lib/index.php';
-
-        //        $template_tpl   = false;
-        //        $template_index = false;
 
         $tpl = $default_tpl;
 
@@ -726,7 +722,7 @@ class Template extends QUI\QDOM
     }
 
     /**
-     * Return the a html header
+     * Return the html header
      * With all important meta entries and quiqqer libraries
      *
      * @return string

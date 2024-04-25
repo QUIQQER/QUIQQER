@@ -32,7 +32,7 @@ class Nginx extends QUI\System\Console\Tool
     protected string $subConfDir;
 
     /**
-     * Konstruktor
+     * Constructor
      */
     public function __construct()
     {

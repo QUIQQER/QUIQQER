@@ -125,7 +125,7 @@ class Project implements \Stringable
     private $firstchild = null;
 
     /**
-     * Konstruktor eines Projektes
+     * Constructor
      *
      * @param string $name - Name of the Project
      * @param string|boolean $lang - (optional) Language of the Project - optional
@@ -286,7 +286,7 @@ class Project implements \Stringable
     }
 
     /**
-     * Projekt Array Notation
+     * Project Array Notation
      *
      * @return array
      */
@@ -299,7 +299,7 @@ class Project implements \Stringable
     }
 
     /**
-     * Namen des Projektes
+     * Name of the project
      *
      * @param string $att -
      *                    name = Name des Projectes
@@ -383,7 +383,7 @@ class Project implements \Stringable
     /**
      * Return a site
      *
-     * @param integer $id - ID der Seite
+     * @param integer $id - ID of the Site
      *
      * @return Site|Site\Edit
      * @throws QUI\Exception
@@ -477,7 +477,7 @@ class Project implements \Stringable
     }
 
     /**
-     * Destruktor
+     * Destructor
      */
     public function __destruct()
     {
@@ -955,7 +955,7 @@ class Project implements \Stringable
      * Return the children ids from a site
      *
      * @param integer $parentid - The parent site ID
-     * @param array $params - extra db statemens, like order, where, count, limit
+     * @param array $params - extra db statements, like order, where, count, limit
      *
      * @return array|integer
      */
@@ -1048,7 +1048,8 @@ class Project implements \Stringable
      *
      * @param integer $id - Child id
      *
-     * @return integer Id of the Parent
+     * @return integer ID of the Parent
+     * @throws QUI\Database\Exception
      */
     public function getParentIdFrom($id)
     {
@@ -1589,7 +1590,7 @@ class Project implements \Stringable
      */
 
     /**
-     * Add an user to the project permission
+     * Add a user to the project permission
      *
      * @param string $permission - name of the permission
      * @param User $User - User Object
@@ -1602,7 +1603,7 @@ class Project implements \Stringable
     }
 
     /**
-     * Add an group to the project permission
+     * Add a group to the project permission
      *
      * @param string $permission - name of the permission
      * @param Group $Group - Group Object

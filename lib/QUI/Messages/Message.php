@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file containes QUI\Messages\Message
+ * This file contains QUI\Messages\Message
  */
 
 namespace QUI\Messages;
@@ -58,7 +58,7 @@ class Message extends QUI\QDOM
     }
 
     /**
-     * Return a the message text
+     * Return the message text
      *
      * @return string
      */

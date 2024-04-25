@@ -105,7 +105,7 @@ class Handler
     }
 
     /**
-     * Is the value a icon css class?
+     * Is the value an icon css class?
      *
      * @param $value
      * @return bool
@@ -122,7 +122,7 @@ class Handler
      */
 
     /**
-     * Return the list as an json array
+     * Return the list as a json array
      *
      * @return string
      */
@@ -132,7 +132,7 @@ class Handler
     }
 
     /**
-     * Return the list as an json array
+     * Return the list as a json array
      *
      * @return array
      */

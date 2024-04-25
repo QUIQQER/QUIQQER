@@ -29,7 +29,7 @@ class Project extends QUI\System\Console\Tool
     protected BricksManager $BricksManager;
 
     /**
-     * Konstruktor
+     * Constructor
      */
     public function __construct()
     {

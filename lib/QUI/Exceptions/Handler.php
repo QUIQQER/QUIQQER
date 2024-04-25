@@ -29,8 +29,8 @@ use function register_shutdown_function;
 /**
  * Exception and Error Manager
  *
- * Exception manager capture php generated errors or an exception, that wasn't catched
- * You can define the error level, which error leben would be loged
+ * Exception manager capture php generated errors or an exception, that wasn't caught
+ * You can define the error level, which error level would be logged
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
@@ -82,7 +82,7 @@ class Handler extends QUI\QDOM
     }
 
     /**
-     * Register shutdown funktions
+     * Register shutdown functions
      *
      * @return boolean
      * @throws QUI\Exception

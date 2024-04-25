@@ -203,7 +203,7 @@ class EventHandler
     }
 
     /**
-     * quiqqer/quiqer: userAuthenticatorLoginStart
+     * quiqqer/quiqqer: userAuthenticatorLoginStart
      *
      * @param int|false $userId
      * @param string $authenticator

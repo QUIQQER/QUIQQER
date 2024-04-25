@@ -18,7 +18,7 @@ use function usort;
 
 /**
  * Class Login
- * Main Login Control - Log in an user with all authentications
+ * Main Login Control - Log in a user with all authentications
  */
 class Login extends Control
 {

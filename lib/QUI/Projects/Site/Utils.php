@@ -438,7 +438,7 @@ class Utils
     }
 
     /**
-     * Return the extra settings from site.xml's
+     * Return the extra settings from site.xml`s
      *
      * @param QUI\Projects\Site|QUI\Projects\Site\Edit $Site
      * @param string $current
@@ -537,10 +537,9 @@ class Utils
     }
 
     /**
-     * Return the admin site modules from site.xml's
+     * Return the admin site modules from site.xml`s
      *
      * @param QUI\Projects\Site|QUI\Projects\Site\Edit $Site
-     *
      * @return array|boolean
      */
     public static function getAdminSiteModulesFromSite($Site)
@@ -718,7 +717,7 @@ class Utils
 
     /**
      * Return sites from a site list
-     * sitelist from controls/projects/project/site/Select
+     * site list from controls/projects/project/site/Select
      *
      * @param Project $Project - Project of the sites
      * @param array|string $list - list from controls/projects/project/site/Select

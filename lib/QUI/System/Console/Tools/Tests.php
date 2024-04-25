@@ -24,7 +24,7 @@ use function str_replace;
 class Tests extends QUI\System\Console\Tool
 {
     /**
-     * Konstruktor
+     * Constructor
      */
     public function __construct()
     {

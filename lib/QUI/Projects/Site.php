@@ -1574,12 +1574,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             $params = [];
         }
 
-//        if ($rewrited) {
-//            $params['site'] = $this;
-//
-//            return $Rewrite->getUrlFromSite($params);
-//        }
-
         $str = 'index.php?id=' . $this->getId() .
             '&project=' . $this->getProject()->getName() .
             '&lang=' . $this->getProject()->getLang();

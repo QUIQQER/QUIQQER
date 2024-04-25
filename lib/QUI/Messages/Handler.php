@@ -74,7 +74,7 @@ class Handler
     }
 
     /**
-     * Return all new messages for an user and delete it in the queue
+     * Return all new messages for a user and delete it in the queue
      *
      * @param QUI\Interfaces\Users\User $User
      *
@@ -148,7 +148,7 @@ class Handler
     }
 
     /**
-     * Add an information for an user
+     * Add an information for a user
      *
      * @param string $str
      */
@@ -172,7 +172,7 @@ class Handler
     }
 
     /**
-     * Add an error for an user
+     * Add an error for a user
      *
      * @param string $str
      */
@@ -186,7 +186,7 @@ class Handler
     }
 
     /**
-     * Add a information for an user
+     * Add an information for a user
      *
      * @param string $str
      */
@@ -200,7 +200,7 @@ class Handler
     }
 
     /**
-     * Add a success message for an user
+     * Add a success message for a user
      *
      * @param string $str
      */
@@ -214,7 +214,7 @@ class Handler
     }
 
     /**
-     * Send an information to an user and save it to the database
+     * Send an information to a user and save it to the database
      *
      * @param QUI\Interfaces\Users\User $User
      * @param string $str
@@ -230,7 +230,7 @@ class Handler
     }
 
     /**
-     * Send a message to an user and save it to the database
+     * Send a message to a user and save it to the database
      *
      * @param QUI\Interfaces\Users\User $User
      * @param Message $Message
@@ -258,7 +258,7 @@ class Handler
     }
 
     /**
-     * Send an error to an user and save it to the database
+     * Send an error to a user and save it to the database
      *
      * @param QUI\Interfaces\Users\User $User
      * @param string $str
@@ -274,7 +274,7 @@ class Handler
     }
 
     /**
-     * Send a information to an user and save it to the database
+     * Send an information to a user and save it to the database
      *
      * @param QUI\Interfaces\Users\User $User
      * @param string $str
@@ -290,7 +290,7 @@ class Handler
     }
 
     /**
-     * Send a success message to an user and save it to the database
+     * Send a success message to a user and save it to the database
      *
      * @param QUI\Interfaces\Users\User $User
      * @param string $str

@@ -15,12 +15,12 @@ use function time;
 
 /**
  * Class Lock
- * Helps to lock a item or an object
+ * Helps to lock an item or an object
  */
 class Locker
 {
     /**
-     * Lock a item or an object and checks the permissions
+     * Lock an item or an object and checks the permissions
      *
      * @param Package $Package
      * @param $key
@@ -69,7 +69,7 @@ class Locker
     }
 
     /**
-     * Check if a item or an object is locked
+     * Check if an item or an object is locked
      *
      * @param Package $Package
      * @param string $key
@@ -135,7 +135,7 @@ class Locker
      * Return the stash item
      *
      * @param string $name
-     * @return \Stash\Interfaces\ItemInterface
+     * @return ItemInterface
      * @throws QUI\Lock\Exception
      */
     protected static function getStash(string $name): ItemInterface
@@ -172,7 +172,7 @@ class Locker
     }
 
     /**
-     * Lock a item or an object
+     * Lock an item or an object
      * no permission check
      *
      * @param Package $Package
@@ -206,7 +206,7 @@ class Locker
     }
 
     /**
-     * Unlock a item or an object and checks the permissions
+     * Unlock an item or an object and checks the permissions
      *
      * @param Package $Package
      * @param $key
@@ -250,7 +250,7 @@ class Locker
     }
 
     /**
-     * Unlock a item or an object
+     * Unlock an item or an object
      * no permission check
      *
      * @param Package $Package

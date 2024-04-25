@@ -31,7 +31,7 @@ use function trim;
 class Htaccess extends QUI\System\Console\Tool
 {
     /**
-     * Konstruktor
+     * Constructor
      */
     public function __construct()
     {

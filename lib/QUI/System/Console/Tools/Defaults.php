@@ -17,7 +17,7 @@ use QUI;
 class Defaults extends QUI\System\Console\Tool
 {
     /**
-     * Konstruktor
+     * Constructor
      */
     public function __construct()
     {

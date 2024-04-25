@@ -139,7 +139,7 @@ class Manager
                 ]
             );
 
-            // Set "minimal.xml" as new default toolbar for the everyone group
+            // Set "minimal.xml" as new default toolbar for everyone group
             if (in_array("minimal.xml", $toolbars)) {
                 QUI::getDataBase()->update(
                     QUI::getDBTableName("groups"),
@@ -179,7 +179,7 @@ class Manager
      * Register a js editor
      *
      * @param string $name - name of the editor
-     * @param string $package - js modul/package name
+     * @param string $package - js module/package name
      *
      * @throws QUI\Exception
      */
@@ -207,7 +207,7 @@ class Manager
     }
 
     /**
-     * Return the main editor manager (wyiswyg) config object
+     * Return the main editor manager (WYSIWYG) config object
      *
      * @return Config
      *
@@ -256,7 +256,7 @@ class Manager
     }
 
     /**
-     * Return all available toolbars for an user
+     * Return all available toolbars for a user
      *
      * @param QUI\Interfaces\Users\User $User
      *
@@ -672,7 +672,7 @@ class Manager
     }
 
     /**
-     * Return the toolbar buttons for an user
+     * Return the toolbar buttons for a user
      * Used the right user toolbar
      *
      * @return array
@@ -686,7 +686,7 @@ class Manager
             return [];
         }
 
-        // Benutzer spezifische Toolbar
+        // user
         $toolbar = $User->getAttribute('toolbar');
         $toolbarPath = self::getToolbarsPath();
 
@@ -698,7 +698,7 @@ class Manager
             }
         }
 
-        // Gruppenspezifische Toolbar
+        // group
         $groups = $User->getGroups();
 
         /* @var $Group QUI\Groups\Group */
@@ -891,7 +891,6 @@ class Manager
      */
     public function prepareHTMLForSave(string $html): string
     {
-        // Bilder umschreiben
         $html = preg_replace_callback(
             '#(src)="([^"]*)"#',
             [$this, "cleanSrc"],
@@ -924,10 +923,7 @@ class Manager
      * Cleanup HTML
      *
      * @param string $html
-     *
      * @return string
-     * @uses Tidy, if enabled
-     *
      */
     public function cleanHTML(string $html)
     {

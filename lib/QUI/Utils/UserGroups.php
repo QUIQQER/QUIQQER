@@ -54,7 +54,7 @@ class UserGroups
     }
 
     /**
-     * Return the user group string from an user
+     * Return the user group string from a user
      *
      * @param QUI\Interfaces\Users\User $User
      * @return string

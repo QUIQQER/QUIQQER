@@ -13,7 +13,7 @@ use function is_array;
 
 /**
  * Class Factory
- * Abstration factory for create-read-update-delete
+ * Abstraction factory for create-read-update-delete
  *
  * @event onCreateBegin
  * @event onCreateEnd

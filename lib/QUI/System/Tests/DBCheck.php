@@ -394,7 +394,7 @@ class DBCheck extends QUI\System\Test
             );
         }
 
-        // collect detailled column information from database
+        // collect detailed column information from database
         $dbFieldsData = $this->Tables->getFieldsInfos($table);
 
         foreach ($dbFieldsData as $field) {
