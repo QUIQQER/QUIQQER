@@ -156,13 +156,6 @@ class User implements QUIUserInterface
     protected array $settings;
 
     /**
-     * User manager
-     *
-     * @var Manager
-     */
-    protected $Users;
-
-    /**
      * Encrypted pass
      *
      * @var string
@@ -206,16 +199,14 @@ class User implements QUIUserInterface
      * constructor
      *
      * @param int|string $id - ID of the user
-     * @param Manager $Users - the user manager
      *
      * @throws ExceptionStack
      * @throws QUI\Exception
      * @throws Exception
      */
-    public function __construct(int|string $id, Manager $Users)
+    public function __construct(int|string $id)
     {
         $this->isLoaded = false;
-        $this->Users = $Users;
 
         if (is_numeric($id)) {
             $id = (int)$id;
