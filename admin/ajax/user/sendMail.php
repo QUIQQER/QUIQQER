@@ -9,6 +9,7 @@
  * @throws QUI\Exception
  */
 
+use QUI\Mail\Mailer;
 use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Utils\Security\Orthos;
 
@@ -20,7 +21,7 @@ QUI::$Ajax->registerFunction(
         $mailContent = trim($mailContent);
 
         // send mail
-        $Mailer = new \QUI\Mail\Mailer();
+        $Mailer = new Mailer();
 
         // Fetch image URLs and replace with fully qualified URLs
         preg_match_all('#"(image\.php.*)"#i', $mailContent, $matches);

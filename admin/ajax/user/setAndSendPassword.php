@@ -11,6 +11,8 @@
  * @throws QUI\Exception
  */
 
+use QUI\Mail\Mailer;
+
 QUI::$Ajax->registerFunction(
     'ajax_user_setAndSendPassword',
     function ($userId, $newPassword, $forceNew) {
@@ -27,7 +29,7 @@ QUI::$Ajax->registerFunction(
         QUI::getMessagesHandler()->clear();
 
         // send mail
-        $Mailer = new \QUI\Mail\Mailer();
+        $Mailer = new Mailer();
         $email = $User->getAttribute('email');
 
         if (empty($email)) {

@@ -9,6 +9,17 @@ namespace QUI\Users\Auth;
 use QUI;
 use QUI\Users\AuthenticatorInterface;
 
+use function array_flip;
+use function array_merge;
+use function class_exists;
+use function class_implements;
+use function is_null;
+use function str_replace;
+use function strcmp;
+use function time;
+use function trim;
+use function usort;
+
 /**
  * Class Handler
  * Main Class, Handling class for authenticators
@@ -29,7 +40,7 @@ class Handler
      */
     public static function getInstance()
     {
-        if (\is_null(self::$Instance)) {
+        if (is_null(self::$Instance)) {
             self::$Instance = new self();
         }
 
@@ -56,7 +67,7 @@ class Handler
         $Locale->no_translation = true;
 
         foreach ($authProviders as $authProvider) {
-            if (\trim($authProvider, '\\') == QUIQQER::class) {
+            if (trim($authProvider, '\\') == QUIQQER::class) {
                 continue;
             }
 
@@ -66,8 +77,8 @@ class Handler
 
             $Permissions->addPermission([
                 'name' => $permissionName,
-                'title' => \str_replace(['[', ']'], '', $Authenticator->getTitle($Locale)),
-                'desc' => \str_replace(['[', ']'], '', $Authenticator->getDescription($Locale)),
+                'title' => str_replace(['[', ']'], '', $Authenticator->getTitle($Locale)),
+                'desc' => str_replace(['[', ']'], '', $Authenticator->getDescription($Locale)),
                 'type' => 'bool',
                 'area' => '',
                 'src' => $Package->getName(),
@@ -112,7 +123,7 @@ class Handler
         $result = [];
 
         $available = $this->getAvailableAuthenticators();
-        $available = \array_flip($available);
+        $available = array_flip($available);
 
         foreach ($authenticators as $authenticator => $status) {
             if ($status != 1) {
@@ -131,7 +142,7 @@ class Handler
         }
 
         // sorting
-        \usort($result, function ($a, $b) {
+        usort($result, function ($a, $b) {
             if ($a == QUIQQER::class) {
                 return 1;
             }
@@ -140,7 +151,7 @@ class Handler
                 return 1;
             }
 
-            return \strcmp($a, $b);
+            return strcmp($a, $b);
         });
 
         return $result;
@@ -172,21 +183,21 @@ class Handler
                     continue;
                 }
 
-                $list = \array_merge($list, $Package->getProvider('auth'));
+                $list = array_merge($list, $Package->getProvider('auth'));
             } catch (QUI\Exception) {
             }
         }
 
         foreach ($list as $provider) {
             try {
-                if (!\class_exists($provider)) {
+                if (!class_exists($provider)) {
                     continue;
                 }
 
-                $interfaces = \class_implements($provider);
+                $interfaces = class_implements($provider);
 
                 if (isset($interfaces['QUI\Users\AuthenticatorInterface'])) {
-                    $authList[] = \trim($provider, '\\');
+                    $authList[] = trim($provider, '\\');
                 }
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
@@ -221,7 +232,7 @@ class Handler
     public function getAuthenticator($authenticator, $username)
     {
         $authenticators = $this->getAvailableAuthenticators();
-        $authenticators = \array_flip($authenticators);
+        $authenticators = array_flip($authenticators);
 
         if (isset($authenticators[$authenticator])) {
             return new $authenticator($username);
@@ -275,7 +286,7 @@ class Handler
         $Engine->assign([
             'body' => $L->get($lg, 'mail.auth.password_reset_confirm.body', [
                 'username' => $User->getUsername(),
-                'date' => $L->formatDate(\time()),
+                'date' => $L->formatDate(time()),
                 'confirmLink' => $confirmLink
             ])
         ]);

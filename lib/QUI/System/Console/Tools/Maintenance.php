@@ -6,6 +6,7 @@
 
 namespace QUI\System\Console\Tools;
 
+use Exception;
 use QUI;
 
 use function file_exists;

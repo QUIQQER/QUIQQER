@@ -8,6 +8,7 @@ namespace QUI\Mail;
 
 use Html2Text\Html2Text;
 use QUI;
+use QUI\Projects\Project;
 
 use function file_exists;
 
@@ -110,9 +111,9 @@ class Template extends QUI\QDOM
     /**
      * Return the Project
      *
-     * @return \QUI\Projects\Project
+     * @return Project
      */
-    public function getProject(): QUI\Projects\Project
+    public function getProject(): Project
     {
         if ($this->getAttribute('Project')) {
             return $this->getAttribute('Project');
@@ -284,7 +285,7 @@ class Template extends QUI\QDOM
     /**
      * Set the project
      *
-     * @param \QUI\Projects\Project $Project
+     * @param Project $Project
      */
     public function setProject(QUI\Projects\Project $Project)
     {

@@ -38,8 +38,8 @@ class Queue
     /**
      * Execute the db mail queue setup
      *
-     * @throws \QUI\Database\Exception
-     * @throws \QUI\Exception
+     * @throws QUI\Database\Exception
+     * @throws QUI\Exception
      */
     public static function setup()
     {
@@ -84,8 +84,8 @@ class Queue
      *
      * @return integer - Mailqueue-ID
      *
-     * @throws \QUI\Database\Exception
-     * @throws \QUI\Exception
+     * @throws QUI\Database\Exception
+     * @throws QUI\Exception
      */
     public static function addToQueue($Mail): int
     {
@@ -160,7 +160,7 @@ class Queue
      * Send the next mail from the queue
      *
      * @return boolean
-     * @throws \QUI\Database\Exception
+     * @throws QUI\Database\Exception
      */
     public function send(): bool
     {
@@ -224,7 +224,7 @@ class Queue
      * @param array $params - mail data
      * @return boolean
      *
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
     protected function sendMail(array $params): bool
     {
@@ -402,7 +402,7 @@ class Queue
      * Get number of mails that have been sent via queue in the last hour
      *
      * @return int
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
     protected function getMailsSentInLastHour(): int
     {
@@ -431,7 +431,7 @@ class Queue
      * Increase number of mails sent by 1 and save this information in the cache
      *
      * @return void
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
     protected function increaseMailsSent()
     {
@@ -446,7 +446,7 @@ class Queue
      * Send all mails from the queue
      *
      * @return void
-     * @throws \QUI\Database\Exception
+     * @throws QUI\Database\Exception
      */
     public function sendAll()
     {
@@ -552,7 +552,7 @@ class Queue
      * Return the number of the queue
      *
      * @return integer
-     * @throws \QUI\Database\Exception
+     * @throws QUI\Database\Exception
      */
     public function count(): int
     {
@@ -571,7 +571,7 @@ class Queue
      * Return the queue list
      *
      * @return array
-     * @throws \QUI\Database\Exception
+     * @throws QUI\Database\Exception
      */
     public function getList(): array
     {

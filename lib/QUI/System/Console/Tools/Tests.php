@@ -7,6 +7,13 @@
 namespace QUI\System\Console\Tools;
 
 use QUI;
+use QUI\Exception;
+use QUI\Interfaces\System\Test;
+
+use function class_exists;
+use function count;
+use function error_get_last;
+use function str_replace;
 
 /**
  * Checks the system and execute the system tests
@@ -33,7 +40,7 @@ class Tests extends QUI\System\Console\Tool
     public function execute()
     {
         QUI::getErrorHandler()->registerShutdown(function () {
-            $last_error = \error_get_last();
+            $last_error = error_get_last();
 
             if ($last_error && $last_error['type'] === E_ERROR) {
                 $this->writeLn("");
@@ -53,27 +60,27 @@ class Tests extends QUI\System\Console\Tool
         $list = [];
 
         foreach ($tests as $testFile) {
-            $cls = 'QUI/System/Tests/' . \str_replace('.php', '', $testFile);
-            $cls = \str_replace('/', '\\', $cls);
+            $cls = 'QUI/System/Tests/' . str_replace('.php', '', $testFile);
+            $cls = str_replace('/', '\\', $cls);
 
-            if (!\class_exists($cls)) {
+            if (!class_exists($cls)) {
                 require $testDir . $testFile;
             }
 
-            if (!\class_exists($cls)) {
+            if (!class_exists($cls)) {
                 continue;
             }
 
             $Test = new $cls();
 
-            if (!($Test instanceof QUI\Interfaces\System\Test)) {
+            if (!($Test instanceof Test)) {
                 continue;
             }
 
             $list[] = $Test;
         }
 
-        $this->writeLn('Execute Tests: ' . \count($list));
+        $this->writeLn('Execute Tests: ' . count($list));
         $this->writeLn('=================================');
 
         $failed = 0;

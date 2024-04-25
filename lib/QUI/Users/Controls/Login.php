@@ -9,6 +9,13 @@ namespace QUI\Users\Controls;
 use QUI;
 use QUI\Control;
 
+use function count;
+use function forward_static_call;
+use function in_array;
+use function is_array;
+use function is_null;
+use function usort;
+
 /**
  * Class Login
  * Main Login Control - Log in an user with all authentications
@@ -47,11 +54,11 @@ class Login extends Control
     {
         $authenticator = $this->next();
 
-        if (\is_null($authenticator)) {
+        if (is_null($authenticator)) {
             return '';
         }
 
-        if (!\is_array($authenticator)) {
+        if (!is_array($authenticator)) {
             $authenticator = [$authenticator];
         }
 
@@ -67,9 +74,9 @@ class Login extends Control
                 continue;
             }
 
-            $Control = \forward_static_call([$auth, 'getLoginControl']);
+            $Control = forward_static_call([$auth, 'getLoginControl']);
 
-            if (\is_null($Control)) {
+            if (is_null($Control)) {
                 continue;
             }
 
@@ -89,7 +96,7 @@ class Login extends Control
             'passwordReset' => !empty($_REQUEST['password_reset']),
             'globalAuth' => $this->isGlobalAuth,
             'authenticators' => $authenticators,
-            'count' => \count($authenticators) - 1
+            'count' => count($authenticators) - 1
         ]);
 
         return $Engine->fetch(__DIR__ . '/Login.html');
@@ -124,7 +131,7 @@ class Login extends Control
 
         if (!empty($globals)) {
             // sort globals (QUIQQER Login has to be first!)
-            \usort($globals, function ($a, $b) {
+            usort($globals, function ($a, $b) {
                 if ($a === QUI\Users\Auth\QUIQQER::class) {
                     return -1;
                 }

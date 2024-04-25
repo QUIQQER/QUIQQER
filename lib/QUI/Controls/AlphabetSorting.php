@@ -8,7 +8,6 @@ namespace QUI\Controls;
 
 use QUI;
 
-use function dirname;
 use function is_int;
 use function is_string;
 

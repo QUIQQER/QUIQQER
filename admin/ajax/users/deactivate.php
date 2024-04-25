@@ -53,7 +53,7 @@ QUI::$Ajax->registerFunction(
                     'quiqqer/quiqqer',
                     'message.users.deactivated',
                     [
-                        'users' => \implode(',', $deactivated)
+                        'users' => implode(',', $deactivated)
                     ]
                 )
             );

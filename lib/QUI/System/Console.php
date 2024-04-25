@@ -37,7 +37,6 @@ use function php_sapi_name;
 use function phpversion;
 use function posix_geteuid;
 use function posix_getpwuid;
-use function rand;
 use function realpath;
 use function sort;
 use function str_replace;

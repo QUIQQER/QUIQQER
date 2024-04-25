@@ -6,9 +6,14 @@
 
 namespace QUI\Projects;
 
+use DOMElement;
+use DOMNodeList;
 use DOMXPath;
 use PDO;
 use QUI;
+use QUI\Database\Exception;
+use QUI\Interfaces\Users\User;
+use QUI\Projects\Site\Edit;
 use QUI\Utils\StringHelper as StringUtils;
 
 use function array_keys;
@@ -18,7 +23,6 @@ use function count;
 use function defined;
 use function explode;
 use function file_exists;
-use function get_class;
 use function http_build_query;
 use function in_array;
 use function is_array;
@@ -34,7 +38,6 @@ use function mb_strpos;
 use function md5;
 use function rtrim;
 use function str_replace;
-use function strpos;
 use function urlencode;
 
 /**
@@ -1080,7 +1083,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 $XPath = new DOMXPath($Dom);
                 $Types = $XPath->query('//type[@type="' . $type . '"]');
 
-                /* @var $Type \DOMElement */
+                /* @var $Type DOMElement */
                 $Type = $Types->item(0);
 
                 if ($Type && $Type->hasAttribute('cache') && (int)$Type->getAttribute('cache') === 0) {
@@ -1136,13 +1139,13 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         $project_lang = $this->getProject()->getLang();
         $siteType = $this->getAttribute('type');
 
-        /* @var $Projects \DOMElement */
+        /* @var $Projects DOMElement */
         $Projects = $projects->item(0);
         $tables = $Projects->getElementsByTagName('table');
 
         for ($i = 0; $i < $tables->length; $i++) {
-            /* @var $tables \DOMNodeList */
-            /* @var $Table \DOMElement */
+            /* @var $tables DOMNodeList */
+            /* @var $Table DOMElement */
             $Table = $tables->item($i);
 
             if ((int)$Table->getAttribute('no-site-reference') == 1) {

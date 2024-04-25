@@ -5,6 +5,8 @@ namespace QUI\Users\Auth;
 use QUI;
 use QUI\Verification\AbstractVerification;
 
+use function current;
+
 class PasswordResetVerification extends AbstractVerification
 {
     /**
@@ -43,7 +45,7 @@ class PasswordResetVerification extends AbstractVerification
             $newPassword = QUI\Security\Password::generateRandom();
 
             // check if user has to set new password
-            if ((bool) QUI::conf('auth_settings', 'forceNewPasswordOnReset')) {
+            if (QUI::conf('auth_settings', 'forceNewPasswordOnReset')) {
                 $User->setAttribute('quiqqer.set.new.password', true);
             }
 
@@ -63,7 +65,7 @@ class PasswordResetVerification extends AbstractVerification
     /**
      * Send mail with temporary password to user
      *
-     * @param QUI\Users\User $User
+     * @param User $User
      * @param string $newPass
      * @return void
      */
@@ -166,7 +168,7 @@ class PasswordResetVerification extends AbstractVerification
             return false;
         }
 
-        $LoginSite = \current($result);
+        $LoginSite = current($result);
 
         return $LoginSite->getUrlRewritten([], [
             'password_reset' => '1'

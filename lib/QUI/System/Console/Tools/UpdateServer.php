@@ -3,6 +3,7 @@
 namespace QUI\System\Console\Tools;
 
 use QUI;
+use QUI\Exception;
 
 /**
  * Update-Server Console Manager

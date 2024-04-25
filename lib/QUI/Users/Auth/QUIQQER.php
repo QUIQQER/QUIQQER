@@ -10,6 +10,16 @@ use QUI;
 use QUI\Users\AbstractAuthenticator;
 use QUI\Utils\Security\Orthos;
 
+use function bin2hex;
+use function is_array;
+use function is_null;
+use function is_string;
+use function mb_substr;
+use function md5;
+use function openssl_random_pseudo_bytes;
+use function password_verify;
+use function trim;
+
 /**
  * Class Auth
  * Standard QUIQQER Authentication
@@ -67,7 +77,7 @@ class QUIQQER extends AbstractAuthenticator
      */
     public function getTitle($Locale = null)
     {
-        if (\is_null($Locale)) {
+        if (is_null($Locale)) {
             $Locale = QUI::getLocale();
         }
 
@@ -82,7 +92,7 @@ class QUIQQER extends AbstractAuthenticator
      */
     public function getDescription($Locale = null)
     {
-        if (\is_null($Locale)) {
+        if (is_null($Locale)) {
             $Locale = QUI::getLocale();
         }
 
@@ -97,7 +107,7 @@ class QUIQQER extends AbstractAuthenticator
      */
     public function getUser()
     {
-        if (!\is_null($this->User)) {
+        if (!is_null($this->User)) {
             return $this->User;
         }
 
@@ -171,7 +181,7 @@ class QUIQQER extends AbstractAuthenticator
      */
     public function auth($password)
     {
-        if (!\is_string($this->username) || empty($this->username)) {
+        if (!is_string($this->username) || empty($this->username)) {
             throw new QUI\Users\Exception(
                 ['quiqqer/quiqqer', 'exception.login.fail.wrong.username.input'],
                 401
@@ -250,10 +260,10 @@ class QUIQQER extends AbstractAuthenticator
     protected function genHash($pass, $salt = null)
     {
         if ($salt === null) {
-            $randomBytes = \openssl_random_pseudo_bytes(SALT_LENGTH);
-            $salt = \mb_substr(\bin2hex($randomBytes), 0, SALT_LENGTH);
+            $randomBytes = openssl_random_pseudo_bytes(SALT_LENGTH);
+            $salt = mb_substr(bin2hex($randomBytes), 0, SALT_LENGTH);
         }
 
-        return $salt . \md5($salt . $pass);
+        return $salt . md5($salt . $pass);
     }
 }

@@ -6,6 +6,7 @@
 
 namespace QUI\Messages;
 
+use Exception;
 use QUI;
 
 /**
@@ -31,7 +32,7 @@ class Handler
                 'mcode' => 'varchar(5)',
                 'mtime' => 'int(11)'
             ]);
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
     }

@@ -11,7 +11,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_users_address_deleteAddressList',
     function ($ids) {
-        $ids = \json_decode($ids, true);
+        $ids = json_decode($ids, true);
         $list = [];
 
         foreach ($ids as $id) {

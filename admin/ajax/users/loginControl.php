@@ -12,7 +12,7 @@ QUI::$Ajax->registerFunction(
         if (empty($authenticators)) {
             $authenticators = [];
         } else {
-            $authenticators = \json_decode($authenticators, true);
+            $authenticators = json_decode($authenticators, true);
         }
 
         $Login = new QUI\Users\Controls\Login([

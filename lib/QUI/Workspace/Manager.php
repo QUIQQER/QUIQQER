@@ -8,6 +8,7 @@ namespace QUI\Workspace;
 
 use Exception;
 use QUI;
+use QUI\Interfaces\Users\User;
 use QUI\Utils\Security\Orthos;
 
 use function array_merge;
@@ -16,6 +17,7 @@ use function file_get_contents;
 use function json_decode;
 use function json_encode;
 use function mb_strlen;
+use function stripos;
 
 /**
  * Workspace Manager
@@ -36,7 +38,7 @@ class Manager
         if ($Table->existColumnInTable(self::table(), 'data')) {
             $column = $Table->getColumn(self::table(), 'data');
 
-            if (\stripos($column['Type'], 'text') !== false) {
+            if (stripos($column['Type'], 'text') !== false) {
                 return;
             }
         }
@@ -114,7 +116,7 @@ class Manager
     /**
      * Add a workspace
      *
-     * @param \QUI\Interfaces\Users\User $User
+     * @param User $User
      * @param string $title - title of the workspace
      * @param string $data - Workspace profile
      * @param integer $minHeight - minimum height of the workspace
@@ -125,7 +127,7 @@ class Manager
      * @throws QUI\Exception
      */
     public static function addWorkspace(
-        QUI\Interfaces\Users\User $User,
+        User $User,
         string $title,
         string $data,
         int $minHeight,
@@ -171,11 +173,11 @@ class Manager
     /**
      * Return the titles of the users workspaces
      *
-     * @param \QUI\Users\User $User
+     * @param QUI\Users\User $User
      *
      * @return array
-     * @throws \QUI\Database\Exception
-     * @throws \QUI\Exception
+     * @throws QUI\Database\Exception
+     * @throws QUI\Exception
      */
     public static function getWorkspacesTitlesByUser(QUI\Users\User $User): array
     {
@@ -192,13 +194,13 @@ class Manager
     /**
      * Return the workspaces list from an user
      *
-     * @param \QUI\Interfaces\Users\User $User
+     * @param User $User
      *
      * @return array
-     * @throws \QUI\Database\Exception
-     * @throws \QUI\Exception
+     * @throws QUI\Database\Exception
+     * @throws QUI\Exception
      */
-    public static function getWorkspacesByUser(QUI\Interfaces\Users\User $User): array
+    public static function getWorkspacesByUser(User $User): array
     {
         $result = QUI::getDataBase()->fetch([
             'from' => self::table(),
@@ -224,7 +226,7 @@ class Manager
     /**
      * Saves a workspace
      *
-     * @param \QUI\Users\User $User
+     * @param QUI\Users\User $User
      * @param integer $id
      * @param array $data
      *
@@ -272,10 +274,10 @@ class Manager
      * Return a workspace by its id
      *
      * @param integer $id - id of the workspace
-     * @param \QUI\Users\User $User
+     * @param QUI\Users\User $User
      *
      * @return array
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      *
      */
     public static function getWorkspaceById(int $id, QUI\Users\User $User): array
@@ -305,9 +307,9 @@ class Manager
     /**
      * Set the workspace to the standard workspace
      *
-     * @param QUI\Interfaces\Users\User $User
+     * @param User $User
      * @param integer $id
-     * @throws \QUI\Database\Exception
+     * @throws QUI\Database\Exception
      */
     public static function setStandardWorkspace(QUI\Interfaces\Users\User $User, int $id)
     {

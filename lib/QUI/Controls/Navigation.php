@@ -9,8 +9,6 @@ namespace QUI\Controls;
 use QUI;
 use QUI\Projects\Site\Utils;
 
-use function dirname;
-
 /**
  * Class Navigation
  *

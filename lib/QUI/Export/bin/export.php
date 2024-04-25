@@ -1,5 +1,7 @@
 <?php
 
+use QUI\HtmlToPdf\Document;
+
 $dir = str_replace('quiqqer/quiqqer/lib/QUI/Export/bin', '', __DIR__);
 define('QUIQQER_SYSTEM', true);
 define('QUIQQER_AJAX', true);
@@ -33,7 +35,7 @@ if (isset($body['type']) && $body['type'] === 'pdf') {
     require_once 'exportPrint.php';
     $output = ob_get_clean();
 
-    $Document = new \QUI\HtmlToPdf\Document();
+    $Document = new Document();
     $Document->setContentHTML($output);
     $pdfFile = $Document->createPDF();
     $name = 'export';

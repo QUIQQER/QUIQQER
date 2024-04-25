@@ -6,8 +6,18 @@
 
 namespace QUI\Groups;
 
+use DOMElement;
 use QUI;
+use QUI\Exception;
 use QUI\Utils\Security\Orthos;
+
+use function array_merge;
+use function file_exists;
+use function in_array;
+use function is_array;
+use function is_numeric;
+use function is_object;
+use function trim;
 
 /**
  * Group Manager
@@ -75,11 +85,11 @@ class Manager extends QUI\QDOM
             $plugin = $entry['name'];
             $userXml = OPT_DIR . $plugin . '/group.xml';
 
-            if (!\file_exists($userXml)) {
+            if (!file_exists($userXml)) {
                 continue;
             }
 
-            $attributes = \array_merge(
+            $attributes = array_merge(
                 $attributes,
                 self::readAttributesFromGroupXML($userXml)
             );
@@ -97,9 +107,7 @@ class Manager extends QUI\QDOM
      *
      * @param integer $id - ID of the Group
      *
-     * @return QUI\Groups\Group
-     *
-     * @throws QUI\Exception
+     * @throws Exception
      */
     public function get($id)
     {
@@ -156,7 +164,7 @@ class Manager extends QUI\QDOM
             return [];
         }
 
-        /* @var $Attributes \DOMElement */
+        /* @var $Attributes DOMElement */
         $Attributes = $Attr->item(0);
         $list = $Attributes->getElementsByTagName('attribute');
 
@@ -173,7 +181,7 @@ class Manager extends QUI\QDOM
                 continue;
             }
 
-            $attributes[] = \trim($Attribute->nodeValue);
+            $attributes[] = trim($Attribute->nodeValue);
         }
 
         return $attributes;
@@ -429,7 +437,7 @@ class Manager extends QUI\QDOM
             isset($params['order'])
             && isset($params['field'])
             && $params['field']
-            && \in_array($params['field'], $allowOrderFields)
+            && in_array($params['field'], $allowOrderFields)
         ) {
             $_fields['order'] = $params['field'] . ' ' . $params['order'];
         }
@@ -452,7 +460,7 @@ class Manager extends QUI\QDOM
         } elseif (
             isset($params['search'])
             && isset($params['searchSettings'])
-            && \is_array($params['searchSettings'])
+            && is_array($params['searchSettings'])
         ) {
             foreach ($params['searchSettings'] as $field) {
                 if (!isset($allowSearchFields[$field])) {
@@ -478,7 +486,7 @@ class Manager extends QUI\QDOM
      */
     public function isGroup($Group)
     {
-        if (!\is_object($Group)) {
+        if (!is_object($Group)) {
             return false;
         }
 
@@ -501,7 +509,7 @@ class Manager extends QUI\QDOM
 
         $result = $this->searchHelper($params);
 
-        if (isset($result[0]) && isset($result[0]['count'])) {
+        if (isset($result[0]['count'])) {
             return (int)$result[0]['count'];
         }
 

@@ -6,7 +6,12 @@
 
 namespace QUI\System\Tests;
 
+use Exception;
 use QUI;
+use Redis;
+
+use function class_exists;
+use function parse_url;
 
 /**
  * Redis Server Test
@@ -48,7 +53,7 @@ class RedisCheck extends QUI\System\Test
      */
     public static function checkServer($server = '', $message = false)
     {
-        if (!\class_exists('RedisArray') || !\class_exists('Redis')) {
+        if (!class_exists('RedisArray') || !class_exists('Redis')) {
             if ($message) {
                 return QUI::getLocale()->get('quiqqer/quiqqer', 'message.redis.classes.missing');
             }
@@ -61,8 +66,8 @@ class RedisCheck extends QUI\System\Test
         }
 
         try {
-            $Redis = new \Redis();
-            $server = \parse_url($server);
+            $Redis = new Redis();
+            $server = parse_url($server);
 
             if (!isset($server['port'])) {
                 $Redis->connect($server['path']);

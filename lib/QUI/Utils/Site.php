@@ -7,6 +7,7 @@
 namespace QUI\Utils;
 
 use QUI;
+use QUI\Exception;
 
 use function explode;
 use function implode;
@@ -138,12 +139,12 @@ class Site
      * @param $url
      *
      * @return QUI\Projects\Site
-     * @throws \QUI\Exception
+     * @throws Exception
      */
     public static function getSiteByUrl($url): QUI\Projects\Site
     {
         if (empty($url)) {
-            throw new QUI\Exception('Site not found', 404);
+            throw new Exception('Site not found', 404);
         }
 
         $project = '';
@@ -224,8 +225,8 @@ class Site
 
         try {
             return QUI\Projects\Site\Utils::getSiteByUrl($Project, $url);
-        } catch (QUI\Exception) {
-            throw new QUI\Exception('Site not found', 404);
+        } catch (Exception) {
+            throw new Exception('Site not found', 404);
         }
     }
 }

@@ -8,8 +8,6 @@ namespace QUI\Controls;
 
 use QUI;
 
-use function dirname;
-
 /**
  * Alphabet sorting
  *

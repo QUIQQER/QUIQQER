@@ -7,6 +7,10 @@
 namespace QUI\Projects\Site;
 
 use QUI;
+use QUI\Exception;
+use QUI\Projects\Project;
+
+use function json_decode;
 
 /**
  * This object is only used to get data purely from the DataBase
@@ -88,7 +92,7 @@ class OnlyDB extends QUI\Projects\Site
 
         /* deprecated */
         if (isset($result[0]['extra'])) {
-            $extra = \json_decode($result[0]['extra'], true);
+            $extra = json_decode($result[0]['extra'], true);
 
             foreach ($extra as $key => $value) {
                 $this->setAttribute($key, $value);

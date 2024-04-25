@@ -22,7 +22,6 @@ use function count;
 use function explode;
 use function file_exists;
 use function function_exists;
-use function get_class;
 use function html_entity_decode;
 use function is_array;
 use function is_numeric;

@@ -5,6 +5,9 @@ namespace QUI\Upload;
 use QUI;
 use QUI\Permissions\Permission;
 
+use function json_encode;
+use function str_replace;
+
 /**
  * Class Form
  */
@@ -102,7 +105,7 @@ class Form extends QUI\QDOM
         if (!$allowedFileTypes) {
             $Engine->assign('allowedFileTypes', '[]');
         } else {
-            $Engine->assign('allowedFileTypes', \json_encode($allowedFileTypes));
+            $Engine->assign('allowedFileTypes', json_encode($allowedFileTypes));
         }
 
         return $Engine->fetch(__DIR__ . '/Form.html');

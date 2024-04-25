@@ -10,6 +10,9 @@ use QUI;
 use QUI\System\Console\Tool;
 use QUI\Utils\Project;
 
+use function str_replace;
+use function trim;
+
 /**
  * Class RenameProject
  */
@@ -42,7 +45,7 @@ class RenameProject extends Tool
         }
 
         $this->writeLnLocale("console.tool.project.rename.prompt.projectname", "light_cyan");
-        $this->oldProjectName = \trim($this->readInput());
+        $this->oldProjectName = trim($this->readInput());
 
         try {
             $this->Project = QUI::getProject($this->oldProjectName);
@@ -53,7 +56,7 @@ class RenameProject extends Tool
         }
 
         $this->writeLnLocale("console.tool.project.rename.prompt.new.name", "light_cyan");
-        $this->newProjectName = \trim($this->readInput());
+        $this->newProjectName = trim($this->readInput());
 
         try {
             Project::validateProjectName($this->newProjectName);
@@ -122,6 +125,6 @@ class RenameProject extends Tool
             ' '
         ];
 
-        return \str_replace($forbiddenCharacters, "", $name);
+        return str_replace($forbiddenCharacters, "", $name);
     }
 }

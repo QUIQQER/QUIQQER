@@ -9,6 +9,10 @@ namespace QUI\System\Console;
 use League\CLImate\CLImate;
 use QUI;
 
+use function count;
+use function ltrim;
+use function php_sapi_name;
+
 /**
  * Parent class for a console tool
  *
@@ -170,7 +174,7 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
         $this->writeLn($this->getAttribute('name'), 'purple');
         $this->writeLn();
 
-        if (\count($this->examples)) {
+        if (count($this->examples)) {
             $this->writeLn('Examples:', 'brown');
             $this->resetColor();
 
@@ -199,7 +203,7 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
         $data = [];
 
         foreach ($this->paramsList as $param) {
-            $argv = '--' . \ltrim($param['param'], '-');
+            $argv = '--' . ltrim($param['param'], '-');
             $description = '';
 
             if (isset($param['short']) && !empty($param['short'])) {
@@ -263,7 +267,7 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
             return $this->params[$name];
         }
 
-        $name = \ltrim($name, '-');
+        $name = ltrim($name, '-');
 
         if (isset($this->params[$name])) {
             return $this->params[$name];
@@ -291,7 +295,7 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
 
         // if cli, read user input
         if (
-            \php_sapi_name() == 'cli' &&
+            php_sapi_name() == 'cli' &&
             (isset($paramData['optional']) && $paramData['optional'] === false)
         ) {
             $this->writeLn('');

@@ -6,6 +6,7 @@
 
 namespace QUI\System\Console;
 
+use Exception;
 use QUI\Events\Event;
 use QUI\System\Log;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
@@ -75,7 +76,7 @@ class Output extends \Symfony\Component\Console\Output\Output
 
         try {
             $this->Events->fireEvent('write', [$message]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::addDebug($e->getMessage());
         }
     }

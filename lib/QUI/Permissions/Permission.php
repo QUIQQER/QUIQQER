@@ -16,11 +16,8 @@ use QUI\Users\User;
 
 use function array_flip;
 use function explode;
-use function get_class;
 use function implode;
-use function is_array;
 use function is_null;
-use function strpos;
 use function substr;
 use function trim;
 

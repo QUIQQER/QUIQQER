@@ -8,6 +8,9 @@ namespace QUI\CRUD;
 
 use QUI;
 
+use function array_key_exists;
+use function is_array;
+
 /**
  * Class Factory
  * Abstration factory for create-read-update-delete
@@ -48,7 +51,7 @@ abstract class Factory extends QUI\Utils\Singleton
             ]
         ];
 
-        if (!\is_array($queryParams)) {
+        if (!is_array($queryParams)) {
             $queryParams = [];
         }
 
@@ -87,7 +90,7 @@ abstract class Factory extends QUI\Utils\Singleton
         $attributes = $this->getChildAttributes();
         $childData = [];
 
-        if (!\is_array($data)) {
+        if (!is_array($data)) {
             $data = [];
         }
 
@@ -96,7 +99,7 @@ abstract class Factory extends QUI\Utils\Singleton
                 continue;
             }
 
-            if (\array_key_exists($attribute, $data)) {
+            if (array_key_exists($attribute, $data)) {
                 $childData[$attribute] = $data[$attribute];
             } else {
                 $childData[$attribute] = '';
@@ -207,7 +210,7 @@ abstract class Factory extends QUI\Utils\Singleton
             'from' => $this->getDataBaseTableName()
         ];
 
-        if (!\is_array($queryParams)) {
+        if (!is_array($queryParams)) {
             $queryParams = [];
         }
 
