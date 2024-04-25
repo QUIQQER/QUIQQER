@@ -262,14 +262,19 @@ class Group extends QUI\QDOM
 
         $this->parentIds = [];
 
-        $result = QUI::getDataBase()->fetch([
-            'select' => 'id, parent',
-            'from' => Manager::table(),
-            'where' => [
-                'id' => $this->getId()
-            ],
-            'limit' => 1
-        ]);
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'select' => 'id, parent',
+                'from' => Manager::table(),
+                'where' => [
+                    'id' => $this->getId()
+                ],
+                'limit' => 1
+            ]);
+        } catch (\Exception $exception) {
+            QUI\System\Log::addError($exception->getMessage());
+            return [];
+        }
 
         $this->parentIds[] = $result[0]['parent'];
 
@@ -958,7 +963,13 @@ class Group extends QUI\QDOM
      */
     public function getChildren(array $params = []): array
     {
-        $ids = $this->getChildrenIds(false, $params);
+        try {
+            $ids = $this->getChildrenIds(false, $params);
+        } catch (\Exception $exception) {
+            QUI\System\Log::addError($exception->getMessage());
+            return [];
+        }
+
         $children = [];
         $Groups = QUI::getGroups();
 
