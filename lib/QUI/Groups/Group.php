@@ -79,7 +79,7 @@ class Group extends QUI\QDOM
      *
      * @var array
      */
-    protected $parentids = null;
+    protected mixed $parentIds = null;
 
     /**
      * constructor
@@ -108,7 +108,7 @@ class Group extends QUI\QDOM
 
 
             if (isset($cache['parentids'])) {
-                $this->parentids = $cache['parentids'];
+                $this->parentIds = $cache['parentids'];
             }
 
             if (isset($cache['rights'])) {
@@ -256,11 +256,11 @@ class Group extends QUI\QDOM
      */
     public function getParentIds(): array
     {
-        if ($this->parentids) {
-            return $this->parentids;
+        if ($this->parentIds) {
+            return $this->parentIds;
         }
 
-        $this->parentids = [];
+        $this->parentIds = [];
 
         $result = QUI::getDataBase()->fetch([
             'select' => 'id, parent',
@@ -271,13 +271,13 @@ class Group extends QUI\QDOM
             'limit' => 1
         ]);
 
-        $this->parentids[] = $result[0]['parent'];
+        $this->parentIds[] = $result[0]['parent'];
 
         if (!empty($result[0]['parent'])) {
             $this->getParentIdsHelper($result[0]['parent']);
         }
 
-        return $this->parentids;
+        return $this->parentIds;
     }
 
     /**
@@ -303,7 +303,7 @@ class Group extends QUI\QDOM
             return;
         }
 
-        $this->parentids[] = $result[0]['parent'];
+        $this->parentIds[] = $result[0]['parent'];
 
         $this->getParentIdsHelper($result[0]['parent']);
     }
@@ -925,7 +925,7 @@ class Group extends QUI\QDOM
     public function isParent(int|string $id, bool $recursive = false): bool
     {
         if ($recursive) {
-            if (in_array($id, $this->parentids)) {
+            if (in_array($id, $this->parentIds)) {
                 return true;
             }
 
