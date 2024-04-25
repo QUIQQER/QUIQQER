@@ -215,7 +215,7 @@ class Rewrite
 
         $url = str_replace($search, '-', $url);
 
-        if (substr($url, -5) == '_html') {
+        if (str_ends_with($url, '_html')) {
             $url = substr($url, 0, -5) . self::getDefaultSuffix();
         }
 
@@ -298,7 +298,7 @@ class Rewrite
         // Aus url/kat/ wird url/kat.html
         if (
             !empty($_REQUEST['_url'])
-            && substr($_REQUEST['_url'], -1) == '/'
+            && str_ends_with($_REQUEST['_url'], '/')
             && strlen($_REQUEST['_url']) != 3
             && !str_contains($_REQUEST['_url'], 'media/cache')
         ) {
@@ -311,11 +311,11 @@ class Rewrite
         }
 
         // Suffix
-        if (substr($_REQUEST['_url'], -6) == '.print') {
+        if (str_ends_with($_REQUEST['_url'], '.print')) {
             $this->suffix = '.print';
         }
 
-        if (substr($_REQUEST['_url'], -4) == '.pdf') {
+        if (str_ends_with($_REQUEST['_url'], '.pdf')) {
             $this->suffix = '.pdf';
         }
 
@@ -549,7 +549,7 @@ class Rewrite
         QUI::getEvents()->fireEvent('request', [$this, $_REQUEST['_url']]);
 
         // Falls kein suffix dann 301 weiterleiten auf .html
-        if (!empty($_REQUEST['_url']) && substr($_REQUEST['_url'], -1) != '/') {
+        if (!empty($_REQUEST['_url']) && !str_ends_with($_REQUEST['_url'], '/')) {
             $pathinfo = pathinfo($_REQUEST['_url']);
 
             if (!isset($pathinfo['extension']) && $defaultSuffix !== '') {
