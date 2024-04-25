@@ -112,7 +112,7 @@ class CommandEvents
         echo PHP_EOL;
 
         echo 'WARNING:' . PHP_EOL;
-        echo "Using the '{$command}' command might cause cache inconsistencies." . PHP_EOL;
+        echo "Using the '$command' command might cause cache inconsistencies." . PHP_EOL;
         echo "If the QUIQQER menu bar disappears, clear the cache." . PHP_EOL;
         echo 'You should edit the composer.json directly and then execute a composer update.' . PHP_EOL;
         echo PHP_EOL;
