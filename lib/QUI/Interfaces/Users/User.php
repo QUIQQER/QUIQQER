@@ -6,6 +6,13 @@
 
 namespace QUI\Interfaces\Users;
 
+use QUI\Countries\Country;
+use QUI\Exception;
+use QUI\Groups\Group;
+use QUI\Locale;
+use QUI\Projects\Media\Image;
+use QUI\Users\Address;
+
 /**
  * The user interface
  *
@@ -19,64 +26,64 @@ interface User
      *
      * @return boolean
      */
-    public function isSU();
+    public function isSU(): bool;
 
     /**
-     * @param integer $groupId
+     * @param integer|string $groupId
      * @return boolean
      */
-    public function isInGroup($groupId);
+    public function isInGroup(int|string $groupId): bool;
 
     /**
      * the user can use the backend?
      *
-     * @return boolean
+     * @return bool
      */
-    public function canUseBackend();
+    public function canUseBackend(): bool;
 
     /**
-     * Loged the user out
+     * Logout the user
      */
     public function logout();
 
     /**
      * Activate the user
      *
-     * @param string $code - activasion code [optional]
+     * @param string $code - activation code [optional]
      */
-    public function activate($code);
+    public function activate(string $code, ?User $PermissionUser = null);
 
     /**
      * Deactivate the user
      */
-    public function deactivate();
+    public function deactivate(?User $PermissionUser = null);
 
     /**
      * Disable a user
      * The user data will be lost, but the user still exist
      *
-     * @param \QUI\Users\User|boolean $ParentUser
+     * @param User|null $PermissionUser
      */
-    public function disable($ParentUser = false);
+    public function disable(?User $PermissionUser = null);
 
     /**
      * Save all attributes of the user
      *
-     * @param \QUI\Users\User|boolean $ParentUser
+     * @param User|null $PermissionUser
      */
-    public function save($ParentUser = false);
+    public function save(?User $PermissionUser = null);
 
     /**
      * Delete the user
      */
-    public function delete();
+    public function delete(?User $PermissionUser = null);
 
     /**
      * Returns the user id
      *
-     * @return integer
+     * @return int|false
      */
-    public function getId();
+    public function getId(): int|false;
 
     /**
      * alias for getUUID
@@ -100,60 +107,60 @@ interface User
      *
      * @return string
      */
-    public function getName();
+    public function getName(): string;
 
     /**
      * Returns the username
      *
      * @return string
      */
-    public function getUsername();
+    public function getUsername(): string;
 
     /**
      * Return the user language
      *
      * @return string
      */
-    public function getLang();
+    public function getLang(): string;
 
     /**
      * Returns the Locale object depending on the user
      *
-     * @return \QUI\Locale
+     * @return Locale
      */
-    public function getLocale();
+    public function getLocale(): Locale;
 
     /**
      * Returns the class type
      *
      * @return string (\QUI\Users\Nobody|\QUI\Users\SystemUser|\QUI\Users\User)
      */
-    public function getType();
+    public function getType(): string;
 
     /**
-     * Returns the activ status of the user
+     * Returns the active status of the user
      * is the user active or not?
      *
      * @return boolean
      */
-    public function getStatus();
+    public function getStatus(): bool;
 
     /**
      * Has the user the right?
      *
      * @param string $right
-     * @param array|boolean $ruleset - (optional), you can specific a ruleset, a rules = array with rights
+     * @param boolean|array $ruleset - (optional), you can specify a ruleset, a rules = array with rights
      *
-     * @return bool|int|string
+     * @return mixed
      */
-    public function getPermission($right, $ruleset = false);
+    public function getPermission(string $right, bool|array $ruleset = false): mixed;
 
     /**
      * set a group to the user
      *
      * @param array|string $groups
      */
-    public function setGroups($groups);
+    public function setGroups(array|string $groups);
 
     /**
      * Returns all groups in which the user is
@@ -162,70 +169,31 @@ interface User
      *
      * @return array
      */
-    public function getGroups($array = true);
+    public function getGroups(bool $array = true): array;
 
     /**
      * Get an address from the user
      *
      * @param integer $id - ID of the address
+     * @return Address
      *
-     * @return \QUI\Users\Address
-     *
-     * @throws \QUI\Exception
+     * @throws Exception
      */
-    public function getAddress($id);
+    public function getAddress(int $id): Address;
 
     /**
      * Return the Country from the user
      *
-     * @return \QUI\Countries\Country|boolean
+     * @return Country|boolean
      */
-    public function getCountry();
-
-    /**
-     * Remove an attribute
-     *
-     * @param string $key
-     */
-    public function removeAttribute($key);
-
-    /**
-     * Set a attribute of the user
-     *
-     * @param string $key
-     * @param string|integer|array $value
-     */
-    public function setAttribute($key, $value);
-
-    /**
-     * set multiple attributes
-     *
-     * @param array $attributes
-     */
-    public function setAttributes($attributes);
-
-    /**
-     * Get a attribute of the user
-     *
-     * @param string $var
-     *
-     * @return string|integer|array
-     */
-    public function getAttribute($var);
-
-    /**
-     * Return all attributes
-     *
-     * @return array
-     */
-    public function getAttributes();
+    public function getCountry(): Country|bool;
 
     /**
      * Returns the avatar of the user
      *
-     * @return \QUI\Projects\Media\Image|false
+     * @return Image|false
      */
-    public function getAvatar();
+    public function getAvatar(): Image|bool;
 
     /**
      * Set the password of the user
@@ -241,56 +209,56 @@ interface User
      * @param string $pass - Password
      * @param boolean $encrypted - is the given password already encrypted?
      */
-    public function checkPassword($pass, $encrypted = false);
+    public function checkPassword(string $pass, bool $encrypted = false);
 
     /**
      * Is the user deleted?
      *
      * @return boolean
      */
-    public function isDeleted();
+    public function isDeleted(): bool;
 
     /**
      * is the user active?
      *
      * @return boolean
      */
-    public function isActive();
+    public function isActive(): bool;
 
     /**
      * is the user online at the moment?
      *
      * @return boolean
      */
-    public function isOnline();
+    public function isOnline(): bool;
 
     /**
-     * Is the user a compny?
+     * Is the user a company?
      *
      * @return mixed
      */
-    public function isCompany();
+    public function isCompany(): mixed;
 
     /**
      * Set the company status, whether the user is a company or not
      *
      * @param boolean $status - true or false
      */
-    public function setCompanyStatus($status);
+    public function setCompanyStatus(bool $status);
 
     /**
      * Add the user to a group
      *
      * @param integer $groupId
      */
-    public function addToGroup($groupId);
+    public function addToGroup(int $groupId);
 
     /**
      * Remove a group from the user
      *
-     * @param \QUI\Groups\Group|integer $Group
+     * @param integer|Group $Group
      */
-    public function removeGroup($Group);
+    public function removeGroup(Group|int $Group);
 
     /**
      * refresh the data from the database
@@ -298,4 +266,46 @@ interface User
      * @throws \QUI\Users\Exception
      */
     public function refresh();
+
+    // region qdom
+
+    /**
+     * Remove an attribute
+     *
+     * @param string $key
+     */
+    public function removeAttribute($key);
+
+    /**
+     * Set an attribute of the user
+     *
+     * @param string $key
+     * @param mixed $value
+     */
+    public function setAttribute($key, $value);
+
+    /**
+     * set multiple attributes
+     *
+     * @param array $attributes
+     */
+    public function setAttributes($attributes);
+
+    /**
+     * Get an attribute of the user
+     *
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function getAttribute($name);
+
+    /**
+     * Return all attributes
+     *
+     * @return array
+     */
+    public function getAttributes();
+
+    //endregion
 }

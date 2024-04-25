@@ -60,10 +60,10 @@ class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
     }
 
     /**
-     * @param bool|true $array
+     * @param bool $array
      * @return array
      */
-    public function getGroups($array = true): array
+    public function getGroups(bool $array = true): array
     {
         $Everyone = new QUI\Groups\Everyone();
 
@@ -75,11 +75,9 @@ class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see \QUI\Users\Nobody::getId()
+     * @return false|int
      */
-    public function getId()
+    public function getId(): false|int
     {
         return 5;
     }
