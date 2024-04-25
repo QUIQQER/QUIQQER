@@ -446,7 +446,7 @@ class Nobody extends QUI\QDOM implements User
      * @return false|Address
      * @ignore
      */
-    public function getStandardAddress()
+    public function getStandardAddress(): bool|Address
     {
         return false;
     }
@@ -488,7 +488,7 @@ class Nobody extends QUI\QDOM implements User
      *
      * @return boolean|string
      */
-    public function hasPermission(string $permission)
+    public function hasPermission(string $permission): bool|string
     {
         $list = QUI::getPermissionManager()->getUserPermissionData($this);
 
