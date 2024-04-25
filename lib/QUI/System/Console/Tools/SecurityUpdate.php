@@ -20,7 +20,6 @@ use function file_put_contents;
 use function json_decode;
 use function json_encode;
 use function str_replace;
-use function strpos;
 use function substr_count;
 use function trim;
 use function unlink;
@@ -140,7 +139,7 @@ class SecurityUpdate extends QUI\System\Console\Tool
                     continue;
                 }
 
-                if (strpos($v, '*') !== false) {
+                if (str_contains($v, '*')) {
                     continue;
                 }
 
@@ -169,7 +168,7 @@ class SecurityUpdate extends QUI\System\Console\Tool
             $isUpdateAvailable = false;
 
             foreach ($dryRunOutput as $line) {
-                if (strpos($line, 'Lock file operations:') === false) {
+                if (!str_contains($line, 'Lock file operations:')) {
                     continue;
                 }
 

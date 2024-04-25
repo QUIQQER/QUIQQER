@@ -40,7 +40,6 @@ use function rename;
 use function sort;
 use function str_ireplace;
 use function str_replace;
-use function strpos;
 use function trim;
 use function unlink;
 
@@ -251,7 +250,7 @@ class Manager
     public static function search($search): array
     {
         return array_filter(self::getToolbars(), function ($toolbar) use ($search) {
-            return strpos($toolbar, $search) !== false;
+            return str_contains($toolbar, $search);
         });
     }
 
@@ -728,7 +727,7 @@ class Manager
             return [];
         }
 
-        if (strpos($toolbar, '.xml') !== false) {
+        if (str_contains($toolbar, '.xml')) {
             if (file_exists($toolbarPath . $toolbar)) {
                 return self::parseXmlFileToArray($toolbarPath . $toolbar);
             }
@@ -966,7 +965,7 @@ class Manager
      */
     public function cleanSrc(array $html): string
     {
-        if (isset($html[2]) && strpos($html[2], 'image.php') !== false) {
+        if (isset($html[2]) && str_contains($html[2], 'image.php')) {
             $html[2] = str_replace('&amp;', '&', $html[2]);
             $src_ = explode('image.php?', $html[2]);
 
@@ -985,14 +984,14 @@ class Manager
      */
     public function cleanHref(array $html): string
     {
-        if (isset($html[2]) && strpos($html[2], 'index.php') !== false) {
+        if (isset($html[2]) && str_contains($html[2], 'index.php')) {
             $index = explode('index.php?', $html[2]);
 
             return $html[1] . '="index.php?' . $index[1] . '"';
         }
 
 
-        if (isset($html[2]) && strpos($html[2], 'image.php') !== false) {
+        if (isset($html[2]) && str_contains($html[2], 'image.php')) {
             $index = explode('image.php?', $html[2]);
 
             return ' ' . $html[1] . '="image.php?' . $index[1] . '"';
@@ -1010,7 +1009,7 @@ class Manager
      */
     public function cleanAdminSrc(array $html): string
     {
-        if (isset($html[2]) && strpos($html[2], 'image.php') !== false) {
+        if (isset($html[2]) && str_contains($html[2], 'image.php')) {
             $src_ = explode('image.php?', $html[2]);
 
             return ' ' . $html[1] . '="' . URL_DIR . 'image.php?' . $src_[1] . '" ';

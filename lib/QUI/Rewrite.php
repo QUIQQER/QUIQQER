@@ -300,7 +300,7 @@ class Rewrite
             !empty($_REQUEST['_url'])
             && substr($_REQUEST['_url'], -1) == '/'
             && strlen($_REQUEST['_url']) != 3
-            && strpos($_REQUEST['_url'], 'media/cache') === false
+            && !str_contains($_REQUEST['_url'], 'media/cache')
         ) {
             $_REQUEST['_url'] = substr($_REQUEST['_url'], 0, -1) . $defaultSuffix;
 
@@ -427,7 +427,7 @@ class Rewrite
         // Media Center Datei, falls nicht im Cache ist
         if (
             isset($_REQUEST['_url'])
-            && strpos($_REQUEST['_url'], 'media/cache') !== false
+            && str_contains($_REQUEST['_url'], 'media/cache')
         ) {
             QUI::getEvents()->fireEvent('request', [$this, $_REQUEST['_url']]);
 
@@ -437,7 +437,7 @@ class Rewrite
             try {
                 $Item = MediaUtils::getElement($_REQUEST['_url']);
 
-                if (strpos($_REQUEST['_url'], '__') !== false) {
+                if (str_contains($_REQUEST['_url'], '__')) {
                     $lastpos_ul = strrpos($_REQUEST['_url'], '__') + 2;
                     $pos_dot = strpos($_REQUEST['_url'], '.', $lastpos_ul);
 
@@ -620,7 +620,7 @@ class Rewrite
             ) {
                 $url = $this->site->getUrlRewritten();
 
-                if (strpos($url, 'http:') === false) {
+                if (!str_contains($url, 'http:')) {
                     $url = $vhosts[$_SERVER['HTTP_HOST']][$this->lang] . URL_DIR . $url;
                     $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
                     $url = 'http://' . $this->project_prefix . $url;
@@ -672,7 +672,7 @@ class Rewrite
 
         $request_url = urldecode($request_url);
 
-        if (strpos($request_url, '?') !== false) {
+        if (str_contains($request_url, '?')) {
             $request_url = explode('?', $request_url);
             $request_url = $request_url[0];
         }
@@ -1408,7 +1408,7 @@ class Rewrite
      */
     public function outputMail(string $output): string
     {
-        if (isset($output[3]) && strpos($output[3], '@') !== false) {
+        if (isset($output[3]) && str_contains($output[3], '@')) {
             [$user, $domain] = explode("@", $output[3]);
 
             return 'href="' . URL_DIR . '[mailto]' . $user . '[at]' . $domain . '" target="mail_protection"';

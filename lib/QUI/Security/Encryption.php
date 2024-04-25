@@ -52,8 +52,8 @@ class Encryption
         /**
          * multi key support
          */
-        if (\strpos($iv, ',') !== false) {
-            $ivs = \explode(',', trim($iv));
+        if (str_contains($iv, ',')) {
+            $ivs = explode(',', trim($iv));
         } else {
             $ivs[] = trim($iv);
         }
@@ -106,8 +106,8 @@ class Encryption
 
             QUI::getConfig('etc/conf.ini.php')->save();
         } else {
-            if (\strpos($iv, ',') !== false) {
-                $iv = \explode(',', trim($iv))[0];
+            if (str_contains($iv, ',')) {
+                $iv = explode(',', trim($iv))[0];
             }
 
             $iv = hex2bin($iv);

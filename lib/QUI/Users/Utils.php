@@ -158,7 +158,7 @@ class Utils
 
 
         // project
-        if (strpos($plugin, 'project.') !== false) {
+        if (str_contains($plugin, 'project.')) {
             $project = explode('project.', $plugin);
 
             return DOM::getTabHTML(

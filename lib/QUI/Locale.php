@@ -680,9 +680,9 @@ class Locale implements \Stringable
     public function isLocaleString(string $str): bool
     {
         if (
-            strpos($str, ' ') === false
-            || strpos($str, '[') === false
-            || strpos($str, ']') === false
+            !str_contains($str, ' ')
+            || !str_contains($str, '[')
+            || !str_contains($str, ']')
         ) {
             return false;
         }

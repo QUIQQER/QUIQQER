@@ -113,7 +113,7 @@ class QUIQQER extends AbstractAuthenticator
 
         $User = false;
 
-        if (QUI::conf('globals', 'emaillogin') && \strpos($this->username, '@') !== false) {
+        if (QUI::conf('globals', 'emaillogin') && str_contains($this->username, '@')) {
             try {
                 $User = QUI::getUsers()->getUserByMail($this->username);
             } catch (QUI\Exception) {

@@ -992,7 +992,7 @@ class Project implements \Stringable
         $order = $this->TABLE . '.order_field';
 
         if (isset($params['order'])) {
-            if (strpos($params['order'], '.') !== false) {
+            if (str_contains($params['order'], '.')) {
                 $order = $this->TABLE . '.' . $params['order'];
             } else {
                 $order = $params['order'];
@@ -1673,7 +1673,7 @@ class Project implements \Stringable
         }
 
         foreach ($tables as $oldTableName) {
-            if (strpos($oldTableName . "_", $this->name) === false) {
+            if (!str_contains($oldTableName . "_", $this->name)) {
                 continue;
             }
 

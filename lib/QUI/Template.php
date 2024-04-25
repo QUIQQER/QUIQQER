@@ -20,7 +20,6 @@ use function implode;
 use function is_array;
 use function realpath;
 use function str_replace;
-use function strpos;
 use function trim;
 
 use const ETC_DIR;
@@ -406,12 +405,12 @@ class Template extends QUI\QDOM
             $templateIni = ETC_DIR . 'templates.ini.php';
             $iniContent = file_get_contents($templateIni);
 
-            if (strpos($templateIni, 'QUI\\Smarty\\Smarty4') === false) {
-                file_put_contents(
-                    $templateIni,
-                    trim($iniContent) . PHP_EOL . 'smarty4="QUI\Smarty\Smarty4"'
-                );
-            }
+                if (!str_contains($templateIni, 'QUI\\Smarty\\Smarty4')) {
+                    file_put_contents(
+                        $templateIni,
+                        trim($iniContent) . PHP_EOL . 'smarty4="QUI\Smarty\Smarty4"'
+                    );
+                }
 
             static::getConfig()->reload();
             $this->load();

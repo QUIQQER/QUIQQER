@@ -1046,7 +1046,7 @@ abstract class Item extends QUI\QDOM
         if ($this->getAttribute('mime_type') == 'text/html') {
             $content = file_get_contents($this->getFullPath());
 
-            if (strpos($content, '<svg') !== false && strpos($content, '</svg>')) {
+            if (str_contains($content, '<svg') && strpos($content, '</svg>')) {
                 file_put_contents(
                     $this->getFullPath(),
                     '<?xml version="1.0" encoding="UTF-8"?>' .

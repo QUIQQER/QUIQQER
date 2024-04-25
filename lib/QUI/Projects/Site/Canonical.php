@@ -10,7 +10,6 @@ use QUI;
 
 use function ltrim;
 use function parse_url;
-use function strpos;
 
 /**
  * Canonical meta helper
@@ -71,7 +70,7 @@ class Canonical
             $httpsHost = $Project->getVHost(true, true);
             $httpsHostExists = false;
 
-            if (strpos($httpsHost, 'https:') !== false) {
+            if (str_contains($httpsHost, 'https:')) {
                 $httpsHostExists = true;
             }
 
@@ -86,7 +85,7 @@ class Canonical
                 return $this->getLinkRel($httpsHost . $this->Site->getCanonical());
             }
 
-            if (strpos($_REQUEST['_url'], QUI\Rewrite::URL_PARAM_SEPARATOR) !== false) {
+            if (str_contains($_REQUEST['_url'], QUI\Rewrite::URL_PARAM_SEPARATOR)) {
                 return $this->getLinkRel($httpsHost . $this->Site->getCanonical());
             }
 
@@ -121,7 +120,7 @@ class Canonical
 
         $httpsHostExists = false;
 
-        if (strpos($httpsHost, 'https:') !== false) {
+        if (str_contains($httpsHost, 'https:')) {
             $httpsHostExists = true;
         }
 
@@ -145,7 +144,7 @@ class Canonical
 
 
         // fix doppelter HOST im canonical https://dev.quiqqer.com/quiqqer/quiqqer/issues/574
-        if (strpos($canonical, 'https:') !== false || strpos($canonical, 'http:') !== false) {
+        if (str_contains($canonical, 'https:') || str_contains($canonical, 'http:')) {
             return $this->getLinkRel($canonical);
         }
 
