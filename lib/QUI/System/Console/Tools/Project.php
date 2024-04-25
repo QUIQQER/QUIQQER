@@ -309,6 +309,7 @@ class Project extends QUI\System\Console\Tool
      * Copy project from one language to another.
      *
      * @return void
+     * @throws QUI\Exception
      */
     protected function copyProject()
     {
@@ -460,6 +461,7 @@ class Project extends QUI\System\Console\Tool
      * @param QUI\Projects\Site $RootSite
      * @param string $langTo
      * @param QUI\Projects\Site|null $ParentSite - Parent site of $RootSite
+     * @throws QUI\Exception
      */
     protected function copySiteLevel(QUI\Projects\Site $RootSite, string $langTo, ?QUI\Projects\Site $ParentSite = null)
     {

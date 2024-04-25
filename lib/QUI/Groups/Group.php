@@ -7,6 +7,7 @@
 namespace QUI\Groups;
 
 use QUI;
+use QUI\Database\Exception;
 
 use function array_filter;
 use function array_flip;
@@ -781,6 +782,7 @@ class Group extends QUI\QDOM
      * Add a user to this group
      *
      * @param QUI\Users\User $User
+     * @throws QUI\Exception
      */
     public function addUser(QUI\Users\User $User): void
     {
@@ -791,6 +793,7 @@ class Group extends QUI\QDOM
      * Remove a user from this group
      *
      * @param QUI\Users\User $User
+     * @throws QUI\Exception
      */
     public function removeUser(QUI\Users\User $User): void
     {
@@ -819,6 +822,7 @@ class Group extends QUI\QDOM
      *
      * @param array $params - SQL Params
      * @return array
+     * @throws Exception
      */
     public function getUsers(array $params = []): array
     {

@@ -7,6 +7,7 @@
 namespace QUI\Permissions;
 
 use QUI;
+use QUI\Database\Exception;
 use QUI\Groups\Group;
 use QUI\Projects\Media;
 use QUI\Projects\Project;
@@ -1135,7 +1136,7 @@ class Permission
      * @param Project $Project
      * @param string $permission - name of the permission
      *
-     * @throws Exception
+     * @throws Exception|QUI\Database\Exception
      */
     public static function removeUserFromProjectPermission(
         User $User,
@@ -1355,8 +1356,9 @@ class Permission
      *
      * @return bool
      *
-     * @throws QUI\Exception
      * @throws Exception
+     * @throws Exception
+     * @throws QUI\Exception
      */
     public static function removeUserFromMediaPermission(
         User $User,

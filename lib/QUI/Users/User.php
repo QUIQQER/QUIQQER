@@ -8,6 +8,7 @@ namespace QUI\Users;
 
 use DOMElement;
 use QUI;
+use QUI\Database\Exception;
 use QUI\ERP\Currency\Handler as Currencies;
 use QUI\ExceptionStack;
 use QUI\Groups\Group;
@@ -207,7 +208,9 @@ class User implements QUIUserInterface
      * @param int|string $id - ID of the user
      * @param Manager $Users - the user manager
      *
-     * @throws QUI\Users\Exception
+     * @throws ExceptionStack
+     * @throws QUI\Exception
+     * @throws Exception
      */
     public function __construct(int|string $id, Manager $Users)
     {
@@ -325,7 +328,11 @@ class User implements QUIUserInterface
     /**
      * refresh the data from the database
      *
-     * @throws QUI\Users\Exception
+     * @throws Exception
+     * @throws Exception
+     * @throws QUI\Exception
+     * @throws ExceptionStack
+     * @throws \Exception
      */
     public function refresh(): void
     {
@@ -577,8 +584,9 @@ class User implements QUIUserInterface
      * Return the standard address from the user
      * If no standard address set, the first address will be returned
      *
-     * @return QUI\Users\Address|false
-     * @throws QUI\Users\Exception
+     * @return Address|false
+     * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
      */
     public function getStandardAddress()
     {
@@ -668,6 +676,7 @@ class User implements QUIUserInterface
      * Returns all addresses from the user
      *
      * @return array
+     * @throws Exception
      */
     public function getAddressList()
     {
@@ -878,8 +887,8 @@ class User implements QUIUserInterface
      * @throws Exception
      * @throws ExceptionStack
      * @throws QUI\Exception
-     * @see QUI\Interfaces\Users\User::save()
-     *
+     * @throws QUI\Permissions\Exception
+     * @throws Exception
      */
     public function save(?QUIUserInterface $PermissionUser = null): void
     {
@@ -1142,6 +1151,7 @@ class User implements QUIUserInterface
      * Add the user to a group
      *
      * @param integer $groupId
+     * @throws QUI\Exception
      */
     public function addToGroup(int|string $groupId): void
     {
@@ -1203,7 +1213,7 @@ class User implements QUIUserInterface
 
     /**
      * @param array|string $groups
-     * @see QUI\Interfaces\Users\User::setGroups()
+     * @throws QUI\Exception
      */
     public function setGroups(array|string $groups): void
     {
@@ -1398,6 +1408,7 @@ class User implements QUIUserInterface
      * @param $authenticator
      * @param QUI\Interfaces\Users\User|boolean $ParentUser - optional, the saving user, default = session user
      *
+     * @throws QUI\Exception
      * @throws Exception
      */
     public function disableAuthenticator($authenticator, $ParentUser = false)
@@ -1458,8 +1469,7 @@ class User implements QUIUserInterface
      * @param boolean|array $ruleset - optional, you can specify a ruleset, a rules = array with rights
      *
      * @return bool|int|string
-     * @see QUI\Interfaces\Users\User::getPermission()
-     *
+     * @throws QUI\Exception
      */
     public function getPermission(string $right, bool|array $ruleset = false): bool|int|string
     {
@@ -1505,6 +1515,7 @@ class User implements QUIUserInterface
      * Return the user Currency
      *
      * @return string
+     * @throws QUI\Exception
      * @todo do it as a plugin
      */
     public function getCurrency(): string
@@ -1632,6 +1643,7 @@ class User implements QUIUserInterface
 
     /**
      * @param integer $gid
+     * @throws QUI\Exception
      * @deprecated use addToGroup
      */
     public function addGroup($gid)
@@ -1659,6 +1671,7 @@ class User implements QUIUserInterface
      * set attributes
      *
      * @param array $attributes
+     * @throws QUI\Exception
      */
     public function setAttributes($attributes): void
     {
@@ -1804,8 +1817,7 @@ class User implements QUIUserInterface
 
     /**
      * @return QUI\Interfaces\Projects\Media\File|false
-     * @see QUI\Interfaces\Users\User::getAvatar()
-     *
+     * @throws ExceptionStack|QUI\Exception
      */
     public function getAvatar(): QUI\Projects\Media\Image|bool
     {
@@ -1844,6 +1856,8 @@ class User implements QUIUserInterface
      * @param string $oldPassword
      * @param bool|QUI\Interfaces\Users\User $ParentUser
      * @throws QUI\Users\Exception
+     * @throws QUI\Permissions\Exception|ExceptionStack
+     * @throws Exception
      */
     public function changePassword($newPassword, $oldPassword, $ParentUser = false)
     {
@@ -1963,6 +1977,7 @@ class User implements QUIUserInterface
      * Update password to the database
      *
      * @param string $password
+     * @throws Exception
      */
     protected function updatePassword($password)
     {
@@ -1980,6 +1995,9 @@ class User implements QUIUserInterface
      * @param string $new - new password
      * @param QUI\Interfaces\Users\User|boolean $ParentUser
      *
+     * @throws ExceptionStack
+     * @throws QUI\Permissions\Exception
+     * @throws Exception
      * @throws QUI\Users\Exception
      */
     public function setPassword(string $new, QUIUserInterface $PermissionUser = null): void
@@ -2012,11 +2030,10 @@ class User implements QUIUserInterface
      * @param QUIUserInterface|null $PermissionUser
      * @return bool|int
      *
-     * @throws \QUI\Users\Exception
-     * @throws \QUI\Permissions\Exception
-     *
-     * @see QUI\Interfaces\Users\User::activate()
-     *
+     * @throws Exception
+     * @throws ExceptionStack
+     * @throws QUI\Permissions\Exception
+     * @throws QUI\Users\Exception
      */
     public function activate(
         string $code = '',
@@ -2104,7 +2121,12 @@ class User implements QUIUserInterface
     /**
      * @param QUIUserInterface|null $PermissionUser (optional) - Executing User
      * @return bool
-     * @see QUI\Interfaces\Users\User::deactivate()
+     *
+     * @throws Exception
+     * @throws ExceptionStack
+     * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
+     * @throws Exception
      */
     public function deactivate(QUIUserInterface $PermissionUser = null): bool
     {
@@ -2206,9 +2228,8 @@ class User implements QUIUserInterface
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see QUI\Interfaces\Users\User::logout()
+     * logout the use, destroy the session
+     * @throws ExceptionStack
      */
     public function logout(): void
     {
@@ -2304,10 +2325,10 @@ class User implements QUIUserInterface
      * @param QUIUserInterface|null $PermissionUser (optional)
      * @return true
      *
-     * @throws QUI\Permissions\Exception
+     * @throws Exception
+     * @throws ExceptionStack
      * @throws QUI\Exception
-     *
-     * @see QUI\Interfaces\Users\User::delete()
+     * @throws QUI\Permissions\Exception
      */
     public function delete(QUIUserInterface $PermissionUser = null): bool
     {

@@ -43,6 +43,7 @@ class SetSiteAttributes extends QUI\System\Console\Tool
     /**
      * (non-PHPdoc)
      *
+     * @throws QUI\Exception
      * @see \QUI\System\Console\Tool::execute()
      */
     public function execute()

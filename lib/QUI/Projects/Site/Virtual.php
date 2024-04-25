@@ -346,6 +346,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Return the Parent id from the site object
      *
      * @return integer
+     * @throws Exception
      */
     public function getParentId()
     {
@@ -378,6 +379,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * ->Parent
      *
      * @return array
+     * @throws Exception
      */
     public function getParentIds()
     {
@@ -390,7 +392,8 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Gibt das Parent Objekt zurück
      *
-     * @return QUI\Projects\Site
+     * @return Site
+     * @throws Exception
      */
     public function getParent()
     {
@@ -428,6 +431,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Site->Parent->ParentParent->ParentParentParent
      *
      * @return array
+     * @throws Exception
      */
     public function getParents()
     {
@@ -497,8 +501,6 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @param string $permission - name of the permission
      * @param QUI\Users\User|boolean $User - optional
-     *
-     * @throws QUI\Exception
      */
     public function checkPermission($permission, $User = false)
     {

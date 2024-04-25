@@ -500,8 +500,7 @@ class Nobody extends QUI\QDOM implements User
      * @param boolean|array $ruleset - optional, you can specify a ruleset, a rules = array with rights
      * @return bool|int|string
      *
-     * @see \QUI\Interfaces\Users\User::getPermission()
-     *
+     * @throws Exception
      */
     public function getPermission(string $right, bool|array $ruleset = false): bool|int|string
     {

@@ -1264,6 +1264,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @return QUI\Projects\Media\Item
      *
+     * @throws QUI\Database\Exception
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
@@ -1704,6 +1705,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * (non-PHPdoc)
      *
      * @param QUI\Interfaces\Users\User|null $PermissionUser
+     * @throws ExceptionStack
      * @see QUI\Projects\Media\Item::destroy()
      */
     public function destroy(QUI\Interfaces\Users\User $PermissionUser = null)

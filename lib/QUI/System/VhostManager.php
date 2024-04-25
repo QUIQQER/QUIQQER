@@ -92,6 +92,7 @@ class VhostManager
     /**
      * Check the vhosts entry and tries to repair it
      * eq. search empty language entries
+     * @throws Exception
      */
     public function repair()
     {
@@ -147,6 +148,7 @@ class VhostManager
      * Return the vhost list
      *
      * @return array
+     * @throws Exception
      */
     public function getList()
     {
@@ -160,6 +162,7 @@ class VhostManager
      * @param string $projectLang - Language of the project (de, en, etc...)
      *
      * @return string
+     * @throws Exception
      */
     public function getHostByProject($projectName, $projectLang)
     {
@@ -317,8 +320,9 @@ class VhostManager
      * Return the vhost data
      *
      * @param string $vhost
-     *
      * @return array|false
+     *
+     * @throws Exception
      */
     public function getVhost($vhost)
     {
@@ -329,8 +333,9 @@ class VhostManager
      * Return all hosts from the project
      *
      * @param string $projectName - Name of the project
-     *
      * @return array
+     *
+     * @throws Exception
      */
     public function getHostsByProject($projectName)
     {
@@ -355,6 +360,7 @@ class VhostManager
      *
      * @param string $vhost
      * @return QUI\Projects\Project|false - Project or false if no project not found
+     * @throws Exception
      */
     public function getProjectByHost($vhost)
     {
@@ -375,6 +381,7 @@ class VhostManager
      * @param bool $includeWWW - (optional) Should www. domains be added?
      *
      * @return array
+     * @throws Exception
      */
     public function getRegisteredDomains($includeWWW = false)
     {

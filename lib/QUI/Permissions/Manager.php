@@ -816,7 +816,6 @@ class Manager
      * @param array $permissions
      * @param boolean|User $EditUser
      *
-     * @throws QUI\Permissions\Exception
      * @throws Exception
      */
     public function setProjectPermissions(
@@ -1063,6 +1062,7 @@ class Manager
      * @param string $permission
      * @param string|integer $value
      *
+     * @throws Exception
      * @throws QUI\Exception
      */
     protected function addSitePermission($Site, string $permission, $value)
@@ -1086,6 +1086,7 @@ class Manager
      * @param string $permission
      * @param string|integer $value
      *
+     * @throws Exception
      * @throws QUI\Exception
      */
     protected function setSitePermission($Site, string $permission, $value)

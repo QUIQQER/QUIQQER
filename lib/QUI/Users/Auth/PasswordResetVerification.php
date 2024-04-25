@@ -3,6 +3,8 @@
 namespace QUI\Users\Auth;
 
 use QUI;
+use QUI\Exception;
+use QUI\Interfaces\Users\User;
 use QUI\Verification\AbstractVerification;
 
 use function current;
@@ -68,6 +70,8 @@ class PasswordResetVerification extends AbstractVerification
      * @param User $User
      * @param string $newPass
      * @return void
+     * @throws Exception
+     * @throws \PHPMailer\PHPMailer\Exception
      */
     protected function sendNewUserPasswordMail($User, $newPass)
     {
@@ -154,6 +158,7 @@ class PasswordResetVerification extends AbstractVerification
      * Automatically redirect the user to this URL on successful verification
      *
      * @return string|false - If this method returns false, no redirection takes place
+     * @throws QUI\Database\Exception
      */
     public function getOnSuccessRedirectUrl()
     {
