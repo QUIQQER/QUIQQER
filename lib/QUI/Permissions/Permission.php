@@ -692,10 +692,7 @@ class Permission
                 $group_ids = $User->getGroups(false);
                 $group_ids = explode(',', $group_ids);
 
-                if (
-                    strpos($perm_value, 'g') !== false
-                    || strpos($perm_value, 'u') !== false
-                ) {
+                if (str_contains($perm_value, 'g') || str_contains($perm_value, 'u')) {
                     $perm_value = (int)substr($perm_value, 1);
                 }
 
@@ -749,10 +746,7 @@ class Permission
                     $real_id = $id;
                     $type = 'g';
 
-                    if (
-                        strpos($id, 'g') !== false
-                        || strpos($id, 'u') !== false
-                    ) {
+                    if (str_contains($id, 'g') || str_contains($id, 'u')) {
                         $real_id = (int)substr($id, 1);
                         $type = substr($id, 0, 1);
                     }

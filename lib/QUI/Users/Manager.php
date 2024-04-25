@@ -36,7 +36,6 @@ use function print_r;
 use function round;
 use function serialize;
 use function str_contains;
-use function strpos;
 use function strtotime;
 use function substr;
 use function time;
@@ -660,7 +659,7 @@ class Manager
         // chromeframe nicht mitaufnehmen -> bug
         if (
             isset($_SERVER['HTTP_USER_AGENT'])
-            && strpos($_SERVER['HTTP_USER_AGENT'], 'chromeframe') === false
+            && !str_contains($_SERVER['HTTP_USER_AGENT'], 'chromeframe')
         ) {
             $useragent = $_SERVER['HTTP_USER_AGENT'];
         }
@@ -1872,7 +1871,7 @@ class Manager
 
 
             // empty where, no search possible
-            if (strpos($query, 'WHERE ()') !== false) {
+            if (str_contains($query, 'WHERE ()')) {
                 return [];
             }
 

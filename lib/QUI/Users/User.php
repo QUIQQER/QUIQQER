@@ -1223,7 +1223,7 @@ class User implements QUIUserInterface
             return;
         }
 
-        if (is_string($groups) && strpos($groups, ',') !== false) {
+        if (is_string($groups) && str_contains($groups, ',')) {
             $groups = explode(',', $groups);
             $aTmp = [];
 

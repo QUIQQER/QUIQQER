@@ -88,7 +88,7 @@ class EventHandler
         // Check if htaccess or nginx need to be recreated
         $webServerType = QUI::conf("webserver", "type");
 
-        if (strpos($webServerType, 'apache') !== false) {
+        if (str_contains($webServerType, 'apache')) {
             $HtAccess = new QUI\System\Console\Tools\Htaccess();
 
             if ($HtAccess->hasModifications()) {

@@ -129,13 +129,13 @@ class UserGroups
         }
 
         foreach ($ugs as $ug) {
-            if (\strpos($ug, 'g') !== false) {
-                $result['groups'][] = (int)\substr($ug, 1);
+            if (str_contains($ug, 'g')) {
+                $result['groups'][] = (int)substr($ug, 1);
                 continue;
             }
 
-            if (\strpos($ug, 'u') !== false) {
-                $result['users'][] = (int)\substr($ug, 1);
+            if (str_contains($ug, 'u')) {
+                $result['users'][] = substr($ug, 1);
             }
         }
 
@@ -153,7 +153,7 @@ class UserGroups
         $ugString = explode(',', $ugString);
 
         foreach ($ugString as $entry) {
-            if (\strpos($entry, 'g') === false && \strpos($entry, 'u') === false) {
+            if (!str_contains($entry, 'g') && !str_contains($entry, 'u')) {
                 return false;
             }
         }

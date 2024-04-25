@@ -75,7 +75,6 @@ use function str_contains;
 use function str_replace;
 use function strcmp;
 use function strip_tags;
-use function strpos;
 use function time;
 use function trim;
 use function usort;
@@ -2366,7 +2365,7 @@ class Manager extends QUI\QDOM
         } catch (QUI\Cache\Exception) {
         }
 
-        if (strpos($type, ':') === false) {
+        if (!str_contains($type, ':')) {
             return false;
         }
 

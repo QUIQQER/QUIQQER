@@ -305,14 +305,11 @@ class Utils
      */
     public static function getMediaTypeByMimeType(string $mime_type): string
     {
-        if (
-            strpos($mime_type, 'image/') !== false
-            && strpos($mime_type, 'vnd.adobe') === false
-        ) {
+        if (str_contains($mime_type, 'image/') && !str_contains($mime_type, 'vnd.adobe')) {
             return 'image';
         }
 
-        if (strpos($mime_type, 'video/') !== false) {
+        if (str_contains($mime_type, 'video/')) {
             return 'video';
         }
 
@@ -337,7 +334,7 @@ class Utils
             return '';
         }
 
-        if (strpos($src, 'image.php') !== false) {
+        if (str_contains($src, 'image.php')) {
             return '';
         }
 
@@ -400,11 +397,11 @@ class Utils
             if (isset($attributes['style'])) {
                 $style = StringUtils::splitStyleAttributes($attributes['style']);
 
-                if (isset($style['width']) && strpos($style['width'], '%') === false) {
+                if (isset($style['width']) && !str_contains($style['width'], '%')) {
                     $maxWidth = (int)$style['width'];
                 }
 
-                if (isset($style['height']) && strpos($style['height'], '%') === false) {
+                if (isset($style['height']) && !str_contains($style['height'], '%')) {
                     $maxHeight = (int)$style['height'];
                 }
             }
@@ -602,13 +599,13 @@ class Utils
             $height = $attributes['height'];
         }
 
-        if (strpos($width, '%') !== false) {
+        if (str_contains($width, '%')) {
             $width = false;
         } else {
             $width = (int)$width;
         }
 
-        if (strpos($height, '%') !== false) {
+        if (str_contains($height, '%')) {
             $height = false;
         } else {
             $height = (int)$height;
@@ -688,9 +685,9 @@ class Utils
     public static function isMediaUrl(string $url): bool
     {
         if (
-            strpos($url, 'image.php') !== false
-            && strpos($url, 'project=') !== false
-            && strpos($url, 'id=') !== false
+            str_contains($url, 'image.php')
+            && str_contains($url, 'project=')
+            && str_contains($url, 'id=')
         ) {
             return true;
         }
@@ -760,9 +757,9 @@ class Utils
      */
     public static function getRealFileDataFromCacheUrl($url): array
     {
-        if (strpos($url, 'media/cache/') !== false) {
+        if (str_contains($url, 'media/cache/')) {
             $parts = explode('media/cache/', $url);
-        } elseif (strpos($url, 'media/sites/') !== false) {
+        } elseif (str_contains($url, 'media/sites/')) {
             $parts = explode('media/sites/', $url);
         } else {
             throw new QUI\Exception(
@@ -797,7 +794,7 @@ class Utils
         // if the element (image) is resized
         $fileName = array_pop($parts);
 
-        if (strpos($fileName, '__') !== false) {
+        if (str_contains($fileName, '__')) {
             $lastpos_ul = strrpos($fileName, '__') + 2;
             $pos_dot = strpos($fileName, '.', $lastpos_ul);
 
@@ -961,7 +958,7 @@ class Utils
             );
         }
 
-        if (strpos($str, '__') !== false) {
+        if (str_contains($str, '__')) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -1022,7 +1019,7 @@ class Utils
             );
         }
 
-        if (strpos($filename, '__') !== false) {
+        if (str_contains($filename, '__')) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',

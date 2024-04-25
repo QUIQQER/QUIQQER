@@ -1303,7 +1303,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         // test if the image is readable
         if (
             MediaUtils::getMediaTypeByMimeType($fileInfo['mime_type']) === 'image'
-            && strpos($fileInfo['mime_type'], 'svg') === false
+            && !str_contains($fileInfo['mime_type'], 'svg')
         ) {
             try {
                 $this->getMedia()->getImageManager()->make($file);
@@ -1312,7 +1312,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
                 // gd lib has some unsupported image types
                 // we can go on
-                if (strpos($message, 'Unsupported image type') === false) {
+                if (!str_contains($message, 'Unsupported image type')) {
                     QUI\System\Log::addError($Exception->getMessage());
 
                     throw new QUI\Exception(
@@ -1338,7 +1338,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         ) {
             $content = file_get_contents($file);
 
-            if (strpos($content, '<svg') !== false && strpos($content, '</svg>')) {
+            if (str_contains($content, '<svg') && strpos($content, '</svg>')) {
                 file_put_contents(
                     $file,
                     '<?xml version="1.0" encoding="UTF-8"?>' .

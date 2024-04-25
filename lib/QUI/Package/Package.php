@@ -27,7 +27,6 @@ use function json_last_error_msg;
 use function ltrim;
 use function preg_replace;
 use function str_replace;
-use function strpos;
 
 use const ARRAY_FILTER_USE_KEY;
 
@@ -135,7 +134,7 @@ class Package extends QUI\QDOM
         $packageDir = OPT_DIR . $package . '/';
 
         // if not exists look at bin
-        if (!is_dir($packageDir) && strpos($package, '/') !== false) {
+        if (!is_dir($packageDir) && str_contains($package, '/')) {
             $packageDir = OPT_DIR . '/bin/' . explode('/', $package)[1] . '/';
         }
 
@@ -298,7 +297,7 @@ class Package extends QUI\QDOM
             return;
         }
 
-        if (strpos($this->composerData['type'], 'quiqqer-') === false) {
+        if (!str_contains($this->composerData['type'], 'quiqqer-')) {
             $this->readPackageInfo = true;
 
             return;

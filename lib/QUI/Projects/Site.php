@@ -1049,7 +1049,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         // load type
         $type = $this->getAttribute('type');
 
-        if (strpos($type, ':') === false) {
+        if (!str_contains($type, ':')) {
             // set defaults
             foreach ($attributes as $attribute) {
                 $attr = $attribute['attribute'];

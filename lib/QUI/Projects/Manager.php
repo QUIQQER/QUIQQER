@@ -37,7 +37,6 @@ use function key;
 use function preg_replace;
 use function str_replace;
 use function strlen;
-use function strpos;
 use function trim;
 use function unlink;
 
@@ -1178,7 +1177,7 @@ class Manager
         }
 
         foreach ($tables as $oldTableName) {
-            if (strpos($oldTableName . '_', QUI_DB_PRFX . $oldName) === false) {
+            if (!str_contains($oldTableName . '_', QUI_DB_PRFX . $oldName)) {
                 continue;
             }
 
@@ -1301,7 +1300,7 @@ class Manager
         $search = $params['search'];
 
         foreach ($list as $project => $entry) {
-            if (!empty($search) && strpos($project, $search) === false) {
+            if (!empty($search) && !str_contains($project, $search)) {
                 continue;
             }
 

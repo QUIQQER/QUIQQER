@@ -33,7 +33,6 @@ use function preg_replace;
 use function realpath;
 use function str_replace;
 use function strlen;
-use function strpos;
 use function trim;
 
 /**
@@ -670,19 +669,19 @@ class Utils
      */
     public static function isSiteLink(string $link): bool
     {
-        if (strpos($link, 'index.php') === false) {
+        if (!str_contains($link, 'index.php')) {
             return false;
         }
 
-        if (strpos($link, 'project=') === false) {
+        if (!str_contains($link, 'project=')) {
             return false;
         }
 
-        if (strpos($link, 'lang=') === false) {
+        if (!str_contains($link, 'lang=')) {
             return false;
         }
 
-        if (strpos($link, 'id=') === false) {
+        if (!str_contains($link, 'id=')) {
             return false;
         }
 

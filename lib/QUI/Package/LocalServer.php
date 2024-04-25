@@ -102,9 +102,9 @@ class LocalServer extends QUI\Utils\Singleton
         // add master / dev version as repository
         $version = false;
 
-        if (\strpos($filename, '-dev-master-') !== false) {
+        if (str_contains($filename, '-dev-master-')) {
             $version = 'dev-master';
-        } elseif (\strpos($filename, '-dev-dev-') !== false) {
+        } elseif (str_contains($filename, '-dev-dev-')) {
             $version = 'dev-dev';
         }
 
@@ -211,9 +211,9 @@ class LocalServer extends QUI\Utils\Singleton
             }
 
             // consider dev master versions
-            if (!isset($composerJson['version']) && \strpos($package, '-dev-master-') !== false) {
+            if (!isset($composerJson['version']) && str_contains($package, '-dev-master-')) {
                 $composerJson['version'] = 'dev-master';
-            } elseif (!isset($composerJson['version']) && \strpos($package, '-dev-dev-') !== false) {
+            } elseif (!isset($composerJson['version']) && str_contains($package, '-dev-dev-')) {
                 $composerJson['version'] = 'dev-dev';
             }
 
