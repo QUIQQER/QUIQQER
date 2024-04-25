@@ -397,8 +397,8 @@ class Manager
         }
 
         try {
-            $User = new User($id, $this);
-        } catch (QUI\Users\Exception $exception) {
+            $User = new User($id);
+        } catch (\Exception $exception) {
             try {
                 $userGetResult = QUI::getEvents()->fireEvent('userGet', [$id]);
 
