@@ -40,18 +40,11 @@ use function trim;
 class Address extends QUI\QDOM
 {
     /**
-     * The user
-     *
-     * @var QUIUserInterface|null
-     */
-    protected ?QUIUserInterface $User = null;
-
-    /**
      * Address-ID
      *
-     * @var integer
+     * @var ?integer
      */
-    protected $id = false;
+    protected ?int $id = null;
 
     protected ?string $uuid = null;
 
@@ -70,7 +63,7 @@ class Address extends QUI\QDOM
      *
      * @throws Exception
      */
-    public function __construct(QUIUserInterface $User, int|string $id)
+    public function __construct(protected QUIUserInterface $User, int|string $id)
     {
         try {
             $where = [
@@ -144,7 +137,7 @@ class Address extends QUI\QDOM
      * @return integer
      * @deprecated
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -167,12 +160,8 @@ class Address extends QUI\QDOM
      *     'type' => 'tel'
      * ]);
      */
-    public function addPhone($phone)
+    public function addPhone(array $phone): void
     {
-        if (!is_array($phone)) {
-            return;
-        }
-
         if (!isset($phone['no'])) {
             return;
         }
@@ -244,7 +233,7 @@ class Address extends QUI\QDOM
      *
      * @return mixed|null
      */
-    public function getAddressSuffix()
+    public function getAddressSuffix(): mixed
     {
         if (!empty($this->attributes['suffix'])) {
             return $this->attributes['suffix'];
@@ -259,7 +248,7 @@ class Address extends QUI\QDOM
      * @param string $key
      * @return mixed|null - Null if no entry set
      */
-    public function getCustomDataEntry(string $key)
+    public function getCustomDataEntry(string $key): mixed
     {
         if (array_key_exists($key, $this->customData)) {
             return $this->customData[$key];
@@ -274,10 +263,8 @@ class Address extends QUI\QDOM
      * @param integer $index
      * @param array|string $phone - [no => '+0049 929292', 'type' => 'fax'] or '+0049 929292'
      */
-    public function editPhone($index, $phone)
+    public function editPhone(int $index, array|string $phone): void
     {
-        $index = (int)$index;
-
         if (!is_array($phone)) {
             $phone = [
                 'no' => Orthos::clear($phone),
@@ -306,7 +293,7 @@ class Address extends QUI\QDOM
     /**
      * @param $number
      */
-    public function editMobile($number)
+    public function editMobile($number): void
     {
         $list = $this->getPhoneList();
         $edited = false;
@@ -333,7 +320,7 @@ class Address extends QUI\QDOM
     /**
      * @param $number
      */
-    public function editFax($number)
+    public function editFax($number): void
     {
         $list = $this->getPhoneList();
         $edited = false;
@@ -360,7 +347,7 @@ class Address extends QUI\QDOM
     /**
      * Delete the complete phone list
      */
-    public function clearPhone()
+    public function clearPhone(): void
     {
         $this->setAttribute('phone', []);
     }
@@ -444,7 +431,7 @@ class Address extends QUI\QDOM
      *
      * @throws Exception
      */
-    public function addMail($mail)
+    public function addMail(string $mail): void
     {
         if (!Orthos::checkMailSyntax($mail)) {
             throw new Exception(
@@ -489,7 +476,7 @@ class Address extends QUI\QDOM
     /**
      * Clear mail addresses
      */
-    public function clearMail()
+    public function clearMail(): void
     {
         $this->setAttribute('mail', json_encode([]));
     }
@@ -502,7 +489,7 @@ class Address extends QUI\QDOM
      *
      * @throws Exception
      */
-    public function editMail($index, $mail)
+    public function editMail(int $index, string $mail): void
     {
         if (!Orthos::checkMailSyntax($mail)) {
             throw new Exception(
@@ -513,9 +500,7 @@ class Address extends QUI\QDOM
             );
         }
 
-        $index = (int)$index;
         $list = $this->getMailList();
-
         $list[$index] = $mail;
 
         $this->setAttribute('mail', json_encode($list));
@@ -559,7 +544,7 @@ class Address extends QUI\QDOM
      * @param null|QUIUserInterface $PermissionUser
      * @throws QUI\Permissions\Exception
      */
-    public function save($PermissionUser = null)
+    public function save(?QUIUserInterface $PermissionUser = null): void
     {
         if (!$this->getUser()) {
             return;
@@ -642,7 +627,7 @@ class Address extends QUI\QDOM
     /**
      * @return QUIUserInterface
      */
-    public function getUser(): ?QUIUserInterface
+    public function getUser(): QUIUserInterface
     {
         return $this->User;
     }
@@ -663,7 +648,7 @@ class Address extends QUI\QDOM
      * @param array $entries
      * @return void
      */
-    public function setCustomData($entries)
+    public function setCustomData(array $entries): void
     {
         foreach ($entries as $k => $v) {
             $this->setCustomDataEntry($k, $v);
@@ -675,7 +660,7 @@ class Address extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    public function delete()
+    public function delete(): void
     {
         QUI::getDataBase()->exec([
             'delete' => true,
@@ -693,7 +678,7 @@ class Address extends QUI\QDOM
      * @param array $options - options
      * @return string
      */
-    public function render($options = []): string
+    public function render(array $options = []): string
     {
         return $this->getDisplay($options);
     }
@@ -704,7 +689,7 @@ class Address extends QUI\QDOM
      * @param array $options - options ['mail' => true, 'tel' => true]
      * @return string - HTML <address>
      */
-    public function getDisplay($options = []): string
+    public function getDisplay(array $options = []): string
     {
         try {
             $Engine = QUI::getTemplateManager()->getEngine(true);
@@ -884,7 +869,7 @@ class Address extends QUI\QDOM
      * @param bool $compareCustomData (optional) - Consider custom data on comparison [default: false]
      * @return bool
      */
-    public function equals(Address $Address, $compareCustomData = false): bool
+    public function equals(Address $Address, bool $compareCustomData = false): bool
     {
         if ($this->getUUID() === $Address->getUUID()) {
             return true;
@@ -940,7 +925,7 @@ class Address extends QUI\QDOM
      *
      * @param string $suffix
      */
-    public function setAddressSuffix(string $suffix)
+    public function setAddressSuffix(string $suffix): void
     {
         $this->setCustomDataEntry('address-suffix', $suffix);
     }
@@ -949,10 +934,10 @@ class Address extends QUI\QDOM
      * Set custom data entry
      *
      * @param string $key
-     * @param integer|float|bool|string $value
+     * @param float|bool|integer|string $value
      * @return void
      */
-    public function setCustomDataEntry(string $key, $value)
+    public function setCustomDataEntry(string $key, float|bool|int|string $value): void
     {
         if (!is_numeric($value) && !is_string($value) && !is_bool($value)) {
             return;
