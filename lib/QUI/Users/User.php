@@ -263,13 +263,13 @@ class User implements QUIUserInterface
         }
 
         $lang = QUI::getLocale()->getCurrent();
-        $langs = QUI::availableLanguages();
+        $languages = QUI::availableLanguages();
 
         if ($this->getAttribute('lang')) {
             $lang = $this->getAttribute('lang');
         }
 
-        if (in_array($lang, $langs)) {
+        if (in_array($lang, $languages)) {
             $this->lang = $lang;
         }
 
