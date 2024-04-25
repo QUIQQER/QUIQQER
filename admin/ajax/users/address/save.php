@@ -38,10 +38,10 @@ QUI::$Ajax->registerFunction(
                 );
             }
 
-            $uid = (int)$result[0]['uid'];
+            $uid = $result[0]['uid'];
         }
 
-        $User = QUI::getUsers()->get((int)$uid);
+        $User = QUI::getUsers()->get($uid);
 
         try {
             $Address = $User->getAddress((int)$aid);

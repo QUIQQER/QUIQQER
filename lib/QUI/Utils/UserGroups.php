@@ -56,13 +56,9 @@ class UserGroups
     public static function getUserGroupStringFromUser(QUI\Interfaces\Users\User $User)
     {
         $result = [];
+        $result[] = 'u' . $User->getUUID();
+
         $groups = $User->getGroups();
-
-        if (!\is_array($groups)) {
-            $groups = [];
-        }
-
-        $result[] = 'u' . $User->getId();
 
         /* @var $Group QUI\Groups\Group */
         foreach ($groups as $Group) {
@@ -92,6 +88,10 @@ class UserGroups
 
         foreach ($users as $uid) {
             if ($uid == $User->getId()) {
+                return true;
+            }
+
+            if ($uid == $User->getUUID()) {
                 return true;
             }
         }

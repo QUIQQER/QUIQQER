@@ -14,7 +14,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_user_setAndSendPassword',
     function ($userId, $newPassword, $forceNew) {
-        $User = QUI::getUsers()->get((int)$userId);
+        $User = QUI::getUsers()->get($userId);
         $User->setPassword($newPassword);
 
         $forceNew = !empty($forceNew);

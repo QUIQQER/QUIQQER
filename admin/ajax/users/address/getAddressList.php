@@ -29,8 +29,8 @@ QUI::$Ajax->registerFunction(
             }
 
             try {
-                $uid = (int)$result[0]['uid'];
-                $User = QUI::getUsers()->get((int)$uid);
+                $uid = $result[0]['uid'];
+                $User = QUI::getUsers()->get($uid);
                 $Address = $User->getAddress((int)$id);
 
                 $attributes = $Address->getAttributes();

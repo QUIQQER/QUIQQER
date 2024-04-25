@@ -661,7 +661,7 @@ class Permission
                 ),
                 403,
                 [
-                    'userid' => $User->getId(),
+                    'userid' => $User->getUUID(),
                     'username' => $User->getName(),
                     'permission' => $permissions
 
@@ -714,6 +714,10 @@ class Permission
                 if ((int)$perm_value == $User->getId()) {
                     $check = true;
                 }
+
+                if ($perm_value == $User->getUUID()) {
+                    $check = true;
+                }
                 break;
 
             case 'users':
@@ -721,6 +725,10 @@ class Permission
 
                 foreach ($uids as $uid) {
                     if ((int)$uid == $User->getId()) {
+                        $check = true;
+                    }
+
+                    if ($uid == $User->getUUID()) {
                         $check = true;
                     }
                 }

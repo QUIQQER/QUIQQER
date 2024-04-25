@@ -422,9 +422,9 @@ class Manager
         }
 
 
-        $uuid = $User->getUniqueId();
+        $uuid = $User->getUUID();
 
-        $this->usersUUIDs[$uuid] = $User->getId();
+        $this->usersUUIDs[$uuid] = $User->getUUID();
         $this->users[$id] = $User;
 
         return $User;
@@ -1178,7 +1178,7 @@ class Manager
         if (!empty($authData['username'])) {
             try {
                 $User = self::getUserByName($authData['username']);
-                $userId = $User->getId();
+                $userId = $User->getUUID();
             } catch (\Exception) {
                 // nothing
             }
@@ -1419,7 +1419,7 @@ class Manager
         if (!empty($username)) {
             try {
                 $User = self::getUserByName($username);
-                $userId = $User->getId();
+                $userId = $User->getUUID();
             } catch (\Exception) {
                 // nothing
             }
@@ -1588,7 +1588,7 @@ class Manager
      */
     public function unsetUserInstance(QUI\Interfaces\Users\User $User)
     {
-        $uuid = $User->getUniqueId();
+        $uuid = $User->getUUID();
         $id = $User->getId();
 
         if (isset($this->users[$id])) {

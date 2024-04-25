@@ -79,9 +79,19 @@ interface User
     public function getId();
 
     /**
-     * @return string|bool
+     * alias for getUUID
+     *
+     * @return string|int
+     * @deprecated use getUUID
      */
-    public function getUniqueId();
+    public function getUniqueId(): string|int;
+
+    /**
+     * Returns the user uuid
+     *
+     * @return string|int
+     */
+    public function getUUID(): string|int;
 
     /**
      * Returns the name of the user

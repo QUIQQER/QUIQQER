@@ -88,7 +88,7 @@ class Manager
 
         foreach ($entries as $entry) {
             try {
-                $User = QUI::getUsers()->get((int)$entry['uid']);
+                $User = QUI::getUsers()->get($entry['uid']);
 
                 if (!QUI\Permissions\Permission::isAdmin($User)) {
                     QUI::getDataBase()->delete(self::table(), [

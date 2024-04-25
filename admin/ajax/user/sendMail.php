@@ -15,7 +15,7 @@ use QUI\Utils\Security\Orthos;
 QUI::$Ajax->registerFunction(
     'ajax_user_sendMail',
     function ($userId, $mailSubject, $mailContent) {
-        $User = QUI::getUsers()->get((int)$userId);
+        $User = QUI::getUsers()->get($userId);
         $mailSubject = trim(Orthos::clear($mailSubject));
         $mailContent = trim($mailContent);
 
@@ -50,7 +50,7 @@ QUI::$Ajax->registerFunction(
                 'quiqqer/quiqqer',
                 'message.ajax.user.sendMail.success',
                 [
-                    'user' => $User->getName() . ' (#' . $User->getId() . ')'
+                    'user' => $User->getName() . ' (#' . $User->getUUID() . ')'
                 ]
             )
         );

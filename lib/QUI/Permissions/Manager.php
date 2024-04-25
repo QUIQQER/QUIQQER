@@ -494,7 +494,7 @@ class Manager
             switch ($area) {
                 case 'user':
                     /* @var $Obj User */
-                    return 'permission2user_' . $Obj->getId();
+                    return 'permission2user_' . $Obj->getUUID();
 
                 case 'groups':
                     /* @var $Obj Group */
@@ -1022,7 +1022,7 @@ class Manager
                 $permissionValue = implode(',', $permissionValues);
             } elseif (QUI::getUsers()->isUser($Perm)) {
                 /* @var $Perm User */
-                $permissionValue = 'u' . $Perm->getId();
+                $permissionValue = 'u' . $Perm->getUUID();
             } elseif (QUI::getGroups()->isGroup($Perm)) {
                 /* @var $Perm QUI\Groups\Group */
                 $permissionValue = 'g' . $Perm->getId();

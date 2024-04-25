@@ -18,7 +18,7 @@ QUI::$Ajax->registerFunction(
         }
 
         $Users = QUI::getUsers();
-        $User = $Users->get((int)$uid);
+        $User = $Users->get($uid);
 
         if ($pw1 != $pw2) {
             throw new QUI\Exception(

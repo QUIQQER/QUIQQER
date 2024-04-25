@@ -46,7 +46,7 @@ define('controls/users/SelectItem', [
                 return Prom;
             }
 
-            var User = Users.get(parseInt(id));
+            var User = Users.get(id);
 
             if (!User.isLoaded()) {
                 Prom = User.load();

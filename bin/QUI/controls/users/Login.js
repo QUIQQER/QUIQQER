@@ -185,9 +185,7 @@ define('controls/users/Login', [
                     return !Node.get('data-qui');
                 });
 
-            if (
-                !forms.length
-            ) {
+            if (!forms.length) {
                 QUIAjax.post('ajax_user_logout', function() {
                     window.location.reload();
                 });

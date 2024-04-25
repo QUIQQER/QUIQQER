@@ -29,9 +29,8 @@ QUI::$Ajax->registerFunction(
             }
 
             try {
-                $uid = (int)$result[0]['uid'];
-                $User = QUI::getUsers()->get((int)$uid);
-                $Address = $User->getAddress((int)$id);
+                $User = QUI::getUsers()->get($result[0]['uid']);
+                 $Address = $User->getAddress((int)$id);
                 $Address->delete();
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::writeDebugException($Exception);

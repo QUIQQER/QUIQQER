@@ -232,7 +232,7 @@ class EventHandler
         }
 
         try {
-            $User = QUI::getUsers()->get((int)$userId);
+            $User = QUI::getUsers()->get($userId);
         } catch (\Exception) {
             // do nothing if user cannot be found
             return;
@@ -278,7 +278,7 @@ class EventHandler
                     'failedLogins' => 0
                 ],
                 [
-                    'id' => $User->getId()
+                    'uuid' => $User->getUUID()
                 ]
             );
         } catch (\Exception $Exception) {

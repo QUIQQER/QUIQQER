@@ -38,6 +38,7 @@
 
             <primary>id</primary>
             <index>username,password</index>
+            <index>uuid</index>
             <auto_increment>id</auto_increment>
 
             <comment>This table contains the users of QUIQQER.</comment>

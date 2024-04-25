@@ -3,7 +3,7 @@
 /**
  * Benutzer speichern
  *
- * @param integer $uid - Benutzer-ID
+ * @param integer|string $uid - user id or user hash
  * @param string $attributes - JSON String of Attributes
  *
  * @return boolean
