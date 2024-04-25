@@ -200,9 +200,9 @@ interface User
      * Set the password of the user
      *
      * @param string $new - new password
-     * @param \QUI\Users\User|boolean $ParentUser
+     * @param ?User $PermissionUser
      */
-    public function setPassword($new, $ParentUser = false);
+    public function setPassword(string $new, ?User $PermissionUser = null);
 
     /**
      * Checks the password if it's the user from
