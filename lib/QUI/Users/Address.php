@@ -833,8 +833,8 @@ class Address extends QUI\QDOM
             $salutation = '';
         }
 
-        $result = "{$salutation} {$firstName} {$lastName}";
-        $result = \preg_replace('/[  ]{2,}/', ' ', $result);
+        $result = "$salutation $firstName $lastName";
+        $result = preg_replace('/[  ]{2,}/', ' ', $result);
 
         return trim($result);
     }

@@ -709,14 +709,14 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $query = "
         
         SELECT id
-        FROM {$table}, {$table_rel}
+        FROM $table, {$table_rel}
         WHERE
-            {$table_parent} = {$parentId} AND
-            {$table_child}  = {$table_id} AND
-            {$table_delete} = 0
+            $table_parent = $parentId AND
+            $table_child  = $table_id AND
+            $table_delete = 0
             {$hiddenQuery}
         ORDER BY
-            {$order_by} {$limit}
+            $order_by {$limit}
         ;
         ";
 

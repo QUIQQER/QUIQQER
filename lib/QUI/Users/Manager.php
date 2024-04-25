@@ -174,7 +174,7 @@ class Manager
 
         // Patch strict
         $DataBase->getPDO()->exec(
-            "ALTER TABLE `{$table}` 
+            "ALTER TABLE `$table` 
             CHANGE `lastedit` `lastedit` DATETIME NULL DEFAULT NULL,
             CHANGE `expire` `expire` DATETIME NULL DEFAULT NULL,
             CHANGE `password` `password` VARCHAR(255) NOT NULL DEFAULT '',
@@ -185,19 +185,19 @@ class Manager
         try {
             $DataBase->getPDO()->exec(
                 "
-                UPDATE `{$table}` 
+                UPDATE `$table` 
                 SET lastedit = NULL 
                 WHERE 
                     lastedit = '0000-00-00 00:00:00' OR 
                     lastedit = '';
                     
-                UPDATE `{$table}` 
+                UPDATE `$table` 
                 SET expire = NULL 
                 WHERE 
                     expire = '0000-00-00 00:00:00' OR 
                     expire = '';
                     
-                UPDATE `{$table}` 
+                UPDATE `$table` 
                 SET birthday = NULL 
                 WHERE 
                     birthday = '0000-00-00' OR 
@@ -209,7 +209,7 @@ class Manager
 
         // uuid extrem indexes patch
         $Stmt = $DataBase->getPDO()->prepare(
-            "SHOW INDEXES FROM `{$table}`
+            "SHOW INDEXES FROM `$table`
             WHERE 
                 non_unique = 0 AND Key_name != 'PRIMARY';"
         );
@@ -282,7 +282,7 @@ class Manager
         $usersAddressColumn = $DataBase->table()->getColumn($table, 'address');
 
         if (!str_contains($usersAddressColumn['Type'], 'varchar')) {
-            $sql = "ALTER TABLE `{$table}` MODIFY `address` VARCHAR(50) NOT NULL";
+            $sql = "ALTER TABLE `$table` MODIFY `address` VARCHAR(50) NOT NULL";
             $DataBase->execSQL($sql);
         }
 

@@ -1336,7 +1336,7 @@ class Utils
              else `mime_type` END
           ) as mime_type
           , COUNT(id) as count
-        FROM `{$table}`
+        FROM `$table`
         WHERE `type` != 'folder'
         GROUP BY
                             (case
