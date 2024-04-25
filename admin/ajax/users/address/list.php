@@ -28,6 +28,7 @@ QUI::$Ajax->registerFunction(
             /* @var $Address \QUI\Users\Address */
             $entry = $Address->getAttributes();
             $entry['id'] = $Address->getId();
+            $entry['uuid'] = $Address->getUUID();
             $entry['text'] = $Address->getText();
             $entry['uid'] = $User->getUUID();
             $entry['default'] = 0;

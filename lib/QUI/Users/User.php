@@ -796,7 +796,7 @@ class User implements QUIUserInterface
         }
 
         if (count($this->getAddressList()) === 1) {
-            $this->setAttribute('address', $CreatedAddress->getUuid());
+            $this->setAttribute('address', $CreatedAddress->getUUID());
             $this->save($ParentUser);
         }
 
