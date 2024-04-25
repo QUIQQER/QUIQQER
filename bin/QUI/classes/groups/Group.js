@@ -32,7 +32,7 @@ define('classes/groups/Group', [
         attributes: {}, // group attributes
 
         initialize: function (gid) {
-            this.$gid = parseInt(gid);
+            this.$gid = gid;
             this.$loaded = false;
         },
 

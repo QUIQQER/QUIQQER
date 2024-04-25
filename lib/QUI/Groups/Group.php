@@ -16,6 +16,7 @@ use function explode;
 use function in_array;
 use function is_array;
 use function is_int;
+use function is_numeric;
 use function json_decode;
 use function json_encode;
 use function microtime;
@@ -45,6 +46,20 @@ class Group extends QUI\QDOM
     protected $rootid;
 
     /**
+     * Group id
+     *
+     * @var int|null
+     */
+    protected ?int $id = null;
+
+    /**
+     * Group uuid
+     *
+     * @var string|null
+     */
+    protected ?string $uuid = null;
+
+    /**
      * internal right cache
      *
      * @var array
@@ -68,20 +83,28 @@ class Group extends QUI\QDOM
     /**
      * constructor
      *
-     * @param integer $id - Group ID
+     * @param integer|string $id - Group ID
      *
      * @throws QUI\Exception
      */
-    public function __construct($id)
+    public function __construct(int|string $id)
     {
-        $id = (int)$id;
+        $this->rootId = QUI::conf('globals', 'root');
 
-        $this->rootid = QUI::conf('globals', 'root');
-        parent::setAttribute('id', $id);
+        if (is_numeric($id)) {
+            $this->id = (int)$id;
+        } else {
+            $this->uuid = $id;
+        }
 
+        // exists groups cache
         try {
-            // falls cache vorhanden ist
-            $cache = QUI\Cache\Manager::get('qui/groups/group/' . $this->getId());
+            if ($this->uuid) {
+                $cache = QUI\Cache\Manager::get('qui/groups/group/' . $this->uuid);
+            } else {
+                $cache = QUI\Cache\Manager::get('qui/groups/group/' . $this->id);
+            }
+
 
             if (isset($cache['parentids'])) {
                 $this->parentids = $cache['parentids'];
@@ -182,11 +205,19 @@ class Group extends QUI\QDOM
     /**
      * Returns the Group-ID
      *
-     * @return integer
+     * @return int
      */
-    public function getId()
+    public function getId(): int
     {
-        return $this->getAttribute('id');
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUUID(): string
+    {
+        return $this->uuid;
     }
 
     /**
@@ -213,8 +244,7 @@ class Group extends QUI\QDOM
      */
     protected function createCache()
     {
-        // Cache aufbauen
-        QUI\Cache\Manager::set('quiqqer/groups/group/' . $this->getId(), [
+        QUI\Cache\Manager::set('quiqqer/groups/group/' . $this->getUUID(), [
             'parentids' => $this->getParentIds(),
             'attributes' => $this->getAttributes(),
             'rights' => $this->rights
@@ -253,19 +283,20 @@ class Group extends QUI\QDOM
     }
 
     /**
-     * Helper method for getparents
+     * Helper method for get parents
      *
-     * @param integer $id
+     * @param int|string $id
      *
      * @ignore
      */
-    private function getParentIdsHelper($id)
+    private function getParentIdsHelper(int|string $id): void
     {
         $result = QUI::getDataBase()->fetch([
             'select' => 'id, parent',
             'from' => Manager::table(),
-            'where' => [
-                'id' => (int)$id
+            'where_or' => [
+                'id' => (int)$id,
+                'uuid' => $id
             ],
             'limit' => 1
         ]);
@@ -343,7 +374,7 @@ class Group extends QUI\QDOM
             $deleteGidInUsers($child);
         }
 
-        $deleteGidInUsers($this->getId());
+        $deleteGidInUsers($this->getUUID());
 
         // Sich selbst löschen
         QUI::getDataBase()->exec([
@@ -354,7 +385,7 @@ class Group extends QUI\QDOM
             ]
         ]);
 
-        QUI\Cache\Manager::clear('qui/groups/group/' . $this->getId());
+        QUI\Cache\Manager::clear('qui/groups/group/' . $this->getUUID());
     }
 
     /**
@@ -803,10 +834,12 @@ class Group extends QUI\QDOM
      */
     public function getUsers($params = [])
     {
-        $id = $this->getId();
+        $uuid = $this->getUUID();
 
         $params['from'] = QUI\Users\Manager::table();
-        $params['where'] = "usergroup LIKE '%,{$id},%' OR usergroup = {$id}";
+        $params['where'] = trim(
+            "usergroup LIKE '%,$uuid,%' OR usergroup = $uuid"
+        );
 
         return QUI::getDataBase()->fetch($params);
     }
@@ -890,16 +923,16 @@ class Group extends QUI\QDOM
     /**
      * Checks if the ID is from a parent group
      *
-     * @param integer $id - ID from parent
-     * @param boolean $recursiv - checks recursive or not
+     * @param int|string $id - ID from parent
+     * @param boolean $recursive - checks recursive or not
      *
      * @return boolean
      *
      * @throws QUI\Exception
      */
-    public function isParent($id, $recursiv = false)
+    public function isParent(int|string $id, bool $recursive = false): bool
     {
-        if ($recursiv) {
+        if ($recursive) {
             if (in_array($id, $this->parentids)) {
                 return true;
             }

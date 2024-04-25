@@ -187,13 +187,13 @@ class Search
                     }
 
                     // always get id
-                    $selectFields[] = 'id';
+                    $selectFields[] = 'uuid';
 
                     $result = QUI::getDataBase()->fetch([
                         'select' => $selectFields,
                         'from' => QUI\Groups\Manager::table(),
                         'where' => [
-                            'id' => [
+                            'uuid' => [
                                 'type' => 'IN',
                                 'value' => $resultGroups
                             ]
@@ -202,6 +202,7 @@ class Search
 
                     foreach ($result as $row) {
                         $row['type'] = 'group';
+                        $row['id'] = $row['uuid'];
 
                         $searchResult['groups'][] = $row;
                     }
@@ -412,7 +413,7 @@ class Search
         if ($count) {
             $sql = "SELECT COUNT(*)";
         } else {
-            $sql = 'SELECT id';
+            $sql = 'SELECT uuid';
         }
 
         $sql .= ' FROM `' . QUI\Groups\Manager::table() . '`';
@@ -423,7 +424,7 @@ class Search
 
         // fields where searchTerm is searched
         $searchFieldsAvailable = [
-            'id' => true,
+            'uuid' => true,
             'name' => true
         ];
 
@@ -443,7 +444,7 @@ class Search
         // fallback
         if (empty($searchFields)) {
             $searchFields = [
-                'id',
+                'uuid',
                 'name'
             ];
         }
@@ -537,7 +538,7 @@ class Search
         $ids = [];
 
         foreach ($result as $row) {
-            $ids[] = $row['id'];
+            $ids[] = $row['uuid'];
         }
 
         return $ids;
@@ -623,7 +624,7 @@ class Search
 
             if (!empty($resultGroups)) {
                 $selectFields = [
-                    'id',
+                    'uuid',
                     'name'
                 ];
 
@@ -631,7 +632,7 @@ class Search
                     'select' => $selectFields,
                     'from' => QUI\Groups\Manager::table(),
                     'where' => [
-                        'id' => [
+                        'uuid' => [
                             'type' => 'IN',
                             'value' => $resultGroups
                         ]
@@ -640,7 +641,7 @@ class Search
 
                 foreach ($result as $row) {
                     $searchResult[] = [
-                        'id' => 'g' . $row['id'],
+                        'id' => 'g' . $row['uuid'],
                         'name' => $row['name']
                     ];
                 }

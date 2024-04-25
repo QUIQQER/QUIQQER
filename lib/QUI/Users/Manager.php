@@ -822,7 +822,7 @@ class Manager
             }
         }
 
-        $User->addToGroup($Everyone->getId());
+        $User->addToGroup($Everyone->getUUID());
         $User->save($ParentUser);
 
         QUI::getEvents()->fireEvent('userCreate', [$User]);
@@ -1049,7 +1049,7 @@ class Manager
             }
         }
 
-        $User->addToGroup($Everyone->getId());
+        $User->addToGroup($Everyone->getUUID());
         $User->save($PermissionUser);
 
         QUI::getEvents()->fireEvent('userCreate', [$User]);
@@ -1906,10 +1906,10 @@ class Manager
                 $subQuery = [];
 
                 foreach ($groups as $groupId) {
-                    if ((int)$groupId > 0) {
+                    if ($groupId != 0) {
                         $subQuery[] = 'usergroup LIKE :' . $groupId . ' ';
 
-                        $binds[':' . $groupId] = '%,' . (int)$groupId . ',%';
+                        $binds[':' . $groupId] = '%,' . $groupId . ',%';
                     }
                 }
 
@@ -1918,9 +1918,9 @@ class Manager
 
             if ($filter_groups_exclude) {
                 foreach ($filter['filter_groups_exclude'] as $groupId) {
-                    if ((int)$groupId > 0) {
+                    if ($groupId != 0) {
                         $query .= ' AND usergroup NOT LIKE :' . $groupId . ' ';
-                        $binds[':' . $groupId] = '%,' . (int)$groupId . ',%';
+                        $binds[':' . $groupId] = '%,' . $groupId . ',%';
                     }
                 }
             }

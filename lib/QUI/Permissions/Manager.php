@@ -122,7 +122,7 @@ class Manager
         ]);
 
         $DBTable->addColumn($table2groups, [
-            'group_id' => 'int(11) NOT NULL',
+            'group_id' => 'varchar(50) NOT NULL',
             'permissions' => 'MEDIUMTEXT'
         ]);
 
@@ -390,7 +390,7 @@ class Manager
             $this->dataCache[$cache] = $DataBase->fetch([
                 'from' => $table . '2groups',
                 'where' => [
-                    'group_id' => $Obj->getId()
+                    'group_id' => $Obj->getUUID()
                 ],
                 'limit' => 1
             ]);
@@ -498,7 +498,7 @@ class Manager
 
                 case 'groups':
                     /* @var $Obj Group */
-                    return 'permission2groups_' . $Obj->getId();
+                    return 'permission2groups_' . $Obj->getUUID();
 
                 case 'project':
                     /* @var $Obj Project */
@@ -745,7 +745,7 @@ class Manager
                 if (!isset($_data[0])) {
                     $DataBase->insert(
                         $table2groups,
-                        ['group_id' => $Obj->getId()]
+                        ['group_id' => $Obj->getUUID()]
                     );
                 }
 
@@ -757,10 +757,10 @@ class Manager
                 $DataBase->update(
                     $table2groups,
                     ['permissions' => json_encode($data)],
-                    ['group_id' => $Obj->getId()]
+                    ['group_id' => $Obj->getUUID()]
                 );
 
-                QUI\Cache\Manager::clear('qui/groups/group/' . $Obj->getId() . '/');
+                QUI\Cache\Manager::clear('qui/groups/group/' . $Obj->getUUID() . '/');
                 QUI\Cache\Manager::clear($this->getDataCacheId($Obj) . '/complete');
                 break;
 
@@ -1015,7 +1015,7 @@ class Manager
 
                     if (QUI::getGroups()->isGroup($PermValue)) {
                         /* @var $PermValue QUI\Groups\Group */
-                        $permissionValues[] = 'g' . $PermValue->getId();
+                        $permissionValues[] = 'g' . $PermValue->getUUID();
                     }
                 }
 
@@ -1025,7 +1025,7 @@ class Manager
                 $permissionValue = 'u' . $Perm->getUUID();
             } elseif (QUI::getGroups()->isGroup($Perm)) {
                 /* @var $Perm QUI\Groups\Group */
-                $permissionValue = 'g' . $Perm->getId();
+                $permissionValue = 'g' . $Perm->getUUID();
             } else {
                 continue;
             }
@@ -1159,7 +1159,7 @@ class Manager
 
                     if (QUI::getGroups()->isGroup($PermValue)) {
                         /* @var $PermValue QUI\Groups\Group */
-                        $permissionValues[] = 'g' . $PermValue->getId();
+                        $permissionValues[] = 'g' . $PermValue->getUUID();
                     }
                 }
 
@@ -1169,7 +1169,7 @@ class Manager
                 $permissionValue = 'u' . $Perm->getUUID();
             } elseif (QUI::getGroups()->isGroup($Perm)) {
                 /* @var $Perm QUI\Groups\Group */
-                $permissionValue = 'g' . $Perm->getId();
+                $permissionValue = 'g' . $Perm->getUUID();
             } else {
                 continue;
             }

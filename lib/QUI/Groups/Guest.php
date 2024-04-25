@@ -79,7 +79,7 @@ class Guest extends QUI\Groups\Group
                 'rights' => json_encode($this->rights),
                 'active' => 1
             ],
-            ['id' => $this->getId()]
+            ['uuid' => $this->getUUID()]
         );
 
         $this->createCache();
@@ -129,11 +129,11 @@ class Guest extends QUI\Groups\Group
      * Checks if the ID is from a parent group
      *
      * @param integer $id - ID from parent
-     * @param boolean $recursiv - checks recursive or not
+     * @param boolean $recursive - checks recursive or not
      *
      * @return boolean
      */
-    public function isParent($id, $recursiv = false)
+    public function isParent(int $id, bool $recursive = false)
     {
         return false;
     }

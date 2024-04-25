@@ -407,7 +407,7 @@ class Permission
         }
 
         $permList = [];
-        $group = 'g' . $Group->getId();
+        $group = 'g' . $Group->getUUID();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -824,7 +824,7 @@ class Permission
         }
 
         $permList = [];
-        $group = 'g' . $Group->getId();
+        $group = 'g' . $Group->getUUID();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -941,7 +941,7 @@ class Permission
         }
 
         $permList = [];
-        $groups = 'g' . $Group->getId();
+        $groups = 'g' . $Group->getUUID();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -1202,7 +1202,7 @@ class Permission
         }
 
         $permList = [];
-        $group = 'g' . $Group->getId();
+        $group = 'g' . $Group->getUUID();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -1322,7 +1322,7 @@ class Permission
         }
 
         $permList = [];
-        $group = 'g' . $Group->getId();
+        $group = 'g' . $Group->getUUID();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -1441,7 +1441,7 @@ class Permission
         }
 
         $permList = [];
-        $group = 'g' . $Group->getId();
+        $group = 'g' . $Group->getUUID();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
