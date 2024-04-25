@@ -322,7 +322,7 @@ class Rewrite
         if (!empty($_REQUEST['_url'])) {
             $_url = explode('/', $_REQUEST['_url']);
 
-            // projekt
+            // project
             if (
                 isset($_url[0])
                 && substr($_url[0], 0, 1) == self::URL_PROJECT_CHARACTER
@@ -333,7 +333,7 @@ class Rewrite
                     substr($_url[0], 1)
                 );
 
-                // if a second project_character, its the template
+                // if a second project_character, it's the template
                 if (strpos($this->project_str, self::URL_PROJECT_CHARACTER)) {
                     $_project_split = explode(
                         self::URL_PROJECT_CHARACTER,

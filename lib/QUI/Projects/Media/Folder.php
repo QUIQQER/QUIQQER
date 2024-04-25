@@ -48,12 +48,12 @@ use function usort;
 class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 {
     /**
-     * Upload file flag - dont overwrite the file
+     * Upload file flag - don't overwrite the file
      */
     const FILE_OVERWRITE_NONE = 0;
 
     /**
-     * Upload file flag - overwrite the file, dont delete the old file
+     * Upload file flag - overwrite the file, don't delete the old file
      */
     const FILE_OVERWRITE_TRUE = 1;
 
@@ -602,13 +602,11 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             $order = $params['order'];
         }
 
-        // abwärtskompatibilität
         if (is_string($params)) {
             $order = $params;
             $params = [];
         }
 
-        // Sortierung
         switch ($order) {
             case 'priority':
             case 'priority ASC':

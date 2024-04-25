@@ -271,7 +271,7 @@ class Utils
     }
 
     /**
-     * Is the variable a image object?
+     * Is the variable an image object?
      *
      * @param string|boolean|object $Unknown
      *
@@ -794,7 +794,7 @@ class Utils
             );
         }
 
-        // if the element (image) is resized resize
+        // if the element (image) is resized
         $fileName = array_pop($parts);
 
         if (strpos($fileName, '__') !== false) {
@@ -950,7 +950,6 @@ class Utils
      */
     public static function checkFolderName(string $str): bool
     {
-        // Prüfung des Namens - Sonderzeichen
         if (preg_match('/[^0-9_a-zA-Z \-]/', $str)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
@@ -1201,7 +1200,6 @@ class Utils
      * Counts and returns the number of folders for a project.
      *
      * @param QUI\Projects\Project $Project
-     *
      * @return int
      */
     public static function countFoldersForProject(QUI\Projects\Project $Project): int
@@ -1262,7 +1260,8 @@ class Utils
 
     /**
      * Returns the size of the given project's media folder in bytes.
-     * By default the value is returned from cache.
+     *
+     * By default, the value is returned from cache.
      * If there is no value in cache, null is returned, unless you use the force parameter.
      * Only if you really need to get a freshly calculated result, you may set the force parameter to true.
      * When using the force parameter expect timeouts since the calculation could take a lot of time.
@@ -1292,7 +1291,8 @@ class Utils
 
     /**
      * Returns the size of the given project's media cache folder in bytes.
-     * By default the value is returned from cache.
+     *
+     * By default, the value is returned from cache.
      * If there is no value in cache, null is returned, unless you use the force parameter.
      * Only if you really need to get a freshly calculated result, you may set the force parameter to true.
      * When using the force parameter expect timeouts since the calculation could take a lot of time.

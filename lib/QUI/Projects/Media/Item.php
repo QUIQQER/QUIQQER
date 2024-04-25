@@ -213,7 +213,7 @@ abstract class Item extends QUI\QDOM
         $languages = QUI::availableLanguages();
         $result = [];
 
-        // its already an array
+        // it's already an array
         if (is_array($val)) {
             foreach ($languages as $language) {
                 if (isset($val[$language])) {
@@ -287,7 +287,7 @@ abstract class Item extends QUI\QDOM
     /**
      * Returns the url from the file
      *
-     * @param boolean $rewritten - false = image.php, true = rewrited URL
+     * @param boolean $rewritten - false = image.php, true = rewrote URL
      *
      * @return string
      */
@@ -654,7 +654,7 @@ abstract class Item extends QUI\QDOM
 
     /**
      * Deactivate the file
-     * the file is no longer public
+     * - the file is no longer public
      *
      * @param QUI\Interfaces\Users\User|null $PermissionUser
      *
@@ -1540,7 +1540,7 @@ abstract class Item extends QUI\QDOM
     }
 
     /**
-     * Add an user to the permission
+     * Add a user to the permission
      *
      * @param string $permission - name of the permission
      * @param User $User - User Object
@@ -1554,7 +1554,7 @@ abstract class Item extends QUI\QDOM
     }
 
     /**
-     * add an group to the permission
+     * add a group to the permission
      *
      * @param Group $Group
      * @param string $permission
@@ -1574,7 +1574,7 @@ abstract class Item extends QUI\QDOM
     //region Path history
 
     /**
-     * Remove an user from the permission
+     * Remove a user from the permission
      *
      * @param string $permission - name of the permission
      * @param User $User - User Object#

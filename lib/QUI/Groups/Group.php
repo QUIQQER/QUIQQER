@@ -74,7 +74,7 @@ class Group extends QUI\QDOM
     protected ?array $childrenIds = null;
 
     /**
-     * internal parentid cache
+     * internal parent id cache
      *
      * @var array
      */
@@ -156,10 +156,9 @@ class Group extends QUI\QDOM
             $this->setAttribute($key, $value);
         }
 
-        // rechte setzen
         $this->rights = QUI::getPermissionManager()->getPermissions($this);
 
-        // Extras are deprected - we need an api
+        // Extras are deprecated - we need an api
         if (isset($result[0]['extra'])) {
             $extraList = $this->getListOfExtraAttributes();
             $extras = [];
@@ -315,10 +314,9 @@ class Group extends QUI\QDOM
     }
 
     /**
-     * Deletes the group and sub-groups
+     * Deletes the group and subgroups
      *
      * @throws QUI\Exception
-     * @todo alle Beziehungen in den Seiten müssen neu gesetzt werden
      */
     public function delete()
     {
@@ -358,10 +356,8 @@ class Group extends QUI\QDOM
         };
 
 
-        // Rekursiv die Kinder bekommen
         $children = $this->getChildrenIds(true);
 
-        // Kinder löschen
         foreach ($children as $child) {
             QUI::getDataBase()->exec([
                 'delete' => true,
@@ -376,7 +372,6 @@ class Group extends QUI\QDOM
 
         $deleteGidInUsers($this->getUUID());
 
-        // Sich selbst löschen
         QUI::getDataBase()->exec([
             'delete' => true,
             'from' => Manager::table(),
@@ -442,7 +437,7 @@ class Group extends QUI\QDOM
     }
 
     /**
-     * Helper method for the recursiveness
+     * Helper method for the recursive
      *
      * @param integer $id
      * @throws QUI\Database\Exception
@@ -515,7 +510,6 @@ class Group extends QUI\QDOM
     {
         $this->rights = QUI::getPermissionManager()->getRightParamsFromGroup($this);
 
-        // Pluginerweiterungen
         $extra = [];
         $attributes = $this->getListOfExtraAttributes();
 
@@ -830,7 +824,6 @@ class Group extends QUI\QDOM
      * return the users from the group
      *
      * @param array $params - SQL Params
-     *
      * @return array
      */
     public function getUsers($params = [])
@@ -959,7 +952,7 @@ class Group extends QUI\QDOM
     }
 
     /**
-     * Returns the sub groups
+     * Returns the subgroups
      *
      * @param array $params - Where Parameter
      *

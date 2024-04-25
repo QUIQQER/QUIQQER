@@ -153,14 +153,14 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * Add an phone number
+     * Add a phone number
      *
      * @param array $phone
      *
-     * @example addPhone(array(
+     * @example addPhone([
      *     'no'   => '555 29 29',
      *     'type' => 'tel'
-     * ));
+     * ]);
      */
     public function addPhone($phone)
     {
@@ -932,7 +932,7 @@ class Address extends QUI\QDOM
     //region address suffix - Address suffix
 
     /**
-     * Add a address suffix to the address
+     * Add an address suffix to the address
      *
      * @param string $suffix
      */

@@ -51,9 +51,7 @@ class Nobody extends QUI\QDOM implements User
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see \QUI\Interfaces\Users\User::isSU()
+     * @return bool
      */
     public function isSU(): bool
     {
@@ -70,13 +68,8 @@ class Nobody extends QUI\QDOM implements User
     }
 
     /**
-     * (non-PHPdoc)
-     *
      * @param boolean $array - returns the groups as objects (true) or as an array (false)
-     *
      * @return array
-     * @see \QUI\Interfaces\Users\User::getGroups()
-     *
      */
     public function getGroups($array = true): array
     {
@@ -120,6 +113,7 @@ class Nobody extends QUI\QDOM implements User
 
     /**
      * Nobody is no company
+     *
      * @return false
      */
     public function isCompany(): bool
@@ -128,9 +122,7 @@ class Nobody extends QUI\QDOM implements User
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see \QUI\Interfaces\Users\User::isDeleted()
+     * @return bool
      */
     public function isDeleted(): bool
     {
@@ -138,9 +130,7 @@ class Nobody extends QUI\QDOM implements User
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see \QUI\Interfaces\Users\User::isActive()
+     * @return bool
      */
     public function isActive(): bool
     {
@@ -148,9 +138,7 @@ class Nobody extends QUI\QDOM implements User
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see \QUI\Interfaces\Users\User::isOnline()
+     * @return bool
      */
     public function isOnline(): bool
     {
@@ -158,9 +146,7 @@ class Nobody extends QUI\QDOM implements User
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see \QUI\Interfaces\Users\User::logout()
+     * @return bool
      */
     public function logout(): bool
     {
@@ -308,13 +294,9 @@ class Nobody extends QUI\QDOM implements User
     }
 
     /**
-     * (non-PHPdoc)
-     *
      * @param string $field
      *
      * @return bool
-     * @see \QUI\Interfaces\Users\User::getExtra()
-     *
      */
     public function getExtra(string $field): bool
     {
@@ -322,11 +304,7 @@ class Nobody extends QUI\QDOM implements User
     }
 
     /**
-     * (non-PHPdoc)
-     *
      * @return string
-     * @see \QUI\Interfaces\Users\User::getType()
-     *
      */
     public function getType(): string
     {
@@ -351,8 +329,6 @@ class Nobody extends QUI\QDOM implements User
 
     /**
      * @return string
-     * @see \QUI\Interfaces\Users\User::getName()
-     *
      */
     public function getName(): string
     {
@@ -360,11 +336,7 @@ class Nobody extends QUI\QDOM implements User
     }
 
     /**
-     * (non-PHPdoc)
-     *
      * @return string
-     * @see \QUI\Interfaces\Users\User::getUsername()
-     *
      */
     public function getUsername(): string
     {
@@ -383,7 +355,7 @@ class Nobody extends QUI\QDOM implements User
 
     /**
      * This method is useless for nobody
-     * \QUI\Users\Nobody cannot have a address
+     * \QUI\Users\Nobody cannot have an address
      *
      * @return array
      * @ignore
@@ -395,7 +367,7 @@ class Nobody extends QUI\QDOM implements User
 
     /**
      * This method is useless for nobody
-     * \QUI\Users\Nobody cannot have a address
+     * \QUI\Users\Nobody cannot have an address
      *
      * @param integer $id
      * @return void
@@ -414,9 +386,6 @@ class Nobody extends QUI\QDOM implements User
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see iUser::getCurrency()
      */
     public function getCurrency()
     {
@@ -496,7 +465,7 @@ class Nobody extends QUI\QDOM implements User
 
     /**
      * This method is useless for nobody
-     * \QUI\Users\Nobody cannot have a address
+     * \QUI\Users\Nobody cannot have an address
      *
      * @return false|Address
      * @ignore
@@ -507,10 +476,7 @@ class Nobody extends QUI\QDOM implements User
     }
 
     /**
-     * (non-PHPdoc)
-     *
      * @return bool
-     * @see \QUI\Interfaces\Users\User::getStatus()
      */
     public function getStatus(): bool
     {
@@ -523,8 +489,6 @@ class Nobody extends QUI\QDOM implements User
      * @param string|array $groups
      *
      * @return bool
-     * @see \QUI\Interfaces\Users\User::setGroups()
-     *
      */
     public function setGroups($groups): bool
     {
@@ -561,8 +525,6 @@ class Nobody extends QUI\QDOM implements User
     }
 
     /**
-     * (non-PHPdoc)
-     *
      * @param string $right
      * @param array|boolean $ruleset - optional, you can specific a ruleset, a rules = array with rights
      *
@@ -587,14 +549,10 @@ class Nobody extends QUI\QDOM implements User
     }
 
     /**
-     * (non-PHPdoc)
-     *
      * @param string $new - new password
      * @param \QUI\Users\User|boolean $ParentUser
      *
      * @return bool
-     * @see \QUI\Interfaces\Users\User::setPassword()
-     *
      */
     public function setPassword($new, $ParentUser = false): bool
     {
@@ -602,14 +560,10 @@ class Nobody extends QUI\QDOM implements User
     }
 
     /**
-     * (non-PHPdoc)
-     *
      * @param string $pass - Password
      * @param boolean $encrypted - is the given password already encrypted?
      *
      * @return false
-     * @see \QUI\Interfaces\Users\User::checkPassword()
-     *
      */
     public function checkPassword($pass, $encrypted = false): bool
     {

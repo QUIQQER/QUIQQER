@@ -59,7 +59,6 @@ class Manager
      */
     public function init()
     {
-        // if a onstart function
         if (!empty($_REQUEST['onstart']) && is_callable($_REQUEST['onstart'])) {
             $this->callFunction($_REQUEST['onstart'], $_REQUEST);
         }
@@ -531,7 +530,6 @@ class Manager
                 ]);
             }
 
-            // extract if the the extract file is set
             if (isset($_REQUEST['extract']) && $_REQUEST['extract']) {
                 $File = $this->extract($file);
             }
@@ -599,7 +597,7 @@ class Manager
     }
 
     /**
-     * Extract the Archiv
+     * Extract the Archive
      *
      * @param string $filename
      *
@@ -759,7 +757,7 @@ class Manager
     }
 
     /**
-     * Flush a exception to the UploadManager
+     * Flush an exception to the UploadManager
      *
      * @param Exception $Exception
      */
@@ -788,7 +786,7 @@ class Manager
 
     /**
      * Get unfinished uploads from a specific user
-     * so you can resume the upload
+     * so, you can resume the upload
      *
      * @param \QUI\Users\User|boolean $User - optional, if false = the session user
      *

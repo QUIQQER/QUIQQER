@@ -545,6 +545,7 @@ class Session
      * @param integer $uid
      *
      * @return boolean
+     * @todo is not working
      */
     public function isUserOnline(int $uid): bool
     {

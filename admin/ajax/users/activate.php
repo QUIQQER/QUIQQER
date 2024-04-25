@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Benutzer aktivieren
+ * User activation
  *
  * @param integer|array|string $uid
  *

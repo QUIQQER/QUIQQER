@@ -149,7 +149,7 @@ class Manager extends QUI\QDOM
     }
 
     /**
-     * Read an user.xml and return the attributes,
+     * Read a user.xml and return the attributes,
      * if some extra attributes defined
      *
      * @param string $file
@@ -379,7 +379,7 @@ class Manager extends QUI\QDOM
     }
 
     /**
-     * Search / Scanns the groups
+     * Search groups
      *
      * @param array $params - QUI\Database\DB params
      *

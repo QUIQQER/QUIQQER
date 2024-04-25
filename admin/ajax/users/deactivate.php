@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Benutzer deaktivieren
+ * user deactivation
  *
  * @param integer|array|string $uid
  *
