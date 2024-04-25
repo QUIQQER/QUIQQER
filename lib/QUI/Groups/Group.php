@@ -36,14 +36,14 @@ class Group extends QUI\QDOM
      *
      * @var array
      */
-    protected $settings;
+    protected array $settings;
 
     /**
      * The group root id
      *
-     * @var integer
+     * @var string|integer|bool|array
      */
-    protected $rootid;
+    protected string|int|bool|array $rootId;
 
     /**
      * Group id
@@ -64,7 +64,7 @@ class Group extends QUI\QDOM
      *
      * @var array
      */
-    protected $rights = [];
+    protected mixed $rights = [];
 
     /**
      * internal children id cache
@@ -229,7 +229,7 @@ class Group extends QUI\QDOM
      *
      * @return array
      */
-    protected function getListOfExtraAttributes()
+    protected function getListOfExtraAttributes(): array
     {
         return Manager::getListOfExtraAttributes();
     }
@@ -239,7 +239,7 @@ class Group extends QUI\QDOM
      *
      * @ignore
      */
-    protected function createCache()
+    protected function createCache(): void
     {
         QUI\Cache\Manager::set('quiqqer/groups/group/' . $this->getUUID(), [
             'parentids' => $this->getParentIds(),
@@ -253,7 +253,7 @@ class Group extends QUI\QDOM
      *
      * @return array
      */
-    public function getParentIds()
+    public function getParentIds(): array
     {
         if ($this->parentids) {
             return $this->parentids;
@@ -312,7 +312,7 @@ class Group extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    public function delete()
+    public function delete(): void
     {
         // Rootgruppe kann nicht gelöscht werden
         if ((int)QUI::conf('globals', 'root') === $this->getId()) {
@@ -436,7 +436,7 @@ class Group extends QUI\QDOM
      * @param integer $id
      * @throws QUI\Database\Exception
      */
-    private function getChildrenIdsHelper(int $id)
+    private function getChildrenIdsHelper(int $id): void
     {
         $result = QUI::getDataBase()->fetch([
             'select' => 'id',
@@ -460,7 +460,7 @@ class Group extends QUI\QDOM
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->getAttribute('name');
     }
@@ -472,7 +472,7 @@ class Group extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    public function getAvatar()
+    public function getAvatar(): QUI\Projects\Media\Image|bool
     {
         $avatar = $this->getAttribute('avatar');
 
@@ -500,7 +500,7 @@ class Group extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    public function save()
+    public function save(): void
     {
         $this->rights = QUI::getPermissionManager()->getRightParamsFromGroup($this);
 
@@ -566,7 +566,7 @@ class Group extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    public function activate()
+    public function activate(): void
     {
         QUI::getDataBase()->update(
             Manager::table(),
@@ -585,7 +585,7 @@ class Group extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    public function deactivate()
+    public function deactivate(): void
     {
         QUI::getDataBase()->update(
             Manager::table(),
@@ -604,7 +604,7 @@ class Group extends QUI\QDOM
      *
      * @return boolean
      */
-    public function isActive()
+    public function isActive(): bool
     {
         return (bool)$this->getAttribute('active');
     }
@@ -614,10 +614,10 @@ class Group extends QUI\QDOM
      *
      * @param string $right
      *
-     * @return boolean|string
+     * @return bool|array|string
      * @deprecated
      */
-    public function hasRight($right)
+    public function hasRight(string $right): bool|array|string
     {
         return $this->hasPermission($right);
     }
@@ -629,7 +629,7 @@ class Group extends QUI\QDOM
      *
      * @return boolean|string|array
      */
-    public function hasPermission($permission)
+    public function hasPermission(string $permission): bool|array|string
     {
         return $this->rights[$permission] ?? false;
     }
@@ -639,7 +639,7 @@ class Group extends QUI\QDOM
      *
      * @return array
      */
-    public function getRights()
+    public function getRights(): array
     {
         return $this->rights;
     }
@@ -651,7 +651,7 @@ class Group extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    public function setRights($rights = [])
+    public function setRights(array $rights = []): void
     {
         $User = QUI::getUserBySession();
 
@@ -674,7 +674,7 @@ class Group extends QUI\QDOM
      *
      * @return boolean
      */
-    public function existsRight($right)
+    public function existsRight(string $right): bool
     {
         if ($this->existsAttribute($right)) {
             return true;
@@ -695,7 +695,7 @@ class Group extends QUI\QDOM
      * @throws QUI\Groups\Exception
      * @throws QUI\Exception
      */
-    public function setParent($parentId)
+    public function setParent(int $parentId): void
     {
         if (
             $this->getParent() && $this->getParent()->getId() == $parentId
@@ -762,7 +762,7 @@ class Group extends QUI\QDOM
      * @return object|integer|false
      * @throws QUI\Exception
      */
-    public function getParent($obj = true)
+    public function getParent(bool $obj = true): object|bool|int
     {
         $ids = $this->getParentIds();
 
@@ -782,7 +782,7 @@ class Group extends QUI\QDOM
      *
      * @param QUI\Users\User $User
      */
-    public function addUser(QUI\Users\User $User)
+    public function addUser(QUI\Users\User $User): void
     {
         $User->addToGroup($this->getId());
     }
@@ -792,7 +792,7 @@ class Group extends QUI\QDOM
      *
      * @param QUI\Users\User $User
      */
-    public function removeUser(QUI\Users\User $User)
+    public function removeUser(QUI\Users\User $User): void
     {
         $User->removeGroup($this);
     }
@@ -802,7 +802,7 @@ class Group extends QUI\QDOM
      *
      * @return array
      */
-    public function getUserIds()
+    public function getUserIds(): array
     {
         $userIds = [];
         $users = $this->getUsers();
@@ -820,7 +820,7 @@ class Group extends QUI\QDOM
      * @param array $params - SQL Params
      * @return array
      */
-    public function getUsers($params = [])
+    public function getUsers(array $params = []): array
     {
         $uuid = $this->getUUID();
 
@@ -840,7 +840,7 @@ class Group extends QUI\QDOM
      * @return QUI\Users\User
      * @throws QUI\Exception
      */
-    public function getUserByName($username)
+    public function getUserByName(string $username): QUI\Users\User
     {
         $result = QUI::getDataBase()->fetch([
             'select' => 'id',
@@ -875,7 +875,7 @@ class Group extends QUI\QDOM
      *
      * @return integer
      */
-    public function countUser($params = [])
+    public function countUser(array $params = []): int
     {
         $_params = [
             'count' => [
@@ -940,7 +940,7 @@ class Group extends QUI\QDOM
      *
      * @return integer
      */
-    public function hasChildren()
+    public function hasChildren(): int
     {
         return count($this->getChildren());
     }
@@ -952,7 +952,7 @@ class Group extends QUI\QDOM
      *
      * @return array
      */
-    public function getChildren($params = [])
+    public function getChildren(array $params = []): array
     {
         $ids = $this->getChildrenIds(false, $params);
         $children = [];
