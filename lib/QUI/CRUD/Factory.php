@@ -65,7 +65,7 @@ abstract class Factory extends QUI\Utils\Singleton
 
         $count = QUI::getDataBase()->fetch($query);
 
-        if (isset($count[0]) && isset($count[0]['id'])) {
+        if (isset($count[0]['id'])) {
             return (int)$count[0]['id'];
         }
 

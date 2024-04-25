@@ -205,7 +205,7 @@ class Manager
                     birthday = '';
             "
             );
-        } catch (\PDOException $Exception) {
+        } catch (PDOException) {
         }
 
         // uuid extrem indexes patch
@@ -307,12 +307,8 @@ class Manager
             // Update references in users table
             $DataBase->update(
                 $table,
-                [
-                    'address' => $addressUuid
-                ],
-                [
-                    'address' => $entry['id']
-                ]
+                ['address' => $addressUuid],
+                ['address' => $entry['id']]
             );
         }
 
@@ -450,11 +446,7 @@ class Manager
             return false;
         }
 
-        try {
-            $_User = $this->getUserBySession();
-        } catch (QUI\Exception) {
-            return false;
-        }
+        $_User = $this->getUserBySession();
 
         if ($User->getUUID() == $_User->getUUID()) {
             return true;
@@ -1083,7 +1075,7 @@ class Manager
             return 0;
         }
 
-        if (isset($result[0]) && isset($result[0]['count'])) {
+        if (isset($result[0]['count'])) {
             return $result[0]['count'];
         }
 
@@ -1099,7 +1091,7 @@ class Manager
      */
     public function getAllUsers(bool $objects = false): array
     {
-        if ($objects == false) {
+        if (!$objects) {
             try {
                 return QUI::getDataBase()->fetch([
                     'from' => self::table(),
@@ -1783,20 +1775,11 @@ class Manager
         /**
          * WHERE
          */
-//        if (isset($params['where'])) {
-        // $_fields['where'] = $params['where'];
-//        }
-
-        // wenn nicht durchsucht wird dann gelöschte nutzer nicht anzeigen
-//        if (!isset($params['search'])) {
-        // $_fields['where_relation']  = "`active` != '-1' ";
-//        }
-
 
         /**
          * WHERE Search
          */
-        if (isset($params['search']) && $params['search'] == true) {
+        if (!empty($params['search'])) {
             if (empty($params['searchSettings'])) {
                 $params['searchSettings'] = [];
             }
@@ -1838,26 +1821,25 @@ class Manager
 
             // set the filters
             if (
-                isset($filter['filter_status'])
-                && !empty($filter['filter_status'])
+                !empty($filter['filter_status'])
                 && $filter['filter_status'] != 'all'
             ) {
                 $filter_status = true;
             }
 
-            if (isset($filter['filter_group']) && !empty($filter['filter_group'])) {
+            if (!empty($filter['filter_group'])) {
                 $filter_group = true;
             }
 
-            if (isset($filter['filter_groups_exclude']) && !empty($filter['filter_groups_exclude'])) {
+            if (!empty($filter['filter_groups_exclude'])) {
                 $filter_groups_exclude = true;
             }
 
-            if (isset($filter['filter_regdate_first']) && !empty($filter['filter_regdate_first'])) {
+            if (!empty($filter['filter_regdate_first'])) {
                 $filter_regdate_first = true;
             }
 
-            if (isset($filter['filter_regdate_last']) && !empty($filter['filter_regdate_last'])) {
+            if (!empty($filter['filter_regdate_last'])) {
                 $filter_regdate_last = true;
             }
 
@@ -1976,7 +1958,7 @@ class Manager
             if ($key == ':active' || $key == ':su') {
                 $Statement->bindValue($key, $value, PDO::PARAM_INT);
             } else {
-                $Statement->bindValue($key, $value, PDO::PARAM_STR);
+                $Statement->bindValue($key, $value);
             }
         }
 

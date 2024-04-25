@@ -24,13 +24,11 @@ use function array_flip;
 use function array_merge;
 use function array_unique;
 use function class_exists;
-use function dirname;
 use function explode;
 use function file_exists;
 use function file_put_contents;
 use function implode;
 use function in_array;
-use function is_array;
 use function is_dir;
 use function libxml_get_errors;
 use function libxml_use_internal_errors;
@@ -269,10 +267,6 @@ class Manager
         $result = [];
         $groups = $User->getGroups();
 
-        if (!is_array($groups)) {
-            $groups = [];
-        }
-
         /* @var $Group QUI\Groups\Group */
         foreach ($groups as $Group) {
             if ($Group->getAttribute('assigned_toolbar')) {
@@ -365,7 +359,7 @@ class Manager
 
         try {
             return QUI\Cache\Manager::get($cacheName);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         // css files
@@ -380,8 +374,8 @@ class Manager
         if (file_exists($file)) {
             $files = XML::getWysiwygCSSFromXml($file);
 
-            foreach ($files as $cssfile) {
-                $css[] = URL_USR_DIR . $project . '/' . $cssfile;
+            foreach ($files as $cssFile) {
+                $css[] = URL_USR_DIR . $project . '/' . $cssFile;
             }
 
             // id and css class
@@ -868,7 +862,6 @@ class Manager
      */
     public function load(string $html): string
     {
-        // Bilder umschreiben
         $html = preg_replace_callback(
             '#(src)="([^"]*)"#',
             [$this, "cleanAdminSrc"],
@@ -919,14 +912,12 @@ class Manager
 
         $html = $this->cleanHTML($html);
 
-        // Zeilenumbrüche in HTML löschen
-        $html = preg_replace_callback(
+        // remove line breaks in html
+        return preg_replace_callback(
             '#(<)(.*?)(>)#',
             [$this, "deleteLineBreaksInHtml"],
             $html
         );
-
-        return $html;
     }
 
     /**

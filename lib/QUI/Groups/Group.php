@@ -174,7 +174,7 @@ class Group extends QUI\QDOM
 
             foreach ($extraData as $attribute => $value) {
                 if (isset($extras[$attribute])) {
-                    $this->setAttribute($attribute, $extraData[$attribute]);
+                    $this->setAttribute($attribute, $value);
                 }
             }
         }
@@ -228,8 +228,6 @@ class Group extends QUI\QDOM
      * - https://dev.quiqqer.com/quiqqer/quiqqer/wikis/Group-Xml
      *
      * @return array
-     *
-     * @throws QUI\Exception
      */
     protected function getListOfExtraAttributes()
     {
@@ -300,11 +298,7 @@ class Group extends QUI\QDOM
             'limit' => 1
         ]);
 
-        if (
-            !isset($result[0])
-            || !isset($result[0]['parent'])
-            || empty($result[0]['parent'])
-        ) {
+        if (empty($result[0]['parent'])) {
             return;
         }
 
@@ -612,7 +606,7 @@ class Group extends QUI\QDOM
      */
     public function isActive()
     {
-        return $this->getAttribute('active') ? true : false;
+        return (bool)$this->getAttribute('active');
     }
 
     /**
@@ -776,7 +770,7 @@ class Group extends QUI\QDOM
             return false;
         }
 
-        if ($obj == true) {
+        if ($obj) {
             return QUI::getGroups()->get($ids[0]);
         }
 
@@ -907,7 +901,7 @@ class Group extends QUI\QDOM
 
         $result = QUI::getDataBase()->fetch($_params);
 
-        if (isset($result[0]) && isset($result[0]['count'])) {
+        if (isset($result[0]['count'])) {
             return $result[0]['count'];
         }
 

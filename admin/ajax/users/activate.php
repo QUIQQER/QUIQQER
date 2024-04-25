@@ -4,7 +4,6 @@
  * User activation
  *
  * @param integer|array|string $uid
- *
  * @return array
  */
 
@@ -24,7 +23,7 @@ QUI::$Ajax->registerFunction(
         foreach ($uid as $_uid) {
             try {
                 $User = $Users->get($_uid);
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 continue;
             }
 

@@ -341,7 +341,7 @@ class Manager extends QUI\QDOM
      */
     public function getAllGroups(bool $objects = false): array
     {
-        if ($objects == false) {
+        if (!$objects) {
             return QUI::getDataBase()->fetch([
                 'from' => self::table(),
                 'order' => 'name'
@@ -369,13 +369,11 @@ class Manager extends QUI\QDOM
      */
     public function getAllGroupIds(): array
     {
-        $result = QUI::getDataBase()->fetch([
+        return QUI::getDataBase()->fetch([
             'select' => 'id',
             'from' => self::table(),
             'order' => 'name'
         ]);
-
-        return $result;
     }
 
     /**
