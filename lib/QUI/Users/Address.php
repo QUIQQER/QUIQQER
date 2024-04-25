@@ -86,7 +86,7 @@ class Address extends QUI\QDOM
             $result = QUI::getDataBase()->fetch([
                 'from' => Manager::tableAddress(),
                 'where' => $where,
-                'limit' => '1'
+                'limit' => 1
             ]);
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::writeDebugException($Exception);
@@ -441,8 +441,8 @@ class Address extends QUI\QDOM
      */
     public function addMail($mail)
     {
-        if (Orthos::checkMailSyntax($mail) == false) {
-            throw new QUI\Users\Exception(
+        if (!Orthos::checkMailSyntax($mail)) {
+            throw new Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'exception.lib.user.address.mail.wrong.syntax'
@@ -499,8 +499,8 @@ class Address extends QUI\QDOM
      */
     public function editMail($index, $mail)
     {
-        if (Orthos::checkMailSyntax($mail) == false) {
-            throw new QUI\Users\Exception(
+        if (!Orthos::checkMailSyntax($mail)) {
+            throw new Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'exception.lib.user.address.mail.wrong.syntax'
@@ -580,9 +580,7 @@ class Address extends QUI\QDOM
         $cleanupAttributes = function ($str) {
             $str = Orthos::removeHTML($str);
             $str = Orthos::clearFormRequest($str);
-            $str = Orthos::clearPath($str);
-
-            return $str;
+            return Orthos::clearPath($str);
         };
 
         try {
@@ -950,15 +948,7 @@ class Address extends QUI\QDOM
      */
     public function setCustomDataEntry(string $key, $value)
     {
-        if (\is_object($value)) {
-            return;
-        }
-
-        if (is_array($value)) {
-            return;
-        }
-
-        if (!\is_numeric($value) && !\is_string($value) && !\is_bool($value)) {
+        if (!is_numeric($value) && !is_string($value) && !is_bool($value)) {
             return;
         }
 

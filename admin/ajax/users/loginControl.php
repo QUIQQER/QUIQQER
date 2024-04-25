@@ -19,8 +19,7 @@ QUI::$Ajax->registerFunction(
             'authenticators' => $authenticators
         ]);
 
-        $result = '';
-        $result .= $Login->create();
+        $result = $Login->create();
         $result .= QUI\Control\Manager::getCSS();
 
         return $result;

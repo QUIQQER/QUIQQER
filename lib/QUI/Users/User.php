@@ -431,22 +431,18 @@ class User implements QUIUserInterface
                 if (isset($extras[$attribute]['encrypt']) && $extras[$attribute]['encrypt']) {
                     $this->setAttribute(
                         $attribute,
-                        QUI\Security\Encryption::decrypt($extraData[$attribute])
+                        QUI\Security\Encryption::decrypt($value)
                     );
 
                     continue;
                 }
 
-                $this->setAttribute($attribute, $extraData[$attribute]);
+                $this->setAttribute($attribute, $value);
             }
         }
 
         if (isset($data[0]['authenticator'])) {
-            $this->authenticator = json_decode($data[0]['authenticator'], true);
-
-            if (!is_array($this->authenticator)) {
-                $this->authenticator = [];
-            }
+            $this->authenticator = json_decode($data[0]['authenticator'], true) ?? [];
         }
 
         // load default address fields
@@ -1060,7 +1056,7 @@ class User implements QUIUserInterface
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         $list = QUI::getPackageManager()->getInstalled();
@@ -1168,7 +1164,7 @@ class User implements QUIUserInterface
 
         $groups[] = $Group;
 
-        foreach ($groups as $key => $UserGroup) {
+        foreach ($groups as $UserGroup) {
             /* @var $UserGroup QUI\Groups\Group */
             if (isset($_tmp[$UserGroup->getId()])) {
                 continue;
