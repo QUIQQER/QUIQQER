@@ -12,19 +12,19 @@ QUI::$Ajax->registerFunction(
     'ajax_users_delete',
     function ($uid) {
         $Users = QUI::getUsers();
-        $uids = json_decode($uid, true);
+        $uIds = json_decode($uid, true);
 
-        if (!\is_array($uids)) {
-            $uids = [$uids];
+        if (!is_array($uIds)) {
+            $uIds = [$uIds];
         }
 
-        foreach ($uids as $uid) {
+        foreach ($uIds as $uid) {
             $Users->get($uid)->delete();
         }
 
         QUI::getMessagesHandler()->addInformation(
             QUI::getLocale()->get('quiqqer/quiqqer', 'message.user.deleted.successful', [
-                'ids' => \implode(', ', $uids)
+                'ids' => implode(', ', $uIds)
             ])
         );
 
