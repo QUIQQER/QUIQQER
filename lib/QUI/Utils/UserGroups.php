@@ -27,7 +27,7 @@ class UserGroups
      * @param array $array
      * @return string
      */
-    public static function parseUGArrayToString($array)
+    public static function parseUGArrayToString(array $array): string
     {
         $result = '';
 
@@ -59,7 +59,7 @@ class UserGroups
      * @param QUI\Interfaces\Users\User $User
      * @return string
      */
-    public static function getUserGroupStringFromUser(QUI\Interfaces\Users\User $User)
+    public static function getUserGroupStringFromUser(QUI\Interfaces\Users\User $User): string
     {
         $result = [];
         $result[] = 'u' . $User->getUUID();
@@ -82,7 +82,7 @@ class UserGroups
      * @param $ugString
      * @return bool
      */
-    public static function isUserInUserGroupString(QUI\Interfaces\Users\User $User, $ugString)
+    public static function isUserInUserGroupString(QUI\Interfaces\Users\User $User, $ugString): bool
     {
         if (!is_string($ugString)) {
             return false;
@@ -115,16 +115,12 @@ class UserGroups
      * @param string $str
      * @return array
      */
-    public static function parseUsersGroupsString($str)
+    public static function parseUsersGroupsString(string $str): array
     {
         $result = [
             'users' => [],
             'groups' => []
         ];
-
-        if (!\is_string($str)) {
-            return $result;
-        }
 
         if (empty($str)) {
             $ugs = [];
@@ -152,7 +148,7 @@ class UserGroups
      * @param string $ugString
      * @return bool
      */
-    public static function isUserGroupString($ugString)
+    public static function isUserGroupString(string $ugString): bool
     {
         $ugString = explode(',', $ugString);
 
