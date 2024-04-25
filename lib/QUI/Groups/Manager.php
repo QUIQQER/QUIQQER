@@ -105,11 +105,12 @@ class Manager extends QUI\QDOM
     /**
      * Return a group by ID
      *
-     * @param integer $id - ID of the Group
+     * @param integer|string $id - ID of the Group
+     * @return Group|Everyone|Guest
      *
      * @throws Exception
      */
-    public function get($id)
+    public function get(int|string $id): Group|Everyone|Guest
     {
         $id = (int)$id;
 
@@ -290,19 +291,31 @@ class Manager extends QUI\QDOM
             return $this->data[$groupId];
         }
 
-        $groupId = (int)$groupId;
-
-        $result = QUI::getDataBase()->fetch([
-            'from' => self::table(),
-            'where' => [
-                'id' => $groupId
-            ],
-            'limit' => 1
-        ]);
-
-        if (isset($result[0]) && ($groupId === 1 || $groupId === 0)) {
-            $this->data[$groupId] = $result;
+        if (
+            is_numeric($groupId)
+            && ((int)$groupId === 1 || (int)$groupId === 0)
+        ) {
+            return [];
         }
+
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'from' => self::table(),
+                'where_or' => [
+                    'id' => (int)$groupId,
+                    'uuid' => $groupId,
+                ],
+                'limit' => 1
+            ]);
+        } catch (QUI\Exception) {
+        }
+
+        if (!isset($result[0])) {
+            return [];
+        }
+
+        $uuid = $result[0]['uuid'];
+        $this->data[$uuid] = $result;
 
         return $result;
     }

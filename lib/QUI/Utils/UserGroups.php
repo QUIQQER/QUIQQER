@@ -68,7 +68,7 @@ class UserGroups
 
         /* @var $Group QUI\Groups\Group */
         foreach ($groups as $Group) {
-            $result[] = 'g' . $Group->getId();
+            $result[] = 'g' . $Group->getUUID();
         }
 
         return implode(',', $result);

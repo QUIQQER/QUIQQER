@@ -62,6 +62,7 @@
 
         <table name="groups">
             <field type="INT(11) NOT NULL DEFAULT 0">id</field>
+            <field type="VARCHAR(50) NOT NULL">uuid</field>
             <field type="VARCHAR(50) NOT NULL DEFAULT ''">name</field>
             <field type="INT(11) NOT NULL DEFAULT 0">parent</field>
             <field type="TINYINT(1) NOT NULL DEFAULT '0'">active</field>
@@ -73,6 +74,7 @@
 
             <primary>id</primary>
             <index>parent</index>
+            <index>uuid</index>
 
             <comment>This table contains the groups of QUIQQER.</comment>
         </table>

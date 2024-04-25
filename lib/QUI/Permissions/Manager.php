@@ -498,7 +498,7 @@ class Manager
 
                 case 'groups':
                     /* @var $Obj Group */
-                    return 'permission2groups_' . $Obj->getId();
+                    return 'permission2groups_' . $Obj->getUUID();
 
                 case 'project':
                     /* @var $Obj Project */
@@ -1016,6 +1016,7 @@ class Manager
                     if (QUI::getGroups()->isGroup($PermValue)) {
                         /* @var $PermValue QUI\Groups\Group */
                         $permissionValues[] = 'g' . $PermValue->getId();
+                        $permissionValues[] = 'g' . $PermValue->getUUID();
                     }
                 }
 
@@ -1025,7 +1026,7 @@ class Manager
                 $permissionValue = 'u' . $Perm->getUUID();
             } elseif (QUI::getGroups()->isGroup($Perm)) {
                 /* @var $Perm QUI\Groups\Group */
-                $permissionValue = 'g' . $Perm->getId();
+                $permissionValue = 'g' . $Perm->getUUID();
             } else {
                 continue;
             }

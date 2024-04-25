@@ -153,11 +153,11 @@ class Everyone extends QUI\Groups\Group
      * Checks if the ID is from a parent group
      *
      * @param integer $id - ID from parent
-     * @param boolean $recursiv - checks recursive or not
+     * @param boolean $recursive - checks recursive or not
      *
      * @return boolean
      */
-    public function isParent($id, $recursiv = false)
+    public function isParent(int $id, bool $recursive = false)
     {
         return false;
     }

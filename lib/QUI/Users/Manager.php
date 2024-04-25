@@ -822,7 +822,7 @@ class Manager
             }
         }
 
-        $User->addToGroup($Everyone->getId());
+        $User->addToGroup($Everyone->getUUID());
         $User->save($ParentUser);
 
         QUI::getEvents()->fireEvent('userCreate', [$User]);
@@ -1049,7 +1049,7 @@ class Manager
             }
         }
 
-        $User->addToGroup($Everyone->getId());
+        $User->addToGroup($Everyone->getUUID());
         $User->save($PermissionUser);
 
         QUI::getEvents()->fireEvent('userCreate', [$User]);
