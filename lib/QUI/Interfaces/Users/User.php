@@ -82,6 +82,7 @@ interface User
      * Returns the user id
      *
      * @return int|false
+     * @deprecated
      */
     public function getId(): int|false;
 
