@@ -34,25 +34,25 @@ class Manager extends QUI\QDOM
 
     const GUEST_ID = 0;
     const EVERYONE_ID = 1;
-    protected static $getListOfExtraAttributes = null;
+    protected static ?array $getListOfExtraAttributes = null;
+
     /**
-     * @var Everyone
+     * @var Everyone|null
      */
-    protected $Everyone = null;
+    protected ?Everyone $Everyone = null;
+
     /**
-     * @var Guest
+     * @var Guest|null
      */
-    protected $Guest = null;
+    protected ?Guest $Guest = null;
+
     /**
      * internal group cache
      *
      * @var array
      */
-    protected $groups;
-    /**
-     * @var array
-     */
-    protected $data = [];
+    protected array $groups;
+
     /**
      * Files that are to be loaded in the admin area
      *
@@ -63,7 +63,7 @@ class Manager extends QUI\QDOM
     /**
      * @return array|bool|object|string|null
      */
-    public static function getListOfExtraAttributes()
+    public static function getListOfExtraAttributes(): object|bool|array|string|null
     {
         if (self::$getListOfExtraAttributes !== null) {
             return self::$getListOfExtraAttributes;
@@ -156,7 +156,7 @@ class Manager extends QUI\QDOM
      *
      * @return array
      */
-    protected static function readAttributesFromGroupXML($file)
+    protected static function readAttributesFromGroupXML(string $file): array
     {
         $Dom = QUI\Utils\Text\XML::getDomFromXml($file);
         $Attr = $Dom->getElementsByTagName('attributes');
@@ -191,7 +191,7 @@ class Manager extends QUI\QDOM
     /**
      * Setup for groups
      */
-    public function setup()
+    public function setup(): void
     {
         $DataBase = QUI::getDataBase();
         $Table = $DataBase->table();
@@ -264,7 +264,7 @@ class Manager extends QUI\QDOM
      *
      * @return string
      */
-    public static function table()
+    public static function table(): string
     {
         return QUI::getDBTableName('groups');
     }
@@ -274,7 +274,7 @@ class Manager extends QUI\QDOM
      *
      * @return QUI\Groups\Group
      */
-    public function firstChild()
+    public function firstChild(): Group
     {
         return $this->get(QUI::conf('globals', 'root'));
     }
@@ -285,7 +285,7 @@ class Manager extends QUI\QDOM
      * @param integer|string $groupId
      * @return array
      */
-    public function getGroupData($groupId)
+    public function getGroupData(int|string $groupId): array
     {
         if (isset($this->data[$groupId])) {
             return $this->data[$groupId];
@@ -323,11 +323,11 @@ class Manager extends QUI\QDOM
     /**
      * Return the name of a group
      *
-     * @param integer $id - ID of the Group
+     * @param integer|string $id - ID of the Group
      *
      * @return string
      */
-    public function getGroupNameById($id)
+    public function getGroupNameById(int|string $id): string
     {
         return $this->get($id)->getAttribute('name');
     }
@@ -339,7 +339,7 @@ class Manager extends QUI\QDOM
      *
      * @return array
      */
-    public function getAllGroups($objects = false)
+    public function getAllGroups(bool $objects = false): array
     {
         if ($objects == false) {
             return QUI::getDataBase()->fetch([
@@ -367,7 +367,7 @@ class Manager extends QUI\QDOM
      *
      * @return array
      */
-    public function getAllGroupIds()
+    public function getAllGroupIds(): array
     {
         $result = QUI::getDataBase()->fetch([
             'select' => 'id',
@@ -385,7 +385,7 @@ class Manager extends QUI\QDOM
      *
      * @return array
      */
-    public function search($params = [])
+    public function search(array $params = []): array
     {
         return $this->searchHelper($params);
     }
@@ -398,7 +398,7 @@ class Manager extends QUI\QDOM
      * @return array
      * @ignore
      */
-    protected function searchHelper($params)
+    protected function searchHelper(array $params): array
     {
         $DataBase = QUI::getDataBase();
         $params = Orthos::clearArray($params);
@@ -497,7 +497,7 @@ class Manager extends QUI\QDOM
      *
      * @return boolean
      */
-    public function isGroup($Group)
+    public function isGroup(mixed $Group): bool
     {
         if (!is_object($Group)) {
             return false;
@@ -513,7 +513,7 @@ class Manager extends QUI\QDOM
      *
      * @return integer
      */
-    public function count($params = [])
+    public function count(array $params = []): int
     {
         $params['count'] = true;
 
