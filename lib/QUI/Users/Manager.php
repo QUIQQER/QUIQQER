@@ -1876,7 +1876,7 @@ class Manager
                     $query .= ' ' . $field . ' LIKE :search OR ';
                 }
 
-                if (substr($query, -3) == 'OR ') {
+                if (str_ends_with($query, 'OR ')) {
                     $query = substr($query, 0, -3);
                 }
 
