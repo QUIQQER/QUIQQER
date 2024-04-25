@@ -54,6 +54,11 @@ class Manager extends QUI\QDOM
     protected array $groups;
 
     /**
+     * @var array
+     */
+    protected array $data = [];
+
+    /**
      * @return array|bool|object|string|null
      */
     public static function getListOfExtraAttributes(): object|bool|array|string|null
