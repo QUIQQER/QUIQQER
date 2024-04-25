@@ -79,7 +79,7 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      * @param string $help
      *
      * @return Tool this
-     * @deprecated use addArgument for argument desriptions
+     * @deprecated use addArgument for argument descriptions
      */
     public function setHelp($help)
     {
@@ -255,7 +255,7 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      * Return the value of an argument
      * If the argument is not set and the user are in the cli, then a user input is required (->readInput())
      *
-     * An argument can looks like: --argument, argument, -shortArgument
+     * An argument can look like: --argument, argument, -shortArgument
      *
      * @param string
      *

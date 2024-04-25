@@ -25,7 +25,7 @@ use function trim;
  * Provides methods for quick rights checking
  *
  * all methods with check throws Exceptions
- * all methods with is or has return the permission value
+ * all methods with is or has returned the permission value
  *     it makes a check and capture the exceptions
  *
  * all methods with get return the permission entries
@@ -832,7 +832,7 @@ class Permission
 
         $flip = array_flip($permList);
 
-        // user is in the permissions, than unset it
+        // user is in the permissions, then unset it
         if (isset($flip[$group])) {
             unset($flip[$group]);
         }
@@ -1131,7 +1131,7 @@ class Permission
     }
 
     /**
-     * Remove an user from the project permission
+     * Remove a user from the project permission
      *
      * @param User $User
      * @param Project $Project
@@ -1162,7 +1162,7 @@ class Permission
 
         $flip = array_flip($permList);
 
-        // user is in the permissions, than unset it
+        // user is in the permissions, then unset it
         if (isset($flip[$user])) {
             unset($flip[$user]);
         }
@@ -1210,7 +1210,7 @@ class Permission
 
         $flip = array_flip($permList);
 
-        // user is in the permissions, than unset it
+        // user is in the permissions, then unset it
         if (isset($flip[$group])) {
             unset($flip[$group]);
         }
@@ -1330,7 +1330,7 @@ class Permission
 
         $flip = array_flip($permList);
 
-        // user is in the permissions, than unset it
+        // user is in the permissions, then unset it
         if (isset($flip[$group])) {
             unset($flip[$group]);
         }
@@ -1389,7 +1389,7 @@ class Permission
 
         $flip = array_flip($permList);
 
-        // user is in the permissions, than unset it
+        // user is in the permissions, then unset it
         if (isset($flip[$user])) {
             unset($flip[$user]);
         }

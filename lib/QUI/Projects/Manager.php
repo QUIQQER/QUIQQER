@@ -63,7 +63,7 @@ class Manager
     public static $Config = null;
 
     /**
-     * laoded projects
+     * loaded projects
      *
      * @var array
      */

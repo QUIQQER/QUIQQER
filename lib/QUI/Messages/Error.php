@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file containes QUI\Messages\Error
+ * This file contains QUI\Messages\Error
  */
 
 namespace QUI\Messages;

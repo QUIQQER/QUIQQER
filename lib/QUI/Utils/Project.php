@@ -222,7 +222,7 @@ class Project
                 QUI::getLocale()->getByLang($language, $group, $var);
             }
 
-            // if en doesn't exists, we use the first available language
+            // if en doesn't exist, we use the first available language
             if (!QUI::getLocale()->exists($language)) {
                 $language = QUI::availableLanguages()[0];
             }

@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
 
 /**
  * Class Session
- * Session placeholder for the CLI
+ * - Session placeholder for the CLI
  */
 class Session
 {

@@ -7,7 +7,7 @@
 namespace QUI\Users;
 
 /**
- * Interface for external authentification
+ * Interface for external authentication
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md

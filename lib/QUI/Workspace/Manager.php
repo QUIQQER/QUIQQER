@@ -192,7 +192,7 @@ class Manager
     }
 
     /**
-     * Return the workspaces list from an user
+     * Return the workspaces list from a user
      *
      * @param User $User
      *

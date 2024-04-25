@@ -28,7 +28,7 @@ use function trim;
 class GetSiteAttributes extends QUI\System\Console\Tool
 {
     /**
-     * Konstruktor
+     * Constructor
      */
     public function __construct()
     {

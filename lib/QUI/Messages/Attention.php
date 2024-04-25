@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file containes QUI\Messages\Attention
+ * This file contains QUI\Messages\Attention
  */
 
 namespace QUI\Messages;

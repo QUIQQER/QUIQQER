@@ -27,7 +27,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
     protected $Project = null;
 
     /**
-     * Konstruktor
+     * Constructor
      *
      * @param Project $Project
      */

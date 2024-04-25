@@ -26,7 +26,7 @@ use function usort;
 class Menu
 {
     /**
-     * Clear the menu cache for an user
+     * Clear the menu cache for a user
      *
      * @param QUI\Interfaces\Users\User $User
      */
@@ -64,7 +64,7 @@ class Menu
     }
 
     /**
-     * Cachename for the menu
+     * Cache name for the menu
      * The name of the menu cache is user dependent
      */
     protected function getCacheName(): string
@@ -112,7 +112,6 @@ class Menu
         }
 
         if ($Menu->getElementByName('extras')) {
-            // Benutzerverwaltung
             $canSeeGroups = Permission::hasPermission('quiqqer.admin.groups.view');
             $canSeeUsers = Permission::hasPermission('quiqqer.admin.users.view');
             $canSeePermissions = false;
@@ -144,7 +143,6 @@ class Menu
                 $Rights->removeChild('permissions');
             }
 
-            // Projektverwaltung
             if (!$User->isSU()) {
                 $Extras->removeChild('projects');
             }
@@ -179,7 +177,7 @@ class Menu
             );
         }
 
-        // read the settings.xml's
+        // read the settings.xml`s
         if (Permission::hasPermission('quiqqer.settings')) {
             $files = [];
 
@@ -270,7 +268,6 @@ class Menu
                         $windowList[$winName] = $Item;
                     }
 
-                    // titel
                     /* @var $Title DOMElement */
                     if (!$Item->getAttribute('text')) {
                         $this->setWindowTitle($Item, $Window);
@@ -299,7 +296,7 @@ class Menu
             }
         }
 
-        // read the menu.xml's
+        // read the menu.xml`s
         $packages = QUI::getPackageManager()->getInstalled();
 
         foreach ($packages as $package) {

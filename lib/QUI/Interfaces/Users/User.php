@@ -103,7 +103,7 @@ interface User
 
     /**
      * Returns the name of the user
-     * If the user has an first and Lastname, it returns the "Firstname Lastname".
+     * If the user has a first and Lastname, it returns the "Firstname Lastname".
      * otherwise it returns getUsername()
      *
      * @return string

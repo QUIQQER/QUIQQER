@@ -358,7 +358,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * Return the ID of the site,
-     * or the ID of the sibling (linked) site of another languager
+     * or the ID of the sibling (linked) site of another language
      *
      * @param string|boolean $lang - optional, if it is set, then the language of the wanted linked sibling site
      *

@@ -9,7 +9,7 @@ namespace QUI\Interfaces\Projects;
 use QUI;
 
 /**
- * Site Objekt - eine einzelne Seite
+ * Site Object - eine einzelne Seite
  *
  * @author     www.pcsg.de (Henning Leutz)
  * @licence    For copyright and license information, please view the /README.md
@@ -81,7 +81,7 @@ interface Site extends QUI\QDOMInterface
 
     /**
      * Return the ID of the site,
-     * or the ID of the sibling (linked) site of another languager
+     * or the ID of the sibling (linked) site of another language
      *
      * @param string|boolean $lang - optional, if it is set, then the language of the wanted linked sibling site
      *

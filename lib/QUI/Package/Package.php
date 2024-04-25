@@ -372,7 +372,7 @@ class Package extends QUI\QDOM
 
     /**
      * Has the package a template parent?
-     * If the package is a template, its possible that the template has a package
+     * If the package is a template, it's possible that the template has a package
      *
      * @return bool
      */
@@ -974,7 +974,7 @@ class Package extends QUI\QDOM
 
     /**
      * Destroy the complete package / plugin
-     * it destroy the database data, too
+     * it destroys the database data, too
      *
      * @throws QUI\Exception
      * @todo implementieren
