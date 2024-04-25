@@ -719,19 +719,6 @@ class Manager
     }
 
     /**
-     * Gibt das interne Projekt zurück
-     *
-     *    Für was???
-     *
-     * @return     QUI\Projects\Project
-     * @deprecated
-     */
-    public function getProject()
-    {
-        return $this->Project;
-    }
-
-    /**
      * Setzt das interne Projekt
      *
      * Für was???
