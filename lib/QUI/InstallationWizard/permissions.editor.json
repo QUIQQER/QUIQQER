@@ -29,7 +29,6 @@
   "quiqqer.packages.quiqqercalendarcontrols.canUse": true,
   "quiqqer.packages.quiqqercolorpicker.canUse": true,
   "quiqqer.packages.quiqqerdashboard.canUse": true,
-  "quiqqer.packages.quiqqerlockclient.canUse": false,
   "quiqqer.packages.quiqqerfontawesome.canUse": true,
   "quiqqer.packages.quiqqerloginlogger.canUse": true,
   "quiqqer.packages.quiqqermeta.canUse": true,

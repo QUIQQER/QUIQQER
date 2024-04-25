@@ -752,15 +752,6 @@
         <locale name="quiqqer.settings.license.url.description">
             <de><![CDATA[Composer-Lizenzserver für alle kostenpflichtigen Pakete]]></de>
         </locale>
-        <locale name="quiqqer.settings.general.globals.lockserver.enabled.title">
-            <de><![CDATA[Lockserver verwenden]]></de>
-        </locale>
-        <locale name="quiqqer.settings.general.globals.lockserver.enabled.description">
-            <de><![CDATA[
-                Der Lockserver lagert die Abhängigkeitsauflösung von Composer auf ein externes QUIQQER-System aus.
-                <a href="https://dev.quiqqer.com/quiqqer/Lockserver/wikis/home" target='_blank'>Mehr Details</a>
-            ]]></de>
-        </locale>
         <locale name="site.type.standard">
             <de><![CDATA[Einfacher Inhalt]]></de>
         </locale>
@@ -5175,10 +5166,6 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         <locale name="message.online.update.RAM.insufficient.vcs">
             <de>
                 <![CDATA[Es steht PHP nicht genug Arbeitsspeicher zur Verfügung, um Pakete mit angeschaltetem VCS Updateserver zu aktualisieren oder zu installieren.]]></de>
-        </locale>
-        <locale name="message.online.update.RAM.insufficient.vcs.lock">
-            <de>
-                <![CDATA[Der Lockserver kann nicht verwendet werden, wenn ein VCS Updateserver aktiviert ist und PHP steht nicht genug Arbeitsspeicher zur Verfügung, um die Operation lokal auszuführen.]]></de>
         </locale>
         <locale name="exception.console.execute.only.in.cli">
             <de><![CDATA[System Tools können nur in der CLI ausgeführt werden.]]></de>

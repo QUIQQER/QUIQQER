@@ -752,15 +752,6 @@
         <locale name="quiqqer.settings.license.url.description">
             <en><![CDATA[Composer license server for all non-free packages]]></en>
         </locale>
-        <locale name="quiqqer.settings.general.globals.lockserver.enabled.title">
-            <en><![CDATA[Use lockserver]]></en>
-        </locale>
-        <locale name="quiqqer.settings.general.globals.lockserver.enabled.description">
-            <en><![CDATA[
-            The lockserver outsources the dependency solution to an external QUIQQER server.
-            <a href="https://dev.quiqqer.com/quiqqer/Lockserver/wikis/home" target='_blank'>Read more</a>
-            ]]></en>
-        </locale>
         <locale name="site.type.standard">
             <en><![CDATA[Default content]]></en>
         </locale>
@@ -5004,10 +4995,6 @@ After logging in you will be prompted to set a new password.
         <locale name="message.online.update.RAM.insufficient.vcs">
             <en>
                 <![CDATA[PHP does not have enough memory available to perform this action, while a VCS updateserver is enabled]]></en>
-        </locale>
-        <locale name="message.online.update.RAM.insufficient.vcs.lock">
-            <en>
-                <![CDATA[It is not possible to use the Lockserver, while a VCS updateserver is active and the system does not have enough memory available to peform this operation locally.]]></en>
         </locale>
         <locale name="exception.console.execute.only.in.cli">
             <en><![CDATA[System tools can only be run in the CLI.]]></en>
