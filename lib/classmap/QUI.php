@@ -710,16 +710,18 @@ class QUI
     /**
      * Returns the PDO Database object
      *
-     * @return PDO
      * @throws Exception
-     * @throws \Doctrine\DBAL\Exception
      */
     public static function getPDO(): PDO
     {
-        $Native = self::getDataBaseConnection()->getNativeConnection();
+        try {
+            $Native = self::getDataBaseConnection()->getNativeConnection();
 
-        if ($Native instanceof PDO) {
-            return $Native;
+            if ($Native instanceof PDO) {
+                return $Native;
+            }
+        } catch (Doctrine\DBAL\Exception $e) {
+            Log::addError($e->getMessage());
         }
 
         throw new QUI\Exception('PDO not found');
