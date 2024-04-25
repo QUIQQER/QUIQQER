@@ -387,7 +387,7 @@ class Manager
 
             $id = $uuid;
         } else {
-            $id = $User->getUniqueId();
+            $id = $User->getUUID();
         }
 
         return $this->getDir() . $id . '/';
@@ -413,7 +413,7 @@ class Manager
             $User = QUI::getUserBySession();
         }
 
-        if ($SessionUser->getId() !== $User->getId()) {
+        if ($SessionUser->getUUID() !== $User->getUUID()) {
             throw new QUI\Permissions\Exception([
                 'quiqqer/quiqqer',
                 'exceptions.upload.no.permissions.'
@@ -720,7 +720,7 @@ class Manager
             $conf,
             json_encode([
                 'file' => $filename,
-                'user' => QUI::getUserBySession()->getId(),
+                'user' => QUI::getUserBySession()->getUUID(),
                 'params' => $params
             ])
         );

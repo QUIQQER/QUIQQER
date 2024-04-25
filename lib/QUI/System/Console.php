@@ -294,7 +294,7 @@ class Console
             exit;
         }
 
-        if (is_null($this->User) || !$this->User->getId()) {
+        if (is_null($this->User) || !$this->User->getUUID()) {
             QUI::getEvents()->fireEvent('userCliLoginError', [$this->getArgument('username')]);
 
             $this->writeLn("Login incorrect\n\n", 'red');
@@ -1176,7 +1176,7 @@ class Console
         $Session = QUI::getSession();
         $Session->set('auth', 1);
         $Session->set('secHash', $Users->getSecHash());
-        $Session->set('uid', $User->getId());
+        $Session->set('uid', $User->getUUID());
         $Session->set('inAuthentication', true);
 
         QUI::getUsers()->login();
@@ -1192,7 +1192,7 @@ class Console
                 'user_agent' => $userAgent,
                 'secHash' => $Users->getSecHash()
             ],
-            ['id' => $User->getId()]
+            ['uuid' => $User->getUUID()]
         );
     }
 

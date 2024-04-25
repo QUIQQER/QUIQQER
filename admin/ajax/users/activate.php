@@ -34,7 +34,7 @@ QUI::$Ajax->registerFunction(
                 $result[$_uid] = $User->isActive() ? 1 : 0;
 
                 if ($User->isActive()) {
-                    $activated[] = $User->getId();
+                    $activated[] = $User->getUUID();
                 }
             } catch (QUI\Exception $Exception) {
                 $result[$_uid] = $User->isActive() ? 1 : 0;

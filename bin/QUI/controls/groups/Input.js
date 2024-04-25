@@ -184,7 +184,7 @@ define('controls/groups/Input', [
             var values = this.$Parent.value.toString().split(',');
 
             for (i = 0, len = values.length; i < len; i++) {
-                val = parseInt(values[i]);
+                val = values[i];
 
                 if (val) {
                     this.addGroup(val);

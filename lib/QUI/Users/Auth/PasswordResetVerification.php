@@ -39,7 +39,7 @@ class PasswordResetVerification extends AbstractVerification
         $SystemUser = $Users->getSystemUser();
 
         try {
-            $User = $Users->get((int)$this->getIdentifier());
+            $User = $Users->get($this->getIdentifier());
             $newPassword = QUI\Security\Password::generateRandom();
 
             // check if user has to set new password

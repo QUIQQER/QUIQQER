@@ -254,9 +254,9 @@ class User implements QUI\Interfaces\Users\User
         if ($this->lang !== null) {
             return $this->lang;
         }
-
+        
         if (
-            $this->getId() === QUI::getUserBySession()->getId()
+            $this->getUUID() === QUI::getUserBySession()->getUUID()
             && QUI::getSession()->get('quiqqer-user-language')
         ) {
             $this->lang = QUI::getSession()->get('quiqqer-user-language');
@@ -676,9 +676,9 @@ class User implements QUI\Interfaces\Users\User
     {
         $result = QUI::getDataBase()->fetch([
             'from' => Manager::tableAddress(),
-            'select' => 'id',
+            'select' => 'id,uuid',
             'where' => [
-                'userUuid' => $this->getUniqueId()
+                'userUuid' => $this->getUUID()
             ]
         ]);
 
@@ -726,7 +726,7 @@ class User implements QUI\Interfaces\Users\User
             'count' => 'count',
             'from' => Manager::tableAddress(),
             'where' => [
-                'userUuid' => $this->getUniqueId()
+                'userUuid' => $this->getUUID()
             ]
         ]);
 
@@ -777,7 +777,7 @@ class User implements QUI\Interfaces\Users\User
         }
 
         $_params['uid'] = $this->getId();
-        $_params['userUuid'] = $this->getUniqueId();
+        $_params['userUuid'] = $this->getUUID();
         $_params['uuid'] = QUI\Utils\Uuid::get();
 
         QUI::getDataBase()->insert(
@@ -829,6 +829,10 @@ class User implements QUI\Interfaces\Users\User
         }
 
         if ($SessionUser->getId() == $this->getId()) {
+            return true;
+        }
+
+        if ($SessionUser->getUUID() == $this->getUUID()) {
             return true;
         }
 
@@ -983,9 +987,9 @@ class User implements QUI\Interfaces\Users\User
             $superUsers = QUI::getUsers()->getUsers([
                 'where' => [
                     'su' => 1,
-                    'id' => [
+                    'uuid' => [
                         'type' => 'NOT',
-                        'value' => $this->getId()
+                        'value' => $this->getUUID()
                     ]
                 ],
                 'limit' => 1
@@ -1033,7 +1037,7 @@ class User implements QUI\Interfaces\Users\User
                 'lastLoginAttempt' => $this->getAttribute('lastLoginAttempt') ?: null,
                 'failedLogins' => $this->getAttribute('failedLogins') ?: 0
             ],
-            ['id' => $this->getId()]
+            ['uuid' => $this->getUUID()]
         );
 
         $this->getStandardAddress()->save($ParentUser);
@@ -1292,8 +1296,8 @@ class User implements QUI\Interfaces\Users\User
                     'from' => Manager::table(),
                     'where' => [
                         'email' => $email,
-                        'id' => [
-                            'value' => $this->getId(),
+                        'uuid' => [
+                            'value' => $this->getUUID(),
                             'type' => 'NOT'
                         ]
                     ],
@@ -1393,7 +1397,7 @@ class User implements QUI\Interfaces\Users\User
         if (class_exists('QUI\Watcher')) {
             QUI\Watcher::addString(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'user.enable.authenticator', [
-                    'id' => $this->getId()
+                    'id' => $this->getUUID()
                 ]),
                 '',
                 ['authenticator' => $authenticator]
@@ -1438,7 +1442,7 @@ class User implements QUI\Interfaces\Users\User
         if (class_exists('QUI\Watcher')) {
             QUI\Watcher::addString(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'user.disable.authenticator', [
-                    'id' => $this->getId()
+                    'id' => $this->getUUID()
                 ]),
                 '',
                 [
@@ -1485,9 +1489,18 @@ class User implements QUI\Interfaces\Users\User
     /**
      * Return the unique id for the user
      *
-     * @return string
+     * @return int|string
+     * @deprecated use getUUID()
      */
-    public function getUniqueId()
+    public function getUniqueId(): int|string
+    {
+        return $this->getUUID();
+    }
+
+    /**
+     * @return string|int
+     */
+    public function getUUID(): string|int
     {
         return $this->uuid ?: '';
     }
@@ -1693,6 +1706,7 @@ class User implements QUI\Interfaces\Users\User
     {
         $params = $this->settings;
         $params['id'] = $this->getId();
+        $params['uuid'] = $this->getUUID();
         $params['active'] = $this->active;
         $params['deleted'] = $this->deleted;
         $params['admin'] = $this->canUseBackend();
@@ -1986,7 +2000,7 @@ class User implements QUI\Interfaces\Users\User
         QUI::getDataBase()->update(
             Manager::table(),
             ['password' => $newPassword],
-            ['id' => $this->getId()]
+            ['uuid' => $this->getUUID()]
         );
     }
 
@@ -2093,7 +2107,7 @@ class User implements QUI\Interfaces\Users\User
         QUI::getDataBase()->update(
             Manager::table(),
             ['active' => 1],
-            ['id' => $this->getId()]
+            ['uuid' => $this->getUUID()]
         );
 
         $this->active = true;
@@ -2102,7 +2116,7 @@ class User implements QUI\Interfaces\Users\User
             QUI::getEvents()->fireEvent('userActivate', [$this]);
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage(), [
-                'UserId' => $this->getId(),
+                'UserId' => $this->getUUID(),
                 'ExceptionType' => $Exception->getType()
             ]);
         }
@@ -2137,7 +2151,7 @@ class User implements QUI\Interfaces\Users\User
         QUI::getDataBase()->update(
             Manager::table(),
             ['active' => 0],
-            ['id' => $this->getId()]
+            ['uuid' => $this->getUUID()]
         );
 
         $this->active = false;
@@ -2175,7 +2189,7 @@ class User implements QUI\Interfaces\Users\User
         }
 
         // Check if user can delete himself
-        if (QUI::getUserBySession()->getId() === $this->getId()) {
+        if (QUI::getUserBySession()->getUUID() === $this->getUUID()) {
             $this->checkPermission('quiqqer.users.delete_self');
         }
 
@@ -2233,7 +2247,9 @@ class User implements QUI\Interfaces\Users\User
      */
     public function logout()
     {
-        if (!$this->getId()) {
+        $uuid = $this->getUUID();
+
+        if (empty($uuid)) {
             return;
         }
 
@@ -2243,7 +2259,7 @@ class User implements QUI\Interfaces\Users\User
         $Users = QUI::getUsers();
         $SessUser = $Users->getUserBySession();
 
-        if ($SessUser->getId() == $this->getId()) {
+        if ($SessUser->getUUID() == $this->getUUID()) {
             $Session = QUI::getSession();
             $Session->destroy();
         }
@@ -2303,7 +2319,7 @@ class User implements QUI\Interfaces\Users\User
                 'activation' => '',
                 'expire' => null
             ],
-            ['id' => $this->getId()]
+            ['uuid' => $this->getUUID()]
         );
 
         $this->logout();
@@ -2312,9 +2328,9 @@ class User implements QUI\Interfaces\Users\User
             'User disabled.',
             QUI\System\Log::LEVEL_INFO,
             [
-                'deletedUserId' => $this->getId(),
+                'deletedUserId' => $this->getUUID(),
                 'deletedUsername' => $this->getUsername(),
-                'executeUserId' => $SessionUser->getId(),
+                'executeUserId' => $SessionUser->getUUID(),
                 'executeUsername' => $SessionUser->getUsername()
             ],
             'user'
@@ -2347,7 +2363,7 @@ class User implements QUI\Interfaces\Users\User
 
         QUI::getDataBase()->delete(
             Manager::table(),
-            ['id' => $this->getId()]
+            ['uuid' => $this->getUUID()]
         );
 
         // delete all workspaces of this user
@@ -2363,9 +2379,9 @@ class User implements QUI\Interfaces\Users\User
             'User deleted.',
             QUI\System\Log::LEVEL_INFO,
             [
-                'deletedUserId' => $this->getId(),
+                'deletedUserId' => $this->getUUID(),
                 'deletedUsername' => $this->getUsername(),
-                'executeUserId' => $PermissionUser->getId(),
+                'executeUserId' => $PermissionUser->getUUID(),
                 'executeUsername' => $PermissionUser->getUsername()
             ],
             'user'
@@ -2400,7 +2416,7 @@ class User implements QUI\Interfaces\Users\User
             return true;
         }
 
-        if ($SessionUser->getId() == $this->getId()) {
+        if ($SessionUser->getUUID() == $this->getUUID()) {
             return true;
         }
 
@@ -2466,6 +2482,6 @@ class User implements QUI\Interfaces\Users\User
      */
     public function isOnline()
     {
-        return QUI::getSession()->isUserOnline($this->getId());
+        return QUI::getSession()->isUserOnline($this->getUUID());
     }
 }

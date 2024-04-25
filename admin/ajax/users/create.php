@@ -14,7 +14,7 @@ QUI::$Ajax->registerFunction(
         $Users = QUI::getUsers();
         $User = $Users->createChild($username);
 
-        return $User->getId();
+        return $User->getUUID();
     },
     ['username'],
     'Permission::checkUser'

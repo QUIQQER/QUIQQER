@@ -202,8 +202,8 @@ class Media extends QUI\QDOM
             'image_height' => 'int(6) default NULL',
             'image_width' => 'int(6) default NULL',
             'image_effects' => 'text',
-            'c_user' => 'int(11) default NULL',
-            'e_user' => 'int(11) default NULL',
+            'c_user' => 'varchar(50) default NULL',
+            'e_user' => 'varchar(50) default NULL',
             'rate_users' => 'text',
             'rate_count' => 'float default NULL',
             'md5hash' => 'varchar(32)',
@@ -266,7 +266,7 @@ class Media extends QUI\QDOM
                 'name' => 'Media',
                 'title' => 'Media',
                 'c_date' => date('Y-m-d H:i:s'),
-                'c_user' => QUI::getUserBySession()->getId(),
+                'c_user' => QUI::getUserBySession()->getUUID(),
                 'type' => 'folder'
             ]);
         } else {

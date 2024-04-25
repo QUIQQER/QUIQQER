@@ -90,7 +90,7 @@ class Locker
         try {
             $uid = self::getStashData(self::getLockKey($Package, $key));
 
-            if ($considerUser && $User->getId() == $uid) {
+            if ($considerUser && $User->getUUID() == $uid) {
                 return false;
             }
 
@@ -193,7 +193,7 @@ class Locker
         }
 
         $name = self::getLockKey($Package, $key);
-        $value = $User->getId();
+        $value = $User->getUUID();
 
         if (!$lifetime) {
             $lifetime = QUI::conf('session', 'max_life_time');
@@ -242,8 +242,8 @@ class Locker
         if (
             $User->isSU()
             || QUI::getUsers()->isSystemUser($User)
-            || $locked === $User->getId()
-            || (!empty($locked['id']) && $locked['id'] === $User->getId())
+            || $locked === $User->getUUID()
+            || (!empty($locked['id']) && $locked['id'] === $User->getUUID())
         ) {
             self::unlock($Package, $key);
         }

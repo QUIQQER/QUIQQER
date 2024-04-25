@@ -9,19 +9,19 @@ define('controls/users/SelectItem', [
     'Ajax',
     'Users'
 
-], function (QUI, QUIElementSelectItem, QUIAjax, Users) {
-    "use strict";
+], function(QUI, QUIElementSelectItem, QUIAjax, Users) {
+    'use strict';
 
     return new Class({
 
         Extends: QUIElementSelectItem,
-        Type   : 'controls/users/SelectItem',
+        Type: 'controls/users/SelectItem',
 
         Binds: [
             'refresh'
         ],
 
-        initialize: function (options) {
+        initialize: function(options) {
             this.parent(options);
             this.setAttribute('icon', 'fa fa-user');
         },
@@ -31,36 +31,27 @@ define('controls/users/SelectItem', [
          *
          * @returns {Promise}
          */
-        refresh: function () {
-            var id   = this.getAttribute('id'),
+        refresh: function() {
+            let id = this.getAttribute('id'),
                 Prom = Promise.resolve();
 
             // user
             this.setAttribute('icon', 'fa fa-user');
 
-            var isnum = /^\d+$/.test(id);
-
-            if (!isnum) {
-                this.destroy();
-
-                return Prom;
-            }
-
-            var User = Users.get(parseInt(id));
+            const User = Users.get(id);
 
             if (!User.isLoaded()) {
                 Prom = User.load();
             }
 
-            return Prom.then(function () {
+            return Prom.then(() => {
                 this.$Text.set({
                     html: User.getAttribute('displayName')
                 });
-            }.bind(this)).catch(function (err) {
+            }).catch((err) => {
                 console.error(err);
-
                 this.destroy();
-            }.bind(this));
+            });
         }
     });
 });

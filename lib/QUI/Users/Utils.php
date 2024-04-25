@@ -42,7 +42,7 @@ class Utils
             'quiqqer/quiqqer'
         );
 
-        if (!$User->getId()) {
+        if (!$User->getUUID()) {
             return $TabBar;
         }
 

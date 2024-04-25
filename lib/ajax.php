@@ -19,7 +19,7 @@ use QUI\Utils\Security\Orthos;
 // if user is loged in, use his language
 $User = QUI::getUserBySession();
 
-if ($User->getId() && $User->getLang()) {
+if ($User->getUUID() && $User->getLang()) {
     QUI::getLocale()->setCurrent($User->getLang());
 }
 

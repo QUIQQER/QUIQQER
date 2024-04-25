@@ -422,9 +422,9 @@ class Manager
         }
 
 
-        $uuid = $User->getUniqueId();
+        $uuid = $User->getUUID();
 
-        $this->usersUUIDs[$uuid] = $User->getId();
+        $this->usersUUIDs[$uuid] = $User->getUUID();
         $this->users[$id] = $User;
 
         return $User;
@@ -441,7 +441,7 @@ class Manager
      */
     public function isAuth(QUIUserInterface $User): bool
     {
-        if (!is_object($User) || !$User->getId()) {
+        if (!is_object($User) || !$User->getUUID()) {
             return false;
         }
 
@@ -451,7 +451,7 @@ class Manager
             return false;
         }
 
-        if ($User->getId() == $_User->getId()) {
+        if ($User->getUUID() == $_User->getUUID()) {
             return true;
         }
 
@@ -1112,7 +1112,7 @@ class Manager
 
         foreach ($ids as $id) {
             try {
-                $result[] = $this->get((int)$id['id']);
+                $result[] = $this->get($id['uuid']);
             } catch (QUI\Exception) {
                 // nothing
             }
@@ -1130,7 +1130,7 @@ class Manager
     {
         try {
             $result = QUI::getDataBase()->fetch([
-                'select' => 'id',
+                'select' => 'id,uuid',
                 'from' => self::table(),
                 'order' => 'username'
             ]);
@@ -1178,7 +1178,7 @@ class Manager
         if (!empty($authData['username'])) {
             try {
                 $User = self::getUserByName($authData['username']);
-                $userId = $User->getId();
+                $userId = $User->getUUID();
             } catch (\Exception) {
                 // nothing
             }
@@ -1217,10 +1217,10 @@ class Manager
         // check user data
         $userData = QUI::getDataBase()->fetch(
             [
-                'select' => ['id', 'expire', 'secHash', 'active'],
+                'select' => ['id', 'uuid', 'expire', 'secHash', 'active'],
                 'from' => self::table(),
                 'where' => [
-                    'id' => $userId
+                    'uuid' => $userId
                 ],
                 'limit' => 1
             ]
@@ -1333,7 +1333,7 @@ class Manager
                 'user_agent' => $userAgent,
                 'secHash' => $this->getSecHash()
             ],
-            ['id' => $userId]
+            ['uuid' => $userId]
         );
 
         $User->refresh();
@@ -1357,7 +1357,7 @@ class Manager
     {
         try {
             $result = QUI::getDataBase()->fetch([
-                'select' => 'id',
+                'select' => 'id,uuid',
                 'from' => self::table(),
                 'where' => [
                     'username' => $username
@@ -1386,7 +1386,7 @@ class Manager
             );
         }
 
-        return $this->get((int)$result[0]['id']);
+        return $this->get($result[0]['uuid']);
     }
 
     /**
@@ -1419,7 +1419,7 @@ class Manager
         if (!empty($username)) {
             try {
                 $User = self::getUserByName($username);
-                $userId = $User->getId();
+                $userId = $User->getUUID();
             } catch (\Exception) {
                 // nothing
             }
@@ -1488,7 +1488,7 @@ class Manager
         if (!$Session->get('uid')) {
             $Session->set(
                 'uid',
-                $Authenticator->getUser()->getId()
+                $Authenticator->getUser()->getUUID()
             );
         }
 
@@ -1539,7 +1539,7 @@ class Manager
 
         foreach ($result as $entry) {
             try {
-                $Users[] = $this->get((int)$entry['id']);
+                $Users[] = $this->get($entry['uuid']);
             } catch (QUI\Exception) {
                 // nothing
             }
@@ -1557,7 +1557,7 @@ class Manager
      */
     public function getUserIds(array $params = []): array
     {
-        $params['select'] = 'id';
+        $params['select'] = 'id,uuid';
         $params['from'] = self::table();
 
         try {
@@ -1588,7 +1588,7 @@ class Manager
      */
     public function unsetUserInstance(QUI\Interfaces\Users\User $User)
     {
-        $uuid = $User->getUniqueId();
+        $uuid = $User->getUUID();
         $id = $User->getId();
 
         if (isset($this->users[$id])) {
@@ -1612,7 +1612,7 @@ class Manager
     {
         try {
             $result = QUI::getDataBase()->fetch([
-                'select' => 'id',
+                'select' => 'id,uuid',
                 'from' => self::table(),
                 'where' => [
                     'email' => $email
@@ -1641,7 +1641,7 @@ class Manager
             );
         }
 
-        return $this->get($result[0]['id']);
+        return $this->get($result[0]['uuid']);
     }
 
     /**
@@ -1749,6 +1749,7 @@ class Manager
 
         $allowOrderFields = [
             'id' => true,
+            'uuid' => true,
             'email' => true,
             'username' => true,
             'usergroup' => true,

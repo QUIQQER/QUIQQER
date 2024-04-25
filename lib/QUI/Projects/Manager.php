@@ -810,8 +810,8 @@ class Manager
             'deleted' => 'tinyint(1) NOT NULL DEFAULT 0',
             'c_date' => 'timestamp NULL DEFAULT NULL',
             'e_date' => 'timestamp NOT NULL DEFAULT NOW() on update NOW()',
-            'c_user' => 'int(11) DEFAULT NULL',
-            'e_user' => 'int(11) DEFAULT NULL',
+            'c_user' => 'varchar(50) DEFAULT NULL',
+            'e_user' => 'varchar(50) DEFAULT NULL',
             'nav_hide' => 'tinyint(1) NOT NULL DEFAULT 0',
             'order_type' => 'varchar(100) NULL',
             'order_field' => 'bigint(20) NULL',
@@ -836,8 +836,8 @@ class Manager
             'active' => 1,
             'deleted' => 0,
             'c_date' => date('Y-m-d H:i:s'),
-            'c_user' => QUI::getUserBySession()->getId(),
-            'e_user' => QUI::getUserBySession()->getId(),
+            'c_user' => QUI::getUserBySession()->getUUID(),
+            'e_user' => QUI::getUserBySession()->getUUID(),
             'nav_hide' => 0
         ]);
 
@@ -858,8 +858,8 @@ class Manager
             'deleted' => 'tinyint(1) NOT NULL DEFAULT 0',
             'c_date' => 'timestamp NULL DEFAULT NULL',
             'e_date' => 'timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP',
-            'c_user' => 'int(11) DEFAULT NULL',
-            'e_user' => 'int(11) DEFAULT NULL',
+            'c_user' => 'varchar(50) DEFAULT NULL',
+            'e_user' => 'varchar(50) DEFAULT NULL',
             'file' => 'text NULL',
             'alt' => 'text NULL',
             'mime_type' => 'text NULL',
@@ -884,8 +884,8 @@ class Manager
             'active' => 1,
             'deleted' => 0,
             'c_date' => date('Y-m-d H:i:s'),
-            'c_user' => QUI::getUserBySession()->getId(),
-            'e_user' => QUI::getUserBySession()->getId(),
+            'c_user' => QUI::getUserBySession()->getUUID(),
+            'e_user' => QUI::getUserBySession()->getUUID(),
             'pathHash' => md5('')
         ]);
 

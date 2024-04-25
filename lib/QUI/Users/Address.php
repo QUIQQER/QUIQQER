@@ -62,7 +62,7 @@ class Address extends QUI\QDOM
     {
         try {
             $where = [
-                'userUuid' => $User->getUniqueId()
+                'userUuid' => $User->getUUID()
             ];
 
             if (is_numeric($id)) {
@@ -86,7 +86,7 @@ class Address extends QUI\QDOM
                     'exception.lib.user.address.not.found',
                     [
                         'addressId' => $id,
-                        'userId' => $User->getId()
+                        'userId' => $User->getUUID()
                     ]
                 ),
                 404
@@ -103,7 +103,7 @@ class Address extends QUI\QDOM
                     'exception.lib.user.address.not.found',
                     [
                         'addressId' => $id,
-                        'userId' => $User->getId()
+                        'userId' => $User->getUUID()
                     ]
                 )
             );
@@ -592,7 +592,7 @@ class Address extends QUI\QDOM
                     'e_date' => date('Y-m-d H:i:s')
                 ],
                 [
-                    'id' => $this->id
+                    'uuid' => $this->getUUID()
                 ]
             );
         } catch (QUI\Exception $Exception) {

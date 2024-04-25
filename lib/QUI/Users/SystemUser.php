@@ -28,21 +28,23 @@ class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see \QUI\Users\Nobody::getUniqueId()
+     * @return int|string
      */
-    public function getUniqueId()
+    public function getUniqueId(): int|string
     {
-        return '5';
+        return $this->getUUID();
     }
 
     /**
-     * (non-PHPdoc)
-     *
+     * @return string|int
+     */
+    public function getUUID(): string|int
+    {
+        return "5";
+    }
+
+    /**
      * @return string
-     * @see \QUI\Interfaces\Users\User::getUsername()
-     *
      */
     public function getUsername(): string
     {

@@ -539,8 +539,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'alt' => $new_name,
             'c_date' => date('Y-m-d h:i:s'),
             'e_date' => date('Y-m-d h:i:s'),
-            'c_user' => $User->getId(),
-            'e_user' => $User->getId(),
+            'c_user' => $User->getUUID(),
+            'e_user' => $User->getUUID(),
             'mime_type' => 'folder'
         ]);
 
@@ -1436,8 +1436,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'pathHash' => md5($filePath),
             'c_date' => date('Y-m-d h:i:s'),
             'e_date' => date('Y-m-d h:i:s'),
-            'c_user' => $EditUser->getId(),
-            'e_user' => $EditUser->getId(),
+            'c_user' => $EditUser->getUUID(),
+            'e_user' => $EditUser->getUUID(),
             'mime_type' => $new_file_info['mime_type'],
             'image_width' => $imageWidth,
             'image_height' => $imageHeight,

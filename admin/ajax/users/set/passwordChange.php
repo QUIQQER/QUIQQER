@@ -14,7 +14,7 @@ QUI::$Ajax->registerFunction(
     'ajax_users_set_passwordChange',
     function ($uid, $newPassword, $passwordRepeat, $oldPassword) {
         $Users = QUI::getUsers();
-        $User = $Users->get((int)$uid);
+        $User = $Users->get($uid);
 
         if ($newPassword != $passwordRepeat) {
             throw new QUI\Exception(

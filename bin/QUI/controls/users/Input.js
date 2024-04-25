@@ -389,8 +389,6 @@ define('controls/users/Input', [
 
             var self = this;
 
-            uid = parseInt(uid);
-
             var User = new UserEntry(uid, {
                 events: {
                     onDestroy: function () {

@@ -259,7 +259,7 @@ class Update
         // quiqqer setup
         $IO->write('Starting QUIQQER setup');
 
-        if (QUI::getUserBySession()->getId()) {
+        if (QUI::getUserBySession()->getUUID()) {
             QUI::setup();
             QUI::getTemp()->moveToTemp(VAR_DIR . 'cache/');
             $IO->write('QUIQQER Setup finish');

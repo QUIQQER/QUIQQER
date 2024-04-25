@@ -1307,8 +1307,8 @@ class Project implements \Stringable
                 'deleted' => 'tinyint(1) NOT NULL DEFAULT 0',
                 'c_date' => 'timestamp NULL DEFAULT NULL',
                 'e_date' => 'timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP',
-                'c_user' => 'int(11) DEFAULT NULL',
-                'e_user' => 'int(11) DEFAULT NULL',
+                'c_user' => 'varchar(50) DEFAULT NULL',
+                'e_user' => 'varchar(50) DEFAULT NULL',
                 'nav_hide' => 'tinyint(1) NOT NULL DEFAULT 0',
                 'order_type' => 'varchar(255) NULL',
                 'order_field' => 'bigint(20) NULL',
@@ -1381,7 +1381,7 @@ class Project implements \Stringable
                     'title' => 'Start',
                     'type' => 'standard',
                     'c_date' => date('Y-m-d H:i:s'),
-                    'c_user' => $User->getId(),
+                    'c_user' => $User->getUUID(),
                     'c_user_ip' => QUI\Utils\System::getClientIP()
                 ]);
             }

@@ -13,7 +13,7 @@ QUI::$Ajax->registerFunction(
     function ($uid) {
         try {
             $Users = QUI::getUsers();
-            $User = $Users->get((int)$uid);
+            $User = $Users->get($uid);
             $Toolbar = QUI\Users\Utils::getUserToolbar($User);
 
             return $Toolbar->toArray();

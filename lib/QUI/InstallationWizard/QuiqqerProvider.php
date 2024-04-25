@@ -144,14 +144,14 @@ class QuiqqerProvider extends AbstractInstallationWizard
             if (!$Config->getValue('installationWizard', 'editorId')) {
                 $Editor = $Root->createChild('Editor');
                 $Editor->activate();
-                $Config->setValue('installationWizard', 'editorId', $Editor->getId());
+                $Config->setValue('installationWizard', 'editorId', $Editor->getUUID());
 
                 $permissions = file_get_contents(__DIR__ . '/permissions.editor.json');
 
                 QUI::getDataBase()->update(
                     $table2groups,
                     ['permissions' => $permissions],
-                    ['group_id' => $Editor->getId()]
+                    ['group_id' => $Editor->getUUID()]
                 );
             }
         } catch (QUI\Exception $Exception) {
@@ -163,14 +163,14 @@ class QuiqqerProvider extends AbstractInstallationWizard
             if (!$Config->getValue('installationWizard', 'sysAdminId')) {
                 $sysAdmin = $Root->createChild('System administrator');
                 $sysAdmin->activate();
-                $Config->setValue('installationWizard', 'sysAdminId', $sysAdmin->getId());
+                $Config->setValue('installationWizard', 'sysAdminId', $sysAdmin->getUUID());
 
                 $permissions = file_get_contents(__DIR__ . '/permissions.sysadmin.json');
 
                 QUI::getDataBase()->update(
                     $table2groups,
                     ['permissions' => $permissions],
-                    ['group_id' => $sysAdmin->getId()]
+                    ['group_id' => $sysAdmin->getUUID()]
                 );
             }
         } catch (QUI\Exception $Exception) {

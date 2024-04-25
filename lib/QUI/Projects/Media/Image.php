@@ -863,7 +863,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
             QUI::getDataBase()->update($this->Media->getTable(), [
                 'e_date' => date('Y-m-d h:i:s'),
-                'e_user' => $SessionUser->getId(),
+                'e_user' => $SessionUser->getUUID(),
                 'mime_type' => $fileInfo['mime_type'],
                 'image_width' => $imageWidth,
                 'image_height' => $imageHeight,

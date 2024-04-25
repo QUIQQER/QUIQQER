@@ -340,7 +340,7 @@ abstract class Item extends QUI\QDOM
      *
      * @return array
      */
-    public function getAttributes(): array
+    public function getAttributes()
     {
         $attributes = parent::getAttributes();
 

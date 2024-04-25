@@ -10,7 +10,7 @@ QUI::$Ajax->registerFunction(
 
         $User = QUI::getUserBySession();
 
-        if ($User->getId()) {
+        if ($User->getUUID()) {
             QUI::getSession()->remove('inAuthentication');
         }
 
@@ -63,7 +63,7 @@ QUI::$Ajax->registerFunction(
             'authenticator' => $Login->next(),
             'control' => $control,
             'user' => [
-                'id' => $SessionUser->getId(),
+                'id' => $SessionUser->getUUID(),
                 'name' => $SessionUser->getName(),
                 'lang' => $SessionUser->getLang()
             ]

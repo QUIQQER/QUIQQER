@@ -258,7 +258,7 @@ class Handler
 
         $Project = QUI::getRewrite()->getProject();
 
-        $PasswordResetVerification = new PasswordResetVerification($User->getId(), [
+        $PasswordResetVerification = new PasswordResetVerification($User->getUUID(), [
             'project' => $Project->getName(),
             'projectLang' => $Project->getLang()
         ]);

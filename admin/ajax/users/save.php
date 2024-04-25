@@ -3,7 +3,7 @@
 /**
  * Benutzer speichern
  *
- * @param integer $uid - Benutzer-ID
+ * @param integer|string $uid - user id or user hash
  * @param string $attributes - JSON String of Attributes
  *
  * @return boolean
@@ -51,7 +51,7 @@ QUI::$Ajax->registerFunction(
         if ($User->getAttribute('lang') !== $language) {
             QUI\Cache\Manager::clear();
 
-            if ($User->getId() === QUI::getUserBySession()->getId()) {
+            if ($User->getUUID() === QUI::getUserBySession()->getUUID()) {
                 QUI::getSession()->set('quiqqer-user-language', false);
             }
         }
@@ -59,7 +59,7 @@ QUI::$Ajax->registerFunction(
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get('quiqqer/quiqqer', 'message.user.saved', [
                 'username' => $User->getName(),
-                'id' => $User->getId()
+                'id' => $User->getUUID()
             ])
         );
 

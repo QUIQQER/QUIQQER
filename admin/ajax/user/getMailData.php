@@ -12,7 +12,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_user_getMailData',
     function ($userId) {
-        $User = QUI::getUsers()->get((int)$userId);
+        $User = QUI::getUsers()->get($userId);
 
         return [
             'name' => $User->getName(),

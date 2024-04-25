@@ -83,7 +83,7 @@ class Handler
     {
         $result = $this->messages;
 
-        if (!$User->getId()) {
+        if (!$User->getUUID()) {
             return $result;
         }
 
@@ -91,12 +91,12 @@ class Handler
             $list = QUI::getDataBase()->fetch([
                 'from' => self::table(),
                 'where' => [
-                    'uid' => $User->getId()
+                    'uid' => $User->getUUID()
                 ]
             ]);
 
             QUI::getDataBase()->delete(self::table(), [
-                'uid' => $User->getId()
+                'uid' => $User->getUUID()
             ]);
         } catch (QUI\Database\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
@@ -245,7 +245,7 @@ class Handler
 
         try {
             QUI::getDataBase()->insert(self::table(), [
-                'uid' => $User->getId(),
+                'uid' => $User->getUUID(),
                 'message' => $Message->getMessage(),
                 'mcode' => (int)$Message->getCode(),
                 'mtime' => (int)$Message->getAttribute('time'),

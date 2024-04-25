@@ -348,7 +348,7 @@ class Permission
         }
 
         $permList = [];
-        $user = 'u' . $User->getId();
+        $user = 'u' . $User->getUUID();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -661,7 +661,7 @@ class Permission
                 ),
                 403,
                 [
-                    'userid' => $User->getId(),
+                    'userid' => $User->getUUID(),
                     'username' => $User->getName(),
                     'permission' => $permissions
 
@@ -711,7 +711,7 @@ class Permission
                 break;
 
             case 'user':
-                if ((int)$perm_value == $User->getId()) {
+                if ($perm_value == $User->getUUID()) {
                     $check = true;
                 }
                 break;
@@ -721,6 +721,10 @@ class Permission
 
                 foreach ($uids as $uid) {
                     if ((int)$uid == $User->getId()) {
+                        $check = true;
+                    }
+
+                    if ($uid == $User->getUUID()) {
                         $check = true;
                     }
                 }
@@ -882,7 +886,7 @@ class Permission
         }
 
         $permList = [];
-        $user = 'u' . $User->getId();
+        $user = 'u' . $User->getUUID();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -1105,7 +1109,7 @@ class Permission
         }
 
         $permList = [];
-        $user = 'u' . $User->getId();
+        $user = 'u' . $User->getUUID();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -1153,7 +1157,7 @@ class Permission
         }
 
         $permList = [];
-        $user = 'u' . $User->getId();
+        $user = 'u' . $User->getUUID();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -1380,7 +1384,7 @@ class Permission
         }
 
         $permList = [];
-        $user = 'u' . $User->getId();
+        $user = 'u' . $User->getUUID();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -1499,7 +1503,7 @@ class Permission
         }
 
         $permList = [];
-        $user = 'u' . $User->getId();
+        $user = 'u' . $User->getUUID();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));

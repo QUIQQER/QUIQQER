@@ -236,7 +236,7 @@ class Edit extends Site
         QUI::getDataBase()->update($this->TABLE, [
             'active' => 1,
             'release_from' => $releaseFrom,
-            'e_user' => $User->getId()
+            'e_user' => $User->getUUID()
         ], [
             'id' => $this->getId()
         ]);
@@ -654,7 +654,7 @@ class Edit extends Site
 
         if ($mid) {
             try {
-                $User = QUI::getUsers()->get((int)$mid);
+                $User = QUI::getUsers()->get($mid);
             } catch (QUI\Exception) {
             }
 
@@ -861,7 +861,7 @@ class Edit extends Site
                 'type' => $this->getAttribute('type'),
                 'layout' => $this->getAttribute('layout'),
                 'nav_hide' => $this->getAttribute('nav_hide') ? 1 : 0,
-                'e_user' => $SaveUser->getId(),
+                'e_user' => $SaveUser->getUUID(),
                 // ORDER
                 'order_type' => $order_type,
                 'order_field' => $order_field,
@@ -1113,7 +1113,7 @@ class Edit extends Site
             'set' => [
                 'active' => 0,
                 'release_from' => null,
-                'e_user' => $User->getId()
+                'e_user' => $User->getUUID()
             ],
             'where' => [
                 'id' => $this->getId()
@@ -1355,8 +1355,8 @@ class Edit extends Site
             'name' => $new_name,
             'title' => $new_name,
             'c_date' => date('Y-m-d H:i:s'),
-            'e_user' => $User->getId(),
-            'c_user' => $User->getId(),
+            'e_user' => $User->getUUID(),
+            'c_user' => $User->getUUID(),
             'c_user_ip' => QUI\Utils\System::getClientIP(),
             'order_field' => $childCount + 1
         ];

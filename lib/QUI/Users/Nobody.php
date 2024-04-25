@@ -328,20 +328,22 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @return false|string
-     * @see \QUI\Interfaces\Users\User::getUniqueId()
-     *
+     * @return int|string
      */
-    public function getUniqueId()
+    public function getUniqueId(): int|string
     {
-        return false;
+        return $this->getUUID();
     }
 
     /**
-     * (non-PHPdoc)
-     *
+     * @return string|int
+     */
+    public function getUUID(): string|int
+    {
+        return '';
+    }
+
+    /**
      * @return string
      * @see \QUI\Interfaces\Users\User::getName()
      *
