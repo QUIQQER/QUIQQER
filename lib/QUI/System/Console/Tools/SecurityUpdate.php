@@ -177,7 +177,7 @@ class SecurityUpdate extends QUI\System\Console\Tool
 
                 foreach ($lines as $l) {
                     // line formed like: "0 updates"
-                    if (strpos(trim($l), '0') === 0) {
+                    if (str_starts_with(trim($l), '0')) {
                         continue;
                     }
 

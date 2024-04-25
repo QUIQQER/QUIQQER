@@ -363,7 +363,7 @@ class Htaccess extends QUI\System\Console\Tool
 
         for ($i = 0; $i < $counter; $i++) {
             $line = $lines[$i];
-            if (substr($line, 0, 1) === "#") {
+            if (str_starts_with($line, "#")) {
                 unset($lines[$i]);
                 continue;
             }

@@ -219,7 +219,7 @@ class Manager
         $dropSql = [];
 
         foreach ($columns as $column) {
-            if (strpos($column['Key_name'], 'uuid_') === 0) {
+            if (str_starts_with($column['Key_name'], 'uuid_')) {
                 $dropSql[] = "ALTER TABLE `users` DROP INDEX `{$column['Key_name']}`;";
             }
         }
@@ -556,7 +556,7 @@ class Manager
             $sessionData = $Session->getSymfonySession()->all();
 
             foreach ($sessionData as $key => $value) {
-                if (strpos($key, 'auth-') === 0) {
+                if (str_starts_with($key, 'auth-')) {
                     $Session->remove($key);
                 }
             }

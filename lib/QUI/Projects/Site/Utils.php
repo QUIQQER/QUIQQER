@@ -767,9 +767,9 @@ class Utils
             }
 
             if (
-                strpos($sitetypeEntry, 'p') === 0
-                && strpos($sitetypeEntry, '/') === false
-                && strpos($sitetypeEntry, ':') === false
+                str_starts_with($sitetypeEntry, 'p')
+                && !str_contains($sitetypeEntry, '/')
+                && !str_contains($sitetypeEntry, ':')
             ) {
                 $parents[] = str_replace('p', '', $sitetypeEntry);
                 continue;

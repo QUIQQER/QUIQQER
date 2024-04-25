@@ -42,7 +42,6 @@ use function set_time_limit;
 use function sha1_file;
 use function str_replace;
 use function strlen;
-use function strpos;
 use function substr;
 use function unlink;
 use function wordwrap;
@@ -934,7 +933,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $files = FileUtils::readDir($cacheDir);
 
         foreach ($files as $file) {
-            if (strpos($file, $cacheName) === 0) {
+            if (str_starts_with($file, $cacheName)) {
                 unlink($cacheDir . $file);
             }
         }
