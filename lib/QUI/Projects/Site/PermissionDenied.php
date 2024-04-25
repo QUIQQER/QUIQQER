@@ -25,6 +25,7 @@ class PermissionDenied extends QUI\Projects\Site
      * @param integer $id - Site ID
      *
      * @throws QUI\Exception
+     * @throws Exception
      */
     public function __construct(QUI\Projects\Project $Project, int $id)
     {
@@ -52,6 +53,7 @@ class PermissionDenied extends QUI\Projects\Site
      * Get data from start Site (ID: 1)
      *
      * @return void
+     * @throws Exception
      */
     public function refresh()
     {

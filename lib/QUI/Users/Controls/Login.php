@@ -8,6 +8,8 @@ namespace QUI\Users\Controls;
 
 use QUI;
 use QUI\Control;
+use QUI\Database\Exception;
+use QUI\ExceptionStack;
 
 use function count;
 use function forward_static_call;
@@ -48,7 +50,9 @@ class Login extends Control
     /**
      * @return string
      *
-     * @throws QUI\Users\Exception
+     * @throws Exception
+     * @throws ExceptionStack
+     * @throws QUI\Exception
      */
     public function getBody()
     {
@@ -107,7 +111,9 @@ class Login extends Control
      *
      * @return array|string|null
      *
-     * @throws QUI\Users\Exception
+     * @throws Exception
+     * @throws QUI\Exception
+     * @throws ExceptionStack
      */
     public function next()
     {

@@ -350,6 +350,7 @@ class Manager
      * @param Project $Project
      *
      * @return array
+     * @throws QUI\Exception
      */
     public static function getSettings(Project $Project): array
     {

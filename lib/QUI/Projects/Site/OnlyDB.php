@@ -55,6 +55,7 @@ class OnlyDB extends QUI\Projects\Site
 
     /**
      * Hohlt sich die Daten frisch us der DB
+     * @throws Exception
      */
     public function refresh()
     {

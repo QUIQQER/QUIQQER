@@ -7,6 +7,7 @@
 namespace QUI\System\Console\Tools;
 
 use QUI;
+use QUI\Exception;
 use QUI\System\Console\Tool;
 use QUI\Utils\Project;
 
@@ -35,6 +36,7 @@ class RenameProject extends Tool
 
     /**
      * Executes the tools steps
+     * @throws Exception
      */
     public function execute()
     {

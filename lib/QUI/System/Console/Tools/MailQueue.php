@@ -10,6 +10,7 @@ namespace QUI\System\Console\Tools;
 
 use League\CLImate\CLImate;
 use QUI;
+use QUI\Database\Exception;
 
 use function implode;
 use function is_numeric;
@@ -45,6 +46,7 @@ class MailQueue extends QUI\System\Console\Tool
     /**
      * (non-PHPdoc)
      *
+     * @throws Exception
      * @see \QUI\System\Console\Tool::execute()
      */
     public function execute()

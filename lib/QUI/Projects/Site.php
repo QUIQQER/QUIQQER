@@ -700,6 +700,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @return integer
      *
+     * @throws Exception
      * @throws QUI\Exception
      */
     public function getParentId(): ?int
@@ -1479,6 +1480,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @param integer $pid
      * @param array $params
+     * @throws Exception
      */
     protected function recursiveHelper(int $pid, array $params = [])
     {

@@ -101,6 +101,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
     /**
      * (non-PHPdoc)
      *
+     * @throws QUI\Exception
      * @see \QUI\System\Console\Tool::execute()
      */
     public function execute()
@@ -239,6 +240,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
      * @param QUI\Projects\Project $SourceProject
      * @param QUI\Projects\Project $TargetProject
      * @return void
+     * @throws QUI\Database\Exception
      */
     protected function copyBricks(QUI\Projects\Project $SourceProject, QUI\Projects\Project $TargetProject)
     {

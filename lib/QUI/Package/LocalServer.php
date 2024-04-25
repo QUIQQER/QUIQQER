@@ -30,6 +30,8 @@ class LocalServer extends QUI\Utils\Singleton
     /**
      * activate the locale repository,
      * if the repository is not in the server list, the repository would be added
+     *
+     * @throws QUI\Exception
      */
     public function activate()
     {
@@ -65,6 +67,7 @@ class LocalServer extends QUI\Utils\Singleton
 
     /**
      * deactivate the locale repository,
+     * @throws QUI\Exception
      */
     public function deactivate()
     {

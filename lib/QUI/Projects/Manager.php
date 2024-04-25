@@ -205,6 +205,7 @@ class Manager
          * @param array $config
          * @param array $oldConfig
          * @param Project $Project
+         * @throws QUI\Exception
          */
         $clearMediaCache = function ($config, $oldConfig, Project $Project) {
             if (

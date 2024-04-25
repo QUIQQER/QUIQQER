@@ -9,6 +9,7 @@ namespace QUI\Projects\Media;
 use Exception;
 use Intervention\Image\Constraint;
 use QUI;
+use QUI\ExceptionStack;
 use QUI\Projects\Media;
 use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Utils\StringHelper;
@@ -114,6 +115,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @return string - URL to the cache file
      *
+     * @throws QUI\Exception
+     * @throws ExceptionStack
      * @throws QUI\Permissions\Exception
      * @throws QUI\Exception
      */
@@ -759,7 +762,9 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @return string - Path to the file
      *
+     * @throws ExceptionStack
      * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
      */
     public function createResizeCache($maxWidth = false, $maxHeight = false)
     {
@@ -831,7 +836,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * @return void
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
     public function updateExternalImage()
     {

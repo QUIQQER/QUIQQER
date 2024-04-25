@@ -7,6 +7,7 @@
 namespace QUI\Projects\Site;
 
 use QUI;
+use QUI\Exception;
 
 use function ltrim;
 use function parse_url;
@@ -33,6 +34,7 @@ class Canonical
      * Return the meta tag, if it is allowed
      *
      * @return string
+     * @throws Exception
      */
     public function output(): string
     {

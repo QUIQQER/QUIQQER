@@ -166,7 +166,7 @@ class Console
 
     /**
      * constructor
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
     public function __construct()
     {
@@ -503,7 +503,7 @@ class Console
      * Read all tools and include it
      *
      * @return void
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
     private function read(): void
     {

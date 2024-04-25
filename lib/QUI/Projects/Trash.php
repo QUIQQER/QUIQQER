@@ -47,6 +47,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      * - page
      *
      * @return array
+     * @throws Exception
      */
     public function getList($params = [])
     {
@@ -125,6 +126,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
 
     /**
      * Clear complete trash
+     * @throws QUI\Exception
      */
     public function clear()
     {
@@ -145,6 +147,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      * Zerstört die gewünschten Seiten im Trash
      *
      * @param array $ids
+     * @throws QUI\Exception
      */
     public function destroy($ids = [])
     {

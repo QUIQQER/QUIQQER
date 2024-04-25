@@ -723,6 +723,7 @@ class Utils
      * @param array $params - order / sort params
      *
      * @return array
+     * @throws QUI\Database\Exception
      */
     public static function getSitesByInputList(
         Project $Project,

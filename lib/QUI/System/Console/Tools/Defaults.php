@@ -7,6 +7,7 @@
 namespace QUI\System\Console\Tools;
 
 use QUI;
+use QUI\Exception;
 
 /**
  *
@@ -28,6 +29,7 @@ class Defaults extends QUI\System\Console\Tool
     /**
      * (non-PHPdoc)
      *
+     * @throws Exception
      * @see \QUI\System\Console\Tool::execute()
      */
     public function execute()

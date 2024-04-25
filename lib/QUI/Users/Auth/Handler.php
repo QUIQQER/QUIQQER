@@ -7,6 +7,7 @@
 namespace QUI\Users\Auth;
 
 use QUI;
+use QUI\Database\Exception;
 use QUI\Users\AuthenticatorInterface;
 
 use function array_flip;
@@ -49,6 +50,7 @@ class Handler
 
     /**
      * @param QUI\Package\Package $Package
+     * @throws Exception
      */
     public static function onPackageSetup(QUI\Package\Package $Package)
     {
@@ -224,7 +226,6 @@ class Handler
      *
      * @param string $authenticator - name of the authenticator
      * @param string $username - QUIQQER username of the user
-     *
      * @return AuthenticatorInterface
      *
      * @throws QUI\Users\Auth\Exception
@@ -251,6 +252,7 @@ class Handler
      * @return void
      *
      * @throws QUI\Exception
+     * @throws \PHPMailer\PHPMailer\Exception
      */
     public function sendPasswordResetVerificationMail($User)
     {

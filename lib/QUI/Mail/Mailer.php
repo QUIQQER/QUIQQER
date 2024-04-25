@@ -82,6 +82,7 @@ class Mailer extends QUI\QDOM
      * constructor
      *
      * @param array $attributes
+     * @throws QUI\Exception
      */
     public function __construct(array $attributes = [])
     {
@@ -144,7 +145,7 @@ class Mailer extends QUI\QDOM
     /**
      * Send the mail
      *
-     * @throws \QUI\Exception|\PHPMailer\PHPMailer\Exception
+     * @throws QUI\Exception|\PHPMailer\PHPMailer\Exception
      */
     public function send(): bool
     {

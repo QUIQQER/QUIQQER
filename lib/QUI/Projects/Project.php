@@ -905,6 +905,7 @@ class Project implements \Stringable
      * @param boolean $ssl - mit oder ohne ssl
      *
      * @return boolean | string
+     * @throws QUI\Exception
      */
     public function getVHost($with_protocol = false, $ssl = false)
     {
@@ -958,6 +959,7 @@ class Project implements \Stringable
      * @param array $params - extra db statements, like order, where, count, limit
      *
      * @return array|integer
+     * @throws QUI\Database\Exception
      */
     public function getChildrenIdsFrom($parentid, $params = [])
     {
@@ -1036,6 +1038,7 @@ class Project implements \Stringable
      * @param integer $id
      *
      * @return integer
+     * @throws QUI\Database\Exception
      * @deprecated
      */
     public function getParentId($id)
@@ -1081,6 +1084,7 @@ class Project implements \Stringable
      * @param boolean $reverse - revers the result
      *
      * @return array
+     * @throws QUI\Database\Exception
      */
     public function getParentIds($id, $reverse = false)
     {
@@ -1105,6 +1109,7 @@ class Project implements \Stringable
      * @param array|boolean $params
      *
      * @return array|integer - if count is given, return is an integer, otherwise an array
+     * @throws QUI\Database\Exception
      */
     public function getSites($params = false)
     {
@@ -1144,6 +1149,7 @@ class Project implements \Stringable
      * @param array $params
      *
      * @return array
+     * @throws QUI\Database\Exception
      * @todo Muss mal echt überarbeitet werden, bad code
      */
     public function getSitesIds($params = [])

@@ -401,6 +401,7 @@ class Media extends QUI\QDOM
      *
      * @return QUI\Projects\Media\Folder
      *
+     * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
     public function firstChild()

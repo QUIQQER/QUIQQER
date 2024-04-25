@@ -995,6 +995,7 @@ class Manager extends QUI\QDOM
      * Return the internal composer object
      *
      * @return Composer
+     * @throws QUI\Composer\Exception
      */
     public function getComposer(): QUI\Composer\Composer
     {
@@ -1202,7 +1203,7 @@ class Manager extends QUI\QDOM
      *
      * @return array
      *
-     * @throws PackageInstallException
+     * @throws PackageInstallException|QUI\Composer\Exception
      */
     protected function composerRequireOrInstall($packages, $version): array
     {
@@ -1231,7 +1232,7 @@ class Manager extends QUI\QDOM
      * Check if package install requirements are met
      *
      * @return void
-     * @throws PackageInstallException
+     * @throws PackageInstallException|QUI\Composer\Exception
      */
     protected function checkComposerInstallRequirements()
     {

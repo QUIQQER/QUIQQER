@@ -6,6 +6,7 @@
 
 namespace QUI\System\Console\Tools;
 
+use Exception;
 use QUI;
 
 use function array_map;
@@ -35,6 +36,7 @@ class Setup extends QUI\System\Console\Tool
      * (non-PHPdoc)
      *
      * @throws QUI\Exception
+     * @throws Exception
      * @see \QUI\System\Console\Tool::execute()
      */
     public function execute()

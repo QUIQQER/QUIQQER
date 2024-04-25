@@ -370,7 +370,9 @@ class Manager
      * @param int|string $id - Could be user-id or user uuid
      * @return QUI\Users\User|Nobody|SystemUser|false
      *
-     * @throws QUI\Users\Exception
+     * @throws Exception
+     * @throws QUI\Exception
+     * @throws ExceptionStack
      */
     public function get(int|string $id)
     {
@@ -1707,7 +1709,10 @@ class Manager
      *
      * @return boolean
      *
-     * @throws QUI\Users\Exception
+     * @throws Exception
+     * @throws ExceptionStack
+     * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
      */
     public function deleteUser(int $id): bool
     {
@@ -2011,6 +2016,7 @@ class Manager
      * Create a new ID for a not created user
      *
      * @return integer
+     * @throws Exception
      * @deprecated
      */
     protected function newId(): int

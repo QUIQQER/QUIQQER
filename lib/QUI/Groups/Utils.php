@@ -87,6 +87,7 @@ class Utils
      * @param string $tab - Tabname
      *
      * @return string
+     * @throws Exception
      */
     public static function getTab($gid, $plugin, $tab)
     {
