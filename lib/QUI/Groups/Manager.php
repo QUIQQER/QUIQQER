@@ -54,13 +54,6 @@ class Manager extends QUI\QDOM
     protected array $groups;
 
     /**
-     * Files that are to be loaded in the admin area
-     *
-     * @var array
-     */
-    protected $adminjsfiles = [];
-
-    /**
      * @return array|bool|object|string|null
      */
     public static function getListOfExtraAttributes(): object|bool|array|string|null
