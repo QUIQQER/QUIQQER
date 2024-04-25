@@ -13,7 +13,7 @@ QUI::$Ajax->registerFunction(
     'ajax_users_address_display',
     function ($uid, $aid) {
         $User = QUI::getUsers()->get($uid);
-        $Address = $User->getAddress((int)$aid);
+        $Address = $User->getAddress($aid);
 
         return $Address->getDisplay();
     },

@@ -15,8 +15,9 @@ QUI::$Ajax->registerFunction(
         $result = QUI::getDataBase()->fetch([
             'select' => ['id', 'uid'],
             'from' => QUI\Users\Manager::tableAddress(),
-            'where' => [
-                'id' => $aid
+            'where_or' => [
+                'id' => $aid,
+                'uuid' => $aid
             ],
             'limit' => 1
         ]);

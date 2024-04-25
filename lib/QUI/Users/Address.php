@@ -105,8 +105,11 @@ class Address extends QUI\QDOM
             );
         }
 
-        $this->User = $User;
-        $this->id = $id;
+        if (is_numeric($id)) {
+            $this->id = $id;
+        } else {
+            $this->uuid = $id;
+        }
 
         if (!isset($result[0])) {
             throw new Exception(
@@ -123,6 +126,7 @@ class Address extends QUI\QDOM
 
         $data = current($result);
         $this->uuid = $data['uuid'];
+        $this->id = (int)$data['id'];
 
         unset($data['id']);
         unset($data['uid']);
@@ -138,16 +142,21 @@ class Address extends QUI\QDOM
      * Return the ID of the address
      *
      * @return integer
+     * @deprecated
      */
     public function getId()
     {
+        if ($this->id === null) {
+            return -1;
+        }
+
         return $this->id;
     }
 
     /**
      * @return string|null
      */
-    public function getUuid(): ?string
+    public function getUUID(): ?string
     {
         return $this->uuid;
     }
@@ -612,7 +621,7 @@ class Address extends QUI\QDOM
 
         try {
             // update user firstname lastname, if this address is the default address
-            if ($User->getStandardAddress()->getId() === $this->getId()) {
+            if ($User->getStandardAddress()->getUUID() === $this->getUUID()) {
                 $mailList = $this->getMailList();
 
                 if (count($mailList)) {
@@ -676,7 +685,6 @@ class Address extends QUI\QDOM
             'delete' => true,
             'from' => Manager::tableAddress(),
             'where' => [
-                'id' => $this->getId(),
                 'uid' => $this->User->getId()
             ]
         ]);
@@ -855,7 +863,7 @@ class Address extends QUI\QDOM
     {
         $attributes = $this->getAttributes();
         $attributes['id'] = $this->getId();
-        $attributes['uuid'] = $this->getUuid();
+        $attributes['uuid'] = $this->getUUID();
 
         return json_encode($attributes);
     }
@@ -867,6 +875,7 @@ class Address extends QUI\QDOM
     {
         $attributes = parent::getAttributes();
         $attributes['suffix'] = $this->getAddressSuffix();
+        $attributes['uuid'] = $this->getUUID();
 
         return $attributes;
     }
@@ -880,7 +889,7 @@ class Address extends QUI\QDOM
      */
     public function equals(Address $Address, $compareCustomData = false): bool
     {
-        if ($this->getId() === $Address->getId()) {
+        if ($this->getUUID() === $Address->getUUID()) {
             return true;
         }
 

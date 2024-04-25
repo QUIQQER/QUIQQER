@@ -677,10 +677,8 @@ class User implements QUIUserInterface
         $list = [];
 
         foreach ($result as $entry) {
-            $id = (int)$entry['id'];
-
             try {
-                $list[$id] = $this->getAddress($id);
+                $list[$entry['uuid']] = $this->getAddress($entry['uuid']);
             } catch (QUI\Users\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
@@ -787,7 +785,7 @@ class User implements QUIUserInterface
         }
 
         if (count($this->getAddressList()) === 1) {
-            $this->setAttribute('address', $CreatedAddress->getUuid());
+            $this->setAttribute('address', $CreatedAddress->getUUID());
             $this->save($ParentUser);
         }
 

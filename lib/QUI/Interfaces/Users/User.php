@@ -175,12 +175,12 @@ interface User
     /**
      * Get an address from the user
      *
-     * @param integer $id - ID of the address
+     * @param integer|string $id - ID or UUID of the address
      * @return Address
      *
      * @throws Exception
      */
-    public function getAddress(int $id): Address;
+    public function getAddress(int|string $id): Address;
 
     /**
      * Return the Country from the user

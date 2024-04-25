@@ -16,8 +16,9 @@ QUI::$Ajax->registerFunction(
             $result = QUI::getDataBase()->fetch([
                 'select' => ['id', 'uid'],
                 'from' => QUI\Users\Manager::tableAddress(),
-                'where' => [
-                    'id' => $aid
+                'where_or' => [
+                    'id' => $aid,
+                    'uuid' => $aid
                 ],
                 'limit' => 1
             ]);
@@ -35,12 +36,11 @@ QUI::$Ajax->registerFunction(
                 );
             }
 
-            $uid = (int)$result[0]['uid'];
+            $uid = $result[0]['uuid'];
         }
 
-        $User = QUI::getUsers()->get((int)$uid);
-        $Address = $User->getAddress((int)$aid);
         $User = QUI::getUsers()->get($uid);
+        $Address = $User->getAddress($aid);
 
         $Address->delete();
     },

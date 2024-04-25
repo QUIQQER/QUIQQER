@@ -27,12 +27,13 @@ QUI::$Ajax->registerFunction(
         foreach ($addresses as $Address) {
             /* @var $Address \QUI\Users\Address */
             $entry = $Address->getAttributes();
-            $entry['id'] = $Address->getId();
+            $entry['id'] = $Address->getUUID();
+            $entry['uuid'] = $Address->getUUID();
             $entry['text'] = $Address->getText();
             $entry['uid'] = $User->getUUID();
             $entry['default'] = 0;
 
-            if ($Standard && $Standard->getId() === $Address->getId()) {
+            if ($Standard && $Standard->getUUID() === $Address->getUUID()) {
                 $entry['default'] = 1;
             }
 

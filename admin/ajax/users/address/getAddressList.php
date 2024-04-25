@@ -18,8 +18,9 @@ QUI::$Ajax->registerFunction(
             $result = QUI::getDataBase()->fetch([
                 'select' => ['id', 'uid'],
                 'from' => QUI\Users\Manager::tableAddress(),
-                'where' => [
-                    'id' => $id
+                'where_or' => [
+                    'id' => $id,
+                    'uuid' => $id
                 ],
                 'limit' => 1
             ]);
@@ -31,11 +32,12 @@ QUI::$Ajax->registerFunction(
             try {
                 $uid = $result[0]['uid'];
                 $User = QUI::getUsers()->get($uid);
-                $Address = $User->getAddress((int)$id);
+                $Address = $User->getAddress($id);
 
                 $attributes = $Address->getAttributes();
                 $attributes['text'] = $Address->getText();
-                $attributes['id'] = $Address->getId();
+                $attributes['id'] = $Address->getUUID();
+                $attributes['uuid'] = $Address->getUUID();
 
                 $list[] = $attributes;
             } catch (QUI\Exception $Exception) {
