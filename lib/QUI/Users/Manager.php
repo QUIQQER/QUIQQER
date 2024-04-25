@@ -719,20 +719,6 @@ class Manager
     }
 
     /**
-     * Setzt das interne Projekt
-     *
-     * Für was???
-     *
-     * @param QUI\Projects\Project $Project
-     *
-     * @deprecated
-     */
-    public function setProject(QUI\Projects\Project $Project)
-    {
-        $this->Project = $Project;
-    }
-
-    /**
      * Create a new User
      *
      * @param boolean|string $username - (optional), new username
