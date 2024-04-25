@@ -69,9 +69,9 @@ class Group extends QUI\QDOM
     /**
      * internal children id cache
      *
-     * @var array
+     * @var array|null
      */
-    protected $childrenids = null;
+    protected ?array $childrenIds = null;
 
     /**
      * internal parentid cache
@@ -399,12 +399,12 @@ class Group extends QUI\QDOM
      */
     public function getChildrenIds(bool $recursive = false, array $params = []): ?array
     {
-        if ($this->childrenids) {
-            return $this->childrenids;
+        if ($this->childrenIds) {
+            return $this->childrenIds;
         }
 
 
-        $this->childrenids = [];
+        $this->childrenIds = [];
 
         $_params = [
             'select' => 'id',
@@ -425,12 +425,12 @@ class Group extends QUI\QDOM
         $result = QUI::getDataBase()->fetch($_params);
 
         if (!isset($result[0])) {
-            return $this->childrenids;
+            return $this->childrenIds;
         }
 
         foreach ($result as $entry) {
             if (isset($entry['id'])) {
-                $this->childrenids[] = $entry['id'];
+                $this->childrenIds[] = $entry['id'];
 
                 if ($recursive) {
                     $this->getChildrenIdsHelper($entry['id']);
@@ -438,7 +438,7 @@ class Group extends QUI\QDOM
             }
         }
 
-        return $this->childrenids;
+        return $this->childrenIds;
     }
 
     /**
@@ -459,7 +459,7 @@ class Group extends QUI\QDOM
 
         foreach ($result as $entry) {
             if (isset($entry['id'])) {
-                $this->childrenids[] = $entry['id'];
+                $this->childrenIds[] = $entry['id'];
 
                 $this->getChildrenIdsHelper($entry['id']);
             }
