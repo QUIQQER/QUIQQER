@@ -39,7 +39,7 @@ class Health
 
     /**
      * System Healthcheck
-     * Return the result of the sytem healthcheck
+     * Return the result of the system healthcheck
      *
      * @return array
      */
@@ -75,7 +75,7 @@ class Health
     }
 
     /**
-     * compare the folder with an file list array
+     * compare the folder with a file list array
      *
      * @param string $md5Checkfile - path to the md5 checkfile
      * @param array $fileList - file list array
@@ -135,6 +135,7 @@ class Health
      * @param string $plugin
      *
      * @return array
+     * @throws Exception
      */
     public static function packageCheck($plugin)
     {
@@ -176,7 +177,7 @@ class Health
     /**
      * check if all files are writable
      *
-     * @throws \QUI\Exception
+     * @throws Exception
      */
     public static function checkWritable()
     {

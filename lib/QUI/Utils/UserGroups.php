@@ -151,7 +151,7 @@ class UserGroups
     }
 
     /**
-     * is the string an UG-String
+     * is the string a UG-String
      *
      * @param string $ugString
      * @return bool

@@ -18,7 +18,7 @@ use QUI;
 class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
 {
     /**
-     * construtcor
+     * constructor
      */
     public function __construct()
     {
@@ -52,11 +52,7 @@ class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
     }
 
     /**
-     * (non-PHPdoc)
-     *
      * @return string
-     * @see \QUI\Interfaces\Users\User::getName()
-     *
      */
     public function getName(): string
     {

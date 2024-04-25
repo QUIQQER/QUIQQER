@@ -896,7 +896,7 @@ class Manager
     }
 
     /**
-     * Set the default workspace for an user
+     * Set the default workspace for a user
      * The user must have administration permissions
      *
      * @param QUI\Interfaces\Users\User $User
@@ -1738,7 +1738,7 @@ class Manager
     }
 
     /**
-     * Suche ausführen
+     * User search
      *
      * @param array $params
      * @return array|integer
@@ -2002,7 +2002,7 @@ class Manager
     }
 
     /**
-     * Anzahl der Benutzer
+     * User count
      *
      * @param array $params - Search parameter
      *

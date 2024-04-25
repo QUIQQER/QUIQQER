@@ -234,9 +234,7 @@ class User implements QUIUserInterface
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see iUser::getLocale()
+     * Returns a locale object in dependence of the user language
      */
     public function getLocale()
     {
@@ -251,9 +249,7 @@ class User implements QUIUserInterface
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see QUI\Interfaces\Users\User::getLang()
+     * returns the user language
      */
     public function getLang()
     {
@@ -290,7 +286,7 @@ class User implements QUIUserInterface
             $this->lang = $lang;
         }
 
-        // falls null, dann vom Projekt
+        // if user has no language, use the project language
         if (!$this->lang) {
             try {
                 $this->lang = QUI\Projects\Manager::get()->getAttribute('lang');
@@ -298,7 +294,6 @@ class User implements QUIUserInterface
             }
         }
 
-        // wird noch gebraucht?
         if (!$this->lang) {
             $this->lang = QUI::getLocale()->getCurrent();
         }
@@ -317,13 +312,9 @@ class User implements QUIUserInterface
     }
 
     /**
-     * (non-PHPdoc)
+     * @param string $name
      *
-     * @param string $var
-     *
-     * @return string|integer|array
-     * @see QUI\Interfaces\Users\User::getAttribute()
-     *
+     * @return mixed
      */
     public function getAttribute($var)
     {
@@ -470,15 +461,13 @@ class User implements QUIUserInterface
     }
 
     /**
-     * (non-PHPdoc)
+     * Sets a user attribute
      *
      * @param string $key
      * @param string|integer|array $value
      *
      * @return void
      * @throws QUI\Exception
-     * @see QUI\Interfaces\Users\User::setAttribute()
-     *
      */
     public function setAttribute($key, $value)
     {
@@ -488,7 +477,7 @@ class User implements QUIUserInterface
 
         switch ($key) {
             case "su":
-                // only a super user can set a superuser
+                // only a superuser can set a superuser
                 if (QUI::getUsers()->existsSession() && QUI::getUsers()->getUserBySession()->isSU()) {
                     if (is_numeric($value)) {
                         $this->su = (bool)(int)$value;
@@ -580,9 +569,7 @@ class User implements QUIUserInterface
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see QUI\Interfaces\Users\User::isSU()
+     * is the user su?
      */
     public function isSU()
     {
@@ -662,7 +649,7 @@ class User implements QUIUserInterface
     }
 
     /**
-     * Get a address from the user
+     * Get an address from the user
      *
      * @param integer $id - address ID
      * @return QUI\Users\Address
@@ -717,7 +704,7 @@ class User implements QUIUserInterface
     }
 
     /**
-     * Add a address to the user
+     * Add an address to the user
      *
      * @param array $params
      * @param QUI\Interfaces\Users\User $ParentUser - Edit user [default: Session user]
@@ -870,9 +857,7 @@ class User implements QUIUserInterface
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see QUI\Interfaces\Users\User::getType()
+     * returns the user type
      */
     public function getType()
     {
@@ -942,7 +927,7 @@ class User implements QUIUserInterface
             $avatar = $this->getAttribute('avatar');
         }
 
-        // Pluginerweiterungen - onSave Event
+        // on save for module attributes
         $extra = [];
         $attributes = $this->getListOfExtraAttributes();
 
@@ -997,7 +982,7 @@ class User implements QUIUserInterface
         }
 
         // check if su exists
-        // check if one super user exists
+        // check if one superuser exists
         if (!$this->isSU()) {
             $superUsers = QUI::getUsers()->getUsers([
                 'where' => [
@@ -1107,7 +1092,7 @@ class User implements QUIUserInterface
     }
 
     /**
-     * Read an user.xml and return the attributes,
+     * Read a user.xml and return the attributes,
      * if some extra attributes defined
      *
      * @param string $file
@@ -1231,8 +1216,6 @@ class User implements QUIUserInterface
     }
 
     /**
-     * (non-PHPdoc)
-     *
      * @param array|string $groups
      * @see QUI\Interfaces\Users\User::setGroups()
      */
@@ -1485,8 +1468,6 @@ class User implements QUIUserInterface
     }
 
     /**
-     * (non-PHPdoc)
-     *
      * @param string $right
      * @param array|boolean $ruleset - optional, you can specific a ruleset, a rules = array with rights
      *
@@ -1823,9 +1804,9 @@ class User implements QUIUserInterface
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see QUI\Interfaces\Users\User::getName()
+     * returns the name of the user.
+     * - if the user has a first and a lastname
+     * - if not, it returns the username
      */
     public function getName()
     {
@@ -1840,8 +1821,6 @@ class User implements QUIUserInterface
     }
 
     /**
-     * (non-PHPdoc)
-     *
      * @return QUI\Interfaces\Projects\Media\File|false
      * @see QUI\Interfaces\Users\User::getAvatar()
      *
@@ -1929,8 +1908,6 @@ class User implements QUIUserInterface
      * @param boolean $encrypted - is the given password already encrypted?
      *
      * @return boolean
-     * @see QUI\Interfaces\Users\User::checkPassword()
-     *
      */
     public function checkPassword($password, $encrypted = false)
     {
@@ -2020,14 +1997,10 @@ class User implements QUIUserInterface
     }
 
     /**
-     * (non-PHPdoc)
-     *
      * @param string $new - new password
      * @param QUI\Interfaces\Users\User|boolean $ParentUser
      *
      * @throws QUI\Users\Exception
-     * @see QUI\Interfaces\Users\User::setPassword()
-     *
      */
     public function setPassword($new, $ParentUser = false)
     {
@@ -2140,9 +2113,7 @@ class User implements QUIUserInterface
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see QUI\Interfaces\Users\User::isActive()
+     * is the user active?
      */
     public function isActive()
     {
@@ -2289,8 +2260,6 @@ class User implements QUIUserInterface
      *
      * @return boolean
      * @throws QUI\Exception
-     * @see QUI\Interfaces\Users\User::disable()
-     *
      */
     public function disable($ParentUser = false)
     {
@@ -2481,9 +2450,7 @@ class User implements QUIUserInterface
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see QUI\Interfaces\Users\User::isDeleted()
+     * is the user deleted?
      */
     public function isDeleted()
     {
@@ -2491,9 +2458,7 @@ class User implements QUIUserInterface
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see QUI\Interfaces\Users\User::isOnline()
+     * is the user online?
      */
     public function isOnline()
     {
