@@ -215,7 +215,7 @@ class Everyone extends QUI\Groups\Group
      *
      * @return array
      */
-    public function getChildrenIds($recursiv = false, $params = [])
+    public function getChildrenIds(bool $recursiv = false, array $params = [])
     {
         return [];
     }

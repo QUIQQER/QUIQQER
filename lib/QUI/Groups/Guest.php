@@ -187,11 +187,11 @@ class Guest extends QUI\Groups\Group
      * return the subgroup ids
      *
      * @param boolean $recursiv - recursiv true / false
-     * @param      $params - SQL Params (limit, order)
+     * @param array $params - SQL Params (limit, order)
      *
      * @return array
      */
-    public function getChildrenIds($recursiv = false, $params = [])
+    public function getChildrenIds(bool $recursiv = false, array $params = [])
     {
         return [];
     }
