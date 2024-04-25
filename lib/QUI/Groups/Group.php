@@ -391,12 +391,13 @@ class Group extends QUI\QDOM
     /**
      * return the subgroup ids
      *
-     * @param boolean $recursiv - recursiv true / false
-     * @param      $params - SQL Params (limit, order)
+     * @param boolean $recursive - recursive true / false
+     * @param array $params - SQL Params (limit, order)
      *
-     * @return array
+     * @return array|null
+     * @throws Exception
      */
-    public function getChildrenIds($recursiv = false, $params = [])
+    public function getChildrenIds(bool $recursive = false, array $params = []): ?array
     {
         if ($this->childrenids) {
             return $this->childrenids;
@@ -431,7 +432,7 @@ class Group extends QUI\QDOM
             if (isset($entry['id'])) {
                 $this->childrenids[] = $entry['id'];
 
-                if ($recursiv == true) {
+                if ($recursive) {
                     $this->getChildrenIdsHelper($entry['id']);
                 }
             }
