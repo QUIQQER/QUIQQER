@@ -7,8 +7,14 @@
 namespace QUI\Groups;
 
 use QUI;
+use QUI\Controls\Toolbar\Bar;
+use QUI\Exception;
 use QUI\Utils\DOM;
 use QUI\Utils\Text\XML;
+
+use function explode;
+use function file_exists;
+use function str_replace;
 
 /**
  * Helper for groups
@@ -21,8 +27,8 @@ class Utils
     /**
      * JavaScript Buttons / Tabs for a group
      *
-     * @param \QUI\Groups\Group $Group
-     * @return \QUI\Controls\Toolbar\Bar
+     * @param Group $Group
+     * @return Bar
      */
     public static function getGroupToolbar($Group)
     {
@@ -46,7 +52,7 @@ class Utils
 
             $userXml = OPT_DIR . $entry['name'] . '/group.xml';
 
-            if (!\file_exists($userXml)) {
+            if (!file_exists($userXml)) {
                 continue;
             }
 
@@ -91,8 +97,8 @@ class Utils
         QUI::getTemplateManager()->assignGlobalParam('Group', $Group);
 
         // project
-        if (\strpos($plugin, 'project.') !== false) {
-            $project = \explode('project.', $plugin);
+        if (str_contains($plugin, 'project.')) {
+            $project = explode('project.', $plugin);
 
             return DOM::getTabHTML(
                 $tab,
@@ -102,7 +108,7 @@ class Utils
 
         // plugin
         try {
-            $plugin = \str_replace('plugin.', '', $plugin);
+            $plugin = str_replace('plugin.', '', $plugin);
             $Package = QUI::getPackage($plugin);
 
             return DOM::getTabHTML(

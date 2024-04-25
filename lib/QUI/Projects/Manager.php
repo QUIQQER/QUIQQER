@@ -6,7 +6,9 @@
 
 namespace QUI\Projects;
 
+use DOMElement;
 use DOMXPath;
+use Exception;
 use QUI;
 use QUI\Cache\Manager as QUICacheManager;
 use QUI\Permissions\Permission;
@@ -23,9 +25,9 @@ use function explode;
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
-use function get_class;
 use function implode;
 use function in_array;
+use function is_array;
 use function is_bool;
 use function is_dir;
 use function is_numeric;
@@ -33,7 +35,6 @@ use function is_string;
 use function json_decode;
 use function key;
 use function preg_replace;
-use function rename;
 use function str_replace;
 use function strlen;
 use function strpos;
@@ -90,7 +91,7 @@ class Manager
      * @param array $params
      *
      * @throws QUI\Exception
-     * @throws \Exception
+     * @throws Exception
      */
     public static function setConfigForProject($project, $params = [])
     {
@@ -108,7 +109,7 @@ class Manager
             $Project
         );
 
-        if (!\is_array($params)) {
+        if (!is_array($params)) {
             $params = [];
         }
 
@@ -319,12 +320,12 @@ class Manager
 
 
         if ($lang === false) {
-            self::$projects[$project]['_standard'] = new QUI\Projects\Project($project);
+            self::$projects[$project]['_standard'] = new Project($project);
 
             return self::$projects[$project]['_standard'];
         }
 
-        self::$projects[$project][$lang] = new QUI\Projects\Project(
+        self::$projects[$project][$lang] = new Project(
             $project,
             $lang,
             $template
@@ -336,7 +337,7 @@ class Manager
     /**
      * projects.ini
      *
-     * @return \QUI\Config
+     * @return Config
      *
      * @throws QUI\Exception
      */
@@ -348,7 +349,7 @@ class Manager
     /**
      * Return the config list
      *
-     * @param \QUI\Projects\Project $Project
+     * @param Project $Project
      *
      * @return array
      *
@@ -403,7 +404,7 @@ class Manager
             $settingsList = $Path->query('//project/settings');
 
             for ($i = 0, $len = $settingsList->length; $i < $len; $i++) {
-                /* @var $Settings \DOMElement */
+                /* @var $Settings DOMElement */
                 $Settings = $settingsList->item($i);
                 $sections = DOM::getConfigParamsFromDOM($Settings);
 
@@ -592,7 +593,7 @@ class Manager
      * Return all templates which are related to the project
      * the vhost templates are included
      *
-     * @param \QUI\Projects\Project $Project
+     * @param Project $Project
      *
      * @return array
      */
@@ -658,8 +659,8 @@ class Manager
      *
      * @param string|array $project - project data
      *
-     * @return \QUI\Projects\Project
-     * @throws \QUI\Exception
+     * @return Project
+     * @throws QUI\Exception
      */
     public static function decode($project)
     {
@@ -695,7 +696,7 @@ class Manager
      * if a project has multiple languages, getProjectList will return multiple projects
      * eq: project exist in en,de,fr getProjectList will return Project(en, Project(de), Project(fr)
      *
-     * @return QUI\Projects\Project[]
+     * @return Project[]
      */
     public static function getProjectList()
     {
@@ -743,9 +744,9 @@ class Manager
      * @param array $languages - optional, additional languages
      * @param string $template - Project template
      *
-     * @return \QUI\Projects\Project
-     * @throws \QUI\Exception
-     * @throws \Exception
+     * @return Project
+     * @throws QUI\Exception
+     * @throws Exception
      *
      * @todo noch einmal anschauen und übersichtlicher schreiben
      */
@@ -1009,7 +1010,7 @@ class Manager
     /**
      * Delete a project
      *
-     * @param \QUI\Projects\Project $Project
+     * @param Project $Project
      *
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
@@ -1192,7 +1193,7 @@ class Manager
 
             try {
                 $Stmt->execute();
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 QUI\System\Log::writeRecursive(
                     "Could not rename Table '" . $oldTableName . "': " . $Exception->getMessage()
                 );
@@ -1254,7 +1255,7 @@ class Manager
         if (!isset($translation[0])) {
             try {
                 QUI\Translator::add($translationGroup, $translationVar);
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 QUI\System\Log::addError(
                     'Rename project: Could not add language variable ' . $translationGroup . '/' . $translationVar . ': ' . $Exception->getMessage(
                     )

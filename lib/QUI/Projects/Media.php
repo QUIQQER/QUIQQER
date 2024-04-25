@@ -7,6 +7,7 @@
 namespace QUI\Projects;
 
 use Exception;
+use Intervention\Image\Constraint;
 use Intervention\Image\ImageManager;
 use QUI;
 use QUI\Projects\Media\Utils;
@@ -624,7 +625,7 @@ class Media extends QUI\QDOM
                 (int)$sizes[1],
                 (int)$sizes[2],
                 function ($Constraint) {
-                    /* @var $Constraint \Intervention\Image\Constraint; */
+                    /* @var $Constraint Constraint; */
                     $Constraint->aspectRatio();
                     $Constraint->upsize();
                 }

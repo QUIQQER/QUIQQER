@@ -12,6 +12,12 @@ use QUI\Controls\Buttons\Separator;
 use QUI\Controls\Toolbar;
 use QUI\Utils\Text\XML;
 
+use function count;
+use function end;
+use function explode;
+use function file_exists;
+use function implode;
+
 /**
  * Helper for the Site Object
  *
@@ -23,13 +29,13 @@ class Sites
     /**
      * JavaScript buttons, depending on the side of the user
      *
-     * @param \QUI\Projects\Site\Edit $Site
+     * @param Edit $Site
      *
-     * @return \QUI\Controls\Toolbar\Bar
+     * @return Bar
      */
     public static function getButtons(Site\Edit $Site)
     {
-        $Toolbar = new Toolbar\Bar([
+        $Toolbar = new Bar([
             'name' => '_Toolbar'
         ]);
 
@@ -171,8 +177,8 @@ class Sites
      * @param string $tabname - Name of the Tab
      * @param Site\Edit $Site
      *
-     * @return \QUI\Controls\Toolbar\Tab|bool
-     * @throws \QUI\Exception
+     * @return Tab|bool
+     * @throws Exception
      */
     public static function getTab($tabname, $Site)
     {
@@ -180,7 +186,7 @@ class Sites
         $Tab = $Toolbar->getElementByName($tabname);
 
         if ($Tab === false) {
-            throw new QUI\Exception('The tab could not be found.');
+            throw new Exception('The tab could not be found.');
         }
 
         return $Tab;
@@ -195,16 +201,16 @@ class Sites
      */
     public static function getTabs(Site\Edit $Site)
     {
-        $Tabbar = new Toolbar\Bar([
+        $Tabbar = new Bar([
             'name' => '_Tabbar'
         ]);
 
         // Wenn die Seite bearbeitet wird
         if ($Site->isLockedFromOther()) {
             $Tabbar->appendChild(
-                new Toolbar\Tab([
+                new Tab([
                     'name' => 'information',
-                    'text' => \QUI::getLocale()->get(
+                    'text' => QUI::getLocale()->get(
                         'quiqqer/quiqqer',
                         'projects.project.site.information'
                     ),
@@ -222,7 +228,7 @@ class Sites
             && $Site->hasPermission('quiqqer.projects.site.edit')
         ) {
             $Tabbar->appendChild(
-                new Toolbar\Tab([
+                new Tab([
                     'name' => 'information',
                     'text' => QUI::getLocale()->get(
                         'quiqqer/quiqqer',
@@ -234,7 +240,7 @@ class Sites
             );
         } elseif ($Site->hasPermission('quiqqer.projects.site.view') === false) {
             $Tabbar->appendChild(
-                new Toolbar\Tab([
+                new Tab([
                     'name' => 'information',
                     'text' => QUI::getLocale()->get(
                         'quiqqer/quiqqer',
@@ -249,7 +255,7 @@ class Sites
         } else // Wenn kein Bearbeitungsrecht aber Ansichtsrecht besteht
         {
             $Tabbar->appendChild(
-                new Toolbar\Tab([
+                new Tab([
                     'name' => 'information',
                     'text' => QUI::getLocale()->get(
                         'quiqqer/quiqqer',
@@ -266,7 +272,7 @@ class Sites
 
         // Inhaltsreiter
         $Tabbar->appendChild(
-            new Toolbar\Tab([
+            new Tab([
                 'name' => 'content',
                 'text' => QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -278,9 +284,9 @@ class Sites
 
         // Einstellungen
         $Tabbar->appendChild(
-            new Toolbar\Tab([
+            new Tab([
                 'name' => 'settings',
-                'text' => \QUI::getLocale()->get(
+                'text' => QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'projects.project.site.settings'
                 ),
@@ -291,13 +297,13 @@ class Sites
 
         // site type tabs
         $type = $Site->getAttribute('type');
-        $types = \explode(':', $type);
+        $types = explode(':', $type);
 
         $file = OPT_DIR . $types[0] . '/site.xml';
 
-        if (\file_exists($file)) {
+        if (file_exists($file)) {
             $Dom = XML::getDomFromXml($file);
-            $Path = new \DOMXPath($Dom);
+            $Path = new DOMXPath($Dom);
 
             QUI\Utils\DOM::addTabsToToolbar(
                 $Path->query("//site/types/type[@type='" . $types[1] . "']/tab"),
@@ -328,12 +334,12 @@ class Sites
 
             $file = OPT_DIR . $package['name'] . '/site.xml';
 
-            if (!\file_exists($file)) {
+            if (!file_exists($file)) {
                 continue;
             }
 
             $Dom = XML::getDomFromXml($file);
-            $Path = new \DOMXPath($Dom);
+            $Path = new DOMXPath($Dom);
 
             QUI\Utils\DOM::addTabsToToolbar(
                 $Path->query("//site/types/type[@type='" . $type . "']/tab"),
@@ -351,7 +357,7 @@ class Sites
 
             $file = OPT_DIR . $package['name'] . '/site.xml';
 
-            if (!\file_exists($file)) {
+            if (!file_exists($file)) {
                 continue;
             }
 
@@ -378,7 +384,7 @@ class Sites
 
             $file = OPT_DIR . $template['name'] . '/site.xml';
 
-            if (!\file_exists($file)) {
+            if (!file_exists($file)) {
                 continue;
             }
 
@@ -410,7 +416,7 @@ class Sites
      *
      * @return array|int
      *
-     * @throws QUI\Exception
+     * @throws Exception
      */
     public static function search($search, $params = [])
     {
@@ -460,7 +466,7 @@ class Sites
         // fields
         if (isset($params['fields']) && !empty($params['fields'])) {
             $fields = [];
-            $_fields = \explode(',', $params['fields']);
+            $_fields = explode(',', $params['fields']);
 
             foreach ($_fields as $field) {
                 switch ($field) {
@@ -507,18 +513,18 @@ class Sites
             foreach ($fields as $field) {
                 $where .= $field . ' LIKE :search';
 
-                if ($field !== \end($fields)) {
+                if ($field !== end($fields)) {
                     $where .= ' OR ';
                 }
             }
 
             $query .= '(SELECT
                             "' . $table['project'] . ' (' . $table['lang'] . ')" as "project",
-                            ' . \implode(',', $selectList) . '
+                            ' . implode(',', $selectList) . '
                         FROM `' . $table['table'] . '`
                         WHERE (' . $where . ') AND deleted = 0) ';
 
-            if ($table !== \end($tables)) {
+            if ($table !== end($tables)) {
                 $query .= ' UNION ';
             }
         }
@@ -542,10 +548,10 @@ class Sites
             ':search' => $search
         ]);
 
-        $result = $Stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $result = $Stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if (isset($params['count'])) {
-            return \count($result);
+            return count($result);
         }
 
         return $result;

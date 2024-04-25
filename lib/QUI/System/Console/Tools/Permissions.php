@@ -6,8 +6,13 @@
 
 namespace QUI\System\Console\Tools;
 
+use Exception;
+use JetBrains\PhpStorm\NoReturn;
 use League\CLImate\CLImate;
 use QUI;
+
+use function count;
+use function explode;
 
 /**
  * Permissions console tool
@@ -55,7 +60,7 @@ class Permissions extends QUI\System\Console\Tool
     /**
      * (non-PHPdoc)
      *
-     * @throws \Exception
+     * @throws Exception
      * @see \QUI\System\Console\Tool::execute()
      */
     public function execute()
@@ -90,7 +95,7 @@ class Permissions extends QUI\System\Console\Tool
     /**
      * Prints the help
      *
-     * @throws \Exception
+     * @throws Exception
      */
     protected function showHelp()
     {
@@ -139,9 +144,9 @@ class Permissions extends QUI\System\Console\Tool
                 $perm['defaultValue'] = '';
             }
 
-            $title = \explode(' ', $perm['title']);
+            $title = explode(' ', $perm['title']);
 
-            if (\count($title) === 2) {
+            if (count($title) === 2) {
                 $title = QUI::getLocale()->get($title[0], $title[1]);
             }
 
@@ -195,9 +200,9 @@ class Permissions extends QUI\System\Console\Tool
             $value = $userPermissions[$permission];
             $perm = $permissions[$permission];
 
-            $title = \explode(' ', $perm['title']);
+            $title = explode(' ', $perm['title']);
 
-            if (\count($title) === 2) {
+            if (count($title) === 2) {
                 $title = QUI::getLocale()->get($title[0], $title[1]);
             }
 
@@ -280,9 +285,9 @@ class Permissions extends QUI\System\Console\Tool
             $value = $groupPermissions[$permission];
             $perm = $permissions[$permission];
 
-            $title = \explode(' ', $perm['title']);
+            $title = explode(' ', $perm['title']);
 
-            if (\count($title) === 2) {
+            if (count($title) === 2) {
                 $title = QUI::getLocale()->get($title[0], $title[1]);
             }
 

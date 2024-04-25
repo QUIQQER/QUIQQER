@@ -8,6 +8,9 @@ namespace QUI\Messages;
 
 use QUI;
 
+use function md5;
+use function time;
+
 /**
  * A message
  *
@@ -27,7 +30,7 @@ class Message extends QUI\QDOM
         $this->setAttributes([
             'message' => '',
             'code' => '',
-            'time' => \time(),
+            'time' => time(),
             'mtype' => $this::class
         ]);
 
@@ -51,7 +54,7 @@ class Message extends QUI\QDOM
      */
     public function getHash()
     {
-        return \md5($this->getMessage());
+        return md5($this->getMessage());
     }
 
     /**

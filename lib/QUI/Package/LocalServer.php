@@ -6,8 +6,21 @@
 
 namespace QUI\Package;
 
+use Exception;
 use QUI;
 use QUI\Utils\System\File;
+use ZipArchive;
+
+use function chdir;
+use function file_exists;
+use function file_get_contents;
+use function is_dir;
+use function json_decode;
+use function json_encode;
+use function pathinfo;
+use function rtrim;
+
+use const JSON_PRETTY_PRINT;
 
 /**
  * Class LocalServer
@@ -37,13 +50,13 @@ class LocalServer extends QUI\Utils\Singleton
     {
         $updatePath = QUI::conf('update', 'updatePath');
 
-        if (!empty($updatePath) && \is_dir($updatePath)) {
-            return \rtrim($updatePath, '/') . '/';
+        if (!empty($updatePath) && is_dir($updatePath)) {
+            return rtrim($updatePath, '/') . '/';
         }
 
         $localeUpdateFolder = VAR_DIR . 'update/packages/';
 
-        if (!\is_dir($localeUpdateFolder)) {
+        if (!is_dir($localeUpdateFolder)) {
             File::mkdir($localeUpdateFolder);
         }
 
@@ -76,11 +89,11 @@ class LocalServer extends QUI\Utils\Singleton
             throw new QUI\Exception('File is not a Package Archive');
         }
 
-        if (!\file_exists($file)) {
+        if (!file_exists($file)) {
             throw new QUI\Exception('Package Archive File not found');
         }
 
-        if (\file_exists($serverDir . $filename)) {
+        if (file_exists($serverDir . $filename)) {
             unlink($serverDir . $filename);
         }
 
@@ -99,19 +112,19 @@ class LocalServer extends QUI\Utils\Singleton
             return;
         }
 
-        $Zip = new \ZipArchive();
+        $Zip = new ZipArchive();
 
         if (!$Zip->open($serverDir . $filename)) {
             return;
         }
 
         $composerJson = $Zip->getFromName('composer.json');
-        $composerJson = \json_decode($composerJson, true);
+        $composerJson = json_decode($composerJson, true);
 
         if (empty($composerJson['version'])) {
             $composerJson['version'] = $version;
 
-            $Zip->addFromString('composer.json', \json_encode($composerJson, \JSON_PRETTY_PRINT));
+            $Zip->addFromString('composer.json', json_encode($composerJson, JSON_PRETTY_PRINT));
         }
 
         $Zip->close();
@@ -156,28 +169,28 @@ class LocalServer extends QUI\Utils\Singleton
     {
         $dir = $this->getDir();
 
-        if (!\is_dir($dir)) {
+        if (!is_dir($dir)) {
             return [];
         }
 
         $files = File::readDir($dir);
         $result = [];
 
-        \chdir($dir);
+        chdir($dir);
 
         foreach ($files as $package) {
             try {
-                $composerJson = \file_get_contents(
-                    "zip://{$package}#composer.json"
+                $composerJson = file_get_contents(
+                    "zip://$package#composer.json"
                 );
-            } catch (\Exception $Exception) {
+            } catch (Exception) {
                 // maybe gitlab package?
                 try {
-                    $packageName = \pathinfo($package);
-                    $composerJson = \file_get_contents(
-                        "zip://{$package}#{$packageName['filename']}/composer.json"
+                    $packageName = pathinfo($package);
+                    $composerJson = file_get_contents(
+                        "zip://$package#{$packageName['filename']}/composer.json"
                     );
-                } catch (\Exception $Exception) {
+                } catch (Exception $Exception) {
                     QUI\System\Log::addDebug($Exception->getMessage());
                     continue;
                 }
@@ -187,13 +200,13 @@ class LocalServer extends QUI\Utils\Singleton
                 continue;
             }
 
-            $composerJson = \json_decode($composerJson, true);
+            $composerJson = json_decode($composerJson, true);
 
             if (!isset($composerJson['name'])) {
                 continue;
             }
 
-            if (\is_dir(OPT_DIR . $composerJson['name'])) {
+            if (is_dir(OPT_DIR . $composerJson['name'])) {
                 continue;
             }
 

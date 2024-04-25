@@ -47,13 +47,13 @@ QUI::$Ajax->registerFunction(
             }
         }
 
-        if (\count($activated)) {
+        if (count($activated)) {
             QUI::getMessagesHandler()->addSuccess(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'message.users.activated',
                     [
-                        'users' => \implode(',', $activated)
+                        'users' => implode(',', $activated)
                     ]
                 )
             );

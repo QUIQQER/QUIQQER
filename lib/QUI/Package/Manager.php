@@ -25,6 +25,7 @@ use Exception;
 use QUI;
 use QUI\Cache\Manager as QUICacheManager;
 use QUI\Projects\Project;
+use QUI\Composer\Composer;
 use QUI\Utils\System\File as QUIFile;
 use Seld\JsonLint\JsonParser;
 use Seld\JsonLint\ParsingException;
@@ -994,7 +995,7 @@ class Manager extends QUI\QDOM
     /**
      * Return the internal composer object
      *
-     * @return null|QUI\Composer\Composer
+     * @return Composer
      */
     public function getComposer(): QUI\Composer\Composer
     {

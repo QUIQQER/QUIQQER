@@ -6,6 +6,7 @@
 
 namespace QUI\Mail;
 
+use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use QUI;
 
@@ -36,7 +37,7 @@ class Manager
      * @param string $body
      *
      * @throws QUI\Exception
-     * @throws \PHPMailer\PHPMailer\Exception
+     * @throws Exception
      */
     public function send(string $to, string $subject, string $body)
     {

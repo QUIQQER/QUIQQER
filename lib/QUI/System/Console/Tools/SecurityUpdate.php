@@ -9,6 +9,7 @@ namespace QUI\System\Console\Tools;
 use Composer\Semver\VersionParser;
 use Exception;
 use QUI;
+use RuntimeException;
 
 use function copy;
 use function date;
@@ -145,7 +146,7 @@ class SecurityUpdate extends QUI\System\Console\Tool
 
                 try {
                     $version = $VersionParser->normalize($v);
-                } catch (\RuntimeException) {
+                } catch (RuntimeException) {
                     continue;
                 }
 

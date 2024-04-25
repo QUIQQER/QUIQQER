@@ -8,6 +8,8 @@ namespace QUI\System\Tests;
 
 use QUI;
 
+use function function_exists;
+
 /**
  * JSON Test
  *
@@ -38,7 +40,7 @@ class Json extends QUI\System\Test
      */
     public function execute()
     {
-        if (\function_exists('json_decode') && \function_exists('json_encode')) {
+        if (function_exists('json_decode') && function_exists('json_encode')) {
             return self::STATUS_OK;
         }
 

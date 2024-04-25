@@ -6,15 +6,19 @@
 
 namespace QUI\Users;
 
+use DOMElement;
 use QUI;
 use QUI\ERP\Currency\Handler as Currencies;
+use QUI\Interfaces\Users\User as QUIUserInterface;
 use QUI\Utils\Security\Orthos as Orthos;
 
+use function array_filter;
 use function array_flip;
 use function array_merge;
 use function array_search;
 use function class_exists;
 use function count;
+use function current;
 use function date;
 use function explode;
 use function file_exists;
@@ -27,10 +31,12 @@ use function is_null;
 use function is_numeric;
 use function is_string;
 use function json_decode;
+use function json_encode;
 use function md5;
 use function reset;
-use function strpos;
+use function strlen;
 use function strtotime;
+use function substr;
 use function trim;
 
 /**
@@ -48,7 +54,7 @@ use function trim;
  * @event   onUserDeactivate [ \QUI\Users\User ]
  * @event   onUserExtraAttributes [ \QUI\Users\User ]
  */
-class User implements QUI\Interfaces\Users\User
+class User implements QUIUserInterface
 {
     /**
      * The groups in which the user is
@@ -627,7 +633,7 @@ class User implements QUI\Interfaces\Users\User
         if (count($list)) {
             reset($list);
 
-            $this->StandardAddress = \current($list);
+            $this->StandardAddress = current($list);
 
             return $this->StandardAddress;
         }
@@ -766,7 +772,7 @@ class User implements QUI\Interfaces\Users\User
             }
 
             if (is_array($params[$needle])) {
-                $_params[$needle] = \json_encode(
+                $_params[$needle] = json_encode(
                     Orthos::clearArray($params[$needle])
                 );
 
@@ -909,12 +915,12 @@ class User implements QUI\Interfaces\Users\User
             // Datumsprüfung auf Syntax
             $value = trim($this->getAttribute('birthday'));
 
-            if (\strlen($value) == 10) {
+            if (strlen($value) == 10) {
                 $value .= ' 00:00:00';
             }
 
             if (Orthos::checkMySqlDatetimeSyntax($value)) {
-                $birthday = \substr($value, 0, 10);
+                $birthday = substr($value, 0, 10);
             }
         }
 
@@ -957,7 +963,7 @@ class User implements QUI\Interfaces\Users\User
         if ($this->getAttribute('assigned_toolbar')) {
             $toolbars = explode(',', $this->getAttribute('assigned_toolbar'));
 
-            $assignedToolbars = \array_filter($toolbars, function ($toolbar) {
+            $assignedToolbars = array_filter($toolbars, function ($toolbar) {
                 return QUI\Editor\Manager::existsToolbar($toolbar);
             });
 
@@ -1024,7 +1030,7 @@ class User implements QUI\Interfaces\Users\User
                 'email' => $email,
                 'avatar' => $avatar,
                 'su' => $this->isSU() ? 1 : 0,
-                'extra' => \json_encode($extra),
+                'extra' => json_encode($extra),
                 'lang' => $this->getAttribute('lang'),
                 'lastedit' => date("Y-m-d H:i:s"),
                 'expire' => $expire,
@@ -1033,7 +1039,7 @@ class User implements QUI\Interfaces\Users\User
                 'company' => $this->isCompany() ? 1 : 0,
                 'toolbar' => $toolbar,
                 'assigned_toolbar' => $assignedToolbars,
-                'authenticator' => \json_encode($this->authenticator),
+                'authenticator' => json_encode($this->authenticator),
                 'lastLoginAttempt' => $this->getAttribute('lastLoginAttempt') ?: null,
                 'failedLogins' => $this->getAttribute('failedLogins') ?: 0
             ],
@@ -1115,7 +1121,7 @@ class User implements QUI\Interfaces\Users\User
             return [];
         }
 
-        /* @var $Attributes \DOMElement */
+        /* @var $Attributes DOMElement */
         $Attributes = $Attr->item(0);
         $list = $Attributes->getElementsByTagName('attribute');
 
@@ -2233,7 +2239,7 @@ class User implements QUI\Interfaces\Users\User
      *
      * @return void
      *
-     * @throws \QUI\Permissions\Exception
+     * @throws QUI\Permissions\Exception
      */
     public function checkPermission($permission)
     {

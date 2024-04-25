@@ -6,7 +6,17 @@
 
 namespace QUI\Security;
 
+use Exception;
 use QUI;
+
+use function bin2hex;
+use function explode;
+use function hex2bin;
+use function openssl_cipher_iv_length;
+use function openssl_decrypt;
+use function openssl_encrypt;
+use function openssl_random_pseudo_bytes;
+use function substr;
 
 /**
  * Class Encryption
@@ -20,8 +30,7 @@ class Encryption
      *
      * @param string $data
      * @return string
-     *
-     * @throws \Exception
+     * @throws QUI\Exception
      */
     public static function decrypt($data)
     {
@@ -51,13 +60,13 @@ class Encryption
 
         foreach ($ivs as $iv) {
             try {
-                $iv = @\hex2bin($iv);
-                $data = \openssl_decrypt($givenData, 'aes-256-cbc', $salt, 0, $iv);
+                $iv = @hex2bin($iv);
+                $data = openssl_decrypt($givenData, 'aes-256-cbc', $salt, 0, $iv);
 
                 if ($data !== false) {
-                    return \substr($data, -$sl) . \substr($data, 0, -$sl);
+                    return substr($data, -$sl) . substr($data, 0, -$sl);
                 }
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
         }
@@ -81,18 +90,18 @@ class Encryption
         $iv = $Config->getValue('openssl', 'iv');
 
         if ($iv === false) {
-            $iv = \openssl_random_pseudo_bytes(\openssl_cipher_iv_length('aes-256-cbc'));
+            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
 
             QUI::getConfig('etc/conf.ini.php')->setValue(
                 'openssl',
                 'iv',
-                \bin2hex($iv)
+                bin2hex($iv)
             );
 
             QUI::getConfig('etc/conf.ini.php')->setValue(
                 'openssl',
                 'length',
-                \openssl_cipher_iv_length('aes-256-cbc')
+                openssl_cipher_iv_length('aes-256-cbc')
             );
 
             QUI::getConfig('etc/conf.ini.php')->save();
@@ -101,11 +110,11 @@ class Encryption
                 $iv = \explode(',', trim($iv))[0];
             }
 
-            $iv = \hex2bin($iv);
+            $iv = hex2bin($iv);
         }
 
-        $data = \substr($data, $sl) . \substr($data, 0, $sl);
+        $data = substr($data, $sl) . substr($data, 0, $sl);
 
-        return \openssl_encrypt($data, 'aes-256-cbc', $salt, 0, $iv);
+        return openssl_encrypt($data, 'aes-256-cbc', $salt, 0, $iv);
     }
 }

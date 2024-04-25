@@ -8,6 +8,12 @@ namespace QUI\Utils;
 
 use QUI;
 
+use function array_flip;
+use function explode;
+use function implode;
+use function is_string;
+use function substr;
+
 /**
  * Helper for users group strings
  * UG-Strings = u19939939,g9929299299,g999929929292,u882828282
@@ -44,7 +50,7 @@ class UserGroups
             $list[] = 'g' . $gid;
         }
 
-        return \implode(',', $list);
+        return implode(',', $list);
     }
 
     /**
@@ -65,7 +71,7 @@ class UserGroups
             $result[] = 'g' . $Group->getId();
         }
 
-        return \implode(',', $result);
+        return implode(',', $result);
     }
 
     /**
@@ -78,7 +84,7 @@ class UserGroups
      */
     public static function isUserInUserGroupString(QUI\Interfaces\Users\User $User, $ugString)
     {
-        if (!\is_string($ugString)) {
+        if (!is_string($ugString)) {
             return false;
         }
 
@@ -92,7 +98,7 @@ class UserGroups
             }
         }
 
-        $userGroups = \array_flip($User->getGroups(false));
+        $userGroups = array_flip($User->getGroups(false));
 
         foreach ($groups as $gid) {
             if (isset($userGroups[$gid])) {
@@ -123,7 +129,7 @@ class UserGroups
         if (empty($str)) {
             $ugs = [];
         } else {
-            $ugs = \explode(',', $str);
+            $ugs = explode(',', $str);
         }
 
         foreach ($ugs as $ug) {
@@ -148,11 +154,7 @@ class UserGroups
      */
     public static function isUserGroupString($ugString)
     {
-        if (!\is_string($ugString)) {
-            return false;
-        }
-
-        $ugString = \explode(',', $ugString);
+        $ugString = explode(',', $ugString);
 
         foreach ($ugString as $entry) {
             if (\strpos($entry, 'g') === false && \strpos($entry, 'u') === false) {

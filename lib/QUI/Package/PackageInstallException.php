@@ -2,11 +2,13 @@
 
 namespace QUI\Package;
 
+use QUI\Exception;
+
 /**
  * Class PackageInstallException
  *
  * Is thrown when
  */
-class PackageInstallException extends \QUI\Exception
+class PackageInstallException extends Exception
 {
 }

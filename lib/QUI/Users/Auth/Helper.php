@@ -9,6 +9,9 @@ namespace QUI\Users\Auth;
 use QUI;
 use QUI\Users\AuthenticatorInterface;
 
+use function is_object;
+use function str_replace;
+
 /**
  * Class Helper
  * Some helper methods, for better authenticator handling
@@ -53,7 +56,7 @@ class Helper
             );
         }
 
-        if (\is_object($authenticator)) {
+        if (is_object($authenticator)) {
             $authenticator = $authenticator::class;
         }
 
@@ -79,9 +82,9 @@ class Helper
         }
 
         if (empty($permission)) {
-            return 'quiqqer.auth.' . \str_replace('\\', '', $authenticator);
+            return 'quiqqer.auth.' . str_replace('\\', '', $authenticator);
         }
 
-        return 'quiqqer.auth.' . \str_replace('\\', '', $authenticator) . '.' . $permission;
+        return 'quiqqer.auth.' . str_replace('\\', '', $authenticator) . '.' . $permission;
     }
 }

@@ -8,6 +8,8 @@ namespace QUI\Projects\Media;
 
 use DOMElement;
 use DOMXPath;
+use Exception;
+use ForceUTF8\Encoding;
 use QUI;
 use QUI\System\Log;
 use QUI\Utils\StringHelper as StringUtils;
@@ -23,7 +25,6 @@ use function file_get_contents;
 use function file_put_contents;
 use function htmlspecialchars;
 use function implode;
-use function intval;
 use function is_object;
 use function is_string;
 use function md5;
@@ -525,7 +526,7 @@ class Utils
             }
 
             if ($key === 'alt' || $key === 'title') {
-                $value = \ForceUTF8\Encoding::toUTF8($value);
+                $value = Encoding::toUTF8($value);
             }
 
             $img .= htmlspecialchars($key) . '="' . $value . '" ';
@@ -874,7 +875,7 @@ class Utils
                 ]);
 
                 return URL_DIR . $output;
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 Log::addDebug($Exception->getMessage(), [
                     'url' => $output,
                     'trace' => $Exception->getTrace()
@@ -1405,7 +1406,7 @@ class Utils
 
         try {
             QUI\Cache\Manager::set($cache, $result);
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
         }
 

@@ -3,13 +3,14 @@
 namespace QUI\Package;
 
 use QUI;
+use QUI\Exception;
 
 /**
  * Class PackageNotLicensedException
  *
  * Is thrown when a package license is required but not existing.
  */
-class PackageNotLicensedException extends \QUI\Exception
+class PackageNotLicensedException extends Exception
 {
     /**
      * @var int

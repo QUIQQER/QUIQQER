@@ -7,7 +7,13 @@
 namespace QUI\Users;
 
 use QUI;
+use QUI\Countries\Country;
 use QUI\ERP\Currency\Handler as Currencies;
+use QUI\Exception;
+use QUI\Groups\Group;
+use QUI\Interfaces\Users\User;
+use QUI\Locale;
+use QUI\Projects\Media\Image;
 
 /**
  * The standard user
@@ -16,12 +22,12 @@ use QUI\ERP\Currency\Handler as Currencies;
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  */
-class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
+class Nobody extends QUI\QDOM implements User
 {
     /**
-     * @var \QUI\Locale|null
+     * @var Locale|null
      */
-    protected ?QUI\Locale $Locale = null;
+    protected ?Locale $Locale = null;
 
     /**
      * constructor
@@ -234,12 +240,12 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @param array $params
      *
-     * @throws \QUI\Users\Exception
+     * @throws Exception
      * @ignore
      */
     public function addAddress(array $params)
     {
-        throw new QUI\Users\Exception(
+        throw new Exception(
             QUI::getLocale()->get(
                 'system',
                 'exception.lib.user.nobody.add.address'
@@ -250,15 +256,15 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     /**
      * Return the locale object depending on the user
      *
-     * @return \QUI\Locale
+     * @return Locale
      */
-    public function getLocale(): ?QUI\Locale
+    public function getLocale(): Locale
     {
         if ($this->Locale) {
             return $this->Locale;
         }
 
-        $this->Locale = new QUI\Locale();
+        $this->Locale = new Locale();
 
         if (QUI::getSession()->get('CURRENT_LANG')) {
             $this->Locale->setCurrent(QUI::getSession()->get('CURRENT_LANG'));
@@ -277,7 +283,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      */
     public function addToGroup($groupId)
     {
-        throw new QUI\Users\Exception(
+        throw new Exception(
             QUI::getLocale()->get(
                 'system',
                 'exception.lib.user.nobody.add.to.group'
@@ -293,7 +299,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      */
     public function removeGroup($Group)
     {
-        throw new QUI\Users\Exception(
+        throw new Exception(
             QUI::getLocale()->get(
                 'system',
                 'exception.lib.user.nobody.remove.group'
@@ -394,12 +400,12 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @param integer $id
      * @return void
      *
-     * @throws \QUI\Users\Exception
+     * @throws Exception
      * @ignore
      */
     public function getAddress($id)
     {
-        throw new QUI\Users\Exception(
+        throw new Exception(
             QUI::getLocale()->get(
                 'quiqqer/quiqqer',
                 'exception.lib.user.nobody.get.address'
@@ -439,7 +445,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * Return the Country of nobody
      * use the GEOIP_COUNTRY_CODE from apache, if available
      *
-     * @return \QUI\Countries\Country|boolean
+     * @return Country|boolean
      */
     public function getCountry()
     {

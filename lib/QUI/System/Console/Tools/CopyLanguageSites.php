@@ -6,8 +6,11 @@
 
 namespace QUI\System\Console\Tools;
 
+use Exception;
 use QUI;
 use QUI\Bricks\Manager as BricksManager;
+
+use function json_encode;
 
 /**
  * Copy the site structure of a project from one language to another
@@ -128,7 +131,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
 
         try {
             $SourceProject = $Projects->getProject($projectname, $source_lang);
-        } catch (\Exception $Exception) {
+        } catch (Exception) {
             $this->writeLn("Could not load project $projectname ($source_lang)");
             $this->execute();
 
@@ -149,7 +152,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
 
         try {
             $SourceProject->get($sourceParentId);
-        } catch (\Exception $Exception) {
+        } catch (Exception) {
             $this->writeLn("Could not load source site $sourceParentId ($source_lang)");
         }
 
@@ -163,7 +166,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
 
         try {
             $TargetProject = $Projects->getProject($projectname, $targetLang);
-        } catch (\Exception $Exception) {
+        } catch (Exception) {
             $this->writeLn("Could not load project $projectname ($targetLang)");
             $this->execute();
 
@@ -184,7 +187,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
 
         try {
             $TargetProject->get($targetParentId);
-        } catch (\Exception) {
+        } catch (Exception) {
             $this->writeLn("Could not load source site $targetParentId ($targetLang)");
         }
 
@@ -267,7 +270,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
                 $this->bricksMapping[$sourceBrickId] = $targetBrickId;
 
                 $this->write(" SUCCESS!");
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
                 $this->write(" ERROR: " . $Exception->getMessage());
             }
@@ -309,7 +312,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
                 );
 
                 $this->write(" SUCCESS!");
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
                 $this->write(" ERROR: " . $Exception->getMessage());
 
@@ -322,7 +325,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
                 try {
                     $SourceChild->addLanguageLink($TargetProject->getLang(), $TargetCopyChild->getId());
                     $this->write(" SUCCESS!");
-                } catch (\Exception $Exception) {
+                } catch (Exception $Exception) {
                     QUI\System\Log::writeException($Exception);
                     $this->write(" ERROR: " . $Exception->getMessage());
                 }
@@ -360,7 +363,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
                 if (!empty($siteAreaBricks)) {
                     $this->write(" SUCCESS!");
 
-                    $TargetCopyChild->setAttribute('quiqqer.bricks.areas', \json_encode($siteAreaBricks));
+                    $TargetCopyChild->setAttribute('quiqqer.bricks.areas', json_encode($siteAreaBricks));
                     $TargetCopyChild->save(QUI::getUsers()->getSystemUser());
                 } else {
                     $this->write(" no bricks found to add in source Site.");
@@ -373,7 +376,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
                 try {
                     $TargetCopyChild->activate(QUI::getUsers()->getSystemUser());
                     $this->write(" SUCCESS!");
-                } catch (\Exception $Exception) {
+                } catch (Exception $Exception) {
                     QUI\System\Log::writeException($Exception);
                     $this->write(" ERROR: " . $Exception->getMessage());
                 }

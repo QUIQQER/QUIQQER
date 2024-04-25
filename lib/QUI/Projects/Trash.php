@@ -7,6 +7,9 @@
 namespace QUI\Projects;
 
 use QUI;
+use QUI\Database\Exception;
+
+use function is_array;
 
 /**
  * Trash from a Project
@@ -26,7 +29,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
     /**
      * Konstruktor
      *
-     * @param \QUI\Projects\Project $Project
+     * @param Project $Project
      */
     public function __construct(Project $Project)
     {
@@ -145,7 +148,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      */
     public function destroy($ids = [])
     {
-        if (!\is_array($ids)) {
+        if (!is_array($ids)) {
             return;
         }
 
@@ -158,7 +161,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
     /**
      * Stellt die gewünschten Seiten wieder her
      *
-     * @param \QUI\Projects\Project $Project
+     * @param Project $Project
      * @param array $ids
      * @param integer $parentid
      *

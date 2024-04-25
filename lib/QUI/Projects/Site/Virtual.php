@@ -7,6 +7,12 @@
 namespace QUI\Projects\Site;
 
 use QUI;
+use QUI\Exception;
+use QUI\Interfaces\Projects\Site;
+use QUI\Projects\Project;
+
+use function json_decode;
+use function json_encode;
 
 /**
  * Virtual site object
@@ -34,7 +40,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param QUI\Projects\Project $Project
      * @param QUI\Projects\Site $Parent
      *
-     * @throws QUI\Exception
+     * @throws Exception
      */
     public function __construct(
         $attributes = [],
@@ -84,7 +90,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function encode()
     {
-        return \json_encode($this->getAttributes());
+        return json_encode($this->getAttributes());
     }
 
     /**
@@ -97,7 +103,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     public function decode($params)
     {
         $this->setAttributes(
-            \json_decode($params, true)
+            json_decode($params, true)
         );
     }
 

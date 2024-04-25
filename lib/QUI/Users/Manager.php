@@ -6,8 +6,13 @@
 
 namespace QUI\Users;
 
+use DOMElement;
+use DOMXPath;
 use PDO;
+use PDOException;
 use QUI;
+use QUI\Database\Exception;
+use QUI\ExceptionStack;
 use QUI\Interfaces\Users\User as QUIUserInterface;
 use QUI\Security\Password;
 use QUI\Utils\DOM;
@@ -135,11 +140,11 @@ class Manager
             }
 
             $Document = XML::getDomFromXml($userXml);
-            $Path = new \DOMXPath($Document);
+            $Path = new DOMXPath($Document);
 
             $tabs = $Path->query("//user/profile/tab");
 
-            /* @var $Tab \DOMElement */
+            /* @var $Tab DOMElement */
             foreach ($tabs as $Tab) {
                 try {
                     $extend .= DOM::parseCategoryToHTML($Tab);
@@ -1977,7 +1982,7 @@ class Manager
 
         try {
             $Statement->execute();
-        } catch (\PDOException $Exception) {
+        } catch (PDOException $Exception) {
             $message = $Exception->getMessage();
             $message .= print_r($query, true);
 

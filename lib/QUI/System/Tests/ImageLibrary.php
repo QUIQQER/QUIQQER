@@ -8,6 +8,10 @@ namespace QUI\System\Tests;
 
 use QUI;
 
+use function class_exists;
+use function function_exists;
+use function implode;
+
 /**
  * JSON Test
  *
@@ -41,12 +45,12 @@ class ImageLibrary extends QUI\System\Test
         $libraries = [];
 
         // ImageMagick PHP
-        if (\class_exists('Imagick')) {
+        if (class_exists('Imagick')) {
             $libraries[] = 'PHP Image Magick';
         }
 
         // GD Lib
-        if (\function_exists('imagecopyresampled')) {
+        if (function_exists('imagecopyresampled')) {
             $libraries[] = 'GD Lib';
         }
 
@@ -56,7 +60,7 @@ class ImageLibrary extends QUI\System\Test
 
         $this->setAttribute(
             'title',
-            'Image Libraries (' . \implode(', ', $libraries) . ')'
+            'Image Libraries (' . implode(', ', $libraries) . ')'
         );
 
         return self::STATUS_OK;

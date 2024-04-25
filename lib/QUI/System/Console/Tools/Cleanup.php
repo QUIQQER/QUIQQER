@@ -3,6 +3,11 @@
 namespace QUI\System\Console\Tools;
 
 use QUI;
+use QUI\Exception;
+
+use function is_file;
+use function time;
+use function unlink;
 
 /**
  * Class Cleanup
@@ -65,7 +70,7 @@ class Cleanup extends QUI\System\Console\Tool
         $repoDir = VAR_DIR . 'composer/repo/';
         $repos = QUI\Utils\System\File::readDir($repoDir);
 
-        $time = \time() - 2_592_000; // older than a month
+        $time = time() - 2_592_000; // older than a month
 
         foreach ($repos as $repo) {
             $files = QUI\Utils\System\File::readDir($repoDir . $repo);
@@ -73,14 +78,14 @@ class Cleanup extends QUI\System\Console\Tool
             foreach ($files as $file) {
                 $repoFile = $repoDir . $repo . '/' . $file;
 
-                if (!\is_file($repoFile)) {
+                if (!is_file($repoFile)) {
                     continue;
                 }
 
                 $fTime = filemtime($repoFile);
 
                 if ($time > $fTime) {
-                    \unlink($repoFile);
+                    unlink($repoFile);
                 }
             }
         }
