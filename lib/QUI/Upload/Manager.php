@@ -38,7 +38,6 @@ use function move_uploaded_file;
 use function ob_flush;
 use function realpath;
 use function str_replace;
-use function strpos;
 use function substr;
 use function trim;
 
@@ -85,8 +84,8 @@ class Manager
             return $function();
         }
 
-        if (strpos($function, 'ajax_') === 0) {
-            // if the function is a ajax_function
+        if (str_starts_with($function, 'ajax_')) {
+            // if the function is an ajax_function
             $_rf_file = OPT_DIR . 'quiqqer/quiqqer/admin/' . str_replace('_', '/', $function) . '.php';
             $_rf_file = Orthos::clearPath(realpath($_rf_file));
 
@@ -101,7 +100,7 @@ class Manager
             return QUI::getAjax()->callRequestFunction($function, $_REQUEST);
         }
 
-        if (strpos($function, 'package_') === 0) {
+        if (str_starts_with($function, 'package_')) {
             $dir = OPT_DIR;
             $file = substr(str_replace('_', '/', $function), 8) . '.php';
 

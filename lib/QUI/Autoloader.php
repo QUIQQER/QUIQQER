@@ -17,7 +17,6 @@ use function is_array;
 use function spl_autoload_functions;
 use function spl_autoload_unregister;
 use function str_replace;
-use function strpos;
 use function substr;
 
 /**
@@ -132,7 +131,7 @@ class Autoloader
         }
 
         // Projects
-        if (strpos($classname, 'Projects\\') === 0) {
+        if (str_starts_with($classname, 'Projects\\')) {
             if (class_exists($classname, false)) {
                 return true;
             }

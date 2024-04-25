@@ -450,9 +450,9 @@ class Manager
                 foreach ($cssFiles as $cssFile) {
                     // external file
                     if (
-                        strpos($cssFile, '//') === 0
-                        || strpos($cssFile, 'https://') === 0
-                        || strpos($cssFile, 'http://') === 0
+                        str_starts_with($cssFile, '//')
+                        || str_starts_with($cssFile, 'https://')
+                        || str_starts_with($cssFile, 'http://')
                     ) {
                         $css[] = $cssFile;
                         continue;
@@ -512,9 +512,9 @@ class Manager
             foreach ($cssFiles as $cssFile) {
                 // external file
                 if (
-                    strpos($cssFile, '//') === 0
-                    || strpos($cssFile, 'https://') === 0
-                    || strpos($cssFile, 'http://') === 0
+                    str_starts_with($cssFile, '//')
+                    || str_starts_with($cssFile, 'https://')
+                    || str_starts_with($cssFile, 'http://')
                 ) {
                     $css[] = $cssFile;
                     continue;

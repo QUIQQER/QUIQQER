@@ -28,7 +28,6 @@ use function str_contains;
 use function str_replace;
 use function strftime;
 use function strlen;
-use function strpos;
 use function strtolower;
 use function strtotime;
 use function strtoupper;
@@ -446,7 +445,7 @@ class Locale implements \Stringable
         $langList = [];
 
         foreach ($locales as $locale) {
-            if (strpos($locale, $lang) !== 0) {
+            if (!str_starts_with($locale, $lang)) {
                 continue;
             }
 
@@ -466,11 +465,11 @@ class Locale implements \Stringable
                 return 0;
             }
 
-            if (strpos($a, $langCode) === 0) {
+            if (str_starts_with($a, $langCode)) {
                 return -1;
             }
 
-            if (strpos($b, $langCode) === 0) {
+            if (str_starts_with($b, $langCode)) {
                 return 1;
             }
 
