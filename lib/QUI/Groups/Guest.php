@@ -146,7 +146,7 @@ class Guest extends QUI\Groups\Group
      * @return object|integer|false
      * @throws \QUI\Exception
      */
-    public function getParent($obj = true)
+    public function getParent(bool $obj = true)
     {
         return false;
     }
@@ -178,7 +178,7 @@ class Guest extends QUI\Groups\Group
      *
      * @return array
      */
-    public function getChildren($params = [])
+    public function getChildren(array $params = [])
     {
         return [];
     }
