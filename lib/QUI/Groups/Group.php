@@ -341,7 +341,6 @@ class Group extends QUI\QDOM
             'select' => 'id, parent',
             'from' => Manager::table(),
             'where_or' => [
-                'id' => (int)$id,
                 'uuid' => $id
             ],
             'limit' => 1

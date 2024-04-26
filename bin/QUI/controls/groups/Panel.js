@@ -710,7 +710,7 @@ define('controls/groups/Panel', [
                 id   = Group.getId();
 
             for (i = 0, len = data.length; i < len; i++) {
-                if (parseInt(data[i].id) !== id) {
+                if (data[i].id !== id) {
                     continue;
                 }
 

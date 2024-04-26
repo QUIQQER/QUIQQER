@@ -230,14 +230,23 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            $result = QUI::getDataBase()->fetch([
-                'from' => self::table(),
-                'where_or' => [
-                    'id' => (int)$groupId,
-                    'uuid' => $groupId
-                ],
-                'limit' => 1
-            ]);
+            if (is_numeric($groupId)) {
+                $result = QUI::getDataBase()->fetch([
+                    'from' => self::table(),
+                    'where' => [
+                        'id' => $groupId
+                    ],
+                    'limit' => 1
+                ]);
+            } else {
+                $result = QUI::getDataBase()->fetch([
+                    'from' => self::table(),
+                    'where' => [
+                        'uuid' => $groupId
+                    ],
+                    'limit' => 1
+                ]);
+            }
         } catch (QUI\Exception) {
         }
 

@@ -17,8 +17,8 @@ define('controls/groups/Sitemap', [
     'Ajax',
     'Groups'
 
-], function (QUI, QUIControl, QUISitemap, QUISitemapItem, QUILocale, Ajax, Groups) {
-    "use strict";
+], function(QUI, QUIControl, QUISitemap, QUISitemapItem, QUILocale, Ajax, Groups) {
+    'use strict';
 
     /**
      * @class controls/groups/Sitemap
@@ -30,7 +30,7 @@ define('controls/groups/Sitemap', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/groups/Sitemap',
+        Type: 'controls/groups/Sitemap',
 
         Binds: [
             'getChildren',
@@ -42,10 +42,10 @@ define('controls/groups/Sitemap', [
             multiple: false
         },
 
-        $Map      : null,
+        $Map: null,
         $Container: null,
 
-        initialize: function (options) {
+        initialize: function(options) {
             this.parent(options);
 
             this.$Map = null;
@@ -58,28 +58,26 @@ define('controls/groups/Sitemap', [
          *
          * @return {HTMLElement}
          */
-        create: function () {
-            var self = this;
-
+        create: function() {
             this.$Elm = new Element('div.qui-group-sitemap');
 
             this.$Map = new QUISitemap({
-                name    : 'Group-Sitemap',
+                name: 'Group-Sitemap',
                 multiple: this.getAttribute('multiple')
             });
 
             // Firstchild
             this.$Map.appendChild(
                 new QUISitemapItem({
-                    name       : 1,
-                    index      : 1,
-                    value      : 1,
-                    text       : '',
-                    alt        : '',
+                    name: 1,
+                    index: 1,
+                    value: 1,
+                    text: '',
+                    alt: '',
                     hasChildren: false,
-                    events     : {
-                        onOpen    : this.getChildren,
-                        onClick   : this.$onItemClick,
+                    events: {
+                        onOpen: this.getChildren,
+                        onClick: this.$onItemClick,
                         onDblClick: this.$onItemDblClick
                     }
                 })
@@ -87,8 +85,8 @@ define('controls/groups/Sitemap', [
 
             this.$Map.inject(this.$Elm);
 
-            (function () {
-                self.$onDrawEnd();
+            (() => {
+                this.$onDrawEnd();
             }).delay(200);
 
             return this.$Elm;
@@ -97,15 +95,15 @@ define('controls/groups/Sitemap', [
         /**
          * the DOMNode is injected, then call the root group
          */
-        $onDrawEnd: function () {
-            var self  = this,
-                Map   = this.$Map,
+        $onDrawEnd: function() {
+            const self = this,
+                Map = this.$Map,
                 First = this.$Map.firstChild();
 
             // load first child
-            Ajax.get('ajax_groups_root', function (result) {
+            Ajax.get('ajax_groups_root', function(result) {
                 if (!result) {
-                    QUI.getMessageHandler().then(function (MH) {
+                    QUI.getMessageHandler().then(function(MH) {
                         MH.addAttention(
                             QUILocale.get('quiqqer/quiqqer', 'message.unknown.root.group')
                         );
@@ -113,14 +111,13 @@ define('controls/groups/Sitemap', [
                     return;
                 }
 
-
                 First.setAttributes({
-                    name       : result.name,
-                    index      : result.id,
-                    value      : result.id,
-                    text       : result.name,
-                    alt        : result.name,
-                    icon       : 'fa fa-group',
+                    name: result.name,
+                    index: result.id,
+                    value: result.uuid,
+                    text: result.name,
+                    alt: result.name,
+                    icon: 'fa fa-group',
                     hasChildren: result.hasChildren
                 });
 
@@ -130,22 +127,22 @@ define('controls/groups/Sitemap', [
                 Promise.all([
                     Groups.get(1).load(), // Everyone
                     Groups.get(0).load()  // Guest
-                ]).then(function (data) {
-                    var everyone = data[0],
-                        guest    = data[1];
+                ]).then(function(data) {
+                    const everyone = data[0],
+                        guest = data[1];
 
                     // guest
                     Map.appendChild(
                         new QUISitemapItem({
-                            index      : guest.attributes.id,
-                            value      : guest.attributes.id,
-                            name       : guest.attributes.name,
-                            text       : guest.attributes.name,
-                            alt        : guest.attributes.name,
-                            icon       : 'fa fa-group',
+                            index: guest.attributes.id,
+                            value: guest.attributes.uuid,
+                            name: guest.attributes.name,
+                            text: guest.attributes.name,
+                            alt: guest.attributes.name,
+                            icon: 'fa fa-group',
                             hasChildren: 0,
-                            events     : {
-                                onClick   : self.$onItemClick,
+                            events: {
+                                onClick: self.$onItemClick,
                                 onDblClick: self.$onItemDblClick
                             }
                         })
@@ -154,15 +151,15 @@ define('controls/groups/Sitemap', [
                     // everyone
                     Map.appendChild(
                         new QUISitemapItem({
-                            index      : everyone.attributes.id,
-                            value      : everyone.attributes.id,
-                            name       : everyone.attributes.name,
-                            text       : everyone.attributes.name,
-                            alt        : everyone.attributes.name,
-                            icon       : 'fa fa-group',
+                            index: everyone.attributes.id,
+                            value: everyone.attributes.uuid,
+                            name: everyone.attributes.name,
+                            text: everyone.attributes.name,
+                            alt: everyone.attributes.name,
+                            icon: 'fa fa-group',
                             hasChildren: 0,
-                            events     : {
-                                onClick   : self.$onItemClick,
+                            events: {
+                                onClick: self.$onItemClick,
                                 onDblClick: self.$onItemDblClick
                             }
                         })
@@ -176,15 +173,15 @@ define('controls/groups/Sitemap', [
          *
          * @param {Object} Parent - qui/controls/sitemap/Item
          */
-        getChildren: function (Parent) {
+        getChildren: function(Parent) {
             Parent.removeIcon('fa-group');
             Parent.addIcon('fa fa-spinner fa-spin');
 
-            var self  = this,
+            const self = this,
                 Group = Groups.get(Parent.getAttribute('value'));
 
-            Group.getChildren().then(function (result) {
-                var i, len, entry;
+            Group.getChildren().then(function(result) {
+                let i, len, entry;
 
                 Parent.clearChildren();
 
@@ -193,16 +190,16 @@ define('controls/groups/Sitemap', [
 
                     Parent.appendChild(
                         new QUISitemapItem({
-                            name       : entry.name,
-                            index      : entry.id,
-                            value      : entry.id,
-                            text       : entry.name,
-                            alt        : entry.name,
-                            icon       : 'fa fa-group',
+                            name: entry.name,
+                            index: entry.id,
+                            value: entry.uuid,
+                            text: entry.name,
+                            alt: entry.name,
+                            icon: 'fa fa-group',
                             hasChildren: entry.hasChildren,
-                            events     : {
-                                onOpen    : self.getChildren,
-                                onClick   : self.$onItemClick,
+                            events: {
+                                onOpen: self.getChildren,
+                                onClick: self.$onItemClick,
                                 onDblClick: self.$onItemDblClick
                             }
                         })
@@ -219,13 +216,11 @@ define('controls/groups/Sitemap', [
          *
          * @return {Array}
          */
-        getValues: function () {
-            var i, len;
-
-            var sels   = this.$Map.getSelectedChildren(),
+        getValues: function() {
+            const sels = this.$Map.getSelectedChildren(),
                 result = [];
 
-            for (i = 0, len = sels.length; i < len; i++) {
+            for (let i = 0, len = sels.length; i < len; i++) {
                 result.push(
                     sels[i].getAttribute('value')
                 );
@@ -239,7 +234,7 @@ define('controls/groups/Sitemap', [
          *
          * @param {Object} Item - qui/controls/sitemap/Item
          */
-        $onItemClick: function (Item) {
+        $onItemClick: function(Item) {
             this.fireEvent('onItemClick', [this, Item]);
         },
 
@@ -248,7 +243,7 @@ define('controls/groups/Sitemap', [
          *
          * @param {Object} Item - qui/controls/sitemap/Item
          */
-        $onItemDblClick: function (Item) {
+        $onItemDblClick: function(Item) {
             this.fireEvent('onItemDblClick', [this, Item]);
         }
     });

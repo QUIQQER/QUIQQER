@@ -574,7 +574,7 @@ define('controls/groups/Group', [
 
             if (Group.getId() === 1 ||
                 Group.getId() === 0 ||
-                Group.getId() === parseInt(window.QUIQQER_CONFIG.globals.root)) {
+                Group.getId() === window.QUIQQER_CONFIG.globals.root) {
                 Parent.getParent('tr').setStyle('display', 'none');
             } else {
                 Parent.set('value', Group.getAttribute('parent'));

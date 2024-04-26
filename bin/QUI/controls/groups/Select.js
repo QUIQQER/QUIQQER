@@ -75,7 +75,7 @@ define('controls/groups/Select', [
 
                     for (let i = 0, len = result.data.length; i < len; i++) {
                         data.push({
-                            id: result.data[i].id,
+                            id: result.data[i].uuid,
                             title: result.data[i].name,
                             icon: 'icon-group'
                         });
