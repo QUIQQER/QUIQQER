@@ -37,7 +37,7 @@
     "league/climate": "^3",
     "league/csv": "^9",
     "masterminds/html5": "^2",
-    "monolog/monolog": "^2|^3",
+    "monolog/monolog": "^3",
     "neitanod/forceutf8": "^2",
     "oomphinc/composer-installers-extender": "^2",
     "phpmailer/phpmailer": "^6",
