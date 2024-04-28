@@ -12,6 +12,7 @@ use DOMXPath;
 use PDO;
 use QUI;
 use QUI\Database\Exception;
+use QUI\ExceptionStack;
 use QUI\Interfaces\Users\User;
 use QUI\Projects\Site\Edit;
 use QUI\Utils\StringHelper as StringUtils;
@@ -1716,11 +1717,13 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * DB Abfragen werden gemacht - Hier auf Performance achten
      *
      * @param array $params - Parameter welche in den namen der seite eingefügt werden
+     * @param array $getParams
      * @return string
      *
      * @throws QUI\Exception
+     * @throws ExceptionStack
      */
-    public function getUrlRewritten(array $params = []): string
+    public function getUrlRewritten(array $params = [], array $getParams = []): string
     {
         $eventResult = false;
 
@@ -1741,11 +1744,11 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             $Output->setProject($this->getProject());
         }
 
-        return $Output->getSiteUrl($params);
+        return $Output->getSiteUrl($params, $getParams);
     }
 
     /**
-     * Returns a "speeking" URL with host
+     * Returns a "speaking" URL with host
      *
      * @param array $pathParams
      * @param array $getParams

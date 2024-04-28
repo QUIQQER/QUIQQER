@@ -21,12 +21,12 @@ class PasswordResetVerification extends AbstractVerification
     /**
      * PasswordResetVerification constructor.
      *
-     * @param string $identifier
+     * @param int|string $identifier
      * @param array $additionalData
      *
      * @throws QUI\Exception
      */
-    public function __construct($identifier, $additionalData = [])
+    public function __construct(int|string $identifier, array $additionalData = [])
     {
         parent::__construct($identifier, $additionalData);
         $this->Project = new QUI\Projects\Project($additionalData['project'], $additionalData['projectLang']);
@@ -146,7 +146,7 @@ class PasswordResetVerification extends AbstractVerification
      * @param string $reason - The reason for the error (see \QUI\Verification\Verifier::REASON_)
      * @return string
      */
-    public function getErrorMessage($reason): string
+    public function getErrorMessage(string $reason): string
     {
         return QUI::getLocale()->get(
             'quiqqer/quiqqer',

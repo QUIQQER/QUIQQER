@@ -139,6 +139,10 @@ class Address extends QUI\QDOM
      */
     public function getId(): int
     {
+        if ($this->id === null) {
+            return -1;
+        }
+
         return $this->id;
     }
 

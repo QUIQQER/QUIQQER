@@ -87,7 +87,7 @@ class Edit extends Site
      *
      * @throws QUI\Exception
      */
-    public function __construct(Project $Project, $id)
+    public function __construct(Project $Project, int $id)
     {
         parent::__construct($Project, $id);
 
