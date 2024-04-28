@@ -57,6 +57,8 @@ class MigrationV2 extends QUI\System\Console\Tool
         $this->permissions();
         $this->workspaces();
         $this->loginLog();
+
+        QUI::getEvents()->fireEvent('quiqqerMigrationV2', [$this]);
     }
 
     public function users(): void
@@ -251,7 +253,7 @@ class MigrationV2 extends QUI\System\Console\Tool
 
     public function groups(): void
     {
-        $this->writeLn('- Update users table');
+        $this->writeLn('- Migrate users table');
 
 
         // read database xml, because we need the newest groups db
@@ -543,7 +545,7 @@ class MigrationV2 extends QUI\System\Console\Tool
 
     public function loginLog()
     {
-        $this->writeLn('- Update login log table');
+        $this->writeLn('- Migrate login log table');
         QUI::getDataBaseConnection()->executeStatement(
             'ALTER TABLE `' . QUI::getDBTableName('login_log') . '` CHANGE `uid` `uid` VARCHAR(50) NOT NULL;'
         );
