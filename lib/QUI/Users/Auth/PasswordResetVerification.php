@@ -122,9 +122,8 @@ class PasswordResetVerification extends AbstractVerification
      *
      * @return void
      */
-    public function onError()
+    public function onError(): void
     {
-        // TODO: Implement onError() method.
     }
 
     /**

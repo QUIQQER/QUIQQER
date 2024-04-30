@@ -21,10 +21,10 @@ class PackageNotLicensedException extends Exception
      * Constructor
      *
      * @param string $package - The concerned package
-     * @param null $message (optional) - If omitted, use default message
+     * @param string|null $message (optional) - If omitted, use default message
      * @param string|null $url (optional) - Package download URL
      */
-    public function __construct(string $package, $message = null, string $url = null)
+    public function __construct(string $package, string $message = null, string $url = null)
     {
         if (empty($message)) {
             $message = QUI::getLocale()->get(

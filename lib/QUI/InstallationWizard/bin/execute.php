@@ -47,7 +47,7 @@ function flushIt()
         <link href="execute.css" rel="stylesheet" type="text/css"/>
 
         <?php
-        echo QUI\FontAwesome\EventHandler::fontawesome(false, false);
+        echo QUI\FontAwesome\EventHandler::fontawesome();
         ?>
     </head>
 <?php
