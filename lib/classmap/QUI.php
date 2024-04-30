@@ -9,9 +9,29 @@
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
+use QUI\Ajax;
+use QUI\Config;
 use QUI\Database\DB;
 use QUI\Exception;
+use QUI\Interfaces\Users\User;
+use QUI\Package\Package;
+use QUI\Projects\Manager as ProjectManager;
+use QUI\Permissions\Manager as PermissionManager;
+use QUI\Projects\Project;
+use QUI\Users\Manager as UserManager;
+use QUI\Groups\Manager as GroupManager;
+use QUI\Messages\Handler as Messages;
+use QUI\Mail\Manager as MailManager;
+use QUI\Package\Manager as PackageManager;
+use QUI\Events\Manager as EventsManager;
+use QUI\Countries\Manager as CountriesManager;
+use QUI\Rewrite;
+use QUI\Session;
+use QUI\System\Headers;
 use QUI\System\Log;
+use QUI\Temp;
+use QUI\Template;
+use QUI\Utils\MyDB;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -48,16 +68,16 @@ class QUI
     /**
      * QUI Config, use \QUI::getConfig()
      *
-     * @var \QUI\Config|null
+     * @var Config|null
      */
-    public static ?\QUI\Config $Conf = null;
+    public static ?Config $Conf = null;
 
     /**
      * QUI getDB object, use \QUI::getDB()
      *
-     * @var \QUI\Utils\MyDB|null
+     * @var MyDB|null
      */
-    public static ?\QUI\Utils\MyDB $DataBase = null;
+    public static ?MyDB $DataBase = null;
 
     /**
      * QUI getDataBase object, use \QUI::getDataBase();
@@ -74,9 +94,9 @@ class QUI
     /**
      * QUI Error Handler, use \QUI::getErrorHandler();
      *
-     * @var \QUI\Exceptions\Handler|null
+     * @var QUI\Exceptions\Handler|null
      */
-    public static ?\QUI\Exceptions\Handler $ErrorHandler = null;
+    public static ?QUI\Exceptions\Handler $ErrorHandler = null;
 
     /**
      * QUI vhosts, use \QUI::vhosts();
@@ -88,127 +108,142 @@ class QUI
     /**
      * QUI Ajax
      *
-     * @var \QUI\Ajax|null
+     * @var Ajax|null
      */
-    public static ?\QUI\Ajax $Ajax = null;
+    public static ?Ajax $Ajax = null;
 
     /**
      * QUI GroupManager, use \QUI::getGroups()
      *
-     * @var \QUI\Groups\Manager|null
+     * @var GroupManager|null
      */
-    public static ?\QUI\Groups\Manager $Groups = null;
+    public static ?GroupManager $Groups = null;
 
     /**
      * QUI Message Handler, use \QUI::getMessageHandler()
      *
-     * @var \QUI\Messages\Handler|null
+     * @var ?Messages
      */
-    public static ?\QUI\Messages\Handler $MessageHandler = null;
+    public static ?Messages $MessageHandler = null;
 
     /**
      * QUI Locale Object, use \QUI::getLocale()
      *
-     * @var \QUI\Locale|null
+     * @var QUI\Locale|null
      */
-    public static ?\QUI\Locale $Locale = null;
+    public static ?QUI\Locale $Locale = null;
+
     /**
      * QUI Mail Manager
      *
-     * @var ?\QUI\Mail\Manager
+     * @var ?MailManager
      */
-    public static ?\QUI\Mail\Manager $MailManager = null;
+    public static ?MailManager $MailManager = null;
+
     /**
      * QUI project manager, use \QUI::getPackageManager();
      *
-     * @var ?\QUI\Package\Manager
+     * @var ?PackageManager
      */
-    public static ?\QUI\Package\Manager $PackageManager = null;
+    public static ?PackageManager $PackageManager = null;
+
     /**
      * QUI project manager, use \QUI::getProjectManager();
      *
-     * @var ?\QUI\Projects\Manager
+     * @var ?ProjectManager
      */
-    public static ?\QUI\Projects\Manager $ProjectManager = null;
+    public static ?ProjectManager $ProjectManager = null;
+
     /**
      * QUI project manager, use \QUI::getProjectManager();
      *
      * @var ?Request
      */
     public static ?Request $Request = null;
+
     /**
      * Global Response Object
      *
      * @var ?Response
      */
     public static ?Response $Response = null;
+
     /**
      * QUI Rewrite Object, use \QUI::getRewrite();
      *
-     * @var ?\QUI\Rewrite
+     * @var ?Rewrite
      */
-    public static ?\QUI\Rewrite $Rewrite = null;
+    public static ?Rewrite $Rewrite = null;
+
     /**
      * QUI Rights Object, use \QUI::getRights();
      *
-     * @var ?\QUI\Permissions\Manager
+     * @var ?PermissionManager
      */
-    public static ?\QUI\Permissions\Manager $Rights = null;
+    public static ?PermissionManager $Rights = null;
+
     /**
      * QUI Session Object, use \QUI::getSession();
      *
-     * @var ?\QUI\Session|QUI\System\Console\Session
+     * @var ?Session|QUI\System\Console\Session
      */
-    public static $Session = null;
+    public static QUI\System\Console\Session|null|Session $Session = null;
+
     /**
      * QUI\Temp Object, use \QUI::getTemp();
      *
-     * @var ?\QUI\Temp
+     * @var ?Temp
      */
-    public static ?\QUI\Temp $Temp = null;
+    public static ?Temp $Temp = null;
+
     /**
      * QUI User Manager, use \QUI::getUsers();
      *
-     * @var ?\QUI\Users\Manager
+     * @var ?UserManager
      */
-    public static ?\QUI\Users\Manager $Users = null;
+    public static ?UserManager $Users = null;
+
     /**
      * internal config objects, array list of configs
      *
      * @var array
      */
     public static array $Configs = [];
+
     /**
      * QUI global Events
      *
-     * @var ?\QUI\Events\Manager
+     * @var ?EventsManager
      */
-    public static ?\QUI\Events\Manager $Events = null;
+    public static ?EventsManager $Events = null;
+
     /**
      * Country Manager
      *
-     * @var ?\QUI\Countries\Manager
+     * @var ?CountriesManager
      */
-    public static ?\QUI\Countries\Manager $Countries = null;
+    public static ?CountriesManager $Countries = null;
+
     /**
      * Template Manager
      *
-     * @var ?\QUI\Template
+     * @var ?Template
      */
-    public static ?\QUI\Template $Template = null;
+    public static ?Template $Template = null;
+
     /**
      * QUI default Locale Object
      *
-     * @var \QUI\Locale|null
+     * @var QUI\Locale|null
      */
-    protected static ?\QUI\Locale $SystemLocale = null;
+    protected static ?QUI\Locale $SystemLocale = null;
 
     /**
      * Set all important paths and load QUIQQER
      *
      * @throws QUI\Exception
      */
-    public static function load()
+    public static function load(): void
     {
         // load the main configuration
         $config = parse_ini_file(ETC_DIR . 'conf.ini.php', true);
@@ -442,7 +477,7 @@ class QUI
      *
      * @return array|bool|string
      */
-    public static function conf(string $section, string $key = null)
+    public static function conf(string $section, string $key = null): bool|array|string
     {
         if (self::$Conf === null) {
             try {
@@ -462,10 +497,10 @@ class QUI
      *
      * @param string $file
      *
-     * @return \QUI\Config
-     * @throws \QUI\Exception
+     * @return Config
+     * @throws Exception
      */
-    public static function getConfig(string $file): \QUI\Config
+    public static function getConfig(string $file): Config
     {
         if (isset(self::$Configs[$file])) {
             return self::$Configs[$file];
@@ -479,19 +514,19 @@ class QUI
 
         $_file = $cmsDir . $file;
 
-        if (substr($file, -4) !== '.php') {
+        if (!str_ends_with($file, '.php')) {
             $_file .= '.php';
         }
 
         if (!isset(self::$Configs[$file])) {
             if (!file_exists($_file) || is_dir($_file)) {
-                throw new \QUI\Exception(
+                throw new Exception(
                     'Error: Ini file does not exists: ' . $_file,
                     404
                 );
             }
 
-            self::$Configs[$file] = new \QUI\Config($_file);
+            self::$Configs[$file] = new Config($_file);
         }
 
         return self::$Configs[$file];
@@ -500,12 +535,12 @@ class QUI
     /**
      * Returns the package manager
      *
-     * @return \QUI\Package\Manager
+     * @return PackageManager
      */
-    public static function getPackageManager(): ?\QUI\Package\Manager
+    public static function getPackageManager(): PackageManager
     {
         if (self::$PackageManager === null) {
-            self::$PackageManager = new \QUI\Package\Manager();
+            self::$PackageManager = new PackageManager();
         }
 
         return self::$PackageManager;
@@ -514,14 +549,14 @@ class QUI
     /**
      * Returns the ErrorHandler
      *
-     * @return \QUI\Exceptions\Handler
+     * @return QUI\Exceptions\Handler
      */
-    public static function getErrorHandler(): ?\QUI\Exceptions\Handler
+    public static function getErrorHandler(): QUI\Exceptions\Handler
     {
         if (self::$ErrorHandler === null) {
             require_once dirname(__FILE__, 2) . '/QUI/Exceptions/Handler.php';
 
-            self::$ErrorHandler = new \QUI\Exceptions\Handler();
+            self::$ErrorHandler = new QUI\Exceptions\Handler();
 
             self::$ErrorHandler->setAttribute(
                 'logdir',
@@ -540,12 +575,12 @@ class QUI
     /**
      * Return the mail manager
      *
-     * @return \QUI\Mail\Manager
+     * @return MailManager
      */
-    public static function getMailManager(): ?\QUI\Mail\Manager
+    public static function getMailManager(): MailManager
     {
         if (self::$MailManager === null) {
-            self::$MailManager = new \QUI\Mail\Manager();
+            self::$MailManager = new MailManager();
         }
 
         return self::$MailManager;
@@ -554,12 +589,12 @@ class QUI
     /**
      * Returns the globals Events object
      *
-     * @return \QUI\Events\Manager
+     * @return EventsManager
      */
-    public static function getEvents(): ?\QUI\Events\Manager
+    public static function getEvents(): EventsManager
     {
         if (self::$Events === null) {
-            self::$Events = new \QUI\Events\Manager();
+            self::$Events = new EventsManager();
         }
 
         return self::$Events;
@@ -570,7 +605,7 @@ class QUI
      *
      * @throws QUI\Exception
      */
-    public static function setup()
+    public static function setup(): void
     {
         QUI\Setup::all();
     }
@@ -612,7 +647,7 @@ class QUI
      *
      * @return array
      */
-    public static function vhosts(): ?array
+    public static function vhosts(): array
     {
         if (self::$vhosts !== null) {
             return self::$vhosts;
@@ -621,7 +656,7 @@ class QUI
         try {
             $vhosts = self::getConfig('etc/vhosts.ini.php');
             self::$vhosts = $vhosts->toArray();
-        } catch (\QUI\Exception) {
+        } catch (Exception) {
             self::$vhosts = [];
         }
 
@@ -631,9 +666,9 @@ class QUI
     /**
      * Return the global ajax object
      *
-     * @return \QUI\Ajax
+     * @return Ajax
      */
-    public static function getAjax(): \QUI\Ajax
+    public static function getAjax(): Ajax
     {
         if (self::$Ajax === null) {
             self::$Ajax = new QUI\Ajax([
@@ -660,14 +695,14 @@ class QUI
      * Return the table name with the QUI Prefix and table params
      *
      * @param string $table
-     * @param \QUI\Projects\Project $Project
+     * @param Project $Project
      * @param boolean $lang - language in the table name? default = true
      *
      * @return string
      */
     public static function getDBProjectTableName(
         string $table,
-        \QUI\Projects\Project $Project,
+        Project $Project,
         bool $lang = true
     ): string {
         if ($lang === false) {
@@ -680,12 +715,12 @@ class QUI
     /**
      * Returns the Country Manager
      *
-     * @return \QUI\Countries\Manager
+     * @return CountriesManager
      */
-    public static function getCountries(): ?\QUI\Countries\Manager
+    public static function getCountries(): CountriesManager
     {
         if (self::$Countries === null) {
-            self::$Countries = new \QUI\Countries\Manager();
+            self::$Countries = new CountriesManager();
         }
 
         return self::$Countries;
@@ -694,14 +729,14 @@ class QUI
     /**
      * Returns the database Object (old version)
      *
-     * @return \QUI\Utils\MyDB
+     * @return MyDB
      * @deprecated
      * use getDataBase and PDO or direct getPDO
      */
-    public static function getDB(): ?\QUI\Utils\MyDB
+    public static function getDB(): MyDB
     {
         if (self::$DataBase === null) {
-            self::$DataBase = new \QUI\Utils\MyDB();
+            self::$DataBase = new MyDB();
         }
 
         return self::$DataBase;
@@ -750,17 +785,18 @@ class QUI
      *
      * You can also use \QUI\Projects\Manager::getProject()
      *
-     * @param string|array $project - Project name | array('name' => , 'lang' => , 'template' => )
-     * @param string|boolean $lang - Project lang (optional)
-     * @param string|boolean $template - Project template (optional)
+     * @param array|string $project - Project name | array('name' => , 'lang' => , 'template' => )
+     * @param boolean|string $lang - Project lang (optional)
+     * @param boolean|string $template - Project template (optional)
      *
-     * @return \QUI\Projects\Project
+     * @return Project
      * @throws QUI\Exception
-     * @uses \QUI\Projects\Manager
-     *
      */
-    public static function getProject($project, $lang = false, $template = false): \QUI\Projects\Project
-    {
+    public static function getProject(
+        array|string $project,
+        bool|string $lang = false,
+        bool|string $template = false
+    ): Project {
         if (is_array($project)) {
             $lang = false;
             $template = false;
@@ -778,18 +814,18 @@ class QUI
             }
         }
 
-        return \QUI\Projects\Manager::getProject($project, $lang, $template);
+        return ProjectManager::getProject($project, $lang, $template);
     }
 
     /**
      * Returns the group manager
      *
-     * @return \QUI\Groups\Manager
+     * @return GroupManager
      */
-    public static function getGroups(): ?\QUI\Groups\Manager
+    public static function getGroups(): GroupManager
     {
         if (self::$Groups === null) {
-            self::$Groups = new \QUI\Groups\Manager();
+            self::$Groups = new GroupManager();
         }
 
         return self::$Groups;
@@ -798,12 +834,12 @@ class QUI
     /**
      * Returns the QUIQQER message handler object
      *
-     * @return \QUI\Messages\Handler
+     * @return Messages
      */
-    public static function getMessagesHandler(): ?\QUI\Messages\Handler
+    public static function getMessagesHandler(): Messages
     {
         if (self::$MessageHandler === null) {
-            self::$MessageHandler = new \QUI\Messages\Handler();
+            self::$MessageHandler = new Messages();
         }
 
         return self::$MessageHandler;
@@ -812,9 +848,9 @@ class QUI
     /**
      * Returns the main locale object
      *
-     * @return \QUI\Locale
+     * @return QUI\Locale
      */
-    public static function getLocale(): ?\QUI\Locale
+    public static function getLocale(): QUI\Locale
     {
         if (self::$Locale === null) {
             self::$Locale = new \QUI\Locale();
@@ -865,9 +901,9 @@ class QUI
     /**
      * Return the QUIQQER default language locale
      *
-     * @return \QUI\Locale
+     * @return QUI\Locale
      */
-    public static function getSystemLocale(): ?\QUI\Locale
+    public static function getSystemLocale(): QUI\Locale
     {
         if (self::$SystemLocale !== null) {
             return self::$SystemLocale;
@@ -887,12 +923,11 @@ class QUI
      * Returns the wanted package
      *
      * @param string $package - name of the package eq: quiqqer/blog or quiqqer/quiqqer
-     *
-     * @return \QUI\Package\Package
+     * @return Package
      *
      * @throws QUI\Exception
      */
-    public static function getPackage(string $package): \QUI\Package\Package
+    public static function getPackage(string $package): Package
     {
         return self::getPackageManager()->getInstalledPackage($package);
     }
@@ -900,12 +935,12 @@ class QUI
     /**
      * Returns the project manager
      *
-     * @return \QUI\Projects\Manager
+     * @return ProjectManager
      */
-    public static function getProjectManager(): ?\QUI\Projects\Manager
+    public static function getProjectManager(): ProjectManager
     {
         if (self::$ProjectManager === null) {
-            self::$ProjectManager = new \QUI\Projects\Manager();
+            self::$ProjectManager = new ProjectManager();
         }
 
         return self::$ProjectManager;
@@ -914,12 +949,12 @@ class QUI
     /**
      * returns the rewrite object
      *
-     * @return \QUI\Rewrite
+     * @return Rewrite
      */
-    public static function getRewrite(): ?\QUI\Rewrite
+    public static function getRewrite(): Rewrite
     {
         if (self::$Rewrite === null) {
-            self::$Rewrite = new \QUI\Rewrite();
+            self::$Rewrite = new Rewrite();
         }
 
         return self::$Rewrite;
@@ -928,24 +963,12 @@ class QUI
     /**
      * Return the rights object
      *
-     * @return \QUI\Permissions\Manager
-     *
-     * @deprecated use ::getPermissionManager
+     * @return PermissionManager
      */
-    public static function getRights(): ?\QUI\Permissions\Manager
-    {
-        return self::getPermissionManager();
-    }
-
-    /**
-     * Return the rights object
-     *
-     * @return \QUI\Permissions\Manager
-     */
-    public static function getPermissionManager(): ?\QUI\Permissions\Manager
+    public static function getPermissionManager(): PermissionManager
     {
         if (self::$Rights === null) {
-            self::$Rights = new \QUI\Permissions\Manager();
+            self::$Rights = new PermissionManager();
         }
 
         return self::$Rights;
@@ -954,12 +977,12 @@ class QUI
     /**
      * @return Response
      */
-    public static function getGlobalResponse(): ?Response
+    public static function getGlobalResponse(): Response
     {
         if (self::$Response === null) {
             self::$Response = new Response();
 
-            $Headers = new \QUI\System\Headers(self::$Response);
+            $Headers = new Headers(self::$Response);
             $Headers->compile();
         }
 
@@ -969,9 +992,9 @@ class QUI
     /**
      * Return the global QUI Session
      *
-     * @return \QUI\Session|QUI\System\Console\Session
+     * @return Session|QUI\System\Console\Session|null
      */
-    public static function getSession()
+    public static function getSession(): Session|QUI\System\Console\Session|null
     {
         if (php_sapi_name() === 'cli') {
             if (self::$Session === null) {
@@ -982,7 +1005,7 @@ class QUI
         }
 
         if (self::$Session === null) {
-            self::$Session = new \QUI\Session();
+            self::$Session = new Session();
             self::getRequest()->setSession(self::$Session->getSymfonySession());
         }
 
@@ -994,7 +1017,7 @@ class QUI
      *
      * @return Request
      */
-    public static function getRequest(): ?Request
+    public static function getRequest(): Request
     {
         if (self::$Request === null) {
             self::$Request = Request::createFromGlobals();
@@ -1006,12 +1029,12 @@ class QUI
     /**
      * Return the temp manager
      *
-     * @return QUI\Temp
+     * @return Temp
      */
-    public static function getTemp(): ?\QUI\Temp
+    public static function getTemp(): Temp
     {
         if (self::$Temp === null) {
-            self::$Temp = new \QUI\Temp(VAR_DIR . 'tmp');
+            self::$Temp = new Temp(VAR_DIR . 'tmp');
         }
 
         return self::$Temp;
@@ -1020,12 +1043,12 @@ class QUI
     /**
      * Return the Template Manager
      *
-     * @return \QUI\Template
+     * @return Template
      */
-    public static function getTemplateManager(): ?\QUI\Template
+    public static function getTemplateManager(): Template
     {
         if (self::$Template === null) {
-            self::$Template = new \QUI\Template();
+            self::$Template = new Template();
         }
 
         return self::$Template;
@@ -1034,9 +1057,9 @@ class QUI
     /**
      * Get current logged in user
      *
-     * @return \QUI\Interfaces\Users\User
+     * @return User
      */
-    public static function getUserBySession(): \QUI\Interfaces\Users\User
+    public static function getUserBySession(): User
     {
         return self::getUsers()->getUserBySession();
     }
@@ -1044,12 +1067,12 @@ class QUI
     /**
      * Return the user manager
      *
-     * @return \QUI\Users\Manager
+     * @return UserManager
      */
-    public static function getUsers(): ?\QUI\Users\Manager
+    public static function getUsers(): UserManager
     {
         if (self::$Users === null) {
-            self::$Users = new \QUI\Users\Manager();
+            self::$Users = new UserManager();
         }
 
         return self::$Users;
