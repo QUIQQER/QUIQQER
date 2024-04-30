@@ -545,11 +545,11 @@ class Package extends QUI\QDOM
     /**
      * Return the package config
      *
-     * @return Config|bool|null
+     * @return Config|null
      *
      * @throws QUI\Exception
      */
-    public function getConfig(): QUI\Config|bool|null
+    public function getConfig(): ?QUI\Config
     {
         if ($this->configPath === null) {
             $configFile = CMS_DIR . 'etc/plugins/' . $this->getName() . '.ini.php';
@@ -560,7 +560,7 @@ class Package extends QUI\QDOM
         }
 
         if (empty($this->configPath)) {
-            return false;
+            return null;
         }
 
         if (!$this->Config) {
