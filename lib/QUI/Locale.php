@@ -167,9 +167,9 @@ class Locale implements \Stringable
      * @param boolean|string $value - (optional) Variable, optional
      * @param boolean|array $replace - (optional)
      *
-     * @return string|array
+     * @return string
      */
-    public function get(string $group, bool|string $value = false, bool|array $replace = false): array|string
+    public function get(string $group, bool|string $value = false, bool|array $replace = false): string
     {
         $str = $this->getHelper($group, $value);
 
