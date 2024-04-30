@@ -35,7 +35,6 @@ class Sites
      * JavaScript buttons, depending on the side of the user
      *
      * @param Edit $Site
-     *
      * @return Bar
      */
     public static function getButtons(Site\Edit $Site): Bar
@@ -204,7 +203,7 @@ class Sites
      *
      * @return Bar
      */
-    public static function getTabs(Site\Edit $Site): Bar
+    public static function getTabs(QUI\Interfaces\Projects\Site $Site): Bar
     {
         $Tabbar = new Bar([
             'name' => '_Tabbar'
