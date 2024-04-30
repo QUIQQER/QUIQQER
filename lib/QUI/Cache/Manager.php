@@ -12,7 +12,6 @@ use MongoDB\Client;
 use QUI;
 use QUI\Config;
 use Stash;
-
 use Stash\Pool;
 
 use function array_unshift;
