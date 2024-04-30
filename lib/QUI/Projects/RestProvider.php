@@ -9,7 +9,10 @@ namespace QUI\Projects;
 use Psr\Http\Message\ResponseInterface as ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as RequestInterface;
 use QUI;
+use QUI\Exception;
 use QUI\REST\Server;
+
+use function json_encode;
 
 /**
  * Class RestProvider
@@ -18,8 +21,9 @@ class RestProvider implements QUI\REST\ProviderInterface
 {
     /**
      * @param Server $Server
+     * @throws Exception
      */
-    public function register(Server $Server)
+    public function register(Server $Server): void
     {
         $Slim = $Server->getSlim();
 
@@ -35,17 +39,17 @@ class RestProvider implements QUI\REST\ProviderInterface
 
                 return $Response->withStatus(200)
                     ->withHeader('Content-Type', 'application/json')
-                    ->write(\json_encode($Site->getAttributes()));
+                    ->write(json_encode($Site->getAttributes()));
             }
         );
     }
 
     /**
-     * Get file containting OpenApi definition for this API.
+     * Get file containing OpenApi definition for this API.
      *
      * @return string|false - Absolute file path or false if no definition exists
      */
-    public function getOpenApiDefinitionFile()
+    public function getOpenApiDefinitionFile(): bool|string
     {
         try {
             $dir = QUI::getPackage('quiqqer/quiqqer')->getDir();
