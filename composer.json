@@ -80,6 +80,9 @@
     "t7systems/blowfish": "1.0.0",
     "tedivm/stash": "^0.17"
   },
+  "conflict": {
+    "quiqqer/rest": "^1"
+  },
   "autoload": {
     "psr-0": {
       "QUI": "lib/"
