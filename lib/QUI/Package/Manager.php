@@ -223,6 +223,8 @@ class Manager extends QUI\QDOM
      */
     protected array $activeServers = [];
 
+    protected ?array $installedPackages = null;
+
     /**
      * constructor
      *
@@ -1085,6 +1087,10 @@ class Manager extends QUI\QDOM
      */
     public function getInstalled(): array
     {
+        if (!is_null($this->installedPackages)) {
+            return $this->installedPackages;
+        }
+
         $list = $this->getList();
         $result = $list;
 
@@ -1098,6 +1104,8 @@ class Manager extends QUI\QDOM
             } catch (QUI\Exception) {
             }
         }
+
+        $this->installedPackages = $result;
 
         return $result;
     }
