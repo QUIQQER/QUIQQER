@@ -311,18 +311,26 @@ class Manager
 
 
         if ($lang === false) {
-            self::$projects[$project]['_standard'] = new Project($project);
+            $Project = new Project($project);
 
-            return self::$projects[$project]['_standard'];
+            if (QUI::isRuntimeCacheEnabled()) {
+                self::$projects[$project]['_standard'] = $Project;
+            }
+
+            return $Project;
         }
 
-        self::$projects[$project][$lang] = new Project(
+        $Project = new Project(
             $project,
             $lang,
             $template
         );
 
-        return self::$projects[$project][$lang];
+        if (QUI::isRuntimeCacheEnabled()) {
+            self::$projects[$project]['_standard'] = $Project;
+        }
+
+        return $Project;
     }
 
     /**

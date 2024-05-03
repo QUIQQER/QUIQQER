@@ -238,6 +238,8 @@ class QUI
      */
     protected static ?QUI\Locale $SystemLocale = null;
 
+    private static bool $runtimeCacheEnabled = true;
+
     /**
      * Set all important paths and load QUIQQER
      *
@@ -1160,4 +1162,26 @@ class QUI
     }
 
     //endregion
+
+    /**
+     * Check if runtime cache is enabled globally (default: true).
+     *
+     * All modules that use runtime caches for instances or data that could possibly
+     * cause a memory overflow should recognize this flag and only use their
+     * runtime cache if this method returns true.
+     *
+     * @return bool
+     */
+    public static function isRuntimeCacheEnabled(): bool
+    {
+        return self::$runtimeCacheEnabled;
+    }
+
+    /**
+     * @return void
+     */
+    public static function disableRuntimeCache(): void
+    {
+        self::$runtimeCacheEnabled = false;
+    }
 }

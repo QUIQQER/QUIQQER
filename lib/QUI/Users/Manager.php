@@ -233,8 +233,10 @@ class Manager
 
         $uuid = $User->getUUID();
 
-        $this->usersUUIDs[$uuid] = $User->getUUID();
-        $this->users[$id] = $User;
+        if (QUI::isRuntimeCacheEnabled()) {
+            $this->usersUUIDs[$uuid] = $User->getUUID();
+            $this->users[$id] = $User;
+        }
 
         return $User;
     }
