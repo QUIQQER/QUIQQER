@@ -1499,20 +1499,10 @@ class Manager
      */
     public static function parseType(string $type): string
     {
-        switch ($type) {
-            case 'bool':
-            case 'string':
-            case 'int':
-            case 'array':
-            case 'group':
-            case 'groups':
-            case 'user':
-            case 'users':
-            case 'users_and_groups':
-                return $type;
-        }
-
-        return 'bool';
+        return match ($type) {
+            'bool', 'string', 'int', 'array', 'group', 'groups', 'user', 'users', 'users_and_groups' => $type,
+            default => 'bool',
+        };
     }
 
     /**
@@ -1524,17 +1514,10 @@ class Manager
      */
     public static function parseArea(string $area): string
     {
-        switch ($area) {
-            case 'global':
-            case 'user':
-            case 'groups':
-            case 'site':
-            case 'project':
-            case 'media':
-                return $area;
-        }
-
-        return '';
+        return match ($area) {
+            'global', 'user', 'groups', 'site', 'project', 'media' => $area,
+            default => '',
+        };
     }
 
     /**
