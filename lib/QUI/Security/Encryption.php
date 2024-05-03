@@ -28,14 +28,14 @@ class Encryption
     /**
      * Decrypts data (Entschlüsselt Daten)
      *
-     * @param string $data
+     * @param string|null $data
      * @return string
      * @throws QUI\Exception
      */
-    public static function decrypt($data)
+    public static function decrypt(string|null $data): string
     {
         if (empty($data)) {
-            return $data;
+            return $data ?? '';
         }
 
         $Config = QUI::getConfig('etc/conf.ini.php');
@@ -77,10 +77,10 @@ class Encryption
     /**
      * Encrypts data (Verschlüsselt Daten)
      *
-     * @param string $data
+     * @param string|null $data
      * @return string
      */
-    public static function encrypt($data)
+    public static function encrypt(string|null $data): string
     {
         $Config = QUI::getConfig('etc/conf.ini.php');
 
