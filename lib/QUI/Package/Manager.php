@@ -128,18 +128,21 @@ class Manager extends QUI\QDOM
     const CACHE_DB_XML_LIST = 'quiqqer/packages/list/haveDatabaseXml';
 
     const EXCEPTION_CODE_PACKAGE_NOT_LICENSED = 1599;
+
     /**
      * internal event manager
      *
      * @var QUI\Events\Manager
      */
     public QUI\Events\Manager $Events;
+
     /**
      * internal event manager
      *
      * @var QUI\Composer\Composer|null
      */
     public ?QUI\Composer\Composer $Composer;
+
     /**
      * Package Directory
      *
@@ -153,36 +156,42 @@ class Manager extends QUI\QDOM
      * @var string
      */
     protected string $varDir;
+
     /**
      * Path to the composer.json file
      *
      * @var string
      */
     protected string $composer_json;
+
     /**
      * Path to the composer.lock file
      *
      * @var string
      */
     protected string $composer_lock;
+
     /**
      * Package list - installed packages
      *
      * @var array
      */
     protected array $list = [];
+
     /**
      * Can composer execute via bash? shell?
      *
      * @var boolean
      */
     protected bool $exec = false;
+
     /**
      * temporary require packages
      *
      * @var array
      */
     protected array $require = [];
+
     /**
      * QUIQQER Version ->getVersion()
      *
