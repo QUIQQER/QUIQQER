@@ -24,7 +24,6 @@ use DOMXPath;
 use Exception;
 use QUI;
 use QUI\Cache\Manager as QUICacheManager;
-use QUI\Projects\Project;
 use QUI\Composer\Composer;
 use QUI\Utils\System\File as QUIFile;
 use Seld\JsonLint\JsonParser;
@@ -2266,10 +2265,9 @@ class Manager extends QUI\QDOM
     /**
      * Returns all site types that are available
      *
-     * @param Project|boolean $Project - optional
      * @return array
      */
-    public function getAvailableSiteTypes($Project = false): array
+    public function getAvailableSiteTypes(): array
     {
         $types = [];
         $installed = $this->getInstalled();
