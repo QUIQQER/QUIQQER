@@ -18,7 +18,7 @@ class Form extends QUI\QDOM
      *
      * @param array $params
      */
-    public function __construct($params = [])
+    public function __construct(array $params = [])
     {
         // defaults
         $this->setAttributes([
@@ -62,7 +62,7 @@ class Form extends QUI\QDOM
     /**
      * Return the generated JS control
      */
-    public function create()
+    public function create(): string
     {
         $Engine = QUI::getTemplateManager()->getEngine();
 
@@ -110,7 +110,7 @@ class Form extends QUI\QDOM
      * @param $var
      * @return string
      */
-    public function phpBool2JsBool($var)
+    public function phpBool2JsBool($var): string
     {
         return $var ? 'true' : 'false';
     }
