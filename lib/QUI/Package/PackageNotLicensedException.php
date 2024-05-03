@@ -21,8 +21,8 @@ class PackageNotLicensedException extends Exception
      * Constructor
      *
      * @param string $package - The concerned package
-     * @param string|array $message (optional) - If omitted, use default message
-     * @param string $url (optional) - Package download URL
+     * @param null $message (optional) - If omitted, use default message
+     * @param string|null $url (optional) - Package download URL
      */
     public function __construct(string $package, $message = null, string $url = null)
     {
