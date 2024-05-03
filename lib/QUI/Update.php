@@ -554,8 +554,8 @@ class Update
             $Events->addEvent(
                 $Event->getAttribute('on'),
                 $Event->getAttribute('fire'),
-                $packageName,
-                $priority
+                $priority,
+                $packageName
             );
         }
     }
