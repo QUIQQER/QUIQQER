@@ -69,42 +69,49 @@ class Project implements \Stringable
      * @var Media|null
      */
     protected ?Media $Media = null;
+
     /**
      * The project site table
      *
      * @var string
      */
     private string $TABLE;
+
     /**
      * The project site relation table
      *
      * @var string
      */
     private string $RELTABLE;
+
     /**
      * The project site relation language table
      *
      * @var string
      */
     private string $RELLANGTABLE;
+
     /**
      * configuration
      *
      * @var array
      */
     private array $config;
+
     /**
      * default language
      *
      * @var string
      */
     private string $default_lang;
+
     /**
      * All languages of the project
      *
      * @var array
      */
     private array $langs;
+
     /**
      * loaded sites
      *
