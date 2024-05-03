@@ -19,7 +19,7 @@ class Uuid
     /**
      * Return a unique id
      */
-    public static function get()
+    public static function get(): string
     {
         try {
             $UUID = \Ramsey\Uuid\Uuid::uuid1();
