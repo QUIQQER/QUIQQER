@@ -322,8 +322,7 @@ class Permission
      * @param User $User
      * @param Edit|Site $Site
      * @param string $permission - name of the permission
-     * @param boolean|User $EditUser
-     *
+     * @param ?User $EditUser
      * @return bool
      *
      * @throws QUI\Exception
@@ -333,7 +332,7 @@ class Permission
         User $User,
         Edit|Site $Site,
         string $permission,
-        bool|User $EditUser = false
+        ?User $EditUser = null
     ): bool {
         if (!QUI\Projects\Site\Utils::isSiteObject($Site)) {
             return false;
@@ -384,7 +383,7 @@ class Permission
      * @param Group $Group
      * @param Edit|Site $Site
      * @param string $permission - name of the permission
-     * @param boolean|User $EditUser
+     * @param ?User $EditUser
      *
      * @return bool
      *
@@ -395,7 +394,7 @@ class Permission
         Group $Group,
         Edit|Site $Site,
         string $permission,
-        bool|User $EditUser = null
+        User $EditUser = null
     ): bool {
         if (!QUI\Projects\Site\Utils::isSiteObject($Site)) {
             return false;
@@ -797,7 +796,7 @@ class Permission
      * @param Group $Group
      * @param Edit|Site $Site
      * @param string $permission
-     * @param boolean|User $EditUser
+     * @param ?User $EditUser
      *
      * @return bool
      *
@@ -808,7 +807,7 @@ class Permission
         Group $Group,
         Edit|Site $Site,
         string $permission,
-        bool|User $EditUser = false
+        User $EditUser = null
     ): bool {
         if (!QUI\Projects\Site\Utils::isSiteObject($Site)) {
             return false;
@@ -854,9 +853,9 @@ class Permission
      * Remove a user from the permission
      *
      * @param User $User
-     * @param Site|Edit $Site
+     * @param QUI\Interfaces\Projects\Site $Site
      * @param string $permission
-     * @param boolean|User $EditUser
+     * @param ?User $EditUser
      *
      * @return bool
      *
@@ -865,9 +864,9 @@ class Permission
      */
     public static function removeUserFromSitePermission(
         User $User,
-        $Site,
+        QUI\Interfaces\Projects\Site $Site,
         string $permission,
-        $EditUser = false
+        User $EditUser = null
     ): bool {
         if (!QUI\Projects\Site\Utils::isSiteObject($Site)) {
             return false;
@@ -920,8 +919,7 @@ class Permission
      * @param Group $Group
      * @param Project $Project
      * @param string $permission
-     * @param boolean|User $EditUser
-     *
+     * @param ?User $EditUser
      * @return bool
      *
      * @throws Exception
@@ -930,7 +928,7 @@ class Permission
         Group $Group,
         Project $Project,
         string $permission,
-        bool|User $EditUser = false
+        User $EditUser = null
     ): bool {
         self::checkProjectPermission('quiqqer.projects.edit', $Project, $EditUser);
 
@@ -1086,7 +1084,7 @@ class Permission
      * @param User $User
      * @param Project $Project
      * @param string $permission - name of the
-     * @param boolean|User $EditUser
+     * @param ?User $EditUser
      *
      * @return boolean
      * @throws QUI\Exception
@@ -1095,7 +1093,7 @@ class Permission
         User $User,
         Project $Project,
         string $permission,
-        bool|User $EditUser = false
+        User $EditUser = null
     ): bool {
         self::checkProjectPermission('quiqqer.projects.edit', $Project, $EditUser);
 
@@ -1234,14 +1232,14 @@ class Permission
      *
      * @param string $perm
      * @param Item $MediaItem
-     * @param boolean|User $User - optional
+     * @param ?User $User - optional
      *
      * @return bool
      */
     public static function hasMediaPermission(
         string $perm,
         Item $MediaItem,
-        bool|User $User = null
+        User $User = null
     ): bool {
         if (Media::useMediaPermissions() === false) {
             return true;
@@ -1260,7 +1258,7 @@ class Permission
      *
      * @param string $perm
      * @param Item $MediaItem
-     * @param boolean|User $User - optional
+     * @param ?User $User - optional
      *
      * @return boolean
      *
@@ -1269,7 +1267,7 @@ class Permission
     public static function checkMediaPermission(
         string $perm,
         Item $MediaItem,
-        bool|User $User = null
+        User $User = null
     ): bool {
         if (Media::useMediaPermissions() === false) {
             return true;
@@ -1301,8 +1299,7 @@ class Permission
      * @param Group $Group
      * @param Item $MediaItem
      * @param string $permission
-     * @param boolean|User $EditUser
-     *
+     * @param ?User $EditUser
      * @return bool
      *
      * @throws QUI\Exception
@@ -1312,7 +1309,7 @@ class Permission
         Group $Group,
         Item $MediaItem,
         string $permission,
-        bool|User $EditUser = false
+        User $EditUser = null
     ): bool {
         if (!QUI\Projects\Media\Utils::isItem($MediaItem)) {
             return false;
@@ -1360,7 +1357,7 @@ class Permission
      * @param User $User
      * @param Item $MediaItem
      * @param string $permission
-     * @param boolean|User $EditUser
+     * @param User|null $EditUser
      *
      * @return bool
      *
@@ -1372,7 +1369,7 @@ class Permission
         User $User,
         Item $MediaItem,
         string $permission,
-        $EditUser = false
+        User $EditUser = null
     ): bool {
         if (!QUI\Projects\Media\Utils::isItem($MediaItem)) {
             return false;
@@ -1421,7 +1418,7 @@ class Permission
      * @param Group $Group
      * @param Item $MediaItem
      * @param string $permission - name of the permission
-     * @param boolean|User $EditUser
+     * @param ?User $EditUser
      *
      * @return bool
      *
@@ -1432,7 +1429,7 @@ class Permission
         Group $Group,
         Item $MediaItem,
         string $permission,
-        $EditUser
+        User $EditUser = null
     ): bool {
         if (!QUI\Projects\Media\Utils::isItem($MediaItem)) {
             return false;
@@ -1480,8 +1477,7 @@ class Permission
      * @param User $User
      * @param Item $MediaItem
      * @param string $permission - name of the permission
-     * @param boolean|User $EditUser
-     *
+     * @param null|User $EditUser
      * @return bool
      *
      * @throws QUI\Exception
@@ -1491,7 +1487,7 @@ class Permission
         User $User,
         Item $MediaItem,
         string $permission,
-        bool|User $EditUser = false
+        ?User $EditUser = null
     ): bool {
         if (!QUI\Projects\Media\Utils::isItem($MediaItem)) {
             return false;
