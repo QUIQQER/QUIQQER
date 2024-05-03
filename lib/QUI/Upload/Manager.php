@@ -52,10 +52,10 @@ class Manager
     /**
      * Initialized the upload
      *
-     * @return string
-     * @throws \QUI\Exception
+     * @return bool|string
+     * @throws Exception
      */
-    public function init()
+    public function init(): bool|string
     {
         if (!empty($_REQUEST['onstart']) && is_callable($_REQUEST['onstart'])) {
             $this->callFunction($_REQUEST['onstart'], $_REQUEST);
@@ -67,13 +67,13 @@ class Manager
     /**
      * call a function
      *
-     * @param string|callback $function - Function
+     * @param callback|string $function - Function
      * @param array $params - function parameter
      *
      * @return mixed
      * @throws Exception
      */
-    protected function callFunction($function, array $params = [])
+    protected function callFunction(callable|string $function, array $params = []): mixed
     {
         if (is_object($function) && ($function)::class === 'Closure') {
             return $function();
@@ -123,10 +123,11 @@ class Manager
      * Upload the file data,
      * read the PUT data and write it to the filesystem or read the $_FILES
      *
-     * @return string
-     * @throws QUI\Exception
+     * @return bool|string
+     * @throws Exception
+     * @throws QUI\Permissions\Exception
      */
-    public function upload()
+    public function upload(): bool|string
     {
         QUIFile::mkdir($this->getUserUploadDir());
 
@@ -356,13 +357,12 @@ class Manager
     /**
      * Return the Path to the User upload directory
      *
-     * @param \QUI\Users\User|boolean $User - optional, standard is the session user
-     *
+     * @param QUI\Interfaces\Users\User|null $User |boolean $User - optional, standard is the session user
      * @return string
      *
      * @throws QUI\Permissions\Exception
      */
-    protected function getUserUploadDir($User = false): string
+    protected function getUserUploadDir(QUI\Interfaces\Users\User $User = null): string
     {
         if (!QUI::getUsers()->isUser($User)) {
             $User = QUI::getUserBySession();
@@ -389,10 +389,10 @@ class Manager
     }
 
     /**
-     * @param null $User
+     * @param QUI\Interfaces\Users\User|null $User
      * @throws QUI\Permissions\Exception
      */
-    protected function checkUserPermissions($User = null)
+    protected function checkUserPermissions(QUI\Interfaces\Users\User $User = null): void
     {
         $SessionUser = QUI::getUserBySession();
 
@@ -451,12 +451,12 @@ class Manager
      * Internal form upload method
      * If the upload is not over HTML5
      *
-     * @param string|callback $onfinish - Function
-     * @param $params - extra params for the \QUI\QDOM File Object
+     * @param callback|string $onfinish - Function
+     * @param mixed $params - extra params for the \QUI\QDOM File Object
      *
      * @throws Exception
      */
-    protected function formUpload($onfinish, $params)
+    protected function formUpload(callable|string $onfinish, mixed $params): void
     {
         if (empty($_FILES) || !isset($_FILES['files'])) {
             throw new Exception(
@@ -629,7 +629,7 @@ class Manager
      *
      * @param array|string $message
      */
-    public function flushMessage($message)
+    public function flushMessage(array|string $message): void
     {
         $message = '<script type="text/javascript">
             let UploadManager = false;
@@ -656,7 +656,7 @@ class Manager
      *
      * @param string $call - eq: alert(1);
      */
-    public function flushAction(string $call)
+    public function flushAction(string $call): void
     {
         $message = '<script type="text/javascript">
             let UploadManager = false;
@@ -685,7 +685,7 @@ class Manager
      *
      * @throws Exception
      */
-    protected function delete(string $filename)
+    protected function delete(string $filename): void
     {
         $file = $this->getUserUploadDir() . $filename;
         $conf = $this->getUserUploadDir() . $filename . '.json';
@@ -702,7 +702,7 @@ class Manager
      *
      * @throws Exception
      */
-    protected function add(string $filename, array $params)
+    protected function add(string $filename, array $params): void
     {
         $conf = $this->getUserUploadDir() . $filename . '.json';
 
@@ -773,7 +773,7 @@ class Manager
      *
      * @throws Exception
      */
-    public function cancel(string $filename)
+    public function cancel(string $filename): void
     {
         $this->delete($filename);
     }
@@ -782,14 +782,13 @@ class Manager
      * Get unfinished uploads from a specific user
      * so, you can resume the upload
      *
-     * @param \QUI\Users\User|boolean $User - optional, if false = the session user
-     *
+     * @param QUI\Interfaces\Users\User|null $User - optional, if null = the session user
      * @return array
      *
      * @throws Exception
      * @throws QUI\Permissions\Exception
      */
-    public function getUnfinishedUploadsFromUser($User = false): array
+    public function getUnfinishedUploadsFromUser(QUI\Interfaces\Users\User $User = null): array
     {
         if (!QUI::getUsers()->isUser($User)) {
             $User = QUI::getUserBySession();
