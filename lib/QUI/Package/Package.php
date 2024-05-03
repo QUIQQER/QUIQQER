@@ -601,18 +601,6 @@ class Package extends QUI\QDOM
     }
 
     /**
-     * use getXMLFilePath()
-     *
-     * @param string $name - e.g. "database.xml" / "package.xml" etc.
-     * @return string|false - absolute file path or false if xml file does not exist
-     * @deprecated
-     */
-    public function getXMLFile(string $name)
-    {
-        return $this->getXMLFilePath($name);
-    }
-
-    /**
      * Get specific XML file from Package
      *
      * @param string $name - e.g. "database.xml" / "package.xml" etc.
