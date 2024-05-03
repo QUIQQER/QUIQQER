@@ -28,25 +28,12 @@ use function substr;
 class Site
 {
     /**
-     * Alias for setRecursiveAttribute
+     * Set an attribute recursive from its parents if the attribute is not set
      *
-     * @param \QUI\Interfaces\Projects\Site $Site
-     * @param $attribute
-     *
-     * @deprecated use setRecursiveAttribute
-     */
-    public static function setRecursivAttribute(\QUI\Interfaces\Projects\Site $Site, $attribute)
-    {
-        self::setRecursiveAttribute($Site, $attribute);
-    }
-
-    /**
-     * Set a attribute recursive from its parents if the attribute is not set
-     *
-     * @param \QUI\Interfaces\Projects\Site $Site
+     * @param QUI\Interfaces\Projects\Site $Site
      * @param string $attribute
      */
-    public static function setRecursiveAttribute(\QUI\Interfaces\Projects\Site $Site, string $attribute)
+    public static function setRecursiveAttribute(QUI\Interfaces\Projects\Site $Site, string $attribute): void
     {
         $value = $Site->getAttribute($attribute);
 
