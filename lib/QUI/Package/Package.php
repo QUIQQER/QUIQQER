@@ -10,6 +10,7 @@ use DOMElement;
 use Exception;
 use QUI;
 use QUI\Cache\LongTermCache;
+use QUI\Config;
 use QUI\Update;
 use QUI\Utils\Text\XML;
 use Seld\JsonLint\JsonParser;
@@ -63,64 +64,64 @@ class Package extends QUI\QDOM
      *
      * @var string
      */
-    protected $name = '';
+    protected string $name = '';
 
     /**
      * Title of the package
      *
-     * @var null
+     * @var ?string
      */
-    protected $title = null;
+    protected ?string $title = null;
 
     /**
      * Description of the package
      *
-     * @var null
+     * @var string|null
      */
-    protected $description = null;
+    protected ?string $description = null;
 
     /**
      * Directory of the package
      *
      * @var string
      */
-    protected $packageDir = '';
+    protected string $packageDir = '';
 
     /**
-     * @var null
+     * @var array|null
      */
-    protected $packageXML = null;
+    protected ?array $packageXML = null;
 
     /**
      * Package composer data from the composer file
      *
      * @var bool|array
      */
-    protected $composerData = false;
+    protected array|bool $composerData = false;
 
     /**
      * Path to the Config
      *
-     * @var string
+     * @var ?string
      */
-    protected $configPath = null;
+    protected ?string $configPath = null;
 
     /**
      * Package Config
      *
-     * @var QUI\Config
+     * @var ?QUI\Config
      */
-    protected $Config = null;
+    protected ?QUI\Config $Config = null;
 
     /**
      * @var bool
      */
-    protected $isQuiqqerPackage = false;
+    protected bool $isQuiqqerPackage = false;
 
     /**
      * @var bool
      */
-    protected $readPackageInfo = false;
+    protected bool $readPackageInfo = false;
 
     /**
      * constructor
@@ -180,12 +181,12 @@ class Package extends QUI\QDOM
     /**
      * Return all providers
      *
-     * @param string|bool $providerName - optional, Name of the wanted providers
+     * @param bool|string $providerName - optional, Name of the wanted providers
      * @return array
      *
      * @todo cache that
      */
-    public function getProvider($providerName = false): array
+    public function getProvider(bool|string $providerName = false): array
     {
         $packageData = $this->getPackageXMLData();
 
@@ -259,7 +260,7 @@ class Package extends QUI\QDOM
     /**
      * read the package data
      */
-    protected function readPackageData()
+    protected function readPackageData(): void
     {
         if ($this->readPackageInfo) {
             return;
@@ -317,7 +318,7 @@ class Package extends QUI\QDOM
      *
      * @return array|bool|mixed
      */
-    public function getComposerData()
+    public function getComposerData(): mixed
     {
         if (!empty($this->composerData)) {
             return $this->composerData;
@@ -388,7 +389,7 @@ class Package extends QUI\QDOM
      *
      * @return bool|Package
      */
-    public function getTemplateParent()
+    public function getTemplateParent(): Package|bool
     {
         $packageData = $this->getPackageXMLData();
 
@@ -544,11 +545,11 @@ class Package extends QUI\QDOM
     /**
      * Return the package config
      *
-     * @return QUI\Config|boolean
+     * @return Config|null
      *
      * @throws QUI\Exception
      */
-    public function getConfig()
+    public function getConfig(): ?QUI\Config
     {
         if ($this->configPath === null) {
             $configFile = CMS_DIR . 'etc/plugins/' . $this->getName() . '.ini.php';
@@ -559,7 +560,7 @@ class Package extends QUI\QDOM
         }
 
         if (empty($this->configPath)) {
-            return false;
+            return null;
         }
 
         if (!$this->Config) {
@@ -582,7 +583,7 @@ class Package extends QUI\QDOM
     /**
      * Clears the package cache
      */
-    public function clearCache()
+    public function clearCache(): void
     {
         LongTermCache::clear($this->getCacheName());
     }
@@ -617,7 +618,7 @@ class Package extends QUI\QDOM
      * @param string $name - e.g. "database.xml" / "package.xml" etc.
      * @return string|false - absolute file path or false if xml file does not exist
      */
-    public function getXMLFilePath(string $name)
+    public function getXMLFilePath(string $name): bool|string
     {
         $file = $this->getDir() . $name;
 
@@ -646,7 +647,7 @@ class Package extends QUI\QDOM
      *
      * @return bool
      */
-    public function hasPermission($permission = 'canUse', $User = null): bool
+    public function hasPermission(string $permission = 'canUse', QUI\Interfaces\Users\User $User = null): bool
     {
         if (!QUI::conf('permissions', 'package')) {
             return true;
@@ -666,7 +667,7 @@ class Package extends QUI\QDOM
      * @param string $permissionName
      * @return mixed
      */
-    public function getPermissionName($permissionName = 'canUse'): string
+    public function getPermissionName(string $permissionName = 'canUse'): string
     {
         $nameShortCut = preg_replace("/[^A-Za-z0-9 ]/", '', $this->getName());
 
@@ -681,7 +682,7 @@ class Package extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    public function install()
+    public function install(): void
     {
         $this->readPackageData();
 
@@ -715,7 +716,7 @@ class Package extends QUI\QDOM
      * @param array $params - optional ['localePublish' => true, 'localeImport' => true, 'forceImport' => false]
      * @throws QUI\Exception
      */
-    public function setup(array $params = [])
+    public function setup(array $params = []): void
     {
         $this->readPackageData();
 
@@ -880,7 +881,7 @@ class Package extends QUI\QDOM
     /**
      * @throws QUI\Exception
      */
-    private function moveQuiqqerAsset()
+    private function moveQuiqqerAsset(): void
     {
         if (!$this->isQuiqqerAsset()) {
             return;
@@ -902,7 +903,7 @@ class Package extends QUI\QDOM
     /**
      * publish the locale files of the package
      */
-    protected function setupLocalePublish()
+    protected function setupLocalePublish(): void
     {
         $dir = $this->getDir();
 
@@ -955,7 +956,7 @@ class Package extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    public function uninstall()
+    public function uninstall(): void
     {
         QUI::getEvents()->fireEvent('packageUnInstall', [$this->getName()]);
         QUI::getEvents()->fireEvent(
@@ -974,7 +975,7 @@ class Package extends QUI\QDOM
      * @throws QUI\Exception
      * @todo implementieren
      */
-    public function destroy()
+    public function destroy(): void
     {
         QUI::getPermissionManager()->deletePermission($this->getPermissionName());
         QUI::getPermissionManager()->deletePermission($this->getPermissionName('header'));
@@ -991,7 +992,7 @@ class Package extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    public function onUpdate()
+    public function onUpdate(): void
     {
         QUI::getEvents()->fireEvent('packageUpdate', [$this]);
         QUI::getEvents()->fireEvent(
