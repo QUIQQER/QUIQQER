@@ -826,8 +826,7 @@ class Project implements \Stringable
      * @param boolean $with_protocol - Mit oder ohne http -> standard = ohne
      * @param boolean $ssl - mit oder ohne ssl
      *
-     * @return boolean | string
-     * @throws QUI\Exception
+     * @return boolean|string
      */
     public function getVHost(bool $with_protocol = false, bool $ssl = false): bool|string
     {
@@ -862,7 +861,12 @@ class Project implements \Stringable
             }
         }
 
-        $StandardProject = QUI::getProjectManager()->getStandard();
+        try {
+            $StandardProject = QUI::getProjectManager()->getStandard();
+        } catch (Exception $exception) {
+            QUI\System\Log::addError($exception->getMessage());
+            return HOST;
+        }
 
         if ($StandardProject->getName() === $this->getName()) {
             return HOST;
