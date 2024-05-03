@@ -23,7 +23,7 @@ class Project
      *
      * @param QUI\Projects\Project $Project
      */
-    public static function createDefaultStructure(QUI\Projects\Project $Project)
+    public static function createDefaultStructure(QUI\Projects\Project $Project): void
     {
         $languages = $Project->getLanguages();
 
@@ -44,7 +44,7 @@ class Project
      * @param QUI\Projects\Project $Project
      * @throws QUI\Exception
      */
-    protected static function createDefaultStructureForProjectLanguage(QUI\Projects\Project $Project)
+    protected static function createDefaultStructureForProjectLanguage(QUI\Projects\Project $Project): void
     {
         $First = $Project->firstChild();
         $First = $First->getEdit();
@@ -201,9 +201,9 @@ class Project
      * @param string $var
      * @param QUI\Projects\Project $Project
      *
-     * @return array|string
+     * @return string
      */
-    protected static function parseForUrl($group, $var, QUI\Projects\Project $Project)
+    protected static function parseForUrl(string $group, string $var, QUI\Projects\Project $Project): string
     {
         // quiqqer/quiqqer#825
         $language = $Project->getLang();
@@ -241,7 +241,7 @@ class Project
      *
      * @throws QUI\Exception
      */
-    public static function applyDemoDataToProject(QUI\Projects\Project $Project, $templateName)
+    public static function applyDemoDataToProject(QUI\Projects\Project $Project, string $templateName): void
     {
         $TemplatePackage = QUI::getPackageManager()->getInstalledPackage($templateName);
         $Parser = new DemoDataParser();
@@ -271,7 +271,7 @@ class Project
      * @return bool
      * @throws QUI\Exception
      */
-    public static function validateProjectName($projectName)
+    public static function validateProjectName($projectName): bool
     {
         $forbiddenSigns = [
             '-',
