@@ -41,7 +41,7 @@ class CommandEvents
      *
      * @param $packageName
      */
-    public static function registerPackageChange($packageName)
+    public static function registerPackageChange($packageName): void
     {
         self::$packages[] = $packageName;
         self::$packages = array_unique(self::$packages);
@@ -53,7 +53,7 @@ class CommandEvents
      *
      * @param Event $Event
      */
-    public static function preUpdate(Event $Event)
+    public static function preUpdate(Event $Event): void
     {
         self::$packages = [];
     }
@@ -64,7 +64,7 @@ class CommandEvents
      *
      * @param Event $Event
      */
-    public static function postUpdate(Event $Event)
+    public static function postUpdate(Event $Event): void
     {
         self::loadPaths($Event);
 
@@ -97,7 +97,7 @@ class CommandEvents
      *
      * @param PreCommandRunEvent $Event
      */
-    public static function preCommandRun(PreCommandRunEvent $Event)
+    public static function preCommandRun(PreCommandRunEvent $Event): void
     {
         if (php_sapi_name() !== 'cli') {
             return;
@@ -122,7 +122,7 @@ class CommandEvents
      * @param Event $Event
      * @throws Exception
      */
-    protected static function loadQUIQQER(Event $Event)
+    protected static function loadQUIQQER(Event $Event): void
     {
         $Composer = $Event->getComposer();
         $config = $Composer->getConfig()->all();
@@ -154,7 +154,7 @@ class CommandEvents
      * @param Event $Event
      * @return void
      */
-    protected static function loadPaths(Event $Event)
+    protected static function loadPaths(Event $Event): void
     {
         $Composer = $Event->getComposer();
         $config = $Composer->getConfig()->all();
