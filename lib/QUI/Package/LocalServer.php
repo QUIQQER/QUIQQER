@@ -33,7 +33,7 @@ class LocalServer extends QUI\Utils\Singleton
      *
      * @throws QUI\Exception
      */
-    public function activate()
+    public function activate(): void
     {
         $serverDir = $this->getDir();
         $Packages = QUI::getPackageManager();
@@ -48,7 +48,7 @@ class LocalServer extends QUI\Utils\Singleton
     /**
      * @return string
      */
-    public function getDir()
+    public function getDir(): string
     {
         $updatePath = QUI::conf('update', 'updatePath');
 
@@ -69,7 +69,7 @@ class LocalServer extends QUI\Utils\Singleton
      * deactivate the locale repository,
      * @throws QUI\Exception
      */
-    public function deactivate()
+    public function deactivate(): void
     {
         $serverDir = $this->getDir();
         $Packages = QUI::getPackageManager();
@@ -82,7 +82,7 @@ class LocalServer extends QUI\Utils\Singleton
      * @param $file
      * @throws QUI\Exception
      */
-    public function uploadPackage($file)
+    public function uploadPackage($file): void
     {
         $serverDir = $this->getDir();
         $info = File::getInfo($file);
@@ -147,7 +147,7 @@ class LocalServer extends QUI\Utils\Singleton
      *
      * @return array
      */
-    public function getNotInstalledPackage()
+    public function getNotInstalledPackage(): array
     {
         $result = [];
         $packages = $this->getPackageList();
@@ -168,7 +168,7 @@ class LocalServer extends QUI\Utils\Singleton
      *
      * @return array
      */
-    public function getPackageList()
+    public function getPackageList(): array
     {
         $dir = $this->getDir();
 
