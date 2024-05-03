@@ -824,7 +824,7 @@ class Project implements \Stringable
      * VHost zurück geben
      *
      * @param boolean $with_protocol - Mit oder ohne http -> standard = ohne
-     * @param boolean $ssl - mit oder ohne ssl
+     * @param boolean $ssl - with or without ssl
      *
      * @return boolean|string
      */
