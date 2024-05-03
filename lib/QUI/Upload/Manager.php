@@ -371,7 +371,7 @@ class Manager
         $this->checkUserPermissions($User);
 
         // for nobody, we use the session id
-        if (!$User->getId()) {
+        if ($User instanceof QUI\Users\Nobody) {
             $Session = QUI::getSession();
             $uuid = $Session->get('uuid');
 
