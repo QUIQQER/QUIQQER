@@ -157,7 +157,7 @@ class Canonical
      * @param $url
      * @return array|false|int|string|null
      */
-    protected function removeHost($url)
+    protected function removeHost($url): bool|int|array|string|null
     {
         return parse_url($url, PHP_URL_PATH);
     }
@@ -177,7 +177,7 @@ class Canonical
     /**
      * Consider get Parameter at the canonical request check
      */
-    public function considerGetParameterOn()
+    public function considerGetParameterOn(): void
     {
         $this->considerGetParams = true;
     }
@@ -185,7 +185,7 @@ class Canonical
     /**
      * Get parameters are not considered at the request check
      */
-    public function considerGetParameterOff()
+    public function considerGetParameterOff(): void
     {
         $this->considerGetParams = false;
     }
