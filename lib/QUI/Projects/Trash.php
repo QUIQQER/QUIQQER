@@ -22,9 +22,9 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
     /**
      * The Project of the trash
      *
-     * @var \QUI\Projects\Project
+     * @var Project|null
      */
-    protected $Project = null;
+    protected ?Project $Project = null;
 
     /**
      * Constructor
@@ -49,7 +49,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      * @return array
      * @throws Exception
      */
-    public function getList($params = [])
+    public function getList(array $params = []): array
     {
         // create grid
         $Grid = new QUI\Utils\Grid();
@@ -116,7 +116,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      * Clear complete trash
      * @throws QUI\Exception
      */
-    public function clear()
+    public function clear(): void
     {
         $ids = $this->Project->getSitesIds([
             'where' => [
@@ -137,7 +137,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      * @param array $ids
      * @throws QUI\Exception
      */
-    public function destroy($ids = [])
+    public function destroy(array $ids = []): void
     {
         if (!is_array($ids)) {
             return;
@@ -158,7 +158,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      *
      * @throws QUI\Exception
      */
-    public function restore(Project $Project, $ids, $parentid)
+    public function restore(Project $Project, array $ids, int $parentid): void
     {
         $Parent = new Site\Edit($Project, $parentid);
 

@@ -45,7 +45,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
      *
      * @return array
      */
-    public function getList($params = []): array
+    public function getList(array $params = []): array
     {
         $Grid = new QUI\Utils\Grid();
         $query = $Grid->parseDBParams($params);
@@ -89,8 +89,9 @@ class Trash implements QUI\Interfaces\Projects\Trash
 
     /**
      * Clears the complete trash
+     * @throws QUI\Database\Exception
      */
-    public function clear()
+    public function clear(): void
     {
         $data = QUI::getDataBase()->fetch([
             'select' => 'id',
@@ -125,7 +126,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
      * @return void
      * @throws Exception
      */
-    public function destroy(int $id)
+    public function destroy(int $id): void
     {
         // check if the file is really deleted?
         $File = $this->Media->get($id);
@@ -138,7 +139,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
     }
 
     /**
-     * Restore a item to a folder
+     * Restore an item to a folder
      *
      * @param integer $id
      * @param QUI\Projects\Media\Folder $Folder
