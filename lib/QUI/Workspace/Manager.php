@@ -31,7 +31,7 @@ class Manager
     /**
      * Setup for the user workspaces
      */
-    public static function setup()
+    public static function setup(): void
     {
         $Table = QUI::getDataBase()->table();
 
@@ -76,7 +76,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function cleanup()
+    public static function cleanup(): void
     {
         try {
             $entries = QUI::getDataBase()->fetch([
@@ -154,9 +154,9 @@ class Manager
      * Delete a workspace
      *
      * @param integer $id - Workspace ID
-     * @param QUI\Interfaces\Users\User $User - User of the Workspace
+     * @param User $User - User of the Workspace
      */
-    public static function deleteWorkspace(int $id, QUI\Interfaces\Users\User $User)
+    public static function deleteWorkspace(int $id, User $User): void
     {
         try {
             QUI::getDataBase()->delete(self::table(), [
@@ -232,7 +232,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function saveWorkspace(QUI\Users\User $User, int $id, array $data = [])
+    public static function saveWorkspace(QUI\Users\User $User, int $id, array $data = []): void
     {
         $workspace = self::getWorkspaceById($id, $User);
 
@@ -311,7 +311,7 @@ class Manager
      * @param integer $id
      * @throws QUI\Database\Exception
      */
-    public static function setStandardWorkspace(QUI\Interfaces\Users\User $User, int $id)
+    public static function setStandardWorkspace(User $User, int $id): void
     {
         if (!QUI::getUsers()->isUser($User)) {
             return;
