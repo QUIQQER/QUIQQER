@@ -722,26 +722,6 @@ class Project implements \Stringable
     }
 
     /**
-     * Return a new id
-     * - this id is not created
-     *
-     * @deprecated
-     */
-    public function getNewId()
-    {
-        $maxId = QUI::getDataBase()->fetch([
-            'select' => 'id',
-            'from' => $this->table(),
-            'limit' => '0,1',
-            'order' => [
-                'id' => 'DESC'
-            ]
-        ]);
-
-        return (int)$maxId[0]['id'] + 1;
-    }
-
-    /**
      * Return all available layouts
      *
      * @return array
