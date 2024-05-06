@@ -139,7 +139,7 @@ class Htaccess extends QUI\System\Console\Tool
         $this->resetColor();
     }
 
-    protected function templateOld()
+    protected function templateOld(): string
     {
         $URL_DIR = URL_DIR;
         $URL_LIB_DIR = URL_LIB_DIR;

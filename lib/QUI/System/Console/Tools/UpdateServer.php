@@ -49,7 +49,7 @@ class UpdateServer extends QUI\System\Console\Tool
         $this->showHelp();
     }
 
-    protected function addServer()
+    protected function addServer(): void
     {
         $server = $this->getArgument('add');
 
@@ -82,7 +82,10 @@ class UpdateServer extends QUI\System\Console\Tool
         );
     }
 
-    protected function removeServer()
+    /**
+     * @throws Exception
+     */
+    protected function removeServer(): void
     {
         $server = $this->getArgument('remove');
 
@@ -104,7 +107,7 @@ class UpdateServer extends QUI\System\Console\Tool
         );
     }
 
-    protected function showHelp()
+    protected function showHelp(): void
     {
         $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.updateserver.help'));
     }

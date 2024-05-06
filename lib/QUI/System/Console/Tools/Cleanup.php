@@ -63,7 +63,7 @@ class Cleanup extends QUI\System\Console\Tool
     /**
      * Clear the composer
      */
-    public static function clearComposer()
+    public static function clearComposer(): void
     {
         $repoDir = VAR_DIR . 'composer/repo/';
         $repos = QUI\Utils\System\File::readDir($repoDir);

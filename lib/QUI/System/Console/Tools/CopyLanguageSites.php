@@ -242,7 +242,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
      * @return void
      * @throws QUI\Database\Exception
      */
-    protected function copyBricks(QUI\Projects\Project $SourceProject, QUI\Projects\Project $TargetProject)
+    protected function copyBricks(QUI\Projects\Project $SourceProject, QUI\Projects\Project $TargetProject): void
     {
         $this->writeLn("\n\n=== Copying bricks to target language ===\n\n");
 
@@ -284,16 +284,21 @@ class CopyLanguageSites extends QUI\System\Console\Tool
      *
      * @param QUI\Projects\Project $SourceProject
      * @param QUI\Projects\Project $TargetProject
-     * @param int $sourceid
-     * @param int $targetid
+     * @param int $sourceId
+     * @param int $targetId
      * @param bool $link (optional) - create language link [default: false]
      * @return void
      *
      * @throws QUI\Exception
      */
-    protected function copyRecursive($SourceProject, $TargetProject, $sourceid, $targetid, $link = false)
-    {
-        $SourceParentSite = new QUI\Projects\Site\Edit($SourceProject, $sourceid);
+    protected function copyRecursive(
+        QUI\Projects\Project $SourceProject,
+        QUI\Projects\Project $TargetProject,
+        int $sourceId,
+        int $targetId,
+        bool $link = false
+    ): void {
+        $SourceParentSite = new QUI\Projects\Site\Edit($SourceProject, $sourceId);
         $sourceChildrenIds = $SourceParentSite->getChildrenIds([
             'active' => '0&1'
         ]);
@@ -309,7 +314,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
 
             try {
                 $TargetCopyChild = $SourceChild->copy(
-                    $targetid,
+                    $targetId,
                     $TargetProject
                 );
 

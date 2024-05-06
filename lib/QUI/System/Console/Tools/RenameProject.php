@@ -19,9 +19,9 @@ use function trim;
  */
 class RenameProject extends Tool
 {
-    protected $oldProjectName;
-    protected $newProjectName;
-    protected $Project;
+    protected string $oldProjectName;
+    protected string $newProjectName;
+    protected QUI\Projects\Project $Project;
 
     /**
      * RenameProject constructor.
@@ -85,10 +85,10 @@ class RenameProject extends Tool
      * Prints a line to the output while using a locale variable of the 'quiqqer/quiqqer' group
      *
      * @param $locale
-     * @param bool $color
-     * @param bool $background
+     * @param bool|string $color
+     * @param bool|string $background
      */
-    protected function writeLnLocale($locale, $color = false, $background = false)
+    protected function writeLnLocale($locale, bool|string $color = false, bool|string $background = false): void
     {
         $text = QUI::getLocale()->get("quiqqer/quiqqer", $locale);
 
@@ -100,9 +100,9 @@ class RenameProject extends Tool
      *
      * @param $name
      *
-     * @return mixed
+     * @return array|string|string[]
      */
-    protected function purgeProjectName($name)
+    protected function purgeProjectName($name): array|string
     {
         $forbiddenCharacters = [
             '-',

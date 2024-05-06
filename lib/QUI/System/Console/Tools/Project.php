@@ -121,7 +121,7 @@ class Project extends QUI\System\Console\Tool
     /**
      * Create a new project
      */
-    protected function createProject()
+    protected function createProject(): void
     {
         // project name
         $projectName = $this->getArgument('projectname');
@@ -240,7 +240,7 @@ class Project extends QUI\System\Console\Tool
     /**
      * Delete a project
      */
-    protected function deleteProject()
+    protected function deleteProject(): void
     {
         $this->writeLnLocale("console.tool.project.delete.warning.header", "yellow");
         $this->writeLnLocale("console.tool.project.delete.warning", "white");
@@ -291,10 +291,10 @@ class Project extends QUI\System\Console\Tool
      * Prints a line to the output while using a locale variable of the 'quiqqer/quiqqer' group
      *
      * @param $locale
-     * @param bool $color
-     * @param bool $background
+     * @param bool|string $color
+     * @param bool|string $background
      */
-    protected function writeLnLocale($locale, $color = false, $background = false)
+    protected function writeLnLocale($locale, bool|string $color = false, bool|string $background = false): void
     {
         $text = QUI::getLocale()->get("quiqqer/quiqqer", $locale);
 
@@ -307,7 +307,7 @@ class Project extends QUI\System\Console\Tool
      * @return void
      * @throws QUI\Exception
      */
-    protected function copyProject()
+    protected function copyProject(): void
     {
         $this->quiqqerBricksInstalled = QUI::getPackageManager()->isInstalled('quiqqer/bricks');
 
@@ -459,8 +459,11 @@ class Project extends QUI\System\Console\Tool
      * @param QUI\Projects\Site|null $ParentSite - Parent site of $RootSite
      * @throws QUI\Exception
      */
-    protected function copySiteLevel(QUI\Projects\Site $RootSite, string $langTo, ?QUI\Projects\Site $ParentSite = null)
-    {
+    protected function copySiteLevel(
+        QUI\Projects\Site $RootSite,
+        string $langTo,
+        ?QUI\Projects\Site $ParentSite = null
+    ): void {
         $Project = $RootSite->getProject();
         $TargetProject = QUI::getProjectManager()->getProject($Project->getName(), $langTo);
 

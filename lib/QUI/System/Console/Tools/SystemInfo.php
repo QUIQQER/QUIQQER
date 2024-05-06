@@ -137,7 +137,7 @@ class SystemInfo extends QUI\System\Console\Tool
      * @param string $value
      * @param string $format - http://php.net/manual/de/function.sprintf.php
      */
-    protected function printArrayEntry($key, $value, $format = "%-25s")
+    protected function printArrayEntry(string $key, string $value, string $format = "%-25s"): void
     {
         $this->write(sprintf($format, $key), 'purple');
         $this->resetColor();
