@@ -64,7 +64,7 @@ interface File
      *
      * @return string - \QUI\Projects\Media\Image | \QUI\Projects\Media\Folder | \QUI\Projects\Media\File
      */
-    public function getType();
+    public function getType(): string;
 
     /**
      * Return the URL of the File, relative to the host
