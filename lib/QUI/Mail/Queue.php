@@ -41,7 +41,7 @@ class Queue
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
-    public static function setup()
+    public static function setup(): void
     {
         $Table = QUI::getDataBase()->table();
 
@@ -87,7 +87,7 @@ class Queue
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
-    public static function addToQueue($Mail): int
+    public static function addToQueue(QUI\Mail|Mailer $Mail): int
     {
         $params = $Mail->toArray();
 
@@ -147,11 +147,11 @@ class Queue
     /**
      * Return the path of the attachment directory
      *
-     * @param string|integer $mailId - ID of the Mail Queue Entry
+     * @param integer|string $mailId - ID of the Mail Queue Entry
      *
      * @return string
      */
-    public static function getAttachmentDir($mailId): string
+    public static function getAttachmentDir(int|string $mailId): string
     {
         return VAR_DIR . 'mailQueue/' . (int)$mailId . '/';
     }
@@ -433,7 +433,7 @@ class Queue
      * @return void
      * @throws QUI\Exception
      */
-    protected function increaseMailsSent()
+    protected function increaseMailsSent(): void
     {
         $cacheFile = QUI::getPackage('quiqqer/quiqqer')->getVarDir() . 'mailqueue';
         $mailsSent = $this->getMailsSentInLastHour();
@@ -448,7 +448,7 @@ class Queue
      * @return void
      * @throws QUI\Database\Exception
      */
-    public function sendAll()
+    public function sendAll(): void
     {
         if (Mailer::$DISABLE_MAIL_SENDING) {
             return;
