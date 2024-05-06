@@ -1109,13 +1109,15 @@ class Manager
      * Return the projects count
      *
      * @return integer
-     *
-     * @throws QUI\Exception
      */
     public static function count(): int
     {
-        $Config = self::getConfig();
-        $config = $Config->toArray();
+        try {
+            $Config = self::getConfig();
+            $config = $Config->toArray();
+        } catch (\Exception) {
+            return 0;
+        }
 
         return count($config);
     }
