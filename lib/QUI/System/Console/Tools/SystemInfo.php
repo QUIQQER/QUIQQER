@@ -38,8 +38,8 @@ class SystemInfo extends QUI\System\Console\Tool
         $data = $Package->getComposerData();
 
         $this->writeLn('QUIQQER Info');
-        $this->writeLn('');
-        $this->writeLn('');
+        $this->writeLn();
+        $this->writeLn();
 
         $print = array_flip([
             'name',
@@ -61,13 +61,13 @@ class SystemInfo extends QUI\System\Console\Tool
                 $this->write(sprintf("%-10s", $key), 'green');
                 $this->resetColor();
                 $this->write("\t\t" . $value);
-                $this->writeLn('');
+                $this->writeLn();
 
                 continue;
             }
 
             $this->writeLn($key, 'green');
-            $this->writeLn('');
+            $this->writeLn();
             $this->resetColor();
 
             if ($key == 'authors') {
@@ -76,7 +76,7 @@ class SystemInfo extends QUI\System\Console\Tool
                         $this->printArrayEntry($_key, $_value, "%-15s");
                     }
 
-                    $this->writeLn('');
+                    $this->writeLn();
                 }
 
                 continue;
@@ -91,7 +91,7 @@ class SystemInfo extends QUI\System\Console\Tool
         $serverList = QUI::getPackageManager()->getServerList();
 
         $this->writeLn('Server-List', 'green');
-        $this->writeLn('');
+        $this->writeLn();
         $this->resetColor();
 
         foreach ($serverList as $server => $data) {
@@ -110,11 +110,11 @@ class SystemInfo extends QUI\System\Console\Tool
             }
         }
 
-        $this->writeLn('');
+        $this->writeLn();
 
         // installed packages
         $this->writeLn('Installed packages', 'green');
-        $this->writeLn('');
+        $this->writeLn();
         $this->resetColor();
 
         $packages = QUI::getPackageManager()->getInstalled();
@@ -126,8 +126,8 @@ class SystemInfo extends QUI\System\Console\Tool
             $this->writeLn($str);
         }
 
-        $this->writeLn('');
-        $this->writeLn('');
+        $this->writeLn();
+        $this->writeLn();
     }
 
     /**
@@ -142,6 +142,6 @@ class SystemInfo extends QUI\System\Console\Tool
         $this->write(sprintf($format, $key), 'purple');
         $this->resetColor();
         $this->write("\t\t" . $value);
-        $this->writeLn('');
+        $this->writeLn();
     }
 }

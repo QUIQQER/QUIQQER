@@ -65,16 +65,12 @@ class Project extends QUI\System\Console\Tool
 
         $this->addArgument(
             'lang_from',
-            'Copy project -> From language',
-            false,
-            false
+            'Copy project -> From language'
         );
 
         $this->addArgument(
             'lang_to',
-            'Copy project -> To language',
-            false,
-            false
+            'Copy project -> To language'
         );
 
         $this->addExample(
@@ -141,7 +137,7 @@ class Project extends QUI\System\Console\Tool
             $this->resetColor();
             $this->writeLn('', '');
             exit;
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         // project languages
@@ -238,7 +234,7 @@ class Project extends QUI\System\Console\Tool
         }
 
         $this->writeLn('Project ' . $projectName . ' successfuly created.');
-        $this->writeLn('');
+        $this->writeLn();
     }
 
     /**
@@ -248,7 +244,7 @@ class Project extends QUI\System\Console\Tool
     {
         $this->writeLnLocale("console.tool.project.delete.warning.header", "yellow");
         $this->writeLnLocale("console.tool.project.delete.warning", "white");
-        $this->writeLn("");
+        $this->writeLn();
         $this->writeLnLocale("console.tool.project.delete.prompt.projectname.info", "cyan");
 
         foreach (QUI::getProjectManager()->getProjects() as $projectName) {
@@ -263,14 +259,14 @@ class Project extends QUI\System\Console\Tool
             $Project = QUI::getProject($projectName);
         } catch (Exception) {
             $this->writeLnLocale("console.tool.project.delete.project.not.found", "light_red");
-            $this->writeLn("");
+            $this->writeLn();
             exit;
         }
 
         // Check if this project is the only one
         if (QUI::getProjectManager()->count() == 1) {
             $this->writeLnLocale("console.tool.project.delete.project.delete.last.project", "light_red");
-            $this->writeLn("");
+            $this->writeLn();
             exit;
         }
 
@@ -281,14 +277,14 @@ class Project extends QUI\System\Console\Tool
 
         if ($confirm != $projectName) {
             $this->writeLnLocale("console.tool.project.delete.error.confirm.mismatch", "light_red");
-            $this->writeLn("");
+            $this->writeLn();
             exit;
         }
 
         QUI::getProjectManager()->deleteProject($Project);
 
         $this->writeLnLocale("console.tool.project.delete.success.finished", "light_green");
-        $this->writeLn("");
+        $this->writeLn();
     }
 
     /**
@@ -355,8 +351,8 @@ class Project extends QUI\System\Console\Tool
 
         $projectLangs = $Project->getLanguages();
 
-        if (!\in_array($langTo, $projectLangs)) {
-            $this->writeLn("Project lang '{$langTo}' does not exist. Adding language...");
+        if (!in_array($langTo, $projectLangs)) {
+            $this->writeLn("Project lang '$langTo' does not exist. Adding language...");
 
             $projectLangs[] = $langTo;
 
@@ -468,20 +464,11 @@ class Project extends QUI\System\Console\Tool
         $Project = $RootSite->getProject();
         $TargetProject = QUI::getProjectManager()->getProject($Project->getName(), $langTo);
 
-        $RootSiteCopy = $this->copySite($TargetProject, $RootSite, $ParentSite ? $ParentSite->getId() : null);
+        $RootSiteCopy = $this->copySite($TargetProject, $RootSite, $ParentSite?->getId());
 
         foreach ($RootSite->getChildrenIds(['active' => '0&1']) as $siteId) {
             $Site = new QUI\Projects\Site\Edit($Project, $siteId);
-
-//            if (!empty($Site->getChildrenIds(['active' => '0&1']))) {
             $this->copySiteLevel($Site, $langTo, $RootSiteCopy);
-//            }
-
-//            $SiteCopy = $this->copySite($TargetProject, $Site, $ParentSite->getId());
-//
-//            if (!empty($Site->getChildrenIds(['active' => '0&1']))) {
-//                $this->copySiteLevel($Site, $langTo, $SiteCopy);
-//            }
         }
     }
 
@@ -538,9 +525,7 @@ class Project extends QUI\System\Console\Tool
 
                         $copyBrickId = $this->BricksManager->copyBrick(
                             $brick['brickId'],
-                            [
-                                'lang' => $langTo
-                            ]
+                            ['lang' => $langTo]
                         );
 
                         $newSiteAreas[$area][] = [

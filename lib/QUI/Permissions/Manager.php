@@ -357,7 +357,6 @@ class Manager
      * Return the permissions data of an object
      *
      * @param mixed $Obj
-     *
      * @return array
      */
     protected function getData($Obj): array
@@ -421,7 +420,6 @@ class Manager
 
         if ($area === 'site') {
             /* @var $Obj QUI\Projects\Site */
-            /* @var $Project Project */
             $Project = $Obj->getProject();
 
             try {
@@ -681,7 +679,6 @@ class Manager
                 throw new QUI\Exception(
                     'Cannot set Permissions. Object not allowed'
                 );
-                break;
         }
 
         QUI\Permissions\Permission::checkPermission(
@@ -1327,13 +1324,13 @@ class Manager
         try {
             $RootGroup = QUI::getGroups()->get(QUI::conf('globals', 'root'));
             $rootPermissions = $this->getPermissions($RootGroup);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         try {
             $Everyone = QUI::getGroups()->get(QUI\Groups\Manager::EVERYONE_ID);
             $everyonePermissions = $this->getPermissions($Everyone);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         foreach ($permissions as $permission) {
@@ -1488,7 +1485,6 @@ class Manager
             case 'users':
             case 'users_and_groups':
                 return $type;
-                break;
         }
 
         return 'bool';
@@ -1511,7 +1507,6 @@ class Manager
             case 'project':
             case 'media':
                 return $area;
-                break;
         }
 
         return '';
@@ -1593,11 +1588,9 @@ class Manager
         switch ($area) {
             case 'project':
                 return $this->getProjectPermissions($Obj);
-                break;
 
             case 'site':
                 return $this->getSitePermissions($Obj);
-                break;
         }
 
         $permissions = [];
@@ -1756,7 +1749,7 @@ class Manager
     {
         $userPermissions = $this->getData($User);
 
-        if (isset($userPermissions[0]) && isset($userPermissions[0]['permissions'])) {
+        if (isset($userPermissions[0]['permissions'])) {
             $userPermissions = json_decode(
                 $userPermissions[0]['permissions'],
                 true
@@ -1778,7 +1771,6 @@ class Manager
      *
      * @return array
      * @todo das muss vielleicht überdacht werden
-     *
      */
     public function getRightParamsFromGroup(Group $Group)
     {
@@ -1802,7 +1794,6 @@ class Manager
                     break;
 
                 case 'groups':
-                    // kommasepariert und zahlen
                     $val = preg_replace('/[^0-9,]/', '', $val);
                     break;
 

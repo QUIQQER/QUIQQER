@@ -160,11 +160,10 @@ class Project implements \Stringable
     {
         $config = Manager::getConfig()->toArray();
 
-        $name = (string)$this->name;
+        $name = $this->name;
         $lang = (string)$this->lang;
         $template = (string)$this->template;
 
-        // Konfiguration einlesen
         if (!isset($config[$name])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
@@ -179,7 +178,6 @@ class Project implements \Stringable
         $this->config = $config[$name];
         $this->name = $name;
 
-        // Langs
         if (!isset($this->config['langs'])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
@@ -206,7 +204,7 @@ class Project implements \Stringable
         $this->default_lang = $this->config['default_lang'];
 
         // Sprache
-        if ($lang != false) {
+        if ($lang) {
             if (!in_array($lang, $this->langs)) {
                 throw new QUI\Exception(
                     QUI::getLocale()->get(
@@ -222,7 +220,6 @@ class Project implements \Stringable
 
             $this->lang = $lang;
         } else {
-            // Falls keine Sprache angegeben wurde wird die Standardsprache verwendet
             if (!isset($this->config['default_lang'])) {
                 throw new QUI\Exception(
                     QUI::getLocale()->get(
@@ -412,7 +409,6 @@ class Project implements \Stringable
         }
 
         $this->children[$id] = $Site;
-
         return $Site;
     }
 
@@ -482,7 +478,6 @@ class Project implements \Stringable
     public function __destruct()
     {
         unset($this->config);
-        unset($this->children_tmp);
     }
 
     /**
@@ -581,7 +576,7 @@ class Project implements \Stringable
         $PDO = QUI::getDataBase()->getPDO();
         $Statement = $PDO->prepare($query);
 
-        $Statement->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
+        $Statement->bindValue(':search', '%' . $search . '%');
         $Statement->execute();
 
         $dbResult = $Statement->fetchAll(PDO::FETCH_ASSOC);
@@ -715,8 +710,6 @@ class Project implements \Stringable
      * @param boolean $link - Clears the site link cache
      * @param boolean $site - Clears the site cache
      *
-     * @throws QUI\Exception
-     *
      * @todo muss überarbeitet werden
      */
     public function clearCache($link = true, $site = true)
@@ -841,7 +834,7 @@ class Project implements \Stringable
         foreach ($vhostList as $vhost) {
             $hostData = $VHosts->getVhost($vhost);
 
-            if (isset($hostData['template']) && !empty($hostData['template'])) {
+            if (!empty($hostData['template'])) {
                 $siteXMLs[] = OPT_DIR . $hostData['template'] . '/site.xml';
             }
         }
@@ -928,10 +921,7 @@ class Project implements \Stringable
                 $params['project'] == $this->getAttribute('name')
                 && $params['lang'] == $this->getAttribute('lang')
             ) {
-                if (
-                    $ssl && isset($params['httpshost'])
-                    && !empty($params['httpshost'])
-                ) {
+                if ($ssl && !empty($params['httpshost'])) {
                     return $with_protocol ? 'https://' . $params['httpshost'] : $params['httpshost'];
                 }
 
@@ -1092,7 +1082,7 @@ class Project implements \Stringable
         $pid = $this->getParentIdFrom($id);
 
         while ($pid != 1) {
-            array_push($ids, $pid);
+            $ids[] = $pid;
             $pid = $this->getParentIdFrom($pid);
         }
 
@@ -1118,12 +1108,12 @@ class Project implements \Stringable
 
         $s = $this->getSitesIds($params);
 
-        if (empty($s) || !is_array($s)) {
+        if (empty($s)) {
             return [];
         }
 
         if (isset($params['count'])) {
-            if (isset($s[0]) && isset($s[0]['count'])) {
+            if (isset($s[0]['count'])) {
                 return $s[0]['count'];
             }
 
@@ -1327,7 +1317,7 @@ class Project implements \Stringable
 
             // fix for old tables
             $DataBase->getPDO()->exec(
-                "ALTER TABLE `{$table}` 
+                "ALTER TABLE `$table` 
                 CHANGE `name` `name` VARCHAR(255) NOT NULL,
                 CHANGE `order_type` `order_type` VARCHAR(255) NULL DEFAULT NULL,
                 CHANGE `release_from` `release_from` DATETIME NULL DEFAULT NULL,
@@ -1340,13 +1330,13 @@ class Project implements \Stringable
             try {
                 $DataBase->getPDO()->exec(
                     "
-                    UPDATE `{$table}` 
+                    UPDATE `$table` 
                     SET release_from = null 
                     WHERE 
                         release_from = '0000-00-00 00:00:00' OR 
                         release_from = '';
                     
-                    UPDATE `{$table}` 
+                    UPDATE `$table` 
                     SET release_to = null 
                     WHERE 
                         release_to = '0000-00-00 00:00:00' OR

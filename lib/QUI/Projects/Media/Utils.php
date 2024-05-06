@@ -613,7 +613,7 @@ class Utils
 
         try {
             $Image = self::getImageByUrl($src);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return '';
         }
 
@@ -1216,7 +1216,7 @@ class Utils
         }
 
         if (isset($result[0])) {
-            return (int) $result[0]['id'];
+            return (int)$result[0]['id'];
         }
 
         return 0;
@@ -1249,7 +1249,7 @@ class Utils
         }
 
         if (isset($result[0])) {
-            return (int) $result[0]['id'];
+            return (int)$result[0]['id'];
         }
 
         return 0;
@@ -1356,7 +1356,7 @@ class Utils
         $return = [];
 
         foreach ($result as $element) {
-            $return[$element['mime_type']] = (int) $element['count'];
+            $return[$element['mime_type']] = (int)$element['count'];
         }
 
         return $return;
@@ -1372,7 +1372,7 @@ class Utils
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
 

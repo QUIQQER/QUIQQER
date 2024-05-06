@@ -431,7 +431,7 @@ class Package extends QUI\QDOM
 
         $packageData = $this->getPackageXMLData();
 
-        if (isset($packageData['title']) && !empty($packageData['title'])) {
+        if (!empty($packageData['title'])) {
             $this->title = $packageData['title'];
 
             return $this->title;
@@ -802,7 +802,7 @@ class Package extends QUI\QDOM
                     $this->getPermissionName('header'),
                     $data
                 );
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 try {
                     QUI\Translator::edit(
                         'quiqqer/quiqqer',
@@ -910,7 +910,6 @@ class Package extends QUI\QDOM
         $dir = $this->getDir();
 
         try {
-            $groups = [];
             $files = [$dir . self::LOCALE_XML];
             $Dom = XML::getDomFromXml($dir . self::LOCALE_XML);
             $FileList = $Dom->getElementsByTagName('file');

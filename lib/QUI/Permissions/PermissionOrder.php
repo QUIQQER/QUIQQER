@@ -135,7 +135,6 @@ class PermissionOrder
                 $hasPermissionResult = $Object->hasPermission($permission);
             }
 
-            // falls wert boolean ist
             if ($hasPermissionResult === true) {
                 return true;
             }
@@ -153,7 +152,7 @@ class PermissionOrder
                 continue;
             }
 
-            // falls wert string ist
+            // string
             if ($hasPermissionResult) {
                 return $hasPermissionResult;
             }

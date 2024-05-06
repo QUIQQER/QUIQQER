@@ -157,8 +157,6 @@ class Handler extends QUI\QDOM
 
         if ($this->getAttribute('logdir')) {
             $log = $this->getAttribute('logdir') . 'error' . date('-Y-m-d') . '.log';
-
-            // Log Verzeichnis erstellen
             QUI\Utils\System\File::mkdir($this->getAttribute('logdir'));
         }
 
@@ -183,8 +181,7 @@ class Handler extends QUI\QDOM
             }
 
             if (isset($_SERVER['HTTP_USER_AGENT'])) {
-                $err_msg .= 'HTTP_USER_AGENT: ' . $_SERVER['HTTP_USER_AGENT']
-                    . "\n";
+                $err_msg .= 'HTTP_USER_AGENT: ' . $_SERVER['HTTP_USER_AGENT'] . "\n";
             }
 
             if (isset($_REQUEST['_url'])) {
@@ -214,7 +211,6 @@ class Handler extends QUI\QDOM
             $err_msg .= "Error Line:" . $errLine . "\n";
         }
 
-        // Nutzerdaten
         if (isset($_SERVER['SERVER_ADDR'])) {
             $err_msg .= "IP: " . $_SERVER['SERVER_ADDR'] . "\n";
             $err_msg .= "Host: " . gethostbyaddr($_SERVER['SERVER_ADDR']) . "\n";

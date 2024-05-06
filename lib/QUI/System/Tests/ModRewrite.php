@@ -88,7 +88,7 @@ class ModRewrite extends QUI\System\Test
         try {
             $Project = QUI::getProjectManager()->getStandard();
             $host = $Project->getHost();
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             return self::STATUS_ERROR;
         }
 

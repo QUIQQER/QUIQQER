@@ -73,8 +73,8 @@ class Login extends Control
             $exclusiveAuthenticators = [];
         }
 
-        foreach ($authenticator as $k => $auth) {
-            if (!empty($exclusiveAuthenticators) && !\in_array($auth, $exclusiveAuthenticators)) {
+        foreach ($authenticator as $auth) {
+            if (!empty($exclusiveAuthenticators) && !in_array($auth, $exclusiveAuthenticators)) {
                 continue;
             }
 
@@ -90,11 +90,7 @@ class Login extends Control
             ];
         }
 
-        try {
-            $Engine = QUI::getTemplateManager()->getEngine();
-        } catch (QUI\Exception) {
-            return '';
-        }
+        $Engine = QUI::getTemplateManager()->getEngine();
 
         $Engine->assign([
             'passwordReset' => !empty($_REQUEST['password_reset']),

@@ -166,13 +166,7 @@ class Manager extends QUI\QDOM
      */
     protected string $composer_lock;
     /**
-     * exec command to the composer.phar file
-     *
-     * @var string
-     */
-    protected string $composer_exec;
-    /**
-     * Packaglist - installed packages
+     * Package list - installed packages
      *
      * @var array
      */
@@ -869,7 +863,7 @@ class Manager extends QUI\QDOM
                 $this->list = $list;
                 return $this->list;
             }
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         $installed_file = $this->dir . 'composer/installed.json';
@@ -1006,13 +1000,6 @@ class Manager extends QUI\QDOM
             $this->Composer->setMode(
                 QUI\Composer\Composer::MODE_WEB
             );
-            /*
-            if (php_sapi_name() != 'cli') {
-                $this->Composer->setMode(QUI\Composer\Composer::MODE_WEB);
-            } else {
-                $this->Composer->setMode(QUI\Composer\Composer::MODE_CLI);
-            }
-            */
         }
 
         return $this->Composer;
@@ -2137,7 +2124,7 @@ class Manager extends QUI\QDOM
     {
         try {
             return QUI\Cache\LongTermCache::get(self::CACHE_SITE_XML_LIST);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         $packages = $this->getInstalled();
@@ -2176,7 +2163,7 @@ class Manager extends QUI\QDOM
     {
         try {
             return QUI\Cache\LongTermCache::get(self::CACHE_MEDIA_XML_LIST);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         $packages = $this->getInstalled();
@@ -2215,7 +2202,7 @@ class Manager extends QUI\QDOM
     {
         try {
             return QUI\Cache\LongTermCache::get(self::CACHE_DB_XML_LIST);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         $packages = $this->getInstalled();
@@ -2443,7 +2430,7 @@ class Manager extends QUI\QDOM
 
         try {
             return QUICacheManager::get($cacheName);
-        } catch (Exception $Exception) {
+        } catch (Exception) {
             // nothing, make license server request
         }
 
@@ -2505,7 +2492,7 @@ class Manager extends QUI\QDOM
 
         try {
             return json_decode(QUI\Cache\LongTermCache::get($cacheName), true);
-        } catch (Exception $Exception) {
+        } catch (Exception) {
             // nothing, make license server request
         }
 
@@ -2604,7 +2591,7 @@ class Manager extends QUI\QDOM
         $data = file_get_contents($installed_file);
         $list = json_decode($data, true);
 
-        foreach ($list as $key => $entry) {
+        foreach ($list as $entry) {
             $cf = $this->dir . $entry['name'] . '/composer.json';
 
             if (!file_exists($cf)) {

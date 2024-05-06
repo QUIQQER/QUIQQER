@@ -83,13 +83,13 @@ class Form extends QUI\QDOM
             'this' => $this,
             'name' => $this->getAttribute('name'),
             'id' => QUI\Utils\Uuid::get(),
-            'uploads' => (int) $this->getAttribute('uploads'),
-            'contextMenu' => $this->phpBool2JsBool((bool) $this->getAttribute('contextMenu')),
-            'multiple' => $this->phpBool2JsBool((bool) $this->getAttribute('multiple')),
-            'sendbutton' => $this->phpBool2JsBool((bool) $this->getAttribute('sendbutton')),
-            'hasFile' => $this->phpBool2JsBool((bool) $this->getAttribute('hasFile')),
-            'deleteFile' => $this->phpBool2JsBool((bool) $this->getAttribute('deleteFile')),
-            'callable' => \str_replace('\\', '\\\\', $this->getType()),
+            'uploads' => (int)$this->getAttribute('uploads'),
+            'contextMenu' => $this->phpBool2JsBool((bool)$this->getAttribute('contextMenu')),
+            'multiple' => $this->phpBool2JsBool((bool)$this->getAttribute('multiple')),
+            'sendbutton' => $this->phpBool2JsBool((bool)$this->getAttribute('sendbutton')),
+            'hasFile' => $this->phpBool2JsBool((bool)$this->getAttribute('hasFile')),
+            'deleteFile' => $this->phpBool2JsBool((bool)$this->getAttribute('deleteFile')),
+            'callable' => str_replace('\\', '\\\\', $this->getType()),
             'typeOfLook' => $typeOfLook
         ]);
 

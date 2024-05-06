@@ -156,7 +156,7 @@ class Autoloader
             }
         }
 
-        return (bool) self::$ComposerLoader->loadClass($classname);
+        return (bool)self::$ComposerLoader->loadClass($classname);
     }
 
     public static function shouldOtherAutoloadersBeUnregistered(): bool

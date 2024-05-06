@@ -411,16 +411,5 @@ class Package extends QUI\System\Console\Tool
 
         $Runner->setOutput($CLIOutput);
         $Runner->executeComposer('remove', ['packages' => [$package]]);
-        /*
-        $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.removing.update'));
-        $input = $this->readInput();
-
-        if (strtolower($input) !== 'y') {
-            return;
-        }
-
-        $Update = new Update();
-        $Update->execute();
-        */
     }
 }

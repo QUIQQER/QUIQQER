@@ -35,8 +35,6 @@ class OnlyDB extends QUI\Projects\Site
         $this->RELTABLE = $Project->table() . '_relations';
         $this->RELLANGTABLE = $Project->getAttribute('name') . '_multilingual';
 
-        $id = (int)$id;
-
         if (empty($id)) {
             throw new QUI\Exception('Site Error; No ID given:' . $id, 400);
         }

@@ -172,7 +172,7 @@ class Utils
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (Exception $Exception) {
+        } catch (Exception) {
         }
 
         $dbXmlList = self::getDataBaseXMLListForSite($Site);
@@ -268,7 +268,7 @@ class Utils
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (Exception $Exception) {
+        } catch (Exception) {
         }
 
         $dbXmlList = QUI::getPackageManager()->getPackageDatabaseXmlList();
@@ -345,7 +345,7 @@ class Utils
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (Exception $Exception) {
+        } catch (Exception) {
         }
 
 
@@ -455,7 +455,7 @@ class Utils
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (Exception $Exception) {
+        } catch (Exception) {
         }
 
 
@@ -548,7 +548,7 @@ class Utils
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (Exception $Exception) {
+        } catch (Exception) {
         }
 
         // site type extra xml

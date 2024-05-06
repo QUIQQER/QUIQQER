@@ -276,7 +276,7 @@ class Locker
         $Item = self::getStash(self::getLockKey($Package, $key));
         $Expire = $Item->getExpiration();
 
-        if ($Expire === false) {
+        if (!$Expire) {
             return 0;
         }
 

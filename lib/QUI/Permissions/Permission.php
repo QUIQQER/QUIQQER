@@ -97,7 +97,7 @@ class Permission
             foreach ($groups as $Group) {
                 $permissions = $Manager->getPermissions($Group);
 
-                if (isset($permissions[$perm]) && !empty($permissions[$perm])) {
+                if (!empty($permissions[$perm])) {
                     return $permissions[$perm];
                 }
             }
@@ -484,7 +484,7 @@ class Permission
         $permissions = $Manager->getPermissions($User);
 
         // first check user permission
-        if (isset($permissions[$perm]) && !empty($permissions[$perm])) {
+        if (!empty($permissions[$perm])) {
             return $permissions[$perm];
         }
 
@@ -561,7 +561,7 @@ class Permission
                         $User
                     );
                 }
-                break;
+
             case 'quiqqer.projects.site.edit':
             case 'quiqqer.projects.sites.edit':
                 try {
@@ -581,7 +581,7 @@ class Permission
                         $User
                     );
                 }
-                break;
+
             case 'quiqqer.projects.site.del':
             case 'quiqqer.projects.sites.del':
                 try {
@@ -601,7 +601,7 @@ class Permission
                         $User
                     );
                 }
-                break;
+
             case 'quiqqer.projects.site.new':
             case 'quiqqer.projects.sites.new':
                 try {
@@ -684,14 +684,13 @@ class Permission
 
         switch ($perm_data['type']) {
             case 'bool':
-                if ((bool)$perm_value) {
+                if ($perm_value) {
                     $check = true;
                 }
                 break;
 
             case 'group':
                 $group_ids = $User->getGroups(false);
-                $group_ids = explode(',', $group_ids);
 
                 if (str_contains($perm_value, 'g') || str_contains($perm_value, 'u')) {
                     $perm_value = (int)substr($perm_value, 1);
@@ -729,12 +728,6 @@ class Permission
             case 'users_and_groups':
                 // groups ids from the user
                 $group_ids = $User->getGroups(false);
-
-                if (!is_array($group_ids)) {
-                    $group_ids = explode(',', $group_ids);
-                }
-
-
                 $user_group_ids = [];
 
                 foreach ($group_ids as $gid) {

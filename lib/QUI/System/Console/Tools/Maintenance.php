@@ -86,8 +86,8 @@ class Maintenance extends QUI\System\Console\Tool
 
             $Config->save();
 
-            $this->writeLn('');
-        } catch (\Exception $Exception) {
+            $this->writeLn();
+        } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
     }

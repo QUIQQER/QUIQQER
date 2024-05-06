@@ -51,9 +51,9 @@ class RenameProject extends Tool
 
         try {
             $this->Project = QUI::getProject($this->oldProjectName);
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
             $this->writeLnLocale("console.tool.project.rename.project.not.found", "white");
-            $this->writeLn("");
+            $this->writeLn();
             exit;
         }
 
@@ -78,7 +78,7 @@ class RenameProject extends Tool
         QUI::getProjectManager()->rename($this->oldProjectName, $this->newProjectName);
 
         $this->writeLnLocale("console.tool.project.rename.finished.success");
-        $this->writeLn("");
+        $this->writeLn();
     }
 
     /**

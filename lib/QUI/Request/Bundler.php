@@ -181,8 +181,6 @@ class Bundler
             require_once $file;
 
             $this->includes[$function] = $file;
-
-            return;
         }
     }
 
@@ -198,7 +196,7 @@ class Bundler
             return;
         }
 
-        if (\is_array($function)) {
+        if (is_array($function)) {
             foreach ($function as $f) {
                 $this->includesPackage($f, $request);
             }

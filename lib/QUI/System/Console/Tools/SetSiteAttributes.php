@@ -56,7 +56,7 @@ class SetSiteAttributes extends QUI\System\Console\Tool
 
         try {
             $Project = $Projects->getProject($projectname, $projectlang);
-        } catch (\Exception $Exception) {
+        } catch (Exception) {
             $this->writeLn("Could not load project $projectname ($projectlang)");
             $this->execute();
 
@@ -64,7 +64,7 @@ class SetSiteAttributes extends QUI\System\Console\Tool
         }
 
         $this->writeLn("Site query (MySQL): WHERE ");
-        $siteQuery = \trim($this->readInput());
+        $siteQuery = trim($this->readInput());
 
         $sql = "SELECT `id` FROM " . QUI::getDBProjectTableName('sites', $Project);
         $sql .= " WHERE $siteQuery";

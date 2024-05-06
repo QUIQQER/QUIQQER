@@ -132,10 +132,6 @@ class Template extends QUI\QDOM
         $Project = $this->getProject();
         $standardTpl = LIB_DIR . 'templates/mail/main.html';
 
-        if (!$Project) {
-            return $standardTpl;
-        }
-
         // exit project template?
         $template = $this->getAttribute('TplMain');
         $projectDir = USR_DIR . $Project->getName() . '/lib/';
@@ -163,10 +159,6 @@ class Template extends QUI\QDOM
     {
         $Project = $this->getProject();
         $standardTpl = LIB_DIR . 'templates/mail/meta.html';
-
-        if (!$Project) {
-            return $standardTpl;
-        }
 
         // exit project template?
         $template = $this->getAttribute('TplMeta');
@@ -196,10 +188,6 @@ class Template extends QUI\QDOM
         $Project = $this->getProject();
         $standardTpl = LIB_DIR . 'templates/mail/header.html';
 
-        if (!$Project) {
-            return $standardTpl;
-        }
-
         // exit project template?
         $template = $this->getAttribute('TplHeader');
         $projectDir = USR_DIR . $Project->getName() . '/lib/';
@@ -228,10 +216,6 @@ class Template extends QUI\QDOM
         $Project = $this->getProject();
         $standardTpl = LIB_DIR . 'templates/mail/body.html';
 
-        if (!$Project) {
-            return $standardTpl;
-        }
-
         // exit project template?
         $template = $this->getAttribute('TplBody');
         $projectDir = USR_DIR . $Project->getName() . '/lib/';
@@ -259,10 +243,6 @@ class Template extends QUI\QDOM
     {
         $Project = $this->getProject();
         $standardTpl = LIB_DIR . 'templates/mail/footer.html';
-
-        if (!$Project) {
-            return $standardTpl;
-        }
 
         // exit project template?
         $template = $this->getAttribute('TplFooter');
