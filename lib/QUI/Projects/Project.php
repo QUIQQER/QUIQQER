@@ -897,7 +897,7 @@ class Project implements \Stringable
                     return $with_protocol ? 'https://' . $url : $url;
                 }
 
-                return $with_protocol ? 'http://' . $url : $url;
+                return $with_protocol ? 'https://' . $url : $url;
             }
         }
 
