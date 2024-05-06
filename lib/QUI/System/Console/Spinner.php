@@ -274,7 +274,7 @@ class Spinner
     /**
      * @var bool|mixed
      */
-    protected $useKeyboardInterrupts = true;
+    protected mixed $useKeyboardInterrupts = true;
     protected int $childPid;
     protected string $message = '';
     protected string $blinkOff = "\e[?25l";
@@ -337,7 +337,7 @@ class Spinner
         $this->loopSpinnerFrames();
     }
 
-    private function keyboardInterrupts()
+    private function keyboardInterrupts(): void
     {
         // Keyboard interrupts. E.g. ctrl-c
         // Exit both parent and child process
@@ -355,7 +355,7 @@ class Spinner
         pcntl_async_signals(true);
     }
 
-    private function resetTerminal()
+    private function resetTerminal(): void
     {
         echo $this->clearLine;
         echo $this->blinkOn;
@@ -389,7 +389,7 @@ class Spinner
         return $prev;
     }
 
-    public function stop()
+    public function stop(): void
     {
         posix_kill($this->childPid, SIGTERM);
         $this->resetTerminal();
