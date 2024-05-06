@@ -35,7 +35,7 @@ class Locker
         $key,
         string $permission = '',
         $User = null
-    ) {
+    ): void {
         if (is_null($User)) {
             $User = QUI::getUserBySession();
         }
@@ -62,7 +62,7 @@ class Locker
         Package $Package,
         string $key,
         ?QUI\Interfaces\Users\User $User = null
-    ) {
+    ): void {
         if (self::isLocked($Package, $key, $User)) {
             throw new QUI\Lock\Exception('Item is locked');
         }
@@ -82,7 +82,7 @@ class Locker
         string $key,
         ?QUI\Interfaces\Users\User $User = null,
         bool $considerUser = true
-    ) {
+    ): mixed {
         if (is_null($User)) {
             $User = QUI::getUserBySession();
         }
@@ -112,7 +112,7 @@ class Locker
      * @return mixed|null
      * @throws QUI\Lock\Exception
      */
-    protected static function getStashData(string $name)
+    protected static function getStashData(string $name): mixed
     {
         $Item = self::getStash($name);
         $data = $Item->get();
@@ -185,9 +185,9 @@ class Locker
     public static function lock(
         Package $Package,
         string $key,
-        $lifetime = false,
+        bool|int $lifetime = false,
         QUI\Interfaces\Users\User $User = null
-    ) {
+    ): void {
         if (is_null($User)) {
             $User = QUI::getUserBySession();
         }
@@ -221,7 +221,7 @@ class Locker
         $key,
         string $permission = '',
         $User = null
-    ) {
+    ): void {
         if (is_null($User)) {
             $User = QUI::getUserBySession();
         }
@@ -257,7 +257,7 @@ class Locker
      * @param string $key
      * @throws QUI\Lock\Exception
      */
-    public static function unlock(Package $Package, string $key)
+    public static function unlock(Package $Package, string $key): void
     {
         $Item = self::getStash(self::getLockKey($Package, $key));
         $Item->clear();
