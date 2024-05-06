@@ -47,7 +47,7 @@ class Handler
     /**
      * return the global icon handler
      *
-     * @return Handler
+     * @return Handler|null
      */
     public static function getInstance(): ?Handler
     {
@@ -67,7 +67,7 @@ class Handler
      *
      * @param string $file
      */
-    public function addCSSFile($file): void
+    public function addCSSFile(string $file): void
     {
         $this->files[] = $file;
     }
