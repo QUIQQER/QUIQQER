@@ -44,7 +44,7 @@ class Media extends QUI\QDOM
     /**
      * @var null|mixed
      */
-    protected static $mediaPermissions = null;
+    protected static mixed $mediaPermissions = null;
     /**
      * internal child cache
      *
@@ -60,7 +60,7 @@ class Media extends QUI\QDOM
     /**
      * Use media permissions? Media permissions are available?
      *
-     * @return bool
+     * @return bool|null
      */
     public static function useMediaPermissions(): ?bool
     {
@@ -134,9 +134,9 @@ class Media extends QUI\QDOM
     /**
      * Return the Logo image object of the media
      *
-     * @return QUI\Projects\Media\Image
+     * @return QUI\Interfaces\Projects\Media\File|bool
      */
-    public function getLogoImage()
+    public function getLogoImage(): QUI\Interfaces\Projects\Media\File|bool
     {
         $Project = $this->getProject();
 
@@ -155,9 +155,9 @@ class Media extends QUI\QDOM
     /**
      * Return the Placeholder of the media
      *
-     * @return QUI\Projects\Media\Image|false
+     * @return QUI\Interfaces\Projects\Media\File|false
      */
-    public function getPlaceholderImage()
+    public function getPlaceholderImage(): QUI\Interfaces\Projects\Media\File|bool
     {
         $Project = $this->getProject();
 
@@ -179,7 +179,7 @@ class Media extends QUI\QDOM
      * @throws QUI\Exception
      * @throws QUI\Database\Exception
      */
-    public function setup()
+    public function setup(): void
     {
         /**
          * Media Center
@@ -349,11 +349,11 @@ class Media extends QUI\QDOM
     /**
      * Return the DataBase table name
      *
-     * @param string|boolean $type - (optional) standard=false; other options: relations
+     * @param boolean|string $type - (optional) standard=false; other options: relations
      *
      * @return string
      */
-    public function getTable($type = false): string
+    public function getTable(bool|string $type = false): string
     {
         if ($type == 'relations') {
             return QUI::getDBTableName($this->Project->getAttribute('name') . '_media_relations');
@@ -367,7 +367,7 @@ class Media extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    public function clearCache()
+    public function clearCache(): void
     {
         $dir = $this->getFullCachePath();
 
@@ -399,12 +399,12 @@ class Media extends QUI\QDOM
     /**
      * Return the first child in the media
      *
-     * @return QUI\Projects\Media\Folder
+     * @return QUI\Interfaces\Projects\Media\File
      *
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
-    public function firstChild()
+    public function firstChild(): QUI\Interfaces\Projects\Media\File
     {
         return $this->get(1);
     }
@@ -414,10 +414,11 @@ class Media extends QUI\QDOM
      *
      * @param integer $id - media id
      *
-     * @return QUI\Projects\Media\Item|QUI\Projects\Media\Image|QUI\Projects\Media\File|QUI\Projects\Media\Folder
+     * @return QUI\Interfaces\Projects\Media\File
+     * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
-    public function get(int $id)
+    public function get(int $id): QUI\Interfaces\Projects\Media\File
     {
         if (isset($this->children[$id])) {
             return $this->children[$id];
@@ -459,9 +460,9 @@ class Media extends QUI\QDOM
      *
      * @param array $result
      *
-     * @return QUI\Projects\Media\Item
+     * @return QUI\Interfaces\Projects\Media\File
      */
-    public function parseResultToItem(array $result)
+    public function parseResultToItem(array $result): QUI\Interfaces\Projects\Media\File
     {
         return match ($result['type']) {
             "image" => new Media\Image($result, $this),
@@ -505,10 +506,11 @@ class Media extends QUI\QDOM
      *
      * @param string $filepath
      *
-     * @return QUI\Projects\Media\Item
+     * @return QUI\Interfaces\Projects\Media\File
+     * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
-    public function getChildByPath(string $filepath)
+    public function getChildByPath(string $filepath): QUI\Interfaces\Projects\Media\File
     {
         $cache = $this->getCacheDir() . 'filePathIds/' . md5($filepath);
 
@@ -548,7 +550,7 @@ class Media extends QUI\QDOM
      * @return QUI\Interfaces\Projects\Media\File
      * @throws QUI\Exception
      */
-    public function replace(int $id, string $file)
+    public function replace(int $id, string $file): QUI\Interfaces\Projects\Media\File
     {
         if (!file_exists($file)) {
             throw new QUI\Exception('File could not be found', 404);
@@ -690,7 +692,7 @@ class Media extends QUI\QDOM
      *
      * @return integer|false
      */
-    public function getParentIdFrom(int $id)
+    public function getParentIdFrom(int $id): bool|int
     {
         if ($id <= 1) {
             return false;
@@ -782,7 +784,7 @@ class Media extends QUI\QDOM
      *
      * @return void
      */
-    public function updateExternalImages()
+    public function updateExternalImages(): void
     {
         try {
             $result = QUI::getDataBase()->fetch([
