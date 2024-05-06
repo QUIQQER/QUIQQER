@@ -46,7 +46,7 @@ class Htaccess extends QUI\System\Console\Tool
      *
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         $this->writeLn('Generating HTACCESS ...');
 

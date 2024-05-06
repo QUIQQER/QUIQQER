@@ -53,7 +53,7 @@ class GetSiteAttributes extends QUI\System\Console\Tool
      * @throws RandomException
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         $Projects = QUI::getProjectManager();
 

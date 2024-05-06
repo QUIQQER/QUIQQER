@@ -28,11 +28,9 @@ class Cleanup extends QUI\System\Console\Tool
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see \QUI\System\Console\Tool::execute()
+     * @throws Exception
      */
-    public function execute()
+    public function execute(): void
     {
         $this->writeLn('Start cleanup ...');
 

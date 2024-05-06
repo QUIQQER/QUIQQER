@@ -63,7 +63,7 @@ class Permissions extends QUI\System\Console\Tool
      * @throws Exception
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         if ($this->getArgument('help')) {
             $this->showHelp();

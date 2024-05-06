@@ -34,7 +34,7 @@ class UpdateServer extends QUI\System\Console\Tool
         $this->addExample('./console quiqqer:update-server --remove=git@dev.quiqqer.com:quiqqer/quiqqer.git');
     }
 
-    public function execute()
+    public function execute(): void
     {
         if ($this->getArgument('add')) {
             $this->addServer();
