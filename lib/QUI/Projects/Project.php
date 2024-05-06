@@ -722,32 +722,6 @@ class Project implements \Stringable
     }
 
     /**
-     * Return the name of a site
-     *
-     * @param integer $id
-     *
-     * @return string
-     * @deprecated
-     */
-    public function getNameById($id)
-    {
-        $result = QUI::getDataBase()->fetch([
-            'select' => 'name',
-            'from' => $this->TABLE,
-            'where' => [
-                'id' => $id
-            ],
-            'limit' => '1'
-        ]);
-
-        if (isset($result[0]) && is_array($result)) {
-            return $result[0]['name'];
-        }
-
-        return '';
-    }
-
-    /**
      * Return a new id
      * - this id is not created
      *
