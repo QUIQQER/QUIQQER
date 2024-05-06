@@ -454,7 +454,6 @@ class Template extends QUI\QDOM
      */
     public function fetchSite($Site): string
     {
-        /* @var $Site QUI\Projects\Site */
         $Project = $Site->getProject();
         $Engine = $this->getEngine();
 

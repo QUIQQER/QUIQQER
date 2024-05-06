@@ -60,9 +60,8 @@ class SecurityUpdate extends QUI\System\Console\Tool
 
         $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'security.update'));
         $this->writeLn('========================');
-        $this->writeLn('');
+        $this->writeLn();
 
-        $self = $this;
         $Packages = QUI::getPackageManager();
         $dryRun = true;
         $dryRunOutput = '';
@@ -229,17 +228,17 @@ class SecurityUpdate extends QUI\System\Console\Tool
             QUI\Cache\Manager::longTimeCacheClearCompleteQuiqqer();
         } catch (Exception $Exception) {
             $this->write(' [error]', 'red');
-            $this->writeLn('');
+            $this->writeLn();
             $this->writeLn(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.error.1') . '::' . $Exception->getMessage(),
                 'red'
             );
 
             $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.error'), 'red');
-            $this->writeLn('');
+            $this->writeLn();
             $this->writeLn('./console repair', 'red');
             $this->resetColor();
-            $this->writeLn('');
+            $this->writeLn();
         } finally {
             // reset the composer jsons
             unlink($composerOriginal);

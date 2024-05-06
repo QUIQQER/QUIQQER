@@ -51,16 +51,10 @@ class Menu
             if (!empty($cache)) {
                 return $cache;
             }
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
-        try {
-            return $this->createMenu();
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
-        }
-
-        return [];
+        return $this->createMenu();
     }
 
     /**
@@ -79,7 +73,6 @@ class Menu
      * no caches use
      *
      * @return array
-     * @throws QUI\Exception
      */
     public function createMenu(): array
     {

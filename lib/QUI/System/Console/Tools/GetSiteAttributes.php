@@ -63,7 +63,7 @@ class GetSiteAttributes extends QUI\System\Console\Tool
 
         try {
             $Project = $Projects->getProject($projectname, $projectlang);
-        } catch (\Exception $Exception) {
+        } catch (Exception) {
             $this->writeLn("Could not load project $projectname ($projectlang)");
             $this->execute();
 
@@ -134,7 +134,6 @@ class GetSiteAttributes extends QUI\System\Console\Tool
             exit(0);
         }
 
-        $SystemUser = QUI::getUsers()->getSystemUser();
         $fetchedAttributes = [];
 
         foreach ($siteIds as $row) {

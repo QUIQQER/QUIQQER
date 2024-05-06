@@ -210,11 +210,7 @@ class QUIQQER extends AbstractAuthenticator
             'limit' => 1
         ]);
 
-        if (
-            empty($userData)
-            || !isset($userData[0]['password'])
-            || empty($userData[0]['password'])
-        ) {
+        if (empty($userData) || empty($userData[0]['password'])) {
             throw new QUI\Users\Exception(
                 ['quiqqer/quiqqer', 'exception.login.fail'],
                 401

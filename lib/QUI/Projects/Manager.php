@@ -223,7 +223,6 @@ class Manager
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
-
                 return;
             }
 
@@ -234,7 +233,6 @@ class Manager
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
-
                 return;
             }
 
@@ -245,7 +243,6 @@ class Manager
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
-
                 return;
             }
 
@@ -256,8 +253,6 @@ class Manager
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
-
-                return;
             }
         };
 
@@ -300,8 +295,8 @@ class Manager
             return self::$projects[$project]['_standard'];
         }
 
-        if (isset(self::$projects[$project]) && isset(self::$projects[$project][$lang])) {
-            /* @var $Project QUI\Projects\Project */
+        if (isset(self::$projects[$project][$lang])) {
+            /* @var $Project Project */
             $Project = self::$projects[$project][$lang];
 
             if (!$template) {
@@ -525,7 +520,7 @@ class Manager
 
         try {
             return QUI\Cache\Manager::get($cache);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         $list = [];
@@ -582,7 +577,7 @@ class Manager
 
         try {
             QUI\Cache\Manager::set($cache, $list);
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
         }
 
@@ -648,9 +643,7 @@ class Manager
             }
         }
 
-        $result = array_unique($result);
-
-        return $result;
+        return array_unique($result);
     }
 
     /**
@@ -714,10 +707,7 @@ class Manager
             $langs = explode(',', trim($conf['langs']));
 
             foreach ($langs as $lang) {
-                if (
-                    isset(self::$projects[$project])
-                    && isset(self::$projects[$project][$lang])
-                ) {
+                if (isset(self::$projects[$project][$lang])) {
                     $result[] = self::$projects[$project][$lang];
                     continue;
                 }
@@ -995,7 +985,7 @@ class Manager
                     self::$Standard = $Project;
                 }
 
-                if ($asObject == true) {
+                if ($asObject) {
                     $list[] = $Project;
                 } else {
                     $list[] = $project;
@@ -1334,13 +1324,13 @@ class Manager
 
         try {
             return QUICacheManager::get($cacheName);
-        } catch (\Exception $Exception) {
+        } catch (Exception) {
             // re-build cache
         }
 
         try {
             $config = Manager::getConfig()->toArray();
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
             return false;
         }

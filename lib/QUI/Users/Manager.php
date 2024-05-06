@@ -62,10 +62,7 @@ class Manager
      * @var bool
      */
     protected bool $multipleCallPrevention = false;
-    /**
-     * @var ?QUI\Projects\Project (active internal project)
-     */
-    private ?QUI\Projects\Project $Project = null;
+
     /**
      * @var array - list of users (cache)
      */
@@ -119,14 +116,7 @@ class Manager
      */
     public static function getProfileTemplate(): string
     {
-        try {
-            $Engine = QUI::getTemplateManager()->getEngine(true);
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
-
-            return '';
-        }
-
+        $Engine = QUI::getTemplateManager()->getEngine(true);
         $packages = QUI::getPackageManager()->getInstalled();
         $extend = '';
 
@@ -145,11 +135,7 @@ class Manager
 
             /* @var $Tab DOMElement */
             foreach ($tabs as $Tab) {
-                try {
-                    $extend .= DOM::parseCategoryToHTML($Tab);
-                } catch (QUI\Exception $Exception) {
-                    QUI\System\Log::writeDebugException($Exception);
-                }
+                $extend .= DOM::parseCategoryToHTML($Tab);
             }
         }
 

@@ -426,9 +426,6 @@ class Edit extends Site
      *
      * @return array|int
      * @throws QUI\Exception
-     *
-     * @todo $recursiv parameter is not used and the interface defines it as a $load parameter
-     *
      */
     public function getChildren($params = [], $recursiv = false)
     {

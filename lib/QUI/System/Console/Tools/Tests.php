@@ -44,14 +44,14 @@ class Tests extends QUI\System\Console\Tool
             $last_error = error_get_last();
 
             if ($last_error && $last_error['type'] === E_ERROR) {
-                $this->writeLn("");
+                $this->writeLn();
 
                 $this->writeLn(
                     $last_error['message'] . ' at line ' . $last_error['line'] . ' :: ' . $last_error['file'],
                     'red'
                 );
 
-                $this->writeLn("");
+                $this->writeLn();
             }
         });
 
@@ -87,10 +87,9 @@ class Tests extends QUI\System\Console\Tool
         $failed = 0;
 
         foreach ($list as $Test) {
-            /* @var $Test \QUI\Interfaces\System\Test */
             try {
                 $result = $Test->execute();
-            } catch (\ErrorException) {
+            } catch (\Exception) {
                 $result = QUI\System\Test::STATUS_ERROR;
             }
 
@@ -115,16 +114,16 @@ class Tests extends QUI\System\Console\Tool
         }
 
         if ($failed) {
-            $this->writeLn('');
+            $this->writeLn();
 
             $this->writeLn('Some tests are failed!!');
             $this->writeLn(
                 'Please check the failed tests, QUIQQER may not function properly under some circumstances.'
             );
-            $this->writeLn('');
+            $this->writeLn();
         }
 
 
-        $this->writeLn('');
+        $this->writeLn();
     }
 }

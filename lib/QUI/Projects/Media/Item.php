@@ -136,7 +136,7 @@ abstract class Item extends QUI\QDOM
 
         if (!file_exists($this->file)) {
             QUI::getMessagesHandler()->addAttention(
-                'File ' . $this->file . ' (' . $this->getId() . ') doesn\'t exist'
+                'File ' . $this->file . ' (' . $this->getId() . ') doesn`t exist'
             );
 
             return;
@@ -558,7 +558,7 @@ abstract class Item extends QUI\QDOM
         try {
             // activate the parents, otherwise the file is not accessible
             $this->getParent()->activate($PermissionUser);
-        } catch (Exception $Exception) {
+        } catch (Exception) {
             // has no parent
         }
 
@@ -1015,7 +1015,7 @@ abstract class Item extends QUI\QDOM
 
         $image_effects = $this->getEffects();
 
-        if (is_string($image_effects) || is_bool($image_effects)) {
+        if (is_bool($image_effects)) {
             $image_effects = [];
         }
 

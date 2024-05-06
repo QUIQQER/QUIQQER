@@ -71,7 +71,6 @@ class Utils
         }
 
         $fileHashes = [];
-
         $directory = dir($dir);
 
         while (($entry = $directory->read()) !== false) {
@@ -124,9 +123,8 @@ class Utils
         ];
 
         $name = str_replace($forbiddenCharacters, '', $name);
-        $name = trim($name);
 
-        return $name;
+        return trim($name);
     }
 
     /**
@@ -208,9 +206,8 @@ class Utils
 
         $result = $apache22 ? $result + 1 : $result;
         $result = $apache24 ? $result + 2 : $result;
-        $result = $nginx ? $result + 4 : $result;
 
-        return $result;
+        return $nginx ? $result + 4 : $result;
     }
 
     /**

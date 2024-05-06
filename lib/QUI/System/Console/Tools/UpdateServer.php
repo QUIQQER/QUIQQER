@@ -32,21 +32,21 @@ class UpdateServer extends QUI\System\Console\Tool
 
         $this->addExample('./console quiqqer:update-server --add=git@dev.quiqqer.com:quiqqer/quiqqer.git --type=vcs');
         $this->addExample('./console quiqqer:update-server --remove=git@dev.quiqqer.com:quiqqer/quiqqer.git');
-
-        $this->isSystemTool();
     }
 
     public function execute()
     {
         if ($this->getArgument('add')) {
-            return $this->addServer();
+            $this->addServer();
+            return;
         }
 
         if ($this->getArgument('remove')) {
-            return $this->removeServer();
+            $this->removeServer();
+            return;
         }
 
-        return $this->showHelp();
+        $this->showHelp();
     }
 
     protected function addServer()

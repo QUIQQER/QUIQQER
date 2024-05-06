@@ -212,7 +212,6 @@ class VhostManager
             );
         }
 
-        // daten prüfen
         $result = [];
 
         foreach ($data as $key => $value) {
@@ -225,13 +224,6 @@ class VhostManager
             throw new Exception([
                 'quiqqer/quiqqer',
                 'exception.vhost.missing.data.project'
-            ]);
-        }
-
-        if (!isset($result["project"])) {
-            throw new QUI\Exception([
-                'quiqqer/quiqqer',
-                'exception.vhost.missing.data.lang'
             ]);
         }
 
@@ -398,7 +390,7 @@ class VhostManager
         $vhosts = QUI::vhosts();
 
         foreach ($vhosts as $key => $data) {
-            if (!isset($data['project']) || empty($data['project'])) {
+            if (empty($data['project'])) {
                 continue;
             }
 
@@ -410,13 +402,13 @@ class VhostManager
             $langs = $Project->getLanguages();
 
             foreach ($langs as $lang) {
-                if (isset($data[$lang]) && !empty($data[$lang])) {
+                if (!empty($data[$lang])) {
                     $domains[] = $data[$lang];
                 }
             }
 
             # Parse httpshost
-            if (isset($data['httpshost']) && !empty($data['httpshost'])) {
+            if (!empty($data['httpshost'])) {
                 $domains[] = $data['httpshost'];
             }
         }

@@ -206,15 +206,15 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
             $argv = '--' . ltrim($param['param'], '-');
             $description = '';
 
-            if (isset($param['short']) && !empty($param['short'])) {
-                $argv .= ' (-' . \ltrim($param['short'], '-') . ')';
+            if (!empty($param['short'])) {
+                $argv .= ' (-' . ltrim($param['short'], '-') . ')';
             }
 
-            if (isset($param['description']) && !empty($param['description'])) {
+            if (!empty($param['description'])) {
                 $description .= $param['description'];
             }
 
-            if (isset($param['optional']) && !empty($param['optional'])) {
+            if (!empty($param['optional'])) {
                 $description .= ' (optional)';
             }
 
@@ -298,10 +298,10 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
             php_sapi_name() == 'cli' &&
             (isset($paramData['optional']) && $paramData['optional'] === false)
         ) {
-            $this->writeLn('');
+            $this->writeLn();
             $this->writeLn('Missing Argument', 'brown');
 
-            $this->writeLn('');
+            $this->writeLn();
             $this->write('--' . $name . ': ', 'green');
 
             $this->resetColor();

@@ -97,11 +97,11 @@ class Manager
             $Mail->Username = $config['SMTPUser'];
             $Mail->Password = $config['SMTPPass'];
 
-            if (isset($config['SMTPPort']) && !empty($config['SMTPPort'])) {
+            if (!empty($config['SMTPPort'])) {
                 $Mail->Port = (int)$config['SMTPPort'];
             }
 
-            if (isset($config['SMTPDebug']) && !empty($config['SMTPDebug'])) {
+            if (!empty($config['SMTPDebug'])) {
                 $Mail->SMTPDebug = (int)$config['SMTPDebug'];
 
                 $Mail->Debugoutput = function ($str, $level) {

@@ -36,7 +36,7 @@ class PackageNotLicensedException extends Exception
             );
         }
 
-        parent::__construct($message, $this->code, []);
+        parent::__construct($message, $this->code);
 
         $this->setAttribute('package', $package);
         $this->setAttribute('url', $url);

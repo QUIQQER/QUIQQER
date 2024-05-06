@@ -698,7 +698,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         // hidden query
         $hiddenQuery = '';
 
-        if (isset($params['where']) && isset($params['where']['hidden'])) {
+        if (isset($params['where']['hidden'])) {
             if ($params['where']['hidden'] === 0) {
                 $hiddenQuery = ' AND hidden = 0';
             } elseif ($params['where']['hidden'] === 1) {
@@ -866,7 +866,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         try {
             return QUI\Cache\Manager::get($cachePath);
-        } catch (Exception $Exception) {
+        } catch (Exception) {
             // re-build cache
         }
 
@@ -1138,7 +1138,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         try {
             return QUI\Cache\Manager::get($cachePath);
-        } catch (Exception $Exception) {
+        } catch (Exception) {
             // re-build cache
         }
 

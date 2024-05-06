@@ -623,8 +623,8 @@ class Media extends QUI\QDOM
             $sizes = QUI\Utils\Math::resize($info['width'], $info['height'], $maxConfigSize);
 
             $Image->resize(
-                (int)$sizes[1],
-                (int)$sizes[2],
+                $sizes[1],
+                $sizes[2],
                 function ($Constraint) {
                     /* @var $Constraint Constraint; */
                     $Constraint->aspectRatio();

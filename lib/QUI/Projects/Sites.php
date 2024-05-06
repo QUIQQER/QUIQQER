@@ -56,7 +56,7 @@ class Sites
         // wenn die Seite bearbeitet wird
         if (
             $Site->isLockedFromOther()
-            || $Site->hasPermission('quiqqer.projects.site.edit') == false
+            || !$Site->hasPermission('quiqqer.projects.site.edit')
         ) {
             $Toolbar->getElementByName('save')->setDisable();
         }
@@ -132,7 +132,7 @@ class Sites
         // oder wenn das Löschen Recht nicht vorhanden ist
         if (
             $Site->isLockedFromOther()
-            || $Site->hasPermission('quiqqer.projects.site.del') == false
+            || !$Site->hasPermission('quiqqer.projects.site.del')
         ) {
             $Toolbar->getElementByName('delete')->setDisable();
         }
@@ -150,7 +150,7 @@ class Sites
             ])
         );
 
-        if ($Site->hasPermission('quiqqer.projects.site.new') == false) {
+        if (!$Site->hasPermission('quiqqer.projects.site.new')) {
             $Toolbar->getElementByName('new')->setDisable();
         }
 
@@ -424,7 +424,6 @@ class Sites
 
         $page = 1;
         $limit = 50;
-        $Project = null;
         $projects = [];
         $fields = ['id', 'title', 'name'];
 
@@ -443,10 +442,10 @@ class Sites
         ];
 
         // projekt
-        if (isset($params['Project']) && !empty($params['Project'])) {
+        if (!empty($params['Project'])) {
             $projects[] = $params['Project'];
         } else {
-            if (isset($params['project']) && !empty($params['project'])) {
+            if (!empty($params['project'])) {
                 $projects[] = QUI::getProject($params['project']);
             } else {
                 // search all projects
@@ -464,7 +463,7 @@ class Sites
         }
 
         // fields
-        if (isset($params['fields']) && !empty($params['fields'])) {
+        if (!empty($params['fields'])) {
             $fields = [];
             $_fields = explode(',', $params['fields']);
 

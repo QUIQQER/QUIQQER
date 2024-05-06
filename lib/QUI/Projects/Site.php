@@ -173,11 +173,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     protected string $extend = '';
 
     /**
-     * Extend class object
-     */
-    protected $Extends = null;
-
-    /**
      * Type string
      *
      * @var string|false
@@ -411,7 +406,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $result = $Statement->fetchAll(PDO::FETCH_ASSOC);
 
-        if (isset($result[0]) && isset($result[0][$lang])) {
+        if (isset($result[0][$lang])) {
             $this->lang_ids[$lang] = (int)$result[0][$lang];
 
             return $this->lang_ids[$lang];
@@ -505,7 +500,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             }
         }
 
-        if (isset($result[0]['extra']) && !empty($result[0]['extra'])) {
+        if (!empty($result[0]['extra'])) {
             $extra = json_decode($result[0]['extra'], true);
 
             foreach ($extra as $key => $value) {
@@ -1309,7 +1304,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             'limit' => 1
         ]);
 
-        if (isset($result[0]) && isset($result[0]["id"])) {
+        if (isset($result[0]["id"])) {
             return $result[0]["id"];
         }
 

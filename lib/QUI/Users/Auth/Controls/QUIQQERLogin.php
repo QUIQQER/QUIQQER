@@ -33,19 +33,14 @@ class QUIQQERLogin extends Control
      */
     public function getBody()
     {
-        try {
-            $Engine = QUI::getTemplateManager()->getEngine();
-        } catch (QUI\Exception) {
-            return '';
-        }
-
+        $Engine = QUI::getTemplateManager()->getEngine();
         $showPasswordReset = false;
 
         if (QUI\Users\Auth\Handler::getInstance()->isQuiqqerVerificationPackageInstalled()) {
             if (!empty($_REQUEST['isAdminLogin']) || QUI::isBackend()) {
-                $showPasswordReset = (bool) QUI::conf('auth_settings', 'showResetPasswordBackend');
+                $showPasswordReset = (bool)QUI::conf('auth_settings', 'showResetPasswordBackend');
             } else {
-                $showPasswordReset = (bool) QUI::conf('auth_settings', 'showResetPasswordFrontend');
+                $showPasswordReset = (bool)QUI::conf('auth_settings', 'showResetPasswordFrontend');
             }
         }
 

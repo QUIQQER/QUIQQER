@@ -172,7 +172,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      */
     public function restore(Project $Project, $ids, $parentid)
     {
-        $Parent = new Site\Edit($Project, (int)$parentid);
+        $Parent = new Site\Edit($Project, $parentid);
 
         foreach ($ids as $id) {
             $Site = new Site\Edit($Project, $id);

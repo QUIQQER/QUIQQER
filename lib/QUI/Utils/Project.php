@@ -60,7 +60,7 @@ class Project
         try {
             QUI::getPackage('quiqqer/search');
             $searchType = 'quiqqer/sitetypes:types/search';
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
         }
 
         $search = $Project->getSitesIds([
@@ -229,9 +229,8 @@ class Project
         }
 
         $str = QUI::getLocale()->getByLang($language, $group, $var);
-        $str = QUI\Projects\Site\Utils::clearUrl($str, $Project);
 
-        return $str;
+        return QUI\Projects\Site\Utils::clearUrl($str, $Project);
     }
 
     /**

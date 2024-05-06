@@ -97,8 +97,6 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Setzt JSON Parameter
      *
      * @param string $params - JSON encoded string
-     *
-     * @throws QUI\Exception
      */
     public function decode($params)
     {

@@ -42,7 +42,7 @@ class Health extends QUI\System\Console\Tool
             $this->writeLn($Exception->getMessage(), 'red');
         }
 
-        $this->writeLn('');
+        $this->writeLn();
         $this->resetColor();
     }
 }

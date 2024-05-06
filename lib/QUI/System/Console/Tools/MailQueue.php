@@ -55,7 +55,7 @@ class MailQueue extends QUI\System\Console\Tool
 
         if ($this->getArgument('count')) {
             $this->writeLn($MailQueue->count() . ' mail(s) in the queue');
-            $this->writeLn('');
+            $this->writeLn();
             return;
         }
 
@@ -128,8 +128,8 @@ class MailQueue extends QUI\System\Console\Tool
             $list = $MailQueue->getList();
 
             $this->writeLn('Mail Queue:');
-            $this->writeLn('');
-            $this->writeLn('');
+            $this->writeLn();
+            $this->writeLn();
 
             $Climate = new CLImate();
             $data = [

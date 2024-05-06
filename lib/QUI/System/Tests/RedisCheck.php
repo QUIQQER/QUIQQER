@@ -82,7 +82,7 @@ class RedisCheck extends QUI\System\Test
             }
 
             return self::STATUS_OK;
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             if ($message) {
                 return $Exception->getMessage();
             }

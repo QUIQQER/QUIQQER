@@ -15,7 +15,6 @@ use QUI\Utils\StringHelper;
 use function DusanKasan\Knapsack\first;
 use function explode;
 use function file_exists;
-use function floatval;
 use function in_array;
 use function is_array;
 use function is_numeric;
@@ -374,7 +373,7 @@ class Locale implements \Stringable
         $Formatter = new NumberFormatter($localeCode[0], $format);
 
         if (is_string($number)) {
-            $number = (float) $number;
+            $number = (float)$number;
         }
 
         $decimalSeparator = self::get('quiqqer/quiqqer', 'numberFormat.decimal_separator');
@@ -401,10 +400,6 @@ class Locale implements \Stringable
         //  "numbering_system": "latn",
         //  "decimal_pattern": "#,##0.###",
         //  "percent_pattern": "#,##0%",
-
-        if ($number === null) {
-            $number = 0;
-        }
 
         return $Formatter->format($number);
     }

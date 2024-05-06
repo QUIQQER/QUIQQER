@@ -26,7 +26,6 @@ use function flush;
 use function fnmatch;
 use function fopen;
 use function fwrite;
-use function get_class;
 use function implode;
 use function is_array;
 use function is_callable;
@@ -76,11 +75,7 @@ class Manager
      */
     protected function callFunction($function, array $params = [])
     {
-        if ($function === false) {
-            return false;
-        }
-
-        if (is_object($function) && ((object)$function)::class === 'Closure') {
+        if (is_object($function) && ($function)::class === 'Closure') {
             return $function();
         }
 
@@ -263,7 +258,7 @@ class Manager
             $file = json_decode($_REQUEST['file'], true);
         }
 
-        if (isset($file) && isset($file['chunkstart']) && $file['chunkstart'] == 0) {
+        if (isset($file['chunkstart']) && $file['chunkstart'] == 0) {
             $this->delete($filename);
         }
 

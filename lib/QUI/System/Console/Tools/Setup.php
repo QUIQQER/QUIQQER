@@ -74,12 +74,12 @@ class Setup extends QUI\System\Console\Tool
         $data = implode("\n", $data);
 
         $this->writeLn($data);
-        $this->writeLn('');
+        $this->writeLn();
 
         $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.setup.start.message'));
         QUI\Setup::all($this);
 
         $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.setup.message.success'));
-        $this->writeLn('');
+        $this->writeLn();
     }
 }

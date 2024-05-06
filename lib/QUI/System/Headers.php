@@ -75,11 +75,11 @@ class Headers
         }
 
         if (QUI::conf('securityHeaders_hsts', 'subdomains')) {
-            $this->hstsSubdomains(true);
+            $this->hstsSubdomains();
         }
 
         if (QUI::conf('securityHeaders_hsts', 'preload')) {
-            $this->hstsPreload(true);
+            $this->hstsPreload();
         }
 
         if (QUI::conf('securityHeaders', 'xFrameOptions')) {
