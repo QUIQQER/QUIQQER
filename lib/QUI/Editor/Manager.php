@@ -80,7 +80,7 @@ class Manager
      * @throws QUI\Exception
      * @throws QUI\DataBase\Exception
      */
-    public static function setup()
+    public static function setup(): void
     {
         QUIFile::mkdir(self::getToolbarsPath());
 
@@ -182,7 +182,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function registerEditor(string $name, string $package)
+    public static function registerEditor(string $name, string $package): void
     {
         $Conf = QUI::getConfig('etc/wysiwyg/editors.ini.php');
         $Conf->setValue($name, null, $package);
@@ -208,7 +208,7 @@ class Manager
     /**
      * Return the main editor manager (WYSIWYG) config object
      *
-     * @return Config
+     * @return Config|null
      *
      * @throws QUI\Exception
      */
@@ -224,7 +224,7 @@ class Manager
     /**
      * Return all available toolbars
      *
-     * @return array
+     * @return array|null
      */
     public static function getToolbars(): ?array
     {
@@ -567,7 +567,7 @@ class Manager
      *
      * @param string $toolbar - Name of the tools (toolbar.xml)
      */
-    public static function deleteToolbar(string $toolbar)
+    public static function deleteToolbar(string $toolbar): void
     {
         QUI\Permissions\Permission::hasPermission(
             'quiqqer.editors.toolbar.delete'
@@ -590,7 +590,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function addToolbar(string $toolbar)
+    public static function addToolbar(string $toolbar): void
     {
         QUI\Permissions\Permission::hasPermission(
             'quiqqer.editors.toolbar.add'
@@ -621,7 +621,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function saveToolbar(string $toolbar, string $xml)
+    public static function saveToolbar(string $toolbar, string $xml): void
     {
         QUI\Permissions\Permission::hasPermission(
             'quiqqer.editors.toolbar.save'
@@ -791,7 +791,7 @@ class Manager
      *
      * @return boolean|array
      */
-    public static function parseXMLLineNode(DOMNode $Node)
+    public static function parseXMLLineNode(DOMNode $Node): bool|array
     {
         if ($Node->nodeName != 'line') {
             return false;
@@ -822,7 +822,7 @@ class Manager
      *
      * @return boolean|array
      */
-    public static function parseXMLGroupNode(DOMNode $Node)
+    public static function parseXMLGroupNode(DOMNode $Node): bool|array
     {
         if ($Node->nodeName != 'group') {
             return false;
@@ -925,7 +925,7 @@ class Manager
      * @param string $html
      * @return string
      */
-    public function cleanHTML(string $html)
+    public function cleanHTML(string $html): string
     {
         $html = preg_replace('/<!--\[if gte mso.*?-->/s', '', $html);
 
@@ -951,7 +951,7 @@ class Manager
 
             $Tidy->parseString($html, $config, 'utf8');
             $Tidy->cleanRepair();
-            $html = $Tidy;
+            $html = $Tidy->html();
         }
 
         return $html;
