@@ -10,6 +10,7 @@ use DOMElement;
 use DOMXPath;
 use QUI;
 use QUI\Exception;
+use QUI\Interfaces\Projects\Site;
 use QUI\Projects;
 use QUI\Projects\Project;
 use QUI\Utils\DOM;
@@ -439,12 +440,12 @@ class Utils
     /**
      * Return the extra settings from site.xml`s
      *
-     * @param QUI\Projects\Site|QUI\Projects\Site\Edit $Site
+     * @param QUI\Interfaces\Projects\Site $Site
      * @param string $current
      *
      * @return string
      */
-    public static function getExtraSettingsForSite($Site, string $current = ''): string
+    public static function getExtraSettingsForSite(QUI\Interfaces\Projects\Site $Site, string $current = ''): string
     {
         if (empty($current)) {
             $current = QUI::getLocale()->getCurrent();
@@ -541,7 +542,7 @@ class Utils
      * @param QUI\Projects\Site|QUI\Projects\Site\Edit $Site
      * @return array|boolean
      */
-    public static function getAdminSiteModulesFromSite($Site)
+    public static function getAdminSiteModulesFromSite(Edit|Projects\Site $Site): bool|array
     {
         $siteType = $Site->getAttribute('type');
         $cache = $Site->getCachePath() . '/xml-admin-modules/' . $siteType;
@@ -587,11 +588,10 @@ class Utils
     /**
      * is the object one of the site objects
      *
-     * @param QUI\Projects\Site|QUI\Projects\Site\Edit|QUI\Projects\Site\OnlyDB $Site
-     *
+     * @param Site $Site
      * @return boolean
      */
-    public static function isSiteObject($Site): bool
+    public static function isSiteObject(QUI\Interfaces\Projects\Site $Site): bool
     {
         switch ($Site::class) {
             case 'QUI\\Projects\\Site':
@@ -727,7 +727,7 @@ class Utils
      */
     public static function getSitesByInputList(
         Project $Project,
-        $list,
+        array|string $list,
         array $params = []
     ): array {
         $limit = 2;
