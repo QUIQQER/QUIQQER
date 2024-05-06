@@ -546,23 +546,6 @@ class Manager
     }
 
     /**
-     * Return the available styles
-     *
-     * @param Project|boolean $Project - (optional)
-     *
-     * @return array
-     */
-    public static function getStyles($Project = false): array
-    {
-        $styles = [];
-
-        if ($Project) {
-        }
-
-        return $styles;
-    }
-
-    /**
      * Delete a toolbar
      *
      * @param string $toolbar - Name of the tools (toolbar.xml)
