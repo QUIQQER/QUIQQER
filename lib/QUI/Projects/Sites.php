@@ -6,10 +6,15 @@
 
 namespace QUI\Projects;
 
+use DOMXPath;
+use PDO;
 use QUI;
 use QUI\Controls\Buttons\Button;
 use QUI\Controls\Buttons\Separator;
-use QUI\Controls\Toolbar;
+use QUI\Controls\Toolbar\Bar;
+use QUI\Controls\Toolbar\Tab;
+use QUI\Exception;
+use QUI\Projects\Site\Edit;
 use QUI\Utils\Text\XML;
 
 use function count;
@@ -33,7 +38,7 @@ class Sites
      *
      * @return Bar
      */
-    public static function getButtons(Site\Edit $Site)
+    public static function getButtons(Site\Edit $Site): Bar
     {
         $Toolbar = new Bar([
             'name' => '_Toolbar'
@@ -180,7 +185,7 @@ class Sites
      * @return Tab|bool
      * @throws Exception
      */
-    public static function getTab($tabname, $Site)
+    public static function getTab(string $tabname, Edit $Site): bool|Tab
     {
         $Toolbar = self::getTabs($Site);
         $Tab = $Toolbar->getElementByName($tabname);
@@ -195,11 +200,11 @@ class Sites
     /**
      * Return the tabs of a site
      *
-     * @param \QUI\Projects\Site\Edit|\QUI\Projects\Site $Site
+     * @param Edit $Site $Site
      *
-     * @return \QUI\Controls\Toolbar\Bar
+     * @return Bar
      */
-    public static function getTabs(Site\Edit $Site)
+    public static function getTabs(Site\Edit $Site): Bar
     {
         $Tabbar = new Bar([
             'name' => '_Tabbar'
@@ -418,7 +423,7 @@ class Sites
      *
      * @throws Exception
      */
-    public static function search($search, $params = [])
+    public static function search(string $search, array $params = []): array|int
     {
         $DataBase = QUI::getDataBase();
 
