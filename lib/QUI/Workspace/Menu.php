@@ -30,7 +30,7 @@ class Menu
      *
      * @param QUI\Interfaces\Users\User $User
      */
-    public static function clearMenuCache(QUI\Interfaces\Users\User $User)
+    public static function clearMenuCache(QUI\Interfaces\Users\User $User): void
     {
         QUI\Cache\Manager::clear(
             'settings/backend-menu/' . $User->getUUID() . '/'
@@ -338,7 +338,7 @@ class Menu
      * @param Menuitem $MenuItem
      * @param DOMElement $Node
      */
-    public function setWindowTitle(Menuitem $MenuItem, DOMElement $Node)
+    public function setWindowTitle(Menuitem $MenuItem, DOMElement $Node): void
     {
         if ($MenuItem->getAttribute('text')) {
             return;
@@ -363,7 +363,7 @@ class Menu
      * @param Menuitem $MenuItem
      * @param DOMElement $Node
      */
-    public function setWindowIcon(Menuitem $MenuItem, DOMElement $Node)
+    public function setWindowIcon(Menuitem $MenuItem, DOMElement $Node): void
     {
         if ($MenuItem->getAttribute('icon')) {
             return;
