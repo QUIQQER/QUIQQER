@@ -151,14 +151,10 @@ class GetSiteAttributes extends QUI\System\Console\Tool
             $fetchedSiteAttributes = [];
 
             foreach ($attributes as $attrKey) {
-                switch ($attrKey) {
-                    case 'url':
-                        $fetchedSiteAttributes[] = $Site->getUrlRewrittenWithHost();
-                        break;
-
-                    default:
-                        $fetchedSiteAttributes[] = $Site->getAttribute($attrKey);
-                }
+                $fetchedSiteAttributes[] = match ($attrKey) {
+                    'url' => $Site->getUrlRewrittenWithHost(),
+                    default => $Site->getAttribute($attrKey),
+                };
             }
 
             $fetchedAttributes[] = $fetchedSiteAttributes;

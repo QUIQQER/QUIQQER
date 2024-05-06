@@ -670,13 +670,10 @@ class Package extends QUI\QDOM
     {
         $nameShortCut = preg_replace("/[^A-Za-z0-9 ]/", '', $this->getName());
 
-        switch ($permissionName) {
-            case 'header':
-                return 'permission.quiqqer.packages.' . $nameShortCut . '._header';
-
-            default:
-                return 'quiqqer.packages.' . $nameShortCut . '.canUse';
-        }
+        return match ($permissionName) {
+            'header' => 'permission.quiqqer.packages.' . $nameShortCut . '._header',
+            default => 'quiqqer.packages.' . $nameShortCut . '.canUse',
+        };
     }
 
     /**

@@ -66,17 +66,10 @@ class Form extends QUI\QDOM
     {
         $Engine = QUI::getTemplateManager()->getEngine();
 
-        switch ($this->getAttribute('typeOfLook')) {
-            case 'DragDrop':
-            case 'Icon':
-            case 'Single':
-                $typeOfLook = $this->getAttribute('typeOfLook');
-                break;
-
-            default:
-                $typeOfLook = 'DragDrop';
-                break;
-        }
+        $typeOfLook = match ($this->getAttribute('typeOfLook')) {
+            'DragDrop', 'Icon', 'Single' => $this->getAttribute('typeOfLook'),
+            default => 'DragDrop',
+        };
 
 
         $Engine->assign([

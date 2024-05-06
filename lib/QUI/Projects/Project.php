@@ -307,39 +307,18 @@ class Project implements \Stringable
      */
     public function getAttribute($att)
     {
-        switch ($att) {
-            case "name":
-                return $this->getName();
-
-            case "lang":
-                return $this->getLang();
-
-            case "e_date":
-                return $this->getLastEditDate();
-
-            case "config":
-                return $this->config;
-
-            case "default_lang":
-                return $this->default_lang;
-
-            case "langs":
-                return $this->langs;
-
-            case "template":
-                return $this->template;
-
-            case "db_table":
-                # Anzeigen demo_de_sites
-                return $this->name . '_' . $this->lang . '_sites';
-
-            case "media_table":
-                # Anzeigen demo_de_sites
-                return $this->name . '_de_media';
-
-            default:
-                return false;
-        }
+        return match ($att) {
+            "name" => $this->getName(),
+            "lang" => $this->getLang(),
+            "e_date" => $this->getLastEditDate(),
+            "config" => $this->config,
+            "default_lang" => $this->default_lang,
+            "langs" => $this->langs,
+            "template" => $this->template,
+            "db_table" => $this->name . '_' . $this->lang . '_sites',
+            "media_table" => $this->name . '_de_media',
+            default => false,
+        };
     }
 
     /**
@@ -459,17 +438,11 @@ class Project implements \Stringable
         }
 
         // default Werte
-        switch ($name) {
-            case "sheets": // Blätterfunktion
-                return 5;
-                break;
-
-            case "archive": // Archiveinträge
-                return 10;
-                break;
-        }
-
-        return false;
+        return match ($name) {
+            "sheets" => 5,
+            "archive" => 10,
+            default => false,
+        };
     }
 
     /**

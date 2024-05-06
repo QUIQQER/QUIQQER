@@ -66,29 +66,17 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
          * Order and Sort
          */
         if (isset($params['order'])) {
-            switch ($params['order']) {
-                case 'name':
-                case 'title':
-                case 'type':
-                    $_params['order'] = $params['order'];
-                    break;
-
-                default:
-                    $_params['order'] = 'id';
-                    break;
-            }
+            $_params['order'] = match ($params['order']) {
+                'name', 'title', 'type' => $params['order'],
+                default => 'id',
+            };
         }
 
         if (isset($params['sort'])) {
-            switch ($params['sort']) {
-                case 'ASC':
-                    $_params['order'] = $_params['order'] . ' ASC';
-                    break;
-
-                default:
-                    $_params['order'] = $_params['order'] . ' DESC';
-                    break;
-            }
+            $_params['order'] = match ($params['sort']) {
+                'ASC' => $_params['order'] . ' ASC',
+                default => $_params['order'] . ' DESC',
+            };
         }
 
         /**
