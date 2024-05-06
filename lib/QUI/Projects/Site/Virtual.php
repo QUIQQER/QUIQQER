@@ -318,19 +318,6 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     /**
-     * Gibt eine sprechenden URL zurück
-     * DB Abfragen werden gemacht - Hier auf Performance achten
-     *
-     * @param array $params - Parameter welche an die URL angehängt werden
-     *
-     * @return string
-     */
-    public function getUrlRewrited($params = [])
-    {
-        return $this->getAttribute('url');
-    }
-
-    /**
      * @param array $params
      * @return mixed
      */
