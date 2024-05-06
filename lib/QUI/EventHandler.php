@@ -35,19 +35,19 @@ class EventHandler
         }
 
         echo "<script>
-            var openChangePasswordWindow = function() {
-                require([
-                    'controls/users/password/Window',
-                    'Locale'
-                ], function(Password, QUILocale) {
-                    new Password({
-                        mustChange: true,
-                        message: QUILocale.get('quiqqer/quiqqer', 'message.set.new.password')
-                    }).open();
-                });
-            };
-       
             require(['Locale'], function(QUILocale) {
+                const openChangePasswordWindow = function() {
+                    require([
+                        'controls/users/password/Window',
+                        'Locale'
+                    ], function(Password, QUILocale) {
+                        new Password({
+                            mustChange: true,
+                            message: QUILocale.get('quiqqer/quiqqer', 'message.set.new.password')
+                        }).open();
+                    });
+                };
+           
                 if (!QUILocale.exists('quiqqer/quiqqer', 'message.set.new.password')) {
                     (function() {
                         openChangePasswordWindow();
