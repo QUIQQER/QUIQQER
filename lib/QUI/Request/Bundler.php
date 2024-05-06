@@ -31,7 +31,7 @@ class Bundler
      *
      * @var array
      */
-    protected $includes = [];
+    protected array $includes = [];
 
     /**
      * Bundler constructor.
@@ -44,7 +44,7 @@ class Bundler
     /**
      * Read the $_REQUEST and create the response
      */
-    public function response()
+    public function response(): bool|string
     {
         if (!isset($_REQUEST['quiqqerBundle'])) {
             return '';
@@ -88,7 +88,7 @@ class Bundler
      * @return array
      * @throws QUI\Exception
      */
-    protected function parseRequest($request)
+    protected function parseRequest(array $request): array
     {
         if (!isset($request['request'])) {
             throw new QUI\Exception('Bad Request', 400);
@@ -141,9 +141,9 @@ class Bundler
     /**
      * Include normal files
      *
-     * @param string $function - name of the function
+     * @param string|array $function - name of the function
      */
-    protected function includes($function)
+    protected function includes(string|array $function): void
     {
         if (is_array($function)) {
             foreach ($function as $f) {
@@ -187,10 +187,10 @@ class Bundler
     /**
      * Include package files
      *
-     * @param string $function - name of the function
+     * @param string|array $function - name of the function
      * @param array $request - Request data
      */
-    protected function includesPackage($function, $request)
+    protected function includesPackage(string|array $function, array $request): void
     {
         if (!isset($request['params']['package'])) {
             return;
@@ -228,12 +228,12 @@ class Bundler
     /**
      * Include projects files
      *
-     * @param string $function - name of the function
+     * @param string|array $function - name of the function
      * @param array $request - Request data
      *
      * @throws QUI\Exception
      */
-    protected function includesProject($function, $request)
+    protected function includesProject(string|array $function, array $request): void
     {
         if (!isset($request['params']['project'])) {
             return;
