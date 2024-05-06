@@ -717,9 +717,9 @@ class Permission
                 break;
 
             case 'users':
-                $uids = explode(',', $perm_value);
+                $uIds = explode(',', $perm_value);
 
-                foreach ($uids as $uid) {
+                foreach ($uIds as $uid) {
                     if ((int)$uid == $User->getId()) {
                         $check = true;
                     }
