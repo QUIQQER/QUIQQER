@@ -267,7 +267,7 @@ class Template extends QUI\QDOM
      *
      * @param Project $Project
      */
-    public function setProject(QUI\Projects\Project $Project)
+    public function setProject(Project $Project): void
     {
         $this->setAttribute('Project', $Project);
     }
@@ -277,7 +277,7 @@ class Template extends QUI\QDOM
      *
      * @param string $template
      */
-    public function setMainTemplate(string $template)
+    public function setMainTemplate(string $template): void
     {
         $this->setAttribute('TplMain', $template);
     }
@@ -287,7 +287,7 @@ class Template extends QUI\QDOM
      *
      * @param string $template
      */
-    public function setMetaTemplate(string $template)
+    public function setMetaTemplate(string $template): void
     {
         $this->setAttribute('TplMeta', $template);
     }
@@ -297,7 +297,7 @@ class Template extends QUI\QDOM
      *
      * @param string $html
      */
-    public function setBody(string $html)
+    public function setBody(string $html): void
     {
         $this->setAttribute('body', $html);
     }
@@ -307,7 +307,7 @@ class Template extends QUI\QDOM
      *
      * @param string $template
      */
-    public function setHeaderTemplate(string $template)
+    public function setHeaderTemplate(string $template): void
     {
         $this->setAttribute('TplHeader', $template);
     }
@@ -317,7 +317,7 @@ class Template extends QUI\QDOM
      *
      * @param string $template
      */
-    public function setFooterTemplate(string $template)
+    public function setFooterTemplate(string $template): void
     {
         $this->setAttribute('TplFooter', $template);
     }
