@@ -275,7 +275,7 @@ interface User
      *
      * @param string $key
      */
-    public function removeAttribute($key);
+    public function removeAttribute(string $key);
 
     /**
      * Set an attribute of the user
@@ -283,14 +283,14 @@ interface User
      * @param string $key
      * @param mixed $value
      */
-    public function setAttribute($key, $value);
+    public function setAttribute(string $key, mixed $value);
 
     /**
      * set multiple attributes
      *
      * @param array $attributes
      */
-    public function setAttributes($attributes);
+    public function setAttributes(array $attributes);
 
     /**
      * Get an attribute of the user
@@ -299,14 +299,14 @@ interface User
      *
      * @return mixed
      */
-    public function getAttribute($name);
+    public function getAttribute(string $name): mixed;
 
     /**
      * Return all attributes
      *
      * @return array
      */
-    public function getAttributes();
+    public function getAttributes(): array;
 
     //endregion
 }
