@@ -11,6 +11,7 @@ use DOMXPath;
 use Exception;
 use QUI;
 use QUI\Cache\Manager as QUICacheManager;
+use QUI\Config;
 use QUI\Permissions\Permission;
 use QUI\Utils\DOM;
 use QUI\Utils\Security\Orthos;
@@ -57,28 +58,28 @@ class Manager
     /**
      * Projects config
      *
-     * @var \QUI\Config
+     * @var Config|null
      */
-    public static $Config = null;
+    public static ?Config $Config = null;
 
     /**
      * loaded projects
      *
      * @var array
      */
-    public static $projects = [];
+    public static array $projects = [];
 
     /**
      * standard project
      *
-     * @var \QUI\Projects\Project
+     * @var Project|null
      */
-    public static $Standard = null;
+    public static ?Project $Standard = null;
 
     /**
      * Clearing / cleanup the manager
      */
-    public static function cleanup()
+    public static function cleanup(): void
     {
         self::$projects = [];
     }
@@ -92,15 +93,10 @@ class Manager
      * @throws QUI\Exception
      * @throws Exception
      */
-    public static function setConfigForProject($project, $params = [])
+    public static function setConfigForProject(string $project, array $params = []): void
     {
-        $Project = $project;
         $handedParams = $params;
-
-        if (is_string($Project) || $Project::class != Project::class) {
-            $Project = self::getProject($project);
-        }
-
+        $Project = self::getProject($project);
         $projectName = $Project->getName();
 
         Permission::checkProjectPermission(
@@ -207,7 +203,7 @@ class Manager
          * @param Project $Project
          * @throws QUI\Exception
          */
-        $clearMediaCache = function ($config, $oldConfig, Project $Project) {
+        $clearMediaCache = function (array $config, array $oldConfig, Project $Project) {
             if (
                 !isset($config['media_watermark'])
                 && !isset($config['media_watermark_position'])
@@ -279,19 +275,19 @@ class Manager
      * Returns a project
      *
      * @param string $project - Project name
-     * @param string|boolean $lang - Project lang, optional (if not set, the standard language used)
-     * @param string|boolean $template - used template, optional (if not set, the standard templaed used)
+     * @param boolean|string $lang - Project lang, optional (if not set, the standard language used)
+     * @param boolean|string $template - used template, optional (if not set, the standard templaed used)
      *
-     * @return \QUI\Projects\Project
+     * @return Project
      *
      * @throws QUI\Exception
      */
-    public static function getProject($project, $lang = false, $template = false)
-    {
-        if (
-            $lang == false && isset(self::$projects[$project])
-            && isset(self::$projects[$project]['_standard'])
-        ) {
+    public static function getProject(
+        string $project,
+        bool|string $lang = false,
+        bool|string $template = false
+    ): Project {
+        if (isset(self::$projects[$project]['_standard']) && !$lang) {
             return self::$projects[$project]['_standard'];
         }
 
@@ -336,7 +332,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function getConfig()
+    public static function getConfig(): Config
     {
         return QUI::getConfig('etc/projects.ini');
     }
@@ -350,7 +346,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function getProjectConfigList(QUI\Projects\Project $Project)
+    public static function getProjectConfigList(Project $Project): array
     {
         $cache = $Project->getCachePath() . '/configList';
 
@@ -429,10 +425,10 @@ class Manager
     /**
      * Returns the current project
      *
-     * @return Project
-     * @throws \QUI\Exception
+     * @return Project|null
+     * @throws QUI\Exception
      */
-    public static function get()
+    public static function get(): ?Project
     {
         $Rewrite = QUI::getRewrite();
 
@@ -463,10 +459,10 @@ class Manager
     /**
      * Standard Projekt bekommen
      *
-     * @return \QUI\Projects\Project
+     * @return Project|null
      * @throws QUI\Exception
      */
-    public static function getStandard()
+    public static function getStandard(): ?Project
     {
         if (self::$Standard !== null) {
             return self::$Standard;
@@ -510,11 +506,11 @@ class Manager
      * Return all settings.xml which are related to the project
      * eq: all settings.xml from templates
      *
-     * @param \QUI\Projects\Project $Project
+     * @param Project $Project
      *
      * @return array
      */
-    public static function getRelatedSettingsXML(QUI\Projects\Project $Project)
+    public static function getRelatedSettingsXML(Project $Project): array
     {
         $cache = $Project->getCachePath() . '/relatedSettingsXml';
 
@@ -592,7 +588,7 @@ class Manager
      *
      * @return array
      */
-    public static function getRelatedTemplates(QUI\Projects\Project $Project)
+    public static function getRelatedTemplates(Project $Project): array
     {
         $result = [];
         $templates = [];
@@ -650,12 +646,12 @@ class Manager
      * Decode project data
      * Decode a project json string to a Project or decode a project array to a Project
      *
-     * @param string|array $project - project data
+     * @param array|string $project - project data
      *
      * @return Project
      * @throws QUI\Exception
      */
-    public static function decode($project)
+    public static function decode(array|string $project): Project
     {
         if (is_string($project)) {
             $project = json_decode($project, true);
@@ -691,7 +687,7 @@ class Manager
      *
      * @return Project[]
      */
-    public static function getProjectList()
+    public static function getProjectList(): array
     {
         try {
             $config = self::getConfig()->toArray();
@@ -740,8 +736,12 @@ class Manager
      *
      * @todo noch einmal anschauen und übersichtlicher schreiben
      */
-    public static function createProject($name, $lang, $languages = [], $template = '')
-    {
+    public static function createProject(
+        string $name,
+        string $lang,
+        array $languages = [],
+        string $template = ''
+    ): Project {
         Permission::checkPermission('quiqqer.projects.create');
 
         if (strlen($name) <= 2) {
@@ -1005,7 +1005,7 @@ class Manager
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
-    public static function deleteProject(QUI\Projects\Project $Project)
+    public static function deleteProject(Project $Project): void
     {
         Permission::checkProjectPermission(
             'quiqqer.projects.destroy',
@@ -1112,7 +1112,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function count()
+    public static function count(): int
     {
         $Config = self::getConfig();
         $config = $Config->toArray();
@@ -1128,7 +1128,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function rename($oldName, $newName)
+    public static function rename(string $oldName, string $newName): void
     {
         QUI\Utils\Project::validateProjectName($newName);
 
@@ -1280,7 +1280,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function search($params)
+    public static function search(array $params): array
     {
         if (!isset($params['search'])) {
             return [];
