@@ -26,7 +26,7 @@ class EventHandler
     /**
      * event on onAdminLoadFooter
      */
-    public static function onAdminLoadFooter()
+    public static function onAdminLoadFooter(): void
     {
         $User = QUI::getUserBySession();
 
@@ -66,7 +66,7 @@ class EventHandler
      * @param string $newPass
      * @param string $oldPass
      */
-    public static function onUserChangePassword(QUI\Interfaces\Users\User $User, $newPass, $oldPass)
+    public static function onUserChangePassword(QUI\Interfaces\Users\User $User, string $newPass, string $oldPass): void
     {
         $User->setAttribute('quiqqer.set.new.password', 0);
         $User->save(QUI::getUsers()->getSystemUser());
@@ -79,7 +79,7 @@ class EventHandler
      *
      * @throws QUI\Exception
      */
-    public static function onPackageUpdate(QUI\Package\Package $Package)
+    public static function onPackageUpdate(QUI\Package\Package $Package): void
     {
         if ($Package->getName() != "quiqqer/quiqqer") {
             return;
@@ -122,7 +122,7 @@ class EventHandler
      *
      * @throws QUI\Exception
      */
-    public static function setPackageStoreUrl()
+    public static function setPackageStoreUrl(): void
     {
         $packageStoreUrlConf = QUI::conf('packagestore', 'url');
 
@@ -161,11 +161,11 @@ class EventHandler
      *
      * Increase User failedLogins counter
      *
-     * @param int $userId - ID of the QUIQQER user that tries to log in
+     * @param int|string $userId - ID of the QUIQQER user that tries to log in
      * @param QUI\Users\Exception $Exception
      * @return void
      */
-    public static function onUserLoginError($userId, QUI\Users\Exception $Exception)
+    public static function onUserLoginError(int|string $userId, QUI\Users\Exception $Exception): void
     {
         switch ($Exception->getAttribute('reason')) {
             case QUI\Users\Manager::AUTH_ERROR_AUTH_ERROR:
@@ -205,13 +205,13 @@ class EventHandler
     /**
      * quiqqer/quiqqer: userAuthenticatorLoginStart
      *
-     * @param int|false $userId
+     * @param int|string $userId
      * @param string $authenticator
      * @return void
      *
      * @throws QUI\Users\Exception
      */
-    public static function onUserAuthenticatorLoginStart($userId, $authenticator)
+    public static function onUserAuthenticatorLoginStart(int|string $userId, string $authenticator): void
     {
         self::onUserLoginStart($userId);
     }
@@ -219,13 +219,13 @@ class EventHandler
     /**
      * quiqqer/quiqqer: onUserLoginStart
      *
-     * @param int|false $userId
+     * @param int|string $userId
      * @return void
      *
      * @throws QUI\Users\Exception
      * @throws \Exception
      */
-    public static function onUserLoginStart($userId)
+    public static function onUserLoginStart(int|string $userId): void
     {
         if (!$userId) {
             return;
@@ -262,7 +262,7 @@ class EventHandler
      * @param Users\User $User
      * @return void
      */
-    public static function onUserLogin(QUI\Users\User $User)
+    public static function onUserLogin(QUI\Users\User $User): void
     {
         try {
             $User->setAttributes([
