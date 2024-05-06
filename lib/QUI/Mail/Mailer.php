@@ -123,7 +123,7 @@ class Mailer extends QUI\QDOM
      *
      * @param string $from - mail@domain.net
      */
-    public function setFrom(string $from)
+    public function setFrom(string $from): void
     {
         $this->setAttribute('from', $from);
     }
@@ -133,7 +133,7 @@ class Mailer extends QUI\QDOM
      *
      * @param string $fromName - Firstname Lastname
      */
-    public function setFromName(string $fromName)
+    public function setFromName(string $fromName): void
     {
         $this->setAttribute('fromName', $fromName);
     }
@@ -320,9 +320,9 @@ class Mailer extends QUI\QDOM
      * Add reply to address
      *
      * @param string $email - E-Mail
-     * @param string|boolean $name - E-Mail Name
+     * @param boolean|string $name - E-Mail Name
      */
-    public function addReplyTo(string $email, $name = false)
+    public function addReplyTo(string $email, bool|string $name = false): void
     {
         $email = trim($email);
         $email = explode(',', $email);
@@ -340,9 +340,9 @@ class Mailer extends QUI\QDOM
      * Add cc address
      *
      * @param string $email - E-Mail
-     * @param string|boolean $name - E-Mail Name
+     * @param boolean|string $name - E-Mail Name
      */
-    public function addCC(string $email, $name = false)
+    public function addCC(string $email, bool|string $name = false): void
     {
         $email = trim($email);
         $email = explode(',', $email);
@@ -360,9 +360,9 @@ class Mailer extends QUI\QDOM
      * Add bcc address
      *
      * @param string $email - E-Mail
-     * @param string|boolean $name - E-Mail Name
+     * @param boolean|string $name - E-Mail Name
      */
-    public function addBCC(string $email, $name = false)
+    public function addBCC(string $email, bool|string $name = false): void
     {
         $email = trim($email);
         $email = explode(',', $email);
@@ -425,7 +425,7 @@ class Mailer extends QUI\QDOM
      *
      * @param string $subject
      */
-    public function setSubject(string $subject)
+    public function setSubject(string $subject): void
     {
         $this->setAttribute('subject', $subject);
     }
@@ -435,7 +435,7 @@ class Mailer extends QUI\QDOM
      *
      * @param boolean $html - is the mail a html mail or not?
      */
-    public function setHTML(bool $html)
+    public function setHTML(bool $html): void
     {
         $this->setAttribute('html', $html);
     }
@@ -445,7 +445,7 @@ class Mailer extends QUI\QDOM
      *
      * @param string $html
      */
-    public function setBody(string $html)
+    public function setBody(string $html): void
     {
         $this->Template->setBody($html);
     }
@@ -455,7 +455,7 @@ class Mailer extends QUI\QDOM
      *
      * @param Project $Project
      */
-    public function setProject(Project $Project)
+    public function setProject(Project $Project): void
     {
         $this->setAttribute('Project', $Project);
         $this->Template->setAttribute('Project', $Project);
@@ -465,9 +465,9 @@ class Mailer extends QUI\QDOM
      * Add a recipient
      *
      * @param string $email - E-Mail
-     * @param string|boolean $name - E-Mail Name
+     * @param boolean|string $name - E-Mail Name
      */
-    public function addRecipient(string $email, $name = false)
+    public function addRecipient(string $email, bool|string $name = false): void
     {
         $email = trim($email);
         $email = explode(',', $email);
@@ -488,7 +488,7 @@ class Mailer extends QUI\QDOM
      *                              addAttachments( array('path/file1.end', 'path/file2.end') )
      *                              addAttachments( 'path/file1.end' )
      */
-    public function addAttachments($files)
+    public function addAttachments(array|string $files): void
     {
         if (!is_array($files)) {
             $this->addAttachment($files);
