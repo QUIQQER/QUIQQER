@@ -121,7 +121,7 @@ class PermissionOrder
      *         the highest integer permission value if multiple objects have integer
      *         permissions, or the string permission if granted by any object.
      */
-    public static function permission(string $permission, array $list)
+    public static function permission(string $permission, array $list): bool|int|string
     {
         $result = false;
 
