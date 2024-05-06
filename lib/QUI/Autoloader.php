@@ -44,7 +44,7 @@ class Autoloader
      *
      * @return void
      */
-    public static function checkAutoloader()
+    public static function checkAutoloader(): void
     {
         if (static::shouldOtherAutoloadersBeUnregistered()) {
             static::unregisterOtherAutoloaders();
@@ -77,7 +77,7 @@ class Autoloader
      *
      * @return void
      */
-    public static function init()
+    public static function init(): void
     {
         if (self::$ComposerLoader) {
             return;
