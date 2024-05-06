@@ -58,7 +58,7 @@ class Output extends \Symfony\Component\Console\Output\Output
      * @param string $message - The message that should be written
      * @param bool $newline - true, if the current line should be finished.
      */
-    protected function doWrite($message, $newline)
+    protected function doWrite($message, $newline): void
     {
         $this->curLine .= $message;
 
@@ -93,7 +93,7 @@ class Output extends \Symfony\Component\Console\Output\Output
     /**
      * Clears all lines of the output
      */
-    public function clearLines()
+    public function clearLines(): void
     {
         $this->lines = [];
     }
