@@ -147,23 +147,13 @@ class MailQueue extends QUI\System\Console\Tool
                 $mailto = json_decode($entry['mailto'], true);
                 $mailto = implode(',', $mailto);
 
-                switch ((int)$entry['status']) {
-                    case QUI\Mail\Queue::STATUS_ADDED:
-                        $status = 'added';
-                        break;
-                    case QUI\Mail\Queue::STATUS_SENT:
-                        $status = 'sent';
-                        break;
-                    case QUI\Mail\Queue::STATUS_SENDING:
-                        $status = 'sending';
-                        break;
-                    case QUI\Mail\Queue::STATUS_ERROR:
-                        $status = 'error';
-                        break;
-
-                    default:
-                        $status = 'unknown';
-                }
+                $status = match ((int)$entry['status']) {
+                    QUI\Mail\Queue::STATUS_ADDED => 'added',
+                    QUI\Mail\Queue::STATUS_SENT => 'sent',
+                    QUI\Mail\Queue::STATUS_SENDING => 'sending',
+                    QUI\Mail\Queue::STATUS_ERROR => 'error',
+                    default => 'unknown',
+                };
 
                 $data[] = [
                     $entry['id'],

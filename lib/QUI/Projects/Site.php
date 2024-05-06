@@ -733,25 +733,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             $order = $params['order'];
         }
 
-        switch ($order) {
-            case 'name ASC':
-            case 'name DESC':
-            case 'title ASC':
-            case 'title DESC':
-            case 'c_date ASC':
-            case 'c_date DESC':
-            case 'd_date ASC':
-            case 'd_date DESC':
-            case 'release_from ASC':
-            case 'release_from DESC':
-                $params['order'] = $order;
-                break;
-
-            case 'manuell':
-            default:
-                $params['order'] = 'order_field';
-                break;
-        }
+        $params['order'] = match ($order) {
+            'name ASC', 'name DESC', 'title ASC', 'title DESC', 'c_date ASC', 'c_date DESC', 'd_date ASC', 'd_date DESC', 'release_from ASC', 'release_from DESC' => $order,
+            default => 'order_field',
+        };
 
         return $this->getProject()->getChildrenIdsFrom(
             $this->getId(),

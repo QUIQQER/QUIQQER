@@ -463,18 +463,12 @@ class Media extends QUI\QDOM
      */
     public function parseResultToItem(array $result)
     {
-        switch ($result['type']) {
-            case "image":
-                return new Media\Image($result, $this);
-
-            case "folder":
-                return new Media\Folder($result, $this);
-
-            case "video":
-                return new Media\Video($result, $this);
-        }
-
-        return new Media\File($result, $this);
+        return match ($result['type']) {
+            "image" => new Media\Image($result, $this),
+            "folder" => new Media\Folder($result, $this),
+            "video" => new Media\Video($result, $this),
+            default => new Media\File($result, $this),
+        };
     }
 
     /**

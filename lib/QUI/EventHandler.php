@@ -137,14 +137,10 @@ class EventHandler
         }
 
         foreach (QUI::availableLanguages() as $lang) {
-            switch ($lang) {
-                case 'de':
-                    $url = 'https://store.quiqqer.de';
-                    break;
-
-                default:
-                    $url = 'https://store.quiqqer.com';
-            }
+            $url = match ($lang) {
+                'de' => 'https://store.quiqqer.de',
+                default => 'https://store.quiqqer.com',
+            };
 
             if (empty($packageStoreUrlConf[$lang])) {
                 $packageStoreUrlConf[$lang] = $url;
