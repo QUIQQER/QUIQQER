@@ -234,17 +234,14 @@ class Group extends QUI\QDOM
      * set a group attribute
      * ID cannot be set
      *
-     * @param string $key - Attribute name
-     * @param string|boolean|integer|array $value - value
-     * @return Group
+     * @param string $name - Attribute name
+     * @param mixed $val - value
      */
-    public function setAttribute($key, $value)
+    public function setAttribute(string $name, mixed $val): void
     {
-        if ($key != 'id') {
-            parent::setAttribute($key, $value);
+        if ($name != 'id') {
+            parent::setAttribute($name, $val);
         }
-
-        return $this;
     }
 
     /**

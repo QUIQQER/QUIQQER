@@ -47,19 +47,16 @@ class Guest extends QUI\Groups\Group
      * set a group attribute
      * ID cannot be set
      *
-     * @param string $key - Attribute name
-     * @param string|boolean|integer|array $value - value
-     *
-     * @return Guest
+     * @param string $name - Attribute name
+     * @param mixed $val - value
      */
-    public function setAttribute($key, $value)
+    public function setAttribute(string $name, mixed $val): void
     {
-        if ($key == 'id') {
-            return $this;
+        if ($name == 'id') {
+            return;
         }
 
-        parent::setAttribute($key, $value);
-        return $this;
+        parent::setAttribute($name, $val);
     }
 
     /**
