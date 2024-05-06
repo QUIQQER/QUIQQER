@@ -64,7 +64,7 @@ class Utils
      *
      * @return bool|string
      */
-    public static function getDirMD5($dir)
+    public static function getDirMD5($dir): bool|string
     {
         if (!is_dir($dir)) {
             return false;
