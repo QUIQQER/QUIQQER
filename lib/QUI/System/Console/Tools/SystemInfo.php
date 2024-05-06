@@ -32,7 +32,7 @@ class SystemInfo extends QUI\System\Console\Tool
      * @throws Exception
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         $Package = QUI::getPackageManager()->getInstalledPackage('quiqqer/quiqqer');
         $data = $Package->getComposerData();

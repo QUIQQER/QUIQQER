@@ -46,7 +46,7 @@ class SetSiteAttributes extends QUI\System\Console\Tool
      * @throws QUI\Exception
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         $Projects = QUI::getProjectManager();
 

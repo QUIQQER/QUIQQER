@@ -49,7 +49,7 @@ class MailQueue extends QUI\System\Console\Tool
      * @throws Exception
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         $MailQueue = new QUI\Mail\Queue();
 

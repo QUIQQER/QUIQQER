@@ -91,7 +91,7 @@ class Project extends QUI\System\Console\Tool
      *
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         $create = $this->getArgument('create');
         $delete = $this->getArgument('delete');

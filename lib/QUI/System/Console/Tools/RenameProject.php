@@ -38,7 +38,7 @@ class RenameProject extends Tool
      * Executes the tools steps
      * @throws Exception
      */
-    public function execute()
+    public function execute(): void
     {
         $this->writeLnLocale("console.tool.project.rename.prompt.projectname.info", "cyan");
 

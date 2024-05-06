@@ -88,7 +88,7 @@ class Package extends QUI\System\Console\Tool
      *
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         if ($this->getArgument('help')) {
             $this->outputHelp();
