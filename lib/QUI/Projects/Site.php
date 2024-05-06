@@ -1713,21 +1713,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     /**
-     * @param array $pathParams - Parameter welche in den namen der seite eingefügt werden
-     * @param array $getParams - Parameter welche an die URL angehängt werden
-     *
-     * @return string
-     *
-     * @throws QUI\Exception
-     * @deprecated use getUrlRewritten
-     *
-     */
-    public function getUrlRewrited(array $pathParams = [], array $getParams = []): string
-    {
-        return $this->getUrlRewritten($pathParams, $getParams);
-    }
-
-    /**
      * Gibt eine sprechenden URL zurück
      * DB Abfragen werden gemacht - Hier auf Performance achten
      *
