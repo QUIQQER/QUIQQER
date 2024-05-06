@@ -3,8 +3,8 @@
 use QUI\HtmlToPdf\Document;
 
 $dir = str_replace('quiqqer/quiqqer/lib/QUI/Export/bin', '', __DIR__);
-define('QUIQQER_SYSTEM', true);
-define('QUIQQER_AJAX', true);
+const QUIQQER_SYSTEM = true;
+const QUIQQER_AJAX = true;
 
 require_once $dir . 'header.php';
 
