@@ -97,7 +97,7 @@ class Permissions extends QUI\System\Console\Tool
      *
      * @throws Exception
      */
-    protected function showHelp()
+    #[NoReturn] protected function showHelp(): void
     {
         $this->writeLn();
 
@@ -134,7 +134,7 @@ class Permissions extends QUI\System\Console\Tool
     /**
      * Shows a complete list from all available permissions
      */
-    protected function showList()
+    protected function showList(): void
     {
         $permissions = QUI::getPermissionManager()->getPermissionList();
         $data = [];
@@ -169,7 +169,7 @@ class Permissions extends QUI\System\Console\Tool
     /**
      * Shows a permission list from a specific user
      */
-    protected function showUser()
+    protected function showUser(): void
     {
         $user = $this->getArgument('user');
         $needle = $this->getArgument('permission');
@@ -260,7 +260,7 @@ class Permissions extends QUI\System\Console\Tool
     /**
      * Shows a permission list from a specific group
      */
-    protected function showGroup()
+    protected function showGroup(): void
     {
         $group = $this->getArgument('group');
         $needle = $this->getArgument('permission');
