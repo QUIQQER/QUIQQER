@@ -23,23 +23,23 @@ interface Site extends QUI\QDOMInterface
      *
      * @return QUI\Projects\Project
      */
-    public function getProject();
+    public function getProject(): QUI\Projects\Project;
 
     /**
      * Lädt die Plugins der Seite
      *
-     * @param string|boolean $plugin - Plugin welches geladen werden soll, optional, ansonsten werden alle geladen
+     * @param boolean|string $plugin - Plugin welches geladen werden soll, optional, ansonsten werden alle geladen
      *
      * @return Site
      */
-    public function load($plugin = false);
+    public function load(bool|string $plugin = false): Site;
 
     /**
      * Serialisierungsdaten
      *
      * @return string
      */
-    public function encode();
+    public function encode(): string;
 
     /**
      * Setzt JSON Parameter
@@ -48,7 +48,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @throws QUI\Exception
      */
-    public function decode($params);
+    public function decode(string $params);
 
     /**
      * Hohlt frisch die Daten aus der DB
@@ -60,7 +60,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @return boolean|integer
      */
-    public function isLinked();
+    public function isLinked(): bool|int;
 
     /**
      * Prüft ob es die Seite auch in einer anderen Sprache gibt
@@ -70,24 +70,24 @@ interface Site extends QUI\QDOMInterface
      *
      * @return boolean
      */
-    public function existLang($lang, $check_only_active = true);
+    public function existLang(string $lang, bool $check_only_active = true): bool;
 
     /**
      * Gibt die IDs von Sprachverknüpfungen zurück
      *
      * @return array
      */
-    public function getLangIds();
+    public function getLangIds(): array;
 
     /**
      * Return the ID of the site,
      * or the ID of the sibling (linked) site of another language
      *
-     * @param string|boolean $lang - optional, if it is set, then the language of the wanted linked sibling site
+     * @param boolean|string $lang - optional, if it is set, then the language of the wanted to be linked sibling site
      *
      * @return integer
      */
-    public function getId($lang = false);
+    public function getId(bool|string $lang = false): int;
 
     /**
      * Gibt alle Kinder zurück
@@ -97,9 +97,9 @@ interface Site extends QUI\QDOMInterface
      *                      $params['limit']
      * @param boolean $load - Legt fest ob die Kinder die Plugins laden sollen
      *
-     * @return array;
+     * @return array|int
      */
-    public function getChildren($params = [], $load = false);
+    public function getChildren(array $params = [], bool $load = false): array|int;
 
     /**
      * Liefert die nächstfolgende Seite
@@ -107,7 +107,7 @@ interface Site extends QUI\QDOMInterface
      * @return QUI\Projects\Site
      * @throws QUI\Exception
      */
-    public function nextSibling();
+    public function nextSibling(): Site;
 
     /**
      * Die nächsten x Kinder
@@ -116,7 +116,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @return array
      */
-    public function nextSiblings($no);
+    public function nextSiblings(int $no): array;
 
     /**
      * Liefert die vorhergehenden Seite
@@ -124,7 +124,7 @@ interface Site extends QUI\QDOMInterface
      * @return QUI\Projects\Site
      * @throws QUI\Exception
      */
-    public function previousSibling();
+    public function previousSibling(): Site;
 
     /**
      * Die x vorhergehenden Geschwister
@@ -133,7 +133,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @return array
      */
-    public function previousSiblings($no);
+    public function previousSiblings(int $no): array;
 
     /**
      * Gibt das erste Kind der Seite zurück
@@ -142,16 +142,16 @@ interface Site extends QUI\QDOMInterface
      *
      * @return QUI\Projects\Site | false
      */
-    public function firstChild($params = []);
+    public function firstChild(array $params = []): bool|Site;
 
     /**
      * Gibt die Kinder zurück achtet aber auf "Nicht in Navigation anzeigen" und Rechte
      *
      * @param array $params
      *
-     * @return array
+     * @return array|int
      */
-    public function getNavigation($params = []);
+    public function getNavigation(array $params = []): array|int;
 
     /**
      * Gibt ein Kind zurück welches den Namen hat
@@ -161,7 +161,7 @@ interface Site extends QUI\QDOMInterface
      * @return integer
      * @throws QUI\Exception
      */
-    public function getChildIdByName($name);
+    public function getChildIdByName(string $name): int;
 
     /**
      * Return a children by id
@@ -171,7 +171,7 @@ interface Site extends QUI\QDOMInterface
      * @return QUI\Projects\Site
      * @throws QUI\Exception
      */
-    public function getChild($id);
+    public function getChild(int $id): Site;
 
     /**
      * Gibt die ID's der Kinder zurück
@@ -183,7 +183,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @return array
      */
-    public function getChildrenIds($params = []);
+    public function getChildrenIds(array $params = []): array;
 
     /**
      * Return ALL children ids under the site
@@ -192,7 +192,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @return array
      */
-    public function getChildrenIdsRecursive($params = []);
+    public function getChildrenIdsRecursive(array $params = []): array;
 
     /**
      * Gibt zurück ob Site Kinder besitzt
@@ -201,7 +201,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @return integer - Anzahl der Kinder
      */
-    public function hasChildren($navhide = false);
+    public function hasChildren(bool $navhide = false): int;
 
     /**
      * Setzt das delete Flag
@@ -213,36 +213,25 @@ interface Site extends QUI\QDOMInterface
     /**
      * Gibt die URL der Seite zurück
      *
-     * @param $params
-     * @param $rewrited
+     * @param array $params
+     * @param array $getParams
      *
      * @return string
      */
-    public function getUrl($params = [], $rewrited = false);
-
-    /**
-     * Gibt eine sprechenden URL zurück
-     * DB Abfragen werden gemacht - Hier auf Performance achten
-     *
-     * @param array $params - Parameter welche an die URL angehängt werden
-     *
-     * @return string
-     * @deprecated
-     */
-//    public function getUrlRewrited($params = array());
+    public function getUrl(array $params = [], array $getParams = []): string;
 
     /**
      * @param array $params
-     * @return mixed
+     * @return string
      */
-    public function getUrlRewritten($params = []);
+    public function getUrlRewritten(array $params = []): string;
 
     /**
      * Return the Parent id from the site object
      *
      * @return integer
      */
-    public function getParentId();
+    public function getParentId(): int;
 
     /**
      * Gibt alle direkten Eltern Ids zurück
@@ -254,14 +243,14 @@ interface Site extends QUI\QDOMInterface
      *
      * @return array
      */
-    public function getParentIds();
+    public function getParentIds(): array;
 
     /**
      * Return the Parent ID List
      *
      * @return array
      */
-    public function getParentIdTree();
+    public function getParentIdTree(): array;
 
     /**
      * Gibt das Parent Objekt zurück.
@@ -269,7 +258,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @return Site|false
      */
-    public function getParent();
+    public function getParent(): Site|bool;
 
     /**
      * Gibt alle rekursive Parents als Objekte zurück
@@ -277,7 +266,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @return array
      */
-    public function getParents();
+    public function getParents(): array;
 
     /**
      * Stellt die Seite wieder her
@@ -298,7 +287,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @return string
      */
-    public function getCanonical();
+    public function getCanonical(): string;
 
     /**
      * Löscht den Seitencache
@@ -314,19 +303,19 @@ interface Site extends QUI\QDOMInterface
      * Shortcut for QUI\Permissions\Permission::hasSitePermission
      *
      * @param string $permission - name of the permission
-     * @param QUI\Users\User|boolean $User - optional
+     * @param ?QUI\Interfaces\Users\User $User - optional
      *
      * @return boolean|integer
      */
-    public function hasPermission($permission, $User = false);
+    public function hasPermission(string $permission, QUI\Interfaces\Users\User $User = null): bool|int;
 
     /**
      * Shortcut for QUI\Permissions\Permission::checkSitePermission
      *
      * @param string $permission - name of the permission
-     * @param QUI\Users\User|boolean $User - optional
+     * @param QUI\Interfaces\Users\User|null $User - optional
      *
      * @throws QUI\Exception
      */
-    public function checkPermission($permission, $User = false);
+    public function checkPermission(string $permission, QUI\Interfaces\Users\User $User = null);
 }

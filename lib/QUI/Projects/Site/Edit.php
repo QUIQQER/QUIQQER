@@ -87,7 +87,7 @@ class Edit extends Site
      *
      * @throws QUI\Exception
      */
-    public function __construct(Project $Project, $id)
+    public function __construct(Project $Project, int $id)
     {
         parent::__construct($Project, $id);
 
@@ -109,7 +109,7 @@ class Edit extends Site
      * @throws QUI\Exception
      * @throws QUI\Database\Exception
      */
-    public function refresh()
+    public function refresh(): void
     {
         $result = QUI::getDataBase()->fetch([
             'from' => $this->TABLE,
@@ -300,7 +300,7 @@ class Edit extends Site
      *
      * @throws QUI\Exception
      */
-    public function destroy()
+    public function destroy(): void
     {
         if ($this->getAttribute('deleted') != 1) {
             return;
@@ -422,12 +422,12 @@ class Edit extends Site
      * @param array $params Parameter für die Childrenausgabe
      *                        $params['where']
      *                        $params['limit']
-     * @param boolean $recursiv Rekursiv alle Kinder IDs bekommen
+     * @param boolean $load Rekursiv alle Kinder IDs bekommen
      *
      * @return array|int
      * @throws QUI\Exception
      */
-    public function getChildren($params = [], $recursiv = false)
+    public function getChildren(array $params = [], bool $load = false)
     {
         if (!isset($params['order'])) {
             // Falls kein order übergeben wird, wird das eingestellte Site order
@@ -1133,7 +1133,7 @@ class Edit extends Site
     /**
      * Create the site cache
      */
-    public function createCache()
+    public function createCache(): void
     {
         // create object cache
         parent::createCache();

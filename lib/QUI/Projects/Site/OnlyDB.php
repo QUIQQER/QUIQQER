@@ -24,12 +24,12 @@ class OnlyDB extends QUI\Projects\Site
     /**
      * constructor
      *
-     * @param \QUI\Projects\Project $Project
+     * @param Project $Project
      * @param integer $id - Site ID
      *
      * @throws QUI\Exception
      */
-    public function __construct(QUI\Projects\Project $Project, $id)
+    public function __construct(Project $Project, int $id)
     {
         $this->TABLE = $Project->table();
         $this->RELTABLE = $Project->table() . '_relations';
@@ -55,7 +55,7 @@ class OnlyDB extends QUI\Projects\Site
      * Hohlt sich die Daten frisch us der DB
      * @throws Exception
      */
-    public function refresh()
+    public function refresh(): void
     {
         $result = QUI::getDataBase()->fetch([
             'from' => $this->TABLE,
