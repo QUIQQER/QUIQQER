@@ -2,6 +2,7 @@
 
 namespace QUI\Mail;
 
+use Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use QUI;
 
@@ -19,7 +20,7 @@ class Log
     /**
      * @param PHPMailer $PhpMailer
      */
-    public static function logSend($PhpMailer)
+    public static function logSend(PHPMailer $PhpMailer): void
     {
         $addresses = self::parseAddresses($PhpMailer->getToAddresses());
         $bcc = self::parseAddresses($PhpMailer->getBccAddresses());
@@ -42,7 +43,7 @@ class Log
      * @param $addresses
      * @return array
      */
-    protected static function parseAddresses($addresses)
+    protected static function parseAddresses($addresses): array
     {
         return array_map(function ($entry) {
             return $entry[0];
@@ -52,7 +53,7 @@ class Log
     /**
      * @param $message
      */
-    public static function write($message)
+    public static function write($message): void
     {
         if ((int)QUI::conf('mail', 'logging') !== 1) {
             return;
@@ -67,7 +68,7 @@ class Log
     /**
      * @param $PhpMailer
      */
-    public static function logDone($PhpMailer)
+    public static function logDone($PhpMailer): void
     {
         $addresses = self::parseAddresses($PhpMailer->getToAddresses());
         $bcc = self::parseAddresses($PhpMailer->getBccAddresses());
@@ -89,7 +90,7 @@ class Log
     /**
      * @param Exception $Exception
      */
-    public static function logException($Exception)
+    public static function logException(Exception $Exception): void
     {
         QUI\Mail\Log::write('ERROR Mail ' . $Exception->getMessage());
     }
