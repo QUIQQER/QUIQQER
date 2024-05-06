@@ -51,7 +51,7 @@ class Session
      * @param $name
      * @param $value
      */
-    public function set($name, $value)
+    public function set($name, $value): void
     {
         $this->params[$name] = $value;
     }
@@ -60,7 +60,7 @@ class Session
      * @param $name
      * @return mixed
      */
-    public function get($name)
+    public function get($name): mixed
     {
         return $this->params[$name] ?? false;
     }
@@ -84,7 +84,7 @@ class Session
     /**
      * @param string $name
      */
-    public function del(string $name)
+    public function del(string $name): void
     {
         if (isset($this->params[$name])) {
             unset($this->params[$name]);
@@ -94,7 +94,7 @@ class Session
     /**
      * @param string $name
      */
-    public function remove(string $name)
+    public function remove(string $name): void
     {
         if (isset($this->params[$name])) {
             unset($this->params[$name]);
@@ -104,7 +104,7 @@ class Session
     /**
      * Destroy all variables in the cli session
      */
-    public function destroy()
+    public function destroy(): void
     {
         $this->params = [];
     }
@@ -137,7 +137,7 @@ class Session
     /**
      * @throws Exception
      */
-    public function setup()
+    public function setup(): void
     {
         QUI\Session::setup();
     }
