@@ -39,7 +39,7 @@ class Manager
      * @throws QUI\Exception
      * @throws Exception
      */
-    public function send(string $to, string $subject, string $body)
+    public function send(string $to, string $subject, string $body): void
     {
         $Mailer = new Mailer();
 
