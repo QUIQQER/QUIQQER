@@ -302,7 +302,7 @@ class User implements QUIUserInterface
      *
      * @return mixed
      */
-    public function getAttribute($name)
+    public function getAttribute(string $name): mixed
     {
         return $this->settings[$name] ?? false;
     }
@@ -450,12 +450,12 @@ class User implements QUIUserInterface
      * Sets a user attribute
      *
      * @param string $key
-     * @param string|integer|array $value
+     * @param mixed $value
      *
      * @return void
      * @throws QUI\Exception
      */
-    public function setAttribute($key, $value): void
+    public function setAttribute(string $key, mixed $value): void
     {
         if (!$key || $key == 'id' || $key == 'password' || $key == 'user_agent') {
             return;
@@ -1634,7 +1634,7 @@ class User implements QUIUserInterface
      *
      * @param string $key
      */
-    public function removeAttribute($key): void
+    public function removeAttribute(string $key): void
     {
         if (!$key || $key == 'id' || $key == 'password' || $key == 'user_agent') {
             return;
@@ -1651,7 +1651,7 @@ class User implements QUIUserInterface
      * @param array $attributes
      * @throws QUI\Exception
      */
-    public function setAttributes($attributes): void
+    public function setAttributes(array $attributes): void
     {
         foreach ($attributes as $key => $value) {
             $this->setAttribute($key, $value);
@@ -1671,7 +1671,7 @@ class User implements QUIUserInterface
      *
      * @return array
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         $params = $this->settings;
         $params['id'] = $this->getId();
