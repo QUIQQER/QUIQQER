@@ -49,7 +49,7 @@ class Handler extends QUI\QDOM
      *
      * @param array $params
      */
-    public function __construct($params = [])
+    public function __construct(array $params = [])
     {
         // defaults
         $this->setAttribute('logdir', '');
@@ -91,7 +91,7 @@ class Handler extends QUI\QDOM
      * QUI\ExceptionHandler->registerShutdown('class::staticMethod');
      *
      */
-    public function registerShutdown()
+    public function registerShutdown(): bool
     {
         $callback = func_get_args();
 
@@ -125,7 +125,7 @@ class Handler extends QUI\QDOM
     /**
      * Call all shutdown functions
      */
-    public function callShutdown()
+    public function callShutdown(): void
     {
         $callbacks = $this->shutDownCallbacks;
 
@@ -138,18 +138,18 @@ class Handler extends QUI\QDOM
     /**
      * Writes the error to the log
      *
-     * @param integer $errno - Fehlercode
-     * @param string $errstr - Fehler
-     * @param string $errfile - (optional) Datei in welcher der Fehler auftaucht
-     * @param integer|string $errline - (optional) Zeile in welcher der Fehler auftaucht
+     * @param integer $errno - error code
+     * @param string $errStr - error
+     * @param string $errFile - (optional) Datei in welcher der Fehler auftaucht
+     * @param integer|string $errLine - (optional) Zeile in welcher der Fehler auftaucht
      */
     public function writeErrorToLog(
-        $errno,
-        $errstr,
-        $errfile = '',
-        $errline = ''
-    ) {
-        if ($this->getAttribute('ERROR_' . $errno) == false) {
+        int $errno,
+        string $errStr,
+        string $errFile = '',
+        int|string $errLine = ''
+    ): void {
+        if (!$this->getAttribute('ERROR_' . $errno)) {
             return;
         }
 
@@ -200,18 +200,18 @@ class Handler extends QUI\QDOM
             $err_msg .= '$_REQUEST: ' . print_r($_REQUEST, true) . "\n\n";
         }
 
-        $err_msg .= "\nMessage:\n" . $errstr . "\n";
+        $err_msg .= "\nMessage:\n" . $errStr . "\n";
 
         if ($errno) {
             $err_msg .= "Error No: ERROR_" . $errno . "\n";
         }
 
-        if ($errfile) {
-            $err_msg .= "Error File:" . $errfile . "\n";
+        if ($errFile) {
+            $err_msg .= "Error File:" . $errFile . "\n";
         }
 
-        if ($errline) {
-            $err_msg .= "Error Line:" . $errline . "\n";
+        if ($errLine) {
+            $err_msg .= "Error Line:" . $errLine . "\n";
         }
 
         // Nutzerdaten
