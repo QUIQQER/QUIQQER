@@ -103,7 +103,6 @@ class QuiqqerMongoDriver extends AbstractDriver
      */
     public function storeData($key, $data, $expiration): bool
     {
-        /* @phpstan-ignore-next-line */
         if ($this->collection instanceof Collection) {
             $id = self::mapKey($key);
 
@@ -136,7 +135,6 @@ class QuiqqerMongoDriver extends AbstractDriver
 
         $preg = "^" . preg_quote(self::mapKey($key));
 
-        /* @phpstan-ignore-next-line */
         if ($this->collection instanceof Collection) {
             $this->collection->deleteMany([
                 '_id' => new Regex($preg, '')
@@ -151,7 +149,6 @@ class QuiqqerMongoDriver extends AbstractDriver
      */
     public function purge(): bool
     {
-        /* @phpstan-ignore-next-line */
         if ($this->collection instanceof Collection) {
             $this->collection->deleteMany([
                 'expiration' => ['$lte' => time()]
@@ -176,7 +173,6 @@ class QuiqqerMongoDriver extends AbstractDriver
         /* @var $client Client */
         $Client = $options['mongo'];
 
-        /* @phpstan-ignore-next-line */
         if (!($Client instanceof Client)) {
             throw new \InvalidArgumentException(
                 'MongoDB\Driver\Manager instance required'
