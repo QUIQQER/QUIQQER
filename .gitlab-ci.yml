@@ -6,8 +6,6 @@ variables:
   PACKAGE_NAME: "quiqqer/quiqqer"
 
 phpunit:
-  rules:
-    - when: never
   image: quiqqer/testing:php-$PHP_VERSION_TO_TEST
   parallel:
     matrix:
