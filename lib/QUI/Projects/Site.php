@@ -887,26 +887,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         // Falls kein Order übergeben wird das eingestellte Site Order
         if (!isset($params['order'])) {
-            switch ($this->getAttribute('order_type')) {
-                case 'name ASC':
-                case 'name DESC':
-                case 'title ASC':
-                case 'title DESC':
-                case 'c_date ASC':
-                case 'c_date DESC':
-                case 'd_date ASC':
-                case 'd_date DESC':
-                case 'release_from ASC':
-                case 'release_from DESC':
-                    $params['order'] = $this->getAttribute('order_type');
-                    break;
-
-                case 'manuel':
-                case 'manuell':
-                default:
-                    $params['order'] = 'order_field';
-                    break;
-            }
+            $params['order'] = match ($this->getAttribute('order_type')) {
+                'name ASC', 'name DESC', 'title ASC', 'title DESC', 'c_date ASC', 'c_date DESC', 'd_date ASC', 'd_date DESC', 'release_from ASC', 'release_from DESC' => $this->getAttribute('order_type'),
+                default => 'order_field',
+            };
         }
 
         if (empty($params['order'])) {

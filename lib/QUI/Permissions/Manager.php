@@ -1792,27 +1792,13 @@ class Manager
             $val = $Group->hasPermission($right['name']);
 
             // bool, string, int, group, array
-            switch ($right['type']) {
-                case 'int':
-                    $val = (int)$val;
-                    break;
-
-                case 'groups':
-                    $val = preg_replace('/[^0-9,]/', '', $val);
-                    break;
-
-                case 'array':
-                    $val = Orthos::clearArray($val);
-                    break;
-
-                case 'string':
-                    $val = Orthos::clearMySQL($val);
-                    break;
-
-                default:
-                    $val = (bool)$val;
-                    break;
-            }
+            $val = match ($right['type']) {
+                'int' => (int)$val,
+                'groups' => preg_replace('/[^0-9,]/', '', $val),
+                'array' => Orthos::clearArray($val),
+                'string' => Orthos::clearMySQL($val),
+                default => (bool)$val,
+            };
 
             $result[$right['name']] = $val;
         }

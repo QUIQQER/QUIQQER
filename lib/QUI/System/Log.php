@@ -103,40 +103,16 @@ class Log
             $context['filename'] = 'deprecated';
         }
 
-        switch ($logLevelName) {
-            case 'debug':
-                $Logger->debug($message, $context);
-                break;
-
-            case 'info':
-                $Logger->info($message, $context);
-                break;
-
-            case 'notice':
-                $Logger->notice($message, $context);
-                break;
-
-            case 'deprecated':
-            case 'warning':
-                $Logger->warning($message, $context);
-                break;
-
-            case 'critical':
-                $Logger->critical($message, $context);
-                break;
-
-            case 'alert':
-                $Logger->alert($message, $context);
-                break;
-
-            case 'emergency':
-                $Logger->emergency($message, $context);
-                break;
-
-            case 'error':
-            default:
-                $Logger->error($message, $context);
-        }
+        match ($logLevelName) {
+            'debug' => $Logger->debug($message, $context),
+            'info' => $Logger->info($message, $context),
+            'notice' => $Logger->notice($message, $context),
+            'deprecated', 'warning' => $Logger->warning($message, $context),
+            'critical' => $Logger->critical($message, $context),
+            'alert' => $Logger->alert($message, $context),
+            'emergency' => $Logger->emergency($message, $context),
+            default => $Logger->error($message, $context),
+        };
     }
 
     /**
