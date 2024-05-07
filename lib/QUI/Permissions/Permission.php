@@ -7,7 +7,6 @@
 namespace QUI\Permissions;
 
 use QUI;
-use QUI\Database\Exception;
 use QUI\Groups\Group;
 use QUI\Projects\Media;
 use QUI\Projects\Media\Item;
