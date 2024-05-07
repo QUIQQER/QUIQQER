@@ -205,9 +205,28 @@ class Update extends QUI\System\Console\Tool
         $Maintenance->setArgument('status', 'on');
         $Maintenance->execute();
 
+        try {
+            $this->writeLn('- Filesystem check ...');
+            $changes = $this->checkFileSystemChanges();
+        } catch (Exception $Exception) {
+            $this->writeLn();
+            $this->writeLn(
+                'The update has received inconsistencies during the file system check.',
+                'yellow'
+            );
 
-        $this->writeLn('- Filesystem check ...');
-        $changes = $this->checkFileSystemChanges();
+            $this->writeLn('Error :: ' . $Exception->getMessage(), 'red');
+            $this->writeLn();
+            $this->resetColor();
+
+            if ($this->executedAnywayQuestion() === false) {
+                $Maintenance->setArgument('status', 'off');
+                $Maintenance->execute();
+                exit;
+            }
+
+            $changes = false;
+        }
 
         if ($changes) {
             $this->writeLn();
