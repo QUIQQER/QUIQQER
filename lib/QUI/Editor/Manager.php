@@ -843,7 +843,7 @@ class Manager
     {
         $html = preg_replace_callback(
             '#(src)="([^"]*)"#',
-            [$this, "cleanAdminSrc"],
+            $this->cleanAdminSrc(...),
             $html
         );
 
@@ -872,13 +872,13 @@ class Manager
     {
         $html = preg_replace_callback(
             '#(src)="([^"]*)"#',
-            [$this, "cleanSrc"],
+            $this->cleanSrc(...),
             $html
         );
 
         $html = preg_replace_callback(
             '#(href)="([^"]*)"#',
-            [$this, "cleanHref"],
+            $this->cleanHref(...),
             $html
         );
 
@@ -893,7 +893,7 @@ class Manager
         // remove line breaks in html
         return preg_replace_callback(
             '#(<)(.*?)(>)#',
-            [$this, "deleteLineBreaksInHtml"],
+            $this->deleteLineBreaksInHtml(...),
             $html
         );
     }

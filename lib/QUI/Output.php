@@ -112,27 +112,27 @@ class Output extends Singleton
         // rewrite image
         $content = preg_replace_callback(
             '#(src|data\-image|data\-href|data\-link|data\-src)="(image.php)\?([^"]*)"#',
-            [&$this, "dataImages"],
+            $this->dataImages(...),
             $content
         );
 
         // rewrite files
         $content = preg_replace_callback(
             '#(href|src|value)="(image.php)\?([^"]*)"#',
-            [&$this, "files"],
+            $this->files(...),
             $content
         );
 
         // rewrite links
         $content = preg_replace_callback(
             '#(data\-href|data\-link)="(index.php)\?([^"]*)"#',
-            [&$this, "dataLinks"],
+            $this->dataLinks(...),
             $content
         );
 
         $content = preg_replace_callback(
             '#(href|src|action|value)="(index.php)\?([^"]*)"#',
-            [&$this, "links"],
+            $this->links(...),
             $content
         );
 
@@ -140,7 +140,7 @@ class Output extends Singleton
         if ($this->settings['remove-deleted-links']) {
             $content = preg_replace_callback(
                 '/<a[ ]*?>(.*?)<\/a>/ims',
-                [&$this, "cleanEmptyLinks"],
+                $this->cleanEmptyLinks(...),
                 $content
             );
         }
@@ -148,21 +148,21 @@ class Output extends Singleton
         // search css files
         $content = preg_replace_callback(
             '#<link([^>]*)>#',
-            [&$this, "cssLinkHref"],
+            $this->cssLinkHref(...),
             $content
         );
 
         // search css files
         $content = preg_replace_callback(
             '#<script([^>]*)>#',
-            [&$this, "scripts"],
+            $this->scripts(...),
             $content
         );
 
         if ($this->settings['use-absolute-urls']) {
             $content = preg_replace_callback(
                 '#(href|src)="(.*?)([^"]*)#',
-                [&$this, "absoluteUrls"],
+                $this->absoluteUrls(...),
                 $content
             );
         }
@@ -272,7 +272,7 @@ class Output extends Singleton
 
                 $html = preg_replace_callback(
                     '#<img([^>]*)>#i',
-                    [&$this, "images"],
+                    $this->images(...),
                     $image
                 );
 
@@ -936,7 +936,7 @@ class Output extends Singleton
 
         $html = preg_replace_callback(
             '#<img([^>]*)>#i',
-            [&$this, "images"],
+            $this->images(...),
             $html
         );
 

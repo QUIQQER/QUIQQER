@@ -397,7 +397,7 @@ class Menu
      */
     protected function sortItems($items): array
     {
-        usort($items, [$this, 'sortByTitle']);
+        usort($items, $this->sortByTitle(...));
 
         foreach ($items as $key => $item) {
             if (!empty($item['items'])) {

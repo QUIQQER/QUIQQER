@@ -83,7 +83,7 @@ class Ajax extends QUI\QDOM
         $ErrorHandler = QUI::getErrorHandler();
 
         try {
-            $ErrorHandler->registerShutdown([$this, 'onShutdown']);
+            $ErrorHandler->registerShutdown($this->onShutdown(...));
         } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
