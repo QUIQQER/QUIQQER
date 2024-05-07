@@ -13,18 +13,18 @@ use QUI;
 use QUI\Config;
 use Stash;
 
+use Stash\Pool;
+
 use function array_unshift;
 use function class_exists;
 use function explode;
 use function file_put_contents;
-use function get_class;
 use function is_array;
 use function is_dir;
 use function is_null;
 use function is_numeric;
 use function is_string;
 use function md5;
-use function strpos;
 
 /**
  * Cache Manager
@@ -42,65 +42,65 @@ class Manager
      *
      * @var bool
      */
-    public static $noClearing = false;
+    public static bool $noClearing = false;
 
     /**
      * @var bool
      */
-    public static $stashLoaded = false;
+    public static bool $stashLoaded = false;
 
     /**
      * Cache Manager Configs
      *
-     * @var Config
+     * @var ?Config
      */
-    public static $Config = null;
+    public static ?Config $Config = null;
 
     /**
      * Stash Object
      *
-     * @var Stash\Pool
+     * @var ?Stash\Pool
      */
-    public static $Stash = null;
+    public static ?Stash\Pool $Stash = null;
 
     /**
-     * File system stach object
+     * File system stash object
      *
-     * @var Stash\Pool
+     * @var ?Stash\Pool
      */
-    public static $FileSystemStash = null;
+    public static ?Stash\Pool $FileSystemStash = null;
 
     /**
-     * the stash multihandler
+     * the stash multi handler
      *
-     * @var Stash\Interfaces\DriverInterface
+     * @var ?Stash\Interfaces\DriverInterface
      */
-    public static $Handler = null;
+    public static ?Stash\Interfaces\DriverInterface $Handler = null;
 
     /**
      * all stash cache objects
      *
-     * @var array
+     * @var ?array
      */
-    public static $handlers = null;
+    public static ?array $handlers = null;
 
     /**
      * @var array
      */
-    protected static $drivers = [];
+    protected static array $drivers = [];
 
     /**
-     * @var null
+     * @var string|int|null
      */
-    protected static $currentDriver = null;
+    protected static string|int|null $currentDriver = null;
 
     /**
      * Returns explicitly the file system cache
      *
-     * @return false|Stash\Pool
+     * @return Pool|null
      * @deprecated use getDriver
      */
-    public static function getFileSystemCache()
+    public static function getFileSystemCache(): Stash\Pool|null
     {
         if (!is_null(self::$FileSystemStash)) {
             return self::$FileSystemStash;
@@ -119,7 +119,7 @@ class Manager
         try {
             $handler = new QuiqqerFileDriver($params);
         } catch (Stash\Exception\RuntimeException) {
-            return false;
+            return null;
         }
 
         $Handler = new Stash\Driver\Composite([
@@ -136,7 +136,7 @@ class Manager
      *
      * @return Config
      */
-    public static function getConfig()
+    public static function getConfig(): Config
     {
         if (!self::$Config) {
             try {
@@ -156,12 +156,11 @@ class Manager
      * Throws an exception if no data is present in the cache for the given key.
      *
      * @param string $name
-     *
-     * @return string|array|object|boolean
+     * @return mixed
      *
      * @throws QUI\Cache\Exception
      */
-    public static function get($name)
+    public static function get(string $name): mixed
     {
         if (self::getConfig()->get('general', 'nocache')) {
             throw new QUI\Cache\Exception(
@@ -233,9 +232,9 @@ class Manager
      * @param string $key - (optional) cache name, cache key
      *
      * @return Stash\Interfaces\ItemInterface
-     * @throws \QUI\Exception|\Exception
+     * @throws QUI\Exception|\Exception
      */
-    public static function getStash($key = '')
+    public static function getStash(string $key = ''): Stash\Interfaces\ItemInterface
     {
         // pfad erstellen falls nicht erstellt ist
         if (!is_dir(VAR_DIR . 'cache/stack/')) {
@@ -291,7 +290,7 @@ class Manager
     /**
      * @return array
      */
-    public static function getHandlers()
+    public static function getHandlers(): array
     {
         $Config = self::getConfig();
 
@@ -364,11 +363,12 @@ class Manager
      * Return the current cache driver.
      *
      * @param array $options - optional
-     * @param string|boolean $driver - optional
+     * @param boolean|string $driver - optional
      *
      * @return Stash\Driver\AbstractDriver
+     * @throws Stash\Exception\RuntimeException
      */
-    public static function getDriver($options = [], $driver = false)
+    public static function getDriver(array $options = [], bool|string $driver = false): Stash\Driver\AbstractDriver
     {
         if ($driver === false) {
             $driver = self::getCurrentDriver();
@@ -465,23 +465,23 @@ class Manager
 
                 $conf = $Config->get('memcache');
 
-                if (isset($conf['prefix_key']) && !empty($conf['prefix_key'])) {
+                if (!empty($conf['prefix_key'])) {
                     $defaults['prefix_key'] = $conf['prefix_key'];
                 }
 
-                if (isset($conf['libketama_compatible']) && !empty($conf['libketama_compatible'])) {
+                if (!empty($conf['libketama_compatible'])) {
                     $defaults['libketama_compatible'] = $conf['libketama_compatible'];
                 }
 
-                if (isset($conf['cache_lookups']) && !empty($conf['cache_lookups'])) {
+                if (!empty($conf['cache_lookups'])) {
                     $defaults['cache_lookups'] = $conf['cache_lookups'];
                 }
 
-                if (isset($conf['serializer']) && !empty($conf['serializer'])) {
+                if (!empty($conf['serializer'])) {
                     $defaults['serializer'] = $conf['serializer'];
                 }
 
-                if (isset($options['prefix_key']) && !empty($options['prefix_key'])) {
+                if (!empty($options['prefix_key'])) {
                     $defaults['prefix_key'] = $options['prefix_key'];
                 }
 
@@ -519,7 +519,7 @@ class Manager
                         $collection = $conf['collection'];
                     }
 
-                    if (strpos($host, 'mongodb://') === false) {
+                    if (!str_contains($host, 'mongodb://')) {
                         $host = 'mongodb://' . $host;
                     }
 
@@ -532,11 +532,18 @@ class Manager
                         $Client = new Client($host);
                     }
 
-                    return new QuiqqerMongoDriver([
-                        'mongo' => $Client,
-                        'database' => $database,
-                        'collection' => $collection
-                    ]);
+                    try {
+                        return new QuiqqerMongoDriver([
+                            'mongo' => $Client,
+                            'database' => $database,
+                            'collection' => $collection
+                        ]);
+                    } catch (\Exception $exception) {
+                        throw new Stash\Exception\RuntimeException(
+                            $exception->getMessage(),
+                            $exception->getCode()
+                        );
+                    }
                 }
 
                 break;
@@ -560,9 +567,9 @@ class Manager
     }
 
     /**
-     * @return int|string
+     * @return int|string|null
      */
-    protected static function getCurrentDriver()
+    protected static function getCurrentDriver(): int|string|null
     {
         if (self::$currentDriver === null) {
             return self::$currentDriver;
@@ -593,13 +600,12 @@ class Manager
     /**
      * Returns the Stash\Driver\Composite or the Stash\Driver
      *
-     * @param string|boolean $type = optional: bestimmten Cache Handler bekommen
-     *
-     * @return Stash\Interfaces\DriverInterface|boolean
+     * @param boolean|string $type = optional: bestimmten Cache Handler bekommen
+     * @return ?Stash\Interfaces\DriverInterface
      */
-    public static function getHandler($type = false)
+    public static function getHandler(bool|string $type = false): Stash\Interfaces\DriverInterface|null
     {
-        if ($type != false) {
+        if ($type) {
             $handlers = self::$handlers;
 
             foreach ($handlers as $Handler) {
@@ -608,11 +614,11 @@ class Manager
                 }
             }
 
-            return false;
+            return null;
         }
 
         if (self::$Handler === null) {
-            return false;
+            return null;
         }
 
         return self::$Handler;
@@ -627,11 +633,11 @@ class Manager
      *
      * @param string $name
      * @param mixed $data
-     * @param DateTimeInterface|int|DateInterval|null $time Seconds, Interval or exact date at/after which the cache item expires.
+     * @param DateInterval|DateTimeInterface|int|null $time Seconds, Interval or exact date at/after which the cache item expires.
      *                                                         If $time is null, the cache will try to use the default value,
      *                                                         if no default value is set, the maximum possible time for the used implementation will be used.
      */
-    public static function set($name, $data, $time = null)
+    public static function set(string $name, mixed $data, DateInterval|DateTimeInterface|int $time = null): void
     {
         if (defined('QUIQQER_SETUP')) {
             return;
@@ -662,7 +668,7 @@ class Manager
      * Clears the settings cache
      * - /settings/
      */
-    public static function clearSettingsCache()
+    public static function clearSettingsCache(): void
     {
         self::clear('settings');
 
@@ -676,9 +682,9 @@ class Manager
     /**
      * Clears all or only a given entry from the cache.
      *
-     * @param string|boolean $key - optional; if no key is given the whole cache is cleared
+     * @param boolean|string $key - optional; if no key is given the whole cache is cleared
      */
-    public static function clear($key = "")
+    public static function clear(bool|string $key = ""): void
     {
         if (self::$noClearing) {
             return;
@@ -697,7 +703,7 @@ class Manager
      * Clears the complete quiqqer cache
      * - /quiqqer/
      */
-    public static function clearCompleteQuiqqerCache()
+    public static function clearCompleteQuiqqerCache(): void
     {
         self::clear('quiqqer');
 
@@ -718,7 +724,7 @@ class Manager
     /**
      * @throws QUI\Exception
      */
-    public static function clearTemplateCache()
+    public static function clearTemplateCache(): void
     {
         QUI\Utils\System\File::unlink(VAR_DIR . 'cache/templates');
         QUI\Utils\System\File::unlink(VAR_DIR . 'cache/compile');
@@ -736,7 +742,7 @@ class Manager
      * Clears the projects cache
      * - /quiqqer/projects/
      */
-    public static function clearProjectsCache()
+    public static function clearProjectsCache(): void
     {
         self::clear('quiqqer/projects/');
 
@@ -753,7 +759,7 @@ class Manager
      *
      * @param string $projectName - name of the project
      */
-    public static function clearProjectCache($projectName)
+    public static function clearProjectCache(string $projectName): void
     {
         self::clear('quiqqer/projects/' . $projectName);
 
@@ -767,9 +773,9 @@ class Manager
     /**
      * Clears the project media cache
      *
-     * @param false|string $projectName - optional, name of the project
+     * @param bool|string $projectName - optional, name of the project
      */
-    public static function clearMediaCache($projectName = false)
+    public static function clearMediaCache(bool|string $projectName = false): void
     {
         // clear all media cache
         if (empty($projectName)) {
@@ -799,7 +805,7 @@ class Manager
      * Clears the groups cache
      * - /quiqqer/groups/
      */
-    public static function clearGroupsCache()
+    public static function clearGroupsCache(): void
     {
         self::clear('quiqqer/groups/');
 
@@ -814,7 +820,7 @@ class Manager
      * Clears the users cache
      * - /quiqqer/users/
      */
-    public static function clearUsersCache()
+    public static function clearUsersCache(): void
     {
         self::clear('quiqqer/users/');
 
@@ -829,7 +835,7 @@ class Manager
      * Clears the permissions cache
      * - /quiqqer/permissions/
      */
-    public static function clearPermissionsCache()
+    public static function clearPermissionsCache(): void
     {
         self::clear('quiqqer/permissions/');
 
@@ -844,7 +850,7 @@ class Manager
      * Clears the packages cache
      * - /quiqqer/packages/
      */
-    public static function clearPackagesCache()
+    public static function clearPackagesCache(): void
     {
         self::clear('quiqqer/packages/');
 
@@ -861,7 +867,7 @@ class Manager
      *
      * @param string $packageName - Name of the package
      */
-    public static function clearPackageCache($packageName)
+    public static function clearPackageCache(string $packageName): void
     {
         self::clear('quiqqer/package/' . $packageName);
 
@@ -877,7 +883,7 @@ class Manager
      * Depending on the size of the cache and the specific drivers in use this can take some time,
      * so it is best called as part of a separate maintenance task or as part of a cron job.
      */
-    public static function purge()
+    public static function purge(): void
     {
         self::$Stash->purge();
 
@@ -891,7 +897,7 @@ class Manager
     /**
      * Clears the entire quiqqer cache.
      */
-    public static function clearAll()
+    public static function clearAll(): void
     {
         if (self::$noClearing) {
             return;
@@ -900,7 +906,7 @@ class Manager
         try {
             QUI::getTemp()->moveToTemp(VAR_DIR . 'cache/');
 
-            self::getStash('')->clear();
+            self::getStash()->clear();
 
             QUI::getEvents()->fireEvent('cacheClearAll');
         } catch (\Exception $Exception) {
@@ -912,7 +918,7 @@ class Manager
 
     /**
      * Returns the size of the /var/cache/ folder in bytes.
-     * By default the value is returned from cache.
+     * By default, the value is returned from cache.
      * If there is no value in cache, null is returned, unless you set the force parameter to true.
      * Only if you really need to get a freshly calculated result, you may set the force parameter to true.
      * When using the force parameter expect timeouts since the calculation could take a lot of time.
@@ -921,7 +927,7 @@ class Manager
      *
      * @return int
      */
-    public static function getCacheFolderSize($force = false)
+    public static function getCacheFolderSize(bool $force = false): int
     {
         $cacheFolder = VAR_DIR . "cache/";
 
@@ -934,7 +940,7 @@ class Manager
      *
      * @return int|null
      */
-    public static function getCacheFolderSizeTimestamp()
+    public static function getCacheFolderSizeTimestamp(): ?int
     {
         $cacheFolder = VAR_DIR . "cache/";
 
@@ -946,7 +952,7 @@ class Manager
     /**
      * clear the complete quiqqer long time cache
      */
-    public static function longTimeCacheClearCompleteQuiqqer()
+    public static function longTimeCacheClearCompleteQuiqqer(): void
     {
         self::longTimeCacheClear('quiqqer');
 
@@ -967,9 +973,9 @@ class Manager
     /**
      * Clears all or only a given entry from the longtime cache.
      *
-     * @param string|boolean $key - optional; if no key is given the whole cache is cleared
+     * @param boolean|string $key - optional; if no key is given the whole cache is cleared
      */
-    public static function longTimeCacheClear($key = "")
+    public static function longTimeCacheClear(bool|string $key = ""): void
     {
         if (self::$noClearing) {
             return;
