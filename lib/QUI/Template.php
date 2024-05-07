@@ -7,6 +7,7 @@
 namespace QUI;
 
 use QUI;
+use QUI\Interfaces\Template\EngineInterface;
 use QUI\Projects\Project;
 use QUI\Utils\Security\Orthos;
 
@@ -348,7 +349,7 @@ class Template extends QUI\QDOM
      * if $admin=true, admin template plugins were loaded
      *
      * @param bool $admin - (optional) is the template for the admin or frontend? <- param deprecated
-     * @return QUI\Interfaces\Template\EngineInterface
+     * @return EngineInterface
      */
     public function getEngine(bool $admin = false): Interfaces\Template\EngineInterface
     {
@@ -362,11 +363,11 @@ class Template extends QUI\QDOM
             $engine = $this->checkSmarty4Engine($engine);
         }
 
-        /* @var $Engine QUI\Interfaces\Template\EngineInterface */
+        /* @var $Engine EngineInterface */
         $Engine = new $this->engines[$engine]($admin);
         $implements = class_implements($Engine);
 
-        if (!isset($implements['QUI\Interfaces\Template\EngineInterface'])) {
+        if (!isset($implements[EngineInterface::class])) {
             QUI\System\Log::addError(
                 'The Template Engine implements not from QUI\Interfaces\Template\EngineInterface'
             );
@@ -996,7 +997,7 @@ class Template extends QUI\QDOM
     {
         /* @var $Project QUI\Projects\Project */
         /* @var $Site QUI\Projects\Site */
-        /* @var $Engine QUI\Interfaces\Template\EngineInterface */
+        /* @var $Engine EngineInterface */
 
         if (is_array($params)) {
             $this->setAttributes($params);

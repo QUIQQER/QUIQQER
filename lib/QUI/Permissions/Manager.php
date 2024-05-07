@@ -1731,13 +1731,13 @@ class Manager
 
         // group permissions
         if ($ruleset) {
-            if (is_string($ruleset) && method_exists('QUI\Permissions\PermissionOrder', $ruleset)) {
-                $result = QUI\Permissions\PermissionOrder::$ruleset($permission, $usersAndGroups);
+            if (is_string($ruleset) && method_exists(PermissionOrder::class, $ruleset)) {
+                $result = PermissionOrder::$ruleset($permission, $usersAndGroups);
             } else {
                 throw new QUI\Exception('Unknown ruleset [getUserPermission]');
             }
         } else {
-            $result = QUI\Permissions\PermissionOrder::permission($permission, $usersAndGroups);
+            $result = PermissionOrder::permission($permission, $usersAndGroups);
         }
 
         return $result;

@@ -98,8 +98,8 @@ class Session
         }
 
         // symfony files
-        $classNativeSessionStorage = '\Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage';
-        $classSession = '\Symfony\Component\HttpFoundation\Session\Session';
+        $classNativeSessionStorage = NativeSessionStorage::class;
+        $classSession = \Symfony\Component\HttpFoundation\Session\Session::class;
         $symfonyDir = OPT_DIR . 'symfony/http-foundation/';
 
         // options

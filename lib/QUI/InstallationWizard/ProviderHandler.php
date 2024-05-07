@@ -79,7 +79,7 @@ class ProviderHandler
 
                 $interfaces = class_implements($provider);
 
-                if (isset($interfaces['QUI\InstallationWizard\InstallationWizardInterface'])) {
+                if (isset($interfaces[InstallationWizardInterface::class])) {
                     $provider = trim($provider, '\\');
                     $providerList[] = new $provider();
                 }

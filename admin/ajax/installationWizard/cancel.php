@@ -4,6 +4,7 @@
  * Cancel the setup for the specific providers
  */
 
+use QUI\InstallationWizard\InstallationWizardInterface;
 use QUI\InstallationWizard\ProviderHandler;
 
 QUI::$Ajax->registerFunction(
@@ -18,7 +19,7 @@ QUI::$Ajax->registerFunction(
 
             $interfaces = class_implements($provider);
 
-            if (!isset($interfaces['QUI\InstallationWizard\InstallationWizardInterface'])) {
+            if (!isset($interfaces[InstallationWizardInterface::class])) {
                 continue;
             }
 

@@ -9,6 +9,8 @@
  * @throws \QUI\Exception
  */
 
+use QUI\Control;
+
 QUI::$Ajax->registerFunction(
     'ajax_controls_get',
     function ($control, $params = false) {
@@ -27,7 +29,7 @@ QUI::$Ajax->registerFunction(
             );
         }
 
-        if (!is_subclass_of($Control, '\QUI\Control')) {
+        if (!is_subclass_of($Control, Control::class)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'control.not.found'),
                 404

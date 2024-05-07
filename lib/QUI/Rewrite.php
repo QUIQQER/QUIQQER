@@ -475,7 +475,7 @@ class Rewrite
                 exit;
             }
 
-            if ($Item->getType() === 'QUI\\Projects\\Media\\Image') {
+            if ($Item->getType() === Image::class) {
                 /* @var $Item Image */
                 if (empty($width)) {
                     $width = false;

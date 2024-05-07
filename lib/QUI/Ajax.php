@@ -287,7 +287,7 @@ class Ajax extends QUI\QDOM
 
         switch ($class) {
             case 'PDOException':
-            case 'QUI\\Database\\Exception':
+            case \QUI\Database\Exception::class:
                 // DB Fehler immer loggen
                 if ($this->getAttribute('db_errors')) {
                     $return['ExceptionDBError']['message'] = $Exception->getMessage();
@@ -305,7 +305,7 @@ class Ajax extends QUI\QDOM
                 }
                 break;
 
-            case 'QUI\\ExceptionStack':
+            case ExceptionStack::class:
                 /* @var $Exception ExceptionStack */
                 $list = $Exception->getExceptionList();
 
@@ -332,8 +332,8 @@ class Ajax extends QUI\QDOM
 
                 break;
 
-            case 'QUI\\Exception':
-            case 'QUI\\Users\\Exception':
+            case \QUI\Exception::class:
+            case \QUI\Users\Exception::class:
                 $return['Exception']['message'] = $Exception->getMessage();
                 $return['Exception']['code'] = $Exception->getCode();
                 $return['Exception']['type'] = $Exception->getType();
@@ -354,7 +354,7 @@ class Ajax extends QUI\QDOM
         if ($Exception instanceof QUI\Users\UserAuthException) {
             // do nothing
             // UserAuthException writes its own log (auth.log)
-        } elseif ($class === 'QUI\\Permissions\\Exception') {
+        } elseif ($class === \QUI\Permissions\Exception::class) {
             QUI\System\Log::addInfo($Exception->getMessage());
         } else {
             QUI\System\Log::writeDebugException($Exception);

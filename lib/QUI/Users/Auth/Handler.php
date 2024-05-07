@@ -198,7 +198,7 @@ class Handler
 
                 $interfaces = class_implements($provider);
 
-                if (isset($interfaces['QUI\Users\AuthenticatorInterface'])) {
+                if (isset($interfaces[AuthenticatorInterface::class])) {
                     $authList[] = trim($provider, '\\');
                 }
             } catch (\Exception $Exception) {

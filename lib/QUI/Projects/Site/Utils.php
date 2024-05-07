@@ -594,9 +594,9 @@ class Utils
     public static function isSiteObject(QUI\Interfaces\Projects\Site $Site): bool
     {
         switch ($Site::class) {
-            case 'QUI\\Projects\\Site':
-            case 'QUI\\Projects\\Site\\Edit':
-            case 'QUI\\Projects\\Site\\OnlyDB':
+            case \QUI\Projects\Site::class:
+            case \QUI\Projects\Site\Edit::class:
+            case \QUI\Projects\Site\OnlyDB::class:
                 break;
 
             default:

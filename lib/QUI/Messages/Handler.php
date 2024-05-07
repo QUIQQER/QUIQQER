@@ -117,25 +117,25 @@ class Handler
             $str = $entry['message'];
 
             switch ($entry['mtype']) {
-                case 'QUI\\Messages\\Attention':
+                case Attention::class:
                     $Message = new Attention([
                         'message' => $str
                     ]);
                     break;
 
-                case 'QUI\\Messages\\Error':
+                case Error::class:
                     $Message = new Error([
                         'message' => $str
                     ]);
                     break;
 
-                case 'QUI\\Messages\\Information':
+                case Information::class:
                     $Message = new Information([
                         'message' => $str
                     ]);
                     break;
 
-                case 'QUI\\Messages\\Success':
+                case Success::class:
                     $Message = new Success([
                         'message' => $str
                     ]);

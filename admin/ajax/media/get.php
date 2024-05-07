@@ -9,6 +9,8 @@
  * @return array
  */
 
+use QUI\Projects\Media\Folder;
+
 QUI::$Ajax->registerFunction(
     'ajax_media_get',
     function ($project, $fileid) {
@@ -21,7 +23,7 @@ QUI::$Ajax->registerFunction(
         $children = [];
         $_children = [];
 
-        if ($File->getType() === 'QUI\\Projects\\Media\\Folder') {
+        if ($File->getType() === Folder::class) {
             $_children = $File->getChildren();
         }
 

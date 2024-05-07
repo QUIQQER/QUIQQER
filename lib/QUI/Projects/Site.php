@@ -60,7 +60,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Edit site
      *
-     * @var ?QUI\Projects\Site\Edit
+     * @var ?Edit
      */
     protected ?Site\Edit $Edit = null;
     /**
@@ -551,8 +551,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getEdit(): ?Site\Edit
     {
-        if ($this::class == 'QUI\Projects\Site\Edit') {
-            /* @var QUI\Projects\Site\Edit $this */
+        if ($this::class == Edit::class) {
+            /* @var Edit $this */
             return $this;
         }
 
@@ -1378,7 +1378,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         foreach ($children as $childId) {
             try {
-                $Edit = new QUI\Projects\Site\Edit($Project, $childId);
+                $Edit = new Edit($Project, $childId);
 
                 if (!$Edit->isLinked()) {
                     continue;

@@ -1,5 +1,6 @@
 <?php
 
+use QUI\InstallationWizard\InstallationWizardInterface;
 use QUI\InstallationWizard\ProviderHandler;
 use QUI\System\Log;
 
@@ -75,7 +76,7 @@ $data = json_decode($data, true);
 
 $interfaces = class_implements($provider);
 
-if (!isset($interfaces['QUI\InstallationWizard\InstallationWizardInterface'])) {
+if (!isset($interfaces[InstallationWizardInterface::class])) {
     // @todo window parent close frame and show error
     exit;
 }

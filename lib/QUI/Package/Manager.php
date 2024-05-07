@@ -1864,7 +1864,7 @@ class Manager extends QUI\QDOM
             throw $Exception;
         }
 
-        if (class_exists('QUI\Cron\Update')) {
+        if (class_exists(\QUI\Cron\Update::class)) {
             QUI\Cron\Update::setAvailableUpdates($output);
         }
 
