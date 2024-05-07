@@ -54,10 +54,9 @@ QUI::$Ajax->registerFunction(
         }
 
         if (!$ExceptionStack->isEmpty()) {
-            $message = array_map(function ($Exception) {
+            $message = array_map(fn($Exception) =>
                 /* @var $Exception QUI\Exception */
-                return $Exception->getMessage();
-            }, $ExceptionStack->getExceptionList());
+                $Exception->getMessage(), $ExceptionStack->getExceptionList());
 
             QUI::getMessagesHandler()->addAttention(
                 implode("<br>", $message)

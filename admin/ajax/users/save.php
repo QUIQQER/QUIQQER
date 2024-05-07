@@ -24,9 +24,7 @@ QUI::$Ajax->registerFunction(
             return false;
         });
 
-        $noAutoSave = array_map(function ($attribute) {
-            return $attribute['name'];
-        }, $noAutoSave);
+        $noAutoSave = array_map(fn($attribute) => $attribute['name'], $noAutoSave);
 
         foreach ($attributes as $key => $value) {
             if (!in_array($key, $noAutoSave)) {

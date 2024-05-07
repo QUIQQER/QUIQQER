@@ -11,12 +11,10 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_site_clear',
-    function ($project, $name) {
-        return QUI\Projects\Site\Utils::clearUrl(
-            $name,
-            QUI::getProjectManager()->decode($project)
-        );
-    },
+    fn($project, $name) => QUI\Projects\Site\Utils::clearUrl(
+        $name,
+        QUI::getProjectManager()->decode($project)
+    ),
     ['project', 'name'],
     'Permission::checkAdminUser'
 );

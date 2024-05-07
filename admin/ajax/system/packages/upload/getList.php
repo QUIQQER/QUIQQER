@@ -8,9 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_upload_getList',
-    function () {
-        return QUI\Package\LocalServer::getInstance()->getPackageList();
-    },
+    fn() => QUI\Package\LocalServer::getInstance()->getPackageList(),
     false,
     [
         'Permission::checkAdminUser',

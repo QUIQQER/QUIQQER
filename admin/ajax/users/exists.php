@@ -10,9 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_exists',
-    function ($username) {
-        return QUI::getUsers()->usernameExists($username);
-    },
+    fn($username) => QUI::getUsers()->usernameExists($username),
     ['username'],
     'Permission::checkUser'
 );

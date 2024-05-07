@@ -9,9 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_list',
-    function () {
-        return QUI::getPackageManager()->getInstalled();
-    },
+    fn() => QUI::getPackageManager()->getInstalled(),
     false,
     [
         'Permission::checkAdminUser',

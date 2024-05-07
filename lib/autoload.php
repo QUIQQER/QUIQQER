@@ -35,9 +35,7 @@ if (QUI\Autoloader::shouldOtherAutoloadersBeUnregistered()) {
 
 QUI\Autoloader::init();
 
-spl_autoload_register(function ($className) {
-    return QUI\Autoloader::load($className);
-});
+spl_autoload_register(fn($className) => QUI\Autoloader::load($className));
 
 /**
  * Error Handler

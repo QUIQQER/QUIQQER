@@ -10,9 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_editor_get_toolbars',
-    function () {
-        return QUI\Editor\Manager::getToolbars();
-    },
+    fn() => QUI\Editor\Manager::getToolbars(),
     false,
     'Permission::checkSU'
 );

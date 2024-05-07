@@ -8,9 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_readLocalRepository',
-    function () {
-        return QUI::getPackageManager()->readLocalRepository();
-    },
+    fn() => QUI::getPackageManager()->readLocalRepository(),
     false,
     [
         'Permission::checkAdminUser',

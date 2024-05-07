@@ -11,9 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_search',
-    function ($search) {
-        return QUI::getPackageManager()->searchNewPackages($search);
-    },
+    fn($search) => QUI::getPackageManager()->searchNewPackages($search),
     ['search'],
     [
         'Permission::checkAdminUser',

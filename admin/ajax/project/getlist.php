@@ -8,9 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_getlist',
-    function () {
-        return QUI\Projects\Manager::getConfig()->toArray();
-    },
+    fn() => QUI\Projects\Manager::getConfig()->toArray(),
     false,
     'Permission::checkAdminUser'
 );

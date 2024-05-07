@@ -9,11 +9,9 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_getLock',
-    function ($package) {
-        return QUI::getPackageManager()
-            ->getInstalledPackage($package)
-            ->getLock();
-    },
+    fn($package) => QUI::getPackageManager()
+        ->getInstalledPackage($package)
+        ->getLock(),
     ['package'],
     [
         'Permission::checkAdminUser',

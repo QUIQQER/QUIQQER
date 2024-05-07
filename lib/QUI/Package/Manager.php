@@ -334,9 +334,7 @@ class Manager extends QUI\QDOM
         $data = file_get_contents($this->composer_lock);
         $data = json_decode($data, true);
 
-        $package = array_filter($data['packages'], function ($package) {
-            return $package['name'] === 'quiqqer/quiqqer';
-        });
+        $package = array_filter($data['packages'], fn($package) => $package['name'] === 'quiqqer/quiqqer');
 
         $package = current($package);
         $this->version = $package['version'];
@@ -362,9 +360,7 @@ class Manager extends QUI\QDOM
         $data = file_get_contents($this->composer_lock);
         $data = json_decode($data, true);
 
-        $package = array_filter($data['packages'], function ($package) {
-            return $package['name'] === 'quiqqer/quiqqer';
-        });
+        $package = array_filter($data['packages'], fn($package) => $package['name'] === 'quiqqer/quiqqer');
 
         $package = current($package);
 
@@ -389,9 +385,7 @@ class Manager extends QUI\QDOM
 
         $packageName = $Package->getName();
 
-        $package = array_filter($data['packages'], function ($package) use ($packageName) {
-            return $package['name'] === $packageName;
-        });
+        $package = array_filter($data['packages'], fn($package) => $package['name'] === $packageName);
 
         if (empty($package)) {
             return [];
@@ -1619,9 +1613,7 @@ class Manager extends QUI\QDOM
         $result = [];
         $packages = $this->searchPackages($search);
 
-        $installed = array_map(function ($entry) {
-            return $entry['name'];
-        }, $this->getList());
+        $installed = array_map(fn($entry) => $entry['name'], $this->getList());
 
         $installed = array_flip($installed);
 
@@ -1833,9 +1825,7 @@ class Manager extends QUI\QDOM
                 $result = json_decode($result[0]['result'], true);
 
                 if (!empty($result)) {
-                    usort($result, function ($a, $b) {
-                        return strcmp($a["package"], $b["package"]);
-                    });
+                    usort($result, fn($a, $b) => strcmp($a["package"], $b["package"]));
 
                     return $result;
                 }
@@ -1847,9 +1837,7 @@ class Manager extends QUI\QDOM
         try {
             $output = $this->getOutdatedPackages();
 
-            usort($output, function ($a, $b) {
-                return strcmp($a["package"], $b["package"]);
-            });
+            usort($output, fn($a, $b) => strcmp($a["package"], $b["package"]));
 
             QUI::getDataBase()->insert(QUI::getDBTableName('updateChecks'), [
                 'date' => time(),

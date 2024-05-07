@@ -8,9 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_maintenance_status',
-    function () {
-        return QUI::conf('globals', 'maintenance');
-    },
+    fn() => QUI::conf('globals', 'maintenance'),
     false,
     'Permission::checkAdminUser'
 );
