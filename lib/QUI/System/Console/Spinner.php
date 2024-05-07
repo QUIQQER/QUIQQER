@@ -343,7 +343,7 @@ class Spinner
         // Exit both parent and child process
         // They are both running the same code
 
-        $keyboard_interrupts = function ($sigNo) {
+        $keyboard_interrupts = function ($sigNo): never {
             posix_kill($this->childPid, SIGTERM);
             $this->resetTerminal();
             exit($sigNo);

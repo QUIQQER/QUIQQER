@@ -206,7 +206,7 @@ class Nobody extends QUI\QDOM implements User
      * @throws Exception
      * @ignore
      */
-    public function addAddress(array $params)
+    public function addAddress(array $params): never
     {
         throw new Exception(
             QUI::getLocale()->get(
@@ -244,7 +244,7 @@ class Nobody extends QUI\QDOM implements User
      * @param int $groupId
      * @throws Exception
      */
-    public function addToGroup(int $groupId)
+    public function addToGroup(int $groupId): never
     {
         throw new Exception(
             QUI::getLocale()->get(
@@ -260,7 +260,7 @@ class Nobody extends QUI\QDOM implements User
      * @param int|Group $Group
      * @throws Exception
      */
-    public function removeGroup(Group|int $Group)
+    public function removeGroup(Group|int $Group): never
     {
         throw new Exception(
             QUI::getLocale()->get(

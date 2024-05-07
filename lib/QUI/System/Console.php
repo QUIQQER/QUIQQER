@@ -998,7 +998,7 @@ class Console
      *
      * @param string $msg - [optional] extra text
      */
-    public function help(string $msg = '')
+    public function help(string $msg = ''): never
     {
         $this->clearMsg();
         $this->getArguments();
