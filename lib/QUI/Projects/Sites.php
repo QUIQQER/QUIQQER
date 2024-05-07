@@ -448,13 +448,11 @@ class Sites
         // projekt
         if (!empty($params['Project'])) {
             $projects[] = $params['Project'];
+        } elseif (!empty($params['project'])) {
+            $projects[] = QUI::getProject($params['project']);
         } else {
-            if (!empty($params['project'])) {
-                $projects[] = QUI::getProject($params['project']);
-            } else {
-                // search all projects
-                $projects = QUI::getProjectManager()->getProjects(true);
-            }
+            // search all projects
+            $projects = QUI::getProjectManager()->getProjects(true);
         }
 
         // limits

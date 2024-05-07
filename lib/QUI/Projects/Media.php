@@ -270,15 +270,13 @@ class Media extends QUI\QDOM
                 'c_user' => QUI::getUserBySession()->getUUID(),
                 'type' => 'folder'
             ]);
-        } else {
+        } elseif ($firstChildResult[0]['type'] != 'folder') {
             // check if id 1 is a folder, id 1 MUST BE a folder
-            if ($firstChildResult[0]['type'] != 'folder') {
-                $DataBase->update(
-                    $table,
-                    ['type' => 'folder'],
-                    ['id' => 1]
-                );
-            }
+            $DataBase->update(
+                $table,
+                ['type' => 'folder'],
+                ['id' => 1]
+            );
         }
 
         // Media Relations

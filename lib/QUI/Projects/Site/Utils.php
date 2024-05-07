@@ -747,12 +747,10 @@ class Utils
 
         if (is_string($list)) {
             $sitetypes = explode(';', $list);
+        } elseif (is_array($list)) {
+            $sitetypes = $list;
         } else {
-            if (is_array($list)) {
-                $sitetypes = $list;
-            } else {
-                return [];
-            }
+            return [];
         }
 
         $ids = [];

@@ -361,14 +361,12 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             } else {
                 $tempParams = $this->getResizeSize(false, $params['height']);
             }
+        } elseif (!($params['width'] % 8 === 0)) {
+            $tempParams = $this->getResizeSize(
+                QUI\Utils\Math::ceilUp($params['width'], 16)
+            );
         } else {
-            if (!($params['width'] % 8 === 0)) {
-                $tempParams = $this->getResizeSize(
-                    QUI\Utils\Math::ceilUp($params['width'], 16)
-                );
-            } else {
-                $tempParams = $this->getResizeSize($params['width']);
-            }
+            $tempParams = $this->getResizeSize($params['width']);
         }
 
         $height = $tempParams['height'];

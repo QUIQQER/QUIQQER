@@ -48,16 +48,12 @@ QUI::$Ajax->registerFunction(
                     // Decide orientation
                     if ($exif['Orientation'] == 3) {
                         $rotation = 180;
+                    } elseif ($exif['Orientation'] == 6) {
+                        $rotation = -90;
+                    } elseif ($exif['Orientation'] == 8) {
+                        $rotation = 90;
                     } else {
-                        if ($exif['Orientation'] == 6) {
-                            $rotation = -90;
-                        } else {
-                            if ($exif['Orientation'] == 8) {
-                                $rotation = 90;
-                            } else {
-                                $rotation = 0;
-                            }
-                        }
+                        $rotation = 0;
                     }
 
                     // Rotate the image

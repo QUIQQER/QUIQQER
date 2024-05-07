@@ -96,59 +96,52 @@ class Search
 
             if ($count) {
                 $searchResult['users'] = $resultUsers;
-            } else {
-                if (!empty($resultUsers)) {
-                    $selectFieldsAvailable = [
-                        'username' => true,
-                        'usergroup' => true,
-                        'email' => true,
-                        'active' => true,
-                        'regdate' => true,
-                        'su' => true,
-                        'expire' => true,
-                        'lastedit' => true,
-                        'firstname' => true,
-                        'lastname' => true,
-                        'usertitle' => true,
-                        'birthday' => true,
-                        'avatar' => true,
-                        'lang' => true,
-                        'company' => true
-                    ];
-
-                    $selectFields = [];
-
-                    if (
-                        !empty($searchParams['users']['select'])
-                        && is_array($searchParams['users']['select'])
-                    ) {
-                        foreach ($searchParams['users']['select'] as $field => $select) {
-                            if (isset($selectFieldsAvailable[$field]) && $select) {
-                                $selectFields[] = $field;
-                            }
+            } elseif (!empty($resultUsers)) {
+                $selectFieldsAvailable = [
+                    'username' => true,
+                    'usergroup' => true,
+                    'email' => true,
+                    'active' => true,
+                    'regdate' => true,
+                    'su' => true,
+                    'expire' => true,
+                    'lastedit' => true,
+                    'firstname' => true,
+                    'lastname' => true,
+                    'usertitle' => true,
+                    'birthday' => true,
+                    'avatar' => true,
+                    'lang' => true,
+                    'company' => true
+                ];
+                $selectFields = [];
+                if (
+                    !empty($searchParams['users']['select'])
+                    && is_array($searchParams['users']['select'])
+                ) {
+                    foreach ($searchParams['users']['select'] as $field => $select) {
+                        if (isset($selectFieldsAvailable[$field]) && $select) {
+                            $selectFields[] = $field;
                         }
                     }
-
-                    // always get id
-                    $selectFields[] = 'uuid';
-
-                    $result = QUI::getDataBase()->fetch([
-                        'select' => $selectFields,
-                        'from' => QUI\Users\Manager::table(),
-                        'where' => [
-                            'uuid' => [
-                                'type' => 'IN',
-                                'value' => $resultUsers
-                            ]
+                }
+                // always get id
+                $selectFields[] = 'uuid';
+                $result = QUI::getDataBase()->fetch([
+                    'select' => $selectFields,
+                    'from' => QUI\Users\Manager::table(),
+                    'where' => [
+                        'uuid' => [
+                            'type' => 'IN',
+                            'value' => $resultUsers
                         ]
-                    ]);
+                    ]
+                ]);
+                foreach ($result as $row) {
+                    $row['type'] = 'user';
+                    $row['id'] = $row['uuid'];
 
-                    foreach ($result as $row) {
-                        $row['type'] = 'user';
-                        $row['id'] = $row['uuid'];
-
-                        $searchResult['users'][] = $row;
-                    }
+                    $searchResult['users'][] = $row;
                 }
             }
         }
@@ -165,47 +158,40 @@ class Search
 
             if ($count) {
                 $searchResult['groups'] = $resultGroups;
-            } else {
-                if (!empty($resultGroups)) {
-                    $selectFieldsAvailable = [
-                        'name' => true,
-                        'parent' => true,
-                        'active' => true
-                    ];
-
-                    $selectFields = [];
-
-                    if (
-                        !empty($searchParams['groups']['select'])
-                        && is_array($searchParams['groups']['select'])
-                    ) {
-                        foreach ($searchParams['groups']['select'] as $field => $select) {
-                            if (isset($selectFieldsAvailable[$field]) && $select) {
-                                $selectFields[] = $field;
-                            }
+            } elseif (!empty($resultGroups)) {
+                $selectFieldsAvailable = [
+                    'name' => true,
+                    'parent' => true,
+                    'active' => true
+                ];
+                $selectFields = [];
+                if (
+                    !empty($searchParams['groups']['select'])
+                    && is_array($searchParams['groups']['select'])
+                ) {
+                    foreach ($searchParams['groups']['select'] as $field => $select) {
+                        if (isset($selectFieldsAvailable[$field]) && $select) {
+                            $selectFields[] = $field;
                         }
                     }
-
-                    // always get id
-                    $selectFields[] = 'uuid';
-
-                    $result = QUI::getDataBase()->fetch([
-                        'select' => $selectFields,
-                        'from' => QUI\Groups\Manager::table(),
-                        'where' => [
-                            'uuid' => [
-                                'type' => 'IN',
-                                'value' => $resultGroups
-                            ]
+                }
+                // always get id
+                $selectFields[] = 'uuid';
+                $result = QUI::getDataBase()->fetch([
+                    'select' => $selectFields,
+                    'from' => QUI\Groups\Manager::table(),
+                    'where' => [
+                        'uuid' => [
+                            'type' => 'IN',
+                            'value' => $resultGroups
                         ]
-                    ]);
+                    ]
+                ]);
+                foreach ($result as $row) {
+                    $row['type'] = 'group';
+                    $row['id'] = $row['uuid'];
 
-                    foreach ($result as $row) {
-                        $row['type'] = 'group';
-                        $row['id'] = $row['uuid'];
-
-                        $searchResult['groups'][] = $row;
-                    }
+                    $searchResult['groups'][] = $row;
                 }
             }
         }
@@ -359,10 +345,8 @@ class Search
 
         if (!empty($searchParams['limit']) && !$count) {
             $sql .= " LIMIT " . $searchParams['limit'];
-        } else {
-            if (!$count) {
-                $sql .= " LIMIT " . self::DEFAULT_LIMIT_USERS;
-            }
+        } elseif (!$count) {
+            $sql .= " LIMIT " . self::DEFAULT_LIMIT_USERS;
         }
 
         $PDO = QUI::getDataBase()->getPDO();
@@ -504,10 +488,8 @@ class Search
 
         if (!empty($searchParams['limit']) && !$count) {
             $sql .= " LIMIT " . $searchParams['limit'];
-        } else {
-            if (!$count) {
-                $sql .= " LIMIT " . self::DEFAULT_LIMIT_GROUPS;
-            }
+        } elseif (!$count) {
+            $sql .= " LIMIT " . self::DEFAULT_LIMIT_GROUPS;
         }
 
         $PDO = QUI::getDataBase()->getPDO();

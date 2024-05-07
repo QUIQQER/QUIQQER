@@ -53,10 +53,8 @@ class LocaleRuntimeCache
             if (isset(self::$languages[$lang][$group])) {
                 return self::$languages[$lang][$group];
             }
-        } else {
-            if (isset(self::$languages[$lang][$group][$value])) {
-                return self::$languages[$lang][$group][$value];
-            }
+        } elseif (isset(self::$languages[$lang][$group][$value])) {
+            return self::$languages[$lang][$group][$value];
         }
 
         return null;

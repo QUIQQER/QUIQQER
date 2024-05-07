@@ -26,18 +26,15 @@ QUI::$Ajax->registerFunction(
             foreach ($matches as $match) {
                 if (strlen($match[1])) {
                     $phpinfo[$match[1]] = [];
+                } elseif (isset($match[3])) {
+                    $keys = array_keys($phpinfo);
+                    $end = end($keys);
+                    $phpinfo[$end][$match[2]] = isset($match[4]) ? [$match[3], $match[4]] : $match[3];
                 } else {
-                    if (isset($match[3])) {
-                        $keys = array_keys($phpinfo);
-                        $end = end($keys);
+                    $keys = array_keys($phpinfo);
+                    $end = end($keys);
 
-                        $phpinfo[$end][$match[2]] = isset($match[4]) ? [$match[3], $match[4]] : $match[3];
-                    } else {
-                        $keys = array_keys($phpinfo);
-                        $end = end($keys);
-
-                        $phpinfo[$end][] = $match[2];
-                    }
+                    $phpinfo[$end][] = $match[2];
                 }
             }
         }

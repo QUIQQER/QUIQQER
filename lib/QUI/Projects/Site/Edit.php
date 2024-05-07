@@ -727,25 +727,19 @@ class Edit extends Site
         $release_from = '';
         $release_to = '';
 
-        if (
-            $this->getAttribute('release_from')
-            && $this->getAttribute('release_from') != '0000-00-00 00:00:00'
-        ) {
+        if ($this->getAttribute('release_from') && $this->getAttribute('release_from') != '0000-00-00 00:00:00') {
             $rf = strtotime($this->getAttribute('release_from'));
-
             if ($rf) {
                 $release_from = date('Y-m-d H:i:s', $rf);
             }
-        } else {
-            if ($this->getAttribute('active')) {
-                // nur bei aktiven seiten das e_date setzen
-                // wenn der cron läuft, darf eine inaktive seite nicht sofort aktiviert werden
-                // daher werden nur aktive seite beachten
-                $release_from = date(
-                    'Y-m-d H:i:s',
-                    strtotime(date('Y-m-d H:i:s'))
-                );
-            }
+        } elseif ($this->getAttribute('active')) {
+            // nur bei aktiven seiten das e_date setzen
+            // wenn der cron läuft, darf eine inaktive seite nicht sofort aktiviert werden
+            // daher werden nur aktive seite beachten
+            $release_from = date(
+                'Y-m-d H:i:s',
+                strtotime(date('Y-m-d H:i:s'))
+            );
         }
 
         if ($this->getAttribute('release_to')) {

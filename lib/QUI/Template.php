@@ -594,10 +594,8 @@ class Template extends QUI\QDOM
         // scripts file (index.php)
         if (file_exists($project_index)) {
             include $project_index;
-        } else {
-            if ($template_index && file_exists($template_index)) {
-                include $template_index;
-            }
+        } elseif ($template_index && file_exists($template_index)) {
+            include $template_index;
         }
 
 
