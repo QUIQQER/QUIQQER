@@ -78,10 +78,8 @@ class Site
                     continue;
                 }
 
-                if ($currentType === $siteType['type']) {
-                    if (!empty($siteType['childrenType'])) {
-                        return $siteType['childrenType'];
-                    }
+                if ($currentType === $siteType['type'] && !empty($siteType['childrenType'])) {
+                    return $siteType['childrenType'];
                 }
             }
         }
@@ -109,10 +107,8 @@ class Site
                     continue;
                 }
 
-                if ($currentType === $siteType['type']) {
-                    if (isset($siteType['childrenNavHide'])) {
-                        return (int)$siteType['childrenNavHide'];
-                    }
+                if ($currentType === $siteType['type'] && isset($siteType['childrenNavHide'])) {
+                    return (int)$siteType['childrenNavHide'];
                 }
             }
         }

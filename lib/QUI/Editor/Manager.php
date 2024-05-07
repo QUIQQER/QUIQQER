@@ -711,10 +711,8 @@ class Manager
             return [];
         }
 
-        if (str_contains($toolbar, '.xml')) {
-            if (file_exists($toolbarPath . $toolbar)) {
-                return self::parseXmlFileToArray($toolbarPath . $toolbar);
-            }
+        if (str_contains($toolbar, '.xml') && file_exists($toolbarPath . $toolbar)) {
+            return self::parseXmlFileToArray($toolbarPath . $toolbar);
         }
 
         return explode(',', $Config->get('toolbars', 'standard'));

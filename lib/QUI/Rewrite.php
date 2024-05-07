@@ -875,10 +875,8 @@ class Rewrite
         }
 
         // ajax?
-        if (defined('QUIQQER_AJAX') && QUIQQER_AJAX) {
-            if (isset($_REQUEST['lang'])) {
-                $this->lang = $_REQUEST['lang'];
-            }
+        if (defined('QUIQQER_AJAX') && QUIQQER_AJAX && isset($_REQUEST['lang'])) {
+            $this->lang = $_REQUEST['lang'];
         }
 
         // Vhosts
@@ -1281,10 +1279,8 @@ class Rewrite
             return [];
         }
 
-        if ($start) {
-            if ($path[0]->getId() != 1) {
-                array_unshift($path, $this->first_child);
-            }
+        if ($start && $path[0]->getId() != 1) {
+            array_unshift($path, $this->first_child);
         }
 
         return $path;

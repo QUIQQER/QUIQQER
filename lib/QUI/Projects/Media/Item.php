@@ -996,10 +996,8 @@ abstract class Item extends QUI\QDOM
     public function save(QUI\Interfaces\Users\User $PermissionUser = null): void
     {
         // permission check
-        if (Media::useMediaPermissions()) {
-            if (method_exists($this, 'deleteCache')) {
-                $this->deleteCache();
-            }
+        if (Media::useMediaPermissions() && method_exists($this, 'deleteCache')) {
+            $this->deleteCache();
         }
 
         $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);

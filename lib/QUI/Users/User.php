@@ -1506,10 +1506,8 @@ class User implements QUIUserInterface
         }
 
 
-        if ($this->getAttribute('currency')) {
-            if (Currencies::existCurrency($this->getAttribute('currency'))) {
-                return $this->getAttribute('currency');
-            }
+        if ($this->getAttribute('currency') && Currencies::existCurrency($this->getAttribute('currency'))) {
+            return $this->getAttribute('currency');
         }
 
         $Country = $this->getCountry();

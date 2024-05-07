@@ -118,10 +118,8 @@ class Menu
             $Extras = $Menu->getElementByName('extras');
             $Rights = $Extras->getElementByName('rights');
 
-            if (!$canSeeGroups) {
-                if ($Rights) {
-                    $Rights->removeChild('groups');
-                }
+            if (!$canSeeGroups && $Rights) {
+                $Rights->removeChild('groups');
             }
 
             if (!$canSeeUsers) {
