@@ -77,13 +77,13 @@ class PermissionDenied extends QUI\Projects\Site
             $User = QUI::getUserBySession();
 
             // eingeloggt, aber keine permission -> hinweis
-            $message = QUI::getLocale()->get('quiqqer/quiqqer', 'site.permission.denied.for.logged.in.users.message', [
+            $message = QUI::getLocale()->get('quiqqer/core', 'site.permission.denied.for.logged.in.users.message', [
                 'username' => $User->getUsername(),
                 'name' => $User->getName()
             ]);
 
             $button = '<a href="?logout=1" class="btn qui-button">' .
-                QUI::getLocale()->get('quiqqer/quiqqer', 'logout') .
+                QUI::getLocale()->get('quiqqer/core', 'logout') .
                 '</a>';
 
             $this->setAttribute(

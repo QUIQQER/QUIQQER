@@ -23,7 +23,7 @@ class QuiqqerProvider extends AbstractInstallationWizard
             $Locale = QUI::getLocale();
         }
 
-        return $Locale->get('quiqqer/quiqqer', 'set.up.title');
+        return $Locale->get('quiqqer/core', 'set.up.title');
     }
 
     /**
@@ -36,7 +36,7 @@ class QuiqqerProvider extends AbstractInstallationWizard
             $Locale = QUI::getLocale();
         }
 
-        return $Locale->get('quiqqer/quiqqer', 'set.up.description');
+        return $Locale->get('quiqqer/core', 'set.up.description');
     }
 
     /**

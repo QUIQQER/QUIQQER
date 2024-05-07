@@ -19,7 +19,7 @@ define('controls/cache/Settings', [
 ], function (QUI, QUIControl, QUIButton, QUIConfirm, Ajax, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
 

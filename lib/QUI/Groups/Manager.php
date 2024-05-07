@@ -130,7 +130,7 @@ class Manager extends QUI\QDOM
         if (!$id) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.qui.manager.no.groupid'
                 )
             );

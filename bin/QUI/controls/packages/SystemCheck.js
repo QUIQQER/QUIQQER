@@ -20,7 +20,7 @@ define('controls/packages/SystemCheck', [
 ], function(QUI, QUIButton, QUIControl, QUIPopup, QUIConfirm, QUILoader, QUIAjax, QUILocale) {
     'use strict';
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     return new Class({
 
@@ -285,7 +285,7 @@ define('controls/packages/SystemCheck', [
 
                     resolve(result);
                 }, {
-                    'package': 'quiqqer/quiqqer',
+                    'package': 'quiqqer/core',
                     packageName: packageName,
                     onError: reject
                 });

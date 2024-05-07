@@ -55,7 +55,7 @@ QUIQQER folgt dem PHP Coding-Standard bis PSR-6 und nutzt für JavaScript JSHINT
 Du möchtest direkt am Core entwickeln? Das finden wir super. Hier handhaben wir die Standards jedoch extrem streng, 
 da dies das Herzstück eines riesigen Ecosystems ist. Wir nehmen gerne Pull Requests an. 
 
-Bitte reiche aber alle Pull Requests unter >> https://dev.quiqqer.com/quiqqer/quiqqer << ein. 
+Bitte reiche aber alle Pull Requests unter >> https://dev.quiqqer.com/quiqqer/core << ein. 
 Pull Requests unter Github werden nicht angenommen.
 
 Falls du nicht weißt, wie du anfangen sollst, helfen wir dir gerne. Schau einfach mal bei uns im Discord vorbei.

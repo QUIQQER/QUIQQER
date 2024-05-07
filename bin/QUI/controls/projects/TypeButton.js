@@ -52,8 +52,8 @@ define('controls/projects/TypeButton', [
             this.$Button = new QUIButton({
                 name  : 'project-types',
                 image : 'fa fa-magic',
-                alt   : Locale.get('quiqqer/quiqqer', 'projects.typebutton.title'),
-                title : Locale.get('quiqqer/quiqqer', 'projects.typebutton.title'),
+                alt   : Locale.get('quiqqer/core', 'projects.typebutton.title'),
+                title : Locale.get('quiqqer/core', 'projects.typebutton.title'),
                 events: {
                     click: function () {
                         new TypeWindow({

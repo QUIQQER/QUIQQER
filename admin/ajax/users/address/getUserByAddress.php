@@ -25,7 +25,7 @@ QUI::$Ajax->registerFunction(
         if (!isset($result[0])) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.user.address.not.found',
                     [
                         'addressId' => $aid

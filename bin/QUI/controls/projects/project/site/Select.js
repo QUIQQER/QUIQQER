@@ -28,7 +28,7 @@ define('controls/projects/project/site/Select', [
              QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
 

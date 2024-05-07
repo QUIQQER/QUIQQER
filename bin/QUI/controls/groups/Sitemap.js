@@ -105,7 +105,7 @@ define('controls/groups/Sitemap', [
                 if (!result) {
                     QUI.getMessageHandler().then(function(MH) {
                         MH.addAttention(
-                            QUILocale.get('quiqqer/quiqqer', 'message.unknown.root.group')
+                            QUILocale.get('quiqqer/core', 'message.unknown.root.group')
                         );
                     });
                     return;

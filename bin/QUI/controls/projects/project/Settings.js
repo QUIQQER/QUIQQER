@@ -35,7 +35,7 @@ define('controls/projects/project/Settings', [
              Translation) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     /**
      * The Project settings panel
@@ -349,8 +349,8 @@ define('controls/projects/project/Settings', [
             return new Promise(function (resolve) {
                 self.$hideBody().then(function () {
                     return Promise.all([
-                        self.$getLocaleData('project/' + self.$Project.getName(), 'template.prefix', 'quiqqer/quiqqer'),
-                        self.$getLocaleData('project/' + self.$Project.getName(), 'template.suffix', 'quiqqer/quiqqer')
+                        self.$getLocaleData('project/' + self.$Project.getName(), 'template.prefix', 'quiqqer/core'),
+                        self.$getLocaleData('project/' + self.$Project.getName(), 'template.suffix', 'quiqqer/core')
                     ]);
                 }).then(function (localeData) {
                     Ajax.get('ajax_project_panel_settings', function (result) {
@@ -381,7 +381,7 @@ define('controls/projects/project/Settings', [
                             'group'  : 'project/' + self.$Project.getName(),
                             'var'    : 'template.prefix',
                             'type'   : 'php,js',
-                            'package': 'quiqqer/quiqqer',
+                            'package': 'quiqqer/core',
                             'data'   : localeData[0]
                         }).inject(
                             Body.getElement('.prefix-settings-container')
@@ -392,7 +392,7 @@ define('controls/projects/project/Settings', [
                             'group'  : 'project/' + self.$Project.getName(),
                             'var'    : 'template.suffix',
                             'type'   : 'php,js',
-                            'package': 'quiqqer/quiqqer',
+                            'package': 'quiqqer/core',
                             'data'   : localeData[1]
                         }).inject(
                             Body.getElement('.suffix-settings-container')
@@ -423,7 +423,7 @@ define('controls/projects/project/Settings', [
                         Template.value = self.$config.template;
 
                         new QUIButton({
-                            text  : Locale.get('quiqqer/quiqqer', 'projects.project.settings.panel.defaultSitestructure.button'),
+                            text  : Locale.get('quiqqer/core', 'projects.project.settings.panel.defaultSitestructure.button'),
                             styles: {
                                 width: '100%'
                             },
@@ -771,7 +771,7 @@ define('controls/projects/project/Settings', [
             var self = this;
 
             var defaultButtonText = Locale.get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'projects.project.settings.panel.defaultSitestructure.button'
             );
 
@@ -782,9 +782,9 @@ define('controls/projects/project/Settings', [
             new QUIConfirm({
                 icon       : 'fa fa-sitemap',
                 texticon   : 'fa fa-sitemap',
-                title      : Locale.get('quiqqer/quiqqer', 'projects.project.settings.panel.defaultSitestructure.win.title'),
-                text       : Locale.get('quiqqer/quiqqer', 'projects.project.settings.panel.defaultSitestructure.win.text'),
-                information: Locale.get('quiqqer/quiqqer', 'projects.project.settings.panel.defaultSitestructure.win.information'),
+                title      : Locale.get('quiqqer/core', 'projects.project.settings.panel.defaultSitestructure.win.title'),
+                text       : Locale.get('quiqqer/core', 'projects.project.settings.panel.defaultSitestructure.win.text'),
+                information: Locale.get('quiqqer/core', 'projects.project.settings.panel.defaultSitestructure.win.information'),
                 maxHeight  : 300,
                 maxWidth   : 600,
                 autoclose  : false,

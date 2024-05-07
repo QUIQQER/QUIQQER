@@ -13,13 +13,13 @@
 
     {if $showPasswordReset}
     <span class="quiqqer-auth-login-passwordreset-link">
-        {locale group="quiqqer/quiqqer" var="quiqqer.auth.login.password_reset"}
+        {locale group="quiqqer/core" var="quiqqer.auth.login.password_reset"}
     </span>
     {/if}
 
     <input type="hidden" value="1" name="login"/>
     <button type="submit" value="Login" class="login qui-button btn-green">
-        <span>{locale group="quiqqer/quiqqer" var="quiqqer.auth.login.btn_text"}</span>
+        <span>{locale group="quiqqer/core" var="quiqqer.auth.login.btn_text"}</span>
     </button>
 </div>
 
@@ -27,21 +27,21 @@
 
 <div class="quiqqer-auth-login-passwordreset" style="display: none;">
     <p class="fs-sm message">
-        {locale group="quiqqer/quiqqer" var="quiqqer.auth.login.password.message"}
+        {locale group="quiqqer/core" var="quiqqer.auth.login.password.message"}
     </p>
     <label>
         <span>
-            {locale group="quiqqer/quiqqer" var="quiqqer.auth.login.label.email"}
+            {locale group="quiqqer/core" var="quiqqer.auth.login.label.email"}
         </span>
         <input type="email" value="" name="email"/>
     </label>
 
     <button type="submit" class="login qui-button btn-green reset-password">
-        <span>{locale group='quiqqer/quiqqer' value='controls.users.auth.quiqqerlogin.btn.password_reset'}</span>
+        <span>{locale group='quiqqer/core' value='controls.users.auth.quiqqerlogin.btn.password_reset'}</span>
     </button>
 
     <button name="cancel" type="reset">
-        {locale group='quiqqer/quiqqer' value='cancel'}
+        {locale group='quiqqer/core' value='cancel'}
     </button>
 </div>
 {/if}

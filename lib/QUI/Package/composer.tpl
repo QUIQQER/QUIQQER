@@ -1,5 +1,5 @@
 {
-    "name" : "quiqqer/quiqqer-system",
+    "name" : "quiqqer/core-system",
     "type" : "composer-installer",
     "description" : "A modular based management system written in JavaScript and PHP",
     "license" : "GPL-3.0+",

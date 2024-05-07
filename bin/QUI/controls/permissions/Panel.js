@@ -15,7 +15,7 @@ define('controls/permissions/Panel', [
 ], function (QUI, QUIPanel, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
 
@@ -177,7 +177,7 @@ define('controls/permissions/Panel', [
                     }).inject(self.getContent());
 
                     new Element('img', {
-                        src   : URL_OPT_DIR + 'quiqqer/quiqqer/bin/images/QMan/security.svg',
+                        src   : URL_OPT_DIR + 'quiqqer/core/bin/images/QMan/security.svg',
                         styles: {
                             width: 250
                         }

@@ -22,7 +22,7 @@ QUI::$Ajax->registerFunction(
 
         if (!QUI\Projects\Media\Utils::isFolder($File)) {
             throw new QUI\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.media.not.a.folder'
             ]);
         }

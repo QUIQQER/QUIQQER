@@ -122,7 +122,7 @@ define('controls/usersAndGroups/Input', [
 
             this.$Search = new Element('input', {
                 'class'    : 'qui-users-and-groups-search',
-                placeholder: Locale.get('quiqqer/quiqqer', 'usersAndGroups.input.search.placeholder'),
+                placeholder: Locale.get('quiqqer/core', 'usersAndGroups.input.search.placeholder'),
                 events     : {
                     keyup: function (event) {
                         if (event.key === 'down') {
@@ -301,7 +301,7 @@ define('controls/usersAndGroups/Input', [
 
                 if (!data || !data.length) {
                     new Element('div', {
-                        html  : Locale.get('quiqqer/quiqqer', 'usersAndGroups.no.results'),
+                        html  : Locale.get('quiqqer/core', 'usersAndGroups.no.results'),
                         styles: {
                             'float': 'left',
                             'clear': 'both',

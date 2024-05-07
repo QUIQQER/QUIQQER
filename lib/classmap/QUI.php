@@ -922,7 +922,7 @@ class QUI
     /**
      * Returns the wanted package
      *
-     * @param string $package - name of the package eq: quiqqer/blog or quiqqer/quiqqer
+     * @param string $package - name of the package eq: quiqqer/blog or quiqqer/core
      * @return Package
      *
      * @throws QUI\Exception

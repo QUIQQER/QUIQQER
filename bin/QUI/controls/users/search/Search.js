@@ -21,7 +21,7 @@ define('controls/users/search/Search', [
 ], function (QUI, QUIControl, QUISwitch, QUILocale, QUIAjax, Users, Mustache, Grid, template) {
     "use strict";
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     return new Class({
 

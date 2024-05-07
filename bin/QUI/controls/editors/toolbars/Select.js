@@ -11,7 +11,7 @@ define('controls/editors/toolbars/Select', [
 ], function (QUIControl, QUIElementSelect, QUILocale, QUIAjax) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     /**
      * @class controls/editors/toolbars/Select

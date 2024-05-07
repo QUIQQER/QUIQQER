@@ -112,7 +112,7 @@ define('classes/packages/Manager', [
         setup: function(pkg, callback) {
             if (setupIsRunning) {
                 let message = QUILocale.get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'message.setup.is.currently.running'
                 );
 

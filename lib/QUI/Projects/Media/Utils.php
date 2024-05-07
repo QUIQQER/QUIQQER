@@ -928,7 +928,7 @@ class Utils
         if (preg_match('/[^0-9_a-zA-Z \-]/', $str)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.media.check.foldername.allowed.signs',
                     ['foldername' => $str]
                 ),
@@ -939,7 +939,7 @@ class Utils
         if (str_contains($str, '__')) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.media.check.name.allowed.underline'
                 ),
                 ErrorCodes::FOLDER_ILLEGAL_CHARACTERS
@@ -978,7 +978,7 @@ class Utils
         if (preg_match('/[^0-9_a-zA-Z \-.]/', $filename)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.media.check.name.allowed.signs',
                     ['filename' => $filename]
                 ),
@@ -990,7 +990,7 @@ class Utils
         if (substr_count($filename, '.') > 1) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.media.check.name.dots'
                 ),
                 ErrorCodes::FOLDER_ILLEGAL_CHARACTERS
@@ -1000,7 +1000,7 @@ class Utils
         if (str_contains($filename, '__')) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.media.check.name.underline'
                 ),
                 ErrorCodes::FOLDER_ILLEGAL_CHARACTERS
@@ -1106,7 +1106,7 @@ class Utils
         if (!isset($result[0])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.file.not.found',
                     ['file' => $fileId]
                 ),
@@ -1133,7 +1133,7 @@ class Utils
         if ($Parent->fileWithNameExists($uploadParams['name'])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.media.file.already.exists',
                     ['filename' => $uploadParams['name']]
                 ),

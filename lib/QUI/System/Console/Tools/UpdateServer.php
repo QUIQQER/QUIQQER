@@ -16,22 +16,22 @@ class UpdateServer extends QUI\System\Console\Tool
     public function __construct()
     {
         $this->setName('quiqqer:update-server')
-            ->setDescription(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.updateserver.description'))
+            ->setDescription(QUI::getLocale()->get('quiqqer/core', 'console.tool.updateserver.description'))
             ->addArgument(
                 'add',
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.updateserver.add.description'),
+                QUI::getLocale()->get('quiqqer/core', 'console.tool.updateserver.add.description'),
                 'a',
                 true
             )
             ->addArgument(
                 'remove',
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.updateserver.remove.description'),
+                QUI::getLocale()->get('quiqqer/core', 'console.tool.updateserver.remove.description'),
                 'r',
                 true
             );
 
-        $this->addExample('./console quiqqer:update-server --add=git@dev.quiqqer.com:quiqqer/quiqqer.git --type=vcs');
-        $this->addExample('./console quiqqer:update-server --remove=git@dev.quiqqer.com:quiqqer/quiqqer.git');
+        $this->addExample('./console quiqqer:update-server --add=git@dev.quiqqer.com:quiqqer/core.git --type=vcs');
+        $this->addExample('./console quiqqer:update-server --remove=git@dev.quiqqer.com:quiqqer/core.git');
     }
 
     public function execute(): void
@@ -56,7 +56,7 @@ class UpdateServer extends QUI\System\Console\Tool
         // Equal to one means that the argument was passed but has no value (--add instead of --add=text.example)
         if (!$server || $server == 1) {
             $this->writeLn(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.updateserver.add.server.missing'),
+                QUI::getLocale()->get('quiqqer/core', 'console.tool.updateserver.add.server.missing'),
                 'red'
             );
 
@@ -67,7 +67,7 @@ class UpdateServer extends QUI\System\Console\Tool
 
         if (!$type) {
             $this->writeLn(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.updateserver.add.type.missing'),
+                QUI::getLocale()->get('quiqqer/core', 'console.tool.updateserver.add.type.missing'),
                 'yellow'
             );
 
@@ -77,7 +77,7 @@ class UpdateServer extends QUI\System\Console\Tool
         QUI::getPackageManager()->addServer($server, ['type' => $type]);
 
         $this->writeLn(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.updateserver.add.success'),
+            QUI::getLocale()->get('quiqqer/core', 'console.tool.updateserver.add.success'),
             'green'
         );
     }
@@ -92,7 +92,7 @@ class UpdateServer extends QUI\System\Console\Tool
         // Equal to one means that the argument was passed but has no value (--add instead of --add=text.example)
         if (!$server || $server == 1) {
             $this->writeLn(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.updateserver.remove.server.missing'),
+                QUI::getLocale()->get('quiqqer/core', 'console.tool.updateserver.remove.server.missing'),
                 'red'
             );
 
@@ -102,13 +102,13 @@ class UpdateServer extends QUI\System\Console\Tool
         QUI::getPackageManager()->removeServer($server);
 
         $this->writeLn(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.updateserver.remove.success'),
+            QUI::getLocale()->get('quiqqer/core', 'console.tool.updateserver.remove.success'),
             'green'
         );
     }
 
     protected function showHelp(): void
     {
-        $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.updateserver.help'));
+        $this->writeLn(QUI::getLocale()->get('quiqqer/core', 'console.tool.updateserver.help'));
     }
 }

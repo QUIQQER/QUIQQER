@@ -21,7 +21,7 @@ define('controls/users/mail/SendUserMail', [
 ], function (QUI, QUIConfirm, QUIAjax, QUILocale, Mustache, template) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
 
@@ -186,7 +186,7 @@ define('controls/users/mail/SendUserMail', [
 
             return new Promise(function (resolve, reject) {
                 QUIAjax.get('ajax_user_getMailData', resolve, {
-                    'package': 'quiqqer/quiqqer',
+                    'package': 'quiqqer/core',
                     userId   : self.getAttribute('userId'),
                     onError  : reject
                 });
@@ -203,7 +203,7 @@ define('controls/users/mail/SendUserMail', [
 
             return new Promise(function (resolve, reject) {
                 QUIAjax.get('ajax_user_sendMail', resolve, {
-                    'package'  : 'quiqqer/quiqqer',
+                    'package'  : 'quiqqer/core',
                     userId     : self.getAttribute('userId'),
                     mailSubject: self.$MailSubjectInput.value,
                     mailContent: self.$MailContentEditor.getContent(),

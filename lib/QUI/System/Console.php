@@ -237,7 +237,7 @@ class Console
 
         if (!$ignorePermCheck && $owner !== $processUser) {
             $this->write(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.console.execute.user', [
+                QUI::getLocale()->get('quiqqer/core', 'exception.console.execute.user', [
                     'user' => $processUser,
                     'owner' => $owner,
                 ]),
@@ -247,7 +247,7 @@ class Console
             $this->clearMsg();
             $this->writeLn();
             $this->writeLn();
-            $this->write(QUI::getLocale()->get('quiqqer/quiqqer', 'console.execute-user.question'));
+            $this->write(QUI::getLocale()->get('quiqqer/core', 'console.execute-user.question'));
 
             $input = $this->readInput();
 
@@ -699,7 +699,7 @@ class Console
     {
         if (php_sapi_name() != 'cli') {
             throw new QUI\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.console.execute.only.in.cli'
             ]);
         }
@@ -715,7 +715,7 @@ class Console
         $displaySystemToolHelp = function ($tool) {
             $self = $this;
             $description = QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'console.systemtool.' . $tool
             );
 
@@ -905,14 +905,14 @@ class Console
     {
         $this->writeLn(
             QUI::getLocale()->get(
-                "quiqqer/quiqqer",
+                "quiqqer/core",
                 "console.tool.passwordreset.header"
             )
         );
 
         $this->writeLn(
             QUI::getLocale()->get(
-                "quiqqer/quiqqer",
+                "quiqqer/core",
                 "console.tool.passwordreset.warning"
             ),
             "yellow"
@@ -922,7 +922,7 @@ class Console
         // Get user Input
         $this->writeLn(
             QUI::getLocale()->get(
-                "quiqqer/quiqqer",
+                "quiqqer/core",
                 "console.tool.passwordreset.prompt.username"
             )
         );
@@ -934,7 +934,7 @@ class Console
         } catch (Exception) {
             $this->writeLn(
                 QUI::getLocale()->get(
-                    "quiqqer/quiqqer",
+                    "quiqqer/core",
                     "console.tool.passwordreset.user.not.found"
                 ),
                 "red"
@@ -946,7 +946,7 @@ class Console
         // Confirmation
         $this->writeLn(
             QUI::getLocale()->get(
-                "quiqqer/quiqqer",
+                "quiqqer/core",
                 "console.tool.passwordreset.prompt.confirm",
                 [
                     "username" => $username
@@ -962,7 +962,7 @@ class Console
 
         $this->writeLn(
             QUI::getLocale()->get(
-                "quiqqer/quiqqer",
+                "quiqqer/core",
                 "console.tool.passwordreset.prompt.confirm2",
                 [
                     "username" => $username
@@ -983,7 +983,7 @@ class Console
 
         $this->writeLn(
             QUI::getLocale()->get(
-                "quiqqer/quiqqer",
+                "quiqqer/core",
                 "console.tool.passwordreset.success",
                 [
                     "password" => $password
@@ -1057,7 +1057,7 @@ class Console
             $Tool = $this->get($tool);
 
             $name = $tool;
-            $description = QUI::getLocale()->get('quiqqer/quiqqer', 'console.systemtool.' . $tool);
+            $description = QUI::getLocale()->get('quiqqer/core', 'console.systemtool.' . $tool);
 
             if ($Tool instanceof QUI\System\Console\Tool) {
                 $name = $Tool->getName();
@@ -1151,14 +1151,14 @@ class Console
 
         if (!QUI::getUsers()->isUser($this->User)) {
             throw new QUI\Users\Exception(
-                ['quiqqer/quiqqer', 'exception.login.fail'],
+                ['quiqqer/core', 'exception.login.fail'],
                 401
             );
         }
 
         if (QUI::getUsers()->isNobodyUser($this->User)) {
             throw new QUI\Users\Exception(
-                ['quiqqer/quiqqer', 'exception.login.fail'],
+                ['quiqqer/core', 'exception.login.fail'],
                 401
             );
         }

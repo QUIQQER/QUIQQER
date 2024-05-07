@@ -18,7 +18,7 @@ define('controls/system/forwarding/Panel', [
 ], function (QUI, QUIPanel, QUIConfirm, QUIFormUtils, Grid, QUIAjax, QUILocale, Mustache, templateForwarding) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
 
@@ -64,7 +64,7 @@ define('controls/system/forwarding/Panel', [
             // Buttons
             this.addButton({
                 name     : 'add',
-                text     : QUILocale.get('quiqqer/quiqqer', 'add'),
+                text     : QUILocale.get('quiqqer/core', 'add'),
                 textimage: 'fa fa-plus',
                 events   : {
                     onClick: this.openCreateForwarding
@@ -77,7 +77,7 @@ define('controls/system/forwarding/Panel', [
 
             this.addButton({
                 name     : 'edit',
-                text     : QUILocale.get('quiqqer/quiqqer', 'edit'),
+                text     : QUILocale.get('quiqqer/core', 'edit'),
                 textimage: 'fa fa-edit',
                 disabled : true,
                 events   : {
@@ -91,7 +91,7 @@ define('controls/system/forwarding/Panel', [
 
             this.addButton({
                 name     : 'remove',
-                text     : QUILocale.get('quiqqer/quiqqer', 'remove'),
+                text     : QUILocale.get('quiqqer/core', 'remove'),
                 textimage: 'fa fa-trash-o',
                 disabled : true,
                 events   : {

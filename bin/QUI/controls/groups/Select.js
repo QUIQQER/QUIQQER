@@ -19,7 +19,7 @@ define('controls/groups/Select', [
 ], function(QUIControl, QUIElementSelect, QUILocale, Groups) {
     'use strict';
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     /**
      * @class controls/groups/Select

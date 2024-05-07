@@ -31,7 +31,7 @@ define('controls/desktop/panels/Help', [
 
             this.parent(options);
 
-            this.setAttribute('title', QUILocale.get('quiqqer/quiqqer', 'help.panel.title'));
+            this.setAttribute('title', QUILocale.get('quiqqer/core', 'help.panel.title'));
             this.setAttribute('icon', 'fa fa-h-square');
 
             this.addEvents({

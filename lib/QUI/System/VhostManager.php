@@ -58,7 +58,7 @@ class VhostManager
         if ($Config->existValue($vhost)) {
             throw new Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.vhost.exist'
                 )
             );
@@ -206,7 +206,7 @@ class VhostManager
         if (!$Config->existValue($vhost)) {
             throw new Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.vhost.not.found'
                 )
             );
@@ -222,12 +222,12 @@ class VhostManager
 
         if (!isset($result["project"])) {
             throw new Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.vhost.missing.data.project'
             ]);
         }
 
-        // host already exist - quiqqer/quiqqer#752
+        // host already exist - quiqqer/core#752
         $config = $Config->toArray();
 
         foreach ($config as $h => $d) {
@@ -240,7 +240,7 @@ class VhostManager
                 && $d['lang'] === $result['lang']
             ) {
                 throw new Exception([
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.vhost.same.host.already.exists'
                 ]);
             }
@@ -295,7 +295,7 @@ class VhostManager
         if (!$Config->existValue($vhost)) {
             throw new Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.vhost.not.found'
                 )
             );

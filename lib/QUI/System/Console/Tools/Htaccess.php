@@ -115,7 +115,7 @@ class Htaccess extends QUI\System\Console\Tool
 # ./console --tool=quiqqer:htaccess
 #
 # How do I customize the .htaccess file:
-# https://dev.quiqqer.com/quiqqer/quiqqer/wikis/htaccess
+# https://dev.quiqqer.com/quiqqer/core/wikis/htaccess
 #';
 
 
@@ -159,10 +159,10 @@ class Htaccess extends QUI\System\Console\Tool
         $URL_SYS_DIR = ltrim($URL_SYS_DIR, '/');
         $URL_VAR_DIR = ltrim($URL_VAR_DIR, '/');
 
-        $quiqqerLib = URL_OPT_DIR . 'quiqqer/quiqqer/lib';
-        $quiqqerBin = URL_OPT_DIR . 'quiqqer/quiqqer/bin';
-        $quiqqerSys = URL_OPT_DIR . 'quiqqer/quiqqer/admin';
-        $quiqqerDir = URL_OPT_DIR . 'quiqqer/quiqqer';
+        $quiqqerLib = URL_OPT_DIR . 'quiqqer/core/lib';
+        $quiqqerBin = URL_OPT_DIR . 'quiqqer/core/bin';
+        $quiqqerSys = URL_OPT_DIR . 'quiqqer/core/admin';
+        $quiqqerDir = URL_OPT_DIR . 'quiqqer/core';
 
         $URL_SYS_ADMIN_DIR = trim($URL_SYS_DIR, '/');
 
@@ -265,10 +265,10 @@ class Htaccess extends QUI\System\Console\Tool
         $URL_SYS_DIR = ltrim($URL_SYS_DIR, '/');
         $URL_VAR_DIR = ltrim($URL_VAR_DIR, '/');
 
-        $quiqqerLib = URL_OPT_DIR . 'quiqqer/quiqqer/lib';
-        $quiqqerBin = URL_OPT_DIR . 'quiqqer/quiqqer/bin';
-        $quiqqerSys = URL_OPT_DIR . 'quiqqer/quiqqer/admin';
-        $quiqqerDir = URL_OPT_DIR . 'quiqqer/quiqqer';
+        $quiqqerLib = URL_OPT_DIR . 'quiqqer/core/lib';
+        $quiqqerBin = URL_OPT_DIR . 'quiqqer/core/bin';
+        $quiqqerSys = URL_OPT_DIR . 'quiqqer/core/admin';
+        $quiqqerDir = URL_OPT_DIR . 'quiqqer/core';
 
         $URL_SYS_ADMIN_DIR = trim($URL_SYS_DIR, '/');
 

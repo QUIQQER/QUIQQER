@@ -35,49 +35,49 @@ class Package extends QUI\System\Console\Tool
             ->setDescription('Package management')
             ->addArgument(
                 'help',
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.help.description'),
+                QUI::getLocale()->get('quiqqer/core', 'console.tool.package.help.description'),
                 false,
                 true
             )
             ->addArgument(
                 'list',
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.installed.description'),
+                QUI::getLocale()->get('quiqqer/core', 'console.tool.package.installed.description'),
                 false,
                 true
             )
             ->addArgument(
                 'show',
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.show.description'),
+                QUI::getLocale()->get('quiqqer/core', 'console.tool.package.show.description'),
                 false,
                 true
             )
             ->addArgument(
                 'search',
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.search.description'),
+                QUI::getLocale()->get('quiqqer/core', 'console.tool.package.search.description'),
                 false,
                 true
             )
             ->addArgument(
                 'install',
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.install.description'),
+                QUI::getLocale()->get('quiqqer/core', 'console.tool.package.install.description'),
                 false,
                 true
             )
             ->addArgument(
                 'setup',
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.setup.description'),
+                QUI::getLocale()->get('quiqqer/core', 'console.tool.package.setup.description'),
                 false,
                 true
             )
             ->addArgument(
                 'purge',
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.purge.description'),
+                QUI::getLocale()->get('quiqqer/core', 'console.tool.package.purge.description'),
                 false,
                 true
             )
             ->addArgument(
                 'remove',
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.purge.description'),
+                QUI::getLocale()->get('quiqqer/core', 'console.tool.package.purge.description'),
                 false,
                 true
             );
@@ -179,7 +179,7 @@ class Package extends QUI\System\Console\Tool
             $Package = QUI::getPackage($package);
 
             $Climate->output->write(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.message.setup.execute')
+                QUI::getLocale()->get('quiqqer/core', 'console.tool.package.message.setup.execute')
             );
             $Climate->lightGreen($package);
             $Package->setup();
@@ -202,7 +202,7 @@ class Package extends QUI\System\Console\Tool
         if (empty($package) || $package === '1') {
             $Climate->output->write(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'console.tool.package.message.install.noPackage',
                 )
             );
@@ -220,7 +220,7 @@ class Package extends QUI\System\Console\Tool
         } catch (QUI\Exception) {
             Update::writeToLog(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'console.tool.package.message.install.execute',
                     ['package' => $package]
                 )
@@ -228,7 +228,7 @@ class Package extends QUI\System\Console\Tool
 
             $Climate->output->write(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'console.tool.package.message.install.execute',
                     ['package' => $package]
                 )
@@ -345,7 +345,7 @@ class Package extends QUI\System\Console\Tool
             $Climate = new CLImate();
             $Climate->out('');
             $Climate->lightGreen(
-                ' ' . QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.search.resultMessage', [
+                ' ' . QUI::getLocale()->get('quiqqer/core', 'console.tool.package.search.resultMessage', [
                     'count' => count($table)
                 ])
             );
@@ -356,9 +356,9 @@ class Package extends QUI\System\Console\Tool
 
     protected function removePackage(string $package): void
     {
-        if ($package === 'quiqqer/quiqqer') {
+        if ($package === 'quiqqer/core') {
             $this->writeLn(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.cannot.be.removed', [
+                QUI::getLocale()->get('quiqqer/core', 'console.tool.package.cannot.be.removed', [
                     'package' => $package
                 ]),
                 'red'
@@ -378,7 +378,7 @@ class Package extends QUI\System\Console\Tool
 
         if (!isset($require[$package])) {
             $this->writeLn(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.cannot.be.removed', [
+                QUI::getLocale()->get('quiqqer/core', 'console.tool.package.cannot.be.removed', [
                     'package' => $package
                 ]),
                 'red'
@@ -386,7 +386,7 @@ class Package extends QUI\System\Console\Tool
 
             $this->resetColor();
             $this->writeLn();
-            $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.can.removed'));
+            $this->writeLn(QUI::getLocale()->get('quiqqer/core', 'console.tool.package.can.removed'));
             $this->writeLn('========================================');
             $this->writeLn();
             $this->writeLn();

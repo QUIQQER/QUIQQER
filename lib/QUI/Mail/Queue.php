@@ -406,7 +406,7 @@ class Queue
      */
     protected function getMailsSentInLastHour(): int
     {
-        $cacheFile = QUI::getPackage('quiqqer/quiqqer')->getVarDir() . 'mailqueue';
+        $cacheFile = QUI::getPackage('quiqqer/core')->getVarDir() . 'mailqueue';
         $time = time();
 
         if (!file_exists($cacheFile)) {
@@ -435,7 +435,7 @@ class Queue
      */
     protected function increaseMailsSent(): void
     {
-        $cacheFile = QUI::getPackage('quiqqer/quiqqer')->getVarDir() . 'mailqueue';
+        $cacheFile = QUI::getPackage('quiqqer/core')->getVarDir() . 'mailqueue';
         $mailsSent = $this->getMailsSentInLastHour();
 
         $mailsSentCache = explode('-', file_get_contents($cacheFile));

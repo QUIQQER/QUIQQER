@@ -121,7 +121,7 @@ class Locker
         if ($isMiss) {
             throw new QUI\Lock\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.cache.manager.not.exist'
                 ),
                 404
@@ -145,7 +145,7 @@ class Locker
         } catch (\Exception) {
             throw new QUI\Lock\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.cache.manager.not.exist'
                 ),
                 404

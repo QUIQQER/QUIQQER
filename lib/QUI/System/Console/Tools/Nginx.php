@@ -333,11 +333,11 @@ PHPPARAM;
             ################################
             
             location ^~ {$quiqqerUrlDir}bin/ {
-                rewrite ^{$quiqqerUrlDir}bin/(.*) {$quiqqerUrlDir}packages/quiqqer/quiqqer/bin/$1 last;
+                rewrite ^{$quiqqerUrlDir}bin/(.*) {$quiqqerUrlDir}packages/quiqqer/core/bin/$1 last;
             }
     
             location ^~ {$quiqqerUrlDir}lib/ {
-                rewrite ^{$quiqqerUrlDir}lib/(.*) {$quiqqerUrlDir}packages/quiqqer/quiqqer/lib/$1 last;                                                                                              
+                rewrite ^{$quiqqerUrlDir}lib/(.*) {$quiqqerUrlDir}packages/quiqqer/core/lib/$1 last;                                                                                              
             }                                                                                                                                     
     
             location = {$quiqqerUrlDir}admin {
@@ -349,11 +349,11 @@ PHPPARAM;
             }
     
             location = {$quiqqerUrlDir}admin/ {
-                rewrite {$quiqqerUrlDir}admin/(.*) {$quiqqerUrlDir}packages/quiqqer/quiqqer/admin/index.php last;
+                rewrite {$quiqqerUrlDir}admin/(.*) {$quiqqerUrlDir}packages/quiqqer/core/admin/index.php last;
             }
                                                                                                                                                 
             location ^~ {$quiqqerUrlDir}admin/ {                                                                                                                    
-                rewrite {$quiqqerUrlDir}admin/(.*) {$quiqqerUrlDir}packages/quiqqer/quiqqer/admin/$1 last;
+                rewrite {$quiqqerUrlDir}admin/(.*) {$quiqqerUrlDir}packages/quiqqer/core/admin/$1 last;
             }        
     
             include {$this->subConfDir}redirects.include;
@@ -378,7 +378,7 @@ PHPPARAM;
                 $phpParams
             }
     
-            location ~* {$quiqqerUrlDir}packages/quiqqer/quiqqer/admin/(.*).php$ {
+            location ~* {$quiqqerUrlDir}packages/quiqqer/core/admin/(.*).php$ {
                 $phpParams
             }
             

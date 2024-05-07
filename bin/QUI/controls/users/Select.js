@@ -19,7 +19,7 @@ define('controls/users/Select', [
 ], function(QUIControl, QUIElementSelect, QUILocale, QUIAjax) {
     'use strict';
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     /**
      * @class controls/users/Select

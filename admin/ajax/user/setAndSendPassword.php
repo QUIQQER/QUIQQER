@@ -35,7 +35,7 @@ QUI::$Ajax->registerFunction(
         if (empty($email)) {
             QUI::getMessagesHandler()->addAttention(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'message.ajax.user.setAndSendPassword.no_mail_sent',
                     [
                         'user' => $User->getName() . ' (#' . $User->getUUID() . ')'
@@ -52,7 +52,7 @@ QUI::$Ajax->registerFunction(
 
         $Mailer->setSubject(
             $Locale->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'mails.user.new_password.subject'
             )
         );
@@ -61,13 +61,13 @@ QUI::$Ajax->registerFunction(
 
         if ($forceNew) {
             $forceNewMsg = $Locale->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'mails.user.new_password.body.force_new'
             );
         }
 
         $body = $Locale->get(
-            'quiqqer/quiqqer',
+            'quiqqer/core',
             'mails.user.new_password.body',
             [
                 'name' => $User->getName(),
@@ -81,7 +81,7 @@ QUI::$Ajax->registerFunction(
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'message.ajax.user.setAndSendPassword.success',
                 [
                     'user' => $User->getName() . ' (#' . $User->getUUID() . ')'

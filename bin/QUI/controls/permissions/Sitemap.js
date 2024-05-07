@@ -313,8 +313,8 @@ define('controls/permissions/Sitemap', [
 
                 text = 'permission.' + permission + '._header';
 
-                if (QUILocale.exists('quiqqer/quiqqer', text)) {
-                    text = QUILocale.get('quiqqer/quiqqer', text);
+                if (QUILocale.exists('quiqqer/core', text)) {
+                    text = QUILocale.get('quiqqer/core', text);
                 } else {
                     for (i = 0, len = groups.length; i < len; i++) {
                         if (QUILocale.exists(groups[i], text)) {

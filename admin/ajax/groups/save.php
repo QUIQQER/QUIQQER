@@ -34,7 +34,7 @@ QUI::$Ajax->registerFunction(
         }
 
         QUI::getMessagesHandler()->addSuccess(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'message.group.saved', [
+            QUI::getLocale()->get('quiqqer/core', 'message.group.saved', [
                 'groupname' => $Group->getName(),
                 'id' => $Group->getUUID()
             ])

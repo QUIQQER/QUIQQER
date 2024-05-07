@@ -64,7 +64,7 @@ class Breadcrumb extends QUI\Control
 
                 $this->setAttribute(
                     'data-qui',
-                    'package/quiqqer/quiqqer/bin/Controls/BreadcrumbSlider'
+                    'package/quiqqer/core/bin/Controls/BreadcrumbSlider'
                 );
                 break;
 
@@ -74,7 +74,7 @@ class Breadcrumb extends QUI\Control
 
                 $this->setAttribute(
                     'data-qui',
-                    'package/quiqqer/quiqqer/bin/Controls/BreadcrumbDropDown'
+                    'package/quiqqer/core/bin/Controls/BreadcrumbDropDown'
                 );
                 break;
         }

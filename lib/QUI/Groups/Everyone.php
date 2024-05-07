@@ -39,7 +39,7 @@ class Everyone extends QUI\Groups\Group
     {
         throw new QUI\Exception(
             QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.everyone.group.cannot.be.deleted'
             )
         );
@@ -134,7 +134,7 @@ class Everyone extends QUI\Groups\Group
     {
         throw new QUI\Exception(
             QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.everyone.group.cannot.be.deactivated'
             )
         );
@@ -233,7 +233,7 @@ class Everyone extends QUI\Groups\Group
     {
         throw new QUI\Exception(
             QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.cannot.create.children'
             )
         );

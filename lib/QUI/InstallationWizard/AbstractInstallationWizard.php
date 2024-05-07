@@ -60,7 +60,7 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
      */
     public function getLogo(): string
     {
-        return URL_OPT_DIR . 'quiqqer/quiqqer/bin/quiqqer_logo.svg';
+        return URL_OPT_DIR . 'quiqqer/core/bin/quiqqer_logo.svg';
     }
 
     /**
@@ -81,7 +81,7 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
             $Locale = QUI::getLocale();
         }
 
-        return $Locale->get('quiqqer/quiqqer', 'set.up.execute.button.text');
+        return $Locale->get('quiqqer/core', 'set.up.execute.button.text');
     }
 
     public function onListInit(&$list)

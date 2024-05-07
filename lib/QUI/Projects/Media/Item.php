@@ -695,7 +695,7 @@ abstract class Item extends QUI\QDOM
 
         if ($this->isDeleted()) {
             throw new Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.already.deleted'),
+                QUI::getLocale()->get('quiqqer/core', 'exception.media.already.deleted'),
                 ErrorCodes::ALREADY_DELETED
             );
         }
@@ -714,7 +714,7 @@ abstract class Item extends QUI\QDOM
         if (!is_file($original)) {
             QUI::getMessagesHandler()->addAttention(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.delete.originalfile.notfound'
                 )
             );
@@ -724,7 +724,7 @@ abstract class Item extends QUI\QDOM
 
         if ($First->getFullPath() == $original) {
             throw new Exception(
-                ['quiqqer/quiqqer', 'exception.delete.root.file'],
+                ['quiqqer/core', 'exception.delete.root.file'],
                 ErrorCodes::ROOT_FOLDER_CANT_DELETED
             );
         }
@@ -898,7 +898,7 @@ abstract class Item extends QUI\QDOM
         // check if a child with the same name exist
         if ($Folder->fileWithNameExists($this->getAttribute('name'))) {
             throw new Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.with.same.name.exists', [
+                QUI::getLocale()->get('quiqqer/core', 'exception.media.file.with.same.name.exists', [
                     'name' => $Folder->getAttribute('name')
                 ]),
                 ErrorCodes::FILE_ALREADY_EXISTS
@@ -1196,7 +1196,7 @@ abstract class Item extends QUI\QDOM
 
         if ($Parent->childWithNameExists($newName)) {
             throw new Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.with.same.name.exists', [
+                QUI::getLocale()->get('quiqqer/core', 'exception.media.file.with.same.name.exists', [
                     'name' => $newName
                 ]),
                 ErrorCodes::FILE_ALREADY_EXISTS
@@ -1205,7 +1205,7 @@ abstract class Item extends QUI\QDOM
 
         if ($Parent->fileWithNameExists($newName . '.' . $extension)) {
             throw new Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.with.same.name.exists', [
+                QUI::getLocale()->get('quiqqer/core', 'exception.media.file.with.same.name.exists', [
                     'name' => $newName
                 ]),
                 ErrorCodes::FILE_ALREADY_EXISTS

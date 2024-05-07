@@ -19,7 +19,7 @@ define('controls/projects/project/site/CreateWindow', [
 ], function(QUI, QUIControl, QUIConfirm, TypeInput, QUILocale, Mustache, QUIAjax, template) {
     'use strict';
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     return new Class({
 

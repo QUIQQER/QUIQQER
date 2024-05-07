@@ -98,7 +98,7 @@ class Handler extends QUI\QDOM
         if (empty($callback)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.qui.exceptions.handler.nocallback',
                     ['function' => __FUNCTION__]
                 ),
@@ -109,7 +109,7 @@ class Handler extends QUI\QDOM
         if (!is_callable($callback[0])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.qui.exceptions.handler.invalid',
                     ['function' => __FUNCTION__]
                 ),
@@ -238,7 +238,7 @@ class Handler extends QUI\QDOM
                 QUI::getMailManager()->send(
                     ERROR_MAIL,
                     QUI::getLocale()->get(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'lib.qui.exceptions.handler.mail.subject',
                         [
                             'host' => $_SERVER['HTTP_HOST'],

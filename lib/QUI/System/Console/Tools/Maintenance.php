@@ -46,7 +46,7 @@ class Maintenance extends QUI\System\Console\Tool
                 $Config->set('globals', 'maintenance', 1);
 
                 // copy maintenance file
-                $file = OPT_DIR . 'quiqqer/quiqqer/lib/templates/maintenance.html';
+                $file = OPT_DIR . 'quiqqer/core/lib/templates/maintenance.html';
 
                 if (file_exists(ETC_DIR . 'maintenance.html')) {
                     $file = ETC_DIR . 'maintenance.html';

@@ -21,7 +21,7 @@ define('controls/usersAndGroups/Select', [
 ], function (QUIControl, QUIElementSelect, QUILocale, Groups, Users, Ajax) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     /**
      * @class controls/groups/Select

@@ -3,10 +3,10 @@
  *
  * Reads/writes textarea lines in a JSON array
  *
- * @module package/quiqqer/quiqqer/bin/QUI/controls/settings/Textarea
+ * @module package/quiqqer/core/bin/QUI/controls/settings/Textarea
  * @author www.pcsg.de (Patrick Müller)
  */
-define('package/quiqqer/quiqqer/bin/QUI/controls/settings/Textarea', [
+define('package/quiqqer/core/bin/QUI/controls/settings/Textarea', [
 
     'qui/controls/Control'
 
@@ -15,7 +15,7 @@ define('package/quiqqer/quiqqer/bin/QUI/controls/settings/Textarea', [
 
     return new Class({
         Extends: QUIControl,
-        Type   : 'package/quiqqer/quiqqer/bin/QUI/controls/settings/Textarea',
+        Type   : 'package/quiqqer/core/bin/QUI/controls/settings/Textarea',
 
         Binds: [
             '$onImport'

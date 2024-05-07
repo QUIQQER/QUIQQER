@@ -26,7 +26,7 @@ define('QUIQQER', ['Ajax', 'Packages'], function (QUIAjax, Packages) {
          * @returns {Promise}
          */
         getInformation: function () {
-            return Packages.getPackageLock('quiqqer/quiqqer');
+            return Packages.getPackageLock('quiqqer/core');
         },
 
         /**

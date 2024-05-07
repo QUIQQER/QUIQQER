@@ -148,7 +148,7 @@ abstract class Factory extends QUI\Utils\Singleton
 
         if (!isset($result[0])) {
             throw new QUI\Exception(
-                ['quiqqer/quiqqer', 'exception.crud.child.not.found'],
+                ['quiqqer/core', 'exception.crud.child.not.found'],
                 404
             );
         }

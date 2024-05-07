@@ -30,7 +30,7 @@ define('controls/projects/project/media/FilePanel', [
 ], function () {
     "use strict";
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     const QUI                = arguments[0],
           QUIPanel           = arguments[1],
@@ -373,15 +373,15 @@ define('controls/projects/project/media/FilePanel', [
                 icon    : 'fa fa-trash-o',
                 texticon: 'fa fa-trash-o',
 
-                title: Locale.get('quiqqer/quiqqer', 'projects.project.site.media.filePanel.window.delete.title', {
+                title: Locale.get('quiqqer/core', 'projects.project.site.media.filePanel.window.delete.title', {
                     file: this.$File.getAttribute('file')
                 }),
 
-                text: Locale.get('quiqqer/quiqqer', 'projects.project.site.media.filePanel.window.delete.text', {
+                text: Locale.get('quiqqer/core', 'projects.project.site.media.filePanel.window.delete.text', {
                     file: this.$File.getAttribute('file')
                 }),
 
-                information: Locale.get('quiqqer/quiqqer', 'projects.project.site.media.filePanel.window.delete.information', {
+                information: Locale.get('quiqqer/core', 'projects.project.site.media.filePanel.window.delete.information', {
                     file: this.$File.getAttribute('file')
                 }),
 
@@ -472,8 +472,8 @@ define('controls/projects/project/media/FilePanel', [
                 new QUIButton({
                     image : 'fa fa-shield',
                     name  : 'permissions',
-                    alt   : Locale.get('quiqqer/quiqqer', 'projects.project.site.media.filePanel.permissions'),
-                    title : Locale.get('quiqqer/quiqqer', 'projects.project.site.media.filePanel.permissions'),
+                    alt   : Locale.get('quiqqer/core', 'projects.project.site.media.filePanel.permissions'),
+                    title : Locale.get('quiqqer/core', 'projects.project.site.media.filePanel.permissions'),
                     styles: {
                         'border-left-width' : 1,
                         'border-right-width': 1,

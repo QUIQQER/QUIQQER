@@ -25,7 +25,7 @@ QUI::$Ajax->registerFunction(
 
         if (!Utils::isFolder($Folder)) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.move.is.no.folder')
+                QUI::getLocale()->get('quiqqer/core', 'exception.media.move.is.no.folder')
             );
         }
 

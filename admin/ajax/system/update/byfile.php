@@ -15,7 +15,7 @@ QUI::$Ajax->registerFunction(
         if (!file_exists($filepath) && !is_dir($filepath)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.no.quiqqer.update.archive'
                 )
             );

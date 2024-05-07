@@ -585,7 +585,7 @@ class Manager
         if (file_exists($file)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.qui.editor.manager.toolbar.exist'
                 )
             );
@@ -610,7 +610,7 @@ class Manager
 
         if (empty($xml)) {
             throw new QUI\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.lib.qui.editor.manager.toolbar.empty'
             ]);
         }
@@ -623,7 +623,7 @@ class Manager
         if (!file_exists($file)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.qui.editor.manager.toolbar.exist'
                 )
             );
@@ -640,7 +640,7 @@ class Manager
         if (!empty($errors)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.qui.editor.manager.toolbar.xml.error',
                     ['error' => $errors[0]->message]
                 )

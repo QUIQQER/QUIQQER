@@ -5,7 +5,7 @@
  * if the browser supports no html5 upload
  */
 
-$dir = str_replace('quiqqer/quiqqer/lib/QUI/Upload/bin', '', __DIR__);
+$dir = str_replace('quiqqer/core/lib/QUI/Upload/bin', '', __DIR__);
 define('QUIQQER_SYSTEM', true);
 define('QUIQQER_AJAX', true);
 

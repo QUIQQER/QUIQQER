@@ -145,7 +145,7 @@ class License
 
         if (empty($response)) {
             throw new QUI\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.License.connection_error'
             ]);
         }
@@ -154,7 +154,7 @@ class License
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new QUI\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.License.connection_error'
             ]);
         }
@@ -293,7 +293,7 @@ class License
 
         if (empty($response)) {
             throw new QUI\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.License.connection_error'
             ]);
         }
@@ -302,7 +302,7 @@ class License
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new QUI\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.License.connection_error'
             ]);
         }
@@ -351,7 +351,7 @@ class License
 
         if (empty($response)) {
             throw new QUI\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.License.connection_error'
             ]);
         }
@@ -360,7 +360,7 @@ class License
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new QUI\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.License.connection_error'
             ]);
         }

@@ -145,7 +145,7 @@ class Canonical
         }
 
 
-        // fix doppelter HOST im canonical https://dev.quiqqer.com/quiqqer/quiqqer/issues/574
+        // fix doppelter HOST im canonical https://dev.quiqqer.com/quiqqer/core/issues/574
         if (str_contains($canonical, 'https:') || str_contains($canonical, 'http:')) {
             return $this->getLinkRel($canonical);
         }

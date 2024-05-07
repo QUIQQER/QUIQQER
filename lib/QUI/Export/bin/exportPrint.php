@@ -1,6 +1,6 @@
 <?php
 
-$dir = str_replace('quiqqer/quiqqer/lib/QUI/Export/bin', '', __DIR__);
+$dir = str_replace('quiqqer/core/lib/QUI/Export/bin', '', __DIR__);
 
 require_once $dir . 'header.php';
 
@@ -58,7 +58,7 @@ foreach ($body['data']['data'] as $key => $entry) {
 
 // css file
 if (!isset($body['cssFile']) || !$body['cssFile']) {
-    $cssFile = HOST . URL_OPT_DIR . 'quiqqer/quiqqer/lib/QUI/Export/bin/exportPrint.css';
+    $cssFile = HOST . URL_OPT_DIR . 'quiqqer/core/lib/QUI/Export/bin/exportPrint.css';
 } else {
     if (!str_starts_with($body['cssFile'], 'http')) {
         $body['cssFile'] = HOST . $body['cssFile'];

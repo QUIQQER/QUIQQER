@@ -75,12 +75,12 @@ class Project
             try {
                 $searchId = $First->createChild([
                     'name' => self::parseForUrl(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'projects.defaultstructure.search.name',
                         $Project
                     ),
                     'title' => self::parseForUrl(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'projects.defaultstructure.search.title',
                         $Project
                     )
@@ -108,12 +108,12 @@ class Project
             try {
                 $legalNoteId = $First->createChild([
                     'name' => self::parseForUrl(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'projects.defaultstructure.legalnotes.name',
                         $Project
                     ),
                     'title' => self::parseForUrl(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'projects.defaultstructure.legalnotes.name',
                         $Project
                     )
@@ -141,12 +141,12 @@ class Project
             try {
                 $generalTermsAndConditionsId = $First->createChild([
                     'name' => self::parseForUrl(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'projects.defaultstructure.generalTermsAndConditions.name',
                         $Project
                     ),
                     'title' => self::parseForUrl(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'projects.defaultstructure.generalTermsAndConditions.name',
                         $Project
                     )
@@ -174,12 +174,12 @@ class Project
             try {
                 $privacyPolicyId = $First->createChild([
                     'name' => self::parseForUrl(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'projects.defaultstructure.privacypolicy.name',
                         $Project
                     ),
                     'title' => self::parseForUrl(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'projects.defaultstructure.privacypolicy.name',
                         $Project
                     )
@@ -205,7 +205,7 @@ class Project
      */
     protected static function parseForUrl(string $group, string $var, QUI\Projects\Project $Project): string
     {
-        // quiqqer/quiqqer#825
+        // quiqqer/core#825
         $language = $Project->getLang();
 
         // import
@@ -298,7 +298,7 @@ class Project
         if (preg_match("@[-.,:;#`!§$%&/?<>\=\'\" ]@", $projectName)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.project.not.allowed.signs',
                     [
                         'signs' => implode(' ', $forbiddenSigns)

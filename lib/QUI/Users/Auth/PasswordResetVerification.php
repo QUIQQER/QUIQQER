@@ -82,8 +82,8 @@ class PasswordResetVerification extends AbstractVerification
         }
 
         $L = QUI::getLocale();
-        $lg = 'quiqqer/quiqqer';
-        $tplDir = QUI::getPackage('quiqqer/quiqqer')->getDir() . 'lib/templates/mail/auth/';
+        $lg = 'quiqqer/core';
+        $tplDir = QUI::getPackage('quiqqer/core')->getDir() . 'lib/templates/mail/auth/';
 
         $Mailer = new QUI\Mail\Mailer();
         $Engine = QUI::getTemplateManager()->getEngine();
@@ -134,7 +134,7 @@ class PasswordResetVerification extends AbstractVerification
     public function getSuccessMessage(): string
     {
         return QUI::getLocale()->get(
-            'quiqqer/quiqqer',
+            'quiqqer/core',
             'users.auth.passwordresetverification.success'
         );
     }
@@ -148,7 +148,7 @@ class PasswordResetVerification extends AbstractVerification
     public function getErrorMessage(string $reason): string
     {
         return QUI::getLocale()->get(
-            'quiqqer/quiqqer',
+            'quiqqer/core',
             'users.auth.passwordresetverification.error'
         );
     }

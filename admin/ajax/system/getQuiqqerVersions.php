@@ -14,8 +14,8 @@ QUI::$Ajax->registerFunction(
         $versions = [];
         $highestMinors = [];
 
-        if (isset($packages['packages']['quiqqer/quiqqer'])) {
-            $quiqqer = $packages['packages']['quiqqer/quiqqer'];
+        if (isset($packages['packages']['quiqqer/core'])) {
+            $quiqqer = $packages['packages']['quiqqer/core'];
             $versionList = array_keys($quiqqer);
 
             foreach ($versionList as $version) {

@@ -63,11 +63,11 @@ if (isset($_REQUEST['package'])) {
 
 // admin ajax
 foreach ($_rf_files as $key => $file) {
-    $_rf_file = OPT_DIR . 'quiqqer/quiqqer/admin/' . str_replace('_', '/', $file) . '.php';
+    $_rf_file = OPT_DIR . 'quiqqer/core/admin/' . str_replace('_', '/', $file) . '.php';
     $_rf_file = Orthos::clearPath($_rf_file);
     $_rf_file = realpath($_rf_file);
 
-    $dir = OPT_DIR . 'quiqqer/quiqqer/admin/';
+    $dir = OPT_DIR . 'quiqqer/core/admin/';
 
     if (str_contains($_rf_file, $dir) && file_exists($_rf_file)) {
         require_once $_rf_file;

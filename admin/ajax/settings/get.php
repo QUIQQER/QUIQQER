@@ -34,7 +34,7 @@ QUI::$Ajax->registerFunction(
 
             // hidden fields
             // don't show this in the frontend
-            if (str_contains($file, 'quiqqer/quiqqer/admin/settings/conf.xml')) {
+            if (str_contains($file, 'quiqqer/core/admin/settings/conf.xml')) {
                 unset($config['db']);
                 unset($config['openssl']);
                 unset($config['globals']['salt']);

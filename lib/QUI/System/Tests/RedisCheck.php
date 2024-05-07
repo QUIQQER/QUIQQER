@@ -55,7 +55,7 @@ class RedisCheck extends QUI\System\Test
     {
         if (!class_exists('RedisArray') || !class_exists('Redis')) {
             if ($message) {
-                return QUI::getLocale()->get('quiqqer/quiqqer', 'message.redis.classes.missing');
+                return QUI::getLocale()->get('quiqqer/core', 'message.redis.classes.missing');
             }
 
             return self::STATUS_ERROR;
@@ -78,7 +78,7 @@ class RedisCheck extends QUI\System\Test
             $Redis->ping();
 
             if ($message) {
-                return QUI::getLocale()->get('quiqqer/quiqqer', 'message.redis.connection.ok');
+                return QUI::getLocale()->get('quiqqer/core', 'message.redis.connection.ok');
             }
 
             return self::STATUS_OK;

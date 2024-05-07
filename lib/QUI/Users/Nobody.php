@@ -310,7 +310,7 @@ class Nobody extends QUI\QDOM implements User
      */
     public function getName(): string
     {
-        return QUI::getLocale()->get('quiqqer/quiqqer', 'nobody.name');
+        return QUI::getLocale()->get('quiqqer/core', 'nobody.name');
     }
 
     /**
@@ -318,7 +318,7 @@ class Nobody extends QUI\QDOM implements User
      */
     public function getUsername(): string
     {
-        return QUI::getLocale()->get('quiqqer/quiqqer', 'nobody.username');
+        return QUI::getLocale()->get('quiqqer/core', 'nobody.username');
     }
 
     /**
@@ -357,7 +357,7 @@ class Nobody extends QUI\QDOM implements User
     {
         throw new Exception(
             QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.lib.user.nobody.get.address'
             )
         );

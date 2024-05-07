@@ -334,7 +334,7 @@ class Manager extends QUI\QDOM
         $data = file_get_contents($this->composer_lock);
         $data = json_decode($data, true);
 
-        $package = array_filter($data['packages'], fn($package) => $package['name'] === 'quiqqer/quiqqer');
+        $package = array_filter($data['packages'], fn($package) => $package['name'] === 'quiqqer/core');
 
         $package = current($package);
         $this->version = $package['version'];
@@ -360,7 +360,7 @@ class Manager extends QUI\QDOM
         $data = file_get_contents($this->composer_lock);
         $data = json_decode($data, true);
 
-        $package = array_filter($data['packages'], fn($package) => $package['name'] === 'quiqqer/quiqqer');
+        $package = array_filter($data['packages'], fn($package) => $package['name'] === 'quiqqer/core');
 
         $package = current($package);
 
@@ -631,7 +631,7 @@ class Manager extends QUI\QDOM
             ];
         }
 
-        // repositories - quiqqer/quiqqer#1260
+        // repositories - quiqqer/core#1260
         usort($repositories, function ($repoA, $repoB) {
             if (isset($repoA['packagist.org'])) {
                 return 1;
@@ -721,7 +721,7 @@ class Manager extends QUI\QDOM
             // must have
             $require = [];
             $require["php"] = ">=7.2";
-            $require["quiqqer/quiqqer"] = "dev-master";
+            $require["quiqqer/core"] = "dev-master";
 
             foreach ($list as $package) {
                 $require[$package['name']] = $package['version'];
@@ -749,12 +749,12 @@ class Manager extends QUI\QDOM
 
         if (QUI::conf('globals', 'quiqqer_version')) {
             if (is_array($composerJson->require)) {
-                $composerJson->require["quiqqer/quiqqer"] = QUI::conf('globals', 'quiqqer_version');
+                $composerJson->require["quiqqer/core"] = QUI::conf('globals', 'quiqqer_version');
             } elseif (is_object($composerJson->require)) {
-                $composerJson->require->{"quiqqer/quiqqer"} = QUI::conf('globals', 'quiqqer_version');
+                $composerJson->require->{"quiqqer/core"} = QUI::conf('globals', 'quiqqer_version');
             } else {
                 $composerJson->require = [
-                    "quiqqer/quiqqer" => QUI::conf('globals', 'quiqqer_version')
+                    "quiqqer/core" => QUI::conf('globals', 'quiqqer_version')
                 ];
             }
         }
@@ -1237,7 +1237,7 @@ class Manager extends QUI\QDOM
 
         if ($memoryLimit != -1 && $memoryLimit < self::REQUIRED_MEMORY * 1024 * 1024) {
             throw new PackageInstallException([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'message.online.update.RAM.insufficient'
             ]);
         }
@@ -1540,7 +1540,7 @@ class Manager extends QUI\QDOM
      * Return package details, via composer
      * If you want a local package, please use getInstalledPackage() and use the Package instead
      *
-     * @param string $package - Name of the package eq: quiqqer/quiqqer
+     * @param string $package - Name of the package eq: quiqqer/core
      *
      * @return array
      * @throws Exception
@@ -1961,7 +1961,7 @@ class Manager extends QUI\QDOM
         ) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'message.online.update.RAM.not.enough',
                     [
                         'command' => './console update'
@@ -2062,7 +2062,7 @@ class Manager extends QUI\QDOM
             }
 
             throw new QUI\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'message.online.update.RAM.insufficient'
             ]);
         }
@@ -2073,7 +2073,7 @@ class Manager extends QUI\QDOM
 
         if ($memoryLimit != -1 && $memoryLimit < self::REQUIRED_MEMORY * 1024 * 1024) {
             throw new QUI\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'message.online.update.RAM.insufficient'
             ]);
         }
@@ -2289,7 +2289,7 @@ class Manager extends QUI\QDOM
     public function getSiteTypeName(string $type): string
     {
         if ($type == 'standard' || empty($type)) {
-            return QUI::getLocale()->get('quiqqer/quiqqer', 'site.type.standard');
+            return QUI::getLocale()->get('quiqqer/core', 'site.type.standard');
         }
 
         // \QUI\System\Log::write( $type );
@@ -2317,7 +2317,7 @@ class Manager extends QUI\QDOM
 
     /**
      * Return the data for a type from its site.xml
-     * https://dev.quiqqer.com/quiqqer/quiqqer/wikis/Site-Xml
+     * https://dev.quiqqer.com/quiqqer/core/wikis/Site-Xml
      *
      * @param string $type
      * @return boolean|array

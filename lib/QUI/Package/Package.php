@@ -743,7 +743,7 @@ class Package extends QUI\QDOM
         }
 
         // permissions
-        if ($this->getName() !== 'quiqqer/quiqqer') { // you can't set permissions to the core
+        if ($this->getName() !== 'quiqqer/core') { // you can't set permissions to the core
             try {
                 $found = QUI::getDataBase()->fetch([
                     'from' => QUI\Permissions\Manager::table(),
@@ -756,7 +756,7 @@ class Package extends QUI\QDOM
                 if (!isset($found[0])) {
                     QUI::getPermissionManager()->addPermission([
                         'name' => $this->getPermissionName(),
-                        'title' => 'quiqqer/quiqqer permission.package.canUse',
+                        'title' => 'quiqqer/core permission.package.canUse',
                         'desc' => '',
                         'area' => '',
                         'type' => 'bool',
@@ -782,14 +782,14 @@ class Package extends QUI\QDOM
 
             try {
                 QUI\Translator::addUserVar(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     $this->getPermissionName('header'),
                     $data
                 );
             } catch (QUI\Exception) {
                 try {
                     QUI\Translator::edit(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         $this->getPermissionName('header'),
                         $this->getName(),
                         $data
@@ -921,7 +921,7 @@ class Package extends QUI\QDOM
 
 
         $groups[] = $this->getName();
-        $groups[] = 'quiqqer/quiqqer';
+        $groups[] = 'quiqqer/core';
 
         $groups = array_unique($groups);
 

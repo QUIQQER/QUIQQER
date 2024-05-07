@@ -16,7 +16,7 @@ define('controls/cache/LongTime', [
 ], function (QUI, QUIControl, QUIButton, QUIConfirm, QUIAjax, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
 
@@ -80,7 +80,7 @@ define('controls/cache/LongTime', [
 
             // redis check
             this.$RedisCheck = new QUIButton({
-                text  : QUILocale.get('quiqqer/quiqqer', 'quiqqer.settings.cache.redis.check.button'),
+                text  : QUILocale.get('quiqqer/core', 'quiqqer.settings.cache.redis.check.button'),
                 events: {
                     onClick: this.redisCheck
                 }
@@ -120,7 +120,7 @@ define('controls/cache/LongTime', [
                                 'class': 'mongo-error-message',
                                 html   : '<td>' +
                                     '<div class="messages-message message-error">' +
-                                    QUILocale.get('quiqqer/quiqqer', 'message.quiqqer.mongo.missing') +
+                                    QUILocale.get('quiqqer/core', 'message.quiqqer.mongo.missing') +
                                     '</div>' +
                                     '</td>'
                             });
@@ -137,7 +137,7 @@ define('controls/cache/LongTime', [
                             'class': 'mongo-check-button',
                             html   : '<td>' +
                                 '<button class="qui-button" style="float: right">' +
-                                QUILocale.get('quiqqer/quiqqer', 'message.quiqqer.mongo.button') +
+                                QUILocale.get('quiqqer/core', 'message.quiqqer.mongo.button') +
                                 '</button>' +
                                 '</td>'
                         }).inject(MongoTable.getElement('tbody'));
@@ -150,7 +150,7 @@ define('controls/cache/LongTime', [
 
                             self.checkMongoDB().then(function () {
                                 Button.disabled = false;
-                                Button.set('html', QUILocale.get('quiqqer/quiqqer', 'message.quiqqer.mongo.button'));
+                                Button.set('html', QUILocale.get('quiqqer/core', 'message.quiqqer.mongo.button'));
                             });
                         });
                     });
@@ -179,7 +179,7 @@ define('controls/cache/LongTime', [
             QUIAjax.get('ajax_system_cache_redisCheck', function (result) {
                 self.$RedisCheck.setAttribute(
                     'text',
-                    QUILocale.get('quiqqer/quiqqer', 'quiqqer.settings.cache.redis.check.button')
+                    QUILocale.get('quiqqer/core', 'quiqqer.settings.cache.redis.check.button')
                 );
 
                 var message = result.message;

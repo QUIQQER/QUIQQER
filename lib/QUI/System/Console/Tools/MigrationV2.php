@@ -257,7 +257,7 @@ class MigrationV2 extends QUI\System\Console\Tool
 
 
         // read database xml, because we need the newest groups db
-        $dbFields = QUI\Utils\Text\XML::getDataBaseFromXml(OPT_DIR . 'quiqqer/quiqqer/database.xml');
+        $dbFields = QUI\Utils\Text\XML::getDataBaseFromXml(OPT_DIR . 'quiqqer/core/database.xml');
         unset($dbFields['projects']);
 
         $dbFields['globals'] = array_filter($dbFields['globals'], fn($entry) => $entry['suffix'] === 'groups');

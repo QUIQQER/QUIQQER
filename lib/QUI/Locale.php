@@ -157,7 +157,7 @@ class Locale implements \Stringable
      */
     public function getDecimalSeparator(): array|string
     {
-        return $this->get('quiqqer/quiqqer', 'numberFormat.decimal_separator');
+        return $this->get('quiqqer/core', 'numberFormat.decimal_separator');
     }
 
     /**
@@ -313,7 +313,7 @@ class Locale implements \Stringable
      */
     public function getGroupingSeparator(): string
     {
-        return $this->get('quiqqer/quiqqer', 'numberFormat.grouping_separator');
+        return $this->get('quiqqer/core', 'numberFormat.grouping_separator');
     }
 
     /**
@@ -321,7 +321,7 @@ class Locale implements \Stringable
      */
     public function getDecimalPattern(): string
     {
-        return $this->get('quiqqer/quiqqer', 'numberFormat.decimal_pattern');
+        return $this->get('quiqqer/core', 'numberFormat.decimal_pattern');
     }
 
     /**
@@ -329,7 +329,7 @@ class Locale implements \Stringable
      */
     public function getPercentPattern(): string
     {
-        return $this->get('quiqqer/quiqqer', 'numberFormat.percent_pattern');
+        return $this->get('quiqqer/core', 'numberFormat.percent_pattern');
     }
 
     /**
@@ -337,7 +337,7 @@ class Locale implements \Stringable
      */
     public function getCurrencyPattern(): string
     {
-        return $this->get('quiqqer/quiqqer', 'numberFormat.currency_pattern');
+        return $this->get('quiqqer/core', 'numberFormat.currency_pattern');
     }
 
     /**
@@ -345,7 +345,7 @@ class Locale implements \Stringable
      */
     public function getAccountingCurrencyPattern(): string
     {
-        return $this->get('quiqqer/quiqqer', 'numberFormat.accounting_currency_pattern');
+        return $this->get('quiqqer/core', 'numberFormat.accounting_currency_pattern');
     }
 
     /**
@@ -375,9 +375,9 @@ class Locale implements \Stringable
             $number = (float)$number;
         }
 
-        $decimalSeparator = self::get('quiqqer/quiqqer', 'numberFormat.decimal_separator');
-        $groupingSeparator = self::get('quiqqer/quiqqer', 'numberFormat.grouping_separator');
-        $decimalPattern = self::get('quiqqer/quiqqer', 'numberFormat.decimal_pattern');
+        $decimalSeparator = self::get('quiqqer/core', 'numberFormat.decimal_separator');
+        $groupingSeparator = self::get('quiqqer/core', 'numberFormat.grouping_separator');
+        $decimalPattern = self::get('quiqqer/core', 'numberFormat.decimal_pattern');
 
         if (!empty($decimalSeparator)) {
             $Formatter->setSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL, $decimalSeparator);

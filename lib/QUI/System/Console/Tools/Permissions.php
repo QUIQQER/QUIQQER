@@ -32,25 +32,25 @@ class Permissions extends QUI\System\Console\Tool
             ->setDescription('Permission explorer')
             ->addArgument(
                 'help',
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.permissions.help.description'),
+                QUI::getLocale()->get('quiqqer/core', 'console.tool.permissions.help.description'),
                 false,
                 true
             )
             ->addArgument(
                 'list',
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.permissions.list.description'),
+                QUI::getLocale()->get('quiqqer/core', 'console.tool.permissions.list.description'),
                 false,
                 true
             )
             ->addArgument(
                 'user',
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.permissions.user.description'),
+                QUI::getLocale()->get('quiqqer/core', 'console.tool.permissions.user.description'),
                 false,
                 true
             )
             ->addArgument(
                 'group',
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.permissions.group.description'),
+                QUI::getLocale()->get('quiqqer/core', 'console.tool.permissions.group.description'),
                 false,
                 true
             );
@@ -105,21 +105,21 @@ class Permissions extends QUI\System\Console\Tool
         $Climate->arguments->add([
             'help' => [
                 'longPrefix' => 'help',
-                'description' => QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.permissions.help.description'),
+                'description' => QUI::getLocale()->get('quiqqer/core', 'console.tool.permissions.help.description'),
                 'noValue' => true
             ],
             'list' => [
                 'longPrefix' => 'list',
-                'description' => QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.permissions.list.description'),
+                'description' => QUI::getLocale()->get('quiqqer/core', 'console.tool.permissions.list.description'),
                 'noValue' => true
             ],
             'user' => [
                 'longPrefix' => 'user',
-                'description' => QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.permissions.user.description')
+                'description' => QUI::getLocale()->get('quiqqer/core', 'console.tool.permissions.user.description')
             ],
             'group' => [
                 'longPrefix' => 'group',
-                'description' => QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.permissions.group.description')
+                'description' => QUI::getLocale()->get('quiqqer/core', 'console.tool.permissions.group.description')
             ]
         ]);
 
@@ -232,7 +232,7 @@ class Permissions extends QUI\System\Console\Tool
         };
 
 
-        $message = QUI::getLocale()->get('quiqqer/quiqqer', 'console.permissions.user', [
+        $message = QUI::getLocale()->get('quiqqer/core', 'console.permissions.user', [
             'username' => $User->getUsername(),
             'user' => $User->getName(),
         ]);
@@ -303,7 +303,7 @@ class Permissions extends QUI\System\Console\Tool
         };
 
 
-        $message = QUI::getLocale()->get('quiqqer/quiqqer', 'console.permissions.group', [
+        $message = QUI::getLocale()->get('quiqqer/core', 'console.permissions.group', [
             'group' => $Group->getName()
         ]);
 

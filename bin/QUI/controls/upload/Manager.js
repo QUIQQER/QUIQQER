@@ -25,7 +25,7 @@ define('controls/upload/Manager', [
 ], function(QUI, QUIPanel, QUIProgressbar, QUIAlert, MathUtils, UploadFile, Ajax, Locale) {
     'use strict';
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     /**
      * @class controls/upload/Manager

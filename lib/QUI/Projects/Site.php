@@ -373,7 +373,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         if ($lang && !in_array($lang, $availableLanguages)) {
             throw new QUI\Exception(
                 [
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.project.lang.not.found',
                     ['lang' => $lang]
                 ],
@@ -436,7 +436,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         if (!isset($result[0])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.site.not.found'
                 ),
                 705,
@@ -453,7 +453,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         if ($params['active'] != 1 && !defined('QUIQQER_PREVIEW')) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.site.not.found'
                 ),
                 705,
@@ -468,7 +468,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         if ($params['deleted'] == 1) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.site.not.found'
                 ),
                 705,
@@ -671,7 +671,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         }
 
         throw new QUI\Exception(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.no.next.sibling')
+            QUI::getLocale()->get('quiqqer/core', 'exception.site.no.next.sibling')
         );
     }
 
@@ -803,7 +803,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         }
 
         throw new QUI\Exception(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.no.previous.sibling')
+            QUI::getLocale()->get('quiqqer/core', 'exception.site.no.previous.sibling')
         );
     }
 
@@ -1037,7 +1037,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             $this->type = $type;
             $this->package = $package;
 
-            $cacheName = 'quiqqer/package/quiqqer/quiqqer/type/' . md5($type) . '/nocache';
+            $cacheName = 'quiqqer/package/quiqqer/core/type/' . md5($type) . '/nocache';
 
             try {
                 $noCache = QUI\Cache\Manager::get($cacheName);
@@ -1279,7 +1279,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         }
 
         throw new QUI\Exception(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.child.by.name.not.found', [
+            QUI::getLocale()->get('quiqqer/core', 'exception.site.child.by.name.not.found', [
                 'name' => $name
             ]),
             705
@@ -1903,7 +1903,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         $Project = $this->getProject();
 
         // Clear the URL caches - required when the URL changes (e.g. when moving a site)
-        // See quiqqer/quiqqer#1129 for more information
+        // See quiqqer/core#1129 for more information
         QUI::getRewrite()->getOutput()->removeRewrittenUrlCache($this);
         QUI\Cache\Manager::clear(
             QUI\Projects\Site::getLinkCachePath(

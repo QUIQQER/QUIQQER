@@ -39,14 +39,14 @@ QUI::$Ajax->registerFunction(
         if (!empty($result)) {
             if (\count($result) === 1) {
                 QUI::getMessagesHandler()->addSuccess(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'message.group.deleted', [
+                    QUI::getLocale()->get('quiqqer/core', 'message.group.deleted', [
                         'groupname' => $names[0],
                         'id' => $result[0]
                     ])
                 );
             } else {
                 QUI::getMessagesHandler()->addSuccess(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'message.groups.deleted', [
+                    QUI::getLocale()->get('quiqqer/core', 'message.groups.deleted', [
                         'groups' => implode(', ', $result)
                     ])
                 );

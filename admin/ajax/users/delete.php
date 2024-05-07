@@ -23,7 +23,7 @@ QUI::$Ajax->registerFunction(
         }
 
         QUI::getMessagesHandler()->addInformation(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'message.user.deleted.successful', [
+            QUI::getLocale()->get('quiqqer/core', 'message.user.deleted.successful', [
                 'ids' => implode(', ', $uIds)
             ])
         );

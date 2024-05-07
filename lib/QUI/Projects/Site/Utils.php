@@ -56,14 +56,14 @@ class Utils
     {
         if (strlen($name) <= 2) {
             throw new Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.url.2.signs'),
+                QUI::getLocale()->get('quiqqer/core', 'exception.site.url.2.signs'),
                 701
             );
         }
 
         if (strlen($name) > 200) {
             throw new Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.url.200.signs'),
+                QUI::getLocale()->get('quiqqer/core', 'exception.site.url.200.signs'),
                 704
             );
         }
@@ -78,7 +78,7 @@ class Utils
         // Prüfung des Namens - Sonderzeichen
         if (preg_match($signs, $name)) {
             throw new Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.url.wrong.signs', [
+                QUI::getLocale()->get('quiqqer/core', 'exception.site.url.wrong.signs', [
                     'name' => $name,
                     'signs' => $signs
                 ]),
@@ -620,7 +620,7 @@ class Utils
         if (!self::isSiteLink($link)) {
             throw new Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.site.not.found'
                 ),
                 705,
@@ -637,7 +637,7 @@ class Utils
         if (empty($parseUrl['query'])) {
             throw new Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.site.not.found'
                 ),
                 705,
@@ -865,7 +865,7 @@ class Utils
         if (!self::isSiteLink($link)) {
             throw new Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.site.not.found'
                 ),
                 705,
@@ -882,7 +882,7 @@ class Utils
         if (empty($parseUrl['query'])) {
             throw new Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.site.not.found'
                 ),
                 705,

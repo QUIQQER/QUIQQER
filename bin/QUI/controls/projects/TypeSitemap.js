@@ -75,8 +75,8 @@ define('controls/projects/TypeSitemap', [
                 name       : 1,
                 index      : 1,
                 value      : 1,
-                text       : Locale.get('quiqqer/quiqqer', 'projects.typesitemap.firstChild'),
-                alt        : Locale.get('quiqqer/quiqqer', 'projects.typesitemap.firstChild'),
+                text       : Locale.get('quiqqer/core', 'projects.typesitemap.firstChild'),
+                alt        : Locale.get('quiqqer/core', 'projects.typesitemap.firstChild'),
                 icon       : 'fa fa-magic',
                 hasChildren: false
             });
@@ -118,7 +118,7 @@ define('controls/projects/TypeSitemap', [
                 if (typeOf(result) === 'array') {
                     First.setAttribute(
                         'text',
-                        Locale.get('quiqqer/quiqqer', 'projects.typesitemap.message.no.types')
+                        Locale.get('quiqqer/core', 'projects.typesitemap.message.no.types')
                     );
 
                     self.fireEvent('load', [self]);
@@ -176,7 +176,7 @@ define('controls/projects/TypeSitemap', [
                         new QUISitemapItem({
                             name       : packageName,
                             value      : packageName,
-                            text       : Locale.get('quiqqer/quiqqer', 'site.type.standard'),
+                            text       : Locale.get('quiqqer/core', 'site.type.standard'),
                             alt        : packageName,
                             icon       : result[packageName].icon,
                             hasChildren: false

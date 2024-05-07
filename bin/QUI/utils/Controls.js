@@ -412,8 +412,8 @@ define('utils/Controls', [
 
                         Cancel = new QUIButton({
                             image : 'fa fa-remove',
-                            alt   : QUILocale.get('quiqqer/quiqqer', 'control.date.button.alt'),
-                            title : QUILocale.get('quiqqer/quiqqer', 'control.date.button.title'),
+                            alt   : QUILocale.get('quiqqer/core', 'control.date.button.alt'),
+                            title : QUILocale.get('quiqqer/core', 'control.date.button.title'),
                             Input : Child,
                             events: {
                                 onClick: function (Btn) {
@@ -443,7 +443,7 @@ define('utils/Controls', [
                     require(['qui/QUI'], function (QUI) {
                         QUI.getMessageHandler(function (MH) {
                             MH.addAttention(
-                                QUILocale.get('quiqqer/quiqqer', 'control.date.missing.package')
+                                QUILocale.get('quiqqer/core', 'control.date.missing.package')
                             );
                         });
                     });

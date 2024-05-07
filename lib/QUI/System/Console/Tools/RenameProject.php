@@ -30,7 +30,7 @@ class RenameProject extends Tool
     {
         $this->setName("quiqqer:rename-project");
         $this->setDescription(
-            QUI::getLocale()->get("quiqqer/quiqqer", "console.tool.project.rename.description")
+            QUI::getLocale()->get("quiqqer/core", "console.tool.project.rename.description")
         );
     }
 
@@ -82,7 +82,7 @@ class RenameProject extends Tool
     }
 
     /**
-     * Prints a line to the output while using a locale variable of the 'quiqqer/quiqqer' group
+     * Prints a line to the output while using a locale variable of the 'quiqqer/core' group
      *
      * @param $locale
      * @param bool|string $color
@@ -90,7 +90,7 @@ class RenameProject extends Tool
      */
     protected function writeLnLocale($locale, bool|string $color = false, bool|string $background = false): void
     {
-        $text = QUI::getLocale()->get("quiqqer/quiqqer", $locale);
+        $text = QUI::getLocale()->get("quiqqer/core", $locale);
 
         $this->writeLn($text, $color, $background);
     }

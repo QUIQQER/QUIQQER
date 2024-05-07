@@ -81,7 +81,7 @@ class Manager
 
         if (str_starts_with($function, 'ajax_')) {
             // if the function is an ajax_function
-            $_rf_file = OPT_DIR . 'quiqqer/quiqqer/admin/' . str_replace('_', '/', $function) . '.php';
+            $_rf_file = OPT_DIR . 'quiqqer/core/admin/' . str_replace('_', '/', $function) . '.php';
             $_rf_file = Orthos::clearPath(realpath($_rf_file));
 
             if (file_exists($_rf_file)) {
@@ -182,7 +182,7 @@ class Manager
 
             if ($count + 1 >= $configMaxFileCount) {
                 throw new QUI\Permissions\Exception([
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.upload.count.limit'
                 ]);
             }
@@ -213,14 +213,14 @@ class Manager
 
         if ($this->checkFnMatch($configAllowedTypes, $fileType) === false) {
             throw new Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.upload.not.allowed.mimetype'
             ]);
         }
 
         if ($this->checkFnMatch($configAllowedEndings, $filename) === false) {
             throw new Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.upload.not.allowed.ending'
             ]);
         }
@@ -297,7 +297,7 @@ class Manager
             QUIFile::unlink($tmp_name);
 
             throw new Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.media.upload.fileSize.is.to.big',
                 [
                     'size' => QUI\Utils\System\File::formatSize($configMaxFileSize),
@@ -410,7 +410,7 @@ class Manager
 
         if ($SessionUser->getUUID() !== $User->getUUID()) {
             throw new QUI\Permissions\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exceptions.upload.no.permissions.'
             ]);
         }
@@ -460,7 +460,7 @@ class Manager
     {
         if (empty($_FILES) || !isset($_FILES['files'])) {
             throw new Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.no.data'),
+                QUI::getLocale()->get('quiqqer/core', 'exception.media.upload.no.data'),
                 400
             );
         }
@@ -481,7 +481,7 @@ class Manager
 
             if (!move_uploaded_file($list["tmp_name"], $file)) {
                 throw new Exception(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.move', [
+                    QUI::getLocale()->get('quiqqer/core', 'exception.media.move', [
                         'file' => $file
                     ])
                 );
@@ -519,7 +519,7 @@ class Manager
             $file = $uploadDir . $filename;
 
             if (!move_uploaded_file($list["tmp_name"], $file)) {
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.move', [
+                QUI::getLocale()->get('quiqqer/core', 'exception.media.move', [
                     'file' => $filename
                 ]);
             }
@@ -563,27 +563,27 @@ class Manager
 
             case UPLOAD_ERR_INI_SIZE:
                 throw new Exception(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.max.filesize')
+                    QUI::getLocale()->get('quiqqer/core', 'exception.media.upload.max.filesize')
                 );
 
             case UPLOAD_ERR_FORM_SIZE:
                 throw new Exception(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.max.form.filesize')
+                    QUI::getLocale()->get('quiqqer/core', 'exception.media.upload.max.form.filesize')
                 );
 
             case UPLOAD_ERR_PARTIAL:
                 throw new Exception(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.partially.uploaded')
+                    QUI::getLocale()->get('quiqqer/core', 'exception.media.upload.partially.uploaded')
                 );
 
             case UPLOAD_ERR_NO_FILE:
                 throw new Exception(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.no.data')
+                    QUI::getLocale()->get('quiqqer/core', 'exception.media.upload.no.data')
                 );
 
             case UPLOAD_ERR_NO_TMP_DIR:
                 throw new Exception(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.missing.temp')
+                    QUI::getLocale()->get('quiqqer/core', 'exception.media.upload.missing.temp')
                 );
         }
 
@@ -606,7 +606,7 @@ class Manager
 
         if ($fileInfo['mime_type'] != 'application/zip') {
             throw new Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.unsupported.archive')
+                QUI::getLocale()->get('quiqqer/core', 'exception.media.upload.unsupported.archive')
             );
         }
 
@@ -734,7 +734,7 @@ class Manager
 
         if (!file_exists($conf)) {
             throw new Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.not.found'),
+                QUI::getLocale()->get('quiqqer/core', 'exception.media.file.not.found'),
                 404
             );
         }

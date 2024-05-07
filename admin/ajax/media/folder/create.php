@@ -22,7 +22,7 @@ QUI::$Ajax->registerFunction(
 
         if (QUI\Projects\Media\Utils::isFolder($File) === false) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.create.folder.only.in.folder')
+                QUI::getLocale()->get('quiqqer/core', 'exception.media.create.folder.only.in.folder')
             );
         }
 

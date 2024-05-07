@@ -169,7 +169,7 @@ class Project implements \Stringable
         if (!isset($config[$name])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.project.not.found',
                     ['name' => $name]
                 ),
@@ -183,7 +183,7 @@ class Project implements \Stringable
         if (!isset($this->config['langs'])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.project.has.no.langs'
                 ),
                 803
@@ -196,7 +196,7 @@ class Project implements \Stringable
         if (!isset($this->config['default_lang'])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.project.lang.no.default'
                 ),
                 805
@@ -210,7 +210,7 @@ class Project implements \Stringable
             if (!in_array($lang, $this->langs)) {
                 throw new QUI\Exception(
                     QUI::getLocale()->get(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'exception.project.lang.not.found',
                         [
                             'lang' => $lang
@@ -225,7 +225,7 @@ class Project implements \Stringable
             if (!isset($this->config['default_lang'])) {
                 throw new QUI\Exception(
                     QUI::getLocale()->get(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'exception.project.lang.no.default'
                     ),
                     805
@@ -1448,7 +1448,7 @@ class Project implements \Stringable
 
         if (!is_writable($file)) {
             throw new QUI\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.custom.css.is.not.writeable',
                 ['file' => $file]
             ]);
@@ -1491,7 +1491,7 @@ class Project implements \Stringable
 
         if (!is_writable($file)) {
             throw new QUI\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.custom.javascript.is.not.writeable',
                 ['file' => $file]
             ]);

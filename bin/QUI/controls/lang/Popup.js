@@ -33,7 +33,7 @@ define('controls/lang/Popup', [
         ],
 
         options: {
-            title    : Locale.get('quiqqer/quiqqer', 'lang.popup.title'),
+            title    : Locale.get('quiqqer/core', 'lang.popup.title'),
             maxHeight: 600,
             maxWidth : 500,
             autoclose: false
@@ -92,12 +92,12 @@ define('controls/lang/Popup', [
 
             this.$Grid = new Grid(GridContainer, {
                 columnModel: [{
-                    header   : Locale.get('quiqqer/quiqqer', 'language.code'),
+                    header   : Locale.get('quiqqer/core', 'language.code'),
                     dataIndex: 'lang',
                     dataType : 'string',
                     width    : 100
                 }, {
-                    header   : Locale.get('quiqqer/quiqqer', 'language'),
+                    header   : Locale.get('quiqqer/core', 'language'),
                     dataIndex: 'text',
                     dataType : 'string',
                     width    : 250
@@ -112,7 +112,7 @@ define('controls/lang/Popup', [
 
             for (var i = 0, len = langs.length; i < len; i++) {
                 data.push({
-                    text: Locale.get('quiqqer/quiqqer', 'language.' + langs[i]),
+                    text: Locale.get('quiqqer/core', 'language.' + langs[i]),
                     lang: langs[i]
                 });
             }

@@ -19,7 +19,7 @@ QUI::$Ajax->registerFunction(
 
         if (QUI\Projects\Media\Utils::isFolder($Folder) === false) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.not.found')
+                QUI::getLocale()->get('quiqqer/core', 'exception.media.file.not.found')
             );
         }
 

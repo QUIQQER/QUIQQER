@@ -104,7 +104,7 @@
 
         <window name="quiqqer-cache" menu-parent="/settings/quiqqer/">
             <title>
-                <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache"/>
+                <locale group="quiqqer/core" var="quiqqer.settings.cache"/>
             </title>
 
             <params>
@@ -114,160 +114,160 @@
             <categories>
                 <category name="settings" require="controls/cache/General">
                     <title>
-                        <locale group="quiqqer/quiqqer" var="quiqqer.settings.general.title"/>
+                        <locale group="quiqqer/core" var="quiqqer.settings.general.title"/>
                     </title>
                     <icon>fa fa-cogs</icon>
 
                     <settings title="general" name="general">
                         <title>
-                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.title"/>
+                            <locale group="quiqqer/core" var="quiqqer.settings.cache.title"/>
                         </title>
 
                         <input conf="general.nocache" type="checkbox">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.general.nocache"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.cache.general.nocache"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/quiqqer"
+                                <locale group="quiqqer/core"
                                         var="quiqqer.settings.cache.general.nocache.description"/>
                             </description>
                         </input>
 
                         <select conf="general.cacheType">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.handler.title"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.cache.handler.title"/>
                             </text>
 
                             <option value="">---</option>
                             <option value="filesystem">
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.handler.filesystem"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.cache.handler.filesystem"/>
                             </option>
                             <option value="apc">
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.handler.apc"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.cache.handler.apc"/>
                             </option>
                             <option value="memcache">
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.handler.memcache"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.cache.handler.memcache"/>
                             </option>
                             <option value="redis">
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.handler.redis"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.cache.handler.redis"/>
                             </option>
                             <option value="mongo">
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.handler.mongo"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.cache.handler.mongo"/>
                             </option>
                         </select>
                     </settings>
 
                     <settings title="redis" name="redis">
                         <title>
-                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.redis.title"/>
+                            <locale group="quiqqer/core" var="quiqqer.settings.cache.redis.title"/>
                         </title>
 
                         <input conf="general.redis" type="text" placeholder="localhost">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.redis.server"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.cache.redis.server"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.redis.server.description"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.cache.redis.server.description"/>
                             </description>
                         </input>
                     </settings>
 
                     <settings title="apc" name="apc">
                         <title>
-                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.apc.title"/>
+                            <locale group="quiqqer/core" var="quiqqer.settings.cache.apc.title"/>
                         </title>
 
                         <input conf="apc.namespace" type="text">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.apc.namespace"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.cache.apc.namespace"/>
                             </text>
                         </input>
 
                         <input conf="apc.ttl" type="text">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.apc.ttl"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.cache.apc.ttl"/>
                             </text>
                         </input>
                     </settings>
 
                     <settings title="memcache" name="memcache">
                         <title>
-                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.memcache.title"/>
+                            <locale group="quiqqer/core" var="quiqqer.settings.memcache.title"/>
                         </title>
 
                         <input conf="memcache.servers" type="text">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.memcache.servers"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.memcache.servers"/>
                             </text>
                         </input>
 
                         <input conf="memcache.prefix_key" type="text">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.memcache.prefix_key"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.memcache.prefix_key"/>
                             </text>
                         </input>
 
                         <input conf="memcache.serializer" type="text">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.memcache.serializer"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.memcache.serializer"/>
                             </text>
                         </input>
 
                         <input conf="memcache.libketama_compatible" type="checkbox">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.memcache.libketama_compatible"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.memcache.libketama_compatible"/>
                             </text>
                         </input>
 
                         <input conf="memcache.cache_lookups" type="checkbox">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.memcache.cache_lookups"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.memcache.cache_lookups"/>
                             </text>
                         </input>
                     </settings>
 
                     <settings title="filesystem" name="filesystem">
                         <title>
-                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.filesystem.title"/>
+                            <locale group="quiqqer/core" var="quiqqer.settings.filesystem.title"/>
                         </title>
                         <input conf="filesystem.path" type="text">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.filesystem.path"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.filesystem.path"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.filesystem.path.description"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.filesystem.path.description"/>
                             </description>
                         </input>
                     </settings>
 
                     <settings title="mongo" name="mongo">
                         <title>
-                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.mongo.title"/>
+                            <locale group="quiqqer/core" var="quiqqer.settings.mongo.title"/>
                         </title>
 
                         <input conf="mongo.host" type="text" placeholder="localhost">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.mongo.server"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.mongo.server"/>
                             </text>
                         </input>
                         <input conf="mongo.database" type="text" placeholder="local">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.mongo.database"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.mongo.database"/>
                             </text>
                         </input>
                         <input conf="mongo.collection" type="text" placeholder="quiqqer.cache">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.mongo.collection"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.mongo.collection"/>
                             </text>
                         </input>
                         <input conf="mongo.username" type="text">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.mongo.username"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.mongo.username"/>
                             </text>
                         </input>
                         <input conf="mongo.password" type="text">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.mongo.password"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.mongo.password"/>
                             </text>
                         </input>
                     </settings>
@@ -275,49 +275,49 @@
 
                 <category name="longtime" require="controls/cache/LongTime">
                     <title>
-                        <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.longtime.title"/>
+                        <locale group="quiqqer/core" var="quiqqer.settings.cache.longtime.title"/>
                     </title>
                     <text>
-                        <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.longtime.text"/>
+                        <locale group="quiqqer/core" var="quiqqer.settings.cache.longtime.text"/>
                     </text>
                     <icon>fa fa-cogs</icon>
 
                     <settings title="longtime" name="longtime">
                         <title>
-                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.longtime.title"/>
+                            <locale group="quiqqer/core" var="quiqqer.settings.longtime.title"/>
                         </title>
 
                         <select conf="longtime.type">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longtime.cache"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.longtime.cache"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longtime.cache.description"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.longtime.cache.description"/>
                             </description>
 
                             <option value="file">
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longtime.file"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.longtime.file"/>
                             </option>
                             <option value="mongo">
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longtime.mongo"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.longtime.mongo"/>
                             </option>
                             <option value="redis">
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longtime.redis"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.longtime.redis"/>
                             </option>
                         </select>
                     </settings>
 
                     <settings title="longtime-redis" name="longtime-redis">
                         <title>
-                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.redis.title"/>
+                            <locale group="quiqqer/core" var="quiqqer.settings.longTimeCache.redis.title"/>
                         </title>
 
                         <input conf="longtime.redis_server" type="text" placeholder="localhost">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.redis.server"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.longTimeCache.redis.server"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/quiqqer"
+                                <locale group="quiqqer/core"
                                         var="quiqqer.settings.longTimeCache.redis.server.description"/>
                             </description>
                         </input>
@@ -325,15 +325,15 @@
 
                     <settings title="longtime-file" name="longtime-file">
                         <title>
-                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.file.title"/>
+                            <locale group="quiqqer/core" var="quiqqer.settings.longTimeCache.file.title"/>
                         </title>
 
                         <input conf="longtime.file_path" type="text">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.file.path"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.longTimeCache.file.path"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/quiqqer"
+                                <locale group="quiqqer/core"
                                         var="quiqqer.settings.longTimeCache.file.path.description"/>
                             </description>
                         </input>
@@ -341,37 +341,37 @@
 
                     <settings title="longtime-mongo" name="longtime-mongo">
                         <title>
-                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.mongo.title"/>
+                            <locale group="quiqqer/core" var="quiqqer.settings.longTimeCache.mongo.title"/>
                         </title>
 
                         <input conf="longtime.mongo_host" type="text" placeholder="localhost">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.mongo.server"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.longTimeCache.mongo.server"/>
                             </text>
                         </input>
                         <input conf="longtime.mongo_database" type="text" placeholder="local">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.mongo.database"/>
+                                <locale group="quiqqer/core" var="quiqqer.settings.longTimeCache.mongo.database"/>
                             </text>
                         </input>
 
                         <input conf="longtime.mongo_collection" type="text" placeholder="quiqqer.store">
                             <text>
-                                <locale group="quiqqer/quiqqer"
+                                <locale group="quiqqer/core"
                                         var="quiqqer.settings.longTimeCache.mongo_collection.server"/>
                             </text>
                         </input>
 
                         <input conf="longtime.mongo_username" type="text">
                             <text>
-                                <locale group="quiqqer/quiqqer"
+                                <locale group="quiqqer/core"
                                         var="quiqqer.settings.longTimeCache.mongo.username"/>
                             </text>
                         </input>
 
                         <input conf="longtime.mongo_password" type="text">
                             <text>
-                                <locale group="quiqqer/quiqqer"
+                                <locale group="quiqqer/core"
                                         var="quiqqer.settings.longTimeCache.mongo.password"/>
                             </text>
                         </input>
@@ -381,28 +381,28 @@
 
                 <category name="management" require="controls/cache/Settings">
                     <title>
-                        <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.management.title"/>
+                        <locale group="quiqqer/core" var="quiqqer.settings.cache.management.title"/>
                     </title>
                     <text>
-                        <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.management.text"/>
+                        <locale group="quiqqer/core" var="quiqqer.settings.cache.management.text"/>
                     </text>
                     <icon>fa fa-paint-brush</icon>
 
                     <settings title="clearCompleteCache" name="clearCompleteCache">
                         <title>
-                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.clear.title"/>
+                            <locale group="quiqqer/core" var="quiqqer.settings.cache.clear.title"/>
                         </title>
                     </settings>
 
                     <settings title="purgeCache" name="purgeCache">
                         <title>
-                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.purge.title"/>
+                            <locale group="quiqqer/core" var="quiqqer.settings.cache.purge.title"/>
                         </title>
                     </settings>
 
                     <settings title="clearQuiqqerCache" name="clearQuiqqerCache">
                         <title>
-                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.quiqqer.title"/>
+                            <locale group="quiqqer/core" var="quiqqer.settings.cache.quiqqer.title"/>
                         </title>
                     </settings>
 

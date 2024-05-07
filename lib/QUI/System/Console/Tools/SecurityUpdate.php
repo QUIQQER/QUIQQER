@@ -58,7 +58,7 @@ class SecurityUpdate extends QUI\System\Console\Tool
     {
         Cleanup::clearComposer();
 
-        $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'security.update'));
+        $this->writeLn(QUI::getLocale()->get('quiqqer/core', 'security.update'));
         $this->writeLn('========================');
         $this->writeLn();
 
@@ -85,7 +85,7 @@ class SecurityUpdate extends QUI\System\Console\Tool
         $Composer->setOutput($CLIOutput);
         $Packages->refreshServerList();
 
-        $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'security.update.start'));
+        $this->writeLn(QUI::getLocale()->get('quiqqer/core', 'security.update.start'));
 
         // create security composer
         $workingDir = $Composer->getWorkingDir();
@@ -149,7 +149,7 @@ class SecurityUpdate extends QUI\System\Console\Tool
                 }
 
                 // wenn version direkt festgesetzt wurde, nicht ändern
-                // quiqqer/quiqqer#1192
+                // quiqqer/core#1192
                 if (substr_count($version, '.') === 3) {
                     $composerJSON['require'][$package] = $v;
                 }
@@ -189,12 +189,12 @@ class SecurityUpdate extends QUI\System\Console\Tool
             }
 
             if (!$isUpdateAvailable) {
-                $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'security.update.no.updates.found'));
+                $this->writeLn(QUI::getLocale()->get('quiqqer/core', 'security.update.no.updates.found'));
                 return;
             }
 
             // run the update with the security package list
-            $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'security.update.updates.found'));
+            $this->writeLn(QUI::getLocale()->get('quiqqer/core', 'security.update.updates.found'));
             $this->writeLn();
             $this->writeLn();
             $dryRun = false;
@@ -207,8 +207,8 @@ class SecurityUpdate extends QUI\System\Console\Tool
 
             $Composer->update();
 
-            $wasExecuted = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.execute');
-            $webserver = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.webserver');
+            $wasExecuted = QUI::getLocale()->get('quiqqer/core', 'update.message.execute');
+            $webserver = QUI::getLocale()->get('quiqqer/core', 'update.message.webserver');
 
             $this->writeLn($wasExecuted);
             $this->writeLn($webserver);
@@ -230,11 +230,11 @@ class SecurityUpdate extends QUI\System\Console\Tool
             $this->write(' [error]', 'red');
             $this->writeLn();
             $this->writeLn(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.error.1') . '::' . $Exception->getMessage(),
+                QUI::getLocale()->get('quiqqer/core', 'update.message.error.1') . '::' . $Exception->getMessage(),
                 'red'
             );
 
-            $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.error'), 'red');
+            $this->writeLn(QUI::getLocale()->get('quiqqer/core', 'update.message.error'), 'red');
             $this->writeLn();
             $this->writeLn('./console repair', 'red');
             $this->resetColor();
@@ -261,13 +261,13 @@ class SecurityUpdate extends QUI\System\Console\Tool
                 $Mailer->addAttachment($logFile);
 
                 $Mailer->setSubject(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'security.update.console.mail.subject', [
+                    QUI::getLocale()->get('quiqqer/core', 'security.update.console.mail.subject', [
                         'host' => HOST
                     ])
                 );
 
                 $Mailer->setBody(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'security.update.console.mail.body', [
+                    QUI::getLocale()->get('quiqqer/core', 'security.update.console.mail.body', [
                         'host' => HOST
                     ])
                 );

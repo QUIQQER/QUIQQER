@@ -554,7 +554,7 @@ class Ajax extends QUI\QDOM
         if (connection_status() == 2) {
             $return = [
                 'Exception' => [
-                    'message' => QUI::getLocale()->get('quiqqer/quiqqer', 'exception.timeout'),
+                    'message' => QUI::getLocale()->get('quiqqer/core', 'exception.timeout'),
                     'code' => 504
                 ]
             ];

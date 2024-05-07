@@ -20,7 +20,7 @@ QUI::$Ajax->registerFunction(
 
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'message.ajax.licenseKey.upload.error'
                 )
             );
@@ -30,7 +30,7 @@ QUI::$Ajax->registerFunction(
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'message.ajax.licenseKey.upload.success'
             )
         );

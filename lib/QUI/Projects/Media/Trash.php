@@ -153,7 +153,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
 
         if (!file_exists($file)) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.trash.file.not.found', [
+                QUI::getLocale()->get('quiqqer/core', 'exception.trash.file.not.found', [
                     'id' => $id
                 ]),
                 ErrorCodes::FILE_IN_TRASH_NOT_FOUND
@@ -171,7 +171,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
 
         if (!isset($data[0])) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.trash.file.not.found'),
+                QUI::getLocale()->get('quiqqer/core', 'exception.trash.file.not.found'),
                 ErrorCodes::FILE_IN_TRASH_NOT_FOUND
             );
         }

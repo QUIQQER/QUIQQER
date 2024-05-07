@@ -48,7 +48,7 @@ QUI::$Ajax->registerFunction(
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'message.ajax.user.sendMail.success',
                 [
                     'user' => $User->getName() . ' (#' . $User->getUUID() . ')'

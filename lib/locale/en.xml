@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <locales>
-    <groups name="quiqqer/quiqqer" datatype="js,php">
+    <groups name="quiqqer/core" datatype="js,php">
         <locale name="yes">
             <en><![CDATA[Yes]]></en>
         </locale>
@@ -2737,7 +2737,7 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="quiqqer.settings.longTimeCache.redis.server.description" html="true">
             <en><![CDATA[
             Please note our Wiki entry:
-            <a href="https://dev.quiqqer.com/quiqqer/quiqqer/wikis/caching/redis" target="_blank">
+            <a href="https://dev.quiqqer.com/quiqqer/core/wikis/caching/redis" target="_blank">
                 QUIQQER Redis Caching
             </a>
             ]]></en>
@@ -4801,7 +4801,7 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         </locale>
     </groups>
 
-    <groups name="quiqqer/quiqqer" datatype="php">
+    <groups name="quiqqer/core" datatype="php">
 
         <locale name="RestProvider.Projects.title">
             <en><![CDATA[QUQIQER Core REST API]]></en>
@@ -5495,7 +5495,7 @@ After logging in you will be prompted to set a new password.
         <locale name="quiqqer.settings.cache.redis.server.description" html="true">
             <en><![CDATA[
             Please note our Wiki entry:
-            <a href="https://dev.quiqqer.com/quiqqer/quiqqer/wikis/caching/redis" target="_blank">
+            <a href="https://dev.quiqqer.com/quiqqer/core/wikis/caching/redis" target="_blank">
                 QUIQQER Redis Caching
             </a>
             ]]></en>
@@ -5555,7 +5555,7 @@ After logging in you will be prompted to set a new password.
             <en><![CDATA[You do not have the necessary rights to view this page.]]></en>
         </locale>
     </groups>
-    <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
+    <groups name="quiqqer/core" datatype="js">        <!-- Control: controls/email/Select -->
 
         <locale name="controls.SendPassword.title">
             <en><![CDATA[Create new user password and send via email]]></en>

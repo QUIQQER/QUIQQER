@@ -35,9 +35,9 @@ class Utils
         $TabBar = new Bar(['name' => 'UserToolbar']);
 
         DOM::addTabsToToolbar(
-            XML::getTabsFromXml(OPT_DIR . 'quiqqer/quiqqer/group.xml'),
+            XML::getTabsFromXml(OPT_DIR . 'quiqqer/core/group.xml'),
             $TabBar,
-            'quiqqer/quiqqer'
+            'quiqqer/core'
         );
 
         /**
@@ -46,7 +46,7 @@ class Utils
         $list = QUI::getPackageManager()->getInstalled();
 
         foreach ($list as $entry) {
-            if ($entry['name'] == 'quiqqer/quiqqer') {
+            if ($entry['name'] == 'quiqqer/core') {
                 continue;
             }
 

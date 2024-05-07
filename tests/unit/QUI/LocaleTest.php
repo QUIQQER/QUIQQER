@@ -23,7 +23,7 @@ class LocaleTest extends TestCase
     public function testResetCurrent()
     {
         $this->markTestSkipped(
-            'Test skipped: resetCurrent is bugged, thus testing is worthless (see quiqqer/quiqqer#1333)'
+            'Test skipped: resetCurrent is bugged, thus testing is worthless (see quiqqer/core#1333)'
         );
 
         $sut = new Locale();
@@ -103,11 +103,11 @@ class LocaleTest extends TestCase
     public static function isLocaleStringDataProvider(): array
     {
         return [
-            ['[quiqqer/quiqqer] this.is.a.test', true],
-            ['[quiqqer/quiqqer] hello', true],
-            ['[quiqqer/quiqqer] 123', true],
+            ['[quiqqer/core] this.is.a.test', true],
+            ['[quiqqer/core] hello', true],
+            ['[quiqqer/core] 123', true],
             ['this.is.a.test', false],
-            ['this.is.a.test [quiqqer/quiqqer]', false],
+            ['this.is.a.test [quiqqer/core]', false],
             ['', false],
             ['[ ]', false],
         ];
@@ -117,7 +117,7 @@ class LocaleTest extends TestCase
     public function testIsLocaleString(string $localeString, bool $expectedResult)
     {
         $this->markTestSkipped(
-            'Test skipped: isLocaleString behaves wrong, thus testing is worthless (see quiqqer/quiqqer#1334)'
+            'Test skipped: isLocaleString behaves wrong, thus testing is worthless (see quiqqer/core#1334)'
         );
 
         $sut = new Locale();
@@ -128,11 +128,11 @@ class LocaleTest extends TestCase
     public static function getPartsOfLocaleStringProvider(): array
     {
         return [
-            ['[quiqqer/quiqqer] this.is.a.test', 'quiqqer/quiqqer', 'this.is.a.test'],
-            ['[quiqqer/quiqqer] hello', 'quiqqer/quiqqer', 'hello'],
-            ['[quiqqer/quiqqer] 123', 'quiqqer/quiqqer', '123'],
+            ['[quiqqer/core] this.is.a.test', 'quiqqer/core', 'this.is.a.test'],
+            ['[quiqqer/core] hello', 'quiqqer/core', 'hello'],
+            ['[quiqqer/core] 123', 'quiqqer/core', '123'],
             ['this.is.a.test', null, null],
-            ['this.is.a.test [quiqqer/quiqqer]', null, null],
+            ['this.is.a.test [quiqqer/core]', null, null],
             ['', null, null],
             ['[ ]', null, null],
         ];
@@ -145,7 +145,7 @@ class LocaleTest extends TestCase
         ?string $expectedVariable
     ) {
         $this->markTestSkipped(
-            'Test skipped: getPartsOfLocaleString behaves odd, thus testing is worthless (see quiqqer/quiqqer#1335)'
+            'Test skipped: getPartsOfLocaleString behaves odd, thus testing is worthless (see quiqqer/core#1335)'
         );
 
         $locale = new Locale();

@@ -141,7 +141,7 @@ class Setup
 
     /**
      * Generate the main files,
-     * the main link only to the internal quiqqer/quiqqer files
+     * the main link only to the internal quiqqer/core files
      */
     public static function generateFileLinks(): void
     {
@@ -210,7 +210,7 @@ if (!defined('ETC_DIR')) {
     define('ETC_DIR', \$etc_dir);
 }
 
-\$boot = '{$OPT_DIR}quiqqer/quiqqer/bootstrap.php';
+\$boot = '{$OPT_DIR}quiqqer/core/bootstrap.php';
 
 if (file_exists(\$boot)) {
     require \$boot;
@@ -242,7 +242,7 @@ if (file_exists(\$maintenanceFile)) {
 }
 
 define('QUIQQER_SYSTEM',true);
-require '{$OPT_DIR}quiqqer/quiqqer/ajax.php';
+require '{$OPT_DIR}quiqqer/core/ajax.php';
 EOT;
         file_put_contents($ajax, $content);
 
@@ -282,7 +282,7 @@ EOT;
         $content = $fileHeader .
             "define('QUIQQER_SYSTEM',true);" .
             "require dirname(__FILE__) .'/bootstrap.php';\n" .
-            "require '{$OPT_DIR}quiqqer/quiqqer/image.php';\n";
+            "require '{$OPT_DIR}quiqqer/core/image.php';\n";
 
         file_put_contents($image, $content);
 
@@ -307,7 +307,7 @@ if (!\$ignoreMaintenance && file_exists(\$maintenanceFile)) {
 
 define('QUIQQER_SYSTEM',true);
 require dirname(__FILE__) .'/bootstrap.php';
-require '{$OPT_DIR}quiqqer/quiqqer/index.php';
+require '{$OPT_DIR}quiqqer/core/index.php';
 EOT;
 
         file_put_contents($index, $content);
@@ -319,7 +319,7 @@ EOT;
         ////////
         $content = $fileHeader .
             "define('CMS_DIR', '$CMS_DIR');\n" .
-            "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';\n";
+            "require '{$OPT_DIR}quiqqer/core/quiqqer.php';\n";
 
         file_put_contents($quiqqer, $content);
 
@@ -336,7 +336,7 @@ EOT;
         $content = "#!/usr/bin/env $phpCommand\n" .
             $fileHeader .
             "define('CMS_DIR', '$CMS_DIR');\n" .
-            "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';\n";
+            "require '{$OPT_DIR}quiqqer/core/quiqqer.php';\n";
 
         file_put_contents($console, $content);
         system("chmod +x $console");

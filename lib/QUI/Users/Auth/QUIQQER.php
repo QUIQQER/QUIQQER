@@ -83,7 +83,7 @@ class QUIQQER extends AbstractAuthenticator
             $Locale = QUI::getLocale();
         }
 
-        return $Locale->get('quiqqer/quiqqer', 'quiqqer.auth.title');
+        return $Locale->get('quiqqer/core', 'quiqqer.auth.title');
     }
 
     /**
@@ -98,7 +98,7 @@ class QUIQQER extends AbstractAuthenticator
             $Locale = QUI::getLocale();
         }
 
-        return $Locale->get('quiqqer/quiqqer', 'quiqqer.auth.description');
+        return $Locale->get('quiqqer/core', 'quiqqer.auth.description');
     }
 
     /**
@@ -127,7 +127,7 @@ class QUIQQER extends AbstractAuthenticator
                 $User = QUI::getUsers()->getUserByName($this->username);
             } catch (QUI\Exception) {
                 throw new QUI\Users\Exception(
-                    ['quiqqer/quiqqer', 'exception.login.fail.user.not.found'],
+                    ['quiqqer/core', 'exception.login.fail.user.not.found'],
                     404
                 );
             }
@@ -186,7 +186,7 @@ class QUIQQER extends AbstractAuthenticator
     {
         if (!is_string($this->username) || empty($this->username)) {
             throw new QUI\Users\Exception(
-                ['quiqqer/quiqqer', 'exception.login.fail.wrong.username.input'],
+                ['quiqqer/core', 'exception.login.fail.wrong.username.input'],
                 401
             );
         }
@@ -197,7 +197,7 @@ class QUIQQER extends AbstractAuthenticator
 
         if (!is_string($authParams) || empty($authParams)) {
             throw new QUI\Users\Exception(
-                ['quiqqer/quiqqer', 'exception.login.fail.wrong.password.input'],
+                ['quiqqer/core', 'exception.login.fail.wrong.password.input'],
                 401
             );
         }
@@ -215,7 +215,7 @@ class QUIQQER extends AbstractAuthenticator
 
         if (empty($userData) || empty($userData[0]['password'])) {
             throw new QUI\Users\Exception(
-                ['quiqqer/quiqqer', 'exception.login.fail'],
+                ['quiqqer/core', 'exception.login.fail'],
                 401
             );
         }
@@ -231,7 +231,7 @@ class QUIQQER extends AbstractAuthenticator
 
             if ($actualPasswordHash !== $passwordHash) {
                 throw new QUI\Users\Exception(
-                    ['quiqqer/quiqqer', 'exception.login.fail'],
+                    ['quiqqer/core', 'exception.login.fail'],
                     401
                 );
             }

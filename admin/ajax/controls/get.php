@@ -24,14 +24,14 @@ QUI::$Ajax->registerFunction(
             }
         } catch (QUI\Exception) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'control.not.found'),
+                QUI::getLocale()->get('quiqqer/core', 'control.not.found'),
                 404
             );
         }
 
         if (!is_subclass_of($Control, Control::class)) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'control.not.found'),
+                QUI::getLocale()->get('quiqqer/core', 'control.not.found'),
                 404
             );
         }

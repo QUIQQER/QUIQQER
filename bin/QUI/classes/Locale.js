@@ -53,7 +53,7 @@ define('classes/Locale', needle, function (QUILocale) {
             var lang    = localeId.split('_')[0],
                 country = localeId.split('_')[1];
 
-            var locLang    = QUILocale.get('quiqqer/quiqqer', 'language.' + lang),
+            var locLang    = QUILocale.get('quiqqer/core', 'language.' + lang),
                 locCountry = QUILocale.get('quiqqer/countries', 'country.' + country);
 
             return locLang + ' (' + locCountry + ')';
@@ -64,7 +64,7 @@ define('classes/Locale', needle, function (QUILocale) {
          * @returns {String}
          */
         getDecimalSeparator: function () {
-            return this.get('quiqqer/quiqqer', 'numberFormat.decimal_separator');
+            return this.get('quiqqer/core', 'numberFormat.decimal_separator');
         },
 
         /**
@@ -72,7 +72,7 @@ define('classes/Locale', needle, function (QUILocale) {
          * @returns {String}
          */
         getGroupingSeparator: function () {
-            return this.get('quiqqer/quiqqer', 'numberFormat.grouping_separator');
+            return this.get('quiqqer/core', 'numberFormat.grouping_separator');
         },
 
         /**
@@ -80,7 +80,7 @@ define('classes/Locale', needle, function (QUILocale) {
          * @returns {String}
          */
         getDecimalPattern: function () {
-            return this.get('quiqqer/quiqqer', 'numberFormat.decimal_pattern');
+            return this.get('quiqqer/core', 'numberFormat.decimal_pattern');
         },
 
         /**
@@ -88,7 +88,7 @@ define('classes/Locale', needle, function (QUILocale) {
          * @returns {String}
          */
         getPercentPattern: function () {
-            return this.get('quiqqer/quiqqer', 'numberFormat.percent_pattern');
+            return this.get('quiqqer/core', 'numberFormat.percent_pattern');
         },
 
         /**
@@ -96,7 +96,7 @@ define('classes/Locale', needle, function (QUILocale) {
          * @returns {String}
          */
         getCurrencyPattern: function () {
-            return this.get('quiqqer/quiqqer', 'numberFormat.currency_pattern');
+            return this.get('quiqqer/core', 'numberFormat.currency_pattern');
         },
 
         /**
@@ -104,7 +104,7 @@ define('classes/Locale', needle, function (QUILocale) {
          * @returns {String}
          */
         getAccountingCurrencyPattern: function () {
-            return this.get('quiqqer/quiqqer', 'numberFormat.accounting_currency_pattern');
+            return this.get('quiqqer/core', 'numberFormat.accounting_currency_pattern');
         },
 
         /**

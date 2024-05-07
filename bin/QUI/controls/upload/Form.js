@@ -35,7 +35,7 @@ define('controls/upload/Form', [
 ], function(QUI, QUIControl, QUIProgressbar, QUIButton, QUILoader, MediaUtils, Upload, Locale) {
     'use strict';
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
     let delayClick = false;
 
     /**
@@ -91,7 +91,7 @@ define('controls/upload/Form', [
                 this.setParams(options.params);
             }
 
-            // quiqqer/quiqqer#772
+            // quiqqer/core#772
             if (typeof options.multible !== 'undefined') {
                 options.multiple = options.multible;
                 delete options.multible;

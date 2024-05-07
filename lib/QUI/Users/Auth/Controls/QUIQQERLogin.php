@@ -45,8 +45,8 @@ class QUIQQERLogin extends Control
         }
 
         $Engine->assign([
-            'usernameText' => QUI::getLocale()->get('quiqqer/quiqqer', 'username'),
-            'passwordText' => QUI::getLocale()->get('quiqqer/quiqqer', 'password'),
+            'usernameText' => QUI::getLocale()->get('quiqqer/core', 'username'),
+            'passwordText' => QUI::getLocale()->get('quiqqer/core', 'password'),
             'showPasswordReset' => $showPasswordReset
         ]);
 

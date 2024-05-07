@@ -83,7 +83,7 @@ Expand your access to the QUIQQER community and find additional resources to get
   updates.
 - [Twitter: Main Developer Account](https://twitter.com/de_henne)
 - [Twitter: PCSG Company Account](https://twitter.com/pcsg_dev)
-- [Gitlab](https://dev.quiqqer.com/quiqqer/quiqqer): Access QUIQQER's GitLab page for discussions, issue reporting, and
+- [Gitlab](https://dev.quiqqer.com/quiqqer/core): Access QUIQQER's GitLab page for discussions, issue reporting, and
   contributions.
 - [Discord](https://discord.gg/tjWg4ZE): Join the QUIQQER Discord server for real-time support and interactions with the
   community.
@@ -107,8 +107,8 @@ To the Contribution Guide:
 We use our own Gitlab instance, if you find bugs or miss features, please write us there. Github serves as a mirror and
 backup.
 
-- [Issues](https://dev.quiqqer.com/quiqqer/quiqqer/-/issues)
-- [Milestones](https://dev.quiqqer.com/quiqqer/quiqqer/-/milestones)
+- [Issues](https://dev.quiqqer.com/quiqqer/core/-/issues)
+- [Milestones](https://dev.quiqqer.com/quiqqer/core/-/milestones)
 
 License
 -------

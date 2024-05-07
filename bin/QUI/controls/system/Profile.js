@@ -30,16 +30,16 @@ define('controls/system/Profile', [
         ],
 
         options: {
-            title        : Locale.get('quiqqer/quiqqer', 'profile'),
+            title        : Locale.get('quiqqer/core', 'profile'),
             icon         : 'fa fa-user',
             maxHeight    : 500,
             maxWidth     : 750,
             autoclose    : false,
             ok_button    : {
-                text: Locale.get('quiqqer/quiqqer', 'save')
+                text: Locale.get('quiqqer/core', 'save')
             },
             cancel_button: {
-                text: Locale.get('quiqqer/quiqqer', 'cancel')
+                text: Locale.get('quiqqer/core', 'cancel')
             }
         },
 

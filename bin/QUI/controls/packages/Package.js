@@ -18,7 +18,7 @@ define('controls/packages/Package', [
 ], function (QUI, QUIControl, Packages, Mustache, QUILocale, template) {
     "use strict";
 
-    var lg = "quiqqer/quiqqer";
+    var lg = "quiqqer/core";
 
     return new Class({
 

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit bootstrap="tests/bootstrap.php">
   <testsuites>
-    <testsuite name="quiqqer/quiqqer Integration Test Suite">
+    <testsuite name="quiqqer/core Integration Test Suite">
       <directory>tests/unit</directory>
     </testsuite>
-    <testsuite name="quiqqer/quiqqer Unit Test Suite">
+    <testsuite name="quiqqer/core Unit Test Suite">
       <directory>tests/integration</directory>
     </testsuite>
   </testsuites>

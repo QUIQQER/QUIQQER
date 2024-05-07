@@ -49,7 +49,7 @@ QUI::$Ajax->registerFunction(
         if (count($deactivated)) {
             QUI::getMessagesHandler()->addSuccess(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'message.users.deactivated',
                     [
                         'users' => implode(',', $deactivated)

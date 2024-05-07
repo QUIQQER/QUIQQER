@@ -179,8 +179,8 @@ class Manager
 
         // if language config has changed,
         // we need to execute a complete project setup
-        // quiqqer/quiqqer#768
-        // quiqqer/quiqqer#767
+        // quiqqer/core#768
+        // quiqqer/core#767
         if (
             isset($handedParams['langs']) &&
             isset($projectConfig['langs']) &&
@@ -537,7 +537,7 @@ class Manager
         foreach ($packages as $package) {
             // if the package is a quiqqer template,
             //
-            // commented out because of: quiqqer/quiqqer#1247
+            // commented out because of: quiqqer/core#1247
             //
             /*
             if ($package['type'] == 'quiqqer-template') {
@@ -755,7 +755,7 @@ class Manager
         if (strlen($name) <= 2) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.project.longer.two.signs'
                 ),
                 801
@@ -765,7 +765,7 @@ class Manager
         if (strlen($lang) != 2) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.project.lang.not.two.signs'
                 ),
                 801
@@ -779,7 +779,7 @@ class Manager
         if (isset($projects[$name])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.project.not.allowed.signs'
                 ),
                 802
@@ -1022,7 +1022,7 @@ class Manager
         if (self::count() < 2) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.project.delete.last'
                 )
             );

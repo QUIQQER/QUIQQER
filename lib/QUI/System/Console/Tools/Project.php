@@ -288,7 +288,7 @@ class Project extends QUI\System\Console\Tool
     }
 
     /**
-     * Prints a line to the output while using a locale variable of the 'quiqqer/quiqqer' group
+     * Prints a line to the output while using a locale variable of the 'quiqqer/core' group
      *
      * @param $locale
      * @param bool|string $color
@@ -296,7 +296,7 @@ class Project extends QUI\System\Console\Tool
      */
     protected function writeLnLocale($locale, bool|string $color = false, bool|string $background = false): void
     {
-        $text = QUI::getLocale()->get("quiqqer/quiqqer", $locale);
+        $text = QUI::getLocale()->get("quiqqer/core", $locale);
 
         $this->writeLn($text, $color, $background);
     }

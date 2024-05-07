@@ -45,7 +45,7 @@ define('controls/system/settings/Mail', [
             this.showSSLOptions();
 
             new QUIButton({
-                text: QUILocale.get('quiqqer/quiqqer', 'test.mail.button'),
+                text: QUILocale.get('quiqqer/core', 'test.mail.button'),
                 textimage: 'fa fa-envelope-o',
                 events: {
                     onClick: this.testMailSettings
@@ -88,7 +88,7 @@ define('controls/system/settings/Mail', [
                     '  <p>' +
                     '      <label class="checkbox-label hasCheckbox">' +
                     '           <input type="checkbox" name="mail.SMTPSecureSSL_verify_peer" />' +
-                    QUILocale.get('quiqqer/quiqqer', 'mail.settings.verify_peer') +
+                    QUILocale.get('quiqqer/core', 'mail.settings.verify_peer') +
                     '      </label>' +
                     '  </p>' +
                     '</td>'
@@ -99,7 +99,7 @@ define('controls/system/settings/Mail', [
                     '  <p>' +
                     '      <label class="checkbox-label hasCheckbox">' +
                     '           <input type="checkbox" name="mail.SMTPSecureSSL_verify_peer_name" />' +
-                    QUILocale.get('quiqqer/quiqqer', 'mail.settings.verify_peer_name') +
+                    QUILocale.get('quiqqer/core', 'mail.settings.verify_peer_name') +
                     '      </label>' +
                     '  </p>' +
                     '</td>'
@@ -110,7 +110,7 @@ define('controls/system/settings/Mail', [
                     '  <p>' +
                     '      <label class="checkbox-label hasCheckbox">' +
                     '           <input type="checkbox" name="mail.SMTPSecureSSL_allow_self_signed" />' +
-                    QUILocale.get('quiqqer/quiqqer', 'mail.settings.allow_self_signed') +
+                    QUILocale.get('quiqqer/core', 'mail.settings.allow_self_signed') +
                     '      </label>' +
                     '  </p>' +
                     '</td>'

@@ -45,7 +45,7 @@ QUI::$Ajax->registerFunction(
 
             default:
                 throw new QUI\Exception(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.missing.permission.entry')
+                    QUI::getLocale()->get('quiqqer/core', 'exception.missing.permission.entry')
                 );
         }
 

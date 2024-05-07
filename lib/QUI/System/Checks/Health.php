@@ -187,7 +187,7 @@ class Health
         if (!file_exists($md5hashFile)) {
             throw new Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.system.health.checklist.md5.not.found'
                 )
             );
@@ -207,7 +207,7 @@ class Health
         if (!empty($notWritable)) {
             throw new Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.system.health.not.writable'
                 )
             );
@@ -226,7 +226,7 @@ class Health
         if (!empty($notWritable)) {
             throw new Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.system.health.not.writable'
                 )
             );

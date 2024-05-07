@@ -55,7 +55,7 @@ QUI::$Ajax->registerFunction(
         }
 
         QUI::getMessagesHandler()->addSuccess(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'message.user.saved', [
+            QUI::getLocale()->get('quiqqer/core', 'message.user.saved', [
                 'username' => $User->getName(),
                 'id' => $User->getUUID()
             ])

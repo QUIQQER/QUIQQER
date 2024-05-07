@@ -16,7 +16,7 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
 ], function (QUI, QUIControl, QUIAjax, QUILocale, Mustache, templateRow, templateHeader) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
         Type   : 'controls/users/auth/GlobalAuthenticatorSettings',

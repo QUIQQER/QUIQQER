@@ -15,7 +15,7 @@ QUI::$Ajax->registerFunction(
         $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
         $type = $Site->getAttribute('type');
 
-        $cacheName = 'quiqqer/package/quiqqer/quiqqer/admin/site/categories/' . $type . '/' . $category;
+        $cacheName = 'quiqqer/package/quiqqer/core/admin/site/categories/' . $type . '/' . $category;
         $exception = false;
 
         try {

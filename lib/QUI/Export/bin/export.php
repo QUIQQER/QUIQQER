@@ -2,7 +2,7 @@
 
 use QUI\HtmlToPdf\Document;
 
-$dir = str_replace('quiqqer/quiqqer/lib/QUI/Export/bin', '', __DIR__);
+$dir = str_replace('quiqqer/core/lib/QUI/Export/bin', '', __DIR__);
 const QUIQQER_SYSTEM = true;
 const QUIQQER_AJAX = true;
 

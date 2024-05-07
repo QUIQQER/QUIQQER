@@ -161,7 +161,7 @@ class GetSiteAttributes extends QUI\System\Console\Tool
         }
 
         // Save to csv
-        $varDir = QUI::getPackage('quiqqer/quiqqer')->getVarDir() . 'fetchedSiteAttributes/';
+        $varDir = QUI::getPackage('quiqqer/core')->getVarDir() . 'fetchedSiteAttributes/';
         QUI\Utils\System\File::mkdir($varDir);
 
         $csvFile = hash('sha256', random_bytes(128)) . '.csv';

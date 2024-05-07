@@ -13,8 +13,8 @@
     "
 >
     <div style="float: left; width: 60%; display: flex; flex-direction: column;">
-        <h1 style="font-size: 3rem">{locale group="quiqqer/quiqqer" var="quiqqer.setup.mail.smtp.title"}</h1>
-        {locale group="quiqqer/quiqqer" var="quiqqer.setup.mail.smtp.description"}
+        <h1 style="font-size: 3rem">{locale group="quiqqer/core" var="quiqqer.setup.mail.smtp.title"}</h1>
+        {locale group="quiqqer/core" var="quiqqer.setup.mail.smtp.description"}
 
         <div class="quiqqer-setup-mailSmtp-btns" style="display: flex; width: 400px; margin-top: 3rem;">
             <button name="use-smtp">
@@ -30,17 +30,17 @@
 
         <form style="margin-top: 3rem; display: none">
             <label>
-                <span>{locale group="quiqqer/quiqqer" var="quiqqer.settings.email.smtp.server"}</span>
+                <span>{locale group="quiqqer/core" var="quiqqer.settings.email.smtp.server"}</span>
                 <input type="text" name="smtp-server" value="{$SMTPServer}" />
             </label>
 
             <label>
-                <span>{locale group="quiqqer/quiqqer" var="quiqqer.settings.email.smtp.port"}</span>
+                <span>{locale group="quiqqer/core" var="quiqqer.settings.email.smtp.port"}</span>
                 <input type="text" name="smtp-port" value="{$SMTPPort}" />
             </label>
 
             <label>
-                <span>{locale group="quiqqer/quiqqer" var="quiqqer.settings.email.smtp.secure"}</span>
+                <span>{locale group="quiqqer/core" var="quiqqer.settings.email.smtp.secure"}</span>
 
                 <select type="text" name="smtp-secure">
                     <option value="">---</option>
@@ -51,26 +51,26 @@
 
             <label class="checkbox">
                 <input type="checkbox" name="smtp-secure-verify_peer"{if $SMTPSecureSSL_verify_peer}checked{/if} />
-                <span>{locale group="quiqqer/quiqqer" var="mail.settings.verify_peer"}</span>
+                <span>{locale group="quiqqer/core" var="mail.settings.verify_peer"}</span>
             </label>
 
             <label class="checkbox">
                 <input type="checkbox" name="smtp-secure-verify_peer_name"{if $SMTPSecureSSL_verify_peer_name}checked{/if} />
-                <span>{locale group="quiqqer/quiqqer" var="mail.settings.verify_peer_name"}</span>
+                <span>{locale group="quiqqer/core" var="mail.settings.verify_peer_name"}</span>
             </label>
 
             <label class="checkbox">
                 <input type="checkbox" name="mail.settings.allow_self_signed"{if $SMTPSecureSSL_allow_self_signed}checked{/if} />
-                <span>{locale group="quiqqer/quiqqer" var="mail.settings.allow_self_signed"}</span>
+                <span>{locale group="quiqqer/core" var="mail.settings.allow_self_signed"}</span>
             </label>
 
             <label style="margin-top: 2rem">
-                <span>{locale group="quiqqer/quiqqer" var="quiqqer.settings.email.smtp.auth.user"}</span>
+                <span>{locale group="quiqqer/core" var="quiqqer.settings.email.smtp.auth.user"}</span>
                 <input type="text" name="smtp-user" autocomplete="new-user" value="{$SMTPUser}" />
             </label>
 
              <label>
-                <span>{locale group="quiqqer/quiqqer" var="quiqqer.settings.email.smtp.auth.password"}</span>
+                <span>{locale group="quiqqer/core" var="quiqqer.settings.email.smtp.auth.password"}</span>
                 <input type="password" name="smtp-password" autocomplete="new-password" value="{$SMTPPass}" />
             </label>
 

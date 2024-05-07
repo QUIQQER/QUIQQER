@@ -14,7 +14,7 @@ header("Content-Type: text/html; charset=utf-8");
 // Setting the Cache-Control directive globally at the start of the request is wrong.
 // As the header() method immediately sends the header, there is no way to overwrite it later.
 // It should be set in the global response object for others to overwrite.
-// See also: quiqqer/quiqqer#1290
+// See also: quiqqer/core#1290
 // header("Cache-Control: no-cache, must-revalidate");
 // header("Pragma: no-cache");
 

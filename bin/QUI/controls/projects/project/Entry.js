@@ -117,11 +117,11 @@ define('controls/projects/project/Entry', [
 
             this.$Close.set({
                 alt  : Locale.get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'projects.project.panel.entry.delete.project'
                 ),
                 title: Locale.get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'projects.project.panel.entry.delete.project'
                 )
             });

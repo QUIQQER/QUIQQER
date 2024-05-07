@@ -22,7 +22,7 @@ define('controls/projects/project/media/Input', [
 ], function (QUIControl, QUIButton, IconConfirm, QUIStringUtils, MediaPopup, Projects, Ajax, Locale) {
     "use strict";
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     /**
      * @class controls/projects/Input
@@ -206,8 +206,8 @@ define('controls/projects/project/media/Input', [
             this.$MediaButton = new QUIButton({
                 name  : 'media-input-image-select',
                 icon  : 'fa fa-picture-o',
-                alt   : Locale.get('quiqqer/quiqqer', 'projects.project.site.media.input.select.alt'),
-                title : Locale.get('quiqqer/quiqqer', 'projects.project.site.media.input.select.title'),
+                alt   : Locale.get('quiqqer/core', 'projects.project.site.media.input.select.alt'),
+                title : Locale.get('quiqqer/core', 'projects.project.site.media.input.select.title'),
                 styles: {
                     width: 50
                 },
@@ -281,8 +281,8 @@ define('controls/projects/project/media/Input', [
                 this.$CSSButton = new QUIButton({
                     name  : 'media-input-css-select',
                     icon  : 'fa fa-css3',
-                    alt   : Locale.get('quiqqer/quiqqer', 'projects.project.site.media.input.cssclass.alt'),
-                    title : Locale.get('quiqqer/quiqqer', 'projects.project.site.media.input.cssclass.title'),
+                    alt   : Locale.get('quiqqer/core', 'projects.project.site.media.input.cssclass.alt'),
+                    title : Locale.get('quiqqer/core', 'projects.project.site.media.input.cssclass.title'),
                     styles: {
                         width: 50
                     },
@@ -297,8 +297,8 @@ define('controls/projects/project/media/Input', [
             new QUIButton({
                 name  : 'media-input-clear',
                 icon  : 'fa fa-remove',
-                alt   : Locale.get('quiqqer/quiqqer', 'projects.project.site.media.input.clear.alt'),
-                title : Locale.get('quiqqer/quiqqer', 'projects.project.site.media.input.clear.alt'),
+                alt   : Locale.get('quiqqer/core', 'projects.project.site.media.input.clear.alt'),
+                title : Locale.get('quiqqer/core', 'projects.project.site.media.input.clear.alt'),
                 styles: {
                     width: 50
                 },

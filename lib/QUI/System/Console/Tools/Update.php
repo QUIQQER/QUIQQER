@@ -47,28 +47,28 @@ class Update extends QUI\System\Console\Tool
             ->setDescription('Update the quiqqer system and the quiqqer packages')
             ->addArgument(
                 'clearCache',
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.update.clearCache'),
+                QUI::getLocale()->get('quiqqer/core', 'console.update.clearCache'),
                 false,
                 true
             )
             ->addArgument(
                 'setDevelopment',
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.update.setDevelopment'),
+                QUI::getLocale()->get('quiqqer/core', 'console.update.setDevelopment'),
                 false,
                 true
             )->addArgument(
                 'check',
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.update.check'),
+                QUI::getLocale()->get('quiqqer/core', 'console.update.check'),
                 false,
                 true
             )->addArgument(
                 'set-date',
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.update.set-date'),
+                QUI::getLocale()->get('quiqqer/core', 'console.update.set-date'),
                 false,
                 true
             )->addArgument(
                 'package',
-                QUI::getLocale()->get('quiqqer/quiqqer', 'console.update.package.update.check'),
+                QUI::getLocale()->get('quiqqer/core', 'console.update.package.update.check'),
                 false,
                 true
             );
@@ -82,11 +82,11 @@ class Update extends QUI\System\Console\Tool
     public function execute(): void
     {
         $this->writeUpdateLog('====== EXECUTE UPDATE ======');
-        $this->writeUpdateLog(QUI::getLocale()->get('quiqqer/quiqqer', 'update.log.message.execute.console'));
+        $this->writeUpdateLog(QUI::getLocale()->get('quiqqer/core', 'update.log.message.execute.console'));
 
         Cleanup::clearComposer();
 
-        $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.start'));
+        $this->writeLn(QUI::getLocale()->get('quiqqer/core', 'update.message.start'));
 
         // check license
         try {
@@ -96,7 +96,7 @@ class Update extends QUI\System\Console\Tool
                 $status = QUI\System\License::getStatus();
 
                 if ($status && isset($status['active']) && $status['active'] === false) {
-                    $message = QUI::getLocale()->get('quiqqer/quiqqer', 'update.log.message.licenseActivation');
+                    $message = QUI::getLocale()->get('quiqqer/core', 'update.log.message.licenseActivation');
                     $message = preg_replace('#([ ]){2,}#', "$1", $message);
                     $message = str_replace(PHP_EOL . " ", PHP_EOL, $message);
                     $message = trim($message);
@@ -147,7 +147,7 @@ class Update extends QUI\System\Console\Tool
         }
 
         if ($this->getArgument('check')) {
-            $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.log.message.update.via.console'));
+            $this->writeLn(QUI::getLocale()->get('quiqqer/core', 'update.log.message.update.via.console'));
             $this->writeLn();
             $this->writeLn();
 
@@ -166,7 +166,7 @@ class Update extends QUI\System\Console\Tool
             // #locale
             if (empty($packages)) {
                 $this->writeLn(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.no.updates.available'),
+                    QUI::getLocale()->get('quiqqer/core', 'update.message.no.updates.available'),
                     'green'
                 );
 
@@ -295,8 +295,8 @@ class Update extends QUI\System\Console\Tool
                 $Packages->update(false, false, $this);
             }
 
-            $wasExecuted = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.execute');
-            $webserver = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.webserver');
+            $wasExecuted = QUI::getLocale()->get('quiqqer/core', 'update.message.execute');
+            $webserver = QUI::getLocale()->get('quiqqer/core', 'update.message.webserver');
 
             $this->writeLn($wasExecuted);
             self::writeToLog($wasExecuted . PHP_EOL);
@@ -341,7 +341,7 @@ class Update extends QUI\System\Console\Tool
             $this->write(' [error]', 'red');
             $this->writeLn();
             $this->writeLn(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.error.1') . '::' . $Exception->getMessage(),
+                QUI::getLocale()->get('quiqqer/core', 'update.message.error.1') . '::' . $Exception->getMessage(),
                 'red'
             );
 
@@ -350,7 +350,7 @@ class Update extends QUI\System\Console\Tool
             }
 
             $this->writeLn(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.error'),
+                QUI::getLocale()->get('quiqqer/core', 'update.message.error'),
                 'red'
             );
 

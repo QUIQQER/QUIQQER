@@ -2,10 +2,10 @@
  * QUIQQER Breadcrumb Control
  *
  * @author www.pcsg.de (Michael Danielczok)
- * @module package/quiqqer/quiqqer/bin/Controls/BreadcrumbSlider
+ * @module package/quiqqer/core/bin/Controls/BreadcrumbSlider
  */
 
-define('package/quiqqer/quiqqer/bin/Controls/BreadcrumbSlider', [
+define('package/quiqqer/core/bin/Controls/BreadcrumbSlider', [
 
     'qui/QUI',
     'qui/controls/Control',
@@ -17,7 +17,7 @@ define('package/quiqqer/quiqqer/bin/Controls/BreadcrumbSlider', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'package/quiqqer/quiqqer/bin/Controls/BreadcrumbDropDown',
+        Type   : 'package/quiqqer/core/bin/Controls/BreadcrumbDropDown',
 
         Binds: [
             '$onImport',

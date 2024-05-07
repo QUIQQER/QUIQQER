@@ -130,7 +130,7 @@ define('controls/system/settings/Auth', [
                 }
 
                 new QUIButton({
-                    text     : QUILocale.get('quiqqer/quiqqer', 'quiqqer.settings.auth.memcached.addServer'),
+                    text     : QUILocale.get('quiqqer/core', 'quiqqer.settings.auth.memcached.addServer'),
                     textimage: 'fa fa-plus',
                     events   : {
                         onClick: function () {
@@ -145,7 +145,7 @@ define('controls/system/settings/Auth', [
                 }).inject(self.$MemcachedTable.getElement('tfoot td'));
 
                 self.$MemcachedTest = new QUIButton({
-                    text     : QUILocale.get('quiqqer/quiqqer', 'quiqqer.settings.auth.memcached.testServer'),
+                    text     : QUILocale.get('quiqqer/core', 'quiqqer.settings.auth.memcached.testServer'),
                     textimage: 'fa fa-bolt',
                     events   : {
                         onClick: function () {
@@ -187,7 +187,7 @@ define('controls/system/settings/Auth', [
                 Container.getElement('[name="session_redis.server"]').value = value;
 
                 self.$RedisCheck = new QUIButton({
-                    text  : QUILocale.get('quiqqer/quiqqer', 'quiqqer.settings.cache.redis.check.button'),
+                    text  : QUILocale.get('quiqqer/core', 'quiqqer.settings.cache.redis.check.button'),
                     events: {
                         onClick: self.redisCheck
                     }
@@ -264,7 +264,7 @@ define('controls/system/settings/Auth', [
             Ajax.get('ajax_system_cache_redisCheck', function (result) {
                 self.$RedisCheck.setAttribute(
                     'text',
-                    QUILocale.get('quiqqer/quiqqer', 'quiqqer.settings.cache.redis.check.button')
+                    QUILocale.get('quiqqer/core', 'quiqqer.settings.cache.redis.check.button')
                 );
 
                 var message = result.message;

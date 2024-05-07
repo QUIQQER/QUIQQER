@@ -19,7 +19,7 @@ class Welcome extends QUI\InstallationWizard\AbstractInstallationWizardStep
             $Locale = QUI::getLocale();
         }
 
-        return $Locale->get('quiqqer/quiqqer', 'quiqqer.setup.welcome.title');
+        return $Locale->get('quiqqer/core', 'quiqqer.setup.welcome.title');
     }
 
     /**
@@ -32,7 +32,7 @@ class Welcome extends QUI\InstallationWizard\AbstractInstallationWizardStep
             $Locale = QUI::getLocale();
         }
 
-        return $Locale->get('quiqqer/quiqqer', 'quiqqer.setup.welcome.description');
+        return $Locale->get('quiqqer/core', 'quiqqer.setup.welcome.description');
     }
 
     /**
@@ -47,7 +47,7 @@ class Welcome extends QUI\InstallationWizard\AbstractInstallationWizardStep
         }
 
         $Engine->assign([
-            'urlImageDir' => URL_OPT_DIR . 'quiqqer/quiqqer/bin/images/installation/'
+            'urlImageDir' => URL_OPT_DIR . 'quiqqer/core/bin/images/installation/'
         ]);
 
         return $Engine->fetch(__DIR__ . '/Welcome.html');

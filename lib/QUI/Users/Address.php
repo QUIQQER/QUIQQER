@@ -92,7 +92,7 @@ class Address extends QUI\QDOM
 
             throw new Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.user.address.not.found',
                     [
                         'addressId' => $id,
@@ -112,7 +112,7 @@ class Address extends QUI\QDOM
         if (!isset($result[0])) {
             throw new Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.user.address.not.found',
                     [
                         'addressId' => $id,
@@ -445,7 +445,7 @@ class Address extends QUI\QDOM
         if (!Orthos::checkMailSyntax($mail)) {
             throw new Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.user.address.mail.wrong.syntax'
                 )
             );
@@ -503,7 +503,7 @@ class Address extends QUI\QDOM
         if (!Orthos::checkMailSyntax($mail)) {
             throw new Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.user.address.mail.wrong.syntax'
                 )
             );
@@ -526,7 +526,7 @@ class Address extends QUI\QDOM
         if ($this->getAttribute('country') === false) {
             throw new Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.user.address.no.country'
                 )
             );
@@ -541,7 +541,7 @@ class Address extends QUI\QDOM
 
         throw new Exception(
             QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.lib.user.address.no.country'
             )
         );

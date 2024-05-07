@@ -39,7 +39,7 @@ define('controls/workspace/Manager', [
 ], function () {
     "use strict";
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     const QUI                     = arguments[0],
           QUIControl              = arguments[1],

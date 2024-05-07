@@ -27,7 +27,7 @@ class Watch
             $authenticator = $params[2];
         }
 
-        $username = QUI::getLocale()->get('quiqqer/quiqqer', 'watch.unknown_user');
+        $username = QUI::getLocale()->get('quiqqer/core', 'watch.unknown_user');
 
         try {
             $User = QUI::getUsers()->get($userId);
@@ -37,7 +37,7 @@ class Watch
         }
 
         return QUI::getLocale()->get(
-            'quiqqer/quiqqer',
+            'quiqqer/core',
             'watch.authenticatorLoginError',
             [
                 'userId' => $userId ?: '-',

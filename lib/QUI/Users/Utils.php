@@ -37,9 +37,9 @@ class Utils
         ]);
 
         DOM::addTabsToToolbar(
-            XML::getTabsFromXml(OPT_DIR . 'quiqqer/quiqqer/user.xml'),
+            XML::getTabsFromXml(OPT_DIR . 'quiqqer/core/user.xml'),
             $TabBar,
-            'quiqqer/quiqqer'
+            'quiqqer/core'
         );
 
         if (!$User->getUUID()) {
@@ -55,7 +55,7 @@ class Utils
         $userXmlFiles = [];
 
         foreach ($list as $entry) {
-            if ($entry['name'] == 'quiqqer/quiqqer') {
+            if ($entry['name'] == 'quiqqer/core') {
                 continue;
             }
 

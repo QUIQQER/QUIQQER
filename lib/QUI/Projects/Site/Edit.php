@@ -141,7 +141,7 @@ class Edit extends Site
 
         if (!isset($result[0])) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.not.found'),
+                QUI::getLocale()->get('quiqqer/core', 'exception.site.not.found'),
                 705,
                 [
                     'siteId' => $this->getId(),
@@ -211,7 +211,7 @@ class Edit extends Site
         } catch (QUI\Exception) {
             throw new QUI\Exception(
                 QUI::getLocale()
-                    ->get('quiqqer/quiqqer', 'exception.permissions.edit')
+                    ->get('quiqqer/core', 'exception.permissions.edit')
             );
         }
 
@@ -268,7 +268,7 @@ class Edit extends Site
             if ($release_from > time()) {
                 throw new QUI\Exception(
                     QUI::getLocale()->get(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'exception.site.release.from.inFuture'
                     ),
                     1119
@@ -285,7 +285,7 @@ class Edit extends Site
         if ($release_to && $release_to < time()) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.release.to.inPast'
                 ),
                 1120
@@ -637,7 +637,7 @@ class Edit extends Site
         } catch (QUI\Exception $Exception) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.permissions.edit'
                 )
             );
@@ -658,7 +658,7 @@ class Edit extends Site
             if (isset($User)) {
                 throw new QUI\Exception(
                     QUI::getLocale()->get(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'exception.site.is.being.edited.user',
                         [
                             'username' => $User->getName()
@@ -670,7 +670,7 @@ class Edit extends Site
 
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.site.is.being.edited'
                 ),
                 703
@@ -705,7 +705,7 @@ class Edit extends Site
                     if ($childId !== $this->id) {
                         throw new QUI\Exception(
                             QUI::getLocale()->get(
-                                'quiqqer/quiqqer',
+                                'quiqqer/core',
                                 'exception.site.same.name',
                                 [
                                     'id' => $pid,
@@ -944,7 +944,7 @@ class Edit extends Site
         if ($update) {
             QUI::getMessagesHandler()->addSuccess(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'message.site.save.success',
                     [
                         'id' => $this->getId(),
@@ -959,7 +959,7 @@ class Edit extends Site
 
         throw new QUI\Exception(
             QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.site.save.error'
             ),
             self::ESAVE
@@ -985,7 +985,7 @@ class Edit extends Site
 
         try {
             $time = Locker::getLockTime(
-                QUI::getPackage('quiqqer/quiqqer'),
+                QUI::getPackage('quiqqer/core'),
                 $this->getLockKey()
             );
         } catch (QUI\Exception $Exception) {
@@ -1018,7 +1018,7 @@ class Edit extends Site
     {
         try {
             return Locker::isLocked(
-                QUI::getPackage('quiqqer/quiqqer'),
+                QUI::getPackage('quiqqer/core'),
                 $this->getLockKey()
             );
         } catch (QUI\Exception $Exception) {
@@ -1047,7 +1047,7 @@ class Edit extends Site
     {
         try {
             Locker::unlock(
-                QUI::getPackage('quiqqer/quiqqer'),
+                QUI::getPackage('quiqqer/core'),
                 $this->getLockKey()
             );
         } catch (QUI\Exception $Exception) {
@@ -1086,7 +1086,7 @@ class Edit extends Site
         } catch (QUI\Exception) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.permissions.edit'
                 )
             );
@@ -1181,13 +1181,13 @@ class Edit extends Site
         // Prüfen ob es eine Seite mit dem gleichen Namen im Parent schon gibt
         if ($Parent->existNameInChildren($name)) {
             $newName = QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'projects.project.site.copy.text',
                 ['name' => $name]
             );
 
             $newTitle = QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'projects.project.site.copy.text',
                 ['name' => $title]
             );
@@ -1197,7 +1197,7 @@ class Edit extends Site
 
             while ($Parent->existNameInChildren($newName)) {
                 $newName = QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'projects.project.site.copy.text.count',
                     [
                         'name' => $name,
@@ -1206,7 +1206,7 @@ class Edit extends Site
                 );
 
                 $newTitle = QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'projects.project.site.copy.text.count',
                     [
                         'name' => $title,
@@ -1327,7 +1327,7 @@ class Edit extends Site
         if ($this->existNameInChildren($new_name)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.site.same.name',
                     [
                         'name' => $new_name
@@ -1451,7 +1451,7 @@ class Edit extends Site
         // Prüfen ob die Seite schon in dem Parent ist
         if ($this->getId() == $pid) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.linked.in.itself'),
+                QUI::getLocale()->get('quiqqer/core', 'exception.site.linked.in.itself'),
                 703
             );
         }
@@ -1459,7 +1459,7 @@ class Edit extends Site
         // Prüfen ob die Seite schon in dem Parent ist
         if ($Parent->getId() == $pid) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.linked.already.exists'),
+                QUI::getLocale()->get('quiqqer/core', 'exception.site.linked.already.exists'),
                 703
             );
         }
@@ -1474,7 +1474,7 @@ class Edit extends Site
         foreach ($links as $entry) {
             if ($entry['parent'] == $pid) {
                 throw new QUI\Exception(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.linked.already.exists'),
+                    QUI::getLocale()->get('quiqqer/core', 'exception.site.linked.already.exists'),
                     703
                 );
             }
@@ -1573,7 +1573,7 @@ class Edit extends Site
         }
 
         Locker::lock(
-            QUI::getPackage('quiqqer/quiqqer'),
+            QUI::getPackage('quiqqer/core'),
             $this->getLockKey()
         );
 

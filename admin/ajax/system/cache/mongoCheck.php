@@ -56,11 +56,11 @@ QUI::$Ajax->registerFunction(
 
         if ($result['data'] === 1) {
             QUI::getMessagesHandler()->addSuccess(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'message.quiqqer.mongo.success')
+                QUI::getLocale()->get('quiqqer/core', 'message.quiqqer.mongo.success')
             );
         } else {
             QUI::getMessagesHandler()->addError(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'message.quiqqer.mongo.error')
+                QUI::getLocale()->get('quiqqer/core', 'message.quiqqer.mongo.error')
             );
         }
     },

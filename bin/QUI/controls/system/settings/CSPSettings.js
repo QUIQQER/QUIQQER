@@ -19,7 +19,7 @@ define('controls/system/settings/CSPSettings', [
 ], function (QUI, QUIControl, QUIConfirm, Grid, QUILocale, QUIAjax, Mustache, templateDirective) {
     "use strict";
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     return new Class({
 

@@ -25,7 +25,7 @@ define('controls/groups/Group', [
 ) {
     'use strict';
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     /**
      * @class controls/groups/Group
@@ -288,10 +288,10 @@ define('controls/groups/Group', [
 
             if (this.getGroup().isActive()) {
                 Status.on();
-                Status.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
+                Status.setAttribute('text', QUILocale.get('quiqqer/core', 'isActivate'));
             } else {
                 Status.off();
-                Status.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isDeactivate'));
+                Status.setAttribute('text', QUILocale.get('quiqqer/core', 'isDeactivate'));
             }
 
             if (Bar.getActive()) {
@@ -342,10 +342,10 @@ define('controls/groups/Group', [
 
                 if (Group.isActive()) {
                     Status.setSilentOn();
-                    Status.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
+                    Status.setAttribute('text', QUILocale.get('quiqqer/core', 'isActivate'));
                 } else {
                     Status.setSilentOff();
-                    Status.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isDeactivate'));
+                    Status.setAttribute('text', QUILocale.get('quiqqer/core', 'isDeactivate'));
                 }
 
                 return;
@@ -378,10 +378,10 @@ define('controls/groups/Group', [
             Prom.then(function() {
                 if (Group.isActive()) {
                     Button.on();
-                    Button.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
+                    Button.setAttribute('text', QUILocale.get('quiqqer/core', 'isActivate'));
                 } else {
                     Button.off();
-                    Button.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isDeactivate'));
+                    Button.setAttribute('text', QUILocale.get('quiqqer/core', 'isDeactivate'));
                 }
 
                 this.Loader.hide();
@@ -410,7 +410,7 @@ define('controls/groups/Group', [
             this.addButton(
                 new QUIButtonSwitch({
                     name: 'status',
-                    text: QUILocale.get('quiqqer/quiqqer', 'isActivate'),
+                    text: QUILocale.get('quiqqer/core', 'isActivate'),
                     disabled: true,
                     events: {
                         onChange: this.$onStatusButtonChange
@@ -885,12 +885,12 @@ define('controls/groups/Group', [
             ], function(QUIConfirm) {
                 new QUIConfirm({
                     autoclose: true,
-                    title: QUILocale.get('quiqqer/quiqqer', 'controls.group.deleteusers.confirm.title'),
+                    title: QUILocale.get('quiqqer/core', 'controls.group.deleteusers.confirm.title'),
                     texticon: 'fa fa-user-times',
                     icon: 'fa fa-user-times',
 
                     information: QUILocale.get(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'controls.group.deleteusers.confirm.info', {
                             groupId: self.$Group.getId(),
                             groupName: self.$Group.getName(),

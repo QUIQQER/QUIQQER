@@ -108,7 +108,7 @@ class Permission
         }
 
         throw new Exception(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.no.permission'),
+            QUI::getLocale()->get('quiqqer/core', 'exception.no.permission'),
             403,
             [
                 'permission' => $perm
@@ -180,7 +180,7 @@ class Permission
         if (!self::isAdmin($UserToCheck)) {
             throw new Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.no.permission'
                 ),
                 440,
@@ -215,7 +215,7 @@ class Permission
             // if no exception throws
             throw new Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.permission.session.expired'
                 ),
                 401
@@ -269,7 +269,7 @@ class Permission
         if (!self::isSU($UserToCheck)) {
             throw new Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.no.permission'
                 ),
                 403,
@@ -665,7 +665,7 @@ class Permission
         if (empty($permissions[$perm])) {
             throw new Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.no.permission'
                 ),
                 403,
@@ -779,7 +779,7 @@ class Permission
 
         throw new Exception(
             QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.no.permission'
             ),
             403,

@@ -164,14 +164,14 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     {
         if (empty($newName)) {
             throw new QUI\Exception(
-                ['quiqqer/quiqqer', 'exception.media.folder.name.invalid'],
+                ['quiqqer/core', 'exception.media.folder.name.invalid'],
                 ErrorCodes::FOLDER_NAME_INVALID
             );
         }
 
         if ($this->getId() == 1) {
             throw new QUI\Exception(
-                ['quiqqer/quiqqer', 'exception.media.root.folder.rename'],
+                ['quiqqer/core', 'exception.media.root.folder.rename'],
                 ErrorCodes::ROOT_FOLDER_CANT_RENAMED
             );
         }
@@ -189,7 +189,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         // check if a folder with the new name exist
         if ($Parent->childWithNameExists($newName)) {
             throw new QUI\Exception(
-                ['quiqqer/quiqqer', 'exception.media.folder.with.same.name.exists'],
+                ['quiqqer/core', 'exception.media.folder.with.same.name.exists'],
                 ErrorCodes::FOLDER_ALREADY_EXISTS
             );
         }
@@ -327,7 +327,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         if (!isset($dbResult[0])) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.not.found.NAME', [
+                QUI::getLocale()->get('quiqqer/core', 'exception.media.file.not.found.NAME', [
                     'file' => $filename
                 ]),
                 ErrorCodes::FILE_NOT_FOUND
@@ -380,7 +380,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         if ($Folder->childWithNameExists($this->getAttribute('name'))) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.folder.already.exists', [
+                QUI::getLocale()->get('quiqqer/core', 'exception.media.folder.already.exists', [
                     'name' => $this->getAttribute('name')
                 ]),
                 ErrorCodes::FOLDER_ALREADY_EXISTS
@@ -457,7 +457,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     {
         if ($Folder->childWithNameExists($this->getAttribute('name'))) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.folder.already.exists', [
+                QUI::getLocale()->get('quiqqer/core', 'exception.media.folder.already.exists', [
                     'name' => $this->getAttribute('name')
                 ]),
                 ErrorCodes::FOLDER_ALREADY_EXISTS
@@ -565,7 +565,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         throw new QUI\Exception(
-            ['quiqqer/quiqqer', 'exception.media.folder.could.not.be.created'],
+            ['quiqqer/core', 'exception.media.folder.could.not.be.created'],
             ErrorCodes::FOLDER_ERROR_CREATION
         );
     }
@@ -758,7 +758,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         if (!class_exists('\ZipArchive')) {
             throw new QUI\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.zip.extension.not.installed'
             ]);
         }
@@ -778,7 +778,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         if (!$countFiles) {
             throw new QUI\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.zip.folder.is.empty'
             ]);
         }
@@ -820,7 +820,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         throw new QUI\Exception(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.folder.has.no.files'),
+            QUI::getLocale()->get('quiqqer/core', 'exception.folder.has.no.files'),
             ErrorCodes::FOLDER_HAS_NO_FILES
         );
     }
@@ -923,7 +923,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         throw new QUI\Exception(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.folder.has.no.images'),
+            QUI::getLocale()->get('quiqqer/core', 'exception.folder.has.no.images'),
             ErrorCodes::FOLDER_HAS_NO_IMAGES
         );
     }
@@ -1284,7 +1284,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         if (!file_exists($file)) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.file.not.found', [
+                QUI::getLocale()->get('quiqqer/core', 'exception.file.not.found', [
                     'file' => $file
                 ]),
                 ErrorCodes::FILE_NOT_FOUND
@@ -1315,7 +1315,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                     QUI\System\Log::addError($Exception->getMessage());
 
                     throw new QUI\Exception(
-                        ['quiqqer/quiqqer', 'exception.image.upload.image.corrupted'],
+                        ['quiqqer/core', 'exception.image.upload.image.corrupted'],
                         ErrorCodes::FILE_IMAGE_CORRUPT
                     );
                 }
@@ -1360,7 +1360,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         if (file_exists($new_file)) {
             if ($options != self::FILE_OVERWRITE_DESTROY && $options != self::FILE_OVERWRITE_TRUE) {
                 throw new QUI\Exception(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.already.exists', [
+                    QUI::getLocale()->get('quiqqer/core', 'exception.media.file.already.exists', [
                         'filename' => $filename
                     ]),
                     ErrorCodes::FILE_ALREADY_EXISTS

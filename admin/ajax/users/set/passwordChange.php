@@ -19,7 +19,7 @@ QUI::$Ajax->registerFunction(
         if ($newPassword != $passwordRepeat) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.user.wrong.passwords'
                 )
             );

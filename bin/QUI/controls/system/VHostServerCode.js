@@ -25,7 +25,7 @@ define('controls/system/VHostServerCode', [
              ProjectPopup, ControlUtils, StringUtils, Ajax, Locale) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
 

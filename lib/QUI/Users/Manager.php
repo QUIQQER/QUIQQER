@@ -376,7 +376,7 @@ class Manager
 
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.permission.session.expired'
                 ),
                 401
@@ -391,7 +391,7 @@ class Manager
             if ($Session->get('expired.from.other')) {
                 throw new QUI\Users\Exception(
                     QUI::getLocale()->get(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'exception.session.expired.from.other'
                     ),
                     401
@@ -400,7 +400,7 @@ class Manager
 
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.permission.session.expired'
                 ),
                 401
@@ -419,7 +419,7 @@ class Manager
 
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.user.inactive'
                 ),
                 401
@@ -443,7 +443,7 @@ class Manager
         }
 
         $message = $User->getLocale()->get(
-            'quiqqer/quiqqer',
+            'quiqqer/core',
             'exception.session.expired.from.other'
         );
 
@@ -551,7 +551,7 @@ class Manager
             if ($this->usernameExists($username)) {
                 throw new QUI\Users\Exception(
                     QUI::getLocale()->get(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'exception.lib.user.exist'
                     )
                 );
@@ -559,7 +559,7 @@ class Manager
 
             $newName = $username;
         } else {
-            $newUserLocale = QUI::getLocale()->get('quiqqer/quiqqer', 'user.create.new.username');
+            $newUserLocale = QUI::getLocale()->get('quiqqer/core', 'user.create.new.username');
             $newName = $newUserLocale;
 
             while ($this->usernameExists($newName)) {
@@ -653,7 +653,7 @@ class Manager
     {
         if ($username != self::clearUsername($username)) {
             throw new QUI\Users\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.lib.user.illegal.signs')
+                QUI::getLocale()->get('quiqqer/core', 'exception.lib.user.illegal.signs')
             );
         }
 
@@ -689,7 +689,7 @@ class Manager
 
         $newWorkspaceId = QUI\Workspace\Manager::addWorkspace(
             $User,
-            QUI::getLocale()->get('quiqqer/quiqqer', 'workspaces.2.columns'),
+            QUI::getLocale()->get('quiqqer/core', 'workspaces.2.columns'),
             $twoColumn,
             500,
             700
@@ -697,7 +697,7 @@ class Manager
 
         QUI\Workspace\Manager::addWorkspace(
             $User,
-            QUI::getLocale()->get('quiqqer/quiqqer', 'workspaces.3.columns'),
+            QUI::getLocale()->get('quiqqer/core', 'workspaces.3.columns'),
             $threeColumn,
             500,
             700
@@ -741,7 +741,7 @@ class Manager
             if ($this->usernameExists($username)) {
                 throw new QUI\Users\Exception(
                     QUI::getLocale()->get(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'exception.lib.user.exist'
                     )
                 );
@@ -752,7 +752,7 @@ class Manager
             $insertData['username'] = $username;
             unset($attributes['username']);
         } else {
-            $newUserLocale = QUI::getLocale()->get('quiqqer/quiqqer', 'user.create.new.username');
+            $newUserLocale = QUI::getLocale()->get('quiqqer/core', 'user.create.new.username');
             $newName = $newUserLocale;
 
             while ($this->usernameExists($newName)) {
@@ -771,7 +771,7 @@ class Manager
 
                 throw new QUI\Users\Exception(
                     QUI::getLocale()->get(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'exception.lib.user.exist'
                     )
                 );
@@ -798,7 +798,7 @@ class Manager
 
                 throw new QUI\Users\Exception(
                     QUI::getLocale()->get(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'exception.lib.user.exist'
                     )
                 );
@@ -986,7 +986,7 @@ class Manager
 
         if (QUI::getUsers()->isNobodyUser($User)) {
             $Exception = new QUI\Users\Exception(
-                ['quiqqer/quiqqer', 'exception.login.fail.user.not.found'],
+                ['quiqqer/core', 'exception.login.fail.user.not.found'],
                 404
             );
 
@@ -1011,7 +1011,7 @@ class Manager
 
         if (!isset($userData[0])) {
             $Exception = new QUI\Users\Exception(
-                ['quiqqer/quiqqer', 'exception.login.fail.user.not.found'],
+                ['quiqqer/core', 'exception.login.fail.user.not.found'],
                 404
             );
 
@@ -1024,7 +1024,7 @@ class Manager
 
         if ($userData[0]['active'] == 0) {
             $Exception = new QUI\Users\Exception(
-                ['quiqqer/quiqqer', 'exception.login.fail.user_not_active'],
+                ['quiqqer/core', 'exception.login.fail.user_not_active'],
                 401
             );
 
@@ -1036,7 +1036,7 @@ class Manager
             throw $Exception;
         } elseif ($userData[0]['active'] == -1) {
             $Exception = new QUI\Users\Exception(
-                ['quiqqer/quiqqer', 'exception.login.fail.user_deleted'],
+                ['quiqqer/core', 'exception.login.fail.user_deleted'],
                 401
             );
 
@@ -1054,7 +1054,7 @@ class Manager
             && strtotime($userData[0]['expire']) < time()
         ) {
             $Exception = new QUI\Users\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.login.expire', [
+                QUI::getLocale()->get('quiqqer/core', 'exception.login.expire', [
                     'expire' => $userData[0]['expire']
                 ])
             );
@@ -1087,7 +1087,7 @@ class Manager
 
         if ($activeGroupExists === false) {
             $Exception = new QUI\Users\Exception(
-                ['quiqqer/quiqqer', 'exception.login.fail'],
+                ['quiqqer/core', 'exception.login.fail'],
                 401
             );
 
@@ -1154,7 +1154,7 @@ class Manager
 
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.user.user.not.found'
                 ),
                 404
@@ -1164,7 +1164,7 @@ class Manager
         if (!isset($result[0])) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.user.user.not.found'
                 ),
                 404
@@ -1259,7 +1259,7 @@ class Manager
             );
 
             throw new QUI\Users\UserAuthException(
-                ['quiqqer/quiqqer', 'exception.login.fail'],
+                ['quiqqer/core', 'exception.login.fail'],
                 401
             );
         }
@@ -1414,7 +1414,7 @@ class Manager
 
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.user.user.not.found'
                 ),
                 404
@@ -1424,7 +1424,7 @@ class Manager
         if (!isset($result[0])) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.user.user.not.found'
                 ),
                 404

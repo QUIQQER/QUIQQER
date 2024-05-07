@@ -116,7 +116,7 @@ define('controls/installation/MailSMTP', [
 
             return new Promise(function (resolve, reject) {
                 QUIAjax.get('ajax_system_mailTest', resolve, {
-                    'package': 'quiqqer/quiqqer',
+                    'package': 'quiqqer/core',
                     onError  : reject,
                     params   : JSON.encode({
                         adminMail : data['mail.admin_mail'],

@@ -84,8 +84,8 @@ define('controls/projects/project/media/Entry', [
 
             Close.addEvent('click', this.destroy);
             Close.set({
-                alt  : Locale.get('quiqqer/quiqqer', 'items.entry.btn.remove'),
-                title: Locale.get('quiqqer/quiqqer', 'items.entry.btn.remove')
+                alt  : Locale.get('quiqqer/core', 'items.entry.btn.remove'),
+                title: Locale.get('quiqqer/core', 'items.entry.btn.remove')
             });
 
             this.refresh();

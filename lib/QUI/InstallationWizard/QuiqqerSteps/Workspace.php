@@ -30,7 +30,7 @@ class Workspace extends QUI\InstallationWizard\AbstractInstallationWizardStep
             $Locale = QUI::getLocale();
         }
 
-        return $Locale->get('quiqqer/quiqqer', 'quiqqer.setup.workspace.title');
+        return $Locale->get('quiqqer/core', 'quiqqer.setup.workspace.title');
     }
 
     /**
@@ -43,7 +43,7 @@ class Workspace extends QUI\InstallationWizard\AbstractInstallationWizardStep
             $Locale = QUI::getLocale();
         }
 
-        return $Locale->get('quiqqer/quiqqer', 'quiqqer.setup.workspace.description');
+        return $Locale->get('quiqqer/core', 'quiqqer.setup.workspace.description');
     }
 
     /**
@@ -59,7 +59,7 @@ class Workspace extends QUI\InstallationWizard\AbstractInstallationWizardStep
 
 
         $Engine->assign([
-            'urlImageDir' => URL_OPT_DIR . 'quiqqer/quiqqer/bin/images/installation/'
+            'urlImageDir' => URL_OPT_DIR . 'quiqqer/core/bin/images/installation/'
         ]);
 
         return $Engine->fetch(__DIR__ . '/Workspace.html');

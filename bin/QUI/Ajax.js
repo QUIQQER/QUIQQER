@@ -197,7 +197,7 @@ define('Ajax', [
                         Request.setAttribute('hasError', true);
 
                         if (Exception.getMessage() === '') {
-                            Exception.setAttribute('message', Locale.get('quiqqer/quiqqer', 'exception.network.error'));
+                            Exception.setAttribute('message', Locale.get('quiqqer/core', 'exception.network.error'));
                             Exception.setAttribute('code', 503);
                             networkError = true;
                         }
@@ -419,7 +419,7 @@ define('Ajax', [
         showMaintenanceMessage: function() {
             QUI.getMessageHandler(function(MH) {
                 MH.addInformation(
-                    Locale.get('quiqqer/quiqqer', 'message.maintenance')
+                    Locale.get('quiqqer/core', 'message.maintenance')
                 );
             });
         },

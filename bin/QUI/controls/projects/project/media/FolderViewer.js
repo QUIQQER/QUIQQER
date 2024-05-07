@@ -46,7 +46,7 @@ define('controls/projects/project/media/FolderViewer', [
 ) {
     'use strict';
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
     let HIDE_HIDDEN_FILES = 1; // 1 = hide all hidden files, 0 = show all hidden files
 
     return new Class({
@@ -75,7 +75,7 @@ define('controls/projects/project/media/FolderViewer', [
             folderUrl: false,
             parentId: false, // {number} parent id if the folder not exists
             filetype: ['image'], // types : image, file, folder
-            createMessage: QUILocale.get('quiqqer/quiqqer', 'folderviewer.create.folder'),
+            createMessage: QUILocale.get('quiqqer/core', 'folderviewer.create.folder'),
             newFolderName: false,
             autoactivate: false // activate files after the upload
         },
@@ -204,7 +204,7 @@ define('controls/projects/project/media/FolderViewer', [
 
             this.$MediaSettings.appendChild({
                 name: 'hiddenView',
-                text: QUILocale.get('quiqqer/quiqqer', 'media.panel.view.hiddenItems.show'),
+                text: QUILocale.get('quiqqer/core', 'media.panel.view.hiddenItems.show'),
                 icon: 'fa fa-eye',
                 events: {
                     onMouseDown: function(Item) {
@@ -213,13 +213,13 @@ define('controls/projects/project/media/FolderViewer', [
                         if (HIDE_HIDDEN_FILES) {
                             Item.setAttribute(
                                 'text',
-                                QUILocale.get('quiqqer/quiqqer', 'media.panel.view.hiddenItems.show')
+                                QUILocale.get('quiqqer/core', 'media.panel.view.hiddenItems.show')
                             );
                             Item.setAttribute('icon', 'fa fa-eye');
                         } else {
                             Item.setAttribute(
                                 'text',
-                                QUILocale.get('quiqqer/quiqqer', 'media.panel.view.hiddenItems.hide')
+                                QUILocale.get('quiqqer/core', 'media.panel.view.hiddenItems.hide')
                             );
                             Item.setAttribute('icon', 'fa fa-eye-slash');
                         }

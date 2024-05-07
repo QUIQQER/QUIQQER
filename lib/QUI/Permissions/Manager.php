@@ -194,7 +194,7 @@ class Manager
 
         if (empty($permissions)) {
             QUI\System\Log::addInfo(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.permissions.are.empty')
+                QUI::getLocale()->get('quiqqer/core', 'exception.permissions.are.empty')
             );
 
             return;
@@ -656,7 +656,7 @@ class Manager
     ): void {
         if (empty($permissions)) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.permissions.are.empty')
+                QUI::getLocale()->get('quiqqer/core', 'exception.permissions.are.empty')
             );
         }
 
@@ -1299,7 +1299,7 @@ class Manager
         if (!isset($permissions[$permission])) {
             throw new QUI\Permissions\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.permissions.permission.not.found'
                 )
             );
@@ -1310,7 +1310,7 @@ class Manager
         if ($params['src'] != 'user') {
             throw new QUI\Permissions\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.permissions.delete.only.user.permissions'
                 )
             );

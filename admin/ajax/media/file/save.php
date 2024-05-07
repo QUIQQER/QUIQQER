@@ -49,14 +49,14 @@ QUI::$Ajax->registerFunction(
 
             QUI::getMessagesHandler()->addSuccess(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'projects.project.site.media.folderPanel.message.save.success'
                 )
             );
         } else {
             QUI::getMessagesHandler()->addSuccess(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'projects.project.site.media.filePanel.message.save.success'
                 )
             );

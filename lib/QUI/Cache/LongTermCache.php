@@ -232,7 +232,7 @@ class LongTermCache
         } catch (\Exception) {
             throw new QUI\Cache\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.cache.manager.not.exist'
                 ),
                 404
@@ -242,7 +242,7 @@ class LongTermCache
         if ($isMiss) {
             throw new QUI\Cache\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.cache.manager.not.exist'
                 ),
                 404

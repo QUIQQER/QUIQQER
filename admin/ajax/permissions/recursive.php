@@ -21,7 +21,7 @@ QUI::$Ajax->registerFunction(
             case 'classes/projects/project/Site':
                 if (!isset($params['id'])) {
                     throw new QUI\Exception(
-                        QUI::getLocale()->get('quiqqer/quiqqer', 'exception.missing.missing.index.id')
+                        QUI::getLocale()->get('quiqqer/core', 'exception.missing.missing.index.id')
                     );
                 }
 
@@ -31,7 +31,7 @@ QUI::$Ajax->registerFunction(
 
             default:
                 throw new QUI\Exception(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.missing.permission.entry')
+                    QUI::getLocale()->get('quiqqer/core', 'exception.missing.permission.entry')
                 );
         }
 
@@ -58,7 +58,7 @@ QUI::$Ajax->registerFunction(
         if (!$errors) {
             QUI::getMessagesHandler()->addSuccess(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'permissions.message.save.success'
                 )
             );

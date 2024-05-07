@@ -130,7 +130,7 @@ class ManagerTest extends TestCase
     public function testSetStandardWorkspace()
     {
         $this->markTestSkipped(
-            'Test skipped: getWorkspaceById does not accept user interface, making testing harder (see quiqqer/quiqqer#1336)'
+            'Test skipped: getWorkspaceById does not accept user interface, making testing harder (see quiqqer/core#1336)'
         );
 
         // Arrange

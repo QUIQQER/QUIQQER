@@ -28,7 +28,7 @@ class PackageNotLicensedException extends Exception
     {
         if (empty($message)) {
             $message = QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'PackageNotLicensedException.message',
                 [
                     'package' => $package

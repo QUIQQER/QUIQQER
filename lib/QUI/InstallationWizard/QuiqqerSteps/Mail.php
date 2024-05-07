@@ -19,7 +19,7 @@ class Mail extends QUI\InstallationWizard\AbstractInstallationWizardStep
             $Locale = QUI::getLocale();
         }
 
-        return $Locale->get('quiqqer/quiqqer', 'quiqqer.setup.mail.title');
+        return $Locale->get('quiqqer/core', 'quiqqer.setup.mail.title');
     }
 
     /**
@@ -32,7 +32,7 @@ class Mail extends QUI\InstallationWizard\AbstractInstallationWizardStep
             $Locale = QUI::getLocale();
         }
 
-        return $Locale->get('quiqqer/quiqqer', 'quiqqer.setup.mail.description');
+        return $Locale->get('quiqqer/core', 'quiqqer.setup.mail.description');
     }
 
     /**
@@ -47,7 +47,7 @@ class Mail extends QUI\InstallationWizard\AbstractInstallationWizardStep
         }
 
         $Engine->assign([
-            'urlImageDir' => URL_OPT_DIR . 'quiqqer/quiqqer/bin/images/installation/',
+            'urlImageDir' => URL_OPT_DIR . 'quiqqer/core/bin/images/installation/',
             'mail' => QUI::conf('mail', 'admin_mail')
         ]);
 

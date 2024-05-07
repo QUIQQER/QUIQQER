@@ -20,7 +20,7 @@ QUI::$Ajax->registerFunction(
             $files = json_decode($file, true);
         }
 
-        $cacheName = 'quiqqer/package/quiqqer/quiqqer/menu/windows/' . md5(json_encode($files));
+        $cacheName = 'quiqqer/package/quiqqer/core/menu/windows/' . md5(json_encode($files));
         $Settings = QUI\Utils\XML\Settings::getInstance();
 
         if ($windowName) {
@@ -33,7 +33,7 @@ QUI::$Ajax->registerFunction(
             if (
                 !$windowName
                 && is_array($files)
-                && in_array('packages/quiqqer/quiqqer/admin/settings/cache.xml', $files)
+                && in_array('packages/quiqqer/core/admin/settings/cache.xml', $files)
             ) {
                 $windowName = 'quiqqer-cache';
             }

@@ -294,7 +294,7 @@ class Manager
         if (!isset($result[0])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.workspace.not.found'
                 ),
                 404
@@ -346,7 +346,7 @@ class Manager
      */
     public static function getAvailablePanels(): array
     {
-        $cache = 'quiqqer/package/quiqqer/quiqqer/available-panels';
+        $cache = 'quiqqer/package/quiqqer/core/available-panels';
 
         try {
             return QUI\Cache\Manager::get($cache);

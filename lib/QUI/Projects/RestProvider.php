@@ -52,7 +52,7 @@ class RestProvider implements QUI\REST\ProviderInterface
     public function getOpenApiDefinitionFile(): bool|string
     {
         try {
-            $dir = QUI::getPackage('quiqqer/quiqqer')->getDir();
+            $dir = QUI::getPackage('quiqqer/core')->getDir();
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
             return false;
@@ -85,6 +85,6 @@ class RestProvider implements QUI\REST\ProviderInterface
             $Locale = QUI::getLocale();
         }
 
-        return $Locale->get('quiqqer/quiqqer', 'RestProvider.Projects.title');
+        return $Locale->get('quiqqer/core', 'RestProvider.Projects.title');
     }
 }

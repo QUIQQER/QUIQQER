@@ -45,7 +45,7 @@ require.config({
         'IPv6': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/IPv6',
         'punycode': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/punycode',
         'SecondLevelDomains': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/SecondLevelDomains',
-        '@popperjs/core': URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/lib/tippy/popper.min'
+        '@popperjs/core': URL_OPT_DIR + 'quiqqer/core/bin/QUI/lib/tippy/popper.min'
     },
 
     waitSeconds: 0,
@@ -113,18 +113,18 @@ require(requireList, function () {
         'control-loader-type': 'line-scale',
         'control-loader-color': '#2f8fc8',
 
-        'control-desktop-panel-sheet-closetext': Locale.get('quiqqer/quiqqer', 'close'),
-        'control-windows-popup-closetext': Locale.get('quiqqer/quiqqer', 'close'),
+        'control-desktop-panel-sheet-closetext': Locale.get('quiqqer/core', 'close'),
+        'control-windows-popup-closetext': Locale.get('quiqqer/core', 'close'),
         'control-windows-cancel-no-button': false,
-        'control-windows-confirm-canceltext': Locale.get('quiqqer/quiqqer', 'cancel'),
-        'control-windows-confirm-submittext': Locale.get('quiqqer/quiqqer', 'accept'),
-        'control-windows-prompt-canceltext': Locale.get('quiqqer/quiqqer', 'cancel'),
-        'control-windows-prompt-submittext': Locale.get('quiqqer/quiqqer', 'accept'),
-        'control-windows-submit-canceltext': Locale.get('quiqqer/quiqqer', 'cancel'),
-        'control-windows-submit-submittext': Locale.get('quiqqer/quiqqer', 'accept'),
+        'control-windows-confirm-canceltext': Locale.get('quiqqer/core', 'cancel'),
+        'control-windows-confirm-submittext': Locale.get('quiqqer/core', 'accept'),
+        'control-windows-prompt-canceltext': Locale.get('quiqqer/core', 'cancel'),
+        'control-windows-prompt-submittext': Locale.get('quiqqer/core', 'accept'),
+        'control-windows-submit-canceltext': Locale.get('quiqqer/core', 'cancel'),
+        'control-windows-submit-submittext': Locale.get('quiqqer/core', 'accept'),
 
         'control-task-panel-limit': 50,
-        'control-task-panel-limit-message': Locale.get('quiqqer/quiqqer', 'message.to.much.tasks'),
+        'control-task-panel-limit-message': Locale.get('quiqqer/core', 'message.to.much.tasks'),
         'quiqqer-panel-inject': PanelUtils.panelApiInjectionEvent
     });
 
@@ -139,8 +139,8 @@ require(requireList, function () {
 
     // taskbar tooltips
     require([
-        URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/lib/tippy/tippy.min.js',
-        'css!' + URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/lib/tippy/tippy.css'
+        URL_OPT_DIR + 'quiqqer/core/bin/QUI/lib/tippy/tippy.min.js',
+        'css!' + URL_OPT_DIR + 'quiqqer/core/bin/QUI/lib/tippy/tippy.css'
     ], function (tippy) {
         QUI.addEvent('onParseBegin', function (Instance, Parent) {
             // parse title
@@ -401,7 +401,7 @@ require(requireList, function () {
 
                         Workspaces.appendChild(
                             new QUIContextmenuItem({
-                                text: Locale.get('quiqqer/quiqqer', 'menu.workspaces.edit'),
+                                text: Locale.get('quiqqer/core', 'menu.workspaces.edit'),
                                 icon: 'fa fa-edit',
                                 events: {
                                     onClick: function () {
@@ -473,7 +473,7 @@ require(requireList, function () {
 
             Workspace.save();
 
-            return Locale.get('quiqqer/quiqqer', 'log.out.message');
+            return Locale.get('quiqqer/core', 'log.out.message');
         };
 
         // logout function

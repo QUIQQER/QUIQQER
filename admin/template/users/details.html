@@ -2,7 +2,7 @@
     <thead>
     <tr>
         <th>
-            {locale group="quiqqer/quiqqer" var="user.panel.details"}
+            {locale group="quiqqer/core" var="user.panel.details"}
         </th>
     </tr>
     </thead>
@@ -12,7 +12,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/quiqqer" var="user_id"}
+                    {locale group="quiqqer/core" var="user_id"}
                 </span>
                 <input type="text" name="id" value="" disabled="disabled"
                        class="field-container-field"
@@ -24,7 +24,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/quiqqer" var="permission.quiqqer.su"}
+                    {locale group="quiqqer/core" var="permission.quiqqer.su"}
                 </span>
                 <span class="field-container-field">
                     <input type="checkbox" name="su"/>
@@ -36,7 +36,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/quiqqer" var="username"}
+                    {locale group="quiqqer/core" var="username"}
                 </span>
                 <input type="text" name="username" class="field-container-field"/>
             </label>
@@ -46,7 +46,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/quiqqer" var="email"}
+                    {locale group="quiqqer/core" var="email"}
                 </span>
 
                 <input type="text" name="email" class="field-container-field"/>
@@ -57,7 +57,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/quiqqer" var="user.panel.avatar"}
+                    {locale group="quiqqer/core" var="user.panel.avatar"}
                 </span>
                 <input type="text" name="avatar" class="media-image"/>
             </label>
@@ -67,7 +67,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/quiqqer" var="groups"}
+                    {locale group="quiqqer/core" var="groups"}
                 </span>
                 <input type="text" name="usergroup" value="" data-qui="controls/groups/Select"/>
             </label>
@@ -77,7 +77,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/quiqqer" var="user.panel.userlanguage"}
+                    {locale group="quiqqer/core" var="user.panel.userlanguage"}
                 </span>
                 <select name="lang" class="field-container-field">
                     {assign var=langs value=$QUI->availableLanguages()}
@@ -95,7 +95,7 @@
     <thead>
     <tr>
         <th>
-            {locale group="quiqqer/quiqqer" var="user.panel.personal"}
+            {locale group="quiqqer/core" var="user.panel.personal"}
         </th>
     </tr>
     </thead>
@@ -103,7 +103,7 @@
     <tr>
         <td>
             <label class="field-container">
-                <span class="field-container-item">{locale group="quiqqer/quiqqer" var="firstname"}</span>
+                <span class="field-container-item">{locale group="quiqqer/core" var="firstname"}</span>
                 <input type="text" name="firstname" value="" class="field-container-field"/>
             </label>
         </td>
@@ -111,7 +111,7 @@
     <tr>
         <td>
             <label class="field-container">
-                <span class="field-container-item">{locale group="quiqqer/quiqqer" var="lastname"}</span>
+                <span class="field-container-item">{locale group="quiqqer/core" var="lastname"}</span>
                 <input type="text" name="lastname" class="field-container-field"/>
             </label>
         </td>
@@ -119,7 +119,7 @@
     <tr>
         <td>
             <label class="field-container">
-                <span class="field-container-item">{locale group="quiqqer/quiqqer" var="birthday"}</span>
+                <span class="field-container-item">{locale group="quiqqer/core" var="birthday"}</span>
                 <input type="date" name="birthday" class="field-container-field"/>
             </label>
         </td>
@@ -128,7 +128,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/quiqqer" var="abbreviation"}
+                    {locale group="quiqqer/core" var="abbreviation"}
                 </span>
                 <input type="text" name="shortcuts" class="field-container-field"/>
             </label>
@@ -141,7 +141,7 @@
     <thead>
     <tr>
         <th>
-            {locale group="quiqqer/quiqqer" var="user.toolbar.title"}
+            {locale group="quiqqer/core" var="user.toolbar.title"}
         </th>
     </tr>
     </thead>
@@ -151,7 +151,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/quiqqer" var="user.panel.editorToolbar"}
+                    {locale group="quiqqer/core" var="user.panel.editorToolbar"}
                 </span>
                 <select name="toolbar" class="field-container-field"></select>
             </label>
@@ -161,7 +161,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/quiqqer" var="user.panel.assignedToolbars"}
+                    {locale group="quiqqer/core" var="user.panel.assignedToolbars"}
                 </span>
                 <input type="text" name="assigned_toolbar" value="" data-qui="controls/editors/toolbars/Select"/>
             </label>
@@ -174,7 +174,7 @@
     <thead>
     <tr>
         <th>
-            {locale group="quiqqer/quiqqer" var="data"}
+            {locale group="quiqqer/core" var="data"}
         </th>
     </tr>
     </thead>
@@ -184,7 +184,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/quiqqer" var="user.panel.created"}
+                    {locale group="quiqqer/core" var="user.panel.created"}
                 </span>
                 <input type="text" name="regdate" disabled="disabled" class="field-container-field"/>
             </label>
@@ -194,7 +194,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/quiqqer" var="user.panel.lastChanged"}
+                    {locale group="quiqqer/core" var="user.panel.lastChanged"}
                 </span>
                 <input type="text" name="lastedit" disabled="disabled" class="field-container-field"/>
             </label>
@@ -204,7 +204,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/quiqqer" var="user.panel.lastLogin"}
+                    {locale group="quiqqer/core" var="user.panel.lastLogin"}
                 </span>
                 <input type="text" name="lastvisit" disabled="disabled" class="field-container-field"/>
             </label>
@@ -214,7 +214,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/quiqqer" var="user.panel.browser"}
+                    {locale group="quiqqer/core" var="user.panel.browser"}
                 </span>
                 <input type="text" name="user_agent" disabled="disabled" class="field-container-field"/>
             </label>

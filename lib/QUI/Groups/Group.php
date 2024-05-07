@@ -153,7 +153,7 @@ class Group extends QUI\QDOM
             );
         }
 
-        // @todo remove it in quiqqer/quiqqer v3
+        // @todo remove it in quiqqer/core v3
         // merge parent id to uuid
         if (is_numeric($result[0]['parent']) && (int)$result[0]['parent'] !== 0) {
             $parentId = (int)$result[0]['parent'];
@@ -191,7 +191,7 @@ class Group extends QUI\QDOM
 
         if (!isset($result[0])) {
             throw new QUI\Exception(
-                ['quiqqer/quiqqer', 'exception.lib.qui.group.doesnt.exist'],
+                ['quiqqer/core', 'exception.lib.qui.group.doesnt.exist'],
                 404
             );
         }
@@ -268,8 +268,8 @@ class Group extends QUI\QDOM
      * Plugins could extend the group attributes
      *
      * look at
-     * - https://dev.quiqqer.com/quiqqer/quiqqer/wikis/User-Xml
-     * - https://dev.quiqqer.com/quiqqer/quiqqer/wikis/Group-Xml
+     * - https://dev.quiqqer.com/quiqqer/core/wikis/User-Xml
+     * - https://dev.quiqqer.com/quiqqer/core/wikis/Group-Xml
      *
      * @return array
      */
@@ -368,7 +368,7 @@ class Group extends QUI\QDOM
             || QUI::conf('globals', 'root') === $this->getUUID()
         ) {
             throw new QUI\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.lib.qui.group.root.delete'
             ]);
         }
@@ -703,7 +703,7 @@ class Group extends QUI\QDOM
 
         if (!$User->isSU()) {
             throw new QUI\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.lib.qui.group.no.edit.permissions'
             ]);
         }
@@ -765,7 +765,7 @@ class Group extends QUI\QDOM
             if (isset($children[$NewParent->getId()])) {
                 throw new QUI\Groups\Exception(
                     [
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'exception.group.set.parent.not.allowed'
                     ],
                     400,
@@ -908,7 +908,7 @@ class Group extends QUI\QDOM
         if (!isset($result[0])) {
             throw new QUI\Exception(
                 [
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.qui.group.user.not.found'
                 ],
                 404
@@ -1079,7 +1079,7 @@ class Group extends QUI\QDOM
         if (!$newId) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.group.create.id.creation.error'
                 )
             );

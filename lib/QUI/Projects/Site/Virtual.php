@@ -169,7 +169,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     public function nextSibling(): QUI\Interfaces\Projects\Site
     {
         throw new QUI\Exception(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.no.next.sibling')
+            QUI::getLocale()->get('quiqqer/core', 'exception.site.no.next.sibling')
         );
     }
 
@@ -194,7 +194,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     public function previousSibling(): QUI\Interfaces\Projects\Site
     {
         throw new QUI\Exception(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.no.previous.sibling')
+            QUI::getLocale()->get('quiqqer/core', 'exception.site.no.previous.sibling')
         );
     }
 
@@ -233,7 +233,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     public function getChildIdByName(string $name): int
     {
         throw new QUI\Exception(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.child.by.name.not.found', [
+            QUI::getLocale()->get('quiqqer/core', 'exception.site.child.by.name.not.found', [
                 'name' => $name
             ]),
             705
@@ -251,7 +251,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     public function getChild(int $id): QUI\Interfaces\Projects\Site
     {
         throw new QUI\Exception(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.child.not.found'),
+            QUI::getLocale()->get('quiqqer/core', 'exception.site.child.not.found'),
             705
         );
     }

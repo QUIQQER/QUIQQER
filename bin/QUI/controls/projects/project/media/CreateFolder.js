@@ -15,7 +15,7 @@ define('controls/projects/project/media/CreateFolder', [
 ], function (QUI, QUIPopup, QUIButton, ProjectSelect, MediaSitemap, Projects, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
 

@@ -164,7 +164,7 @@ class Manager
         if (self::getConfig()->get('general', 'nocache')) {
             throw new QUI\Cache\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.cache.manager.not.exist'
                 ),
                 404
@@ -174,7 +174,7 @@ class Manager
         if (defined('QUIQQER_SETUP')) {
             throw new QUI\Cache\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.cache.manager.not.exist'
                 ),
                 404
@@ -188,7 +188,7 @@ class Manager
         } catch (\Exception) {
             throw new QUI\Cache\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.cache.manager.not.exist'
                 ),
                 404
@@ -215,7 +215,7 @@ class Manager
 
             throw new QUI\Cache\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.cache.manager.not.exist'
                 ),
                 404

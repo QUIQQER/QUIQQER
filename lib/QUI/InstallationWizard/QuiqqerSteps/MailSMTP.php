@@ -28,7 +28,7 @@ class MailSMTP extends QUI\InstallationWizard\AbstractInstallationWizardStep
             $Locale = QUI::getLocale();
         }
 
-        return $Locale->get('quiqqer/quiqqer', 'quiqqer.setup.MailSMTP.title');
+        return $Locale->get('quiqqer/core', 'quiqqer.setup.MailSMTP.title');
     }
 
     /**
@@ -41,7 +41,7 @@ class MailSMTP extends QUI\InstallationWizard\AbstractInstallationWizardStep
             $Locale = QUI::getLocale();
         }
 
-        return $Locale->get('quiqqer/quiqqer', 'quiqqer.setup.MailSMTP.description');
+        return $Locale->get('quiqqer/core', 'quiqqer.setup.MailSMTP.description');
     }
 
     /**
@@ -56,7 +56,7 @@ class MailSMTP extends QUI\InstallationWizard\AbstractInstallationWizardStep
         }
 
         $Engine->assign([
-            'urlImageDir' => URL_OPT_DIR . 'quiqqer/quiqqer/bin/images/installation/',
+            'urlImageDir' => URL_OPT_DIR . 'quiqqer/core/bin/images/installation/',
             'SMTPServer' => QUI::conf('mail', 'SMTPServer'),
             'SMTPPort' => QUI::conf('mail', 'SMTPPort'),
             'SMTPSecure' => QUI::conf('mail', 'SMTPSecure'),

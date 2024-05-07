@@ -43,12 +43,12 @@ class EventHandler
                     ], function(Password, QUILocale) {
                         new Password({
                             mustChange: true,
-                            message: QUILocale.get('quiqqer/quiqqer', 'message.set.new.password')
+                            message: QUILocale.get('quiqqer/core', 'message.set.new.password')
                         }).open();
                     });
                 };
            
-                if (!QUILocale.exists('quiqqer/quiqqer', 'message.set.new.password')) {
+                if (!QUILocale.exists('quiqqer/core', 'message.set.new.password')) {
                     (function() {
                         openChangePasswordWindow();
                     }).delay(2000);
@@ -81,7 +81,7 @@ class EventHandler
      */
     public static function onPackageUpdate(QUI\Package\Package $Package): void
     {
-        if ($Package->getName() != "quiqqer/quiqqer") {
+        if ($Package->getName() != "quiqqer/core") {
             return;
         }
 
@@ -153,7 +153,7 @@ class EventHandler
     }
 
     /**
-     * quiqqer/quiqqer: onUserLoginError
+     * quiqqer/core: onUserLoginError
      *
      * Increase User failedLogins counter
      *
@@ -199,7 +199,7 @@ class EventHandler
     }
 
     /**
-     * quiqqer/quiqqer: userAuthenticatorLoginStart
+     * quiqqer/core: userAuthenticatorLoginStart
      *
      * @param int|string $userId
      * @param string $authenticator
@@ -213,7 +213,7 @@ class EventHandler
     }
 
     /**
-     * quiqqer/quiqqer: onUserLoginStart
+     * quiqqer/core: onUserLoginStart
      *
      * @param int|string $userId
      * @return void
@@ -246,14 +246,14 @@ class EventHandler
 
         if ($Now < $NextLoginAllowed) {
             throw new QUI\Users\Exception(
-                ['quiqqer/quiqqer', 'exception.login.fail.login_locked'],
+                ['quiqqer/core', 'exception.login.fail.login_locked'],
                 429
             );
         }
     }
 
     /**
-     * quiqqer/quiqqer: onUserLogin
+     * quiqqer/core: onUserLogin
      *
      * @param Users\User $User
      * @return void

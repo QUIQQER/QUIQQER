@@ -76,7 +76,7 @@ class Search
         if ($searchUsers) {
             if (empty($searchParams['users'])) {
                 throw new QUI\Exception([
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.usergroups.search.cannot.search.users.without.parameters'
                 ]);
             }
@@ -149,7 +149,7 @@ class Search
         if ($searchGroups) {
             if (empty($searchParams['groups'])) {
                 throw new QUI\Exception([
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.usergroups.search.cannot.search.groups.without.parameters'
                 ]);
             }
@@ -561,7 +561,7 @@ class Search
         if ($searchUsers) {
             if (empty($searchParams['users'])) {
                 throw new QUI\Exception([
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.usergroups.search.cannot.search.users.without.parameters'
                 ]);
             }
@@ -597,7 +597,7 @@ class Search
         if ($searchGroups) {
             if (empty($searchParams['groups'])) {
                 throw new QUI\Exception([
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.usergroups.search.cannot.search.groups.without.parameters'
                 ]);
             }

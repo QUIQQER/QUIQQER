@@ -23,7 +23,7 @@ QUI::$Ajax->registerFunction(
             if ($Exception->getCode() === 429) {
                 throw new QUI\Users\UserAuthException(
                     [
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'exception.login.fail.login_locked'
                     ],
                     $Exception->getCode()

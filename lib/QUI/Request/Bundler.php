@@ -158,11 +158,11 @@ class Bundler
         }
 
         // admin ajax
-        $file = OPT_DIR . 'quiqqer/quiqqer/admin/' . str_replace('_', '/', $function) . '.php';
+        $file = OPT_DIR . 'quiqqer/core/admin/' . str_replace('_', '/', $function) . '.php';
         $file = Orthos::clearPath($file);
         $file = realpath($file);
 
-        $dir = OPT_DIR . 'quiqqer/quiqqer/admin/';
+        $dir = OPT_DIR . 'quiqqer/core/admin/';
 
         if (str_contains($file, $dir) && file_exists($file)) {
             require_once $file;

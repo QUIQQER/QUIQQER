@@ -18,7 +18,7 @@ define('controls/packages/server/DeleteServerWindow', [
 ], function (QUI, QUIConfirm, Mustache, QUILocale, Packages, templateAddServer) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
 
@@ -37,7 +37,7 @@ define('controls/packages/server/DeleteServerWindow', [
             maxWidth : 400,
             autoclose: false,
             ok_button: {
-                text     : QUILocale.get('quiqqer/quiqqer', 'delete'),
+                text     : QUILocale.get('quiqqer/core', 'delete'),
                 textimage: 'fa fa-trash'
             },
             server   : false

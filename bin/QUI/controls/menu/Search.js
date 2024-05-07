@@ -65,7 +65,7 @@ define('controls/menu/Search', [
 
             this.$SearchType = new QUIButton({
                 textimage: 'fa fa-search',
-                text     : QUILocale.get('quiqqer/quiqqer', 'menu.search.title'),
+                text     : QUILocale.get('quiqqer/core', 'menu.search.title'),
                 styles   : {
                     lineHeight: 38
                 }
@@ -73,7 +73,7 @@ define('controls/menu/Search', [
 
             this.$SearchType.appendChild({
                 icon  : 'fa fa-file-o',
-                text  : QUILocale.get('quiqqer/quiqqer', 'menu.search.sites.title'),
+                text  : QUILocale.get('quiqqer/core', 'menu.search.sites.title'),
                 search: 'site',
                 events: {
                     onClick: this.$onChange
@@ -82,7 +82,7 @@ define('controls/menu/Search', [
 
             this.$SearchType.appendChild({
                 icon  : 'fa fa-user',
-                text  : QUILocale.get('quiqqer/quiqqer', 'menu.search.users.title'),
+                text  : QUILocale.get('quiqqer/core', 'menu.search.users.title'),
                 search: 'user',
                 events: {
                     onClick: this.$onChange
@@ -91,7 +91,7 @@ define('controls/menu/Search', [
 
             this.$SearchType.appendChild({
                 icon  : 'fa fa-group',
-                text  : QUILocale.get('quiqqer/quiqqer', 'menu.search.groups.title'),
+                text  : QUILocale.get('quiqqer/core', 'menu.search.groups.title'),
                 search: 'group',
                 events: {
                     onClick: this.$onChange

@@ -14,7 +14,7 @@ define('controls/projects/project/site/SearchWindow', [
 ], function (QUI, QUIConfirm, Search, QUILocale) {
     "use strict";
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     return new Class({
 

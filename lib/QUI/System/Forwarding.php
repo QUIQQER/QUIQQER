@@ -32,7 +32,7 @@ class Forwarding
 
         if (isset($config[$from])) {
             throw new QUI\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.forwarding.already.exists'
             ]);
         }
@@ -78,7 +78,7 @@ class Forwarding
         if (!isset($config[$from])) {
             throw new QUI\Exception(
                 [
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.forwarding.not.found'
                 ],
                 404

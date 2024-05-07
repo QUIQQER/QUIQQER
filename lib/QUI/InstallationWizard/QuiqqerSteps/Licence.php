@@ -29,7 +29,7 @@ class Licence extends QUI\InstallationWizard\AbstractInstallationWizardStep
             $Locale = QUI::getLocale();
         }
 
-        return $Locale->get('quiqqer/quiqqer', 'quiqqer.setup.licence.title');
+        return $Locale->get('quiqqer/core', 'quiqqer.setup.licence.title');
     }
 
     /**
@@ -42,7 +42,7 @@ class Licence extends QUI\InstallationWizard\AbstractInstallationWizardStep
             $Locale = QUI::getLocale();
         }
 
-        return $Locale->get('quiqqer/quiqqer', 'quiqqer.setup.licence.description');
+        return $Locale->get('quiqqer/core', 'quiqqer.setup.licence.description');
     }
 
     /**
@@ -57,7 +57,7 @@ class Licence extends QUI\InstallationWizard\AbstractInstallationWizardStep
         }
 
         $Engine->assign([
-            'urlImageDir' => URL_OPT_DIR . 'quiqqer/quiqqer/bin/images/installation/'
+            'urlImageDir' => URL_OPT_DIR . 'quiqqer/core/bin/images/installation/'
         ]);
 
         return $Engine->fetch(__DIR__ . '/Licence.html');

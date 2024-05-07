@@ -79,7 +79,7 @@ class Licence extends QUI\System\Console\Tool
             exit;
         }
 
-        $licenceFile = OPT_DIR . 'quiqqer/quiqqer/LICENSE';
+        $licenceFile = OPT_DIR . 'quiqqer/core/LICENSE';
         $content = file_get_contents($licenceFile);
 
         echo $content;

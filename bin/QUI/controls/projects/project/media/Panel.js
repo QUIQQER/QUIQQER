@@ -31,7 +31,7 @@ define('controls/projects/project/media/Panel', [
 ], function () {
     "use strict";
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     let HIDE_HIDDEN_FILES = 1; // 1 = hide all hidden files, 0 = show all hidden files
     let SHOW_SITEMAP_STATUS = false;
@@ -382,17 +382,17 @@ define('controls/projects/project/media/Panel', [
                 ).appendChild(
                     new ContextmenuItem({
                         name  : 'hiddenView',
-                        text  : Locale.get('quiqqer/quiqqer', 'media.panel.view.hiddenItems.show'),
+                        text  : Locale.get('quiqqer/core', 'media.panel.view.hiddenItems.show'),
                         icon  : 'fa fa-eye',
                         events: {
                             onMouseDown: function (Item) {
                                 HIDE_HIDDEN_FILES = !HIDE_HIDDEN_FILES;
 
                                 if (HIDE_HIDDEN_FILES) {
-                                    Item.setAttribute('text', Locale.get('quiqqer/quiqqer', 'media.panel.view.hiddenItems.show'));
+                                    Item.setAttribute('text', Locale.get('quiqqer/core', 'media.panel.view.hiddenItems.show'));
                                     Item.setAttribute('icon', 'fa fa-eye');
                                 } else {
-                                    Item.setAttribute('text', Locale.get('quiqqer/quiqqer', 'media.panel.view.hiddenItems.hide'));
+                                    Item.setAttribute('text', Locale.get('quiqqer/core', 'media.panel.view.hiddenItems.hide'));
                                     Item.setAttribute('icon', 'fa fa-eye-slash');
                                 }
 
@@ -2669,7 +2669,7 @@ define('controls/projects/project/media/Panel', [
                     });
                 });
             }, {
-                'package' : 'quiqqer/quiqqer',
+                'package' : 'quiqqer/core',
                 attributes: JSON.encode({
                     limit  : self.getAttribute('limit'),
                     sheet  : self.getAttribute('page'),

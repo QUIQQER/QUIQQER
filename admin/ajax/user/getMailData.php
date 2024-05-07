@@ -16,7 +16,7 @@ QUI::$Ajax->registerFunction(
 
         return [
             'name' => $User->getName(),
-            'lang' => QUI::getLocale()->get('quiqqer/quiqqer', 'language.' . $User->getLang()),
+            'lang' => QUI::getLocale()->get('quiqqer/core', 'language.' . $User->getLang()),
             'email' => $User->getAttribute('email')
         ];
     },

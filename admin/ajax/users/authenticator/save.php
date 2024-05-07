@@ -17,7 +17,7 @@ QUI::$Ajax->registerFunction(
 
         if (!$User->isSU()) {
             throw new QUI\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.config.save.not.allowed'
             ]);
         }

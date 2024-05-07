@@ -23,7 +23,7 @@ QUI::$Ajax->registerFunction(
 
         if ($Folder->getType() != Folder::class) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.is.no.folder')
+                QUI::getLocale()->get('quiqqer/core', 'exception.media.upload.is.no.folder')
             );
         }
 

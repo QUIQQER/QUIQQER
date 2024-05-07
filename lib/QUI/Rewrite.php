@@ -490,7 +490,7 @@ class Rewrite
                 } catch (QUI\Permissions\Exception) {
                     http_response_code(Response::HTTP_FORBIDDEN);
 
-                    $file = OPT_DIR . 'quiqqer/quiqqer/bin/images/deny.svg';
+                    $file = OPT_DIR . 'quiqqer/core/bin/images/deny.svg';
                     $Item->setAttribute('mime_type', 'image/svg+xml');
                 } catch (QUI\Exception $Exception) {
                     QUI\System\Log::writeException($Exception);
@@ -502,7 +502,7 @@ class Rewrite
                 } catch (QUI\Permissions\Exception) {
                     http_response_code(Response::HTTP_FORBIDDEN);
 
-                    $file = OPT_DIR . 'quiqqer/quiqqer/bin/images/deny.svg';
+                    $file = OPT_DIR . 'quiqqer/core/bin/images/deny.svg';
                     $Item->setAttribute('mime_type', 'image/svg+xml');
                 } catch (QUI\Exception $Exception) {
                     QUI\System\Log::writeException($Exception);
@@ -1462,7 +1462,7 @@ class Rewrite
             ]);
         }
 
-        // change children - quiqqer/quiqqer#334
+        // change children - quiqqer/core#334
         $currentPathsIds = array_map(fn($entry) => $entry['id'], $currentPaths);
 
         $childrenIds = array_flip($Site->getChildrenIdsRecursive());

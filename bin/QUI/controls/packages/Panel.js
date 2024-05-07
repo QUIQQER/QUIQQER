@@ -16,7 +16,7 @@ define('controls/packages/Panel', [
 ], function (QUI, QUIPanel, QUIButton, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     /**
      * @class controls/packages/Panel
@@ -69,7 +69,7 @@ define('controls/packages/Panel', [
 
             this.addButton({
                 name  : 'menu',
-                title : QUILocale.get('quiqqer/quiqqer', 'packages.panel.menu'),
+                title : QUILocale.get('quiqqer/core', 'packages.panel.menu'),
                 icon  : 'fa fa-bars',
                 events: {
                     onClick: this.toggleMenu
@@ -83,7 +83,7 @@ define('controls/packages/Panel', [
             // left categories
             this.addCategory({
                 name  : 'system',
-                text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.update'),
+                text  : QUILocale.get('quiqqer/core', 'packages.panel.category.update'),
                 image : 'fa fa-check-circle-o',
                 events: {
                     onActive: this.loadSystem
@@ -92,7 +92,7 @@ define('controls/packages/Panel', [
 
             this.addCategory({
                 name  : 'search',
-                text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.search'),
+                text  : QUILocale.get('quiqqer/core', 'packages.panel.category.search'),
                 image : 'fa fa-plug',
                 events: {
                     onClick : function () {
@@ -104,7 +104,7 @@ define('controls/packages/Panel', [
 
             this.addCategory({
                 name  : 'installed',
-                text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.installed'),
+                text  : QUILocale.get('quiqqer/core', 'packages.panel.category.installed'),
                 image : 'fa fa-puzzle-piece',
                 events: {
                     onActive: this.loadInstalled
@@ -113,7 +113,7 @@ define('controls/packages/Panel', [
 
             this.addCategory({
                 name  : 'server',
-                text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.server'),
+                text  : QUILocale.get('quiqqer/core', 'packages.panel.category.server'),
                 image : 'fa fa-server',
                 events: {
                     onActive: this.loadServer
@@ -122,7 +122,7 @@ define('controls/packages/Panel', [
 
             this.addCategory({
                 name  : 'systemcheck',
-                text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.systemCheck.cat.title'),
+                text  : QUILocale.get('quiqqer/core', 'packages.panel.category.systemCheck.cat.title'),
                 image : 'fa fa-info-circle',
                 events: {
                     onActive: this.loadSystemCheck
@@ -131,7 +131,7 @@ define('controls/packages/Panel', [
 
             this.addCategory({
                 name  : 'phpinfo',
-                text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.settings'),
+                text  : QUILocale.get('quiqqer/core', 'packages.panel.category.settings'),
                 image : 'fa fa-gears',
                 events: {
                     onClick: function () {
@@ -139,7 +139,7 @@ define('controls/packages/Panel', [
                             var Item = Menu.getChildren()
                                 .getChildren('settings')
                                 .getChildren('quiqqer')
-                                .getChildren('/settings/quiqqer/quiqqer/');
+                                .getChildren('/settings/quiqqer/core/');
 
                             Menu.menuClick(Item);
                         });
@@ -149,7 +149,7 @@ define('controls/packages/Panel', [
 
             this.addCategory({
                 name  : 'license',
-                text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.license'),
+                text  : QUILocale.get('quiqqer/core', 'packages.panel.category.license'),
                 image : 'fa fa-key',
                 events: {
                     onActive: this.loadLicense
@@ -228,7 +228,7 @@ define('controls/packages/Panel', [
             var Sheet = this.createSheet({
                 buttons: false,
                 icon   : 'fa fa-plug',
-                title  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.search')
+                title  : QUILocale.get('quiqqer/core', 'packages.panel.category.search')
             });
 
             Sheet.addEvent('show', function () {
