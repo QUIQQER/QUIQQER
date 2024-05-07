@@ -1016,7 +1016,7 @@ class Output extends Singleton
         if (
             str_contains($att['src'], 'http://')
             || str_contains($att['src'], 'https://')
-            || strpos($att['src'], '//') === 0
+            || str_starts_with($att['src'], '//')
         ) {
             return $html;
         }

@@ -38,7 +38,7 @@ QUI::$Ajax->registerFunction(
             );
         }
 
-        if (strpos($template, CMS_DIR) !== 0) {
+        if (!str_starts_with($template, CMS_DIR)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
