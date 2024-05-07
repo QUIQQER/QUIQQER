@@ -36,7 +36,7 @@ class QuiqqerFileDriver extends FileSystem
 
         $extension = $this->getEncoder()->getExtension();
 
-        if (strpos($path, $extension) !== false) {
+        if (str_contains($path, $extension)) {
             $path = substr($path, 0, -(strlen($extension)));
         }
 

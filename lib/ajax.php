@@ -55,7 +55,7 @@ if (isset($_REQUEST['package'])) {
         $_rf_file = Orthos::clearPath($_rf_file);
         $_rf_file = realpath($_rf_file);
 
-        if (strpos($_rf_file, $dir) !== false && file_exists($_rf_file)) {
+        if (str_contains($_rf_file, $dir) && file_exists($_rf_file)) {
             require_once $_rf_file;
         }
     }
@@ -69,7 +69,7 @@ foreach ($_rf_files as $key => $file) {
 
     $dir = OPT_DIR . 'quiqqer/quiqqer/admin/';
 
-    if (strpos($_rf_file, $dir) !== false && file_exists($_rf_file)) {
+    if (str_contains($_rf_file, $dir) && file_exists($_rf_file)) {
         require_once $_rf_file;
     }
 }
@@ -99,7 +99,7 @@ if (isset($_REQUEST['project'])) {
 
         $dir = $projectDir . '/lib/';
 
-        if (strpos($file, $dir) !== false && file_exists($file)) {
+        if (str_contains($file, $dir) && file_exists($file)) {
             require_once $file;
         }
     }

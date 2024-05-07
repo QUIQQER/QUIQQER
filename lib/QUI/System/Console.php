@@ -387,7 +387,7 @@ class Console
 
         // Parameter auslesen
         foreach ($_SERVER['argv'] as $argv) {
-            if (strpos($argv, '=') !== false) {
+            if (str_contains($argv, '=')) {
                 $var = explode('=', $argv);
 
                 if (isset($var[0]) && isset($var[1])) {
@@ -584,7 +584,7 @@ class Console
         $groups = [];
 
         foreach ($this->tools as $name => $Tool) {
-            if (strpos($name, ':') === false) {
+            if (!str_contains($name, ':')) {
                 continue;
             }
 

@@ -29,7 +29,7 @@ QUI::$Ajax->registerFunction(
         $phpinfo = \ob_get_contents();
         \ob_end_clean();
 
-        if (\strpos('mod_rewrite', $phpinfo) !== false) {
+        if (str_contains('mod_rewrite', $phpinfo)) {
             return 1;
         }
 

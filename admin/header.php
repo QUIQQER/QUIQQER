@@ -21,7 +21,7 @@ if (
 $Users = QUI::getUsers();
 $User = $Users->getUserBySession();
 
-if (strpos($_SERVER['SCRIPT_NAME'], 'index.php') !== false) {
+if (str_contains($_SERVER['SCRIPT_NAME'], 'index.php')) {
     if (!$User->canUseBackend() || !$Users->isAuth($User)) {
         if ($User->getId() && !QUI\Permissions\Permission::isAdmin($User)) {
             $User->logout();

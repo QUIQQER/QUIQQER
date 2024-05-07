@@ -143,7 +143,7 @@ if (isset($_GET['logout'])) {
 
     if (
         isset($_SERVER['REQUEST_URI'])
-        && strpos($_SERVER['REQUEST_URI'], 'logout=1') !== false
+        && str_contains($_SERVER['REQUEST_URI'], 'logout=1')
     ) {
         header('Location: ' . str_replace('logout=1', '', $_SERVER['REQUEST_URI']));
         exit;

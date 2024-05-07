@@ -18,7 +18,7 @@ QUI::$Ajax->registerFunction(
         }
 
         foreach ($files as $file) {
-            if (strpos($file, CMS_DIR) === false) {
+            if (!str_contains($file, CMS_DIR)) {
                 $file = CMS_DIR . $file;
             }
 
@@ -34,7 +34,7 @@ QUI::$Ajax->registerFunction(
 
             // hidden fields
             // don't show this in the frontend
-            if (strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') !== false) {
+            if (str_contains($file, 'quiqqer/quiqqer/admin/settings/conf.xml')) {
                 unset($config['db']);
                 unset($config['openssl']);
                 unset($config['globals']['salt']);

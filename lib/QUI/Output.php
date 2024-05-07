@@ -174,7 +174,7 @@ class Output extends Singleton
             return $content;
         }
 
-        if (strpos($content, '<img') === false) {
+        if (!str_contains($content, '<img')) {
             QUI::getEvents()->fireEvent('outputParseEnd', [&$content]);
 
             return $content;
@@ -182,7 +182,7 @@ class Output extends Singleton
 
         $withDocumentOutput = false;
 
-        if (strpos($content, '<html') !== false && strpos($content, '<body') !== false) {
+        if (str_contains($content, '<html') && str_contains($content, '<body')) {
             $withDocumentOutput = true;
         }
 
@@ -193,7 +193,7 @@ class Output extends Singleton
         libxml_use_internal_errors(true);
         $HTML5 = new HTML5();
 
-        if (strpos($content, '<body') === false) {
+        if (!str_contains($content, '<body')) {
             $Dom = $HTML5->loadHTML('<html><body>' . $content . '</body></html>');
         } else {
             $Dom = $HTML5->loadHTML($content);
@@ -445,9 +445,9 @@ class Output extends Singleton
         $urlQuery = $parseUrl['query'];
 
         if (
-            strpos($urlQuery, 'project') === false
-            || strpos($urlQuery, 'lang') === false
-            || strpos($urlQuery, 'id') === false
+            !str_contains($urlQuery, 'project')
+            || !str_contains($urlQuery, 'lang')
+            || !str_contains($urlQuery, 'id')
         ) {
             // no quiqqer url
             return $output[0];
@@ -740,7 +740,7 @@ class Output extends Singleton
      */
     protected function cleanEmptyLinks(array $output): string
     {
-        if (strpos($output[0], 'href=') === false) {
+        if (!str_contains($output[0], 'href=')) {
             return $output[1];
         }
 
@@ -784,11 +784,11 @@ class Output extends Singleton
             return $output[0];
         }
 
-        if (!MediaUtils::isMediaUrl($att['src']) && strpos($att['src'], 'media/cache') === false) {
+        if (!MediaUtils::isMediaUrl($att['src']) && !str_contains($att['src'], 'media/cache')) {
             // is relative url from the system?
             if (
                 $this->settings['use-system-image-paths']
-                && strpos($output[0], 'http') === false
+                && !str_contains($output[0], 'http')
             ) {
                 // workaround for system paths, not optimal
                 $output[0] = str_replace(
@@ -806,7 +806,7 @@ class Output extends Singleton
 
         unset($att['src']);
 
-        if (strpos($src, 'media/cache') !== false) {
+        if (str_contains($src, 'media/cache')) {
             try {
                 $Image = MediaUtils::getElement($src);
                 $src = $Image->getUrl();
@@ -880,7 +880,7 @@ class Output extends Singleton
         $urlQuery = $parseUrl['query'];
 
         // check no quiqqer url
-        if (strpos($urlQuery, 'project') === false || strpos($urlQuery, 'id') === false) {
+        if (!str_contains($urlQuery, 'project') || !str_contains($urlQuery, 'id')) {
             return $output[0];
         }
 
@@ -926,7 +926,7 @@ class Output extends Singleton
     {
         $html = $output[0];
 
-        if (strpos($html, '</picture>') !== false) {
+        if (str_contains($html, '</picture>')) {
             return $html;
         }
 
@@ -966,7 +966,7 @@ class Output extends Singleton
             return $html;
         }
 
-        if (strpos($att['href'], '?lu=') !== false) {
+        if (str_contains($att['href'], '?lu=')) {
             return $html;
         }
 
@@ -974,11 +974,11 @@ class Output extends Singleton
         $file = CMS_DIR . ltrim($att['href'], '/');
 
         // check if css file is project custom css
-        if (strpos($att['href'], 'custom.css') !== false && file_exists($file)) {
+        if (str_contains($att['href'], 'custom.css') && file_exists($file)) {
             $lu = md5(filemtime($file));
         }
 
-        if (strpos($att['href'], '?') === false) {
+        if (!str_contains($att['href'], '?')) {
             $att['href'] .= '?lu=' . $lu;
         } else {
             $att['href'] .= '&lu=' . $lu;
@@ -1008,14 +1008,14 @@ class Output extends Singleton
             return $html;
         }
 
-        if (strpos($att['src'], '?lu=') !== false) {
+        if (str_contains($att['src'], '?lu=')) {
             return $html;
         }
 
         // external files dont get the lu flag
         if (
-            strpos($att['src'], 'http://') !== false
-            || strpos($att['src'], 'https://') !== false
+            str_contains($att['src'], 'http://')
+            || str_contains($att['src'], 'https://')
             || strpos($att['src'], '//') === 0
         ) {
             return $html;
@@ -1025,11 +1025,11 @@ class Output extends Singleton
         $file = CMS_DIR . ltrim($att['src'], '/');
 
         // check if css file is project custom css
-        if (strpos($att['src'], 'custom.js') !== false && file_exists($file)) {
+        if (str_contains($att['src'], 'custom.js') && file_exists($file)) {
             $lu = md5(filemtime($file));
         }
 
-        if (strpos($att['src'], '?') === false) {
+        if (!str_contains($att['src'], '?')) {
             $att['src'] .= '?lu=' . $lu;
         } else {
             $att['src'] .= '&lu=' . $lu;
@@ -1062,11 +1062,11 @@ class Output extends Singleton
 
         $url = $output[3];
 
-        if (strpos($url, 'https://') !== false || strpos($url, 'http://') !== false) {
+        if (str_contains($url, 'https://') || str_contains($url, 'http://')) {
             return $html;
         }
 
-        if (strpos($url, 'data:') !== false || empty($url)) {
+        if (str_contains($url, 'data:') || empty($url)) {
             return $html;
         }
 
@@ -1075,7 +1075,7 @@ class Output extends Singleton
         if ($this->Project) {
             $host = $this->Project->getHost();
 
-            if (strpos($host, 'https://') === false && strpos($host, 'http://') === false) {
+            if (!str_contains($host, 'https://') && !str_contains($host, 'http://')) {
                 $host = 'https://' . $host;
             }
         }

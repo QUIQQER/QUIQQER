@@ -396,7 +396,7 @@ class Edit extends Site
         $order = $this->TABLE . '.order_field';
 
         if (isset($params['order'])) {
-            if (strpos($params['order'], '.') !== false) {
+            if (str_contains($params['order'], '.')) {
                 $order = $this->TABLE . '.' . $params['order'];
             } else {
                 $order = $params['order'];

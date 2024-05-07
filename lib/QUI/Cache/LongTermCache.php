@@ -153,7 +153,7 @@ class LongTermCache
                         $collection = $conf['mongo_collection'];
                     }
 
-                    if (strpos($host, 'mongodb://') === false) {
+                    if (!str_contains($host, 'mongodb://')) {
                         $host = 'mongodb://' . $host;
                     }
 

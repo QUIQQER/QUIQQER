@@ -32,7 +32,7 @@ QUI::$Ajax->registerFunction(
             $collection = 'quiqqer.longterm';
         }
 
-        if (\strpos($host, 'mongodb://') === false) {
+        if (!str_contains($host, 'mongodb://')) {
             $host = 'mongodb://' . $host;
         }
 
