@@ -850,14 +850,7 @@ class Utils
                 if (!self::isImage($Obj)) {
                     return $url;
                 }
-            } catch (QUI\Exception $Exception) {
-                Log::addDebug($Exception->getMessage(), [
-                    'url' => $output,
-                    'trace' => $Exception->getTrace()
-                ]);
-
-                return URL_DIR . $output;
-            } catch (Exception $Exception) {
+            } catch (QUI\Exception | Exception $Exception) {
                 Log::addDebug($Exception->getMessage(), [
                     'url' => $output,
                     'trace' => $Exception->getTrace()

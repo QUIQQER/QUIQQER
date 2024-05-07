@@ -878,10 +878,7 @@ class Group extends QUI\QDOM
             QUI\Utils\Doctrine::parseDbArrayToQueryBuilder($query, $params);
 
             return $query->executeQuery()->fetchAllAssociative();
-        } catch (\Exception $e) {
-            QUI\System\Log::addError($e->getMessage());
-            return [];
-        } catch (\Doctrine\DBAL\Exception $e) {
+        } catch (\Exception | \Doctrine\DBAL\Exception $e) {
             QUI\System\Log::addError($e->getMessage());
             return [];
         }
