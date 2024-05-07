@@ -46,8 +46,6 @@ class Address extends QUI\QDOM
      */
     protected ?int $id = null;
 
-    protected ?string $uuid = null;
-
     /**
      * Custom address data
      *
@@ -59,7 +57,7 @@ class Address extends QUI\QDOM
      * constructor
      *
      * @param QUIUserInterface $User - User
-     * @param integer|string $id - Address id or uuid
+     * @param integer $id - Address id
      *
      * @throws Exception
      */

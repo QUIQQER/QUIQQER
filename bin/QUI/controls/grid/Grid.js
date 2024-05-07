@@ -4199,7 +4199,7 @@ define('controls/grid/Grid', [
          * @param rowId | number
          */
         highlightRow: function(rowId) {
-            if (!rowId || rowId < 0) {
+            if (typeof rowId === 'undefined' || rowId < 0) {
                 return;
             }
 

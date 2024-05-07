@@ -156,6 +156,16 @@ class User implements QUIUserInterface
     protected array $settings;
 
     /**
+     * <<<<<<< HEAD
+     * =======
+     * User manager
+     *
+     * @var \QUI\Users\Manager
+     */
+    protected $Users;
+
+    /**
+     * >>>>>>> dev
      * Encrypted pass
      *
      * @var string
@@ -1012,7 +1022,7 @@ class User implements QUIUserInterface
                 'lastedit' => date("Y-m-d H:i:s"),
                 'expire' => $expire,
                 'shortcuts' => $this->getAttribute('shortcuts'),
-                'address' => !empty($this->getAttribute('address')) ? $this->getAttribute('address') : null,
+                'address' => (int)$this->getAttribute('address'),
                 'company' => $this->isCompany() ? 1 : 0,
                 'toolbar' => $toolbar,
                 'assigned_toolbar' => $assignedToolbars,

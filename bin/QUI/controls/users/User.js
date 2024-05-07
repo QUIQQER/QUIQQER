@@ -62,12 +62,14 @@ define('controls/users/User', [
         ],
 
         initialize: function(uid, options) {
-            this.$uid = uid;
-            this.$userId = uid;
-            this.setAttribute('name', 'user-panel-' + uid);
-            this.setAttribute('#id', 'user-panel-' + uid);
+            if (typeOf(uid) === 'string' || typeOf(uid) === 'number') {
+                this.$uid = parseInt(uid);
+                this.$userId = parseInt(uid);
+                this.setAttribute('name', 'user-panel-' + uid);
+                this.setAttribute('#id', 'user-panel-' + uid);
 
-            QUI.Controls.$cids[this.$uid] = this;
+                QUI.Controls.$cids[this.$uid] = this;
+            }
 
             this.$AddressGrid = null;
             this.parent(options);

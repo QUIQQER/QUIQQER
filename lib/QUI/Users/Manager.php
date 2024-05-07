@@ -25,6 +25,7 @@ use function explode;
 use function file_exists;
 use function func_get_args;
 use function func_num_args;
+use function get_class;
 use function implode;
 use function in_array;
 use function is_numeric;
@@ -184,8 +185,6 @@ class Manager
     public function get(int|string $id): QUI\Interfaces\Users\User
     {
         if (is_numeric($id)) {
-            $id = (int)$id;
-
             if (!$id) {
                 return new Nobody();
             }
@@ -233,8 +232,10 @@ class Manager
 
         $uuid = $User->getUUID();
 
-        $this->usersUUIDs[$uuid] = $User->getUUID();
-        $this->users[$id] = $User;
+        if (QUI::isRuntimeCacheEnabled()) {
+            $this->usersUUIDs[$uuid] = $User->getUUID();
+            $this->users[$id] = $User;
+        }
 
         return $User;
     }

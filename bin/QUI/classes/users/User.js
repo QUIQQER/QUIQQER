@@ -43,7 +43,7 @@ define('classes/users/User', [
          * Get user id
          *
          * @method classes/users/User#getId
-         * @return {Number|String} User-ID
+         * @return {Number} User-ID
          */
         getId: function () {
             return this.$uid;

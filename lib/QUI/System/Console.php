@@ -153,6 +153,7 @@ class Console
         'password-reset',
         'setup',
         'update',
+        'package',
         'licence',
         'htaccess',
         'composer'
@@ -846,6 +847,10 @@ class Console
 
             case 'update':
                 $this->setArgument('#system-tool', 'quiqqer:update');
+                break;
+
+            case 'package':
+                $this->setArgument('#system-tool', 'quiqqer:package');
                 break;
 
             case 'htaccess':

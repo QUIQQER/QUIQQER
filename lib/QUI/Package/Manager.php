@@ -223,6 +223,8 @@ class Manager extends QUI\QDOM
      */
     protected array $activeServers = [];
 
+    protected ?array $installedPackages = null;
+
     /**
      * constructor
      *
@@ -455,7 +457,7 @@ class Manager extends QUI\QDOM
         }
 
         $composerJson->config->{"vendor-dir"} = rtrim(OPT_DIR, DIRECTORY_SEPARATOR);
-        $composerJson->config->{"cache-dir"} = rtrim($this->varDir, DIRECTORY_SEPARATOR);
+        $composerJson->config->{"cache-dir"} = $this->varDir . 'cache';
         $composerJson->config->{"component-dir"} = OPT_DIR . 'bin';
         $composerJson->config->{"quiqqer-dir"} = CMS_DIR;
         $composerJson->config->{"secure-http"} = true;
@@ -1085,6 +1087,10 @@ class Manager extends QUI\QDOM
      */
     public function getInstalled(): array
     {
+        if (!is_null($this->installedPackages)) {
+            return $this->installedPackages;
+        }
+
         $list = $this->getList();
         $result = $list;
 
@@ -1098,6 +1104,8 @@ class Manager extends QUI\QDOM
             } catch (QUI\Exception) {
             }
         }
+
+        $this->installedPackages = $result;
 
         return $result;
     }
