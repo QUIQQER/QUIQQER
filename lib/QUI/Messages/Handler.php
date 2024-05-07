@@ -6,6 +6,8 @@
 
 namespace QUI\Messages;
 
+use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Schema\Schema;
 use Exception;
 use QUI;
 
@@ -21,19 +23,25 @@ class Handler
 
     /**
      * Create the database table for the messages
+     *
+     * @throws \Doctrine\DBAL\Exception
      */
     public static function setup(): void
     {
-        try {
-            QUI::getDataBase()->table()->addColumn(self::table(), [
-                'uid' => 'int(11)',
-                'message' => 'text',
-                'mtype' => 'varchar(100)',
-                'mcode' => 'varchar(5)',
-                'mtime' => 'int(11)'
-            ]);
-        } catch (Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
+        $schemaManager = QUI::getSchemaManager();
+        $schema = new Schema();
+        $tableName = QUI::getDBTableName('messages');
+
+        $table = $schema->createTable($tableName);
+        $table->addColumn("uid", "string", ["length" => 50, "notnull" => false]);
+        $table->addColumn("message", "text");
+        $table->addColumn("mtype", "string", ["length" => 100, "notnull" => false]);
+        $table->addColumn("mcode", "string", ["length" => 5, "notnull" => false]);
+        $table->addColumn("mtime", "integer", ["notnull" => false]);
+        $table->setPrimaryKey(["uid"]);
+
+        if (!$schemaManager->tablesExist([$tableName])) {
+            $schemaManager->createTable($table);
         }
     }
 
