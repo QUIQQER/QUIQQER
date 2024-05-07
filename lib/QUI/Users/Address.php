@@ -46,6 +46,11 @@ class Address extends QUI\QDOM
      */
     protected ?int $id = null;
 
+    /**
+     * Address UUID
+     *
+     * @var string|null
+     */
     protected ?string $uuid = null;
 
     /**
