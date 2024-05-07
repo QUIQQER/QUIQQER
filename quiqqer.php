@@ -71,7 +71,22 @@ if ($isComposerMode) {
 
     $_SERVER['argv'][] = '--working-dir=' . $cmsDir . '/var/composer';
 
-    require dirname(__FILE__, 3) . '/composer/composer/bin/composer';
+    if (file_exists(dirname(__FILE__, 3) . '/composer/composer/bin/composer')) {
+        require dirname(__FILE__, 3) . '/composer/composer/bin/composer';
+        exit;
+    }
+
+    $composerPhar = $cmsDir . '/var/composer/composer.phar';
+
+    if (file_exists($composerPhar)) {
+        array_shift($_SERVER['argv']);
+        $argString = implode(' ', $_SERVER['argv']);
+
+        system(PHP_BINARY . ' ' . $composerPhar . ' self-update');
+        system(PHP_BINARY . ' ' . $composerPhar . ' ' . $argString);
+        exit;
+    }
+
     exit;
 }
 
