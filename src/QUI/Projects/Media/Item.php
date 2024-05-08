@@ -256,12 +256,14 @@ abstract class Item extends QUI\QDOM
                 foreach ($val as $language => $v) {
                     $this->title[$language] = $v;
                 }
+
                 break;
 
             case 'alt':
                 foreach ($val as $language => $v) {
                     $this->alt[$language] = $v;
                 }
+
                 break;
 
             case 'short':
@@ -269,6 +271,7 @@ abstract class Item extends QUI\QDOM
                 foreach ($val as $language => $v) {
                     $this->description[$language] = $v;
                 }
+
                 break;
         }
     }

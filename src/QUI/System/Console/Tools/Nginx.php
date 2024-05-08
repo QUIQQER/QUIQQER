@@ -28,7 +28,9 @@ use function trim;
 class Nginx extends QUI\System\Console\Tool
 {
     protected string $nginxConfigFile;
+
     protected string $nginxConfDir;
+
     protected string $subConfDir;
 
     /**

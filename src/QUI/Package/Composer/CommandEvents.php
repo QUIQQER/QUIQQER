@@ -87,6 +87,7 @@ class CommandEvents
                 'executePackagesSetup' => false
             ]);
         }
+
         // @todo system setup, user groups, events and so on
     }
 

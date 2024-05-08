@@ -63,10 +63,12 @@ class Manager
      * @var Config|null
      */
     public static ?Config $Config = null;
+
     /**
      * @var null|array
      */
     protected static ?array $toolbars = null;
+
     /**
      * Editor plugins
      *

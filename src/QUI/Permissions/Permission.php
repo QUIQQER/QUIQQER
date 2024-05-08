@@ -698,6 +698,7 @@ class Permission
                 if ($perm_value) {
                     $check = true;
                 }
+
                 break;
 
             case 'group':
@@ -719,6 +720,7 @@ class Permission
                 if ($perm_value == $User->getUUID()) {
                     $check = true;
                 }
+
                 break;
 
             case 'users':
@@ -733,6 +735,7 @@ class Permission
                         $check = true;
                     }
                 }
+
                 break;
 
             case 'groups':
@@ -761,15 +764,18 @@ class Permission
                             if ($real_id == $User->getId()) {
                                 $check = true;
                             }
+
                             break;
 
                         case 'g':
                             if (isset($user_group_ids[$real_id])) {
                                 $check = true;
                             }
+
                             break;
                     }
                 }
+
                 break;
         }
 

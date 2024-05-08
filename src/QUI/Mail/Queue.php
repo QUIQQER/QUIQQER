@@ -31,8 +31,11 @@ use function time;
 class Queue
 {
     const STATUS_ADDED = 0;
+
     const STATUS_SENT = 1;
+
     const STATUS_SENDING = 2;
+
     const STATUS_ERROR = 3;
 
     /**

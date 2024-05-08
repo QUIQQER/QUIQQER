@@ -30,7 +30,9 @@ use function trim;
 class Manager extends QUI\QDOM
 {
     const GUEST_ID = 0;
+
     const EVERYONE_ID = 1;
+
     protected static ?array $getListOfExtraAttributes = null;
 
     /**

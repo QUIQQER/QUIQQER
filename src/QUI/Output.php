@@ -298,6 +298,7 @@ class Output extends Singleton
                 )
             );
         }
+
         // reset to the normal limit
         set_time_limit($executionTime);
 
@@ -476,6 +477,7 @@ class Output extends Singleton
 
             return '';
         }
+
         //return $output[0];
     }
 

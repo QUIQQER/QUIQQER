@@ -41,10 +41,12 @@ class Media extends QUI\QDOM
      * @var bool
      */
     public static bool $globalDisableMediaCacheCreation = false;
+
     /**
      * @var null|mixed
      */
     protected static mixed $mediaPermissions = null;
+
     /**
      * internal child cache
      *

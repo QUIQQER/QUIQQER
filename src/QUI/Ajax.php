@@ -56,12 +56,14 @@ class Ajax extends QUI\QDOM
      * @var array
      */
     protected static array $callables = [];
+
     /**
      * registered permissions from available ajax functions
      *
      * @var array
      */
     protected static array $permissions = [];
+
     /**
      * javascript functions to be executed by after a request
      * These functions are registered via Ajax.registerCallback('functionName', callable);
@@ -303,6 +305,7 @@ class Ajax extends QUI\QDOM
                 if ((DEVELOPMENT || DEBUG_MODE) && $class !== 'PDOException') {
                     $return['Exception']['context'] = $Exception->getContext();
                 }
+
                 break;
 
             case ExceptionStack::class:

@@ -58,22 +58,26 @@ class Session
      * @var int
      */
     public int $lifetime = 1400;
+
     /**
      * @var array
      */
     protected array $vars = [];
+
     /**
      * Session handler
      *
      * @var \Symfony\Component\HttpFoundation\Session\Session
      */
     private mixed $Session = false;
+
     /**
      * Storage handler
      *
      * @var PdoSessionHandler
      */
     private mixed $Storage = false;
+
     /**
      * Database table
      *

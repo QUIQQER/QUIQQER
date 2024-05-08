@@ -73,8 +73,11 @@ use const URL_DIR;
 class Rewrite
 {
     const URL_PARAM_SEPARATOR = '_';
+
     const URL_SPACE_CHARACTER = '-';
+
     const URL_PROJECT_CHARACTER = '^';
+
     const URL_DEFAULT_SUFFIX = '.html';
 
     public static bool $SUFFIX = false;
@@ -128,54 +131,63 @@ class Rewrite
      * @var string
      */
     private string $project_prefix = '';
+
     /**
      * project lang
      *
      * @var string|bool
      */
     private string|bool $lang = false;
+
     /**
      * active site
      *
      * @var QUI\Interfaces\Projects\Site|null
      */
     private ?QUI\Interfaces\Projects\Site $site = null;
+
     /**
      * first site of the project
      *
      * @var QUI\Interfaces\Projects\Site
      */
     private QUI\Interfaces\Projects\Site $first_child;
+
     /**
      * current site path
      *
      * @var array
      */
     private array $path = [];
+
     /**
      * current site path - but only the ids
      *
      * @var array
      */
     private array $ids_in_path = [];
+
     /**
      * loaded vhosts
      *
      * @var array|bool
      */
     private array|bool $vhosts = false;
+
     /**
      * current suffix, (.html, .pdf, .print)
      *
      * @var string
      */
     private string $suffix = '.html';
+
     /**
      * the html output
      *
      * @var string
      */
     private string $output_content = '';
+
     /**
      * Standard header code
      *

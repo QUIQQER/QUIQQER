@@ -34,7 +34,9 @@ use function trim;
 class Health
 {
     const STATUS_NOT_FOUND = 0;
+
     const STATUS_OK = 1;
+
     const STATUS_ERROR = -1;
 
     /**

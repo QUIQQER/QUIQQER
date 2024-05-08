@@ -1246,6 +1246,7 @@ class Edit extends Site
             if ($key == 'name' || $key == 'title' || $key == 'type') {
                 continue;
             }
+
             $Site->setAttribute($key, $value);
         }
 

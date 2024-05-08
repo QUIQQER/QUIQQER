@@ -563,6 +563,7 @@ class Manager
                         $result[$key] = $params;
                         continue 2;
                     }
+
                     break;
             }
 

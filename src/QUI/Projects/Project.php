@@ -65,6 +65,7 @@ class Project implements \Stringable
      * @var array
      */
     protected array $cache_files = [];
+
     /**
      * @var Media|null
      */
@@ -1268,7 +1269,7 @@ class Project implements \Stringable
                     WHERE 
                         release_from = '0000-00-00 00:00:00' OR 
                         release_from = '';
-                    
+
                     UPDATE `$table` 
                     SET release_to = null 
                     WHERE 

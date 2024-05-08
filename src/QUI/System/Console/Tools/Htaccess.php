@@ -370,6 +370,7 @@ class Htaccess extends QUI\System\Console\Tool
 
             break;
         }
+
         $oldHtaccessContent = implode(PHP_EOL, $lines);
 
 

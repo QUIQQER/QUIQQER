@@ -64,12 +64,14 @@ class Console
      * @var string|bool
      */
     protected string|bool $current_color = false;
+
     /**
      * the current background color
      *
      * @var string|bool
      */
     protected string|bool $current_bg = false;
+
     /**
      * All available text colors
      *
@@ -101,6 +103,7 @@ class Console
         'cyan_u' => '4;36',
         'white_u' => '4;37'
     ];
+
     /**
      * All available background colors
      *
@@ -116,26 +119,31 @@ class Console
         'cyan' => '46',
         'light_gray' => '47'
     ];
+
     /**
      * CLI arguments
      *
      * @var array
      */
     protected array $arguments = [];
+
     /**
      * @var null|QUI\Interfaces\Users\User
      */
     protected ?QUI\Interfaces\Users\User $User = null;
+
     /**
      * All available console tools
      *
      * @var array
      */
     private array $tools = [];
+
     /**
      * @var array All available tools, but grouped
      */
     private array $groupedTools = [];
+
     /**
      * List of system tools
      * Tools which are called with the SystemUser
@@ -158,6 +166,7 @@ class Console
         'htaccess',
         'composer'
     ];
+
     /**
      * Console parameter
      *

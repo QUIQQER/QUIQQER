@@ -27,6 +27,7 @@ use function trim;
 class Search
 {
     const DEFAULT_LIMIT_USERS = 20;
+
     const DEFAULT_LIMIT_GROUPS = 20;
 
     /**
@@ -125,6 +126,7 @@ class Search
                         }
                     }
                 }
+
                 // always get id
                 $selectFields[] = 'uuid';
                 $result = QUI::getDataBase()->fetch([
@@ -175,6 +177,7 @@ class Search
                         }
                     }
                 }
+
                 // always get id
                 $selectFields[] = 'uuid';
                 $result = QUI::getDataBase()->fetch([
@@ -283,6 +286,7 @@ class Search
                                 ];
                                 break;
                         }
+
                         break;
 
                     case 'groups':

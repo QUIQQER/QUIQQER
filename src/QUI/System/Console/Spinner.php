@@ -12,10 +12,15 @@ use const SIGTERM;
 class Spinner
 {
     const DOTS = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+
     const DOTS2 = ['⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷'];
+
     const DOTS3 = ['⠋', '⠙', '⠚', '⠞', '⠖', '⠦', '⠴', '⠲', '⠳', '⠓'];
+
     const DOTS4 = ['⠄', '⠆', '⠇', '⠋', '⠙', '⠸', '⠰', '⠠', '⠰', '⠸', '⠙', '⠋', '⠇', '⠆'];
+
     const DOTS5 = ['⠋', '⠙', '⠚', '⠒', '⠂', '⠂', '⠒', '⠲', '⠴', '⠦', '⠖', '⠒', '⠐', '⠐', '⠒', '⠓', '⠋'];
+
     const DOTS6 = [
         '⠁',
         '⠉',
@@ -42,6 +47,7 @@ class Spinner
         '⠉',
         '⠁'
     ];
+
     const DOTS7 = [
         '⠈',
         '⠉',
@@ -68,6 +74,7 @@ class Spinner
         '⠉',
         '⠈'
     ];
+
     const DOTS8 = [
         '⠁',
         '⠁',
@@ -99,9 +106,13 @@ class Spinner
         '⠈',
         '⠈'
     ];
+
     const DOTS9 = ['⢹', '⢺', '⢼', '⣸', '⣇', '⡧', '⡗', '⡏'];
+
     const DOTS10 = ['⢄', '⢂', '⢁', '⡁', '⡈', '⡐', '⡠'];
+
     const DOTS11 = ['⠁', '⠂', '⠄', '⡀', '⢀', '⠠', '⠐', '⠈'];
+
     const DOTS12 = [
         '⢀⠀',
         '⡀⠀',
@@ -162,6 +173,7 @@ class Spinner
     ];
 
     const LINE = ['-', '\\', '|', '/'];
+
     const LINE2 = ['⠂', '-', '–', '—', '–', '-'];
 
     const PIPE = ['┤', '┘', '┴', '└', '├', '┌', '┬', '┐'];
@@ -183,6 +195,7 @@ class Spinner
     ];
 
     const STAR = ['✶', '✸', '✹', '✺', '✹', '✷'];
+
     const STAR2 = ['+', 'x', '*'];
 
     const FLIP = ['_', '_', '_', '-', '`', '`', '\'', '´', '-', '_', '_', '_'];
@@ -214,6 +227,7 @@ class Spinner
     const SQUARE_CORNERS = ['◰', '◳', '◲', '◱'];
 
     const CIRCLE_QUARTERS = ['◴', '◷', '◶', '◵'];
+
     const CIRCLE_HALVES = ['◐', '◓', '◑', '◒'];
 
     const ARROW3 = [
@@ -275,10 +289,15 @@ class Spinner
      * @var bool|mixed
      */
     protected mixed $useKeyboardInterrupts = true;
+
     protected int $childPid;
+
     protected string $message = '';
+
     protected string $blinkOff = "\e[?25l";
+
     protected string $blinkOn = "\e[?25h";
+
     protected string $clearLine = "\33[2K\r";
 
     /**

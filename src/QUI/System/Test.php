@@ -17,9 +17,11 @@ use QUI;
 abstract class Test extends QUI\QDOM implements QUI\Interfaces\System\Test
 {
     const STATUS_OK = 1;
+
     const STATUS_ERROR = -1;
 
     const TEST_IS_REQUIRED = 1;
+
     const TEST_IS_OPTIONAL = 2;
 
     /**

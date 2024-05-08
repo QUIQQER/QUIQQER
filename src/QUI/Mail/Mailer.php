@@ -332,6 +332,7 @@ class Mailer extends QUI\QDOM
                 $this->reply[] = [$mail, $name];
                 continue;
             }
+
             $this->reply[] = $mail;
         }
     }
@@ -352,6 +353,7 @@ class Mailer extends QUI\QDOM
                 $this->cc[] = [$mail, $name];
                 continue;
             }
+
             $this->cc[] = $mail;
         }
     }
@@ -372,6 +374,7 @@ class Mailer extends QUI\QDOM
                 $this->bcc[] = [$mail, $name];
                 continue;
             }
+
             $this->bcc[] = $mail;
         }
     }
@@ -477,6 +480,7 @@ class Mailer extends QUI\QDOM
                 $this->recipients[] = [$mail, $name];
                 continue;
             }
+
             $this->recipients[] = $mail;
         }
     }

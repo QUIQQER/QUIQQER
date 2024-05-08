@@ -40,6 +40,7 @@ class CSP
      * @var array
      */
     protected array $allowedIni = [];
+
     /**
      * List of csp directives
      * - default directives
@@ -64,6 +65,7 @@ class CSP
         'reportUri' => 'report-uri',
         'styleSrcElem' => 'style-src-elem'
     ];
+
     /**
      * csp written out
      *

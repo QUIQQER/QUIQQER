@@ -471,6 +471,7 @@ class User implements QUIUserInterface
                         $this->su = (bool)$value;
                     }
                 }
+
                 break;
 
             case "username":
@@ -501,6 +502,7 @@ class User implements QUIUserInterface
                         $this->settings[$key] = date('Y-m-d H:i:s', $time);
                     }
                 }
+
                 break;
 
             case "lang":
@@ -530,6 +532,7 @@ class User implements QUIUserInterface
                         }
                     }
                 }
+
                 break;
 
             case "firstname":
@@ -538,6 +541,7 @@ class User implements QUIUserInterface
                 if ($this->isLoaded === true) {
                     $this->getStandardAddress()->setAttribute('firstname', $value);
                 }
+
                 break;
 
             case "lastname":
@@ -546,6 +550,7 @@ class User implements QUIUserInterface
                 if ($this->isLoaded === true) {
                     $this->getStandardAddress()->setAttribute('lastname', $value);
                 }
+
                 break;
 
             default:

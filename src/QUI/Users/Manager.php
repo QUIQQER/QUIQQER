@@ -51,11 +51,17 @@ use function time;
 class Manager
 {
     const AUTH_ERROR_AUTH_ERROR = 'AUTH_ERROR_AUTH_ERROR';
+
     const AUTH_ERROR_USER_NOT_FOUND = 'auth_error_user_not_found';
+
     const AUTH_ERROR_USER_NOT_ACTIVE = 'auth_error_user_not_active';
+
     const AUTH_ERROR_USER_DELETED = 'auth_error_user_deleted';
+
     const AUTH_ERROR_LOGIN_EXPIRED = 'auth_error_login_expired';
+
     const AUTH_ERROR_NO_ACTIVE_GROUP = 'auth_error_no_active_group';
+
     /**
      * internal prevention for multiple session user calling
      *

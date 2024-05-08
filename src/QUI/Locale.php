@@ -48,18 +48,21 @@ class Locale implements \Stringable
      * @var boolean
      */
     public bool $no_translation = false;
+
     /**
      * The current lang
      *
      * @var array|bool
      */
     protected array|bool $dateFormats = false;
+
     /**
      * The current lang
      *
      * @var string
      */
     protected string $current = 'en';
+
     /**
      * ini file objects
      *

@@ -20,7 +20,9 @@ use function trim;
 class RenameProject extends Tool
 {
     protected string $oldProjectName;
+
     protected string $newProjectName;
+
     protected QUI\Projects\Project $Project;
 
     /**

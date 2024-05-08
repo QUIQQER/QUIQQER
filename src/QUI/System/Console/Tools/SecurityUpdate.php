@@ -129,6 +129,7 @@ class SecurityUpdate extends QUI\System\Console\Tool
                     if (!isset($composerJSON['require']['php'])) {
                         $composerJSON['require']['php'] = $v;
                     }
+
                     continue;
                 }
 

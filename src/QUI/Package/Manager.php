@@ -198,24 +198,28 @@ class Manager extends QUI\QDOM
      * @var string|null
      */
     protected ?string $version = null;
+
     /**
      * QUIQQER Version ->getHash()
      *
      * @var string|null
      */
     protected ?string $hash = null;
+
     /**
      * List of packages objects
      *
      * @var array
      */
     protected array $packages = [];
+
     /**
      * List of installed packages flags
      *
      * @var array
      */
     protected array $installed = [];
+
     /**
      * active servers - use as temp for local repo using
      *

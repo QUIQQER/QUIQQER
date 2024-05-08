@@ -51,12 +51,14 @@ class Mail
      * @var \QUI\Mail\Template
      */
     public Mail\Template $Template;
+
     /**
      * internal mail config
      *
      * @var array
      */
     private array $config;
+
     /**
      * internal PHPMailer object
      *

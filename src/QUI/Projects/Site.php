@@ -57,12 +57,14 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @var QUI\Events\Event
      */
     public QUI\Events\Event $Events;
+
     /**
      * Edit site
      *
      * @var ?Edit
      */
     protected ?Site\Edit $Edit = null;
+
     /**
      * @var Project
      */
