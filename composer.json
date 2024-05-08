@@ -85,7 +85,7 @@
   },
   "autoload": {
     "psr-4": {
-      "QUI\\": "src/"
+      "QUI\\": "src/QUI/"
     },
     "classmap": [
       "src/classmap/"
