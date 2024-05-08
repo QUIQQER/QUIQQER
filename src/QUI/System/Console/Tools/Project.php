@@ -436,7 +436,6 @@ class Project extends QUI\System\Console\Tool
                         ]
                     ]);
 
-                    /** @var QUI\Bricks\Brick $Brick */
                     foreach ($result as $row) {
                         $this->BricksManager->deleteBrick($row['id']);
                     }
