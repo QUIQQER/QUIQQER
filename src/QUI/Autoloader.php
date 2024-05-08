@@ -156,7 +156,28 @@ class Autoloader
             }
         }
 
-        return (bool)self::$ComposerLoader->loadClass($classname);
+        $composerLoaded = (bool)self::$ComposerLoader->loadClass($classname);
+
+        if ($composerLoaded) {
+            return true;
+        }
+
+        $file = dirname(__FILE__, 2) . '/' . $classname . '.php';
+        $file = str_replace('\\', '/', $file);
+
+        if (file_exists($file)) {
+            require_once $file;
+        }
+
+        if (class_exists($classname, false)) {
+            return true;
+        }
+
+        if (interface_exists($classname, false)) {
+            return true;
+        }
+
+        return false;
     }
 
     public static function shouldOtherAutoloadersBeUnregistered(): bool
