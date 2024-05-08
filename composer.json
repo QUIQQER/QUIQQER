@@ -81,6 +81,7 @@
     "tedivm/stash": "^0.17"
   },
   "conflict": {
+    "quiqqer/quiqqer": "*",
     "quiqqer/rest": "^1"
   },
   "autoload": {
