@@ -651,7 +651,7 @@ class Manager
      */
     public static function checkUsernameSigns(string $username): bool
     {
-        if ($username != self::clearUsername($username)) {
+        if ($username !== self::clearUsername($username)) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get('quiqqer/core', 'exception.lib.user.illegal.signs')
             );

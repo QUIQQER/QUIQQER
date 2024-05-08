@@ -772,7 +772,7 @@ class Manager
      */
     public static function parseXMLLineNode(DOMNode $Node): bool|array
     {
-        if ($Node->nodeName != 'line') {
+        if ($Node->nodeName !== 'line') {
             return false;
         }
 
@@ -803,7 +803,7 @@ class Manager
      */
     public static function parseXMLGroupNode(DOMNode $Node): bool|array
     {
-        if ($Node->nodeName != 'group') {
+        if ($Node->nodeName !== 'group') {
             return false;
         }
 

@@ -54,7 +54,7 @@ spl_autoload_register(function ($className) {
  */
 function exception_error_handler(int $errno, string $errStr, string $errFile, int $errLine): bool
 {
-    if ($errStr == 'json_encode(): Invalid UTF-8 sequence in argument') {
+    if ($errStr === 'json_encode(): Invalid UTF-8 sequence in argument') {
         QUI::getErrorHandler()->setAttribute('show_request', true);
         QUI::getErrorHandler()->writeErrorToLog($errno, $errStr, $errFile, $errLine);
         QUI::getErrorHandler()->setAttribute('show_request', false);

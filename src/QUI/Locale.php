@@ -449,7 +449,7 @@ class Locale implements \Stringable
         $langCode = strtolower($lang) . '_' . strtoupper($lang);
 
         // not the best solution
-        if ($lang == 'en') {
+        if ($lang === 'en') {
             $langCode = 'en_GB';
         }
 

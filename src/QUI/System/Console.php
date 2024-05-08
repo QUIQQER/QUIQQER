@@ -956,7 +956,7 @@ class Console
 
         $confirm = strtolower(trim($this->readInput()));
 
-        if ($confirm != "y") {
+        if ($confirm !== "y") {
             exit;
         }
 
@@ -973,7 +973,7 @@ class Console
 
         $confirm = strtolower(trim($this->readInput()));
 
-        if ($confirm != "y") {
+        if ($confirm !== "y") {
             exit;
         }
 
@@ -1239,7 +1239,7 @@ class Console
         $tool = $this->readInput();
         $Exec = false;
 
-        if ($tool == 'exit' || !$tool) {
+        if ($tool === 'exit' || !$tool) {
             $this->writeLn();
 
             return;

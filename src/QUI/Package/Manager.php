@@ -1573,11 +1573,11 @@ class Manager extends QUI\QDOM
             $key = trim(strip_tags($line[0]));
             $value = trim(strip_tags($line[1]));
 
-            if ($key == 'versions') {
+            if ($key === 'versions') {
                 $value = array_map('trim', explode(',', $value));
             }
 
-            if ($key == 'descrip.') {
+            if ($key === 'descrip.') {
                 $key = 'description';
             }
 
@@ -2288,7 +2288,7 @@ class Manager extends QUI\QDOM
      */
     public function getSiteTypeName(string $type): string
     {
-        if ($type == 'standard' || empty($type)) {
+        if ($type === 'standard' || empty($type)) {
             return QUI::getLocale()->get('quiqqer/core', 'site.type.standard');
         }
 

@@ -899,7 +899,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $len = strlen($filename);
 
             // cache delete
-            if (substr($file, 0, $len + 2) == $filename . '__') {
+            if (substr($file, 0, $len + 2) === $filename . '__') {
                 FileUtils::unlink($cacheData['dirname'] . '/' . $file);
             }
         }

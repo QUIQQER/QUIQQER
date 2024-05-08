@@ -558,7 +558,7 @@ NGINX;
         $oldContent = file_get_contents($this->nginxConfigFile);
         $content = $this->template();
 
-        if (trim($oldContent) != trim($content)) {
+        if (trim($oldContent) !== trim($content)) {
             return true;
         }
 

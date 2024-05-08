@@ -457,7 +457,7 @@ class User implements QUIUserInterface
      */
     public function setAttribute(string $key, mixed $value): void
     {
-        if (!$key || $key == 'id' || $key == 'password' || $key == 'user_agent') {
+        if (!$key || $key === 'id' || $key === 'password' || $key === 'user_agent') {
             return;
         }
 
@@ -480,7 +480,7 @@ class User implements QUIUserInterface
                 // Falls der Name geändert wird muss geprüft werden das es diesen nicht schon gibt
                 Manager::checkUsernameSigns($value);
 
-                if ($this->name != $value && QUI::getUsers()->usernameExists($value)) {
+                if ($this->name !== $value && QUI::getUsers()->usernameExists($value)) {
                     throw new QUI\Users\Exception(
                         QUI::getLocale()->get('quiqqer/core', 'exception.user.name.already.exists')
                     );
@@ -806,7 +806,7 @@ class User implements QUIUserInterface
         $Users = QUI::getUsers();
         $SessionUser = $Users->getUserBySession();
 
-        if ($ParentUser && $ParentUser->getType() == SystemUser::class) {
+        if ($ParentUser && $ParentUser->getType() === SystemUser::class) {
             return true;
         }
 
@@ -814,11 +814,11 @@ class User implements QUIUserInterface
             return true;
         }
 
-        if ($SessionUser->getId() == $this->getId()) {
+        if ($SessionUser->getId() === $this->getId()) {
             return true;
         }
 
-        if ($SessionUser->getUUID() == $this->getUUID()) {
+        if ($SessionUser->getUUID() === $this->getUUID()) {
             return true;
         }
 
@@ -1632,7 +1632,7 @@ class User implements QUIUserInterface
      */
     public function removeAttribute(string $key): void
     {
-        if (!$key || $key == 'id' || $key == 'password' || $key == 'user_agent') {
+        if (!$key || $key === 'id' || $key === 'password' || $key === 'user_agent') {
             return;
         }
 
@@ -1884,7 +1884,7 @@ class User implements QUIUserInterface
     public function checkPassword(string $pass, bool $encrypted = false): bool
     {
         if ($encrypted) {
-            return $pass == $this->password;
+            return $pass === $this->password;
         }
 
         try {
@@ -2059,7 +2059,7 @@ class User implements QUIUserInterface
             );
         }
 
-        if ($this->password == '') {
+        if ($this->password === '') {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/core',
@@ -2223,7 +2223,7 @@ class User implements QUIUserInterface
         $Users = QUI::getUsers();
         $SessUser = $Users->getUserBySession();
 
-        if ($SessUser->getUUID() == $this->getUUID()) {
+        if ($SessUser->getUUID() === $this->getUUID()) {
             $Session = QUI::getSession();
             $Session->destroy();
         }
@@ -2366,7 +2366,7 @@ class User implements QUIUserInterface
         $Users = QUI::getUsers();
         $SessionUser = $Users->getUserBySession();
 
-        if ($ParentUser && $ParentUser->getType() == SystemUser::class) {
+        if ($ParentUser && $ParentUser->getType() === SystemUser::class) {
             return true;
         }
 
@@ -2374,7 +2374,7 @@ class User implements QUIUserInterface
             return true;
         }
 
-        if ($SessionUser->getUUID() == $this->getUUID()) {
+        if ($SessionUser->getUUID() === $this->getUUID()) {
             return true;
         }
 

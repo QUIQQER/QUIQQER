@@ -54,7 +54,7 @@ class Everyone extends QUI\Groups\Group
      */
     public function setAttribute(string $name, mixed $val): void
     {
-        if ($name == 'id') {
+        if ($name === 'id') {
             return;
         }
 

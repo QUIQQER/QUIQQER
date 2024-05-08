@@ -69,7 +69,7 @@ class RenameProject extends Tool
             $this->writeLnLocale("console.tool.project.rename.validation.clear.name", "white");
             $this->write(" " . $this->newProjectName, "light_green");
             $this->writeLnLocale("console.tool.project.rename.prompt.continue.new.name", "light_cyan");
-            if (trim(strtolower($this->readInput())) != "y") {
+            if (trim(strtolower($this->readInput())) !== "y") {
                 exit;
             }
         }

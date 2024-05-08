@@ -390,7 +390,7 @@ class Htaccess extends QUI\System\Console\Tool
             $this->writeLn("[2] Apache 2.2 and lower.");
             $this->writeLn("Please type a number [1]");
             $input = $this->readInput();
-            if ($input == "2") {
+            if ($input === "2") {
                 $oldTemplate = true;
             }
         }
@@ -415,7 +415,7 @@ class Htaccess extends QUI\System\Console\Tool
             $htaccessContent .= $this->template();
         }
 
-        if (trim($oldHtaccessContent) == trim($htaccessContent)) {
+        if (trim($oldHtaccessContent) === trim($htaccessContent)) {
             return false;
         }
 

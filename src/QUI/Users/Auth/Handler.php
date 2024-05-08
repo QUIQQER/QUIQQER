@@ -69,7 +69,7 @@ class Handler
         $Locale->no_translation = true;
 
         foreach ($authProviders as $authProvider) {
-            if (trim($authProvider, '\\') == QUIQQER::class) {
+            if (trim($authProvider, '\\') === QUIQQER::class) {
                 continue;
             }
 

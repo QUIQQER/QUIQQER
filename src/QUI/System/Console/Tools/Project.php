@@ -275,7 +275,7 @@ class Project extends QUI\System\Console\Tool
         $this->writeLnLocale("console.tool.project.delete.prompt.projectname.confirm", "light_cyan");
         $confirm = $this->readInput();
 
-        if ($confirm != $projectName) {
+        if ($confirm !== $projectName) {
             $this->writeLnLocale("console.tool.project.delete.error.confirm.mismatch", "light_red");
             $this->writeLn();
             exit;

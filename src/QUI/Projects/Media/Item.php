@@ -722,7 +722,7 @@ abstract class Item extends QUI\QDOM
             $notFound = true;
         }
 
-        if ($First->getFullPath() == $original) {
+        if ($First->getFullPath() === $original) {
             throw new Exception(
                 ['quiqqer/core', 'exception.delete.root.file'],
                 ErrorCodes::ROOT_FOLDER_CANT_DELETED
@@ -1178,7 +1178,7 @@ abstract class Item extends QUI\QDOM
         $new_full_file = $Parent->getFullPath() . $newName . '.' . $extension;
         $new_file = $Parent->getPath() . $newName . '.' . $extension;
 
-        if ($new_full_file == $original) {
+        if ($new_full_file === $original) {
             return;
         }
 

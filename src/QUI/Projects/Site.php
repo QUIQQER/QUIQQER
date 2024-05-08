@@ -551,7 +551,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getEdit(): ?Site\Edit
     {
-        if ($this::class == Edit::class) {
+        if ($this::class === Edit::class) {
             /* @var Edit $this */
             return $this;
         }
@@ -939,7 +939,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     {
         $id = (int)$id;
 
-        if ($id == $this->getId()) {
+        if ($id === $this->getId()) {
             throw new QUI\Exception('Page can not be a child of itself');
         }
 
@@ -1606,7 +1606,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                     continue;
                 }
 
-                if ($param == 'suffix') {
+                if ($param === 'suffix') {
                     continue;
                 }
 
@@ -1685,7 +1685,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     protected function getUrlHelper(int $id): void
     {
-        if ($id != $this->getId()) {
+        if ($id !== $this->getId()) {
             $this->parents[] = $this->getProject()->get($id)->getAttribute('name');
         }
 

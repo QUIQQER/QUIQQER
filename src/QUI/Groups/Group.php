@@ -239,7 +239,7 @@ class Group extends QUI\QDOM
      */
     public function setAttribute(string $name, mixed $val): void
     {
-        if ($name != 'id') {
+        if ($name !== 'id') {
             parent::setAttribute($name, $val);
         }
     }

@@ -141,7 +141,7 @@ class Site
         // fetch project
         if (
             isset($urlParts[0])
-            && substr($urlParts[0], 0, 1) == QUI\Rewrite::URL_PROJECT_CHARACTER
+            && substr($urlParts[0], 0, 1) === QUI\Rewrite::URL_PROJECT_CHARACTER
         ) {
             $project = str_replace(
                 $defaultSuffix,

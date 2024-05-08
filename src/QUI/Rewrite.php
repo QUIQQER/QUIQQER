@@ -320,7 +320,7 @@ class Rewrite
             // project
             if (
                 isset($_url[0])
-                && substr($_url[0], 0, 1) == self::URL_PROJECT_CHARACTER
+                && substr($_url[0], 0, 1) === self::URL_PROJECT_CHARACTER
             ) {
                 $this->project_str = str_replace(
                     $defaultSuffix,
@@ -1032,7 +1032,7 @@ class Rewrite
     public function getSiteByUrl(string $url, bool $setPath = true): bool|QUI\Interfaces\Projects\Site
     {
         // Sprache raus
-        if ($url == '') {
+        if ($url === '') {
             return $this->first_child;
         }
 

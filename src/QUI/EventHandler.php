@@ -81,7 +81,7 @@ class EventHandler
      */
     public static function onPackageUpdate(QUI\Package\Package $Package): void
     {
-        if ($Package->getName() != "quiqqer/core") {
+        if ($Package->getName() !== "quiqqer/core") {
             return;
         }
 

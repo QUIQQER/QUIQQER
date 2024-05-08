@@ -71,7 +71,7 @@ class Utils
         $signs = '@[.,:;#`!§$%&/?<>\=\'\"\@\_\]\[\+\-]@';
 
 
-        if (QUI\Rewrite::URL_SPACE_CHARACTER == '-') {
+        if (QUI\Rewrite::URL_SPACE_CHARACTER === '-') {
             $signs = '@[.,:;#`!§$%&/?<>\=\'\"\@\_\]\[\+]@';
         }
 

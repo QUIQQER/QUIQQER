@@ -300,7 +300,7 @@ class Ajax extends QUI\QDOM
                     $return['Exception']['type'] = $Exception::class;
                 }
 
-                if ((DEVELOPMENT || DEBUG_MODE) && $class != 'PDOException') {
+                if ((DEVELOPMENT || DEBUG_MODE) && $class !== 'PDOException') {
                     $return['Exception']['context'] = $Exception->getContext();
                 }
                 break;

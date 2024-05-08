@@ -115,7 +115,7 @@ class Utils
             ];
         }
 
-        if ($Item->getType() == Folder::class) {
+        if ($Item->getType() === Folder::class) {
             /* @var $Item Folder */
             return [
                 'icon' => 'fa fa-folder-o',
@@ -263,7 +263,7 @@ class Utils
 
         $extension = self::getExtension($Item->getAttribute('file'));
 
-        if ($extension == 'pdf') {
+        if ($extension === 'pdf') {
             return 'fa-file-pdf-o';
         }
 
