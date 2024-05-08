@@ -322,7 +322,7 @@ define('InstallationWizard', [
                         // @todo  open iframe
 
                         new Element('iframe', {
-                            src   : URL_OPT_DIR + 'quiqqer/core/lib/QUI/InstallationWizard/bin/execute.php',
+                            src   : URL_OPT_DIR + 'quiqqer/core/src/QUI/InstallationWizard/bin/execute.php',
                             styles: {
                                 background: '#fff',
                                 border    : 0,

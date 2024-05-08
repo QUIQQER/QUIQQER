@@ -337,7 +337,7 @@ PHPPARAM;
             }
     
             location ^~ {$quiqqerUrlDir}lib/ {
-                rewrite ^{$quiqqerUrlDir}lib/(.*) {$quiqqerUrlDir}packages/quiqqer/core/lib/$1 last;                                                                                              
+                rewrite ^{$quiqqerUrlDir}lib/(.*) {$quiqqerUrlDir}packages/quiqqer/core/src/$1 last;                                                                                              
             }                                                                                                                                     
     
             location = {$quiqqerUrlDir}admin {

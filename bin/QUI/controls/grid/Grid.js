@@ -179,7 +179,7 @@ define('controls/grid/Grid', [
                 print: true
             }, // {print : 'Drucken', pdf : 'PDF', csv : 'CSV', json : 'JSON'},
             exportRenderer: null, // function(data){data.type data.data data.Grid}
-            exportBinUrl: URL_OPT_DIR + 'quiqqer/core/lib/QUI/Export/bin/export.php',
+            exportBinUrl: URL_OPT_DIR + 'quiqqer/core/src/QUI/Export/bin/export.php',
 
             // drag & Drop
             dragdrop: false,

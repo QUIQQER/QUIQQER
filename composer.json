@@ -84,11 +84,11 @@
     "quiqqer/rest": "^1"
   },
   "autoload": {
-    "psr-0": {
-      "QUI": "lib/"
+    "psr-4": {
+      "QUI\\": "src/"
     },
     "classmap": [
-      "lib/classmap/"
+      "src/classmap/"
     ]
   },
   "funding": [

@@ -83,7 +83,7 @@ class PasswordResetVerification extends AbstractVerification
 
         $L = QUI::getLocale();
         $lg = 'quiqqer/core';
-        $tplDir = QUI::getPackage('quiqqer/core')->getDir() . 'lib/templates/mail/auth/';
+        $tplDir = QUI::getPackage('quiqqer/core')->getDir() . 'src/templates/mail/auth/';
 
         $Mailer = new QUI\Mail\Mailer();
         $Engine = QUI::getTemplateManager()->getEngine();

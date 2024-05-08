@@ -31,7 +31,7 @@ if ($isRepairMode) {
     unset($_SERVER['argv'][0]);
     unset($_SERVER['argv'][1]);
 
-    require 'lib/repair.php';
+    require 'src/repair.php';
     exit;
 }
 

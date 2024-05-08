@@ -153,7 +153,7 @@ try {
         ]);
 
         $file = LIB_DIR . 'templates/maintenance.html';
-        $pfile = USR_DIR . $Project->getName() . '/lib/maintenance.html';
+        $pfile = USR_DIR . $Project->getName() . '/src/maintenance.html';
 
         if (file_exists($pfile)) {
             $file = $pfile;
@@ -306,6 +306,6 @@ try {
     error_log($Exception->getMessage());
 
     echo file_get_contents(
-        dirname(__FILE__) . '/lib/templates/error.html'
+        dirname(__FILE__) . '/src/templates/error.html'
     );
 }

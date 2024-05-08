@@ -18,4 +18,4 @@ header("Pragma: no-cache");
 header('Expires: ' . gmdate('D, d M Y H:i:s', time() - 60) . ' GMT');
 
 //require '../bootstrap.php';
-require __DIR__ . '/../lib/ajax.php';
+require __DIR__ . '/../src/ajax.php';

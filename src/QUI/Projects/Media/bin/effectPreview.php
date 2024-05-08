@@ -8,7 +8,7 @@ if (!isset($_REQUEST['id']) || !isset($_REQUEST['project'])) {
     exit;
 }
 
-$dir = str_replace('quiqqer/core/lib/QUI/Projects/Media/bin', '', __DIR__);
+$dir = str_replace('quiqqer/core/src/QUI/Projects/Media/bin', '', __DIR__);
 define('QUIQQER_SYSTEM', true);
 
 require_once $dir . '/header.php';
