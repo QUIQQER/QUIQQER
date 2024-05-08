@@ -970,7 +970,9 @@ class Manager
             $Events->fireEvent('userLoginError', [$userId, $Exception]);
 
             throw $Exception;
-        } elseif ($userData[0]['active'] == -1) {
+        }
+
+        if ($userData[0]['active'] == -1) {
             $Exception = new QUI\Users\Exception(
                 ['quiqqer/core', 'exception.login.fail.user_deleted'],
                 401

@@ -304,10 +304,11 @@ class Session
             }
 
             return new MemcachedSessionHandler($Memcached);
-        } elseif ($sessionType == 'memcached' && !class_exists('Memcached')) {
-            Log::addWarning('Memcached not installed');
         }
 
+        if ($sessionType == 'memcached' && !class_exists('Memcached')) {
+            Log::addWarning('Memcached not installed');
+        }
 
         // memcache
         // @deprecated
@@ -332,10 +333,11 @@ class Session
 
             /* @phpstan-ignore-next-line */
             return new MemcacheSessionHandler($Memcache);
-        } elseif ($sessionType == 'memcache' && !class_exists('Memcache')) {
-            Log::addWarning('Memcache not installed');
         }
 
+        if ($sessionType == 'memcache' && !class_exists('Memcache')) {
+            Log::addWarning('Memcache not installed');
+        }
 
         // session via database
         if ($sessionType == 'database') {
