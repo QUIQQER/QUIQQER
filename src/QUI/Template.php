@@ -874,9 +874,7 @@ class Template extends QUI\QDOM
      */
     public function getLayout(array $params = []): string
     {
-        if (is_array($params)) {
-            $this->setAttributes($params);
-        }
+        $this->setAttributes($params);
 
         $layout = $this->getLayoutType();
 
@@ -1000,9 +998,7 @@ class Template extends QUI\QDOM
         /* @var $Site QUI\Projects\Site */
         /* @var $Engine EngineInterface */
 
-        if (is_array($params)) {
-            $this->setAttributes($params);
-        }
+        $this->setAttributes($params);
 
         $Project = $this->getAttribute('Project');
         $Site = $this->getAttribute('Site');

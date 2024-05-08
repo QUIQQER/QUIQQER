@@ -258,7 +258,7 @@ class Manager
      */
     public function isAuth(QUIUserInterface $User): bool
     {
-        if (!is_object($User) || !$User->getUUID()) {
+        if (!$User->getUUID()) {
             return false;
         }
 

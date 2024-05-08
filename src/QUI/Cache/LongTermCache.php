@@ -96,7 +96,7 @@ class LongTermCache
 
                 $servers = [];
 
-                if (is_array($conf) && !empty($conf[0])) {
+                if (!empty($conf[0])) {
                     foreach ($conf as $server) {
                         $servers[] = explode(':', $server);
                     }

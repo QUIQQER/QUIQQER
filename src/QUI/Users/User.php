@@ -1223,7 +1223,7 @@ class User implements QUIUserInterface
             return;
         }
 
-        if (is_string($groups) && str_contains($groups, ',')) {
+        if (str_contains($groups, ',')) {
             $groups = explode(',', $groups);
             $aTmp = [];
 
@@ -1246,13 +1246,11 @@ class User implements QUIUserInterface
         }
 
 
-        if (is_string($groups)) {
-            try {
-                $Group = $Groups->get($groups);
-                $this->Group[] = $Group->getUUID();
-                $this->groups = ',' . $groups . ',';
-            } catch (QUI\Exception) {
-            }
+        try {
+            $Group = $Groups->get($groups);
+            $this->Group[] = $Group->getUUID();
+            $this->groups = ',' . $groups . ',';
+        } catch (QUI\Exception) {
         }
     }
 
@@ -2419,9 +2417,7 @@ class User implements QUIUserInterface
      */
     public function setCompanyStatus(bool $status = false): void
     {
-        if (is_bool($status)) {
-            $this->company = $status;
-        }
+        $this->company = $status;
     }
 
     /**
