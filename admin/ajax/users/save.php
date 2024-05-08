@@ -17,11 +17,13 @@ QUI::$Ajax->registerFunction(
         $language = $User->getAttribute('lang');
 
         $noAutoSave = array_filter($User->getListOfExtraAttributes(), function ($attribute) {
-            if (isset($attribute['no-auto-save']) && $attribute['no-auto-save']) {
-                return true;
+            if (!isset($attribute['no-auto-save'])) {
+                return false;
             }
-
-            return false;
+            if (!$attribute['no-auto-save']) {
+                return false;
+            }
+            return true;
         });
 
         $noAutoSave = array_map(fn($attribute) => $attribute['name'], $noAutoSave);

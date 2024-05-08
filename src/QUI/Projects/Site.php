@@ -602,9 +602,15 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         $list = $Parent->getChildrenIds();
 
         foreach ($list as $key => $id) {
-            if ($id == $this->getId() && isset($list[$key + 1])) {
-                return $Project->get((int)$list[$key + 1]);
+            if ($id != $this->getId()) {
+                continue;
             }
+
+            if (!isset($list[$key + 1])) {
+                continue;
+            }
+
+            return $Project->get((int)$list[$key + 1]);
         }
 
         throw new QUI\Exception(
@@ -721,9 +727,15 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         $list = $Parent->getChildrenIds();
 
         foreach ($list as $key => $id) {
-            if ($id == $this->getId() && isset($list[$key - 1])) {
-                return $Project->get((int)$list[$key - 1]);
+            if ($id != $this->getId()) {
+                continue;
             }
+
+            if (!isset($list[$key - 1])) {
+                continue;
+            }
+
+            return $Project->get((int)$list[$key - 1]);
         }
 
         throw new QUI\Exception(
@@ -1050,7 +1062,11 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             // get database fields
             $fields = QUI\Utils\DOM::dbTableDomToArray($Table);
 
-            if (!isset($fields['suffix']) || !isset($fields['fields'])) {
+            if (!isset($fields['suffix'])) {
+                continue;
+            }
+
+            if (!isset($fields['fields'])) {
                 continue;
             }
 
@@ -1447,9 +1463,15 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         if (!empty($getParams)) {
             foreach ($getParams as $key => $value) {
-                if (!is_string($value) && !is_numeric($value)) {
-                    unset($getParams[$key]);
+                if (is_string($value)) {
+                    continue;
                 }
+
+                if (is_numeric($value)) {
+                    continue;
+                }
+
+                unset($getParams[$key]);
             }
 
             $str .= '&_getParams=' . urlencode(http_build_query($getParams));
@@ -1579,9 +1601,15 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $pid = $this->getProject()->getParentIdFrom($id);
 
-        if ($pid && $pid != 1) {
-            $this->getUrlHelper($pid);
+        if (!$pid) {
+            return;
         }
+
+        if ($pid == 1) {
+            return;
+        }
+
+        $this->getUrlHelper($pid);
     }
 
     /**

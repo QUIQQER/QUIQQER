@@ -22,7 +22,11 @@ QUI::$Ajax->registerFunction(
             foreach ($versionList as $version) {
                 [$major, $minor] = explode('.', $version) + [null, null];
 
-                if ($major === null || $minor === null) {
+                if ($major === null) {
+                    continue;
+                }
+
+                if ($minor === null) {
                     continue;
                 }
 

@@ -247,10 +247,15 @@ class Manager
             'uid' => $User->getUUID()
         ]);
 
-
-        if (isset($data['standard']) && (int)$data['standard'] === 1) {
-            self::setStandardWorkspace($User, $id);
+        if (!isset($data['standard'])) {
+            return;
         }
+
+        if ((int)$data['standard'] !== 1) {
+            return;
+        }
+
+        self::setStandardWorkspace($User, $id);
     }
 
     /**

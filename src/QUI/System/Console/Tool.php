@@ -242,12 +242,15 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
 
         // short argument?
         foreach ($this->paramsList as $entry) {
-            if (
-                $entry['short'] == $name
-                && isset($this->params[$entry['param']])
-            ) {
-                return $this->params[$entry['param']];
+            if ($entry['short'] != $name) {
+                continue;
             }
+
+            if (!isset($this->params[$entry['param']])) {
+                continue;
+            }
+
+            return $this->params[$entry['param']];
         }
 
         $paramData = [];

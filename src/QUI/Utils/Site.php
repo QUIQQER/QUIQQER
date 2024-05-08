@@ -74,9 +74,15 @@ class Site
                     continue;
                 }
 
-                if ($currentType === $siteType['type'] && !empty($siteType['childrenType'])) {
-                    return $siteType['childrenType'];
+                if ($currentType !== $siteType['type']) {
+                    continue;
                 }
+
+                if (empty($siteType['childrenType'])) {
+                    continue;
+                }
+
+                return $siteType['childrenType'];
             }
         }
 
@@ -102,9 +108,15 @@ class Site
                     continue;
                 }
 
-                if ($currentType === $siteType['type'] && isset($siteType['childrenNavHide'])) {
-                    return (int)$siteType['childrenNavHide'];
+                if ($currentType !== $siteType['type']) {
+                    continue;
                 }
+
+                if (!isset($siteType['childrenNavHide'])) {
+                    continue;
+                }
+
+                return (int)$siteType['childrenNavHide'];
             }
         }
 

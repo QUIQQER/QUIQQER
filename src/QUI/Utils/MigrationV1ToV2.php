@@ -73,7 +73,11 @@ class MigrationV1ToV2
 
                 $addressId = $entry[$field];
 
-                if (empty($addressId) || !is_numeric($addressId)) {
+                if (empty($addressId)) {
+                    continue;
+                }
+
+                if (!is_numeric($addressId)) {
                     continue;
                 }
 

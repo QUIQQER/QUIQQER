@@ -245,9 +245,15 @@ class Project implements \Stringable
                 continue;
             }
 
-            if ($vhost['lang'] == $this->lang && $vhost['project'] == $this->name) {
-                $this->config['vhost'] = $host;
+            if ($vhost['lang'] != $this->lang) {
+                continue;
             }
+
+            if ($vhost['project'] != $this->name) {
+                continue;
+            }
+
+            $this->config['vhost'] = $host;
         }
 
         // tabellen setzen
@@ -532,7 +538,11 @@ class Project implements \Stringable
                 continue;
             }
 
-            if (empty($params['project']) || empty($params['lang'])) {
+            if (empty($params['project'])) {
+                continue;
+            }
+
+            if (empty($params['lang'])) {
                 continue;
             }
 

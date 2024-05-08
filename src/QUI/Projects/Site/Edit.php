@@ -275,15 +275,21 @@ class Edit extends Site
 
         $release_to = strtotime($release_to);
 
-        if ($release_to && $release_to < time()) {
-            throw new QUI\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/core',
-                    'exception.release.to.inPast'
-                ),
-                1120
-            );
+        if (!$release_to) {
+            return;
         }
+
+        if ($release_to >= time()) {
+            return;
+        }
+
+        throw new QUI\Exception(
+            QUI::getLocale()->get(
+                'quiqqer/core',
+                'exception.release.to.inPast'
+            ),
+            1120
+        );
     }
 
     /**
@@ -1235,7 +1241,15 @@ class Edit extends Site
         $Site = new QUI\Projects\Site\Edit($Project, $site_id);
 
         foreach ($attribues as $key => $value) {
-            if ($key == 'name' || $key == 'title' || $key == 'type') {
+            if ($key == 'name') {
+                continue;
+            }
+
+            if ($key == 'title') {
+                continue;
+            }
+
+            if ($key == 'type') {
                 continue;
             }
 

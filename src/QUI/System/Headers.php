@@ -78,13 +78,19 @@ class Headers
         // default CSP
         $cspHeaders = QUI::conf('securityHeaders_csp');
 
-        if (!empty($cspHeaders) && is_array($cspHeaders)) {
-            foreach ($cspHeaders as $key => $values) {
-                $values = explode(' ', $values);
+        if (empty($cspHeaders)) {
+            return;
+        }
 
-                foreach ($values as $value) {
-                    $this->cspAdd($value, $key);
-                }
+        if (!is_array($cspHeaders)) {
+            return;
+        }
+
+        foreach ($cspHeaders as $key => $values) {
+            $values = explode(' ', $values);
+
+            foreach ($values as $value) {
+                $this->cspAdd($value, $key);
             }
         }
     }

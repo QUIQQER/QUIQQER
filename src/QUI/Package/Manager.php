@@ -539,7 +539,11 @@ class Manager extends QUI\QDOM
                 continue;
             }
 
-            if (!isset($params['active']) || $params['active'] != 1) {
+            if (!isset($params['active'])) {
+                continue;
+            }
+
+            if ($params['active'] != 1) {
                 continue;
             }
 
@@ -1151,12 +1155,18 @@ class Manager extends QUI\QDOM
     {
         $memoryLimit = QUI\Utils\System::getMemoryLimit();
 
-        if ($memoryLimit != -1 && $memoryLimit < self::REQUIRED_MEMORY * 1024 * 1024) {
-            throw new PackageInstallException([
-                'quiqqer/core',
-                'message.online.update.RAM.insufficient'
-            ]);
+        if ($memoryLimit == -1) {
+            return;
         }
+
+        if ($memoryLimit >= self::REQUIRED_MEMORY * 1024 * 1024) {
+            return;
+        }
+
+        throw new PackageInstallException([
+            'quiqqer/core',
+            'message.online.update.RAM.insufficient'
+        ]);
     }
 
     /**
@@ -1168,9 +1178,15 @@ class Manager extends QUI\QDOM
         $servers = $this->getServerList();
 
         foreach ($servers as $server) {
-            if ($server['type'] === 'vcs' && $server['active']) {
-                return true;
+            if ($server['type'] !== 'vcs') {
+                continue;
             }
+
+            if (!$server['active']) {
+                continue;
+            }
+
+            return true;
         }
 
         return false;

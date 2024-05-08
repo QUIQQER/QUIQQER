@@ -199,9 +199,15 @@ class Manager
                     $UserInstance = null;
 
                     foreach ($userGetResult as $entry) {
-                        if ($entry && in_array(QUI\Interfaces\Users\User::class, class_implements($entry))) {
-                            $UserInstance = $entry;
+                        if (!$entry) {
+                            continue;
                         }
+
+                        if (!in_array(QUI\Interfaces\Users\User::class, class_implements($entry))) {
+                            continue;
+                        }
+
+                        $UserInstance = $entry;
                     }
 
                     if ($UserInstance && in_array(QUI\Interfaces\Users\User::class, class_implements($UserInstance))) {
@@ -268,9 +274,15 @@ class Manager
                 $UserInstance = null;
 
                 foreach ($result as $entry) {
-                    if ($entry && in_array(QUI\Interfaces\Users\User::class, class_implements($entry))) {
-                        $UserInstance = $entry;
+                    if (!$entry) {
+                        continue;
                     }
+
+                    if (!in_array(QUI\Interfaces\Users\User::class, class_implements($entry))) {
+                        continue;
+                    }
+
+                    $UserInstance = $entry;
                 }
 
                 if ($UserInstance && in_array(QUI\Interfaces\Users\User::class, class_implements($UserInstance))) {

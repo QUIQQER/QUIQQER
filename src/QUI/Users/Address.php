@@ -163,9 +163,15 @@ class Address extends QUI\QDOM
         $list = $this->getPhoneList();
 
         foreach ($list as $entry) {
-            if ($entry['type'] == $phone['type'] && $entry['no'] == $phone['no']) {
-                return;
+            if ($entry['type'] != $phone['type']) {
+                continue;
             }
+
+            if ($entry['no'] != $phone['no']) {
+                continue;
+            }
+
+            return;
         }
 
         $list[] = $phone;

@@ -532,12 +532,19 @@ class Manager
                     break;
             }
 
-            if (
-                empty($params['area'])
-                && ($area == 'user' || $area == 'groups')
-            ) {
-                $result[$key] = $params;
+            if (!empty($params['area'])) {
+                continue;
             }
+
+            if ($area != 'user') {
+                continue;
+            }
+
+            if ($area != 'groups') {
+                continue;
+            }
+
+            $result[$key] = $params;
         }
 
         return $result;

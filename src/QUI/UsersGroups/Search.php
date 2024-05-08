@@ -121,9 +121,15 @@ class Search
                     && is_array($searchParams['users']['select'])
                 ) {
                     foreach ($searchParams['users']['select'] as $field => $select) {
-                        if (isset($selectFieldsAvailable[$field]) && $select) {
-                            $selectFields[] = $field;
+                        if (!isset($selectFieldsAvailable[$field])) {
+                            continue;
                         }
+
+                        if (!$select) {
+                            continue;
+                        }
+
+                        $selectFields[] = $field;
                     }
                 }
 
@@ -172,9 +178,15 @@ class Search
                     && is_array($searchParams['groups']['select'])
                 ) {
                     foreach ($searchParams['groups']['select'] as $field => $select) {
-                        if (isset($selectFieldsAvailable[$field]) && $select) {
-                            $selectFields[] = $field;
+                        if (!isset($selectFieldsAvailable[$field])) {
+                            continue;
                         }
+
+                        if (!$select) {
+                            continue;
+                        }
+
+                        $selectFields[] = $field;
                     }
                 }
 
@@ -238,9 +250,15 @@ class Search
 
         if (!empty($searchParams['searchFields']) && is_array($searchParams['searchFields'])) {
             foreach ($searchParams['searchFields'] as $field => $search) {
-                if (isset($searchFieldsAvailable[$field]) && $search) {
-                    $searchFields[] = $field;
+                if (!isset($searchFieldsAvailable[$field])) {
+                    continue;
                 }
+
+                if (!$search) {
+                    continue;
+                }
+
+                $searchFields[] = $field;
             }
         }
 
@@ -423,9 +441,15 @@ class Search
             && is_array($searchParams['searchFields'])
         ) {
             foreach ($searchParams['searchFields'] as $field => $search) {
-                if (isset($searchFieldsAvailable[$field]) && $search) {
-                    $searchFields[] = $field;
+                if (!isset($searchFieldsAvailable[$field])) {
+                    continue;
                 }
+
+                if (!$search) {
+                    continue;
+                }
+
+                $searchFields[] = $field;
             }
         }
 

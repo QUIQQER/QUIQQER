@@ -856,9 +856,15 @@ class Template extends QUI\QDOM
             $Layout = QUI\Utils\Text\XML::getLayoutFromXml($siteXML, $layout);
             $layoutFile = $template . '/' . $layout . '.html';
 
-            if ($Layout && file_exists($layoutFile)) {
-                return $layout;
+            if (!$Layout) {
+                continue;
             }
+
+            if (!file_exists($layoutFile)) {
+                continue;
+            }
+
+            return $layout;
         }
 
         return false;

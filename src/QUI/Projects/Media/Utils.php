@@ -469,7 +469,11 @@ class Utils
                         $media = ' media="' . $set['media'] . '"';
                     }
 
-                    if (!isset($set['src']) || !isset($set['type'])) {
+                    if (!isset($set['src'])) {
+                        continue;
+                    }
+
+                    if (!isset($set['type'])) {
                         continue;
                     }
 

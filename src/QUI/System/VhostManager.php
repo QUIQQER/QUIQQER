@@ -226,15 +226,18 @@ class VhostManager
                 continue;
             }
 
-            if (
-                $d['project'] === $result['project']
-                && $d['lang'] === $result['lang']
-            ) {
-                throw new Exception([
-                    'quiqqer/core',
-                    'exception.vhost.same.host.already.exists'
-                ]);
+            if ($d['project'] !== $result['project']) {
+                continue;
             }
+
+            if ($d['lang'] !== $result['lang']) {
+                continue;
+            }
+
+            throw new Exception([
+                'quiqqer/core',
+                'exception.vhost.same.host.already.exists'
+            ]);
         }
 
 

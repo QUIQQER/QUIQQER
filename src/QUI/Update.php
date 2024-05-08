@@ -415,7 +415,11 @@ class Update
 
         foreach ($engines as $Engine) {
             /* @var $Engine DOMElement */
-            if (!$Engine->getAttribute('class_name') || empty($Engine->nodeValue)) {
+            if (!$Engine->getAttribute('class_name')) {
+                continue;
+            }
+
+            if (empty($Engine->nodeValue)) {
                 continue;
             }
 
@@ -445,7 +449,11 @@ class Update
 
         foreach ($editors as $Editor) {
             /* @var $Editor DOMElement */
-            if (!$Editor->getAttribute('package') || empty($Editor->nodeValue)) {
+            if (!$Editor->getAttribute('package')) {
+                continue;
+            }
+
+            if (empty($Editor->nodeValue)) {
                 continue;
             }
 
@@ -534,7 +542,11 @@ class Update
 
         foreach ($events as $Event) {
             /* @var $Event DOMElement */
-            if (!$Event->getAttribute('on') || !$Event->getAttribute('fire')) {
+            if (!$Event->getAttribute('on')) {
+                continue;
+            }
+
+            if (!$Event->getAttribute('fire')) {
                 continue;
             }
 

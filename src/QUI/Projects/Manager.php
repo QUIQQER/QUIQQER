@@ -233,14 +233,20 @@ class Manager
                 return;
             }
 
-            if (
-                isset($config['media_image_library'])
-                && isset($oldConfig['media_image_library'])
-                && $config['media_image_library'] != $oldConfig['media_image_library']
-            ) {
-                // clear cache
-                $Project->getMedia()->clearCache();
+            if (!isset($config['media_image_library'])) {
+                return;
             }
+
+            if (!isset($oldConfig['media_image_library'])) {
+                return;
+            }
+
+            if ($config['media_image_library'] == $oldConfig['media_image_library']) {
+                return;
+            }
+
+            // clear cache
+            $Project->getMedia()->clearCache();
         };
 
         $clearMediaCache($availableConfig, $projectConfig, $Project);
@@ -461,13 +467,19 @@ class Manager
         }
 
         foreach ($config as $project => $conf) {
-            if (isset($conf['standard']) && $conf['standard'] == 1) {
-                self::$Standard = self::getProject(
-                    $project,
-                    $conf['default_lang'],
-                    $conf['template']
-                );
+            if (!isset($conf['standard'])) {
+                continue;
             }
+
+            if ($conf['standard'] != 1) {
+                continue;
+            }
+
+            self::$Standard = self::getProject(
+                $project,
+                $conf['default_lang'],
+                $conf['template']
+            );
         }
 
         if (self::$Standard === null) {

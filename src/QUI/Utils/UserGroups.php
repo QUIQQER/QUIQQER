@@ -130,9 +130,15 @@ class UserGroups
         $ugString = explode(',', $ugString);
 
         foreach ($ugString as $entry) {
-            if (!str_contains($entry, 'g') && !str_contains($entry, 'u')) {
-                return false;
+            if (str_contains($entry, 'g')) {
+                continue;
             }
+
+            if (str_contains($entry, 'u')) {
+                continue;
+            }
+
+            return false;
         }
 
         return true;

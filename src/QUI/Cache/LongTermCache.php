@@ -272,8 +272,14 @@ class LongTermCache
     {
         $Config = self::getConfig();
 
-        if ($Config->get('longtime', 'type') === 'filesystem' && !is_dir(self::fileSystemPath())) {
-            QUI\Utils\System\File::mkdir(self::fileSystemPath());
+        if ($Config->get('longtime', 'type') !== 'filesystem') {
+            return;
         }
+
+        if (is_dir(self::fileSystemPath())) {
+            return;
+        }
+
+        QUI\Utils\System\File::mkdir(self::fileSystemPath());
     }
 }
