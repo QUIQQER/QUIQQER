@@ -862,7 +862,6 @@ class Group extends QUI\QDOM
      */
     public function getUsers(array $params = []): array
     {
-        $id = $this->getId();
         $uuid = $this->getUUID();
 
         try {

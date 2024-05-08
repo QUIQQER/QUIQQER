@@ -530,9 +530,6 @@ class Manager
         $list = [];
         $packages = QUI::getPackageManager()->getInstalled();
 
-        $templates = self::getRelatedTemplates($Project);
-        $templates = array_flip($templates);
-
         // read template config
         foreach ($packages as $package) {
             // if the package is a quiqqer template,

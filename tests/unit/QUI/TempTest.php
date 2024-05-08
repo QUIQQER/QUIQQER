@@ -15,7 +15,7 @@ class TempTest extends TestCase
     {
         $testDirectory = $this->getTestDirectoryPath();
 
-        $sut = new Temp($testDirectory);
+        new Temp($testDirectory);
 
         $this->assertDirectoryExists($testDirectory);
         rmdir($testDirectory);
