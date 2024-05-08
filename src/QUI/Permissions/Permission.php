@@ -97,13 +97,11 @@ class Permission
 
         $groups = $User->getGroups();
 
-        if (!empty($groups)) {
-            foreach ($groups as $Group) {
-                $permissions = $Manager->getPermissions($Group);
+        foreach ($groups as $Group) {
+            $permissions = $Manager->getPermissions($Group);
 
-                if (!empty($permissions[$perm])) {
-                    return $permissions[$perm];
-                }
+            if (!empty($permissions[$perm])) {
+                return $permissions[$perm];
             }
         }
 

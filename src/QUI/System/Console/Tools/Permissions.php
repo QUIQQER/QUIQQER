@@ -218,13 +218,11 @@ class Permissions extends QUI\System\Console\Tool
                 'isSu' => $User->isSU()
             ];
 
-            if (!empty($groups)) {
-                foreach ($groups as $Group) {
-                    $groupPermissions = $Manager->getPermissions($Group);
+            foreach ($groups as $Group) {
+                $groupPermissions = $Manager->getPermissions($Group);
 
-                    if (isset($groupPermissions[$permission])) {
-                        $result[$Group->getName()] = $groupPermissions[$permission];
-                    }
+                if (isset($groupPermissions[$permission])) {
+                    $result[$Group->getName()] = $groupPermissions[$permission];
                 }
             }
 

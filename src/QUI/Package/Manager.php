@@ -737,18 +737,16 @@ class Manager extends QUI\QDOM
             $composerJson->require = $require;
         }
 
-        if (!empty($packages)) {
-            foreach ($packages as $package => $version) {
-                try {
-                    $this->getInstalledPackage($package);
+        foreach ($packages as $package => $version) {
+            try {
+                $this->getInstalledPackage($package);
 
-                    $Parser = new VersionParser();
-                    $Parser->normalize(str_replace('*', '0', $version)); // workaround, normalize cant check 1.*
+                $Parser = new VersionParser();
+                $Parser->normalize(str_replace('*', '0', $version)); // workaround, normalize cant check 1.*
 
-                    $composerJson->require[$package] = $version;
-                } catch (Exception $Exception) {
-                    QUI\System\Log::addError($Exception->getMessage());
-                }
+                $composerJson->require[$package] = $version;
+            } catch (Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
             }
         }
 
