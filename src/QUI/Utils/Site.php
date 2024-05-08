@@ -69,7 +69,7 @@ class Site
     public static function getChildType(QUI\Projects\Site $Site): string
     {
         $Project = $Site->getProject();
-        $siteTypes = QUI::getPackageManager()->getAvailableSiteTypes($Project);
+        $siteTypes = QUI::getPackageManager()->getAvailableSiteTypes();
         $currentType = $Site->getAttribute('type');
 
         foreach ($siteTypes as $module) {
@@ -98,7 +98,7 @@ class Site
     public static function getChildNaveHide(QUI\Projects\Site $Site): int
     {
         $Project = $Site->getProject();
-        $siteTypes = QUI::getPackageManager()->getAvailableSiteTypes($Project);
+        $siteTypes = QUI::getPackageManager()->getAvailableSiteTypes();
         $currentType = $Site->getAttribute('type');
 
         foreach ($siteTypes as $module) {

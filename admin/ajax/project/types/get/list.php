@@ -16,7 +16,7 @@ QUI::$Ajax->registerFunction(
             $Project = false;
         }
 
-        return QUI::getPackageManager()->getAvailableSiteTypes($Project);
+        return QUI::getPackageManager()->getAvailableSiteTypes();
     },
     ['project'],
     'Permission::checkAdminUser'
