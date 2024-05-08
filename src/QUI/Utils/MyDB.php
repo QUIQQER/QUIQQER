@@ -144,20 +144,16 @@ class MyDB implements \Stringable
         switch ($type) {
             case 'OBJ':
                 return $this->DB->fetch($params, \PDO::FETCH_OBJ);
-                break;
 
             case 'NUM':
                 return $this->DB->fetch($params, \PDO::FETCH_NUM);
-                break;
 
             case 'BOTH':
                 return $this->DB->fetch($params, \PDO::FETCH_BOTH);
-                break;
 
             default:
             case 'ASSOC':
                 return $this->DB->fetch($params, \PDO::FETCH_ASSOC);
-                break;
         }
     }
 

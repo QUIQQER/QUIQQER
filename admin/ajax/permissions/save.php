@@ -51,7 +51,6 @@ QUI::$Ajax->registerFunction(
                 throw new QUI\Exception(
                     'Cannot find permissions for Object'
                 );
-                break;
         }
 
         $Manager->setPermissions($Bind, $permissions);
