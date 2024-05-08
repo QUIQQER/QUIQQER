@@ -9,6 +9,8 @@ namespace QUI\System;
 use Exception;
 use QUI;
 
+use const DEBUG_MODE;
+
 /**
  * Writes Logs into the log dir
  *
@@ -182,7 +184,7 @@ class Log
         bool|string $filename = false,
         bool $force = false
     ): void {
-        if (DEBUG_MODE === false) {
+        if (!defined('DEBUG_MODE') || DEBUG_MODE === false) {
             return;
         }
 
