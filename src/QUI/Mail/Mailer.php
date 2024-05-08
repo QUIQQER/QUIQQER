@@ -38,50 +38,35 @@ class Mailer extends QUI\QDOM
 
     /**
      * Mail template
-     *
-     * @var Template|null
      */
     public ?Template $Template = null;
 
     /**
      * list of recipients
-     *
-     * @var array
      */
     protected array $recipients = [];
 
     /**
      * list of reply
-     *
-     * @var array
      */
     protected array $reply = [];
 
     /**
      * list of cc
-     *
-     * @var array
      */
     protected array $cc = [];
 
     /**
      * list of bcc
-     *
-     * @var array
      */
     protected array $bcc = [];
 
     /**
      * list of attachments
-     *
-     * @var array
      */
     protected array $attachments = [];
 
     /**
-     * constructor
-     *
-     * @param array $attributes
      * @throws QUI\Exception
      */
     public function __construct(array $attributes = [])
@@ -384,8 +369,6 @@ class Mailer extends QUI\QDOM
      * Add a file to the mail
      *
      * @param string $file - path to the file
-     *
-     * @return boolean
      */
     public function addAttachment(string $file): bool
     {
@@ -398,11 +381,6 @@ class Mailer extends QUI\QDOM
         return true;
     }
 
-    /**
-     * Mail params to array
-     *
-     * @return array
-     */
     public function toArray(): array
     {
         return [
@@ -423,12 +401,6 @@ class Mailer extends QUI\QDOM
     /**
      * add methods
      */
-
-    /**
-     * Set the mail subject
-     *
-     * @param string $subject
-     */
     public function setSubject(string $subject): void
     {
         $this->setAttribute('subject', $subject);
@@ -444,11 +416,6 @@ class Mailer extends QUI\QDOM
         $this->setAttribute('html', $html);
     }
 
-    /**
-     * Set the body
-     *
-     * @param string $html
-     */
     public function setBody(string $html): void
     {
         $this->Template->setBody($html);
@@ -456,8 +423,6 @@ class Mailer extends QUI\QDOM
 
     /**
      * Set the project object, for the mailer and the mailer template
-     *
-     * @param Project $Project
      */
     public function setProject(Project $Project): void
     {

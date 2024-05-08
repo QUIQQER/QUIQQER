@@ -17,15 +17,10 @@ use function define;
 use function defined;
 use function php_sapi_name;
 
-/**
- * Class PackageEvents
- */
 class PackageEvents
 {
     /**
      * Occurs before a package is installed.
-     *
-     * @param PackageEvent $Event
      */
     public static function prePackageInstall(PackageEvent $Event)
     {
@@ -33,8 +28,6 @@ class PackageEvents
 
     /**
      * occurs after a package has been installed.
-     *
-     * @param PackageEvent $Event
      */
     public static function postPackageInstall(PackageEvent $Event): void
     {
@@ -66,9 +59,6 @@ class PackageEvents
         QUI\Cache\Manager::clearCompleteQuiqqerCache();
     }
 
-    /**
-     * @param PackageEvent $Event
-     */
     protected static function loadQUIQQER(PackageEvent $Event): void
     {
         $Composer = $Event->getComposer();
@@ -101,8 +91,6 @@ class PackageEvents
 
     /**
      * occurs before a package is updated.
-     *
-     * @param PackageEvent $Event
      */
     public static function prePackageUpdate(PackageEvent $Event)
     {
@@ -110,8 +98,6 @@ class PackageEvents
 
     /**
      * occurs after a package has been updated.
-     *
-     * @param PackageEvent $Event
      */
     public static function postPackageUpdate(PackageEvent $Event): void
     {
@@ -145,8 +131,6 @@ class PackageEvents
 
     /**
      * occurs before a package is uninstalled.
-     *
-     * @param PackageEvent $Event
      */
     public static function prePackageUninstall(PackageEvent $Event): void
     {
@@ -178,8 +162,6 @@ class PackageEvents
 
     /**
      * occurs after a package has been uninstalled.
-     *
-     * @param PackageEvent $Event
      */
     public static function postPackageUninstall(PackageEvent $Event): void
     {

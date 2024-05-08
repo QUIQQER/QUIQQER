@@ -45,24 +45,15 @@ use function is_string;
  */
 class Mail
 {
-    /**
-     * Mail template
-     *
-     * @var \QUI\Mail\Template
-     */
     public Mail\Template $Template;
 
     /**
      * internal mail config
-     *
-     * @var array
      */
     private array $config;
 
     /**
      * internal PHPMailer object
-     *
-     * @var PHPMailer
      */
     private PHPMailer $Mail;
 
@@ -165,10 +156,7 @@ class Mail
     /**
      * send the mail
      *
-     * @param array $mailconf
-     *
-     * @return true
-     * @throws QUI\Exception
+     * @throws QUI\Exception|\PHPMailer\PHPMailer\Exception
      * @example send(array(
      *        'MailTo'    => 'cms@pcsg.de',
      *        'Subject'    => 'CMS Newsletter',
@@ -327,11 +315,6 @@ class Mail
         return $this->Mail;
     }
 
-    /**
-     * Mail params to array
-     *
-     * @return array
-     */
     public function toArray(): array
     {
         $IsHTML = true;

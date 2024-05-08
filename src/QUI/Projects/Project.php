@@ -61,69 +61,48 @@ class Project implements \Stringable
 {
     /**
      * caching files
-     *
-     * @var array
      */
     protected array $cache_files = [];
 
-    /**
-     * @var Media|null
-     */
     protected ?Media $Media = null;
 
     /**
      * The project site table
-     *
-     * @var string
      */
     private string $TABLE;
 
     /**
      * The project site relation table
-     *
-     * @var string
      */
     private string $RELTABLE;
 
     /**
      * The project site relation language table
-     *
-     * @var string
      */
     private string $RELLANGTABLE;
 
     /**
      * configuration
-     *
-     * @var array
      */
     private array $config;
 
     /**
      * default language
-     *
-     * @var string
      */
     private string $default_lang;
 
     /**
      * All languages of the project
-     *
-     * @var array
      */
     private array $langs;
 
     /**
      * loaded sites
-     *
-     * @var array
      */
     private array $children = [];
 
     /**
      * first child
-     *
-     * @var Site|QUI\Projects\Site\Edit|null
      */
     private Site|QUI\Projects\Site\Edit|null $firstchild = null;
 
@@ -287,8 +266,6 @@ class Project implements \Stringable
 
     /**
      * Project Array Notation
-     *
-     * @return array
      */
     public function toArray(): array
     {
@@ -326,8 +303,6 @@ class Project implements \Stringable
 
     /**
      * Return the project name
-     *
-     * @return string
      */
     public function getName(): string
     {
@@ -336,8 +311,6 @@ class Project implements \Stringable
 
     /**
      * Return the project lang
-     *
-     * @return string
      */
     public function getLang(): string
     {
@@ -346,8 +319,6 @@ class Project implements \Stringable
 
     /**
      * Return the last edit date in the project
-     *
-     * @return integer
      */
     public function getLastEditDate(): int
     {
@@ -394,9 +365,6 @@ class Project implements \Stringable
         return $Site;
     }
 
-    /**
-     * @return string
-     */
     protected function getEDateCacheName(): string
     {
         return $this->getCachePath() . '/edate/';
@@ -404,8 +372,6 @@ class Project implements \Stringable
 
     /**
      * Return the project cache path
-     *
-     * @return string
      */
     public function getCachePath(): string
     {
@@ -414,9 +380,6 @@ class Project implements \Stringable
 
     /**
      * Return the cache path for a project (without language)
-     *
-     * @param string $projectName
-     * @return string
      */
     public static function getProjectCachePath(string $projectName): string
     {
@@ -456,21 +419,11 @@ class Project implements \Stringable
         unset($this->config);
     }
 
-    /**
-     * Tostring
-     *
-     * @return string
-     */
     public function __toString(): string
     {
         return 'Object ' . $this::class . '(' . $this->name . ',' . $this->lang . ')';
     }
 
-    /**
-     * Projekt JSON Notation
-     *
-     * @return string
-     */
     public function toJSON(): string
     {
         return json_encode($this->toArray());
@@ -478,8 +431,6 @@ class Project implements \Stringable
 
     /**
      * Return all languages in the project
-     *
-     * @return array
      */
     public function getLanguages(): array
     {
@@ -499,8 +450,6 @@ class Project implements \Stringable
     /**
      * Return the project title
      * Locale->get('project/NAME', 'title') or getName()
-     *
-     * @return string
      */
     public function getTitle(): string
     {
@@ -569,17 +518,11 @@ class Project implements \Stringable
         return $result;
     }
 
-    /**
-     * @return string
-     */
     public function table(): string
     {
         return QUI::getDBTableName($this->name . '_' . $this->lang . '_sites');
     }
 
-    /**
-     * @return bool
-     */
     public function hasVHost(): bool
     {
         $Hosts = QUI::getRewrite()->getVHosts();
@@ -610,11 +553,8 @@ class Project implements \Stringable
     }
 
     //region cache
-
     /**
      * Gibt den allgemein gültigen Host vom Projekt zurück
-     *
-     * @return string
      */
     public function getHost(): string
     {
@@ -637,8 +577,6 @@ class Project implements \Stringable
 
     /**
      * Get the Trash from the Project
-     *
-     * @return QUI\Projects\Trash
      */
     public function getTrash(): Trash
     {
@@ -647,8 +585,6 @@ class Project implements \Stringable
 
     /**
      * Gibt alle Attribute vom Projekt zurück
-     *
-     * @return array
      */
     public function getAllAttributes(): array
     {
@@ -666,8 +602,6 @@ class Project implements \Stringable
      * Erste Seite des Projektes
      *
      * @$pluginload boolean
-     *
-     * @return Edit|Site
      *
      * @throws QUI\Exception
      */
@@ -706,11 +640,8 @@ class Project implements \Stringable
     }
 
     //endregion
-
     /**
      * Return the project cache path with the language path
-     *
-     * @return string
      */
     public function getCacheLanguagePath(): string
     {
@@ -719,10 +650,6 @@ class Project implements \Stringable
 
     /**
      * Return the cache path with the language path for a project
-     *
-     * @param string $projectName
-     * @param string $projectLang
-     * @return string
      */
     public static function getProjectLanguageCachePath(string $projectName, string $projectLang): string
     {
@@ -731,8 +658,6 @@ class Project implements \Stringable
 
     /**
      * Return all available layouts
-     *
-     * @return array
      */
     public function getLayouts(): array
     {
@@ -959,9 +884,6 @@ class Project implements \Stringable
     /**
      * Returns the parent id from a site
      *
-     * @param integer $id
-     *
-     * @return integer
      * @throws QUI\Database\Exception
      * @deprecated
      */
@@ -1007,7 +929,6 @@ class Project implements \Stringable
      * @param integer $id - child id
      * @param boolean $reverse - revers the result
      *
-     * @return array
      * @throws QUI\Database\Exception
      */
     public function getParentIds(int $id, bool $reverse = false): array
@@ -1029,8 +950,6 @@ class Project implements \Stringable
 
     /**
      * Alle Seiten bekommen
-     *
-     * @param boolean|array $params
      *
      * @return array|integer - if count is given, return is an integer, otherwise an array
      * @throws QUI\Database\Exception
@@ -1070,9 +989,6 @@ class Project implements \Stringable
     /**
      * Ids von bestimmten Seiten bekommen
      *
-     * @param array $params
-     *
-     * @return array
      * @throws QUI\Database\Exception
      * @todo Muss mal echt überarbeitet werden, bad code
      */
@@ -1400,8 +1316,6 @@ class Project implements \Stringable
 
     /**
      * Return the media object from the project
-     *
-     * @return QUI\Projects\Media
      */
     public function getMedia(): Media
     {
@@ -1414,8 +1328,6 @@ class Project implements \Stringable
 
     /**
      * Set the last edit date in the project
-     *
-     * @param integer $date
      */
     public function setEditDate(int $date): void
     {
@@ -1460,8 +1372,6 @@ class Project implements \Stringable
 
     /**
      * Return the custom css for the project
-     *
-     * @return string
      */
     public function getCustomCSS(): string
     {
@@ -1503,8 +1413,6 @@ class Project implements \Stringable
 
     /**
      * Return the custom js for the project
-     *
-     * @return string
      */
     public function getCustomJavaScript(): string
     {
@@ -1669,9 +1577,6 @@ class Project implements \Stringable
 
     /**
      * Explicitly set the project template for the runtime.
-     *
-     * @param string $template
-     * @return void
      */
     public function setTemplate(string $template): void
     {

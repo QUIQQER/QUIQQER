@@ -32,7 +32,6 @@ class Everyone extends QUI\Groups\Group
     /**
      * Deletes the group and subgroups
      *
-     * @return void
      * @throws Exception
      */
     public function delete(): void
@@ -104,9 +103,6 @@ class Everyone extends QUI\Groups\Group
     }
 
     /**
-     * Returns the Group-ID
-     *
-     * @return integer
      * @deprecated
      */
     public function getId(): int
@@ -140,24 +136,11 @@ class Everyone extends QUI\Groups\Group
         );
     }
 
-    /**
-     * Is the group active?
-     *
-     * @return boolean
-     */
     public function isActive(): bool
     {
         return true;
     }
 
-    /**
-     * Checks if the ID is from a parent group
-     *
-     * @param int|string $id - ID from parent
-     * @param boolean $recursive - checks recursive or not
-     *
-     * @return boolean
-     */
     public function isParent(int|string $id, bool $recursive = false): bool
     {
         return false;
@@ -175,21 +158,11 @@ class Everyone extends QUI\Groups\Group
         return null;
     }
 
-    /**
-     * Get all parent ids
-     *
-     * @return array
-     */
     public function getParentIds(): array
     {
         return [];
     }
 
-    /**
-     * Have the group subgroups?
-     *
-     * @return integer
-     */
     public function hasChildren(): int
     {
         return 0;
@@ -227,6 +200,7 @@ class Everyone extends QUI\Groups\Group
      * @param QUI\Interfaces\Users\User|null $ParentUser - (optional), Parent User, which create the user
      *
      * @return Group
+     *
      * @throws QUI\Exception
      */
     public function createChild(string $name, ?QUI\Interfaces\Users\User $ParentUser = null): Group

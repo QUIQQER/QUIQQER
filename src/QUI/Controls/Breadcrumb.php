@@ -16,10 +16,6 @@ use QUI;
  */
 class Breadcrumb extends QUI\Control
 {
-    /**
-     * constructor
-     * @param array $attributes
-     */
     public function __construct(array $attributes = [])
     {
         // default options
@@ -35,7 +31,6 @@ class Breadcrumb extends QUI\Control
     }
 
     /**
-     * @return string
      * @throws QUI\Exception
      */
     public function getBody(): string

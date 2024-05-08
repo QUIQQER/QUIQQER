@@ -246,8 +246,6 @@ OPTI;
 
     /**
      * nginx template
-     *
-     * @return string
      */
     protected function template(): string
     {
@@ -548,8 +546,6 @@ NGINX;
 
     /**
      * Checks if the nginx config has been modified since the last time generating it.
-     *
-     * @return bool
      */
     public function hasModifications(): bool
     {

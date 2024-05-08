@@ -17,11 +17,6 @@ use QUI;
  */
 class LangSwitch extends QUI\Bricks\Controls\LanguageSwitches\DropDown
 {
-    /**
-     * LangSwitch constructor.
-     *
-     * @param array $attributes
-     */
     public function __construct(array $attributes)
     {
         parent::__construct($attributes);

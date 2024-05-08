@@ -20,7 +20,7 @@ use function json_encode;
 class Guest extends QUI\Groups\Group
 {
     /**
-     * constructor
+     * @inheritDoc
      */
     public function __construct()
     {
@@ -28,10 +28,7 @@ class Guest extends QUI\Groups\Group
     }
 
     /**
-     * Deletes the group and subgroups
-     *
-     * @return void
-     * @throws Exception
+     * @inheritDoc
      */
     public function delete(): void
     {
@@ -44,11 +41,7 @@ class Guest extends QUI\Groups\Group
     }
 
     /**
-     * set a group attribute
-     * ID cannot be set
-     *
-     * @param string $name - Attribute name
-     * @param mixed $val - value
+     * @inheritDoc
      */
     public function setAttribute(string $name, mixed $val): void
     {
@@ -60,8 +53,7 @@ class Guest extends QUI\Groups\Group
     }
 
     /**
-     * saves the group
-     * All attributes are set in the database
+     * @inheritDoc
      */
     public function save(): void
     {
@@ -82,30 +74,30 @@ class Guest extends QUI\Groups\Group
     }
 
     /**
-     * Returns the Group-ID
-     *
-     * @return integer
-     * @deprecated
+     * @inheritDoc
      */
     public function getId(): int
     {
         return Manager::GUEST_ID;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getUUID(): string
     {
         return Manager::GUEST_ID;
     }
 
     /**
-     * Activate the group
+     * @inheritDoc
      */
     public function activate(): void
     {
     }
 
     /**
-     * deactivate the group
+     * @inheritDoc
      */
     public function deactivate(): void
     {
@@ -118,9 +110,7 @@ class Guest extends QUI\Groups\Group
     }
 
     /**
-     * Is the group active?
-     *
-     * @return boolean
+     * @inheritDoc
      */
     public function isActive(): bool
     {
@@ -128,12 +118,7 @@ class Guest extends QUI\Groups\Group
     }
 
     /**
-     * Checks if the ID is from a parent group
-     *
-     * @param int|string $id - ID from parent
-     * @param boolean $recursive - checks recursive or not
-     *
-     * @return boolean
+     * @inheritDoc
      */
     public function isParent(int|string $id, bool $recursive = false): bool
     {
@@ -141,11 +126,7 @@ class Guest extends QUI\Groups\Group
     }
 
     /**
-     * return the parent group
-     *
-     * @param boolean $obj - Parent Object (true) oder Parent-ID (false) -> (optional = true)
-     *
-     * @return Everyone|Group|Guest|null
+     * @inheritDoc
      */
     public function getParent(bool $obj = true): Guest|Group|Everyone|null
     {
@@ -153,9 +134,7 @@ class Guest extends QUI\Groups\Group
     }
 
     /**
-     * Get all parent ids
-     *
-     * @return array
+     * @inheritDoc
      */
     public function getParentIds(): array
     {
@@ -163,9 +142,7 @@ class Guest extends QUI\Groups\Group
     }
 
     /**
-     * Have the group subgroups?
-     *
-     * @return integer
+     * @inheritDoc
      */
     public function hasChildren(): int
     {
@@ -173,11 +150,7 @@ class Guest extends QUI\Groups\Group
     }
 
     /**
-     * Returns the subgroups
-     *
-     * @param array $params - Where Parameter
-     *
-     * @return array
+     * @inheritDoc
      */
     public function getChildren(array $params = []): array
     {
@@ -185,12 +158,7 @@ class Guest extends QUI\Groups\Group
     }
 
     /**
-     * return the subgroup ids
-     *
-     * @param boolean $recursive - recursive true / false
-     * @param array $params - SQL Params (limit, order)
-     *
-     * @return array|null
+     * @inheritDoc
      */
     public function getChildrenIds(bool $recursive = false, array $params = []): ?array
     {
@@ -198,13 +166,7 @@ class Guest extends QUI\Groups\Group
     }
 
     /**
-     * Create a subgroup
-     *
-     * @param string $name - name of the subgroup
-     * @param QUI\Interfaces\Users\User|null $ParentUser - (optional), Parent User, which create the user
-     *
-     * @return Group
-     * @throws QUI\Exception
+     * @inheritDoc
      */
     public function createChild(string $name, ?QUI\Interfaces\Users\User $ParentUser = null): Group
     {

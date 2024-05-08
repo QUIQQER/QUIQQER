@@ -16,24 +16,12 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
  */
 class Session
 {
-    /**
-     * @var array
-     */
     protected array $params = [];
 
-    /**
-     * @var string
-     */
     protected string $id;
 
-    /**
-     * @var MockFileSessionStorage
-     */
     protected MockFileSessionStorage $Storage;
 
-    /**
-     * @var \Symfony\Component\HttpFoundation\Session\Session
-     */
     protected \Symfony\Component\HttpFoundation\Session\Session $Session;
 
     /**
@@ -56,34 +44,21 @@ class Session
         $this->params[$name] = $value;
     }
 
-    /**
-     * @param $name
-     * @return mixed
-     */
     public function get($name): mixed
     {
         return $this->params[$name] ?? false;
     }
 
-    /**
-     * @return string
-     */
     public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * @return bool
-     */
     public function check(): bool
     {
         return true;
     }
 
-    /**
-     * @param string $name
-     */
     public function del(string $name): void
     {
         if (isset($this->params[$name])) {
@@ -91,9 +66,6 @@ class Session
         }
     }
 
-    /**
-     * @param string $name
-     */
     public function remove(string $name): void
     {
         if (isset($this->params[$name])) {
@@ -109,10 +81,6 @@ class Session
         $this->params = [];
     }
 
-    /**
-     * @param $sid
-     * @return int
-     */
     public function getLastRefreshFrom($sid): int
     {
         return time();
@@ -120,8 +88,6 @@ class Session
 
     /**
      * Return the symfony session
-     *
-     * @return \Symfony\Component\HttpFoundation\Session\Session
      */
     public function getSymfonySession(): \Symfony\Component\HttpFoundation\Session\Session
     {

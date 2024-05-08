@@ -42,8 +42,6 @@ class Health
     /**
      * System Healthcheck
      * Return the result of the system healthcheck
-     *
-     * @return array
      */
     public static function systemCheck(): array
     {
@@ -134,9 +132,6 @@ class Health
      * Package Healthcheck
      * Return the result of the package healthcheck
      *
-     * @param string $plugin
-     *
-     * @return array
      * @throws Exception
      */
     public static function packageCheck(string $plugin): array

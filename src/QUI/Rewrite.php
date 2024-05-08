@@ -84,114 +84,77 @@ class Rewrite
 
     /**
      * site request parameter
-     *
-     * @var array
      */
     public array $site_params = [];
 
-    /**
-     * @var null|array
-     */
     protected ?array $registerPaths = null;
 
-    /**
-     * @var Output
-     */
     protected Output $Output;
 
-    /**
-     * @var Events\Event
-     */
     protected QUI\Events\Event $Events;
 
     /**
      * active project
-     *
-     * @var ?Project
      */
     private ?Project $project = null;
 
     /**
      * active project
-     *
-     * @var string
      */
     private string $project_str = '';
 
     /**
      * active template
-     *
-     * @var string|bool
      */
     private string|bool $template_str = false;
 
     /**
      * if project prefix is set
-     *
-     * @var string
      */
     private string $project_prefix = '';
 
     /**
      * project lang
-     *
-     * @var string|bool
      */
     private string|bool $lang = false;
 
     /**
      * active site
-     *
-     * @var QUI\Interfaces\Projects\Site|null
      */
     private ?QUI\Interfaces\Projects\Site $site = null;
 
     /**
      * first site of the project
-     *
-     * @var QUI\Interfaces\Projects\Site
      */
     private QUI\Interfaces\Projects\Site $first_child;
 
     /**
      * current site path
-     *
-     * @var array
      */
     private array $path = [];
 
     /**
      * current site path - but only the ids
-     *
-     * @var array
      */
     private array $ids_in_path = [];
 
     /**
      * loaded vhosts
-     *
-     * @var array|bool
      */
     private array|bool $vhosts = false;
 
     /**
      * current suffix, (.html, .pdf, .print)
-     *
-     * @var string
      */
     private string $suffix = '.html';
 
     /**
      * the html output
-     *
-     * @var string
      */
     private string $output_content = '';
 
     /**
      * Standard header code
-     *
-     * @var int
      */
     private int $headerCode = 200;
 
@@ -210,7 +173,6 @@ class Rewrite
      * @param string $url
      * @param boolean $slash - Soll Slash ersetzt werden oder nicht
      *
-     * @return string
      */
     public static function replaceUrlSigns(string $url, bool $slash = false): string
     {
@@ -231,8 +193,6 @@ class Rewrite
 
     /**
      * Return the default suffix eq: .html or ''
-     *
-     * @return bool|string
      */
     public static function getDefaultSuffix(): bool|string
     {
@@ -689,11 +649,6 @@ class Rewrite
         }
     }
 
-    /**
-     * Gibt die Vhosts zurück
-     *
-     * @return array
-     */
     public function getVHosts(): array
     {
         if (!empty($this->vhosts) || is_array($this->vhosts)) {
@@ -809,7 +764,6 @@ class Rewrite
     /**
      * Shows the 404 site
      *
-     * @return Site
      * @throws QUI\Exception
      */
     public function getErrorSite(): Site
@@ -871,8 +825,6 @@ class Rewrite
     /**
      * Gibt das aktuelle Projekt zurück
      * Die Daten werden aus der URL gehohlt
-     *
-     * @return Project
      *
      * @throws QUI\Exception
      */
@@ -1013,8 +965,6 @@ class Rewrite
 
     /**
      * Return the current request uri without params
-     *
-     * @return string
      */
     public function getRequestUri(): string
     {
@@ -1033,12 +983,6 @@ class Rewrite
     }
 
     /**
-     * Enter description here...
-     *
-     * @param string $url
-     * @param boolean $setPath
-     * @return Site|false
-     *
      * @throws QUI\Exception
      */
     public function getSiteByUrl(string $url, bool $setPath = true): bool|QUI\Interfaces\Projects\Site
@@ -1127,10 +1071,6 @@ class Rewrite
     /**
      * Return the Site or false if a path exists
      *
-     * @param string $path
-     * @param Project $Project
-     *
-     * @return QUI\Interfaces\Projects\Site|false
      * @throws Exception
      */
     public function existRegisterPath(string $path, Project $Project): bool|QUI\Interfaces\Projects\Site
@@ -1173,10 +1113,6 @@ class Rewrite
 
     /**
      * Parameter der Rewrite
-     *
-     * @param string $name
-     *
-     * @return string|boolean
      */
     public function getParam(string $name): bool|string
     {
@@ -1209,27 +1145,18 @@ class Rewrite
 
     /**
      * Return the current header code
-     *
-     * @return Int
      */
     public function getHeaderCode(): int
     {
         return $this->headerCode;
     }
 
-    /**
-     * Enter description here...
-     *
-     * @return string
-     */
     public function getProjectPrefix(): string
     {
         return $this->project_prefix;
     }
 
     /**
-     * @return Output
-     *
      * @throws QUI\Exception
      */
     public function getOutput(): Output
@@ -1252,8 +1179,6 @@ class Rewrite
     /**
      * Gibt die aktuelle Seite zurück
      *
-     * @return QUI\Interfaces\Projects\Site|null
-     *
      * @throws QUI\Exception
      */
     public function getSite(): ?QUI\Interfaces\Projects\Site
@@ -1269,8 +1194,6 @@ class Rewrite
 
     /**
      * Aktuelles Site Objekt überschreiben
-     *
-     * @param QUI\Interfaces\Projects\Site $Site
      */
     public function setSite(QUI\Interfaces\Projects\Site $Site): void
     {
@@ -1279,9 +1202,6 @@ class Rewrite
 
     /**
      * Den aktuelle Pfad bekommen
-     *
-     * @param boolean $start - where to start
-     * @return array
      */
     public function getPath(bool $start = true): array
     {
@@ -1300,8 +1220,6 @@ class Rewrite
 
     /**
      * Set the current path
-     *
-     * @param array $path
      */
     public function setPath(array $path): void
     {
@@ -1320,9 +1238,6 @@ class Rewrite
         return in_array($id, $this->ids_in_path);
     }
 
-    /**
-     * @param QUI\Interfaces\Projects\Site $Site
-     */
     public function addSiteToPath(QUI\Interfaces\Projects\Site $Site): void
     {
         $this->path[] = $Site;
@@ -1365,21 +1280,11 @@ class Rewrite
         return $this->getOutputContent();
     }
 
-    /**
-     * Output Content bekommen
-     *
-     * @return string
-     */
     public function getOutputContent(): string
     {
         return $this->output_content;
     }
 
-    /**
-     * Output Content setzen
-     *
-     * @param string $str
-     */
     public function setOutputContent(string $str): void
     {
         $this->output_content = $str;
@@ -1388,10 +1293,6 @@ class Rewrite
     /**
      * Mail Protection gegen SPAM
      * Wandelt die Mail Addressen so um das ein BOT nichts mit anfangen kann
-     *
-     * @param string $output
-     *
-     * @return string
      */
     public function outputMail(string $output): string
     {
@@ -1406,8 +1307,6 @@ class Rewrite
 
     /**
      * Return the url params as index array
-     *
-     * @return array
      */
     public function getUrlParamsList(): array
     {
@@ -1426,9 +1325,6 @@ class Rewrite
 
     /**
      * Register a rewrite path
-     *
-     * @param array|string $paths
-     * @param QUI\Interfaces\Projects\Site $Site
      *
      * @throws QUI\Exception
      */
@@ -1523,8 +1419,6 @@ class Rewrite
 
     /**
      * Unregister a rewrite path
-     *
-     * @param QUI\Interfaces\Projects\Site $Site
      *
      * @throws QUI\Exception
      */

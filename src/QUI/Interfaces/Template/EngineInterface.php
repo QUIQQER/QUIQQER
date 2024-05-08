@@ -28,39 +28,26 @@ interface EngineInterface
 
     /**
      * Assign a Variable to the engine
-     *
-     * @param array|string $var
-     * @param mixed $value - optional
      */
     public function assign(array|string $var, mixed $value = false);
 
     /**
      * Return the value of a template variable
-     *
-     * @param string $variableName
-     * @return mixed
      */
     public function getTemplateVariable(string $variableName): mixed;
 
     /**
      * Return the current template canonical object
-     *
-     * @return Canonical
      */
     public function getCanonical(): Canonical;
 
     /**
      * Set a locale object to the engine
-     *
-     * @param Locale $Locale
-     * @return void
      */
     public function setLocale(Locale $Locale): void;
 
     /**
      * Return the engine locale object
-     *
-     * @return Locale|null
      */
     public function getLocale(): ?Locale;
 }

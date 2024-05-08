@@ -19,10 +19,6 @@ class Licence extends QUI\InstallationWizard\AbstractInstallationWizardStep
         $this->setJavaScriptControl('controls/installation/Licence');
     }
 
-    /**
-     * @param null $Locale
-     * @return string
-     */
     public function getTitle($Locale = null): string
     {
         if ($Locale === null) {
@@ -32,10 +28,6 @@ class Licence extends QUI\InstallationWizard\AbstractInstallationWizardStep
         return $Locale->get('quiqqer/core', 'quiqqer.setup.licence.title');
     }
 
-    /**
-     * @param null $Locale
-     * @return string
-     */
     public function getDescription($Locale = null): string
     {
         if ($Locale === null) {
@@ -45,9 +37,6 @@ class Licence extends QUI\InstallationWizard\AbstractInstallationWizardStep
         return $Locale->get('quiqqer/core', 'quiqqer.setup.licence.description');
     }
 
-    /**
-     * @return string
-     */
     public function create(): string
     {
         try {

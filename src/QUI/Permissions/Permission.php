@@ -36,18 +36,10 @@ use function trim;
  */
 class Permission
 {
-    /**
-     * @var null|User
-     */
     protected static ?QUI\Interfaces\Users\User $User = null;
 
     /**
      * has the User the permission
-     *
-     * @param string $perm
-     * @param boolean|User $User
-     *
-     * @return false|string|permission
      */
     public static function hasPermission(
         string $perm,
@@ -63,11 +55,6 @@ class Permission
 
     /**
      * Checks whether the user has the permission
-     *
-     * @param string $perm
-     * @param boolean|User|null $User - optional
-     *
-     * @return false|string|permission
      *
      * @throws Exception
      */
@@ -114,9 +101,6 @@ class Permission
         );
     }
 
-    /**
-     * @return QUI\Interfaces\Users\User|null
-     */
     protected static function getUser(): QUI\Interfaces\Users\User|null
     {
         if (!is_null(self::$User)) {
@@ -130,8 +114,6 @@ class Permission
      * Set the global user for the permissions
      * You can set the default user for the permission checks,
      * default is the session user
-     *
-     * @param QUI\Interfaces\Users\User $User
      */
     public static function setUser(QUI\Interfaces\Users\User $User): void
     {
@@ -140,10 +122,6 @@ class Permission
 
     /**
      * Checks, if the user has the SuperUser flag
-     *
-     * @param boolean|User $User - optional
-     *
-     * @return boolean
      */
     public static function isSU(bool|User $User = null): bool
     {
@@ -223,9 +201,6 @@ class Permission
 
     /**
      * Checks, if the user is an admin user
-     *
-     * @param boolean|User $User - optional
-     * @return boolean
      */
     public static function isAdmin(bool|User $User = null): bool
     {
@@ -280,11 +255,6 @@ class Permission
 
     /**
      * Checks if the permission is set
-     *
-     * @param string $perm
-     * @param boolean|User $User - optional
-     *
-     * @return boolean
      */
     public static function existsPermission(string $perm, bool|User $User = null): bool
     {
@@ -315,12 +285,6 @@ class Permission
 
     /**
      * Add a user to the permission
-     *
-     * @param User $User
-     * @param Edit|Site $Site
-     * @param string $permission - name of the permission
-     * @param ?User $EditUser
-     * @return bool
      *
      * @throws QUI\Exception
      * @throws Exception
@@ -373,16 +337,8 @@ class Permission
     /**
      * Sites
      */
-
     /**
      * Add a group to the permission
-     *
-     * @param Group $Group
-     * @param Edit|Site $Site
-     * @param string $permission - name of the permission
-     * @param ?User $EditUser
-     *
-     * @return bool
      *
      * @throws QUI\Exception
      * @throws Exception
@@ -435,11 +391,6 @@ class Permission
 
     /**
      * Checks if the permission exists in the Site
-     *
-     * @param string $perm
-     * @param Edit|Site $Site
-     *
-     * @return bool
      */
     public static function existsSitePermission(string $perm, Edit|Site $Site): bool
     {
@@ -451,9 +402,6 @@ class Permission
 
     /**
      * Return the Site Permission
-     *
-     * @param Edit|Site $Site
-     * @param string $perm
      *
      * @return mixed|boolean
      */
@@ -468,11 +416,6 @@ class Permission
     /**
      * Return a permission of the user
      * - can be user for string permissions
-     *
-     * @param string $perm
-     * @param QUI\Interfaces\Users\User|null $User
-     *
-     * @return mixed|boolean
      */
     public static function getPermission(string $perm, QUI\Interfaces\Users\User $User = null): mixed
     {
@@ -493,12 +436,6 @@ class Permission
 
     /**
      * has the User the permission at the site?
-     *
-     * @param string $perm
-     * @param Site $Site
-     * @param boolean|User $User - optional
-     *
-     * @return bool
      */
     public static function hasSitePermission(
         string $perm,
@@ -515,12 +452,6 @@ class Permission
 
     /**
      * Checks if the User have the permission of the Site
-     *
-     * @param string $perm
-     * @param Edit|Site $Site
-     * @param boolean|User $User - optional
-     *
-     * @return boolean
      *
      * @throws Exception
      */
@@ -634,12 +565,6 @@ class Permission
 
     /**
      * Check the permission with a given permission list
-     *
-     * @param array $permissions - list of permissions
-     * @param string $perm
-     * @param boolean|User $User
-     *
-     * @return boolean
      *
      * @throws Exception
      */
@@ -796,13 +721,6 @@ class Permission
     /**
      * Remove a group from the permission
      *
-     * @param Group $Group
-     * @param Edit|Site $Site
-     * @param string $permission
-     * @param ?User $EditUser
-     *
-     * @return bool
-     *
      * @throws QUI\Exception
      * @throws Exception
      */
@@ -854,13 +772,6 @@ class Permission
 
     /**
      * Remove a user from the permission
-     *
-     * @param User $User
-     * @param QUI\Interfaces\Projects\Site $Site
-     * @param string $permission
-     * @param ?User $EditUser
-     *
-     * @return bool
      *
      * @throws QUI\Exception
      * @throws Exception
@@ -915,15 +826,8 @@ class Permission
     /**
      * Projects
      */
-
     /**
      * Adds a user to the Project permission
-     *
-     * @param Group $Group
-     * @param Project $Project
-     * @param string $permission
-     * @param ?User $EditUser
-     * @return bool
      *
      * @throws Exception
      */
@@ -969,12 +873,6 @@ class Permission
 
     /**
      * Checks if the User have the permission of the Project
-     *
-     * @param string $perm
-     * @param Project $Project
-     * @param boolean|User $User - optional
-     *
-     * @return bool
      *
      * @throws Exception
      */
@@ -1084,12 +982,6 @@ class Permission
     /**
      * Adds a user to the Project permission
      *
-     * @param User $User
-     * @param Project $Project
-     * @param string $permission - name of the
-     * @param ?User $EditUser
-     *
-     * @return boolean
      * @throws QUI\Exception
      */
     public static function addUserToProjectPermission(
@@ -1135,10 +1027,6 @@ class Permission
     /**
      * Remove a user from the project permission
      *
-     * @param User $User
-     * @param Project $Project
-     * @param string $permission - name of the permission
-     *
      * @throws Exception|QUI\Database\Exception
      */
     public static function removeUserFromProjectPermission(
@@ -1180,12 +1068,6 @@ class Permission
 
     /**
      * Remove a group from the project permission
-     *
-     * @param Group $Group
-     * @param Project $Project
-     * @param string $permission - name of the permission
-     *
-     * @return bool
      *
      * @throws Exception
      */
@@ -1229,15 +1111,8 @@ class Permission
     }
 
     //region media permissions
-
     /**
      * has the User the permission for the media item?
-     *
-     * @param string $perm
-     * @param Item $MediaItem
-     * @param ?User $User - optional
-     *
-     * @return bool
      */
     public static function hasMediaPermission(
         string $perm,
@@ -1258,12 +1133,6 @@ class Permission
 
     /**
      * Checks if the User have the permission of the Site
-     *
-     * @param string $perm
-     * @param Item $MediaItem
-     * @param ?User $User - optional
-     *
-     * @return boolean
      *
      * @throws Exception
      */
@@ -1298,12 +1167,6 @@ class Permission
 
     /**
      * Remove a group from the permission
-     *
-     * @param Group $Group
-     * @param Item $MediaItem
-     * @param string $permission
-     * @param ?User $EditUser
-     * @return bool
      *
      * @throws QUI\Exception
      * @throws Exception
@@ -1356,13 +1219,6 @@ class Permission
 
     /**
      * Remove a user from the permission
-     *
-     * @param User $User
-     * @param Item $MediaItem
-     * @param string $permission
-     * @param User|null $EditUser
-     *
-     * @return bool
      *
      * @throws Exception
      * @throws Exception
@@ -1418,13 +1274,6 @@ class Permission
     /**
      * Add a group to the permission
      *
-     * @param Group $Group
-     * @param Item $MediaItem
-     * @param string $permission - name of the permission
-     * @param ?User $EditUser
-     *
-     * @return bool
-     *
      * @throws QUI\Exception
      * @throws Exception
      */
@@ -1476,12 +1325,6 @@ class Permission
 
     /**
      * Add a user to the permission
-     *
-     * @param User $User
-     * @param Item $MediaItem
-     * @param string $permission - name of the permission
-     * @param null|User $EditUser
-     * @return bool
      *
      * @throws QUI\Exception
      * @throws Exception

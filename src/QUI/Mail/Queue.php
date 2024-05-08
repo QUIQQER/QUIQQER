@@ -70,11 +70,6 @@ class Queue
         $Table->setAutoIncrement(self::table(), 'id');
     }
 
-    /**
-     * Return the table string
-     *
-     * @return string
-     */
     public static function table(): string
     {
         return QUI::getDBTableName('mailqueue');
@@ -162,7 +157,6 @@ class Queue
     /**
      * Send the next mail from the queue
      *
-     * @return boolean
      * @throws QUI\Database\Exception
      */
     public function send(): bool
@@ -402,9 +396,6 @@ class Queue
     }
 
     /**
-     * Get number of mails that have been sent via queue in the last hour
-     *
-     * @return int
      * @throws QUI\Exception
      */
     protected function getMailsSentInLastHour(): int
@@ -433,7 +424,6 @@ class Queue
     /**
      * Increase number of mails sent by 1 and save this information in the cache
      *
-     * @return void
      * @throws QUI\Exception
      */
     protected function increaseMailsSent(): void
@@ -448,7 +438,6 @@ class Queue
     /**
      * Send all mails from the queue
      *
-     * @return void
      * @throws QUI\Database\Exception
      */
     public function sendAll(): void
@@ -484,9 +473,6 @@ class Queue
     /**
      * Send an mail by its mail queue id
      *
-     * @param integer $id
-     *
-     * @return boolean
      * @throws QUI\Exception
      */
     public function sendById(int $id): bool
@@ -552,9 +538,6 @@ class Queue
     }
 
     /**
-     * Return the number of the queue
-     *
-     * @return integer
      * @throws QUI\Database\Exception
      */
     public function count(): int
@@ -571,9 +554,6 @@ class Queue
     }
 
     /**
-     * Return the queue list
-     *
-     * @return array
      * @throws QUI\Database\Exception
      */
     public function getList(): array

@@ -38,19 +38,10 @@ use function trim;
  */
 class DBCheck extends QUI\System\Test
 {
-    /**
-     * @var Tables|null
-     */
     protected ?Tables $Tables = null;
 
-    /**
-     * @var bool
-     */
     protected bool $error = false;
 
-    /**
-     * @var array
-     */
     protected array $errors = [];
 
     /**
@@ -71,8 +62,6 @@ class DBCheck extends QUI\System\Test
 
     /**
      * Database Check
-     *
-     * @return integer
      */
     public function execute(): int
     {
@@ -285,11 +274,6 @@ class DBCheck extends QUI\System\Test
         return $checkData;
     }
 
-    /**
-     * @param string $table
-     * @param string $dbTable
-     * @param string $error
-     */
     protected function addError(string $table, string $dbTable, string $error): void
     {
         $this->errors[] = [
@@ -513,9 +497,6 @@ class DBCheck extends QUI\System\Test
         }
     }
 
-    /**
-     * @param string $xmlFile
-     */
     protected function outputError(string $xmlFile): void
     {
         if (empty($this->errors)) {

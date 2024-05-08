@@ -27,8 +27,6 @@ class Menu
 {
     /**
      * Clear the menu cache for a user
-     *
-     * @param QUI\Interfaces\Users\User $User
      */
     public static function clearMenuCache(QUI\Interfaces\Users\User $User): void
     {
@@ -39,8 +37,6 @@ class Menu
 
     /**
      * Return the menu für the session user
-     *
-     * @return array
      */
     public function getMenu(): array
     {
@@ -71,8 +67,6 @@ class Menu
     /**
      * Create the menu
      * no caches use
-     *
-     * @return array
      */
     public function createMenu(): array
     {
@@ -332,9 +326,6 @@ class Menu
     /**
      * Set window title / menu item title
      * only if no title is set
-     *
-     * @param QUI\Controls\Contextmenu\MenuItem $MenuItem
-     * @param DOMElement $Node
      */
     public function setWindowTitle(
         QUI\Controls\Contextmenu\MenuItem $MenuItem,
@@ -359,9 +350,6 @@ class Menu
     /**
      * Set window icon / menu item icon
      * only if no icon is set
-     *
-     * @param QUI\Controls\Contextmenu\MenuItem $MenuItem
-     * @param DOMElement $Node
      */
     public function setWindowIcon(
         QUI\Controls\Contextmenu\MenuItem $MenuItem,
@@ -391,9 +379,6 @@ class Menu
 
     /**
      * Sort the menu items
-     *
-     * @param $items
-     * @return array
      */
     protected function sortItems($items): array
     {
@@ -410,10 +395,6 @@ class Menu
 
     /**
      * usort helper function / method
-     *
-     * @param array $a
-     * @param array $b
-     * @return int
      */
     protected function sortByTitle(array $a, array $b): int
     {

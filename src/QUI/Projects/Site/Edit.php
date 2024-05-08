@@ -74,17 +74,10 @@ class Edit extends Site
 
     /**
      * Project conf <<------ ??? why here
-     *
-     * @var array
      */
     public array $conf = [];
 
     /**
-     * Constructor
-     *
-     * @param QUI\Projects\Project $Project
-     * @param integer $id
-     *
      * @throws QUI\Exception
      */
     public function __construct(Project $Project, int $id)
@@ -364,8 +357,6 @@ class Edit extends Site
     }
 
     /**
-     * (non-PHPdoc)
-     *
      * @param integer $pid - Parent - ID
      * @param array $params
      *
@@ -425,6 +416,7 @@ class Edit extends Site
      * @param boolean $load Rekursiv alle Kinder IDs bekommen
      *
      * @return array|int
+     *
      * @throws QUI\Exception
      */
     public function getChildren(array $params = [], bool $load = false): int|array
@@ -1257,10 +1249,6 @@ class Edit extends Site
 
     /**
      * Checks if a site with the name in the children exists
-     *
-     * @param string $name
-     *
-     * @return boolean
      */
     public function existNameInChildren(string $name): bool
     {
@@ -1607,12 +1595,6 @@ class Edit extends Site
     }
 
     /**
-     * add an group to the permission
-     *
-     * @param Group $Group
-     * @param string $permission
-     * @param boolean|\QUI\Users\User $EditUser
-     *
      * @throws QUI\Exception
      */
     public function addgroupToPermission(Group $Group, $permission, $EditUser = false)
@@ -1639,12 +1621,6 @@ class Edit extends Site
     }
 
     /**
-     * Remove a group from the permission
-     *
-     * @param Group $Group
-     * @param string $permission - name of the permission
-     * @param boolean|\QUI\Users\User $EditUser
-     *
      * @throws QUI\Exception
      */
     public function removeGroupFromSitePermission(Group $Group, $permission, $EditUser = false)

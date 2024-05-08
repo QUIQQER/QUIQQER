@@ -12,17 +12,12 @@ use function get_class;
  */
 abstract class AbstractInstallationWizard implements InstallationWizardInterface
 {
-    /**
-     * @return int
-     */
     public function getPriority(): int
     {
         return 0;
     }
 
     /**
-     * @param int $step
-     * @return InstallationWizardStepInterface
      * @throws Exception
      */
     public function getStep(int $step): InstallationWizardStepInterface
@@ -36,10 +31,6 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
         throw new Exception('Step not found', 404);
     }
 
-    /**
-     * @param null $Locale
-     * @return array
-     */
     public function toArray($Locale = null): array
     {
         $steps = array_map(fn($Step) => $Step->toArray(), $this->getSteps());
@@ -55,26 +46,16 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
         ];
     }
 
-    /**
-     * @return string
-     */
     public function getLogo(): string
     {
         return URL_OPT_DIR . 'quiqqer/core/bin/quiqqer_logo.svg';
     }
 
-    /**
-     * @return int
-     */
     public function getStatus(): int
     {
         return ProviderHandler::getProviderStatus($this);
     }
 
-    /**
-     * @param $Locale
-     * @return string
-     */
     public function getFinishButtonText($Locale = null): string
     {
         if ($Locale === null) {
@@ -100,8 +81,6 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
 
     /**
      * Returns the text for the finish display
-     *
-     * @return string
      */
     public function getExecuteContent(): string
     {

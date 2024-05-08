@@ -36,7 +36,6 @@ class QuiqqerMongoDriver extends AbstractDriver
     /**
      * QuiqqerMongoDriver constructor.
      *
-     * @param array $options
      * @throws Exception
      */
     public function __construct(array $options = [])
@@ -89,10 +88,6 @@ class QuiqqerMongoDriver extends AbstractDriver
         return false;
     }
 
-    /**
-     * @param array $key
-     * @return string
-     */
     private static function mapKey(array $key): string
     {
         return implode('/', $key);
@@ -160,8 +155,6 @@ class QuiqqerMongoDriver extends AbstractDriver
 
     /**
      * mongo - A MongoClient/Mongo/MongoDB instance. Required.
-     *
-     * @param array $options
      *
      * @throws InvalidArgumentException
      * @throws \Exception

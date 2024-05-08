@@ -24,17 +24,11 @@ class Manager
 {
     /**
      * mail queue manager
-     *
-     * @var Queue|null
      */
     protected ?Queue $Queue = null;
 
     /**
      * Send a mail
-     *
-     * @param string $to
-     * @param string $subject
-     * @param string $body
      *
      * @throws QUI\Exception
      * @throws Exception
@@ -57,8 +51,6 @@ class Manager
 
     /**
      * Return the mail queue manager
-     *
-     * @return Queue
      */
     public function getQueue(): Queue
     {
@@ -72,19 +64,12 @@ class Manager
     /**
      * Return a Mailer object
      * Easier send, uses the mailer queue
-     *
-     * @return Mailer
      */
     public function getMailer(): Mailer
     {
         return new Mailer();
     }
 
-    /**
-     * Return a PHPMailer object
-     *
-     * @return PHPMailer
-     */
     public function getPHPMailer(): PHPMailer
     {
         $config = QUI::conf('mail');

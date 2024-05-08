@@ -77,18 +77,11 @@ class Utils
      */
     const CACHE_KEY_TIMESTAMP_MEDIA_CACHE_FOLDER_SIZE_PREFIX = "timestamp_media_cache_folder_size_";
 
-    /**
-     * @var array
-     */
     protected static array $urlItemCache = [];
 
     /**
      * Returns the item array
      * the array is specially adapted for the media center
-     *
-     * @param Item $Item
-     *
-     * @return array
      */
     public static function parseForMediaCenter(Item $Item): array
     {
@@ -164,10 +157,6 @@ class Utils
 
     /**
      * Return the extension of a file
-     *
-     * @param string $filename - filename
-     *
-     * @return string
      */
     public static function getExtension(string $filename): string
     {
@@ -252,8 +241,6 @@ class Utils
 
     /**
      * Return the fitting font awesome class
-     * @param Item $Item
-     * @return string
      */
     public static function getFontAwesomeIconByItem(Item $Item): string
     {
@@ -272,10 +259,6 @@ class Utils
 
     /**
      * Is the variable an image object?
-     *
-     * @param object|boolean|string $Unknown
-     *
-     * @return boolean
      */
     public static function isImage(object|bool|string $Unknown): bool
     {
@@ -297,11 +280,7 @@ class Utils
     /**
      * Return the media type by a file mime type
      *
-     * @param string $mime_type
-     *
-     * @return string file|image
      * @example \QUI\Projects\Media\Utils::getMediaTypeByMimeType( 'image/jpeg' )
-     *
      */
     public static function getMediaTypeByMimeType(string $mime_type): string
     {
@@ -319,12 +298,6 @@ class Utils
     /**
      * Return <picture><img /></picture> from image attributes
      * considered responsive images, too
-     *
-     * @param string $src
-     * @param array $attributes
-     * @param bool $withHost
-     *
-     * @return string
      */
     public static function getImageHTML(string $src, array $attributes = [], bool $withHost = false): string
     {
@@ -563,10 +536,6 @@ class Utils
 
     /**
      * Return only the source for an <img /> tag from image attributes
-     *
-     * @param $src
-     * @param array $attributes
-     * @return string
      */
     public static function getImageSource($src, array $attributes = []): string
     {
@@ -641,9 +610,6 @@ class Utils
      * Return the media image
      * If it is no image, its throws an exception
      *
-     * @param mixed $url - image.php? url
-     *
-     * @return Image
      * @throws QUI\Exception
      */
     public static function getImageByUrl(mixed $url): Image
@@ -675,13 +641,6 @@ class Utils
         return $Obj;
     }
 
-    /**
-     * Is the URL a media url?
-     *
-     * @param string $url
-     *
-     * @return boolean
-     */
     public static function isMediaUrl(string $url): bool
     {
         if (
@@ -698,9 +657,6 @@ class Utils
     /**
      * Return the media image, file, folder
      *
-     * @param mixed $url - image.php? url
-     *
-     * @return QUI\Interfaces\Projects\Media\File
      * @throws QUI\Exception
      */
     public static function getMediaItemByUrl(mixed $url): QUI\Interfaces\Projects\Media\File
@@ -738,6 +694,7 @@ class Utils
      * @param string $url - cache url, or real path of the file
      *
      * @return QUI\Interfaces\Projects\Media\File
+     *
      * @throws QUI\Exception
      */
     public static function getElement(string $url): QUI\Interfaces\Projects\Media\File
@@ -750,9 +707,6 @@ class Utils
     }
 
     /**
-     * @param $url
-     * @return array
-     *
      * @throws QUI\Exception
      */
     public static function getRealFileDataFromCacheUrl($url): array
@@ -813,10 +767,6 @@ class Utils
 
     /**
      * Return the rewritten url from an image.php? url
-     *
-     * @param string $output
-     * @param array $size
-     * @return string
      *
      * @throws QUI\Exception
      */
@@ -914,13 +864,9 @@ class Utils
     /**
      * is methods
      */
-
     /**
      * checks if the string can be used for a media folder name
      *
-     * @param string $str - foldername
-     *
-     * @return boolean
      * @throws QUI\Exception
      */
     public static function checkFolderName(string $str): bool
@@ -951,10 +897,6 @@ class Utils
 
     /**
      * Deletes characters which are not allowed for folders
-     *
-     * @param string $str - Folder name
-     *
-     * @return string
      */
     public static function stripFolderName(string $str): string
     {
@@ -1010,10 +952,6 @@ class Utils
 
     /**
      * Deletes characters which are not allowed in the media center
-     *
-     * @param string $str
-     *
-     * @return string
      */
     public static function stripMediaName(string $str): string
     {
@@ -1044,9 +982,6 @@ class Utils
 
     /**
      * Is the variable a folder object?
-     *
-     * @param mixed $Unknown
-     * @return boolean
      */
     public static function isFolder(mixed $Unknown): bool
     {
@@ -1067,9 +1002,6 @@ class Utils
 
     /**
      * Is the object a media item
-     *
-     * @param mixed $Unknown
-     * @return bool
      */
     public static function isItem(mixed $Unknown): bool
     {
@@ -1144,10 +1076,6 @@ class Utils
 
     /**
      * Generate the MD5 hash of a file object
-     *
-     * @param File|Image $File
-     *
-     * @return string
      */
     public static function generateMD5(Image|File $File): string
     {
@@ -1156,10 +1084,6 @@ class Utils
 
     /**
      * Generate the SHA1 hash of a file object
-     *
-     * @param File|Image $File
-     *
-     * @return string
      */
     public static function generateSHA1(Image|File $File): string
     {
@@ -1168,9 +1092,6 @@ class Utils
 
     /**
      * Counts and returns the number of folders for a project.
-     *
-     * @param QUI\Projects\Project $Project
-     * @return int
      */
     public static function countFoldersForProject(QUI\Projects\Project $Project): int
     {
@@ -1195,13 +1116,6 @@ class Utils
         return 0;
     }
 
-    /**
-     * Counts and returns the number of files for a project.
-     *
-     * @param QUI\Projects\Project $Project
-     *
-     * @return int
-     */
     public static function countFilesForProject(QUI\Projects\Project $Project): int
     {
         $mediaTable = $Project->getMedia()->getTable();
@@ -1249,10 +1163,6 @@ class Utils
     /**
      * Returns the timestamp when to media folder size was stored in cache for the given project.
      * Returns null if there is no data in the cache.
-     *
-     * @param QUI\Projects\Project $Project
-     *
-     * @return int|null
      */
     public static function getMediaFolderSizeTimestampForProject(QUI\Projects\Project $Project): ?int
     {
@@ -1280,10 +1190,6 @@ class Utils
     /**
      * Returns the timestamp when to media cache folder size was stored in cache for the given project.
      * Returns null if there is no data in the cache.
-     *
-     * @param QUI\Projects\Project $Project
-     *
-     * @return int|null
      */
     public static function getMediaCacheFolderSizeTimestampForProject(QUI\Projects\Project $Project): ?int
     {
@@ -1335,10 +1241,6 @@ class Utils
         return $return;
     }
 
-    /**
-     * @param Item $Item
-     * @return array
-     */
     public static function getExtraAttributeListForMediaItems(Item $Item): array
     {
         $cache = $Item->getMedia()->getProject()->getCachePath() . '/xml-media-attributes/';

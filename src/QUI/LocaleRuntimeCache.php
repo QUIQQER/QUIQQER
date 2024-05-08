@@ -14,14 +14,6 @@ class LocaleRuntimeCache
      */
     protected static array $languages = [];
 
-    /**
-     * Set global locale group or
-     *
-     * @param string $lang
-     * @param string $group
-     * @param array $translations
-     * @return void
-     */
     public static function set(string $lang, string $group, array $translations): void
     {
         if (!isset(self::$languages[$lang])) {
@@ -60,14 +52,6 @@ class LocaleRuntimeCache
         return null;
     }
 
-    /**
-     * Check if a locale group
-     *
-     * @param string $lang
-     * @param string $group
-     *
-     * @return bool
-     */
     public static function isCached(string $lang, string $group): bool
     {
         return isset(self::$languages[$lang][$group]);

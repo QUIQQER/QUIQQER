@@ -24,14 +24,8 @@ abstract class Test extends QUI\QDOM implements QUI\Interfaces\System\Test
 
     const TEST_IS_OPTIONAL = 2;
 
-    /**
-     * @var int
-     */
     protected int $isRequired = self::TEST_IS_REQUIRED;
 
-    /**
-     * Constructor
-     */
     public function __construct()
     {
         $this->setAttributes([
@@ -40,41 +34,21 @@ abstract class Test extends QUI\QDOM implements QUI\Interfaces\System\Test
         ]);
     }
 
-    /**
-     * Is the test require?
-     *
-     * @return bool
-     */
     public function isRequired(): bool
     {
         return ($this->isRequired == self::TEST_IS_REQUIRED);
     }
 
-    /**
-     * Is the test optional?
-     *
-     * @return bool
-     */
     public function isOptional(): bool
     {
         return ($this->isRequired == self::TEST_IS_OPTIONAL);
     }
 
-    /**
-     * Return the test title
-     *
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->getAttribute('title');
     }
 
-    /**
-     * Return the test description
-     *
-     * @return string
-     */
     public function getDescription(): string
     {
         return $this->getAttribute('description');

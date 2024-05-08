@@ -47,9 +47,6 @@ class Utils
     /**
      * Prüft ob der Name erlaubt ist
      *
-     * @param string $name
-     *
-     * @return boolean
      * @throws Exception
      */
     public static function checkName(string $name): bool
@@ -161,10 +158,6 @@ class Utils
      * Return data table array for the Site Object
      * a list of the extra database and extra attributes for saving the site
      * the extra attributes are all from database.xml files
-     *
-     * @param QUI\Projects\Site $Site
-     *
-     * @return array
      */
     public static function getDataListForSite(Projects\Site $Site): array
     {
@@ -257,10 +250,6 @@ class Utils
 
     /**
      * Return database.xml list for the Site Object
-     *
-     * @param QUI\Projects\Site $Site
-     *
-     * @return array
      */
     public static function getDataBaseXMLListForSite(Projects\Site $Site): array
     {
@@ -334,10 +323,6 @@ class Utils
 
     /**
      * Return database.xml list for the Site Object
-     *
-     * @param QUI\Projects\Site $Site
-     *
-     * @return array
      */
     public static function getExtraAttributeListForSite(Projects\Site $Site): array
     {
@@ -439,11 +424,6 @@ class Utils
 
     /**
      * Return the extra settings from site.xml`s
-     *
-     * @param QUI\Interfaces\Projects\Site $Site
-     * @param string $current
-     *
-     * @return string
      */
     public static function getExtraSettingsForSite(QUI\Interfaces\Projects\Site $Site, string $current = ''): string
     {
@@ -538,9 +518,6 @@ class Utils
 
     /**
      * Return the admin site modules from site.xml`s
-     *
-     * @param QUI\Projects\Site|QUI\Projects\Site\Edit $Site
-     * @return array|boolean
      */
     public static function getAdminSiteModulesFromSite(Edit|Projects\Site $Site): bool|array
     {
@@ -587,9 +564,6 @@ class Utils
 
     /**
      * is the object one of the site objects
-     *
-     * @param Site $Site
-     * @return boolean
      */
     public static function isSiteObject(QUI\Interfaces\Projects\Site $Site): bool
     {
@@ -613,6 +587,7 @@ class Utils
      * @param string $link - index.php?project=test&lang=de&id=1
      *
      * @return Projects\Site
+     *
      * @throws Exception
      */
     public static function getSiteByLink(string $link): Projects\Site
@@ -691,10 +666,6 @@ class Utils
     /**
      * Return a site by an url (relative url)
      *
-     * @param Project $Project
-     * @param $link
-     * @return Projects\Site
-     *
      * @throws Exception
      */
     public static function getSiteByUrl(Project $Project, $link): Projects\Site
@@ -724,6 +695,7 @@ class Utils
      * @param array $params - order / sort params
      *
      * @return array
+     *
      * @throws QUI\Database\Exception
      */
     public static function getSitesByInputList(

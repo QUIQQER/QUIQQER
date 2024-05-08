@@ -127,10 +127,6 @@ class Log
 
     /**
      * Return the log name by a log level
-     *
-     * @param integer $LogLevel - Log Level
-     *
-     * @return string
      */
     public static function levelToLogName(int $LogLevel): string
     {
@@ -220,11 +216,6 @@ class Log
         self::write($message, self::LEVEL_DEBUG, $context, $filename);
     }
 
-    /**
-     * @param string $message
-     * @param array $context
-     * @return void
-     */
     public static function addDeprecated(string $message, array $context = []): void
     {
         $trace = (new QUI\Exception())->getTraceAsString();

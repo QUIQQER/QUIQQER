@@ -61,11 +61,6 @@ class EventHandler
         </script>";
     }
 
-    /**
-     * @param QUI\Interfaces\Users\User $User
-     * @param string $newPass
-     * @param string $oldPass
-     */
     public static function onUserChangePassword(QUI\Interfaces\Users\User $User, string $newPass, string $oldPass): void
     {
         $User->setAttribute('quiqqer.set.new.password', 0);
@@ -73,10 +68,6 @@ class EventHandler
     }
 
     /**
-     * Event: OnPackageUpdate
-     *
-     * @param Package\Package $Package
-     *
      * @throws QUI\Exception
      */
     public static function onPackageUpdate(QUI\Package\Package $Package): void
@@ -117,8 +108,6 @@ class EventHandler
 
     /**
      * Set (default) package store URL in QUIQQER settings
-     *
-     * @return void
      *
      * @throws QUI\Exception
      */
@@ -201,10 +190,6 @@ class EventHandler
     /**
      * quiqqer/core: userAuthenticatorLoginStart
      *
-     * @param int|string $userId
-     * @param string $authenticator
-     * @return void
-     *
      * @throws QUI\Users\Exception
      */
     public static function onUserAuthenticatorLoginStart(int|string $userId, string $authenticator): void
@@ -214,9 +199,6 @@ class EventHandler
 
     /**
      * quiqqer/core: onUserLoginStart
-     *
-     * @param int|string $userId
-     * @return void
      *
      * @throws QUI\Users\Exception
      * @throws \Exception
@@ -254,9 +236,6 @@ class EventHandler
 
     /**
      * quiqqer/core: onUserLogin
-     *
-     * @param Users\User $User
-     * @return void
      */
     public static function onUserLogin(QUI\Users\User $User): void
     {

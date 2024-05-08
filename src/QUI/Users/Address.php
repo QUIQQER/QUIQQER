@@ -39,33 +39,13 @@ use function trim;
  */
 class Address extends QUI\QDOM
 {
-    /**
-     * Address-ID
-     *
-     * @var ?integer
-     */
     protected ?int $id = null;
 
-    /**
-     * Address UUID
-     *
-     * @var string|null
-     */
     protected ?string $uuid = null;
 
-    /**
-     * Custom address data
-     *
-     * @var array
-     */
     protected array $customData = [];
 
     /**
-     * constructor
-     *
-     * @param QUIUserInterface $User - User
-     * @param integer|string $id - Address id or uuid
-     *
      * @throws Exception
      */
     public function __construct(protected QUIUserInterface $User, int|string $id)
@@ -137,9 +117,6 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * Return the ID of the address
-     *
-     * @return integer
      * @deprecated
      */
     public function getId(): int
@@ -151,9 +128,6 @@ class Address extends QUI\QDOM
         return $this->id;
     }
 
-    /**
-     * @return string|null
-     */
     public function getUUID(): ?string
     {
         return $this->uuid;
@@ -162,7 +136,6 @@ class Address extends QUI\QDOM
     /**
      * Add a phone number
      *
-     * @param array $phone
      *
      * @example addPhone([
      *     'no'   => '555 29 29',
@@ -204,8 +177,6 @@ class Address extends QUI\QDOM
 
     /**
      * Return the complete phone list
-     *
-     * @return array
      */
     public function getPhoneList(): array
     {
@@ -222,10 +193,6 @@ class Address extends QUI\QDOM
         return [];
     }
 
-    /**
-     * @param string $name
-     * @return false|mixed|null
-     */
     public function getAttribute(string $name): mixed
     {
         if ($name === 'suffix') {
@@ -251,12 +218,6 @@ class Address extends QUI\QDOM
         return $this->getCustomDataEntry('address-suffix');
     }
 
-    /**
-     * Get custom data entry
-     *
-     * @param string $key
-     * @return mixed|null - Null if no entry set
-     */
     public function getCustomDataEntry(string $key): mixed
     {
         if (array_key_exists($key, $this->customData)) {
@@ -363,8 +324,6 @@ class Address extends QUI\QDOM
 
     /**
      * Return the first telephone number
-     *
-     * @return string
      */
     public function getPhone(): string
     {
@@ -387,8 +346,6 @@ class Address extends QUI\QDOM
 
     /**
      * Return the first telephone number
-     *
-     * @return string
      */
     public function getMobile(): string
     {
@@ -411,8 +368,6 @@ class Address extends QUI\QDOM
 
     /**
      * Return the first fax number
-     *
-     * @return string
      */
     public function getFax(): string
     {
@@ -462,11 +417,6 @@ class Address extends QUI\QDOM
         $this->setAttribute('mail', json_encode($list));
     }
 
-    /**
-     * Return the Email list
-     *
-     * @return array
-     */
     public function getMailList(): array
     {
         if (is_array($this->getAttribute('mail'))) {
@@ -516,9 +466,6 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * Return the address country
-     *
-     * @return QUI\Countries\Country
      * @throws Exception
      */
     public function getCountry(): QUI\Countries\Country
@@ -548,9 +495,6 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * Saves the address
-     *
-     * @param null|QUIUserInterface $PermissionUser
      * @throws QUI\Permissions\Exception
      */
     public function save(?QUIUserInterface $PermissionUser = null): void
@@ -633,30 +577,16 @@ class Address extends QUI\QDOM
         }
     }
 
-    /**
-     * @return QUIUserInterface
-     */
     public function getUser(): QUIUserInterface
     {
         return $this->User;
     }
 
-    /**
-     * Get all custom data entries
-     *
-     * @return array
-     */
     public function getCustomData(): array
     {
         return $this->customData;
     }
 
-    /**
-     * Set multiple custom data entries
-     *
-     * @param array $entries
-     * @return void
-     */
     public function setCustomData(array $entries): void
     {
         foreach ($entries as $k => $v) {
@@ -682,9 +612,6 @@ class Address extends QUI\QDOM
 
     /**
      * Alias for getDisplay
-     *
-     * @param array $options - options
-     * @return string
      */
     public function render(array $options = []): string
     {
@@ -733,9 +660,6 @@ class Address extends QUI\QDOM
         return $Engine->fetch(SYS_DIR . 'template/users/address/display.html');
     }
 
-    /**
-     * @return string
-     */
     public function getText(): string
     {
         $salutation = $this->getAttribute('salutation');
@@ -807,8 +731,6 @@ class Address extends QUI\QDOM
 
     /**
      * Return the main name of the address
-     *
-     * @return string
      */
     public function getName(): string
     {
@@ -844,11 +766,6 @@ class Address extends QUI\QDOM
         return trim($result);
     }
 
-    /**
-     * Return the address as json
-     *
-     * @return string
-     */
     public function toJSON(): string
     {
         $attributes = $this->getAttributes();
@@ -858,9 +775,6 @@ class Address extends QUI\QDOM
         return json_encode($attributes);
     }
 
-    /**
-     * @return array
-     */
     public function getAttributes(): array
     {
         $attributes = parent::getAttributes();
@@ -930,8 +844,6 @@ class Address extends QUI\QDOM
 
     /**
      * Add an address suffix to the address
-     *
-     * @param string $suffix
      */
     public function setAddressSuffix(string $suffix): void
     {
@@ -940,10 +852,6 @@ class Address extends QUI\QDOM
 
     /**
      * Set custom data entry
-     *
-     * @param string $key
-     * @param float|bool|integer|string $value
-     * @return void
      */
     public function setCustomDataEntry(string $key, float|bool|int|string $value): void
     {

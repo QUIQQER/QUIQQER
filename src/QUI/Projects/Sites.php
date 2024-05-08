@@ -33,9 +33,6 @@ class Sites
 {
     /**
      * JavaScript buttons, depending on the side of the user
-     *
-     * @param Edit $Site
-     * @return Bar
      */
     public static function getButtons(Site\Edit $Site): Bar
     {
@@ -178,10 +175,6 @@ class Sites
     /**
      * Get the tab of a site
      *
-     * @param string $tabname - Name of the Tab
-     * @param Site\Edit $Site
-     *
-     * @return Tab|bool
      * @throws Exception
      */
     public static function getTab(string $tabname, Edit $Site): bool|Tab
@@ -198,10 +191,6 @@ class Sites
 
     /**
      * Return the tabs of a site
-     *
-     * @param Edit $Site $Site
-     *
-     * @return Bar
      */
     public static function getTabs(QUI\Interfaces\Projects\Site $Site): Bar
     {
@@ -407,9 +396,6 @@ class Sites
     /**
      * Search sites
      *
-     * @param string $search
-     * @param array $params
-     *
      * $params['Project'] - \QUI\Projects\Project
      * $params['project'] - string - project name
      *
@@ -417,8 +403,6 @@ class Sites
      * $params['page'] - number of the page
      * $params['fields'] - searchable fields
      * $params['count'] - true/false result as a count?
-     *
-     * @return array|int
      *
      * @throws Exception
      */

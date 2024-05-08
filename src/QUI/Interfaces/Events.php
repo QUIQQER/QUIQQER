@@ -17,7 +17,6 @@ interface Events
 {
     /**
      * Return all registered events
-     * @return array
      */
     public function getList(): array;
 
@@ -33,8 +32,6 @@ interface Events
 
     /**
      * The same as addEvent, but accepts an array to add multiple events at once.
-     *
-     * @param array $events
      */
     public function addEvents(array $events);
 

@@ -67,118 +67,83 @@ class QUI
 
     /**
      * QUI Config, use \QUI::getConfig()
-     *
-     * @var Config|null
      */
     public static ?Config $Conf = null;
 
     /**
      * QUI getDB object, use \QUI::getDB()
-     *
-     * @var MyDB|null
      */
     public static ?MyDB $DataBase = null;
 
     /**
      * QUI getDataBase object, use \QUI::getDataBase();
-     *
-     * @var DB|null
      */
     public static ?DB $DataBase2 = null;
 
-    /**
-     * @var Connection|null
-     */
     protected static ?Connection $QueryBuilder = null;
 
     /**
      * QUI Error Handler, use \QUI::getErrorHandler();
-     *
-     * @var QUI\Exceptions\Handler|null
      */
     public static ?QUI\Exceptions\Handler $ErrorHandler = null;
 
     /**
      * QUI vhosts, use \QUI::vhosts();
-     *
-     * @var array|null
      */
     public static ?array $vhosts = null;
 
     /**
      * QUI Ajax
-     *
-     * @var Ajax|null
      */
     public static ?Ajax $Ajax = null;
 
     /**
      * QUI GroupManager, use \QUI::getGroups()
-     *
-     * @var GroupManager|null
      */
     public static ?GroupManager $Groups = null;
 
     /**
      * QUI Message Handler, use \QUI::getMessageHandler()
-     *
-     * @var ?Messages
      */
     public static ?Messages $MessageHandler = null;
 
     /**
      * QUI Locale Object, use \QUI::getLocale()
-     *
-     * @var QUI\Locale|null
      */
     public static ?QUI\Locale $Locale = null;
 
     /**
      * QUI Mail Manager
-     *
-     * @var ?MailManager
      */
     public static ?MailManager $MailManager = null;
 
     /**
      * QUI project manager, use \QUI::getPackageManager();
-     *
-     * @var ?PackageManager
      */
     public static ?PackageManager $PackageManager = null;
 
     /**
      * QUI project manager, use \QUI::getProjectManager();
-     *
-     * @var ?ProjectManager
      */
     public static ?ProjectManager $ProjectManager = null;
 
     /**
      * QUI project manager, use \QUI::getProjectManager();
-     *
-     * @var ?Request
      */
     public static ?Request $Request = null;
 
     /**
      * Global Response Object
-     *
-     * @var ?Response
      */
     public static ?Response $Response = null;
 
     /**
      * QUI Rewrite Object, use \QUI::getRewrite();
-     *
-     * @var ?Rewrite
      */
     public static ?Rewrite $Rewrite = null;
 
     /**
      * QUI Rights Object, use \QUI::getRights();
-     *
-     * @var ?PermissionManager
      */
     public static ?PermissionManager $Rights = null;
 
@@ -191,50 +156,36 @@ class QUI
 
     /**
      * QUI\Temp Object, use \QUI::getTemp();
-     *
-     * @var ?Temp
      */
     public static ?Temp $Temp = null;
 
     /**
      * QUI User Manager, use \QUI::getUsers();
-     *
-     * @var ?UserManager
      */
     public static ?UserManager $Users = null;
 
     /**
      * internal config objects, array list of configs
-     *
-     * @var array
      */
     public static array $Configs = [];
 
     /**
      * QUI global Events
-     *
-     * @var ?EventsManager
      */
     public static ?EventsManager $Events = null;
 
     /**
      * Country Manager
-     *
-     * @var ?CountriesManager
      */
     public static ?CountriesManager $Countries = null;
 
     /**
      * Template Manager
-     *
-     * @var ?Template
      */
     public static ?Template $Template = null;
 
     /**
      * QUI default Locale Object
-     *
-     * @var QUI\Locale|null
      */
     protected static ?QUI\Locale $SystemLocale = null;
 
@@ -472,10 +423,8 @@ class QUI
     /**
      * Get a QUIQQER main configuration entry
      *
-     * @param string $section
      * @param string|null $key (optional)
      *
-     * @return array|bool|string
      */
     public static function conf(string $section, string $key = null): bool|array|string
     {
@@ -495,9 +444,7 @@ class QUI
      * Returns a config object for a INI file
      * Starting from CMS_DIR
      *
-     * @param string $file
      *
-     * @return Config
      * @throws Exception
      */
     public static function getConfig(string $file): Config
@@ -534,8 +481,6 @@ class QUI
 
     /**
      * Returns the package manager
-     *
-     * @return PackageManager
      */
     public static function getPackageManager(): PackageManager
     {
@@ -548,8 +493,6 @@ class QUI
 
     /**
      * Returns the ErrorHandler
-     *
-     * @return QUI\Exceptions\Handler
      */
     public static function getErrorHandler(): QUI\Exceptions\Handler
     {
@@ -574,8 +517,6 @@ class QUI
 
     /**
      * Return the mail manager
-     *
-     * @return MailManager
      */
     public static function getMailManager(): MailManager
     {
@@ -588,8 +529,6 @@ class QUI
 
     /**
      * Returns the globals Events object
-     *
-     * @return EventsManager
      */
     public static function getEvents(): EventsManager
     {
@@ -610,9 +549,6 @@ class QUI
         QUI\Setup::all();
     }
 
-    /**
-     * @return array
-     */
     public static function backendGuiConfigs(): array
     {
         $config = [];
@@ -634,8 +570,6 @@ class QUI
 
     /**
      * Return the QUIQQER version
-     *
-     * @return string
      */
     public static function version(): string
     {
@@ -644,8 +578,6 @@ class QUI
 
     /**
      * Get registered vhosts
-     *
-     * @return array
      */
     public static function vhosts(): array
     {
@@ -665,8 +597,6 @@ class QUI
 
     /**
      * Return the global ajax object
-     *
-     * @return Ajax
      */
     public static function getAjax(): Ajax
     {
@@ -682,9 +612,7 @@ class QUI
     /**
      * Return the table name with the QUI Prefix
      *
-     * @param string $table
      *
-     * @return string
      */
     public static function getDBTableName(string $table): string
     {
@@ -694,11 +622,8 @@ class QUI
     /**
      * Return the table name with the QUI Prefix and table params
      *
-     * @param string $table
-     * @param Project $Project
      * @param boolean $lang - language in the table name? default = true
      *
-     * @return string
      */
     public static function getDBProjectTableName(
         string $table,
@@ -714,8 +639,6 @@ class QUI
 
     /**
      * Returns the Country Manager
-     *
-     * @return CountriesManager
      */
     public static function getCountries(): CountriesManager
     {
@@ -729,7 +652,6 @@ class QUI
     /**
      * Returns the database Object (old version)
      *
-     * @return MyDB
      * @deprecated
      * use getDataBase and PDO or direct getPDO
      */
@@ -765,7 +687,6 @@ class QUI
     /**
      * Returns the Database object
      *
-     * @return DB
      * @deprecated
      */
     public static function getDataBase(): DB
@@ -789,7 +710,6 @@ class QUI
      * @param boolean|string $lang - Project lang (optional)
      * @param boolean|string $template - Project template (optional)
      *
-     * @return Project
      * @throws QUI\Exception
      */
     public static function getProject(
@@ -819,8 +739,6 @@ class QUI
 
     /**
      * Returns the group manager
-     *
-     * @return GroupManager
      */
     public static function getGroups(): GroupManager
     {
@@ -833,8 +751,6 @@ class QUI
 
     /**
      * Returns the QUIQQER message handler object
-     *
-     * @return Messages
      */
     public static function getMessagesHandler(): Messages
     {
@@ -847,8 +763,6 @@ class QUI
 
     /**
      * Returns the main locale object
-     *
-     * @return QUI\Locale
      */
     public static function getLocale(): QUI\Locale
     {
@@ -884,8 +798,6 @@ class QUI
 
     /**
      * Returns all available languages
-     *
-     * @return array
      */
     public static function availableLanguages(): array
     {
@@ -900,8 +812,6 @@ class QUI
 
     /**
      * Return the QUIQQER default language locale
-     *
-     * @return QUI\Locale
      */
     public static function getSystemLocale(): QUI\Locale
     {
@@ -923,7 +833,6 @@ class QUI
      * Returns the wanted package
      *
      * @param string $package - name of the package eq: quiqqer/blog or quiqqer/core
-     * @return Package
      *
      * @throws QUI\Exception
      */
@@ -934,8 +843,6 @@ class QUI
 
     /**
      * Returns the project manager
-     *
-     * @return ProjectManager
      */
     public static function getProjectManager(): ProjectManager
     {
@@ -948,8 +855,6 @@ class QUI
 
     /**
      * returns the rewrite object
-     *
-     * @return Rewrite
      */
     public static function getRewrite(): Rewrite
     {
@@ -962,8 +867,6 @@ class QUI
 
     /**
      * Return the rights object
-     *
-     * @return PermissionManager
      */
     public static function getPermissionManager(): PermissionManager
     {
@@ -974,9 +877,6 @@ class QUI
         return self::$Rights;
     }
 
-    /**
-     * @return Response
-     */
     public static function getGlobalResponse(): Response
     {
         if (self::$Response === null) {
@@ -991,8 +891,6 @@ class QUI
 
     /**
      * Return the global QUI Session
-     *
-     * @return Session|QUI\System\Console\Session|null
      */
     public static function getSession(): Session|QUI\System\Console\Session|null
     {
@@ -1014,8 +912,6 @@ class QUI
 
     /**
      * Return the global request object
-     *
-     * @return Request
      */
     public static function getRequest(): Request
     {
@@ -1028,8 +924,6 @@ class QUI
 
     /**
      * Return the temp manager
-     *
-     * @return Temp
      */
     public static function getTemp(): Temp
     {
@@ -1042,8 +936,6 @@ class QUI
 
     /**
      * Return the Template Manager
-     *
-     * @return Template
      */
     public static function getTemplateManager(): Template
     {
@@ -1056,8 +948,6 @@ class QUI
 
     /**
      * Get current logged in user
-     *
-     * @return User
      */
     public static function getUserBySession(): User
     {
@@ -1066,8 +956,6 @@ class QUI
 
     /**
      * Return the user manager
-     *
-     * @return UserManager
      */
     public static function getUsers(): UserManager
     {
@@ -1080,8 +968,6 @@ class QUI
 
     /**
      * Runs QUIQQER in the backend?
-     *
-     * @return bool
      */
     public static function isBackend(): bool
     {
@@ -1090,8 +976,6 @@ class QUI
 
     /**
      * Runs QUIQQER in the frontend?
-     *
-     * @return bool
      */
     public static function isFrontend(): bool
     {
@@ -1108,8 +992,6 @@ class QUI
 
     /**
      * Runs QUIQQER in the system (console)?
-     *
-     * @return bool
      */
     public static function isSystem(): bool
     {
@@ -1117,11 +999,8 @@ class QUI
     }
 
     //region Doctrine
-
     /**
      * Returns the doctrine DBAL Connection Object
-     *
-     * @return Connection
      */
     public static function getDataBaseConnection(): Connection
     {
@@ -1140,8 +1019,6 @@ class QUI
 
     /**
      * Returns a doctrine query builder
-     *
-     * @return QueryBuilder
      */
     public static function getQueryBuilder(): QueryBuilder
     {
@@ -1151,7 +1028,6 @@ class QUI
     /**
      * Returns a doctrine schema manager
      *
-     * @return AbstractSchemaManager
      * @throws \Doctrine\DBAL\Exception
      */
     public static function getSchemaManager(): AbstractSchemaManager
@@ -1160,24 +1036,18 @@ class QUI
     }
 
     //endregion
-
     /**
      * Check if runtime cache is enabled globally (default: true).
      *
      * All modules that use runtime caches for instances or data that could possibly
      * cause a memory overflow should recognize this flag and only use their
      * runtime cache if this method returns true.
-     *
-     * @return bool
      */
     public static function isRuntimeCacheEnabled(): bool
     {
         return self::$runtimeCacheEnabled;
     }
 
-    /**
-     * @return void
-     */
     public static function disableRuntimeCache(): void
     {
         self::$runtimeCacheEnabled = false;

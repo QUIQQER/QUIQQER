@@ -53,147 +53,104 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 {
     /**
      * $Events - manage and fires events
-     *
-     * @var QUI\Events\Event
      */
     public QUI\Events\Event $Events;
 
     /**
      * Edit site
-     *
-     * @var ?Edit
      */
     protected ?Site\Edit $Edit = null;
 
-    /**
-     * @var Project
-     */
     protected Project $Project;
 
     /**
      * The site id
-     *
-     * @var integer
      */
     protected int $id;
 
     /**
      * parents array
-     *
-     * @var array
      */
     protected array $parents;
 
     /**
      * the main parent id
-     *
-     * @var integer|null
      */
     protected ?int $parent_id = null;
 
     /**
      * Parent ids
-     *
-     * @var array|null
      */
     protected ?array $parents_id = null;
 
     /**
      * the children list
-     *
-     * @var array
      */
     protected array $childs_container;
 
     /**
      * children
-     *
-     * @var array
      */
     protected array $children = [];
 
     /**
      * the site url
-     *
-     * @var string|bool
      */
     protected string|bool $url = false;
 
     /**
      * the ids of the pages in other languages
-     *
-     * @var array
      */
     protected array $lang_ids = [];
 
     /**
      * the database table
-     *
-     * @var string
      */
     protected string $TABLE = '';
 
     /**
      * the database relation table
-     *
-     * @var string
      */
     protected string $RELTABLE = '';
 
     /**
      * the database relation language table
-     *
-     * @var string
      */
     protected string $RELLANGTABLE = '';
 
     /**
      * Is the site loaded flag
-     *
-     * @var boolean
      */
     protected bool $loadFlag = false;
 
     /**
      * is the site a link
-     *
-     * @var boolean|int
      */
     protected int|bool $LINKED_PARENT = false;
 
     /**
      * tmp data from tables from the plugins
-     *
-     * @var array
      */
     protected array $database_data = [];
 
     /**
      * Extend class string
-     *
-     * @var string
      */
     protected string $extend = '';
 
     /**
      * Type string
-     *
-     * @var string|false
      */
     protected string|false $type = false;
 
     /**
      * Package string
-     *
-     * @var string|false
      */
     protected string|false $package = false;
 
     /**
      * Constructor
      *
-     * @param QUI\Projects\Project $Project
-     * @param integer $id
      *
      * @throws QUI\Exception
      */
@@ -299,8 +256,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * Return the cache name of the site
-     *
-     * @return string
      */
     protected function getCacheName(): string
     {
@@ -315,12 +270,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         return self::getSiteCachePath($this->getProject()->getName(), $this->getProject()->getLang(), $this->getId());
     }
 
-    /**
-     * @param string $projectName
-     * @param string $projectLang
-     * @param int|string $id
-     * @return string
-     */
     public static function getSiteCachePath(string $projectName, string $projectLang, int|string $id): string
     {
         $projectPath = Project::getProjectLanguageCachePath(
@@ -333,8 +282,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * Return the project object of the site
-     *
-     * @return QUI\Projects\Project
      */
     public function getProject(): Project
     {
@@ -530,8 +477,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * serialize
-     *
-     * @return string
      */
     public function encode(): string
     {
@@ -546,8 +491,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * Returns the Edit Site object from this Site
-     *
-     * @return Edit|null
      *
      * @throws QUI\Exception
      */
@@ -570,11 +513,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * Prüft ob es die Seite auch in einer anderen Sprache gibt
-     *
-     * @param string $lang
-     * @param boolean $check_only_active - check only active pages
-     *
-     * @return boolean
      *
      * @throws QUI\Exception
      */
@@ -621,8 +559,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * Gibt die IDs von Sprachverknüpfungen zurück
-     *
-     * @return array
      */
     public function getLangIds(): array
     {
@@ -657,7 +593,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Returns the next site
      *
-     * @return QUI\Projects\Site
      * @throws QUI\Exception
      */
     public function nextSibling(): Site
@@ -678,10 +613,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     /**
-     * Gibt das Parent Objekt zurück
-     *
-     * @return Site|bool
-     *
      * @throws QUI\Exception
      */
     public function getParent(): bool|Site
@@ -694,10 +625,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     /**
-     * Return the Parent id from the site object
-     *
-     * @return int
-     *
      * @throws Exception
      * @throws QUI\Exception
      */
@@ -750,9 +677,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Return the next x sites
      *
-     * @param integer $no
-     * @return array
-     *
      * @throws QUI\Exception
      */
     public function nextSiblings(int $no): array
@@ -789,7 +713,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Returns the previous site
      *
-     * @return QUI\Projects\Site
      * @throws QUI\Exception
      */
     public function previousSibling(): Site
@@ -811,9 +734,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * Returns the previous x sites
-     *
-     * @param integer $no
-     * @return array
      *
      * @throws QUI\Exception
      */
@@ -849,9 +769,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * Returns the first child of the site
-     *
-     * @param array $params
-     * @return QUI\Projects\Site|false
      *
      * @throws QUI\Exception
      */
@@ -929,11 +846,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     /**
-     * Return a children by id
-     *
-     * @param integer $id
-     *
-     * @return QUI\Projects\Site
      * @throws QUI\Exception
      */
     public function getChild(int $id): Site
@@ -1181,11 +1093,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     /**
-     * Return the last child
-     *
-     * @param array $params
-     * @return bool|Site|Site\Edit
-     *
      * @throws QUI\Exception
      */
     public function lastChild(array $params = []): bool|Edit|Site
@@ -1215,10 +1122,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Gibt die Kinder zurück achtet aber auf "Nicht in Navigation anzeigen" und Rechte
      *
-     * @param array $params
-     *
-     * @return array|int
-     *
      * @throws QUI\Exception
      */
     public function getNavigation(array $params = []): array|int
@@ -1247,9 +1150,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Gibt ein Kind zurück welches den Namen hat
      *
-     * @param string $name
-     *
-     * @return integer
      * @throws QUI\Exception
      */
     public function getChildIdByName(string $name): int
@@ -1427,8 +1327,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @param array $params - db parameter
      *
-     * @return array
-     *
      * @throws QUI\Exception
      */
     public function getChildrenIdsRecursive(array $params = []): array
@@ -1463,8 +1361,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * Prüft ob es eine Verknüpfung ist
-     *
-     * @return boolean|int
      */
     public function isLinked(): bool|int
     {
@@ -1482,8 +1378,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * ->Parent
      * ->Parent
      * ->Parent
-     *
-     * @return array
      *
      * @throws QUI\Exception
      */
@@ -1523,11 +1417,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * Gibt die URL der Seite zurück
-     *
-     * @param array $params
-     * @param array $getParams
-     *
-     * @return string
      *
      * @throws QUI\Exception
      */
@@ -1734,10 +1623,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Returns a "speaking" URL with host
      *
-     * @param array $pathParams
-     * @param array $getParams
-     * @return string
-     *
      * @throws QUI\Exception
      */
     public function getUrlRewrittenWithHost(array $pathParams = [], array $getParams = []): string
@@ -1758,8 +1643,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * Return the Parent ID List
-     *
-     * @return array
      *
      * @throws QUI\Exception
      */
@@ -1790,12 +1673,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     //region cache
-
     /**
      * Gibt alle rekursive Parents als Objekte zurück
      * Site->Parent->ParentParent->ParentParentParent
      *
-     * @return array
      *
      * @throws QUI\Exception
      */
@@ -1914,12 +1795,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         );
     }
 
-    /**
-     * @param string $projectName
-     * @param string $projectLang
-     * @param string|int $id
-     * @return string
-     */
     public static function getLinkCachePath(string $projectName, string $projectLang, $id): string
     {
         $projectPath = Project::getProjectLanguageCachePath(
@@ -1932,8 +1807,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * Canonical URL - Um doppelte Inhalt zu vermeiden
-     *
-     * @return string
      *
      * @throws QUI\Exception
      */
@@ -1955,16 +1828,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     //endregion
-
     //region permissions
-
     /**
      * Shortcut for QUI\Permissions\Permission::hasSitePermission
-     *
-     * @param string $permission - name of the permission
-     * @param User|null $User - optional
-     *
-     * @return boolean|integer
      */
     public function hasPermission(string $permission, QUI\Interfaces\Users\User $User = null): bool|int
     {
@@ -1977,10 +1843,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * Überprüft ob es den Namen bei den Kindern schon gibt
-     *
-     * @param string $name
-     *
-     * @return boolean
      *
      * @throws QUI\Exception
      */

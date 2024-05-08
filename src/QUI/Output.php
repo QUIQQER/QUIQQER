@@ -54,40 +54,26 @@ class Output extends Singleton
 {
     /**
      * Current output project
-     *
-     * @var null|Project
      */
     protected ?Project $Project = null;
 
     /**
      * internal lifetime image cache
-     *
-     * @var array
      */
     protected array $imageCache = [];
 
-    /**
-     * @var array
-     */
     protected array $imageUrlCache = [];
 
     /**
      * internal lifetime link cache
-     *
-     * @var array
      */
     protected array $linkCache = [];
 
     /**
      * internal lifetime link cache for rewritten urls
-     *
-     * @var array
      */
     protected array $rewrittenCache = [];
 
-    /**
-     * @var array
-     */
     protected array $settings = [
         'use-system-image-paths' => false,
         'remove-deleted-links' => true,
@@ -363,18 +349,12 @@ class Output extends Singleton
         return $result;
     }
 
-    /**
-     * @param Projects\Project $Project
-     */
     public function setProject(Project $Project)
     {
         $this->Project = $Project;
     }
 
     /**
-     * Set a setting
-     *
-     * @param string $setting
      * @param string|bool|float|integer $value
      */
     public function setSetting(string $setting, $value)
@@ -385,8 +365,6 @@ class Output extends Singleton
     /**
      * Removes an internal rewritten url from the cache, if needed
      * use this with caution
-     *
-     * @param Interfaces\Projects\Site $Site
      */
     public function removeRewrittenUrlCache(QUI\Interfaces\Projects\Site $Site)
     {
@@ -401,10 +379,6 @@ class Output extends Singleton
         }
     }
 
-    /**
-     * @param array $output
-     * @return string
-     */
     protected function dataLinks(array $output): string
     {
         if ($output[2] !== 'index.php') {
@@ -416,9 +390,6 @@ class Output extends Singleton
 
     /**
      * parse href links
-     *
-     * @param array $output
-     * @return string
      */
     protected function links(array $output): string
     {
@@ -483,11 +454,6 @@ class Output extends Singleton
 
     /**
      * Return a rewritten url from a site
-     *
-     * @param array $params
-     * @param array $getParams
-     *
-     * @return string
      *
      * @throws Exception
      */
@@ -663,11 +629,6 @@ class Output extends Singleton
 
     /**
      * Erweitert die URL um Params
-     *
-     * @param string $url
-     * @param array $params
-     *
-     * @return string
      */
     protected function extendUrlWithParams(string $url, array $params = []): string
     {
@@ -736,9 +697,6 @@ class Output extends Singleton
     /**
      * search empty a href links
      * - if link is empty, return = inner html of the link
-     *
-     * @param array $output
-     * @return string
      */
     protected function cleanEmptyLinks(array $output): string
     {
@@ -751,9 +709,6 @@ class Output extends Singleton
 
     /**
      * parse file links
-     *
-     * @param array $output
-     * @return string
      */
     protected function files(array $output): string
     {
@@ -768,9 +723,6 @@ class Output extends Singleton
 
     /**
      * parse image links
-     *
-     * @param array $output
-     * @return string
      */
     protected function images(array $output): string
     {
@@ -947,9 +899,6 @@ class Output extends Singleton
 
     /**
      * Parse `<link` html nodes
-     *
-     * @param array $output
-     * @return string
      */
     protected function cssLinkHref(array $output): string
     {
@@ -997,10 +946,6 @@ class Output extends Singleton
         return $result;
     }
 
-    /**
-     * @param $output
-     * @return string
-     */
     protected function scripts($output): string
     {
         $html = $output[0];
@@ -1050,9 +995,6 @@ class Output extends Singleton
 
     /**
      * Set a host to all urls
-     *
-     * @param $output
-     * @return string
      */
     protected function absoluteUrls($output): string
     {

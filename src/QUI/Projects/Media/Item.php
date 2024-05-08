@@ -54,55 +54,33 @@ abstract class Item extends QUI\QDOM
 {
     /**
      * internal image effect parameter
-     *
-     * @var bool|array
      */
     protected array|bool $effects = false;
 
     /**
      * internal media object
-     *
-     * @var Media|null
      */
     protected ?Media $Media = null;
 
     /**
      * internal parent id (use ->getParentId())
-     *
-     * @var int|bool
      */
     protected int|bool $parent_id = false;
 
     /**
      * Path to the real file
-     *
-     * @var string
      */
     protected string $file;
 
-    /**
-     * @var array|null
-     */
     protected ?array $pathHistory = null;
 
-    /**
-     * @var array
-     */
     protected array $title = [];
 
-    /**
-     * @var array
-     */
     protected array $description = [];
 
-    /**
-     * @var array
-     */
     protected array $alt = [];
 
     /**
-     * constructor
-     *
      * @param array $params - item attributes
      * @param Media $Media - Media of the file
      */
@@ -152,11 +130,8 @@ abstract class Item extends QUI\QDOM
     }
 
     //region General getter and is methods
-
     /**
      * Return the path of the file, without host, url dir or cms dir
-     *
-     * @return string
      */
     public function getPath(): string
     {
@@ -166,9 +141,6 @@ abstract class Item extends QUI\QDOM
     /**
      * overwritten get attribute
      * -> this method considers multilingual attributes
-     *
-     * @param string $name
-     * @return mixed
      */
     public function getAttribute(string $name): mixed
     {
@@ -190,9 +162,6 @@ abstract class Item extends QUI\QDOM
     /**
      * overwritten set attribute
      * -> this method considers multilingual attributes
-     *
-     * @param string $name
-     * @param mixed $val
      */
     public function setAttribute(string $name, mixed $val): void
     {
@@ -245,9 +214,6 @@ abstract class Item extends QUI\QDOM
     /**
      * Set multilingual attributes -> array of attributes [de => text, en => text]
      * - util method
-     *
-     * @param string $type
-     * @param array $val
      */
     protected function setMultilingualArray(string $type, array $val): void
     {
@@ -278,8 +244,6 @@ abstract class Item extends QUI\QDOM
 
     /**
      * Returns the id of the item
-     *
-     * @return integer
      */
     public function getId(): int
     {
@@ -288,10 +252,6 @@ abstract class Item extends QUI\QDOM
 
     /**
      * Returns the url from the file
-     *
-     * @param boolean $rewritten - false = image.php, true = rewrote URL
-     *
-     * @return string
      */
     public function getUrl(bool $rewritten = false): string
     {
@@ -328,8 +288,6 @@ abstract class Item extends QUI\QDOM
 
     /**
      * Return the Media of the item
-     *
-     * @return Media
      */
     public function getMedia(): Media
     {
@@ -339,8 +297,6 @@ abstract class Item extends QUI\QDOM
     /**
      * overwritten get attributes
      * -> this method considers multilingual attributes
-     *
-     * @return array
      */
     public function getAttributes(): array
     {
@@ -445,9 +401,6 @@ abstract class Item extends QUI\QDOM
     /**
      * Return the short / description
      * alias for getDescription()
-     *
-     * @param null|QUI\Locale $Locale
-     * @return string
      */
     public function getShort(QUI\Locale $Locale = null): string
     {
@@ -456,9 +409,6 @@ abstract class Item extends QUI\QDOM
 
     /**
      * Return the short / description
-     *
-     * @param null|QUI\Locale $Locale
-     * @return mixed
      */
     public function getDescription(QUI\Locale $Locale = null): mixed
     {
@@ -504,7 +454,6 @@ abstract class Item extends QUI\QDOM
      * Return the alt text
      *
      * @param null|QUI\Locale $Locale
-     * @return string
      */
     public function getAlt(QUI\Locale $Locale = null): string
     {
@@ -624,7 +573,6 @@ abstract class Item extends QUI\QDOM
     /**
      * Return the Parent Media Item Object
      *
-     * @return Folder
      * @throws Exception
      */
     public function getParent(): Folder
@@ -634,8 +582,6 @@ abstract class Item extends QUI\QDOM
 
     /**
      * Return the parent id
-     *
-     * @return int
      */
     public function getParentId(): int
     {
@@ -804,8 +750,6 @@ abstract class Item extends QUI\QDOM
 
     /**
      * Returns if the file is deleted or not
-     *
-     * @return boolean
      */
     public function isDeleted(): bool
     {
@@ -873,8 +817,6 @@ abstract class Item extends QUI\QDOM
 
     /**
      * Returns if the file is active or not
-     *
-     * @return boolean
      */
     public function isActive(): bool
     {
@@ -1253,12 +1195,7 @@ abstract class Item extends QUI\QDOM
     }
 
     // endregion
-
     // region Path and URL Methods
-
-    /**
-     * @param string $path
-     */
     public function addToPathHistory(string $path): void
     {
         $this->getPathHistory();
@@ -1266,9 +1203,6 @@ abstract class Item extends QUI\QDOM
         $this->pathHistory[] = $path;
     }
 
-    /**
-     * @return array|null
-     */
     public function getPathHistory(): ?array
     {
         if ($this->pathHistory !== null) {
@@ -1294,8 +1228,6 @@ abstract class Item extends QUI\QDOM
 
     /**
      * Return the effects of the item
-     *
-     * @return bool|array
      */
     public function getEffects(): bool|array
     {
@@ -1320,8 +1252,6 @@ abstract class Item extends QUI\QDOM
 
     /**
      * Set complete effects
-     *
-     * @param array $effects
      */
     public function setEffects(array $effects = []): void
     {
@@ -1329,13 +1259,7 @@ abstract class Item extends QUI\QDOM
     }
 
     // endregion
-
     // region Effect methods
-
-    /**
-     * @param array|string $value
-     * @return string
-     */
     protected function saveMultilingualField(array|string $value): string
     {
         if (is_array($value)) {
@@ -1364,8 +1288,6 @@ abstract class Item extends QUI\QDOM
 
     /**
      * Is the media item hidden?
-     *
-     * @return bool
      */
     public function isHidden(): bool
     {
@@ -1387,13 +1309,10 @@ abstract class Item extends QUI\QDOM
     }
 
     //endregion
-
     //region Hidden
-
     /**
      * Return all Parents
      *
-     * @return array
      *
      * @throws Exception
      */
@@ -1411,8 +1330,6 @@ abstract class Item extends QUI\QDOM
 
     /**
      * Return all parent ids
-     *
-     * @return array
      */
     public function getParentIds(): array
     {
@@ -1482,8 +1399,6 @@ abstract class Item extends QUI\QDOM
 
     /**
      * Are view permissions set for this item?
-     *
-     * @return bool
      */
     public function hasViewPermissionSet(): bool
     {
@@ -1492,9 +1407,6 @@ abstract class Item extends QUI\QDOM
 
     /**
      * Are permissions set for this item?
-     *
-     * @param $permission
-     * @return bool
      */
     public function hasPermissionsSet($permission): bool
     {
@@ -1510,11 +1422,6 @@ abstract class Item extends QUI\QDOM
 
     /**
      * Shortcut for QUI\Permissions\Permission::hasSitePermission
-     *
-     * @param string $permission - name of the permission
-     * @param QUI\Interfaces\Users\User |null $User - optional
-     *
-     * @return boolean
      */
     public function hasPermission(string $permission, QUI\Interfaces\Users\User $User = null): bool
     {
@@ -1557,10 +1464,6 @@ abstract class Item extends QUI\QDOM
     /**
      * add a group to the permission
      *
-     * @param Group $Group
-     * @param string $permission
-     * @param null|User $EditUser
-     *
      * @throws Exception
      */
     public function addGroupToPermission(
@@ -1596,10 +1499,6 @@ abstract class Item extends QUI\QDOM
 
     /**
      * Remove a group from the permission
-     *
-     * @param Group $Group
-     * @param string $permission - name of the permission
-     * @param null|User $EditUser
      *
      * @throws Exception
      */

@@ -28,8 +28,6 @@ class Encryption
     /**
      * Decrypts data (Entschlüsselt Daten)
      *
-     * @param string|null $data
-     * @return string
      * @throws QUI\Exception
      */
     public static function decrypt(string|null $data): string
@@ -76,9 +74,6 @@ class Encryption
 
     /**
      * Encrypts data (Verschlüsselt Daten)
-     *
-     * @param string|null $data
-     * @return string
      */
     public static function encrypt(string|null $data): string
     {

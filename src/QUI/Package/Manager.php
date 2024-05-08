@@ -130,15 +130,11 @@ class Manager extends QUI\QDOM
 
     /**
      * internal event manager
-     *
-     * @var QUI\Events\Manager
      */
     public QUI\Events\Manager $Events;
 
     /**
      * internal event manager
-     *
-     * @var QUI\Composer\Composer|null
      */
     public ?QUI\Composer\Composer $Composer;
 
@@ -152,88 +148,61 @@ class Manager extends QUI\QDOM
     /**
      * VAR Directory for composer
      * eq: here are the cache and the quiqqer composer.json file
-     *
-     * @var string
      */
     protected string $varDir;
 
     /**
      * Path to the composer.json file
-     *
-     * @var string
      */
     protected string $composer_json;
 
     /**
      * Path to the composer.lock file
-     *
-     * @var string
      */
     protected string $composer_lock;
 
     /**
      * Package list - installed packages
-     *
-     * @var array
      */
     protected array $list = [];
 
     /**
      * Can composer execute via bash? shell?
-     *
-     * @var boolean
      */
     protected bool $exec = false;
 
     /**
      * temporary require packages
-     *
-     * @var array
      */
     protected array $require = [];
 
     /**
      * QUIQQER Version ->getVersion()
-     *
-     * @var string|null
      */
     protected ?string $version = null;
 
     /**
      * QUIQQER Version ->getHash()
-     *
-     * @var string|null
      */
     protected ?string $hash = null;
 
     /**
      * List of packages objects
-     *
-     * @var array
      */
     protected array $packages = [];
 
     /**
      * List of installed packages flags
-     *
-     * @var array
      */
     protected array $installed = [];
 
     /**
      * active servers - use as temp for local repo using
-     *
-     * @var array
      */
     protected array $activeServers = [];
 
     protected ?array $installedPackages = null;
 
-    /**
-     * constructor
-     *
-     * @param array $attributes
-     */
     public function __construct(array $attributes = [])
     {
         // defaults
@@ -254,8 +223,6 @@ class Manager extends QUI\QDOM
 
     /**
      * Return the available QUIQQER package types
-     *
-     * @return array
      */
     public static function getPackageTypes(): array
     {
@@ -270,10 +237,6 @@ class Manager extends QUI\QDOM
     }
 
     /**
-     * Return the last update date
-     *
-     * @return integer
-     *
      * @throws QUI\Exception
      */
     public function getLastUpdateCheckDate(): int
@@ -291,8 +254,6 @@ class Manager extends QUI\QDOM
     /**
      * Returns the update config object
      *
-     * @return QUI\Config
-     *
      * @throws QUI\Exception
      */
     protected function getUpdateConf(): QUI\Config
@@ -305,11 +266,6 @@ class Manager extends QUI\QDOM
         return new QUI\Config(CMS_DIR . 'etc/last_update.ini.php');
     }
 
-    /**
-     * Return the last update date
-     *
-     * @return integer
-     */
     public function getLastUpdateDate(): int
     {
         try {
@@ -320,11 +276,6 @@ class Manager extends QUI\QDOM
         }
     }
 
-    /**
-     * Return the version from the composer json
-     *
-     * @return string
-     */
     public function getVersion(): string
     {
         if ($this->version) {
@@ -347,9 +298,6 @@ class Manager extends QUI\QDOM
         return $this->version;
     }
 
-    /**
-     * @return string
-     */
     public function getHash(): string
     {
         if ($this->hash) {
@@ -378,10 +326,6 @@ class Manager extends QUI\QDOM
 
     /**
      * Return the lock data from the package
-     *
-     * @param Package $Package
-     *
-     * @return array
      */
     public function getPackageLock(Package $Package): array
     {
@@ -796,11 +740,6 @@ class Manager extends QUI\QDOM
         );
     }
 
-    /**
-     * Return the server list
-     *
-     * @return array
-     */
     public function getServerList(): array
     {
         try {
@@ -839,8 +778,6 @@ class Manager extends QUI\QDOM
 
     /**
      * Get extra client data for composer license server header
-     *
-     * @return array
      */
     protected function getLicenseClientData(): array
     {
@@ -855,8 +792,6 @@ class Manager extends QUI\QDOM
     /**
      * internal get list method
      * return all installed packages and create the internal package list cache
-     *
-     * @return array
      */
     protected function getList(): array
     {
@@ -936,6 +871,7 @@ class Manager extends QUI\QDOM
      * @param string $package - name of the package
      *
      * @return QUI\Package\Package
+     *
      * @throws QUI\Exception
      */
     public function getInstalledPackage(string $package): Package
@@ -992,11 +928,9 @@ class Manager extends QUI\QDOM
     /**
      * Package Methods
      */
-
     /**
      * Return the internal composer object
      *
-     * @return Composer
      * @throws QUI\Composer\Exception
      */
     public function getComposer(): QUI\Composer\Composer
@@ -1017,8 +951,6 @@ class Manager extends QUI\QDOM
      * Returns how many packages are installed.
      *
      * This is better than counting the result of getInstalled(), since this doesn't instantiate all packages as objects.
-     *
-     * @return int
      */
     public function countInstalledPackages(): int
     {
@@ -1027,9 +959,6 @@ class Manager extends QUI\QDOM
 
     /**
      * Return the installed packages, but filtered
-     *
-     * @param array $params
-     * @return array
      */
     public function searchInstalledPackages(array $params = []): array
     {
@@ -1062,8 +991,6 @@ class Manager extends QUI\QDOM
 
     /**
      * Return all packages with the current versions
-     *
-     * @return array
      */
     public function getInstalledVersions(): array
     {
@@ -1079,8 +1006,6 @@ class Manager extends QUI\QDOM
 
     /**
      * Return the installed packages
-     *
-     * @return array
      */
     public function getInstalled(): array
     {
@@ -1115,8 +1040,6 @@ class Manager extends QUI\QDOM
      * When using the force parameter expect timeouts since the calculation could take a lot of time.
      *
      * @param boolean $force - Force a calculation of the package folder size. Values aren't returned from cache. Expect timeouts.
-     *
-     * @return int|null
      */
     public function getPackageFolderSize(bool $force = false): ?int
     {
@@ -1138,8 +1061,6 @@ class Manager extends QUI\QDOM
      * This process may take a lot of time -> Expect timeouts!
      *
      * @param boolean $doNotCache - Don't store the result in cache. Off by default.
-     *
-     * @return int
      */
     protected function calculatePackageFolderSize(bool $doNotCache = false): int
     {
@@ -1162,8 +1083,6 @@ class Manager extends QUI\QDOM
     /**
      * Returns the timestamp when the package folder size was stored in cache.
      * Returns null if there is no data in the cache.
-     *
-     * @return int|null
      */
     public function getPackageFolderSizeTimestamp(): ?int
     {
@@ -1199,11 +1118,6 @@ class Manager extends QUI\QDOM
      * This will check if the Lock server is enabled and available.
      * The package will be required or added to the lockfile and installed.
      *
-     * @param $packages
-     * @param $version
-     *
-     * @return array
-     *
      * @throws PackageInstallException|QUI\Composer\Exception
      */
     protected function composerRequireOrInstall($packages, $version): array
@@ -1231,7 +1145,6 @@ class Manager extends QUI\QDOM
     /**
      * Check if package install requirements are met
      *
-     * @return void
      * @throws PackageInstallException|QUI\Composer\Exception
      */
     protected function checkComposerInstallRequirements(): void
@@ -1249,8 +1162,6 @@ class Manager extends QUI\QDOM
     /**
      * Checks if a VCS update server is configured and active.
      * Returns true if at least one VCS server is active and configured. Returns false otherwise.
-     *
-     * @return bool
      */
     protected function isVCSServerEnabled(): bool
     {
@@ -1270,10 +1181,6 @@ class Manager extends QUI\QDOM
      *
      * Please use this method to check the installation status and not ->getInstalledPackage()
      * This method use an internal caching
-     *
-     * @param string $packageName
-     *
-     * @return bool
      */
     public function isInstalled(string $packageName): bool
     {
@@ -1461,9 +1368,6 @@ class Manager extends QUI\QDOM
      * Return the params of an installed package
      * If you want the Package Object, you should use getInstalledPackage
      *
-     * @param string $package
-     *
-     * @return array
      * @throws Exception
      */
     public function getPackage(string $package): array
@@ -1545,7 +1449,6 @@ class Manager extends QUI\QDOM
      *
      * @param string $package - Name of the package eq: quiqqer/core
      *
-     * @return array
      * @throws Exception
      */
     public function show(string $package): array
@@ -1606,10 +1509,6 @@ class Manager extends QUI\QDOM
     /**
      * Search a string in the repositories
      * Returns only not installed packages
-     *
-     * @param string $search - search string
-     *
-     * @return array
      */
     public function searchNewPackages(string $search): array
     {
@@ -1631,10 +1530,6 @@ class Manager extends QUI\QDOM
 
     /**
      * Search a string in the repositories
-     *
-     * @param string $search - search string
-     *
-     * @return array
      */
     public function searchPackages(string $search): array
     {
@@ -1754,8 +1649,6 @@ class Manager extends QUI\QDOM
 
     /**
      * Remove a Server completely from the update-server list
-     *
-     * @param array|string $server
      *
      * @throws QUI\Exception
      * @throws Exception
@@ -1883,7 +1776,6 @@ class Manager extends QUI\QDOM
      *   'oldVersion' => "dev-master abc1234"
      *  );
      *
-     * @return array
      * @throws QUI\Composer\Exception
      * @throws Exception
      */
@@ -2029,7 +1921,6 @@ class Manager extends QUI\QDOM
     /**
      * XML helper
      */
-
     /**
      * Execute a composer update for $package
      *
@@ -2099,7 +1990,6 @@ class Manager extends QUI\QDOM
     /**
      * Return all packages which includes a site.xml
      *
-     * @return array
      * @todo move to an API XML Handler
      */
     public function getPackageSiteXmlList(): array
@@ -2138,7 +2028,6 @@ class Manager extends QUI\QDOM
     /**
      * Return all packages which includes a media.xml
      *
-     * @return array
      * @todo move to an API XML Handler
      */
     public function getPackageMediaXmlList(): array
@@ -2177,7 +2066,6 @@ class Manager extends QUI\QDOM
     /**
      * Return all packages which includes a site.xml
      *
-     * @return array
      * @todo move to an API XML Handler
      */
     public function getPackageDatabaseXmlList(): array
@@ -2236,11 +2124,6 @@ class Manager extends QUI\QDOM
         return $result;
     }
 
-    /**
-     * Returns all site types that are available
-     *
-     * @return array
-     */
     public function getAvailableSiteTypes(): array
     {
         $types = [];
@@ -2321,9 +2204,6 @@ class Manager extends QUI\QDOM
     /**
      * Return the data for a type from its site.xml
      * https://dev.quiqqer.com/quiqqer/core/wikis/Site-Xml
-     *
-     * @param string $type
-     * @return boolean|array
      */
     protected function getSiteXMLDataByType(string $type): bool|array
     {
@@ -2385,12 +2265,8 @@ class Manager extends QUI\QDOM
     }
 
     //region site types
-
     /**
      * Return the type icon
-     *
-     * @param string $type
-     * @return string
      */
     public function getIconBySiteType(string $type): string
     {
@@ -2527,7 +2403,6 @@ class Manager extends QUI\QDOM
     /**
      * Return the composer array
      *
-     * @return array
      * @throws Exception
      */
     protected function getComposerJSON(): array

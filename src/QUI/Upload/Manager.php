@@ -52,7 +52,6 @@ class Manager
     /**
      * Initialized the upload
      *
-     * @return bool|string
      * @throws Exception
      */
     public function init(): bool|string
@@ -123,7 +122,6 @@ class Manager
      * Upload the file data,
      * read the PUT data and write it to the filesystem or read the $_FILES
      *
-     * @return bool|string
      * @throws Exception
      * @throws QUI\Permissions\Exception
      */
@@ -357,9 +355,6 @@ class Manager
     /**
      * Return the Path to the User upload directory
      *
-     * @param QUI\Interfaces\Users\User|null $User |boolean $User - optional, standard is the session user
-     * @return string
-     *
      * @throws QUI\Permissions\Exception
      */
     protected function getUserUploadDir(QUI\Interfaces\Users\User $User = null): string
@@ -424,12 +419,6 @@ class Manager
         return VAR_DIR . 'uploads/';
     }
 
-    /**
-     * @param string $values
-     * @param string $str
-     *
-     * @return bool
-     */
     protected function checkFnMatch(string $values, string $str): bool
     {
         if (empty($values)) {
@@ -549,9 +538,6 @@ class Manager
     /**
      * Check if some errors occurred on the upload entry
      *
-     * @param integer $error
-     *
-     * @return bool
      * @throws Exception
      */
     protected function checkUpload(int $error): bool
@@ -593,10 +579,6 @@ class Manager
     /**
      * Extract the Archive
      *
-     * @param string $filename
-     *
-     * @return QDOM
-     *
      * @throws Exception
      * @todo more archive types
      */
@@ -626,8 +608,6 @@ class Manager
 
     /**
      * Flush a Message to the JavaScript UploadManager
-     *
-     * @param array|string $message
      */
     public function flushMessage(array|string $message): void
     {
@@ -681,8 +661,6 @@ class Manager
     /**
      * Delete the file entry and the uploaded temp file
      *
-     * @param string $filename
-     *
      * @throws Exception
      */
     protected function delete(string $filename): void
@@ -723,9 +701,6 @@ class Manager
     /**
      * Return a \QUI\QDOM Object of the file entry
      *
-     * @param string $filename
-     *
-     * @return QDOM
      * @throws Exception
      */
     protected function getFileData(string $filename): QDOM
@@ -752,8 +727,6 @@ class Manager
 
     /**
      * Flush an exception to the UploadManager
-     *
-     * @param Exception $Exception
      */
     public function flushException(Exception $Exception): void
     {

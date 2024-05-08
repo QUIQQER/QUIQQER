@@ -20,9 +20,6 @@ use function is_array;
  */
 abstract class Factory extends QUI\Utils\Singleton
 {
-    /**
-     * @var QUI\Events\Event
-     */
     protected QUI\Events\Event $Events;
 
     /**
@@ -35,9 +32,6 @@ abstract class Factory extends QUI\Utils\Singleton
 
     /**
      * Return the number of the children
-     *
-     * @param array $queryParams
-     * @return int
      *
      * @throws QUI\Database\Exception
      */
@@ -72,16 +66,10 @@ abstract class Factory extends QUI\Utils\Singleton
         return 0;
     }
 
-    /**
-     * @return string
-     */
     abstract public function getDataBaseTableName(): string;
 
     /**
      * Create a new child
-     *
-     * @param array $data
-     * @return QUI\CRUD\Child
      *
      * @throws QUI\Exception
      */
@@ -121,16 +109,10 @@ abstract class Factory extends QUI\Utils\Singleton
         return $Child;
     }
 
-    /**
-     * @return array
-     */
     abstract public function getChildAttributes(): array;
 
     /**
      * Return a child
-     *
-     * @param int|string $id
-     * @return QUI\CRUD\Child
      *
      * @throws QUI\Exception
      */
@@ -162,17 +144,11 @@ abstract class Factory extends QUI\Utils\Singleton
         return $Child;
     }
 
-    /**
-     * @return string
-     */
     abstract public function getChildClass(): string;
 
     /**
      * Return the children
      * If you want only the data, please use getChildrenData
-     *
-     * @param array $queryParams
-     * @return array - [Child, Child, Child]
      *
      * @throws QUI\Database\Exception
      */
@@ -198,9 +174,6 @@ abstract class Factory extends QUI\Utils\Singleton
 
     /**
      * Return the children data
-     *
-     * @param array $queryParams
-     * @return array - [array, array, array]
      *
      * @throws QUI\Database\Exception
      */

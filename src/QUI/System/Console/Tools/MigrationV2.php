@@ -419,7 +419,6 @@ class MigrationV2 extends QUI\System\Console\Tool
     }
 
     /**
-     * @return void
      * @throws Exception
      * @throws QUI\Database\Exception
      */
@@ -506,7 +505,6 @@ class MigrationV2 extends QUI\System\Console\Tool
     }
 
     /**
-     * @return void
      * @throws Exception
      * @throws QUI\Database\Exception
      */

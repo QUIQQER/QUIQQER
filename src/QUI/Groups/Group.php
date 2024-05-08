@@ -32,32 +32,12 @@ use function mt_srand;
  */
 class Group extends QUI\QDOM
 {
-    /**
-     * Settings of the group
-     *
-     * @var array
-     */
     protected array $settings;
 
-    /**
-     * The group root id
-     *
-     * @var string|integer|bool|array
-     */
     protected string|int|bool|array $rootId;
 
-    /**
-     * Group id
-     *
-     * @var int|null
-     */
     protected ?int $id = null;
 
-    /**
-     * Group uuid
-     *
-     * @var string|null
-     */
     protected ?string $uuid = null;
 
     /**
@@ -67,11 +47,6 @@ class Group extends QUI\QDOM
      */
     protected mixed $rights = [];
 
-    /**
-     * internal children id cache
-     *
-     * @var array|null
-     */
     protected ?array $childrenIds = null;
 
     /**
@@ -245,9 +220,6 @@ class Group extends QUI\QDOM
     }
 
     /**
-     * Returns the Group-ID
-     *
-     * @return int
      * @deprecated
      */
     public function getId(): int
@@ -255,9 +227,6 @@ class Group extends QUI\QDOM
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
     public function getUUID(): string
     {
         return $this->uuid;
@@ -270,8 +239,6 @@ class Group extends QUI\QDOM
      * look at
      * - https://dev.quiqqer.com/quiqqer/core/wikis/User-Xml
      * - https://dev.quiqqer.com/quiqqer/core/wikis/Group-Xml
-     *
-     * @return array
      */
     protected function getListOfExtraAttributes(): array
     {
@@ -292,11 +259,6 @@ class Group extends QUI\QDOM
         ]);
     }
 
-    /**
-     * Get all parent ids
-     *
-     * @return array
-     */
     public function getParentIds(): array
     {
         if ($this->parentIds) {
@@ -328,13 +290,6 @@ class Group extends QUI\QDOM
         return $this->parentIds;
     }
 
-    /**
-     * Helper method for get parents
-     *
-     * @param int|string $id
-     *
-     * @ignore
-     */
     private function getParentIdsHelper(int|string $id): void
     {
         $result = QUI::getDataBase()->fetch([
@@ -435,6 +390,7 @@ class Group extends QUI\QDOM
      * @param array $params - SQL Params (limit, order)
      *
      * @return array|null
+     *
      * @throws Exception
      */
     public function getChildrenIds(bool $recursive = false, array $params = []): ?array
@@ -482,9 +438,6 @@ class Group extends QUI\QDOM
     }
 
     /**
-     * Helper method for the recursive
-     *
-     * @param int|string $id
      * @throws QUI\Database\Exception
      */
     private function getChildrenIdsHelper(int|string $id): void
@@ -503,11 +456,6 @@ class Group extends QUI\QDOM
         }
     }
 
-    /**
-     * Return the group name
-     *
-     * @return string
-     */
     public function getName(): string
     {
         return $this->getAttribute('name');
@@ -645,22 +593,12 @@ class Group extends QUI\QDOM
         QUI::getEvents()->fireEvent('groupDeactivate', [$this]);
     }
 
-    /**
-     * Is the group active?
-     *
-     * @return boolean
-     */
     public function isActive(): bool
     {
         return (bool)$this->getAttribute('active');
     }
 
     /**
-     * Has the group the right?
-     *
-     * @param string $right
-     *
-     * @return bool|array|string
      * @deprecated
      */
     public function hasRight(string $right): bool|array|string
@@ -668,33 +606,17 @@ class Group extends QUI\QDOM
         return $this->hasPermission($right);
     }
 
-    /**
-     * Has the group the permission?
-     *
-     * @param string $permission
-     *
-     * @return boolean|string|array
-     */
     public function hasPermission(string $permission): bool|array|string
     {
         return $this->rights[$permission] ?? false;
     }
 
-    /**
-     * return all rights
-     *
-     * @return array
-     */
     public function getRights(): array
     {
         return $this->rights;
     }
 
     /**
-     * set a right to the group
-     *
-     * @param array $rights
-     *
      * @throws QUI\Exception
      */
     public function setRights(array $rights = []): void
@@ -713,13 +635,6 @@ class Group extends QUI\QDOM
         }
     }
 
-    /**
-     * Exist the right in the group?
-     *
-     * @param string $right
-     *
-     * @return boolean
-     */
     public function existsRight(string $right): bool
     {
         if ($this->existsAttribute($right)) {
@@ -734,10 +649,6 @@ class Group extends QUI\QDOM
     }
 
     /**
-     * Set a new parent
-     *
-     * @param int|string $parentId
-     *
      * @throws QUI\Groups\Exception
      * @throws QUI\Exception
      */
@@ -791,9 +702,6 @@ class Group extends QUI\QDOM
     }
 
     /**
-     * return the parent group
-     **
-     * @return Group|Everyone|Guest|null
      * @throws QUI\Exception
      */
     public function getParent(): Group|Everyone|Guest|null
@@ -816,9 +724,6 @@ class Group extends QUI\QDOM
     }
 
     /**
-     * Add a user to this group
-     *
-     * @param QUI\Users\User $User
      * @throws QUI\Exception
      */
     public function addUser(QUI\Users\User $User): void
@@ -827,9 +732,6 @@ class Group extends QUI\QDOM
     }
 
     /**
-     * Remove a user from this group
-     *
-     * @param QUI\Users\User $User
      * @throws QUI\Exception
      */
     public function removeUser(QUI\Users\User $User): void
@@ -837,11 +739,6 @@ class Group extends QUI\QDOM
         $User->removeGroup($this);
     }
 
-    /**
-     * Get IDs of all users in the groups
-     *
-     * @return array
-     */
     public function getUserIds(): array
     {
         $userIds = [];
@@ -858,6 +755,7 @@ class Group extends QUI\QDOM
      * return the users from the group
      *
      * @param array $params - SQL Params
+     *
      * @return array
      */
     public function getUsers(array $params = []): array
@@ -882,11 +780,6 @@ class Group extends QUI\QDOM
     }
 
     /**
-     * search a user by name
-     *
-     * @param string $username
-     *
-     * @return QUI\Users\User
      * @throws QUI\Exception
      */
     public function getUserByName(string $username): QUI\Users\User
@@ -918,11 +811,11 @@ class Group extends QUI\QDOM
     }
 
     /**
-     * returns the user count
-     *
      * @param array $params - SQL Params
      *
      * @return integer
+     *
+     * @throws Exception
      */
     public function countUser(array $params = []): int
     {
@@ -959,13 +852,6 @@ class Group extends QUI\QDOM
     }
 
     /**
-     * Checks if the ID is from a parent group
-     *
-     * @param int|string $id - ID from parent
-     * @param boolean $recursive - checks recursive or not
-     *
-     * @return boolean
-     *
      * @throws QUI\Exception
      */
     public function isParent(int|string $id, bool $recursive = false): bool
@@ -985,11 +871,6 @@ class Group extends QUI\QDOM
         return false;
     }
 
-    /**
-     * Have the group subgroups?
-     *
-     * @return integer
-     */
     public function hasChildren(): int
     {
         return count($this->getChildren());
@@ -1038,12 +919,6 @@ class Group extends QUI\QDOM
     }
 
     /**
-     * Create a subgroup
-     *
-     * @param string $name - name of the subgroup
-     * @param QUI\Interfaces\Users\User|null $ParentUser - (optional), Parent User, which create the user
-     *
-     * @return QUI\Groups\Group
      * @throws QUI\Exception
      */
     public function createChild(string $name, ?QUI\Interfaces\Users\User $ParentUser = null): Group

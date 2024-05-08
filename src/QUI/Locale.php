@@ -44,52 +44,31 @@ class Locale implements \Stringable
 {
     /**
      * no translation flag
-     *
-     * @var boolean
      */
     public bool $no_translation = false;
 
-    /**
-     * The current lang
-     *
-     * @var array|bool
-     */
     protected array|bool $dateFormats = false;
 
     /**
      * The current lang
-     *
-     * @var string
      */
     protected string $current = 'en';
 
     /**
      * ini file objects
-     *
-     * @var array
      */
     protected array $inis = [];
 
     /**
      * List of internal locale list for setlocale()
-     *
-     * @var array
      */
     protected array $localeList = [];
 
     /**
      * Saves the current language of this Locale if setTemporaryCurrent is used.
-     *
-     * @var bool
      */
     protected bool $tempCurrent = false;
 
-
-    /**
-     * Locale tostring
-     *
-     * @return string
-     */
     public function __toString(): string
     {
         return 'Locale()';
@@ -101,9 +80,6 @@ class Locale implements \Stringable
      * WARNING: It's STRONGLY advised to use resetCurrent() immediately after
      * your use case. Changing the global current language longer than that may otherwise have
      * unforeseeable consequences!
-     *
-     * @param string $lang
-     * @return void
      */
     public function setTemporaryCurrent(string $lang): void
     {
@@ -114,11 +90,6 @@ class Locale implements \Stringable
         $this->setCurrent($lang);
     }
 
-    /**
-     * Return the current language
-     *
-     * @return string
-     */
     public function getCurrent(): string
     {
         return $this->current;
@@ -144,8 +115,6 @@ class Locale implements \Stringable
     /**
      * Resets the current language to the initial state. Useful only after setTemporaryCurrent()
      * was used!
-     *
-     * @return void
      */
     public function resetCurrent(): void
     {
@@ -155,9 +124,6 @@ class Locale implements \Stringable
         }
     }
 
-    /**
-     * @return array|string
-     */
     public function getDecimalSeparator(): array|string
     {
         return $this->get('quiqqer/core', 'numberFormat.decimal_separator');
@@ -165,12 +131,6 @@ class Locale implements \Stringable
 
     /**
      * Get the translation
-     *
-     * @param string $group - locale group
-     * @param boolean|string $value - (optional) Variable, optional
-     * @param boolean|array $replace - (optional)
-     *
-     * @return string
      */
     public function get(string $group, bool|string $value = false, bool|array $replace = false): string
     {
@@ -194,13 +154,7 @@ class Locale implements \Stringable
     /**
      * Translation helper method
      *
-     * @param string $group
-     * @param boolean|string $value - (optional)
-     * @param boolean|string $current - (optional) wanted language
-     *
-     * @return string|array
      * @see ->get()
-     * @ignore
      */
     protected function getHelper(string $group, bool|string $value = false, bool|string $current = false): array|string
     {
@@ -267,11 +221,6 @@ class Locale implements \Stringable
 
     /**
      * Get the translation file in dependence to the lang and group
-     *
-     * @param string $lang
-     * @param string $group
-     *
-     * @return string
      */
     public function getTranslationFile(string $lang, string $group): string
     {
@@ -284,8 +233,6 @@ class Locale implements \Stringable
 
     /**
      * Folder located the translations
-     *
-     * @return string
      */
     public function dir(): string
     {
@@ -293,10 +240,6 @@ class Locale implements \Stringable
     }
 
     /**
-     * @param string $lang - Language
-     * @param string $group - Language group
-     * @param array|string $key
-     * @param boolean|string $value
      * @deprecated
      *
      * Set translation
@@ -311,41 +254,26 @@ class Locale implements \Stringable
         LocaleRuntimeCache::set($lang, $group, $key);
     }
 
-    /**
-     * @return string
-     */
     public function getGroupingSeparator(): string
     {
         return $this->get('quiqqer/core', 'numberFormat.grouping_separator');
     }
 
-    /**
-     * @return string
-     */
     public function getDecimalPattern(): string
     {
         return $this->get('quiqqer/core', 'numberFormat.decimal_pattern');
     }
 
-    /**
-     * @return string
-     */
     public function getPercentPattern(): string
     {
         return $this->get('quiqqer/core', 'numberFormat.percent_pattern');
     }
 
-    /**
-     * @return string
-     */
     public function getCurrencyPattern(): string
     {
         return $this->get('quiqqer/core', 'numberFormat.currency_pattern');
     }
 
-    /**
-     * @return string
-     */
     public function getAccountingCurrencyPattern(): string
     {
         return $this->get('quiqqer/core', 'numberFormat.accounting_currency_pattern');
@@ -359,13 +287,6 @@ class Locale implements \Stringable
     {
     }
 
-    /**
-     * Format a number
-     *
-     * @param float|integer|string $number
-     * @param integer $format
-     * @return string
-     */
     public function formatNumber(string|float|int $number, int $format = NumberFormatter::DECIMAL): string
     {
         $localeCode = QUI::getLocale()->getLocalesByLang(
@@ -542,10 +463,6 @@ class Locale implements \Stringable
 
     /**
      * Return a date formatter for the current language
-     *
-     * @param int $dateType
-     * @param int $timeType
-     * @return IntlDateFormatter
      */
     public function getDateFormatter(
         int $dateType = IntlDateFormatter::SHORT,
@@ -587,9 +504,6 @@ class Locale implements \Stringable
 
     /**
      * Exists the language in the locale?
-     *
-     * @param {string} $language - language eq: de, en
-     * @return bool
      */
     public function existsLang($language): bool
     {
@@ -598,13 +512,6 @@ class Locale implements \Stringable
 
     /**
      * Get the translation from a specific language
-     *
-     * @param string $lang
-     * @param string $group
-     * @param boolean|string $value
-     * @param boolean|array $replace
-     *
-     * @return string|array
      */
     public function getByLang(
         string $lang,
@@ -632,9 +539,6 @@ class Locale implements \Stringable
     /**
      * Parse a locale string and translate it
      * a locale strings looks like: [group] var.var.var
-     *
-     * @param array|string $title
-     * @return array|string
      */
     public function parseLocaleString(array|string $title): array|string
     {
@@ -673,9 +577,6 @@ class Locale implements \Stringable
     /**
      * Verified the string if the string is a locale string
      * a locale strings looks like: [group] var.var.var
-     *
-     * @param string $str
-     * @return bool
      */
     public function isLocaleString(string $str): bool
     {
@@ -713,8 +614,6 @@ class Locale implements \Stringable
 
     /**
      * Return all available date formats
-     *
-     * @return bool|array
      */
     protected function getDateFormats(): bool|array
     {

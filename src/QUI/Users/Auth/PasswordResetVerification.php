@@ -11,19 +11,9 @@ use function current;
 
 class PasswordResetVerification extends AbstractVerification
 {
-    /**
-     * Project
-     *
-     * @var QUI\Projects\Project
-     */
     protected QUI\Projects\Project $Project;
 
     /**
-     * PasswordResetVerification constructor.
-     *
-     * @param int|string $identifier
-     * @param array $additionalData
-     *
      * @throws QUI\Exception
      */
     public function __construct(int|string $identifier, array $additionalData = [])
@@ -34,8 +24,6 @@ class PasswordResetVerification extends AbstractVerification
 
     /**
      * Execute this method on successful verification
-     *
-     * @return void
      */
     public function onSuccess(): void
     {
@@ -67,9 +55,6 @@ class PasswordResetVerification extends AbstractVerification
     /**
      * Send mail with temporary password to user
      *
-     * @param User $User
-     * @param string $newPass
-     * @return void
      * @throws Exception
      * @throws \PHPMailer\PHPMailer\Exception
      */
@@ -119,8 +104,6 @@ class PasswordResetVerification extends AbstractVerification
 
     /**
      * Execute this method on unsuccessful verification
-     *
-     * @return void
      */
     public function onError(): void
     {
@@ -128,8 +111,6 @@ class PasswordResetVerification extends AbstractVerification
 
     /**
      * This message is displayed to the user on successful verification
-     *
-     * @return string
      */
     public function getSuccessMessage(): string
     {

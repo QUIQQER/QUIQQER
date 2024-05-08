@@ -38,65 +38,43 @@ class Manager
      * Global clearing flag
      * better control about the cache clearing process
      * (for process performance optimization)
-     *
-     * @var bool
      */
     public static bool $noClearing = false;
 
-    /**
-     * @var bool
-     */
     public static bool $stashLoaded = false;
 
     /**
      * Cache Manager Configs
-     *
-     * @var ?Config
      */
     public static ?Config $Config = null;
 
     /**
      * Stash Object
-     *
-     * @var ?Stash\Pool
      */
     public static ?Stash\Pool $Stash = null;
 
     /**
      * File system stash object
-     *
-     * @var ?Stash\Pool
      */
     public static ?Stash\Pool $FileSystemStash = null;
 
     /**
      * the stash multi handler
-     *
-     * @var ?Stash\Interfaces\DriverInterface
      */
     public static ?Stash\Interfaces\DriverInterface $Handler = null;
 
     /**
      * all stash cache objects
-     *
-     * @var ?array
      */
     public static ?array $handlers = null;
 
-    /**
-     * @var array
-     */
     protected static array $drivers = [];
 
-    /**
-     * @var string|int|null
-     */
     protected static string|int|null $currentDriver = null;
 
     /**
      * Returns explicitly the file system cache
      *
-     * @return Pool|null
      * @deprecated use getDriver
      */
     public static function getFileSystemCache(): Stash\Pool|null
@@ -132,8 +110,6 @@ class Manager
 
     /**
      * Cache Settings
-     *
-     * @return Config
      */
     public static function getConfig(): Config
     {
@@ -153,9 +129,6 @@ class Manager
     /**
      * Returns cached data.
      * Throws an exception if no data is present in the cache for the given key.
-     *
-     * @param string $name
-     * @return mixed
      *
      * @throws QUI\Cache\Exception
      */
@@ -230,7 +203,6 @@ class Manager
      *
      * @param string $key - (optional) cache name, cache key
      *
-     * @return Stash\Interfaces\ItemInterface
      * @throws QUI\Exception|\Exception
      */
     public static function getStash(string $key = ''): Stash\Interfaces\ItemInterface
@@ -286,9 +258,6 @@ class Manager
         return self::$Stash->getItem($key);
     }
 
-    /**
-     * @return array
-     */
     public static function getHandlers(): array
     {
         $Config = self::getConfig();
@@ -361,10 +330,6 @@ class Manager
     /**
      * Return the current cache driver.
      *
-     * @param array $options - optional
-     * @param boolean|string $driver - optional
-     *
-     * @return Stash\Driver\AbstractDriver
      * @throws Stash\Exception\RuntimeException
      */
     public static function getDriver(array $options = [], bool|string $driver = false): Stash\Driver\AbstractDriver
@@ -565,9 +530,6 @@ class Manager
         return new QuiqqerFileDriver($params);
     }
 
-    /**
-     * @return int|string|null
-     */
     protected static function getCurrentDriver(): int|string|null
     {
         if (self::$currentDriver === null) {
@@ -598,9 +560,6 @@ class Manager
 
     /**
      * Returns the Stash\Driver\Composite or the Stash\Driver
-     *
-     * @param boolean|string $type = optional: bestimmten Cache Handler bekommen
-     * @return ?Stash\Interfaces\DriverInterface
      */
     public static function getHandler(bool|string $type = false): Stash\Interfaces\DriverInterface|null
     {
@@ -936,8 +895,6 @@ class Manager
     /**
      * Returns the timestamp when the cache folder's size was stored in cache.
      * Returns null if there is no data in the cache.
-     *
-     * @return int|null
      */
     public static function getCacheFolderSizeTimestamp(): ?int
     {

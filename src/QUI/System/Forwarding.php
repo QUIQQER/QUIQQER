@@ -20,10 +20,6 @@ class Forwarding
     /**
      * Create a forwarding entry
      *
-     * @param string $from
-     * @param string $target
-     * @param int|string $httpCode
-     *
      * @throws QUI\Exception
      */
     public static function create(string $from, string $target, int|string $httpCode = 301): void
@@ -49,8 +45,6 @@ class Forwarding
     /**
      * Return the forwarding config
      *
-     * @return QUI\Config
-     *
      * @throws QUI\Exception
      */
     public static function getConfig(): QUI\Config
@@ -64,10 +58,6 @@ class Forwarding
 
     /**
      * Update a forwarding entry
-     *
-     * @param string $from
-     * @param string $target
-     * @param int|string $httpCode
      *
      * @throws QUI\Exception
      */
@@ -97,7 +87,6 @@ class Forwarding
     /**
      * Löscht ein forwarding eintrag
      *
-     * @param array|string $from
      * @throws QUI\Exception
      */
     public static function delete(array|string $from): void
@@ -115,8 +104,6 @@ class Forwarding
 
     /**
      * Return the list
-     *
-     * @return Collection
      */
     public static function getList(): Collection
     {
@@ -133,8 +120,6 @@ class Forwarding
      * Forward,
      * If the Request matches to one of the global forwarding,
      * it forward the request and cancel the current
-     *
-     * @param Request $Request
      */
     public static function forward(Request $Request): void
     {
@@ -173,8 +158,6 @@ class Forwarding
 
     /**
      * Execute a redirection
-     *
-     * @param array $data
      */
     protected static function redirect(array $data): never
     {

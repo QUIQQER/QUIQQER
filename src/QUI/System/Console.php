@@ -60,22 +60,16 @@ class Console
 {
     /**
      * The current text color
-     *
-     * @var string|bool
      */
     protected string|bool $current_color = false;
 
     /**
      * the current background color
-     *
-     * @var string|bool
      */
     protected string|bool $current_bg = false;
 
     /**
      * All available text colors
-     *
-     * @var array
      */
     protected array $colors = [
         'black' => '0;30',
@@ -106,8 +100,6 @@ class Console
 
     /**
      * All available background colors
-     *
-     * @var array
      */
     protected array $bg = [
         'black' => '40',
@@ -122,20 +114,13 @@ class Console
 
     /**
      * CLI arguments
-     *
-     * @var array
      */
     protected array $arguments = [];
 
-    /**
-     * @var null|QUI\Interfaces\Users\User
-     */
     protected ?QUI\Interfaces\Users\User $User = null;
 
     /**
      * All available console tools
-     *
-     * @var array
      */
     private array $tools = [];
 
@@ -147,8 +132,6 @@ class Console
     /**
      * List of system tools
      * Tools which are called with the SystemUser
-     *
-     * @var array
      */
     private array $systemTools = [
         'clear-all-quiqqer-cache',
@@ -169,8 +152,6 @@ class Console
 
     /**
      * Console parameter
-     *
-     * @var array
      */
     private array $argv;
 
@@ -379,8 +360,6 @@ class Console
 
     /**
      * Read the argv params
-     *
-     * @return array
      */
     protected function readArgv(): array
     {
@@ -479,8 +458,6 @@ class Console
 
     /**
      * Return the CLI arguments
-     *
-     * @return array
      */
     public function getArguments(): array
     {
@@ -499,9 +476,6 @@ class Console
 
     /**
      * Set CLI arguments
-     *
-     * @param string $argument
-     * @param string $value
      */
     public function setArgument(string $argument, string $value)
     {
@@ -513,7 +487,6 @@ class Console
     /**
      * Read all tools and include it
      *
-     * @return void
      * @throws QUI\Exception
      */
     private function read(): void
@@ -609,9 +582,6 @@ class Console
     /**
      * Include the tool class
      *
-     * @param string $file
-     * @param string $dir
-     *
      * @throws QUI\Exception
      */
     protected function includeClasses(string $file, string $dir)
@@ -668,8 +638,6 @@ class Console
     /**
      * Return the CLI argument
      *
-     * @param string $argument
-     *
      * @return mixed|null
      */
     public function getArgument(string $argument)
@@ -693,8 +661,6 @@ class Console
 
     /**
      * Read the input from the user -> STDIN
-     *
-     * @return string
      */
     public function readInput(): string
     {

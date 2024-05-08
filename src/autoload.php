@@ -42,15 +42,8 @@ spl_autoload_register(function ($className) {
 /**
  * Error Handler
  *
- * @param integer $errno
- * @param string $errStr
- * @param string $errFile
- * @param integer $errLine
- *
- * @return boolean
  * @throws ErrorException
  * @author www.pcsg.de (Henning Leutz)
- *
  */
 function exception_error_handler(int $errno, string $errStr, string $errFile, int $errLine): bool
 {

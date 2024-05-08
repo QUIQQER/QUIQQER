@@ -9,10 +9,6 @@ use QUI;
  */
 class Welcome extends QUI\InstallationWizard\AbstractInstallationWizardStep
 {
-    /**
-     * @param null $Locale
-     * @return string
-     */
     public function getTitle($Locale = null): string
     {
         if ($Locale === null) {
@@ -22,10 +18,6 @@ class Welcome extends QUI\InstallationWizard\AbstractInstallationWizardStep
         return $Locale->get('quiqqer/core', 'quiqqer.setup.welcome.title');
     }
 
-    /**
-     * @param null $Locale
-     * @return string
-     */
     public function getDescription($Locale = null): string
     {
         if ($Locale === null) {
@@ -35,9 +27,6 @@ class Welcome extends QUI\InstallationWizard\AbstractInstallationWizardStep
         return $Locale->get('quiqqer/core', 'quiqqer.setup.welcome.description');
     }
 
-    /**
-     * @return string
-     */
     public function create(): string
     {
         try {

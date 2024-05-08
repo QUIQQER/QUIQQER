@@ -20,11 +20,6 @@ use function file_exists;
  */
 class Template extends QUI\QDOM
 {
-    /**
-     * Constructor
-     *
-     * @param array $params
-     */
     public function __construct(array $params = [])
     {
         $this->setAttributes([
@@ -42,8 +37,6 @@ class Template extends QUI\QDOM
 
     /**
      * Return the complete mail as text, without html
-     *
-     * @return string
      */
     public function getText(): string
     {
@@ -54,8 +47,6 @@ class Template extends QUI\QDOM
 
     /**
      * Return the complete mail template as HTML
-     *
-     * @return string
      */
     public function getHTML(): string
     {
@@ -108,11 +99,6 @@ class Template extends QUI\QDOM
         return $mailBody;
     }
 
-    /**
-     * Return the Project
-     *
-     * @return Project
-     */
     public function getProject(): Project
     {
         if ($this->getAttribute('Project')) {
@@ -124,8 +110,6 @@ class Template extends QUI\QDOM
 
     /**
      * Return the meta template path
-     *
-     * @return string
      */
     public function getMainTemplate(): string
     {
@@ -152,8 +136,6 @@ class Template extends QUI\QDOM
 
     /**
      * Return the meta template path
-     *
-     * @return string
      */
     public function getMetaTemplate(): string
     {
@@ -180,8 +162,6 @@ class Template extends QUI\QDOM
 
     /**
      * Return the header template path
-     *
-     * @return string
      */
     public function getHeaderTemplate(): string
     {
@@ -208,8 +188,6 @@ class Template extends QUI\QDOM
 
     /**
      * Return the body template path
-     *
-     * @return string
      */
     public function getBodyTemplate(): string
     {
@@ -236,8 +214,6 @@ class Template extends QUI\QDOM
 
     /**
      * Return the footer template path
-     *
-     * @return string
      */
     public function getFooterTemplate(): string
     {
@@ -262,31 +238,16 @@ class Template extends QUI\QDOM
         return $standardTpl;
     }
 
-    /**
-     * Set the project
-     *
-     * @param Project $Project
-     */
     public function setProject(Project $Project): void
     {
         $this->setAttribute('Project', $Project);
     }
 
-    /**
-     * Set the main template
-     *
-     * @param string $template
-     */
     public function setMainTemplate(string $template): void
     {
         $this->setAttribute('TplMain', $template);
     }
 
-    /**
-     * Set the meta template
-     *
-     * @param string $template
-     */
     public function setMetaTemplate(string $template): void
     {
         $this->setAttribute('TplMeta', $template);
@@ -294,29 +255,17 @@ class Template extends QUI\QDOM
 
     /**
      * Set the body html
-     *
-     * @param string $html
      */
     public function setBody(string $html): void
     {
         $this->setAttribute('body', $html);
     }
 
-    /**
-     * Set the Header template
-     *
-     * @param string $template
-     */
     public function setHeaderTemplate(string $template): void
     {
         $this->setAttribute('TplHeader', $template);
     }
 
-    /**
-     * Set the Header template
-     *
-     * @param string $template
-     */
     public function setFooterTemplate(string $template): void
     {
         $this->setAttribute('TplFooter', $template);

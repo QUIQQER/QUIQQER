@@ -9,15 +9,8 @@ namespace QUI\Users\Auth\Controls;
 use QUI;
 use QUI\Control;
 
-/**
- * Class QUIQQERLogin
- */
 class QUIQQERLogin extends Control
 {
-    /**
-     * QUIQQERLogin constructor.
-     * @param array $options
-     */
     public function __construct(array $options = [])
     {
         parent::__construct($options);
@@ -28,9 +21,6 @@ class QUIQQERLogin extends Control
         $this->setJavaScriptControl('controls/users/auth/QUIQQERLogin');
     }
 
-    /**
-     * @return string
-     */
     public function getBody(): string
     {
         $Engine = QUI::getTemplateManager()->getEngine();

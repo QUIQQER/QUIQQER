@@ -26,14 +26,8 @@ use const URL_DIR;
 use const USR_DIR;
 use const VAR_DIR;
 
-/**
- * Class CommandEvents
- */
 class CommandEvents
 {
-    /**
-     * @var array
-     */
     protected static array $packages = [];
 
     /**
@@ -50,8 +44,6 @@ class CommandEvents
     /**
      * occurs before the update command is executed,
      * or before install command is executed without a lock file present.
-     *
-     * @param Event $Event
      */
     public static function preUpdate(Event $Event): void
     {
@@ -61,8 +53,6 @@ class CommandEvents
     /**
      * occurs after the update command has been executed,
      * or after install command has been executed without a lock file present.
-     *
-     * @param Event $Event
      */
     public static function postUpdate(Event $Event): void
     {
@@ -95,8 +85,6 @@ class CommandEvents
      * Called before every composer command.
      * Using the commands require or remove causes cache inconsistencies.
      * Therefore, we tell the user how to prevent this.
-     *
-     * @param PreCommandRunEvent $Event
      */
     public static function preCommandRun(PreCommandRunEvent $Event): void
     {
@@ -120,7 +108,6 @@ class CommandEvents
     }
 
     /**
-     * @param Event $Event
      * @throws Exception
      */
     protected static function loadQUIQQER(Event $Event): void
@@ -151,9 +138,6 @@ class CommandEvents
 
     /**
      * Loads all quiqqer paths into the current running instance
-     *
-     * @param Event $Event
-     * @return void
      */
     protected static function loadPaths(Event $Event): void
     {

@@ -45,9 +45,6 @@ class LocalServer extends QUI\Utils\Singleton
         $Packages->setServerStatus($serverDir, 1);
     }
 
-    /**
-     * @return string
-     */
     public function getDir(): string
     {
         $updatePath = QUI::conf('update', 'updatePath');
@@ -144,8 +141,6 @@ class LocalServer extends QUI\Utils\Singleton
 
     /**
      * Return all not installed packages in the local server
-     *
-     * @return array
      */
     public function getNotInstalledPackage(): array
     {
@@ -165,8 +160,6 @@ class LocalServer extends QUI\Utils\Singleton
 
     /**
      * Return the package list in the locale server
-     *
-     * @return array
      */
     public function getPackageList(): array
     {

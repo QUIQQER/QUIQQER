@@ -27,14 +27,9 @@ class Manager implements QUI\Interfaces\Events
 {
     /**
      * Site Events
-     *
-     * @var array
      */
     protected array $siteEvents = [];
 
-    /**
-     * @var Event
-     */
     protected Event $Events;
 
     /**
@@ -108,8 +103,6 @@ class Manager implements QUI\Interfaces\Events
 
     /**
      * Return the events db table name
-     *
-     * @return string
      */
     public static function table(): string
     {
@@ -188,8 +181,6 @@ class Manager implements QUI\Interfaces\Events
 
     /**
      * Return a complete list of registered events
-     *
-     * @return array
      */
     public function getList(): array
     {
@@ -198,10 +189,6 @@ class Manager implements QUI\Interfaces\Events
 
     /**
      * Return a complete list of registered events for a specific site type
-     *
-     * @param string $type
-     *
-     * @return array
      */
     public function getSiteListByType(string $type): array
     {
@@ -243,8 +230,6 @@ class Manager implements QUI\Interfaces\Events
 
     /**
      * The same as addEvent, but accepts an array to add multiple events at once.
-     *
-     * @param array $events
      */
     public function addEvents(array $events): void
     {
@@ -280,7 +265,6 @@ class Manager implements QUI\Interfaces\Events
     }
 
     /**
-     * @param QUI\Package\Package $Package
      * @throws QUI\Exception
      */
     public function removePackageEvents(QUI\Package\Package $Package): void

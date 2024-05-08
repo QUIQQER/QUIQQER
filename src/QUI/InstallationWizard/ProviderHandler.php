@@ -25,9 +25,6 @@ class ProviderHandler
 
     const STATUS_SET_UP_DONE = 2;
 
-    /**
-     * @var QUI\Config|null
-     */
     protected static ?QUI\Config $Config = null;
 
     /**
@@ -91,10 +88,6 @@ class ProviderHandler
         return $providerList;
     }
 
-    /**
-     * @param InstallationWizardInterface $Provider
-     * @return int
-     */
     public static function getProviderStatus(InstallationWizardInterface $Provider): int
     {
         try {
@@ -105,7 +98,6 @@ class ProviderHandler
     }
 
     /**
-     * @return QUI\Config|null
      * @throws QUI\Exception
      */
     public static function getConfig(): ?QUI\Config
@@ -122,8 +114,6 @@ class ProviderHandler
     }
 
     /**
-     * @param InstallationWizardInterface $Provider
-     * @param int $status
      * @throws QUI\Exception
      */
     public static function setProviderStatus(InstallationWizardInterface $Provider, int $status)

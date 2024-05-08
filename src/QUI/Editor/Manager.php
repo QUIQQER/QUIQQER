@@ -59,20 +59,13 @@ class Manager
 {
     /**
      * WYSIWYG editor config
-     *
-     * @var Config|null
      */
     public static ?Config $Config = null;
 
-    /**
-     * @var null|array
-     */
     protected static ?array $toolbars = null;
 
     /**
      * Editor plugins
-     *
-     * @var array
      */
     protected array $plugins = [];
 
@@ -158,8 +151,6 @@ class Manager
 
     /**
      * Return the path to the toolbars
-     *
-     * @return string
      */
     public static function getToolbarsPath(): string
     {
@@ -168,8 +159,6 @@ class Manager
 
     /**
      * Path to the toolbar xml files
-     *
-     * @return string
      */
     public static function getPath(): string
     {
@@ -194,8 +183,6 @@ class Manager
     /**
      * Return all settings of the manager
      *
-     * @return array
-     *
      * @throws QUI\Exception
      */
     public static function getConfig(): array
@@ -210,8 +197,6 @@ class Manager
     /**
      * Return the main editor manager (WYSIWYG) config object
      *
-     * @return Config|null
-     *
      * @throws QUI\Exception
      */
     public static function getConf(): ?Config
@@ -225,8 +210,6 @@ class Manager
 
     /**
      * Return all available toolbars
-     *
-     * @return array|null
      */
     public static function getToolbars(): ?array
     {
@@ -242,13 +225,6 @@ class Manager
         return $files;
     }
 
-    /**
-     * Search toolbars
-     *
-     * @param $search
-     *
-     * @return array
-     */
     public static function search($search): array
     {
         return array_filter(self::getToolbars(), fn($toolbar) => str_contains($toolbar, $search));
@@ -256,10 +232,6 @@ class Manager
 
     /**
      * Return all available toolbars for a user
-     *
-     * @param QUI\Interfaces\Users\User $User
-     *
-     * @return array
      */
     public static function getToolbarsFromUser(QUI\Interfaces\Users\User $User): array
     {
@@ -295,10 +267,6 @@ class Manager
 
     /**
      * Return all available toolbars for a group
-     *
-     * @param QUI\Groups\Group $Group
-     *
-     * @return array
      */
     public static function getToolbarsFromGroup(QUI\Groups\Group $Group): array
     {
@@ -329,13 +297,6 @@ class Manager
         return $result;
     }
 
-    /**
-     * Checks if the toolbar exists
-     *
-     * @param $toolbar
-     *
-     * @return bool
-     */
     public static function existsToolbar($toolbar): bool
     {
         $toolbars = self::getToolbars();
@@ -347,9 +308,6 @@ class Manager
     /**
      * Return the Editor Settings for a specific Project
      *
-     * @param Project $Project
-     *
-     * @return array
      * @throws QUI\Exception
      */
     public static function getSettings(Project $Project): array
@@ -657,8 +615,6 @@ class Manager
     /**
      * Return the toolbar buttons for a user
      * Used the right user toolbar
-     *
-     * @return array
      */
     public static function getToolbarButtonsFromUser(): array
     {
@@ -722,8 +678,6 @@ class Manager
      * Reads a toolbar xml and return and return it as array
      *
      * @param string $file - path to the file
-     *
-     * @return array
      */
     public static function parseXmlFileToArray(string $file): array
     {
@@ -767,10 +721,6 @@ class Manager
 
     /**
      * Parse an XML <line> node
-     *
-     * @param DOMNode $Node
-     *
-     * @return boolean|array
      */
     public static function parseXMLLineNode(DOMNode $Node): bool|array
     {
@@ -798,10 +748,6 @@ class Manager
 
     /**
      * Parse an XML <group> node
-     *
-     * @param DOMNode $Node
-     *
-     * @return boolean|array
      */
     public static function parseXMLGroupNode(DOMNode $Node): bool|array
     {
@@ -836,10 +782,6 @@ class Manager
 
     /**
      * Load the html for an editor and clean it up
-     *
-     * @param string $html
-     *
-     * @return string
      */
     public function load(string $html): string
     {
@@ -865,10 +807,6 @@ class Manager
     /**
      * Prepare html for saving
      * Clean it up
-     *
-     * @param string $html
-     *
-     * @return string
      */
     public function prepareHTMLForSave(string $html): string
     {
@@ -902,9 +840,6 @@ class Manager
 
     /**
      * Cleanup HTML
-     *
-     * @param string $html
-     * @return string
      */
     public function cleanHTML(string $html): string
     {
@@ -940,10 +875,6 @@ class Manager
 
     /**
      * Cleanup image src
-     *
-     * @param array $html
-     *
-     * @return string
      */
     public function cleanSrc(array $html): string
     {
@@ -959,10 +890,6 @@ class Manager
 
     /**
      * Cleanup image href
-     *
-     * @param array $html
-     *
-     * @return string
      */
     public function cleanHref(array $html): string
     {
@@ -984,10 +911,6 @@ class Manager
 
     /**
      * Cleanup image.php? paths from the admin
-     *
-     * @param array $html
-     *
-     * @return string
      */
     public function cleanAdminSrc(array $html): string
     {
@@ -1002,10 +925,6 @@ class Manager
 
     /**
      * Delete line breaks in html content
-     *
-     * @param array $params
-     *
-     * @return string
      */
     protected function deleteLineBreaksInHtml(array $params): string
     {

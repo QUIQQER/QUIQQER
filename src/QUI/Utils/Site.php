@@ -29,9 +29,6 @@ class Site
 {
     /**
      * Set an attribute recursive from its parents if the attribute is not set
-     *
-     * @param QUI\Interfaces\Projects\Site $Site
-     * @param string $attribute
      */
     public static function setRecursiveAttribute(QUI\Interfaces\Projects\Site $Site, string $attribute): void
     {
@@ -115,11 +112,6 @@ class Site
     }
 
     /**
-     * Tries to find the matching site based on a URL
-     *
-     * @param $url
-     *
-     * @return QUI\Projects\Site
      * @throws Exception
      */
     public static function getSiteByUrl($url): QUI\Projects\Site

@@ -31,33 +31,18 @@ class Event implements QUI\Interfaces\Events
 {
     /**
      * Registered events
-     *
-     * @var array
      */
     protected array $events = [];
 
-    /**
-     * @var array
-     */
     protected array $currentRunning = [];
 
-    /**
-     * @var array
-     */
     protected array $ignore = [];
 
-    /**
-     * @return array
-     */
     public function getList(): array
     {
         return $this->events;
     }
 
-    /**
-     * @param array $events
-     * @return void
-     */
     public function addEvents(array $events): void
     {
         foreach ($events as $event => $fn) {

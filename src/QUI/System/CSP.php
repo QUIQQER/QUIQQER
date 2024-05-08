@@ -29,23 +29,16 @@ use const PHP_EOL;
  */
 class CSP
 {
-    /**
-     * @var ?CSP
-     */
     protected static ?CSP $Instance = null;
 
     /**
      * List of csp directives
-     *
-     * @var array
      */
     protected array $allowedIni = [];
 
     /**
      * List of csp directives
      * - default directives
-     *
-     * @var array
      */
     protected array $cspDirective = [
         'base' => 'base-uri',
@@ -68,8 +61,6 @@ class CSP
 
     /**
      * csp written out
-     *
-     * @var array
      */
     protected array $cspSource = [
         'none' => "'none'",
@@ -103,8 +94,6 @@ class CSP
 
     /**
      * Return the global CSP object
-     *
-     * @return CSP
      */
     public static function getInstance(): CSP
     {
@@ -126,7 +115,6 @@ class CSP
     }
 
     /**
-     * @return QUI\Config
      * @throws Exception
      */
     protected function getConfig(): QUI\Config
@@ -153,7 +141,6 @@ class CSP
     }
 
     /**
-     * @return array
      * @throws Exception
      */
     public function getCSPDirectiveConfig(): array
@@ -199,8 +186,6 @@ class CSP
 
     /**
      * Returns all available CSP sources
-     *
-     * @return array
      */
     public function getCSPSources(): array
     {
@@ -209,8 +194,6 @@ class CSP
 
     /**
      * Returns all allowed csp directives
-     *
-     * @return array
      */
     public function getAllowedCSPList(): array
     {
@@ -225,8 +208,6 @@ class CSP
 
     /**
      * Return all available CSP directives
-     *
-     * @return array
      */
     public function getCSPDirectives(): array
     {
@@ -282,9 +263,6 @@ class CSP
 
     /**
      * Is the directive allowed?
-     *
-     * @param string $directive
-     * @return bool
      */
     public function isDirectiveAllowed(string $directive): bool
     {

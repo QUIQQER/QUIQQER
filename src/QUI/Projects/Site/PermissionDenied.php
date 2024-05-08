@@ -53,7 +53,6 @@ class PermissionDenied extends QUI\Projects\Site
     /**
      * Get data from start Site (ID: 1)
      *
-     * @return void
      * @throws Exception
      */
     public function refresh(): void
@@ -111,7 +110,6 @@ class PermissionDenied extends QUI\Projects\Site
 
     /**
      * @inheritdoc
-     * @return QUI\Projects\Site
      */
     public function load(bool|string $plugin = false): QUI\Projects\Site
     {

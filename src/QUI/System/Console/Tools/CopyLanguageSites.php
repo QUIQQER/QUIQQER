@@ -19,31 +19,17 @@ use function json_encode;
  */
 class CopyLanguageSites extends QUI\System\Console\Tool
 {
-    /**
-     * @var ?BricksManager
-     */
     protected ?BricksManager $BricksManager = null;
 
     /**
      * Maps source brick id to target brick id.
-     *
-     * @var array
      */
     protected array $bricksMapping = [];
 
-    /**
-     * @var bool
-     */
     protected bool $copyBricks = false;
 
-    /**
-     * @var array
-     */
     protected array $sourceBrickAreas = [];
 
-    /**
-     * @var bool
-     */
     protected bool $activateSites = true;
 
     /**
@@ -237,9 +223,6 @@ class CopyLanguageSites extends QUI\System\Console\Tool
     /**
      * Copy all bricks.
      *
-     * @param QUI\Projects\Project $SourceProject
-     * @param QUI\Projects\Project $TargetProject
-     * @return void
      * @throws QUI\Database\Exception
      */
     protected function copyBricks(QUI\Projects\Project $SourceProject, QUI\Projects\Project $TargetProject): void

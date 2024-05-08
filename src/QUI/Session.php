@@ -54,14 +54,9 @@ class Session
 {
     /**
      * Lifetime of the cookie
-     *
-     * @var int
      */
     public int $lifetime = 1400;
 
-    /**
-     * @var array
-     */
     protected array $vars = [];
 
     /**
@@ -80,8 +75,6 @@ class Session
 
     /**
      * Database table
-     *
-     * @var string
      */
     private string $table;
 
@@ -229,8 +222,6 @@ class Session
 
     /**
      * Return the storage type
-     *
-     * @return SessionHandlerInterface
      *
      * @throws QUI\Exception
      */
@@ -393,8 +384,6 @@ class Session
 
     /**
      * Checks the validity of the session
-     *
-     * @return boolean
      */
     public function check(): bool
     {
@@ -474,11 +463,6 @@ class Session
         return false;
     }
 
-    /**
-     * Returns the session-id
-     *
-     * @return string
-     */
     public function getId(): string
     {
         if ($this->Session) {
@@ -506,8 +490,6 @@ class Session
 
     /**
      * Alias for del()
-     *
-     * @param string $var
      */
     public function remove(string $var): void
     {
@@ -518,8 +500,6 @@ class Session
      * Return the last login from the session-id
      *
      * @param string $sid - Session-ID
-     *
-     * @return integer
      */
     public function getLastRefreshFrom(string $sid): int
     {
@@ -545,9 +525,6 @@ class Session
     /**
      * Is the user online?
      *
-     * @param int|string $uid
-     *
-     * @return boolean
      * @todo is not working
      */
     public function isUserOnline(int|string $uid): bool
@@ -567,11 +544,6 @@ class Session
         return isset($result[0]);
     }
 
-    /**
-     * Return the symfony session
-     *
-     * @return \Symfony\Component\HttpFoundation\Session\Session|bool
-     */
     public function getSymfonySession(): \Symfony\Component\HttpFoundation\Session\Session|bool
     {
         return $this->Session;

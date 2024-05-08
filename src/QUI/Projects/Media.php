@@ -37,20 +37,13 @@ class Media extends QUI\QDOM
      * when createCache() is called.
      *
      * This should only be set to true if a lot of media items are created (e.g. in a mass import).
-     *
-     * @var bool
      */
     public static bool $globalDisableMediaCacheCreation = false;
 
-    /**
-     * @var null|mixed
-     */
     protected static mixed $mediaPermissions = null;
 
     /**
      * internal child cache
-     *
-     * @var array
      */
     protected array $children = [];
 
@@ -61,8 +54,6 @@ class Media extends QUI\QDOM
 
     /**
      * Use media permissions? Media permissions are available?
-     *
-     * @return bool|null
      */
     public static function useMediaPermissions(): ?bool
     {
@@ -79,8 +70,6 @@ class Media extends QUI\QDOM
 
     /**
      * Return the Logo of the media / project
-     *
-     * @return string
      */
     public function getLogo(): string
     {
@@ -102,8 +91,6 @@ class Media extends QUI\QDOM
 
     /**
      * Return the project of the media
-     *
-     * @return QUI\Projects\Project
      */
     public function getProject(): Project
     {
@@ -112,8 +99,6 @@ class Media extends QUI\QDOM
 
     /**
      * Return the Placeholder of the media
-     *
-     * @return string
      */
     public function getPlaceholder(): string
     {
@@ -135,8 +120,6 @@ class Media extends QUI\QDOM
 
     /**
      * Return the Logo image object of the media
-     *
-     * @return QUI\Interfaces\Projects\Media\File|bool
      */
     public function getLogoImage(): QUI\Interfaces\Projects\Media\File|bool
     {
@@ -399,8 +382,6 @@ class Media extends QUI\QDOM
     /**
      * Return the first child in the media
      *
-     * @return QUI\Projects\Media\Folder
-     *
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
@@ -422,7 +403,6 @@ class Media extends QUI\QDOM
      *
      * @param integer $id - media id
      *
-     * @return QUI\Interfaces\Projects\Media\File
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
@@ -462,13 +442,8 @@ class Media extends QUI\QDOM
     /**
      * methods for usage
      */
-
     /**
      * Parse a database entry to a media object
-     *
-     * @param array $result
-     *
-     * @return QUI\Interfaces\Projects\Media\File
      */
     public function parseResultToItem(array $result): QUI\Interfaces\Projects\Media\File
     {
@@ -512,9 +487,6 @@ class Media extends QUI\QDOM
     /**
      * Return a file from its file oath
      *
-     * @param string $filepath
-     *
-     * @return QUI\Interfaces\Projects\Media\File
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
@@ -556,6 +528,7 @@ class Media extends QUI\QDOM
      * @param string $file - Path to the new file
      *
      * @return QUI\Interfaces\Projects\Media\File
+     *
      * @throws QUI\Exception
      */
     public function replace(int $id, string $file): QUI\Interfaces\Projects\Media\File
@@ -695,10 +668,6 @@ class Media extends QUI\QDOM
 
     /**
      * Return the parent id
-     *
-     * @param integer $id
-     *
-     * @return integer|false
      */
     public function getParentIdFrom(int $id): bool|int
     {
@@ -728,8 +697,6 @@ class Media extends QUI\QDOM
 
     /**
      * Return the ImageManager of the Media
-     *
-     * @return ImageManager
      */
     public function getImageManager(): ImageManager
     {
@@ -779,8 +746,6 @@ class Media extends QUI\QDOM
 
     /**
      * Returns the Media Trash
-     *
-     * @return \QUI\Projects\Media\Trash
      */
     public function getTrash(): Media\Trash
     {
@@ -789,8 +754,6 @@ class Media extends QUI\QDOM
 
     /**
      * Updates all external images
-     *
-     * @return void
      */
     public function updateExternalImages(): void
     {

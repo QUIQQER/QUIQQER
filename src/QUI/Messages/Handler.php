@@ -1,9 +1,5 @@
 <?php
 
-/**
- * This file contains \QUI\Messages\Handler
- */
-
 namespace QUI\Messages;
 
 use Doctrine\DBAL\Schema\Table;
@@ -45,9 +41,6 @@ class Handler
         }
     }
 
-    /**
-     * Return the message handler db table
-     */
     public static function table(): string
     {
         return QUI::getDBTableName('messages');
@@ -61,13 +54,6 @@ class Handler
         $this->messages = [];
     }
 
-    /**
-     * Return the messages list as pure array
-     *
-     * @param QUI\Interfaces\Users\User $User
-     *
-     * @return array
-     */
     public function getMessagesAsArray(QUI\Interfaces\Users\User $User): array
     {
         $result = [];
@@ -83,10 +69,6 @@ class Handler
 
     /**
      * Return all new messages for a user and delete it in the queue
-     *
-     * @param QUI\Interfaces\Users\User $User
-     *
-     * @return array
      */
     public function getNewMessages(QUI\Interfaces\Users\User $User): array
     {
@@ -157,8 +139,6 @@ class Handler
 
     /**
      * Add an information for a user
-     *
-     * @param string $str
      */
     public function addAttention(string $str): void
     {
@@ -169,11 +149,6 @@ class Handler
         );
     }
 
-    /**
-     * Add a message to the handler
-     *
-     * @param Message $Message
-     */
     public function addMessage(Message $Message): void
     {
         $this->messages[$Message->getHash()] = $Message;
@@ -181,8 +156,6 @@ class Handler
 
     /**
      * Add an error for a user
-     *
-     * @param string $str
      */
     public function addError(string $str): void
     {
@@ -195,8 +168,6 @@ class Handler
 
     /**
      * Add an information for a user
-     *
-     * @param string $str
      */
     public function addInformation(string $str): void
     {
@@ -209,8 +180,6 @@ class Handler
 
     /**
      * Add a success message for a user
-     *
-     * @param string $str
      */
     public function addSuccess(string $str): void
     {
@@ -223,9 +192,6 @@ class Handler
 
     /**
      * Send an information to a user and save it to the database
-     *
-     * @param QUI\Interfaces\Users\User $User
-     * @param string $str
      */
     public function sendAttention(QUI\Interfaces\Users\User $User, string $str): void
     {
@@ -239,9 +205,6 @@ class Handler
 
     /**
      * Send a message to a user and save it to the database
-     *
-     * @param QUI\Interfaces\Users\User $User
-     * @param Message $Message
      */
     public function sendMessage(QUI\Interfaces\Users\User $User, Message $Message): void
     {
@@ -267,9 +230,6 @@ class Handler
 
     /**
      * Send an error to a user and save it to the database
-     *
-     * @param QUI\Interfaces\Users\User $User
-     * @param string $str
      */
     public function sendError(QUI\Interfaces\Users\User $User, string $str): void
     {
@@ -283,9 +243,6 @@ class Handler
 
     /**
      * Send an information to a user and save it to the database
-     *
-     * @param QUI\Interfaces\Users\User $User
-     * @param string $str
      */
     public function sendInformation(QUI\Interfaces\Users\User $User, string $str): void
     {
@@ -299,9 +256,6 @@ class Handler
 
     /**
      * Send a success message to a user and save it to the database
-     *
-     * @param QUI\Interfaces\Users\User $User
-     * @param string $str
      */
     public function sendSuccess(QUI\Interfaces\Users\User $User, string $str): void
     {

@@ -41,22 +41,16 @@ class Manager
 
     /**
      * internal right cache
-     *
-     * @var array
      */
     protected array $cache = [];
 
     /**
      * Permissions2 data cache
-     *
-     * @var array
      */
     protected array $dataCache = [];
 
     /**
      * internal ram cache for permissions
-     *
-     * @var array
      */
     protected array $permissionsCache = [];
 
@@ -79,11 +73,6 @@ class Manager
         }
     }
 
-    /**
-     * Return the permission table name
-     *
-     * @return string
-     */
     public static function table(): string
     {
         return QUI::getDBTableName(self::TABLE);
@@ -180,9 +169,6 @@ class Manager
     /**
      * Set the default permissions for the group
      *
-     * @param Group $Group
-     * @param QUI\Interfaces\Users\User|null $ParentUser - (optional), Parent User, which create the user
-     *
      * @throws QUI\Exception
      */
     public static function importPermissionsForGroup(
@@ -206,9 +192,6 @@ class Manager
     /**
      * Return the current permissions from a group, user, site, project or media
      * Returns the set permissions
-     *
-     * @param mixed $Obj
-     * @return array
      */
     public function getPermissions(mixed $Obj): array
     {
@@ -276,9 +259,6 @@ class Manager
 
     /**
      * Return the corresponding area for the object
-     *
-     * @param mixed $Object
-     * @return string
      */
     protected function objectToArea(mixed $Object): string
     {
@@ -295,10 +275,6 @@ class Manager
 
     /**
      * Return the corresponding area of a php class
-     *
-     * @param string $cls
-     *
-     * @return string
      */
     public static function classToArea(string $cls): string
     {
@@ -333,10 +309,6 @@ class Manager
 
     /**
      * Return the permissions from a site
-     *
-     * @param Project $Project
-     *
-     * @return array
      */
     public function getProjectPermissions(Project $Project): array
     {
@@ -358,9 +330,6 @@ class Manager
 
     /**
      * Return the permissions data of an object
-     *
-     * @param mixed $Obj
-     * @return array
      */
     protected function getData(mixed $Obj): array
     {
@@ -482,10 +451,6 @@ class Manager
 
     /**
      * Return the internal permission cache id
-     *
-     * @param mixed $Obj
-     *
-     * @return string
      */
     protected function getDataCacheId(mixed $Obj): string
     {
@@ -578,13 +543,6 @@ class Manager
         return $result;
     }
 
-    /**
-     * Return the permissions from a site
-     *
-     * @param QUI\Interfaces\Projects\Site $Site
-     *
-     * @return array
-     */
     public function getSitePermissions(QUI\Interfaces\Projects\Site $Site): array
     {
         if (QUI\Projects\Site\Utils::isSiteObject($Site) === false) {
@@ -610,9 +568,6 @@ class Manager
 
     /**
      * Return the permissions from a media item
-     *
-     * @param $MediaItem
-     * @return array
      */
     public function getMediaPermissions($MediaItem): array
     {
@@ -817,11 +772,7 @@ class Manager
     /**
      * Set the permissions for a project object
      *
-     * @param Project $Project
-     * @param array $permissions
-     * @param QUI\Interfaces\Users\User|null $EditUser
-     *
-     * @throws Exception
+     * @throws Exception|\QUI\Permissions\Exception
      */
     public function setProjectPermissions(
         Project $Project,
@@ -872,11 +823,6 @@ class Manager
 
     /**
      * Cleanup the value for the type
-     *
-     * @param string $type
-     * @param integer|array|string $val
-     *
-     * @return int|bool|array|string
      */
     protected function cleanValue(string $type, int|array|string $val): int|bool|array|string
     {
@@ -919,9 +865,6 @@ class Manager
     /**
      * Add a new permission entry for site
      *
-     * @param Project $Project
-     * @param string $permission
-     * @param integer|string $value
      * @throws Exception
      */
     protected function addProjectPermission(
@@ -943,9 +886,6 @@ class Manager
     /**
      * Updates the permission entry for the site
      *
-     * @param Project $Project
-     * @param string $permission
-     * @param integer|string $value
      * @throws Exception
      */
     protected function setProjectPermission(
@@ -975,10 +915,6 @@ class Manager
 
     /**
      * Set the permissions for a site object
-     *
-     * @param QUI\Interfaces\Projects\Site $Site
-     * @param array $permissions - Array of permissions
-     * @param QUI\Interfaces\Users\User|null $EditUser - Edit user
      *
      * @throws QUI\Exception
      * @throws Exception
@@ -1065,10 +1001,6 @@ class Manager
     /**
      * Add a new permission entry for site
      *
-     * @param QUI\Interfaces\Projects\Site $Site
-     * @param string $permission
-     * @param integer|string $value
-     *
      * @throws Exception
      * @throws QUI\Exception
      */
@@ -1091,10 +1023,6 @@ class Manager
 
     /**
      * Updates the permission entry for the site
-     *
-     * @param QUI\Interfaces\Projects\Site $Site
-     * @param string $permission
-     * @param integer|string $value
      *
      * @throws Exception
      * @throws QUI\Exception
@@ -1130,10 +1058,6 @@ class Manager
 
     /**
      * Set the permissions for a site object
-     *
-     * @param Item $MediaItem
-     * @param array $permissions - Array of permissions
-     * @param QUI\Interfaces\Users\User|null $EditUser - Edit user
      *
      * @throws QUI\Exception
      * @throws Exception
@@ -1222,12 +1146,6 @@ class Manager
     }
 
     /**
-     * Add a new permission entry for site
-     *
-     * @param QUI\Projects\Media\Item $MediaItem
-     * @param string $permission
-     * @param integer|string $value
-     *
      * @throws QUI\Exception
      */
     protected function addMediaPermission(
@@ -1249,10 +1167,6 @@ class Manager
 
     /**
      * Updates the permission entry for the media entry
-     *
-     * @param QUI\Projects\Media\Item $MediaItem
-     * @param string $permission
-     * @param integer|string $value
      *
      * @throws QUI\Exception
      */
@@ -1525,7 +1439,6 @@ class Manager
      * Delete all permissions from the package list
      * It does not delete permissions created by the user
      *
-     * @param QUI\Package\Package $Package
      * @throws Exception
      */
     public function deletePermissionsFromPackage(QUI\Package\Package $Package): void
@@ -1573,13 +1486,10 @@ class Manager
     /**
      * ab hier old
      */
-
     /**
      * Return all permissions from a group, user, site, project or media
      *
      * @param QUI\Groups\Group|User|Project|QUI\Projects\Site $Obj
-     *
-     * @return array
      */
     public function getCompletePermissionList(mixed $Obj): array
     {
@@ -1644,9 +1554,6 @@ class Manager
     /**
      * Remove all permissions from the site
      *
-     * @param QUI\Interfaces\Projects\Site $Site
-     * @param QUI\Interfaces\Users\User|null $EditUser
-     *
      * @throws Exception
      * @throws QUI\Exception
      */
@@ -1679,12 +1586,6 @@ class Manager
     /**
      * Rechte vom Benutzer bekommen
      * Geht besser über User->getPermission('right')
-     *
-     * @param QUI\Interfaces\Users\User $User
-     * @param string $permission
-     * @param callback|boolean|string $ruleset
-     *
-     * @return mixed
      *
      * @throws QUI\Exception
      *
@@ -1745,11 +1646,6 @@ class Manager
     }
 
     // region media
-
-    /**
-     * @param $User
-     * @return array
-     */
     public function getUserPermissionData($User): array
     {
         $userPermissions = $this->getData($User);
@@ -1772,9 +1668,6 @@ class Manager
      * Rechte Array einer Gruppe aus den Attributen erstellen
      * Wird zum Beispiel zum Speichern einer Gruppe verwendet
      *
-     * @param QUI\Groups\Group $Group
-     *
-     * @return array
      * @todo das muss vielleicht überdacht werden
      */
     public function getRightParamsFromGroup(Group $Group): array
@@ -1809,9 +1702,6 @@ class Manager
 
     /**
      * Remove all permissions from the site
-     *
-     * @param QUI\Interfaces\Projects\Media\File $MediaItem
-     * @param QUI\Interfaces\Users\User|null $EditUser
      *
      * @throws QUI\Exception
      */

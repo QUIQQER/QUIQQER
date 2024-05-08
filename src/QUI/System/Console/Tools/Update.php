@@ -366,8 +366,6 @@ class Update extends QUI\System\Console\Tool
 
     /**
      * Write a log to the update file
-     *
-     * @param string $message
      */
     protected function writeUpdateLog(string $message): void
     {
@@ -389,8 +387,6 @@ class Update extends QUI\System\Console\Tool
 
     /**
      * Write buffer to the update log
-     *
-     * @param string $buffer
      */
     public static function writeToLog(string $buffer): void
     {
@@ -481,9 +477,6 @@ class Update extends QUI\System\Console\Tool
         $Instance->writeLn(strip_tags($message));
     }
 
-    /**
-     * @return bool
-     */
     protected function checkFileSystemChanges(): bool
     {
         $Packages = QUI::getPackageManager();
@@ -599,9 +592,6 @@ class Update extends QUI\System\Console\Tool
         return false;
     }
 
-    /**
-     * @return bool
-     */
     protected function executedAnywayQuestion(): bool
     {
         $this->writeLn('Should the update be executed anyway? [y,N]: ', 'red');

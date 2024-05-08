@@ -22,11 +22,6 @@ class Locker
     /**
      * Lock an item or an object and checks the permissions
      *
-     * @param Package $Package
-     * @param $key
-     * @param string $permission - optional
-     * @param null $User
-     *
      * @throws QUI\Permissions\Exception
      * @throws QUI\Lock\Exception
      */
@@ -50,12 +45,6 @@ class Locker
     }
 
     /**
-     * Check, if the item is locked
-     *
-     * @param Package $Package
-     * @param String $key
-     * @param null|QUI\Interfaces\Users\User $User - default = session user
-     *
      * @throws QUI\Lock\Exception
      */
     public static function checkLocked(
@@ -69,13 +58,12 @@ class Locker
     }
 
     /**
-     * Check if an item or an object is locked
-     *
      * @param Package $Package
      * @param string $key
      * @param null|QUI\Interfaces\Users\User $User
      * @param bool $considerUser (optional) - Consider a $key as NOT locked if it was created by the given $User [default: true]
-     * @return false|mixed
+     *
+     * @return mixed
      */
     public static function isLocked(
         Package $Package,
@@ -108,7 +96,6 @@ class Locker
     /**
      * Return the data from the cache
      *
-     * @param string $name
      * @return mixed|null
      * @throws QUI\Lock\Exception
      */
@@ -134,8 +121,6 @@ class Locker
     /**
      * Return the stash item
      *
-     * @param string $name
-     * @return ItemInterface
      * @throws QUI\Lock\Exception
      */
     protected static function getStash(string $name): ItemInterface
@@ -156,10 +141,6 @@ class Locker
     /**
      * Return the key for the lock item
      *
-     * @param Package $Package
-     * @param string $key
-     * @return string
-     *
      * @throws QUI\Lock\Exception
      */
     protected static function getLockKey(Package $Package, string $key): string
@@ -174,11 +155,6 @@ class Locker
     /**
      * Lock an item or an object
      * no permission check
-     *
-     * @param Package $Package
-     * @param string $key
-     * @param bool|integer $lifetime
-     * @param null|QUI\Interfaces\Users\User $User
      *
      * @throws QUI\Lock\Exception
      */
@@ -207,11 +183,6 @@ class Locker
 
     /**
      * Unlock an item or an object and checks the permissions
-     *
-     * @param Package $Package
-     * @param $key
-     * @param string $permission - optional
-     * @param null $User
      *
      * @throws QUI\Permissions\Exception
      * @throws QUI\Lock\Exception
@@ -253,8 +224,6 @@ class Locker
      * Unlock an item or an object
      * no permission check
      *
-     * @param Package $Package
-     * @param string $key
      * @throws QUI\Lock\Exception
      */
     public static function unlock(Package $Package, string $key): void
@@ -266,9 +235,6 @@ class Locker
     /**
      * Return the seconds from the last lock
      *
-     * @param Package $Package
-     * @param string $key
-     * @return int
      * @throws QUI\Lock\Exception
      */
     public static function getLockTime(Package $Package, string $key): int

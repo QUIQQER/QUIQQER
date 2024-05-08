@@ -167,8 +167,6 @@ class Package extends QUI\System\Console\Tool
 
     /**
      * Execute the setup for a package
-     *
-     * @param string $package
      */
     protected function executePackageSetup(string $package): void
     {
@@ -191,8 +189,6 @@ class Package extends QUI\System\Console\Tool
 
     /**
      * Install a package
-     *
-     * @param string $package
      */
     protected function installPackage(string $package): void
     {
@@ -252,8 +248,6 @@ class Package extends QUI\System\Console\Tool
 
     /**
      * Show package information
-     *
-     * @param string $package
      */
     protected function showPackageInformation(string $package): void
     {

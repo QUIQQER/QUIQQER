@@ -28,8 +28,6 @@ class Bundler
 {
     /**
      * Files includes
-     *
-     * @var array
      */
     protected array $includes = [];
 
@@ -82,10 +80,6 @@ class Bundler
     }
 
     /**
-     *
-     * @param array $request
-     *
-     * @return array
      * @throws QUI\Exception
      */
     protected function parseRequest(array $request): array

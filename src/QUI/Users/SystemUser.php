@@ -28,7 +28,6 @@ class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
     }
 
     /**
-     * @return int|string
      * @deprecated
      */
     public function getUniqueId(): int|string
@@ -36,34 +35,21 @@ class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
         return $this->getUUID();
     }
 
-    /**
-     * @return string|int
-     */
     public function getUUID(): string|int
     {
         return "5";
     }
 
-    /**
-     * @return string
-     */
     public function getUsername(): string
     {
         return $this->getName();
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->getAttribute('username');
     }
 
-    /**
-     * @param bool $array
-     * @return array
-     */
     public function getGroups(bool $array = true): array
     {
         $Everyone = new QUI\Groups\Everyone();

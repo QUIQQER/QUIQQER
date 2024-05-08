@@ -18,10 +18,6 @@ class MailSMTP extends QUI\InstallationWizard\AbstractInstallationWizardStep
         $this->setJavaScriptControl('controls/installation/MailSMTP');
     }
 
-    /**
-     * @param null $Locale
-     * @return string
-     */
     public function getTitle($Locale = null): string
     {
         if ($Locale === null) {
@@ -31,10 +27,6 @@ class MailSMTP extends QUI\InstallationWizard\AbstractInstallationWizardStep
         return $Locale->get('quiqqer/core', 'quiqqer.setup.MailSMTP.title');
     }
 
-    /**
-     * @param null $Locale
-     * @return string
-     */
     public function getDescription($Locale = null): string
     {
         if ($Locale === null) {
@@ -44,9 +36,6 @@ class MailSMTP extends QUI\InstallationWizard\AbstractInstallationWizardStep
         return $Locale->get('quiqqer/core', 'quiqqer.setup.MailSMTP.description');
     }
 
-    /**
-     * @return string
-     */
     public function create(): string
     {
         try {

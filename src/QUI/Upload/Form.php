@@ -13,11 +13,6 @@ use function str_replace;
  */
 class Form extends QUI\QDOM
 {
-    /**
-     * Form constructor.
-     *
-     * @param array $params
-     */
     public function __construct(array $params = [])
     {
         // defaults
@@ -106,9 +101,6 @@ class Form extends QUI\QDOM
 
     /**
      * Return a php bool var for js bool
-     *
-     * @param $var
-     * @return string
      */
     public function phpBool2JsBool($var): string
     {

@@ -13,8 +13,6 @@ class Utils
 {
     /**
      * Gets all available languages
-     *
-     * @return array
      */
     public static function getAvailableLanguages(): array
     {
@@ -59,10 +57,6 @@ class Utils
 
     /**
      * Calculates the MD5 sum of the given directory
-     *
-     * @param $dir
-     *
-     * @return bool|string
      */
     public static function getDirMD5($dir): bool|string
     {
@@ -92,10 +86,6 @@ class Utils
 
     /**
      * Sanitizes the given projectname
-     *
-     * @param $name
-     *
-     * @return string
      */
     public static function sanitizeProjectName($name): string
     {
@@ -135,8 +125,6 @@ class Utils
      * Nginx = 4
      *
      * Apache2.4 + Nginx = 6
-     *
-     * @return int
      */
     public static function detectWebserver(): int
     {
@@ -210,11 +198,6 @@ class Utils
         return $nginx ? $result + 4 : $result;
     }
 
-    /**
-     * @param $templateName
-     * @param $version
-     * @return bool
-     */
     public static function templateSupportsDemoData($templateName, $version): bool
     {
         $packagesJson = file_get_contents('https://update.quiqqer.com/packages.json');

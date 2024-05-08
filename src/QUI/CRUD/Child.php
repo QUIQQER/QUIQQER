@@ -21,17 +21,8 @@ use function array_key_exists;
  */
 abstract class Child extends QUI\QDOM
 {
-    /**
-     * @var QUI\Events\Event
-     */
     protected QUI\Events\Event $Events;
 
-    /**
-     * Child constructor.
-     *
-     * @param integer|string $id
-     * @param Factory $Factory
-     */
     public function __construct(protected int|string $id, protected Factory $Factory)
     {
         $this->Events = new QUI\Events\Event();
@@ -57,8 +48,6 @@ abstract class Child extends QUI\QDOM
 
     /**
      * Return the Child-ID
-     *
-     * @return int|string
      */
     public function getId(): int|string
     {
@@ -117,10 +106,6 @@ abstract class Child extends QUI\QDOM
     /**
      * returns an attribute
      * if the attribute is not set, it returns false
-     *
-     * @param string $name
-     *
-     * @return mixed
      */
     public function getAttribute(string $name): mixed
     {

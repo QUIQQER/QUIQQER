@@ -24,9 +24,6 @@ use QUI\Projects\Media\Image;
  */
 class Nobody extends QUI\QDOM implements User
 {
-    /**
-     * @var Locale|null
-     */
     protected ?Locale $Locale = null;
 
     /**
@@ -50,18 +47,11 @@ class Nobody extends QUI\QDOM implements User
         }
     }
 
-    /**
-     * @return bool
-     */
     public function isSU(): bool
     {
         return false;
     }
 
-    /**
-     * @param int|string $groupId
-     * @return bool
-     */
     public function isInGroup(int|string $groupId): bool
     {
         return in_array($groupId, $this->getGroups(false));
@@ -84,7 +74,6 @@ class Nobody extends QUI\QDOM implements User
     }
 
     /**
-     * @return bool|int
      * @deprecated
      */
     public function getId(): false|int
@@ -100,9 +89,6 @@ class Nobody extends QUI\QDOM implements User
         return $this->canUseBackend();
     }
 
-    /**
-     * @return bool
-     */
     public function canUseBackend(): bool
     {
         return false;
@@ -118,33 +104,21 @@ class Nobody extends QUI\QDOM implements User
         return false;
     }
 
-    /**
-     * @return bool
-     */
     public function isDeleted(): bool
     {
         return true;
     }
 
-    /**
-     * @return bool
-     */
     public function isActive(): bool
     {
         return false;
     }
 
-    /**
-     * @return bool
-     */
     public function isOnline(): bool
     {
         return true;
     }
 
-    /**
-     * @return bool
-     */
     public function logout(): bool
     {
         return false;
@@ -160,28 +134,16 @@ class Nobody extends QUI\QDOM implements User
         return false;
     }
 
-    /**
-     * @param User|null $PermissionUser
-     * @return bool
-     */
     public function deactivate(?User $PermissionUser = null): bool
     {
         return false;
     }
 
-    /**
-     * @param User|null $PermissionUser
-     * @return bool
-     */
     public function disable(?User $PermissionUser = null): bool
     {
         return false;
     }
 
-    /**
-     * @param User|null $PermissionUser
-     * @return bool
-     */
     public function save(?User $PermissionUser = null): bool
     {
         QUI::getSession()->set('attributes', $this->getAttributes());
@@ -189,10 +151,6 @@ class Nobody extends QUI\QDOM implements User
         return true;
     }
 
-    /**
-     * @param User|null $PermissionUser
-     * @return bool
-     */
     public function delete(?User $PermissionUser = null): bool
     {
         return false;
@@ -201,10 +159,7 @@ class Nobody extends QUI\QDOM implements User
     /**
      * This method is useless for nobody
      *
-     * @param array $params
-     *
      * @throws Exception
-     * @ignore
      */
     public function addAddress(array $params): never
     {
@@ -218,8 +173,6 @@ class Nobody extends QUI\QDOM implements User
 
     /**
      * Return the locale object depending on the user
-     *
-     * @return Locale
      */
     public function getLocale(): Locale
     {
@@ -241,7 +194,6 @@ class Nobody extends QUI\QDOM implements User
     /**
      * Nobody can't be added to the group
      *
-     * @param int $groupId
      * @throws Exception
      */
     public function addToGroup(int $groupId): never
@@ -257,7 +209,6 @@ class Nobody extends QUI\QDOM implements User
     /**
      * Nobody can't be added to the group
      *
-     * @param int|Group $Group
      * @throws Exception
      */
     public function removeGroup(Group|int $Group): never
@@ -270,26 +221,17 @@ class Nobody extends QUI\QDOM implements User
         );
     }
 
-    /**
-     * @param string $field
-     *
-     * @return bool
-     */
     public function getExtra(string $field): bool
     {
         return false;
     }
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         return $this::class;
     }
 
     /**
-     * @return int|string
      * @deprecated
      */
     public function getUniqueId(): int|string
@@ -297,35 +239,21 @@ class Nobody extends QUI\QDOM implements User
         return $this->getUUID();
     }
 
-    /**
-     * @return string|int
-     */
     public function getUUID(): string|int
     {
         return '';
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return QUI::getLocale()->get('quiqqer/core', 'nobody.name');
     }
 
-    /**
-     * @return string
-     */
     public function getUsername(): string
     {
         return QUI::getLocale()->get('quiqqer/core', 'nobody.username');
     }
 
-    /**
-     * Return the user lang
-     *
-     * @return string
-     */
     public function getLang(): string
     {
         return self::getLocale()->getCurrent();
@@ -334,9 +262,6 @@ class Nobody extends QUI\QDOM implements User
     /**
      * This method is useless for nobody
      * \QUI\Users\Nobody cannot have an address
-     *
-     * @return array
-     * @ignore
      */
     public function getAddressList(): array
     {
@@ -347,11 +272,7 @@ class Nobody extends QUI\QDOM implements User
      * This method is useless for nobody
      * \QUI\Users\Nobody cannot have an address
      *
-     * @param integer|string $id
-     * @return Address
-     *
      * @throws Exception
-     * @ignore
      */
     public function getAddress(int|string $id): Address
     {
@@ -391,8 +312,6 @@ class Nobody extends QUI\QDOM implements User
     /**
      * Return the Country of nobody
      * use the GEOIP_COUNTRY_CODE from apache, if available
-     *
-     * @return Country|boolean
      */
     public function getCountry(): Country|bool
     {
@@ -453,19 +372,11 @@ class Nobody extends QUI\QDOM implements User
         return false;
     }
 
-    /**
-     * @return bool
-     */
     public function getStatus(): bool
     {
         return true;
     }
 
-    /**
-     * @param array|string $groups
-     *
-     * @return bool
-     */
     public function setGroups(array|string $groups): bool
     {
         return false;
@@ -485,10 +396,6 @@ class Nobody extends QUI\QDOM implements User
 
     /**
      * Exists the permission in the user permissions
-     *
-     * @param string $permission
-     *
-     * @return boolean|string
      */
     public function hasPermission(string $permission): bool|string
     {
@@ -511,8 +418,6 @@ class Nobody extends QUI\QDOM implements User
 
     /**
      * not usable, nobody is always a company
-     *
-     * @param bool $status
      */
     public function setCompanyStatus(bool $status = false): void
     {

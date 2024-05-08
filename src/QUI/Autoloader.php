@@ -31,8 +31,6 @@ class Autoloader
 {
     /**
      * Composer Autoloader
-     *
-     * @var ?ClassLoader
      */
     public static ?ClassLoader $ComposerLoader = null;
 
@@ -41,8 +39,6 @@ class Autoloader
      *
      * This method checks if any autoload functions are registered and unregisters the composer autoloader.
      * The composer autoloader is identified by an instance of the \Composer\Autoload\ClassLoader class.
-     *
-     * @return void
      */
     public static function checkAutoloader(): void
     {
@@ -74,8 +70,6 @@ class Autoloader
      * Initializes the class.
      *
      * Initializes the class by loading the composer autoloader if not already loaded.
-     *
-     * @return void
      */
     public static function init(): void
     {

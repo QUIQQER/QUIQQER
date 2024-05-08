@@ -24,15 +24,8 @@ use function usort;
  */
 class Login extends Control
 {
-    /**
-     * @var bool
-     */
     protected bool $isGlobalAuth = false;
 
-    /**
-     * Login constructor.
-     * @param array $options
-     */
     public function __construct(array $options = [])
     {
         $this->setAttributes([
@@ -48,8 +41,6 @@ class Login extends Control
     }
 
     /**
-     * @return string
-     *
      * @throws Exception
      * @throws ExceptionStack
      * @throws QUI\Exception
@@ -104,8 +95,6 @@ class Login extends Control
 
     /**
      * Return the next Authenticator, if one exists
-     *
-     * @return array|string|null
      *
      * @throws Exception
      * @throws QUI\Exception

@@ -21,16 +21,9 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
 {
     /**
      * The Project of the trash
-     *
-     * @var Project|null
      */
     protected ?Project $Project = null;
 
-    /**
-     * Constructor
-     *
-     * @param Project $Project
-     */
     public function __construct(Project $Project)
     {
         $this->Project = $Project;
@@ -134,7 +127,6 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
     /**
      * Zerstört die gewünschten Seiten im Trash
      *
-     * @param array $ids
      * @throws QUI\Exception
      */
     public function destroy(array $ids = []): void
@@ -151,10 +143,6 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
 
     /**
      * Stellt die gewünschten Seiten wieder her
-     *
-     * @param Project $Project
-     * @param array $ids
-     * @param integer $parentid
      *
      * @throws QUI\Exception
      */

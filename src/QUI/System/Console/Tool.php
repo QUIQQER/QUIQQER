@@ -23,34 +23,20 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
 {
     /**
      * Console parameter list, list of available parameter
-     *
-     * @var array
      */
     protected array $paramsList = [];
 
     /**
      * Console parameter, values of the parameter / arguments
-     *
-     * @var array
      */
     protected array $params;
 
-    /**
-     * @var array
-     */
     protected array $examples = [];
 
-    /**
-     * @var bool
-     */
     protected bool $systemTool = true;
 
     /**
      * Set the name of the Tool
-     *
-     * @param string $name
-     *
-     * @return Tool
      */
     public function setName(string $name): self
     {
@@ -61,10 +47,6 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
 
     /**
      * Set the description of the Tool
-     *
-     * @param string $description
-     *
-     * @return Tool
      */
     public function setDescription(string $description): self
     {
@@ -76,8 +58,6 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
     /**
      * Set the help of the Tool
      *
-     * @param string $help
-     * @return Tool
      * @deprecated use addArgument for argument descriptions
      */
     public function setHelp(string $help): self
@@ -116,14 +96,6 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
         return $this;
     }
 
-    /**
-     * Set value of an argument
-     *
-     * @param string $name
-     * @param boolean|string $value
-     *
-     * @return Tool
-     */
     public function setArgument(string $name, bool|string $value): self
     {
         $this->params[$name] = $value;
@@ -141,8 +113,6 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
 
     /**
      * Return the name of the Tool
-     *
-     * @return string|boolean
      */
     public function getName(): bool|string
     {
@@ -151,8 +121,6 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
 
     /**
      * Return the name of the Tool
-     *
-     * @return string|boolean
      */
     public function getDescription(): bool|string
     {
@@ -255,10 +223,6 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      * If the argument is not set and the user are in the cli, then a user input is required (->readInput())
      *
      * An argument can look like: --argument, argument, -shortArgument
-     *
-     * @param string $name
-     *
-     * @return string|bool
      */
     public function getArgument(string $name): bool|string
     {
@@ -349,8 +313,6 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
 
     /**
      * Read the input from the user
-     *
-     * @return string
      */
     public function readInput(): string
     {
@@ -371,8 +333,6 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
     /**
      * Is this tool a system tool?
      * system tools can be executed without a user
-     *
-     * @return bool
      */
     public function isSystemTool(): bool
     {

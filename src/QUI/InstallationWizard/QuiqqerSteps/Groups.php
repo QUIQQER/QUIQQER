@@ -21,10 +21,6 @@ class Groups extends QUI\InstallationWizard\AbstractInstallationWizardStep
         $this->setJavaScriptControl('controls/installation/Groups');
     }
 
-    /**
-     * @param null $Locale
-     * @return string
-     */
     public function getTitle($Locale = null): string
     {
         if ($Locale === null) {
@@ -34,10 +30,6 @@ class Groups extends QUI\InstallationWizard\AbstractInstallationWizardStep
         return $Locale->get('quiqqer/core', 'quiqqer.setup.groups.title');
     }
 
-    /**
-     * @param null $Locale
-     * @return string
-     */
     public function getDescription($Locale = null): string
     {
         if ($Locale === null) {
@@ -47,9 +39,6 @@ class Groups extends QUI\InstallationWizard\AbstractInstallationWizardStep
         return $Locale->get('quiqqer/core', 'quiqqer.setup.groups.description');
     }
 
-    /**
-     * @return string
-     */
     public function create(): string
     {
         try {

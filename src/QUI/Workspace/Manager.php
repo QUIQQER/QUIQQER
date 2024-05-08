@@ -61,11 +61,6 @@ class Manager
         }
     }
 
-    /**
-     * Return the table string
-     *
-     * @return string
-     */
     public static function table(): string
     {
         return QUI::getDBTableName('users_workspaces');
@@ -171,11 +166,6 @@ class Manager
     }
 
     /**
-     * Return the titles of the users workspaces
-     *
-     * @param QUI\Users\User $User
-     *
-     * @return array
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
@@ -194,9 +184,6 @@ class Manager
     /**
      * Return the workspaces list from a user
      *
-     * @param User $User
-     *
-     * @return array
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
@@ -225,10 +212,6 @@ class Manager
 
     /**
      * Saves a workspace
-     *
-     * @param QUI\Users\User $User
-     * @param integer $id
-     * @param array $data
      *
      * @throws QUI\Exception
      */
@@ -271,14 +254,7 @@ class Manager
     }
 
     /**
-     * Return a workspace by its id
-     *
-     * @param integer $id - id of the workspace
-     * @param QUI\Users\User $User
-     *
-     * @return array
      * @throws QUI\Exception
-     *
      */
     public static function getWorkspaceById(int $id, QUI\Users\User $User): array
     {
@@ -307,8 +283,6 @@ class Manager
     /**
      * Set the workspace to the standard workspace
      *
-     * @param User $User
-     * @param integer $id
      * @throws QUI\Database\Exception
      */
     public static function setStandardWorkspace(User $User, int $id): void
@@ -341,8 +315,6 @@ class Manager
 
     /**
      * Return the available panels
-     *
-     * @return array
      */
     public static function getAvailablePanels(): array
     {
@@ -375,21 +347,11 @@ class Manager
         return $panels;
     }
 
-    /**
-     * Return the two column workspace default
-     *
-     * @return string
-     */
     public static function getTwoColumnDefault(): string
     {
         return file_get_contents(dirname(__FILE__, 2) . '/Users/workspaces/twoColumns.js');
     }
 
-    /**
-     * Return the three column workspace default
-     *
-     * @return string
-     */
     public static function getThreeColumnDefault(): string
     {
         return file_get_contents(dirname(__FILE__, 2) . '/Users/workspaces/threeColumns.js');

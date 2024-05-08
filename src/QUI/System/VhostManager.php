@@ -30,11 +30,6 @@ use function trim;
  */
 class VhostManager
 {
-    /**
-     * Config
-     *
-     * @var Config|null
-     */
     protected ?Config $Config = null;
 
     /**
@@ -73,9 +68,6 @@ class VhostManager
     }
 
     /**
-     * Return the config
-     *
-     * @return Config|null
      * @throws Exception
      */
     protected function getConfig(): ?Config
@@ -147,7 +139,6 @@ class VhostManager
     /**
      * Return the vhost list
      *
-     * @return array
      * @throws Exception
      */
     public function getList(): array
@@ -284,7 +275,6 @@ class VhostManager
     /**
      * Remove a vhost entry
      *
-     * @param string $vhost
      *
      * @throws Exception
      */
@@ -311,9 +301,6 @@ class VhostManager
     /**
      * Return the vhost data
      *
-     * @param string $vhost
-     * @return array|false
-     *
      * @throws Exception
      */
     public function getVhost(string $vhost): bool|array
@@ -323,9 +310,6 @@ class VhostManager
 
     /**
      * Return all hosts from the project
-     *
-     * @param string $projectName - Name of the project
-     * @return array
      *
      * @throws Exception
      */
@@ -350,8 +334,6 @@ class VhostManager
     /**
      * Get Project by VHost
      *
-     * @param string $vhost
-     * @return QUI\Projects\Project|false - Project or false if no project not found
      * @throws Exception
      */
     public function getProjectByHost(string $vhost): bool|QUI\Projects\Project

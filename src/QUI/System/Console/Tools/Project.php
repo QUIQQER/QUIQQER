@@ -289,10 +289,6 @@ class Project extends QUI\System\Console\Tool
 
     /**
      * Prints a line to the output while using a locale variable of the 'quiqqer/core' group
-     *
-     * @param $locale
-     * @param bool|string $color
-     * @param bool|string $background
      */
     protected function writeLnLocale($locale, bool|string $color = false, bool|string $background = false): void
     {
@@ -304,7 +300,6 @@ class Project extends QUI\System\Console\Tool
     /**
      * Copy project from one language to another.
      *
-     * @return void
      * @throws QUI\Exception
      */
     protected function copyProject(): void
@@ -453,9 +448,6 @@ class Project extends QUI\System\Console\Tool
     /**
      * Takes a $RootSite and creates language copies of all its children.
      *
-     * @param QUI\Projects\Site $RootSite
-     * @param string $langTo
-     * @param QUI\Projects\Site|null $ParentSite - Parent site of $RootSite
      * @throws QUI\Exception
      */
     protected function copySiteLevel(

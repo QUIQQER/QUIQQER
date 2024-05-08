@@ -29,15 +29,11 @@ class Handler
 {
     /**
      * global instance
-     *
-     * @var Handler|null
      */
     protected static ?Handler $Instance = null;
 
     /**
      * Return the global QUI\Users\Auth\Handler instance
-     *
-     * @return Handler
      */
     public static function getInstance(): Handler
     {
@@ -49,7 +45,6 @@ class Handler
     }
 
     /**
-     * @param QUI\Package\Package $Package
      * @throws Exception
      */
     public static function onPackageSetup(QUI\Package\Package $Package): void
@@ -92,8 +87,6 @@ class Handler
     /**
      * Return all global active authenticators for the frontend authentication
      * - alias for getGlobalFrontendAuthenticators
-     *
-     * @return array
      */
     public function getGlobalAuthenticators(): array
     {
@@ -102,18 +95,12 @@ class Handler
 
     /**
      * Return all global active authenticators for the frontend authentication
-     *
-     * @return array
      */
     public function getGlobalFrontendAuthenticators(): array
     {
         return $this->getAuthenticatorFromConfig(QUI::conf('auth_frontend'));
     }
 
-    /**
-     * @param array $authenticators
-     * @return array
-     */
     protected function getAuthenticatorFromConfig(array $authenticators = []): array
     {
         if (empty($authenticators)) {
@@ -161,8 +148,6 @@ class Handler
 
     /**
      * Return all available authenticators
-     *
-     * @return array
      */
     public function getAvailableAuthenticators(): array
     {
@@ -213,8 +198,6 @@ class Handler
 
     /**
      * Return all global active authenticators for the backend authentication
-     *
-     * @return array
      */
     public function getGlobalBackendAuthenticators(): array
     {
@@ -248,8 +231,6 @@ class Handler
     /**
      * Send e-mail to the user to confirm password reset
      *
-     * @param QUI\Users\User $User
-     * @return void
      *
      * @throws QUI\Exception
      * @throws \PHPMailer\PHPMailer\Exception
@@ -306,8 +287,6 @@ class Handler
 
     /**
      * Check if the package "quiqqer/verification" is installed
-     *
-     * @return bool
      */
     public function isQuiqqerVerificationPackageInstalled(): bool
     {

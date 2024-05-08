@@ -57,22 +57,16 @@ class Manager
 {
     /**
      * Projects config
-     *
-     * @var Config|null
      */
     public static ?Config $Config = null;
 
     /**
      * loaded projects
-     *
-     * @var array
      */
     public static array $projects = [];
 
     /**
      * standard project
-     *
-     * @var Project|null
      */
     public static ?Project $Standard = null;
 
@@ -86,9 +80,6 @@ class Manager
 
     /**
      * set configuration for a project
-     *
-     * @param string $project
-     * @param array $params
      *
      * @throws QUI\Exception
      * @throws Exception
@@ -334,10 +325,6 @@ class Manager
     }
 
     /**
-     * projects.ini
-     *
-     * @return Config
-     *
      * @throws QUI\Exception
      */
     public static function getConfig(): Config
@@ -345,15 +332,6 @@ class Manager
         return QUI::getConfig('etc/projects.ini');
     }
 
-    /**
-     * Return the config list
-     *
-     * @param Project $Project
-     *
-     * @return array
-     *
-     * @throws QUI\Exception
-     */
     public static function getProjectConfigList(Project $Project): array
     {
         $cache = $Project->getCachePath() . '/configList';
@@ -433,7 +411,6 @@ class Manager
     /**
      * Returns the current project
      *
-     * @return Project|null
      * @throws QUI\Exception
      */
     public static function get(): ?Project
@@ -467,7 +444,6 @@ class Manager
     /**
      * Standard Projekt bekommen
      *
-     * @return Project|null
      * @throws QUI\Exception
      */
     public static function getStandard(): ?Project
@@ -513,10 +489,6 @@ class Manager
     /**
      * Return all settings.xml which are related to the project
      * eq: all settings.xml from templates
-     *
-     * @param Project $Project
-     *
-     * @return array
      */
     public static function getRelatedSettingsXML(Project $Project): array
     {
@@ -588,10 +560,6 @@ class Manager
     /**
      * Return all templates which are related to the project
      * the vhost templates are included
-     *
-     * @param Project $Project
-     *
-     * @return array
      */
     public static function getRelatedTemplates(Project $Project): array
     {
@@ -654,6 +622,7 @@ class Manager
      * @param array|string $project - project data
      *
      * @return Project
+     *
      * @throws QUI\Exception
      */
     public static function decode(array|string $project): Project
@@ -728,17 +697,8 @@ class Manager
     }
 
     /**
-     * Create a new project
-     *
-     * @param string $name - Project name
-     * @param string $lang - Project lang
-     * @param array $languages - optional, additional languages
-     * @param string $template - Project template
-     *
-     * @return Project
      * @throws QUI\Exception
      * @throws Exception
-     *
      * @todo noch einmal anschauen und übersichtlicher schreiben
      */
     public static function createProject(
@@ -1001,10 +961,6 @@ class Manager
     }
 
     /**
-     * Delete a project
-     *
-     * @param Project $Project
-     *
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
@@ -1110,8 +1066,6 @@ class Manager
 
     /**
      * Return the projects count
-     *
-     * @return integer
      */
     public static function count(): int
     {
@@ -1316,9 +1270,6 @@ class Manager
 
     /**
      * Check if a project with given name exists.
-     *
-     * @param string $projectName
-     * @return bool
      */
     public static function existsProject(string $projectName): bool
     {

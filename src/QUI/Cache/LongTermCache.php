@@ -18,14 +18,8 @@ use function strpos;
  */
 class LongTermCache
 {
-    /**
-     * @var null|QUI\Config
-     */
     protected static ?QUI\Config $Config = null;
 
-    /**
-     * @var null|Stash\Pool
-     */
     protected static ?Stash\Pool $Pool = null;
 
     /**
@@ -54,10 +48,6 @@ class LongTermCache
         }
     }
 
-    /**
-     * @param $name
-     * @return string
-     */
     protected static function generateStorageKey($name): string
     {
         return md5(__FILE__) . '/quiqqer-lt/' . $name;
@@ -252,9 +242,6 @@ class LongTermCache
         return $data;
     }
 
-    /**
-     * @return string
-     */
     public static function fileSystemPath(): string
     {
         return VAR_DIR . 'cache/longtime/';

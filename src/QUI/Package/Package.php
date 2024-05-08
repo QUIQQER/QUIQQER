@@ -71,68 +71,24 @@ class Package extends QUI\QDOM
 
     const PANEL_XML = 'panel.xml';
 
-    /**
-     * Name of the package
-     *
-     * @var string
-     */
     protected string $name = '';
 
-    /**
-     * Title of the package
-     *
-     * @var ?string
-     */
     protected ?string $title = null;
 
-    /**
-     * Description of the package
-     *
-     * @var string|null
-     */
     protected ?string $description = null;
 
-    /**
-     * Directory of the package
-     *
-     * @var string
-     */
     protected string $packageDir = '';
 
-    /**
-     * @var array|null
-     */
     protected ?array $packageXML = null;
 
-    /**
-     * Package composer data from the composer file
-     *
-     * @var bool|array
-     */
     protected array|bool $composerData = false;
 
-    /**
-     * Path to the Config
-     *
-     * @var ?string
-     */
     protected ?string $configPath = null;
 
-    /**
-     * Package Config
-     *
-     * @var ?QUI\Config
-     */
     protected ?QUI\Config $Config = null;
 
-    /**
-     * @var bool
-     */
     protected bool $isQuiqqerPackage = false;
 
-    /**
-     * @var bool
-     */
     protected bool $readPackageInfo = false;
 
     /**
@@ -162,29 +118,17 @@ class Package extends QUI\QDOM
 
     /**
      * Alias for getCacheName()
-     *
-     * @return string
      */
     public function getCachePath(): string
     {
         return $this->getCacheName();
     }
 
-    /**
-     * Return the cache name for this package
-     *
-     * @return string
-     */
     public function getCacheName(): string
     {
         return 'quiqqer/package/' . $this->getName();
     }
 
-    /**
-     * Return the name of the package
-     *
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
@@ -220,11 +164,6 @@ class Package extends QUI\QDOM
         return $provider[$providerName];
     }
 
-    /**
-     * Read the package xml
-     *
-     * @return array
-     */
     protected function getPackageXMLData(): array
     {
         if ($this->packageXML !== null) {
@@ -251,11 +190,6 @@ class Package extends QUI\QDOM
         return $this->packageXML;
     }
 
-    /**
-     * Is the package a quiqqer package?
-     *
-     * @return bool
-     */
     public function isQuiqqerPackage(): bool
     {
         $this->readPackageData();
@@ -383,8 +317,6 @@ class Package extends QUI\QDOM
     /**
      * Has the package a template parent?
      * If the package is a template, it's possible that the template has a package
-     *
-     * @return bool
      */
     public function hasTemplateParent(): bool
     {
@@ -396,8 +328,6 @@ class Package extends QUI\QDOM
     /**
      * Return the template parent
      * - if one is set
-     *
-     * @return bool|Package
      */
     public function getTemplateParent(): Package|bool
     {
@@ -417,8 +347,6 @@ class Package extends QUI\QDOM
     /**
      * Return the var dir for the package
      * you can use the var dir for not accessible files
-     *
-     * @return string
      */
     public function getVarDir(): string
     {
@@ -431,8 +359,6 @@ class Package extends QUI\QDOM
 
     /**
      * Return the package title
-     *
-     * @return string
      */
     public function getTitle(): string
     {
@@ -465,8 +391,6 @@ class Package extends QUI\QDOM
 
     /**
      * Return the package description
-     *
-     * @return string
      */
     public function getDescription(): string
     {
@@ -507,8 +431,6 @@ class Package extends QUI\QDOM
 
     /**
      * Return the path to the package image / icon
-     *
-     * @return string
      */
     public function getImage(): string
     {
@@ -525,9 +447,6 @@ class Package extends QUI\QDOM
         return '';
     }
 
-    /**
-     * @return string
-     */
     public function getVersion(): string
     {
         $composer = $this->getComposerData();
@@ -538,8 +457,6 @@ class Package extends QUI\QDOM
     /**
      * Return all preview images
      * Not the main image
-     *
-     * @return array
      */
     public function getPreviewImages(): array
     {
@@ -553,10 +470,6 @@ class Package extends QUI\QDOM
     }
 
     /**
-     * Return the package config
-     *
-     * @return Config|null
-     *
      * @throws QUI\Exception
      */
     public function getConfig(): ?QUI\Config
@@ -582,8 +495,6 @@ class Package extends QUI\QDOM
 
     /**
      * Return the package lock data
-     *
-     * @return array
      */
     public function getLock(): array
     {
@@ -600,8 +511,6 @@ class Package extends QUI\QDOM
 
     /**
      * Return the requirements / dependencies of the package
-     *
-     * @return array
      */
     public function getDependencies(): array
     {
@@ -629,8 +538,6 @@ class Package extends QUI\QDOM
 
     /**
      * Return the system path of the package
-     *
-     * @return string
      */
     public function getDir(): string
     {
@@ -639,11 +546,6 @@ class Package extends QUI\QDOM
 
     /**
      * Checks the package permission
-     *
-     * @param string $permission - could be canUse
-     * @param QUI\Interfaces\Users\User|null $User
-     *
-     * @return bool
      */
     public function hasPermission(string $permission = 'canUse', QUI\Interfaces\Users\User $User = null): bool
     {
@@ -661,9 +563,6 @@ class Package extends QUI\QDOM
      * Return the permission name for a package permission
      * eq:
      * - canUse
-     *
-     * @param string $permissionName
-     * @return mixed
      */
     public function getPermissionName(string $permissionName = 'canUse'): string
     {
@@ -862,8 +761,6 @@ class Package extends QUI\QDOM
 
     /**
      * Is the package a quiqqer asset package?
-     *
-     * @return bool
      */
     public function isQuiqqerAsset(): bool
     {

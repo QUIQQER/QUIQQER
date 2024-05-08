@@ -16,11 +16,6 @@ use QUI\Projects\Site\Utils;
  */
 class Navigation extends QUI\Control
 {
-    /**
-     * constructor
-     *
-     * @param array $attributes
-     */
     public function __construct(array $attributes = [])
     {
         // defaults values
@@ -43,7 +38,6 @@ class Navigation extends QUI\Control
     }
 
     /**
-     * @return string
      * @throws QUI\Exception
      */
     public function getBody(): string

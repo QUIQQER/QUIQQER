@@ -39,64 +39,40 @@ class Template extends QUI\QDOM
 {
     /**
      * Registered template engines
-     *
-     * @var array
      */
     protected array $engines = [];
 
     /**
      * Header extensions
-     *
-     * @var array
      */
     protected array $header = [];
 
     /**
      * Footer extensions
-     *
-     * @var array
      */
     protected array $footer = [];
 
     /**
      * assigned vars
-     *
-     * @var array
      */
     protected array $assigned = [];
 
     /**
      * modules that loaded after the onload event
-     *
-     * @var array
      */
     protected array $onLoadModules = [];
 
-    /**
-     * @var ?QUI\Package\Package
-     */
     protected ?Package\Package $TemplatePackage = null;
 
-    /**
-     * @var ?QUI\Package\Package
-     */
     protected ?Package\Package $TemplateParent = null;
 
-    /**
-     * @var null|QUI\Projects\Project
-     */
     protected ?Projects\Project $Project = null;
 
     /**
      * Project template list
-     *
-     * @var array
      */
     protected array $templates = [];
 
-    /**
-     * constructor
-     */
     public function __construct()
     {
         $this->setAttribute('mootools', true);
@@ -131,10 +107,6 @@ class Template extends QUI\QDOM
     }
 
     /**
-     * Return the Template Config object
-     *
-     * @return QUI\Config
-     *
      * @throws QUI\Exception
      */
     public static function getConfig(): Config
@@ -148,19 +120,12 @@ class Template extends QUI\QDOM
 
     /**
      * Return the current header extensions
-     *
-     * @return array
      */
     public function getExtendHeader(): array
     {
         return $this->header;
     }
 
-    /**
-     *
-     * @param string $cssPath
-     * @param int $priority
-     */
     public function extendHeaderWithCSSFile(string $cssPath, int $priority = 3): void
     {
         $this->extendHeader(
@@ -171,9 +136,6 @@ class Template extends QUI\QDOM
 
     /**
      * Extend the head <head>...</head>
-     *
-     * @param string $str
-     * @param integer $priority
      */
     public function extendHeader(string $str, int $priority = 3): void
     {
@@ -187,11 +149,6 @@ class Template extends QUI\QDOM
         $this->header[$priority] = $_str;
     }
 
-    /**
-     * @param string $jsPath
-     * @param boolean $async
-     * @param integer $priority
-     */
     public function extendHeaderWithJavaScriptFile(
         string $jsPath,
         bool $async = true,
@@ -214,10 +171,6 @@ class Template extends QUI\QDOM
 
     /**
      * Add the JavaScript File to the bottom of the html
-     *
-     * @param string $jsPath
-     * @param boolean $async
-     * @param integer $priority
      */
     public function extendFooterWithJavaScriptFile(
         string $jsPath,
@@ -241,9 +194,6 @@ class Template extends QUI\QDOM
 
     /**
      * Add Code to the bottom of the html
-     *
-     * @param string $str
-     * @param integer $priority
      */
     public function extendFooter(
         string $str,
@@ -261,8 +211,6 @@ class Template extends QUI\QDOM
 
     /**
      * Return the current footer extensions
-     *
-     * @return array
      */
     public function getExtendFooter(): array
     {
@@ -271,8 +219,6 @@ class Template extends QUI\QDOM
 
     /**
      * Add a javascript module, that loaded at the onload event
-     *
-     * @param string $module
      */
     public function addOnloadJavaScriptModule(string $module): void
     {
@@ -282,9 +228,6 @@ class Template extends QUI\QDOM
     /**
      * Returns the url for a file
      * - also considers template inheritance - template parent
-     *
-     * @param $path
-     * @return string
      */
     public function getTemplateUrl($path): string
     {
@@ -309,8 +252,6 @@ class Template extends QUI\QDOM
 
     /**
      * Get absolute path to current template package
-     *
-     * @return string
      */
     public function getTemplatePath(): string
     {
@@ -319,9 +260,6 @@ class Template extends QUI\QDOM
         return OPT_DIR . $template . '/';
     }
 
-    /**
-     * @return Package\Package|null
-     */
     public function getTemplatePackage(): ?Package\Package
     {
         return $this->TemplatePackage;
@@ -439,9 +377,6 @@ class Template extends QUI\QDOM
     /**
      * Register a param for the Template engine
      * This registered param would be assigned to the Template Engine at the getEngine() method
-     *
-     * @param string $param
-     * @param mixed $value
      */
     public function assignGlobalParam(string $param, mixed $value): void
     {
@@ -450,10 +385,6 @@ class Template extends QUI\QDOM
 
     /**
      * Prepares the contents of a template
-     *
-     * @param QUI\Interfaces\Projects\Site $Site
-     *
-     * @return string
      *
      * @throws QUI\Exception
      */
@@ -669,8 +600,6 @@ class Template extends QUI\QDOM
      * Return the template title
      * eq: <title></title>
      *
-     * @return string
-     *
      * @throws QUI\Exception
      */
     public function getTitle(): string
@@ -724,8 +653,6 @@ class Template extends QUI\QDOM
     /**
      * Return the html header
      * With all important meta entries and quiqqer libraries
-     *
-     * @return string
      *
      * @throws QUI\Exception
      */
@@ -940,9 +867,6 @@ class Template extends QUI\QDOM
     /**
      * Return all project templates which have a site.xml
      * -> consider template inheritance
-     *
-     * @param Project $Project
-     * @return bool|array
      */
     protected function getProjectTemplates(Projects\Project $Project): bool|array
     {

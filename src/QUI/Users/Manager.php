@@ -64,8 +64,6 @@ class Manager
 
     /**
      * internal prevention for multiple session user calling
-     *
-     * @var bool
      */
     protected bool $multipleCallPrevention = false;
 
@@ -74,30 +72,16 @@ class Manager
      */
     private array $users = [];
 
-    /**
-     * @var array
-     */
     private array $usersUUIDs = [];
 
-    /**
-     * @var null|Nobody
-     */
     private ?Nobody $Nobody = null;
 
-    /**
-     * @var null|SystemUser
-     */
     private ?SystemUser $SystemUser = null;
 
-    /**
-     * @var null|QUIUserInterface
-     */
     private ?QUIUserInterface $Session = null;
 
     /**
      * Return the db table for the addresses
-     *
-     * @return string
      */
     public static function tableAddress(): string
     {
@@ -121,8 +105,6 @@ class Manager
 
     /**
      * Get user profile template (profile window)
-     *
-     * @return string
      */
     public static function getProfileTemplate(): string
     {
@@ -169,8 +151,6 @@ class Manager
 
     /**
      * Return the db table
-     *
-     * @return string
      */
     public static function table(): string
     {
@@ -250,11 +230,7 @@ class Manager
     /**
      * Is the user authenticated
      *
-     * @param QUI\Interfaces\Users\User $User
-     *
-     * @return boolean
      * @todo muss noch fremde nutzer prüfen
-     *
      */
     public function isAuth(QUIUserInterface $User): bool
     {
@@ -271,11 +247,6 @@ class Manager
         return false;
     }
 
-    /**
-     * Get the Session user
-     *
-     * @return QUIUserInterface
-     */
     public function getUserBySession(): QUIUserInterface
     {
         if (defined('SYSTEM_INTERN')) {
@@ -328,11 +299,6 @@ class Manager
         return $this->Session;
     }
 
-    /**
-     * Return the System user
-     *
-     * @return SystemUser
-     */
     public function getSystemUser(): SystemUser
     {
         if ($this->SystemUser === null) {
@@ -342,11 +308,6 @@ class Manager
         return $this->SystemUser;
     }
 
-    /**
-     * Return the Nobody user
-     *
-     * @return Nobody
-     */
     public function getNobody(): Nobody
     {
         if ($this->Nobody === null) {
@@ -465,7 +426,6 @@ class Manager
      * Generate a user-dependent security hash
      * There are different data use such as IP, User-Agent and the System-Salt
      *
-     * @return string
      * @todo   noch eine eindeutige möglichkeit der Identifizierung des Browser finden
      */
     public function getSecHash(): string
@@ -491,10 +451,6 @@ class Manager
     /**
      * Is the Object a User?
      * It checks the user interface, for authentication please use ->isAuth()
-     *
-     * @param mixed $User
-     *
-     * @return boolean
      */
     public function isUser(mixed $User): bool
     {
@@ -513,13 +469,6 @@ class Manager
         return false;
     }
 
-    /**
-     * Is the Object a system user?
-     *
-     * @param mixed $User
-     *
-     * @return boolean
-     */
     public function isSystemUser(mixed $User): bool
     {
         if (!is_object($User)) {
@@ -536,10 +485,6 @@ class Manager
     /**
      * Create a new User
      *
-     * @param boolean|string $username - (optional), new username
-     * @param QUI\Interfaces\Users\User|null $ParentUser - (optional), Parent User, which create the user
-     *
-     * @return QUIUserInterface
      * @throws QUI\Users\Exception
      * @throws QUI\Exception
      */
@@ -616,13 +561,6 @@ class Manager
         return $User;
     }
 
-    /**
-     * Checks if the username already exists
-     *
-     * @param string $username
-     *
-     * @return boolean
-     */
     public function usernameExists(string $username): bool
     {
         if (empty($username)) {
@@ -650,9 +588,6 @@ class Manager
     /**
      * Checks name for illegal characters
      *
-     * @param string $username
-     *
-     * @return boolean
      * @throws QUI\Users\Exception
      */
     public static function checkUsernameSigns(string $username): bool
@@ -668,9 +603,6 @@ class Manager
 
     /**
      * Delete illegal characters from the name
-     *
-     * @param string $username
-     * @return string
      */
     public static function clearUsername(string $username): string
     {
@@ -681,7 +613,6 @@ class Manager
      * Set the default workspace for a user
      * The user must have administration permissions
      *
-     * @param QUIUserInterface $User
      * @throws QUI\Exception
      */
     public function setDefaultWorkspacesForUsers(QUIUserInterface $User): void
@@ -714,10 +645,6 @@ class Manager
 
     /**
      * Create user with specific attributes
-     *
-     * @param array $attributes
-     * @param QUIUserInterface|null $PermissionUser
-     * @return QUIUserInterface
      *
      * @throws Exception
      * @throws QUI\Database\Exception
@@ -851,8 +778,6 @@ class Manager
 
     /**
      * Returns the number of users in the system
-     *
-     * @return integer
      */
     public function countAllUsers(): int
     {
@@ -875,8 +800,6 @@ class Manager
     }
 
     /**
-     * Get all users
-     *
      * @param boolean $objects - as objects=true, as array=false
      *
      * @return array
@@ -910,11 +833,6 @@ class Manager
         return $result;
     }
 
-    /**
-     * Returns all user-IDs
-     *
-     * @return array
-     */
     public function getAllUserIds(): array
     {
         try {
@@ -1135,11 +1053,6 @@ class Manager
     }
 
     /**
-     * get the user by username
-     *
-     * @param string $username - Username
-     *
-     * @return QUIUserInterface|User
      * @throws Exception
      * @throws ExceptionStack
      * @throws QUI\Exception
@@ -1182,10 +1095,6 @@ class Manager
 
     /**
      * Authenticate the user at one authenticator
-     *
-     * @param string|AbstractAuthenticator|AuthenticatorInterface $authenticator
-     * @param array $params
-     * @return bool
      *
      * @throws QUI\Users\UserAuthException
      * @throws QUI\Exception
@@ -1293,13 +1202,6 @@ class Manager
         return true;
     }
 
-    /**
-     * Is the Object a system user?
-     *
-     * @param mixed $User
-     *
-     * @return boolean
-     */
     public function isNobodyUser(mixed $User): bool
     {
         if (!is_object($User)) {
@@ -1317,8 +1219,6 @@ class Manager
      * Get specific users
      *
      * @param array $params -> SQL Array
-     *
-     * @return array
      */
     public function getUsers(array $params = []): array
     {
@@ -1345,8 +1245,6 @@ class Manager
      * Get specific users ids
      *
      * @param array $params -> SQL Array
-     *
-     * @return array
      */
     public function getUserIds(array $params = []): array
     {
@@ -1364,8 +1262,6 @@ class Manager
 
     /**
      * Session initialize?
-     *
-     * @return boolean
      */
     public function existsSession(): bool
     {
@@ -1375,9 +1271,6 @@ class Manager
     /**
      * this method is used for a cleanup of the ram.
      * individual user instances can be removed from the internal ram cache.
-     *
-     * @param QUIUserInterface $User
-     * @return void
      */
     public function unsetUserInstance(QUIUserInterface $User): void
     {
@@ -1394,12 +1287,6 @@ class Manager
     }
 
     /**
-     * Get the user by email
-     *
-     * @param string $email - User E-Mail
-     *
-     * @return QUIUserInterface
-     *
      * @throws Exception
      * @throws ExceptionStack
      * @throws QUI\Exception
@@ -1441,9 +1328,6 @@ class Manager
     }
 
     /**
-     * @param string $username
-     *
-     * @return bool
      * @deprecated use usernameExists()
      */
     public function existsUsername(string $username): bool
@@ -1452,9 +1336,6 @@ class Manager
     }
 
     /**
-     * @param string $username
-     *
-     * @return bool
      * @deprecated use existsUsername
      */
     public function checkUsername(string $username): bool
@@ -1463,9 +1344,6 @@ class Manager
     }
 
     /**
-     * @param string $email
-     *
-     * @return bool
      * @deprecated use emailExists
      */
     public function existEmail(string $email): bool
@@ -1475,10 +1353,6 @@ class Manager
 
     /**
      * Checks the e-mail if this is already on the system
-     *
-     * @param string $email
-     *
-     * @return boolean
      */
     public function emailExists(string $email): bool
     {
@@ -1501,12 +1375,6 @@ class Manager
     }
 
     /**
-     * Delete the user
-     *
-     * @param integer|string $id - user id or user uuid
-     *
-     * @return boolean
-     *
      * @throws Exception
      * @throws ExceptionStack
      * @throws QUI\Exception
@@ -1518,12 +1386,6 @@ class Manager
     }
 
     /**
-     * Search all users
-     *
-     * @param array $params
-     *
-     * @return array|int
-     *
      * @throws Exception
      */
     public function search(array $params): array|int
@@ -1533,9 +1395,6 @@ class Manager
 
     /**
      * User search
-     *
-     * @param array $params
-     * @return array|integer
      *
      * @throws QUI\Database\Exception
      * @todo where params
@@ -1815,7 +1674,6 @@ class Manager
     /**
      * Create a new ID for a not created user
      *
-     * @return integer
      * @throws Exception
      * @deprecated
      */

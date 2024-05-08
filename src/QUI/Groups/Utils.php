@@ -26,9 +26,6 @@ class Utils
 {
     /**
      * JavaScript Buttons / Tabs for a group
-     *
-     * @param Group $Group
-     * @return Bar
      */
     public static function getGroupToolbar(Group $Group): Bar
     {
@@ -82,11 +79,6 @@ class Utils
     /**
      * Tab contents of a group Tab / Button
      *
-     * @param integer|string $gid - Group ID
-     * @param string $plugin - Plugin
-     * @param string $tab - Tab name
-     *
-     * @return string
      * @throws Exception
      */
     public static function getTab(int|string $gid, string $plugin, string $tab): string

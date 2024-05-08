@@ -19,10 +19,6 @@ use function is_string;
  */
 class AlphabetSorting extends QUI\Control
 {
-    /**
-     * constructor
-     * @param array $attributes
-     */
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -35,7 +31,6 @@ class AlphabetSorting extends QUI\Control
     }
 
     /**
-     * @return string
      * @throws QUI\Exception
      */
     public function getBody(): string

@@ -20,9 +20,6 @@ use function parse_url;
  */
 class Canonical
 {
-    /**
-     * @var bool
-     */
     protected bool $considerGetParams = false;
 
     public function __construct(
@@ -32,9 +29,6 @@ class Canonical
 
     /**
      * Return the meta tag, if it is allowed
-     *
-     * @return string
-     * @throws Exception
      */
     public function output(): string
     {
@@ -164,10 +158,6 @@ class Canonical
 
     /**
      * Return <link rel="canonical"> tag
-     *
-     * @param string $url - href link
-     *
-     * @return string
      */
     protected function getLinkRel(string $url): string
     {

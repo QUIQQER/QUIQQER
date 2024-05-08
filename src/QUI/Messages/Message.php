@@ -19,11 +19,6 @@ use function time;
  */
 class Message extends QUI\QDOM
 {
-    /**
-     * constructor
-     *
-     * @param array $params
-     */
     public function __construct(array $params = [])
     {
         // defaults
@@ -37,11 +32,6 @@ class Message extends QUI\QDOM
         $this->setAttributes($params);
     }
 
-    /**
-     * Return the message code
-     *
-     * @return string
-     */
     public function getCode(): string
     {
         return $this->getAttribute('code');
@@ -49,19 +39,12 @@ class Message extends QUI\QDOM
 
     /**
      * Return the md5 string of the message
-     *
-     * @return string
      */
     public function getHash(): string
     {
         return md5($this->getMessage());
     }
 
-    /**
-     * Return the message text
-     *
-     * @return string
-     */
     public function getMessage(): string
     {
         return $this->getAttribute('message');

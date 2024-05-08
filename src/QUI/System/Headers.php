@@ -20,15 +20,10 @@ use function str_replace;
  */
 class Headers
 {
-    /**
-     * @var Response|null
-     */
     protected ?Response $Response = null;
 
     /**
      * Default HSTS settings
-     *
-     * @var array
      */
     protected array $hsts = [
         'max-age' => '31536000',
@@ -36,30 +31,16 @@ class Headers
         'preload' => false
     ];
 
-    /**
-     * @var array
-     */
     protected array $csp = [];
 
-    /**
-     * @var bool
-     */
     protected string|array|bool $xFrameOptions = false;
 
-    /**
-     * @var bool
-     */
     protected string|array|bool $xContentTypeOptions = "nosniff";
 
-    /**
-     * @var bool
-     */
     protected string|array|bool $xXSSProtection = "1; mode=block";
 
     /**
      * Headers constructor.
-     *
-     * @param Response|null $Response
      */
     public function __construct(?Response $Response = null)
     {
@@ -111,8 +92,6 @@ class Headers
     /**
      * HTTP Strict Transport Security
      * max age param
-     *
-     * @param integer $maxAge
      */
     public function hstsMaxAge(int $maxAge): void
     {
@@ -122,8 +101,6 @@ class Headers
     /**
      * HTTP Strict Transport Security
      * subdomains param
-     *
-     * @param bool $mode
      */
     public function hstsSubdomains(bool $mode = true): void
     {
@@ -133,12 +110,9 @@ class Headers
     /**
      * HTTP Strict Transport Security (HSTS)
      */
-
     /**
      * HTTP Strict Transport Security
      * preload param
-     *
-     * @param bool $mode
      */
     public function hstsPreload(bool $mode = true): void
     {
@@ -228,8 +202,6 @@ class Headers
 
     /**
      * Return the response object
-     *
-     * @return Response|null
      */
     public function getResponse(): ?Response
     {
@@ -260,8 +232,6 @@ class Headers
 
     /**
      * Remove csp header entry or entries
-     *
-     * @param string $cspValue
      */
     public function cspRemove(string $cspValue): void
     {

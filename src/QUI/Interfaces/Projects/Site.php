@@ -18,11 +18,6 @@ use QUI;
  */
 interface Site extends QUI\QDOMInterface
 {
-    /**
-     * Return the project object of the site
-     *
-     * @return QUI\Projects\Project
-     */
     public function getProject(): QUI\Projects\Project;
 
     /**
@@ -36,8 +31,6 @@ interface Site extends QUI\QDOMInterface
 
     /**
      * Serialisierungsdaten
-     *
-     * @return string
      */
     public function encode(): string;
 
@@ -57,25 +50,16 @@ interface Site extends QUI\QDOMInterface
 
     /**
      * Prüft ob es eine Verknüpfung ist
-     *
-     * @return boolean|integer
      */
     public function isLinked(): bool|int;
 
     /**
      * Prüft ob es die Seite auch in einer anderen Sprache gibt
-     *
-     * @param string $lang
-     * @param boolean $check_only_active - check only active pages
-     *
-     * @return boolean
      */
     public function existLang(string $lang, bool $check_only_active = true): bool;
 
     /**
      * Gibt die IDs von Sprachverknüpfungen zurück
-     *
-     * @return array
      */
     public function getLangIds(): array;
 
@@ -111,10 +95,6 @@ interface Site extends QUI\QDOMInterface
 
     /**
      * Die nächsten x Kinder
-     *
-     * @param integer $no
-     *
-     * @return array
      */
     public function nextSiblings(int $no): array;
 
@@ -128,47 +108,25 @@ interface Site extends QUI\QDOMInterface
 
     /**
      * Die x vorhergehenden Geschwister
-     *
-     * @param integer $no
-     *
-     * @return array
      */
     public function previousSiblings(int $no): array;
 
     /**
      * Gibt das erste Kind der Seite zurück
-     *
-     * @param array $params
-     *
-     * @return QUI\Projects\Site | false
      */
     public function firstChild(array $params = []): bool|Site;
 
     /**
      * Gibt die Kinder zurück achtet aber auf "Nicht in Navigation anzeigen" und Rechte
-     *
-     * @param array $params
-     *
-     * @return array|int
      */
     public function getNavigation(array $params = []): array|int;
 
     /**
-     * Gibt ein Kind zurück welches den Namen hat
-     *
-     * @param string $name
-     *
-     * @return integer
      * @throws QUI\Exception
      */
     public function getChildIdByName(string $name): int;
 
     /**
-     * Return a children by id
-     *
-     * @param integer $id
-     *
-     * @return QUI\Projects\Site
      * @throws QUI\Exception
      */
     public function getChild(int $id): Site;
@@ -210,69 +168,24 @@ interface Site extends QUI\QDOMInterface
      */
     public function delete();
 
-    /**
-     * Gibt die URL der Seite zurück
-     *
-     * @param array $params
-     * @param array $getParams
-     *
-     * @return string
-     */
     public function getUrl(array $params = [], array $getParams = []): string;
 
-    /**
-     * @param array $params
-     * @return string
-     */
     public function getUrlRewritten(array $params = []): string;
 
-    /**
-     * Return the Parent id from the site object
-     *
-     * @return integer
-     */
     public function getParentId(): int;
 
-    /**
-     * Gibt alle direkten Eltern Ids zurück
-     *
-     * Site
-     * ->Parent
-     * ->Parent
-     * ->Parent
-     *
-     * @return array
-     */
     public function getParentIds(): array;
 
-    /**
-     * Return the Parent ID List
-     *
-     * @return array
-     */
     public function getParentIdTree(): array;
 
     /**
      * Gibt das Parent Objekt zurück.
      * Wenn kein Parent Objekt existiert wird false zurückgegeben.
-     *
-     * @return Site|false
      */
     public function getParent(): Site|bool;
 
-    /**
-     * Gibt alle rekursive Parents als Objekte zurück
-     * Site->Parent->ParentParent->ParentParentParent
-     *
-     * @return array
-     */
     public function getParents(): array;
 
-    /**
-     * Stellt die Seite wieder her
-     *
-     * ??? wieso hier? und nicht im trash? O.o
-     */
     public function restore();
 
     /**
@@ -284,37 +197,16 @@ interface Site extends QUI\QDOMInterface
 
     /**
      * Canonical URL - Um doppelte Inhalt zu vermeiden
-     *
-     * @return string
      */
     public function getCanonical(): string;
 
-    /**
-     * Löscht den Seitencache
-     */
     public function deleteCache();
 
-    /**
-     * Löscht den Seitencache
-     */
     public function createCache();
 
-    /**
-     * Shortcut for QUI\Permissions\Permission::hasSitePermission
-     *
-     * @param string $permission - name of the permission
-     * @param ?QUI\Interfaces\Users\User $User - optional
-     *
-     * @return boolean|integer
-     */
     public function hasPermission(string $permission, QUI\Interfaces\Users\User $User = null): bool|int;
 
     /**
-     * Shortcut for QUI\Permissions\Permission::checkSitePermission
-     *
-     * @param string $permission - name of the permission
-     * @param QUI\Interfaces\Users\User|null $User - optional
-     *
      * @throws QUI\Exception
      */
     public function checkPermission(string $permission, QUI\Interfaces\Users\User $User = null);

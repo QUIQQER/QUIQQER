@@ -19,20 +19,12 @@ use function trim;
  */
 class Handler
 {
-    /**
-     * @var ?Handler
-     */
     protected static ?Handler $Instance = null;
 
-    /**
-     * @var array
-     */
     protected array $list = [];
 
     /**
      * list of needed css files
-     *
-     * @var array
      */
     protected array $files = [];
 
@@ -46,8 +38,6 @@ class Handler
 
     /**
      * return the global icon handler
-     *
-     * @return Handler|null
      */
     public static function getInstance(): ?Handler
     {
@@ -61,34 +51,16 @@ class Handler
     /**
      * File methods
      */
-
-    /**
-     * Add a file to the handler
-     *
-     * @param string $file
-     */
     public function addCSSFile(string $file): void
     {
         $this->files[] = $file;
     }
 
-    /**
-     * return all css files
-     *
-     * @return array
-     */
     public function getCSSFiles(): array
     {
         return $this->files;
     }
 
-    /**
-     * Icon methods
-     */
-
-    /**
-     * @param array $icons
-     */
     public function addIcons(array $icons): void
     {
         foreach ($icons as $icon) {
@@ -104,12 +76,6 @@ class Handler
         $this->list[] = trim($iconClass);
     }
 
-    /**
-     * Is the value an icon css class?
-     *
-     * @param $value
-     * @return bool
-     */
     public function isIcon($value): bool
     {
         $classes = array_flip($this->list);
@@ -121,21 +87,11 @@ class Handler
      * helper methods
      */
 
-    /**
-     * Return the list as a json array
-     *
-     * @return string
-     */
     public function toJSON(): string
     {
         return json_encode($this->toArray());
     }
 
-    /**
-     * Return the list as a json array
-     *
-     * @return array
-     */
     public function toArray(): array
     {
         return $this->list;

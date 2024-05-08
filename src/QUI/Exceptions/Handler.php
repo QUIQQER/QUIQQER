@@ -39,16 +39,9 @@ class Handler extends QUI\QDOM
 {
     /**
      * registered shutdown callback functions
-     *
-     * @var array
      */
     protected array $shutDownCallbacks = [];
 
-    /**
-     * constructor
-     *
-     * @param array $params
-     */
     public function __construct(array $params = [])
     {
         // defaults
@@ -84,7 +77,6 @@ class Handler extends QUI\QDOM
     /**
      * Register shutdown functions
      *
-     * @return boolean
      * @throws QUI\Exception
      * @example QUI\ExceptionHandler->registerShutdown('function', 'param');
      * QUI\ExceptionHandler->registerShutdown(array($Object, 'dynamicMethod'));

@@ -66,8 +66,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * direct children of the folder
-     *
-     * @var array
      */
     protected array $children = [];
 
@@ -139,11 +137,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @param QUI\Projects\Media\Folder $Parent
      * @see QUI\Interfaces\Projects\Media\File::restore()
-     *
      */
     public function restore(QUI\Projects\Media\Folder $Parent)
     {
@@ -256,10 +250,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * Return true if a child with the name exist
-     *
-     * @param string $name - name (my_holiday)
-     *
-     * @return boolean
      */
     public function childWithNameExists(string $name): bool
     {
@@ -276,9 +266,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return a file from the folder by its name
      *
-     * @param string $filename
-     *
-     * @return QUI\Projects\Media\Item
      * @throws QUI\Exception
      */
     public function getChildByName(string $filename): Item
@@ -290,10 +277,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * Return all children with the wanted name
-     *
-     * @param $filename
-     * @param bool $limit
-     * @return array
      *
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
@@ -360,14 +343,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @param QUI\Projects\Media\Folder $Folder
-     * @param QUI\Interfaces\Users\User|null $PermissionUser
-     *
      * @throws QUI\Exception
-     * @see QUI\Projects\Media\Item::moveTo()
      *
+     * @see QUI\Projects\Media\Item::moveTo()
      */
     public function moveTo(QUI\Projects\Media\Folder $Folder, QUI\Interfaces\Users\User $PermissionUser = null): void
     {
@@ -443,15 +421,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @param QUI\Projects\Media\Folder $Folder
-     * @param QUI\Interfaces\Users\User|null $PermissionUser
-     *
-     * @return QUI\Projects\Media\Folder
      * @throws QUI\Exception
-     * @see QUI\Projects\Media\Item::copyTo()
      *
+     * @see QUI\Projects\Media\Item::copyTo()
      */
     public function copyTo(QUI\Projects\Media\Folder $Folder, QUI\Interfaces\Users\User $PermissionUser = null): Item
     {
@@ -488,9 +460,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Adds / create a subfolder
      *
-     * @param string $foldername - Name of the new folder
-     *
-     * @return QUI\Projects\Media\Folder
      * @throws QUI\Exception
      */
     public function createFolder(string $foldername): Folder
@@ -572,8 +541,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * Get cache path where internal folder statistics are cached (e.g. children count, subfolder count).
-     *
-     * @return string
      */
     protected function getCachePath(): string
     {
@@ -746,7 +713,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Creates a zip in the temp and return the path to it
      *
-     * @return string
      * @throws QUI\Exception
      */
     public function createZIP(): string
@@ -805,8 +771,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the first child
      *
-     * @return QUI\Projects\Media\File
-     *
      * @throws QUI\Exception
      */
     public function firstChild(): File
@@ -859,8 +823,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * Returns the count of the children
-     *
-     * @return integer
      */
     public function hasChildren(): int
     {
@@ -908,8 +870,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the first image
      *
-     * @return QUI\Projects\Media\Image
-     *
      * @throws QUI\Exception
      */
     public function firstImage(): Image
@@ -930,9 +890,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * Return the images from the folder
-     *
-     * @param array $params - filter parameter
-     * @return array|int
      */
     public function getImages(array $params = []): array|int
     {
@@ -941,10 +898,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * Return children / elements in the folder
-     *
-     * @param string $type
-     * @param array $params
-     * @return array|int
      */
     protected function getElements(string $type, array $params): array|int
     {
@@ -1094,9 +1047,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * Return the sub folders from the folder
-     *
-     * @param array $params - filter parameter
-     * @return array|int
      */
     public function getFolders(array $params = []): array|int
     {
@@ -1107,7 +1057,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * Return the files from folder
      *
      * @param array $params - filter parameter
-     * @return array|int
      */
     public function getFiles(array $params = []): array|int
     {
@@ -1115,8 +1064,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
-     * @return int|null
-     *
      * @todo as cron
      */
     public function getSize(): ?int
@@ -1127,7 +1074,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Returns the count of the children
      *
-     * @return integer
      * @todo use getElements folder with count
      */
     public function hasSubFolders(): int
@@ -1177,7 +1123,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Returns only the sub folders
      *
-     * @return array
      * @throws QUI\Database\Exception
      * @deprecated use getFolders
      */
@@ -1215,10 +1160,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * Return true if a file with the filename in the folder exists
-     *
-     * @param string $file - filename (my_holiday.png)
-     *
-     * @return boolean
      */
     public function fileWithNameExists(string $file): bool
     {
@@ -1577,8 +1518,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * Returns all ids from children under the folder
-     *
-     * @return array
      */
     protected function getAllRecursiveChildrenIds(): array
     {

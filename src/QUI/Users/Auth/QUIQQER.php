@@ -23,60 +23,30 @@ use function openssl_random_pseudo_bytes;
 use function password_verify;
 use function trim;
 
-/**
- * Class Auth
- * Standard QUIQQER Authentication
- */
 class QUIQQER extends AbstractAuthenticator
 {
-    /**
-     * User object
-     * @var ?User
-     */
     protected ?User $User = null;
 
-    /**
-     * Name of the user
-     * @var string|null
-     */
     protected ?string $username = null;
 
-    /**
-     * @var bool
-     */
     protected bool $authenticated = false;
 
-    /**
-     * @param array|int|string $user
-     */
     public function __construct(array|int|string $user = '')
     {
         $user = Orthos::clear($user);
         $this->username = $user;
     }
 
-    /**
-     * @return Controls\QUIQQERLogin
-     */
     public static function getLoginControl(): Controls\QUIQQERLogin
     {
         return new Controls\QUIQQERLogin();
     }
 
-    /**
-     * @return bool
-     */
     public static function isCLICompatible(): bool
     {
         return true;
     }
 
-    /**
-     * Return the auth title
-     *
-     * @param Locale|null $Locale
-     * @return string
-     */
     public function getTitle(Locale $Locale = null): string
     {
         if (is_null($Locale)) {
@@ -86,12 +56,6 @@ class QUIQQER extends AbstractAuthenticator
         return $Locale->get('quiqqer/core', 'quiqqer.auth.title');
     }
 
-    /**
-     * Return the auth title
-     *
-     * @param Locale|null $Locale
-     * @return string
-     */
     public function getDescription(Locale $Locale = null): string
     {
         if (is_null($Locale)) {
@@ -102,9 +66,6 @@ class QUIQQER extends AbstractAuthenticator
     }
 
     /**
-     * Return the user object
-     *
-     * @return User
      * @throws Exception
      */
     public function getUser(): User
@@ -143,7 +104,6 @@ class QUIQQER extends AbstractAuthenticator
      */
 
     /**
-     * @param QUI\System\Console $Console
      * @throws QUI\Exception
      */
     public function cliAuthentication(QUI\System\Console $Console): void
@@ -175,9 +135,6 @@ class QUIQQER extends AbstractAuthenticator
 
     /**
      * Authenticate the user
-     *
-     * @param string|int|array $authParams
-     * @return boolean
      *
      * @throws Exception
      * @throws QUI\Database\Exception
@@ -251,9 +208,6 @@ class QUIQQER extends AbstractAuthenticator
     /**
      * Old genHash method
      *
-     * @param string $pass
-     * @param string|null $salt
-     * @return string
      * @deprecated
      */
     protected function genHash(string $pass, string $salt = null): string

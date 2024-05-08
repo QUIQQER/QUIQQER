@@ -59,17 +59,9 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 {
     /**
      * Max image width & width for image cache creation
-     *
-     * @var int
      */
     protected int $IMAGE_MAX_SIZE = 4000;
 
-    /**
-     * Image constructor.
-     *
-     * @param $params
-     * @param Media $Media
-     */
     public function __construct($params, Media $Media)
     {
         parent::__construct($params, $Media);
@@ -295,10 +287,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the image path
      *
-     * @param bool|string|int $maxWidth - (optional)
-     * @param bool|string|int $maxHeight - (optional)
-     * @return string
-     *
      * @throws QUI\Exception
      */
     public function getSizeCachePath(
@@ -468,8 +456,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Is the image an animated image?
      * Thanks to https://stackoverflow.com/a/415942
-     *
-     * @return bool
      */
     public function isAnimated(): bool
     {
@@ -501,11 +487,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Resize the image and aspect the ratio
      *
-     * @param integer $newWidth
-     * @param integer $newHeight
-     *
      * @return string - Path to the new Image
-     *
      */
     public function resize(int $newWidth = 0, int $newHeight = 0): string
     {
@@ -542,8 +524,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * Return the Watermark image file
-     *
-     * @return Image|boolean
      */
     public function getWatermark(): Image|bool
     {
@@ -578,11 +558,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         return false;
     }
 
-    /**
-     * Return the Watermark image file
-     *
-     * @return Image|boolean
-     */
     public function getWatermarkPosition(): Image|bool
     {
         $imageEffects = $this->getEffects();
@@ -671,11 +646,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the image url
      *
-     * @param bool|string|int $maxWidth - (optional) width
-     * @param bool|string|int $maxHeight - (optional) height
-     *
-     * @return string
-     *
      * @throws QUI\Exception
      */
     public function getSizeCacheUrl(
@@ -722,11 +692,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Creates a cache file and takes into account the maximum sizes
      * return the media url
-     *
-     * @param bool|string|int $maxWidth
-     * @param bool|string|int $maxHeight
-     *
-     * @return string - Path to the file
      *
      * @throws QUI\Exception
      */
@@ -823,9 +788,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Hash methods
      */
-
     /**
-     * @return void
      * @throws QUI\Exception
      */
     public function updateExternalImage(): void

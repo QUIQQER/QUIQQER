@@ -24,39 +24,14 @@ use QUI\Projects\Project;
  */
 interface File
 {
-    /**
-     * Return the file media ID
-     *
-     * @return integer
-     */
     public function getId(): int;
 
-    /**
-     * Return the Parent of the file
-     *
-     * @return Item
-     */
     public function getParent(): Item;
 
-    /**
-     * Return the parent id
-     *
-     * @return integer
-     */
     public function getParentId(): int;
 
-    /**
-     * return all parent ids from the file
-     *
-     * @return array
-     */
     public function getParentIds(): array;
 
-    /**
-     * Return the path from the file
-     *
-     * @return string
-     */
     public function getPath(): string;
 
     /**
@@ -68,22 +43,16 @@ interface File
 
     /**
      * Return the URL of the File, relative to the host
-     *
-     * @return string
      */
     public function getUrl(): string;
 
     /**
-     * Activate the file
-     *
      * @param QUI\Interfaces\Users\User|null $PermissionUser
+     *
      * @throws Exception
      */
     public function activate(QUI\Interfaces\Users\User $PermissionUser = null);
 
-    /**
-     * @return bool
-     */
     public function isActive(): bool;
 
     /**
@@ -110,11 +79,6 @@ interface File
     public function save();
 
     /**
-     * Renames the file
-     *
-     * @param string $newName
-     * @param User|null $PermissionUser
-     *
      * @throws Exception
      */
     public function rename(string $newName, QUI\Interfaces\Users\User $PermissionUser = null);
@@ -133,38 +97,13 @@ interface File
      */
     public function deleteCache();
 
-    /**
-     * move the item to another folder
-     *
-     * @param Folder $Folder
-     */
     public function moveTo(Folder $Folder);
 
-    /**
-     * copy the item to another folder
-     *
-     * @param Folder $Folder
-     */
     public function copyTo(Folder $Folder);
 
-    /**
-     * Return the Media of the file
-     *
-     * @return Media
-     */
     public function getMedia(): Media;
 
-    /**
-     * Return the Project of the file
-     *
-     * @return Project
-     */
     public function getProject(): Project;
 
-    /**
-     * @param string $permission
-     * @param User|null $User
-     * @return void
-     */
     public function checkPermission(string $permission, QUI\Interfaces\Users\User $User = null): void;
 }

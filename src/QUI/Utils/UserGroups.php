@@ -23,10 +23,6 @@ use function substr;
  */
 class UserGroups
 {
-    /**
-     * @param array $array
-     * @return string
-     */
     public static function parseUGArrayToString(array $array): string
     {
         $result = '';
@@ -53,12 +49,6 @@ class UserGroups
         return implode(',', $list);
     }
 
-    /**
-     * Return the user group string from a user
-     *
-     * @param QUI\Interfaces\Users\User $User
-     * @return string
-     */
     public static function getUserGroupStringFromUser(QUI\Interfaces\Users\User $User): string
     {
         $result = [];
@@ -77,10 +67,6 @@ class UserGroups
     /**
      * Check user in the user group string
      * there are also groups of user tested
-     *
-     * @param QUI\Interfaces\Users\User $User
-     * @param $ugString
-     * @return bool
      */
     public static function isUserInUserGroupString(QUI\Interfaces\Users\User $User, $ugString): bool
     {
@@ -111,9 +97,6 @@ class UserGroups
 
     /**
      * Return an array (array('users', 'groups') from a user_groups string eq: u796832571,g654240634
-     *
-     * @param string $str
-     * @return array
      */
     public static function parseUsersGroupsString(string $str): array
     {
@@ -142,12 +125,6 @@ class UserGroups
         return $result;
     }
 
-    /**
-     * is the string a UG-String
-     *
-     * @param string $ugString
-     * @return bool
-     */
     public static function isUserGroupString(string $ugString): bool
     {
         $ugString = explode(',', $ugString);

@@ -30,8 +30,6 @@ class Trash implements QUI\Interfaces\Projects\Trash
 
     /**
      * Returns the trash path for the Media
-     *
-     * @return string
      */
     public function getPath(): string
     {
@@ -42,8 +40,6 @@ class Trash implements QUI\Interfaces\Projects\Trash
      * Returns the items in the trash
      *
      * @param array $params - QUI\Utils\Grid parameters
-     *
-     * @return array
      */
     public function getList(array $params = []): array
     {
@@ -122,8 +118,6 @@ class Trash implements QUI\Interfaces\Projects\Trash
     /**
      * Destroys a file by deleting it and marking it as destroyed.
      *
-     * @param int $id The ID of the file to be destroyed.
-     * @return void
      * @throws Exception
      */
     public function destroy(int $id): void
@@ -141,10 +135,6 @@ class Trash implements QUI\Interfaces\Projects\Trash
     /**
      * Restore an item to a folder
      *
-     * @param integer $id
-     * @param QUI\Projects\Media\Folder $Folder
-     *
-     * @return QUI\Projects\Media\Item
      * @throws QUI\Exception
      */
     public function restore(int $id, Folder $Folder): Item

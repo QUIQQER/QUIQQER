@@ -36,8 +36,6 @@ if (!function_exists('glob_recursive')) {
      * Does not support flag GLOB_BRACE
      *
      * @param $pattern
-     * @param int $flags
-     * @return array
      */
     function glob_recursive($pattern, int $flags = 0): array
     {
@@ -67,8 +65,6 @@ class Update
     /**
      * If a plugin / package would be installed via composer
      *
-     * @param Event $Event
-     *
      * @throws Exception
      * @todo implement the installation
      */
@@ -85,10 +81,7 @@ class Update
     /**
      * If a plugin / package is updated via composer
      *
-     * @param Event $Event
-     *
-     * @throws QUI\Exception
-     * @throws \Exception
+     * @throws Exception|\Doctrine\DBAL\Exception
      */
     public static function onUpdate(Event $Event): void
     {
@@ -692,8 +685,6 @@ class Update
 
     /**
      * Returns the current update log file
-     *
-     * @return string
      */
     public static function getLogFile(): string
     {

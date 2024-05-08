@@ -242,8 +242,6 @@ class Htaccess extends QUI\System\Console\Tool
 
     /**
      * htaccess template
-     *
-     * @return string
      */
     protected function template(): string
     {
@@ -348,8 +346,6 @@ class Htaccess extends QUI\System\Console\Tool
 
     /**
      * Checks if the htaccess file would change if it gets generated again
-     *
-     * @return bool
      */
     public function hasModifications(): bool
     {

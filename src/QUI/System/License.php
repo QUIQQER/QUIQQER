@@ -39,9 +39,6 @@ class License
     /**
      * Register a license from a license file
      *
-     * @param QDOM $File
-     * @return void
-     *
      * @throws QUI\Exception
      * @throws Exception
      */
@@ -211,8 +208,6 @@ class License
 
     /**
      * Get unique QUIQQER system ID
-     *
-     * @return string
      */
     public static function getSystemId(): string
     {
@@ -235,8 +230,6 @@ class License
 
     /**
      * Get unique hash that represents the current system configuration that is relevant for license purposes
-     *
-     * @return string
      */
     public static function getSystemDataHash(): string
     {
@@ -248,8 +241,6 @@ class License
 
     /**
      * Get system data for license server requests
-     *
-     * @return array
      */
     protected static function getSystemData(): array
     {

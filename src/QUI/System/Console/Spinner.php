@@ -270,19 +270,10 @@ class Spinner
         '(●     )'
     ];
 
-    /**
-     * @var array
-     */
     protected array $frames = [];
 
-    /**
-     * @var int
-     */
     protected int $length;
 
-    /**
-     * @var int
-     */
     protected int $current;
 
     /**
@@ -302,9 +293,6 @@ class Spinner
 
     /**
      * Spinner constructor.
-     *
-     * @param array $frames
-     * @param bool $use_keyboard_interrupts
      */
     public function __construct(array $frames, bool $use_keyboard_interrupts = true)
     {
@@ -393,9 +381,6 @@ class Spinner
         }
     }
 
-    /**
-     * @return int
-     */
     protected function next(): int
     {
         $prev = $this->current;

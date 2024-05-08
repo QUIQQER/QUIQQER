@@ -535,11 +535,6 @@ class Search
      *
      * Returns only username, user ID and user Avatar
      *
-     * @param string $searchTerm - search term
-     * @param array $searchParams - search parameters
-     *
-     * @return array
-     *
      * @throws QUI\Exception
      */
     public static function suggestSearch(string $searchTerm, array $searchParams): array

@@ -32,8 +32,6 @@ class Setup
     /**
      * Execute the QUIQQER Setup
      *
-     * @param QUI\Interfaces\System\SystemOutput|null $Output
-     *
      * @throws QUI\Exception
      * @throws QUI\ExceptionStack
      * @throws Exception

@@ -13,10 +13,6 @@ use function mb_strtolower;
  */
 class QuiqqerProvider extends AbstractInstallationWizard
 {
-    /**
-     * @param null $Locale
-     * @return string
-     */
     public function getTitle($Locale = null): string
     {
         if ($Locale === null) {
@@ -26,10 +22,6 @@ class QuiqqerProvider extends AbstractInstallationWizard
         return $Locale->get('quiqqer/core', 'set.up.title');
     }
 
-    /**
-     * @param null $Locale
-     * @return string
-     */
     public function getDescription($Locale = null): string
     {
         if ($Locale === null) {
@@ -39,9 +31,6 @@ class QuiqqerProvider extends AbstractInstallationWizard
         return $Locale->get('quiqqer/core', 'set.up.description');
     }
 
-    /**
-     * @return int
-     */
     public function getPriority(): int
     {
         return 2;
@@ -66,7 +55,6 @@ class QuiqqerProvider extends AbstractInstallationWizard
     }
 
     /**
-     * @param array $data
      * @throws QUI\Exception
      */
     public function execute(array $data = []): void

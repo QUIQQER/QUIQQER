@@ -45,38 +45,25 @@ class Ajax extends QUI\QDOM
 {
     /**
      * Available ajax functions
-     *
-     * @var array
      */
     protected static array $functions = [];
 
     /**
      * Available ajax lambda functions
-     *
-     * @var array
      */
     protected static array $callables = [];
 
     /**
      * registered permissions from available ajax functions
-     *
-     * @var array
      */
     protected static array $permissions = [];
 
     /**
      * javascript functions to be executed by after a request
      * These functions are registered via Ajax.registerCallback('functionName', callable);
-     *
-     * @var array
      */
     protected array $jsCallbacks = [];
 
-    /**
-     * constructor
-     *
-     * @param array $params
-     */
     public function __construct(array $params = [])
     {
         self::setAttributes($params);
@@ -154,21 +141,11 @@ class Ajax extends QUI\QDOM
         return true;
     }
 
-    /**
-     * Return all registered functions
-     *
-     * @return array
-     */
     public static function getRegisteredFunctions(): array
     {
         return self::$functions;
     }
 
-    /**
-     * Return all callable functions
-     *
-     * @return array
-     */
     public static function getRegisteredCallables(): array
     {
         return self::$callables;
@@ -264,10 +241,6 @@ class Ajax extends QUI\QDOM
 
     /**
      * Exceptions xml / json return
-     *
-     * @param PDOException|Exception|\Exception $Exception
-     *
-     * @return array
      */
     public function writeException(PDOException|\Exception|Exception $Exception): array
     {
@@ -376,11 +349,6 @@ class Ajax extends QUI\QDOM
 
     /**
      * Internal call of an ajax function
-     *
-     * @param string $_rf
-     * @param mixed $values
-     *
-     * @return array - the result
      */
     public function callRequestFunction(string $_rf, mixed $values = false): array
     {
@@ -480,8 +448,6 @@ class Ajax extends QUI\QDOM
     /**
      * Checks the rights if a function has a checkPermissions routine
      *
-     * @param callback|string $reg_function
-     *
      * @throws Exception
      * @throws \QUI\Permissions\Exception
      */
@@ -566,9 +532,6 @@ class Ajax extends QUI\QDOM
         }
     }
 
-    /**
-     * @return array
-     */
     public function getJsCallbacks(): array
     {
         return $this->jsCallbacks;

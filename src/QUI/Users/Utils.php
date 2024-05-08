@@ -25,10 +25,6 @@ class Utils
 {
     /**
      * JavaScript Buttons / Tabs from a user
-     *
-     * @param QUI\Interfaces\Users\User $User
-     *
-     * @return Bar
      */
     public static function getUserToolbar(QUI\Interfaces\Users\User $User): Bar
     {
@@ -112,12 +108,6 @@ class Utils
 
     /**
      * Tab contents of a user Tabs / Buttons
-     *
-     * @param integer|string $uid
-     * @param string $plugin
-     * @param string $tab
-     *
-     * @return string
      *
      * @throws QUI\Exception
      *

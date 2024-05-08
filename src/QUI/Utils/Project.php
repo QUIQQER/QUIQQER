@@ -13,16 +13,8 @@ use function file_exists;
 use function implode;
 use function preg_match;
 
-/**
- * Class Project
- */
 class Project
 {
-    /**
-     * Create the default structure for a project
-     *
-     * @param QUI\Projects\Project $Project
-     */
     public static function createDefaultStructure(QUI\Projects\Project $Project): void
     {
         $languages = $Project->getLanguages();
@@ -39,9 +31,6 @@ class Project
     }
 
     /**
-     * Create the default structure for a specific project language
-     *
-     * @param QUI\Projects\Project $Project
      * @throws QUI\Exception
      */
     protected static function createDefaultStructureForProjectLanguage(QUI\Projects\Project $Project): void
@@ -196,12 +185,6 @@ class Project
 
     /**
      * Parse a locale string that no url error exists
-     *
-     * @param string $group
-     * @param string $var
-     * @param QUI\Projects\Project $Project
-     *
-     * @return string
      */
     protected static function parseForUrl(string $group, string $var, QUI\Projects\Project $Project): string
     {
@@ -234,11 +217,6 @@ class Project
     }
 
     /**
-     * Apply demo data to a project
-     *
-     * @param QUI\Projects\Project $Project
-     * @param string $templateName
-     *
      * @throws QUI\Exception
      */
     public static function applyDemoDataToProject(QUI\Projects\Project $Project, string $templateName): void
@@ -264,11 +242,6 @@ class Project
     }
 
     /**
-     * Validates the projects name
-     *
-     * @param $projectName
-     *
-     * @return bool
      * @throws QUI\Exception
      */
     public static function validateProjectName($projectName): bool
