@@ -378,7 +378,7 @@ class Edit extends Site
     public function getChildrenIdsFromParentId(int $pid, array $params = []): array
     {
         $where_1 = [
-            $this->RELTABLE . '.parent' => (int)$pid,
+            $this->RELTABLE . '.parent' => $pid,
             $this->TABLE . '.deleted' => 0,
             $this->RELTABLE . '.child' => '`' . $this->TABLE . '.id`'
         ];

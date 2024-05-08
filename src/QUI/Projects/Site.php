@@ -757,7 +757,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function nextSiblings(int $no): array
     {
-        $no = (int)$no;
+        $no = $no;
         $result = [];
 
         $Parent = $this->getParent();
@@ -819,7 +819,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function previousSiblings(int $no): array
     {
-        $no = (int)$no;
         $result = [];
 
         $Parent = $this->getParent();
@@ -939,8 +938,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getChild(int $id): Site
     {
-        $id = (int)$id;
-
         if ($id === $this->getId()) {
             throw new QUI\Exception('Page can not be a child of itself');
         }
