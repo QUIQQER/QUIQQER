@@ -681,7 +681,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function nextSiblings(int $no): array
     {
-        $no = $no;
         $result = [];
 
         $Parent = $this->getParent();
