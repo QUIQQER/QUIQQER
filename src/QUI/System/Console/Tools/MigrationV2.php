@@ -540,7 +540,7 @@ class MigrationV2 extends QUI\System\Console\Tool
         }
     }
 
-    public function loginLog()
+    public function loginLog(): void
     {
         $this->writeLn('- Migrate login log table');
         QUI::getDataBaseConnection()->executeStatement(

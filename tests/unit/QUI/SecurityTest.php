@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 class SecurityTest extends TestCase
 {
-    public function testB64encryptAndDecrypt()
+    public function testB64encryptAndDecrypt(): void
     {
         $sut = new Security();
         $stringToEncrypt = 'test_string';

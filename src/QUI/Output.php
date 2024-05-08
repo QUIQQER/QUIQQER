@@ -349,7 +349,7 @@ class Output extends Singleton
         return $result;
     }
 
-    public function setProject(Project $Project)
+    public function setProject(Project $Project): void
     {
         $this->Project = $Project;
     }
@@ -357,7 +357,7 @@ class Output extends Singleton
     /**
      * @param string|bool|float|integer $value
      */
-    public function setSetting(string $setting, $value)
+    public function setSetting(string $setting, $value): void
     {
         $this->settings[$setting] = $value;
     }
@@ -366,7 +366,7 @@ class Output extends Singleton
      * Removes an internal rewritten url from the cache, if needed
      * use this with caution
      */
-    public function removeRewrittenUrlCache(QUI\Interfaces\Projects\Site $Site)
+    public function removeRewrittenUrlCache(QUI\Interfaces\Projects\Site $Site): void
     {
         $project = $Site->getProject()->getName();
         $lang = $Site->getProject()->getLang();

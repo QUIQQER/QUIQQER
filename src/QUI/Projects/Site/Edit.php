@@ -197,7 +197,7 @@ class Edit extends Site
      *
      * @throws QUI\Exception
      */
-    public function activate($User = false)
+    public function activate($User = false): void
     {
         try {
             $this->checkPermission('quiqqer.projects.site.edit', $User);
@@ -1076,7 +1076,7 @@ class Edit extends Site
      *
      * @throws QUI\Exception
      */
-    public function deactivate($User = false)
+    public function deactivate($User = false): void
     {
         try {
             // Prüfen ob der Benutzer die Seite bearbeiten darf
@@ -1441,7 +1441,7 @@ class Edit extends Site
      *
      * @throws QUI\Exception
      */
-    public function linked($pid)
+    public function linked($pid): void
     {
         $Project = $this->getProject();
         $Parent = $this->getParent();
@@ -1500,7 +1500,7 @@ class Edit extends Site
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function deleteLinked($pid, $all = false, $orig = false)
+    public function deleteLinked($pid, $all = false, $orig = false): void
     {
         $this->checkPermission('quiqqer.projects.site.edit');
 
@@ -1589,7 +1589,7 @@ class Edit extends Site
      * @throws QUI\Exception
      * @todo eigenes recht dafür einführen
      */
-    public function unlockWithRights()
+    public function unlockWithRights(): void
     {
         $this->unlock();
     }
@@ -1603,7 +1603,7 @@ class Edit extends Site
      *
      * @throws QUI\Exception
      */
-    public function addUserToPermission(User $User, $permission, $EditUser = false)
+    public function addUserToPermission(User $User, $permission, $EditUser = false): void
     {
         Permission::addUserToSitePermission($User, $this, $permission, $EditUser);
     }
@@ -1611,7 +1611,7 @@ class Edit extends Site
     /**
      * @throws QUI\Exception
      */
-    public function addgroupToPermission(Group $Group, $permission, $EditUser = false)
+    public function addgroupToPermission(Group $Group, $permission, $EditUser = false): void
     {
         Permission::addGroupToSitePermission($Group, $this, $permission, $EditUser);
     }
@@ -1629,7 +1629,7 @@ class Edit extends Site
      *
      * @throws QUI\Exception
      */
-    public function removeUserFromSitePermission(User $User, $permission, $EditUser = false)
+    public function removeUserFromSitePermission(User $User, $permission, $EditUser = false): void
     {
         Permission::removeUserFromSitePermission($User, $this, $permission, $EditUser);
     }
@@ -1637,7 +1637,7 @@ class Edit extends Site
     /**
      * @throws QUI\Exception
      */
-    public function removeGroupFromSitePermission(Group $Group, $permission, $EditUser = false)
+    public function removeGroupFromSitePermission(Group $Group, $permission, $EditUser = false): void
     {
         Permission::removeGroupFromSitePermission($Group, $this, $permission, $EditUser);
     }

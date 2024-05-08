@@ -29,11 +29,7 @@ class LongTermCache
 
     //region API
 
-    /**
-     * @param $name
-     * @param $data
-     */
-    public static function set($name, $data)
+    public static function set($name, $data): void
     {
         $key = self::generateStorageKey($name);
 
@@ -252,7 +248,7 @@ class LongTermCache
      *
      * @param string $name
      */
-    public static function clear($name = '')
+    public static function clear($name = ''): void
     {
         $key = self::generateStorageKey($name);
 
@@ -268,7 +264,7 @@ class LongTermCache
     /**
      * execute the long time cache setup
      */
-    public static function setup()
+    public static function setup(): void
     {
         $Config = self::getConfig();
 

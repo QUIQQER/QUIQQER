@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 #[RunTestsInSeparateProcesses]
 class AjaxTest extends TestCase
 {
-    public function testRegisterAndGetFunction()
+    public function testRegisterAndGetFunction(): void
     {
         $testFunction = function () {
         };
@@ -21,7 +21,7 @@ class AjaxTest extends TestCase
         $this->assertEquals($testFunction, $sut::getRegisteredCallables()[$testFunctionName]['callable']);
     }
 
-    public function testRegisterAndGetCallable()
+    public function testRegisterAndGetCallable(): void
     {
         $sut = new Ajax();
         $regVars = ['var1', 'var2'];
@@ -33,7 +33,7 @@ class AjaxTest extends TestCase
         $this->assertEquals($regVars, $sut::getRegisteredFunctions()[$testFunction]);
     }
 
-    public function testWriteExceptionReturnsWellFormedArray()
+    public function testWriteExceptionReturnsWellFormedArray(): void
     {
         $message = 'test';
         $code = 123;
@@ -46,7 +46,7 @@ class AjaxTest extends TestCase
         $this->assertEquals($testException::class, $sut['Exception']['type']);
     }
 
-    public function testWriteExceptionRemovesHtmlFromMessage()
+    public function testWriteExceptionRemovesHtmlFromMessage(): void
     {
         $messageToTest = '<iframe></iframe><p>myP</p><div>myDiv</div><h1>myH1</h1>';
         $cleanedMessage = '<p>myP</p><div>myDiv</div>myH1';
@@ -56,7 +56,7 @@ class AjaxTest extends TestCase
         $this->assertEquals($cleanedMessage, $sut['Exception']['message']);
     }
 
-    public function testCallRequestFunctionWithUnregisteredFunctionWritesException()
+    public function testCallRequestFunctionWithUnregisteredFunctionWritesException(): void
     {
         $ajax = new Ajax();
 
@@ -65,7 +65,7 @@ class AjaxTest extends TestCase
         $this->assertArrayHasKey('Exception', $sut);
     }
 
-    public function testCallRequestFunctionWithoutPermissionsWritesException()
+    public function testCallRequestFunctionWithoutPermissionsWritesException(): void
     {
         $ajax = new Ajax();
         $testFunctionName = 'test_function';
@@ -78,7 +78,7 @@ class AjaxTest extends TestCase
         $this->assertArrayHasKey('Exception', $sut);
     }
 
-    public function testCallRequestFunctionWritesFunctionsResult()
+    public function testCallRequestFunctionWritesFunctionsResult(): void
     {
         $sut = new Ajax();
         $testFunctionName = 'test_function';
@@ -95,12 +95,12 @@ class AjaxTest extends TestCase
         $this->assertEquals($testParameterValue, $result);
     }
 
-    public function testCall()
+    public function testCall(): void
     {
         $this->markTestIncomplete('Figure out how to test this');
     }
 
-    public function testPermissions()
+    public function testPermissions(): void
     {
         $this->markTestIncomplete('Figure out how to test this');
     }

@@ -139,7 +139,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * @see QUI\Interfaces\Projects\Media\File::restore()
      */
-    public function restore(QUI\Projects\Media\Folder $Parent)
+    public function restore(QUI\Projects\Media\Folder $Parent): void
     {
         // nothing
         // folders are not in the trash

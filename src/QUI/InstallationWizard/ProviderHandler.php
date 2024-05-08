@@ -116,7 +116,7 @@ class ProviderHandler
     /**
      * @throws QUI\Exception
      */
-    public static function setProviderStatus(InstallationWizardInterface $Provider, int $status)
+    public static function setProviderStatus(InstallationWizardInterface $Provider, int $status): void
     {
         self::getConfig()->set('status', $Provider::class, $status);
         self::getConfig()->save();

@@ -50,7 +50,7 @@ class Temp
     /**
      * Clear the Temp folder
      */
-    public function clear()
+    public function clear(): void
     {
         if (system('rm -rf ' . $this->folder)) {
             QUIFile::mkdir($this->folder);
@@ -70,7 +70,7 @@ class Temp
      * @param string $folder - Path to file or folder
      * @throws QUI\Exception
      */
-    public function moveToTemp(string $folder)
+    public function moveToTemp(string $folder): void
     {
         if (!file_exists($folder)) {
             return;

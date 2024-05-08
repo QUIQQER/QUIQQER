@@ -316,7 +316,7 @@ class Console
      * QUIQQER Console title
      * output the main quiqqer console info
      */
-    public function title()
+    public function title(): void
     {
         $params = $this->readArgv();
         $version = QUI::getPackageManager()->getVersion();
@@ -397,7 +397,7 @@ class Console
      * @param string|boolean $color - (optional) text color
      * @param string|boolean $bg - (optional) background color
      */
-    public function message(string $msg, $color = false, $bg = false)
+    public function message(string $msg, $color = false, $bg = false): void
     {
         if ($color) {
             $this->current_color = $color;
@@ -423,7 +423,7 @@ class Console
     /**
      * reset the message color
      */
-    public function resetMsg()
+    public function resetMsg(): void
     {
         echo "\033[0m";
     }
@@ -431,7 +431,7 @@ class Console
     /**
      * reset the message and background color and reset the color settings
      */
-    public function clearMsg()
+    public function clearMsg(): void
     {
         $this->current_color = false;
         $this->current_bg = false;
@@ -446,7 +446,7 @@ class Console
      * @param string|boolean $color - (optional) textcolor
      * @param string|boolean $bg - (optional) background color
      */
-    public function writeLn(string $msg = '', $color = false, $bg = false)
+    public function writeLn(string $msg = '', $color = false, $bg = false): void
     {
         $this->message(PHP_EOL . $msg, $color, $bg);
 
@@ -477,7 +477,7 @@ class Console
     /**
      * Set CLI arguments
      */
-    public function setArgument(string $argument, string $value)
+    public function setArgument(string $argument, string $value): void
     {
         $argument = trim($argument, '-');
 
@@ -654,7 +654,7 @@ class Console
      * @param string|boolean $color - (optional) text color
      * @param string|boolean $bg - (optional) background color
      */
-    public function write(string $msg, $color = false, $bg = false)
+    public function write(string $msg, $color = false, $bg = false): void
     {
         $this->message($msg, $color, $bg);
     }
@@ -866,7 +866,7 @@ class Console
     /**
      * clear the console (all colors)
      */
-    public function clear()
+    public function clear(): void
     {
         array_map(function ($a) {
             print chr($a);
@@ -1015,7 +1015,7 @@ class Console
     /**
      * Display the list of the system tool
      */
-    public function displaySystemTools()
+    public function displaySystemTools(): void
     {
         $systemTools = $this->systemTools;
 
@@ -1179,7 +1179,7 @@ class Console
     /**
      * List all tools in the shell for selection
      */
-    public function readToolFromShell()
+    public function readToolFromShell(): void
     {
         $this->clearMsg();
 
@@ -1256,7 +1256,7 @@ class Console
     /**
      * Start the console, if a tool is selected, execute the tool
      */
-    public function start()
+    public function start(): void
     {
         if (!$this->getArgument('tool')) {
             return;

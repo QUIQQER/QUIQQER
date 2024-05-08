@@ -368,7 +368,7 @@ class Spinner
         echo $this->blinkOn;
     }
 
-    private function loopSpinnerFrames()
+    private function loopSpinnerFrames(): void
     {
         echo $this->blinkOff;
 

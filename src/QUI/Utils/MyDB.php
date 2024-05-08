@@ -295,7 +295,7 @@ class MyDB implements \Stringable
      *
      * @param string|array $tables
      */
-    public function optimize($tables)
+    public function optimize($tables): void
     {
         $this->DB->table()->optimize($tables);
     }
@@ -306,7 +306,7 @@ class MyDB implements \Stringable
      * @param string $table
      * @param array $fields
      */
-    public function createTable($table, $fields)
+    public function createTable($table, $fields): void
     {
         $this->DB->table()->create($table, $fields);
     }
@@ -318,7 +318,7 @@ class MyDB implements \Stringable
      * @param string $table
      * @param array $fields
      */
-    public function createTableFields($table, $fields)
+    public function createTableFields($table, $fields): void
     {
         $this->DB->table()->addColumn($table, $fields);
     }
@@ -329,7 +329,7 @@ class MyDB implements \Stringable
      * @param string $table - Tabelle
      * @param array $fields - Felder welche gelöscht werden sollen
      */
-    public function deleteTableFields($table, $fields)
+    public function deleteTableFields($table, $fields): void
     {
         $this->DB->table()->deleteFields($table, $fields);
     }
@@ -351,7 +351,7 @@ class MyDB implements \Stringable
      *
      * @param string $table
      */
-    public function deleteTable($table)
+    public function deleteTable($table): void
     {
         $this->DB->table()->delete($table);
     }
@@ -387,7 +387,7 @@ class MyDB implements \Stringable
      * @param string $table
      * @param string $row
      */
-    public function deleteRow($table, $row)
+    public function deleteRow($table, $row): void
     {
         $this->DB->table()->deleteColumn($table, $row);
     }
