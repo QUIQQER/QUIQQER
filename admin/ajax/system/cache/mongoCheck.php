@@ -52,6 +52,7 @@ QUI::$Ajax->registerFunction(
         ]);
 
         $CacheDriver->storeData(['db-test'], 1, false);
+
         $result = $CacheDriver->getData(['db-test']);
 
         if ($result['data'] === 1) {

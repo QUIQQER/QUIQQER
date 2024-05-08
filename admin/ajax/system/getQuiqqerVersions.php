@@ -11,6 +11,7 @@ QUI::$Ajax->registerFunction(
     function () {
         $packages = @file_get_contents('https://update.quiqqer.com/packages.json');
         $packages = json_decode($packages, true);
+
         $versions = [];
         $highestMinors = [];
 

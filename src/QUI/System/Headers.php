@@ -179,6 +179,7 @@ class Headers
         $Response = $this->getResponse();
 
         $Response->setCharset('UTF-8');
+
         $Response->headers->set('Content-Type', 'text/html');
 
         // HTTP Strict Transport Security (HSTS)

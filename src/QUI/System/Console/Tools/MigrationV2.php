@@ -86,13 +86,13 @@ class MigrationV2 extends QUI\System\Console\Tool
                 WHERE 
                     lastedit = '0000-00-00 00:00:00' OR 
                     lastedit = '';
-                    
+
                 UPDATE `$table` 
                 SET expire = NULL 
                 WHERE 
                     expire = '0000-00-00 00:00:00' OR 
                     expire = '';
-                    
+
                 UPDATE `$table` 
                 SET birthday = NULL 
                 WHERE 
@@ -111,6 +111,7 @@ class MigrationV2 extends QUI\System\Console\Tool
         );
 
         $Stmt->execute();
+
         $columns = $Stmt->fetchAll();
         $dropSql = [];
 

@@ -738,6 +738,7 @@ class Template extends QUI\QDOM
 
         $siteType = $Site->getAttribute('type');
         $siteType = explode(':', $siteType);
+
         $files = [];
 
         if (isset($siteType[0]) && isset($siteType[1])) {

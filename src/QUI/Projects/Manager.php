@@ -1169,6 +1169,7 @@ class Manager
 
         $Stmt = QUI::getDataBase()->getPDO()->prepare('SHOW TABLES;');
         $Stmt->execute();
+
         $result = $Stmt->fetchAll();
 
         foreach ($result as $row) {

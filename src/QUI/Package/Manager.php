@@ -341,6 +341,7 @@ class Manager extends QUI\QDOM
         $package = array_filter($data['packages'], fn($package) => $package['name'] === 'quiqqer/core');
 
         $package = current($package);
+
         $this->version = $package['version'];
 
         return $this->version;

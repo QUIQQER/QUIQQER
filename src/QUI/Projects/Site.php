@@ -1327,6 +1327,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         );
 
         $Statement->execute($prepared);
+
         $result = $Statement->fetchAll(PDO::FETCH_ASSOC);
 
         return $result[0]['idc'];
