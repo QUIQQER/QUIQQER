@@ -120,7 +120,7 @@ class Manager
         }
 
         // merge current config and available config
-        foreach ($availableConfig as $key => $value) {
+        foreach (array_keys($availableConfig) as $key) {
             if (!isset($projectConfig[$key])) {
                 continue;
             }
@@ -133,7 +133,7 @@ class Manager
 
         // merge params config with available / current config
         if (!empty($params)) {
-            foreach ($availableConfig as $key => $value) {
+            foreach (array_keys($availableConfig) as $key) {
                 if (!isset($params[$key])) {
                     continue;
                 }
@@ -262,7 +262,7 @@ class Manager
 
         $projects = $Config->toArray();
 
-        foreach ($projects as $_project => $settings) {
+        foreach (array_keys($projects) as $_project) {
             if ($_project != $projectName) {
                 $Config->setValue($_project, 'standard', 0);
             }

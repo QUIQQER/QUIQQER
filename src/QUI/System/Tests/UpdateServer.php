@@ -43,7 +43,7 @@ class UpdateServer extends QUI\System\Test
         $updateServer = false;
         $composerServer = false;
 
-        foreach ($servers as $server => $serverData) {
+        foreach (array_keys($servers) as $server) {
             if ($server == 'https://update.quiqqer.com/') {
                 $updateServer = true;
             }

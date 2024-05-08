@@ -345,7 +345,7 @@ class Manager
 
         $permissions = [];
 
-        foreach ($_list as $permission => $params) {
+        foreach (array_keys($_list) as $permission) {
             $permissions[$permission] = false;
         }
 
@@ -596,7 +596,7 @@ class Manager
 
         $permissions = [];
 
-        foreach ($_list as $permission => $params) {
+        foreach (array_keys($_list) as $permission) {
             $permissions[$permission] = false;
         }
 
@@ -625,7 +625,7 @@ class Manager
 
         $permissions = [];
 
-        foreach ($_list as $permission => $params) {
+        foreach (array_keys($_list) as $permission) {
             $permissions[$permission] = false;
         }
 

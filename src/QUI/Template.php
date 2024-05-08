@@ -785,7 +785,7 @@ class Template extends QUI\QDOM
 
         $locales = [];
 
-        foreach ($files as $package => $file) {
+        foreach (array_keys($files) as $package) {
             $locales[] = $package . '/' . $Project->getLang();
         }
 

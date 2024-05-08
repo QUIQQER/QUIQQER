@@ -117,7 +117,7 @@ class Health
 
 
         // check if all files from the md5 exist
-        foreach ($md5List as $file => $md5) {
+        foreach (array_keys($md5List) as $file) {
             if (!isset($result[$file])) {
                 $result[$file] = self::STATUS_NOT_FOUND;
             }

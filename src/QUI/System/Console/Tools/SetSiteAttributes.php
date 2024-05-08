@@ -149,7 +149,7 @@ class SetSiteAttributes extends QUI\System\Console\Tool
             foreach ($attributes as $k => $v) {
                 $output = $v;
 
-                foreach ($placeholderDesc as $placeholder => $desc) {
+                foreach (array_keys($placeholderDesc) as $placeholder) {
                     $placeholder = '[' . $placeholder . ']';
                     if (mb_strpos($v, $placeholder) === false) {
                         continue;

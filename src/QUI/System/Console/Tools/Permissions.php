@@ -245,7 +245,7 @@ class Permissions extends QUI\System\Console\Tool
         if (!empty($needle)) {
             $data[] = $parsePermission($needle);
         } else {
-            foreach ($userPermissions as $permission => $value) {
+            foreach (array_keys($userPermissions) as $permission) {
                 $data[] = $parsePermission($permission);
             }
         }
@@ -315,7 +315,7 @@ class Permissions extends QUI\System\Console\Tool
         if (!empty($needle)) {
             $data[] = $parsePermission($needle);
         } else {
-            foreach ($groupPermissions as $permission => $value) {
+            foreach (array_keys($groupPermissions) as $permission) {
                 $data[] = $parsePermission($permission);
             }
         }

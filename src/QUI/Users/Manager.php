@@ -364,7 +364,7 @@ class Manager
         $clearSessionData = function () use ($Session) {
             $sessionData = $Session->getSymfonySession()->all();
 
-            foreach ($sessionData as $key => $value) {
+            foreach (array_keys($sessionData) as $key) {
                 if (str_starts_with($key, 'auth-')) {
                     $Session->remove($key);
                 }

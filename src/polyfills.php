@@ -13,7 +13,7 @@ if (!function_exists('array_key_first')) {
      */
     function array_key_first(array $arr): int|string|null
     {
-        foreach ($arr as $key => $unused) {
+        foreach (array_keys($arr) as $key) {
             return $key;
         }
 
