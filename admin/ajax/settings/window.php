@@ -61,7 +61,7 @@ QUI::$Ajax->registerFunction(
 
         $result['categories'] = [];
 
-        foreach ($categories as $key => $category) {
+        foreach ($categories as $category) {
             if (isset($category['title']) && is_array($category['title'])) {
                 $category['text'] = QUI::getLocale()->get(
                     $category['title'][0],

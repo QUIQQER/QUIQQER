@@ -47,7 +47,7 @@ if (isset($_REQUEST['package'])) {
     $package = $_REQUEST['package'];
     $dir = OPT_DIR;
 
-    foreach ($_rf_files as $key => $file) {
+    foreach ($_rf_files as $file) {
         $firstPart = 'package_' . str_replace('/', '_', $package);
         $ending = str_replace($firstPart, '', $file);
 
@@ -62,7 +62,7 @@ if (isset($_REQUEST['package'])) {
 }
 
 // admin ajax
-foreach ($_rf_files as $key => $file) {
+foreach ($_rf_files as $file) {
     $_rf_file = OPT_DIR . 'quiqqer/core/admin/' . str_replace('_', '/', $file) . '.php';
     $_rf_file = Orthos::clearPath($_rf_file);
     $_rf_file = realpath($_rf_file);
@@ -91,7 +91,7 @@ if (isset($_REQUEST['project'])) {
     $projectDir = USR_DIR . $Project->getName();
     $firstPart = 'project_' . $Project->getName() . '_';
 
-    foreach ($_rf_files as $key => $file) {
+    foreach ($_rf_files as $file) {
         $file = str_replace($firstPart, '', $file);
         $file = $projectDir . '/lib/' . str_replace('_', '/', $file) . '.php';
         $file = Orthos::clearPath($file);

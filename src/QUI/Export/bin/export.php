@@ -77,7 +77,7 @@ foreach ($body['data']['header'] as $key => $entry) {
 // data
 $data = [];
 
-foreach ($body['data']['data'] as $key => $entry) {
+foreach ($body['data']['data'] as $entry) {
     $entry = array_values($entry);
 
     foreach ($entry as $k => $v) {
