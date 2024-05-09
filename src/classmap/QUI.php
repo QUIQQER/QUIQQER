@@ -356,8 +356,8 @@ class QUI
         }
 
         // bugfix: workaround: Uncaught Error: Call to undefined function DusanKasan\Knapsack\append()
-        if (!function_exists('\DusanKasan\Knapsack\append') && file_exists(OPT_DIR . 'dusank/knapsack/src/collection_functions.php')) {
-            require_once OPT_DIR . 'dusank/knapsack/src/collection_functions.php';
+        if (!function_exists('\DusanKasan\Knapsack\append') && file_exists(OPT_DIR . 'martinvenus/knapsack/src/collection_functions.php')) {
+            require_once OPT_DIR . 'martinvenus/knapsack/src/collection_functions.php';
         }
 
 
