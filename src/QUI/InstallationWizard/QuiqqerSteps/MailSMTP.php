@@ -12,7 +12,7 @@ class MailSMTP extends QUI\InstallationWizard\AbstractInstallationWizardStep
     /**
      * @param array $attributes
      */
-    public function __construct($attributes = [])
+    public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
         $this->setJavaScriptControl('controls/installation/MailSMTP');

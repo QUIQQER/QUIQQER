@@ -47,7 +47,7 @@ class Output extends \Symfony\Component\Console\Output\Output
      * @param bool $decorated
      * @param OutputFormatterInterface|null $formatter
      */
-    public function __construct($verbosity = self::VERBOSITY_NORMAL, $decorated = false, $formatter = null)
+    public function __construct(?int $verbosity = self::VERBOSITY_NORMAL, bool $decorated = false, ?\Symfony\Component\Console\Formatter\OutputFormatterInterface $formatter = null)
     {
         parent::__construct($verbosity, $decorated, $formatter);
         $this->Events = new Event();

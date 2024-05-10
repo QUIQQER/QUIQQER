@@ -62,7 +62,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      */
     protected int $IMAGE_MAX_SIZE = 4000;
 
-    public function __construct($params, Media $Media)
+    public function __construct(array $params, Media $Media)
     {
         parent::__construct($params, $Media);
 
