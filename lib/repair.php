@@ -30,6 +30,28 @@ echo '
                                               
 ';
 
+//start helper-functions
+
+function getNewestFileFrom(string $folder, string $fileEnding): string
+{
+    $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($folder));
+    $latestTime = 0;
+    $latestFile = '';
+
+    foreach ($iterator as $file) {
+        if ($file->isFile() && pathinfo($file->getFilename(), PATHINFO_EXTENSION) === $fileEnding) {
+            if ($file->getMTime() > $latestTime) {
+                $latestTime = $file->getMTime();
+                $latestFile = $file->getRealPath();
+            }
+        }
+    }
+
+    return $latestFile;
+}
+
+//end helper-functions
+
 
 echo PHP_EOL;
 echo '=========================' . PHP_EOL;
@@ -48,6 +70,11 @@ if (!empty($iniFile['globals']['phpCommand'])) {
 }
 
 $composerDir = $varDir . 'composer/';
+$backupFolder = $varDir . 'backup';
+
+if (!is_dir($composerDir)) {
+    mkdir($composerDir);
+}
 $composerPhar = $composerDir . 'composer.phar';
 
 system('wget https://getcomposer.org/download/latest-stable/composer.phar -O ' . $composerPhar);
@@ -63,6 +90,50 @@ echo PHP_EOL;
 system($composerCommand . ' --version');
 
 echo PHP_EOL;
+echo '=================================' . PHP_EOL;
+echo '|  Check needed composer files  |' . PHP_EOL;
+echo '=================================' . PHP_EOL;
+echo PHP_EOL;
+
+if (file_exists($composerDir . 'composer.json')) {
+    echo '- composer.json [ok]' . PHP_EOL;
+} else {
+    echo '- composer.json [error]' . PHP_EOL;
+    echo '-> try to restore' . PHP_EOL;
+
+    $latestComposerJson = getNewestFileFrom($backupFolder, 'json');
+    copy($latestComposerJson, $composerDir . 'composer.json');
+
+    if (file_exists($composerDir . 'composer.json')) {
+        echo '- composer.json [ok]' . PHP_EOL;
+    } else {
+        echo '\e[31m';
+        echo "Something went wrong, could not restore the composer.json file. Please restore the composer.json file.";
+        echo '\e[0m';
+
+        exit;
+    }
+}
+/*
+if (file_exists($composerDir . 'composer.lock')) {
+    echo '- composer.lock [ok]' . PHP_EOL;
+} else {
+    echo '- composer.lock [error]' . PHP_EOL;
+    echo '-> try to restore' . PHP_EOL;
+
+    $latestComposerJson = getNewestFileFrom($backupFolder, 'lock');
+    copy($latestComposerJson, $composerDir . 'composer.lock');
+
+    if (file_exists($composerDir . 'composer.lock')) {
+        echo '- composer.lock [ok]' . PHP_EOL;
+    } else {
+        echo "-> Something went wrong, could not restore the composer.lock file." . PHP_EOL;
+        echo "-> Since the composer.json is available, I will try to repair it anyway." . PHP_EOL;
+    }
+}
+*/
+
+echo PHP_EOL;
 echo '======================================' . PHP_EOL;
 echo '|  Try to update and repair QUIQQER  |' . PHP_EOL;
 echo '======================================' . PHP_EOL;
@@ -74,7 +145,12 @@ if (file_exists($composerDir . 'composer.lock')) {
     unlink($composerDir . 'composer.lock');
 }
 
+echo '- execute an update without scripts' . PHP_EOL;
 system($composerCommand . ' update --no-scripts -v');
+
+echo '- execute a regular update' . PHP_EOL;
+system($composerCommand . ' update');
+
 chdir(CMS_DIR);
 
 echo PHP_EOL;
