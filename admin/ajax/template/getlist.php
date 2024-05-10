@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_template_getlist',
-    fn() => QUI::getPackageManager()->searchInstalledPackages([
+    static fn() => QUI::getPackageManager()->searchInstalledPackages([
         'type' => "quiqqer-template"
     ]),
     false,

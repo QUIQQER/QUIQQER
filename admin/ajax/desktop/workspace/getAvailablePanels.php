@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_desktop_workspace_getAvailablePanels',
-    fn() => QUI\Workspace\Manager::getAvailablePanels(),
+    static fn() => QUI\Workspace\Manager::getAvailablePanels(),
     false,
     'Permission::checkUser'
 );

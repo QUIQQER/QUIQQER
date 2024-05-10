@@ -12,7 +12,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_getCategory',
-    fn($uid, $plugin, $tab) => QUI\Users\Utils::getTab($uid, $plugin, $tab),
+    static fn($uid, $plugin, $tab) => QUI\Users\Utils::getTab($uid, $plugin, $tab),
     ['uid', 'plugin', 'tab'],
     'Permission::checkAdminUser'
 );

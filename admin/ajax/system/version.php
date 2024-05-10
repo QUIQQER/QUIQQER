@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_version',
-    fn() => QUI::getPackageManager()->getVersion(),
+    static fn() => QUI::getPackageManager()->getVersion(),
     false,
     [
         'Permission::checkAdminUser',

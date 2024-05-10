@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_forwarding_getList',
-    fn() => QUI\System\Forwarding::getList()->toArray(),
+    static fn() => QUI\System\Forwarding::getList()->toArray(),
     false,
     'Permission::checkAdminUser'
 );

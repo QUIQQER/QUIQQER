@@ -227,7 +227,7 @@ class Manager
 
     public static function search($search): array
     {
-        return array_filter(self::getToolbars(), fn($toolbar) => str_contains($toolbar, $search));
+        return array_filter(self::getToolbars(), static fn($toolbar) => str_contains($toolbar, $search));
     }
 
     /**

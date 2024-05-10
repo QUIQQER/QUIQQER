@@ -86,7 +86,7 @@ class AjaxTest extends TestCase
 
         $sut::registerFunction(
             $testFunctionName,
-            fn($testParameter) => $testParameter,
+            static fn($testParameter) => $testParameter,
             ['testParameter']
         );
 

@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_desktop_workspace_threeColumns',
-    fn() => QUI\Workspace\Manager::getThreeColumnDefault(),
+    static fn() => QUI\Workspace\Manager::getThreeColumnDefault(),
     false,
     'Permission::checkUser'
 );

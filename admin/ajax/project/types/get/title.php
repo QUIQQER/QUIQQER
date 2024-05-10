@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_types_get_title',
-    fn($sitetype) => QUI::getPackageManager()->getSiteTypeName($sitetype),
+    static fn($sitetype) => QUI::getPackageManager()->getSiteTypeName($sitetype),
     ['sitetype'],
     'Permission::checkAdminUser'
 );

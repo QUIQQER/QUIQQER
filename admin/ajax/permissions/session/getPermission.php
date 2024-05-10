@@ -9,6 +9,6 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_permissions_session_getPermission',
-    fn($permission, $ruleset) => QUI::getUserBySession()->getPermission($permission, $ruleset),
+    static fn($permission, $ruleset) => QUI::getUserBySession()->getPermission($permission, $ruleset),
     ['permission', 'ruleset']
 );

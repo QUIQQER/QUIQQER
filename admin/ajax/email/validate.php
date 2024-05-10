@@ -11,7 +11,7 @@ use QUI\Utils\Security\Orthos;
 
 QUI::$Ajax->registerFunction(
     'ajax_email_validate',
-    fn($mail) => Orthos::checkMailSyntax($mail),
+    static fn($mail) => Orthos::checkMailSyntax($mail),
     ['mail'],
     'Permission::checkUser'
 );

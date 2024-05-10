@@ -6,7 +6,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_settings_getAllowedCSP',
-    fn() => QUI\System\CSP::getInstance()->getAllowedCSPList(),
+    static fn() => QUI\System\CSP::getInstance()->getAllowedCSPList(),
     false,
     ['Permission::checkAdminUser']
 );

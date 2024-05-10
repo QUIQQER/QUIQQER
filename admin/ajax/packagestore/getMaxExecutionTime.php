@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_packagestore_getMaxExecutionTime',
-    fn() => (int)ini_get('max_execution_time'),
+    static fn() => (int)ini_get('max_execution_time'),
     [],
     'Permission::checkAdminUser'
 );

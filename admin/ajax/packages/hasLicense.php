@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_packages_hasLicense',
-    fn($licensePackage) => QUI::getPackageManager()->hasLicense(\QUI\Utils\Security\Orthos::clear($licensePackage)),
+    static fn($licensePackage) => QUI::getPackageManager()->hasLicense(\QUI\Utils\Security\Orthos::clear($licensePackage)),
     ['licensePackage'],
     'Permission::checkAdminUser'
 );
