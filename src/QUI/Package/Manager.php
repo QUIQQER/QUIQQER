@@ -594,7 +594,7 @@ class Manager extends QUI\QDOM
         }
 
         // repositories - quiqqer/core#1260
-        usort($repositories, static function ($repoA, $repoB): int {
+        usort($repositories, static function (array $repoA, array $repoB): int {
             if (isset($repoA['packagist.org'])) {
                 return 1;
             }

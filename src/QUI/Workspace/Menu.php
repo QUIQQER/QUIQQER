@@ -380,7 +380,7 @@ class Menu
     /**
      * Sort the menu items
      */
-    protected function sortItems($items): array
+    protected function sortItems(array $items): array
     {
         usort($items, $this->sortByTitle(...));
 

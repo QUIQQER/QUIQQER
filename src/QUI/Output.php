@@ -300,7 +300,7 @@ class Output extends Singleton
 
         $result = preg_replace_callback(
             '#title="([^"]*)"#i',
-            static function ($output): string {
+            static function (array $output): string {
                 if (empty($output[1])) {
                     return $output[0];
                 }
@@ -316,7 +316,7 @@ class Output extends Singleton
 
         $result = preg_replace_callback(
             '#alt="([^"]*)"#i',
-            static function ($output): string {
+            static function (array $output): string {
                 if (empty($output[1])) {
                     return $output[0];
                 }
@@ -332,7 +332,7 @@ class Output extends Singleton
 
         $result = preg_replace_callback(
             '#href="([^"]*)"#i',
-            static function ($output): string {
+            static function (array $output): string {
                 if (empty($output[1])) {
                     return $output[0];
                 }

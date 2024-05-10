@@ -10,7 +10,7 @@ use function is_string;
 
 class Doctrine
 {
-    public static function parseDbArrayToQueryBuilder(QueryBuilder $query, $params): QueryBuilder
+    public static function parseDbArrayToQueryBuilder(QueryBuilder $query, array $params): QueryBuilder
     {
         if (!empty($params['where'])) {
             $where = $params['where'];

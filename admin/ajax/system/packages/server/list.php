@@ -30,7 +30,7 @@ QUI::$Ajax->registerFunction(
                 'active' => $active
             ];
         }
-        usort($data, static function ($a, $b): int {
+        usort($data, static function (array $a, array $b): int {
             if ($a['server'] == $b['server']) {
                 return 0;
             }

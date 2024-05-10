@@ -301,7 +301,7 @@ class Media extends QUI\QDOM
 
         $languages = QUI::availableLanguages();
 
-        $updateEntry = static function ($type, $data, $table) use ($languages): void {
+        $updateEntry = static function ($type, array $data, $table) use ($languages): void {
             $value = $data[$type];
             $valueJSON = json_decode($value, true);
 
