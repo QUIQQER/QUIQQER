@@ -54,7 +54,7 @@ class Manager
      *
      * @throws Exception
      */
-    public function init(): bool|string
+    public function init(): bool|string|array
     {
         if (!empty($_REQUEST['onstart']) && is_callable($_REQUEST['onstart'])) {
             $this->callFunction($_REQUEST['onstart'], $_REQUEST);
@@ -125,7 +125,7 @@ class Manager
      * @throws Exception
      * @throws QUI\Permissions\Exception
      */
-    public function upload(): bool|string
+    public function upload(): bool|string|array
     {
         QUIFile::mkdir($this->getUserUploadDir());
 
