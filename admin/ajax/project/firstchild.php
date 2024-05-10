@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_firstchild',
-    static function ($project) {
+    static function ($project): array {
         $Project = QUI::getProjectManager()->decode($project);
         $First = $Project->firstChild();
         $Temp = new QUI\Projects\Site\Edit($Project, $First->getId());

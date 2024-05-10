@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_panel_categories_get',
-    static function ($project) {
+    static function ($project): array {
         $Project = QUI::getProjectManager()->decode($project);
 
         $buttonList = [];

@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_groups_deactivate',
-    static function ($gid) {
+    static function ($gid): array {
         $gid = json_decode($gid, true);
 
         if (!is_array($gid)) {

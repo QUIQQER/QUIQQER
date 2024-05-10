@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_server_list',
-    static function () {
+    static function (): array {
         $list = QUI::getPackageManager()->getServerList();
         $data = [];
 

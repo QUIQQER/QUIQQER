@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_address_list',
-    static function ($uid) {
+    static function ($uid): array {
         $User = QUI::getUsers()->get($uid);
         $addresses = $User->getAddressList();
         $result = [];

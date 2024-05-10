@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_address_getAddressList',
-    static function ($ids) {
+    static function ($ids): array {
         $ids = json_decode($ids, true);
         $list = [];
 

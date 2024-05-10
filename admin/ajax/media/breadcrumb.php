@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_media_breadcrumb',
-    static function ($project, $fileid) {
+    static function ($project, $fileid): array {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $File = $Media->get($fileid);

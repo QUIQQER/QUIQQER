@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_deactivate',
-    static function ($uid) {
+    static function ($uid): array {
         $uid = json_decode($uid, true);
 
         if (!is_array($uid)) {
