@@ -12,6 +12,7 @@ use function array_flip;
 use function explode;
 use function implode;
 use function is_string;
+use function str_starts_with;
 use function substr;
 
 /**
@@ -112,12 +113,12 @@ class UserGroups
         }
 
         foreach ($ugs as $ug) {
-            if (str_contains($ug, 'g')) {
-                $result['groups'][] = (int)substr($ug, 1);
+            if (str_starts_with($ug, 'g')) {
+                $result['groups'][] = substr($ug, 1);
                 continue;
             }
 
-            if (str_contains($ug, 'u')) {
+            if (str_starts_with($ug, 'u')) {
                 $result['users'][] = substr($ug, 1);
             }
         }
@@ -130,11 +131,11 @@ class UserGroups
         $ugString = explode(',', $ugString);
 
         foreach ($ugString as $entry) {
-            if (str_contains($entry, 'g')) {
+            if (str_starts_with($entry, 'g')) {
                 continue;
             }
 
-            if (str_contains($entry, 'u')) {
+            if (str_starts_with($entry, 'u')) {
                 continue;
             }
 

@@ -6,6 +6,7 @@ use QUI;
 use QUI\Database\Exception;
 
 use function count;
+use function implode;
 use function is_numeric;
 
 class MigrationV1ToV2
@@ -115,6 +116,63 @@ class MigrationV1ToV2
                     );
                 } catch (QUI\Exception) {
                 }
+            }
+        }
+    }
+
+    public static function migrateUserGroupField(string $table, string $field, string $indexId = 'id'): void
+    {
+        $result = QUI::getDataBase()->fetch([
+            'from' => $table
+        ]);
+
+        foreach ($result as $entry) {
+            $id = $entry[$indexId];
+            $ugField = $entry[$field];
+            $new = [];
+
+            if (empty($ugField)) {
+                continue;
+            }
+
+            $userGroups = UserGroups::parseUsersGroupsString($ugField);
+
+            // users
+            foreach ($userGroups['users'] as $userId) {
+                if (!is_numeric($userId)) {
+                    $new[] = 'u' . $userId;
+                    continue;
+                }
+
+                try {
+                    $new[] = 'u' . QUI::getUsers()->get($userId)->getUUID();
+                } catch (QUI\Exception) {
+                    $new[] = 'u' . $userId;
+                }
+            }
+
+            // groups
+            foreach ($userGroups['groups'] as $groupId) {
+                if (!is_numeric($groupId)) {
+                    $new[] = 'g' . $groupId;
+                    continue;
+                }
+
+                try {
+                    $new[] = 'g' . QUI::getGroups()->get($groupId)->getUUID();
+                } catch (QUI\Exception) {
+                    $new[] = 'g' . $groupId;
+                }
+            }
+
+            // update
+            try {
+                QUI::getDataBase()->update(
+                    $table,
+                    [$field => ',' . implode(',', $new) . ','],
+                    [$indexId => $id]
+                );
+            } catch (QUI\Exception) {
             }
         }
     }
