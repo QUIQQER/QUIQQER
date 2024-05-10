@@ -159,7 +159,7 @@ class Htaccess extends QUI\System\Console\Tool
         $URL_SYS_DIR = ltrim($URL_SYS_DIR, '/');
         $URL_VAR_DIR = ltrim($URL_VAR_DIR, '/');
 
-        $quiqqerLib = URL_OPT_DIR . 'quiqqer/core/lib';
+        $quiqqerLib = URL_OPT_DIR . 'quiqqer/core/src';
         $quiqqerBin = URL_OPT_DIR . 'quiqqer/core/bin';
         $quiqqerSys = URL_OPT_DIR . 'quiqqer/core/admin';
         $quiqqerDir = URL_OPT_DIR . 'quiqqer/core';
@@ -263,7 +263,7 @@ class Htaccess extends QUI\System\Console\Tool
         $URL_SYS_DIR = ltrim($URL_SYS_DIR, '/');
         $URL_VAR_DIR = ltrim($URL_VAR_DIR, '/');
 
-        $quiqqerLib = URL_OPT_DIR . 'quiqqer/core/lib';
+        $quiqqerLib = URL_OPT_DIR . 'quiqqer/core/src';
         $quiqqerBin = URL_OPT_DIR . 'quiqqer/core/bin';
         $quiqqerSys = URL_OPT_DIR . 'quiqqer/core/admin';
         $quiqqerDir = URL_OPT_DIR . 'quiqqer/core';
