@@ -8,6 +8,6 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_session_get',
-    static fn($key) => QUI::getSession()->get($key),
+    static fn($key): mixed => QUI::getSession()->get($key),
     ['key']
 );

@@ -261,7 +261,7 @@ class MigrationV2 extends QUI\System\Console\Tool
         $dbFields = QUI\Utils\Text\XML::getDataBaseFromXml(OPT_DIR . 'quiqqer/core/database.xml');
         unset($dbFields['projects']);
 
-        $dbFields['globals'] = array_filter($dbFields['globals'], static fn($entry) => $entry['suffix'] === 'groups');
+        $dbFields['globals'] = array_filter($dbFields['globals'], static fn($entry): bool => $entry['suffix'] === 'groups');
 
         QUI\Utils\Text\XML::importDataBase($dbFields);
 

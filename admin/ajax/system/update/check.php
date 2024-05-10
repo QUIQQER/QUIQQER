@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_update_check',
-    static fn() => QUI::getPackageManager()->checkUpdates(),
+    static fn(): bool => QUI::getPackageManager()->checkUpdates(),
     false,
     [
         'Permission::checkAdminUser',

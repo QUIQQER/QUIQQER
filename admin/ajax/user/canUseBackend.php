@@ -4,4 +4,4 @@
  * User is admin check
  */
 
-QUI::$Ajax->registerFunction('ajax_user_canUseBackend', static fn() => QUI::getUserBySession()->canUseBackend());
+QUI::$Ajax->registerFunction('ajax_user_canUseBackend', static fn(): bool => QUI::getUserBySession()->canUseBackend());

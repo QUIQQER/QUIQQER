@@ -155,7 +155,7 @@ class Package extends QUI\QDOM
         }
 
         $provider = $packageData['provider'];
-        $provider = array_filter($provider, static fn($key) => $key === $providerName, ARRAY_FILTER_USE_KEY);
+        $provider = array_filter($provider, static fn($key): bool => $key === $providerName, ARRAY_FILTER_USE_KEY);
 
         if (!isset($provider[$providerName])) {
             return [];

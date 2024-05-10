@@ -289,7 +289,7 @@ class Manager extends QUI\QDOM
         $data = file_get_contents($this->composer_lock);
         $data = json_decode($data, true);
 
-        $package = array_filter($data['packages'], static fn($package) => $package['name'] === 'quiqqer/core');
+        $package = array_filter($data['packages'], static fn($package): bool => $package['name'] === 'quiqqer/core');
         $package = current($package);
 
         $this->version = $package['version'];
@@ -312,7 +312,7 @@ class Manager extends QUI\QDOM
         $data = file_get_contents($this->composer_lock);
         $data = json_decode($data, true);
 
-        $package = array_filter($data['packages'], static fn($package) => $package['name'] === 'quiqqer/core');
+        $package = array_filter($data['packages'], static fn($package): bool => $package['name'] === 'quiqqer/core');
 
         $package = current($package);
 
@@ -333,7 +333,7 @@ class Manager extends QUI\QDOM
 
         $packageName = $Package->getName();
 
-        $package = array_filter($data['packages'], static fn($package) => $package['name'] === $packageName);
+        $package = array_filter($data['packages'], static fn($package): bool => $package['name'] === $packageName);
 
         if (empty($package)) {
             return [];
@@ -1746,7 +1746,7 @@ class Manager extends QUI\QDOM
                 $result = json_decode($result[0]['result'], true);
 
                 if (!empty($result)) {
-                    usort($result, static fn($a, $b) => strcmp($a["package"], $b["package"]));
+                    usort($result, static fn($a, $b): int => strcmp($a["package"], $b["package"]));
 
                     return $result;
                 }
@@ -1758,7 +1758,7 @@ class Manager extends QUI\QDOM
         try {
             $output = $this->getOutdatedPackages();
 
-            usort($output, static fn($a, $b) => strcmp($a["package"], $b["package"]));
+            usort($output, static fn($a, $b): int => strcmp($a["package"], $b["package"]));
 
             QUI::getDataBase()->insert(QUI::getDBTableName('updateChecks'), [
                 'date' => time(),
