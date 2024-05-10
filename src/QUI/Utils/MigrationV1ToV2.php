@@ -12,12 +12,16 @@ class MigrationV1ToV2
 {
     /**
      * migration helper for user fields in a db table
-     * - table needs ID as identifier
+     * - default table identifier for the inset is ID
+     * - you can overwrite the identifier with $indexId
      *
      * @throws Exception
      */
-    public static function migrateUsers(string $table, array $userTableFields = []): void
-    {
+    public static function migrateUsers(
+        string $table,
+        array $userTableFields = [],
+        string $indexId = 'id'
+    ): void {
         if (!count($userTableFields)) {
             return;
         }
@@ -39,10 +43,20 @@ class MigrationV1ToV2
                 }
 
                 try {
+                    $uuid = QUI::getUsers()->get($uid)->getUUID();
+                } catch (QUI\Exception) {
+                    continue;
+                }
+
+                if (empty($uuid)) {
+                    continue;
+                }
+
+                try {
                     QUI::getDataBase()->update(
                         $table,
-                        [$field => QUI::getUsers()->get($uid)->getUUID()],
-                        ['id' => $entry['id']]
+                        [$field => $uuid],
+                        [$indexId => $entry[$indexId]]
                     );
                 } catch (QUI\Exception) {
                 }
