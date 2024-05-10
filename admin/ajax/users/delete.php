@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_delete',
-    static function ($uid) {
+    static function ($uid): bool {
         $Users = QUI::getUsers();
         $uIds = json_decode($uid, true);
 

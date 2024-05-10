@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_licenseKey_delete',
-    static function () {
+    static function (): bool {
         $licenseConfigFile = CMS_DIR . 'etc/license.ini.php';
 
         if (!file_exists($licenseConfigFile)) {

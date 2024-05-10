@@ -230,7 +230,7 @@ class Output extends Singleton
                 return null;
             };
 
-            $isInPicture = static function ($Image) {
+            $isInPicture = static function ($Image): bool {
                 $Parent = $Image->parentNode;
 
                 while ($Parent) {
