@@ -117,7 +117,7 @@ class DBCheck extends QUI\System\Test
      *
      * @param $xmlFile
      */
-    protected function checkIntegrity($xmlFile): void
+    protected function checkIntegrity(string $xmlFile): void
     {
         $content = XML::getDataBaseFromXml($xmlFile);
 

@@ -548,7 +548,7 @@ class MigrationV2 extends QUI\System\Console\Tool
         );
     }
 
-    protected function getUserHash($userId): string|int
+    protected function getUserHash(int|string $userId): string|int
     {
         try {
             return QUI::getUsers()->get($userId)->getUUID();

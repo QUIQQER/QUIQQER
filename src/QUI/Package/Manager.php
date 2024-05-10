@@ -1133,7 +1133,7 @@ class Manager extends QUI\QDOM
      *
      * @throws PackageInstallException|QUI\Composer\Exception
      */
-    protected function composerRequireOrInstall($packages, $version): array
+    protected function composerRequireOrInstall($packages, string $version): array
     {
         $this->checkComposerInstallRequirements();
 

@@ -27,7 +27,7 @@ class Locker
      */
     public static function lockWithPermissions(
         Package $Package,
-        $key,
+        string $key,
         string $permission = '',
         $User = null
     ): void {
@@ -189,7 +189,7 @@ class Locker
      */
     public static function unlockWithPermissions(
         Package $Package,
-        $key,
+        string $key,
         string $permission = '',
         $User = null
     ): void {
