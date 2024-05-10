@@ -290,7 +290,6 @@ class Manager extends QUI\QDOM
         $data = json_decode($data, true);
 
         $package = array_filter($data['packages'], fn($package) => $package['name'] === 'quiqqer/core');
-
         $package = current($package);
 
         $this->version = $package['version'];
@@ -347,12 +346,12 @@ class Manager extends QUI\QDOM
      * Set a quiqqer version to the composer file
      * This method does not perform an update
      *
-     * @param $version
+     * @param string $version
      *
      * @throws UnexpectedValueException
      * @throws Exception
      */
-    public function setQuiqqerVersion($version): void
+    public function setQuiqqerVersion(string $version): void
     {
         $Parser = new VersionParser();
         $Parser->normalize(str_replace('*', '0', $version)); // workaround, normalize cant check 1.*
@@ -469,32 +468,32 @@ class Manager extends QUI\QDOM
         $composerEvents = [
             // command events
             'pre-update-cmd' => [
-                'QUI\\Package\\Composer\\CommandEvents::preUpdate'
+                'QUI\Package\Composer\CommandEvents::preUpdate'
             ],
             'post-update-cmd' => [
-                'QUI\\Package\\Composer\\CommandEvents::postUpdate'
+                'QUI\Package\Composer\CommandEvents::postUpdate'
             ],
             'pre-command-run' => [
-                'QUI\\Package\\Composer\\CommandEvents::preCommandRun'
+                'QUI\Package\Composer\CommandEvents::preCommandRun'
             ],
             // package events
             'pre-package-install' => [
-                'QUI\\Package\\Composer\\PackageEvents::prePackageInstall'
+                'QUI\Package\Composer\PackageEvents::prePackageInstall'
             ],
             'post-package-install' => [
-                'QUI\\Package\\Composer\\PackageEvents::postPackageInstall'
+                'QUI\Package\Composer\PackageEvents::postPackageInstall'
             ],
             'pre-package-update' => [
-                'QUI\\Package\\Composer\\PackageEvents::prePackageUpdate'
+                'QUI\Package\Composer\PackageEvents::prePackageUpdate'
             ],
             'post-package-update' => [
-                'QUI\\Package\\Composer\\PackageEvents::postPackageUpdate'
+                'QUI\Package\Composer\PackageEvents::postPackageUpdate'
             ],
             'pre-package-uninstall' => [
-                'QUI\\Package\\Composer\\PackageEvents::prePackageUninstall'
+                'QUI\Package\Composer\PackageEvents::prePackageUninstall'
             ],
             'post-package-uninstall' => [
-                'QUI\\Package\\Composer\\PackageEvents::postPackageUninstall'
+                'QUI\Package\Composer\PackageEvents::postPackageUninstall'
             ]
         ];
 
@@ -572,10 +571,20 @@ class Manager extends QUI\QDOM
                 continue;
             }
 
-            $repositories[] = [
+            $package = [
                 'type' => $params['type'],
                 'url' => $server
             ];
+
+            if (isset($params['options'])) {
+                $options = json_decode($params['options'], true);
+
+                if (is_array($options)) {
+                    $package['options'] = $options;
+                }
+            }
+
+            $repositories[] = $package;
         }
 
         if (isset($servers['packagist.org']) && $servers['packagist.org']['active'] == 0) {
@@ -740,7 +749,7 @@ class Manager extends QUI\QDOM
         // save
         file_put_contents(
             $this->composer_json,
-            json_encode($composerJson, JSON_PRETTY_PRINT)
+            json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
         );
     }
 
@@ -2281,6 +2290,7 @@ class Manager extends QUI\QDOM
     }
 
     //region site types
+
     /**
      * Return the type icon
      */
