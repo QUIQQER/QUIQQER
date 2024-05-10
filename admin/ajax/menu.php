@@ -11,7 +11,7 @@
  */
 QUI::$Ajax->registerFunction(
     'ajax_menu',
-    static function () {
+    static function (): array {
         $Menu = new QUI\Workspace\Menu();
 
         return $Menu->getMenu();

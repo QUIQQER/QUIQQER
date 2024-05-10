@@ -35,10 +35,8 @@ class MyDB implements \Stringable
 
     /**
      * \QUI\Database\DB Objekt (Neues Datenbank Objekt)
-     *
-     * @return \QUI\Database\DB
      */
-    public function getUtilsDB()
+    public function getUtilsDB(): \QUI\Database\DB
     {
         return QUI::getDataBase();
     }
@@ -74,12 +72,7 @@ class MyDB implements \Stringable
         return $data;
     }
 
-    /**
-     * PDO Objekt
-     *
-     * @return \PDO
-     */
-    public function getPDO()
+    public function getPDO(): ?\PDO
     {
         return QUI::getDataBase()->getPDO();
     }
@@ -164,7 +157,7 @@ class MyDB implements \Stringable
      *
      * @return \PDOStatement
      */
-    public function queryNoEscape($params)
+    public function queryNoEscape($params): \PDOStatement
     {
         return $this->DB->exec($params);
     }
@@ -222,7 +215,7 @@ class MyDB implements \Stringable
      *
      * @return \PDOStatement
      */
-    public function updateData($table, $fieldValue, $fieldAndId)
+    public function updateData($table, $fieldValue, $fieldAndId): \PDOStatement
     {
         return $this->DB->exec([
             'update' => $table,
@@ -281,7 +274,7 @@ class MyDB implements \Stringable
      *
      * @return \PDOStatement
      */
-    public function deleteData($table, $fieldAndId)
+    public function deleteData($table, $fieldAndId): \PDOStatement
     {
         return $this->DB->exec([
             'delete' => true,

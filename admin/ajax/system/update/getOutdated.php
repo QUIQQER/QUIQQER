@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_update_getOutdated',
-    static function ($force) {
+    static function ($force): array {
         if (!isset($force)) {
             $force = false;
         }

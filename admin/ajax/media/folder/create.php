@@ -15,7 +15,7 @@ use QUI\Projects\Media\Folder;
 
 QUI::$Ajax->registerFunction(
     'ajax_media_folder_create',
-    static function ($project, $parentid, $newfolder) {
+    static function ($project, $parentid, $newfolder): array {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $File = $Media->get($parentid);

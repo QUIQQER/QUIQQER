@@ -6,7 +6,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_installationWizard_get',
-    static function () {
+    static function (): array {
         if (!QUI::getUserBySession()->isSU()) {
             return [];
         }

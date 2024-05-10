@@ -10,7 +10,7 @@ use QUI\System\License;
 
 QUI::$Ajax->registerFunction(
     'ajax_licenseKey_activate',
-    static function () {
+    static function (): array {
         try {
             return License::activateSystem();
         } catch (\Exception $Exception) {

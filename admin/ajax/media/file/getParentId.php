@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_media_file_getParentId',
-    static function ($project, $fileid) {
+    static function ($project, $fileid): int {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $fileid = (int)$fileid;

@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_save',
-    static function ($uid, $attributes) {
+    static function ($uid, $attributes): array {
         $User = QUI::getUsers()->get($uid);
         $attributes = json_decode($attributes, true);
         $language = $User->getAttribute('lang');

@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_types_get_list',
-    static function ($project) {
+    static function ($project): array {
         try {
             $Project = QUI::getProjectManager()->decode($project);
         } catch (QUI\Exception) {

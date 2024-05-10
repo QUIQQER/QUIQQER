@@ -11,7 +11,7 @@ use QUI\System\License;
 
 QUI::$Ajax->registerFunction(
     'ajax_licenseKey_checkStatus',
-    static function () {
+    static function (): bool|array {
         try {
             return License::getStatus();
         } catch (\Exception $Exception) {

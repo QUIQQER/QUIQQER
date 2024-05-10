@@ -12,7 +12,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_permissions_getCompleteList',
-    static function ($params, $btype) {
+    static function ($params, $btype): array {
         $params = json_decode($params, true);
         $Manager = QUI::getPermissionManager();
 

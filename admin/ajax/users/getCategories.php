@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_getCategories',
-    static function ($uid) {
+    static function ($uid): array {
         try {
             $Users = QUI::getUsers();
             $User = $Users->get($uid);
