@@ -14,7 +14,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_template_get',
-    static function ($template, $package, $params = '') {
+    static function ($template, $package, $params = ''): string {
         $current = QUI::getLocale()->getCurrent();
         $Engine = QUI::getTemplateManager()->getEngine(true);
 

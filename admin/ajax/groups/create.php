@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_groups_create',
-    static function ($groupname, $pid) {
+    static function ($groupname, $pid): string {
         $Groups = QUI::getGroups();
         $Parent = $Groups->get($pid);
         $Group = $Parent->createChild($groupname);

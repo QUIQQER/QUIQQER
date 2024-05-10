@@ -667,7 +667,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         // thanks to http://php.net/manual/de/function.rawurlencode.php#63751
         $encoded = implode(
             "/",
-            array_map(static function ($part) {
+            array_map(static function ($part): string {
                 $encoded = '';
                 $length = mb_strlen($part);
 

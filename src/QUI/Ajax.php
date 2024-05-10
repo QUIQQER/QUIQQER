@@ -253,7 +253,7 @@ class Ajax extends QUI\QDOM
             $data = $Exception->toArray();
         }
 
-        $attributes = array_filter($data, static function ($v, $k) {
+        $attributes = array_filter($data, static function ($v, $k): bool {
             return match ($k) {
                 'message', 'code', 'type', 'context' => false,
                 default => is_string($v) || is_array($v) || is_numeric($v) || is_bool($v),

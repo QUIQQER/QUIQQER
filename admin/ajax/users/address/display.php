@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_address_display',
-    static function ($uid, $aid) {
+    static function ($uid, $aid): string {
         $User = QUI::getUsers()->get($uid);
         $Address = $User->getAddress($aid);
 

@@ -8,7 +8,7 @@ use QUI\InstallationWizard\InstallationWizardInterface;
 
 QUI::$Ajax->registerFunction(
     'ajax_installationWizard_getStep',
-    static function ($provider, $step) {
+    static function ($provider, $step): string {
         if (!class_exists($provider)) {
             return '';
         }

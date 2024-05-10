@@ -13,12 +13,8 @@ class Watch
 {
     /**
      * Write failed login attempts to watcher log
-     *
-     * @param string $event
-     * @param array $params
-     * @return string
      */
-    public static function authenticatorLoginError($event, $params)
+    public static function authenticatorLoginError($event, $params): string
     {
         $userId = $params[0];
         $authenticator = '-';

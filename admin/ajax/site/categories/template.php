@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_site_categories_template',
-    static function ($project, $id, $tab) {
+    static function ($project, $id, $tab): string {
         $Project = QUI::getProjectManager()->decode($project);
         $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
 

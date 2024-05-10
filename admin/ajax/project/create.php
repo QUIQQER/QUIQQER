@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_create',
-    static function ($params) {
+    static function ($params): string {
         $params = json_decode($params, true);
         $template = '';
 

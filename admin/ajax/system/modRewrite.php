@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_modRewrite',
-    static function () {
+    static function (): int {
         // quiqqer check
         if (\array_key_exists('HTTP_MOD_REWRITE', $_SERVER)) {
             return 1;

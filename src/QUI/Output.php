@@ -191,7 +191,7 @@ class Output extends Singleton
         if ($this->settings['parse-to-picture-elements']) {
             $images = $Dom->getElementsByTagName('img');
 
-            $nodeContent = static function ($n) {
+            $nodeContent = static function ($n): string {
                 /* @var $n DOMElement */
                 $HTML5 = new HTML5([
                     'disable_html_ns' => true
@@ -300,7 +300,7 @@ class Output extends Singleton
 
         $result = preg_replace_callback(
             '#title="([^"]*)"#i',
-            static function ($output) {
+            static function ($output): string {
                 if (empty($output[1])) {
                     return $output[0];
                 }
@@ -316,7 +316,7 @@ class Output extends Singleton
 
         $result = preg_replace_callback(
             '#alt="([^"]*)"#i',
-            static function ($output) {
+            static function ($output): string {
                 if (empty($output[1])) {
                     return $output[0];
                 }
@@ -332,7 +332,7 @@ class Output extends Singleton
 
         $result = preg_replace_callback(
             '#href="([^"]*)"#i',
-            static function ($output) {
+            static function ($output): string {
                 if (empty($output[1])) {
                     return $output[0];
                 }
@@ -808,11 +808,7 @@ class Output extends Singleton
         return $this->imageCache[$img];
     }
 
-    /**
-     * @param $output
-     * @return mixed|string
-     */
-    protected function dataImages($output)
+    protected function dataImages($output): string
     {
         $output = str_replace('&amp;', '&', $output);   // &amp; fix
         $output = str_replace('〈=', '&lang=', $output); // URL FIX

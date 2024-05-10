@@ -131,7 +131,7 @@ class Handler
         }
 
         // sorting
-        usort($result, static function ($a, $b) {
+        usort($result, static function ($a, $b): int {
             if ($a == QUIQQER::class) {
                 return 1;
             }

@@ -12,7 +12,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_media_url_get',
-    static function ($project, $fileid) {
+    static function ($project, $fileid): string {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
 

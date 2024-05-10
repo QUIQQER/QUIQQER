@@ -12,7 +12,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_site_getLinkedPath',
-    static function ($project, $id, $parentId) {
+    static function ($project, $id, $parentId): string {
         $Project = QUI::getProjectManager()->decode($project);
         $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
         $Parent = new QUI\Projects\Site\Edit($Project, (int)$parentId);
