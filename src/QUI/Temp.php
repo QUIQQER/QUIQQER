@@ -28,10 +28,7 @@ use function system;
  */
 class Temp
 {
-    /**
-     * @var string
-     */
-    protected $folder;
+    protected string $folder;
 
     /**
      * constructor

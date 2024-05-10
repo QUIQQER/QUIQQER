@@ -20,10 +20,8 @@ class MyDB implements \Stringable
 {
     /**
      * internal db object
-     *
-     * @var \QUI\Database\DB
      */
-    protected $DB = null;
+    protected \QUI\Database\DB $DB;
 
     /**
      * constructor
