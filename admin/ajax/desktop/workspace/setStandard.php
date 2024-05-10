@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_desktop_workspace_setStandard',
-    function ($id) {
+    static function ($id) {
         QUI\Workspace\Manager::setStandardWorkspace(
             QUI::getUserBySession(),
             $id

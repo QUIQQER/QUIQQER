@@ -9,10 +9,11 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_usersgroups_searchGrid',
-    function ($search, $fields, $params) {
+    static function ($search, $fields, $params) {
         $fields = json_decode($fields, true);
         $params = json_decode($params, true);
-        $limit = 20; // default
+        $limit = 20;
+        // default
         $page = 1;
 
         if (!is_array($params)) {

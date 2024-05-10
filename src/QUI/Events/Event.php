@@ -158,7 +158,7 @@ class Event implements QUI\Interfaces\Events
         $events = $this->events[$event];
 
         // sort
-        usort($events, function ($a, $b) {
+        usort($events, static function ($a, $b) {
             if ($a['priority'] == $b['priority']) {
                 return 0;
             }

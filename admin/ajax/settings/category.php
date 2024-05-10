@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_settings_category',
-    function ($file, $category, $windowName) {
+    static function ($file, $category, $windowName) {
         if (file_exists($file)) {
             $files = [$file];
         } else {

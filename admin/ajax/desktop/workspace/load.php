@@ -6,7 +6,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_desktop_workspace_load',
-    function () {
+    static function () {
         $list = QUI\Workspace\Manager::getWorkspacesByUser(QUI::getUserBySession());
         $executed = !count(QUI\InstallationWizard\ProviderHandler::getNotSetUpProviderList());
 

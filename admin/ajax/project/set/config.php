@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_set_config',
-    function ($project, $params) {
+    static function ($project, $params) {
         $Project = QUI\Projects\Manager::getProject($project);
         $params = json_decode($params, true);
 

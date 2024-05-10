@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_parent',
-    function ($project, $id) {
+    static function ($project, $id) {
         $Project = QUI::getProjectManager()->decode($project);
         $Site = $Project->get($id);
 

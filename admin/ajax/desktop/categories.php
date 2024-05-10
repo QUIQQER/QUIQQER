@@ -10,7 +10,7 @@ use QUI\Package\Package;
 
 QUI::$Ajax->registerFunction(
     'ajax_desktop_categories',
-    function ($type) {
+    static function ($type) {
         $cache = 'quiqqer/package/quiqqer/core/desktopCategories/list/' . md5($type);
 
         try {

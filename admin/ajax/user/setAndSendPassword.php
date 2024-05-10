@@ -15,7 +15,7 @@ use QUI\Mail\Mailer;
 
 QUI::$Ajax->registerFunction(
     'ajax_user_setAndSendPassword',
-    function ($userId, $newPassword, $forceNew) {
+    static function ($userId, $newPassword, $forceNew) {
         $User = QUI::getUsers()->get($userId);
         $User->setPassword($newPassword);
 

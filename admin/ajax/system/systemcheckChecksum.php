@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_systemcheckChecksum',
-    function ($packageName) {
+    static function ($packageName) {
         $Package = QUI::getPackage('quiqqer/requirements');
         $dir = $Package->getVarDir();
         $cacheFile = $dir . "requirements_checks_result_package";

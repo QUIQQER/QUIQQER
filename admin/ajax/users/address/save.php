@@ -12,7 +12,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_address_save',
-    function ($uid, $aid, $data) {
+    static function ($uid, $aid, $data) {
         $data = json_decode($data, true);
 
         if (!isset($uid) || !$uid) {

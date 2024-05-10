@@ -366,7 +366,7 @@ class QUI
 
 
         // mem peak - info mail at 80% usage
-        self::getErrorHandler()->registerShutdown(function () {
+        self::getErrorHandler()->registerShutdown(static function () {
             QUI\Utils\System\Debug::marker('END');
 
             // ram peak, if the ram usage is too high, than write and send a message

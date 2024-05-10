@@ -6,7 +6,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_updateWithLocalServer',
-    function () {
+    static function () {
         QUI::getPackageManager()->updateWithLocalRepository();
     },
     false,

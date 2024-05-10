@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_editor_toolbar_save',
-    function ($toolbar, $xml) {
+    static function ($toolbar, $xml) {
         QUI\Editor\Manager::saveToolbar($toolbar, $xml);
 
         QUI::getMessagesHandler()->addSuccess(

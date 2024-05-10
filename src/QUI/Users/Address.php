@@ -526,7 +526,7 @@ class Address extends QUI\QDOM
         $mail = json_encode($this->getMailList());
         $phone = json_encode($this->getPhoneList());
 
-        $cleanupAttributes = function ($str) {
+        $cleanupAttributes = static function ($str) {
             $str = Orthos::removeHTML($str);
             $str = Orthos::clearFormRequest($str);
             return Orthos::clearPath($str);

@@ -1088,7 +1088,7 @@ class Rewrite
 
         // Nach / (slash) sortieren, damit URL mit mehr Kindseiten als erstes kommen
         // Ansonsten kann es vorkommen das die falsche Seite für den Pfad zuständig ist
-        usort($list, function ($a, $b) {
+        usort($list, static function ($a, $b) {
             return mb_substr_count($a['path'], '/') - mb_substr_count($b['path'], '/');
         });
 
@@ -1381,7 +1381,7 @@ class Rewrite
          * @param $eventName
          * @param Interfaces\Projects\Site $Site
          */
-        $triggerEvent = function ($eventName, QUI\Interfaces\Projects\Site $Site) {
+        $triggerEvent = static function ($eventName, QUI\Interfaces\Projects\Site $Site) {
             try {
                 QUI::getEvents()->fireEvent($eventName, [$Site]);
             } catch (QUI\ExceptionStack $Exception) {

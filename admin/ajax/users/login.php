@@ -2,7 +2,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_login',
-    function ($authenticator, $params, $globalauth) {
+    static function ($authenticator, $params, $globalauth) {
         QUI::getEvents()->fireEvent('userLoginAjaxStart');
 
         QUI::getSession()->destroy();

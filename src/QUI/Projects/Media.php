@@ -301,7 +301,7 @@ class Media extends QUI\QDOM
 
         $languages = QUI::availableLanguages();
 
-        $updateEntry = function ($type, $data, $table) use ($languages) {
+        $updateEntry = static function ($type, $data, $table) use ($languages) {
             $value = $data[$type];
             $valueJSON = json_decode($value, true);
 
@@ -602,7 +602,7 @@ class Media extends QUI\QDOM
             $Image->resize(
                 $sizes[1],
                 $sizes[2],
-                function ($Constraint) {
+                static function ($Constraint) {
                     /* @var $Constraint Constraint; */
                     $Constraint->aspectRatio();
                     $Constraint->upsize();

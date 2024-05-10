@@ -13,7 +13,7 @@ use QUI\Control;
 
 QUI::$Ajax->registerFunction(
     'ajax_controls_get',
-    function ($control, $params = false) {
+    static function ($control, $params = false) {
         try {
             $Control = new $control();
             $params = json_decode($params, true);

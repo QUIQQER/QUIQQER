@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_site_categories_get',
-    function ($project, $id) {
+    static function ($project, $id) {
         $Project = QUI::getProjectManager()->decode($project);
         $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
 

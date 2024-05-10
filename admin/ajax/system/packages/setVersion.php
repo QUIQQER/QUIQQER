@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_setVersion',
-    function ($packages, $version) {
+    static function ($packages, $version) {
         QUI::getPackageManager()->setPackageVersion(
             json_decode($packages, true),
             $version

@@ -12,7 +12,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_site_save',
-    function ($project, $id, $attributes) {
+    static function ($project, $id, $attributes) {
         $Project = QUI::getProjectManager()->decode($project);
         $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
 

@@ -122,7 +122,7 @@ class Login extends Control
 
         if (!empty($globals)) {
             // sort globals (QUIQQER Login has to be first!)
-            usort($globals, function ($a, $b) {
+            usort($globals, static function ($a, $b) {
                 if ($a === QUI\Users\Auth\QUIQQER::class) {
                     return -1;
                 }

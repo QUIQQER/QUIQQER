@@ -12,7 +12,7 @@ use QUI\System\License;
 
 QUI::$Ajax->registerFunction(
     'ajax_licenseKey_upload',
-    function ($File) {
+    static function ($File) {
         try {
             License::registerLicenseFile($File);
         } catch (\Exception $Exception) {

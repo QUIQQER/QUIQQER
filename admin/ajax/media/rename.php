@@ -12,7 +12,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_media_rename',
-    function ($project, $id, $newname) {
+    static function ($project, $id, $newname) {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $Item = $Media->get($id);

@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_get',
-    function ($uid) {
+    static function ($uid) {
         try {
             $User = QUI::getUsers()->get($uid);
             $attributes = $User->getAttributes();

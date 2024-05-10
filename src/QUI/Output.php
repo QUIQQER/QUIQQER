@@ -191,7 +191,7 @@ class Output extends Singleton
         if ($this->settings['parse-to-picture-elements']) {
             $images = $Dom->getElementsByTagName('img');
 
-            $nodeContent = function ($n) {
+            $nodeContent = static function ($n) {
                 /* @var $n DOMElement */
                 $HTML5 = new HTML5([
                     'disable_html_ns' => true
@@ -209,7 +209,7 @@ class Output extends Singleton
                 return $html;
             };
 
-            $getPicture = function ($html) {
+            $getPicture = static function ($html) {
                 if (empty($html)) {
                     return null;
                 }
@@ -230,7 +230,7 @@ class Output extends Singleton
                 return null;
             };
 
-            $isInPicture = function ($Image) {
+            $isInPicture = static function ($Image) {
                 $Parent = $Image->parentNode;
 
                 while ($Parent) {
@@ -300,7 +300,7 @@ class Output extends Singleton
 
         $result = preg_replace_callback(
             '#title="([^"]*)"#i',
-            function ($output) {
+            static function ($output) {
                 if (empty($output[1])) {
                     return $output[0];
                 }
@@ -316,7 +316,7 @@ class Output extends Singleton
 
         $result = preg_replace_callback(
             '#alt="([^"]*)"#i',
-            function ($output) {
+            static function ($output) {
                 if (empty($output[1])) {
                     return $output[0];
                 }
@@ -332,7 +332,7 @@ class Output extends Singleton
 
         $result = preg_replace_callback(
             '#href="([^"]*)"#i',
-            function ($output) {
+            static function ($output) {
                 if (empty($output[1])) {
                     return $output[0];
                 }

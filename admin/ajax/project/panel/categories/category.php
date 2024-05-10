@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_panel_categories_category',
-    function ($file, $category) {
+    static function ($file, $category) {
         if (file_exists($file)) {
             $files = [$file];
         } else {

@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_address_getUserByAddress',
-    function ($aid) {
+    static function ($aid) {
         $result = QUI::getDataBase()->fetch([
             'select' => ['id', 'uid'],
             'from' => QUI\Users\Manager::tableAddress(),

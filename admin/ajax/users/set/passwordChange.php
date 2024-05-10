@@ -12,7 +12,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_set_passwordChange',
-    function ($uid, $newPassword, $passwordRepeat, $oldPassword) {
+    static function ($uid, $newPassword, $passwordRepeat, $oldPassword) {
         $Users = QUI::getUsers();
         $User = $Users->get($uid);
 

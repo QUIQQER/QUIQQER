@@ -6,7 +6,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_optimize',
-    function () {
+    static function () {
         $Table = QUI::getDataBase()->table();
         $Table->optimize($Table->getTables());
     },

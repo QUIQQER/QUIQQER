@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_editor_get_toolbarsFromUser',
-    function ($uid, $assignedToolbars) {
+    static function ($uid, $assignedToolbars) {
         $User = QUI::getUsers()->get($uid);
 
         if (!empty($assignedToolbars)) {

@@ -6,7 +6,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_update',
-    function ($package) {
+    static function ($package) {
         QUI::getPackageManager()->update($package);
     },
     ['package'],

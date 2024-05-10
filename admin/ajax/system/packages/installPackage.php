@@ -14,7 +14,7 @@ use QUI\Package\PackageInstallException;
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_installPackage',
-    function ($packageName, $packageVersion, $server) {
+    static function ($packageName, $packageVersion, $server) {
         $Packages = QUI::getPackageManager();
         $server = json_decode($server, true);
 

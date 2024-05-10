@@ -8,7 +8,7 @@ use QUI\System\Tests\RedisCheck;
 
 QUI::$Ajax->registerFunction(
     'ajax_system_cache_redisCheck',
-    function ($server) {
+    static function ($server) {
         $status  = RedisCheck::checkServer($server);
         $message = RedisCheck::checkServer($server, true);
 

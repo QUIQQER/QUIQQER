@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_media_create_sha1',
-    function ($project) {
+    static function ($project) {
         $Project = QUI\Projects\Manager::decode($project);
         $Media = $Project->getMedia();
 

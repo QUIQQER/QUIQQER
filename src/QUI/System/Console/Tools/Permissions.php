@@ -189,13 +189,7 @@ class Permissions extends QUI\System\Console\Tool
         $groups = $User->getGroups();
 
         // helper
-        $parsePermission = function ($permission) use (
-            $User,
-            $Manager,
-            $permissions,
-            $userPermissions,
-            $groups
-        ) {
+        $parsePermission = static function ($permission) use ($User, $Manager, $permissions, $userPermissions, $groups) {
             $value = $userPermissions[$permission];
             $perm = $permissions[$permission];
 
@@ -275,10 +269,7 @@ class Permissions extends QUI\System\Console\Tool
         $groupPermissions = $Manager->getCompletePermissionList($Group);
         $permissions = $Manager->getPermissionList();
 
-        $parsePermission = function ($permission) use (
-            $permissions,
-            $groupPermissions,
-        ) {
+        $parsePermission = static function ($permission) use ($permissions, $groupPermissions) {
             $value = $groupPermissions[$permission];
             $perm = $permissions[$permission];
 

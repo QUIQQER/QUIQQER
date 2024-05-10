@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_groups_list',
-    function ($params) {
+    static function ($params) {
         $Groups = QUI::getGroups();
         $params = json_decode($params, true);
         $page = 1;

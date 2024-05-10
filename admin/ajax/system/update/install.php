@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_update_install',
-    function ($File) {
+    static function ($File) {
     },
     ['File'],
     [

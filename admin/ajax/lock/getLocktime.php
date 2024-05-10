@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_lock_getLocktime',
-    function ($package, $key) {
+    static function ($package, $key) {
         $Package = QUI::getPackage($package);
 
         return QUI\Lock\Locker::getLockTime($Package, $key);

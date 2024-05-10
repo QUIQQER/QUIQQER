@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_groups_delete',
-    function ($gids) {
+    static function ($gids) {
         $gids = json_decode($gids, true);
         $Groups = QUI::getGroups();
 

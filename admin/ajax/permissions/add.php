@@ -13,7 +13,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_permissions_add',
-    function ($permission, $permissiontype, $area) {
+    static function ($permission, $permissiontype, $area) {
         $Manager = QUI::getPermissionManager();
         $permissions = $Manager->getPermissionList();
 

@@ -6,7 +6,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_activateLocalServer',
-    function () {
+    static function () {
         QUI::getPackageManager()->activateLocalServer();
     },
     false,

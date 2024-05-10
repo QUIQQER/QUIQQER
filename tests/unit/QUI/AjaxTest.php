@@ -10,7 +10,7 @@ class AjaxTest extends TestCase
 {
     public function testRegisterAndGetFunction(): void
     {
-        $testFunction = function () {
+        $testFunction = static function () {
         };
         $testFunctionName = 'test_function';
 
@@ -70,7 +70,7 @@ class AjaxTest extends TestCase
         $ajax = new Ajax();
         $testFunctionName = 'test_function';
 
-        $ajax::registerFunction($testFunctionName, function () {
+        $ajax::registerFunction($testFunctionName, static function () {
         }, false, 'test_permission');
 
         $sut = $ajax->callRequestFunction($testFunctionName);

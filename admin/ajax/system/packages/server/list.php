@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_server_list',
-    function () {
+    static function () {
         $list = QUI::getPackageManager()->getServerList();
         $data = [];
 
@@ -30,8 +30,7 @@ QUI::$Ajax->registerFunction(
                 'active' => $active
             ];
         }
-
-        usort($data, function ($a, $b) {
+        usort($data, static function ($a, $b) {
             if ($a['server'] == $b['server']) {
                 return 0;
             }

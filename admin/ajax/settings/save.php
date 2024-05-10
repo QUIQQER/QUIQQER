@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_settings_save',
-    function ($file, $params) {
+    static function ($file, $params) {
         $jsonFiles = json_decode($file, true);
         $files = [];
 

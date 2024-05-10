@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_address_get',
-    function ($uid, $aid) {
+    static function ($uid, $aid) {
         if (!isset($uid) || !$uid) {
             $result = QUI::getDataBase()->fetch([
                 'select' => ['id', 'uid'],

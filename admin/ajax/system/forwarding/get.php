@@ -8,9 +8,9 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_forwarding_get',
-    function ($forwarding) {
+    static function ($forwarding) {
         return QUI\System\Forwarding::getList()
-            ->find(function ($value, $key) use ($forwarding) {
+            ->find(static function ($value, $key) use ($forwarding) {
                 return $key == $forwarding;
             });
     },

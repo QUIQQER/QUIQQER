@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_getQuiqqerVersions',
-    function () {
+    static function () {
         $packages = @file_get_contents('https://update.quiqqer.com/packages.json');
         $packages = json_decode($packages, true);
 

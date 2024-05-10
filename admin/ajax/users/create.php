@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_create',
-    function ($username) {
+    static function ($username) {
         $Users = QUI::getUsers();
         $User = $Users->createChild($username);
 

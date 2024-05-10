@@ -12,7 +12,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_site_linked',
-    function ($project, $id, $newParentId) {
+    static function ($project, $id, $newParentId) {
         $Project = QUI::getProjectManager()->decode($project);
         $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
 

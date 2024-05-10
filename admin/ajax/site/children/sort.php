@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_site_children_sort',
-    function ($project, $parent, $ids, $from, $sortType) {
+    static function ($project, $parent, $ids, $from, $sortType) {
         $Project = QUI::getProjectManager()->decode($project);
         $ids = json_decode($ids, true);
         $from = (int)$from;

@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_address_deleteAddressList',
-    function ($ids) {
+    static function ($ids) {
         $ids = json_decode($ids, true);
         $list = [];
 

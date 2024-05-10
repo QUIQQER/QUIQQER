@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_loginControl',
-    function ($authenticators = null) {
+    static function ($authenticators = null) {
         if (empty($authenticators)) {
             $authenticators = [];
         } else {

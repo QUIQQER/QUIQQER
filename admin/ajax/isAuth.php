@@ -1,6 +1,6 @@
 <?php
 
-QUI::getAjax()->registerFunction('ajax_isAuth', function () {
+QUI::getAjax()->registerFunction('ajax_isAuth', static function () {
     $SessionUser = QUI::getUserBySession();
 
     return [

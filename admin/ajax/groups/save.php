@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_groups_save',
-    function ($gid, $attributes, $rights) {
+    static function ($gid, $attributes, $rights) {
         $Groups = QUI::getGroups();
         $Group = $Groups->get($gid);
 

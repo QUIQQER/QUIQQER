@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_hasEmail',
-    function ($userId) {
+    static function ($userId) {
         $User = QUI::getUsers()->get($userId);
         $email = $User->getAttribute('email');
 

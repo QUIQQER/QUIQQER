@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_user_getMailData',
-    function ($userId) {
+    static function ($userId) {
         $User = QUI::getUsers()->get($userId);
 
         return [

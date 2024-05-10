@@ -16,7 +16,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_media_folder_firstImage',
-    function ($project, $folderId) {
+    static function ($project, $folderId) {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $File = $Media->get($folderId);

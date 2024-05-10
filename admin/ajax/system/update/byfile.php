@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_update_byfile',
-    function ($File) {
+    static function ($File) {
         /* @var $File \QUI\QDOM */
         $filepath = $File->getAttribute('filepath');
 

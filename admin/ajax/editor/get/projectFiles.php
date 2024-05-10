@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_editor_get_projectFiles',
-    function ($project) {
+    static function ($project) {
         try {
             $Project = QUI::getProject($project);
         } catch (QUI\Exception) {

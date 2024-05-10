@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_vhosts_getList',
-    function () {
+    static function () {
         $VhostManager = new \QUI\System\VhostManager();
 
         return $VhostManager->getList();

@@ -28,7 +28,7 @@ class RestProvider implements QUI\REST\ProviderInterface
 
         $Slim->get(
             '/projects/{project}/{lang}/{id}',
-            function (RequestInterface $Request, ResponseInterface $Response, $args) {
+            static function (RequestInterface $Request, ResponseInterface $Response, $args) {
                 $project = $Request->getAttribute('project');
                 $lang = $Request->getAttribute('lang');
                 $id = $Request->getAttribute('id');

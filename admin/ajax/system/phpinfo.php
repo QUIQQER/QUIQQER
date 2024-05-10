@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_phpinfo',
-    function () {
+    static function () {
         ob_start();
         phpinfo();
 

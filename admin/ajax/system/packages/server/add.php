@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_server_add',
-    function ($server, $params) {
+    static function ($server, $params) {
         QUI::getPackageManager()->addServer(
             $server,
             json_decode($params, true)

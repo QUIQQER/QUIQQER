@@ -9,7 +9,7 @@ use QUI\InstallationWizard\ProviderHandler;
 
 QUI::$Ajax->registerFunction(
     'ajax_installationWizard_execute',
-    function ($provider, $data) {
+    static function ($provider, $data) {
         if (!class_exists($provider)) {
             return false;
         }

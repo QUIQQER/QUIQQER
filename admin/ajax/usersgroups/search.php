@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_usersgroups_search',
-    function ($search, $fields, $params) {
+    static function ($search, $fields, $params) {
         $fields = json_decode($fields, true);
         $params = json_decode($params, true);
 

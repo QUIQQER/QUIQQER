@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_media_checkreplace',
-    function ($project, $fileid, $filename, $filetype) {
+    static function ($project, $fileid, $filename, $filetype) {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
 

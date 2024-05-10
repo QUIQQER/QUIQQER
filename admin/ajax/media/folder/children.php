@@ -16,7 +16,7 @@ use QUI\Utils\Security\Orthos;
 
 QUI::$Ajax->registerFunction(
     'ajax_media_folder_children',
-    function ($project, $folderid, $params) {
+    static function ($project, $folderid, $params) {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $File = $Media->get($folderid);
@@ -34,8 +34,7 @@ QUI::$Ajax->registerFunction(
         }
 
         $_children = $File->getChildrenIds($params);
-
-        $getUserName = function ($uid) {
+        $getUserName = static function ($uid) {
             try {
                 return QUI::getUsers()->get($uid)->getName();
             } catch (QUI\Exception) {

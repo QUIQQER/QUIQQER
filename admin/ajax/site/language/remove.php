@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_site_language_remove',
-    function ($project, $id, $linkedParams) {
+    static function ($project, $id, $linkedParams) {
         $linkedParams = json_decode($linkedParams, true);
 
         $Project = QUI::getProjectManager()->decode($project);

@@ -196,7 +196,7 @@ class Ajax extends QUI\QDOM
 
         $encoded = json_encode($result);
 
-        $utf8ize = function ($mixed) use (&$utf8ize) {
+        $utf8ize = static function ($mixed) use (&$utf8ize) {
             if (is_string($mixed)) {
                 return utf8_encode($mixed);
             }
@@ -253,7 +253,7 @@ class Ajax extends QUI\QDOM
             $data = $Exception->toArray();
         }
 
-        $attributes = array_filter($data, function ($v, $k) {
+        $attributes = array_filter($data, static function ($v, $k) {
             return match ($k) {
                 'message', 'code', 'type', 'context' => false,
                 default => is_string($v) || is_array($v) || is_numeric($v) || is_bool($v),

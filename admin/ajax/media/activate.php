@@ -12,7 +12,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_media_activate',
-    function ($project, $fileid) {
+    static function ($project, $fileid) {
         $fileid = json_decode($fileid, true);
 
         $Project = QUI\Projects\Manager::getProject($project);

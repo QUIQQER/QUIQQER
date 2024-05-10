@@ -12,7 +12,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_media_folder_getSize',
-    function ($project, $id) {
+    static function ($project, $id) {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $Folder = $Media->get($id);

@@ -16,7 +16,7 @@ use QUI\QDOM;
 
 QUI::$Ajax->registerFunction(
     'ajax_media_upload',
-    function ($project, $parentid, $File) {
+    static function ($project, $parentid, $File) {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $Folder = $Media->get((int)$parentid);

@@ -487,7 +487,7 @@ class Update extends QUI\System\Console\Tool
         $result = [];
 
         $CLIOutput = new QUI\System\Console\Output();
-        $CLIOutput->Events->addEvent('onWrite', function ($message) use (&$result) {
+        $CLIOutput->Events->addEvent('onWrite', static function ($message) use (&$result) {
             $result[] = $message;
             self::writeToLog($message . PHP_EOL);
         });

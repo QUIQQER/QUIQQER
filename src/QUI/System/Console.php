@@ -868,7 +868,7 @@ class Console
      */
     public function clear(): void
     {
-        array_map(function ($a) {
+        array_map(static function ($a) {
             print chr($a);
         }, [27, 91, 72, 27, 91, 50, 74]);
     }

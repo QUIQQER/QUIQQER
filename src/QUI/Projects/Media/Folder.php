@@ -1019,7 +1019,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             case 'priority ASC':
             case 'priority DESC':
                 // if priority, sort, that empty priority is the last
-                usort($result, function ($ImageA, $ImageB) {
+                usort($result, static function ($ImageA, $ImageB) {
                     /* @var $ImageA Image */
                     $a = $ImageA->getAttribute('priority');
                     /* @var $ImageB Image */

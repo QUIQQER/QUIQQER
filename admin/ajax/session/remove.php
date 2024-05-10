@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_session_remove',
-    function ($key) {
+    static function ($key) {
         QUI::getSession()->del($key);
     },
     ['key']

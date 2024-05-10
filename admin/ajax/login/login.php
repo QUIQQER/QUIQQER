@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_login_login',
-    function ($username, $password) {
+    static function ($username, $password) {
         QUI::getUsers()->login($username, $password);
 
         return QUI::getUserBySession()->getAttributes();

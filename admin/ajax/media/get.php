@@ -13,7 +13,7 @@ use QUI\Projects\Media\Folder;
 
 QUI::$Ajax->registerFunction(
     'ajax_media_get',
-    function ($project, $fileid) {
+    static function ($project, $fileid) {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $File = $Media->get($fileid);

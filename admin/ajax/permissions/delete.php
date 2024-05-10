@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_permissions_delete',
-    function ($permission) {
+    static function ($permission) {
         QUI::getPermissionManager()->deletePermission($permission);
 
         QUI::getMessagesHandler()->addSuccess(

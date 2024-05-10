@@ -382,7 +382,7 @@ class Locale implements \Stringable
         }
 
         // sort, main locale to the top
-        usort($langList, function ($a, $b) use ($langCode) {
+        usort($langList, static function ($a, $b) use ($langCode) {
             if ($a == $b) {
                 return 0;
             }

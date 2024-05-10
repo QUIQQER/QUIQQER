@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_widgets_stats',
-    function () {
+    static function () {
         $list = QUI::getUsers()->getAllUsers();
 
         $active = 0;

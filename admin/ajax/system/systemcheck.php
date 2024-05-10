@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_systemcheck',
-    function () {
+    static function () {
         if (!isset($_REQUEST['lang'])) {
             $_REQUEST['lang'] = 'en';
         }

@@ -9,7 +9,7 @@ use QUI\InstallationWizard\ProviderHandler;
 
 QUI::$Ajax->registerFunction(
     'ajax_installationWizard_cancel',
-    function ($providers) {
+    static function ($providers) {
         $providers = json_decode($providers, true);
 
         foreach ($providers as $provider) {

@@ -6,7 +6,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_media_deleteCache',
-    function ($project, $fileId) {
+    static function ($project, $fileId) {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
 

@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_editor_get_toolbarsFromGroup',
-    function ($gid, $assignedToolbars) {
+    static function ($gid, $assignedToolbars) {
         $Group = QUI::getGroups()->get($gid);
         $Group->setAttribute('assigned_toolbar', $assignedToolbars);
 

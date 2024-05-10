@@ -340,7 +340,7 @@ class Manager
         // max_life_time check
         $Session = QUI::getSession();
 
-        $clearSessionData = function () use ($Session) {
+        $clearSessionData = static function () use ($Session) {
             $sessionData = $Session->getSymfonySession()->all();
 
             foreach (array_keys($sessionData) as $key) {

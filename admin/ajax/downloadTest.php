@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_downloadTest',
-    function () {
+    static function () {
         sleep(2);
         QUI\Utils\System\File::downloadHeader(OPT_DIR . 'quiqqer/core/README.md');
     },

@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_authenticator_save',
-    function ($authenticators) {
+    static function ($authenticators) {
         $User = QUI::getUserBySession();
         $authenticators = json_decode($authenticators, true);
 

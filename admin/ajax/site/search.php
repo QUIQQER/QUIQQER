@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_site_search',
-    function ($search, $params) {
+    static function ($search, $params) {
         $params = \json_decode($params, true);
         $page = 1;
 

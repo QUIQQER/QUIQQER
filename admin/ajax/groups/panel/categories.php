@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_groups_panel_categories',
-    function ($gid) {
+    static function ($gid) {
         $Groups = QUI::getGroups();
         $Group = $Groups->get($gid);
 

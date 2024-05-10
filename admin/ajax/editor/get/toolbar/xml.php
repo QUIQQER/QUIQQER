@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_editor_get_toolbar_xml',
-    function ($toolbar) {
+    static function ($toolbar) {
         $file = QUI\Editor\Manager::getToolbarsPath() . $toolbar;
         $file = QUI\Utils\Security\Orthos::clearPath($file);
 

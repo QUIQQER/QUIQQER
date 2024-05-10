@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_groups_removeUsers',
-    function ($gid, $userIds) {
+    static function ($gid, $userIds) {
         $userIds = json_decode($userIds, true);
         $Group = QUI::getGroups()->get($gid);
 

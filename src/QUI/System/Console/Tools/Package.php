@@ -323,7 +323,7 @@ class Package extends QUI\System\Console\Tool
             QUI\System\Console\Spinner::DOTS
         );
 
-        $Spinner->run('Searching...', function () use ($search, $Spinner) {
+        $Spinner->run('Searching...', static function () use ($search, $Spinner) {
             $Composer = QUI::getPackageManager()->getComposer();
             $result = $Composer->search($search);
             $Spinner->stop();

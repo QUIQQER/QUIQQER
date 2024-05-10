@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_search_lastEditSites',
-    function ($params) {
+    static function ($params) {
         $params = json_decode($params, true);
         $projects = QUI::getProjectManager()->getProjects(true);
 

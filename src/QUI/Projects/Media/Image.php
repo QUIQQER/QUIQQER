@@ -192,7 +192,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                 $height = null;
             }
 
-            $Image->resize($width, $height, function ($Constraint) {
+            $Image->resize($width, $height, static function ($Constraint) {
                 /* @var $Constraint Constraint; */
                 $Constraint->aspectRatio();
                 $Constraint->upsize();
@@ -253,7 +253,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                     $imageHeight = $imageHeight * ($ratio / 100);
                     $imageWidth = $imageWidth * ($ratio / 100);
 
-                    $WatermarkImage->resize($imageWidth, $imageHeight, function ($Constraint) {
+                    $WatermarkImage->resize($imageWidth, $imageHeight, static function ($Constraint) {
                         /* @var $Constraint Constraint; */
                         $Constraint->aspectRatio();
                         $Constraint->upsize();
@@ -507,7 +507,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $Image->resize(
                 $newWidth,
                 $newHeight,
-                function ($Constraint) {
+                static function ($Constraint) {
                     /* @var $Constraint Constraint; */
                     $Constraint->aspectRatio();
                     $Constraint->upsize();
@@ -667,7 +667,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         // thanks to http://php.net/manual/de/function.rawurlencode.php#63751
         $encoded = implode(
             "/",
-            array_map(function ($part) {
+            array_map(static function ($part) {
                 $encoded = '';
                 $length = mb_strlen($part);
 

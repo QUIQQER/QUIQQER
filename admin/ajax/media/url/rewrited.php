@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_media_url_rewrited',
-    function ($fileurl, $params) {
+    static function ($fileurl, $params) {
         if (QUI\Projects\Media\Utils::isMediaUrl($fileurl) === false) {
             return $fileurl;
         }

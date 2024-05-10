@@ -12,7 +12,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_media_folder_recursiveEffects',
-    function ($project, $folderId) {
+    static function ($project, $folderId) {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $Folder = $Media->get($folderId);

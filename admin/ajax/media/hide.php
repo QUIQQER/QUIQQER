@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_media_hide',
-    function ($project, $ids) {
+    static function ($project, $ids) {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $ids = json_decode($ids, true);

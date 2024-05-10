@@ -11,12 +11,11 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_save',
-    function ($uid, $attributes) {
+    static function ($uid, $attributes) {
         $User = QUI::getUsers()->get($uid);
         $attributes = json_decode($attributes, true);
         $language = $User->getAttribute('lang');
-
-        $noAutoSave = array_filter($User->getListOfExtraAttributes(), function ($attribute) {
+        $noAutoSave = array_filter($User->getListOfExtraAttributes(), static function ($attribute) {
             if (!isset($attribute['no-auto-save'])) {
                 return false;
             }

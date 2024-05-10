@@ -11,7 +11,7 @@ use QUI\System\License;
 
 QUI::$Ajax->registerFunction(
     'ajax_licenseKey_get',
-    function () {
+    static function () {
         $licenseConfigFile = CMS_DIR . 'etc/license.ini.php';
         $systemId = License::getSystemId();
         $systemDataHash = License::getSystemDataHash();

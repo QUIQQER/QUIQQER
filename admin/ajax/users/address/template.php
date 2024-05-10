@@ -6,7 +6,7 @@
  * @return String
  */
 
-QUI::$Ajax->registerFunction('ajax_users_address_template', function () {
+QUI::$Ajax->registerFunction('ajax_users_address_template', static function () {
     $Engine = QUI::getTemplateManager()->getEngine(true);
     $Countries = QUI::getCountries();
 
