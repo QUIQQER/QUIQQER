@@ -688,7 +688,7 @@ class Console
 
         $help = $this->getArgument('help');
 
-        $displaySystemToolHelp = function ($tool) {
+        $displaySystemToolHelp = function ($tool): void {
             $self = $this;
             $description = QUI::getLocale()->get(
                 'quiqqer/core',
@@ -868,7 +868,7 @@ class Console
      */
     public function clear(): void
     {
-        array_map(static function ($a) {
+        array_map(static function ($a): void {
             print chr($a);
         }, [27, 91, 72, 27, 91, 50, 74]);
     }

@@ -12,7 +12,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_trash_media_restore',
-    static function ($project, $ids, $parentid) {
+    static function ($project, $ids, $parentid): void {
         $Project = QUI::getProjectManager()->decode($project);
         $Media = $Project->getMedia();
         $Trash = $Media->getTrash();

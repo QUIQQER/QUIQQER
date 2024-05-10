@@ -335,7 +335,7 @@ class Group extends QUI\QDOM
          *
          * @param int|string $groupId
          */
-        $deleteGidInUsers = static function (int|string $groupId) {
+        $deleteGidInUsers = static function (int|string $groupId): void {
             if (!is_int($groupId)) {
                 return;
             }

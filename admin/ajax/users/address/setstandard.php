@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_address_setstandard',
-    static function ($uid, $aid) {
+    static function ($uid, $aid): void {
         $User = QUI::getUsers()->get($uid);
         $Address = $User->getAddress($aid);
 

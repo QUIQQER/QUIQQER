@@ -12,7 +12,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_site_unlink',
-    static function ($project, $id, $parentId, $all) {
+    static function ($project, $id, $parentId, $all): void {
         $Project = QUI::getProjectManager()->decode($project);
         $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
 

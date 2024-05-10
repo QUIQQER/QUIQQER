@@ -231,7 +231,7 @@ class Package extends QUI\System\Console\Tool
             );
 
             $CLIOutput = new QUI\System\Console\Output();
-            $CLIOutput->Events->addEvent('onWrite', function ($message) {
+            $CLIOutput->Events->addEvent('onWrite', function ($message): void {
                 Update::onCliOutput($message, $this);
             });
 
@@ -323,7 +323,7 @@ class Package extends QUI\System\Console\Tool
             QUI\System\Console\Spinner::DOTS
         );
 
-        $Spinner->run('Searching...', static function () use ($search, $Spinner) {
+        $Spinner->run('Searching...', static function () use ($search, $Spinner): void {
             $Composer = QUI::getPackageManager()->getComposer();
             $result = $Composer->search($search);
             $Spinner->stop();
@@ -400,7 +400,7 @@ class Package extends QUI\System\Console\Tool
 
         // start update routines
         $CLIOutput = new QUI\System\Console\Output();
-        $CLIOutput->Events->addEvent('onWrite', function ($message) {
+        $CLIOutput->Events->addEvent('onWrite', function ($message): void {
             Update::onCliOutput($message, $this);
         });
 

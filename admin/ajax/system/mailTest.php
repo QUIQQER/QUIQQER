@@ -6,7 +6,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_mailTest',
-    static function ($params) {
+    static function ($params): void {
         $params = json_decode($params, true);
         $Mail = QUI::getMailManager()->getPHPMailer();
 
@@ -87,7 +87,7 @@ QUI::$Ajax->registerFunction(
             $Mail->Body = QUI::getLocale()->get('quiqqer/core', 'text.mail.body');
 
             $Mail->SMTPDebug = 3;
-            $Mail->Debugoutput = static function ($str, $level) {
+            $Mail->Debugoutput = static function ($str, $level): void {
                 QUI\System\Log::writeRecursive(rtrim($str) . PHP_EOL);
                 QUI\Mail\Log::write(rtrim($str));
             };

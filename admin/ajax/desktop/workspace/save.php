@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_desktop_workspace_save',
-    static function ($id, $data) {
+    static function ($id, $data): void {
         $User = QUI::getUserBySession();
 
         QUI\Workspace\Manager::saveWorkspace($User, $id, [

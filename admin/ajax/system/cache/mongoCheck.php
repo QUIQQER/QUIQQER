@@ -8,7 +8,7 @@ use QUI\Cache\QuiqqerMongoDriver;
 
 QUI::$Ajax->registerFunction(
     'ajax_system_cache_mongoCheck',
-    static function ($host, $database, $collection, $username, $password) {
+    static function ($host, $database, $collection, $username, $password): void {
         try {
             QUI::getPackage('mongodb/mongodb');
         } catch (QUI\Exception) {

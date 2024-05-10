@@ -89,7 +89,7 @@ class Manager
             if (!empty($config['SMTPDebug'])) {
                 $Mail->SMTPDebug = (int)$config['SMTPDebug'];
 
-                $Mail->Debugoutput = static function ($str, $level) {
+                $Mail->Debugoutput = static function ($str, $level): void {
                     Log::write(rtrim($str));
                 };
             }

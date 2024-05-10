@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_trash_media_destroy',
-    static function ($project, $ids) {
+    static function ($project, $ids): void {
         $Project = QUI::getProjectManager()->decode($project);
         $Media = $Project->getMedia();
         $Trash = $Media->getTrash();

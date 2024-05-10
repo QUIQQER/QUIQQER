@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_trash_clear',
-    static function ($project) {
+    static function ($project): void {
         $Project = QUI::getProjectManager()->decode($project);
         $Trash = $Project->getTrash();
 

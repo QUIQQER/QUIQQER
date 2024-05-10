@@ -192,7 +192,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                 $height = null;
             }
 
-            $Image->resize($width, $height, static function ($Constraint) {
+            $Image->resize($width, $height, static function ($Constraint): void {
                 /* @var $Constraint Constraint; */
                 $Constraint->aspectRatio();
                 $Constraint->upsize();
@@ -253,7 +253,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                     $imageHeight = $imageHeight * ($ratio / 100);
                     $imageWidth = $imageWidth * ($ratio / 100);
 
-                    $WatermarkImage->resize($imageWidth, $imageHeight, static function ($Constraint) {
+                    $WatermarkImage->resize($imageWidth, $imageHeight, static function ($Constraint): void {
                         /* @var $Constraint Constraint; */
                         $Constraint->aspectRatio();
                         $Constraint->upsize();
@@ -507,7 +507,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $Image->resize(
                 $newWidth,
                 $newHeight,
-                static function ($Constraint) {
+                static function ($Constraint): void {
                     /* @var $Constraint Constraint; */
                     $Constraint->aspectRatio();
                     $Constraint->upsize();

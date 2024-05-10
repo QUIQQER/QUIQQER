@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_media_create_md5',
-    static function ($project) {
+    static function ($project): void {
         $Project = QUI\Projects\Manager::decode($project);
         $Media = $Project->getMedia();
 

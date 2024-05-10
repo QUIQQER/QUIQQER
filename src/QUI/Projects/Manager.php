@@ -194,7 +194,7 @@ class Manager
          * @param Project $Project
          * @throws QUI\Exception
          */
-        $clearMediaCache = static function (array $config, array $oldConfig, Project $Project) {
+        $clearMediaCache = static function (array $config, array $oldConfig, Project $Project): void {
             if (
                 !isset($config['media_watermark'])
                 && !isset($config['media_watermark_position'])

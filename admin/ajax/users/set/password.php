@@ -12,7 +12,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_set_password',
-    static function ($uid, $pw1, $pw2) {
+    static function ($uid, $pw1, $pw2): void {
         if (empty($pw1) || empty($pw2)) {
             return;
         }

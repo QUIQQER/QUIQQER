@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_settings_memcachedTest',
-    static function ($data) {
+    static function ($data): void {
         $data = json_decode($data, true);
 
         if (!class_exists('Memcached')) {

@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_desktop_workspace_add',
-    static function ($data) {
+    static function ($data): void {
         $User = QUI::getUserBySession();
         $data = json_decode($data, true);
 

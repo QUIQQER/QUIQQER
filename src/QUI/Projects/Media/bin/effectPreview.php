@@ -77,7 +77,7 @@ if (isset($_REQUEST['watermark'])) {
             $imageHeight = $imageHeight * ($ratio / 100);
             $imageWidth = $imageWidth * ($ratio / 100);
 
-            $WatermarkImage->resize($imageWidth, $imageHeight, static function ($Constraint) {
+            $WatermarkImage->resize($imageWidth, $imageHeight, static function ($Constraint): void {
                 $Constraint->aspectRatio();
                 $Constraint->upsize();
             });
@@ -89,7 +89,7 @@ if (isset($_REQUEST['watermark'])) {
 }
 
 
-$Image->resize(400, 400, static function ($Constraint) {
+$Image->resize(400, 400, static function ($Constraint): void {
     $Constraint->aspectRatio();
     $Constraint->upsize();
 });

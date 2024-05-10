@@ -12,7 +12,7 @@ use QUI\QDOM;
 
 QUI::$Ajax->registerFunction(
     'ajax_media_replace',
-    static function ($project, $fileid, $File) {
+    static function ($project, $fileid, $File): void {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
 

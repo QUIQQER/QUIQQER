@@ -117,7 +117,7 @@ class Update extends QUI\System\Console\Tool
         $Packages = QUI::getPackageManager();
 
         // output events
-        $Packages->getComposer()->addEvent('onOutput', function ($Composer, $output, $type) {
+        $Packages->getComposer()->addEvent('onOutput', function ($Composer, $output, $type): void {
             if ($this->getArgument('check')) {
                 return;
             }
@@ -245,7 +245,7 @@ class Update extends QUI\System\Console\Tool
 
         // start update routines
         $CLIOutput = new QUI\System\Console\Output();
-        $CLIOutput->Events->addEvent('onWrite', function ($message) {
+        $CLIOutput->Events->addEvent('onWrite', function ($message): void {
             self::onCliOutput($message, $this);
         });
 
@@ -487,7 +487,7 @@ class Update extends QUI\System\Console\Tool
         $result = [];
 
         $CLIOutput = new QUI\System\Console\Output();
-        $CLIOutput->Events->addEvent('onWrite', static function ($message) use (&$result) {
+        $CLIOutput->Events->addEvent('onWrite', static function ($message) use (&$result): void {
             $result[] = $message;
             self::writeToLog($message . PHP_EOL);
         });

@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_media_delete',
-    static function ($project, $fileid) {
+    static function ($project, $fileid): void {
         $fileid = json_decode($fileid, true);
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();

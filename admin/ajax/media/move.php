@@ -16,7 +16,7 @@ use QUI\Projects\Media\Utils;
 
 QUI::$Ajax->registerFunction(
     'ajax_media_move',
-    static function ($project, $to, $ids) {
+    static function ($project, $to, $ids): void {
         $Project = Manager::getProject($project);
         $Media = $Project->getMedia();
         $Folder = $Media->get($to);

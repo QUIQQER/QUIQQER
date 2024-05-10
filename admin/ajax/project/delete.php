@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_delete',
-    static function ($project) {
+    static function ($project): void {
         QUI::getProjectManager()->deleteProject(
             QUI::getProjectManager()->decode($project)
         );

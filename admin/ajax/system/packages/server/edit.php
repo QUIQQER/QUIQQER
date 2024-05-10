@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_server_edit',
-    static function ($server, $params) {
+    static function ($server, $params): void {
         QUI::getPackageManager()->editServer(
             $server,
             json_decode($params, true)

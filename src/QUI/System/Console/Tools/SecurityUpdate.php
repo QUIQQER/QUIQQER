@@ -73,7 +73,7 @@ class SecurityUpdate extends QUI\System\Console\Tool
 
         // start update routines
         $CLIOutput = new QUI\System\Console\Output();
-        $CLIOutput->Events->addEvent('onWrite', function ($message) use (&$dryRun, &$dryRunOutput) {
+        $CLIOutput->Events->addEvent('onWrite', function ($message) use (&$dryRun, &$dryRunOutput): void {
             if ($dryRun) {
                 $dryRunOutput .= $message . PHP_EOL;
                 return;

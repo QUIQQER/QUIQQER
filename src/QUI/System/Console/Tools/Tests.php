@@ -40,7 +40,7 @@ class Tests extends QUI\System\Console\Tool
      */
     public function execute(): void
     {
-        QUI::getErrorHandler()->registerShutdown(function () {
+        QUI::getErrorHandler()->registerShutdown(function (): void {
             $last_error = error_get_last();
 
             if ($last_error && $last_error['type'] === E_ERROR) {

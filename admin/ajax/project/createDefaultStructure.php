@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_createDefaultStructure',
-    static function ($project) {
+    static function ($project): void {
         QUI\Utils\Project::createDefaultStructure(
             QUI::getProjectManager()->decode($project)
         );

@@ -14,7 +14,7 @@ use QUI\Projects\Media\Folder;
 
 QUI::$Ajax->registerFunction(
     'ajax_media_copy',
-    static function ($project, $to, $ids) {
+    static function ($project, $to, $ids): void {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $Folder = $Media->get($to);

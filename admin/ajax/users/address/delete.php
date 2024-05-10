@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_address_delete',
-    static function ($uid, $aid) {
+    static function ($uid, $aid): void {
         if (!isset($uid) || !$uid) {
             $result = QUI::getDataBase()->fetch([
                 'select' => ['id', 'uid'],

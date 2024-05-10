@@ -6,7 +6,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_uploads_callback',
-    static function ($File, $callable) {
+    static function ($File, $callable): void {
         if (!isset($callable)) {
             return;
         }

@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_authenticator_disable',
-    static function ($uid, $authenticator) {
+    static function ($uid, $authenticator): void {
         $User = QUI::getUsers()->get($uid);
         $User->disableAuthenticator($authenticator);
     },

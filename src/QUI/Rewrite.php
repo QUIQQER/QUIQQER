@@ -1381,7 +1381,7 @@ class Rewrite
          * @param $eventName
          * @param Interfaces\Projects\Site $Site
          */
-        $triggerEvent = static function ($eventName, QUI\Interfaces\Projects\Site $Site) {
+        $triggerEvent = static function ($eventName, QUI\Interfaces\Projects\Site $Site): void {
             try {
                 QUI::getEvents()->fireEvent($eventName, [$Site]);
             } catch (QUI\ExceptionStack $Exception) {

@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_permissions_recursive',
-    static function ($params, $btype, $permissions) {
+    static function ($params, $btype, $permissions): void {
         $Manager = QUI::getPermissionManager();
         $permissions = json_decode($permissions, true);
         $params = json_decode($params, true);
