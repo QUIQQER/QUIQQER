@@ -130,6 +130,7 @@ abstract class Item extends QUI\QDOM
     }
 
     //region General getter and is methods
+
     /**
      * Return the path of the file, without host, url dir or cms dir
      */
@@ -163,7 +164,7 @@ abstract class Item extends QUI\QDOM
      * overwritten set attribute
      * -> this method considers multilingual attributes
      */
-    public function setAttribute(string $name, mixed $val): void
+    public function setAttribute(string $name, mixed $value): void
     {
         if (
             $name !== 'title'
@@ -171,7 +172,7 @@ abstract class Item extends QUI\QDOM
             && $name !== 'description'
             && $name !== 'alt'
         ) {
-            parent::setAttribute($name, $val);
+            parent::setAttribute($name, $value);
 
             return;
         }
@@ -182,10 +183,10 @@ abstract class Item extends QUI\QDOM
         $result = [];
 
         // it's already an array
-        if (is_array($val)) {
+        if (is_array($value)) {
             foreach ($languages as $language) {
-                if (isset($val[$language])) {
-                    $result[$language] = $val[$language];
+                if (isset($value[$language])) {
+                    $result[$language] = $value[$language];
                 }
             }
 
@@ -195,15 +196,18 @@ abstract class Item extends QUI\QDOM
         }
 
         // value is a string, so we need to look deeper
-        $val = json_decode($val, true);
+        if ($value) {
+            $value = json_decode($value, true);
+        }
+
         $current = QUI::getLocale()->getCurrent();
 
-        if (!$val) {
-            $result[$current] = $val;
+        if (!$value || !is_array($value)) {
+            $result[$current] = $value;
         } else {
             foreach ($languages as $language) {
-                if (isset($val[$language])) {
-                    $result[$language] = $val[$language];
+                if (isset($value[$language])) {
+                    $result[$language] = $value[$language];
                 }
             }
         }

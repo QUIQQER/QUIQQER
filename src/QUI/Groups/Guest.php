@@ -43,13 +43,13 @@ class Guest extends QUI\Groups\Group
     /**
      * @inheritDoc
      */
-    public function setAttribute(string $name, mixed $val): void
+    public function setAttribute(string $name, mixed $value): void
     {
         if ($name === 'id') {
             return;
         }
 
-        parent::setAttribute($name, $val);
+        parent::setAttribute($name, $value);
     }
 
     /**
