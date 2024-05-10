@@ -1479,10 +1479,9 @@ class Project implements \Stringable
     /**
      * Renames the project
      *
-     * @param $newName
      * @throws QUI\Exception
      */
-    public function rename($newName): void
+    public function rename(string $newName): void
     {
         QUI\Utils\Project::validateProjectName($newName);
 
