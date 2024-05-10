@@ -305,12 +305,7 @@ class Mail
         );
     }
 
-    /**
-     * Return the internal PHPMailer object
-     *
-     * @return PHPMailer
-     */
-    public function getPHPMailer()
+    public function getPHPMailer(): PHPMailer
     {
         return $this->Mail;
     }

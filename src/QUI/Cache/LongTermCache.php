@@ -180,10 +180,8 @@ class LongTermCache
 
     /**
      * Cache Settings
-     *
-     * @return QUI\Config
      */
-    public static function getConfig()
+    public static function getConfig(): \QUI\Config
     {
         if (!self::$Config) {
             try {
