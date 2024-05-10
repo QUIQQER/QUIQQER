@@ -671,6 +671,10 @@ class QUI
      */
     public static function getPDO(): PDO
     {
+        if (QUI::getDataBase()->getPDO()) {
+            return QUI::getDataBase()->getPDO();
+        }
+
         try {
             $Native = self::getDataBaseConnection()->getNativeConnection();
 
