@@ -66,7 +66,7 @@ class Manager
     /**
      * call a function
      *
-     * @param callback|string $function - Function
+     * @param callable|string $function - Function
      * @param array $params - function parameter
      *
      * @return mixed
@@ -440,7 +440,7 @@ class Manager
      * Internal form upload method
      * If the upload is not over HTML5
      *
-     * @param callback|string $onfinish - Function
+     * @param callable|string $onfinish - Function
      * @param mixed $params - extra params for the \QUI\QDOM File Object
      *
      * @throws Exception

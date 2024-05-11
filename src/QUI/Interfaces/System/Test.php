@@ -14,9 +14,10 @@ namespace QUI\Interfaces\System;
 interface Test
 {
     /**
-     * @return \QUI\System\Test::STATUS_OK|\QUI\System\Tests\Test::STATUS_ERROR
+     * return \QUI\System\Test::STATUS_OK|\QUI\System\Tests\Test::STATUS_ERROR
+     * return int
      */
-    public function execute();
+    public function execute(): int;
 
     public function isRequired(): bool;
 
