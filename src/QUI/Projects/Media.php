@@ -140,9 +140,9 @@ class Media extends QUI\QDOM
     /**
      * Return the Placeholder of the media
      *
-     * @return QUI\Interfaces\Projects\Media\File|false
+     * @return QUI\Projects\Media\Image|null
      */
-    public function getPlaceholderImage(): QUI\Interfaces\Projects\Media\File|bool
+    public function getPlaceholderImage(): QUI\Projects\Media\Image|null
     {
         $Project = $this->getProject();
 
@@ -155,7 +155,7 @@ class Media extends QUI\QDOM
             }
         }
 
-        return false;
+        return null;
     }
 
     /**

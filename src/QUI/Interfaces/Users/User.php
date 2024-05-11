@@ -122,7 +122,7 @@ interface User
 
     public function getCountry(): Country|bool;
 
-    public function getAvatar(): Image|bool;
+    public function getAvatar(): Image|null;
 
     public function setPassword(string $new, ?User $PermissionUser = null);
 

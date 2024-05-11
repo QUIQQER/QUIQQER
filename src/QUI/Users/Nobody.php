@@ -382,11 +382,7 @@ class Nobody extends QUI\QDOM implements User
         return false;
     }
 
-    /**
-     * @return Image|false
-     * @throws Exception
-     */
-    public function getAvatar(): Image|bool
+    public function getAvatar(): Image|null
     {
         $Project = QUI::getProjectManager()->getStandard();
         $Media = $Project->getMedia();
@@ -406,7 +402,7 @@ class Nobody extends QUI\QDOM implements User
 
     /**
      * @param string $right
-     * @param boolean|array $ruleset - optional, you can specify a ruleset, a rules = array with rights
+     * @param bool|string|callable $ruleset - optional, you can specify a ruleset, a rules = array with rights
      * @return bool|int|string
      *
      * @throws Exception

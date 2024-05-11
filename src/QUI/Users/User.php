@@ -852,7 +852,10 @@ class User implements QUIUserInterface
         if ($this->getAttribute('assigned_toolbar')) {
             $toolbars = explode(',', $this->getAttribute('assigned_toolbar'));
 
-            $assignedToolbars = array_filter($toolbars, static fn($toolbar): bool => QUI\Editor\Manager::existsToolbar($toolbar));
+            $assignedToolbars = array_filter(
+                $toolbars,
+                static fn($toolbar): bool => QUI\Editor\Manager::existsToolbar($toolbar)
+            );
 
             $assignedToolbars = implode(',', $assignedToolbars);
         }
@@ -1326,7 +1329,7 @@ class User implements QUIUserInterface
 
     /**
      * @param string $right
-     * @param boolean|array $ruleset - optional, you can specify a ruleset, a rules = array with rights
+     * @param callable|bool|string $ruleset - optional, you can specify a ruleset, a rules = array with rights
      *
      * @return bool|int|string
      * @throws QUI\Exception
@@ -1633,15 +1636,15 @@ class User implements QUIUserInterface
     }
 
     /**
-     * @return QUI\Interfaces\Projects\Media\File|false
+     * @return ?QUI\Projects\Media\Image
      * @throws ExceptionStack|QUI\Exception
      */
-    public function getAvatar(): QUI\Projects\Media\Image|bool
+    public function getAvatar(): ?QUI\Projects\Media\Image
     {
         $result = QUI::getEvents()->fireEvent('userGetAvatar', [$this]);
 
         foreach ($result as $Entry) {
-            if ($Entry instanceof QUI\Interfaces\Projects\Media\File) {
+            if ($Entry instanceof QUI\Projects\Media\Image) {
                 return $Entry;
             }
         }
