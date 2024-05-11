@@ -356,7 +356,10 @@ class QUI
         }
 
         // bugfix: workaround: Uncaught Error: Call to undefined function DusanKasan\Knapsack\append()
-        if (!function_exists('\DusanKasan\Knapsack\append') && file_exists(OPT_DIR . 'martinvenus/knapsack/src/collection_functions.php')) {
+        if (
+            !function_exists('\DusanKasan\Knapsack\append')
+            && file_exists(OPT_DIR . 'martinvenus/knapsack/src/collection_functions.php')
+        ) {
             require_once OPT_DIR . 'martinvenus/knapsack/src/collection_functions.php';
         }
 
@@ -1003,12 +1006,13 @@ class QUI
     }
 
     //region Doctrine
+
     /**
      * Returns the doctrine DBAL Connection Object
      */
     public static function getDataBaseConnection(): Connection
     {
-        if (!self::$QueryBuilder instanceof DB) {
+        if (!(self::$QueryBuilder instanceof Connection)) {
             self::$QueryBuilder = Doctrine\DBAL\DriverManager::getConnection([
                 'dbname' => self::conf('db', 'database'),
                 'driver' => 'pdo_' . self::conf('db', 'driver'),
@@ -1040,6 +1044,7 @@ class QUI
     }
 
     //endregion
+
     /**
      * Check if runtime cache is enabled globally (default: true).
      *
