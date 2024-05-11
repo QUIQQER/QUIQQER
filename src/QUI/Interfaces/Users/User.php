@@ -120,6 +120,8 @@ interface User
      */
     public function getAddress(int|string $id): Address;
 
+    public function getStandardAddress(): null|Address;
+
     public function getCountry(): Country|bool;
 
     public function getAvatar(): Image|null;

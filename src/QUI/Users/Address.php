@@ -24,6 +24,7 @@ use function is_numeric;
 use function is_string;
 use function json_decode;
 use function json_encode;
+use function method_exists;
 use function preg_replace;
 use function reset;
 use function trim;
@@ -515,8 +516,11 @@ class Address extends QUI\QDOM
 
 
         $User = $this->getUser();
-        $User->checkEditPermission($PermissionUser);
 
+        if (method_exists($User, 'checkEditPermission')) {
+            $User->checkEditPermission($PermissionUser);
+        }
+        
         try {
             QUI::getEvents()->fireEvent('userAddressSaveBegin', [$this, $this->getUser()]);
         } catch (\Exception $Exception) {

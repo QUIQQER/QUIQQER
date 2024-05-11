@@ -493,11 +493,11 @@ class User implements QUIUserInterface
      * Return the standard address from the user
      * If no standard address set, the first address will be returned
      *
-     * @return Address|false
+     * @return Address|null
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function getStandardAddress(): bool|Address
+    public function getStandardAddress(): null|Address
     {
         $Address = $this->getStandardAddressHelper();
         $mailList = $Address->getMailList();
