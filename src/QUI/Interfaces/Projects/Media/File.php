@@ -52,6 +52,8 @@ interface File
      */
     public function getUrl(): string;
 
+    public function getFullPath(): string;
+
     /**
      * @param QUI\Interfaces\Users\User|null $PermissionUser
      *
@@ -60,6 +62,8 @@ interface File
     public function activate(QUI\Interfaces\Users\User $PermissionUser = null);
 
     public function isActive(): bool;
+
+    public function isHidden(): bool;
 
     /**
      * Deactivate the file
@@ -76,6 +80,8 @@ interface File
      * @throws Exception
      */
     public function delete(QUI\Interfaces\Users\User $PermissionUser = null);
+
+    public function destroy(QUI\Interfaces\Users\User $PermissionUser = null): void;
 
     /**
      * Save the file with all its attributes to the Database

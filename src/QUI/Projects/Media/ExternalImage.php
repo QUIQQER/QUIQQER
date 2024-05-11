@@ -102,6 +102,11 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
         return $this->image;
     }
 
+    public function getFullPath(): string
+    {
+        return $this->image;
+    }
+
     /**
      * Return the real with of the image
      *
@@ -236,7 +241,7 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
     /**
      * Placeholder - do nothing
      */
-    public function activate($PermissionUser = null)
+    public function activate(QUI\Interfaces\Users\User $PermissionUser = null)
     {
         // do nothing
     }
@@ -244,7 +249,7 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
     /**
      * placeholder - do nothing
      */
-    public function deactivate($PermissionUser = null)
+    public function deactivate(QUI\Interfaces\Users\User $PermissionUser = null): void
     {
         // do nothing
     }
@@ -252,7 +257,12 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
     /**
      * placeholder - do nothing
      */
-    public function delete($PermissionUser = null)
+    public function delete(QUI\Interfaces\Users\User $PermissionUser = null): void
+    {
+        // do nothing
+    }
+
+    public function destroy(QUI\Interfaces\Users\User $PermissionUser = null): void
     {
         // do nothing
     }
@@ -326,6 +336,11 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
     public function isActive(): bool
     {
         return true;
+    }
+
+    public function isHidden(): bool
+    {
+        return false;
     }
 
     public function checkPermission(string $permission, QUI\Interfaces\Users\User $User = null): void

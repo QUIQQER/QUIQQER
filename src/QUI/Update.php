@@ -414,7 +414,10 @@ class Update
         $engines = XML::getTemplateEnginesFromXml($xml_file);
 
         foreach ($engines as $Engine) {
-            /* @var $Engine DOMElement */
+            if (!($Engine instanceof DOMElement)) {
+                continue;
+            }
+
             if (!$Engine->getAttribute('class_name')) {
                 continue;
             }
@@ -448,7 +451,10 @@ class Update
         $editors = XML::getWysiwygEditorsFromXml($xml_file);
 
         foreach ($editors as $Editor) {
-            /* @var $Editor DOMElement */
+            if (!($Editor instanceof DOMElement)) {
+                continue;
+            }
+
             if (!$Editor->getAttribute('package')) {
                 continue;
             }

@@ -18,6 +18,7 @@ use function in_array;
 use function json_decode;
 use function json_encode;
 use function mb_strtolower;
+use function method_exists;
 
 /**
  * Class Project
@@ -290,8 +291,11 @@ class Project extends QUI\System\Console\Tool
     /**
      * Prints a line to the output while using a locale variable of the 'quiqqer/core' group
      */
-    protected function writeLnLocale(bool|string $locale, bool|string $color = false, bool|string $background = false): void
-    {
+    protected function writeLnLocale(
+        bool|string $locale,
+        bool|string $color = false,
+        bool|string $background = false
+    ): void {
         $text = QUI::getLocale()->get("quiqqer/core", $locale);
 
         $this->writeLn($text, $color, $background);
@@ -495,8 +499,10 @@ class Project extends QUI\System\Console\Tool
             $NewSite->setAttributes($Site->getAttributes());
 
             $NewSite->save($SystemUser);
-        } else {
+        } elseif (method_exists($Site, 'copy')) {
             $NewSite = $Site->copy($copyParentId, $TargetProject);
+        } else {
+            throw new QUI\Exception('Something went wrong. Wrong site object');
         }
 
         $this->writeLn(" -> Copy successful");

@@ -496,8 +496,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         $table = $this->Media->getTable();
         $table_rel = $this->Media->getTable('relations');
-
-        // In die DB legen
         $file = $this->getAttribute('file') . $new_name . '/';
 
         QUI::getDataBase()->insert($table, [
@@ -527,10 +525,12 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         if (is_dir($dir . $new_name)) {
             $Folder = $this->Media->get($id);
 
-            $Folder->setEffects($this->getEffects());
-            $Folder->save();
+            if ($Folder instanceof Folder) {
+                $Folder->setEffects($this->getEffects());
+                $Folder->save();
 
-            return $Folder;
+                return $Folder;
+            }
         }
 
         throw new QUI\Exception(
@@ -1313,7 +1313,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 $Item = MediaUtils::getElement($new_file);
 
                 if (MediaUtils::isImage($Item)) {
-                    /* @var $Item QUI\Projects\Media\Image */
+                    /* @var $Item */
                     $Item->deleteCache();
                 }
 
@@ -1389,12 +1389,14 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'child' => $id
         ]);
 
-        /* @var $File QUI\Projects\Media\File */
         $File = $this->Media->get($id);
-        $File->generateMD5();
-        $File->generateSHA1();
-        $File->setTitle($title);
-        $File->setAlt($title);
+
+        if ($File instanceof QUI\Projects\Media\File) {
+            $File->generateMD5();
+            $File->generateSHA1();
+            $File->setTitle($title);
+            $File->setAlt($title);
+        }
 
         $maxSize = $this->getProject()->getConfig('media_maxUploadSize');
 
@@ -1669,7 +1671,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 set_time_limit(1);
                 $Item = $Media->get($id);
 
-                if (MediaUtils::isFolder($Item) || MediaUtils::isImage($Item)) {
+                if ($Item instanceof Folder || $Item instanceof Image) {
                     $Item->setEffects($effects);
                     $Item->save();
                 }

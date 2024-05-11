@@ -83,7 +83,7 @@ class Utils
      * Returns the item array
      * the array is specially adapted for the media center
      */
-    public static function parseForMediaCenter(Item $Item): array
+    public static function parseForMediaCenter(QUI\Interfaces\Projects\Media\File $Item): array
     {
         if ($Item->getId() === 1) {
             /* @var $Item Folder */
