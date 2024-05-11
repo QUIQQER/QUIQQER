@@ -7,6 +7,7 @@
 namespace QUI\Utils;
 
 use QUI;
+use QUI\Database\Exception;
 
 /**
  * Bridge für die alte MyDB Klasse zu neuer \PDO
@@ -189,7 +190,7 @@ class MyDB implements \Stringable
      *
      * @param string $table
      * @param string $field
-     * @param string , Array $fieldAndId
+     * @param string|array $fieldAndId
      *
      * @return array
      */
@@ -268,9 +269,10 @@ class MyDB implements \Stringable
      * tabelle , array('id'=>1) oder string "id=1 AND name = 'Horst'"
      *
      * @param string $table
-     * @param Sring , Array $fieldAndId
+     * @param string|array $fieldAndId
      *
      * @return \PDOStatement
+     * @throws Exception
      */
     public function deleteData($table, $fieldAndId): \PDOStatement
     {

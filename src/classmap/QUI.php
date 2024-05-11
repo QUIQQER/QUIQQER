@@ -150,7 +150,7 @@ class QUI
     /**
      * QUI Session Object, use \QUI::getSession();
      *
-     * @var ?Session|QUI\System\Console\Session
+     * @var Session|QUI\System\Console\Session|null
      */
     public static QUI\System\Console\Session|null|Session $Session = null;
 
