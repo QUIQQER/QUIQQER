@@ -142,7 +142,7 @@ class Manager
             'minWidth' => $minWidth
         ]);
 
-        return QUI::getDataBase()->getPDO()->lastInsertId('id');
+        return (int)QUI::getDataBase()->getPDO()->lastInsertId('id');
     }
 
     /**
