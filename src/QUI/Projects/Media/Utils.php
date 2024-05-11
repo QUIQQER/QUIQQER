@@ -991,11 +991,7 @@ class Utils
             return false;
         }
 
-        if (!method_exists($Unknown, 'getType')) {
-            return false;
-        }
-
-        if ($Unknown->getType() === Folder::class) {
+        if ($Unknown instanceof Folder) {
             return true;
         }
 

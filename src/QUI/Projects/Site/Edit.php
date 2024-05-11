@@ -992,7 +992,7 @@ class Edit extends Site
             return true;
         }
 
-        $max_life_time = QUI::conf('session', 'max_life_time');
+        $max_life_time = (int)QUI::conf('session', 'max_life_time');
 
         if ($time > $max_life_time) {
             $this->unlock();
@@ -1164,7 +1164,7 @@ class Edit extends Site
             $Project = $this->getProject();
         }
 
-        if ($Project::class != Project::class) {
+        if (!($Project instanceof Project)) {
             throw new QUI\Exception(
                 'Site copy: Project not found',
                 404
