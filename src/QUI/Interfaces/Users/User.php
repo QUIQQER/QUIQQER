@@ -102,7 +102,7 @@ interface User
      * Has the user the right?
      *
      * @param string $right
-     * @param boolean|array|string $ruleset - (optional), you can specify a ruleset, a rules = array with rights
+     * @param callable|bool|string $ruleset - (optional), you can specify a ruleset, a rules = array with rights
      *
      * @return mixed
      */
