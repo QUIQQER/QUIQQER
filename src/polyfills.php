@@ -47,10 +47,6 @@ if (!function_exists("array_merge_recursive_overwrite")) {
      *
      * @see https://www.php.net/manual/en/function.array-merge-recursive.php
      * @see https://www.php.net/manual/en/function.array-merge.php
-     *
-     * @param array[] $arrays Variable list of arrays to recursively merge.
-     *
-     * @return array The merged array
      */
     function array_merge_recursive_overwrite(array ...$arrays): array
     {
