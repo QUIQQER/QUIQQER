@@ -217,27 +217,6 @@ define('classes/packages/Manager', [
         },
 
         /**
-         * Activate the local repository
-         *
-         * @param {Function} [callback] - optional
-         * @returns {Promise}
-         */
-        activateLocalServer: function(callback) {
-            return new Promise(function(resolve, reject) {
-                Ajax.post('ajax_system_activateLocalServer', function() {
-                    if (typeOf(callback) === 'function') {
-                        callback();
-                    }
-
-                    resolve();
-                }, {
-                    showError: false,
-                    onError: reject
-                });
-            });
-        },
-
-        /**
          * Add a server to the update server list
          *
          * @param {String} server - server name
