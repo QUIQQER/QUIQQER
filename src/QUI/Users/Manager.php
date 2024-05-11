@@ -18,7 +18,6 @@ use QUI\Security\Password;
 use QUI\Utils\DOM;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\Text\XML;
-
 use Throwable;
 
 use function class_implements;
