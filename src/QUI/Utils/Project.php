@@ -37,8 +37,9 @@ class Project
     {
         $First = $Project->firstChild();
         $First = $First->getEdit();
+        $layout = $First->getAttribute('layout');
 
-        if (!$First->getAttribute('layout') || $First->getAttribute('layout') === '') {
+        if (empty($layout)) {
             $First->setAttribute('layout', 'layout/startpage');
             $First->save();
         }
@@ -46,10 +47,8 @@ class Project
         // Search
         $searchType = 'quiqqer/sitetypes:types/search';
 
-        try {
-            QUI::getPackage('quiqqer/search');
-            $searchType = 'quiqqer/sitetypes:types/search';
-        } catch (QUI\Exception) {
+        if (QUI::getPackageManager()->isInstalled('quiqqer/search')) {
+            $searchType = 'quiqqer/search:types/search';
         }
 
         $search = $Project->getSitesIds([
