@@ -426,7 +426,7 @@ class QUI
      * @param string|null $key (optional)
      *
      */
-    public static function conf(string $section, string $key = null): bool|array|string
+    public static function conf(string $section, string $key = null): mixed
     {
         if (self::$Conf === null) {
             try {
