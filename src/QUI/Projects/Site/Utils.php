@@ -7,6 +7,7 @@
 namespace QUI\Projects\Site;
 
 use DOMElement;
+use DOMNode;
 use DOMXPath;
 use QUI;
 use QUI\Exception;
@@ -184,8 +185,11 @@ class Utils
             $tableList = $Path->query("//database/projects/table");
 
             for ($i = 0, $len = $tableList->length; $i < $len; $i++) {
-                /* @var $Table DOMElement */
                 $Table = $tableList->item($i);
+
+                if (!($Table instanceof DOMElement)) {
+                    continue;
+                }
 
                 if ($Table->getAttribute('no-auto-update')) {
                     continue;
@@ -277,8 +281,11 @@ class Utils
             $tableList = $Path->query("//database/projects/table");
 
             for ($i = 0, $len = $tableList->length; $i < $len; $i++) {
-                /* @var $Table DOMElement */
                 $Table = $tableList->item($i);
+
+                if (!($Table instanceof DOMElement)) {
+                    continue;
+                }
 
                 if ($Table->getAttribute('no-auto-update')) {
                     continue;
@@ -349,11 +356,13 @@ class Utils
 
             $Dom = XML::getDomFromXml($file);
             $Path = new DOMXPath($Dom);
-
             $attributes = $Path->query('//site/attributes/attribute');
 
-            /* @var $Attribute DOMElement */
             foreach ($attributes as $Attribute) {
+                if (!($Attribute instanceof DOMElement)) {
+                    continue;
+                }
+
                 $result[] = [
                     'attribute' => trim($Attribute->nodeValue),
                     'default' => $Attribute->getAttribute('default')
@@ -373,11 +382,13 @@ class Utils
 
             $Dom = XML::getDomFromXml($originalPackageSiteXmlFile);
             $Path = new DOMXPath($Dom);
-
             $attributes = $Path->query($exprPackage);
 
-            /* @var $Attribute DOMElement */
             foreach ($attributes as $Attribute) {
+                if (!($Attribute instanceof DOMElement)) {
+                    continue;
+                }
+
                 $result[] = [
                     'attribute' => trim($Attribute->nodeValue),
                     'default' => $Attribute->getAttribute('default')
@@ -400,11 +411,13 @@ class Utils
 
                 $Dom = XML::getDomFromXml($siteXmlFile);
                 $Path = new DOMXPath($Dom);
-
                 $attributes = $Path->query($exprOtherPackage);
 
-                /* @var $Attribute DOMElement */
                 foreach ($attributes as $Attribute) {
+                    if (!($Attribute instanceof DOMElement)) {
+                        continue;
+                    }
+
                     $result[] = [
                         'attribute' => trim($Attribute->nodeValue),
                         'default' => $Attribute->getAttribute('default')
@@ -568,9 +581,9 @@ class Utils
     public static function isSiteObject(QUI\Interfaces\Projects\Site $Site): bool
     {
         switch ($Site::class) {
-            case \QUI\Projects\Site::class:
-            case \QUI\Projects\Site\Edit::class:
-            case \QUI\Projects\Site\OnlyDB::class:
+            case Projects\Site::class:
+            case Edit::class:
+            case OnlyDB::class:
                 break;
 
             default:
