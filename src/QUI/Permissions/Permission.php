@@ -183,7 +183,7 @@ class Permission
             $UserToCheck = self::getUser();
         }
 
-        if ($UserToCheck::class !== \QUI\Users\User::class) {
+        if (!($UserToCheck instanceof QUI\Users\User)) {
             if (!$User) {
                 QUI::getUsers()->checkUserSession();
             }
@@ -1111,6 +1111,7 @@ class Permission
     }
 
     //region media permissions
+
     /**
      * has the User the permission for the media item?
      */
