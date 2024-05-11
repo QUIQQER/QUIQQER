@@ -28,11 +28,9 @@ use function file_exists;
 use function implode;
 use function in_array;
 use function is_array;
-use function is_bool;
 use function is_int;
 use function is_null;
 use function is_numeric;
-use function is_string;
 use function json_decode;
 use function json_encode;
 use function md5;
@@ -1068,7 +1066,7 @@ class User implements QUIUserInterface
 
     /**
      * @param boolean $array - returns the groups as objects (true) or as an array (false)
-     * @return QUI\Groups\Group[]|array
+     * @return QUI\Groups\Group[]|string[]|array
      */
     public function getGroups(bool $array = true): array
     {
@@ -1354,18 +1352,13 @@ class User implements QUIUserInterface
         return $this->uuid ?: '';
     }
 
-    /**
-     * (non-PHPdoc)
-     *
-     * @see QUIUserInterface::getStatus
-     */
-    public function getStatus(): bool
+    public function getStatus(): int
     {
         if ($this->active) {
             return $this->active;
         }
 
-        return false;
+        return 0;
     }
 
     /**
@@ -1744,10 +1737,10 @@ class User implements QUIUserInterface
             ]);
 
             return true;
-        } catch (QUI\Users\Exception) {
-            // 401 -> wrong password
         } catch (\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
+            if (!($Exception instanceof QUI\Users\Exception)) {
+                QUI\System\Log::writeException($Exception);
+            }
         }
 
         return false;
@@ -1913,7 +1906,7 @@ class User implements QUIUserInterface
             ['uuid' => $this->getUUID()]
         );
 
-        $this->active = true;
+        $this->active = 1;
 
         try {
             QUI::getEvents()->fireEvent('userActivate', [$this]);
@@ -1932,7 +1925,7 @@ class User implements QUIUserInterface
      */
     public function isActive(): bool
     {
-        return $this->active;
+        return $this->active === 1;
     }
 
     /**
@@ -1958,7 +1951,7 @@ class User implements QUIUserInterface
             ['uuid' => $this->getUUID()]
         );
 
-        $this->active = false;
+        $this->active = 0;
         $this->logout();
 
         return true;
@@ -2248,7 +2241,7 @@ class User implements QUIUserInterface
      */
     public function isDeleted(): bool
     {
-        return $this->deleted;
+        return $this->deleted === 0;
     }
 
     /**

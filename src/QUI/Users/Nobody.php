@@ -372,9 +372,9 @@ class Nobody extends QUI\QDOM implements User
         return null;
     }
 
-    public function getStatus(): bool
+    public function getStatus(): int
     {
-        return true;
+        return 1;
     }
 
     public function getAuthenticators(): array

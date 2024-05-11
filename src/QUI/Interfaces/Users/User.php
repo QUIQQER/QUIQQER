@@ -96,7 +96,7 @@ interface User
      * Returns the active status of the user
      * is the user active or not?
      */
-    public function getStatus(): bool;
+    public function getStatus(): int;
 
     /**
      * Has the user the right?
