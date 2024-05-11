@@ -245,11 +245,11 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                     case "top":
                     case "top-right":
                     case "left":
-                    case  "center":
-                    case  "right":
-                    case  "bottom-left":
-                    case  "bottom":
-                    case  "bottom-right":
+                    case "center":
+                    case "right":
+                    case "bottom-left":
+                    case "bottom":
+                    case "bottom-right":
                         $watermarkPosition = $pos;
                         break;
 
