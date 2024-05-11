@@ -506,10 +506,6 @@ class Address extends QUI\QDOM
      */
     public function save(?QUIUserInterface $PermissionUser = null): void
     {
-        if (!$this->getUser()) {
-            return;
-        }
-
         if (is_null($PermissionUser)) {
             $PermissionUser = QUI::getUserBySession();
         }
@@ -750,7 +746,7 @@ class Address extends QUI\QDOM
         $firstName = $this->getAttribute('firstname');
         $lastName = $this->getAttribute('lastname');
 
-        if (empty($firstName) && $User) {
+        if (empty($firstName)) {
             $firstName = $User->getAttribute('firstname');
         }
 
@@ -758,7 +754,7 @@ class Address extends QUI\QDOM
             $firstName = '';
         }
 
-        if (empty($lastName) && $User) {
+        if (empty($lastName)) {
             $lastName = $User->getAttribute('lastname');
         }
 
@@ -865,10 +861,6 @@ class Address extends QUI\QDOM
      */
     public function setCustomDataEntry(string $key, float|bool|int|string $value): void
     {
-        if (!is_numeric($value) && !is_string($value) && !is_bool($value)) {
-            return;
-        }
-
         $this->customData[$key] = $value;
         $this->setAttribute('customData', $this->customData);
     }
