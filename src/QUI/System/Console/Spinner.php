@@ -372,6 +372,7 @@ class Spinner
     {
         echo $this->blinkOff;
 
+        /* @phpstan-ignore-next-line */
         while (true) {
             $next = $this->next();
 

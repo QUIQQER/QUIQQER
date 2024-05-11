@@ -35,6 +35,8 @@ use const VAR_DIR;
  */
 class SecurityUpdate extends QUI\System\Console\Tool
 {
+    protected bool $dryRun;
+
     /**
      * constructor
      */
@@ -63,7 +65,7 @@ class SecurityUpdate extends QUI\System\Console\Tool
         $this->writeLn();
 
         $Packages = QUI::getPackageManager();
-        $dryRun = true;
+        $this->dryRun = true;
         $dryRunOutput = '';
 
         $Composer = $Packages->getComposer();
@@ -73,8 +75,8 @@ class SecurityUpdate extends QUI\System\Console\Tool
 
         // start update routines
         $CLIOutput = new QUI\System\Console\Output();
-        $CLIOutput->Events->addEvent('onWrite', function ($message) use (&$dryRun, &$dryRunOutput): void {
-            if ($dryRun) {
+        $CLIOutput->Events->addEvent('onWrite', function ($message) use (&$dryRunOutput): void {
+            if ($this->dryRun) {
                 $dryRunOutput .= $message . PHP_EOL;
                 return;
             }
@@ -198,7 +200,7 @@ class SecurityUpdate extends QUI\System\Console\Tool
             $this->writeLn(QUI::getLocale()->get('quiqqer/core', 'security.update.updates.found'));
             $this->writeLn();
             $this->writeLn();
-            $dryRun = false;
+            $this->dryRun = false;
 
             // if update exist, activate maintenance
             $Maintenance = new Maintenance();

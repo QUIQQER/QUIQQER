@@ -255,7 +255,6 @@ class Console
 
         if (isset($params['help']) && !isset($params['tool'])) {
             $this->help();
-            exit;
         }
 
 

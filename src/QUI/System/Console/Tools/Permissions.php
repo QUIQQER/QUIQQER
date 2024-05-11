@@ -66,8 +66,6 @@ class Permissions extends QUI\System\Console\Tool
     {
         if ($this->getArgument('help')) {
             $this->showHelp();
-
-            return;
         }
 
         if ($this->getArgument('list')) {
@@ -189,7 +187,13 @@ class Permissions extends QUI\System\Console\Tool
         $groups = $User->getGroups();
 
         // helper
-        $parsePermission = static function ($permission) use ($User, $Manager, $permissions, $userPermissions, $groups) {
+        $parsePermission = static function ($permission) use (
+            $User,
+            $Manager,
+            $permissions,
+            $userPermissions,
+            $groups
+        ) {
             $value = $userPermissions[$permission];
             $perm = $permissions[$permission];
 

@@ -426,7 +426,7 @@ class Update extends QUI\System\Console\Tool
             $message = str_replace([' - Upgrading '], '', $message);
             $updates = explode(',', $message);
 
-            if ($update || $updates || $upgrade) {
+            if ($update || $upgrade) {
                 $Instance->writeLn('Updates:', 'yellow');
             } elseif ($install) {
                 $Instance->writeLn('Installs:', 'yellow');
