@@ -49,9 +49,9 @@ class RedisCheck extends QUI\System\Test
     /**
      * @param string $server - optional
      * @param bool $message - error codes as message or flag?
-     * @return int
+     * @return int|string
      */
-    public static function checkServer(string $server = '', bool $message = false): int
+    public static function checkServer(string $server = '', bool $message = false): int|string
     {
         if (!class_exists('RedisArray') || !class_exists('Redis')) {
             if ($message) {
