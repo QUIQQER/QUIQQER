@@ -6,10 +6,12 @@
  * @params \QUI\QDOM $File
  */
 
+use QUI\QDOM;
+
 QUI::$Ajax->registerFunction(
     'ajax_system_update_byfile',
     static function ($File): void {
-        /* @var $File \QUI\QDOM */
+        /* @var $File QDOM */
         $filepath = $File->getAttribute('filepath');
 
         if (!file_exists($filepath) && !is_dir($filepath)) {

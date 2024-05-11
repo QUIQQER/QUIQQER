@@ -7,6 +7,7 @@
 namespace QUI\Editor;
 
 use DOMDocument;
+use DOMElement;
 use DOMNode;
 use DOMXPath;
 use Exception;
@@ -70,10 +71,12 @@ class Manager
     protected array $plugins = [];
 
     /**
-     * Setup
+     * Execute the editor setup
      *
+     * @return void
+     *
+     * @throws QUI\Database\Exception
      * @throws QUI\Exception
-     * @throws QUI\DataBase\Exception
      */
     public static function setup(): void
     {
@@ -343,8 +346,12 @@ class Manager
             $WYSIWYG = $Path->query("//wysiwyg");
 
             if ($WYSIWYG->length) {
-                $bodyId = $WYSIWYG->item(0)->getAttribute('id');
-                $bodyClass = $WYSIWYG->item(0)->getAttribute('class');
+                $DomElement = $WYSIWYG->item(0);
+
+                if ($DomElement instanceof DOMElement) {
+                    $bodyId = $DomElement->getAttribute('id');
+                    $bodyClass = $DomElement->getAttribute('class');
+                }
             }
 
             // styles
@@ -428,8 +435,12 @@ class Manager
                 $WYSIWYG = $Path->query("//wysiwyg");
 
                 if ($WYSIWYG->length) {
-                    $bodyId = $WYSIWYG->item(0)->getAttribute('id');
-                    $bodyClass = $WYSIWYG->item(0)->getAttribute('class');
+                    $DomElement = $WYSIWYG->item(0);
+
+                    if ($DomElement instanceof DOMElement) {
+                        $bodyId = $DomElement->getAttribute('id');
+                        $bodyClass = $DomElement->getAttribute('class');
+                    }
                 }
 
                 $styles = array_merge(
