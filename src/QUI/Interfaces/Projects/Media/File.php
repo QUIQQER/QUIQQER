@@ -8,7 +8,6 @@ namespace QUI\Interfaces\Projects\Media;
 
 use QUI;
 use QUI\Exception;
-use QUI\Interfaces\Users\User;
 use QUI\Projects\Media;
 use QUI\Projects\Media\Folder;
 use QUI\Projects\Media\Item;
@@ -24,6 +23,20 @@ use QUI\Projects\Project;
  */
 interface File
 {
+    // region start QDOM
+
+    public function getAttribute(string $name): mixed;
+
+    public function setAttribute(string $name, mixed $value): void;
+
+    public function setAttributes(?array $attributes): void;
+
+    public function getAttributes(): array;
+
+    public function getType(): string;
+
+    // endregion
+
     public function getId(): int;
 
     public function getParent(): Item;
@@ -33,13 +46,6 @@ interface File
     public function getParentIds(): array;
 
     public function getPath(): string;
-
-    /**
-     * Return what type is the file
-     *
-     * @return string - \QUI\Projects\Media\Image | \QUI\Projects\Media\Folder | \QUI\Projects\Media\File
-     */
-    public function getType(): string;
 
     /**
      * Return the URL of the File, relative to the host

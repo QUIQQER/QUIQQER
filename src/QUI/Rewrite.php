@@ -447,8 +447,7 @@ class Rewrite
                 exit;
             }
 
-            if ($Item->getType() === Image::class) {
-                /* @var $Item Image */
+            if ($Item instanceof Image) {
                 if (empty($width)) {
                     $width = false;
                 }

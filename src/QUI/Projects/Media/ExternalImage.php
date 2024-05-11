@@ -14,7 +14,7 @@ use QUI\Projects\Project;
 /**
  * Class ExternalImage
  */
-class ExternalImage implements QUI\Interfaces\Projects\Media\File
+class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\File
 {
     public function __construct(protected string $image)
     {
@@ -232,6 +232,7 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
 
 
     //region placeholder methods
+
     /**
      * Placeholder - do nothing
      */
