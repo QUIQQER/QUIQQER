@@ -141,7 +141,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @return array
      */
-    public function getChildrenIds(array $params = []): array;
+    public function getChildrenIds(array $params = []): array|int;
 
     /**
      * Return ALL children ids under the site

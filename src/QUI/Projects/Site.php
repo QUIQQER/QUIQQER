@@ -657,11 +657,11 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *                      $params['where']
      *                      $params['limit']
      *
-     * @return array
+     * @return array|int
      *
      * @throws QUI\Exception
      */
-    public function getChildrenIds(array $params = []): array
+    public function getChildrenIds(array $params = []): array|int
     {
         $order = $this->getAttribute('order_type');
 
