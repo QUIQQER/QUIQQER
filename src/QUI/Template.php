@@ -488,15 +488,15 @@ class Template extends QUI\QDOM
         $template_tpl = OPT_DIR . $projectTemplate . '/index.html';
         $template_index = OPT_DIR . $projectTemplate . '/index.php';
 
-        if ($template_tpl && !file_exists($template_tpl) && $hasTemplateParent) {
+        if (!file_exists($template_tpl) && $hasTemplateParent) {
             $template_tpl = OPT_DIR . $this->TemplateParent->getName() . '/index.html';
         }
 
-        if ($template_index && !file_exists($template_index) && $hasTemplateParent) {
+        if (!file_exists($template_index) && $hasTemplateParent) {
             $template_index = OPT_DIR . $this->TemplateParent->getName() . '/index.php';
         }
 
-        if ($template_tpl && file_exists($template_tpl)) {
+        if (file_exists($template_tpl)) {
             $tpl = $template_tpl;
 
             $Engine->assign([
