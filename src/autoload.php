@@ -133,7 +133,7 @@ function exception_error_handler(int $errno, string $errStr, string $errFile, in
  *
  * @param Exception $Exception
  */
-function exception_handler(\Throwable $Exception)
+function exception_handler(\Throwable $Exception): void
 {
     QUI::getErrorHandler()->writeErrorToLog(
         $Exception->getCode(),
@@ -141,10 +141,4 @@ function exception_handler(\Throwable $Exception)
         $Exception->getFile(),
         $Exception->getLine()
     );
-
-    if (DEVELOPMENT) {
-        print(
-            $Exception->getMessage() . "\n" . $Exception->getTraceAsString() . "\n"
-        );
-    }
 }
