@@ -270,12 +270,6 @@ class Menu
                     }
 
                     $Parent = $Menu->getElementByPath($menuParent);
-
-                    if (!$Parent) {
-                        $Settings->appendChild($Item);
-                        continue;
-                    }
-
                     $Parent->appendChild($Item);
                 }
             }
