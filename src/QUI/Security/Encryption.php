@@ -62,6 +62,7 @@ class Encryption
                 $data = openssl_decrypt($givenData, 'aes-256-cbc', $salt, 0, $iv);
 
                 if ($data !== false) {
+                    /* @phpstan-ignore-next-line */
                     return substr($data, -$sl) . substr($data, 0, -$sl);
                 }
             } catch (Exception $Exception) {
