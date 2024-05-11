@@ -520,7 +520,7 @@ class Address extends QUI\QDOM
         if (method_exists($User, 'checkEditPermission')) {
             $User->checkEditPermission($PermissionUser);
         }
-        
+
         try {
             QUI::getEvents()->fireEvent('userAddressSaveBegin', [$this, $this->getUser()]);
         } catch (\Exception $Exception) {
