@@ -370,27 +370,6 @@ define('classes/packages/Manager', [
         },
 
         /**
-         * Read the locale repository and search installable packages
-         *
-         * @param {Function} [callback] - optional
-         * @return {Promise}
-         */
-        readLocalRepository: function(callback) {
-            return new Promise(function(resolve, reject) {
-                Ajax.post('ajax_system_readLocalRepository', function(result) {
-                    if (typeOf(callback) === 'function') {
-                        callback(result);
-                    }
-
-                    resolve(result);
-                }, {
-                    showError: false,
-                    onError: reject
-                });
-            });
-        },
-
-        /**
          * Check, if updates are available
          *
          * @return {Promise}
