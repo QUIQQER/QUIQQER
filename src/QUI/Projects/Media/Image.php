@@ -240,10 +240,22 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                     $Watermark->getFullPath()
                 );
 
-                $watermarkPosition = match ($pos) {
-                    "top-left", "top", "top-right", "left", "center", "right", "bottom-left", "bottom", "bottom-right" => $pos,
-                    default => 'bottom-right',
-                };
+                switch ($pos) {
+                    case "top-left":
+                    case "top":
+                    case "top-right";
+                    case "left";
+                    case  "center";
+                    case  "right";
+                    case  "bottom-left";
+                    case  "bottom";
+                    case  "bottom-right":
+                        $watermarkPosition = $pos;
+                        break;
+
+                    default:
+                        $watermarkPosition = 'bottom-right';
+                }
 
                 // ratio calc
                 if ($ratio) {
