@@ -7,6 +7,8 @@
  * @throws \QUI\Exception
  */
 
+use QUI\System\Log;
+
 QUI::$Ajax->registerFunction(
     'ajax_settings_save',
     static function ($file, $params): void {
@@ -27,7 +29,7 @@ QUI::$Ajax->registerFunction(
             }
 
             if (!file_exists($file)) {
-                QUI\Log\Logger::getLogger()->addError(
+                Log::addError(
                     QUI::getLocale()->get(
                         'quiqqer/core',
                         'exception.config.save.file.not.found'
