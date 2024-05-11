@@ -19,6 +19,8 @@ use QUI\Utils\DOM;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\Text\XML;
 
+use Throwable;
+
 use function class_implements;
 use function defined;
 use function explode;
@@ -161,7 +163,7 @@ class Manager
      * Get the user by id or uuid
      *
      * @param int|string $id - Could be user-id or user uuid
-     * @return User
+     * @return QUI\Interfaces\Users\User
      *
      * @throws Exception
      * @throws QUI\Exception
@@ -1179,7 +1181,7 @@ class Manager
                 $Exception->getCode(),
                 $Exception->getContext()
             );
-        } catch (\Exception) {
+        } catch (Throwable) {
             QUI\System\Log::write(
                 'Login failed: ' . $username,
                 QUI\System\Log::LEVEL_WARNING,
