@@ -802,7 +802,7 @@ class Utils
                 if (!($Obj instanceof Image)) {
                     return $url;
                 }
-            } catch (QUI\Exception|Exception $Exception) {
+            } catch (Exception $Exception) {
                 Log::addDebug($Exception->getMessage(), [
                     'url' => $output,
                     'trace' => $Exception->getTrace()
@@ -1276,7 +1276,7 @@ class Utils
                 if (!($Attribute instanceof DOMElement)) {
                     continue;
                 }
-             
+
                 $result[] = [
                     'attribute' => trim($Attribute->nodeValue),
                     'default' => $Attribute->getAttribute('default')
