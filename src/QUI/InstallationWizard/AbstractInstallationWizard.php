@@ -6,6 +6,7 @@ use QUI;
 
 use function array_map;
 use function get_class;
+use function method_exists;
 
 /**
  * Class AbstractInstallationWizard
@@ -33,7 +34,13 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
 
     public function toArray($Locale = null): array
     {
-        $steps = array_map(static fn($Step) => $Step->toArray(), $this->getSteps());
+        $steps = array_map(function ($Step) {
+            if (method_exists($Step, 'toArray')) {
+                return $Step->toArray();
+            }
+
+            return [];
+        }, $this->getSteps());
 
         return [
             'title' => $this->getTitle($Locale),
@@ -90,7 +97,7 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
     /**
      * Returns the step which are shown during the execute() step (installation)
      *
-     * @return \string[][]
+     * @return array
      */
     public function getExecuteSteps(): array
     {
