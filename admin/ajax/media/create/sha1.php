@@ -24,7 +24,10 @@ QUI::$Ajax->registerFunction(
         foreach ($ids as $id) {
             try {
                 $Item = $Media->get($id);
-                $Item->generateSHA1();
+
+                if (method_exists($Item, 'generateSHA1')) {
+                    $Item->generateSHA1();
+                }
             } catch (QUI\Exception $Exception) {
                 QUI::getMessagesHandler()->addError(
                     $Exception->getMessage()

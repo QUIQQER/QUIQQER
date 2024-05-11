@@ -21,7 +21,10 @@ QUI::$Ajax->registerFunction(
         $Media = $Project->getMedia();
         $File = $Media->get($folderid);
 
-        /* @var $File Folder */
+        if (!($File instanceof Folder)) {
+            return [];
+        }
+
         $params = Orthos::clearArray(json_decode($params, true));
         $Grid = new Grid($params);
 

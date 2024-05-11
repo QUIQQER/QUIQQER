@@ -43,11 +43,11 @@ QUI::$Ajax->registerFunction(
                 return $attr;
             }
 
-            if (!$attr['image_width']) {
+            if (!$attr['image_width'] && method_exists($File, 'getWidth')) {
                 $attr['image_width'] = $File->getWidth();
             }
 
-            if (!$attr['image_height']) {
+            if (!$attr['image_height'] && method_exists($File, 'getHeight')) {
                 $attr['image_height'] = $File->getHeight();
             }
 
@@ -71,11 +71,11 @@ QUI::$Ajax->registerFunction(
 
             $attributes = $File->getAttributes();
 
-            if (!$attributes['image_width']) {
+            if (!$attributes['image_width'] && method_exists($File, 'getWidth')) {
                 $attributes['image_width'] = $File->getWidth();
             }
 
-            if (!$attributes['image_height']) {
+            if (!$attributes['image_height'] && method_exists($File, 'getHeight')) {
                 $attributes['image_height'] = $File->getHeight();
             }
 

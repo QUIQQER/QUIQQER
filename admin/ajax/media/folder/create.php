@@ -20,13 +20,12 @@ QUI::$Ajax->registerFunction(
         $Media = $Project->getMedia();
         $File = $Media->get($parentid);
 
-        if (QUI\Projects\Media\Utils::isFolder($File) === false) {
+        if (!($File instanceof Folder)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/core', 'exception.media.create.folder.only.in.folder')
             );
         }
 
-        /* @var $File Folder */
         $Folder = $File->createFolder($newfolder);
 
         return QUI\Projects\Media\Utils::parseForMediaCenter($Folder);
