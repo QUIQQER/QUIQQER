@@ -7,7 +7,7 @@
  * @licence For copyright and license information, please view the /README.md
  */
 
-const QUIQQER_MIN_PHP_VERSION = '7.4.0';
+const QUIQQER_MIN_PHP_VERSION = '8.1.0';
 
 header("Content-Type: text/html; charset=utf-8");
 
@@ -45,7 +45,7 @@ ini_set('session.save_path', VAR_DIR . 'sessions');
 
 set_error_handler("exception_error_handler");
 
-if (DEVELOPMENT == 1) {
+if (DEVELOPMENT) {
     error_reporting(E_ALL);
 } else {
     error_reporting(E_ALL ^ E_NOTICE);
