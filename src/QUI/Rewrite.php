@@ -514,8 +514,8 @@ class Rewrite
 
         QUI::getEvents()->fireEvent('request', [$this, $_REQUEST['_url']]);
 
-        // Falls kein suffix dann 301 weiterleiten auf .html
-        if (!empty($_REQUEST['_url']) && !str_ends_with($_REQUEST['_url'], '/')) {
+        // Falls kein suffix dawn 301 weiterleiten auf .html
+        if (!empty($_REQUEST['_url']) && str_ends_with($_REQUEST['_url'], '/')) {
             $pathinfo = pathinfo($_REQUEST['_url']);
 
             if (!isset($pathinfo['extension']) && $defaultSuffix !== '') {
