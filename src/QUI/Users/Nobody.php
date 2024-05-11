@@ -377,6 +377,11 @@ class Nobody extends QUI\QDOM implements User
         return true;
     }
 
+    public function getAuthenticators(): array
+    {
+        return [];
+    }
+
     public function setGroups(array|string $groups): bool
     {
         return false;

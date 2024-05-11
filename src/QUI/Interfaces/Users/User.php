@@ -108,6 +108,8 @@ interface User
      */
     public function getPermission(string $right, callable|bool|string $ruleset = false): mixed;
 
+    public function getAuthenticators(): array;
+
     public function setGroups(array|string $groups);
 
     /**

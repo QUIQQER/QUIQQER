@@ -22,6 +22,7 @@ use function end;
 use function explode;
 use function file_exists;
 use function implode;
+use function method_exists;
 
 /**
  * Helper for the Site Object
@@ -198,8 +199,7 @@ class Sites
             'name' => '_Tabbar'
         ]);
 
-        // Wenn die Seite bearbeitet wird
-        if ($Site->isLockedFromOther()) {
+        if (method_exists($Site, 'isLockedFromOther') && $Site->isLockedFromOther()) {
             $Tabbar->appendChild(
                 new Tab([
                     'name' => 'information',

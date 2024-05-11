@@ -1139,7 +1139,6 @@ class Console
             );
         }
 
-        /* @var $User QUI\Users\User */
         $User = $this->User;
         $authenticators = $User->getAuthenticators();
 
