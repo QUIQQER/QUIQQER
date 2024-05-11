@@ -33,6 +33,7 @@ use function libxml_clear_errors;
 use function libxml_use_internal_errors;
 use function ltrim;
 use function md5;
+use function method_exists;
 use function parse_str;
 use function parse_url;
 use function preg_replace;
@@ -448,7 +449,6 @@ class Output extends Singleton
 
             return '';
         }
-
         //return $output[0];
     }
 
@@ -840,7 +840,10 @@ class Output extends Singleton
             return '';
         }
 
-        if ($MediaItem->hasViewPermissionSet()) {
+        if (
+            method_exists($MediaItem, 'hasViewPermissionSet')
+            && $MediaItem->hasViewPermissionSet()
+        ) {
             return $output[1] . '="' . URL_DIR . $MediaItem->getUrl() . '"';
         }
 

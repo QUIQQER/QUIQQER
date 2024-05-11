@@ -13,6 +13,7 @@ use QUI\Exception;
 use QUI\REST\Server;
 
 use function json_encode;
+use function method_exists;
 
 /**
  * Class RestProvider
@@ -35,10 +36,13 @@ class RestProvider implements QUI\REST\ProviderInterface
 
                 $Project = QUI::getProject($project, $lang);
                 $Site = $Project->get($id);
+                $Header = $Response->withStatus(200)->withHeader('Content-Type', 'application/json');
 
-                return $Response->withStatus(200)
-                    ->withHeader('Content-Type', 'application/json')
-                    ->write(json_encode($Site->getAttributes()));
+                if (method_exists($Header, 'write')) {
+                    return $Header->write(json_encode($Site->getAttributes()));
+                }
+
+                return '';
             }
         );
     }

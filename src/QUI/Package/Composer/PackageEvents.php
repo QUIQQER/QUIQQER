@@ -15,6 +15,7 @@ use QUI;
 
 use function define;
 use function defined;
+use function method_exists;
 use function php_sapi_name;
 
 class PackageEvents
@@ -33,8 +34,12 @@ class PackageEvents
     {
         self::loadQUIQQER($Event);
 
-        /* @var $Operation InstallOperation */
         $Operation = $Event->getOperation();
+
+        if (!method_exists($Operation, 'getPackage')) {
+            return;
+        }
+
         $TargetPackage = $Operation->getPackage();
         $packageName = $TargetPackage->getName();
 
@@ -103,8 +108,12 @@ class PackageEvents
     {
         self::loadQUIQQER($Event);
 
-        /* @var $Operation UpdateOperation */
         $Operation = $Event->getOperation();
+
+        if (!method_exists($Operation, 'getTargetPackage')) {
+            return;
+        }
+
         $TargetPackage = $Operation->getTargetPackage();
         $packageName = $TargetPackage->getName();
 
@@ -136,8 +145,12 @@ class PackageEvents
     {
         self::loadQUIQQER($Event);
 
-        /* @var $Operation UninstallOperation */
         $Operation = $Event->getOperation();
+
+        if (!method_exists($Operation, 'getPackage')) {
+            return;
+        }
+
         $TargetPackage = $Operation->getPackage();
         $packageName = $TargetPackage->getName();
 
