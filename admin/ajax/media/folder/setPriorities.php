@@ -10,6 +10,8 @@
  * @throws \QUI\Exception
  */
 
+use QUI\Projects\Media\Folder;
+
 QUI::$Ajax->registerFunction(
     'ajax_media_folder_setPriorities',
     static function ($project, $folderId, $priorities): void {
@@ -17,7 +19,7 @@ QUI::$Ajax->registerFunction(
         $Media = $Project->getMedia();
         $Folder = $Media->get($folderId);
 
-        if (!QUI\Projects\Media\Utils::isFolder($Folder)) {
+        if (!($Folder instanceof Folder)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/core', 'exception.media.not.a.folder')
             );

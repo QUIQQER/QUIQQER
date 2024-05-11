@@ -50,7 +50,7 @@ interface File
     /**
      * Return the URL of the File, relative to the host
      */
-    public function getUrl(): string;
+    public function getUrl(bool $rewritten = false): string;
 
     public function getFullPath(): string;
 
@@ -62,6 +62,8 @@ interface File
     public function activate(QUI\Interfaces\Users\User $PermissionUser = null);
 
     public function isActive(): bool;
+
+    public function isDeleted(): bool;
 
     public function isHidden(): bool;
 

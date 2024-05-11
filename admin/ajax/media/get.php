@@ -17,13 +17,17 @@ QUI::$Ajax->registerFunction(
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $File = $Media->get($fileid);
+        $parents = [];
 
-        $parents = $File->getParents();
+        if ($File instanceof Folder) {
+            $parents = $File->getParents();
+        }
+
         $breadcrumb = [];
         $children = [];
         $_children = [];
 
-        if ($File->getType() === Folder::class) {
+        if ($File instanceof Folder) {
             $_children = $File->getChildren();
         }
 

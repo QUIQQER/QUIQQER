@@ -2261,9 +2261,12 @@ class Manager extends QUI\QDOM
             return false;
         }
 
-        /* @var $Type DOMElement */
         $Type = $Types->item(0);
         $data = [];
+
+        if (!($Types instanceof DOMElement)) {
+            return false;
+        }
 
         if ($Type->getAttribute('icon')) {
             $data['icon'] = $Type->getAttribute('icon');

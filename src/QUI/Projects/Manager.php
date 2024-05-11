@@ -387,9 +387,12 @@ class Manager
             $settingsList = $Path->query('//project/settings');
 
             for ($i = 0, $len = $settingsList->length; $i < $len; $i++) {
-                /* @var $Settings DOMElement */
                 $Settings = $settingsList->item($i);
                 $sections = DOM::getConfigParamsFromDOM($Settings);
+
+                if (!($Settings instanceof DOMElement)) {
+                    continue;
+                }
 
                 $settingsName = $Settings->getAttribute('name');
 

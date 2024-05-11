@@ -1402,12 +1402,11 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         // if it is an image, then resize -> if needed
         if (
-            Utils::isImage($File)
+            $File instanceof Image
             && $maxSize
             && isset($new_file_info['width'])
             && isset($new_file_info['height'])
         ) {
-            /* @var $File Image */
             $resizeData = $File->getResizeSize($maxSize, $maxSize);
 
             if ($new_file_info['width'] > $maxSize || $new_file_info['height'] > $maxSize) {
@@ -1459,7 +1458,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                     $NewFolder = $this->createFolder($folderName);
                 }
 
-                $NewFolder->uploadFolder($path . '/' . $file);
+                if ($NewFolder instanceof Folder) {
+                    $NewFolder->uploadFolder($path . '/' . $file);
+                }
+
                 continue;
             }
 

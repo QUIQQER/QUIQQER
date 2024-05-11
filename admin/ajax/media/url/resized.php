@@ -33,8 +33,9 @@ QUI::$Ajax->registerFunction(
                 );
             }
 
-            /* @var $File Image */
-            return $File->getSizeCacheUrl($maxWidth, $maxHeight);
+            if (method_exists($File, 'getSizeCacheUrl')) {
+                return $File->getSizeCacheUrl($maxWidth, $maxHeight);
+            }
         } catch (QUI\Exception) {
         }
 

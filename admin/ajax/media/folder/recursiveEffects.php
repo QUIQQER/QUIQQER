@@ -10,6 +10,8 @@
  * @throws \QUI\Exception
  */
 
+use QUI\Projects\Media\Folder;
+
 QUI::$Ajax->registerFunction(
     'ajax_media_folder_recursiveEffects',
     static function ($project, $folderId): void {
@@ -17,13 +19,12 @@ QUI::$Ajax->registerFunction(
         $Media = $Project->getMedia();
         $Folder = $Media->get($folderId);
 
-        if (QUI\Projects\Media\Utils::isFolder($Folder) === false) {
+        if (!($Folder instanceof Folder)) {
             throw new QUI\Exception(
                 'You can create a folder only in a folder'
             );
         }
 
-        /* @var $Folder QUI\Projects\Media\Folder */
         $Folder->setEffectsRecursive();
 
         QUI::getMessagesHandler()->addSuccess(

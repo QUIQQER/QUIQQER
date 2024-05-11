@@ -97,7 +97,7 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
     /**
      * Return the URL of the File, relative to the host
      */
-    public function getUrl(): string
+    public function getUrl(bool $rewritten = false): string
     {
         return $this->image;
     }
@@ -336,6 +336,11 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
     public function isActive(): bool
     {
         return true;
+    }
+
+    public function isDeleted(): bool
+    {
+        return false;
     }
 
     public function isHidden(): bool

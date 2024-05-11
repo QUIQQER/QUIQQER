@@ -817,7 +817,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         // Falls kein Order übergeben wird das eingestellte Site Order
         if (!isset($params['order'])) {
             $params['order'] = match ($this->getAttribute('order_type')) {
-                'name ASC', 'name DESC', 'title ASC', 'title DESC', 'c_date ASC', 'c_date DESC', 'd_date ASC', 'd_date DESC', 'release_from ASC', 'release_from DESC' => $this->getAttribute('order_type'),
+                'name ASC', 'name DESC', 'title ASC', 'title DESC', 'c_date ASC', 'c_date DESC', 'd_date ASC', 'd_date DESC', 'release_from ASC', 'release_from DESC' => $this->getAttribute(
+                    'order_type'
+                ),
                 default => 'order_field',
             };
         }
@@ -971,10 +973,13 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 $XPath = new DOMXPath($Dom);
                 $Types = $XPath->query('//type[@type="' . $type . '"]');
 
-                /* @var $Type DOMElement */
                 $Type = $Types->item(0);
 
-                if ($Type && $Type->hasAttribute('cache') && (int)$Type->getAttribute('cache') === 0) {
+                if (
+                    $Type instanceof DOMElement
+                    && $Type->hasAttribute('cache')
+                    && (int)$Type->getAttribute('cache') === 0
+                ) {
                     $noCache = 1;
                 }
 
@@ -1700,6 +1705,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     //region cache
+
     /**
      * Gibt alle rekursive Parents als Objekte zurück
      * Site->Parent->ParentParent->ParentParentParent

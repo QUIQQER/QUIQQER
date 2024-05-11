@@ -85,8 +85,7 @@ class Utils
      */
     public static function parseForMediaCenter(QUI\Interfaces\Projects\Media\File $Item): array
     {
-        if ($Item->getId() === 1) {
-            /* @var $Item Folder */
+        if ($Item instanceof Folder && $Item->getId() === 1) {
             return [
                 'icon' => 'fa fa-home',
                 'icon80x80' => URL_BIN_DIR . '80x80/media.png',
@@ -108,8 +107,7 @@ class Utils
             ];
         }
 
-        if ($Item->getType() === Folder::class) {
-            /* @var $Item Folder */
+        if ($Item instanceof Folder) {
             return [
                 'icon' => 'fa fa-folder-o',
                 'icon80x80' => URL_BIN_DIR . '80x80/extensions/folder.png',
@@ -801,10 +799,10 @@ class Utils
                 $Obj = self::getMediaItemByUrl($output);
                 $url = $Obj->getUrl(true);
 
-                if (!self::isImage($Obj)) {
+                if (!($Obj instanceof Image)) {
                     return $url;
                 }
-            } catch (QUI\Exception | Exception $Exception) {
+            } catch (QUI\Exception|Exception $Exception) {
                 Log::addDebug($Exception->getMessage(), [
                     'url' => $output,
                     'trace' => $Exception->getTrace()
@@ -815,7 +813,7 @@ class Utils
         }
 
 
-        // Falls Grösse mit eingebaut wurde diese mit einbauen
+        // sizes
         if (count($size)) {
             $url_explode = explode('.', $url);
 
@@ -1066,7 +1064,10 @@ class Utils
 
         $Parent = $File->getParent();
 
-        if ($Parent->fileWithNameExists($uploadParams['name'])) {
+        if (
+            method_exists($Parent, 'fileWithNameExists')
+            && $Parent->fileWithNameExists($uploadParams['name'])
+        ) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/core',
@@ -1271,8 +1272,11 @@ class Utils
 
             $attributes = $Path->query('//quiqqer/media/attributes/attribute');
 
-            /* @var $Attribute DOMElement */
             foreach ($attributes as $Attribute) {
+                if (!($Attribute instanceof DOMElement)) {
+                    continue;
+                }
+             
                 $result[] = [
                     'attribute' => trim($Attribute->nodeValue),
                     'default' => $Attribute->getAttribute('default')

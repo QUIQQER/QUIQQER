@@ -19,7 +19,11 @@ QUI::$Ajax->registerFunction(
         foreach ($ids as $id) {
             try {
                 $Item = $Media->get((int)$id);
-                $Item->setHidden();
+
+                if (method_exists($Item, 'setHidden')) {
+                    $Item->setHidden();
+                }
+
                 $Item->save();
             } catch (QUI\Exception $Exception) {
                 QUI::getMessagesHandler()->addError(

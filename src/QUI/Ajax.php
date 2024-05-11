@@ -275,20 +275,25 @@ class Ajax extends QUI\QDOM
                     $return['Exception']['type'] = $Exception::class;
                 }
 
-                if ((DEVELOPMENT || DEBUG_MODE) && $class !== 'PDOException') {
+                if (
+                    (DEVELOPMENT || DEBUG_MODE)
+                    && $class !== 'PDOException'
+                    && method_exists($Exception, 'getContext')
+                ) {
                     $return['Exception']['context'] = $Exception->getContext();
                 }
 
                 break;
 
             case ExceptionStack::class:
-                /* @var $Exception ExceptionStack */
-                $list = $Exception->getExceptionList();
+                $list = [];
 
-                if (isset($list[0])) {
-                    /* @var $FirstException Exception */
+                if (method_exists($Exception, 'getExceptionList')) {
+                    $list = $Exception->getExceptionList();
+                }
+
+                if (isset($list[0]) && $list[0] instanceof Exception) {
                     $FirstException = $list[0];
-                    // method nicht mit ausgeben
                     $message = $FirstException->getMessage();
                     $end = mb_strripos($message, ' :: ');
 
@@ -308,13 +313,13 @@ class Ajax extends QUI\QDOM
 
                 break;
 
-            case \QUI\Exception::class:
-            case \QUI\Users\Exception::class:
+            case Exception::class:
+            case QUI\Users\Exception::class:
                 $return['Exception']['message'] = $Exception->getMessage();
                 $return['Exception']['code'] = $Exception->getCode();
-                $return['Exception']['type'] = $Exception->getType();
-
-                if (DEVELOPMENT || DEBUG_MODE) {
+                $return['Exception']['type'] = get_class($Exception);
+                
+                if ((DEVELOPMENT || DEBUG_MODE) && method_exists($Exception, 'getContext')) {
                     $return['Exception']['context'] = $Exception->getContext();
                 }
 

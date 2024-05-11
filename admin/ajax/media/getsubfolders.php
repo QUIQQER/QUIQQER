@@ -20,14 +20,13 @@ QUI::$Ajax->registerFunction(
         $File = $Media->get($fileid);
         $params = json_decode($params, true);
 
-        if (!QUI\Projects\Media\Utils::isFolder($File)) {
+        if (!($File instanceof Folder)) {
             throw new QUI\Exception([
                 'quiqqer/core',
                 'exception.media.not.a.folder'
             ]);
         }
 
-        /* @var $File Folder */
         $children = [];
         $folders = $File->getFolders($params);
 

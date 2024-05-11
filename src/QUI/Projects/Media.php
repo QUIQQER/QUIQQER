@@ -578,10 +578,13 @@ class Media extends QUI\QDOM
             throw new QUI\Exception('No Parent found.', 404);
         }
 
-        /* @var $Parent QUI\Projects\Media\Folder */
         $Parent = $this->get($parentId);
 
-        if ($data['name'] != $name && $Parent->childWithNameExists($name)) {
+        if (
+            $Parent instanceof QUI\Projects\Media\Folder
+            && $data['name'] !== $name
+            && $Parent->childWithNameExists($name)
+        ) {
             throw new QUI\Exception(
                 'A file with the name ' . $name . ' already exist.',
                 403

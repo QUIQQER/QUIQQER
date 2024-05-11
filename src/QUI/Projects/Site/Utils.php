@@ -28,6 +28,7 @@ use function html_entity_decode;
 use function is_array;
 use function is_numeric;
 use function is_string;
+use function method_exists;
 use function parse_str;
 use function parse_url;
 use function preg_match;
@@ -442,6 +443,10 @@ class Utils
     {
         if (empty($current)) {
             $current = QUI::getLocale()->getCurrent();
+        }
+
+        if (!method_exists($Site, 'getCachePath')) {
+            return '';
         }
 
         $siteType = $Site->getAttribute('type');
