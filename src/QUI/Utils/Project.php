@@ -194,20 +194,18 @@ class Project
         QUI::getLocale()->getByLang($language, $group, $var);
 
         if (!QUI::getLocale()->exists($language)) {
-            // check if we can import it
+            // try import
             QUI::getLocale()->getByLang($language, $group, $var);
+        }
 
-            if (!QUI::getLocale()->exists($language)) {
-                $language = 'en';
+        if (!QUI::getLocale()->exists($language)) {
+            $language = 'en';
+            QUI::getLocale()->getByLang($language, $group, $var);
+        }
 
-                // import
-                QUI::getLocale()->getByLang($language, $group, $var);
-            }
-
-            // if en doesn't exist, we use the first available language
-            if (!QUI::getLocale()->exists($language)) {
-                $language = QUI::availableLanguages()[0];
-            }
+        // if en doesn't exist, we use the first available language
+        if (!QUI::getLocale()->exists($language)) {
+            $language = QUI::availableLanguages()[0];
         }
 
         $str = QUI::getLocale()->getByLang($language, $group, $var);
