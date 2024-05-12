@@ -5,13 +5,12 @@ namespace QUI\Cache;
 use MongoDB\Client;
 use QUI;
 use Stash;
+use Stash\Interfaces\DriverInterface;
 
 use function explode;
 use function file_put_contents;
-use function is_array;
 use function is_dir;
 use function md5;
-use function strpos;
 
 /**
  * Class LongTermCache
@@ -22,10 +21,7 @@ class LongTermCache
 
     protected static ?Stash\Pool $Pool = null;
 
-    /**
-     * @var null
-     */
-    protected static $Driver = null;
+    protected static ?DriverInterface $Driver = null;
 
     //region API
 
@@ -66,7 +62,7 @@ class LongTermCache
     /**
      * Return the current driver
      */
-    protected static function getDriver()
+    protected static function getDriver(): ?DriverInterface
     {
         if (self::$Driver !== null) {
             return self::$Driver;
@@ -199,12 +195,9 @@ class LongTermCache
     /**
      * Returns the cached data
      *
-     * @param string $name
-     * @return string|array|object|boolean
-     *
      * @throws QUI\Cache\Exception
      */
-    public static function get($name)
+    public static function get(string $name): mixed
     {
         $key = self::generateStorageKey($name);
 
@@ -243,10 +236,8 @@ class LongTermCache
 
     /**
      * Clears the cache
-     *
-     * @param string $name
      */
-    public static function clear($name = ''): void
+    public static function clear(string $name = ''): void
     {
         $key = self::generateStorageKey($name);
 

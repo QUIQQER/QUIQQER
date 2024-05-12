@@ -181,11 +181,9 @@ class Ajax extends QUI\QDOM
 
         QUI::getSession()->getSymfonySession()->save();
 
-        if (QUI::getMessagesHandler()) {
-            $result['message_handler'] = QUI::getMessagesHandler()->getMessagesAsArray(
-                QUI::getUserBySession()
-            );
-        }
+        $result['message_handler'] = QUI::getMessagesHandler()->getMessagesAsArray(
+            QUI::getUserBySession()
+        );
 
         // maintenance flag
         $result['maintenance'] = QUI::conf('globals', 'maintenance') ? 1 : 0;

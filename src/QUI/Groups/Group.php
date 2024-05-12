@@ -524,7 +524,10 @@ class Group extends QUI\QDOM
         if ($this->getAttribute('assigned_toolbar')) {
             $toolbars = explode(',', $this->getAttribute('assigned_toolbar'));
 
-            $assignedToolbars = array_filter($toolbars, static fn($toolbar): bool => QUI\Editor\Manager::existsToolbar($toolbar));
+            $assignedToolbars = array_filter(
+                $toolbars,
+                static fn($toolbar): bool => QUI\Editor\Manager::existsToolbar($toolbar)
+            );
 
             $assignedToolbars = implode(',', $assignedToolbars);
         }
@@ -773,7 +776,7 @@ class Group extends QUI\QDOM
             QUI\Utils\Doctrine::parseDbArrayToQueryBuilder($query, $params);
 
             return $query->executeQuery()->fetchAllAssociative();
-        } catch (\Exception | \Doctrine\DBAL\Exception $e) {
+        } catch (\Exception|\Doctrine\DBAL\Exception $e) {
             QUI\System\Log::addError($e->getMessage());
             return [];
         }
@@ -819,7 +822,6 @@ class Group extends QUI\QDOM
      */
     public function countUser(array $params = []): int
     {
-        // @todo uuid
         $_params = [
             'count' => [
                 'select' => 'id',
@@ -829,7 +831,7 @@ class Group extends QUI\QDOM
             'where' => [
                 'usergroup' => [
                     'type' => '%LIKE%',
-                    'value' => "," . $this->getId() . ","
+                    'value' => "," . $this->getUUID() . ","
                 ]
             ]
         ];
@@ -932,6 +934,7 @@ class Group extends QUI\QDOM
         $create = true;
         $newId = false;
 
+        // @todo IMPORTANT!!! wird wahrscheinlich nicht mehr benötigt, da wir uuids nutzen?
         while ($create) {
             $rand = (int)(microtime(true) * 1_000_000);
             mt_srand($rand);
@@ -948,15 +951,6 @@ class Group extends QUI\QDOM
             if (!isset($result[0]) || !$result[0]['id']) {
                 $create = false;
             }
-        }
-
-        if ($create === false) {
-            throw new QUI\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/core',
-                    'exception.group.create.id.creation.error'
-                )
-            );
         }
 
         QUI::getDataBase()->insert(Manager::table(), [
