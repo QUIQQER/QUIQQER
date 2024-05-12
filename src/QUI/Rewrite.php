@@ -225,8 +225,8 @@ class Rewrite
         // nginx fix
         $_REQUEST['_url'] = ltrim($_REQUEST['_url'], '/');
 
-        //wenn seite existiert, dann muss nichts mehr gemacht werden
-        if (isset($this->site) && $this->site) {
+        // if ->site exists, we are done
+        if ($this->site) {
             QUI::getEvents()->fireEvent('request', [$this, $_REQUEST['_url']]);
 
             return;
@@ -540,14 +540,6 @@ class Rewrite
         }
 
         $this->first_child = $this->getProject()->firstChild();
-
-        if ($this->site && $this->site->getId() !== $this->first_child->getId()) {
-            $this->setIntoPath($this->first_child);
-            $this->setIntoPath($this->site);
-
-            return;
-        }
-
         $this->site = $this->first_child;
 
         if (!empty($_REQUEST['_url'])) {
