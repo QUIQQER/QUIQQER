@@ -125,9 +125,9 @@ class Project implements \Stringable
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::writeDebugException($Exception);
 
-            $this->name = null;
-            $this->lang = null;
-            $this->template = null;
+            $this->name = '';
+            $this->lang = '';
+            $this->template = '';
 
             throw $Exception;
         }
@@ -563,6 +563,7 @@ class Project implements \Stringable
     }
 
     //region cache
+
     /**
      * Gibt den allgemein gültigen Host vom Projekt zurück
      */
@@ -650,6 +651,7 @@ class Project implements \Stringable
     }
 
     //endregion
+
     /**
      * Return the project cache path with the language path
      */

@@ -67,7 +67,7 @@ class Locale implements \Stringable
     /**
      * Saves the current language of this Locale if setTemporaryCurrent is used.
      */
-    protected bool $tempCurrent = false;
+    protected bool|string $tempCurrent = false;
 
     public function __toString(): string
     {

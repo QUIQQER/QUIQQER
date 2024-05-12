@@ -467,10 +467,6 @@ class Utils
                         $media = ' media="' . $set['media'] . '"';
                     }
 
-                    if (!isset($set['src'])) {
-                        continue;
-                    }
-
                     if (!isset($set['type'])) {
                         continue;
                     }
@@ -632,14 +628,13 @@ class Utils
 
         $Obj = self::getMediaItemByUrl($url);
 
-        if (!self::isImage($Obj)) {
+        if (!($Obj instanceof Image)) {
             throw new QUI\Exception(
                 'Its not an image',
                 ErrorCodes::NOT_AN_IMAGE
             );
         }
 
-        /* @var $Obj Image */
         return $Obj;
     }
 

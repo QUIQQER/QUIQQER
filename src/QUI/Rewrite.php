@@ -80,7 +80,7 @@ class Rewrite
 
     const URL_DEFAULT_SUFFIX = '.html';
 
-    public static bool $SUFFIX = false;
+    public static bool|string $SUFFIX = false;
 
     /**
      * site request parameter

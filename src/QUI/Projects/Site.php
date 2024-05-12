@@ -186,7 +186,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         // for admins there is no cache
         if (defined('ADMIN') && ADMIN == 1) {
-            return true;
+            return;
         }
 
         try {
@@ -206,8 +206,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $this->Events->fireEvent('init', [$this]);
         QUI::getEvents()->fireEvent('siteInit', [$this]);
-
-        return true;
     }
 
     /**
@@ -362,7 +360,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             return $this->lang_ids[$lang];
         }
 
-        return false;
+        return $this->id;
     }
 
     /**
