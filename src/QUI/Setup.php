@@ -39,7 +39,7 @@ class Setup
     public static function all(?QUI\Interfaces\System\SystemOutput $Output = null): void
     {
         if (!$Output) {
-            $Output = new QUI\System\VoidOutput();
+            $Output = new QUI\System\Output\VoidOutput();
         }
 
         QUI\System\Log::write(
@@ -464,7 +464,7 @@ EOT;
         ?QUI\Interfaces\System\SystemOutput $Output = null
     ): void {
         if (!$Output) {
-            $Output = new QUI\System\VoidOutput();
+            $Output = new QUI\System\Output\VoidOutput();
         }
 
         QUI::getEvents()->fireEvent('setupPackageSetupBegin');

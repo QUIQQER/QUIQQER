@@ -1,6 +1,6 @@
 <?php
 
-namespace QUI\System;
+namespace QUI\System\Output;
 
 use QUI\Interfaces\System\SystemOutput;
 
