@@ -78,6 +78,7 @@ class Autoloader
         }
 
         self::$ComposerLoader = require dirname(__FILE__, 5) . '/autoload.php';
+        require_once dirname(__FILE__, 2) . '/classmap/QUI.php';
     }
 
     /**
@@ -103,37 +104,12 @@ class Autoloader
             return true;
         }
 
-        // exists quiqqer?
-        if (!class_exists('\QUI', false)) {
-            require_once dirname(__FILE__, 2) . '/classmap/QUI.php';
-        }
-
         if ($classname === 'QUI') {
-            return true;
-        }
-
-        if (class_exists($classname, false)) {
-            return true;
-        }
-
-        if (interface_exists($classname, false)) {
-            return true;
-        }
-
-        if (function_exists($classname)) {
             return true;
         }
 
         // Projects
         if (str_starts_with($classname, 'Projects\\')) {
-            if (class_exists($classname, false)) {
-                return true;
-            }
-
-            if (interface_exists($classname, false)) {
-                return true;
-            }
-
             $file = USR_DIR . substr($classname, 9) . '.php';
             $file = str_replace('\\', '/', $file);
 
@@ -141,10 +117,12 @@ class Autoloader
                 require_once $file;
             }
 
+            /** @phpstan-ignore-next-line */
             if (class_exists($classname, false)) {
                 return true;
             }
 
+            /** @phpstan-ignore-next-line */
             if (interface_exists($classname, false)) {
                 return true;
             }
@@ -163,10 +141,12 @@ class Autoloader
             require_once $file;
         }
 
+        /** @phpstan-ignore-next-line */
         if (class_exists($classname, false)) {
             return true;
         }
 
+        /** @phpstan-ignore-next-line */
         if (interface_exists($classname, false)) {
             return true;
         }

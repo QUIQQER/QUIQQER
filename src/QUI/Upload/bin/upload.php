@@ -36,11 +36,9 @@ $result = [
     'maintenance' => QUI::conf('globals', 'maintenance') ? 1 : 0
 ];
 
-if (QUI::getMessagesHandler()) {
-    $result['message_handler'] = QUI::getMessagesHandler()->getMessagesAsArray(
-        QUI::getUserBySession()
-    );
-}
+$result['message_handler'] = QUI::getMessagesHandler()->getMessagesAsArray(
+    QUI::getUserBySession()
+);
 
 // maintenance flag
 echo '<quiqqer>' . json_encode($result) . '</quiqqer>';

@@ -1097,12 +1097,8 @@ class Project implements \Stringable
             $sql['limit'] = $params['limit'];
         }
 
-        if (isset($params['order'])) {
-            $sql['order'] = $params['order'];
-        } else {
-            $sql['order'] = 'order_field';
-        }
-
+        $sql['order'] = $params['order'];
+        
         if (isset($params['debug'])) {
             $sql['debug'] = true;
 

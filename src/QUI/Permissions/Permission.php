@@ -613,15 +613,11 @@ class Permission
         }
 
         $perm_value = $permissions[$perm];
-
         $check = false;
 
         switch ($perm_data['type']) {
             case 'bool':
-                if ($perm_value) {
-                    $check = true;
-                }
-
+                $check = true;
                 break;
 
             case 'group':

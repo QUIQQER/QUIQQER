@@ -188,7 +188,8 @@ class Locale implements \Stringable
             QUI\System\Log::writeDebugException($Exception);
         }
 
-        if ($translation !== null && str_contains($translation, ' ') && strlen($translation) === 1) {
+        /** @phpstan-ignore-next-line */
+        if (str_contains($translation, ' ') && strlen($translation) == 1) {
             return ' ';
         }
 

@@ -119,13 +119,8 @@ class Bundler
         }
 
         // messages
-        $MessageHandler = QUI::getMessagesHandler();
-
-        if ($MessageHandler) {
-            $result['message_handler'] = $MessageHandler->getMessagesAsArray(QUI::getUserBySession());
-
-            $MessageHandler->clear();
-        }
+        $result['message_handler'] = QUI::getMessagesHandler()->getMessagesAsArray(QUI::getUserBySession());
+        QUI::getMessagesHandler()->clear();
 
         $result['jsCallbacks'] = QUI::getAjax()->getJsCallbacks();
 
