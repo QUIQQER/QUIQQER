@@ -1510,17 +1510,12 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             // in rewrite zeile 1420 ->_extendUrlWidthPrams wird dies auch noch gemacht
             // somit kann ein url cache aufgebaut werden
             foreach ($params as $param => $value) {
-                if (is_integer($param)) {
+                if (is_int($param)) {
                     $url .= $separator . $value;
                     continue;
                 }
 
                 if ($param === 'suffix') {
-                    continue;
-                }
-
-                if (is_int($param)) {
-                    $url .= $separator . $value;
                     continue;
                 }
 
@@ -1555,17 +1550,12 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         $url .= QUI\Rewrite::replaceUrlSigns($this->getAttribute('name'), true);
 
         foreach ($params as $param => $value) {
-            if (is_integer($param)) {
+            if (is_int($param)) {
                 $url .= $separator . $value;
                 continue;
             }
 
             if ($param == 'suffix') {
-                continue;
-            }
-
-            if (is_int($param)) {
-                $url .= $separator . $value;
                 continue;
             }
 
