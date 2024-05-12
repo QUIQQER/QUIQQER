@@ -9,6 +9,8 @@ namespace QUI\Groups;
 use QUI;
 use QUI\Database\Exception;
 
+use Throwable;
+
 use function array_filter;
 use function array_flip;
 use function array_merge;
@@ -776,7 +778,7 @@ class Group extends QUI\QDOM
             QUI\Utils\Doctrine::parseDbArrayToQueryBuilder($query, $params);
 
             return $query->executeQuery()->fetchAllAssociative();
-        } catch (\Exception|\Doctrine\DBAL\Exception $e) {
+        } catch (Throwable $e) {
             QUI\System\Log::addError($e->getMessage());
             return [];
         }
