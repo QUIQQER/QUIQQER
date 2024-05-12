@@ -9,3 +9,9 @@ parameters:
     bootstrapFiles:
         - tests/phpstan-bootstrap.php
     tipsOfTheDay: false
+    dynamicConstantNames:
+        - DEVELOPMENT
+        - DEBUG_MODE
+        - CMS_DIR
+        - URL_DIR
+        - QUIQQER_AJAX
