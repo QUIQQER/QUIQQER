@@ -9,9 +9,10 @@ QUI::$Ajax->registerFunction(
     static function (): array {
         $list = QUI\Workspace\Manager::getWorkspacesByUser(QUI::getUserBySession());
         $executed = !count(QUI\InstallationWizard\ProviderHandler::getNotSetUpProviderList());
+        $adminMail = QUI::conf('mail', 'admin_mail');
 
         if ($executed) {
-            if (!QUI::conf('mail', 'admin_mail') || QUI::conf('mail', 'admin_mail') === '') {
+            if (empty($adminMail)) {
                 QUI::getMessagesHandler()->addError(
                     QUI::getLocale()->get('quiqqer/core', 'message.missing.admin.mail')
                 );
