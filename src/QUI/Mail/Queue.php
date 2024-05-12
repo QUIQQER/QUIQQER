@@ -78,14 +78,13 @@ class Queue
     /**
      * Add a mail to the mail queue
      *
-     * @param Mailer|QUI\Mail $Mail
-     *
-     * @return integer - Mailqueue-ID
+     * @param Mailer $Mail
+     * @return integer - Mail queue ID
      *
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
-    public static function addToQueue(QUI\Mail|Mailer $Mail): int
+    public static function addToQueue(Mailer $Mail): int
     {
         $params = $Mail->toArray();
 
