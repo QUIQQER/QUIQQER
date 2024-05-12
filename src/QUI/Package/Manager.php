@@ -1114,7 +1114,7 @@ class Manager extends QUI\QDOM
      * @param array|string $packages - name of the package, or list of packages
      * @param boolean|string $version - (optional) version of the package default = dev-master
      *
-     * @throws QUI\Exception
+     * @throws Exception
      */
     public function install(array|string $packages, bool|string $version = false): void
     {
