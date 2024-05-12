@@ -89,7 +89,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws QUI\Exception
      * @see QUI\Interfaces\Projects\Media\File::createCache()
      */
-    public function createCache()
+    public function createCache(): bool|string
     {
         if (Media::$globalDisableMediaCacheCreation) {
             return false;

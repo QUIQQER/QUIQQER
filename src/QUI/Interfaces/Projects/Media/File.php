@@ -41,7 +41,7 @@ interface File
 
     public function getParent(): Item;
 
-    public function getParentId(): int;
+    public function getParentId(): int|bool;
 
     public function getParentIds(): array;
 
@@ -81,7 +81,7 @@ interface File
      * @param QUI\Interfaces\Users\User|null $PermissionUser
      * @throws Exception
      */
-    public function delete(QUI\Interfaces\Users\User $PermissionUser = null);
+    public function delete(QUI\Interfaces\Users\User $PermissionUser = null): void;
 
     public function destroy(QUI\Interfaces\Users\User $PermissionUser = null): void;
 
@@ -90,7 +90,7 @@ interface File
      *
      * @throws Exception
      */
-    public function save();
+    public function save(): void;
 
     /**
      * @throws Exception
@@ -102,18 +102,18 @@ interface File
      *
      * @throws Exception
      */
-    public function createCache();
+    public function createCache(): bool|string;
 
     /**
      * delete the file cache
      *
      * @throws Exception
      */
-    public function deleteCache();
+    public function deleteCache(): void;
 
-    public function moveTo(Folder $Folder);
+    public function moveTo(Folder $Folder): void;
 
-    public function copyTo(Folder $Folder);
+    public function copyTo(Folder $Folder): QUI\Interfaces\Projects\Media\File;
 
     public function getMedia(): Media;
 

@@ -137,7 +137,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
      *
      * @throws QUI\Exception
      */
-    public function restore(int $id, Folder $Folder): Item
+    public function restore(int $id, Folder $Folder): QUI\Interfaces\Projects\Media\File
     {
         $file = $this->getPath() . $id;
 

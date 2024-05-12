@@ -109,12 +109,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
-     * (non-PHPdoc)
-     *
      * @throws QUI\Exception
-     * @see QUI\Interfaces\Projects\Media\File::createCache()
      */
-    public function createCache(): bool
+    public function createCache(): bool|string
     {
         if (Media::$globalDisableMediaCacheCreation) {
             return false;
@@ -332,14 +329,12 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws QUI\Exception
      * @see QUI\Interfaces\Projects\Media\File::deleteCache()
      */
-    public function deleteCache(): bool
+    public function deleteCache(): void
     {
         $cacheDir = $this->Media->getFullCachePath();
         $cacheFile = $cacheDir . $this->getAttribute('file');
 
         FileUtils::unlink($cacheFile);
-
-        return true;
     }
 
     /**
@@ -425,8 +420,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @see QUI\Projects\Media\Item::copyTo()
      */
-    public function copyTo(QUI\Projects\Media\Folder $Folder, QUI\Interfaces\Users\User $PermissionUser = null): Item
-    {
+    public function copyTo(
+        QUI\Projects\Media\Folder $Folder,
+        QUI\Interfaces\Users\User $PermissionUser = null
+    ): QUI\Interfaces\Projects\Media\File {
         if ($Folder->childWithNameExists($this->getAttribute('name'))) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/core', 'exception.media.folder.already.exists', [
@@ -569,11 +566,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         if (isset($params['order'])) {
             $order = $params['order'];
-        }
-
-        if (is_string($params)) {
-            $order = $params;
-            $params = [];
         }
 
         switch ($order) {
@@ -1201,7 +1193,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *                           self::FILE_OVERWRITE_DESTROY
      * @param User|null $EditUser
      *
-     * @return Item|Image|File
+     * @return QUI\Interfaces\Projects\Media\File
      *
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
@@ -1211,7 +1203,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         string $file,
         int $options = Folder::FILE_OVERWRITE_NONE,
         ?QUI\Interfaces\Users\User $EditUser = null
-    ): Item|Image|File {
+    ): QUI\Interfaces\Projects\Media\File {
         if (empty($EditUser)) {
             $EditUser = QUI::getUserBySession();
         }
@@ -1440,10 +1432,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * @param string $path - Path to the dir
      * @param QUI\Projects\Media\Folder|boolean $Folder - (optional) Uploaded Folder
      *
-     * @return QUI\Projects\Media\Item
+     * @return Folder
      * @throws QUI\Exception
      */
-    protected function uploadFolder(string $path, bool|Folder $Folder = false): Item
+    protected function uploadFolder(string $path, bool|Folder $Folder = false): Folder
     {
         $files = FileUtils::readDir($path);
 

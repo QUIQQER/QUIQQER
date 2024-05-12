@@ -26,7 +26,7 @@ class Video extends Item implements QUI\Interfaces\Projects\Media\File
         return $mediaDir . $file;
     }
 
-    public function deleteCache()
+    public function deleteCache(): void
     {
         // cache doesn't exist for videos
     }

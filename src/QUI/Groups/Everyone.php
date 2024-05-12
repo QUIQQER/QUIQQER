@@ -112,7 +112,7 @@ class Everyone extends QUI\Groups\Group
 
     public function getUUID(): string
     {
-        return Manager::EVERYONE_ID;
+        return (string)Manager::EVERYONE_ID;
     }
 
     /**

@@ -132,7 +132,7 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
      *
      * @see QUI\Interfaces\Projects\Media\File::createCache()
      */
-    public function createCache()
+    public function createCache(): bool|string
     {
         if (Media::$globalDisableMediaCacheCreation) {
             return false;
@@ -144,12 +144,12 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
     /**
      * Create a cache file with the new width and height
      *
-     * @param integer|boolean $width - (optional)
-     * @param integer|boolean $height - (optional)
+     * @param boolean|integer $width - (optional)
+     * @param boolean|integer $height - (optional)
      *
      * @return string - URL to the cache file
      */
-    public function createSizeCache($width = false, $height = false): string
+    public function createSizeCache(bool|int $width = false, bool|int $height = false): string
     {
         return $this->image;
     }
@@ -270,7 +270,7 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
     /**
      * placeholder - do nothing
      */
-    public function save()
+    public function save(): void
     {
         // do nothing
     }
@@ -288,7 +288,7 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
     /**
      * placeholder - do nothing
      */
-    public function deleteCache()
+    public function deleteCache(): void
     {
         // do nothing
     }
@@ -302,18 +302,20 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
 
     /**
      * placeholder - do nothing
+     * @throws Exception
      */
-    public function moveTo(QUI\Projects\Media\Folder $Folder)
+    public function moveTo(QUI\Projects\Media\Folder $Folder): void
     {
-        // do nothing
+        throw new QUI\Exception('External images can not be moved');
     }
 
     /**
      * placeholder - do nothing
+     * @throws Exception
      */
-    public function copyTo(QUI\Projects\Media\Folder $Folder)
+    public function copyTo(QUI\Projects\Media\Folder $Folder): QUI\Interfaces\Projects\Media\File
     {
-        // do nothing
+        throw new QUI\Exception('External images can not be copied');
     }
 
     /**

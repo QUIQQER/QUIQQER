@@ -104,7 +104,7 @@ class Queue
 
         QUI::getDataBase()->insert(self::table(), $params);
 
-        $newMailId = QUI::getDataBase()->getPDO()->lastInsertId('id');
+        $newMailId = (int)QUI::getDataBase()->getPDO()->lastInsertId('id');
 
         // attachments
         $attachmentFiles = [];
@@ -129,12 +129,8 @@ class Queue
             if (!empty($attachmentFiles)) {
                 QUI::getDataBase()->update(
                     self::table(),
-                    [
-                        'attachements' => json_encode($attachmentFiles)
-                    ],
-                    [
-                        'id' => $newMailId
-                    ]
+                    ['attachements' => json_encode($attachmentFiles)],
+                    ['id' => $newMailId]
                 );
             }
         }

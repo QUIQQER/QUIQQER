@@ -581,13 +581,19 @@ abstract class Item extends QUI\QDOM
      */
     public function getParent(): Folder
     {
-        return $this->Media->get($this->getParentId());
+        $Item = $this->Media->get($this->getParentId());
+
+        if ($Item instanceof Folder) {
+            return $Item;
+        }
+
+        throw new QUI\Exception('Something went wrong. Item is no folder');
     }
 
     /**
      * Return the parent id
      */
-    public function getParentId(): int
+    public function getParentId(): int|bool
     {
         if ($this->parent_id) {
             return $this->parent_id;
@@ -839,8 +845,10 @@ abstract class Item extends QUI\QDOM
      *
      * @throws Exception
      */
-    public function moveTo(Folder $Folder, QUI\Interfaces\Users\User $PermissionUser = null): void
-    {
+    public function moveTo(
+        Folder $Folder,
+        QUI\Interfaces\Users\User $PermissionUser = null
+    ): void {
         $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
 
@@ -915,13 +923,14 @@ abstract class Item extends QUI\QDOM
      *
      * @param Folder $Folder
      * @param QUI\Interfaces\Users\User|null $PermissionUser
-     *
-     * @return Item - The new file
+     * @return QUI\Interfaces\Projects\Media\File - The new file
      *
      * @throws Exception
      */
-    public function copyTo(Folder $Folder, QUI\Interfaces\Users\User $PermissionUser = null): Item
-    {
+    public function copyTo(
+        Folder $Folder,
+        QUI\Interfaces\Users\User $PermissionUser = null
+    ): QUI\Interfaces\Projects\Media\File {
         $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
         $File = $Folder->uploadFile($this->getFullPath());

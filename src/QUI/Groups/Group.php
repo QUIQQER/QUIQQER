@@ -786,7 +786,7 @@ class Group extends QUI\QDOM
     /**
      * @throws QUI\Exception
      */
-    public function getUserByName(string $username): QUI\Users\User
+    public function getUserByName(string $username): QUI\Interfaces\Users\User
     {
         $result = QUI::getDataBase()->fetch([
             'select' => 'id,uuid',
