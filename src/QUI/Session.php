@@ -234,13 +234,9 @@ class Session
         if ($sessionType === 'redis' && class_exists('RedisArray')) {
             $redisServer = QUI::conf('session_redis');
             $redisCluster = QUI::conf('session_redis_cluster');
-
             $RedisCluster = null;
 
-            if (
-                !empty($redisCluster['cluster'])
-                && class_exists('RedisArray')
-            ) {
+            if (!empty($redisCluster['cluster'])) {
                 $cluster = explode(',', $redisCluster['cluster']);
                 $timeout = null;
                 $readTimeout = null;
