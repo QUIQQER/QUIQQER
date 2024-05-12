@@ -223,13 +223,6 @@ class MyDB implements \Stringable
         ]);
     }
 
-    /**
-     * Insert
-     *
-     * @param string $table
-     * @param array $fieldValue
-     * @return string
-     */
     public function insertData($table, $fieldValue)
     {
         return $this->addData($table, $fieldValue);
@@ -253,10 +246,6 @@ class MyDB implements \Stringable
 
     /**
      * Insert Query mit Rückgabe (lastInsertId)
-     *
-     * @param array $params
-     *
-     * @return integer
      */
     public function insert($params)
     {
