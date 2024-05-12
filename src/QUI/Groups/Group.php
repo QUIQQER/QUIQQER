@@ -8,7 +8,6 @@ namespace QUI\Groups;
 
 use QUI;
 use QUI\Database\Exception;
-
 use Throwable;
 
 use function array_filter;
