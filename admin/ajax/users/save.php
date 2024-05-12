@@ -20,7 +20,7 @@ QUI::$Ajax->registerFunction(
         if (method_exists($User, 'getListOfExtraAttributes')) {
             $extraAttributes = $User->getListOfExtraAttributes();
         }
-        
+
         $noAutoSave = array_filter($extraAttributes, static function (array $attribute): bool {
             if (!isset($attribute['no-auto-save'])) {
                 return false;
