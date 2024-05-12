@@ -13,7 +13,6 @@ use PDOException;
 use QUI;
 use QUI\Groups\Group;
 use QUI\Permissions\Permission;
-use QUI\Projects\Site\Edit;
 use QUI\Projects\Site\PermissionDenied;
 use QUI\Users\User;
 use QUI\Utils\Text\XML;
@@ -1098,7 +1097,7 @@ class Project implements \Stringable
         }
 
         $sql['order'] = $params['order'];
-        
+
         if (isset($params['debug'])) {
             $sql['debug'] = true;
 
