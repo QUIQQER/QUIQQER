@@ -9,9 +9,11 @@ namespace QUI\Interfaces\Users;
 use QUI\Countries\Country;
 use QUI\Exception;
 use QUI\Groups\Group;
+use QUI\Interfaces\Users\User as QUIUserInterface;
 use QUI\Locale;
 use QUI\Projects\Media\Image;
 use QUI\Users\Address;
+use QUI\Users\AuthenticatorInterface;
 
 /**
  * The user interface
@@ -37,7 +39,7 @@ interface User
      *
      * @param string $code - activation code
      */
-    public function activate(string $code, ?User $PermissionUser = null);
+    public function activate(string $code = '', ?User $PermissionUser = null);
 
     public function deactivate(?User $PermissionUser = null);
 
@@ -108,8 +110,6 @@ interface User
      */
     public function getPermission(string $right, callable|bool|string $ruleset = false): mixed;
 
-    public function getAuthenticators(): array;
-
     public function setGroups(array|string $groups);
 
     /**
@@ -117,18 +117,13 @@ interface User
      */
     public function getGroups(bool $array = true): array;
 
-    /**
-     * @throws Exception
-     */
-    public function getAddress(int|string $id): Address;
-
-    public function getStandardAddress(): null|Address;
-
     public function getCountry(): Country|bool;
 
     public function getAvatar(): Image|null;
 
     public function setPassword(string $new, ?User $PermissionUser = null);
+
+    public function changePassword(string $newPassword, string $oldPassword, QUIUserInterface $ParentUser = null): void;
 
     /**
      * Checks the password if it's the user from
@@ -167,5 +162,51 @@ interface User
     public function getAttribute(string $name): mixed;
 
     public function getAttributes(): array;
+    //endregion
+
+    //region authenticator
+
+    /**
+     * @param string $authenticator
+     * @return AuthenticatorInterface
+     *
+     * @throws \QUI\Users\Exception
+     */
+    public function getAuthenticator(string $authenticator): AuthenticatorInterface;
+
+    public function getAuthenticators(): array;
+
+    /**
+     * @throws \QUI\Users\Exception
+     */
+    public function disableAuthenticator(string $authenticator, QUIUserInterface $ParentUser = null): void;
+
+    /**
+     * @throws \QUI\Users\Exception
+     */
+    public function enableAuthenticator(string $authenticator, QUIUserInterface $ParentUser = null): void;
+
+    public function hasAuthenticator(string $authenticator): bool;
+    //endregion
+
+    //region addresses
+
+    /**
+     * @param array $params
+     * @param User|null $ParentUser
+     * @return ?Address
+     *
+     * @throws Exception
+     */
+    public function addAddress(array $params = [], QUIUserInterface $ParentUser = null): ?Address;
+
+    /**
+     * @throws Exception
+     */
+    public function getAddress(int|string $id): Address;
+
+    public function getStandardAddress(): null|Address;
+
+    public function getAddressList(): array;
     //endregion
 }

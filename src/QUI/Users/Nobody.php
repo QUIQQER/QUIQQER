@@ -12,6 +12,7 @@ use QUI\ERP\Currency\Handler as Currencies;
 use QUI\Exception;
 use QUI\Groups\Group;
 use QUI\Interfaces\Users\User;
+use QUI\Interfaces\Users\User as QUIUserInterface;
 use QUI\Locale;
 use QUI\Projects\Media\Image;
 
@@ -129,7 +130,7 @@ class Nobody extends QUI\QDOM implements User
      * @param User|null $PermissionUser
      * @return bool
      */
-    public function activate(string $code, User $PermissionUser = null): bool
+    public function activate(string $code = '', User $PermissionUser = null): bool
     {
         return false;
     }
@@ -161,7 +162,7 @@ class Nobody extends QUI\QDOM implements User
      *
      * @throws Exception
      */
-    public function addAddress(array $params): never
+    public function addAddress(array $params = [], User $ParentUser = null): ?Address
     {
         throw new Exception(
             QUI::getLocale()->get(
@@ -377,11 +378,6 @@ class Nobody extends QUI\QDOM implements User
         return 1;
     }
 
-    public function getAuthenticators(): array
-    {
-        return [];
-    }
-
     public function setGroups(array|string $groups): bool
     {
         return false;
@@ -435,6 +431,10 @@ class Nobody extends QUI\QDOM implements User
         return false;
     }
 
+    public function changePassword(string $newPassword, string $oldPassword, QUIUserInterface $ParentUser = null): void
+    {
+    }
+
     /**
      * @param string $pass - Password
      * @param boolean $encrypted - is the given password already encrypted?
@@ -445,4 +445,41 @@ class Nobody extends QUI\QDOM implements User
     {
         return false;
     }
+
+    //region authenticator
+    public function hasAuthenticator(string $authenticator): bool
+    {
+        return false;
+    }
+
+    public function getAuthenticator(string $authenticator): AuthenticatorInterface
+    {
+        throw new QUI\Users\Exception(
+            ['quiqqer/core', 'exception.authenticator.not.found'],
+            404
+        );
+    }
+
+    public function getAuthenticators(): array
+    {
+        return [];
+    }
+
+    public function enableAuthenticator(string $authenticator, QUIUserInterface $ParentUser = null): void
+    {
+        throw new QUI\Users\Exception(
+            ['quiqqer/core', 'exception.authenticator.not.found'],
+            404
+        );
+    }
+
+    public function disableAuthenticator(string $authenticator, QUIUserInterface $ParentUser = null): void
+    {
+        throw new QUI\Users\Exception(
+            ['quiqqer/core', 'exception.authenticator.not.found'],
+            404
+        );
+    }
+
+    //endregion authenticator
 }

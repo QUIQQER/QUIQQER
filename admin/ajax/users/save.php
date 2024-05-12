@@ -15,7 +15,13 @@ QUI::$Ajax->registerFunction(
         $User = QUI::getUsers()->get($uid);
         $attributes = json_decode($attributes, true);
         $language = $User->getAttribute('lang');
-        $noAutoSave = array_filter($User->getListOfExtraAttributes(), static function (array $attribute): bool {
+        $extraAttributes = [];
+
+        if (method_exists($User, 'getListOfExtraAttributes')) {
+            $extraAttributes = $User->getListOfExtraAttributes();
+        }
+        
+        $noAutoSave = array_filter($extraAttributes, static function (array $attribute): bool {
             if (!isset($attribute['no-auto-save'])) {
                 return false;
             }

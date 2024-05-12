@@ -1266,13 +1266,16 @@ class User implements QUIUserInterface
     /**
      * Disables an authenticator from the user
      *
-     * @param $authenticator
+     * @param string $authenticator
      * @param QUIUserInterface|null $ParentUser - optional, the saving user, default = session user
      *
+     * @throws Exception
+     * @throws ExceptionStack
      * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
      * @throws Exception
      */
-    public function disableAuthenticator($authenticator, QUIUserInterface $ParentUser = null): void
+    public function disableAuthenticator(string $authenticator, QUIUserInterface $ParentUser = null): void
     {
         $available = Auth\Handler::getInstance()->getAvailableAuthenticators();
         $available = array_flip($available);
