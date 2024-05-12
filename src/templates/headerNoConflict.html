@@ -100,7 +100,7 @@
 <script id="quiqqer-user-defined">
     {assign var=userCountry value=$User->getCountry()}
     var QUIQQER_USER = {
-        id   : '{if $User->getUUID()}{$User->getUUID()}{else}0{/if}',
+        id   : '{$User->getUUID()}',
         name : '{$User->getName()}',
         lang : '{$User->getLang()}',
         country: {if $userCountry}'{$userCountry->getCode()}'{else}false{/if}
