@@ -1896,11 +1896,7 @@ class Manager extends QUI\QDOM
             $Composer->mute();
         }
 
-        if (is_string($package) && empty($package)) {
-            $package = false;
-        }
-
-        if (!is_string($package) && !is_bool($package)) {
+        if (!(is_string($package) && !empty($package)) && !is_bool($package)) {
             $package = false;
         }
 
@@ -2264,7 +2260,7 @@ class Manager extends QUI\QDOM
         $Type = $Types->item(0);
         $data = [];
 
-        if (!($Types instanceof DOMElement)) {
+        if (!($Type instanceof DOMElement)) {
             return false;
         }
 

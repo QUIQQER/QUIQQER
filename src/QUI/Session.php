@@ -59,19 +59,9 @@ class Session
 
     protected array $vars = [];
 
-    /**
-     * Session handler
-     *
-     * @var \Symfony\Component\HttpFoundation\Session\Session
-     */
-    private mixed $Session = false;
+    private mixed $Session = null;
 
-    /**
-     * Storage handler
-     *
-     * @var PdoSessionHandler
-     */
-    private mixed $Storage = false;
+    private mixed $Storage = null;
 
     /**
      * Database table
@@ -247,7 +237,10 @@ class Session
 
             $RedisCluster = null;
 
-            if (!empty($redisCluster) && !empty($redisCluster['cluster']) && class_exists('RedisArray')) {
+            if (
+                !empty($redisCluster['cluster'])
+                && class_exists('RedisArray')
+            ) {
                 $cluster = explode(',', $redisCluster['cluster']);
                 $timeout = null;
                 $readTimeout = null;

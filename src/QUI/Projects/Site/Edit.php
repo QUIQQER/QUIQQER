@@ -966,10 +966,8 @@ class Edit extends Site
 
     /**
      * is the page currently edited from another user than me?
-     *
-     * @return bool|integer
      */
-    public function isLockedFromOther()
+    public function isLockedFromOther(): bool|int|string
     {
         $uid = $this->isLocked();
 
@@ -1000,19 +998,17 @@ class Edit extends Site
             return false;
         }
 
-        if (is_array($uid) && isset($uid['id'])) {
+        if (isset($uid['id'])) {
             return $uid['id'];
         }
 
-        return (int)$uid;
+        return $uid;
     }
 
     /**
      * is the page currently edited
-     *
-     * @return bool|string
      */
-    public function isLocked()
+    public function isLocked(): bool|string
     {
         try {
             return Locker::isLocked(
@@ -1031,7 +1027,7 @@ class Edit extends Site
      *
      * @return string
      */
-    protected function getLockKey()
+    protected function getLockKey(): string
     {
         return $this->getProject()->getName() . '_' .
             $this->getProject()->getLang() . '_' .
@@ -1041,7 +1037,7 @@ class Edit extends Site
     /**
      * Demarkiert die Seite, die Seite wird nicht mehr bearbeitet
      */
-    protected function unlock()
+    protected function unlock(): void
     {
         try {
             Locker::unlock(
@@ -1062,7 +1058,7 @@ class Edit extends Site
      * @throws \QUI\Exception
      * @deprecated use \QUI\Projects\Site\Utils::checkName
      */
-    public static function checkName($name)
+    public static function checkName(string $name): bool
     {
         return QUI\Projects\Site\Utils::checkName($name);
     }

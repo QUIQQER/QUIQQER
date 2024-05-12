@@ -950,7 +950,7 @@ class Group extends QUI\QDOM
             }
         }
 
-        if (!$newId) {
+        if ($create === false) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/core',

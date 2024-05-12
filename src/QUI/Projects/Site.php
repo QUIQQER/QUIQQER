@@ -1024,7 +1024,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         $DataBaseXML = QUI\Utils\Text\XML::getDomFromXml($databaseXml);
         $projects = $DataBaseXML->getElementsByTagName('projects');
 
-        if (!$projects || !$projects->length) {
+        if (!$projects->length) {
             return;
         }
 
@@ -1456,10 +1456,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             }
 
             if (!is_string($value) && !is_numeric($value) && !is_bool($value)) {
-                continue;
-            }
-
-            if (!is_string($param) && !is_numeric($param) && !is_bool($param)) {
                 continue;
             }
 

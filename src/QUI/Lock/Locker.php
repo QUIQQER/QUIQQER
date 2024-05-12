@@ -6,6 +6,7 @@
 
 namespace QUI\Lock;
 
+use DateTime;
 use QUI;
 use QUI\Package\Package;
 use Stash\Interfaces\ItemInterface;
@@ -242,7 +243,7 @@ class Locker
         $Item = self::getStash(self::getLockKey($Package, $key));
         $Expire = $Item->getExpiration();
 
-        if (!$Expire) {
+        if (!($Expire instanceof DateTime)) {
             return 0;
         }
 

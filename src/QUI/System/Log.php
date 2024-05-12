@@ -9,6 +9,8 @@ namespace QUI\System;
 use Exception;
 use QUI;
 
+use function defined;
+
 use const DEBUG_MODE;
 
 /**
@@ -188,7 +190,10 @@ class Log
         bool|string $filename = false,
         bool $force = false
     ): void {
-        if (!defined('DEBUG_MODE') || DEBUG_MODE === false) {
+        if (
+            !defined('DEBUG_MODE')
+            || defined('DEBUG_MODE') && DEBUG_MODE === false
+        ) {
             return;
         }
 

@@ -200,7 +200,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
             $copyBricks = $this->readInput();
         }
 
-        if ($copyBricks || mb_strtolower($copyBricks) === 'y') {
+        if ($copyBricks && mb_strtolower($copyBricks) !== 'n') {
             $this->copyBricks = true;
             $this->sourceBrickAreas = $this->BricksManager->getAreasByProject($SourceProject);
 

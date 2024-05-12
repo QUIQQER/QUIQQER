@@ -224,7 +224,7 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      *
      * An argument can look like: --argument, argument, -shortArgument
      */
-    public function getArgument(string $name): bool|string
+    public function getArgument(string $name): mixed
     {
         if (isset($this->params[$name])) {
             return $this->params[$name];

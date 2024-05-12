@@ -216,7 +216,7 @@ class QUI
             /**
              * DEBUG_MODE - setting if debug mode is enabled or not
              */
-            define("DEBUG_MODE", $config['globals']['debug_mode']);
+            define("DEBUG_MODE", (bool)$config['globals']['debug_mode']);
         }
 
         if (!defined('DEVELOPMENT')) {

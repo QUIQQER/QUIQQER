@@ -827,7 +827,7 @@ class Rewrite
      *
      * @throws QUI\Exception
      */
-    public function getProject(): Project
+    public function getProject(): ?Project
     {
         if ($this->project) {
             return $this->project;
@@ -1182,13 +1182,11 @@ class Rewrite
      */
     public function getSite(): ?QUI\Interfaces\Projects\Site
     {
-        if (isset($this->site) && is_object($this->site)) {
+        if ($this->site !== null) {
             return $this->site;
         }
 
-        $Project = $this->getProject();
-
-        return $Project->firstChild();
+        return $this->getProject()->firstChild();
     }
 
     /**
