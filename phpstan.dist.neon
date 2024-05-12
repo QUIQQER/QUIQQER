@@ -15,3 +15,5 @@ parameters:
         - CMS_DIR
         - URL_DIR
         - QUIQQER_AJAX
+        - ERROR_SEND
+        - ERROR_MAIL
