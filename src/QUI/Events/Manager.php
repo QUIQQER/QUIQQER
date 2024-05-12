@@ -81,7 +81,7 @@ class Manager implements QUI\Interfaces\Events
                     trim($params['event']),
                     trim($params['callback']),
                     $params['priority'] ?? 0,
-                    trim($params['package']) ?? ''
+                    trim($params['package'] ?? '')
                 );
             }
 
