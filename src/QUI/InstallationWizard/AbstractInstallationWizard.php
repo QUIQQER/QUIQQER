@@ -3,13 +3,11 @@
 namespace QUI\InstallationWizard;
 
 use QUI;
-
 use QUI\Locale;
 
 use function array_map;
 use function flushIt;
 use function function_exists;
-use function get_class;
 use function method_exists;
 
 /**
