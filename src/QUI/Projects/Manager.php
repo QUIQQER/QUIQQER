@@ -875,7 +875,9 @@ class Manager
             $languages[] = $lang;
         }
 
-        $languages = array_filter($languages, static fn($language): bool => strlen($language) === 2);
+        $languages = array_filter($languages, static function ($language): bool {
+            return strlen($language) === 2;
+        });
 
         $languages = array_unique($languages);
 

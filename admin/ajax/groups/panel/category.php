@@ -12,7 +12,9 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_groups_panel_category',
-    static fn($gid, $plugin, $tab): string => QUI\Groups\Utils::getTab($gid, $plugin, $tab),
+    static function ($gid, $plugin, $tab): string {
+        return QUI\Groups\Utils::getTab($gid, $plugin, $tab);
+    },
     ['gid', 'plugin', 'tab'],
     'Permission::checkSU'
 );

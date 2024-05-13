@@ -9,7 +9,9 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_list',
-    static fn(): array => QUI::getPackageManager()->getInstalled(),
+    static function (): array {
+        return QUI::getPackageManager()->getInstalled();
+    },
     false,
     [
         'Permission::checkAdminUser',

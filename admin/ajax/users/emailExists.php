@@ -9,7 +9,9 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_emailExists',
-    static fn($email): bool => QUI::getUsers()->emailExists($email),
+    static function ($email): bool {
+        return QUI::getUsers()->emailExists($email);
+    },
     ['email'],
     'Permission::checkUser'
 );

@@ -8,7 +8,9 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_get_layouts',
-    static fn($project): array => QUI\Projects\Manager::decode($project)->getLayouts(),
+    static function ($project): array {
+        return QUI\Projects\Manager::decode($project)->getLayouts();
+    },
     ['project'],
     'Permission::checkAdminUser'
 );

@@ -17,9 +17,13 @@ QUI::$Ajax->registerFunction(
             $Provider->onListInit($list);
         }
 
-        usort($list, static fn($a, $b): int => $a->getPriority() > $b->getPriority() ? 1 : 0);
+        usort($list, static function ($a, $b): int {
+            return $a->getPriority() > $b->getPriority() ? 1 : 0;
+        });
 
-        return array_map(static fn($Provider) => $Provider->toArray(), $list);
+        return array_map(static function ($Provider) {
+            return $Provider->toArray();
+        }, $list);
     },
     false,
     ''

@@ -8,7 +8,9 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_health_system',
-    static fn(): array => QUI\System\Checks\Health::systemCheck(),
+    static function (): array {
+        return QUI\System\Checks\Health::systemCheck();
+    },
     false,
     'Permission::checkSU'
 );

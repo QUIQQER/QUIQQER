@@ -8,7 +8,9 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_getAvailableLanguages',
-    static fn(): array => QUI::availableLanguages(),
+    static function (): array {
+        return QUI::availableLanguages();
+    },
     false,
     'Permission::checkUser'
 );

@@ -1360,7 +1360,9 @@ class Rewrite
         }
 
         // change children - quiqqer/core#334
-        $currentPathsIds = array_map(static fn($entry) => $entry['id'], $currentPaths);
+        $currentPathsIds = array_map(static function ($entry) {
+            return $entry['id'];
+        }, $currentPaths);
 
         $childrenIds = array_flip($Site->getChildrenIdsRecursive());
 

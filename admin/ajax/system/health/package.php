@@ -8,7 +8,9 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_health_package',
-    static fn($pkg): array => QUI\System\Checks\Health::packageCheck($pkg),
+    static function ($pkg): array {
+        return QUI\System\Checks\Health::packageCheck($pkg);
+    },
     ['pkg'],
     'Permission::checkSU'
 );

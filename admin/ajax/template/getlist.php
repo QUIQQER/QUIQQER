@@ -8,9 +8,11 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_template_getlist',
-    static fn(): array => QUI::getPackageManager()->searchInstalledPackages([
-        'type' => "quiqqer-template"
-    ]),
+    static function (): array {
+        return QUI::getPackageManager()->searchInstalledPackages([
+            'type' => "quiqqer-template"
+        ]);
+    },
     false,
     'Permission::checkAdminUser'
 );

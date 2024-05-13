@@ -67,7 +67,9 @@ class Setup extends QUI\System\Console\Tool
         ]);
 
         $data = explode('<br />', $data);
-        $data = array_map(static fn($entry): string => trim($entry), $data);
+        $data = array_map(static function ($entry): string {
+            return trim($entry);
+        }, $data);
 
         $data = implode("\n", $data);
 

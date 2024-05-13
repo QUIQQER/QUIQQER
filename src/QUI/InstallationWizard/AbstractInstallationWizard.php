@@ -34,7 +34,7 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
 
     public function toArray($Locale = null): array
     {
-        $steps = array_map(function ($Step) {
+        $steps = array_map(static function ($Step) {
             if (method_exists($Step, 'toArray')) {
                 return $Step->toArray();
             }

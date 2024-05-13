@@ -8,7 +8,9 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_upload_getNotInstalledPackages',
-    static fn(): array => QUI\Package\LocalServer::getInstance()->getNotInstalledPackage(),
+    static function (): array {
+        return QUI\Package\LocalServer::getInstance()->getNotInstalledPackage();
+    },
     false,
     [
         'Permission::checkAdminUser',

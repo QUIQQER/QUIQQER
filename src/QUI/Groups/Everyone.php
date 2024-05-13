@@ -78,7 +78,9 @@ class Everyone extends QUI\Groups\Group
         if ($this->getAttribute('assigned_toolbar')) {
             $toolbars = explode(',', $this->getAttribute('assigned_toolbar'));
 
-            $assignedToolbars = array_filter($toolbars, static fn($toolbar): bool => QUI\Editor\Manager::existsToolbar($toolbar));
+            $assignedToolbars = array_filter($toolbars, static function ($toolbar): bool {
+                return QUI\Editor\Manager::existsToolbar($toolbar);
+            });
 
             $assignedToolbars = implode(',', $assignedToolbars);
         }

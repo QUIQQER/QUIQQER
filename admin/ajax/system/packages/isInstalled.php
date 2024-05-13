@@ -9,6 +9,8 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_isInstalled',
-    static fn($packageName): bool => QUI::getPackageManager()->isInstalled($packageName),
+    static function ($packageName): bool {
+        return QUI::getPackageManager()->isInstalled($packageName);
+    },
     ['packageName']
 );

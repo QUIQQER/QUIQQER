@@ -155,7 +155,9 @@ class Package extends QUI\QDOM
         }
 
         $provider = $packageData['provider'];
-        $provider = array_filter($provider, static fn($key): bool => $key === $providerName, ARRAY_FILTER_USE_KEY);
+        $provider = array_filter($provider, static function ($key) use ($providerName): bool {
+            return $key === $providerName;
+        }, ARRAY_FILTER_USE_KEY);
 
         if (!isset($provider[$providerName])) {
             return [];
@@ -820,7 +822,9 @@ class Package extends QUI\QDOM
                 );
             }
 
-            $groups = array_map(static fn($data) => $data['group'], $groups);
+            $groups = array_map(static function ($data) {
+                return $data['group'];
+            }, $groups);
 
             $groups = array_unique($groups);
         } catch (Exception $Exception) {

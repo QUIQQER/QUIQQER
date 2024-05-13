@@ -8,7 +8,9 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_permissions_list',
-    static fn(): array => QUI::getPermissionManager()->getPermissionList(),
+    static function (): array {
+        return QUI::getPermissionManager()->getPermissionList();
+    },
     false,
     [
         'Permission::checkAdminUser',

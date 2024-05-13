@@ -35,7 +35,9 @@ class Log
 
     protected static function parseAddresses($addresses): array
     {
-        return array_map(static fn($entry) => $entry[0], $addresses);
+        return array_map(static function ($entry) {
+            return $entry[0];
+        }, $addresses);
     }
 
     public static function write($message): void

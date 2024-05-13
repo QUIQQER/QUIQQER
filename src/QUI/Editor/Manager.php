@@ -230,7 +230,9 @@ class Manager
 
     public static function search($search): array
     {
-        return array_filter(self::getToolbars(), static fn($toolbar): bool => str_contains($toolbar, $search));
+        return array_filter(self::getToolbars(), static function ($toolbar) use ($search): bool {
+            return str_contains($toolbar, $search);
+        });
     }
 
     /**
