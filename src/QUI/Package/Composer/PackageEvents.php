@@ -6,17 +6,13 @@
 
 namespace QUI\Package\Composer;
 
-use Composer\DependencyResolver\Operation\InstallOperation;
-use Composer\DependencyResolver\Operation\UninstallOperation;
-use Composer\DependencyResolver\Operation\UpdateOperation;
 use Composer\Installer\PackageEvent;
-use Exception;
-use QUI;
 
-use function define;
-use function defined;
+use function dirname;
 use function method_exists;
-use function php_sapi_name;
+use function shell_exec;
+
+use const PHP_BINARY;
 
 class PackageEvents
 {
@@ -32,8 +28,6 @@ class PackageEvents
      */
     public static function postPackageInstall(PackageEvent $Event): void
     {
-        self::loadQUIQQER($Event);
-
         $Operation = $Event->getOperation();
 
         if (!method_exists($Operation, 'getPackage')) {
@@ -43,55 +37,10 @@ class PackageEvents
         $TargetPackage = $Operation->getPackage();
         $packageName = $TargetPackage->getName();
 
-        try {
-            $Package = QUI::getPackage($packageName);
-            $Package->install();
+        $phpPath = PHP_BINARY;
+        $dir = dirname(__FILE__);
 
-            CommandEvents::registerPackageChange($packageName);
-        } catch (Exception $Exception) {
-            QUI\System\Log::write(
-                $Exception->getMessage(),
-                $Exception->getCode(),
-                [
-                    'method' => 'QUI\Package\Composer\PackageEvents::postPackageInstall',
-                    'package' => $packageName
-                ]
-            );
-        }
-
-        QUI\Cache\Manager::clearPackagesCache();
-        QUI\Cache\Manager::clearSettingsCache();
-        QUI\Cache\Manager::clearCompleteQuiqqerCache();
-    }
-
-    protected static function loadQUIQQER(PackageEvent $Event): void
-    {
-        $Composer = $Event->getComposer();
-        $config = $Composer->getConfig()->all();
-
-        if (!defined('CMS_DIR')) {
-            define('CMS_DIR', $config['config']['quiqqer-dir']);
-        }
-
-        if (!defined('ETC_DIR')) {
-            define('ETC_DIR', $config['config']['quiqqer-dir'] . 'etc/');
-        }
-
-        if (php_sapi_name() === 'cli') {
-            if (!defined('SYSTEM_INTERN')) {
-                define('SYSTEM_INTERN', true);
-            }
-
-            QUI\Permissions\Permission::setUser(
-                QUI::getUsers()->getSystemUser()
-            );
-        }
-
-        try {
-            QUI::load();
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
-        }
+        shell_exec("$phpPath $dir/postPackageInstall.php $packageName");
     }
 
     /**
@@ -106,45 +55,6 @@ class PackageEvents
      */
     public static function postPackageUpdate(PackageEvent $Event): void
     {
-        self::loadQUIQQER($Event);
-
-        $Operation = $Event->getOperation();
-
-        if (!method_exists($Operation, 'getTargetPackage')) {
-            return;
-        }
-
-        $TargetPackage = $Operation->getTargetPackage();
-        $packageName = $TargetPackage->getName();
-
-        try {
-            $Package = QUI::getPackage($packageName);
-            $Package->onUpdate();
-
-            CommandEvents::registerPackageChange($packageName);
-        } catch (Exception $Exception) {
-            QUI\System\Log::write(
-                $Exception->getMessage(),
-                $Exception->getCode(),
-                [
-                    'method' => 'QUI\Package\Composer\PackageEvents::postPackageUpdate',
-                    'package' => $packageName
-                ]
-            );
-        }
-
-        QUI\Cache\Manager::clearPackagesCache();
-        QUI\Cache\Manager::clearSettingsCache();
-        QUI\Cache\Manager::clearCompleteQuiqqerCache();
-    }
-
-    /**
-     * occurs before a package is uninstalled.
-     */
-    public static function prePackageUninstall(PackageEvent $Event): void
-    {
-        self::loadQUIQQER($Event);
-
         $Operation = $Event->getOperation();
 
         if (!method_exists($Operation, 'getPackage')) {
@@ -154,23 +64,32 @@ class PackageEvents
         $TargetPackage = $Operation->getPackage();
         $packageName = $TargetPackage->getName();
 
-        try {
-            $Package = QUI::getPackage($packageName);
-            $Package->uninstall();
-        } catch (Exception $Exception) {
-            QUI\System\Log::write(
-                $Exception->getMessage(),
-                $Exception->getCode(),
-                [
-                    'method' => 'QUI\Package\Composer\PackageEvents::postPackageUninstall',
-                    'package' => $packageName
-                ]
-            );
+        // script
+        $phpPath = PHP_BINARY;
+        $dir = dirname(__FILE__);
+
+        shell_exec("$phpPath $dir/postPackageUpdate.php $packageName");
+    }
+
+    /**
+     * occurs before a package is uninstalled.
+     */
+    public static function prePackageUninstall(PackageEvent $Event): void
+    {
+        $Operation = $Event->getOperation();
+
+        if (!method_exists($Operation, 'getPackage')) {
+            return;
         }
 
-        QUI\Cache\Manager::clearPackagesCache();
-        QUI\Cache\Manager::clearSettingsCache();
-        QUI\Cache\Manager::clearCompleteQuiqqerCache();
+        $TargetPackage = $Operation->getPackage();
+        $packageName = $TargetPackage->getName();
+
+        // script
+        $phpPath = PHP_BINARY;
+        $dir = dirname(__FILE__);
+
+        shell_exec("$phpPath $dir/prePackageUninstall.php $packageName");
     }
 
     /**
@@ -178,8 +97,19 @@ class PackageEvents
      */
     public static function postPackageUninstall(PackageEvent $Event): void
     {
-        QUI\Cache\Manager::clearPackagesCache();
-        QUI\Cache\Manager::clearSettingsCache();
-        QUI\Cache\Manager::clearCompleteQuiqqerCache();
+        $Operation = $Event->getOperation();
+
+        if (!method_exists($Operation, 'getPackage')) {
+            return;
+        }
+
+        $TargetPackage = $Operation->getPackage();
+        $packageName = $TargetPackage->getName();
+
+        // script
+        $phpPath = PHP_BINARY;
+        $dir = dirname(__FILE__);
+
+        shell_exec("$phpPath $dir/postPackageUninstall.php $packageName");
     }
 }
