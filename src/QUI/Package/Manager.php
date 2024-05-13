@@ -288,7 +288,7 @@ class Manager extends QUI\QDOM
         $data = file_get_contents($this->composer_lock);
         $data = json_decode($data, true);
 
-        $package = array_filter($data['packages'], static function ($package): bool {
+        $package = array_filter($data['packages'], static function (array $package): bool {
             return $package['name'] === 'quiqqer/core';
         });
 
@@ -314,7 +314,7 @@ class Manager extends QUI\QDOM
         $data = file_get_contents($this->composer_lock);
         $data = json_decode($data, true);
 
-        $package = array_filter($data['packages'], static function ($package): bool {
+        $package = array_filter($data['packages'], static function (array $package): bool {
             return $package['name'] === 'quiqqer/core';
         });
 
@@ -337,7 +337,7 @@ class Manager extends QUI\QDOM
 
         $packageName = $Package->getName();
 
-        $package = array_filter($data['packages'], static function ($package) use ($packageName): bool {
+        $package = array_filter($data['packages'], static function (array $package) use ($packageName): bool {
             return $package['name'] === $packageName;
         });
 
@@ -1546,7 +1546,7 @@ class Manager extends QUI\QDOM
         $result = [];
         $packages = $this->searchPackages($search);
 
-        $installed = array_map(static function ($entry) {
+        $installed = array_map(static function (array $entry) {
             return $entry['name'];
         }, $this->getList());
 
@@ -1754,7 +1754,7 @@ class Manager extends QUI\QDOM
                 $result = json_decode($result[0]['result'], true);
 
                 if (!empty($result)) {
-                    usort($result, static function ($a, $b): int {
+                    usort($result, static function (array $a, array $b): int {
                         return strcmp($a["package"], $b["package"]);
                     });
 
@@ -1768,7 +1768,7 @@ class Manager extends QUI\QDOM
         try {
             $output = $this->getOutdatedPackages();
 
-            usort($output, static function ($a, $b): int {
+            usort($output, static function (array $a, array $b): int {
                 return strcmp($a["package"], $b["package"]);
             });
 

@@ -822,7 +822,7 @@ class Package extends QUI\QDOM
                 );
             }
 
-            $groups = array_map(static function ($data) {
+            $groups = array_map(static function (array $data) {
                 return $data['group'];
             }, $groups);
 

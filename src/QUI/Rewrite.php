@@ -1360,7 +1360,7 @@ class Rewrite
         }
 
         // change children - quiqqer/core#334
-        $currentPathsIds = array_map(static function ($entry) {
+        $currentPathsIds = array_map(static function (array $entry) {
             return $entry['id'];
         }, $currentPaths);
 

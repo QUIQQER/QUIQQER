@@ -31,7 +31,7 @@ QUI::$Ajax->registerFunction(
             return true;
         });
 
-        $noAutoSave = array_map(static function ($attribute) {
+        $noAutoSave = array_map(static function (array $attribute) {
             return $attribute['name'];
         }, $noAutoSave);
 
