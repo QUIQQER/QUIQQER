@@ -270,7 +270,9 @@ class Manager
             return 'groups';
         }
 
-        return self::classToArea($Object::class);
+        $className = is_object($Object) ? $Object::class : '';
+
+        return self::classToArea($className);
     }
 
     /**
