@@ -331,18 +331,18 @@ class Package extends QUI\QDOM
      * Return the template parent
      * - if one is set
      */
-    public function getTemplateParent(): Package|bool
+    public function getTemplateParent(): ?Package
     {
         $packageData = $this->getPackageXMLData();
 
         if (empty($packageData['template_parent'])) {
-            return false;
+            return null;
         }
 
         try {
             return QUI::getPackage($packageData['template_parent']);
         } catch (QUI\Exception) {
-            return false;
+            return null;
         }
     }
 
