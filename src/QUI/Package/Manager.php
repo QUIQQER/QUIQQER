@@ -1901,34 +1901,6 @@ class Manager extends QUI\QDOM
 
         $this->composerUpdateOrInstall($package);
 
-        /*
-        if (!empty($output) && $Composer->getMode() === QUI\Composer\Composer::MODE_WEB) {
-            foreach ($output as $line) {
-                if (strpos($line, '<warning>') !== false) {
-                    $Output->writeLn(strip_tags($line), 'cyan');
-
-                    // reset color
-                    if (method_exists($Output, 'resetColor')) {
-                        $Output->resetColor();
-                    }
-
-                    continue;
-                }
-
-                $Output->writeLn($line);
-            }
-        }
-        */
-
-        if ($package) {
-            $Output->writeLn('Update done ... run setup for ' . $package);
-            $Package = self::getInstalledPackage($package);
-            $Package->setup();
-        } else {
-            $Output->writeLn('Update done ... run complete setup ...');
-            QUI\Setup::all($Output);
-        }
-
         // set last update
         $Output->writeLn('Cleanup database');
 
