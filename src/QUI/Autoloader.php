@@ -49,7 +49,7 @@ class Autoloader
         self::init();
     }
 
-    private static function unregisterOtherAutoloaders(): void
+    protected static function unregisterOtherAutoloaders(): void
     {
         $autoloaderFunctions = spl_autoload_functions();
 
