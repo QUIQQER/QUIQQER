@@ -4,7 +4,11 @@ namespace QUI\InstallationWizard;
 
 use QUI;
 
+use QUI\Locale;
+
 use function array_map;
+use function flushIt;
+use function function_exists;
 use function get_class;
 use function method_exists;
 
@@ -32,7 +36,7 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
         throw new Exception('Step not found', 404);
     }
 
-    public function toArray($Locale = null): array
+    public function toArray(?Locale $Locale = null): array
     {
         $steps = array_map(static function ($Step) {
             if (method_exists($Step, 'toArray')) {
@@ -72,14 +76,14 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
         return $Locale->get('quiqqer/core', 'set.up.execute.button.text');
     }
 
-    public function onListInit(&$list)
+    public function onListInit(&$list): void
     {
     }
 
     /**
      * @return false|string
      */
-    public function finish()
+    public function finish(): bool|string
     {
         return false;
     }

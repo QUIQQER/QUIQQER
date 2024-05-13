@@ -2,14 +2,16 @@
 
 namespace QUI\InstallationWizard;
 
+use QUI\Locale;
+
 /**
  * Interface InstallationWizardInterface
  */
 interface InstallationWizardInterface
 {
-    public function getTitle($Locale = null): string;
+    public function getTitle(?Locale $Locale = null): string;
 
-    public function getDescription($Locale = null): string;
+    public function getDescription(?Locale $Locale = null): string;
 
     public function getLogo(): string;
 
@@ -31,7 +33,7 @@ interface InstallationWizardInterface
      */
     public function getStep(int $step): InstallationWizardStepInterface;
 
-    public function toArray($Locale = null): array;
+    public function toArray(?Locale $Locale = null): array;
 
     public function execute(array $data = []);
 
@@ -40,7 +42,7 @@ interface InstallationWizardInterface
      *
      * @return bool|string
      */
-    public function finish();
+    public function finish(): bool|string;
 
     public function write(string $line);
 
@@ -51,8 +53,7 @@ interface InstallationWizardInterface
     /**
      * is called when all provider lists are called via ajax
      *
-     * @param $list
-     * @return mixed
+     * @param array $list
      */
-    public function onListInit(&$list);
+    public function onListInit(array &$list): void;
 }
