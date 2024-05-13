@@ -494,8 +494,10 @@ class Manager
             QUI\System\Log::writeDebugException($Exception);
         }
 
+        $objectName = is_object($Obj) ? $Obj::class : $Obj;
+
         QUI\System\Log::addInfo(
-            'Permission Area ' . $Obj::class . ' not found'
+            "Permission Area '$objectName' not found"
         );
 
         return '__NULL__';
