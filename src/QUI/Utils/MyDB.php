@@ -323,7 +323,7 @@ class MyDB implements \Stringable
      *
      * @return boolean
      */
-    public function existTable($table)
+    public function existTable($table): bool
     {
         return $this->DB->table()->exist($table);
     }
@@ -346,7 +346,7 @@ class MyDB implements \Stringable
      *
      * @return boolean
      */
-    public function existRowInTable($table, $row)
+    public function existRowInTable($table, $row): bool
     {
         return $this->DB->table()->existColumnInTable($table, $row);
     }
@@ -394,7 +394,7 @@ class MyDB implements \Stringable
      *
      * @return boolean
      */
-    public function issetPrimaryKey($table, $key)
+    public function issetPrimaryKey($table, $key): bool
     {
         return $this->DB->table()->issetPrimaryKey($table, $key);
     }
@@ -407,7 +407,7 @@ class MyDB implements \Stringable
      *
      * @return boolean
      */
-    public function setPrimaryKey($table, $key)
+    public function setPrimaryKey($table, $key): bool
     {
         return $this->DB->table()->setPrimaryKey($table, $key);
     }
@@ -420,7 +420,7 @@ class MyDB implements \Stringable
      *
      * @return boolean
      */
-    public function issetIndex($table, $key)
+    public function issetIndex($table, $key): bool
     {
         return $this->DB->table()->issetIndex($table, $key);
     }
@@ -445,7 +445,7 @@ class MyDB implements \Stringable
      *
      * @return boolean
      */
-    public function setIndex($table, $index)
+    public function setIndex($table, $index): bool
     {
         return $this->DB->table()->setIndex($table, $index);
     }
@@ -458,7 +458,7 @@ class MyDB implements \Stringable
      *
      * @return boolean
      */
-    public function setFulltext($table, $index)
+    public function setFulltext($table, $index): bool
     {
         return $this->DB->table()->setFulltext($table, $index);
     }
@@ -471,7 +471,7 @@ class MyDB implements \Stringable
      *
      * @return boolean
      */
-    public function issetFulltext($table, $key)
+    public function issetFulltext($table, $key): bool
     {
         return $this->DB->table()->issetFulltext($table, $key);
     }
