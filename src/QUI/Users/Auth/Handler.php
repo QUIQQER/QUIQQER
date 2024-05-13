@@ -98,7 +98,7 @@ class Handler
      */
     public function getGlobalFrontendAuthenticators(): array
     {
-        return $this->getAuthenticatorFromConfig(QUI::conf('auth_frontend'));
+        return $this->getAuthenticatorFromConfig(QUI::conf('auth_frontend') ?: []);
     }
 
     protected function getAuthenticatorFromConfig(array $authenticators = []): array
@@ -201,7 +201,7 @@ class Handler
      */
     public function getGlobalBackendAuthenticators(): array
     {
-        return $this->getAuthenticatorFromConfig(QUI::conf('auth_backend'));
+        return $this->getAuthenticatorFromConfig(QUI::conf('auth_backend') ?: []);
     }
 
     /**
