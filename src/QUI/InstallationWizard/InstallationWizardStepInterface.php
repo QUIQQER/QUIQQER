@@ -2,14 +2,16 @@
 
 namespace QUI\InstallationWizard;
 
+use QUI\Locale;
+
 /**
  * Interface InstallationWizardStepInterface
  */
 interface InstallationWizardStepInterface
 {
-    public function getTitle($Locale = null): string;
+    public function getTitle(?Locale $Locale = null): string;
 
-    public function getDescription($Locale = null): string;
+    public function getDescription(?Locale $Locale = null): string;
 
     public function getJavaScriptControl(): string;
 
@@ -23,5 +25,5 @@ interface InstallationWizardStepInterface
     /**
      * @return string
      */
-    public function create();
+    public function create(): string;
 }
