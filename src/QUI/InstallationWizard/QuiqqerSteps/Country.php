@@ -3,6 +3,7 @@
 namespace QUI\InstallationWizard\QuiqqerSteps;
 
 use QUI;
+use QUI\Locale;
 
 /**
  * Class Welcome
@@ -18,7 +19,7 @@ class Country extends QUI\InstallationWizard\AbstractInstallationWizardStep
         $this->setJavaScriptControl('controls/installation/Country');
     }
 
-    public function getTitle($Locale = null): string
+    public function getTitle(?Locale $Locale = null): string
     {
         if ($Locale === null) {
             $Locale = QUI::getLocale();
@@ -27,7 +28,7 @@ class Country extends QUI\InstallationWizard\AbstractInstallationWizardStep
         return $Locale->get('quiqqer/core', 'quiqqer.setup.country.title');
     }
 
-    public function getDescription($Locale = null): string
+    public function getDescription(?Locale $Locale = null): string
     {
         if ($Locale === null) {
             $Locale = QUI::getLocale();
@@ -38,11 +39,7 @@ class Country extends QUI\InstallationWizard\AbstractInstallationWizardStep
 
     public function create(): string
     {
-        try {
-            $Engine = QUI::getTemplateManager()->getEngine();
-        } catch (QUI\Exception) {
-            return '';
-        }
+        $Engine = QUI::getTemplateManager()->getEngine();
 
         $Engine->assign([
             'urlImageDir' => URL_OPT_DIR . 'quiqqer/core/bin/images/installation/'
