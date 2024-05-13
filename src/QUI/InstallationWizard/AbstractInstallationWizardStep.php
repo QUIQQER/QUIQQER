@@ -3,18 +3,18 @@
 namespace QUI\InstallationWizard;
 
 use QUI;
+use QUI\Locale;
 
 /**
  * Class AbstractInstallationWizard
  */
-abstract class AbstractInstallationWizardStep extends QUI\Control implements
-    \QUI\InstallationWizard\InstallationWizardStepInterface
+abstract class AbstractInstallationWizardStep extends QUI\Control implements InstallationWizardStepInterface
 {
     public function execute(): void
     {
     }
 
-    public function toArray($Locale = null): array
+    public function toArray(?Locale $Locale = null): array
     {
         return [
             'title' => $this->getTitle($Locale),
