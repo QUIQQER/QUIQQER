@@ -101,9 +101,9 @@ class Handler
         return $this->getAuthenticatorFromConfig(QUI::conf('auth_frontend') ?: []);
     }
 
-    protected function getAuthenticatorFromConfig(array $authenticators = []): array
+    protected function getAuthenticatorFromConfig(array $authenticatorConfig = []): array
     {
-        if (empty($authenticators)) {
+        if (empty($authenticatorConfig)) {
             return [
                 QUIQQER::class
             ];
@@ -114,7 +114,7 @@ class Handler
         $available = $this->getAvailableAuthenticators();
         $available = array_flip($available);
 
-        foreach ($authenticators as $authenticator => $status) {
+        foreach ($authenticatorConfig as $authenticator => $status) {
             if ($status != 1) {
                 continue;
             }
