@@ -208,7 +208,7 @@ class Utils
                     $types = explode(',', $types);
                 }
 
-                if (!empty($types) && is_array($types)) {
+                if (!empty($types)) {
                     foreach ($types as $allowedType) {
                         if (!StringUtils::match($allowedType, $siteType)) {
                             continue 2;
