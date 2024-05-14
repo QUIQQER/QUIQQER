@@ -24,12 +24,8 @@ require __DIR__ . '/polyfills.php';
 
 if (QUI\Autoloader::shouldOtherAutoloadersBeUnregistered()) {
     // unregister other autoload functions (all must run over quiqqer)
-    $autoloaderFunctions = spl_autoload_functions();
-
-    if (is_array($autoloaderFunctions)) {
-        foreach ($autoloaderFunctions as $autoloaderFunction) {
-            spl_autoload_unregister($autoloaderFunction);
-        }
+    foreach (spl_autoload_functions() as $autoloaderFunction) {
+        spl_autoload_unregister($autoloaderFunction);
     }
 }
 
