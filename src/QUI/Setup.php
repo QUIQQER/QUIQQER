@@ -474,10 +474,6 @@ EOT;
 
         $PackageManager->refreshServerList();
 
-        if (!is_array($setupOptions)) {
-            $setupOptions = [];
-        }
-
         if (!isset($setupOptions['localePublish'])) {
             $setupOptions['localePublish'] = false;
         }
