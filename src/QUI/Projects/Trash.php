@@ -131,10 +131,6 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      */
     public function destroy(array $ids = []): void
     {
-        if (!is_array($ids)) {
-            return;
-        }
-
         foreach ($ids as $id) {
             $Site = new Site\Edit($this->Project, (int)$id);
             $Site->destroy();
