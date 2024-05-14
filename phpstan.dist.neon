@@ -9,6 +9,7 @@ parameters:
     bootstrapFiles:
         - tests/phpstan-bootstrap.php
     tipsOfTheDay: false
+    treatPhpDocTypesAsCertain: false
     dynamicConstantNames:
         - DEVELOPMENT
         - DEBUG_MODE
