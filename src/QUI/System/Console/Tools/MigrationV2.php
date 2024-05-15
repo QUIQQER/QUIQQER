@@ -13,6 +13,8 @@ use QUI;
 
 use function array_filter;
 use function count;
+use function explode;
+use function implode;
 use function is_numeric;
 
 /**
@@ -52,6 +54,7 @@ class MigrationV2 extends QUI\System\Console\Tool
 
         $this->users();
         $this->groups();
+        $this->groupsInUsers();
         $this->projectSites();
         $this->media();
         $this->permissions();
@@ -254,7 +257,7 @@ class MigrationV2 extends QUI\System\Console\Tool
 
     public function groups(): void
     {
-        $this->writeLn('- Migrate users table');
+        $this->writeLn('- Migrate groups table');
 
 
         // read database xml, because we need the newest groups db
@@ -335,6 +338,41 @@ class MigrationV2 extends QUI\System\Console\Tool
         QUI::getUsers()->get(0)->save();
         QUI::getUsers()->get(5)->save();
         QUI::getUsers()->get(QUI::conf('globals', 'rootuser'))->save();
+    }
+
+    public function groupsInUsers(): void
+    {
+        $this->writeLn('- Migrate groups in users');
+        $table = QUI\Users\Manager::table();
+
+        $result = QUI::getDataBase()->fetch([
+            'from' => $table
+        ]);
+
+        foreach ($result as $entry) {
+            $userGroups = $entry['usergroup'];
+            $newGroups = [];
+
+            $userGroups = trim($userGroups, ',');
+            $userGroups = explode(',', $userGroups);
+
+            foreach ($userGroups as $groupId) {
+                try {
+                    $newGroups[] = QUI::getGroups()->get($groupId)->getUUID();
+                } catch (QUI\Exception) {
+                    $newGroups[] = $groupId;
+                }
+            }
+
+            try {
+                QUI::getDataBase()->update(
+                    $table,
+                    ['usergroup' => ',' . implode(',', $newGroups) . ','],
+                    ['id' => $entry['id']]
+                );
+            } catch (QUI\Exception) {
+            }
+        }
     }
 
     public function projectSites(): void
