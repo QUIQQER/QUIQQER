@@ -314,7 +314,7 @@ class Nobody extends QUI\QDOM implements User
      * Return the Country of nobody
      * use the GEOIP_COUNTRY_CODE from apache, if available
      */
-    public function getCountry(): Country|bool
+    public function getCountry(): ?Country
     {
         if (QUI::getSession()->get('country')) {
             try {
@@ -358,7 +358,7 @@ class Nobody extends QUI\QDOM implements User
             }
         }
 
-        return false;
+        return null;
     }
 
     /**

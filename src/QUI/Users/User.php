@@ -1395,7 +1395,7 @@ class User implements QUIUserInterface
         return Currencies::getDefaultCurrency()->getCode();
     }
 
-    public function getCountry(): QUI\Countries\Country|bool
+    public function getCountry(): ?QUI\Countries\Country
     {
         try {
             $Address = $this->getCurrentAddress();
@@ -1425,7 +1425,7 @@ class User implements QUIUserInterface
             }
         }
 
-        return false;
+        return null;
     }
 
     /**

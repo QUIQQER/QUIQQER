@@ -117,7 +117,7 @@ interface User
      */
     public function getGroups(bool $array = true): array;
 
-    public function getCountry(): Country|bool;
+    public function getCountry(): ?Country;
 
     public function getAvatar(): Image|null;
 
