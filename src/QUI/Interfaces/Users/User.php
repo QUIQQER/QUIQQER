@@ -32,29 +32,29 @@ interface User
 
     public function canUseBackend(): bool;
 
-    public function logout();
+    public function logout(): void;
 
     /**
      * Activate the user
      *
      * @param string $code - activation code
      */
-    public function activate(string $code = '', ?User $PermissionUser = null);
+    public function activate(string $code = '', ?User $PermissionUser = null): bool|int;
 
-    public function deactivate(?User $PermissionUser = null);
+    public function deactivate(?User $PermissionUser = null): bool;
 
     /**
      * Disable a user
      * The user data will be lost, but the user still exist
      */
-    public function disable(?User $PermissionUser = null);
+    public function disable(?User $PermissionUser = null): bool;
 
     /**
      * Save all attributes of the user
      */
-    public function save(?User $PermissionUser = null);
+    public function save(?User $PermissionUser = null): void;
 
-    public function delete(?User $PermissionUser = null);
+    public function delete(?User $PermissionUser = null): bool;
 
     /**
      * @deprecated

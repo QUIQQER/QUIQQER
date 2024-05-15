@@ -120,9 +120,8 @@ class Nobody extends QUI\QDOM implements User
         return true;
     }
 
-    public function logout(): bool
+    public function logout(): void
     {
-        return false;
     }
 
     /**
@@ -145,11 +144,9 @@ class Nobody extends QUI\QDOM implements User
         return false;
     }
 
-    public function save(?User $PermissionUser = null): bool
+    public function save(?User $PermissionUser = null): void
     {
         QUI::getSession()->set('attributes', $this->getAttributes());
-
-        return true;
     }
 
     public function delete(?User $PermissionUser = null): bool
