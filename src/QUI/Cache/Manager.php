@@ -888,8 +888,13 @@ class Manager
     public static function getCacheFolderSize(bool $force = false): int
     {
         $cacheFolder = VAR_DIR . "cache/";
+        $size = QUI\Utils\System\Folder::getFolderSize($cacheFolder, $force);
 
-        return QUI\Utils\System\Folder::getFolderSize($cacheFolder, $force);
+        if (!$size) {
+            return 0;
+        }
+
+        return $size;
     }
 
     /**
