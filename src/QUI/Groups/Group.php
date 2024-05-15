@@ -105,6 +105,16 @@ class Group extends QUI\QDOM
 
 
         $result = QUI::getGroups()->getGroupData($id);
+
+        if (!isset($result[0])) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/core',
+                    'exception.lib.qui.manager.no.groupid'
+                )
+            );
+        }
+
         $id = (int)$result[0]['id'];
 
         // create uuid for group. if not exists

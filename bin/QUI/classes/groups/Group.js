@@ -77,6 +77,7 @@ define('classes/groups/Group', [
 
                     this.fireEvent('refresh', [this]);
                 }, {
+                    showError: false,
                     gid: this.getId(),
                     onError: reject
                 });

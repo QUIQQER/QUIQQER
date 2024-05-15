@@ -40,7 +40,7 @@ define('controls/groups/SelectItem', [
                 Prom = Group.load();
             }
 
-            return Prom.then(function() {
+            return Prom.then(() => {
                 // everyone is not deletable
                 if (id == 1) {
                     this.$Destroy.setStyle('display', 'none');
@@ -49,7 +49,9 @@ define('controls/groups/SelectItem', [
                 this.$Text.set({
                     html: Group.getName()
                 });
-            }.bind(this));
+            }).catch(() => {
+                this.destroy();
+            });
         }
     });
 });
