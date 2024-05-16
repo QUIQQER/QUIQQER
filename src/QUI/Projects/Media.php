@@ -121,7 +121,7 @@ class Media extends QUI\QDOM
     /**
      * Return the Logo image object of the media
      */
-    public function getLogoImage(): ?QUI\Interfaces\Projects\Media\File
+    public function getLogoImage(): QUI\Projects\Media\Image|null
     {
         $Project = $this->getProject();
 
