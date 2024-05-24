@@ -799,7 +799,11 @@ class Address extends QUI\QDOM
      */
     public function equals(Address $Address, bool $compareCustomData = false): bool
     {
-        if ($this->getUUID() === $Address->getUUID()) {
+        if (
+            $this->getUUID()
+            && $Address->getUUID()
+            && $this->getUUID() === $Address->getUUID()
+        ) {
             return true;
         }
 
