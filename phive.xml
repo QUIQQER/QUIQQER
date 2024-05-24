@@ -5,4 +5,5 @@
   <phar name="composer-require-checker" version="^4.8.0" installed="4.8.0" location="./tools/composer-require-checker" copy="false"/>
   <phar name="phpcs" version="^3.10.1" installed="3.10.1" location="./tools/phpcs" copy="false"/>
   <phar name="phpcbf" version="^3.10.1" installed="3.10.1" location="./tools/phpcbf" copy="false"/>
+  <phar name="captainhook" version="^5.23.0" installed="5.23.0" location="./tools/captainhook" copy="false"/>
 </phive>
