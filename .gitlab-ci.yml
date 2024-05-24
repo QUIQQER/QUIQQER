@@ -1,3 +1,17 @@
 include:
-  - project: 'quiqqer/stabilization/semantic-release'
-    file: '/ci-templates/.gitlab-ci.yml'
+  - component: dev.quiqqer.com/quiqqer/stabilization/ci-cd-components/quiqqer-package-bundle/quiqqer-package-bundle@main
+
+# Remove the entire phpunit-php8.1 block, to allow PHPUnit to run on PHP 8.1 in your pipeline
+phpunit-php8.1:
+  rules:
+    - when: never
+
+# Remove the entire phpunit-php8.2 block, to allow PHPUnit to run on PHP 8.2 in your pipeline
+phpunit-php8.2:
+  rules:
+    - when: never
+
+# Remove the entire phpunit-php8.3 block, to allow PHPUnit to run on PHP 8.3 in your pipeline
+phpunit-php8.3:
+  rules:
+    - when: never
