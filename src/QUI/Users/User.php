@@ -1092,9 +1092,6 @@ class User implements QUIUserInterface
         return [];
     }
 
-    /**
-     * @throws QUI\Exception
-     */
     public function setGroups(null|array|string $groups): void
     {
         if (empty($groups)) {
@@ -1111,7 +1108,12 @@ class User implements QUIUserInterface
             $this->Group = [];
 
             foreach ($groups as $group) {
-                $Group = $Groups->get($group);
+                try {
+                    $Group = $Groups->get($group);
+                } catch (QUI\Exception) {
+                    continue;
+                }
+
                 $this->Group[] = $Group;
                 $aTmp[] = $Group->getUUID();
             }
