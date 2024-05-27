@@ -1095,7 +1095,7 @@ class User implements QUIUserInterface
     /**
      * @throws QUI\Exception
      */
-    public function setGroups(array|string $groups): void
+    public function setGroups(null|array|string $groups): void
     {
         if (empty($groups)) {
             return;
