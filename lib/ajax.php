@@ -31,6 +31,10 @@ if (
     && (strlen($_REQUEST['lang']) === 2 || strlen($_REQUEST['lang']) === 5)
 ) {
     QUI::getLocale()->setCurrent($_REQUEST['lang']);
+
+    if (QUI::getUsers()->isNobodyUser(QUI::getUserBySession())) {
+        QUI::getSession()->set('CURRENT_LANG', $_REQUEST['lang']);
+    }
 }
 
 // required ajax files
