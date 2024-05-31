@@ -1857,7 +1857,7 @@ class User implements QUIUserInterface
             $this->checkEditPermission($PermissionUser);
         }
 
-        QUI::getEvents()->fireEvent('userActivateBegin', [$this, $code]);
+        QUI::getEvents()->fireEvent('userActivateBegin', [$this, $code, $PermissionUser]);
 
 
         // benutzer ist schon aktiv, aktivierung kann nicht durchgeführt werden
@@ -1913,7 +1913,7 @@ class User implements QUIUserInterface
         $this->active = 1;
 
         try {
-            QUI::getEvents()->fireEvent('userActivate', [$this]);
+            QUI::getEvents()->fireEvent('userActivate', [$this, $PermissionUser]);
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage(), [
                 'UserId' => $this->getUUID(),
