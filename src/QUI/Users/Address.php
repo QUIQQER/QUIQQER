@@ -46,11 +46,15 @@ class Address extends QUI\QDOM
 
     protected array $customData = [];
 
+    protected ?QUIUserInterface $User = null;
+
     /**
      * @throws Exception
      */
-    public function __construct(protected QUIUserInterface $User, int|string $id)
+    public function __construct(QUIUserInterface $User, int|string $id)
     {
+        $this->User = $User;
+
         try {
             $where = [
                 'userUuid' => $User->getUUID()
