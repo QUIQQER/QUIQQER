@@ -206,7 +206,7 @@ class Update extends QUI\System\Console\Tool
         $Maintenance->execute();
 
         try {
-            $this->writeLn('- Filesystem check ...');
+            $this->writeLn('- File system is checked for changes ...');
             $changes = $this->checkFileSystemChanges();
         } catch (Exception $Exception) {
             $this->writeLn();
@@ -498,32 +498,24 @@ class Update extends QUI\System\Console\Tool
             $Runner->executeComposer('status', [
                 '-vvv' => true
             ]);
-        } catch (\QUI\Composer\Exception) {
+        } catch (\QUI\Exception $exception) {
             $modified = [];
 
             foreach ($result as $line) {
-                if (str_contains($line, '[404] ')) {
-                    $path = str_replace('[404] ', '', $line);
-
+                if (
+                    str_contains($line, '[400] ')
+                    || str_contains($line, '[401] ')
+                    || str_contains($line, '[402] ')
+                    || str_contains($line, '[403] ')
+                    || str_contains($line, '[404] ')
+                ) {
                     $this->writeLn();
                     $this->writeLn(
-                        '[404] - The update could not check the following package, there was a problem with the package archive.',
-                        'red'
+                        '- The update could not check the following package, there was a problem with the package archive.',
+                        'yellow'
                     );
 
-                    $this->writeLn($path);
-                }
-
-                if (str_contains($line, '[400] ')) {
-                    $path = str_replace('[400] ', '', $line);
-
-                    $this->writeLn();
-                    $this->writeLn(
-                        '[400] - The update could not check the following package, there was a problem with the package archive.',
-                        'red'
-                    );
-
-                    $this->writeLn($path);
+                    $this->writeLn('>> ' . $exception->getMessage());
                 }
 
                 if (str_contains($line, "    M ")) {
