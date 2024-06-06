@@ -16,6 +16,10 @@ use function count;
 use function explode;
 use function implode;
 use function is_numeric;
+use function trim;
+use function var_dump;
+
+use const OPT_DIR;
 
 /**
  * MailQueue Console Manager
@@ -42,13 +46,13 @@ class MigrationV2 extends QUI\System\Console\Tool
         // messages
         $this->writeLn('- Update messages table');
         QUI::getDataBaseConnection()->executeStatement(
-            'ALTER TABLE `' . QUI::getDBTableName('messages') . '` CHANGE `uid` `uid` VARCHAR(50) NULL DEFAULT NULL;'
+            'ALTER TABLE `' . QUI::getDBTableName('messages') . '` CHANGE `uid` `uid` VARCHAR(50);'
         );
 
         // session
         $this->writeLn('- Update session table');
         QUI::getDataBaseConnection()->executeStatement(
-            'ALTER TABLE `' . QUI::getDBTableName('sessions') . '` CHANGE `uid` `uid` VARCHAR(50) NULL DEFAULT NULL;'
+            'ALTER TABLE `' . QUI::getDBTableName('sessions') . '` CHANGE `uid` `uid` VARCHAR(50);'
         );
 
 
@@ -293,6 +297,8 @@ class MigrationV2 extends QUI\System\Console\Tool
 
             QUI::getDataBase()->insert(QUI\Groups\Manager::table(), [
                 'id' => 0,
+                'uuid' => 0,
+                'parent' => 0,
                 'name' => 'Guest'
             ]);
 
@@ -321,6 +327,8 @@ class MigrationV2 extends QUI\System\Console\Tool
 
             QUI::getDataBase()->insert(QUI\Groups\Manager::table(), [
                 'id' => 1,
+                'uuid' => 1,
+                'parent' => 0,
                 'name' => 'Everyone'
             ]);
 
@@ -533,14 +541,17 @@ class MigrationV2 extends QUI\System\Console\Tool
                 continue;
             }
 
-            QUI::getDataBase()->insert($table2Groups, [
-                'group_id' => $groupUUID,
-                'permissions' => $entry['permissions']
-            ]);
+            try {
+                QUI::getDataBase()->insert($table2Groups, [
+                    'group_id' => $groupUUID,
+                    'permissions' => $entry['permissions']
+                ]);
 
-            QUI::getDataBase()->delete($table2Groups, [
-                'group_id' => $entry['group_id']
-            ]);
+                QUI::getDataBase()->delete($table2Groups, [
+                    'group_id' => $entry['group_id']
+                ]);
+            } catch (\Exception) {
+            }
         }
     }
 
