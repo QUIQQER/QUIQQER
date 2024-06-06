@@ -1045,7 +1045,6 @@ class QUI
 
     //endregion
 
-
     /**
      * Check if runtime cache is enabled globally (default: true).
      *

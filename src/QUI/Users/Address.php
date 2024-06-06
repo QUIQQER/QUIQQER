@@ -51,7 +51,7 @@ class Address extends QUI\QDOM
     /**
      * @throws Exception
      */
-    public function __construct(QUIUserInterface $User, int $id)
+    public function __construct(QUIUserInterface $User, int|string $id)
     {
         $this->User = $User;
 
@@ -140,6 +140,7 @@ class Address extends QUI\QDOM
 
     /**
      * Add a phone number
+     *
      *
      * @example addPhone([
      *     'no'   => '555 29 29',
