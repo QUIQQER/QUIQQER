@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_media_hide',
-    function ($project, $ids) {
+    static function ($project, $ids): void {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $ids = json_decode($ids, true);
@@ -19,7 +19,11 @@ QUI::$Ajax->registerFunction(
         foreach ($ids as $id) {
             try {
                 $Item = $Media->get((int)$id);
-                $Item->setHidden();
+
+                if (method_exists($Item, 'setHidden')) {
+                    $Item->setHidden();
+                }
+
                 $Item->save();
             } catch (QUI\Exception $Exception) {
                 QUI::getMessagesHandler()->addError(

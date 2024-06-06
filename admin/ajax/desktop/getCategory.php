@@ -10,8 +10,8 @@ use QUI\Package\Package;
 
 QUI::$Ajax->registerFunction(
     'ajax_desktop_getCategory',
-    function ($type, $category) {
-        $cache = 'quiqqer/package/quiqqer/quiqqer/desktopCategories/category/' . md5($type . $category);
+    static function ($type, $category) {
+        $cache = 'quiqqer/package/quiqqer/core/desktopCategories/category/' . md5($type . $category);
 
         try {
             return QUI\Cache\Manager::get($cache);

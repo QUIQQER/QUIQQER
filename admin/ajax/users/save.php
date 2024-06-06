@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Benutzer speichern
+ * save user
  *
- * @param integer $uid - Benutzer-ID
+ * @param integer|string $uid - user id or user hash
  * @param string $attributes - JSON String of Attributes
  *
  * @return boolean
@@ -11,20 +11,27 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_save',
-    function ($uid, $attributes) {
+    static function ($uid, $attributes): array {
         $User = QUI::getUsers()->get($uid);
         $attributes = json_decode($attributes, true);
         $language = $User->getAttribute('lang');
+        $extraAttributes = [];
 
-        $noAutoSave = array_filter($User->getListOfExtraAttributes(), function ($attribute) {
-            if (isset($attribute['no-auto-save']) && $attribute['no-auto-save']) {
-                return true;
+        if (method_exists($User, 'getListOfExtraAttributes')) {
+            $extraAttributes = $User->getListOfExtraAttributes();
+        }
+
+        $noAutoSave = array_filter($extraAttributes, static function (array $attribute): bool {
+            if (!isset($attribute['no-auto-save'])) {
+                return false;
             }
-
-            return false;
+            if (!$attribute['no-auto-save']) {
+                return false;
+            }
+            return true;
         });
 
-        $noAutoSave = array_map(function ($attribute) {
+        $noAutoSave = array_map(static function (array $attribute) {
             return $attribute['name'];
         }, $noAutoSave);
 
@@ -34,7 +41,7 @@ QUI::$Ajax->registerFunction(
             }
         }
 
-        // aktivieren / deaktivieren
+        // activation / deactivation
         if (isset($attributes['active'])) {
             if ((int)$attributes['active'] === 1) {
                 if (!$User->isActive()) {
@@ -51,15 +58,15 @@ QUI::$Ajax->registerFunction(
         if ($User->getAttribute('lang') !== $language) {
             QUI\Cache\Manager::clear();
 
-            if ($User->getId() === QUI::getUserBySession()->getId()) {
+            if ($User->getUUID() === QUI::getUserBySession()->getUUID()) {
                 QUI::getSession()->set('quiqqer-user-language', false);
             }
         }
 
         QUI::getMessagesHandler()->addSuccess(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'message.user.saved', [
+            QUI::getLocale()->get('quiqqer/core', 'message.user.saved', [
                 'username' => $User->getName(),
-                'id' => $User->getId()
+                'id' => $User->getUUID()
             ])
         );
 

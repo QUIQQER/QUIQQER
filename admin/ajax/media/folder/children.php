@@ -10,22 +10,26 @@
  * @return array
  */
 
+use QUI\Projects\Media\Folder;
 use QUI\Utils\Grid;
 use QUI\Utils\Security\Orthos;
 
 QUI::$Ajax->registerFunction(
     'ajax_media_folder_children',
-    function ($project, $folderid, $params) {
+    static function ($project, $folderid, $params): array {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $File = $Media->get($folderid);
 
-        /* @var $File \QUI\Projects\Media\Folder */
+        if (!($File instanceof Folder)) {
+            return [];
+        }
+
+        $params = Orthos::clearArray(json_decode($params, true));
         $Grid = new Grid($params);
-        $params = Orthos::clearArray(\json_decode($params, true));
 
         $children = [];
-        $showHiddenFiles = !empty($params['showHiddenFiles']) && $params['showHiddenFiles'];
+        $showHiddenFiles = !empty($params['showHiddenFiles']);
         $params = $Grid->parseDBParams($params);
 
         if ($showHiddenFiles === false) {
@@ -33,8 +37,7 @@ QUI::$Ajax->registerFunction(
         }
 
         $_children = $File->getChildrenIds($params);
-
-        $getUserName = function ($uid) {
+        $getUserName = static function ($uid): string {
             try {
                 return QUI::getUsers()->get($uid)->getName();
             } catch (QUI\Exception) {
@@ -63,7 +66,7 @@ QUI::$Ajax->registerFunction(
                 ];
 
                 $children[] = $child;
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
         }

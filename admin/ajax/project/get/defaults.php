@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_get_defaults',
-    function ($project) {
+    static function ($project): array {
         $Project = QUI\Projects\Manager::decode($project);
         return QUI\Projects\Manager::getProjectConfigList($Project);
     },

@@ -9,19 +9,25 @@
  * @return array
  */
 
+use QUI\Projects\Media\Folder;
+
 QUI::$Ajax->registerFunction(
     'ajax_media_get',
-    function ($project, $fileid) {
+    static function ($project, $fileid) {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $File = $Media->get($fileid);
+        $parents = [];
 
-        $parents = $File->getParents();
+        if ($File instanceof Folder) {
+            $parents = $File->getParents();
+        }
+
         $breadcrumb = [];
         $children = [];
         $_children = [];
 
-        if ($File->getType() === 'QUI\\Projects\\Media\\Folder') {
+        if ($File instanceof Folder) {
             $_children = $File->getChildren();
         }
 

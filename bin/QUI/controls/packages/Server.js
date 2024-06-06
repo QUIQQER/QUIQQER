@@ -19,7 +19,7 @@ define('controls/packages/Server', [
 ], function (QUI, QUIControl, QUIButton, QUIConfirm, Packages, Mustache, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
 

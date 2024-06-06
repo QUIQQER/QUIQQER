@@ -81,7 +81,7 @@ define('controls/cache/General', [
 
             // redis check
             this.$RedisCheck = new QUIButton({
-                text  : QUILocale.get('quiqqer/quiqqer', 'quiqqer.settings.cache.redis.check.button'),
+                text  : QUILocale.get('quiqqer/core', 'quiqqer.settings.cache.redis.check.button'),
                 events: {
                     onClick: this.redisCheck
                 }
@@ -137,7 +137,7 @@ define('controls/cache/General', [
                                 'class': 'mongo-error-message',
                                 html   : '<td>' +
                                     '<div class="messages-message message-error">' +
-                                    QUILocale.get('quiqqer/quiqqer', 'message.quiqqer.mongo.missing') +
+                                    QUILocale.get('quiqqer/core', 'message.quiqqer.mongo.missing') +
                                     '</div>' +
                                     '</td>'
                             });
@@ -154,7 +154,7 @@ define('controls/cache/General', [
                             'class': 'mongo-check-button',
                             html   : '<td>' +
                                 '<button class="qui-button" style="float: right">' +
-                                QUILocale.get('quiqqer/quiqqer', 'message.quiqqer.mongo.button') +
+                                QUILocale.get('quiqqer/core', 'message.quiqqer.mongo.button') +
                                 '</button>' +
                                 '</td>'
                         }).inject(MongoTable.getElement('tbody'));
@@ -167,7 +167,7 @@ define('controls/cache/General', [
 
                             self.checkMongoDB().then(function () {
                                 Button.disabled = false;
-                                Button.set('html', QUILocale.get('quiqqer/quiqqer', 'message.quiqqer.mongo.button'));
+                                Button.set('html', QUILocale.get('quiqqer/core', 'message.quiqqer.mongo.button'));
                             });
                         });
                     });
@@ -192,7 +192,7 @@ define('controls/cache/General', [
             QUIAjax.get('ajax_system_cache_redisCheck', function (result) {
                 self.$RedisCheck.setAttribute(
                     'text',
-                    QUILocale.get('quiqqer/quiqqer', 'quiqqer.settings.cache.redis.check.button')
+                    QUILocale.get('quiqqer/core', 'quiqqer.settings.cache.redis.check.button')
                 );
 
                 var message = result.message;

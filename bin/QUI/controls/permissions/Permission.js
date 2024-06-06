@@ -27,7 +27,7 @@ define('controls/permissions/Permission', [
 ], function (QUI, QUIControl, QUIButton, QUIConfirm, QUIObjectUtils, PermissionMap, ControlUtils, PermissionUtils, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
 
@@ -536,11 +536,11 @@ define('controls/permissions/Permission', [
             new QUIConfirm({
                 maxWidth   : 450,
                 maxHeight  : 300,
-                title      : QUILocale.get('quiqqer/quiqqer', 'permissions.panel.window.delete.title'),
-                text       : QUILocale.get('quiqqer/quiqqer', 'permissions.panel.window.delete.text', {
+                title      : QUILocale.get('quiqqer/core', 'permissions.panel.window.delete.title'),
+                text       : QUILocale.get('quiqqer/core', 'permissions.panel.window.delete.text', {
                     right: permission
                 }),
-                information: QUILocale.get('quiqqer/quiqqer', 'permissions.panel.window.delete.information', {
+                information: QUILocale.get('quiqqer/core', 'permissions.panel.window.delete.information', {
                     right: permission
                 }),
                 autoclose  : false,

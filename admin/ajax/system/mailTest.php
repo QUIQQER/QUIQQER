@@ -6,7 +6,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_mailTest',
-    function ($params) {
+    static function ($params): void {
         $params = json_decode($params, true);
         $Mail = QUI::getMailManager()->getPHPMailer();
 
@@ -83,11 +83,11 @@ QUI::$Ajax->registerFunction(
                 $Mail->addAddress($recipient);
             }
 
-            $Mail->Subject = QUI::getLocale()->get('quiqqer/quiqqer', 'text.mail.subject');
-            $Mail->Body = QUI::getLocale()->get('quiqqer/quiqqer', 'text.mail.body');
+            $Mail->Subject = QUI::getLocale()->get('quiqqer/core', 'text.mail.subject');
+            $Mail->Body = QUI::getLocale()->get('quiqqer/core', 'text.mail.body');
 
             $Mail->SMTPDebug = 3;
-            $Mail->Debugoutput = function ($str, $level) {
+            $Mail->Debugoutput = static function ($str, $level): void {
                 QUI\System\Log::writeRecursive(rtrim($str) . PHP_EOL);
                 QUI\Mail\Log::write(rtrim($str));
             };
@@ -107,8 +107,8 @@ QUI::$Ajax->registerFunction(
         // send mail with Mail Template
         try {
             $Mailers = QUI::getMailManager()->getMailer();
-            $Mailers->setSubject(QUI::getLocale()->get('quiqqer/quiqqer', 'text.mail.subject'));
-            $Mailers->setBody(QUI::getLocale()->get('quiqqer/quiqqer', 'text.mail.body'));
+            $Mailers->setSubject(QUI::getLocale()->get('quiqqer/core', 'text.mail.subject'));
+            $Mailers->setBody(QUI::getLocale()->get('quiqqer/core', 'text.mail.body'));
             $Mailers->addRecipient($mailRecipient);
             $Mailers->send();
         } catch (Exception $Exception) {
@@ -116,7 +116,7 @@ QUI::$Ajax->registerFunction(
         }
 
         QUI::getMessagesHandler()->addSuccess(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'message.testmail.success')
+            QUI::getLocale()->get('quiqqer/core', 'message.testmail.success')
         );
     },
     ['params'],

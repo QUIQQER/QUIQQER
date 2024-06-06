@@ -12,15 +12,16 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_address_save',
-    function ($uid, $aid, $data) {
+    static function ($uid, $aid, $data): ?string {
         $data = json_decode($data, true);
 
         if (!isset($uid) || !$uid) {
             $result = QUI::getDataBase()->fetch([
                 'select' => ['id', 'uid'],
                 'from' => QUI\Users\Manager::tableAddress(),
-                'where' => [
-                    'id' => $aid
+                'where_or' => [
+                    'id' => $aid,
+                    'uuid' => $aid
                 ],
                 'limit' => 1
             ]);
@@ -28,7 +29,7 @@ QUI::$Ajax->registerFunction(
             if (!isset($result[0])) {
                 throw new QUI\Users\Exception(
                     QUI::getLocale()->get(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'exception.lib.user.address.not.found',
                         [
                             'addressId' => $aid,
@@ -38,13 +39,13 @@ QUI::$Ajax->registerFunction(
                 );
             }
 
-            $uid = (int)$result[0]['uid'];
+            $uid = $result[0]['uid'];
         }
 
-        $User = QUI::getUsers()->get((int)$uid);
+        $User = QUI::getUsers()->get($uid);
 
         try {
-            $Address = $User->getAddress((int)$aid);
+            $Address = $User->getAddress($aid);
         } catch (QUI\Exception) {
             $Address = $User->addAddress($data);
         }
@@ -52,13 +53,13 @@ QUI::$Ajax->registerFunction(
         $Address->clearMail();
         $Address->clearPhone();
 
-        if (isset($data['mails']) && \is_array($data['mails'])) {
+        if (isset($data['mails']) && is_array($data['mails'])) {
             foreach ($data['mails'] as $mail) {
                 $Address->addMail($mail);
             }
         }
 
-        if (isset($data['phone']) && \is_array($data['phone'])) {
+        if (isset($data['phone']) && is_array($data['phone'])) {
             foreach ($data['phone'] as $phone) {
                 $Address->addPhone($phone);
             }
@@ -75,15 +76,15 @@ QUI::$Ajax->registerFunction(
         $Address->save();
 
         if (isset($data['standard']) && $data['standard'] === 1) {
-            $User->setAttribute('address', $Address->getId());
+            $User->setAttribute('address', $Address->getUUID());
             $User->save();
         }
 
-        if ($Address->getId() === $User->getStandardAddress()->getId()) {
+        if ($Address->getUUID() === $User->getStandardAddress()->getUUID()) {
             $User->save();
         }
 
-        return $Address->getId();
+        return $Address->getUUID();
     },
     ['uid', 'aid', 'data'],
     ['Permission::checkAdminUser', 'quiqqer.admin.users.edit']

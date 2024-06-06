@@ -11,7 +11,7 @@ use QUI\System\License;
 
 QUI::$Ajax->registerFunction(
     'ajax_licenseKey_get',
-    function () {
+    static function () {
         $licenseConfigFile = CMS_DIR . 'etc/license.ini.php';
         $systemId = License::getSystemId();
         $systemDataHash = License::getSystemDataHash();
@@ -38,7 +38,7 @@ QUI::$Ajax->registerFunction(
 
         if (isset($data['validUntil'])) {
             if ($data['validUntil'] === 'forever') {
-                $data['validUntil'] = QUI::getLocale()->get('quiqqer/quiqqer', 'quiqqer.licenseKey.unlimited');
+                $data['validUntil'] = QUI::getLocale()->get('quiqqer/core', 'quiqqer.licenseKey.unlimited');
             } else {
                 $data['validUntil'] = date('Y-m-d', (int)$data['validUntil']);
             }

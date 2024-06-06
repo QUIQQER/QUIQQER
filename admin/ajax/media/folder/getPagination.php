@@ -12,8 +12,8 @@ use QUI\Utils\Security\Orthos;
 
 QUI::$Ajax->registerFunction(
     'ajax_media_folder_getPagination',
-    function ($attributes) {
-        $attributes = Orthos::clearArray(\json_decode($attributes, true));
+    static function ($attributes) {
+        $attributes = Orthos::clearArray(json_decode($attributes, true));
         $Pagination = new Pagination($attributes);
 
         $Output = new QUI\Output();

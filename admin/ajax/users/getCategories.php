@@ -10,10 +10,10 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_getCategories',
-    function ($uid) {
+    static function ($uid): array {
         try {
             $Users = QUI::getUsers();
-            $User = $Users->get((int)$uid);
+            $User = $Users->get($uid);
             $Toolbar = QUI\Users\Utils::getUserToolbar($User);
 
             return $Toolbar->toArray();

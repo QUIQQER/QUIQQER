@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_forwarding_getList',
-    function () {
+    static function () {
         return QUI\System\Forwarding::getList()->toArray();
     },
     false,

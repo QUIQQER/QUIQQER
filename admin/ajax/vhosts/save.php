@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_vhosts_save',
-    function ($vhost, $data) {
+    static function ($vhost, $data): void {
         $data = json_decode($data, true);
 
         $VhostManager = new QUI\System\VhostManager();

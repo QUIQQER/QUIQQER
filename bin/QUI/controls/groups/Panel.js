@@ -25,7 +25,7 @@ define('controls/groups/Panel', [
 ], function () {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     var QUI                = arguments[0],
         Panel              = arguments[1],
@@ -189,9 +189,9 @@ define('controls/groups/Panel', [
                     width    : 60
                 }, {
                     header   : Locale.get(lg, 'group_id'),
-                    dataIndex: 'id',
-                    dataType : 'number',
-                    width    : 150
+                    dataIndex: 'uuid',
+                    dataType : 'string',
+                    width    : 240
                 }, {
                     header   : Locale.get(lg, 'groupname'),
                     dataIndex: 'name',
@@ -507,7 +507,7 @@ define('controls/groups/Panel', [
          */
         $gridDblClick: function (data) {
             this.openGroup(
-                data.target.getDataByRow(data.row).id
+                data.target.getDataByRow(data.row).uuid
             );
         },
 
@@ -629,8 +629,8 @@ define('controls/groups/Panel', [
 
                     data[i].status = new QUISwitch({
                         status: data[i].active,
-                        value : data[i].id,
-                        gid   : data[i].id,
+                        value : data[i].uuid,
+                        gid   : data[i].uuid,
                         title : data[i].active ?
                             self.getAttribute('active_text') :
                             self.getAttribute('deactive_text'),
@@ -710,7 +710,7 @@ define('controls/groups/Panel', [
                 id   = Group.getId();
 
             for (i = 0, len = data.length; i < len; i++) {
-                if (parseInt(data[i].id) !== id) {
+                if (data[i].id !== id) {
                     continue;
                 }
 

@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_get',
-    function ($package) {
+    static function ($package): array {
         $Package = QUI::getPackageManager()->getInstalledPackage($package);
         $composerData = $Package->getComposerData();
         $lockData = $Package->getLock();

@@ -5,24 +5,25 @@
  *
  * @param string $project - Name of the project
  * @param integer|string $parentid
- * @param \QUI\QDOM $File
+ * @param QDOM $File
  *
  * @throws \QUI\Exception
  */
 
 use QUI\Projects\Media\Folder;
 use QUI\Projects\Media\Utils;
+use QUI\QDOM;
 
 QUI::$Ajax->registerFunction(
     'ajax_media_upload',
-    function ($project, $parentid, $File) {
+    static function ($project, $parentid, $File) {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $Folder = $Media->get((int)$parentid);
 
-        if ($Folder->getType() != 'QUI\\Projects\\Media\\Folder') {
+        if ($Folder->getType() !== Folder::class) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.is.no.folder')
+                QUI::getLocale()->get('quiqqer/core', 'exception.media.upload.is.no.folder')
             );
         }
 
@@ -47,16 +48,12 @@ QUI::$Ajax->registerFunction(
                     // Decide orientation
                     if ($exif['Orientation'] == 3) {
                         $rotation = 180;
+                    } elseif ($exif['Orientation'] == 6) {
+                        $rotation = -90;
+                    } elseif ($exif['Orientation'] == 8) {
+                        $rotation = 90;
                     } else {
-                        if ($exif['Orientation'] == 6) {
-                            $rotation = -90;
-                        } else {
-                            if ($exif['Orientation'] == 8) {
-                                $rotation = 90;
-                            } else {
-                                $rotation = 0;
-                            }
-                        }
+                        $rotation = 0;
                     }
 
                     // Rotate the image
@@ -69,13 +66,13 @@ QUI::$Ajax->registerFunction(
                     }
                 }
             }
-        } catch (\Exception) {
+        } catch (Exception) {
         }
 
         $params = $File->getAttribute('params');
 
         // if file has a folder in original file path
-        if (!empty($params) && !empty($params['filepath']) && strpos($params['filepath'], '/') !== false) {
+        if (!empty($params) && !empty($params['filepath']) && str_contains($params['filepath'], '/')) {
             $path = trim($params['filepath'], '/');
             $path = explode('/', $path);
 

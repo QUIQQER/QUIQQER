@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_html_sitemap',
-    function ($project) {
+    static function ($project): string {
         $Project = QUI::getProjectManager()->decode($project);
         $Template = QUI::getTemplateManager()->getEngine();
 

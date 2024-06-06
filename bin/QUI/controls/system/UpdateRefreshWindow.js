@@ -7,7 +7,7 @@ define('controls/system/UpdateRefreshWindow', [
 ], function (QUI, QUIConfirm, QUILocale) {
     "use strict";
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     return new Class({
 

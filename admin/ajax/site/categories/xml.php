@@ -10,12 +10,12 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_site_categories_xml',
-    function ($project, $id, $category) {
+    static function ($project, $id, $category) {
         $Project = QUI::getProjectManager()->decode($project);
         $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
         $type = $Site->getAttribute('type');
 
-        $cacheName = 'quiqqer/package/quiqqer/quiqqer/admin/site/categories/' . $type . '/' . $category;
+        $cacheName = 'quiqqer/package/quiqqer/core/admin/site/categories/' . $type . '/' . $category;
         $exception = false;
 
         try {

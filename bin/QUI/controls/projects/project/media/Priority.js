@@ -59,7 +59,7 @@ define('controls/projects/project/media/Priority', [
                 buttons    : [
                     {
                         text  : QUILocale.get(
-                            'quiqqer/quiqqer',
+                            'quiqqer/core',
                             'projects.project.site.media.priority.btn.save'
                         ),
                         events: {
@@ -75,19 +75,19 @@ define('controls/projects/project/media/Priority', [
                         width    : 100
                     },
                     {
-                        header   : QUILocale.get('quiqqer/quiqqer', 'id'),
+                        header   : QUILocale.get('quiqqer/core', 'id'),
                         dataIndex: 'id',
                         dataType : 'integer',
                         width    : 50
                     },
                     {
-                        header   : QUILocale.get('quiqqer/quiqqer', 'name'),
+                        header   : QUILocale.get('quiqqer/core', 'name'),
                         dataIndex: 'name',
                         dataType : 'string',
                         width    : 300
                     },
                     {
-                        header   : QUILocale.get('quiqqer/quiqqer', 'title'),
+                        header   : QUILocale.get('quiqqer/core', 'title'),
                         dataIndex: 'title',
                         dataType : 'string',
                         width    : 300

@@ -8,22 +8,22 @@ use QUI\Users\User;
 
 class ManagerTest extends TestCase
 {
-    public function testSetup()
+    public function testSetup(): void
     {
         $this->markTestIncomplete('Figure out how to test this');
     }
 
-    public function testCleanup()
+    public function testCleanup(): void
     {
         $this->markTestIncomplete('Figure out how to test this');
     }
 
-    public function testGetWorkspacesByUser()
+    public function testGetWorkspacesByUser(): void
     {
         $this->markTestIncomplete('Decide if this has to be tested or if it is trivial');
     }
 
-    public function testGetWorkspaceByInvalidIdAndUserThrowsException()
+    public function testGetWorkspaceByInvalidIdAndUserThrowsException(): void
     {
         $sut = new Manager();
         $testUser = $this->createUserStub();
@@ -32,7 +32,7 @@ class ManagerTest extends TestCase
         $sut::getWorkspaceById(99999999, $testUser);
     }
 
-    public function testAddWorkspaceWithInvalidUserThrowsException()
+    public function testAddWorkspaceWithInvalidUserThrowsException(): void
     {
         $sut = new Manager();
         $testUser = $this->createStub(\QUI\Interfaces\Users\User::class);
@@ -41,7 +41,7 @@ class ManagerTest extends TestCase
         $sut::addWorkspace($testUser, 'title', 'data', 100, 100);
     }
 
-    public function testAddAndGetWorkspace()
+    public function testAddAndGetWorkspace(): void
     {
         $sut = new Manager();
         $testUser = $this->createUserStub();
@@ -68,7 +68,7 @@ class ManagerTest extends TestCase
         $sut::deleteWorkspace($testWorkspaceId, $testUser);
     }
 
-    public function testSaveWorkspace()
+    public function testSaveWorkspace(): void
     {
         $sut = new Manager();
         $testUser = $this->createUserStub();
@@ -101,7 +101,7 @@ class ManagerTest extends TestCase
         $sut::deleteWorkspace($testWorkspaceId, $testUser);
     }
 
-    public function testSaveWorkspaceWithBigData()
+    public function testSaveWorkspaceWithBigData(): void
     {
         $sut = new Manager();
         $testUser = $this->createUserStub();
@@ -110,7 +110,7 @@ class ManagerTest extends TestCase
         $sut::saveWorkspace($testUser, 1, ['data' => str_repeat('a', 30000)]);
     }
 
-    public function testDeleteWorkspace()
+    public function testDeleteWorkspace(): void
     {
         $sut = new Manager();
         $testUser = $this->createUserStub();
@@ -127,10 +127,10 @@ class ManagerTest extends TestCase
         $sut::getWorkspaceById($testWorkspaceId, $testUser);
     }
 
-    public function testSetStandardWorkspace()
+    public function testSetStandardWorkspace(): void
     {
         $this->markTestSkipped(
-            'Test skipped: getWorkspaceById does not accept user interface, making testing harder (see quiqqer/quiqqer#1336)'
+            'Test skipped: getWorkspaceById does not accept user interface, making testing harder (see quiqqer/core#1336)'
         );
 
         // Arrange
@@ -166,7 +166,7 @@ class ManagerTest extends TestCase
         $sut::deleteWorkspace($testWorkspaceToBecomeStandardId, $testUser);
     }
 
-    public function testGetAvailablePanels()
+    public function testGetAvailablePanels(): void
     {
         $this->markTestIncomplete('Figure out how to test this');
     }

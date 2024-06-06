@@ -10,12 +10,12 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_groups_addUsers',
-    function ($gid, $userIds) {
+    static function ($gid, $userIds): void {
         $userIds = json_decode($userIds, true);
-        $Group = QUI::getGroups()->get((int)$gid);
+        $Group = QUI::getGroups()->get($gid);
 
         foreach ($userIds as $userId) {
-            $User = QUI::getUsers()->get((int)$userId);
+            $User = QUI::getUsers()->get($userId);
             $Group->addUser($User);
             $User->save();
         }

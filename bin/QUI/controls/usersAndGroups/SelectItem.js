@@ -10,19 +10,19 @@ define('controls/usersAndGroups/SelectItem', [
     'Groups',
     'Users'
 
-], function (QUI, QUIElementSelectItem, QUIAjax, Groups, Users) {
-    "use strict";
+], function(QUI, QUIElementSelectItem, QUIAjax, Groups, Users) {
+    'use strict';
 
     return new Class({
 
         Extends: QUIElementSelectItem,
-        Type   : 'controls/usersAndGroups/SelectItem',
+        Type: 'controls/usersAndGroups/SelectItem',
 
         Binds: [
             'refresh'
         ],
 
-        initialize: function (options) {
+        initialize: function(options) {
             this.parent(options);
             this.setAttribute('icon', 'fa fa-group');
         },
@@ -32,21 +32,21 @@ define('controls/usersAndGroups/SelectItem', [
          *
          * @returns {Promise}
          */
-        refresh: function () {
-            var id   = this.getAttribute('id'),
+        refresh: function() {
+            var id = this.getAttribute('id'),
                 Prom = Promise.resolve();
 
             // group
             if (id.charAt(0) === 'g') {
                 this.setAttribute('icon', 'fa fa-group');
 
-                var Group = Groups.get(parseInt(id.substring(1)));
+                var Group = Groups.get(id.substring(1));
 
                 if (!Group.isLoaded()) {
                     Prom = Group.load();
                 }
 
-                return Prom.then(function () {
+                return Prom.then(function() {
                     // everyone is not deletable
                     if (id == 1) {
                         this.$Destroy.setStyle('display', 'none');
@@ -61,13 +61,13 @@ define('controls/usersAndGroups/SelectItem', [
             // user
             this.setAttribute('icon', 'fa fa-user');
 
-            var User = Users.get(parseInt(id.substring(1)));
+            var User = Users.get(id.substring(1));
 
             if (!User.isLoaded()) {
                 Prom = User.load();
             }
 
-            return Prom.then(function () {
+            return Prom.then(function() {
                 this.$Text.set({
                     html: User.getName()
                 });

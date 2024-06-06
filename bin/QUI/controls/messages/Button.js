@@ -15,7 +15,7 @@ define('controls/messages/Button', [
 ], function (QUI, QUIControl, LoadingMessage, BulkUpload, QUILocale) {
     "use strict";
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
     const uploadMessages = {};
     const uploadNodes = [];
 
@@ -295,7 +295,7 @@ define('controls/messages/Button', [
                 }).inject(this.$Messages);
 
                 new Element('img', {
-                    src   : URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/controls/messages/messages-empty.svg',
+                    src   : URL_OPT_DIR + 'quiqqer/core/bin/QUI/controls/messages/messages-empty.svg',
                     styles: {
                         opacity: 0.75,
                         width  : 160

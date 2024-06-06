@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_media_create_md5',
-    function ($project) {
+    static function ($project): void {
         $Project = QUI\Projects\Manager::decode($project);
         $Media = $Project->getMedia();
 
@@ -24,7 +24,10 @@ QUI::$Ajax->registerFunction(
         foreach ($ids as $id) {
             try {
                 $Item = $Media->get($id);
-                $Item->generateMD5();
+
+                if (method_exists($Item, 'generateMD5')) {
+                    $Item->generateMD5();
+                }
             } catch (QUI\Exception $Exception) {
                 QUI::getMessagesHandler()->addError(
                     $Exception->getMessage()

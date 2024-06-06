@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_upload_getNotInstalledPackages',
-    function () {
+    static function (): array {
         return QUI\Package\LocalServer::getInstance()->getNotInstalledPackage();
     },
     false,

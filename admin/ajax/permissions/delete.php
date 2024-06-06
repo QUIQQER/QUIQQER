@@ -8,12 +8,12 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_permissions_delete',
-    function ($permission) {
+    static function ($permission): void {
         QUI::getPermissionManager()->deletePermission($permission);
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'permissions.message.delete.success'
             )
         );

@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_update_check',
-    function () {
+    static function (): bool {
         return QUI::getPackageManager()->checkUpdates();
     },
     false,

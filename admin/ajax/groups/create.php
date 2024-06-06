@@ -10,12 +10,12 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_groups_create',
-    function ($groupname, $pid) {
+    static function ($groupname, $pid): string {
         $Groups = QUI::getGroups();
-        $Parent = $Groups->get((int)$pid);
+        $Parent = $Groups->get($pid);
         $Group = $Parent->createChild($groupname);
 
-        return $Group->getId();
+        return $Group->getUUID();
     },
     ['groupname', 'pid'],
     'Permission::checkUser'

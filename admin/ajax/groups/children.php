@@ -9,12 +9,11 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_groups_children',
-    function ($gid) {
+    static function ($gid): array {
         $Groups = QUI::getGroups();
         $Group = $Groups->get($gid);
-        $children = $Group->getChildren();
 
-        return $children;
+        return $Group->getChildren();
     },
     ['gid'],
     'Permission::checkAdminUser'

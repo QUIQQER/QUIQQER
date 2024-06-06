@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_getLock',
-    function ($package) {
+    static function ($package): array {
         return QUI::getPackageManager()
             ->getInstalledPackage($package)
             ->getLock();

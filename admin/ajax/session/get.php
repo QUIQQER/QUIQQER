@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_session_get',
-    function ($key) {
+    static function ($key) {
         return QUI::getSession()->get($key);
     },
     ['key']

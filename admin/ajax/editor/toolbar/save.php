@@ -9,12 +9,12 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_editor_toolbar_save',
-    function ($toolbar, $xml) {
+    static function ($toolbar, $xml): void {
         QUI\Editor\Manager::saveToolbar($toolbar, $xml);
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'message.editor.toolbar.save.success'
             )
         );

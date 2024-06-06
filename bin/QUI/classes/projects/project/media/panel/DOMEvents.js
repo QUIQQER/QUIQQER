@@ -14,7 +14,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
 ], function (QUI, QUIPrompt, QUIConfirm, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     /**
      * @class classes/projects/project/media/panel/DOMEvents

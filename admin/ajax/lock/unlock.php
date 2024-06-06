@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_lock_unlock',
-    function ($package, $key) {
+    static function ($package, $key): void {
         $Package = QUI::getPackage($package);
         QUI\Lock\Locker::unlock($Package, $key);
     },

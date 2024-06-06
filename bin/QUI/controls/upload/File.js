@@ -29,7 +29,7 @@ define('controls/upload/File', [
 ], function () {
     "use strict";
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     const QUI                = arguments[0],
           QUIControl         = arguments[1],
@@ -621,7 +621,7 @@ define('controls/upload/File', [
                 this.$errors++;
 
                 QUI.getMessageHandler().then(function (MH) {
-                    MH.addError(QUILocale.get('quiqqer/quiqqer', 'exception.upload.error'));
+                    MH.addError(QUILocale.get('quiqqer/core', 'exception.upload.error'));
                     console.error(err);
                 });
             }.bind(this));

@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_getAvailableLanguages',
-    function () {
+    static function (): array {
         return QUI::availableLanguages();
     },
     false,

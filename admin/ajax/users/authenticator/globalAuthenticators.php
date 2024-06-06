@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_authenticator_globalAuthenticators',
-    function () {
+    static function () {
         $User = QUI::getUserBySession();
         $Auth = QUI\Users\Auth\Handler::getInstance();
         $available = $Auth->getAvailableAuthenticators();

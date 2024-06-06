@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_switchstatus',
-    function ($uid) {
+    static function ($uid): array {
         $uid = json_decode($uid, true);
 
         if (!is_array($uid)) {
@@ -29,7 +29,7 @@ QUI::$Ajax->registerFunction(
 
                     QUI::getMessagesHandler()->addSuccess(
                         QUI::getLocale()->get(
-                            'quiqqer/quiqqer',
+                            'quiqqer/core',
                             'message.user.deactivate'
                         )
                     );
@@ -38,7 +38,7 @@ QUI::$Ajax->registerFunction(
 
                     QUI::getMessagesHandler()->addSuccess(
                         QUI::getLocale()->get(
-                            'quiqqer/quiqqer',
+                            'quiqqer/core',
                             'message.user.activate'
                         )
                     );

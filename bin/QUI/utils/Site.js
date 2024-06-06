@@ -103,7 +103,7 @@ define('utils/Site', [
          */
         openCreateChild: function (ParentSite, value) {
             const self    = this,
-                  lg      = 'quiqqer/quiqqer',
+                  lg      = 'quiqqer/core',
                   Site    = ParentSite,
                   Project = Site.getProject();
 

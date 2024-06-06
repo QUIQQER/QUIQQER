@@ -7,9 +7,11 @@
  * @throws \QUI\Exception
  */
 
+use QUI\System\Log;
+
 QUI::$Ajax->registerFunction(
     'ajax_settings_save',
-    function ($file, $params) {
+    static function ($file, $params): void {
         $jsonFiles = json_decode($file, true);
         $files = [];
 
@@ -27,9 +29,9 @@ QUI::$Ajax->registerFunction(
             }
 
             if (!file_exists($file)) {
-                QUI\Log\Logger::getLogger()->addError(
+                Log::addError(
                     QUI::getLocale()->get(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'exception.config.save.file.not.found'
                     )
                 );
@@ -43,7 +45,7 @@ QUI::$Ajax->registerFunction(
 
             // csp data
             if (
-                strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') !== false
+                str_contains($file, 'quiqqer/core/admin/settings/conf.xml')
                 && isset($params['securityHeaders_csp'])
             ) {
                 unset($params['securityHeaders_csp']);
@@ -51,7 +53,7 @@ QUI::$Ajax->registerFunction(
 
             // more bad workaround by hen
             // @todo need to fix that
-            if (strpos($file, 'quiqqer/quiqqer/admin/settings/cache.xml') !== false) {
+            if (str_contains($file, 'quiqqer/core/admin/settings/cache.xml')) {
                 if (!empty($params['general']['cacheType'])) {
                     $cacheType = $params['general']['cacheType'];
 
@@ -71,7 +73,7 @@ QUI::$Ajax->registerFunction(
                 }
             }
 
-            if (strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') !== false) {
+            if (str_contains($file, 'quiqqer/core/admin/settings/conf.xml')) {
                 // overwrite openssl settings is not allowed
                 if (isset($params['openssl'])) {
                     unset($params['openssl']);
@@ -100,11 +102,11 @@ QUI::$Ajax->registerFunction(
             QUI\Utils\Text\XML::setConfigFromXml($file, $params);
 
             QUI::getMessagesHandler()->addSuccess(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'message.config.saved')
+                QUI::getLocale()->get('quiqqer/core', 'message.config.saved')
             );
 
             // bad workaround by hen
-            if (strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') === false) {
+            if (!str_contains($file, 'quiqqer/core/admin/settings/conf.xml')) {
                 continue;
             }
 
@@ -137,7 +139,7 @@ QUI::$Ajax->registerFunction(
 
             if (
                 $webserverConfig !== false && is_string($webserverConfig)
-                && strpos($webserverConfig, "apache") !== false
+                && str_contains($webserverConfig, "apache")
             ) {
                 continue;
             }
@@ -167,7 +169,7 @@ QUI::$Ajax->registerFunction(
             if ($newContent != $oldContent) {
                 QUI::getMessagesHandler()->addInformation(
                     QUI::getLocale()->get(
-                        "quiqqer/quiqqer",
+                        "quiqqer/core",
                         "message.config.webserver.changed"
                     )
                 );

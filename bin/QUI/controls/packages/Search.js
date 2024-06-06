@@ -29,7 +29,7 @@ define('controls/packages/Search', [
              templateTermsOfUse, templateOtherSources) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
 
@@ -98,15 +98,15 @@ define('controls/packages/Search', [
 
 
             this.$StoreButton = new QUIButton({
-                text  : QUILocale.get('quiqqer/quiqqer', 'controls.packages.search.template.togglePackageStore'),
+                text  : QUILocale.get('quiqqer/core', 'controls.packages.search.template.togglePackageStore'),
                 events: {
                     onClick: this.openStore
                 }
             }).inject(this.$Buttons);
 
             this.$PackageButton = new QUIButton({
-                text  : QUILocale.get('quiqqer/quiqqer', 'controls.packages.search.template.upload'),
-                title : QUILocale.get('quiqqer/quiqqer', 'dialog.packages.install.upload.title'),
+                text  : QUILocale.get('quiqqer/core', 'controls.packages.search.template.upload'),
+                title : QUILocale.get('quiqqer/core', 'dialog.packages.install.upload.title'),
                 events: {
                     onClick: this.openUpload
                 }
@@ -114,7 +114,7 @@ define('controls/packages/Search', [
 
             this.$SearchButton = new QUIButton({
                 icon  : 'fa fa-search',
-                title : QUILocale.get('quiqqer/quiqqer', 'controls.packages.search.othersources.template.labelSearch'),
+                title : QUILocale.get('quiqqer/core', 'controls.packages.search.othersources.template.labelSearch'),
                 styles: {
                     'float': 'right'
                 },

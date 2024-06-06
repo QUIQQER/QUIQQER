@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_desktop_workspace_threeColumns',
-    function () {
+    static function (): string {
         return QUI\Workspace\Manager::getThreeColumnDefault();
     },
     false,

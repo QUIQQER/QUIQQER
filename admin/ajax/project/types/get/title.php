@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_types_get_title',
-    function ($sitetype) {
+    static function ($sitetype): string {
         return QUI::getPackageManager()->getSiteTypeName($sitetype);
     },
     ['sitetype'],

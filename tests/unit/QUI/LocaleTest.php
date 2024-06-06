@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 #[RunTestsInSeparateProcesses]
 class LocaleTest extends TestCase
 {
-    public function testSetCurrent()
+    public function testSetCurrent(): void
     {
         $sut = new Locale();
 
@@ -20,10 +20,10 @@ class LocaleTest extends TestCase
         $this->assertEquals($testLanguage, $sut->getCurrent());
     }
 
-    public function testResetCurrent()
+    public function testResetCurrent(): void
     {
         $this->markTestSkipped(
-            'Test skipped: resetCurrent is bugged, thus testing is worthless (see quiqqer/quiqqer#1333)'
+            'Test skipped: resetCurrent is bugged, thus testing is worthless (see quiqqer/core#1333)'
         );
 
         $sut = new Locale();
@@ -36,7 +36,7 @@ class LocaleTest extends TestCase
         $this->assertEquals($testLanguage, $sut->getCurrent());
     }
 
-    public function testSetTemporaryCurrent()
+    public function testSetTemporaryCurrent(): void
     {
         $sut = new Locale();
 
@@ -65,7 +65,7 @@ class LocaleTest extends TestCase
     }
 
     #[DataProvider('formatNumberDataProvider')]
-    public function testFormatNumber(string $language, float $numberToFormat, string $expectedFormat)
+    public function testFormatNumber(string $language, float $numberToFormat, string $expectedFormat): void
     {
         $locale = new Locale();
         $locale->setCurrent($language);
@@ -75,7 +75,7 @@ class LocaleTest extends TestCase
         $this->assertEquals($expectedFormat, $sut);
     }
 
-    public function testGetDateFormatterContainsCurrentLanguage()
+    public function testGetDateFormatterContainsCurrentLanguage(): void
     {
         $locale = new Locale();
         $expectedLanguage = 'fr';
@@ -86,14 +86,14 @@ class LocaleTest extends TestCase
         $this->assertEquals($expectedLanguage, $sut->getLocale());
     }
 
-    public function testExistsReturnsFalseOnRandomLocaleVariable()
+    public function testExistsReturnsFalseOnRandomLocaleVariable(): void
     {
         $sut = new Locale();
 
         $this->assertFalse($sut->exists('abc', '123'));
     }
 
-    public function testExistsLangReturnsFalseOnNonExistingLanguage()
+    public function testExistsLangReturnsFalseOnNonExistingLanguage(): void
     {
         $sut = new Locale();
 
@@ -103,21 +103,21 @@ class LocaleTest extends TestCase
     public static function isLocaleStringDataProvider(): array
     {
         return [
-            ['[quiqqer/quiqqer] this.is.a.test', true],
-            ['[quiqqer/quiqqer] hello', true],
-            ['[quiqqer/quiqqer] 123', true],
+            ['[quiqqer/core] this.is.a.test', true],
+            ['[quiqqer/core] hello', true],
+            ['[quiqqer/core] 123', true],
             ['this.is.a.test', false],
-            ['this.is.a.test [quiqqer/quiqqer]', false],
+            ['this.is.a.test [quiqqer/core]', false],
             ['', false],
             ['[ ]', false],
         ];
     }
 
     #[DataProvider('isLocaleStringDataProvider')]
-    public function testIsLocaleString(string $localeString, bool $expectedResult)
+    public function testIsLocaleString(string $localeString, bool $expectedResult): void
     {
         $this->markTestSkipped(
-            'Test skipped: isLocaleString behaves wrong, thus testing is worthless (see quiqqer/quiqqer#1334)'
+            'Test skipped: isLocaleString behaves wrong, thus testing is worthless (see quiqqer/core#1334)'
         );
 
         $sut = new Locale();
@@ -128,11 +128,11 @@ class LocaleTest extends TestCase
     public static function getPartsOfLocaleStringProvider(): array
     {
         return [
-            ['[quiqqer/quiqqer] this.is.a.test', 'quiqqer/quiqqer', 'this.is.a.test'],
-            ['[quiqqer/quiqqer] hello', 'quiqqer/quiqqer', 'hello'],
-            ['[quiqqer/quiqqer] 123', 'quiqqer/quiqqer', '123'],
+            ['[quiqqer/core] this.is.a.test', 'quiqqer/core', 'this.is.a.test'],
+            ['[quiqqer/core] hello', 'quiqqer/core', 'hello'],
+            ['[quiqqer/core] 123', 'quiqqer/core', '123'],
             ['this.is.a.test', null, null],
-            ['this.is.a.test [quiqqer/quiqqer]', null, null],
+            ['this.is.a.test [quiqqer/core]', null, null],
             ['', null, null],
             ['[ ]', null, null],
         ];
@@ -143,9 +143,9 @@ class LocaleTest extends TestCase
         string $localeStringToTest,
         ?string $expectedGroup,
         ?string $expectedVariable
-    ) {
+    ): void {
         $this->markTestSkipped(
-            'Test skipped: getPartsOfLocaleString behaves odd, thus testing is worthless (see quiqqer/quiqqer#1335)'
+            'Test skipped: getPartsOfLocaleString behaves odd, thus testing is worthless (see quiqqer/core#1335)'
         );
 
         $locale = new Locale();
@@ -156,42 +156,42 @@ class LocaleTest extends TestCase
         $this->assertEquals($expectedVariable, $sut[1]);
     }
 
-    public function testGet()
+    public function testGet(): void
     {
         $this->markTestIncomplete('Figure out how to test this');
     }
 
-    public function testGetHelper()
+    public function testGetHelper(): void
     {
         $this->markTestIncomplete('Figure out how to test this');
     }
 
-    public function testInitConfig()
+    public function testInitConfig(): void
     {
         $this->markTestIncomplete('Figure out how to test this');
     }
 
-    public function testGetTranslationsFile()
+    public function testGetTranslationsFile(): void
     {
         $this->markTestIncomplete('Figure out how to test this');
     }
 
-    public function testGetLocalesByLand()
+    public function testGetLocalesByLand(): void
     {
         $this->markTestIncomplete('Figure out how to test this');
     }
 
-    public function testGetByLang()
+    public function testGetByLang(): void
     {
         $this->markTestIncomplete('Figure out how to test this');
     }
 
-    public function testParseLocaleString()
+    public function testParseLocaleString(): void
     {
         $this->markTestIncomplete('Figure out how to test this');
     }
 
-    public function testParseLocaleArray()
+    public function testParseLocaleArray(): void
     {
         $this->markTestIncomplete('Figure out how to test this');
     }

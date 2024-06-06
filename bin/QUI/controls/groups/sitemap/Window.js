@@ -14,8 +14,8 @@ define('controls/groups/sitemap/Window', [
     'Locale',
     'Permissions'
 
-], function (QUI, QUIConfirm, GroupSitemap, QUILocale, Permissions) {
-    "use strict";
+], function(QUI, QUIConfirm, GroupSitemap, QUILocale, Permissions) {
+    'use strict';
 
     /**
      * @class controls/groups/sitemap/Window
@@ -25,7 +25,7 @@ define('controls/groups/sitemap/Window', [
     return new Class({
 
         Extends: QUIConfirm,
-        Type   : 'controls/groups/sitemap/Window',
+        Type: 'controls/groups/sitemap/Window',
 
         Binds: [
             '$onWindowCreate',
@@ -34,19 +34,19 @@ define('controls/groups/sitemap/Window', [
         ],
 
         options: {
-            multible   : false,
-            multiple   : false,
-            message    : false,
-            title      : QUILocale.get('quiqqer/quiqqer', 'groups.sitemap.window.title'),
-            text       : QUILocale.get('quiqqer/quiqqer', 'groups.sitemap.window.title'),
-            information: QUILocale.get('quiqqer/quiqqer', 'groups.sitemap.window.information'),
-            texticon   : false,
-            icon       : 'fa fa-group',
-            maxHeight  : 600,
-            maxWidth   : 400
+            multible: false,
+            multiple: false,
+            message: false,
+            title: QUILocale.get('quiqqer/core', 'groups.sitemap.window.title'),
+            text: QUILocale.get('quiqqer/core', 'groups.sitemap.window.title'),
+            information: QUILocale.get('quiqqer/core', 'groups.sitemap.window.information'),
+            texticon: false,
+            icon: 'fa fa-group',
+            maxHeight: 600,
+            maxWidth: 400
         },
 
-        initialize: function (options) {
+        initialize: function(options) {
             this.$Win = null;
             this.$Map = null;
 
@@ -60,19 +60,19 @@ define('controls/groups/sitemap/Window', [
         /**
          * event : onCreate
          */
-        $onOpen: function () {
-            var self    = this,
+        $onOpen: function() {
+            var self = this,
                 Content = this.getContent();
 
             this.Loader.show();
 
             Permissions.hasPermission(
                 'quiqqer.admin.groups.create'
-            ).then(function (hasPermission) {
+            ).then(function(hasPermission) {
                 if (!hasPermission) {
-                    QUI.getMessageHandler().then(function (MH) {
+                    QUI.getMessageHandler().then(function(MH) {
                         MH.addError(
-                            QUILocale.get('quiqqer/quiqqer', 'exception.no.permission')
+                            QUILocale.get('quiqqer/core', 'exception.no.permission')
                         );
                     });
 
@@ -105,7 +105,7 @@ define('controls/groups/sitemap/Window', [
                 }).inject(SitemapBody);
 
                 self.Loader.hide();
-            }.bind(this)).catch(function (err) {
+            }.bind(this)).catch(function(err) {
                 console.error(err);
                 self.close();
             });
@@ -116,7 +116,7 @@ define('controls/groups/sitemap/Window', [
          *
          * @method qui/controls/windows/Confirm#submit
          */
-        submit: function () {
+        submit: function() {
             this.fireEvent('submit', [this, this.$Map.getValues()]);
 
             if (this.getAttribute('autoclose')) {

@@ -9,14 +9,14 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_systemcheckChecksum',
-    function ($packageName) {
+    static function ($packageName) {
         $Package = QUI::getPackage('quiqqer/requirements');
         $dir = $Package->getVarDir();
         $cacheFile = $dir . "requirements_checks_result_package";
 
         if (!file_exists($cacheFile)) {
             QUI::getMessagesHandler()->addError(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'packages.panel.category.systemcheck.checksum.fileNotFound')
+                QUI::getLocale()->get('quiqqer/core', 'packages.panel.category.systemcheck.checksum.fileNotFound')
             );
 
             return false;
@@ -27,7 +27,7 @@ QUI::$Ajax->registerFunction(
         if (!isset($packages[$packageName])) {
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'packages.panel.category.systemcheck.checksum.cacheForThisPackageNotFound',
                     ['cacheForThisPackage' => $packageName]
                 )

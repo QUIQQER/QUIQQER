@@ -6,7 +6,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_cache_mongoAvailable',
-    function () {
+    static function (): bool {
         try {
             QUI::getPackage('mongodb/mongodb');
         } catch (QUI\Exception) {

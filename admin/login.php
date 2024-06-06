@@ -15,7 +15,7 @@ if (!empty($defaultLanguage)) {
 }
 
 $authPackages = [];
-$quiqqerLogo = QUI::getLocale()->get('quiqqer/quiqqer', 'menu.quiqqer.text');
+$quiqqerLogo = QUI::getLocale()->get('quiqqer/core', 'menu.quiqqer.text');
 
 $projectLogo = '';
 
@@ -404,7 +404,7 @@ foreach ($packages as $package) {
 
     <?php
 
-    echo QUI\FontAwesome\EventHandler::fontawesome(false, false);
+    echo QUI\FontAwesome\EventHandler::fontawesome();
 
     ?>
 
@@ -492,7 +492,7 @@ foreach ($packages as $package) {
                     'qui/QUI',
                     'utils/Session',
                     'Locale',
-                    'locale/quiqqer/quiqqer/' + lang
+                    'locale/quiqqer/core/' + lang
                 ], function(QUI, Session, QUILocale) {
                     QUILocale.setCurrent(lang);
                     Session.set('quiqqer-user-language', lang).catch(function(err) {
@@ -501,27 +501,27 @@ foreach ($packages as $package) {
 
                     document.getElements('.slogan__login').set(
                         'html',
-                        QUILocale.get('quiqqer/quiqqer', 'loginBox.header.text')
+                        QUILocale.get('quiqqer/core', 'loginBox.header.text')
                     );
 
                     document.getElements('.slogan__title h1').set(
                         'html',
-                        QUILocale.get('quiqqer/quiqqer', 'loginBox.aside.title')
+                        QUILocale.get('quiqqer/core', 'loginBox.aside.title')
                     );
 
                     document.getElements('.slogan__title p').set(
                         'html',
-                        QUILocale.get('quiqqer/quiqqer', 'loginBox.aside.slogan')
+                        QUILocale.get('quiqqer/core', 'loginBox.aside.slogan')
                     );
 
                     document.getElements('.logo__text').set(
                         'html',
-                        QUILocale.get('quiqqer/quiqqer', 'loginBox.powered')
+                        QUILocale.get('quiqqer/core', 'loginBox.powered')
                     );
 
                     document.getElements('.licenseToggleButton-license').set(
                         'html',
-                        QUILocale.get('quiqqer/quiqqer', 'loginBox.license')
+                        QUILocale.get('quiqqer/core', 'loginBox.license')
                     );
 
                     const LoginElement = document.getElement('.quiqqer-login');
@@ -595,7 +595,7 @@ foreach ($packages as $package) {
                         QUI.getMessageHandler().then(function(MH) {
                             MH.addError(
                                 QUILocale.get(
-                                    'quiqqer/quiqqer',
+                                    'quiqqer/core',
                                     'exception.permission.no.admin'
                                 )
                             );
@@ -756,7 +756,7 @@ if (defined('LOGIN_FAILED')) { ?>
         ];
 
     for (let i = 0, len = QUIQQER_LANGUAGES.length; i < len; i++) {
-        needle.push('locale/quiqqer/quiqqer/' + QUIQQER_LANGUAGES[i]);
+        needle.push('locale/quiqqer/core/' + QUIQQER_LANGUAGES[i]);
     }
 
     require(needle, function(QUISelect, QUILocale) {
@@ -775,11 +775,11 @@ if (defined('LOGIN_FAILED')) { ?>
             lang = QUIQQER_LANGUAGES[i];
             QUILocale.setCurrent(lang);
 
-            text = QUILocale.get('quiqqer/quiqqer', 'language.' + lang);
+            text = QUILocale.get('quiqqer/core', 'language.' + lang);
 
-            if (!QUILocale.exists('quiqqer/quiqqer', 'language.' + lang)) {
+            if (!QUILocale.exists('quiqqer/core', 'language.' + lang)) {
                 QUILocale.setCurrent('en');
-                text = QUILocale.get('quiqqer/quiqqer', 'language.' + lang);
+                text = QUILocale.get('quiqqer/core', 'language.' + lang);
             }
 
             Select.appendChild(

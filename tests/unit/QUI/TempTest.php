@@ -11,17 +11,17 @@ class TempTest extends TestCase
         return '/tmp/quiqqer_quiqqer_test_directory_' . uniqid();
     }
 
-    public function testConstructorCreatesFolder()
+    public function testConstructorCreatesFolder(): void
     {
         $testDirectory = $this->getTestDirectoryPath();
 
-        $sut = new Temp($testDirectory);
+        new Temp($testDirectory);
 
         $this->assertDirectoryExists($testDirectory);
         rmdir($testDirectory);
     }
 
-    public function testClearRemovesFilesFromDirectory()
+    public function testClearRemovesFilesFromDirectory(): void
     {
         $testDirectory = $this->getTestDirectoryPath();
         $sut = new Temp($testDirectory);
@@ -33,7 +33,7 @@ class TempTest extends TestCase
         $this->assertFalse($isFileInTestDirectory);
     }
 
-    public function testMoveToTemp()
+    public function testMoveToTemp(): void
     {
         $testDirectoryPath = $this->getTestDirectoryPath();
         $sut = new Temp($testDirectoryPath);
@@ -46,7 +46,7 @@ class TempTest extends TestCase
         $this->assertFileDoesNotExist($directoryToMove);
     }
 
-    public function testCreateFolderWithGivenName()
+    public function testCreateFolderWithGivenName(): void
     {
         $sut = new Temp($this->getTestDirectoryPath());
 
@@ -55,7 +55,7 @@ class TempTest extends TestCase
         $this->assertDirectoryExists($cacheFolder);
     }
 
-    public function testCreateFolderWithoutName()
+    public function testCreateFolderWithoutName(): void
     {
         $sut = new Temp($this->getTestDirectoryPath());
 

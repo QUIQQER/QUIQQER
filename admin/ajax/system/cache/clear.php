@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_cache_clear',
-    function ($params) {
+    static function ($params): void {
         $params = json_decode($params, true);
 
         if (!empty($params['compile'])) {

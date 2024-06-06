@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_permissions_session_hasPermission',
-    function ($permission) {
+    static function ($permission): \QUI\Permissions\Permission|bool|string {
         return QUI\Permissions\Permission::hasPermission($permission);
     },
     ['permission']

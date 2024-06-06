@@ -13,7 +13,7 @@ define('controls/permissions/User', [
 ], function (Permission, QUIButton, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
 
     return new Class({
@@ -151,8 +151,8 @@ define('controls/permissions/User', [
          */
         $onOpen: function () {
             new QUIButton({
-                text     : QUILocale.get('quiqqer/quiqqer', 'permission.control.btn.user.save'),
-                title    : QUILocale.get('quiqqer/quiqqer', 'permission.control.btn.user.save'),
+                text     : QUILocale.get('quiqqer/core', 'permission.control.btn.user.save'),
+                title    : QUILocale.get('quiqqer/core', 'permission.control.btn.user.save'),
                 textimage: 'fa fa-save',
                 styles   : {
                     'float': 'right'

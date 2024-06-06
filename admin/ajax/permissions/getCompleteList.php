@@ -12,7 +12,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_permissions_getCompleteList',
-    function ($params, $btype) {
+    static function ($params, $btype): array {
         $params = json_decode($params, true);
         $Manager = QUI::getPermissionManager();
 
@@ -36,7 +36,7 @@ QUI::$Ajax->registerFunction(
 
             default:
                 throw new QUI\Exception(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.missing.permission.entry')
+                    QUI::getLocale()->get('quiqqer/core', 'exception.missing.permission.entry')
                 );
         }
 

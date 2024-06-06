@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_media_file_preview',
-    function ($project, $fileid) {
+    static function ($project, $fileid): void {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $File = $Media->get($fileid);
@@ -21,7 +21,9 @@ QUI::$Ajax->registerFunction(
             exit;
         }
 
-        QUI\Utils\System\File::fileHeader($File->getFullPath());
+        if (method_exists($File, 'getFullPath')) {
+            QUI\Utils\System\File::fileHeader($File->getFullPath());
+        }
     },
     ['project', 'fileid'],
     'Permission::checkAdminUser'

@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_desktop_workspace_delete',
-    function ($ids) {
+    static function ($ids): void {
         $User = QUI::getUserBySession();
         $ids = json_decode($ids, true);
 

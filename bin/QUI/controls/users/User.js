@@ -32,7 +32,7 @@ define('controls/users/User', [
 ) {
     'use strict';
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     /**
      * @class controls/users/User
@@ -171,7 +171,7 @@ define('controls/users/User', [
             this.addButton(
                 new QUIButtonSwitch({
                     name: 'status',
-                    text: QUILocale.get('quiqqer/quiqqer', 'isActivate'),
+                    text: QUILocale.get('quiqqer/core', 'isActivate'),
                     status: true,
                     disabled: true,
                     events: {
@@ -284,7 +284,7 @@ define('controls/users/User', [
 
                     if (User.isActive() === -1) {
                         Status.setSilentOff();
-                        Status.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isDeactivate'));
+                        Status.setAttribute('text', QUILocale.get('quiqqer/core', 'isDeactivate'));
                         Status.disable();
                         return;
                     }
@@ -293,10 +293,10 @@ define('controls/users/User', [
 
                     if (!User.isActive()) {
                         Status.off();
-                        Status.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isDeactivate'));
+                        Status.setAttribute('text', QUILocale.get('quiqqer/core', 'isDeactivate'));
                     } else {
                         Status.on();
-                        Status.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
+                        Status.setAttribute('text', QUILocale.get('quiqqer/core', 'isActivate'));
                     }
                 });
 
@@ -533,7 +533,7 @@ define('controls/users/User', [
                         new Element('tr', {
                             html: '<td colspan="2">' +
                                 '    <div class="content-message-error">' +
-                                QUILocale.get('quiqqer/quiqqer', 'message.user.has.no.password') +
+                                QUILocale.get('quiqqer/core', 'message.user.has.no.password') +
                                 '    </div>' +
                                 '</td>'
                         }).inject(Body.getElement('tbody'));
@@ -583,7 +583,7 @@ define('controls/users/User', [
                                 Table.addClass('authenticator-enabled');
 
                                 Btn.getElm().setStyle('width', null);
-                                Btn.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
+                                Btn.setAttribute('text', QUILocale.get('quiqqer/core', 'isActivate'));
                                 Btn.getElm().removeClass('btn-red');
                                 Btn.getElm().addClass('btn-green');
 
@@ -593,7 +593,7 @@ define('controls/users/User', [
                             Table.removeClass('authenticator-enabled');
 
                             Btn.getElm().setStyle('width', null);
-                            Btn.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isDeactivate'));
+                            Btn.setAttribute('text', QUILocale.get('quiqqer/core', 'isDeactivate'));
                             Btn.getElm().addClass('btn-red');
                             Btn.getElm().removeClass('btn-green');
 
@@ -636,14 +636,14 @@ define('controls/users/User', [
 
                     for (i = 0, len = authenticators.length; i < len; i++) {
                         enabled = false;
-                        title = QUILocale.get('quiqqer/quiqqer', 'isDeactivate');
-                        text = QUILocale.get('quiqqer/quiqqer', 'isDeactivate');
+                        title = QUILocale.get('quiqqer/core', 'isDeactivate');
+                        text = QUILocale.get('quiqqer/core', 'isDeactivate');
                         cls = 'btn-red';
 
                         if (authenticators[i].hasClass('authenticator-enabled')) {
                             enabled = true;
-                            title = QUILocale.get('quiqqer/quiqqer', 'isActivate');
-                            text = QUILocale.get('quiqqer/quiqqer', 'isActivate');
+                            title = QUILocale.get('quiqqer/core', 'isActivate');
+                            text = QUILocale.get('quiqqer/core', 'isActivate');
                             cls = 'btn-green';
                         }
 
@@ -898,10 +898,10 @@ define('controls/users/User', [
 
             if (this.getUser().isActive()) {
                 Status.setSilentOn();
-                Status.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
+                Status.setAttribute('text', QUILocale.get('quiqqer/core', 'isActivate'));
             } else {
                 Status.setSilentOff();
-                Status.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isDeactivate'));
+                Status.setAttribute('text', QUILocale.get('quiqqer/core', 'isDeactivate'));
             }
 
             this.setAttribute('icon', 'fa fa-user');
@@ -949,10 +949,10 @@ define('controls/users/User', [
 
                 if (User.isActive()) {
                     Button.on();
-                    Button.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
+                    Button.setAttribute('text', QUILocale.get('quiqqer/core', 'isActivate'));
                 } else {
                     Button.off();
-                    Button.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isDeactivate'));
+                    Button.setAttribute('text', QUILocale.get('quiqqer/core', 'isDeactivate'));
                 }
 
                 this.Loader.hide();
@@ -965,10 +965,10 @@ define('controls/users/User', [
 
                 if (User.isActive()) {
                     Button.setSilentOn();
-                    Button.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
+                    Button.setAttribute('text', QUILocale.get('quiqqer/core', 'isActivate'));
                 } else {
                     Button.setSilentOff();
-                    Button.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isDeactivate'));
+                    Button.setAttribute('text', QUILocale.get('quiqqer/core', 'isDeactivate'));
                 }
 
                 this.Loader.hide();

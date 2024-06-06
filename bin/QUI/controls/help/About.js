@@ -31,8 +31,8 @@ define('controls/help/About', [
         options: {
             maxHeight      : 400,
             maxWidth       : 600,
-            title          : QUILocale.get('quiqqer/quiqqer', 'menu.help.about.text'),
-            closeButtonText: QUILocale.get('quiqqer/quiqqer', 'close')
+            title          : QUILocale.get('quiqqer/core', 'menu.help.about.text'),
+            closeButtonText: QUILocale.get('quiqqer/core', 'close')
         },
 
         initialize: function (options) {

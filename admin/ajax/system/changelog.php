@@ -8,8 +8,8 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_changelog',
-    function () {
-        $Package = QUI::getPackage('quiqqer/quiqqer');
+    static function (): string {
+        $Package = QUI::getPackage('quiqqer/core');
         $changelog = $Package->getDir() . 'CHANGELOG';
 
         return htmlspecialchars(file_get_contents($changelog));

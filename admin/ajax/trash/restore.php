@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_trash_restore',
-    function ($project, $ids, $parentid) {
+    static function ($project, $ids, $parentid): void {
         $Project = QUI::getProjectManager()->decode($project);
         $ids = json_decode($ids, true);
         $Trash = $Project->getTrash();

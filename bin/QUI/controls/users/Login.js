@@ -185,9 +185,7 @@ define('controls/users/Login', [
                     return !Node.get('data-qui');
                 });
 
-            if (
-                !forms.length
-            ) {
+            if (!forms.length) {
                 QUIAjax.post('ajax_user_logout', function() {
                     window.location.reload();
                 });
@@ -201,7 +199,7 @@ define('controls/users/Login', [
             for (let i = 1, len = forms.length; i < len; i++) {
                 new Element('div', {
                     'class': 'quiqqer-login-or',
-                    html: '<span>' + QUILocale.get('quiqqer/quiqqer', 'controls.users.auth.login.or') + '</span>'
+                    html: '<span>' + QUILocale.get('quiqqer/core', 'controls.users.auth.login.or') + '</span>'
                 }).inject(forms[i], 'before');
             }
 

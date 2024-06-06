@@ -11,14 +11,14 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_media_file_getParentId',
-    function ($project, $fileid) {
+    static function ($project, $fileid): int {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $fileid = (int)$fileid;
 
         try {
-            $File = $Media->get((int)$fileid);
-        } catch (QUI\Exception $Exception) {
+            $File = $Media->get($fileid);
+        } catch (QUI\Exception) {
             return $Media->firstChild()->getId();
         }
 

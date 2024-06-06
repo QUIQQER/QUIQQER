@@ -13,7 +13,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_getConfig',
-    function ($package) {
+    static function ($package) {
         $Package = QUI::getPackageManager()->getInstalledPackage($package);
 
         return $Package->getConfig()->toArray();

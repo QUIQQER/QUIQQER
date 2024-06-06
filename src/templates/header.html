@@ -1,0 +1,276 @@
+    {strip}<title>{$Template->getTitle()}</title>{/strip}
+
+    <!-- [begin] meta -->
+    <meta charset="utf-8"/>
+
+    {if $Template->getAttribute('html5') === false}
+    <meta http-equiv="content-language" content="{$Project->getlang()}" />
+    <meta name="page-topic" content="{$Site->getAttribute('title')|escape:'html'}" />
+
+    <meta name="date" content="{$Site->getAttribute('e_date')}" />
+    <meta name="copyright" content="{$Project->getConfig('meta.copyright')}" />
+    <meta name="publisher" content="{$Project->getConfig('meta.publisher')}" />
+    {/if}
+
+    <meta name="description" content="{$Site->getAttribute('meta.description')|escape:'html'}" />
+    <meta name="keywords" content="{$Site->getAttribute('meta.keywords')|escape:'html'}" />
+
+    {if $Locale->no_translation}
+    <meta name="robots" content="noindex" />
+    <meta name="googlebot" content="noindex"/>
+    {else}
+    <meta name="robots" content="{$Site->getAttribute('meta.robots')}" />
+    <meta name="googlebot" content="{$Site->getAttribute('meta.robots')}"/>
+    {/if}
+
+    <meta name="generator" content="{$smarty.const.GENERATOR}" />
+    <meta name="author" content="{$Site->getAttribute('meta.author')}" />
+    <meta name="revisit-after" content="{$Site->getAttribute('meta.revisit')}" />
+
+    <!-- [end] meta -->
+
+    {if $Project->getConfig('favicon')}
+    <link rel="icon" href="{$Project->getConfig('favicon')}" type="image/png" />
+
+    <!-- For IE 11, Chrome, Firefox, Safari, Opera -->
+    <link rel="icon" href="{image src=$Project->getConfig('favicon') width=16 height=16 onlysrc=1 }"
+          sizes="16x16" type="image/png"/>
+    <link rel="icon" href="{image src=$Project->getConfig('favicon') width=32 height=32 onlysrc=1}"
+          sizes="32x32" type="image/png"/>
+    <link rel="icon" href="{image src=$Project->getConfig('favicon') width=48 height=48 onlysrc=1}"
+          sizes="48x48" type="image/png"/>
+    <link rel="icon" href="{image src=$Project->getConfig('favicon') width=64 height=64 onlysrc=1}"
+          sizes="62x62" type="image/png"/>
+    <link rel="icon" href="{image src=$Project->getConfig('favicon') width=128 height=128 onlysrc=1}"
+          sizes="128x128" type="image/png"/>
+    {/if}
+
+    <!--
+    <link rel="manifest" href="{$URL_DIR}manifest.json" />
+    -->
+
+    <script type="text/javascript" data-no-cache="1">
+        var URL_DIR          = '{$URL_DIR}',
+            URL_OPT_DIR      = '{$URL_OPT_DIR}',
+            URL_BIN_DIR      = '{$URL_BIN_DIR}',
+            URL_LIB_DIR      = '{$URL_LIB_DIR}',
+            URL_VAR_DIR      = '{$URL_VAR_DIR}',
+            URL_PROJECT_DIR  = '{$URL_USR_DIR}{$Project->getName()}/',
+            URL_TEMPLATE_DIR = '{$URL_OPT_DIR}{$Project->getAttribute('template')}/';
+
+        var QUIQQER = {
+            lu : '{$lastUpdate|md5}',
+            ajax: '{$URL_DIR}ajax.php',
+            title: '{$Template->getTitle()|escape:"html"}',
+            country: '{$systemCountry}'
+        };
+
+        {assign var=httpshost value=$Project->getVHost( true, true )}
+        var QUIQQER_PROJECT = {
+            name      : '{$Project->getName()}',
+            lang      : '{$Project->getLang()}',
+            languages : '{$languages}',
+            logo      : '{if isset($projectLogo)}{$projectLogo}{/if}',
+            template  : '{$Project->getAttribute("template")|escape:"html"}',
+            httpshost : {if strpos( $httpshost, 'https' ) !== false}'{$httpshost}'{else}false{/if}
+        };
+
+        var QUIQQER_SITE = {
+            id   : '{$Site->getId()}',
+            type : '{$Site->getAttribute("type")}',
+            url  : '{$Site->getUrlRewritten()}'
+        };
+
+        var QUIQQER_ONLOAD_MODULES = {$loadModuleFiles|json_encode:true},
+            QUIQQER_FRONTEND       = 1,
+            QUIQQER_LOCALE         = {$localeFiles|json_encode:true};
+
+        {if "LOGIN_FAILED"|defined}
+            {if LOGIN_FAILED|is_string}
+            var QUIQQER_LOGIN_FAILED = "{$smarty.const.LOGIN_FAILED}";
+            {else}
+            var QUIQQER_LOGIN_FAILED = "{locale group="quiqqer/core" value="exception.login.fail"}";
+            {/if}
+        {/if}
+    </script>
+    <script id="quiqqer-user-defined">
+        {assign var=userCountry value=$User->getCountry()}
+        var QUIQQER_USER = {
+            id   : '{$User->getUUID()}',
+            name : '{$User->getName()}',
+            lang : '{$User->getLang()}',
+            country: {if $userCountry}'{$userCountry->getCode()}'{else}false{/if}
+        };
+    </script>
+
+    <!-- quiqqer-js-defined -->
+
+    {if $Template->getAttribute('mootools')}
+        <!-- mootools -->
+        <script src="{$URL_OPT_DIR}bin/qui/qui/lib/mootools-core.js?lu={$lastUpdate|md5}"></script>
+        <script src="{$URL_OPT_DIR}bin/qui/qui/lib/mootools-more.js?lu={$lastUpdate|md5}"></script>
+        <script src="{$URL_OPT_DIR}bin/qui/qui/lib/moofx.js?lu={$lastUpdate|md5}"></script>
+    {/if}
+
+    {if $Template->getAttribute('requirejs')}
+        <!-- include components -->
+        <script src="{$URL_OPT_DIR}bin/quiqqer-asset/requirejs/requirejs/require.js?lu={$lastUpdate|md5}"></script>
+        <script>
+            require.config({
+                baseUrl : URL_DIR,
+                paths   : {
+                    "assets"    : URL_OPT_DIR +'bin',
+                    "package"   : URL_OPT_DIR.replace(/\/+$/,''),
+                    "locale"    : URL_VAR_DIR +'locale/bin',
+                    "qui"       : URL_OPT_DIR +'bin/qui/qui',
+                    "classes"   : URL_BIN_DIR +'QUI/classes',
+                    "controls"  : URL_BIN_DIR +'QUI/controls',
+                    "utils"     : URL_BIN_DIR +'QUI/utils',
+                    "polyfills" : URL_BIN_DIR +'QUI/polyfills',
+                    "Controls"  : URL_BIN_DIR +'Controls',
+                    "project"   : URL_TEMPLATE_DIR +'bin/js',
+
+                    "Ajax"          : URL_BIN_DIR +'QUI/Ajax',
+                    "Locale"        : URL_BIN_DIR +'QUI/Locale',
+                    "UploadManager" : URL_BIN_DIR +'QUI/UploadManager',
+                    "Mustache"      : URL_OPT_DIR + 'bin/quiqqer-asset/mustache/mustache/mustache.min',
+                    "QUIQQER"      :  URL_OPT_DIR + 'quiqqer/core/bin/QUI/QUIQQER',
+                    "Packages"      :  URL_OPT_DIR + 'quiqqer/core/bin/QUI/Packages',
+
+                    "MooToolsCore"      : URL_OPT_DIR + "bin/qui/qui/lib/mootools-core",
+                    "MooToolsMore"      : URL_OPT_DIR + "bin/qui/qui/lib/mootools-more",
+                    "MooFX"             : URL_OPT_DIR + "bin/qui/qui/lib/moofx",
+                    
+                    "URI"               : URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/URI',
+                    'IPv6'              : URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/IPv6',
+                    'punycode'          : URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/punycode',
+                    'SecondLevelDomains': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/SecondLevelDomains'
+                },
+                waitSeconds : 0,
+                locale      : QUIQQER_USER.lang +"-"+ QUIQQER_USER.lang,
+                catchError  : true,
+                urlArgs     : "update={$lastUpdate|md5}",
+
+                map : {
+                    '*': {
+                        'css'    : URL_OPT_DIR +'bin/qui/qui/lib/css.min.js',
+                        'image'  : URL_OPT_DIR +'bin/qui/qui/lib/image.min.js',
+                        'text'   : URL_OPT_DIR +'bin/qui/qui/lib/text.min.js'
+                    }
+                },
+
+                shim: {
+                    URI : {
+                        deps: ['IPv6', 'punycode', 'SecondLevelDomains']
+                    },
+                    IPv6 : {
+                        exports: 'IPv6'
+                    },
+                    punycode : {
+                        exports: 'punycode'
+                    },
+                    SecondLevelDomains: {
+                        exports: 'SecondLevelDomains'
+                    },
+                    MooFX: {
+                        exports: 'moofx'
+                    },
+                    MooTools: {
+                        exports: 'MooTools',
+                        deps: ["MooToolsCore", "MooToolsMore", "MooFX"]
+                    },
+                    MooToolsCore: {
+                        exports: 'MooTools'
+                    },
+                    MooToolsMore: {
+                        deps: [
+                            'MooToolsCore'
+                        ]
+                    }
+                }
+            });
+        </script>
+
+        <script>
+            window.addEvent("domready", function () {
+                "use strict";
+
+                require(['Locale'].append(QUIQQER_LOCALE), function (QUILocale) {
+                    QUILocale.setCurrent(QUIQQER_PROJECT.lang);
+
+                    if (window.location.toString().indexOf('lang=false') !== -1) {
+                        QUILocale.no_translation = true;
+                    }
+
+                    // Load QUI
+                    require(["qui/QUI"], function (QUI) {
+                        window.quiIsLoaded = true;
+
+                        QUI.addEvent("onError", function (msg, url, linenumber) {
+                            if (typeof linenumber === "undefined") {
+                                linenumber = 0;
+                            }
+
+                            console.error(msg);
+                            console.error(url);
+                            console.error("LineNo: " + linenumber);
+                        });
+                    });
+                });
+
+                // workaround for slower pc's
+                require(['qui/QUI'], function (QUI) {
+                    QUI.parse(document.body);
+                });
+            });
+
+
+            window.quiIsLoaded = false;
+            window.whenQuiLoaded = function() {
+                if (quiIsLoaded) {
+                    return Promise.resolve();
+                }
+
+                return new Promise(function(resolve) {
+                    setTimeout(function () {
+                        whenQuiLoaded().then(resolve);
+                    }, 100);
+                });
+            };
+        </script>
+    {/if}
+
+    <!-- canonical -->
+    {$Canonical->output()}
+
+    <!-- quiqqer css -->
+
+
+    {if $Template->getAttribute('rel_next')}
+        <link rel="next" href="{url site=$Smarty->getHeaderAttribute('rel_next')}" />
+    {/if}
+
+    {if $Template->getAttribute('rel_prev')}
+        <link rel="prev" href="{url site=$Smarty->getHeaderAttribute('rel_prev')}" />
+    {/if}
+
+    {assign var=projectLang value=$Project->getLang()}
+    {assign var=projectLangs value=$Project->getAttribute('langs')}
+    {foreach from=$projectLangs item=lang}
+        {if $Site->existsAttribute("`$lang`-link")}
+            <link rel="alternate" hreflang="{$lang}"  href="{$Site->getAttribute("`$lang`-link")}"/>
+        {elseif $Site->existLang($lang)}
+            <link rel="alternate" hreflang="{$lang}" href="{url id=$Site->getId($lang) lang=$lang rewritten=true host=true}" />
+        {/if}
+    {/foreach}
+
+
+    {if isset( $siteStyle )}
+        <link href="{$siteStyle}" rel="stylesheet" />
+    {/if}
+
+    {if isset( $siteScript )}
+        <script type="text/javascript" src="{$siteScript}"></script>
+    {/if}
+
+    {$headerExtend}

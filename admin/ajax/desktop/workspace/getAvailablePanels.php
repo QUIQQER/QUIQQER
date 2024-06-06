@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_desktop_workspace_getAvailablePanels',
-    function () {
+    static function (): array {
         return QUI\Workspace\Manager::getAvailablePanels();
     },
     false,

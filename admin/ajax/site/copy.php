@@ -12,7 +12,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_site_copy',
-    function ($project, $id, $newParent) {
+    static function ($project, $id, $newParent): int {
         $Project = QUI::getProjectManager()->decode($project);
         $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
         $newParent = json_decode($newParent, true);

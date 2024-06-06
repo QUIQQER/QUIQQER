@@ -14,7 +14,7 @@ define('controls/permissions/Site', [
 ], function (Permission, QUIButton, QUIConfirm, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
 
@@ -112,7 +112,7 @@ define('controls/permissions/Site', [
          */
         $onOpen: function () {
             new QUIButton({
-                title    : QUILocale.get('quiqqer/quiqqer', 'permission.control.btn.site.save.recursive'),
+                title    : QUILocale.get('quiqqer/core', 'permission.control.btn.site.save.recursive'),
                 textimage: 'fa fa-reply-all',
                 styles   : {
                     'float': 'right'
@@ -125,8 +125,8 @@ define('controls/permissions/Site', [
             }).inject(this.$Buttons);
 
             new QUIButton({
-                text     : QUILocale.get('quiqqer/quiqqer', 'permission.control.btn.site.save'),
-                title    : QUILocale.get('quiqqer/quiqqer', 'permission.control.btn.site.save.text'),
+                text     : QUILocale.get('quiqqer/core', 'permission.control.btn.site.save'),
+                title    : QUILocale.get('quiqqer/core', 'permission.control.btn.site.save.text'),
                 textimage: 'fa fa-save',
                 styles   : {
                     'float': 'right'
@@ -155,20 +155,20 @@ define('controls/permissions/Site', [
             var self = this;
 
             new QUIConfirm({
-                title      : QUILocale.get('quiqqer/quiqqer', 'permission.control.site.recursive.win.title'),
+                title      : QUILocale.get('quiqqer/core', 'permission.control.site.recursive.win.title'),
                 icon       : 'fa fa-reply-all',
                 maxHeight  : 300,
                 maxWidth   : 450,
                 texticon   : false,
-                text       : QUILocale.get('quiqqer/quiqqer', 'permission.control.site.recursive.win.text'),
-                information: QUILocale.get('quiqqer/quiqqer', 'permission.control.site.recursive.win.information'),
+                text       : QUILocale.get('quiqqer/core', 'permission.control.site.recursive.win.text'),
+                information: QUILocale.get('quiqqer/core', 'permission.control.site.recursive.win.information'),
 
                 cancel_button: {
-                    text     : QUILocale.get('quiqqer/quiqqer', 'cancel'),
+                    text     : QUILocale.get('quiqqer/core', 'cancel'),
                     textimage: 'fa fa-remove'
                 },
                 ok_button    : {
-                    text     : QUILocale.get('quiqqer/quiqqer', 'accept'),
+                    text     : QUILocale.get('quiqqer/core', 'accept'),
                     textimage: 'fa fa-check'
                 },
 

@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_address_getAddressList',
-    function ($ids) {
+    static function ($ids): array {
         $ids = json_decode($ids, true);
         $list = [];
 
@@ -18,8 +18,9 @@ QUI::$Ajax->registerFunction(
             $result = QUI::getDataBase()->fetch([
                 'select' => ['id', 'uid'],
                 'from' => QUI\Users\Manager::tableAddress(),
-                'where' => [
-                    'id' => $id
+                'where_or' => [
+                    'id' => $id,
+                    'uuid' => $id
                 ],
                 'limit' => 1
             ]);
@@ -29,13 +30,14 @@ QUI::$Ajax->registerFunction(
             }
 
             try {
-                $uid = (int)$result[0]['uid'];
-                $User = QUI::getUsers()->get((int)$uid);
-                $Address = $User->getAddress((int)$id);
+                $uid = $result[0]['uid'];
+                $User = QUI::getUsers()->get($uid);
+                $Address = $User->getAddress($id);
 
                 $attributes = $Address->getAttributes();
                 $attributes['text'] = $Address->getText();
-                $attributes['id'] = $Address->getId();
+                $attributes['id'] = $Address->getUUID();
+                $attributes['uuid'] = $Address->getUUID();
 
                 $list[] = $attributes;
             } catch (QUI\Exception $Exception) {

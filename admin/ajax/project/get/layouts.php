@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_get_layouts',
-    function ($project) {
+    static function ($project): array {
         return QUI\Projects\Manager::decode($project)->getLayouts();
     },
     ['project'],

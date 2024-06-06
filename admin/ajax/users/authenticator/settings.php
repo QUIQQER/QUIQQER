@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_authenticator_settings',
-    function ($uid, $authenticator) {
+    static function ($uid, $authenticator): string {
         $User = QUI::getUsers()->get($uid);
         $Authenticator = $User->getAuthenticator($authenticator);
         $Settings = $Authenticator->getSettingsControl();

@@ -2,7 +2,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_login',
-    function ($authenticator, $params, $globalauth) {
+    static function ($authenticator, $params, $globalauth) {
         QUI::getEvents()->fireEvent('userLoginAjaxStart');
 
         QUI::getSession()->destroy();
@@ -10,7 +10,7 @@ QUI::$Ajax->registerFunction(
 
         $User = QUI::getUserBySession();
 
-        if ($User->getId()) {
+        if ($User->getUUID()) {
             QUI::getSession()->remove('inAuthentication');
         }
 
@@ -23,7 +23,7 @@ QUI::$Ajax->registerFunction(
             if ($Exception->getCode() === 429) {
                 throw new QUI\Users\UserAuthException(
                     [
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'exception.login.fail.login_locked'
                     ],
                     $Exception->getCode()
@@ -63,7 +63,7 @@ QUI::$Ajax->registerFunction(
             'authenticator' => $Login->next(),
             'control' => $control,
             'user' => [
-                'id' => $SessionUser->getId(),
+                'id' => $SessionUser->getUUID(),
                 'name' => $SessionUser->getName(),
                 'lang' => $SessionUser->getLang()
             ]

@@ -13,7 +13,7 @@ define('controls/permissions/Group', [
 ], function (Permission, QUIButton, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
 
@@ -149,8 +149,8 @@ define('controls/permissions/Group', [
          */
         $onOpen: function () {
             new QUIButton({
-                text     : QUILocale.get('quiqqer/quiqqer', 'permission.control.btn.group.save'),
-                title    : QUILocale.get('quiqqer/quiqqer', 'permission.control.btn.group.save'),
+                text     : QUILocale.get('quiqqer/core', 'permission.control.btn.group.save'),
+                title    : QUILocale.get('quiqqer/core', 'permission.control.btn.group.save'),
                 textimage: 'fa fa-save',
                 styles   : {
                     'float': 'right'

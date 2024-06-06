@@ -11,10 +11,12 @@
  * @throws QUI\Exception
  */
 
+use QUI\Mail\Mailer;
+
 QUI::$Ajax->registerFunction(
     'ajax_user_setAndSendPassword',
-    function ($userId, $newPassword, $forceNew) {
-        $User = QUI::getUsers()->get((int)$userId);
+    static function ($userId, $newPassword, $forceNew): void {
+        $User = QUI::getUsers()->get($userId);
         $User->setPassword($newPassword);
 
         $forceNew = !empty($forceNew);
@@ -27,16 +29,16 @@ QUI::$Ajax->registerFunction(
         QUI::getMessagesHandler()->clear();
 
         // send mail
-        $Mailer = new \QUI\Mail\Mailer();
+        $Mailer = new Mailer();
         $email = $User->getAttribute('email');
 
         if (empty($email)) {
             QUI::getMessagesHandler()->addAttention(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'message.ajax.user.setAndSendPassword.no_mail_sent',
                     [
-                        'user' => $User->getName() . ' (#' . $User->getId() . ')'
+                        'user' => $User->getName() . ' (#' . $User->getUUID() . ')'
                     ]
                 )
             );
@@ -50,7 +52,7 @@ QUI::$Ajax->registerFunction(
 
         $Mailer->setSubject(
             $Locale->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'mails.user.new_password.subject'
             )
         );
@@ -59,13 +61,13 @@ QUI::$Ajax->registerFunction(
 
         if ($forceNew) {
             $forceNewMsg = $Locale->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'mails.user.new_password.body.force_new'
             );
         }
 
         $body = $Locale->get(
-            'quiqqer/quiqqer',
+            'quiqqer/core',
             'mails.user.new_password.body',
             [
                 'name' => $User->getName(),
@@ -79,10 +81,10 @@ QUI::$Ajax->registerFunction(
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'message.ajax.user.setAndSendPassword.success',
                 [
-                    'user' => $User->getName() . ' (#' . $User->getId() . ')'
+                    'user' => $User->getName() . ' (#' . $User->getUUID() . ')'
                 ]
             )
         );

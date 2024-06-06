@@ -203,7 +203,7 @@ define('controls/projects/project/Sitemap', [
                         if (self.getAttribute('media')) {
                             self.$Map.appendChild(
                                 new QUISitemapItem({
-                                    text    : Locale.get('quiqqer/quiqqer', 'projects.project.sitemap.media'),
+                                    text    : Locale.get('quiqqer/core', 'projects.project.sitemap.media'),
                                     value   : 'media',
                                     icon    : 'fa fa-picture-o',
                                     dragable: true,
@@ -454,7 +454,7 @@ define('controls/projects/project/Sitemap', [
                             new QUISitemapItem({
                                 icon       : 'fa fa-level-up',
                                 text       : '...',
-                                title      : Locale.get('quiqqer/quiqqer', 'control.project.sitemap.prev'),
+                                title      : Locale.get('quiqqer/core', 'control.project.sitemap.prev'),
                                 contextmenu: false,
                                 sheets     : sheets,
                                 Item       : Item,
@@ -488,7 +488,7 @@ define('controls/projects/project/Sitemap', [
                             new QUISitemapItem({
                                 icon       : 'fa fa-level-down',
                                 text       : '...',
-                                title      : Locale.get('quiqqer/quiqqer', 'control.project.sitemap.next'),
+                                title      : Locale.get('quiqqer/core', 'control.project.sitemap.next'),
                                 contextmenu: false,
                                 sheets     : sheets,
                                 Item       : Item,
@@ -613,7 +613,7 @@ define('controls/projects/project/Sitemap', [
             ContextMenu.clearChildren().appendChild(
                 new QUIContextmenuItem({
                     name  : 'create-new-site',
-                    text  : Locale.get('quiqqer/quiqqer', 'projects.project.site.btn.new.text'),
+                    text  : Locale.get('quiqqer/core', 'projects.project.site.btn.new.text'),
                     icon  : 'fa fa-file-text',
                     events: {
                         onClick: function () {
@@ -630,7 +630,7 @@ define('controls/projects/project/Sitemap', [
             ).appendChild(
                 new QUIContextmenuItem({
                     name  : 'copy',
-                    text  : Locale.get('quiqqer/quiqqer', 'copy'),
+                    text  : Locale.get('quiqqer/core', 'copy'),
                     icon  : 'fa fa-copy',
                     events: {
                         onClick: function () {
@@ -648,7 +648,7 @@ define('controls/projects/project/Sitemap', [
             ).appendChild(
                 new QUIContextmenuItem({
                     name  : 'cut',
-                    text  : Locale.get('quiqqer/quiqqer', 'cut'),
+                    text  : Locale.get('quiqqer/core', 'cut'),
                     icon  : 'fa fa-cut',
                     events: {
                         onClick: function () {
@@ -667,7 +667,7 @@ define('controls/projects/project/Sitemap', [
                 new QUIContextmenuItem({
                     disabled: true,
                     name    : 'paste',
-                    text    : Locale.get('quiqqer/quiqqer', 'paste'),
+                    text    : Locale.get('quiqqer/core', 'paste'),
                     icon    : 'fa fa-paste',
                     events  : {
                         onClick: function () {
@@ -679,7 +679,7 @@ define('controls/projects/project/Sitemap', [
                 new QUIContextmenuItem({
                     disabled: true,
                     name    : 'linked-paste',
-                    text    : Locale.get('quiqqer/quiqqer', 'linked.paste'),
+                    text    : Locale.get('quiqqer/core', 'linked.paste'),
                     icon    : 'fa fa-paste',
                     events  : {
                         onClick: function () {
@@ -692,7 +692,7 @@ define('controls/projects/project/Sitemap', [
             ).appendChild(
                 new QUIContextmenuItem({
                     name  : 'open-in-website',
-                    text  : Locale.get('quiqqer/quiqqer', 'project.sitemap.open.in.window'),
+                    text  : Locale.get('quiqqer/core', 'project.sitemap.open.in.window'),
                     icon  : 'fa fa-external-link',
                     events: {
                         onClick: function () {
@@ -706,8 +706,8 @@ define('controls/projects/project/Sitemap', [
                 new QUIContextmenuItem({
                     name  : 'de-activate-site',
                     text  : active ?
-                        Locale.get('quiqqer/quiqqer', 'projects.project.site.btn.deactivate.text') :
-                        Locale.get('quiqqer/quiqqer', 'projects.project.site.btn.activate.text'),
+                        Locale.get('quiqqer/core', 'projects.project.site.btn.deactivate.text') :
+                        Locale.get('quiqqer/core', 'projects.project.site.btn.activate.text'),
                     icon  : active ? 'fa fa-remove' : 'fa fa-ok',
                     events: {
                         onClick: function () {
@@ -764,12 +764,12 @@ define('controls/projects/project/Sitemap', [
 
                     Paste.setAttribute(
                         'text',
-                        Locale.get('quiqqer/quiqqer', 'paste') + ':<br /> ' + dataString
+                        Locale.get('quiqqer/core', 'paste') + ':<br /> ' + dataString
                     );
 
                     Linked.setAttribute(
                         'text',
-                        Locale.get('quiqqer/quiqqer', 'linked.paste') + ':<br /> ' + dataString
+                        Locale.get('quiqqer/core', 'linked.paste') + ':<br /> ' + dataString
                     );
 
                     Paste.enable();
@@ -836,7 +836,7 @@ define('controls/projects/project/Sitemap', [
 
 
             new QUIConfirm({
-                title    : Locale.get('quiqqer/quiqqer', 'control.project.sitemap.sheetWindow.title'),
+                title    : Locale.get('quiqqer/core', 'control.project.sitemap.sheetWindow.title'),
                 maxHeight: 300,
                 maxWidth : 500,
                 events   : {
@@ -844,7 +844,7 @@ define('controls/projects/project/Sitemap', [
                         var Content = Win.getContent();
 
                         Content.set({
-                            html   : Locale.get('quiqqer/quiqqer', 'control.project.sitemap.sheetWindow.content'),
+                            html   : Locale.get('quiqqer/core', 'control.project.sitemap.sheetWindow.content'),
                             'class': 'qui-projects-sitemap-sheetsWindow'
                         });
 

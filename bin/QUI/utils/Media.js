@@ -89,7 +89,7 @@ define('utils/Media', [
                     QUI.getMessageHandler().then(function (MH) {
                         MH.addAttention(
                             QUILocale.get(
-                                'quiqqer/quiqqer',
+                                'quiqqer/core',
                                 'exception.media.check.name.allowed.signs',
                                 {filename : val}
                             ),

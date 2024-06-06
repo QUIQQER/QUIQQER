@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_get_config',
-    function ($project, $param) {
+    static function ($project, $param) {
         $Project = QUI\Projects\Manager::getProject($project);
 
         if (!empty($param)) {

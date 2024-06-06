@@ -11,11 +11,11 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_address_setstandard',
-    function ($uid, $aid) {
-        $User = QUI::getUsers()->get((int)$uid);
-        $Address = $User->getAddress((int)$aid);
+    static function ($uid, $aid): void {
+        $User = QUI::getUsers()->get($uid);
+        $Address = $User->getAddress($aid);
 
-        $User->setAttribute('address', $Address->getId());
+        $User->setAttribute('address', $Address->getUUID());
         $User->save();
     },
     ['uid', 'aid'],

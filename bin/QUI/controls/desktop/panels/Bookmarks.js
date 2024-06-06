@@ -40,7 +40,7 @@ define('controls/desktop/panels/Bookmarks', [
                 onCreate: this.$onCreate,
                 onInject: function () {
                     this.setAttributes({
-                        title: QUILocale.get('quiqqer/quiqqer', 'panels.bookmarks.title'),
+                        title: QUILocale.get('quiqqer/core', 'panels.bookmarks.title'),
                         icon : 'fa fa-bookmark'
                     });
 
@@ -56,7 +56,7 @@ define('controls/desktop/panels/Bookmarks', [
             var self = this;
 
             this.setAttributes({
-                title : QUILocale.get('quiqqer/quiqqer', 'panels.bookmarks.title'),
+                title : QUILocale.get('quiqqer/core', 'panels.bookmarks.title'),
                 icon  : 'fa fa-bookmark',
                 footer: false
             });
@@ -64,7 +64,7 @@ define('controls/desktop/panels/Bookmarks', [
             this.addButton({
                 name  : 'add',
                 icon  : 'fa fa-plus',
-                title : QUILocale.get('quiqqer/quiqqer', 'control.bookmarks.panel.button.add.title'),
+                title : QUILocale.get('quiqqer/core', 'control.bookmarks.panel.button.add.title'),
                 events: {
                     onClick: this.openAddDialog
                 }
@@ -73,7 +73,7 @@ define('controls/desktop/panels/Bookmarks', [
             this.addButton({
                 name  : 'edit',
                 icon  : 'fa fa-edit',
-                title : QUILocale.get('quiqqer/quiqqer', 'control.bookmarks.panel.button.edit.title'),
+                title : QUILocale.get('quiqqer/core', 'control.bookmarks.panel.button.edit.title'),
                 events: {
                     onClick: function (Btn) {
                         if (Btn.isActive()) {
@@ -104,7 +104,7 @@ define('controls/desktop/panels/Bookmarks', [
 
             this.addButton({
                 name  : 'sort',
-                title : QUILocale.get('quiqqer/quiqqer', 'control.bookmarks.panel.button.sort.title'),
+                title : QUILocale.get('quiqqer/core', 'control.bookmarks.panel.button.sort.title'),
                 icon  : 'fa fa-sort',
                 styles: {
                     'float': 'right'

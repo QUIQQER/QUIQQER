@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_site_deactivate',
-    function ($project, $id) {
+    static function ($project, $id): int {
         $Project = QUI::getProjectManager()->decode($project);
         $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
 

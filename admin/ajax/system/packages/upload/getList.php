@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_upload_getList',
-    function () {
+    static function (): array {
         return QUI\Package\LocalServer::getInstance()->getPackageList();
     },
     false,

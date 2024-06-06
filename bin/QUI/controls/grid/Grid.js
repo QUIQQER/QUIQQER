@@ -52,7 +52,7 @@ define('controls/grid/Grid', [
     'use strict';
 
     let Panel = null;
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     const resizeMeInThePanel = function() {
         this.resize();
@@ -179,7 +179,7 @@ define('controls/grid/Grid', [
                 print: true
             }, // {print : 'Drucken', pdf : 'PDF', csv : 'CSV', json : 'JSON'},
             exportRenderer: null, // function(data){data.type data.data data.Grid}
-            exportBinUrl: URL_OPT_DIR + 'quiqqer/quiqqer/lib/QUI/Export/bin/export.php',
+            exportBinUrl: URL_OPT_DIR + 'quiqqer/core/src/QUI/Export/bin/export.php',
 
             // drag & Drop
             dragdrop: false,
@@ -2068,7 +2068,7 @@ define('controls/grid/Grid', [
                     new Element('div', {
                         'class': 'data-empty',
                         html: '<div class="data-empty-cell">' +
-                            QUILocale.get('quiqqer/quiqqer', 'grid.is.empty') +
+                            QUILocale.get('quiqqer/core', 'grid.is.empty') +
                             '</div>'
                     }).inject(this.container.getElement('.bDiv'));
                 }
@@ -2474,7 +2474,7 @@ define('controls/grid/Grid', [
                 // button drop down
                 this.$Menu = new QUIButton({
                     textimage: 'fa fa-navicon',
-                    text: QUILocale.get('quiqqer/quiqqer', 'control.grid.menu.button'),
+                    text: QUILocale.get('quiqqer/core', 'control.grid.menu.button'),
                     dropDownIcon: false
                 }).inject(ToolbarRight);
 
@@ -2861,7 +2861,7 @@ define('controls/grid/Grid', [
                 if (this.getAttribute('storageKey')) {
                     const SizingBtn = new Element('div', {
                         'class': 'pSizing pButton',
-                        title: QUILocale.get('quiqqer/quiqqer', 'grid.compact.button.title'),
+                        title: QUILocale.get('quiqqer/core', 'grid.compact.button.title'),
                         'data-qui-tablesizing': 'normal',
                         events: {
                             click: this.resizeTablePerButtonClick.bind(this)
@@ -2869,7 +2869,7 @@ define('controls/grid/Grid', [
                     });
 
                     if (this.tableSizing === 'small') {
-                        SizingBtn.title = QUILocale.get('quiqqer/quiqqer', 'grid.compact.button.title.small');
+                        SizingBtn.title = QUILocale.get('quiqqer/core', 'grid.compact.button.title.small');
                         SizingBtn.setAttribute('data-qui-tableSizing', 'small');
                     }
 
@@ -2879,7 +2879,7 @@ define('controls/grid/Grid', [
                 if (options.exportData) {
                     RightButtons.appendHTML(
                         '<div class="pExport pButton" title="' +
-                        QUILocale.get('quiqqer/quiqqer', 'grid.export.button.title') + '">' +
+                        QUILocale.get('quiqqer/core', 'grid.export.button.title') + '">' +
                         '</div>');
                 }
 
@@ -3290,9 +3290,9 @@ define('controls/grid/Grid', [
         getExportSelect: function() {
             const self = this;
 
-            const btnInnerHTMLDownload = QUILocale.get('quiqqer/quiqqer', 'grid.export.button.download') +
+            const btnInnerHTMLDownload = QUILocale.get('quiqqer/core', 'grid.export.button.download') +
                 ' <span class="fa fa-solid fa-download"></span>';
-            const btnInnerHTMLPrint = QUILocale.get('quiqqer/quiqqer', 'grid.export.button.print') +
+            const btnInnerHTMLPrint = QUILocale.get('quiqqer/core', 'grid.export.button.print') +
                 ' <span class="fa fa-solid fa-print"></span>';
 
             require([
@@ -3344,13 +3344,13 @@ define('controls/grid/Grid', [
 
                     WinContent.style.padding = 0;
                     WinContent.set('html', Mustache.render(template, {
-                        'navFields': QUILocale.get('quiqqer/quiqqer', 'grid.export.nav.fields'),
-                        'navExport': QUILocale.get('quiqqer/quiqqer', 'grid.export.nav.export'),
-                        'contentFieldsTitle': QUILocale.get('quiqqer/quiqqer', 'grid.export.message.title'),
-                        'contentFieldsDesc': QUILocale.get('quiqqer/quiqqer', 'grid.export.message'),
-                        'contentExportTitle': QUILocale.get('quiqqer/quiqqer', 'grid.export.message.exportType.title'),
-                        'contentExportDesc': QUILocale.get('quiqqer/quiqqer', 'grid.export.message.exportType'),
-                        'btnNext': QUILocale.get('quiqqer/quiqqer', 'grid.export.button.next'),
+                        'navFields': QUILocale.get('quiqqer/core', 'grid.export.nav.fields'),
+                        'navExport': QUILocale.get('quiqqer/core', 'grid.export.nav.export'),
+                        'contentFieldsTitle': QUILocale.get('quiqqer/core', 'grid.export.message.title'),
+                        'contentFieldsDesc': QUILocale.get('quiqqer/core', 'grid.export.message'),
+                        'contentExportTitle': QUILocale.get('quiqqer/core', 'grid.export.message.exportType.title'),
+                        'contentExportDesc': QUILocale.get('quiqqer/core', 'grid.export.message.exportType'),
+                        'btnNext': QUILocale.get('quiqqer/core', 'grid.export.button.next'),
                         'btn': btnInnerHTMLDownload
                     }));
 
@@ -3407,8 +3407,8 @@ define('controls/grid/Grid', [
                             });
 
                         if (header === '' || header === '&nbsp;') {
-                            label.title = QUILocale.get('quiqqer/quiqqer', 'grid.export.item.noLabel');
-                            span.innerHTML = QUILocale.get('quiqqer/quiqqer', 'grid.export.item.noLabel');
+                            label.title = QUILocale.get('quiqqer/core', 'grid.export.item.noLabel');
+                            span.innerHTML = QUILocale.get('quiqqer/core', 'grid.export.item.noLabel');
                             span.classList.add('export-item__text--noLabel');
                         }
 
@@ -3468,7 +3468,7 @@ define('controls/grid/Grid', [
                         Label = new Element('label.export-fileFormat__item', {
                             html: '<span class="' + fileImage + '"></span> ' +
                                 '<div class="label"><span class="text">' +
-                                QUILocale.get('quiqqer/quiqqer', 'grid.export.type.' + exportType) + '</span></div>'
+                                QUILocale.get('quiqqer/core', 'grid.export.type.' + exportType) + '</span></div>'
                         });
 
                         Input = new Element('input', {
@@ -3544,7 +3544,7 @@ define('controls/grid/Grid', [
 
             if (Btn.getProperty('data-qui-tableSizing') === 'small') {
                 Btn.setProperty('data-qui-tableSizing', 'normal');
-                Btn.title = QUILocale.get('quiqqer/quiqqer', 'grid.sizing.button.title');
+                Btn.title = QUILocale.get('quiqqer/core', 'grid.sizing.button.title');
                 this.container.style.setProperty('--_grid-sizingMultiplier', 1);
 //                this.setAttribute('tablesizing', 'normal');
                 this.tableSizing = 'normal';
@@ -3554,7 +3554,7 @@ define('controls/grid/Grid', [
             }
 
             Btn.setProperty('data-qui-tableSizing', 'small');
-            Btn.title = QUILocale.get('quiqqer/quiqqer', 'grid.sizing.button.title.small');
+            Btn.title = QUILocale.get('quiqqer/core', 'grid.sizing.button.title.small');
             this.container.style.setProperty('--_grid-sizingMultiplier', 0.5);
 //            this.setAttribute('tablesizing', 'small');
             this.tableSizing = 'small';

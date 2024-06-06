@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_packages_checkTermsOfUse',
-    function () {
+    static function (): bool {
         $Config = new QUI\Config(ETC_DIR . 'conf.ini.php');
         $agreement = $Config->get('packagestore', 'agreedToTermsOfUse');
 

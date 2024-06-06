@@ -19,7 +19,7 @@ define('controls/projects/project/media/Select', [
 ], function (QUIControl, QUIElementSelect, QUILocale, Projects) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     /**
      * @class controls/projects/project/media/Select

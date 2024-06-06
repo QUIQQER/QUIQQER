@@ -6,7 +6,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_cache_purge',
-    function () {
+    static function (): void {
         QUI\Cache\Manager::purge();
     },
     false,

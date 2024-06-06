@@ -8,13 +8,13 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_settings_memcachedTest',
-    function ($data) {
+    static function ($data): void {
         $data = json_decode($data, true);
 
         if (!class_exists('Memcached')) {
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'message.session.auth.memcached.notinstalled'
                 )
             );
@@ -25,7 +25,7 @@ QUI::$Ajax->registerFunction(
         if (!count($data)) {
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'message.session.auth.memcached.missing.servers'
                 )
             );
@@ -39,7 +39,7 @@ QUI::$Ajax->registerFunction(
             if (!isset($entry['server'])) {
                 QUI::getMessagesHandler()->addAttention(
                     QUI::getLocale()->get(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'message.session.auth.memcached.empty.server'
                     )
                 );
@@ -51,7 +51,7 @@ QUI::$Ajax->registerFunction(
             if (!isset($entry['port'])) {
                 QUI::getMessagesHandler()->addAttention(
                     QUI::getLocale()->get(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'message.session.auth.memcached.empty.port'
                     )
                 );
@@ -76,7 +76,7 @@ QUI::$Ajax->registerFunction(
 
                 QUI::getMessagesHandler()->addAttention(
                     QUI::getLocale()->get(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'message.session.auth.memcached.error',
                         [
                             'server' => $server,
@@ -90,7 +90,7 @@ QUI::$Ajax->registerFunction(
         if (!$errors) {
             QUI::getMessagesHandler()->addSuccess(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'message.session.auth.memcached.success'
                 )
             );

@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_installLocalePackage',
-    function ($packages) {
+    static function ($packages): void {
         $json = json_decode($packages, true);
 
         if ($json && is_array($json)) {

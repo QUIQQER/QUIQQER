@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Delete cache of an media item
+ * Delete cache of a media item
  */
 
 QUI::$Ajax->registerFunction(
     'ajax_media_deleteCache',
-    function ($project, $fileId) {
+    static function ($project, $fileId): void {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
 

@@ -74,7 +74,7 @@ define('controls/packages/Installed', [
 
             this.$ViewTile = new QUIButton({
                 name  : 'viewTile',
-                title : QUILocale.get('quiqqer/quiqqer', 'packages.panel.menu'),
+                title : QUILocale.get('quiqqer/core', 'packages.panel.menu'),
                 icon  : 'fa fa-th',
                 styles: {
                     width: 50
@@ -86,7 +86,7 @@ define('controls/packages/Installed', [
 
             this.$ViewList = new QUIButton({
                 name  : 'viewList',
-                title : QUILocale.get('quiqqer/quiqqer', 'packages.panel.menu'),
+                title : QUILocale.get('quiqqer/core', 'packages.panel.menu'),
                 icon  : 'fa fa-th-list',
                 styles: {
                     width: 50

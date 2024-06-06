@@ -485,7 +485,7 @@ define('classes/projects/project/media/Item', [
 
             return new Promise(function (resolve) {
                 Ajax.post('ajax_media_deleteCache', resolve, {
-                    'package': 'quiqqer/quiqqer',
+                    'package': 'quiqqer/core',
                     project  : self.getMedia().getProject().getName(),
                     fileId   : self.getId()
                 });

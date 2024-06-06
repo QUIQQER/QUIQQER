@@ -5,7 +5,7 @@
  * the bundler sends the request between a timeframe
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package quiqqer/quiqqer
+ * @package quiqqer/core
  */
 
 define('classes/request/Bundler', [
@@ -313,7 +313,7 @@ define('classes/request/Bundler', [
                 require(['Locale'], function (QUILocale) {
                     QUI.getMessageHandler(function (MH) {
                         MH.addInformation(
-                            QUILocale.get('quiqqer/quiqqer', 'message.maintenance')
+                            QUILocale.get('quiqqer/core', 'message.maintenance')
                         );
                     });
                 });

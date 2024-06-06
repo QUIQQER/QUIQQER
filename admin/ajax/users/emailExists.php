@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_emailExists',
-    function ($email) {
+    static function ($email): bool {
         return QUI::getUsers()->emailExists($email);
     },
     ['email'],

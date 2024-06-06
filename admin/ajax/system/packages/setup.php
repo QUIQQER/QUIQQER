@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_setup',
-    function ($package) {
+    static function ($package): void {
         QUI::getPackageManager()->setup($package);
     },
     ['package'],

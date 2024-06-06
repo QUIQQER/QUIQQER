@@ -106,7 +106,7 @@ define('controls/installation/Cron', [
                     const Cancel = new Element('button', {
                         type   : 'button',
                         'class': 'qui-button',
-                        html   : QUILocale.get('quiqqer/quiqqer', 'quiqqer.setup.cron.button.next'),
+                        html   : QUILocale.get('quiqqer/core', 'quiqqer.setup.cron.button.next'),
                         styles : {
                             clear  : 'both',
                             margin : '5px 5px 0 0',
@@ -124,7 +124,7 @@ define('controls/installation/Cron', [
                     const Button = new Element('button', {
                         type   : 'button',
                         'class': 'qui-button btn-green',
-                        html   : QUILocale.get('quiqqer/quiqqer', 'quiqqer.setup.cron.button.register'),
+                        html   : QUILocale.get('quiqqer/core', 'quiqqer.setup.cron.button.register'),
                         styles : {
                             margin : '5px 0 0 0',
                             opacity: 0,

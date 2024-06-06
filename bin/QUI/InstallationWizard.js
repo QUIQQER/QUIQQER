@@ -58,7 +58,7 @@ define('InstallationWizard', [
                     }
 
                     WizardWindow = new Window({
-                        title             : QUILocale.get('quiqqer/quiqqer', 'quiqqer.setup.window.title'),
+                        title             : QUILocale.get('quiqqer/core', 'quiqqer.setup.window.title'),
                         maxHeight         : maxHeight,
                         maxWidth          : maxWidth,
                         resizable         : false,
@@ -74,7 +74,7 @@ define('InstallationWizard', [
 
                                 NextButton = new Element('button', {
                                     'class': 'qui-button',
-                                    html   : QUILocale.get('quiqqer/quiqqer', 'set.up.next.button.text'),
+                                    html   : QUILocale.get('quiqqer/core', 'set.up.next.button.text'),
                                     events : {
                                         click: this.$clickNextButton.bind(this)
                                     }
@@ -95,7 +95,7 @@ define('InstallationWizard', [
                                 QUIAjax.post('ajax_installationWizard_cancel', function () {
                                     // nothing
                                 }, {
-                                    'package': 'quiqqer/quiqqer',
+                                    'package': 'quiqqer/core',
                                     providers: JSON.encode(providers)
                                 });
                             }
@@ -105,7 +105,7 @@ define('InstallationWizard', [
                     WizardWindow.open();
                 });
             }, {
-                'package': 'quiqqer/quiqqer',
+                'package': 'quiqqer/core',
                 onError  : function () {
                     // nothing
                 }
@@ -224,7 +224,7 @@ define('InstallationWizard', [
                         // last step
                         NextButton.set('html', finishButtonTitle);
                     } else {
-                        NextButton.set('html', QUILocale.get('quiqqer/quiqqer', 'set.up.next.button.text'));
+                        NextButton.set('html', QUILocale.get('quiqqer/core', 'set.up.next.button.text'));
                     }
 
                     if (providerSteps[step].jsControl !== '') {
@@ -267,7 +267,7 @@ define('InstallationWizard', [
                         resolve();
                     });
                 }, {
-                    'package': 'quiqqer/quiqqer',
+                    'package': 'quiqqer/core',
                     provider : CurrentProvider.class,
                     step     : step
                 });
@@ -322,7 +322,7 @@ define('InstallationWizard', [
                         // @todo  open iframe
 
                         new Element('iframe', {
-                            src   : URL_OPT_DIR + 'quiqqer/quiqqer/lib/QUI/InstallationWizard/bin/execute.php',
+                            src   : URL_OPT_DIR + 'quiqqer/core/src/QUI/InstallationWizard/bin/execute.php',
                             styles: {
                                 background: '#fff',
                                 border    : 0,
@@ -343,7 +343,7 @@ define('InstallationWizard', [
                     /*
                     QUI.getMessageHandler().then(function (MH) {
                         MH.addSuccess(
-                            QUILocale.get('quiqqer/quiqqer', 'quiqqer.setup.success')
+                            QUILocale.get('quiqqer/core', 'quiqqer.setup.success')
                         );
                     });
 
@@ -353,7 +353,7 @@ define('InstallationWizard', [
                     window.location.reload();
                     */
                 }, {
-                    'package': 'quiqqer/quiqqer',
+                    'package': 'quiqqer/core',
                     provider : CurrentProvider.class,
                     data     : JSON.encode(formData),
                     onError  : function (err) {

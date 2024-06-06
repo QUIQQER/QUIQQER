@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_server_add',
-    function ($server, $params) {
+    static function ($server, $params): void {
         QUI::getPackageManager()->addServer(
             $server,
             json_decode($params, true)
@@ -18,7 +18,7 @@ QUI::$Ajax->registerFunction(
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'message.packages.server.add.successfully',
                 ['server' => $server]
             )

@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_editor_toolbar_delete',
-    function ($toolbar) {
+    static function ($toolbar): void {
         QUI\Editor\Manager::deleteToolbar($toolbar);
     },
     ['toolbar']

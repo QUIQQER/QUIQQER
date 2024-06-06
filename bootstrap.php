@@ -24,5 +24,5 @@ if (!defined('ETC_DIR')) {
     exit;
 }
 
-require_once dirname(__FILE__) . '/lib/autoload.php';
-require_once dirname(__FILE__) . '/lib/header.php';
+require_once dirname(__FILE__) . '/src/autoload.php';
+require_once dirname(__FILE__) . '/src/header.php';

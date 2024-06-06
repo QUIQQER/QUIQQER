@@ -9,8 +9,8 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_settings_window',
-    function ($file, $windowName) {
-        if (!isset($windowName) || strpos($windowName, '.xml') !== false) {
+    static function ($file, $windowName) {
+        if (!isset($windowName) || str_contains($windowName, '.xml')) {
             $windowName = false;
         }
 
@@ -20,7 +20,7 @@ QUI::$Ajax->registerFunction(
             $files = json_decode($file, true);
         }
 
-        $cacheName = 'quiqqer/package/quiqqer/quiqqer/menu/windows/' . md5(json_encode($files));
+        $cacheName = 'quiqqer/package/quiqqer/core/menu/windows/' . md5(json_encode($files));
         $Settings = QUI\Utils\XML\Settings::getInstance();
 
         if ($windowName) {
@@ -33,7 +33,7 @@ QUI::$Ajax->registerFunction(
             if (
                 !$windowName
                 && is_array($files)
-                && in_array('packages/quiqqer/quiqqer/admin/settings/cache.xml', $files)
+                && in_array('packages/quiqqer/core/admin/settings/cache.xml', $files)
             ) {
                 $windowName = 'quiqqer-cache';
             }
@@ -61,7 +61,7 @@ QUI::$Ajax->registerFunction(
 
         $result['categories'] = [];
 
-        foreach ($categories as $key => $category) {
+        foreach ($categories as $category) {
             if (isset($category['title']) && is_array($category['title'])) {
                 $category['text'] = QUI::getLocale()->get(
                     $category['title'][0],

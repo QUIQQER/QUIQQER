@@ -9,14 +9,14 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_types_get_list',
-    function ($project) {
+    static function ($project): array {
         try {
             $Project = QUI::getProjectManager()->decode($project);
         } catch (QUI\Exception) {
             $Project = false;
         }
 
-        return QUI::getPackageManager()->getAvailableSiteTypes($Project);
+        return QUI::getPackageManager()->getAvailableSiteTypes();
     },
     ['project'],
     'Permission::checkAdminUser'

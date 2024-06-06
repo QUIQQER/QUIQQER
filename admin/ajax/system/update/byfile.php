@@ -6,16 +6,18 @@
  * @params \QUI\QDOM $File
  */
 
+use QUI\QDOM;
+
 QUI::$Ajax->registerFunction(
     'ajax_system_update_byfile',
-    function ($File) {
-        /* @var $File \QUI\QDOM */
+    static function ($File): void {
+        /* @var $File QDOM */
         $filepath = $File->getAttribute('filepath');
 
         if (!file_exists($filepath) && !is_dir($filepath)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.no.quiqqer.update.archive'
                 )
             );

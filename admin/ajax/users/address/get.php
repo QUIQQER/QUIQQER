@@ -11,13 +11,14 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_address_get',
-    function ($uid, $aid) {
+    static function ($uid, $aid) {
         if (!isset($uid) || !$uid) {
             $result = QUI::getDataBase()->fetch([
                 'select' => ['id', 'uid'],
                 'from' => QUI\Users\Manager::tableAddress(),
-                'where' => [
-                    'id' => $aid
+                'where_or' => [
+                    'id' => $aid,
+                    'uuid' => $aid
                 ],
                 'limit' => 1
             ]);
@@ -25,7 +26,7 @@ QUI::$Ajax->registerFunction(
             if (!isset($result[0])) {
                 throw new QUI\Users\Exception(
                     QUI::getLocale()->get(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'exception.lib.user.address.not.found',
                         [
                             'addressId' => $aid,
@@ -35,15 +36,15 @@ QUI::$Ajax->registerFunction(
                 );
             }
 
-            $uid = (int)$result[0]['uid'];
+            $uid = $result[0]['uid'];
         }
 
-        $User = QUI::getUsers()->get((int)$uid);
-        $Address = $User->getAddress((int)$aid);
+        $User = QUI::getUsers()->get($uid);
+        $Address = $User->getAddress($aid);
         $address = $Address->getAttributes();
         $Standard = $User->getStandardAddress();
 
-        if ($Standard && $Standard->getId() == $Address->getId()) {
+        if ($Standard && $Standard->getUUID() == $Address->getUUID()) {
             $address['default'] = 1;
         } else {
             $address['default'] = 0;

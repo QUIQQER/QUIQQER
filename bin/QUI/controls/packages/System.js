@@ -26,7 +26,7 @@ define('controls/packages/System', [
              QUIAjax, QUILocale, FaviconUtils, Translator, template) {
     "use strict";
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     return new Class({
 

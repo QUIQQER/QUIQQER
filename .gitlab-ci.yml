@@ -3,7 +3,7 @@ include:
     file: '/ci-templates/.gitlab-ci.yml'
 
 variables:
-  PACKAGE_NAME: "quiqqer/quiqqer"
+  PACKAGE_NAME: "quiqqer/core"
 
 phpunit:
   image: quiqqer/testing:php-$PHP_VERSION_TO_TEST

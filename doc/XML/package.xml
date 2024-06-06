@@ -1,30 +1,30 @@
 <quiqqer>
     <package>
         <title>
-            <locale group="quiqqer/quiqqer" var="package.title"/>
+            <locale group="quiqqer/core" var="package.title"/>
         </title>
 
         <description>
-            <locale group="quiqqer/quiqqer" var="package.title"/>
+            <locale group="quiqqer/core" var="package.title"/>
         </description>
 
-        <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/quiqqer_logo.png"/>
+        <image src="URL_OPT_DIR/quiqqer/core/bin/quiqqer_logo.png"/>
 
         <preview>
-            <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/1.png"/>
-            <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/2.png"/>
-            <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/3.png"/>
-            <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/4.png"/>
-            <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/5.png"/>
+            <image src="URL_OPT_DIR/quiqqer/core/bin/preview/1.png"/>
+            <image src="URL_OPT_DIR/quiqqer/core/bin/preview/2.png"/>
+            <image src="URL_OPT_DIR/quiqqer/core/bin/preview/3.png"/>
+            <image src="URL_OPT_DIR/quiqqer/core/bin/preview/4.png"/>
+            <image src="URL_OPT_DIR/quiqqer/core/bin/preview/5.png"/>
         </preview>
 
         <support>
             <email>support@pcsg.de</email>
-            <issues>https://dev.quiqqer.com/quiqqer/quiqqer/issues</issues>
+            <issues>https://dev.quiqqer.com/quiqqer/core/issues</issues>
             <forum>https://community.quiqqer.com</forum>
-            <wiki>https://dev.quiqqer.com/quiqqer/quiqqer/wikis/home</wiki>
+            <wiki>https://dev.quiqqer.com/quiqqer/core/wikis/home</wiki>
             <irc>irc://irc.freenode.org/composer</irc>
-            <source>https://dev.quiqqer.com/quiqqer/quiqqer/tree/master</source>
+            <source>https://dev.quiqqer.com/quiqqer/core/tree/master</source>
             <docs>https://doc.quiqqer.com/</docs>
         </support>
 

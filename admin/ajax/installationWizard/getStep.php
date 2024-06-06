@@ -4,16 +4,18 @@
  * Return list of packages which needs a setup
  */
 
+use QUI\InstallationWizard\InstallationWizardInterface;
+
 QUI::$Ajax->registerFunction(
     'ajax_installationWizard_getStep',
-    function ($provider, $step) {
+    static function ($provider, $step): string {
         if (!class_exists($provider)) {
             return '';
         }
 
         $interfaces = class_implements($provider);
 
-        if (!isset($interfaces['QUI\InstallationWizard\InstallationWizardInterface'])) {
+        if (!isset($interfaces[InstallationWizardInterface::class])) {
             return '';
         }
 

@@ -13,12 +13,12 @@ use QUI\Projects\Media\Utils;
 
 QUI::$Ajax->registerFunction(
     'ajax_media_details',
-    function ($project, $fileid) {
+    static function ($project, $fileid) {
         $fileid = json_decode($fileid, true);
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
 
-        if (!\is_array($fileid)) {
+        if (!is_array($fileid)) {
             if (Utils::isMediaUrl($fileid)) {
                 $File = Utils::getMediaItemByUrl($fileid);
             } else {
@@ -29,7 +29,7 @@ QUI::$Ajax->registerFunction(
 
             try {
                 $attr['c_username'] = QUI::getUsers()->get($attr['c_user'])->getName();
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception) {
                 $attr['c_username'] = '---';
             }
 
@@ -43,11 +43,11 @@ QUI::$Ajax->registerFunction(
                 return $attr;
             }
 
-            if (!$attr['image_width']) {
+            if (!$attr['image_width'] && method_exists($File, 'getWidth')) {
                 $attr['image_width'] = $File->getWidth();
             }
 
-            if (!$attr['image_height']) {
+            if (!$attr['image_height'] && method_exists($File, 'getHeight')) {
                 $attr['image_height'] = $File->getHeight();
             }
 
@@ -71,11 +71,11 @@ QUI::$Ajax->registerFunction(
 
             $attributes = $File->getAttributes();
 
-            if (!$attributes['image_width']) {
+            if (!$attributes['image_width'] && method_exists($File, 'getWidth')) {
                 $attributes['image_width'] = $File->getWidth();
             }
 
-            if (!$attributes['image_height']) {
+            if (!$attributes['image_height'] && method_exists($File, 'getHeight')) {
                 $attributes['image_height'] = $File->getHeight();
             }
 

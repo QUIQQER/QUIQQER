@@ -23,7 +23,7 @@ define('controls/users/password/send/SendPassword', [
 ], function (QUI, QUIConfirm, QUIButton, QUIFormUtils, QUIAjax, QUILocale, Mustache, template) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
 
@@ -169,7 +169,7 @@ define('controls/users/password/send/SendPassword', [
 
             return new Promise(function (resolve, reject) {
                 QUIAjax.get('ajax_user_setAndSendPassword', resolve, {
-                    'package'  : 'quiqqer/quiqqer',
+                    'package'  : 'quiqqer/core',
                     userId     : self.getAttribute('userId'),
                     newPassword: self.$Password.value.trim(),
                     forceNew   : self.$ForceNew.checked ? 1 : 0,

@@ -9,9 +9,11 @@
  * @throws \QUI\Exception
  */
 
+use QUI\Control;
+
 QUI::$Ajax->registerFunction(
     'ajax_controls_get',
-    function ($control, $params = false) {
+    static function ($control, $params = false): string {
         try {
             $Control = new $control();
             $params = json_decode($params, true);
@@ -22,14 +24,14 @@ QUI::$Ajax->registerFunction(
             }
         } catch (QUI\Exception) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'control.not.found'),
+                QUI::getLocale()->get('quiqqer/core', 'control.not.found'),
                 404
             );
         }
 
-        if (!is_subclass_of($Control, '\QUI\Control')) {
+        if (!is_subclass_of($Control, Control::class)) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'control.not.found'),
+                QUI::getLocale()->get('quiqqer/core', 'control.not.found'),
                 404
             );
         }

@@ -8,20 +8,25 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_getQuiqqerVersions',
-    function () {
+    static function (): array {
         $packages = @file_get_contents('https://update.quiqqer.com/packages.json');
         $packages = json_decode($packages, true);
+
         $versions = [];
         $highestMinors = [];
 
-        if (isset($packages['packages']['quiqqer/quiqqer'])) {
-            $quiqqer = $packages['packages']['quiqqer/quiqqer'];
+        if (isset($packages['packages']['quiqqer/core'])) {
+            $quiqqer = $packages['packages']['quiqqer/core'];
             $versionList = array_keys($quiqqer);
 
             foreach ($versionList as $version) {
                 [$major, $minor] = explode('.', $version) + [null, null];
 
-                if ($major === null || $minor === null) {
+                if ($major === null) {
+                    continue;
+                }
+
+                if ($minor === null) {
                     continue;
                 }
 

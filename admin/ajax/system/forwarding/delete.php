@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_forwarding_delete',
-    function ($from) {
+    static function ($from): void {
         QUI\System\Forwarding::delete(
             json_decode($from, true)
         );

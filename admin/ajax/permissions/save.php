@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_permissions_save',
-    function ($params, $btype, $permissions) {
+    static function ($params, $btype, $permissions): void {
         $Manager = QUI::getPermissionManager();
         $permissions = \json_decode($permissions, true);
         $params = \json_decode($params, true);
@@ -51,14 +51,13 @@ QUI::$Ajax->registerFunction(
                 throw new QUI\Exception(
                     'Cannot find permissions for Object'
                 );
-                break;
         }
 
         $Manager->setPermissions($Bind, $permissions);
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'permissions.message.save.success'
             )
         );

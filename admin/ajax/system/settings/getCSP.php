@@ -6,7 +6,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_settings_getCSP',
-    function () {
+    static function (): array {
         return QUI\System\CSP::getInstance()->getCSPDirectiveConfig();
     },
     false,

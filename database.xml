@@ -38,6 +38,7 @@
 
             <primary>id</primary>
             <index>username,password</index>
+            <index>uuid</index>
             <auto_increment>id</auto_increment>
 
             <comment>This table contains the users of QUIQQER.</comment>
@@ -46,7 +47,7 @@
 
         <table name="users_workspaces">
             <field type="INT(11) NOT NULL">id</field>
-            <field type="INT(11) NOT NULL">uid</field>
+            <field type="varchar(50) NOT NULL">uid</field>
             <field type="TEXT NULL">title</field>
             <field type="LONGTEXT NULL">data</field>
             <field type="INT(11) DEFAULT 0">minHeight</field>
@@ -61,8 +62,9 @@
 
         <table name="groups">
             <field type="INT(11) NOT NULL DEFAULT 0">id</field>
+            <field type="VARCHAR(50) NOT NULL">uuid</field>
             <field type="VARCHAR(50) NOT NULL DEFAULT ''">name</field>
-            <field type="INT(11) NOT NULL DEFAULT 0">parent</field>
+            <field type="VARCHAR(50) NOT NULL DEFAULT 0">parent</field>
             <field type="TINYINT(1) NOT NULL DEFAULT '0'">active</field>
             <field type="VARCHAR(128) DEFAULT ''">toolbar</field>
             <field type="TEXT NULL">assigned_toolbar</field>
@@ -72,6 +74,7 @@
 
             <primary>id</primary>
             <index>parent</index>
+            <index>uuid</index>
 
             <comment>This table contains the groups of QUIQQER.</comment>
         </table>
@@ -90,14 +93,14 @@
         </table>
 
         <table name="permissions2users">
-            <field type="INT(11) NOT NULL DEFAULT 0">user_id</field>
+            <field type="VARCHAR(50) NOT NULL DEFAULT 0">user_id</field>
             <field type="MEDIUMTEXT NULL">permissions</field>
 
             <primary>user_id</primary>
         </table>
 
         <table name="permissions2groups">
-            <field type="INT(11) NOT NULL DEFAULT 0">group_id</field>
+            <field type="VARCHAR(50) NOT NULL DEFAULT 0">group_id</field>
             <field type="MEDIUMTEXT NULL">permissions</field>
 
             <primary>group_id</primary>
@@ -157,7 +160,9 @@
         <!-- Addresses -->
         <table name="users_address">
             <field type="INT(11) NOT NULL">id</field>
-            <field type="INT(11) NOT NULL">uid</field>
+            <field type="VARCHAR(50) NOT NULL">uuid</field>
+            <field type="VARCHAR(50) NOT NULL">uid</field>
+            <field type="VARCHAR(50) NOT NULL">userUuid</field>
             <field type="VARCHAR(255)">salutation</field>
             <field type="VARCHAR(255)">firstname</field>
             <field type="VARCHAR(255)">lastname</field>

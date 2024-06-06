@@ -133,7 +133,7 @@ define('controls/menu/Manager', [
                 ContextMenu.appendChild(
                     new Item({
                         icon  : 'fa fa-power-off',
-                        text  : QUILocale.get('quiqqer/quiqqer', 'menu.log.out'),
+                        text  : QUILocale.get('quiqqer/core', 'menu.log.out'),
                         events: {
                             onClick: function () {
                                 window.logout();

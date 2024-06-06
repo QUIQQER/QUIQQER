@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_groups_users',
-    function ($gid, $params) {
+    static function ($gid, $params) {
         $params = json_decode($params, true);
 
         $start = 0;

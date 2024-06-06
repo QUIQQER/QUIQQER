@@ -21,7 +21,7 @@ define('controls/system/settings/FormatSettings', [
 ], function (QUI, QUIControl, QUIAjax, QUILocale, Mustache, Translate, templateEntry) {
     "use strict";
 
-    var lg         = 'quiqqer/quiqqer';
+    var lg         = 'quiqqer/core';
     var Translator = new Translate();
 
     return new Class({
@@ -66,13 +66,13 @@ define('controls/system/settings/FormatSettings', [
 
                 for (i = 0, len = languages.length; i < len; i++) {
                     lang = languages[i];
-                    data = locales[lang]['quiqqer/quiqqer'];
+                    data = locales[lang]['quiqqer/core'];
 
                     new Element('div', {
                         'class'    : 'quiqqer-formatsettings',
                         'data-lang': lang,
                         html       : Mustache.render(templateEntry, {
-                            title: QUILocale.get('quiqqer/quiqqer', 'language.' + lang),
+                            title: QUILocale.get('quiqqer/core', 'language.' + lang),
                             flag : '<img src="' + URL_BIN_DIR + '16x16/flags/' + lang + '.png" />',
 
                             decimal_separator          : data['numberFormat.decimal_separator'],
@@ -131,7 +131,7 @@ define('controls/system/settings/FormatSettings', [
                 for (i in list) {
                     if (list.hasOwnProperty(i)) {
                         promises.push(
-                            Translator.setTranslation('quiqqer/quiqqer', i, list[i])
+                            Translator.setTranslation('quiqqer/core', i, list[i])
                         );
                     }
                 }
@@ -148,7 +148,7 @@ define('controls/system/settings/FormatSettings', [
                 }).then(function (MH) {
                     MH.setAttribute('showMessages', true);
 
-                    return Translator.publish('quiqqer/quiqqer');
+                    return Translator.publish('quiqqer/core');
 
                 }).then(resolve, reject);
 

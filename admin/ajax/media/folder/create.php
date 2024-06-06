@@ -11,20 +11,21 @@
  * @throws \QUI\Exception
  */
 
+use QUI\Projects\Media\Folder;
+
 QUI::$Ajax->registerFunction(
     'ajax_media_folder_create',
-    function ($project, $parentid, $newfolder) {
+    static function ($project, $parentid, $newfolder): array {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $File = $Media->get($parentid);
 
-        if (QUI\Projects\Media\Utils::isFolder($File) === false) {
+        if (!($File instanceof Folder)) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.create.folder.only.in.folder')
+                QUI::getLocale()->get('quiqqer/core', 'exception.media.create.folder.only.in.folder')
             );
         }
 
-        /* @var $File \QUI\Projects\Media\Folder */
         $Folder = $File->createFolder($newfolder);
 
         return QUI\Projects\Media\Utils::parseForMediaCenter($Folder);

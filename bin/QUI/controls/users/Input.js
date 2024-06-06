@@ -389,8 +389,6 @@ define('controls/users/Input', [
 
             var self = this;
 
-            uid = parseInt(uid);
-
             var User = new UserEntry(uid, {
                 events: {
                     onDestroy: function () {
@@ -432,7 +430,7 @@ define('controls/users/Input', [
 
                 if (!data.length) {
                     new Element('div', {
-                        html  : Locale.get('quiqqer/quiqqer', 'users.input.no.results'),
+                        html  : Locale.get('quiqqer/core', 'users.input.no.results'),
                         styles: {
                             'float': 'left',
                             'clear': 'both',

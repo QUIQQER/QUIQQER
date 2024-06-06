@@ -18,7 +18,7 @@ define('controls/users/password/Password', [
 ], function (QUI, QUIControl, QUIAjax, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
         Extends: QUIControl,

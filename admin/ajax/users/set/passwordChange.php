@@ -12,14 +12,14 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_set_passwordChange',
-    function ($uid, $newPassword, $passwordRepeat, $oldPassword) {
+    static function ($uid, $newPassword, $passwordRepeat, $oldPassword): void {
         $Users = QUI::getUsers();
-        $User = $Users->get((int)$uid);
+        $User = $Users->get($uid);
 
         if ($newPassword != $passwordRepeat) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.user.wrong.passwords'
                 )
             );

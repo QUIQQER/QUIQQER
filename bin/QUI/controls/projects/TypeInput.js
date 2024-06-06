@@ -161,8 +161,8 @@ define('controls/projects/TypeInput', [
 
             if (!value || value === '' || value === 'standard') {
                 self.$Text.set({
-                    html : QUILocale.get('quiqqer/quiqqer', 'site.type.standard'),
-                    title: QUILocale.get('quiqqer/quiqqer', 'site.type.standard')
+                    html : QUILocale.get('quiqqer/core', 'site.type.standard'),
+                    title: QUILocale.get('quiqqer/core', 'site.type.standard')
                 });
                 return;
             }

@@ -288,7 +288,7 @@ define('classes/users/User', [
                         onfinish(false, false);
                     }
 
-                    reject(Locale.get('quiqqer/quiqqer', 'exception.user.wrong.passwords'));
+                    reject(Locale.get('quiqqer/core', 'exception.user.wrong.passwords'));
                     return;
                 }
 

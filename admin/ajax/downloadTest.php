@@ -9,9 +9,9 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_downloadTest',
-    function () {
+    static function (): void {
         sleep(2);
-        QUI\Utils\System\File::downloadHeader(OPT_DIR . 'quiqqer/quiqqer/README.md');
+        QUI\Utils\System\File::downloadHeader(OPT_DIR . 'quiqqer/core/README.md');
     },
     false,
     'Permission::checkAdminUser'

@@ -9,9 +9,9 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_groups_get',
-    function ($gid) {
+    static function ($gid): array {
         $Groups = QUI::getGroups();
-        $Group = $Groups->get((int)$gid);
+        $Group = $Groups->get($gid);
 
         $attr = $Group->getAttributes();
         $attr['hasChildren'] = $Group->hasChildren();

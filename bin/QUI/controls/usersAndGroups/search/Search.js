@@ -22,7 +22,7 @@ define('controls/usersAndGroups/search/Search', [
 ], function (QUI, QUIControl, QUIButton, QUISwitch, QUILocale, QUIAjax, Users, Grid) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
         Extends: QUIControl,
@@ -57,7 +57,7 @@ define('controls/usersAndGroups/search/Search', [
          */
         create: function () {
             var placeholder = QUILocale.get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'control.usersgroups.select.search.field.placeholder'
             );
 
@@ -109,7 +109,7 @@ define('controls/usersAndGroups/search/Search', [
                     },
                     {
                         header   : QUILocale.get(lg, 'id'),
-                        dataIndex: 'id',
+                        dataIndex: 'uuid',
                         dataType : 'integer',
                         width    : 150
                     },

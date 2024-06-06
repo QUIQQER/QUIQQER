@@ -13,14 +13,14 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_permissions_add',
-    function ($permission, $permissiontype, $area) {
+    static function ($permission, $permissiontype, $area): bool {
         $Manager = QUI::getPermissionManager();
         $permissions = $Manager->getPermissionList();
 
         if (isset($permissions[$permission])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.permissions.exists'
                 )
             );

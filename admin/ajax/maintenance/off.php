@@ -6,7 +6,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_maintenance_off',
-    function () {
+    static function (): void {
         $Config = QUI::getConfig('etc/conf.ini.php');
         $Config->setValue('globals', 'maintenance', 0);
         $Config->save();

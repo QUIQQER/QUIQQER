@@ -10,24 +10,19 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_site_activate',
-    function ($project, $id) {
+    static function ($project, $id): int {
         $Project = QUI::getProjectManager()->decode($project);
         $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
 
         try {
             $Site->activate();
         } catch (QUI\Exception $Exception) {
-            switch ($Exception->getCode()) {
-                case 1119:
-                case 1120:
-                    QUI::getMessagesHandler()->addAttention(
-                        $Exception->getMessage()
-                    );
-                    break;
-
-                default:
-                    throw $Exception;
-            }
+            match ($Exception->getCode()) {
+                1119, 1120 => QUI::getMessagesHandler()->addAttention(
+                    $Exception->getMessage()
+                ),
+                default => throw $Exception,
+            };
         }
 
         return $Site->getAttribute('active') ? 1 : 0;

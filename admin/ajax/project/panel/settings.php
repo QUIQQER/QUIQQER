@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_panel_settings',
-    function ($project) {
+    static function ($project): string {
         $Engine = QUI::getTemplateManager()->getEngine(true);
         $Project = QUI::getProjectManager()->decode($project);
 

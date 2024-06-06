@@ -17,7 +17,7 @@ define('controls/packages/upload/Window', [
 ], function (QUI, QUIPopup, QUIButton, PackageUpload, PackageList, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
 

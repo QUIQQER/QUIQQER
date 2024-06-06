@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_uploads_cancel',
-    function ($file) {
+    static function ($file): void {
         $UploadManager = new QUI\Upload\Manager();
         $UploadManager->cancel($file);
     },

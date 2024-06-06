@@ -184,7 +184,7 @@ define('controls/groups/Input', [
             var values = this.$Parent.value.toString().split(',');
 
             for (i = 0, len = values.length; i < len; i++) {
-                val = parseInt(values[i]);
+                val = values[i];
 
                 if (val) {
                     this.addGroup(val);
@@ -343,7 +343,7 @@ define('controls/groups/Input', [
 
                 if (!data || !data.length) {
                     new Element('div', {
-                        html  : Locale.get('quiqqer/quiqqer', 'groups.input.no.results'),
+                        html  : Locale.get('quiqqer/core', 'groups.input.no.results'),
                         styles: {
                             'float': 'left',
                             'clear': 'both',

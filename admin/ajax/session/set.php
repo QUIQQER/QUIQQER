@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_session_set',
-    function ($key, $value) {
+    static function ($key, $value): void {
         QUI::getSession()->set($key, json_decode($value, true));
     },
     ['key', 'value']

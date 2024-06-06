@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_site_children_create',
-    function ($project, $id, $attributes) {
+    static function ($project, $id, $attributes): array {
         $attributes = json_decode($attributes, true);
 
         if (empty($attributes['name']) && !empty($attributes['title'])) {

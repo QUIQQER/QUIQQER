@@ -10,9 +10,9 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_groups_save',
-    function ($gid, $attributes, $rights) {
+    static function ($gid, $attributes, $rights): void {
         $Groups = QUI::getGroups();
-        $Group = $Groups->get((int)$gid);
+        $Group = $Groups->get($gid);
 
         $attributes = json_decode($attributes, true);
         $rights = json_decode($rights, true);
@@ -34,9 +34,9 @@ QUI::$Ajax->registerFunction(
         }
 
         QUI::getMessagesHandler()->addSuccess(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'message.group.saved', [
+            QUI::getLocale()->get('quiqqer/core', 'message.group.saved', [
                 'groupname' => $Group->getName(),
-                'id' => $Group->getId()
+                'id' => $Group->getUUID()
             ])
         );
     },

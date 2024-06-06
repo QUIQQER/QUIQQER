@@ -9,12 +9,12 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_server_remove',
-    function ($server) {
+    static function ($server): void {
         QUI::getPackageManager()->removeServer($server);
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'message.packages.server.remove.successfully',
                 ['server' => $server]
             )

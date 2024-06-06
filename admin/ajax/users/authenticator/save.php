@@ -11,13 +11,13 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_authenticator_save',
-    function ($authenticators) {
+    static function ($authenticators): void {
         $User = QUI::getUserBySession();
         $authenticators = json_decode($authenticators, true);
 
         if (!$User->isSU()) {
             throw new QUI\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.config.save.not.allowed'
             ]);
         }

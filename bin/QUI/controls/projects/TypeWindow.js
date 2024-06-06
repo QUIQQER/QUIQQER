@@ -46,18 +46,18 @@ define('controls/projects/TypeWindow', [
             project          : false,
             pluginsSelectable: false,
 
-            title    : QUILocale.get('quiqqer/quiqqer', 'projects.typewindow.title'),
+            title    : QUILocale.get('quiqqer/core', 'projects.typewindow.title'),
             icon     : 'fa fa-magic',
             maxHeight: 600,
             maxWidth : 400,
             message  : false,
 
             cancel_button: {
-                text     : QUILocale.get('quiqqer/quiqqer', 'cancel'),
+                text     : QUILocale.get('quiqqer/core', 'cancel'),
                 textimage: 'fa fa-remove'
             },
             ok_button    : {
-                text     : QUILocale.get('quiqqer/quiqqer', 'ok'),
+                text     : QUILocale.get('quiqqer/core', 'ok'),
                 textimage: 'fa fa-check'
             }
         },
@@ -99,7 +99,7 @@ define('controls/projects/TypeWindow', [
                 '<div class="qui-type-window-buttons"></div>' +
                 '<div class="qui-type-window-cc"></div>' +
                 '<div class="qui-type-window-info messages-message message-information">' +
-                QUILocale.get('quiqqer/quiqqer', 'projects.typewindow.info') +
+                QUILocale.get('quiqqer/core', 'projects.typewindow.info') +
                 '</div>'
             );
 
@@ -115,7 +115,7 @@ define('controls/projects/TypeWindow', [
             this.$ShowSitemap = new QUIButton({
                 name     : 'sitemap',
                 textimage: 'fa fa-sitemap',
-                text     : QUILocale.get('quiqqer/quiqqer', 'projects.typewindow.btn.sitemapView'),
+                text     : QUILocale.get('quiqqer/core', 'projects.typewindow.btn.sitemapView'),
                 events   : {
                     click: this.sitemapView
                 }
@@ -124,7 +124,7 @@ define('controls/projects/TypeWindow', [
             this.$ShowDetails = new QUIButton({
                 name     : 'details',
                 textimage: 'fa fa-file-text',
-                text     : QUILocale.get('quiqqer/quiqqer', 'projects.typewindow.btn.detailView'),
+                text     : QUILocale.get('quiqqer/core', 'projects.typewindow.btn.detailView'),
                 events   : {
                     click: this.detailsView
                 }

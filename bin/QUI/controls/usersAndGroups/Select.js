@@ -18,10 +18,10 @@ define('controls/usersAndGroups/Select', [
 
     'css!controls/groups/Select.css'
 
-], function (QUIControl, QUIElementSelect, QUILocale, Groups, Users, Ajax) {
-    "use strict";
+], function(QUIControl, QUIElementSelect, QUILocale, Groups, Users, Ajax) {
+    'use strict';
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     /**
      * @class controls/groups/Select
@@ -34,14 +34,14 @@ define('controls/usersAndGroups/Select', [
     return new Class({
 
         Extends: QUIElementSelect,
-        Type   : 'controls/usersAndGroups/Select',
+        Type: 'controls/usersAndGroups/Select',
 
         Binds: [
             '$onSearchButtonClick',
             'groupSearch'
         ],
 
-        initialize: function (options, Input) {
+        initialize: function(options, Input) {
             this.parent(options, Input);
 
             this.setAttribute('Search', this.usersGroupSearch);
@@ -64,28 +64,28 @@ define('controls/usersAndGroups/Select', [
          * @param {String} value
          * @returns {Promise}
          */
-        usersGroupSearch: function (value) {
-            return new Promise(function (resolve) {
-                Ajax.get('ajax_usersgroups_search', function (result) {
+        usersGroupSearch: function(value) {
+            return new Promise(function(resolve) {
+                Ajax.get('ajax_usersgroups_search', function(result) {
                     var i, len;
 
-                    var data         = [],
-                        userResult   = result.users,
+                    var data = [],
+                        userResult = result.users,
                         groupsResult = result.groups;
-
+console.log(userResult);
                     for (i = 0, len = userResult.length; i < len; i++) {
                         data.push({
-                            id   : 'u' + userResult[i].id,
+                            id: 'u' + userResult[i].id,
                             title: userResult[i].username,
-                            icon : 'fa fa-user'
+                            icon: 'fa fa-user'
                         });
                     }
 
                     for (i = 0, len = groupsResult.length; i < len; i++) {
                         data.push({
-                            id   : 'g' + groupsResult[i].id,
+                            id: 'g' + groupsResult[i].id,
                             title: groupsResult[i].name,
-                            icon : 'fa fa-group'
+                            icon: 'fa fa-group'
                         });
                     }
 
@@ -106,18 +106,18 @@ define('controls/usersAndGroups/Select', [
          * @param {Object} self - select object
          * @param {Object} Btn - button object
          */
-        $onSearchButtonClick: function (self, Btn) {
+        $onSearchButtonClick: function(self, Btn) {
             Btn.setAttribute('icon', 'fa fa-spinner fa-spin');
 
             require([
                 'controls/usersAndGroups/search/Window'
-            ], function (Window) {
+            ], function(Window) {
                 new Window({
                     autoclose: true,
-                    multiple : this.getAttribute('multiple'),
-                    events   : {
-                        onSubmit: function (Win, data) {
-                            data = data.map(function (Entry) {
+                    multiple: this.getAttribute('multiple'),
+                    events: {
+                        onSubmit: function(Win, data) {
+                            data = data.map(function(Entry) {
                                 if (Entry.type == 'group') {
                                     return 'g' + Entry.id;
                                 }

@@ -300,7 +300,7 @@ define('controls/projects/project/media/Sitemap', [
                             new QUISitemapItem({
                                 icon       : 'fa fa-level-up',
                                 text       : '...',
-                                title      : QUILocale.get('quiqqer/quiqqer', 'control.project.sitemap.prev'),
+                                title      : QUILocale.get('quiqqer/core', 'control.project.sitemap.prev'),
                                 contextmenu: false,
                                 sheets     : sheets,
                                 Item       : Item,
@@ -332,7 +332,7 @@ define('controls/projects/project/media/Sitemap', [
                             new QUISitemapItem({
                                 icon       : 'fa fa-level-down',
                                 text       : '...',
-                                title      : QUILocale.get('quiqqer/quiqqer', 'control.project.sitemap.next'),
+                                title      : QUILocale.get('quiqqer/core', 'control.project.sitemap.next'),
                                 contextmenu: false,
                                 sheets     : sheets,
                                 Item       : Item,

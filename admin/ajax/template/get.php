@@ -14,7 +14,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_template_get',
-    function ($template, $package, $params = '') {
+    static function ($template, $package, $params = ''): string {
         $current = QUI::getLocale()->getCurrent();
         $Engine = QUI::getTemplateManager()->getEngine(true);
 
@@ -32,16 +32,16 @@ QUI::$Ajax->registerFunction(
         if (!$template || !file_exists($template)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.template.not.found'
                 )
             );
         }
 
-        if (strpos($template, CMS_DIR) !== 0) {
+        if (!str_starts_with($template, CMS_DIR)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.template.not.found'
                 )
             );

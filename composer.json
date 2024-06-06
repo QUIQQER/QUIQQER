@@ -1,5 +1,5 @@
 {
-  "name": "quiqqer/quiqqer",
+  "name": "quiqqer/core",
   "type": "quiqqer-system",
   "description": "A modular based management system written in JavaScript and PHP",
   "license": "GPL-3.0-or-later",
@@ -30,13 +30,14 @@
     "ext-zip": "*",
     "composer/composer": "^2",
     "composer/semver": "^3",
-    "dusank/knapsack": "^8|^9|^10",
+    "martinvenus/knapsack": "^10",
+    "doctrine/dbal": "^4",
     "html2text/html2text": "^4",
     "intervention/image": "^2",
     "league/climate": "^3",
     "league/csv": "^9",
     "masterminds/html5": "^2",
-    "monolog/monolog": "^2|^3",
+    "monolog/monolog": "^3",
     "neitanod/forceutf8": "^2",
     "oomphinc/composer-installers-extender": "^2",
     "phpmailer/phpmailer": "^6",
@@ -48,67 +49,53 @@
     "quiqqer-asset/nouislider": "^15",
     "quiqqer-asset/requirejs": "^2",
     "quiqqer-asset/urijs": "^1",
-    "quiqqer/backendsearch": "^1",
-    "quiqqer/calendar-controls": "^1",
-    "quiqqer/ckeditor4": "^2|^1",
-    "quiqqer/colorpicker": "^1.1",
-    "quiqqer/composer": "^1.4.2",
-    "quiqqer/controls": "^1.1.1",
-    "quiqqer/countries": "^1",
-    "quiqqer/cron": "^1.10.2",
-    "quiqqer/dashboard": "^1",
+    "quiqqer/backendsearch": "^2",
+    "quiqqer/calendar-controls": "^3",
+    "quiqqer/ckeditor4": "^3",
+    "quiqqer/colorpicker": "^2",
+    "quiqqer/composer": "^1.9.0",
+    "quiqqer/controls": "^2",
+    "quiqqer/countries": "^2",
+    "quiqqer/cron": "^2",
+    "quiqqer/dashboard": "^2",
     "quiqqer/demodata": "^1",
-    "quiqqer/diashow": "^1",
-    "quiqqer/fontawesome": "^5",
-    "quiqqer/lockclient": "^1",
-    "quiqqer/log": "^1.6",
-    "quiqqer/login-logger": "^1",
-    "quiqqer/messages": "^1",
-    "quiqqer/meta": "^2.1",
-    "quiqqer/qui": "^1.5",
-    "quiqqer/qui-php": "^1",
+    "quiqqer/diashow": "^2",
+    "quiqqer/fontawesome": "^6",
+    "quiqqer/log": "^2",
+    "quiqqer/login-logger": "^2",
+    "quiqqer/messages": "^2",
+    "quiqqer/meta": "^3",
+    "quiqqer/qui": "^1.6",
+    "quiqqer/qui-php": "^2",
     "quiqqer/requirements": "^3",
     "quiqqer/smarty": "^3|^4",
-    "quiqqer/translator": "^1.9",
-    "quiqqer/utils": "^1.22",
-    "ramsey/uuid": "^3|^4",
+    "quiqqer/translator": "^2",
+    "quiqqer/utils": "^2",
+    "ramsey/uuid": "^4",
     "seld/jsonlint": "^1",
     "symfony/console": "^4|^5|^6",
-    "symfony/http-foundation": "2.3 - 7",
+    "symfony/http-foundation": "^7",
     "symfony/polyfill-php82": "^1",
     "symfony/polyfill-php83": "^1",
     "t7systems/blowfish": "1.0.0",
     "tedivm/stash": "^0.17"
   },
+  "conflict": {
+    "quiqqer/quiqqer": "*",
+    "quiqqer/rest": "^1"
+  },
   "autoload": {
-    "psr-0": {
-      "QUI": "lib/"
+    "psr-4": {
+      "QUI\\": "src/QUI/"
     },
     "classmap": [
-      "lib/classmap/"
+      "src/classmap/"
     ]
   },
   "funding": [
     {
       "type": "github",
       "url": "https://github.com/sponsors/pcsg"
-    }
-  ],
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://composer.quiqqer.com"
-    },
-    {
-      "type": "composer",
-      "url": "https://assets.quiqqer.com"
-    },
-    {
-      "type": "composer",
-      "url": "https://update.quiqqer.com"
-    },
-    {
-      "packagist.org": false
     }
   ],
   "config": {

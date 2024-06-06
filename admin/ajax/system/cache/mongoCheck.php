@@ -8,7 +8,7 @@ use QUI\Cache\QuiqqerMongoDriver;
 
 QUI::$Ajax->registerFunction(
     'ajax_system_cache_mongoCheck',
-    function ($host, $database, $collection, $username, $password) {
+    static function ($host, $database, $collection, $username, $password): void {
         try {
             QUI::getPackage('mongodb/mongodb');
         } catch (QUI\Exception) {
@@ -32,7 +32,7 @@ QUI::$Ajax->registerFunction(
             $collection = 'quiqqer.longterm';
         }
 
-        if (\strpos($host, 'mongodb://') === false) {
+        if (!str_contains($host, 'mongodb://')) {
             $host = 'mongodb://' . $host;
         }
 
@@ -52,15 +52,16 @@ QUI::$Ajax->registerFunction(
         ]);
 
         $CacheDriver->storeData(['db-test'], 1, false);
+
         $result = $CacheDriver->getData(['db-test']);
 
         if ($result['data'] === 1) {
             QUI::getMessagesHandler()->addSuccess(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'message.quiqqer.mongo.success')
+                QUI::getLocale()->get('quiqqer/core', 'message.quiqqer.mongo.success')
             );
         } else {
             QUI::getMessagesHandler()->addError(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'message.quiqqer.mongo.error')
+                QUI::getLocale()->get('quiqqer/core', 'message.quiqqer.mongo.error')
             );
         }
     },

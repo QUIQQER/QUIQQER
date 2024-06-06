@@ -10,16 +10,17 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_address_deleteAddressList',
-    function ($ids) {
-        $ids = \json_decode($ids, true);
+    static function ($ids): array {
+        $ids = json_decode($ids, true);
         $list = [];
 
         foreach ($ids as $id) {
             $result = QUI::getDataBase()->fetch([
                 'select' => ['id', 'uid'],
                 'from' => QUI\Users\Manager::tableAddress(),
-                'where' => [
-                    'id' => $id
+                'where_or' => [
+                    'id' => $id,
+                    'uuid' => $id,
                 ],
                 'limit' => 1
             ]);
@@ -29,9 +30,8 @@ QUI::$Ajax->registerFunction(
             }
 
             try {
-                $uid = (int)$result[0]['uid'];
-                $User = QUI::getUsers()->get((int)$uid);
-                $Address = $User->getAddress((int)$id);
+                $User = QUI::getUsers()->get($result[0]['uid']);
+                $Address = $User->getAddress($id);
                 $Address->delete();
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::writeDebugException($Exception);

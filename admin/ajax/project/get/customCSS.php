@@ -7,7 +7,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_get_customCSS',
-    function ($project) {
+    static function ($project): string {
         $Project = QUI\Projects\Manager::decode($project);
 
         return $Project->getCustomCSS();

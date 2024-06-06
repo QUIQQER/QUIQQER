@@ -8,14 +8,20 @@
  * @return array
  */
 
+use QUI\Projects\Media\Folder;
+
 QUI::$Ajax->registerFunction(
     'ajax_media_breadcrumb',
-    function ($project, $fileid) {
+    static function ($project, $fileid): array {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $File = $Media->get($fileid);
+        $parents = [];
 
-        $parents = $File->getParents();
+        if ($File instanceof Folder) {
+            $parents = $File->getParents();
+        }
+
         $breadcrumb = [];
 
         // create breadcrumb data

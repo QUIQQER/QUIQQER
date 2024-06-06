@@ -6,7 +6,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_installationWizard_get',
-    function () {
+    static function (): array {
         if (!QUI::getUserBySession()->isSU()) {
             return [];
         }
@@ -17,11 +17,11 @@ QUI::$Ajax->registerFunction(
             $Provider->onListInit($list);
         }
 
-        usort($list, function ($a, $b) {
+        usort($list, static function ($a, $b): int {
             return $a->getPriority() > $b->getPriority() ? 1 : 0;
         });
 
-        return array_map(function ($Provider) {
+        return array_map(static function ($Provider) {
             return $Provider->toArray();
         }, $list);
     },

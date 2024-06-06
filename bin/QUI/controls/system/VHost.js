@@ -25,7 +25,7 @@ define('controls/system/VHost', [
 ], function () {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     var QUI          = arguments[ 0 ],
         QUIControl   = arguments[ 1 ],

@@ -22,7 +22,7 @@ define('controls/icons/Confirm', [
         ],
 
         options: {
-            title    : QUILocale.get('quiqqer/quiqqer', 'control.icons.confirm.title'),
+            title    : QUILocale.get('quiqqer/core', 'control.icons.confirm.title'),
             icon     : 'fa fa-css3',
             'class'  : 'qui-window-popup-icons',
             maxHeight: 600,
@@ -64,7 +64,7 @@ define('controls/icons/Confirm', [
 
             this.$Frame = new Element('iframe', {
                 'class'    : 'window-iconSelect-iframe',
-                src        : URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/controls/icons/iconList.php?quiid=' + id,
+                src        : URL_OPT_DIR + 'quiqqer/core/bin/QUI/controls/icons/iconList.php?quiid=' + id,
                 border     : 0,
                 frameborder: 0,
                 styles     : {
@@ -132,7 +132,7 @@ define('controls/icons/Confirm', [
             this.$Search = new Element('input', {
                 'class'    : 'window-iconSelect-search',
                 type       : 'text',
-                placeholder: QUILocale.get('quiqqer/quiqqer', 'control.icons.confirm.filterIcons'),
+                placeholder: QUILocale.get('quiqqer/core', 'control.icons.confirm.filterIcons'),
                 events     : {
                     keydown: function (event) {
                         if (event.key === 'esc') {
@@ -258,7 +258,7 @@ define('controls/icons/Confirm', [
 
             this.NoResultsInfo = new Element('div', {
                 'class': 'no-results-info',
-                html   : '<p>' + QUILocale.get('quiqqer/quiqqer', 'control.icons.confirm.noResultsInfo') + '</p><span class="fa fa-css3"></span>'
+                html   : '<p>' + QUILocale.get('quiqqer/core', 'control.icons.confirm.noResultsInfo') + '</p><span class="fa fa-css3"></span>'
             }).inject(this.$IconContainer);
 
             moofx(this.NoResultsInfo).animate({

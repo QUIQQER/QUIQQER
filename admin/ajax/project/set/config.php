@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_set_config',
-    function ($project, $params) {
+    static function ($project, $params): void {
         $Project = QUI\Projects\Manager::getProject($project);
         $params = json_decode($params, true);
 
@@ -27,7 +27,7 @@ QUI::$Ajax->registerFunction(
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'message.project.config.save.success'
             )
         );

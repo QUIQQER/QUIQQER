@@ -7,10 +7,10 @@
         <panel require="controls/projects/project/Panel">
             <image>fa fa-home</image>
             <title>
-                <locale group="quiqqer/quiqqer" var="panels.project.title"/>
+                <locale group="quiqqer/core" var="panels.project.title"/>
             </title>
             <text>
-                <locale group="quiqqer/quiqqer" var="panels.project.description"/>
+                <locale group="quiqqer/core" var="panels.project.description"/>
             </text>
         </panel>
 
@@ -18,10 +18,10 @@
         <panel require="controls/desktop/panels/Bookmarks">
             <image>fa fa-bookmark</image>
             <title>
-                <locale group="quiqqer/quiqqer" var="panels.bookmarks.title"/>
+                <locale group="quiqqer/core" var="panels.bookmarks.title"/>
             </title>
             <text>
-                <locale group="quiqqer/quiqqer" var="panels.bookmarks.description"/>
+                <locale group="quiqqer/core" var="panels.bookmarks.description"/>
             </text>
         </panel>
 
@@ -29,10 +29,10 @@
         <panel require="UploadManager">
             <image>fa fa-upload</image>
             <title>
-                <locale group="quiqqer/quiqqer" var="panels.upload.title"/>
+                <locale group="quiqqer/core" var="panels.upload.title"/>
             </title>
             <text>
-                <locale group="quiqqer/quiqqer" var="panels.upload.description"/>
+                <locale group="quiqqer/core" var="panels.upload.description"/>
             </text>
         </panel>
 
@@ -40,10 +40,10 @@
         <panel require="qui/controls/desktop/Tasks">
             <image>fa fa-tasks</image>
             <title>
-                <locale group="quiqqer/quiqqer" var="panels.tasks.title"/>
+                <locale group="quiqqer/core" var="panels.tasks.title"/>
             </title>
             <text>
-                <locale group="quiqqer/quiqqer" var="panels.tasks.description"/>
+                <locale group="quiqqer/core" var="panels.tasks.description"/>
             </text>
         </panel>
 

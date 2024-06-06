@@ -11,10 +11,10 @@ use QUI\Projects\Media\Image;
 
 QUI::$Ajax->registerFunction(
     'ajax_media_file_externalUpdate',
-    function ($project, $fileid) {
+    static function ($project, $fileid): void {
         $Project = QUI\Projects\Manager::getProject($project);
-        $Media   = $Project->getMedia();
-        $File    = $Media->get((int)$fileid);
+        $Media = $Project->getMedia();
+        $File = $Media->get((int)$fileid);
 
         if ($File instanceof Image) {
             $File->updateExternalImage();

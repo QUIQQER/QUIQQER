@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_project_getlist',
-    function () {
+    static function (): array {
         return QUI\Projects\Manager::getConfig()->toArray();
     },
     false,

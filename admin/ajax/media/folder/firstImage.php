@@ -14,16 +14,18 @@
  * @return array
  */
 
+use QUI\Projects\Media\Folder;
+
 QUI::$Ajax->registerFunction(
     'ajax_media_folder_firstImage',
-    function ($project, $folderId) {
+    static function ($project, $folderId): array {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $File = $Media->get($folderId);
 
-        if (!QUI\Projects\Media\Utils::isFolder($File)) {
+        if (!($File instanceof Folder)) {
             throw new QUI\Exception([
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'exception.no.folder.given'
             ]);
         }

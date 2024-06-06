@@ -37,7 +37,7 @@ define('controls/projects/project/media/FolderPanel', [
              Ajax) {
     "use strict";
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     return new Class({
 
@@ -212,15 +212,15 @@ define('controls/projects/project/media/FolderPanel', [
                 texticon : 'fa fa-trash-o',
                 maxWidth : 533,
                 maxHeight: 300,
-                title    : Locale.get('quiqqer/quiqqer', 'projects.project.site.media.folderPanel.window.delete.title', {
+                title    : Locale.get('quiqqer/core', 'projects.project.site.media.folderPanel.window.delete.title', {
                     folder: this.$Folder.getAttribute('file')
                 }),
 
-                text: Locale.get('quiqqer/quiqqer', 'projects.project.site.media.folderPanel.window.delete.text', {
+                text: Locale.get('quiqqer/core', 'projects.project.site.media.folderPanel.window.delete.text', {
                     folder: this.$Folder.getAttribute('file')
                 }),
 
-                information: Locale.get('quiqqer/quiqqer', 'projects.project.site.media.folderPanel.window.delete.information', {
+                information: Locale.get('quiqqer/core', 'projects.project.site.media.folderPanel.window.delete.information', {
                     folder: this.$Folder.getAttribute('file')
                 }),
                 autoclose  : false,
@@ -559,10 +559,10 @@ define('controls/projects/project/media/FolderPanel', [
 
             this.createSheet({
                 icon       : 'fa fa-sort-amount-asc',
-                title      : Locale.get('quiqqer/quiqqer', 'projects.project.site.media.priority.sheet.title'),
+                title      : Locale.get('quiqqer/core', 'projects.project.site.media.priority.sheet.title'),
                 closeButton: {
                     textimage: 'fa fa-remove',
-                    text     : Locale.get('quiqqer/quiqqer', 'cancel')
+                    text     : Locale.get('quiqqer/core', 'cancel')
                 },
                 events     : {
                     onOpen: function (Sheet) {
@@ -631,8 +631,8 @@ define('controls/projects/project/media/FolderPanel', [
             new QUIButton({
                 image : 'fa fa-shield',
                 name  : 'permissions',
-                alt   : Locale.get('quiqqer/quiqqer', 'projects.project.site.media.filePanel.permissions'),
-                title : Locale.get('quiqqer/quiqqer', 'projects.project.site.media.filePanel.permissions'),
+                alt   : Locale.get('quiqqer/core', 'projects.project.site.media.filePanel.permissions'),
+                title : Locale.get('quiqqer/core', 'projects.project.site.media.filePanel.permissions'),
                 styles: {
                     'border-left-width' : 1,
                     'border-right-width': 1,

@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_maintenance_status',
-    function () {
+    static function () {
         return QUI::conf('globals', 'maintenance');
     },
     false,

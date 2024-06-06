@@ -11,12 +11,12 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_user_getMailData',
-    function ($userId) {
-        $User = QUI::getUsers()->get((int)$userId);
+    static function ($userId) {
+        $User = QUI::getUsers()->get($userId);
 
         return [
             'name' => $User->getName(),
-            'lang' => QUI::getLocale()->get('quiqqer/quiqqer', 'language.' . $User->getLang()),
+            'lang' => QUI::getLocale()->get('quiqqer/core', 'language.' . $User->getLang()),
             'email' => $User->getAttribute('email')
         ];
     },

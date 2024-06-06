@@ -10,9 +10,11 @@
  * @throws \QUI\Exception
  */
 
+use QUI\Projects\Media\Folder;
+
 QUI::$Ajax->registerFunction(
     'ajax_media_copy',
-    function ($project, $to, $ids) {
+    static function ($project, $to, $ids): void {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $Folder = $Media->get($to);
@@ -21,11 +23,11 @@ QUI::$Ajax->registerFunction(
 
         if (!QUI\Projects\Media\Utils::isFolder($Folder)) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.copy.is.no.folder')
+                QUI::getLocale()->get('quiqqer/core', 'exception.media.copy.is.no.folder')
             );
         }
 
-        /* @var $Folder \QUI\Projects\Media\Folder */
+        /* @var $Folder Folder */
         foreach ($ids as $id) {
             try {
                 $Item = $Media->get((int)$id);

@@ -10,7 +10,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_editor_get_toolbars',
-    function () {
+    static function (): ?array {
         return QUI\Editor\Manager::getToolbars();
     },
     false,

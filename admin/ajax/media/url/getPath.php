@@ -12,7 +12,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_media_url_getPath',
-    function ($fileurl) {
+    static function ($fileurl) {
         if (QUI\Projects\Media\Utils::isMediaUrl($fileurl) === false) {
             return $fileurl;
         }

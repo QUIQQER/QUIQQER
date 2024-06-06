@@ -112,7 +112,7 @@ define('classes/packages/Manager', [
         setup: function(pkg, callback) {
             if (setupIsRunning) {
                 let message = QUILocale.get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'message.setup.is.currently.running'
                 );
 
@@ -210,27 +210,6 @@ define('classes/packages/Manager', [
             return new Promise(function(resolve, reject) {
                 Ajax.post('ajax_system_packages_search', resolve, {
                     'search': search,
-                    showError: false,
-                    onError: reject
-                });
-            });
-        },
-
-        /**
-         * Activate the local repository
-         *
-         * @param {Function} [callback] - optional
-         * @returns {Promise}
-         */
-        activateLocalServer: function(callback) {
-            return new Promise(function(resolve, reject) {
-                Ajax.post('ajax_system_activateLocalServer', function() {
-                    if (typeOf(callback) === 'function') {
-                        callback();
-                    }
-
-                    resolve();
-                }, {
                     showError: false,
                     onError: reject
                 });
@@ -384,27 +363,6 @@ define('classes/packages/Manager', [
                     resolve();
                 }, {
                     packages: JSON.encode(packages),
-                    showError: false,
-                    onError: reject
-                });
-            });
-        },
-
-        /**
-         * Read the locale repository and search installable packages
-         *
-         * @param {Function} [callback] - optional
-         * @return {Promise}
-         */
-        readLocalRepository: function(callback) {
-            return new Promise(function(resolve, reject) {
-                Ajax.post('ajax_system_readLocalRepository', function(result) {
-                    if (typeOf(callback) === 'function') {
-                        callback(result);
-                    }
-
-                    resolve(result);
-                }, {
                     showError: false,
                     onError: reject
                 });

@@ -25,7 +25,7 @@ define('controls/users/Panel', [
 ], function() {
     'use strict';
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     const QUI = arguments[0],
         Panel = arguments[1],
@@ -513,7 +513,7 @@ define('controls/users/Panel', [
                             if (!hasPermission) {
                                 QUI.getMessageHandler().then(function(MH) {
                                     MH.addError(
-                                        QUILocale.get('quiqqer/quiqqer', 'exception.no.permission')
+                                        QUILocale.get('quiqqer/core', 'exception.no.permission')
                                     );
                                 });
 
@@ -812,7 +812,7 @@ define('controls/users/Panel', [
                 id = User.getId();
 
             for (let i = 0, len = data.length; i < len; i++) {
-                if (parseInt(data[i].id) === id) {
+                if (data[i].id == id) {
                     Grid.setDataByRow(i, this.userToGridData(User));
                 }
             }
@@ -976,7 +976,7 @@ define('controls/users/Panel', [
                 id = User.getId();
 
             for (let i = 0, len = data.length; i < len; i++) {
-                if (parseInt(data[i].id) === id) {
+                if (data[i].id == id) {
                     return Grid.getDataByRow(i).status;
                 }
             }

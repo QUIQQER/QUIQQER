@@ -10,9 +10,10 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_packages_getStoreUrl',
-    function () {
+    static function () {
         $packageStoreUrls = QUI::conf('packagestore', 'url');
         $packageStoreUrls = json_decode($packageStoreUrls, true);
+
         $lang = QUI::getUserBySession()->getLang();
 
         if (empty($packageStoreUrls) || empty($packageStoreUrls[$lang])) {

@@ -27,12 +27,12 @@ define('utils/Date', [
             var timeSince = this.getTimeSince(GivenDate);
 
             return QUILocale.get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'time.ago',
                 {
                     amount: timeSince.amount,
                     // get the time unit in dative form (necessary for languages like german)
-                    unit  : QUILocale.get('quiqqer/quiqqer', timeSince.unit + '.dative')
+                    unit  : QUILocale.get('quiqqer/core', timeSince.unit + '.dative')
                 }
             );
         },

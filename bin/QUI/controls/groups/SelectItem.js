@@ -9,19 +9,19 @@ define('controls/groups/SelectItem', [
     'Ajax',
     'Groups'
 
-], function (QUI, QUIElementSelectItem, QUIAjax, Groups) {
-    "use strict";
+], function(QUI, QUIElementSelectItem, QUIAjax, Groups) {
+    'use strict';
 
     return new Class({
 
         Extends: QUIElementSelectItem,
-        Type   : 'controls/groups/SelectItem',
+        Type: 'controls/groups/SelectItem',
 
         Binds: [
             'refresh'
         ],
 
-        initialize: function (options) {
+        initialize: function(options) {
             this.parent(options);
             this.setAttribute('icon', 'fa fa-group');
         },
@@ -31,16 +31,16 @@ define('controls/groups/SelectItem', [
          *
          * @returns {Promise}
          */
-        refresh: function () {
-            var id    = this.getAttribute('id'),
+        refresh: function() {
+            let id = this.getAttribute('id'),
                 Group = Groups.get(id),
-                Prom  = Promise.resolve();
+                Prom = Promise.resolve();
 
             if (!Group.isLoaded()) {
                 Prom = Group.load();
             }
 
-            return Prom.then(function () {
+            return Prom.then(() => {
                 // everyone is not deletable
                 if (id == 1) {
                     this.$Destroy.setStyle('display', 'none');
@@ -49,7 +49,9 @@ define('controls/groups/SelectItem', [
                 this.$Text.set({
                     html: Group.getName()
                 });
-            }.bind(this));
+            }).catch(() => {
+                this.destroy();
+            });
         }
     });
 });

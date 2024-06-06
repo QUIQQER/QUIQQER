@@ -2,7 +2,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_editor_toolbar_search',
-    function ($search) {
+    static function ($search): array {
         return QUI\Editor\Manager::search($search);
     },
     ['search']

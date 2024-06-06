@@ -15,7 +15,7 @@ define('controls/system/settings/Config', [
 ], function(QUI, QUIControl, QUIConfirm, Ajax, QUILocale) {
     'use strict';
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     return new Class({
 
@@ -135,7 +135,7 @@ define('controls/system/settings/Config', [
 
                             result.push(
                                 {name: 'quiqqer/qui'},
-                                {name: 'quiqqer/quiqqer'},
+                                {name: 'quiqqer/core'},
                                 {name: 'quiqqer/qui-php'},
                                 {name: 'quiqqer/utils'}
                             );

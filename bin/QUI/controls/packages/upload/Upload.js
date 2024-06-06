@@ -16,7 +16,7 @@ define('controls/packages/upload/Upload', [
 ], function (QUI, QUIControl, QUIButton, UploadForm, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
 
@@ -222,7 +222,7 @@ define('controls/packages/upload/Upload', [
                         }).inject(Container);
 
                         new QUIButton({
-                            text  : QUILocale.get('quiqqer/quiqqer', 'cancel'),
+                            text  : QUILocale.get('quiqqer/core', 'cancel'),
                             events: {
                                 onClick: resolve
                             }

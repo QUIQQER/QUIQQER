@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_vhosts_getHostByProject',
-    function ($project) {
+    static function ($project): string {
         $Project = QUI::getProjectManager()->decode($project);
         $Manager = new QUI\System\VhostManager();
 

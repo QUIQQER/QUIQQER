@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_system_getLastUpdate',
-    function ($formatted) {
+    static function ($formatted) {
         $date = QUI::getPackageManager()->getLastUpdateDate();
 
         if (!isset($formatted) || !$formatted) {

@@ -6,6 +6,6 @@
  * @return String
  */
 
-QUI::$Ajax->registerFunction('ajax_user_profileTemplate', function () {
+QUI::$Ajax->registerFunction('ajax_user_profileTemplate', static function (): string {
     return QUI::getUsers()->getProfileTemplate();
 });

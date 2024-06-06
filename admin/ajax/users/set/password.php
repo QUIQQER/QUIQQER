@@ -12,18 +12,18 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_set_password',
-    function ($uid, $pw1, $pw2) {
+    static function ($uid, $pw1, $pw2): void {
         if (empty($pw1) || empty($pw2)) {
             return;
         }
 
         $Users = QUI::getUsers();
-        $User = $Users->get((int)$uid);
+        $User = $Users->get($uid);
 
         if ($pw1 != $pw2) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'exception.lib.user.wrong.passwords'
                 )
             );

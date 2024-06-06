@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_permissions_list',
-    function () {
+    static function (): array {
         return QUI::getPermissionManager()->getPermissionList();
     },
     false,

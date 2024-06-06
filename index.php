@@ -22,7 +22,7 @@ if (!defined('QUIQQER_SYSTEM')) {
 // Mailto
 if (
     isset($_REQUEST['_url'])
-    && strpos($_REQUEST['_url'], '[mailto]') !== false
+    && str_contains($_REQUEST['_url'], '[mailto]')
 ) {
     $addr = str_replace('[mailto]', '', $_REQUEST['_url']);
     [$user, $host] = explode("[at]", $addr);
@@ -42,7 +42,7 @@ use Symfony\Component\HttpFoundation\Response;
 try {
     require_once 'bootstrap.php';
 
-    if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'index.php') !== false) {
+    if (isset($_SERVER['REQUEST_URI']) && str_contains($_SERVER['REQUEST_URI'], 'index.php')) {
         QUI::getEvents()->fireEvent('errorHeaderShowBefore', [
             Response::HTTP_SEE_OTHER,
             $_SERVER['REQUEST_URI']
@@ -153,7 +153,7 @@ try {
         ]);
 
         $file = LIB_DIR . 'templates/maintenance.html';
-        $pfile = USR_DIR . $Project->getName() . '/lib/maintenance.html';
+        $pfile = USR_DIR . $Project->getName() . '/src/maintenance.html';
 
         if (file_exists($pfile)) {
             $file = $pfile;
@@ -198,7 +198,7 @@ try {
     // if cache exists, and cache should also be used
     if (
         CACHE
-        && $Site->getAttribute('nocache') != true
+        && !$Site->getAttribute('nocache')
         && !QUI::getUsers()->isAuth(QUI::getUserBySession())
         && empty($query)
         && $Rewrite->getHeaderCode() === 200
@@ -246,7 +246,7 @@ try {
 
         // cachefile erstellen
         if (
-            $Site->getAttribute('nocache') != true
+            !$Site->getAttribute('nocache')
             && !QUI::getUsers()->isAuth(QUI::getUserBySession())
             && empty($query)
             && $Rewrite->getHeaderCode() === 200
@@ -306,6 +306,6 @@ try {
     error_log($Exception->getMessage());
 
     echo file_get_contents(
-        dirname(__FILE__) . '/lib/templates/error.html'
+        dirname(__FILE__) . '/src/templates/error.html'
     );
 }

@@ -258,7 +258,7 @@ echo $User->getLang(); ?>"> <!--<![endif]-->
 
     $locales = [];
 
-    foreach ($files as $package => $file) {
+    foreach (array_keys($files) as $package) {
         $locales[] = $package . '/' . $User->getLang();
     }
 

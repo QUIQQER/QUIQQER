@@ -45,7 +45,7 @@ define('controls/projects/project/site/Panel', [
           Mustache        = arguments[13],
           templateRestore = arguments[14];
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     const cleanupUrl = function (value) {
         const notAllowed = Object.keys(SiteUtils.notAllowedUrlSigns()).join('|'),
@@ -54,7 +54,7 @@ define('controls/projects/project/site/Panel', [
         value = value.replace(reg, '');
         value = value.replace(/ /g, QUIQQER.Rewrite.URL_SPACE_CHARACTER);
 
-        // quiqqer/quiqqer#980 --- to -
+        // quiqqer/core#980 --- to -
         value = value.replace(
             new RegExp(
                 QUIQQER.Rewrite.URL_SPACE_CHARACTER + QUIQQER.Rewrite.URL_SPACE_CHARACTER + '+', "g"
@@ -177,7 +177,7 @@ define('controls/projects/project/site/Panel', [
                             '<tr>' +
                             '   <td>{{localeLang}}</td>' +
                             '   <td><img src="' + window.URL_OPT_DIR +
-                            'quiqqer/quiqqer/bin/16x16/flags/{{lang}}.png" alt="" /> {{lang}}</td>' +
+                            'quiqqer/core/bin/16x16/flags/{{lang}}.png" alt="" /> {{lang}}</td>' +
                             '</tr>' +
                             '<tr>' +
                             '   <td>{{localeID}}</td>' +
@@ -323,7 +323,7 @@ define('controls/projects/project/site/Panel', [
                 // if dom is not loaded, we wait 200ms
                 (function () {
                     if (this.$delayTest > 10) {
-                        const errorMessage = Locale.get('quiqqer/quiqqer', 'exception.site.panel.error', {
+                        const errorMessage = Locale.get('quiqqer/core', 'exception.site.panel.error', {
                             id: this.getSite().getId()
                         });
 
@@ -527,8 +527,8 @@ define('controls/projects/project/site/Panel', [
                     self.$ButtonOpenWebsite = new QUIButton({
                         textimage: 'fa fa-external-link',
                         name     : 'sort',
-                        text     : Locale.get('quiqqer/quiqqer', 'project.sitemap.open.in.window'),
-                        title    : Locale.get('quiqqer/quiqqer', 'project.sitemap.open.in.window'),
+                        text     : Locale.get('quiqqer/core', 'project.sitemap.open.in.window'),
+                        title    : Locale.get('quiqqer/core', 'project.sitemap.open.in.window'),
                         events   : {
                             onClick: self.openSiteInPopup
                         }
@@ -608,7 +608,7 @@ define('controls/projects/project/site/Panel', [
 
                 const Sheet = self.createSheet({
                     icon : 'fa fa-window-restore',
-                    title: Locale.get('quiqqer/quiqqer', 'panel.site.restore.title', {
+                    title: Locale.get('quiqqer/core', 'panel.site.restore.title', {
                         id: Site.getId()
                     })
                 });
@@ -640,14 +640,14 @@ define('controls/projects/project/site/Panel', [
                 };
 
                 let text = Locale.get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/core',
                     'panel.site.restore.message.local.newer',
                     localeParams
                 );
 
                 if (StorageTime && EditDate > StorageTime) {
                     text = Locale.get(
-                        'quiqqer/quiqqer',
+                        'quiqqer/core',
                         'panel.site.restore.message.online.newer',
                         localeParams
                     );
@@ -661,7 +661,7 @@ define('controls/projects/project/site/Panel', [
                 Sheet.clearButtons();
 
                 Sheet.addButton({
-                    text  : Locale.get('quiqqer/quiqqer', 'panel.site.restore.button.cancel'),
+                    text  : Locale.get('quiqqer/core', 'panel.site.restore.button.cancel'),
                     events: {
                         onClick: function () {
                             Sheet.hide(function () {
@@ -675,7 +675,7 @@ define('controls/projects/project/site/Panel', [
                 });
 
                 Sheet.addButton({
-                    text  : Locale.get('quiqqer/quiqqer', 'panel.site.restore.button.restore'),
+                    text  : Locale.get('quiqqer/core', 'panel.site.restore.button.restore'),
                     events: {
                         onClick: function () {
                             Sheet.hide(function () {
@@ -1174,7 +1174,7 @@ define('controls/projects/project/site/Panel', [
                                 if (OpenInStructure) {
                                     OpenInStructure.addEvent('click', self.openSiteInStructure);
                                     OpenInStructure.set('disabled', false);
-                                    OpenInStructure.set('title', Locale.get('quiqqer/quiqqer', 'projects.project.site.panel.information.openInSiteStructure'));
+                                    OpenInStructure.set('title', Locale.get('quiqqer/core', 'projects.project.site.panel.information.openInSiteStructure'));
                                 }
 
                                 if (SiteType) {
@@ -1697,18 +1697,18 @@ define('controls/projects/project/site/Panel', [
                     }
 
                     new QUIConfirm({
-                        title        : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.title'),
-                        text         : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.text'),
-                        information  : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.information'),
+                        title        : Locale.get('quiqqer/core', 'site.window.siteChangesExists.title'),
+                        text         : Locale.get('quiqqer/core', 'site.window.siteChangesExists.text'),
+                        information  : Locale.get('quiqqer/core', 'site.window.siteChangesExists.information'),
                         maxHeight    : 400,
                         maxWidth     : 600,
                         texticon     : 'fa fa-edit',
                         icon         : 'fa fa-edit',
                         ok_button    : {
-                            text: Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.button.ok')
+                            text: Locale.get('quiqqer/core', 'site.window.siteChangesExists.button.ok')
                         },
                         cancel_button: {
-                            text: Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.button.cancel')
+                            text: Locale.get('quiqqer/core', 'site.window.siteChangesExists.button.cancel')
                         },
                         events       : {
                             onSubmit: function () {
@@ -2364,9 +2364,9 @@ define('controls/projects/project/site/Panel', [
             new QUIConfirm({
                 icon         : 'fa fa-file-o',
                 texticon     : 'fa fa-file-o',
-                title        : Locale.get('quiqqer/quiqqer', 'window.title.url.customization'),
-                text         : Locale.get('quiqqer/quiqqer', 'window.title.url.customization.text'),
-                information  : Locale.get('quiqqer/quiqqer', 'window.title.url.customization.information'),
+                title        : Locale.get('quiqqer/core', 'window.title.url.customization'),
+                text         : Locale.get('quiqqer/core', 'window.title.url.customization.text'),
+                information  : Locale.get('quiqqer/core', 'window.title.url.customization.information'),
                 maxHeight    : 400,
                 maxWidth     : 600,
                 events       : {
@@ -2389,10 +2389,10 @@ define('controls/projects/project/site/Panel', [
                     }
                 },
                 ok_button    : {
-                    text: Locale.get('quiqqer/quiqqer', 'window.title.url.customization.button.ok')
+                    text: Locale.get('quiqqer/core', 'window.title.url.customization.button.ok')
                 },
                 cancel_button: {
-                    text: Locale.get('quiqqer/quiqqer', 'window.title.url.customization.button.cancel')
+                    text: Locale.get('quiqqer/core', 'window.title.url.customization.button.cancel')
                 }
             }).open();
         }

@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_site_clear',
-    function ($project, $name) {
+    static function ($project, $name): string {
         return QUI\Projects\Site\Utils::clearUrl(
             $name,
             QUI::getProjectManager()->decode($project)

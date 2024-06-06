@@ -11,7 +11,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_trash_sites',
-    function ($project, $params) {
+    static function ($project, $params): array {
         $Project = QUI::getProjectManager()->decode($project);
         $Trash = $Project->getTrash();
 

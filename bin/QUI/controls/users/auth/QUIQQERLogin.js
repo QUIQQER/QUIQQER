@@ -21,7 +21,7 @@ define('controls/users/auth/QUIQQERLogin', [
 ], function(QUI, QUIControl, QUILoader, QUILocale, QUIAjax) {
     'use strict';
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
 

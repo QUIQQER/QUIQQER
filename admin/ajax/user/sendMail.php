@@ -9,18 +9,19 @@
  * @throws QUI\Exception
  */
 
+use QUI\Mail\Mailer;
 use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Utils\Security\Orthos;
 
 QUI::$Ajax->registerFunction(
     'ajax_user_sendMail',
-    function ($userId, $mailSubject, $mailContent) {
-        $User = QUI::getUsers()->get((int)$userId);
+    static function ($userId, $mailSubject, $mailContent): void {
+        $User = QUI::getUsers()->get($userId);
         $mailSubject = trim(Orthos::clear($mailSubject));
         $mailContent = trim($mailContent);
 
         // send mail
-        $Mailer = new \QUI\Mail\Mailer();
+        $Mailer = new Mailer();
 
         // Fetch image URLs and replace with fully qualified URLs
         preg_match_all('#"(image\.php.*)"#i', $mailContent, $matches);
@@ -47,10 +48,10 @@ QUI::$Ajax->registerFunction(
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/core',
                 'message.ajax.user.sendMail.success',
                 [
-                    'user' => $User->getName() . ' (#' . $User->getId() . ')'
+                    'user' => $User->getName() . ' (#' . $User->getUUID() . ')'
                 ]
             )
         );

@@ -16,10 +16,10 @@ define('controls/users/Select', [
 
     'css!controls/users/Select.css'
 
-], function (QUIControl, QUIElementSelect, QUILocale, QUIAjax) {
-    "use strict";
+], function(QUIControl, QUIElementSelect, QUILocale, QUIAjax) {
+    'use strict';
 
-    const lg = 'quiqqer/quiqqer';
+    const lg = 'quiqqer/core';
 
     /**
      * @class controls/users/Select
@@ -32,14 +32,14 @@ define('controls/users/Select', [
     return new Class({
 
         Extends: QUIElementSelect,
-        Type   : 'controls/users/Select',
+        Type: 'controls/users/Select',
 
         Binds: [
             '$onSearchButtonClick',
             'userSearch'
         ],
 
-        initialize: function (options) {
+        initialize: function(options) {
             this.parent(options);
 
             this.setAttribute('Search', this.userSearch);
@@ -53,7 +53,7 @@ define('controls/users/Select', [
 
             this.addEvents({
                 onSearchButtonClick: this.$onSearchButtonClick,
-                onCreate           : () => {
+                onCreate: () => {
                     this.getElm().addClass('quiqqer-user-select');
                 }
             });
@@ -65,19 +65,17 @@ define('controls/users/Select', [
          * @param {String} value
          * @returns {Promise}
          */
-        userSearch: function (value) {
-            return new Promise(function (resolve) {
-                QUIAjax.get('ajax_usersgroups_search', function (result) {
-                    let i, len;
+        userSearch: function(value) {
+            return new Promise(function(resolve) {
+                QUIAjax.get('ajax_usersgroups_search', function(result) {
+                    const data = [],
+                        userResult = result.users;
 
-                    const data       = [],
-                          userResult = result.users;
-
-                    for (i = 0, len = userResult.length; i < len; i++) {
+                    for (let i = 0, len = userResult.length; i < len; i++) {
                         data.push({
-                            id   : userResult[i].id,
+                            id: userResult[i].id,
                             title: userResult[i].username,
-                            icon : 'fa fa-user'
+                            icon: 'fa fa-user'
                         });
                     }
 
@@ -98,7 +96,7 @@ define('controls/users/Select', [
          * @param {Object} Select
          * @param {Object} Btn
          */
-        $onSearchButtonClick: function (Select, Btn) {
+        $onSearchButtonClick: function(Select, Btn) {
             const oldIcon = Btn.getAttribute('icon');
 
             Btn.setAttribute('icon', 'fa fa-spinner fa-spin');
@@ -108,11 +106,11 @@ define('controls/users/Select', [
                 'controls/users/search/Window'
             ], (Window) => {
                 new Window({
-                    autoclose     : true,
-                    multiple      : this.getAttribute('multiple'),
-                    search        : this.getAttribute('search'),
+                    autoclose: true,
+                    multiple: this.getAttribute('multiple'),
+                    search: this.getAttribute('search'),
                     searchSettings: this.getAttribute('searchSettings'),
-                    events        : {
+                    events: {
                         onSubmit: (Win, userIds) => {
                             for (let i = 0, len = userIds.length; i < len; i++) {
                                 this.addItem(userIds[i].id);

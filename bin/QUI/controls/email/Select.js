@@ -17,7 +17,7 @@ define('controls/email/Select', [
 ], function (QUI, QUIElementSelect, QUILocale, QUIAjax) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     /**
      * @class controls/email/Select

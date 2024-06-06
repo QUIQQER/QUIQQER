@@ -19,7 +19,7 @@ define('controls/packages/PackageList', [
              templatePackageTile, templatePackageList) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
 

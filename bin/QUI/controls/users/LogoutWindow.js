@@ -17,7 +17,7 @@ define('controls/users/LogoutWindow', [
 ], function (QUI, QUIConfirm, Login, QUILocale, Ajax) {
     "use strict";
 
-    var lg = 'quiqqer/quiqqer';
+    var lg = 'quiqqer/core';
 
     return new Class({
 

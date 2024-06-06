@@ -9,7 +9,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_groups_delete',
-    function ($gids) {
+    static function ($gids): array {
         $gids = json_decode($gids, true);
         $Groups = QUI::getGroups();
 
@@ -25,7 +25,7 @@ QUI::$Ajax->registerFunction(
         foreach ($gids as $gid) {
             try {
                 $groupName = $Groups->get($gid)->getName();
-                $groupId = $Groups->get($gid)->getId();
+                $groupId = $Groups->get($gid)->getUUID();
 
                 $Groups->get($gid)->delete();
 
@@ -39,14 +39,14 @@ QUI::$Ajax->registerFunction(
         if (!empty($result)) {
             if (\count($result) === 1) {
                 QUI::getMessagesHandler()->addSuccess(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'message.group.deleted', [
+                    QUI::getLocale()->get('quiqqer/core', 'message.group.deleted', [
                         'groupname' => $names[0],
                         'id' => $result[0]
                     ])
                 );
             } else {
                 QUI::getMessagesHandler()->addSuccess(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'message.groups.deleted', [
+                    QUI::getLocale()->get('quiqqer/core', 'message.groups.deleted', [
                         'groups' => implode(', ', $result)
                     ])
                 );
@@ -54,7 +54,7 @@ QUI::$Ajax->registerFunction(
         }
 
         if (!$ExceptionStack->isEmpty()) {
-            $message = array_map(function ($Exception) {
+            $message = array_map(static function ($Exception) {
                 /* @var $Exception QUI\Exception */
                 return $Exception->getMessage();
             }, $ExceptionStack->getExceptionList());
