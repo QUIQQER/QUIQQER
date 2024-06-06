@@ -68,6 +68,12 @@ class Group extends QUI\QDOM
     {
         $this->rootId = QUI::conf('globals', 'root');
 
+        if ($id == Manager::EVERYONE_ID) {
+            $this->id = (int)$id;
+            $this->uuid = $id;
+            return;
+        }
+
         if (is_numeric($id)) {
             $this->id = (int)$id;
         } else {

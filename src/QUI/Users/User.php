@@ -841,7 +841,7 @@ class User implements QUIUserInterface
 
         // add to everyone
         $Everyone = new QUI\Groups\Everyone();
-        $this->addToGroup($Everyone->getId());
+        $this->addToGroup($Everyone->getUUID());
 
         // check assigned toolbars
         $assignedToolbars = '';
