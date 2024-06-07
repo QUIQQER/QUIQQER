@@ -68,12 +68,6 @@ class Group extends QUI\QDOM
     {
         $this->rootId = QUI::conf('globals', 'root');
 
-        if ($id == Manager::EVERYONE_ID) {
-            $this->id = (int)$id;
-            $this->uuid = $id;
-            return;
-        }
-
         if (is_numeric($id)) {
             $this->id = (int)$id;
         } else {
@@ -113,6 +107,12 @@ class Group extends QUI\QDOM
         $result = QUI::getGroups()->getGroupData($id);
 
         if (!isset($result[0])) {
+            if ($id == Manager::EVERYONE_ID || $id == Manager::GUEST_ID) {
+                $this->id = (int)$id;
+                $this->uuid = $id;
+                return;
+            }
+
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/core',
