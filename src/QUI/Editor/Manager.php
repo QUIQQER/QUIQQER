@@ -31,6 +31,7 @@ use function file_put_contents;
 use function implode;
 use function in_array;
 use function is_dir;
+use function is_numeric;
 use function libxml_get_errors;
 use function libxml_use_internal_errors;
 use function md5;
@@ -125,16 +126,25 @@ class Manager
                 $rootToolbar = $toolbars[0];
             }
 
-            QUI::getDataBase()->update(
-                QUI::getDBTableName("groups"),
-                [
-                    "toolbar" => $rootToolbar,
-                    "assigned_toolbar" => implode(",", $toolbars)
-                ],
-                [
-                    "id" => $rootGroupID
-                ]
-            );
+            if (is_numeric($rootGroupID)) {
+                QUI::getDataBase()->update(
+                    QUI::getDBTableName("groups"),
+                    [
+                        "toolbar" => $rootToolbar,
+                        "assigned_toolbar" => implode(",", $toolbars)
+                    ],
+                    ["id" => $rootGroupID]
+                );
+            } else {
+                QUI::getDataBase()->update(
+                    QUI::getDBTableName("groups"),
+                    [
+                        "toolbar" => $rootToolbar,
+                        "assigned_toolbar" => implode(",", $toolbars)
+                    ],
+                    ["uuid" => $rootGroupID]
+                );
+            }
 
             // Set "minimal.xml" as new default toolbar for everyone group
             if (in_array("minimal.xml", $toolbars)) {
@@ -144,9 +154,7 @@ class Manager
                         "toolbar" => "minimal.xml",
                         "assigned_toolbar" => "minimal.xml"
                     ],
-                    [
-                        "id" => 1
-                    ]
+                    ["id" => 1]
                 );
             }
         }
