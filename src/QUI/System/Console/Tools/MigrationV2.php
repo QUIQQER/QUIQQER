@@ -16,6 +16,10 @@ use function count;
 use function explode;
 use function implode;
 use function is_numeric;
+use function trim;
+use function var_dump;
+
+use const OPT_DIR;
 
 /**
  * MailQueue Console Manager
@@ -42,13 +46,13 @@ class MigrationV2 extends QUI\System\Console\Tool
         // messages
         $this->writeLn('- Update messages table');
         QUI::getDataBaseConnection()->executeStatement(
-            'ALTER TABLE `' . QUI::getDBTableName('messages') . '` CHANGE `uid` `uid` VARCHAR(50) NULL DEFAULT NULL;'
+            'ALTER TABLE `' . QUI::getDBTableName('messages') . '` CHANGE `uid` `uid` VARCHAR(50);'
         );
 
         // session
         $this->writeLn('- Update session table');
         QUI::getDataBaseConnection()->executeStatement(
-            'ALTER TABLE `' . QUI::getDBTableName('sessions') . '` CHANGE `uid` `uid` VARCHAR(50) NULL DEFAULT NULL;'
+            'ALTER TABLE `' . QUI::getDBTableName('sessions') . '` CHANGE `uid` `uid` VARCHAR(50);'
         );
 
 
@@ -68,43 +72,10 @@ class MigrationV2 extends QUI\System\Console\Tool
     {
         $this->writeLn('- Update users table');
 
+        QUI\Users\Install::user();
+
         $DataBase = QUI::getDataBase();
         $table = QUI\Users\Manager::table();
-
-        // Patch strict
-        $DataBase->getPDO()->exec(
-            "ALTER TABLE `$table` 
-            CHANGE `lastedit` `lastedit` DATETIME NULL DEFAULT NULL,
-            CHANGE `expire` `expire` DATETIME NULL DEFAULT NULL,
-            CHANGE `password` `password` VARCHAR(255) NOT NULL DEFAULT '',
-            CHANGE `birthday` `birthday` DATE NULL DEFAULT NULL;
-            "
-        );
-
-        try {
-            $DataBase->getPDO()->exec(
-                "
-                UPDATE `$table` 
-                SET lastedit = NULL 
-                WHERE 
-                    lastedit = '0000-00-00 00:00:00' OR 
-                    lastedit = '';
-
-                UPDATE `$table` 
-                SET expire = NULL 
-                WHERE 
-                    expire = '0000-00-00 00:00:00' OR 
-                    expire = '';
-
-                UPDATE `$table` 
-                SET birthday = NULL 
-                WHERE 
-                    birthday = '0000-00-00' OR 
-                    birthday = '';
-            "
-            );
-        } catch (\Exception) {
-        }
 
         // uuid extreme indexes patch
         $Stmt = $DataBase->getPDO()->prepare(
@@ -258,86 +229,7 @@ class MigrationV2 extends QUI\System\Console\Tool
     public function groups(): void
     {
         $this->writeLn('- Migrate groups table');
-
-
-        // read database xml, because we need the newest groups db
-        $dbFields = QUI\Utils\Text\XML::getDataBaseFromXml(OPT_DIR . 'quiqqer/core/database.xml');
-        unset($dbFields['projects']);
-
-        $dbFields['globals'] = array_filter($dbFields['globals'], static function (array $entry): bool {
-            return $entry['suffix'] === 'groups';
-        });
-
-        QUI\Utils\Text\XML::importDataBase($dbFields);
-
-        $DataBase = QUI::getDataBase();
-        $DataBase->execSQL(
-            "ALTER TABLE `" . QUI\Groups\Manager::table() . "` CHANGE `parent` `parent` VARCHAR(50) NULL DEFAULT NULL;"
-        );
-
-        $Table = $DataBase->table();
-        $Table->setPrimaryKey(QUI\Groups\Manager::table(), 'id');
-        $Table->setIndex(QUI\Groups\Manager::table(), 'parent');
-
-
-        // Guest
-        $result = QUI::getDataBase()->fetch([
-            'from' => QUI\Groups\Manager::table(),
-            'where' => [
-                'id' => 0
-            ]
-        ]);
-
-        if (!isset($result[0])) {
-            QUI\System\Log::addNotice('Guest Group does not exist.');
-
-            QUI::getDataBase()->insert(QUI\Groups\Manager::table(), [
-                'id' => 0,
-                'name' => 'Guest'
-            ]);
-
-            QUI\System\Log::addNotice('Guest Group was created.');
-        } else {
-            QUI::getDataBase()->update(QUI\Groups\Manager::table(), [
-                'name' => 'Guest'
-            ], [
-                'id' => 0
-            ]);
-
-            QUI\System\Log::addNotice('Guest exists only updated');
-        }
-
-
-        // Everyone
-        $result = QUI::getDataBase()->fetch([
-            'from' => QUI\Groups\Manager::table(),
-            'where' => [
-                'id' => 1
-            ]
-        ]);
-
-        if (!isset($result[0])) {
-            QUI\System\Log::addNotice('Everyone Group does not exist...');
-
-            QUI::getDataBase()->insert(QUI\Groups\Manager::table(), [
-                'id' => 1,
-                'name' => 'Everyone'
-            ]);
-
-            QUI\System\Log::addNotice('Everyone Group was created.');
-        } else {
-            QUI::getDataBase()->update(QUI\Groups\Manager::table(), [
-                'name' => 'Everyone'
-            ], [
-                'id' => 1
-            ]);
-
-            QUI\System\Log::addNotice('Everyone exists');
-        }
-
-        QUI::getUsers()->get(0)->save();
-        QUI::getUsers()->get(5)->save();
-        QUI::getUsers()->get(QUI::conf('globals', 'rootuser'))->save();
+        QUI\Users\Install::groups();
     }
 
     public function groupsInUsers(): void
@@ -533,14 +425,17 @@ class MigrationV2 extends QUI\System\Console\Tool
                 continue;
             }
 
-            QUI::getDataBase()->insert($table2Groups, [
-                'group_id' => $groupUUID,
-                'permissions' => $entry['permissions']
-            ]);
+            try {
+                QUI::getDataBase()->insert($table2Groups, [
+                    'group_id' => $groupUUID,
+                    'permissions' => $entry['permissions']
+                ]);
 
-            QUI::getDataBase()->delete($table2Groups, [
-                'group_id' => $entry['group_id']
-            ]);
+                QUI::getDataBase()->delete($table2Groups, [
+                    'group_id' => $entry['group_id']
+                ]);
+            } catch (\Exception) {
+            }
         }
     }
 
