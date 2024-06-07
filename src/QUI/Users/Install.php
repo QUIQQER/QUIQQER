@@ -150,8 +150,10 @@ class Install
             QUI\System\Log::addNotice('Everyone exists');
         }
 
-        QUI::getUsers()->get(0)->save();
-        QUI::getUsers()->get(5)->save();
-        QUI::getUsers()->get(QUI::conf('globals', 'rootuser'))->save();
+        $SystemUser = QUI::getUsers()->getSystemUser();
+
+        QUI::getUsers()->get(0)->save($SystemUser);
+        QUI::getUsers()->get(5)->save($SystemUser);
+        QUI::getUsers()->get(QUI::conf('globals', 'rootuser'))->save($SystemUser);
     }
 }
