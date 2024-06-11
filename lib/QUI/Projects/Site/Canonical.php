@@ -7,10 +7,16 @@
 namespace QUI\Projects\Site;
 
 use QUI;
+use QUI\Exception;
 
+use function filter_var;
 use function ltrim;
 use function parse_url;
-use function strpos;
+use function urldecode;
+
+use const FILTER_VALIDATE_URL;
+use const PHP_URL_PATH;
+use const URL_DIR;
 
 /**
  * Canonical meta helper
@@ -20,10 +26,7 @@ use function strpos;
  */
 class Canonical
 {
-    /**
-     * @var bool
-     */
-    protected bool $considerGetParams = false;
+    protected bool $considerGetParams = true;
 
     public function __construct(
         protected QUI\Interfaces\Projects\Site $Site
@@ -32,8 +35,6 @@ class Canonical
 
     /**
      * Return the meta tag, if it is allowed
-     *
-     * @return string
      */
     public function output(): string
     {
@@ -71,7 +72,7 @@ class Canonical
             $httpsHost = $Project->getVHost(true, true);
             $httpsHostExists = false;
 
-            if (strpos($httpsHost, 'https:') !== false) {
+            if (str_contains($httpsHost, 'https:')) {
                 $httpsHostExists = true;
             }
 
@@ -82,12 +83,18 @@ class Canonical
                 return $this->getLinkRel($httpsHost . $siteUrl);
             }
 
-            if ($this->Site->getAttribute('ERROR_HEADER')) {
-                return $this->getLinkRel($httpsHost . $this->Site->getCanonical());
+            $canonical = $this->Site->getCanonical();
+
+            if (str_contains($canonical, 'https:') === false || str_contains($canonical, 'http:') === false) {
+                $canonical = $httpsHost . $canonical;
             }
 
-            if (strpos($_REQUEST['_url'], QUI\Rewrite::URL_PARAM_SEPARATOR) !== false) {
-                return $this->getLinkRel($httpsHost . $this->Site->getCanonical());
+            if ($this->Site->getAttribute('ERROR_HEADER')) {
+                return $this->getLinkRel($canonical);
+            }
+
+            if (str_contains($_REQUEST['_url'], QUI\Rewrite::URL_PARAM_SEPARATOR)) {
+                return $this->getLinkRel($canonical);
             }
 
             return '';
@@ -121,7 +128,7 @@ class Canonical
 
         $httpsHostExists = false;
 
-        if (strpos($httpsHost, 'https:') !== false) {
+        if (str_contains($httpsHost, 'https:')) {
             $httpsHostExists = true;
         }
 
@@ -139,13 +146,16 @@ class Canonical
         }
 
         // canonical and request the same? then no output
-        if ($httpsHost . URL_DIR . $requestUrl == $canonical && $this->considerGetParams === false) {
+        $urlIsTheSame = urldecode($httpsHost . URL_DIR . $requestUrl) == $canonical
+            || $httpsHost . URL_DIR . $requestUrl == $canonical;
+
+        if ($urlIsTheSame && $this->considerGetParams === false) {
             return '';
         }
 
 
-        // fix doppelter HOST im canonical https://dev.quiqqer.com/quiqqer/quiqqer/issues/574
-        if (strpos($canonical, 'https:') !== false || strpos($canonical, 'http:') !== false) {
+        // fix doppelter HOST im canonical https://dev.quiqqer.com/quiqqer/core/issues/574
+        if (str_contains($canonical, 'https:') || str_contains($canonical, 'http:')) {
             return $this->getLinkRel($canonical);
         }
 
@@ -156,17 +166,13 @@ class Canonical
      * @param $url
      * @return array|false|int|string|null
      */
-    protected function removeHost($url)
+    protected function removeHost($url): bool|int|array|string|null
     {
         return parse_url($url, PHP_URL_PATH);
     }
 
     /**
      * Return <link rel="canonical"> tag
-     *
-     * @param string $url - href link
-     *
-     * @return string
      */
     protected function getLinkRel(string $url): string
     {
@@ -176,7 +182,7 @@ class Canonical
     /**
      * Consider get Parameter at the canonical request check
      */
-    public function considerGetParameterOn()
+    public function considerGetParameterOn(): void
     {
         $this->considerGetParams = true;
     }
@@ -184,7 +190,7 @@ class Canonical
     /**
      * Get parameters are not considered at the request check
      */
-    public function considerGetParameterOff()
+    public function considerGetParameterOff(): void
     {
         $this->considerGetParams = false;
     }
