@@ -42,7 +42,8 @@ class Manager extends QUI\QDOM
     /**
      * internal group cache
      */
-    protected array $groups;
+    protected array $groups = [];
+    protected array $groupIdsToHashes = [];
 
     protected array $data = [];
 
@@ -123,12 +124,21 @@ class Manager extends QUI\QDOM
             return $this->groups[$id];
         }
 
+        if (isset($this->groupIdsToHashes[$id])) {
+            $hash = $this->groupIdsToHashes[$id];
+
+            if (isset($this->groups[$hash])) {
+                return $this->groups[$hash];
+            }
+        }
+
         $Group = new Group($id);
-        $id = $Group->getUUID();
+        $uuid = $Group->getUUID();
 
-        $this->groups[$id] = $Group;
+        $this->groups[$uuid] = $Group;
+        $this->groupIdsToHashes[$Group->getId()] = $uuid;
 
-        return $this->groups[$id];
+        return $this->groups[$uuid];
     }
 
     /**
