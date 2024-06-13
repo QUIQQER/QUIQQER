@@ -1562,11 +1562,11 @@ class Manager
                 $groups = explode(',', $filter['filter_group']);
                 $subQuery = [];
 
-                foreach ($groups as $groupId) {
+                foreach ($groups as $g => $groupId) {
                     if ($groupId != 0) {
-                        $subQuery[] = 'usergroup LIKE :' . $groupId . ' ';
+                        $subQuery[] = 'usergroup LIKE :g' . $g . ' ';
 
-                        $binds[':' . $groupId] = '%,' . $groupId . ',%';
+                        $binds[':g' . $g] = '%,' . $groupId . ',%';
                     }
                 }
 
