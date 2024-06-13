@@ -273,6 +273,18 @@ define('controls/grid/Grid', [
                 'data-quiid': this.getId()
             });
 
+            // Textmarkierung bei doppelclick aufheben
+            this.container.addEventListener('dblclick', function (event) {
+                event.preventDefault();
+
+                if (window.getSelection) {
+                    window.getSelection().removeAllRanges();
+                } else if (document.selection) {
+                    document.selection.empty();
+                }
+            });
+
+
             this.draw();
             this.reset();
             this.resize();
