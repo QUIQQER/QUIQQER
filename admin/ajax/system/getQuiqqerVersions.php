@@ -41,8 +41,7 @@ QUI::$Ajax->registerFunction(
             $versions[] = $major . "." . $minor . ".*";
         }
 
-        $versions[] = "dev-master";
-        $versions[] = "dev-dev";
+        $versions[] = "dev-main";
 
         return $versions;
     },
