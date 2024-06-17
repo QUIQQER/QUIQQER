@@ -905,9 +905,10 @@ class User implements QUIUserInterface
 
 
         // saving
-        QUI::getDataBase()->update(
-            Manager::table(),
-            [
+        $query = QUI::getQueryBuilder()->update(Manager::table());
+
+        QUI\Utils\Doctrine::parseDbArrayToQueryBuilder($query, [
+            'update' => [
                 'username' => $this->getUsername(),
                 'usergroup' => ',' . implode(',', $this->getGroups(false)) . ',',
                 'firstname' => $this->getAttribute('firstname'),
@@ -930,8 +931,16 @@ class User implements QUIUserInterface
                 'lastLoginAttempt' => $this->getAttribute('lastLoginAttempt') ?: null,
                 'failedLogins' => $this->getAttribute('failedLogins') ?: 0
             ],
-            ['uuid' => $this->getUUID()]
-        );
+            'where' => [
+                'uuid' => $this->getUUID()
+            ]
+        ]);
+
+        try {
+            $query->executeQuery();
+        } catch (\Doctrine\DBAL\Exception $exception) {
+            QUI\System\Log::addError($exception->getMessage());
+        }
 
         $this->getStandardAddress()->save($PermissionUser);
 
