@@ -12,6 +12,16 @@ class Doctrine
 {
     public static function parseDbArrayToQueryBuilder(QueryBuilder $query, array $params): QueryBuilder
     {
+        if (!empty($params['update'])) {
+            $update = $params['update'];
+            $up = 0;
+
+            foreach ($update as $field => $value) {
+                $query->set($field, ':up' . $up)->setParameter('up' . $up, $value);
+                $up++;
+            }
+        }
+
         if (!empty($params['where'])) {
             $where = $params['where'];
 

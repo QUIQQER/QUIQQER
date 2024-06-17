@@ -326,8 +326,8 @@ class Update extends QUI\System\Console\Tool
             if (!empty($diff)) {
                 $this->write($diff);
 
-                $this->writeLn('There have been changes to the ini files!!!', 'red');
-                $this->writeLn('Should the etc backup be deleted anyway? [Y,n]', 'red');
+                $this->writeLn('There have been changes to the ini files!', 'blue');
+                $this->writeLn('Should the etc backup be deleted anyway? [Y,n]', 'blue');
                 $this->resetColor();
                 $input = $this->readInput();
 

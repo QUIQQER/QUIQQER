@@ -95,7 +95,7 @@ define('controls/grid/Grid', [
         options: {
             title: '',
             titletagnode: '', // 'h3.omnigrid__caption-title' ist default | any valid css selector, e.g.:
-                         // 'div', 'h1.my_css_class', 'h2#id_attr.my_css_class.one_more_my_class'
+            // 'div', 'h1.my_css_class', 'h2#id_attr.my_css_class.one_more_my_class'
             description: '', // html allowed
             name: false,
             alternaterows: true,
@@ -272,6 +272,35 @@ define('controls/grid/Grid', [
                 },
                 'data-quiid': this.getId()
             });
+
+            // Textmarkierung bei doppelclick aufheben
+            this.container.addEventListener('dblclick', function(event) {
+                event.preventDefault();
+
+                if (window.getSelection) {
+                    window.getSelection().removeAllRanges();
+                } else {
+                    if (document.selection) {
+                        document.selection.empty();
+                    }
+                }
+            });
+
+            // Textmarkierung bei shift click aufheben
+            this.container.addEventListener('click', function(event) {
+                if (!event.shiftKey) {
+                    return;
+                }
+
+                if (window.getSelection) {
+                    window.getSelection().removeAllRanges();
+                } else {
+                    if (document.selection) {
+                        document.selection.empty();
+                    }
+                }
+            });
+
 
             this.draw();
             this.reset();
@@ -4210,7 +4239,7 @@ define('controls/grid/Grid', [
             }
 
             EditableRow.classList.remove('flash-animation');
-            
+
             setTimeout(() => {
                 EditableRow.classList.add('flash-animation');
             }, 50);

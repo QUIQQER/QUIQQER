@@ -27,11 +27,9 @@ try {
     );
 }
 
-// clear project cache, because of settings xml cache
-QUI\Cache\Manager::clear('quiqqer');
-
 QUI\Cache\Manager::clearPackagesCache();
 QUI\Cache\Manager::clearSettingsCache();
 QUI\Cache\Manager::clearCompleteQuiqqerCache();
 
+QUI\Cache\Manager::clear('quiqqer');
 QUI\Cache\LongTermCache::clear('quiqqer');
