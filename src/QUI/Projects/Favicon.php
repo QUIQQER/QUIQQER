@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * This file contains the \QUI\Projects\Favicon
  */
