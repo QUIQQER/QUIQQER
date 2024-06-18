@@ -319,6 +319,13 @@
         <locale name="projects.project.settings.panel.favicon">
             <en><![CDATA[Favicon]]></en>
         </locale>
+        <locale name="projects.project.settings.panel.favicon.description" html="true">
+            <en><![CDATA[
+            A favicon, also known as a bookmark icon, is a graphic that is linked to your website.
+            It is used to visually represent the page in browser tabs, bookmark lists and other areas.
+            The favicon must have an aspect ratio of 1:1, i.e. be square.
+            ]]></en>
+        </locale>
         <locale name="projects.project.settings.panel.mediaSettings.imageLibrary">
             <en><![CDATA[Used image library]]></en>
         </locale>
