@@ -146,6 +146,7 @@ define('controls/grid/Grid', [
             // pagination
             url: null,
             pagination: false,
+            'button-reload': false,
             page: 1,
             perPageOptions: [
                 5,
@@ -2851,11 +2852,12 @@ define('controls/grid/Grid', [
                         '<span class="cpageMax"></span>' +
                         '</span>' +
                         '</div>';
-                    h = h +
-                        '<div class="pGroup"><div class="pNext pButton"></div><div class="pLast pButton"></div></div>';
-                    h = h +
-                        '<div class="btnseparator"></div><div class="pGroup"><div class="pReload pButton"></div></div>';
+                    h = h + '<div class="pGroup"><div class="pNext pButton"></div><div class="pLast pButton"></div></div>';
                     h = h + '<div class="btnseparator"></div><div class="pGroup"><span class="pPageStat"></span></div>';
+                }
+
+                if (this.getAttribute('pagination') || this.getAttribute('button-reload')) {
+                    h = h + '<div class="btnseparator"></div><div class="pGroup"><div class="pReload pButton"></div></div>';
                 }
 
                 if (options.multipleSelection) {
