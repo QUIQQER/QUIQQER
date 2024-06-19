@@ -771,6 +771,7 @@ class Template extends QUI\QDOM
 
         // assign
         $Engine->assign([
+            'Favicon' => new QUI\Projects\Favicon(),
             'Project' => $Project,
             'Site' => $Site,
             'Engine' => $Engine,

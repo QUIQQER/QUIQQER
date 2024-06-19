@@ -27,29 +27,7 @@
 <meta name="author" content="{$Site->getAttribute('meta.author')}" />
 <meta name="revisit-after" content="{$Site->getAttribute('meta.revisit')}" />
 
-<!--<meta property="og:image" content="{$Site->getAttribute('meta.socialimage')}" />
-<meta name="twitter:image" content="{$Site->getAttribute('meta.socialimage')}" />-->
-<!-- [end] meta -->
-
-{if $Project->getConfig('favicon')}
-<link rel="icon" href="{$Project->getConfig('favicon')}" type="image/png" />
-
-<!-- For IE 11, Chrome, Firefox, Safari, Opera -->
-<link rel="icon" href="{image src=$Project->getConfig('favicon') width=16 height=16 onlysrc=1}"
-      sizes="16x16" type="image/png"/>
-<link rel="icon" href="{image src=$Project->getConfig('favicon') width=32 height=32 onlysrc=1}"
-      sizes="32x32" type="image/png"/>
-<link rel="icon" href="{image src=$Project->getConfig('favicon') width=48 height=48 onlysrc=1}"
-      sizes="48x48" type="image/png"/>
-<link rel="icon" href="{image src=$Project->getConfig('favicon') width=64 height=64 onlysrc=1}"
-      sizes="64x64" type="image/png"/>
-<link rel="icon" href="{image src=$Project->getConfig('favicon') width=128 height=128 onlysrc=1}"
-      sizes="128x128" type="image/png"/>
-{/if}
-
-<!--
-<link rel="manifest" href="{$URL_DIR}manifest.json" />
--->
+{$Favicon->output($Project)}
 
 <script type="text/javascript" data-no-cache="1">
     var URL_DIR          = '{$URL_DIR}',

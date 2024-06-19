@@ -319,6 +319,13 @@
         <locale name="projects.project.settings.panel.favicon">
             <de><![CDATA[Favicon]]></de>
         </locale>
+        <locale name="projects.project.settings.panel.favicon.description" html="true">
+            <de><![CDATA[
+            Ein Favicon, auch bekannt als Lesezeichen-Icon, ist eine Grafik, die mit deiner Website verbunden ist.
+            Es dient dazu, die Seite visuell in den Browser-Tabs, Lesezeichenlisten und anderen Bereichen zu repräsentieren.
+            Das Favicon muss ein Seitenverhältnis von 1:1 haben, also quadratisch sein.
+            ]]></de>
+        </locale>
         <locale name="projects.project.settings.panel.mediaSettings.imageLibrary">
             <de><![CDATA[Verwendete Bildbibliothek]]></de>
         </locale>
