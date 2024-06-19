@@ -50,6 +50,7 @@ define('controls/messages/Button', [
             this.$rendering = false;
 
             this.$Elm = null;
+            this.$Icon = null;
             this.$MessageHandler = null;
             this.$Batch = null;
 
@@ -80,6 +81,8 @@ define('controls/messages/Button', [
                     click: this.toggle
                 }
             });
+
+            this.$Icon = this.$Elm.getElement('.fa-comments');
 
             this.$Elm.addEvent('click', this.toggle);
 
@@ -515,6 +518,16 @@ define('controls/messages/Button', [
 
             const MessageNode = this.$createMessageNode(Message);
 
+            if (MessageNode.classList.contains('quiqqer-message-success')) {
+                this.$showSuccessMark();
+                this.$MessageHandler.$newMessages++;
+                this.$MessageHandler.save();
+                this.refresh();
+
+                return;
+            }
+
+
             if (this.$queue.length) {
                 this.$queue.push(MessageNode);
                 this.$MessageHandler.$newMessages++;
@@ -543,6 +556,11 @@ define('controls/messages/Button', [
         $showMessage: function(Node) {
             const self = this;
             const messages = document.getElements('.quiqqer-message');
+
+            if (Node.classList.contains('quiqqer-message-success')) {
+                this.$showSuccessMark();
+                return Promise.resolve();
+            }
 
             if (messages.length) {
                 return this.$closeMessage(messages).then(function() {
@@ -765,6 +783,19 @@ define('controls/messages/Button', [
                     }
                 });
             });
+        },
+
+        $showSuccessMark: function() {
+            // show checkmark instead of message
+            this.$Icon.classList.add('fa-check');
+            this.$Icon.classList.remove('fa-comments');
+            this.$Icon.style.color = '#2fb344';
+
+            (() => {
+                this.$Icon.classList.add('fa-comments');
+                this.$Icon.classList.remove('fa-check');
+                this.$Icon.style.color = null;
+            }).delay(500);
         },
 
         $addFileUpload: function(File) {
