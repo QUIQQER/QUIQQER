@@ -23,6 +23,9 @@ parameters:
         - QUIQQER_AJAX
         - ERROR_SEND
         - ERROR_MAIL
+        - QUIQQER_BACKEND
+        - QUIQQER_CONSOLE
+        - ADMIN
     customRulesetUsed: true
 services:
     -
