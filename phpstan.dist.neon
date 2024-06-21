@@ -4,8 +4,9 @@ includes:
 parameters:
     level: 4
     paths:
-        - src
-        - admin/ajax
+        - .
+    excludePaths:
+        - tests
     bootstrapFiles:
         - tests/phpstan-bootstrap.php
     tipsOfTheDay: false
