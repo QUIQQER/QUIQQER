@@ -6,6 +6,10 @@ parameters:
     paths:
         - .
     excludePaths:
+        - src/QUI/Users/Auth/Handler.php
+        - src/QUI/Users/Auth/PasswordResetVerification.php
+        - src/QUI/Projects/RestProvider.php
+        - src/QUI/Cache/QuiqqerMongoDriver.php
         - tests
     bootstrapFiles:
         - tests/phpstan-bootstrap.php

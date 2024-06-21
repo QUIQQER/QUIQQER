@@ -1389,6 +1389,7 @@ class User implements QUIUserInterface
         }
 
 
+        // @phpstan-ignore class.notFound (Currency class is provided by 'quiqqer/currency' package, as checked above)
         if ($this->getAttribute('currency') && Currencies::existCurrency($this->getAttribute('currency'))) {
             return $this->getAttribute('currency');
         }
@@ -1398,11 +1399,13 @@ class User implements QUIUserInterface
         if ($Country) {
             $currency = $Country->getCurrencyCode();
 
+            // @phpstan-ignore class.notFound (Currency class is provided by 'quiqqer/currency' package, as checked above)
             if (Currencies::existCurrency($currency)) {
                 return $currency;
             }
         }
 
+        // @phpstan-ignore class.notFound (Currency class is provided by 'quiqqer/currency' package, as checked above)
         return Currencies::getDefaultCurrency()->getCode();
     }
 
