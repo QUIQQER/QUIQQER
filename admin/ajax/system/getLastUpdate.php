@@ -16,7 +16,7 @@ QUI::$Ajax->registerFunction(
             return $date;
         }
 
-        return QUI::getLocale()->formatDate($date, '%B %d %Y, %X %Z');
+        return QUI::getLocale()->formatDate($date, 'MMMM dd yyyy, HH:mm:ss z');
     },
     ['formatted'],
     [
