@@ -75,11 +75,11 @@ class MigrationV2 extends QUI\System\Console\Tool
         QUI\Users\Install::user();
 
         $DataBase = QUI::getDataBase();
-        $table = QUI\Users\Manager::table();
+        $userTable = QUI\Users\Manager::table();
 
         // uuid extreme indexes patch
         $Stmt = $DataBase->getPDO()->prepare(
-            "SHOW INDEXES FROM `$table`
+            "SHOW INDEXES FROM `$userTable`
             WHERE 
                 non_unique = 0 AND Key_name != 'PRIMARY';"
         );
@@ -109,22 +109,22 @@ class MigrationV2 extends QUI\System\Console\Tool
         }
 
         // users with no uuid
-        $addressesWithoutUuid = QUI::getDataBase()->fetch([
-            'from' => $table,
+        $usersWithoutUuid = QUI::getDataBase()->fetch([
+            'from' => $userTable,
             'where' => [
                 'uuid' => ''
             ]
         ]);
 
-        foreach ($addressesWithoutUuid as $entry) {
-            $DataBase->update($table, [
-                'uuid' => QUI\Utils\Uuid::get()
-            ], [
-                'id' => $entry['id']
-            ]);
+        foreach ($usersWithoutUuid as $entry) {
+            $DataBase->update(
+                $userTable,
+                ['uuid' => QUI\Utils\Uuid::get()],
+                ['id' => $entry['id']]
+            );
         }
 
-        $DataBase->table()->setUniqueColumns($table, 'uuid');
+        $DataBase->table()->setUniqueColumns($userTable, 'uuid');
 
         // addresses
         $this->writeLn('- Migrate users addresses');
@@ -148,10 +148,10 @@ class MigrationV2 extends QUI\System\Console\Tool
             );
         }
 
-        $usersAddressColumn = $DataBase->table()->getColumn($table, 'address');
+        $usersAddressColumn = $DataBase->table()->getColumn($userTable, 'address');
 
         if (!str_contains($usersAddressColumn['Type'], 'varchar')) {
-            $sql = "ALTER TABLE `$table` MODIFY `address` VARCHAR(50) NOT NULL";
+            $sql = "ALTER TABLE `$userTable` MODIFY `address` VARCHAR(50) NOT NULL";
             $DataBase->execSQL($sql);
         }
 
@@ -169,19 +169,42 @@ class MigrationV2 extends QUI\System\Console\Tool
         foreach ($addressesWithoutUuid as $entry) {
             $addressUuid = QUI\Utils\Uuid::get();
 
-            $DataBase->update($tableAddresses, [
-                'uuid' => $addressUuid
-            ], [
-                'id' => $entry['id']
-            ]);
-
-            // Update references in users table
             $DataBase->update(
-                $table,
-                ['address' => $addressUuid],
-                ['address' => $entry['id']]
+                $tableAddresses,
+                ['uuid' => $addressUuid],
+                ['id' => $entry['id']]
             );
         }
+
+        // MIGRATE DEFAULT ADDRESS
+        $users = QUI::getDataBase()->fetch([
+            'from' => $userTable
+        ]);
+
+        foreach ($users as $user) {
+            $standardAddress = $user['address'];
+
+            if (is_numeric($standardAddress)) {
+                $addressData = QUI::getDataBase()->fetch([
+                    'from' => $tableAddresses,
+                    'where' => [
+                        'id' => $standardAddress
+                    ]
+                ]);
+
+                if (!count($addressData)) {
+                    continue;
+                }
+
+                // Update references in users table
+                $DataBase->update(
+                    $userTable,
+                    ['address' => $addressData[0]['uuid']],
+                    ['id' => $user['id']]
+                );
+            }
+        }
+
 
         if ($setAddressUuidColumnToUnique) {
             $DataBase->table()->setUniqueColumns($tableAddresses, 'uuid');
@@ -201,7 +224,7 @@ class MigrationV2 extends QUI\System\Console\Tool
         foreach ($addressesWithoutUserUuid as $entry) {
             $result = $DataBase->fetch([
                 'select' => ['uuid'],
-                'from' => $table,
+                'from' => $userTable,
                 'where' => [
                     'id' => $entry['uid']
                 ],
