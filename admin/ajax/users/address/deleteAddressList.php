@@ -16,7 +16,7 @@ QUI::$Ajax->registerFunction(
 
         foreach ($ids as $id) {
             $result = QUI::getDataBase()->fetch([
-                'select' => ['id', 'uid'],
+                'select' => ['id', 'uid', 'userUuid'],
                 'from' => QUI\Users\Manager::tableAddress(),
                 'where_or' => [
                     'id' => $id,
@@ -30,7 +30,7 @@ QUI::$Ajax->registerFunction(
             }
 
             try {
-                $User = QUI::getUsers()->get($result[0]['uid']);
+                $User = QUI::getUsers()->get($result[0]['userUuid']);
                 $Address = $User->getAddress($id);
                 $Address->delete();
             } catch (QUI\Exception $Exception) {
