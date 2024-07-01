@@ -613,7 +613,8 @@ class Address extends QUI\QDOM
             'delete' => true,
             'from' => Manager::tableAddress(),
             'where' => [
-                'uid' => $this->User->getId()
+                'uid' => $this->User->getId(),
+                'id' => $this->getId()
             ]
         ]);
     }
