@@ -59,11 +59,15 @@ define('classes/users/User', [
          * @return {String} Username
          */
         getName: function() {
-            var firstname = this.getAttribute('firstname');
-            var lastname = this.getAttribute('lastname');
+            const firstname = this.getAttribute('firstname');
+            const lastname = this.getAttribute('lastname');
 
             if (firstname && lastname) {
                 return firstname + ' ' + lastname;
+            }
+
+            if (this.getAttribute('displayName') && this.getAttribute('displayName') !== '') {
+                return this.getAttribute('displayName');
             }
 
             return this.getUsername();
