@@ -13,8 +13,8 @@ define('classes/users/User', [
     'Ajax',
     'Locale'
 
-], function (QUI, DOM, Ajax, Locale) {
-    "use strict";
+], function(QUI, DOM, Ajax, Locale) {
+    'use strict';
 
     /**
      * A QUIQQER User
@@ -27,12 +27,12 @@ define('classes/users/User', [
     return new Class({
 
         Extends: DOM,
-        Type   : 'classes/users/User',
+        Type: 'classes/users/User',
 
         attributes: {}, // user attributes
 
-        initialize: function (uid) {
-            this.$uid    = uid;
+        initialize: function(uid) {
+            this.$uid = uid;
             this.$extras = {};
             this.$loaded = false;
 
@@ -45,7 +45,7 @@ define('classes/users/User', [
          * @method classes/users/User#getId
          * @return {Number|String} User-ID
          */
-        getId: function () {
+        getId: function() {
             return this.$uid;
         },
 
@@ -58,9 +58,9 @@ define('classes/users/User', [
          * @method classes/users/User#getName
          * @return {String} Username
          */
-        getName: function () {
+        getName: function() {
             var firstname = this.getAttribute('firstname');
-            var lastname  = this.getAttribute('lastname');
+            var lastname = this.getAttribute('lastname');
 
             if (firstname && lastname) {
                 return firstname + ' ' + lastname;
@@ -74,7 +74,7 @@ define('classes/users/User', [
          *
          * @return bool|String
          */
-        getUsername: function () {
+        getUsername: function() {
             return this.getAttribute('username');
         },
 
@@ -84,17 +84,17 @@ define('classes/users/User', [
          * @method classes/users/User#load
          * @param {Function} [onfinish] - (optional), callback
          */
-        load: function (onfinish) {
+        load: function(onfinish) {
             var self = this;
 
-            return new Promise(function (resolve, reject) {
-                Ajax.get('ajax_users_get', function (result) {
-                    self.$loaded    = true;
+            return new Promise(function(resolve, reject) {
+                Ajax.get('ajax_users_get', function(result) {
+                    self.$loaded = true;
                     self.$addresses = false;
 
                     var uid = 0;
 
-                    if ("id" in result && result.id > 10) {
+                    if ('id' in result && result.id > 10) {
                         uid = result.id;
                     }
 
@@ -112,7 +112,7 @@ define('classes/users/User', [
 
                         self.fireEvent('refresh', [self]);
 
-                        require(['Users'], function (Users) {
+                        require(['Users'], function(Users) {
                             Users.onRefreshUser(self);
                             reject(self);
                         });
@@ -134,13 +134,13 @@ define('classes/users/User', [
 
                     self.fireEvent('refresh', [self]);
 
-                    require(['Users'], function (Users) {
+                    require(['Users'], function(Users) {
                         Users.onRefreshUser(self);
                         resolve(self);
                     });
 
                 }, {
-                    uid    : self.getId(),
+                    uid: self.getId(),
                     onError: reject
                 });
             });
@@ -151,7 +151,7 @@ define('classes/users/User', [
          *
          * @return {Promise}
          */
-        loadIfNotLoaded: function () {
+        loadIfNotLoaded: function() {
             if (this.$loaded) {
                 return Promise.resolve(this);
             }
@@ -164,7 +164,7 @@ define('classes/users/User', [
          *
          * @return {Boolean}
          */
-        isLoaded: function () {
+        isLoaded: function() {
             return this.$loaded;
         },
 
@@ -176,8 +176,8 @@ define('classes/users/User', [
          * @param {Function} [callback] - (optional),
          * @return {Promise}
          */
-        save: function (params, callback) {
-            return new Promise(function (resolve, reject) {
+        save: function(params, callback) {
+            return new Promise(function(resolve, reject) {
                 if (!this.$uid) {
                     if (typeof callback === 'function') {
                         callback();
@@ -190,8 +190,8 @@ define('classes/users/User', [
 
                 this.$addresses = false;
 
-                require(['Users'], function (Users) {
-                    Users.saveUser(self, params).then(function () {
+                require(['Users'], function(Users) {
+                    Users.saveUser(self, params).then(function() {
                         if (typeof callback === 'function') {
                             callback();
                         }
@@ -209,8 +209,8 @@ define('classes/users/User', [
          * @param {Function} [onfinish] - (optional), callback function, calls if activation is finish
          * @return {Promise}
          */
-        activate: function (onfinish) {
-            return new Promise(function (resolve, reject) {
+        activate: function(onfinish) {
+            return new Promise(function(resolve, reject) {
                 if (!this.$uid) {
                     if (typeof onfinish === 'function') {
                         onfinish();
@@ -221,8 +221,8 @@ define('classes/users/User', [
 
                 var self = this;
 
-                require(['Users'], function (Users) {
-                    Users.activate([self.getId()], function () {
+                require(['Users'], function(Users) {
+                    Users.activate([self.getId()], function() {
                         if (typeof onfinish === 'function') {
                             onfinish();
                         }
@@ -240,8 +240,8 @@ define('classes/users/User', [
          * @param {Function} [onfinish] - (optional), callback function, calls if deactivation is finish
          * @return {Promise}
          */
-        deactivate: function (onfinish) {
-            return new Promise(function (resolve, reject) {
+        deactivate: function(onfinish) {
+            return new Promise(function(resolve, reject) {
                 if (!this.$uid) {
                     if (typeof onfinish === 'function') {
                         onfinish();
@@ -252,8 +252,8 @@ define('classes/users/User', [
 
                 var self = this;
 
-                require(['Users'], function (Users) {
-                    Users.deactivate([self.getId()], function () {
+                require(['Users'], function(Users) {
+                    Users.deactivate([self.getId()], function() {
                         if (typeof onfinish === 'function') {
                             onfinish();
                         }
@@ -272,8 +272,8 @@ define('classes/users/User', [
          * @param {Object} [options]    - (optional),
          * @param {Function} [onfinish] - (optional), callback
          */
-        savePassword: function (pass1, pass2, options, onfinish) {
-            return new Promise(function (resolve, reject) {
+        savePassword: function(pass1, pass2, options, onfinish) {
+            return new Promise(function(resolve, reject) {
 
                 if (!this.$uid) {
                     onfinish(false, false);
@@ -292,7 +292,7 @@ define('classes/users/User', [
                     return;
                 }
 
-                Ajax.post('ajax_users_set_password', function (result) {
+                Ajax.post('ajax_users_set_password', function(result) {
                     this.setAttribute('hasPassword', 1);
 
                     if (typeof onfinish === 'function') {
@@ -301,10 +301,10 @@ define('classes/users/User', [
 
                     resolve(result);
                 }.bind(this), {
-                    uid    : this.getId(),
-                    pw1    : pass1,
-                    pw2    : pass2,
-                    params : JSON.encode(options),
+                    uid: this.getId(),
+                    pw1: pass1,
+                    pw2: pass2,
+                    params: JSON.encode(options),
                     onError: reject
                 });
 
@@ -316,7 +316,7 @@ define('classes/users/User', [
          *
          * @return {Number} 0, 1, -1
          */
-        isActive: function () {
+        isActive: function() {
             if (!this.$uid) {
                 return 0;
             }
@@ -330,12 +330,12 @@ define('classes/users/User', [
          * @param {String} authenticator - name of the authenticator
          * @returns {Promise}
          */
-        enableAuthenticator: function (authenticator) {
-            return new Promise(function (resolve, reject) {
+        enableAuthenticator: function(authenticator) {
+            return new Promise(function(resolve, reject) {
                 Ajax.post('ajax_users_authenticator_enable', resolve, {
                     authenticator: authenticator,
-                    uid          : this.getId(),
-                    onError      : reject
+                    uid: this.getId(),
+                    onError: reject
                 });
             }.bind(this));
         },
@@ -346,12 +346,12 @@ define('classes/users/User', [
          * @param {String} authenticator - name of the authenticator
          * @returns {Promise}
          */
-        disableAuthenticator: function (authenticator) {
-            return new Promise(function (resolve, reject) {
+        disableAuthenticator: function(authenticator) {
+            return new Promise(function(resolve, reject) {
                 Ajax.post('ajax_users_authenticator_disable', resolve, {
                     authenticator: authenticator,
-                    uid          : this.getId(),
-                    onError      : reject
+                    uid: this.getId(),
+                    onError: reject
                 });
             }.bind(this));
         },
@@ -362,12 +362,12 @@ define('classes/users/User', [
          * @param {String} authenticator - name of the authenticator
          * @returns {Promise}
          */
-        getAuthenticatorSettings: function (authenticator) {
-            return new Promise(function (resolve, reject) {
+        getAuthenticatorSettings: function(authenticator) {
+            return new Promise(function(resolve, reject) {
                 Ajax.get('ajax_users_authenticator_settings', resolve, {
                     authenticator: authenticator,
-                    uid          : this.getId(),
-                    onError      : reject
+                    uid: this.getId(),
+                    onError: reject
                 });
             }.bind(this));
         },
@@ -378,12 +378,12 @@ define('classes/users/User', [
          * @param {String} authenticator - name of the authenticator
          * @returns {Promise}
          */
-        hasAuthenticator: function (authenticator) {
-            return new Promise(function (resolve, reject) {
+        hasAuthenticator: function(authenticator) {
+            return new Promise(function(resolve, reject) {
                 Ajax.post('ajax_users_authenticator_has', resolve, {
                     authenticator: authenticator,
-                    uid          : this.getId(),
-                    onError      : reject
+                    uid: this.getId(),
+                    onError: reject
                 });
             }.bind(this));
         },
@@ -393,20 +393,20 @@ define('classes/users/User', [
          *
          * @returns {Promise}
          */
-        getAddressList: function () {
+        getAddressList: function() {
             var self = this;
 
-            return new Promise(function (resolve, reject) {
+            return new Promise(function(resolve, reject) {
                 if (self.$addresses) {
                     resolve(self.$addresses);
                     return;
                 }
 
-                Ajax.post('ajax_users_address_list', function (result) {
+                Ajax.post('ajax_users_address_list', function(result) {
                     self.$addresses = result;
                     resolve(self.$addresses);
                 }, {
-                    uid    : this.getId(),
+                    uid: this.getId(),
                     onError: reject
                 });
             }.bind(this));
@@ -428,7 +428,7 @@ define('classes/users/User', [
          *
          * @return {Object} this (classes/users/User)
          */
-        setAttribute: function (k, v) {
+        setAttribute: function(k, v) {
             this.attributes[k] = v;
             return this;
         },
@@ -446,7 +446,7 @@ define('classes/users/User', [
          *   attr2 : []
          * })
          */
-        setAttributes: function (attributes) {
+        setAttributes: function(attributes) {
             attributes = attributes || {};
 
             for (var k in attributes) {
@@ -467,7 +467,7 @@ define('classes/users/User', [
          * @param {Object} k - Object width attributes
          * @return {Boolean|String} The wanted attribute or false
          */
-        getAttribute: function (k) {
+        getAttribute: function(k) {
             if (typeof this.attributes[k] !== 'undefined') {
                 return this.attributes[k];
             }
@@ -481,7 +481,7 @@ define('classes/users/User', [
          * @method classes/users/User#getAttributes
          * @return {Object} alle attributes
          */
-        getAttributes: function () {
+        getAttributes: function() {
             return this.attributes;
         },
 
@@ -492,7 +492,7 @@ define('classes/users/User', [
          * @param {String} k - wanted attribute
          * @return {Boolean} true or false
          */
-        existAttribute: function (k) {
+        existAttribute: function(k) {
             return typeof this.attributes[k] !== 'undefined';
         },
 
@@ -502,7 +502,7 @@ define('classes/users/User', [
          * @param {String} field
          * @return {String|Number|Array|Boolean}
          */
-        getExtra: function (field) {
+        getExtra: function(field) {
             if (typeof this.$extras[field] !== 'undefined') {
                 return this.$extras[field];
             }
@@ -516,7 +516,7 @@ define('classes/users/User', [
          * @param {String} field - Name of the extra field
          * @param {String|Boolean} value - Value of the extra field
          */
-        setExtra: function (field, value) {
+        setExtra: function(field, value) {
             this.$extras[field] = value;
         },
 
@@ -525,7 +525,7 @@ define('classes/users/User', [
          *
          * @return {Object}
          */
-        getExtras: function () {
+        getExtras: function() {
             return this.$extras;
         }
     });
