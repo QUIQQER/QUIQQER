@@ -1,4 +1,4 @@
-s/**
+/**
  * A QUIQQER SystemUser
  *
  * @module classes/users/SystemUser
