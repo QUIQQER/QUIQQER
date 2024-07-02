@@ -312,7 +312,7 @@ class Group extends QUI\QDOM
         $result = QUI::getDataBase()->fetch([
             'select' => 'id, parent',
             'from' => Manager::table(),
-            'where_or' => [
+            'where' => [
                 'uuid' => $id
             ],
             'limit' => 1
