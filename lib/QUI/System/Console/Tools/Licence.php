@@ -39,7 +39,7 @@ class Licence extends QUI\System\Console\Tool
      */
     public function execute(): void
     {
-        echo PHP_EOL;
+        $this->writeLn();
 
         if ($this->getArgument('list')) {
             $this->listLicences();
@@ -89,9 +89,9 @@ class Licence extends QUI\System\Console\Tool
         $licenceFile = OPT_DIR . 'quiqqer/core/LICENSE';
         $content = file_get_contents($licenceFile);
 
-        echo $content;
-        echo PHP_EOL;
-        echo PHP_EOL;
+        $this->writeLn($content);
+        $this->writeLn();
+        $this->writeLn();
     }
 
     private function listLicences(): void
