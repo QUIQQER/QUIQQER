@@ -39,6 +39,8 @@ class Licence extends QUI\System\Console\Tool
      */
     public function execute(): void
     {
+        echo PHP_EOL;
+
         if ($this->getArgument('list')) {
             $this->listLicences();
 
@@ -51,8 +53,33 @@ class Licence extends QUI\System\Console\Tool
             exit;
         }
 
-        echo PHP_EOL;
-        echo 'Use "quiqqer:licence --help" to print usage information.';
+        $this->write('To view the QUIQQER licence use ');
+        $this->write('"quiqqer:licence --show"', 'green');
+
+        $this->resetColor();
+        $this->writeLn();
+        $this->writeLn();
+
+        $this->write('To list the licences of all QUIQQER packages use ');
+        $this->write('"quiqqer:licence --list"', 'green');
+
+        $this->resetColor();
+        $this->writeLn();
+        $this->writeLn();
+
+        $this->write('For further usage information use ');
+        $this->write('"quiqqer:licence --help"', 'green');
+
+        $this->resetColor();
+        $this->writeLn();
+        $this->writeLn();
+
+        $this->write('Hint: ', 'yellow');
+        $this->resetColor();
+        $this->write('To manage your QUIQQER system license use ');
+        $this->write('"quiqqer:license-manager"', 'green');
+
+        $this->resetColor();
 
         exit;
     }
