@@ -27,8 +27,9 @@ class Licence extends QUI\System\Console\Tool
     {
         $this->systemTool = true;
         $this->setName('quiqqer:licence')
-            ->setDescription('Show the licence information')
-            ->addArgument('list', 'Print a list of all licenses', false, true);
+            ->setDescription('Show information about QUIQQER licences')
+            ->addArgument('list', 'Print a list of all licenses', false, true)
+            ->addArgument('show', 'Print the QUIQQER licence', false, true);
     }
 
     /**
@@ -36,55 +37,73 @@ class Licence extends QUI\System\Console\Tool
      *
      * @see \QUI\System\Console\Tool::execute()
      */
-    public function execute()
+    public function execute(): void
     {
         if ($this->getArgument('list')) {
-            $installed = QUI::getPackageManager()->getInstalled();
-            $data = [];
-
-            foreach ($installed as $package) {
-                $license = '';
-
-                if (isset($package['license'])) {
-                    $license = $package['license'];
-                } else {
-                    try {
-                        // check composer json
-                        $Package = QUI::getPackageManager()->getInstalledPackage($package['name']);
-                        $composer = $Package->getComposerData();
-
-                        if (isset($composer['license'])) {
-                            $license = $composer['license'];
-                        } elseif (isset($composer['licence'])) {
-                            $license = $composer['licence'];
-                        }
-                    } catch (QUI\Exception) {
-                    }
-                }
-
-                if (is_array($license)) {
-                    $license = implode(',', $license);
-                }
-
-                $data[] = [
-                    $package['name'],
-                    $license
-                ];
-            }
-
-            $Climate = new CLImate();
-            $Climate->columns($data);
-            $Climate->out('');
+            $this->listLicences();
 
             exit;
         }
 
-        $licenceFile = OPT_DIR . 'quiqqer/quiqqer/LICENSE';
+        if ($this->getArgument('show')) {
+            $this->showLicence();
+
+            exit;
+        }
+
+        echo PHP_EOL;
+        echo 'Use "quiqqer:licence --help" to print usage information.';
+
+        exit;
+    }
+
+    private function showLicence(): void
+    {
+        $licenceFile = OPT_DIR . 'quiqqer/core/LICENSE';
         $content = file_get_contents($licenceFile);
 
         echo $content;
         echo PHP_EOL;
         echo PHP_EOL;
-        exit;
+    }
+
+    private function listLicences(): void
+    {
+        $installed = QUI::getPackageManager()->getInstalled();
+        $data = [];
+
+        foreach ($installed as $package) {
+            $license = '';
+
+            if (isset($package['license'])) {
+                $license = $package['license'];
+            } else {
+                try {
+                    // check composer json
+                    $Package = QUI::getPackageManager()->getInstalledPackage($package['name']);
+                    $composer = $Package->getComposerData();
+
+                    if (isset($composer['license'])) {
+                        $license = $composer['license'];
+                    } elseif (isset($composer['licence'])) {
+                        $license = $composer['licence'];
+                    }
+                } catch (QUI\Exception) {
+                }
+            }
+
+            if (is_array($license)) {
+                $license = implode(',', $license);
+            }
+
+            $data[] = [
+                $package['name'],
+                $license
+            ];
+        }
+
+        $Climate = new CLImate();
+        $Climate->columns($data);
+        $Climate->out('');
     }
 }
