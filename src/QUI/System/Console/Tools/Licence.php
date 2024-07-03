@@ -39,42 +39,7 @@ class Licence extends QUI\System\Console\Tool
     public function execute(): void
     {
         if ($this->getArgument('list')) {
-            $installed = QUI::getPackageManager()->getInstalled();
-            $data = [];
-
-            foreach ($installed as $package) {
-                $license = '';
-
-                if (isset($package['license'])) {
-                    $license = $package['license'];
-                } else {
-                    try {
-                        // check composer json
-                        $Package = QUI::getPackageManager()->getInstalledPackage($package['name']);
-                        $composer = $Package->getComposerData();
-
-                        if (isset($composer['license'])) {
-                            $license = $composer['license'];
-                        } elseif (isset($composer['licence'])) {
-                            $license = $composer['licence'];
-                        }
-                    } catch (QUI\Exception) {
-                    }
-                }
-
-                if (is_array($license)) {
-                    $license = implode(',', $license);
-                }
-
-                $data[] = [
-                    $package['name'],
-                    $license
-                ];
-            }
-
-            $Climate = new CLImate();
-            $Climate->columns($data);
-            $Climate->out('');
+            $this->listLicences();
 
             exit;
         }
@@ -86,5 +51,45 @@ class Licence extends QUI\System\Console\Tool
         echo PHP_EOL;
         echo PHP_EOL;
         exit;
+    }
+
+    private function listLicences(): void
+    {
+        $installed = QUI::getPackageManager()->getInstalled();
+        $data = [];
+
+        foreach ($installed as $package) {
+            $license = '';
+
+            if (isset($package['license'])) {
+                $license = $package['license'];
+            } else {
+                try {
+                    // check composer json
+                    $Package = QUI::getPackageManager()->getInstalledPackage($package['name']);
+                    $composer = $Package->getComposerData();
+
+                    if (isset($composer['license'])) {
+                        $license = $composer['license'];
+                    } elseif (isset($composer['licence'])) {
+                        $license = $composer['licence'];
+                    }
+                } catch (QUI\Exception) {
+                }
+            }
+
+            if (is_array($license)) {
+                $license = implode(',', $license);
+            }
+
+            $data[] = [
+                $package['name'],
+                $license
+            ];
+        }
+
+        $Climate = new CLImate();
+        $Climate->columns($data);
+        $Climate->out('');
     }
 }
