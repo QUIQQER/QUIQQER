@@ -27,8 +27,9 @@ class Licence extends QUI\System\Console\Tool
     {
         $this->systemTool = true;
         $this->setName('quiqqer:licence')
-            ->setDescription('Show the licence information')
-            ->addArgument('list', 'Print a list of all licenses', false, true);
+            ->setDescription('Show information about QUIQQER licences')
+            ->addArgument('list', 'Print a list of all licenses', false, true)
+            ->addArgument('show', 'Print the QUIQQER licence', false, true);
     }
 
     /**
@@ -44,13 +45,26 @@ class Licence extends QUI\System\Console\Tool
             exit;
         }
 
+        if ($this->getArgument('show')) {
+            $this->showLicence();
+
+            exit;
+        }
+
+        echo PHP_EOL;
+        echo 'Use "quiqqer:licence --help" to print usage information.';
+
+        exit;
+    }
+
+    private function showLicence(): void
+    {
         $licenceFile = OPT_DIR . 'quiqqer/core/LICENSE';
         $content = file_get_contents($licenceFile);
 
         echo $content;
         echo PHP_EOL;
         echo PHP_EOL;
-        exit;
     }
 
     private function listLicences(): void
