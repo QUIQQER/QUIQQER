@@ -194,7 +194,7 @@ class Nobody extends QUI\QDOM implements User
      *
      * @throws Exception
      */
-    public function addToGroup(int $groupId): never
+    public function addToGroup(int|string|Group $groupId): never
     {
         throw new Exception(
             QUI::getLocale()->get(
