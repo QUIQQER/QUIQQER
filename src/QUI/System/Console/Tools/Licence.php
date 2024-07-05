@@ -53,35 +53,21 @@ class Licence extends QUI\System\Console\Tool
             exit;
         }
 
-        $this->write('To view the QUIQQER licence use ');
-        $this->write('"quiqqer:licence --show"', 'green');
+        $this->printSystemLicenseInformation();
+        $this->writeLn();
 
+        $this->write('To manage your QUIQQER system license use ');
+        $this->write('"quiqqer:license-manager"', 'green');
         $this->resetColor();
+
         $this->writeLn();
         $this->writeLn();
 
-        $this->write('To list the licences of all QUIQQER packages use ');
-        $this->write('"quiqqer:licence --list"', 'green');
-
-        $this->resetColor();
-        $this->writeLn();
-        $this->writeLn();
-
-        $this->write('For further usage information use ');
+        $this->write('To find out how to get information about package licenses use ');
         $this->write('"quiqqer:licence --help"', 'green');
 
         $this->resetColor();
         $this->writeLn();
-        $this->writeLn();
-
-        $this->write('Hint: ', 'yellow');
-        $this->resetColor();
-        $this->write('To manage your QUIQQER system license use ');
-        $this->write('"quiqqer:license-manager"', 'green');
-
-        $this->resetColor();
-
-        exit;
     }
 
     private function showLicence(): void
@@ -165,5 +151,34 @@ class Licence extends QUI\System\Console\Tool
         $Climate = new CLImate();
         $Climate->columns($data);
         $Climate->out('');
+    }
+
+    public function printSystemLicenseInformation(): void
+    {
+        try {
+            $licenseStatus = QUI\System\License::getStatus();
+        } catch (\Exception) {
+            $this->writeLn('Error: Could not retrieve the status of the system license.', 'red');
+
+            return;
+        }
+
+        if (!$licenseStatus) {
+            $this->writeLn('The system does not have a registered license.');
+
+            return;
+        }
+
+
+        $this->write('The system uses an ');
+
+        if ($licenseStatus['active']) {
+            $this->write('active ', 'green');
+        } else {
+            $this->write('inactive ', 'red');
+        }
+
+        $this->resetColor();
+        $this->write('license.');
     }
 }
