@@ -29,7 +29,7 @@ class Licence extends QUI\System\Console\Tool
         $this->setName('quiqqer:licence')
             ->setDescription('Show information about QUIQQER licences')
             ->addArgument('list', 'Print a list of all licenses', false, true)
-            ->addArgument('show', 'Print the QUIQQER licence', false, true);
+            ->addArgument('show', 'Print the licence of a given package', false, true);
     }
 
     /**
@@ -86,12 +86,45 @@ class Licence extends QUI\System\Console\Tool
 
     private function showLicence(): void
     {
-        $licenceFile = OPT_DIR . 'quiqqer/core/LICENSE';
-        $content = file_get_contents($licenceFile);
+        $packageName = $this->getArgument('show');
 
-        $this->writeLn($content);
-        $this->writeLn();
-        $this->writeLn();
+        if ($packageName === '1') {
+            $this->writeLn('Error: Please specify a package name along the "show" argument', 'red');
+
+            return;
+        }
+
+        try {
+            $Package = QUI::getPackage($packageName);
+        } catch (QUI\Exception $e) {
+            $this->writeLn("Error: Package '$packageName' is not installed or package name is invalid.", 'red');
+
+            return;
+        }
+
+        $packageDirectory = $Package->getDir();
+
+        $licenceFile = $packageDirectory . '/LICENSE';
+
+        if (file_exists($licenceFile)) {
+            $this->writeLn(file_get_contents($licenceFile));
+
+            return;
+        }
+
+        $this->writeLn('Notice: Package has no dedicated "LICENSE" file.', 'yellow');
+        $this->resetColor();
+
+        $packageComposerData = $Package->getComposerData();
+
+        if (isset($packageComposerData['license'])) {
+            $this->writeLn("License according to package's composer.json file:");
+            $this->writeLn($packageComposerData['license'], 'green');
+
+            return;
+        }
+
+        $this->writeLn("Package '$packageName' does not specify a license.", 'red');
     }
 
     private function listLicences(): void
