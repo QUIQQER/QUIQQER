@@ -44,13 +44,13 @@ class Licence extends QUI\System\Console\Tool
         if ($this->getArgument('list')) {
             $this->listLicences();
 
-            exit;
+            return;
         }
 
         if ($this->getArgument('show')) {
             $this->showLicence();
 
-            exit;
+            return;
         }
 
         $this->printSystemLicenseInformation();
