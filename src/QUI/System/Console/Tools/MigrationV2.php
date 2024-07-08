@@ -65,6 +65,24 @@ class MigrationV2 extends QUI\System\Console\Tool
         $this->workspaces();
         $this->loginLog();
 
+        $this->writeLn('- Migrate root user and root group');
+
+        $Config = QUI::getConfig('etc/conf.ini.php');
+        $rootUser = $Config->getValue('globals', 'rootuser');
+        $rootGroup = $Config->getValue('globals', 'root');
+
+        try {
+            $Config->setValue('globals', 'rootuser', QUI::getUsers()->get($rootUser)->getUUID());
+        } catch (QUI\Exception) {
+        }
+
+        try {
+            $Config->setValue('globals', 'root', QUI::getGroups()->get($rootGroup)->getUUID());
+        } catch (QUI\Exception) {
+        }
+
+        $Config->save();
+
         QUI::getEvents()->fireEvent('quiqqerMigrationV2', [$this]);
     }
 

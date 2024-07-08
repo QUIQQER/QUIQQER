@@ -358,4 +358,26 @@ class License
 
         return $response;
     }
+
+    /**
+     * @throws QUI\Exception
+     */
+    public static function deleteLicense(): void
+    {
+        $licenseConfigFile = CMS_DIR . 'etc/license.ini.php';
+
+        if (!file_exists($licenseConfigFile)) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/core',
+                    'message.ajax.licenseKey.delete.error'
+                )
+            );
+        }
+
+        unlink($licenseConfigFile);
+
+        // re-create composer.json
+        QUI::getPackageManager()->refreshServerList();
+    }
 }

@@ -1211,19 +1211,19 @@
             <de><![CDATA[Der Vorgang konnte leider nicht durchgeführt werden:<br><br>[error]]]></de>
         </locale>
         <locale name="controls.licensekeypanel.title">
-            <de><![CDATA[QUIQQER Lizenz]]></de>
+            <de><![CDATA[QUIQQER Lizenzschlüssel]]></de>
         </locale>
         <locale name="controls.licensekey.delete.popup.title">
-            <de><![CDATA[QUIQQER Lizenz löschen]]></de>
+            <de><![CDATA[QUIQQER Lizenzschlüssel löschen]]></de>
         </locale>
         <locale name="controls.licensekey.delete.popup.info">
             <de><![CDATA[
-            Sind Sie sicher, dass Sie Ihre aktuelle QUIQQER Lizenz löschen wollen? Sie haben dann ggf.
-            keinen Zugriff mehr auf Pakete, die Teil Ihrer Lizenz waren.
+            Sind Sie sicher, dass Sie Ihren aktuellen QUIQQER Lizenzschlüssel löschen wollen? Sie haben dann ggf.
+            keinen Zugriff mehr auf Pakete, die Teil Ihres Lizenzschlüssels waren.
             ]]></de>
         </locale>
         <locale name="controls.licensekey.delete.btn">
-            <de><![CDATA[Lizenz löschen]]></de>
+            <de><![CDATA[Lizenzschlüssel löschen]]></de>
         </locale>
         <locale name="welcome.message">
             <de><![CDATA[Willkommen [username]]]></de>
@@ -3041,14 +3041,14 @@
             <de><![CDATA[Benutzer entfernen]]></de>
         </locale>
         <locale name="controls.licensekey.template.header">
-            <de><![CDATA[QUIQQER Lizenz-Informationen]]></de>
+            <de><![CDATA[QUIQQER Lizenzschlüssel-Informationen]]></de>
         </locale>
         <locale name="controls.licensekey.template.labelId">
-            <de><![CDATA[Lizenz-ID]]></de>
+            <de><![CDATA[Lizenzschlüssel-ID]]></de>
         </locale>
         <locale name="controls.licensekey.status.activation.error">
             <de>
-                <![CDATA[Die Lizenz konnte nicht am Lizenz-Server aktiviert werden. Bitte wiederholen Sie den Vorgang oder wenden Sie sich mit einer Support-Anfrage an support@pcsg.de.]]></de>
+                <![CDATA[Der Lizenzschlüssel konnte nicht am Lizenz-Server aktiviert werden. Bitte wiederholen Sie den Vorgang oder wenden Sie sich mit einer Support-Anfrage an support@pcsg.de.]]></de>
         </locale>
         <locale name="controls.licensekey.template.labelCreated">
             <de><![CDATA[Erstellt am]]></de>
@@ -3060,10 +3060,13 @@
             <de><![CDATA[Ausgestellt für]]></de>
         </locale>
         <locale name="controls.licensekey.template.labelUpload">
-            <de><![CDATA[Lizenz-Datei hochladen]]></de>
+            <de><![CDATA[Lizenzschlüssel-Datei hochladen]]></de>
+        </locale>
+        <locale name="controls.licensekey.template.info" html="1">
+            <de><![CDATA[Sie können die Funktion von QUIQQER mit Premium-Paketen erweitern. Um Premium-Pakete zu installieren, benötigen Sie einen gültigen Lizenzschlüssel. Ihren Lizenzschlüssel erhalten Sie beim Kauf eines Premium-Pakets im <a href="https://store.quiqqer.de/" target="_blank">QUIQQER Store</a>.]]></de>
         </locale>
         <locale name="controls.licensekey.template.labelDelete">
-            <de><![CDATA[Lizenz löschen]]></de>
+            <de><![CDATA[Lizenzschlüssel löschen]]></de>
         </locale>
         <locale name="controls.licensekey.template.labelStatus">
             <de><![CDATA[Aktivierungs-Status]]></de>
@@ -3076,26 +3079,26 @@
         </locale>
         <locale name="controls.licensekey.template.descSystemId">
             <de>
-                <![CDATA[Einmalig für Ihr QUIQQER-System generieter Identifikator, der am Lizenz-Server registriert wird, sobald Sie eine Lizenz aktivieren. Dient dazu, mehrere QUIQQER-Systeme, die einer Lizenz zugeordnet sind, zu unterscheiden.]]></de>
+                <![CDATA[Einmalig für Ihr QUIQQER-System generieter Identifikator, der am Lizenz-Server registriert wird, sobald Sie einen Lizenzschlüssel aktivieren. Dient dazu, mehrere QUIQQER-Systeme, die einem Lizenzschlüssel zugeordnet sind, zu unterscheiden.]]></de>
         </locale>
         <locale name="controls.licensekey.template.descSystemDataHash">
             <de>
-                <![CDATA[Eindeutiger Hash Ihrer QUIQQER Systemkonfiguration. Ändert sich, wenn sich wesentliche Bestandteile Ihrer Konfiguration ändern. Die Aktivierung für eine Lizenz bzw. System ID gilt immer für einen System-Konfigurations-Hash. Sobald sich dieser Wert ändert, muss die Lizenz erneut aktiviert werden.]]></de>
+                <![CDATA[Eindeutiger Hash Ihrer QUIQQER Systemkonfiguration. Ändert sich, wenn sich wesentliche Bestandteile Ihrer Konfiguration ändern. Die Aktivierung für einen Lizenzschlüssel bzw. System ID gilt immer für einen System-Konfigurations-Hash. Sobald sich dieser Wert ändert, muss der Lizenzschlüssel erneut aktiviert werden.]]></de>
         </locale>
         <locale name="controls.licensekey.status.loading">
             <de><![CDATA[Frage Status ab...]]></de>
         </locale>
         <locale name="controls.licensekey.status.error.general" html="true">
             <de>
-                <![CDATA[Der Lizenz-Status konnte nicht überprüft werden. Bitte wiederholen Sie den Vorgang oder schreiben Sie eine Support-Anfrage an <a href="mailto:support@pcsg.de">support@pcsg.de</a>.]]></de>
+                <![CDATA[Der Lizenzschlüssel-Status konnte nicht überprüft werden. Bitte wiederholen Sie den Vorgang oder schreiben Sie eine Support-Anfrage an <a href="mailto:support@pcsg.de">support@pcsg.de</a>.]]></de>
         </locale>
         <locale name="controls.licensekey.status.error.request_error" html="true">
             <de>
-                <![CDATA[Der Lizenz-Status konnte nicht überprüft werden. Bitte wiederholen Sie den Vorgang oder schreiben Sie eine Support-Anfrage an <a href="mailto:support@pcsg.de">support@pcsg.de</a>.]]></de>
+                <![CDATA[Der Lizenzschlüssel-Status konnte nicht überprüft werden. Bitte wiederholen Sie den Vorgang oder schreiben Sie eine Support-Anfrage an <a href="mailto:support@pcsg.de">support@pcsg.de</a>.]]></de>
         </locale>
         <locale name="controls.licensekey.status.error.system_not_registered" html="true">
             <de>
-                <![CDATA[Der Lizenz-Status konnte nicht überprüft werden. Bitte wiederholen Sie den Vorgang oder schreiben Sie eine Support-Anfrage an <a href="mailto:support@pcsg.de">support@pcsg.de</a>.]]></de>
+                <![CDATA[Der Lizenzschlüssel-Status konnte nicht überprüft werden. Bitte wiederholen Sie den Vorgang oder schreiben Sie eine Support-Anfrage an <a href="mailto:support@pcsg.de">support@pcsg.de</a>.]]></de>
         </locale>
         <locale name="controls.licensekey.status.active">
             <de><![CDATA[aktiv]]></de>
@@ -3111,7 +3114,7 @@
         </locale>
         <locale name="controls.licensekey.status.reasonCode.system_inactive">
             <de>
-                <![CDATA[Dieses QUIQQER-System ist zur Zeit für diese Lizenz nicht aktiviert. Um die Lizenz nutzen zu können, aktivieren Sie bitte Ihr System.]]></de>
+                <![CDATA[Dieses QUIQQER-System ist zurzeit für diesen Lizenzschlüssel nicht aktiviert. Um den Lizenzschlüssel nutzen zu können, aktivieren Sie bitte Ihr System.]]></de>
         </locale>
         <locale name="controls.licensekey.status.reasonCode.system_changed">
             <de>
@@ -3119,13 +3122,13 @@
         </locale>
         <locale name="controls.licensekey.status.reasonCode.wrong_license">
             <de>
-                <![CDATA[Diese QUIQQER-Lizenz konnte nicht am Lizenz-Server validiert werden. Bitte stellen Sie sicher, dass Sie eine offizielle und gültige QUIQQER-Lizenzdatei verwenden!]]></de>
+                <![CDATA[Dieser QUIQQER-Lizenzschlüssel konnte nicht am Lizenz-Server validiert werden. Bitte stellen Sie sicher, dass Sie eine offizielle und gültige QUIQQER-Lizenzschlüsseldatei verwenden!]]></de>
         </locale>
         <locale name="controls.licensekey.status.activation.btn.ok">
             <de><![CDATA[Verstanden]]></de>
         </locale>
         <locale name="controls.licensekey.status.activation.text">
-            <de><![CDATA[Lizenz-Aktivierung]]></de>
+            <de><![CDATA[Lizenzschlüssel-Aktivierung]]></de>
         </locale>
         <locale name="controls.licensekey.status.remaining_activations">
             <de><![CDATA[(verbleibende Aktivierungen: [count])]]></de>
@@ -4451,25 +4454,25 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             <de><![CDATA[Mail-Queue aktivieren]]></de>
         </locale>
         <locale name="message.ajax.licenseKey.upload.error">
-            <de><![CDATA[Beim Einlesen der Lizenz-Datei ist ein Fehler aufgetreten.
-                Ggf. ist die Lizenz-Datei ungültig. Bitte wenden Sie sich an einen Administrator oder an die Stelle,
-                die die Lizenz ausgegeben hat.
+            <de><![CDATA[Beim Einlesen der Lizenzschlüssel-Datei ist ein Fehler aufgetreten.
+                Ggf. ist die Lizenzschlüssel-Datei ungültig. Bitte wenden Sie sich an einen Administrator oder an die Stelle,
+                die den Lizenzschlüssel ausgegeben hat.
             ]]></de>
         </locale>
         <locale name="message.ajax.licenseKey.upload.success">
             <de><![CDATA[
-            Die Lizenz-Datei wurde erfolgreich eingelesen.
-            Diese QUIQQER-Installation hat nun Zugriff auf alle Pakete,die diese Lizenz beinhaltet.
+            Die Lizenzschlüssel-Datei wurde erfolgreich eingelesen.
+            Diese QUIQQER-Installation hat nun Zugriff auf alle Pakete, die dieser Lizenzschlüssel beinhaltet.
             ]]></de>
         </locale>
         <locale name="message.editor.toolbar.save.success">
             <de><![CDATA[Die Toolbar wurde erfolgreich gespeichert.]]></de>
         </locale>
         <locale name="message.ajax.licenseKey.delete.error">
-            <de><![CDATA[Die Lizenz wurde nicht gelöscht, da keine Lizenz in Ihrem QUIQQER-System aktiviert war.]]></de>
+            <de><![CDATA[Der Lizenzschlüssel wurde nicht gelöscht, da kein Lizenzschlüssel in Ihrem QUIQQER-System aktiviert war.]]></de>
         </locale>
         <locale name="message.ajax.licenseKey.delete.success">
-            <de><![CDATA[Die Lizenz wurde erfolgreich gelöscht und ist nun nicht mehr aktiv.]]></de>
+            <de><![CDATA[Der Lizenzschlüssel wurde erfolgreich gelöscht und ist nun nicht mehr aktiv.]]></de>
         </locale>
         <locale name="exception.lib.user.activasion.user.is.activated">
             <de><![CDATA[Der Benutzer konnte nicht aktiviert werde da dieser schon aktiviert ist.]]></de>
@@ -4822,7 +4825,7 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             <de><![CDATA[
                 <p>Du möchtest ecoyn genauer anpassen? Dazu bietet das System viele Module:
                 Verwalte Abos oder Rechnungen, erinnere an Zahlungen, bereite deine Buchhaltung vor und vieles mehr. Bis zu einem Jahresumsatz von 100.000 Euro nutzt du alle Pakete kostenfrei.
-                Für nicht freie Module musst du danach eine kostenpflichtige Lizenz erwerben.</p>
+                Für nicht freie Module musst du danach einen kostenpflichtigen Lizenzschlüssel erwerben.</p>
                 <p>Möchtest du ecoyn inklusive der unfreien Module installieren?</p>
             ]]></de>
         </locale>
@@ -5009,7 +5012,7 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
 
         <locale name="PackageNotLicensedException.message" html="true">
             <de>
-                <![CDATA[Für diese Funktion benötigen Sie eine Lizenz für das Paket <b>[package]</b>. Sie können eine entsprechende Lizenz im <a href="https://store.quiqqer.de" target="_blank">QUIQQER Package Store</a> erwerben.]]></de>
+                <![CDATA[Für diese Funktion benötigen Sie einen Lizenzschlüssel für das Paket <b>[package]</b>. Sie können einen entsprechenden Lizenzschlüssel im <a href="https://store.quiqqer.de" target="_blank">QUIQQER Package Store</a> erwerben.]]></de>
         </locale>
         <locale name="exception.License.connection_error">
             <de>
@@ -5615,8 +5618,8 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         </locale>
         <locale name="update.log.message.licenseActivation">
             <de><![CDATA[
-                Deine Lizenz ist derzeit nicht aktiviert.
-                Bevor du ein Update startest, ist es notwendig, deine Lizenz zu aktivieren oder zu entfernen.
+                Dein Lizenzschlüssel ist derzeit nicht aktiviert.
+                Bevor du ein Update startest, ist es notwendig, deinen Lizenzschlüssel zu aktivieren oder zu entfernen.
             ]]></de>
         </locale>
         <locale name="security.update">
@@ -5903,7 +5906,7 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
             <de><![CDATA[Einstellungen]]></de>
         </locale>
         <locale name="packages.panel.category.license">
-            <de><![CDATA[Lizenz]]></de>
+            <de><![CDATA[Lizenzschlüssel]]></de>
         </locale>
         <locale name="packages.dialog.info.support">
             <de><![CDATA[Support]]></de>
