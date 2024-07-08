@@ -435,19 +435,19 @@
             <de><![CDATA[Der Vorgang konnte leider nicht durchgeführt werden:<br><br>[error]]]></de>
         </locale>
         <locale name="controls.licensekeypanel.title">
-            <de><![CDATA[QUIQQER Lizenz]]></de>
+            <de><![CDATA[QUIQQER Lizenzschlüssel]]></de>
         </locale>
         <locale name="controls.licensekey.delete.popup.title">
-            <de><![CDATA[QUIQQER Lizenz löschen]]></de>
+            <de><![CDATA[QUIQQER Lizenzschlüssel löschen]]></de>
         </locale>
         <locale name="controls.licensekey.delete.popup.info">
             <de><![CDATA[
-            Sind Sie sicher, dass Sie Ihre aktuelle QUIQQER Lizenz löschen wollen? Sie haben dann ggf.
-            keinen Zugriff mehr auf Pakete, die Teil Ihrer Lizenz waren.
+            Sind Sie sicher, dass Sie Ihren aktuellen QUIQQER Lizenzschlüssel löschen wollen? Sie haben dann ggf.
+            keinen Zugriff mehr auf Pakete, die Teil Ihres Lizenzschlüssels waren.
             ]]></de>
         </locale>
         <locale name="controls.licensekey.delete.btn">
-            <de><![CDATA[Lizenz löschen]]></de>
+            <de><![CDATA[Lizenzschlüssel löschen]]></de>
         </locale>
         <locale name="welcome.message">
             <de><![CDATA[Willkommen [username]]]></de>
@@ -1947,10 +1947,10 @@
             <de><![CDATA[Benutzer entfernen]]></de>
         </locale>
         <locale name="controls.licensekey.template.header">
-            <de><![CDATA[QUIQQER Lizenz-Informationen]]></de>
+            <de><![CDATA[QUIQQER Lizenzschlüssel-Informationen]]></de>
         </locale>
         <locale name="controls.licensekey.template.labelId">
-            <de><![CDATA[Lizenz-ID]]></de>
+            <de><![CDATA[Lizenzschlüssel-ID]]></de>
         </locale>
         <locale name="controls.licensekey.template.labelCreated">
             <de><![CDATA[Erstellt am]]></de>
@@ -1962,10 +1962,13 @@
             <de><![CDATA[Ausgestellt für]]></de>
         </locale>
         <locale name="controls.licensekey.template.labelUpload">
-            <de><![CDATA[Lizenz-Datei hochladen]]></de>
+            <de><![CDATA[Lizenzschlüssel-Datei hochladen]]></de>
+        </locale>
+        <locale name="controls.licensekey.template.info" html="1">
+            <de><![CDATA[Sie können die Funktion von QUIQQER mit Premium-Paketen erweitern. Um Premium-Pakete zu installieren, benötigen Sie einen gültigen Lizenzschlüssel. Ihren Lizenzschlüssel erhalten Sie beim Kauf eines Premium-Pakets im <a href="https://store.quiqqer.de/" target="_blank">QUIQQER Store</a>.]]></de>
         </locale>
         <locale name="controls.licensekey.template.labelDelete">
-            <de><![CDATA[Lizenz löschen]]></de>
+            <de><![CDATA[Lizenzschlüssel löschen]]></de>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="php">
@@ -3183,25 +3186,25 @@
             <de><![CDATA[Mail-Queue aktivieren]]></de>
         </locale>
         <locale name="message.ajax.licenseKey.upload.error">
-            <de><![CDATA[Beim Einlesen der Lizenz-Datei ist ein Fehler aufgetreten.
-                Ggf. ist die Lizenz-Datei ungültig. Bitte wenden Sie sich an einen Administrator oder an die Stelle,
-                die die Lizenz ausgegeben hat.
+            <de><![CDATA[Beim Einlesen der Lizenzschlüssel-Datei ist ein Fehler aufgetreten.
+                Ggf. ist die Lizenzschlüssel-Datei ungültig. Bitte wenden Sie sich an einen Administrator oder an die Stelle,
+                die den Lizenzschlüssel ausgegeben hat.
             ]]></de>
         </locale>
         <locale name="message.ajax.licenseKey.upload.success">
             <de><![CDATA[
-            Die Lizenz-Datei wurde erfolgreich eingelesen.
-            Diese QUIQQER-Installation hat nun Zugriff auf alle Pakete,die diese Lizenz beinhaltet.
+            Die Lizenzschlüssel-Datei wurde erfolgreich eingelesen.
+            Diese QUIQQER-Installation hat nun Zugriff auf alle Pakete, die dieser Lizenzschlüssel beinhaltet.
             ]]></de>
         </locale>
         <locale name="message.editor.toolbar.save.success">
             <de><![CDATA[Die Toolbar wurde erfolgreich gespeichert.]]></de>
         </locale>
         <locale name="message.ajax.licenseKey.delete.error">
-            <de><![CDATA[Die Lizenz wurde nicht gelöscht, da keine Lizenz in Ihrem QUIQQER-System aktiviert war.]]></de>
+            <de><![CDATA[Der Lizenzschlüssel wurde nicht gelöscht, da kein Lizenzschlüssel in Ihrem QUIQQER-System aktiviert war.]]></de>
         </locale>
         <locale name="message.ajax.licenseKey.delete.success">
-            <de><![CDATA[Die Lizenz wurde erfolgreich gelöscht und ist nun nicht mehr aktiv.]]></de>
+            <de><![CDATA[Der Lizenzschlüssel wurde erfolgreich gelöscht und ist nun nicht mehr aktiv.]]></de>
         </locale>
         <locale name="exception.lib.user.activasion.user.is.activated">
             <de><![CDATA[Der Benutzer konnte nicht aktiviert werde da dieser schon aktiviert ist.]]></de>
