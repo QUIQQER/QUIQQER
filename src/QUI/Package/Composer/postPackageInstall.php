@@ -14,9 +14,16 @@ if ($argc > 1) {
 try {
     $Output->writeLn('Install package: ' . $packageName);
 
+    \QUI\System\Log::addError('Install package: ' . $packageName);
+
     $Package = QUI::getPackage($packageName);
     $Package->install();
+
+    \QUI\System\Log::addError('Install package DONE: ' . $packageName);
+
 } catch (Exception $Exception) {
+    \QUI\System\Log::addError('Install package exception: ' . $packageName);
+
     QUI\System\Log::addError(
         $Exception->getMessage(),
         [
@@ -25,6 +32,8 @@ try {
             'errorCode' => $Exception->getCode()
         ]
     );
+
+    \QUI\System\Log::addError('Install package exception DONE: ' . $packageName);
 }
 
 QUI\Cache\Manager::clearPackagesCache();

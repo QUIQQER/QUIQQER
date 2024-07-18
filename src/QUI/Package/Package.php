@@ -587,16 +587,29 @@ class Package extends QUI\QDOM
 
         $pkgName = $this->getName();
 
+        QUI\System\Log::addError('Fire packageInstallBefore event: ' . $pkgName);
+
         QUI::getEvents()->fireEvent('packageInstallBefore', [$this]);
         QUI::getEvents()->fireEvent('packageInstallBefore-' . $pkgName, [$this]);
+
+        QUI\System\Log::addError('Fire packageInstallBefore event DONE: ' . $pkgName);
+        QUI\System\Log::addError('Import Events: ' . $pkgName);
+
 
         Update::importEvents(
             $this->getDir() . self::EVENTS_XML,
             $this->getName()
         );
 
+        QUI\System\Log::addError('Import Events DONE: ' . $pkgName);
+        QUI\System\Log::addError('Fire packageInstall event: ' . $pkgName);
+
+
         QUI::getEvents()->fireEvent('packageInstall', [$this]);
         QUI::getEvents()->fireEvent('packageInstall-' . $pkgName, [$this]);
+
+        QUI\System\Log::addError('Fire packageInstall event DONE: ' . $pkgName);
+
 
         if ($this->isQuiqqerPackage()) {
             $this->setup();
