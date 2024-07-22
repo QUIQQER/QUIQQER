@@ -24,6 +24,7 @@ use DOMXPath;
 use Exception;
 use QUI;
 use QUI\Cache\Manager as QUICacheManager;
+use QUI\Composer\Composer;
 use QUI\Utils\System\File as QUIFile;
 use Seld\JsonLint\JsonParser;
 use Seld\JsonLint\ParsingException;
@@ -1877,7 +1878,7 @@ class Manager extends QUI\QDOM
         ?QUI\Interfaces\System\SystemOutput $Output = null
     ): void {
         if (!$Output) {
-            $Output = new QUI\System\Output\VoidOutput();
+            $Output = new QUI\System\VoidOutput();
         }
 
 
