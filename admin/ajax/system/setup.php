@@ -10,7 +10,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_system_setup',
     static function ($package): void {
-        if (!empty($package)) {
+        if (isset($package) && !empty($package)) {
             QUI::getPackageManager()->setup($package);
 
             return;
