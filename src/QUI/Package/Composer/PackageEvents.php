@@ -10,7 +10,7 @@ use Composer\Installer\PackageEvent;
 
 use function dirname;
 use function method_exists;
-use function system;
+use function shell_exec;
 
 use const PHP_BINARY;
 
@@ -40,7 +40,7 @@ class PackageEvents
         $phpPath = PHP_BINARY;
         $dir = dirname(__FILE__);
 
-        system("$phpPath $dir/postPackageInstall.php $packageName");
+        shell_exec("$phpPath $dir/postPackageInstall.php $packageName");
     }
 
     /**
@@ -68,7 +68,7 @@ class PackageEvents
         $phpPath = PHP_BINARY;
         $dir = dirname(__FILE__);
 
-        system("$phpPath $dir/postPackageUpdate.php $packageName");
+        shell_exec("$phpPath $dir/postPackageUpdate.php $packageName");
     }
 
     /**
@@ -89,7 +89,7 @@ class PackageEvents
         $phpPath = PHP_BINARY;
         $dir = dirname(__FILE__);
 
-        system("$phpPath $dir/prePackageUninstall.php $packageName");
+        shell_exec("$phpPath $dir/prePackageUninstall.php $packageName");
     }
 
     /**
@@ -110,6 +110,6 @@ class PackageEvents
         $phpPath = PHP_BINARY;
         $dir = dirname(__FILE__);
 
-        system("$phpPath $dir/postPackageUninstall.php $packageName");
+        shell_exec("$phpPath $dir/postPackageUninstall.php $packageName");
     }
 }

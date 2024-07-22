@@ -11,7 +11,6 @@ use Composer\Script\Event;
 
 use function array_unique;
 use function dirname;
-use function system;
 
 class CommandEvents
 {
@@ -46,7 +45,7 @@ class CommandEvents
         $phpPath = PHP_BINARY;
         $dir = dirname(__FILE__);
 
-        system("$phpPath $dir/postUpdate.php");
+        shell_exec("$phpPath $dir/postUpdate.php");
     }
 
     /**
