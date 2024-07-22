@@ -561,8 +561,12 @@ define('controls/grid/Grid', [
          */
         getPaginationData: function() {
             return {
+                limit: this.getAttribute('perPage'),
                 perPage: this.getAttribute('perPage'),
-                page: this.getAttribute('page')
+
+                page: this.getAttribute('page'),
+                sortBy : this.getAttribute('sortBy'),
+                sortOn : this.getAttribute('sortOn')
             };
         },
 
