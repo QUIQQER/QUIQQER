@@ -966,6 +966,12 @@ class Rewrite
             $http_host = $_SERVER['HTTP_HOST'];
         }
 
+        // If a port is specified in the URL and there is no vHost explicitly defined for it...
+        if (!isset($vhosts[$http_host]) && str_contains($http_host, ':')) {
+            // ...then drop the port as a fallback
+            $http_host = explode(':', $http_host)[0];
+        }
+
         if (!isset($vhosts[$http_host])) {
             return false;
         }
