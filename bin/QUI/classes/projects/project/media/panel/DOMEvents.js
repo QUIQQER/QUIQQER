@@ -309,13 +309,14 @@ define('classes/projects/project/media/panel/DOMEvents', [
 
                                     onComplete: function () {
                                         var i, len;
+                                        const fileId = DOMNode.get('data-id');
 
                                         var panels     = QUI.Controls.get('projects-media-panel'),
                                             windows    = QUI.Controls.get(
-                                                'replace-media-id-' + DOMNode.get('data-id')
+                                                'replace-media-id-' + fileId
                                             ),
                                             filepanels = QUI.Controls.get(
-                                                'projects-media-file-panel-' + DOMNode.get('data-id')
+                                                'projects-media-file-panel-' + fileId
                                             );
 
                                         // Media panels refresh
@@ -332,6 +333,9 @@ define('classes/projects/project/media/panel/DOMEvents', [
                                         for (i = 0, len = filepanels.length; i < len; i++) {
                                             filepanels[i].refresh();
                                         }
+
+                                        Win.fireEvent('itemReplace', [fileId, self]);
+                                        QUI.fireEvent('mediaItemReplace', [fileId, self]);
                                     },
 
                                     /// drag drop events

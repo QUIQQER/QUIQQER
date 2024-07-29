@@ -205,10 +205,12 @@ define('classes/projects/project/Media', [
                         fileid    : childid,
                         phponstart: 'ajax_media_checkreplace',
                         events    : {
-                            onComplete: function () {
+                            onComplete: () => {
                                 if (typeof onfinish === 'function') {
                                     onfinish();
                                 }
+                                this.fireEvent('itemReplace', [childid, this]);
+                                QUI.fireEvent('mediaItemReplace', [childid, this]);
                                 resolve();
                             }
                         }
