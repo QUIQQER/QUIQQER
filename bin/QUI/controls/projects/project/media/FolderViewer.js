@@ -127,11 +127,16 @@ define('controls/projects/project/media/FolderViewer', [
                 onItemRename: this.$itemEvent,
                 onItemActivate: this.$itemEvent,
                 onItemDeactivate: this.$itemEvent,
+                onItemReplace: this.$itemEvent,
                 onItemRefresh: this.$itemEvent,
                 onItemSave: this.$itemEvent,
                 onItemDelete: this.$itemEvent,
                 onItemsHide: this.$itemHideStatusChange,
                 onItemsVisible: this.$itemHideStatusChange
+            });
+
+            QUI.addEvents({
+                onMediaItemReplace: this.$itemEvent
             });
         },
 
@@ -563,6 +568,7 @@ define('controls/projects/project/media/FolderViewer', [
                 dataSrc = imageSrc + '&noresize=1';
 
             imageSrc = imageSrc + '&maxwidth=80&maxheight=80&quiadmin=1';
+            imageSrc += '&refresh=' + (Math.random() + 1).toString(36).substring(7);
 
             if (imageData.type === 'file') {
                 imageSrc = imageData.icon80x80;
