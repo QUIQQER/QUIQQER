@@ -109,6 +109,37 @@ class Manager
     }
 
     /**
+     * Reset the workspace
+     * - adds a reset workspace -> two columns
+     * - if reset workspace exists, it will delete this workspace and add a new reset workspace
+     */
+    public static function resetWorkspace(User $User): void
+    {
+        // check if reset workspace exists
+        try {
+            $workspaces = self::getWorkspacesByUser($User);
+        } catch (\Exception) {
+            $workspaces = [];
+        }
+
+        foreach ($workspaces as $workspace) {
+            if (isset($workspace['title']) && $workspace['title'] === 'reset') {
+                self::deleteWorkspace((int)$workspace['id'], $User);
+            }
+        }
+
+        $newId = self::addWorkspace(
+            $User,
+            'reset',
+            self::getTwoColumnDefault(),
+            700,
+            500
+        );
+
+        self::setStandardWorkspace($User, $newId);
+    }
+
+    /**
      * Add a workspace
      *
      * @param User $User

@@ -3161,6 +3161,9 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="menu.profile.workspace.text">
             <en><![CDATA[Workspaces]]></en>
         </locale>
+        <locale name="menu.profile.reset.text">
+            <en><![CDATA[Reset workspace]]></en>
+        </locale>
         <locale name="menu.profile.userProfile.text">
             <en><![CDATA[Settings]]></en>
         </locale>

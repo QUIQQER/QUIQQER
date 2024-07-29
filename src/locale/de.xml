@@ -3235,6 +3235,9 @@
         <locale name="menu.profile.workspace.text">
             <de><![CDATA[Arbeitsbereiche]]></de>
         </locale>
+        <locale name="menu.profile.reset.text">
+            <de><![CDATA[Arbeitsbereich zurücksetzen]]></de>
+        </locale>
         <locale name="menu.profile.userProfile.text">
             <de><![CDATA[Einstellungen]]></de>
         </locale>

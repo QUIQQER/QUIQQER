@@ -359,8 +359,17 @@ require(requireList, function () {
                             return;
                         }
 
-                        const Workspaces = Bar.getChildren('profile')
-                            .getChildren('workspaces');
+                        const Workspaces = Bar.getChildren('profile').getChildren('workspaces');
+                        const ResetWorkspaces = Bar.getChildren('profile').getChildren('workspace-reset');
+
+                        if (ResetWorkspaces) {
+                            ResetWorkspaces.addEvent('click', function() {
+                                Workspace.Loader.show();
+                                Ajax.post('ajax_desktop_workspace_reset', function() {
+                                    window.location.reload();
+                                });
+                            });
+                        }
 
                         Workspaces.clear();
 

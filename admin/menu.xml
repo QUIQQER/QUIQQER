@@ -163,14 +163,17 @@
     >
         <locale group="quiqqer/core" var="menu.profile.userPassword.text"/>
     </item>
-
-
-    <!-- profile -->
     <item parent="/profile/"
           name="workspaces"
           icon="fa fa-laptop"
     >
         <locale group="quiqqer/core" var="menu.profile.workspace.text"/>
+    </item>
+    <item parent="/profile/"
+          name="workspace-reset"
+          icon="fa-solid fa-rotate-left"
+    >
+        <locale group="quiqqer/core" var="menu.profile.reset.text"/>
     </item>
 
 </menu>
