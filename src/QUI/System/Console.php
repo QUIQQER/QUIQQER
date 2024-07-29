@@ -1055,8 +1055,10 @@ class Console
     {
         if (empty($this->groupedTools[$group])) {
             $this->writeLn('No tools found!', 'red');
+            $this->writeLn();
+            $this->resetMsg();
 
-            return;
+            exit(2);
         }
 
         $tools = $this->groupedTools[$group];
