@@ -22,7 +22,9 @@ foreach ($packages as $package) {
 
         $Package = QUI::getPackage($package);
         $Package->uninstall();
-    } catch (QUI\Exception $Exception) {
+    } catch (\Exception $Exception) {
+        $Output->writeLn('!! '. $Exception->getMessage(), 'red');
+
         QUI\System\Log::addError(
             $Exception->getMessage(),
             [
