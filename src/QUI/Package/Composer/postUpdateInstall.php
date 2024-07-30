@@ -7,7 +7,7 @@ require "header.php";
 
 
 // quiqqer install
-$Output->writeLn('> Execute Package installations');
+$Output->writeLn('> Executing package installations');
 
 if ($argc > 1) {
     $packages = $argv[1];
@@ -19,7 +19,7 @@ if ($argc > 1) {
 
 foreach ($packages as $package) {
     try {
-        $Output->writeLn('>> installation of '. $package);
+        $Output->writeLn('>> '. $package);
 
         $Package = QUI::getPackage($package);
         $Package->install();

@@ -6,7 +6,7 @@ global $Output;
 require "header.php";
 
 // quiqqer install
-$Output->writeLn('> Execute Package update');
+$Output->writeLn('> Executing package updates');
 
 if ($argc > 1) {
     $packages = $argv[1];
@@ -18,7 +18,7 @@ if ($argc > 1) {
 
 foreach ($packages as $package) {
     try {
-        $Output->writeLn('>> update of '. $package);
+        $Output->writeLn('>> '. $package);
 
         $Package = QUI::getPackage($package);
         $Package->onUpdate();
