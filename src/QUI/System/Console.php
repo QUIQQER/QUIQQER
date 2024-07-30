@@ -9,6 +9,7 @@ namespace QUI\System;
 use Exception;
 use League\CLImate\CLImate;
 use QUI;
+use QUI\ExceptionStack;
 use QUI\Utils\Security\Orthos;
 
 use function array_flip;
@@ -40,7 +41,6 @@ use function posix_getpwuid;
 use function realpath;
 use function sort;
 use function str_replace;
-use function strpos;
 use function strtolower;
 use function time;
 use function trim;
@@ -50,7 +50,7 @@ use const PHP_EOL;
 /**
  * The QUIQQER Console
  *
- * With the console you can start tools / crons in the shell
+ * With the console you can start tools in the shell
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @author  www.pcsg.de (Moritz Scholz)
@@ -131,7 +131,7 @@ class Console
 
     /**
      * List of system tools
-     * Tools which are called with the SystemUser
+     * - Tools which are called with the SystemUser
      */
     private array $systemTools = [
         'clear-all-quiqqer-cache',
@@ -393,10 +393,10 @@ class Console
      * Output a message
      *
      * @param string $msg - Message to output
-     * @param string|boolean $color - (optional) text color
-     * @param string|boolean $bg - (optional) background color
+     * @param boolean|string $color - (optional) text color
+     * @param boolean|string $bg - (optional) background color
      */
-    public function message(string $msg, $color = false, $bg = false): void
+    public function message(string $msg, bool|string $color = false, bool|string $bg = false): void
     {
         if ($color) {
             $this->current_color = $color;
@@ -442,10 +442,10 @@ class Console
      * Write a new line
      *
      * @param string $msg - (optional) the printed message
-     * @param string|boolean $color - (optional) textcolor
-     * @param string|boolean $bg - (optional) background color
+     * @param boolean|string $color - (optional) text color
+     * @param boolean|string $bg - (optional) background color
      */
-    public function writeLn(string $msg = '', $color = false, $bg = false): void
+    public function writeLn(string $msg = '', bool|string $color = false, bool|string $bg = false): void
     {
         $this->message(PHP_EOL . $msg, $color, $bg);
 
@@ -583,7 +583,7 @@ class Console
      *
      * @throws QUI\Exception
      */
-    protected function includeClasses(string $file, string $dir)
+    protected function includeClasses(string $file, string $dir): void
     {
         $file = Orthos::clearPath(realpath($dir . $file));
 
@@ -621,7 +621,7 @@ class Console
      *
      * @return array|Console\Tool|bool
      */
-    public function get($tool)
+    public function get(bool|string $tool): bool|array|Console\Tool
     {
         if (isset($this->tools[$tool]) && is_object($this->tools[$tool])) {
             return $this->tools[$tool];
@@ -639,7 +639,7 @@ class Console
      *
      * @return mixed|null
      */
-    public function getArgument(string $argument)
+    public function getArgument(string $argument): mixed
     {
         $argument = trim($argument, '-');
 
@@ -650,10 +650,10 @@ class Console
      * alternative for message()
      *
      * @param string $msg - Message to output
-     * @param string|boolean $color - (optional) text color
-     * @param string|boolean $bg - (optional) background color
+     * @param boolean|string $color - (optional) text color
+     * @param boolean|string $bg - (optional) background color
      */
-    public function write(string $msg, $color = false, $bg = false): void
+    public function write(string $msg, bool|string $color = false, bool|string $bg = false): void
     {
         $this->message($msg, $color, $bg);
     }
@@ -667,10 +667,10 @@ class Console
     }
 
     /**
-     * Exceute the system tool
+     * Execute the system tool
      * @throws QUI\Exception
      */
-    protected function executeSystemTool()
+    protected function executeSystemTool(): void
     {
         if (php_sapi_name() != 'cli') {
             throw new QUI\Exception([
@@ -874,9 +874,13 @@ class Console
 
     /**
      * Initiates a password reset
-     * @throws \QUI\Users\Exception
+     *
+     * @throws QUI\Database\Exception
+     * @throws ExceptionStack
+     * @throws QUI\Permissions\Exception
+     * @throws QUI\Users\Exception
      */
-    protected function passwordReset()
+    protected function passwordReset(): void
     {
         $this->writeLn(
             QUI::getLocale()->get(
@@ -1051,12 +1055,14 @@ class Console
         $Climate->out('');
     }
 
-    protected function displayToolsForGroups($group)
+    protected function displayToolsForGroups($group): void
     {
         if (empty($this->groupedTools[$group])) {
             $this->writeLn('No tools found!', 'red');
+            $this->writeLn();
+            $this->resetMsg();
 
-            return;
+            exit(2);
         }
 
         $tools = $this->groupedTools[$group];
@@ -1094,9 +1100,9 @@ class Console
 
     /**
      * Execute the authentication
-     * @throws \QUI\Users\Exception|\QUI\Database\Exception
+     * @throws QUI\Users\Exception|QUI\Database\Exception
      */
-    protected function authenticate()
+    protected function authenticate(): void
     {
         $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
 

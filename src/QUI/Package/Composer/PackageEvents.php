@@ -37,10 +37,7 @@ class PackageEvents
         $TargetPackage = $Operation->getPackage();
         $packageName = $TargetPackage->getName();
 
-        $phpPath = PHP_BINARY;
-        $dir = dirname(__FILE__);
-
-        system("$phpPath $dir/postPackageInstall.php $packageName");
+        CommandEvents::registerPackageInstall($packageName);
     }
 
     /**
@@ -64,11 +61,7 @@ class PackageEvents
         $TargetPackage = $Operation->getPackage();
         $packageName = $TargetPackage->getName();
 
-        // script
-        $phpPath = PHP_BINARY;
-        $dir = dirname(__FILE__);
-
-        system("$phpPath $dir/postPackageUpdate.php $packageName");
+        CommandEvents::registerPackageUpdate($packageName);
     }
 
     /**
@@ -85,11 +78,7 @@ class PackageEvents
         $TargetPackage = $Operation->getPackage();
         $packageName = $TargetPackage->getName();
 
-        // script
-        $phpPath = PHP_BINARY;
-        $dir = dirname(__FILE__);
-
-        system("$phpPath $dir/prePackageUninstall.php $packageName");
+        CommandEvents::registerPackageUninstall($packageName);
     }
 
     /**
@@ -97,19 +86,5 @@ class PackageEvents
      */
     public static function postPackageUninstall(PackageEvent $Event): void
     {
-        $Operation = $Event->getOperation();
-
-        if (!method_exists($Operation, 'getPackage')) {
-            return;
-        }
-
-        $TargetPackage = $Operation->getPackage();
-        $packageName = $TargetPackage->getName();
-
-        // script
-        $phpPath = PHP_BINARY;
-        $dir = dirname(__FILE__);
-
-        system("$phpPath $dir/postPackageUninstall.php $packageName");
     }
 }
