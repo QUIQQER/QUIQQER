@@ -362,6 +362,17 @@ class Manager extends QUI\QDOM
         $Parser = new VersionParser();
         $Parser->normalize(str_replace('*', '0', $version)); // workaround, normalize cant check 1.*
 
+        $oldVersion = $this->getVersion();
+        $oldVersionParts = explode('.', $oldVersion);
+        $oldMajorVersion = $oldVersionParts[0];
+
+        $versionParts = explode('.', $version);
+        $newMajorVersion = $versionParts[0];
+
+        if ((int)$oldMajorVersion !== (int)$newMajorVersion) {
+            throw new QUI\Exception('Version ' . $version . ' is not allowed!');
+        }
+
         $this->version = $version;
         $this->createComposerJSON();
     }
