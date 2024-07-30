@@ -11,21 +11,38 @@ use Composer\Script\Event;
 
 use function array_unique;
 use function dirname;
+use function implode;
 use function system;
+
+use const PHP_BINARY;
 
 class CommandEvents
 {
-    protected static array $packages = [];
+    protected static array $install = [];
+    protected static array $uninstall = [];
+    protected static array $update = [];
 
     /**
      * Registered a package which has changed
      *
      * @param $packageName
      */
-    public static function registerPackageChange($packageName): void
+    public static function registerPackageUninstall($packageName): void
     {
-        self::$packages[] = $packageName;
-        self::$packages = array_unique(self::$packages);
+        self::$uninstall[] = $packageName;
+        self::$uninstall = array_unique(self::$uninstall);
+    }
+
+    public static function registerPackageInstall($packageName): void
+    {
+        self::$install[] = $packageName;
+        self::$install = array_unique(self::$install);
+    }
+
+    public static function registerPackageUpdate($packageName): void
+    {
+        self::$update[] = $packageName;
+        self::$update = array_unique(self::$update);
     }
 
     /**
@@ -34,7 +51,6 @@ class CommandEvents
      */
     public static function preUpdate(Event $Event): void
     {
-        self::$packages = [];
     }
 
     /**
@@ -46,7 +62,27 @@ class CommandEvents
         $phpPath = PHP_BINARY;
         $dir = dirname(__FILE__);
 
-        system("$phpPath $dir/postUpdate.php");
+        if (!empty(self::$install)) {
+            system("$phpPath $dir/postUpdateInstall.php " . implode(',', self::$install));
+        }
+
+        if (!empty(self::$update)) {
+            system("$phpPath $dir/postUpdateUpdate.php " . implode(',', self::$update));
+        }
+
+        if (!empty(self::$uninstall)) {
+            system("$phpPath $dir/postUpdateUninstall.php " . implode(',', self::$uninstall));
+        }
+
+        // execute complete setup
+        system("$phpPath $dir/postUpdateSetup.php");
+    }
+
+    /**
+     * occurs after the install command has been executed,
+     */
+    public static function postInstall(Event $Event): void
+    {
     }
 
     /**
