@@ -1,5 +1,7 @@
 <?php
 
+define('QUIQQER_UPDATE_IN_PROGRESS', true);
+
 global $Output;
 require "header.php";
 

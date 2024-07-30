@@ -1,7 +1,10 @@
 <?php
 
+define('QUIQQER_UPDATE_IN_PROGRESS', true);
+
 global $Output;
 require "header.php";
+
 
 // quiqqer install
 $Output->writeLn('> Execute Package installations');
