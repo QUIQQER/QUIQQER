@@ -179,7 +179,7 @@ class Manager
         $permissions = $Manager->getPermissions($Group);
 
         if (empty($permissions)) {
-            // @todo use default errors
+            $permissions = $Manager->getPermissions(new QUI\Users\Nobody());
         }
 
 
