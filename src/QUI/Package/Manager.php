@@ -362,7 +362,24 @@ class Manager extends QUI\QDOM
         $Parser = new VersionParser();
         $Parser->normalize(str_replace('*', '0', $version)); // workaround, normalize cant check 1.*
 
+        $oldVersion = $this->getVersion();
+        $oldVersionParts = explode('.', $oldVersion);
+        $oldMajorVersion = $oldVersionParts[0];
+
+        $versionParts = explode('.', $version);
+        $newMajorVersion = $versionParts[0];
+
+        if ((int)$oldMajorVersion !== (int)$newMajorVersion) {
+            throw new QUI\Exception('Version ' . $version . ' is not allowed!');
+        }
+
         $this->version = $version;
+
+        $Config = QUI::$Conf;
+        $Config->setValue('globals', 'quiqqer_version', $this->version);
+        $Config->save();
+        $Config->reload();
+
         $this->createComposerJSON();
     }
 
@@ -691,8 +708,8 @@ class Manager extends QUI\QDOM
 
             // must have
             $require = [];
-            $require["php"] = ">=7.2";
-            $require["quiqqer/core"] = "dev-master";
+            $require["php"] = "^8.1";
+            $require["quiqqer/core"] = "2.*";
 
             foreach ($list as $package) {
                 $require[$package['name']] = $package['version'];

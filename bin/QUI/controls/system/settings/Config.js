@@ -55,30 +55,7 @@ define('controls/system/settings/Config', [
                     }).inject(Select);
                 }
 
-                const selectedVersion = QUIQQER_CONFIG.globals.quiqqer_version;
-
-                // replace last security version number
-                if (selectedVersion.indexOf('dev') === -1) {
-                    let parts = selectedVersion.split('.');
-                    let version;
-
-                    if ((parts[0] + '.' + parts[1]).indexOf('.*') === -1) {
-                        version = parts[0] + '.' + parts[1] + '.*';
-                    } else {
-                        version = parts[0] + '.' + parts[1];
-                    }
-
-                    if (!Select.getElement('[value="' + version + '"]')) {
-                        new Element('option', {
-                            value: version,
-                            html: version
-                        }).inject(Select);
-                    }
-
-                    Select.value = version;
-                } else {
-                    Select.value = selectedVersion;
-                }
+                Select.value = QUIQQER_CONFIG.globals.quiqqer_version;
 
                 new Element('div', {
                     html: QUILocale.get(lg, 'quiqqer.config.current.version', {

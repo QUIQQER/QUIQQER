@@ -452,6 +452,10 @@ class QUI
      */
     public static function getConfig(string $file): Config
     {
+        if ($file === 'etc/conf.ini.php' && self::$Conf) {
+            return self::$Conf;
+        }
+
         if (isset(self::$Configs[$file])) {
             return self::$Configs[$file];
         }
