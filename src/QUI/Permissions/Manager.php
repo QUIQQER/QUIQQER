@@ -182,6 +182,10 @@ class Manager
             $permissions = $Manager->getPermissions(new QUI\Users\Nobody());
         }
 
+        if (empty($permissions)) {
+            // Group has no permissions, so no permissions have to be set; see quiqqer/core#1389
+            return;
+        }
 
         $Manager->setPermissions($Group, $permissions, $ParentUser);
     }
