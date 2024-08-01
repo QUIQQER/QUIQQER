@@ -86,6 +86,11 @@ class Handler
      * Icon methods
      */
 
+    public function clearCssFiles(): void
+    {
+        $this->files = [];
+    }
+
     /**
      * @param array $icons
      */
@@ -115,6 +120,11 @@ class Handler
         $classes = array_flip($this->list);
 
         return isset($classes[$value]);
+    }
+
+    public function clearCssIcons(): void
+    {
+        $this->list = [];
     }
 
     /**
