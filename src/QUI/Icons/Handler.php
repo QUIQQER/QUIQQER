@@ -61,6 +61,11 @@ class Handler
         return $this->files;
     }
 
+    public function clearCssFiles(): void
+    {
+        $this->files = [];
+    }
+
     public function addIcons(array $icons): void
     {
         foreach ($icons as $icon) {
@@ -81,6 +86,11 @@ class Handler
         $classes = array_flip($this->list);
 
         return isset($classes[$value]);
+    }
+
+    public function clearCssIcons(): void
+    {
+        $this->list = [];
     }
 
     /**
