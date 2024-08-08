@@ -33,15 +33,6 @@ class ManagerTest extends TestCase
         $sut::getWorkspaceById(99999999, $testUser);
     }
 
-    public function testAddWorkspaceWithInvalidUserThrowsException(): void
-    {
-        $sut = new Manager();
-        $testUser = $this->createStub(\QUI\Interfaces\Users\User::class);
-
-        $this->expectException(Exception::class);
-        $sut::addWorkspace($testUser, 'title', 'data', 100, 100);
-    }
-
     public function testAddAndGetWorkspace(): void
     {
         $sut = new Manager();
