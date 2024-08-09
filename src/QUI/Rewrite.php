@@ -323,6 +323,7 @@ class Rewrite
 
                 $_new_url = [];
 
+                // Reset the array index, so that it starts at zero again (TODO: consider using "array_shift" instead of "unset") 
                 foreach ($_url as $elm) {
                     $_new_url[] = $elm;
                 }
@@ -353,6 +354,7 @@ class Rewrite
 
                 $_new_url = [];
 
+                // Reset the array index, so that it starts at zero again (TODO: consider using "array_shift" instead of "unset") 
                 foreach ($_url as $elm) {
                     $_new_url[] = $elm;
                 }
