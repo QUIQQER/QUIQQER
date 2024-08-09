@@ -23,12 +23,13 @@ if (!defined('QUIQQER_SYSTEM')) {
 if (
     isset($_REQUEST['_url'])
     && str_contains($_REQUEST['_url'], '[mailto]')
+    && str_contains($_REQUEST['_url'], '[at]')
 ) {
     $addr = str_replace('[mailto]', '', $_REQUEST['_url']);
     [$user, $host] = explode("[at]", $addr);
 
-    if (isset($user) && isset($host)) {
-        header("Location: mailto:" . $user . "@" . $host);
+    if (!empty($user) && !empty($host)) {
+        header("Location: mailto:$user@$host");
         exit;
     }
 }

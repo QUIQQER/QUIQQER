@@ -1,3 +1,16 @@
 include:
-  - project: 'quiqqer/stabilization/semantic-release'
-    file: '/ci-templates/.gitlab-ci.yml'
+  - component: dev.quiqqer.com/quiqqer/stabilization/ci-cd-components/quiqqer-package-bundle/quiqqer-package-bundle@main
+
+trigger-build-of-testing-docker-image:
+  needs:
+    - release
+  stage: release
+  image: curlimages/curl
+  variables:
+    RELEASED_VERSION_ARTIFACT: .RELEASED_VERSION.txt
+  script:
+    - if [ ! -f $RELEASED_VERSION_ARTIFACT ]; then echo "No version released, exiting..."; exit; fi
+    - RELEASED_MAJOR_VERSION=$(cut -d. -f1 $RELEASED_VERSION_ARTIFACT)
+    - curl --fail-with-body --request POST --form "token=$CI_JOB_TOKEN" --form ref=main --form "variables[IMAGE_TYPE]=testing" --form "variables[QUIQQER_VERSION]=$RELEASED_MAJOR_VERSION" "$CI_API_V4_URL/projects/1061/trigger/pipeline"
+  rules:
+    - !reference [release, rules]

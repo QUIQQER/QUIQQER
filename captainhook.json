@@ -1,0 +1,13 @@
+{
+    "pre-commit": {
+        "enabled": true,
+        "actions": [
+            {
+                "action": "\\CaptainHook\\App\\Hook\\PHP\\Action\\Linting"
+            },
+            {
+                "action": "composer test"
+            }
+        ]
+    }
+}
