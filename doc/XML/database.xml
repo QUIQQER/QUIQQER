@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database>
     <global>
-        <table name="table_name" no-site-reference="1" engine="MYISAM">
+        <table name="table_name" no-site-reference="1" engine="InnoDB">
             <field type="varchar(255)">groups</field>
             <field type="varchar(255)">var</field>
             <field type="varchar(20)">datatype</field>
