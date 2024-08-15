@@ -166,7 +166,7 @@ class Site
 
             $cleanup = [];
 
-            // Reset the array index, so that it starts at zero again (TODO: consider using "array_shift" instead of "unset") 
+            // Reset the array index, so that it starts at zero again (TODO: consider using "array_shift" instead of "unset")
             foreach ($urlParts as $elm) {
                 $cleanup[] = $elm;
             }
@@ -184,7 +184,7 @@ class Site
 
             unset($urlParts[0]);
 
-            // Reset the array index, so that it starts at zero again (TODO: consider using "array_shift" instead of "unset") 
+            // Reset the array index, so that it starts at zero again (TODO: consider using "array_shift" instead of "unset")
             foreach ($urlParts as $elm) {
                 $cleanup[] = $elm;
             }

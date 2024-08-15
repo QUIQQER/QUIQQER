@@ -114,7 +114,7 @@ class MigrationV2 extends QUI\System\Console\Tool
                     $conn->executeStatement("ALTER TABLE `$tableName` ENGINE=InnoDB;");
                     $this->writeLn('-> Converted ' . $tableName . ' to InnoDB');
                 } catch (\Exception $exception) {
-                    $this->writeLn('Error at table '. $tableName, 'red');
+                    $this->writeLn('Error at table ' . $tableName, 'red');
                     $this->writeLn($exception->getMessage(), 'red');
                     $this->resetColor();
                 }
