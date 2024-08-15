@@ -68,6 +68,12 @@ class LocaleTest extends TestCase
     public function testFormatNumber(string $language, float $numberToFormat, string $expectedFormat): void
     {
         $locale = new Locale();
+
+        // TODO: remove logic from test
+        if (!$locale->existsLang($language)) {
+            $this->markTestSkipped("Language '$language' is not available in this QUIQQER system");
+        }
+
         $locale->setCurrent($language);
 
         $sut = $locale->formatNumber($numberToFormat, \NumberFormatter::SCIENTIFIC);

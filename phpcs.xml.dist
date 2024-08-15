@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<ruleset>
+    <!-- Use PSR-12 ruleset -->
+    <rule ref="PSR12"/>
+
+    <!-- Only scan *.php files -->
+    <arg name="extensions" value="php"/>
+
+    <!-- Ignore warnings -->
+    <arg name="warning-severity" value="0"/>
+
+    <!-- Process 64 (or number of CPU cores) files in parallel -->
+    <arg name="parallel" value="64"/>
+
+    <!-- Output relative file paths, by setting the current folder as the basepath -->
+    <arg name="basepath" value="."/>
+
+    <!-- Show colored output -->
+    <arg name="colors"/>
+
+    <!-- Scan everything in the current folder -->
+    <file>.</file>
+</ruleset>

@@ -471,7 +471,7 @@ class Manager
             return false;
         }
 
-        if ($User::class === User::class) {
+        if ($User instanceof \QUI\Users\User) {
             return true;
         }
 
@@ -488,7 +488,7 @@ class Manager
             return false;
         }
 
-        if ($User::class === SystemUser::class) {
+        if ($User instanceof \QUI\Users\SystemUser) {
             return true;
         }
 
@@ -1223,7 +1223,7 @@ class Manager
             return false;
         }
 
-        if ($User::class === Nobody::class) {
+        if ($User instanceof \QUI\Users\Nobody) {
             return true;
         }
 

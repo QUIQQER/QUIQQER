@@ -84,6 +84,49 @@ class MigrationV2 extends QUI\System\Console\Tool
         $Config->save();
 
         QUI::getEvents()->fireEvent('quiqqerMigrationV2', [$this]);
+
+
+        // migrate databases to innodb
+        try {
+            $this->writeLn('- Migrate database to MyISAM');
+
+            $conn = QUI::getDataBaseConnection();
+            $dbname = QUI::conf('db', 'database');
+
+            // Alle MyISAM-Tabellen abrufen
+            $sql = "
+            SELECT table_name 
+            FROM information_schema.tables 
+            WHERE 
+                table_schema = :dbname AND engine = 'MyISAM'
+            ";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue('dbname', $dbname);
+
+            $result = $stmt->executeQuery();
+            $tables = $result->fetchAllAssociative();
+
+            // Speicher-Engine jeder Tabelle ändern
+            foreach ($tables as $table) {
+                try {
+                    $tableName = $table['table_name'] ?? $table['TABLE_NAME'];
+                    $conn->executeStatement("ALTER TABLE `$tableName` ENGINE=InnoDB;");
+                    $this->writeLn('-> Converted ' . $tableName . ' to InnoDB');
+                } catch (\Exception $exception) {
+                    $this->writeLn('Error at table ' . $tableName, 'red');
+                    $this->writeLn($exception->getMessage(), 'red');
+                    $this->resetColor();
+                }
+            }
+
+            $this->writeLn('-> Conversion complete');
+        } catch (Exception $e) {
+            $this->writeLn('An error occurred: ' . $e->getMessage());
+        }
+
+        $this->writeLn('Migration complete!', 'green');
+        $this->resetColor();
     }
 
     public function users(): void

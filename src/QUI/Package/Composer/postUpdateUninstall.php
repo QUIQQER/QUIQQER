@@ -18,12 +18,12 @@ if ($argc > 1) {
 
 foreach ($packages as $package) {
     try {
-        $Output->writeLn('>> '. $package);
+        $Output->writeLn('>> ' . $package);
 
         $Package = QUI::getPackage($package);
         $Package->uninstall();
     } catch (\Exception $Exception) {
-        $Output->writeLn('!! '. $Exception->getMessage(), 'red');
+        $Output->writeLn('!! ' . $Exception->getMessage(), 'red');
 
         QUI\System\Log::addError(
             $Exception->getMessage(),

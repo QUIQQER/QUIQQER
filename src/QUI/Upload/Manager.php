@@ -74,7 +74,7 @@ class Manager
      */
     protected function callFunction(callable|string $function, array $params = []): mixed
     {
-        if (is_object($function) && ($function)::class === 'Closure') {
+        if ($function instanceof \Closure) {
             return $function();
         }
 
