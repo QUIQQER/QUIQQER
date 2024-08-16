@@ -209,7 +209,7 @@ class Nobody extends QUI\QDOM implements User
      *
      * @throws Exception
      */
-    public function removeGroup(Group|int $Group): never
+    public function removeGroup(Group|int|string $Group): never
     {
         throw new Exception(
             QUI::getLocale()->get(

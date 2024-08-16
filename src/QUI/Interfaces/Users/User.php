@@ -143,9 +143,9 @@ interface User
 
     public function setCompanyStatus(bool $status);
 
-    public function addToGroup(int $groupId);
+    public function addToGroup(int|string $groupId);
 
-    public function removeGroup(Group|int $Group);
+    public function removeGroup(Group|int|string $Group);
 
     /**
      * @throws \QUI\Users\Exception
