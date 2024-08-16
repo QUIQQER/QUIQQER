@@ -31,6 +31,7 @@ use function is_array;
 use function is_int;
 use function is_null;
 use function is_numeric;
+use function is_string;
 use function json_decode;
 use function json_encode;
 use function md5;
@@ -1040,9 +1041,6 @@ class User implements QUIUserInterface
         return $attributes;
     }
 
-    /**
-     * @throws QUI\Exception
-     */
     public function addToGroup(int|string $groupId): void
     {
         try {
@@ -1469,11 +1467,11 @@ class User implements QUIUserInterface
     /**
      * @throws QUI\Exception
      */
-    public function removeGroup(Group|int $Group): void
+    public function removeGroup(Group|int|string $Group): void
     {
         $Groups = QUI::getGroups();
 
-        if (is_int($Group)) {
+        if (is_int($Group) || is_string($Group)) {
             $Group = $Groups->get($Group);
         }
 
@@ -1493,7 +1491,7 @@ class User implements QUIUserInterface
      * @throws QUI\Exception
      * @deprecated use addToGroup
      */
-    public function addGroup(int $gid): void
+    public function addGroup(int|string $gid): void
     {
         $this->addToGroup($gid);
     }

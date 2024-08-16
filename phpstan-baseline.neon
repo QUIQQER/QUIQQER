@@ -211,11 +211,6 @@ parameters:
 			path: src/QUI/System/Console/Tools/SetSiteAttributes.php
 
 		-
-			message: "#^Parameter \\#1 \\$groupId of method QUI\\\\Interfaces\\\\Users\\\\User\\:\\:addToGroup\\(\\) expects int, string given\\.$#"
-			count: 2
-			path: src/QUI/Users/Manager.php
-
-		-
 			message: "#^Call to static method existCurrency\\(\\) on an unknown class QUI\\\\ERP\\\\Currency\\\\Handler\\.$#"
 			count: 2
 			path: src/QUI/Users/Nobody.php
