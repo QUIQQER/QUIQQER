@@ -467,19 +467,19 @@ class MigrationV2 extends QUI\System\Console\Tool
                 $userUUID = QUI::getUsers()->get($entry['user_id'])->getUUID();
             } catch (QUI\Exception) {
                 // nutzer existiert nicht, kann als permission gelöscht werden
-                QUI::getDataBase()->delete($table2Users, [
+                QUI::getDataBaseConnection()->delete($table2Users, [
                     'user_id' => $entry['user_id']
                 ]);
 
                 continue;
             }
 
-            QUI::getDataBase()->insert($table2Users, [
+            QUI::getDataBaseConnection()->insert($table2Users, [
                 'user_id' => $userUUID,
                 'permissions' => $entry['permissions']
             ]);
 
-            QUI::getDataBase()->delete($table2Users, [
+            QUI::getDataBaseConnection()->delete($table2Users, [
                 'user_id' => $entry['user_id']
             ]);
         }
@@ -499,7 +499,7 @@ class MigrationV2 extends QUI\System\Console\Tool
             } catch (\Exception) {
                 // gruppe existiert nicht, kann als permission gelöscht werden
 
-                QUI::getDataBase()->delete($table2Groups, [
+                QUI::getDataBaseConnection()->delete($table2Groups, [
                     'group_id' => $entry['group_id']
                 ]);
                 continue;
@@ -510,12 +510,12 @@ class MigrationV2 extends QUI\System\Console\Tool
             }
 
             try {
-                QUI::getDataBase()->insert($table2Groups, [
+                QUI::getDataBaseConnection()->insert($table2Groups, [
                     'group_id' => $groupUUID,
                     'permissions' => $entry['permissions']
                 ]);
 
-                QUI::getDataBase()->delete($table2Groups, [
+                QUI::getDataBaseConnection()->delete($table2Groups, [
                     'group_id' => $entry['group_id']
                 ]);
             } catch (\Exception) {
@@ -545,7 +545,7 @@ class MigrationV2 extends QUI\System\Console\Tool
             try {
                 $uuid = QUI::getUsers()->get($workspace['uid'])->getUUID();
             } catch (QUI\Exception) {
-                QUI::getDataBase()->delete($table, [
+                QUI::getDataBaseConnection()->delete($table, [
                     'id' => $workspace['id']
                 ]);
                 continue;
@@ -559,6 +559,9 @@ class MigrationV2 extends QUI\System\Console\Tool
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function loginLog(): void
     {
         $this->writeLn('- Migrate login log table');
