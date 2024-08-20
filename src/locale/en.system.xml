@@ -416,17 +416,17 @@
             <en><![CDATA[The process could not be performed unfortunately:<br><br>[error]]]></en>
         </locale>
         <locale name="controls.licensekeypanel.title">
-            <en><![CDATA[QUIQQER License]]></en>
+            <en><![CDATA[QUIQQER License Key]]></en>
         </locale>
         <locale name="controls.licensekey.delete.popup.title">
-            <en><![CDATA[Delete QUIQQER License]]></en>
+            <en><![CDATA[Delete QUIQQER License Key]]></en>
         </locale>
         <locale name="controls.licensekey.delete.popup.info">
             <en>
-                <![CDATA[Are you sure you want to delete your current QUIQQER license? You may no longer have access to packages that were part of your license.]]></en>
+                <![CDATA[Are you sure you want to delete your current QUIQQER license key? You may no longer have access to packages that were part of your license key.]]></en>
         </locale>
         <locale name="controls.licensekey.delete.btn">
-            <en><![CDATA[Delete License]]></en>
+            <en><![CDATA[Delete License Key]]></en>
         </locale>
         <locale name="welcome.message">
             <en><![CDATA[Welcome [username]]]></en>
@@ -1862,10 +1862,10 @@
             <en><![CDATA[Remove user(s)]]></en>
         </locale>        <!-- LicenseKey -->
         <locale name="controls.licensekey.template.header">
-            <en><![CDATA[QUIQQER license information]]></en>
+            <en><![CDATA[QUIQQER license key information]]></en>
         </locale>
         <locale name="controls.licensekey.template.labelId">
-            <en><![CDATA[License ID]]></en>
+            <en><![CDATA[License key ID]]></en>
         </locale>
         <locale name="controls.licensekey.template.labelCreated">
             <en><![CDATA[Created at]]></en>
@@ -1877,10 +1877,13 @@
             <en><![CDATA[Issued for]]></en>
         </locale>
         <locale name="controls.licensekey.template.labelUpload">
-            <en><![CDATA[Upload license file]]></en>
+            <en><![CDATA[Upload license key file]]></en>
+        </locale>
+        <locale name="controls.licensekey.template.info" html="1">
+            <en><![CDATA[You can expand the functionality of QUIQQER with premium packages. To install premium packages you need a valid license key. You will receive your license key when you purchase a premium package in the <a href="https://store.quiqqer.com/" target="_blank">QUIQQER Store</a>.]]></en>
         </locale>
         <locale name="controls.licensekey.template.labelDelete">
-            <en><![CDATA[Delete license]]></en>
+            <en><![CDATA[Delete license key]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="php">        <!-- QUIQQERLogin -->
@@ -3032,23 +3035,23 @@
         </locale>        <!-- License key -->
         <locale name="message.ajax.licenseKey.upload.error">
             <en><![CDATA[
-            An error ocurred while reading the license file. The license file may be invalid. Please contact an administrator or the issuer of the license.
+            An error ocurred while reading the license key file. The license key file may be invalid. Please contact an administrator or the issuer of the license key.
             ]]></en>
         </locale>
         <locale name="message.ajax.licenseKey.upload.success">
             <en><![CDATA[
-            The license file has been imported succesfully.
-            This QUIQQER system now has access to all packages this license contains.
+            The license key file has been imported succesfully.
+            This QUIQQER system now has access to all packages this license key contains.
             ]]></en>
         </locale>
         <locale name="message.editor.toolbar.save.success">
             <en><![CDATA[The toolbar has been successfully saved.]]></en>
         </locale>
         <locale name="message.ajax.licenseKey.delete.error">
-            <en><![CDATA[The license was not deleted because no license was active in your QUIQQER system.]]></en>
+            <en><![CDATA[The license key was not deleted because no license key was active in your QUIQQER system.]]></en>
         </locale>
         <locale name="message.ajax.licenseKey.delete.success">
-            <en><![CDATA[The license was deleted successfully and is now inactive.]]></en>
+            <en><![CDATA[The license key was deleted successfully and is now inactive.]]></en>
         </locale>
         <locale name="exception.lib.user.activasion.user.is.activated">
             <en><![CDATA[The user could not be activated because he is already activated.]]></en>

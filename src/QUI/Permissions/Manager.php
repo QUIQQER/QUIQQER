@@ -179,10 +179,11 @@ class Manager
         $permissions = $Manager->getPermissions($Group);
 
         if (empty($permissions)) {
-            QUI\System\Log::addInfo(
-                QUI::getLocale()->get('quiqqer/core', 'exception.permissions.are.empty')
-            );
+            $permissions = $Manager->getPermissions(new QUI\Users\Nobody());
+        }
 
+        if (empty($permissions)) {
+            // Group has no permissions, so no permissions have to be set; see quiqqer/core#1389
             return;
         }
 
@@ -536,19 +537,12 @@ class Manager
                     break;
             }
 
-            if (!empty($params['area'])) {
-                continue;
+            if (
+                empty($params['area'])
+                && ($area == 'user' || $area == 'groups')
+            ) {
+                $result[$key] = $params;
             }
-
-            if ($area != 'user') {
-                continue;
-            }
-
-            if ($area != 'groups') {
-                continue;
-            }
-
-            $result[$key] = $params;
         }
 
         return $result;

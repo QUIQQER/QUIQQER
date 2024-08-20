@@ -9,9 +9,9 @@
 QUI::$Ajax->registerFunction(
     'ajax_licenseKey_delete',
     static function (): bool {
-        $licenseConfigFile = CMS_DIR . 'etc/license.ini.php';
-
-        if (!file_exists($licenseConfigFile)) {
+        try {
+            \QUI\System\License::deleteLicense();
+        } catch (\Exception $exception) {
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
                     'quiqqer/core',
@@ -21,11 +21,6 @@ QUI::$Ajax->registerFunction(
 
             return false;
         }
-
-        unlink($licenseConfigFile);
-
-        // re-create composer.json
-        QUI::getPackageManager()->refreshServerList();
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(

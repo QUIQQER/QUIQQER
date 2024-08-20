@@ -323,6 +323,7 @@ class Rewrite
 
                 $_new_url = [];
 
+                // Reset the array index, so that it starts at zero again (TODO: consider using "array_shift" instead of "unset")
                 foreach ($_url as $elm) {
                     $_new_url[] = $elm;
                 }
@@ -353,6 +354,7 @@ class Rewrite
 
                 $_new_url = [];
 
+                // Reset the array index, so that it starts at zero again (TODO: consider using "array_shift" instead of "unset")
                 foreach ($_url as $elm) {
                     $_new_url[] = $elm;
                 }
@@ -904,6 +906,12 @@ class Rewrite
 
         if (isset($_SERVER['HTTP_HOST'])) {
             $http_host = $_SERVER['HTTP_HOST'];
+        }
+
+        // If a port is specified in the URL and there is no vHost explicitly defined for it...
+        if (!isset($vhosts[$http_host]) && str_contains($http_host, ':')) {
+            // ...then drop the port as a fallback
+            $http_host = explode(':', $http_host)[0];
         }
 
         if (!isset($vhosts[$http_host])) {

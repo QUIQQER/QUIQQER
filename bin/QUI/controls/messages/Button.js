@@ -12,8 +12,8 @@ define('controls/messages/Button', [
 
     'css!controls/messages/Button.css'
 
-], function (QUI, QUIControl, LoadingMessage, BulkUpload, QUILocale) {
-    "use strict";
+], function(QUI, QUIControl, LoadingMessage, BulkUpload, QUILocale) {
+    'use strict';
 
     const lg = 'quiqqer/core';
     const uploadMessages = {};
@@ -22,7 +22,7 @@ define('controls/messages/Button', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/messages/Button',
+        Type: 'controls/messages/Button',
 
         Binds: [
             'open',
@@ -42,7 +42,7 @@ define('controls/messages/Button', [
             messageDelay: 4000
         },
 
-        initialize: function (options) {
+        initialize: function(options) {
             this.parent(options);
 
             this.$open = false;
@@ -50,6 +50,7 @@ define('controls/messages/Button', [
             this.$rendering = false;
 
             this.$Elm = null;
+            this.$Icon = null;
             this.$MessageHandler = null;
             this.$Batch = null;
 
@@ -63,30 +64,32 @@ define('controls/messages/Button', [
 
             this.$filter = {
                 information: true,
-                success    : true,
-                attention  : true,
-                error      : true
+                success: true,
+                attention: true,
+                error: true
             };
         },
 
-        create: function () {
+        create: function() {
             // button
             this.$Elm = new Element('button', {
-                'class'     : 'qui-contextmenu-baritem quiqqer-message-handler-button',
-                'data-qui'  : 'controls/messages/Button',
+                'class': 'qui-contextmenu-baritem quiqqer-message-handler-button',
+                'data-qui': 'controls/messages/Button',
                 'data-quiid': this.getId(),
-                html        : '<span class="fa fa-comments"></span>',
-                events      : {
+                html: '<span class="fa fa-comments"></span>',
+                events: {
                     click: this.toggle
                 }
             });
+
+            this.$Icon = this.$Elm.getElement('.fa-comments');
 
             this.$Elm.addEvent('click', this.toggle);
 
             this.$Batch = new Element('span', {
                 'class': 'quiqqer-message-handler-batch',
-                html   : 0,
-                styles : {
+                html: 0,
+                styles: {
                     display: 'none',
                     opacity: 0
                 }
@@ -97,7 +100,7 @@ define('controls/messages/Button', [
 
                 MH.addEvents({
                     onClearNewMessages: this.refresh,
-                    onClear           : this.refresh
+                    onClear: this.refresh
                 });
 
                 this.$MessageHandler = MH;
@@ -107,12 +110,12 @@ define('controls/messages/Button', [
 
             // create message box
             this.$MessageBox = new Element('div', {
-                'class' : 'quiqqer-message-handler',
+                'class': 'quiqqer-message-handler',
                 tabIndex: -1,
-                styles  : {
+                styles: {
                     display: 'none'
                 },
-                events  : {
+                events: {
                     blur: () => {
                         this.close();
                     }
@@ -121,18 +124,18 @@ define('controls/messages/Button', [
 
             this.$Header = new Element('header', {
                 'class': 'quiqqer-message-handler-header',
-                'html' : '' +
-                         '<span class="quiqqer-message-handler-header-title">' +
-                         '   ' + QUILocale.get(lg, 'message.handler.title') +
-                         '</span>' +
-                         '' +
-                         '<div name="filter-notifications">' +
-                         '  <span class="fa fa-filter"></span>' +
-                         '</div>' +
-                         '<button name="clear-notifications">' +
-                         '   <span class="fa fa-trash"></span>' +
-                         '   <span>' + QUILocale.get(lg, 'message.handler.clear') + '</span>' +
-                         '</button>'
+                'html': '' +
+                    '<span class="quiqqer-message-handler-header-title">' +
+                    '   ' + QUILocale.get(lg, 'message.handler.title') +
+                    '</span>' +
+                    '' +
+                    '<div name="filter-notifications">' +
+                    '  <span class="fa fa-filter"></span>' +
+                    '</div>' +
+                    '<button name="clear-notifications">' +
+                    '   <span class="fa fa-trash"></span>' +
+                    '   <span>' + QUILocale.get(lg, 'message.handler.clear') + '</span>' +
+                    '</button>'
             }).inject(this.$MessageBox);
 
             this.$Messages = new Element('div', {
@@ -141,8 +144,8 @@ define('controls/messages/Button', [
 
             new Element('div', {
                 'class': 'quiqqer-message-handler-close',
-                html   : '<span class="fa fa-close"></span>',
-                events : {
+                html: '<span class="fa fa-close"></span>',
+                events: {
                     click: this.close
                 }
             }).inject(this.$MessageBox);
@@ -161,11 +164,11 @@ define('controls/messages/Button', [
         /**
          * refresh the button display - batch
          */
-        refresh: function () {
+        refresh: function() {
             if (this.$open && !this.$isOpening) {
                 this.$Batch.set('html', 1);
 
-                (function () {
+                (function() {
                     moofx(this.$Batch).animate({
                         opacity: 0
                     }, {
@@ -204,7 +207,7 @@ define('controls/messages/Button', [
         /**
          * render the messages in the notification panel
          */
-        $renderMessages: function () {
+        $renderMessages: function() {
             if (!this.$open) {
                 return;
             }
@@ -224,7 +227,7 @@ define('controls/messages/Button', [
 
             this.$Messages.set('html', '');
 
-            messages.sort(function (a, b) {
+            messages.sort(function(a, b) {
                 a = new Date(a.getAttribute('time'));
                 b = new Date(b.getAttribute('time'));
 
@@ -269,10 +272,10 @@ define('controls/messages/Button', [
 
             for (i = 0, len = uploadNodes.length; i < len; i++) {
                 uploadNodes[i].setStyles({
-                    opacity : 1,
+                    opacity: 1,
                     position: 'relative',
-                    top     : null,
-                    display : null
+                    top: null,
+                    display: null
                 });
 
                 uploadNodes[i].inject(this.$Messages, 'top');
@@ -286,26 +289,26 @@ define('controls/messages/Button', [
                 // no messages
                 const Container = new Element('div', {
                     styles: {
-                        alignItems    : 'center',
-                        display       : 'flex',
-                        flexDirection : 'column',
+                        alignItems: 'center',
+                        display: 'flex',
+                        flexDirection: 'column',
                         justifyContent: 'center',
-                        height        : '100%'
+                        height: '100%'
                     }
                 }).inject(this.$Messages);
 
                 new Element('img', {
-                    src   : URL_OPT_DIR + 'quiqqer/core/bin/QUI/controls/messages/messages-empty.svg',
+                    src: URL_OPT_DIR + 'quiqqer/core/bin/QUI/controls/messages/messages-empty.svg',
                     styles: {
                         opacity: 0.75,
-                        width  : 160
+                        width: 160
                     }
                 }).inject(Container);
 
                 new Element('div', {
-                    html  : QUILocale.get(lg, 'message.handler.no.messages'),
+                    html: QUILocale.get(lg, 'message.handler.no.messages'),
                     styles: {
-                        color     : '#cbcbcb',
+                        color: '#cbcbcb',
                         paddingTop: '1rem'
                     }
                 }).inject(Container);
@@ -318,7 +321,7 @@ define('controls/messages/Button', [
         /**
          * Clears all notifications
          */
-        clear: function () {
+        clear: function() {
             this.$MessageHandler.clear();
             this.close();
         },
@@ -328,7 +331,7 @@ define('controls/messages/Button', [
         /**
          * open or close the message handler
          */
-        toggle: function () {
+        toggle: function() {
             if (this.$open) {
                 return this.close();
             }
@@ -339,7 +342,7 @@ define('controls/messages/Button', [
         /**
          * opens the message handler
          */
-        open: function () {
+        open: function() {
             this.$open = true;
             this.$isOpening = true;
 
@@ -349,7 +352,7 @@ define('controls/messages/Button', [
 
             Node.setStyles({
                 opacity: 0,
-                top    : 50
+                top: 50
             });
 
             Node.setStyle('display', null);
@@ -359,7 +362,7 @@ define('controls/messages/Button', [
 
             moofx(Node).animate({
                 opacity: 1,
-                top    : 60
+                top: 60
             }, {
                 duration: 200,
                 callback: () => {
@@ -373,7 +376,7 @@ define('controls/messages/Button', [
         /**
          * close the message handler
          */
-        close: function () {
+        close: function() {
             this.$open = false;
 
             if (!this.$MessageBox) {
@@ -382,7 +385,7 @@ define('controls/messages/Button', [
 
             moofx(this.$MessageBox).animate({
                 opacity: 0,
-                top    : 50
+                top: 50
             }, {
                 duration: 200,
                 callback: () => {
@@ -400,7 +403,7 @@ define('controls/messages/Button', [
          * @param Message
          * @return {Element}
          */
-        $createMessageNode: function (Message) {
+        $createMessageNode: function(Message) {
             let icon = '';
             let messageType = '';
 
@@ -432,30 +435,30 @@ define('controls/messages/Button', [
             }
 
             const Node = new Element('div', {
-                'class'      : 'quiqqer-message',
+                'class': 'quiqqer-message',
                 'data-msg-id': Message.getId(),
-                html         : '' +
-                               '<span class="quiqqer">' +
-                               '   <span class="' + icon + '"></span>' +
-                               '</span>' +
-                               '<span class="quiqqer-message-text">' + Message.getAttribute('message') + '</span>' +
-                               '<span class="quiqqer-message-date">' +
-                               '   <span class="fa fa-clock-o"></span>' +
-                               '   ' + this.$getMessageDisplayTime(Message) +
-                               '</span>' +
-                               '<div class="quiqqer-message-close">' +
-                               '    <span class="fa fa-close"></span>' +
-                               '</div>'
+                html: '' +
+                    '<span class="quiqqer">' +
+                    '   <span class="' + icon + '"></span>' +
+                    '</span>' +
+                    '<span class="quiqqer-message-text">' + Message.getAttribute('message') + '</span>' +
+                    '<span class="quiqqer-message-date">' +
+                    '   <span class="fa fa-clock-o"></span>' +
+                    '   ' + this.$getMessageDisplayTime(Message) +
+                    '</span>' +
+                    '<div class="quiqqer-message-close">' +
+                    '    <span class="fa fa-close"></span>' +
+                    '</div>'
             });
 
             if (messageType === 'quiqqer-message-loading') {
                 new Element('span', {
                     'class': 'fa fa-circle-o-notch fa-spin',
-                    styles : {
-                        float   : 'right',
-                        color   : '#000',
+                    styles: {
+                        float: 'right',
+                        color: '#000',
                         fontSize: '16px',
-                        padding : 0
+                        padding: 0
                     }
                 }).inject(Node.getElement('.quiqqer-message-date'));
             }
@@ -480,12 +483,12 @@ define('controls/messages/Button', [
          * @param {Object} Message
          * @return {string}
          */
-        $getMessageDisplayTime: function (Message) {
+        $getMessageDisplayTime: function(Message) {
             const Time = Message.getAttribute('time');
 
             const time = ('0' + Time.getDate()).slice(-2) + '.' +
-                         ('0' + (Time.getMonth() + 1)).slice(-2) + '.' +
-                         Time.getFullYear();
+                ('0' + (Time.getMonth() + 1)).slice(-2) + '.' +
+                Time.getFullYear();
 
             const hours = ('0' + Time.getHours()).slice(-2);
             const minutes = ('0' + Time.getMinutes()).slice(-2);
@@ -499,7 +502,7 @@ define('controls/messages/Button', [
          * @param {Object} Message
          * @param {HTMLElement} Node
          */
-        $customMessageHandling: function (Message, Node) {
+        $customMessageHandling: function(Message, Node) {
             if (Node) {
                 this.$showMessageAtNode(Message, Node);
                 return;
@@ -515,6 +518,16 @@ define('controls/messages/Button', [
 
             const MessageNode = this.$createMessageNode(Message);
 
+            if (MessageNode.classList.contains('quiqqer-message-success')) {
+                this.$showSuccessMark();
+                this.$MessageHandler.$newMessages++;
+                this.$MessageHandler.save();
+                this.refresh();
+
+                return;
+            }
+
+
             if (this.$queue.length) {
                 this.$queue.push(MessageNode);
                 this.$MessageHandler.$newMessages++;
@@ -525,7 +538,7 @@ define('controls/messages/Button', [
             }
 
             this.$queue.push(MessageNode);
-            this.$showMessage(MessageNode).catch(function (err) {
+            this.$showMessage(MessageNode).catch(function(err) {
                 console.error(err);
             });
 
@@ -540,12 +553,17 @@ define('controls/messages/Button', [
          * @param Node
          * @return {Promise}
          */
-        $showMessage: function (Node) {
+        $showMessage: function(Node) {
             const self = this;
             const messages = document.getElements('.quiqqer-message');
 
+            if (Node.classList.contains('quiqqer-message-success')) {
+                this.$showSuccessMark();
+                return Promise.resolve();
+            }
+
             if (messages.length) {
-                return this.$closeMessage(messages).then(function () {
+                return this.$closeMessage(messages).then(function() {
                     return self.$showMessage(Node);
                 });
             }
@@ -561,10 +579,10 @@ define('controls/messages/Button', [
             }
 
             Node.setStyles({
-                opacity : 0,
+                opacity: 0,
                 position: 'absolute',
-                top     : 50,
-                zIndex  : zIndex
+                top: 50,
+                zIndex: zIndex
             });
 
             Node.inject(document.body);
@@ -572,7 +590,7 @@ define('controls/messages/Button', [
             return new Promise((resolve) => {
                 moofx(Node).animate({
                     opacity: 1,
-                    top    : 60
+                    top: 60
                 }, {
                     duration: 200,
                     callback: () => {
@@ -621,7 +639,7 @@ define('controls/messages/Button', [
             });
         },
 
-        $showMessageAtNode: function (Message, Parent) {
+        $showMessageAtNode: function(Message, Parent) {
             const MessageNode = this.$createMessageNode(Message);
             let zIndex = QUI.Windows.$getmaxWindowZIndex() + 1;
 
@@ -630,9 +648,9 @@ define('controls/messages/Button', [
             }
 
             MessageNode.setStyles({
-                opacity : 0,
+                opacity: 0,
                 position: 'absolute',
-                zIndex  : zIndex
+                zIndex: zIndex
             });
 
             MessageNode.inject(document.body);
@@ -643,7 +661,7 @@ define('controls/messages/Button', [
 
             MessageNode.setStyles({
                 left: pos.x,
-                top : startY
+                top: startY
             });
 
             const winSize = QUI.getWindowSize();
@@ -656,17 +674,17 @@ define('controls/messages/Button', [
             return new Promise((resolve) => {
                 moofx(MessageNode).animate({
                     opacity: 1,
-                    top    : startY + 10
+                    top: startY + 10
                 }, {
                     duration: 200,
                     callback: () => {
                         setTimeout(() => {
                             moofx(MessageNode).animate({
                                 opacity: 0,
-                                top    : startY
+                                top: startY
                             }, {
                                 duration: 200,
-                                callback: function () {
+                                callback: function() {
                                     MessageNode.destroy();
                                     resolve();
                                 }
@@ -685,7 +703,7 @@ define('controls/messages/Button', [
          *
          * @param event
          */
-        $destroyMessage: function (event) {
+        $destroyMessage: function(event) {
             if (!this.$MessageHandler) {
                 return;
             }
@@ -702,7 +720,7 @@ define('controls/messages/Button', [
             if (Target.hasClass('quiqqer-message-loading--bulk')) {
                 moofx(Target).animate({
                     opacity: 0,
-                    top    : 50
+                    top: 50
                 }, {
                     duration: 200,
                     callback: () => {
@@ -714,10 +732,10 @@ define('controls/messages/Button', [
                 return;
             }
 
-            const msgId    = Target.get('data-msg-id'),
-                  messages = this.$MessageHandler.getMessages();
+            const msgId = Target.get('data-msg-id'),
+                messages = this.$MessageHandler.getMessages();
 
-            let Message = messages.filter(function (msg) {
+            let Message = messages.filter(function(msg) {
                 return msg.getId() === msgId;
             });
 
@@ -726,8 +744,8 @@ define('controls/messages/Button', [
             }
 
             moofx(Target).animate({
-                height : 0,
-                margin : 0,
+                height: 0,
+                margin: 0,
                 padding: 0,
                 opacity: 0
             }, {
@@ -748,18 +766,18 @@ define('controls/messages/Button', [
          * @param Node
          * @return {Promise}
          */
-        $closeMessage: function (Node) {
+        $closeMessage: function(Node) {
             if (!Node) {
                 return Promise.resolve();
             }
 
-            return new Promise(function (resolve) {
+            return new Promise(function(resolve) {
                 moofx(Node).animate({
                     opacity: 0,
-                    top    : 50
+                    top: 50
                 }, {
                     duration: 200,
-                    callback: function () {
+                    callback: function() {
                         Node.destroy();
                         resolve();
                     }
@@ -767,27 +785,40 @@ define('controls/messages/Button', [
             });
         },
 
-        $addFileUpload: function (File) {
+        $showSuccessMark: function() {
+            // show checkmark instead of message
+            this.$Icon.classList.add('fa-check');
+            this.$Icon.classList.remove('fa-comments');
+            this.$Icon.style.color = '#2fb344';
+
+            (() => {
+                this.$Icon.classList.add('fa-comments');
+                this.$Icon.classList.remove('fa-check');
+                this.$Icon.style.color = null;
+            }).delay(500);
+        },
+
+        $addFileUpload: function(File) {
             if (File instanceof BulkUpload) {
                 const progress = File.getProgress();
 
                 const MessageInstance = new LoadingMessage({
                     percent: 0,
                     message: '<span class="quiqqer-message-loading-text">' +
-                             QUILocale.get(lg, 'upload.bulk.message', {
-                                 done : progress.done,
-                                 total: progress.total
-                             }) +
-                             '</span>' +
-                             '<span class="quiqqer-message-loading-progress">' +
-                             '   <span class="quiqqer-message-loading-progress-bar"></span>' +
-                             '</span>'
+                        QUILocale.get(lg, 'upload.bulk.message', {
+                            done: progress.done,
+                            total: progress.total
+                        }) +
+                        '</span>' +
+                        '<span class="quiqqer-message-loading-progress">' +
+                        '   <span class="quiqqer-message-loading-progress-bar"></span>' +
+                        '</span>'
                 });
 
                 MessageInstance.getElm().addClass('quiqqer-message-loading--bulk');
                 uploadMessages[File.getId()] = MessageInstance;
 
-                File.addEvent('uploadPartEnd', function () {
+                File.addEvent('uploadPartEnd', function() {
                     const progress = File.getProgress();
 
                     const instanceId = uploadMessages[File.getId()].getId();
@@ -801,7 +832,7 @@ define('controls/messages/Button', [
                     const Bar = MessageNode.getElement('.quiqqer-message-loading-progress-bar');
 
                     Text.set('html', QUILocale.get(lg, 'upload.bulk.message', {
-                        done : progress.done,
+                        done: progress.done,
                         total: progress.total
                     }));
 
@@ -835,7 +866,7 @@ define('controls/messages/Button', [
                             Media.get(File.getAttribute('parentId')).then((Folder) => {
                                 this.$MessageHandler.addSuccess(
                                     QUILocale.get(lg, 'upload.bulk.successful', {
-                                        count : progress.total,
+                                        count: progress.total,
                                         folder: Folder.getAttribute('name')
                                     })
                                 );
@@ -876,14 +907,14 @@ define('controls/messages/Button', [
             const MessageInstance = new LoadingMessage({
                 percent: 0,
                 message: '<span>Upload ' + File.$File.name + '</span>' +
-                         '<span class="quiqqer-message-loading-progress">' +
-                         '  <span class="quiqqer-message-loading-progress-bar"></span>' +
-                         '</span>'
+                    '<span class="quiqqer-message-loading-progress">' +
+                    '  <span class="quiqqer-message-loading-progress-bar"></span>' +
+                    '</span>'
             });
 
             uploadMessages[fileId] = MessageInstance;
 
-            File.addEvent('onRefresh', function (File, percent) {
+            File.addEvent('onRefresh', function(File, percent) {
                 if (typeof uploadMessages[File.getId()] === 'undefined') {
                     return;
                 }
@@ -895,8 +926,7 @@ define('controls/messages/Button', [
                     return;
                 }
 
-                MessageNode.getElement('.quiqqer-message-loading-progress-bar')
-                           .setStyle('width', percent + '%');
+                MessageNode.getElement('.quiqqer-message-loading-progress-bar').setStyle('width', percent + '%');
             });
 
             File.addEvent('onComplete', (File) => {
@@ -955,7 +985,7 @@ define('controls/messages/Button', [
             this.$customMessageHandling(MessageInstance, null);
         },
 
-        toggleFilter: function (e) {
+        toggleFilter: function(e) {
             if (typeOf(e) === 'domevent') {
                 e.stop();
             }
@@ -967,7 +997,7 @@ define('controls/messages/Button', [
             }
         },
 
-        openFilter: function () {
+        openFilter: function() {
             if (this.$Filter) {
                 return;
             }
@@ -976,10 +1006,10 @@ define('controls/messages/Button', [
 
             this.$Filter = new Element('div', {
                 'class': 'quiqqer-messages-filter',
-                html   : '<span class="fa fa-info-circle information" data-filter="information"></span>' +
-                         '<span class="fa fa-check-circle success" data-filter="success"></span>' +
-                         '<span class="fa fa-exclamation-circle attention" data-filter="attention"></span>' +
-                         '<span class="fa fa-exclamation-circle error" data-filter="error"></span>'
+                html: '<span class="fa fa-info-circle information" data-filter="information"></span>' +
+                    '<span class="fa fa-check-circle success" data-filter="success"></span>' +
+                    '<span class="fa fa-exclamation-circle attention" data-filter="attention"></span>' +
+                    '<span class="fa fa-exclamation-circle error" data-filter="error"></span>'
             }).inject(this.$Messages, 'before');
 
             this.$Filter.getElements('.fa').addEvent('click', (event) => {
@@ -1005,7 +1035,7 @@ define('controls/messages/Button', [
             });
         },
 
-        closeFilter: function () {
+        closeFilter: function() {
             this.$Filter.destroy();
             this.$Filter = null;
 

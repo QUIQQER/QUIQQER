@@ -74,7 +74,7 @@
     "ramsey/uuid": "^4",
     "seld/jsonlint": "^1",
     "symfony/console": "^4|^5|^6",
-    "symfony/http-foundation": "^7",
+    "symfony/http-foundation": "^6",
     "symfony/polyfill-php82": "^1",
     "symfony/polyfill-php83": "^1",
     "t7systems/blowfish": "1.0.0",
@@ -104,5 +104,47 @@
       "composer/installers": false,
       "oomphinc/composer-installers-extender": false
     }
+  },
+  "scripts": {
+    "test": [
+      "@dev:lint",
+      "@dev:phpunit"
+    ],
+    "dev:phpunit": "./tools/phpunit",
+    "dev:lint": [
+      "@dev:lint:phpstan",
+      "@dev:lint:style"
+    ],
+    "dev:lint:phpstan": "./tools/phpstan",
+    "dev:lint:style": "./tools/phpcs",
+    "dev:lint:style:fix": "./tools/phpcbf",
+    "dev:init": [
+      "@dev:init:check-requirements",
+      "@dev:init:tools",
+      "@dev:init:git-hooks"
+    ],
+    "dev:init:check-requirements": [
+      "which composer > /dev/null || (echo 'Error: composer has to be globally installed'; exit 1)",
+      "which phive > /dev/null || (echo 'Error: PHIVE has to be globally installed'; exit 1)"
+    ],
+    "dev:init:tools": "phive install --temporary",
+    "dev:init:git-hooks": "./tools/captainhook install --only-enabled --force"
+  },
+  "scripts-aliases": {
+    "test": [
+      "dev:test"
+    ]
+  },
+  "scripts-descriptions": {
+    "test": "Runs linting, static analysis, and unit tests.",
+    "dev:phpunit": "Run PHPUnit test suites",
+    "dev:lint": "Run PHPStan and code style check",
+    "dev:lint:phpstan": "Run PHPStan",
+    "dev:lint:style": "Run code style check (PHP_CodeSniffer)",
+    "dev:lint:style:fix": "Try to fix code style errors automatically",
+    "dev:init": "Initialize the developer tooling (tools and git hooks)",
+    "dev:init:check-requirements": "Check if the necessary requirements are met",
+    "dev:init:tools": "Install all developer tools (requires PHIVE)",
+    "dev:init:git-hooks": "Install all git hooks (may require tools to be installed)"
   }
 }

@@ -18,10 +18,8 @@ use function file_exists;
 use function implode;
 use function in_array;
 use function is_array;
-use function is_bool;
 use function is_null;
 use function is_numeric;
-use function is_string;
 use function json_decode;
 use function json_encode;
 use function method_exists;
@@ -51,7 +49,7 @@ class Address extends QUI\QDOM
     /**
      * @throws Exception
      */
-    public function __construct(QUIUserInterface $User, int $id)
+    public function __construct(QUIUserInterface $User, int|string $id)
     {
         $this->User = $User;
 
@@ -140,6 +138,7 @@ class Address extends QUI\QDOM
 
     /**
      * Add a phone number
+     *
      *
      * @example addPhone([
      *     'no'   => '555 29 29',
@@ -614,7 +613,8 @@ class Address extends QUI\QDOM
             'delete' => true,
             'from' => Manager::tableAddress(),
             'where' => [
-                'uid' => $this->User->getId()
+                'uid' => $this->User->getId(),
+                'id' => $this->getId()
             ]
         ]);
     }

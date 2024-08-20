@@ -13,8 +13,8 @@ define('classes/users/SystemUser', [
     'classes/users/Nobody',
     'classes/users/SystemUser'
 
-], function (QUI, DOM, Nobody) {
-    "use strict";
+], function(QUI, DOM, Nobody) {
+    'use strict';
 
     /**
      * A QUIQQER User
@@ -25,12 +25,12 @@ define('classes/users/SystemUser', [
     return new Class({
 
         Extends: Nobody,
-        Type   : 'classes/users/SystemUser',
+        Type: 'classes/users/SystemUser',
 
         attributes: {}, // user attributes
 
-        initialize: function () {
-            this.$uid    = 5;
+        initialize: function() {
+            this.$uid = 5;
             this.$extras = {};
             this.$loaded = true;
         },
@@ -41,7 +41,7 @@ define('classes/users/SystemUser', [
          * @method classes/users/Nobody#getId
          * @return {Number} User-ID
          */
-        getId: function () {
+        getId: function() {
             return 5;
         },
 
@@ -51,7 +51,7 @@ define('classes/users/SystemUser', [
          * @method classes/users/Nobody#getName
          * @return {String} Username
          */
-        getName: function () {
+        getName: function() {
             return 'System-User';
         }
     });

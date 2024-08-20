@@ -13,6 +13,8 @@ require $dir . '/header.php';
 
 $Icons = new QUI\Icons\Handler();
 
+QUI::getEvents()->fireEvent('onIconListLoading', [$Icons]);
+
 $icons = $Icons->toArray();
 $files = $Icons->getCSSFiles();
 

@@ -98,6 +98,7 @@ define('controls/licenseKey/LicenseKey', [
                 labelValidUntil    : QUILocale.get(lg, lgPrefix + 'labelValidUntil'),
                 labelName          : QUILocale.get(lg, lgPrefix + 'labelName'),
                 labelUpload        : QUILocale.get(lg, lgPrefix + 'labelUpload'),
+                info               : QUILocale.get(lg, lgPrefix + 'info'),
                 labelStatus        : QUILocale.get(lg, lgPrefix + 'labelStatus'),
                 labelSystemId      : QUILocale.get(lg, lgPrefix + 'labelSystemId'),
                 labelSystemDataHash: QUILocale.get(lg, lgPrefix + 'labelSystemDataHash'),
