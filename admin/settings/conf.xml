@@ -449,6 +449,9 @@
                             <text>
                                 <locale group="quiqqer/core" var="quiqqer.settings.general.favicon"/>
                             </text>
+                            <description>
+                                <locale group="quiqqer/core" var="quiqqer.settings.general.favicon.desc"/>
+                            </description>
                         </input>
 
                         <input type="hidden" conf="globals.nonce" label="false"/>

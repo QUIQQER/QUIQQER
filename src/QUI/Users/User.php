@@ -31,6 +31,7 @@ use function is_array;
 use function is_int;
 use function is_null;
 use function is_numeric;
+use function is_string;
 use function json_decode;
 use function json_encode;
 use function md5;
@@ -841,7 +842,7 @@ class User implements QUIUserInterface
 
         // add to everyone
         $Everyone = new QUI\Groups\Everyone();
-        $this->addToGroup($Everyone->getId());
+        $this->addToGroup($Everyone->getUUID());
 
         // check assigned toolbars
         $assignedToolbars = '';
@@ -905,9 +906,10 @@ class User implements QUIUserInterface
 
 
         // saving
-        QUI::getDataBase()->update(
-            Manager::table(),
-            [
+        $query = QUI::getQueryBuilder()->update(Manager::table());
+
+        QUI\Utils\Doctrine::parseDbArrayToQueryBuilder($query, [
+            'update' => [
                 'username' => $this->getUsername(),
                 'usergroup' => ',' . implode(',', $this->getGroups(false)) . ',',
                 'firstname' => $this->getAttribute('firstname'),
@@ -922,7 +924,7 @@ class User implements QUIUserInterface
                 'lastedit' => date("Y-m-d H:i:s"),
                 'expire' => $expire,
                 'shortcuts' => $this->getAttribute('shortcuts'),
-                'address' => (int)$this->getAttribute('address'),
+                'address' => !empty($this->getAttribute('address')) ? $this->getAttribute('address') : null,
                 'company' => $this->isCompany() ? 1 : 0,
                 'toolbar' => $toolbar,
                 'assigned_toolbar' => $assignedToolbars,
@@ -930,8 +932,16 @@ class User implements QUIUserInterface
                 'lastLoginAttempt' => $this->getAttribute('lastLoginAttempt') ?: null,
                 'failedLogins' => $this->getAttribute('failedLogins') ?: 0
             ],
-            ['uuid' => $this->getUUID()]
-        );
+            'where' => [
+                'uuid' => $this->getUUID()
+            ]
+        ]);
+
+        try {
+            $query->executeQuery();
+        } catch (\Doctrine\DBAL\Exception $exception) {
+            QUI\System\Log::addError($exception->getMessage());
+        }
 
         $this->getStandardAddress()->save($PermissionUser);
 
@@ -1031,9 +1041,6 @@ class User implements QUIUserInterface
         return $attributes;
     }
 
-    /**
-     * @throws QUI\Exception
-     */
     public function addToGroup(int|string $groupId): void
     {
         try {
@@ -1380,6 +1387,7 @@ class User implements QUIUserInterface
         }
 
 
+        // @phpstan-ignore class.notFound (Currency class is provided by 'quiqqer/currency' package, as checked above)
         if ($this->getAttribute('currency') && Currencies::existCurrency($this->getAttribute('currency'))) {
             return $this->getAttribute('currency');
         }
@@ -1389,11 +1397,13 @@ class User implements QUIUserInterface
         if ($Country) {
             $currency = $Country->getCurrencyCode();
 
+            // @phpstan-ignore class.notFound (Currency class is provided by 'quiqqer/currency' package, as checked above)
             if (Currencies::existCurrency($currency)) {
                 return $currency;
             }
         }
 
+        // @phpstan-ignore class.notFound (Currency class is provided by 'quiqqer/currency' package, as checked above)
         return Currencies::getDefaultCurrency()->getCode();
     }
 
@@ -1457,11 +1467,11 @@ class User implements QUIUserInterface
     /**
      * @throws QUI\Exception
      */
-    public function removeGroup(Group|int $Group): void
+    public function removeGroup(Group|int|string $Group): void
     {
         $Groups = QUI::getGroups();
 
-        if (is_int($Group)) {
+        if (is_int($Group) || is_string($Group)) {
             $Group = $Groups->get($Group);
         }
 
@@ -1481,7 +1491,7 @@ class User implements QUIUserInterface
      * @throws QUI\Exception
      * @deprecated use addToGroup
      */
-    public function addGroup(int $gid): void
+    public function addGroup(int|string $gid): void
     {
         $this->addToGroup($gid);
     }

@@ -3,3 +3,11 @@ tools
 vendor
 composer.lock
 .phpunit.result.cache
+
+tools/
+
+phpstan.neon
+
+.phpunit.result.cache
+
+phpunit.xml

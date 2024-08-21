@@ -20,8 +20,8 @@ define('classes/users/Manager', [
     'Ajax',
     'qui/utils/Object'
 
-], function (DOM, User, Nobody, SystemUser, Ajax, ObjectUtils) {
-    "use strict";
+], function(DOM, User, Nobody, SystemUser, Ajax, ObjectUtils) {
+    'use strict';
 
     /**
      * @class classes/users/Manager
@@ -32,24 +32,22 @@ define('classes/users/Manager', [
     return new Class({
 
         Extends: DOM,                   // @member classes/users/Manager
-        Type   : 'classes/users/Users', // @member classes/users/Manager
-        $users : {},                    // @member classes/users/Manager
+        Type: 'classes/users/Users', // @member classes/users/Manager
+        $users: {},                    // @member classes/users/Manager
 
         /**
          * Return a user
          *
          * @method classes/users/Manager#get
-         * @param {Number} uid - Id of the User
+         * @param {Number|String} uid - Id of the User
          * @return {Object} User - controls/users/User
          */
-        get: function (uid) {
-            uid = parseInt(uid);
-
-            if (uid === 0) {
+        get: function(uid) {
+            if (uid === 0 || uid === false || uid === '0') {
                 return new Nobody();
             }
 
-            if (uid === 5) {
+            if (uid === 5 || uid === '5') {
                 return new SystemUser();
             }
 
@@ -66,7 +64,7 @@ define('classes/users/Manager', [
          * @method classes/users/Manager#getUserBySession
          * @return {Object} User - controls/users/User
          */
-        getUserBySession: function () {
+        getUserBySession: function() {
             if (typeof this.$users[USER.id] === 'undefined') {
                 this.$users[USER.id] = new User(USER.id);
             }
@@ -82,10 +80,10 @@ define('classes/users/Manager', [
          * @param {Object} [params]     - (optional), extra params
          * @return {Promise}
          */
-        getList: function (search, params) {
-            return new Promise(function (resolve, reject) {
+        getList: function(search, params) {
+            return new Promise(function(resolve, reject) {
                 Ajax.get('ajax_users_search', resolve, ObjectUtils.combine(params, {
-                    params : JSON.encode(search),
+                    params: JSON.encode(search),
                     onError: reject
                 }));
             });
@@ -97,7 +95,7 @@ define('classes/users/Manager', [
          * @param {unknown} User
          * @return {boolean}
          */
-        isUser: function (User) {
+        isUser: function(User) {
             var type = typeOf(User);
 
             if (type === 'classes/users/Nobody') {
@@ -120,16 +118,16 @@ define('classes/users/Manager', [
          * @param {Object} [params]     - (optional), extra params
          * @return Promise
          */
-        switchStatus: function (uid, onfinish, params) {
+        switchStatus: function(uid, onfinish, params) {
             var self = this;
 
-            return new Promise(function (resolve, reject) {
+            return new Promise(function(resolve, reject) {
                 params = ObjectUtils.combine(params, {
-                    uid    : JSON.encode(uid),
+                    uid: JSON.encode(uid),
                     onError: reject
                 });
 
-                Ajax.post('ajax_users_switchstatus', function (result) {
+                Ajax.post('ajax_users_switchstatus', function(result) {
                     if (uid in result && uid in self.$users) {
                         self.$users[uid].setAttribute('active', result[uid]);
                     }
@@ -154,16 +152,16 @@ define('classes/users/Manager', [
          * @param {Object} [params]     - (optional), extra params
          * @return Promise
          */
-        activate: function (uid, onfinish, params) {
+        activate: function(uid, onfinish, params) {
             var self = this;
 
-            return new Promise(function (resolve, reject) {
+            return new Promise(function(resolve, reject) {
                 params = ObjectUtils.combine(params, {
-                    uid    : JSON.encode(uid),
+                    uid: JSON.encode(uid),
                     onError: reject
                 });
 
-                Ajax.post('ajax_users_activate', function (result) {
+                Ajax.post('ajax_users_activate', function(result) {
                     if (uid in result && uid in self.$users) {
                         self.$users[uid].setAttribute('active', result[uid]);
                     }
@@ -189,16 +187,16 @@ define('classes/users/Manager', [
          * @param {Object} [params]     - (optional), extra params
          * @return Promise
          */
-        deactivate: function (uid, onfinish, params) {
+        deactivate: function(uid, onfinish, params) {
             var self = this;
 
-            return new Promise(function (resolve, reject) {
+            return new Promise(function(resolve, reject) {
                 params = ObjectUtils.combine(params, {
-                    uid    : JSON.encode(uid),
+                    uid: JSON.encode(uid),
                     onError: reject
                 });
 
-                Ajax.post('ajax_users_deactivate', function (result) {
+                Ajax.post('ajax_users_deactivate', function(result) {
                     if (uid in result && uid in self.$users) {
                         self.$users[uid].setAttribute('active', result[uid]);
                     }
@@ -223,12 +221,12 @@ define('classes/users/Manager', [
          * @param {Function} onfinish - callback function
          * @param {Object} [params]   - (optional), extra params
          */
-        existsUsername: function (username, onfinish, params) {
+        existsUsername: function(username, onfinish, params) {
             params = ObjectUtils.combine(params, {
                 username: username
             });
 
-            Ajax.get('ajax_users_exists', function (result, Request) {
+            Ajax.get('ajax_users_exists', function(result, Request) {
                 onfinish(result, Request);
             }, params);
         },
@@ -241,12 +239,12 @@ define('classes/users/Manager', [
          * @param {Function} [onfinish] - (optional), callback function
          * @param {Object} [params]     - (optional), extra params
          */
-        createUser: function (username, onfinish, params) {
+        createUser: function(username, onfinish, params) {
             params = ObjectUtils.combine(params, {
                 username: username
             });
 
-            Ajax.post('ajax_users_create', function (result, Request) {
+            Ajax.post('ajax_users_create', function(result, Request) {
                 if (typeof onfinish !== 'undefined') {
                     onfinish(result, Request);
                 }
@@ -261,13 +259,13 @@ define('classes/users/Manager', [
          * @param {Object} [params]     - (optional), extra params
          * @param {Function} [onfinish] - (optional), callback function
          */
-        deleteUsers: function (uids, params, onfinish) {
-            return new Promise(function (resolve) {
+        deleteUsers: function(uids, params, onfinish) {
+            return new Promise(function(resolve) {
                 params = ObjectUtils.combine(params, {
                     uid: JSON.encode(uids)
                 });
 
-                Ajax.post('ajax_users_delete', function (result) {
+                Ajax.post('ajax_users_delete', function(result) {
                     for (var i = 0, len = uids.length; i < len; i++) {
                         if (typeof this.$users[uids[i]] !== 'undefined') {
                             delete this.$users[uids[i]];
@@ -292,7 +290,7 @@ define('classes/users/Manager', [
          * @method classes/users/Manager#onRefreshUser
          * @param {Object} User - controls/users/User
          */
-        onRefreshUser: function (User) {
+        onRefreshUser: function(User) {
             this.fireEvent('refresh', [this, User]);
         },
 
@@ -302,10 +300,10 @@ define('classes/users/Manager', [
          * @param {Number} userId
          * @return {Promise}
          */
-        hasEmail: function (userId) {
-            return new Promise(function (resolve, reject) {
+        hasEmail: function(userId) {
+            return new Promise(function(resolve, reject) {
                 Ajax.get('ajax_users_hasEmail', resolve, {
-                    userId : userId,
+                    userId: userId,
                     onError: reject
                 });
             });
@@ -320,9 +318,9 @@ define('classes/users/Manager', [
          * @param {Function} [onfinish] - (optional), callback
          * @return {Promise}
          */
-        saveUser: function (User, params, onfinish) {
-            return new Promise(function (resolve, reject) {
-                var self       = this,
+        saveUser: function(User, params, onfinish) {
+            return new Promise(function(resolve, reject) {
+                var self = this,
                     attributes = User.getAttributes();
 
                 for (var i in attributes) {
@@ -337,12 +335,12 @@ define('classes/users/Manager', [
 
                 // attributes.extra = User.getExtras();
                 params = ObjectUtils.combine(params, {
-                    uid       : User.getId(),
+                    uid: User.getId(),
                     attributes: JSON.encode(attributes),
-                    onError   : reject
+                    onError: reject
                 });
 
-                Ajax.post('ajax_users_save', function (result, Request) {
+                Ajax.post('ajax_users_save', function(result, Request) {
                     self.get(User.getId());
                     self.fireEvent('save', [self, User]);
 

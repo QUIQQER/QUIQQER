@@ -98,7 +98,7 @@ class MigrationV1ToV2
 
                 try {
                     $addressData = QUI::getDataBase()->fetch([
-                        'from' => QUI::getDBTableName('	users_address'),
+                        'from' => QUI::getDBTableName('users_address'),
                         'where' => [
                             'id' => $addressId
                         ],

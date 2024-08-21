@@ -23,11 +23,17 @@ class LongTermCache
 
     protected static ?DriverInterface $Driver = null;
 
+    protected static array $runtime = [];
+
     //region API
 
     public static function set($name, $data): void
     {
         $key = self::generateStorageKey($name);
+
+        if (isset(self::$runtime[$key])) {
+            unset(self::$runtime[$key]);
+        }
 
         try {
             $Pool = self::getPool();
@@ -201,6 +207,10 @@ class LongTermCache
     {
         $key = self::generateStorageKey($name);
 
+        if (isset(self::$runtime[$key])) {
+            return self::$runtime[$key];
+        }
+
         try {
             $Pool = self::getPool();
             $Item = $Pool->getItem($key);
@@ -225,6 +235,8 @@ class LongTermCache
                 404
             );
         }
+
+        self::$runtime[$key] = $data;
 
         return $data;
     }

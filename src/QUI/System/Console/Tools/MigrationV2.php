@@ -16,6 +16,10 @@ use function count;
 use function explode;
 use function implode;
 use function is_numeric;
+use function trim;
+use function var_dump;
+
+use const OPT_DIR;
 
 /**
  * MailQueue Console Manager
@@ -42,13 +46,13 @@ class MigrationV2 extends QUI\System\Console\Tool
         // messages
         $this->writeLn('- Update messages table');
         QUI::getDataBaseConnection()->executeStatement(
-            'ALTER TABLE `' . QUI::getDBTableName('messages') . '` CHANGE `uid` `uid` VARCHAR(50) NULL DEFAULT NULL;'
+            'ALTER TABLE `' . QUI::getDBTableName('messages') . '` CHANGE `uid` `uid` VARCHAR(50);'
         );
 
         // session
         $this->writeLn('- Update session table');
         QUI::getDataBaseConnection()->executeStatement(
-            'ALTER TABLE `' . QUI::getDBTableName('sessions') . '` CHANGE `uid` `uid` VARCHAR(50) NULL DEFAULT NULL;'
+            'ALTER TABLE `' . QUI::getDBTableName('sessions') . '` CHANGE `uid` `uid` VARCHAR(50);'
         );
 
 
@@ -61,54 +65,82 @@ class MigrationV2 extends QUI\System\Console\Tool
         $this->workspaces();
         $this->loginLog();
 
+        $this->writeLn('- Migrate root user and root group');
+
+        $Config = QUI::getConfig('etc/conf.ini.php');
+        $rootUser = $Config->getValue('globals', 'rootuser');
+        $rootGroup = $Config->getValue('globals', 'root');
+
+        try {
+            $Config->setValue('globals', 'rootuser', QUI::getUsers()->get($rootUser)->getUUID());
+        } catch (QUI\Exception) {
+        }
+
+        try {
+            $Config->setValue('globals', 'root', QUI::getGroups()->get($rootGroup)->getUUID());
+        } catch (QUI\Exception) {
+        }
+
+        $Config->save();
+
         QUI::getEvents()->fireEvent('quiqqerMigrationV2', [$this]);
+
+
+        // migrate databases to innodb
+        try {
+            $this->writeLn('- Migrate database to MyISAM');
+
+            $conn = QUI::getDataBaseConnection();
+            $dbname = QUI::conf('db', 'database');
+
+            // Alle MyISAM-Tabellen abrufen
+            $sql = "
+            SELECT table_name 
+            FROM information_schema.tables 
+            WHERE 
+                table_schema = :dbname AND engine = 'MyISAM'
+            ";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue('dbname', $dbname);
+
+            $result = $stmt->executeQuery();
+            $tables = $result->fetchAllAssociative();
+
+            // Speicher-Engine jeder Tabelle ändern
+            foreach ($tables as $table) {
+                try {
+                    $tableName = $table['table_name'] ?? $table['TABLE_NAME'];
+                    $conn->executeStatement("ALTER TABLE `$tableName` ENGINE=InnoDB;");
+                    $this->writeLn('-> Converted ' . $tableName . ' to InnoDB');
+                } catch (\Exception $exception) {
+                    $this->writeLn('Error at table ' . $tableName, 'red');
+                    $this->writeLn($exception->getMessage(), 'red');
+                    $this->resetColor();
+                }
+            }
+
+            $this->writeLn('-> Conversion complete');
+        } catch (Exception $e) {
+            $this->writeLn('An error occurred: ' . $e->getMessage());
+        }
+
+        $this->writeLn('Migration complete!', 'green');
+        $this->resetColor();
     }
 
     public function users(): void
     {
         $this->writeLn('- Update users table');
 
+        QUI\Users\Install::user();
+
         $DataBase = QUI::getDataBase();
-        $table = QUI\Users\Manager::table();
-
-        // Patch strict
-        $DataBase->getPDO()->exec(
-            "ALTER TABLE `$table` 
-            CHANGE `lastedit` `lastedit` DATETIME NULL DEFAULT NULL,
-            CHANGE `expire` `expire` DATETIME NULL DEFAULT NULL,
-            CHANGE `password` `password` VARCHAR(255) NOT NULL DEFAULT '',
-            CHANGE `birthday` `birthday` DATE NULL DEFAULT NULL;
-            "
-        );
-
-        try {
-            $DataBase->getPDO()->exec(
-                "
-                UPDATE `$table` 
-                SET lastedit = NULL 
-                WHERE 
-                    lastedit = '0000-00-00 00:00:00' OR 
-                    lastedit = '';
-
-                UPDATE `$table` 
-                SET expire = NULL 
-                WHERE 
-                    expire = '0000-00-00 00:00:00' OR 
-                    expire = '';
-
-                UPDATE `$table` 
-                SET birthday = NULL 
-                WHERE 
-                    birthday = '0000-00-00' OR 
-                    birthday = '';
-            "
-            );
-        } catch (\Exception) {
-        }
+        $userTable = QUI\Users\Manager::table();
 
         // uuid extreme indexes patch
         $Stmt = $DataBase->getPDO()->prepare(
-            "SHOW INDEXES FROM `$table`
+            "SHOW INDEXES FROM `$userTable`
             WHERE 
                 non_unique = 0 AND Key_name != 'PRIMARY';"
         );
@@ -138,22 +170,22 @@ class MigrationV2 extends QUI\System\Console\Tool
         }
 
         // users with no uuid
-        $addressesWithoutUuid = QUI::getDataBase()->fetch([
-            'from' => $table,
+        $usersWithoutUuid = QUI::getDataBase()->fetch([
+            'from' => $userTable,
             'where' => [
                 'uuid' => ''
             ]
         ]);
 
-        foreach ($addressesWithoutUuid as $entry) {
-            $DataBase->update($table, [
-                'uuid' => QUI\Utils\Uuid::get()
-            ], [
-                'id' => $entry['id']
-            ]);
+        foreach ($usersWithoutUuid as $entry) {
+            $DataBase->update(
+                $userTable,
+                ['uuid' => QUI\Utils\Uuid::get()],
+                ['id' => $entry['id']]
+            );
         }
 
-        $DataBase->table()->setUniqueColumns($table, 'uuid');
+        $DataBase->table()->setUniqueColumns($userTable, 'uuid');
 
         // addresses
         $this->writeLn('- Migrate users addresses');
@@ -177,10 +209,10 @@ class MigrationV2 extends QUI\System\Console\Tool
             );
         }
 
-        $usersAddressColumn = $DataBase->table()->getColumn($table, 'address');
+        $usersAddressColumn = $DataBase->table()->getColumn($userTable, 'address');
 
         if (!str_contains($usersAddressColumn['Type'], 'varchar')) {
-            $sql = "ALTER TABLE `$table` MODIFY `address` VARCHAR(50) NOT NULL";
+            $sql = "ALTER TABLE `$userTable` MODIFY `address` VARCHAR(50) NOT NULL";
             $DataBase->execSQL($sql);
         }
 
@@ -198,19 +230,42 @@ class MigrationV2 extends QUI\System\Console\Tool
         foreach ($addressesWithoutUuid as $entry) {
             $addressUuid = QUI\Utils\Uuid::get();
 
-            $DataBase->update($tableAddresses, [
-                'uuid' => $addressUuid
-            ], [
-                'id' => $entry['id']
-            ]);
-
-            // Update references in users table
             $DataBase->update(
-                $table,
-                ['address' => $addressUuid],
-                ['address' => $entry['id']]
+                $tableAddresses,
+                ['uuid' => $addressUuid],
+                ['id' => $entry['id']]
             );
         }
+
+        // MIGRATE DEFAULT ADDRESS
+        $users = QUI::getDataBase()->fetch([
+            'from' => $userTable
+        ]);
+
+        foreach ($users as $user) {
+            $standardAddress = $user['address'];
+
+            if (is_numeric($standardAddress)) {
+                $addressData = QUI::getDataBase()->fetch([
+                    'from' => $tableAddresses,
+                    'where' => [
+                        'id' => $standardAddress
+                    ]
+                ]);
+
+                if (!count($addressData)) {
+                    continue;
+                }
+
+                // Update references in users table
+                $DataBase->update(
+                    $userTable,
+                    ['address' => $addressData[0]['uuid']],
+                    ['id' => $user['id']]
+                );
+            }
+        }
+
 
         if ($setAddressUuidColumnToUnique) {
             $DataBase->table()->setUniqueColumns($tableAddresses, 'uuid');
@@ -230,7 +285,7 @@ class MigrationV2 extends QUI\System\Console\Tool
         foreach ($addressesWithoutUserUuid as $entry) {
             $result = $DataBase->fetch([
                 'select' => ['uuid'],
-                'from' => $table,
+                'from' => $userTable,
                 'where' => [
                     'id' => $entry['uid']
                 ],
@@ -258,86 +313,7 @@ class MigrationV2 extends QUI\System\Console\Tool
     public function groups(): void
     {
         $this->writeLn('- Migrate groups table');
-
-
-        // read database xml, because we need the newest groups db
-        $dbFields = QUI\Utils\Text\XML::getDataBaseFromXml(OPT_DIR . 'quiqqer/core/database.xml');
-        unset($dbFields['projects']);
-
-        $dbFields['globals'] = array_filter($dbFields['globals'], static function (array $entry): bool {
-            return $entry['suffix'] === 'groups';
-        });
-
-        QUI\Utils\Text\XML::importDataBase($dbFields);
-
-        $DataBase = QUI::getDataBase();
-        $DataBase->execSQL(
-            "ALTER TABLE `" . QUI\Groups\Manager::table() . "` CHANGE `parent` `parent` VARCHAR(50) NULL DEFAULT NULL;"
-        );
-
-        $Table = $DataBase->table();
-        $Table->setPrimaryKey(QUI\Groups\Manager::table(), 'id');
-        $Table->setIndex(QUI\Groups\Manager::table(), 'parent');
-
-
-        // Guest
-        $result = QUI::getDataBase()->fetch([
-            'from' => QUI\Groups\Manager::table(),
-            'where' => [
-                'id' => 0
-            ]
-        ]);
-
-        if (!isset($result[0])) {
-            QUI\System\Log::addNotice('Guest Group does not exist.');
-
-            QUI::getDataBase()->insert(QUI\Groups\Manager::table(), [
-                'id' => 0,
-                'name' => 'Guest'
-            ]);
-
-            QUI\System\Log::addNotice('Guest Group was created.');
-        } else {
-            QUI::getDataBase()->update(QUI\Groups\Manager::table(), [
-                'name' => 'Guest'
-            ], [
-                'id' => 0
-            ]);
-
-            QUI\System\Log::addNotice('Guest exists only updated');
-        }
-
-
-        // Everyone
-        $result = QUI::getDataBase()->fetch([
-            'from' => QUI\Groups\Manager::table(),
-            'where' => [
-                'id' => 1
-            ]
-        ]);
-
-        if (!isset($result[0])) {
-            QUI\System\Log::addNotice('Everyone Group does not exist...');
-
-            QUI::getDataBase()->insert(QUI\Groups\Manager::table(), [
-                'id' => 1,
-                'name' => 'Everyone'
-            ]);
-
-            QUI\System\Log::addNotice('Everyone Group was created.');
-        } else {
-            QUI::getDataBase()->update(QUI\Groups\Manager::table(), [
-                'name' => 'Everyone'
-            ], [
-                'id' => 1
-            ]);
-
-            QUI\System\Log::addNotice('Everyone exists');
-        }
-
-        QUI::getUsers()->get(0)->save();
-        QUI::getUsers()->get(5)->save();
-        QUI::getUsers()->get(QUI::conf('globals', 'rootuser'))->save();
+        QUI\Users\Install::groups();
     }
 
     public function groupsInUsers(): void
@@ -491,19 +467,19 @@ class MigrationV2 extends QUI\System\Console\Tool
                 $userUUID = QUI::getUsers()->get($entry['user_id'])->getUUID();
             } catch (QUI\Exception) {
                 // nutzer existiert nicht, kann als permission gelöscht werden
-                QUI::getDataBase()->delete($table2Users, [
+                QUI::getDataBaseConnection()->delete($table2Users, [
                     'user_id' => $entry['user_id']
                 ]);
 
                 continue;
             }
 
-            QUI::getDataBase()->insert($table2Users, [
+            QUI::getDataBaseConnection()->insert($table2Users, [
                 'user_id' => $userUUID,
                 'permissions' => $entry['permissions']
             ]);
 
-            QUI::getDataBase()->delete($table2Users, [
+            QUI::getDataBaseConnection()->delete($table2Users, [
                 'user_id' => $entry['user_id']
             ]);
         }
@@ -523,7 +499,7 @@ class MigrationV2 extends QUI\System\Console\Tool
             } catch (\Exception) {
                 // gruppe existiert nicht, kann als permission gelöscht werden
 
-                QUI::getDataBase()->delete($table2Groups, [
+                QUI::getDataBaseConnection()->delete($table2Groups, [
                     'group_id' => $entry['group_id']
                 ]);
                 continue;
@@ -533,14 +509,17 @@ class MigrationV2 extends QUI\System\Console\Tool
                 continue;
             }
 
-            QUI::getDataBase()->insert($table2Groups, [
-                'group_id' => $groupUUID,
-                'permissions' => $entry['permissions']
-            ]);
+            try {
+                QUI::getDataBaseConnection()->insert($table2Groups, [
+                    'group_id' => $groupUUID,
+                    'permissions' => $entry['permissions']
+                ]);
 
-            QUI::getDataBase()->delete($table2Groups, [
-                'group_id' => $entry['group_id']
-            ]);
+                QUI::getDataBaseConnection()->delete($table2Groups, [
+                    'group_id' => $entry['group_id']
+                ]);
+            } catch (\Exception) {
+            }
         }
     }
 
@@ -566,7 +545,7 @@ class MigrationV2 extends QUI\System\Console\Tool
             try {
                 $uuid = QUI::getUsers()->get($workspace['uid'])->getUUID();
             } catch (QUI\Exception) {
-                QUI::getDataBase()->delete($table, [
+                QUI::getDataBaseConnection()->delete($table, [
                     'id' => $workspace['id']
                 ]);
                 continue;
@@ -580,6 +559,9 @@ class MigrationV2 extends QUI\System\Console\Tool
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function loginLog(): void
     {
         $this->writeLn('- Migrate login log table');

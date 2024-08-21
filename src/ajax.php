@@ -31,10 +31,6 @@ if (
     && (strlen($_REQUEST['lang']) === 2 || strlen($_REQUEST['lang']) === 5)
 ) {
     QUI::getLocale()->setCurrent($_REQUEST['lang']);
-
-    if (QUI::getUsers()->isNobodyUser(QUI::getUserBySession())) {
-        QUI::getSession()->set('CURRENT_LANG', $_REQUEST['lang']);
-    }
 }
 
 // required ajax files
@@ -130,6 +126,6 @@ if (isset($_REQUEST['project'])) {
 $result = QUI::getAjax()->call();
 
 // destroy current ob output, so ajax will be no longer destroyed
-ob_clean();
+@ob_clean();
 echo $result;
 exit;

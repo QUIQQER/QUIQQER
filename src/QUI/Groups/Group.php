@@ -107,6 +107,12 @@ class Group extends QUI\QDOM
         $result = QUI::getGroups()->getGroupData($id);
 
         if (!isset($result[0])) {
+            if ($id == Manager::EVERYONE_ID || $id == Manager::GUEST_ID) {
+                $this->id = (int)$id;
+                $this->uuid = $id;
+                return;
+            }
+
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/core',
@@ -153,7 +159,7 @@ class Group extends QUI\QDOM
         } elseif (is_numeric($result[0]['parent']) && (int)$result[0]['parent'] === 0) {
             QUI::getDatabase()->update(
                 Manager::table(),
-                ['parent' => null],
+                ['parent' => 0],
                 ['id' => $result[0]['id']]
             );
         }
@@ -306,7 +312,7 @@ class Group extends QUI\QDOM
         $result = QUI::getDataBase()->fetch([
             'select' => 'id, parent',
             'from' => Manager::table(),
-            'where_or' => [
+            'where' => [
                 'uuid' => $id
             ],
             'limit' => 1

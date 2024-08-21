@@ -1,5 +1,7 @@
 <?php
 
+define('QUIQQER_UPDATE_IN_PROGRESS', true);
+
 global $Output;
 require "header.php";
 
@@ -27,3 +29,9 @@ try {
     Log::addError($exception->getMessage());
     $Output->writeLn($exception->getMessage(), 'red');
 }
+
+QUI\Cache\Manager::clear('quiqqer');
+QUI\Cache\Manager::clearPackagesCache();
+QUI\Cache\Manager::clearSettingsCache();
+QUI\Cache\Manager::clearCompleteQuiqqerCache();
+QUI\Cache\LongTermCache::clear('quiqqer');

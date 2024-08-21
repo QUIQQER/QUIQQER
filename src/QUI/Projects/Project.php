@@ -962,14 +962,13 @@ class Project implements \Stringable
     /**
      * Alle Seiten bekommen
      *
-     * @return array|integer - if count is given, return is an integer, otherwise an array
+     * @return array|int - if count is given, return is an integer, otherwise an array
      * @throws QUI\Database\Exception
      */
-    public function getSites(bool|array $params = false): array|int
+    public function getSites(array $params = []): array|int
     {
         // Falls kein Query dann alle Seiten hohlen
         // @notice - Kann performancefressend sein
-
         $s = $this->getSitesIds($params);
 
         if (empty($s)) {
@@ -1005,7 +1004,7 @@ class Project implements \Stringable
      */
     public function getSitesIds(array $params = []): array
     {
-        if (empty($params) || !is_array($params)) {
+        if (empty($params)) {
             // Falls kein Query dann alle Seiten hohlen
             // @notice - Kann performancefressend sein
             return QUI::getDataBase()->fetch([

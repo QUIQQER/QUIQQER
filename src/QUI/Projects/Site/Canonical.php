@@ -11,6 +11,9 @@ use QUI\Exception;
 
 use function ltrim;
 use function parse_url;
+use function urldecode;
+
+use const URL_DIR;
 
 /**
  * Canonical meta helper
@@ -20,7 +23,7 @@ use function parse_url;
  */
 class Canonical
 {
-    protected bool $considerGetParams = false;
+    protected bool $considerGetParams = true;
 
     public function __construct(
         protected QUI\Interfaces\Projects\Site $Site
@@ -77,12 +80,18 @@ class Canonical
                 return $this->getLinkRel($httpsHost . $siteUrl);
             }
 
+            $canonical = $this->Site->getCanonical();
+
+            if (str_contains($canonical, 'https:') === false || str_contains($canonical, 'http:') === false) {
+                $canonical = $httpsHost . $canonical;
+            }
+
             if ($this->Site->getAttribute('ERROR_HEADER')) {
-                return $this->getLinkRel($httpsHost . $this->Site->getCanonical());
+                return $this->getLinkRel($canonical);
             }
 
             if (str_contains($_REQUEST['_url'], QUI\Rewrite::URL_PARAM_SEPARATOR)) {
-                return $this->getLinkRel($httpsHost . $this->Site->getCanonical());
+                return $this->getLinkRel($canonical);
             }
 
             return '';
@@ -134,7 +143,10 @@ class Canonical
         }
 
         // canonical and request the same? then no output
-        if ($httpsHost . URL_DIR . $requestUrl == $canonical && $this->considerGetParams === false) {
+        $urlIsTheSame = urldecode($httpsHost . URL_DIR . $requestUrl) == $canonical
+            || $httpsHost . URL_DIR . $requestUrl == $canonical;
+
+        if ($urlIsTheSame && $this->considerGetParams === false) {
             return '';
         }
 

@@ -95,7 +95,7 @@ define('controls/grid/Grid', [
         options: {
             title: '',
             titletagnode: '', // 'h3.omnigrid__caption-title' ist default | any valid css selector, e.g.:
-                         // 'div', 'h1.my_css_class', 'h2#id_attr.my_css_class.one_more_my_class'
+            // 'div', 'h1.my_css_class', 'h2#id_attr.my_css_class.one_more_my_class'
             description: '', // html allowed
             name: false,
             alternaterows: true,
@@ -146,6 +146,7 @@ define('controls/grid/Grid', [
             // pagination
             url: null,
             pagination: false,
+            'button-reload': false,
             page: 1,
             perPageOptions: [
                 5,
@@ -272,6 +273,35 @@ define('controls/grid/Grid', [
                 },
                 'data-quiid': this.getId()
             });
+
+            // Textmarkierung bei doppelclick aufheben
+            this.container.addEventListener('dblclick', function(event) {
+                event.preventDefault();
+
+                if (window.getSelection) {
+                    window.getSelection().removeAllRanges();
+                } else {
+                    if (document.selection) {
+                        document.selection.empty();
+                    }
+                }
+            });
+
+            // Textmarkierung bei shift click aufheben
+            this.container.addEventListener('click', function(event) {
+                if (!event.shiftKey) {
+                    return;
+                }
+
+                if (window.getSelection) {
+                    window.getSelection().removeAllRanges();
+                } else {
+                    if (document.selection) {
+                        document.selection.empty();
+                    }
+                }
+            });
+
 
             this.draw();
             this.reset();
@@ -531,8 +561,12 @@ define('controls/grid/Grid', [
          */
         getPaginationData: function() {
             return {
+                limit: this.getAttribute('perPage'),
                 perPage: this.getAttribute('perPage'),
-                page: this.getAttribute('page')
+
+                page: this.getAttribute('page'),
+                sortBy : this.getAttribute('sortBy'),
+                sortOn : this.getAttribute('sortOn')
             };
         },
 
@@ -2822,11 +2856,12 @@ define('controls/grid/Grid', [
                         '<span class="cpageMax"></span>' +
                         '</span>' +
                         '</div>';
-                    h = h +
-                        '<div class="pGroup"><div class="pNext pButton"></div><div class="pLast pButton"></div></div>';
-                    h = h +
-                        '<div class="btnseparator"></div><div class="pGroup"><div class="pReload pButton"></div></div>';
+                    h = h + '<div class="pGroup"><div class="pNext pButton"></div><div class="pLast pButton"></div></div>';
                     h = h + '<div class="btnseparator"></div><div class="pGroup"><span class="pPageStat"></span></div>';
+                }
+
+                if (this.getAttribute('pagination') || this.getAttribute('button-reload')) {
+                    h = h + '<div class="btnseparator"></div><div class="pGroup"><div class="pReload pButton"></div></div>';
                 }
 
                 if (options.multipleSelection) {
@@ -4210,7 +4245,7 @@ define('controls/grid/Grid', [
             }
 
             EditableRow.classList.remove('flash-animation');
-            
+
             setTimeout(() => {
                 EditableRow.classList.add('flash-animation');
             }, 50);

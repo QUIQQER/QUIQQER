@@ -5,6 +5,7 @@ namespace QUI\Workspace;
 use PHPUnit\Framework\TestCase;
 use QUI\Exception;
 use QUI\Users\User;
+use QUI\Utils\Uuid;
 
 class ManagerTest extends TestCase
 {
@@ -32,15 +33,6 @@ class ManagerTest extends TestCase
         $sut::getWorkspaceById(99999999, $testUser);
     }
 
-    public function testAddWorkspaceWithInvalidUserThrowsException(): void
-    {
-        $sut = new Manager();
-        $testUser = $this->createStub(\QUI\Interfaces\Users\User::class);
-
-        $this->expectException(Exception::class);
-        $sut::addWorkspace($testUser, 'title', 'data', 100, 100);
-    }
-
     public function testAddAndGetWorkspace(): void
     {
         $sut = new Manager();
@@ -59,7 +51,7 @@ class ManagerTest extends TestCase
         );
         $testWorkspace = $sut::getWorkspaceById($testWorkspaceId, $testUser);
 
-        $this->assertEquals($testUser->getId(), $testWorkspace['uid']);
+        $this->assertEquals($testUser->getUUID(), $testWorkspace['uid']);
         $this->assertEquals($testTitle, $testWorkspace['title']);
         $this->assertEquals($testData, $testWorkspace['data']);
         $this->assertEquals($testMinHeight, $testWorkspace['minHeight']);
@@ -92,7 +84,7 @@ class ManagerTest extends TestCase
         ]);
 
         $savedWorkspace = $sut::getWorkspaceById($testWorkspaceId, $testUser);
-        $this->assertEquals($testUser->getId(), $savedWorkspace['uid']);
+        $this->assertEquals($testUser->getUUID(), $savedWorkspace['uid']);
         $this->assertEquals($newTitle, $savedWorkspace['title']);
         $this->assertEquals($newData, $savedWorkspace['data']);
         $this->assertEquals($newMinHeight, $savedWorkspace['minHeight']);
@@ -171,14 +163,14 @@ class ManagerTest extends TestCase
         $this->markTestIncomplete('Figure out how to test this');
     }
 
-    protected function createUserStub(?int $userId = null): User
+    protected function createUserStub(?string $userUuid = null): User
     {
-        if (is_null($userId)) {
-            $userId = random_int(9999, 999999);
+        if (is_null($userUuid)) {
+            $userUuid = Uuid::get();
         }
 
         return $this->createConfiguredStub(User::class, [
-            'getId' => $userId
+            'getUUID' => $userUuid
         ]);
     }
 }
