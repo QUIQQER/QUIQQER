@@ -314,6 +314,45 @@ class MigrationV2 extends QUI\System\Console\Tool
     {
         $this->writeLn('- Migrate groups table');
         QUI\Users\Install::groups();
+
+
+        // migrate group parents
+        $Root = QUI::getGroups()->get(QUI::conf('globals', 'root'));
+        $rootUUID = $Root->getUUID();
+        $groupTable = QUI\Groups\Manager::table();
+
+        $result = QUI::getDataBase()->fetch([
+            'from' => $groupTable
+        ]);
+
+        foreach ($result as $entry) {
+            $groupUUID = $entry['uuid'];
+
+            if ($groupUUID == 0 || $groupUUID == 1 || $groupUUID == $rootUUID) {
+                continue;
+            }
+
+            $parent = $entry['parent'];
+
+            try {
+                if ($parent == 0) {
+                    QUI::getDataBase()->update(
+                        $groupTable,
+                        ['parent' => $rootUUID],
+                        ['id' => $entry['id']]
+                    );
+                } else {
+                    QUI::getDataBase()->update(
+                        $groupTable,
+                        ['parent' => QUI::getGroups()->get($parent)->getUUID()],
+                        ['id' => $entry['id']]
+                    );
+                }
+            } catch (QUI\Exception $exception) {
+                $this->writeLn($exception->getMessage(), 'red');
+                $this->resetColor();
+            }
+        }
     }
 
     public function groupsInUsers(): void

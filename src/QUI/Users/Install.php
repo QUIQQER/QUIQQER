@@ -102,7 +102,7 @@ class Install
         if (!isset($result[0])) {
             QUI\System\Log::addNotice('Guest Group does not exist.');
 
-            QUI::getDataBase()->insert(QUI\Groups\Manager::table(), [
+            QUI::getDataBaseConnection()->insert(QUI\Groups\Manager::table(), [
                 'id' => 0,
                 'uuid' => 0,
                 'parent' => 0,
@@ -132,7 +132,7 @@ class Install
         if (!isset($result[0])) {
             QUI\System\Log::addNotice('Everyone Group does not exist...');
 
-            QUI::getDataBase()->insert(QUI\Groups\Manager::table(), [
+            QUI::getDataBaseConnection()->insert(QUI\Groups\Manager::table(), [
                 'id' => 1,
                 'uuid' => 1,
                 'parent' => 0,
