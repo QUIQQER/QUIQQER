@@ -95,11 +95,6 @@ class Nobody extends QUI\QDOM implements User
         return false;
     }
 
-    /**
-     * Nobody is no company
-     *
-     * @return false
-     */
     public function isCompany(): bool
     {
         return false;
