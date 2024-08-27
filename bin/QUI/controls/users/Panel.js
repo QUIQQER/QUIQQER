@@ -146,10 +146,11 @@ define('controls/users/Panel', [
             this.addButton({
                 name: 'userNew',
                 Users: this,
+                text: QUILocale.get(lg, 'users.panel.btn.create'),
+                textimage: 'fa fa-plus',
                 events: {
                     onClick: this.createUser
-                },
-                text: QUILocale.get(lg, 'users.panel.btn.create')
+                }
             });
 
             this.addButton({
@@ -166,9 +167,12 @@ define('controls/users/Panel', [
             this.addButton({
                 name: 'userDel',
                 Users: this,
-                text: QUILocale.get(lg, 'users.panel.btn.delete'),
+                title: QUILocale.get(lg, 'users.panel.btn.delete'),
                 disabled: true,
-                textimage: 'fa fa-trash-o',
+                icon: 'fa fa-trash-o',
+                styles: {
+                    'float': 'right'
+                },
                 events: {
                     onMousedown: this.$onButtonDelClick
                 }
@@ -271,12 +275,6 @@ define('controls/users/Panel', [
                 onDblClick: this.$gridDblClick,
                 onBlur: this.$gridBlur
             });
-
-            // toolbar resize after insert
-            (function() {
-                this.getButtonBar().setAttribute('width', '98%');
-                this.getButtonBar().resize();
-            }).delay(200, this);
 
             // start and list the users
             this.load();
@@ -550,9 +548,13 @@ define('controls/users/Panel', [
                 return;
             }
 
-            Edit.enable();
-            Delete.enable();
+            if (len === 1) {
+                Edit.enable();
+            } else {
+                Edit.disable();
+            }
 
+            Delete.enable();
             data.evt.stop();
         },
 
