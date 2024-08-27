@@ -894,13 +894,36 @@ define('controls/users/Panel', [
          * Open deletion popup
          */
         $onButtonDelClick: function() {
-            let i, len;
+            let i, len, username;
 
             const uids = [],
-                data = this.getGrid().getSelectedData();
+                data = this.getGrid().getSelectedData(),
+                List = new Element('ul');
 
             for (i = 0, len = data.length; i < len; i++) {
-                uids.push(data[i].id);
+                username = '';
+
+                if (data[i].firstname) {
+                    username += data[i].firstname + ' ';
+                }
+
+                if (data[i].firstname) {
+                    username += data[i].lastname + ' ';
+                }
+
+                username = username.trim();
+
+                if (username === '' && data[i].email) {
+                    username += data[i].email;
+                }
+
+                new Element('li', {
+                    'class': 'user-delete-window-list-entry',
+                    html: '<span class="user-delete-window-list-entry-username">' + username + '</span>' +
+                        '<span class="user-delete-window-list-entry-uuid">' + data[i].uuid + '</span>'
+                }).inject(List);
+
+                uids.push(data[i].uuid);
             }
 
             if (!uids.length) {
@@ -912,15 +935,18 @@ define('controls/users/Panel', [
                 icon: 'fa fa-trash-o',
                 texticon: 'fa fa-trash-o',
                 title: QUILocale.get(lg, 'users.panel.delete.window.title'),
-                text: QUILocale.get(lg, 'users.panel.delete.window.text', {
-                    userids: uids.join(', ')
-                }),
+                text: QUILocale.get(lg, 'users.panel.delete.window.text'),
                 information: QUILocale.get(lg, 'users.panel.delete.window.information'),
-                maxWidth: 600,
+                maxWidth: 700,
                 maxHeight: 400,
                 uids: uids,
                 events: {
-                    onSubmit: function(Win) {
+                    onOpen: (Win) => {
+                        const Header = Win.getContent().getElement('.text');
+
+                        List.inject(Header, 'after');
+                    },
+                    onSubmit: (Win) => {
                         require(['Users'], function(Users) {
                             Users.deleteUsers(Win.getAttribute('uids')).then(function() {
                                 Win.close();
