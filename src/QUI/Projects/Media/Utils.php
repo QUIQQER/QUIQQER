@@ -638,8 +638,12 @@ class Utils
         return $Obj;
     }
 
-    public static function isMediaUrl(string $url): bool
+    public static function isMediaUrl(mixed $url): bool
     {
+        if (!is_string($url)) {
+            return false;
+        }
+
         if (
             str_contains($url, 'image.php')
             && str_contains($url, 'project=')
