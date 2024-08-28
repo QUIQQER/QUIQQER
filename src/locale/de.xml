@@ -2557,7 +2557,7 @@
             <de><![CDATA[Benutzer löschen]]></de>
         </locale>
         <locale name="users.panel.delete.window.text">
-            <de><![CDATA[Sie möchten folgende Benutzer löschen:<br /><br />[userids]]]></de>
+            <de><![CDATA[Sie möchten folgende Benutzer löschen:]]></de>
         </locale>
         <locale name="users.panel.delete.window.information">
             <de><![CDATA[

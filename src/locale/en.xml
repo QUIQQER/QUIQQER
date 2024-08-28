@@ -2505,13 +2505,13 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[Enter a new user name. The user is created inactive.]]></en>
         </locale>
         <locale name="exception.create.user.exists">
-            <en><![CDATA[The username already exists. <br />                 Please enter a different username.]]></en>
+            <en><![CDATA[The username already exists.<br />Please enter a different username.]]></en>
         </locale>
         <locale name="users.panel.delete.window.title">
             <en><![CDATA[Delete users]]></en>
         </locale>
         <locale name="users.panel.delete.window.text">
-            <en><![CDATA[You want to delete the following users:<br /><br />[userids]]]></en>
+            <en><![CDATA[You want to delete the following users:]]]></en>
         </locale>
         <locale name="users.panel.delete.window.information">
             <en><![CDATA[Users are completely removed from the system and can not be restored.]]></en>
