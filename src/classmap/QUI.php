@@ -1022,7 +1022,8 @@ class QUI
                 'driver' => 'pdo_' . self::conf('db', 'driver'),
                 'host' => self::conf('db', 'host'),
                 'user' => self::conf('db', 'user'),
-                'password' => self::conf('db', 'password')
+                'password' => self::conf('db', 'password'),
+                'quote_identifiers' => true
             ]);
         }
 
