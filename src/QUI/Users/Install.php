@@ -82,6 +82,9 @@ class Install
         QUI\Utils\Text\XML::importDataBase($dbFields);
 
         $DataBase = QUI::getDataBase();
+        $Connection = QUI::getDataBaseConnection();
+        $groupTable = $Connection->quoteIdentifier(QUI\Groups\Manager::table());
+
         $DataBase->execSQL(
             "ALTER TABLE `" . QUI\Groups\Manager::table() . "` CHANGE `parent` `parent` VARCHAR(50) NULL DEFAULT NULL;"
         );
@@ -102,7 +105,7 @@ class Install
         if (!isset($result[0])) {
             QUI\System\Log::addNotice('Guest Group does not exist.');
 
-            QUI::getDataBase()->insert(QUI\Groups\Manager::table(), [
+            QUI::getDataBaseConnection()->insert($groupTable, [
                 'id' => 0,
                 'uuid' => 0,
                 'parent' => 0,
@@ -132,7 +135,7 @@ class Install
         if (!isset($result[0])) {
             QUI\System\Log::addNotice('Everyone Group does not exist...');
 
-            QUI::getDataBase()->insert(QUI\Groups\Manager::table(), [
+            QUI::getDataBaseConnection()->insert($groupTable, [
                 'id' => 1,
                 'uuid' => 1,
                 'parent' => 0,

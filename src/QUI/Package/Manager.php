@@ -1669,6 +1669,7 @@ class Manager extends QUI\QDOM
                 case "artifact":
                 case "npm":
                 case "bower":
+                case "path":
                     $Config->setValue($server, 'type', $params['type']);
                     $Config->setValue($server, 'active', 1);
                     break;
