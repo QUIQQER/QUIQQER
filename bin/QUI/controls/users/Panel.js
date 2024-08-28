@@ -146,10 +146,11 @@ define('controls/users/Panel', [
             this.addButton({
                 name: 'userNew',
                 Users: this,
+                text: QUILocale.get(lg, 'users.panel.btn.create'),
+                textimage: 'fa fa-plus',
                 events: {
                     onClick: this.createUser
-                },
-                text: QUILocale.get(lg, 'users.panel.btn.create')
+                }
             });
 
             this.addButton({
@@ -166,9 +167,12 @@ define('controls/users/Panel', [
             this.addButton({
                 name: 'userDel',
                 Users: this,
-                text: QUILocale.get(lg, 'users.panel.btn.delete'),
+                title: QUILocale.get(lg, 'users.panel.btn.delete'),
                 disabled: true,
-                textimage: 'fa fa-trash-o',
+                icon: 'fa fa-trash-o',
+                styles: {
+                    'float': 'right'
+                },
                 events: {
                     onMousedown: this.$onButtonDelClick
                 }
@@ -271,12 +275,6 @@ define('controls/users/Panel', [
                 onDblClick: this.$gridDblClick,
                 onBlur: this.$gridBlur
             });
-
-            // toolbar resize after insert
-            (function() {
-                this.getButtonBar().setAttribute('width', '98%');
-                this.getButtonBar().resize();
-            }).delay(200, this);
 
             // start and list the users
             this.load();
@@ -550,9 +548,13 @@ define('controls/users/Panel', [
                 return;
             }
 
-            Edit.enable();
-            Delete.enable();
+            if (len === 1) {
+                Edit.enable();
+            } else {
+                Edit.disable();
+            }
 
+            Delete.enable();
             data.evt.stop();
         },
 
@@ -894,13 +896,36 @@ define('controls/users/Panel', [
          * Open deletion popup
          */
         $onButtonDelClick: function() {
-            let i, len;
+            let i, len, username;
 
             const uids = [],
-                data = this.getGrid().getSelectedData();
+                data = this.getGrid().getSelectedData(),
+                List = new Element('ul');
 
             for (i = 0, len = data.length; i < len; i++) {
-                uids.push(data[i].id);
+                username = '';
+
+                if (data[i].firstname) {
+                    username += data[i].firstname + ' ';
+                }
+
+                if (data[i].firstname) {
+                    username += data[i].lastname + ' ';
+                }
+
+                username = username.trim();
+
+                if (username === '' && data[i].email) {
+                    username += data[i].email;
+                }
+
+                new Element('li', {
+                    'class': 'user-delete-window-list-entry',
+                    html: '<span class="user-delete-window-list-entry-username">' + username + '</span>' +
+                        '<span class="user-delete-window-list-entry-uuid">' + data[i].uuid + '</span>'
+                }).inject(List);
+
+                uids.push(data[i].uuid);
             }
 
             if (!uids.length) {
@@ -912,15 +937,18 @@ define('controls/users/Panel', [
                 icon: 'fa fa-trash-o',
                 texticon: 'fa fa-trash-o',
                 title: QUILocale.get(lg, 'users.panel.delete.window.title'),
-                text: QUILocale.get(lg, 'users.panel.delete.window.text', {
-                    userids: uids.join(', ')
-                }),
+                text: QUILocale.get(lg, 'users.panel.delete.window.text'),
                 information: QUILocale.get(lg, 'users.panel.delete.window.information'),
-                maxWidth: 600,
+                maxWidth: 700,
                 maxHeight: 400,
                 uids: uids,
                 events: {
-                    onSubmit: function(Win) {
+                    onOpen: (Win) => {
+                        const Header = Win.getContent().getElement('.text');
+
+                        List.inject(Header, 'after');
+                    },
+                    onSubmit: (Win) => {
                         require(['Users'], function(Users) {
                             Users.deleteUsers(Win.getAttribute('uids')).then(function() {
                                 Win.close();
