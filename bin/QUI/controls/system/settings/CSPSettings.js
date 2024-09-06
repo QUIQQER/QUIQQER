@@ -9,6 +9,7 @@ define('controls/system/settings/CSPSettings', [
     'qui/QUI',
     'qui/controls/Control',
     'qui/controls/windows/Confirm',
+    'qui/controls/buttons/Switch',
     'controls/grid/Grid',
     'Locale',
     'Ajax',
@@ -16,15 +17,15 @@ define('controls/system/settings/CSPSettings', [
 
     'text!controls/system/settings/CSPSettings.Directive.html'
 
-], function (QUI, QUIControl, QUIConfirm, Grid, QUILocale, QUIAjax, Mustache, templateDirective) {
-    "use strict";
+], function(QUI, QUIControl, QUIConfirm, QUISwitch, Grid, QUILocale, QUIAjax, Mustache, templateDirective) {
+    'use strict';
 
     const lg = 'quiqqer/core';
 
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/system/settings/CSPSettings',
+        Type: 'controls/system/settings/CSPSettings',
 
         Binds: [
             'refresh',
@@ -35,26 +36,27 @@ define('controls/system/settings/CSPSettings', [
             '$onImport'
         ],
 
-        initialize: function (options) {
+        initialize: function(options) {
             this.parent(options);
 
             this.$Elm = null;
             this.$Input = null;
             this.$Grid = null;
+            this.$Switch = null;
 
             this.$cspDirective = {
-                'base'   : 'base-uri',
-                'child'  : 'child-src',
+                'base': 'base-uri',
+                'child': 'child-src',
                 'connect': 'connect-src',
                 'default': 'default-src',
-                'font'   : 'font-src',
-                'form'   : 'form-action',
-                'image'  : 'img-src',
-                'img'    : 'img-src',
-                'script' : 'script-src',
-                'style'  : 'style-src',
-                'object' : 'object-src',
-                'report' : 'report-uri'
+                'font': 'font-src',
+                'form': 'form-action',
+                'image': 'img-src',
+                'img': 'img-src',
+                'script': 'script-src',
+                'style': 'style-src',
+                'object': 'object-src',
+                'report': 'report-uri'
             };
 
             this.addEvents({
@@ -68,7 +70,7 @@ define('controls/system/settings/CSPSettings', [
          *
          * @return {HTMLDivElement}
          */
-        create: function () {
+        create: function() {
             this.$Elm = new Element('div.quiqqer-cspsettings');
 
             return this.$Elm;
@@ -77,29 +79,29 @@ define('controls/system/settings/CSPSettings', [
         /**
          * event : on inject
          */
-        $onInject: function () {
+        $onInject: function() {
             const Container = new Element('div', {
                 styles: {
                     overflow: 'hidden',
                     position: 'relative',
-                    width   : '100%'
+                    width: '100%'
                 }
             }).inject(this.getElm());
 
             const GridCon = new Element('div').inject(Container);
 
-            const self  = this,
-                  width = Container.getSize().x;
+            const self = this,
+                width = Container.getSize().x;
 
             Container.setStyle('width', width);
 
             this.$Grid = new Grid(GridCon, {
                 buttons: [
                     {
-                        name     : 'add',
-                        text     : QUILocale.get(lg, 'add'),
+                        name: 'add',
+                        text: QUILocale.get(lg, 'add'),
                         textimage: 'fa fa-plus',
-                        events   : {
+                        events: {
                             onClick: this.openAddDialog
                         }
                     },
@@ -107,20 +109,20 @@ define('controls/system/settings/CSPSettings', [
                         type: 'separator'
                     },
                     {
-                        name     : 'edit',
-                        text     : QUILocale.get(lg, 'edit'),
+                        name: 'edit',
+                        text: QUILocale.get(lg, 'edit'),
                         textimage: 'fa fa-edit',
-                        disabled : true,
-                        events   : {
+                        disabled: true,
+                        events: {
                             onClick: this.openEditDialog
                         }
                     },
                     {
-                        name     : 'remove',
-                        text     : QUILocale.get(lg, 'remove'),
+                        name: 'remove',
+                        text: QUILocale.get(lg, 'remove'),
                         textimage: 'fa fa-trash',
-                        disabled : true,
-                        events   : {
+                        disabled: true,
+                        events: {
                             onClick: this.openDeleteDialog
                         }
                     }
@@ -128,33 +130,40 @@ define('controls/system/settings/CSPSettings', [
 
                 columnModel: [
                     {
-                        header   : QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.value'),
+                        header: QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.value'),
                         dataIndex: 'value',
-                        width    : 200
+                        width: 200
                     },
                     {
-                        header   : QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.directive'),
+                        header: QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.directive'),
                         dataIndex: 'directive',
-                        width    : 200
+                        width: 200
                     }
                 ],
 
                 multipleSelection: true,
-                height           : 300
+                height: 300
             });
+
+            this.$Switch = new QUISwitch({
+                title: QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.enabled'),
+                styles: {
+                    height: 20
+                }
+            }).inject(this.$Grid.getElm().getElement('[data-position="right"]'));
 
             this.$Grid.setWidth(width);
 
             this.$Grid.addEvents({
-                onClick: function () {
-                    const buttons  = self.$Grid.getButtons(),
-                          selected = self.$Grid.getSelectedIndices();
+                onClick: function() {
+                    const buttons = self.$Grid.getButtons(),
+                        selected = self.$Grid.getSelectedIndices();
 
-                    const Edit = buttons.filter(function (Btn) {
+                    const Edit = buttons.filter(function(Btn) {
                         return Btn.getAttribute('name') === 'edit';
                     })[0];
 
-                    const Remove = buttons.filter(function (Btn) {
+                    const Remove = buttons.filter(function(Btn) {
                         return Btn.getAttribute('name') === 'remove';
                     })[0];
 
@@ -177,7 +186,7 @@ define('controls/system/settings/CSPSettings', [
         /**
          * event : on import
          */
-        $onImport: function () {
+        $onImport: function() {
             this.$Input = this.getElm();
             this.$Elm = this.create();
 
@@ -192,11 +201,11 @@ define('controls/system/settings/CSPSettings', [
         /**
          * Update the input value
          */
-        $update: function () {
+        $update: function() {
             const data = {};
             const selected = this.$Grid.getData();
 
-            selected.each(function (entry) {
+            selected.each(function(entry) {
                 if (typeof data[entry.directive] === 'undefined') {
                     data[entry.directive] = [];
                 }
@@ -208,6 +217,8 @@ define('controls/system/settings/CSPSettings', [
                 data[directive] = data[directive].join(' ');
             }
 
+            data['status'] = this.$Switch.getStatus() ? 1 : 0;
+
             this.$Input.value = JSON.encode(data);
             this.$Input.fireEvent('change');
         },
@@ -217,20 +228,32 @@ define('controls/system/settings/CSPSettings', [
          *
          * @return {Promise}
          */
-        refresh: function () {
+        refresh: function() {
             const self = this;
 
-            return new Promise(function (resolve) {
-                QUIAjax.get('ajax_system_settings_getCSP', function (result) {
+            return new Promise(function(resolve) {
+                QUIAjax.get('ajax_system_settings_getCSP', function(result) {
                     let i, values, directive;
                     const data = [];
 
-                    const appendData = function (value) {
+                    const appendData = function(value) {
                         data.push({
-                            value    : value.replace(/'/g, ''),
+                            value: value.replace(/'/g, ''),
                             directive: directive
                         });
                     };
+
+                    if (typeof result.status !== 'undefined') {
+                        const status = parseInt(result.status);
+
+                        if (status) {
+                            self.$Switch.on();
+                        } else {
+                            self.$Switch.off();
+                        }
+
+                        delete result.status;
+                    }
 
                     for (i in result) {
                         if (!result.hasOwnProperty(i)) {
@@ -261,17 +284,17 @@ define('controls/system/settings/CSPSettings', [
          *
          * @returns {Promise}
          */
-        save: function () {
+        save: function() {
             const self = this;
 
             this.$update();
 
-            return new Promise(function (resolve, reject) {
-                QUIAjax.post('ajax_system_settings_saveCSP', function () {
+            return new Promise(function(resolve, reject) {
+                QUIAjax.post('ajax_system_settings_saveCSP', function() {
                     self.refresh().then(resolve);
                 }, {
                     onError: reject,
-                    data   : self.$Input.value
+                    data: self.$Input.value
                 });
             });
         },
@@ -279,39 +302,42 @@ define('controls/system/settings/CSPSettings', [
         /**
          * Open the add directive dialog
          */
-        openAddDialog: function () {
+        openAddDialog: function() {
             const self = this;
 
             new QUIConfirm({
-                title    : QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.add.title'),
-                icon     : 'fa fa-plus',
+                title: QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.add.title'),
+                icon: 'fa fa-plus',
                 maxHeight: 400,
-                maxWidth : 600,
+                maxWidth: 600,
                 autoclose: false,
-                events   : {
-                    onOpen: function (Win) {
+                events: {
+                    onOpen: function(Win) {
                         const Content = Win.getContent();
 
                         Win.Loader.show();
                         Content.set('html', '');
 
-                        QUIAjax.get('ajax_system_settings_getAllowedCSP', function (cspList) {
+                        QUIAjax.get('ajax_system_settings_getAllowedCSP', function(cspList) {
                             Content.set('html', Mustache.render(templateDirective, {
-                                titleValue         : QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.value'),
-                                titleDirective     : QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.directive'),
-                                textVariableListing: QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.valuePlaceholder'),
+                                titleValue: QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.value'),
+                                titleDirective: QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.directive'),
+                                textVariableListing: QUILocale.get(
+                                    lg,
+                                    'quiqqer.settings.security_headers.csp.valuePlaceholder'
+                                )
                             }));
 
                             const Directive = Content.getElement('[name="directive"]');
 
-                            cspList.forEach(function (entry) {
+                            cspList.forEach(function(entry) {
                                 new Element('option', {
-                                    html : entry,
+                                    html: entry,
                                     value: entry
                                 }).inject(Directive);
                             });
 
-                            Content.getElements('.predefined-values a').addEvent('click', function (event) {
+                            Content.getElements('.predefined-values a').addEvent('click', function(event) {
                                 event.stop();
                                 Content.getElement('[name="value"]').value = this.get('text').trim();
                             });
@@ -320,17 +346,17 @@ define('controls/system/settings/CSPSettings', [
                         });
                     },
 
-                    onSubmit: function (Win) {
-                        const Content   = Win.getContent(),
-                              Value     = Content.getElement('[name="value"]'),
-                              Directive = Content.getElement('[name="directive"]');
+                    onSubmit: function(Win) {
+                        const Content = Win.getContent(),
+                            Value = Content.getElement('[name="value"]'),
+                            Directive = Content.getElement('[name="directive"]');
 
                         if (Value === '') {
                             return;
                         }
 
                         self.$Grid.addRow({
-                            value    : Value.value,
+                            value: Value.value,
                             directive: Directive.value
                         });
 
@@ -346,38 +372,41 @@ define('controls/system/settings/CSPSettings', [
         /**
          * Open the edit directive dialog
          */
-        openEditDialog: function () {
-            const self     = this,
-                  row      = this.$Grid.getSelectedIndices()[0],
-                  selected = this.$Grid.getSelectedData()[0];
+        openEditDialog: function() {
+            const self = this,
+                row = this.$Grid.getSelectedIndices()[0],
+                selected = this.$Grid.getSelectedData()[0];
 
             new QUIConfirm({
-                title    : QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.edit.title'),
-                icon     : 'fa fa-plus',
+                title: QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.edit.title'),
+                icon: 'fa fa-plus',
                 maxHeight: 400,
-                maxWidth : 600,
+                maxWidth: 600,
                 autoclose: false,
-                events   : {
-                    onOpen: function (Win) {
+                events: {
+                    onOpen: function(Win) {
                         const Content = Win.getContent();
 
                         Win.Loader.show();
                         Content.set('html', '');
 
-                        QUIAjax.get('ajax_system_settings_getAllowedCSP', function (cspList) {
+                        QUIAjax.get('ajax_system_settings_getAllowedCSP', function(cspList) {
 
                             Content.set('html', Mustache.render(templateDirective, {
-                                titleValue         : QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.value'),
-                                titleDirective     : QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.directive'),
-                                textVariableListing: QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.valuePlaceholder'),
+                                titleValue: QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.value'),
+                                titleDirective: QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.directive'),
+                                textVariableListing: QUILocale.get(
+                                    lg,
+                                    'quiqqer.settings.security_headers.csp.valuePlaceholder'
+                                )
                             }));
 
-                            const Value     = Content.getElement('[name="value"]'),
-                                  Directive = Content.getElement('[name="directive"]');
+                            const Value = Content.getElement('[name="value"]'),
+                                Directive = Content.getElement('[name="directive"]');
 
-                            cspList.forEach(function (entry) {
+                            cspList.forEach(function(entry) {
                                 new Element('option', {
-                                    html : entry,
+                                    html: entry,
                                     value: entry
                                 }).inject(Directive);
                             });
@@ -385,7 +414,7 @@ define('controls/system/settings/CSPSettings', [
                             Value.value = selected.value;
                             Directive.value = selected.directive;
 
-                            Content.getElements('.predefined-values a').addEvent('click', function (event) {
+                            Content.getElements('.predefined-values a').addEvent('click', function(event) {
                                 event.stop();
                                 Content.getElement('[name="value"]').value = this.get('text').trim();
                             });
@@ -394,17 +423,17 @@ define('controls/system/settings/CSPSettings', [
                         });
                     },
 
-                    onSubmit: function (Win) {
-                        const Content   = Win.getContent(),
-                              Value     = Content.getElement('[name="value"]'),
-                              Directive = Content.getElement('[name="directive"]');
+                    onSubmit: function(Win) {
+                        const Content = Win.getContent(),
+                            Value = Content.getElement('[name="value"]'),
+                            Directive = Content.getElement('[name="directive"]');
 
                         if (Value === '') {
                             return;
                         }
 
                         self.$Grid.setDataByRow(row, {
-                            value    : Value.value,
+                            value: Value.value,
                             directive: Directive.value
                         });
 
@@ -421,8 +450,8 @@ define('controls/system/settings/CSPSettings', [
         /**
          * opens the delete dialog
          */
-        openDeleteDialog: function () {
-            const selected = this.$Grid.getSelectedData().map(function (entry) {
+        openDeleteDialog: function() {
+            const selected = this.$Grid.getSelectedData().map(function(entry) {
                 return '<li>' + entry.value + ' (' + entry.directive + ') </li>';
             });
 
@@ -431,16 +460,16 @@ define('controls/system/settings/CSPSettings', [
             }
 
             const self = this,
-                  list = '<ul>' + selected.join('') + '</ul>';
+                list = '<ul>' + selected.join('') + '</ul>';
 
             new QUIConfirm({
-                title    : QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.delete.title'),
-                icon     : 'fa fa-trash',
+                title: QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.delete.title'),
+                icon: 'fa fa-trash',
                 maxHeight: 400,
-                maxWidth : 600,
+                maxWidth: 600,
 
                 events: {
-                    onOpen: function (Win) {
+                    onOpen: function(Win) {
                         Win.getContent().set(
                             'html',
                             QUILocale.get(lg, 'quiqqer.settings.security_headers.csp.delete.text', {
@@ -449,7 +478,7 @@ define('controls/system/settings/CSPSettings', [
                         );
                     },
 
-                    onSubmit: function (Win) {
+                    onSubmit: function(Win) {
                         Win.Loader.show();
 
                         self.$Grid.deleteRows(

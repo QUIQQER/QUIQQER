@@ -178,32 +178,36 @@ class Headers
         }
 
         // create CSP header
-        $list = [];
-        $csp = [];
+        $status = QUI::conf('securityHeaders_csp', 'status');
 
-        $cspSources = CSP::getInstance()->getCSPSources();
-        $cspDirectives = CSP::getInstance()->getCSPDirectives();
+        if ($status === false || (int)$status === 1) {
+            $list = [];
+            $csp = [];
 
-        foreach ($this->csp as $entry) {
-            $value = $entry['value'];
-            $directive = $entry['directive'];
+            $cspSources = CSP::getInstance()->getCSPSources();
+            $cspDirectives = CSP::getInstance()->getCSPDirectives();
 
-            if (isset($cspSources[$value])) {
-                $value = $cspSources[$value];
+            foreach ($this->csp as $entry) {
+                $value = $entry['value'];
+                $directive = $entry['directive'];
+
+                if (isset($cspSources[$value])) {
+                    $value = $cspSources[$value];
+                }
+
+                if (isset($cspDirectives[$directive])) {
+                    $directive = $cspDirectives[$directive];
+                }
+
+                $list[$directive][] = $value;
             }
 
-            if (isset($cspDirectives[$directive])) {
-                $directive = $cspDirectives[$directive];
+            foreach ($list as $directive => $entries) {
+                $csp[] = $directive . ' ' . implode(' ', $entries);
             }
 
-            $list[$directive][] = $value;
+            $Response->headers->set("Content-Security-Policy", implode('; ', $csp));
         }
-
-        foreach ($list as $directive => $entries) {
-            $csp[] = $directive . ' ' . implode(' ', $entries);
-        }
-
-        $Response->headers->set("Content-Security-Policy", implode('; ', $csp));
     }
 
     /**

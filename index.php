@@ -275,7 +275,7 @@ try {
         }
 
         if ($Exception->getCode() !== 5001) {
-            Log::writeException($Exception, Log::LEVEL_ERROR);
+            Log::writeException($Exception);
         }
 
         $Template = new QUI\Template();
@@ -297,7 +297,14 @@ try {
 
     QUI::getEvents()->fireEvent('responseSent', [$Response]);
 } catch (Exception $Exception) {
-    QUI\System\Log::writeException($Exception);
+    if ($Exception->getCode() === 705) { // site not found
+        QUI\System\Log::addInfo($Exception->getMessage(), [
+            'request' => $_REQUEST
+        ]);
+    } else {
+        QUI\System\Log::addError($Exception->getMessage());
+        QUI\System\Log::writeException($Exception);
+    }
 
     // error ??
     header('HTTP/1.1 503 Service Temporarily Unavailable');

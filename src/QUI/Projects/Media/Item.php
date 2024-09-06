@@ -6,7 +6,7 @@
 
 namespace QUI\Projects\Media;
 
-use Locale;
+use QUI\Locale;
 use QUI;
 use QUI\Exception;
 use QUI\Groups\Group;
