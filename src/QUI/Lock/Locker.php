@@ -84,7 +84,7 @@ class Locker
             }
 
             try {
-                return QUI::getUsers()->get($uid)->getAttributes();
+                return QUI::getUsers()->get($uid)->getUUID();
             } catch (QUI\Exception) {
                 return $uid;
             }
