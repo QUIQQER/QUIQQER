@@ -1406,8 +1406,14 @@ class Edit extends Site
         }
 
         // Aufruf der createChild Methode im TempSite - für den Adminbereich
-        $this->Events->fireEvent('createChild', [$newId, $this]);
-        QUI::getEvents()->fireEvent('siteCreateChild', [$newId, $this]);
+        try {
+            $this->Events->fireEvent('createChild', [$newId, $this]);
+            QUI::getEvents()->fireEvent('siteCreateChild', [$newId, $this]);
+        } catch (\Exception $Exception) {
+            QUI::getMessagesHandler()->addAttention(
+                $Exception->getMessage()
+            );
+        }
 
 
         return $newId;
