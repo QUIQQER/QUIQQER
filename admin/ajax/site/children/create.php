@@ -26,6 +26,15 @@ QUI::$Ajax->registerFunction(
         $Child->setAttributes($attributes);
         $Child->save();
 
+
+        try {
+            QUI::getEvents()->fireEvent('siteCreateChildEnd', [$Child]);
+        } catch (\Exception $Exception) {
+            QUI::getMessagesHandler()->addAttention(
+                $Exception->getMessage()
+            );
+        }
+
         return $Child->getAttributes();
     },
     ['project', 'id', 'attributes']
