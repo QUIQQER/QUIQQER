@@ -367,6 +367,9 @@ class User implements QUIUserInterface
         $this->setAttribute('lastname', $data[0]['lastname']);
         $this->setAttribute('email', $data[0]['email']);
 
+        $this->address_list = [];
+        $this->StandardAddress = null;
+
         // Event
         QUI::getEvents()->fireEvent('userLoad', [$this]);
     }
