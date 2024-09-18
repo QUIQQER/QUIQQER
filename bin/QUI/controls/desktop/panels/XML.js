@@ -128,7 +128,7 @@ define('controls/desktop/panels/XML', [
 
                 // load categories
                 let i, len, Category;
-                console.log(categories);
+                
                 if (this.getAttribute('alphabetical-order')) {
                     categories.sort(function(a, b) {
                         const aIndex = 'index' in a && a.index !== '' ? a.index : Infinity;
