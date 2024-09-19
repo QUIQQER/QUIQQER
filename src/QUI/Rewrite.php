@@ -542,9 +542,12 @@ class Rewrite
         }
 
         $this->first_child = $this->getProject()->firstChild();
-        $this->site = $this->first_child;
 
-        if (!empty($_REQUEST['_url'])) {
+        if ($this->site === null) {
+            $this->site = $this->first_child;
+        }
+
+        if (!empty($_REQUEST['_url']) && $this->site->getId() === $this->first_child->getId()) {
             // URL Parameter filtern
             try {
                 $this->site = $this->getSiteByUrl($_REQUEST['_url']);
