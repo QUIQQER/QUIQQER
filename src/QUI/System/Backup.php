@@ -75,6 +75,10 @@ class Backup
         $command = 'diff ' . implode('', $params) . ' ' . $backupFolder . ' ' . ETC_DIR;
         $result = shell_exec($command);
 
+        if (empty($result)) {
+            $result = '';
+        }
+
         $result = str_replace($backupFolder . '/', 'Old config: ', $result);
         $result = str_replace(ETC_DIR, " - New config: ", $result);
         $result = str_replace('\ No newline at end of file', "", $result);
