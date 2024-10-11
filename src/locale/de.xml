@@ -2008,12 +2008,6 @@
         <locale name="projects.project.panel.media.contextMenu.replace">
             <de><![CDATA[Datei ersetzen ...]]></de>
         </locale>
-        <locale name="projects.project.panel.media.contextMenu.publish">
-            <de><![CDATA[Veröffentlichen]]></de>
-        </locale>
-        <locale name="projects.project.panel.media.contextMenu.unpublish">
-            <de><![CDATA[Nicht veröffentlichen]]></de>
-        </locale>
         <locale name="projects.project.panel.media.contextMenu.download">
             <de><![CDATA[Datei herunterladen]]></de>
         </locale>
@@ -4508,10 +4502,10 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             <de><![CDATA[Im Mediabereich öffnen]]></de>
         </locale>
         <locale name="projects.project.site.btn.activate.text">
-            <de><![CDATA[Veröffentlichen]]></de>
+            <de><![CDATA[Aktivieren]]></de>
         </locale>
         <locale name="projects.project.site.btn.deactivate.text">
-            <de><![CDATA[Nicht veröffentlichen]]></de>
+            <de><![CDATA[Deaktivieren]]></de>
         </locale>
         <locale name="packages.panel.title">
             <de><![CDATA[Systemverwaltung]]></de>
@@ -4977,6 +4971,9 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         </locale>
         <locale name="upload.bulk.message">
             <de><![CDATA[[done] Dateien von [total] hochgeladen]]></de>
+        </locale>
+        <locale name="settings.security.title">
+            <de><![CDATA[Sicherheit]]></de>
         </locale>
     </groups>
 

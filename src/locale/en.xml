@@ -1973,12 +1973,6 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="projects.project.panel.media.contextMenu.replace">
             <en><![CDATA[Replace file ...]]></en>
         </locale>
-        <locale name="projects.project.panel.media.contextMenu.publish">
-            <en><![CDATA[Publish]]></en>
-        </locale>
-        <locale name="projects.project.panel.media.contextMenu.unpublish">
-            <en><![CDATA[Unpublish]]></en>
-        </locale>
         <locale name="projects.project.panel.media.contextMenu.download">
             <en><![CDATA[Download file]]></en>
         </locale>
@@ -4358,10 +4352,10 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
             <en><![CDATA[Open in media]]></en>
         </locale>
         <locale name="projects.project.site.btn.activate.text">
-            <en><![CDATA[Publish]]></en>
+            <en><![CDATA[Activate]]></en>
         </locale>
         <locale name="projects.project.site.btn.deactivate.text">
-            <en><![CDATA[Unpublish]]></en>
+            <en><![CDATA[Deactivate]]></en>
         </locale>
         <locale name="packages.panel.title">
             <en><![CDATA[System administration]]></en>
@@ -4814,6 +4808,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         </locale>
         <locale name="upload.bulk.message">
             <en><![CDATA[[done] files uploaded from [total].]]></en>
+        </locale>
+        <locale name="settings.security.title">
+            <en><![CDATA[Security]]></en>
         </locale>
     </groups>
 
