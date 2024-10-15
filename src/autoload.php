@@ -11,6 +11,8 @@
  * @licence For copyright and license information, please view the /README.md
  */
 
+use QUI\System\Log;
+
 require __DIR__ . '/QUI/Autoloader.php';
 require __DIR__ . '/polyfills.php';
 
@@ -136,20 +138,13 @@ function exception_handler(\Throwable $Exception): void
     if ($code >= 400 && $code < 600) {
         http_response_code($code);
         header('Content-Type: application/json');
-
-        echo json_encode([
-            'error' => true,
-            'message' => $Exception->getMessage(),
-            'code' => $code
-        ]);
-
-        return;
     }
 
-    QUI::getErrorHandler()->writeErrorToLog(
-        $Exception->getCode(),
-        $Exception->getMessage(),
-        $Exception->getFile(),
-        $Exception->getLine()
-    );
+    Log::addError($Exception->getMessage());
+
+    echo json_encode([
+        'error' => true,
+        'message' => $Exception->getMessage(),
+        'code' => $code
+    ]);
 }
