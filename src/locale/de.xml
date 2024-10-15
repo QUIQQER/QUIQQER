@@ -4972,6 +4972,9 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="upload.bulk.message">
             <de><![CDATA[[done] Dateien von [total] hochgeladen]]></de>
         </locale>
+        <locale name="settings.security.title">
+            <de><![CDATA[Sicherheit]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/core" datatype="php">

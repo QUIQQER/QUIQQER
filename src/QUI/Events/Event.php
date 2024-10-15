@@ -210,30 +210,26 @@ class Event implements QUI\Interfaces\Events
             } catch (QUI\Exception $Exception) {
                 $message = $Exception->getMessage();
 
-                if (is_string($fn)) {
-                    $message .= ' :: ' . $fn;
-                }
-
                 $Clone = new QUI\Exception(
                     $message,
                     $Exception->getCode(),
-                    ['trace' => $Exception->getTraceAsString()]
+                    [
+                        'trace' => $Exception->getTraceAsString(),
+                        'fn' => is_string($fn) ? $fn : ''
+                    ]
                 );
 
                 $Stack->addException($Clone);
             } catch (Throwable $Exception) {
                 $message = $Exception->getMessage();
 
-                if (is_string($fn)) {
-                    $message .= ' :: ' . $fn;
-                }
-
                 $Clone = new QUI\Exception(
                     $message,
                     $Exception->getCode(),
                     [
                         'trace' => $Exception->getTraceAsString(),
-                        'functionType' => gettype($fn)
+                        'functionType' => gettype($fn),
+                        'fn' => is_string($fn) ? $fn : ''
                     ]
                 );
 

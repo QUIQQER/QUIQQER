@@ -7,6 +7,8 @@
  * @licence For copyright and license information, please view the /README.md
  */
 
+use QUI\ExceptionStack;
+
 const QUIQQER_MIN_PHP_VERSION = '8.1.0';
 
 header("Content-Type: text/html; charset=utf-8");
@@ -44,6 +46,7 @@ ini_set("error_log", VAR_DIR . 'log/error' . date('-Y-m-d') . '.log');
 ini_set('session.save_path', VAR_DIR . 'sessions');
 
 set_error_handler("exception_error_handler");
+set_exception_handler("exception_handler");
 
 if (DEVELOPMENT) {
     error_reporting(E_ALL);
@@ -153,6 +156,18 @@ if (isset($_GET['logout'])) {
 $memoryLimit = QUI\Utils\System::getMemoryLimit();
 QUI\Utils\System::$memory_limit = $memoryLimit > 0 ? $memoryLimit : false;
 
-QUI::getEvents()->fireEvent('headerLoaded');
+try {
+    QUI::getEvents()->fireEvent('headerLoaded');
+} catch (QUI\Exception $Exception) {
+    if ($Exception instanceof ExceptionStack) {
+        $list = $Exception->getExceptionList();
+
+        if (count($list) === 1) {
+            throw $list[0];
+        }
+    }
+
+    throw $Exception;
+}
 
 QUI\Utils\System\Debug::marker('header end');

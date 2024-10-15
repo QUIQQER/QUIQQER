@@ -703,7 +703,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             if (!sels.length || sels.length === 1) {
                 return new QUIContextmenuItem({
                     name  : 'activate',
-                    text  : QUILocale.get('quiqqer/core', 'activate'),
+                    text  : QUILocale.get('quiqqer/core', 'projects.project.panel.media.contextMenu.publish'),
                     icon  : 'fa fa-check',
                     events: {
                         onMouseDown: function () {
@@ -719,7 +719,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
 
             const Activate = new QUIContextmenuItem({
                 name: 'activate',
-                text: QUILocale.get('quiqqer/core', 'activate'),
+                text: QUILocale.get('quiqqer/core', 'projects.project.panel.media.contextMenu.publish'),
                 icon: 'fa fa-check'
             });
 
@@ -768,7 +768,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             if (!sels.length || sels.length === 1) {
                 return new QUIContextmenuItem({
                     name  : 'deactivate',
-                    text  : QUILocale.get('quiqqer/core', 'deactivate'),
+                    text  : QUILocale.get('quiqqer/core', 'projects.project.panel.media.contextMenu.unpublish'),
                     icon  : 'fa fa-remove',
                     events: {
                         onMouseDown: function () {
@@ -784,7 +784,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
 
             const Deactivate = new QUIContextmenuItem({
                 name: 'deactivate',
-                text: QUILocale.get('quiqqer/core', 'deactivate'),
+                text: QUILocale.get('quiqqer/core', 'projects.project.panel.media.contextMenu.unpublish'),
                 icon: 'fa fa-remove'
             });
 

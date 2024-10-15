@@ -4809,6 +4809,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="upload.bulk.message">
             <en><![CDATA[[done] files uploaded from [total].]]></en>
         </locale>
+        <locale name="settings.security.title">
+            <en><![CDATA[Security]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/core" datatype="php">
