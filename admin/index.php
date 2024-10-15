@@ -48,6 +48,8 @@ echo $User->getLang(); ?>"> <!--<![endif]-->
 
     <!-- favicon -->
     <?php
+    QUI::getEvents()->fireEvent('adminLoadBegin');
+
     $favicon = QUI::conf('globals', 'favicon');
 
     if ($favicon) {
