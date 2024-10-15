@@ -131,6 +131,21 @@ function exception_error_handler(int $errno, string $errStr, string $errFile, in
  */
 function exception_handler(\Throwable $Exception): void
 {
+    $code = $Exception->getCode();
+
+    if ($code >= 400 && $code < 600) {
+        http_response_code($code);
+        header('Content-Type: application/json');
+
+        echo json_encode([
+            'error' => true,
+            'message' => $Exception->getMessage(),
+            'code' => $code
+        ]);
+
+        return;
+    }
+
     QUI::getErrorHandler()->writeErrorToLog(
         $Exception->getCode(),
         $Exception->getMessage(),
