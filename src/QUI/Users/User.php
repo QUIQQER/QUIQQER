@@ -1157,7 +1157,7 @@ class User implements QUIUserInterface
 
         try {
             $Group = $Groups->get($groups);
-            $this->Group[] = $Group->getUUID();
+            $this->Group[] = $Group;
             $this->groups = ',' . $groups . ',';
         } catch (QUI\Exception) {
         }
