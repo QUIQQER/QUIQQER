@@ -11,8 +11,8 @@ define('controls/help/Dashboard', [
     'qui/QUI',
     'qui/controls/desktop/Panel'
 
-], function (QUI, QUIPanel) {
-    "use strict";
+], function(QUI, QUIPanel) {
+    'use strict';
 
     /**
      * @class controls/help/Dashboard
@@ -23,7 +23,7 @@ define('controls/help/Dashboard', [
     return new Class({
 
         Extends: QUIPanel,
-        Type   : 'controls/help/Dashboard',
+        Type: 'controls/help/Dashboard',
 
         Binds: [
             '$onCreate',
@@ -32,28 +32,30 @@ define('controls/help/Dashboard', [
         ],
 
         options: {
-            icon             : URL_BIN_DIR + '16x16/quiqqer.png',
-            title            : 'QUIQQER Dashboard',
+            icon: URL_BIN_DIR + '16x16/quiqqer.png',
+            title: 'QUIQQER Dashboard',
             displayNoTaskText: true
         },
 
-        initialize: function (options) {
+        initialize: function(options) {
             this.parent(options);
 
             this.addEvents({
                 onCreate: this.$onCreate,
-                onInject: function () {
-                    (function () {
-                        this.destroy();
+                onInject: () => {
+                    (() => {
+                        if (typeof this.destroy !== 'function') {
+                            this.destroy();
+                        }
                     }).delay(500);
-                }.bind(this)
+                }
             });
         },
 
         /**
          * Create the project panel body
          */
-        $onCreate: function () {
+        $onCreate: function() {
 
         }
     });
