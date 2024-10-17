@@ -41,6 +41,7 @@
     "neitanod/forceutf8": "^2",
     "oomphinc/composer-installers-extender": "^2",
     "phpmailer/phpmailer": "^6",
+    "php81_bc/strftime": "^0.7",
     "quiqqer-asset/ace-builds": "^1",
     "quiqqer-asset/animejs": "^3",
     "quiqqer-asset/downloadjs": "^1",
