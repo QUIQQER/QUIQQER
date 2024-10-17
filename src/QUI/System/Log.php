@@ -8,7 +8,6 @@ namespace QUI\System;
 
 use Exception;
 use QUI;
-
 use Throwable;
 
 use function defined;
