@@ -128,8 +128,6 @@ function exception_error_handler(int $errno, string $errStr, string $errFile, in
 
 /**
  * Exception handler
- *
- * @param Exception $Exception
  */
 function exception_handler(\Throwable $Exception): void
 {
