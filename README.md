@@ -21,13 +21,33 @@ About QUIQQER
 ![Static Badge](https://img.shields.io/badge/Browser-Opera-red)
 ![Static Badge](https://img.shields.io/badge/Browser-Brave-orange)
 
-QUIQQER is an all-in-one Enterprise Content Management System (CMS) designed for convenient backend management, fast
-implementation, and modular design. It goes beyond the capabilities of a traditional CMS by offering a range of useful
-tools not commonly found in similar systems.
+## What is QUIQQER?
 
-QUIQQER was developed by PCSG - Computer & Internet Service OHG, a modern IT agency located in the beautiful city of
-Solingen, Germany. It was specifically created to facilitate the quick implementation of SaaS, e-commerce shops, and web
-applications.
+**QUIQQER is a PHP framework designed for all kinds of web projects.**
+
+QUIQQER has been continuously developed for over 15 years with the aim of creating a system that allows for the rapid
+implementation of SaaS (Software as a Service) solutions. While it originally began as a CMS (Content Management
+System), it has evolved into a highly versatile framework with more than 100 modules.
+
+In 2024, we initiated a comprehensive restructuring, which will be completed in 2025. Going forward, QUIQQER will offer
+a flexible module API and a robust administration system for users, rights, and groups.
+
+### Create customized solutions based on your needs:
+
+- **Want to create a blog?** Use QUIQQER + CMS + Blog Module
+- **Need an e-commerce store?** Use QUIQQER + ecoyn
+- **Looking for an ERP system?** Use QUIQQER + various ERP modules
+- **Building a SaaS solution?** Use QUIQQER + Orders + Invoices + Memberships + Plans
+
+Over 100 modules are already available and widely used and give you endless possibilities of how you can use QUIQQER. As the setup can sometimes be complex, we plan to release tutorials and videos in 2025 to help you get started.
+
+As strong supporters of open source, the core of QUIQQER is free and open source. Whether you're looking to build a
+SaaS, ERP, website, blog, ordering system, store, or MVP, QUIQQER has the tools to support you.
+
+---
+
+*QUIQQER is developed by PCSG - Computer & Internet Service OHG, a modern IT agency located in Solingen, Germany.*
+
 
 ### Features
 
@@ -66,13 +86,15 @@ you in creating and managing your web projects effectively.
 
 - https://www.quiqqer.com/Discover
 
+
 Getting Started
 ------
 
 To get started with QUIQQER, follow the [official instructions](https://www.quiqqer.com/Start-now).
 
-- [Installation via Web / Browser](https://www.quiqqer.com/Start-now/Installation#websetup)
 - [Installation via CLI / Server](https://www.quiqqer.com/Start-now/Installation#terminal-setup)
+- [Installation via Web / Browser](https://www.quiqqer.com/Start-now/Installation#websetup)
+
 
 Additional Resources
 ------
@@ -82,7 +104,6 @@ Expand your access to the QUIQQER community and find additional resources to get
 - [Main Website](https://www.quiqqer.com/): Visit the official website for comprehensive resources, documentation, and
   updates.
 - [Twitter: Main Developer Account](https://twitter.com/de_henne)
-- [Twitter: PCSG Company Account](https://twitter.com/pcsg_dev)
 - [Gitlab](https://dev.quiqqer.com/quiqqer/core): Access QUIQQER's GitLab page for discussions, issue reporting, and
   contributions.
 - [Discord](https://discord.gg/tjWg4ZE): Join the QUIQQER Discord server for real-time support and interactions with the
@@ -115,25 +136,14 @@ License
 
 - GPL-3.0+
 
+
 Thank you
 --------
 
 QUIQQER owes its existence and success to the dedicated efforts of numerous developers and projects. We would like to
-express our gratitude to the following software packages and their contributors:
+take this opportunity to thank all the open source projects on which QUIQQER is based. This starts with Linux and ends
+with various JavaScript libraries.
 
-- Composer (http://getcomposer.org)
-- MooTools (http://mootools.net/)
-- requirejs (requirejs.org/)
-- AMD css! plugin curl.js (https://github.com/cujojs/curl)
-- moofx (https://github.com/kamicane/moofx/)
-- Font Awesome (http://fontawesome.io/)
-- Basis and idea for the QUIQQER Font: http://fontfabric.com/multicolore-free-fonts/
-- All the Webstuff (PHP, Apache, NGINX, MySQL/MariaDB)
-
-We acknowledge that this list may not encompass all the contributions that have influenced QUIQQER, and we apologize for
-any omissions. We extend our sincere appreciation to all the developers and contributors who have played a part in the
-creation and evolution of QUIQQER.
-
-Thank you for your remarkable work and the lines of code that have shaped the development landscape.
+We hope that with QUIQQER we make the open source area a little better.
 
 Henning and Moritz from PCSG & QUIQQER
