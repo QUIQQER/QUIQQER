@@ -21,7 +21,7 @@ About QUIQQER
 ![Static Badge](https://img.shields.io/badge/Browser-Opera-red)
 ![Static Badge](https://img.shields.io/badge/Browser-Brave-orange)
 
-## What is QUIQQER?
+# What is QUIQQER?
 
 **QUIQQER is a PHP framework designed for all kinds of web projects.**
 
@@ -39,7 +39,8 @@ a flexible module API and a robust administration system for users, rights, and 
 - **Looking for an ERP system?** Use QUIQQER + various ERP modules
 - **Building a SaaS solution?** Use QUIQQER + Orders + Invoices + Memberships + Plans
 
-Over 100 modules are already available and widely used and give you endless possibilities of how you can use QUIQQER. As the setup can sometimes be complex, we plan to release tutorials and videos in 2025 to help you get started.
+Over 100 modules are already available and widely used . As the setup can sometimes be complex, we plan to release 
+tutorials and videos in 2025 to help you get started.
 
 As strong supporters of open source, the core of QUIQQER is free and open source. Whether you're looking to build a
 SaaS, ERP, website, blog, ordering system, store, or MVP, QUIQQER has the tools to support you.
@@ -48,11 +49,10 @@ SaaS, ERP, website, blog, ordering system, store, or MVP, QUIQQER has the tools 
 
 *QUIQQER is developed by PCSG - Computer & Internet Service OHG, a modern IT agency located in Solingen, Germany.*
 
-
 ### Features
 
 - Template System with Layouts: QUIQQER offers a flexible template system with layouts, allowing you to create visually
-  appealing and consistent designs for your web pages.
+  appealing and consistent designs for your web pages and web apps.
 
 - Modular Based Management System: QUIQQER is built on a modular architecture, enabling easy management and
   customization of various components to suit your specific project requirements.
@@ -60,8 +60,9 @@ SaaS, ERP, website, blog, ordering system, store, or MVP, QUIQQER has the tools 
 - Internal Package Management via Composer: QUIQQER integrates an internal package management system based on Composer.
   It also provides a bridge to npm and bower, giving you access to a vast number of packages for extended functionality.
 
-- Easy XML Module API: QUIQQER offers a simple XML module API that allows you to create and integrate XML files into
-  your projects with ease. This enables seamless integration of structured data within your applications.
+- Easy XML Module API: QUIQQER offers a robust XML module API that allows you to easily build modules and plugins. With
+  this API, you can define new page types, introduce custom user attributes, set up event reactions, extend user and
+  group functionalities, and much more, providing extensive customization options for your projects.
 
 - Event-Based System: QUIQQER employs an event-based system, enabling you to respond to and handle events within your
   applications effectively.
@@ -86,7 +87,6 @@ you in creating and managing your web projects effectively.
 
 - https://www.quiqqer.com/Discover
 
-
 Getting Started
 ------
 
@@ -94,7 +94,6 @@ To get started with QUIQQER, follow the [official instructions](https://www.quiq
 
 - [Installation via CLI / Server](https://www.quiqqer.com/Start-now/Installation#terminal-setup)
 - [Installation via Web / Browser](https://www.quiqqer.com/Start-now/Installation#websetup)
-
 
 Additional Resources
 ------
@@ -136,9 +135,9 @@ License
 
 - GPL-3.0+
 
-
 Thank you
 --------
+
 
 QUIQQER owes its existence and success to the dedicated efforts of numerous developers and projects. We would like to
 take this opportunity to thank all the open source projects on which QUIQQER is based. This starts with Linux and ends
