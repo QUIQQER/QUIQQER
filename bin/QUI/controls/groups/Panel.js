@@ -705,6 +705,10 @@ define('controls/groups/Panel', [
          * @param {Object} Group - classes/groups/Group
          */
         $onRefreshGroup: function(Groups, Group) {
+            if (typeof Group === 'undefined') {
+                return;
+            }
+
             var i, len;
 
             var Grid = this.getGrid(),
