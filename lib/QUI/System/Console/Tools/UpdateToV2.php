@@ -82,6 +82,9 @@ class UpdateToV2 extends QUI\System\Console\Tool
         $this->writeLn('- Execute QUIQQER v2 setup');
         chdir(CMS_DIR);
         system('./console update');
+
+        $this->writeLn('- Execute QUIQQER v2 migration');
+        system('./console quiqqer:migration-v2');
     }
 
     public function getLatestMajorVersion($package): string
