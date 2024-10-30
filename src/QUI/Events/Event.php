@@ -13,7 +13,9 @@ use Throwable;
 use function call_user_func;
 use function call_user_func_array;
 use function explode;
+use function gettype;
 use function is_array;
+use function is_callable;
 use function is_string;
 use function preg_replace;
 use function str_contains;
@@ -76,6 +78,13 @@ class Event implements QUI\Interfaces\Events
             if ($params['callable'] == $fn) {
                 return;
             }
+        }
+
+        if (!is_callable($fn)) {
+            QUI\System\Log::addError('Event error :: $fn is not callable', [
+                'fn' => is_string($fn) ? $fn : gettype($fn)
+            ]);
+            return;
         }
 
         $this->events[$event][] = [
