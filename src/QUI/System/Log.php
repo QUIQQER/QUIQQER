@@ -91,7 +91,7 @@ class Log
             return;
         }
 
-        if (!empty($_SERVER['REQUEST_URI'])) {
+        if (!empty($_SERVER['REQUEST_URI']) && defined('HOST')) {
             $context['request'] = HOST . $_SERVER['REQUEST_URI'];
         }
 
