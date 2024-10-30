@@ -1163,7 +1163,9 @@ class Rewrite
      */
     public function getOutput(): Output
     {
-        $this->Output->setProject($this->getProject());
+        if ($this->getProject()) {
+            $this->Output->setProject($this->getProject());
+        }
 
         return $this->Output;
     }
