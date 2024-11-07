@@ -16,7 +16,6 @@ use QUI\Projects\Site;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 use function array_flip;
@@ -27,13 +26,7 @@ use function count;
 use function define;
 use function defined;
 use function explode;
-use function fclose;
 use function file_exists;
-use function filesize;
-use function fopen;
-use function fread;
-use function gmdate;
-use function header;
 use function http_response_code;
 use function implode;
 use function in_array;
