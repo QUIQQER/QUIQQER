@@ -13,8 +13,11 @@ use QUI\Projects\Media\Image;
 use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Projects\Project;
 use QUI\Projects\Site;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 use function array_flip;
 use function array_map;
@@ -494,6 +497,7 @@ class Rewrite
             }
 
             // Dateien direkt im Browser ausgeben, da Cachedatei noch nicht verfügbar war
+            /*
             header("Content-Type: " . $Item->getAttribute('mime_type'));
             header("Expires: " . gmdate("D, d M Y H:i:s") . " GMT");
             header("Pragma: public");
@@ -505,8 +509,13 @@ class Rewrite
             $fo_image = fopen($file, "r");
             $fr_image = fread($fo_image, filesize($file));
             fclose($fo_image);
-
             echo $fr_image;
+            */
+
+            $response = new BinaryFileResponse($file);
+            $response->headers->set('Content-Type', $Item->getAttribute('mime_type'));
+            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE);
+            $response->send();
             exit;
         }
 
