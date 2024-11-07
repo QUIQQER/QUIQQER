@@ -490,23 +490,13 @@ class Rewrite
             }
 
             // Dateien direkt im Browser ausgeben, da Cachedatei noch nicht verfügbar war
-            /*
-            header("Content-Type: " . $Item->getAttribute('mime_type'));
-            header("Expires: " . gmdate("D, d M Y H:i:s") . " GMT");
-            header("Pragma: public");
-            header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-            header("Accept-Ranges: bytes");
-            header("Content-Disposition: inline; filename=\"" . pathinfo($file, PATHINFO_BASENAME) . "\"");
-            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+            header("Content-Length: " . filesize($file)); // workaround, symfony bug
 
-            $fo_image = fopen($file, "r");
-            $fr_image = fread($fo_image, filesize($file));
-            fclose($fo_image);
-            echo $fr_image;
-            */
-
+            // output
             $response = new BinaryFileResponse($file);
             $response->headers->set('Content-Type', $Item->getAttribute('mime_type'));
+            $response->headers->set('Accept-Ranges', 'bytes');
+            $response->headers->set('Content-Length', filesize($file));
             $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE);
             $response->send();
             exit;
