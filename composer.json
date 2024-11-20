@@ -71,7 +71,7 @@
     "quiqqer/requirements": "^3",
     "quiqqer/smarty": "^3|^4",
     "quiqqer/translator": "^2",
-    "quiqqer/utils": "^2",
+    "quiqqer/utils": "^2.0.9",
     "ramsey/uuid": "^4",
     "seld/jsonlint": "^1",
     "symfony/console": "^4|^5|^6",
