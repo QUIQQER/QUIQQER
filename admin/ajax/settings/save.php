@@ -84,7 +84,11 @@ QUI::$Ajax->registerFunction(
                     unset($params['db']);
                 }
 
-                // nonce check
+                if (empty($params['globals']['quiqqer_version'])) {
+                    $params['globals']['quiqqer_version'] = QUI::conf('globals', 'quiqqer_version');
+                }
+
+                    // nonce check
                 if (empty($params['globals']['nonce'])) {
                     throw new QUI\Exception('Could not save QUIQQER config');
                 }

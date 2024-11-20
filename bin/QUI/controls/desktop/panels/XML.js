@@ -128,7 +128,7 @@ define('controls/desktop/panels/XML', [
 
                 // load categories
                 let i, len, Category;
-                
+
                 if (this.getAttribute('alphabetical-order')) {
                     categories.sort(function(a, b) {
                         const aIndex = 'index' in a && a.index !== '' ? a.index : Infinity;
@@ -456,12 +456,13 @@ define('controls/desktop/panels/XML', [
          * Send the configuration to the server
          */
         save: function() {
+            this.Loader.show();
             this.unloadCategory(false);
 
             const inList = {};
 
             // filter controls with save method
-            const saveable = QUI.Controls.getControlsInElement(this.getBody()).filter(function(Control) {
+            const saveAble = QUI.Controls.getControlsInElement(this.getBody()).filter(function(Control) {
                 if (Control.getId() in inList) {
                     return false;
                 }
@@ -474,7 +475,7 @@ define('controls/desktop/panels/XML', [
                 return true;
             });
 
-            let promises = saveable.map(function(Control) {
+            let promises = saveAble.map(function(Control) {
                 return Control.save();
             }).filter(function(Promise) {
                 return typeof Promise.then === 'function';
@@ -484,19 +485,19 @@ define('controls/desktop/panels/XML', [
                 promises = [Promise.resolve()];
             }
 
-            Promise.all(promises).then(function() {
-                var Save = this.getButtonBar().getElement('save');
-
+            Promise.all(promises).then(() => {
+                const Save = this.getButtonBar().getElement('save');
                 Save.setAttribute('textimage', 'fa fa-refresh fa-spin');
 
-                Ajax.post('ajax_settings_save', function() {
+                Ajax.post('ajax_settings_save', () => {
                     Save.setAttribute('textimage', 'fa fa-save');
+                    this.Loader.hide();
                 }, {
                     file: JSON.encode(this.$file),
                     params: JSON.encode(this.$config)
                 });
 
-            }.bind(this));
+            });
         }
     });
 });
