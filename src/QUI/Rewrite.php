@@ -497,7 +497,7 @@ class Rewrite
             $response = new BinaryFileResponse($file);
             $response->headers->set('Content-Type', $Item->getAttribute('mime_type'));
             $response->headers->set('Accept-Ranges', 'bytes');
-            $response->headers->set('Content-Length', filesize($file));
+            $response->headers->set('Content-Length', (string)filesize($file));
             $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE);
             $response->send();
             exit;
