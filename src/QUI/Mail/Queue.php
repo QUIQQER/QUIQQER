@@ -30,13 +30,13 @@ use function time;
  */
 class Queue
 {
-    const int STATUS_ADDED = 0;
+    const STATUS_ADDED = 0;
 
-    const int STATUS_SENT = 1;
+    const STATUS_SENT = 1;
 
-    const int STATUS_SENDING = 2;
+    const STATUS_SENDING = 2;
 
-    const int STATUS_ERROR = 3;
+    const STATUS_ERROR = 3;
 
     /**
      * Execute the db mail queue setup
