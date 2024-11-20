@@ -199,6 +199,9 @@
         <locale name="permission.quiqqer.menu.settings">
             <de><![CDATA[Kann das Einstellungs-Menü sehen]]></de>
         </locale>
+        <locale name="permission.quiqqer.login">
+            <de><![CDATA[Darf sich  in das Frontend einloggen.]]></de>
+        </locale>
         <locale name="permission.quiqqer.admin">
             <de><![CDATA[Darf sich in das Backend (Administration) einloggen.]]></de>
         </locale>

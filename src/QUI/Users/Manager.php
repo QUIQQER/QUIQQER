@@ -1013,28 +1013,9 @@ class Manager
             $this->authenticate($Authenticator, $authData);
         }
 
-        // is one group active?
-        $activeGroupExists = false;
+        // has user permission for a login
+        QUI\Permissions\Permission::checkPermission('quiqqer.login', $User);
 
-        foreach ($User->getGroups() as $Group) {
-            /* @var $Group QUI\Groups\Group */
-            if ($Group->getAttribute('active') == 1) {
-                $activeGroupExists = true;
-                break;
-            }
-        }
-
-        if ($activeGroupExists === false) {
-            $Exception = new QUI\Users\Exception(
-                ['quiqqer/core', 'exception.login.fail'],
-                401
-            );
-
-            $Exception->setAttribute('reason', self::AUTH_ERROR_NO_ACTIVE_GROUP);
-            $Events->fireEvent('userLoginError', [$userId, $Exception]);
-
-            throw $Exception;
-        }
 
         // session
         QUI::getSession()->remove('inAuthentication');
