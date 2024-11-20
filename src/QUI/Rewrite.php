@@ -40,6 +40,7 @@ use function mb_substr_count;
 use function parse_url;
 use function pathinfo;
 use function str_replace;
+use function str_starts_with;
 use function strlen;
 use function strpos;
 use function strrpos;
@@ -907,6 +908,10 @@ class Rewrite
         if (!isset($vhosts[$http_host]) && str_contains($http_host, ':')) {
             // ...then drop the port as a fallback
             $http_host = explode(':', $http_host)[0];
+        }
+
+        if (!isset($vhosts[$http_host]) && str_starts_with($http_host, 'www.')) {
+            $http_host = mb_substr($http_host, 4);
         }
 
         if (!isset($vhosts[$http_host])) {
