@@ -30,13 +30,13 @@ use function time;
  */
 class Queue
 {
-    const STATUS_ADDED = 0;
+    const int STATUS_ADDED = 0;
 
-    const STATUS_SENT = 1;
+    const int STATUS_SENT = 1;
 
-    const STATUS_SENDING = 2;
+    const int STATUS_SENDING = 2;
 
-    const STATUS_ERROR = 3;
+    const int STATUS_ERROR = 3;
 
     /**
      * Execute the db mail queue setup
@@ -520,6 +520,15 @@ class Queue
                 ]);
 
                 return true;
+            } else {
+                QUI::getDataBase()->update(
+                    self::table(),
+                    [
+                        'status' => self::STATUS_ADDED,
+                        'retry' => $entry['retry'] + 1
+                    ],
+                    ['id' => $entry['id']]
+                );
             }
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError(
