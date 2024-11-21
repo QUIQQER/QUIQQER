@@ -40,6 +40,21 @@ QUI::$Ajax->registerFunction(
 
             if (!empty($windowName) && $windowName !== 'qui-desktop-panel') {
                 $Settings->setXMLPath('//quiqqer/settings/window[@name="' . $windowName . '"]');
+
+                // if window name exists, load the packages with a settings.xml
+                $packages = QUI::getPackageManager()->searchInstalledPackages([
+                    'type' => 'quiqqer-module'
+                ]);
+
+                foreach ($packages as $package) {
+                    if (isset($package['_settings'])) {
+                        $settingXml = OPT_DIR . $package['name'] . '/settings.xml';
+
+                        if (file_exists($settingXml) && !in_array($settingXml, $files)) {
+                            $files[] = trim(URL_OPT_DIR . $package['name'] . '/settings.xml', '/');
+                        }
+                    }
+                }
             } else {
                 $Settings->setXMLPath('//quiqqer/settings/window');
             }

@@ -18,15 +18,34 @@ QUI::$Ajax->registerFunction(
             $files = json_decode($file, true);
         }
 
+        if (!is_array($files)) {
+            $files = [$files];
+        }
+
         $cacheName = 'quiqqer/package/quiqqer/core/menu/categories/' . md5(json_encode($files)) . '/' . $category;
 
         try {
             $result = QUI\Cache\Manager::get($cacheName);
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Exception) {
             $Settings = QUI\Utils\XML\Settings::getInstance();
 
             if (!empty($windowName) && $windowName !== 'qui-desktop-panel') {
                 $Settings->setXMLPath('//quiqqer/settings/window[@name="' . $windowName . '"]');
+
+                // if window name exists, load the packages with a settings.xml
+                $packages = QUI::getPackageManager()->searchInstalledPackages([
+                    'type' => 'quiqqer-module'
+                ]);
+
+                foreach ($packages as $package) {
+                    if (isset($package['_settings'])) {
+                        $settingXml = OPT_DIR . $package['name'] . '/settings.xml';
+
+                        if (file_exists($settingXml) && !in_array($settingXml, $files)) {
+                            $files[] = trim(URL_OPT_DIR . $package['name'] . '/settings.xml', '/');
+                        }
+                    }
+                }
             } else {
                 $Settings->setXMLPath('//quiqqer/settings/window');
             }
