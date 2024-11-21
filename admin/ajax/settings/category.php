@@ -22,6 +22,18 @@ QUI::$Ajax->registerFunction(
             $files = [$files];
         }
 
+        foreach ($files as $k => $file) {
+            if (file_exists(OPT_DIR . $file)) {
+                $files[$k] = OPT_DIR . $file;
+                continue;
+            }
+
+            if (file_exists(CMS_DIR . $file)) {
+                $files[$k] = CMS_DIR . $file;
+            }
+        }
+
+
         $cacheName = 'quiqqer/package/quiqqer/core/menu/categories/' . md5(json_encode($files)) . '/' . $category;
 
         try {
@@ -41,11 +53,13 @@ QUI::$Ajax->registerFunction(
                     if (isset($package['_settings'])) {
                         $settingXml = OPT_DIR . $package['name'] . '/settings.xml';
 
-                        if (file_exists($settingXml) && !in_array($settingXml, $files)) {
-                            $files[] = trim(URL_OPT_DIR . $package['name'] . '/settings.xml', '/');
+                        if (file_exists($settingXml)) {
+                            $files[] = $settingXml;
                         }
                     }
                 }
+
+                $files = array_unique($files);
             } else {
                 $Settings->setXMLPath('//quiqqer/settings/window');
             }
