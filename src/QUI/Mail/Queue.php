@@ -238,6 +238,8 @@ class Queue
             return false;
         }
 
+        $PhpMailer = null;
+
         try {
             $PhpMailer = QUI::getMailManager()->getPHPMailer();
 
@@ -367,6 +369,14 @@ class Queue
 
             return true;
         } catch (Exception $Exception) {
+            $retries = QUI::getEvents()->fireEvent('onMailQueueSendError', [$this, $PhpMailer, $Exception]);
+
+            foreach ($retries as $retry) {
+                if ($retry) {
+                    return true;
+                }
+            }
+
             $message = $Exception->getMessage();
 
             if (str_contains($message, 'Recipient address rejected:')) {
@@ -520,16 +530,16 @@ class Queue
                 ]);
 
                 return true;
-            } else {
-                QUI::getDataBase()->update(
-                    self::table(),
-                    [
-                        'status' => self::STATUS_ADDED,
-                        'retry' => $entry['retry'] + 1
-                    ],
-                    ['id' => $entry['id']]
-                );
             }
+
+            QUI::getDataBase()->update(
+                self::table(),
+                [
+                    'status' => self::STATUS_ADDED,
+                    'retry' => $entry['retry'] + 1
+                ],
+                ['id' => $entry['id']]
+            );
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError(
                 $Exception->getMessage(),
@@ -537,6 +547,8 @@ class Queue
                 'mail_queue'
             );
         }
+
+        QUI::getEvents()->fireEvent('onMailQueueError', [$entry]);
 
         return false;
     }

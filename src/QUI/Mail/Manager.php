@@ -72,6 +72,14 @@ class Manager
 
     public function getPHPMailer(): PHPMailer
     {
+        $phpInitMailer = QUI::getEvents()->fireEvent('getPhpMailerInitStart');
+
+        foreach ($phpInitMailer as $return) {
+            if ($return instanceof PHPMailer) {
+                return $return;
+            }
+        }
+
         $config = QUI::conf('mail');
         $Mail = new PHPMailer(true);
 

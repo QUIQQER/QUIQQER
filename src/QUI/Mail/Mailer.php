@@ -294,6 +294,14 @@ class Mailer extends QUI\QDOM
 
             return true;
         } catch (Exception $Exception) {
+            $tryings = QUI::getEvents()->fireEvent('onMailSendError', [$this, $PHPMailer, $Exception]);
+
+            foreach ($tryings as $try) {
+                if ($try) {
+                    return true;
+                }
+            }
+
             Log::logException($Exception);
 
             throw new QUI\Exception(
