@@ -238,6 +238,8 @@ class Queue
             return false;
         }
 
+        $PhpMailer = null;
+
         try {
             $PhpMailer = QUI::getMailManager()->getPHPMailer();
 
@@ -367,6 +369,14 @@ class Queue
 
             return true;
         } catch (Exception $Exception) {
+            $retries = QUI::getEvents()->fireEvent('onMailQueueSendError', [$this, $PhpMailer, $Exception]);
+
+            foreach ($retries as $retry) {
+                if ($retry) {
+                    return true;
+                }
+            }
+
             $message = $Exception->getMessage();
 
             if (str_contains($message, 'Recipient address rejected:')) {
