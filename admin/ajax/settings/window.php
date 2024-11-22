@@ -20,6 +20,10 @@ QUI::$Ajax->registerFunction(
             $files = json_decode($file, true);
         }
 
+        if (!is_array($files)) {
+            $files = [$files];
+        }
+
         foreach ($files as $k => $file) {
             if (file_exists(OPT_DIR . $file)) {
                 $files[$k] = OPT_DIR . $file;
