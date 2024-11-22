@@ -520,16 +520,16 @@ class Queue
                 ]);
 
                 return true;
-            } else {
-                QUI::getDataBase()->update(
-                    self::table(),
-                    [
-                        'status' => self::STATUS_ADDED,
-                        'retry' => $entry['retry'] + 1
-                    ],
-                    ['id' => $entry['id']]
-                );
             }
+
+            QUI::getDataBase()->update(
+                self::table(),
+                [
+                    'status' => self::STATUS_ADDED,
+                    'retry' => $entry['retry'] + 1
+                ],
+                ['id' => $entry['id']]
+            );
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError(
                 $Exception->getMessage(),
@@ -537,6 +537,8 @@ class Queue
                 'mail_queue'
             );
         }
+
+        QUI::getEvents()->fireEvent('onMailQueueError', [$entry]);
 
         return false;
     }
