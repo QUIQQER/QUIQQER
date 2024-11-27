@@ -417,8 +417,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                 'imagesize' => true
             ]);
 
-            $width = $info['width'];
-            $height = $info['height'];
+            $width = $info['width'] ?? 100;
+            $height = $info['height'] ?? 100;
         }
 
         $maxConfigSize = $this->getProject()->getConfig('media_maxUploadSize');
