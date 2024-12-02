@@ -538,6 +538,7 @@ class Address extends QUI\QDOM
             QUI::getDataBase()->update(
                 Manager::tableAddress(),
                 [
+                    'title' => $cleanupAttributes($this->getAttribute('title')),
                     'salutation' => $cleanupAttributes($this->getAttribute('salutation')),
                     'firstname' => $cleanupAttributes($this->getAttribute('firstname')),
                     'lastname' => $cleanupAttributes($this->getAttribute('lastname')),
