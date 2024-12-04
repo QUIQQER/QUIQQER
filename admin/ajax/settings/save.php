@@ -104,6 +104,7 @@ QUI::$Ajax->registerFunction(
             }
 
             QUI\Utils\Text\XML::setConfigFromXml($file, $params);
+            QUI::$Conf->reload();
 
             QUI::getMessagesHandler()->addSuccess(
                 QUI::getLocale()->get('quiqqer/core', 'message.config.saved')
@@ -125,7 +126,6 @@ QUI::$Ajax->registerFunction(
             }
 
             // generate ./console
-            QUI::$Conf->reload();
             QUI\Setup::generateFileLinks();
 
             # Save the current .htaccess content to see if the config changed
