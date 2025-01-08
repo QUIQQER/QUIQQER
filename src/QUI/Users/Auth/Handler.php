@@ -6,9 +6,12 @@
 
 namespace QUI\Users\Auth;
 
+use Composer\Semver\Semver;
 use QUI;
 use QUI\Database\Exception;
 use QUI\Users\AuthenticatorInterface;
+use QUI\Verification\Interface\VerificationFactoryInterface;
+use QUI\Verification\VerificationFactory;
 
 use function array_flip;
 use function array_merge;
@@ -31,6 +34,13 @@ class Handler
      * global instance
      */
     protected static ?Handler $Instance = null;
+
+    public function __construct(private ?VerificationFactoryInterface $verificationFactory = null)
+    {
+        if (is_null($this->verificationFactory)) {
+            $this->verificationFactory = new VerificationFactory();
+        }
+    }
 
     /**
      * Return the global QUI\Users\Auth\Handler instance
@@ -252,12 +262,16 @@ class Handler
 
         $Project = QUI::getRewrite()->getProject();
 
-        $PasswordResetVerification = new PasswordResetVerification($User->getUUID(), [
-            'project' => $Project->getName(),
-            'projectLang' => $Project->getLang()
-        ]);
-
-        $confirmLink = QUI\Verification\Verifier::startVerification($PasswordResetVerification, true);
+        $verification = $this->verificationFactory->createLinkVerification(
+            'resetpassword-' . $User->getUUID(),
+            new PasswordResetVerification(),
+            [
+                'uuid' => $User->getUUID(),
+                'project' => $Project->getName(),
+                'projectLang' => $Project->getLang()
+            ],
+            true
+        );
 
         $L = QUI::getLocale();
         $lg = 'quiqqer/core';
@@ -270,7 +284,7 @@ class Handler
             'body' => $L->get($lg, 'mail.auth.password_reset_confirm.body', [
                 'username' => $User->getUsername(),
                 'date' => $L->formatDate(time()),
-                'confirmLink' => $confirmLink
+                'confirmLink' => $verification->getVerificationUrl()
             ])
         ]);
 
@@ -286,18 +300,22 @@ class Handler
     }
 
     /**
-     * Check if the package "quiqqer/verification" is installed
+     * Check if the package "quiqqer/verification" is installed and has the minimal required version.
      */
     public function isQuiqqerVerificationPackageInstalled(): bool
     {
-        $isInstalled = true;
-
-        try {
-            QUI::getPackage('quiqqer/verification');
-        } catch (\Exception) {
-            $isInstalled = false;
+        if (!QUI::getPackageManager()->isInstalled('quiqqer/verification')) {
+            return false;
         }
 
-        return $isInstalled;
+        try {
+            $package = QUI::getPackage('quiqqer/verification');
+            $requiredVersion = "^3|dev-*";
+
+            return Semver::satisfies($package->getVersion(), $requiredVersion);
+        } catch (\Exception $exception) {
+            QUI\System\Log::writeDebugException($exception);
+            return false;
+        }
     }
 }

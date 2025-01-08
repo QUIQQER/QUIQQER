@@ -1911,7 +1911,7 @@
         </locale>
         <locale name="exception.user.auth.handler.verification_package_not_installed">
             <en>
-                <![CDATA[Confirmation mail for "Password reset" cannot be sent because the package "quiqqer/verification" is not installed.]]></en>
+                <![CDATA[Confirmation mail for "Password reset" cannot be sent because the package "quiqqer/verification" is not installed or not installed in the required version (^3).]]></en>
         </locale>
         <locale name="exception.user.auth.handler.missing_user_email">
             <en>
