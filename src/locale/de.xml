@@ -3176,7 +3176,7 @@
         <locale name="exception.user.auth.handler.verification_package_not_installed">
             <de><![CDATA[
             Bestätigungs-Mail für das "Passwort zurücksetzen" kann nicht versendet werden,
-            da das Paket "quiqqer/verification" nicht installiert ist.
+            da das Paket "quiqqer/verification" nicht oder nicht in der korrekten Version (^3) installiert ist.
             ]]></de>
         </locale>
         <locale name="exception.user.auth.handler.missing_user_email">
