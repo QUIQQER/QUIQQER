@@ -110,6 +110,11 @@ class Licence extends QUI\System\Console\Tool
             return;
         }
 
+        try {
+            QUI::getEvents()->fireEvent('quiqqerConsoleLicence', [$packageName]);
+        } catch (QUI\Exception) {
+        }
+
         $this->writeLn("Package '$packageName' does not specify a license.", 'red');
     }
 
@@ -146,6 +151,11 @@ class Licence extends QUI\System\Console\Tool
                 $package['name'],
                 $license
             ];
+        }
+
+        try {
+            QUI::getEvents()->fireEvent('quiqqerConsoleLicenceList', [&$data]);
+        } catch (QUI\Exception) {
         }
 
         $Climate = new CLImate();
