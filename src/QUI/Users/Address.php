@@ -47,7 +47,7 @@ class Address extends QUI\QDOM
     protected ?QUIUserInterface $User = null;
 
     /**
-     * @throws Exception
+     * @throws Exception|QUI\ExceptionStack
      */
     public function __construct(QUIUserInterface $User, int|string $id)
     {
@@ -111,6 +111,8 @@ class Address extends QUI\QDOM
 
         unset($data['id']);
         unset($data['uid']);
+
+        QUI::getEvents()->fireEvent('userAddressInitData', [$this, &$data]);
 
         if (!empty($data['custom_data'])) {
             $this->setCustomData(json_decode($data['custom_data'], true));
@@ -534,49 +536,46 @@ class Address extends QUI\QDOM
             return Orthos::clearPath($str);
         };
 
+        $dbData = [
+            'title' => $cleanupAttributes($this->getAttribute('title')),
+            'salutation' => $cleanupAttributes($this->getAttribute('salutation')),
+            'firstname' => $cleanupAttributes($this->getAttribute('firstname')),
+            'lastname' => $cleanupAttributes($this->getAttribute('lastname')),
+            'company' => $cleanupAttributes($this->getAttribute('company')),
+            'delivery' => $cleanupAttributes($this->getAttribute('delivery')),
+            'street_no' => $cleanupAttributes($this->getAttribute('street_no')),
+            'zip' => $cleanupAttributes($this->getAttribute('zip')),
+            'city' => $cleanupAttributes($this->getAttribute('city')),
+            'country' => $cleanupAttributes($this->getAttribute('country')),
+            'mail' => $mail,
+            'phone' => $phone,
+            'custom_data' => json_encode($this->getCustomData()),
+            'e_date' => date('Y-m-d H:i:s')
+        ];
+
+        QUI::getEvents()->fireEvent('userAddressSaveBefore', [$this, $this->getUser(), &$dbData]);
+
         try {
             QUI::getDataBase()->update(
                 Manager::tableAddress(),
-                [
-                    'title' => $cleanupAttributes($this->getAttribute('title')),
-                    'salutation' => $cleanupAttributes($this->getAttribute('salutation')),
-                    'firstname' => $cleanupAttributes($this->getAttribute('firstname')),
-                    'lastname' => $cleanupAttributes($this->getAttribute('lastname')),
-                    'company' => $cleanupAttributes($this->getAttribute('company')),
-                    'delivery' => $cleanupAttributes($this->getAttribute('delivery')),
-                    'street_no' => $cleanupAttributes($this->getAttribute('street_no')),
-                    'zip' => $cleanupAttributes($this->getAttribute('zip')),
-                    'city' => $cleanupAttributes($this->getAttribute('city')),
-                    'country' => $cleanupAttributes($this->getAttribute('country')),
-                    'mail' => $mail,
-                    'phone' => $phone,
-                    'custom_data' => json_encode($this->getCustomData()),
-                    'e_date' => date('Y-m-d H:i:s')
-                ],
-                [
-                    'uuid' => $this->getUUID()
-                ]
+                $dbData,
+                ['uuid' => $this->getUUID()]
             );
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
             QUI\System\Log::writeDebugException($Exception);
         }
 
-        try {
-            // update user firstname lastname, if this address is the default address
-            if ($User->getStandardAddress()->getUUID() === $this->getUUID()) {
-                $mailList = $this->getMailList();
+        if ($User->getStandardAddress()->getUUID() === $this->getUUID()) {
+            $mailList = $this->getMailList();
 
-                if (count($mailList)) {
-                    $email = reset($mailList);
-                    $User->setAttribute('email', $cleanupAttributes($email));
-                }
-
-                $User->setAttribute('firstname', $cleanupAttributes($this->getAttribute('firstname')));
-                $User->setAttribute('lastname', $cleanupAttributes($this->getAttribute('lastname')));
+            if (count($mailList)) {
+                $email = reset($mailList);
+                $User->setAttribute('email', $cleanupAttributes($email));
             }
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::addDebug($Exception->getMessage());
+
+            $User->setAttribute('firstname', $cleanupAttributes($this->getAttribute('firstname')));
+            $User->setAttribute('lastname', $cleanupAttributes($this->getAttribute('lastname')));
         }
 
         try {

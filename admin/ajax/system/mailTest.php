@@ -110,7 +110,7 @@ QUI::$Ajax->registerFunction(
             $Mailers->setSubject(QUI::getLocale()->get('quiqqer/core', 'text.mail.subject'));
             $Mailers->setBody(QUI::getLocale()->get('quiqqer/core', 'text.mail.body'));
             $Mailers->addRecipient($mailRecipient);
-            $Mailers->send();
+            $Mailers->send($Mail);
         } catch (Exception $Exception) {
             QUI\Mail\Log::logException($Exception);
         }
