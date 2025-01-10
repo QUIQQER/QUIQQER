@@ -37,7 +37,7 @@ class Handler
 
     public function __construct(private ?VerificationFactoryInterface $verificationFactory = null)
     {
-        if (is_null($this->verificationFactory)) {
+        if (is_null($this->verificationFactory) && $this->isQuiqqerVerificationPackageInstalled()) {
             $this->verificationFactory = new VerificationFactory();
         }
     }
