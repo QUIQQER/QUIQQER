@@ -94,7 +94,8 @@ class Mailer extends QUI\QDOM
 
         // html mail template
         $this->Template = new Template([
-            'Project' => $this->getAttribute('Project')
+            'Project' => $this->getAttribute('Project'),
+            'Mailer' => $this
         ]);
 
         try {
