@@ -19,19 +19,20 @@ QUI::$Ajax->registerFunction(
                 $authenticator,
                 json_decode($params, true)
             );
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Users\UserAuthException | QUI\Users\Auth\Exception | QUI\Users\Exception $Exception) {
             if ($Exception->getCode() === 429) {
                 throw new QUI\Users\UserAuthException(
-                    [
-                        'quiqqer/quiqqer',
-                        'exception.login.fail.login_locked'
-                    ],
+                    ['quiqqer/core', 'exception.login.fail.login_locked'],
                     $Exception->getCode()
                 );
             }
 
+            throw $Exception;
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+
             throw new QUI\Users\UserAuthException(
-                $Exception->getMessage(),
+                ['quiqqer/core', 'exception.login.fail'],
                 $Exception->getCode()
             );
         }
