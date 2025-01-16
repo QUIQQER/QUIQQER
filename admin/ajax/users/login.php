@@ -21,7 +21,7 @@ QUI::$Ajax->registerFunction(
                 $authenticator,
                 json_decode($params, true)
             );
-        } catch (QUI\Users\UserAuthException|QUI\Users\Auth\Exception|QUI\Users\Exception $Exception) {
+        } catch (QUI\Users\UserAuthException | QUI\Users\Auth\Exception | QUI\Users\Exception $Exception) {
             if ($Exception->getCode() === 429) {
                 throw new QUI\Users\UserAuthException(
                     ['quiqqer/core', 'exception.login.fail.login_locked'],
