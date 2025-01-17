@@ -142,7 +142,7 @@ function exception_handler(\Throwable $Exception): void
 
     echo json_encode([
         'error' => true,
-        'message' => $Exception->getMessage(),
+        'message' => 'An error occurred. Check the log for more details.',
         'code' => $code
     ]);
 }
