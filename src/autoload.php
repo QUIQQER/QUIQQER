@@ -138,6 +138,10 @@ function exception_handler(\Throwable $Exception): void
         header('Content-Type: application/json');
     }
 
+    if (php_sapi_name() === 'cli') {
+        Log::writeException($Exception);
+    }
+
     Log::addError($Exception->getMessage());
 
     echo json_encode([
