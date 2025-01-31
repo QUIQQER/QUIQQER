@@ -325,7 +325,10 @@ define('classes/request/BulkUpload', [
                 return acc;
             }, {});
 
-            const url = URL_LIB_DIR + 'QUI/Upload/bin/upload.php?' + Object.toQueryString(p);
+            let qs = Object.toQueryString(p);
+            qs = btoa(qs);
+
+            const url = URL_LIB_DIR + 'QUI/Upload/bin/upload.php?qs=' + qs;
 
             return fetch(url, {
                 method: 'PUT',
