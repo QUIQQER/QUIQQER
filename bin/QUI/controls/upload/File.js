@@ -575,8 +575,11 @@ define('controls/upload/File', [
 
             QUI.fireEvent('upload', [this]);
 
+            let qs = Object.toQueryString(UploadParams);
+            qs = btoa(qs);
+
             // $project, $parentid, $file, $data
-            const url = URL_LIB_DIR + 'QUI/Upload/bin/upload.php?' + Object.toQueryString(UploadParams);
+            const url = URL_LIB_DIR + 'QUI/Upload/bin/upload.php?qs=' + qs;
 
             fetch(url, {
                 method : 'PUT',

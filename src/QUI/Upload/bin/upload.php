@@ -5,6 +5,15 @@
  * if the browser supports no html5 upload
  */
 
+if (!empty($_GET['qs'])) {
+    $qs = $_GET['qs'];
+    $qs = base64_decode($qs);
+
+    if ($qs) {
+        parse_str($qs, $_GET);
+    }
+}
+
 $dir = str_replace('quiqqer/core/src/QUI/Upload/bin', '', __DIR__);
 define('QUIQQER_SYSTEM', true);
 define('QUIQQER_AJAX', true);
