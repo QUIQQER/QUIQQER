@@ -268,7 +268,6 @@ define('controls/desktop/panels/XML', [
                     QUI.parse(Body),
                     ControlUtils.parse(Body)
                 ]).then(function() {
-
                     var i, len, Node, Control, nodeName;
                     var quiElements = Body.getElements('[data-quiid]');
 
@@ -299,7 +298,6 @@ define('controls/desktop/panels/XML', [
                         Control.setValue(self.$config[Node.get('name')]);
                     }
 
-
                     // require?
                     if (!Category.getAttribute('require')) {
                         self.Loader.hide();
@@ -311,14 +309,12 @@ define('controls/desktop/panels/XML', [
 
                         if (type === 'function') {
                             R(self);
-
                         } else {
                             if (type === 'class') {
                                 self.$Control = new R(self);
 
                                 if (self.getContent().get('html') === '') {
                                     self.$Control.inject(Form);
-
                                 } else {
                                     self.$Control.imports(Form);
                                 }
@@ -326,7 +322,6 @@ define('controls/desktop/panels/XML', [
                         }
 
                         self.Loader.hide();
-
                     }, function(err) {
                         QUI.getMessageHandler(function(MH) {
                             MH.addAttention(
@@ -340,7 +335,6 @@ define('controls/desktop/panels/XML', [
                         self.Loader.hide();
                     });
                 });
-
             }, {
                 file: JSON.encode(file),
                 category: Category.getAttribute('name'),

@@ -18,7 +18,7 @@ define('controls/cache/General', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/cache/General',
+        Type: 'controls/cache/General',
 
         Binds: [
             '$onImport',
@@ -27,7 +27,7 @@ define('controls/cache/General', [
         ],
 
         initialize: function (Settings) {
-            this.$Settings   = Settings;
+            this.$Settings = Settings;
             this.$RedisCheck = null;
 
             this.addEvents({
@@ -41,12 +41,24 @@ define('controls/cache/General', [
         $onImport: function () {
             var i, len, Table;
 
-            var Elm        = this.getElm(),
-                CacheType  = Elm.querySelector('[name="general.cacheType"]'),
+            var Elm = this.getElm(),
+                CacheType = Elm.querySelector('[name="general.cacheType"]'),
                 RedisTable = Elm.querySelector('[name="general.redis"]').getParent('table'),
-                data       = this.$Settings.serialize();
+                data = this.$Settings.serialize();
 
             // default setting check
+            if (typeof data.config.general.cacheType !== 'undefined') {
+                let cacheType = data.config.general.cacheType;
+
+                if (typeof data.config.handlers[cacheType] !== 'undefined') {
+                    Object.keys(data.config.handlers).forEach(key => {
+                        data.config.handlers[key] = 0;
+                    });
+
+                    data.config.handlers[cacheType] = 1;
+                }
+            }
+
             if (typeof data.config.handlers !== 'undefined') {
                 var handlers = data.config.handlers;
 
@@ -81,7 +93,7 @@ define('controls/cache/General', [
 
             // redis check
             this.$RedisCheck = new QUIButton({
-                text  : QUILocale.get('quiqqer/core', 'quiqqer.settings.cache.redis.check.button'),
+                text: QUILocale.get('quiqqer/core', 'quiqqer.settings.cache.redis.check.button'),
                 events: {
                     onClick: this.redisCheck
                 }
@@ -94,14 +106,14 @@ define('controls/cache/General', [
          * event: on type change
          */
         $onTypeChange: function () {
-            var self       = this,
-                Elm        = this.getElm(),
-                CacheType  = Elm.querySelector('[name="general.cacheType"]'),
+            var self = this,
+                Elm = this.getElm(),
+                CacheType = Elm.querySelector('[name="general.cacheType"]'),
                 RedisTable = Elm.querySelector('[name="general.redis"]').getParent('table'),
-                APCTable   = Elm.querySelector('[name="apc.namespace"]').getParent('table'),
-                MemTable   = Elm.querySelector('[name="memcache.servers"]').getParent('table'),
+                APCTable = Elm.querySelector('[name="apc.namespace"]').getParent('table'),
+                MemTable = Elm.querySelector('[name="memcache.servers"]').getParent('table'),
                 MongoTable = Elm.querySelector('[name="mongo.host"]').getParent('table'),
-                FileTable  = Elm.querySelector('[name="filesystem.path"]').getParent('table');
+                FileTable = Elm.querySelector('[name="filesystem.path"]').getParent('table');
 
             RedisTable.setStyle('display', 'none');
             APCTable.setStyle('display', 'none');
@@ -135,7 +147,7 @@ define('controls/cache/General', [
                         if (!availability) {
                             var RowMessage = new Element('tr', {
                                 'class': 'mongo-error-message',
-                                html   : '<td>' +
+                                html: '<td>' +
                                     '<div class="messages-message message-error">' +
                                     QUILocale.get('quiqqer/core', 'message.quiqqer.mongo.missing') +
                                     '</div>' +
@@ -152,7 +164,7 @@ define('controls/cache/General', [
 
                         new Element('tr', {
                             'class': 'mongo-check-button',
-                            html   : '<td>' +
+                            html: '<td>' +
                                 '<button class="qui-button" style="float: right">' +
                                 QUILocale.get('quiqqer/core', 'message.quiqqer.mongo.button') +
                                 '</button>' +
@@ -196,7 +208,7 @@ define('controls/cache/General', [
                 );
 
                 var message = result.message;
-                var status  = result.status;
+                var status = result.status;
 
                 QUI.getMessageHandler().then(function (MH) {
                     if (status === -1) {
@@ -233,16 +245,16 @@ define('controls/cache/General', [
          * @return {Promise}
          */
         checkMongoDB: function () {
-            var Elm  = this.getElm(),
+            var Elm = this.getElm(),
                 Form = Elm.querySelector('[name="mongo.host"]').getParent('form');
 
             return new Promise(function (resolve) {
                 QUIAjax.get('ajax_system_cache_mongoCheck', resolve, {
-                    'host'      : Form.elements['mongo.host'].value,
-                    'database'  : Form.elements['mongo.database'].value,
+                    'host': Form.elements['mongo.host'].value,
+                    'database': Form.elements['mongo.database'].value,
                     'collection': Form.elements['mongo.collection'].value,
-                    'username'  : Form.elements['mongo.username'].value,
-                    'password'  : Form.elements['mongo.password'].value
+                    'username': Form.elements['mongo.username'].value,
+                    'password': Form.elements['mongo.password'].value
                 });
             });
         }
