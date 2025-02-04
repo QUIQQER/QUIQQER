@@ -161,11 +161,6 @@ parameters:
 			path: src/QUI/Projects/Media/Image.php
 
 		-
-			message: "#^Parameter \\#2 \\$flags of function pathinfo expects int, array\\|true given\\.$#"
-			count: 1
-			path: src/QUI/Projects/Media/Item.php
-
-		-
 			message: "#^Parameter \\#2 \\$User of method QUI\\\\Projects\\\\Site\\:\\:checkPermission\\(\\) expects bool\\|QUI\\\\Users\\\\User, QUI\\\\Interfaces\\\\Users\\\\User\\|null given\\.$#"
 			count: 4
 			path: src/QUI/Projects/Site/Edit.php
