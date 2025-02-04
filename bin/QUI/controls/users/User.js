@@ -27,8 +27,8 @@ define('controls/users/User', [
 
     'css!controls/users/User.css'
 
-], function(QUI, QUIPanel, QUIButton, QUIButtonSwitch, QUIButtonMultiple, QUIConfirm, Grid,
-    FormUtils, ControlUtils, Users, QUIAjax, QUILocale, Editors
+], function (QUI, QUIPanel, QUIButton, QUIButtonSwitch, QUIButtonMultiple, QUIConfirm, Grid,
+             FormUtils, ControlUtils, Users, QUIAjax, QUILocale, Editors
 ) {
     'use strict';
 
@@ -61,7 +61,7 @@ define('controls/users/User', [
             '$onClickSendMail'
         ],
 
-        initialize: function(uid, options) {
+        initialize: function (uid, options) {
             this.$uid = uid;
             this.$userId = uid;
             this.setAttribute('name', 'user-panel-' + uid);
@@ -75,7 +75,7 @@ define('controls/users/User', [
             this.addEvents({
                 onCreate: this.$onCreate,
                 onDestroy: this.$onDestroy,
-                onShow: function() {
+                onShow: function () {
                     const Status = this.getButtons('status');
 
                     if (Status) {
@@ -92,7 +92,7 @@ define('controls/users/User', [
          *
          * @return {Object} data
          */
-        serialize: function() {
+        serialize: function () {
             return {
                 attributes: this.getAttributes(),
                 userid: this.getUser().getId(),
@@ -106,7 +106,7 @@ define('controls/users/User', [
          * @param {Object} data
          * @return {Object} this (controls/users/User)
          */
-        unserialize: function(data) {
+        unserialize: function (data) {
             this.setAttributes(data.attributes);
 
             this.$uid = data.userid;
@@ -125,18 +125,18 @@ define('controls/users/User', [
          *
          * @return {Object} classes/users/User
          */
-        getUser: function() {
+        getUser: function () {
             return Users.get(this.$userId);
         },
 
         /**
          * Opens the user permissions
          */
-        openPermissions: function() {
+        openPermissions: function () {
             const Parent = this.getParent(),
                 User = this.getUser();
 
-            require(['controls/permissions/Panel'], function(PermPanel) {
+            require(['controls/permissions/Panel'], function (PermPanel) {
                 Parent.appendChild(
                     new PermPanel({
                         'Object': User
@@ -148,7 +148,7 @@ define('controls/users/User', [
         /**
          * Create the user panel
          */
-        $onCreate: function() {
+        $onCreate: function () {
             const self = this;
 
             this.Loader.show();
@@ -183,14 +183,14 @@ define('controls/users/User', [
                 textimage: 'fa fa-caret-down',
                 title: QUILocale.get(lg, 'quiqqer.customer.panel.extras.title'),
                 events: {
-                    onClick: function() {
-                        ExtrasBtn.getMenu().then(function(Menu) {
+                    onClick: function () {
+                        ExtrasBtn.getMenu().then(function (Menu) {
                             const pos = ExtrasBtn.getElm().getPosition(),
                                 size = ExtrasBtn.getElm().getSize();
 
                             Menu.setAttribute('corner', 'topRight');
 
-                            ExtrasBtn.openMenu().then(function() {
+                            ExtrasBtn.openMenu().then(function () {
                                 Menu.setPosition(
                                     pos.x - 150,
                                     pos.y + size.y + 10
@@ -251,7 +251,7 @@ define('controls/users/User', [
             Users.addEvent('switchStatus', this.$onUserRefresh);
 
 
-            QUIAjax.get('ajax_users_getCategories', function(result) {
+            QUIAjax.get('ajax_users_getCategories', function (result) {
                 let i, len;
                 const User = self.getUser(),
                     Status = self.getButtons('status');
@@ -267,7 +267,7 @@ define('controls/users/User', [
 
                 self.setAttribute('icon', 'fa fa-user');
 
-                User.loadIfNotLoaded().then(function() {
+                User.loadIfNotLoaded().then(function () {
                     self.setAttribute('title', QUILocale.get(lg, 'users.user.title', {
                         username: User.getAttribute('username')
                     }));
@@ -298,8 +298,8 @@ define('controls/users/User', [
                     }
                 });
 
-                require(['Permissions'], function(Permissions) {
-                    Permissions.hasPermission('quiqqer.admin.users.send_mail').then(function(canSendUserMail) {
+                require(['Permissions'], function (Permissions) {
+                    Permissions.hasPermission('quiqqer.admin.users.send_mail').then(function (canSendUserMail) {
                         const btnChildren = ExtrasBtn.getChildren();
                         let SendMailBtn = null;
 
@@ -330,7 +330,7 @@ define('controls/users/User', [
                 QUI.fireEvent('quiqqerUserPanelCreate', [self]);
             }, {
                 uid: this.getUser().getId(),
-                onError: function() {
+                onError: function () {
                     self.destroy();
                 }
             });
@@ -340,7 +340,7 @@ define('controls/users/User', [
          * the panel on destroy event
          * remove the binded events
          */
-        $onDestroy: function() {
+        $onDestroy: function () {
             Users.removeEvent('refresh', this.$onUserRefresh);
             Users.removeEvent('save', this.$onUserRefresh);
             Users.removeEvent('switchStatus', this.$onUserRefresh);
@@ -352,7 +352,7 @@ define('controls/users/User', [
          * -> execute no unload
          * -> uses the current user data
          */
-        refreshDisplay: function() {
+        refreshDisplay: function () {
             let Active = this.getCategoryBar().getActive();
 
             if (!Active) {
@@ -368,7 +368,7 @@ define('controls/users/User', [
          *
          * @param {Object} Btn - qui/controls/buttons/Button
          */
-        $onButtonActive: function(Btn) {
+        $onButtonActive: function (Btn) {
             const self = this,
                 Body = self.getBody(),
                 User = self.getUser(),
@@ -376,9 +376,9 @@ define('controls/users/User', [
 
             this.Loader.show();
 
-            this.$hideCurrentContent().then(function() {
+            this.$hideCurrentContent().then(function () {
                 return self.$getCategoryContent(Btn);
-            }).then(function(result) {
+            }).then(function (result) {
                 if (!result) {
                     result = '';
                 }
@@ -405,9 +405,9 @@ define('controls/users/User', [
 
                 // parse all the controls
                 return QUI.parse(Body);
-            }).then(function() {
+            }).then(function () {
                 return ControlUtils.parse(self.getBody());
-            }).then(function() {
+            }).then(function () {
                 const Created = self.getBody().getElement('[name="regdate"]');
                 const LastEdit = self.getBody().getElement('[name="lastedit"]');
                 const LastVisit = self.getBody().getElement('[name="lastvisit"]');
@@ -467,7 +467,7 @@ define('controls/users/User', [
                     }
                 }
 
-                QUI.Controls.getControlsInElement(Body).each(function(Control) {
+                QUI.Controls.getControlsInElement(Body).each(function (Control) {
                     Control.setAttribute('Panel', self);
                     Control.setAttribute('uid', self.getUser().getId());
                     Control.setAttribute('User', self.getUser());
@@ -509,7 +509,7 @@ define('controls/users/User', [
                         }
                     }).inject(PasswordField, 'after');
 
-                    ShowPasswords.addEvent('change', function() {
+                    ShowPasswords.addEvent('change', function () {
                         const PasswordFields = Body.getElements(
                             '[name="password2"],[name="password"]'
                         );
@@ -547,8 +547,8 @@ define('controls/users/User', [
                         text: QUILocale.get(lg, 'users.user.btn.password.generateAndSend'),
                         textimage: 'fa fa-asterisk',
                         events: {
-                            onClick: function() {
-                                require(['controls/users/password/send/SendPassword'], function(SendPassword) {
+                            onClick: function () {
+                                require(['controls/users/password/send/SendPassword'], function (SendPassword) {
                                     new SendPassword({
                                         userId: User.getId()
                                     }).open();
@@ -560,7 +560,7 @@ define('controls/users/User', [
 
                 // authenticator
                 if (authenticators) {
-                    const toggleAuthenticator = function(Btn) {
+                    const toggleAuthenticator = function (Btn) {
                         let Table = Btn.getElm().getParent('table'),
                             auth = Table.get('data-authenticator'),
                             Prom = Promise.resolve();
@@ -574,9 +574,9 @@ define('controls/users/User', [
                             Prom = User.enableAuthenticator(auth);
                         }
 
-                        Prom.then(function() {
+                        Prom.then(function () {
                             return User.hasAuthenticator(auth);
-                        }).then(function(enabled) {
+                        }).then(function (enabled) {
                             if (enabled) {
                                 Table.addClass('authenticator-enabled');
 
@@ -596,7 +596,7 @@ define('controls/users/User', [
                             Btn.getElm().removeClass('btn-green');
 
                             return false;
-                        }).then(function(settings) {
+                        }).then(function (settings) {
                             let TBody = Table.getElement('tbody');
 
                             if (!settings || settings === '') {
@@ -618,13 +618,13 @@ define('controls/users/User', [
                             });
 
                             return QUI.parse(TBody);
-                        }).then(function() {
-                            QUI.Controls.getControlsInElement(Table.getElement('tbody')).each(function(Control) {
+                        }).then(function () {
+                            QUI.Controls.getControlsInElement(Table.getElement('tbody')).each(function (Control) {
                                 Control.setAttribute('Panel', self);
                                 Control.setAttribute('uid', self.getUser().getId());
                                 Control.setAttribute('User', self.getUser());
                             });
-                        }).catch(function(Exception) {
+                        }).catch(function (Exception) {
                             console.error(Exception);
                             Btn.setAttribute('text', '<span class="fa fa-bolt"></span>');
                         });
@@ -682,11 +682,11 @@ define('controls/users/User', [
                         Body.getElement('[name="assigned_toolbar"]').get('data-quiid')
                     );
 
-                    const renderToolbars = function() {
+                    const renderToolbars = function () {
                         return Editors.getToolbarsFromUser(
                             self.getUser().getId(),
                             AssignedToolbar.getValue()
-                        ).then(function(toolbars) {
+                        ).then(function (toolbars) {
                             Toolbar.set('html', '');
 
                             new Element('option', {
@@ -715,13 +715,13 @@ define('controls/users/User', [
                 }
 
                 if (Groups) {
-                    QUI.Controls.getById(Groups.get('data-quiid')).addEvent('change', function() {
+                    QUI.Controls.getById(Groups.get('data-quiid')).addEvent('change', function () {
                         self.Loader.show();
-                        self.$onClickSave().then(function() {
+                        self.$onClickSave().then(function () {
                             QUI.Controls.getById(
                                 Body.getElement('[name="assigned_toolbar"]').get('data-quiid')
                             ).fireEvent('change');
-                        }).then(function() {
+                        }).then(function () {
                             self.Loader.hide();
                         });
                     });
@@ -739,7 +739,7 @@ define('controls/users/User', [
                         req = Btn.getAttribute('onload_require');
 
                     if (req) {
-                        require([req], function(result) {
+                        require([req], function (result) {
                             self.Loader.hide();
 
                             if (typeOf(result) === 'class') {
@@ -777,10 +777,10 @@ define('controls/users/User', [
          *
          * @returns {Promise}
          */
-        $hideCurrentContent: function() {
+        $hideCurrentContent: function () {
             const self = this;
 
-            return new Promise(function(resolve) {
+            return new Promise(function (resolve) {
                 const Body = self.getBody(),
                     Form = Body.getElement('form');
 
@@ -806,10 +806,10 @@ define('controls/users/User', [
          *
          * @returns {Promise}
          */
-        $showCurrentContent: function() {
+        $showCurrentContent: function () {
             const self = this;
 
-            return new Promise(function(resolve) {
+            return new Promise(function (resolve) {
                 const Body = self.getBody(),
                     Form = Body.getElement('form');
 
@@ -836,10 +836,10 @@ define('controls/users/User', [
          * @param {Object} Btn
          * @returns {Promise}
          */
-        $getCategoryContent: function(Btn) {
+        $getCategoryContent: function (Btn) {
             const self = this;
 
-            return new Promise(function(resolve) {
+            return new Promise(function (resolve) {
                 QUIAjax.get('ajax_users_getCategory', resolve, {
                     Tab: Btn,
                     plugin: Btn.getAttribute('plugin'),
@@ -853,7 +853,7 @@ define('controls/users/User', [
          * if the button was active and know normal
          * = unload event of the button
          */
-        $onButtonNormal: function() {
+        $onButtonNormal: function () {
             const Content = this.getBody(),
                 Frm = Content.getElement('form'),
                 data = FormUtils.getFormData(Frm);
@@ -868,7 +868,7 @@ define('controls/users/User', [
         /**
          * Refresh the Panel if the user is refreshed
          */
-        $onUserRefresh: function() {
+        $onUserRefresh: function () {
             this.setAttribute('title', QUILocale.get(lg, 'users.user.title', {
                 username: this.getUser().getAttribute('username')
             }));
@@ -919,7 +919,7 @@ define('controls/users/User', [
          *
          * @param {Object} Button - qui/controls/buttons/ButtonSwitch
          */
-        $onStatusButtonChange: function(Button) {
+        $onStatusButtonChange: function (Button) {
             const buttonStatus = Button.getStatus(),
                 User = this.getUser(),
                 userStatus = User.isActive();
@@ -938,7 +938,7 @@ define('controls/users/User', [
                 Prom = this.userDeactivation();
             }
 
-            Prom.then(function() {
+            Prom.then(function () {
                 if (User.isActive() === -1) {
                     Button.disable();
                     this.Loader.hide();
@@ -954,7 +954,7 @@ define('controls/users/User', [
                 }
 
                 this.Loader.hide();
-            }.bind(this)).catch(function() {
+            }.bind(this)).catch(function () {
                 if (User.isActive() === -1) {
                     Button.disable();
                     this.Loader.hide();
@@ -979,7 +979,7 @@ define('controls/users/User', [
          * @param {Object} Users - qui/classes/users/Manager
          * @param {Array} uids - user ids, which are deleted
          */
-        $onUserDelete: function(Users, uids) {
+        $onUserDelete: function (Users, uids) {
             const uid = this.getUser().getId();
 
             for (let i = 0, len = uids.length; i < len; i++) {
@@ -995,7 +995,7 @@ define('controls/users/User', [
          *
          * @method controls/users/User#$onClickSave
          */
-        $onClickSave: function() {
+        $onClickSave: function () {
             const Active = this.getActiveCategory(),
                 User = this.getUser();
 
@@ -1009,7 +1009,7 @@ define('controls/users/User', [
                 PassWordSave = this.savePassword();
             }
 
-            return PassWordSave.then(function() {
+            return PassWordSave.then(function () {
                 return User.save();
             });
         },
@@ -1019,26 +1019,35 @@ define('controls/users/User', [
          *
          * @method controls/users/User#$onClickDel
          */
-        $onClickDel: function() {
+        $onClickDel: function () {
             const uid = this.getUser().getId();
+            const username = this.getUser().getAttribute('username');
+            const List = new Element('ul');
+
+            new Element('li', {
+                'class': 'user-delete-window-list-entry',
+                html: '<span class="user-delete-window-list-entry-username">' + username + '</span>' +
+                    '<span class="user-delete-window-list-entry-uuid">' + uid + '</span>'
+            }).inject(List);
 
             new QUIConfirm({
-                name: 'DeleteUser',
+                name: 'DeleteUsers',
                 icon: 'fa fa-trash-o',
                 texticon: 'fa fa-trash-o',
-                title: QUILocale.get(lg, 'users.user.window.delete.title'),
-                text: QUILocale.get(lg, 'users.user.window.delete.text', {
-                    userid: this.getUser().getId(),
-                    username: this.getUser().getName()
-                }),
-                information: QUILocale.get(lg, 'users.user.window.delete.information'),
-                maxWidth: 600,
+                title: QUILocale.get(lg, 'users.panel.delete.window.title'),
+                text: QUILocale.get(lg, 'users.panel.delete.window.text'),
+                information: QUILocale.get(lg, 'users.panel.delete.window.information'),
+                maxWidth: 700,
                 maxHeight: 400,
-                autoclose: false,
                 events: {
-                    onSubmit: function(Win) {
+                    onOpen: (Win) => {
+                        const Header = Win.getContent().getElement('.text');
+
+                        List.inject(Header, 'after');
+                    },
+                    onSubmit: function (Win) {
                         Win.Loader.show();
-                        Users.deleteUsers([uid]).then(function() {
+                        Users.deleteUsers([uid]).then(function () {
                             Win.close();
                         });
                     }
@@ -1049,10 +1058,10 @@ define('controls/users/User', [
         /**
          * Open "send user mail" dialog
          */
-        $onClickSendMail: function() {
+        $onClickSendMail: function () {
             const uid = this.getUser().getId();
 
-            require(['controls/users/mail/SendUserMail'], function(SendUserMail) {
+            require(['controls/users/mail/SendUserMail'], function (SendUserMail) {
                 new SendUserMail({
                     userId: uid
                 }).open();
@@ -1066,8 +1075,8 @@ define('controls/users/User', [
          * @method controls/users/User#savePassword
          * @return {Promise}
          */
-        savePassword: function() {
-            return new Promise(function(resolve, reject) {
+        savePassword: function () {
+            return new Promise(function (resolve, reject) {
                 const Body = this.getBody(),
                     Form = Body.getElement('form'),
                     Pass1 = Form.elements.password,
@@ -1079,11 +1088,11 @@ define('controls/users/User', [
 
                 this.Loader.show();
 
-                this.getUser().savePassword(Pass1.value, Pass2.value).then(function() {
+                this.getUser().savePassword(Pass1.value, Pass2.value).then(function () {
                     this.Loader.hide();
                     resolve();
-                }.bind(this)).catch(function(err) {
-                    QUI.getMessageHandler().then(function(MH) {
+                }.bind(this)).catch(function (err) {
+                    QUI.getMessageHandler().then(function (MH) {
                         if (typeOf(err) === 'string') {
                             MH.addError(err);
                             return;
@@ -1103,7 +1112,7 @@ define('controls/users/User', [
          * Generate a random password and set it to the password fields
          * it saves not the passwords!!
          */
-        generatePassword: function() {
+        generatePassword: function () {
             const Body = this.getBody(),
                 Form = Body.getElement('form'),
                 Pass1 = Form.elements.password,
@@ -1132,7 +1141,7 @@ define('controls/users/User', [
         /**
          * Create the address table
          */
-        $createAddressTable: function() {
+        $createAddressTable: function () {
             const self = this,
                 Content = this.getContent(),
                 size = Content.getSize(),
@@ -1224,7 +1233,7 @@ define('controls/users/User', [
                         text: QUILocale.get(lg, 'users.user.address.table.btn.add'),
                         textimage: 'fa fa-plus',
                         events: {
-                            onClick: function() {
+                            onClick: function () {
                                 self.createAddress();
                             }
                         }
@@ -1238,7 +1247,7 @@ define('controls/users/User', [
                         textimage: 'fa fa-edit',
                         disabled: true,
                         events: {
-                            onClick: function() {
+                            onClick: function () {
                                 self.editAddress(
                                     self.$AddressGrid.getSelectedData()[0].id
                                 );
@@ -1251,7 +1260,7 @@ define('controls/users/User', [
                         textimage: 'fa fa-remove',
                         disabled: true,
                         events: {
-                            onClick: function() {
+                            onClick: function () {
                                 self.deleteAddress(
                                     self.$AddressGrid.getSelectedData()[0].id
                                 );
@@ -1261,18 +1270,18 @@ define('controls/users/User', [
                 ],
 
                 height: 300,
-                onrefresh: function() {
+                onrefresh: function () {
                     self.$refreshAddresses();
                 }
             });
 
             this.$AddressGrid.addEvents({
-                onClick: function() {
+                onClick: function () {
                     const buttons = self.$AddressGrid.getButtons(),
                         sels = self.$AddressGrid.getSelectedIndices();
 
                     if (!sels) {
-                        buttons.each(function(Btn) {
+                        buttons.each(function (Btn) {
                             if (Btn.getAttribute('name') !== 'add') {
                                 Btn.disable();
                             }
@@ -1281,12 +1290,12 @@ define('controls/users/User', [
                         return;
                     }
 
-                    buttons.each(function(Btn) {
+                    buttons.each(function (Btn) {
                         Btn.enable();
                     });
                 },
 
-                onDblClick: function() {
+                onDblClick: function () {
                     self.editAddress(
                         self.$AddressGrid.getSelectedData()[0].id
                     );
@@ -1300,14 +1309,14 @@ define('controls/users/User', [
         /**
          * Load / refresh the adresses
          */
-        $refreshAddresses: function() {
+        $refreshAddresses: function () {
             if (!this.$AddressGrid) {
                 return;
             }
 
             const self = this;
 
-            QUIAjax.get('ajax_users_address_list', function(result) {
+            QUIAjax.get('ajax_users_address_list', function (result) {
                 for (let i = 0, len = result.length; i < len; i++) {
                     if (result[i].default) {
                         result[i].default = new Element('span', {
@@ -1331,10 +1340,10 @@ define('controls/users/User', [
         /**
          * Creates a new address and opens the edit control
          */
-        createAddress: function() {
+        createAddress: function () {
             const self = this;
 
-            QUIAjax.post('ajax_users_address_save', function(newId) {
+            QUIAjax.post('ajax_users_address_save', function (newId) {
                 self.editAddress(newId);
                 self.$AddressGrid.refresh();
             }, {
@@ -1349,7 +1358,7 @@ define('controls/users/User', [
          *
          * @param {Number} addressId - ID of the address
          */
-        editAddress: function(addressId) {
+        editAddress: function (addressId) {
             const self = this,
                 Sheet = this.createSheet({
                     title: QUILocale.get(lg, 'users.user.address.edit'),
@@ -1357,13 +1366,13 @@ define('controls/users/User', [
                 });
 
             Sheet.addEvents({
-                onOpen: function(Sheet) {
-                    require(['controls/users/Address'], function(Address) {
+                onOpen: function (Sheet) {
+                    require(['controls/users/Address'], function (Address) {
                         const UserAddress = new Address({
                             addressId: addressId,
                             uid: self.getUser().getId(),
                             events: {
-                                onSaved: function() {
+                                onSaved: function () {
                                     Sheet.hide();
                                     self.$AddressGrid.refresh();
                                 }
@@ -1374,7 +1383,7 @@ define('controls/users/User', [
                             textimage: 'fa fa-save',
                             text: QUILocale.get(lg, 'save'),
                             events: {
-                                onClick: function() {
+                                onClick: function () {
                                     UserAddress.save();
                                 }
                             }
@@ -1391,7 +1400,7 @@ define('controls/users/User', [
          *
          * @param {Number} addressId - ID of the address
          */
-        deleteAddress: function(addressId) {
+        deleteAddress: function (addressId) {
             const self = this;
 
             new QUIConfirm({
@@ -1399,8 +1408,8 @@ define('controls/users/User', [
                 text: QUILocale.get(lg, 'users.user.address.window.delete.text'),
                 information: QUILocale.get(lg, 'users.user.address.window.delete.information'),
                 events: {
-                    onSubmit: function() {
-                        QUIAjax.post('ajax_users_address_delete', function() {
+                    onSubmit: function () {
+                        QUIAjax.post('ajax_users_address_delete', function () {
                             self.$AddressGrid.refresh();
                         }, {
                             aid: addressId,
@@ -1411,7 +1420,7 @@ define('controls/users/User', [
             }).open();
         },
 
-        userDeactivation: function() {
+        userDeactivation: function () {
             return new Promise((resolve, reject) => {
                 const User = this.getUser();
 
@@ -1426,10 +1435,10 @@ define('controls/users/User', [
                     maxWidth: 600,
                     autoclose: false,
                     events: {
-                        onSubmit: function(Win) {
+                        onSubmit: function (Win) {
                             Win.Loader.show();
 
-                            User.deactivate().then(function() {
+                            User.deactivate().then(function () {
                                 Win.close();
                                 resolve();
                             });
