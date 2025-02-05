@@ -151,7 +151,7 @@ define('controls/cache/Settings', [
                     icon: 'fa fa-wrench'
                 },
                 {
-                    name: 'media',
+                    name: 'quiqqer-media',
                     icon: 'fa fa-picture-o'
                 }
             ];

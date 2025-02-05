@@ -11,6 +11,7 @@ if (!empty($_GET['qs'])) {
 
     if ($qs) {
         parse_str($qs, $_GET);
+        parse_str($qs, $_REQUEST);
     }
 }
 
