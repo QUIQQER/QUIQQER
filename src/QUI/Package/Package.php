@@ -549,7 +549,7 @@ class Package extends QUI\QDOM
     /**
      * Checks the package permission
      */
-    public function hasPermission(string $permission = 'canUse', QUI\Interfaces\Users\User $User = null): bool
+    public function hasPermission(string $permission = 'canUse', null|QUI\Interfaces\Users\User $User = null): bool
     {
         if (!QUI::conf('permissions', 'package')) {
             return true;
