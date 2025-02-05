@@ -222,12 +222,7 @@ class Manager
 
         if (!($Obj instanceof User)) {
             foreach ($_list as $permission => $params) {
-                if (isset($params['defaultvalue'])) {
-                    $permissions[$permission] = $params['defaultvalue'];
-                    continue;
-                }
-
-                $permissions[$permission] = false;
+                $permissions[$permission] = $params['defaultvalue'] ?? false;
             }
         }
 
@@ -1264,7 +1259,10 @@ class Manager
 
         $Everyone = null;
         $RootGroup = null;
+        $Guest = null;
+
         $everyonePermissions = [];
+        $guestPermissions = [];
 
         try {
             $RootGroup = QUI::getGroups()->get(QUI::conf('globals', 'root'));
@@ -1275,6 +1273,12 @@ class Manager
         try {
             $Everyone = QUI::getGroups()->get(QUI\Groups\Manager::EVERYONE_ID);
             $everyonePermissions = $this->getPermissions($Everyone);
+        } catch (QUI\Exception) {
+        }
+
+        try {
+            $Guest = QUI::getGroups()->get(QUI\Groups\Manager::GUEST_ID);
+            $guestPermissions = $this->getPermissions($Guest);
         } catch (QUI\Exception) {
         }
 
@@ -1304,9 +1308,16 @@ class Manager
 
             if (
                 isset($permission['everyonePermission'])        // if root permission === null, no root permission is set
-                && !isset($rootPermissions[$permission['name']]) // if not exists, use root permission default
+                && !isset($everyonePermissions[$permission['name']]) // if not exists, use root permission default
             ) {
                 $everyonePermissions[$permission['name']] = $permission['everyonePermission'];
+            }
+
+            if (
+                isset($permission['guestPermission'])        // if root permission === null, no root permission is set
+                && !isset($guestPermissions[$permission['name']]) // if not exists, use root permission default
+            ) {
+                $guestPermissions[$permission['name']] = $permission['guestPermission'];
             }
         }
 
@@ -1321,6 +1332,14 @@ class Manager
         if (count($everyonePermissions)) {
             try {
                 $this->setPermissions($Everyone, $everyonePermissions);
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
+            }
+        }
+
+        if (count($guestPermissions)) {
+            try {
+                $this->setPermissions($Guest, $guestPermissions);
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::addError($Exception->getMessage());
             }

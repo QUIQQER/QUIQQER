@@ -27,6 +27,8 @@ define('controls/users/Login', [
 ], function(QUI, QUIControl, QUILoader, QUIFormUtils, QUIAjax, QUILocale) {
     'use strict';
 
+    let onInjectIsRunning = false;
+
     return new Class({
 
         Extends: QUIControl,
@@ -92,6 +94,12 @@ define('controls/users/Login', [
          * event : on inject
          */
         $onInject: function() {
+            if (onInjectIsRunning) {
+                return;
+            }
+
+            onInjectIsRunning = true;
+
             if (this.getAttribute('showLoader')) {
                 this.Loader.show();
             }
@@ -103,6 +111,8 @@ define('controls/users/Login', [
                     self.fireEvent('load', [self]);
                     QUI.fireEvent('quiqqerUserAuthLoginLoad', [self]);
                 });
+
+                onInjectIsRunning = false;
             }, {
                 isAdminLogin: typeof QUIQQER_IS_ADMIN_LOGIN !== 'undefined' ? 1 : 0,
                 authenticators: JSON.encode(this.getAttribute('authenticators'))

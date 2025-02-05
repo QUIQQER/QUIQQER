@@ -60,6 +60,9 @@ foreach ($packages as $package) {
 <!--[if (gte IE 9)|!(IE)]><!-->
 <html lang="de"> <!--<![endif]-->
 <head>
+    <?php
+    QUI::getEvents()->fireEvent('adminLoadBegin');
+    ?>
     <!-- HTML5
           ================================================== -->
     <!--[if lt IE 9]>
@@ -657,6 +660,10 @@ foreach ($packages as $package) {
         }
 
     </script>
+
+    <?php
+    QUI::getEvents()->fireEvent('adminLogin');
+    ?>
 </head>
 <body>
 
@@ -711,7 +718,8 @@ foreach ($packages as $package) {
             <div class="license" style="height: 0;">
                 <div class="license__text" style="visibility: hidden;">
                     QUIQQER Copyright(C) <?php
-                    echo date('Y'); ?> PCSG - Computer & Internet Service OHG - <a href="https://www.pcsg.de" target="_blank">www.pcsg.de</a>.
+                    echo date('Y'); ?> PCSG - Computer & Internet Service OHG - <a href="https://www.pcsg.de"
+                                                                                   target="_blank">www.pcsg.de</a>.
                     This program comes with ABSOLUTELY NO WARRANTY;
                     This is free software, and you are welcome to redistribute it under certain conditions;
                     Visit <a href="https://www.quiqqer.com" target="_blank">www.quiqqer.com</a> for details.
@@ -795,6 +803,10 @@ if (defined('LOGIN_FAILED')) { ?>
 
     });
 </script>
+
+<?php
+QUI::getEvents()->fireEvent('adminLoginFooter');
+?>
 
 </body>
 </html>

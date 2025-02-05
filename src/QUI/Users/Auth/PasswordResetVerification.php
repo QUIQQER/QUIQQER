@@ -4,34 +4,30 @@ namespace QUI\Users\Auth;
 
 use QUI;
 use QUI\Exception;
-use QUI\Interfaces\Users\User;
-use QUI\Verification\AbstractVerification;
+use QUI\Verification\AbstractLinkVerificationHandler;
+use QUI\Verification\Entity\LinkVerification;
+use QUI\Verification\Enum\VerificationErrorReason;
+use QUI\Verification\Entity\AbstractVerification;
 
 use function current;
 
-class PasswordResetVerification extends AbstractVerification
+class PasswordResetVerification extends AbstractLinkVerificationHandler
 {
     protected QUI\Projects\Project $Project;
 
-    /**
-     * @throws QUI\Exception
-     */
-    public function __construct(int|string $identifier, array $additionalData = [])
-    {
-        parent::__construct($identifier, $additionalData);
-        $this->Project = new QUI\Projects\Project($additionalData['project'], $additionalData['projectLang']);
-    }
-
-    /**
+     /**
      * Execute this method on successful verification
+     *
+     * @param LinkVerification $verification
+     * @return void
      */
-    public function onSuccess(): void
+    public function onSuccess(LinkVerification $verification): void
     {
         $Users = QUI::getUsers();
         $SystemUser = $Users->getSystemUser();
 
         try {
-            $User = $Users->get($this->getIdentifier());
+            $User = $Users->get($verification->getCustomDataEntry('uuid'));
             $newPassword = QUI\Security\Password::generateRandom();
 
             // check if user has to set new password
@@ -91,28 +87,33 @@ class PasswordResetVerification extends AbstractVerification
         $Mailer->send();
     }
 
-    /**
+  /**
      * Get the duration of a Verification (minutes)
      *
-     * @return int|false - duration in minutes;
-     * if this method returns false use the module setting default value
+   * @param AbstractVerification $verification
+   * @return int|null - duration in minutes;
+     * on NULL use the module setting default value
      */
-    public function getValidDuration(): bool|int
+    public function getValidDuration(AbstractVerification $verification): ?int
     {
         return (int)QUI::conf('auth_settings', 'passwordResetLinkValidTime');
     }
 
     /**
      * Execute this method on unsuccessful verification
+     * @param LinkVerification $verification
+     * @param VerificationErrorReason $reason
      */
-    public function onError(): void
+    public function onError(LinkVerification $verification, VerificationErrorReason $reason): void
     {
+        // nothing
     }
 
     /**
      * This message is displayed to the user on successful verification
+     * @param LinkVerification $verification
      */
-    public function getSuccessMessage(): string
+    public function getSuccessMessage(LinkVerification $verification): string
     {
         return QUI::getLocale()->get(
             'quiqqer/core',
@@ -123,10 +124,11 @@ class PasswordResetVerification extends AbstractVerification
     /**
      * This message is displayed to the user on unsuccessful verification
      *
-     * @param string $reason - The reason for the error (see \QUI\Verification\Verifier::REASON_)
+     * @param LinkVerification $verification
+     * @param VerificationErrorReason $reason
      * @return string
      */
-    public function getErrorMessage(string $reason): string
+    public function getErrorMessage(LinkVerification $verification, VerificationErrorReason $reason): string
     {
         return QUI::getLocale()->get(
             'quiqqer/core',
@@ -137,10 +139,11 @@ class PasswordResetVerification extends AbstractVerification
     /**
      * Automatically redirect the user to this URL on successful verification
      *
-     * @return string|false - If this method returns false, no redirection takes place
+     * @param LinkVerification $verification
+     * @return string|null - If this method returns false, no redirection takes place
      * @throws QUI\Database\Exception
      */
-    public function getOnSuccessRedirectUrl(): bool|string
+    public function getOnSuccessRedirectUrl(LinkVerification $verification): ?string
     {
         $result = $this->Project->getSites([
             'where' => [
@@ -158,15 +161,5 @@ class PasswordResetVerification extends AbstractVerification
         return $LoginSite->getUrlRewritten([], [
             'password_reset' => '1'
         ]);
-    }
-
-    /**
-     * Automatically redirect the user to this URL on unsuccessful verification
-     *
-     * @return string|false - If this method returns false, no redirection takes place
-     */
-    public function getOnErrorRedirectUrl(): bool|string
-    {
-        return false;
     }
 }

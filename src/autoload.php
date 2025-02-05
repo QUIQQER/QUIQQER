@@ -11,6 +11,8 @@
  * @licence For copyright and license information, please view the /README.md
  */
 
+use QUI\System\Log;
+
 require __DIR__ . '/QUI/Autoloader.php';
 require __DIR__ . '/polyfills.php';
 
@@ -126,15 +128,25 @@ function exception_error_handler(int $errno, string $errStr, string $errFile, in
 
 /**
  * Exception handler
- *
- * @param Exception $Exception
  */
 function exception_handler(\Throwable $Exception): void
 {
-    QUI::getErrorHandler()->writeErrorToLog(
-        $Exception->getCode(),
-        $Exception->getMessage(),
-        $Exception->getFile(),
-        $Exception->getLine()
-    );
+    $code = $Exception->getCode();
+
+    if ($code >= 400 && $code < 600) {
+        http_response_code($code);
+        header('Content-Type: application/json');
+    }
+
+    if (php_sapi_name() === 'cli') {
+        Log::writeException($Exception);
+    }
+
+    Log::addError($Exception->getMessage());
+
+    echo json_encode([
+        'error' => true,
+        'message' => 'An error occurred. Check the log for more details.',
+        'code' => $code
+    ]);
 }

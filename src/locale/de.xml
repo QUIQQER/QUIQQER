@@ -199,6 +199,9 @@
         <locale name="permission.quiqqer.menu.settings">
             <de><![CDATA[Kann das Einstellungs-Menü sehen]]></de>
         </locale>
+        <locale name="permission.quiqqer.login">
+            <de><![CDATA[Darf sich  in das Frontend einloggen.]]></de>
+        </locale>
         <locale name="permission.quiqqer.admin">
             <de><![CDATA[Darf sich in das Backend (Administration) einloggen.]]></de>
         </locale>
@@ -877,7 +880,7 @@
         <locale name="panels.bookmarks.description">
             <de><![CDATA[
             Verwalten Sie schnell Aufrufe von Panels.
-            Legen Sie für sich Lesezeichen fest damit Sie Ihre oft genutzten Funtionen schnell erreichen.
+            Legen Sie für sich Lesezeichen fest damit Sie Ihre oft genutzten Funktionen schnell erreichen.
             ]]></de>
         </locale>
         <locale name="exception.unknown.error">
@@ -2557,7 +2560,7 @@
             <de><![CDATA[Benutzer löschen]]></de>
         </locale>
         <locale name="users.panel.delete.window.text">
-            <de><![CDATA[Sie möchten folgende Benutzer löschen:<br /><br />[userids]]]></de>
+            <de><![CDATA[Sie möchten folgende Benutzer löschen:]]></de>
         </locale>
         <locale name="users.panel.delete.window.information">
             <de><![CDATA[
@@ -3173,7 +3176,7 @@
         <locale name="exception.user.auth.handler.verification_package_not_installed">
             <de><![CDATA[
             Bestätigungs-Mail für das "Passwort zurücksetzen" kann nicht versendet werden,
-            da das Paket "quiqqer/verification" nicht installiert ist.
+            da das Paket "quiqqer/verification" nicht oder nicht in der korrekten Version (^3) installiert ist.
             ]]></de>
         </locale>
         <locale name="exception.user.auth.handler.missing_user_email">
@@ -4279,15 +4282,15 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             <de><![CDATA[Allgemeine Cookie Einstellungen.]]></de>
         </locale>
         <locale name="quiqqer.settings.cookies.sameSite">
-            <en><![CDATA[SameSite]]></en>
+            <de><![CDATA[SameSite]]></de>
         </locale>
         <locale name="quiqqer.settings.cookies.sameSite.description" html="true">
-            <en><![CDATA[
+            <de><![CDATA[
             SameSite prevents the browser from sending this cookie along with cross-site requests.
             The main goal is mitigate the risk of cross-origin information leakage.
             It also provides some protection against cross-site request forgery attacks.<br />
             <a href="https://owasp.org/www-community/SameSite" target="_blank">More information</a>
-            ]]></en>
+            ]]></de>
         </locale>
         <locale name="quiqqer.settings.security_headers">
             <de><![CDATA[Inhaltsschutzrichtlinie]]></de>
@@ -4971,6 +4974,9 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         </locale>
         <locale name="upload.bulk.message">
             <de><![CDATA[[done] Dateien von [total] hochgeladen]]></de>
+        </locale>
+        <locale name="settings.security.title">
+            <de><![CDATA[Sicherheit]]></de>
         </locale>
     </groups>
 

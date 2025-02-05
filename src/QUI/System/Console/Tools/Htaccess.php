@@ -126,12 +126,18 @@ class Htaccess extends QUI\System\Console\Tool
             $htaccessContent .= "\n\n";
         }
 
+        // module API
+        try {
+            QUI::getEvents()->fireEvent('onHtaccessGenerate', [&$htaccessContent]);
+        } catch (\Exception $exception) {
+            QUI\System\Log::addError($exception->getMessage());
+        }
+
         if ($oldTemplate) {
             $htaccessContent .= $this->templateOld();
         } else {
             $htaccessContent .= $this->template();
         }
-
 
         file_put_contents($htaccessFile, $htaccessContent);
 
@@ -220,6 +226,7 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteRule ^(.*)$ index.php?_url=$1&%{QUERY_STRING} [L]
 
     # quiqqer API allowed requests
+    RewriteCond %{REQUEST_URI} !^/.well-known/.*$ 
     RewriteCond %{REQUEST_URI} !^(.*)bin(.*)$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}media/cache/(.*)$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}packages/ckeditor/(.*)$
@@ -323,6 +330,7 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)$ index.php?_url=$1&%{QUERY_STRING} [END]
     
+    RewriteCond %{REQUEST_URI} !^/.well-known/.*$
     RewriteCond %{REQUEST_URI} !^(.*)bin(.*)$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}media/cache/(.*)$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}packages/ckeditor/(.*)$

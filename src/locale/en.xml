@@ -199,8 +199,11 @@
         <locale name="permission.quiqqer.menu.settings">
             <en><![CDATA[Can see the settings menu]]></en>
         </locale>
+        <locale name="permission.quiqqer.login">
+            <en><![CDATA[Is allowed to logged in to the frontend]]></en>
+        </locale>
         <locale name="permission.quiqqer.admin">
-            <en><![CDATA[Is allowed to loged in to the backend (Administration)]]></en>
+            <en><![CDATA[Is allowed to logged in to the backend (Administration)]]></en>
         </locale>
         <locale name="permission.quiqqer.su">
             <en><![CDATA[Is Superuser]]></en>
@@ -2505,13 +2508,13 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[Enter a new user name. The user is created inactive.]]></en>
         </locale>
         <locale name="exception.create.user.exists">
-            <en><![CDATA[The username already exists. <br />                 Please enter a different username.]]></en>
+            <en><![CDATA[The username already exists.<br />Please enter a different username.]]></en>
         </locale>
         <locale name="users.panel.delete.window.title">
             <en><![CDATA[Delete users]]></en>
         </locale>
         <locale name="users.panel.delete.window.text">
-            <en><![CDATA[You want to delete the following users:<br /><br />[userids]]]></en>
+            <en><![CDATA[You want to delete the following users:]]]></en>
         </locale>
         <locale name="users.panel.delete.window.information">
             <en><![CDATA[Users are completely removed from the system and can not be restored.]]></en>
@@ -3118,7 +3121,7 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         </locale>
         <locale name="exception.user.auth.handler.verification_package_not_installed">
             <en><![CDATA[
-                Confirmation mail for "Password reset" cannot be sent because the package "quiqqer/verification" is not installed.]]></en>
+                Confirmation mail for "Password reset" cannot be sent because the package "quiqqer/verification" is not installed or not installed in the required version (^3).]]></en>
         </locale>
         <locale name="exception.user.auth.handler.missing_user_email">
             <en><![CDATA[
@@ -4808,6 +4811,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         </locale>
         <locale name="upload.bulk.message">
             <en><![CDATA[[done] files uploaded from [total].]]></en>
+        </locale>
+        <locale name="settings.security.title">
+            <en><![CDATA[Security]]></en>
         </locale>
     </groups>
 

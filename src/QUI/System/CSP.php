@@ -224,6 +224,12 @@ class CSP
      */
     public function setCSPDirectiveToConfig($directive, $value): void
     {
+        if ($directive === 'status') {
+            $this->getConfig()->setValue('securityHeaders_csp', 'status', (int)$value);
+            $this->getConfig()->save();
+            return;
+        }
+
         if (!$this->isDirectiveAllowed($directive)) {
             throw new QUI\Exception('Directive is not allowed');
         }

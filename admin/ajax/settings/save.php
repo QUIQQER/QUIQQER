@@ -84,7 +84,11 @@ QUI::$Ajax->registerFunction(
                     unset($params['db']);
                 }
 
-                // nonce check
+                if (empty($params['globals']['quiqqer_version'])) {
+                    $params['globals']['quiqqer_version'] = QUI::conf('globals', 'quiqqer_version');
+                }
+
+                    // nonce check
                 if (empty($params['globals']['nonce'])) {
                     throw new QUI\Exception('Could not save QUIQQER config');
                 }
@@ -100,6 +104,7 @@ QUI::$Ajax->registerFunction(
             }
 
             QUI\Utils\Text\XML::setConfigFromXml($file, $params);
+            QUI::$Conf->reload();
 
             QUI::getMessagesHandler()->addSuccess(
                 QUI::getLocale()->get('quiqqer/core', 'message.config.saved')
@@ -121,7 +126,6 @@ QUI::$Ajax->registerFunction(
             }
 
             // generate ./console
-            QUI::$Conf->reload();
             QUI\Setup::generateFileLinks();
 
             # Save the current .htaccess content to see if the config changed

@@ -13,8 +13,10 @@ use QUI\Projects\Media\Image;
 use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Projects\Project;
 use QUI\Projects\Site;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 use function array_flip;
 use function array_map;
@@ -24,13 +26,7 @@ use function count;
 use function define;
 use function defined;
 use function explode;
-use function fclose;
 use function file_exists;
-use function filesize;
-use function fopen;
-use function fread;
-use function gmdate;
-use function header;
 use function http_response_code;
 use function implode;
 use function in_array;
@@ -44,6 +40,7 @@ use function mb_substr_count;
 use function parse_url;
 use function pathinfo;
 use function str_replace;
+use function str_starts_with;
 use function strlen;
 use function strpos;
 use function strrpos;
@@ -494,19 +491,15 @@ class Rewrite
             }
 
             // Dateien direkt im Browser ausgeben, da Cachedatei noch nicht verfügbar war
-            header("Content-Type: " . $Item->getAttribute('mime_type'));
-            header("Expires: " . gmdate("D, d M Y H:i:s") . " GMT");
-            header("Pragma: public");
-            header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-            header("Accept-Ranges: bytes");
-            header("Content-Disposition: inline; filename=\"" . pathinfo($file, PATHINFO_BASENAME) . "\"");
-            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+            header("Content-Length: " . filesize($file)); // workaround, symfony bug
 
-            $fo_image = fopen($file, "r");
-            $fr_image = fread($fo_image, filesize($file));
-            fclose($fo_image);
-
-            echo $fr_image;
+            // output
+            $response = new BinaryFileResponse($file);
+            $response->headers->set('Content-Type', $Item->getAttribute('mime_type'));
+            $response->headers->set('Accept-Ranges', 'bytes');
+            $response->headers->set('Content-Length', (string)filesize($file));
+            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE);
+            $response->send();
             exit;
         }
 
@@ -542,9 +535,12 @@ class Rewrite
         }
 
         $this->first_child = $this->getProject()->firstChild();
-        $this->site = $this->first_child;
 
-        if (!empty($_REQUEST['_url'])) {
+        if ($this->site === null) {
+            $this->site = $this->first_child;
+        }
+
+        if (!empty($_REQUEST['_url']) && $this->site->getId() === $this->first_child->getId()) {
             // URL Parameter filtern
             try {
                 $this->site = $this->getSiteByUrl($_REQUEST['_url']);
@@ -914,6 +910,10 @@ class Rewrite
             $http_host = explode(':', $http_host)[0];
         }
 
+        if (!isset($vhosts[$http_host]) && str_starts_with($http_host, 'www.')) {
+            $http_host = mb_substr($http_host, 4);
+        }
+
         if (!isset($vhosts[$http_host])) {
             return false;
         }
@@ -1088,7 +1088,7 @@ class Rewrite
         // Nach / (slash) sortieren, damit URL mit mehr Kindseiten als erstes kommen
         // Ansonsten kann es vorkommen das die falsche Seite für den Pfad zuständig ist
         usort($list, static function (array $a, array $b): int {
-            return mb_substr_count($a['path'], '/') - mb_substr_count($b['path'], '/');
+            return mb_substr_count($b['path'], '/') - mb_substr_count($a['path'], '/');
         });
 
         foreach ($list as $entry) {
@@ -1160,7 +1160,9 @@ class Rewrite
      */
     public function getOutput(): Output
     {
-        $this->Output->setProject($this->getProject());
+        if ($this->getProject()) {
+            $this->Output->setProject($this->getProject());
+        }
 
         return $this->Output;
     }

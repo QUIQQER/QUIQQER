@@ -6,7 +6,7 @@
 
 namespace QUI\Projects\Media;
 
-use Locale;
+use QUI\Locale;
 use QUI;
 use QUI\Exception;
 use QUI\Groups\Group;
@@ -1363,13 +1363,13 @@ abstract class Item extends QUI\QDOM
     /**
      * Returns information about a file path
      *
-     * @param boolean|array $options - If present, specifies a specific element to be returned;
+     * @param int|bool $options - If present, specifies a specific element to be returned;
      *                                  one of:
      *                                  PATHINFO_DIRNAME, PATHINFO_BASENAME,
      *                                  PATHINFO_EXTENSION or PATHINFO_FILENAME.
      * @return array|string
      */
-    public function getPathinfo(bool|array $options = false): array|string
+    public function getPathinfo(bool|int $options = false): array|string
     {
         if (!$options) {
             return pathinfo($this->getFullPath());

@@ -8,6 +8,7 @@ namespace QUI\Mail;
 
 use Exception;
 use Html2Text\Html2Text;
+use PHPMailer\PHPMailer\PHPMailer;
 use QUI;
 use QUI\Projects\Project;
 
@@ -93,7 +94,8 @@ class Mailer extends QUI\QDOM
 
         // html mail template
         $this->Template = new Template([
-            'Project' => $this->getAttribute('Project')
+            'Project' => $this->getAttribute('Project'),
+            'Mailer' => $this
         ]);
 
         try {
@@ -132,7 +134,7 @@ class Mailer extends QUI\QDOM
      *
      * @throws QUI\Exception|\PHPMailer\PHPMailer\Exception
      */
-    public function send(): bool
+    public function send(?PHPMailer $PHPMailer = null): bool
     {
         if (Mailer::$DISABLE_MAIL_SENDING) {
             return true;
@@ -146,7 +148,10 @@ class Mailer extends QUI\QDOM
             QUI\System\Log::writeException($Exception);
         }
 
-        $PHPMailer = QUI::getMailManager()->getPHPMailer();
+        if (!$PHPMailer) {
+            $PHPMailer = QUI::getMailManager()->getPHPMailer();
+        }
+
         $html = $this->Template->getHTML();
 
         // remove picture elements
@@ -294,6 +299,14 @@ class Mailer extends QUI\QDOM
 
             return true;
         } catch (Exception $Exception) {
+            $tryings = QUI::getEvents()->fireEvent('onMailSendError', [$this, $PHPMailer, $Exception]);
+
+            foreach ($tryings as $try) {
+                if ($try) {
+                    return true;
+                }
+            }
+
             Log::logException($Exception);
 
             throw new QUI\Exception(
