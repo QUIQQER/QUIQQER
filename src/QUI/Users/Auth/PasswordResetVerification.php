@@ -13,8 +13,6 @@ use function current;
 
 class PasswordResetVerification extends AbstractLinkVerificationHandler
 {
-    protected QUI\Projects\Project $Project;
-
      /**
      * Execute this method on successful verification
      *
@@ -141,11 +139,11 @@ class PasswordResetVerification extends AbstractLinkVerificationHandler
      *
      * @param LinkVerification $verification
      * @return string|null - If this method returns false, no redirection takes place
-     * @throws QUI\Database\Exception
+     * @throws QUI\Database\Exception|Exception
      */
     public function getOnSuccessRedirectUrl(LinkVerification $verification): ?string
     {
-        $result = $this->Project->getSites([
+        $result = QUI::getRewrite()->getProject()->getSites([
             'where' => [
                 'type' => 'quiqqer/frontend-users:types/login'
             ],
