@@ -111,7 +111,9 @@ define('controls/grid/Grid', [
             tablesizing: 'normal', // 'normal', 'small'
             design: 'simple', // 'simple', 'clean'
             border: 'column', // 'none', 'column', 'row', 'all'
-            lastCellRightSpacing: 40, // spacing from the last cell to the right border of the table, useful for resizing by dragging
+            // spacing from the last cell to the right border of the table, useful for resizing by dragging
+            // if resizeColumns is set to false, lastCellRightSpacing is always set to 0
+            lastCellRightSpacing: 40,
 
             storageKey: false, // if storage key is set, the grid settings (column model) are saved in the locale storage
             configurable: true, // table is configurable, user is able to dragdrop columns, storage key must be set
@@ -222,6 +224,10 @@ define('controls/grid/Grid', [
             this.$initialColumnsModel = Array.from(this.$columnModel);
 
             this.parent(options);
+
+            if (!this.getAttribute('resizeColumns')) {
+                this.lastCellRightSpacing = 0;
+            }
 
             if (typeof options.storageKey !== 'undefined' && options.storageKey) {
                 this.$gridHash = getHash(this.$columnModel);
