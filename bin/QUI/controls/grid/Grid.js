@@ -2221,6 +2221,8 @@ define('controls/grid/Grid', [
                     let text = columnData;
 
                     if (typeof columnData !== 'string') {
+                        // replace white spaces and newlines with a single space
+                        text = text.replace(/\s+/g, ' ').trim();
                         text = columnData.innerText || columnData.textContent;
                     }
 
