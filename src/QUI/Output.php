@@ -1013,6 +1013,10 @@ class Output extends Singleton
             return $html;
         }
 
+        if (str_starts_with($url, 'mailto:')) {
+            return $html;
+        }
+
         $host = HOST;
 
         if ($this->Project) {
