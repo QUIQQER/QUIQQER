@@ -299,33 +299,8 @@ class Session
             Log::addWarning('Memcached not installed');
         }
 
-        // memcache
-        // @deprecated
-        if ($sessionType == 'memcache' && class_exists('Memcache')) {
-            $memcache_data = QUI::conf('session', 'memcache_data');
-            $memcache_data = explode(';', $memcache_data);
-
-            $Memcache = new Memcache();
-
-            foreach ($memcache_data as $serverData) {
-                $serverData = explode(':', $serverData);
-
-                $server = $serverData[0];
-                $port = 11211;
-
-                if (isset($serverData[1])) {
-                    $port = $serverData[1];
-                }
-
-                $Memcache->addserver($server, $port);
-            }
-
-            /* @phpstan-ignore-next-line */
-            return new MemcacheSessionHandler($Memcache);
-        }
-
         if ($sessionType == 'memcache' && !class_exists('Memcache')) {
-            Log::addWarning('Memcache not installed');
+            Log::addWarning('Memcache is not available anymore. Please install Memcached instead.');
         }
 
         // session via database
