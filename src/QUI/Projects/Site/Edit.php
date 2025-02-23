@@ -199,7 +199,7 @@ class Edit extends Site
      *
      * @throws QUI\Exception
      */
-    public function activate(QUI\Interfaces\Users\User $User = null): void
+    public function activate(null | QUI\Interfaces\Users\User $User = null): void
     {
         try {
             $this->checkPermission('quiqqer.projects.site.edit', $User);
@@ -427,7 +427,7 @@ class Edit extends Site
      *
      * @throws QUI\Exception
      */
-    public function getChildren(array $params = [], bool $load = false): int|array
+    public function getChildren(array $params = [], bool $load = false): int | array
     {
         if (!isset($params['order'])) {
             // Falls kein order übergeben wird, wird das eingestellte Site order
@@ -489,7 +489,7 @@ class Edit extends Site
      * @throws QUI\Database\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function addLanguageLink(string $lang, string|int $id): PDOStatement
+    public function addLanguageLink(string $lang, string | int $id): PDOStatement
     {
         $this->checkPermission('quiqqer.projects.site.edit');
 
@@ -951,7 +951,7 @@ class Edit extends Site
     /**
      * is the page currently edited from another user than me?
      */
-    public function isLockedFromOther(): bool|int|string
+    public function isLockedFromOther(): bool | int | string
     {
         $uid = $this->isLocked();
 
@@ -992,7 +992,7 @@ class Edit extends Site
     /**
      * is the page currently edited
      */
-    public function isLocked(): bool|string
+    public function isLocked(): bool | string
     {
         try {
             return Locker::isLocked(
@@ -1055,7 +1055,7 @@ class Edit extends Site
      * @param ?QUI\Interfaces\Users\User $User - [optional] User to save
      * @throws QUI\Exception
      */
-    public function deactivate(QUI\Interfaces\Users\User $User = null): void
+    public function deactivate(null | QUI\Interfaces\Users\User $User = null): void
     {
         try {
             $this->checkPermission('quiqqer.projects.site.edit', $User);
@@ -1134,7 +1134,7 @@ class Edit extends Site
      * @throws QUI\Permissions\Exception
      * @todo Rekursiv kopieren
      */
-    public function copy(int $pid, ?Project $Project = null): Edit
+    public function copy(int $pid, null | Project $Project = null): Edit
     {
         // Edit Rechte prüfen
         $this->checkPermission('quiqqer.projects.site.edit');
@@ -1285,7 +1285,7 @@ class Edit extends Site
     public function createChild(
         array $params = [],
         array $childPermissions = [],
-        QUI\Interfaces\Users\User $User = null
+        null | QUI\Interfaces\Users\User $User = null
     ): int {
         $this->checkPermission('quiqqer.projects.site.new', $User);
 
@@ -1483,7 +1483,7 @@ class Edit extends Site
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function deleteLinked(int $pid, bool|int $all = false, bool $orig = false): void
+    public function deleteLinked(int $pid, bool | int $all = false, bool $orig = false): void
     {
         $this->checkPermission('quiqqer.projects.site.edit');
 
@@ -1588,7 +1588,7 @@ class Edit extends Site
     public function addUserToPermission(
         QUI\Interfaces\Users\User $User,
         string $permission,
-        QUI\Interfaces\Users\User $EditUser = null
+        null | QUI\Interfaces\Users\User $EditUser = null
     ): void {
         Permission::addUserToSitePermission($User, $this, $permission, $EditUser);
     }
@@ -1599,7 +1599,7 @@ class Edit extends Site
     public function addGroupToPermission(
         Group $Group,
         string $permission,
-        QUI\Interfaces\Users\User $EditUser = null
+        null | QUI\Interfaces\Users\User $EditUser = null
     ): void {
         Permission::addGroupToSitePermission($Group, $this, $permission, $EditUser);
     }
@@ -1620,7 +1620,7 @@ class Edit extends Site
     public function removeUserFromSitePermission(
         QUI\Interfaces\Users\User $User,
         string $permission,
-        QUI\Interfaces\Users\User $EditUser = null
+        null | QUI\Interfaces\Users\User $EditUser = null
     ): void {
         Permission::removeUserFromSitePermission($User, $this, $permission, $EditUser);
     }
@@ -1631,7 +1631,7 @@ class Edit extends Site
     public function removeGroupFromSitePermission(
         Group $Group,
         string $permission,
-        ?QUI\Interfaces\Users\User $EditUser = null
+        null | QUI\Interfaces\Users\User $EditUser = null
     ): void {
         Permission::removeGroupFromSitePermission($Group, $this, $permission, $EditUser);
     }

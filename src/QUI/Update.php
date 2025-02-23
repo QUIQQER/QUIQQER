@@ -293,7 +293,7 @@ class Update
      *
      * @throws QUI\Exception
      */
-    public static function importAllLocaleXMLs(Composer $Composer = null): void
+    public static function importAllLocaleXMLs(null | Composer $Composer = null): void
     {
         $packages_dir = false;
 
@@ -603,7 +603,7 @@ class Update
      * @throws QUI\Exception
      * @deprecated
      */
-    public static function importAllMenuXMLs(Composer $Composer = null): void
+    public static function importAllMenuXMLs(null | Composer $Composer = null): void
     {
         $packages_dir = false;
 

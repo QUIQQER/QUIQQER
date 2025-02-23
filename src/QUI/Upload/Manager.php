@@ -54,7 +54,7 @@ class Manager
      *
      * @throws Exception
      */
-    public function init(): bool|string|array
+    public function init(): bool | string | array
     {
         if (!empty($_REQUEST['onstart']) && is_callable($_REQUEST['onstart'])) {
             $this->callFunction($_REQUEST['onstart'], $_REQUEST);
@@ -72,7 +72,7 @@ class Manager
      * @return mixed
      * @throws Exception
      */
-    protected function callFunction(callable|string $function, array $params = []): mixed
+    protected function callFunction(callable | string $function, array $params = []): mixed
     {
         if ($function instanceof \Closure) {
             return $function();
@@ -125,7 +125,7 @@ class Manager
      * @throws Exception
      * @throws QUI\Permissions\Exception
      */
-    public function upload(): bool|string|array
+    public function upload(): bool | string | array
     {
         QUIFile::mkdir($this->getUserUploadDir());
 
@@ -357,7 +357,7 @@ class Manager
      *
      * @throws QUI\Permissions\Exception
      */
-    protected function getUserUploadDir(QUI\Interfaces\Users\User $User = null): string
+    protected function getUserUploadDir(null | QUI\Interfaces\Users\User $User = null): string
     {
         if (!QUI::getUsers()->isUser($User)) {
             $User = QUI::getUserBySession();
@@ -387,7 +387,7 @@ class Manager
      * @param QUI\Interfaces\Users\User|null $User
      * @throws QUI\Permissions\Exception
      */
-    protected function checkUserPermissions(QUI\Interfaces\Users\User $User = null): void
+    protected function checkUserPermissions(null | QUI\Interfaces\Users\User $User = null): void
     {
         $SessionUser = QUI::getUserBySession();
 
@@ -445,7 +445,7 @@ class Manager
      *
      * @throws Exception
      */
-    protected function formUpload(callable|string $onfinish, mixed $params): void
+    protected function formUpload(callable | string $onfinish, mixed $params): void
     {
         if (empty($_FILES) || !isset($_FILES['files'])) {
             throw new Exception(
@@ -609,7 +609,7 @@ class Manager
     /**
      * Flush a Message to the JavaScript UploadManager
      */
-    public function flushMessage(array|string $message): void
+    public function flushMessage(array | string $message): void
     {
         $message = '<script type="text/javascript">
             let UploadManager = false;
@@ -761,7 +761,7 @@ class Manager
      * @throws Exception
      * @throws QUI\Permissions\Exception
      */
-    public function getUnfinishedUploadsFromUser(QUI\Interfaces\Users\User $User = null): array
+    public function getUnfinishedUploadsFromUser(null | QUI\Interfaces\Users\User $User = null): array
     {
         if (!QUI::getUsers()->isUser($User)) {
             $User = QUI::getUserBySession();
