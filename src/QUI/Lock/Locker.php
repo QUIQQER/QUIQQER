@@ -30,7 +30,7 @@ class Locker
         Package $Package,
         string $key,
         string $permission = '',
-        $User = null
+        null | QUI\Interfaces\Users\User $User = null
     ): void {
         if (is_null($User)) {
             $User = QUI::getUserBySession();
@@ -51,7 +51,7 @@ class Locker
     public static function checkLocked(
         Package $Package,
         string $key,
-        ?QUI\Interfaces\Users\User $User = null
+        null | QUI\Interfaces\Users\User $User = null
     ): void {
         if (self::isLocked($Package, $key, $User)) {
             throw new QUI\Lock\Exception('Item is locked');
@@ -69,7 +69,7 @@ class Locker
     public static function isLocked(
         Package $Package,
         string $key,
-        ?QUI\Interfaces\Users\User $User = null,
+        null | QUI\Interfaces\Users\User $User = null,
         bool $considerUser = true
     ): mixed {
         if (is_null($User)) {
@@ -162,8 +162,8 @@ class Locker
     public static function lock(
         Package $Package,
         string $key,
-        bool|int $lifetime = false,
-        QUI\Interfaces\Users\User $User = null
+        bool | int $lifetime = false,
+        null | QUI\Interfaces\Users\User $User = null
     ): void {
         if (is_null($User)) {
             $User = QUI::getUserBySession();
@@ -192,7 +192,7 @@ class Locker
         Package $Package,
         string $key,
         string $permission = '',
-        $User = null
+        null | QUI\Interfaces\Users\User $User = null
     ): void {
         if (is_null($User)) {
             $User = QUI::getUserBySession();

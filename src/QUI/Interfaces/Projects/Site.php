@@ -27,7 +27,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @return Site
      */
-    public function load(bool|string $plugin = false): Site;
+    public function load(bool | string $plugin = false): Site;
 
     /**
      * Serialisierungsdaten
@@ -44,14 +44,14 @@ interface Site extends QUI\QDOMInterface
     public function decode(string $params);
 
     /**
-     * Hohlt frisch die Daten aus der DB
+     * Holt frisch die Daten aus der DB
      */
     public function refresh();
 
     /**
      * Prüft ob es eine Verknüpfung ist
      */
-    public function isLinked(): bool|int;
+    public function isLinked(): bool | int;
 
     /**
      * Prüft ob es die Seite auch in einer anderen Sprache gibt
@@ -71,7 +71,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @return integer
      */
-    public function getId(bool|string $lang = false): int;
+    public function getId(bool | string $lang = false): int;
 
     /**
      * Gibt alle Kinder zurück
@@ -83,7 +83,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @return array|int
      */
-    public function getChildren(array $params = [], bool $load = false): array|int;
+    public function getChildren(array $params = [], bool $load = false): array | int;
 
     /**
      * Liefert die nächstfolgende Seite
@@ -114,12 +114,12 @@ interface Site extends QUI\QDOMInterface
     /**
      * Gibt das erste Kind der Seite zurück
      */
-    public function firstChild(array $params = []): bool|Site;
+    public function firstChild(array $params = []): bool | Site;
 
     /**
      * Gibt die Kinder zurück achtet aber auf "Nicht in Navigation anzeigen" und Rechte
      */
-    public function getNavigation(array $params = []): array|int;
+    public function getNavigation(array $params = []): array | int;
 
     /**
      * @throws QUI\Exception
@@ -141,7 +141,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @return array
      */
-    public function getChildrenIds(array $params = []): array|int;
+    public function getChildrenIds(array $params = []): array | int;
 
     /**
      * Return ALL children ids under the site
@@ -182,7 +182,7 @@ interface Site extends QUI\QDOMInterface
      * Gibt das Parent Objekt zurück.
      * Wenn kein Parent Objekt existiert wird false zurückgegeben.
      */
-    public function getParent(): Site|bool;
+    public function getParent(): Site | bool;
 
     public function getParents(): array;
 
@@ -204,10 +204,16 @@ interface Site extends QUI\QDOMInterface
 
     public function createCache();
 
-    public function hasPermission(string $permission, QUI\Interfaces\Users\User $User = null): bool|int;
+    public function hasPermission(
+        string $permission,
+        null | QUI\Interfaces\Users\User $User = null
+    ): bool | int;
 
     /**
      * @throws QUI\Exception
      */
-    public function checkPermission(string $permission, QUI\Interfaces\Users\User $User = null);
+    public function checkPermission(
+        string $permission,
+        null | QUI\Interfaces\Users\User $User = null
+    );
 }

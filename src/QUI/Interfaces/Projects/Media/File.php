@@ -41,7 +41,7 @@ interface File
 
     public function getParent(): Item;
 
-    public function getParentId(): int|bool;
+    public function getParentId(): int | bool;
 
     public function getParentIds(): array;
 
@@ -59,7 +59,7 @@ interface File
      *
      * @throws Exception
      */
-    public function activate(QUI\Interfaces\Users\User $PermissionUser = null);
+    public function activate(null | QUI\Interfaces\Users\User $PermissionUser = null);
 
     public function isActive(): bool;
 
@@ -73,7 +73,7 @@ interface File
      * @param QUI\Interfaces\Users\User|null $PermissionUser
      * @throws Exception
      */
-    public function deactivate(QUI\Interfaces\Users\User $PermissionUser = null);
+    public function deactivate(null | QUI\Interfaces\Users\User $PermissionUser = null);
 
     /**
      * Delete the file, file is in trash
@@ -81,9 +81,9 @@ interface File
      * @param QUI\Interfaces\Users\User|null $PermissionUser
      * @throws Exception
      */
-    public function delete(QUI\Interfaces\Users\User $PermissionUser = null): void;
+    public function delete(null | QUI\Interfaces\Users\User $PermissionUser = null): void;
 
-    public function destroy(QUI\Interfaces\Users\User $PermissionUser = null): void;
+    public function destroy(null | QUI\Interfaces\Users\User $PermissionUser = null): void;
 
     /**
      * Save the file with all its attributes to the Database
@@ -95,14 +95,17 @@ interface File
     /**
      * @throws Exception
      */
-    public function rename(string $newName, QUI\Interfaces\Users\User $PermissionUser = null);
+    public function rename(
+        string $newName,
+        null | QUI\Interfaces\Users\User $PermissionUser = null
+    );
 
     /**
      * create the file cache
      *
      * @throws Exception
      */
-    public function createCache(): bool|string;
+    public function createCache(): bool | string;
 
     /**
      * delete the file cache
@@ -119,5 +122,8 @@ interface File
 
     public function getProject(): Project;
 
-    public function checkPermission(string $permission, QUI\Interfaces\Users\User $User = null): void;
+    public function checkPermission(
+        string $permission,
+        null | QUI\Interfaces\Users\User $User = null
+    ): void;
 }
