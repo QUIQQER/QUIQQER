@@ -32,8 +32,8 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function __construct(
         array $attributes = [],
-        QUI\Projects\Project $Project = null,
-        QUI\Projects\Site $Parent = null
+        null | QUI\Projects\Project $Project = null,
+        null | QUI\Projects\Site $Parent = null
     ) {
         $this->Project = $Project;
         $this->Parent = $Parent;
@@ -61,7 +61,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @return Virtual
      */
-    public function load(bool|string $plugin = false): QUI\Interfaces\Projects\Site
+    public function load(bool | string $plugin = false): QUI\Interfaces\Projects\Site
     {
         return $this;
     }
@@ -96,7 +96,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Prüft ob es eine Verknüpfung ist
      */
-    public function isLinked(): bool|int
+    public function isLinked(): bool | int
     {
         return false;
     }
@@ -127,7 +127,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @return int|array ;
      */
-    public function getChildren(array $params = [], bool $load = false): int|array
+    public function getChildren(array $params = [], bool $load = false): int | array
     {
         return [];
     }
@@ -177,7 +177,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Gibt die Kinder zurück achtet aber auf "Nicht in Navigation anzeigen" und Rechte
      */
-    public function getNavigation(array $params = []): int|array
+    public function getNavigation(array $params = []): int | array
     {
         return [];
     }
@@ -294,7 +294,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @return integer
      */
-    public function getId(bool|string $lang = false): int
+    public function getId(bool | string $lang = false): int
     {
         return $this->getAttribute('id');
     }
@@ -334,7 +334,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Gibt das erste Kind der Seite zurück
      */
-    public function firstChild(array $params = []): Site|bool
+    public function firstChild(array $params = []): Site | bool
     {
         return false;
     }
@@ -404,7 +404,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Shortcut for QUI\Permissions\Permission::hasSitePermission
      */
-    public function hasPermission(string $permission, $User = false): bool|int
+    public function hasPermission(string $permission, $User = false): bool | int
     {
         return true;
     }

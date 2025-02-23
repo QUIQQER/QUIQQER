@@ -96,7 +96,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * the site url
      */
-    protected string|bool $url = false;
+    protected string | bool $url = false;
 
     /**
      * the ids of the pages in other languages
@@ -126,7 +126,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * is the site a link
      */
-    protected int|bool $LINKED_PARENT = false;
+    protected int | bool $LINKED_PARENT = false;
 
     /**
      * tmp data from tables from the plugins
@@ -141,12 +141,12 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Type string
      */
-    protected string|false $type = false;
+    protected string | false $type = false;
 
     /**
      * Package string
      */
-    protected string|false $package = false;
+    protected string | false $package = false;
 
     /**
      * Constructor
@@ -268,7 +268,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         return self::getSiteCachePath($this->getProject()->getName(), $this->getProject()->getLang(), $this->getId());
     }
 
-    public static function getSiteCachePath(string $projectName, string $projectLang, int|string $id): string
+    public static function getSiteCachePath(string $projectName, string $projectLang, int | string $id): string
     {
         $projectPath = Project::getProjectLanguageCachePath(
             $projectName,
@@ -296,7 +296,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @throws QUI\Exception
      */
-    public function getId(bool|string $lang = false): int
+    public function getId(bool | string $lang = false): int
     {
         if ($lang === false) {
             return $this->id;
@@ -619,7 +619,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * @throws QUI\Exception
      */
-    public function getParent(): bool|Site
+    public function getParent(): bool | Site
     {
         if (!$this->getParentId()) {
             return false;
@@ -659,7 +659,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @throws QUI\Exception
      */
-    public function getChildrenIds(array $params = []): array|int
+    public function getChildrenIds(array $params = []): array | int
     {
         $order = $this->getAttribute('order_type');
 
@@ -781,7 +781,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @throws QUI\Exception
      */
-    public function firstChild(array $params = []): bool|Site
+    public function firstChild(array $params = []): bool | Site
     {
         if (!is_array($params)) {
             $params = [];
@@ -806,7 +806,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @throws QUI\Exception
      */
-    public function getChildren(array $params = [], bool $load = false): array|int
+    public function getChildren(array $params = [], bool $load = false): array | int
     {
         if (!is_array($params)) {
             $params = [];
@@ -896,7 +896,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @throws QUI\Exception
      */
-    public function load(bool|string $plugin = false): Site
+    public function load(bool | string $plugin = false): Site
     {
         $this->loadFlag = true;
         $cacheDbPackageCacheName = $this->getCachePath() . '/dbPackageFiles';
@@ -1113,7 +1113,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * @throws QUI\Exception
      */
-    public function lastChild(array $params = []): bool|Edit|Site
+    public function lastChild(array $params = []): bool | Edit | Site
     {
         if (!is_array($params)) {
             $params = [];
@@ -1142,7 +1142,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @throws QUI\Exception
      */
-    public function getNavigation(array $params = []): array|int
+    public function getNavigation(array $params = []): array | int
     {
         if (!is_array($params)) {
             $params = [];
@@ -1380,7 +1380,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Prüft ob es eine Verknüpfung ist
      */
-    public function isLinked(): bool|int
+    public function isLinked(): bool | int
     {
         if ($this->LINKED_PARENT === false) {
             return false;
@@ -1849,7 +1849,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Shortcut for QUI\Permissions\Permission::hasSitePermission
      */
-    public function hasPermission(string $permission, QUI\Interfaces\Users\User $User = null): bool|int
+    public function hasPermission(string $permission, null | QUI\Interfaces\Users\User $User = null): bool | int
     {
         return QUI\Permissions\Permission::hasSitePermission(
             $permission,

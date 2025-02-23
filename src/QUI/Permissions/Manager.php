@@ -173,7 +173,7 @@ class Manager
      */
     public static function importPermissionsForGroup(
         Group $Group,
-        QUI\Interfaces\Users\User $ParentUser = null
+        null | QUI\Interfaces\Users\User $ParentUser = null
     ): void {
         $Manager = QUI::getPermissionManager();
         $permissions = $Manager->getPermissions($Group);
@@ -506,7 +506,7 @@ class Manager
      *
      * @return array
      */
-    public function getPermissionList(bool|string $area = false): array
+    public function getPermissionList(bool | string $area = false): array
     {
         if (!$area) {
             return $this->cache;
@@ -608,7 +608,7 @@ class Manager
     public function setPermissions(
         mixed $Obj,
         array $permissions,
-        QUI\Interfaces\Users\User $EditUser = null
+        null | QUI\Interfaces\Users\User $EditUser = null
     ): void {
         if (empty($permissions)) {
             throw new QUI\Exception(
@@ -777,7 +777,7 @@ class Manager
     public function setProjectPermissions(
         Project $Project,
         array $permissions,
-        QUI\Interfaces\Users\User $EditUser = null
+        null | QUI\Interfaces\Users\User $EditUser = null
     ): void {
         $data = [];
         $_data = $this->getData($Project);
@@ -824,8 +824,10 @@ class Manager
     /**
      * Cleanup the value for the type
      */
-    protected function cleanValue(string $type, int|array|string $val): int|bool|array|string
-    {
+    protected function cleanValue(
+        string $type,
+        int | array | string $val
+    ): int | bool | array | string {
         switch ($type) {
             case 'int':
                 $val = (int)$val;
@@ -870,7 +872,7 @@ class Manager
     protected function addProjectPermission(
         Project $Project,
         string $permission,
-        int|string $value
+        int | string $value
     ): void {
         QUI::getDataBase()->insert(
             self::table() . '2projects',
@@ -891,7 +893,7 @@ class Manager
     protected function setProjectPermission(
         Project $Project,
         string $permission,
-        int|string $value
+        int | string $value
     ): void {
         QUI::getDataBase()->update(
             self::table() . '2projects',
@@ -922,7 +924,7 @@ class Manager
     public function setSitePermissions(
         QUI\Interfaces\Projects\Site $Site,
         array $permissions,
-        QUI\Interfaces\Users\User $EditUser = null
+        null | QUI\Interfaces\Users\User $EditUser = null
     ): void {
         if (QUI\Projects\Site\Utils::isSiteObject($Site) === false) {
             return;
@@ -1007,7 +1009,7 @@ class Manager
     protected function addSitePermission(
         QUI\Interfaces\Projects\Site $Site,
         string $permission,
-        int|string $value
+        int | string $value
     ): void {
         $Project = $Site->getProject();
         $table = self::table();
@@ -1030,7 +1032,7 @@ class Manager
     protected function setSitePermission(
         QUI\Interfaces\Projects\Site $Site,
         string $permission,
-        int|string $value
+        int | string $value
     ): void {
         $Project = $Site->getProject();
         $table = self::table();
@@ -1065,7 +1067,7 @@ class Manager
     public function setMediaPermissions(
         QUI\Projects\Media\Item $MediaItem,
         array $permissions,
-        QUI\Interfaces\Users\User $EditUser = null
+        null | QUI\Interfaces\Users\User $EditUser = null
     ): void {
         if (QUI\Projects\Media\Utils::isItem($MediaItem) === false) {
             return;
@@ -1151,7 +1153,7 @@ class Manager
     protected function addMediaPermission(
         QUI\Projects\Media\Item $MediaItem,
         string $permission,
-        int|string $value
+        int | string $value
     ): void {
         $Media = $MediaItem->getMedia();
         $Project = $Media->getProject();
@@ -1173,7 +1175,7 @@ class Manager
     protected function setMediaPermission(
         QUI\Projects\Media\Item $MediaItem,
         string $permission,
-        int|string $value
+        int | string $value
     ): void {
         $Media = $MediaItem->getMedia();
         $Project = $Media->getProject();
@@ -1497,7 +1499,7 @@ class Manager
      * @return false|array
      * @throws QUI\Exception
      */
-    public function getPermissionData(string $permission): bool|array
+    public function getPermissionData(string $permission): bool | array
     {
         if (!isset($this->cache[$permission])) {
             throw new QUI\Exception('Permission not found');
@@ -1583,7 +1585,7 @@ class Manager
      */
     public function removeSitePermissions(
         QUI\Interfaces\Projects\Site $Site,
-        QUI\Interfaces\Users\User $EditUser = null
+        null | QUI\Interfaces\Users\User $EditUser = null
     ): void {
         $Site->checkPermission('quiqqer.projects.site.edit', $EditUser);
 
@@ -1625,7 +1627,7 @@ class Manager
     public function getUserPermission(
         QUI\Interfaces\Users\User $User,
         string $permission,
-        callable|bool|string $ruleset = false
+        callable | bool | string $ruleset = false
     ): mixed {
         /* @var $User User */
         $usersAndGroups = $User->getGroups();
@@ -1731,7 +1733,7 @@ class Manager
      */
     public function removeMediaPermissions(
         QUI\Interfaces\Projects\Media\File $MediaItem,
-        QUI\Interfaces\Users\User $EditUser = null
+        null | QUI\Interfaces\Users\User $EditUser = null
     ): void {
         $MediaItem->checkPermission('quiqqer.projects.media.edit', $EditUser);
 

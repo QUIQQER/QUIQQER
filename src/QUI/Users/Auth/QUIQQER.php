@@ -31,7 +31,7 @@ class QUIQQER extends AbstractAuthenticator
 
     protected bool $authenticated = false;
 
-    public function __construct(array|int|string $user = '')
+    public function __construct(array | int | string $user = '')
     {
         $user = Orthos::clear($user);
         $this->username = $user;
@@ -47,7 +47,7 @@ class QUIQQER extends AbstractAuthenticator
         return true;
     }
 
-    public function getTitle(Locale $Locale = null): string
+    public function getTitle(null | Locale $Locale = null): string
     {
         if (is_null($Locale)) {
             $Locale = QUI::getLocale();
@@ -56,7 +56,7 @@ class QUIQQER extends AbstractAuthenticator
         return $Locale->get('quiqqer/core', 'quiqqer.auth.title');
     }
 
-    public function getDescription(Locale $Locale = null): string
+    public function getDescription(null | Locale $Locale = null): string
     {
         if (is_null($Locale)) {
             $Locale = QUI::getLocale();
@@ -139,7 +139,7 @@ class QUIQQER extends AbstractAuthenticator
      * @throws Exception
      * @throws QUI\Database\Exception
      */
-    public function auth(string|int|array $authParams): bool
+    public function auth(string | int | array $authParams): bool
     {
         if (!is_string($this->username) || empty($this->username)) {
             throw new QUI\Users\Exception(
@@ -210,7 +210,7 @@ class QUIQQER extends AbstractAuthenticator
      *
      * @deprecated
      */
-    protected function genHash(string $pass, string $salt = null): string
+    protected function genHash(string $pass, null | string $salt = null): string
     {
         if ($salt === null) {
             $randomBytes = openssl_random_pseudo_bytes(SALT_LENGTH);

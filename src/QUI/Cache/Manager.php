@@ -70,14 +70,14 @@ class Manager
 
     protected static array $drivers = [];
 
-    protected static string|int|null $currentDriver = null;
+    protected static string | int | null $currentDriver = null;
 
     /**
      * Returns explicitly the file system cache
      *
      * @deprecated use getDriver
      */
-    public static function getFileSystemCache(): Stash\Pool|null
+    public static function getFileSystemCache(): Stash\Pool | null
     {
         if (!is_null(self::$FileSystemStash)) {
             return self::$FileSystemStash;
@@ -332,7 +332,7 @@ class Manager
      *
      * @throws Stash\Exception\RuntimeException
      */
-    public static function getDriver(array $options = [], bool|string $driver = false): Stash\Driver\AbstractDriver
+    public static function getDriver(array $options = [], bool | string $driver = false): Stash\Driver\AbstractDriver
     {
         if ($driver === false) {
             $driver = self::getCurrentDriver();
@@ -530,7 +530,7 @@ class Manager
         return new QuiqqerFileDriver($params);
     }
 
-    protected static function getCurrentDriver(): int|string|null
+    protected static function getCurrentDriver(): int | string | null
     {
         if (self::$currentDriver === null) {
             return self::$currentDriver;
@@ -561,7 +561,7 @@ class Manager
     /**
      * Returns the Stash\Driver\Composite or the Stash\Driver
      */
-    public static function getHandler(bool|string $type = false): Stash\Interfaces\DriverInterface|null
+    public static function getHandler(bool | string $type = false): Stash\Interfaces\DriverInterface | null
     {
         if ($type) {
             $handlers = self::$handlers;
@@ -595,8 +595,11 @@ class Manager
      *                                                         If $time is null, the cache will try to use the default value,
      *                                                         if no default value is set, the maximum possible time for the used implementation will be used.
      */
-    public static function set(string $name, mixed $data, DateInterval|DateTimeInterface|int $time = null): void
-    {
+    public static function set(
+        string $name,
+        mixed $data,
+        null | DateInterval | DateTimeInterface | int $time = null
+    ): void {
         if (defined('QUIQQER_SETUP')) {
             return;
         }
@@ -642,7 +645,7 @@ class Manager
      *
      * @param boolean|string $key - optional; if no key is given the whole cache is cleared
      */
-    public static function clear(bool|string $key = ""): void
+    public static function clear(bool | string $key = ""): void
     {
         if (self::$noClearing) {
             return;
@@ -733,7 +736,7 @@ class Manager
      *
      * @param bool|string $projectName - optional, name of the project
      */
-    public static function clearMediaCache(bool|string $projectName = false): void
+    public static function clearMediaCache(bool | string $projectName = false): void
     {
         // clear all media cache
         if (empty($projectName)) {
@@ -936,7 +939,7 @@ class Manager
      *
      * @param boolean|string $key - optional; if no key is given the whole cache is cleared
      */
-    public static function longTimeCacheClear(bool|string $key = ""): void
+    public static function longTimeCacheClear(bool | string $key = ""): void
     {
         if (self::$noClearing) {
             return;

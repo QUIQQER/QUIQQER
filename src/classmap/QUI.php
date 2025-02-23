@@ -429,7 +429,7 @@ class QUI
      * @param string|null $key (optional)
      *
      */
-    public static function conf(string $section, string $key = null): mixed
+    public static function conf(string $section, null | string $key = null): mixed
     {
         if (self::$Conf === null) {
             try {

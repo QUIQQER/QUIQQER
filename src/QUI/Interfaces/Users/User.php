@@ -28,7 +28,7 @@ interface User
      */
     public function isSU(): bool;
 
-    public function isInGroup(int|string $groupId): bool;
+    public function isInGroup(int | string $groupId): bool;
 
     public function canUseBackend(): bool;
 
@@ -39,34 +39,34 @@ interface User
      *
      * @param string $code - activation code
      */
-    public function activate(string $code = '', ?User $PermissionUser = null): bool|int;
+    public function activate(string $code = '', null | User $PermissionUser = null): bool | int;
 
-    public function deactivate(?User $PermissionUser = null): bool;
+    public function deactivate(null | User $PermissionUser = null): bool;
 
     /**
      * Disable a user
      * The user data will be lost, but the user still exist
      */
-    public function disable(?User $PermissionUser = null): bool;
+    public function disable(null | User $PermissionUser = null): bool;
 
     /**
      * Save all attributes of the user
      */
-    public function save(?User $PermissionUser = null): void;
+    public function save(null | User $PermissionUser = null): void;
 
-    public function delete(?User $PermissionUser = null): bool;
+    public function delete(null | User $PermissionUser = null): bool;
 
     /**
      * @deprecated
      */
-    public function getId(): int|false;
+    public function getId(): int | false;
 
     /**
      * @deprecated use getUUID
      */
-    public function getUniqueId(): string|int;
+    public function getUniqueId(): string | int;
 
-    public function getUUID(): string|int;
+    public function getUUID(): string | int;
 
     /**
      * Returns the name of the user
@@ -108,22 +108,29 @@ interface User
      *
      * @return mixed
      */
-    public function getPermission(string $right, callable|bool|string $ruleset = false): mixed;
+    public function getPermission(
+        string $right,
+        callable | bool | string $ruleset = false
+    ): mixed;
 
-    public function setGroups(array|string $groups);
+    public function setGroups(array | string $groups);
 
     /**
      * @param boolean $array - returns the groups as objects (true) or as an array (false)
      */
     public function getGroups(bool $array = true): array;
 
-    public function getCountry(): ?Country;
+    public function getCountry(): null | Country;
 
-    public function getAvatar(): Image|null;
+    public function getAvatar(): Image | null;
 
-    public function setPassword(string $new, ?User $PermissionUser = null);
+    public function setPassword(string $new, null | User $PermissionUser = null);
 
-    public function changePassword(string $newPassword, string $oldPassword, QUIUserInterface $ParentUser = null): void;
+    public function changePassword(
+        string $newPassword,
+        string $oldPassword,
+        null | QUIUserInterface $ParentUser = null
+    ): void;
 
     /**
      * Checks the password if it's the user from
@@ -143,9 +150,9 @@ interface User
 
     public function setCompanyStatus(bool $status);
 
-    public function addToGroup(int|string $groupId);
+    public function addToGroup(int | string $groupId);
 
-    public function removeGroup(Group|int|string $Group);
+    public function removeGroup(Group | int | string $Group);
 
     /**
      * @throws \QUI\Users\Exception
@@ -179,12 +186,12 @@ interface User
     /**
      * @throws \QUI\Users\Exception
      */
-    public function disableAuthenticator(string $authenticator, QUIUserInterface $ParentUser = null): void;
+    public function disableAuthenticator(string $authenticator, null | QUIUserInterface $ParentUser = null): void;
 
     /**
      * @throws \QUI\Users\Exception
      */
-    public function enableAuthenticator(string $authenticator, QUIUserInterface $ParentUser = null): void;
+    public function enableAuthenticator(string $authenticator, null | QUIUserInterface $ParentUser = null): void;
 
     public function hasAuthenticator(string $authenticator): bool;
     //endregion
@@ -198,14 +205,14 @@ interface User
      *
      * @throws Exception
      */
-    public function addAddress(array $params = [], QUIUserInterface $ParentUser = null): ?Address;
+    public function addAddress(array $params = [], null | QUIUserInterface $ParentUser = null): ?Address;
 
     /**
      * @throws Exception
      */
-    public function getAddress(int|string $id): Address;
+    public function getAddress(int | string $id): Address;
 
-    public function getStandardAddress(): null|Address;
+    public function getStandardAddress(): null | Address;
 
     public function getAddressList(): array;
     //endregion

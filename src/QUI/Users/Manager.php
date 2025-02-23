@@ -99,7 +99,7 @@ class Manager
      * Generates a hash of a password
      *
      */
-    public static function genHash(string $pass, string $salt = null): string
+    public static function genHash(string $pass, null | string $salt = null): string
     {
         return Password::generateHash($pass);
     }
@@ -168,7 +168,7 @@ class Manager
      * @throws QUI\Exception
      * @throws ExceptionStack
      */
-    public function get(int|string $id): QUI\Interfaces\Users\User
+    public function get(int | string $id): QUI\Interfaces\Users\User
     {
         if (is_numeric($id)) {
             $id = (int)$id;
@@ -502,8 +502,8 @@ class Manager
      * @throws QUI\Exception
      */
     public function createChild(
-        bool|string $username = false,
-        QUIUserInterface $ParentUser = null
+        bool | string $username = false,
+        null | QUIUserInterface $ParentUser = null
     ): QUIUserInterface {
         // check, is the user allowed to create new users
         QUI\Permissions\Permission::checkPermission(
@@ -872,7 +872,7 @@ class Manager
      * @throws QUI\Users\Exception
      * @throws \Exception
      */
-    public function login(array|int|string $authData = []): QUIUserInterface|null
+    public function login(array | int | string $authData = []): QUIUserInterface | null
     {
         if (QUI::getSession()->get('auth') && QUI::getSession()->get('uid')) {
             $userId = QUI::getSession()->get('uid');
@@ -1053,7 +1053,7 @@ class Manager
      * @throws ExceptionStack
      * @throws QUI\Exception
      */
-    public function getUserByName(string $username): QUIUserInterface|User
+    public function getUserByName(string $username): QUIUserInterface | User
     {
         try {
             $result = QUI::getDataBase()->fetch([
@@ -1097,7 +1097,7 @@ class Manager
      * @throws QUI\ExceptionStack
      */
     public function authenticate(
-        AuthenticatorInterface|AbstractAuthenticator|string $authenticator,
+        AuthenticatorInterface | AbstractAuthenticator | string $authenticator,
         array $params = []
     ): bool {
         $username = '';
@@ -1376,7 +1376,7 @@ class Manager
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function deleteUser(int|string $id): bool
+    public function deleteUser(int | string $id): bool
     {
         return $this->get($id)->delete();
     }
@@ -1384,7 +1384,7 @@ class Manager
     /**
      * @throws Exception
      */
-    public function search(array $params): array|int
+    public function search(array $params): array | int
     {
         return $this->execSearch($params);
     }
@@ -1395,7 +1395,7 @@ class Manager
      * @throws QUI\Database\Exception
      * @todo where params
      */
-    protected function execSearch(array $params): array|int
+    protected function execSearch(array $params): array | int
     {
         $PDO = QUI::getDataBase()->getPDO();
         $params = Orthos::clearArray($params);
