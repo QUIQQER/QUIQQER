@@ -595,8 +595,12 @@ class Address extends QUI\QDOM
         return $this->customData;
     }
 
-    public function setCustomData(array $entries): void
+    public function setCustomData(null | array $entries): void
     {
+        if (!is_array($entries)) {
+            return;
+        }
+
         foreach ($entries as $k => $v) {
             $this->setCustomDataEntry($k, $v);
         }
