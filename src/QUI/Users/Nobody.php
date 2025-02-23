@@ -53,7 +53,7 @@ class Nobody extends QUI\QDOM implements User
         return false;
     }
 
-    public function isInGroup(int|string $groupId): bool
+    public function isInGroup(int | string $groupId): bool
     {
         return in_array($groupId, $this->getGroups(false));
     }
@@ -77,7 +77,7 @@ class Nobody extends QUI\QDOM implements User
     /**
      * @deprecated
      */
-    public function getId(): false|int
+    public function getId(): false | int
     {
         return false;
     }
@@ -124,27 +124,27 @@ class Nobody extends QUI\QDOM implements User
      * @param User|null $PermissionUser
      * @return bool
      */
-    public function activate(string $code = '', User $PermissionUser = null): bool
+    public function activate(string $code = '', null | User $PermissionUser = null): bool
     {
         return false;
     }
 
-    public function deactivate(?User $PermissionUser = null): bool
+    public function deactivate(null | User $PermissionUser = null): bool
     {
         return false;
     }
 
-    public function disable(?User $PermissionUser = null): bool
+    public function disable(null | User $PermissionUser = null): bool
     {
         return false;
     }
 
-    public function save(?User $PermissionUser = null): void
+    public function save(null | User $PermissionUser = null): void
     {
         QUI::getSession()->set('attributes', $this->getAttributes());
     }
 
-    public function delete(?User $PermissionUser = null): bool
+    public function delete(null | User $PermissionUser = null): bool
     {
         return false;
     }
@@ -154,7 +154,7 @@ class Nobody extends QUI\QDOM implements User
      *
      * @throws Exception
      */
-    public function addAddress(array $params = [], User $ParentUser = null): ?Address
+    public function addAddress(array $params = [], null | User $ParentUser = null): ?Address
     {
         throw new Exception(
             QUI::getLocale()->get(
@@ -189,7 +189,7 @@ class Nobody extends QUI\QDOM implements User
      *
      * @throws Exception
      */
-    public function addToGroup(int|string|Group $groupId): never
+    public function addToGroup(int | string | Group $groupId): never
     {
         throw new Exception(
             QUI::getLocale()->get(
@@ -204,7 +204,7 @@ class Nobody extends QUI\QDOM implements User
      *
      * @throws Exception
      */
-    public function removeGroup(Group|int|string $Group): never
+    public function removeGroup(Group | int | string $Group): never
     {
         throw new Exception(
             QUI::getLocale()->get(
@@ -227,12 +227,12 @@ class Nobody extends QUI\QDOM implements User
     /**
      * @deprecated
      */
-    public function getUniqueId(): int|string
+    public function getUniqueId(): int | string
     {
         return $this->getUUID();
     }
 
-    public function getUUID(): string|int
+    public function getUUID(): string | int
     {
         return '';
     }
@@ -267,7 +267,7 @@ class Nobody extends QUI\QDOM implements User
      *
      * @throws Exception
      */
-    public function getAddress(int|string $id): Address
+    public function getAddress(int | string $id): Address
     {
         throw new Exception(
             QUI::getLocale()->get(
@@ -360,7 +360,7 @@ class Nobody extends QUI\QDOM implements User
      * @return null|Address
      * @ignore
      */
-    public function getStandardAddress(): null|Address
+    public function getStandardAddress(): null | Address
     {
         return null;
     }
@@ -370,12 +370,12 @@ class Nobody extends QUI\QDOM implements User
         return 1;
     }
 
-    public function setGroups(array|string $groups): bool
+    public function setGroups(array | string $groups): bool
     {
         return false;
     }
 
-    public function getAvatar(): Image|null
+    public function getAvatar(): Image | null
     {
         $Project = QUI::getProjectManager()->getStandard();
         $Media = $Project->getMedia();
@@ -386,7 +386,7 @@ class Nobody extends QUI\QDOM implements User
     /**
      * Exists the permission in the user permissions
      */
-    public function hasPermission(string $permission): bool|string
+    public function hasPermission(string $permission): bool | string
     {
         $list = QUI::getPermissionManager()->getUserPermissionData($this);
 
@@ -400,7 +400,7 @@ class Nobody extends QUI\QDOM implements User
      *
      * @throws Exception
      */
-    public function getPermission(string $right, callable|bool|string $ruleset = false): bool|int|string
+    public function getPermission(string $right, callable | bool | string $ruleset = false): bool | int | string
     {
         return QUI::getPermissionManager()->getUserPermission($this, $right, $ruleset);
     }
@@ -423,8 +423,11 @@ class Nobody extends QUI\QDOM implements User
         return false;
     }
 
-    public function changePassword(string $newPassword, string $oldPassword, QUIUserInterface $ParentUser = null): void
-    {
+    public function changePassword(
+        string $newPassword,
+        string $oldPassword,
+        null | QUIUserInterface $ParentUser = null
+    ): void {
     }
 
     /**
@@ -457,7 +460,7 @@ class Nobody extends QUI\QDOM implements User
         return [];
     }
 
-    public function enableAuthenticator(string $authenticator, QUIUserInterface $ParentUser = null): void
+    public function enableAuthenticator(string $authenticator, null | QUIUserInterface $ParentUser = null): void
     {
         throw new QUI\Users\Exception(
             ['quiqqer/core', 'exception.authenticator.not.found'],
@@ -465,7 +468,7 @@ class Nobody extends QUI\QDOM implements User
         );
     }
 
-    public function disableAuthenticator(string $authenticator, QUIUserInterface $ParentUser = null): void
+    public function disableAuthenticator(string $authenticator, null | QUIUserInterface $ParentUser = null): void
     {
         throw new QUI\Users\Exception(
             ['quiqqer/core', 'exception.authenticator.not.found'],

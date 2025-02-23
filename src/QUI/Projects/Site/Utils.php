@@ -97,7 +97,7 @@ class Utils
      *
      * @return string
      */
-    public static function clearUrl(string $url, QUI\Projects\Project $Project = null): string
+    public static function clearUrl(string $url, null | QUI\Projects\Project $Project = null): string
     {
         // space separator
         $url = str_replace(QUI\Rewrite::URL_SPACE_CHARACTER, ' ', $url);
@@ -537,7 +537,7 @@ class Utils
     /**
      * Return the admin site modules from site.xml`s
      */
-    public static function getAdminSiteModulesFromSite(Edit|Projects\Site $Site): bool|array
+    public static function getAdminSiteModulesFromSite(Edit | Projects\Site $Site): bool | array
     {
         $siteType = $Site->getAttribute('type');
         $cache = $Site->getCachePath() . '/xml-admin-modules/' . $siteType;
@@ -718,7 +718,7 @@ class Utils
      */
     public static function getSitesByInputList(
         Project $Project,
-        array|string $list,
+        array | string $list,
         array $params = []
     ): array {
         $limit = 2;

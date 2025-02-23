@@ -77,7 +77,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws QUI\Exception
      * @see QUI\Interfaces\Projects\Media\File::activate()
      */
-    public function activate(QUI\Interfaces\Users\User $PermissionUser = null): void
+    public function activate(null | QUI\Interfaces\Users\User $PermissionUser = null): void
     {
         $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
@@ -111,7 +111,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * @throws QUI\Exception
      */
-    public function createCache(): bool|string
+    public function createCache(): bool | string
     {
         if (Media::$globalDisableMediaCacheCreation) {
             return false;
@@ -151,7 +151,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * @see QUI\Projects\Media\Item::rename()
      *
      */
-    public function rename(string $newName, QUI\Interfaces\Users\User $PermissionUser = null): void
+    public function rename(string $newName, null | QUI\Interfaces\Users\User $PermissionUser = null): void
     {
         if (empty($newName)) {
             throw new QUI\Exception(
@@ -342,8 +342,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @see QUI\Projects\Media\Item::moveTo()
      */
-    public function moveTo(QUI\Projects\Media\Folder $Folder, QUI\Interfaces\Users\User $PermissionUser = null): void
-    {
+    public function moveTo(
+        QUI\Projects\Media\Folder $Folder,
+        null | QUI\Interfaces\Users\User $PermissionUser = null
+    ): void {
         $Parent = $this->getParent();
 
         if ($Folder->getId() === $Parent->getId()) {
@@ -422,7 +424,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function copyTo(
         QUI\Projects\Media\Folder $Folder,
-        QUI\Interfaces\Users\User $PermissionUser = null
+        null | QUI\Interfaces\Users\User $PermissionUser = null
     ): QUI\Interfaces\Projects\Media\File {
         if ($Folder->childWithNameExists($this->getAttribute('name'))) {
             throw new QUI\Exception(
@@ -554,7 +556,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @return array|int
      */
-    public function getChildrenIds(array $params = []): array|int
+    public function getChildrenIds(array $params = []): array | int
     {
         $table = $this->Media->getTable();
         $table_rel = $this->Media->getTable('relations');
@@ -883,7 +885,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the images from the folder
      */
-    public function getImages(array $params = []): array|int
+    public function getImages(array $params = []): array | int
     {
         return $this->getElements('image', $params);
     }
@@ -891,7 +893,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return children / elements in the folder
      */
-    protected function getElements(string $type, array $params): array|int
+    protected function getElements(string $type, array $params): array | int
     {
         switch ($type) {
             case 'image':
@@ -1040,7 +1042,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the sub folders from the folder
      */
-    public function getFolders(array $params = []): array|int
+    public function getFolders(array $params = []): array | int
     {
         return $this->getElements('folder', $params);
     }
@@ -1050,7 +1052,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @param array $params - filter parameter
      */
-    public function getFiles(array $params = []): array|int
+    public function getFiles(array $params = []): array | int
     {
         return $this->getElements('file', $params);
     }
@@ -1435,7 +1437,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * @return Folder
      * @throws QUI\Exception
      */
-    protected function uploadFolder(string $path, bool|Folder $Folder = false): Folder
+    protected function uploadFolder(string $path, bool | Folder $Folder = false): Folder
     {
         $files = FileUtils::readDir($path);
 
@@ -1478,7 +1480,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws QUI\Exception
      * @see QUI\Interfaces\Projects\Media\File::deactivate()
      */
-    public function deactivate(QUI\Interfaces\Users\User $PermissionUser = null): void
+    public function deactivate(null | QUI\Interfaces\Users\User $PermissionUser = null): void
     {
         if ($this->isActive() === false) {
             return;
@@ -1553,7 +1555,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws QUI\Exception
      * @see QUI\Projects\Media\Item::delete()
      */
-    public function delete(QUI\Interfaces\Users\User $PermissionUser = null): void
+    public function delete(null | QUI\Interfaces\Users\User $PermissionUser = null): void
     {
         $this->checkPermission('quiqqer.projects.media.del', $PermissionUser);
 
@@ -1641,7 +1643,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws ExceptionStack
      * @see QUI\Projects\Media\Item::destroy()
      */
-    public function destroy(QUI\Interfaces\Users\User $PermissionUser = null): void
+    public function destroy(null | QUI\Interfaces\Users\User $PermissionUser = null): void
     {
         // nothing
         // folders are not in the trash

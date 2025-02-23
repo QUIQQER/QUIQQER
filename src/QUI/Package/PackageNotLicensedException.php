@@ -24,8 +24,11 @@ class PackageNotLicensedException extends Exception
      * @param string|null $message (optional) - If omitted, use default message
      * @param string|null $url (optional) - Package download URL
      */
-    public function __construct(string $package, string $message = null, string $url = null)
-    {
+    public function __construct(
+        string $package,
+        null | string $message = null,
+        null | string $url = null
+    ) {
         if (empty($message)) {
             $message = QUI::getLocale()->get(
                 'quiqqer/core',

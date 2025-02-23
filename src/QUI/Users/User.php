@@ -134,7 +134,7 @@ class User implements QUIUserInterface
      * @throws QUI\Exception
      * @throws Exception
      */
-    public function __construct(int|string $id)
+    public function __construct(int | string $id)
     {
         $this->isLoaded = false;
 
@@ -222,7 +222,7 @@ class User implements QUIUserInterface
      * Returns the user id
      * @deprecated
      */
-    public function getId(): int|false
+    public function getId(): int | false
     {
         return $this->id ?: false;
     }
@@ -499,7 +499,7 @@ class User implements QUIUserInterface
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function getStandardAddress(): null|Address
+    public function getStandardAddress(): null | Address
     {
         $Address = $this->getStandardAddressHelper();
         $mailList = $Address->getMailList();
@@ -568,7 +568,7 @@ class User implements QUIUserInterface
      *
      * @throws \QUI\Users\Exception
      */
-    public function getAddress(int|string $id): Address
+    public function getAddress(int | string $id): Address
     {
         if (isset($this->address_list[$id])) {
             return $this->address_list[$id];
@@ -618,7 +618,7 @@ class User implements QUIUserInterface
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function addAddress(array $params = [], QUIUserInterface $ParentUser = null): Address
+    public function addAddress(array $params = [], null | QUIUserInterface $ParentUser = null): Address
     {
         if (is_null($ParentUser)) {
             $ParentUser = QUI::getUserBySession();
@@ -720,7 +720,7 @@ class User implements QUIUserInterface
      * @return boolean - true
      * @throws QUI\Permissions\Exception
      */
-    public function checkEditPermission(QUIUserInterface $ParentUser = null): bool
+    public function checkEditPermission(null | QUIUserInterface $ParentUser = null): bool
     {
         $Users = QUI::getUsers();
         $SessionUser = $Users->getUserBySession();
@@ -770,7 +770,7 @@ class User implements QUIUserInterface
     /**
      * Exists the permission in the user permissions
      */
-    public function hasPermission(string $permission): bool|string
+    public function hasPermission(string $permission): bool | string
     {
         $list = QUI::getPermissionManager()->getUserPermissionData($this);
 
@@ -1044,7 +1044,7 @@ class User implements QUIUserInterface
         return $attributes;
     }
 
-    public function addToGroup(int|string $groupId): void
+    public function addToGroup(int | string $groupId): void
     {
         try {
             $Groups = QUI::getGroups();
@@ -1102,7 +1102,7 @@ class User implements QUIUserInterface
         return [];
     }
 
-    public function setGroups(null|array|string $groups): void
+    public function setGroups(null | array | string $groups): void
     {
         if (empty($groups)) {
             return;
@@ -1237,7 +1237,7 @@ class User implements QUIUserInterface
      * @param ?QUIUserInterface $ParentUser - optional, the saving user, default = session user
      * @throws QUI\Users\Exception|QUI\Exception
      */
-    public function enableAuthenticator(string $authenticator, QUIUserInterface $ParentUser = null): void
+    public function enableAuthenticator(string $authenticator, null | QUIUserInterface $ParentUser = null): void
     {
         $available = Auth\Handler::getInstance()->getAvailableAuthenticators();
         $available = array_flip($available);
@@ -1286,7 +1286,7 @@ class User implements QUIUserInterface
      * @throws QUI\Permissions\Exception
      * @throws Exception
      */
-    public function disableAuthenticator(string $authenticator, QUIUserInterface $ParentUser = null): void
+    public function disableAuthenticator(string $authenticator, null | QUIUserInterface $ParentUser = null): void
     {
         $available = Auth\Handler::getInstance()->getAvailableAuthenticators();
         $available = array_flip($available);
@@ -1346,7 +1346,7 @@ class User implements QUIUserInterface
      * @return bool|int|string
      * @throws QUI\Exception
      */
-    public function getPermission(string $right, callable|bool|string $ruleset = false): bool|int|string
+    public function getPermission(string $right, callable | bool | string $ruleset = false): bool | int | string
     {
         //@todo Benutzer muss erster prüfen ob bei ihm das recht seperat gesetzt ist
 
@@ -1356,12 +1356,12 @@ class User implements QUIUserInterface
     /**
      * @deprecated use getUUID()
      */
-    public function getUniqueId(): int|string
+    public function getUniqueId(): int | string
     {
         return $this->getUUID();
     }
 
-    public function getUUID(): string|int
+    public function getUUID(): string | int
     {
         return $this->uuid ?: '';
     }
@@ -1450,7 +1450,7 @@ class User implements QUIUserInterface
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function getCurrentAddress(): bool|Address
+    public function getCurrentAddress(): bool | Address
     {
         $CurrentAddress = $this->getAttribute('CurrentAddress');
 
@@ -1470,7 +1470,7 @@ class User implements QUIUserInterface
     /**
      * @throws QUI\Exception
      */
-    public function removeGroup(Group|int|string $Group): void
+    public function removeGroup(Group | int | string $Group): void
     {
         $Groups = QUI::getGroups();
 
@@ -1494,7 +1494,7 @@ class User implements QUIUserInterface
      * @throws QUI\Exception
      * @deprecated use addToGroup
      */
-    public function addGroup(int|string $gid): void
+    public function addGroup(int | string $gid): void
     {
         $this->addToGroup($gid);
     }
@@ -1689,7 +1689,7 @@ class User implements QUIUserInterface
     public function changePassword(
         string $newPassword,
         string $oldPassword,
-        QUIUserInterface $ParentUser = null
+        null | QUIUserInterface $ParentUser = null
     ): void {
         $this->checkEditPermission($ParentUser);
 
@@ -1827,7 +1827,7 @@ class User implements QUIUserInterface
      * @throws Exception
      * @throws QUI\Users\Exception
      */
-    public function setPassword(string $new, QUIUserInterface $PermissionUser = null): void
+    public function setPassword(string $new, null | QUIUserInterface $PermissionUser = null): void
     {
         $this->checkEditPermission($PermissionUser);
 
@@ -1864,8 +1864,8 @@ class User implements QUIUserInterface
      */
     public function activate(
         string $code = '',
-        QUIUserInterface $PermissionUser = null
-    ): bool|int {
+        null | QUIUserInterface $PermissionUser = null
+    ): bool | int {
         if (empty($code)) {
             $this->checkEditPermission($PermissionUser);
         }
@@ -1955,7 +1955,7 @@ class User implements QUIUserInterface
      * @throws QUI\Permissions\Exception
      * @throws Exception
      */
-    public function deactivate(QUIUserInterface $PermissionUser = null): bool
+    public function deactivate(null | QUIUserInterface $PermissionUser = null): bool
     {
         $this->checkEditPermission($PermissionUser);
         $this->canBeDeleted();
@@ -2077,7 +2077,7 @@ class User implements QUIUserInterface
     /**
      * @throws QUI\Exception
      */
-    public function disable(QUIUserInterface $PermissionUser = null): bool
+    public function disable(null | QUIUserInterface $PermissionUser = null): bool
     {
         $this->checkEditPermission($PermissionUser);
         $this->canBeDeleted();
@@ -2148,7 +2148,7 @@ class User implements QUIUserInterface
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function delete(QUIUserInterface $PermissionUser = null): bool
+    public function delete(null | QUIUserInterface $PermissionUser = null): bool
     {
         if (empty($PermissionUser)) {
             $PermissionUser = QUI::getUserBySession();
@@ -2199,7 +2199,7 @@ class User implements QUIUserInterface
      * @throws QUI\Permissions\Exception
      * @throws QUI\Exception
      */
-    public function checkDeletePermission(QUIUserInterface $ParentUser = null): bool
+    public function checkDeletePermission(null | QUIUserInterface $ParentUser = null): bool
     {
         $this->canBeDeleted();
 
@@ -2236,7 +2236,7 @@ class User implements QUIUserInterface
         );
     }
 
-    public function isInGroup(int|string $groupId): bool
+    public function isInGroup(int | string $groupId): bool
     {
         $groups = $this->getGroups(false);
 
