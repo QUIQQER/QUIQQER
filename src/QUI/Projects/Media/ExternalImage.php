@@ -132,7 +132,7 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
      *
      * @see QUI\Interfaces\Projects\Media\File::createCache()
      */
-    public function createCache(): bool|string
+    public function createCache(): bool | string
     {
         if (Media::$globalDisableMediaCacheCreation) {
             return false;
@@ -149,7 +149,7 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
      *
      * @return string - URL to the cache file
      */
-    public function createSizeCache(bool|int $width = false, bool|int $height = false): string
+    public function createSizeCache(bool | int $width = false, bool | int $height = false): string
     {
         return $this->image;
     }
@@ -241,7 +241,7 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
     /**
      * Placeholder - do nothing
      */
-    public function activate(QUI\Interfaces\Users\User $PermissionUser = null)
+    public function activate(null | QUI\Interfaces\Users\User $PermissionUser = null)
     {
         // do nothing
     }
@@ -249,7 +249,7 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
     /**
      * placeholder - do nothing
      */
-    public function deactivate(QUI\Interfaces\Users\User $PermissionUser = null): void
+    public function deactivate(null | QUI\Interfaces\Users\User $PermissionUser = null): void
     {
         // do nothing
     }
@@ -257,12 +257,12 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
     /**
      * placeholder - do nothing
      */
-    public function delete(QUI\Interfaces\Users\User $PermissionUser = null): void
+    public function delete(null | QUI\Interfaces\Users\User $PermissionUser = null): void
     {
         // do nothing
     }
 
-    public function destroy(QUI\Interfaces\Users\User $PermissionUser = null): void
+    public function destroy(null | QUI\Interfaces\Users\User $PermissionUser = null): void
     {
         // do nothing
     }
@@ -280,7 +280,7 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
      *
      * @param QUI\Interfaces\Users\User|null $PermissionUser
      */
-    public function rename(string $newName, QUI\Interfaces\Users\User $PermissionUser = null)
+    public function rename(string $newName, null | QUI\Interfaces\Users\User $PermissionUser = null)
     {
         // do nothing
     }
@@ -350,7 +350,7 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
         return false;
     }
 
-    public function checkPermission(string $permission, QUI\Interfaces\Users\User $User = null): void
+    public function checkPermission(string $permission, null | QUI\Interfaces\Users\User $User = null): void
     {
     }
 }
