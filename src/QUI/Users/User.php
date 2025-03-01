@@ -2258,7 +2258,7 @@ class User implements QUIUserInterface
      */
     public function isDeleted(): bool
     {
-        return $this->deleted === 0;
+        return $this->deleted !== 0;
     }
 
     /**
