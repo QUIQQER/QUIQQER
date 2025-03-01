@@ -2103,6 +2103,7 @@ class User implements QUIUserInterface
             Manager::table(),
             [
                 'username' => '',
+                'deleted' => 1,
                 'active' => -1,
                 'password' => '',
                 'usergroup' => '',
@@ -2122,6 +2123,7 @@ class User implements QUIUserInterface
             ['uuid' => $this->getUUID()]
         );
 
+        $this->deleted = 1;
         $this->logout();
 
         QUI\System\Log::write(
@@ -2155,8 +2157,9 @@ class User implements QUIUserInterface
         }
 
         $this->checkDeletePermission($PermissionUser);
+        $this->deleted = 1;
 
-        // Pluginerweiterungen - onDelete Event
+        // API
         QUI::getEvents()->fireEvent('userDelete', [$this]);
 
         QUI::getDataBase()->delete(
