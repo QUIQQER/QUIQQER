@@ -108,7 +108,7 @@ class Encryption
             $iv = hex2bin($iv);
         }
 
-        $data = substr($data, $sl) . substr($data, 0, $sl);
+        $data = substr($data, (int)$sl) . substr($data, 0, (int)$sl);
 
         return openssl_encrypt($data, 'aes-256-cbc', $salt, 0, $iv);
     }
