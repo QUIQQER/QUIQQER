@@ -194,14 +194,14 @@ echo $User->getLang(); ?>"> <!--<![endif]-->
 
         var QUIQQER_VERSION = "<?php echo QUI::getPackageManager()->getVersion(); ?>";
         var QUIQQER_HASH = "<?php echo QUI::getPackageManager()->getHash(); ?>";
-        var QUIQQER_CONFIG = <?php echo \json_encode($config); ?>;
+        var QUIQQER_CONFIG = <?php echo json_encode($config); ?>;
 
         // Exceptions
         var QUIQQER_EXCEPTION_CODE_PACKAGE_NOT_LICENSED = <?php echo QUI::getPackageManager(
         )::EXCEPTION_CODE_PACKAGE_NOT_LICENSED; ?>;
 
         // standard project
-        var QUIQQER_PROJECT = <?php echo \json_encode([
+        var QUIQQER_PROJECT = <?php echo json_encode([
             'name' => $Project ? $Project->getName() : '',
             'lang' => $Project ? $Project->getLang() : ''
         ]); ?>;
@@ -266,7 +266,7 @@ echo $User->getLang(); ?>"> <!--<![endif]-->
 
     echo '<script type="text/javascript">';
     echo '/* <![CDATA[ */';
-    echo 'var QUIQQER_LOCALE = ' . \json_encode($locales, true);
+    echo 'var QUIQQER_LOCALE = ' . json_encode($locales);
     echo '/* ]]> */';
     echo '</script>';
 
