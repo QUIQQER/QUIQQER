@@ -247,8 +247,8 @@ class Session
                     $RedisCluster = new RedisCluster(
                         'quiqqer-session',
                         $cluster,
-                        $timeout,
-                        $readTimeout,
+                        $timeout, // @phpstan-ignore-line
+                        $readTimeout, // @phpstan-ignore-line
                         false
                     );
                 } catch (RedisClusterException $Exception) {
