@@ -11,7 +11,7 @@ require_once $dir . 'header.php';
 try {
     QUI\Permissions\Permission::checkAdminUser(QUI::getUserBySession());
 } catch (QUI\Exception $Exception) {
-    QUI::getGlobalResponse()->setStatusCode($Exception->getMessage());
+    QUI::getGlobalResponse()->setStatusCode($Exception->getCode());
     QUI::getGlobalResponse()->setContent(json_encode($Exception->toArray()));
     QUI::getGlobalResponse()->send();
     exit;
