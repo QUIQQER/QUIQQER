@@ -137,7 +137,7 @@ try {
     ) {
         $Response->setStatusCode(Response::HTTP_SERVICE_UNAVAILABLE);
         $Response->headers->set('X-Powered-By', '');
-        $Response->headers->set('Retry-After', 3600);
+        $Response->headers->set('Retry-After', '3600');
 
         $Smarty = QUI::getTemplateManager()->getEngine();
 
@@ -170,6 +170,10 @@ try {
     // Event onstart
     QUI::getEvents()->fireEvent('start');
     Debug::marker('objekte initialisiert');
+
+    if (!method_exists($Site, 'getCachePath')) {
+        throw new QUI\Exception('No cache path available');
+    }
 
     $siteCachePath = $Site->getCachePath() . '/' . md5(QUI::getRequest()->getRequestUri());
 

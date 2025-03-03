@@ -176,7 +176,9 @@ try {
             $maxheight = (int)$_REQUEST['maxheight'];
         }
 
-        $image = $File->createResizeCache($maxwidth, $maxheight);
+        if (method_exists($File, 'createResizeCache')) {
+            $image = $File->createResizeCache($maxwidth, $maxheight);
+        }
     }
 
     if (!$image) {

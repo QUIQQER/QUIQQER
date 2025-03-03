@@ -737,7 +737,7 @@ class Rewrite
             case 503:
                 $Response->setStatusCode(Response::HTTP_SERVICE_UNAVAILABLE);
                 $Response->headers->set('X-Powered-By', '');
-                $Response->headers->set('Retry-After', 3600);
+                $Response->headers->set('Retry-After', '3600');
                 break;
         }
 

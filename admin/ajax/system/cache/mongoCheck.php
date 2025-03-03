@@ -51,7 +51,7 @@ QUI::$Ajax->registerFunction(
             'collection' => $collection
         ]);
 
-        $CacheDriver->storeData(['db-test'], 1, false);
+        $CacheDriver->storeData(['db-test'], 1, 10);
 
         $result = $CacheDriver->getData(['db-test']);
 

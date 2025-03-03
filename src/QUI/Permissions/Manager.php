@@ -595,7 +595,7 @@ class Manager
     /**
      * Set the permissions for an object
      *
-     * @param User|Group|Project|Site|Edit $Obj
+     * @param User|Group|Project|Site|Edit|QUI\Projects\Media\Item $Obj
      * @param array $permissions - Array of permissions
      * @param QUI\Interfaces\Users\User|null $EditUser - Edit user
      *
@@ -1515,7 +1515,7 @@ class Manager
     /**
      * Return all permissions from a group, user, site, project or media
      *
-     * @param QUI\Groups\Group|User|Project|QUI\Projects\Site $Obj
+     * @param QUI\Groups\Group|User|Project|QUI\Projects\Site|QUI\Interfaces\Users\User $Obj
      */
     public function getCompletePermissionList(mixed $Obj): array
     {

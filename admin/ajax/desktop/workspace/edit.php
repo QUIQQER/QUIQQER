@@ -13,7 +13,9 @@ QUI::$Ajax->registerFunction(
         $User = QUI::getUserBySession();
         $data = json_decode($data, true);
 
-        QUI\Workspace\Manager::saveWorkspace($User, $id, $data);
+        if ($User instanceof QUI\Users\User) {
+            QUI\Workspace\Manager::saveWorkspace($User, $id, $data);
+        }
     },
     ['id', 'data'],
     'Permission::checkUser'

@@ -278,7 +278,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
-    public function getChildrenByName($filename, bool $limit = false): array
+    public function getChildrenByName($filename, bool | int $limit = false): array
     {
         $table = $this->Media->getTable();
         $table_rel = $this->Media->getTable('relations');
@@ -522,7 +522,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         QUI\Cache\Manager::clear($this->getCachePath());
 
         if (is_dir($dir . $new_name)) {
-            $Folder = $this->Media->get($id);
+            $Folder = $this->Media->get((int)$id);
 
             if ($Folder instanceof Folder) {
                 $Folder->setEffects($this->getEffects());
@@ -1383,7 +1383,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'child' => $id
         ]);
 
-        $File = $this->Media->get($id);
+        $File = $this->Media->get((int)$id);
 
         if ($File instanceof QUI\Projects\Media\File) {
             $File->generateMD5();

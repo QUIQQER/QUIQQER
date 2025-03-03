@@ -27,7 +27,12 @@ QUI::$Ajax->registerFunction(
             );
         }
 
-        /* @var $Folder Folder */
+        if (!($Folder instanceof Folder)) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get('quiqqer/core', 'exception.media.copy.is.no.folder')
+            );
+        }
+
         foreach ($ids as $id) {
             try {
                 $Item = $Media->get((int)$id);

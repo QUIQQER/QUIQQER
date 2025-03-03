@@ -212,11 +212,11 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Shortcut for QUI\Permissions\Permission::checkSitePermission
      *
      * @param string $permission - name of the permission
-     * @param QUI\Users\User|boolean $User - optional
+     * @param User|null $User - optional
      *
      * @throws QUI\Permissions\Exception
      */
-    public function checkPermission(string $permission, $User = false): void
+    public function checkPermission(string $permission, User | null $User = null): void
     {
         QUI\Permissions\Permission::checkSitePermission(
             $permission,

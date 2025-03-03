@@ -16,8 +16,11 @@ QUI::$Ajax->registerFunction(
 
         foreach ($userIds as $userId) {
             $User = QUI::getUsers()->get($userId);
-            $Group->addUser($User);
-            $User->save();
+
+            if ($User instanceof QUI\Users\User) {
+                $Group->addUser($User);
+                $User->save();
+            }
         }
     },
     ['gid', 'userIds'],
