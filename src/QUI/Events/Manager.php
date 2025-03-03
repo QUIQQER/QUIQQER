@@ -50,7 +50,7 @@ class Manager implements QUI\Interfaces\Events
             ) {
                 $exists = QUI::getDataBase()->table()->exist(self::table());
 
-                QUI::$Conf->setValue('globals', 'eventsCreated', $exists);
+                QUI::$Conf->setValue('globals', 'eventsCreated', $exists ? 1 : 0);
 
                 try {
                     QUI::$Conf->save();
@@ -121,8 +121,12 @@ class Manager implements QUI\Interfaces\Events
      * @throws Exception
      * @example $EventManager->addEvent('myEvent', function() { });
      */
-    public function addEvent(string $event, callable|string $fn, int $priority = 0, string $package = ''): void
-    {
+    public function addEvent(
+        string $event,
+        callable | string $fn,
+        int $priority = 0,
+        string $package = ''
+    ): void {
         if (is_string($fn)) {
             QUI::getDataBase()->insert(self::table(), [
                 'event' => trim($event),
@@ -164,7 +168,7 @@ class Manager implements QUI\Interfaces\Events
      * @param bool|string $package - name of the package, default = false => complete clear
      * @throws QUI\Exception
      */
-    public static function clear(bool|string $package = false): void
+    public static function clear(bool | string $package = false): void
     {
         if (empty($package) || !is_string($package)) {
             QUI::getDataBase()->table()->truncate(
@@ -214,8 +218,12 @@ class Manager implements QUI\Interfaces\Events
      * @throws Exception
      * @example $EventManager->addEvent('onSave', '\Namespace\Class::exec', 'quiqqer/blog:blog/entry' });
      */
-    public function addSiteEvent(string $event, callable|string $fn, string $siteType, int $priority = 0): void
-    {
+    public function addSiteEvent(
+        string $event,
+        callable | string $fn,
+        string $siteType,
+        int $priority = 0
+    ): void {
         if (!is_string($fn)) {
             return;
         }
@@ -224,7 +232,7 @@ class Manager implements QUI\Interfaces\Events
             'event' => trim($event),
             'callback' => trim($fn),
             'sitetype' => trim($siteType),
-            'priority' => trim($priority)
+            'priority' => $priority
         ]);
     }
 
@@ -245,8 +253,11 @@ class Manager implements QUI\Interfaces\Events
      *
      * @throws QUI\Exception
      */
-    public function removeEvent(string $event, callable|bool $fn = false, string $package = ''): void
-    {
+    public function removeEvent(
+        string $event,
+        callable | bool $fn = false,
+        string $package = ''
+    ): void {
         $this->Events->removeEvent($event, $fn);
 
         if ($fn === false) {
@@ -295,8 +306,11 @@ class Manager implements QUI\Interfaces\Events
      * @return array         An array containing the results of the event handlers
      * @throws ExceptionStack
      */
-    public function fireEvent(string $event, bool|array $args = false, bool $force = false): array
-    {
+    public function fireEvent(
+        string $event,
+        bool | array $args = false,
+        bool $force = false
+    ): array {
         // event onFireEvent
         $fireArgs = $args;
 

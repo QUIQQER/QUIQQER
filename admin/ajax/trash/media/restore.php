@@ -24,11 +24,12 @@ QUI::$Ajax->registerFunction(
             );
         }
 
-        /* @var $Folder \QUI\Projects\Media\Folder */
         $ids = json_decode($ids, true);
 
         foreach ($ids as $id) {
-            $Trash->restore($id, $Folder);
+            if ($Folder instanceof QUI\Projects\Media\Folder) {
+                $Trash->restore($id, $Folder);
+            }
         }
     },
     ['project', 'ids', 'parentid'],

@@ -281,6 +281,10 @@ class Nobody extends QUI\QDOM implements User
      */
     public function getCurrency()
     {
+        if (!class_exists('QUI\ERP\Currency\Handler')) {
+            throw new QUI\Exception('Currency handler not found');
+        }
+
         if (QUI::getSession()->get('currency')) {
             $currency = QUI::getSession()->get('currency');
 
