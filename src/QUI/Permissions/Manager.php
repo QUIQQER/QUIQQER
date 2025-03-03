@@ -595,7 +595,7 @@ class Manager
     /**
      * Set the permissions for an object
      *
-     * @param User|Group|Project|Site|Edit $Obj
+     * @param User|Group|Project|Site|Edit|QUI\Projects\Media\Item $Obj
      * @param array $permissions - Array of permissions
      * @param QUI\Interfaces\Users\User|null $EditUser - Edit user
      *

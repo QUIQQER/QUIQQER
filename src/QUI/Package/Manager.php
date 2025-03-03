@@ -931,7 +931,7 @@ class Manager extends QUI\QDOM
      *
      * @throws UnexpectedValueException|Exception
      */
-    public function setPackageVersion(array|string $packages, string $version): void
+    public function setPackageVersion(array | string $packages, string $version): void
     {
         if (!is_array($packages)) {
             $packages = [$packages];
@@ -1142,7 +1142,7 @@ class Manager extends QUI\QDOM
      *
      * @throws Exception
      */
-    public function install(array|string $packages, bool|string $version = false): void
+    public function install(array | string $packages, bool | string $version = false): void
     {
         QUI\System\Log::addDebug(
             'Install package ' . print_r($packages, true) . ' -> install'
@@ -1254,18 +1254,24 @@ class Manager extends QUI\QDOM
      * Install only a local package
      *
      * @param array|string $packages - name of the package
-     * @param boolean $version - (optional) version of the package
+     * @param int|float|bool $version - (optional) version of the package
      *
      * @throws QUI\Exception
      */
-    public function installLocalPackage(array|string $packages, bool $version = false): void
-    {
+    public function installLocalPackage(
+        array | string $packages,
+        int | float | bool $version = false
+    ): void {
         QUI\System\Log::addDebug(
             'Install package ' . print_r($packages, true) . ' -> installLocalPackage'
         );
 
+        if (empty($version)) {
+            $version = '';
+        }
+
         $this->useOnlyLocalRepository();
-        $this->getComposer()->requirePackage($packages, $version);
+        $this->getComposer()->requirePackage($packages, (string)$version);
         $this->resetRepositories();
 
         $this->setup($packages);
@@ -1304,7 +1310,7 @@ class Manager extends QUI\QDOM
      * Activate or Deactivate a server
      *
      * @param string $server - Server, IP, Host
-     * @param boolean $status - 1 = active, 0 = disabled
+     * @param boolean|int $status - 1 = active, 0 = disabled
      * @param boolean $backup - Optional (default=true, create a backup, false = create no backup
      *
      * @throws QUI\Exception
@@ -1312,7 +1318,7 @@ class Manager extends QUI\QDOM
      */
     public function setServerStatus(
         string $server,
-        bool $status,
+        int | bool $status,
         bool $backup = true
     ): void {
         $Config = QUI::getConfig('etc/source.list.ini.php');
@@ -1397,7 +1403,7 @@ class Manager extends QUI\QDOM
      * @param array|string $packages
      * @param array $setupOptions - optional, setup package options
      */
-    public function setup(array|string $packages, array $setupOptions = []): void
+    public function setup(array | string $packages, array $setupOptions = []): void
     {
         QUIFile::mkdir(CMS_DIR . 'etc/plugins/');
 
@@ -1707,7 +1713,7 @@ class Manager extends QUI\QDOM
      * @throws QUI\Exception
      * @throws Exception
      */
-    public function removeServer(array|string $server): void
+    public function removeServer(array | string $server): void
     {
         $Config = QUI::getConfig('etc/source.list.ini.php');
 
@@ -1861,7 +1867,7 @@ class Manager extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    public function updateWithLocalRepository(bool|string $package = false): void
+    public function updateWithLocalRepository(bool | string $package = false): void
     {
         $this->createComposerBackup();
         $this->useOnlyLocalRepository();
@@ -1890,7 +1896,7 @@ class Manager extends QUI\QDOM
      * @todo if exception uncommitted changes -> interactive mode
      */
     public function update(
-        bool|string $package = false,
+        bool | string $package = false,
         bool $mute = true,
         ?QUI\Interfaces\System\SystemOutput $Output = null
     ): void {
@@ -1955,7 +1961,7 @@ class Manager extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    protected function composerUpdateOrInstall(bool|string|array $package): array
+    protected function composerUpdateOrInstall(bool | string | array $package): array
     {
         $memoryLimit = QUI\Utils\System::getMemoryLimit();
 
@@ -2231,7 +2237,7 @@ class Manager extends QUI\QDOM
      * Return the data for a type from its site.xml
      * https://dev.quiqqer.com/quiqqer/core/wikis/Site-Xml
      */
-    protected function getSiteXMLDataByType(string $type): bool|array
+    protected function getSiteXMLDataByType(string $type): bool | array
     {
         $cache = 'quiqqer/packages/xml-data/' . $type;
 
@@ -2373,7 +2379,7 @@ class Manager extends QUI\QDOM
      * @param string $package - Package name (internal)
      * @return bool|array
      */
-    public function getPackageStoreUrls(string $package): bool|array
+    public function getPackageStoreUrls(string $package): bool | array
     {
         $cacheName = 'quiqqer_packagestore_urls/' . $package;
 
