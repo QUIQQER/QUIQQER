@@ -914,7 +914,7 @@ class User implements QUIUserInterface
         QUI\Utils\Doctrine::parseDbArrayToQueryBuilder($query, [
             'update' => [
                 'username' => $this->getUsername(),
-                'usergroup' => ',' . implode(',', $this->getGroups(false)) . ',',
+                'usergroup' => ',' . implode(',', $this->getGroups(false)) . ',', // @phpstan-ignore-line
                 'firstname' => $this->getAttribute('firstname'),
                 'lastname' => $this->getAttribute('lastname'),
                 'usertitle' => $this->getAttribute('usertitle'),
@@ -1385,13 +1385,14 @@ class User implements QUIUserInterface
             QUI::getPackage('quiqqer/currency');
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::writeException($Exception, QUI\System\Log::LEVEL_ALERT);
-
             return 'EUR';
         }
 
-
-        // @phpstan-ignore class.notFound (Currency class is provided by 'quiqqer/currency' package, as checked above)
-        if ($this->getAttribute('currency') && Currencies::existCurrency($this->getAttribute('currency'))) {
+        if (
+            class_exists('QUI\ERP\Currency\Handler')
+            && $this->getAttribute('currency')
+            && Currencies::existCurrency($this->getAttribute('currency'))
+        ) {
             return $this->getAttribute('currency');
         }
 
@@ -1400,14 +1401,16 @@ class User implements QUIUserInterface
         if ($Country) {
             $currency = $Country->getCurrencyCode();
 
-            // @phpstan-ignore class.notFound (Currency class is provided by 'quiqqer/currency' package, as checked above)
-            if (Currencies::existCurrency($currency)) {
+            if (class_exists('QUI\ERP\Currency\Handler') && Currencies::existCurrency($currency)) {
                 return $currency;
             }
         }
 
-        // @phpstan-ignore class.notFound (Currency class is provided by 'quiqqer/currency' package, as checked above)
-        return Currencies::getDefaultCurrency()->getCode();
+        if (class_exists('QUI\ERP\Currency\Handler')) {
+            return Currencies::getDefaultCurrency()->getCode();
+        }
+
+        return 'EUR';
     }
 
     public function getCountry(): ?QUI\Countries\Country
@@ -2195,7 +2198,7 @@ class User implements QUIUserInterface
      * Checks the delete permissions
      * Can the user be deleted by the current user?
      *
-     * @param QUI\Users\User|null $ParentUser
+     * @param QUI\Interfaces\Users\User|null $ParentUser
      *
      * @return boolean - true
      *

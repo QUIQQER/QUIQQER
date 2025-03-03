@@ -33,6 +33,7 @@ if (QUI\Autoloader::shouldOtherAutoloadersBeUnregistered()) {
 
 QUI\Autoloader::init();
 
+// @phpstan-ignore-next-line
 spl_autoload_register(static function ($className): bool {
     return QUI\Autoloader::load($className);
 });

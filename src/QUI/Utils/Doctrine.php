@@ -54,11 +54,11 @@ class Doctrine
             $limit = explode(',', $params['limit']);
 
             if (!empty($limit[0])) {
-                $query->setFirstResult($limit[0]);
+                $query->setFirstResult((int)$limit[0]);
             }
 
             if (!empty($limit[1])) {
-                $query->setMaxResults($limit[1]);
+                $query->setMaxResults((int)$limit[1]);
             }
         }
 
