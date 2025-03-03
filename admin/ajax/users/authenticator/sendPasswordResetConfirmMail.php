@@ -16,7 +16,11 @@ QUI::$Ajax->registerFunction(
     static function ($email): void {
         try {
             $User = QUI::getUsers()->getUserByMail($email);
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
+            return;
+        }
+
+        if (!($User instanceof QUI\Users\User)) {
             return;
         }
 
