@@ -1,6 +1,7 @@
 <?php
 
 use QUI\HtmlToPdf\Document;
+use QUI\System\Log;
 
 $dir = str_replace('quiqqer/core/src/QUI/Export/bin', '', __DIR__);
 const QUIQQER_SYSTEM = true;
@@ -27,6 +28,11 @@ if (
     || !isset($body['data']['header'])
     || !isset($body['data']['data'])
 ) {
+    exit;
+}
+
+if (!class_exists('QUI\HtmlToPdf\Document')) {
+    Log::addError('Class "QUI\HtmlToPdf\Document" not found!');
     exit;
 }
 
