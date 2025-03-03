@@ -649,7 +649,7 @@ class Utils
             $urlQueryParams['lang']
         );
 
-        return $Project->get($urlQueryParams['id']);
+        return $Project->get((int)$urlQueryParams['id']);
     }
 
     /**

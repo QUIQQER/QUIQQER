@@ -289,7 +289,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $Image->save($cacheFile);
 
         // reset to the normal limit
-        set_time_limit($time);
+        set_time_limit((int)$time);
 
         QUI::getEvents()->fireEvent('mediaCreateSizeCache', [$this, $Image]);
 
