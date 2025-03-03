@@ -287,7 +287,7 @@ class Output extends Singleton
         }
 
         // reset to the normal limit
-        set_time_limit($executionTime);
+        set_time_limit((int)$executionTime);
 
         $result = str_replace(
             ['</img>', '</source>', '</meta>', '</link>', '</input>', '</br>'],
@@ -920,12 +920,12 @@ class Output extends Singleton
             return $html;
         }
 
-        $lu = md5(QUI::getPackageManager()->getLastUpdateDate());
+        $lu = md5((string)QUI::getPackageManager()->getLastUpdateDate());
         $file = CMS_DIR . ltrim($att['href'], '/');
 
         // check if css file is project custom css
         if (str_contains($att['href'], 'custom.css') && file_exists($file)) {
-            $lu = md5(filemtime($file));
+            $lu = md5((string)filemtime($file));
         }
 
         if (!str_contains($att['href'], '?')) {
@@ -967,12 +967,12 @@ class Output extends Singleton
             return $html;
         }
 
-        $lu = md5(QUI::getPackageManager()->getLastUpdateDate());
+        $lu = md5((string)QUI::getPackageManager()->getLastUpdateDate());
         $file = CMS_DIR . ltrim($att['src'], '/');
 
         // check if css file is project custom css
         if (str_contains($att['src'], 'custom.js') && file_exists($file)) {
-            $lu = md5(filemtime($file));
+            $lu = md5((string)filemtime($file));
         }
 
         if (!str_contains($att['src'], '?')) {
