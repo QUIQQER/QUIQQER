@@ -157,7 +157,7 @@ class SetSiteAttributes extends QUI\System\Console\Tool
 
                     switch ($placeholder) {
                         case '[id]':
-                            $v = str_replace($placeholder, $Site->getId(), $v);
+                            $v = str_replace($placeholder, (string)$Site->getId(), $v);
                             $output = $v;
                             break;
 

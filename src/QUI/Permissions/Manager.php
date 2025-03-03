@@ -1515,7 +1515,7 @@ class Manager
     /**
      * Return all permissions from a group, user, site, project or media
      *
-     * @param QUI\Groups\Group|User|Project|QUI\Projects\Site $Obj
+     * @param QUI\Groups\Group|User|Project|QUI\Projects\Site|QUI\Interfaces\Users\User $Obj
      */
     public function getCompletePermissionList(mixed $Obj): array
     {
