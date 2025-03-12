@@ -71,6 +71,11 @@ class Update extends QUI\System\Console\Tool
                 QUI::getLocale()->get('quiqqer/core', 'console.update.package.update.check'),
                 false,
                 true
+            )->addArgument(
+                'skip-filesystem-check',
+                QUI::getLocale()->get('quiqqer/core', 'console.update.skip-filesystem-check'),
+                false,
+                true
             );
     }
 
@@ -205,38 +210,45 @@ class Update extends QUI\System\Console\Tool
         $Maintenance->setArgument('status', 'on');
         $Maintenance->execute();
 
-        try {
-            $this->writeLn('- File system is checked for changes ...');
-            $changes = $this->checkFileSystemChanges();
-        } catch (Exception $Exception) {
-            $this->writeLn();
-            $this->writeLn(
-                'The update has received inconsistencies during the file system check.',
-                'yellow'
-            );
-
-            $this->writeLn('Error :: ' . $Exception->getMessage(), 'red');
-            $this->writeLn();
-            $this->resetColor();
-
-            if ($this->executedAnywayQuestion() === false) {
-                $Maintenance->setArgument('status', 'off');
-                $Maintenance->execute();
-                exit;
-            }
-
-            $changes = false;
+        $executeFileSystemCheck = true;
+        if ($this->getArgument('skip-filesystem-check')) {
+            $executeFileSystemCheck = false;
         }
 
-        if ($changes) {
-            $this->writeLn();
-            $this->writeLn('The update has found inconsistencies in the system!', 'yellow');
-            $this->resetColor();
+        if ($executeFileSystemCheck) {
+            try {
+                $this->writeLn('- File system is checked for changes ...');
+                $changes = $this->checkFileSystemChanges();
+            } catch (Exception $Exception) {
+                $this->writeLn();
+                $this->writeLn(
+                    'The update has received inconsistencies during the file system check.',
+                    'yellow'
+                );
 
-            if ($this->executedAnywayQuestion() === false) {
-                $Maintenance->setArgument('status', 'off');
-                $Maintenance->execute();
-                exit;
+                $this->writeLn('Error :: ' . $Exception->getMessage(), 'red');
+                $this->writeLn();
+                $this->resetColor();
+
+                if ($this->executedAnywayQuestion() === false) {
+                    $Maintenance->setArgument('status', 'off');
+                    $Maintenance->execute();
+                    exit;
+                }
+
+                $changes = false;
+            }
+
+            if ($changes) {
+                $this->writeLn();
+                $this->writeLn('The update has found inconsistencies in the system!', 'yellow');
+                $this->resetColor();
+
+                if ($this->executedAnywayQuestion() === false) {
+                    $Maintenance->setArgument('status', 'off');
+                    $Maintenance->execute();
+                    exit;
+                }
             }
         }
 

@@ -5494,6 +5494,9 @@ After logging in you will be prompted to set a new password.
         <locale name="console.update.package.update.check">
             <en><![CDATA[Update single package.]]></en>
         </locale>
+        <locale name="console.update.skip-filesystem-check">
+            <en><![CDATA[Skips the file system check]]></en>
+        </locale>
 
         <locale name="user.settings.showNamesInSitemap">
             <en><![CDATA[Show site names in the sitemap]]></en>

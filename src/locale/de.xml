@@ -5679,6 +5679,9 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         <locale name="console.update.package.update.check">
             <de><![CDATA[Einzelnes Paket aktualisieren.]]></de>
         </locale>
+        <locale name="console.update.skip-filesystem-check">
+            <de><![CDATA[Überspringt den Filesystem Check]]></de>
+        </locale>
 
         <locale name="user.settings.showNamesInSitemap">
             <de><![CDATA[Seitennamen in der Sitemap anzeigen]]></de>
