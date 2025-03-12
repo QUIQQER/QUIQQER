@@ -3066,7 +3066,8 @@
             <de><![CDATA[Lizenzschlüssel-Datei hochladen]]></de>
         </locale>
         <locale name="controls.licensekey.template.info" html="1">
-            <de><![CDATA[Sie können die Funktion von QUIQQER mit Premium-Paketen erweitern. Um Premium-Pakete zu installieren, benötigen Sie einen gültigen Lizenzschlüssel. Ihren Lizenzschlüssel erhalten Sie beim Kauf eines Premium-Pakets im <a href="https://store.quiqqer.de/" target="_blank">QUIQQER Store</a>.]]></de>
+            <de>
+                <![CDATA[Sie können die Funktion von QUIQQER mit Premium-Paketen erweitern. Um Premium-Pakete zu installieren, benötigen Sie einen gültigen Lizenzschlüssel. Ihren Lizenzschlüssel erhalten Sie beim Kauf eines Premium-Pakets im <a href="https://store.quiqqer.de/" target="_blank">QUIQQER Store</a>.]]></de>
         </locale>
         <locale name="controls.licensekey.template.labelDelete">
             <de><![CDATA[Lizenzschlüssel löschen]]></de>
@@ -4472,7 +4473,8 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             <de><![CDATA[Die Toolbar wurde erfolgreich gespeichert.]]></de>
         </locale>
         <locale name="message.ajax.licenseKey.delete.error">
-            <de><![CDATA[Der Lizenzschlüssel wurde nicht gelöscht, da kein Lizenzschlüssel in Ihrem QUIQQER-System aktiviert war.]]></de>
+            <de>
+                <![CDATA[Der Lizenzschlüssel wurde nicht gelöscht, da kein Lizenzschlüssel in Ihrem QUIQQER-System aktiviert war.]]></de>
         </locale>
         <locale name="message.ajax.licenseKey.delete.success">
             <de><![CDATA[Der Lizenzschlüssel wurde erfolgreich gelöscht und ist nun nicht mehr aktiv.]]></de>
@@ -5212,6 +5214,9 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         </locale>
         <locale name="console.systemtool.setup">
             <de><![CDATA[Führt ein System-Setup aus]]></de>
+        </locale>
+        <locale name="console.systemtool.system-migration">
+            <de><![CDATA[Migriert das QUIQQER-System in ein neues Verzeichnis, wenn es verschoben wurde, und passt automatisch alle relevanten Pfade in den Einstellungen an.]]></de>
         </locale>
         <locale name="console.systemtool.password-reset">
             <de><![CDATA[Initiiert ein Passwort-Reset]]></de>

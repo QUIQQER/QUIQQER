@@ -61,12 +61,12 @@ class Console
     /**
      * The current text color
      */
-    protected string|bool $current_color = false;
+    protected string | bool $current_color = false;
 
     /**
      * the current background color
      */
-    protected string|bool $current_bg = false;
+    protected string | bool $current_bg = false;
 
     /**
      * All available text colors
@@ -143,6 +143,7 @@ class Console
         'cron',
         'password-reset',
         'setup',
+        'system-migration',
         'update',
         'package',
         'licence',
@@ -396,7 +397,7 @@ class Console
      * @param boolean|string $color - (optional) text color
      * @param boolean|string $bg - (optional) background color
      */
-    public function message(string $msg, bool|string $color = false, bool|string $bg = false): void
+    public function message(string $msg, bool | string $color = false, bool | string $bg = false): void
     {
         if ($color) {
             $this->current_color = $color;
@@ -445,7 +446,7 @@ class Console
      * @param boolean|string $color - (optional) text color
      * @param boolean|string $bg - (optional) background color
      */
-    public function writeLn(string $msg = '', bool|string $color = false, bool|string $bg = false): void
+    public function writeLn(string $msg = '', bool | string $color = false, bool | string $bg = false): void
     {
         $this->message(PHP_EOL . $msg, $color, $bg);
 
@@ -621,7 +622,7 @@ class Console
      *
      * @return array|Console\Tool|bool
      */
-    public function get(bool|string $tool): bool|array|Console\Tool
+    public function get(bool | string $tool): bool | array | Console\Tool
     {
         if (isset($this->tools[$tool]) && is_object($this->tools[$tool])) {
             return $this->tools[$tool];
@@ -653,7 +654,7 @@ class Console
      * @param boolean|string $color - (optional) text color
      * @param boolean|string $bg - (optional) background color
      */
-    public function write(string $msg, bool|string $color = false, bool|string $bg = false): void
+    public function write(string $msg, bool | string $color = false, bool | string $bg = false): void
     {
         $this->message($msg, $color, $bg);
     }
@@ -878,7 +879,7 @@ class Console
      * @throws QUI\Database\Exception
      * @throws ExceptionStack
      * @throws QUI\Permissions\Exception
-     * @throws QUI\Users\Exception
+     * @throws QUI\Users\Exception|Random\RandomException
      */
     protected function passwordReset(): void
     {

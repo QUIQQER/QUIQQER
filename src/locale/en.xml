@@ -5042,6 +5042,9 @@ After logging in you will be prompted to set a new password.
         <locale name="console.systemtool.setup">
             <en><![CDATA[Execute a system setup]]></en>
         </locale>
+        <locale name="console.systemtool.system-migration">
+            <de><![CDATA[Migrates the QUIQQER system to a new directory if it has been moved and automatically adjusts all relevant paths in the settings.]]></de>
+        </locale>
         <locale name="console.systemtool.password-reset">
             <en><![CDATA[Initiates a password reset]]></en>
         </locale>
