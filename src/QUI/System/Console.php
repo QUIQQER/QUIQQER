@@ -879,7 +879,7 @@ class Console
      * @throws QUI\Database\Exception
      * @throws ExceptionStack
      * @throws QUI\Permissions\Exception
-     * @throws QUI\Users\Exception|Random\RandomException
+     * @throws QUI\Users\Exception
      */
     protected function passwordReset(): void
     {
