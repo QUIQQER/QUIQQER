@@ -18,8 +18,8 @@ $pathMigration = file_get_contents(
     'https://dev.quiqqer.com/quiqqerscripts/PathMigration/-/raw/master/pathmigration.php?ref_type=heads'
 );
 
-$file = getcwd() .'/pathMigration.php';
+$file = getcwd() . '/pathMigration.php';
 file_put_contents($file, $pathMigration);
 
-system(PHP_BINARY .' '.$file);
+system(PHP_BINARY . ' ' . $file);
 unlink($pathMigration);
