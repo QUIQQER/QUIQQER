@@ -2106,7 +2106,6 @@ class User implements QUIUserInterface
             Manager::table(),
             [
                 'username' => '',
-                'deleted' => 1,
                 'active' => -1,
                 'password' => '',
                 'usergroup' => '',
