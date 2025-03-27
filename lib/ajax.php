@@ -4,6 +4,7 @@
  * Main Ajax Handling
  * Is used in backend and frontend ajax
  */
+header("Content-Type: text/plain");
 
 if (isset($_REQUEST['beacon'])) {
     $input = file_get_contents('php://input');
