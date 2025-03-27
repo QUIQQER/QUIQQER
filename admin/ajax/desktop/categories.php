@@ -37,6 +37,10 @@ QUI::$Ajax->registerFunction(
                 continue;
             }
 
+            $type = preg_replace('/[^\x09\x0A\x0D\x20-\x{D7FF}\x{E000}-\x{FFFD}]/u', '', $type);
+            $type = str_replace(['"', "'"], '-', $type);
+            $type = str_replace(['&', '<', '>'], '-', $type);
+
             $Settings->setXMLPath('//quiqqer/window[@name="' . $type . '"]');
 
             $Collection = $Settings->getCategories($panelXml);
