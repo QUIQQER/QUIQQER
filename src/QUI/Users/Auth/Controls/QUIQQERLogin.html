@@ -11,20 +11,19 @@
         <input type="password" value="" name="password" required/>
     </label>
 
+    <input type="hidden" value="1" name="login"/>
+    <button type="submit" value="Login" class="login qui-button btn-green quiqqer-frontend-social-button">
+        <span>{locale group="quiqqer/core" var="quiqqer.auth.login.btn_text"}</span>
+    </button>
+
     {if $showPasswordReset}
     <span class="quiqqer-auth-login-passwordreset-link">
         {locale group="quiqqer/core" var="quiqqer.auth.login.password_reset"}
     </span>
     {/if}
-
-    <input type="hidden" value="1" name="login"/>
-    <button type="submit" value="Login" class="login qui-button btn-green">
-        <span>{locale group="quiqqer/core" var="quiqqer.auth.login.btn_text"}</span>
-    </button>
 </div>
 
 {if $showPasswordReset}
-
 <div class="quiqqer-auth-login-passwordreset" style="display: none;">
     <p class="fs-sm message">
         {locale group="quiqqer/core" var="quiqqer.auth.login.password.message"}

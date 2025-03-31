@@ -4,15 +4,40 @@
 </div>
 {/if}
 
-{foreach $authenticators as $k => $authenticator}
-<form method="POST" name="login" data-authenticator="{$authenticator['class']}"{if $globalAuth} data-globalauth="1"{/if}>
-{$authenticator['control']->create()}
-</form>
-
-{if $k >= $count}
-{break}
-{/if}
-<div>
-    {locale group="quiqqer/core" var="controls.users.auth.login.or"}
+<div class="quiqqer-users-login-mailAuthenticator">
+    {foreach $mailAuthenticators as $k => $authenticator}
+    {assign var=dataAuth value=''}
+    {if $globalAuth}{assign var=dataAuth value='data-globalauth="1"'}{/if}
+    <form
+            method="POST"
+            name="login"
+            data-authenticator="{$authenticator['class']}"
+            {$dataAuth}
+    >
+        {$authenticator['control']->create()}
+    </form>
+    {/foreach}
 </div>
-{/foreach}
+
+{if count($mailAuthenticators) && count($socialAuthenticators)}
+<div class="quiqqer-users-login-or">
+    <div class="quiqqer-users-login-or-text">
+        {locale group="quiqqer/core" var="controls.users.auth.login.or"}
+    </div>
+</div>
+{/if}
+
+<div class="quiqqer-users-login-socialAuthenticator">
+    {foreach $socialAuthenticators as $k => $authenticator}
+    {assign var=dataAuth value=''}
+    {if $globalAuth}{assign var=dataAuth value='data-globalauth="1"'}{/if}
+    <form
+            method="POST"
+            name="login"
+            data-authenticator="{$authenticator['class']}"
+            {$dataAuth}
+    >
+        {$authenticator['control']->create()}
+    </form>
+    {/foreach}
+</div>

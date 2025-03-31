@@ -36,7 +36,13 @@ class Login extends Control
 
         parent::__construct($options);
 
-        $this->addCSSClass('quiqqer-login ');
+        $cssFile = OPT_DIR . 'quiqqer/core/bin/QUI/controls/users/Login.css';
+
+        if (file_exists($cssFile)) {
+            $this->addCSSFile($cssFile);
+        }
+
+        $this->addCSSClass('quiqqer-login');
         $this->setJavaScriptControl('controls/users/Login');
     }
 
@@ -57,7 +63,8 @@ class Login extends Control
             $authenticator = [$authenticator];
         }
 
-        $authenticators = [];
+        $mailAuthenticators = [];
+        $socialAuthenticators = [];
         $exclusiveAuthenticators = $this->getAttribute('authenticators');
 
         if (empty($exclusiveAuthenticators)) {
@@ -75,7 +82,16 @@ class Login extends Control
                 continue;
             }
 
-            $authenticators[] = [
+            if ($auth === QUI\Users\Auth\QUIQQER::class) {
+                $mailAuthenticators[] = [
+                    'class' => $auth,
+                    'control' => $Control
+                ];
+
+                continue;
+            }
+
+            $socialAuthenticators[] = [
                 'class' => $auth,
                 'control' => $Control
             ];
@@ -86,8 +102,8 @@ class Login extends Control
         $Engine->assign([
             'passwordReset' => !empty($_REQUEST['password_reset']),
             'globalAuth' => $this->isGlobalAuth,
-            'authenticators' => $authenticators,
-            'count' => count($authenticators) - 1
+            'mailAuthenticators' => $mailAuthenticators,
+            'socialAuthenticators' => $socialAuthenticators
         ]);
 
         return $Engine->fetch(__DIR__ . '/Login.html');
@@ -100,7 +116,7 @@ class Login extends Control
      * @throws QUI\Exception
      * @throws ExceptionStack
      */
-    public function next(): array|string|null
+    public function next(): array | string | null
     {
         if (QUI::isFrontend()) {
             $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
