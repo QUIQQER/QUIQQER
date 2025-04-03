@@ -222,13 +222,10 @@ class Manager
                 throw $exception;
             }
         }
-
-
-        $uuid = $User->getUUID();
-
+        
         if (QUI::isRuntimeCacheEnabled()) {
-            $this->usersUUIDs[$uuid] = $User->getUUID();
-            $this->users[$id] = $User;
+            $this->usersUUIDs[$User->getId()] = $User->getUUID();
+            $this->users[$User->getUUID()] = $User;
         }
 
         return $User;
@@ -1040,7 +1037,7 @@ class Manager
         );
 
         $User->refresh();
-        $this->users[$userId] = $User;
+        $this->users[$User->getUUID()] = $User;
         $this->Session = $User;
 
         QUI::getEvents()->fireEvent('userLogin', [$User]);
