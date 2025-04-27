@@ -1023,8 +1023,8 @@ class Project implements \Stringable
                 case 'title DESC':
                 case 'c_date ASC':
                 case 'c_date DESC':
-                case 'd_date ASC':
-                case 'd_date DESC':
+                case 'e_date ASC':
+                case 'e_date DESC':
                 case 'release_from ASC':
                 case 'release_from DESC':
                     $order = $params['order'];
