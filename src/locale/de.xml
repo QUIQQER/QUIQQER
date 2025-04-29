@@ -4980,6 +4980,13 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="settings.security.title">
             <de><![CDATA[Sicherheit]]></de>
         </locale>
+        <locale name="text.verified">
+            <de><![CDATA[verifiziert]]></de>
+        </locale>
+        <locale name="text.unverified">
+            <de><![CDATA[unverifiziert]]></de>
+        </locale>
+
     </groups>
 
     <groups name="quiqqer/core" datatype="php">

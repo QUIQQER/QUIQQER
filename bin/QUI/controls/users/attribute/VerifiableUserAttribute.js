@@ -3,12 +3,14 @@ define('controls/users/attribute/VerifiableUserAttribute', [
     'qui/QUI',
     'qui/controls/Control',
     'Ajax',
+    'Locale',
 
     'css!controls/users/attribute/VerifiableUserAttribute.css'
 
-], function (QUI, QUIControl, QUIAjax) {
+], function (QUI, QUIControl, QUIAjax, QUILocale) {
     'use strict';
 
+    const lg = 'quiqqer/core';
     const VERIFIED = 'VERIFIED';
     const UNVERIFIED = 'UNVERIFIED';
 
@@ -126,8 +128,6 @@ define('controls/users/attribute/VerifiableUserAttribute', [
         getData: function () {
             return new Promise((resolve) => {
                 QUIAjax.get('ajax_users_attribute_getVerifiedAttribute', (data) => {
-                    console.log(data);
-
                     if (data && typeof data.verification_status !== 'undefined') {
                         this.setAttribute('status', data.verification_status);
                     }
@@ -150,12 +150,12 @@ define('controls/users/attribute/VerifiableUserAttribute', [
             if (this.$Checkbox.checked) {
                 this.getElm().classList.remove('attribute-verification--unverified');
                 this.getElm().classList.add('attribute-verification--verified');
-                this.$Display.set('html', 'verifiziert');
+                this.$Display.set('html', QUILocale.get(lg, 'text.verified'));
                 this.setAttribute('status', VERIFIED);
             } else {
                 this.getElm().classList.remove('attribute-verification--verified');
                 this.getElm().classList.add('attribute-verification--unverified');
-                this.$Display.set('html', 'unverifiziert');
+                this.$Display.set('html', QUILocale.get(lg, 'text.unverified'));
                 this.setAttribute('status', UNVERIFIED);
             }
 

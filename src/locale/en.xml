@@ -4815,6 +4815,13 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="settings.security.title">
             <en><![CDATA[Security]]></en>
         </locale>
+
+        <locale name="text.verified">
+            <de><![CDATA[verified]]></de>
+        </locale>
+        <locale name="text.unverified">
+            <de><![CDATA[unverified]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/core" datatype="php">
