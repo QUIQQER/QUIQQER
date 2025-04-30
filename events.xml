@@ -9,4 +9,5 @@
     <event on="onUserLoginStart" fire="\QUI\EventHandler::onUserLoginStart"/>
     <event on="onUserLogin" fire="\QUI\EventHandler::onUserLogin"/>
     <event on="onUserAuthenticatorLoginStart" fire="\QUI\EventHandler::onUserAuthenticatorLoginStart"/>
+
 </events>

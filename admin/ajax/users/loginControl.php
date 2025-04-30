@@ -8,7 +8,7 @@
 
 QUI::$Ajax->registerFunction(
     'ajax_users_loginControl',
-    static function ($authenticators = null): string {
+    static function ($authenticators = null): array {
         if (empty($authenticators)) {
             $authenticators = [];
         } else {
@@ -22,7 +22,10 @@ QUI::$Ajax->registerFunction(
         $result = $Login->create();
         $result .= QUI\Control\Manager::getCSS();
 
-        return $result;
+        return [
+            'control' => $result,
+            'authStep' => $Login->getAttribute('authStep')
+        ];
     },
     ['authenticators']
 );

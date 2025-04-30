@@ -111,6 +111,15 @@ class Handler
         return $this->getAuthenticatorFromConfig(QUI::conf('auth_frontend') ?: []);
     }
 
+    public function getGlobalFrontendSecondaryAuthenticators(): array
+    {
+        if (empty(QUI::conf('auth_frontend_secondary'))) {
+            return [];
+        }
+
+        return $this->getAuthenticatorFromConfig(QUI::conf('auth_frontend_secondary'));
+    }
+
     protected function getAuthenticatorFromConfig(array $authenticatorConfig = []): array
     {
         if (empty($authenticatorConfig)) {
@@ -212,6 +221,18 @@ class Handler
     public function getGlobalBackendAuthenticators(): array
     {
         return $this->getAuthenticatorFromConfig(QUI::conf('auth_backend') ?: []);
+    }
+
+    /**
+     * Return all global active authenticators for the backend authentication
+     */
+    public function getGlobalBackendSecondaryAuthenticators(): array
+    {
+        if (empty(QUI::conf('auth_backend_secondary'))) {
+            return [];
+        }
+
+        return $this->getAuthenticatorFromConfig(QUI::conf('auth_backend_secondary'));
     }
 
     /**

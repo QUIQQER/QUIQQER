@@ -639,14 +639,58 @@
         <locale name="quiqqer.auth.description">
             <en><![CDATA[The standard QUIQQER authentication by username and password.]]></en>
         </locale>
+        <locale name="quiqqer.auth.description">
+            <en><![CDATA[Die standard QUIQQER Authentifizierung per Benutzername und Passwort.]]></en>
+        </locale>
+        <locale name="quiqqer.mail2fa.title">
+            <en><![CDATA[QUIQQER Mail Authentifizierung]]></en>
+        </locale>
+        <locale name="quiqqer.mail2fa.description">
+            <en><![CDATA[
+            The standard QUIQQER Mail authentication via verified e-mail.
+            Only accounts with verified mail can authenticate themselves.
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.verified.mail2fa.mail.subject">
+            <en><![CDATA[
+            Dein Anmeldecode für [host]
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.verified.mail2fa.mail.content" html="true">
+            <en><![CDATA[
+            <p>Hallo,</p>
+            <p>
+              dein Bestätigungscode für die Anmeldung bei <strong>[host]</strong> lautet:
+            </p>
+            <p style="font-size: 1.5em; font-weight: bold; letter-spacing: 2px;">
+              [code]
+            </p>
+            <p>
+              Bitte gib diesen Code ein, um fortzufahren. Der Code ist nur für kurze Zeit gültig.
+            </p>
+            <p>
+              Falls du diese Anfrage nicht selbst gestellt hast, kannst du diese E-Mail einfach ignorieren.
+            </p>
+            <p>
+              Viele Grüße<br>
+              Dein [host]-Team
+            </p>
+            ]]></en>
+        </locale>
         <locale name="quiqqer.settings.auth.global">
-            <en><![CDATA[Primary Authentifiers]]></en>
+            <en><![CDATA[Global Authentifiers]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.global.desc">
             <en><![CDATA[
-            Primary Authenticators are authentication methods which provide the user at the beginning of his Authentication.
+            Global Authenticators are authentication methods which provide the user at the beginning of his Authentication.
             In addition, you can go over the permissions management for each group or user and set more factor authentication.
             ]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.primary">
+            <en><![CDATA[Primary Authentifiers]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.secondary">
+            <en><![CDATA[Secondary Authentifiers]]></en>
         </locale>
         <locale name="exception.forwarding.already.exists">
             <en><![CDATA[This forwarding already exists.]]></en>
@@ -4815,13 +4859,6 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="settings.security.title">
             <en><![CDATA[Security]]></en>
         </locale>
-
-        <locale name="text.verified">
-            <de><![CDATA[verified]]></de>
-        </locale>
-        <locale name="text.unverified">
-            <de><![CDATA[unverified]]></de>
-        </locale>
     </groups>
 
     <groups name="quiqqer/core" datatype="php">
@@ -5048,9 +5085,6 @@ After logging in you will be prompted to set a new password.
         </locale>
         <locale name="console.systemtool.setup">
             <en><![CDATA[Execute a system setup]]></en>
-        </locale>
-        <locale name="console.systemtool.system-migration">
-            <en><![CDATA[Migrates the QUIQQER system to a new directory if it has been moved and automatically adjusts all relevant paths in the settings.]]></en>
         </locale>
         <locale name="console.systemtool.password-reset">
             <en><![CDATA[Initiates a password reset]]></en>
@@ -5500,9 +5534,6 @@ After logging in you will be prompted to set a new password.
         </locale>
         <locale name="console.update.package.update.check">
             <en><![CDATA[Update single package.]]></en>
-        </locale>
-        <locale name="console.update.skip-filesystem-check">
-            <en><![CDATA[Skips the file system check]]></en>
         </locale>
 
         <locale name="user.settings.showNamesInSitemap">

@@ -2332,7 +2332,7 @@ class User implements QUIUserInterface
         foreach ($attributes as $attribute) {
             if (
                 $attribute->getValue() === $value
-                && $attribute->getStatus() === AttributeVerificationStatus::VERIFIED
+                && $attribute->getVerificationStatus() === AttributeVerificationStatus::VERIFIED
             ) {
                 return true;
             }

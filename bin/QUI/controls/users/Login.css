@@ -1,52 +1,38 @@
 .quiqqer-login {
     background: #fff;
-    display: flex;
-    flex-direction: column;
     min-height: 180px;
+    overflow: auto;
+    padding-block: 20px;
     position: relative;
 }
 
 .quiqqer-login form {
-    display: flex;
-    flex-direction: column;
     position: relative;
     top: 0;
     width: 100%;
 }
 
-.quiqqer-users-login-socialAuthenticator {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    width: 100%;
-}
-
-.quiqqer-login .quiqqer-frontend-social-button {
-    width: 100%;
-}
-
-.quiqqer-users-login-or {
-    border-top: 1px solid #CFD2D2;
+.quiqqer-login-or {
+    border-top: 1px solid #cfd2d2;
     clear: both;
-    color: #CFD2D2;
+    color: #cfd2d2;
     float: left;
-    line-height: 30px;
-    margin: 2rem 0 1.5rem;
-    text-align: center;
+    margin: 30px 0;
     position: relative;
-    height: 10px;
     width: 100%;
 }
 
-.quiqqer-users-login-or-text {
-    background: #fff;
+.quiqqer-login-or span {
+    background: none repeat scroll 0 0 #ffffff;
     color: #666666;
     font-size: 16px;
-    line-height: 30px;
-    padding: 0 10px;
-    position: relative;
+    left: 50%;
+    line-height: 20px;
+    margin: 0 0 0 -25px;
+    position: absolute;
     text-align: center;
-    top: -15px;
+    top: -12px;
+    width: 50px;
 }
 
 .quiqqer-login-logo {

@@ -51,4 +51,14 @@ abstract class AbstractAuthenticator implements QUI\Users\AuthenticatorInterface
     public function cliAuthentication(Console $Console): void
     {
     }
+
+    public function isPrimaryAuthentication(): bool
+    {
+        return true;
+    }
+
+    public function isSecondaryAuthentication(): bool
+    {
+        return true;
+    }
 }

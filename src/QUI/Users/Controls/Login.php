@@ -30,19 +30,17 @@ class Login extends Control
     {
         $this->setAttributes([
             'data-qui' => 'controls/users/Login',
-            'authenticators' => [] // predefined list of Authenticator classes; if empty = use all authenticators
+            'authStep' => 'primary',
+            
+            // predefined list of Authenticator classes; if empty = use all authenticators
             // that are configured
+            'authenticators' => [],
+
         ]);
 
         parent::__construct($options);
 
-        $cssFile = OPT_DIR . 'quiqqer/core/bin/QUI/controls/users/Login.css';
-
-        if (file_exists($cssFile)) {
-            $this->addCSSFile($cssFile);
-        }
-
-        $this->addCSSClass('quiqqer-login');
+        $this->addCSSClass('quiqqer-login ');
         $this->setJavaScriptControl('controls/users/Login');
     }
 
@@ -63,8 +61,7 @@ class Login extends Control
             $authenticator = [$authenticator];
         }
 
-        $mailAuthenticators = [];
-        $socialAuthenticators = [];
+        $authenticators = [];
         $exclusiveAuthenticators = $this->getAttribute('authenticators');
 
         if (empty($exclusiveAuthenticators)) {
@@ -82,16 +79,7 @@ class Login extends Control
                 continue;
             }
 
-            if ($auth === QUI\Users\Auth\QUIQQER::class) {
-                $mailAuthenticators[] = [
-                    'class' => $auth,
-                    'control' => $Control
-                ];
-
-                continue;
-            }
-
-            $socialAuthenticators[] = [
+            $authenticators[] = [
                 'class' => $auth,
                 'control' => $Control
             ];
@@ -102,8 +90,8 @@ class Login extends Control
         $Engine->assign([
             'passwordReset' => !empty($_REQUEST['password_reset']),
             'globalAuth' => $this->isGlobalAuth,
-            'mailAuthenticators' => $mailAuthenticators,
-            'socialAuthenticators' => $socialAuthenticators
+            'authenticators' => $authenticators,
+            'count' => count($authenticators) - 1
         ]);
 
         return $Engine->fetch(__DIR__ . '/Login.html');
@@ -118,49 +106,58 @@ class Login extends Control
      */
     public function next(): array | string | null
     {
-        if (QUI::isFrontend()) {
-            $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
-        } else {
-            $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalBackendAuthenticators();
-        }
-
-        $globals = [];
-
-        if (QUI::getSession()->get('auth-globals') != 1) {
-            foreach ($authenticators as $auth) {
-                if (QUI::getSession()->get('auth-' . $auth) !== 1) {
-                    $globals[] = $auth;
-                }
+        if (QUI::getSession()->get('auth-globals') !== 1) {
+            // primary authenticator
+            if (QUI::isFrontend()) {
+                $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalFrontendAuthenticators();
+            } else {
+                $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalBackendAuthenticators();
             }
 
-            $this->isGlobalAuth = true;
+            $this->setAttribute('authStep', 'primary');
         }
 
-        if (!empty($globals)) {
-            // sort globals (QUIQQER Login has to be first!)
-            usort($globals, static function ($a, $b): int {
-                if ($a === QUI\Users\Auth\QUIQQER::class) {
-                    return -1;
-                }
+        if (empty($authenticators) && QUI::getSession()->get('auth-secondary') !== 1) {
+            // secondary authenticators
+            if (QUI::isFrontend()) {
+                $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalFrontendSecondaryAuthenticators();
+            } else {
+                $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalBackendSecondaryAuthenticators();
+            }
 
-                if ($b === QUI\Users\Auth\QUIQQER::class) {
-                    return 1;
-                }
-
-                return 0;
-            });
-
-            return $globals;
+            $this->setAttribute('authStep', 'secondary');
         }
+
+        if (empty($authenticators)) {
+            return null;
+        }
+
+        // sort globals (QUIQQER Login has to be first!)
+        usort($authenticators, static function ($a, $b): int {
+            if ($a === QUI\Users\Auth\QUIQQER::class) {
+                return -1;
+            }
+
+            if ($b === QUI\Users\Auth\QUIQQER::class) {
+                return 1;
+            }
+
+            return 0;
+        });
 
         // test user authenticators
         // multi authenticators
+        /*
         $uid = QUI::getSession()->get('uid');
 
         if (!$uid) {
             return null;
         }
+        */
 
+        return $authenticators;
+
+        // old??
         $User = QUI::getUsers()->get($uid);
         $authenticators = $User->getAuthenticators();
 

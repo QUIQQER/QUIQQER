@@ -4,9 +4,8 @@
 }
 
 .quiqqer-auth-login-container {
-    display: flex;
-    flex-direction: column;
     width: 100%;
+    display: flow-root;
 }
 
 .quiqqer-login-auth label {
@@ -14,28 +13,6 @@
     margin-bottom: 10px;
     position: relative;
     width: 100%;
-}
-
-.quiqqer-users-login-socialAuthenticator {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    width: 100%;
-}
-
-.quiqqer-login .quiqqer-frontend-social-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    line-height: 46px;
-    padding-bottom: 0;
-    padding-top: 0;
-    width: 100%;
-}
-
-.quiqqer-login .quiqqer-frontend-social-button .qui-button-text {
-    margin: 0;
 }
 
 .quiqqer-login-auth label span {
@@ -60,7 +37,8 @@
 
 .quiqqer-auth-login-passwordreset-link {
     cursor: pointer;
-    clear: both;
+    margin-bottom: 20px;
+    float: right;
 }
 
 .quiqqer-auth-login-passwordreset [type="submit"] {
