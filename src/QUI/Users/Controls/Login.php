@@ -8,8 +8,6 @@ namespace QUI\Users\Controls;
 
 use QUI;
 use QUI\Control;
-use QUI\Database\Exception;
-use QUI\ExceptionStack;
 
 use function count;
 use function forward_static_call;
@@ -44,11 +42,6 @@ class Login extends Control
         $this->setJavaScriptControl('controls/users/Login');
     }
 
-    /**
-     * @throws Exception
-     * @throws ExceptionStack
-     * @throws QUI\Exception
-     */
     public function getBody(): string
     {
         $authenticator = $this->next();
@@ -99,12 +92,8 @@ class Login extends Control
 
     /**
      * Return the next Authenticator, if one exists
-     *
-     * @throws Exception
-     * @throws QUI\Exception
-     * @throws ExceptionStack
      */
-    public function next(): array | string | null
+    public function next(): array | null
     {
         if (QUI::getSession()->get('auth-globals') !== 1) {
             // primary authenticator
@@ -145,28 +134,6 @@ class Login extends Control
             return 0;
         });
 
-        // test user authenticators
-        // multi authenticators
-        /*
-        $uid = QUI::getSession()->get('uid');
-
-        if (!$uid) {
-            return null;
-        }
-        */
-
         return $authenticators;
-
-        // old??
-        $User = QUI::getUsers()->get($uid);
-        $authenticators = $User->getAuthenticators();
-
-        foreach ($authenticators as $Authenticator) {
-            if (QUI::getSession()->get('auth-' . $Authenticator::class) !== 1) {
-                return $Authenticator::class;
-            }
-        }
-
-        return null;
     }
 }

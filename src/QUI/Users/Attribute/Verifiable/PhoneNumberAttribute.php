@@ -3,7 +3,7 @@
 namespace QUI\Users\Attribute\Verifiable;
 
 use QUI;
-use QUI\Exception;
+use Exception;
 use QUI\Users\Attribute\AttributeVerificationStatus;
 
 final class PhoneNumberAttribute extends AbstractVerifiableUserAttribute
@@ -13,7 +13,6 @@ final class PhoneNumberAttribute extends AbstractVerifiableUserAttribute
      * @param string $value
      * @param AttributeVerificationStatus $verificationStatus
      *
-     * @throws \libphonenumber\NumberParseException
      * @throws Exception
      */
     public function __construct(string $uuid, string $value, AttributeVerificationStatus $verificationStatus)
