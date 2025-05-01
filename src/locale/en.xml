@@ -643,39 +643,45 @@
             <en><![CDATA[Die standard QUIQQER Authentifizierung per Benutzername und Passwort.]]></en>
         </locale>
         <locale name="quiqqer.mail2fa.title">
-            <en><![CDATA[QUIQQER Mail Authentifizierung]]></en>
+            <en><![CDATA[OTP Mail Authentication]]></en>
         </locale>
         <locale name="quiqqer.mail2fa.description">
             <en><![CDATA[
-            The standard QUIQQER Mail authentication via verified e-mail.
+            The standard QUIQQER One Time Password Mail authentication via verified e-mail.
             Only accounts with verified mail can authenticate themselves.
             ]]></en>
         </locale>
         <locale name="quiqqer.verified.mail2fa.mail.subject">
             <en><![CDATA[
-            Dein Anmeldecode für [host]
+            Your login code for [host]
             ]]></en>
         </locale>
         <locale name="quiqqer.verified.mail2fa.mail.content" html="true">
             <en><![CDATA[
-            <p>Hallo,</p>
+            <p>Hello,</p>
             <p>
-              dein Bestätigungscode für die Anmeldung bei <strong>[host]</strong> lautet:
+              Your verification code for logging in to <strong>[host]</strong> is:
             </p>
             <p style="font-size: 1.5em; font-weight: bold; letter-spacing: 2px;">
               [code]
             </p>
             <p>
-              Bitte gib diesen Code ein, um fortzufahren. Der Code ist nur für kurze Zeit gültig.
+              Please enter this code to continue. The code is valid for a short time only.
             </p>
             <p>
-              Falls du diese Anfrage nicht selbst gestellt hast, kannst du diese E-Mail einfach ignorieren.
+              If you did not request this code, you can simply ignore this email.
             </p>
             <p>
-              Viele Grüße<br>
-              Dein [host]-Team
+              Best regards<br>
+              Your [host] Team
             </p>
             ]]></en>
+        </locale>
+        <locale name="quiqqer.verified.mail2fa.control.description">
+            <en><![CDATA[We have sent you a confirmation code by e-mail. Please enter the code here to continue.]]></en>
+        </locale>
+        <locale name="quiqqer.verified.mail2fa.control.codeLabel">
+            <en><![CDATA[Enter code:]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.global">
             <en><![CDATA[Global Authentifiers]]></en>

@@ -63,9 +63,13 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
                 row.appendChild(cell);
                 Table.appendChild(row);
 
+                let tableHeaderText = Mustache.render(templateHeader, {
+                    title: QUILocale.get(lg, 'quiqqer.settings.auth.primary')
+                });
+
                 const primaryTable = document.createElement('table');
                 primaryTable.classList.add('data-table', 'data-table-flexbox');
-                primaryTable.innerHTML = '<thead><tr><td>' + QUILocale.get(lg, 'quiqqer.settings.auth.primary') + '</td></tr></thead>';
+                primaryTable.innerHTML = '<thead>' + tableHeaderText + '</thead>';
                 primaryTable.setAttribute('data-name', 'primary-authenticator');
 
                 for (i = 0, len = available.length; i < len; i++) {
@@ -90,9 +94,13 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
 
 
                 // secondary authenticator
+                tableHeaderText = Mustache.render(templateHeader, {
+                    title: QUILocale.get(lg, 'quiqqer.settings.auth.secondary')
+                });
+
                 const secondaryTable = document.createElement('table');
                 secondaryTable.classList.add('data-table', 'data-table-flexbox');
-                secondaryTable.innerHTML = '<thead><tr><td>' + QUILocale.get(lg, 'quiqqer.settings.auth.secondary') + '</td></tr></thead>';
+                secondaryTable.innerHTML = '<thead>' + tableHeaderText + '</thead>';
                 secondaryTable.setAttribute('data-name', 'secondary-authenticator');
 
                 for (i = 0, len = available.length; i < len; i++) {
