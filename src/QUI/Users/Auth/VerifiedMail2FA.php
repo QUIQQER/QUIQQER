@@ -178,12 +178,10 @@ class VerifiedMail2FA extends AbstractAuthenticator
         }
 
         // send mail
-        $digitCode = str_pad(
-            rand(0, 999999),
-            6,
-            '0',
-            STR_PAD_LEFT
-        );
+        $digitCode = '';
+        for ($i = 0; $i < 6; $i++) {
+            $digitCode .= random_int(0, 9);
+        }
 
         try {
             QUI::getSession()->set(self::USER_CODE_ATTRIBUTE, $digitCode);

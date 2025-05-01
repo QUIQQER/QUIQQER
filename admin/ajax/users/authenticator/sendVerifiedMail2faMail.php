@@ -1,15 +1,9 @@
 <?php
 
 /**
- * Send mail to confirm password reset process
- *
- * @param integer|string $uid
- * @param string $authenticator
- * @return void
- * @throws \QUI\Users\Exception
+ * Send mail with OTP mail code to the current session user
  */
 
-use QUI\Users\Auth\Handler;
 use QUI\Users\Auth\VerifiedMail2FA;
 
 QUI::$Ajax->registerFunction(
