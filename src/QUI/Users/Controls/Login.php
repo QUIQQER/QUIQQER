@@ -29,7 +29,7 @@ class Login extends Control
         $this->setAttributes([
             'data-qui' => 'controls/users/Login',
             'authStep' => 'primary',
-            
+
             // predefined list of Authenticator classes; if empty = use all authenticators
             // that are configured
             'authenticators' => [],
