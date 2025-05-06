@@ -119,10 +119,23 @@ class Backup extends QUI\System\Console\Tool
 
         $base = rtrim(CMS_DIR, '/');
         $folders = ['etc', 'media', 'packages', 'usr', 'var'];
+        $mainFiles = [
+            'ajax.php',
+            'ajaxBundler.php',
+            'bootstrap.php',
+            'console',
+            'image.php',
+            'index.php',
+            'quiqqer.php'
+        ];
         $include = [];
 
         foreach ($folders as $folder) {
             $include[] = escapeshellarg($folder);
+        }
+
+        foreach ($mainFiles as $file) {
+            $include[] = escapeshellarg($file);
         }
 
         // Exclude certain subfolders in var
