@@ -120,6 +120,7 @@ class Backup extends QUI\System\Console\Tool
         $base = rtrim(CMS_DIR, '/');
         $folders = ['etc', 'media', 'packages', 'usr', 'var'];
         $mainFiles = [
+            '.htaccess',
             'ajax.php',
             'ajaxBundler.php',
             'bootstrap.php',
