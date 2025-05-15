@@ -4,7 +4,7 @@
         {locale group="quiqqer/core" value="control.breadcrumb.text"}
     </span>
 
-    <ul class="fa-ul quiqqer-breadcrumb-list" itemscope itemtype="http://schema.org/BreadcrumbList">
+    <ul class="fa-ul quiqqer-breadcrumb-list" itemscope itemtype="https://schema.org/BreadcrumbList">
         {assign var=Path value=$Rewrite->getPath()}
         {assign var=Project value=$Rewrite->getProject()}
         {assign var=Site value=$Rewrite->getSite()}
@@ -13,7 +13,7 @@
 
         {if $Site->getId() === 1}
         <li itemprop="itemListElement" itemscope
-            itemtype="http://schema.org/ListItem">
+            itemtype="https://schema.org/ListItem">
             <a href="{url site=$First}"
                title="{$First->getAttribute('title')|escape:"html"}"
                itemprop="item"
@@ -27,7 +27,7 @@
         {foreach from=$Path key=i item=Crumb}
         <li itemprop="itemListElement" itemscope
             class="quiqqer-breadcrumb-list-element"
-            itemtype="http://schema.org/ListItem">
+            itemtype="https://schema.org/ListItem">
             <a href="{url site=$Crumb}"
                class="quiqqer-breadcrumb-link"
                title="{$Crumb->getAttribute('title')|escape:"html"}"
