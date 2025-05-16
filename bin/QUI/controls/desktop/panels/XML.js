@@ -134,6 +134,10 @@ define('controls/desktop/panels/XML', [
                         const aIndex = 'index' in a && a.index !== '' ? a.index : Infinity;
                         const bIndex = 'index' in b && b.index !== '' ? b.index : Infinity;
 
+                        if (typeof a.text === 'undefined' || typeof b.text === 'undefined') {
+                            return aIndex - bIndex;
+                        }
+
                         return aIndex - bIndex || a.text.localeCompare(b.text);
                     });
                 }
