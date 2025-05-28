@@ -237,6 +237,8 @@ define('controls/upload/Manager', [
                     return acc;
                 }, {});
 
+                this.fireEvent('fileUploadRefresh', [this, 0]);
+
                 new BulkUpload({
                     parentId: params.parentid,
                     project: params.project,
@@ -260,6 +262,10 @@ define('controls/upload/Manager', [
                                 this,
                                 100
                             ]);
+                        },
+                        uploadPartEnd: (BulkUploadInstance) => {
+                            const progress = BulkUploadInstance.getProgress();
+                            this.fireEvent('fileUploadRefresh', [this, progress.percent]);
                         }
                     }
                 }).upload(files);
@@ -335,7 +341,8 @@ define('controls/upload/Manager', [
                         params: params,
                         events: {
                             onComplete: func_oncomplete,
-                            onCancel: func_oncancel
+                            onCancel: func_oncancel,
+                            onRefresh: this.$onFileUploadRefresh
                         }
                     });
 
