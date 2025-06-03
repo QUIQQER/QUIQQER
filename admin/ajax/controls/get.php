@@ -36,7 +36,11 @@ QUI::$Ajax->registerFunction(
             );
         }
 
-        return $Control->create();
+        $Output = new QUI\Output();
+        $control = $Control->create();
+        $css = QUI\Control\Manager::getCSS();
+
+        return $Output->parse($css . $control);
     },
     ['control', 'params']
 );
