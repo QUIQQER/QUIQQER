@@ -723,8 +723,8 @@ class Package extends QUI\QDOM
         // xml
         try {
             Update::importDatabase($dir . self::DATABASE_XML);
-        } catch (QUI\Exception $Exception) {
-            Log::writeException($Exception);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
         }
 
         Update::importTemplateEngines($dir . 'engines.xml');
