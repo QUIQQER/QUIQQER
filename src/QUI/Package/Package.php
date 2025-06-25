@@ -100,6 +100,10 @@ class Package extends QUI\QDOM
      */
     public function __construct(string $package)
     {
+        if (empty($package)) {
+            throw new QUI\Exception('Package not exists. Package name is empty.', 404);
+        }
+        
         $packageDir = OPT_DIR . $package . '/';
 
         // if not exists look at bin
