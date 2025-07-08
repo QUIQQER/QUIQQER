@@ -41,7 +41,7 @@ QUI::$Ajax->registerFunction(
         finfo_close($fInfo);
 
         try {
-            if (in_array($mimeType, ['image/jpeg', 'image/tiff'])) {
+            if (in_array($mimeType, ['image/jpeg', 'image/tiff']) && function_exists('exif_read_data')) {
                 $exif = exif_read_data($file);
 
                 if (!empty($exif['Orientation'])) {

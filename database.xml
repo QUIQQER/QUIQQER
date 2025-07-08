@@ -23,7 +23,7 @@
             <field type="INT(1) NOT NULL DEFAULT '0'">company</field>
             <field type="DATE NULL DEFAULT NULL">birthday</field>
             <field type="TEXT NULL">avatar</field>
-            <field type="TEXT NULL">extra</field>
+            <field type="LONGTEXT NULL">extra</field>
             <field type="VARCHAR(2) DEFAULT NULL">lang</field>
             <field type="VARCHAR(50) NULL DEFAULT NULL">address</field>
             <field type="TINYTEXT NULL">secHash</field>

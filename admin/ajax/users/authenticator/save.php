@@ -24,30 +24,49 @@ QUI::$Ajax->registerFunction(
 
         $Config = QUI::getConfig('etc/conf.ini.php');
 
+        // cleanup
         $Config->del('auth');
         $Config->del('auth_frontend');
         $Config->del('auth_backend');
+        $Config->del('auth_frontend_secondary');
+        $Config->del('auth_backend_secondary');
 
-        foreach ($authenticators as $authenticator => $range) {
-            try {
-                // exist authenticator?
-                QUI\Users\Auth\Handler::getInstance()->getAuthenticator(
-                    $authenticator,
-                    $User->getUsername()
-                );
+        // setter
+        if (!empty($authenticators['primary'])) {
+            foreach (['backend', 'frontend'] as $type) {
+                foreach ($authenticators['primary'][$type] as $authenticator) {
+                    try {
+                        QUI\Users\Auth\Handler::getInstance()->getAuthenticator(
+                            $authenticator,
+                            $User->getUsername()
+                        );
 
-                if (!isset($range['frontend'])) {
-                    $range['frontend'] = 0;
+                        $Config->setValue('auth_' . $type, $authenticator, 1);
+                    } catch (QUI\Exception $Exception) {
+                        QUI\System\Log::writeException($Exception);
+                    }
                 }
+            }
+        }
 
-                if (!isset($range['backend'])) {
-                    $range['backend'] = 0;
+        if (!empty($authenticators['secondary'])) {
+            foreach (['backend', 'frontend'] as $type) {
+                foreach ($authenticators['secondary'][$type] as $authenticator) {
+                    try {
+                        QUI\Users\Auth\Handler::getInstance()->getAuthenticator(
+                            $authenticator,
+                            $User->getUsername()
+                        );
+
+                        $Config->setValue(
+                            'auth_' . $type . '_secondary',
+                            $authenticator,
+                            1
+                        );
+                    } catch (QUI\Exception $Exception) {
+                        QUI\System\Log::writeException($Exception);
+                    }
                 }
-
-                $Config->setValue('auth_frontend', $authenticator, $range['frontend']);
-                $Config->setValue('auth_backend', $authenticator, $range['backend']);
-            } catch (QUI\Exception $Exception) {
-                QUI\System\Log::writeException($Exception);
             }
         }
 

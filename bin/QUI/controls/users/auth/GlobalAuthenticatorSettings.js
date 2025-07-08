@@ -16,10 +16,10 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
 ], function (QUI, QUIControl, QUIAjax, QUILocale, Mustache, templateRow, templateHeader) {
     "use strict";
 
-    var lg = 'quiqqer/core';
+    const lg = 'quiqqer/core';
 
     return new Class({
-        Type   : 'controls/users/auth/GlobalAuthenticatorSettings',
+        Type: 'controls/users/auth/GlobalAuthenticatorSettings',
         Extends: QUIControl,
 
         Binds: [
@@ -29,7 +29,8 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
         initialize: function (options) {
             this.parent(options);
 
-            this.$rows = [];
+            this.$primaryTable = null;
+            this.$secondaryTable = null;
 
             this.addEvents({
                 onImport: this.$onImport
@@ -40,93 +41,140 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
          * event : on import
          */
         $onImport: function () {
-            var self = this;
+            QUIAjax.get('ajax_users_authenticator_globalAuthenticators', (result) => {
+                const available = result.available,
+                    globals = result.global;
 
-            QUIAjax.get('ajax_users_authenticator_globalAuthenticators', function (result) {
-                var available = result.available,
-                    globals   = result.global;
+                console.log(result);
 
                 new Element('div', {
                     html: QUILocale.get(lg, 'quiqqer.settings.auth.global.desc')
-                }).inject(self.getElm(), 'after');
+                }).inject(this.getElm(), 'after');
 
-                var i, r, len, rLen, NewRow;
+                let i, r, len, rLen, newRow;
+                let row, cell;
 
-                var Row  = self.getElm().getParent('tr');
-                var rows = [];
+                const Table = this.getElm().getParent('table');
+
+                // primary authenticator
+                row = document.createElement('tr');
+                cell = document.createElement('td');
+
+                row.appendChild(cell);
+                Table.appendChild(row);
+
+                let tableHeaderText = Mustache.render(templateHeader, {
+                    title: QUILocale.get(lg, 'quiqqer.settings.auth.primary')
+                });
+
+                const primaryTable = document.createElement('table');
+                primaryTable.classList.add('data-table', 'data-table-flexbox');
+                primaryTable.innerHTML = '<thead>' + tableHeaderText + '</thead>';
+                primaryTable.setAttribute('data-name', 'primary-authenticator');
 
                 for (i = 0, len = available.length; i < len; i++) {
-                    NewRow = new Element('tr', {
-                        html: Mustache.render(templateRow, {
-                            title        : available[i].title,
-                            description  : available[i].description,
-                            authenticator: available[i].authenticator
-                        })
-                    }).inject(Row, 'after');
-
-                    rows.push(NewRow);
-
-                    NewRow.getElements('input').addEvent('change', self.$onChange);
-                }
-
-                new Element('tr', {
-                    html: Mustache.render(templateHeader, {})
-                }).inject(Row, 'after');
-
-                var condition;
-                var frontend = globals.frontend;
-                var backend  = globals.backend;
-
-                for (i = 0, len = frontend.length; i < len; i++) {
-                    for (r = 0, rLen = rows.length; r < rLen; r++) {
-                        condition = [];
-                        condition.push('[name="' + frontend[i].escapeRegExp() + '"]');
-                        condition.push('[value="frontend"]');
-                        condition = condition.join('');
-
-                        rows[r].getElements(condition).set('checked', true);
+                    if (!available[i].isPrimaryAuthentication) {
+                        continue;
                     }
+
+                    newRow = document.createElement('div');
+                    newRow.innerHTML = Mustache.render(templateRow, {
+                        title: available[i].title,
+                        description: available[i].description,
+                        authenticator: available[i].authenticator
+                    });
+
+                    newRow.getElements('input').addEvent('change', this.$onChange);
+
+                    primaryTable.appendChild(newRow);
                 }
 
-                for (i = 0, len = backend.length; i < len; i++) {
-                    for (r = 0, rLen = rows.length; r < rLen; r++) {
-                        condition = [];
-                        condition.push('[name="' + backend[i].escapeRegExp() + '"]');
-                        condition.push('[value="backend"]');
-                        condition = condition.join('');
+                cell.appendChild(primaryTable);
+                this.$primaryTable = primaryTable;
 
-                        rows[r].getElements(condition).set('checked', true);
+
+                // secondary authenticator
+                tableHeaderText = Mustache.render(templateHeader, {
+                    title: QUILocale.get(lg, 'quiqqer.settings.auth.secondary')
+                });
+
+                const secondaryTable = document.createElement('table');
+                secondaryTable.classList.add('data-table', 'data-table-flexbox');
+                secondaryTable.innerHTML = '<thead>' + tableHeaderText + '</thead>';
+                secondaryTable.setAttribute('data-name', 'secondary-authenticator');
+
+                for (i = 0, len = available.length; i < len; i++) {
+                    if (!available[i].isSecondaryAuthentication) {
+                        continue;
                     }
+
+                    newRow = document.createElement('div');
+                    newRow.innerHTML = Mustache.render(templateRow, {
+                        title: available[i].title,
+                        description: available[i].description,
+                        authenticator: available[i].authenticator
+                    });
+
+                    newRow.getElements('input').addEvent('change', this.$onChange);
+
+                    secondaryTable.appendChild(newRow);
                 }
 
-                self.$rows = rows;
-                self.$onChange();
+                cell.appendChild(secondaryTable);
+                this.$secondaryTable = secondaryTable;
+
+                // configs / checkbox / selected
+                this.$checkCheckboxes(globals.primary.frontend, primaryTable, 'frontend');
+                this.$checkCheckboxes(globals.primary.backend, primaryTable, 'backend');
+                this.$checkCheckboxes(globals.secondary.frontend, secondaryTable, 'frontend');
+                this.$checkCheckboxes(globals.secondary.backend, secondaryTable, 'backend');
+
+                this.$onChange();
             });
+        },
+
+        /**
+         * Checks all checkboxes with given names and the specified value ("frontend" or "backend") and sets them to checked.
+         *
+         * @param {Array<string>} config - Array of names.
+         * @param {HTMLElement} table - The DOM element to search in.
+         * @param {string} type - frontend / backend
+         */
+        $checkCheckboxes: function (config, table, type) {
+            for (let i = 0, len = config.length; i < len; i++) {
+                let condition = [];
+                condition.push('[name="' + config[i].escapeRegExp() + '"]');
+                condition.push('[value="' + type + '"]');
+                condition = condition.join('');
+
+                let checkbox = table.querySelector(condition);
+
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+            }
         },
 
         /**
          * event: on checkbox change
          */
         $onChange: function () {
-            var i, len, elm;
-            var inputs = this.$rows.map(function (Row) {
-                var nodes = Row.getElements('input');
-                return [nodes[0], nodes[1]];
-            });
+            const result = {
+                primary: {frontend: [], backend: []},
+                secondary: {frontend: [], backend: []}
+            };
 
-            inputs = inputs.flat();
-
-            var result = {};
-
-            for (i = 0, len = inputs.length; i < len; i++) {
-                elm = inputs[i];
-
-                if (typeof result[elm.name] === 'undefined') {
-                    result[elm.name] = {};
-                }
-
-                result[elm.name][elm.value] = elm.checked;
+            function collect(table, target) {
+                table.getElements('input[type="checkbox"]').forEach((elm) => {
+                    if (elm.checked) {
+                        if (elm.value === 'frontend') target.frontend.push(elm.name);
+                        if (elm.value === 'backend') target.backend.push(elm.name);
+                    }
+                });
             }
+
+            collect(this.$primaryTable, result.primary);
+            collect(this.$secondaryTable, result.secondary);
 
             if (this.getElm().nodeName === 'INPUT') {
                 this.getElm().value = JSON.encode(result);
@@ -139,12 +187,12 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
          * @returns {Promise}
          */
         save: function () {
-            return new Promise(function (resolve, reject) {
+            return new Promise((resolve, reject) => {
                 QUIAjax.post('ajax_users_authenticator_save', resolve, {
                     authenticators: this.getElm().value,
-                    onError       : reject
+                    onError: reject
                 });
-            }.bind(this));
+            });
         }
     });
 });

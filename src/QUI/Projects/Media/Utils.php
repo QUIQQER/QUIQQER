@@ -336,9 +336,10 @@ class Utils
         }
 
 
-        // build picture source sets
-        $srcset = '';
+        // build picture source sets (refactored)
+        $srcset = [];
         $host = '';
+        $imgMimeType = '';
 
         try {
             $originalSrc = urldecode($src);
@@ -377,23 +378,17 @@ class Utils
                 }
             }
 
-            $imageX = (int)$Project->getConfig('media_useImageScale');
+            $imageScale = (int)$Project->getConfig('media_useImageScale') ?: 2;
+            $imageScale = min($imageScale, 20);
 
-            if (!$imageX) {
-                $imageX = 2;
+            if (!$imageScale) {
+                $imageScale = 2;
             }
 
-            if ($imageX > 20) {
-                $imageX = 20; // <<-- crazy dudes
-            }
-
-            $imgSrcSetEntries = [];
+            $imgMimeType = $Image->getAttribute('mime_type');
 
             if ($imageWidth) {
                 $end = $maxWidth && $imageWidth > $maxWidth ? $maxWidth : $imageWidth;
-                $start = 16;
-                $sets = [];
-
                 $batchesCount = (int)$Project->getConfig('media_imageBatchesCount');
 
                 if (!$batchesCount) {
@@ -401,77 +396,25 @@ class Utils
                 }
 
                 $batchSize = ceil($end / $batchesCount) ?: 200;
+                $start = 16;
                 $duplicate = [];
 
                 for (; $start < $end + $batchSize; $start += $batchSize) {
-                    $media = '(max-width: ' . $start . 'px)';
                     $imageUrl = $Image->getSizeCacheUrl($start, $maxHeight);
-
-                    $currentHeight = explode('__', $imageUrl)[1];
-                    $currentHeight = explode('.', $currentHeight)[0];
-                    $currentHeight = (int)explode('x', $currentHeight)[1];
-
-                    if ($currentHeight) {
-                        $media = '(max-width: ' . $start . 'px) or (max-height: ' . $currentHeight . 'px)';
-                    }
 
                     if (isset($duplicate[$imageUrl])) {
                         continue;
                     }
-
                     $duplicate[$imageUrl] = true;
+                    $srcset[] = htmlspecialchars($host . $imageUrl) . ' ' . $start . 'w';
 
-                    $srcForSet = htmlspecialchars($imageUrl);
-
-                    for ($x = 2; $x <= $imageX; $x++) {
+                    // Retina/HiDPI
+                    for ($x = 2; $x <= $imageScale; $x++) {
                         if ($imageWidth > $start * $x) {
                             $src2x = $Image->getSizeCacheUrl($start * $x);
-                            $src2x = htmlspecialchars($src2x);
-                            $srcForSet .= ", $src2x {$x}x";
+                            $srcset[] = htmlspecialchars($host . $src2x) . ' ' . ($start * $x) . 'w';
                         }
                     }
-
-                    $sets[] = [
-                        'src' => $srcForSet,
-                        'media' => $media,
-                        'type' => $Image->getAttribute('mime_type')
-                    ];
-
-                    $imgSrcSetEntries[] = $srcForSet;
-                }
-
-                if (!count($sets)) {
-                    $sets[] = [
-                        'src' => htmlspecialchars($Image->getSizeCacheUrl()),
-                        'media' => '',
-                        'type' => $Image->getAttribute('mime_type')
-                    ];
-                }
-
-                // last one is the original
-                if ($maxWidth || $maxHeight) {
-                    $sets[array_key_last($sets)]['media'] = '';
-                } else {
-                    $sets[] = [
-                        'src' => htmlspecialchars($Image->getSizeCacheUrl()),
-                        'media' => '',
-                        'type' => $Image->getAttribute('mime_type')
-                    ];
-                }
-
-                foreach ($sets as $set) {
-                    $media = '';
-
-                    // last item doesn't need
-                    if (!empty($set['media'])) {
-                        $media = ' media="' . $set['media'] . '"';
-                    }
-
-                    if (!isset($set['type'])) {
-                        continue;
-                    }
-
-                    $srcset .= '<source ' . $media . ' srcset="' . $host . $set['src'] . '" type="' . $set['type'] . '" />';
                 }
             }
         } catch (QUI\Exception $Exception) {
@@ -500,17 +443,20 @@ class Utils
             $img .= htmlspecialchars($key) . '="' . $value . '" ';
         }
 
-        $img .= ' src="' . $host . htmlspecialchars($originalSrc) . '"';
-        /*
-                if (!empty($imgSrcSetEntries)) {
-                    $img .= ' srcset="' . implode(', ', $imgSrcSetEntries) . '"';
-                }
-        */
+        $img .= 'src="' . $host . htmlspecialchars($originalSrc) . '"';
+
+        if (!empty($srcset)) {
+            $img .= ' srcset="' . implode(', ', $srcset) . '"';
+        }
+
+        if (!empty($imgMimeType)) {
+            $img .= ' type="' . $imgMimeType . '"';
+        }
+
         $img .= ' />';
 
-
-        // picture html
-        $picture = '<picture>' . $srcset . $img . '</picture>';
+        // picture html (nur ein picture, keine mehrfachen sources)
+        $picture = '<picture>' . $img . '</picture>';
 
         try {
             QUI::getEvents()->fireEvent('mediaCreateImageHtml', [&$picture]);

@@ -1,0 +1,37 @@
+.attribute-verification {
+    display: flex;
+    justify-content: left;
+    padding: 5px;
+    width: 100%;
+}
+
+.attribute-verification label {
+    cursor: pointer;
+}
+
+.attribute-verification span {
+    line-height: 20px;
+    padding: 0 10px;
+}
+
+.attribute-verification--verified {
+    background: #dff0df;
+    color: #3e8e41;
+}
+
+.attribute-verification-label.attribute-verification--verified {
+    border-color: #3e8e41;
+    border-style: solid;
+    border-width: 0 1px 1px 1px;
+}
+
+.attribute-verification--unverified {
+    background: #ffe0e0;
+    color: #cd3835;
+}
+
+.attribute-verification-label.attribute-verification--unverified {
+    border-color: #cd3835;
+    border-style: solid;
+    border-width: 0 1px 1px 1px;
+}
