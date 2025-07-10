@@ -131,8 +131,6 @@ class User implements QUIUserInterface
 
     /**
      * verifiable status of the attributes
-     *
-     * @var null
      */
     protected null | QUI\Users\Attribute\VerifiableUserAttributeCollection $verifiableAttributes = null;
 
