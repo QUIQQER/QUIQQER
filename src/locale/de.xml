@@ -130,6 +130,13 @@
         <locale name="numberFormat.grouping_separator">
             <de><![CDATA[.]]></de>
         </locale>
+        <locale name="text.unverified">
+            <de><![CDATA[Nicht verifiziert]]></de>
+        </locale>
+        <locale name="text.verified">
+            <de><![CDATA[Verifiziert]]></de>
+        </locale>
+
         <locale name="permission.permission._header">
             <de><![CDATA[Rechte]]></de>
         </locale>
