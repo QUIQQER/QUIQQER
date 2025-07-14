@@ -56,4 +56,14 @@ interface AuthenticatorInterface
      * The CLI Authentication, only if isCLICompatible returns true
      */
     public function cliAuthentication(Console $Console);
+
+    /**
+     * @return bool - true, if the authenticator can be used as primary authentication
+     */
+    public function isPrimaryAuthentication(): bool;
+
+    /**
+     * @return bool - true, if the authenticator can be used as primary authentication
+     */
+    public function isSecondaryAuthentication(): bool;
 }

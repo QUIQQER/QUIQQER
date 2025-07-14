@@ -554,6 +554,9 @@ define('controls/projects/project/media/FilePanel', [
                     }
                 })
             );
+
+            this.fireEvent('createButtons', [this]);
+            QUI.fireEvent('mediaFileCreateButtons', [this]);
         },
 
         /**

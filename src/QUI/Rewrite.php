@@ -6,6 +6,7 @@
 
 namespace QUI;
 
+use JetBrains\PhpStorm\NoReturn;
 use QUI;
 use QUI\Database\Exception;
 use QUI\Projects\Media\File;
@@ -77,7 +78,7 @@ class Rewrite
 
     const URL_DEFAULT_SUFFIX = '.html';
 
-    public static bool|string $SUFFIX = false;
+    public static bool | string $SUFFIX = false;
 
     /**
      * site request parameter
@@ -103,7 +104,7 @@ class Rewrite
     /**
      * active template
      */
-    private string|bool $template_str = false;
+    private string | bool $template_str = false;
 
     /**
      * if project prefix is set
@@ -113,7 +114,7 @@ class Rewrite
     /**
      * project lang
      */
-    private string|bool $lang = false;
+    private string | bool $lang = false;
 
     /**
      * active site
@@ -138,7 +139,7 @@ class Rewrite
     /**
      * loaded vhosts
      */
-    private array|bool $vhosts = false;
+    private array | bool $vhosts = false;
 
     /**
      * current suffix, (.html, .pdf, .print)
@@ -191,7 +192,7 @@ class Rewrite
     /**
      * Return the default suffix eq: .html or ''
      */
-    public static function getDefaultSuffix(): bool|string
+    public static function getDefaultSuffix(): bool | string
     {
         if (self::$SUFFIX !== false) {
             return self::$SUFFIX;
@@ -491,15 +492,7 @@ class Rewrite
             }
 
             // Dateien direkt im Browser ausgeben, da Cachedatei noch nicht verfügbar war
-            header("Content-Length: " . filesize($file)); // workaround, symfony bug
-
-            // output
-            $response = new BinaryFileResponse($file);
-            $response->headers->set('Content-Type', $Item->getAttribute('mime_type'));
-            $response->headers->set('Accept-Ranges', 'bytes');
-            $response->headers->set('Content-Length', (string)filesize($file));
-            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE);
-            $response->send();
+            $this->sendFileWithRange($file, $Item->getAttribute('mime_type'));
             exit;
         }
 
@@ -636,6 +629,56 @@ class Rewrite
         if ($request_url != $url) {
             $this->site->setAttribute('canonical', $url);
         }
+    }
+
+    public static function sendFileWithRange($file, $mimeType): void
+    {
+        if (!is_file($file) || !is_readable($file)) {
+            header("HTTP/1.1 404 Not Found");
+            exit;
+        }
+
+        $size = filesize($file);
+        $start = 0;
+        $end = $size - 1;
+        $length = $size;
+
+        if (isset($_SERVER['HTTP_RANGE'])) {
+            if (preg_match('/bytes=(\d+)-(\d*)/', $_SERVER['HTTP_RANGE'], $matches)) {
+                $start = intval($matches[1]);
+
+                if ($matches[2] !== '') {
+                    $end = intval($matches[2]);
+                }
+
+                $length = $end - $start + 1;
+                $httpStatus = '206 Partial Content';
+                header("HTTP/1.1 $httpStatus");
+                header("Content-Range: bytes $start-$end/$size");
+            }
+        }
+
+        header('Content-Type: ' . $mimeType);
+        header('Content-Length: ' . $length);
+        header('Accept-Ranges: bytes');
+        header('Content-Disposition: inline; filename="' . basename($file) . '"');
+
+        $fp = fopen($file, 'rb');
+        fseek($fp, $start);
+
+        $buffer = 8192;
+        $bytesSent = 0;
+
+        while (!feof($fp) && $bytesSent < $length) {
+            $readLength = min($buffer, $length - $bytesSent);
+            echo fread($fp, $readLength);
+            $bytesSent += $readLength;
+            @ob_flush();
+            flush();
+        }
+
+        fclose($fp);
+        exit;
     }
 
     public function getVHosts(): array
@@ -893,7 +936,7 @@ class Rewrite
      *
      * @return Project|false
      */
-    protected function getProjectByVhost(): bool|Project
+    protected function getProjectByVhost(): bool | Project
     {
         $vhosts = $this->getVHosts();
 
@@ -984,7 +1027,7 @@ class Rewrite
     /**
      * @throws QUI\Exception
      */
-    public function getSiteByUrl(string $url, bool $setPath = true): bool|QUI\Interfaces\Projects\Site
+    public function getSiteByUrl(string $url, bool $setPath = true): bool | QUI\Interfaces\Projects\Site
     {
         // Sprache raus
         if ($url === '') {
@@ -1072,7 +1115,7 @@ class Rewrite
      *
      * @throws Exception
      */
-    public function existRegisterPath(string $path, Project $Project): bool|QUI\Interfaces\Projects\Site
+    public function existRegisterPath(string $path, Project $Project): bool | QUI\Interfaces\Projects\Site
     {
         if ($this->registerPaths === null) {
             $table = QUI::getDBProjectTableName('paths', $Project);
@@ -1113,7 +1156,7 @@ class Rewrite
     /**
      * Parameter der Rewrite
      */
-    public function getParam(string $name): bool|string
+    public function getParam(string $name): bool | string
     {
         $result = '';
 
@@ -1327,7 +1370,7 @@ class Rewrite
      *
      * @throws QUI\Exception
      */
-    public function registerPath(array|string $paths, QUI\Interfaces\Projects\Site $Site): void
+    public function registerPath(array | string $paths, QUI\Interfaces\Projects\Site $Site): void
     {
         $Project = $Site->getProject();
         $table = QUI::getDBProjectTableName('paths', $Project);

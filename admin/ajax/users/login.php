@@ -4,10 +4,13 @@ use QUI\System\Log;
 
 QUI::$Ajax->registerFunction(
     'ajax_users_login',
-    static function ($authenticator, $params, $globalauth) {
+    static function ($authenticator, $params, $authStep) {
         QUI::getEvents()->fireEvent('userLoginAjaxStart');
 
-        QUI::getSession()->destroy();
+        if ($authStep !== 'secondary') {
+            //QUI::getSession()->destroy();
+        }
+
         QUI::getSession()->set('inAuthentication', 1);
 
         $User = QUI::getUserBySession();
@@ -39,9 +42,12 @@ QUI::$Ajax->registerFunction(
             );
         }
 
-
-        if ($globalauth) {
+        if ($authStep === 'primary') {
             QUI::getSession()->set('auth-globals', 1);
+        }
+
+        if ($authStep === 'secondary') {
+            QUI::getSession()->set('auth-secondary', 1);
         }
 
         $Login = new QUI\Users\Controls\Login();
@@ -65,6 +71,7 @@ QUI::$Ajax->registerFunction(
         return [
             'authenticator' => $Login->next(),
             'control' => $control,
+            'authStep' => $Login->getAttribute('authStep'),
             'user' => [
                 'id' => $SessionUser->getUUID(),
                 'name' => $SessionUser->getName(),
@@ -72,5 +79,5 @@ QUI::$Ajax->registerFunction(
             ]
         ];
     },
-    ['authenticator', 'params', 'globalauth']
+    ['authenticator', 'params', 'authStep']
 );

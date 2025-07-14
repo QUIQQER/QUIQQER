@@ -8,8 +8,6 @@ namespace QUI\Users\Controls;
 
 use QUI;
 use QUI\Control;
-use QUI\Database\Exception;
-use QUI\ExceptionStack;
 
 use function count;
 use function forward_static_call;
@@ -30,8 +28,12 @@ class Login extends Control
     {
         $this->setAttributes([
             'data-qui' => 'controls/users/Login',
-            'authenticators' => [] // predefined list of Authenticator classes; if empty = use all authenticators
+            'authStep' => 'primary',
+
+            // predefined list of Authenticator classes; if empty = use all authenticators
             // that are configured
+            'authenticators' => [],
+
         ]);
 
         parent::__construct($options);
@@ -40,11 +42,6 @@ class Login extends Control
         $this->setJavaScriptControl('controls/users/Login');
     }
 
-    /**
-     * @throws Exception
-     * @throws ExceptionStack
-     * @throws QUI\Exception
-     */
     public function getBody(): string
     {
         $authenticator = $this->next();
@@ -95,65 +92,48 @@ class Login extends Control
 
     /**
      * Return the next Authenticator, if one exists
-     *
-     * @throws Exception
-     * @throws QUI\Exception
-     * @throws ExceptionStack
      */
-    public function next(): array|string|null
+    public function next(): array | null
     {
-        if (QUI::isFrontend()) {
-            $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
-        } else {
-            $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalBackendAuthenticators();
-        }
-
-        $globals = [];
-
-        if (QUI::getSession()->get('auth-globals') != 1) {
-            foreach ($authenticators as $auth) {
-                if (QUI::getSession()->get('auth-' . $auth) !== 1) {
-                    $globals[] = $auth;
-                }
+        if (QUI::getSession()->get('auth-globals') !== 1) {
+            // primary authenticator
+            if (QUI::isFrontend()) {
+                $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalFrontendAuthenticators();
+            } else {
+                $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalBackendAuthenticators();
             }
 
-            $this->isGlobalAuth = true;
+            $this->setAttribute('authStep', 'primary');
         }
 
-        if (!empty($globals)) {
-            // sort globals (QUIQQER Login has to be first!)
-            usort($globals, static function ($a, $b): int {
-                if ($a === QUI\Users\Auth\QUIQQER::class) {
-                    return -1;
-                }
+        if (empty($authenticators) && QUI::getSession()->get('auth-secondary') !== 1) {
+            // secondary authenticators
+            if (QUI::isFrontend()) {
+                $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalFrontendSecondaryAuthenticators();
+            } else {
+                $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalBackendSecondaryAuthenticators();
+            }
 
-                if ($b === QUI\Users\Auth\QUIQQER::class) {
-                    return 1;
-                }
-
-                return 0;
-            });
-
-            return $globals;
+            $this->setAttribute('authStep', 'secondary');
         }
 
-        // test user authenticators
-        // multi authenticators
-        $uid = QUI::getSession()->get('uid');
-
-        if (!$uid) {
+        if (empty($authenticators)) {
             return null;
         }
 
-        $User = QUI::getUsers()->get($uid);
-        $authenticators = $User->getAuthenticators();
-
-        foreach ($authenticators as $Authenticator) {
-            if (QUI::getSession()->get('auth-' . $Authenticator::class) !== 1) {
-                return $Authenticator::class;
+        // sort globals (QUIQQER Login has to be first!)
+        usort($authenticators, static function ($a, $b): int {
+            if ($a === QUI\Users\Auth\QUIQQER::class) {
+                return -1;
             }
-        }
 
-        return null;
+            if ($b === QUI\Users\Auth\QUIQQER::class) {
+                return 1;
+            }
+
+            return 0;
+        });
+
+        return $authenticators;
     }
 }

@@ -9,6 +9,7 @@
  * @deprecated
  */
 
+// @deprecated
 QUI::$Ajax->registerFunction(
     'ajax_login_login',
     static function ($username, $password): array {

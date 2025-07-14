@@ -37,7 +37,7 @@ class QUIQQER extends AbstractAuthenticator
         $this->username = $user;
     }
 
-    public static function getLoginControl(): Controls\QUIQQERLogin
+    public static function getLoginControl(): QUI\Control
     {
         return new Controls\QUIQQERLogin();
     }

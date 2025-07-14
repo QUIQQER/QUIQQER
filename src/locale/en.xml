@@ -130,6 +130,12 @@
         <locale name="numberFormat.grouping_separator">
             <en><![CDATA[,]]></en>
         </locale>
+        <locale name="text.unverified">
+            <en><![CDATA[Nicht verifiziert]]></en>
+        </locale>
+        <locale name="text.verified">
+            <en><![CDATA[Verifiziert]]></en>
+        </locale>
         <locale name="permission.permission._header">
             <en><![CDATA[Permissions]]></en>
         </locale>
@@ -639,14 +645,64 @@
         <locale name="quiqqer.auth.description">
             <en><![CDATA[The standard QUIQQER authentication by username and password.]]></en>
         </locale>
+        <locale name="quiqqer.auth.description">
+            <en><![CDATA[Die standard QUIQQER Authentifizierung per Benutzername und Passwort.]]></en>
+        </locale>
+        <locale name="quiqqer.mail2fa.title">
+            <en><![CDATA[OTP Mail Authentication]]></en>
+        </locale>
+        <locale name="quiqqer.mail2fa.description">
+            <en><![CDATA[
+            The standard QUIQQER One Time Password Mail authentication via verified e-mail.
+            Only accounts with verified mail can authenticate themselves.
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.verified.mail2fa.mail.subject">
+            <en><![CDATA[
+            Your login code for [host]
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.verified.mail2fa.mail.content" html="true">
+            <en><![CDATA[
+            <p>Hello,</p>
+            <p>
+              Your verification code for logging in to <strong>[host]</strong> is:
+            </p>
+            <p style="font-size: 1.5em; font-weight: bold; letter-spacing: 2px;">
+              [code]
+            </p>
+            <p>
+              Please enter this code to continue. The code is valid for a short time only.
+            </p>
+            <p>
+              If you did not request this code, you can simply ignore this email.
+            </p>
+            <p>
+              Best regards<br>
+              Your [host] Team
+            </p>
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.verified.mail2fa.control.description">
+            <en><![CDATA[We have sent you a confirmation code by e-mail. Please enter the code here to continue.]]></en>
+        </locale>
+        <locale name="quiqqer.verified.mail2fa.control.codeLabel">
+            <en><![CDATA[Enter code:]]></en>
+        </locale>
         <locale name="quiqqer.settings.auth.global">
-            <en><![CDATA[Primary Authentifiers]]></en>
+            <en><![CDATA[Global Authentifiers]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.global.desc">
             <en><![CDATA[
-            Primary Authenticators are authentication methods which provide the user at the beginning of his Authentication.
+            Global Authenticators are authentication methods which provide the user at the beginning of his Authentication.
             In addition, you can go over the permissions management for each group or user and set more factor authentication.
             ]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.primary">
+            <en><![CDATA[Primary Authentifiers]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.secondary">
+            <en><![CDATA[Secondary Authentifiers]]></en>
         </locale>
         <locale name="exception.forwarding.already.exists">
             <en><![CDATA[This forwarding already exists.]]></en>

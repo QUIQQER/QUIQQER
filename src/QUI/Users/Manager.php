@@ -908,14 +908,41 @@ class Manager
 
         // global authenticators
         if (QUI::getSession()->get('auth-globals') !== 1) {
-            $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
+            if (QUI::isBackend()) {
+                $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalBackendAuthenticators();
+            } else {
+                $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalFrontendAuthenticators();
+            }
 
-            /* @var $Authenticator QUI\Users\AbstractAuthenticator */
             foreach ($authenticators as $authenticator) {
                 $this->authenticate($authenticator, $authData);
             }
 
-            QUI::getSession()->set('auth-globals', 1);
+            if (!empty($authenticators)) {
+                QUI::getSession()->set('auth-globals', 1);
+                // @todo set user uuid to session
+            }
+        }
+
+        if (QUI::getSession()->get('auth-secondary') !== 1) {
+            if (QUI::isBackend()) {
+                $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalBackendSecondaryAuthenticators();
+            } else {
+                $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalFrontendSecondaryAuthenticators();
+            }
+
+            /* @var $Authenticator QUI\Users\AbstractAuthenticator */
+            try {
+                foreach ($authenticators as $authenticator) {
+                    $this->authenticate($authenticator, $authData);
+                }
+            } catch (\Exception $exception) {
+                throw new QUI\Users\Auth\Exception2FA(
+                    $exception->getMessage()
+                );
+            }
+
+            QUI::getSession()->set('auth-secondary', 1);
         }
 
         $userId = QUI::getSession()->get('uid');

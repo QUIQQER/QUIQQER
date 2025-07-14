@@ -21,7 +21,7 @@ define('controls/lang/ContentMultiLang', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/lang/ContentMultiLang',
+        Type: 'controls/lang/ContentMultiLang',
 
         Binds: [
             'toggle',
@@ -43,15 +43,15 @@ define('controls/lang/ContentMultiLang', [
 
             this.Loader = new QUILoader();
 
-            this.$Elm    = null;
-            this.$Input  = null;
+            this.$Elm = null;
+            this.$Input = null;
             this.$Button = null;
-            this.$Input  = null;
+            this.$Input = null;
 
-            this.$ContentContainer   = null;
-            this.$Editor             = null;
+            this.$ContentContainer = null;
+            this.$Editor = null;
             this.$editorSaveInterval = null;
-            this.$LangSelect         = null;
+            this.$LangSelect = null;
 
             this.addEvents({
                 onImport: this.$onImport,
@@ -67,9 +67,9 @@ define('controls/lang/ContentMultiLang', [
         create: function () {
             this.$Elm = new Element('div', {
                 'class': 'field-container-field quiqqer-lang-contentmultilang',
-                'html' : '<div class="quiqqer-lang-contentmultilang-langselect"></div>' +
+                'html': '<div class="quiqqer-lang-contentmultilang-langselect"></div>' +
                     '<div class="quiqqer-lang-contentmultilang-content"></div>',
-                styles : {
+                styles: {
                     minHeight: 300
                 }
             });
@@ -80,9 +80,9 @@ define('controls/lang/ContentMultiLang', [
 
             if (!this.$Input) {
                 this.$Input = new Element('input', {
-                    type : 'hidden',
+                    type: 'hidden',
                     value: this.getAttribute('value'),
-                    name : this.getAttribute('name')
+                    name: this.getAttribute('name')
                 });
             }
 
@@ -90,7 +90,7 @@ define('controls/lang/ContentMultiLang', [
 
             this.$LangSelect = new LangSelect({
                 'class': 'quiqqer-lang-contentmultilang-langselect-select',
-                events : {
+                events: {
                     onChange: function (Control, lang) {
                         this.$loadLangContent(lang);
                     }.bind(this)
@@ -119,6 +119,10 @@ define('controls/lang/ContentMultiLang', [
             }
 
             return this.$Elm;
+        },
+
+        refresh: function () {
+            this.$loadLangContent(this.$LangSelect.getValue());
         },
 
         /**
@@ -212,7 +216,7 @@ define('controls/lang/ContentMultiLang', [
             var currentLang = this.$LangSelect.getValue();
 
             this.$data[currentLang] = this.$Editor.getContent();
-            this.$Input.value       = JSON.encode(this.$data);
+            this.$Input.value = JSON.encode(this.$data);
         },
 
         /**
@@ -248,7 +252,7 @@ define('controls/lang/ContentMultiLang', [
             }
 
             this.$Input.value = data;
-            this.$data        = this.getData();
+            this.$data = this.getData();
 
             if (this.$LangSelect) {
                 this.$loadLangContent(this.$LangSelect.getValue());

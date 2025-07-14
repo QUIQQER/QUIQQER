@@ -100,6 +100,10 @@ class Package extends QUI\QDOM
      */
     public function __construct(string $package)
     {
+        if (empty($package)) {
+            throw new QUI\Exception('Package not exists. Package name is empty.', 404);
+        }
+
         $packageDir = OPT_DIR . $package . '/';
 
         // if not exists look at bin
@@ -715,8 +719,18 @@ class Package extends QUI\QDOM
             }
         }
 
+        // events
+        QUI\Events\Manager::clear($this->getName());
+        Update::importEvents($dir . self::EVENTS_XML, $this->getName());
+        Update::importSiteEvents($dir . self::SITE_XML);
+
         // xml
-        Update::importDatabase($dir . self::DATABASE_XML);
+        try {
+            Update::importDatabase($dir . self::DATABASE_XML);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+
         Update::importTemplateEngines($dir . 'engines.xml');
         Update::importEditors($dir . 'wysiwyg.xml');
 
@@ -724,11 +738,6 @@ class Package extends QUI\QDOM
 
         Update::importPermissions($dir . self::PERMISSIONS_XML, $this->getName());
         Update::importMenu($dir . self::MENU_XML);
-
-        // events
-        QUI\Events\Manager::clear($this->getName());
-        Update::importEvents($dir . self::EVENTS_XML, $this->getName());
-        Update::importSiteEvents($dir . self::SITE_XML);
 
         // locale
         if ($optionLocaleImport) {

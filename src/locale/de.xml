@@ -130,6 +130,13 @@
         <locale name="numberFormat.grouping_separator">
             <de><![CDATA[.]]></de>
         </locale>
+        <locale name="text.unverified">
+            <de><![CDATA[Nicht verifiziert]]></de>
+        </locale>
+        <locale name="text.verified">
+            <de><![CDATA[Verifiziert]]></de>
+        </locale>
+
         <locale name="permission.permission._header">
             <de><![CDATA[Rechte]]></de>
         </locale>
@@ -637,14 +644,61 @@
         <locale name="quiqqer.auth.description">
             <de><![CDATA[Die standard QUIQQER Authentifizierung per Benutzername und Passwort.]]></de>
         </locale>
+        <locale name="quiqqer.mail2fa.title">
+            <de><![CDATA[OTP Mail Authentifizierung]]></de>
+        </locale>
+        <locale name="quiqqer.mail2fa.description">
+            <de><![CDATA[
+            Die standard QUIQQER One Time Password Mail Authentifizierung per verifizierter E-Mail.
+            Nur Accounts mit verifzierter Mail können sich authentifizieren.
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.verified.mail2fa.mail.subject">
+            <de><![CDATA[
+            Dein Anmeldecode für [host]
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.verified.mail2fa.mail.content" html="true">
+            <de><![CDATA[
+            <p>Hallo,</p>
+            <p>
+              dein Bestätigungscode für die Anmeldung bei <strong>[host]</strong> lautet:
+            </p>
+            <p style="font-size: 1.5em; font-weight: bold; letter-spacing: 2px;">
+              [code]
+            </p>
+            <p>
+              Bitte gib diesen Code ein, um fortzufahren. Der Code ist nur für kurze Zeit gültig.
+            </p>
+            <p>
+              Falls du diese Anfrage nicht selbst gestellt hast, kannst du diese E-Mail einfach ignorieren.
+            </p>
+            <p>
+              Viele Grüße<br>
+              Dein [host]-Team
+            </p>
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.verified.mail2fa.control.description">
+            <de><![CDATA[Wir haben dir einen Bestätigungscode per E-Mail gesendet. Bitte gib den Code hier ein, um fortzufahren.]]></de>
+        </locale>
+        <locale name="quiqqer.verified.mail2fa.control.codeLabel">
+            <de><![CDATA[Code Eingabe:]]></de>
+        </locale>
         <locale name="quiqqer.settings.auth.global">
-            <de><![CDATA[Primäre Authenticator]]></de>
+            <de><![CDATA[Globale Authenticator]]></de>
         </locale>
         <locale name="quiqqer.settings.auth.global.desc">
             <de><![CDATA[
-            Primäre Authenticator sind Auhthentifizierungsmethoden welche dem Benutzer zu Anfang seiner Authentifizierung zur Verfügung stehen.
+            Globale Authenticator sind Auhthentifizierungsmethoden welche dem Benutzer zu Anfang seiner Authentifizierung zur Verfügung stehen.
             Zusätzlich können Sie über die Zugriffsrechteverwaltung für jede Gruppe oder jeden User Mehrfachauthentifizierungen zur Verfügung stellen.
             ]]></de>
+        </locale>
+        <locale name="quiqqer.settings.auth.primary">
+            <de><![CDATA[Primäre Authenticator]]></de>
+        </locale>
+        <locale name="quiqqer.settings.auth.secondary">
+            <de><![CDATA[Sekundäre Authenticator]]></de>
         </locale>
         <locale name="exception.forwarding.already.exists">
             <de><![CDATA[Diese Weiterleitung besteht bereits.]]></de>
@@ -3066,7 +3120,8 @@
             <de><![CDATA[Lizenzschlüssel-Datei hochladen]]></de>
         </locale>
         <locale name="controls.licensekey.template.info" html="1">
-            <de><![CDATA[Sie können die Funktion von QUIQQER mit Premium-Paketen erweitern. Um Premium-Pakete zu installieren, benötigen Sie einen gültigen Lizenzschlüssel. Ihren Lizenzschlüssel erhalten Sie beim Kauf eines Premium-Pakets im <a href="https://store.quiqqer.de/" target="_blank">QUIQQER Store</a>.]]></de>
+            <de>
+                <![CDATA[Sie können die Funktion von QUIQQER mit Premium-Paketen erweitern. Um Premium-Pakete zu installieren, benötigen Sie einen gültigen Lizenzschlüssel. Ihren Lizenzschlüssel erhalten Sie beim Kauf eines Premium-Pakets im <a href="https://store.quiqqer.de/" target="_blank">QUIQQER Store</a>.]]></de>
         </locale>
         <locale name="controls.licensekey.template.labelDelete">
             <de><![CDATA[Lizenzschlüssel löschen]]></de>
@@ -4472,7 +4527,8 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             <de><![CDATA[Die Toolbar wurde erfolgreich gespeichert.]]></de>
         </locale>
         <locale name="message.ajax.licenseKey.delete.error">
-            <de><![CDATA[Der Lizenzschlüssel wurde nicht gelöscht, da kein Lizenzschlüssel in Ihrem QUIQQER-System aktiviert war.]]></de>
+            <de>
+                <![CDATA[Der Lizenzschlüssel wurde nicht gelöscht, da kein Lizenzschlüssel in Ihrem QUIQQER-System aktiviert war.]]></de>
         </locale>
         <locale name="message.ajax.licenseKey.delete.success">
             <de><![CDATA[Der Lizenzschlüssel wurde erfolgreich gelöscht und ist nun nicht mehr aktiv.]]></de>

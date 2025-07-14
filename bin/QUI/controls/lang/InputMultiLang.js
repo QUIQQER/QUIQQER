@@ -185,6 +185,23 @@ define('controls/lang/InputMultiLang', [
             });
         },
 
+        refresh: function() {
+            let lang, Input;
+            const inputData = this.getData();
+
+            for (lang in inputData) {
+                if (!inputData.hasOwnProperty(lang)) {
+                    continue;
+                }
+
+                Input = this.getElm().getElement('[name="' + lang + '"]');
+
+                if (Input) {
+                    Input.value = inputData[lang];
+                }
+            }
+        },
+
         /**
          * disable this control
          */
@@ -245,21 +262,7 @@ define('controls/lang/InputMultiLang', [
             }
 
             this.$Input.value = data;
-
-            let lang, Input;
-            const inputData = this.getData();
-
-            for (lang in inputData) {
-                if (!inputData.hasOwnProperty(lang)) {
-                    continue;
-                }
-
-                Input = this.getElm().getElement('[name="' + lang + '"]');
-
-                if (Input) {
-                    Input.value = inputData[lang];
-                }
-            }
+            this.refresh();
         },
 
         /**

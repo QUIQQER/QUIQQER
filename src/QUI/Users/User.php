@@ -14,6 +14,8 @@ use QUI\ExceptionStack;
 use QUI\Groups\Group;
 use QUI\Interfaces\Users\User as QUIUserInterface;
 use QUI\Utils\Security\Orthos as Orthos;
+use QUI\Users\Attribute\AttributeVerificationStatus;
+use QUI\Users\Attribute\Verifiable\AbstractVerifiableUserAttribute;
 
 use function array_filter;
 use function array_flip;
@@ -126,6 +128,11 @@ class User implements QUIUserInterface
      * construct loading flag
      */
     protected bool $isLoaded = true;
+
+    /**
+     * verifiable status of the attributes
+     */
+    protected null | QUI\Users\Attribute\VerifiableUserAttributeCollection $verifiableAttributes = null;
 
     /**
      * @param int|string $id - ID of the user
@@ -933,7 +940,8 @@ class User implements QUIUserInterface
                 'assigned_toolbar' => $assignedToolbars,
                 'authenticator' => json_encode($this->authenticator),
                 'lastLoginAttempt' => $this->getAttribute('lastLoginAttempt') ?: null,
-                'failedLogins' => $this->getAttribute('failedLogins') ?: 0
+                'failedLogins' => $this->getAttribute('failedLogins') ?: 0,
+                'verifiableAttributes' => json_encode($this->parseVerifiedAttributesToArray())
             ],
             'where' => [
                 'uuid' => $this->getUUID()
@@ -2273,4 +2281,140 @@ class User implements QUIUserInterface
     {
         return QUI::getSession()->isUserOnline($this->getUUID());
     }
+
+    // region verifiable attributes
+
+    public function setStatusToVerifiableAttribute(
+        string $value,
+        string $type,
+        AttributeVerificationStatus | string $status
+    ): void {
+        if (!class_exists($type) || !is_subclass_of($type, AbstractVerifiableUserAttribute::class)) {
+            return;
+        }
+
+        $status = AttributeVerificationStatus::tryFrom($status);
+        $attributes = $this->getVerifiedAttributes();
+
+        foreach ($attributes as $attribute) {
+            if ($attribute->getValue() === $value) {
+                $attribute->setVerificationStatus($status);
+                return;
+            }
+        }
+
+        $attribute = new $type(
+            QUI\Utils\Uuid::get(),
+            $value,
+            $status
+        );
+
+        $attributes->add($attribute);
+    }
+
+    /**
+     * @param float|int|string $value
+     * @param string $type - eq: MailAttribute::class; extends AbstractVerifiableUserAttribute, type of the attribute
+     * @return bool
+     */
+    public function isAttributeVerified(
+        float | int | string $value,
+        string $type
+    ): bool {
+        if (!class_exists($type) || !is_subclass_of($type, AbstractVerifiableUserAttribute::class)) {
+            return false;
+        }
+
+        $attributes = $this->getVerifiedAttributes();
+
+        foreach ($attributes as $attribute) {
+            if (
+                $attribute->getValue() === $value
+                && $attribute->getVerificationStatus() === AttributeVerificationStatus::VERIFIED
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $value
+     * @return null|AbstractVerifiableUserAttribute
+     */
+    public function getVerifiedAttribute(string $value): ?AbstractVerifiableUserAttribute
+    {
+        $attributes = $this->getVerifiedAttributes();
+
+        foreach ($attributes as $attribute) {
+            if ($attribute->getValue() === $value) {
+                return $attribute;
+            }
+        }
+
+        return null;
+    }
+
+    public function getVerifiedAttributes(): QUI\Users\Attribute\VerifiableUserAttributeCollection
+    {
+        if ($this->verifiableAttributes !== null) {
+            return $this->verifiableAttributes;
+        }
+
+        $verifiableAttributes = new QUI\Users\Attribute\VerifiableUserAttributeCollection();
+        $data = json_decode($this->getAttribute('verifiableAttributes'), true) ?? [];
+
+        // mail
+        foreach ($data as $verifiableAttribute) {
+            if (!isset($verifiableAttribute['type'])) {
+                continue;
+            }
+
+            if (empty($verifiableAttribute['verification_status'])) {
+                continue;
+            }
+
+
+            $class = $verifiableAttribute['type'];
+
+            if (!class_exists($class) || !is_subclass_of($class, AbstractVerifiableUserAttribute::class)) {
+                continue;
+            }
+
+            $status = AttributeVerificationStatus::tryFrom(
+                $verifiableAttribute['verification_status']
+            );
+
+            $verifiableAttributes->add(
+                new $class(
+                    $verifiableAttribute['uuid'],
+                    $verifiableAttribute['value'],
+                    $status
+                )
+            );
+        }
+
+        $this->verifiableAttributes = $verifiableAttributes;
+
+        return $this->verifiableAttributes;
+    }
+
+    protected function parseVerifiedAttributesToArray(): array
+    {
+        $collection = $this->getVerifiedAttributes();
+
+        if ($collection->isEmpty()) {
+            return [];
+        }
+
+        $result = [];
+
+        foreach ($collection as $verifiableUserAttribute) {
+            $result[] = $verifiableUserAttribute->toArray();
+        }
+
+        return $result;
+    }
+    //endregion
 }

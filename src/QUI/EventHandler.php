@@ -150,7 +150,7 @@ class EventHandler
      * @param QUI\Users\Exception $Exception
      * @return void
      */
-    public static function onUserLoginError(int|string $userId, QUI\Users\Exception $Exception): void
+    public static function onUserLoginError(int | string $userId, QUI\Users\Exception $Exception): void
     {
         switch ($Exception->getAttribute('reason')) {
             case QUI\Users\Manager::AUTH_ERROR_AUTH_ERROR:
@@ -192,7 +192,7 @@ class EventHandler
      *
      * @throws QUI\Users\Exception
      */
-    public static function onUserAuthenticatorLoginStart(int|string $userId, string $authenticator): void
+    public static function onUserAuthenticatorLoginStart(int | string $userId): void
     {
         self::onUserLoginStart($userId);
     }
@@ -203,7 +203,7 @@ class EventHandler
      * @throws QUI\Users\Exception
      * @throws \Exception
      */
-    public static function onUserLoginStart(int|string $userId): void
+    public static function onUserLoginStart(int | string $userId): void
     {
         if (!$userId) {
             return;

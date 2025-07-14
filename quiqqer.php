@@ -5,26 +5,38 @@ if (php_sapi_name() !== 'cli') {
     exit;
 }
 
+// read params
 $isComposerMode = false;
 $isRepairMode = false;
+$isPathMigration = false;
 
-// repair mode
-if (
-    !empty($_SERVER['argv'])
-    && $_SERVER['argv'][0] === 'quiqqer.php'
-    && isset($_SERVER['argv'][1])
-    && $_SERVER['argv'][1] === 'repair'
-) {
-    $isRepairMode = true;
+$scriptName = $_SERVER['argv'][0] ?? '';
+$command = $_SERVER['argv'][1] ?? '';
+
+$validScripts = ['quiqqer.php', './console'];
+
+if (in_array($scriptName, $validScripts, true)) {
+    switch ($command) {
+        case 'repair':
+            $isRepairMode = true;
+            break;
+        case 'system-migration':
+            $isPathMigration = true;
+            break;
+        case 'composer':
+            $isComposerMode = true;
+            break;
+    }
+} else {
+    echo 'Error: Please run "./console" only from the main directory of your QUIQQER installation.' . PHP_EOL;
+    exit(1);
 }
 
-if (
-    !empty($_SERVER['argv'])
-    && $_SERVER['argv'][0] === './console'
-    && isset($_SERVER['argv'][1])
-    && $_SERVER['argv'][1] === 'repair'
-) {
-    $isRepairMode = true;
+// execute params
+
+if ($isPathMigration) {
+    require 'src/pathMigration.php';
+    exit;
 }
 
 if ($isRepairMode) {
@@ -33,26 +45,6 @@ if ($isRepairMode) {
 
     require 'src/repair.php';
     exit;
-}
-
-
-// composer mode
-if (
-    !empty($_SERVER['argv'])
-    && $_SERVER['argv'][0] === 'quiqqer.php'
-    && isset($_SERVER['argv'][1])
-    && $_SERVER['argv'][1] === 'composer'
-) {
-    $isComposerMode = true;
-}
-
-if (
-    !empty($_SERVER['argv'])
-    && $_SERVER['argv'][0] === './console'
-    && isset($_SERVER['argv'][1])
-    && $_SERVER['argv'][1] === 'composer'
-) {
-    $isComposerMode = true;
 }
 
 if ($isComposerMode) {
