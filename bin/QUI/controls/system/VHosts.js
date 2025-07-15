@@ -2,7 +2,6 @@
  * VHost Panel
  *
  * @module controls/system/VHosts
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/system/VHosts', [
 
@@ -19,12 +18,12 @@ define('controls/system/VHosts', [
 ], function (QUI, QUIPanel, QUIPrompt, QUIConfirm, Grid, Vhost, VhostServerCode, Ajax, Locale) {
     "use strict";
 
-    var lg = 'quiqqer/core';
+    const lg = 'quiqqer/core';
 
     return new Class({
 
         Extends: QUIPanel,
-        Type   : 'controls/system/VHosts',
+        Type: 'controls/system/VHosts',
 
         Binds: [
             '$onCreate',
@@ -36,7 +35,7 @@ define('controls/system/VHosts', [
 
         options: {
             title: Locale.get(lg, 'system.vhosts.title'),
-            icon : 'fa fa-location-arrow'
+            icon: 'fa fa-location-arrow'
         },
 
         initialize: function (options) {
@@ -52,13 +51,13 @@ define('controls/system/VHosts', [
          * event : on create
          */
         $onCreate: function () {
-            var self = this;
+            const self = this;
 
             // buttons
             this.addButton({
-                text     : Locale.get(lg, 'system.vhosts.btn.add'),
+                text: Locale.get(lg, 'system.vhosts.btn.add'),
                 textimage: 'fa fa-plus',
-                events   : {
+                events: {
                     onClick: function () {
                         self.openAddVhost();
                     }
@@ -70,11 +69,11 @@ define('controls/system/VHosts', [
             });
 
             this.addButton({
-                name     : 'editVhost',
-                text     : Locale.get(lg, 'system.vhosts.btn.edit.marked'),
+                name: 'editVhost',
+                text: Locale.get(lg, 'system.vhosts.btn.edit.marked'),
                 textimage: 'fa fa-edit',
-                disabled : true,
-                events   : {
+                disabled: true,
+                events: {
                     onClick: function () {
                         self.openEditVhost();
                     }
@@ -82,11 +81,11 @@ define('controls/system/VHosts', [
             });
 
             this.addButton({
-                name     : 'delVhost',
-                text     : Locale.get(lg, 'system.vhosts.btn.del.marked'),
+                name: 'delVhost',
+                text: Locale.get(lg, 'system.vhosts.btn.del.marked'),
                 textimage: 'fa fa-trash-o',
-                disabled : true,
-                events   : {
+                disabled: true,
+                events: {
                     onClick: function () {
                         self.openRemoveVhost();
                     }
@@ -95,40 +94,40 @@ define('controls/system/VHosts', [
 
 
             // Grid
-            var Container = new Element('div').inject(
+            const Container = new Element('div').inject(
                 this.getContent()
             );
 
             this.$Grid = new Grid(Container, {
                 columnModel: [{
-                    header   : Locale.get(lg, 'system.vhosts.table.domain'),
+                    header: Locale.get(lg, 'system.vhosts.table.domain'),
                     dataIndex: 'host',
-                    dataType : 'string',
-                    width    : 200
+                    dataType: 'string',
+                    width: 200
                 }, {
-                    header   : Locale.get(lg, 'project'),
+                    header: Locale.get(lg, 'project'),
                     dataIndex: 'project',
-                    dataType : 'string',
-                    width    : 200
+                    dataType: 'string',
+                    width: 200
                 }, {
-                    header   : Locale.get(lg, 'language'),
+                    header: Locale.get(lg, 'language'),
                     dataIndex: 'lang',
-                    dataType : 'string',
-                    width    : 200
+                    dataType: 'string',
+                    width: 200
                 }, {
-                    header   : Locale.get(lg, 'template'),
+                    header: Locale.get(lg, 'template'),
                     dataIndex: 'template',
-                    dataType : 'string',
-                    width    : 200
+                    dataType: 'string',
+                    width: 200
                 }],
-                onrefresh  : function () {
+                onrefresh: function () {
                     self.load();
                 }
             });
 
             // Events
             this.$Grid.addEvents({
-                onClick   : this.$gridClick,
+                onClick: this.$gridClick,
                 onDblClick: this.$gridDblClick
             });
 
@@ -143,13 +142,13 @@ define('controls/system/VHosts', [
                 return;
             }
 
-            var Body = this.getContent();
+            const Body = this.getContent();
 
             if (!Body) {
                 return;
             }
 
-            var size = Body.getSize();
+            const size = Body.getSize();
 
             this.$Grid.setHeight(size.y - 40);
             this.$Grid.setWidth(size.x - 40);
@@ -159,13 +158,13 @@ define('controls/system/VHosts', [
          * Load the users with the settings
          */
         load: function () {
-            var self = this;
+            const self = this;
 
             this.Loader.show();
 
             Ajax.get('ajax_vhosts_getList', function (result) {
-                var host, entry;
-                var data = [];
+                let host, entry;
+                const data = [];
 
                 if (Object.getLength(result)) {
                     for (host in result) {
@@ -176,9 +175,9 @@ define('controls/system/VHosts', [
                         entry = result[host];
 
                         data.push({
-                            host    : host,
-                            project : entry.project,
-                            lang    : entry.lang,
+                            host: host,
+                            project: entry.project,
+                            lang: entry.lang,
                             template: entry.template
                         });
                     }
@@ -199,7 +198,7 @@ define('controls/system/VHosts', [
          * @param {Function} [callback] - (optional), callback function
          */
         addVhost: function (host, callback) {
-            var self = this;
+            const self = this;
 
             Ajax.get('ajax_vhosts_add', function (newHost) {
                 self.load();
@@ -220,7 +219,7 @@ define('controls/system/VHosts', [
          * @param {Function} [callback] - (optional), callback function
          */
         editVhost: function (host, data, callback) {
-            var self = this;
+            const self = this;
 
             this.Loader.show();
 
@@ -232,7 +231,7 @@ define('controls/system/VHosts', [
                 }
             }, {
                 vhost: host,
-                data : JSON.encode(data)
+                data: JSON.encode(data)
             });
         },
 
@@ -243,7 +242,7 @@ define('controls/system/VHosts', [
          * @param {Function} [callback] - (optional), callback function
          */
         removeVhost: function (host, callback) {
-            var self = this;
+            const self = this;
 
             this.Loader.show();
 
@@ -266,16 +265,16 @@ define('controls/system/VHosts', [
          * opens a add vhost window
          */
         openAddVhost: function () {
-            var self = this;
+            const self = this;
 
             new QUIPrompt({
-                icon       : 'fa fa-plus',
-                titleicon  : 'fa fa-location-arrow',
-                title      : Locale.get(lg, 'system.vhosts.add.window.title'),
+                icon: 'fa fa-plus',
+                titleicon: 'fa fa-location-arrow',
+                title: Locale.get(lg, 'system.vhosts.add.window.title'),
                 information: Locale.get(lg, 'system.vhosts.add.window.information'),
-                maxWidth   : 450,
-                maxHeight  : 300,
-                events     : {
+                maxWidth: 450,
+                maxHeight: 300,
+                events: {
                     onSubmit: function (value, Win) {
                         self.addVhost(value, function (host) {
                             Win.close();
@@ -292,10 +291,10 @@ define('controls/system/VHosts', [
          * @param {String} [vhost] - (optional), host name
          */
         openEditVhost: function (vhost) {
-            var self = this;
+            const self = this;
 
             if (typeof vhost === 'undefined') {
-                var data = this.$Grid.getSelectedData();
+                const data = this.$Grid.getSelectedData();
 
                 if (data[0] && data[0].host) {
                     vhost = data[0].host;
@@ -306,16 +305,16 @@ define('controls/system/VHosts', [
                 return;
             }
 
-            var Sheet = this.createSheet({
-                title : Locale.get(lg, 'system.vhosts.edit.sheet.title', {
+            const Sheet = this.createSheet({
+                title: Locale.get(lg, 'system.vhosts.edit.sheet.title', {
                     vhost: vhost
                 }),
-                icon  : 'fa fa-location-arrow',
+                icon: 'fa fa-location-arrow',
                 events: {
                     onOpen: function (Sheet) {
                         self.Loader.show();
 
-                        var Host = null;
+                        let Host = null;
 
                         // only numbers -> server error codes
                         if (/^\d+$/.test(vhost)) {
@@ -331,9 +330,9 @@ define('controls/system/VHosts', [
 
 
                         Sheet.addButton({
-                            text     : Locale.get(lg, 'system.vhosts.edit.sheet.btn.save'),
+                            text: Locale.get(lg, 'system.vhosts.edit.sheet.btn.save'),
                             textimage: 'fa fa-save',
-                            events   : {
+                            events: {
                                 onClick: function () {
                                     Host.save(function () {
                                         Sheet.hide();
@@ -360,10 +359,10 @@ define('controls/system/VHosts', [
          * @param {String} [vhost] - (optional), host name
          */
         openRemoveVhost: function (vhost) {
-            var self = this;
+            const self = this;
 
             if (typeof vhost === 'undefined') {
-                var data = this.$Grid.getSelectedData();
+                const data = this.$Grid.getSelectedData();
 
                 if (data[0] && data[0].host) {
                     vhost = data[0].host;
@@ -376,20 +375,20 @@ define('controls/system/VHosts', [
 
 
             new QUIConfirm({
-                title      : Locale.get(lg, 'system.vhosts.del.window.title'),
-                icon       : 'fa fa-trash-o',
-                text       : Locale.get(lg, 'system.vhosts.del.window.text', {
+                title: Locale.get(lg, 'system.vhosts.del.window.title'),
+                icon: 'fa fa-trash-o',
+                text: Locale.get(lg, 'system.vhosts.del.window.text', {
                     vhost: vhost
                 }),
-                texticon   : 'fa fa-trash-o',
-                maxWidth   : 450,
-                maxHeight  : 300,
+                texticon: 'fa fa-trash-o',
+                maxWidth: 450,
+                maxHeight: 300,
                 information: Locale.get(lg, 'system.vhosts.del.window.information'),
 
                 closeButtonText: Locale.get(lg, 'cancel'),
 
                 ok_button: {
-                    text     : Locale.get(lg, 'delete'),
+                    text: Locale.get(lg, 'delete'),
                     textimage: 'fa fa-trash-o'
                 },
 
@@ -411,8 +410,8 @@ define('controls/system/VHosts', [
          * @param {Object} data - grid event data
          */
         $gridClick: function (data) {
-            var len    = data.target.selected.length,
-                Edit   = this.getButtons('editVhost'),
+            const len = data.target.selected.length,
+                Edit = this.getButtons('editVhost'),
                 Delete = this.getButtons('delVhost');
 
             if (len === 0) {
@@ -429,7 +428,7 @@ define('controls/system/VHosts', [
         },
 
         /**
-         * event : double click at the grid
+         * event : double-click at the grid
          *
          * @param {Object} data - grid event data
          */
