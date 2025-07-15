@@ -51,15 +51,13 @@ define('controls/system/VHosts', [
          * event : on create
          */
         $onCreate: function () {
-            const self = this;
-
             // buttons
             this.addButton({
                 text: Locale.get(lg, 'system.vhosts.btn.add'),
                 textimage: 'fa fa-plus',
                 events: {
-                    onClick: function () {
-                        self.openAddVhost();
+                    onClick: () => {
+                        this.openAddVhost();
                     }
                 }
             });
@@ -74,8 +72,8 @@ define('controls/system/VHosts', [
                 textimage: 'fa fa-edit',
                 disabled: true,
                 events: {
-                    onClick: function () {
-                        self.openEditVhost();
+                    onClick: () => {
+                        this.openEditVhost();
                     }
                 }
             });
@@ -86,8 +84,8 @@ define('controls/system/VHosts', [
                 textimage: 'fa fa-trash-o',
                 disabled: true,
                 events: {
-                    onClick: function () {
-                        self.openRemoveVhost();
+                    onClick: () => {
+                        this.openRemoveVhost();
                     }
                 }
             });
@@ -120,8 +118,8 @@ define('controls/system/VHosts', [
                     dataType: 'string',
                     width: 200
                 }],
-                onrefresh: function () {
-                    self.load();
+                onrefresh: () => {
+                    this.load();
                 }
             });
 
@@ -158,11 +156,9 @@ define('controls/system/VHosts', [
          * Load the users with the settings
          */
         load: function () {
-            const self = this;
-
             this.Loader.show();
 
-            Ajax.get('ajax_vhosts_getList', function (result) {
+            Ajax.get('ajax_vhosts_getList', (result) => {
                 let host, entry;
                 const data = [];
 
@@ -183,11 +179,11 @@ define('controls/system/VHosts', [
                     }
                 }
 
-                self.$Grid.setData({
+                this.$Grid.setData({
                     data: data
                 });
 
-                self.Loader.hide();
+                this.Loader.hide();
             });
         },
 
@@ -198,10 +194,8 @@ define('controls/system/VHosts', [
          * @param {Function} [callback] - (optional), callback function
          */
         addVhost: function (host, callback) {
-            const self = this;
-
-            Ajax.get('ajax_vhosts_add', function (newHost) {
-                self.load();
+            Ajax.get('ajax_vhosts_add', (newHost) => {
+                this.load();
 
                 if (typeOf(callback) === 'function') {
                     callback(newHost);
@@ -219,12 +213,10 @@ define('controls/system/VHosts', [
          * @param {Function} [callback] - (optional), callback function
          */
         editVhost: function (host, data, callback) {
-            const self = this;
-
             this.Loader.show();
 
-            Ajax.get('ajax_vhosts_edit', function () {
-                self.load();
+            Ajax.get('ajax_vhosts_edit', () => {
+                this.load();
 
                 if (typeOf(callback) === 'function') {
                     callback(host, data);
@@ -242,12 +234,10 @@ define('controls/system/VHosts', [
          * @param {Function} [callback] - (optional), callback function
          */
         removeVhost: function (host, callback) {
-            const self = this;
-
             this.Loader.show();
 
-            Ajax.get('ajax_vhosts_remove', function () {
-                self.load();
+            Ajax.get('ajax_vhosts_remove', () => {
+                this.load();
 
                 if (typeOf(callback) === 'function') {
                     callback(host);
@@ -265,8 +255,6 @@ define('controls/system/VHosts', [
          * opens a add vhost window
          */
         openAddVhost: function () {
-            const self = this;
-
             new QUIPrompt({
                 icon: 'fa fa-plus',
                 titleicon: 'fa fa-location-arrow',
@@ -275,10 +263,10 @@ define('controls/system/VHosts', [
                 maxWidth: 450,
                 maxHeight: 300,
                 events: {
-                    onSubmit: function (value, Win) {
-                        self.addVhost(value, function (host) {
+                    onSubmit: (value, Win) => {
+                        this.addVhost(value, (host) => {
                             Win.close();
-                            self.openEditVhost(host);
+                            this.openEditVhost(host);
                         });
                     }
                 }
@@ -291,8 +279,6 @@ define('controls/system/VHosts', [
          * @param {String} [vhost] - (optional), host name
          */
         openEditVhost: function (vhost) {
-            const self = this;
-
             if (typeof vhost === 'undefined') {
                 const data = this.$Grid.getSelectedData();
 
@@ -311,8 +297,8 @@ define('controls/system/VHosts', [
                 }),
                 icon: 'fa fa-location-arrow',
                 events: {
-                    onOpen: function (Sheet) {
-                        self.Loader.show();
+                    onOpen: (Sheet) => {
+                        this.Loader.show();
 
                         let Host = null;
 
@@ -341,11 +327,11 @@ define('controls/system/VHosts', [
                             }
                         });
 
-                        self.Loader.hide();
+                        this.Loader.hide();
                     },
 
-                    onClose: function () {
-                        self.load();
+                    onClose: () => {
+                        this.load();
                     }
                 }
             });
@@ -359,8 +345,6 @@ define('controls/system/VHosts', [
          * @param {String} [vhost] - (optional), host name
          */
         openRemoveVhost: function (vhost) {
-            const self = this;
-
             if (typeof vhost === 'undefined') {
                 const data = this.$Grid.getSelectedData();
 
@@ -393,8 +377,8 @@ define('controls/system/VHosts', [
                 },
 
                 events: {
-                    onSubmit: function () {
-                        self.removeVhost(vhost);
+                    onSubmit: () => {
+                        this.removeVhost(vhost);
                     }
                 }
             }).open();
