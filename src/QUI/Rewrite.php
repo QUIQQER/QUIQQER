@@ -231,11 +231,27 @@ class Rewrite
         }
 
         $vhosts = $this->getVHosts();
-        $defaultSuffix = self::getDefaultSuffix();
+        $httpHost = $_SERVER['HTTP_HOST'] ?? null;
+        $vhost = false;
 
-        if (!isset($_SERVER['HTTP_HOST'])) {
-            $_SERVER['HTTP_HOST'] = '';
+        if ($httpHost && isset($vhosts[$httpHost])) {
+            $vhost = $vhosts[$httpHost];
         }
+
+        if (!$vhost) {
+            foreach ($vhosts as $host => $vhostData) {
+                if (!str_contains($host, '*')) {
+                    continue;
+                }
+
+                if (fnmatch($host, $httpHost, FNM_CASEFOLD)) {
+                    $vhost = $host;
+                    break;
+                }
+            }
+        }
+
+        $defaultSuffix = self::getDefaultSuffix();
 
         // globale forwarding - 301, etc
         QUI\System\Forwarding::forward(QUI::getRequest());
@@ -363,15 +379,14 @@ class Rewrite
                 // und es nicht der https host ist
                 // @todo https host nicht über den port prüfen, zu ungenau
                 if (
-                    isset($_SERVER['HTTP_HOST'])
-                    && isset($vhosts[$_SERVER['HTTP_HOST']])
-                    && isset($vhosts[$_SERVER['HTTP_HOST']][$this->lang])
-                    && !empty($vhosts[$_SERVER['HTTP_HOST']][$this->lang])
+                    $vhost
+                    && isset($vhost[$this->lang])
+                    && !empty($vhost[$this->lang])
                     && (int)$_SERVER['SERVER_PORT'] !== 443
-                    && QUI::conf('globals', 'httpshost') != 'https://' . $_SERVER['HTTP_HOST']
+                    && QUI::conf('globals', 'httpshost') != 'https://' . $httpHost
                 ) {
                     $url = implode('/', $_url);
-                    $url = $vhosts[$_SERVER['HTTP_HOST']][$this->lang] . URL_DIR . $url;
+                    $url = $vhost[$this->lang] . URL_DIR . $url;
                     $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
                     $url = 'http://' . $this->project_prefix . $url;
 
@@ -504,9 +519,9 @@ class Rewrite
 
         // Falls kein suffix dawn 301 weiterleiten auf .html
         if (!empty($_REQUEST['_url']) && str_ends_with($_REQUEST['_url'], '/')) {
-            $pathinfo = pathinfo($_REQUEST['_url']);
+            $pathInfo = pathinfo($_REQUEST['_url']);
 
-            if (!isset($pathinfo['extension']) && $defaultSuffix !== '') {
+            if (!isset($pathInfo['extension']) && $defaultSuffix !== '') {
                 $url = URL_DIR . $_REQUEST['_url'] . $defaultSuffix;
                 $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
 
@@ -515,8 +530,8 @@ class Rewrite
                 $this->showErrorHeader(301, $url);
             } elseif (
                 $defaultSuffix === ''
-                && isset($pathinfo['extension'])
-                && $pathinfo['extension'] == 'html'
+                && isset($pathInfo['extension'])
+                && $pathInfo['extension'] == 'html'
             ) {
                 // Falls Extension .html und suffix leer ist
                 // dann auf kein suffix leiten
@@ -559,18 +574,17 @@ class Rewrite
             // Sprachen Host finden
             // und es nicht der https host ist
             if (
-                isset($_SERVER['HTTP_HOST'])
-                && isset($vhosts[$_SERVER['HTTP_HOST']])
-                && isset($vhosts[$_SERVER['HTTP_HOST']][$this->lang])
-                && !empty($vhosts[$_SERVER['HTTP_HOST']][$this->lang])
-                && $_SERVER['HTTP_HOST'] != $vhosts[$_SERVER['HTTP_HOST']][$this->lang]
+                $vhost
+                && isset($vhost[$this->lang])
+                && !empty($vhost[$this->lang])
+                && $httpHost != $vhost[$this->lang]
                 && (int)$_SERVER['SERVER_PORT'] !== 443
-                && QUI::conf('globals', 'httpshost') != 'https://' . $_SERVER['HTTP_HOST']
+                && QUI::conf('globals', 'httpshost') != 'https://' . $httpHost
             ) {
                 $url = $this->site->getUrlRewritten();
 
                 if (!str_contains($url, 'http:')) {
-                    $url = $vhosts[$_SERVER['HTTP_HOST']][$this->lang] . URL_DIR . $url;
+                    $url = $vhost[$this->lang] . URL_DIR . $url;
                     $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
                     $url = 'http://' . $this->project_prefix . $url;
                 }
