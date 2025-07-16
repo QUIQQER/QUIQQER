@@ -2183,6 +2183,7 @@ class User implements QUIUserInterface
             ['uid' => $this->getId()]
         );
 
+        QUI::getUsers()->onDeleteUser($this);
 
         $this->logout();
 
