@@ -26,6 +26,7 @@ use function array_unshift;
 use function count;
 use function define;
 use function defined;
+use function DusanKasan\Knapsack\first;
 use function explode;
 use function file_exists;
 use function http_response_code;
@@ -156,6 +157,8 @@ class Rewrite
      */
     private int $headerCode = 200;
 
+    private array | null $vhostData = null;
+
     /**
      * constructor
      */
@@ -230,38 +233,14 @@ class Rewrite
             return;
         }
 
-        $vhosts = $this->getVHosts();
         $httpHost = $_SERVER['HTTP_HOST'] ?? null;
-        $vhost = false;
-        $vhostData = [];
-
-        if ($httpHost && isset($vhosts[$httpHost])) {
-            $vhost = $vhosts[$httpHost];
-        }
-
-        if (!$vhost) {
-            foreach ($vhosts as $host => $vhostData) {
-                if (!str_contains($host, '*')) {
-                    continue;
-                }
-
-                if (fnmatch($host, $httpHost, FNM_CASEFOLD)) {
-                    $vhost = $host;
-                    break;
-                }
-            }
-        }
-
-        if (isset($vhosts[$vhost])) {
-            $vhostData = $vhosts[$vhost];
-        }
-
+        $vhostData = $this->getCurrentVhostData();
         $defaultSuffix = self::getDefaultSuffix();
 
         // globale forwarding - 301, etc
         QUI\System\Forwarding::forward(QUI::getRequest());
 
-        // on character urls are not allowed
+        // one character urls are not allowed
         if (
             !empty($_REQUEST['_url'])
             && (mb_strlen($_REQUEST['_url']) === 1 || mb_substr($_REQUEST['_url'], 0, 1) === '.')
@@ -384,8 +363,7 @@ class Rewrite
                 // und es nicht der https host ist
                 // @todo https host nicht über den port prüfen, zu ungenau
                 if (
-                    $vhost
-                    && isset($vhostData[$this->lang])
+                    isset($vhostData[$this->lang])
                     && !empty($vhostData[$this->lang])
                     && (int)$_SERVER['SERVER_PORT'] !== 443
                     && QUI::conf('globals', 'httpshost') != 'https://' . $httpHost
@@ -579,12 +557,12 @@ class Rewrite
             // Sprachen Host finden
             // und es nicht der https host ist
             if (
-                $vhost
-                && isset($vhostData[$this->lang])
+                isset($vhostData[$this->lang])
                 && !empty($vhostData[$this->lang])
                 && $httpHost != $vhostData[$this->lang]
                 && (int)$_SERVER['SERVER_PORT'] !== 443
                 && QUI::conf('globals', 'httpshost') != 'https://' . $httpHost
+                && !$this->isWildcardHost()
             ) {
                 $url = $this->site->getUrlRewritten();
 
@@ -709,6 +687,69 @@ class Rewrite
         $this->vhosts = QUI::vhosts();
 
         return $this->vhosts;
+    }
+
+    public function getCurrentVhostData(): array
+    {
+        if ($this->vhostData !== null) {
+            return $this->vhostData;
+        }
+
+        $vhosts = $this->getVHosts();
+        $httpHost = $_SERVER['HTTP_HOST'] ?? null;
+        $vhost = false;
+
+        if ($httpHost && isset($vhosts[$httpHost])) {
+            $vhost = $httpHost;
+        }
+
+        if (!$vhost) {
+            foreach ($vhosts as $host => $vhostData) {
+                if (!str_contains($host, '*')) {
+                    continue;
+                }
+
+                if (fnmatch($host, $httpHost, FNM_CASEFOLD)) {
+                    $vhost = $host;
+                    break;
+                }
+            }
+        }
+
+        if (isset($vhosts[$vhost])) {
+            $this->vhostData = $vhosts[$vhost];
+        }
+
+        if (empty($this->vhostData)) {
+            $this->vhostData = first($vhosts);
+        }
+
+        return $this->vhostData;
+    }
+
+    public function isWildcardHost(): bool
+    {
+        $vhosts = $this->getVHosts();
+        $httpHost = $_SERVER['HTTP_HOST'] ?? null;
+        $vhost = false;
+
+        if ($httpHost && isset($vhosts[$httpHost])) {
+            $vhost = $httpHost;
+        }
+
+        if (!$vhost) {
+            foreach ($vhosts as $host => $vhostData) {
+                if (!str_contains($host, '*')) {
+                    continue;
+                }
+
+                if (fnmatch($host, $httpHost, FNM_CASEFOLD)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -875,7 +916,7 @@ class Rewrite
 
     /**
      * Gibt das aktuelle Projekt zurück
-     * Die Daten werden aus der URL gehohlt
+     * Die Daten werden aus der URL geholt
      *
      * @throws QUI\Exception
      */
@@ -937,7 +978,7 @@ class Rewrite
             return $this->project;
         }
 
-        // Projekt mit der Sprache exitiert nicht
+        // Projekt mit der Sprache existiert nicht
         $this->showErrorHeader();
 
         $Project = QUI\Projects\Manager::getStandard();
@@ -957,55 +998,38 @@ class Rewrite
      */
     protected function getProjectByVhost(): bool | Project
     {
-        $vhosts = $this->getVHosts();
+        if ($this->project) {
+            return $this->project;
+        }
+
+        $vhostData = $this->getCurrentVhostData();
 
         // Vhosts
-        $http_host = '';
-
-        if (isset($_SERVER['HTTP_HOST'])) {
-            $http_host = $_SERVER['HTTP_HOST'];
-        }
-
-        // If a port is specified in the URL and there is no vHost explicitly defined for it...
-        if (!isset($vhosts[$http_host]) && str_contains($http_host, ':')) {
-            // ...then drop the port as a fallback
-            $http_host = explode(':', $http_host)[0];
-        }
-
-        if (!isset($vhosts[$http_host]) && str_starts_with($http_host, 'www.')) {
-            $http_host = mb_substr($http_host, 4);
-        }
-
-        if (!isset($vhosts[$http_host])) {
+        if (!isset($vhostData['project'])) {
             return false;
         }
 
-        if (!isset($vhosts[$http_host]['project'])) {
-            return false;
-        }
-
-        $pname = $vhosts[$http_host]['project'];
+        $projectName = $vhostData['project'];
 
         //$lang = false;
-        if (isset($vhosts[$http_host]['lang']) && !$this->lang) {
-            $this->lang = $vhosts[$http_host]['lang'];
+        if (isset($vhostData['lang']) && !$this->lang) {
+            $this->lang = $vhostData['lang'];
         }
 
         $template = false;
+        $Project = null;
 
-        if (isset($vhosts[$_SERVER['HTTP_HOST']]['template'])) {
-            $template = $vhosts[$_SERVER['HTTP_HOST']]['template'];
+        if (isset($vhostData['template'])) {
+            $template = $vhostData['template'];
         }
 
         try {
             $Project = QUI::getProject(
-                $pname,
+                $projectName,
                 $this->lang,
                 $template
             );
         } catch (QUI\Exception) {
-            // nothing todo
-            $Project = false;
         }
 
         if ($Project) {
