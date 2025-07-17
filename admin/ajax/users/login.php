@@ -42,7 +42,7 @@ QUI::$Ajax->registerFunction(
             );
         }
 
-        if ($authStep === 'primary') {
+        if ($authStep === 'primary' || empty($authStep)) {
             QUI::getSession()->set('auth-globals', 1);
         }
 
