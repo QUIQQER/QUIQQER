@@ -254,7 +254,6 @@ class Rewrite
 
         if (isset($vhosts[$vhost])) {
             $vhostData = $vhosts[$vhost];
-
         }
 
         $defaultSuffix = self::getDefaultSuffix();
