@@ -6,7 +6,6 @@
 
 namespace QUI;
 
-use JetBrains\PhpStorm\NoReturn;
 use QUI;
 use QUI\Database\Exception;
 use QUI\Projects\Media\File;
@@ -14,10 +13,8 @@ use QUI\Projects\Media\Image;
 use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Projects\Project;
 use QUI\Projects\Site;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 use function array_flip;
 use function array_map;
@@ -26,7 +23,6 @@ use function array_unshift;
 use function count;
 use function define;
 use function defined;
-use function DusanKasan\Knapsack\first;
 use function explode;
 use function file_exists;
 use function http_response_code;
@@ -42,7 +38,6 @@ use function mb_substr_count;
 use function parse_url;
 use function pathinfo;
 use function str_replace;
-use function str_starts_with;
 use function strlen;
 use function strpos;
 use function strrpos;
@@ -721,7 +716,7 @@ class Rewrite
         }
 
         if (empty($this->vhostData)) {
-            $this->vhostData = first($vhosts);
+            $this->vhostData = reset($vhosts);
         }
 
         return $this->vhostData;
