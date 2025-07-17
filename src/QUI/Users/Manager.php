@@ -227,8 +227,8 @@ class Manager
         $uuid = $User->getUUID();
 
         if (QUI::isRuntimeCacheEnabled()) {
-            $this->usersUUIDs[$uuid] = $User->getUUID();
-            $this->users[$id] = $User;
+            $this->usersUUIDs[$User->getId()] = $User->getUUID();
+            $this->users[$uuid] = $User;
         }
 
         return $User;
@@ -1406,6 +1406,20 @@ class Manager
     public function deleteUser(int | string $id): bool
     {
         return $this->get($id)->delete();
+    }
+
+    public function onDeleteUser(QUIUserInterface $User): void
+    {
+        $id = $User->getId();
+        $uuid = $User->getUUID();
+
+        if (isset($this->users[$uuid])) {
+            unset($this->users[$uuid]);
+        }
+
+        if (isset($this->usersUUIDs[$id])) {
+            unset($this->usersUUIDs[$id]);
+        }
     }
 
     /**
