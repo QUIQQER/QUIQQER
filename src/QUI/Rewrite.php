@@ -694,6 +694,10 @@ class Rewrite
         $httpHost = $_SERVER['HTTP_HOST'] ?? null;
         $vhost = false;
 
+        if (empty($vhosts)) {
+            return [];
+        }
+
         if ($httpHost && isset($vhosts[$httpHost])) {
             $vhost = $httpHost;
         }
@@ -716,7 +720,8 @@ class Rewrite
         }
 
         if (empty($this->vhostData)) {
-            $this->vhostData = reset($vhosts);
+            $firstVhost = reset($vhosts);
+            $this->vhostData = is_array($firstVhost) ? $firstVhost : [];
         }
 
         return $this->vhostData;
