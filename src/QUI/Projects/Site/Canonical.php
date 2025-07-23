@@ -54,12 +54,14 @@ class Canonical
         }
 
         // host check
-        if (isset($_SERVER['HTTP_HOST'])) {
-            $requestHost = $_SERVER['HTTP_HOST'];
+        $requestHost = $_SERVER['HTTP_HOST'] ?? null;
+
+        if ($requestHost) {
             $hostWithoutProtocol = $Project->getVHost(false, true);
             $httpsHost = $Project->getVHost(true, true);
 
             if ($requestHost != $hostWithoutProtocol) {
+                $httpsHost = rtrim($httpsHost, '/') . '/';
                 return $this->getLinkRel($httpsHost . $siteUrl);
             }
         }
@@ -163,7 +165,7 @@ class Canonical
      * @param $url
      * @return array|false|int|string|null
      */
-    protected function removeHost($url): bool|int|array|string|null
+    protected function removeHost($url): bool | int | array | string | null
     {
         return parse_url($url, PHP_URL_PATH);
     }
