@@ -449,10 +449,7 @@ class Utils
             $img .= ' srcset="' . implode(', ', $srcset) . '"';
         }
 
-        if (!empty($imgMimeType)) {
-            $img .= ' type="' . $imgMimeType . '"';
-        }
-
+        $img .= ' sizes="100cqw"';
         $img .= ' />';
 
         // picture html (nur ein picture, keine mehrfachen sources)
