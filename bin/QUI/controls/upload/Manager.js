@@ -266,6 +266,9 @@ define('controls/upload/Manager', [
                         uploadPartEnd: (BulkUploadInstance) => {
                             const progress = BulkUploadInstance.getProgress();
                             this.fireEvent('fileUploadRefresh', [this, progress.percent]);
+                        },
+                        onError: (BulkUploadInstance, ErrorInstance) => {
+                            this.fireEvent('error', [this, ErrorInstance]);
                         }
                     }
                 }).upload(files);
