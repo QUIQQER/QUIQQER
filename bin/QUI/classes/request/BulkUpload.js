@@ -20,7 +20,7 @@ define('classes/request/BulkUpload', [
     'qui/utils/Math',
     'Locale'
 
-], function(QUI, QDOM, ObjectUtils, QUIMath, QUILocale) {
+], function (QUI, QDOM, ObjectUtils, QUIMath, QUILocale) {
     'use strict';
 
     const cyrb53 = (str, seed = 0) => {
@@ -58,7 +58,7 @@ define('classes/request/BulkUpload', [
             params: {}
         },
 
-        initialize: function(options) {
+        initialize: function (options) {
             this.parent(options);
 
             this.$size = 0;
@@ -78,7 +78,7 @@ define('classes/request/BulkUpload', [
             this.$LoadingMessage = null;
         },
 
-        $calc: function(files) {
+        $calc: function (files) {
             this.$size = 0;
 
             if (!files.length) {
@@ -130,7 +130,7 @@ define('classes/request/BulkUpload', [
          *
          * @return {*}
          */
-        getFileEntry: function() {
+        getFileEntry: function () {
             return this.$files[this.$currentHash];
         },
 
@@ -138,7 +138,7 @@ define('classes/request/BulkUpload', [
          * starts the upload
          * @param files
          */
-        upload: function(files) {
+        upload: function (files) {
             this.$calc(files);
             QUI.fireEvent('upload', [this]);
             this.$run();
@@ -148,7 +148,7 @@ define('classes/request/BulkUpload', [
          * Returns the current progress
          * @return {{running: number, total: *, waiting: number, size: (*|number), uploaded: (boolean|number|*), files: ([]|*), done: number, percent: *}}
          */
-        getProgress: function() {
+        getProgress: function () {
             let waiting = 0;
             let running = 0;
             let done = 0;
@@ -187,7 +187,7 @@ define('classes/request/BulkUpload', [
             };
         },
 
-        $refreshLoadingMessage: function() {
+        $refreshLoadingMessage: function () {
             if (!this.$LoadingMessage) {
                 return;
             }
@@ -201,7 +201,7 @@ define('classes/request/BulkUpload', [
         /**
          * internal upload starting
          */
-        $run: function() {
+        $run: function () {
             if (!this.$CurrentFile) {
                 this.$CurrentFile = this.$getNextFile();
             }
@@ -225,7 +225,7 @@ define('classes/request/BulkUpload', [
          *
          * @return {boolean}
          */
-        $getNextFile: function() {
+        $getNextFile: function () {
             for (let filehash in this.$files) {
                 if (!this.$files.hasOwnProperty(filehash)) {
                     continue;
@@ -243,7 +243,7 @@ define('classes/request/BulkUpload', [
             return false;
         },
 
-        $uploadFile: function(File) {
+        $uploadFile: function (File) {
             if (typeof File !== 'undefined') {
                 this.$currentRangeStart = 0;
                 this.$currentFileSize = File.size;
@@ -270,7 +270,7 @@ define('classes/request/BulkUpload', [
             });
         },
 
-        $uploadFilePart: function(File) {
+        $uploadFilePart: function (File) {
             this.getFileEntry().status = STATUS_RUNNING;
 
             // the file part
@@ -360,7 +360,7 @@ define('classes/request/BulkUpload', [
                 return response.text().then((text) => {
                     this.$parseResult(text);
                 });
-            }).catch(function(err) {
+            }).catch(function (err) {
                 console.error(err);
             });
         },
@@ -371,37 +371,45 @@ define('classes/request/BulkUpload', [
          *
          * @param {String} responseText - server answer
          */
-        $parseResult: function(responseText) {
-            const str = responseText || '',
-                len = str.length,
-                start = 9,
-                end = len - 10;
+        $parseResult: function (responseText) {
+            const str = responseText || '';
 
-            if (!len) {
+            if (!str.length) {
                 return;
             }
 
-            if (!str.match('<quiqqer>') || !str.match('</quiqqer>')) {
+            // Find the positions of <quiqqer> and </quiqqer>
+            const startTag = '<quiqqer>';
+            const endTag = '</quiqqer>';
+            const startPos = str.indexOf(startTag);
+            const endPos = str.indexOf(endTag, startPos);
+
+            if (startPos === -1 || endPos === -1) {
                 this.$error = true;
+                return;
             }
 
-            if (str.substring(0, start) !== '<quiqqer>' ||
-                str.substring(end, len) !== '</quiqqer>') {
-                this.$error = true;
-            }
+            const start = startPos + startTag.length;
+            const end = endPos;
 
             // callback
             const result = eval('(' + str.substring(start, end) + ')');
-
 
             // exist a main exception?
             if (result.Exception) {
                 this.$error = true;
                 this.$execute = false;
-            }
 
-            if (result.Exception) {
-                this.$error = true;
+                require(['qui/controls/messages/Error'], (MessageError) => {
+                    this.fireEvent('error', [
+                        this,
+                        new MessageError({
+                            message: result.Exception.message || '',
+                            code: result.Exception.code || 0,
+                            type: result.Exception.type || 'Exception'
+                        })
+                    ]);
+                });
             }
 
             if (result.result) {

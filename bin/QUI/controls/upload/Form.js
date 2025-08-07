@@ -60,6 +60,7 @@ define('controls/upload/Form', [
             styles: false,
             pauseAllowed: true,
             contextMenu: true, // context menu for the file upload
+            showErrors: true, // use message handler to show error
 
             // look
             typeOfLook: 'DragDrop',    // DragDrop, Icon, Single
@@ -1323,11 +1324,9 @@ define('controls/upload/Form', [
         },
 
         /**
-         * Event on error
-         *
-         * @param {Object} Error - qui/controls/messages/Error
+         * event: on error
          */
-        $onError: function(Error) {
+        $onError: function(uploadManagerInstance, Error) {
             if (this.$Progress) {
                 this.$Progress.hide();
             }
@@ -1364,9 +1363,11 @@ define('controls/upload/Form', [
                 }
             }).inject(this.$Info);
 
-            QUI.getMessageHandler().then(function(MH) {
-                MH.add(Error);
-            });
+            if (this.getAttribute('showErrors')) {
+                QUI.getMessageHandler().then(function(MH) {
+                    MH.add(Error);
+                });
+            }
 
             this.fireEvent('error', [
                 this,
