@@ -139,6 +139,13 @@ class Utils
         QUI::getTemplateManager()->assignGlobalParam('userAuthenticators', $userAuthenticators);
 
         // <category>
+        if (!file_exists($plugin) && file_exists(CMS_DIR . $plugin)) {
+            $Settings = QUI\Utils\XML\Settings::getInstance();
+            $Settings->setXMLPath('//user/window');
+
+            return $Settings->getCategoriesHtml([CMS_DIR . $plugin], $tab);
+        }
+
         if (file_exists($plugin)) {
             $Settings = QUI\Utils\XML\Settings::getInstance();
             $Settings->setXMLPath('//user/window');
