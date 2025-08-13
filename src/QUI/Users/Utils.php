@@ -113,7 +113,7 @@ class Utils
      *
      * @todo kick <tab> as xml in user.xml
      */
-    public static function getTab(int|string $uid, string $plugin, string $tab): string
+    public static function getTab(int | string $uid, string $plugin, string $tab): string
     {
         $Users = QUI::getUsers();
         $User = $Users->get($uid);
