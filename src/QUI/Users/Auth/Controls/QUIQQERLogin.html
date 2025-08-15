@@ -24,7 +24,6 @@
 </div>
 
 {if $showPasswordReset}
-
 <div class="quiqqer-auth-login-passwordreset" style="display: none;">
     <p class="fs-sm message">
         {locale group="quiqqer/core" var="quiqqer.auth.login.password.message"}
@@ -33,7 +32,7 @@
         <span>
             {locale group="quiqqer/core" var="quiqqer.auth.login.label.email"}
         </span>
-        <input type="email" value="" name="email"/>
+        <input type="email" value="" name="email" autofocus/>
     </label>
 
     <button type="submit" class="login qui-button btn-green reset-password">

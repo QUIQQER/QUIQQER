@@ -1,7 +1,5 @@
 /**
  * QUIQQER Authentication via email code
- *
- * @author Henning Leutz (www.pcsg.de)
  */
 define('controls/users/auth/VerifiedMail2FA', [
 
@@ -13,7 +11,7 @@ define('controls/users/auth/VerifiedMail2FA', [
 ], function (QUI, QUIControl, QUILocale, QUIAjax) {
     'use strict';
 
-    var lg = 'quiqqer/core';
+    const lg = 'quiqqer/core';
 
     return new Class({
 
