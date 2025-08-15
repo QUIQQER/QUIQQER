@@ -114,14 +114,12 @@ define('controls/users/Login', [
                     this.fireEvent('load', [this]);
                     QUI.fireEvent('quiqqerUserAuthLoginLoad', [this]);
 
-                    this.getElm().querySelectorAll('section').forEach(function (section) {
-                        if (section.style.opacity === '0') {
-                            moofx(section).animate({
-                                opacity: 1
-                            }, {
-                                duration: 250
-                            });
-                        }
+                    moofx(
+                        this.getElm().querySelector('[data-name="quiqqer-users-login-container"]')
+                    ).animate({
+                        opacity: 1
+                    }, {
+                        duration: 250
                     });
                 });
             }, {
@@ -145,14 +143,12 @@ define('controls/users/Login', [
             this.fireEvent('load', [this]);
             QUI.fireEvent('quiqqerUserAuthLoginLoad', [this]);
 
-            this.getElm().querySelectorAll('section').forEach(function (section) {
-                if (section.style.opacity === '0') {
-                    moofx(section).animate({
-                        opacity: 1
-                    }, {
-                        duration: 250
-                    });
-                }
+            moofx(
+                this.getElm().querySelector('[data-name="quiqqer-users-login-container"]')
+            ).animate({
+                opacity: 1
+            }, {
+                duration: 250
             });
         },
 

@@ -1,49 +1,54 @@
-{if $passwordReset}
-<div class="quiqqer-users-login-success">
-    {locale group="quiqqer/core" var="users.auth.passwordresetverification.success"}
-</div>
-{/if}
-
-{assign var="dataGlobalAuth" value=""}
-{if $globalAuth}
-{assign var="dataGlobalAuth" value='data-globalauth="1"'}
-{/if}
-
-{* SOCIAL LOGINS *}
-<section class="quiqqer-users-login-social" style="opacity: 0">
-    {* social logins *}
-    {foreach $authenticators as $k => $authenticator}
-    {if $authenticator['class'] !== 'QUI\\Users\\Auth\\QUIQQER'}
-
-    <form method="POST"
-          name="login"
-          data-authenticator="{$authenticator['class']}"
-          {$dataGlobalAuth}
-    >
-        {$authenticator['control']->create()}
-    </form>
-    {/if}
-    {/foreach}
-</section>
-
-{* MAIL LOGIN *}
-<section class="quiqqer-users-login-form" style="opacity: 0">
-    {foreach $authenticators as $k => $authenticator}
-    {if $authenticator['class'] === 'QUI\\Users\\Auth\\QUIQQER'}
-
-    <div class="quiqqer-login-or">
-    <span>
-        {locale group="quiqqer/core" var="controls.users.auth.login.or"}
-    </span>
+<div data-name="quiqqer-users-login-container" style="opacity: 0">
+    {if $passwordReset}
+    <div class="quiqqer-users-login-success">
+        {locale group="quiqqer/core" var="users.auth.passwordresetverification.success"}
     </div>
-    <form method="POST"
-          name="login"
-          data-authenticator="{$authenticator['class']}"
-          {$dataGlobalAuth}
-    >
-        {$authenticator['control']->create()}
-    </form>
-
     {/if}
-    {/foreach}
-</section>
+
+    {assign var="dataGlobalAuth" value=""}
+    {if $globalAuth}
+    {assign var="dataGlobalAuth" value='data-globalauth="1"'}
+    {/if}
+
+    {* SOCIAL LOGINS *}
+    <section class="quiqqer-users-login-social">
+        {* social logins *}
+        {foreach $authenticators as $k => $authenticator}
+        {if $authenticator['class'] !== 'QUI\\Users\\Auth\\QUIQQER'}
+
+        <form method="POST"
+              name="login"
+              data-authenticator="{$authenticator['class']}"
+              {$dataGlobalAuth}
+        >
+            {$authenticator['control']->create()}
+        </form>
+        {/if}
+        {/foreach}
+    </section>
+
+    {* MAIL LOGIN *}
+    <section class="quiqqer-users-login-form">
+        {foreach $authenticators as $k => $authenticator}
+        {if $authenticator['class'] === 'QUI\\Users\\Auth\\QUIQQER'}
+
+        {if count($authenticators) >= 2}
+        <div class="quiqqer-login-or">
+        <span>
+            {locale group="quiqqer/core" var="controls.users.auth.login.or"}
+        </span>
+        </div>
+        {/if}
+
+        <form method="POST"
+              name="login"
+              data-authenticator="{$authenticator['class']}"
+              {$dataGlobalAuth}
+        >
+            {$authenticator['control']->create()}
+        </form>
+
+        {/if}
+        {/foreach}
+    </section>
+</div>
