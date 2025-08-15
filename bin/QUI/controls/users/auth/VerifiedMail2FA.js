@@ -2,7 +2,6 @@
  * QUIQQER Authentication via email code
  */
 define('controls/users/auth/VerifiedMail2FA', [
-
     'qui/QUI',
     'qui/controls/Control',
     'Locale',
@@ -11,13 +10,9 @@ define('controls/users/auth/VerifiedMail2FA', [
 ], function (QUI, QUIControl, QUILocale, QUIAjax) {
     'use strict';
 
-    const lg = 'quiqqer/core';
-
     return new Class({
 
-        Extends: QUIControl,
-        Type: 'controls/users/auth/VerifiedMail2FA',
-
+        Extends: QUIControl, Type: 'controls/users/auth/VerifiedMail2FA',
         Binds: [
             '$onImport'
         ],
@@ -46,7 +41,24 @@ define('controls/users/auth/VerifiedMail2FA', [
             // send mail
             QUIAjax.post('ajax_users_authenticator_sendVerifiedMail2faMail', () => {
             }, {
-                'package': 'quiqqer/code'
+                'package': 'quiqqer/code',
+                onError: (err) => {
+                    QUI.getMessageHandler().then((mh) => {
+                        mh.addError(err.getMessage());
+
+                        // destroy session
+                        require(['utils/Session'], (Session) => {
+                            Session.remove('inAuthentication');
+                            Session.remove('auth-globals');
+
+                            const loginNode = this.getElm().closest('[data-qui="controls/users/Login"]');
+
+                            if (loginNode) {
+                                QUI.Controls.getById(loginNode.get('data-quiid')).refresh();
+                            }
+                        });
+                    });
+                }
             });
 
             // Focus handling for code inputs
