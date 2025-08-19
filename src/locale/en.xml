@@ -468,6 +468,9 @@
         <locale name="isDeactivate">
             <en><![CDATA[Is deactivated]]></en>
         </locale>
+        <locale name="user.panel.2fa">
+            <en><![CDATA[2FA authentication]]></en>
+        </locale>
         <locale name="user.panel.details">
             <en><![CDATA[Details]]></en>
         </locale>

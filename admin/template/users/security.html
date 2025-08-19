@@ -122,43 +122,56 @@
     </tbody>
 </table>
 
-{if count($authenticators)}
-<table class="data-table data-table-flexbox data-table-no-toggle" style="margin-bottom: 5px">
-    <thead>
-    <tr>
-        <th>
-            {locale group="quiqqer/core" var="user.settings.authenticators"}
-        </th>
-    </tr>
-    </thead>
-</table>
 
-{foreach from=$userAuthenticators item=$Authenticator}
-{assign var=cls value=get_class($Authenticator)}
-{assign var=hasAuth value=$User->hasAuthenticator($cls)}
-<table class="data-table data-table-flexbox data-table-no-toggle authenticator{if $hasAuth} authenticator-enabled{/if}"
-       data-authenticator="{$cls}"
-       style="margin-bottom: 5px"
->
+<table class="data-table data-table-flexbox">
     <thead>
     <tr>
-        <th>
-            {$Authenticator->getTitle()}
-        </th>
+        <th>{locale group="quiqqer/core" var="user.panel.2fa"}</th>
     </tr>
     </thead>
-    {if $User->hasAuthenticator($cls)}
-    {assign var=Settings value=$Authenticator->getSettingsControl()}
-    {if $Settings}
     <tbody>
+    {if !count($authenticators)}
     <tr>
         <td>
-            {$Settings->create()}
+            <p>{locale group="quiqqer/core" var="user.panel.2fa.empty"}</p>
         </td>
     </tr>
+    {else}
+        {foreach from=$userAuthenticators item=$Authenticator}
+            {assign var=cls value=get_class($Authenticator)}
+            {assign var=hasAuth value=$User->hasAuthenticator($cls)}
+            <tr>
+                <td>
+
+                    <table
+                        class="data-table authenticator{if $hasAuth} authenticator-enabled{/if}"
+                        data-authenticator="{$cls}"
+                        style="margin-bottom: 0;"
+                    >
+                        <thead>
+                        <tr>
+                            <th>
+                                {$Authenticator->getTitle()}
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {if $User->hasAuthenticator($cls)}
+                        {assign var=Settings value=$Authenticator->getSettingsControl()}
+                        {if $Settings}
+                        <tr>
+                            <td>
+                                {$Settings->create()}
+                            </td>
+                        </tr>
+                        {/if}
+                        {/if}
+                        </tbody>
+                    </table>
+
+                </td>
+            </tr>
+        {/foreach}
+    {/if}
     </tbody>
-    {/if}
-    {/if}
 </table>
-{/foreach}
-{/if}
