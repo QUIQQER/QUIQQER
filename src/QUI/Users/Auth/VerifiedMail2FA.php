@@ -9,6 +9,7 @@ use QUI\Users\AbstractAuthenticator;
 use QUI\Users\Attribute\Verifiable\MailAttribute;
 use QUI\Users\Exception;
 use QUI\Utils\Security\Orthos;
+use Random\RandomException;
 
 /**
  * Class Mail2FA
@@ -93,7 +94,7 @@ class VerifiedMail2FA extends AbstractAuthenticator
 
         if (empty($uid) || !$hasChar) {
             throw new QUI\Users\Exception(
-                ['quiqqer/core', 'exception.login.fail'],
+                ['quiqqer/core', 'exception.login.fail.user.not.found'],
                 401
             );
         }
@@ -102,13 +103,13 @@ class VerifiedMail2FA extends AbstractAuthenticator
             $User = QUI::getUsers()->get($uid);
         } catch (QUI\Exception) {
             throw new QUI\Users\Exception(
-                ['quiqqer/core', 'exception.permission.no.admin'],
+                ['quiqqer/core', 'exception.login.fail.user.not.found'],
             );
         }
 
         if (!($User instanceof QUI\Users\User)) {
             throw new QUI\Users\Exception(
-                ['quiqqer/core', 'exception.permission.no.admin'],
+                ['quiqqer/core', 'exception.login.fail.user.not.found'],
             );
         }
 
@@ -117,7 +118,7 @@ class VerifiedMail2FA extends AbstractAuthenticator
 
         if (!$isVerified) {
             throw new QUI\Users\Exception(
-                ['quiqqer/core', 'exception.permission.no.admin'],
+                ['quiqqer/core', 'exception.user.mail.not.verified'],
             );
         }
 
@@ -144,6 +145,7 @@ class VerifiedMail2FA extends AbstractAuthenticator
      *
      * @return void
      * @throws QUI\Permissions\Exception
+     * @throws RandomException
      */
     public static function sendAuthMailToSessionUser(): void
     {
@@ -158,13 +160,13 @@ class VerifiedMail2FA extends AbstractAuthenticator
             $User = QUI::getUsers()->get($uid);
         } catch (QUI\Exception) {
             throw new QUI\Permissions\Exception(
-                ['quiqqer/core', 'exception.permission.no.admin'],
+                ['quiqqer/core', 'exception.login.fail.user.not.found'],
             );
         }
 
         if (!($User instanceof QUI\Users\User)) {
             throw new QUI\Permissions\Exception(
-                ['quiqqer/core', 'exception.permission.no.admin'],
+                ['quiqqer/core', 'exception.login.fail.user.not.found'],
             );
         }
 
@@ -173,7 +175,7 @@ class VerifiedMail2FA extends AbstractAuthenticator
 
         if (!$isVerified) {
             throw new QUI\Permissions\Exception(
-                ['quiqqer/core', 'exception.permission.no.admin'],
+                ['quiqqer/core', 'exception.user.mail.not.verified'],
             );
         }
 

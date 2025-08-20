@@ -1,18 +1,54 @@
-{if $passwordReset}
-<div class="quiqqer-users-login-success">
-    {locale group="quiqqer/core" var="users.auth.passwordresetverification.success"}
-</div>
-{/if}
+<div data-name="quiqqer-users-login-container" style="opacity: 0">
+    {if $passwordReset}
+    <div class="quiqqer-users-login-success">
+        {locale group="quiqqer/core" var="users.auth.passwordresetverification.success"}
+    </div>
+    {/if}
 
-{foreach $authenticators as $k => $authenticator}
-<form method="POST" name="login" data-authenticator="{$authenticator['class']}"{if $globalAuth} data-globalauth="1"{/if}>
-{$authenticator['control']->create()}
-</form>
+    {assign var="dataGlobalAuth" value=""}
+    {if $globalAuth}
+    {assign var="dataGlobalAuth" value='data-globalauth="1"'}
+    {/if}
 
-{if $k >= $count}
-{break}
-{/if}
-<div>
-    {locale group="quiqqer/core" var="controls.users.auth.login.or"}
+    {* SOCIAL LOGINS *}
+    <section class="quiqqer-users-login-social">
+        {* social logins *}
+        {foreach $authenticators as $k => $authenticator}
+        {if $authenticator['class'] !== 'QUI\\Users\\Auth\\QUIQQER'}
+
+        <form method="POST"
+              name="login"
+              data-authenticator="{$authenticator['class']}"
+              {$dataGlobalAuth}
+        >
+            {$authenticator['control']->create()}
+        </form>
+        {/if}
+        {/foreach}
+    </section>
+
+    {* MAIL LOGIN *}
+    <section class="quiqqer-users-login-form">
+        {foreach $authenticators as $k => $authenticator}
+        {if $authenticator['class'] === 'QUI\\Users\\Auth\\QUIQQER'}
+
+        {if count($authenticators) >= 2}
+        <div class="quiqqer-login-or">
+        <span>
+            {locale group="quiqqer/core" var="controls.users.auth.login.or"}
+        </span>
+        </div>
+        {/if}
+
+        <form method="POST"
+              name="login"
+              data-authenticator="{$authenticator['class']}"
+              {$dataGlobalAuth}
+        >
+            {$authenticator['control']->create()}
+        </form>
+
+        {/if}
+        {/foreach}
+    </section>
 </div>
-{/foreach}

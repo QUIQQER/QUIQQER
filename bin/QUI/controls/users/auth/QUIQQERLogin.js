@@ -7,8 +7,6 @@
  * @event showPasswordReset [self]
  *
  * @module controls/users/auth/QUIQQERLogin
- * @author Patrick Müller (www.pcsg.de)
- * @author Henning Leutz (www.pcsg.de)
  */
 define('controls/users/auth/QUIQQERLogin', [
 
@@ -18,15 +16,15 @@ define('controls/users/auth/QUIQQERLogin', [
     'Locale',
     'Ajax'
 
-], function(QUI, QUIControl, QUILoader, QUILocale, QUIAjax) {
+], function (QUI, QUIControl, QUILoader, QUILocale, QUIAjax) {
     'use strict';
 
-    var lg = 'quiqqer/core';
+    const lg = 'quiqqer/core';
 
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/users/auth/QUIQQERLogin',
+        Type: 'controls/users/auth/QUIQQERLogin',
 
         Binds: [
             '$onImport',
@@ -39,7 +37,7 @@ define('controls/users/auth/QUIQQERLogin', [
          * construct
          * @param {Object} options
          */
-        initialize: function(options) {
+        initialize: function (options) {
             this.parent(options);
 
             this.Loader = null;
@@ -52,7 +50,7 @@ define('controls/users/auth/QUIQQERLogin', [
         /**
          * event : on import
          */
-        $onImport: function() {
+        $onImport: function () {
             this.Loader = new QUILoader().inject(this.getElm());
             this.$initPasswordReset();
         },
@@ -60,8 +58,8 @@ define('controls/users/auth/QUIQQERLogin', [
         /**
          * Initialize password reset functionality
          */
-        $initPasswordReset: function() {
-            var self = this,
+        $initPasswordReset: function () {
+            const self = this,
                 PasswordReset = this.getElm().getElement('.quiqqer-auth-login-passwordreset'),
                 PasswordResetCancel = this.getElm().getElement(
                     '.quiqqer-auth-login-passwordreset [name="cancel"]'
@@ -71,24 +69,24 @@ define('controls/users/auth/QUIQQERLogin', [
                 return;
             }
 
-            var size = this.getElm().getSize();
+            const size = this.getElm().getSize();
 
             this.getElm().setStyles({
                 height: size.y,
-                width : '100%'
+                width: '100%'
             });
 
             // events
-            var PasswordResetLink = this.getElm().getElement(
+            const PasswordResetLink = this.getElm().getElement(
                 '.quiqqer-auth-login-passwordreset-link'
             );
 
-            PasswordResetLink.addEvent('click', function(event) {
+            PasswordResetLink.addEvent('click', function (event) {
                 event.stop();
                 self.$showPasswordReset();
             });
 
-            PasswordResetCancel.addEvent('click', function(event) {
+            PasswordResetCancel.addEvent('click', function (event) {
                 event.stop();
                 self.$showPassword();
             });
@@ -99,7 +97,7 @@ define('controls/users/auth/QUIQQERLogin', [
         /**
          * @return Promise
          */
-        $showPasswordReset: function() {
+        $showPasswordReset: function () {
             const Container = this.getElm(), PasswordContainer = Container.getElement('.quiqqer-auth-login-container'),
                 PasswordReset = Container.getElement('.quiqqer-auth-login-passwordreset');
 
@@ -112,12 +110,12 @@ define('controls/users/auth/QUIQQERLogin', [
 
             this.fireEvent('showPasswordReset', [this]);
 
-            return new Promise(function(resolve) {
+            return new Promise(function (resolve) {
                 moofx(PasswordContainer).animate({
                     opacity: 0
                 }, {
                     duration: 250,
-                    callback: function() {
+                    callback: function () {
                         PasswordContainer.setStyle('display', 'none');
 
                         PasswordReset.setStyle('opacity', 0);
@@ -127,7 +125,7 @@ define('controls/users/auth/QUIQQERLogin', [
                             height: PasswordReset.getSize().y
                         }, {
                             duration: 250,
-                            callback: function() {
+                            callback: function () {
                                 PasswordReset.getElement('input[name="email"]').focus();
                                 Container.style.overflow = null;
                                 Container.style.height = null;
@@ -139,7 +137,7 @@ define('controls/users/auth/QUIQQERLogin', [
                             opacity: 1
                         }, {
                             duration: 250,
-                            callback: function() {
+                            callback: function () {
 //                                PasswordReset.getElement('input[name="email"]').focus();
 //                                Container.style.overflow = null;
 //                                Container.style.height = null;
@@ -154,7 +152,7 @@ define('controls/users/auth/QUIQQERLogin', [
         /**
          * @return Promise
          */
-        $showPassword: function() {
+        $showPassword: function () {
             const Container = this.getElm(),
                 PasswordContainer = Container.getElement('.quiqqer-auth-login-container'),
                 PasswordReset = Container.getElement('.quiqqer-auth-login-passwordreset');
@@ -168,12 +166,12 @@ define('controls/users/auth/QUIQQERLogin', [
 
             this.fireEvent('showPassword', [this]);
 
-            return new Promise(function(resolve) {
+            return new Promise(function (resolve) {
                 moofx(PasswordReset).animate({
                     opacity: 0
                 }, {
                     duration: 250,
-                    callback: function() {
+                    callback: function () {
                         PasswordReset.setStyle('display', 'none');
 
                         PasswordContainer.setStyle('opacity', 0);
@@ -183,7 +181,7 @@ define('controls/users/auth/QUIQQERLogin', [
                             height: PasswordContainer.getSize().y
                         }, {
                             duration: 250,
-                            callback: function() {
+                            callback: function () {
                                 Container.style.height = null;
                             }
                         });
@@ -192,8 +190,7 @@ define('controls/users/auth/QUIQQERLogin', [
                             opacity: 1
                         }, {
                             duration: 250,
-                            callback: function() {
-                                PasswordContainer.getElement('input[name="email"]').focus();
+                            callback: function () {
                                 Container.style.overflow = null;
                                 Container.style.height = null;
                                 resolve();
@@ -207,15 +204,15 @@ define('controls/users/auth/QUIQQERLogin', [
         /**
          * Init password reset events
          */
-        $initPasswordResetEvents: function() {
-            var self = this,
+        $initPasswordResetEvents: function () {
+            const self = this,
                 Elm = this.getElm(),
                 EmailInput = Elm.getElement('input[name="email"]'),
                 SubmitBtn = Elm.getElement('.quiqqer-auth-login-passwordreset button.reset-password'),
                 MsgElm = Elm.getElement('.quiqqer-auth-login-message');
 
-            var submit = function() {
-                var email = EmailInput.value.trim();
+            const submit = function () {
+                const email = EmailInput.value.trim();
 
                 if (email === '') {
                     EmailInput.focus();
@@ -227,22 +224,22 @@ define('controls/users/auth/QUIQQERLogin', [
                 SubmitBtn.disabled = true;
                 MsgElm.set('html', '');
 
-                var showHideMessage = function(Message) {
+                const showHideMessage = function (Message) {
                     moofx(Message).animate({
                         opacity: 1,
-                        top    : 0
+                        top: 0
                     }, {
                         duration: 200,
-                        callback: function() {
-                            (function() {
+                        callback: function () {
+                            (function () {
                                 moofx(Message).animate({
                                     opacity: 0,
-                                    top    : -20
+                                    top: -20
                                 }, {
                                     duration: 200,
-                                    callback: function() {
+                                    callback: function () {
                                         Message.destroy();
-                                        self.$showPassword().then(function() {
+                                        self.$showPassword().then(function () {
                                             EmailInput.value = '';
                                             EmailInput.setStyle('display', null);
                                         });
@@ -253,40 +250,40 @@ define('controls/users/auth/QUIQQERLogin', [
                     });
                 };
 
-                self.$sendPasswordResetConfirmMail(email).then(function() {
+                self.$sendPasswordResetConfirmMail(email).then(function () {
                     self.Loader.hide();
 
-                    var Message = new Element('div', {
-                        html   : QUILocale.get(lg, 'controls.users.auth.quiqqerlogin.send_mail_success'),
+                    const Message = new Element('div', {
+                        html: QUILocale.get(lg, 'controls.users.auth.quiqqerlogin.send_mail_success'),
                         'class': 'message-success',
-                        styles : {
-                            height  : '100%',
-                            opacity : 0,
-                            padding : 20,
+                        styles: {
+                            height: '100%',
+                            opacity: 0,
+                            padding: 20,
                             position: 'absolute',
-                            top     : -20,
-                            width   : '100%'
+                            top: -20,
+                            width: '100%'
                         }
                     }).inject(self.getElm());
 
                     showHideMessage(Message);
                     EmailInput.setStyle('display', 'none');
                     SubmitBtn.disabled = false;
-                }, function(e) {
+                }, function (e) {
                     self.Loader.hide();
 
-                    var Message = new Element('div', {
-                        html   : QUILocale.get(lg, 'controls.users.auth.quiqqerlogin.send_mail_error', {
+                    const Message = new Element('div', {
+                        html: QUILocale.get(lg, 'controls.users.auth.quiqqerlogin.send_mail_error', {
                             error: e.getMessage()
                         }),
                         'class': 'message-error',
-                        styles : {
-                            height  : '100%',
-                            opacity : 0,
-                            padding : 20,
+                        styles: {
+                            height: '100%',
+                            opacity: 0,
+                            padding: 20,
                             position: 'absolute',
-                            top     : -20,
-                            width   : '100%'
+                            top: -20,
+                            width: '100%'
                         }
                     }).inject(self.getElm());
 
@@ -296,7 +293,7 @@ define('controls/users/auth/QUIQQERLogin', [
                 });
             };
 
-            EmailInput.addEvent('keydown', function(event) {
+            EmailInput.addEvent('keydown', function (event) {
                 // stop login-form submit on enter
                 if (event.code === 13) {
                     event.stop();
@@ -304,7 +301,7 @@ define('controls/users/auth/QUIQQERLogin', [
                 }
             });
 
-            SubmitBtn.addEvent('click', function(event) {
+            SubmitBtn.addEvent('click', function (event) {
                 event.stop();
                 submit();
             });
@@ -316,11 +313,11 @@ define('controls/users/auth/QUIQQERLogin', [
          * @param {String} email
          * @return {Promise}
          */
-        $sendPasswordResetConfirmMail: function(email) {
-            return new Promise(function(resolve, reject) {
+        $sendPasswordResetConfirmMail: function (email) {
+            return new Promise(function (resolve, reject) {
                 QUIAjax.post('ajax_users_authenticator_sendPasswordResetConfirmMail', resolve, {
-                    email    : email,
-                    onError  : reject,
+                    email: email,
+                    onError: reject,
                     showError: false
                 });
             });

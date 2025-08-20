@@ -17,6 +17,10 @@ QUI::$Ajax->registerFunction(
         $language = $User->getAttribute('lang');
         $extraAttributes = [];
 
+        if (isset($attributes['verifiableAttributes'])) {
+            unset($attributes['verifiableAttributes']);
+        }
+
         if (method_exists($User, 'getListOfExtraAttributes')) {
             $extraAttributes = $User->getListOfExtraAttributes();
         }

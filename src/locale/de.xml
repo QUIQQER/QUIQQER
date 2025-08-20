@@ -563,6 +563,9 @@
         <locale name="exception.user.name.already.exists">
             <de><![CDATA[Dieser Benutzername existiert bereits.]]></de>
         </locale>
+        <locale name="exception.user.mail.not.verified">
+            <de><![CDATA[Die E-Mail ist leider noch nicht verifiziert.]]></de>
+        </locale>
         <locale name="user.settings.setNewPassword">
             <de><![CDATA[Passwort erneuern]]></de>
         </locale>
