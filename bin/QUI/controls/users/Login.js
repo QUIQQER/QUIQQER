@@ -113,8 +113,16 @@ define('controls/users/Login', [
 
                     this.fireEvent('load', [this]);
                     QUI.fireEvent('quiqqerUserAuthLoginLoad', [this]);
+
+                    moofx(
+                        this.getElm().querySelector('[data-name="quiqqer-users-login-container"]')
+                    ).animate({
+                        opacity: 1
+                    }, {
+                        duration: 250
+                    });
                 });
-                }, {
+            }, {
                 isAdminLogin: typeof QUIQQER_IS_ADMIN_LOGIN !== 'undefined' ? 1 : 0,
                 authenticators: JSON.encode(this.getAttribute('authenticators'))
             });
@@ -134,6 +142,14 @@ define('controls/users/Login', [
             this.$refreshForm();
             this.fireEvent('load', [this]);
             QUI.fireEvent('quiqqerUserAuthLoginLoad', [this]);
+
+            moofx(
+                this.getElm().querySelector('[data-name="quiqqer-users-login-container"]')
+            ).animate({
+                opacity: 1
+            }, {
+                duration: 250
+            });
         },
 
         /**
@@ -197,7 +213,7 @@ define('controls/users/Login', [
                 });
 
             if (!forms.length) {
-                QUIAjax.post('ajax_user_logout', function() {
+                QUIAjax.post('ajax_user_logout', function () {
                     window.location.reload();
                 });
 

@@ -1,6 +1,5 @@
 /**
  * @module controls/users/auth/GlobalAuthenticatorSettings
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/users/auth/GlobalAuthenticatorSettings', [
 

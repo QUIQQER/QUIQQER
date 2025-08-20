@@ -2,7 +2,7 @@
     background: #fff;
     min-height: 180px;
     overflow: auto;
-    padding-block: 20px;
+    padding: 20px;
     position: relative;
 }
 
@@ -10,6 +10,12 @@
     position: relative;
     top: 0;
     width: 100%;
+}
+
+.quiqqer-users-login-social {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .quiqqer-login-or {
@@ -44,4 +50,8 @@
     position: absolute;
     right: 20px;
     top: 0;
+}
+
+.quiqqer-login .quiqqer-frontend-social-button {
+    width: 100%;
 }
