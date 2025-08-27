@@ -44,8 +44,6 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
                 const available = result.available,
                     globals = result.global;
 
-                console.log(result);
-
                 new Element('div', {
                     html: QUILocale.get(lg, 'quiqqer.settings.auth.global.desc')
                 }).inject(this.getElm(), 'after');
@@ -93,40 +91,80 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
 
 
                 // secondary authenticator
+                const secondaryDescription = document.createElement('div');
+                secondaryDescription.classList.add('quiqqer-message', 'quiqqer-message-information');
+                secondaryDescription.style.display = 'flex';
+                secondaryDescription.style.alignItems = 'center';
+                secondaryDescription.style.gap = '10px';
+                secondaryDescription.style.width = '100%';
+                secondaryDescription.style.maxWidth = '100%';
+                secondaryDescription.style.margin = '10px 0';
+                secondaryDescription.innerHTML = `
+                    <span>
+                        Hier können Sie festlegen, dass Benutzer zusätzlich zum primären Authenticator einen zweiten Authenticator (2FA) 
+                        nutzen müssen. Sie können separat bestimmen, ob die Zwei-Faktor-Authentifizierung für das Frontend, 
+                        das Backend oder beide Bereiche verpflichtend sein soll.
+                    </span>
+                `;
+
+
                 tableHeaderText = Mustache.render(templateHeader, {
                     title: QUILocale.get(lg, 'quiqqer.settings.auth.secondary')
                 });
 
                 const secondaryTable = document.createElement('table');
                 secondaryTable.classList.add('data-table', 'data-table-flexbox');
-                secondaryTable.innerHTML = '<thead>' + tableHeaderText + '</thead>';
+                secondaryTable.innerHTML = '<thead>' + tableHeaderText + '</thead><tbody></tbody>';
                 secondaryTable.setAttribute('data-name', 'secondary-authenticator');
 
-                for (i = 0, len = available.length; i < len; i++) {
-                    if (!available[i].isSecondaryAuthentication) {
-                        continue;
-                    }
+                const secondTd = secondaryTable.querySelector('thead th div:nth-child(2)');
+                const thirdTd = secondaryTable.querySelector('thead th div:nth-child(3)');
 
-                    newRow = document.createElement('div');
-                    newRow.innerHTML = Mustache.render(templateRow, {
-                        title: available[i].title,
-                        description: available[i].description,
-                        authenticator: available[i].authenticator
-                    });
+                secondTd.parentNode.removeChild(secondTd);
+                thirdTd.parentNode.removeChild(thirdTd);
 
-                    newRow.getElements('input').addEvent('change', this.$onChange);
+                secondaryTable.querySelector('tbody').innerHTML = `
+                    <tr>
+                        <td>
+                            <label class="field-container hasCheckbox">
+                                <div class="field-container-item">Frontend</div>  
+                                <div class="field-container-field">
+                                    <input type="checkbox" name="secondary_frontend" />
+                                    Nutzer müssen im Frontend eine zweite Authentifizierung einrichten.  
+                                </div>  
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="field-container hasCheckbox">
+                                <div class="field-container-item">Backend</div>  
+                                <div class="field-container-field">
+                                    <input type="checkbox" name="secondary_backend" />
+                                    Nutzer müssen im Backend eine zweite Authentifizierung einrichten.
+                                </div>  
+                            </label>
+                        </td>
+                    </tr>
+                `;
 
-                    secondaryTable.appendChild(newRow);
-                }
-
+                secondaryTable.querySelector('thead th').style.flexDirection = 'column';
+                secondaryTable.querySelector('thead th').appendChild(secondaryDescription);
                 cell.appendChild(secondaryTable);
                 this.$secondaryTable = secondaryTable;
 
                 // configs / checkbox / selected
                 this.$checkCheckboxes(globals.primary.frontend, primaryTable, 'frontend');
                 this.$checkCheckboxes(globals.primary.backend, primaryTable, 'backend');
-                this.$checkCheckboxes(globals.secondary.frontend, secondaryTable, 'frontend');
-                this.$checkCheckboxes(globals.secondary.backend, secondaryTable, 'backend');
+
+                const secondaryFrontend = this.$secondaryTable.querySelector('input[name="secondary_frontend"]');
+                const secondaryBackend = this.$secondaryTable.querySelector('input[name="secondary_backend"]');
+
+                secondaryFrontend.addEventListener('change', this.$onChange);
+                secondaryFrontend.checked = globals.secondary.frontend;
+
+                secondaryBackend.addEventListener('change', this.$onChange);
+                secondaryBackend.checked = globals.secondary.backend;
 
                 this.$onChange();
             });
@@ -160,7 +198,7 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
         $onChange: function () {
             const result = {
                 primary: {frontend: [], backend: []},
-                secondary: {frontend: [], backend: []}
+                //secondary: {frontend: [], backend: []}
             };
 
             function collect(table, target) {
@@ -173,7 +211,9 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
             }
 
             collect(this.$primaryTable, result.primary);
-            collect(this.$secondaryTable, result.secondary);
+
+            result.secondary_frontend = this.$secondaryTable.querySelector('input[name="secondary_frontend"]').checked ? 1 : 0;
+            result.secondary_backend = this.$secondaryTable.querySelector('input[name="secondary_backend"]').checked ? 1 : 0;
 
             if (this.getElm().nodeName === 'INPUT') {
                 this.getElm().value = JSON.encode(result);

@@ -560,6 +560,8 @@ define('controls/users/User', [
 
                 // authenticator
                 if (authenticators) {
+
+                    // @todo [BEGIN] TODO HEN -> NEU
                     const toggleAuthenticator = function (Btn) {
                         let Table = Btn.getElm().getParent('table'),
                             auth = Table.get('data-authenticator'),
@@ -655,10 +657,11 @@ define('controls/users/User', [
                                 top: 5
                             },
                             events: {
-                                onClick: toggleAuthenticator
+                                onClick: toggleAuthenticator // @todo TODO HEN -> NEU
                             }
                         }).inject(authenticators[i].getElement('thead th'));
                     }
+                    // @todo [END] TODO HEN -> NEU
                 }
 
                 // password expire

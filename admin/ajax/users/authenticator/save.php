@@ -49,6 +49,19 @@ QUI::$Ajax->registerFunction(
             }
         }
 
+        $Config->setValue('auth_settings', 'secondary_frontend', 0);
+        $Config->setValue('auth_settings', 'secondary_backend', 0);
+
+        if (isset($authenticators['secondary_frontend'])) {
+            $Config->setValue('auth_settings', 'secondary_frontend', (int)$authenticators['secondary_frontend']);
+        }
+
+        if (isset($authenticators['secondary_backend'])) {
+            $Config->setValue('auth_settings', 'secondary_backend', (int)$authenticators['secondary_backend']);
+        }
+
+
+        /*
         if (!empty($authenticators['secondary'])) {
             foreach (['backend', 'frontend'] as $type) {
                 foreach ($authenticators['secondary'][$type] as $authenticator) {
@@ -69,6 +82,7 @@ QUI::$Ajax->registerFunction(
                 }
             }
         }
+        */
 
         $Config->save();
     },
