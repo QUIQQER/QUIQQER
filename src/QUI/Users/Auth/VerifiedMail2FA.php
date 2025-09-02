@@ -17,23 +17,39 @@ use Random\RandomException;
  */
 class VerifiedMail2FA extends AbstractAuthenticator
 {
-    public const USER_CODE_ATTRIBUTE = 'quiqqer.verified.2fa.mail.code';
+    public const string USER_CODE_ATTRIBUTE = 'quiqqer.verified.2fa.mail.code';
 
     protected ?User $User = null;
-
-    protected ?string $username = null;
-
+    protected mixed $user = null;
     protected bool $authenticated = false;
 
-    public function __construct(array | int | string $user = '')
+    public function __construct(array | int | string | User $user = '')
     {
-        $user = Orthos::clear($user);
-        $this->username = $user;
+        if ($user instanceof User) {
+            $this->User = $user;
+            return;
+        }
+
+        $this->user = Orthos::clear($user);
     }
 
     public static function getLoginControl(): QUI\Control
     {
         return new Controls\VerifiedMail2FA();
+    }
+
+    public function getSettingsControl(): ?QUI\Control
+    {
+        $user = null;
+
+        try {
+            $user = $this->getUser();
+        } catch (QUI\Exception) {
+        }
+
+        return new Controls\Settings\VerifiedMail2FA([
+            'user' => $user
+        ]);
     }
 
     public static function isCLICompatible(): bool
@@ -59,6 +75,24 @@ class VerifiedMail2FA extends AbstractAuthenticator
         return $Locale->get('quiqqer/core', 'quiqqer.mail2fa.description');
     }
 
+    public function getFrontendTitle(null | Locale $Locale = null): string
+    {
+        if (is_null($Locale)) {
+            $Locale = QUI::getLocale();
+        }
+
+        return $Locale->get('quiqqer/core', 'quiqqer.mail2fa.frontend.title');
+    }
+
+    public function getFrontendDescription(null | Locale $Locale = null): string
+    {
+        if (is_null($Locale)) {
+            $Locale = QUI::getLocale();
+        }
+
+        return $Locale->get('quiqqer/core', 'quiqqer.mail2fa.frontend.description');
+    }
+
     /**
      * @throws Exception
      */
@@ -68,16 +102,29 @@ class VerifiedMail2FA extends AbstractAuthenticator
             return $this->User;
         }
 
+
         try {
-            $this->User = QUI::getUsers()->getUserByName($this->username);
+            $this->User = QUI::getUsers()->get($this->user);
+            return $this->User;
         } catch (QUI\Exception) {
-            throw new QUI\Users\Exception(
-                ['quiqqer/core', 'exception.login.fail.user.not.found'],
-                404
-            );
         }
 
-        return $this->User;
+        try {
+            $this->User = QUI::getUsers()->getUserByName($this->user);
+            return $this->User;
+        } catch (QUI\Exception) {
+        }
+
+        try {
+            $this->User = QUI::getUsers()->getUserByMail($this->user);
+            return $this->User;
+        } catch (QUI\Exception) {
+        }
+
+        throw new QUI\Users\Exception(
+            ['quiqqer/core', 'exception.login.fail.user.not.found'],
+            404
+        );
     }
 
     public function auth(string | int | array $authParams): bool

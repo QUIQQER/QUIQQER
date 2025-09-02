@@ -2,6 +2,7 @@
  * QUIQQER Authentication via email code
  */
 define('controls/users/auth/VerifiedMail2FA', [
+
     'qui/QUI',
     'qui/controls/Control',
     'Locale',
@@ -12,7 +13,9 @@ define('controls/users/auth/VerifiedMail2FA', [
 
     return new Class({
 
-        Extends: QUIControl, Type: 'controls/users/auth/VerifiedMail2FA',
+        Extends: QUIControl,
+        Type: 'controls/users/auth/VerifiedMail2FA',
+
         Binds: [
             '$onImport'
         ],

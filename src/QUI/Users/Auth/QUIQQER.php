@@ -26,15 +26,17 @@ use function trim;
 class QUIQQER extends AbstractAuthenticator
 {
     protected ?User $User = null;
-
-    protected ?string $username = null;
-
+    protected ?string $user = null;
     protected bool $authenticated = false;
 
-    public function __construct(array | int | string $user = '')
+    public function __construct(array | int | string | User $user = '')
     {
-        $user = Orthos::clear($user);
-        $this->username = $user;
+        if ($user instanceof User) {
+            $this->User = $user;
+            return;
+        }
+
+        $this->user = Orthos::clear($user);
     }
 
     public static function getLoginControl(): QUI\Control
@@ -76,27 +78,25 @@ class QUIQQER extends AbstractAuthenticator
 
         $User = false;
 
-        if (QUI::conf('globals', 'emaillogin') && str_contains($this->username, '@')) {
+        if (QUI::conf('globals', 'emaillogin') && str_contains($this->user, '@')) {
             try {
-                $User = QUI::getUsers()->getUserByMail($this->username);
+                $User = QUI::getUsers()->getUserByMail($this->user);
             } catch (QUI\Exception) {
             }
         }
 
         if ($User === false) {
             try {
-                $User = QUI::getUsers()->getUserByName($this->username);
+                $this->User = QUI::getUsers()->getUserByName($this->user);
+                return $this->User;
             } catch (QUI\Exception) {
-                throw new QUI\Users\Exception(
-                    ['quiqqer/core', 'exception.login.fail.user.not.found'],
-                    404
-                );
             }
         }
 
-        $this->User = $User;
-
-        return $this->User;
+        throw new QUI\Users\Exception(
+            ['quiqqer/core', 'exception.login.fail.user.not.found'],
+            404
+        );
     }
 
     /**
@@ -129,7 +129,7 @@ class QUIQQER extends AbstractAuthenticator
             $password = $Console->getArgument('password');
         }
 
-        $this->username = $username;
+        $this->user = $username;
         $this->auth($password);
     }
 
@@ -141,7 +141,7 @@ class QUIQQER extends AbstractAuthenticator
      */
     public function auth(string | int | array $authParams): bool
     {
-        if (!is_string($this->username) || empty($this->username)) {
+        if (!is_string($this->user) || empty($this->user)) {
             throw new QUI\Users\Exception(
                 ['quiqqer/core', 'exception.login.fail.wrong.username.input'],
                 401

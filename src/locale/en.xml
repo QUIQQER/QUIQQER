@@ -663,6 +663,16 @@
             Only accounts with verified mail can authenticate themselves.
             ]]></en>
         </locale>
+        <locale name="quiqqer.mail2fa.frontend.title">
+            <en><![CDATA[Email one-time code authentication]]></en>
+        </locale>
+        <locale name="quiqqer.mail2fa.frontend.description">
+            <en><![CDATA[
+            With this method, you will receive a one-time code via email when you log in.
+            This provides additional protection for your account—even if someone knows your password,
+            no one can log in without access to your verified email address.
+            ]]></en>
+        </locale>
         <locale name="quiqqer.verified.mail2fa.mail.subject">
             <en><![CDATA[
             Your login code for [host]

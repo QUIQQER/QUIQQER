@@ -1,0 +1,32 @@
+{if $isBackend}
+
+    {if $mailIsVerified === false}
+    <div class="quiqqer-message quiqqer-message-attention" style="width: 100%; max-width: 100%">
+        Die E-Mail Adresse ist nicht verifziert.
+        Um diese Authentifizierung nutzen können muss die Mail verifiziert sein
+    </div>
+    {/if}
+
+    {if $mailIsVerified && $hasAlreadyAuthenticated}
+    <div style="width: 100%; text-align: center">
+        <span class="fa fa-thumbs-up" style="font-size: 4rem; margin: 2rem"></span>
+        <p style="font-size: 2.5rem;">
+            Authentifizierung ist erfolgreich eingerichtet.
+        </p>
+    </div>
+    {/if}
+
+{else}
+
+    {if $mailIsVerified === false}
+        Bite verifiziere Deine E-Mail Adresse, klicke auf den Button um die einmal Code per E-Mail zu erhalten.
+        <div class="">
+
+        </div>
+
+        <button class="btn btn-primary">
+            Einmal Code senden um E-Mail zu verifizieren
+        </button>
+    {/if}
+
+{/if}

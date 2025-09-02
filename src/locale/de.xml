@@ -659,6 +659,16 @@
             Nur Accounts mit verifzierter Mail können sich authentifizieren.
             ]]></de>
         </locale>
+        <locale name="quiqqer.mail2fa.frontend.title">
+            <de><![CDATA[Mail Einmal Code Authentifizierung]]></de>
+        </locale>
+        <locale name="quiqqer.mail2fa.frontend.description">
+            <de><![CDATA[
+            Mit dieser Methode erhältst du bei der Anmeldung einen einmaligen Code per E-Mail.
+            So ist dein Konto zusätzlich geschützt – selbst wenn jemand dein Passwort kennt,
+            kann sich niemand ohne Zugriff auf deine verifizierte E-Mail anmelden.
+            ]]></de>
+        </locale>
         <locale name="quiqqer.verified.mail2fa.mail.subject">
             <de><![CDATA[
             Dein Anmeldecode für [host]
