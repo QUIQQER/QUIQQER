@@ -15,6 +15,16 @@ $command = $_SERVER['argv'][1] ?? '';
 
 $validScripts = ['quiqqer.php', './console'];
 
+if (!in_array($scriptName, $validScripts, true)) {
+    if (basename($scriptName) === 'console') {
+        $scriptName = './console';
+
+        if (defined('CMS_DIR')) {
+            chdir(CMS_DIR);
+        }
+    }
+}
+
 if (in_array($scriptName, $validScripts, true)) {
     switch ($command) {
         case 'repair':
