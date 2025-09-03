@@ -44,6 +44,10 @@ QUI::$Ajax->registerFunction(
                     'backend' => $Auth->getGlobalBackendAuthenticators()
                 ],
                 'secondary' => [
+                    'frontend' => $Auth->getGlobalFrontendSecondaryAuthenticators(),
+                    'backend' => $Auth->getGlobalBackendSecondaryAuthenticators()
+                ],
+                'secondary_settings' => [
                     'frontend' => (int)$Config->getValue('auth_settings', 'secondary_frontend'),
                     'backend' => (int)$Config->getValue('auth_settings', 'secondary_backend')
                 ]

@@ -31,16 +31,14 @@ QUI::$Ajax->registerFunction(
         $Config->del('auth_frontend_secondary');
         $Config->del('auth_backend_secondary');
 
+        $authHandler = QUI\Users\Auth\Handler::getInstance();
+
         // setter
         if (!empty($authenticators['primary'])) {
             foreach (['backend', 'frontend'] as $type) {
                 foreach ($authenticators['primary'][$type] as $authenticator) {
                     try {
-                        QUI\Users\Auth\Handler::getInstance()->getAuthenticator(
-                            $authenticator,
-                            $User->getUsername()
-                        );
-
+                        $authHandler->getAuthenticator($authenticator, $User);
                         $Config->setValue('auth_' . $type, $authenticator, 1);
                     } catch (QUI\Exception $Exception) {
                         QUI\System\Log::writeException($Exception);
@@ -60,29 +58,18 @@ QUI::$Ajax->registerFunction(
             $Config->setValue('auth_settings', 'secondary_backend', (int)$authenticators['secondary_backend']);
         }
 
-
-        /*
         if (!empty($authenticators['secondary'])) {
             foreach (['backend', 'frontend'] as $type) {
                 foreach ($authenticators['secondary'][$type] as $authenticator) {
                     try {
-                        QUI\Users\Auth\Handler::getInstance()->getAuthenticator(
-                            $authenticator,
-                            $User->getUsername()
-                        );
-
-                        $Config->setValue(
-                            'auth_' . $type . '_secondary',
-                            $authenticator,
-                            1
-                        );
+                        $authHandler->getAuthenticator($authenticator, $User);
+                        $Config->setValue('auth_' . $type . '_secondary', $authenticator, 1);
                     } catch (QUI\Exception $Exception) {
                         QUI\System\Log::writeException($Exception);
                     }
                 }
             }
         }
-        */
 
         $Config->save();
     },

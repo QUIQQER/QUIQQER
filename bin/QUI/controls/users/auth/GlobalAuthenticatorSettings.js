@@ -99,6 +99,7 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
                 secondaryDescription.style.width = '100%';
                 secondaryDescription.style.maxWidth = '100%';
                 secondaryDescription.style.margin = '10px 0';
+                secondaryDescription.style.borderWidth = '0';
                 secondaryDescription.innerHTML = `
                     <span>
                         Hier können Sie festlegen, dass Benutzer zusätzlich zum primären Authenticator einen zweiten Authenticator (2FA) 
@@ -126,24 +127,58 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
                 secondaryTable.querySelector('tbody').innerHTML = `
                     <tr>
                         <td>
-                            <label class="field-container hasCheckbox">
+                            <label class="field-container">
                                 <div class="field-container-item">Frontend</div>  
-                                <div class="field-container-field">
-                                    <input type="checkbox" name="secondary_frontend" />
-                                    Nutzer müssen im Frontend eine zweite Authentifizierung einrichten.  
-                                </div>  
+                                <select class="field-container-field" name="secondary_frontend">
+                                    <option value="0">
+                                        Nutzer können keine zweite Authentifizierung einrichten. 
+                                    </option>
+                                    <option value="1">
+                                        Nutzer müssen eine zweite Authentifizierung einrichten.
+                                    </option>
+                                    <option value="2">
+                                        Nutzer erhalten einen Hinweis und können eine zweite Authentifizierung einrichten.
+                                    </option>
+                                </select>                                      
                             </label>
+                        </td>
+                    </tr>
+                    <tr style="display: none;">
+                        <td>
+                             <div class="field-container">
+                                 <div class="field-container-item">
+                                    Im Frontend verfügbare zwei faktor Authentifizierungsarten
+                                 </div>
+                                 <div data-name="secondary_frontend_authenticators" class="field-container-field" ></div>
+                             </div>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <label class="field-container hasCheckbox">
+                            <label class="field-container">
                                 <div class="field-container-item">Backend</div>  
-                                <div class="field-container-field">
-                                    <input type="checkbox" name="secondary_backend" />
-                                    Nutzer müssen im Backend eine zweite Authentifizierung einrichten.
-                                </div>  
+                                <select class="field-container-field" name="secondary_backend">
+                                    <option value="0">
+                                        Nutzer können keine zweite Authentifizierung einrichten. 
+                                    </option>
+                                    <option value="1">
+                                        Nutzer müssen eine zweite Authentifizierung einrichten.
+                                    </option>
+                                    <option value="2">
+                                        Nutzer erhalten einen Hinweis und können eine zweite Authentifizierung einrichten.
+                                    </option>
+                                </select>  
                             </label>
+                        </td>
+                    </tr>
+                    <tr style="display: none;">
+                        <td>
+                             <div class="field-container">
+                                 <div class="field-container-item">
+                                    Im Backend verfügbare zwei faktor Authentifizierungsarten
+                                 </div>
+                                 <div data-name="secondary_backend_authenticators" class="field-container-field" ></div>
+                             </div>
                         </td>
                     </tr>
                 `;
@@ -153,18 +188,59 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
                 cell.appendChild(secondaryTable);
                 this.$secondaryTable = secondaryTable;
 
+                const sfAuthenticators = this.$secondaryTable
+                    .querySelector('[data-name="secondary_frontend_authenticators"]');
+
+                const sbAuthenticators = this.$secondaryTable
+                    .querySelector('[data-name="secondary_backend_authenticators"]');
+
+                let labelNode, clone1, clone2;
+
+                for (i = 0, len = available.length; i < len; i++) {
+                    if (!available[i].isSecondaryAuthentication) {
+                        continue;
+                    }
+
+                    labelNode = document.createElement('label');
+                    labelNode.style.width = '100%';
+                    labelNode.innerHTML = `
+                        <input 
+                            type="checkbox" 
+                            name="secondary_authenticator" 
+                            value="${available[i].authenticator}" 
+                        />
+                        <span>${available[i].title}</span>
+                    `;
+
+                    clone1 = labelNode.cloneNode(true);
+                    clone2 = labelNode.cloneNode(true);
+                    clone1.querySelector('input').addEventListener('change', this.$onChange);
+                    clone2.querySelector('input').addEventListener('change', this.$onChange);
+
+                    if (globals.secondary.frontend.indexOf(available[i].authenticator) !== -1) {
+                        clone1.querySelector('input').checked = true;
+                    }
+
+                    if (globals.secondary.backend.indexOf(available[i].authenticator) !== -1) {
+                        clone2.querySelector('input').checked = true;
+                    }
+
+                    sfAuthenticators.appendChild(clone1);
+                    sbAuthenticators.appendChild(clone2);
+                }
+
                 // configs / checkbox / selected
                 this.$checkCheckboxes(globals.primary.frontend, primaryTable, 'frontend');
                 this.$checkCheckboxes(globals.primary.backend, primaryTable, 'backend');
 
-                const secondaryFrontend = this.$secondaryTable.querySelector('input[name="secondary_frontend"]');
-                const secondaryBackend = this.$secondaryTable.querySelector('input[name="secondary_backend"]');
+                const secondaryFrontend = this.$secondaryTable.querySelector('select[name="secondary_frontend"]');
+                const secondaryBackend = this.$secondaryTable.querySelector('select[name="secondary_backend"]');
 
                 secondaryFrontend.addEventListener('change', this.$onChange);
-                secondaryFrontend.checked = globals.secondary.frontend;
+                secondaryFrontend.value = globals.secondary_settings.frontend;
 
                 secondaryBackend.addEventListener('change', this.$onChange);
-                secondaryBackend.checked = globals.secondary.backend;
+                secondaryBackend.value = globals.secondary_settings.backend;
 
                 this.$onChange();
             });
@@ -198,7 +274,7 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
         $onChange: function () {
             const result = {
                 primary: {frontend: [], backend: []},
-                //secondary: {frontend: [], backend: []}
+                secondary: {frontend: [], backend: []}
             };
 
             function collect(table, target) {
@@ -212,9 +288,40 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
 
             collect(this.$primaryTable, result.primary);
 
-            result.secondary_frontend = this.$secondaryTable.querySelector('input[name="secondary_frontend"]').checked ? 1 : 0;
-            result.secondary_backend = this.$secondaryTable.querySelector('input[name="secondary_backend"]').checked ? 1 : 0;
+            result.secondary_frontend = parseInt(
+                this.$secondaryTable.querySelector('select[name="secondary_frontend"]').value
+            );
 
+            result.secondary_backend = parseInt(
+                this.$secondaryTable.querySelector('select[name="secondary_backend"]').value
+            );
+
+            // show 2fa auths
+            const sfAuthenticators = this.$secondaryTable.querySelector('[data-name="secondary_frontend_authenticators"]');
+            const sbAuthenticators = this.$secondaryTable.querySelector('[data-name="secondary_backend_authenticators"]');
+
+            sfAuthenticators.closest('tr').style.display = result.secondary_frontend !== 0 ? '' : 'none';
+            sbAuthenticators.closest('tr').style.display = result.secondary_backend !== 0 ? '' : 'none';
+
+            if (result.secondary_frontend !== 0) {
+                result.secondary.frontend = Array.from(
+                    sfAuthenticators.querySelectorAll('[type="checkbox"]:checked')
+                ).map((node) => {
+                    return node.value;
+                });
+            }
+
+            if (result.secondary_backend !== 0) {
+                result.secondary.backend = Array.from(
+                    sbAuthenticators.querySelectorAll('[type="checkbox"]:checked')
+                ).map((node) => {
+                    return node.value;
+                });
+            }
+
+            console.log(result);
+
+            // save
             if (this.getElm().nodeName === 'INPUT') {
                 this.getElm().value = JSON.encode(result);
             }

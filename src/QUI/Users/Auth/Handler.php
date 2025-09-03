@@ -9,6 +9,7 @@ namespace QUI\Users\Auth;
 use Composer\Semver\Semver;
 use QUI;
 use QUI\Database\Exception;
+use QUI\Interfaces\Users\User;
 use QUI\Users\AuthenticatorInterface;
 use QUI\Verification\Interface\VerificationFactoryInterface;
 use QUI\Verification\VerificationFactory;
@@ -239,18 +240,20 @@ class Handler
      * Returns a specific authenticator
      *
      * @param string $authenticator - name of the authenticator
-     * @param string $username - QUIQQER username of the user
+     * @param string|int|User $user - QUIQQER username / id / uuid / user object
      * @return AuthenticatorInterface
      *
      * @throws QUI\Users\Auth\Exception
      */
-    public function getAuthenticator(string $authenticator, string $username): AuthenticatorInterface
-    {
+    public function getAuthenticator(
+        string $authenticator,
+        string | int | QUI\Interfaces\Users\User $user
+    ): AuthenticatorInterface {
         $authenticators = $this->getAvailableAuthenticators();
         $authenticators = array_flip($authenticators);
 
         if (isset($authenticators[$authenticator])) {
-            return new $authenticator($username);
+            return new $authenticator($user);
         }
 
         throw new QUI\Users\Auth\Exception(

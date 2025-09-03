@@ -695,11 +695,55 @@
             </p>
             ]]></de>
         </locale>
+        <locale name="quiqqer.enable.mail2fa.mail.subject">
+            <de><![CDATA[
+            [host]: Dein Code zur Aktivierung der E-Mail-Einmal-Code-Authentifizierung
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.enable.mail2fa.mail.content" html="true">
+            <de><![CDATA[
+            <p>Hallo,</p>
+            <p>
+              dein Code zur Aktivierung der E-Mail-Einmal-Code-Authentifizierung bei <strong>[host]</strong> lautet:
+            </p>
+            <p style="font-size: 1.5em; font-weight: bold; letter-spacing: 2px;">
+              [code]
+            </p>
+            <p>
+              Bitte gib diesen Code ein, um fortzufahren. Der Code ist nur für kurze Zeit gültig.
+            </p>
+            <p>
+              Falls du diese Anfrage nicht selbst gestellt hast, kannst du diese E-Mail einfach ignorieren.
+            </p>
+            <p>
+              Viele Grüße<br>
+              Dein [host]-Team
+            </p>
+            ]]></de>
+        </locale>
         <locale name="quiqqer.verified.mail2fa.control.description">
-            <de><![CDATA[Wir haben dir einen Bestätigungscode per E-Mail gesendet. Bitte gib den Code hier ein, um fortzufahren.]]></de>
+            <de><![CDATA[
+            Wir haben dir einen Bestätigungscode per E-Mail gesendet. Bitte gib den Code hier ein, um fortzufahren.
+            ]]></de>
         </locale>
         <locale name="quiqqer.verified.mail2fa.control.codeLabel">
             <de><![CDATA[Code Eingabe:]]></de>
+        </locale>
+        <locale name="quiqqer.verified.mail2fa.control.code.button">
+            <de><![CDATA[Code senden und Verifizierung durchführen]]></de>
+        </locale>
+        <locale name="quiqqer.verified.mail2fa.control.frontend.sendCodeButton">
+            <de><![CDATA[Code per E-Mail anfordern]]></de>
+        </locale>
+        <locale name="quiqqer.verified.mail2fa.control.frontend.description">
+            <de><![CDATA[
+                <h1>Mail Einmal Code Authentifizierung aktivieren</h1>
+                <p>
+                Bitte bestätige deine E-Mail-Adresse.
+                Klicke dazu auf den Button, um einen einmaligen Bestätigungscode per E-Mail zu erhalten.
+                Anschließend gib bitte den erhaltenen Code unten ein, um die Verifizierung abzuschließen.
+                </p>
+            ]]></de>
         </locale>
         <locale name="quiqqer.settings.auth.global">
             <de><![CDATA[Globale Authenticator]]></de>

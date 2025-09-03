@@ -15,7 +15,8 @@ class VerifiedMail2FA extends Control
     {
         parent::__construct($options);
 
-        $this->addCSSClass('quiqqer-mail2fa-auth');
+        $this->addCSSClass('quiqqer-mail2fa-auth-settings');
+        $this->addCSSClass('default-content');
         $this->addCSSFile(__DIR__ . '/VerifiedMail2FA.css');
         $this->setJavaScriptControl('controls/users/auth/settings/VerifiedMail2FA');
     }

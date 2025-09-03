@@ -42,7 +42,7 @@ define('controls/users/auth/VerifiedMail2FA', [
             const inputs = node.querySelectorAll('input');
 
             // send mail
-            QUIAjax.post('ajax_users_authenticator_sendVerifiedMail2faMail', () => {
+            QUIAjax.post('ajax_users_authenticator_mail2fa_sendVerifiedMail2faMail', () => {
             }, {
                 'package': 'quiqqer/code',
                 onError: (err) => {

@@ -1,0 +1,48 @@
+
+.quiqqer-mail2fa-auth-settings {
+    margin: 0 auto;
+}
+
+.quiqqer-mail2fa-auth-settings h1 {
+    font-size: 2rem;
+}
+
+.quiqqer-mail2fa-auth-settings [name="send-code"] {
+    display: block;
+    margin: 1rem auto 0;
+}
+
+.quiqqer-mail2fa-auth-settings hr {
+    margin: 2rem 0;
+}
+
+[data-name="quiqqer-mail2fa-auth-settings-code"] {
+    text-align: center;
+}
+
+[data-name="quiqqer-mail2fa-auth-settings-code"] label {
+    display: block;
+    margin: 1rem auto;
+    max-width: 500px;
+}
+
+[data-name="quiqqer-mail2fa-auth-settings-code"] label span:first-child {
+    font-size: 12px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+[data-name="quiqqer-mail2fa-auth-settings-code"] .code {
+    display: flex;
+    gap: 1rem;
+}
+
+[data-name="quiqqer-mail2fa-auth-settings-code"] .code input {
+    flex-grow: 1;
+    padding: 0;
+    line-height: 40px;
+    height: 50px;
+    text-align: center;
+    width: 10px;
+}
