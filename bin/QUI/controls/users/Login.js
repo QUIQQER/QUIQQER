@@ -1,17 +1,17 @@
 /**
  * @module controls/users/Login
  *
- * @event onLoad [self]
- * @event onAuthBegin [self]
- * @event onAuthNext [self]
- * @event onSuccess [self]
- * @event onUserLoginError [error, self]
+ * @event onLoad [this]
+ * @event onAuthBegin [this]
+ * @event onAuthNext [this]
+ * @event onSuccess [this]
+ * @event onUserLoginError [error, this]
  *
- * @event onQuiqqerUserAuthLoginLoad [self]
- * @event onQuiqqerUserAuthLoginUserLoginError [error, self]
- * @event onQuiqqerUserAuthLoginAuthBegin [self]
- * @event onQuiqqerUserAuthLoginSuccess [self]
- * @event onQuiqqerUserAuthNext [self]
+ * @event onQuiqqerUserAuthLoginLoad [this]
+ * @event onQuiqqerUserAuthLoginUserLoginError [error, this]
+ * @event onQuiqqerUserAuthLoginAuthBegin [this]
+ * @event onQuiqqerUserAuthLoginSuccess [this]
+ * @event onQuiqqerUserAuthNext [this]
  */
 define('controls/users/Login', [
 
@@ -156,35 +156,21 @@ define('controls/users/Login', [
          * Refresh the form data and set events to the current form
          */
         $refreshForm: function () {
-            const self = this;
 
-            this.$forms.set({
-                action: '',
-                method: 'POST',
-                events: {
-                    submit: (event) => {
-                        let Target = null;
+            const onSubmit = (e) => {
+                e.stopPropagation();
+                e.preventDefault();
 
-                        if (typeOf(event) === 'element') {
-                            Target = event;
-                        }
+                this.auth(e.target).catch((err) => {
+                    this.fireEvent('userLoginError', [err, this]);
+                    QUI.fireEvent('quiqqerUserAuthLoginUserLoginError', [err, this]);
+                });
+            }
 
-                        if (typeOf(event) === 'domevent') {
-                            event.stop();
-                            Target = event.target;
-                        }
-
-                        if (!Target) {
-                            console.error('No target given.');
-                            return;
-                        }
-
-                        this.auth(Target).catch(function (err) {
-                            self.fireEvent('userLoginError', [err, self]);
-                            QUI.fireEvent('quiqqerUserAuthLoginUserLoginError', [err, self]);
-                        });
-                    }
-                }
+            Array.from(this.$forms).forEach((form) => {
+                form.action = '';
+                form.method = 'POST';
+                form.addEventListener('submit', onSubmit);
             });
 
             const onSuccess = this.getAttribute('onSuccess');
@@ -201,74 +187,88 @@ define('controls/users/Login', [
          * @return {Promise}
          */
         $buildAuthenticator: function (html) {
-            const Container = new Element('div', {
-                html: html
-            });
+            const container = this.getElm();
+            const ghost = document.createElement('div');
+            ghost.innerHTML = html;
 
-            const elements = Container.getChildren(),
-                forms = Container.getElements('form'),
+            let socialLoginContainer = container.querySelector('[data-name="social-logins"]');
+            let mailLoginContainer = container.querySelector('[data-name="mail-logins"]');
 
-                children = elements.filter(function (Node) {
-                    return !Node.get('data-qui');
+            if (!socialLoginContainer && !mailLoginContainer) {
+                container.innerHTML = html;
+
+                socialLoginContainer = container.querySelector('[data-name="social-logins"]');
+                mailLoginContainer = container.querySelector('[data-name="mail-logins"]');
+            } else {
+                Array.from(
+                    ghost.querySelectorAll('style')
+                ).forEach((style) => {
+                    container.appendChild(style);
                 });
-
-            if (!forms.length) {
-                QUIAjax.post('ajax_user_logout', function () {
-                    window.location.reload();
-                });
-
-                return Promise.resolve();
             }
 
-            console.log('$buildAuthenticator', this.$authStep);
+            // social logins
+            if (socialLoginContainer) {
+                socialLoginContainer.innerHTML = '';
 
-            forms.setStyle('opacity', 0);
-            forms.inject(this.getElm());
-
-            for (let i = 1, len = forms.length; i < len; i++) {
-                new Element('div', {
-                    'class': 'quiqqer-login-or',
-                    html: '<span>' + QUILocale.get('quiqqer/core', 'controls.users.auth.login.or') + '</span>'
-                }).inject(forms[i], 'before');
+                Array.from(
+                    ghost.querySelectorAll('[data-name="social-logins"] form')
+                ).forEach((form) => {
+                    form.style.opacity = 0;
+                    socialLoginContainer.appendChild(form);
+                });
             }
 
-            this.$forms = forms;
+            // mail logins
+            if (mailLoginContainer) {
+                mailLoginContainer.innerHTML = '';
+
+                Array.from(
+                    ghost.querySelectorAll('[data-name="mail-logins"] form')
+                ).forEach((form) => {
+                    form.style.opacity = 0;
+                    mailLoginContainer.appendChild(form);
+                });
+            }
+
+            this.$forms = container.querySelectorAll('form');
             this.$refreshForm();
 
-            children.each(function (Child) {
-                Child.inject(forms[0]);
+            console.log();
+
+            Array.from(this.$forms).forEach((form) => {
+                QUI.parse(form);
             });
 
-            return QUI.parse(forms).then(function () {
-                this.Loader.hide();
+            this.Loader.hide();
 
-                const Node = this.getElm().getElement('[data-qui="controls/users/auth/QUIQQERLogin"]');
+            const Node = container.querySelector('[data-qui="controls/users/auth/QUIQQERLogin"]');
 
-                if (Node && Node.get('data-quiid')) {
-                    const Control = QUI.Controls.getById(Node.get('data-quiid'));
+            if (Node && Node.getAttribute('data-quiid')) {
+                const Control = QUI.Controls.getById(Node.getAttribute('data-quiid'));
 
-                    if (Control) {
-                        Control.addEvents({
-                            onShowPassword: this.$onShowPassword,
-                            onShowPasswordReset: this.onShowPasswordReset
-                        });
-                    }
+                if (Control) {
+                    Control.addEvents({
+                        onShowPassword: this.$onShowPassword,
+                        onShowPasswordReset: this.onShowPasswordReset
+                    });
                 }
+            }
 
-                forms.setStyle('top', 20);
-
-                moofx(forms).animate({
-                    opacity: 1,
-                    top: 0
+            return new Promise((resolve) => {
+                moofx(this.$forms).animate({
+                    opacity: 1
                 }, {
                     duration: 500,
-                    callback: function () {
-                        if (typeof forms[0].elements[0] !== 'undefined') {
-                            forms[0].elements[0].focus();
+                    callback: () => {
+                        if (typeof this.$forms[0].elements[0] !== 'undefined') {
+                            this.$forms[0].elements[0].focus();
                         }
+
+                        resolve();
                     }
                 });
-            }.bind(this));
+            });
         },
 
         /**
@@ -278,15 +278,12 @@ define('controls/users/Login', [
             if (this.getAttribute('showLoader')) {
                 this.Loader.show();
             }
-            console.log('auth');
             this.fireEvent('authBegin', [this]);
             QUI.fireEvent('quiqqerUserAuthLoginAuthBegin', [this]);
 
             return new Promise((resolve, reject) => {
                 QUIAjax.post('ajax_users_login', (result) => {
                     this.$authStep = result.authStep;
-
-                    console.log(this.$authStep);
 
                     // authentication was successful
                     if (!result.authenticator) {
@@ -305,27 +302,16 @@ define('controls/users/Login', [
                         return;
                     }
 
-                    const Or = this.getElm().getElements('.quiqqer-login-or');
-
-                    if (Or.length) {
-                        moofx(Or).animate({
-                            opacity: 0
-                        }, {
-                            duration: 200
-                        });
-                    }
-
                     moofx(this.$forms).animate({
                         top: 20,
                         opacity: 0
                     }, {
                         duration: 250,
                         callback: () => {
-                            if (Or.length) {
-                                Or.destroy();
-                            }
+                            Array.from(this.$forms).forEach((form) => {
+                                form.parentNode.removeChild(form);
+                            });
 
-                            this.$forms.destroy();
                             this.$buildAuthenticator(result.control);
                         }
                     });

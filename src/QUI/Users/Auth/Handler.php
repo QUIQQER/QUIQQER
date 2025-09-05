@@ -240,14 +240,14 @@ class Handler
      * Returns a specific authenticator
      *
      * @param string $authenticator - name of the authenticator
-     * @param string|int|User $user - QUIQQER username / id / uuid / user object
+     * @param string|int|User|null $user - QUIQQER username / id / uuid / user object
      * @return AuthenticatorInterface
      *
-     * @throws QUI\Users\Auth\Exception
+     * @throws Exception
      */
     public function getAuthenticator(
         string $authenticator,
-        string | int | QUI\Interfaces\Users\User $user
+        null | string | int | QUI\Interfaces\Users\User $user = null
     ): AuthenticatorInterface {
         $authenticators = $this->getAvailableAuthenticators();
         $authenticators = array_flip($authenticators);

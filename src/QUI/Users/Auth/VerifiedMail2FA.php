@@ -24,8 +24,12 @@ class VerifiedMail2FA extends AbstractAuthenticator
     protected mixed $user = null;
     protected bool $authenticated = false;
 
-    public function __construct(array | int | string | User $user = '')
+    public function __construct(null | array | int | string | User $user = null)
     {
+        if (empty($user)) {
+            return;
+        }
+
         if ($user instanceof User) {
             $this->User = $user;
             return;
@@ -103,6 +107,12 @@ class VerifiedMail2FA extends AbstractAuthenticator
             return $this->User;
         }
 
+        if (empty($this->user)) {
+            throw new QUI\Users\Exception(
+                ['quiqqer/core', 'exception.login.fail.user.not.found'],
+                404
+            );
+        }
 
         try {
             $this->User = QUI::getUsers()->get($this->user);
@@ -284,6 +294,12 @@ class VerifiedMail2FA extends AbstractAuthenticator
 
         $email = $User->getAttribute('email');
 
+        if (empty($email)) {
+            throw new QUI\Permissions\Exception(
+                ['quiqqer/core', 'exception.login.fail.user.need.email'],
+            );
+        }
+
         // send mail
         $digitCode = '';
 
@@ -332,6 +348,17 @@ class VerifiedMail2FA extends AbstractAuthenticator
             );
         }
 
+        // check if current user is nobody
+        // 1fa must be successfully authenticated
+        if (QUI::getUsers()->isNobodyUser(QUI::getUserBySession())) {
+            if (!QUI::getSession()->get('auth-globals')) {
+                throw new QUI\Users\Exception(
+                    ['quiqqer/core', 'exception.2fa.mail.enable.not.authenticated'],
+                );
+            }
+        }
+
+
         $userCode = QUI::getSession()->get(self::USER_CODE_VERIFYING_ATTRIBUTE);
 
         if ($code !== $userCode) {
@@ -339,7 +366,14 @@ class VerifiedMail2FA extends AbstractAuthenticator
         }
 
         try {
-            $User->enableAuthenticator(VerifiedMail2FA::class);
+            if (QUI::getUsers()->isNobodyUser(QUI::getUserBySession())) {
+                $User->enableAuthenticator(
+                    VerifiedMail2FA::class,
+                    QUI::getUsers()->getSystemUser()
+                );
+            } else {
+                $User->enableAuthenticator(VerifiedMail2FA::class);
+            }
         } catch (QUI\Exception $e) {
             throw new QUI\Users\Exception($e->getMessage());
         }

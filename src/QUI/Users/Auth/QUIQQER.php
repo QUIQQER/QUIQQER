@@ -29,8 +29,12 @@ class QUIQQER extends AbstractAuthenticator
     protected ?string $user = null;
     protected bool $authenticated = false;
 
-    public function __construct(array | int | string | User $user = '')
+    public function __construct(null | array | int | string | User $user = null)
     {
+        if (empty($user)) {
+            return;
+        }
+
         if ($user instanceof User) {
             $this->User = $user;
             return;

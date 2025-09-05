@@ -67,6 +67,8 @@ define('controls/users/auth/settings/VerifiedMail2FA', [
                     this.$enable(code).then(() => {
                         if (enableButton) enableButton.disabled = false;
                         if (codeSendButton) codeSendButton.disabled = false;
+
+                        this.fireEvent('completed');
                     });
                 });
             }

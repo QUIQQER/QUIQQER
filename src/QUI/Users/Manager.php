@@ -924,7 +924,17 @@ class Manager
             }
         }
 
-        if (QUI::getSession()->get('auth-secondary') !== 1) {
+        $secondaryAuth = false;
+
+        if (QUI::isBackend() && QUI::conf('auth_settings', 'secondary_backend')) {
+            $secondaryAuth = true;
+        }
+
+        if (QUI::isFrontend() && QUI::conf('auth_settings', 'secondary_frontend')) {
+            $secondaryAuth = true;
+        }
+
+        if ($secondaryAuth && QUI::getSession()->get('auth-secondary') !== 1) {
             if (QUI::isBackend()) {
                 $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalBackendSecondaryAuthenticators();
             } else {
@@ -1034,11 +1044,10 @@ class Manager
 
         /* @var $User User */
         // user authenticators
-        $authenticator = $User->getAuthenticators();
-
-        foreach ($authenticator as $Authenticator) {
-            $this->authenticate($Authenticator, $authData);
-        }
+        //$authenticator = $User->getAuthenticators();
+        //foreach ($authenticator as $Authenticator) {
+            //$this->authenticate($Authenticator, $authData);
+        //}
 
         // has user permission for a login
         QUI\Permissions\Permission::checkPermission('quiqqer.login', $User);

@@ -1776,6 +1776,7 @@ class User implements QUIUserInterface
 
     /**
      * Return the authenticators from the user
+     * - Which are enabled
      *
      * @param string $authenticator - Name of the authenticator
      * @return AuthenticatorInterface

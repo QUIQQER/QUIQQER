@@ -11,6 +11,5 @@ QUI::$Ajax->registerFunction(
     static function ($code): void {
         VerifiedMail2FA::enableByUser($code);
     },
-    ['code'],
-    'Permission::checkUser'
+    ['code']
 );

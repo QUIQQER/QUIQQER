@@ -95,6 +95,8 @@ class Login extends Control
      */
     public function next(): array | null
     {
+        $authenticators = [];
+
         if (QUI::getSession()->get('auth-globals') !== 1) {
             // primary authenticator
             if (QUI::isFrontend()) {
@@ -106,12 +108,42 @@ class Login extends Control
             $this->setAttribute('authStep', 'primary');
         }
 
-        if (empty($authenticators) && QUI::getSession()->get('auth-secondary') !== 1) {
+        if (QUI::isFrontend()) {
+            $secondaryLoginType = (int)QUI::conf('auth_settings', 'secondary_frontend');
+        } else {
+            $secondaryLoginType = (int)QUI::conf('auth_settings', 'secondary_backend');
+        }
+
+        if (
+            empty($authenticators)
+            && QUI::getSession()->get('auth-secondary') !== 1
+        ) {
+            if ($secondaryLoginType === 0) {
+                return [];
+            }
+
             // secondary authenticators
             if (QUI::isFrontend()) {
                 $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalFrontendSecondaryAuthenticators();
             } else {
                 $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalBackendSecondaryAuthenticators();
+            }
+
+            try {
+                // use only from user activated authenticators
+                $uid = QUI::getSession()->get('uid');
+                $user = QUI::getUsers()->get($uid);
+                $userAuthenticators = $user->getAuthenticators();
+
+                $authenticators = array_filter($authenticators, function($authenticator) use ($userAuthenticators) {
+                    foreach ($userAuthenticators as $userAuthenticator) {
+                        if (get_class($userAuthenticator) === $authenticator) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+            } catch (\Exception) {
             }
 
             $this->setAttribute('authStep', 'secondary');

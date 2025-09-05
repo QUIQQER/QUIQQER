@@ -11,7 +11,7 @@
     {/if}
 
     {* SOCIAL LOGINS *}
-    <section class="quiqqer-users-login-social">
+    <section data-name="social-logins" class="quiqqer-users-login-social">
         {* social logins *}
         {foreach $authenticators as $k => $authenticator}
         {if $authenticator['class'] !== 'QUI\\Users\\Auth\\QUIQQER'}
@@ -27,19 +27,20 @@
         {/foreach}
     </section>
 
+    {foreach $authenticators as $k => $authenticator}
     {* MAIL LOGIN *}
-    <section class="quiqqer-users-login-form">
-        {foreach $authenticators as $k => $authenticator}
-        {if $authenticator['class'] === 'QUI\\Users\\Auth\\QUIQQER'}
 
-        {if count($authenticators) >= 2}
-        <div class="quiqqer-login-or">
+    {if $authenticator['class'] === 'QUI\\Users\\Auth\\QUIQQER'}
+
+    {if count($authenticators) >= 2}
+    <div class="quiqqer-login-or">
         <span>
             {locale group="quiqqer/core" var="controls.users.auth.login.or"}
         </span>
-        </div>
-        {/if}
+    </div>
+    {/if}
 
+    <section data-name="mail-logins" class="quiqqer-users-login-form">
         <form method="POST"
               name="login"
               data-authenticator="{$authenticator['class']}"
@@ -47,8 +48,8 @@
         >
             {$authenticator['control']->create()}
         </form>
-
-        {/if}
-        {/foreach}
     </section>
+
+    {/if}
+    {/foreach}
 </div>

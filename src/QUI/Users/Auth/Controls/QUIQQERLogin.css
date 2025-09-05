@@ -28,6 +28,8 @@
 
 .quiqqer-login-auth [type="submit"] {
     cursor: pointer;
+    margin: 1.25rem 0 1rem;
+    width: 100%;
 }
 
 .quiqqer-auth-login-passwordreset {
@@ -35,20 +37,20 @@
     display: flow-root;
 }
 
+.quiqqer-auth-login-passwordreset label {
+    margin: 1rem 0 0 0;
+}
+
 .quiqqer-auth-login-passwordreset-link {
     cursor: pointer;
-    margin-bottom: 20px;
     float: right;
 }
 
 .quiqqer-auth-login-passwordreset [type="submit"] {
+    margin-top: 0.5rem;
     width: 100%
 }
 
-.quiqqer-auth-login-passwordreset button {
-    clear: both;
-    cursor: pointer;
-    line-height: 20px;
-    margin-top: 20px;
+.quiqqer-auth-login-passwordreset [type="reset"] {
     width: 100%
 }

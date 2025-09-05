@@ -6,7 +6,9 @@ define('controls/users/auth/VerifiedMail2FA', [
     'qui/QUI',
     'qui/controls/Control',
     'Locale',
-    'Ajax'
+    'Ajax',
+
+    'css!controls/users/auth/VerifiedMail2FA.css'
 
 ], function (QUI, QUIControl, QUILocale, QUIAjax) {
     'use strict';

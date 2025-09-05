@@ -20,9 +20,9 @@ use QUI\System\Console;
 interface AuthenticatorInterface
 {
     /**
-     * @param array|int|string|User $user - name of the user, or user id
+     * @param array|int|string|User|null $user - name of the user, or user id
      */
-    public function __construct(array | int | string | User $user = '');
+    public function __construct(null | array | int | string | User $user = null);
 
     public static function getLoginControl(): ?Control;
 

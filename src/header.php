@@ -146,6 +146,8 @@ if (isset($_GET['logout'])) {
     $User->logout();
     $User = QUI::getUsers()->getNobody();
 
+    QUI::getSession()->destroy();
+
     if (
         isset($_SERVER['REQUEST_URI'])
         && str_contains($_SERVER['REQUEST_URI'], 'logout=1')
