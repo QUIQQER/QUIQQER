@@ -38,7 +38,7 @@ use function trim;
  */
 class Address extends QUI\QDOM
 {
-    protected ?int $id = null;
+    protected null|int|string $id = null;
 
     protected ?string $uuid = null;
 
