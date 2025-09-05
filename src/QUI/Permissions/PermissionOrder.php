@@ -139,10 +139,13 @@ class PermissionOrder
                 return true;
             }
 
-            // falls integer ist
-            if (is_int($hasPermissionResult)) {
+            // falls numerisch ist
+            if (is_numeric($hasPermissionResult)) {
+                $hasPermissionResult = (int) $hasPermissionResult;
+
                 if (is_bool($result)) {
-                    $result = 0;
+                    $result = $hasPermissionResult;
+                    continue;
                 }
 
                 if ($hasPermissionResult > $result) {
