@@ -6,12 +6,14 @@
  * @event onAuthNext [this]
  * @event onSuccess [this]
  * @event onUserLoginError [error, this]
+ * @event onBuildAuthenticator [this]
  *
  * @event onQuiqqerUserAuthLoginLoad [this]
  * @event onQuiqqerUserAuthLoginUserLoginError [error, this]
  * @event onQuiqqerUserAuthLoginAuthBegin [this]
  * @event onQuiqqerUserAuthLoginSuccess [this]
  * @event onQuiqqerUserAuthNext [this]
+ * @event onQuiqqerUserAuthLoginBuildAuthenticator [this]
  */
 define('controls/users/Login', [
 
@@ -190,6 +192,8 @@ define('controls/users/Login', [
             const ghost = document.createElement('div');
             ghost.innerHTML = html;
 
+            container.style.overflow = 'hidden';
+
             let socialLoginContainer = container.querySelector('[data-name="social-logins"]');
             let mailLoginContainer = container.querySelector('[data-name="mail-logins"]');
 
@@ -253,6 +257,8 @@ define('controls/users/Login', [
             }
 
             return new Promise((resolve) => {
+                container.style.overflow = '';
+
                 if (!this.$forms || !this.$forms.length) {
                     resolve();
                     return;
@@ -268,6 +274,8 @@ define('controls/users/Login', [
                         }
 
                         resolve();
+                        this.fireEvent('buildAuthenticator', [this]);
+                        QUI.fireEvent('quiqqerUserAuthLoginBuildAuthenticator', [this]);
                     }
                 });
             });
@@ -306,7 +314,6 @@ define('controls/users/Login', [
                     }
 
                     moofx(this.$forms).animate({
-                        top: 20,
                         opacity: 0
                     }, {
                         duration: 250,
