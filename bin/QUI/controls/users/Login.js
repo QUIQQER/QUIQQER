@@ -82,6 +82,8 @@ define('controls/users/Login', [
                 'type': 'fa-circle-o-notch'
             }).inject(this.getElm());
 
+            console.log(this.$Elm);
+
             return this.$Elm;
         },
 
@@ -198,10 +200,27 @@ define('controls/users/Login', [
             let mailLoginContainer = container.querySelector('[data-name="mail-logins"]');
 
             if (!socialLoginContainer && !mailLoginContainer) {
-                container.innerHTML = html;
+                const loginNode = ghost.querySelector('[data-qui="controls/users/Login"]');
+console.log(loginNode);
+                if (loginNode) {
+                    container.innerHTML = loginNode.innerHTML;
+                    container.setAttribute('data-qui', loginNode.getAttribute('data-qui'));
+
+                    loginNode.classList.forEach((cls) => {
+                        container.classList.add(cls);
+                    });
+                } else {
+                    container.innerHTML = ghost.innerHTML;
+                }
 
                 socialLoginContainer = container.querySelector('[data-name="social-logins"]');
                 mailLoginContainer = container.querySelector('[data-name="mail-logins"]');
+
+                Array.from(
+                    ghost.querySelectorAll('style')
+                ).forEach((style) => {
+                    container.appendChild(style);
+                });
             } else {
                 Array.from(
                     ghost.querySelectorAll('style')
