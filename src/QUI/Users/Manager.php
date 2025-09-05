@@ -907,7 +907,7 @@ class Manager
         $Events->fireEvent('userLoginStart', [$userId]);
 
         // global authenticators
-        if (QUI::getSession()->get('auth-globals') !== 1) {
+        if (QUI::getSession()->get('auth-primary') !== 1) {
             if (QUI::isBackend()) {
                 $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalBackendAuthenticators();
             } else {
@@ -919,8 +919,7 @@ class Manager
             }
 
             if (!empty($authenticators)) {
-                QUI::getSession()->set('auth-globals', 1);
-                // @todo set user uuid to session
+                QUI::getSession()->set('auth-primary', 1);
             }
         }
 

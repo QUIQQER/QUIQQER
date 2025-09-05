@@ -54,7 +54,7 @@ define('controls/users/auth/VerifiedMail2FA', [
                         // destroy session
                         require(['utils/Session'], (Session) => {
                             Session.remove('inAuthentication');
-                            Session.remove('auth-globals');
+                            Session.remove('auth-primary');
 
                             const loginNode = this.getElm().closest('[data-qui="controls/users/Login"]');
 

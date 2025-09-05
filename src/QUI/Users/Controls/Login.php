@@ -97,7 +97,7 @@ class Login extends Control
     {
         $authenticators = [];
 
-        if (QUI::getSession()->get('auth-globals') !== 1) {
+        if (QUI::getSession()->get('auth-primary') !== 1) {
             // primary authenticator
             if (QUI::isFrontend()) {
                 $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalFrontendAuthenticators();

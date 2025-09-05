@@ -44,7 +44,7 @@ QUI::$Ajax->registerFunction(
         }
 
         if ($authStep === 'primary' || empty($authStep)) {
-            QUI::getSession()->set('auth-globals', 1);
+            QUI::getSession()->set('auth-primary', 1);
             QUI::getSession()->set('auth-secondary', 0);
         }
 
@@ -68,7 +68,7 @@ QUI::$Ajax->registerFunction(
         if (
             empty($next) && $secondaryLoginType !== 1
             ||
-            QUI::getSession()->get('auth-globals') === 1
+            QUI::getSession()->get('auth-primary') === 1
             && QUI::getSession()->get('auth-secondary') === 1
         ) {
             try {

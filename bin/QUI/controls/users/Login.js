@@ -156,7 +156,6 @@ define('controls/users/Login', [
          * Refresh the form data and set events to the current form
          */
         $refreshForm: function () {
-
             const onSubmit = (e) => {
                 e.stopPropagation();
                 e.preventDefault();
@@ -234,8 +233,6 @@ define('controls/users/Login', [
             this.$forms = container.querySelectorAll('form');
             this.$refreshForm();
 
-            console.log();
-
             Array.from(this.$forms).forEach((form) => {
                 QUI.parse(form);
             });
@@ -256,6 +253,11 @@ define('controls/users/Login', [
             }
 
             return new Promise((resolve) => {
+                if (!this.$forms || !this.$forms.length) {
+                    resolve();
+                    return;
+                }
+
                 moofx(this.$forms).animate({
                     opacity: 1
                 }, {
@@ -278,6 +280,7 @@ define('controls/users/Login', [
             if (this.getAttribute('showLoader')) {
                 this.Loader.show();
             }
+
             this.fireEvent('authBegin', [this]);
             QUI.fireEvent('quiqqerUserAuthLoginAuthBegin', [this]);
 
@@ -286,7 +289,7 @@ define('controls/users/Login', [
                     this.$authStep = result.authStep;
 
                     // authentication was successful
-                    if (!result.authenticator) {
+                    if (!result.authenticator || !result.authenticator.length) {
                         window.QUIQQER_USER = result.user;
 
                         this.fireEvent('success', [this]);

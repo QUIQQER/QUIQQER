@@ -351,7 +351,7 @@ class VerifiedMail2FA extends AbstractAuthenticator
         // check if current user is nobody
         // 1fa must be successfully authenticated
         if (QUI::getUsers()->isNobodyUser(QUI::getUserBySession())) {
-            if (!QUI::getSession()->get('auth-globals')) {
+            if (!QUI::getSession()->get('auth-primary')) {
                 throw new QUI\Users\Exception(
                     ['quiqqer/core', 'exception.2fa.mail.enable.not.authenticated'],
                 );
