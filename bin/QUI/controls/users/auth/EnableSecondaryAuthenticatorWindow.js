@@ -17,6 +17,10 @@ define('controls/users/auth/EnableSecondaryAuthenticatorWindow', [
         Extends: QUIPopup,
         Type: 'controls/users/auth/EnableSecondaryAuthenticatorWindow',
 
+        options: {
+            authenticator: false // enable a specific authenticator
+        },
+
         initialize: function (options) {
             this.parent(options);
 
@@ -25,6 +29,8 @@ define('controls/users/auth/EnableSecondaryAuthenticatorWindow', [
                 maxWidth: 600,
                 buttons: false,
                 closeable: false,
+                backgroundClosable: false,
+                autoclose: false
             });
 
             this.addEvents({
@@ -54,10 +60,21 @@ define('controls/users/auth/EnableSecondaryAuthenticatorWindow', [
                 <section data-name="authenticator-settings" style="opacity: 0;"></section>
             `;
 
+            if (this.getAttribute('authenticator')) {
+                this.setAttribute('backgroundClosable', true);
+                this.setAttribute('closable', true);
+
+                this.$showAuthenticatorSettings(this.getAttribute('authenticator')).then(() => {
+                    this.close();
+                    this.Loader.hide();
+                    this.fireEvent('completed');
+                });
+
+                return;
+            }
+
             QUIAjax.get('ajax_users_authenticator_getSecondaryAuthenticators', (list) => {
                 list.forEach((authenticator) => {
-                    console.log(authenticator);
-
                     const authNode = document.createElement('div')
 
                     authNode.classList.add('enable-secondary-authenticators-authenticator');
@@ -80,7 +97,10 @@ define('controls/users/auth/EnableSecondaryAuthenticatorWindow', [
 
                             this.$showAuthenticatorSettings(
                                 button.getAttribute('data-authenticator')
-                            );
+                            ).then(() => {
+                                this.close();
+                                this.fireEvent('completed');
+                            });
                         });
                     } else {
                         button.addEventListener('click', (e) => {
@@ -88,7 +108,10 @@ define('controls/users/auth/EnableSecondaryAuthenticatorWindow', [
 
                             this.$enableAuthenticator(
                                 button.getAttribute('data-authenticator')
-                            );
+                            ).then(() => {
+                                this.close();
+                                this.fireEvent('completed');
+                            });
                         });
                     }
 
@@ -167,6 +190,10 @@ define('controls/users/auth/EnableSecondaryAuthenticatorWindow', [
 
         $enableAuthenticator: function (authenticator) {
             console.log(authenticator);
+
+            return new Promise(() => {
+                // @todo TODO
+            });
         }
     });
 });

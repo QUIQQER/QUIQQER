@@ -41,7 +41,9 @@ define('controls/users/Login', [
             '$onInject',
             '$refreshForm',
             '$onShowPassword',
-            'onShowPasswordReset'
+            'onShowPasswordReset',
+            '$clickShowControl',
+            '$clickBackToAuthList'
         ],
 
         options: {
@@ -82,8 +84,6 @@ define('controls/users/Login', [
                 'type': 'fa-circle-o-notch'
             }).inject(this.getElm());
 
-            console.log(this.$Elm);
-
             return this.$Elm;
         },
 
@@ -109,26 +109,27 @@ define('controls/users/Login', [
                 this.Loader.show();
             }
 
-            QUIAjax.get('ajax_users_loginControl', (result) => {
-                this.$authStep = result.authStep;
+            this.getLoginControl().then((responseData) => {
+                return this.$handleLoginResponse(responseData);
+            }).then((responseData) => {
+                return this.$buildAuthenticator(responseData.control);
+            }).then(() => {
+                onInjectIsRunning = false;
 
-                this.$buildAuthenticator(result.control).then(() => {
-                    onInjectIsRunning = false;
+                this.fireEvent('load', [this]);
+                QUI.fireEvent('quiqqerUserAuthLoginLoad', [this]);
 
-                    this.fireEvent('load', [this]);
-                    QUI.fireEvent('quiqqerUserAuthLoginLoad', [this]);
+                const container = this.getElm().querySelector(
+                    '[data-name="quiqqer-users-login-container"]'
+                );
 
-                    moofx(
-                        this.getElm().querySelector('[data-name="quiqqer-users-login-container"]')
-                    ).animate({
+                if (container) {
+                    moofx(container).animate({
                         opacity: 1
                     }, {
                         duration: 250
                     });
-                });
-            }, {
-                isAdminLogin: typeof QUIQQER_IS_ADMIN_LOGIN !== 'undefined' ? 1 : 0,
-                authenticators: JSON.encode(this.getAttribute('authenticators'))
+                }
             });
         },
 
@@ -183,6 +184,92 @@ define('controls/users/Login', [
             }
         },
 
+        $handleLoginResponse: function (responseData) {
+            this.$authStep = responseData.authStep;
+
+            let response = Promise.resolve(responseData);
+
+            if (
+                responseData.secondaryLoginType === 1
+                && responseData.authStep === 'secondary'
+                && !responseData.authenticator
+            ) {
+                // 2fa is a must
+                return this.$show2FAEnable().then(() => {
+                    return this.getLoginControl();
+                });
+            }
+
+            // 2fa info, because user can activate it but don't have to
+            if (
+                responseData.secondaryLoginType === 2
+                && responseData.authStep === 'secondary'
+                && !responseData.authenticator
+            ) {
+                return this.$show2FAInfo().then((closeType) => {
+                    if (closeType === 'cancel') {
+                        return [];
+                    }
+                });
+            }
+
+            return response.then(() => {
+                return responseData;
+            });
+        },
+
+        $show2FAEnable: function () {
+            this.Loader.show();
+
+            return new Promise((resolve) => {
+                require([
+                    'controls/users/auth/EnableSecondaryAuthenticatorWindow'
+                ], (EnableSecondaryAuthenticatorWindow) => {
+                    new EnableSecondaryAuthenticatorWindow({
+                        events: {
+                            onCompleted: () => {
+                                this.Loader.hide();
+                                resolve();
+                            }
+                        }
+                    }).open();
+                });
+            });
+        },
+
+        $show2FAInfo: function () {
+            this.Loader.show();
+
+            return new Promise((resolve) => {
+                require([
+                    'controls/users/auth/ShowSecondaryAuthenticatorWindow'
+                ], (ShowSecondaryAuthenticatorWindow) => {
+                    new ShowSecondaryAuthenticatorWindow({
+                        events: {
+                            onCompleted: () => {
+                                this.Loader.hide();
+                                resolve('completed');
+                            },
+                            onCancel: () => {
+                                this.Loader.hide();
+                                resolve('cancel');
+                            }
+                        }
+                    }).open();
+                });
+            });
+        },
+
+        getLoginControl: function () {
+            return new Promise((resolve, reject) => {
+                QUIAjax.get('ajax_users_loginControl', resolve, {
+                    isAdminLogin: typeof QUIQQER_IS_ADMIN_LOGIN !== 'undefined' ? 1 : 0,
+                    authenticators: JSON.encode(this.getAttribute('authenticators')),
+                    onError: reject
+                });
+            });
+        },
+
         /**
          * Build the authenticator from the ajax html
          *
@@ -196,12 +283,14 @@ define('controls/users/Login', [
 
             container.style.overflow = 'hidden';
 
+            console.log('$buildAuthenticator', this.$authStep);
+
             let socialLoginContainer = container.querySelector('[data-name="social-logins"]');
             let mailLoginContainer = container.querySelector('[data-name="mail-logins"]');
 
             if (!socialLoginContainer && !mailLoginContainer) {
                 const loginNode = ghost.querySelector('[data-qui="controls/users/Login"]');
-console.log(loginNode);
+
                 if (loginNode) {
                     container.innerHTML = loginNode.innerHTML;
                     container.setAttribute('data-qui', loginNode.getAttribute('data-qui'));
@@ -237,6 +326,7 @@ console.log(loginNode);
                     ghost.querySelectorAll('[data-name="social-logins"] form')
                 ).forEach((form) => {
                     form.style.opacity = 0;
+                    form.style.display = 'none';
                     socialLoginContainer.appendChild(form);
                 });
             }
@@ -249,6 +339,7 @@ console.log(loginNode);
                     ghost.querySelectorAll('[data-name="mail-logins"] form')
                 ).forEach((form) => {
                     form.style.opacity = 0;
+                    form.style.display = 'none';
                     mailLoginContainer.appendChild(form);
                 });
             }
@@ -256,9 +347,42 @@ console.log(loginNode);
             this.$forms = container.querySelectorAll('form');
             this.$refreshForm();
 
-            Array.from(this.$forms).forEach((form) => {
-                QUI.parse(form);
-            });
+            if (this.$authStep === 'primary') {
+                Array.from(this.$forms).forEach((form) => {
+                    form.style.display = '';
+                    form.querySelector('button[name="show-control"]').style.display = 'none';
+                });
+
+                Array.from(this.$forms).forEach((form) => {
+                    QUI.parse(form);
+                });
+            }
+
+            if (this.$authStep === 'secondary') {
+                if (this.$forms.length >= 2) {
+                    // show buttons
+                    Array.from(this.$forms).forEach((form) => {
+                        const button = form.querySelector('button[name="show-control"]');
+
+                        form.style.display = '';
+                        button.style.display = '';
+                        form.querySelector('[data-name="quiqqer-users-login-social-control"]').style.display = 'none';
+
+                        button.addEventListener('click', this.$clickShowControl);
+                    });
+
+                    container.querySelector('[data-name="mail-logins"]').style.marginTop = '0.5rem';
+                } else {
+                    Array.from(this.$forms).forEach((form) => {
+                        form.style.display = '';
+                        form.querySelector('button[name="show-control"]').style.display = 'none';
+                    });
+
+                    Array.from(this.$forms).forEach((form) => {
+                        QUI.parse(form);
+                    });
+                }
+            }
 
             this.Loader.hide();
 
@@ -312,39 +436,7 @@ console.log(loginNode);
             QUI.fireEvent('quiqqerUserAuthLoginAuthBegin', [this]);
 
             return new Promise((resolve, reject) => {
-                QUIAjax.post('ajax_users_login', (result) => {
-                    this.$authStep = result.authStep;
-
-                    // authentication was successful
-                    if (!result.authenticator || !result.authenticator.length) {
-                        window.QUIQQER_USER = result.user;
-
-                        this.fireEvent('success', [this]);
-                        QUI.fireEvent('quiqqerUserAuthLoginSuccess', [this, Form.get('data-authenticator')]);
-                        resolve(this);
-
-                        if (typeof this.getAttribute('onSuccess') === 'function') {
-                            this.getAttribute('onSuccess')(this);
-                            return;
-                        }
-
-                        window.location.reload();
-                        return;
-                    }
-
-                    moofx(this.$forms).animate({
-                        opacity: 0
-                    }, {
-                        duration: 250,
-                        callback: () => {
-                            Array.from(this.$forms).forEach((form) => {
-                                form.parentNode.removeChild(form);
-                            });
-
-                            this.$buildAuthenticator(result.control);
-                        }
-                    });
-                }, {
+                QUIAjax.post('ajax_users_login', resolve, {
                     showLogin: false,
                     authenticator: Form.get('data-authenticator'),
                     authStep: this.$authStep,
@@ -364,6 +456,37 @@ console.log(loginNode);
                         QUI.fireEvent('quiqqerUserAuthNext', [this]);
 
                         reject(e);
+                    }
+                });
+            }).then((responseData) => {
+                return this.$handleLoginResponse(responseData)
+            }).then((responseData) => {
+                // authentication was successful
+                if (!responseData.authenticator || !responseData.authenticator.length) {
+                    window.QUIQQER_USER = responseData.user;
+
+                    this.fireEvent('success', [this]);
+                    QUI.fireEvent('quiqqerUserAuthLoginSuccess', [this, Form.get('data-authenticator')]);
+
+                    if (typeof this.getAttribute('onSuccess') === 'function') {
+                        this.getAttribute('onSuccess')(this);
+                        return;
+                    }
+
+                    window.location.reload();
+                    return;
+                }
+
+                moofx(this.$forms).animate({
+                    opacity: 0
+                }, {
+                    duration: 250,
+                    callback: () => {
+                        Array.from(this.$forms).forEach((form) => {
+                            form.parentNode.removeChild(form);
+                        });
+
+                        this.$buildAuthenticator(responseData.control);
                     }
                 });
             });
@@ -460,6 +583,70 @@ console.log(loginNode);
                     }
                 });
             }
+        },
+
+        $clickShowControl: function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            const targetForm = e.target.closest('form');
+            const container = targetForm.closest('[data-name="quiqqer-users-login-container"]');
+            const forms = container.querySelectorAll('form');
+
+            Array.from(forms).forEach((form) => {
+                const button = form.querySelector('button[name="show-control"]');
+
+                moofx(button).animate({
+                    opacity: 0
+                }, {
+                    duration: 250,
+                    callback: () => {
+                        button.style.display = 'none';
+                    }
+                });
+            });
+
+            setTimeout(() => {
+                const controlContainer = targetForm.querySelector('[data-name="quiqqer-users-login-social-control"]');
+
+                controlContainer.style.display = 'block';
+                QUI.parse(controlContainer).then(() => {
+                    const back = document.createElement('button');
+                    back.innerHTML = 'Zurück';
+                    back.classList.add('btn', 'btn-secondary');
+                    back.name = 'back-to-auth-list';
+                    back.addEventListener('click', this.$clickBackToAuthList)
+
+                    this.getElm().appendChild(back);
+                });
+            }, 300);
+        },
+
+        $clickBackToAuthList: function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const container = this.getElm();
+            const controlContainer = container.querySelectorAll('[data-name="quiqqer-users-login-social-control"]');
+            const backButton = container.querySelector('[name="back-to-auth-list"]');
+            const controls = container.querySelectorAll('[name="show-control"]');
+
+            Array.from(controlContainer).forEach((node) => {
+                node.style.display = 'none';
+            });
+
+            if (backButton) {
+                backButton.parentNode.removeChild(backButton);
+            }
+
+            Array.from(controls).forEach((control) => {
+                control.style.opacity = 0;
+                control.style.display = 'block';
+
+                moofx(control).animate({
+                    opacity: 1
+                })
+            });
         }
     });
 });

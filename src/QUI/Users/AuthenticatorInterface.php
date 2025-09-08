@@ -25,6 +25,7 @@ interface AuthenticatorInterface
     public function __construct(null | array | int | string | User $user = null);
 
     public static function getLoginControl(): ?Control;
+    public static function getSecondaryAuthenticationButton(): ?Control;
 
     public function getPasswordResetControl(): ?Control;
 
@@ -44,6 +45,7 @@ interface AuthenticatorInterface
     public function getTitle(null | Locale $Locale = null): string;
 
     public function getDescription(null | Locale $Locale = null): string;
+    public function getIcon(): string;
 
     public function getFrontendTitle(null | Locale $Locale = null): string;
 

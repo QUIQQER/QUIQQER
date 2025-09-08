@@ -71,6 +71,20 @@ class QUIQQER extends AbstractAuthenticator
         return $Locale->get('quiqqer/core', 'quiqqer.auth.description');
     }
 
+    public function getFrontendTitle(?Locale $Locale = null): string
+    {
+        if (is_null($Locale)) {
+            $Locale = QUI::getLocale();
+        }
+
+        return $Locale->get('quiqqer/core', 'quiqqer.auth.frontendTitle');
+    }
+
+    public function getIcon(): string
+    {
+        return 'fa fa-key';
+    }
+
     /**
      * @throws Exception
      */

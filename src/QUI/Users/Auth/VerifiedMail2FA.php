@@ -6,6 +6,7 @@ use QUI;
 use QUI\Interfaces\Users\User;
 use QUI\Locale;
 use QUI\Users\AbstractAuthenticator;
+use QUI\Users\Attribute\AttributeVerificationStatus;
 use QUI\Users\Attribute\Verifiable\MailAttribute;
 use QUI\Users\Exception;
 use QUI\Utils\Security\Orthos;
@@ -78,6 +79,11 @@ class VerifiedMail2FA extends AbstractAuthenticator
         }
 
         return $Locale->get('quiqqer/core', 'quiqqer.mail2fa.description');
+    }
+
+    public function getIcon(): string
+    {
+        return 'fa fa-envelope';
     }
 
     public function getFrontendTitle(null | Locale $Locale = null): string
@@ -366,6 +372,18 @@ class VerifiedMail2FA extends AbstractAuthenticator
         }
 
         try {
+            // verify mail
+            if (method_exists($User, 'setStatusToVerifiableAttribute')) {
+                $User->setStatusToVerifiableAttribute(
+                    $User->getAttribute('email'),
+                    QUI\Users\Attribute\Verifiable\MailAttribute::class,
+                    AttributeVerificationStatus::VERIFIED
+                );
+
+                $User->save(QUI::getUsers()->getSystemUser());
+            }
+
+            // enable 2fa
             if (QUI::getUsers()->isNobodyUser(QUI::getUserBySession())) {
                 $User->enableAuthenticator(
                     VerifiedMail2FA::class,

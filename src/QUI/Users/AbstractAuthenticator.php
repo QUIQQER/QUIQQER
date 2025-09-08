@@ -24,6 +24,11 @@ abstract class AbstractAuthenticator implements QUI\Users\AuthenticatorInterface
         return null;
     }
 
+    public static function getSecondaryAuthenticationButton(): ?QUI\Control
+    {
+        return null;
+    }
+
     public function getPasswordResetControl(): ?Control
     {
         return null;

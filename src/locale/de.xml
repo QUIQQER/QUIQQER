@@ -647,6 +647,12 @@
         <locale name="quiqqer.auth.title">
             <de><![CDATA[QUIQQER Standard Authentifizierung]]></de>
         </locale>
+        <locale name="quiqqer.auth.frontendTitle">
+            <de><![CDATA[Benutzername und Password]]></de>
+        </locale>
+        <locale name="quiqqer.auth.frontendTitle.email">
+            <de><![CDATA[Benutzername / E-Mail und Password]]></de>
+        </locale>
         <locale name="quiqqer.auth.description">
             <de><![CDATA[Die standard QUIQQER Authentifizierung per Benutzername und Passwort.]]></de>
         </locale>

@@ -44,14 +44,14 @@ class Login extends Control
 
     public function getBody(): string
     {
-        $authenticator = $this->next();
+        $nextAuthenticators = $this->next();
 
-        if (is_null($authenticator)) {
+        if (is_null($nextAuthenticators)) {
             return '';
         }
 
-        if (!is_array($authenticator)) {
-            $authenticator = [$authenticator];
+        if (!is_array($nextAuthenticators)) {
+            $nextAuthenticators = [$nextAuthenticators];
         }
 
         $authenticators = [];
@@ -61,19 +61,22 @@ class Login extends Control
             $exclusiveAuthenticators = [];
         }
 
-        foreach ($authenticator as $auth) {
-            if (!empty($exclusiveAuthenticators) && !in_array($auth, $exclusiveAuthenticators)) {
+        foreach ($nextAuthenticators as $authenticator) {
+            if (!empty($exclusiveAuthenticators) && !in_array($authenticator, $exclusiveAuthenticators)) {
                 continue;
             }
 
-            $Control = forward_static_call([$auth, 'getLoginControl']);
+            $Control = forward_static_call([$authenticator, 'getLoginControl']);
 
             if (is_null($Control)) {
                 continue;
             }
 
+            $instance = new $authenticator();
+
             $authenticators[] = [
-                'class' => $auth,
+                'instance' => $instance,
+                'class' => $authenticator,
                 'control' => $Control
             ];
         }
@@ -81,10 +84,12 @@ class Login extends Control
         $Engine = QUI::getTemplateManager()->getEngine();
 
         $Engine->assign([
+            'self' => $this,
             'passwordReset' => !empty($_REQUEST['password_reset']),
             'globalAuth' => $this->isGlobalAuth,
             'authenticators' => $authenticators,
-            'count' => count($authenticators) - 1
+            'count' => count($authenticators) - 1,
+            'authStep' => $this->getAttribute('authStep')
         ]);
 
         return $Engine->fetch(__DIR__ . '/Login.html');
@@ -135,7 +140,7 @@ class Login extends Control
                 $user = QUI::getUsers()->get($uid);
                 $userAuthenticators = $user->getAuthenticators();
 
-                $authenticators = array_filter($authenticators, function($authenticator) use ($userAuthenticators) {
+                $authenticators = array_filter($authenticators, function ($authenticator) use ($userAuthenticators) {
                     foreach ($userAuthenticators as $userAuthenticator) {
                         if (get_class($userAuthenticator) === $authenticator) {
                             return true;
@@ -167,5 +172,14 @@ class Login extends Control
         });
 
         return $authenticators;
+    }
+
+    public function renderIcon($icon): string
+    {
+        if (str_starts_with($icon, 'fa ') || str_starts_with($icon, 'fa-')) {
+            return '<span class="' . $icon . '"></span>';
+        }
+
+        return '<img src="' . $icon . '">';
     }
 }

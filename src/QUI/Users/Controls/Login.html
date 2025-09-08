@@ -21,7 +21,18 @@
               data-authenticator="{$authenticator['class']}"
               {$dataGlobalAuth}
         >
-            {$authenticator['control']->create()}
+            {if $authenticator['instance']->getSecondaryAuthenticationButton()}
+                {$authenticator['instance']->getSecondaryAuthenticationButton()->create()}
+            {else}
+            <button name="show-control" type="button" class="btn btn-primary w-full">
+                {$self->renderIcon($authenticator['instance']->getIcon())}
+                <span>{$authenticator['instance']->getFrontendTitle()}</span>
+            </button>
+            {/if}
+
+            <div data-name="quiqqer-users-login-social-control">
+                {$authenticator['control']->create()}
+            </div>
         </form>
         {/if}
         {/foreach}
@@ -32,7 +43,7 @@
 
     {if $authenticator['class'] === 'QUI\\Users\\Auth\\QUIQQER'}
 
-    {if count($authenticators) >= 2}
+    {if count($authenticators) >= 2 && $authStep !== 'secondary'}
     <div class="quiqqer-login-or">
         <span>
             {locale group="quiqqer/core" var="controls.users.auth.login.or"}
@@ -46,7 +57,18 @@
               data-authenticator="{$authenticator['class']}"
               {$dataGlobalAuth}
         >
-            {$authenticator['control']->create()}
+            {if $authenticator['instance']->getSecondaryAuthenticationButton()}
+                {$authenticator['instance']->getSecondaryAuthenticationButton()->create()}
+            {else}
+            <button name="show-control" type="button" class="btn btn-primary w-full">
+                {$self->renderIcon($authenticator['instance']->getIcon())}
+                <span>{$authenticator['instance']->getFrontendTitle()}</span>
+            </button>
+            {/if}
+
+            <div data-name="quiqqer-users-login-social-control">
+                {$authenticator['control']->create()}
+            </div>
         </form>
     </section>
 

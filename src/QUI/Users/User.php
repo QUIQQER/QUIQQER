@@ -2295,7 +2295,10 @@ class User implements QUIUserInterface
             return;
         }
 
-        $status = AttributeVerificationStatus::tryFrom($status);
+        if (is_string($status)) {
+            $status = AttributeVerificationStatus::from($status);
+        }
+
         $attributes = $this->getVerifiedAttributes();
 
         foreach ($attributes as $attribute) {
