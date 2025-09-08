@@ -48,16 +48,13 @@ define('controls/users/auth/EnableSecondaryAuthenticatorWindow', [
                     <div style="text-align: center">
                         <span class="fa fa-shield-alt" style="margin: 2rem 0; font-size: 4rem;"></span>    
                         <h1 style="font-size: 2rem">
-                            Zwei-Faktor-Authentifizierung erforderlich
+                            ${QUILocale.get(lg, 'quiqqer.window.enable.2fa.title')}
                         </h1>
-                        <p>
-                            Um deine Anmeldung noch sicherer zu machen, musst du eine Zwei-Faktor-Authentifizierung aktivieren. 
-                            Bitte wähle eine Methode aus und aktiviere sie, um fortzufahren.
-                        </p>
+                        ${QUILocale.get(lg, 'quiqqer.window.enable.2fa.description')}
                     </div>
                     <div data-name="enable-secondary-authenticators"></div>
                 </section>
-                <section data-name="authenticator-settings" style="opacity: 0;"></section>
+                <section data-name="authenticator-settings" style="opacity: 0; display: none;"></section>
             `;
 
             if (this.getAttribute('authenticator')) {
@@ -84,7 +81,7 @@ define('controls/users/auth/EnableSecondaryAuthenticatorWindow', [
                         <h2>${authenticator.frontend.title}</h2>
                         <p>${authenticator.frontend.description}</p>
                         <button class="btn btn-primary">
-                            Aktivieren
+                            ${QUILocale.get(lg, 'activate')}
                         </button>
                     `;
 
@@ -125,8 +122,11 @@ define('controls/users/auth/EnableSecondaryAuthenticatorWindow', [
         },
 
         $showAuthenticatorSettings: function (authenticator) {
-            const list = this.getContent().querySelector('[data-name="authenticator-list"]');
-            const settings = this.getContent().querySelector('[data-name="authenticator-settings"]');
+            const container = this.getContent();
+            const list = container.querySelector('[data-name="authenticator-list"]');
+            const settings = container.querySelector('[data-name="authenticator-settings"]');
+
+            settings.innerHTML = '';
 
             settings.style.opacity = 0;
             settings.style.position = 'absolute';
@@ -134,12 +134,55 @@ define('controls/users/auth/EnableSecondaryAuthenticatorWindow', [
             settings.style.top = '0';
             settings.style.width = '100%';
             settings.style.height = '100%';
+            settings.style.display = '';
+
+            if (typeof container.scrollTo === 'function') {
+                container.scrollTo(0, 0);
+            } else if (typeof container.scrollTop !== 'undefined') {
+                container.scrollTop = 0;
+            }
+
+            // back button
+            const backButton = document.createElement('button');
+            backButton.type = 'button';
+            backButton.style.marginBottom = '1rem';
+            backButton.innerHTML = `
+                <span class="fa fa-arrow-left"></span>
+                <span>${QUILocale.get(lg, 'quiqqer.window.enable.2fa.backButton')}</span>
+            `;
+
+            backButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                moofx(list).animate({
+                    opacity: 1,
+                    left: 0
+                }, {
+                    duration: 250
+                });
+
+                moofx(settings).animate({
+                    left: -20,
+                    opacity: 0
+                }, {
+                    duration: 250,
+                    callback: () => {
+                        settings.innerHTML = '';
+                        settings.style.display = 'none';
+                    }
+                });
+            });
+
 
             this.Loader.show();
 
             return new Promise((resolve) => {
                 QUIAjax.get('ajax_users_authenticator_secondarySettings', (settingHtml) => {
                     settings.innerHTML = settingHtml;
+
+                    // insert back button
+                    settings.insertBefore(backButton, settings.firstChild);
 
                     QUI.parse(settings).then(() => {
                         const settingsNode = settings.querySelector('[data-qui]');
@@ -189,10 +232,11 @@ define('controls/users/auth/EnableSecondaryAuthenticatorWindow', [
         },
 
         $enableAuthenticator: function (authenticator) {
-            console.log(authenticator);
-
-            return new Promise(() => {
-                // @todo TODO
+            return new Promise((resolve, reject) => {
+                QUIAjax.get('ajax_users_authenticator_enableTwoFactorBySession', resolve, {
+                    authenticator: authenticator,
+                    onError: reject
+                });
             });
         }
     });

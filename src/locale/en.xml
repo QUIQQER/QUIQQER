@@ -657,8 +657,19 @@
         <locale name="quiqqer.auth.description">
             <en><![CDATA[The standard QUIQQER authentication by username and password.]]></en>
         </locale>
-        <locale name="quiqqer.auth.description">
-            <en><![CDATA[Die standard QUIQQER Authentifizierung per Benutzername und Passwort.]]></en>
+        <locale name="quiqqer.window.enable.2fa.title">
+            <en><![CDATA[Two-factor authentication required]]></en>
+        </locale>
+        <locale name="quiqqer.window.enable.2fa.description" html="true">
+            <en><![CDATA[
+            <p>
+                To make your login even more secure, you need to enable two-factor authentication.
+                Please select a method and enable it to continue.
+            </p>
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.window.enable.2fa.backButton">
+            <en><![CDATA[Back to the authentication list]]></en>
         </locale>
         <locale name="quiqqer.mail2fa.title">
             <en><![CDATA[OTP Mail Authentication]]></en>

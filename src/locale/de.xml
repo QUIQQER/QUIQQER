@@ -585,7 +585,7 @@
             <de><![CDATA[Datum / Uhrzeit]]></de>
         </locale>
         <locale name="user.settings.authenticators">
-            <de><![CDATA[Zustäzliche Authentifizierung]]></de>
+            <de><![CDATA[Zusätzliche Authentifizierung]]></de>
         </locale>
         <locale name="message.setup.is.currently.running">
             <de><![CDATA[Das Setup wird gerade ausgeführt. Bitte warten Sie bis dieses zu ende ist.]]></de>
@@ -655,6 +655,20 @@
         </locale>
         <locale name="quiqqer.auth.description">
             <de><![CDATA[Die standard QUIQQER Authentifizierung per Benutzername und Passwort.]]></de>
+        </locale>
+        <locale name="quiqqer.window.enable.2fa.title">
+            <de><![CDATA[Zwei-Faktor-Authentifizierung erforderlich]]></de>
+        </locale>
+        <locale name="quiqqer.window.enable.2fa.description" html="true">
+            <de><![CDATA[
+            <p>
+                Um deine Anmeldung noch sicherer zu machen, musst du eine Zwei-Faktor-Authentifizierung aktivieren.
+                Bitte wähle eine Methode aus und aktiviere sie, um fortzufahren.
+            </p>
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.window.enable.2fa.backButton">
+            <de><![CDATA[Zurück zur Authentifizierungsliste]]></de>
         </locale>
         <locale name="quiqqer.mail2fa.title">
             <de><![CDATA[OTP Mail Authentifizierung]]></de>
