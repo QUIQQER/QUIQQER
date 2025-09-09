@@ -670,6 +670,25 @@
         <locale name="quiqqer.window.enable.2fa.backButton">
             <de><![CDATA[Zurück zur Authentifizierungsliste]]></de>
         </locale>
+
+        <locale name="quiqqer.window.show.2fa.info.title">
+            <de><![CDATA[Zwei-Faktor-Authentifizierung einrichten?]]></de>
+        </locale>
+        <locale name="quiqqer.window.show.2fa.info.description" html="true">
+            <de><![CDATA[
+            <p>
+                Um deine Anmeldung noch sicherer zu machen, kannst du eine Zwei-Faktor-Authentifizierung aktivieren.
+                Bitte wähle eine Methode aus und aktiviere sie, um fortzufahren.
+            </p>
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.window.show.2fa.info.button.2fa">
+            <de><![CDATA[Zwei-Faktor-Authentifizierung einrichten]]></de>
+        </locale>
+        <locale name="quiqqer.window.show.2fa.info.button.not">
+            <de><![CDATA[Jetzt nicht]]></de>
+        </locale>
+
         <locale name="quiqqer.mail2fa.title">
             <de><![CDATA[OTP Mail Authentifizierung]]></de>
         </locale>

@@ -671,6 +671,25 @@
         <locale name="quiqqer.window.enable.2fa.backButton">
             <en><![CDATA[Back to the authentication list]]></en>
         </locale>
+
+        <locale name="quiqqer.window.show.2fa.info.title">
+            <en><![CDATA[Set up two-factor authentication?]]></en>
+        </locale>
+        <locale name="quiqqer.window.show.2fa.info.description" html="true">
+            <en><![CDATA[
+            <p>
+                To make your login even more secure, you can enable two-factor authentication.
+                Please select a method and enable it to continue.
+            </p>
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.window.show.2fa.info.button.2fa">
+            <en><![CDATA[Set up two-factor authentication]]></en>
+        </locale>
+        <locale name="quiqqer.window.show.2fa.info.button.not">
+            <en><![CDATA[Not now]]></en>
+        </locale>
+
         <locale name="quiqqer.mail2fa.title">
             <en><![CDATA[OTP Mail Authentication]]></en>
         </locale>

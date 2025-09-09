@@ -47,22 +47,20 @@ define('controls/users/auth/ShowSecondaryAuthenticatorWindow', [
                     <div style="text-align: center">
                         <span class="fa fa-shield-alt" style="margin: 2rem 0; font-size: 4rem;"></span>    
                         <h1 style="font-size: 2rem">
-                            Zwei-Faktor-Authentifizierung einrichten?
+                            ${QUILocale.get(lg, 'quiqqer.window.show.2fa.info.title')}
                         </h1>
-                        <p>
-                            Um deine Anmeldung noch sicherer zu machen, kannst du eine Zwei-Faktor-Authentifizierung aktivieren. 
-                            Bitte wähle eine Methode aus und aktiviere sie, um fortzufahren.
-                        </p>
+                        
+                        ${QUILocale.get(lg, 'quiqqer.window.show.2fa.info.description')}
                     </div>
                 </section>
                 <div style="display: flex; gap: 1rem; flex-direction: column">
                     <button name="setup-secondary-authenticator" class="btn btn-primary w-full">
                         <span class="fa fa-shield-alt"></span>
-                        <span>Zwei-Faktor-Authentifizierung einrichten</span>
+                        <span>${QUILocale.get(lg, 'quiqqer.window.show.2fa.info.button.2fa')}</span>
                     </button>
                     
                     <button name="no-setup" class="btn btn-secondary w-full">
-                        <span>Jetzt nicht</span>
+                        <span>${QUILocale.get(lg, 'quiqqer.window.show.2fa.info.button.not')}</span>
                     </button>
                 </div>
             `;
@@ -74,8 +72,22 @@ define('controls/users/auth/ShowSecondaryAuthenticatorWindow', [
             container.querySelector(
                 '[name="setup-secondary-authenticator"]'
             ).addEventListener('click', () => {
-                this.Loader.show();
-                window.location = '/profile/user/2fa';
+                QUIAjax.get('package_quiqqer_frontend-users_ajax_frontend_login_getLoginRedirect', (url) => {
+                    this.Loader.show();
+
+                    if (url) {
+                        window.location = url;
+                        return;
+                    }
+
+                    window.location = '/';
+                }, {
+                    'package': 'quiqqer/frontend-users',
+                    project: QUIQQER_PROJECT.name,
+                    onError: () => {
+                        window.location = '/';
+                    }
+                });
             });
 
             this.Loader.hide();
