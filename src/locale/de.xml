@@ -799,6 +799,36 @@
         <locale name="quiqqer.settings.auth.secondary">
             <de><![CDATA[Sekundäre Authenticator]]></de>
         </locale>
+        <locale name="quiqqer.settings.auth.frontend">
+            <de><![CDATA[Frontend]]></de>
+        </locale>
+        <locale name="quiqqer.settings.auth.backend">
+            <de><![CDATA[Backend]]></de>
+        </locale>
+        <locale name="quiqqer.settings.auth.secondary.type.information">
+            <de><![CDATA[
+            Hier können Sie festlegen, dass Benutzer zusätzlich zum primären Authenticator einen zweiten Authenticator (2FA)
+            nutzen müssen. Sie können separat bestimmen, ob die Zwei-Faktor-Authentifizierung für das Frontend,
+            das Backend oder beide Bereiche verpflichtend sein soll.
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.settings.auth.secondary.type.0">
+            <de><![CDATA[Nutzer können keine zweite Authentifizierung einrichten.]]></de>
+        </locale>
+        <locale name="quiqqer.settings.auth.secondary.type.1">
+            <de><![CDATA[Nutzer müssen eine zweite Authentifizierung einrichten.]]></de>
+        </locale>
+        <locale name="quiqqer.settings.auth.secondary.type.2">
+            <de><![CDATA[Nutzer erhalten einen Hinweis und können eine zweite Authentifizierung einrichten.]]></de>
+        </locale>
+        <locale name="quiqqer.settings.auth.secondary.frontend.available">
+            <de><![CDATA[Im Frontend verfügbare zwei faktor Authentifizierungsarten]]></de>
+        </locale>
+        <locale name="quiqqer.settings.auth.secondary.backend.available">
+            <de><![CDATA[Im Backend verfügbare zwei faktor Authentifizierungsarten]]></de>
+        </locale>
+
+
         <locale name="exception.forwarding.already.exists">
             <de><![CDATA[Diese Weiterleitung besteht bereits.]]></de>
         </locale>

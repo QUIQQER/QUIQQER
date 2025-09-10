@@ -18,6 +18,7 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
     const lg = 'quiqqer/core';
 
     return new Class({
+
         Type: 'controls/users/auth/GlobalAuthenticatorSettings',
         Extends: QUIControl,
 
@@ -102,9 +103,7 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
                 secondaryDescription.style.borderWidth = '0';
                 secondaryDescription.innerHTML = `
                     <span>
-                        Hier können Sie festlegen, dass Benutzer zusätzlich zum primären Authenticator einen zweiten Authenticator (2FA) 
-                        nutzen müssen. Sie können separat bestimmen, ob die Zwei-Faktor-Authentifizierung für das Frontend, 
-                        das Backend oder beide Bereiche verpflichtend sein soll.
+                        ${QUILocale.get(lg, 'quiqqer.settings.auth.secondary.type.information')}
                     </span>
                 `;
 
@@ -128,16 +127,18 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
                     <tr>
                         <td>
                             <label class="field-container">
-                                <div class="field-container-item">Frontend</div>  
+                                <div class="field-container-item">
+                                    ${QUILocale.get(lg, 'quiqqer.settings.auth.frontend')}
+                                </div>  
                                 <select class="field-container-field" name="secondary_frontend">
                                     <option value="0">
-                                        Nutzer können keine zweite Authentifizierung einrichten. 
+                                        ${QUILocale.get(lg, 'quiqqer.settings.auth.secondary.type.0')}
                                     </option>
                                     <option value="1">
-                                        Nutzer müssen eine zweite Authentifizierung einrichten.
+                                        ${QUILocale.get(lg, 'quiqqer.settings.auth.secondary.type.1')}
                                     </option>
                                     <option value="2">
-                                        Nutzer erhalten einen Hinweis und können eine zweite Authentifizierung einrichten.
+                                        ${QUILocale.get(lg, 'quiqqer.settings.auth.secondary.type.2')}
                                     </option>
                                 </select>                                      
                             </label>
@@ -147,7 +148,7 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
                         <td>
                              <div class="field-container">
                                  <div class="field-container-item">
-                                    Im Frontend verfügbare zwei faktor Authentifizierungsarten
+                                    ${QUILocale.get(lg, 'quiqqer.settings.auth.secondary.frontend.available')}
                                  </div>
                                  <div data-name="secondary_frontend_authenticators" class="field-container-field" ></div>
                              </div>
@@ -156,16 +157,18 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
                     <tr>
                         <td>
                             <label class="field-container">
-                                <div class="field-container-item">Backend</div>  
+                                <div class="field-container-item">
+                                    ${QUILocale.get(lg, 'quiqqer.settings.auth.backend')}
+                                </div>  
                                 <select class="field-container-field" name="secondary_backend">
                                     <option value="0">
-                                        Nutzer können keine zweite Authentifizierung einrichten. 
+                                        ${QUILocale.get(lg, 'quiqqer.settings.auth.secondary.type.0')} 
                                     </option>
                                     <option value="1">
-                                        Nutzer müssen eine zweite Authentifizierung einrichten.
+                                        ${QUILocale.get(lg, 'quiqqer.settings.auth.secondary.type.1')}
                                     </option>
                                     <option value="2">
-                                        Nutzer erhalten einen Hinweis und können eine zweite Authentifizierung einrichten.
+                                        ${QUILocale.get(lg, 'quiqqer.settings.auth.secondary.type.2')}
                                     </option>
                                 </select>  
                             </label>
@@ -175,7 +178,7 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
                         <td>
                              <div class="field-container">
                                  <div class="field-container-item">
-                                    Im Backend verfügbare zwei faktor Authentifizierungsarten
+                                    ${QUILocale.get(lg, 'quiqqer.settings.auth.secondary.backend.available')}
                                  </div>
                                  <div data-name="secondary_backend_authenticators" class="field-container-field" ></div>
                              </div>
