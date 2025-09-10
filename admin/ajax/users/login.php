@@ -61,6 +61,9 @@ QUI::$Ajax->registerFunction(
         // $secondaryLoginType = 0 no 2fa
         // $secondaryLoginType = 1 2fa is required
         // $secondaryLoginType = 2 2fa is optional
+        if ($secondaryLoginType === 2 && QUI::getSession()->get('auth-primary')) {
+            QUI::getSession()->set('auth', 1);
+        }
 
         $Login = new QUI\Users\Controls\Login();
         $next = $Login->next();
@@ -68,8 +71,7 @@ QUI::$Ajax->registerFunction(
         if (
             empty($next) && $secondaryLoginType !== 1
             ||
-            QUI::getSession()->get('auth-primary') === 1
-            && QUI::getSession()->get('auth-secondary') === 1
+            QUI::getSession()->get('auth-primary') === 1 && QUI::getSession()->get('auth-secondary') === 1
         ) {
             try {
                 QUI::getUsers()->login();

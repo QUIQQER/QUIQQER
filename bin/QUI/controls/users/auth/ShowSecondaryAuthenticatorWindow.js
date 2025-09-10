@@ -3,10 +3,11 @@ define('controls/users/auth/ShowSecondaryAuthenticatorWindow', [
     'qui/QUI',
     'qui/controls/windows/Popup',
     'Locale',
+    'Ajax',
 
     'css!controls/users/auth/ShowSecondaryAuthenticatorWindow.css'
 
-], function (QUI, QUIPopup, QUILocale) {
+], function (QUI, QUIPopup, QUILocale, QUIAjax) {
     "use strict";
 
     const lg = 'quiqqer/core';
@@ -66,25 +67,36 @@ define('controls/users/auth/ShowSecondaryAuthenticatorWindow', [
             `;
 
             container.querySelector('[name="no-setup"]').addEventListener('click', () => {
-                this.cancel();
+                this.Loader.show();
+
+                QUIAjax.post('ajax_user_setHasSeen2faInformation', () => {
+                    this.cancel();
+                }, {
+                    onError: () => {
+                        this.cancel();
+                    }
+                });
             });
 
             container.querySelector(
                 '[name="setup-secondary-authenticator"]'
             ).addEventListener('click', () => {
-                QUIAjax.get('package_quiqqer_frontend-users_ajax_frontend_login_getLoginRedirect', (url) => {
-                    this.Loader.show();
+                this.Loader.show();
+
+                QUIAjax.get('ajax_users_authenticator_getProfileUrl', (url) => {
+                    if (url && url.indexOf('.html') !== -1) {
+                        window.location = url.replace('.html', '/user/2fa.html');
+                        return;
+                    }
 
                     if (url) {
-                        window.location = url;
+                        window.location = url + '/user/2fa';
                         return;
                     }
 
                     window.location = '/';
                 }, {
-                    'package': 'quiqqer/frontend-users',
-                    project: QUIQQER_PROJECT.name,
-                    onError: () => {
+                    onError: (err) => {
                         window.location = '/';
                     }
                 });

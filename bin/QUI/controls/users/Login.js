@@ -187,8 +187,6 @@ define('controls/users/Login', [
         $handleLoginResponse: function (responseData) {
             this.$authStep = responseData.authStep;
 
-            console.log('responseData', responseData);
-
             let response = Promise.resolve(responseData);
             let authenticators = null;
             let secondaryType = responseData.secondaryLoginType;
@@ -278,21 +276,30 @@ define('controls/users/Login', [
             this.Loader.show();
 
             return new Promise((resolve) => {
-                require([
-                    'controls/users/auth/ShowSecondaryAuthenticatorWindow'
-                ], (ShowSecondaryAuthenticatorWindow) => {
-                    new ShowSecondaryAuthenticatorWindow({
-                        events: {
-                            onCompleted: () => {
-                                this.Loader.hide();
-                                resolve('completed');
-                            },
-                            onCancel: () => {
-                                this.Loader.hide();
-                                resolve('cancel');
+                QUIAjax.get('ajax_user_getHasSeen2faInformation', (hasSeen) => {
+                    console.log('hasSeen', hasSeen);
+
+                    if (hasSeen) {
+                        resolve('cancel');
+                        return;
+                    }
+
+                    require([
+                        'controls/users/auth/ShowSecondaryAuthenticatorWindow'
+                    ], (ShowSecondaryAuthenticatorWindow) => {
+                        new ShowSecondaryAuthenticatorWindow({
+                            events: {
+                                onCompleted: () => {
+                                    this.Loader.hide();
+                                    resolve('completed');
+                                },
+                                onCancel: () => {
+                                    this.Loader.hide();
+                                    resolve('cancel');
+                                }
                             }
-                        }
-                    }).open();
+                        }).open();
+                    });
                 });
             });
         },
@@ -335,8 +342,6 @@ define('controls/users/Login', [
             ghost.innerHTML = html;
 
             container.style.overflow = 'hidden';
-
-            console.log('$buildAuthenticator', this.$authStep);
 
             let socialLoginContainer = container.querySelector('[data-name="social-logins"]');
             let mailLoginContainer = container.querySelector('[data-name="mail-logins"]');
@@ -497,9 +502,11 @@ define('controls/users/Login', [
                         QUIFormUtils.getFormData(Form)
                     ),
                     onError: (e) => {
+                        console.log(e);
+
                         if (e.getAttribute('type') === 'QUI\\Users\\Auth\\Exception2FA') {
                             this.$authStep = 'secondary';
-                            this.auth();
+                            this.auth(Form);
                             reject(e);
                             return;
                         }
