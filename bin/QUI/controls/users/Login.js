@@ -187,12 +187,49 @@ define('controls/users/Login', [
         $handleLoginResponse: function (responseData) {
             this.$authStep = responseData.authStep;
 
+            console.log('responseData', responseData);
+
             let response = Promise.resolve(responseData);
+            let authenticators = null;
+            let secondaryType = responseData.secondaryLoginType;
 
             if (
-                responseData.secondaryLoginType === 1
+                typeof responseData.authenticator !== 'undefined'
+                && responseData.authenticator
+                && responseData.authenticator.length
+            ) {
+                authenticators = responseData.authenticator;
+            }
+
+            if (
+                responseData.authStep === 'primary'
+                && !authenticators
+                && secondaryType !== 0
+            ) {
+                // 2fa + no authenticators and primary step, smth is wrong
+                // kill the session and start again
+                return this.destroySession().then(() => {
+                    return this.getLoginControl();
+                });
+            }
+
+            if (responseData.authStep === 'primary' && !authenticators) {
+                // no 2fa + no authenticators and primary step, login is ok
+                return this.isAuth().then((userData) => {
+                    if (userData.type === 'QUI\\Users\\Nobody') {
+                        return this.destroySession().then(() => {
+                            return this.getLoginControl();
+                        });
+                    }
+
+                    return responseData;
+                });
+            }
+
+            if (
+                secondaryType === 1
                 && responseData.authStep === 'secondary'
-                && !responseData.authenticator
+                && !authenticators
             ) {
                 // 2fa is a must
                 return this.$show2FAEnable().then(() => {
@@ -202,9 +239,9 @@ define('controls/users/Login', [
 
             // 2fa info, because user can activate it but don't have to
             if (
-                responseData.secondaryLoginType === 2
+                secondaryType === 2
                 && responseData.authStep === 'secondary'
-                && !responseData.authenticator
+                && !authenticators
             ) {
                 return this.$show2FAInfo().then((closeType) => {
                     if (closeType === 'cancel') {
@@ -265,6 +302,22 @@ define('controls/users/Login', [
                 QUIAjax.get('ajax_users_loginControl', resolve, {
                     isAdminLogin: typeof QUIQQER_IS_ADMIN_LOGIN !== 'undefined' ? 1 : 0,
                     authenticators: JSON.encode(this.getAttribute('authenticators')),
+                    onError: reject
+                });
+            });
+        },
+
+        destroySession: function () {
+            return new Promise((resolve, reject) => {
+                QUIAjax.get('ajax_session_destroy', resolve, {
+                    onError: reject
+                });
+            });
+        },
+
+        isAuth: function () {
+            return new Promise((resolve, reject) => {
+                QUIAjax.get('ajax_isAuth', resolve, {
                     onError: reject
                 });
             });
