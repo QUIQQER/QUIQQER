@@ -504,8 +504,6 @@ define('controls/users/Login', [
                         QUIFormUtils.getFormData(Form)
                     ),
                     onError: (e) => {
-                        console.log(e);
-
                         if (e.getAttribute('type') === 'QUI\\Users\\Auth\\Exception2FA') {
                             this.$authStep = 'secondary';
                             this.auth(Form);
