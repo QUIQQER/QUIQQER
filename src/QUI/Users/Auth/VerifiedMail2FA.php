@@ -18,8 +18,8 @@ use Random\RandomException;
  */
 class VerifiedMail2FA extends AbstractAuthenticator
 {
-    public const string USER_CODE_ATTRIBUTE = 'quiqqer.verified.2fa.mail.code';
-    public const string USER_CODE_VERIFYING_ATTRIBUTE = 'quiqqer.verifying.2fa.mail.code';
+    public const USER_CODE_ATTRIBUTE = 'quiqqer.verified.2fa.mail.code';
+    public const USER_CODE_VERIFYING_ATTRIBUTE = 'quiqqer.verifying.2fa.mail.code';
 
     protected ?User $User = null;
     protected mixed $user = null;
