@@ -187,6 +187,10 @@ define('controls/users/Login', [
         $handleLoginResponse: function (responseData) {
             this.$authStep = responseData.authStep;
 
+            if (typeof responseData.loggedIn !== 'undefined' && responseData.loggedIn) {
+                return Promise.resolve(responseData);
+            }
+
             let response = Promise.resolve(responseData);
             let authenticators = null;
             let secondaryType = responseData.secondaryLoginType;
@@ -277,8 +281,6 @@ define('controls/users/Login', [
 
             return new Promise((resolve) => {
                 QUIAjax.get('ajax_user_getHasSeen2faInformation', (hasSeen) => {
-                    console.log('hasSeen', hasSeen);
-
                     if (hasSeen) {
                         resolve('cancel');
                         return;

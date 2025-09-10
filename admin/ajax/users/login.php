@@ -7,11 +7,6 @@ QUI::$Ajax->registerFunction(
     'ajax_users_login',
     static function ($authenticator, $params, $authStep) {
         QUI::getEvents()->fireEvent('userLoginAjaxStart');
-
-        if ($authStep !== 'secondary') {
-            //QUI::getSession()->destroy();
-        }
-
         QUI::getSession()->set('inAuthentication', 1);
 
         $User = QUI::getUserBySession();
@@ -67,7 +62,7 @@ QUI::$Ajax->registerFunction(
 
         $Login = new QUI\Users\Controls\Login();
         $next = $Login->next();
-
+        $loggedIn = false;
         if (
             empty($next) && $secondaryLoginType !== 1
             ||
@@ -75,6 +70,7 @@ QUI::$Ajax->registerFunction(
         ) {
             try {
                 QUI::getUsers()->login();
+                $loggedIn = true;
             } catch (\Exception $Exception) {
                 // User cannot log in (e.g. User is not active)
                 QUI::getSession()->destroy();
@@ -94,6 +90,7 @@ QUI::$Ajax->registerFunction(
             'authenticator' => $next,
             'secondaryLoginType' => $secondaryLoginType,
             'control' => $control,
+            'loggedIn' => $loggedIn,
             'authStep' => $Login->getAttribute('authStep'),
             'user' => [
                 'id' => $SessionUser->getUUID(),

@@ -33,6 +33,11 @@ define('controls/users/auth/EnableSecondaryAuthenticatorWindow', [
                 autoclose: false
             });
 
+            if (this.getAttribute('authenticator')) {
+                this.setAttribute('backgroundClosable', true);
+                this.setAttribute('closable', true);
+            }
+
             this.addEvents({
                 onOpen: this.$onOpen
             });
@@ -58,9 +63,6 @@ define('controls/users/auth/EnableSecondaryAuthenticatorWindow', [
             `;
 
             if (this.getAttribute('authenticator')) {
-                this.setAttribute('backgroundClosable', true);
-                this.setAttribute('closable', true);
-
                 this.$showAuthenticatorSettings(this.getAttribute('authenticator')).then(() => {
                     this.close();
                     this.Loader.hide();
@@ -143,36 +145,40 @@ define('controls/users/auth/EnableSecondaryAuthenticatorWindow', [
             }
 
             // back button
-            const backButton = document.createElement('button');
-            backButton.type = 'button';
-            backButton.style.marginBottom = '1rem';
-            backButton.innerHTML = `
-                <span class="fa fa-arrow-left"></span>
-                <span>${QUILocale.get(lg, 'quiqqer.window.enable.2fa.backButton')}</span>
-            `;
+            let backButton = null;
 
-            backButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
+            if (!this.getAttribute('authenticator')) {
+                backButton = document.createElement('button');
+                backButton.type = 'button';
+                backButton.style.marginBottom = '1rem';
+                backButton.innerHTML = `
+                    <span class="fa fa-arrow-left"></span>
+                    <span>${QUILocale.get(lg, 'quiqqer.window.enable.2fa.backButton')}</span>
+                `;
 
-                moofx(list).animate({
-                    opacity: 1,
-                    left: 0
-                }, {
-                    duration: 250
+                backButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    moofx(list).animate({
+                        opacity: 1,
+                        left: 0
+                    }, {
+                        duration: 250
+                    });
+
+                    moofx(settings).animate({
+                        left: -20,
+                        opacity: 0
+                    }, {
+                        duration: 250,
+                        callback: () => {
+                            settings.innerHTML = '';
+                            settings.style.display = 'none';
+                        }
+                    });
                 });
-
-                moofx(settings).animate({
-                    left: -20,
-                    opacity: 0
-                }, {
-                    duration: 250,
-                    callback: () => {
-                        settings.innerHTML = '';
-                        settings.style.display = 'none';
-                    }
-                });
-            });
+            }
 
 
             this.Loader.show();
@@ -182,7 +188,9 @@ define('controls/users/auth/EnableSecondaryAuthenticatorWindow', [
                     settings.innerHTML = settingHtml;
 
                     // insert back button
-                    settings.insertBefore(backButton, settings.firstChild);
+                    if (backButton) {
+                        settings.insertBefore(backButton, settings.firstChild);
+                    }
 
                     QUI.parse(settings).then(() => {
                         const settingsNode = settings.querySelector('[data-qui]');
