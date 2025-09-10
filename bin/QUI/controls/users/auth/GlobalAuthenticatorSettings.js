@@ -322,8 +322,6 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
                 });
             }
 
-            console.log(result);
-
             // save
             if (this.getElm().nodeName === 'INPUT') {
                 this.getElm().value = JSON.encode(result);
