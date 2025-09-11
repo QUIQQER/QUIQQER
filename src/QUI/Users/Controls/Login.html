@@ -11,7 +11,7 @@
     {/if}
 
     {* SOCIAL LOGINS *}
-    <section class="quiqqer-users-login-social">
+    <section data-name="social-logins" class="quiqqer-users-login-social">
         {* social logins *}
         {foreach $authenticators as $k => $authenticator}
         {if $authenticator['class'] !== 'QUI\\Users\\Auth\\QUIQQER'}
@@ -21,34 +21,57 @@
               data-authenticator="{$authenticator['class']}"
               {$dataGlobalAuth}
         >
-            {$authenticator['control']->create()}
+            {if $authenticator['instance']->getSecondaryAuthenticationButton()}
+                {$authenticator['instance']->getSecondaryAuthenticationButton()->create()}
+            {else}
+            <button name="show-control" type="button" class="btn btn-primary w-full">
+                {$self->renderIcon($authenticator['instance']->getIcon())}
+                <span>{$authenticator['instance']->getFrontendTitle()}</span>
+            </button>
+            {/if}
+
+            <div data-name="quiqqer-users-login-social-control">
+                {$authenticator['control']->create()}
+            </div>
         </form>
         {/if}
         {/foreach}
     </section>
 
+    {foreach $authenticators as $k => $authenticator}
     {* MAIL LOGIN *}
-    <section class="quiqqer-users-login-form">
-        {foreach $authenticators as $k => $authenticator}
-        {if $authenticator['class'] === 'QUI\\Users\\Auth\\QUIQQER'}
 
-        {if count($authenticators) >= 2}
-        <div class="quiqqer-login-or">
+    {if $authenticator['class'] === 'QUI\\Users\\Auth\\QUIQQER'}
+
+    {if count($authenticators) >= 2 && $authStep !== 'secondary'}
+    <div class="quiqqer-login-or">
         <span>
             {locale group="quiqqer/core" var="controls.users.auth.login.or"}
         </span>
-        </div>
-        {/if}
+    </div>
+    {/if}
 
+    <section data-name="mail-logins" class="quiqqer-users-login-form">
         <form method="POST"
               name="login"
               data-authenticator="{$authenticator['class']}"
               {$dataGlobalAuth}
         >
-            {$authenticator['control']->create()}
-        </form>
+            {if $authenticator['instance']->getSecondaryAuthenticationButton()}
+                {$authenticator['instance']->getSecondaryAuthenticationButton()->create()}
+            {else}
+            <button name="show-control" type="button" class="btn btn-primary w-full">
+                {$self->renderIcon($authenticator['instance']->getIcon())}
+                <span>{$authenticator['instance']->getFrontendTitle()}</span>
+            </button>
+            {/if}
 
-        {/if}
-        {/foreach}
+            <div data-name="quiqqer-users-login-social-control">
+                {$authenticator['control']->create()}
+            </div>
+        </form>
     </section>
+
+    {/if}
+    {/foreach}
 </div>

@@ -38,7 +38,7 @@ use function trim;
  */
 class Address extends QUI\QDOM
 {
-    protected ?int $id = null;
+    protected null | int | string $id = null;
 
     protected ?string $uuid = null;
 
@@ -49,7 +49,7 @@ class Address extends QUI\QDOM
     /**
      * @throws Exception|QUI\ExceptionStack
      */
-    public function __construct(QUIUserInterface $User, int|string $id)
+    public function __construct(QUIUserInterface $User, int | string $id)
     {
         $this->User = $User;
 
@@ -244,7 +244,7 @@ class Address extends QUI\QDOM
      * @param integer $index
      * @param array|string $phone - [no => '+0049 929292', 'type' => 'fax'] or '+0049 929292'
      */
-    public function editPhone(int $index, array|string $phone): void
+    public function editPhone(int $index, array | string $phone): void
     {
         if (!is_array($phone)) {
             $phone = [
@@ -870,7 +870,7 @@ class Address extends QUI\QDOM
     /**
      * Set custom data entry
      */
-    public function setCustomDataEntry(string $key, float|bool|int|string $value): void
+    public function setCustomDataEntry(string $key, float | bool | int | string $value): void
     {
         $this->customData[$key] = $value;
         $this->setAttribute('customData', $this->customData);

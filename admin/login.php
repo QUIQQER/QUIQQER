@@ -63,12 +63,6 @@ foreach ($packages as $package) {
     <?php
     QUI::getEvents()->fireEvent('adminLoadBegin');
     ?>
-    <!-- HTML5
-          ================================================== -->
-    <!--[if lt IE 9]>
-    <script src="<?php
-    echo URL_BIN_DIR; ?>js/mvc/html5.js"></script>
-    <![endif]-->
 
     <title>
         QUIQQER Content Management System - <?php
@@ -191,6 +185,40 @@ foreach ($packages as $package) {
             max-width: 1000px;
             width: 100%;
             background-color: #fff;
+        }
+
+        .btn, button {
+            display: inline-flex;
+            cursor:pointer;
+            padding: 8px 12px;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            border-width: 1px;
+            border-style: solid;
+            border-color: transparent;
+            text-decoration: none;
+
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 600;
+            line-height: 20px; /* 142.857% */
+
+            border-radius: 16px;
+            outline: none !important; /* disable browser focus ring */
+        }
+
+        .btn-primary:hover{
+            border-color: rgba(26, 97, 219, 1);
+            background: rgba(26, 97, 219, 1);
+            @apply shadow-xs;
+        }
+
+        .btn-primary,
+        .qui-window-popup-buttons button[name="close"]:only-child { /* 1 */
+            border: 1px solid #00529B;
+            background: #00529B;
+            color: #fff;
         }
 
         @media screen and (min-width: 768px) {
@@ -455,8 +483,7 @@ foreach ($packages as $package) {
             }
         });
 
-        function getCurrentLanguage()
-        {
+        function getCurrentLanguage() {
             if (LANGUAGE) {
                 return LANGUAGE;
             }
@@ -484,21 +511,20 @@ foreach ($packages as $package) {
             return LANGUAGE;
         }
 
-        function setLanguage(lang)
-        {
+        function setLanguage(lang) {
             if (!QUIQQER_LANGUAGES.contains(lang)) {
                 lang = QUIQQER_LANGUAGES[0];
             }
 
-            return new Promise(function(resolve) {
+            return new Promise(function (resolve) {
                 require([
                     'qui/QUI',
                     'utils/Session',
                     'Locale',
                     'locale/quiqqer/core/' + lang
-                ], function(QUI, Session, QUILocale) {
+                ], function (QUI, Session, QUILocale) {
                     QUILocale.setCurrent(lang);
-                    Session.set('quiqqer-user-language', lang).catch(function(err) {
+                    Session.set('quiqqer-user-language', lang).catch(function (err) {
                         // doesn't matter
                     });
 
@@ -545,13 +571,13 @@ foreach ($packages as $package) {
         require([
             'qui/QUI',
             'controls/users/Login'
-        ].append(QUIQQER_LOCALE || []), function(QUI, Login) {
+        ].append(QUIQQER_LOCALE || []), function (QUI, Login) {
             QUI.setAttributes({
                 'control-loader-type': 'line-scale',
                 'control-loader-color': '#2f8fc8'
             });
 
-            setLanguage(getCurrentLanguage()).then(function() {
+            setLanguage(getCurrentLanguage()).then(function () {
                 document.getElement('.login-container').set('html', '');
 
                 const LogIn = new Login({
@@ -561,7 +587,7 @@ foreach ($packages as $package) {
 
                 // chrome workaround - because of state saving
                 // sometimes, chrome don't load all events on a back up'd tab
-                (function() {
+                (function () {
                     const Form = LogIn.getElm().getElement('form');
 
                     if (!Form) {
@@ -586,16 +612,15 @@ foreach ($packages as $package) {
             });
         });
 
-        function onSuccess(Login)
-        {
+        function onSuccess(Login) {
             require([
                 'Ajax',
                 'Locale'
-            ], function(QUIAjax, QUILocale) {
+            ], function (QUIAjax, QUILocale) {
                 // check if admin user
-                QUIAjax.get('ajax_user_canUseBackend', function(canUseAdmin) {
+                QUIAjax.get('ajax_user_canUseBackend', function (canUseAdmin) {
                     if (canUseAdmin === false) {
-                        QUI.getMessageHandler().then(function(MH) {
+                        QUI.getMessageHandler().then(function (MH) {
                             MH.addError(
                                 QUILocale.get(
                                     'quiqqer/core',
@@ -612,7 +637,7 @@ foreach ($packages as $package) {
                         opacity: 0
                     }, {
                         duration: 200,
-                        callback: function() {
+                        callback: function () {
                             window.location.reload();
                         }
                     });
@@ -623,8 +648,7 @@ foreach ($packages as $package) {
         /**
          * Show license text
          */
-        function showLicenseText()
-        {
+        function showLicenseText() {
             const License = document.getElement('.license'),
                 Inner = document.getElement('.license__text');
 
@@ -634,7 +658,7 @@ foreach ($packages as $package) {
                 height: Inner.offsetHeight
             }, {
                 duration: 300,
-                callback: function() {
+                callback: function () {
                     License.style.height = null;
                 }
             });
@@ -643,8 +667,7 @@ foreach ($packages as $package) {
         /**
          * Hide license text
          */
-        function hideLicenseText()
-        {
+        function hideLicenseText() {
             const License = document.getElement('.license'),
                 Inner = document.getElement('.license__text');
 
@@ -652,7 +675,7 @@ foreach ($packages as $package) {
                 height: 0
             }, {
                 duration: 300,
-                callback: function() {
+                callback: function () {
                     Inner.style.visibility = null;
 
                 }
@@ -747,8 +770,8 @@ foreach ($packages as $package) {
 <?php
 if (defined('LOGIN_FAILED')) { ?>
     <script type="text/javascript">
-        require(['qui/QUI'], function() {
-            QUI.getMessageHandler().then(function(MH) {
+        require(['qui/QUI'], function () {
+            QUI.getMessageHandler().then(function (MH) {
                 MH.addError("<?php echo LOGIN_FAILED; ?>");
             });
         });
@@ -767,10 +790,10 @@ if (defined('LOGIN_FAILED')) { ?>
         needle.push('locale/quiqqer/core/' + QUIQQER_LANGUAGES[i]);
     }
 
-    require(needle, function(QUISelect, QUILocale) {
+    require(needle, function (QUISelect, QUILocale) {
         const Select = new QUISelect({
             events: {
-                onChange: function() {
+                onChange: function () {
                     setLanguage(Select.getValue());
                 }
             }
@@ -799,7 +822,7 @@ if (defined('LOGIN_FAILED')) { ?>
 
         QUILocale.setCurrent(current);
         Select.setValue(getCurrentLanguage());
-    }, function() {
+    }, function () {
 
     });
 </script>

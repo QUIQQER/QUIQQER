@@ -4,6 +4,7 @@
     <attributes>
         <attribute>quiqqer.set.new.password</attribute>
         <attribute>quiqqer.sitemap.showNames</attribute>
+        <attribute>quiqqer.has.seen.2fa.info</attribute>
         <attribute>qui-bookmarks</attribute>
     </attributes>
 

@@ -7,9 +7,9 @@
 use QUI\Users\Auth\VerifiedMail2FA;
 
 QUI::$Ajax->registerFunction(
-    'ajax_users_authenticator_sendVerifiedMail2faMail',
-    static function (): void {
-        VerifiedMail2FA::sendAuthMailToSessionUser();
+    'ajax_users_authenticator_mail2fa_enableByUser',
+    static function ($code): void {
+        VerifiedMail2FA::enableByUser($code);
     },
-    false
+    ['code']
 );

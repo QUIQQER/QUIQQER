@@ -1,17 +1,19 @@
 /**
  * @module controls/users/Login
  *
- * @event onLoad [self]
- * @event onAuthBegin [self]
- * @event onAuthNext [self]
- * @event onSuccess [self]
- * @event onUserLoginError [error, self]
+ * @event onLoad [this]
+ * @event onAuthBegin [this]
+ * @event onAuthNext [this]
+ * @event onSuccess [this]
+ * @event onUserLoginError [error, this]
+ * @event onBuildAuthenticator [this]
  *
- * @event onQuiqqerUserAuthLoginLoad [self]
- * @event onQuiqqerUserAuthLoginUserLoginError [error, self]
- * @event onQuiqqerUserAuthLoginAuthBegin [self]
- * @event onQuiqqerUserAuthLoginSuccess [self]
- * @event onQuiqqerUserAuthNext [self]
+ * @event onQuiqqerUserAuthLoginLoad [this]
+ * @event onQuiqqerUserAuthLoginUserLoginError [error, this]
+ * @event onQuiqqerUserAuthLoginAuthBegin [this]
+ * @event onQuiqqerUserAuthLoginSuccess [this]
+ * @event onQuiqqerUserAuthNext [this]
+ * @event onQuiqqerUserAuthLoginBuildAuthenticator [this]
  */
 define('controls/users/Login', [
 
@@ -39,7 +41,9 @@ define('controls/users/Login', [
             '$onInject',
             '$refreshForm',
             '$onShowPassword',
-            'onShowPasswordReset'
+            'onShowPasswordReset',
+            '$clickShowControl',
+            '$clickBackToAuthList'
         ],
 
         options: {
@@ -105,26 +109,27 @@ define('controls/users/Login', [
                 this.Loader.show();
             }
 
-            QUIAjax.get('ajax_users_loginControl', (result) => {
-                this.$authStep = result.authStep;
+            this.getLoginControl().then((responseData) => {
+                return this.$handleLoginResponse(responseData);
+            }).then((responseData) => {
+                return this.$buildAuthenticator(responseData.control);
+            }).then(() => {
+                onInjectIsRunning = false;
 
-                this.$buildAuthenticator(result.control).then(() => {
-                    onInjectIsRunning = false;
+                this.fireEvent('load', [this]);
+                QUI.fireEvent('quiqqerUserAuthLoginLoad', [this]);
 
-                    this.fireEvent('load', [this]);
-                    QUI.fireEvent('quiqqerUserAuthLoginLoad', [this]);
+                const container = this.getElm().querySelector(
+                    '[data-name="quiqqer-users-login-container"]'
+                );
 
-                    moofx(
-                        this.getElm().querySelector('[data-name="quiqqer-users-login-container"]')
-                    ).animate({
+                if (container) {
+                    moofx(container).animate({
                         opacity: 1
                     }, {
                         duration: 250
                     });
-                });
-            }, {
-                isAdminLogin: typeof QUIQQER_IS_ADMIN_LOGIN !== 'undefined' ? 1 : 0,
-                authenticators: JSON.encode(this.getAttribute('authenticators'))
+                }
             });
         },
 
@@ -156,35 +161,20 @@ define('controls/users/Login', [
          * Refresh the form data and set events to the current form
          */
         $refreshForm: function () {
-            const self = this;
+            const onSubmit = (e) => {
+                e.stopPropagation();
+                e.preventDefault();
 
-            this.$forms.set({
-                action: '',
-                method: 'POST',
-                events: {
-                    submit: (event) => {
-                        let Target = null;
+                this.auth(e.target).catch((err) => {
+                    this.fireEvent('userLoginError', [err, this]);
+                    QUI.fireEvent('quiqqerUserAuthLoginUserLoginError', [err, this]);
+                });
+            }
 
-                        if (typeOf(event) === 'element') {
-                            Target = event;
-                        }
-
-                        if (typeOf(event) === 'domevent') {
-                            event.stop();
-                            Target = event.target;
-                        }
-
-                        if (!Target) {
-                            console.error('No target given.');
-                            return;
-                        }
-
-                        this.auth(Target).catch(function (err) {
-                            self.fireEvent('userLoginError', [err, self]);
-                            QUI.fireEvent('quiqqerUserAuthLoginUserLoginError', [err, self]);
-                        });
-                    }
-                }
+            Array.from(this.$forms).forEach((form) => {
+                form.action = '';
+                form.method = 'POST';
+                form.addEventListener('submit', onSubmit);
             });
 
             const onSuccess = this.getAttribute('onSuccess');
@@ -194,6 +184,155 @@ define('controls/users/Login', [
             }
         },
 
+        $handleLoginResponse: function (responseData) {
+            this.$authStep = responseData.authStep;
+
+            if (
+                typeof responseData.loggedIn !== 'undefined'
+                && responseData.loggedIn
+            ) {
+                // 2fa info, because user can activate it but don't have to
+                return this.$show2FAInfo().then((closeType) => {
+                    if (closeType === 'hasSeen2faInformation') {
+                        return responseData;
+                    }
+
+                    if (closeType === 'cancel') {
+                        return [];
+                    }
+
+                    return responseData;
+                });
+            }
+
+            let response = Promise.resolve(responseData);
+            let authenticators = null;
+            let secondaryType = responseData.secondaryLoginType;
+
+            if (
+                typeof responseData.authenticator !== 'undefined'
+                && responseData.authenticator
+                && responseData.authenticator.length
+            ) {
+                authenticators = responseData.authenticator;
+            }
+
+            if (
+                responseData.authStep === 'primary'
+                && !authenticators
+                && secondaryType !== 0
+            ) {
+                // 2fa + no authenticators and primary step, smth is wrong
+                // kill the session and start again
+                return this.destroySession().then(() => {
+                    return this.getLoginControl();
+                });
+            }
+
+            if (responseData.authStep === 'primary' && !authenticators) {
+                // no 2fa + no authenticators and primary step, login is ok
+                return this.isAuth().then((userData) => {
+                    if (userData.type === 'QUI\\Users\\Nobody') {
+                        return this.destroySession().then(() => {
+                            return this.getLoginControl();
+                        });
+                    }
+
+                    return responseData;
+                });
+            }
+
+            if (
+                secondaryType === 1
+                && responseData.authStep === 'secondary'
+                && !authenticators
+            ) {
+                // 2fa is a must
+                return this.$show2FAEnable().then(() => {
+                    return this.getLoginControl();
+                });
+            }
+
+            return response.then(() => {
+                return responseData;
+            });
+        },
+
+        $show2FAEnable: function () {
+            this.Loader.show();
+
+            return new Promise((resolve) => {
+                require([
+                    'controls/users/auth/EnableSecondaryAuthenticatorWindow'
+                ], (EnableSecondaryAuthenticatorWindow) => {
+                    new EnableSecondaryAuthenticatorWindow({
+                        events: {
+                            onCompleted: () => {
+                                this.Loader.hide();
+                                resolve();
+                            }
+                        }
+                    }).open();
+                });
+            });
+        },
+
+        $show2FAInfo: function () {
+            this.Loader.show();
+
+            return new Promise((resolve) => {
+                QUIAjax.get('ajax_user_getHasSeen2faInformation', (hasSeen) => {
+                    if (hasSeen) {
+                        resolve('hasSeen2faInformation');
+                        return;
+                    }
+
+                    require([
+                        'controls/users/auth/ShowSecondaryAuthenticatorWindow'
+                    ], (ShowSecondaryAuthenticatorWindow) => {
+                        new ShowSecondaryAuthenticatorWindow({
+                            events: {
+                                onCompleted: () => {
+                                    this.Loader.hide();
+                                    resolve('completed');
+                                },
+                                onCancel: () => {
+                                    this.Loader.hide();
+                                    resolve('cancel');
+                                }
+                            }
+                        }).open();
+                    });
+                });
+            });
+        },
+
+        getLoginControl: function () {
+            return new Promise((resolve, reject) => {
+                QUIAjax.get('ajax_users_loginControl', resolve, {
+                    isAdminLogin: typeof QUIQQER_IS_ADMIN_LOGIN !== 'undefined' ? 1 : 0,
+                    authenticators: JSON.encode(this.getAttribute('authenticators')),
+                    onError: reject
+                });
+            });
+        },
+
+        destroySession: function () {
+            return new Promise((resolve, reject) => {
+                QUIAjax.get('ajax_session_destroy', resolve, {
+                    onError: reject
+                });
+            });
+        },
+
+        isAuth: function () {
+            return new Promise((resolve, reject) => {
+                QUIAjax.get('ajax_isAuth', resolve, {
+                    onError: reject
+                });
+            });
+        },
+
         /**
          * Build the authenticator from the ajax html
          *
@@ -201,74 +340,149 @@ define('controls/users/Login', [
          * @return {Promise}
          */
         $buildAuthenticator: function (html) {
-            const Container = new Element('div', {
-                html: html
-            });
+            const container = this.getElm();
+            const ghost = document.createElement('div');
+            ghost.innerHTML = html;
 
-            const elements = Container.getChildren(),
-                forms = Container.getElements('form'),
+            container.style.overflow = 'hidden';
 
-                children = elements.filter(function (Node) {
-                    return !Node.get('data-qui');
-                });
+            let socialLoginContainer = container.querySelector('[data-name="social-logins"]');
+            let mailLoginContainer = container.querySelector('[data-name="mail-logins"]');
 
-            if (!forms.length) {
-                QUIAjax.post('ajax_user_logout', function () {
-                    window.location.reload();
-                });
+            if (!socialLoginContainer && !mailLoginContainer) {
+                const loginNode = ghost.querySelector('[data-qui="controls/users/Login"]');
 
-                return Promise.resolve();
-            }
+                if (loginNode) {
+                    container.innerHTML = loginNode.innerHTML;
+                    container.setAttribute('data-qui', loginNode.getAttribute('data-qui'));
 
-            console.log('$buildAuthenticator', this.$authStep);
-
-            forms.setStyle('opacity', 0);
-            forms.inject(this.getElm());
-
-            for (let i = 1, len = forms.length; i < len; i++) {
-                new Element('div', {
-                    'class': 'quiqqer-login-or',
-                    html: '<span>' + QUILocale.get('quiqqer/core', 'controls.users.auth.login.or') + '</span>'
-                }).inject(forms[i], 'before');
-            }
-
-            this.$forms = forms;
-            this.$refreshForm();
-
-            children.each(function (Child) {
-                Child.inject(forms[0]);
-            });
-
-            return QUI.parse(forms).then(function () {
-                this.Loader.hide();
-
-                const Node = this.getElm().getElement('[data-qui="controls/users/auth/QUIQQERLogin"]');
-
-                if (Node && Node.get('data-quiid')) {
-                    const Control = QUI.Controls.getById(Node.get('data-quiid'));
-
-                    if (Control) {
-                        Control.addEvents({
-                            onShowPassword: this.$onShowPassword,
-                            onShowPasswordReset: this.onShowPasswordReset
-                        });
-                    }
+                    loginNode.classList.forEach((cls) => {
+                        container.classList.add(cls);
+                    });
+                } else {
+                    container.innerHTML = ghost.innerHTML;
                 }
 
-                forms.setStyle('top', 20);
+                socialLoginContainer = container.querySelector('[data-name="social-logins"]');
+                mailLoginContainer = container.querySelector('[data-name="mail-logins"]');
 
-                moofx(forms).animate({
-                    opacity: 1,
-                    top: 0
+                Array.from(
+                    ghost.querySelectorAll('style')
+                ).forEach((style) => {
+                    container.appendChild(style);
+                });
+            } else {
+                Array.from(
+                    ghost.querySelectorAll('style')
+                ).forEach((style) => {
+                    container.appendChild(style);
+                });
+            }
+
+            // social logins
+            if (socialLoginContainer) {
+                socialLoginContainer.innerHTML = '';
+
+                Array.from(
+                    ghost.querySelectorAll('[data-name="social-logins"] form')
+                ).forEach((form) => {
+                    form.style.opacity = 0;
+                    form.style.display = 'none';
+                    socialLoginContainer.appendChild(form);
+                });
+            }
+
+            // mail logins
+            if (mailLoginContainer) {
+                mailLoginContainer.innerHTML = '';
+
+                Array.from(
+                    ghost.querySelectorAll('[data-name="mail-logins"] form')
+                ).forEach((form) => {
+                    form.style.opacity = 0;
+                    form.style.display = 'none';
+                    mailLoginContainer.appendChild(form);
+                });
+            }
+
+            this.$forms = container.querySelectorAll('form');
+            this.$refreshForm();
+
+            if (this.$authStep === 'primary') {
+                Array.from(this.$forms).forEach((form) => {
+                    form.style.display = '';
+                    form.querySelector('button[name="show-control"]').style.display = 'none';
+                });
+
+                Array.from(this.$forms).forEach((form) => {
+                    QUI.parse(form);
+                });
+            }
+
+            if (this.$authStep === 'secondary') {
+                if (this.$forms.length >= 2) {
+                    // show buttons
+                    Array.from(this.$forms).forEach((form) => {
+                        const button = form.querySelector('button[name="show-control"]');
+
+                        form.style.display = '';
+                        button.style.display = '';
+                        form.querySelector('[data-name="quiqqer-users-login-social-control"]').style.display = 'none';
+
+                        button.addEventListener('click', this.$clickShowControl);
+                    });
+
+                    container.querySelector('[data-name="mail-logins"]').style.marginTop = '0.5rem';
+                } else {
+                    Array.from(this.$forms).forEach((form) => {
+                        form.style.display = '';
+                        form.querySelector('button[name="show-control"]').style.display = 'none';
+                    });
+
+                    Array.from(this.$forms).forEach((form) => {
+                        QUI.parse(form);
+                    });
+                }
+            }
+
+            this.Loader.hide();
+
+            const Node = container.querySelector('[data-qui="controls/users/auth/QUIQQERLogin"]');
+
+            if (Node && Node.getAttribute('data-quiid')) {
+                const Control = QUI.Controls.getById(Node.getAttribute('data-quiid'));
+
+                if (Control) {
+                    Control.addEvents({
+                        onShowPassword: this.$onShowPassword,
+                        onShowPasswordReset: this.onShowPasswordReset
+                    });
+                }
+            }
+
+            return new Promise((resolve) => {
+                container.style.overflow = '';
+
+                if (!this.$forms || !this.$forms.length) {
+                    resolve();
+                    return;
+                }
+
+                moofx(this.$forms).animate({
+                    opacity: 1
                 }, {
                     duration: 500,
-                    callback: function () {
-                        if (typeof forms[0].elements[0] !== 'undefined') {
-                            forms[0].elements[0].focus();
+                    callback: () => {
+                        if (typeof this.$forms[0].elements[0] !== 'undefined') {
+                            this.$forms[0].elements[0].focus();
                         }
+
+                        resolve();
+                        this.fireEvent('buildAuthenticator', [this]);
+                        QUI.fireEvent('quiqqerUserAuthLoginBuildAuthenticator', [this]);
                     }
                 });
-            }.bind(this));
+            });
         },
 
         /**
@@ -278,58 +492,12 @@ define('controls/users/Login', [
             if (this.getAttribute('showLoader')) {
                 this.Loader.show();
             }
-            console.log('auth');
+
             this.fireEvent('authBegin', [this]);
             QUI.fireEvent('quiqqerUserAuthLoginAuthBegin', [this]);
 
             return new Promise((resolve, reject) => {
-                QUIAjax.post('ajax_users_login', (result) => {
-                    this.$authStep = result.authStep;
-
-                    console.log(this.$authStep);
-
-                    // authentication was successful
-                    if (!result.authenticator) {
-                        window.QUIQQER_USER = result.user;
-
-                        this.fireEvent('success', [this]);
-                        QUI.fireEvent('quiqqerUserAuthLoginSuccess', [this, Form.get('data-authenticator')]);
-                        resolve(this);
-
-                        if (typeof this.getAttribute('onSuccess') === 'function') {
-                            this.getAttribute('onSuccess')(this);
-                            return;
-                        }
-
-                        window.location.reload();
-                        return;
-                    }
-
-                    const Or = this.getElm().getElements('.quiqqer-login-or');
-
-                    if (Or.length) {
-                        moofx(Or).animate({
-                            opacity: 0
-                        }, {
-                            duration: 200
-                        });
-                    }
-
-                    moofx(this.$forms).animate({
-                        top: 20,
-                        opacity: 0
-                    }, {
-                        duration: 250,
-                        callback: () => {
-                            if (Or.length) {
-                                Or.destroy();
-                            }
-
-                            this.$forms.destroy();
-                            this.$buildAuthenticator(result.control);
-                        }
-                    });
-                }, {
+                QUIAjax.post('ajax_users_login', resolve, {
                     showLogin: false,
                     authenticator: Form.get('data-authenticator'),
                     authStep: this.$authStep,
@@ -339,7 +507,7 @@ define('controls/users/Login', [
                     onError: (e) => {
                         if (e.getAttribute('type') === 'QUI\\Users\\Auth\\Exception2FA') {
                             this.$authStep = 'secondary';
-                            this.auth();
+                            this.auth(Form);
                             reject(e);
                             return;
                         }
@@ -349,6 +517,37 @@ define('controls/users/Login', [
                         QUI.fireEvent('quiqqerUserAuthNext', [this]);
 
                         reject(e);
+                    }
+                });
+            }).then((responseData) => {
+                return this.$handleLoginResponse(responseData)
+            }).then((responseData) => {
+                // authentication was successful
+                if (!responseData.authenticator || !responseData.authenticator.length) {
+                    window.QUIQQER_USER = responseData.user;
+
+                    this.fireEvent('success', [this]);
+                    QUI.fireEvent('quiqqerUserAuthLoginSuccess', [this, Form.get('data-authenticator')]);
+
+                    if (typeof this.getAttribute('onSuccess') === 'function') {
+                        this.getAttribute('onSuccess')(this);
+                        return;
+                    }
+
+                    window.location.reload();
+                    return;
+                }
+
+                moofx(this.$forms).animate({
+                    opacity: 0
+                }, {
+                    duration: 250,
+                    callback: () => {
+                        Array.from(this.$forms).forEach((form) => {
+                            form.parentNode.removeChild(form);
+                        });
+
+                        this.$buildAuthenticator(responseData.control);
                     }
                 });
             });
@@ -445,6 +644,70 @@ define('controls/users/Login', [
                     }
                 });
             }
+        },
+
+        $clickShowControl: function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            const targetForm = e.target.closest('form');
+            const container = targetForm.closest('[data-name="quiqqer-users-login-container"]');
+            const forms = container.querySelectorAll('form');
+
+            Array.from(forms).forEach((form) => {
+                const button = form.querySelector('button[name="show-control"]');
+
+                moofx(button).animate({
+                    opacity: 0
+                }, {
+                    duration: 250,
+                    callback: () => {
+                        button.style.display = 'none';
+                    }
+                });
+            });
+
+            setTimeout(() => {
+                const controlContainer = targetForm.querySelector('[data-name="quiqqer-users-login-social-control"]');
+
+                controlContainer.style.display = 'block';
+                QUI.parse(controlContainer).then(() => {
+                    const back = document.createElement('button');
+                    back.innerHTML = 'Zurück';
+                    back.classList.add('btn', 'btn-secondary');
+                    back.name = 'back-to-auth-list';
+                    back.addEventListener('click', this.$clickBackToAuthList)
+
+                    this.getElm().appendChild(back);
+                });
+            }, 300);
+        },
+
+        $clickBackToAuthList: function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const container = this.getElm();
+            const controlContainer = container.querySelectorAll('[data-name="quiqqer-users-login-social-control"]');
+            const backButton = container.querySelector('[name="back-to-auth-list"]');
+            const controls = container.querySelectorAll('[name="show-control"]');
+
+            Array.from(controlContainer).forEach((node) => {
+                node.style.display = 'none';
+            });
+
+            if (backButton) {
+                backButton.parentNode.removeChild(backButton);
+            }
+
+            Array.from(controls).forEach((control) => {
+                control.style.opacity = 0;
+                control.style.display = 'block';
+
+                moofx(control).animate({
+                    opacity: 1
+                })
+            });
         }
     });
 });

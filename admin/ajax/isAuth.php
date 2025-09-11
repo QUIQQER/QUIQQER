@@ -4,8 +4,9 @@ QUI::getAjax()->registerFunction('ajax_isAuth', static function () {
     $SessionUser = QUI::getUserBySession();
 
     return [
-        'id'   => $SessionUser->getUUID(),
+        'id' => $SessionUser->getUUID(),
         'name' => $SessionUser->getName(),
-        'lang' => $SessionUser->getLang()
+        'lang' => $SessionUser->getLang(),
+        'type' => $SessionUser->getType()
     ];
 });

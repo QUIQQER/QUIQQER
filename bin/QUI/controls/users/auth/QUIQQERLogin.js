@@ -69,10 +69,7 @@ define('controls/users/auth/QUIQQERLogin', [
                 return;
             }
 
-            const size = this.getElm().getSize();
-
             this.getElm().setStyles({
-                height: size.y,
                 width: '100%'
             });
 

@@ -7,6 +7,7 @@
 namespace QUI\Users;
 
 use QUI\Control;
+use QUI\Interfaces\Users\User;
 use QUI\Locale;
 use QUI\System\Console;
 
@@ -19,15 +20,16 @@ use QUI\System\Console;
 interface AuthenticatorInterface
 {
     /**
-     * @param array|integer|string $user - name of the user, or user id
+     * @param array|int|string|User|null $user - name of the user, or user id
      */
-    public function __construct(array | int | string $user = '');
+    public function __construct(null | array | int | string | User $user = null);
 
     public static function getLoginControl(): ?Control;
+    public static function getSecondaryAuthenticationButton(): ?Control;
 
-    public static function getPasswordResetControl(): ?Control;
+    public function getPasswordResetControl(): ?Control;
 
-    public static function getSettingsControl(): ?Control;
+    public function getSettingsControl(): ?Control;
 
     public static function isCLICompatible(): bool;
 
@@ -38,11 +40,16 @@ interface AuthenticatorInterface
      */
     public function auth(string | array | int $authParams);
 
-    public function getUser(): \QUI\Interfaces\Users\User;
+    public function getUser(): User;
 
     public function getTitle(null | Locale $Locale = null): string;
 
     public function getDescription(null | Locale $Locale = null): string;
+    public function getIcon(): string;
+
+    public function getFrontendTitle(null | Locale $Locale = null): string;
+
+    public function getFrontendDescription(null | Locale $Locale = null): string;
 
     /**
      * CLI

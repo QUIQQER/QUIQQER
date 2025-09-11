@@ -470,6 +470,9 @@
         <locale name="isDeactivate">
             <de><![CDATA[Ist deaktiviert]]></de>
         </locale>
+        <locale name="user.panel.2fa">
+            <de><![CDATA[2FA Authentifizierung]]></de>
+        </locale>
         <locale name="user.panel.details">
             <de><![CDATA[Details]]></de>
         </locale>
@@ -582,7 +585,28 @@
             <de><![CDATA[Datum / Uhrzeit]]></de>
         </locale>
         <locale name="user.settings.authenticators">
-            <de><![CDATA[Zustäzliche Authentifizierung]]></de>
+            <de><![CDATA[Zwei-Faktor-Authentifizierung]]></de>
+        </locale>
+        <locale name="user.settings.authenticators.additionalSettings">
+            <de><![CDATA[Weitere Einstellungen zur Authentifizierung]]></de>
+        </locale>
+        <locale name="user.settings.authenticators.2faList">
+            <de><![CDATA[Verfügbare Zwei-Faktor-Authentifizierungen für diesen Nutzer]]></de>
+        </locale>
+        <locale name="user.settings.authenticators.2faList.empty">
+            <de><![CDATA[Keine Zwei-Faktor-Authentifizierungen vorhanden]]></de>
+        </locale>
+        <locale name="user.settings.hasSeen2faInfo">
+            <de><![CDATA[Hat Hinweis zur Zwei-Faktor-Authentifizierung gesehen]]></de>
+        </locale>
+        <locale name="user.settings.hasSeen2faInfo.description" html="true">
+            <de><![CDATA[
+            Diese Einstellung zeigt an, ob der Nutzer den Hinweis zur Zwei-Faktor-Authentifizierung bereits gesehen hat.
+            <br />
+            Ist die Option nicht aktiviert, wird dem Nutzer der Hinweis beim nächsten Login erneut angezeigt.<br />
+            Die Einstellung wirkt nur, wenn in den globalen Einstellungen für "Sekundäre Authenticator" festgelegt ist,
+            dass Nutzer einen Hinweis erhalten und eine zweite Authentifizierung einrichten können.
+            ]]></de>
         </locale>
         <locale name="message.setup.is.currently.running">
             <de><![CDATA[Das Setup wird gerade ausgeführt. Bitte warten Sie bis dieses zu ende ist.]]></de>
@@ -644,9 +668,48 @@
         <locale name="quiqqer.auth.title">
             <de><![CDATA[QUIQQER Standard Authentifizierung]]></de>
         </locale>
+        <locale name="quiqqer.auth.frontendTitle">
+            <de><![CDATA[Benutzername und Password]]></de>
+        </locale>
+        <locale name="quiqqer.auth.frontendTitle.email">
+            <de><![CDATA[Benutzername / E-Mail und Password]]></de>
+        </locale>
         <locale name="quiqqer.auth.description">
             <de><![CDATA[Die standard QUIQQER Authentifizierung per Benutzername und Passwort.]]></de>
         </locale>
+        <locale name="quiqqer.window.enable.2fa.title">
+            <de><![CDATA[Zwei-Faktor-Authentifizierung erforderlich]]></de>
+        </locale>
+        <locale name="quiqqer.window.enable.2fa.description" html="true">
+            <de><![CDATA[
+            <p>
+                Um deine Anmeldung noch sicherer zu machen, musst du eine Zwei-Faktor-Authentifizierung aktivieren.
+                Bitte wähle eine Methode aus und aktiviere sie, um fortzufahren.
+            </p>
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.window.enable.2fa.backButton">
+            <de><![CDATA[Zurück zur Authentifizierungsliste]]></de>
+        </locale>
+
+        <locale name="quiqqer.window.show.2fa.info.title">
+            <de><![CDATA[Zwei-Faktor-Authentifizierung einrichten?]]></de>
+        </locale>
+        <locale name="quiqqer.window.show.2fa.info.description" html="true">
+            <de><![CDATA[
+            <p>
+                Um deine Anmeldung noch sicherer zu machen, kannst du eine Zwei-Faktor-Authentifizierung aktivieren.
+                Bitte wähle eine Methode aus und aktiviere sie, um fortzufahren.
+            </p>
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.window.show.2fa.info.button.2fa">
+            <de><![CDATA[Zwei-Faktor-Authentifizierung einrichten]]></de>
+        </locale>
+        <locale name="quiqqer.window.show.2fa.info.button.not">
+            <de><![CDATA[Jetzt nicht]]></de>
+        </locale>
+
         <locale name="quiqqer.mail2fa.title">
             <de><![CDATA[OTP Mail Authentifizierung]]></de>
         </locale>
@@ -654,6 +717,16 @@
             <de><![CDATA[
             Die standard QUIQQER One Time Password Mail Authentifizierung per verifizierter E-Mail.
             Nur Accounts mit verifzierter Mail können sich authentifizieren.
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.mail2fa.frontend.title">
+            <de><![CDATA[Mail Einmal Code Authentifizierung]]></de>
+        </locale>
+        <locale name="quiqqer.mail2fa.frontend.description">
+            <de><![CDATA[
+            Mit dieser Methode erhältst du bei der Anmeldung einen einmaligen Code per E-Mail.
+            So ist dein Konto zusätzlich geschützt – selbst wenn jemand dein Passwort kennt,
+            kann sich niemand ohne Zugriff auf deine verifizierte E-Mail anmelden.
             ]]></de>
         </locale>
         <locale name="quiqqer.verified.mail2fa.mail.subject">
@@ -682,12 +755,70 @@
             </p>
             ]]></de>
         </locale>
+        <locale name="quiqqer.enable.mail2fa.mail.subject">
+            <de><![CDATA[
+            [host]: Dein Code zur Aktivierung der E-Mail-Einmal-Code-Authentifizierung
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.enable.mail2fa.mail.content" html="true">
+            <de><![CDATA[
+            <p>Hallo,</p>
+            <p>
+              dein Code zur Aktivierung der E-Mail-Einmal-Code-Authentifizierung bei <strong>[host]</strong> lautet:
+            </p>
+            <p style="font-size: 1.5em; font-weight: bold; letter-spacing: 2px;">
+              [code]
+            </p>
+            <p>
+              Bitte gib diesen Code ein, um fortzufahren. Der Code ist nur für kurze Zeit gültig.
+            </p>
+            <p>
+              Falls du diese Anfrage nicht selbst gestellt hast, kannst du diese E-Mail einfach ignorieren.
+            </p>
+            <p>
+              Viele Grüße<br>
+              Dein [host]-Team
+            </p>
+            ]]></de>
+        </locale>
         <locale name="quiqqer.verified.mail2fa.control.description">
-            <de><![CDATA[Wir haben dir einen Bestätigungscode per E-Mail gesendet. Bitte gib den Code hier ein, um fortzufahren.]]></de>
+            <de><![CDATA[
+            Wir haben dir einen Bestätigungscode per E-Mail gesendet. Bitte gib den Code hier ein, um fortzufahren.
+            ]]></de>
         </locale>
         <locale name="quiqqer.verified.mail2fa.control.codeLabel">
             <de><![CDATA[Code Eingabe:]]></de>
         </locale>
+        <locale name="quiqqer.verified.mail2fa.control.code.button">
+            <de><![CDATA[Code senden und Verifizierung durchführen]]></de>
+        </locale>
+        <locale name="quiqqer.verified.mail2fa.control.frontend.sendCodeButton">
+            <de><![CDATA[Code per E-Mail anfordern]]></de>
+        </locale>
+        <locale name="quiqqer.verified.mail2fa.control.frontend.description">
+            <de><![CDATA[
+                <h1>Mail Einmal Code Authentifizierung aktivieren</h1>
+                <p>
+                Bitte bestätige deine E-Mail-Adresse.
+                Klicke dazu auf den Button, um einen einmaligen Bestätigungscode per E-Mail zu erhalten.
+                Anschließend gib bitte den erhaltenen Code unten ein, um die Verifizierung abzuschließen.
+                </p>
+            ]]></de>
+        </locale>
+
+        <locale name="quiqqer.verified.mail2fa.control.backend.noVerifiedMail" html="true">
+            <de><![CDATA[
+            <p>Die E-Mail-Adresse ist noch nicht verifiziert.</p>
+            <p>Um diese Authentifizierung nutzen zu können, muss zuerst die E-Mail-Adresse bestätigt werden.</p>
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.verified.mail2fa.control.backend.verifiedMail" html="true">
+            <de><![CDATA[
+            <p>Die Authentifizierung wurde erfolgreich eingerichtet. Ab sofort ist dieses Konto zusätzlich geschützt.</p>
+            <p>Bei zukünftigen Anmeldungen wird ein zweiter Authentifizierungsfaktor abgefragt, um die Sicherheit weiter zu erhöhen.</p>
+            ]]></de>
+        </locale>
+
         <locale name="quiqqer.settings.auth.global">
             <de><![CDATA[Globale Authenticator]]></de>
         </locale>
@@ -703,6 +834,36 @@
         <locale name="quiqqer.settings.auth.secondary">
             <de><![CDATA[Sekundäre Authenticator]]></de>
         </locale>
+        <locale name="quiqqer.settings.auth.frontend">
+            <de><![CDATA[Frontend]]></de>
+        </locale>
+        <locale name="quiqqer.settings.auth.backend">
+            <de><![CDATA[Backend]]></de>
+        </locale>
+        <locale name="quiqqer.settings.auth.secondary.type.information">
+            <de><![CDATA[
+            Hier können Sie festlegen, dass Benutzer zusätzlich zum primären Authenticator einen zweiten Authenticator (2FA)
+            nutzen müssen. Sie können separat bestimmen, ob die Zwei-Faktor-Authentifizierung für das Frontend,
+            das Backend oder beide Bereiche verpflichtend sein soll.
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.settings.auth.secondary.type.0">
+            <de><![CDATA[Nutzer können keine zweite Authentifizierung einrichten.]]></de>
+        </locale>
+        <locale name="quiqqer.settings.auth.secondary.type.1">
+            <de><![CDATA[Nutzer müssen eine zweite Authentifizierung einrichten.]]></de>
+        </locale>
+        <locale name="quiqqer.settings.auth.secondary.type.2">
+            <de><![CDATA[Nutzer erhalten einen Hinweis und können eine zweite Authentifizierung einrichten.]]></de>
+        </locale>
+        <locale name="quiqqer.settings.auth.secondary.frontend.available">
+            <de><![CDATA[Im Frontend verfügbare zwei faktor Authentifizierungsarten]]></de>
+        </locale>
+        <locale name="quiqqer.settings.auth.secondary.backend.available">
+            <de><![CDATA[Im Backend verfügbare zwei faktor Authentifizierungsarten]]></de>
+        </locale>
+
+
         <locale name="exception.forwarding.already.exists">
             <de><![CDATA[Diese Weiterleitung besteht bereits.]]></de>
         </locale>

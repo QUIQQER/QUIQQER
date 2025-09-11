@@ -15,15 +15,25 @@ QUI::$Ajax->registerFunction(
             $authenticators = json_decode($authenticators, true);
         }
 
+        if (QUI::isFrontend()) {
+            $secondaryLoginType = (int)QUI::conf('auth_settings', 'secondary_frontend');
+        } else {
+            $secondaryLoginType = (int)QUI::conf('auth_settings', 'secondary_backend');
+        }
+
         $Login = new QUI\Users\Controls\Login([
             'authenticators' => $authenticators
         ]);
 
-        $result = $Login->create();
-        $result .= QUI\Control\Manager::getCSS();
+        $next = $Login->next();
+
+        $control = $Login->create();
+        $control .= QUI\Control\Manager::getCSS();
 
         return [
-            'control' => $result,
+            'secondaryLoginType' => $secondaryLoginType,
+            'authenticator' => $next,
+            'control' => $control,
             'authStep' => $Login->getAttribute('authStep')
         ];
     },
