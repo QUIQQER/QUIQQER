@@ -122,10 +122,39 @@
     </tbody>
 </table>
 
-{if count($authenticators)}
 <h2>
     {locale group="quiqqer/core" var="user.settings.authenticators"}
 </h2>
+
+<table class="data-table data-table-flexbox">
+    <thead>
+    <tr>
+        <th>
+            {locale group="quiqqer/core" var="user.settings.authenticators.additionalSettings"}
+        </th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/core" var="user.settings.hasSeen2faInfo"}
+                </span>
+                <span class="field-container-field">
+                    <input type="checkbox" name="has.seen.2fa.info" />
+                    {locale group="quiqqer/core" var="user.settings.hasSeen2faInfo.description"}
+                </span>
+            </label>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<h3 style="font-size: 1.2rem">
+    {locale group="quiqqer/core" var="user.settings.authenticators.2faList"}
+</h3>
 
 {foreach from=$userAuthenticators item=$authenticator}
 {assign var=cls value=get_class($authenticator)}
@@ -152,18 +181,7 @@
         </th>
     </tr>
     </thead>
-    {*if $User->hasAuthenticator($cls)}
-    {assign var=Settings value=$authenticator->getSettingsControl()}
-    {if $Settings}
-    <tbody>
-    <tr>
-        <td>
-            {$Settings->create()}
-        </td>
-    </tr>
-    </tbody>
-    {/if}
-    {/if*}
 </table>
+{foreachelse}
+<p>{locale group="quiqqer/core" var="user.settings.authenticators.2faList.empty"}</p>
 {/foreach}
-{/if}

@@ -585,7 +585,28 @@
             <de><![CDATA[Datum / Uhrzeit]]></de>
         </locale>
         <locale name="user.settings.authenticators">
-            <de><![CDATA[Zusätzliche Authentifizierung]]></de>
+            <de><![CDATA[Zwei-Faktor-Authentifizierung]]></de>
+        </locale>
+        <locale name="user.settings.authenticators.additionalSettings">
+            <de><![CDATA[Weitere Einstellungen zur Authentifizierung]]></de>
+        </locale>
+        <locale name="user.settings.authenticators.2faList">
+            <de><![CDATA[Verfügbare Zwei-Faktor-Authentifizierungen für diesen Nutzer]]></de>
+        </locale>
+        <locale name="user.settings.authenticators.2faList.empty">
+            <de><![CDATA[Keine Zwei-Faktor-Authentifizierungen vorhanden]]></de>
+        </locale>
+        <locale name="user.settings.hasSeen2faInfo">
+            <de><![CDATA[Hat Hinweis zur Zwei-Faktor-Authentifizierung gesehen]]></de>
+        </locale>
+        <locale name="user.settings.hasSeen2faInfo.description" html="true">
+            <de><![CDATA[
+            Diese Einstellung zeigt an, ob der Nutzer den Hinweis zur Zwei-Faktor-Authentifizierung bereits gesehen hat.
+            <br />
+            Ist die Option nicht aktiviert, wird dem Nutzer der Hinweis beim nächsten Login erneut angezeigt.<br />
+            Die Einstellung wirkt nur, wenn in den globalen Einstellungen für "Sekundäre Authenticator" festgelegt ist,
+            dass Nutzer einen Hinweis erhalten und eine zweite Authentifizierung einrichten können.
+            ]]></de>
         </locale>
         <locale name="message.setup.is.currently.running">
             <de><![CDATA[Das Setup wird gerade ausgeführt. Bitte warten Sie bis dieses zu ende ist.]]></de>

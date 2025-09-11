@@ -583,7 +583,27 @@
             <en><![CDATA[Date / Time]]></en>
         </locale>
         <locale name="user.settings.authenticators">
-            <en><![CDATA[Additional authentication]]></en>
+            <en><![CDATA[Two-Factor Authentication]]></en>
+        </locale>
+        <locale name="user.settings.authenticators.additionalSettings">
+            <en><![CDATA[Additional authentication settings]]></en>
+        </locale>
+        <locale name="user.settings.authenticators.2faList">
+            <en><![CDATA[Two-factor authentication methods available for this user]]></en>
+        </locale>
+        <locale name="user.settings.authenticators.2faList.empty">
+            <en><![CDATA[No two-factor authentication available]]></en>
+        </locale>
+        <locale name="user.settings.hasSeen2faInfo">
+            <en><![CDATA[Has seen the note about two-factor authentication]]></en>
+        </locale>
+        <locale name="user.settings.hasSeen2faInfo.description" html="true">
+            <en><![CDATA[
+            This setting indicates whether the user has already seen the two-factor authentication notice.<br />
+            If the option is not enabled, the user will see the message again the next time they log in.
+            The setting only takes effect if the global settings for “Secondary Authenticator” specify
+            that users receive a message and can set up a second authentication.
+            ]]></en>
         </locale>
         <locale name="message.setup.is.currently.running">
             <en><![CDATA[The setup is running. Please wait until this is finish.]]></en>
