@@ -1,14 +1,12 @@
 /**
- * QUIQQER Authentication via email code
+ * QUIQQER Authentication Settings via email code
  */
-define('controls/users/auth/VerifiedMail2FA', [
+define('controls/users/auth/settings/VerifiedMail2FA', [
 
     'qui/QUI',
     'qui/controls/Control',
     'Locale',
-    'Ajax',
-
-    'css!controls/users/auth/VerifiedMail2FA.css'
+    'Ajax'
 
 ], function (QUI, QUIControl, QUILocale, QUIAjax) {
     'use strict';
@@ -16,10 +14,11 @@ define('controls/users/auth/VerifiedMail2FA', [
     return new Class({
 
         Extends: QUIControl,
-        Type: 'controls/users/auth/VerifiedMail2FA',
+        Type: 'controls/users/auth/settings/VerifiedMail2FA',
 
         Binds: [
-            '$onImport'
+            '$onImport',
+            '$sendCode'
         ],
 
         /**
@@ -40,32 +39,73 @@ define('controls/users/auth/VerifiedMail2FA', [
          * event : on import
          */
         $onImport: function () {
-            const node = this.getElm();
-            const inputs = node.querySelectorAll('input');
+            const content = this.getElm();
+            const codeForm = content.querySelector('[data-name="quiqqer-mail2fa-auth-settings-code"]');
+            const codeSendButton = content.querySelector('[name="send-code"]');
+            const enableButton = content.querySelector('button[name="enable"]');
 
-            // send mail
-            QUIAjax.post('ajax_users_authenticator_mail2fa_sendVerifiedMail2faMail', () => {
-            }, {
-                'package': 'quiqqer/code',
-                onError: (err) => {
-                    QUI.getMessageHandler().then((mh) => {
-                        mh.addError(err.getMessage());
+            // mail code send
+            if (codeSendButton) {
+                codeSendButton.addEventListener('click', this.$sendCode);
+            }
 
-                        // destroy session
-                        require(['utils/Session'], (Session) => {
-                            Session.remove('inAuthentication');
-                            Session.remove('auth-primary');
+            if (codeForm) {
+                const inputs = codeForm.querySelectorAll('input');
+                this.$initInputEvents(inputs);
 
-                            const loginNode = this.getElm().closest('[data-qui="controls/users/Login"]');
+                codeForm.addEventListener('submit', (e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
 
-                            if (loginNode) {
-                                QUI.Controls.getById(loginNode.get('data-quiid')).refresh();
-                            }
-                        });
+                    if (enableButton) enableButton.disabled = true;
+                    if (codeSendButton) codeSendButton.disabled = true;
+
+                    const code = Array.from(codeForm.querySelectorAll('input'))
+                        .map((input) => input.value)
+                        .join('');
+
+                    this.$enable(code).then(() => {
+                        if (enableButton) enableButton.disabled = false;
+                        if (codeSendButton) codeSendButton.disabled = false;
+
+                        this.fireEvent('completed');
                     });
-                }
-            });
+                });
+            }
+        },
 
+        $sendCode: function (e) {
+            const button = e.target.nodeName === 'BUTTON' ? e.target : e.target.closest('button');
+            const icon = button.querySelector('.fa');
+            let envelopeIcon = 'fa-envelope-o';
+
+            if (icon.classList.contains('fa-envelope')) {
+                envelopeIcon = 'fa-envelope';
+            }
+
+            icon.classList.add('fa-circle-o-notch', 'fa-spin');
+            icon.classList.remove(envelopeIcon);
+            button.disabled = true;
+
+            QUIAjax.post('ajax_users_authenticator_mail2fa_sendEnableMail', () => {
+                icon.classList.remove('fa-circle-o-notch', 'fa-spin');
+                icon.classList.add(envelopeIcon);
+                button.disabled = false;
+            }, {
+                'package': 'quiqqer/code'
+            });
+        },
+
+        $enable: function (code) {
+            return new Promise((resolve) => {
+                QUIAjax.post('ajax_users_authenticator_mail2fa_enableByUser', resolve, {
+                    'package': 'quiqqer/code',
+                    code: code
+                });
+            });
+        },
+
+        $initInputEvents: function (inputs) {
             // Focus handling for code inputs
             inputs.forEach((input, idx) => {
                 input.addEventListener('input', (e) => {

@@ -6,6 +6,7 @@ use QUI;
 use QUI\Interfaces\Users\User;
 use QUI\Locale;
 use QUI\Users\AbstractAuthenticator;
+use QUI\Users\Attribute\AttributeVerificationStatus;
 use QUI\Users\Attribute\Verifiable\MailAttribute;
 use QUI\Users\Exception;
 use QUI\Utils\Security\Orthos;
@@ -18,22 +19,43 @@ use Random\RandomException;
 class VerifiedMail2FA extends AbstractAuthenticator
 {
     public const USER_CODE_ATTRIBUTE = 'quiqqer.verified.2fa.mail.code';
+    public const USER_CODE_VERIFYING_ATTRIBUTE = 'quiqqer.verifying.2fa.mail.code';
 
     protected ?User $User = null;
-
-    protected ?string $username = null;
-
+    protected mixed $user = null;
     protected bool $authenticated = false;
 
-    public function __construct(array | int | string $user = '')
+    public function __construct(null | array | int | string | User $user = null)
     {
-        $user = Orthos::clear($user);
-        $this->username = $user;
+        if (empty($user)) {
+            return;
+        }
+
+        if ($user instanceof User) {
+            $this->User = $user;
+            return;
+        }
+
+        $this->user = Orthos::clear($user);
     }
 
     public static function getLoginControl(): QUI\Control
     {
         return new Controls\VerifiedMail2FA();
+    }
+
+    public function getSettingsControl(): ?QUI\Control
+    {
+        $user = null;
+
+        try {
+            $user = $this->getUser();
+        } catch (QUI\Exception) {
+        }
+
+        return new Controls\Settings\VerifiedMail2FA([
+            'user' => $user
+        ]);
     }
 
     public static function isCLICompatible(): bool
@@ -59,6 +81,29 @@ class VerifiedMail2FA extends AbstractAuthenticator
         return $Locale->get('quiqqer/core', 'quiqqer.mail2fa.description');
     }
 
+    public function getIcon(): string
+    {
+        return 'fa fa-envelope';
+    }
+
+    public function getFrontendTitle(null | Locale $Locale = null): string
+    {
+        if (is_null($Locale)) {
+            $Locale = QUI::getLocale();
+        }
+
+        return $Locale->get('quiqqer/core', 'quiqqer.mail2fa.frontend.title');
+    }
+
+    public function getFrontendDescription(null | Locale $Locale = null): string
+    {
+        if (is_null($Locale)) {
+            $Locale = QUI::getLocale();
+        }
+
+        return $Locale->get('quiqqer/core', 'quiqqer.mail2fa.frontend.description');
+    }
+
     /**
      * @throws Exception
      */
@@ -68,16 +113,35 @@ class VerifiedMail2FA extends AbstractAuthenticator
             return $this->User;
         }
 
-        try {
-            $this->User = QUI::getUsers()->getUserByName($this->username);
-        } catch (QUI\Exception) {
+        if (empty($this->user)) {
             throw new QUI\Users\Exception(
                 ['quiqqer/core', 'exception.login.fail.user.not.found'],
                 404
             );
         }
 
-        return $this->User;
+        try {
+            $this->User = QUI::getUsers()->get($this->user);
+            return $this->User;
+        } catch (QUI\Exception) {
+        }
+
+        try {
+            $this->User = QUI::getUsers()->getUserByName($this->user);
+            return $this->User;
+        } catch (QUI\Exception) {
+        }
+
+        try {
+            $this->User = QUI::getUsers()->getUserByMail($this->user);
+            return $this->User;
+        } catch (QUI\Exception) {
+        }
+
+        throw new QUI\Users\Exception(
+            ['quiqqer/core', 'exception.login.fail.user.not.found'],
+            404
+        );
     }
 
     public function auth(string | int | array $authParams): bool
@@ -204,6 +268,138 @@ class VerifiedMail2FA extends AbstractAuthenticator
             ]);
         }
     }
+
+    //region enable
+
+    /**
+     * @throws QUI\Permissions\Exception
+     * @throws RandomException
+     */
+    public static function sendEnableMailToSessionUser(): void
+    {
+        // get user
+        $uid = QUI::getSession()->get('uid');
+
+        if (empty($uid)) {
+            return;
+        }
+
+        try {
+            $User = QUI::getUsers()->get($uid);
+        } catch (QUI\Exception) {
+            throw new QUI\Permissions\Exception(
+                ['quiqqer/core', 'exception.login.fail.user.not.found'],
+            );
+        }
+
+        if (!($User instanceof QUI\Users\User)) {
+            throw new QUI\Permissions\Exception(
+                ['quiqqer/core', 'exception.login.fail.user.not.found'],
+            );
+        }
+
+        $email = $User->getAttribute('email');
+
+        if (empty($email)) {
+            throw new QUI\Permissions\Exception(
+                ['quiqqer/core', 'exception.login.fail.user.need.email'],
+            );
+        }
+
+        // send mail
+        $digitCode = '';
+
+        for ($i = 0; $i < 6; $i++) {
+            $digitCode .= random_int(0, 9);
+        }
+
+        try {
+            QUI::getSession()->set(self::USER_CODE_VERIFYING_ATTRIBUTE, $digitCode);
+
+            QUI::getMailManager()->send(
+                $email,
+                QUI::getLocale()->get('quiqqer/core', 'quiqqer.enable.mail2fa.mail.subject', [
+                    'host' => $_SERVER['HTTP_HOST']
+                ]),
+                QUI::getLocale()->get('quiqqer/core', 'quiqqer.enable.mail2fa.mail.content', [
+                    'code' => $digitCode,
+                    'host' => $_SERVER['HTTP_HOST']
+                ])
+            );
+        } catch (\Exception $exception) {
+            QUI\System\Log::addError($exception->getMessage(), [
+                'source' => self::class . '::sendEnableMailToSessionUser'
+            ]);
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function enableByUser($code): bool
+    {
+        $uid = QUI::getSession()->get('uid');
+
+        try {
+            $User = QUI::getUsers()->get($uid);
+        } catch (QUI\Exception) {
+            throw new QUI\Users\Exception(
+                ['quiqqer/core', 'exception.login.fail.user.not.found'],
+            );
+        }
+
+        if (!($User instanceof QUI\Users\User)) {
+            throw new QUI\Users\Exception(
+                ['quiqqer/core', 'exception.login.fail.user.not.found'],
+            );
+        }
+
+        // check if current user is nobody
+        // 1fa must be successfully authenticated
+        if (QUI::getUsers()->isNobodyUser(QUI::getUserBySession())) {
+            if (!QUI::getSession()->get('auth-primary')) {
+                throw new QUI\Users\Exception(
+                    ['quiqqer/core', 'exception.2fa.mail.enable.not.authenticated'],
+                );
+            }
+        }
+
+
+        $userCode = QUI::getSession()->get(self::USER_CODE_VERIFYING_ATTRIBUTE);
+
+        if ($code !== $userCode) {
+            return false;
+        }
+
+        try {
+            // verify mail
+            if (method_exists($User, 'setStatusToVerifiableAttribute')) {
+                $User->setStatusToVerifiableAttribute(
+                    $User->getAttribute('email'),
+                    QUI\Users\Attribute\Verifiable\MailAttribute::class,
+                    AttributeVerificationStatus::VERIFIED
+                );
+
+                $User->save(QUI::getUsers()->getSystemUser());
+            }
+
+            // enable 2fa
+            if (QUI::getUsers()->isNobodyUser(QUI::getUserBySession())) {
+                $User->enableAuthenticator(
+                    VerifiedMail2FA::class,
+                    QUI::getUsers()->getSystemUser()
+                );
+            } else {
+                $User->enableAuthenticator(VerifiedMail2FA::class);
+            }
+        } catch (QUI\Exception $e) {
+            throw new QUI\Users\Exception($e->getMessage());
+        }
+
+        return true;
+    }
+
+    //endregion
 
     public function isPrimaryAuthentication(): bool
     {

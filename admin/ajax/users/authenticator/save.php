@@ -31,16 +31,14 @@ QUI::$Ajax->registerFunction(
         $Config->del('auth_frontend_secondary');
         $Config->del('auth_backend_secondary');
 
+        $authHandler = QUI\Users\Auth\Handler::getInstance();
+
         // setter
         if (!empty($authenticators['primary'])) {
             foreach (['backend', 'frontend'] as $type) {
                 foreach ($authenticators['primary'][$type] as $authenticator) {
                     try {
-                        QUI\Users\Auth\Handler::getInstance()->getAuthenticator(
-                            $authenticator,
-                            $User->getUsername()
-                        );
-
+                        $authHandler->getAuthenticator($authenticator, $User);
                         $Config->setValue('auth_' . $type, $authenticator, 1);
                     } catch (QUI\Exception $Exception) {
                         QUI\System\Log::writeException($Exception);
@@ -49,20 +47,23 @@ QUI::$Ajax->registerFunction(
             }
         }
 
+        $Config->setValue('auth_settings', 'secondary_frontend', 0);
+        $Config->setValue('auth_settings', 'secondary_backend', 0);
+
+        if (isset($authenticators['secondary_frontend'])) {
+            $Config->setValue('auth_settings', 'secondary_frontend', (int)$authenticators['secondary_frontend']);
+        }
+
+        if (isset($authenticators['secondary_backend'])) {
+            $Config->setValue('auth_settings', 'secondary_backend', (int)$authenticators['secondary_backend']);
+        }
+
         if (!empty($authenticators['secondary'])) {
             foreach (['backend', 'frontend'] as $type) {
                 foreach ($authenticators['secondary'][$type] as $authenticator) {
                     try {
-                        QUI\Users\Auth\Handler::getInstance()->getAuthenticator(
-                            $authenticator,
-                            $User->getUsername()
-                        );
-
-                        $Config->setValue(
-                            'auth_' . $type . '_secondary',
-                            $authenticator,
-                            1
-                        );
+                        $authHandler->getAuthenticator($authenticator, $User);
+                        $Config->setValue('auth_' . $type . '_secondary', $authenticator, 1);
                     } catch (QUI\Exception $Exception) {
                         QUI\System\Log::writeException($Exception);
                     }

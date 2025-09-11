@@ -1,0 +1,24 @@
+[data-name="enable-secondary-authenticators"] {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+[data-name="enable-secondary-authenticators-authenticator"] {
+    padding: 1rem;
+    border-width: 1px;
+    border-style: solid;
+
+    color: var(--theme-colors-gray-500, rgb(111, 111, 107));
+    border-color: var(--theme-colors-gray-200, rgb(209, 209, 208));
+    background: var(--theme-colors-gray-50, rgb(246, 246, 245));
+    border-radius: var(--radius-md);
+}
+
+[data-name="enable-secondary-authenticators-authenticator"] > h2 {
+    margin-top: 0;
+}
+
+[data-name="authenticator-settings"] {
+    padding: 2rem;
+}

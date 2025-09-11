@@ -8,6 +8,7 @@ namespace QUI\Users;
 
 use QUI;
 use QUI\Control;
+use QUI\Locale;
 use QUI\System\Console;
 
 /**
@@ -23,12 +24,17 @@ abstract class AbstractAuthenticator implements QUI\Users\AuthenticatorInterface
         return null;
     }
 
-    public static function getPasswordResetControl(): ?Control
+    public static function getSecondaryAuthenticationButton(): ?QUI\Control
     {
         return null;
     }
 
-    public static function getSettingsControl(): ?Control
+    public function getPasswordResetControl(): ?Control
+    {
+        return null;
+    }
+
+    public function getSettingsControl(): ?Control
     {
         return null;
     }
@@ -36,6 +42,16 @@ abstract class AbstractAuthenticator implements QUI\Users\AuthenticatorInterface
     public static function isCLICompatible(): bool
     {
         return false;
+    }
+
+    public function getFrontendTitle(null | Locale $Locale = null): string
+    {
+        return $this->getTitle($Locale);
+    }
+
+    public function getFrontendDescription(null | Locale $Locale = null): string
+    {
+        return $this->getDescription($Locale);
     }
 
     public function getUserId(): int

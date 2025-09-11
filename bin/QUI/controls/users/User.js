@@ -3,7 +3,6 @@
  * Here you can change / edit the user
  *
  * @module controls/users/User
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onQuiqqerUserPanelCreate [self] - Fires when the User panel is created
  */
@@ -399,6 +398,8 @@ define('controls/users/User', [
                 FormUtils.setDataToForm(extras, Form);
                 FormUtils.setDataToForm(attributes, Form);
 
+                console.log('users', attributes);
+
                 Body.getElements('[data-qui]').set({
                     'data-qui-options-uid': self.getUser().getId()
                 });
@@ -407,7 +408,7 @@ define('controls/users/User', [
                 return QUI.parse(Body);
             }).then(function () {
                 return ControlUtils.parse(self.getBody());
-            }).then(function () {
+            }).then(() => {
                 const Created = self.getBody().getElement('[name="regdate"]');
                 const LastEdit = self.getBody().getElement('[name="lastedit"]');
                 const LastVisit = self.getBody().getElement('[name="lastvisit"]');
@@ -428,8 +429,6 @@ define('controls/users/User', [
                             new Date(Created.value * 1000)
                         );
                     } catch (e) {
-                        console.error('DEBUG:');
-                        console.error(e);
                     }
                 } else {
                     if (Created) {
@@ -443,8 +442,6 @@ define('controls/users/User', [
                             new Date(LastEdit.value)
                         );
                     } catch (e) {
-                        console.error('DEBUG:');
-                        console.error(e);
                     }
                 } else {
                     if (LastEdit) {
@@ -458,8 +455,6 @@ define('controls/users/User', [
                             new Date(LastVisit.value * 1000)
                         );
                     } catch (e) {
-                        console.error('DEBUG:');
-                        console.error(e);
                     }
                 } else {
                     if (LastVisit) {
@@ -560,77 +555,8 @@ define('controls/users/User', [
 
                 // authenticator
                 if (authenticators) {
-                    const toggleAuthenticator = function (Btn) {
-                        let Table = Btn.getElm().getParent('table'),
-                            auth = Table.get('data-authenticator'),
-                            Prom = Promise.resolve();
-
-                        Btn.getElm().setStyle('width', Btn.getElm().getSize().x);
-                        Btn.setAttribute('text', '<span class="fa fa-spinner fa-spin"></span>');
-
-                        if (Table.hasClass('authenticator-enabled')) {
-                            Prom = User.disableAuthenticator(auth);
-                        } else {
-                            Prom = User.enableAuthenticator(auth);
-                        }
-
-                        Prom.then(function () {
-                            return User.hasAuthenticator(auth);
-                        }).then(function (enabled) {
-                            if (enabled) {
-                                Table.addClass('authenticator-enabled');
-
-                                Btn.getElm().setStyle('width', null);
-                                Btn.setAttribute('text', QUILocale.get('quiqqer/core', 'isActivate'));
-                                Btn.getElm().removeClass('btn-red');
-                                Btn.getElm().addClass('btn-green');
-
-                                return User.getAuthenticatorSettings(auth);
-                            }
-
-                            Table.removeClass('authenticator-enabled');
-
-                            Btn.getElm().setStyle('width', null);
-                            Btn.setAttribute('text', QUILocale.get('quiqqer/core', 'isDeactivate'));
-                            Btn.getElm().addClass('btn-red');
-                            Btn.getElm().removeClass('btn-green');
-
-                            return false;
-                        }).then(function (settings) {
-                            let TBody = Table.getElement('tbody');
-
-                            if (!settings || settings === '') {
-                                if (TBody) {
-                                    TBody.destroy();
-                                }
-                                return;
-                            }
-
-                            if (!TBody) {
-                                TBody = new Element('tbody', {
-                                    html: '<tr><td></td></tr>'
-                                }).inject(Table);
-                            }
-
-                            TBody.getElement('td').set('html', settings);
-                            TBody.getElements('[data-qui]').set({
-                                'data-qui-options-uid': self.getUser().getId()
-                            });
-
-                            return QUI.parse(TBody);
-                        }).then(function () {
-                            QUI.Controls.getControlsInElement(Table.getElement('tbody')).each(function (Control) {
-                                Control.setAttribute('Panel', self);
-                                Control.setAttribute('uid', self.getUser().getId());
-                                Control.setAttribute('User', self.getUser());
-                            });
-                        }).catch(function (Exception) {
-                            console.error(Exception);
-                            Btn.setAttribute('text', '<span class="fa fa-bolt"></span>');
-                        });
-                    };
-
-                    let cls, text, title, enabled;
+                    let cls, text, title, enabled,
+                        button, settingButton;
 
                     for (i = 0, len = authenticators.length; i < len; i++) {
                         enabled = false;
@@ -645,19 +571,49 @@ define('controls/users/User', [
                             cls = 'btn-green';
                         }
 
-                        new QUIButton({
-                            text: text,
-                            title: title,
-                            'class': cls,
-                            styles: {
-                                position: 'absolute',
-                                right: 5,
-                                top: 5
-                            },
-                            events: {
-                                onClick: toggleAuthenticator
-                            }
-                        }).inject(authenticators[i].getElement('thead th'));
+                        button = document.createElement('button');
+                        button.classList.add('btn', 'btn-secondary', 'qui-button', cls);
+                        button.type = 'button'
+                        button.title = text;
+                        button.innerHTML = text;
+                        button.style.float = 'right';
+
+                        button.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+
+                            const button = e.target.nodeName === 'BUTTON' ? e.target : e.target.closest('button');
+
+                            this.$toggleAuthentication(button).catch((err) => {
+                                console.error(err);
+                            });
+                        });
+
+                        authenticators[i].querySelector('thead th').appendChild(button);
+
+
+                        if (authenticators[i].getAttribute('data-settings')) {
+                            settingButton = document.createElement('button');
+                            settingButton.classList.add('btn', 'btn-secondary', 'qui-button');
+                            settingButton.type = 'button'
+                            settingButton.name = 'settings';
+                            settingButton.innerHTML = `<span class="fa fa-gears"></span>`;
+                            settingButton.style.float = 'right';
+                            settingButton.style.marginRight = '10px';
+
+
+                            settingButton.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+
+                                const button = e.target.nodeName === 'BUTTON' ? e.target : e.target.closest('button');
+                                this.$openAuthSettings(button)
+                            });
+
+                            settingButton.disabled = !authenticators[i].hasClass('authenticator-enabled');
+
+                            authenticators[i].querySelector('thead th').appendChild(settingButton);
+                        }
                     }
                 }
 
@@ -763,7 +719,6 @@ define('controls/users/User', [
 
                     self.$showCurrentContent();
                     self.Loader.hide();
-
                 } catch (Exception) {
                     console.error('some error occurred ' + Exception.getMessage());
                     self.$showCurrentContent();
@@ -1445,6 +1400,121 @@ define('controls/users/User', [
                         },
 
                         onCancel: reject
+                    }
+                }).open();
+            });
+        },
+
+        $toggleAuthentication: function (button) {
+            const user = this.getUser();
+
+            let table = button.closest('table'),
+                tbody = table.querySelector('tbody'),
+                auth = table.get('data-authenticator'),
+                toggleStatus = Promise.resolve();
+
+            button.style.width = button.offsetWidth + 'px';
+            button.innerHTML = '<span class="fa fa-spinner fa-spin"></span>';
+
+            if (table.hasClass('authenticator-enabled')) {
+                toggleStatus = user.disableAuthenticator(auth);
+            } else {
+                toggleStatus = user.enableAuthenticator(auth);
+            }
+
+            return toggleStatus.then(() => {
+                return user.hasAuthenticator(auth);
+            }).then((enabled) => {
+                if (enabled) {
+                    table.classList.add('authenticator-enabled');
+
+                    button.style.width = '';
+                    button.innerHTML = QUILocale.get('quiqqer/core', 'isActivate');
+                    button.classList.remove('btn-red');
+                    button.classList.add('btn-green');
+
+                    if (table.querySelector('[name="settings"]')) {
+                        table.querySelector('[name="settings"]').disabled = false;
+                    }
+
+                    //return user.getAuthenticatorSettings(auth);
+                    return;
+                }
+
+                table.classList.remove('authenticator-enabled');
+
+                button.style.width = '';
+                button.innerHTML = QUILocale.get('quiqqer/core', 'isDeactivate');
+                button.classList.add('btn-red');
+                button.classList.remove('btn-green');
+
+                if (table.querySelector('[name="settings"]')) {
+                    table.querySelector('[name="settings"]').disabled = true;
+                }
+
+                return false;
+            }).then((settings) => {
+                return;
+
+                if (!settings || settings === '') {
+                    if (tbody) {
+                        tbody.destroy();
+                    }
+                    return;
+                }
+
+                if (!tbody) {
+                    tbody = new Element('tbody', {
+                        html: '<tr><td></td></tr>'
+                    }).inject(table);
+                }
+
+                tbody.querySelector('td').innerHTML = settings;
+
+                Array.from(tbody.querySelectorAll('[data-qui]')).forEach((node) => {
+                    node.setAttribute('data-qui-options-uid', user.getId());
+                });
+
+                return QUI.parse(tbody);
+            }).then(() => {
+                QUI.Controls.getControlsInElement(tbody).each((Control) => {
+                    Control.setAttribute('Panel', this);
+                    Control.setAttribute('uid', this.getUser().getId());
+                    Control.setAttribute('User', this.getUser());
+                });
+            }).catch(function (Exception) {
+                console.error(Exception);
+                button.innerHTML = '<span class="fa fa-bolt"></span>';
+            });
+        },
+
+        $openAuthSettings: function (button) {
+            const user = this.getUser();
+
+            let table = button.closest('table'),
+                auth = table.get('data-authenticator');
+
+            require([
+                'qui/controls/windows/Popup'
+            ], (Popup) => {
+                new Popup({
+                    maxHeight: 600,
+                    maxWidth: 800,
+                    title: 'Settings for ',
+                    icon: 'fa fa-gears',
+                    buttons: false,
+                    events: {
+                        onOpen: function (win) {
+                            win.Loader.show();
+                            win.getContent().innerHTML = '';
+
+                            user.getAuthenticatorSettings(auth).then((settingHtml) => {
+                                win.getContent().innerHTML = settingHtml;
+                                return QUI.parse(win.getContent());
+                            }).then(() => {
+                                win.Loader.hide();
+                            });
+                        }
                     }
                 }).open();
             });

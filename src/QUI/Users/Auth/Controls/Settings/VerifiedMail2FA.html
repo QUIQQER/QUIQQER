@@ -1,0 +1,67 @@
+{if $isBackend}
+
+    {if $mailIsVerified === false}
+    <div class="quiqqer-message quiqqer-message-attention" style="width: 100%; max-width: 100%">
+        {locale group="quiqqer/core" var="quiqqer.verified.mail2fa.control.backend.noVerifiedMail"}
+    </div>
+    {/if}
+
+    {if $mailIsVerified && $hasAlreadyAuthenticated}
+    <div style="width: 100%; text-align: center">
+        <span class="fa fa-thumbs-up" style="font-size: 4rem; margin: 2rem"></span>
+        <p style="font-size: 2.5rem;">
+            {locale group="quiqqer/core" var="quiqqer.verified.mail2fa.control.backend.verifiedMail"}
+        </p>
+    </div>
+    {/if}
+
+{else}
+
+    {if $mailIsVerified === false}
+        <div data-name="quiqqer-mail2fa-auth-settings-description">
+            {locale group="quiqqer/core" var="quiqqer.verified.mail2fa.control.frontend.description"}
+        </div>
+
+        <button name="send-code" class="btn btn-primary">
+            <span class="fa fa-envelope-o"></span>
+            <span>
+                {locale group="quiqqer/core" var="quiqqer.verified.mail2fa.control.frontend.sendCodeButton"}
+            </span>
+        </button>
+
+        <hr />
+
+        <form
+            method="POST"
+            action=""
+            data-name="quiqqer-mail2fa-auth-settings-code"
+            class="quiqqer-mail2fa-auth-settings-code"
+        >
+            <label>
+                <span>{locale group="quiqqer/core" var="quiqqer.verified.mail2fa.control.codeLabel"}</span>
+                <span class="code">
+                    <input type="text" name="char-1"/>
+                    <input type="text" name="char-2"/>
+                    <input type="text" name="char-3"/>
+                    <input type="text" name="char-4"/>
+                    <input type="text" name="char-5"/>
+                    <input type="text" name="char-6"/>
+                </span>
+            </label>
+
+            <button name="enable" type="submit" value="Login" class="btn btn-secondary">
+                <span>{locale group="quiqqer/core" var="quiqqer.verified.mail2fa.control.code.button"}</span>
+            </button>
+        </form>
+    {/if}
+
+    {if $hasAlreadyAuthenticated}
+    <div style="width: 100%; text-align: center">
+        <span class="fa fa-thumbs-up" style="font-size: 4rem; margin: 2rem"></span>
+        <p style="font-size: 2.5rem;">
+            Authentifizierung ist erfolgreich eingerichtet.
+        </p>
+    </div>
+    {/if}
+
+{/if}

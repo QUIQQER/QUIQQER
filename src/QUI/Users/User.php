@@ -1776,6 +1776,7 @@ class User implements QUIUserInterface
 
     /**
      * Return the authenticators from the user
+     * - Which are enabled
      *
      * @param string $authenticator - Name of the authenticator
      * @return AuthenticatorInterface
@@ -2294,7 +2295,10 @@ class User implements QUIUserInterface
             return;
         }
 
-        $status = AttributeVerificationStatus::tryFrom($status);
+        if (is_string($status)) {
+            $status = AttributeVerificationStatus::from($status);
+        }
+
         $attributes = $this->getVerifiedAttributes();
 
         foreach ($attributes as $attribute) {

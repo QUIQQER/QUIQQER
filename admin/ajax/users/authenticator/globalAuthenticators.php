@@ -15,6 +15,7 @@ QUI::$Ajax->registerFunction(
     static function () {
         $User = QUI::getUserBySession();
         $Auth = QUI\Users\Auth\Handler::getInstance();
+        $Config = QUI::getConfig('etc/conf.ini.php');
         $available = $Auth->getAvailableAuthenticators();
 
         $list = [];
@@ -45,6 +46,10 @@ QUI::$Ajax->registerFunction(
                 'secondary' => [
                     'frontend' => $Auth->getGlobalFrontendSecondaryAuthenticators(),
                     'backend' => $Auth->getGlobalBackendSecondaryAuthenticators()
+                ],
+                'secondary_settings' => [
+                    'frontend' => (int)$Config->getValue('auth_settings', 'secondary_frontend'),
+                    'backend' => (int)$Config->getValue('auth_settings', 'secondary_backend')
                 ]
             ],
             'available' => $list
