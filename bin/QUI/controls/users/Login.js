@@ -187,8 +187,22 @@ define('controls/users/Login', [
         $handleLoginResponse: function (responseData) {
             this.$authStep = responseData.authStep;
 
-            if (typeof responseData.loggedIn !== 'undefined' && responseData.loggedIn) {
-                return Promise.resolve(responseData);
+            if (
+                typeof responseData.loggedIn !== 'undefined'
+                && responseData.loggedIn
+            ) {
+                // 2fa info, because user can activate it but don't have to
+                return this.$show2FAInfo().then((closeType) => {
+                    if (closeType === 'hasSeen2faInformation') {
+                        return responseData;
+                    }
+
+                    if (closeType === 'cancel') {
+                        return [];
+                    }
+
+                    return responseData;
+                });
             }
 
             let response = Promise.resolve(responseData);
@@ -239,19 +253,6 @@ define('controls/users/Login', [
                 });
             }
 
-            // 2fa info, because user can activate it but don't have to
-            if (
-                secondaryType === 2
-                && responseData.authStep === 'secondary'
-                && !authenticators
-            ) {
-                return this.$show2FAInfo().then((closeType) => {
-                    if (closeType === 'cancel') {
-                        return [];
-                    }
-                });
-            }
-
             return response.then(() => {
                 return responseData;
             });
@@ -282,7 +283,7 @@ define('controls/users/Login', [
             return new Promise((resolve) => {
                 QUIAjax.get('ajax_user_getHasSeen2faInformation', (hasSeen) => {
                     if (hasSeen) {
-                        resolve('cancel');
+                        resolve('hasSeen2faInformation');
                         return;
                     }
 

@@ -805,6 +805,20 @@
                 </p>
             ]]></de>
         </locale>
+
+        <locale name="quiqqer.verified.mail2fa.control.backend.noVerifiedMail" html="true">
+            <de><![CDATA[
+            <p>Die E-Mail-Adresse ist noch nicht verifiziert.</p>
+            <p>Um diese Authentifizierung nutzen zu können, muss zuerst die E-Mail-Adresse bestätigt werden.</p>
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.verified.mail2fa.control.backend.verifiedMail" html="true">
+            <de><![CDATA[
+            <p>Die Authentifizierung wurde erfolgreich eingerichtet. Ab sofort ist dieses Konto zusätzlich geschützt.</p>
+            <p>Bei zukünftigen Anmeldungen wird ein zweiter Authentifizierungsfaktor abgefragt, um die Sicherheit weiter zu erhöhen.</p>
+            ]]></de>
+        </locale>
+
         <locale name="quiqqer.settings.auth.global">
             <de><![CDATA[Globale Authenticator]]></de>
         </locale>

@@ -3,10 +3,6 @@
 QUI::$Ajax->registerFunction(
     'ajax_users_authenticator_secondarySettings',
     static function ($authenticator): string {
-        if (!QUI::isFrontend()) {
-            return '';
-        }
-
         $available = QUI\Users\Auth\Handler::getInstance()->getAvailableAuthenticators();
         $available = array_flip($available);
 

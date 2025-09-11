@@ -2,8 +2,7 @@
 
     {if $mailIsVerified === false}
     <div class="quiqqer-message quiqqer-message-attention" style="width: 100%; max-width: 100%">
-        Die E-Mail Adresse ist nicht verifziert.
-        Um diese Authentifizierung nutzen können muss die Mail verifiziert sein
+        {locale group="quiqqer/core" var="quiqqer.verified.mail2fa.control.backend.noVerifiedMail"}
     </div>
     {/if}
 
@@ -11,7 +10,7 @@
     <div style="width: 100%; text-align: center">
         <span class="fa fa-thumbs-up" style="font-size: 4rem; margin: 2rem"></span>
         <p style="font-size: 2.5rem;">
-            Authentifizierung ist erfolgreich eingerichtet.
+            {locale group="quiqqer/core" var="quiqqer.verified.mail2fa.control.backend.verifiedMail"}
         </p>
     </div>
     {/if}

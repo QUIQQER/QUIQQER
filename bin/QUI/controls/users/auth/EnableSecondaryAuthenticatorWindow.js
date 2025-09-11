@@ -231,7 +231,6 @@ define('controls/users/auth/EnableSecondaryAuthenticatorWindow', [
                     });
                 }, {
                     authenticator: authenticator,
-                    uid: QUIQQER_USER.id,
                     onError: (err) => {
                         console.error(err);
                     }

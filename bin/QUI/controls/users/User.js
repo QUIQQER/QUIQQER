@@ -3,7 +3,6 @@
  * Here you can change / edit the user
  *
  * @module controls/users/User
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onQuiqqerUserPanelCreate [self] - Fires when the User panel is created
  */
@@ -399,6 +398,8 @@ define('controls/users/User', [
                 FormUtils.setDataToForm(extras, Form);
                 FormUtils.setDataToForm(attributes, Form);
 
+                console.log('users', attributes);
+
                 Body.getElements('[data-qui]').set({
                     'data-qui-options-uid': self.getUser().getId()
                 });
@@ -428,8 +429,6 @@ define('controls/users/User', [
                             new Date(Created.value * 1000)
                         );
                     } catch (e) {
-                        console.error('DEBUG:');
-                        console.error(e);
                     }
                 } else {
                     if (Created) {
@@ -443,8 +442,6 @@ define('controls/users/User', [
                             new Date(LastEdit.value)
                         );
                     } catch (e) {
-                        console.error('DEBUG:');
-                        console.error(e);
                     }
                 } else {
                     if (LastEdit) {
@@ -458,8 +455,6 @@ define('controls/users/User', [
                             new Date(LastVisit.value * 1000)
                         );
                     } catch (e) {
-                        console.error('DEBUG:');
-                        console.error(e);
                     }
                 } else {
                     if (LastVisit) {
@@ -724,7 +719,6 @@ define('controls/users/User', [
 
                     self.$showCurrentContent();
                     self.Loader.hide();
-
                 } catch (Exception) {
                     console.error('some error occurred ' + Exception.getMessage());
                     self.$showCurrentContent();

@@ -804,6 +804,20 @@
                 </p>
             ]]></en>
         </locale>
+
+        <locale name="quiqqer.verified.mail2fa.control.backend.noVerifiedMail" html="true">
+            <en><![CDATA[
+            <p>The email address has not yet been verified.</p>
+            <p>To use this authentication, the email address must first be confirmed.</p>
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.verified.mail2fa.control.backend.verifiedMail" html="true">
+            <en><![CDATA[
+            <p>Authentication has been successfully set up. This account is now additionally protected.</p>
+            <p>A second authentication factor will be requested for future logins to further increase security.</p>
+            ]]></en>
+        </locale>
+
         <locale name="quiqqer.settings.auth.global">
             <en><![CDATA[Global Authenticators]]></en>
         </locale>

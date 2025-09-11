@@ -83,6 +83,14 @@ define('controls/users/auth/ShowSecondaryAuthenticatorWindow', [
             ).addEventListener('click', () => {
                 this.Loader.show();
 
+                if (
+                    typeof window.QUIQQER_IS_ADMIN_LOGIN !== 'undefined'
+                    && window.QUIQQER_IS_ADMIN_LOGIN
+                ) {
+                    window.location = '/';
+                    return;
+                }
+
                 QUIAjax.get('ajax_users_authenticator_getProfileUrl', (url) => {
                     if (url && url.indexOf('.html') !== -1) {
                         window.location = url.replace('.html', '/user/2fa.html');
