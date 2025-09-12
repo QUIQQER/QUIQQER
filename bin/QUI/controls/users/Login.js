@@ -195,7 +195,7 @@ define('controls/users/Login', [
                 typeof responseData.loggedIn !== 'undefined'
                 && responseData.loggedIn
             ) {
-                if (secondaryType !== 1) {
+                if (secondaryType !== 2) {
                     return response;
                 }
 
