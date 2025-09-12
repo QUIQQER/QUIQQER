@@ -187,10 +187,18 @@ define('controls/users/Login', [
         $handleLoginResponse: function (responseData) {
             this.$authStep = responseData.authStep;
 
+            let response = Promise.resolve(responseData);
+            let authenticators = null;
+            let secondaryType = responseData.secondaryLoginType;
+
             if (
                 typeof responseData.loggedIn !== 'undefined'
                 && responseData.loggedIn
             ) {
+                if (secondaryType !== 1) {
+                    return response;
+                }
+
                 // 2fa info, because user can activate it but don't have to
                 return this.$show2FAInfo().then((closeType) => {
                     if (closeType === 'hasSeen2faInformation') {
@@ -204,10 +212,6 @@ define('controls/users/Login', [
                     return responseData;
                 });
             }
-
-            let response = Promise.resolve(responseData);
-            let authenticators = null;
-            let secondaryType = responseData.secondaryLoginType;
 
             if (
                 typeof responseData.authenticator !== 'undefined'
