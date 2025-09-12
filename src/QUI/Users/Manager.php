@@ -1045,7 +1045,7 @@ class Manager
         // user authenticators
         //$authenticator = $User->getAuthenticators();
         //foreach ($authenticator as $Authenticator) {
-            //$this->authenticate($Authenticator, $authData);
+        //$this->authenticate($Authenticator, $authData);
         //}
 
         // has user permission for a login
@@ -1185,7 +1185,9 @@ class Manager
             QUI\System\Log::write(
                 'Login failed: ' . $username,
                 QUI\System\Log::LEVEL_WARNING,
-                [],
+                [
+                    'exception' => $Exception->getMessage()
+                ],
                 'auth'
             );
 
@@ -1196,11 +1198,13 @@ class Manager
                 $Exception->getCode(),
                 $Exception->getContext()
             );
-        } catch (Throwable) {
+        } catch (Throwable $Exception) {
             QUI\System\Log::write(
                 'Login failed: ' . $username,
                 QUI\System\Log::LEVEL_WARNING,
-                [],
+                [
+                    'exception' => $Exception->getMessage()
+                ],
                 'auth'
             );
 
