@@ -94,21 +94,18 @@ class QUIQQER extends AbstractAuthenticator
             return $this->User;
         }
 
-        $User = false;
-
         if (QUI::conf('globals', 'emaillogin') && str_contains($this->user, '@')) {
             try {
-                $User = QUI::getUsers()->getUserByMail($this->user);
+                $this->User = QUI::getUsers()->getUserByMail($this->user);
+                return $this->User;
             } catch (QUI\Exception) {
             }
         }
 
-        if ($User === false) {
-            try {
-                $this->User = QUI::getUsers()->getUserByName($this->user);
-                return $this->User;
-            } catch (QUI\Exception) {
-            }
+        try {
+            $this->User = QUI::getUsers()->getUserByName($this->user);
+            return $this->User;
+        } catch (QUI\Exception) {
         }
 
         throw new QUI\Users\Exception(
@@ -183,7 +180,7 @@ class QUIQQER extends AbstractAuthenticator
             'select' => ['password'],
             'from' => QUI::getUsers()->table(),
             'where' => [
-                'uuid' => $this->getUserUUID()
+                'uuid' => $this->getUser()->getUUID()
             ],
             'limit' => 1
         ]);
