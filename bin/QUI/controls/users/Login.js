@@ -191,6 +191,16 @@ define('controls/users/Login', [
             let authenticators = null;
             let secondaryType = responseData.secondaryLoginType;
 
+            if (responseData.authStep === 'secondary') {
+                const dividers = Array.from(
+                    this.getElm().querySelectorAll('[data-name="or-divider"]')
+                );
+
+                dividers.forEach((node) => {
+                    node.style.display = 'none';
+                });
+            }
+
             if (
                 typeof responseData.loggedIn !== 'undefined'
                 && responseData.loggedIn

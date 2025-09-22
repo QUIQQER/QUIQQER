@@ -44,7 +44,7 @@
     {if $authenticator['class'] === 'QUI\\Users\\Auth\\QUIQQER'}
 
     {if count($authenticators) >= 2 && $authStep !== 'secondary'}
-    <div class="quiqqer-login-or">
+    <div data-name="or-divider" class="quiqqer-login-or">
         <span>
             {locale group="quiqqer/core" var="controls.users.auth.login.or"}
         </span>
