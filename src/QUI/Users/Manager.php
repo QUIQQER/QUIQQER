@@ -306,6 +306,8 @@ class Manager
                 QUI\System\Log::writeDebugException($Exception);
             }
 
+            QUI::getSession()->destroy();
+            QUI::getSession()->start();
             $this->Session = $this->getNobody();
         }
 
