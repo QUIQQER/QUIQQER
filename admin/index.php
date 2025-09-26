@@ -3,6 +3,7 @@
 // phpcs:ignoreFile
 
 define('QUIQQER_SYSTEM', true);
+define('QUIQQER_BACKEND', true);
 require __DIR__ . '/header.php';
 
 QUI::getEvents()->fireEvent('adminRequest');

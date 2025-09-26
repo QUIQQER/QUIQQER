@@ -306,6 +306,8 @@ class Manager
                 QUI\System\Log::writeDebugException($Exception);
             }
 
+            //QUI::getSession()->destroy();
+            //QUI::getSession()->start();
             $this->Session = $this->getNobody();
         }
 
@@ -342,6 +344,11 @@ class Manager
         $Session = QUI::getSession();
 
         $clearSessionData = static function () use ($Session): void {
+            // only if auth is not running
+            if ($Session->get('inAuthentication')) {
+                return;
+            }
+
             $sessionData = $Session->getSymfonySession()->all();
 
             foreach (array_keys($sessionData) as $key) {
@@ -363,10 +370,63 @@ class Manager
             );
         }
 
-        if (!$Session->get('uid') || !$Session->get('auth')) {
-            if (!$Session->get('inAuthentication')) {
-                $clearSessionData();
+
+        $isAuthenticated = false;
+
+        // NEW CHECK
+        if ($Session->get('uid')) {
+            if (QUI::isFrontend()) {
+                $secondaryLoginType = (int)QUI::conf('auth_settings', 'secondary_frontend');
+            } else {
+                $secondaryLoginType = (int)QUI::conf('auth_settings', 'secondary_backend');
             }
+
+            if (
+                $secondaryLoginType === 1
+                && $Session->get('auth-primary')
+                && $Session->get('auth-secondary')
+            ) {
+                // 2fa is active and a must
+                $isAuthenticated = true;
+            } elseif ($secondaryLoginType === 2) {
+                // 2FA possible
+                // check if user has 2FA activated
+                $userId = $Session->get('uid');
+
+                try {
+                    $user = QUI::getUsers()->get($userId);
+                    $has2FA = QUI\Users\Utils::has2FAAuthenticator($user);
+
+                    if (
+                        $has2FA === false
+                        && $Session->get('auth-primary')
+                    ) {
+                        $isAuthenticated = true;
+                    }
+
+                    if (
+                        $has2FA
+                        && $Session->get('auth-primary')
+                        && $Session->get('auth-secondary')
+                    ) {
+                        $isAuthenticated = true;
+                    }
+                } catch (QUI\Exception $Exception) {
+                    $clearSessionData();
+                    throw $Exception;
+                }
+            } elseif (
+                $secondaryLoginType === 0
+                && $Session->get('auth-primary')
+            ) {
+                // no 2FA
+                $isAuthenticated = true;
+            }
+        }
+
+        // OLD CHECK !$Session->get('uid') || !$Session->get('auth')
+        if ($isAuthenticated === false) {
+            $clearSessionData();
 
             if ($Session->get('expired.from.other')) {
                 throw new QUI\Users\Exception(

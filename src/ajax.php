@@ -18,15 +18,13 @@ if (!isset($_REQUEST['_rf'])) {
 
 use QUI\Utils\Security\Orthos;
 
-// if user is loged in, use his language
+// if user is logged in, use his language
 $User = QUI::getUserBySession();
 
 if ($User->getUUID() && $User->getLang()) {
     QUI::getLocale()->setCurrent($User->getLang());
 }
 
-// @todo dies muss wirklich getestet werden
-// @todo falls sprachen chaos erscheint
 if (
     defined('QUIQQER_FRONTEND')
     && isset($_REQUEST['lang'])

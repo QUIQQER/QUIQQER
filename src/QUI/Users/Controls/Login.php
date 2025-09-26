@@ -26,14 +26,19 @@ class Login extends Control
 
     public function __construct(array $options = [])
     {
+        $authStep = 'primary';
+
+        if (QUI::getSession()->get('auth-primary') === 1) {
+            $authStep = 'secondary';
+        }
+
         $this->setAttributes([
             'data-qui' => 'controls/users/Login',
-            'authStep' => 'primary',
+            'authStep' => $authStep,
 
             // predefined list of Authenticator classes; if empty = use all authenticators
             // that are configured
-            'authenticators' => [],
-
+            'authenticators' => []
         ]);
 
         parent::__construct($options);
@@ -82,6 +87,8 @@ class Login extends Control
         }
 
         $Engine = QUI::getTemplateManager()->getEngine();
+
+        $this->setAttribute('data-qui-auth-step', $this->getAttribute('authStep'));
 
         $Engine->assign([
             'self' => $this,

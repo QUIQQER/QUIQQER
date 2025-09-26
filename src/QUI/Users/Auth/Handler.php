@@ -109,7 +109,16 @@ class Handler
      */
     public function getGlobalFrontendAuthenticators(): array
     {
-        return $this->getAuthenticatorFromConfig(QUI::conf('auth_frontend') ?: []);
+        if (empty(QUI::conf('auth_frontend'))) {
+            return [];
+        }
+
+        $authenticators = $this->getAuthenticatorFromConfig(QUI::conf('auth_frontend'));
+        $authenticators = array_filter($authenticators, static function ($class) {
+            return (new $class())->isPrimaryAuthentication();
+        });
+
+        return array_values($authenticators);
     }
 
     public function getGlobalFrontendSecondaryAuthenticators(): array
@@ -118,7 +127,12 @@ class Handler
             return [];
         }
 
-        return $this->getAuthenticatorFromConfig(QUI::conf('auth_frontend_secondary'));
+        $authenticators = $this->getAuthenticatorFromConfig(QUI::conf('auth_frontend_secondary'));
+        $authenticators = array_filter($authenticators, static function ($class) {
+            return (new $class())->isSecondaryAuthentication();
+        });
+
+        return array_values($authenticators);
     }
 
     protected function getAuthenticatorFromConfig(array $authenticatorConfig = []): array
@@ -221,7 +235,16 @@ class Handler
      */
     public function getGlobalBackendAuthenticators(): array
     {
-        return $this->getAuthenticatorFromConfig(QUI::conf('auth_backend') ?: []);
+        if (empty(QUI::conf('auth_backend'))) {
+            return [];
+        }
+
+        $authenticators = $this->getAuthenticatorFromConfig(QUI::conf('auth_backend'));
+        $authenticators = array_filter($authenticators, static function ($class) {
+            return (new $class())->isPrimaryAuthentication();
+        });
+
+        return array_values($authenticators);
     }
 
     /**
@@ -233,7 +256,12 @@ class Handler
             return [];
         }
 
-        return $this->getAuthenticatorFromConfig(QUI::conf('auth_backend_secondary'));
+        $authenticators = $this->getAuthenticatorFromConfig(QUI::conf('auth_backend_secondary'));
+        $authenticators = array_filter($authenticators, static function ($class) {
+            return (new $class())->isSecondaryAuthentication();
+        });
+
+        return array_values($authenticators);
     }
 
     /**
@@ -243,7 +271,7 @@ class Handler
      * @param string|int|User|null $user - QUIQQER username / id / uuid / user object
      * @return AuthenticatorInterface
      *
-     * @throws Exception
+     * @throws QUI\Users\Auth\Exception
      */
     public function getAuthenticator(
         string $authenticator,
