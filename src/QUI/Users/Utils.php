@@ -199,7 +199,7 @@ class Utils
         }
 
         $secondaryAuthenticators = array_filter($secondaryAuthenticators, function ($v) {
-            return (int)$v;
+            return (bool)(int)$v;
         });
 
         foreach ($authenticators as $authenticator) {
