@@ -82,7 +82,7 @@ define('controls/users/Login', [
 
             this.Loader = new QUILoader({
                 'type': 'fa-circle-o-notch'
-            }).inject(this.getElm());
+            }).inject(this.$Elm);
 
             return this.$Elm;
         },
@@ -137,11 +137,17 @@ define('controls/users/Login', [
          * event : on import
          */
         $onImport: function () {
-            this.Loader = new QUILoader().inject(this.getElm());
-            this.$forms = this.getElm().getElements('form');
+            const container = this.getElm();
 
-            if (this.getElm().get('data-onsuccess')) {
-                this.setAttribute('onSuccess', this.getElm().get('data-onsuccess'));
+            if (container.getAttribute('data-qui-auth-step')) {
+                this.$authStep = container.getAttribute('data-qui-auth-step');
+            }
+
+            this.Loader = new QUILoader().inject(container);
+            this.$forms = container.getElements('form');
+
+            if (container.get('data-onsuccess')) {
+                this.setAttribute('onSuccess', container.get('data-onsuccess'));
             }
 
             this.$refreshForm();
@@ -149,7 +155,7 @@ define('controls/users/Login', [
             QUI.fireEvent('quiqqerUserAuthLoginLoad', [this]);
 
             moofx(
-                this.getElm().querySelector('[data-name="quiqqer-users-login-container"]')
+                container.querySelector('[data-name="quiqqer-users-login-container"]')
             ).animate({
                 opacity: 1
             }, {
@@ -190,6 +196,16 @@ define('controls/users/Login', [
             let response = Promise.resolve(responseData);
             let authenticators = null;
             let secondaryType = responseData.secondaryLoginType;
+
+            if (responseData.authStep === 'secondary') {
+                const dividers = Array.from(
+                    this.getElm().querySelectorAll('[data-name="or-divider"]')
+                );
+
+                dividers.forEach((node) => {
+                    node.style.display = 'none';
+                });
+            }
 
             if (
                 typeof responseData.loggedIn !== 'undefined'

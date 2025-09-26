@@ -24,7 +24,7 @@
             {if $authenticator['instance']->getSecondaryAuthenticationButton()}
                 {$authenticator['instance']->getSecondaryAuthenticationButton()->create()}
             {else}
-            <button name="show-control" type="button" class="btn btn-primary w-full">
+            <button name="show-control" type="button" class="btn btn-primary w-full" style="display: none">
                 {$self->renderIcon($authenticator['instance']->getIcon())}
                 <span>{$authenticator['instance']->getFrontendTitle()}</span>
             </button>
@@ -44,7 +44,7 @@
     {if $authenticator['class'] === 'QUI\\Users\\Auth\\QUIQQER'}
 
     {if count($authenticators) >= 2 && $authStep !== 'secondary'}
-    <div class="quiqqer-login-or">
+    <div data-name="or-divider" class="quiqqer-login-or">
         <span>
             {locale group="quiqqer/core" var="controls.users.auth.login.or"}
         </span>
@@ -60,7 +60,7 @@
             {if $authenticator['instance']->getSecondaryAuthenticationButton()}
                 {$authenticator['instance']->getSecondaryAuthenticationButton()->create()}
             {else}
-            <button name="show-control" type="button" class="btn btn-primary w-full">
+            <button name="show-control" type="button" class="btn btn-primary w-full" style="display: none">
                 {$self->renderIcon($authenticator['instance']->getIcon())}
                 <span>{$authenticator['instance']->getFrontendTitle()}</span>
             </button>

@@ -177,7 +177,37 @@ class Utils
         } catch (QUI\Exception) {
         }
 
-
         return '';
+    }
+
+    public static function has2FAAuthenticator(QUI\Interfaces\Users\User $user): bool
+    {
+        $authenticators = $user->getAuthenticators();
+
+        if (empty($authenticators)) {
+            return false;
+        }
+
+        if (QUI::isFrontend()) {
+            $secondaryAuthenticators = QUI::conf('auth_frontend_secondary');
+        } else {
+            $secondaryAuthenticators = QUI::conf('auth_backend_secondary');
+        }
+
+        if (empty($secondaryAuthenticators) || !is_array($secondaryAuthenticators)) {
+            return false;
+        }
+
+        $secondaryAuthenticators = array_filter($secondaryAuthenticators, function ($v) {
+            return (bool)(int)$v;
+        });
+
+        foreach ($authenticators as $authenticator) {
+            if (isset($secondaryAuthenticators[$authenticator::class])) {
+                return true;
+            }
+        }
+
+        return true;
     }
 }

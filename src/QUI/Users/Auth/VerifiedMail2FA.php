@@ -217,7 +217,9 @@ class VerifiedMail2FA extends AbstractAuthenticator
         $uid = QUI::getSession()->get('uid');
 
         if (empty($uid)) {
-            return;
+            throw new QUI\Permissions\Exception(
+                ['quiqqer/core', 'exception.login.fail.user.not.found'],
+            );
         }
 
         try {
