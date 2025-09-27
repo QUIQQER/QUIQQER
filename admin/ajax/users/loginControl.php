@@ -32,6 +32,7 @@ QUI::$Ajax->registerFunction(
 
         return [
             'secondaryLoginType' => $secondaryLoginType,
+            'loggedIn' => QUI::getUsers()->isAuth(QUI::getUserBySession()),
             'authenticator' => $next,
             'control' => $control,
             'authStep' => $Login->getAttribute('authStep')
