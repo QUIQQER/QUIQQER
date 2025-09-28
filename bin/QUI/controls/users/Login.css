@@ -1,5 +1,7 @@
 .quiqqer-login {
     background: #fff;
+    display: flex;
+    flex-direction: column;
     min-height: 180px;
     padding: 20px;
     position: relative;
