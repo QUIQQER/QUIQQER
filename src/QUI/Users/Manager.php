@@ -236,11 +236,14 @@ class Manager
 
     /**
      * Is the user authenticated
-     *
-     * @todo muss noch fremde nutzer prüfen
+     * Checks only the session user
      */
-    public function isAuth(QUIUserInterface $User): bool
+    public function isAuth(QUIUserInterface | null $User): bool
     {
+        if ($User === null) {
+            return false;
+        }
+
         if (!$User->getUUID()) {
             return false;
         }

@@ -197,6 +197,10 @@ define('controls/users/Login', [
             let authenticators = null;
             let secondaryType = responseData.secondaryLoginType;
 
+            if (responseData.loggedIn) {
+                return response;
+            }
+
             if (responseData.authStep === 'secondary') {
                 const dividers = Array.from(
                     this.getElm().querySelectorAll('[data-name="or-divider"]')
@@ -543,7 +547,11 @@ define('controls/users/Login', [
                 return this.$handleLoginResponse(responseData)
             }).then((responseData) => {
                 // authentication was successful
-                if (!responseData.authenticator || !responseData.authenticator.length) {
+                if (
+                    !responseData.authenticator
+                    || !responseData.authenticator.length
+                    || responseData.loggedIn
+                ) {
                     window.QUIQQER_USER = responseData.user;
 
                     this.fireEvent('success', [this]);
@@ -558,17 +566,21 @@ define('controls/users/Login', [
                     return;
                 }
 
-                moofx(this.$forms).animate({
-                    opacity: 0
-                }, {
-                    duration: 250,
-                    callback: () => {
-                        Array.from(this.$forms).forEach((form) => {
-                            form.parentNode.removeChild(form);
-                        });
+                return new Promise((resolve) => {
+                    moofx(this.$forms).animate({
+                        opacity: 0
+                    }, {
+                        duration: 250,
+                        callback: () => {
+                            Array.from(this.$forms).forEach((form) => {
+                                form.parentNode.removeChild(form);
+                            });
 
-                        this.$buildAuthenticator(responseData.control);
-                    }
+                            this.$buildAuthenticator(responseData.control).then(() => {
+                                resolve(responseData);
+                            });
+                        }
+                    });
                 });
             });
         },
