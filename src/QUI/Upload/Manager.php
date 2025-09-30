@@ -728,10 +728,16 @@ class Manager
     /**
      * Flush an exception to the UploadManager
      */
-    public function flushException(Exception $Exception): void
+    public function flushException(\Throwable $Exception): void
     {
+        $exception = $Exception->getMessage();
+
+        if (method_exists($Exception, 'toArray')) {
+            $exception = $Exception->toArray();
+        }
+
         $message = [
-            'Exception' => $Exception->toArray()
+            'Exception' => $exception
         ];
 
         echo '<quiqqer>' . json_encode($message) . '</quiqqer>';
