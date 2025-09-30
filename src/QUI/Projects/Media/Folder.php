@@ -1266,18 +1266,26 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         // svg fix
         if (
-            $fileInfo['mime_type'] == 'text/html'
-            || $fileInfo['mime_type'] == 'text/plain'
-            || $fileInfo['mime_type'] == 'image/svg'
+            $fileInfo['mime_type'] === 'text/html'
+            || $fileInfo['mime_type'] === 'text/plain'
+            || $fileInfo['mime_type'] === 'image/svg'
+            || $fileInfo['mime_type'] === 'image/svg+xml'
         ) {
             $content = file_get_contents($file);
 
             if (str_contains($content, '<svg') && strpos($content, '</svg>')) {
-                file_put_contents(
-                    $file,
-                    '<?xml version="1.0" encoding="UTF-8"?>' .
-                    $content
-                );
+                if (!str_contains($content, '<?xml ')) {
+                    if (preg_match('/(<svg[\s\S]*<\/svg>)/i', $content, $match)) {
+                        $content = $match[1];
+                    }
+
+                    if (mb_substr($content, 0, 3) === "\xEF\xBB\xBF") {
+                        $content = substr($content, 3);
+                    }
+
+                    $content = '<?xml version="1.0" encoding="UTF-8"?>' . $content;
+                    file_put_contents($file, $content);
+                }
 
                 $fileInfo = FileUtils::getInfo($file);
             }
@@ -1306,8 +1314,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             try {
                 $Item = MediaUtils::getElement($new_file);
 
-                if (MediaUtils::isImage($Item)) {
-                    /* @var $Item */
+                if (method_exists($Item, 'deleteCache')) {
                     $Item->deleteCache();
                 }
 
@@ -1351,6 +1358,59 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $filePath = StringUtils::replaceDblSlashes($filePath);
         $imageWidth = null;
         $imageHeight = null;
+
+        if ($fileInfo['mime_type'] === 'image/svg' || $fileInfo['mime_type'] === 'image/svg+xml') {
+            $svgContent = file_get_contents($file);
+
+            if (preg_match('/(<svg[\s\S]*<\/svg>)/i', $svgContent, $match)) {
+                $svgContent = $match[1];
+            }
+
+            if (mb_substr($svgContent, 0, 3) === "\xEF\xBB\xBF") {
+                $svgContent = substr($svgContent, 3);
+            }
+
+            $svgContent = trim($svgContent);
+
+            try {
+                $dom = new \DOMDocument();
+                $dom->loadXML($svgContent);
+                $svg = $dom->getElementsByTagName('svg')->item(0);
+            } catch (\Exception) {
+                $svg = null;
+            }
+
+            if ($svg) {
+                $width = $svg->getAttribute('width');
+                $height = $svg->getAttribute('height');
+                $viewBox = $svg->getAttribute('viewBox');
+
+                // Fallback auf viewBox, falls width/height fehlen oder 0 sind
+                if ((!$width || !$height) && $viewBox) {
+                    $parts = preg_split('/[\s,]+/', $viewBox);
+
+                    if (count($parts) === 4) {
+                        if (!$width) {
+                            $width = $parts[2];
+                            $new_file_info['width'] = (int)$width;
+                        }
+
+                        if (!$height) {
+                            $height = $parts[3];
+                            $new_file_info['height'] = (int)$height;
+                        }
+                    }
+                }
+
+                if ($width) {
+                    $new_file_info['width'] = (int)$width;
+                }
+
+                if ($height) {
+                    $new_file_info['height'] = (int)$height;
+                }
+            }
+        }
 
         if (isset($new_file_info['width']) && $new_file_info['width']) {
             $imageWidth = (int)$new_file_info['width'];
