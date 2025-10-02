@@ -1227,6 +1227,8 @@ class Project implements \Stringable
             if (!isset($firstChildResult[0])) {
                 $DataBase->insert($table, [
                     'id' => 1,
+                    'active' => 1,
+                    'deleted' => 0,
                     'name' => 'start',
                     'title' => 'Start',
                     'type' => 'standard',
