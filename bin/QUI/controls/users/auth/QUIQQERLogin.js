@@ -75,7 +75,7 @@ define('controls/users/auth/QUIQQERLogin', [
 
             // events
             const PasswordResetLink = this.getElm().getElement(
-                '.quiqqer-auth-login-passwordreset-link'
+                '[data-name="password-reset-link"'
             );
 
             PasswordResetLink.addEvent('click', function (event) {
