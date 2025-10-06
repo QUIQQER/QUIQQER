@@ -743,7 +743,7 @@ class Manager
     /**
      * Parse an XML <line> node
      */
-    public static function parseXMLLineNode(DOMNode $Node): bool|array
+    public static function parseXMLLineNode(DOMNode $Node): bool | array
     {
         if ($Node->nodeName !== 'line') {
             return false;
@@ -770,7 +770,7 @@ class Manager
     /**
      * Parse an XML <group> node
      */
-    public static function parseXMLGroupNode(DOMNode $Node): bool|array
+    public static function parseXMLGroupNode(DOMNode $Node): bool | array
     {
         if ($Node->nodeName !== 'group') {
             return false;

@@ -143,7 +143,7 @@ class Everyone extends QUI\Groups\Group
         return true;
     }
 
-    public function isParent(int|string $id, bool $recursive = false): bool
+    public function isParent(int | string $id, bool $recursive = false): bool
     {
         return false;
     }
@@ -155,7 +155,7 @@ class Everyone extends QUI\Groups\Group
      *
      * @return Everyone|Group|Guest|null
      */
-    public function getParent(bool $obj = true): null|Group|Guest|Everyone
+    public function getParent(bool $obj = true): null | Group | Guest | Everyone
     {
         return null;
     }

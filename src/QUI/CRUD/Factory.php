@@ -116,7 +116,7 @@ abstract class Factory extends QUI\Utils\Singleton
      *
      * @throws QUI\Exception
      */
-    public function getChild(int|string $id): Child
+    public function getChild(int | string $id): Child
     {
         $childClass = $this->getChildClass();
 

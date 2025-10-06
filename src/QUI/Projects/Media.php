@@ -253,7 +253,8 @@ class Media extends QUI\QDOM
                 'title' => 'Media',
                 'c_date' => date('Y-m-d H:i:s'),
                 'c_user' => QUI::getUserBySession()->getUUID(),
-                'type' => 'folder'
+                'type' => 'folder',
+                'pathHash' => md5('')
             ]);
         } elseif ($firstChildResult[0]['type'] != 'folder') {
             // check if id 1 is a folder, id 1 MUST BE a folder
