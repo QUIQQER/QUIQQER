@@ -89,12 +89,12 @@ class Guest extends QUI\Groups\Group
         return true;
     }
 
-    public function isParent(int|string $id, bool $recursive = false): bool
+    public function isParent(int | string $id, bool $recursive = false): bool
     {
         return false;
     }
 
-    public function getParent(bool $obj = true): Guest|Group|Everyone|null
+    public function getParent(bool $obj = true): Guest | Group | Everyone | null
     {
         return null;
     }

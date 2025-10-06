@@ -81,7 +81,7 @@ class Utils
      *
      * @throws Exception
      */
-    public static function getTab(int|string $gid, string $plugin, string $tab): string
+    public static function getTab(int | string $gid, string $plugin, string $tab): string
     {
         $Groups = QUI::getGroups();
         $Group = $Groups->get($gid);

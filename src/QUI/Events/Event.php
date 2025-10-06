@@ -65,7 +65,7 @@ class Event implements QUI\Interfaces\Events
      */
     public function addEvent(
         string $event,
-        callable|string $fn,
+        callable | string $fn,
         int $priority = 0,
         string $package = ''
     ): void {
@@ -108,7 +108,7 @@ class Event implements QUI\Interfaces\Events
      * @param string $event - The type of event (e.g. 'complete').
      * @param callable|boolean $fn - (optional) The function to remove.
      */
-    public function removeEvent(string $event, callable|bool $fn = false): void
+    public function removeEvent(string $event, callable | bool $fn = false): void
     {
         if (!isset($this->events[$event])) {
             return;
@@ -138,7 +138,7 @@ class Event implements QUI\Interfaces\Events
      */
     public function fireEvent(
         string $event,
-        bool|array $args = false,
+        bool | array $args = false,
         bool $force = false
     ): array {
         $results = [];

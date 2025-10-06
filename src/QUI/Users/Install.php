@@ -108,6 +108,7 @@ class Install
             QUI::getDataBaseConnection()->insert($groupTable, [
                 'id' => 0,
                 'uuid' => 0,
+                'active' => 1,
                 'parent' => 0,
                 'name' => 'Guest'
             ]);
@@ -115,7 +116,8 @@ class Install
             QUI\System\Log::addNotice('Guest Group was created.');
         } else {
             QUI::getDataBase()->update(QUI\Groups\Manager::table(), [
-                'name' => 'Guest'
+                'name' => 'Guest',
+                'active' => 1
             ], [
                 'id' => 0
             ]);
@@ -138,6 +140,7 @@ class Install
             QUI::getDataBaseConnection()->insert($groupTable, [
                 'id' => 1,
                 'uuid' => 1,
+                'active' => 1,
                 'parent' => 0,
                 'name' => 'Everyone'
             ]);
@@ -145,7 +148,8 @@ class Install
             QUI\System\Log::addNotice('Everyone Group was created.');
         } else {
             QUI::getDataBase()->update(QUI\Groups\Manager::table(), [
-                'name' => 'Everyone'
+                'name' => 'Everyone',
+                'active' => 1
             ], [
                 'id' => 1
             ]);

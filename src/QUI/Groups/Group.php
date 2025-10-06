@@ -35,7 +35,7 @@ class Group extends QUI\QDOM
 {
     protected array $settings;
 
-    protected string|int|bool|array $rootId;
+    protected string | int | bool | array $rootId;
 
     protected ?int $id = null;
 
@@ -64,7 +64,7 @@ class Group extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    public function __construct(int|string $id)
+    public function __construct(int | string $id)
     {
         $this->rootId = QUI::conf('globals', 'root');
 
@@ -307,7 +307,7 @@ class Group extends QUI\QDOM
         return $this->parentIds;
     }
 
-    private function getParentIdsHelper(int|string $id): void
+    private function getParentIdsHelper(int | string $id): void
     {
         $result = QUI::getDataBase()->fetch([
             'select' => 'id, parent',
@@ -352,7 +352,7 @@ class Group extends QUI\QDOM
          *
          * @param int|string $groupId
          */
-        $deleteGidInUsers = static function (int|string $groupId): void {
+        $deleteGidInUsers = static function (int | string $groupId): void {
             if (!is_int($groupId)) {
                 return;
             }
@@ -457,7 +457,7 @@ class Group extends QUI\QDOM
     /**
      * @throws QUI\Database\Exception
      */
-    private function getChildrenIdsHelper(int|string $id): void
+    private function getChildrenIdsHelper(int | string $id): void
     {
         $result = QUI::getDataBase()->fetch([
             'select' => 'id,uuid',
@@ -485,7 +485,7 @@ class Group extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    public function getAvatar(): QUI\Projects\Media\Image|bool
+    public function getAvatar(): QUI\Projects\Media\Image | bool
     {
         $avatar = $this->getAttribute('avatar');
 
@@ -620,12 +620,12 @@ class Group extends QUI\QDOM
     /**
      * @deprecated
      */
-    public function hasRight(string $right): bool|array|string
+    public function hasRight(string $right): bool | array | string
     {
         return $this->hasPermission($right);
     }
 
-    public function hasPermission(string $permission): bool|array|string
+    public function hasPermission(string $permission): bool | array | string
     {
         return $this->rights[$permission] ?? false;
     }
@@ -671,7 +671,7 @@ class Group extends QUI\QDOM
      * @throws QUI\Groups\Exception
      * @throws QUI\Exception
      */
-    public function setParent(int|string $parentId): void
+    public function setParent(int | string $parentId): void
     {
         // @todo remove getId in QUIQQER V3
         // you can't set for the root group, everyone or guest a parent group
@@ -723,7 +723,7 @@ class Group extends QUI\QDOM
     /**
      * @throws QUI\Exception
      */
-    public function getParent(): Group|Everyone|Guest|null
+    public function getParent(): Group | Everyone | Guest | null
     {
         if ($this->getAttribute('parent') === null) {
             return null;
@@ -872,7 +872,7 @@ class Group extends QUI\QDOM
     /**
      * @throws QUI\Exception
      */
-    public function isParent(int|string $id, bool $recursive = false): bool
+    public function isParent(int | string $id, bool $recursive = false): bool
     {
         if ($recursive) {
             if (in_array($id, $this->parentIds)) {
