@@ -23,7 +23,7 @@ abstract class Child extends QUI\QDOM
 {
     protected QUI\Events\Event $Events;
 
-    public function __construct(protected int|string $id, protected Factory $Factory)
+    public function __construct(protected int | string $id, protected Factory $Factory)
     {
         $this->Events = new QUI\Events\Event();
     }
@@ -49,7 +49,7 @@ abstract class Child extends QUI\QDOM
     /**
      * Return the Child-ID
      */
-    public function getId(): int|string
+    public function getId(): int | string
     {
         return $this->id;
     }
