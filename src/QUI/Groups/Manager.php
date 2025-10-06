@@ -47,7 +47,7 @@ class Manager extends QUI\QDOM
 
     protected array $data = [];
 
-    public static function getListOfExtraAttributes(): object|bool|array|string|null
+    public static function getListOfExtraAttributes(): object | bool | array | string | null
     {
         if (self::$getListOfExtraAttributes !== null) {
             return self::$getListOfExtraAttributes;
@@ -89,7 +89,7 @@ class Manager extends QUI\QDOM
     /**
      * @throws Exception
      */
-    public function get(int|string $id): Group|Everyone|Guest
+    public function get(int | string $id): Group | Everyone | Guest
     {
         if (is_numeric($id)) {
             $id = (int)$id;
@@ -201,7 +201,7 @@ class Manager extends QUI\QDOM
     /**
      * Return the db data of a group
      */
-    public function getGroupData(int|string $groupId): array
+    public function getGroupData(int | string $groupId): array
     {
         if (isset($this->data[$groupId])) {
             return $this->data[$groupId];
@@ -241,7 +241,7 @@ class Manager extends QUI\QDOM
     /**
      * @throws Exception
      */
-    public function getGroupNameById(int|string $id): string
+    public function getGroupNameById(int | string $id): string
     {
         return $this->get($id)->getAttribute('name');
     }
