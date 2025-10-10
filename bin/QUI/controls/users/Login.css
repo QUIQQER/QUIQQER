@@ -1,9 +1,7 @@
 .quiqqer-login {
-    background: #fff;
     display: flex;
     flex-direction: column;
     min-height: 180px;
-    padding: 20px;
     position: relative;
 }
 
@@ -15,30 +13,26 @@
 .quiqqer-users-login-social {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 1rem;
 }
 
 .quiqqer-login-or {
-    border-top: 1px solid #cfd2d2;
-    clear: both;
-    color: #cfd2d2;
-    float: left;
-    margin: 30px 0;
-    position: relative;
+    margin-block: 1rem;
+    text-align: center;
     width: 100%;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    color: var(--qui-colors-muted);
 }
 
-.quiqqer-login-or span {
-    background: none repeat scroll 0 0 #ffffff;
-    color: #666666;
-    font-size: 16px;
-    left: 50%;
-    line-height: 20px;
-    margin: 0 0 0 -25px;
-    position: absolute;
-    text-align: center;
-    top: -12px;
-    width: 50px;
+.quiqqer-login-or:before,
+.quiqqer-login-or:after {
+    content: "";
+    display: inline-block;
+    height: 1px;
+    flex-grow: 1;
+    background-color: currentColor;
 }
 
 .quiqqer-login-logo {
