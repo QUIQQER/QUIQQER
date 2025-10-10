@@ -64,10 +64,12 @@ class Manager
     /**
      * Return a Mailer object
      * Easier send, uses the mailer queue
+     *
+     * @throws QUI\Exception
      */
-    public function getMailer(): Mailer
+    public function getMailer(array $attributes = []): Mailer
     {
-        return new Mailer();
+        return new Mailer($attributes);
     }
 
     public function getPHPMailer(): PHPMailer
