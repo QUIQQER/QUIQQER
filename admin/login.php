@@ -176,7 +176,6 @@ foreach ($packages as $package) {
         }
 
         .container {
-            min-height: 100vh;
             min-height: 100svh;
         }
 
@@ -185,40 +184,6 @@ foreach ($packages as $package) {
             max-width: 1000px;
             width: 100%;
             background-color: #fff;
-        }
-
-        .btn, button {
-            display: inline-flex;
-            cursor:pointer;
-            padding: 8px 12px;
-            justify-content: center;
-            align-items: center;
-            gap: 4px;
-            border-width: 1px;
-            border-style: solid;
-            border-color: transparent;
-            text-decoration: none;
-
-            font-size: 14px;
-            font-style: normal;
-            font-weight: 600;
-            line-height: 20px; /* 142.857% */
-
-            border-radius: 16px;
-            outline: none !important; /* disable browser focus ring */
-        }
-
-        .btn-primary:hover{
-            border-color: rgba(26, 97, 219, 1);
-            background: rgba(26, 97, 219, 1);
-            @apply shadow-xs;
-        }
-
-        .btn-primary,
-        .qui-window-popup-buttons button[name="close"]:only-child { /* 1 */
-            border: 1px solid #00529B;
-            background: #00529B;
-            color: #fff;
         }
 
         @media screen and (min-width: 768px) {
@@ -330,26 +295,25 @@ foreach ($packages as $package) {
             border-radius: var(--radius-sm);
         }
 
-        .mainContent .login-container button {
-            color: var(--color-primary-accent);
-            background-color: var(--color-primary);
-            border-radius: var(--radius-sm);
-            line-height: calc(1.5rem + 2px);
+        .mainContent button {
+            line-height: 1.5;
             font-size: 16px;
             border: none;
-            margin-top: 1rem;
             padding: 0.5rem 1.5rem;
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+        }
+
+        .mainContent [type="submit"] {
+            color: var(--color-primary-accent);
+            background-color: var(--color-primary);
             width: 100%;
         }
 
-        .mainContent .login-container button[type="reset"],
-        .mainContent .login-container button[name="cancel"] {
+        .mainContent button[type="reset"],
+        .mainContent button[name="cancel"] {
             background-color: var(--color-secondary);
             color: var(--color-secondary-accent);
-        }
-
-        .mainContent .login-container button.reset-password {
-            margin-top: calc(1rem - 10px);
         }
 
         /* lang switch */

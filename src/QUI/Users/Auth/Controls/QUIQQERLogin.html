@@ -17,15 +17,17 @@
     </button>
 
     {if $showPasswordReset}
-    <span class="quiqqer-auth-login-passwordreset-link">
-        {locale group="quiqqer/core" var="quiqqer.auth.login.password_reset"}
-    </span>
+        <div class="quiqqer-auth-login__password-reset">
+            <button class="btn password-reset-btn" data-name="password-reset-link">
+                {locale group="quiqqer/core" var="quiqqer.auth.login.password_reset"}
+            </button>
+        </div>
     {/if}
 </div>
 
 {if $showPasswordReset}
 <div class="quiqqer-auth-login-passwordreset" style="display: none;">
-    <p class="fs-sm message">
+    <p class="fs-sm message quiqqer-auth-login-passwordreset__info">
         {locale group="quiqqer/core" var="quiqqer.auth.login.password.message"}
     </p>
     <label>
@@ -39,7 +41,7 @@
         <span>{locale group='quiqqer/core' value='controls.users.auth.quiqqerlogin.btn.password_reset'}</span>
     </button>
 
-    <button name="cancel" type="reset" class="btn btn-secondary">
+    <button name="cancel" type="reset" class="btn btn-light">
         {locale group='quiqqer/core' value='cancel'}
     </button>
 </div>

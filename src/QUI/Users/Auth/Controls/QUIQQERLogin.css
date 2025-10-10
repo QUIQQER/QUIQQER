@@ -4,7 +4,6 @@
 
 .quiqqer-auth-login-container {
     width: 100%;
-    display: flow-root;
 }
 
 .quiqqer-login-auth label {
@@ -25,31 +24,28 @@
     width: 100%;
 }
 
-.quiqqer-login-auth [type="submit"] {
-    cursor: pointer;
-    margin: 1.25rem 0 1rem;
+.quiqqer-login-auth button {
+    margin-top: 1rem;
+}
+
+.quiqqer-login-auth [type="submit"],
+.quiqqer-login-auth [name="cancel"] {
     width: 100%;
 }
 
-.quiqqer-auth-login-passwordreset {
-    width: 100%;
-    display: flow-root;
+.quiqqer-auth-login__password-reset {
+    text-align: right;
 }
 
-.quiqqer-auth-login-passwordreset label {
-    margin: 1rem 0 0 0;
+.quiqqer-auth-login__password-reset .btn {
+    background-color: transparent;
+    color: inherit;
+    border-color: transparent;
+    padding-inline: 0;
+
 }
 
-.quiqqer-auth-login-passwordreset-link {
-    cursor: pointer;
-    float: right;
-}
-
-.quiqqer-auth-login-passwordreset [type="submit"] {
-    margin-top: 0.5rem;
-    width: 100%
-}
-
-.quiqqer-auth-login-passwordreset [type="reset"] {
-    width: 100%
+/* reset overlay */
+.quiqqer-auth-login-passwordreset__info {
+    margin-bottom: 1rem;
 }

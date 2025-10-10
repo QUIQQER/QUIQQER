@@ -1,6 +1,21 @@
-.quiqqer-loginWindow-message {
-    clear: both;
-    float: left;
-    padding: 10px 20px;
+.quiqqer-loginWindow-content button {
+    line-height: 1.5;
+    font-size: 16px;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+}
+
+.quiqqer-loginWindow-content [type="submit"] {
+    color: var(--qui-btn-primary-color, #fff);
+    background-color: var(--qui-btn-primary-bg, #2f8fc6);
+    width: 100%;
+}
+
+.quiqqer-loginWindow-content button[type="reset"],
+.quiqqer-loginWindow-content button[name="cancel"] {
+    background-color: var(--color-secondary, #eee);
+    color: var(--color-secondary-accent, #333);
     width: 100%;
 }
