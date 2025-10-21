@@ -2211,6 +2211,12 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="projects.project.panel.media.contextMenu.uploadLocation">
             <en><![CDATA[Upload to this location]]></en>
         </locale>
+        <locale name="projects.project.panel.media.contextMenu.publish">
+            <de><![CDATA[Publish]]></de>
+        </locale>
+        <locale name="projects.project.panel.media.contextMenu.unpublish">
+            <de><![CDATA[Unpublish]]></de>
+        </locale>
         <locale name="projects.project.panel.languageSwitch">
             <en><![CDATA[Language selection]]></en>
         </locale>
