@@ -697,6 +697,10 @@ class Manager
             return;
         }
 
+        if (!$User->canUseBackend()) {
+            return;
+        }
+
         $twoColumn = QUI\Workspace\Manager::getTwoColumnDefault();
         $threeColumn = QUI\Workspace\Manager::getThreeColumnDefault();
 

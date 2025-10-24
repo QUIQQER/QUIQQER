@@ -569,7 +569,47 @@ class MigrationV2 extends QUI\System\Console\Tool
     public function workspaces(): void
     {
         $this->writeLn('- Migrate workspaces');
+        $this->writeLn('> Cleanup workspaces');
 
+        $workspaceTable = QUI\Workspace\Manager::table();
+        $queryBuilder = QUI::getQueryBuilder();
+
+        $result = $queryBuilder->select('*')->from($workspaceTable)->executeQuery();
+        $count = 0;
+        $progressInterval = 50;
+
+        while ($entry = $result->fetchAssociative()) {
+            $time = date('H:i:s');
+
+            try {
+                $User = QUI::getUsers()->get($entry['uid']);
+            } catch (\Exception) {
+                if (++$count % $progressInterval === 0) {
+                    $this->writeLn(">> $time [$count] ");
+                }
+
+                // user not found -> workspace can be deleted
+                QUI::getDataBaseConnection()->delete($workspaceTable, [
+                    'id' => $entry['id']
+                ]);
+
+                continue;
+            }
+
+            if ($User->canUseBackend()) {
+                continue;
+            }
+
+            if (++$count % $progressInterval === 0) {
+                $this->writeLn(">> $time [$count] ");
+            }
+
+            QUI::getDataBaseConnection()->delete($workspaceTable, [
+                'id' => $entry['id']
+            ]);
+        }
+
+        $this->writeLn('> Upgrade workspaces');
         $table = QUI::getDBTableName('users_workspaces');
 
         QUI::getDataBaseConnection()->executeStatement(
@@ -609,7 +649,7 @@ class MigrationV2 extends QUI\System\Console\Tool
         );
     }
 
-    protected function getUserHash(int|string $userId): string|int
+    protected function getUserHash(int | string $userId): string | int
     {
         try {
             return QUI::getUsers()->get($userId)->getUUID();

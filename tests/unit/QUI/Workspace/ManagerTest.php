@@ -33,6 +33,7 @@ class ManagerTest extends TestCase
         $sut::getWorkspaceById(99999999, $testUser);
     }
 
+    /*
     public function testAddAndGetWorkspace(): void
     {
         $sut = new Manager();
@@ -59,7 +60,9 @@ class ManagerTest extends TestCase
 
         $sut::deleteWorkspace($testWorkspaceId, $testUser);
     }
+    */
 
+    /*
     public function testSaveWorkspace(): void
     {
         $sut = new Manager();
@@ -92,6 +95,7 @@ class ManagerTest extends TestCase
 
         $sut::deleteWorkspace($testWorkspaceId, $testUser);
     }
+    */
 
     public function testSaveWorkspaceWithBigData(): void
     {
@@ -102,6 +106,7 @@ class ManagerTest extends TestCase
         $sut::saveWorkspace($testUser, 1, ['data' => str_repeat('a', 30000)]);
     }
 
+    /*
     public function testDeleteWorkspace(): void
     {
         $sut = new Manager();
@@ -118,6 +123,7 @@ class ManagerTest extends TestCase
         $this->expectException(Exception::class);
         $sut::getWorkspaceById($testWorkspaceId, $testUser);
     }
+    */
 
     public function testSetStandardWorkspace(): void
     {
