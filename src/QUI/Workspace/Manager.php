@@ -132,6 +132,10 @@ class Manager
             throw new QUI\Exception('No user given');
         }
 
+        if (!$User->canUseBackend()) {
+            throw new QUI\Exception('User is no administrator user');
+        }
+
         $title = Orthos::clear($title);
 
         QUI::getDataBase()->insert(self::table(), [
@@ -189,6 +193,11 @@ class Manager
      */
     public static function getWorkspacesByUser(User $User): array
     {
+        // only administrators have a workspace
+        if (!$User->canUseBackend()) {
+            return [];
+        }
+
         $result = QUI::getDataBase()->fetch([
             'from' => self::table(),
             'where' => [
@@ -196,7 +205,7 @@ class Manager
             ]
         ]);
 
-        if (empty($result) && QUI\Permissions\Permission::isAdmin($User)) {
+        if (empty($result)) {
             QUI::getUsers()->setDefaultWorkspacesForUsers($User);
 
             $result = QUI::getDataBase()->fetch([
@@ -297,6 +306,10 @@ class Manager
         }
 
         if (!QUI\Permissions\Permission::isAdmin($User)) {
+            return;
+        }
+
+        if (!$User->canUseBackend()) {
             return;
         }
 
