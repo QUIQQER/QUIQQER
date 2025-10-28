@@ -911,7 +911,7 @@ class User implements QUIUserInterface
         $this->getStandardAddress();
 
         if (!$this->getAttribute('address')) {
-            $this->setAttribute('address', $this->getStandardAddress()->getId());
+            $this->setAttribute('address', $this->getStandardAddress()->getUUID());
         }
 
 
@@ -958,7 +958,10 @@ class User implements QUIUserInterface
 
         QUI::getEvents()->fireEvent('userSaveEnd', [$this]);
 
-        QUI\Workspace\Menu::clearMenuCache($this);
+        // only for admin users needed
+        if ($this->canUseBackend()) {
+            QUI\Workspace\Menu::clearMenuCache($this);
+        }
     }
 
     /**
@@ -1588,7 +1591,7 @@ class User implements QUIUserInterface
             return $this->admin;
         }
 
-        $this->admin = QUI\Permissions\Permission::isAdmin();
+        $this->admin = QUI\Permissions\Permission::isAdmin($this);
 
         return $this->admin;
     }
@@ -2182,6 +2185,11 @@ class User implements QUIUserInterface
         QUI::getDataBase()->delete(
             QUI\Workspace\Manager::table(),
             ['uid' => $this->getId()]
+        );
+
+        QUI::getDataBase()->delete(
+            QUI\Workspace\Manager::table(),
+            ['uid' => $this->getUUID()]
         );
 
         QUI::getUsers()->onDeleteUser($this);

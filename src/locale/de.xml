@@ -2250,6 +2250,12 @@
         <locale name="projects.project.panel.media.contextMenu.uploadLocation">
             <de><![CDATA[An diese Stelle hochladen]]></de>
         </locale>
+        <locale name="projects.project.panel.media.contextMenu.publish">
+            <de><![CDATA[Veröffentlichen]]></de>
+        </locale>
+        <locale name="projects.project.panel.media.contextMenu.unpublish">
+            <de><![CDATA[Nicht veröffentlichen]]></de>
+        </locale>
         <locale name="projects.project.panel.languageSwitch">
             <de><![CDATA[Sprachauswahl]]></de>
         </locale>
