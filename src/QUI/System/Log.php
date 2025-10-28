@@ -51,10 +51,10 @@ class Log
      * @param boolean $force - [optional] if true: log in any case, no matter which settings
      */
     public static function writeRecursive(
-        object|array|int|string $object,
+        object | array | int | string $object,
         int $logLevel = self::LEVEL_INFO,
         array $context = [],
-        bool|string $filename = false,
+        bool | string $filename = false,
         bool $force = false
     ): void {
         self::write(print_r($object, true), $logLevel, $context, $filename, $force);
@@ -75,7 +75,7 @@ class Log
         string $message,
         int $logLevel = self::LEVEL_INFO,
         array $context = [],
-        bool|string $filename = false,
+        bool | string $filename = false,
         bool $force = false
     ): void {
         $Logger = QUI\Log\Logger::getLogger();
@@ -157,10 +157,10 @@ class Log
      * @param boolean $force - [optional] if true: log in any case, no matter which settings
      */
     public static function writeException(
-        Exception|QUI\Exception|Throwable $Exception,
+        Exception | QUI\Exception | Throwable $Exception,
         int $logLevel = self::LEVEL_ERROR,
         array $context = [],
-        bool|string $filename = false,
+        bool | string $filename = false,
         bool $force = false
     ): void {
         $message = $Exception->getCode() . " :: \n\n";
@@ -185,10 +185,10 @@ class Log
      * @param boolean $force - [optional] if true: log in any case, no matter which settings
      */
     public static function writeDebugException(
-        Exception|QUI\Exception $Exception,
+        Exception | QUI\Exception $Exception,
         int $logLevel = self::LEVEL_DEBUG,
         array $context = [],
-        bool|string $filename = false,
+        bool | string $filename = false,
         bool $force = false
     ): void {
         if (
@@ -217,7 +217,7 @@ class Log
      * @param array $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    public static function addDebug(string $message, array $context = [], bool|string $filename = false): void
+    public static function addDebug(string $message, array $context = [], bool | string $filename = false): void
     {
         self::write($message, self::LEVEL_DEBUG, $context, $filename);
     }
@@ -229,7 +229,7 @@ class Log
 
         $context['trace'] = $trace;
 
-        self::write($message, self::LEVEL_DEPRECATED, $context);
+        self::write($message, self::LEVEL_DEPRECATED, $context, 'deprecated');
     }
 
     /**
@@ -239,7 +239,7 @@ class Log
      * @param array $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    public static function addInfo(string $message, array $context = [], bool|string $filename = false): void
+    public static function addInfo(string $message, array $context = [], bool | string $filename = false): void
     {
         self::write($message, self::LEVEL_INFO, $context, $filename);
     }
@@ -251,7 +251,7 @@ class Log
      * @param array $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    public static function addNotice(string $message, array $context = [], bool|string $filename = false): void
+    public static function addNotice(string $message, array $context = [], bool | string $filename = false): void
     {
         self::write($message, self::LEVEL_NOTICE, $context, $filename);
     }
@@ -263,7 +263,7 @@ class Log
      * @param array $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    public static function addWarning(string $message, array $context = [], bool|string $filename = false): void
+    public static function addWarning(string $message, array $context = [], bool | string $filename = false): void
     {
         self::write($message, self::LEVEL_WARNING, $context, $filename);
     }
@@ -275,7 +275,7 @@ class Log
      * @param array $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    public static function addError(string $message, array $context = [], bool|string $filename = false): void
+    public static function addError(string $message, array $context = [], bool | string $filename = false): void
     {
         self::write($message, self::LEVEL_ERROR, $context, $filename);
     }
@@ -287,7 +287,7 @@ class Log
      * @param array $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    public static function addCritical(string $message, array $context = [], bool|string $filename = false): void
+    public static function addCritical(string $message, array $context = [], bool | string $filename = false): void
     {
         self::write($message, self::LEVEL_CRITICAL, $context, $filename);
     }
@@ -299,7 +299,7 @@ class Log
      * @param array $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    public static function addAlert(string $message, array $context = [], bool|string $filename = false): void
+    public static function addAlert(string $message, array $context = [], bool | string $filename = false): void
     {
         self::write($message, self::LEVEL_ALERT, $context, $filename);
     }
@@ -311,7 +311,7 @@ class Log
      * @param array $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    public static function addEmergency(string $message, array $context = [], bool|string $filename = false): void
+    public static function addEmergency(string $message, array $context = [], bool | string $filename = false): void
     {
         self::write($message, self::LEVEL_EMERGENCY, $context, $filename);
     }

@@ -8,7 +8,7 @@ if (!function_exists('array_key_first')) {
     /**
      * https://www.php.net/manual/de/function.array-key-first.php
      */
-    function array_key_first(array $arr): int|string|null
+    function array_key_first(array $arr): int | string | null
     {
         foreach (array_keys($arr) as $key) {
             return $key;
@@ -22,7 +22,7 @@ if (!function_exists("array_key_last")) {
     /**
      * https://www.php.net/manual/de/function.array-key-last.php#123016
      */
-    function array_key_last($array): int|string|null
+    function array_key_last($array): int | string | null
     {
         if (!is_array($array) || empty($array)) {
             return null;
@@ -66,5 +66,24 @@ if (!function_exists("array_merge_recursive_overwrite")) {
         }
 
         return $merged;
+    }
+}
+
+if (!class_exists('Deprecated')) {
+    #[Attribute(
+        Attribute::TARGET_CLASS
+        | Attribute::TARGET_FUNCTION
+        | Attribute::TARGET_METHOD
+        | Attribute::TARGET_PROPERTY
+        | Attribute::TARGET_CLASS_CONSTANT
+        | Attribute::TARGET_PARAMETER
+    )]
+    class Deprecated
+    {
+        public function __construct(
+            ?string $reason = null,
+            ?string $since = null
+        ) {
+        }
     }
 }
