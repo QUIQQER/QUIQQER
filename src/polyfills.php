@@ -82,8 +82,8 @@ if (!class_exists('Deprecated')) {
     class Deprecated
     {
         public function __construct(
-            ?string $reason = null,
-            ?string $since = null
+            ?string $reason = null, // @phpstan-ignore-line
+            ?string $since = null // @phpstan-ignore-line
         ) {
         }
     }
