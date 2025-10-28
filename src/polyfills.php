@@ -78,6 +78,7 @@ if (!class_exists('Deprecated')) {
         | Attribute::TARGET_CLASS_CONSTANT
         | Attribute::TARGET_PARAMETER
     )]
+    // phpcs:ignore PSR1.Classes.ClassDeclaration.MissingNamespace
     class Deprecated
     {
         public function __construct(
