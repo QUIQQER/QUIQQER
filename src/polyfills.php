@@ -81,10 +81,9 @@ if (!class_exists('Deprecated')) {
     // phpcs:ignore PSR1.Classes.ClassDeclaration.MissingNamespace
     class Deprecated
     {
-        public function __construct(
-            ?string $reason = null, // @phpstan-ignore-line
-            ?string $since = null // @phpstan-ignore-line
-        ) {
+        // @phpstan-ignore-next-line
+        public function __construct(?string $reason = null, ?string $since = null)
+        {
         }
     }
 }
