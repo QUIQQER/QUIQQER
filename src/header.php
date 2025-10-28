@@ -32,6 +32,10 @@ QUI\Autoloader::checkAutoloader();
 QUI::load();
 QUI\Utils\System\Debug::marker('header start');
 
+if (QUI::conf('globals', 'display_errors')) {
+    ini_set('display_errors', (bool)QUI::conf('', 'display_errors'));
+}
+
 if (version_compare(phpversion(), QUIQQER_MIN_PHP_VERSION, '<=')) {
     $message = 'QUIQQER runs with a wrong PHP Version. Please upgrade your PHP Version.';
 
