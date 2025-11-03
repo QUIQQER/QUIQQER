@@ -65,7 +65,7 @@ function exception_error_handler(int $errno, string $errStr, string $errFile, in
     $l = error_reporting();
 
     if ($errno === E_DEPRECATED || $errno === E_USER_DEPRECATED) {
-        QUI\System\Log::addInfo('Deprecated: ' . $errStr, [
+        QUI\System\Log::addDeprecated('Deprecated: ' . $errStr, [
             'file' => $errFile,
             'line' => $errLine
         ]);
