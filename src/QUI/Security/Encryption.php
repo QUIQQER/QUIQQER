@@ -84,7 +84,7 @@ class Encryption
         $sl = $Config->getValue('globals', 'saltlength');
         $iv = $Config->getValue('openssl', 'iv');
 
-        if ($iv === false) {
+        if (empty($iv)) {
             $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
 
             QUI::getConfig('etc/conf.ini.php')->setValue(
