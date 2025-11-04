@@ -1017,10 +1017,18 @@ class QUI
     public static function getDataBaseConnection(): Connection
     {
         if (!(self::$QueryBuilder instanceof Connection)) {
+            $port = (int)self::conf('db', 'port');
+
+            if (empty($port)) {
+                $port = 3306;
+            }
+
             self::$QueryBuilder = Doctrine\DBAL\DriverManager::getConnection([
                 'dbname' => self::conf('db', 'database'),
                 'driver' => 'pdo_' . self::conf('db', 'driver'),
                 'host' => self::conf('db', 'host'),
+                'port' => $port,
+                'persistent' => (bool)self::conf('db', 'persistent'),
                 'user' => self::conf('db', 'user'),
                 'password' => self::conf('db', 'password')
             ]);

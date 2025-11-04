@@ -217,7 +217,7 @@ class Media extends QUI\QDOM
         $DataBase->table()->setIndex($table, 'pathHash');
 
         try {
-            $DataBase->execSQL('UPDATE ' . $table . ' SET pathHash = MD5(file)');
+            $DataBase->execSQL("UPDATE $table SET pathHash = MD5(COALESCE(file, ''))");
         } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
@@ -304,6 +304,11 @@ class Media extends QUI\QDOM
 
         $updateEntry = static function ($type, array $data, $table) use ($languages): void {
             $value = $data[$type];
+
+            if (empty($value)) {
+                return;
+            }
+
             $valueJSON = json_decode($value, true);
 
             if (is_array($valueJSON)) {
