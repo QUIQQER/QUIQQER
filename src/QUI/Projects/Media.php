@@ -304,6 +304,11 @@ class Media extends QUI\QDOM
 
         $updateEntry = static function ($type, array $data, $table) use ($languages): void {
             $value = $data[$type];
+
+            if (empty($value)) {
+                return;
+            }
+
             $valueJSON = json_decode($value, true);
 
             if (is_array($valueJSON)) {
