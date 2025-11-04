@@ -217,7 +217,7 @@ class Media extends QUI\QDOM
         $DataBase->table()->setIndex($table, 'pathHash');
 
         try {
-            $DataBase->execSQL("UPDATE $table SET pathHash = MD5(COALESCE(file, '')");
+            $DataBase->execSQL("UPDATE $table SET pathHash = MD5(COALESCE(file, ''))");
         } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
