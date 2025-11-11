@@ -120,6 +120,14 @@
                     <type><![CDATA[bool]]></type>
                     <defaultvalue><![CDATA[0]]></defaultvalue>
                 </conf>
+                <conf name="display_errors">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue><![CDATA[0]]></defaultvalue>
+                </conf>
+                <conf name="log_deprecated_errors">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue><![CDATA[0]]></defaultvalue>
+                </conf>
             </section>
 
             <section name="auth_settings">

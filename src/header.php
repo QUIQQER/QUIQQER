@@ -49,16 +49,20 @@ if (version_compare(phpversion(), QUIQQER_MIN_PHP_VERSION, '<=')) {
 ini_set("error_log", VAR_DIR . 'log/error' . date('-Y-m-d') . '.log');
 ini_set('session.save_path', VAR_DIR . 'sessions');
 
-set_error_handler("exception_error_handler");
+$errorLevel = E_ALL;
+$explicitlyLogDeprecatedErrors = !empty(QUI::conf('globals', 'log_deprecated_errors'));
+
+// disable DEPRECATED warning by default if not in delevopment mode and not explicitly enabled
+if (!DEVELOPMENT && $explicitlyLogDeprecatedErrors === false) {
+    $errorLevel = E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED;
+}
+
+error_reporting($errorLevel);
+
+set_error_handler("exception_error_handler", $errorLevel);
 set_exception_handler(function (\Throwable $exception): void {
     exception_handler($exception);
 });
-
-if (DEVELOPMENT) {
-    error_reporting(E_ALL);
-} else {
-    error_reporting(E_ALL ^ E_NOTICE);
-}
 
 define('GENERATOR', 'QUIQQER /www.pcsg.de');
 //
