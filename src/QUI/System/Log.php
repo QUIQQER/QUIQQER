@@ -178,14 +178,14 @@ class Log
     /**
      * Writes an Exception to a log file
      *
-     * @param Exception|QUI\Exception $Exception
+     * @param Exception|QUI\Exception|Throwable $Exception
      * @param integer $logLevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
      * @param array $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database
      * @param boolean $force - [optional] if true: log in any case, no matter which settings
      */
     public static function writeDebugException(
-        Exception | QUI\Exception $Exception,
+        Exception | QUI\Exception | Throwable $Exception,
         int $logLevel = self::LEVEL_DEBUG,
         array $context = [],
         bool | string $filename = false,
