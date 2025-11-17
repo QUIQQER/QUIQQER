@@ -1258,8 +1258,11 @@ define('controls/upload/Form', [
                         return;
                     }
 
-                    if (self.getAttribute('maxuploads') !== false &&
-                        files.length > self.getAttribute('maxuploads')) {
+                    if (
+                        self.getAttribute('maxuploads') !== false
+                        && self.getAttribute('maxuploads') !== 0
+                        && files.length > self.getAttribute('maxuploads')
+                    ) {
                         QUI.getMessageHandler().then(function(MH) {
                             MH.addError(
                                 Locale.get(lg, 'upload.form.message.limit', {

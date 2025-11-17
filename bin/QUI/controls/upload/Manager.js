@@ -239,6 +239,8 @@ define('controls/upload/Manager', [
 
                 this.fireEvent('fileUploadRefresh', [this, 0]);
 
+                let errors = [];
+
                 new BulkUpload({
                     parentId: params.parentid,
                     project: params.project,
@@ -258,6 +260,14 @@ define('controls/upload/Manager', [
                                 params.events.onComplete(uploadedFiles);
                             }
 
+                            if (errors.length) {
+                                QUI.getMessageHandler().then((MH) => {
+                                    errors.forEach((error) => {
+                                        MH.addError(error);
+                                    });
+                                });
+                            }
+
                             this.fireEvent('fileUploadRefresh', [
                                 this,
                                 100
@@ -268,6 +278,14 @@ define('controls/upload/Manager', [
                             this.fireEvent('fileUploadRefresh', [this, progress.percent]);
                         },
                         onError: (BulkUploadInstance, ErrorInstance) => {
+                            if (typeof ErrorInstance.getMessage === 'function') {
+                                const msg = ErrorInstance.getMessage();
+
+                                if (!errors.includes(msg)) {
+                                    errors.push(msg);
+                                }
+                            }
+
                             this.fireEvent('error', [this, ErrorInstance]);
                         }
                     }
