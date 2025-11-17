@@ -74,7 +74,7 @@ class Mailer extends QUI\QDOM
     {
         $config = QUI::conf('mail');
 
-        if (isset($attributes['Project'])) {
+        if (isset($attributes['Project']) && $attributes['Project'] instanceof Project) {
             $project = $attributes['Project'];
         } else {
             $project = QUI::getProjectManager()->get();
