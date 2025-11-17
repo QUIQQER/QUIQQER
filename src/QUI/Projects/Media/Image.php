@@ -570,7 +570,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         return false;
     }
 
-    public function getWatermarkPosition(): Image|bool
+    public function getWatermarkPosition(): string|bool
     {
         $imageEffects = $this->getEffects();
 
