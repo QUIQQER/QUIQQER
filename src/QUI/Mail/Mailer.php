@@ -73,10 +73,15 @@ class Mailer extends QUI\QDOM
     public function __construct(array $attributes = [])
     {
         $config = QUI::conf('mail');
-        $project = QUI::getProjectManager()->get();
 
-        if (QUI::getRewrite()->getProject()) {
-            $project = QUI::getRewrite()->getProject();
+        if (isset($attributes['Project'])) {
+            $project = $attributes['Project'];
+        } else {
+            $project = QUI::getProjectManager()->get();
+
+            if (QUI::getRewrite()->getProject()) {
+                $project = QUI::getRewrite()->getProject();
+            }
         }
 
         // default
