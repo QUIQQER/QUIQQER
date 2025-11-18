@@ -156,12 +156,6 @@ class Group extends QUI\QDOM
                 ['parent' => $Group->getUUID()],
                 ['id' => $result[0]['id']]
             );
-        } elseif (is_numeric($result[0]['parent']) && (int)$result[0]['parent'] === 0) {
-            QUI::getDatabase()->update(
-                Manager::table(),
-                ['parent' => 0],
-                ['id' => $result[0]['id']]
-            );
         }
 
 
