@@ -2,26 +2,25 @@
  * Help Window
  *
  * @module controls/help/About
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/help/About', [
 
     'qui/controls/windows/Popup',
     'Locale',
+    'Ajax',
     'Mustache',
 
     'text!controls/help/About.de.html',
     'text!controls/help/About.en.html',
-
     'css!controls/help/About.css'
 
-], function (QUIPopup, QUILocale, Mustache, templateDe, templateEn) {
+], function (QUIPopup, QUILocale, QUIAjax, Mustache, templateDe, templateEn) {
     "use strict";
 
     return new Class({
 
         Extends: QUIPopup,
-        Type   : 'controls/help/About',
+        Type: 'controls/help/About',
 
         Binds: [
             '$onOpen',
@@ -29,16 +28,16 @@ define('controls/help/About', [
         ],
 
         options: {
-            maxHeight      : 400,
-            maxWidth       : 600,
-            title          : QUILocale.get('quiqqer/core', 'menu.help.about.text'),
+            maxHeight: 440,
+            maxWidth: 600,
+            title: QUILocale.get('quiqqer/core', 'menu.help.about.text'),
             closeButtonText: QUILocale.get('quiqqer/core', 'close')
         },
 
         initialize: function (options) {
             this.parent(options);
             this.addEvents({
-                onOpen  : this.$onOpen,
+                onOpen: this.$onOpen,
                 onCreate: this.$onCreate
             });
         },
@@ -54,25 +53,35 @@ define('controls/help/About', [
          * event: on open
          */
         $onOpen: function () {
-            var template;
+            this.Loader.show();
 
-            this.getContent().addClass('quiqqer-about-window');
+            QUIAjax.get('ajax_system_systemInfo', (data) => {
+                let template;
+                this.getContent().addClass('quiqqer-about-window');
 
-            switch (QUILocale.getCurrent()) {
-                case 'de':
-                    template = templateDe;
-                    break;
+                switch (QUILocale.getCurrent()) {
+                    case 'de':
+                        template = templateDe;
+                        break;
 
-                default:
-                    template = templateEn;
-            }
+                    default:
+                        template = templateEn;
+                }
 
-            this.getContent().set('html', Mustache.render(template, {
-                version: QUIQQER_VERSION,
-                hash   : QUIQQER_HASH,
-                logo   : URL_BIN_DIR + 'quiqqer_logo.png',
-                year   : new Date().getFullYear()
-            }));
+                this.getContent().set('html', Mustache.render(template, {
+                    version: data.version,
+                    hash: data.hash,
+                    logo: URL_BIN_DIR + 'quiqqer_logo.png',
+                    year: new Date().getFullYear(),
+                    database: data.database,
+                    php_version: data.php_version
+                }));
+
+                this.Loader.hide();
+            }, {
+                'package': 'quiqqer/core'
+            });
+
         }
     });
 });
