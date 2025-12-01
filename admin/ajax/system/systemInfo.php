@@ -6,10 +6,12 @@ QUI::$Ajax->registerFunction(
         $connection = QUI::getDataBaseConnection();
         $dbVersion = $connection->getServerVersion();
         $dbType = $connection->getParams()['driver'] ?? null;
+        $package = QUI::getPackage('quiqqer/core');
 
         return [
             'version' => QUI::getPackageManager()->getVersion(),
             'hash' => QUI::getPackageManager()->getHash(),
+            'lock' => $package->getLock(),
             'php_version' => phpversion(),
             'database' => [
                 'type' => $dbType,

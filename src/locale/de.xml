@@ -4942,6 +4942,25 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="packages.panel.category.systemcheck.checksum.cacheForThisPackageNotFound">
             <de><![CDATA[Cache für <strong>[cacheForThisPackage]</strong> konnte nicht gefunden werden.]]></de>
         </locale>
+        <locale name="packages.panel.header.quiqqer">
+            <de><![CDATA[QUIQQER]]></de>
+        </locale>
+        <locale name="packages.panel.header.php">
+            <de><![CDATA[PHP]]></de>
+        </locale>
+        <locale name="packages.panel.header.database">
+            <de><![CDATA[Datenbank]]></de>
+        </locale>
+        <locale name="packages.panel.header.reference">
+            <de><![CDATA[Referenz]]></de>
+        </locale>
+        <locale name="packages.panel.header.lastUpdateCheck">
+            <de><![CDATA[Letzte Aktualisierungsprüfung]]></de>
+        </locale>
+        <locale name="packages.panel.header.lastUpdate">
+            <de><![CDATA[Letztes Aktualisierung]]></de>
+        </locale>
+
         <locale name="menu.help.about.text">
             <de><![CDATA[Über QUIQQER]]></de>
         </locale>
