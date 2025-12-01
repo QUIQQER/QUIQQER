@@ -190,13 +190,36 @@ define('controls/packages/System', [
             ]).then((res) => {
                 let lastUpdateCheck = res[0];
                 let lastUpdate = res[1];
+                let language = 'en-US';
+
+                const options = {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                };
+
+                switch (USER.lang) {
+                    case 'de':
+                        language = 'de-DE';
+                        break;
+                    case 'en':
+                        language = 'en-US';
+                        break;
+                }
 
                 if (!lastUpdateCheck) {
                     lastUpdateCheck = '---';
+                } else {
+                    lastUpdateCheck = new Date(lastUpdateCheck).toLocaleString(language, options);
                 }
 
                 if (!lastUpdate) {
                     lastUpdate = '---';
+                } else {
+                    lastUpdate = new Date(lastUpdate).toLocaleString(language, options);
                 }
 
                 this.$Elm.querySelector('.qui-update-lastCheck').set('html', lastUpdateCheck);
