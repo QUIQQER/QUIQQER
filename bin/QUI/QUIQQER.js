@@ -1,7 +1,5 @@
 /**
  * QUIQQER
- *
- * @author www.pcsg.de (Henning Leutz)
  */
 define('QUIQQER', ['Ajax', 'Packages'], function (QUIAjax, Packages) {
     "use strict";
@@ -26,7 +24,11 @@ define('QUIQQER', ['Ajax', 'Packages'], function (QUIAjax, Packages) {
          * @returns {Promise}
          */
         getInformation: function () {
-            return Packages.getPackageLock('quiqqer/core');
+            return new Promise((resolve) => {
+                QUIAjax.get('ajax_system_systemInfo', resolve, {
+                    'package': 'quiqqer/core'
+                });
+            });
         },
 
         /**
