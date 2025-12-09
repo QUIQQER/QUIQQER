@@ -24,27 +24,29 @@ QUI::$Ajax->registerFunction(
             $Mail->addReplyTo($params['MAILReplyTo']);
         }
 
+        if (empty($params['SMTP'])) {
+            $Mail->SMTPAuth = false;
+        } else {
+            $Mail->SMTPAuth = true;
+        }
+
         if (!empty($params['SMTPServer'])) {
             $Mail->Mailer = 'smtp';
-            $Mail->SMTPAuth = true;
             $Mail->Host = $params['SMTPServer'];
         }
 
         if (!empty($params['SMTPUser'])) {
             $Mail->Mailer = 'smtp';
-            $Mail->SMTPAuth = true;
             $Mail->Username = $params['SMTPUser'];
         }
 
         if (!empty($params['SMTPPass'])) {
             $Mail->Mailer = 'smtp';
-            $Mail->SMTPAuth = true;
             $Mail->Password = $params['SMTPPass'];
         }
 
         if (!empty($params['SMTPPort'])) {
             $Mail->Mailer = 'smtp';
-            $Mail->SMTPAuth = true;
             $Mail->Port = (int)$params['SMTPPort'];
         }
 
