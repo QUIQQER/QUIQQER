@@ -24,48 +24,50 @@ QUI::$Ajax->registerFunction(
             $Mail->addReplyTo($params['MAILReplyTo']);
         }
 
-        if (empty($params['SMTP'])) {
-            $Mail->SMTPAuth = false;
-        } else {
-            $Mail->SMTPAuth = true;
-        }
+        if (!empty($params['SMTP'])) {
+            if (empty($params['SMTPAuth'])) {
+                $Mail->SMTPAuth = false;
+            } else {
+                $Mail->SMTPAuth = true;
 
-        if (!empty($params['SMTPServer'])) {
-            $Mail->Mailer = 'smtp';
-            $Mail->Host = $params['SMTPServer'];
-        }
+                if (!empty($params['SMTPUser'])) {
+                    $Mail->Mailer = 'smtp';
+                    $Mail->Username = $params['SMTPUser'];
+                }
 
-        if (!empty($params['SMTPUser'])) {
-            $Mail->Mailer = 'smtp';
-            $Mail->Username = $params['SMTPUser'];
-        }
+                if (!empty($params['SMTPPass'])) {
+                    $Mail->Mailer = 'smtp';
+                    $Mail->Password = $params['SMTPPass'];
+                }
+            }
 
-        if (!empty($params['SMTPPass'])) {
-            $Mail->Mailer = 'smtp';
-            $Mail->Password = $params['SMTPPass'];
-        }
+            if (!empty($params['SMTPServer'])) {
+                $Mail->Mailer = 'smtp';
+                $Mail->Host = $params['SMTPServer'];
+            }
 
-        if (!empty($params['SMTPPort'])) {
-            $Mail->Mailer = 'smtp';
-            $Mail->Port = (int)$params['SMTPPort'];
-        }
+            if (!empty($params['SMTPPort'])) {
+                $Mail->Mailer = 'smtp';
+                $Mail->Port = (int)$params['SMTPPort'];
+            }
 
-        if (!empty($params['SMTPSecure'])) {
-            switch ($params['SMTPSecure']) {
-                case "ssl":
-                    $Mail->SMTPSecure = $params['SMTPSecure'];
+            if (!empty($params['SMTPSecure'])) {
+                switch ($params['SMTPSecure']) {
+                    case "ssl":
+                        $Mail->SMTPSecure = $params['SMTPSecure'];
 
-                    $Mail->SMTPOptions = [
-                        'ssl' => [
-                            'verify_peer' => (int)$params['SMTPSecureSSL_verify_peer'],
-                            'verify_peer_name' => (int)$params['SMTPSecureSSL_verify_peer_name'],
-                            'allow_self_signed' => (int)$params['SMTPSecureSSL_allow_self_signed']
-                        ]
-                    ];
-                    break;
-                case "tls":
-                    $Mail->SMTPSecure = $params['SMTPSecure'];
-                    break;
+                        $Mail->SMTPOptions = [
+                            'ssl' => [
+                                'verify_peer' => (int)$params['SMTPSecureSSL_verify_peer'],
+                                'verify_peer_name' => (int)$params['SMTPSecureSSL_verify_peer_name'],
+                                'allow_self_signed' => (int)$params['SMTPSecureSSL_allow_self_signed']
+                            ]
+                        ];
+                        break;
+                    case "tls":
+                        $Mail->SMTPSecure = $params['SMTPSecure'];
+                        break;
+                }
             }
         }
 
