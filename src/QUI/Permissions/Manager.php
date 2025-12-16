@@ -11,17 +11,16 @@ use QUI\Database\Exception;
 use QUI\ExceptionStack;
 use QUI\Groups\Group;
 use QUI\Interfaces\Projects\Media\File;
-use QUI\Projects\Media\Item;
 use QUI\Projects\Project;
 use QUI\Projects\Site;
 use QUI\Projects\Site\Edit;
 use QUI\Users\User;
 use QUI\Utils\Security\Orthos;
+use Ramsey\Uuid\Uuid;
 
 use function count;
 use function implode;
 use function is_array;
-use function is_callable;
 use function is_string;
 use function json_decode;
 use function json_encode;
@@ -834,19 +833,51 @@ class Manager
                 break;
 
             case 'users_and_groups':
-                // u1234566775 <- user-id
-                // g1234566775 <- group-id
-                $val = preg_replace('/[^0-9,ug]/', '', $val);
+                // ue8547a92-9d03-11f0-b2b2-42476d08324f <- user-id
+                // ge8547a92-9d03-11f0-b2b2-42476d08324f <- group-id
+                if (str_contains($val, ',')) {
+                    $val = explode(',', $val);
+                    $val = array_map(function ($val) {
+                        if (Uuid::isValid(mb_substr($val, 1))) {
+                            return $val;
+                        }
+
+                        return preg_replace('/[^0-9,ug]/', '', $val);
+                    }, $val);
+                    $val = array_filter($val);
+                    $val = implode(',', $val);
+                } else {
+                    if (!Uuid::isValid(mb_substr($val, 1))) {
+                        $val = preg_replace('/[^0-9,ug]/', '', $val);
+                    }
+                }
                 break;
 
             case 'users':
             case 'groups':
-                $val = preg_replace('/[^0-9,]/', '', $val);
+                if (str_contains($val, ',')) {
+                    $val = explode(',', $val);
+                    $val = array_map(function ($val) {
+                        if (Uuid::isValid($val)) {
+                            return $val;
+                        }
+
+                        return preg_replace('/[^0-9]/', '', $val);
+                    }, $val);
+                    $val = array_filter($val);
+                    $val = implode(',', $val);
+                } else {
+                    if (!Uuid::isValid($val)) {
+                        $val = preg_replace('/[^0-9,]/', '', $val);
+                    }
+                }
                 break;
 
             case 'user':
             case 'group':
-                $val = preg_replace('/[^0-9]/', '', $val);
+                if (!Uuid::isValid($val)) {
+                    $val = preg_replace('/[^0-9]/', '', $val);
+                }
                 break;
 
             case 'array':

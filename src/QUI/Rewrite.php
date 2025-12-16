@@ -863,7 +863,10 @@ class Rewrite
         $vhosts = $this->getVHosts();
 
         // Falls der Host eine eigene Fehlerseite zugewiesen bekommen hat
-        if (isset($vhosts[$_SERVER['HTTP_HOST']]['error'])) {
+        if (
+            isset($_SERVER['HTTP_HOST'])
+            && isset($vhosts[$_SERVER['HTTP_HOST']]['error'])
+        ) {
             $host = $_SERVER['HTTP_HOST'];
 
             $error = $vhosts[$host]['error'];
@@ -893,7 +896,11 @@ class Rewrite
             }
         }
 
-        if (isset($vhosts[404]['project']) && isset($vhosts[404]['lang']) && isset($vhosts[404]['id'])) {
+        if (
+            isset($vhosts[404]['project'])
+            && isset($vhosts[404]['lang'])
+            && isset($vhosts[404]['id'])
+        ) {
             try {
                 $Project = QUI::getProject(
                     $vhosts[404]['project'],
