@@ -203,6 +203,7 @@ define('controls/system/settings/Mail', [
                 SMTP: Form.elements['mail.SMTP'].checked ? 1 : 0,
                 SMTPServer: Form.elements['mail.SMTPServer'].value,
                 SMTPPort: Form.elements['mail.SMTPPort'].value,
+                SMTPAuth: Form.elements['mail.SMTPAuth'].checked ? 1 : 0,
                 SMTPUser: Form.elements['mail.SMTPUser'].value,
                 SMTPPass: Form.elements['mail.SMTPPass'].value,
                 SMTPSecure: Form.elements['mail.SMTPSecure'].value
