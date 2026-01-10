@@ -1597,9 +1597,9 @@ class Manager
 
             // set the filters
             switch ($filter['filter_status']) {
-                case '1';
-                case '0';
-                case '-1';
+                case '1':
+                case '0':
+                case '-1':
                     $filter_status = true;
                     break;
 
