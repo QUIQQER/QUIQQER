@@ -1596,11 +1596,17 @@ class Manager
             $filter_regdate_last = false;
 
             // set the filters
-            if (
-                !empty($filter['filter_status'])
-                && $filter['filter_status'] != 'all'
-            ) {
-                $filter_status = true;
+            switch ($filter['filter_status']) {
+                case '1':
+                case '0':
+                case '-1':
+                    $filter_status = true;
+                    break;
+
+                default:
+                case 'all':
+                    $filter_status = false;
+                    break;
             }
 
             if (!empty($filter['filter_group'])) {

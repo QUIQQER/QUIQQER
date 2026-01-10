@@ -2737,7 +2737,7 @@
         </locale>
         <locale name="users.panel.search.info">
             <de><![CDATA[
-                Suchparameter sind aktiviert.<br />
+                Suchparameter sind aktiviert.
                 Klicken Sie hier um die Suche zu beenden und alle Benutzer wieder anzeigen zu lassen.
             ]]></de>
         </locale>

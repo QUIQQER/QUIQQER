@@ -1,0 +1,135 @@
+<form name="user-search" class="user-search-form" method="post">
+    <table class="data-table data-table-flexbox">
+        <thead>
+        <tr>
+            <th>
+                {{searchTitle}}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {{user_id}}
+                    </span>
+                    <span class="field-container-field">
+                        <input type="checkbox" checked="checked" value="" name="uid"/>
+                    </span>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {{username}}
+                    </span>
+                    <span class="field-container-field">
+                        <input type="checkbox" checked="checked" value="" name="username"/>
+                    </span>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {{email}}
+                    </span>
+                    <span class="field-container-field">
+                        <input type="checkbox" checked="checked" value="" name="email"/>
+                    </span>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {{firstname}}
+                    </span>
+                    <span class="field-container-field">
+                        <input type="checkbox" checked="checked" value="" name="firstname"/>
+                    </span>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {{lastname}}
+                    </span>
+                    <span class="field-container-field">
+                        <input type="checkbox" checked="checked" value="" name="lastname"/>
+                    </span>
+                </label>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="data-table data-table-flexbox">
+        <thead>
+        <tr>
+            <th>
+                {{filterTitle}}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {{status}}
+                    </span>
+                    <select name="filter_status" class="field-container-field">
+                        <option value="all" selected="selected">Alle</option>
+                        <option value="1">Aktiviert</option>
+                        <option value="0">Deaktiviert</option>
+                        <option value="-1">Gelöscht</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {{filter_regdate_first}}
+                    </span>
+                    <input type="date" name="filter_regdate_first" value="" class="field-container-field"/>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {{filter_regdate_last}}
+                    </span>
+                    <input type="date" name="filter_regdate_last" value="" class="field-container-field"/>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {{groups}}
+                    </span>
+                    <input type="hidden"
+                           name="filter_group"
+                           value=""
+                           class="field-container-field"
+                           data-qui="controls/groups/Select"
+                    />
+                </label>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</form>
