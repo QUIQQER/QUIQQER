@@ -1,0 +1,37 @@
+.badge {
+    padding: var(--spacing-xxs, 2px) var(--spacing-sm, 6px);
+    align-items: center;
+    gap: var(--spacing-xs, 4px);
+
+    border-radius: var(--radius-md, 8px);
+    border: 0px solid var(--component-colors-utility-gray-blue-utility-gray-blue-200, #D5D9EB);
+    background: var(--component-colors-utility-gray-blue-utility-gray-blue-50, #F8F9FC);
+    color: var(--component-colors-utility-gray-utility-gray-700);
+
+
+    display: inline-block;
+
+    text-align: center;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px; /* 150% */
+}
+
+.badge-success {
+    border-color: var(--component-colors-utility-success-utility-success-200, #ABEFC6);
+    background: var(--component-colors-utility-success-utility-success-50, #ECFDF3);
+    color: var(--component-colors-utility-success-utility-success-700, #067647);
+}
+
+.badge-warning {
+    border-color: var(--component-colors-utility-warning-utility-warning-200, #FDE2C8);
+    background: var(--component-colors-utility-warning-utility-warning-50, #FFFAF0);
+    color: var(--component-colors-utility-warning-utility-warning-700, #92400E);
+}
+
+.badge-error {
+    border-color: var(--component-colors-utility-error-utility-error-200, #FEE2E2);
+    background: var(--component-colors-utility-error-utility-error-50, #FEF3F3);
+    color: var(--component-colors-utility-error-utility-error-700, #B91C1C);
+}

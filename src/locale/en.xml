@@ -2689,7 +2689,9 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         </locale>
         <locale name="users.panel.search.info">
             <en><![CDATA[
-                Search parameters are activated. <br />                Click here to end the search and to display all users again.]]></en>
+                Search parameters are activated.
+                Click here to end the search and to display all users again.
+            ]]></en>
         </locale>
         <locale name="users.panel.user.is.active">
             <en><![CDATA[User is active. Click on the button to disable the user.]]></en>

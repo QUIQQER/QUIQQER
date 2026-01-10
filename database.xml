@@ -39,7 +39,17 @@
 
             <primary>id</primary>
             <index>username,password</index>
+            <index>username</index>
             <index>uuid</index>
+            <index>active</index>
+            <index>activation</index>
+            <index>regdate</index>
+            <index>firstname</index>
+            <index>lastname</index>
+            <index>company</index>
+            <index>birthday</index>
+            <index>lang</index>
+            <index>address</index>
             <auto_increment>id</auto_increment>
 
             <comment>This table contains the users of QUIQQER.</comment>
@@ -76,6 +86,7 @@
             <primary>id</primary>
             <index>parent</index>
             <index>uuid</index>
+            <index>active</index>
 
             <comment>This table contains the groups of QUIQQER.</comment>
         </table>
@@ -91,6 +102,8 @@
 
             <primary>name</primary>
             <index>name</index>
+            <index>type</index>
+            <index>area</index>
         </table>
 
         <table name="permissions2users">
@@ -98,6 +111,7 @@
             <field type="MEDIUMTEXT NULL">permissions</field>
 
             <primary>user_id</primary>
+            <index>user_id</index>
         </table>
 
         <table name="permissions2groups">
@@ -105,6 +119,7 @@
             <field type="MEDIUMTEXT NULL">permissions</field>
 
             <primary>group_id</primary>
+            <index>group_id</index>
         </table>
 
         <table name="permissions2sites">
@@ -124,6 +139,9 @@
             <field type="TEXT NULL">value</field>
 
             <primary>project,lang,permission</primary>
+            <index>project</index>
+            <index>lang</index>
+            <index>permission</index>
         </table>
 
         <table name="permissions2media">
@@ -133,6 +151,9 @@
             <field type="TEXT NULL">value</field>
 
             <primary>project,id,permission</primary>
+            <index>project</index>
+            <index>id</index>
+            <index>permission</index>
         </table>
 
         <table name="sessions">
@@ -142,6 +163,9 @@
             <field type="INT(11) NOT NULL DEFAULT 0">session_lifetime</field>
 
             <primary>session_id</primary>
+            <index>session_id</index>
+            <index>session_time</index>
+            <index>session_lifetime</index>
             <comment>
                 This table contains the user session. This table is only used when sessions run over the database.
                 Default is the file system.
@@ -156,6 +180,7 @@
 
             <primary>id</primary>
             <auto_increment>id</auto_increment>
+            <index>date</index>
         </table>
 
         <!-- Addresses -->
@@ -182,7 +207,10 @@
 
             <primary>id</primary>
             <auto_increment>id</auto_increment>
+            <index>id</index>
             <index>uid</index>
+            <index>uuid</index>
+            <index>userUuid</index>
         </table>
 
     </global>
