@@ -8,7 +8,7 @@
     <a href="https://www.quiqqer.de" target="_blank">www.quiqqer.de</a> -
     <a href="https://www.quiqqer.com" target="_blank">www.quiqqer.com</a>
 </p>
-<br/>
+<br />
 <div class="quiqqer-about-window-data">
     <p>
         Copyright
@@ -17,11 +17,15 @@
         </a>
     </p>
     <p>Author: Henning Leutz & Moritz Scholz</p>
-    <br/>
-    <p>Version: {{version}}</p>
-    {{#hash}}
-    <p>Hash: {{hash}}</p>
-    {{/hash}}
+    <br />
+    <p>
+        QUIQQER: {{version}}<br />
+        PHP: {{php_version}} <br />
+        Database {{database.version}} ({{database.type}})<br />
+        {{#hash}}
+        Hash: {{hash}}
+        {{/hash}}
+    </p>
 
     <br/>
     <br/>

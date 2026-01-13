@@ -138,7 +138,9 @@ class License
 
         $response = curl_exec($Curl);
 
-        curl_close($Curl);
+        if (PHP_VERSION_ID < 80000) {
+            curl_close($Curl);
+        }
 
         if (empty($response)) {
             throw new QUI\Exception([

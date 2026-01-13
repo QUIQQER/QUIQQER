@@ -1,62 +1,90 @@
-.qui-control-packages-update-infos {
-    background: #f1f1f1;
-    float: left;
-    padding: 20px;
+.qui-update-label-bar {
+    display: flex;
+    flex-direction: column;
     width: 100%;
+    background: #f4f4f6;
+    color: #23272f;
+    font-size: 1rem;
+    padding: 10px 24px 6px 24px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+    gap: 10px;
 }
 
-.qui-control-packages-update-infos img {
-    float: left;
+.qui-update-label-bar .qui-update-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
-.qui-control-packages-update-infos-v {
-    float: left;
-    list-style-type: none;
-    margin: 0;
-    padding: 0 0 0 20px;
+.qui-update-meta-tableData {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
-.qui-control-packages-update-infos-v2 {
-    clear: both;
-
-    float: left;
-    list-style-type: none;
-    margin: 0;
-    padding: 20px 0 0 0;
-    width: 100%;
+.qui-update-meta-tableData .qui-update-label {
+    min-width: 180px;
 }
 
-.qui-control-packages-update-infos-v2 li {
-    clear: both;
+.qui-update-version-label,
+.qui-update-label {
+    font-size: 0.93em;
+    font-weight: 400;
 }
 
-.qui-control-packages-update-infos-v2 span {
+.qui-update-ref,
+.qui-update-lastCheck,
+.qui-update-last {
+    font-weight: 700;
+    color: #23272f;
+    margin-right: 16px;
+    min-width: 80px;
     display: inline-block;
-    width: 200px;
 }
 
-.qui-control-packages-update-infos-v li {
-    clear: both;
+@media (max-width: 800px) {
+    .qui-update-label-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 10px 8px 6px 8px;
+    }
+
+    .qui-update-label-bar .qui-update-meta {
+        gap: 10px;
+    }
 }
 
-.qui-control-packages-update-infos-v li span:first-child {
-    float: left;
-    width: 80px;
+.qui-badge {
+    display: inline-block;
+    background: #e9e9ec;
+    color: #23272f;
+    border-radius: 12px;
+    padding: 2px 10px;
+    font-size: 0.97em;
+    font-weight: 600;
+    margin-right: 10px;
+    min-width: 60px;
+    text-align: center;
 }
 
-.qui-control-packages-update-infos-lastCheck-cell {
-    padding-top: 10px;
+.qui-update-version {
+    background: #2c2f35;
+    color: #fff;
 }
 
-.qui-control-packages-update-infos-lastCheck-cell span {
-    clear: both;
-    float: left;
-    white-space: nowrap;
+.qui-phpversion {
+    background: #4f5b93;
+    color: #fff;
 }
 
-.qui-control-packages-update-infos-last-cell {
-
+.qui-database {
+    background: #2d7a39;
+    color: #fff;
 }
+
 
 .qui-control-packages-update-buttons {
     float: left;

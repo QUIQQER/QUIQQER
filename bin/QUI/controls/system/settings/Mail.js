@@ -200,8 +200,10 @@ define('controls/system/settings/Mail', [
                 MAILFromText: Form.elements['mail.MAILFromText'].value,
                 MAILReplyTo: Form.elements['mail.MAILReplyTo'].value,
 
+                SMTP: Form.elements['mail.SMTP'].checked ? 1 : 0,
                 SMTPServer: Form.elements['mail.SMTPServer'].value,
                 SMTPPort: Form.elements['mail.SMTPPort'].value,
+                SMTPAuth: Form.elements['mail.SMTPAuth'].checked ? 1 : 0,
                 SMTPUser: Form.elements['mail.SMTPUser'].value,
                 SMTPPass: Form.elements['mail.SMTPPass'].value,
                 SMTPSecure: Form.elements['mail.SMTPSecure'].value
@@ -213,9 +215,11 @@ define('controls/system/settings/Mail', [
                 params.SMTPSecureSSL_allow_self_signed = Form.elements['mail.SMTPSecureSSL_allow_self_signed'].checked ? 1 : 0;
             }
 
+            /*
             if (!Form.elements['mail.SMTP'].checked) {
                 params = {};
             }
+            */
 
             Button.setAttribute('textimage', 'fa fa-spinner fa-spin');
 

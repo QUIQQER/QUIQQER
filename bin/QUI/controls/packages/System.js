@@ -1,6 +1,5 @@
 /**
  * @module controls/packages/System
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onLoad
  * @event onShowLoader
@@ -31,7 +30,7 @@ define('controls/packages/System', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/packages/System',
+        Type: 'controls/packages/System',
 
         Binds: [
             '$onInject',
@@ -57,31 +56,32 @@ define('controls/packages/System', [
         },
 
         /**
-         * Create the domnode element
+         * Create the DOM-Node element
          *
          * @returns {HTMLDivElement}
          */
         create: function () {
             this.$Elm = new Element('div', {
                 'class': 'qui-control-packages-update',
-                html   : Mustache.render(template, {
-                    URL_BIN_DIR: URL_BIN_DIR
+                html: Mustache.render(template, {
+                    URL_BIN_DIR: URL_BIN_DIR,
+                    titleQUIQQER: QUILocale.get(lg, 'packages.panel.header.quiqqer'),
+                    titlePHP: QUILocale.get(lg, 'packages.panel.header.php'),
+                    titleDatabase: QUILocale.get(lg, 'packages.panel.header.database'),
+                    titleReference: QUILocale.get(lg, 'packages.panel.header.reference'),
+                    titleLastUpdateCheck: QUILocale.get(lg, 'packages.panel.header.lastUpdateCheck'),
+                    titleLastUpdate: QUILocale.get(lg, 'packages.panel.header.lastUpdate'),
                 })
             });
 
-            this.$Buttons = this.$Elm.getElement(
-                '.qui-control-packages-update-buttons'
-            );
-
-            this.$Result = this.$Elm.getElement(
-                '.qui-control-packages-update-result'
-            );
+            this.$Buttons = this.$Elm.querySelector('.qui-control-packages-update-buttons');
+            this.$Result = this.$Elm.querySelector('.qui-control-packages-update-result');
 
             this.$Update = new QUIButton({
-                name     : 'update',
-                text     : QUILocale.get(lg, 'packages.panel.btn.startUpdate'),
+                name: 'update',
+                text: QUILocale.get(lg, 'packages.panel.btn.startUpdate'),
                 textimage: 'fa fa-check-circle-o',
-                events   : {
+                events: {
                     onClick: () => {
                         this.checkUpdates(true);
                     }
@@ -90,28 +90,28 @@ define('controls/packages/System', [
 
             if (parseInt(QUIQQER_CONFIG.globals.development)) {
                 this.$Setup = new QUIButton({
-                    name     : 'setup',
-                    text     : QUILocale.get(lg, 'packages.panel.btn.setup'),
+                    name: 'setup',
+                    text: QUILocale.get(lg, 'packages.panel.btn.setup'),
                     textimage: 'fa fa-hdd-o',
-                    events   : {
+                    events: {
                         onClick: this.executeCompleteSetup
                     },
-                    styles   : {
+                    styles: {
                         margin: '0 0 0 20px'
                     }
                 }).inject(this.$Buttons);
             }
 
             this.$ExecuteUpdate = new QUIButton({
-                name     : 'executeUpdate',
-                text     : QUILocale.get(lg, 'packages.panel.btn.executeUpdate'),
+                name: 'executeUpdate',
+                text: QUILocale.get(lg, 'packages.panel.btn.executeUpdate'),
                 textimage: 'fa fa-exclamation-triangle',
-                events   : {
+                events: {
                     onClick: () => {
                         this.$openSetupExecuteWindow();
                     }
                 },
-                styles   : {
+                styles: {
                     'float': 'right'
                 }
             }).inject(this.$Buttons);
@@ -139,44 +139,41 @@ define('controls/packages/System', [
          * event : on inject
          */
         $onInject: function () {
-            const self = this;
+            const container = this.getElm();
 
             this.$List = {
                 viewTile: this.viewTile,
                 viewList: this.viewList
             };
 
-            require(['QUIQQER'], function (QUIQQER) {
-                QUIQQER.getInformation().then(function (data) {
-                    self.$Elm.getElement(
-                        '.qui-control-packages-update-infos-version'
-                    ).set('html', data.version);
+            require(['QUIQQER'], (QUIQQER) => {
+                QUIQQER.getInformation().then((data) => {
+                    const hashNode = container.querySelector('.qui-update-ref');
+                    container.querySelector('.qui-update-version-value').set('html', data.version);
+                    container.querySelector('.qui-phpversion-value').set('html', data.php_version);
+                    container.querySelector('.qui-database-value').set(
+                        'html',
+                        `${data.database.version} (${data.database.type})`
+                    );
 
-                    if (typeof data.source === 'undefined') {
-                        data.source = {};
+                    if (data.hash !== '') {
+                        hashNode.set('html', data.hash);
+                    } else {
+                        hashNode.closest('.qui-update-meta').style.display = 'none';
                     }
-
-                    self.$Elm.getElement(
-                        '.qui-control-packages-update-infos-ref'
-                    ).set('html', data.source.reference || '');
-
-                    self.$Elm.getElement(
-                        '.qui-control-packages-update-infos-time'
-                    ).set('html', data.time);
-
-                }).then(function () {
-                    return self.refreshLastUpdateCheckDate();
-                }).then(function () {
-                    return Packages.getOutdated(false).then(function (result) {
+                }).then(() => {
+                    return this.refreshLastUpdateCheckDate();
+                }).then(() => {
+                    return Packages.getOutdated(false).then((result) => {
                         if (result && result.length) {
-                            self.$list = result;
-                            self.viewList();
+                            this.$list = result;
+                            this.viewList();
                         } else {
-                            self.$list = [];
+                            this.$list = [];
                         }
                     });
-                }).then(function () {
-                    self.fireEvent('load', [self]);
+                }).then(() => {
+                    this.fireEvent('load', [this]);
                 });
             });
         },
@@ -193,22 +190,40 @@ define('controls/packages/System', [
             ]).then((res) => {
                 let lastUpdateCheck = res[0];
                 let lastUpdate = res[1];
+                let language = 'en-US';
+
+                const options = {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                };
+
+                switch (USER.lang) {
+                    case 'de':
+                        language = 'de-DE';
+                        break;
+                    case 'en':
+                        language = 'en-US';
+                        break;
+                }
 
                 if (!lastUpdateCheck) {
                     lastUpdateCheck = '---';
+                } else {
+                    lastUpdateCheck = new Date(lastUpdateCheck).toLocaleString(language, options);
                 }
 
                 if (!lastUpdate) {
                     lastUpdate = '---';
+                } else {
+                    lastUpdate = new Date(lastUpdate).toLocaleString(language, options);
                 }
 
-                this.$Elm.getElement(
-                    '.qui-control-packages-update-infos-lastCheck'
-                ).set('html', lastUpdateCheck);
-
-                this.$Elm.getElement(
-                    '.qui-control-packages-update-infos-last'
-                ).set('html', lastUpdate);
+                this.$Elm.querySelector('.qui-update-lastCheck').set('html', lastUpdateCheck);
+                this.$Elm.querySelector('.qui-update-last').set('html', lastUpdate);
             });
         },
 
@@ -269,13 +284,13 @@ define('controls/packages/System', [
          * @returns {Promise}
          */
         checkUpdates: function (force) {
-            const self   = this,
-                  Button = this.$Update;
+            const self = this,
+                Button = this.$Update;
 
             Button.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
             return Packages.getOutdated(force || false).then(function (result) {
-                let title   = QUILocale.get(lg, 'message.update.not.available.title'),
+                let title = QUILocale.get(lg, 'message.update.not.available.title'),
                     message = QUILocale.get(lg, 'message.update.not.available.description');
 
                 if (result && result.length) {
@@ -346,7 +361,7 @@ define('controls/packages/System', [
                 if (packages && packages.length) {
                     moofx(packages).animate({
                         opacity: 0,
-                        width  : 0
+                        width: 0
                     }, {
                         callback: function () {
                             packages.destroy();
@@ -383,14 +398,14 @@ define('controls/packages/System', [
          */
         $openSetupExecuteWindow: function () {
             new QUIConfirm({
-                icon       : 'fa fa-check-circle-o',
-                texticon   : 'fa fa-check-circle-o',
-                title      : QUILocale.get(lg, 'confirm.window.system.update.title'),
+                icon: 'fa fa-check-circle-o',
+                texticon: 'fa fa-check-circle-o',
+                title: QUILocale.get(lg, 'confirm.window.system.update.title'),
                 information: QUILocale.get(lg, 'confirm.window.system.update.information'),
-                text       : QUILocale.get(lg, 'confirm.window.system.update.text'),
-                maxHeight  : 300,
-                maxWidth   : 500,
-                events     : {
+                text: QUILocale.get(lg, 'confirm.window.system.update.text'),
+                maxHeight: 300,
+                maxWidth: 500,
+                events: {
                     onSubmit: (Win) => {
                         Win.Loader.show();
                         this.executeSystemUpdate().then(function () {
@@ -398,8 +413,8 @@ define('controls/packages/System', [
                         });
                     }
                 },
-                ok_button  : {
-                    text     : QUILocale.get(lg, 'confirm.window.system.update.button.exec'),
+                ok_button: {
+                    text: QUILocale.get(lg, 'confirm.window.system.update.button.exec'),
                     textimage: false
                 }
             }).open();
@@ -431,14 +446,14 @@ define('controls/packages/System', [
                 pkg = this.$list[i];
 
                 Package = new Element('div', {
-                    'class'       : 'packages-package qui-control-packages-system-package-viewTile',
-                    'html'        : '<div class="qui-control-packages-system-package-viewTile-text">' +
-                                    '  <span class="package">' + pkg.package + '</span>' +
-                                    '  <span class="version">' + pkg.version + '</span>' +
-                                    '  <span class="oldVersion">' + pkg.oldVersion + '</span>' +
-                                    '</div>' +
-                                    '<div class="qui-control-packages-system-package-viewTile-buttons"></div>',
-                    title         : QUILocale.get(lg, 'packages.panel.system.packageUpdate.title', {
+                    'class': 'packages-package qui-control-packages-system-package-viewTile',
+                    'html': '<div class="qui-control-packages-system-package-viewTile-text">' +
+                        '  <span class="package">' + pkg.package + '</span>' +
+                        '  <span class="version">' + pkg.version + '</span>' +
+                        '  <span class="oldVersion">' + pkg.oldVersion + '</span>' +
+                        '</div>' +
+                        '<div class="qui-control-packages-system-package-viewTile-buttons"></div>',
+                    title: QUILocale.get(lg, 'packages.panel.system.packageUpdate.title', {
                         package: pkg.package,
                         version: pkg.version
                     }),
@@ -446,7 +461,7 @@ define('controls/packages/System', [
                 }).inject(this.$Result);
 
                 Update.clone().addEvent('click', this.$onPackageUpdate)
-                      .inject(Package.getElement('.qui-control-packages-system-package-viewTile-buttons'));
+                    .inject(Package.querySelector('.qui-control-packages-system-package-viewTile-buttons'));
             }
         },
 
@@ -467,25 +482,25 @@ define('controls/packages/System', [
                 pkg = this.$list[i];
 
                 Package = new Element('div', {
-                    'class'       : 'packages-package qui-control-packages-system-package-viewList',
-                    'html'        : '<div class="qui-control-packages-system-package-viewList-text">' +
-                                    '  <span class="package">' + pkg.package + '</span>' +
-                                    '  <span class="oldVersion">' + pkg.oldVersion + '</span>' +
-                                    '  <span class="version">' + pkg.version + '</span>' +
-                                    '</div>' +
-                                    '<div class="qui-control-packages-system-package-viewList-buttons"></div>',
-                    events        : {
+                    'class': 'packages-package qui-control-packages-system-package-viewList',
+                    'html': '<div class="qui-control-packages-system-package-viewList-text">' +
+                        '  <span class="package">' + pkg.package + '</span>' +
+                        '  <span class="oldVersion">' + pkg.oldVersion + '</span>' +
+                        '  <span class="version">' + pkg.version + '</span>' +
+                        '</div>' +
+                        '<div class="qui-control-packages-system-package-viewList-buttons"></div>',
+                    events: {
                         click: this.$onPackageUpdate
                     },
                     'data-package': pkg.package
                 }).inject(this.$Result);
 
-                Package.getElement('.package').set('title', pkg.package);
-                Package.getElement('.version').set('title', pkg.version);
-                Package.getElement('.oldVersion').set('title', pkg.oldVersion);
+                Package.querySelector('.package').set('title', pkg.package);
+                Package.querySelector('.version').set('title', pkg.version);
+                Package.querySelector('.oldVersion').set('title', pkg.oldVersion);
 
                 Update.clone().addEvent('click', this.$onPackageUpdate)
-                      .inject(Package.getElement('.qui-control-packages-system-package-viewList-buttons'));
+                    .inject(Package.querySelector('.qui-control-packages-system-package-viewList-buttons'));
             }
         },
 
@@ -495,14 +510,14 @@ define('controls/packages/System', [
          * @param {Event} event
          */
         $onPackageUpdate: function (event) {
-            const Target  = event.target,
-                  Package = Target.getParent('.packages-package'),
-                  pkg     = Package.get('data-package');
+            const Target = event.target,
+                Package = Target.getParent('.packages-package'),
+                pkg = Package.get('data-package');
 
             const Loader = new Element('div', {
                 'class': 'packages-package-loader',
-                'html' : '<span class="fa fa-spinner fa-spin"></span>',
-                styles : {
+                'html': '<span class="fa fa-spinner fa-spin"></span>',
+                styles: {
                     opacity: 0
                 }
             }).inject(Package);
@@ -522,7 +537,7 @@ define('controls/packages/System', [
 
                                 moofx(Package).animate({
                                     opacity: 0,
-                                    width  : 0
+                                    width: 0
                                 }, {
                                     callback: function () {
                                         Package.destroy();

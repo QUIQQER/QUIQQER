@@ -673,14 +673,14 @@ class Permission
                     $real_id = $id;
                     $type = 'g';
 
-                    if (str_contains($id, 'g') || str_contains($id, 'u')) {
-                        $real_id = (int)substr($id, 1);
-                        $type = substr($id, 0, 1);
+                    if (str_starts_with($id, 'g') || str_starts_with($id, 'u')) {
+                        $real_id = mb_substr($id, 1);
+                        $type = mb_substr($id, 0, 1);
                     }
 
                     switch ($type) {
                         case 'u':
-                            if ($real_id == $User->getId()) {
+                            if ($real_id == $User->getId() || $real_id == $User->getUUID()) {
                                 $check = true;
                             }
 

@@ -19,10 +19,14 @@
     </p>
     <p>Author: Henning Leutz & Moritz Scholz</p>
     <br/>
-    <p>Version: {{version}}</p>
-    {{#hash}}
-    <p>Hash: {{hash}}</p>
-    {{/hash}}
+    <p>
+        QUIQQER: {{version}}<br />
+        PHP: {{php_version}} <br />
+        Database {{database.version}} ({{database.type}})<br />
+        {{#hash}}
+        Hash: {{hash}}
+        {{/hash}}
+    </p>
 
     <br/>
     <br/>

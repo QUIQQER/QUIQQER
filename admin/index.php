@@ -111,6 +111,9 @@ echo $User->getLang(); ?>"> <!--<![endif]-->
           type="text/css"
     />
 
+    <link href="<?php
+    echo URL_BIN_DIR; ?>css/badges.css" rel="stylesheet" type="text/css"/>
+
     <?php
 
     echo QUI\FontAwesome\FontAwesome::getLinkHtml(6);

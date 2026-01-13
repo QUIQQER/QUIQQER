@@ -398,8 +398,6 @@ define('controls/users/User', [
                 FormUtils.setDataToForm(extras, Form);
                 FormUtils.setDataToForm(attributes, Form);
 
-                console.log('users', attributes);
-
                 Body.getElements('[data-qui]').set({
                     'data-qui-options-uid': self.getUser().getId()
                 });

@@ -262,7 +262,7 @@
     max-height: 40px;
 }
 
-.omnigrid div.bDiv ul {
+.omnigrid div.bDiv > ul {
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -273,7 +273,7 @@
     min-width: 100%;
 }
 
-.omnigrid div.bDiv ul li {
+.omnigrid div.bDiv > ul > li {
     margin: 0;
     padding: 0;
     list-style: none;
@@ -352,7 +352,7 @@
     top: initial;
 }
 
-.omnigrid div.bDiv ul li.section ul > li {
+.omnigrid div.bDiv > ul > li.section ul > li {
     list-style-type: circle;
     overflow: visible;
 }

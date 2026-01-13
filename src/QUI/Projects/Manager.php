@@ -281,8 +281,8 @@ class Manager
      */
     public static function getProject(
         string $project,
-        bool|string $lang = false,
-        bool|string $template = false
+        bool | string $lang = false,
+        bool | string $template = false
     ): Project {
         if (isset(self::$projects[$project]['_standard']) && !$lang) {
             return self::$projects[$project]['_standard'];
@@ -419,19 +419,20 @@ class Manager
 
     /**
      * Returns the current project
-     *
-     * @throws QUI\Exception
      */
     public static function get(): ?Project
     {
         $Rewrite = QUI::getRewrite();
 
         if ($Rewrite->getParam('project')) {
-            return self::getProject(
-                $Rewrite->getParam('project'),
-                $Rewrite->getParam('lang'),
-                $Rewrite->getParam('template')
-            );
+            try {
+                return self::getProject(
+                    $Rewrite->getParam('project'),
+                    $Rewrite->getParam('lang'),
+                    $Rewrite->getParam('template')
+                );
+            } catch (QUI\Exception) {
+            }
         }
 
         $Standard = self::getStandard();
@@ -441,10 +442,13 @@ class Manager
             $Rewrite->getParam('lang')
             && $Rewrite->getParam('lang') != $Standard->getAttribute('lang')
         ) {
-            return self::getProject(
-                $Standard->getAttribute('name'),
-                $Rewrite->getParam('lang')
-            );
+            try {
+                return self::getProject(
+                    $Standard->getAttribute('name'),
+                    $Rewrite->getParam('lang')
+                );
+            } catch (QUI\Exception) {
+            }
         }
 
         return $Standard;
@@ -640,7 +644,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function decode(array|string $project): Project
+    public static function decode(array | string $project): Project
     {
         if (is_string($project)) {
             $project = json_decode($project, true);
