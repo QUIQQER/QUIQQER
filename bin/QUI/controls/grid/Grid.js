@@ -388,7 +388,7 @@ define('controls/grid/Grid', [
             t.dragging = false;
             t.selected = [];
 
-            t.elements = t.ulBody.getElements('li');
+            t.elements = t.ulBody.getElements('li.tr');
 
             t.filtered = false;
             t.lastsection = null;
