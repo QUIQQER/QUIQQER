@@ -87,6 +87,8 @@
             <index>parent</index>
             <index>uuid</index>
             <index>active</index>
+            <index>name</index>
+            <index>toolbar</index>
 
             <comment>This table contains the groups of QUIQQER.</comment>
         </table>

@@ -14,3 +14,36 @@
     float: left;
     line-height: 16px;
 }
+
+[data-name="group-search-filter"] {
+    background: #fff;
+    position: absolute;
+    top: 0;
+    right: 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    padding: 20px;
+}
+
+[data-name="group-search-filter"] form {
+    display: block;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+
+[data-name="group-search-filter"] form table:last-child {
+    margin-bottom: 0;
+}
+
+[data-name="group-search-filter"] .data-table td {
+    line-height: 20px;
+    padding: 0;
+}
+
+[data-name="group-search-filter"] .field-container-field,
+[data-name="group-search-filter"] .field-container-item {
+    border-bottom: 0;
+    border-left: 0;
+    border-right: 0;
+}

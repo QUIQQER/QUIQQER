@@ -8,7 +8,6 @@ define('controls/groups/Panel', [
     'qui/QUI',
     'qui/controls/desktop/Panel',
     'Groups',
-    'Locale',
     'controls/grid/Grid',
     'utils/Controls',
     'controls/groups/sitemap/Window',
@@ -18,7 +17,10 @@ define('controls/groups/Panel', [
     'qui/controls/windows/Confirm',
     'qui/controls/buttons/Button',
     'qui/controls/buttons/Switch',
+    'Locale',
+    'Mustache',
 
+    'text!controls/groups/Panel.groupSearch.html',
     'css!controls/groups/Panel.css'
 
 ], function () {
@@ -29,16 +31,19 @@ define('controls/groups/Panel', [
     const QUI = arguments[0],
         Panel = arguments[1],
         Groups = arguments[2],
-        Locale = arguments[3],
-        Grid = arguments[4],
-        ControlUtils = arguments[5],
-        GroupSitemapWindow = arguments[6],
-        Template = arguments[7],
-        Attention = arguments[8],
-        QUIPrompt = arguments[9],
-        QUIConfirm = arguments[10],
-        QUIButton = arguments[11],
-        QUISwitch = arguments[12];
+        Grid = arguments[3],
+        ControlUtils = arguments[4],
+        GroupSitemapWindow = arguments[5],
+        Template = arguments[6],
+        Attention = arguments[7],
+        QUIPrompt = arguments[8],
+        QUIConfirm = arguments[9],
+        QUIButton = arguments[10],
+        QUISwitch = arguments[11],
+        QUILocale = arguments[12],
+        Mustache = arguments[13],
+        groupSearchTemplate = arguments[14]
+    ;
 
     /**
      * @class qui/controls/groups/Panel
@@ -78,7 +83,7 @@ define('controls/groups/Panel', [
             page: 1,
             view: 'table',
 
-            search: false,
+            search: '',
             searchfields: ['id', 'name']
         },
 
@@ -86,9 +91,14 @@ define('controls/groups/Panel', [
             this.$uid = String.uniqueID();
 
             this.parent(options);
+console.log(typeof this.getAttribute('search'));
+            if (typeof this.getAttribute('search') === 'string') {
+                this.getAttribute('search', '');
+            }
 
             this.$Grid = null;
             this.$Container = null;
+            this.$filterContainer = null;
 
             this.addEvent('onCreate', this.$onCreate);
             this.addEvent('onResize', this.$onResize);
@@ -102,14 +112,12 @@ define('controls/groups/Panel', [
             });
 
             this.setAttributes({
-                active_text: Locale.get(lg, 'groups.panel.group.is.active'),
-                deactive_text: Locale.get(lg, 'groups.panel.group.is.deactive')
+                active_text: QUILocale.get(lg, 'groups.panel.group.is.active'),
+                deactive_text: QUILocale.get(lg, 'groups.panel.group.is.deactive')
             });
 
-            const self = this;
-
-            this.addEvent('onDestroy', function () {
-                Groups.removeEvent('switchStatus', self.$onSwitchStatus);
+            this.addEvent('onDestroy', () => {
+                Groups.removeEvent('switchStatus', this.$onSwitchStatus);
             });
         },
 
@@ -126,8 +134,7 @@ define('controls/groups/Panel', [
          * create the group panel
          */
         $onCreate: function () {
-            const self = this;
-
+/*
             this.addButton({
                 name: 'groupSearch',
                 events: {
@@ -135,42 +142,13 @@ define('controls/groups/Panel', [
                         self.search();
                     }
                 },
-                alt: Locale.get(lg, 'groups.panel.btn.search'),
-                title: Locale.get(lg, 'groups.panel.btn.search'),
+                alt: QUILocale.get(lg, 'groups.panel.btn.search'),
+                title: QUILocale.get(lg, 'groups.panel.btn.search'),
                 image: 'fa fa-search'
             });
-
-            this.addButton({
-                type: 'separator'
-            });
-
-            this.addButton({
-                name: 'groupNew',
-                events: {
-                    onMousedown: this.createGroup
-                },
-                text: Locale.get(lg, 'groups.panel.btn.create')
-            });
-
-            this.addButton({
-                name: 'groupEdit',
-                events: {
-                    onMousedown: this.$onButtonEditClick
-                },
-                text: Locale.get(lg, 'groups.panel.btn.edit'),
-                disabled: true,
-                textimage: 'fa fa-edit'
-            });
-
-            this.addButton({
-                name: 'groupDel',
-                events: {
-                    onMousedown: this.$onButtonDelClick
-                },
-                text: Locale.get(lg, 'groups.panel.btn.delete'),
-                disabled: true,
-                textimage: 'fa fa-trash-o'
-            });
+*/
+            this.addButton({}); // placeholder, workaround, button bar will be shown
+            this.$createSearch();
 
 
             // create grid
@@ -179,34 +157,62 @@ define('controls/groups/Panel', [
             this.$GridContainer = new Element('div');
             this.$GridContainer.inject(Body);
 
-
             this.$Grid = new Grid(this.$GridContainer, {
+                buttons: [
+                    {
+                        name: 'groupNew',
+                        events: {
+                            onMousedown: this.createGroup
+                        },
+                        text: QUILocale.get(lg, 'groups.panel.btn.create'),
+                        textimage: 'fa fa-plus'
+                    },
+                    {
+                        name: 'groupEdit',
+                        events: {
+                            onMousedown: this.$onButtonEditClick
+                        },
+                        text: QUILocale.get(lg, 'groups.panel.btn.edit'),
+                        disabled: true,
+                        textimage: 'fa fa-edit'
+                    },
+                    {
+                        name: 'groupDel',
+                        events: {
+                            onMousedown: this.$onButtonDelClick
+                        },
+                        text: QUILocale.get(lg, 'groups.panel.btn.delete'),
+                        disabled: true,
+                        textimage: 'fa fa-trash-o',
+                        position: 'right'
+                    }
+                ],
                 columnModel: [
                     {
-                        header: Locale.get(lg, 'status'),
+                        header: QUILocale.get(lg, 'status'),
                         dataIndex: 'status',
                         dataType: 'QUI',
                         width: 60
                     }, {
-                        header: Locale.get(lg, 'group_id'),
-                        dataIndex: 'uuid',
-                        dataType: 'string',
-                        width: 240
-                    }, {
-                        header: Locale.get(lg, 'groupname'),
+                        header: QUILocale.get(lg, 'groupname'),
                         dataIndex: 'name',
                         dataType: 'number',
                         width: 150
                     }, {
-                        header: Locale.get(lg, 'groups.panel.grid.admin'),
+                        header: QUILocale.get(lg, 'groups.panel.grid.admin'),
                         dataIndex: 'admin',
                         dataType: 'string',
                         width: 150
                     }, {
-                        header: Locale.get(lg, 'groups.panel.grid.users'),
+                        header: QUILocale.get(lg, 'groups.panel.grid.users'),
                         dataIndex: 'users',
                         dataType: 'number',
                         width: 150
+                    }, {
+                        header: QUILocale.get(lg, 'group_id'),
+                        dataIndex: 'uuid',
+                        dataType: 'string',
+                        width: 240
                     }
                 ],
                 pagination: true,
@@ -219,17 +225,6 @@ define('controls/groups/Panel', [
                 sortHeader: true,
                 width: Body.getSize().x - 40,
                 height: Body.getSize().y - 40,
-                onrefresh: function (me) {
-                    const options = me.options;
-
-                    self.setAttribute('field', options.sortOn);
-                    self.setAttribute('order', options.sortBy);
-                    self.setAttribute('limit', options.perPage);
-                    self.setAttribute('page', options.page);
-
-                    self.load();
-                },
-
                 alternaterows: true,
                 resizeColumns: true,
                 selectable: true,
@@ -241,17 +236,111 @@ define('controls/groups/Panel', [
             this.$Grid.addEvents({
                 onClick: this.$gridClick,
                 onDblClick: this.$gridDblClick,
-                onBlur: this.$gridBlur
+                onBlur: this.$gridBlur,
+                onRefresh: (gridInstance) => {
+                    const options = gridInstance.options;
+
+                    this.setAttribute('field', options.sortOn);
+                    this.setAttribute('order', options.sortBy);
+                    this.setAttribute('limit', options.perPage);
+                    this.setAttribute('page', options.page);
+                    this.load();
+                }
             });
 
             // toolbar resize after insert
-            (function () {
-                self.getButtonBar().setAttribute('width', '98%');
-                self.getButtonBar().resize();
+            (() => {
+                this.getButtonBar().setAttribute('width', '98%');
+                this.getButtonBar().resize();
             }).delay(200);
 
             // start and list the groups
             this.load();
+        },
+
+        $createSearch: function() {
+            // suche
+            const searchContainer = document.createElement('div');
+            searchContainer.style.float = 'right';
+            searchContainer.style.paddingLeft = '10px';
+            searchContainer.style.position = 'relative';
+
+            searchContainer.innerHTML = `
+                <div style="position: relative; float: left;">
+                    <input name="group-search" type="search" />
+                    <span style="position: absolute; left: 10px; top: 16px;">
+                        <span class="fa fa-search"></span>
+                    </span>
+                </div>
+                <button name="filter" style="cursor: pointer;">
+                    <span class="fa fa-filter"></span>
+                </button>
+            `;
+
+            // filter
+            const filter = document.createElement('div');
+            filter.setAttribute('data-name', 'group-search-filter');
+            filter.style.zIndex = '1000';
+            filter.style.width = '500px';
+            filter.style.display = 'none';
+            filter.style.overflow = 'auto';
+            filter.style.maxHeight = '550px';
+
+            this.$filterContainer = filter;
+            document.body.appendChild(this.$filterContainer);
+            this.$renderFilter();
+            this.addButton(searchContainer);
+
+            const filterButton = searchContainer.querySelector('[name="filter"]');
+
+            const handleFilterClickOutside = (e) => {
+                if (!filter.contains(e.target) && e.target !== filterButton) {
+                    filter.style.display = 'none';
+                    document.body.removeEventListener('mouseup', handleFilterClickOutside);
+                    this.search();
+                }
+            };
+
+            filterButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+
+                const rect = filterButton.getBoundingClientRect();
+
+                filter.style.display = 'flex';
+                filter.style.left = `${parseInt(rect.left) - parseInt(filter.style.width) + 30}px`;
+                filter.style.top = `${parseInt(rect.bottom)}px`;
+
+                setTimeout(() => {
+                    document.body.addEventListener('mouseup', handleFilterClickOutside);
+                }, 0);
+            });
+
+
+            const searchInput = searchContainer.querySelector('[name="group-search"]');
+            searchInput.style.paddingLeft = '30px';
+            searchInput.style.width = '280px';
+            searchInput.style.marginTop = '9px';
+            searchInput.style.borderRadius = '5px';
+
+            searchInput.addEventListener('change', () => {
+                this.search();
+            });
+
+            searchInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    this.search();
+                }
+            });
+        },
+
+        $renderFilter: function () {
+            this.$filterContainer.innerHTML = Mustache.render(groupSearchTemplate, {
+                searchTitle: QUILocale.get(lg, 'group.panel.search.in.title'),
+
+            });
+
+            QUI.parse(this.$filterContainer);
         },
 
         /**
@@ -283,107 +372,28 @@ define('controls/groups/Panel', [
          * Opens the groups search settings
          */
         search: function () {
-            this.Loader.show();
+            const searchString = this.getElm().querySelector('[name="group-search"]').value;
+            const fields = [];
 
-            const self = this,
-                Sheet = this.createSheet({
-                    title: Locale.get(lg, 'groups.panel.search.title')
-                });
+            if (this.$filterContainer) {
+                const form = this.$filterContainer.querySelector('form');
 
-            Sheet.addEvent('onOpen', function (Sheet) {
-                Template.get('groups_searchtpl', function (result) {
-                    let i, len, Frm, Search;
+                if (!form.elements.gid.checked && !Frm.elements.name.checked) {
+                    form.elements.gid.checked = true;
+                    form.elements.name.checked = true;
+                }
 
-                    const Body = Sheet.getBody(),
-                        fields = self.getAttribute('searchfields'),
-                        search = self.getAttribute('search');
+                if (form.elements.gid.checked) {
+                    fields.push('id');
+                }
 
-                    Body.set('html', result);
-                    self.setAttribute('SearchSheet', Sheet);
-
-                    ControlUtils.parse(Body);
-
-                    Frm = Body.getElement('form');
-                    Search = Frm.elements.search;
-
-                    Search.addEvent('keyup', function (event) {
-                        if (event.key === 'enter') {
-                            self.execSearch(self.getAttribute('SearchSheet'));
-                        }
-                    });
-
-                    Search.value = search || '';
-                    Search.focus();
-
-
-                    Frm.elements.gid.checked = false;
-                    Frm.elements.name.checked = false;
-
-                    for (i = 0, len = fields.length; i < len; i++) {
-                        switch (fields[i]) {
-                            case 'id':
-                                Frm.elements.gid.checked = true;
-                                break;
-
-                            case 'name':
-                                Frm.elements.name.checked = true;
-                                break;
-                        }
-                    }
-
-                    Frm.addEvent('submit', function (event) {
-                        event.stop();
-                    });
-
-
-                    // search button
-                    new QUIButton({
-                        textimage: 'fa fa-search',
-                        text: Locale.get(lg, 'groups.panel.search.btn.search'),
-                        events: {
-                            onClick: function () {
-                                self.execSearch(Sheet);
-                            }
-                        }
-                    }).inject(Search, 'after');
-
-                    self.Loader.hide();
-                });
-            });
-
-            Sheet.show();
-        },
-
-        /**
-         * Execute the search
-         *
-         * @param {Object} Sheet - qui/desktop/panels/Sheet
-         */
-        execSearch: function (Sheet) {
-            const fields = [],
-                Frm = Sheet.getBody().getElement('form');
-
-
-            // check if one checkbox is active
-            if (!Frm.elements.gid.checked && !Frm.elements.name.checked) {
-                Frm.elements.gid.checked = true;
-                Frm.elements.name.checked = true;
+                if (form.elements.name.checked) {
+                    fields.push('name');
+                }
             }
 
-
-            if (Frm.elements.gid.checked) {
-                fields.push('id');
-            }
-
-            if (Frm.elements.name.checked) {
-                fields.push('name');
-            }
-
-            this.setAttribute('search', Frm.elements.search.value);
+            this.setAttribute('search', searchString);
             this.setAttribute('searchfields', fields);
-
-            Sheet.hide();
-
             this.load();
         },
 
@@ -394,9 +404,9 @@ define('controls/groups/Panel', [
             const self = this;
 
             new GroupSitemapWindow({
-                title: Locale.get(lg, 'groups.panel.create.window.title'),
-                text: Locale.get(lg, 'groups.panel.create.window.sitemap.text'),
-                information: Locale.get(lg, 'groups.panel.create.window.sitemap.information'),
+                title: QUILocale.get(lg, 'groups.panel.create.window.title'),
+                text: QUILocale.get(lg, 'groups.panel.create.window.sitemap.text'),
+                information: QUILocale.get(lg, 'groups.panel.create.window.sitemap.information'),
                 maxWidth: 400,
                 maxHeight: 600,
                 events: {
@@ -407,9 +417,9 @@ define('controls/groups/Panel', [
                         }
 
                         new QUIPrompt({
-                            title: Locale.get(lg, 'groups.panel.create.window.new.group.title'),
-                            text: Locale.get(lg, 'groups.panel.create.window.new.group.text'),
-                            information: Locale.get(lg, 'groups.panel.create.window.new.group.information'),
+                            title: QUILocale.get(lg, 'groups.panel.create.window.new.group.title'),
+                            text: QUILocale.get(lg, 'groups.panel.create.window.new.group.text'),
+                            information: QUILocale.get(lg, 'groups.panel.create.window.new.group.information'),
                             icon: 'fa fa-group',
                             titleicon: false,
                             maxWidth: 400,
@@ -448,11 +458,11 @@ define('controls/groups/Panel', [
                 status: false,
                 id: Group.getId(),
                 name: Group.getAttribute('name'),
-                admin: Locale.get(lg, 'no')
+                admin: QUILocale.get(lg, 'no')
             };
 
             if (Group.getAttribute('admin')) {
-                data.admin = Locale.get(lg, 'yes');
+                data.admin = QUILocale.get(lg, 'yes');
             }
 
             data.status = new QUISwitch({
@@ -475,8 +485,8 @@ define('controls/groups/Panel', [
          */
         $gridClick: function (data) {
             const len = data.target.selected.length,
-                Edit = this.getButtons('groupEdit'),
-                Delete = this.getButtons('groupDel');
+                Edit = this.$Grid.getButton('groupEdit'),
+                Delete = this.$Grid.getButton('groupDel');
 
             Edit.disable();
             Delete.disable();
@@ -494,7 +504,10 @@ define('controls/groups/Panel', [
                 Delete.enable();
             }
 
-            Edit.enable();
+            if (len === 1) {
+                Edit.enable();
+            }
+
 
             if ('evt' in data) {
                 data.evt.stop();
@@ -519,8 +532,8 @@ define('controls/groups/Panel', [
             this.getGrid().unselectAll();
             this.getGrid().removeSections();
 
-            this.getButtons('groupEdit').disable();
-            this.getButtons('groupDel').disable();
+            this.$Grid.getButton('groupEdit').disable();
+            this.$Grid.getButton('groupDel').disable();
         },
 
         /**
@@ -572,17 +585,31 @@ define('controls/groups/Panel', [
 
             this.Loader.show();
 
-            this.setAttribute('title', Locale.get(lg, 'groups.panel.title'));
+            this.setAttribute('title', QUILocale.get(lg, 'groups.panel.title'));
             this.setAttribute('icon', 'fa fa-spinner fa-spin');
             this.refresh();
 
-            if (this.getAttribute('search') && !this.getBody().getElement('.messages-message')) {
-                new Attention({
-                    message: Locale.get(lg, 'groups.panel.search.active.message'),
+            if (typeof this.getAttribute('search') !== 'string') {
+                this.setAttribute('search', '');
+            }
+
+            if (
+                this.getAttribute('search')
+                && this.getAttribute('search') !== ''
+                && !this.getBody().getElement('.messages-message')
+            ) {
+                let attNode = new Attention({
+                    message: QUILocale.get(lg, 'groups.panel.search.active.message'),
                     events: {
-                        onClick: function (Message) {
-                            self.setAttribute('search', false);
+                        onClick: (Message) => {
+                            self.setAttribute('search', '');
                             self.setAttribute('searchSettings', {});
+
+                            const searchString = this.getElm().querySelector('[name="group-search"]');
+
+                            if (searchString) {
+                                searchString.value = '';
+                            }
 
                             Message.destroy();
                             self.load();
@@ -594,6 +621,14 @@ define('controls/groups/Panel', [
                         cursor: 'pointer'
                     }
                 }).inject(this.getContent(), 'top');
+
+                attNode = attNode.getElm();
+                attNode.style.textAlign = 'center';
+                attNode.style.borderRadius = '5px';
+
+                if (attNode.querySelector('.messages-message-destroy')) {
+                    attNode.querySelector('.messages-message-destroy').parentNode.remove();
+                }
             }
 
             this.resize();
@@ -622,10 +657,10 @@ define('controls/groups/Panel', [
                     admin = parseInt(data[i].admin);
 
                     data[i].active = parseInt(data[i].active);
-                    data[i].admin = Locale.get(lg, 'no');
+                    data[i].admin = QUILocale.get(lg, 'no');
 
                     if (admin) {
-                        data[i].admin = Locale.get(lg, 'yes');
+                        data[i].admin = QUILocale.get(lg, 'yes');
                     }
 
                     data[i].status = new QUISwitch({
@@ -643,7 +678,7 @@ define('controls/groups/Panel', [
 
                 Grid.setData(result);
 
-                self.setAttribute('title', Locale.get(lg, 'groups.panel.title'));
+                self.setAttribute('title', QUILocale.get(lg, 'groups.panel.title'));
                 self.setAttribute('icon', 'fa fa-group');
                 self.refresh();
 
@@ -825,11 +860,11 @@ define('controls/groups/Panel', [
                 name: 'DeleteGroups',
                 icon: 'fa fa-trash-o',
                 texticon: 'fa fa-trash-o',
-                title: Locale.get(lg, 'groups.panel.delete.window.title'),
-                text: Locale.get(lg, 'groups.panel.delete.window.text') + '<br /><br />' + gids.join(', '),
-                information: Locale.get(lg, 'groups.panel.delete.window.information'),
+                title: QUILocale.get(lg, 'groups.panel.delete.window.title'),
+                text: QUILocale.get(lg, 'groups.panel.delete.window.text') + '<br /><br />' + gids.join(', '),
+                information: QUILocale.get(lg, 'groups.panel.delete.window.information'),
                 ok_button: {
-                    text: Locale.get(lg, 'delete'),
+                    text: QUILocale.get(lg, 'delete'),
                     textimage: 'fa fa-trash'
                 },
                 maxWidth: 600,
