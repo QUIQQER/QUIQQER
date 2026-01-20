@@ -3,7 +3,6 @@
  * Edit and saves an user address
  *
  * @module controls/users/Address
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onSaved [self]
  */

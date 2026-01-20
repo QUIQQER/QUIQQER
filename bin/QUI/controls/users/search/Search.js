@@ -1,6 +1,5 @@
 /**
  * @module controls/users/search/Search
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onDblClick [self]
  */

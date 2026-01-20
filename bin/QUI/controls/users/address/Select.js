@@ -1,6 +1,5 @@
 /**
  * @module controls/users/address/Select
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onLoad [self]
  */

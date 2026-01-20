@@ -1,6 +1,5 @@
 /**
  * @module controls/users/search/Window
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/users/search/Window', [
 

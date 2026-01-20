@@ -2,7 +2,6 @@
  * Makes a user input field to a field selection field
  *
  * @module controls/users/Select
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onAddItem [ this, id ]
  * @event onChange [ this ]

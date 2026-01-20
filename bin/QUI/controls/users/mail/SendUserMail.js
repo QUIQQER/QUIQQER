@@ -2,7 +2,6 @@
  * Send e-mail to a QUIQQER user
  *
  * @module controls/users/mail/SendUserMail
- * @author www.pcsg.de (Patrick Müller)
  *
  * @event onLoad [this] - Fires if control has finished loading everything
  */

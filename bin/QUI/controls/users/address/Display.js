@@ -1,6 +1,5 @@
 /**
  * @module controls/users/address/Display
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onLoad [self]
  * @event onLoadError [self]

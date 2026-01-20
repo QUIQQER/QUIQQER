@@ -2,7 +2,6 @@
  * Makes an input field to a user selection field
  *
  * @module controls/users/Input
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onAdd [ {this}, {String} userid ]
  * @event onChange [ {this} ]
