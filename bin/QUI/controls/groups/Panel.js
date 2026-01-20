@@ -2,7 +2,6 @@
  * Groups manager panel
  *
  * @module controls/groups/Panel
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/groups/Panel', [
 
@@ -22,12 +21,12 @@ define('controls/groups/Panel', [
 
     'css!controls/groups/Panel.css'
 
-], function() {
+], function () {
     'use strict';
 
-    var lg = 'quiqqer/core';
+    const lg = 'quiqqer/core';
 
-    var QUI = arguments[0],
+    const QUI = arguments[0],
         Panel = arguments[1],
         Groups = arguments[2],
         Locale = arguments[3],
@@ -83,7 +82,7 @@ define('controls/groups/Panel', [
             searchfields: ['id', 'name']
         },
 
-        initialize: function(options) {
+        initialize: function (options) {
             this.$uid = String.uniqueID();
 
             this.parent(options);
@@ -107,9 +106,9 @@ define('controls/groups/Panel', [
                 deactive_text: Locale.get(lg, 'groups.panel.group.is.deactive')
             });
 
-            var self = this;
+            const self = this;
 
-            this.addEvent('onDestroy', function() {
+            this.addEvent('onDestroy', function () {
                 Groups.removeEvent('switchStatus', self.$onSwitchStatus);
             });
         },
@@ -119,20 +118,20 @@ define('controls/groups/Panel', [
          *
          * @return {controls/grid/Grid|null}
          */
-        getGrid: function() {
+        getGrid: function () {
             return this.$Grid;
         },
 
         /**
          * create the group panel
          */
-        $onCreate: function() {
-            var self = this;
+        $onCreate: function () {
+            const self = this;
 
             this.addButton({
                 name: 'groupSearch',
                 events: {
-                    onMousedown: function() {
+                    onMousedown: function () {
                         self.search();
                     }
                 },
@@ -175,7 +174,7 @@ define('controls/groups/Panel', [
 
 
             // create grid
-            var Body = this.getContent();
+            const Body = this.getContent();
 
             this.$GridContainer = new Element('div');
             this.$GridContainer.inject(Body);
@@ -220,8 +219,8 @@ define('controls/groups/Panel', [
                 sortHeader: true,
                 width: Body.getSize().x - 40,
                 height: Body.getSize().y - 40,
-                onrefresh: function(me) {
-                    var options = me.options;
+                onrefresh: function (me) {
+                    const options = me.options;
 
                     self.setAttribute('field', options.sortOn);
                     self.setAttribute('order', options.sortBy);
@@ -246,7 +245,7 @@ define('controls/groups/Panel', [
             });
 
             // toolbar resize after insert
-            (function() {
+            (function () {
                 self.getButtonBar().setAttribute('width', '98%');
                 self.getButtonBar().resize();
             }).delay(200);
@@ -258,7 +257,7 @@ define('controls/groups/Panel', [
         /**
          * Load the groups with the settings
          */
-        load: function() {
+        load: function () {
             this.Loader.show();
             this.$loadGroups();
         },
@@ -269,8 +268,8 @@ define('controls/groups/Panel', [
          * @param {Number} gid - Group-ID
          * @return {Object} this (controls/groups/Panel)
          */
-        openGroup: function(gid) {
-            require(['controls/groups/Group'], function(Group) {
+        openGroup: function (gid) {
+            require(['controls/groups/Group'], function (Group) {
                 this.getParent().appendChild(
                     new Group(gid)
                 );
@@ -283,19 +282,19 @@ define('controls/groups/Panel', [
         /**
          * Opens the groups search settings
          */
-        search: function() {
+        search: function () {
             this.Loader.show();
 
-            var self = this,
+            const self = this,
                 Sheet = this.createSheet({
                     title: Locale.get(lg, 'groups.panel.search.title')
                 });
 
-            Sheet.addEvent('onOpen', function(Sheet) {
-                Template.get('groups_searchtpl', function(result) {
-                    var i, len, Frm, Search;
+            Sheet.addEvent('onOpen', function (Sheet) {
+                Template.get('groups_searchtpl', function (result) {
+                    let i, len, Frm, Search;
 
-                    var Body = Sheet.getBody(),
+                    const Body = Sheet.getBody(),
                         fields = self.getAttribute('searchfields'),
                         search = self.getAttribute('search');
 
@@ -307,7 +306,7 @@ define('controls/groups/Panel', [
                     Frm = Body.getElement('form');
                     Search = Frm.elements.search;
 
-                    Search.addEvent('keyup', function(event) {
+                    Search.addEvent('keyup', function (event) {
                         if (event.key === 'enter') {
                             self.execSearch(self.getAttribute('SearchSheet'));
                         }
@@ -332,7 +331,7 @@ define('controls/groups/Panel', [
                         }
                     }
 
-                    Frm.addEvent('submit', function(event) {
+                    Frm.addEvent('submit', function (event) {
                         event.stop();
                     });
 
@@ -342,7 +341,7 @@ define('controls/groups/Panel', [
                         textimage: 'fa fa-search',
                         text: Locale.get(lg, 'groups.panel.search.btn.search'),
                         events: {
-                            onClick: function() {
+                            onClick: function () {
                                 self.execSearch(Sheet);
                             }
                         }
@@ -360,8 +359,8 @@ define('controls/groups/Panel', [
          *
          * @param {Object} Sheet - qui/desktop/panels/Sheet
          */
-        execSearch: function(Sheet) {
-            var fields = [],
+        execSearch: function (Sheet) {
+            const fields = [],
                 Frm = Sheet.getBody().getElement('form');
 
 
@@ -391,8 +390,8 @@ define('controls/groups/Panel', [
         /**
          * Open the group create dialog
          */
-        createGroup: function() {
-            var self = this;
+        createGroup: function () {
+            const self = this;
 
             new GroupSitemapWindow({
                 title: Locale.get(lg, 'groups.panel.create.window.title'),
@@ -402,7 +401,7 @@ define('controls/groups/Panel', [
                 maxHeight: 600,
                 events: {
                     // now we need a groupname
-                    onSubmit: function(Win, result) {
+                    onSubmit: function (Win, result) {
                         if (!result.length) {
                             return;
                         }
@@ -417,14 +416,14 @@ define('controls/groups/Panel', [
                             maxHeight: 400,
                             pid: result[0],
                             events: {
-                                onDrawEnd: function(Win) {
+                                onDrawEnd: function (Win) {
                                     Win.getBody().getElement('input').focus();
                                 },
 
-                                onSubmit: function(result, Win) {
+                                onSubmit: function (result, Win) {
                                     Win.Loader.show();
 
-                                    Groups.createGroup(result, Win.getAttribute('pid')).then(function(newgroupid) {
+                                    Groups.createGroup(result, Win.getAttribute('pid')).then(function (newgroupid) {
                                         self.load();
                                         self.openGroup(newgroupid);
                                         Win.close();
@@ -443,9 +442,9 @@ define('controls/groups/Panel', [
          * @param {Object} Group - controls/groups/Group
          * @return {Object}
          */
-        groupToData: function(Group) {
+        groupToData: function (Group) {
             // defaults
-            var data = {
+            const data = {
                 status: false,
                 id: Group.getId(),
                 name: Group.getAttribute('name'),
@@ -474,8 +473,8 @@ define('controls/groups/Panel', [
          *
          * @param {DOMEvent} data
          */
-        $gridClick: function(data) {
-            var len = data.target.selected.length,
+        $gridClick: function (data) {
+            const len = data.target.selected.length,
                 Edit = this.getButtons('groupEdit'),
                 Delete = this.getButtons('groupDel');
 
@@ -486,8 +485,8 @@ define('controls/groups/Panel', [
                 return;
             }
 
-            var selectedData = this.$Grid.getSelectedData();
-            var guestEveryone = selectedData.filter(function(entry) {
+            const selectedData = this.$Grid.getSelectedData();
+            const guestEveryone = selectedData.filter(function (entry) {
                 return parseInt(entry.id) === 1 || parseInt(entry.id) === 0;
             }).length;
 
@@ -507,7 +506,7 @@ define('controls/groups/Panel', [
          *
          * @param {Object} data - grid selected data
          */
-        $gridDblClick: function(data) {
+        $gridDblClick: function (data) {
             this.openGroup(
                 data.target.getDataByRow(data.row).uuid
             );
@@ -516,7 +515,7 @@ define('controls/groups/Panel', [
         /**
          * onblur on the grid
          */
-        $gridBlur: function() {
+        $gridBlur: function () {
             this.getGrid().unselectAll();
             this.getGrid().removeSections();
 
@@ -527,8 +526,8 @@ define('controls/groups/Panel', [
         /**
          * Resize the groups panel
          */
-        $onResize: function() {
-            var Body = this.getBody();
+        $onResize: function () {
+            const Body = this.getBody();
 
             if (!Body) {
                 return;
@@ -544,7 +543,7 @@ define('controls/groups/Panel', [
                 this.getGrid().setHeight(Body.getSize().y - 40);
             }
 
-            var Message = Body.getElement('.messages-message');
+            const Message = Body.getElement('.messages-message');
 
             if (Message) {
                 Message.setStyle('width', this.getBody().getSize().x - 40);
@@ -553,8 +552,8 @@ define('controls/groups/Panel', [
             this.getGrid().setWidth(Body.getSize().x - 40);
 
             // resize switches
-            var i, len, Control;
-            var switches = Body.getElements('.qui-switch');
+            let i, len, Control;
+            const switches = Body.getElements('.qui-switch');
 
             for (i = 0, len = switches.length; i < len; i++) {
                 Control = QUI.Controls.getById(switches[i].get('data-quiid'));
@@ -568,8 +567,8 @@ define('controls/groups/Panel', [
         /**
          * Load the groups to the grid
          */
-        $loadGroups: function() {
-            var self = this;
+        $loadGroups: function () {
+            const self = this;
 
             this.Loader.show();
 
@@ -581,7 +580,7 @@ define('controls/groups/Panel', [
                 new Attention({
                     message: Locale.get(lg, 'groups.panel.search.active.message'),
                     events: {
-                        onClick: function(Message) {
+                        onClick: function (Message) {
                             self.setAttribute('search', false);
                             self.setAttribute('searchSettings', {});
 
@@ -607,10 +606,10 @@ define('controls/groups/Panel', [
                 page: this.getAttribute('page'),
                 search: this.getAttribute('search'),
                 searchSettings: this.getAttribute('searchfields')
-            }).then(function(result) {
-                var i, len, data, admin;
+            }).then(function (result) {
+                let i, len, data, admin;
 
-                var Grid = self.getGrid();
+                const Grid = self.getGrid();
 
                 if (!Grid) {
                     self.Loader.hide();
@@ -657,7 +656,7 @@ define('controls/groups/Panel', [
          *
          * @param {Object} Switch - qui/controls/buttons/Switch
          */
-        $btnSwitchStatus: function(Switch) {
+        $btnSwitchStatus: function (Switch) {
             Groups.switchStatus(Switch.getAttribute('gid'));
         },
 
@@ -668,10 +667,10 @@ define('controls/groups/Panel', [
          * @param {Object} Groups - classes/groups/Manager
          * @param {Object} ids - Group-IDs with status
          */
-        $onSwitchStatus: function(Groups, ids) {
-            var i, len, Status, entry, status;
+        $onSwitchStatus: function (Groups, ids) {
+            let i, len, Status, entry, status;
 
-            var Grid = this.getGrid(),
+            const Grid = this.getGrid(),
                 data = Grid.getData();
 
             for (i = 0, len = data.length; i < len; i++) {
@@ -704,14 +703,14 @@ define('controls/groups/Panel', [
          * @param {Object} Groups - classes/groups/Manager
          * @param {Object} Group - classes/groups/Group
          */
-        $onRefreshGroup: function(Groups, Group) {
+        $onRefreshGroup: function (Groups, Group) {
             if (typeof Group === 'undefined') {
                 return;
             }
 
-            var i, len;
+            let i, len;
 
-            var Grid = this.getGrid(),
+            const Grid = this.getGrid(),
                 data = Grid.getData(),
                 id = Group.getId();
 
@@ -731,10 +730,10 @@ define('controls/groups/Panel', [
          * @param {classes/groups/Manager} Groups
          * @param {Array} ids - Delete Group-IDs
          */
-        $onDeleteGroup: function(Groups, ids) {
-            var i, id, len;
+        $onDeleteGroup: function (Groups, ids) {
+            let i, id, len;
 
-            var Grid = this.getGrid(),
+            const Grid = this.getGrid(),
                 data = Grid.getData(),
                 _tmp = {};
 
@@ -755,8 +754,8 @@ define('controls/groups/Panel', [
         /**
          * Open all marked groups
          */
-        $onButtonEditClick: function() {
-            var Parent = this.getParent(),
+        $onButtonEditClick: function () {
+            const Parent = this.getParent(),
                 Grid = this.getGrid(),
                 seldata = Grid.getSelectedData();
 
@@ -769,14 +768,14 @@ define('controls/groups/Panel', [
                 return;
             }
 
-            var i, len;
+            let i, len;
 
             if (Parent.getType() === 'qui/controls/desktop/Tasks') {
                 require([
                     'controls/groups/Group',
                     'qui/controls/taskbar/Group'
-                ], function(GroupControl, QUITaskGroup) {
-                    var Group, Task, TaskGroup;
+                ], function (GroupControl, QUITaskGroup) {
+                    let Group, Task, TaskGroup;
 
                     TaskGroup = new QUITaskGroup();
                     Parent.appendTask(TaskGroup);
@@ -803,10 +802,10 @@ define('controls/groups/Panel', [
         /**
          * Open deletion popup
          */
-        $onButtonDelClick: function() {
-            var i, len;
+        $onButtonDelClick: function () {
+            let i, len;
 
-            var gids = [],
+            const gids = [],
                 data = this.getGrid().getSelectedData();
 
             for (i = 0, len = data.length; i < len; i++) {
@@ -837,9 +836,9 @@ define('controls/groups/Panel', [
                 maxHeight: 400,
                 autoclose: false,
                 events: {
-                    onSubmit: function(Win) {
+                    onSubmit: function (Win) {
                         Win.Loader.show();
-                        Groups.deleteGroups(gids).then(function() {
+                        Groups.deleteGroups(gids).then(function () {
                             Win.close();
                         });
                     }
