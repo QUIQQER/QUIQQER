@@ -385,6 +385,7 @@ console.log(typeof this.getAttribute('search'));
 
                 if (form.elements.gid.checked) {
                     fields.push('id');
+                    fields.push('uuid');
                 }
 
                 if (form.elements.name.checked) {
