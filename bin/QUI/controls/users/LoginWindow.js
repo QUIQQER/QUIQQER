@@ -2,7 +2,6 @@
  * Login Window
  *
  * @module controls/users/LoginWindow
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onSubmit [ Array, this ]
  * @event onLogin [self]

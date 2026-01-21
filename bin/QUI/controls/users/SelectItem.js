@@ -1,6 +1,5 @@
 /**
  * @module controls/users/SelectItem
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/users/SelectItem', [
 

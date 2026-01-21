@@ -1,7 +1,6 @@
 /**
  * Logout popup / window
  *
- * @author www.pcsg.de (Henning Leutz)
  * @module controls/users/LogoutWindow
  *
  * @event onQuiqqerUserAuthLogout

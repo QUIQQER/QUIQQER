@@ -3,7 +3,6 @@
  * the display updates itself
  *
  * @module controls/users/Entry
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onLoad [self, User]
  * @event onError [self, uid]
