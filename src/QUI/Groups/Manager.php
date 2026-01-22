@@ -302,6 +302,7 @@ class Manager extends QUI\QDOM
 
         $allowOrderFields = [
             'id',
+            'uuid',
             'name',
             'parent',
             'active'
@@ -309,6 +310,7 @@ class Manager extends QUI\QDOM
 
         $allowSearchFields = [
             'id' => true,
+            'uuid' => true,
             'name' => true,
             'parent' => true,
             'active' => true

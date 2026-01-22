@@ -1,6 +1,5 @@
 /**
  * @module controls/users/password/Password
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onSaveBegin [self]
  * @event onSaveEnd [self]

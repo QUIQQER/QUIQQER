@@ -1,6 +1,5 @@
 /**
  * @module controls/users/password/Window
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onSuccess [this]
  * @event onError [this]

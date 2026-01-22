@@ -1589,6 +1589,10 @@ class Manager
                 $fields = $allowOrderFields;
             }
 
+            if (isset($fields['id']) && !isset($fields['uuid'])) {
+                $fields['uuid'] = true;
+            }
+
             $filter_status = false;
             $filter_group = false;
             $filter_groups_exclude = false;
