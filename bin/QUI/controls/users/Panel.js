@@ -298,6 +298,11 @@ define('controls/users/Panel', [
                         dataIndex: 'id',
                         dataType: 'string',
                         width: 150
+                    },
+                    {
+                        dataIndex: 'uuid',
+                        dataType: 'string',
+                        hidden: true
                     }
                 ],
                 configurable: true,
@@ -830,7 +835,10 @@ define('controls/users/Panel', [
         /**
          * Open all marked users
          */
-        $onButtonEditClick: function () {
+        $onButtonEditClick: function (instance, event) {
+            event.preventDefault();
+            event.stopPropagation();
+
             const Parent = this.getParent(),
                 Grid = this.getGrid(),
                 seldata = Grid.getSelectedData();
@@ -878,7 +886,10 @@ define('controls/users/Panel', [
         /**
          * Open deletion popup
          */
-        $onButtonDelClick: function () {
+        $onButtonDelClick: function (instance, event) {
+            event.preventDefault();
+            event.stopPropagation();
+
             let i, len, username;
 
             const uids = [],
@@ -1068,6 +1079,7 @@ define('controls/users/Panel', [
 
             if (typeof user.uuid !== 'undefined') {
                 userData.id = user.uuid;
+                userData.uuid = user.uuid;
             }
 
             // data
