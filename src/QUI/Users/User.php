@@ -2261,6 +2261,21 @@ class User implements QUIUserInterface
 
     public function isInGroup(int | string $groupId): bool
     {
+        if (is_numeric($groupId)) {
+            QUI\System\Log::addDeprecated('Passing an ID (instead of UUID) to "User::isInGroup" is deprecated.');
+
+            $groupId = (int)$groupId;
+            $groups = $this->getGroups(true);
+
+            foreach ($groups as $group) {
+                if ($group->getId() === $groupId) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         $groups = $this->getGroups(false);
 
         return in_array($groupId, $groups);
