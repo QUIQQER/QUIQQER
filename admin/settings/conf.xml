@@ -223,6 +223,10 @@
                 <conf name="SMTPSecureSSL_allow_self_signed">
                     <type><![CDATA[bool]]></type>
                 </conf>
+                <conf name="SMTPIpVersion">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue><![CDATA[auto]]></defaultvalue>
+                </conf>
 
                 <conf name="MAILFrom">
                     <type><![CDATA[string]]></type>
@@ -705,6 +709,21 @@
                             <option value="">---</option>
                             <option value="ssl">SSL</option>
                             <option value="tls">TLS</option>
+                        </select>
+
+                        <select conf="mail.SMTPIpVersion">
+                            <text>
+                                <locale group="quiqqer/core" var="quiqqer.settings.email.SMTPIpVersion"/>
+                            </text>
+                            <option value="auto">
+                                <locale group="quiqqer/core" var="quiqqer.settings.email.SMTPIpVersion.option.auto"/>
+                            </option>
+                            <option value="ipv4">
+                                <locale group="quiqqer/core" var="quiqqer.settings.email.SMTPIpVersion.option.ipv4"/>
+                            </option>
+                            <option value="ipv6">
+                                <locale group="quiqqer/core" var="quiqqer.settings.email.SMTPIpVersion.option.ipv6"/>
+                            </option>
                         </select>
                     </settings>
 

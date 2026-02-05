@@ -69,6 +69,26 @@ QUI::$Ajax->registerFunction(
                         break;
                 }
             }
+
+            if (!empty($params['SMTPIpVersion'])) {
+                switch ($params['SMTPIpVersion']) {
+                    case 'ipv4':
+                        $Mail->SMTPOptions = [
+                            'socket' => [
+                                'bindto' => '0.0.0.0:0'
+                            ],
+                        ];
+                        break;
+
+                    case 'ipv6':
+                        $Mail->SMTPOptions = [
+                            'socket' => [
+                                'bindto' => '[::]:0'
+                            ],
+                        ];
+                        break;
+                }
+            }
         }
 
         // debug output

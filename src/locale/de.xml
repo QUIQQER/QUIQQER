@@ -3643,6 +3643,18 @@
         <locale name="quiqqer.settings.email.smtp.secure">
             <de><![CDATA[Verbindungssicherheit]]></de>
         </locale>
+        <locale name="quiqqer.settings.email.SMTPIpVersion">
+            <de><![CDATA[IP-Version]]></de>
+        </locale>
+        <locale name="quiqqer.settings.email.SMTPIpVersion.option.auto">
+            <de><![CDATA[automatisch]]></de>
+        </locale>
+        <locale name="quiqqer.settings.email.SMTPIpVersion.option.ipv4">
+            <de><![CDATA[IPv4]]></de>
+        </locale>
+        <locale name="quiqqer.settings.email.SMTPIpVersion.option.ipv6">
+            <de><![CDATA[IPv6]]></de>
+        </locale>
         <locale name="quiqqer.settings.email.smtp.auth.title">
             <de><![CDATA[SMTP Authentifizierung]]></de>
         </locale>
