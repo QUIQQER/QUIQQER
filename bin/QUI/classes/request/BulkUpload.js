@@ -4,9 +4,6 @@
 /**
  * Bulk Upload -> Upload of multiple Files
  *
- * @module classes/request/Upload
- * @author www.pcsg.de (Henning Leutz)
- *
  * @event onFinish [this, uploadedFiles]
  * @event onUploadPartStart [this]
  * @event onUploadPartEnd [this]

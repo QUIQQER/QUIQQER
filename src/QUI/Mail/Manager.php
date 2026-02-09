@@ -113,18 +113,36 @@ class Manager
                 }
             }
 
-            /**
-             * These options are set regardless of the "SMTPSecure" setting
-             * because PHPMailer may try to establish a secure connection if the mail
-             * server supports it regardless of the "SMTPSecure" setting.
-             */
-            $Mail->SMTPOptions = [
+            $smtpOptions = [
+                /**
+                 * These options are set regardless of the "SMTPSecure" setting
+                 * because PHPMailer may try to establish a secure connection if the mail
+                 * server supports it regardless of the "SMTPSecure" setting.
+                 */
                 'ssl' => [
                     'verify_peer' => (int)$config['SMTPSecureSSL_verify_peer'],
                     'verify_peer_name' => (int)$config['SMTPSecureSSL_verify_peer_name'],
                     'allow_self_signed' => (int)$config['SMTPSecureSSL_allow_self_signed']
                 ]
             ];
+
+            if (!empty($config['SMTPIpVersion'])) {
+                switch ($config['SMTPIpVersion']) {
+                    case 'ipv4':
+                        $smtpOptions['socket'] = [
+                            'bindto' => '0.0.0.0:0'
+                        ];
+                        break;
+
+                    case 'ipv6':
+                        $smtpOptions['socket'] = [
+                            'bindto' => '[::]:0'
+                        ];
+                        break;
+                }
+            }
+
+            $Mail->SMTPOptions = $smtpOptions;
         }
 
         $Mail->From = $config['MAILFrom'];

@@ -153,6 +153,10 @@ system($composerCommand . ' update');
 
 chdir(CMS_DIR);
 
+echo '- generate new htaccess' . PHP_EOL;
+system('./console quiqqer:htaccess');
+
+
 echo PHP_EOL;
 echo '===================' . PHP_EOL;
 echo '|  Hello QUIQQER  |' . PHP_EOL;

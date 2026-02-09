@@ -3589,6 +3589,18 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="quiqqer.settings.email.smtp.auth.MAILReplyTo.description">
             <en><![CDATA[Mail address to which the reply should be sent.]]></en>
         </locale>
+        <locale name="quiqqer.settings.email.SMTPIpVersion">
+            <en><![CDATA[IP version]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.SMTPIpVersion.option.auto">
+            <en><![CDATA[automatic]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.SMTPIpVersion.option.ipv4">
+            <en><![CDATA[IPv4]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.SMTPIpVersion.option.ipv6">
+            <en><![CDATA[IPv6]]></en>
+        </locale>
         <locale name="quiqqer.settings.email.logging">
             <en><![CDATA[Mail logging]]></en>
         </locale>

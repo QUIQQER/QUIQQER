@@ -206,7 +206,8 @@ define('controls/system/settings/Mail', [
                 SMTPAuth: Form.elements['mail.SMTPAuth'].checked ? 1 : 0,
                 SMTPUser: Form.elements['mail.SMTPUser'].value,
                 SMTPPass: Form.elements['mail.SMTPPass'].value,
-                SMTPSecure: Form.elements['mail.SMTPSecure'].value
+                SMTPSecure: Form.elements['mail.SMTPSecure'].value,
+                SMTPIpVersion: Form.elements['mail.SMTPIpVersion'].value
             };
 
             if (Form.elements['mail.SMTPSecure'].value === 'ssl') {
