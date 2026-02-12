@@ -13,6 +13,7 @@
                 icon=""
                 template=""
                 cache=""
+                content="1|0"
         >
             <!-- extend only the panel for the type -->
             <tab name="">
