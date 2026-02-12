@@ -6,6 +6,8 @@ if (!defined('QUIQQER_SYSTEM')) {
 
 require_once 'bootstrap.php';
 
+QUI::getGlobalResponse()->sendHeaders();
+
 if (!isset($_REQUEST['project']) || !isset($_REQUEST['id'])) {
     header("HTTP/1.0 404 Not Found");
     exit;
