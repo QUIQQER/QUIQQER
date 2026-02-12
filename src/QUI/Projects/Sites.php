@@ -6,6 +6,7 @@
 
 namespace QUI\Projects;
 
+use DOMElement;
 use DOMXPath;
 use PDO;
 use QUI;
@@ -278,6 +279,10 @@ class Sites
                 );
 
                 foreach ($TypeNodes as $TypeNode) {
+                    if (!$TypeNode instanceof DOMElement) {
+                        continue;
+                    }
+
                     if (
                         $TypeNode->hasAttribute('content')
                         && (int)$TypeNode->getAttribute('content') === 0
