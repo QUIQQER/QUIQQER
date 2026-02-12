@@ -475,6 +475,7 @@ class Update extends QUI\System\Console\Tool
             'Writing ',
             'Executing command ',
             '[304] ',
+            'Skipped tag '
         ];
 
 
