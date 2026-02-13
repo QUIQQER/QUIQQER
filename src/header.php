@@ -81,14 +81,6 @@ define('MAIL_PROTECT', QUI::conf('globals', 'mailprotection'));
 define('ADMIN_CACHE', false);
 define('DEBUG_MEMORY', false);
 
-// Cacheflag setzen
-try {
-    QUI\Cache\Manager::set('qui_cache_test', 1);
-    define('CHECK_CACHE', QUI\Cache\Manager::get('qui_cache_test'));
-} catch (QUI\Cache\Exception | Stash\Exception\InvalidArgumentException) {
-    define('CHECK_CACHE', false);
-}
-
 $error_mail = QUI::conf('error', 'mail');
 
 if (!empty($error_mail)) {
