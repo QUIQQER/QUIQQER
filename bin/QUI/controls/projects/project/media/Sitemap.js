@@ -33,7 +33,7 @@ define('controls/projects/project/media/Sitemap', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/projects/project/media/Sitemap',
+        Type: 'controls/projects/project/media/Sitemap',
 
         Binds: [
             '$onInject',
@@ -42,12 +42,12 @@ define('controls/projects/project/media/Sitemap', [
         ],
 
         options: {
-            name     : 'projects-media-sitemap',
+            name: 'projects-media-sitemap',
             container: false,
-            project  : false,
-            lang     : false,
-            id       : false,
-            limit    : false
+            project: false,
+            lang: false,
+            id: false,
+            limit: false
         },
 
         initialize: function (options) {
@@ -102,8 +102,8 @@ define('controls/projects/project/media/Sitemap', [
                 return;
             }
 
-            var self    = this,
-                id      = this.getAttribute('id') || 1,
+            var self = this,
+                id = this.getAttribute('id') || 1,
                 Project = Projects.get(
                     this.getAttribute('project'),
                     this.getAttribute('lang')
@@ -210,7 +210,7 @@ define('controls/projects/project/media/Sitemap', [
                     resolve(result);
                 }, {
                     project: this.getAttribute('project'),
-                    fileid : id,
+                    fileid: id,
                     onError: reject
                 });
             }.bind(this));
@@ -234,15 +234,15 @@ define('controls/projects/project/media/Sitemap', [
                 file = result.file || result;
 
             Itm = new QUISitemapItem({
-                name       : file.name,
-                index      : file.id,
-                value      : file.id,
-                text       : file.name,
-                icon       : file.icon,
-                type       : file.type,
+                name: file.name,
+                index: file.id,
+                value: file.id,
+                text: file.name,
+                icon: file.icon,
+                type: file.type,
                 hasChildren: file.hasSubfolders || false,
-                events     : {
-                    onOpen : this.$loadChildren,
+                events: {
+                    onOpen: this.$loadChildren,
                     onClick: function (Itm) {
                         self.fireEvent('itemClick', [
                             Itm,
@@ -268,7 +268,7 @@ define('controls/projects/project/media/Sitemap', [
             var self = this;
 
             return new Promise(function (resolve, reject) {
-                var limitStart   = Item.getAttribute('limitStart'),
+                var limitStart = Item.getAttribute('limitStart'),
                     projectLimit = self.getAttribute('limit');
 
                 if (limitStart === false) {
@@ -287,9 +287,9 @@ define('controls/projects/project/media/Sitemap', [
 
                 // if children are false
                 Ajax.get('ajax_media_getsubfolders', function (result) {
-                    var count    = parseInt(result.count),
-                        end      = start + projectLimit,
-                        sheets   = (count / projectLimit).ceil(),
+                    var count = parseInt(result.count),
+                        end = start + projectLimit,
+                        sheets = (count / projectLimit).ceil(),
                         children = result.children;
 
                     Item.setAttribute('hasChildren', count);
@@ -298,14 +298,14 @@ define('controls/projects/project/media/Sitemap', [
                     if (start > 0) {
                         Item.appendChild(
                             new QUISitemapItem({
-                                icon       : 'fa fa-level-up',
-                                text       : '...',
-                                title      : QUILocale.get('quiqqer/core', 'control.project.sitemap.prev'),
+                                icon: 'fa fa-level-up',
+                                text: '...',
+                                title: QUILocale.get('quiqqer/core', 'control.project.sitemap.prev'),
                                 contextmenu: false,
-                                sheets     : sheets,
-                                Item       : Item,
-                                events     : {
-                                    onClick : function () {
+                                sheets: sheets,
+                                Item: Item,
+                                events: {
+                                    onClick: function () {
                                         Item.setAttribute('limitStart', limitStart - 1);
                                         self.$loadChildren(Item);
                                     },
@@ -330,14 +330,14 @@ define('controls/projects/project/media/Sitemap', [
                     if (end < count) {
                         Item.appendChild(
                             new QUISitemapItem({
-                                icon       : 'fa fa-level-down',
-                                text       : '...',
-                                title      : QUILocale.get('quiqqer/core', 'control.project.sitemap.next'),
+                                icon: 'fa fa-level-down',
+                                text: '...',
+                                title: QUILocale.get('quiqqer/core', 'control.project.sitemap.next'),
                                 contextmenu: false,
-                                sheets     : sheets,
-                                Item       : Item,
-                                events     : {
-                                    onClick : function () {
+                                sheets: sheets,
+                                Item: Item,
+                                events: {
+                                    onClick: function () {
                                         Item.setAttribute('limitStart', limitStart + 1);
                                         self.$loadChildren(Item);
                                     },
@@ -363,9 +363,9 @@ define('controls/projects/project/media/Sitemap', [
                     resolve();
                 }, {
                     project: self.getAttribute('project'),
-                    lang   : self.getAttribute('lang'),
-                    fileid : Item.getAttribute('value'),
-                    params : JSON.encode({
+                    lang: self.getAttribute('lang'),
+                    fileid: Item.getAttribute('value'),
+                    params: JSON.encode({
                         limit: start + ',' + projectLimit
                     }),
                     onError: reject
@@ -406,14 +406,14 @@ define('controls/projects/project/media/Sitemap', [
                 return;
             }
 
-            var self     = this,
-                sheets   = parseInt(Item.getAttribute('sheets')),
-                Select   = new Element('select'),
+            var self = this,
+                sheets = parseInt(Item.getAttribute('sheets')),
+                Select = new Element('select'),
                 SiteItem = Item.getAttribute('Item');
 
             for (var i = 0, len = sheets; i < len; i++) {
                 new Element('option', {
-                    html : 'Blatt ' + (i + 1),
+                    html: 'Blatt ' + (i + 1),
                     value: i
                 }).inject(Select);
             }
@@ -424,15 +424,15 @@ define('controls/projects/project/media/Sitemap', [
 
 
             new QUIConfirm({
-                title    : 'Blätterfunktion',
+                title: 'Blätterfunktion',
                 maxHeight: 300,
-                maxWidth : 500,
-                events   : {
+                maxWidth: 500,
+                events: {
                     onOpen: function (Win) {
                         var Content = Win.getContent();
 
                         Content.set({
-                            html   : '<p>Welche Unterordner des Ordnrs sollen angezeigt werden?</p>',
+                            html: '<p>Welche Unterordner des Ordnrs sollen angezeigt werden?</p>',
                             'class': 'qui-projects-sitemap-sheetsWindow'
                         });
 
@@ -441,7 +441,7 @@ define('controls/projects/project/media/Sitemap', [
 
                     onSubmit: function (Win) {
                         var Select = Win.getContent().getElement('select'),
-                            sheet  = parseInt(Select.value);
+                            sheet = parseInt(Select.value);
 
                         SiteItem.setAttribute('limitStart', sheet - 1);
                         self.$loadChildren(SiteItem);

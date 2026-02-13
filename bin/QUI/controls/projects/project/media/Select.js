@@ -32,7 +32,7 @@ define('controls/projects/project/media/Select', [
     return new Class({
 
         Extends: QUIElementSelect,
-        Type   : 'controls/projects/project/media/Select',
+        Type: 'controls/projects/project/media/Select',
 
         Binds: [
             '$onSearchButtonClick',
@@ -40,7 +40,7 @@ define('controls/projects/project/media/Select', [
         ],
 
         options: {
-            project : false,
+            project: false,
             use_urls: false  // use media item URLs instead of IDs
         },
 
@@ -96,9 +96,9 @@ define('controls/projects/project/media/Select', [
 
                     for (var i = 0, len = result.data.length; i < len; i++) {
                         data.push({
-                            id   : result.data[i].id,
+                            id: result.data[i].id,
                             title: result.data[i].name,
-                            icon : 'fa fa-image-o'
+                            icon: 'fa fa-image-o'
                         });
                     }
 
@@ -114,7 +114,7 @@ define('controls/projects/project/media/Select', [
          * @param {Object} Btn
          */
         $onSearchButtonClick: function (Select, Btn) {
-            var self    = this,
+            var self = this,
                 oldIcon = Btn.getAttribute('icon');
 
             Btn.setAttribute('icon', 'fa fa-spinner fa-spin');
@@ -123,7 +123,7 @@ define('controls/projects/project/media/Select', [
             require(['controls/projects/project/media/Popup'], function (Window) {
                 new Window({
                     autoclose: true,
-                    events   : {
+                    events: {
                         onSubmit: function (Win, mediaFile) {
                             if (self.getAttribute('use_urls')) {
                                 self.addItem(mediaFile.url);

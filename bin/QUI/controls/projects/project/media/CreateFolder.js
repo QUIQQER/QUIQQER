@@ -20,7 +20,7 @@ define('controls/projects/project/media/CreateFolder', [
     return new Class({
 
         Extends: QUIPopup,
-        Type   : 'controls/projects/project/media/CreateFolder',
+        Type: 'controls/projects/project/media/CreateFolder',
 
         Binds: [
             '$onOpen',
@@ -29,26 +29,26 @@ define('controls/projects/project/media/CreateFolder', [
         ],
 
         options: {
-            project      : false,
-            parentId     : false,
-            Parent       : false,
+            project: false,
+            parentId: false,
+            Parent: false,
             newFolderName: false,
-            maxHeight    : 400,
-            maxWidth     : 600
+            maxHeight: 400,
+            maxWidth: 600
         },
 
         initialize: function (options) {
             this.parent(options);
 
             this.setAttributes({
-                title  : QUILocale.get(lg, 'control.media.create.folder.window.title'),
-                icon   : 'fa fa-plus',
+                title: QUILocale.get(lg, 'control.media.create.folder.window.title'),
+                icon: 'fa fa-plus',
                 buttons: true
             });
 
-            this.$Input    = null;
+            this.$Input = null;
             this.$MediaMap = null;
-            this.$step     = '';
+            this.$step = '';
 
             this.addEvents({
                 onOpen: this.$onOpen
@@ -62,17 +62,17 @@ define('controls/projects/project/media/CreateFolder', [
             this.$Buttons.set('html', '');
 
             this.$Prev = new QUIButton({
-                text    : QUILocale.get(lg, 'control.media.create.folder.window.back.button.title'),
+                text: QUILocale.get(lg, 'control.media.create.folder.window.back.button.title'),
                 disabled: true,
-                events  : {
+                events: {
                     click: this.prev
                 }
             });
 
             this.$Next = new QUIButton({
-                text    : QUILocale.get(lg, 'control.media.create.folder.window.continue.button.title'),
+                text: QUILocale.get(lg, 'control.media.create.folder.window.continue.button.title'),
                 disabled: true,
-                events  : {
+                events: {
                     click: this.next
                 }
             });
@@ -86,7 +86,7 @@ define('controls/projects/project/media/CreateFolder', [
             var Content = this.getContent();
 
             Content.set({
-                html  : '<div class="container-sheet"></div>',
+                html: '<div class="container-sheet"></div>',
                 styles: {
                     position: 'relative'
                 }
@@ -95,10 +95,10 @@ define('controls/projects/project/media/CreateFolder', [
             this.$Container = Content.getElement('.container-sheet');
 
             this.$Container.setStyles({
-                left    : 0,
-                padding : 20,
+                left: 0,
+                padding: 20,
                 position: 'absolute',
-                width   : '100%'
+                width: '100%'
             });
 
             if (this.getAttribute('Parent')) {
@@ -143,12 +143,12 @@ define('controls/projects/project/media/CreateFolder', [
 
                 new ProjectSelect({
                     langSelect: false,
-                    styles    : {
+                    styles: {
                         'float': 'none',
                         display: 'block',
-                        margin : '10px auto'
+                        margin: '10px auto'
                     },
-                    events    : {
+                    events: {
                         onChange: function (value) {
                             if (value === '') {
                                 return;
@@ -226,10 +226,10 @@ define('controls/projects/project/media/CreateFolder', [
                 });
 
                 this.$Input = new Element('input', {
-                    type  : 'text',
+                    type: 'text',
                     styles: {
                         marginTop: 10,
-                        width    : 200
+                        width: 200
                     }
                 }).inject(this.$Container);
 
@@ -249,7 +249,7 @@ define('controls/projects/project/media/CreateFolder', [
             return new Promise(function (resolve) {
                 moofx(this.$Container).animate({
                     opacity: 0,
-                    top    : -20
+                    top: -20
                 }, {
                     duration: 200,
                     callback: resolve
@@ -266,7 +266,7 @@ define('controls/projects/project/media/CreateFolder', [
             return new Promise(function (resolve) {
                 moofx(this.$Container).animate({
                     opacity: 1,
-                    top    : 0
+                    top: 0
                 }, {
                     duration: 200,
                     callback: resolve
@@ -280,13 +280,13 @@ define('controls/projects/project/media/CreateFolder', [
          * @return {Promise}
          */
         submit: function () {
-            var self     = this,
+            var self = this,
                 newTitle = false;
 
             this.Loader.show();
 
             var parentId = this.getAttribute('parentId'),
-                project  = this.getAttribute('project');
+                project = this.getAttribute('project');
 
             if (this.getAttribute('newFolderName')) {
                 newTitle = this.getAttribute('newFolderName');
@@ -308,7 +308,7 @@ define('controls/projects/project/media/CreateFolder', [
                 }
 
                 var Project = Projects.get(project),
-                    Media   = Project.getMedia();
+                    Media = Project.getMedia();
 
                 Media.get(parentId).then(function (Folder) {
                     if (Folder.getType() !== 'classes/projects/project/media/Folder') {

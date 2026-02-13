@@ -42,7 +42,7 @@ define('controls/projects/project/media/FolderPanel', [
     return new Class({
 
         Extends: QUIPanel,
-        Type   : 'controls/projects/project/media/FolderPanel',
+        Type: 'controls/projects/project/media/FolderPanel',
 
         Binds: [
             '$onInject',
@@ -58,7 +58,7 @@ define('controls/projects/project/media/FolderPanel', [
 
         options: {
             folderId: false,
-            project : false
+            project: false
         },
 
         initialize: function (options) {
@@ -75,7 +75,7 @@ define('controls/projects/project/media/FolderPanel', [
             this.$loaded = false;
 
             this.addEvents({
-                onInject : this.$onInject,
+                onInject: this.$onInject,
                 onDestroy: this.$onDestroy
             });
         },
@@ -94,7 +94,7 @@ define('controls/projects/project/media/FolderPanel', [
             if (this.$Folder) {
                 this.$Folder.removeEvents({
                     onRefresh: this.$onFolderRefresh,
-                    onSave   : this.$onFolderRefresh
+                    onSave: this.$onFolderRefresh
                 });
             }
         },
@@ -112,9 +112,9 @@ define('controls/projects/project/media/FolderPanel', [
 
             this.$loaded = true;
 
-            const self    = this,
-                  Project = Projects.get(this.getAttribute('project')),
-                  Media   = Project.getMedia();
+            const self = this,
+                Project = Projects.get(this.getAttribute('project')),
+                Media = Project.getMedia();
 
             Media.get(this.getAttribute('folderId')).then(function (Folder) {
                 self.$Folder = Folder;
@@ -122,16 +122,16 @@ define('controls/projects/project/media/FolderPanel', [
 
                 self.$Folder.addEvents({
                     onRefresh: self.$onFolderRefresh,
-                    onSave   : self.$onFolderRefresh
+                    onSave: self.$onFolderRefresh
                 });
 
                 const title = Project.getName() + '://' + Folder.getAttribute('file');
 
                 self.setAttributes({
-                    icon : 'fa fa-folder-open-o',
+                    icon: 'fa fa-folder-open-o',
                     title: title,
-                    name : 'projects-media-file-panel-' + Folder.getId(),
-                    id   : 'projects-media-file-panel-' + Folder.getId()
+                    name: 'projects-media-file-panel-' + Folder.getId(),
+                    id: 'projects-media-file-panel-' + Folder.getId()
                 });
 
                 self.refresh();
@@ -148,7 +148,7 @@ define('controls/projects/project/media/FolderPanel', [
          */
         $onFolderRefresh: function () {
             const Project = Projects.get(this.getAttribute('project')),
-                  title   = Project.getName() + '://' + this.$Folder.getAttribute('file');
+                title = Project.getName() + '://' + this.$Folder.getAttribute('file');
 
             this.setAttributes({
                 title: title
@@ -208,11 +208,11 @@ define('controls/projects/project/media/FolderPanel', [
             const self = this;
 
             new QUIConfirm({
-                icon     : 'fa fa-trash-o',
-                texticon : 'fa fa-trash-o',
-                maxWidth : 533,
+                icon: 'fa fa-trash-o',
+                texticon: 'fa fa-trash-o',
+                maxWidth: 533,
                 maxHeight: 300,
-                title    : Locale.get('quiqqer/core', 'projects.project.site.media.folderPanel.window.delete.title', {
+                title: Locale.get('quiqqer/core', 'projects.project.site.media.folderPanel.window.delete.title', {
                     folder: this.$Folder.getAttribute('file')
                 }),
 
@@ -223,8 +223,8 @@ define('controls/projects/project/media/FolderPanel', [
                 information: Locale.get('quiqqer/core', 'projects.project.site.media.folderPanel.window.delete.information', {
                     folder: this.$Folder.getAttribute('file')
                 }),
-                autoclose  : false,
-                events     : {
+                autoclose: false,
+                events: {
                     onSubmit: function (Win) {
                         Win.Loader.show();
 
@@ -253,7 +253,7 @@ define('controls/projects/project/media/FolderPanel', [
 
 
             const self = this,
-                  Body = this.getContent();
+                Body = this.getContent();
 
             Body.set('html', '');
             Body.setStyle('opacity', 0);
@@ -266,28 +266,28 @@ define('controls/projects/project/media/FolderPanel', [
                     '<form>' + result + '</form>'
                 );
 
-                const Form  = Body.getElement('form'),
-                      Order = Form.getElement('[name="order"]');
+                const Form = Body.getElement('form'),
+                    Order = Form.getElement('[name="order"]');
 
                 QUIFormUtils.setDataToForm(self.$Folder.getAttributes(), Form);
 
                 Order.setStyles({
                     'borderRadius': 0,
-                    'float'       : 'left'
+                    'float': 'left'
                 });
 
                 new QUIButton({
-                    alt    : Locale.get(lg, 'projects.project.site.panel.btn.priority'),
-                    title  : Locale.get(lg, 'projects.project.site.panel.btn.priority'),
-                    icon   : 'fa fa-sort-amount-asc',
+                    alt: Locale.get(lg, 'projects.project.site.panel.btn.priority'),
+                    title: Locale.get(lg, 'projects.project.site.panel.btn.priority'),
+                    icon: 'fa fa-sort-amount-asc',
                     'class': 'field-container-item',
-                    events : {
+                    events: {
                         onClick: self.openPriorityOrder
                     },
-                    styles : {
-                        border   : '1px solid rgba(147, 128, 108, 0.25)',
+                    styles: {
+                        border: '1px solid rgba(147, 128, 108, 0.25)',
                         boxShadow: 'none',
-                        width    : 50
+                        width: 50
                     }
                 }).inject(Order, 'after');
 
@@ -363,9 +363,9 @@ define('controls/projects/project/media/FolderPanel', [
 
             this.Loader.show();
 
-            const self   = this,
-                  Body   = this.getContent(),
-                  Folder = this.$Folder;
+            const self = this,
+                Body = this.getContent(),
+                Folder = this.$Folder;
 
             Body.set('html', '');
 
@@ -377,13 +377,13 @@ define('controls/projects/project/media/FolderPanel', [
 
                 let WatermarkInput;
 
-                const Effects           = Folder.getEffects(),
-                      Greyscale         = Body.getElement('[name="effect-greyscale"]'),
-                      WatermarkPosition = Body.getElement('[name="effect-watermark_position"]'),
-                      WatermarkRatio    = Body.getElement('[name="effect-watermark_ratio"]'),
-                      Watermark         = Body.getElement('.effect-watermark'),
-                      WatermarkCell     = Body.getElement('.effect-watermark-cell'),
-                      WatermarkRow      = Body.getElement('.effect-watermark-row');
+                const Effects = Folder.getEffects(),
+                    Greyscale = Body.getElement('[name="effect-greyscale"]'),
+                    WatermarkPosition = Body.getElement('[name="effect-watermark_position"]'),
+                    WatermarkRatio = Body.getElement('[name="effect-watermark_ratio"]'),
+                    Watermark = Body.getElement('.effect-watermark'),
+                    WatermarkCell = Body.getElement('.effect-watermark-cell'),
+                    WatermarkRow = Body.getElement('.effect-watermark-row');
 
                 self.$EffectWatermark = Body.getElement('[name="effect-watermark"]');
 
@@ -412,30 +412,30 @@ define('controls/projects/project/media/FolderPanel', [
                 }
 
                 self.$EffectBlur = new QUIRange({
-                    name  : 'effect-blur',
-                    value : Effects.blur,
-                    min   : 0,
-                    max   : 100,
+                    name: 'effect-blur',
+                    value: Effects.blur,
+                    min: 0,
+                    max: 100,
                     events: {
                         onChange: self.$refreshImageEffectFrame
                     }
                 }).inject(Body.getElement('.effect-blur'));
 
                 self.$EffectBrightness = new QUIRange({
-                    name  : 'effect-brightness',
-                    value : Effects.brightness,
-                    min   : -100,
-                    max   : 100,
+                    name: 'effect-brightness',
+                    value: Effects.brightness,
+                    min: -100,
+                    max: 100,
                     events: {
                         onChange: self.$refreshImageEffectFrame
                     }
                 }).inject(Body.getElement('.effect-brightness'));
 
                 self.$EffectContrast = new QUIRange({
-                    name  : 'effect-contrast',
-                    value : Effects.contrast,
-                    min   : -100,
-                    max   : 100,
+                    name: 'effect-contrast',
+                    value: Effects.contrast,
+                    min: -100,
+                    max: 100,
                     events: {
                         onChange: self.$refreshImageEffectFrame
                     }
@@ -453,9 +453,9 @@ define('controls/projects/project/media/FolderPanel', [
 
 
                 new QUIButton({
-                    text  : Locale.get(lg, 'projects.project.site.media.folderPanel.btn.effectsRecursive'),
+                    text: Locale.get(lg, 'projects.project.site.media.folderPanel.btn.effectsRecursive'),
                     styles: {
-                        'float'     : 'right',
+                        'float': 'right',
                         marginBottom: 20
                     },
                     events: {
@@ -468,10 +468,10 @@ define('controls/projects/project/media/FolderPanel', [
                 // watermark
                 const Select = new QUISelect({
                     menuWidth: 300,
-                    styles   : {
+                    styles: {
                         width: 260
                     },
-                    events   : {
+                    events: {
                         onChange: function (value) {
                             if (value === 'default' || value === '') {
                                 WatermarkRow.setStyle('display', 'none');
@@ -511,7 +511,7 @@ define('controls/projects/project/media/FolderPanel', [
 
                 WatermarkInput = new MediaInput({
                     styles: {
-                        clear  : 'both',
+                        clear: 'both',
                         'float': 'left'
                     },
                     events: {
@@ -558,13 +558,13 @@ define('controls/projects/project/media/FolderPanel', [
             const self = this;
 
             this.createSheet({
-                icon       : 'fa fa-sort-amount-asc',
-                title      : Locale.get('quiqqer/core', 'projects.project.site.media.priority.sheet.title'),
+                icon: 'fa fa-sort-amount-asc',
+                title: Locale.get('quiqqer/core', 'projects.project.site.media.priority.sheet.title'),
                 closeButton: {
                     textimage: 'fa fa-remove',
-                    text     : Locale.get('quiqqer/core', 'cancel')
+                    text: Locale.get('quiqqer/core', 'cancel')
                 },
-                events     : {
+                events: {
                     onOpen: function (Sheet) {
                         const Content = Sheet.getContent();
 
@@ -576,7 +576,7 @@ define('controls/projects/project/media/FolderPanel', [
                             'controls/projects/project/media/Priority'
                         ], function (Priority) {
                             new Priority({
-                                project : self.getAttribute('project'),
+                                project: self.getAttribute('project'),
                                 folderId: self.getAttribute('folderId')
                             }).inject(Content);
                         });
@@ -596,13 +596,13 @@ define('controls/projects/project/media/FolderPanel', [
             const self = this;
 
             new QUIConfirm({
-                title      : Locale.get(lg, 'media.folderPanel.window.effect.recursive.title'),
-                maxWidth   : 533,
-                maxHeight  : 300,
-                text       : Locale.get(lg, 'media.folderPanel.window.effect.recursive.text'),
+                title: Locale.get(lg, 'media.folderPanel.window.effect.recursive.title'),
+                maxWidth: 533,
+                maxHeight: 300,
+                text: Locale.get(lg, 'media.folderPanel.window.effect.recursive.text'),
                 information: Locale.get(lg, 'media.folderPanel.window.effect.recursive.information'),
-                autoclose  : false,
-                events     : {
+                autoclose: false,
+                events: {
                     onSubmit: function (Win) {
                         Win.Loader.show();
 
@@ -611,7 +611,7 @@ define('controls/projects/project/media/FolderPanel', [
                                 Win.close();
                             }, {
                                 folderId: self.$Folder.getId(),
-                                project : self.$Folder.getMedia().getProject().getName()
+                                project: self.$Folder.getMedia().getProject().getName()
                             });
                         });
                     }
@@ -629,15 +629,15 @@ define('controls/projects/project/media/FolderPanel', [
 
             // permissions
             new QUIButton({
-                image : 'fa fa-shield',
-                name  : 'permissions',
-                alt   : Locale.get('quiqqer/core', 'projects.project.site.media.filePanel.permissions'),
-                title : Locale.get('quiqqer/core', 'projects.project.site.media.filePanel.permissions'),
+                image: 'fa fa-shield',
+                name: 'permissions',
+                alt: Locale.get('quiqqer/core', 'projects.project.site.media.filePanel.permissions'),
+                title: Locale.get('quiqqer/core', 'projects.project.site.media.filePanel.permissions'),
                 styles: {
-                    'border-left-width' : 1,
+                    'border-left-width': 1,
                     'border-right-width': 1,
-                    'float'             : 'right',
-                    width               : 40
+                    'float': 'right',
+                    width: 40
                 },
                 events: {
                     onClick: this.openPermissions
@@ -646,9 +646,9 @@ define('controls/projects/project/media/FolderPanel', [
 
             this.addButton(
                 new QUIButton({
-                    text     : Locale.get(lg, 'projects.project.site.media.filePanel.btn.save.text'),
+                    text: Locale.get(lg, 'projects.project.site.media.filePanel.btn.save.text'),
                     textimage: 'fa fa-save',
-                    events   : {
+                    events: {
                         onClick: function () {
                             self.save();
                         }
@@ -656,9 +656,9 @@ define('controls/projects/project/media/FolderPanel', [
                 })
             ).addButton(
                 new QUIButton({
-                    alt   : Locale.get(lg, 'projects.project.site.media.filePanel.btn.delete.text'),
-                    title : Locale.get(lg, 'projects.project.site.media.filePanel.btn.delete.text'),
-                    icon  : 'fa fa-trash-o',
+                    alt: Locale.get(lg, 'projects.project.site.media.filePanel.btn.delete.text'),
+                    title: Locale.get(lg, 'projects.project.site.media.filePanel.btn.delete.text'),
+                    icon: 'fa fa-trash-o',
                     events: {
                         onClick: function () {
                             self.del();
@@ -678,18 +678,18 @@ define('controls/projects/project/media/FolderPanel', [
             this.getCategoryBar().clear();
 
             this.addCategory({
-                text  : Locale.get(lg, 'projects.project.site.media.filePanel.details.text'),
-                name  : 'details',
-                icon  : 'fa fa-folder-open-o',
+                text: Locale.get(lg, 'projects.project.site.media.filePanel.details.text'),
+                name: 'details',
+                icon: 'fa fa-folder-open-o',
                 events: {
                     onActive: this.openDetails
                 }
             });
 
             this.addCategory({
-                text  : Locale.get(lg, 'projects.project.site.media.filePanel.image.effects.text'),
-                name  : 'effects',
-                icon  : 'fa fa-magic',
+                text: Locale.get(lg, 'projects.project.site.media.filePanel.image.effects.text'),
+                name: 'effects',
+                icon: 'fa fa-magic',
                 events: {
                     onActive: this.openEffects
                 }
@@ -730,26 +730,26 @@ define('controls/projects/project/media/FolderPanel', [
             }
 
 
-            const fileId            = this.$previewImageData.id,
-                  project           = this.$Media.getProject().getName(),
-                  Content           = this.getContent(),
-                  WatermarkPosition = Content.getElement('[name="effect-watermark_position"]'),
-                  WatermarkRatio    = Content.getElement('[name="effect-watermark_ratio"]');
+            const fileId = this.$previewImageData.id,
+                project = this.$Media.getProject().getName(),
+                Content = this.getContent(),
+                WatermarkPosition = Content.getElement('[name="effect-watermark_position"]'),
+                WatermarkRatio = Content.getElement('[name="effect-watermark_ratio"]');
 
             const Greyscale = Content.getElement('[name="effect-greyscale"]');
             let url = URL_LIB_DIR + 'QUI/Projects/Media/bin/effectPreview.php?';
 
             url = url + Object.toQueryString({
-                id                : fileId,
-                project           : project,
-                blur              : this.$EffectBlur.getValue(),
-                brightness        : this.$EffectBrightness.getValue(),
-                contrast          : this.$EffectContrast.getValue(),
-                greyscale         : Greyscale.checked ? 1 : 0,
-                watermark         : this.$EffectWatermark.value,
+                id: fileId,
+                project: project,
+                blur: this.$EffectBlur.getValue(),
+                brightness: this.$EffectBrightness.getValue(),
+                contrast: this.$EffectContrast.getValue(),
+                greyscale: Greyscale.checked ? 1 : 0,
+                watermark: this.$EffectWatermark.value,
                 watermark_position: WatermarkPosition.value,
-                watermark_ratio   : WatermarkRatio.value,
-                '__nocache'       : String.uniqueID()
+                watermark_ratio: WatermarkRatio.value,
+                '__nocache': String.uniqueID()
             });
 
             Image.set('src', url);
@@ -792,7 +792,7 @@ define('controls/projects/project/media/FolderPanel', [
          */
         openPermissions: function () {
             const Parent = this.getParent(),
-                  Folder = this.$Folder;
+                Folder = this.$Folder;
 
             require(['controls/permissions/Panel'], function (PermPanel) {
                 Parent.appendChild(

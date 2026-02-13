@@ -35,7 +35,7 @@ define('controls/projects/project/media/Input', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/projects/project/media/Input',
+        Type: 'controls/projects/project/media/Input',
 
         Binds: [
             '$onInject',
@@ -43,16 +43,16 @@ define('controls/projects/project/media/Input', [
         ],
 
         options: {
-            name  : '',
+            name: '',
             styles: false,
 
-            fileid              : false,
-            breadcrumb          : true,     // you can specified if the breadcrumb is shown or not
-            selectable_types    : false,    // you can specified which types are selectable
+            fileid: false,
+            breadcrumb: true,     // you can specified if the breadcrumb is shown or not
+            selectable_types: false,    // you can specified which types are selectable
             selectable_mimetypes: false,    // you can specified which mime types are selectable
-            cssclasses          : false,    // css classes can be selected
-            mediabutton         : true,     // images can be selected
-            ratio_warning       : false     // if the image has not an 1:1 ration, a warning icon is displayed
+            cssclasses: false,    // css classes can be selected
+            mediabutton: true,     // images can be selected
+            ratio_warning: false     // if the image has not an 1:1 ration, a warning icon is displayed
         },
 
         initialize: function (options, Input) {
@@ -98,9 +98,9 @@ define('controls/projects/project/media/Input', [
             const self = this;
 
             this.$Elm = new Element('div', {
-                'class'     : 'qui-controls-project-media-input box',
+                'class': 'qui-controls-project-media-input box',
                 'data-quiid': this.getId(),
-                'data-qui'  : 'controls/projects/project/media/Input'
+                'data-qui': 'controls/projects/project/media/Input'
             });
 
             if (!this.$Input) {
@@ -139,9 +139,9 @@ define('controls/projects/project/media/Input', [
 
             // preview
             this.$Preview = new Element('div', {
-                html   : '&nbsp;',
+                html: '&nbsp;',
                 'class': 'qui-controls-project-media-input-preview',
-                events : {
+                events: {
                     mouseenter: function () {
                         let pos = self.$Preview.getPosition();
                         let size = 250;
@@ -160,18 +160,18 @@ define('controls/projects/project/media/Input', [
 
                         const Parent = new Element('div', {
                             'class': 'qui-controls-project-media-input-preview--view',
-                            html   : '<div></div>',
-                            styles : {
+                            html: '<div></div>',
+                            styles: {
                                 backgroundColor: '#fff',
-                                borderRadius   : 5,
-                                boxShadow      : '1px 1px 5px -2px rgba(0, 0, 0, 0.75)',
-                                height         : 250,
-                                width          : 250,
-                                padding        : 5,
-                                position       : 'absolute',
-                                top            : top,
-                                left           : left,
-                                zIndex         : 10
+                                borderRadius: 5,
+                                boxShadow: '1px 1px 5px -2px rgba(0, 0, 0, 0.75)',
+                                height: 250,
+                                width: 250,
+                                padding: 5,
+                                position: 'absolute',
+                                top: top,
+                                left: left,
+                                zIndex: 10
                             }
                         }).inject(document.body);
 
@@ -184,11 +184,11 @@ define('controls/projects/project/media/Input', [
 
                         new Element('div', {
                             styles: {
-                                background        : url,
-                                backgroundSize    : 'contain',
+                                background: url,
+                                backgroundSize: 'contain',
                                 backgroundPosition: 'center center',
-                                height            : '100%',
-                                width             : '100%'
+                                height: '100%',
+                                width: '100%'
                             }
                         }).inject(Parent);
                     },
@@ -199,23 +199,23 @@ define('controls/projects/project/media/Input', [
             }).inject(this.$Elm);
 
             this.$Path = new Element('div', {
-                html   : '&nbsp;',
+                html: '&nbsp;',
                 'class': 'qui-controls-project-media-input-path'
             }).inject(this.$Elm);
 
             this.$MediaButton = new QUIButton({
-                name  : 'media-input-image-select',
-                icon  : 'fa fa-picture-o',
-                alt   : Locale.get('quiqqer/core', 'projects.project.site.media.input.select.alt'),
-                title : Locale.get('quiqqer/core', 'projects.project.site.media.input.select.title'),
+                name: 'media-input-image-select',
+                icon: 'fa fa-picture-o',
+                alt: Locale.get('quiqqer/core', 'projects.project.site.media.input.select.alt'),
+                title: Locale.get('quiqqer/core', 'projects.project.site.media.input.select.title'),
                 styles: {
                     width: 50
                 },
                 events: {
                     onClick: function () {
-                        let value   = self.$Input.value,
+                        let value = self.$Input.value,
                             project = '',
-                            fileid  = false;
+                            fileid = false;
 
                         if (self.$Input.get('data-project')) {
                             project = self.$Input.get('data-project');
@@ -250,12 +250,12 @@ define('controls/projects/project/media/Input', [
                         }
 
                         new MediaPopup({
-                            project             : project,
-                            fileid              : fileid,
-                            breadcrumb          : self.getAttribute('breadcrumb'),
-                            selectable_types    : self.getAttribute('selectable_types'),
+                            project: project,
+                            fileid: fileid,
+                            breadcrumb: self.getAttribute('breadcrumb'),
+                            selectable_types: self.getAttribute('selectable_types'),
                             selectable_mimetypes: self.getAttribute('selectable_mimetypes'),
-                            events              : {
+                            events: {
                                 onSubmit: function (Popup, params) {
                                     self.$Input.value = params.url;
 
@@ -279,10 +279,10 @@ define('controls/projects/project/media/Input', [
 
             if (this.getAttribute('cssclasses')) {
                 this.$CSSButton = new QUIButton({
-                    name  : 'media-input-css-select',
-                    icon  : 'fa fa-css3',
-                    alt   : Locale.get('quiqqer/core', 'projects.project.site.media.input.cssclass.alt'),
-                    title : Locale.get('quiqqer/core', 'projects.project.site.media.input.cssclass.title'),
+                    name: 'media-input-css-select',
+                    icon: 'fa fa-css3',
+                    alt: Locale.get('quiqqer/core', 'projects.project.site.media.input.cssclass.alt'),
+                    title: Locale.get('quiqqer/core', 'projects.project.site.media.input.cssclass.title'),
                     styles: {
                         width: 50
                     },
@@ -295,10 +295,10 @@ define('controls/projects/project/media/Input', [
             }
 
             new QUIButton({
-                name  : 'media-input-clear',
-                icon  : 'fa fa-remove',
-                alt   : Locale.get('quiqqer/core', 'projects.project.site.media.input.clear.alt'),
-                title : Locale.get('quiqqer/core', 'projects.project.site.media.input.clear.alt'),
+                name: 'media-input-clear',
+                icon: 'fa fa-remove',
+                alt: Locale.get('quiqqer/core', 'projects.project.site.media.input.clear.alt'),
+                title: Locale.get('quiqqer/core', 'projects.project.site.media.input.clear.alt'),
                 styles: {
                     width: 50
                 },
@@ -399,14 +399,14 @@ define('controls/projects/project/media/Input', [
             // loader image
             const MiniLoader = new Element('div', {
                 'class': 'fa fa-spinner fa-spin',
-                styles : {
-                    fontSize : 18,
-                    height   : 20,
-                    left     : 4,
-                    position : 'relative',
+                styles: {
+                    fontSize: 18,
+                    height: 20,
+                    left: 4,
+                    position: 'relative',
                     textAlign: 'center',
-                    top      : 4,
-                    width    : 20
+                    top: 4,
+                    width: 20
                 }
             }).inject(this.$Preview);
 
@@ -422,13 +422,13 @@ define('controls/projects/project/media/Input', [
                 if (self.getAttribute('ratio_warning') && size.width !== size.height) {
                     new Element('span', {
                         'class': 'fa fa-exclamation-triangle',
-                        styles : {
-                            bottom  : 0,
-                            color   : '#FDDD5C',
-                            left    : 25,
+                        styles: {
+                            bottom: 0,
+                            color: '#FDDD5C',
+                            left: 25,
                             position: 'absolute'
                         },
-                        title  : Locale.get(lg, 'control.project.input.ratio.warning')
+                        title: Locale.get(lg, 'control.project.input.ratio.warning')
                     }).inject(self.getElm());
                 } else {
                     self.getElm().getElements('.fa-exclamation-triangle').destroy();
@@ -456,9 +456,9 @@ define('controls/projects/project/media/Input', [
 
             }, {
                 fileurl: value,
-                params : JSON.encode({
+                params: JSON.encode({
                     height: 30,
-                    width : 30
+                    width: 30
                 })
             });
         },

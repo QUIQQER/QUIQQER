@@ -26,7 +26,7 @@ define('controls/projects/project/media/Entry', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/projects/project/media/Entry',
+        Type: 'controls/projects/project/media/Entry',
 
         Binds: [
             '$onItemUpdate',
@@ -39,8 +39,8 @@ define('controls/projects/project/media/Entry', [
             var Parent = this.getAttribute('Parent');
 
             this.$Media = Parent.getMedia();
-            this.$Item  = null;
-            this.$Elm   = null;
+            this.$Item = null;
+            this.$Elm = null;
         },
 
         /**
@@ -84,7 +84,7 @@ define('controls/projects/project/media/Entry', [
 
             Close.addEvent('click', this.destroy);
             Close.set({
-                alt  : Locale.get('quiqqer/core', 'items.entry.btn.remove'),
+                alt: Locale.get('quiqqer/core', 'items.entry.btn.remove'),
                 title: Locale.get('quiqqer/core', 'items.entry.btn.remove')
             });
 
@@ -109,7 +109,7 @@ define('controls/projects/project/media/Entry', [
          * @return {Object} this (controls/projects/project/media/Entry)
          */
         refresh: function () {
-            var self      = this,
+            var self = this,
                 EntryIcon = this.$Elm.getElement('.media-item-entry-icon');
 
             EntryIcon.removeClass('fa-picture-o');
