@@ -605,9 +605,12 @@ class Media extends QUI\QDOM
 
             // create image
             $Image = $this->getImageManager()->read($file);
-            $sizes = QUI\Utils\Math::resize($info['width'], $info['height'], $maxConfigSize);
 
-            $Image->scaleDown($sizes[1], $sizes[2]);
+            if (!empty($maxConfigSize)) {
+                $sizes = QUI\Utils\Math::resize($info['width'], $info['height'], $maxConfigSize);
+                $Image->scaleDown($sizes[1], $sizes[2]);
+            }
+
             $Image->save($file);
             $info = QUI\Utils\System\File::getInfo($file);
         }
@@ -646,7 +649,8 @@ class Media extends QUI\QDOM
                 'mime_type' => $info['mime_type'],
                 'image_height' => $imageHeight,
                 'image_width' => $imageWidth,
-                'type' => $imageType
+                'type' => $imageType,
+                'e_date' => date('Y-m-d H:i:s')
             ],
             ['id' => $id]
         );

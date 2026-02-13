@@ -198,22 +198,51 @@ define('classes/projects/project/Media', [
          */
         replace: function (childid, File, onfinish) {
             return new Promise(function (resolve, reject) {
-                // upload file
-                require(['UploadManager'], function (UploadManager) {
-                    UploadManager.uploadFiles([File], 'ajax_media_replace', {
-                        project   : this.getProject().getName(),
-                        fileid    : childid,
-                        phponstart: 'ajax_media_checkreplace',
-                        events    : {
-                            onComplete: function () {
-                                if (typeof onfinish === 'function') {
-                                    onfinish();
+                const startUpload = function (parentId) {
+                    // upload file
+                    require(['UploadManager'], function (UploadManager) {
+                        const params = {
+                            project   : this.getProject().getName(),
+                            fileid    : childid,
+                            phponstart: 'ajax_media_checkreplace',
+                            events    : {
+                                onComplete: function () {
+                                    if (typeof onfinish === 'function') {
+                                        onfinish();
+                                    }
+                                    resolve();
                                 }
-                                resolve();
                             }
+                        };
+
+                        if (parentId) {
+                            params.parentid = parentId;
                         }
+
+                        UploadManager.uploadFiles([File], 'ajax_media_replace', params);
+                    }.bind(this), reject);
+                }.bind(this);
+
+                // keep parent id in upload params (important for follow-up refresh/message flow)
+                if (this.$items[childid] && typeof this.$items[childid].getParentId === 'function') {
+                    this.$items[childid].getParentId().then(startUpload).catch(function () {
+                        startUpload(null);
                     });
-                }.bind(this), reject);
+                    return;
+                }
+
+                this.get(childid).then(function (Item) {
+                    if (!Item || typeof Item.getParentId !== 'function') {
+                        startUpload(null);
+                        return;
+                    }
+
+                    Item.getParentId().then(startUpload).catch(function () {
+                        startUpload(null);
+                    });
+                }).catch(function () {
+                    startUpload(null);
+                });
 
             }.bind(this));
         },
