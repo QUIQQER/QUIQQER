@@ -1,7 +1,6 @@
 /**
  * Send e-mail to a QUIQQER user
  *
- * @module controls/users/password/send/SendPassword
  *
  * @event onLoad [this] - Fires if control has finished loading everything
  */

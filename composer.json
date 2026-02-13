@@ -33,7 +33,7 @@
     "martinvenus/knapsack": "^10",
     "doctrine/dbal": "^4",
     "html2text/html2text": "^4",
-    "intervention/image": "^2",
+    "intervention/image": "^3.10",
     "league/climate": "^3",
     "league/csv": "^9",
     "masterminds/html5": "^2",

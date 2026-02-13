@@ -1,6 +1,4 @@
 /**
- * @module controls/packages/Package
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onLoad
  * @event onSearchBegin

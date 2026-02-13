@@ -1,8 +1,5 @@
 /**
  * Window: Edit a server
- *
- * @module controls/packages/server/EditServerWindow
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/packages/server/EditServerWindow', [
 

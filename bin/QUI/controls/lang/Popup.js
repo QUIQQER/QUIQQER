@@ -1,8 +1,6 @@
 /**
  * List all available languages
  *
- * @module controls/lang/Popup
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onSubmit [ {Array}, {this} ]
  */

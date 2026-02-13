@@ -1,6 +1,3 @@
-/**
- * @module controls/users/auth/GlobalAuthenticatorSettings
- */
 define('controls/users/auth/GlobalAuthenticatorSettings', [
 
     'qui/QUI',

@@ -1,5 +1,4 @@
 /**
- * @module controls/packages/System
  *
  * @event onLoad
  * @event onShowLoader

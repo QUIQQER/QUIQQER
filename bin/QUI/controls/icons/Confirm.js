@@ -1,7 +1,3 @@
-/**
- * @module controls/icons/Confirm
- * @author www.pcsg.de (Henning Leutz)
- */
 define('controls/icons/Confirm', [
 
     'qui/QUI',

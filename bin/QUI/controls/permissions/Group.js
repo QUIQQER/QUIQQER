@@ -1,8 +1,5 @@
 /**
  * Permissions for a Group
- *
- * @module controls/permissions/Group
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/permissions/Group', [
 

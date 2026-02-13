@@ -2,7 +2,6 @@
  * HTML Preview
  *
  * @package controls/editors/Input
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/editors/Preview', [
 

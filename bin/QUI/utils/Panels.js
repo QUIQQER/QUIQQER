@@ -1,9 +1,6 @@
 /**
  * Helper for panels
  * helps to open a new panel, like a Project Panel or a Site Panel
- *
- * @module utils/Panels
- * @author www.pcsg.de (Henning Leutz)
  */
 define('utils/Panels', [
     'qui/QUI',

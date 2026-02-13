@@ -3,9 +3,6 @@
  *
  * The type window create a qui/controls/windows/Confirm
  * with all available types for the project
- *
- * @module controls/projects/TypeWindow
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/projects/TypeWindow', [
 

@@ -1,9 +1,5 @@
-
 /**
  * A media image
- *
- * @module classes/projects/project/media/Image
- * @author www.pcsg.de (Henning Leutz)
  */
 
 define('classes/projects/project/media/Image', [
@@ -20,8 +16,8 @@ define('classes/projects/project/media/Image', [
      */
     return new Class({
 
-        Extends : MediaItem,
-        Type    : 'classes/projects/project/media/Image'
+        Extends: MediaItem,
+        Type: 'classes/projects/project/media/Image'
 
     });
 });

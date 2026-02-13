@@ -1,8 +1,6 @@
 /**
  * Site search panel
  *
- * @module controls/projects/project/site/Search
- * @author www.pcsg.de (Henning Leutz)
  **/
 define('controls/projects/project/site/Search', [
 

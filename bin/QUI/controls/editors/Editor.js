@@ -4,8 +4,6 @@
  * The editor main class is the parent class for all WYSIWYG editors.
  * Every WYSIWYG editor must inherit from this class
  *
- * @module controls/editors/Editor
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onInit [ {self} ]
  * @event onDraw [ {self} ]

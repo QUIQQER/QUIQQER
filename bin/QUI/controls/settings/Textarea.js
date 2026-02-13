@@ -2,9 +2,6 @@
  * Control for settings that use a Textarea
  *
  * Reads/writes textarea lines in a JSON array
- *
- * @module package/quiqqer/core/bin/QUI/controls/settings/Textarea
- * @author www.pcsg.de (Patrick Müller)
  */
 define('package/quiqqer/core/bin/QUI/controls/settings/Textarea', [
 

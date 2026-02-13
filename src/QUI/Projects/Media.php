@@ -7,7 +7,6 @@
 namespace QUI\Projects;
 
 use Exception;
-use Intervention\Image\Constraint;
 use Intervention\Image\ImageManager;
 use QUI;
 use QUI\Projects\Media\Utils;
@@ -121,7 +120,7 @@ class Media extends QUI\QDOM
     /**
      * Return the Logo image object of the media
      */
-    public function getLogoImage(): QUI\Projects\Media\Image|null
+    public function getLogoImage(): QUI\Projects\Media\Image | null
     {
         $Project = $this->getProject();
 
@@ -142,7 +141,7 @@ class Media extends QUI\QDOM
      *
      * @return QUI\Projects\Media\Image|null
      */
-    public function getPlaceholderImage(): QUI\Projects\Media\Image|null
+    public function getPlaceholderImage(): QUI\Projects\Media\Image | null
     {
         $Project = $this->getProject();
 
@@ -342,7 +341,7 @@ class Media extends QUI\QDOM
      *
      * @return string
      */
-    public function getTable(bool|string $type = false): string
+    public function getTable(bool | string $type = false): string
     {
         if ($type == 'relations') {
             return QUI::getDBTableName($this->Project->getAttribute('name') . '_media_relations');
@@ -605,18 +604,12 @@ class Media extends QUI\QDOM
             $info = FileUtils::getInfo($file, ['imagesize' => true]);
 
             // create image
-            $Image = $this->getImageManager()->make($file);
-            $sizes = QUI\Utils\Math::resize($info['width'], $info['height'], $maxConfigSize);
+            $Image = $this->getImageManager()->read($file);
 
-            $Image->resize(
-                $sizes[1],
-                $sizes[2],
-                static function ($Constraint): void {
-                    /* @var $Constraint Constraint; */
-                    $Constraint->aspectRatio();
-                    $Constraint->upsize();
-                }
-            );
+            if (!empty($maxConfigSize)) {
+                $sizes = QUI\Utils\Math::resize($info['width'], $info['height'], $maxConfigSize);
+                $Image->scaleDown($sizes[1], $sizes[2]);
+            }
 
             $Image->save($file);
             $info = QUI\Utils\System\File::getInfo($file);
@@ -656,7 +649,8 @@ class Media extends QUI\QDOM
                 'mime_type' => $info['mime_type'],
                 'image_height' => $imageHeight,
                 'image_width' => $imageWidth,
-                'type' => $imageType
+                'type' => $imageType,
+                'e_date' => date('Y-m-d H:i:s')
             ],
             ['id' => $id]
         );
@@ -678,7 +672,7 @@ class Media extends QUI\QDOM
     /**
      * Return the parent id
      */
-    public function getParentIdFrom(int $id): bool|int
+    public function getParentIdFrom(int $id): bool | int
     {
         if ($id <= 1) {
             return false;
@@ -723,10 +717,10 @@ class Media extends QUI\QDOM
         }
 
         if (class_exists('Imagick') && ($library === '' || $library === 'imagick')) {
-            return new ImageManager(['driver' => 'imagick']);
+            return ImageManager::imagick();
         }
 
-        return new ImageManager(['driver' => 'gd']);
+        return ImageManager::gd();
     }
 
     /**

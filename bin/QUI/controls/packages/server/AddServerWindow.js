@@ -1,8 +1,5 @@
 /**
  * Window: Add a server
- *
- * @module controls/packages/server/AddServerWindow
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/packages/server/AddServerWindow', [
 

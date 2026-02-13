@@ -1,8 +1,5 @@
 /**
  * The type input set the type control to an input field
- *
- * @module controls/projects/TypeInput
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/projects/TypeInput', [
 

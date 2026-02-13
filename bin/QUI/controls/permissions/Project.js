@@ -1,8 +1,5 @@
 /**
  * Permissions Panel -> Project
- *
- * @module controls/permissions/Project
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/permissions/Project', [
 

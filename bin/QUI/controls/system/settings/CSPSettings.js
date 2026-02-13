@@ -1,5 +1,4 @@
 /**
- * @module Content Security Policy
  *
  * Config / Settings Control for CSP Settings
  * Content Security Policy

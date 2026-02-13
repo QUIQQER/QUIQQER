@@ -1,8 +1,6 @@
 /**
  * Media for a Project
  *
- * @module classes/projects/project/Media
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onItemRename [ self, Item ]
  * @event onItemRefresh [ self, Item ]
@@ -38,12 +36,12 @@ define('classes/projects/project/Media', [
     return new Class({
 
         Extends: DOM,
-        Type   : 'classes/projects/project/Media',
+        Type: 'classes/projects/project/Media',
 
         initialize: function (Project) {
             this.$Project = Project;
-            this.$Panel   = null;
-            this.$items   = {};
+            this.$Panel = null;
+            this.$items = {};
         },
 
         /**
@@ -135,7 +133,7 @@ define('classes/projects/project/Media', [
 
                     resolve(children);
                 }, {
-                    fileid : JSON.encode(id),
+                    fileid: JSON.encode(id),
                     project: self.getProject().getName(),
                     onError: function (Exception) {
                         reject(Exception);
@@ -165,7 +163,7 @@ define('classes/projects/project/Media', [
 
                     resolve(result);
                 }, {
-                    fileid : JSON.encode(id),
+                    fileid: JSON.encode(id),
                     project: self.getProject().getName(),
                     onError: function (Exception) {
                         reject(Exception);
@@ -198,22 +196,51 @@ define('classes/projects/project/Media', [
          */
         replace: function (childid, File, onfinish) {
             return new Promise(function (resolve, reject) {
-                // upload file
-                require(['UploadManager'], function (UploadManager) {
-                    UploadManager.uploadFiles([File], 'ajax_media_replace', {
-                        project   : this.getProject().getName(),
-                        fileid    : childid,
-                        phponstart: 'ajax_media_checkreplace',
-                        events    : {
-                            onComplete: function () {
-                                if (typeof onfinish === 'function') {
-                                    onfinish();
+                const startUpload = function (parentId) {
+                    // upload file
+                    require(['UploadManager'], function (UploadManager) {
+                        const params = {
+                            project: this.getProject().getName(),
+                            fileid: childid,
+                            phponstart: 'ajax_media_checkreplace',
+                            events: {
+                                onComplete: function () {
+                                    if (typeof onfinish === 'function') {
+                                        onfinish();
+                                    }
+                                    resolve();
                                 }
-                                resolve();
                             }
+                        };
+
+                        if (parentId) {
+                            params.parentid = parentId;
                         }
+
+                        UploadManager.uploadFiles([File], 'ajax_media_replace', params);
+                    }.bind(this), reject);
+                }.bind(this);
+
+                // keep parent id in upload params (important for follow-up refresh/message flow)
+                if (this.$items[childid] && typeof this.$items[childid].getParentId === 'function') {
+                    this.$items[childid].getParentId().then(startUpload).catch(function () {
+                        startUpload(null);
                     });
-                }.bind(this), reject);
+                    return;
+                }
+
+                this.get(childid).then(function (Item) {
+                    if (!Item || typeof Item.getParentId !== 'function') {
+                        startUpload(null);
+                        return;
+                    }
+
+                    Item.getParentId().then(startUpload).catch(function () {
+                        startUpload(null);
+                    });
+                }).catch(function () {
+                    startUpload(null);
+                });
 
             }.bind(this));
         },
@@ -233,7 +260,7 @@ define('classes/projects/project/Media', [
             return new Promise(function (resolve, reject) {
                 params = ObjectUtils.combine(params, {
                     project: this.getProject().getName(),
-                    fileid : JSON.encode(id),
+                    fileid: JSON.encode(id),
                     onError: reject
                 });
 
@@ -280,7 +307,7 @@ define('classes/projects/project/Media', [
             return new Promise(function (resolve, reject) {
                 params = ObjectUtils.combine(params, {
                     project: this.getProject().getName(),
-                    fileid : JSON.encode(id),
+                    fileid: JSON.encode(id),
                     onError: reject
                 });
 
@@ -338,7 +365,7 @@ define('classes/projects/project/Media', [
 
                 params = ObjectUtils.combine(params, {
                     project: this.getProject().getName(),
-                    fileid : JSON.encode(id),
+                    fileid: JSON.encode(id),
                     onError: reject
                 });
 
@@ -399,22 +426,22 @@ define('classes/projects/project/Media', [
             }
 
             Item.addEvents({
-                onRename    : function (Item) {
+                onRename: function (Item) {
                     self.fireEvent('itemRename', [self, Item]);
                 },
-                onActivate  : function (Item) {
+                onActivate: function (Item) {
                     self.fireEvent('itemActivate', [self, Item]);
                 },
                 onDeactivate: function (Item) {
                     self.fireEvent('itemDeactivate', [self, Item]);
                 },
-                onRefresh   : function (Item) {
+                onRefresh: function (Item) {
                     self.fireEvent('itemRefresh', [self, Item]);
                 },
-                onSave      : function (Item) {
+                onSave: function (Item) {
                     self.fireEvent('itemSave', [self, Item]);
                 },
-                onDelete    : function (Item) {
+                onDelete: function (Item) {
                     self.fireEvent('itemDelete', [self, Item.getId()]);
                 }
             });
@@ -438,7 +465,7 @@ define('classes/projects/project/Media', [
                     self.fireEvent('itemsHide', [self, ids]);
                 }, {
                     project: self.getProject().getName(),
-                    ids    : JSON.encode(ids),
+                    ids: JSON.encode(ids),
                     onError: reject
                 });
             });
@@ -459,7 +486,7 @@ define('classes/projects/project/Media', [
                     self.fireEvent('itemsVisible', [self, ids]);
                 }, {
                     project: self.getProject().getName(),
-                    ids    : JSON.encode(ids),
+                    ids: JSON.encode(ids),
                     onError: reject
                 });
             });
@@ -478,8 +505,8 @@ define('classes/projects/project/Media', [
             return new Promise(function (resolve, reject) {
                 Ajax.get('ajax_media_search', resolve, {
                     project: self.getProject().getName(),
-                    search : search,
-                    params : JSON.encode(params),
+                    search: search,
+                    params: JSON.encode(params),
                     onError: reject
                 });
             });

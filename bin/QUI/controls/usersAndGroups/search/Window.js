@@ -1,7 +1,3 @@
-/**
- * @module controls/usersAndGroups/search/Window
- * @author www.pcsg.de (Henning Leutz)
- */
 define('controls/usersAndGroups/search/Window', [
 
     'qui/QUI',

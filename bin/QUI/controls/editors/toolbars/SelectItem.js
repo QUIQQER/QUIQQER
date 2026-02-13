@@ -1,7 +1,3 @@
-/**
- * @module controls/editors/toolbars/SelectItem
- * @author www.pcsg.de (Henning Leutz)
- */
 define('controls/editors/toolbars/SelectItem', [
 
     'qui/QUI',

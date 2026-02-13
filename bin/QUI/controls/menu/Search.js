@@ -1,8 +1,5 @@
 /**
  * Search for QUIQQER Administration
- *
- * @module controls/menu/Search
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/menu/Search', [
 

@@ -1,8 +1,6 @@
 /**
  * The Quiqqer Dashboard
  *
- * @author www.pcsg.de (Henning Leutz)
- * @module controls/help/Dashboard
  *
  * @deprecated
  */

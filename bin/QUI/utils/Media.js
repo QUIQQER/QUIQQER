@@ -1,9 +1,7 @@
 /**
  * Comment here
  *
- * @author www.pcsg.de (Henning Leutz)
  *
- * @module
  * @package
  * @namespace
  *

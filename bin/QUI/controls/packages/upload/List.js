@@ -1,6 +1,3 @@
-/**
- * @module controls/packages/upload/List
- */
 define('controls/packages/upload/List', [
 
     'qui/QUI',

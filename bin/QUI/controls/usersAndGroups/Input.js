@@ -1,8 +1,6 @@
 /**
  * Makes an input field to a user / group selection field
  *
- * @module controls/usersAndGroups/Input
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onAddUser [ this, id ]
  * @event onAddgroup [ this, id ]

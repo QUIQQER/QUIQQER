@@ -1,8 +1,6 @@
 /**
  * Group Manager (Model)
  *
- * @author www.pcsg.de (Henning Leutz)
- * @module classes/groups/Manager
  *
  * @event onActivate [this, result, Request]
  * @event onDeactivate [this, result, Request]

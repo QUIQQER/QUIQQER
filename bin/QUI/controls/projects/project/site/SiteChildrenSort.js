@@ -1,8 +1,5 @@
 /**
  * Children sort control
- *
- * @module controls/projects/project/site/SiteChildrenSort
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/projects/project/site/SiteChildrenSort', [
 

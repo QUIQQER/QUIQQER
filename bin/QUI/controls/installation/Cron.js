@@ -1,7 +1,3 @@
-/**
- * @module controls/installation/Cron
- * @author www.pcsg.de (Henning Leutz)
- */
 define('controls/installation/Cron', [
 
     'qui/QUI',

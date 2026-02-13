@@ -1,9 +1,6 @@
 /**
  * quiqqer locale
  * Extends the QUI locale with some quiqqer relevant methods
- *
- * @module classes/Locale
- * @author www.pcsg.de (Henning Leutz)
  */
 var needle = ['qui/classes/Locale'];
 

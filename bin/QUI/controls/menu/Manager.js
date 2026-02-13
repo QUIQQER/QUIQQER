@@ -1,8 +1,5 @@
 /**
  * QUIQQER Main Menu
- *
- * @module controls/menu/Manager
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/menu/Manager', [
 

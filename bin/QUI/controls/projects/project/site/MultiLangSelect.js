@@ -1,8 +1,5 @@
 /**
  * Select sites for multiple languages
- *
- * @module controls/projects/project/site/MultiLangSelect
- * @author www.pcsg.de (Patrick Müller)
  */
 define('controls/projects/project/site/MultiLangSelect', [
 

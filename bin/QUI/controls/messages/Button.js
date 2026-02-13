@@ -1,7 +1,3 @@
-/**
- * @module controls/messages/Button
- * @author www.pcsg.de (Henning Leutz)
- */
 define('controls/messages/Button', [
 
     'qui/QUI',

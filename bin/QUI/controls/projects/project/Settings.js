@@ -1,8 +1,5 @@
 /**
  * Project settings panel
- *
- * @module controls/projects/project/Settings
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/projects/project/Settings', [
 

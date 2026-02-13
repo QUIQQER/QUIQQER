@@ -1,7 +1,3 @@
-/**
- * @module controls/packages/store/Store
- * @author www.pcsg.de (Henning Leutz)
- */
 define('controls/packages/store/Store', [
 
     'qui/QUI',

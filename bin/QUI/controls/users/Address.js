@@ -2,7 +2,6 @@
  * Address control
  * Edit and saves an user address
  *
- * @module controls/users/Address
  *
  * @event onSaved [self]
  */

@@ -1,7 +1,3 @@
-/**
- * @module controls/installation/MailSMTP
- * @author www.pcsg.de (Henning Leutz)
- */
 define('controls/installation/MailSMTP', [
 
     'qui/QUI',

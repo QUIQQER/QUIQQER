@@ -2,9 +2,6 @@
  * Settings for formating
  * - Currency, Percent, Accounting Patterns
  * - Grouping, Separators Pattern
- *
- * @module controls/system/settings/FormatSettings
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/system/settings/FormatSettings', [
 

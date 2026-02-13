@@ -2,8 +2,6 @@
  * QUI file download manager
  * For downloading files via the ajax API
  *
- * @module classes/request/Downloads
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onComplete
  *

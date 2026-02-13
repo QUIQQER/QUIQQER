@@ -1,7 +1,6 @@
 /**
  * Login Window
  *
- * @module controls/users/LoginWindow
  *
  * @event onSubmit [ Array, this ]
  * @event onLogin [self]

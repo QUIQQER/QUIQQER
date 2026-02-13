@@ -1,8 +1,5 @@
 /**
  * Display the formatted format for a file format input field
- *
- * @module controls/projects/project/settings/FileFormat
- * @author www.pcsg.de (Henning Leutz)
  */
 
 define('controls/projects/project/settings/FileFormat', [

@@ -1,8 +1,3 @@
-/**
- *
- * @module utils/Favicon
- * @author www.pcsg.de (Henning Leutz)
- */
 define('utils/Favicon', [
 
     'qui/controls/messages/Favico'

@@ -1,8 +1,5 @@
 /**
  * Cache Settings
- *
- * @module controls/cache/Settings
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/cache/Settings', [
 

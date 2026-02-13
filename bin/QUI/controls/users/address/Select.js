@@ -1,5 +1,4 @@
 /**
- * @module controls/users/address/Select
  *
  * @event onLoad [self]
  */

@@ -1,6 +1,3 @@
-/**
- * @module controls/users/SelectItem
- */
 define('controls/users/SelectItem', [
 
     'qui/QUI',

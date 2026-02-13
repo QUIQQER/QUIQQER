@@ -1,8 +1,5 @@
 /**
  * System user profile
- *
- * @module controls/system/Profile
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/system/Profile', [
 

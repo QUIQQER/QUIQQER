@@ -1,8 +1,5 @@
 /**
  * A group panel
- *
- * @module controls/groups/Group
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/groups/Group', [
 

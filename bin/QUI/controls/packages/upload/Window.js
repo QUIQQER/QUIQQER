@@ -1,5 +1,4 @@
 /**
- * @module controls/packages/upload/Window
  *
  * opens the package install upload dialog
  */

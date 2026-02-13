@@ -1,7 +1,6 @@
 /**
  * Makes a user input field to a field selection field
  *
- * @module controls/users/Select
  *
  * @event onAddItem [ this, id ]
  * @event onChange [ this ]

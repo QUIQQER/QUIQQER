@@ -1,8 +1,6 @@
 /**
  * A project Site Object
  *
- * @module classes/projects/project/Site
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onLoad [ this ]
  * @event onGetChildren [ this, {Array} ]
@@ -36,7 +34,7 @@ define('classes/projects/project/Site', [
     return new Class({
 
         Extends: DOM,
-        Type   : 'classes/projects/project/Site',
+        Type: 'classes/projects/project/Site',
 
         Binds: [
             'setAttributes',
@@ -46,8 +44,8 @@ define('classes/projects/project/Site', [
         ],
 
         options: {
-            Project   : '',
-            id        : 0,
+            Project: '',
+            id: 0,
             attributes: {}
         },
 
@@ -58,9 +56,9 @@ define('classes/projects/project/Site', [
             this.$loaded = false;
 
             this.$workingId = 'site-' +
-                              Project.getName() + '-' +
-                              Project.getLang() + '-' +
-                              id;
+                Project.getName() + '-' +
+                Project.getLang() + '-' +
+                id;
 
             this.$modulesLoaded = false;
 
@@ -77,7 +75,7 @@ define('classes/projects/project/Site', [
          */
         encode: function () {
             var Project = this.getProject(),
-                encode  = Project.encode();
+                encode = Project.encode();
 
             encode = JSON.decode(encode);
             encode.id = this.getId();
@@ -95,7 +93,7 @@ define('classes/projects/project/Site', [
          */
         load: function (onfinish) {
             var params = this.ajaxParams(),
-                Site   = this;
+                Site = this;
 
             Ajax.get('ajax_site_get', function (result) {
                 Site.setAttributes(result.attributes);
@@ -124,7 +122,7 @@ define('classes/projects/project/Site', [
                     Site.$modulesLoaded = true;
 
                     var onSiteLoad = [],
-                        jsModules  = result.modules.js;
+                        jsModules = result.modules.js;
 
                     for (var i in jsModules) {
                         if (!jsModules.hasOwnProperty(i)) {
@@ -257,7 +255,7 @@ define('classes/projects/project/Site', [
                 Ajax.get('ajax_site_getchildren', function (result) {
                     var i, len, Child;
                     var children = result.children,
-                        Project  = Site.getProject();
+                        Project = Site.getProject();
 
                     for (i = 0, len = children.length; i < len; i++) {
                         Child = Project.get(children[i].id);
@@ -377,7 +375,7 @@ define('classes/projects/project/Site', [
          * @return {Promise}
          */
         save: function (onfinish) {
-            var Site   = this,
+            var Site = this,
                 params = this.ajaxParams(),
                 status = this.getAttribute('active');
 
@@ -451,7 +449,7 @@ define('classes/projects/project/Site', [
          */
         move: function (newParentId, callback) {
             return new Promise(function (resolve, reject) {
-                var Site   = this,
+                var Site = this,
                     params = this.ajaxParams();
 
                 params.newParentId = newParentId;
@@ -482,7 +480,7 @@ define('classes/projects/project/Site', [
         copy: function (newParent, callback) {
             return new Promise(function (resolve, reject) {
 
-                var Site   = this,
+                var Site = this,
                     params = this.ajaxParams();
 
                 params.newParent = JSON.encode(newParent);
@@ -512,7 +510,7 @@ define('classes/projects/project/Site', [
          * @param {Function} [callback] - (optional) callback function
          */
         linked: function (newParentId, callback) {
-            var Site   = this,
+            var Site = this,
                 params = this.ajaxParams();
 
             params.newParentId = newParentId;
@@ -645,7 +643,7 @@ define('classes/projects/project/Site', [
          */
         unlink: function (parentId, all) {
             return new Promise(function (resolve, reject) {
-                var Site   = this,
+                var Site = this,
                     params = this.ajaxParams();
 
                 params.onError = reject;
@@ -718,7 +716,7 @@ define('classes/projects/project/Site', [
                 return Promise.resolve(false);
             }
 
-            var self        = this,
+            var self = this,
                 storageData = this.getWorkingStorage();
 
             return new Promise(function (resolve) {
@@ -907,7 +905,7 @@ define('classes/projects/project/Site', [
         ajaxParams: function () {
             return {
                 project: this.getProject().encode(),
-                id     : this.getId()
+                id: this.getId()
             };
         }
     });

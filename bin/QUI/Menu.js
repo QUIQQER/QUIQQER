@@ -1,8 +1,5 @@
 /**
  * Global Menu manager
- *
- * @module Menu
- * @author www.pcsg.de (Henning Leutz)
  */
 define('Menu', [
 

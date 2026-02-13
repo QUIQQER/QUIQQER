@@ -7,7 +7,6 @@
 namespace QUI\Projects\Media;
 
 use Exception;
-use Intervention\Image\Constraint;
 use QUI;
 use QUI\ExceptionStack;
 use QUI\Projects\Media;
@@ -89,7 +88,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws QUI\Exception
      * @see QUI\Interfaces\Projects\Media\File::createCache()
      */
-    public function createCache(): bool|string
+    public function createCache(): bool | string
     {
         if (Media::$globalDisableMediaCacheCreation) {
             return false;
@@ -110,7 +109,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws ExceptionStack
      * @throws QUI\Permissions\Exception
      */
-    public function createSizeCache(bool|int $width = false, bool|int $height = false): bool|string
+    public function createSizeCache(bool | int $width = false, bool | int $height = false): bool | string
     {
         if (!$this->getAttribute('active')) {
             return false;
@@ -174,7 +173,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         set_time_limit(1000);
 
         try {
-            $Image = $Media->getImageManager()->make($original);
+            $Image = $Media->getImageManager()->read($original);
         } catch (Exception $Exception) {
             QUI\System\Log::addDebug($Exception->getMessage());
             FileUtils::copy($original, $cacheFile);
@@ -192,11 +191,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                 $height = null;
             }
 
-            $Image->resize($width, $height, static function ($Constraint): void {
-                /* @var $Constraint Constraint; */
-                $Constraint->aspectRatio();
-                $Constraint->upsize();
-            });
+            $Image->scaleDown($width, $height);
         }
 
         // effects
@@ -235,10 +230,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             if ($Watermark) {
                 $pos = $this->getWatermarkPosition();
                 $ratio = $this->getWatermarkRatio();
-
-                $WatermarkImage = $Media->getImageManager()->make(
-                    $Watermark->getFullPath()
-                );
+                $WatermarkImage = $Media->getImageManager()->read($Watermark->getFullPath());
 
                 switch ($pos) {
                     case "top-left":
@@ -259,20 +251,16 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
                 // ratio calc
                 if ($ratio) {
-                    $imageHeight = $Image->getHeight();
-                    $imageWidth = $Image->getWidth();
+                    $imageHeight = $Image->height();
+                    $imageWidth = $Image->width();
 
                     $imageHeight = $imageHeight * ($ratio / 100);
                     $imageWidth = $imageWidth * ($ratio / 100);
 
-                    $WatermarkImage->resize($imageWidth, $imageHeight, static function ($Constraint): void {
-                        /* @var $Constraint Constraint; */
-                        $Constraint->aspectRatio();
-                        $Constraint->upsize();
-                    });
+                    $WatermarkImage->scaleDown($imageWidth, $imageHeight);
                 }
 
-                $Image->insert($WatermarkImage, $watermarkPosition);
+                $Image->place($WatermarkImage, $watermarkPosition);
             }
         } catch (Exception $Exception) {
             QUI\System\Log::addInfo($Exception->getMessage(), [
@@ -302,8 +290,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws QUI\Exception
      */
     public function getSizeCachePath(
-        bool|string|int $maxWidth = false,
-        bool|string|int $maxHeight = false
+        bool | string | int $maxWidth = false,
+        bool | string | int $maxHeight = false
     ): string {
         $Media = $this->Media;
         /* @var $Media QUI\Projects\Media */
@@ -399,8 +387,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws QUI\Exception
      */
     public function getResizeSize(
-        bool|string|int $maxWidth = false,
-        bool|string|int $maxHeight = false
+        bool | string | int $maxWidth = false,
+        bool | string | int $maxHeight = false
     ): array {
         if ($this->getAttribute('mime_type') == 'image/svg+xml') {
             return [
@@ -512,20 +500,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
         try {
             // create image
-            $Image = $this->getMedia()
-                ->getImageManager()
-                ->make($original);
-
-            $Image->resize(
-                $newWidth,
-                $newHeight,
-                static function ($Constraint): void {
-                    /* @var $Constraint Constraint; */
-                    $Constraint->aspectRatio();
-                    $Constraint->upsize();
-                }
-            );
-
+            $Image = $this->getMedia()->getImageManager()->read($original);
+            $Image->scaleDown($newWidth, $newHeight);
             $Image->save($original);
         } catch (Exception $Exception) {
             QUI\System\Log::writeDebugException($Exception);
@@ -537,7 +513,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the Watermark image file
      */
-    public function getWatermark(): Image|bool
+    public function getWatermark(): Image | bool
     {
         // own watermark?
         $imageEffects = $this->getEffects();
@@ -570,7 +546,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         return false;
     }
 
-    public function getWatermarkPosition(): string|bool
+    public function getWatermarkPosition(): string | bool
     {
         $imageEffects = $this->getEffects();
 
@@ -591,7 +567,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * @return array|bool|false|string
      */
-    public function getWatermarkRatio(): bool|array|string
+    public function getWatermarkRatio(): bool | array | string
     {
         $imageEffects = $this->getEffects();
 
@@ -615,7 +591,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @return integer|false
      * @throws QUI\Exception
      */
-    public function getHeight(): bool|int
+    public function getHeight(): bool | int
     {
         if ($this->getAttribute('image_height')) {
             return (int)$this->getAttribute('image_height');
@@ -638,7 +614,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @return integer|false
      * @throws QUI\Exception
      */
-    public function getWidth(): bool|int
+    public function getWidth(): bool | int
     {
         if ($this->getAttribute('image_width')) {
             return (int)$this->getAttribute('image_width');
@@ -661,8 +637,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws QUI\Exception
      */
     public function getSizeCacheUrl(
-        bool|string|int $maxWidth = false,
-        bool|string|int $maxHeight = false
+        bool | string | int $maxWidth = false,
+        bool | string | int $maxHeight = false
     ): string {
         $cachePath = $this->getSizeCachePath($maxWidth, $maxHeight);
         $cacheUrl = str_replace(CMS_DIR, URL_DIR, $cachePath);
@@ -707,8 +683,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @throws QUI\Exception
      */
-    public function createSizeCacheUrl(bool|string|int $maxWidth = false, bool|string|int $maxHeight = false): string
-    {
+    public function createSizeCacheUrl(
+        bool | string | int $maxWidth = false,
+        bool | string | int $maxHeight = false
+    ): string {
         $params = $this->getResizeSize($maxWidth, $maxHeight);
 
         $cacheUrl = $this->createSizeCache(
@@ -732,9 +710,9 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws QUI\Permissions\Exception
      */
     public function createResizeCache(
-        bool|string|int $maxWidth = false,
-        bool|string|int $maxHeight = false
-    ): bool|string {
+        bool | string | int $maxWidth = false,
+        bool | string | int $maxHeight = false
+    ): bool | string {
         $params = $this->getResizeSize($maxWidth, $maxHeight);
 
         return $this->createSizeCache(

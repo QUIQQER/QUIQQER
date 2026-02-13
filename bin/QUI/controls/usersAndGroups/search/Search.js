@@ -1,6 +1,4 @@
 /**
- * @module controls/usersAndGroups/search/Search
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onDblClick [self]
  * @event onSearchBegin [self]

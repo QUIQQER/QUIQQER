@@ -1,8 +1,5 @@
 /**
  * Global locale object
- *
- * @module Locale
- * @author www.pcsg.de (Henning Leutz)
  */
 define('Locale', ['classes/Locale'], function (QUILocale) {
     "use strict";

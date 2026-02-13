@@ -1,9 +1,6 @@
 /**
  * Site Language Select
  * For each project language the user can select a site
- *
- * @module controls/projects/project/SiteSelect
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/projects/project/SiteSelect', [
 

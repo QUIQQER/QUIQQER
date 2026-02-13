@@ -1,8 +1,6 @@
 /**
  * Makes a user input field to a field selection field
  *
- * @module controls/email/Select
- * @author www.pcsg.de (Patrick Müller)
  *
  * @event onAddItem [ this, id ]
  * @event onChange [ this ]

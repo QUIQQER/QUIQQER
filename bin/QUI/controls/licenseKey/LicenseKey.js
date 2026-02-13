@@ -2,9 +2,6 @@
  * LicenseKey JavaScript Control
  *
  * Manage a license key for a QUIQQER system
- *
- * @module controls/LicenseKey
- * @author www.pcsg.de (Patrick Müller)
  */
 define('controls/licenseKey/LicenseKey', [
 
