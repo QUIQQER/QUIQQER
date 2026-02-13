@@ -33,7 +33,7 @@ define('classes/projects/Project', [
     return new Class({
 
         Extends: QDOM,
-        Type   : 'classes/projects/Project',
+        Type: 'classes/projects/Project',
 
         Binds: [
             '$onChildDelete',
@@ -52,14 +52,14 @@ define('classes/projects/Project', [
             host: false
         },
 
-        $ids  : {},
+        $ids: {},
         $Media: false,
         $Trash: false,
 
         initialize: function (options) {
             this.parent(options);
 
-            this.$config  = false;
+            this.$config = false;
             this.$layouts = null;
         },
 
@@ -77,8 +77,8 @@ define('classes/projects/Project', [
             }
 
             return JSON.encode({
-                name    : this.getName(),
-                lang    : this.getLang(),
+                name: this.getName(),
+                lang: this.getLang(),
                 template: template
             });
         },
@@ -98,14 +98,14 @@ define('classes/projects/Project', [
             var Site = new ProjectSite(this, id);
 
             Site.addEvents({
-                onDelete     : this.$onSiteDelete,
-                onSave       : this.$onSiteSave,
-                onActivate   : this.$onSiteActivate,
-                onDeactivate : this.$onSiteDeactivate,
+                onDelete: this.$onSiteDelete,
+                onSave: this.$onSiteSave,
+                onActivate: this.$onSiteActivate,
+                onDeactivate: this.$onSiteDeactivate,
                 onCreateChild: this.$onSiteCreate,
-                onSortSave   : this.$onSiteSortSave,
-                onLoad       : this.$onSiteLoad,
-                onUnlink     : this.$onSiteUnlink
+                onSortSave: this.$onSiteSortSave,
+                onLoad: this.$onSiteLoad,
+                onUnlink: this.$onSiteUnlink
             });
 
             this.$ids[id] = Site;
@@ -236,7 +236,7 @@ define('classes/projects/Project', [
                     });
                 }, {
                     project: self.getName(),
-                    params : JSON.encode(params || false),
+                    params: JSON.encode(params || false),
                     onError: reject
                 });
             });
@@ -326,7 +326,7 @@ define('classes/projects/Project', [
                 'ajax_project_get_config',
                 'ajax_vhosts_getList'
             ], function (config, vhosts) {
-                var vhost       = config.vhost,
+                var vhost = config.vhost,
                     projectName = self.getName(),
                     projectLang = self.getLang();
 
@@ -366,7 +366,7 @@ define('classes/projects/Project', [
 
             }, {
                 project: this.getName(),
-                params : false
+                params: false
             });
         },
 

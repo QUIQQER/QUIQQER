@@ -38,12 +38,12 @@ define('classes/projects/project/Media', [
     return new Class({
 
         Extends: DOM,
-        Type   : 'classes/projects/project/Media',
+        Type: 'classes/projects/project/Media',
 
         initialize: function (Project) {
             this.$Project = Project;
-            this.$Panel   = null;
-            this.$items   = {};
+            this.$Panel = null;
+            this.$items = {};
         },
 
         /**
@@ -135,7 +135,7 @@ define('classes/projects/project/Media', [
 
                     resolve(children);
                 }, {
-                    fileid : JSON.encode(id),
+                    fileid: JSON.encode(id),
                     project: self.getProject().getName(),
                     onError: function (Exception) {
                         reject(Exception);
@@ -165,7 +165,7 @@ define('classes/projects/project/Media', [
 
                     resolve(result);
                 }, {
-                    fileid : JSON.encode(id),
+                    fileid: JSON.encode(id),
                     project: self.getProject().getName(),
                     onError: function (Exception) {
                         reject(Exception);
@@ -202,10 +202,10 @@ define('classes/projects/project/Media', [
                     // upload file
                     require(['UploadManager'], function (UploadManager) {
                         const params = {
-                            project   : this.getProject().getName(),
-                            fileid    : childid,
+                            project: this.getProject().getName(),
+                            fileid: childid,
                             phponstart: 'ajax_media_checkreplace',
-                            events    : {
+                            events: {
                                 onComplete: function () {
                                     if (typeof onfinish === 'function') {
                                         onfinish();
@@ -262,7 +262,7 @@ define('classes/projects/project/Media', [
             return new Promise(function (resolve, reject) {
                 params = ObjectUtils.combine(params, {
                     project: this.getProject().getName(),
-                    fileid : JSON.encode(id),
+                    fileid: JSON.encode(id),
                     onError: reject
                 });
 
@@ -309,7 +309,7 @@ define('classes/projects/project/Media', [
             return new Promise(function (resolve, reject) {
                 params = ObjectUtils.combine(params, {
                     project: this.getProject().getName(),
-                    fileid : JSON.encode(id),
+                    fileid: JSON.encode(id),
                     onError: reject
                 });
 
@@ -367,7 +367,7 @@ define('classes/projects/project/Media', [
 
                 params = ObjectUtils.combine(params, {
                     project: this.getProject().getName(),
-                    fileid : JSON.encode(id),
+                    fileid: JSON.encode(id),
                     onError: reject
                 });
 
@@ -428,22 +428,22 @@ define('classes/projects/project/Media', [
             }
 
             Item.addEvents({
-                onRename    : function (Item) {
+                onRename: function (Item) {
                     self.fireEvent('itemRename', [self, Item]);
                 },
-                onActivate  : function (Item) {
+                onActivate: function (Item) {
                     self.fireEvent('itemActivate', [self, Item]);
                 },
                 onDeactivate: function (Item) {
                     self.fireEvent('itemDeactivate', [self, Item]);
                 },
-                onRefresh   : function (Item) {
+                onRefresh: function (Item) {
                     self.fireEvent('itemRefresh', [self, Item]);
                 },
-                onSave      : function (Item) {
+                onSave: function (Item) {
                     self.fireEvent('itemSave', [self, Item]);
                 },
-                onDelete    : function (Item) {
+                onDelete: function (Item) {
                     self.fireEvent('itemDelete', [self, Item.getId()]);
                 }
             });
@@ -467,7 +467,7 @@ define('classes/projects/project/Media', [
                     self.fireEvent('itemsHide', [self, ids]);
                 }, {
                     project: self.getProject().getName(),
-                    ids    : JSON.encode(ids),
+                    ids: JSON.encode(ids),
                     onError: reject
                 });
             });
@@ -488,7 +488,7 @@ define('classes/projects/project/Media', [
                     self.fireEvent('itemsVisible', [self, ids]);
                 }, {
                     project: self.getProject().getName(),
-                    ids    : JSON.encode(ids),
+                    ids: JSON.encode(ids),
                     onError: reject
                 });
             });
@@ -507,8 +507,8 @@ define('classes/projects/project/Media', [
             return new Promise(function (resolve, reject) {
                 Ajax.get('ajax_media_search', resolve, {
                     project: self.getProject().getName(),
-                    search : search,
-                    params : JSON.encode(params),
+                    search: search,
+                    params: JSON.encode(params),
                     onError: reject
                 });
             });

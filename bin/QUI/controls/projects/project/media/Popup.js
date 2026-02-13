@@ -23,7 +23,7 @@ define('controls/projects/project/media/Popup', [
     return new Class({
 
         Extends: QUIPopup,
-        Type   : 'controls/projects/project/media/Popup',
+        Type: 'controls/projects/project/media/Popup',
 
         Binds: [
             '$onCreate',
@@ -33,12 +33,12 @@ define('controls/projects/project/media/Popup', [
         ],
 
         options: {
-            project             : false,
-            fileid              : false,
-            closeButtonText     : QUILocale.get('quiqqer/core', 'cancel'),
-            breadcrumb          : true,
-            selectable          : true,
-            selectable_types    : false,   // you can specified which types are selectable
+            project: false,
+            fileid: false,
+            closeButtonText: QUILocale.get('quiqqer/core', 'cancel'),
+            breadcrumb: true,
+            selectable: true,
+            selectable_types: false,   // you can specified which types are selectable
             selectable_mimetypes: false    // you can specified which mime types are selectable
         },
 
@@ -53,10 +53,10 @@ define('controls/projects/project/media/Popup', [
             this.$created = false;
 
             this.addEvents({
-                onCreate   : this.$onCreate,
-                onOpen     : this.$onOpen,
+                onCreate: this.$onCreate,
+                onOpen: this.$onOpen,
                 onOpenBegin: this.$onOpenBegin,
-                onClose    : function () {
+                onClose: function () {
                     if (this.$Panel) {
                         this.$Panel.destroy();
                     }
@@ -76,8 +76,8 @@ define('controls/projects/project/media/Popup', [
 
             let Media, Project, Content;
 
-            const self    = this,
-                  project = this.getAttribute('project');
+            const self = this,
+                project = this.getAttribute('project');
 
             Content = this.getContent();
 
@@ -95,29 +95,29 @@ define('controls/projects/project/media/Popup', [
 
                     const SelectContainer = new Element('div', {
                         styles: {
-                            height   : '100%',
-                            left     : 0,
-                            padding  : 20,
-                            position : 'absolute',
+                            height: '100%',
+                            left: 0,
+                            padding: 20,
+                            position: 'absolute',
                             textAlign: 'center',
-                            top      : 0,
-                            width    : '100%'
+                            top: 0,
+                            width: '100%'
                         },
-                        html  : '<div style="margin-bottom: 20px;">' +
-                                QUILocale.get(
-                                    'quiqqer/core',
-                                    'projects.project.site.media.popup.noProject.text'
-                                ) +
-                                '</div>'
+                        html: '<div style="margin-bottom: 20px;">' +
+                            QUILocale.get(
+                                'quiqqer/core',
+                                'projects.project.site.media.popup.noProject.text'
+                            ) +
+                            '</div>'
                     }).inject(Content);
 
                     new ProjectSelect({
                         langSelect: false,
-                        styles    : {
+                        styles: {
                             'float': 'none',
                             display: 'inline-block'
                         },
-                        events    : {
+                        events: {
                             onChange: function (value) {
                                 if (value === '') {
                                     return;
@@ -149,9 +149,9 @@ define('controls/projects/project/media/Popup', [
 
             this.addButton(
                 new QUIButton({
-                    text     : QUILocale.get('quiqqer/core', 'accept'),
+                    text: QUILocale.get('quiqqer/core', 'accept'),
                     textimage: 'fa fa-check',
-                    events   : {
+                    events: {
                         onClick: function () {
                             self.$getDetails(self.$folderData, function (data) {
                                 self.$submit(data, true);
@@ -173,15 +173,15 @@ define('controls/projects/project/media/Popup', [
 
             Ajax.get('ajax_media_file_getParentId', (parentId) => {
                 this.$Panel = new MediaPanel(Media, {
-                    startid             : parentId,
-                    dragable            : false,
-                    collapsible         : false,
-                    selectable          : true,
-                    breadcrumb          : this.getAttribute('breadcrumb'),
-                    selectable_types    : this.getAttribute('selectable_types'),
+                    startid: parentId,
+                    dragable: false,
+                    collapsible: false,
+                    selectable: true,
+                    breadcrumb: this.getAttribute('breadcrumb'),
+                    selectable_types: this.getAttribute('selectable_types'),
                     selectable_mimetypes: this.getAttribute('selectable_mimetypes'),
-                    isInPopup           : true,
-                    events              : {
+                    isInPopup: true,
+                    events: {
                         onCreate: (Panel) => {
                             Panel.getElm().setStyle('borderRadius', 0);
                             this.Loader.hide();
@@ -214,7 +214,7 @@ define('controls/projects/project/media/Popup', [
                     this.$Panel.resize();
                 }
             }, {
-                fileid : fileId,
+                fileid: fileId,
                 project: Project.getName()
             });
 
@@ -263,11 +263,11 @@ define('controls/projects/project/media/Popup', [
             this.close();
 
             const Confirm = new QUIConfirm({
-                title      : QUILocale.get('quiqqer/core', 'projects.project.site.media.popup.window.activate.title'),
-                text       : QUILocale.get('quiqqer/core', 'projects.project.site.media.popup.window.activate.text'),
+                title: QUILocale.get('quiqqer/core', 'projects.project.site.media.popup.window.activate.title'),
+                text: QUILocale.get('quiqqer/core', 'projects.project.site.media.popup.window.activate.text'),
                 information: QUILocale.get('quiqqer/core', 'projects.project.site.media.popup.window.activate.information'),
-                autoclose  : false,
-                events     : {
+                autoclose: false,
+                events: {
                     onCancel: function () {
                         require([
                             'controls/projects/project/media/Popup'
@@ -293,7 +293,7 @@ define('controls/projects/project/media/Popup', [
                             self.$submit(imageData, true);
                         }, {
                             project: imageData.project,
-                            fileid : imageData.id
+                            fileid: imageData.id
                         });
                     }
                 }
@@ -388,7 +388,7 @@ define('controls/projects/project/media/Popup', [
 
             Ajax.get('ajax_media_details', callback, {
                 project: project,
-                fileid : imageData.id
+                fileid: imageData.id
             });
         }
     });

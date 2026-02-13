@@ -1,4 +1,3 @@
-
 /**
  * A media image
  *
@@ -20,8 +19,8 @@ define('classes/projects/project/media/Image', [
      */
     return new Class({
 
-        Extends : MediaItem,
-        Type    : 'classes/projects/project/media/Image'
+        Extends: MediaItem,
+        Type: 'classes/projects/project/media/Image'
 
     });
 });

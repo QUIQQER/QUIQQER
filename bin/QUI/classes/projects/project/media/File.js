@@ -1,4 +1,3 @@
-
 /**
  * A media file
  *
@@ -19,7 +18,7 @@ define('classes/projects/project/media/File', [
      * @memberof! <global>
      */
     return new Class({
-        Extends : MediaItem,
-        Type    : 'classes/projects/project/media/File'
+        Extends: MediaItem,
+        Type: 'classes/projects/project/media/File'
     });
 });

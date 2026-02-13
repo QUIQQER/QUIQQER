@@ -37,36 +37,36 @@ define('classes/projects/project/media/Item', [
     return new Class({
 
         Extends: DOM,
-        Type   : 'classes/projects/project/media/Item',
+        Type: 'classes/projects/project/media/Item',
 
         options: {
-            id      : 0,
-            name    : '',
-            title   : '',
-            alt     : '',
-            'short' : '',
-            active  : '',
-            order   : '',
+            id: 0,
+            name: '',
+            title: '',
+            alt: '',
+            'short': '',
+            active: '',
+            order: '',
             priority: '',
-            file    : '',
+            file: '',
 
-            c_date    : '',
-            c_user    : '',
+            c_date: '',
+            c_user: '',
             c_username: '',
 
-            e_date    : '',
-            e_user    : '',
+            e_date: '',
+            e_user: '',
             e_username: '',
 
-            watermark   : false,
+            watermark: false,
             roundcorners: false,
 
-            mime_type   : '',
+            mime_type: '',
             image_height: '',
-            image_width : '',
-            cache_url   : '',
-            hidden      : 0,
-            external    : ''
+            image_width: '',
+            cache_url: '',
+            hidden: 0,
+            external: ''
         },
 
         initialize: function (params, Media) {
@@ -168,7 +168,7 @@ define('classes/projects/project/media/Item', [
          */
         getUrl: function () {
             const project = this.getMedia().getProject().getName(),
-                  id      = this.getId();
+                id = this.getId();
 
             return 'image.php?project=' + project + '&id=' + id;
         },
@@ -183,7 +183,7 @@ define('classes/projects/project/media/Item', [
             return new Promise(function (resolve, reject) {
                 Ajax.get('ajax_media_file_getParentId', resolve, {
                     project: this.getMedia().getProject().getName(),
-                    fileid : this.getId(),
+                    fileid: this.getId(),
                     onError: reject
                 });
             }.bind(this));
@@ -219,7 +219,7 @@ define('classes/projects/project/media/Item', [
                     resolve(result);
                 }, {
                     project: this.getMedia().getProject().getName(),
-                    fileid : this.getId(),
+                    fileid: this.getId(),
                     onError: reject
                 });
             }.bind(this));
@@ -246,10 +246,10 @@ define('classes/projects/project/media/Item', [
                 attributes.image_effects = self.getEffects();
 
                 params = Utils.combine(params, {
-                    project   : self.getMedia().getProject().getName(),
-                    fileid    : self.getId(),
+                    project: self.getMedia().getProject().getName(),
+                    fileid: self.getId(),
                     attributes: JSON.encode(self.getAttributes()),
-                    onError   : reject
+                    onError: reject
                 });
 
                 Ajax.post('ajax_media_file_save', function (result) {
@@ -293,8 +293,8 @@ define('classes/projects/project/media/Item', [
          * @return Promise
          */
         activate: function (oncomplete, params) {
-            const Media  = this.getMedia(),
-                  Result = Media.activate(this.getId(), oncomplete, params);
+            const Media = this.getMedia(),
+                Result = Media.activate(this.getId(), oncomplete, params);
 
             return Result.then(function (result) {
                 this.setAttribute('active', result);
@@ -315,8 +315,8 @@ define('classes/projects/project/media/Item', [
          * @return Promise
          */
         deactivate: function (oncomplete, params) {
-            const Media  = this.getMedia(),
-                  Result = Media.deactivate(this.getId(), oncomplete, params);
+            const Media = this.getMedia(),
+                Result = Media.deactivate(this.getId(), oncomplete, params);
 
             return Result.then(function (result) {
                 this.setAttribute('active', result);
@@ -336,7 +336,7 @@ define('classes/projects/project/media/Item', [
 
             const url = Ajax.$url + '?' + Ajax.parseParams('ajax_media_file_download', {
                 project: this.getMedia().getProject().getName(),
-                fileid : this.getId()
+                fileid: this.getId()
             });
 
             // create a iframe
@@ -344,10 +344,10 @@ define('classes/projects/project/media/Item', [
                 new Element('iframe#download-frame', {
                     styles: {
                         position: 'absolute',
-                        width   : 100,
-                        height  : 100,
-                        left    : -400,
-                        top     : -400
+                        width: 100,
+                        height: 100,
+                        left: -400,
+                        top: -400
                     }
                 }).inject(document.body);
             }
@@ -401,7 +401,7 @@ define('classes/projects/project/media/Item', [
             return new Promise(function (resolve, reject) {
                 params = Utils.combine(params, {
                     project: this.getMedia().getProject().getName(),
-                    id     : this.getId(),
+                    id: this.getId(),
                     newname: newname,
                     onError: reject
                 });
@@ -486,8 +486,8 @@ define('classes/projects/project/media/Item', [
             return new Promise(function (resolve) {
                 Ajax.post('ajax_media_deleteCache', resolve, {
                     'package': 'quiqqer/core',
-                    project  : self.getMedia().getProject().getName(),
-                    fileId   : self.getId()
+                    project: self.getMedia().getProject().getName(),
+                    fileId: self.getId()
                 });
             });
         }
