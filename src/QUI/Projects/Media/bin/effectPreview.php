@@ -22,22 +22,22 @@ if (!QUI\Projects\Media\Utils::isImage($File)) {
     exit;
 }
 
-$Image = $Media->getImageManager()->make($File->getFullPath());
+$Image = $Media->getImageManager()->read($File->getFullPath());
 
 if (isset($_REQUEST['greyscale']) && (int)$_REQUEST['greyscale']) {
     $Image->greyscale();
 }
 
 if (isset($_REQUEST['brightness']) && is_numeric($_REQUEST['brightness'])) {
-    $Image->brightness((int) $_REQUEST['brightness']);
+    $Image->brightness((int)$_REQUEST['brightness']);
 }
 
 if (isset($_REQUEST['blur']) && is_numeric($_REQUEST['blur'])) {
-    $Image->blur((int) $_REQUEST['blur']);
+    $Image->blur((int)$_REQUEST['blur']);
 }
 
 if (isset($_REQUEST['contrast']) && is_numeric($_REQUEST['contrast'])) {
-    $contrast = (int) $_REQUEST['contrast'];
+    $contrast = (int)$_REQUEST['contrast'];
 
     if ($contrast !== 0) {
         $Image->contrast($contrast);
@@ -52,7 +52,7 @@ if (isset($_REQUEST['watermark'])) {
         $pos = '';
         $ratio = false;
 
-        $WatermarkImage = $Media->getImageManager()->make(
+        $WatermarkImage = $Media->getImageManager()->read(
             $MediaImage->getFullPath()
         );
 
@@ -71,34 +71,24 @@ if (isset($_REQUEST['watermark'])) {
 
         // ratio calc
         if ($ratio) {
-            $imageHeight = $Image->getHeight();
-            $imageWidth = $Image->getWidth();
+            $imageHeight = $Image->height();
+            $imageWidth = $Image->width();
 
             $imageHeight = $imageHeight * ($ratio / 100);
             $imageWidth = $imageWidth * ($ratio / 100);
 
-            $WatermarkImage->resize($imageWidth, $imageHeight, static function ($Constraint): void {
-                $Constraint->aspectRatio();
-                $Constraint->upsize();
-            });
+            $WatermarkImage->scaleDown($imageWidth, $imageHeight);
         }
 
-        $Image->insert($WatermarkImage, $watermarkPosition);
+        $Image->place($WatermarkImage, $watermarkPosition);
     } catch (QUI\Exception) {
     }
 }
 
-
-$Image->resize(400, 400, static function ($Constraint): void {
-    $Constraint->aspectRatio();
-    $Constraint->upsize();
-});
-
+$Image->scaleDown(400, 400);
 
 $file = VAR_DIR . 'tmp/' . $File->getId() . '.' . \pathinfo($File->getFullPath())['extension'];
 $Image->save($file);
 
 QUI\Utils\System\File::fileHeader($file);
-
-//echo $Image->response();
 exit;

@@ -1240,7 +1240,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             && !str_contains($fileInfo['mime_type'], 'svg')
         ) {
             try {
-                $this->getMedia()->getImageManager()->make($file);
+                $this->getMedia()->getImageManager()->read($file);
             } catch (Exception $Exception) {
                 $message = $Exception->getMessage();
 

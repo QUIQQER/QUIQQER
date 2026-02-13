@@ -133,7 +133,7 @@ try {
         }
 
         try {
-            $Image = $Media->getImageManager()->make($File->getFullPath());
+            $Image = $Media->getImageManager()->read($File->getFullPath());
         } catch (\Exception $Exception) {
             QUI\System\Log::addDebug($Exception->getMessage());
 
@@ -141,21 +141,11 @@ try {
             exit;
         }
 
-
-        if (isset($_REQUEST['noresize'])) {
-            $Image->save($cacheFile);
-        } else {
-            $Image->resize(
-                $_REQUEST['maxwidth'],
-                $_REQUEST['maxheight'],
-                function ($Constraint) {
-                    $Constraint->aspectRatio();
-                    $Constraint->upsize();
-                }
-            );
-
-            $Image->save($cacheFile);
+        if (!isset($_REQUEST['noresize'])) {
+            $Image->scaleDown($_REQUEST['maxwidth'], $_REQUEST['maxheight']);
         }
+
+        $Image->save($cacheFile);
 
         QUI\Utils\System\File::fileHeader($cacheFile);
         exit;

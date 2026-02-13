@@ -59,7 +59,7 @@ QUI::$Ajax->registerFunction(
                     // Rotate the image
                     if ($rotation) {
                         $ImageManager = $Media->getImageManager();
-                        $Image = $ImageManager->make($file);
+                        $Image = $ImageManager->read($file);
 
                         $Image->rotate($rotation);
                         $Image->save();
