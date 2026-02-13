@@ -7,6 +7,11 @@
 
 header("Content-Type: text/plain");
 
+// Ensure globally configured security headers (CSP, HSTS, etc.) are also sent on AJAX requests.
+$Response = QUI::getGlobalResponse();
+$Response->headers->set('Content-Type', 'text/plain');
+$Response->sendHeaders();
+
 if (isset($_REQUEST['beacon'])) {
     $input = file_get_contents('php://input');
     parse_str($input, $_REQUEST);

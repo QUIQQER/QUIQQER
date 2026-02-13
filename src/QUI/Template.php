@@ -170,7 +170,7 @@ class Template extends QUI\QDOM
     }
 
     /**
-     * Add the JavaScript File to the bottom of the html
+     * Add the JavaScript File to the bottom of the HTML
      */
     public function extendFooterWithJavaScriptFile(
         string $jsPath,
@@ -193,7 +193,7 @@ class Template extends QUI\QDOM
     }
 
     /**
-     * Add Code to the bottom of the html
+     * Add Code to the bottom of the HTML
      */
     public function extendFooter(
         string $str,
@@ -218,7 +218,7 @@ class Template extends QUI\QDOM
     }
 
     /**
-     * Add a javascript module, that loaded at the onload event
+     * Add a JavaScript module that loaded at the onload event
      */
     public function addOnloadJavaScriptModule(string $module): void
     {
@@ -251,7 +251,7 @@ class Template extends QUI\QDOM
     }
 
     /**
-     * Get absolute path to current template package
+     * Get an absolute path to the current template package
      */
     public function getTemplatePath(): string
     {
@@ -651,8 +651,8 @@ class Template extends QUI\QDOM
     }
 
     /**
-     * Return the html header
-     * With all important meta entries and quiqqer libraries
+     * Return the HTML header
+     * With all important meta-entries and quiqqer libraries
      *
      * @throws QUI\Exception
      */
@@ -672,7 +672,7 @@ class Template extends QUI\QDOM
             $package = $siteType[0];
             $type = $siteType[1];
 
-            // type css
+            // type CSS
             $siteStyle = OPT_DIR . $package . '/bin/' . $type . '.css';
             $siteScript = OPT_DIR . $package . '/bin/' . $type . '.js';
 
@@ -693,8 +693,6 @@ class Template extends QUI\QDOM
             $realSitePath = OPT_DIR . $package . '/' . $type . '.css';
 
             if (file_exists($realSitePath)) {
-                //$css = file_get_contents( $realSitePath );
-
                 $this->extendHeader(
                     '<style>' . file_get_contents($realSitePath) . '</style>'
                 );
@@ -721,7 +719,7 @@ class Template extends QUI\QDOM
         $headers = $this->header;
         $headerExtend = implode('', $headers);
 
-        // custom css
+        // custom CSS
         $customCSS = $Project->getName() . '/bin/custom.css';
         $customJS = $Project->getName() . '/bin/custom.js';
 
@@ -872,7 +870,7 @@ class Template extends QUI\QDOM
     }
 
     /**
-     * Return all project templates which have a site.xml
+     * Return all project templates that have a site.xml
      * -> consider template inheritance
      */
     protected function getProjectTemplates(Projects\Project $Project): bool|array

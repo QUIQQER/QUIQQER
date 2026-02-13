@@ -6,6 +6,7 @@
 
 namespace QUI\Projects;
 
+use DOMElement;
 use DOMXPath;
 use PDO;
 use QUI;
@@ -178,7 +179,7 @@ class Sites
      *
      * @throws Exception
      */
-    public static function getTab(string $tabname, Edit $Site): bool|Tab
+    public static function getTab(string $tabname, Edit $Site): bool | Tab
     {
         $Toolbar = self::getTabs($Site);
         $Tab = $Toolbar->getElementByName($tabname);
@@ -263,17 +264,50 @@ class Sites
             return $Tabbar;
         }
 
+        $showDefaultContentTab = true;
+        $type = $Site->getAttribute('type');
+        $siteTypeParts = explode(':', $type, 2);
+
+        if (isset($siteTypeParts[0], $siteTypeParts[1])) {
+            $siteXmlFile = OPT_DIR . $siteTypeParts[0] . '/site.xml';
+
+            if (file_exists($siteXmlFile)) {
+                $Dom = XML::getDomFromXml($siteXmlFile);
+                $Path = new DOMXPath($Dom);
+                $TypeNodes = $Path->query(
+                    "//site/types/type[@type='" . $siteTypeParts[1] . "' or @type='" . $type . "']"
+                );
+
+                foreach ($TypeNodes as $TypeNode) {
+                    if (!$TypeNode instanceof DOMElement) {
+                        continue;
+                    }
+
+                    if (
+                        $TypeNode->hasAttribute('content')
+                        && (int)$TypeNode->getAttribute('content') === 0
+                    ) {
+                        $showDefaultContentTab = false;
+                        break;
+                    }
+                }
+            }
+        }
+
         // Inhaltsreiter
-        $Tabbar->appendChild(
-            new Tab([
-                'name' => 'content',
-                'text' => QUI::getLocale()->get(
-                    'quiqqer/core',
-                    'projects.project.site.content'
-                ),
-                'icon' => 'fa fa-file-text-o'
-            ])
-        );
+        if ($showDefaultContentTab) {
+            // Inhaltsreiter
+            $Tabbar->appendChild(
+                new Tab([
+                    'name' => 'content',
+                    'text' => QUI::getLocale()->get(
+                        'quiqqer/core',
+                        'projects.project.site.content'
+                    ),
+                    'icon' => 'fa fa-file-text-o'
+                ])
+            );
+        }
 
         // Einstellungen
         $Tabbar->appendChild(
@@ -406,7 +440,7 @@ class Sites
      *
      * @throws Exception
      */
-    public static function search(string $search, array $params = []): array|int
+    public static function search(string $search, array $params = []): array | int
     {
         $DataBase = QUI::getDataBase();
 
