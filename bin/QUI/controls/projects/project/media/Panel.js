@@ -1,8 +1,6 @@
 /**
  * Displays a Media in a Panel
  *
- * @module controls/projects/project/media/Panel
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onDragDropComplete [this, event]
  * @event childClick [ this, imageData ]

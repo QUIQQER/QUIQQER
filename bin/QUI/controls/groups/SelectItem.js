@@ -1,7 +1,3 @@
-/**
- * @module package/quiqqer/areas/bin/controls/Areas
- * @author www.pcsg.de (Henning Leutz)
- */
 define('controls/groups/SelectItem', [
 
     'qui/QUI',

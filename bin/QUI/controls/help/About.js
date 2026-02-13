@@ -1,7 +1,5 @@
 /**
  * Help Window
- *
- * @module controls/help/About
  */
 define('controls/help/About', [
 

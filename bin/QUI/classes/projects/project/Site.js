@@ -1,8 +1,6 @@
 /**
  * A project Site Object
  *
- * @module classes/projects/project/Site
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onLoad [ this ]
  * @event onGetChildren [ this, {Array} ]

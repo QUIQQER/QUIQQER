@@ -1,8 +1,5 @@
 /**
  * Displays a Project in a Panel
- *
- * @module controls/projects/project/Panel
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/projects/project/Panel', [
 

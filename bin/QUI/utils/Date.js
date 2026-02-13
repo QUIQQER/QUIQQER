@@ -1,10 +1,5 @@
 /**
  * Date utils
- *
- * @module utils/Date
- *
- * @author www.pcsg.de (Jan Wennrich)
- * @author Smart people from Stack Overflow
  */
 define('utils/Date', [
     'Locale'
@@ -49,7 +44,6 @@ define('utils/Date', [
          * - A date 3 months ago would return {amount: 3, unit: 'months'}
          * - A date 2 minutes ago would return {amount: 2, unit: 'minutes'}
          *
-         * @author Inspired by a Stack Overflow answer from Sky Sander (https://stackoverflow.com/a/3177838)
          *
          * @param {Date} GivenDate
          *

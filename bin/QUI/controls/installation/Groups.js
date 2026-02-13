@@ -1,7 +1,3 @@
-/**
- * @module controls/installation/Groups
- * @author www.pcsg.de (Henning Leutz)
- */
 define('controls/installation/Groups', [
 
     'qui/QUI',

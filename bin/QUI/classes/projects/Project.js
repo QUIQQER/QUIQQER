@@ -1,8 +1,6 @@
 /**
  * A QUIQQER project
  *
- * @module classes/projects/Project
- * @author www.pcsg.de (Henning Leutz)
  *
  * @events onSiteDelete [this, {Number}]
  * @events onSiteSave [this, {classes/projects/project/Site}]

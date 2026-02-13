@@ -1,7 +1,3 @@
-/**
- * @module controls/usersAndGroups/SelectItem
- * @author www.pcsg.de (Henning Leutz)
- */
 define('controls/usersAndGroups/SelectItem', [
 
     'qui/QUI',

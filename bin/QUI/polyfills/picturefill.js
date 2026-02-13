@@ -800,7 +800,6 @@
      *
      * Returns the first valid <css-length> with a media condition that evaluates to true,
      * or "100vw" if all valid media conditions evaluate to false.
-     *
      */
 
     function parseSizes(strValue) {

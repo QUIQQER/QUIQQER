@@ -1,8 +1,5 @@
 /**
  * Displays a sitemap from a media
- *
- * @module controls/projects/project/media/Sitemap
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/projects/project/media/Sitemap', [
 

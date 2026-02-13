@@ -1,8 +1,5 @@
 /**
  * The main trash panel
- *
- * @module controls/trash/Panel
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/trash/Panel', [
 

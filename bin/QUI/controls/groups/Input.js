@@ -1,8 +1,6 @@
 /**
  * Makes an input field to a group selection field
  *
- * @module controls/groups/Input
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onAdd [this, groupid]
  *

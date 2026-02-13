@@ -1,8 +1,6 @@
 /**
  * Media for a Project
  *
- * @module classes/projects/project/Media
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onItemRename [ self, Item ]
  * @event onItemRefresh [ self, Item ]

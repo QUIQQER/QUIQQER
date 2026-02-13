@@ -1,8 +1,5 @@
 /**
  * Locker
- *
- * @module utils/Lock
- * @author www.pcsg.de (Henning Leutz)
  */
 define('utils/Session', ['Ajax'], function(QUIAjax) {
     'use strict';

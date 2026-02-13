@@ -1,6 +1,3 @@
-/**
- * @module controls/editors/toolbars/Select
- */
 define('controls/editors/toolbars/Select', [
 
     'qui/QUI',

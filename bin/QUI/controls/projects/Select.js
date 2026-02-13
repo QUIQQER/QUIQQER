@@ -1,8 +1,6 @@
 /**
  * Dropdown for project selection
  *
- * @module controls/projects/Select
- * @author www.pcsg.de (Patrick Müller)
  *
  * @event onChange [ value, self ]
  * @event onLoad [ self ]

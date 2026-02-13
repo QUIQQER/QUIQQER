@@ -1,8 +1,6 @@
 /**
  * Image input
  *
- * @module controls/projects/project/media/Input
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onChange [ {self}, {String} ]
  */

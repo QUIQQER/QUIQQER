@@ -1,9 +1,6 @@
 /**
  * A group field / display
  * the display updates itself
- *
- * @module controls/projects/project/media/Entry
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/projects/project/media/Entry', [
 

@@ -1,8 +1,5 @@
 /**
  * Media ContextMenu for a Media Panel
- *
- * @module classes/projects/project/media/panel/ContextMenu
- * @author www.pcsg.de (Henning Leutz)
  */
 define('classes/projects/project/media/panel/ContextMenu', [
 

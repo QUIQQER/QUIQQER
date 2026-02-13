@@ -1,8 +1,5 @@
 /**
  * A media file
- *
- * @module classes/projects/project/media/File
- * @author www.pcsg.de (Henning Leutz)
  */
 
 define('classes/projects/project/media/File', [

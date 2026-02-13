@@ -1,8 +1,5 @@
 /**
  * Displays a Sitemap from a project
- *
- * @module controls/projects/project/Sitemap
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/projects/project/Sitemap', [
 

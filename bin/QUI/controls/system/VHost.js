@@ -2,9 +2,6 @@
 /**
  * VHost control
  * edit and change a vhost entry
- *
- * @module controls/system/VHost
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/system/VHost', [
 

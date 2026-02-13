@@ -1,8 +1,6 @@
 /**
  * Displays a Site in a Panel
  *
- * @module controls/projects/project/site/Panel
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onQuiqqerSitePanelBuild [self] - Fires when the Site panel is built and categories / buttons are added
  */

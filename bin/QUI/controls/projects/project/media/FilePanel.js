@@ -1,8 +1,5 @@
 /**
  * Displays a Media in a Panel
- *
- * @module controls/projects/project/media/FilePanel
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/projects/project/media/FilePanel', [
 

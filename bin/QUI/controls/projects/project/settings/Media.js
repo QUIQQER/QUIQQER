@@ -1,8 +1,5 @@
 /**
  * Media-Settings for a project
- *
- * @module controls/projects/project/settings/Media
- * @author www.pcsg.de (Henning Leutz)
  */
 
 define('controls/projects/project/settings/Media', [

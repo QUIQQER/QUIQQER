@@ -1,7 +1,3 @@
-/**
- * @module controls/editors/CodeEditor
- * @author www.pcsg.de (Henning Leutz)
- */
 
 require.config({
     paths: {

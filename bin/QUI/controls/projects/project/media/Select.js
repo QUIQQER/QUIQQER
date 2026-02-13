@@ -1,8 +1,6 @@
 /**
  * Makes a group input field to a field selection field
  *
- * @module controls/projects/project/media/Select
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onAddGroup [ this, id ]
  * @event onChange [ this ]

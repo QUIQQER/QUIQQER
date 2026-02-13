@@ -3,8 +3,6 @@
  *
  * In this Popup you can select a project
  *
- * @module controls/projects/SelectWindow
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onSubmit [ {this}, {Object} result ];
  */

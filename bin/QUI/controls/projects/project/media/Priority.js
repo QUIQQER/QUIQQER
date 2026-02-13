@@ -1,8 +1,5 @@
 /**
  * Set priority of the folder children
- *
- * @author www.pcsg.de (Henning Leutz)
- * @module controls/projects/project/media/Priority
  */
 define('controls/projects/project/media/Priority', [
 

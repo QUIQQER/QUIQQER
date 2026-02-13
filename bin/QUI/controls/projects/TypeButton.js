@@ -1,8 +1,5 @@
 /**
  * The type button opens a type window for the project
- *
- * @module controls/projects/TypeButton
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/projects/TypeButton', [
 

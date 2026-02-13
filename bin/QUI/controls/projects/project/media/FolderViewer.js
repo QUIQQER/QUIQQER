@@ -2,8 +2,6 @@
  * Folder Viewer
  * Display images from a folder and offers a slideshow / diashow
  *
- * @module controls/projects/project/media/FolderViewer
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onFolderCreated [self, newFolder]
  */

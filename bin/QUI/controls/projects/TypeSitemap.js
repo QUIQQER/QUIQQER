@@ -4,8 +4,6 @@
  * The type sitemap displays / create a qui/controls/sitemap/Map
  * with all available types for the project
  *
- * @module controls/projects/TypeSitemap
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onLoad [ self ]
  */

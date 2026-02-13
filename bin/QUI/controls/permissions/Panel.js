@@ -1,8 +1,5 @@
 /**
  * Permissions Panel
- *
- * @module controls/permissions/Panel
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/permissions/Panel', [
 

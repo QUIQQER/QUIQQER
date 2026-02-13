@@ -1,7 +1,3 @@
-/**
- * @module controls/projects/project/media/CreateFolder
- * @author www.pcsg.de (Henning Leutz)
- */
 define('controls/projects/project/media/CreateFolder', [
 
     'qui/QUI',

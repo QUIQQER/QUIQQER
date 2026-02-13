@@ -1,7 +1,5 @@
 /**
  * Groups manager panel
- *
- * @module controls/groups/Panel
  */
 define('controls/groups/Panel', [
 

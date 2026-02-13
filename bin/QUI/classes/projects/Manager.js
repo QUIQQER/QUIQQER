@@ -1,8 +1,6 @@
 /**
  * The Project Manager
  *
- * @module classes/projects/Manager
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onCreate
  * @event onDelete

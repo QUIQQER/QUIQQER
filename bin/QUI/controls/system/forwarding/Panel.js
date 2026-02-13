@@ -1,7 +1,3 @@
-/**
- * @module controls/system/forwarding/Panel
- * @author www.pcsg.de (Henning Leutz)
- */
 define('controls/system/forwarding/Panel', [
 
     'qui/QUI',

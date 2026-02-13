@@ -1,8 +1,5 @@
 /**
  * Global User Manager object
- *
- * @module Users
- * @author www.pcsg.de (Henning Leutz)
  */
 define('Users', [
 

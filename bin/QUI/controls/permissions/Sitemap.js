@@ -1,8 +1,6 @@
 /**
  * Permissions Sitemap
  *
- * @module controls/permissions/Panel
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event itemClick [Item, value]
  */

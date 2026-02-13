@@ -1,7 +1,3 @@
-/**
- * @module controls/email/SelectItem
- * @author www.pcsg.de (Henning Leutz)
- */
 define('controls/email/SelectItem', [
 
     'qui/QUI',

@@ -4,7 +4,6 @@
  * Send ajax request, but bundle the requests
  * the bundler sends the request between a timeframe
  *
- * @author www.pcsg.de (Henning Leutz)
  * @package quiqqer/core
  */
 

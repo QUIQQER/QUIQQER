@@ -1,9 +1,6 @@
 /**
  * A projects field / display
  * the display updates itself
- *
- * @module controls/projects/project/Entry
- * @author www.pcsg.de (Henning Leutz)
  */
 
 define('controls/projects/project/Entry', [

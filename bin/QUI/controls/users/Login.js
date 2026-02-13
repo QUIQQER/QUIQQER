@@ -1,5 +1,4 @@
 /**
- * @module controls/users/Login
  *
  * @event onLoad [this]
  * @event onAuthBegin [this]

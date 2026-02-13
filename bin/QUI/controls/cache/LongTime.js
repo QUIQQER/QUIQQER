@@ -1,8 +1,5 @@
 /**
  * Cache type setting for long time cache
- *
- * @module controls/cache/LongTime
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/cache/LongTime', [
 

@@ -1,8 +1,5 @@
 /**
  * Media trash
- *
- * @module classes/projects/media/Trash
- * @author www.pcsg.de (Henning Leutz)
  */
 
 define('classes/projects/media/Trash', [

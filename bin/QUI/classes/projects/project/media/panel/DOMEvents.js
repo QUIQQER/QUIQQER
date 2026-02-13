@@ -1,8 +1,5 @@
 /**
  * Media DOM event handling for a media panel
- *
- * @module classes/projects/project/media/panel/DOMEvents
- * @author www.pcsg.de (Henning Leutz)
  */
 define('classes/projects/project/media/panel/DOMEvents', [
 

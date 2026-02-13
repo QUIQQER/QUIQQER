@@ -2,9 +2,6 @@
  * Editor Manager
  *
  * The editor manager creates the editors and load all required classes
- *
- * @module classes/editor/Manager
- * @author www.pcsg.de (Henning Leutz)
  */
 define('classes/editor/Manager', [
 

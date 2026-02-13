@@ -1,8 +1,5 @@
 /**
  * Package Manager / System Update
- *
- * @module controls/packages/Panel
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/packages/Panel', [
 

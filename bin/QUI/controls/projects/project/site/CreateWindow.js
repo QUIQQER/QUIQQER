@@ -1,6 +1,4 @@
 /**
- * @module controls/projects/project/site/CreateWindow
- * @author www.pcsg.de (Henning Leutz)
  *
  * opens a window to create a new site
  */

@@ -1,8 +1,5 @@
 /**
  * Permissions Panel -> Site
- *
- * @module controls/permissions/Site
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/permissions/Site', [
 

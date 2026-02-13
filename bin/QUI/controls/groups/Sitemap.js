@@ -1,6 +1,4 @@
 /**
- * @module controls/groups/Sitemap
- * @author www.pcsg.de (Henning Leutz)
  *
  * A Sitemap that list the groups
  *

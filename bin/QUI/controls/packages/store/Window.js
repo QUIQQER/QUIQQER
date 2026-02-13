@@ -1,7 +1,3 @@
-/**
- * @module controls/packages/store/Window
- * @author www.pcsg.de (Henning Leutz)
- */
 define('controls/packages/store/Window', [
 
     'qui/QUI',

@@ -1,7 +1,3 @@
-/**
- * @module controls/packages/Package
- * @author www.pcsg.de (Henning Leutz)
- */
 define('controls/packages/PackageList', [
 
     'qui/QUI',

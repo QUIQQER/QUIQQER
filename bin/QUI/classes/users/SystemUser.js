@@ -1,8 +1,6 @@
 /**
  * A QUIQQER SystemUser
  *
- * @module classes/users/SystemUser
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onRefresh [ {classes/users/SystemUser} ]
  */

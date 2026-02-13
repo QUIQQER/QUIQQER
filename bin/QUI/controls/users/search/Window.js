@@ -1,6 +1,3 @@
-/**
- * @module controls/users/search/Window
- */
 define('controls/users/search/Window', [
 
     'qui/QUI',

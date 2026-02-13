@@ -1,5 +1,4 @@
 /**
- * @module controls/packages/upload/Upload
  *
  * Install a package via it's archive package
  */

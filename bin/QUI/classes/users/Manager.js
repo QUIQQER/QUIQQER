@@ -1,8 +1,6 @@
 /**
  * User Manager - class
  *
- * @module classes/users/Manager
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onSwitchStatus [this, result, Request]
  * @event onActivate [this, result, Request]

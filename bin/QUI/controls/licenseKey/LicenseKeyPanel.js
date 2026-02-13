@@ -2,9 +2,6 @@
  * LicenseKeyPanel JavaScript Control
  *
  * Panel for showing QUIQQER license key information
- *
- * @module controls/licenseKey/LicenseKeyPanel
- * @author www.pcsg.de (Patrick Müller)
  */
 define('controls/licenseKey/LicenseKeyPanel', [
 

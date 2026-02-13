@@ -1,8 +1,5 @@
 /**
  * A media Popup
- *
- * @module controls/projects/project/media/Popup
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/projects/project/media/Popup', [
 

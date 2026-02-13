@@ -1,8 +1,6 @@
 /**
  * Parent class for all media items like file, image, folder
  *
- * @module classes/projects/project/media/Item
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onRefresh [ {self} ]
  * @event onSave [ {self} ]

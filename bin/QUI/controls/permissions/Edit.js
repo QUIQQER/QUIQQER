@@ -1,9 +1,6 @@
 /**
  * Edit the permission
  * delete and create new permissions
- *
- * @module controls/permissions/Edit
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/permissions/Edit', [
 

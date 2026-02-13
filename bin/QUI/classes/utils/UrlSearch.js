@@ -1,7 +1,3 @@
-/**
- * @module classes/utils/UrlSearch
- * @author www.pcsg.de (Henning Leutz)
- */
 define('classes/utils/UrlSearch', [
 
     'qui/classes/DOM',

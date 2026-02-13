@@ -1,10 +1,5 @@
 /**
  * Colors
- *
- * @module utils/color
- *
- * @author www.pcsg.de (Jan Wennrich)
- * @author A lot of smart people from Stack Overflow
  */
 define('utils/Color', [], function () {
     "use strict";

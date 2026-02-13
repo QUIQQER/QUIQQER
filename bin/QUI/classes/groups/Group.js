@@ -1,8 +1,6 @@
 /**
  * Group (Model)
  *
- * @module classes/groups/Group
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onRefresh [ {classes/groups/Group} ]
  * @event onActivate [ {classes/groups/Group} ]

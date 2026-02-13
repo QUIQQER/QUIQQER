@@ -1,7 +1,6 @@
 /**
  * Logout popup / window
  *
- * @module controls/users/LogoutWindow
  *
  * @event onQuiqqerUserAuthLogout
  */
