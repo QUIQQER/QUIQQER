@@ -471,6 +471,7 @@ EOT;
 
         $PackageManager = QUI::getPackageManager();
         $packages = SystemFile::readDir(OPT_DIR);
+        sort($packages);
 
         $PackageManager->refreshServerList();
 
@@ -500,6 +501,7 @@ EOT;
             }
 
             $list = SystemFile::readDir(OPT_DIR . $package);
+            sort($list);
 
             foreach ($list as $sub) {
                 $packageName = $package . '/' . $sub;
