@@ -1,8 +1,5 @@
 /**
  * quiqqer mail config
- *
- * @module controls/system/settings/Mail
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/system/settings/Mail', [
 

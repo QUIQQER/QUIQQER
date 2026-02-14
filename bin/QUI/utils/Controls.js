@@ -1,8 +1,5 @@
 /**
  * control utils - helper for all controls
- *
- * @module utils/Controls
- * @author www.pcsg.de (Henning Leutz)
  */
 
 define('utils/Controls', [

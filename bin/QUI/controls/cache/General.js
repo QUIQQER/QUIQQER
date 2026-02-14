@@ -1,8 +1,5 @@
 /**
  * Cache type setting
- *
- * @module controls/cache/CacheType
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/cache/General', [
 

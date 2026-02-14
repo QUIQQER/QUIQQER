@@ -1,8 +1,5 @@
 /**
  * Set priority of the folder children
- *
- * @author www.pcsg.de (Henning Leutz)
- * @module controls/projects/project/media/Priority
  */
 define('controls/projects/project/media/Priority', [
 
@@ -19,7 +16,7 @@ define('controls/projects/project/media/Priority', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/projects/project/media/Priority',
+        Type: 'controls/projects/project/media/Priority',
 
         Binds: [
             '$onResize',
@@ -28,7 +25,7 @@ define('controls/projects/project/media/Priority', [
         ],
 
         options: {
-            project : '',
+            project: '',
             folderId: false
         },
 
@@ -56,9 +53,9 @@ define('controls/projects/project/media/Priority', [
             });
 
             this.$Grid = new Grid(this.$Elm, {
-                buttons    : [
+                buttons: [
                     {
-                        text  : QUILocale.get(
+                        text: QUILocale.get(
                             'quiqqer/core',
                             'projects.project.site.media.priority.btn.save'
                         ),
@@ -69,34 +66,34 @@ define('controls/projects/project/media/Priority', [
                 ],
                 columnModel: [
                     {
-                        header   : '&nbsp;',
+                        header: '&nbsp;',
                         dataIndex: 'order',
-                        dataType : 'node',
-                        width    : 100
+                        dataType: 'node',
+                        width: 100
                     },
                     {
-                        header   : QUILocale.get('quiqqer/core', 'id'),
+                        header: QUILocale.get('quiqqer/core', 'id'),
                         dataIndex: 'id',
-                        dataType : 'integer',
-                        width    : 50
+                        dataType: 'integer',
+                        width: 50
                     },
                     {
-                        header   : QUILocale.get('quiqqer/core', 'name'),
+                        header: QUILocale.get('quiqqer/core', 'name'),
                         dataIndex: 'name',
-                        dataType : 'string',
-                        width    : 300
+                        dataType: 'string',
+                        width: 300
                     },
                     {
-                        header   : QUILocale.get('quiqqer/core', 'title'),
+                        header: QUILocale.get('quiqqer/core', 'title'),
                         dataIndex: 'title',
-                        dataType : 'string',
-                        width    : 300
+                        dataType: 'string',
+                        width: 300
                     },
                     {
-                        header   : '&nbsp;',
+                        header: '&nbsp;',
                         dataIndex: 'preview',
-                        dataType : 'node',
-                        width    : 60,
+                        dataType: 'node',
+                        width: 60,
                         className: 'project-media-priority-image'
                     }
                 ]
@@ -136,34 +133,34 @@ define('controls/projects/project/media/Priority', [
 
                             for (let i = 0, len = childData.length; i < len; i++) {
                                 data.push({
-                                    order  : new Element('input', {
-                                        value : childData[i].priority,
-                                        type  : 'number',
+                                    order: new Element('input', {
+                                        value: childData[i].priority,
+                                        type: 'number',
                                         styles: {
                                             lineHeight: 22,
-                                            padding   : '0 4px',
-                                            width     : '95%'
+                                            padding: '0 4px',
+                                            width: '95%'
                                         }
                                     }),
-                                    id     : childData[i].id,
-                                    name   : childData[i].name,
-                                    title  : childData[i].title,
+                                    id: childData[i].id,
+                                    name: childData[i].name,
+                                    title: childData[i].title,
                                     preview: new Element('img', {
                                         src: URL_DIR + 'image.php?' + Object.toQueryString({
-                                            id       : childData[i].id,
-                                            project  : project,
-                                            quiadmin : 1,
+                                            id: childData[i].id,
+                                            project: project,
+                                            quiadmin: 1,
                                             maxheight: 60,
-                                            maxwidth : 60,
-                                            hash     : String.uniqueID()
+                                            maxwidth: 60,
+                                            hash: String.uniqueID()
                                         })
                                     })
                                 });
                             }
 
                             self.$Grid.setData({
-                                data : data,
-                                page : children.page,
+                                data: data,
+                                page: children.page,
                                 total: children.total
                             });
 
@@ -186,11 +183,11 @@ define('controls/projects/project/media/Priority', [
                 this.Loader.show();
 
                 const priorities = [],
-                      data       = this.$Grid.getData();
+                    data = this.$Grid.getData();
 
                 for (let i = 0, len = data.length; i < len; i++) {
                     priorities.push({
-                        id      : data[i].id,
+                        id: data[i].id,
                         priority: parseInt(data[i].order.value)
                     });
                 }
@@ -198,10 +195,10 @@ define('controls/projects/project/media/Priority', [
                 QUIAjax.post('ajax_media_folder_setPriorities', () => {
                     this.refresh().then(resolve);
                 }, {
-                    project   : this.getAttribute('project'),
-                    folderId  : this.getAttribute('folderId'),
+                    project: this.getAttribute('project'),
+                    folderId: this.getAttribute('folderId'),
                     priorities: JSON.encode(priorities),
-                    onError   : reject
+                    onError: reject
                 });
             });
         },

@@ -1,9 +1,6 @@
 /**
  * Template Manager
  * Use the Template Manager for getting HTML Templates
- *
- * @module utils/Template
- * @author www.pcsg.de (Henning Leutz)
  */
 define('utils/Template', [
 

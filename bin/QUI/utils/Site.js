@@ -1,8 +1,6 @@
 /**
  * Helper for site operations
  *
- * @module utils/Site
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onBeforeOpenCreateChild [ ParentSite ]
  * @event onOpenCreateChild [ Win, ParentSite ]

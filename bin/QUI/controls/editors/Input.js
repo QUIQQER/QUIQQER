@@ -2,7 +2,6 @@
  * Input field which opens an editor in the window
  *
  * @package controls/editors/Input
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/editors/Input', [
 

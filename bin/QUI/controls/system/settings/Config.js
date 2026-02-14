@@ -1,8 +1,5 @@
 /**
  * quiqqer config
- *
- * @module controls/system/settings/Config
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/system/settings/Config', [
 

@@ -1,6 +1,3 @@
-/**
- * @module controls/editors/ToolbarConfigurator
- */
 define('controls/editors/ToolbarConfigurator', [
 
     'qui/QUI',

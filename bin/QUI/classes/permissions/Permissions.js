@@ -1,8 +1,5 @@
 /**
  * Permission Controller
- *
- * @author www.pcsg.de (Henning Leutz
- * @module classes/permissions/Permissions
  */
 define('classes/permissions/Permissions', [
 

@@ -1,9 +1,6 @@
 /**
  * Permissions Utils
  * Helper for the permissions controls
- *
- * @module utils/permissions/Utils
- * @author www.pcsg.de (Henning Leutz)
  */
 define('utils/permissions/Utils', [
 

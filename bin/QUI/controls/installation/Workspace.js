@@ -1,7 +1,3 @@
-/**
- * @module controls/installation/Workspace
- * @author www.pcsg.de (Henning Leutz)
- */
 define('controls/installation/Workspace', [
 
     'qui/QUI',

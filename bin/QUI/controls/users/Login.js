@@ -1,5 +1,4 @@
 /**
- * @module controls/users/Login
  *
  * @event onLoad [this]
  * @event onAuthBegin [this]
@@ -469,6 +468,7 @@ define('controls/users/Login', [
                 }
             }
 
+            this.Loader.inject(this.getElm());
             this.Loader.hide();
 
             const Node = container.querySelector('[data-qui="controls/users/auth/QUIQQERLogin"]');

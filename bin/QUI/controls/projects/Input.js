@@ -1,8 +1,6 @@
 /**
  * Makes an input field to a project selection field
  *
- * @module controls/projects/Input
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onAdd [ this, project, lang ]
  * @event onChange [ this ]

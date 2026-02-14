@@ -1,8 +1,6 @@
 /**
  * Help panel
  *
- * @module controls/desktop/panels/Help
- * @author www.pcsg.de (Henning Leutz)
  *
  * @deprecated
  */

@@ -1,8 +1,6 @@
 /**
  * A QUIQQER Nobody User
  *
- * @module classes/users/Nobody
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onRefresh [ {classes/users/Nobody} ]
  */

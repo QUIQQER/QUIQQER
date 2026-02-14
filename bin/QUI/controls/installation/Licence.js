@@ -1,7 +1,3 @@
-/**
- * @module controls/installation/Licence
- * @author www.pcsg.de (Henning Leutz)
- */
 define('controls/installation/Licence', [
 
     'qui/QUI',

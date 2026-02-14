@@ -1,8 +1,6 @@
 /**
  * History Handling for Tabs
  * - mouse back and forward changes the tabs
- *
- * @author www.pcsg.de (Henning Leutz)
  */
 define('libs/HistoryTabs', [], function () {
     "use strict";

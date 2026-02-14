@@ -1,9 +1,6 @@
 /**
  * Select a site input field
  *
- * @module controls/projects/project/site/Input
- * @author www.pcsg.de (Henning Leutz)
- * @author www.pcsg.de (Patrick Müller)
  *
  * @event onSelect [url, this] - fires if the user selects a site
  * @event onRemove [this] - fires if the user removes the selected site

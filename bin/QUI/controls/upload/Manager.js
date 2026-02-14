@@ -2,8 +2,6 @@
  * Upload manager
  * Uploads files and show the upload status
  *
- * @module controls/upload/Manager
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onFileCancel [ {self}, {File} ]
  * @event onFileComplete [ {self}, {File} ]

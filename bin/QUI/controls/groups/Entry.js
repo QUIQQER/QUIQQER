@@ -1,9 +1,6 @@
 /**
  * A group field / display
  * the display updates itself
- *
- * @module controls/groups/Entry
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/groups/Entry', [
 

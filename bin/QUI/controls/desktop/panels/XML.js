@@ -1,9 +1,6 @@
 /**
  * a panel based on a xml file
  * eg settings.xml
- *
- * @author www.pcsg.de (Henning Leutz)
- * @module controls/desktop/panels/XML
  */
 define('controls/desktop/panels/XML', [
 

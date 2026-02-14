@@ -1,8 +1,6 @@
 /**
  * Permissions control - parent class
  *
- * @module controls/permissions/Permission
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onLoad
  * @event onLoadError

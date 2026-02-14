@@ -4,8 +4,6 @@
  * drag/drop upload script
  * add dragdrop Events to the elements
  *
- * @module classes/request/Upload
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onDragenter [{DOMEvent}, {DOMNode Target}, {self}]
  * @event onDragleave [{DOMEvent}, {DOMNode Target}, {self}]

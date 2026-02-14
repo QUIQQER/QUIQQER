@@ -1,9 +1,6 @@
 /**
  * Type details
  * Shows details of the types
- *
- * @module controls/projects/TypeDetails
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/projects/TypeDetails', [
 

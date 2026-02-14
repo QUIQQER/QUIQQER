@@ -1,5 +1,4 @@
 /**
- * @module controls/users/password/Window
  *
  * @event onSuccess [this]
  * @event onError [this]

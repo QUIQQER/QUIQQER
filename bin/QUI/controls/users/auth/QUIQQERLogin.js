@@ -5,8 +5,6 @@
  *
  * @event showPassword [self]
  * @event showPasswordReset [self]
- *
- * @module controls/users/auth/QUIQQERLogin
  */
 define('controls/users/auth/QUIQQERLogin', [
 

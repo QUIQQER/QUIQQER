@@ -1,6 +1,4 @@
 /**
- * @module controls/packages/SystemCheck
- * @author www.pcsg.de (Michael Danielczok)
  *
  * @event onLoad
  */

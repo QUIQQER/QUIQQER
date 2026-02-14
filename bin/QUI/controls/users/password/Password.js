@@ -1,5 +1,4 @@
 /**
- * @module controls/users/password/Password
  *
  * @event onSaveBegin [self]
  * @event onSaveEnd [self]

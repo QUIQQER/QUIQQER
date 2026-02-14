@@ -1,8 +1,5 @@
 /**
  * quiqqer authentication configuration
- *
- * @module controls/system/settings/Auth
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/system/settings/Auth', [
 

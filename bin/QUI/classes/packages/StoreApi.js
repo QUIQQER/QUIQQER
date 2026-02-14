@@ -1,8 +1,5 @@
 /**
  * Package manager
- *
- * @module classes/packages/StoreApi
- * @author www.pcsg.de (Henning Leutz)
  */
 define('classes/packages/StoreApi', [
 

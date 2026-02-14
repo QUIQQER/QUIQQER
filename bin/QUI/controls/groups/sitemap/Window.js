@@ -1,8 +1,6 @@
 /**
  * Groups Sitemapwindow
  *
- * @module controls/groups/sitemap/Window
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onSubmit [ this, values ]
  */

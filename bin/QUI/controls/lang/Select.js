@@ -1,6 +1,5 @@
 /**
  * @package controls/lang/Select
- * @author www.pcsg.de (Henning Leutz)
  *
  * Sprachauswahl - DropDown
  *

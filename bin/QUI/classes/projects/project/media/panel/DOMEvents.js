@@ -1,8 +1,5 @@
 /**
  * Media DOM event handling for a media panel
- *
- * @module classes/projects/project/media/panel/DOMEvents
- * @author www.pcsg.de (Henning Leutz)
  */
 define('classes/projects/project/media/panel/DOMEvents', [
 
@@ -90,21 +87,21 @@ define('classes/projects/project/media/panel/DOMEvents', [
          * @param {Array} List (DOMNode)
          */
         del: function (List) {
-            var self  = this,
+            var self = this,
                 Media = this.getMedia(),
                 items = [],
-                list  = [];
+                list = [];
 
             new QUIConfirm({
-                name       : 'delete_item',
-                title      : QUILocale.get(lg, 'dialog.projects.media.folder.delete.title'),
-                icon       : 'fa fa-trash-o',
-                texticon   : 'fa fa-trash-o',
-                text       : QUILocale.get(lg, 'dialog.projects.media.folder.delete.text'),
+                name: 'delete_item',
+                title: QUILocale.get(lg, 'dialog.projects.media.folder.delete.title'),
+                icon: 'fa fa-trash-o',
+                texticon: 'fa fa-trash-o',
+                text: QUILocale.get(lg, 'dialog.projects.media.folder.delete.text'),
                 information: '<div class="qui-media-file-delete"></div>',
-                maxHeight  : 400,
-                maxWidth   : 600,
-                events     : {
+                maxHeight: 400,
+                maxWidth: 600,
+                events: {
                     onOpen: function (Win) {
                         Win.Loader.show();
 
@@ -120,8 +117,8 @@ define('classes/projects/project/media/panel/DOMEvents', [
 
                             // @todo do it as mustache template
                             var folderIcon = URL_BIN_DIR + '16x16/extensions/folder.png',
-                                imageIcon  = URL_BIN_DIR + '16x16/extensions/image.png',
-                                fileIcon   = URL_BIN_DIR + '16x16/extensions/empty.png';
+                                imageIcon = URL_BIN_DIR + '16x16/extensions/image.png',
+                                fileIcon = URL_BIN_DIR + '16x16/extensions/empty.png';
 
                             for (i = 0, len = items.length; i < len; i++) {
                                 item = items[i];
@@ -196,15 +193,15 @@ define('classes/projects/project/media/panel/DOMEvents', [
             var self = this;
 
             new QUIPrompt({
-                name       : 'rename_item',
-                title      : QUILocale.get(lg, 'dialog.projects.media.rename.title'),
+                name: 'rename_item',
+                title: QUILocale.get(lg, 'dialog.projects.media.rename.title'),
                 information: QUILocale.get(lg, 'dialog.projects.media.rename.information', {
                     file: DOMNode.name
                 }),
-                icon       : 'fa fa-font',
-                titleicon  : 'fa fa-font',
-                maxHeight  : 300,
-                maxWidth   : 450,
+                icon: 'fa fa-font',
+                titleicon: 'fa fa-font',
+                maxHeight: 300,
+                maxWidth: 450,
 
                 check: function (Win) {
                     Win.fireEvent('submit', [Win.getValue(), Win]);
@@ -218,10 +215,10 @@ define('classes/projects/project/media/panel/DOMEvents', [
                         var itemid = DOMNode.get('data-id');
 
                         Win.getContent().getElement('.qui-windows-prompt-input').setStyles({
-                            'float'  : 'left',
+                            'float': 'left',
                             marginTop: 10,
                             textAlign: 'center',
-                            width    : '100%'
+                            width: '100%'
                         });
 
                         Win.getContent().getElements('.qui-windows-prompt-icon').destroy();
@@ -235,7 +232,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
                     },
 
                     onSubmit: function (result, Win) {
-                        var itemid  = DOMNode.get('data-id'),
+                        var itemid = DOMNode.get('data-id'),
                             newName = result;
 
                         self.$createLoaderItem(DOMNode);
@@ -247,7 +244,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
                                 }
 
                                 DOMNode.set({
-                                    alt  : result,
+                                    alt: result,
                                     title: result
                                 });
 
@@ -277,29 +274,29 @@ define('classes/projects/project/media/panel/DOMEvents', [
             var self = this;
 
             new QUIConfirm({
-                title    : QUILocale.get(lg, 'dialog.projects.media.file.replace.title'),
-                icon     : 'fa fa-retweet',
-                name     : 'replace-media-id-' + DOMNode.get('data-id'),
+                title: QUILocale.get(lg, 'dialog.projects.media.file.replace.title'),
+                icon: 'fa fa-retweet',
+                name: 'replace-media-id-' + DOMNode.get('data-id'),
                 maxHeight: 400,
-                maxWidth : 600,
+                maxWidth: 600,
 
-                text       : QUILocale.get(lg, 'dialog.projects.media.file.replace.title'),
-                texticon   : 'fa fa-retweet',
+                text: QUILocale.get(lg, 'dialog.projects.media.file.replace.title'),
+                texticon: 'fa fa-retweet',
                 information: QUILocale.get(lg, 'dialog.projects.media.file.replace.information', {
                     file: DOMNode.title
                 }),
-                autoclose  : false,
-                events     : {
+                autoclose: false,
+                events: {
                     onCreate: function (Win) {
                         var Content = Win.getContent();
 
                         // upload formular
                         require(['controls/upload/Form'], function (UploadForm) {
                             var Form = new UploadForm({
-                                Drops : [Content],
+                                Drops: [Content],
                                 styles: {
-                                    clear : 'both',
-                                    float : 'left',
+                                    clear: 'both',
+                                    float: 'left',
                                     margin: '20px 0 0 0'
                                 },
                                 events: {
@@ -310,8 +307,8 @@ define('classes/projects/project/media/panel/DOMEvents', [
                                     onComplete: function () {
                                         var i, len;
 
-                                        var panels     = QUI.Controls.get('projects-media-panel'),
-                                            windows    = QUI.Controls.get(
+                                        var panels = QUI.Controls.get('projects-media-panel'),
+                                            windows = QUI.Controls.get(
                                                 'replace-media-id-' + DOMNode.get('data-id')
                                             ),
                                             filepanels = QUI.Controls.get(
@@ -385,8 +382,8 @@ define('classes/projects/project/media/panel/DOMEvents', [
             ], function (MediaPopup) {
                 new MediaPopup({
                     selectable_types: 'folder',
-                    project         : self.getMedia().getProject().getName(),
-                    events          : {
+                    project: self.getMedia().getProject().getName(),
+                    events: {
                         onSubmit: function (MediaPopup, result) {
                             if (result.type !== 'folder') {
                                 QUI.getMessageHandler().then(function (MH) {
@@ -429,12 +426,12 @@ define('classes/projects/project/media/panel/DOMEvents', [
                 new Element('div.loader', {
                     styles: {
                         background: '#000000 url(' + URL_BIN_DIR + 'images/loader-big-black-white.gif) no-repeat center center',
-                        position  : 'absolute',
-                        top       : 0,
-                        left      : 0,
-                        height    : '100%',
-                        width     : '100%',
-                        opacity   : 0.5
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        height: '100%',
+                        width: '100%',
+                        opacity: 0.5
                     }
                 }).inject(List[i]);
             }

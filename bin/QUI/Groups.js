@@ -1,8 +1,5 @@
 /**
  * Global Group Manager object
- *
- * @module Groups
- * @author www.pcsg.de (Henning Leutz)
  */
 define('Groups', [
 

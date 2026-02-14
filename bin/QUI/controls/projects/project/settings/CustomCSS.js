@@ -1,7 +1,5 @@
 /**
  * CustomCSS for a project
- *
- * @author www.pcsg.de (Henning Leutz)
  */
 
 define('controls/projects/project/settings/CustomCSS', [

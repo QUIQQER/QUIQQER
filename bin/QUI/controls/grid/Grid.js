@@ -6,8 +6,6 @@
  *
  * Complete rewrited by www.pcsg.de (Henning Leutz)
  *
- * @module controls/grid/Grid
- * @author www.pcsg.de (Henning Leutz)
  *
  * @fires onClick
  * @fires onDblClick

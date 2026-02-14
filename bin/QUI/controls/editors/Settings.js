@@ -1,7 +1,5 @@
 /**
  * WYWIWYG Editor Setting Panel
- *
- * @author www.pcsg.de (Henning Leutz)
  */
 
 define('controls/editors/Settings', [

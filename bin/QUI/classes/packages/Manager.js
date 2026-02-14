@@ -1,8 +1,5 @@
 /**
  * Package manager
- *
- * @module classes/packages/Manager
- * @author www.pcsg.de (Henning Leutz)
  */
 define('classes/packages/Manager', [
 

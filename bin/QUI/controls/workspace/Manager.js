@@ -1,8 +1,6 @@
 /**
  * Workspace Manager
  *
- * @module controls/workspace/Manager
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onWorkspaceLoaded [ {self} ]
  * @event onLoadWorkspace [ {self} ]

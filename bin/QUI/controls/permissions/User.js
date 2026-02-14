@@ -1,8 +1,5 @@
 /**
  * Permission for an user
- *
- * @module controls/permissions/User
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/permissions/User', [
 

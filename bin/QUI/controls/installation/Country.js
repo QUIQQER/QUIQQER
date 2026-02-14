@@ -1,7 +1,3 @@
-/**
- * @module controls/installation/Country
- * @author www.pcsg.de (Henning Leutz)
- */
 define('controls/installation/Country', [
 
     'qui/QUI',

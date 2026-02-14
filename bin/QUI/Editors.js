@@ -1,9 +1,6 @@
 /**
  * Global Editor manager
  * define: QUI.Editors
- *
- * @module Editors
- * @author www.pcsg.de (Henning Leutz)
  */
 define('Editors', [
 

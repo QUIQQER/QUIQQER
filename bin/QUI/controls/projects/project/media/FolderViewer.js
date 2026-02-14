@@ -2,8 +2,6 @@
  * Folder Viewer
  * Display images from a folder and offers a slideshow / diashow
  *
- * @module controls/projects/project/media/FolderViewer
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onFolderCreated [self, newFolder]
  */
@@ -27,7 +25,7 @@ define('controls/projects/project/media/FolderViewer', [
 
     'css!controls/projects/project/media/FolderViewer.css'
 
-], function(
+], function (
     QUI,
     QUIControl,
     QUILoader,
@@ -80,7 +78,7 @@ define('controls/projects/project/media/FolderViewer', [
             autoactivate: false // activate files after the upload
         },
 
-        initialize: function(options) {
+        initialize: function (options) {
             this.parent(options);
 
             this.Loader = null;
@@ -138,7 +136,7 @@ define('controls/projects/project/media/FolderViewer', [
         /**
          * event : on create
          */
-        create: function() {
+        create: function () {
             this.$Elm = this.parent();
             this.$Elm.addClass('qui-project-media-folderViewer');
 
@@ -191,8 +189,8 @@ define('controls/projects/project/media/FolderViewer', [
                 }
             }).inject(this.$Buttons);
 
-            this.$MediaSettings.getContextMenu(function(Menu) {
-                Menu.addEvent('onShow', function() {
+            this.$MediaSettings.getContextMenu(function (Menu) {
+                Menu.addEvent('onShow', function () {
                     const pos = Menu.getElm().getPosition();
                     const width = Menu.getElm().getSize().x;
 
@@ -207,7 +205,7 @@ define('controls/projects/project/media/FolderViewer', [
                 text: QUILocale.get('quiqqer/core', 'media.panel.view.hiddenItems.show'),
                 icon: 'fa fa-eye',
                 events: {
-                    onMouseDown: function(Item) {
+                    onMouseDown: function (Item) {
                         HIDE_HIDDEN_FILES = !HIDE_HIDDEN_FILES;
 
                         if (HIDE_HIDDEN_FILES) {
@@ -260,7 +258,7 @@ define('controls/projects/project/media/FolderViewer', [
 
             // Upload events
             new RequestUpload([this.$Container], {
-                onDragenter: function(event, Elm) {
+                onDragenter: function (event, Elm) {
                     if (!Elm.hasClass('qui-project-media-folderViewer-container')) {
                         Elm = Elm.getParent('qui-project-media-folderViewer-container');
                     }
@@ -272,12 +270,12 @@ define('controls/projects/project/media/FolderViewer', [
                     Elm.addClass('qui-media-drag');
                     event.stop();
                 },
-                onDragleave: function(event, Elm) {
+                onDragleave: function (event, Elm) {
                     if (Elm.hasClass('qui-project-media-folderViewer-container')) {
                         Elm.removeClass('qui-media-drag');
                     }
                 },
-                onDragend: function(event, Elm) {
+                onDragend: function (event, Elm) {
                     if (Elm.hasClass('qui-project-media-folderViewer-container')) {
                         Elm.removeClass('qui-media-drag');
                     }
@@ -291,14 +289,14 @@ define('controls/projects/project/media/FolderViewer', [
         /**
          * event : on inject
          */
-        $onInject: function() {
+        $onInject: function () {
             this.refresh();
         },
 
         /**
          * event: on destroy
          */
-        $onDestroy: function() {
+        $onDestroy: function () {
             if (this.$ContextMenu) {
                 this.$ContextMenu.destroy();
             }
@@ -319,7 +317,7 @@ define('controls/projects/project/media/FolderViewer', [
         /**
          * refresh the folder viewer
          */
-        refresh: function() {
+        refresh: function () {
             if (!this.getAttribute('project') && this.getAttribute('folderUrl') ||
                 !this.getAttribute('folderId') && this.getAttribute('folderUrl')) {
                 const folderUrl = this.getAttribute('folderUrl'),
@@ -346,12 +344,12 @@ define('controls/projects/project/media/FolderViewer', [
                 Media = Project.getMedia();
 
             if (!this.getAttribute('folderId')) {
-                return this.showCreateFolder().then(function() {
+                return this.showCreateFolder().then(function () {
                     self.Loader.hide();
                 });
             }
 
-            return Media.get(this.getAttribute('folderId')).then(function(Item) {
+            return Media.get(this.getAttribute('folderId')).then(function (Item) {
                 const allowedTypes = self.getAttribute('filetype');
 
                 if (typeOf(Item) !== 'classes/projects/project/media/Folder') {
@@ -376,7 +374,7 @@ define('controls/projects/project/media/FolderViewer', [
 
                 return Item.getChildren(false, {
                     showHiddenFiles: !HIDE_HIDDEN_FILES
-                }).then(function(Result) {
+                }).then(function (Result) {
                     const items = Result.data;
 
                     self.$Container.set('html', '');
@@ -423,7 +421,7 @@ define('controls/projects/project/media/FolderViewer', [
 
                     self.Loader.hide();
                 });
-            }).catch(function(err) {
+            }).catch(function (err) {
                 console.error('debug error', err);
                 return self.showCreateFolder();
             });
@@ -434,7 +432,7 @@ define('controls/projects/project/media/FolderViewer', [
          *
          * @param {String} [image] - optional, source of the image, whiche should be zoomed
          */
-        diashow: function(image) {
+        diashow: function (image) {
             if (this.$Diashow) {
                 if (typeOf(image) === 'string') {
                     this.$Diashow.showImage(image);
@@ -451,17 +449,17 @@ define('controls/projects/project/media/FolderViewer', [
             require([
                 'package/quiqqer/diashow/bin/Diashow',
                 'qui/utils/Elements'
-            ], function(Diashow, ElementUtils) {
+            ], function (Diashow, ElementUtils) {
                 let MediaItemElements = self.$Container.getElements(
                     '.qui-project-media-folderViewer-item'
                 );
 
                 // Filter non-images
-                MediaItemElements = MediaItemElements.filter(function(Elm) {
+                MediaItemElements = MediaItemElements.filter(function (Elm) {
                     return Elm.get('data-type') === 'image';
                 });
 
-                const imageData = MediaItemElements.map(function(Elm) {
+                const imageData = MediaItemElements.map(function (Elm) {
                     return {
                         src: Elm.get('data-src'),
                         title: Elm.title,
@@ -474,7 +472,7 @@ define('controls/projects/project/media/FolderViewer', [
                         images: imageData,
                         zIndex: ElementUtils.getComputedZIndex(self.$Elm),
                         events: {
-                            onClose: function() {
+                            onClose: function () {
                                 // workaround close bug
                                 self.$Diashow.destroy();
                                 self.$Diashow = null;
@@ -495,8 +493,8 @@ define('controls/projects/project/media/FolderViewer', [
         /**
          * Open upload
          */
-        openUpload: function() {
-            this.openSheet(function(Content, Sheet) {
+        openUpload: function () {
+            this.openSheet(function (Content, Sheet) {
 
                 const Upload = new UploadForm({
                     multiple: true,
@@ -506,7 +504,7 @@ define('controls/projects/project/media/FolderViewer', [
                         height: '95%'
                     },
                     events: {
-                        onCancel: function() {
+                        onCancel: function () {
                             Sheet.fireEvent('close');
                         },
                         onComplete: (Form, uploadedFiles) => {
@@ -555,7 +553,7 @@ define('controls/projects/project/media/FolderViewer', [
          * @param {Object} imageData - data of the image
          * @return {Element}
          */
-        $createImageItem: function(imageData) {
+        $createImageItem: function (imageData) {
             const self = this;
 
             let cursor = 'zoom-in',
@@ -591,7 +589,7 @@ define('controls/projects/project/media/FolderViewer', [
                 'data-mimetype': imageData.mimetype,
                 'data-hidden': imageData.isHidden ? 1 : 0,
                 events: {
-                    click: function() {
+                    click: function () {
                         if (imageData.type === 'image') {
                             self.diashow(this.get('data-src'));
                         }
@@ -624,7 +622,7 @@ define('controls/projects/project/media/FolderViewer', [
 
             require([
                 'image!' + imageSrc
-            ], function(Image) {
+            ], function (Image) {
                 const IC = this.getElement(
                     '.qui-project-media-folderViewer-item-image'
                 );
@@ -637,7 +635,7 @@ define('controls/projects/project/media/FolderViewer', [
                     duration: 200
                 });
 
-            }.bind(Container), function(err) {
+            }.bind(Container), function (err) {
                 console.error(err);
             }.bind(Container));
 
@@ -650,13 +648,13 @@ define('controls/projects/project/media/FolderViewer', [
          * @param {DOMEvent} event         - DragDrop Event
          * @param {HTMLElement|File} Files - List of droped files
          */
-        $onDrop: function(event, Files) {
+        $onDrop: function (event, Files) {
             if (!Files.length) {
                 return;
             }
 
             const size = this.$Elm.getSize();
-            
+
             const Background = new Element('div', {
                 'class': 'qui-project-media-folderViewer-upload-background',
                 styles: {
@@ -672,11 +670,11 @@ define('controls/projects/project/media/FolderViewer', [
                 }
             }).inject(this.$Elm);
 
-            const close = function() {
+            const close = function () {
                 moofx(Background).animate({
                     opacity: 0
                 }, {
-                    callback: function() {
+                    callback: function () {
                         Background.destroy();
                     }
                 });
@@ -685,7 +683,7 @@ define('controls/projects/project/media/FolderViewer', [
                     opacity: 0,
                     top: top - 20
                 }, {
-                    callback: function() {
+                    callback: function () {
                         Message.destroy();
                     }
                 });
@@ -752,15 +750,15 @@ define('controls/projects/project/media/FolderViewer', [
          *
          * @return {Promise}
          */
-        showCreateFolder: function() {
+        showCreateFolder: function () {
             const self = this;
 
             if (self.getElm().getElement('.folder-missing-container')) {
                 return Promise.resolve();
             }
 
-            return new Promise(function(resolve, reject) {
-                require(['controls/projects/project/media/CreateFolder'], function(CreateFolder) {
+            return new Promise(function (resolve, reject) {
+                require(['controls/projects/project/media/CreateFolder'], function (CreateFolder) {
                     self.$Buttons.setStyle('display', 'none');
                     self.$Container.setStyle('display', 'none');
 
@@ -790,12 +788,12 @@ define('controls/projects/project/media/FolderViewer', [
                             marginTop: 10
                         },
                         events: {
-                            onClick: function() {
+                            onClick: function () {
                                 new CreateFolder({
                                     newFolderName: self.getAttribute('newFolderName'),
                                     Parent: self.getAttribute('Parent'),
                                     events: {
-                                        onSubmit: function(CF, Item) {
+                                        onSubmit: function (CF, Item) {
                                             self.fireEvent('folderCreated', [self, Item]);
                                         }
                                     }
@@ -812,7 +810,7 @@ define('controls/projects/project/media/FolderViewer', [
         /**
          * Hide the create folder dialog
          */
-        hideCreateFolder: function() {
+        hideCreateFolder: function () {
             this.getElm().getElements('.create-folder-container').destroy();
             this.$Buttons.setStyle('display', null);
             this.$Container.setStyle('display', null);
@@ -821,7 +819,7 @@ define('controls/projects/project/media/FolderViewer', [
         /**
          * open the folder
          */
-        openInMedia: function() {
+        openInMedia: function () {
             const project = this.getAttribute('project');
             const folderId = this.getAttribute('folderId');
 
@@ -833,7 +831,7 @@ define('controls/projects/project/media/FolderViewer', [
         /**
          * open the folder details
          */
-        openFolder: function() {
+        openFolder: function () {
             const project = this.getAttribute('project');
             const folderId = this.getAttribute('folderId');
 
@@ -846,7 +844,7 @@ define('controls/projects/project/media/FolderViewer', [
          * @param {String} url
          * @returns {Promise}
          */
-        $autoActivate: function(url) {
+        $autoActivate: function (url) {
             return new Promise((resolve) => {
                 // activate the file
                 const params = QUIStringUtils.getUrlParams(url);
@@ -866,7 +864,7 @@ define('controls/projects/project/media/FolderViewer', [
          *
          * @param event
          */
-        $onContextMenu: function(event) {
+        $onContextMenu: function (event) {
             if (typeOf(event) !== 'domevent') {
                 return;
             }
@@ -890,7 +888,7 @@ define('controls/projects/project/media/FolderViewer', [
          *
          * @return {HTMLElement}
          */
-        getContent: function() {
+        getContent: function () {
             return this.getElm();
         },
 
@@ -899,7 +897,7 @@ define('controls/projects/project/media/FolderViewer', [
          *
          * @return {Array}
          */
-        getSelectedItems: function() {
+        getSelectedItems: function () {
             return this.$selected;
         },
 
@@ -909,7 +907,7 @@ define('controls/projects/project/media/FolderViewer', [
          * @method qui/controls/desktop/Panel#getContextMenu
          * @return {qui/controls/contextmenu/Menu}
          */
-        getContextMenu: function() {
+        getContextMenu: function () {
             if (this.$ContextMenu) {
                 return this.$ContextMenu;
             }
@@ -918,7 +916,7 @@ define('controls/projects/project/media/FolderViewer', [
             this.$ContextMenu = new QUIContextmenu({
                 title: this.getAttribute('title'),
                 events: {
-                    blur: function(Menu) {
+                    blur: function (Menu) {
                         Menu.hide();
                     }
                 }
@@ -934,7 +932,7 @@ define('controls/projects/project/media/FolderViewer', [
          *
          * @return {*}
          */
-        getMedia: function() {
+        getMedia: function () {
             const Project = Projects.get(this.getAttribute('project'));
 
             return Project.getMedia();
@@ -948,7 +946,7 @@ define('controls/projects/project/media/FolderViewer', [
          *
          * @deprecated this.$DOMEvents.activate
          */
-        activateItem: function(DOMNode) {
+        activateItem: function (DOMNode) {
             this.$DOMEvents.activate([DOMNode]);
         },
 
@@ -960,7 +958,7 @@ define('controls/projects/project/media/FolderViewer', [
          *
          * @deprecated this.$DOMEvents.activate
          */
-        activateItems: function(DOMNode) {
+        activateItems: function (DOMNode) {
             this.$DOMEvents.activate(DOMNode);
         },
 
@@ -972,7 +970,7 @@ define('controls/projects/project/media/FolderViewer', [
          *
          * @deprecated this.$DOMEvents.deactivate
          */
-        deactivateItem: function(DOMNode) {
+        deactivateItem: function (DOMNode) {
             this.$DOMEvents.deactivate([DOMNode]);
         },
 
@@ -984,7 +982,7 @@ define('controls/projects/project/media/FolderViewer', [
          *
          * @deprecated this.$DOMEvents.deactivate
          */
-        deactivateItems: function(DOMNode) {
+        deactivateItems: function (DOMNode) {
             this.$DOMEvents.deactivate(DOMNode);
         },
 
@@ -994,7 +992,7 @@ define('controls/projects/project/media/FolderViewer', [
          * @method controls/projects/project/media/Panel#deleteItem
          * @param {Array|NodeList|HTMLElement} DOMNode - list
          */
-        deleteItem: function(DOMNode) {
+        deleteItem: function (DOMNode) {
             this.$DOMEvents.del([DOMNode]);
         },
 
@@ -1004,7 +1002,7 @@ define('controls/projects/project/media/FolderViewer', [
          * @method controls/projects/project/media/Panel#deleteItems
          * @param {Array|NodeList} items List
          */
-        deleteItems: function(items) {
+        deleteItems: function (items) {
             this.$DOMEvents.del(items);
         },
 
@@ -1014,7 +1012,7 @@ define('controls/projects/project/media/FolderViewer', [
          * @method controls/projects/project/media/Panel#deleteItem
          * @param {Array|NodeList|HTMLElement} DOMNode - list
          */
-        moveItem: function(DOMNode) {
+        moveItem: function (DOMNode) {
             this.$DOMEvents.move([DOMNode]);
         },
 
@@ -1024,7 +1022,7 @@ define('controls/projects/project/media/FolderViewer', [
          * @method controls/projects/project/media/Panel#deleteItem
          * @param {Array|NodeList|HTMLElement} Nodes - list
          */
-        moveItems: function(Nodes) {
+        moveItems: function (Nodes) {
             this.$DOMEvents.move(Nodes);
         },
 
@@ -1034,7 +1032,7 @@ define('controls/projects/project/media/FolderViewer', [
          * @method controls/projects/project/media/Panel#renameItem
          * @param {HTMLElement} DOMNode
          */
-        renameItem: function(DOMNode) {
+        renameItem: function (DOMNode) {
             this.$DOMEvents.rename(DOMNode);
         },
 
@@ -1044,7 +1042,7 @@ define('controls/projects/project/media/FolderViewer', [
          * @method controls/projects/project/media/Panel#replaceItem
          * @param {HTMLElement} DOMNode
          */
-        replaceItem: function(DOMNode) {
+        replaceItem: function (DOMNode) {
             this.$DOMEvents.replace(DOMNode);
         },
 
@@ -1054,8 +1052,8 @@ define('controls/projects/project/media/FolderViewer', [
          * @method controls/projects/project/media/Panel#downloadFile
          * @param {Number} fileid - ID of the file
          */
-        downloadFile: function(fileid) {
-            this.getMedia().get(fileid, function(File) {
+        downloadFile: function (fileid) {
+            this.getMedia().get(fileid, function (File) {
                 File.download();
             });
         },
@@ -1065,14 +1063,14 @@ define('controls/projects/project/media/FolderViewer', [
         /**
          * event: media item change
          */
-        $itemEvent: function() {
+        $itemEvent: function () {
             this.refresh();
         },
 
         /**
          * event: media item hidden status change
          */
-        $itemHideStatusChange: function() {
+        $itemHideStatusChange: function () {
             this.refresh();
         }
     });

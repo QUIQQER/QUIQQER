@@ -1,7 +1,3 @@
-/**
- * @module controls/lang/InputMultiLang
- * @author www.pcsg.de (Henning Leutz)
- */
 define('controls/lang/InputMultiLang', [
 
     'QUIQQER',

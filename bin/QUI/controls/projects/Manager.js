@@ -1,8 +1,5 @@
 /**
  * With the Project-Manager you can create, delete and edit projects
- *
- * @module controls/projects/Manager
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/projects/Manager', [
 

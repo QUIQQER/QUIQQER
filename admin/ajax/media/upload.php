@@ -35,43 +35,9 @@ QUI::$Ajax->registerFunction(
             return '';
         }
 
-        // check if image must be rotated
-        $fInfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mimeType = finfo_file($fInfo, $file);
-        finfo_close($fInfo);
-
-        try {
-            if (in_array($mimeType, ['image/jpeg', 'image/tiff']) && function_exists('exif_read_data')) {
-                $exif = exif_read_data($file);
-
-                if (!empty($exif['Orientation'])) {
-                    // Decide orientation
-                    if ($exif['Orientation'] == 3) {
-                        $rotation = 180;
-                    } elseif ($exif['Orientation'] == 6) {
-                        $rotation = -90;
-                    } elseif ($exif['Orientation'] == 8) {
-                        $rotation = 90;
-                    } else {
-                        $rotation = 0;
-                    }
-
-                    // Rotate the image
-                    if ($rotation) {
-                        $ImageManager = $Media->getImageManager();
-                        $Image = $ImageManager->make($file);
-
-                        $Image->rotate($rotation);
-                        $Image->save();
-                    }
-                }
-            }
-        } catch (Exception) {
-        }
-
         $params = $File->getAttribute('params');
 
-        // if file has a folder in original file path
+        // if a file has a folder in an original file path
         if (!empty($params) && !empty($params['filepath']) && str_contains($params['filepath'], '/')) {
             $path = trim($params['filepath'], '/');
             $path = explode('/', $path);

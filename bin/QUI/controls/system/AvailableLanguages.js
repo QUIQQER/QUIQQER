@@ -1,9 +1,6 @@
 /**
  * Available language list control
  * list all available languages from the system
- *
- * @module controls/system/AvailableLanguages
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/system/AvailableLanguages', [
 

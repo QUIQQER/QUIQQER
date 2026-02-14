@@ -1,8 +1,6 @@
 /**
  * The Project Manager
  *
- * @module classes/projects/Manager
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onCreate
  * @event onDelete
@@ -25,11 +23,11 @@ define('classes/projects/Manager', [
     return new Class({
 
         Extends: QDOM,
-        Type   : 'classes/projects/Manager',
+        Type: 'classes/projects/Manager',
 
-        $Project : false,
+        $Project: false,
         $projects: {},
-        $getList : null, // internal project cache
+        $getList: null, // internal project cache
 
         /**
          * Standard project
@@ -67,7 +65,7 @@ define('classes/projects/Manager', [
                 onProjectSave: function (Project) {
                     this.$getList = null;
 
-                    var name     = Project.getName(),
+                    var name = Project.getName(),
                         projects = {};
 
                     for (var key in this.$projects) {
@@ -203,9 +201,9 @@ define('classes/projects/Manager', [
 
                     self.fireEvent('create', [project, lang]);
                 }, {
-                    params : JSON.encode({
-                        project : project,
-                        lang    : lang,
+                    params: JSON.encode({
+                        project: project,
+                        lang: lang,
                         template: template,
                         demodata: demodata
                     }),
@@ -221,7 +219,7 @@ define('classes/projects/Manager', [
          * @param {Function} [callback] - callback function
          */
         deleteProject: function (project, callback) {
-            var self    = this,
+            var self = this,
                 Project = this.get(project);
 
             this.$getList = null;

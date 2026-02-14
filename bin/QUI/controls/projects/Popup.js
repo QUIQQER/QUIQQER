@@ -4,8 +4,6 @@
  * In this Popup you can select a site from a project and submit it
  * eq for insert a link into a input element or editor
  *
- * @module controls/projects/Popup
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onSubmit [ {this}, {Object} result ];
  */

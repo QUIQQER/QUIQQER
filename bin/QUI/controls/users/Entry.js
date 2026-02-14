@@ -2,7 +2,6 @@
  * A user field / display
  * the display updates itself
  *
- * @module controls/users/Entry
  *
  * @event onLoad [self, User]
  * @event onError [self, uid]

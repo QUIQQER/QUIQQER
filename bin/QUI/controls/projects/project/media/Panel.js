@@ -1,8 +1,6 @@
 /**
  * Displays a Media in a Panel
  *
- * @module controls/projects/project/media/Panel
- * @author www.pcsg.de (Henning Leutz)
  *
  * @event onDragDropComplete [this, event]
  * @event childClick [ this, imageData ]
@@ -36,21 +34,21 @@ define('controls/projects/project/media/Panel', [
     let HIDE_HIDDEN_FILES = 1; // 1 = hide all hidden files, 0 = show all hidden files
     let SHOW_SITEMAP_STATUS = false;
 
-    const QUI              = arguments[0],
-          QUIPanel         = arguments[1],
-          Media            = arguments[2],
-          MediaSitemap     = arguments[3],
-          PanelDOMEvents   = arguments[4],
-          PanelContextMenu = arguments[5],
-          BreadcrumbItem   = arguments[6],
-          GridControl      = arguments[7],
-          UploadForm       = arguments[8],
-          RequestUpload    = arguments[9],
-          Ajax             = arguments[10],
-          Locale           = arguments[11],
-          MediaUtils       = arguments[12],
-          Projects         = arguments[13],
-          Permissions      = arguments[14];
+    const QUI = arguments[0],
+        QUIPanel = arguments[1],
+        Media = arguments[2],
+        MediaSitemap = arguments[3],
+        PanelDOMEvents = arguments[4],
+        PanelContextMenu = arguments[5],
+        BreadcrumbItem = arguments[6],
+        GridControl = arguments[7],
+        UploadForm = arguments[8],
+        RequestUpload = arguments[9],
+        Ajax = arguments[10],
+        Locale = arguments[11],
+        MediaUtils = arguments[12],
+        Projects = arguments[13],
+        Permissions = arguments[14];
 
     /**
      * A Media-Panel, opens the Media in an Apppanel
@@ -65,7 +63,7 @@ define('controls/projects/project/media/Panel', [
     return new Class({
 
         Extends: QUIPanel,
-        Type   : 'controls/projects/project/media/Panel',
+        Type: 'controls/projects/project/media/Panel',
 
         Binds: [
             '$onCreate',
@@ -83,25 +81,25 @@ define('controls/projects/project/media/Panel', [
         ],
 
         options: {
-            id        : 'projects-media-panel',
-            container : false,
-            startid   : false,
-            view      : 'symbols',    // available views are: symbols, details, preview
-            fileid    : false,        // the current folder id
+            id: 'projects-media-panel',
+            container: false,
+            startid: false,
+            view: 'symbols',    // available views are: symbols, details, preview
+            fileid: false,        // the current folder id
             breadcrumb: true,
 
             title: '',
-            icon : '',
+            icon: '',
 
             field: 'name',
             order: 'ASC',
             limit: 25,
-            page : 1,
+            page: 1,
 
-            selectable          : false,    // is the media in the selectable mode (for popup or image inserts)
-            selectable_types    : false,    // {Array} you can specified which types are selectable (folder, image, file, *)
+            selectable: false,    // is the media in the selectable mode (for popup or image inserts)
+            selectable_types: false,    // {Array} you can specified which types are selectable (folder, image, file, *)
             selectable_mimetypes: false,    // {Array} you can specified which mime types are selectable
-            selectable_multiple : false     // multiple selection active? press ctrl / strg,
+            selectable_multiple: false     // multiple selection active? press ctrl / strg,
         },
 
         initialize: function (Media, options) {
@@ -153,8 +151,8 @@ define('controls/projects/project/media/Panel', [
             this.$maxFileUploads = 5;
 
             this.$children = {
-                data : [],
-                page : 1,
+                data: [],
+                page: 1,
                 total: 0
             };
 
@@ -164,9 +162,9 @@ define('controls/projects/project/media/Panel', [
             this.$PanelContextMenu = new PanelContextMenu(this);
 
             this.addEvents({
-                onCreate : this.$onCreate,
-                onResize : this.$onResize,
-                onShow   : function () {
+                onCreate: this.$onCreate,
+                onResize: this.$onResize,
+                onShow: function () {
                     if (this.$Pagination) {
                         this.$Pagination.$redraw();
                     }
@@ -186,14 +184,14 @@ define('controls/projects/project/media/Panel', [
             // media events
             if (typeOf(this.$Media) === 'classes/projects/project/Media') {
                 this.$Media.addEvents({
-                    onItemRename    : this.$itemEvent,
-                    onItemActivate  : this.$itemEvent,
+                    onItemRename: this.$itemEvent,
+                    onItemActivate: this.$itemEvent,
                     onItemDeactivate: this.$itemEvent,
-                    onItemRefresh   : this.$itemEvent,
-                    onItemSave      : this.$itemEvent,
-                    onItemDelete    : this.$itemDelete,
-                    onItemsHide     : this.$itemHideStatusChange,
-                    onItemsVisible  : this.$itemHideStatusChange
+                    onItemRefresh: this.$itemEvent,
+                    onItemSave: this.$itemEvent,
+                    onItemDelete: this.$itemDelete,
+                    onItemsHide: this.$itemHideStatusChange,
+                    onItemsVisible: this.$itemHideStatusChange
                 });
             }
         },
@@ -207,8 +205,8 @@ define('controls/projects/project/media/Panel', [
         serialize: function () {
             return {
                 attributes: this.getAttributes(),
-                project   : this.$Media.getProject().getName(),
-                type      : this.getType()
+                project: this.$Media.getProject().getName(),
+                type: this.getType()
             };
         },
 
@@ -227,14 +225,14 @@ define('controls/projects/project/media/Panel', [
 
             // media events
             this.$Media.addEvents({
-                onItemRename    : this.$itemEvent,
-                onItemActivate  : this.$itemEvent,
+                onItemRename: this.$itemEvent,
+                onItemActivate: this.$itemEvent,
                 onItemDeactivate: this.$itemEvent,
-                onItemRefresh   : this.$itemEvent,
-                onItemSave      : this.$itemEvent,
-                onItemDelete    : this.$itemDelete,
-                onItemsHide     : this.$itemHideStatusChange,
-                onItemsVisible  : this.$itemHideStatusChange
+                onItemRefresh: this.$itemEvent,
+                onItemSave: this.$itemEvent,
+                onItemDelete: this.$itemDelete,
+                onItemsHide: this.$itemHideStatusChange,
+                onItemsVisible: this.$itemHideStatusChange
             });
 
             return this;
@@ -281,7 +279,7 @@ define('controls/projects/project/media/Panel', [
 
             // blur event
             const self = this,
-                  Body = this.getContent();
+                Body = this.getContent();
 
             Body.addEvent('click', this.unselectItems);
             Body.addEvent('contextmenu', this.$onContextMenu);
@@ -294,10 +292,10 @@ define('controls/projects/project/media/Panel', [
             ], function (QUIButton, QUISeparator, ContextmenuItem) {
                 self.addButton(
                     new QUIButton({
-                        name  : 'left-sitemap-media-button',
-                        image : 'fa fa-sitemap',
-                        alt   : Locale.get(lg, 'projects.project.site.media.panel.btn.sitemap.show'),
-                        title : Locale.get(lg, 'projects.project.site.media.panel.btn.sitemap.show'),
+                        name: 'left-sitemap-media-button',
+                        image: 'fa fa-sitemap',
+                        alt: Locale.get(lg, 'projects.project.site.media.panel.btn.sitemap.show'),
+                        title: Locale.get(lg, 'projects.project.site.media.panel.btn.sitemap.show'),
                         events: {
                             onClick: function (Btn) {
                                 if (Btn.isActive()) {
@@ -320,9 +318,9 @@ define('controls/projects/project/media/Panel', [
                 // views
                 const View = new QUIButton({
                     textimage: 'fa fa-th',
-                    name     : 'view',
-                    text     : '',
-                    methods  : {
+                    name: 'view',
+                    text: '',
+                    methods: {
                         change: function (Item) {
                             const Btn = Item.getAttribute('Button');
 
@@ -346,9 +344,9 @@ define('controls/projects/project/media/Panel', [
 
                 View.appendChild(
                     new ContextmenuItem({
-                        name  : 'symbols',
-                        text  : Locale.get(lg, 'projects.project.site.media.panel.btn.view.symbols'),
-                        icon  : 'fa fa-th',
+                        name: 'symbols',
+                        text: Locale.get(lg, 'projects.project.site.media.panel.btn.view.symbols'),
+                        icon: 'fa fa-th',
                         events: {
                             onMouseDown: function (Item) {
                                 View.change(Item);
@@ -357,9 +355,9 @@ define('controls/projects/project/media/Panel', [
                     })
                 ).appendChild(
                     new ContextmenuItem({
-                        name  : 'details',
-                        text  : Locale.get(lg, 'projects.project.site.media.panel.btn.view.details'),
-                        icon  : 'fa fa-list-alt',
+                        name: 'details',
+                        text: Locale.get(lg, 'projects.project.site.media.panel.btn.view.details'),
+                        icon: 'fa fa-list-alt',
                         events: {
                             onMouseDown: function (Item) {
                                 View.change(Item);
@@ -368,9 +366,9 @@ define('controls/projects/project/media/Panel', [
                     })
                 ).appendChild(
                     new ContextmenuItem({
-                        name  : 'preview',
-                        text  : Locale.get(lg, 'projects.project.site.media.panel.btn.view.preview'),
-                        icon  : 'fa fa-file-image-o',
+                        name: 'preview',
+                        text: Locale.get(lg, 'projects.project.site.media.panel.btn.view.preview'),
+                        icon: 'fa fa-file-image-o',
                         events: {
                             onMouseDown: function (Item) {
                                 View.change(Item);
@@ -381,9 +379,9 @@ define('controls/projects/project/media/Panel', [
                     new QUISeparator()
                 ).appendChild(
                     new ContextmenuItem({
-                        name  : 'hiddenView',
-                        text  : Locale.get('quiqqer/core', 'media.panel.view.hiddenItems.show'),
-                        icon  : 'fa fa-eye',
+                        name: 'hiddenView',
+                        text: Locale.get('quiqqer/core', 'media.panel.view.hiddenItems.show'),
+                        icon: 'fa fa-eye',
                         events: {
                             onMouseDown: function (Item) {
                                 HIDE_HIDDEN_FILES = !HIDE_HIDDEN_FILES;
@@ -430,16 +428,16 @@ define('controls/projects/project/media/Panel', [
 
                 // Upload
                 const Upload = new QUIButton({
-                    name : 'upload',
-                    icon : 'fa fa-plus',
+                    name: 'upload',
+                    icon: 'fa fa-plus',
                     title: Locale.get(lg, 'projects.project.site.media.panel.btn.upload')
                 });
 
                 Upload.appendChild(
                     new ContextmenuItem({
-                        name  : 'create_folder',
-                        text  : Locale.get(lg, 'projects.project.site.media.panel.btn.create'),
-                        icon  : 'fa fa-folder-open-o',
+                        name: 'create_folder',
+                        text: Locale.get(lg, 'projects.project.site.media.panel.btn.create'),
+                        icon: 'fa fa-folder-open-o',
                         events: {
                             onMouseDown: function () {
                                 self.createFolder();
@@ -448,9 +446,9 @@ define('controls/projects/project/media/Panel', [
                     })
                 ).appendChild(
                     new ContextmenuItem({
-                        name  : 'upload_files',
-                        text  : Locale.get(lg, 'projects.project.site.media.panel.btn.upload.files'),
-                        icon  : 'fa fa-file',
+                        name: 'upload_files',
+                        text: Locale.get(lg, 'projects.project.site.media.panel.btn.upload.files'),
+                        icon: 'fa fa-file',
                         events: {
                             onMouseDown: function () {
                                 self.uploadFiles();
@@ -459,9 +457,9 @@ define('controls/projects/project/media/Panel', [
                     })
                 ).appendChild(
                     new ContextmenuItem({
-                        name  : 'upload_archive',
-                        text  : Locale.get(lg, 'projects.project.site.media.panel.btn.upload.archive'),
-                        icon  : 'fa fa-archive',
+                        name: 'upload_archive',
+                        text: Locale.get(lg, 'projects.project.site.media.panel.btn.upload.archive'),
+                        icon: 'fa fa-archive',
                         events: {
                             onMouseDown: function () {
                                 self.uploadArchive();
@@ -474,13 +472,13 @@ define('controls/projects/project/media/Panel', [
 
                 self.$Filter = new Element('input', {
                     placeholder: 'Filter...',
-                    styles     : {
-                        'float' : 'right',
-                        margin  : 10,
+                    styles: {
+                        'float': 'right',
+                        margin: 10,
                         maxWidth: '100%',
-                        width   : 200
+                        width: 200
                     },
-                    events     : {
+                    events: {
                         keyup: self.$onFilter
                     }
                 });
@@ -501,7 +499,7 @@ define('controls/projects/project/media/Panel', [
                         });
 
                         let project = false,
-                            lang    = false;
+                            lang = false;
 
                         if (self.$Media && self.$Media.getProject()) {
                             project = self.$Media.getProject().getName();
@@ -509,19 +507,19 @@ define('controls/projects/project/media/Panel', [
                         }
 
                         new ProjectSelect({
-                            langSelect : false,
+                            langSelect: false,
                             emptyselect: false,
-                            project    : project,
-                            lang       : lang,
-                            styles     : {
-                                border      : 'none',
-                                borderRight : '1px solid #dedede',
+                            project: project,
+                            lang: lang,
+                            styles: {
+                                border: 'none',
+                                borderRight: '1px solid #dedede',
                                 borderRadius: 0,
-                                margin      : '4px 0 0',
+                                margin: '4px 0 0',
                                 paddingRight: 10,
-                                width       : 'inherit'
+                                width: 'inherit'
                             },
-                            events     : {
+                            events: {
                                 onChange: function (value) {
                                     if (!self.$loaded) {
                                         return;
@@ -620,8 +618,8 @@ define('controls/projects/project/media/Panel', [
          * @param {Boolean} [isRefresh] (optional) - opens an item as part of a refresh (i.e. pagination) [default: false]
          */
         openID: function (fileId, isRefresh) {
-            const self    = this,
-                  Project = this.$Media.getProject();
+            const self = this,
+                Project = this.$Media.getProject();
 
             isRefresh = isRefresh || false;
 
@@ -634,7 +632,7 @@ define('controls/projects/project/media/Panel', [
 
             // set loader image
             this.setOptions({
-                icon : 'fa fa-spinner fa-spin',
+                icon: 'fa fa-spinner fa-spin',
                 title: ' Media (' + Project.getName() + ')'
             });
 
@@ -655,7 +653,7 @@ define('controls/projects/project/media/Panel', [
                 self.getMedia().get(fileId).then(function (MediaFile) {
                     // set media image to the panel
                     self.setOptions({
-                        icon : 'fa fa-picture-o',
+                        icon: 'fa fa-picture-o',
                         title: ' Media (' + Project.getName() + ')'
                     });
 
@@ -710,11 +708,11 @@ define('controls/projects/project/media/Panel', [
                             self.$view(children);
                         });
                     }, {
-                        sortOn         : self.getAttribute('field'),
-                        sortBy         : self.getAttribute('order'),
-                        perPage        : self.getAttribute('limit'),
-                        page           : self.getAttribute('page'),
-                        order          : self.getAttribute('field') + ' ' + self.getAttribute('order'),
+                        sortOn: self.getAttribute('field'),
+                        sortBy: self.getAttribute('order'),
+                        perPage: self.getAttribute('limit'),
+                        page: self.getAttribute('page'),
+                        order: self.getAttribute('field') + ' ' + self.getAttribute('order'),
                         showHiddenFiles: !HIDE_HIDDEN_FILES
                     });
                 }).catch(function (err) {
@@ -761,15 +759,15 @@ define('controls/projects/project/media/Panel', [
 
             SHOW_SITEMAP_STATUS = true;
 
-            const self  = this,
-                  Body  = this.getContent(),
-                  Items = Body.getElement('.qui-media-content');
+            const self = this,
+                Body = this.getContent(),
+                Items = Body.getElement('.qui-media-content');
 
             if (!Body.getElement('.qui-media-sitemap')) {
                 new Element('div', {
                     'class': 'qui-media-sitemap shadow',
-                    styles : {
-                        left    : -350,
+                    styles: {
+                        left: -350,
                         position: 'absolute'
                     }
                 }).inject(Body, 'top');
@@ -778,7 +776,7 @@ define('controls/projects/project/media/Panel', [
             Container = Body.getElement('.qui-media-sitemap');
 
             Items.setStyles({
-                width     : Body.getSize().x - 350,
+                width: Body.getSize().x - 350,
                 marginLeft: 300
             });
 
@@ -791,15 +789,15 @@ define('controls/projects/project/media/Panel', [
 
                     new Element('div', {
                         'class': 'qui-media-sitemap-handle columnHandle',
-                        styles : {
+                        styles: {
                             position: 'absolute',
-                            top     : 0,
-                            right   : 0,
-                            height  : '100%',
-                            width   : 4,
-                            cursor  : 'pointer'
+                            top: 0,
+                            right: 0,
+                            height: '100%',
+                            width: 4,
+                            cursor: 'pointer'
                         },
-                        events : {
+                        events: {
                             click: function () {
                                 self.hideSitemap();
                             }
@@ -815,9 +813,9 @@ define('controls/projects/project/media/Panel', [
          * @method controls/projects/project/media/Panel#hideSitemap
          */
         hideSitemap: function () {
-            const self      = this,
-                  Body      = this.getContent(),
-                  Container = Body.getElement('.qui-media-sitemap');
+            const self = this,
+                Body = this.getContent(),
+                Container = Body.getElement('.qui-media-sitemap');
 
             SHOW_SITEMAP_STATUS = false;
 
@@ -830,13 +828,13 @@ define('controls/projects/project/media/Panel', [
                 left: -350
             }, {
                 callback: function () {
-                    const Body  = self.getContent(),
-                          Items = Body.getElement('.qui-media-content');
+                    const Body = self.getContent(),
+                        Items = Body.getElement('.qui-media-content');
 
                     Container.destroy();
 
                     Items.setStyles({
-                        width     : '100%',
+                        width: '100%',
                         marginLeft: null
                     });
 
@@ -878,10 +876,10 @@ define('controls/projects/project/media/Panel', [
          *                                    extrat = false => standard upload
          */
         $upload: function (extract) {
-            const self  = this,
-                  Sheet = this.createSheet({
-                      buttons: false
-                  });
+            const self = this,
+                Sheet = this.createSheet({
+                    buttons: false
+                });
 
             self.fireEvent('uploadOpenBegin', [
                 self,
@@ -895,12 +893,12 @@ define('controls/projects/project/media/Panel', [
                     Sheet.destroy();
                     self.fireEvent('uploadClose', [self]);
                 },
-                onOpen : function () {
+                onOpen: function () {
                     let Parent;
                     const Content = Sheet.getBody();
 
                     Content.set({
-                        html  : '',
+                        html: '',
                         styles: {
                             padding: 20
                         }
@@ -919,22 +917,22 @@ define('controls/projects/project/media/Panel', [
                     }
 
                     const height = Content.getSize().y -
-                                   Parent.getSize().y -
-                                   80; // 80 = content padding + form margin
+                        Parent.getSize().y -
+                        80; // 80 = content padding + form margin
 
                     // upload form
                     const Form = new UploadForm({
-                        sendbutton  : true,
+                        sendbutton: true,
                         cancelbutton: true,
-                        maxuploads  : self.$maxFileUploads,
-                        styles      : {
-                            float : 'left',
-                            clear : 'both',
+                        maxuploads: self.$maxFileUploads,
+                        styles: {
+                            float: 'left',
+                            clear: 'both',
                             height: height,
                             margin: '20px 0 0'
                         },
-                        fileid      : self.getAttribute('fileid'),
-                        events      : {
+                        fileid: self.getAttribute('fileid'),
+                        events: {
                             onDragenter: function (event, Elm) {
                                 if (!Elm.hasClass('qui-panel-sheet-body')) {
                                     Elm = Elm.getParent('qui-panel-sheet-body');
@@ -1031,21 +1029,21 @@ define('controls/projects/project/media/Panel', [
          * @method controls/projects/project/media/Panel#$createSitemap
          */
         $createSitemap: function () {
-            const Body      = this.getContent(),
-                  Container = Body.getElement('.qui-media-sitemap');
+            const Body = this.getContent(),
+                Container = Body.getElement('.qui-media-sitemap');
 
             if (!Container) {
                 return;
             }
 
-            const self    = this,
-                  Project = this.getMedia().getProject();
+            const self = this,
+                Project = this.getMedia().getProject();
 
             this.$Map = new MediaSitemap({
                 project: Project.getName(),
-                lang   : Project.getLang(),
-                id     : 1,
-                events : {
+                lang: Project.getLang(),
+                id: 1,
+                events: {
                     onItemClick: function (Item) {
                         self.openID(
                             Item.getAttribute('value')
@@ -1060,7 +1058,7 @@ define('controls/projects/project/media/Panel', [
             // open last breadcrumb item in the sitemap
             this.$Map.addEvent('onOpenEnd', function (Item, MapControl) {
                 const Breadcrumb = self.getBreadcrumb(),
-                      Last       = Breadcrumb.lastChild();
+                    Last = Breadcrumb.lastChild();
 
                 MapControl.selectFolder(Last.getAttribute('id'));
             });
@@ -1079,19 +1077,19 @@ define('controls/projects/project/media/Panel', [
                 return;
             }
 
-            const self       = this,
-                  Breadcrumb = this.getBreadcrumb(),
+            const self = this,
+                Breadcrumb = this.getBreadcrumb(),
 
-                  func_open  = function (Item) {
-                      self.openID(Item.getAttribute('id'));
-                  };
+                func_open = function (Item) {
+                    self.openID(Item.getAttribute('id'));
+                };
 
             Breadcrumb.clear();
 
             for (i = 0, len = items.length; i < len; i++) {
                 Item = new BreadcrumbItem({
                     text: items[i].name,
-                    id  : items[i].id
+                    id: items[i].id
                 });
 
                 Item.addEvents({
@@ -1112,16 +1110,16 @@ define('controls/projects/project/media/Panel', [
          * @method controls/projects/project/media/Panel#$resizeSheet
          */
         $resizeSheet: function () {
-            const Body  = this.getContent(),
-                  Map   = Body.getElement('.qui-media-sitemap'),
-                  Sheet = Body.getElement('.pannelsheet');
+            const Body = this.getContent(),
+                Map = Body.getElement('.qui-media-sitemap'),
+                Sheet = Body.getElement('.pannelsheet');
 
             if (!Sheet) {
                 return;
             }
 
             const PanelContent = Sheet.getElement('.pannelsheet-content'),
-                  PanelButtons = Sheet.getElement('.pannelsheet-buttons');
+                PanelButtons = Sheet.getElement('.pannelsheet-buttons');
 
 
             if (!Map) {
@@ -1129,7 +1127,7 @@ define('controls/projects/project/media/Panel', [
 
                 Sheet.setStyles({
                     'width': body_width,
-                    'left' : 0
+                    'left': 0
                 });
 
                 PanelContent.setStyle('width', body_width);
@@ -1139,11 +1137,11 @@ define('controls/projects/project/media/Panel', [
             }
 
             const sheet_size = Sheet.getSize().x,
-                  map_size   = Map.getSize().x;
+                map_size = Map.getSize().x;
 
             Sheet.setStyles({
                 'width': sheet_size - map_size,
-                'left' : map_size
+                'left': map_size
             });
 
             PanelContent.setStyle('width', sheet_size - map_size);
@@ -1158,7 +1156,7 @@ define('controls/projects/project/media/Panel', [
          */
         $view: function (children) {
             const self = this,
-                  Body = this.getContent();
+                Body = this.getContent();
 
             let droplist = [];
 
@@ -1179,8 +1177,8 @@ define('controls/projects/project/media/Panel', [
 
             MediaBody = Body.getElement('.qui-media-content');
             MediaBody.set({
-                'html'     : '',
-                'data-id'  : this.getAttribute('fileid'),
+                'html': '',
+                'data-id': this.getAttribute('fileid'),
                 'data-type': 'folder'
             });
 
@@ -1282,9 +1280,9 @@ define('controls/projects/project/media/Panel', [
             let i, len, ext, Elm, Child;
 
             const droplist = [],
-                  Media    = this.$Media,
-                  Project  = Media.getProject(),
-                  project  = Project.getName();
+                Media = this.$Media,
+                Project = Media.getProject(),
+                project = Project.getName();
 
             this.$Filter.setStyle('display', null);
 
@@ -1311,24 +1309,24 @@ define('controls/projects/project/media/Panel', [
                 }
 
                 Elm = new Element('div', {
-                    'data-id'      : Child.id,
-                    'data-project' : project,
-                    'data-type'    : Child.type,
-                    'data-active'  : Child.active ? 1 : 0,
-                    'data-error'   : Child.error ? 1 : 0,
+                    'data-id': Child.id,
+                    'data-project': project,
+                    'data-type': Child.type,
+                    'data-active': Child.active ? 1 : 0,
+                    'data-error': Child.error ? 1 : 0,
                     'data-mimetype': Child.mimetype,
-                    'data-hidden'  : Child.isHidden ? 1 : 0,
+                    'data-hidden': Child.isHidden ? 1 : 0,
 
                     'class': 'qui-media-item smooth',
-                    html   : '<span class="title">' + Child.name + '</span>',
-                    alt    : Child.name + ext,
-                    title  : Child.name + ext,
+                    html: '<span class="title">' + Child.name + '</span>',
+                    alt: Child.name + ext,
+                    title: Child.name + ext,
 
                     events: {
-                        click      : this.$viewSymbolClick.bind(this),
-                        dblclick   : this.$viewSymbolDblClick.bind(this),
-                        mousedown  : this.$viewSymbolMouseDown.bind(this),
-                        mouseup    : this.$dragStop.bind(this),
+                        click: this.$viewSymbolClick.bind(this),
+                        dblclick: this.$viewSymbolDblClick.bind(this),
+                        mousedown: this.$viewSymbolMouseDown.bind(this),
+                        mouseup: this.$dragStop.bind(this),
                         contextmenu: this.$PanelContextMenu.show.bind(this.$PanelContextMenu)
                     }
                 });
@@ -1352,14 +1350,14 @@ define('controls/projects/project/media/Panel', [
                 if (Child.error) {
                     Elm.setStyles({
                         backgroundImage: 'url(' + URL_BIN_DIR + '48x48/file_broken.png)',
-                        paddingLeft    : 20
+                        paddingLeft: 20
                     });
 
                     showBrokenFileMsg(Child);
                 } else {
                     Elm.setStyles({
                         backgroundImage: 'url(' + Child.icon80x80 + ')',
-                        paddingLeft    : 20
+                        paddingLeft: 20
                     });
                 }
 
@@ -1382,9 +1380,9 @@ define('controls/projects/project/media/Panel', [
             let i, len, url, ext, Child, Elm;
 
             const droplist = [],
-                  Media    = this.$Media,
-                  Project  = Media.getProject(),
-                  project  = Project.getName();
+                Media = this.$Media,
+                Project = Media.getProject(),
+                project = Project.getName();
 
             this.$Filter.setStyle('display', null);
 
@@ -1404,24 +1402,24 @@ define('controls/projects/project/media/Panel', [
 
 
                 Elm = new Element('div', {
-                    'data-id'      : Child.id,
-                    'data-project' : project,
-                    'data-type'    : Child.type,
-                    'data-active'  : Child.active ? 1 : 0,
-                    'data-error'   : Child.error ? 1 : 0,
+                    'data-id': Child.id,
+                    'data-project': project,
+                    'data-type': Child.type,
+                    'data-active': Child.active ? 1 : 0,
+                    'data-error': Child.error ? 1 : 0,
                     'data-mimetype': Child.mimetype,
-                    'data-hidden'  : Child.isHidden ? 1 : 0,
+                    'data-hidden': Child.isHidden ? 1 : 0,
 
                     'class': 'qui-media-item box smooth',
-                    html   : '<span class="title">' + Child.name + '</span>',
-                    alt    : Child.name + ext,
-                    title  : Child.name + ext,
+                    html: '<span class="title">' + Child.name + '</span>',
+                    alt: Child.name + ext,
+                    title: Child.name + ext,
 
                     events: {
-                        click      : this.$viewSymbolClick.bind(this),
-                        dblclick   : this.$viewSymbolDblClick.bind(this),
-                        mousedown  : this.$viewSymbolMouseDown.bind(this),
-                        mouseup    : this.$dragStop.bind(this),
+                        click: this.$viewSymbolClick.bind(this),
+                        dblclick: this.$viewSymbolDblClick.bind(this),
+                        mousedown: this.$viewSymbolMouseDown.bind(this),
+                        mouseup: this.$dragStop.bind(this),
                         contextmenu: this.$PanelContextMenu.show.bind(this.$PanelContextMenu)
                     }
                 });
@@ -1438,7 +1436,7 @@ define('controls/projects/project/media/Panel', [
 
                 Elm.setStyles({
                     backgroundImage: 'url(' + Child.icon80x80 + ')',
-                    paddingLeft    : 20
+                    paddingLeft: 20
                 });
 
                 if (Child.mimetype && Child.mimetype.indexOf('svg') !== -1) {
@@ -1448,7 +1446,7 @@ define('controls/projects/project/media/Panel', [
                 if (Child.error) {
                     Elm.setStyles({
                         backgroundImage: 'url(' + URL_BIN_DIR + '48x48/file_broken.png)',
-                        paddingLeft    : 20
+                        paddingLeft: 20
                     });
 
                     QUI.getMessageHandler(function (MH) {
@@ -1469,7 +1467,7 @@ define('controls/projects/project/media/Panel', [
                     }
 
                     Elm.setStyles({
-                        'backgroundImage'   : 'url(' + url + ')',
+                        'backgroundImage': 'url(' + url + ')',
                         'backgroundPosition': 'center center'
                     });
                 }
@@ -1515,15 +1513,15 @@ define('controls/projects/project/media/Panel', [
                     this.$selected.erase(Target);
                 }
 
-                const id      = Target.get('data-id'),
-                      project = this.getProject().getName();
+                const id = Target.get('data-id'),
+                    project = this.getProject().getName();
 
 
                 const imageData = {
-                    id     : id,
+                    id: id,
                     project: project,
-                    url    : MediaUtils.getUrlByImageParams(id, project),
-                    type   : Target.get('data-type')
+                    url: MediaUtils.getUrlByImageParams(id, project),
+                    type: Target.get('data-type')
                 };
 
                 this.fireEvent('childClick', [
@@ -1584,85 +1582,85 @@ define('controls/projects/project/media/Panel', [
         $viewDetails: function (Result, Container) {
             Container.set('html', '');
 
-            const self          = this,
-                  GridContainer = new Element('div');
+            const self = this,
+                GridContainer = new Element('div');
 
             GridContainer.inject(Container);
 
             this.$Filter.setStyle('display', 'none');
 
             const Grid = new GridControl(GridContainer, {
-                storageKey : 'quiqqer-media-panel',
+                storageKey: 'quiqqer-media-panel',
                 columnModel: [
                     {
-                        header   : '&nbsp;',
+                        header: '&nbsp;',
                         dataIndex: 'icon',
-                        dataType : 'image',
-                        width    : 30
+                        dataType: 'image',
+                        width: 30
                     },
                     {
-                        header   : Locale.get(lg, 'id'),
+                        header: Locale.get(lg, 'id'),
                         dataIndex: 'id',
-                        dataType : 'integer',
-                        width    : 50
+                        dataType: 'integer',
+                        width: 50
                     },
                     {
-                        header   : Locale.get(lg, 'name'),
+                        header: Locale.get(lg, 'name'),
                         dataIndex: 'name',
-                        dataType : 'string',
-                        width    : 150
+                        dataType: 'string',
+                        width: 150
                     },
                     {
-                        header   : Locale.get(lg, 'extension'),
+                        header: Locale.get(lg, 'extension'),
                         dataIndex: 'extension',
-                        dataType : 'string',
-                        width    : 80
+                        dataType: 'string',
+                        width: 80
                     },
                     {
-                        header   : Locale.get(lg, 'title'),
+                        header: Locale.get(lg, 'title'),
                         dataIndex: 'title',
-                        dataType : 'string',
-                        width    : 150
+                        dataType: 'string',
+                        width: 150
                     },
                     {
-                        header   : Locale.get(lg, 'c_date'),
+                        header: Locale.get(lg, 'c_date'),
                         dataIndex: 'c_date',
-                        dataType : 'date',
-                        width    : 150
+                        dataType: 'date',
+                        width: 150
                     },
                     {
-                        header   : Locale.get(lg, 'c_user'),
+                        header: Locale.get(lg, 'c_user'),
                         dataIndex: 'c_user',
-                        dataType : 'string',
-                        width    : 150
+                        dataType: 'string',
+                        width: 150
                     },
                     {
-                        header   : Locale.get(lg, 'e_date'),
+                        header: Locale.get(lg, 'e_date'),
                         dataIndex: 'e_date',
-                        dataType : 'date',
-                        width    : 150
+                        dataType: 'date',
+                        width: 150
                     },
                     {
-                        header   : Locale.get(lg, 'e_user'),
+                        header: Locale.get(lg, 'e_user'),
                         dataIndex: 'e_user',
-                        dataType : 'string',
-                        width    : 150
+                        dataType: 'string',
+                        width: 150
                     }
                 ],
 
-                pagination       : true,
-                filterInput      : true,
-                perPage          : this.getAttribute('limit'),
-                perPageOptions   : this.$limitOptions,
-                page             : this.getAttribute('page'),
-                sortOn           : this.getAttribute('field'),
-                sortBy           : this.getAttribute('order'),
-                serverSort       : true,
-                showHeader       : true,
-                sortHeader       : true,
-                width            : Container.getSize().x - 100,
-                height           : Container.getSize().y - 40,
-                onrefresh        : function (me) {
+                pagination: true,
+                filterInput: true,
+                perPage: this.getAttribute('limit'),
+                perPageOptions: this.$limitOptions,
+                page: this.getAttribute('page'),
+                sortOn: this.getAttribute('field'),
+                sortBy: this.getAttribute('order'),
+                serverSort: true,
+                showHeader: true,
+                sortHeader: true,
+                width: Container.getSize().x - 100,
+                height: Container.getSize().y - 40,
+                onrefresh: function (me) {
                     const options = me.options;
 
                     self.setAttribute('field', options.sortOn);
@@ -1672,32 +1670,32 @@ define('controls/projects/project/media/Panel', [
 
                     self.refresh();
                 },
-                alternaterows    : true,
-                resizeColumns    : true,
-                selectable       : true,
+                alternaterows: true,
+                resizeColumns: true,
+                selectable: true,
                 multipleSelection: true,
-                resizeHeaderOnly : true
+                resizeHeaderOnly: true
             });
 
             Grid.addEvents({
                 onClick: function (data) {
-                    const Grid    = data.target,
-                          row     = data.row,
-                          rowData = Grid.getDataByRow(row);
+                    const Grid = data.target,
+                        row = data.row,
+                        rowData = Grid.getDataByRow(row);
 
                     if (self.getAttribute('selectable') &&
                         self.isItemSelectable(rowData) &&
                         rowData.type !== 'folder' // folder must be openable
                     ) {
                         const GridData = Grid.getDataByRow(row),
-                              id       = GridData.id,
-                              project  = self.getProject().getName();
+                            id = GridData.id,
+                            project = self.getProject().getName();
 
                         const imageData = {
-                            id     : id,
+                            id: id,
                             project: project,
-                            url    : MediaUtils.getUrlByImageParams(id, project),
-                            type   : ''
+                            url: MediaUtils.getUrlByImageParams(id, project),
+                            type: ''
                         };
 
                         self.fireEvent('childClick', [
@@ -1739,15 +1737,15 @@ define('controls/projects/project/media/Panel', [
                 );
 
                 if (breadcrumb_list.length > 1) {
-                    let Last       = breadcrumb_list.pop(),
+                    let Last = breadcrumb_list.pop(),
                         BeforeLast = breadcrumb_list.pop();
 
                     children.reverse();
 
                     children.push({
-                        icon : 'fa fa-level-up',
-                        id   : BeforeLast.getAttribute('id'),
-                        name : '..',
+                        icon: 'fa fa-level-up',
+                        id: BeforeLast.getAttribute('id'),
+                        name: '..',
                         title: BeforeLast.getAttribute('text')
                     });
 
@@ -1773,14 +1771,14 @@ define('controls/projects/project/media/Panel', [
 
             require(['qui/controls/windows/Prompt'], function (Prompt) {
                 new Prompt({
-                    title      : Locale.get(lg, 'projects.project.site.folder.create.title'),
-                    titleicon  : 'fa fa-folder-open-o',
+                    title: Locale.get(lg, 'projects.project.site.folder.create.title'),
+                    titleicon: 'fa fa-folder-open-o',
                     information: Locale.get(lg, 'projects.project.site.folder.create.information'),
-                    icon       : 'fa fa-folder-open-o',
-                    maxHeight  : 400,
-                    maxWidth   : 600,
-                    autoclose  : false,
-                    events     : {
+                    icon: 'fa fa-folder-open-o',
+                    maxHeight: 400,
+                    maxWidth: 600,
+                    autoclose: false,
+                    events: {
                         onSubmit: function (value, Win) {
                             Win.Loader.show();
 
@@ -1813,15 +1811,15 @@ define('controls/projects/project/media/Panel', [
 
             require(['qui/controls/windows/Confirm'], function (Confirm) {
                 new Confirm({
-                    title    : Locale.get(lg, 'projects.project.site.folder.createNewName.title'),
-                    text     : Locale.get(lg, 'projects.project.site.folder.createNewName.text'),
-                    icon     : 'fa fa-folder-open-o',
-                    texticon : 'fa fa-folder-open-o',
+                    title: Locale.get(lg, 'projects.project.site.folder.createNewName.title'),
+                    text: Locale.get(lg, 'projects.project.site.folder.createNewName.text'),
+                    icon: 'fa fa-folder-open-o',
+                    texticon: 'fa fa-folder-open-o',
                     maxHeight: 400,
-                    maxWidth : 600,
+                    maxWidth: 600,
                     autoclose: false,
-                    events   : {
-                        onOpen  : function (Win) {
+                    events: {
+                        onOpen: function (Win) {
                             Win.Loader.show();
 
                             Ajax.get('ajax_media_folder_stripName', function (newName) {
@@ -2004,7 +2002,7 @@ define('controls/projects/project/media/Panel', [
          */
         isItemSelectable: function (Item) {
             // selectable
-            let selectableTypes     = this.getAttribute('selectable_types'),
+            let selectableTypes = this.getAttribute('selectable_types'),
                 selectableMimeTypes = this.getAttribute('selectable_mimetypes');
 
             if (!selectableTypes && !selectableMimeTypes) {
@@ -2020,14 +2018,14 @@ define('controls/projects/project/media/Panel', [
             }
 
             const allTypes = selectableTypes.contains('*'),
-                  allMimes = selectableMimeTypes.contains('*');
+                allMimes = selectableMimeTypes.contains('*');
 
             if (allTypes && allMimes) {
                 return true;
             }
 
 
-            let elmtype  = '',
+            let elmtype = '',
                 mimeType = '';
 
             if (typeOf(Item) === 'element') {
@@ -2044,7 +2042,7 @@ define('controls/projects/project/media/Panel', [
 
 
             const mimeTypeFound = selectableMimeTypes.contains(mimeType),
-                  typeFound     = selectableTypes.contains(elmtype);
+                typeFound = selectableTypes.contains(elmtype);
 
             // if all mime types allowed and the allowed type is correct
             if (allMimes && typeFound) {
@@ -2080,8 +2078,8 @@ define('controls/projects/project/media/Panel', [
                 // we need no reload of the folder
             }, {
                 project: this.$Media.getProject().getName(),
-                to     : folderid,
-                ids    : JSON.encode(ids)
+                to: folderid,
+                ids: JSON.encode(ids)
             });
         },
 
@@ -2105,8 +2103,8 @@ define('controls/projects/project/media/Panel', [
                     self.openID(self.getAttribute('fileid')).then(resolve);
                 }, {
                     project: self.$Media.getProject().getName(),
-                    to     : folderid,
-                    ids    : JSON.encode(ids)
+                    to: folderid,
+                    ids: JSON.encode(ids)
                 });
             });
         },
@@ -2138,8 +2136,8 @@ define('controls/projects/project/media/Panel', [
             let i, len, ElmSize;
 
             const self = this,
-                  mx   = event.page.x,
-                  my   = event.page.y;
+                mx = event.page.x,
+                my = event.page.y;
 
             let Elm = event.target;
 
@@ -2152,19 +2150,19 @@ define('controls/projects/project/media/Panel', [
             // create the shadow element
             this.$Drag = new Element('div', {
                 'class': 'box',
-                styles : {
-                    position  : 'absolute',
-                    top       : my - 20,
-                    left      : mx - 40,
-                    zIndex    : 1000,
+                styles: {
+                    position: 'absolute',
+                    top: my - 20,
+                    left: mx - 40,
+                    zIndex: 1000,
                     MozOutline: 'none',
-                    outline   : 0,
-                    color     : '#fff',
-                    padding   : 10,
-                    cursor    : 'pointer',
+                    outline: 0,
+                    color: '#fff',
+                    padding: 10,
+                    cursor: 'pointer',
 
-                    width     : ElmSize.x,
-                    height    : ElmSize.y,
+                    width: ElmSize.x,
+                    height: ElmSize.y,
                     background: 'rgba(0,0,0, 0.5)'
                 }
             }).inject(document.body);
@@ -2202,7 +2200,7 @@ define('controls/projects/project/media/Panel', [
                 ].join(','),
 
                 onComplete: this.$dragComplete.bind(this),
-                onDrop    : this.$drop.bind(this),
+                onDrop: this.$drop.bind(this),
 
                 onEnter: function (element, Droppable) {
                     self.$dragEnter(false, Droppable);
@@ -2214,7 +2212,7 @@ define('controls/projects/project/media/Panel', [
 
             }).start({
                 target: Elm,
-                page  : {
+                page: {
                     x: mx,
                     y: my
                 }
@@ -2243,20 +2241,20 @@ define('controls/projects/project/media/Panel', [
                 }
 
 
-                const items   = [],
-                      Media   = this.getMedia(),
-                      Project = Media.getProject(),
-                      project = Project.getName();
+                const items = [],
+                    Media = this.getMedia(),
+                    Project = Media.getProject(),
+                    project = Project.getName();
 
                 let ids = Element.get('data-ids');
                 ids = ids.split(',');
 
                 for (let i = 0, len = ids.length; i < len; i++) {
                     items.push({
-                        id     : ids[i],
-                        Media  : Media,
+                        id: ids[i],
+                        Media: Media,
                         project: project,
-                        url    : 'image.php?qui=1&id=' + ids[i] + '&project=' + project
+                        url: 'image.php?qui=1&id=' + ids[i] + '&project=' + project
                     });
                 }
 
@@ -2493,8 +2491,8 @@ define('controls/projects/project/media/Panel', [
             Node.removeClass('qmi-deactive');
 
             Node.set({
-                alt          : Item.getAttribute('name'),
-                title        : Item.getAttribute('title'),
+                alt: Item.getAttribute('name'),
+                title: Item.getAttribute('title'),
                 'data-active': Item.isActive() ? 1 : 0
             });
 
@@ -2614,7 +2612,7 @@ define('controls/projects/project/media/Panel', [
 
                 const LimitSelect = new Element('select', {
                     'class': 'qui-media-pagination-limit',
-                    events : {
+                    events: {
                         change: self.$onPaginationLimitChange
                     }
                 }).inject(self.$PaginationContainer, 'top');
@@ -2638,8 +2636,8 @@ define('controls/projects/project/media/Panel', [
                     limitOption = self.$limitOptions[i];
 
                     new Element('option', {
-                        value   : limitOption,
-                        html    : limitOption,
+                        value: limitOption,
+                        html: limitOption,
                         selected: limitOption == currentLimit ? 'selected' : ''
                     }).inject(LimitSelect);
                 }
@@ -2669,11 +2667,11 @@ define('controls/projects/project/media/Panel', [
                     });
                 });
             }, {
-                'package' : 'quiqqer/core',
+                'package': 'quiqqer/core',
                 attributes: JSON.encode({
-                    limit  : self.getAttribute('limit'),
-                    sheet  : self.getAttribute('page'),
-                    count  : self.getAttribute('total'),
+                    limit: self.getAttribute('limit'),
+                    sheet: self.getAttribute('page'),
+                    count: self.getAttribute('total'),
                     useAjax: true
                 })
             });

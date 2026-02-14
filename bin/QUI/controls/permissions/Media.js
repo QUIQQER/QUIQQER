@@ -1,8 +1,5 @@
 /**
  * Permissions Panel -> Media
- *
- * @module controls/permissions/Media
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/permissions/Media', [
 

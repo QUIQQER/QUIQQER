@@ -1,5 +1,4 @@
 /**
- * @module controls/users/address/Display
  *
  * @event onLoad [self]
  * @event onLoadError [self]

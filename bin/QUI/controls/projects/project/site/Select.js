@@ -1,8 +1,3 @@
-/**
- *
- * @module controls/projects/project/site/Select
- * @author www.pcsg.de (Henning Leutz)
- */
 define('controls/projects/project/site/Select', [
 
     'qui/QUI',

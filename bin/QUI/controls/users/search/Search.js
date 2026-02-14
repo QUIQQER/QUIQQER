@@ -1,5 +1,4 @@
 /**
- * @module controls/users/search/Search
  *
  * @event onDblClick [self]
  */

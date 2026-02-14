@@ -1,7 +1,5 @@
 /**
  * Help Window
- *
- * @author www.pcsg.de (Henning Leutz)
  */
 
 define('controls/help/Changelog', [

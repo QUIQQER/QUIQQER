@@ -2,8 +2,6 @@
  * A file upload control for the upload manager
  * it shows the upload status for one file
  *
- * @author www.pcsg.de (Henning Leutz)
- * @module controls/upload/File
  *
  * @fires onClick [this]
  * @fires onCancel [this]

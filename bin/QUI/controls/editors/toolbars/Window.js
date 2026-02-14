@@ -1,7 +1,3 @@
-/**
- * @module controls/editors/toolbars/Window
- * @author www.pcsg.de (Henning Leutz)
- */
 define('controls/editors/toolbars/Window', [
 
     'qui/QUI',

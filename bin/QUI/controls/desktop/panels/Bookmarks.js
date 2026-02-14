@@ -1,8 +1,5 @@
 /**
  * QUIQQER Bookmars
- *
- * @module controls/desktop/panels/Bookmarks
- * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/desktop/panels/Bookmarks', [
 

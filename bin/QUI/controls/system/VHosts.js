@@ -1,7 +1,5 @@
 /**
  * VHost Panel
- *
- * @module controls/system/VHosts
  */
 define('controls/system/VHosts', [
 
