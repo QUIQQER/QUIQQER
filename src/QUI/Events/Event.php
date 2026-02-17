@@ -163,7 +163,7 @@ class Event implements QUI\Interfaces\Events
 
         $this->currentRunning[$event] = true;
 
-        $Stack = new QUI\ExceptionStack();
+        $Stack = null;
         $events = $this->events[$event];
 
         // sort
@@ -217,26 +217,42 @@ class Event implements QUI\Interfaces\Events
 
                 $results[$fn] = call_user_func_array($fn, $args);
             } catch (QUI\Exception $Exception) {
-                $message = $Exception->getMessage();
+                if ($Stack === null) {
+                    $Stack = new QUI\ExceptionStack();
+                }
+
+                $message = '[' . $event . '] ' . (is_string($fn) ? $fn : gettype($fn))
+                    . ' :: ' . $Exception->getMessage();
 
                 $Clone = new QUI\Exception(
                     $message,
                     $Exception->getCode(),
                     [
                         'trace' => $Exception->getTraceAsString(),
+                        'file' => $Exception->getFile(),
+                        'line' => $Exception->getLine(),
+                        'event' => $event,
                         'fn' => is_string($fn) ? $fn : ''
                     ]
                 );
 
                 $Stack->addException($Clone);
             } catch (Throwable $Exception) {
-                $message = $Exception->getMessage();
+                if ($Stack === null) {
+                    $Stack = new QUI\ExceptionStack();
+                }
+
+                $message = '[' . $event . '] ' . (is_string($fn) ? $fn : gettype($fn))
+                    . ' :: ' . $Exception->getMessage();
 
                 $Clone = new QUI\Exception(
                     $message,
                     (int)$Exception->getCode(),
                     [
                         'trace' => $Exception->getTraceAsString(),
+                        'file' => $Exception->getFile(),
+                        'line' => $Exception->getLine(),
+                        'event' => $event,
                         'functionType' => gettype($fn),
                         'fn' => is_string($fn) ? $fn : ''
                     ]
@@ -248,7 +264,7 @@ class Event implements QUI\Interfaces\Events
 
         $this->currentRunning[$event] = false;
 
-        if (!$Stack->isEmpty()) {
+        if ($Stack !== null && !$Stack->isEmpty()) {
             throw $Stack;
         }
 

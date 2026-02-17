@@ -318,7 +318,14 @@ class Manager implements QUI\Interfaces\Events
             $fireArgs = [];
         }
 
-        $this->Events->fireEvent('onFireEvent', [$event, $fireArgs]);
+        try {
+            $this->Events->fireEvent('onFireEvent', [$event, $fireArgs]);
+        } catch (\Throwable $Exception) {
+            error_log(
+                '[QUI::Events::Manager] onFireEvent failed for "' . $event . '": '
+                . $Exception->getMessage()
+            );
+        }
 
         return $this->Events->fireEvent($event, $fireArgs, $force);
     }
