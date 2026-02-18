@@ -375,15 +375,13 @@ class VerifiedMail2FA extends AbstractAuthenticator
 
         try {
             // verify mail
-            if (method_exists($User, 'setStatusToVerifiableAttribute')) {
-                $User->setStatusToVerifiableAttribute(
-                    $User->getAttribute('email'),
-                    QUI\Users\Attribute\Verifiable\MailAttribute::class,
-                    AttributeVerificationStatus::VERIFIED
-                );
+            $User->setStatusToVerifiableAttribute(
+                $User->getAttribute('email'),
+                QUI\Users\Attribute\Verifiable\MailAttribute::class,
+                AttributeVerificationStatus::VERIFIED
+            );
 
-                $User->save(QUI::getUsers()->getSystemUser());
-            }
+            $User->save(QUI::getUsers()->getSystemUser());
 
             // enable 2fa
             if (QUI::getUsers()->isNobodyUser(QUI::getUserBySession())) {

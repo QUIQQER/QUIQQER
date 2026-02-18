@@ -121,10 +121,6 @@ class Ajax extends QUI\QDOM
         bool|array $reg_vars = [],
         bool|array|string $user_perm = false
     ): bool {
-        if (!is_callable($function)) {
-            return false;
-        }
-
         if (!is_array($reg_vars)) {
             $reg_vars = [];
         }

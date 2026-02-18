@@ -18,11 +18,9 @@ use function array_unshift;
 use function class_exists;
 use function explode;
 use function file_put_contents;
-use function is_array;
 use function is_dir;
 use function is_null;
 use function is_numeric;
-use function is_string;
 use function md5;
 
 /**
@@ -210,12 +208,6 @@ class Manager
         // pfad erstellen falls nicht erstellt ist
         if (!is_dir(VAR_DIR . 'cache/stack/')) {
             QUI\Utils\System\File::mkdir(VAR_DIR . 'cache/stack/');
-        }
-
-        if (!is_string($key)) {
-            throw new QUI\Exception('Cache: No String given', 405, [
-                'key' => $key
-            ]);
         }
 
         if (!empty($key)) {

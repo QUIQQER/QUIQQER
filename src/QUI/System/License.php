@@ -131,7 +131,7 @@ class License
         $Curl = curl_init();
 
         curl_setopt_array($Curl, [
-            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_RETURNTRANSFER => true,
             CURLOPT_URL => $licenseServerUrl,
             CURLOPT_USERAGENT => 'QUIQQER'
         ]);
@@ -275,7 +275,7 @@ class License
         $Curl = curl_init();
 
         curl_setopt_array($Curl, [
-            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_RETURNTRANSFER => true,
             CURLOPT_URL => $licenseServerUrl,
             CURLOPT_USERAGENT => 'QUIQQER'
         ]);
@@ -333,7 +333,7 @@ class License
         $Curl = curl_init();
 
         curl_setopt_array($Curl, [
-            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_RETURNTRANSFER => true,
             CURLOPT_URL => $licenseServerUrl,
             CURLOPT_USERAGENT => 'QUIQQER'
         ]);

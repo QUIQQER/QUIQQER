@@ -43,9 +43,6 @@ use function usort;
 
 /**
  * A media folder
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 {
@@ -1313,10 +1310,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             // overwrite file
             try {
                 $Item = MediaUtils::getElement($new_file);
-
-                if (method_exists($Item, 'deleteCache')) {
-                    $Item->deleteCache();
-                }
+                $Item->deleteCache();
 
                 $Item->deactivate();
                 $Item->delete();

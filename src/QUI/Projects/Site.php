@@ -783,10 +783,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function firstChild(array $params = []): bool | Site
     {
-        if (!is_array($params)) {
-            $params = [];
-        }
-
         $params['limit'] = '1';
 
         $children = $this->getChildren($params);
@@ -808,10 +804,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getChildren(array $params = [], bool $load = false): array | int
     {
-        if (!is_array($params)) {
-            $params = [];
-        }
-
         // Falls kein Order übergeben wird das eingestellte Site Order
         if (!isset($params['order'])) {
             $params['order'] = match ($this->getAttribute('order_type')) {
@@ -1115,10 +1107,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function lastChild(array $params = []): bool | Edit | Site
     {
-        if (!is_array($params)) {
-            $params = [];
-        }
-
         $params['limit'] = false;
 
         $result = $this->getChildrenIds($params);
@@ -1144,10 +1132,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getNavigation(array $params = []): array | int
     {
-        if (!is_array($params)) {
-            $params = [];
-        }
-
         $params['where']['nav_hide'] = 0;
 
         $children = $this->getChildren($params);
@@ -1440,10 +1424,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getUrl(array $params = [], array $getParams = []): string
     {
-        if (!is_array($params)) {
-            $params = [];
-        }
-
         $str = 'index.php?id=' . $this->getId() .
             '&project=' . $this->getProject()->getName() .
             '&lang=' . $this->getProject()->getLang();

@@ -27,9 +27,6 @@ use function mt_srand;
 
 /**
  * A group
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Group extends QUI\QDOM
 {
@@ -53,7 +50,7 @@ class Group extends QUI\QDOM
     /**
      * internal parent id cache
      *
-     * @var array
+     * @var null|array
      */
     protected mixed $parentIds = null;
 
@@ -61,7 +58,6 @@ class Group extends QUI\QDOM
      * constructor
      *
      * @param integer|string $id - Group ID
-     *
      * @throws QUI\Exception
      */
     public function __construct(int | string $id)

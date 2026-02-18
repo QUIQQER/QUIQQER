@@ -4,7 +4,7 @@
  * If the image has an external image, the image will be updated
  *
  * @param string $project - Name of the project
- * @param string|integer - File-ID
+ * @param string|integer $fileid - File-ID
  */
 
 use QUI\Projects\Media\Image;

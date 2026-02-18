@@ -1612,10 +1612,6 @@ class Manager extends QUI\QDOM
             return;
         }
 
-        if (!is_array($params)) {
-            return;
-        }
-
         $Config = QUI::getConfig('etc/source.list.ini.php');
 
         // rename server
@@ -1655,10 +1651,6 @@ class Manager extends QUI\QDOM
     public function addServer(string $server, array $params = []): void
     {
         if (empty($server)) {
-            return;
-        }
-
-        if (!is_array($params)) {
             return;
         }
 
@@ -1754,10 +1746,6 @@ class Manager extends QUI\QDOM
      */
     public function getOutdated(bool $force = false): array
     {
-        if (!is_bool($force)) {
-            $force = false;
-        }
-
         $this->checkComposer();
         $this->setLastUpdateCheckDate();
 
@@ -2352,7 +2340,7 @@ class Manager extends QUI\QDOM
             $Curl = curl_init();
 
             curl_setopt_array($Curl, [
-                CURLOPT_RETURNTRANSFER => 1,
+                CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_URL => $licenseServerUrl,
                 CURLOPT_USERAGENT => 'QUIQQER'
             ]);
@@ -2411,7 +2399,7 @@ class Manager extends QUI\QDOM
             $Curl = curl_init();
 
             curl_setopt_array($Curl, [
-                CURLOPT_RETURNTRANSFER => 1,
+                CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_URL => $licenseServerUrl,
                 CURLOPT_USERAGENT => 'QUIQQER'
             ]);

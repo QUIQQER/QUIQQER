@@ -258,7 +258,7 @@ class Utils
     /**
      * Is the variable an image object?
      */
-    public static function isImage(object|bool|string $Unknown): bool
+    public static function isImage(object | bool | string $Unknown): bool
     {
         if (!is_object($Unknown)) {
             return false;
@@ -430,7 +430,7 @@ class Utils
                 continue;
             }
 
-            if (is_array($value) && $key === 'alt' && isset($Image) && $Image instanceof Item) {
+            if (is_array($value) && $key === 'alt' && isset($Image)) {
                 $value = $Image->getAlt();
             } elseif (!is_string($value)) {
                 continue;
@@ -682,6 +682,7 @@ class Utils
          * during composer update when two different instance of QUIQQER are initialised
          * and "existsProject" does not exist in the calling instance.
          */
+        // @phpstan-ignore-next-line
         if (method_exists($ProjectManager, 'existsProject') && !$ProjectManager::existsProject($project)) {
             throw new QUI\Exception(
                 'File not found',
@@ -1020,7 +1021,7 @@ class Utils
     /**
      * Generate the MD5 hash of a file object
      */
-    public static function generateMD5(Image|File $File): string
+    public static function generateMD5(Image | File $File): string
     {
         return md5_file($File->getFullPath());
     }
@@ -1028,7 +1029,7 @@ class Utils
     /**
      * Generate the SHA1 hash of a file object
      */
-    public static function generateSHA1(Image|File $File): string
+    public static function generateSHA1(Image | File $File): string
     {
         return sha1_file($File->getFullPath());
     }

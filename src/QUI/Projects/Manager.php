@@ -95,10 +95,6 @@ class Manager
             $Project
         );
 
-        if (!is_array($params)) {
-            $params = [];
-        }
-
         $Config = self::getConfig();
         $projects = $Config->toArray();
 
