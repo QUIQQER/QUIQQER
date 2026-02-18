@@ -4,9 +4,8 @@
  * Saves the data of a media file
  *
  * @param string $project - Name of the project
- * @param string|integer - File-ID
+ * @param string|integer $fileid - File-ID
  * @param string $attributes - JSON Array, new file attributes
- *
  * @return string
  */
 

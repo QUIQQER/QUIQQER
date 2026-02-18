@@ -9,7 +9,6 @@ namespace QUI\CRUD;
 use QUI;
 
 use function array_key_exists;
-use function is_array;
 
 /**
  * Class Factory
@@ -45,10 +44,6 @@ abstract class Factory extends QUI\Utils\Singleton
             ]
         ];
 
-        if (!is_array($queryParams)) {
-            $queryParams = [];
-        }
-
         if (isset($queryParams['where'])) {
             $query['where'] = $queryParams['where'];
         }
@@ -77,10 +72,6 @@ abstract class Factory extends QUI\Utils\Singleton
     {
         $attributes = $this->getChildAttributes();
         $childData = [];
-
-        if (!is_array($data)) {
-            $data = [];
-        }
 
         foreach ($attributes as $attribute) {
             if ($attribute == 'id') {
@@ -182,10 +173,6 @@ abstract class Factory extends QUI\Utils\Singleton
         $query = [
             'from' => $this->getDataBaseTableName()
         ];
-
-        if (!is_array($queryParams)) {
-            $queryParams = [];
-        }
 
         if (isset($queryParams['select'])) {
             $query['select'] = $queryParams['select'];

@@ -21,9 +21,7 @@ QUI::$Ajax->registerFunction(
             exit;
         }
 
-        if (method_exists($File, 'getFullPath')) {
-            QUI\Utils\System\File::fileHeader($File->getFullPath());
-        }
+        QUI\Utils\System\File::fileHeader($File->getFullPath());
     },
     ['project', 'fileid'],
     'Permission::checkAdminUser'

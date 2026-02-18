@@ -29,7 +29,6 @@ use function http_response_code;
 use function implode;
 use function in_array;
 use function is_array;
-use function is_object;
 use function is_string;
 use function ltrim;
 use function mb_strlen;
@@ -521,10 +520,7 @@ class Rewrite
         }
 
         $this->first_child = $this->getProject()->firstChild();
-
-        if ($this->site === null) {
-            $this->site = $this->first_child;
-        }
+        $this->site = $this->first_child;
 
         if (!empty($_REQUEST['_url']) && $this->site->getId() === $this->first_child->getId()) {
             // URL Parameter filtern
@@ -979,7 +975,7 @@ class Rewrite
             $Project = false;
         }
 
-        if ($Project && is_object($Project)) {
+        if ($Project) {
             $this->project = $Project;
 
             return $this->project;

@@ -48,7 +48,6 @@ QUI::$Ajax->registerFunction(
         } catch (QUI\Exception) {
             if (
                 !$windowName
-                && is_array($files)
                 && in_array('packages/quiqqer/core/admin/settings/cache.xml', $files)
             ) {
                 $windowName = 'quiqqer-cache';

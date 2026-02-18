@@ -40,9 +40,6 @@ use function trim;
 
 /**
  * Site Utils - Site Helper
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Utils
 {
@@ -70,6 +67,7 @@ class Utils
         $signs = '@[.,:;#`!§$%&/?<>\=\'\"\@\_\]\[\+\-]@';
 
 
+        // @phpstan-ignore-next-line
         if (QUI\Rewrite::URL_SPACE_CHARACTER === '-') {
             $signs = '@[.,:;#`!§$%&/?<>\=\'\"\@\_\]\[\+]@';
         }
@@ -304,7 +302,7 @@ class Utils
                     $types = explode(',', $types);
                 }
 
-                if (!empty($types) && is_array($types)) {
+                if (!empty($types)) {
                     foreach ($types as $allowedType) {
                         if (!StringUtils::match($allowedType, $siteType)) {
                             continue 2;
@@ -732,16 +730,10 @@ class Utils
             $order = $params['order'];
         }
 
-//        if (empty($order)) {
-        // @todo eigener select, rückgabe dann wie in liste übergeben
-//        }
-
         if (is_string($list)) {
             $sitetypes = explode(';', $list);
-        } elseif (is_array($list)) {
-            $sitetypes = $list;
         } else {
-            return [];
+            $sitetypes = $list;
         }
 
         $ids = [];

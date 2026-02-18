@@ -667,10 +667,6 @@ class User implements QUIUserInterface
             'country'
         ];
 
-        if (!is_array($params)) {
-            $params = [];
-        }
-
         foreach ($needles as $needle) {
             if (!isset($params[$needle])) {
                 $_params[$needle] = '';

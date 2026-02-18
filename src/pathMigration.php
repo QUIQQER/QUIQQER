@@ -22,4 +22,4 @@ $file = getcwd() . '/pathMigration.php';
 file_put_contents($file, $pathMigration);
 
 system(PHP_BINARY . ' ' . $file);
-unlink($pathMigration);
+unlink($file);

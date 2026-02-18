@@ -1143,13 +1143,6 @@ class Edit extends Site
             $Project = $this->getProject();
         }
 
-        if (!($Project instanceof Project)) {
-            throw new QUI\Exception(
-                'Site copy: Project not found',
-                404
-            );
-        }
-
         $Parent = new QUI\Projects\Site\Edit($Project, $pid);
         $attributes = $this->getAttributes();
         $name = $this->getAttribute('name');
