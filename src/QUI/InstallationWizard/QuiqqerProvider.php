@@ -37,7 +37,7 @@ class QuiqqerProvider extends AbstractInstallationWizard
     }
 
     /**
-     * @return QuiqqerSteps\Welcome[]
+     * @return QUI\InstallationWizard\AbstractInstallationWizardStep[]
      */
     public function getSteps(): array
     {

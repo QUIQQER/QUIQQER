@@ -27,7 +27,6 @@ use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 use function array_flip;
 use function array_rand;
 use function array_unique;
-use function array_values;
 use function class_exists;
 use function define;
 use function defined;
@@ -46,9 +45,6 @@ use function time;
  *
  * based at symfony session handler
  * http://symfony.com/doc/current/components/http_foundation/sessions.html
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Session
 {
@@ -126,7 +122,7 @@ class Session
         // cookie same site
         $sameSite = QUI::conf('cookies', 'sameSite');
 
-        if ($sameSite && $sameSite !== '' && QUI\Utils\System::isProtocolSecure()) {
+        if ($sameSite && QUI\Utils\System::isProtocolSecure()) {
             switch ($sameSite) {
                 case 'Lax':
                 case 'None':
@@ -151,6 +147,9 @@ class Session
                 );
             }
 
+            // Fallback include for different Symfony package layouts across installations.
+            // The fallback path may not exist in every environment.
+            /* @phpstan-ignore-next-line */
             include_once $fileNativeSessionStorage;
 
             if (class_exists($classNativeSessionStorage)) {
@@ -177,6 +176,9 @@ class Session
                 throw new \Exception('Session File not found ' . $fileSession);
             }
 
+            // Fallback include for different Symfony package layouts across installations.
+            // The fallback path may not exist in every environment.
+            /* @phpstan-ignore-next-line */
             include_once $fileSession;
 
             if (class_exists($classSession)) {
@@ -260,7 +262,6 @@ class Session
 
             if (!empty($redisServer) && !empty($redisServer['server'])) {
                 $redisServer = explode(',', $redisServer['server']);
-                $redisServer = array_values($redisServer);
 
                 return new RedisSessionHandler(
                     new RedisArray($redisServer)

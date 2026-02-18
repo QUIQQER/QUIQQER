@@ -82,7 +82,7 @@ class Event implements QUI\Interfaces\Events
 
         if (!is_callable($fn)) {
             QUI\System\Log::addError('Event error :: $fn is not callable', [
-                'fn' => is_string($fn) ? $fn : gettype($fn)
+                'fn' => $fn
             ]);
             return;
         }

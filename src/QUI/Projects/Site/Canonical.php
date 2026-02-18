@@ -17,9 +17,6 @@ use const URL_DIR;
 
 /**
  * Canonical meta helper
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Canonical
 {
@@ -41,9 +38,9 @@ class Canonical
         $siteUrl = $this->Site->getCanonical();
         $siteUrl = $this->removeHost($siteUrl);
 
-        if ($Site->getAttribute('meta.canonical') && $Site->getAttribute('meta.canonical') !== '') {
-            $metaCanonical = $Site->getAttribute('meta.canonical');
+        $metaCanonical = $Site->getAttribute('meta.canonical');
 
+        if ($metaCanonical) {
             if (!QUI\Projects\Site\Utils::isSiteLink($metaCanonical)) {
                 if (filter_var($metaCanonical, FILTER_VALIDATE_URL)) {
                     return $this->getLinkRel($metaCanonical);

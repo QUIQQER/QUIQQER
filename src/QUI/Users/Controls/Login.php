@@ -12,7 +12,6 @@ use QUI\Control;
 use function count;
 use function forward_static_call;
 use function in_array;
-use function is_array;
 use function is_null;
 use function usort;
 
@@ -53,10 +52,6 @@ class Login extends Control
 
         if (is_null($nextAuthenticators)) {
             return '';
-        }
-
-        if (!is_array($nextAuthenticators)) {
-            $nextAuthenticators = [$nextAuthenticators];
         }
 
         $authenticators = [];
