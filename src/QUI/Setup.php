@@ -16,16 +16,12 @@ use QUI\Utils\System\File as SystemFile;
 use function date;
 use function file_exists;
 use function file_put_contents;
-use function is_array;
 use function is_dir;
 use function system;
 use function unlink;
 
 /**
  * QUIQQER Setup
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Setup
 {
@@ -35,6 +31,7 @@ class Setup
      * @throws QUI\Exception
      * @throws QUI\ExceptionStack
      * @throws Exception
+     * @throws \Doctrine\DBAL\Exception
      */
     public static function all(?QUI\Interfaces\System\SystemOutput $Output = null): void
     {
@@ -352,6 +349,7 @@ EOT;
      *
      * @throws QUI\Exception
      * @throws QUI\ExceptionStack
+     * @throws Exception
      */
     public static function executeMainSystemSetup(): void
     {
@@ -369,6 +367,13 @@ EOT;
         // workspaces
         Workspace\Manager::setup();
 
+        // login setting check
+        if (empty(QUI::conf('auth_backend'))) {
+            $Config = QUI::getConfig('etc/conf.ini.php');
+            $Config->setValue('auth_backend', QUI\Users\Auth\QUIQQER::class, 1);
+            $Config->save();
+        }
+
         QUI::getEvents()->fireEvent('setupMainSystemEnd');
     }
 
@@ -381,7 +386,8 @@ EOT;
      * - Events
      *
      * @throws QUI\Exception
-     * @throws QUI\ExceptionStack
+     * @throws QUI\ExceptionStack|
+     * @throws \Doctrine\DBAL\Exception
      */
     public static function executeCommunicationSetup(): void
     {
