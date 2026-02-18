@@ -386,7 +386,7 @@ EOT;
      * - Events
      *
      * @throws QUI\Exception
-     * @throws QUI\ExceptionStack|
+     * @throws QUI\ExceptionStack
      * @throws \Doctrine\DBAL\Exception
      */
     public static function executeCommunicationSetup(): void
