@@ -79,7 +79,7 @@
     "symfony/polyfill-php82": "^1",
     "symfony/polyfill-php83": "^1",
     "t7systems/blowfish": "1.0.0",
-    "tedivm/stash": "^0.17"
+    "tedivm/stash": "^1.2"
   },
   "conflict": {
     "quiqqer/quiqqer": "*",
