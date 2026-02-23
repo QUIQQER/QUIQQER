@@ -261,7 +261,7 @@ class Queue
             // reply
             foreach ($replyTo as $entry) {
                 if (is_array($entry)) {
-                    $PhpMailer->addAddress($entry[0], $entry[1]);
+                    $PhpMailer->addReplyTo($entry[0], $entry[1]);
                     continue;
                 }
 
@@ -271,7 +271,7 @@ class Queue
             // cc
             foreach ($cc as $entry) {
                 if (is_array($entry)) {
-                    $PhpMailer->addAddress($entry[0], $entry[1]);
+                    $PhpMailer->addCC($entry[0], $entry[1]);
                     continue;
                 }
 
@@ -281,7 +281,7 @@ class Queue
             // bcc
             foreach ($bcc as $entry) {
                 if (is_array($entry)) {
-                    $PhpMailer->addAddress($entry[0], $entry[1]);
+                    $PhpMailer->addBCC($entry[0], $entry[1]);
                     continue;
                 }
 
