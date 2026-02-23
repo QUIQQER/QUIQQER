@@ -40,7 +40,7 @@
     "monolog/monolog": "^3",
     "neitanod/forceutf8": "^2",
     "oomphinc/composer-installers-extender": "^2",
-    "phpmailer/phpmailer": "^6",
+    "phpmailer/phpmailer": "^7",
     "php81_bc/strftime": "^0.7",
     "quiqqer-asset/ace-builds": "^1",
     "quiqqer-asset/animejs": "^3",
