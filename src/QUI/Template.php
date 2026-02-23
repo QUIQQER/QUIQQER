@@ -807,8 +807,17 @@ class Template extends QUI\QDOM
             return $this->getBody($params);
         }
 
-        $Project = $this->getAttribute('Project');
-        $templates = $this->getProjectTemplates($Project);
+        $templateName = $this->TemplatePackage->getName();
+        $templatePath = OPT_DIR . $templateName;
+
+        $templates = [$templatePath];
+
+        if ($this->TemplateParent) {
+            $templateParentName = $this->TemplateParent->getName();
+            $templateParentPath = OPT_DIR . $templateParentName;
+
+            $templates[] = $templateParentPath;
+        }
 
         foreach ($templates as $template) {
             $layoutFile = $template . '/' . $layout . '.html';
