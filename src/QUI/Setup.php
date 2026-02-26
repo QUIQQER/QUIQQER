@@ -187,6 +187,7 @@ EOF;
         $bootstrap = CMS_DIR . 'bootstrap.php';
         $console = CMS_DIR . 'console';
         $systemId = License::getSystemId();
+        $relativeOptDir = str_replace($CMS_DIR, '', $OPT_DIR);
 
 
         ////////
@@ -313,8 +314,8 @@ EOT;
         // quiqqer.php is not needed anymore -> use ./console
         ////////
         $content = $fileHeader .
-            "define('CMS_DIR', '$CMS_DIR');\n" .
-            "require '{$OPT_DIR}quiqqer/core/quiqqer.php';\n";
+            "define('CMS_DIR', dirname(__FILE__) . '/');\n" .
+            "require CMS_DIR . '{$relativeOptDir}quiqqer/core/quiqqer.php';\n";
 
         file_put_contents($quiqqer, $content);
 
@@ -328,12 +329,10 @@ EOT;
             $phpCommand = 'php';
         }
 
-        $relativeOptDir = str_replace($CMS_DIR, '', $OPT_DIR);
-
         $content = "#!/usr/bin/env $phpCommand\n" .
             $fileHeader .
             "define('CMS_DIR', dirname(__FILE__) . '/');\n" .
-            "require './{$relativeOptDir}quiqqer/core/quiqqer.php';\n";
+            "require CMS_DIR . '{$relativeOptDir}quiqqer/core/quiqqer.php';\n";
 
         file_put_contents($console, $content);
         system("chmod +x $console");
