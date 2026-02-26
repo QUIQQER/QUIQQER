@@ -1,5 +1,4 @@
 /**
- *
  * @event onSaveBegin [self]
  * @event onSaveEnd [self]
  * @event onSave [self]
@@ -16,18 +15,18 @@ define('controls/users/password/Password', [
 ], function (QUI, QUIControl, QUIAjax, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/core';
+    const lg = 'quiqqer/core';
 
     return new Class({
         Extends: QUIControl,
-        Type   : 'controls/users/password/Password',
+        Type: 'controls/users/password/Password',
 
         Binds: [
             '$onInject'
         ],
 
         options: {
-            uid       : false,
+            uid: false,
             mustChange: false
         },
 
@@ -35,7 +34,7 @@ define('controls/users/password/Password', [
             this.parent(options);
 
             if (!this.getAttribute('uid')) {
-                var uid = false;
+                let uid = false;
 
                 if (typeof USER !== 'undefined') {
                     uid = USER.id;
@@ -46,9 +45,9 @@ define('controls/users/password/Password', [
                 this.setAttribute('uid', uid);
             }
 
-            this.$Password         = null;
-            this.$Password2        = null;
-            this.$OldPassword      = null;
+            this.$Password = null;
+            this.$Password2 = null;
+            this.$OldPassword = null;
             this.$ShowPassCheckbox = null;
 
             this.addEvents({
@@ -63,29 +62,29 @@ define('controls/users/password/Password', [
          */
         create: function () {
             this.$Elm = new Element('form', {
-                'class'     : 'qui-control-user-password',
-                html        : '<label>' +
-                '    <span class="qui-control-user-password-title">' +
-                QUILocale.get(lg, 'user.panel.password.old') +
-                '    </span>' +
-                '    <input type="password" name="oldPassword" required autocomplete="off" />' +
-                '</label>' +
-                '<label>' +
-                '    <span class="qui-control-user-password-title">' +
-                QUILocale.get(lg, 'user.panel.password.new') +
-                '    </span>' +
-                '    <input type="password" name="password" required autocomplete="off" />' +
-                '</label>' +
-                '<label>' +
-                '    <span class="qui-control-user-password-title">' +
-                QUILocale.get(lg, 'user.panel.password.repeat') +
-                '    </span>' +
-                '    <input type="password" name="password2" required autocomplete="off" />' +
-                '</label>' +
-                '<label>' +
-                '    <input type="checkbox" name="show" />' +
-                QUILocale.get(lg, 'user.panel.password.show') +
-                '</label>',
+                'class': 'qui-control-user-password',
+                html: '<label>' +
+                    '    <span class="qui-control-user-password-title">' +
+                    QUILocale.get(lg, 'user.panel.password.old') +
+                    '    </span>' +
+                    '    <input type="password" name="oldPassword" required autocomplete="off" />' +
+                    '</label>' +
+                    '<label>' +
+                    '    <span class="qui-control-user-password-title">' +
+                    QUILocale.get(lg, 'user.panel.password.new') +
+                    '    </span>' +
+                    '    <input type="password" name="password" required autocomplete="off" />' +
+                    '</label>' +
+                    '<label>' +
+                    '    <span class="qui-control-user-password-title">' +
+                    QUILocale.get(lg, 'user.panel.password.repeat') +
+                    '    </span>' +
+                    '    <input type="password" name="password2" required autocomplete="off" />' +
+                    '</label>' +
+                    '<label>' +
+                    '    <input type="checkbox" name="show" />' +
+                    QUILocale.get(lg, 'user.panel.password.show') +
+                    '</label>',
                 autocomplete: "off"
             });
 
@@ -93,19 +92,19 @@ define('controls/users/password/Password', [
                 event.stop();
             });
 
-            this.$Password         = this.$Elm.getElement('[name="password"]');
-            this.$Password2        = this.$Elm.getElement('[name="password2"]');
-            this.$OldPassword      = this.$Elm.getElement('[name="oldPassword"]');
+            this.$Password = this.$Elm.getElement('[name="password"]');
+            this.$Password2 = this.$Elm.getElement('[name="password2"]');
+            this.$OldPassword = this.$Elm.getElement('[name="oldPassword"]');
             this.$ShowPassCheckbox = this.$Elm.getElement('[name="show"]');
 
             this.$ShowPassCheckbox.addEvent('change', function () {
                 if (this.$ShowPassCheckbox.checked) {
-                    this.$Password.type    = 'text';
-                    this.$Password2.type   = 'text';
+                    this.$Password.type = 'text';
+                    this.$Password2.type = 'text';
                     this.$OldPassword.type = 'text';
                 } else {
-                    this.$Password.type    = 'password';
-                    this.$Password2.type   = 'password';
+                    this.$Password.type = 'password';
+                    this.$Password2.type = 'password';
                     this.$OldPassword.type = 'password';
                 }
             }.bind(this));
@@ -138,11 +137,11 @@ define('controls/users/password/Password', [
                     this.fireEvent('save', [this]);
                     this.fireEvent('saveEnd', [this]);
                 }.bind(this), {
-                    uid           : this.getAttribute('uid'),
-                    newPassword   : this.$Password.value,
+                    uid: this.getAttribute('uid'),
+                    newPassword: this.$Password.value,
                     passwordRepeat: this.$Password2.value,
-                    oldPassword   : this.$OldPassword.value,
-                    onError       : reject
+                    oldPassword: this.$OldPassword.value,
+                    onError: reject
                 });
             }.bind(this));
         }

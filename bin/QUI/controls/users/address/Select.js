@@ -1,5 +1,4 @@
 /**
- *
  * @event onLoad [self]
  */
 define('controls/users/address/Select', [
@@ -15,7 +14,7 @@ define('controls/users/address/Select', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/users/address/Select',
+        Type: 'controls/users/address/Select',
 
         Binds: [
             '$onImport',
@@ -30,8 +29,8 @@ define('controls/users/address/Select', [
             this.parent(options);
 
             this.$Select = null;
-            this.$User   = null;
-            this.$value  = false;
+            this.$User = null;
+            this.$value = false;
 
             this.addEvents({
                 onImport: this.$onImport,
@@ -105,8 +104,8 @@ define('controls/users/address/Select', [
          */
         $onInject: function () {
             if (!Users.isUser(this.$User)) {
-                var PanelNode = this.getElm().getParent('.qui-panel'),
-                    Panel     = QUI.Controls.getById(PanelNode.get('data-quiid'));
+                const PanelNode = this.getElm().getParent('.qui-panel'),
+                    Panel = QUI.Controls.getById(PanelNode.get('data-quiid'));
 
                 if ("getUser" in Panel) {
                     this.setUser(Panel.getUser());
@@ -118,13 +117,13 @@ define('controls/users/address/Select', [
                 return;
             }
 
-            var self = this;
+            const self = this;
 
             QUIAjax.get('ajax_users_address_list', function (result) {
-                var i, len, text, entry;
+                let i, len, text, entry;
 
                 new Element('option', {
-                    html : '',
+                    html: '',
                     value: ''
                 }).inject(self.$Elm);
 
@@ -137,7 +136,7 @@ define('controls/users/address/Select', [
                         entry.country;
 
                     new Element('option', {
-                        html : text,
+                        html: text,
                         value: entry.id
                     }).inject(self.$Elm);
                 }

@@ -1,7 +1,6 @@
 /**
  * Makes a user input field to a field selection field
  *
- *
  * @event onAddItem [ this, id ]
  * @event onChange [ this ]
  */

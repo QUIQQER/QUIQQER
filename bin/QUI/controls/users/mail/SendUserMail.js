@@ -1,7 +1,6 @@
 /**
  * Send e-mail to a QUIQQER user
  *
- *
  * @event onLoad [this] - Fires if control has finished loading everything
  */
 define('controls/users/mail/SendUserMail', [
@@ -19,12 +18,12 @@ define('controls/users/mail/SendUserMail', [
 ], function (QUI, QUIConfirm, QUIAjax, QUILocale, Mustache, template) {
     "use strict";
 
-    var lg = 'quiqqer/core';
+    const lg = 'quiqqer/core';
 
     return new Class({
 
         Extends: QUIConfirm,
-        type   : 'controls/users/mail/SendUserMail',
+        type: 'controls/users/mail/SendUserMail',
 
         Binds: [
             '$onOpen',
@@ -35,31 +34,31 @@ define('controls/users/mail/SendUserMail', [
             userId: false,  // QUIQQER user ID
 
             maxHeight: 820,
-            maxWidth : 900
+            maxWidth: 900
         },
 
         initialize: function (options) {
             this.parent(options);
 
             this.setAttributes({
-                icon         : 'fa fa-envelope',
-                title        : QUILocale.get(lg, 'controls.SendUserMail.title'),
-                autoclose    : false,
+                icon: 'fa fa-envelope',
+                title: QUILocale.get(lg, 'controls.SendUserMail.title'),
+                autoclose: false,
                 cancel_button: {
                     textimage: 'fa fa-close',
-                    text     : QUILocale.get('quiqqer/system', 'close')
+                    text: QUILocale.get('quiqqer/system', 'close')
                 },
-                ok_button    : {
+                ok_button: {
                     textimage: 'fa fa-envelope',
-                    text     : QUILocale.get(lg, 'controls.SendUserMail.submit')
+                    text: QUILocale.get(lg, 'controls.SendUserMail.submit')
                 }
             });
 
-            this.$MailSubjectInput  = null;
+            this.$MailSubjectInput = null;
             this.$MailContentEditor = null;
 
             this.addEvents({
-                onOpen  : this.$onOpen,
+                onOpen: this.$onOpen,
                 onSubmit: this.$onSubmit
             });
         },
@@ -68,7 +67,7 @@ define('controls/users/mail/SendUserMail', [
          * event: on open
          */
         $onOpen: function () {
-            var self    = this,
+            const self = this,
                 Content = this.getContent();
 
             this.Loader.show();
@@ -76,20 +75,20 @@ define('controls/users/mail/SendUserMail', [
             this.$getMailData().then(function (MailData) {
                 Content.set({
                     html: Mustache.render(template, {
-                        labelUserName   : QUILocale.get(lg, 'username'),
-                        labelUserLang   : QUILocale.get(lg, 'language'),
-                        labelUserEmail  : QUILocale.get(lg, 'email'),
+                        labelUserName: QUILocale.get(lg, 'username'),
+                        labelUserLang: QUILocale.get(lg, 'language'),
+                        labelUserEmail: QUILocale.get(lg, 'email'),
                         labelMailSubject: QUILocale.get(lg, 'controls.SendUserMail.tpl.labelMailSubject'),
                         labelMailContent: QUILocale.get(lg, 'controls.SendUserMail.tpl.labelMailContent'),
-                        userName        : MailData.name,
-                        userLang        : MailData.lang,
-                        userEmail       : MailData.email
+                        userName: MailData.name,
+                        userLang: MailData.lang,
+                        userEmail: MailData.email
                     })
                 });
 
                 Content.addClass('quiqqer-quiqqer-user-mail');
 
-                var MailContainer       = Content.getElement('.quiqqer-quiqqer-user-mail-mailEditor'),
+                const MailContainer = Content.getElement('.quiqqer-quiqqer-user-mail-mailEditor'),
                     MailEditorContainer = Content.getElement('.quiqqer-quiqqer-user-mail-mailEditor-content');
 
                 self.$MailSubjectInput = Content.getElement('.quiqqer-quiqqer-user-mail-mailEditor-subject');
@@ -99,7 +98,7 @@ define('controls/users/mail/SendUserMail', [
 
                     new Element('div', {
                         'class': 'messages-message box message-attention',
-                        html   : QUILocale.get(lg, 'controls.SendUserMail.user_no_mail')
+                        html: QUILocale.get(lg, 'controls.SendUserMail.user_no_mail')
                     }).inject(MailContainer);
 
                     self.getButton('submit').disable();
@@ -140,7 +139,7 @@ define('controls/users/mail/SendUserMail', [
          * Event: onSubmit
          */
         $onSubmit: function () {
-            var self = this;
+            const self = this;
 
             if (this.$MailSubjectInput.value.trim() === '') {
                 QUI.getMessageHandler().then(function (MH) {
@@ -180,13 +179,13 @@ define('controls/users/mail/SendUserMail', [
          * @return {Promise}
          */
         $getMailData: function () {
-            var self = this;
+            const self = this;
 
             return new Promise(function (resolve, reject) {
                 QUIAjax.get('ajax_user_getMailData', resolve, {
                     'package': 'quiqqer/core',
-                    userId   : self.getAttribute('userId'),
-                    onError  : reject
+                    userId: self.getAttribute('userId'),
+                    onError: reject
                 });
             });
         },
@@ -197,15 +196,15 @@ define('controls/users/mail/SendUserMail', [
          * @return {Promise}
          */
         $sendMail: function () {
-            var self = this;
+            const self = this;
 
             return new Promise(function (resolve, reject) {
                 QUIAjax.get('ajax_user_sendMail', resolve, {
-                    'package'  : 'quiqqer/core',
-                    userId     : self.getAttribute('userId'),
+                    'package': 'quiqqer/core',
+                    userId: self.getAttribute('userId'),
                     mailSubject: self.$MailSubjectInput.value,
                     mailContent: self.$MailContentEditor.getContent(),
-                    onError    : reject
+                    onError: reject
                 });
             });
         }
