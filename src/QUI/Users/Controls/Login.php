@@ -48,6 +48,18 @@ class Login extends Control
 
     public function getBody(): string
     {
+        if (QUI::getUsers()->isAuth(QUI::getUserBySession())) {
+            $message = QUI::getLocale()->get(
+                'quiqqer/core',
+                'controls.users.auth.quiqqerLogin.already.logged.in',
+                [
+                    'username' => QUI::getUserBySession()->getName()
+                ]
+            );
+
+            return "<div class='q-message q-message-information'>$message</div>";
+        }
+
         $nextAuthenticators = $this->next();
 
         if (is_null($nextAuthenticators)) {

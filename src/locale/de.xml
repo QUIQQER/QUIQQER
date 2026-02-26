@@ -1431,6 +1431,9 @@
         <locale name="controls.users.auth.quiqqerlogin.send_mail_error">
             <de><![CDATA[Der Vorgang konnte leider nicht durchgeführt werden:<br><br>[error]]]></de>
         </locale>
+        <locale name="controls.users.auth.quiqqerLogin.already.logged.in" html="true">
+            <de><![CDATA[Sie sind bereits mit dem Benutzernamen <b>[username]</b> eingeloggt.]]></de>
+        </locale>
         <locale name="controls.licensekeypanel.title">
             <de><![CDATA[QUIQQER Lizenzschlüssel]]></de>
         </locale>

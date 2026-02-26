@@ -1427,6 +1427,9 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="controls.users.auth.quiqqerlogin.send_mail_error">
             <en><![CDATA[The process could not be performed unfortunately:<br><br>[error]]]></en>
         </locale>
+        <locale name="controls.users.auth.quiqqerLogin.already.logged.in" html="true">
+            <en><![CDATA[You are already logged in as <b>[username]</b>.]]></en>
+        </locale>
         <locale name="controls.licensekeypanel.title">
             <en><![CDATA[QUIQQER License Key]]></en>
         </locale>
