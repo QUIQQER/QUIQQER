@@ -246,6 +246,10 @@
                     <type><![CDATA[bool]]></type>
                     <defaultvalue>0</defaultvalue>
                 </conf>
+                <conf name="maxAttachmentSize">
+                    <type><![CDATA[integer]]></type>
+                    <defaultvalue>52428800</defaultvalue>
+                </conf>
             </section>
 
             <section name="session">
@@ -673,6 +677,18 @@
                             </text>
                             <description>
                                 <locale group="quiqqer/core" var="quiqqer.settings.email.admin_bcc.description"/>
+                            </description>
+                        </input>
+                        <input
+                                conf="mail.maxAttachmentSize"
+                                type="number"
+                                data-qui="controls/projects/project/settings/FileFormat"
+                        >
+                            <text>
+                                <locale group="quiqqer/core" var="quiqqer.settings.email.maxAttachmentSize"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/core" var="quiqqer.settings.email.maxAttachmentSize.desc"/>
                             </description>
                         </input>
                     </settings>

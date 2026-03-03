@@ -14,8 +14,10 @@ use QUI\Projects\Project;
 
 use function explode;
 use function file_exists;
+use function filesize;
 use function is_array;
 use function preg_replace;
+use function sprintf;
 use function str_replace;
 use function trim;
 
@@ -30,6 +32,8 @@ use function trim;
  */
 class Mailer extends QUI\QDOM
 {
+    public const DEFAULT_MAX_ATTACHMENT_SIZE_MB = 50;
+
     /**
      * Static flag in the Mailer class to control the runtime behavior of mail sending.
      *
@@ -262,6 +266,8 @@ class Mailer extends QUI\QDOM
                 continue;
             }
 
+            $this->assertAttachmentSize($file);
+
             $info = QUI\Utils\System\File::getInfo($file);
 
             if (!isset($info['mime_type'])) {
@@ -399,6 +405,8 @@ class Mailer extends QUI\QDOM
             return false;
         }
 
+        $this->assertAttachmentSize($file);
+
         $this->attachments[] = $file;
 
         return true;
@@ -492,5 +500,40 @@ class Mailer extends QUI\QDOM
         foreach ($files as $file) {
             $this->addAttachment($file);
         }
+    }
+
+    /**
+     * Return the configured max attachment size in bytes.
+     */
+    public static function getMaxAttachmentSizeInBytes(): int
+    {
+        $maxAttachmentSize = (int)QUI::conf('mail', 'maxAttachmentSize');
+
+        if ($maxAttachmentSize <= 0) {
+            return self::DEFAULT_MAX_ATTACHMENT_SIZE_MB * 1024 * 1024;
+        }
+
+        return $maxAttachmentSize;
+    }
+
+    /**
+     * @throws QUI\Exception
+     */
+    protected function assertAttachmentSize(string $file): void
+    {
+        $fileSize = filesize($file);
+        $maxFileSize = self::getMaxAttachmentSizeInBytes();
+
+        if ($fileSize === false || $fileSize <= $maxFileSize) {
+            return;
+        }
+
+        throw new QUI\Exception(
+            sprintf(
+                'Attachment "%s" exceeds max size of %d MB.',
+                $file,
+                (int)($maxFileSize / 1024 / 1024)
+            )
+        );
     }
 }

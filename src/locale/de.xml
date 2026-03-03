@@ -4696,6 +4696,13 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="quiqqer.settings.email.queue">
             <de><![CDATA[Mail-Queue aktivieren]]></de>
         </locale>
+        <locale name="quiqqer.settings.email.maxAttachmentSize">
+            <de><![CDATA[Maximale Anhangsgröße (Byte)]]></de>
+        </locale>
+        <locale name="quiqqer.settings.email.maxAttachmentSize.desc">
+            <de><![CDATA[
+                Legt die maximale Größe eines einzelnen E-Mail-Anhangs in Byte fest. Standard: <b>52428800</b> (50 MB).]]></de>
+        </locale>
         <locale name="message.ajax.licenseKey.upload.error">
             <de><![CDATA[Beim Einlesen der Lizenzschlüssel-Datei ist ein Fehler aufgetreten.
                 Ggf. ist die Lizenzschlüssel-Datei ungültig. Bitte wenden Sie sich an einen Administrator oder an die Stelle,

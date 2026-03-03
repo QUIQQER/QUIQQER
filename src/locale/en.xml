@@ -4544,6 +4544,13 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="quiqqer.settings.email.queue">
             <en><![CDATA[Enable Mail Queue]]></en>
         </locale>
+        <locale name="quiqqer.settings.email.maxAttachmentSize">
+            <en><![CDATA[Max attachment size (Byte)]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.maxAttachmentSize.desc">
+            <en><![CDATA[
+                Defines the maximum size of a single mail attachment in bytes. Default: <b>52428800</b> (50 MB).]]></en>
+        </locale>
         <locale name="message.ajax.licenseKey.upload.error">
             <en><![CDATA[
             An error ocurred while reading the license key file. The license key file may be invalid. Please contact an administrator or the issuer of the license key.

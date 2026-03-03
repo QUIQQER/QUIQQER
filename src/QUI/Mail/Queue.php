@@ -14,11 +14,13 @@ use function explode;
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
+use function filesize;
 use function is_array;
 use function is_dir;
 use function json_decode;
 use function json_encode;
 use function preg_replace;
+use function sprintf;
 use function str_replace;
 use function time;
 
@@ -301,6 +303,19 @@ class Queue
 
                         if (!file_exists($file)) {
                             continue;
+                        }
+
+                        $fileSize = filesize($file);
+                        $maxFileSize = Mailer::getMaxAttachmentSizeInBytes();
+
+                        if ($fileSize !== false && $fileSize > $maxFileSize) {
+                            throw new QUI\Exception(
+                                sprintf(
+                                    'Attachment "%s" exceeds max size of %d MB.',
+                                    $fileName,
+                                    (int)($maxFileSize / 1024 / 1024)
+                                )
+                            );
                         }
 
                         $infos = File::getInfo($file);
