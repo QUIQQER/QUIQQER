@@ -1,7 +1,6 @@
 /**
  * Send e-mail to a QUIQQER user
  *
- *
  * @event onLoad [this] - Fires if control has finished loading everything
  */
 define('controls/users/password/send/SendPassword', [
@@ -21,12 +20,12 @@ define('controls/users/password/send/SendPassword', [
 ], function (QUI, QUIConfirm, QUIButton, QUIFormUtils, QUIAjax, QUILocale, Mustache, template) {
     "use strict";
 
-    var lg = 'quiqqer/core';
+    const lg = 'quiqqer/core';
 
     return new Class({
 
         Extends: QUIConfirm,
-        type   : 'controls/users/password/send/SendPassword',
+        type: 'controls/users/password/send/SendPassword',
 
         Binds: [
             '$onOpen',
@@ -38,32 +37,32 @@ define('controls/users/password/send/SendPassword', [
             userId: false,  // QUIQQER user ID
 
             maxHeight: 420,
-            maxWidth : 800
+            maxWidth: 800
         },
 
         initialize: function (options) {
             this.parent(options);
 
             this.setAttributes({
-                icon         : 'fa fa-envelope',
-                title        : QUILocale.get(lg, 'controls.SendPassword.title'),
-                autoclose    : false,
+                icon: 'fa fa-envelope',
+                title: QUILocale.get(lg, 'controls.SendPassword.title'),
+                autoclose: false,
                 cancel_button: {
                     textimage: 'fa fa-close',
-                    text     : QUILocale.get('quiqqer/system', 'close')
+                    text: QUILocale.get('quiqqer/system', 'close')
                 },
-                ok_button    : {
+                ok_button: {
                     textimage: 'fa fa-envelope',
-                    text     : QUILocale.get(lg, 'controls.SendPassword.submit')
+                    text: QUILocale.get(lg, 'controls.SendPassword.submit')
                 }
             });
 
-            this.$Password       = null;
+            this.$Password = null;
             this.$PasswordRepeat = null;
-            this.$ForceNew       = null;
+            this.$ForceNew = null;
 
             this.addEvents({
-                onOpen  : this.$onOpen,
+                onOpen: this.$onOpen,
                 onSubmit: this.$onSubmit
             });
         },
@@ -72,28 +71,28 @@ define('controls/users/password/send/SendPassword', [
          * event: on open
          */
         $onOpen: function () {
-            var self    = this,
+            const self = this,
                 Content = this.getContent();
 
             Content.set({
                 html: Mustache.render(template, {
-                    header             : QUILocale.get(lg, 'user.panel.password'),
-                    labelPassword      : QUILocale.get(lg, 'user.panel.password.new'),
+                    header: QUILocale.get(lg, 'user.panel.password'),
+                    labelPassword: QUILocale.get(lg, 'user.panel.password.new'),
                     labelPasswordRepeat: QUILocale.get(lg, 'user.panel.password.repeat'),
-                    labelPasswordShow  : QUILocale.get(lg, 'user.panel.password.show'),
-                    labelForceNew      : QUILocale.get(lg, 'user.settings.setNewPassword'),
-                    descForceNew       : QUILocale.get(lg, 'user.settings.setNewPassword.text')
+                    labelPasswordShow: QUILocale.get(lg, 'user.panel.password.show'),
+                    labelForceNew: QUILocale.get(lg, 'user.settings.setNewPassword'),
+                    descForceNew: QUILocale.get(lg, 'user.settings.setNewPassword.text')
                 })
             });
 
-            this.$Password       = Content.getElement('input[name="password"]');
+            this.$Password = Content.getElement('input[name="password"]');
             this.$PasswordRepeat = Content.getElement('input[name="password2"]');
-            this.$ForceNew       = Content.getElement('input[name="quiqqer.set.new.password"]');
+            this.$ForceNew = Content.getElement('input[name="quiqqer.set.new.password"]');
 
-            var ShowPasswords = Content.getElement('input[name="showPasswords"]');
+            const ShowPasswords = Content.getElement('input[name="showPasswords"]');
 
             ShowPasswords.addEvent('change', function () {
-                var PasswordFields = Content.getElements(
+                const PasswordFields = Content.getElements(
                     '[name="password2"],[name="password"]'
                 );
 
@@ -107,8 +106,8 @@ define('controls/users/password/send/SendPassword', [
 
             new QUIButton({
                 textimage: 'fa fa-lock',
-                text     : QUILocale.get(lg, 'users.user.btn.password.generate'),
-                events   : {
+                text: QUILocale.get(lg, 'users.user.btn.password.generate'),
+                events: {
                     onClick: self.$generatePassword
                 }
             }).inject(this.$Password, 'after');
@@ -122,9 +121,9 @@ define('controls/users/password/send/SendPassword', [
          * Event: onSubmit
          */
         $onSubmit: function () {
-            var self = this;
+            const self = this;
 
-            var pw1 = this.$Password.value.trim(),
+            const pw1 = this.$Password.value.trim(),
                 pw2 = this.$PasswordRepeat.value.trim();
 
             if (pw1 !== pw2) {
@@ -151,9 +150,9 @@ define('controls/users/password/send/SendPassword', [
          * it saves not the passwords!!
          */
         $generatePassword: function () {
-            var newPassword = Math.random().toString(36).slice(-8);
+            const newPassword = Math.random().toString(36).slice(-8);
 
-            this.$Password.value       = newPassword;
+            this.$Password.value = newPassword;
             this.$PasswordRepeat.value = newPassword;
         },
 
@@ -163,15 +162,15 @@ define('controls/users/password/send/SendPassword', [
          * @return {Promise}
          */
         $setAndSendPassword: function () {
-            var self = this;
+            const self = this;
 
             return new Promise(function (resolve, reject) {
                 QUIAjax.get('ajax_user_setAndSendPassword', resolve, {
-                    'package'  : 'quiqqer/core',
-                    userId     : self.getAttribute('userId'),
+                    'package': 'quiqqer/core',
+                    userId: self.getAttribute('userId'),
                     newPassword: self.$Password.value.trim(),
-                    forceNew   : self.$ForceNew.checked ? 1 : 0,
-                    onError    : reject
+                    forceNew: self.$ForceNew.checked ? 1 : 0,
+                    onError: reject
                 });
             });
         }

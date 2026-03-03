@@ -26,9 +26,6 @@ use function md5;
 /**
  * Cache Manager
  * Easy access fot different cache types
- *
- * @author www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Manager
 {

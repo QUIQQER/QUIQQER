@@ -1,5 +1,4 @@
 /**
- *
  * @event onDblClick [self]
  */
 define('controls/users/search/Search', [
@@ -24,7 +23,7 @@ define('controls/users/search/Search', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/users/search/Search',
+        Type: 'controls/users/search/Search',
 
         Binds: [
             'search',
@@ -33,13 +32,13 @@ define('controls/users/search/Search', [
         ],
 
         options: {
-            field         : 'username',
-            order         : 'ASC',
-            limit         : 100,
-            page          : 1,
-            search        : false,
+            field: 'username',
+            order: 'ASC',
+            limit: 100,
+            page: 1,
+            search: false,
             searchSettings: {},
-            editable      : true
+            editable: true
         },
 
         initialize: function (options) {
@@ -62,20 +61,20 @@ define('controls/users/search/Search', [
 
             this.$Elm = new Element('div', {
                 'class': 'user-search-control',
-                html   : Mustache.render(template, {
-                    textUserId   : QUILocale.get(lg, 'user_id'),
-                    textUsername : QUILocale.get(lg, 'username'),
+                html: Mustache.render(template, {
+                    textUserId: QUILocale.get(lg, 'user_id'),
+                    textUsername: QUILocale.get(lg, 'username'),
                     textFirstname: QUILocale.get(lg, 'firstname'),
-                    textLastname : QUILocale.get(lg, 'lastname'),
-                    textEmail    : QUILocale.get(lg, 'email'),
-                    textGroup    : QUILocale.get(lg, 'group'),
-                    textCDate    : QUILocale.get(lg, 'c_date'),
-                    textFrom     : QUILocale.get(lg, 'from'),
-                    textTo       : QUILocale.get(lg, 'to')
+                    textLastname: QUILocale.get(lg, 'lastname'),
+                    textEmail: QUILocale.get(lg, 'email'),
+                    textGroup: QUILocale.get(lg, 'group'),
+                    textCDate: QUILocale.get(lg, 'c_date'),
+                    textFrom: QUILocale.get(lg, 'from'),
+                    textTo: QUILocale.get(lg, 'to')
                 }),
-                styles : {
+                styles: {
                     height: '100%',
-                    width : '100%'
+                    width: '100%'
                 }
             });
 
@@ -115,69 +114,69 @@ define('controls/users/search/Search', [
 
             // grid
             this.$Grid = new Grid(this.$Container, {
-                columnModel      : [
+                columnModel: [
                     {
-                        header   : QUILocale.get(lg, 'status'),
+                        header: QUILocale.get(lg, 'status'),
                         dataIndex: 'status',
-                        dataType : 'QUI',
-                        width    : 60
+                        dataType: 'QUI',
+                        width: 60
                     },
                     {
-                        header   : QUILocale.get(lg, 'user_id'),
+                        header: QUILocale.get(lg, 'user_id'),
                         dataIndex: 'id',
-                        dataType : 'string',
-                        width    : 150
+                        dataType: 'string',
+                        width: 150
                     },
                     {
-                        header   : QUILocale.get(lg, 'username'),
+                        header: QUILocale.get(lg, 'username'),
                         dataIndex: 'username',
-                        dataType : 'integer',
-                        width    : 150
+                        dataType: 'integer',
+                        width: 150
                     },
                     {
-                        header   : QUILocale.get(lg, 'group'),
+                        header: QUILocale.get(lg, 'group'),
                         dataIndex: 'usergroup',
-                        dataType : 'integer',
-                        width    : 150
+                        dataType: 'integer',
+                        width: 150
                     },
                     {
-                        header   : QUILocale.get(lg, 'email'),
+                        header: QUILocale.get(lg, 'email'),
                         dataIndex: 'email',
-                        dataType : 'string',
-                        width    : 150
+                        dataType: 'string',
+                        width: 150
                     },
                     {
-                        header   : QUILocale.get(lg, 'firstname'),
+                        header: QUILocale.get(lg, 'firstname'),
                         dataIndex: 'firstname',
-                        dataType : 'string',
-                        width    : 150
+                        dataType: 'string',
+                        width: 150
                     },
                     {
-                        header   : QUILocale.get(lg, 'lastname'),
+                        header: QUILocale.get(lg, 'lastname'),
                         dataIndex: 'lastname',
-                        dataType : 'string',
-                        width    : 150
+                        dataType: 'string',
+                        width: 150
                     },
                     {
-                        header   : QUILocale.get(lg, 'c_date'),
+                        header: QUILocale.get(lg, 'c_date'),
                         dataIndex: 'regdate',
-                        dataType : 'date',
-                        width    : 150
+                        dataType: 'date',
+                        width: 150
                     }
                 ],
-                pagination       : true,
-                filterInput      : true,
-                perPage          : this.getAttribute('limit'),
-                page             : this.getAttribute('page'),
-                sortOn           : this.getAttribute('field'),
-                serverSort       : true,
-                showHeader       : true,
-                sortHeader       : true,
-                alternaterows    : true,
-                resizeColumns    : true,
-                selectable       : true,
+                pagination: true,
+                filterInput: true,
+                perPage: this.getAttribute('limit'),
+                page: this.getAttribute('page'),
+                sortOn: this.getAttribute('field'),
+                serverSort: true,
+                showHeader: true,
+                sortHeader: true,
+                alternaterows: true,
+                resizeColumns: true,
+                selectable: true,
                 multipleSelection: true,
-                resizeHeaderOnly : true
+                resizeHeaderOnly: true
             });
 
             // Events
@@ -185,7 +184,7 @@ define('controls/users/search/Search', [
                 onDblClick: function () {
                     this.fireEvent('dblClick', [this]);
                 }.bind(this),
-                onRefresh : this.search
+                onRefresh: this.search
             });
 
             this.$Grid.refresh();
@@ -225,17 +224,17 @@ define('controls/users/search/Search', [
             Search.userSearchString = this.$SearchInput.value;
 
             Search.fields = {
-                id       : Form.elements.userId.checked ? 1 : 0,
-                username : Form.elements.username.checked ? 1 : 0,
+                id: Form.elements.userId.checked ? 1 : 0,
+                username: Form.elements.username.checked ? 1 : 0,
                 firstname: Form.elements.firstname.checked ? 1 : 0,
-                lastname : Form.elements.lastname.checked ? 1 : 0,
-                email    : Form.elements.email.checked ? 1 : 0,
-                group    : Form.elements.group.checked ? 1 : 0
+                lastname: Form.elements.lastname.checked ? 1 : 0,
+                email: Form.elements.email.checked ? 1 : 0,
+                group: Form.elements.group.checked ? 1 : 0
             };
 
             const RegDateFilter = {
                 regdate_from: Form.elements['registration-from'].value,
-                regdate_to  : Form.elements['registration-to'].value
+                regdate_to: Form.elements['registration-to'].value
             };
 
             if (typeof Search.filter === 'object') {
@@ -245,11 +244,11 @@ define('controls/users/search/Search', [
             }
 
             Users.getList({
-                field         : options.sortOn,
-                order         : options.sortBy,
-                limit         : options.perPage,
-                page          : options.page,
-                search        : this.getAttribute('search'),
+                field: options.sortOn,
+                order: options.sortBy,
+                limit: options.perPage,
+                page: options.page,
+                search: this.getAttribute('search'),
                 searchSettings: Search
             }).then((result) => {
                 this.$Grid.setData(
@@ -293,8 +292,8 @@ define('controls/users/search/Search', [
                 if (editable) {
                     data.data[i].status = new QUISwitch({
                         status: entry.active === 1,
-                        uid   : entry.id,
-                        title : entry.active ? this.active_text : this.deactive_text,
+                        uid: entry.id,
+                        title: entry.active ? this.active_text : this.deactive_text,
                         events: {
                             onChange: this.$onSwitchStatusChange
                         }
@@ -304,10 +303,10 @@ define('controls/users/search/Search', [
                 }
 
                 data.data[i].status = new Element('div', {
-                    class : entry.active ? 'fa fa-check' : 'fa fa-minus',
+                    class: entry.active ? 'fa fa-check' : 'fa fa-minus',
                     styles: {
                         textAlign: 'center',
-                        width    : 'calc(100% - 5px)'
+                        width: 'calc(100% - 5px)'
                     }
                 });
             }
@@ -322,8 +321,8 @@ define('controls/users/search/Search', [
          */
         $onSwitchStatusChange: function (Switch) {
             const self = this,
-                  uid  = Switch.getAttribute('uid'),
-                  User = Users.get(uid);
+                uid = Switch.getAttribute('uid'),
+                User = Users.get(uid);
 
             if (!User.isLoaded()) {
                 User.load(function () {
@@ -366,8 +365,8 @@ define('controls/users/search/Search', [
          * Open the filter
          */
         openFilter: function () {
-            const self            = this,
-                  FilterContainer = this.getElm().getElement('.user-search-control-form-filter');
+            const self = this,
+                FilterContainer = this.getElm().getElement('.user-search-control-form-filter');
 
             FilterContainer.setStyle('position', 'absolute');
             FilterContainer.setStyle('opacity', 0);
@@ -387,11 +386,11 @@ define('controls/users/search/Search', [
             FilterContainer.setStyle('position', null);
 
             moofx(FilterContainer).animate({
-                height       : height,
-                marginTop    : 20,
-                opacity      : 1,
+                height: height,
+                marginTop: 20,
+                opacity: 1,
                 paddingBottom: 10,
-                paddingTop   : 10
+                paddingTop: 10
             }, {
                 duration: 300,
                 callback: function () {
@@ -404,15 +403,15 @@ define('controls/users/search/Search', [
          * Close the filter
          */
         closeFilter: function () {
-            const self            = this,
-                  FilterContainer = this.getElm().getElement('.user-search-control-form-filter');
+            const self = this,
+                FilterContainer = this.getElm().getElement('.user-search-control-form-filter');
 
             moofx(FilterContainer).animate({
-                height       : 0,
-                marginTop    : 0,
-                opacity      : 1,
+                height: 0,
+                marginTop: 0,
+                opacity: 1,
                 paddingBottom: 0,
-                paddingTop   : 0
+                paddingTop: 0
             }, {
                 duration: 300,
                 callback: function () {

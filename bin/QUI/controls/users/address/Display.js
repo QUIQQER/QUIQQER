@@ -1,5 +1,4 @@
 /**
- *
  * @event onLoad [self]
  * @event onLoadError [self]
  * @event onClick [self]
@@ -14,6 +13,7 @@ define('controls/users/address/Display', [
     "use strict";
 
     return new Class({
+        
         Extends: QUIControl,
         Type: 'controls/users/address/Select',
 
@@ -57,7 +57,7 @@ define('controls/users/address/Display', [
          * refresh the display
          */
         refresh: function () {
-            var self = this;
+            const self = this;
 
             return new Promise(function (resolve) {
                 QUIAjax.get('ajax_users_address_display', function (result) {
@@ -74,7 +74,7 @@ define('controls/users/address/Display', [
          * event: on inject
          */
         $onInject: function () {
-            var self = this;
+            const self = this;
 
             this.refresh().then(function () {
                 self.fireEvent('load', [self]);

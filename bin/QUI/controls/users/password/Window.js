@@ -1,5 +1,4 @@
 /**
- *
  * @event onSuccess [this]
  * @event onError [this]
  */
@@ -17,24 +16,24 @@ define('controls/users/password/Window', [
 
     return new Class({
         Extends: QUIConfirm,
-        Type   : 'controls/users/password/Password',
+        Type: 'controls/users/password/Password',
 
         Binds: [
             '$onOpen'
         ],
 
         options: {
-            'class'   : 'qui-controls-user-password-quiWindow',
-            icon      : 'fa fa-key',
-            title     : QUILocale.get('quiqqer/core', 'menu.profile.userPassword.text'),
-            maxHeight : 500,
-            maxWidth  : 340,
-            uid       : false,
-            autoclose : false,
-            message   : false,
+            'class': 'qui-controls-user-password-quiWindow',
+            icon: 'fa fa-key',
+            title: QUILocale.get('quiqqer/core', 'menu.profile.userPassword.text'),
+            maxHeight: 500,
+            maxWidth: 340,
+            uid: false,
+            autoclose: false,
+            message: false,
             mustChange: false,
-            ok_button : {
-                text     : QUILocale.get('quiqqer/core', 'accept'),
+            ok_button: {
+                text: QUILocale.get('quiqqer/core', 'accept'),
                 textimage: 'fa fa-check'
             }
         },
@@ -63,18 +62,18 @@ define('controls/users/password/Window', [
             if (this.getAttribute('message')) {
                 new Element('div', {
                     'class': 'qui-controls-user-password-window-message',
-                    html   : this.getAttribute('message')
+                    html: this.getAttribute('message')
                 }).inject(Win.getContent());
             }
 
             this.$Password = new Password({
-                uid       : this.getAttribute('uid'),
+                uid: this.getAttribute('uid'),
                 mustChange: false,
-                events    : {
+                events: {
                     onSaveBegin: function () {
                         Win.Loader.show();
                     },
-                    onSave     : function () {
+                    onSave: function () {
                         Win.Loader.hide();
                     }
                 }
@@ -94,7 +93,7 @@ define('controls/users/password/Window', [
          * Submit the new password
          */
         submit: function () {
-            var self = this;
+            const self = this;
 
             this.Loader.show();
             this.$Password.save().then(function () {
@@ -104,7 +103,7 @@ define('controls/users/password/Window', [
                 this.Loader.hide();
                 this.fireEvent('error', [this]);
 
-                var Message,
+                let Message,
                     Content = self.getContent();
 
                 Message = Content.getElement('.qui-controls-user-password-window-message');
@@ -114,7 +113,7 @@ define('controls/users/password/Window', [
                 } else {
                     Message = new Element('div', {
                         'class': 'qui-controls-user-password-window-message',
-                        html   : e.getMessage()
+                        html: e.getMessage()
                     }).inject(Content);
                 }
 

@@ -14,19 +14,18 @@ use function explode;
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
+use function filesize;
 use function is_array;
 use function is_dir;
 use function json_decode;
 use function json_encode;
 use function preg_replace;
+use function sprintf;
 use function str_replace;
 use function time;
 
 /**
  * Mail queue
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Queue
 {
@@ -144,7 +143,7 @@ class Queue
      *
      * @return string
      */
-    public static function getAttachmentDir(int|string $mailId): string
+    public static function getAttachmentDir(int | string $mailId): string
     {
         return VAR_DIR . 'mailQueue/' . (int)$mailId . '/';
     }
@@ -301,6 +300,19 @@ class Queue
 
                         if (!file_exists($file)) {
                             continue;
+                        }
+
+                        $fileSize = filesize($file);
+                        $maxFileSize = Mailer::getMaxAttachmentSizeInBytes();
+
+                        if ($fileSize !== false && $fileSize > $maxFileSize) {
+                            throw new QUI\Exception(
+                                sprintf(
+                                    'Attachment "%s" exceeds max size of %d MB.',
+                                    $fileName,
+                                    (int)($maxFileSize / 1024 / 1024)
+                                )
+                            );
                         }
 
                         $infos = File::getInfo($file);
@@ -476,7 +488,7 @@ class Queue
     }
 
     /**
-     * Send an mail by its mail queue id
+     * Send a mail by its mail queue id
      *
      * @throws QUI\Exception
      */
