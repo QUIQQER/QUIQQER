@@ -661,6 +661,7 @@ class Template extends QUI\QDOM
         $Project = $this->getAttribute('Project');
         $Site = $this->getAttribute('Site');
         $Engine = $this->getAttribute('Engine');
+        $sessionUser = QUI::getUserBySession();
 
         $siteType = $Site->getAttribute('type');
         $siteType = explode(':', $siteType);
@@ -779,7 +780,10 @@ class Template extends QUI\QDOM
             'Canonical' => $Engine->getCanonical(),
             'lastUpdate' => QUI::getPackageManager()->getLastUpdateDate(),
             'languages' => implode(',', $Project->getLanguages()),
-            'systemCountry' => QUI::conf('globals', 'country')
+            'systemCountry' => QUI::conf('globals', 'country'),
+            'sessionUserIsUser' => (int)QUI::getUsers()->isUser($sessionUser),
+            'sessionUserIsNobody' => (int)QUI::getUsers()->isNobodyUser($sessionUser),
+            'sessionUserIsAuth' => (int)QUI::getUsers()->isAuth($sessionUser)
         ]);
 
         if ($this->getAttribute('noConflict')) {
