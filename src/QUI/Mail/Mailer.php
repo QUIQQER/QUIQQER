@@ -103,7 +103,7 @@ class Mailer extends QUI\QDOM
         // construct array
         $this->setAttributes($attributes);
 
-        // html mail template
+        // HTML mail template
         $this->Template = new Template([
             'Project' => $this->getAttribute('Project'),
             'Mailer' => $this
@@ -117,7 +117,7 @@ class Mailer extends QUI\QDOM
     }
 
     /**
-     * Set the from value for the mail
+     * Set from value for the mail
      *
      * @param string $from - mail@domain.net
      */
@@ -127,7 +127,7 @@ class Mailer extends QUI\QDOM
     }
 
     /**
-     * Set the from name for the mail
+     * Set from name for the mail
      *
      * @param string $fromName - Firstname Lastname
      */
@@ -395,6 +395,7 @@ class Mailer extends QUI\QDOM
      * Add a file to the mail
      *
      * @param string $file - path to the file
+     * @throws QUI\Exception
      */
     public function addAttachment(string $file): bool
     {
@@ -435,9 +436,9 @@ class Mailer extends QUI\QDOM
     }
 
     /**
-     * set the html flag, is html mail or not
+     * set the HTML flag, is HTML mail or not
      *
-     * @param boolean $html - is the mail a html mail or not?
+     * @param boolean $html - is the mail an HTML mail or not?
      */
     public function setHTML(bool $html): void
     {
@@ -485,6 +486,7 @@ class Mailer extends QUI\QDOM
      * @param array|string $files - array with file paths eq:
      *                              addAttachments( array('path/file1.end', 'path/file2.end') )
      *                              addAttachments( 'path/file1.end' )
+     * @throws QUI\Exception
      */
     public function addAttachments(array | string $files): void
     {

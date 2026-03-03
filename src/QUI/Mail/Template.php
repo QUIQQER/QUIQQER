@@ -33,7 +33,7 @@ class Template extends QUI\QDOM
     }
 
     /**
-     * Return the complete mail as text, without html
+     * Return the complete mail as text, without HTML
      */
     public function getText(): string
     {
@@ -81,7 +81,7 @@ class Template extends QUI\QDOM
         $body = $Engine->fetch($this->getBodyTemplate());
         $footer = $Engine->fetch($this->getFooterTemplate());
 
-        $mailBody = str_replace([
+        return str_replace([
             '[[templateMeta]]',
             '[[templateHeader]]',
             '[[templateBody]]',
@@ -92,8 +92,6 @@ class Template extends QUI\QDOM
             $body,
             $footer
         ], $main);
-
-        return $mailBody;
     }
 
     public function getProject(): Project
@@ -251,7 +249,7 @@ class Template extends QUI\QDOM
     }
 
     /**
-     * Set the body html
+     * Set the body HTML
      */
     public function setBody(string $html): void
     {

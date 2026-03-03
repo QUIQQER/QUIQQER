@@ -10,6 +10,8 @@ use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use QUI;
 
+use QUI\ExceptionStack;
+
 use function explode;
 use function rtrim;
 use function trim;
@@ -69,6 +71,9 @@ class Manager
         return new Mailer($attributes);
     }
 
+    /**
+     * @throws ExceptionStack
+     */
     public function getPHPMailer(): PHPMailer
     {
         $phpInitMailer = QUI::getEvents()->fireEvent('getPhpMailerInitStart');

@@ -488,7 +488,7 @@ class Queue
     }
 
     /**
-     * Send an mail by its mail queue id
+     * Send a mail by its mail queue id
      *
      * @throws QUI\Exception
      */
