@@ -3,8 +3,6 @@
  *
  * Send ajax request, but bundle the requests
  * the bundler sends the request between a timeframe
- *
- * @package quiqqer/core
  */
 
 define('classes/request/Bundler', [

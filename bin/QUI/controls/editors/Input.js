@@ -1,7 +1,5 @@
 /**
  * Input field which opens an editor in the window
- *
- * @package controls/editors/Input
  */
 define('controls/editors/Input', [
 
