@@ -334,7 +334,7 @@ class Mailer extends QUI\QDOM
      * @param string $email - E-Mail
      * @param boolean|string $name - E-Mail Name
      */
-    public function addReplyTo(string $email, bool|string $name = false): void
+    public function addReplyTo(string $email, bool | string $name = false): void
     {
         $email = trim($email);
         $email = explode(',', $email);
@@ -355,7 +355,7 @@ class Mailer extends QUI\QDOM
      * @param string $email - E-Mail
      * @param boolean|string $name - E-Mail Name
      */
-    public function addCC(string $email, bool|string $name = false): void
+    public function addCC(string $email, bool | string $name = false): void
     {
         $email = trim($email);
         $email = explode(',', $email);
@@ -376,7 +376,7 @@ class Mailer extends QUI\QDOM
      * @param string $email - E-Mail
      * @param boolean|string $name - E-Mail Name
      */
-    public function addBCC(string $email, bool|string $name = false): void
+    public function addBCC(string $email, bool | string $name = false): void
     {
         $email = trim($email);
         $email = explode(',', $email);
@@ -464,7 +464,7 @@ class Mailer extends QUI\QDOM
      * @param string $email - E-Mail
      * @param boolean|string $name - E-Mail Name
      */
-    public function addRecipient(string $email, bool|string $name = false): void
+    public function addRecipient(string $email, bool | string $name = false): void
     {
         $email = trim($email);
         $email = explode(',', $email);
@@ -486,7 +486,7 @@ class Mailer extends QUI\QDOM
      *                              addAttachments( array('path/file1.end', 'path/file2.end') )
      *                              addAttachments( 'path/file1.end' )
      */
-    public function addAttachments(array|string $files): void
+    public function addAttachments(array | string $files): void
     {
         if (!is_array($files)) {
             $this->addAttachment($files);

@@ -143,7 +143,7 @@ class Queue
      *
      * @return string
      */
-    public static function getAttachmentDir(int|string $mailId): string
+    public static function getAttachmentDir(int | string $mailId): string
     {
         return VAR_DIR . 'mailQueue/' . (int)$mailId . '/';
     }
