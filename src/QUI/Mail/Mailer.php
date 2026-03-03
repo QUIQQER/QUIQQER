@@ -26,9 +26,6 @@ use function trim;
  * It's the main mail wrapper for the php mailer
  *
  * if you want to send a mail, look at \QUI::getMailManager()->send() first
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Mailer extends QUI\QDOM
 {

@@ -14,9 +14,6 @@ use function file_exists;
 
 /**
  * Mail Template
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Template extends QUI\QDOM
 {
