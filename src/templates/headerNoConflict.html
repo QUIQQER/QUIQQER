@@ -81,9 +81,8 @@
         id   : '{$User->getUUID()}',
         name : '{$User->getName()}',
         lang : '{$User->getLang()}',
-        isUser : {$sessionUserIsUser},
         isNobody : {$sessionUserIsNobody},
-        isAuth : {$sessionUserIsAuth},
+        isLoggedIn : {$sessionUserIsAuth},
         country: {if $userCountry}'{$userCountry->getCode()}'{else}false{/if}
     };
 </script>
