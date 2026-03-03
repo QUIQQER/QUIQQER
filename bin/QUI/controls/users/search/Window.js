@@ -11,7 +11,7 @@ define('controls/users/search/Window', [
     return new Class({
 
         Extends: QUIConfirm,
-        Type   : 'controls/users/search/Window',
+        Type: 'controls/users/search/Window',
 
         Binds: [
             'submit',
@@ -20,18 +20,18 @@ define('controls/users/search/Window', [
         ],
 
         options: {
-            maxWidth      : 1200,
-            maxHeight     : 800,
-            editable      : false,
-            autoclose     : true,
+            maxWidth: 1200,
+            maxHeight: 800,
+            editable: false,
+            autoclose: true,
             searchSettings: false,
-            search        : true
+            search: true
         },
 
         initialize: function (options) {
             this.setAttributes({
                 title: QUILocale.get('quiqqer/core', 'users.panel.search.title'),
-                icon : 'fa fa-users'
+                icon: 'fa fa-users'
             });
 
             this.parent(options);
@@ -39,7 +39,7 @@ define('controls/users/search/Window', [
             this.$Search = null;
 
             this.addEvents({
-                onOpen  : this.$onOpen,
+                onOpen: this.$onOpen,
                 onResize: this.$onResize
             });
         },
@@ -55,15 +55,15 @@ define('controls/users/search/Window', [
             Content.setStyle('padding', 0);
 
             this.$Search = new UserSearch({
-                search        : this.getAttribute('search'),
+                search: this.getAttribute('search'),
                 searchSettings: this.getAttribute('searchSettings'),
-                editable      : this.getAttribute('editable'),
-                events        : {
-                    onDblClick   : this.submit,
+                editable: this.getAttribute('editable'),
+                events: {
+                    onDblClick: this.submit,
                     onSearchBegin: function () {
                         Win.Loader.show();
                     },
-                    onSearchEnd  : function () {
+                    onSearchEnd: function () {
                         Win.Loader.hide();
                     }
                 }

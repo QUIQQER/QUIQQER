@@ -1,7 +1,6 @@
 /**
  * Logout popup / window
  *
- *
  * @event onQuiqqerUserAuthLogout
  */
 define('controls/users/LogoutWindow', [
@@ -15,31 +14,31 @@ define('controls/users/LogoutWindow', [
 ], function (QUI, QUIConfirm, Login, QUILocale, Ajax) {
     "use strict";
 
-    var lg = 'quiqqer/core';
+    const lg = 'quiqqer/core';
 
     return new Class({
 
         Extends: QUIConfirm,
-        Type   : 'controls/users/LogoutWindow',
+        Type: 'controls/users/LogoutWindow',
 
         Binds: [
             'logout'
         ],
 
         options: {
-            icon         : 'icon-sign-out fa fa-sign-out',
-            title        : QUILocale.get(lg, 'window.logout.title'),
-            text         : QUILocale.get(lg, 'window.logout.text'),
-            texticon     : 'icon-sign-out fa fa-sign-out',
-            information  : QUILocale.get(lg, 'window.logout.information'),
-            maxWidth     : 500,
-            maxHeight    : 300,
+            icon: 'icon-sign-out fa fa-sign-out',
+            title: QUILocale.get(lg, 'window.logout.title'),
+            text: QUILocale.get(lg, 'window.logout.text'),
+            texticon: 'icon-sign-out fa fa-sign-out',
+            information: QUILocale.get(lg, 'window.logout.information'),
+            maxWidth: 500,
+            maxHeight: 300,
             cancel_button: {
-                text     : QUILocale.get(lg, 'window.logout.button.cancel'),
+                text: QUILocale.get(lg, 'window.logout.button.cancel'),
                 textimage: 'icon-remove fa fa-remove'
             },
-            ok_button    : {
-                text     : QUILocale.get(lg, 'window.logout.button.ok'),
+            ok_button: {
+                text: QUILocale.get(lg, 'window.logout.button.ok'),
                 textimage: 'fa fa-sign-out'
             }
         },

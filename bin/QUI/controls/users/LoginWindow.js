@@ -1,7 +1,6 @@
 /**
  * Login Window
  *
- *
  * @event onSubmit [ Array, this ]
  * @event onLogin [self]
  */
@@ -24,7 +23,7 @@ define('controls/users/LoginWindow', [
     return new Class({
 
         Extends: QUIConfirm,
-        Type   : 'controls/users/LoginWindow',
+        Type: 'controls/users/LoginWindow',
 
         Binds: [
             'submit',
@@ -33,23 +32,22 @@ define('controls/users/LoginWindow', [
         ],
 
         options: {
-            title    : Locale.get('quiqqer/core', 'login.title'),
-            icon     : 'fa fa-sign-in',
+            title: Locale.get('quiqqer/core', 'login.title'),
+            icon: 'fa fa-sign-in',
             maxHeight: 400,
-            maxWidth : 400,
+            maxWidth: 400,
             autoclose: false,
-            buttons  : false,
-            logo     : false,
-            message  : false
+            buttons: false,
+            logo: false,
+            message: false
         },
 
         initialize: function (options) {
             this.parent(options);
 
             this.$opened = false;
-            this.$Login  = null;
-
-
+            this.$Login = null;
+            
             this.addEvent('cancel', function () {
                 window.onbeforeunload = null;
 
@@ -64,10 +62,10 @@ define('controls/users/LoginWindow', [
          */
         open: function () {
             // check if one login window is still open
-            var logins = QUI.Controls.getByType('controls/users/LoginWindow');
+            const logins = QUI.Controls.getByType('controls/users/LoginWindow');
 
             if (logins.length >= 2) {
-                for (var i = 0, len = logins.length; i < len; i++) {
+                for (let i = 0, len = logins.length; i < len; i++) {
                     if (logins[i].$opened) {
                         this.destroy();
                         return;
@@ -78,7 +76,7 @@ define('controls/users/LoginWindow', [
             this.$opened = true;
             this.parent();
 
-            var self    = this,
+            const self = this,
                 Content = this.getContent();
 
             Content.getElements('.submit-body').destroy();
@@ -87,28 +85,28 @@ define('controls/users/LoginWindow', [
             if (this.getAttribute('message')) {
                 new Element('div', {
                     'class': 'quiqqer-loginWindow-message message-attention',
-                    html   : this.getAttribute('message')
+                    html: this.getAttribute('message')
                 }).inject(Content);
             }
 
             if (this.getAttribute('logo')) {
                 new Element('img', {
                     'class': 'quiqqer-login-logo',
-                    src    : this.getAttribute('logo')
+                    src: this.getAttribute('logo')
                 }).inject(Content);
             }
 
             this.$Login = new Login({
                 showLoader: false,
-                onSuccess : function () {
+                onSuccess: function () {
                     self.close();
                     self.fireEvent('success', [self]);
                 },
-                events    : {
+                events: {
                     onAuthBegin: function () {
                         self.Loader.show();
                     },
-                    onAuthNext : function () {
+                    onAuthNext: function () {
                         self.Loader.hide();
                     }
                 }

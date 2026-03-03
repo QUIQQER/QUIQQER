@@ -1427,6 +1427,9 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="controls.users.auth.quiqqerlogin.send_mail_error">
             <en><![CDATA[The process could not be performed unfortunately:<br><br>[error]]]></en>
         </locale>
+        <locale name="controls.users.auth.quiqqerLogin.already.logged.in" html="true">
+            <en><![CDATA[You are already logged in as <b>[username]</b>.]]></en>
+        </locale>
         <locale name="controls.licensekeypanel.title">
             <en><![CDATA[QUIQQER License Key]]></en>
         </locale>
@@ -4540,6 +4543,13 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         </locale>
         <locale name="quiqqer.settings.email.queue">
             <en><![CDATA[Enable Mail Queue]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.maxAttachmentSize">
+            <en><![CDATA[Max attachment size (Byte)]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.maxAttachmentSize.desc">
+            <en><![CDATA[
+                Defines the maximum size of a single mail attachment in bytes. Default: <b>52428800</b> (50 MB).]]></en>
         </locale>
         <locale name="message.ajax.licenseKey.upload.error">
             <en><![CDATA[

@@ -2,7 +2,6 @@
  * A user field / display
  * the display updates itself
  *
- *
  * @event onLoad [self, User]
  * @event onError [self, uid]
  */
@@ -27,7 +26,7 @@ define('controls/users/Entry', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/users/Entry',
+        Type: 'controls/users/Entry',
 
         Binds: [
             '$onUserUpdate',
@@ -60,13 +59,13 @@ define('controls/users/Entry', [
             const self = this;
 
             this.$Elm = new Element('div', {
-                'class'     : 'users-entry users-entry-enabled smooth',
-                'data-id'   : this.$User.getId(),
+                'class': 'users-entry users-entry-enabled smooth',
+                'data-id': this.$User.getId(),
                 'data-quiid': this.getId(),
-                title       : this.$User.getName() + ' - ' + this.$User.getId(),
-                html        : '<div class="users-entry-icon fa"></div>' +
-                              '<div class="users-entry-text"></div>' +
-                              '<div class="users-entry-close fa fa-remove"></div>'
+                title: this.$User.getName() + ' - ' + this.$User.getId(),
+                html: '<div class="users-entry-icon fa"></div>' +
+                    '<div class="users-entry-text"></div>' +
+                    '<div class="users-entry-close fa fa-remove"></div>'
             });
 
             const Close = this.$Elm.getElement('.users-entry-close');
@@ -78,7 +77,7 @@ define('controls/users/Entry', [
             });
 
             Close.set({
-                alt  : Locale.get('quiqqer/core', 'users.entry.user.remove'),
+                alt: Locale.get('quiqqer/core', 'users.entry.user.remove'),
                 title: Locale.get('quiqqer/core', 'users.entry.user.remove')
             });
 

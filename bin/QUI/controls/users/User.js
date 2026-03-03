@@ -2,7 +2,6 @@
  * A User Panel
  * Here you can change / edit the user
  *
- *
  * @event onQuiqqerUserPanelCreate [self] - Fires when the User panel is created
  */
 define('controls/users/User', [

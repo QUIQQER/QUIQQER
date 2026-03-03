@@ -1,5 +1,4 @@
 /**
- *
  * @event onLoad [this]
  * @event onAuthBegin [this]
  * @event onAuthNext [this]

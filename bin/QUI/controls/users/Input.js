@@ -1,7 +1,6 @@
 /**
  * Makes an input field to a user selection field
  *
- *
  * @event onAdd [ {this}, {String} userid ]
  * @event onChange [ {this} ]
  *
@@ -32,7 +31,7 @@ define('controls/users/Input', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/users/Input',
+        Type: 'controls/users/Input',
 
         Binds: [
             'close',
@@ -42,8 +41,8 @@ define('controls/users/Input', [
         ],
 
         options: {
-            max   : false,
-            name  : '',
+            max: false,
+            name: '',
             styles: false
         },
 
@@ -62,7 +61,7 @@ define('controls/users/Input', [
             this.$Bind = Input || null;
 
             this.addEvents({
-                onImport : this.$onImport,
+                onImport: this.$onImport,
                 onDestroy: function () {
                     if (this.$DropDown) {
                         this.$DropDown.destroy();
@@ -98,16 +97,16 @@ define('controls/users/Input', [
             this.$Bind.set('data-quiid', this.getId());
 
             this.$Input = new Element('input', {
-                type  : 'text',
-                name  : this.$Bind.get('name') + '-search',
+                type: 'text',
+                name: this.$Bind.get('name') + '-search',
                 styles: {
-                    'float'      : 'left',
-                    'margin'     : '3px 0',
+                    'float': 'left',
+                    'margin': '3px 0',
                     'paddingLeft': 20,
-                    'background' : 'url(' + URL_BIN_DIR + '10x10/search.png) no-repeat 4px center',
-                    width        : '100%',
-                    cursor       : 'pointer',
-                    display      : 'none'
+                    'background': 'url(' + URL_BIN_DIR + '10x10/search.png) no-repeat 4px center',
+                    width: '100%',
+                    cursor: 'pointer',
+                    display: 'none'
                 },
                 events: {
                     keyup: function (event) {
@@ -129,7 +128,7 @@ define('controls/users/Input', [
                         this.fireSearch();
                     }.bind(this),
 
-                    blur : this.close,
+                    blur: this.close,
                     focus: this.fireSearch
                 }
             }).inject(this.$Bind, 'before');
@@ -138,8 +137,8 @@ define('controls/users/Input', [
             this.$DropDown = new Element('div.users-input-dropdown', {
                 styles: {
                     display: 'none',
-                    top    : this.$Input.getPosition().y + this.$Input.getSize().y,
-                    left   : this.$Input.getPosition().x
+                    top: this.$Input.getPosition().y + this.$Input.getSize().y,
+                    left: this.$Input.getPosition().x
                 }
             }).inject(document.body);
 
@@ -156,14 +155,14 @@ define('controls/users/Input', [
                 return this.$Elm;
             }
 
-            var wasDisabled = this.isDisabled();
+            const wasDisabled = this.isDisabled();
 
             this.$Bind.disabled = false;
             this.$disabled = false;
 
 
-            var i, len;
-            var values = this.$Bind.value.toString().split(',');
+            let i, len;
+            const values = this.$Bind.value.toString().split(',');
 
             for (i = 0, len = values.length; i < len; i++) {
                 if (values[i] !== '') {
@@ -176,7 +175,7 @@ define('controls/users/Input', [
                 this.$disabled = true;
 
                 // disable children
-                var list = this.$getUserEntries();
+                const list = this.$getUserEntries();
 
                 for (i = 0, len = list.length; i < len; i++) {
                     list[i].disable();
@@ -190,7 +189,7 @@ define('controls/users/Input', [
          * event: on import
          */
         $onImport: function () {
-            var Elm = this.getElm();
+            const Elm = this.getElm();
 
             if (Elm.nodeName === 'INPUT') {
                 this.$Bind = Elm;
@@ -222,10 +221,10 @@ define('controls/users/Input', [
             }
 
             // set value
-            var i, len;
+            let i, len;
 
-            var list = this.$Container.getElements('.users-entry'),
-                ids  = [];
+            const list = this.$Container.getElements('.users-entry'),
+                ids = [];
 
 
             // hide or display input field
@@ -235,11 +234,11 @@ define('controls/users/Input', [
                 // hide
                 this.$Input.setStyle('position', 'relative');
 
-                //var computedSize = this.$Input.getComputedSize();
+                //const computedSize = this.$Input.getComputedSize();
 
                 moofx(this.$Input).animate({
-                    height : 0,
-                    margin : 0,
+                    height: 0,
+                    margin: 0,
                     opacity: 0,
                     padding: 0
                 }, {
@@ -254,31 +253,31 @@ define('controls/users/Input', [
             } else if (this.$Input.getStyle('display') == 'none') {
 
                 this.$Input.setStyles({
-                    display : null,
-                    height  : null,
-                    margin  : null,
-                    padding : null,
+                    display: null,
+                    height: null,
+                    margin: null,
+                    padding: null,
                     position: 'absolute'
                 });
 
                 this.$Input.setStyle('paddingLeft', 20);
 
-                var computedSize = this.$Input.getComputedSize();
+                const computedSize = this.$Input.getComputedSize();
 
                 this.getElm().setStyle('height', computedSize.height);
 
                 // show
                 this.$Input.setStyles({
-                    display : null,
-                    height  : 0,
+                    display: null,
+                    height: 0,
                     position: 'absolute'
                 });
 
                 moofx(this.$Input).animate({
-                    height       : computedSize.height,
-                    opacity      : 1,
+                    height: computedSize.height,
+                    opacity: 1,
                     paddingBottom: computedSize['padding-bottom'],
-                    paddingTop   : computedSize['padding-top']
+                    paddingTop: computedSize['padding-top']
                 }, {
                     duration: 250,
                     callback: function () {
@@ -326,11 +325,11 @@ define('controls/users/Input', [
             this.cancelSearch();
 
             this.$DropDown.set({
-                html  : '<img src="' + URL_BIN_DIR + 'images/loader.gif" />',
+                html: '<img src="' + URL_BIN_DIR + 'images/loader.gif" />',
                 styles: {
                     display: '',
-                    top    : this.$Input.getPosition().y + this.$Input.getSize().y,
-                    left   : this.$Input.getPosition().x
+                    top: this.$Input.getPosition().y + this.$Input.getSize().y,
+                    left: this.$Input.getPosition().x
                 }
             });
 
@@ -378,16 +377,16 @@ define('controls/users/Input', [
                 return;
             }
 
-            var entries = this.$Container.getElements('.users-entry');
+            const entries = this.$Container.getElements('.users-entry');
 
             if (this.getAttribute('max') &&
                 this.getAttribute('max') <= entries.length) {
                 return;
             }
 
-            var self = this;
+            const self = this;
 
-            var User = new UserEntry(uid, {
+            const User = new UserEntry(uid, {
                 events: {
                     onDestroy: function () {
                         (function () { // delay, because enable event is too early
@@ -417,23 +416,23 @@ define('controls/users/Input', [
             }
 
             Ajax.get('ajax_users_search', function (result, Request) {
-                var i, len, nam, func_mousedown, func_mouseover;
+                let i, len, nam, func_mousedown, func_mouseover;
 
-                var data     = result.data,
-                    value    = Request.getAttribute('value'),
-                    Elm      = Request.getAttribute('Elm'),
+                const data = result.data,
+                    value = Request.getAttribute('value'),
+                    Elm = Request.getAttribute('Elm'),
                     DropDown = Elm.$DropDown;
 
                 DropDown.set('html', '');
 
                 if (!data.length) {
                     new Element('div', {
-                        html  : Locale.get('quiqqer/core', 'users.input.no.results'),
+                        html: Locale.get('quiqqer/core', 'users.input.no.results'),
                         styles: {
                             'float': 'left',
                             'clear': 'both',
                             padding: 5,
-                            margin : 5
+                            margin: 5
                         }
                     }).inject(DropDown);
 
@@ -461,31 +460,31 @@ define('controls/users/Input', [
                     );
 
                     new Element('div', {
-                        html       : nam + ' (' + data[i].id + ')',
-                        'class'    : 'box-sizing radius5',
-                        'data-id'  : data[i].id,
+                        html: nam + ' (' + data[i].id + ')',
+                        'class': 'box-sizing radius5',
+                        'data-id': data[i].id,
                         'data-name': data[i].username,
-                        styles     : {
+                        styles: {
                             'float': 'left',
                             'clear': 'both',
                             padding: 5,
-                            cursor : 'pointer',
-                            width  : '100%'
+                            cursor: 'pointer',
+                            width: '100%'
                         },
-                        events     : {
+                        events: {
                             mousedown: func_mousedown,
                             mouseover: func_mouseover
                         }
                     }).inject(DropDown);
                 }
             }, {
-                Elm   : this,
-                value : this.$Input.value,
+                Elm: this,
+                value: this.$Input.value,
                 params: JSON.encode({
-                    order         : 'ASC',
-                    limit         : 5,
-                    page          : 1,
-                    search        : true,
+                    order: 'ASC',
+                    limit: 5,
+                    page: 1,
+                    search: true,
                     searchSettings: {
                         userSearchString: this.$Input.value
                     }
@@ -507,7 +506,7 @@ define('controls/users/Input', [
                 return this;
             }
 
-            var Active = this.$DropDown.getElement('.hover');
+            const Active = this.$DropDown.getElement('.hover');
 
             // Last Element
             if (!Active) {
@@ -539,7 +538,7 @@ define('controls/users/Input', [
                 return this;
             }
 
-            var Active = this.$DropDown.getElement('.hover');
+            const Active = this.$DropDown.getElement('.hover');
 
             // First Element
             if (!Active) {
@@ -567,7 +566,7 @@ define('controls/users/Input', [
                 return;
             }
 
-            var Active = this.$DropDown.getElement('.hover');
+            const Active = this.$DropDown.getElement('.hover');
 
             if (Active) {
                 this.addUser(Active.get('data-id'));
@@ -606,7 +605,7 @@ define('controls/users/Input', [
                 this.$Bind.disabled = true;
             }
 
-            var self = this;
+            const self = this;
 
             moofx(this.$Input).animate({
                 opacity: 0
@@ -617,9 +616,9 @@ define('controls/users/Input', [
             });
 
             // disable children
-            var list = this.$getUserEntries();
+            const list = this.$getUserEntries();
 
-            for (var i = 0, len = list.length; i < len; i++) {
+            for (let i = 0, len = list.length; i < len; i++) {
                 list[i].disable();
             }
         },
@@ -639,9 +638,9 @@ define('controls/users/Input', [
 
 
             // enable children
-            var list = this.$getUserEntries();
+            const list = this.$getUserEntries();
 
-            for (var i = 0, len = list.length; i < len; i++) {
+            for (let i = 0, len = list.length; i < len; i++) {
                 list[i].enable();
             }
         },
@@ -664,10 +663,10 @@ define('controls/users/Input', [
          * @return {Array}
          */
         $getUserEntries: function () {
-            var list   = this.$Container.getElements('.users-entry'),
+            const list = this.$Container.getElements('.users-entry'),
                 result = [];
 
-            for (var i = 0, len = list.length; i < len; i++) {
+            for (let i = 0, len = list.length; i < len; i++) {
                 result.push(
                     QUI.Controls.getById(
                         list[i].get('data-quiid')

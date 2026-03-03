@@ -1,8 +1,5 @@
 /**
- * @package controls/lang/Select
- *
  * Sprachauswahl - DropDown
- *
  * @event onChange
  */
 define('controls/lang/Select', [

@@ -36,16 +36,16 @@
     -->
 
     <script type="text/javascript" data-no-cache="1">
-        var URL_DIR          = '{$URL_DIR}',
-            URL_OPT_DIR      = '{$URL_OPT_DIR}',
-            URL_BIN_DIR      = '{$URL_BIN_DIR}',
-            URL_LIB_DIR      = '{$URL_LIB_DIR}',
-            URL_VAR_DIR      = '{$URL_VAR_DIR}',
-            URL_PROJECT_DIR  = '{$URL_USR_DIR}{$Project->getName()}/',
+        var URL_DIR = '{$URL_DIR}',
+            URL_OPT_DIR = '{$URL_OPT_DIR}',
+            URL_BIN_DIR = '{$URL_BIN_DIR}',
+            URL_LIB_DIR = '{$URL_LIB_DIR}',
+            URL_VAR_DIR = '{$URL_VAR_DIR}',
+            URL_PROJECT_DIR = '{$URL_USR_DIR}{$Project->getName()}/',
             URL_TEMPLATE_DIR = '{$URL_OPT_DIR}{$Project->getAttribute('template')}/';
 
         var QUIQQER = {
-            lu : '{$lastUpdate|md5}',
+            lu: '{$lastUpdate|md5}',
             ajax: '{$URL_DIR}ajax.php',
             title: '{$Template->getTitle()|escape:"html"}',
             country: '{$systemCountry}'
@@ -53,23 +53,23 @@
 
         {assign var=httpshost value=$Project->getVHost( true, true )}
         var QUIQQER_PROJECT = {
-            name      : '{$Project->getName()}',
-            lang      : '{$Project->getLang()}',
-            languages : '{$languages}',
-            logo      : '{if isset($projectLogo)}{$projectLogo}{/if}',
-            template  : '{$Project->getAttribute("template")|escape:"html"}',
-            httpshost : {if strpos( $httpshost, 'https' ) !== false}'{$httpshost}'{else}false{/if}
+            name: '{$Project->getName()}',
+            lang: '{$Project->getLang()}',
+            languages: '{$languages}',
+            logo: '{if isset($projectLogo)}{$projectLogo}{/if}',
+            template: '{$Project->getAttribute("template")|escape:"html"}',
+            httpshost: {if strpos( $httpshost, 'https' ) !== false}'{$httpshost}'{else}false{/if}
         };
 
         var QUIQQER_SITE = {
-            id   : '{$Site->getId()}',
-            type : '{$Site->getAttribute("type")}',
-            url  : '{$Site->getUrlRewritten()}'
+            id: '{$Site->getId()}',
+            type: '{$Site->getAttribute("type")}',
+            url: '{$Site->getUrlRewritten()}'
         };
 
         var QUIQQER_ONLOAD_MODULES = {$loadModuleFiles|json_encode:true},
-            QUIQQER_FRONTEND       = 1,
-            QUIQQER_LOCALE         = {$localeFiles|json_encode:true};
+            QUIQQER_FRONTEND = 1,
+            QUIQQER_LOCALE = {$localeFiles|json_encode:true};
 
         {if "LOGIN_FAILED"|defined}
             {if LOGIN_FAILED|is_string}
@@ -82,9 +82,11 @@
     <script id="quiqqer-user-defined">
         {assign var=userCountry value=$User->getCountry()}
         var QUIQQER_USER = {
-            id   : '{$User->getUUID()}',
-            name : '{$User->getName()}',
-            lang : '{$User->getLang()}',
+            id: '{$User->getUUID()}',
+            name: '{$User->getName()}',
+            lang: '{$User->getLang()}',
+            isNobody : {$sessionUserIsNobody},
+            isLoggedIn : {$sessionUserIsAuth},
             country: {if $userCountry}'{$userCountry->getCode()}'{else}false{/if}
         };
     </script>
@@ -105,43 +107,43 @@
             require.config({
                 baseUrl : URL_DIR,
                 paths   : {
-                    "assets"    : URL_OPT_DIR +'bin',
-                    "package"   : URL_OPT_DIR.replace(/\/+$/,''),
-                    "locale"    : URL_VAR_DIR +'locale/bin',
-                    "qui"       : URL_OPT_DIR +'bin/qui/qui',
-                    "classes"   : URL_BIN_DIR +'QUI/classes',
-                    "controls"  : URL_BIN_DIR +'QUI/controls',
-                    "utils"     : URL_BIN_DIR +'QUI/utils',
-                    "polyfills" : URL_BIN_DIR +'QUI/polyfills',
-                    "Controls"  : URL_BIN_DIR +'Controls',
-                    "project"   : URL_TEMPLATE_DIR +'bin/js',
+                    "assets": URL_OPT_DIR +'bin',
+                    "package": URL_OPT_DIR.replace(/\/+$/,''),
+                    "locale": URL_VAR_DIR +'locale/bin',
+                    "qui": URL_OPT_DIR +'bin/qui/qui',
+                    "classes": URL_BIN_DIR +'QUI/classes',
+                    "controls": URL_BIN_DIR +'QUI/controls',
+                    "utils": URL_BIN_DIR +'QUI/utils',
+                    "polyfills": URL_BIN_DIR +'QUI/polyfills',
+                    "Controls": URL_BIN_DIR +'Controls',
+                    "project": URL_TEMPLATE_DIR +'bin/js',
 
-                    "Ajax"          : URL_BIN_DIR +'QUI/Ajax',
-                    "Locale"        : URL_BIN_DIR +'QUI/Locale',
-                    "UploadManager" : URL_BIN_DIR +'QUI/UploadManager',
-                    "Mustache"      : URL_OPT_DIR + 'bin/quiqqer-asset/mustache/mustache/mustache.min',
-                    "QUIQQER"      :  URL_OPT_DIR + 'quiqqer/core/bin/QUI/QUIQQER',
-                    "Packages"      :  URL_OPT_DIR + 'quiqqer/core/bin/QUI/Packages',
+                    "Ajax": URL_BIN_DIR +'QUI/Ajax',
+                    "Locale": URL_BIN_DIR +'QUI/Locale',
+                    "UploadManager": URL_BIN_DIR +'QUI/UploadManager',
+                    "Mustache": URL_OPT_DIR + 'bin/quiqqer-asset/mustache/mustache/mustache.min',
+                    "QUIQQER":  URL_OPT_DIR + 'quiqqer/core/bin/QUI/QUIQQER',
+                    "Packages":  URL_OPT_DIR + 'quiqqer/core/bin/QUI/Packages',
 
-                    "MooToolsCore"      : URL_OPT_DIR + "bin/qui/qui/lib/mootools-core",
-                    "MooToolsMore"      : URL_OPT_DIR + "bin/qui/qui/lib/mootools-more",
-                    "MooFX"             : URL_OPT_DIR + "bin/qui/qui/lib/moofx",
+                    "MooToolsCore": URL_OPT_DIR + "bin/qui/qui/lib/mootools-core",
+                    "MooToolsMore": URL_OPT_DIR + "bin/qui/qui/lib/mootools-more",
+                    "MooFX": URL_OPT_DIR + "bin/qui/qui/lib/moofx",
                     
-                    "URI"               : URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/URI',
-                    'IPv6'              : URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/IPv6',
-                    'punycode'          : URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/punycode',
+                    "URI": URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/URI',
+                    'IPv6': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/IPv6',
+                    'punycode': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/punycode',
                     'SecondLevelDomains': URL_OPT_DIR + 'bin/quiqqer-asset/urijs/urijs/src/SecondLevelDomains'
                 },
-                waitSeconds : 0,
-                locale      : QUIQQER_USER.lang +"-"+ QUIQQER_USER.lang,
-                catchError  : true,
-                urlArgs     : "update={$lastUpdate|md5}",
+                waitSeconds: 0,
+                locale: QUIQQER_USER.lang +"-"+ QUIQQER_USER.lang,
+                catchError: true,
+                urlArgs: "update={$lastUpdate|md5}",
 
                 map : {
                     '*': {
-                        'css'    : URL_OPT_DIR +'bin/qui/qui/lib/css.min.js',
-                        'image'  : URL_OPT_DIR +'bin/qui/qui/lib/image.min.js',
-                        'text'   : URL_OPT_DIR +'bin/qui/qui/lib/text.min.js'
+                        'css': URL_OPT_DIR +'bin/qui/qui/lib/css.min.js',
+                        'image': URL_OPT_DIR +'bin/qui/qui/lib/image.min.js',
+                        'text': URL_OPT_DIR +'bin/qui/qui/lib/text.min.js'
                     }
                 },
 

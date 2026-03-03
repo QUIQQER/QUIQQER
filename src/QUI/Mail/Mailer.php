@@ -14,8 +14,10 @@ use QUI\Projects\Project;
 
 use function explode;
 use function file_exists;
+use function filesize;
 use function is_array;
 use function preg_replace;
+use function sprintf;
 use function str_replace;
 use function trim;
 
@@ -24,12 +26,11 @@ use function trim;
  * It's the main mail wrapper for the php mailer
  *
  * if you want to send a mail, look at \QUI::getMailManager()->send() first
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Mailer extends QUI\QDOM
 {
+    public const DEFAULT_MAX_ATTACHMENT_SIZE_MB = 50;
+
     /**
      * Static flag in the Mailer class to control the runtime behavior of mail sending.
      *
@@ -102,7 +103,7 @@ class Mailer extends QUI\QDOM
         // construct array
         $this->setAttributes($attributes);
 
-        // html mail template
+        // HTML mail template
         $this->Template = new Template([
             'Project' => $this->getAttribute('Project'),
             'Mailer' => $this
@@ -116,7 +117,7 @@ class Mailer extends QUI\QDOM
     }
 
     /**
-     * Set the from value for the mail
+     * Set from value for the mail
      *
      * @param string $from - mail@domain.net
      */
@@ -126,7 +127,7 @@ class Mailer extends QUI\QDOM
     }
 
     /**
-     * Set the from name for the mail
+     * Set from name for the mail
      *
      * @param string $fromName - Firstname Lastname
      */
@@ -262,6 +263,8 @@ class Mailer extends QUI\QDOM
                 continue;
             }
 
+            $this->assertAttachmentSize($file);
+
             $info = QUI\Utils\System\File::getInfo($file);
 
             if (!isset($info['mime_type'])) {
@@ -331,7 +334,7 @@ class Mailer extends QUI\QDOM
      * @param string $email - E-Mail
      * @param boolean|string $name - E-Mail Name
      */
-    public function addReplyTo(string $email, bool|string $name = false): void
+    public function addReplyTo(string $email, bool | string $name = false): void
     {
         $email = trim($email);
         $email = explode(',', $email);
@@ -352,7 +355,7 @@ class Mailer extends QUI\QDOM
      * @param string $email - E-Mail
      * @param boolean|string $name - E-Mail Name
      */
-    public function addCC(string $email, bool|string $name = false): void
+    public function addCC(string $email, bool | string $name = false): void
     {
         $email = trim($email);
         $email = explode(',', $email);
@@ -373,7 +376,7 @@ class Mailer extends QUI\QDOM
      * @param string $email - E-Mail
      * @param boolean|string $name - E-Mail Name
      */
-    public function addBCC(string $email, bool|string $name = false): void
+    public function addBCC(string $email, bool | string $name = false): void
     {
         $email = trim($email);
         $email = explode(',', $email);
@@ -392,12 +395,15 @@ class Mailer extends QUI\QDOM
      * Add a file to the mail
      *
      * @param string $file - path to the file
+     * @throws QUI\Exception
      */
     public function addAttachment(string $file): bool
     {
         if (!file_exists($file)) {
             return false;
         }
+
+        $this->assertAttachmentSize($file);
 
         $this->attachments[] = $file;
 
@@ -430,9 +436,9 @@ class Mailer extends QUI\QDOM
     }
 
     /**
-     * set the html flag, is html mail or not
+     * set the HTML flag, is HTML mail or not
      *
-     * @param boolean $html - is the mail a html mail or not?
+     * @param boolean $html - is the mail an HTML mail or not?
      */
     public function setHTML(bool $html): void
     {
@@ -459,7 +465,7 @@ class Mailer extends QUI\QDOM
      * @param string $email - E-Mail
      * @param boolean|string $name - E-Mail Name
      */
-    public function addRecipient(string $email, bool|string $name = false): void
+    public function addRecipient(string $email, bool | string $name = false): void
     {
         $email = trim($email);
         $email = explode(',', $email);
@@ -480,8 +486,9 @@ class Mailer extends QUI\QDOM
      * @param array|string $files - array with file paths eq:
      *                              addAttachments( array('path/file1.end', 'path/file2.end') )
      *                              addAttachments( 'path/file1.end' )
+     * @throws QUI\Exception
      */
-    public function addAttachments(array|string $files): void
+    public function addAttachments(array | string $files): void
     {
         if (!is_array($files)) {
             $this->addAttachment($files);
@@ -492,5 +499,40 @@ class Mailer extends QUI\QDOM
         foreach ($files as $file) {
             $this->addAttachment($file);
         }
+    }
+
+    /**
+     * Return the configured max attachment size in bytes.
+     */
+    public static function getMaxAttachmentSizeInBytes(): int
+    {
+        $maxAttachmentSize = (int)QUI::conf('mail', 'maxAttachmentSize');
+
+        if ($maxAttachmentSize <= 0) {
+            return self::DEFAULT_MAX_ATTACHMENT_SIZE_MB * 1024 * 1024;
+        }
+
+        return $maxAttachmentSize;
+    }
+
+    /**
+     * @throws QUI\Exception
+     */
+    protected function assertAttachmentSize(string $file): void
+    {
+        $fileSize = filesize($file);
+        $maxFileSize = self::getMaxAttachmentSizeInBytes();
+
+        if ($fileSize === false || $fileSize <= $maxFileSize) {
+            return;
+        }
+
+        throw new QUI\Exception(
+            sprintf(
+                'Attachment "%s" exceeds max size of %d MB.',
+                $file,
+                (int)($maxFileSize / 1024 / 1024)
+            )
+        );
     }
 }

@@ -1,7 +1,5 @@
 /**
  * HTML Preview
- *
- * @package controls/editors/Input
  */
 define('controls/editors/Preview', [
 
