@@ -9,7 +9,6 @@ namespace QUI\Mail;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use QUI;
-
 use QUI\ExceptionStack;
 
 use function explode;
