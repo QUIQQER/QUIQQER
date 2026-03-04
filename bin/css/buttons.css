@@ -1,0 +1,393 @@
+input[type="submit"],
+input[type="button"],
+input[type="reset"],
+.btn {
+    --padding-block: 0.75em;
+    --padding-inline: 1.25em;
+
+    color: var(--qui-btn-color, inherit);
+    background-color: var(--qui-btn-bgColor, transparent);
+    border-color: var(--qui-btn-borderColor, transparent);
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75em;
+    font-weight: normal;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 0.5em;
+    transition: all .15s ease-in-out;
+
+    text-align: center;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    padding: var(--padding-block) var(--padding-inline);
+    font-size: 1em;
+    line-height: 1.25;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: inherit;
+}
+
+.btn:hover,
+.btn:active {
+    color: var(--qui-btn-color--hover, inherit);
+    background-color: var(--qui-btn-bgColor--hover, transparent);
+    border-color: var(--qui-btn-borderColor--hover, transparent);
+    outline: none;
+    text-decoration: none;
+}
+
+/**
+ * Button primary
+ */
+.btn-primary {
+    --qui-btn-color: #fff;
+    --qui-btn-bgColor: var(--qui-colors-primary);
+    --qui-btn-borderColor: var(--qui-colors-primary);
+    --qui-btn-color--hover: #fff;
+    --qui-btn-bgColor--hover: color-mix(in srgb, var(--qui-colors-primary), black 20%);
+    --qui-btn-borderColor--hover: color-mix(in srgb, var(--qui-colors-primary), black 20%);
+    --qui-btn-color--disabled: #ffffff;
+    --qui-btn-bgColor--disabled: color-mix(in srgb, var(--qui-colors-primary), white 50%);
+    --qui-btn-borderColor--disabled: color-mix(in srgb, var(--qui-colors-primary), white 50%);
+}
+
+.btn-primary-outline {
+    --qui-btn-color: var(--qui-colors-primary);
+    --qui-btn-bgColor: transparent;
+    --qui-btn-borderColor: var(--qui-colors-primary);
+    --qui-btn-color--hover: #fff;
+    --qui-btn-bgColor--hover: var(--qui-colors-primary);
+    --qui-btn-borderColor--hover: var(--qui-colors-primary);
+    --qui-btn-color--disabled: #fff;
+    --qui-btn-bgColor--disabled: color-mix(in srgb, var(--qui-colors-primary), white 40%);
+    --qui-btn-borderColor--disabled: color-mix(in srgb, var(--qui-colors-primary), white 40%);
+}
+
+/**
+ * Button secondary
+ */
+.btn-secondary {
+    --qui-btn-color: #ffffff;
+    --qui-btn-bgColor: var(--qui-colors-secondary);
+    --qui-btn-borderColor: var(--qui-colors-secondary);
+    --qui-btn-color--hover: #ffffff;
+    --qui-btn-bgColor--hover: color-mix(in srgb, var(--qui-colors-secondary), black 20%);
+    --qui-btn-borderColor--hover: color-mix(in srgb, var(--qui-colors-secondary), black 20%);
+    --qui-btn-color--disabled: #ffffff;
+    --qui-btn-bgColor--disabled: color-mix(in srgb, var(--qui-colors-secondary), white 40%);
+    --qui-btn-borderColor--disabled: color-mix(in srgb, var(--qui-colors-secondary), white 40%);
+}
+
+.btn-secondary-outline {
+    --qui-btn-color: var(--qui-colors-secondary);
+    --qui-btn-bgColor: transparent;
+    --qui-btn-borderColor: var(--qui-colors-secondary);
+    --qui-btn-color--hover: #ffffff;
+    --qui-btn-bgColor--hover: var(--qui-colors-secondary);
+    --qui-btn-borderColor--hover: var(--qui-colors-secondary);
+    --qui-btn-color--disabled: color-mix(in srgb, var(--qui-colors-secondary), white 40%);
+    --qui-btn-bgColor--disabled: transparent;
+    --qui-btn-borderColor--disabled: color-mix(in srgb, var(--qui-colors-secondary), white 40%);
+}
+
+/**
+ * Button success
+ */
+.btn-success {
+    --qui-btn-color: #ffffff;
+    --qui-btn-bgColor: var(--qui-colors-success);
+    --qui-btn-borderColor: var(--qui-colors-success);
+    --qui-btn-color--hover: #ffffff;
+    --qui-btn-bgColor--hover: color-mix(in srgb, var(--qui-colors-success), black 10%);
+    --qui-btn-borderColor--hover: color-mix(in srgb, var(--qui-colors-success), black 10%);
+    --qui-btn-color--disabled: #ffffff;
+    --qui-btn-bgColor--disabled: color-mix(in srgb, var(--qui-colors-success), white 40%);
+    --qui-btn-borderColor--disabled: color-mix(in srgb, var(--qui-colors-success), white 40%);
+}
+
+.btn-success-outline {
+    --qui-btn-color: var(--qui-colors-success);
+    --qui-btn-bgColor: transparent;
+    --qui-btn-borderColor: var(--qui-colors-success);
+    --qui-btn-color--hover: #ffffff;
+    --qui-btn-bgColor--hover: var(--qui-colors-success);
+    --qui-btn-borderColor--hover: var(--qui-colors-success);
+    --qui-btn-color--disabled: color-mix(in srgb, var(--qui-colors-success), white 40%);
+    --qui-btn-bgColor--disabled: transparent;
+    --qui-btn-borderColor--disabled: color-mix(in srgb, var(--qui-colors-success), white 40%);
+}
+
+/**
+ * Button danger
+ */
+.btn-danger {
+    --qui-btn-color: #ffffff;
+    --qui-btn-bgColor: var(--qui-colors-danger);
+    --qui-btn-borderColor: var(--qui-colors-danger);
+    --qui-btn-color--hover: #ffffff;
+    --qui-btn-bgColor--hover: color-mix(in srgb, var(--qui-colors-danger), black 10%);
+    --qui-btn-borderColor--hover: color-mix(in srgb, var(--qui-colors-danger), black 10%);
+    --qui-btn-color--disabled: #ffffff;
+    --qui-btn-bgColor--disabled: color-mix(in srgb, var(--qui-colors-danger), white 40%);
+    --qui-btn-borderColor--disabled: color-mix(in srgb, var(--qui-colors-danger), white 40%);
+}
+
+.btn-danger-outline {
+    --qui-btn-color: var(--qui-colors-danger);
+    --qui-btn-bgColor: transparent;
+    --qui-btn-borderColor: var(--qui-colors-danger);
+    --qui-btn-color--hover: #ffffff;
+    --qui-btn-bgColor--hover: var(--qui-colors-danger);
+    --qui-btn-borderColor--hover: var(--qui-colors-danger);
+    --qui-btn-color--disabled: color-mix(in srgb, var(--qui-colors-danger), white 40%);
+    --qui-btn-bgColor--disabled: transparent;
+    --qui-btn-borderColor--disabled: color-mix(in srgb, var(--qui-colors-danger), white 40%);
+}
+
+/**
+ * Button warning
+ */
+.btn-warning {
+    --qui-btn-color: #000000;
+    --qui-btn-bgColor: var(--qui-colors-warning);
+    --qui-btn-borderColor: var(--qui-colors-warning);
+    --qui-btn-color--hover: #000000;
+    --qui-btn-bgColor--hover: color-mix(in srgb, var(--qui-colors-warning), black 10%);
+    --qui-btn-borderColor--hover: color-mix(in srgb, var(--qui-colors-warning), black 10%);
+    --qui-btn-color--disabled: #333;
+    --qui-btn-bgColor--disabled: color-mix(in srgb, var(--qui-colors-warning), white 40%);
+    --qui-btn-borderColor--disabled: color-mix(in srgb, var(--qui-colors-warning), white 40%);
+}
+
+.btn-warning-outline {
+    --qui-btn-color: var(--qui-colors-warning);
+    --qui-btn-bgColor: transparent;
+    --qui-btn-borderColor: var(--qui-colors-warning);
+    --qui-btn-color--hover: #ffffff;
+    --qui-btn-bgColor--hover: var(--qui-colors-warning);
+    --qui-btn-borderColor--hover: var(--qui-colors-warning);
+    --qui-btn-color--disabled: color-mix(in srgb, var(--qui-colors-warning), white 40%);
+    --qui-btn-bgColor--disabled: transparent;
+    --qui-btn-borderColor--disabled: color-mix(in srgb, var(--qui-colors-warning), white 40%);
+}
+
+/**
+ * Button info
+ */
+.btn-info {
+    --qui-btn-color: #ffffff;
+    --qui-btn-bgColor: var(--qui-colors-info);
+    --qui-btn-borderColor: var(--qui-colors-info);
+    --qui-btn-color--hover: #ffffff;
+    --qui-btn-bgColor--hover: color-mix(in srgb, var(--qui-colors-info), black 10%);
+    --qui-btn-borderColor--hover: color-mix(in srgb, var(--qui-colors-info), black 10%);
+    --qui-btn-color--disabled: #ffffff;
+    --qui-btn-bgColor--disabled: color-mix(in srgb, var(--qui-colors-info), white 40%);
+    --qui-btn-borderColor--disabled: color-mix(in srgb, var(--qui-colors-info), white 40%);
+}
+
+.btn-info-outline {
+    --qui-btn-color: var(--qui-colors-info);
+    --qui-btn-bgColor: transparent;
+    --qui-btn-borderColor: var(--qui-colors-info);
+    --qui-btn-color--hover: #ffffff;
+    --qui-btn-bgColor--hover: var(--qui-colors-info);
+    --qui-btn-borderColor--hover: var(--qui-colors-info);
+    --qui-btn-color--disabled: color-mix(in srgb, var(--qui-colors-info), white 40%);
+    --qui-btn-bgColor--disabled: transparent;
+    --qui-btn-borderColor--disabled: color-mix(in srgb, var(--qui-colors-info), white 40%);
+}
+
+/**
+ * Button dark
+ */
+.btn-dark {
+    --qui-btn-color: #ffffff;
+    --qui-btn-bgColor: var(--qui-colors-dark);
+    --qui-btn-borderColor: var(--qui-colors-dark);
+    --qui-btn-color--hover: #ffffff;
+    --qui-btn-bgColor--hover: color-mix(in srgb, var(--qui-colors-dark), black 10%);
+    --qui-btn-borderColor--hover: color-mix(in srgb, var(--qui-colors-dark), black 10%);
+    --qui-btn-color--disabled: #ffffff;
+    --qui-btn-bgColor--disabled: color-mix(in srgb, var(--qui-colors-dark), white 40%);
+    --qui-btn-borderColor--disabled: color-mix(in srgb, var(--qui-colors-dark), white 40%);
+}
+
+.btn-dark-outline {
+    --qui-btn-color: var(--qui-colors-dark);
+    --qui-btn-bgColor: transparent;
+    --qui-btn-borderColor: var(--qui-colors-dark);
+    --qui-btn-color--hover: #ffffff;
+    --qui-btn-bgColor--hover: var(--qui-colors-dark);
+    --qui-btn-borderColor--hover: var(--qui-colors-dark);
+    --qui-btn-color--disabled: color-mix(in srgb, var(--qui-colors-dark), white 40%);
+    --qui-btn-bgColor--disabled: transparent;
+    --qui-btn-borderColor--disabled: color-mix(in srgb, var(--qui-colors-dark), white 40%);
+}
+
+/**
+ * Button light
+ */
+.btn-light {
+    --qui-btn-color: #000000;
+    --qui-btn-bgColor: var(--qui-colors-light);
+    --qui-btn-borderColor: var(--qui-colors-light);
+    --qui-btn-color--hover: #000000;
+    --qui-btn-bgColor--hover: color-mix(in srgb, var(--qui-colors-light), black 10%);
+    --qui-btn-borderColor--hover: color-mix(in srgb, var(--qui-colors-light), black 10%);
+    --qui-btn-color--disabled: #ffffff;
+    --qui-btn-bgColor--disabled: color-mix(in srgb, var(--qui-colors-light), white 40%);
+    --qui-btn-borderColor--disabled: color-mix(in srgb, var(--qui-colors-light), white 40%);
+}
+
+.btn-light-outline {
+    --qui-btn-color: var(--qui-colors-light);
+    --qui-btn-bgColor: transparent;
+    --qui-btn-borderColor: var(--qui-colors-light);
+    --qui-btn-color--hover: #ffffff;
+    --qui-btn-bgColor--hover: var(--qui-colors-light);
+    --qui-btn-borderColor--hover: var(--qui-colors-light);
+    --qui-btn-color--disabled: color-mix(in srgb, var(--qui-colors-light), white 40%);
+    --qui-btn-bgColor--disabled: transparent;
+    --qui-btn-borderColor--disabled: color-mix(in srgb, var(--qui-colors-light), white 40%);
+}
+
+/**
+ * Button white
+ */
+.btn-white {
+    --qui-btn-color: #111;
+    --qui-btn-bgColor: var(--qui-colors-white);
+    --qui-btn-borderColor: var(--qui-colors-white);
+    --qui-btn-color--hover: #000;
+    --qui-btn-bgColor--hover: color-mix(in srgb, var(--qui-colors-white), black 5%);
+    --qui-btn-borderColor--hover: color-mix(in srgb, var(--qui-colors-white), black 5%);
+    --qui-btn-color--disabled: rgba(0, 0, 0, 0.33);
+    --qui-btn-bgColor--disabled: color-mix(in srgb, var(--qui-colors-white), white 40%);
+    --qui-btn-borderColor--disabled: color-mix(in srgb, var(--qui-colors-white), white 40%);
+}
+
+.btn-white-outline {
+    --qui-btn-color: var(--qui-colors-white);
+    --qui-btn-bgColor: transparent;
+    --qui-btn-borderColor: var(--qui-colors-white);
+    --qui-btn-color--hover: #000;
+    --qui-btn-bgColor--hover: var(--qui-colors-white);
+    --qui-btn-borderColor--hover: var(--qui-colors-white);
+    --qui-btn-color--disabled: color-mix(in srgb, var(--qui-colors-white), black 10%);
+    --qui-btn-bgColor--disabled: transparent;
+    --qui-btn-borderColor--disabled: color-mix(in srgb, var(--qui-colors-white), black 10%);
+}
+
+/**
+ * Button link
+ */
+.btn-link {
+    --qui-btn-color: var(--qui-colors-primary);
+    --qui-btn-bgColor: transparent;
+    --qui-btn-borderColor: transparent;
+    --qui-btn-color--hover: color-mix(in srgb, var(--qui-colors-primary), white 20%);
+    --qui-btn-bgColor--hover: rgba(0,0,0,0.075);
+    --qui-btn-borderColor--hover: transparent;
+    --qui-btn-color--disabled: color-mix(in srgb, var(--qui-colors-primary), white 40%);
+    --qui-btn-bgColor--disabled: transparent;
+    --qui-btn-borderColor--disabled: transparent;
+}
+
+/*
+ * button link - it takes the inherited color
+ */
+.btn-link-body {
+    --qui-btn-color: hsl(from currentColor h s l);
+    --qui-btn-bgColor: transparent;
+    --qui-btn-borderColor: transparent;
+    --qui-btn-color--hover: color-mix(in srgb, currentColor, white 10%);
+    --qui-btn-bgColor--hover: hsl(from currentColor h s l / 10%);
+    --qui-btn-borderColor--hover: transparent;
+    --qui-btn-color--disabled: var(--qui-colors-body);
+    --qui-btn-bgColor--disabled: transparent;
+    --qui-btn-borderColor--disabled: transparent;
+}
+
+/**
+ * Button disabled
+ */
+:where(.btn, input[type='submit'], input[type='reset'], input[type='button'])[disabled],
+:where(.btn, input[type='submit'], input[type='reset'], input[type='button']).disabled {
+    cursor: default;
+
+    --qui-btn-color: var(--qui-btn-color--disabled);
+    --qui-btn-bgColor: var(--qui-btn-bgColor--disabled);
+    --qui-btn-borderColor: var(--qui-btn-borderColor--disabled);
+    --qui-btn-color--hover: var(--qui-btn-color--disabled);
+    --qui-btn-bgColor--hover: var(--qui-btn-bgColor--disabled);
+    --qui-btn-borderColor--hover: var(--qui-btn-borderColor--disabled);
+}
+
+/**
+ * Button sizes
+ */
+.btn-sm {
+    --padding-block: 0.5em;
+    --padding-inline: 1em;
+
+    font-size: .875em;
+}
+
+.btn-lg {
+    gap: 1em;
+    font-size: 1.25em;
+}
+
+/**
+ * Button icon
+ */
+.btn.btn-icon {
+    aspect-ratio: 1;
+}
+
+.btn.btn-rounded {
+    border-radius: 10em;
+}
+
+/**
+ * Utility
+ */
+.btn-container {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-container--center {
+    justify-content: center;
+}
+
+@media (max-width: 767px) {
+    .btn-container > .btn {
+        width: 100%;
+    }
+}
+
+/* Button stack: always stacked and full width */
+.btn-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.btn-stack > .btn {
+    width: 100%;
+}
+
+/* misc */
+.btn-full {
+    width: 100%;
+}

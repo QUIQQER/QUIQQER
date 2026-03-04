@@ -105,6 +105,9 @@ echo $User->getLang(); ?>"> <!--<![endif]-->
 
     <!-- [begin] css combine -->
 
+    <link href="<?php echo URL_BIN_DIR; ?>css/variables.css" rel="stylesheet" type="text/css"/>
+    <link href="<?php echo URL_BIN_DIR; ?>css/buttons.css" rel="stylesheet" type="text/css"/>
+
     <link href="<?php
     echo URL_BIN_DIR; ?>css/tables.css"
           rel="stylesheet"
