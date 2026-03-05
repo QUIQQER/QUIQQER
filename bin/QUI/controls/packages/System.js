@@ -14,14 +14,13 @@ define('controls/packages/System', [
     'Mustache',
     'Ajax',
     'Locale',
-    'utils/Favicon',
     'package/quiqqer/translator/bin/Translator',
 
     'text!controls/packages/System.html',
     'css!controls/packages/System.css'
 
 ], function (QUI, QUIControl, QUIButton, QUIConfirm, Packages, Mustache,
-             QUIAjax, QUILocale, FaviconUtils, Translator, template) {
+             QUIAjax, QUILocale, Translator, template) {
     "use strict";
 
     const lg = 'quiqqer/core';
@@ -234,8 +233,6 @@ define('controls/packages/System', [
         executeCompleteSetup: function () {
             const Button = this.$Setup;
 
-            FaviconUtils.loading();
-
             Button.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
             return QUI.getMessageHandler().then(function (MH) {
@@ -273,7 +270,6 @@ define('controls/packages/System', [
 
             }).then(function () {
                 Button.setAttribute('textimage', 'fa fa-hdd-o');
-                FaviconUtils.setDefault();
             });
         },
 
