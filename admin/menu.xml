@@ -26,16 +26,6 @@
         <locale group="quiqqer/core" var="menu.help.about.text"/>
     </item>
 
-    <item parent="/quiqqer/"
-          name="changelog"
-          icon="URL_BIN_DIR/16x16/quiqqer.png"
-          require="controls/help/Changelog"
-          group="quiqqer/core"
-          var="menu.help.changelog.text"
-    >
-        <locale group="quiqqer/core" var="menu.help.changelog.text"/>
-    </item>
-
     <!-- Plugins und Packages -->
     <item parent="/quiqqer/"
           name="packages"
