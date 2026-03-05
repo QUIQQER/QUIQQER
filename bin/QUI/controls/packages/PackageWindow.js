@@ -10,7 +10,7 @@ define('controls/packages/PackageWindow', [
     return new Class({
 
         Extends: QUIPopup,
-        Type   : 'controls/packages/PackageWindow',
+        Type: 'controls/packages/PackageWindow',
 
         Binds: [
             '$onOpen'
@@ -18,9 +18,9 @@ define('controls/packages/PackageWindow', [
 
         options: {
             maxHeight: 600,
-            maxWidth : 800,
+            maxWidth: 800,
             'package': false,
-            buttons  : false
+            buttons: false
         },
 
         initialize: function (options) {
@@ -41,7 +41,7 @@ define('controls/packages/PackageWindow', [
          */
         $onOpen: function () {
             this.getContent().set({
-                html  : '',
+                html: '',
                 styles: {
                     padding: 0
                 }
@@ -51,7 +51,7 @@ define('controls/packages/PackageWindow', [
 
             this.$Package = new Package({
                 'package': this.getAttribute('package'),
-                events   : {
+                events: {
                     onLoad: function () {
                         this.Loader.hide();
                     }.bind(this)

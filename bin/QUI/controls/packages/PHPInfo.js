@@ -1,5 +1,4 @@
 /**
- *
  * @event onLoad
  */
 define('controls/packages/PHPInfo', [
@@ -16,7 +15,7 @@ define('controls/packages/PHPInfo', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/packages/PHPInfo',
+        Type: 'controls/packages/PHPInfo',
 
         Binds: [
             '$onInject'
@@ -40,7 +39,7 @@ define('controls/packages/PHPInfo', [
         create: function () {
             this.$Elm = new Element('div', {
                 'class': 'qui-control-packages-phpinfo',
-                'html' : '<div class="qui-control-packages-phpinfo-container"></div>'
+                'html': '<div class="qui-control-packages-phpinfo-container"></div>'
             });
 
             this.$Container = this.$Elm.getElement(
