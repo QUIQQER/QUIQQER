@@ -52,9 +52,6 @@ use const URL_DIR;
 /**
  * Rewrite - URL Verwaltung (sprechende URLS)
  *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
- *
  * @todo  must be rewritten, spaghetti code :(
  * @todo  create new concept
  * @todo  translate comments

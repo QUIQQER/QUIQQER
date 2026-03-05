@@ -42,7 +42,7 @@ if (!function_exists("array_merge_recursive_overwrite")) {
      * and this is done recursively, so that if one of the values is an array itself, the function will merge it with a corresponding entry in another array too.
      * If, however, the arrays have the same numeric key, the latter value will not overwrite the original value, but will be appended.
      *
-     * Mimics the behaviour of array_merge_recursive() with the exception that duplicate string keys are overwritten instead of merged into an array,
+     * Mimics the behavior of array_merge_recursive() with the exception that duplicate string keys are overwritten instead of merged into an array,
      * more akin to array_merge().
      *
      * @see https://www.php.net/manual/en/function.array-merge-recursive.php

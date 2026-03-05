@@ -30,9 +30,6 @@ use const PHP_EOL;
 /**
  * Template Engine Manager
  *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
- *
  * @event onTemplateGetHeader [ $this ]
  */
 class Template extends QUI\QDOM
