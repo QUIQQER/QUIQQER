@@ -15,28 +15,38 @@
     text-align: center;
     white-space: nowrap;
     vertical-align: baseline;
-    border-radius: 0.75rem;
+    border-radius: 0.7em;
     font-style: normal;
+}
+
+.badge-primary {
+    --qui-badge-color: var(--qui-colors-primary--accent);
+    --qui-badge-bgColor: var(--qui-colors-primary);
+}
+
+.badge-primary-light {
+    --qui-badge-color: var(--qui-colors-primary-800);
+    --qui-badge-bgColor: var(--qui-colors-primary-50);
+}
+
+.badge-secondary {
+    --qui-badge-color: #fff;
+    --qui-badge-bgColor: var(--qui-colors-secondary);
+}
+
+.badge-secondary-light {
+    --qui-badge-color: var(--qui-colors-secondary-800);
+    --qui-badge-bgColor: var(--qui-colors-secondary-50);
 }
 
 .badge-success {
     --qui-badge-color: #fff;
-    --qui-badge-bgColor: rgb(40 167 69);
+    --qui-badge-bgColor: var(--qui-colors-success);
 }
 
 .badge-success-light {
-    --qui-badge-color: #1c7530;
-    --qui-badge-bgColor: #e9f6ec;
-}
-
-.badge-warning {
-    --qui-badge-color: #000;
-    --qui-badge-bgColor: #ffd147;
-}
-
-.badge-warning-light {
-    --qui-badge-color: #806924;
-    --qui-badge-bgColor: #fff6da;
+    --qui-badge-color: var(--qui-colors-success-800);
+    --qui-badge-bgColor: var(--qui-colors-success-50);
 }
 
 .badge-error,
@@ -47,36 +57,60 @@
 
 .badge-error-light,
 .badge-danger-light {
-    --qui-badge-color: #b0342e;
-    --qui-badge-bgColor: #fbeceb;
+    --qui-badge-color: var(--qui-colors-danger-700);
+    --qui-badge-bgColor: var(--qui-colors-danger-50);
+}
+
+.badge-warning {
+    --qui-badge-color: #000;
+    --qui-badge-bgColor: var(--qui-colors-warning);
+}
+
+.badge-warning-light {
+    --qui-badge-color: var(--qui-colors-warning-950);
+    --qui-badge-bgColor: var(--qui-colors-warning-100);
 }
 
 .badge-info {
     --qui-badge-color: #fff;
-    --qui-badge-bgColor: #4ca5ce;
+    --qui-badge-bgColor: var(--qui-colors-info);
 }
 
 .badge-info-light {
-    --qui-badge-color: #357390;
-    --qui-badge-bgColor: #edf6fa;
+    --qui-badge-color: var(--qui-colors-info-800);
+    --qui-badge-bgColor: var(--qui-colors-info-50);
 }
 
 .badge-light {
-    --qui-badge-bgColor: #e5e5e5;
+    --qui-badge-bgColor: var(--qui-colors-light);
     --qui-badge-color: #000;
 }
 
 .badge-dark {
-    --qui-badge-bgColor: rgb(44, 49, 54);
+    --qui-badge-bgColor: var(--qui-colors-dark);
     --qui-badge-color: #fff;
 }
 
 .badge-dark-light {
-    --qui-badge-bgColor: #f5f5f5;
-    --qui-badge-color: #2c3136;
+    --qui-badge-bgColor: var(--qui-colors-dark-25);
+    --qui-badge-color: var(--qui-colors-dark);
 }
 
 .badge-white {
     --qui-badge-bgColor: #fff;
     --qui-badge-color: #111;
+}
+
+/* rounded */
+.badge-pill {
+    border-radius: 100px;
+}
+
+/* sizing */
+.badge-sm {
+    --qui-badge-fontSize: 0.7em;
+}
+
+.badge-lg {
+    --qui-badge-fontSize: 1em;
 }
