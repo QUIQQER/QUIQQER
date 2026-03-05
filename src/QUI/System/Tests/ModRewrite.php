@@ -23,9 +23,6 @@ use function substr;
 
 /**
  * ModRewrite Test
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class ModRewrite extends QUI\System\Test
 {
@@ -79,7 +76,7 @@ class ModRewrite extends QUI\System\Test
     }
 
     /**
-     * makes a http request and check, if the mod rewrite works
+     * makes an http request and check, if the mod rewrite works
      *
      * @return int self::STATUS_OK|self::STATUS_ERROR
      */

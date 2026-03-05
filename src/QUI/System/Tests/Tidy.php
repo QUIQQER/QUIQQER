@@ -12,9 +12,6 @@ use function class_exists;
 
 /**
  * Tidy Test
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Tidy extends QUI\System\Test
 {

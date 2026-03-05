@@ -32,9 +32,6 @@ use function trim;
 /**
  * Database Check - Compares existing QUIQQER database tables with database.xml files
  * and detects discrepancies
- *
- * @author  www.pcsg.de (Patrick Müller)
- * @licence For copyright and license information, please view the /README.md
  */
 class DBCheck extends QUI\System\Test
 {
@@ -113,9 +110,9 @@ class DBCheck extends QUI\System\Test
     }
 
     /**
-     * Main method for extracting table info from xml and compare it with the database
+     * Main method for extracting table info from XML and compare it with the database
      *
-     * @param $xmlFile
+     * @param string $xmlFile
      */
     protected function checkIntegrity(string $xmlFile): void
     {
@@ -195,7 +192,7 @@ class DBCheck extends QUI\System\Test
     }
 
     /**
-     * Extracts check relevant data from xml table information
+     * Extracts check relevant data from XML table information
      *
      * @param array $info
      * @param boolean $isGlobal (optional) - is a global table
@@ -263,7 +260,7 @@ class DBCheck extends QUI\System\Test
                 }
             }
 
-            // assume the xml file declares an id key
+            // assume the XML file declares an id key
             // although, technically it is created by the system in this special case
             if (!in_array('id', $primaryKeys)) {
                 $checkData['primaryKeys'][] = 'id';
@@ -361,7 +358,7 @@ class DBCheck extends QUI\System\Test
         }
 
 
-        // check if xml file declares fields that are not present in the database table
+        // check if XML file declares fields that are not present in the database table
         $xmlFieldsDiff = array_diff(
             array_keys($fields),
             $dbFields
@@ -388,7 +385,7 @@ class DBCheck extends QUI\System\Test
                 continue;
             }
 
-            // column declaration from the xml file
+            // column declaration from the XML file
             $fieldData = StringHelper::toLower($fields[$fieldName]);
 
             /*** NULL/NOT NULL check ***/
@@ -454,7 +451,7 @@ class DBCheck extends QUI\System\Test
                 'unsigned'
             ];
 
-            // clear xml field data of already checked content
+            // clear XML field data of already checked content
             $fieldData = str_replace($notNeeded, '', $fieldData);
             $isDatatype = str_replace($notNeeded, '', $isDatatype);
 

@@ -18,8 +18,6 @@ use const PHP_EOL;
 
 /**
  * Class ArrayOutput
- *
- * @package QUI\Composer
  */
 class Output extends \Symfony\Component\Console\Output\Output
 {

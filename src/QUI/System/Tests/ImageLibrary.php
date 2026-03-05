@@ -13,10 +13,7 @@ use function function_exists;
 use function implode;
 
 /**
- * JSON Test
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
+ * ImageLibrary Test
  */
 class ImageLibrary extends QUI\System\Test
 {
