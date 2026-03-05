@@ -2110,9 +2110,6 @@
         <locale name="menu.help.text">
             <de><![CDATA[QUIQQER]]></de>
         </locale>
-        <locale name="menu.help.changelog.text">
-            <de><![CDATA[Changelog]]></de>
-        </locale>
         <locale name="menu.help.dashboard.text">
             <de><![CDATA[Dashboard]]></de>
         </locale>

@@ -10,9 +10,6 @@ use QUI;
 
 /**
  * CHMOD Test
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class PHPVersion extends QUI\System\Test
 {
@@ -32,7 +29,7 @@ class PHPVersion extends QUI\System\Test
     }
 
     /**
-     * Check, if PHP version is high enouph
+     * Check, if PHP version is high enough
      *
      * @return self::STATUS_OK|self::STATUS_ERROR
      */

@@ -21,9 +21,6 @@ use function trim;
 
 /**
  * Generate the nginx.conf file
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Nginx extends QUI\System\Console\Tool
 {

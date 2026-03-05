@@ -1996,9 +1996,6 @@
         <locale name="menu.help.text">
             <en><![CDATA[QUIQQER]]></en>
         </locale>
-        <locale name="menu.help.changelog.text">
-            <en><![CDATA[Changelog]]></en>
-        </locale>
         <locale name="menu.help.dashboard.text">
             <en><![CDATA[Dashboard]]></en>
         </locale>

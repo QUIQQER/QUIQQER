@@ -22,14 +22,12 @@ use function str_replace;
 use function trim;
 
 /**
- * Healthcheck
+ * Health check
+ *
  * Checks the system or a package to health
  * Are all files correct?
  *
  * the check uses the checklist.md5, the checklist.md5 contains all md5 hashes of all files
- *
- * @author www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Health
 {
@@ -40,8 +38,8 @@ class Health
     const STATUS_ERROR = -1;
 
     /**
-     * System Healthcheck
-     * Return the result of the system healthcheck
+     * System health check
+     * Return the result of the system health check
      */
     public static function systemCheck(): array
     {
@@ -129,8 +127,8 @@ class Health
     }
 
     /**
-     * Package Healthcheck
-     * Return the result of the package healthcheck
+     * Package health check
+     * Return the result of the package health check
      *
      * @throws Exception
      */

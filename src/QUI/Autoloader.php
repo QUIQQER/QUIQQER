@@ -23,9 +23,6 @@ use function substr;
  * The QUIQQER Autoloader
  * Loads all classes when calling, in dependence of the classes name
  * it includes the composer autoloader
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Autoloader
 {

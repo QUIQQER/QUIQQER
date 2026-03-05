@@ -23,9 +23,6 @@ use const OPT_DIR;
 
 /**
  * MailQueue Console Manager
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class MigrationV2 extends QUI\System\Console\Tool
 {

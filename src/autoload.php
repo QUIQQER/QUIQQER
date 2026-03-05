@@ -6,9 +6,6 @@
 
 /**
  * Autoloader for the QUIQQER CMS
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 
 use QUI\System\Log;

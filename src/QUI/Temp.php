@@ -22,9 +22,6 @@ use function system;
 /**
  * Temp managed the temp folder
  * It creates temp folders and delete it, provides methods for temp files / folders
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Temp
 {

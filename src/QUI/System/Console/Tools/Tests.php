@@ -17,9 +17,6 @@ use function str_replace;
 
 /**
  * Checks the system and execute the system tests
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Tests extends QUI\System\Console\Tool
 {

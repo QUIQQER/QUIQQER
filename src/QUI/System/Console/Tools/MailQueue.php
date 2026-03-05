@@ -20,9 +20,6 @@ use const PHP_EOL;
 
 /**
  * MailQueue Console Manager
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class MailQueue extends QUI\System\Console\Tool
 {

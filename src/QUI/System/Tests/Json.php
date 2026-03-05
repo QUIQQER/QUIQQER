@@ -12,9 +12,6 @@ use function function_exists;
 
 /**
  * JSON Test
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Json extends QUI\System\Test
 {
