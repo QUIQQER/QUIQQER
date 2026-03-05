@@ -15,9 +15,6 @@ use function trim;
 
 /**
  * Execute the system setup
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Setup extends QUI\System\Console\Tool
 {

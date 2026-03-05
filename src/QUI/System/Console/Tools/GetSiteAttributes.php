@@ -22,8 +22,6 @@ use function trim;
 
 /**
  * Get attributes from a selection of Sites
- *
- * @author  www.pcsg.de (Patrick Müller)
  */
 class GetSiteAttributes extends QUI\System\Console\Tool
 {

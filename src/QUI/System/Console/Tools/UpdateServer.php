@@ -7,9 +7,6 @@ use QUI\Exception;
 
 /**
  * Update-Server Console Manager
- *
- * @author  www.pcsg.de (Jan Wennrich)
- * @licence For copyright and license information, please view the /README.md
  */
 class UpdateServer extends QUI\System\Console\Tool
 {

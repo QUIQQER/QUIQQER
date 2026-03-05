@@ -14,9 +14,6 @@ use function is_array;
 
 /**
  * Show the licence
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Licence extends QUI\System\Console\Tool
 {

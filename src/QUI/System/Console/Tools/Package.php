@@ -18,9 +18,6 @@ use function ksort;
 /**
  * Package console tool
  * Package handling via CLI
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Package extends QUI\System\Console\Tool
 {

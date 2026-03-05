@@ -9,12 +9,6 @@ namespace QUI\System\Console\Tools;
 use QUI;
 use QUI\Exception;
 
-/**
- *
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
- */
 class Defaults extends QUI\System\Console\Tool
 {
     /**

@@ -14,8 +14,6 @@ use function json_encode;
 
 /**
  * Copy the site structure of a project from one language to another
- *
- * @author  www.pcsg.de (Patrick Müller)
  */
 class CopyLanguageSites extends QUI\System\Console\Tool
 {

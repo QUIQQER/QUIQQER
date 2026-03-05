@@ -11,9 +11,6 @@ use QUI\Exception;
 
 /**
  * Print the system info - quiqqer version and so on
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class SystemInfo extends QUI\System\Console\Tool
 {
