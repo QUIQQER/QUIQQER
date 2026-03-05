@@ -16,8 +16,6 @@ use function trim;
 
 /**
  * Set attributes for a selection of Sites
- *
- * @author  www.pcsg.de (Patrick Müller)
  */
 class SetSiteAttributes extends QUI\System\Console\Tool
 {

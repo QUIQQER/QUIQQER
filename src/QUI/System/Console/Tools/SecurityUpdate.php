@@ -30,8 +30,6 @@ use const VAR_DIR;
 
 /**
  * Update command for the console
- *
- * @author www.pcsg.de (Henning Leutz)
  */
 class SecurityUpdate extends QUI\System\Console\Tool
 {

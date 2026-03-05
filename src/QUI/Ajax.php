@@ -37,9 +37,6 @@ use function utf8_encode;
 /**
  * QUIQQER Ajax
  * Communication between JavaScript and PHP
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Ajax extends QUI\QDOM
 {
@@ -59,7 +56,7 @@ class Ajax extends QUI\QDOM
     protected static array $permissions = [];
 
     /**
-     * javascript functions to be executed by after a request
+     * JavaScript functions to be executed by after a request
      * These functions are registered via Ajax.registerCallback('functionName', callable);
      */
     protected array $jsCallbacks = [];

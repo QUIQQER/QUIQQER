@@ -17,9 +17,7 @@ use function json_encode;
 use function strpos;
 
 /**
- * Intranet
- *
- * @author www.pcsg.de
+ * EventHandler
  */
 class EventHandler
 {

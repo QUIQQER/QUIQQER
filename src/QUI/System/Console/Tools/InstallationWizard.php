@@ -7,9 +7,6 @@ use QUI\InstallationWizard\ProviderHandler;
 
 /**
  * Execute the QUIQQER installation wizard
- *
- * @author  www.pcsg.de (Jan Wennrich)
- * @licence For copyright and license information, please view the /README.md
  */
 class InstallationWizard extends QUI\System\Console\Tool
 {

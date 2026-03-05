@@ -36,9 +36,6 @@ use function usort;
 /**
  * The locale object
  * translate the ui and all messages
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Locale implements \Stringable
 {

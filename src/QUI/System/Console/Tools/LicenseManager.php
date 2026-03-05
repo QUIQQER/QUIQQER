@@ -10,9 +10,6 @@ use function is_array;
 
 /**
  * Manage the QUIQQER store license
- *
- * @author  www.pcsg.de (Jan Wennrich)
- * @licence For copyright and license information, please view the /README.md
  */
 class LicenseManager extends QUI\System\Console\Tool
 {

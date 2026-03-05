@@ -205,6 +205,8 @@ define('controls/grid/Grid', [
             this.tableSizing = 'normal';
             this.lastCellRightSpacing = 40;
 
+            this.setAttribute('emptyMessage', QUILocale.get('quiqqer/core', 'grid.is.empty'));
+
             if (typeof options.lastCellRightSpacing !== 'undefined') {
                 this.lastCellRightSpacing = parseInt(options.lastCellRightSpacing);
             }

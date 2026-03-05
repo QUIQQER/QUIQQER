@@ -15,9 +15,6 @@ use function parse_url;
 
 /**
  * Redis Server Test
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class RedisCheck extends QUI\System\Test
 {

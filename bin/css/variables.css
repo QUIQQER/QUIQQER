@@ -1,0 +1,149 @@
+:root {
+    /**
+     * Colors
+     */
+
+    /* primary */
+    --qui-colors-primary: #2f8fc6;
+    --qui-colors-primary--light: var(--qui-colors-primary-300);
+    --qui-colors-primary--dark: var(--qui-colors-primary-700);
+    --qui-colors-primary--accent: #fff;
+    --qui-colors-primary-25: color-mix(in srgb, var(--qui-colors-primary) 5%, white);
+    --qui-colors-primary-50: color-mix(in srgb, var(--qui-colors-primary) 10%, white);
+    --qui-colors-primary-100: color-mix(in srgb, var(--qui-colors-primary) 20%, white);
+    --qui-colors-primary-200: color-mix(in srgb, var(--qui-colors-primary) 40%, white);
+    --qui-colors-primary-300: color-mix(in srgb, var(--qui-colors-primary) 60%, white);
+    --qui-colors-primary-400: color-mix(in srgb, var(--qui-colors-primary) 80%, white);
+    --qui-colors-primary-500: var(--qui-colors-primary);
+    --qui-colors-primary-600: color-mix(in srgb, var(--qui-colors-primary) 90%, black);
+    --qui-colors-primary-700: color-mix(in srgb, var(--qui-colors-primary) 80%, black);
+    --qui-colors-primary-800: color-mix(in srgb, var(--qui-colors-primary) 70%, black);
+    --qui-colors-primary-900: color-mix(in srgb, var(--qui-colors-primary) 60%, black);
+    --qui-colors-primary-950: color-mix(in srgb, var(--qui-colors-primary) 50%, black);
+
+    /* secondary */
+    --qui-colors-secondary: #6c757d;
+    --qui-colors-secondary-25: color-mix(in srgb, var(--qui-colors-secondary) 5%, white);
+    --qui-colors-secondary-50: color-mix(in srgb, var(--qui-colors-secondary) 10%, white);
+    --qui-colors-secondary-100: color-mix(in srgb, var(--qui-colors-secondary) 20%, white);
+    --qui-colors-secondary-200: color-mix(in srgb, var(--qui-colors-secondary) 40%, white);
+    --qui-colors-secondary-300: color-mix(in srgb, var(--qui-colors-secondary) 60%, white);
+    --qui-colors-secondary-400: color-mix(in srgb, var(--qui-colors-secondary) 80%, white);
+    --qui-colors-secondary-500: var(--qui-colors-secondary);
+    --qui-colors-secondary-600: color-mix(in srgb, var(--qui-colors-secondary) 90%, black);
+    --qui-colors-secondary-700: color-mix(in srgb, var(--qui-colors-secondary) 80%, black);
+    --qui-colors-secondary-800: color-mix(in srgb, var(--qui-colors-secondary) 70%, black);
+    --qui-colors-secondary-900: color-mix(in srgb, var(--qui-colors-secondary) 60%, black);
+    --qui-colors-secondary-950: color-mix(in srgb, var(--qui-colors-secondary) 50%, black);
+
+    /* success */
+    --qui-colors-success: #28a745;
+    --qui-colors-success-25: color-mix(in srgb, var(--qui-colors-success) 5%, white);
+    --qui-colors-success-50: color-mix(in srgb, var(--qui-colors-success) 10%, white);
+    --qui-colors-success-100: color-mix(in srgb, var(--qui-colors-success) 20%, white);
+    --qui-colors-success-200: color-mix(in srgb, var(--qui-colors-success) 40%, white);
+    --qui-colors-success-300: color-mix(in srgb, var(--qui-colors-success) 60%, white);
+    --qui-colors-success-400: color-mix(in srgb, var(--qui-colors-success) 80%, white);
+    --qui-colors-success-500: var(--qui-colors-success);
+    --qui-colors-success-600: color-mix(in srgb, var(--qui-colors-success) 90%, black);
+    --qui-colors-success-700: color-mix(in srgb, var(--qui-colors-success) 80%, black);
+    --qui-colors-success-800: color-mix(in srgb, var(--qui-colors-success) 70%, black);
+    --qui-colors-success-900: color-mix(in srgb, var(--qui-colors-success) 60%, black);
+    --qui-colors-success-950: color-mix(in srgb, var(--qui-colors-success) 50%, black);
+
+    /* danger */
+    --qui-colors-danger: #dc4139;
+    --qui-colors-danger-25: color-mix(in srgb, var(--qui-colors-danger) 5%, white);
+    --qui-colors-danger-50: color-mix(in srgb, var(--qui-colors-danger) 10%, white);
+    --qui-colors-danger-100: color-mix(in srgb, var(--qui-colors-danger) 20%, white);
+    --qui-colors-danger-200: color-mix(in srgb, var(--qui-colors-danger) 40%, white);
+    --qui-colors-danger-300: color-mix(in srgb, var(--qui-colors-danger) 60%, white);
+    --qui-colors-danger-400: color-mix(in srgb, var(--qui-colors-danger) 80%, white);
+    --qui-colors-danger-500: var(--qui-colors-danger);
+    --qui-colors-danger-600: color-mix(in srgb, var(--qui-colors-danger) 90%, black);
+    --qui-colors-danger-700: color-mix(in srgb, var(--qui-colors-danger) 80%, black);
+    --qui-colors-danger-800: color-mix(in srgb, var(--qui-colors-danger) 70%, black);
+    --qui-colors-danger-900: color-mix(in srgb, var(--qui-colors-danger) 60%, black);
+    --qui-colors-danger-950: color-mix(in srgb, var(--qui-colors-danger) 50%, black);
+
+    /* warning */
+    --qui-colors-warning: #ffd147;
+    --qui-colors-warning-25: color-mix(in srgb, var(--qui-colors-warning) 5%, white);
+    --qui-colors-warning-50: color-mix(in srgb, var(--qui-colors-warning) 10%, white);
+    --qui-colors-warning-100: color-mix(in srgb, var(--qui-colors-warning) 20%, white);
+    --qui-colors-warning-200: color-mix(in srgb, var(--qui-colors-warning) 40%, white);
+    --qui-colors-warning-300: color-mix(in srgb, var(--qui-colors-warning) 60%, white);
+    --qui-colors-warning-400: color-mix(in srgb, var(--qui-colors-warning) 80%, white);
+    --qui-colors-warning-500: var(--qui-colors-warning);
+    --qui-colors-warning-600: color-mix(in srgb, var(--qui-colors-warning) 90%, black);
+    --qui-colors-warning-700: color-mix(in srgb, var(--qui-colors-warning) 80%, black);
+    --qui-colors-warning-800: color-mix(in srgb, var(--qui-colors-warning) 70%, black);
+    --qui-colors-warning-900: color-mix(in srgb, var(--qui-colors-warning) 60%, black);
+    --qui-colors-warning-950: color-mix(in srgb, var(--qui-colors-warning) 50%, black);
+
+    /* info */
+    --qui-colors-info: #4ca5ce;
+    --qui-colors-info-25: color-mix(in srgb, var(--qui-colors-info) 5%, white);
+    --qui-colors-info-50: color-mix(in srgb, var(--qui-colors-info) 10%, white);
+    --qui-colors-info-100: color-mix(in srgb, var(--qui-colors-info) 20%, white);
+    --qui-colors-info-200: color-mix(in srgb, var(--qui-colors-info) 40%, white);
+    --qui-colors-info-300: color-mix(in srgb, var(--qui-colors-info) 60%, white);
+    --qui-colors-info-400: color-mix(in srgb, var(--qui-colors-info) 80%, white);
+    --qui-colors-info-500: var(--qui-colors-info);
+    --qui-colors-info-600: color-mix(in srgb, var(--qui-colors-info) 90%, black);
+    --qui-colors-info-700: color-mix(in srgb, var(--qui-colors-info) 80%, black);
+    --qui-colors-info-800: color-mix(in srgb, var(--qui-colors-info) 70%, black);
+    --qui-colors-info-900: color-mix(in srgb, var(--qui-colors-info) 60%, black);
+    --qui-colors-info-950: color-mix(in srgb, var(--qui-colors-info) 50%, black);
+
+    /* gray */
+    --qui-colors-gray: #61656b;
+    --qui-colors-gray-25: color-mix(in srgb, var(--qui-colors-gray) 5%, white);
+    --qui-colors-gray-50: color-mix(in srgb, var(--qui-colors-gray) 10%, white);
+    --qui-colors-gray-100: color-mix(in srgb, var(--qui-colors-gray) 20%, white);
+    --qui-colors-gray-200: color-mix(in srgb, var(--qui-colors-gray) 40%, white);
+    --qui-colors-gray-300: color-mix(in srgb, var(--qui-colors-gray) 60%, white);
+    --qui-colors-gray-400: color-mix(in srgb, var(--qui-colors-gray) 80%, white);
+    --qui-colors-gray-500: var(--qui-colors-gray);
+    --qui-colors-gray-600: color-mix(in srgb, var(--qui-colors-gray) 90%, black);
+    --qui-colors-gray-700: color-mix(in srgb, var(--qui-colors-gray) 80%, black);
+    --qui-colors-gray-800: color-mix(in srgb, var(--qui-colors-gray) 70%, black);
+    --qui-colors-gray-900: color-mix(in srgb, var(--qui-colors-gray) 60%, black);
+    --qui-colors-gray-950: color-mix(in srgb, var(--qui-colors-gray) 50%, black);
+
+    /* light */
+    --qui-colors-light: #e5e5e5;
+    --qui-colors-light-25: color-mix(in srgb, var(--qui-colors-light) 5%, white);
+    --qui-colors-light-50: color-mix(in srgb, var(--qui-colors-light) 10%, white);
+    --qui-colors-light-100: color-mix(in srgb, var(--qui-colors-light) 20%, white);
+    --qui-colors-light-200: color-mix(in srgb, var(--qui-colors-light) 40%, white);
+    --qui-colors-light-300: color-mix(in srgb, var(--qui-colors-light) 60%, white);
+    --qui-colors-light-400: color-mix(in srgb, var(--qui-colors-light) 80%, white);
+    --qui-colors-light-500: var(--qui-colors-light);
+    --qui-colors-light-600: color-mix(in srgb, var(--qui-colors-light) 90%, black);
+    --qui-colors-light-700: color-mix(in srgb, var(--qui-colors-light) 80%, black);
+    --qui-colors-light-800: color-mix(in srgb, var(--qui-colors-light) 70%, black);
+    --qui-colors-light-900: color-mix(in srgb, var(--qui-colors-light) 60%, black);
+    --qui-colors-light-950: color-mix(in srgb, var(--qui-colors-light) 50%, black);
+
+    /* dark */
+    --qui-colors-dark: #2c3136;
+    --qui-colors-dark-25: color-mix(in srgb, var(--qui-colors-dark) 5%, white);
+    --qui-colors-dark-50: color-mix(in srgb, var(--qui-colors-dark) 10%, white);
+    --qui-colors-dark-100: color-mix(in srgb, var(--qui-colors-dark) 20%, white);
+    --qui-colors-dark-200: color-mix(in srgb, var(--qui-colors-dark) 40%, white);
+    --qui-colors-dark-300: color-mix(in srgb, var(--qui-colors-dark) 60%, white);
+    --qui-colors-dark-400: color-mix(in srgb, var(--qui-colors-dark) 80%, white);
+    --qui-colors-dark-500: var(--qui-colors-dark);
+    --qui-colors-dark-600: color-mix(in srgb, var(--qui-colors-dark) 90%, black);
+    --qui-colors-dark-700: color-mix(in srgb, var(--qui-colors-dark) 80%, black);
+    --qui-colors-dark-800: color-mix(in srgb, var(--qui-colors-dark) 70%, black);
+    --qui-colors-dark-900: color-mix(in srgb, var(--qui-colors-dark) 60%, black);
+    --qui-colors-dark-950: color-mix(in srgb, var(--qui-colors-dark) 50%, black);
+
+    /* white */
+    --qui-colors-white: #fff;
+
+    /* black */
+    --qui-colors-black: #000;
+}

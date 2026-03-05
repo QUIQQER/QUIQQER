@@ -10,9 +10,6 @@ use QUI;
 
 /**
  * Curl Test
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Curl extends QUI\System\Test
 {
