@@ -20,7 +20,7 @@ define('controls/packages/upload/Upload', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/packages/upload/Upload',
+        Type: 'controls/packages/upload/Upload',
 
         Binds: [
             '$onFinished'
@@ -28,7 +28,7 @@ define('controls/packages/upload/Upload', [
 
         options: {
             height: false,
-            width : false
+            width: false
         },
 
         initialize: function (options) {
@@ -44,15 +44,15 @@ define('controls/packages/upload/Upload', [
          */
         create: function () {
             var self = this,
-                Elm  = this.parent();
+                Elm = this.parent();
 
             Elm.addClass('qui-packages-upload');
 
             this.$Upload = new UploadForm({
-                sendbutton  : true,
+                sendbutton: true,
                 cancelbutton: true,
-                accept      : 'application/zip',
-                events      : {
+                accept: 'application/zip',
+                events: {
                     onCancel: function () {
                         self.fireEvent('cancel', [self]);
                     },
@@ -176,8 +176,8 @@ define('controls/packages/upload/Upload', [
                     callback: function () {
                         var Container = new Element('label', {
                             'class': 'qui-packages-upload-notInstalled',
-                            html   : QUILocale.get(lg, 'dialog.packages.install.upload.notInstalled.text'),
-                            styles : {
+                            html: QUILocale.get(lg, 'dialog.packages.install.upload.notInstalled.text'),
+                            styles: {
                                 opacity: 0
                             }
                         }).inject(self.$Elm);
@@ -185,14 +185,14 @@ define('controls/packages/upload/Upload', [
                         var i, len, title, version;
 
                         for (i = 0, len = packages.length; i < len; i++) {
-                            title   = packages[i].title || packages[i].name;
+                            title = packages[i].title || packages[i].name;
                             version = packages[i].version;
 
                             title = title + ' (' + version + ')';
 
                             new Element('div', {
                                 'class': 'qui-packages-upload-notInstalled-package',
-                                html   : '<input type="checkbox" ' +
+                                html: '<input type="checkbox" ' +
                                     'name="' + packages[i].name + '" ' +
                                     'data-version="' + version + '" /> ' + title
                             }).inject(Container);
@@ -201,7 +201,7 @@ define('controls/packages/upload/Upload', [
                         Container.getElements('input').set('checked', true);
 
                         new QUIButton({
-                            text  : QUILocale.get(lg, 'dialog.packages.install.upload.notInstalled.installBtn'),
+                            text: QUILocale.get(lg, 'dialog.packages.install.upload.notInstalled.installBtn'),
                             styles: {
                                 marginRight: 10
                             },
@@ -210,7 +210,7 @@ define('controls/packages/upload/Upload', [
                                     var checked = Container.getElements('input:checked');
                                     var results = checked.map(function (Checkbox) {
                                         return {
-                                            name   : Checkbox.get('name'),
+                                            name: Checkbox.get('name'),
                                             version: Checkbox.get('data-version')
                                         };
                                     });
@@ -221,7 +221,7 @@ define('controls/packages/upload/Upload', [
                         }).inject(Container);
 
                         new QUIButton({
-                            text  : QUILocale.get('quiqqer/core', 'cancel'),
+                            text: QUILocale.get('quiqqer/core', 'cancel'),
                             events: {
                                 onClick: resolve
                             }

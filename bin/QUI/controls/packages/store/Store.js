@@ -13,7 +13,7 @@ define('controls/packages/store/Store', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/packages/store/Store',
+        Type: 'controls/packages/store/Store',
 
         initialize: function (options) {
             this.parent(options);
@@ -43,11 +43,11 @@ define('controls/packages/store/Store', [
 
             this.getStoreUrl().then(function (src) {
                 self.$Frame = new Element('iframe', {
-                    src   : src,
+                    src: src,
                     styles: {
                         border: 'none',
                         height: '100%',
-                        width : '100%'
+                        width: '100%'
                     }
                 }).inject(self.$Elm);
 

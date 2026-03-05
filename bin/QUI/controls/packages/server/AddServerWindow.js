@@ -20,7 +20,7 @@ define('controls/packages/server/AddServerWindow', [
     return new Class({
 
         Extends: QUIConfirm,
-        Type   : 'controls/packages/server/AddServerWindow',
+        Type: 'controls/packages/server/AddServerWindow',
 
         Binds: [
             '$onOpen',
@@ -28,13 +28,13 @@ define('controls/packages/server/AddServerWindow', [
         ],
 
         options: {
-            title    : QUILocale.get(lg, 'packages.panel.server.win.add.title'),
-            icon     : 'fa fa-server',
+            title: QUILocale.get(lg, 'packages.panel.server.win.add.title'),
+            icon: 'fa fa-server',
             maxHeight: 600,
-            maxWidth : 400,
+            maxWidth: 400,
             autoclose: false,
             ok_button: {
-                text     : QUILocale.get('quiqqer/core', 'add'),
+                text: QUILocale.get('quiqqer/core', 'add'),
                 textimage: 'fa fa-server'
             }
         },
@@ -43,8 +43,8 @@ define('controls/packages/server/AddServerWindow', [
             this.parent(options);
 
             this.$Server = null;
-            this.$Type   = null;
-            this.$Image  = null;
+            this.$Type = null;
+            this.$Image = null;
 
             this.addEvents({
                 onOpen: this.$onOpen
@@ -68,8 +68,8 @@ define('controls/packages/server/AddServerWindow', [
             });
 
             this.$Server = Form.elements.server;
-            this.$Type   = Form.elements.type;
-            this.$Image  = Content.getElement('.qui-control-packages-server-image');
+            this.$Type = Form.elements.type;
+            this.$Image = Content.getElement('.qui-control-packages-server-image');
 
             this.$Type.addEvent('change', function (event) {
                 this.$Image.set('html', Packages.getServerTypeIcon(event.target.value));
