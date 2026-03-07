@@ -1,5 +1,4 @@
 /**
- *
  * @event onLoad
  */
 define('controls/packages/SystemCheck', [
@@ -15,7 +14,7 @@ define('controls/packages/SystemCheck', [
 
     'css!controls/packages/SystemCheck.css'
 
-], function(QUI, QUIButton, QUIControl, QUIPopup, QUIConfirm, QUILoader, QUIAjax, QUILocale) {
+], function (QUI, QUIButton, QUIControl, QUIPopup, QUIConfirm, QUILoader, QUIAjax, QUILocale) {
     'use strict';
 
     const lg = 'quiqqer/core';
@@ -36,7 +35,7 @@ define('controls/packages/SystemCheck', [
             'confirmSystemCheckExec'
         ],
 
-        initialize: function(options) {
+        initialize: function (options) {
             this.parent(options);
 
             this.Loader = new QUILoader();
@@ -53,7 +52,7 @@ define('controls/packages/SystemCheck', [
          *
          * @returns {HTMLDivElement}
          */
-        create: function() {
+        create: function () {
             this.$Elm = new Element('div', {
                 'class': 'qui-control-packages-systemcheck',
                 'html': '<div class="qui-control-packages-systemcheck-container"></div>'
@@ -65,7 +64,7 @@ define('controls/packages/SystemCheck', [
         /**
          * event : on inject
          */
-        $onInject: function() {
+        $onInject: function () {
             // title bar
             this.TitleBar = new Element('div', {
                 'class': 'qui-control-packages-systemcheck-title'
@@ -108,7 +107,7 @@ define('controls/packages/SystemCheck', [
         /**
          * Opens a confirm dialog to start the system check
          */
-        confirmSystemCheckExec: function() {
+        confirmSystemCheckExec: function () {
             new QUIConfirm({
                 icon: 'fa fa-info-circle',
                 texticon: false,
@@ -130,7 +129,7 @@ define('controls/packages/SystemCheck', [
         /**
          * Execute system check and parse unknown packages
          */
-        execSystemCheck: function() {
+        execSystemCheck: function () {
             this.Loader.inject(this.$Elm);
 
             this.Loader.show(QUILocale.get(
@@ -145,7 +144,7 @@ define('controls/packages/SystemCheck', [
             });
         },
 
-        $setSystemCheckEvents: function() {
+        $setSystemCheckEvents: function () {
             const checksums = this.$Elm.getElement('.test-message-checkSum');
 
             const click = (PackageElm) => {
@@ -162,7 +161,7 @@ define('controls/packages/SystemCheck', [
          *
          * @returns {Promise}
          */
-        runSystemCheck: function() {
+        runSystemCheck: function () {
             return new Promise((resolve, reject) => {
                 QUIAjax.get('ajax_system_systemcheck', (result) => {
                     this.ResultContainer.set('html', result);
@@ -178,8 +177,8 @@ define('controls/packages/SystemCheck', [
          *
          * @return {Promise}
          */
-        getSystemCheckResultsFromCache: function() {
-            return new Promise(function(resolve) {
+        getSystemCheckResultsFromCache: function () {
+            return new Promise(function (resolve) {
                 QUIAjax.get('ajax_system_systemcheckResultsFromCache', resolve);
             });
         },
@@ -187,7 +186,7 @@ define('controls/packages/SystemCheck', [
         /**
          * Open window with php info
          */
-        openPHPInfoWindow: function() {
+        openPHPInfoWindow: function () {
             const self = this;
 
             new QUIPopup({
@@ -197,11 +196,11 @@ define('controls/packages/SystemCheck', [
                 title: QUILocale.get(lg, 'packages.panel.category.systemcheck.phpinfo'),
                 closeButtonText: QUILocale.get(lg, 'close'),
                 events: {
-                    onOpen: function(Win) {
+                    onOpen: function (Win) {
                         const Content = Win.getContent();
-                        self.getPHPInfo().then(function(response) {
+                        self.getPHPInfo().then(function (response) {
                             Content.set('html', response);
-                        }).catch(function() {
+                        }).catch(function () {
                             Content.set(
                                 'html',
                                 QUILocale.get(lg, 'packages.panel.category.systemcheck.phpinfo.error')
@@ -217,9 +216,9 @@ define('controls/packages/SystemCheck', [
          *
          * @returns {Promise}
          */
-        getPHPInfo: function() {
-            return new Promise(function(resolve, reject) {
-                QUIAjax.get('ajax_system_phpinfo', function(result) {
+        getPHPInfo: function () {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.get('ajax_system_phpinfo', function (result) {
                     resolve(result);
                 }, {
                     onError: reject
@@ -232,10 +231,10 @@ define('controls/packages/SystemCheck', [
          *
          * @param {Object} event
          */
-        $packageClick: function(event) {
+        $packageClick: function (event) {
             let packageName = event.target.getParent().getAttribute('data-package');
 
-            this.getChecksumForPackage(packageName).then(function(response) {
+            this.getChecksumForPackage(packageName).then(function (response) {
                 new QUIPopup({
                     'class': 'qui-control-packages-systemcheck-checksum',
                     maxWidth: 900,
@@ -243,7 +242,7 @@ define('controls/packages/SystemCheck', [
                     title: packageName,
                     closeButtonText: QUILocale.get(lg, 'close'),
                     events: {
-                        onOpen: function(Win) {
+                        onOpen: function (Win) {
                             const message = QUILocale.get(lg, 'packages.panel.category.systemcheck.checksum.popupText');
 
                             Win.getContent().set(
@@ -253,12 +252,12 @@ define('controls/packages/SystemCheck', [
                         }
                     }
                 }).open();
-            }).catch(function(ajaxError) {
+            }).catch(function (ajaxError) {
                 if (ajaxError) {
                     return;
                 }
 
-                QUI.getMessageHandler().then(function(MH) {
+                QUI.getMessageHandler().then(function (MH) {
                     MH.setAttribute('displayTimeMessages', 6000);
                     MH.addError(
                         QUILocale.get(lg, 'packages.panel.category.systemcheck.checksum.error')
@@ -273,9 +272,9 @@ define('controls/packages/SystemCheck', [
          * @param packageName
          * @returns {Promise}
          */
-        getChecksumForPackage: function(packageName) {
-            return new Promise(function(resolve, reject) {
-                QUIAjax.get('ajax_system_systemcheckChecksum', function(result) {
+        getChecksumForPackage: function (packageName) {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.get('ajax_system_systemcheckChecksum', function (result) {
                     if (!result) {
                         reject(true);
                         return;

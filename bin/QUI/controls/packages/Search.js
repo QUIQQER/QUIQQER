@@ -1,5 +1,4 @@
 /**
- *
  * @event onLoad
  * @event onSearchBegin
  * @event onSearchEnd
@@ -32,7 +31,7 @@ define('controls/packages/Search', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/packages/Search',
+        Type: 'controls/packages/Search',
 
         Binds: [
             'openStore',
@@ -51,23 +50,23 @@ define('controls/packages/Search', [
         initialize: function (options) {
             this.parent(options);
 
-            this.$OtherSourcesResultList  = null;
+            this.$OtherSourcesResultList = null;
             this.$storeApiEventRegistered = false;
 
             this.Loader = new QUILoader();
 
-            this.$Results    = null;
-            this.$Input      = null;
+            this.$Results = null;
+            this.$Input = null;
             this.$TermsOfUse = null;
-            this.$Content    = null;
-            this.$Panel      = null;
+            this.$Content = null;
+            this.$Panel = null;
 
             window.$StoreApi = new StoreApi();
-            this.$Store      = null;
+            this.$Store = null;
 
-            this.$StoreButton   = null;
+            this.$StoreButton = null;
             this.$PackageButton = null;
-            this.$SearchButton  = null;
+            this.$SearchButton = null;
 
             this.addEvents({
                 onInject: this.$onInject
@@ -96,23 +95,23 @@ define('controls/packages/Search', [
 
 
             this.$StoreButton = new QUIButton({
-                text  : QUILocale.get('quiqqer/core', 'controls.packages.search.template.togglePackageStore'),
+                text: QUILocale.get('quiqqer/core', 'controls.packages.search.template.togglePackageStore'),
                 events: {
                     onClick: this.openStore
                 }
             }).inject(this.$Buttons);
 
             this.$PackageButton = new QUIButton({
-                text  : QUILocale.get('quiqqer/core', 'controls.packages.search.template.upload'),
-                title : QUILocale.get('quiqqer/core', 'dialog.packages.install.upload.title'),
+                text: QUILocale.get('quiqqer/core', 'controls.packages.search.template.upload'),
+                title: QUILocale.get('quiqqer/core', 'dialog.packages.install.upload.title'),
                 events: {
                     onClick: this.openUpload
                 }
             }).inject(this.$Buttons);
 
             this.$SearchButton = new QUIButton({
-                icon  : 'fa fa-search',
-                title : QUILocale.get('quiqqer/core', 'controls.packages.search.othersources.template.labelSearch'),
+                icon: 'fa fa-search',
+                title: QUILocale.get('quiqqer/core', 'controls.packages.search.othersources.template.labelSearch'),
                 styles: {
                     'float': 'right'
                 },
@@ -164,7 +163,7 @@ define('controls/packages/Search', [
 
             require(['controls/packages/store/Store'], function (Store) {
                 self.$Container.set('html', '');
-                self.$Store   = new Store().inject(self.$Container);
+                self.$Store = new Store().inject(self.$Container);
                 window.$Store = self.$Store;
             });
 
@@ -181,20 +180,20 @@ define('controls/packages/Search', [
                     return;
                 }
 
-                var Data        = event.data,
+                var Data = event.data,
                     frameWindow = window.$Store.getFrame().contentWindow;
 
                 if (!frameWindow) {
                     return;
                 }
 
-                var params     = Data.params || [];
+                var params = Data.params || [];
                 var identifier = Data.func + params.join('-'); // request identifier
 
                 // init request
                 if (Data.func === 'init') {
                     frameWindow.postMessage({
-                        result    : true,
+                        result: true,
                         identifier: identifier
                     }, '*');
                     return;
@@ -202,7 +201,7 @@ define('controls/packages/Search', [
 
                 if (typeof this.$StoreApi[Data.func] === 'undefined') {
                     frameWindow.postMessage({
-                        result    : null,
+                        result: null,
                         identifier: identifier
                     }, '*');
                     return;
@@ -211,13 +210,13 @@ define('controls/packages/Search', [
                 // regular request
                 window.$StoreApi[Data.func].apply(window.$StoreApi, params).then(function (result) {
                     frameWindow.postMessage({
-                        result    : result,
+                        result: result,
                         identifier: identifier
                     }, '*');
                 }, function (e) {
                     frameWindow.postMessage({
-                        result      : null,
-                        identifier  : identifier,
+                        result: null,
+                        identifier: identifier,
                         errorMessage: e.getMessage()
                     }, '*');
                 });
@@ -235,7 +234,7 @@ define('controls/packages/Search', [
             this.$activateButton(this.$SearchButton);
 
             this.$Container.set('html', Mustache.render(templateOtherSources, {
-                labelSearch      : QUILocale.get(lg, 'controls.packages.search.othersources.template.labelSearch'),
+                labelSearch: QUILocale.get(lg, 'controls.packages.search.othersources.template.labelSearch'),
                 placeholderSearch: QUILocale.get(lg, 'controls.packages.search.othersources.template.placeholderSearch')
             }));
 
@@ -255,8 +254,8 @@ define('controls/packages/Search', [
 
             this.$OtherSourcesResultList = new PackageList({
                 buttons: [{
-                    icon  : 'fa fa-download',
-                    title : QUILocale.get(lg, 'packages.panel.system.packageInstall.title'),
+                    icon: 'fa fa-download',
+                    title: QUILocale.get(lg, 'packages.panel.system.packageInstall.title'),
                     styles: {
                         width: '100%'
                     },
@@ -338,8 +337,8 @@ define('controls/packages/Search', [
 
             var template;
 
-            var self     = this,
-                lang     = QUILocale.getCurrent(),
+            var self = this,
+                lang = QUILocale.getCurrent(),
                 lgPrefix = 'controls.packages.search.termsofuse.';
 
             switch (lang) {
@@ -356,9 +355,9 @@ define('controls/packages/Search', [
             require([template], function (templateTOU) {
                 self.$TermsOfUse = new Element('div', {
                     'class': 'quiqqer-packages-search-termsofuse',
-                    html   : Mustache.render(templateTermsOfUse, {
-                        header       : QUILocale.get(lg, lgPrefix + 'header'),
-                        content      : Mustache.render(templateTOU),
+                    html: Mustache.render(templateTermsOfUse, {
+                        header: QUILocale.get(lg, lgPrefix + 'header'),
+                        content: Mustache.render(templateTOU),
                         acceptBtnText: QUILocale.get(lg, lgPrefix + 'acceptBtnText')
                     })
                 }).inject(self.$Container);
@@ -396,10 +395,10 @@ define('controls/packages/Search', [
                     }
 
                     this.$OtherSourcesResultList.addPackage({
-                        name       : name,
-                        title      : name,
+                        name: name,
+                        title: name,
                         description: result[name],
-                        installed  : false
+                        installed: false
                     });
                 }
 
@@ -421,7 +420,7 @@ define('controls/packages/Search', [
         $onClickInstall: function (Btn, event) {
             event.stop();
 
-            var self        = this,
+            var self = this,
                 SearchInput = this.$Content.getElement('input');
 
             this.fireEvent('onShowLoader', [this]);

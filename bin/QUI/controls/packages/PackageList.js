@@ -20,7 +20,7 @@ define('controls/packages/PackageList', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/packages/PackageList',
+        Type: 'controls/packages/PackageList',
 
         Binds: [
             '$onInject',
@@ -29,7 +29,7 @@ define('controls/packages/PackageList', [
         ],
 
         options: {
-            buttons    : false,
+            buttons: false,
             showButtons: true
         },
 
@@ -37,8 +37,8 @@ define('controls/packages/PackageList', [
             this.parent(options);
 
             this.$packages = [];
-            this.$view     = options && options.view || 'tile';
-            this.$filter   = '';
+            this.$view = options && options.view || 'tile';
+            this.$filter = '';
 
             this.addEvents({
                 onInject: this.$onInject
@@ -148,11 +148,11 @@ define('controls/packages/PackageList', [
                 }
 
                 Package = new Element('div', {
-                    'class'    : 'packages-package-tile-package packages-package',
-                    html       : Mustache.render(templatePackageTile, {
-                        title      : entry.title || entry.name,
+                    'class': 'packages-package-tile-package packages-package',
+                    html: Mustache.render(templatePackageTile, {
+                        title: entry.title || entry.name,
                         description: entry.description,
-                        image      : image
+                        image: image
                     }),
                     'data-name': entry.name
                 }).inject(this.$Elm);
@@ -172,7 +172,7 @@ define('controls/packages/PackageList', [
                 if (extraButtons.length) {
                     var c, clen, options;
                     for (c = 0, clen = extraButtons.length; c < clen; c++) {
-                        options         = Object.clone(extraButtons[c]);
+                        options = Object.clone(extraButtons[c]);
                         options.package = entry.name;
 
                         new QUIButton(options).inject(ButtonContainer);
@@ -189,9 +189,9 @@ define('controls/packages/PackageList', [
 
                 if (parseInt(QUIQQER_CONFIG.globals.development)) {
                     new QUIButton({
-                        icon  : 'fa fa-hdd-o',
-                        title : QUILocale.get(lg, 'packages.setup', {
-                            pkg     : entry.name,
+                        icon: 'fa fa-hdd-o',
+                        title: QUILocale.get(lg, 'packages.setup', {
+                            pkg: entry.name,
                             pkgTitle: entry.title || entry.name
                         }),
                         events: {
@@ -231,12 +231,12 @@ define('controls/packages/PackageList', [
                 }
 
                 Package = new Element('div', {
-                    'class'    : 'packages-package-list-package packages-package',
-                    html       : Mustache.render(templatePackageList, {
-                        title      : entry.title || entry.name,
+                    'class': 'packages-package-list-package packages-package',
+                    html: Mustache.render(templatePackageList, {
+                        title: entry.title || entry.name,
                         description: entry.description,
-                        version    : entry.version,
-                        image      : image
+                        version: entry.version,
+                        image: image
                     }),
                     'data-name': entry.name
                 }).inject(this.$Elm);
@@ -263,7 +263,7 @@ define('controls/packages/PackageList', [
                 if (extraButtons.length) {
                     var c, clen, options;
                     for (c = 0, clen = extraButtons.length; c < clen; c++) {
-                        options         = Object.clone(extraButtons[c]);
+                        options = Object.clone(extraButtons[c]);
                         options.package = entry.name;
 
                         new QUIButton(options).inject(ButtonContainer);
@@ -275,9 +275,9 @@ define('controls/packages/PackageList', [
                 }
 
                 new QUIButton({
-                    icon  : 'fa fa-hdd-o',
-                    title : QUILocale.get(lg, 'packages.setup', {
-                        pkg     : entry.name,
+                    icon: 'fa fa-hdd-o',
+                    title: QUILocale.get(lg, 'packages.setup', {
+                        pkg: entry.name,
                         pkgTitle: entry.title || entry.name
                     }),
                     events: {
@@ -298,7 +298,7 @@ define('controls/packages/PackageList', [
             event.stop();
 
             var PackageNode = Btn.getElm().getParent('.packages-package');
-            var pkgName     = PackageNode.get('data-name');
+            var pkgName = PackageNode.get('data-name');
 
             Btn.setAttribute('icon', 'fa fa-spinner fa-spin');
 

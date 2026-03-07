@@ -1,5 +1,4 @@
 /**
- *
  * @event onLoad
  */
 define('controls/packages/Server', [
@@ -22,7 +21,7 @@ define('controls/packages/Server', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/packages/Installed',
+        Type: 'controls/packages/Installed',
 
         Binds: [
             '$onInject',
@@ -38,14 +37,14 @@ define('controls/packages/Server', [
             this.parent(options);
 
             this.$servers = [];
-            this.$view    = options && options.view || 'tile';
-            this.$filter  = '';
-            this.$delay   = false;
+            this.$view = options && options.view || 'tile';
+            this.$filter = '';
+            this.$delay = false;
 
-            this.$List        = null;
-            this.$Search      = null;
+            this.$List = null;
+            this.$Search = null;
             this.$SearchInput = null;
-            this.$Result      = null;
+            this.$Result = null;
 
             this.addEvents({
                 onInject: this.$onInject
@@ -58,10 +57,10 @@ define('controls/packages/Server', [
          */
         getButtons: function () {
             return [{
-                name     : 'addServer',
+                name: 'addServer',
                 textimage: 'fa fa-plus',
-                text     : QUILocale.get(lg, 'control.server.button.add.text'),
-                events   : {
+                text: QUILocale.get(lg, 'control.server.button.add.text'),
+                events: {
                     onClick: function () {
                         this.openAddServerDialog();
                     }.bind(this)
@@ -76,19 +75,19 @@ define('controls/packages/Server', [
          */
         create: function () {
             var placeholder = QUILocale.get(lg, 'control.server.filter.placeholder');
-            var submitText  = QUILocale.get(lg, 'control.server.filter.submit');
+            var submitText = QUILocale.get(lg, 'control.server.filter.submit');
 
             this.$Elm = new Element('div', {
                 'class': 'qui-control-packages-server',
-                html   : '<form class="qui-control-packages-server-search">' +
-                '  <fieldset>' +
-                '      <label>' +
-                '          <input type="search" name="search" />' +
-                '      </label>' +
-                '      <input type="submit"/>' +
-                '  </fieldset>' +
-                '</form>' +
-                '<div class="qui-control-packages-server-result"></div>'
+                html: '<form class="qui-control-packages-server-search">' +
+                    '  <fieldset>' +
+                    '      <label>' +
+                    '          <input type="search" name="search" />' +
+                    '      </label>' +
+                    '      <input type="submit"/>' +
+                    '  </fieldset>' +
+                    '</form>' +
+                    '<div class="qui-control-packages-server-result"></div>'
             });
 
             this.$List = {
@@ -102,11 +101,11 @@ define('controls/packages/Server', [
             this.$Elm.getElement('[type="submit"]').set('value', submitText);
 
             this.$SearchInput.addEvents({
-                change : this.$refreshFilter,
-                keyup  : this.$refreshFilter,
+                change: this.$refreshFilter,
+                keyup: this.$refreshFilter,
                 mouseup: this.$refreshFilter,
-                cancel : this.$refreshFilter,
-                blur   : this.$refreshFilter
+                cancel: this.$refreshFilter,
+                blur: this.$refreshFilter
             });
 
             this.$Elm.getElement('form').addEvent('submit', function (event) {
@@ -211,17 +210,17 @@ define('controls/packages/Server', [
 
                 Server = new Element('div', {
                     'class': 'packages-server qui-control-packages-server-tile-entry',
-                    title  : server.server,
-                    'html' : '<div class="qui-control-packages-server-tile-entry-image">' +
-                    Packages.getServerTypeIcon(server.type) +
-                    '</div>' +
-                    '<div class="qui-control-packages-server-tile-entry-text">' +
-                    server.server +
-                    '</div>' +
-                    '<div class="qui-control-packages-server-tile-entry-buttons">' +
-                    '' +
-                    '</div>',
-                    events : {
+                    title: server.server,
+                    'html': '<div class="qui-control-packages-server-tile-entry-image">' +
+                        Packages.getServerTypeIcon(server.type) +
+                        '</div>' +
+                        '<div class="qui-control-packages-server-tile-entry-text">' +
+                        server.server +
+                        '</div>' +
+                        '<div class="qui-control-packages-server-tile-entry-buttons">' +
+                        '' +
+                        '</div>',
+                    events: {
                         click: this.$onServerClick
                     }
                 }).inject(this.$Result);
@@ -242,12 +241,12 @@ define('controls/packages/Server', [
 
                 if (server.active) {
                     Active.clone()
-                          .addEvent('click', this.$onToggleStatusClick)
-                          .inject(Buttons);
+                        .addEvent('click', this.$onToggleStatusClick)
+                        .inject(Buttons);
                 } else {
                     Deactive.clone()
-                            .addEvent('click', this.$onToggleStatusClick)
-                            .inject(Buttons);
+                        .addEvent('click', this.$onToggleStatusClick)
+                        .inject(Buttons);
                 }
 
                 if (server.server !== 'othersources' &&
@@ -255,8 +254,8 @@ define('controls/packages/Server', [
                     server.server !== 'bower') {
 
                     Delete.clone()
-                          .addEvent('click', this.$onDeleterClick)
-                          .inject(Buttons);
+                        .addEvent('click', this.$onDeleterClick)
+                        .inject(Buttons);
                 }
             }
         },
@@ -291,17 +290,17 @@ define('controls/packages/Server', [
 
                 Server = new Element('div', {
                     'class': 'packages-server qui-control-packages-server-list-entry',
-                    title  : server.server,
-                    html   : '<div class="qui-control-packages-server-list-entry-image">' +
-                    Packages.getServerTypeIcon(server.type) +
-                    '</div>' +
-                    '<div class="qui-control-packages-server-list-entry-text">' +
-                    server.server +
-                    '</div>' +
-                    '<div class="qui-control-packages-server-list-entry-buttons">' +
-                    '' +
-                    '</div>',
-                    events : {
+                    title: server.server,
+                    html: '<div class="qui-control-packages-server-list-entry-image">' +
+                        Packages.getServerTypeIcon(server.type) +
+                        '</div>' +
+                        '<div class="qui-control-packages-server-list-entry-text">' +
+                        server.server +
+                        '</div>' +
+                        '<div class="qui-control-packages-server-list-entry-buttons">' +
+                        '' +
+                        '</div>',
+                    events: {
                         click: this.$onServerClick
                     }
                 }).inject(this.$Result);
@@ -322,12 +321,12 @@ define('controls/packages/Server', [
 
                 if (server.active) {
                     Active.clone()
-                          .addEvent('click', this.$onToggleStatusClick)
-                          .inject(Buttons);
+                        .addEvent('click', this.$onToggleStatusClick)
+                        .inject(Buttons);
                 } else {
                     Deactive.clone()
-                            .addEvent('click', this.$onToggleStatusClick)
-                            .inject(Buttons);
+                        .addEvent('click', this.$onToggleStatusClick)
+                        .inject(Buttons);
                 }
 
                 if (server.server !== 'othersources' &&
@@ -335,8 +334,8 @@ define('controls/packages/Server', [
                     server.server !== 'bower') {
 
                     Delete.clone()
-                          .addEvent('click', this.$onDeleterClick)
-                          .inject(Buttons);
+                        .addEvent('click', this.$onDeleterClick)
+                        .inject(Buttons);
                 }
             }
         },
@@ -388,9 +387,9 @@ define('controls/packages/Server', [
         $onToggleStatusClick: function (event) {
             event.stop();
 
-            var Target    = event.target;
+            var Target = event.target;
             var newStatus = !Target.hasClass('fa-check');
-            var server    = Target.getParent('.packages-server').get('title');
+            var server = Target.getParent('.packages-server').get('title');
 
             Target.removeClass('fa-check');
             Target.removeClass('fa-remove');

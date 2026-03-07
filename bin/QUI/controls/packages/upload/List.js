@@ -13,7 +13,7 @@ define('controls/packages/upload/List', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/packages/upload/List',
+        Type: 'controls/packages/upload/List',
 
         initialize: function (options) {
             this.parent(options);

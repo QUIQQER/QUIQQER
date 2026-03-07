@@ -1,5 +1,4 @@
 /**
- *
  * @event onLoad
  */
 define('controls/packages/Package', [
@@ -21,7 +20,7 @@ define('controls/packages/Package', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/packages/Package',
+        Type: 'controls/packages/Package',
 
         Binds: [
             '$onInject'
@@ -72,33 +71,33 @@ define('controls/packages/Package', [
                     }
 
                     require.push({
-                        name   : key,
+                        name: key,
                         version: data.require[key]
                     });
                 }
 
                 var locale = {
-                    support     : QUILocale.get(lg, 'packages.dialog.info.support'),
-                    preview     : QUILocale.get(lg, 'packages.dialog.info.preview'),
-                    noPreview   : QUILocale.get(lg, 'packages.dialog.info.preview.none'),
-                    more        : QUILocale.get(lg, 'packages.dialog.info.more'),
-                    name        : QUILocale.get(lg, 'packages.dialog.info.name'),
-                    license     : QUILocale.get(lg, 'packages.dialog.info.license'),
-                    version     : QUILocale.get(lg, 'packages.dialog.info.version'),
-                    type        : QUILocale.get(lg, 'packages.dialog.info.type'),
-                    hash        : QUILocale.get(lg, 'packages.dialog.info.hash'),
+                    support: QUILocale.get(lg, 'packages.dialog.info.support'),
+                    preview: QUILocale.get(lg, 'packages.dialog.info.preview'),
+                    noPreview: QUILocale.get(lg, 'packages.dialog.info.preview.none'),
+                    more: QUILocale.get(lg, 'packages.dialog.info.more'),
+                    name: QUILocale.get(lg, 'packages.dialog.info.name'),
+                    license: QUILocale.get(lg, 'packages.dialog.info.license'),
+                    version: QUILocale.get(lg, 'packages.dialog.info.version'),
+                    type: QUILocale.get(lg, 'packages.dialog.info.type'),
+                    hash: QUILocale.get(lg, 'packages.dialog.info.hash'),
                     dependencies: QUILocale.get(lg, 'packages.dialog.info.dependencies')
                 };
 
                 this.$Elm.set({
                     html: Mustache.render(template, {
-                        data       : data,
-                        title      : data.title,
+                        data: data,
+                        title: data.title,
                         description: data.description,
-                        image      : image,
-                        support    : data.support || {},
-                        require    : require,
-                        locale     : locale
+                        image: image,
+                        support: data.support || {},
+                        require: require,
+                        locale: locale
                     })
                 });
 

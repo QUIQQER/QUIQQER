@@ -1,5 +1,4 @@
 /**
- *
  * @event onLoad
  */
 define('controls/packages/Installed', [
@@ -21,7 +20,7 @@ define('controls/packages/Installed', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/packages/Installed',
+        Type: 'controls/packages/Installed',
 
         Binds: [
             '$onInject',
@@ -52,7 +51,7 @@ define('controls/packages/Installed', [
         create: function () {
             this.$Elm = new Element('div', {
                 'class': 'qui-control-packages-installed',
-                'html' : Mustache.render(template)
+                'html': Mustache.render(template)
             });
 
             this.$Search = this.$Elm.getElement('.qui-control-packages-installed-search');
@@ -63,17 +62,17 @@ define('controls/packages/Installed', [
             this.$SearchInput = this.$Elm.getElement('[type="search"]');
 
             this.$SearchInput.addEvents({
-                change : this.$refreshFilter,
-                keyup  : this.$refreshFilter,
+                change: this.$refreshFilter,
+                keyup: this.$refreshFilter,
                 mouseup: this.$refreshFilter,
-                cancel : this.$refreshFilter,
-                blur   : this.$refreshFilter
+                cancel: this.$refreshFilter,
+                blur: this.$refreshFilter
             });
 
             this.$ViewTile = new QUIButton({
-                name  : 'viewTile',
-                title : QUILocale.get('quiqqer/core', 'packages.panel.menu'),
-                icon  : 'fa fa-th',
+                name: 'viewTile',
+                title: QUILocale.get('quiqqer/core', 'packages.panel.menu'),
+                icon: 'fa fa-th',
                 styles: {
                     width: 50
                 },
@@ -83,9 +82,9 @@ define('controls/packages/Installed', [
             }).inject(this.$Search, 'top');
 
             this.$ViewList = new QUIButton({
-                name  : 'viewList',
-                title : QUILocale.get('quiqqer/core', 'packages.panel.menu'),
-                icon  : 'fa fa-th-list',
+                name: 'viewList',
+                title: QUILocale.get('quiqqer/core', 'packages.panel.menu'),
+                icon: 'fa fa-th-list',
                 styles: {
                     width: 50
                 },

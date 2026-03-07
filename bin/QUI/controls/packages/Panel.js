@@ -25,7 +25,7 @@ define('controls/packages/Panel', [
     return new Class({
 
         Extends: QUIPanel,
-        Type   : 'controls/packages/Panel',
+        Type: 'controls/packages/Panel',
 
         Binds: [
             'toggleMenu',
@@ -54,7 +54,7 @@ define('controls/packages/Panel', [
 
             this.addEvents({
                 onCreate: this.$onCreate,
-                onShow  : this.$onShow
+                onShow: this.$onShow
             });
         },
 
@@ -65,9 +65,9 @@ define('controls/packages/Panel', [
             var self = this;
 
             this.addButton({
-                name  : 'menu',
-                title : QUILocale.get('quiqqer/core', 'packages.panel.menu'),
-                icon  : 'fa fa-bars',
+                name: 'menu',
+                title: QUILocale.get('quiqqer/core', 'packages.panel.menu'),
+                icon: 'fa fa-bars',
                 events: {
                     onClick: this.toggleMenu
                 },
@@ -79,20 +79,20 @@ define('controls/packages/Panel', [
 
             // left categories
             this.addCategory({
-                name  : 'system',
-                text  : QUILocale.get('quiqqer/core', 'packages.panel.category.update'),
-                image : 'fa fa-check-circle-o',
+                name: 'system',
+                text: QUILocale.get('quiqqer/core', 'packages.panel.category.update'),
+                image: 'fa fa-check-circle-o',
                 events: {
                     onActive: this.loadSystem
                 }
             });
 
             this.addCategory({
-                name  : 'search',
-                text  : QUILocale.get('quiqqer/core', 'packages.panel.category.search'),
-                image : 'fa fa-plug',
+                name: 'search',
+                text: QUILocale.get('quiqqer/core', 'packages.panel.category.search'),
+                image: 'fa fa-plug',
                 events: {
-                    onClick : function () {
+                    onClick: function () {
                         self.$Before = self.getActiveCategory();
                     },
                     onActive: this.loadSearch
@@ -100,36 +100,36 @@ define('controls/packages/Panel', [
             });
 
             this.addCategory({
-                name  : 'installed',
-                text  : QUILocale.get('quiqqer/core', 'packages.panel.category.installed'),
-                image : 'fa fa-puzzle-piece',
+                name: 'installed',
+                text: QUILocale.get('quiqqer/core', 'packages.panel.category.installed'),
+                image: 'fa fa-puzzle-piece',
                 events: {
                     onActive: this.loadInstalled
                 }
             });
 
             this.addCategory({
-                name  : 'server',
-                text  : QUILocale.get('quiqqer/core', 'packages.panel.category.server'),
-                image : 'fa fa-server',
+                name: 'server',
+                text: QUILocale.get('quiqqer/core', 'packages.panel.category.server'),
+                image: 'fa fa-server',
                 events: {
                     onActive: this.loadServer
                 }
             });
 
             this.addCategory({
-                name  : 'systemcheck',
-                text  : QUILocale.get('quiqqer/core', 'packages.panel.category.systemCheck.cat.title'),
-                image : 'fa fa-info-circle',
+                name: 'systemcheck',
+                text: QUILocale.get('quiqqer/core', 'packages.panel.category.systemCheck.cat.title'),
+                image: 'fa fa-info-circle',
                 events: {
                     onActive: this.loadSystemCheck
                 }
             });
 
             this.addCategory({
-                name  : 'phpinfo',
-                text  : QUILocale.get('quiqqer/core', 'packages.panel.category.settings'),
-                image : 'fa fa-gears',
+                name: 'phpinfo',
+                text: QUILocale.get('quiqqer/core', 'packages.panel.category.settings'),
+                image: 'fa fa-gears',
                 events: {
                     onClick: function () {
                         require(['Menu'], function (Menu) {
@@ -145,9 +145,9 @@ define('controls/packages/Panel', [
             });
 
             this.addCategory({
-                name  : 'license',
-                text  : QUILocale.get('quiqqer/core', 'packages.panel.category.license'),
-                image : 'fa fa-key',
+                name: 'license',
+                text: QUILocale.get('quiqqer/core', 'packages.panel.category.license'),
+                image: 'fa fa-key',
                 events: {
                     onActive: this.loadLicense
                 }
@@ -156,7 +156,7 @@ define('controls/packages/Panel', [
             this.$Categories.addClass('packages-panel-categories');
 
             this.getContent().setStyles({
-                padding : 0,
+                padding: 0,
                 position: 'relative'
             });
         },
@@ -224,8 +224,8 @@ define('controls/packages/Panel', [
 
             var Sheet = this.createSheet({
                 buttons: false,
-                icon   : 'fa fa-plug',
-                title  : QUILocale.get('quiqqer/core', 'packages.panel.category.search')
+                icon: 'fa fa-plug',
+                title: QUILocale.get('quiqqer/core', 'packages.panel.category.search')
             });
 
             Sheet.addEvent('show', function () {
@@ -234,13 +234,13 @@ define('controls/packages/Panel', [
                 require(['controls/packages/Search'], function (Search) {
                     new Search({
                         events: {
-                            onLoad       : function () {
+                            onLoad: function () {
                                 self.Loader.hide();
                             },
                             onSearchBegin: function () {
                                 self.Loader.show();
                             },
-                            onSearchEnd  : function () {
+                            onSearchEnd: function () {
                                 self.Loader.hide();
                             }
                         }
@@ -277,7 +277,7 @@ define('controls/packages/Panel', [
                     require([ctrl], function (Control) {
                         self.$Control = new Control({
                             events: {
-                                onLoad      : function () {
+                                onLoad: function () {
                                     self.Loader.hide();
                                     resolve();
                                 },
@@ -291,9 +291,9 @@ define('controls/packages/Panel', [
                         });
 
                         self.$Control.getElm().setStyles({
-                            opacity : 0,
+                            opacity: 0,
                             position: 'relative',
-                            top     : -50
+                            top: -50
                         });
 
                         self.$Control.inject(self.getContent());
@@ -344,7 +344,7 @@ define('controls/packages/Panel', [
 
                 moofx(Control.getElm()).animate({
                     opacity: 0,
-                    top    : -50
+                    top: -50
                 }, {
                     duration: 250,
                     callback: function () {
@@ -371,12 +371,12 @@ define('controls/packages/Panel', [
 
                 Elm.setStyles({
                     opacity: 0,
-                    top    : -50
+                    top: -50
                 });
 
                 moofx(Elm).animate({
                     opacity: 1,
-                    top    : 0
+                    top: 0
                 }, {
                     duration: 250,
                     callback: resolve
