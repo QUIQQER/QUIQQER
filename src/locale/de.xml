@@ -3487,6 +3487,9 @@
         <locale name="menu.settings.vhosts.text">
             <de><![CDATA[Virtual Hosts]]></de>
         </locale>
+        <locale name="menu.settings.mailqueue.text">
+            <de><![CDATA[Mail-Queue]]></de>
+        </locale>
         <locale name="menu.extras.rights.text">
             <de><![CDATA[Benutzerverwaltung]]></de>
         </locale>
@@ -4685,6 +4688,13 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             <de><![CDATA[
                 Bestimmt die maximale Anzahl an E-Mails, die per Mail-Queue innerhalb einer Stunde versendet werden dürfen. <b>0 = kein Limit</b>.]]></de>
         </locale>
+        <locale name="quiqqer.settings.email.queueMaxRetries">
+            <de><![CDATA[Maximale Sendeversuche pro Queue-Mail]]></de>
+        </locale>
+        <locale name="quiqqer.settings.email.queueMaxRetries.desc">
+            <de><![CDATA[
+                Definiert, wie oft eine Queue-E-Mail nach Fehlern erneut versucht wird, bevor sie abgebrochen wird. <b>0 = kein Limit</b>.]]></de>
+        </locale>
         <locale name="quiqqer.settings.email.queue.desc">
             <de><![CDATA[
             E-Mails werden so lange in einer Warteschlange gespeichert, bis es sicher ist, dass sie versendet wurden.
@@ -4692,6 +4702,93 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         </locale>
         <locale name="quiqqer.settings.email.queue">
             <de><![CDATA[Mail-Queue aktivieren]]></de>
+        </locale>
+        <locale name="mailqueue.panel.title">
+            <de><![CDATA[Mail-Queue]]></de>
+        </locale>
+        <locale name="mailqueue.filter.search.placeholder">
+            <de><![CDATA[Mails in der Queue durchsuchen (Betreff, Absender, Empfänger, Inhalt ...)]]></de>
+        </locale>
+        <locale name="mailqueue.grid.header.lastsend">
+            <de><![CDATA[Letzter Versand]]></de>
+        </locale>
+        <locale name="mailqueue.grid.header.status">
+            <de><![CDATA[Status]]></de>
+        </locale>
+        <locale name="mailqueue.grid.header.retry">
+            <de><![CDATA[Versuche]]></de>
+        </locale>
+        <locale name="mailqueue.grid.header.subject">
+            <de><![CDATA[Betreff]]></de>
+        </locale>
+        <locale name="mailqueue.grid.header.to">
+            <de><![CDATA[An]]></de>
+        </locale>
+        <locale name="mailqueue.delete.button">
+            <de><![CDATA[Löschen]]></de>
+        </locale>
+        <locale name="mailqueue.delete.dialog.title">
+            <de><![CDATA[Mails in der Queue löschen]]></de>
+        </locale>
+        <locale name="mailqueue.delete.dialog.text">
+            <de><![CDATA[Sollen die ausgewählten Mails in der Queue wirklich gelöscht werden?]]></de>
+        </locale>
+        <locale name="mailqueue.status.added">
+            <de><![CDATA[Hinzugefügt]]></de>
+        </locale>
+        <locale name="mailqueue.status.sent">
+            <de><![CDATA[Versendet]]></de>
+        </locale>
+        <locale name="mailqueue.status.sending">
+            <de><![CDATA[Wird versendet]]></de>
+        </locale>
+        <locale name="mailqueue.status.error">
+            <de><![CDATA[Fehler]]></de>
+        </locale>
+        <locale name="mailqueue.status.canceled">
+            <de><![CDATA[Abgebrochen]]></de>
+        </locale>
+        <locale name="mailqueue.mail.panel.title">
+            <de><![CDATA[Queue-E-Mail]]></de>
+        </locale>
+        <locale name="mailqueue.mail.panel.error.no_mail_id">
+            <de><![CDATA[Keine Mail-ID übergeben.]]></de>
+        </locale>
+        <locale name="mailqueue.mail.panel.error.not_found">
+            <de><![CDATA[E-Mail nicht gefunden.]]></de>
+        </locale>
+        <locale name="mailqueue.mail.field.status">
+            <de><![CDATA[Status]]></de>
+        </locale>
+        <locale name="mailqueue.mail.field.lastsend">
+            <de><![CDATA[Letzter Versand]]></de>
+        </locale>
+        <locale name="mailqueue.mail.field.retry">
+            <de><![CDATA[Versuche]]></de>
+        </locale>
+        <locale name="mailqueue.mail.field.from">
+            <de><![CDATA[Von]]></de>
+        </locale>
+        <locale name="mailqueue.mail.field.to">
+            <de><![CDATA[An]]></de>
+        </locale>
+        <locale name="mailqueue.mail.field.reply_to">
+            <de><![CDATA[Antwort an]]></de>
+        </locale>
+        <locale name="mailqueue.mail.field.cc">
+            <de><![CDATA[CC]]></de>
+        </locale>
+        <locale name="mailqueue.mail.field.bcc">
+            <de><![CDATA[BCC]]></de>
+        </locale>
+        <locale name="mailqueue.mail.field.errors">
+            <de><![CDATA[Fehler]]></de>
+        </locale>
+        <locale name="mailqueue.mail.field.body_html">
+            <de><![CDATA[Inhalt (HTML)]]></de>
+        </locale>
+        <locale name="mailqueue.mail.field.body_text">
+            <de><![CDATA[Inhalt (Text)]]></de>
         </locale>
         <locale name="quiqqer.settings.email.maxAttachmentSize">
             <de><![CDATA[Maximale Anhangsgröße (Byte)]]></de>

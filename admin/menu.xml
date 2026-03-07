@@ -111,6 +111,15 @@
         <locale group="quiqqer/core" var="menu.settings.editor.text"/>
     </item>
 
+    <item parent="/settings/quiqqer/"
+          name="mailqueue"
+          icon="fa fa-envelope-open-o"
+          require="controls/system/mailqueue/Panel"
+          permission="quiqqer.admin.settings"
+    >
+        <locale group="quiqqer/core" var="menu.settings.mailqueue.text"/>
+    </item>
+
     <!--
     <item parent="/settings/quiqqer/"
           name="vhosts"

@@ -242,6 +242,10 @@
                     <type><![CDATA[number]]></type>
                     <defaultvalue>0</defaultvalue>
                 </conf>
+                <conf name="queueMaxRetries">
+                    <type><![CDATA[number]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
                 <conf name="admin_bcc">
                     <type><![CDATA[bool]]></type>
                     <defaultvalue>0</defaultvalue>
@@ -661,6 +665,14 @@
                             </text>
                             <description>
                                 <locale group="quiqqer/core" var="quiqqer.settings.email.queueLimitPerHour.desc"/>
+                            </description>
+                        </input>
+                        <input conf="mail.queueMaxRetries" type="number">
+                            <text>
+                                <locale group="quiqqer/core" var="quiqqer.settings.email.queueMaxRetries"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/core" var="quiqqer.settings.email.queueMaxRetries.desc"/>
                             </description>
                         </input>
                         <input conf="mail.logging" type="checkbox">
