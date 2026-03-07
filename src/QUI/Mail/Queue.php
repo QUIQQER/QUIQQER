@@ -180,6 +180,7 @@ class Queue
                     ]
                 ],
             ],
+            'order' => 'c_date ASC, id ASC',
             'limit' => 1
         ]);
 
