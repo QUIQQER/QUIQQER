@@ -10,16 +10,16 @@ define('controls/packages/store/Window', [
     return new Class({
 
         Extends: QUIPopup,
-        Type   : 'controls/packages/store/Window',
+        Type: 'controls/packages/store/Window',
 
         Binds: [
             '$onOpen'
         ],
 
         options: {
-            package  : false,
+            package: false,
             maxHeight: 600,
-            maxWidth : 800
+            maxWidth: 800
         },
 
         initialize: function (options) {
@@ -27,9 +27,9 @@ define('controls/packages/store/Window', [
 
             this.setAttributes({
                 maxHeight: size.y - 100,
-                maxWidth : size.x - 100,
-                title    : 'Q-Store',
-                buttons  : false
+                maxWidth: size.x - 100,
+                title: 'Q-Store',
+                buttons: false
             });
 
             this.parent(options);
@@ -49,7 +49,7 @@ define('controls/packages/store/Window', [
 
             new Store({
                 package: this.getAttribute('package'),
-                events : {
+                events: {
                     onLoad: function () {
                         self.Loader.hide();
                     }

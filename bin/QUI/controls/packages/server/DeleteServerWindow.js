@@ -20,7 +20,7 @@ define('controls/packages/server/DeleteServerWindow', [
     return new Class({
 
         Extends: QUIConfirm,
-        Type   : 'controls/packages/server/DeleteServerWindow',
+        Type: 'controls/packages/server/DeleteServerWindow',
 
         Binds: [
             '$onOpen',
@@ -28,24 +28,24 @@ define('controls/packages/server/DeleteServerWindow', [
         ],
 
         options: {
-            title    : QUILocale.get(lg, 'packages.panel.server.win.delete.title'),
-            icon     : 'fa fa-trash',
+            title: QUILocale.get(lg, 'packages.panel.server.win.delete.title'),
+            icon: 'fa fa-trash',
             maxHeight: 600,
-            maxWidth : 400,
+            maxWidth: 400,
             autoclose: false,
             ok_button: {
-                text     : QUILocale.get('quiqqer/core', 'delete'),
+                text: QUILocale.get('quiqqer/core', 'delete'),
                 textimage: 'fa fa-trash'
             },
-            server   : false
+            server: false
         },
 
         initialize: function (options) {
             this.parent(options);
 
             this.$Server = null;
-            this.$Type   = null;
-            this.$Image  = null;
+            this.$Type = null;
+            this.$Image = null;
 
             this.addEvents({
                 onOpen: this.$onOpen
@@ -74,8 +74,8 @@ define('controls/packages/server/DeleteServerWindow', [
             }.bind(this));
 
             this.$Server = Form.elements.server;
-            this.$Type   = Form.elements.type;
-            this.$Image  = Content.getElement('.qui-control-packages-server-image');
+            this.$Type = Form.elements.type;
+            this.$Image = Content.getElement('.qui-control-packages-server-image');
 
             this.$Type.addEvent('change', function () {
                 this.$Image.set('html', Packages.getServerTypeIcon(this.$Type.value));

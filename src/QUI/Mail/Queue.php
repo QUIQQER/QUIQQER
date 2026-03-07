@@ -10,19 +10,26 @@ use Exception;
 use QUI;
 use QUI\Utils\System\File;
 
+use function array_filter;
+use function array_map;
 use function explode;
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
 use function filesize;
+use function implode;
+use function in_array;
 use function is_array;
 use function is_dir;
+use function is_string;
 use function json_decode;
 use function json_encode;
 use function preg_replace;
 use function sprintf;
 use function str_replace;
+use function strtolower;
 use function time;
+use function trim;
 
 /**
  * Mail queue
@@ -36,6 +43,8 @@ class Queue
     const STATUS_SENDING = 2;
 
     const STATUS_ERROR = 3;
+
+    const STATUS_CANCELED = 4;
 
     /**
      * Execute the db mail queue setup
@@ -62,7 +71,8 @@ class Queue
             'attachements' => 'TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL',
             'status' => 'int(1) NOT NULL DEFAULT 0',
             'lastsend' => 'int(11)',
-            'retry' => 'int(3) NOT NULL DEFAULT 0'
+            'retry' => 'int(3) NOT NULL DEFAULT 0',
+            'errors' => 'LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL'
         ]);
 
         $Table->setPrimaryKey(self::table(), 'id');
@@ -163,10 +173,14 @@ class Queue
             'from' => self::table(),
             'where' => [
                 'status' => [
-                    'type' => 'NOT',
-                    'value' => self::STATUS_SENDING
-                ]
+                    'type' => 'IN',
+                    'value' => [
+                        self::STATUS_ADDED,
+                        self::STATUS_ERROR
+                    ]
+                ],
             ],
+            'order' => 'c_date ASC, id ASC',
             'limit' => 1
         ]);
 
@@ -175,17 +189,6 @@ class Queue
         }
 
         $entry = $params[0];
-
-        QUI::getDataBase()->update(
-            self::table(),
-            [
-                'status' => self::STATUS_SENDING,
-                'lastsend' => time(),
-                'retry' => (int)$entry['retry']++
-            ],
-            ['id' => $entry['id']]
-        );
-
 
         try {
             $send = $this->sendMail($entry);
@@ -198,7 +201,15 @@ class Queue
 
                 return true;
             }
-        } catch (QUI\Exception $Exception) {
+
+            if (!$this->isMailCanceled((int)$entry['id'])) {
+                QUI::getDataBase()->update(
+                    self::table(),
+                    ['status' => self::STATUS_ADDED],
+                    ['id' => $entry['id']]
+                );
+            }
+        } catch (\Exception $Exception) {
             QUI\System\Log::addError(
                 $Exception->getMessage(),
                 ['trace' => $Exception->getTraceAsString()],
@@ -238,8 +249,12 @@ class Queue
         }
 
         $PhpMailer = null;
+        $currentRetry = 0;
 
         try {
+            $currentRetry = $this->markAsSendingAndIncreaseRetry($params);
+            $params['retry'] = $currentRetry;
+
             $PhpMailer = QUI::getMailManager()->getPHPMailer();
 
             $mailto = json_decode($params['mailto'], true);
@@ -399,6 +414,13 @@ class Queue
             QUI\System\Log::writeException($Exception);
             Log::logException($Exception);
 
+            $this->appendError((int)$params['id'], $Exception->getMessage());
+            $params['errors'] = $Exception->getMessage();
+
+            if ($this->cancelIfReachedMaxRetries($params, $currentRetry)) {
+                return false;
+            }
+
             QUI::getDataBase()->update(
                 self::table(),
                 ['status' => self::STATUS_ERROR],
@@ -468,8 +490,11 @@ class Queue
             'from' => self::table(),
             'where' => [
                 'status' => [
-                    'type' => 'NOT',
-                    'value' => self::STATUS_SENDING
+                    'type' => 'IN',
+                    'value' => [
+                        self::STATUS_ADDED,
+                        self::STATUS_ERROR
+                    ]
                 ]
             ]
         ]);
@@ -516,21 +541,14 @@ class Queue
             );
         }
 
-        if ((int)$params[0]['status'] === self::STATUS_SENDING) {
+        if (
+            (int)$params[0]['status'] === self::STATUS_SENDING
+            || (int)$params[0]['status'] === self::STATUS_CANCELED
+        ) {
             return true;
         }
 
         $entry = $params[0];
-
-        QUI::getDataBase()->update(
-            self::table(),
-            [
-                'status' => self::STATUS_SENDING,
-                'lastsend' => time(),
-                'retry' => (int)$entry['retry']++
-            ],
-            ['id' => $id]
-        );
 
         try {
             $send = $this->sendMail($entry);
@@ -544,15 +562,14 @@ class Queue
                 return true;
             }
 
-            QUI::getDataBase()->update(
-                self::table(),
-                [
-                    'status' => self::STATUS_ADDED,
-                    'retry' => $entry['retry'] + 1
-                ],
-                ['id' => $entry['id']]
-            );
-        } catch (QUI\Exception $Exception) {
+            if (!$this->isMailCanceled((int)$entry['id'])) {
+                QUI::getDataBase()->update(
+                    self::table(),
+                    ['status' => self::STATUS_ADDED],
+                    ['id' => $entry['id']]
+                );
+            }
+        } catch (\Exception $Exception) {
             QUI\System\Log::addError(
                 $Exception->getMessage(),
                 ['trace' => $Exception->getTraceAsString()],
@@ -589,5 +606,185 @@ class Queue
         return QUI::getDataBase()->fetch([
             'from' => self::table()
         ]);
+    }
+
+    /**
+     * @throws QUI\Database\Exception
+     */
+    protected function markAsSendingAndIncreaseRetry(array $params): int
+    {
+        $retry = (int)$params['retry'] + 1;
+
+        QUI::getDataBase()->update(
+            self::table(),
+            [
+                'status' => self::STATUS_SENDING,
+                'lastsend' => time(),
+                'retry' => $retry
+            ],
+            ['id' => $params['id']]
+        );
+
+        return $retry;
+    }
+
+    /**
+     * @throws QUI\Database\Exception
+     */
+    protected function isMailCanceled(int $id): bool
+    {
+        $result = QUI::getDataBase()->fetch([
+            'select' => ['status'],
+            'from' => self::table(),
+            'where' => ['id' => $id],
+            'limit' => 1
+        ]);
+
+        if (!isset($result[0])) {
+            return false;
+        }
+
+        return (int)$result[0]['status'] === self::STATUS_CANCELED;
+    }
+
+    /**
+     * @throws QUI\Database\Exception
+     */
+    protected function cancelIfReachedMaxRetries(array $params, int $retry): bool
+    {
+        $maxRetries = (int)QUI::conf('mail', 'queueMaxRetries');
+
+        if ($maxRetries < 1 || $retry < $maxRetries) {
+            return false;
+        }
+
+        QUI::getDataBase()->update(
+            self::table(),
+            ['status' => self::STATUS_CANCELED],
+            ['id' => $params['id']]
+        );
+
+        $this->notifyAdminAboutCanceledMail($params, $retry);
+
+        return true;
+    }
+
+    /**
+     * @throws QUI\Database\Exception
+     */
+    protected function appendError(int $id, string $message): void
+    {
+        $result = QUI::getDataBase()->fetch([
+            'select' => ['errors'],
+            'from' => self::table(),
+            'where' => ['id' => $id],
+            'limit' => 1
+        ]);
+
+        $currentErrors = '';
+
+        if (isset($result[0]['errors']) && is_string($result[0]['errors'])) {
+            $currentErrors = $result[0]['errors'];
+        }
+
+        $entry = '[' . time() . '] ' . $message;
+        $errors = trim($currentErrors . "\n" . $entry);
+
+        QUI::getDataBase()->update(
+            self::table(),
+            ['errors' => $errors],
+            ['id' => $id]
+        );
+    }
+
+    protected function notifyAdminAboutCanceledMail(array $params, int $retryCount): void
+    {
+        $adminMail = trim((string)QUI::conf('mail', 'admin_mail'));
+
+        if (empty($adminMail)) {
+            return;
+        }
+
+        $adminMails = array_values(array_filter(array_map('trim', explode(',', $adminMail))));
+
+        if (empty($adminMails)) {
+            return;
+        }
+
+        $recipients = $this->extractMailAddresses($params['mailto'] ?? []);
+        $normalizedAdmins = array_map(
+            static function ($mail) {
+                return strtolower(trim((string)$mail));
+            },
+            $adminMails
+        );
+
+        $nonAdminRecipients = array_filter(
+            $recipients,
+            static function ($mail) use ($normalizedAdmins) {
+                return !in_array(strtolower(trim($mail)), $normalizedAdmins, true);
+            }
+        );
+
+        if (empty($nonAdminRecipients)) {
+            return;
+        }
+
+        try {
+            $PhpMailer = QUI::getMailManager()->getPHPMailer();
+
+            foreach ($adminMails as $mail) {
+                $PhpMailer->addAddress($mail);
+            }
+
+            $errors = '';
+
+            if (isset($params['errors']) && is_string($params['errors'])) {
+                $errors = trim($params['errors']);
+            }
+
+            $body = implode("\n", [
+                'A mail queue entry has been canceled because max retries were reached.',
+                'Mail Queue ID: ' . (int)$params['id'],
+                'Retries: ' . $retryCount,
+                'Subject: ' . (string)($params['subject'] ?? ''),
+                'Recipients: ' . implode(', ', $recipients),
+                'Last Error: ' . $errors
+            ]);
+
+            $PhpMailer->Subject = 'Mail queue entry canceled';
+            $PhpMailer->Body = $body;
+            $PhpMailer->AltBody = $body;
+            $PhpMailer->isHTML(false);
+            $PhpMailer->send();
+        } catch (Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+    }
+
+    protected function extractMailAddresses(mixed $mails): array
+    {
+        if (is_string($mails)) {
+            $mails = json_decode($mails, true);
+        }
+
+        if (!is_array($mails)) {
+            return [];
+        }
+
+        $result = [];
+
+        foreach ($mails as $entry) {
+            if (is_array($entry) && isset($entry[0])) {
+                $result[] = (string)$entry[0];
+                continue;
+            }
+
+            if (is_string($entry)) {
+                $result[] = $entry;
+            }
+        }
+
+        return array_values(array_filter(array_map('trim', $result)));
     }
 }

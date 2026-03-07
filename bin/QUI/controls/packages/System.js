@@ -1,5 +1,4 @@
 /**
- *
  * @event onLoad
  * @event onShowLoader
  * @event onHideLoader
@@ -183,8 +182,8 @@ define('controls/packages/System', [
          */
         refreshLastUpdateCheckDate: function () {
             return Promise.all([
-                Packages.getLastUpdateCheck(true),
-                Packages.getLastUpdate(true)
+                Packages.getLastUpdateCheck(false),
+                Packages.getLastUpdate(false)
             ]).then((res) => {
                 let lastUpdateCheck = res[0];
                 let lastUpdate = res[1];
@@ -208,16 +207,16 @@ define('controls/packages/System', [
                         break;
                 }
 
-                if (!lastUpdateCheck) {
+                if (!parseInt(lastUpdateCheck, 10)) {
                     lastUpdateCheck = '---';
                 } else {
-                    lastUpdateCheck = new Date(lastUpdateCheck).toLocaleString(language, options);
+                    lastUpdateCheck = new Date(parseInt(lastUpdateCheck, 10) * 1000).toLocaleString(language, options);
                 }
 
-                if (!lastUpdate) {
+                if (!parseInt(lastUpdate, 10)) {
                     lastUpdate = '---';
                 } else {
-                    lastUpdate = new Date(lastUpdate).toLocaleString(language, options);
+                    lastUpdate = new Date(parseInt(lastUpdate, 10) * 1000).toLocaleString(language, options);
                 }
 
                 this.$Elm.querySelector('.qui-update-lastCheck').set('html', lastUpdateCheck);

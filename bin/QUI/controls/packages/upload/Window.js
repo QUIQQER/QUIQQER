@@ -21,7 +21,7 @@ define('controls/packages/upload/Window', [
     return new Class({
 
         Extends: QUIPopup,
-        Type   : 'controls/packages/upload/Window',
+        Type: 'controls/packages/upload/Window',
 
         Binds: [
             '$onOpen',
@@ -30,26 +30,26 @@ define('controls/packages/upload/Window', [
 
         options: {
             maxHeight: 450,
-            maxWidth : 900,
-            buttons  : false
+            maxWidth: 900,
+            buttons: false
         },
 
         initialize: function (options) {
             this.setAttributes({
                 title: QUILocale.get(lg, 'dialog.packages.install.upload.title'),
-                icon : 'fa fa-upload'
+                icon: 'fa fa-upload'
             });
 
             this.parent(options);
 
             this.$UploadContainer = null;
-            this.$ListContainer   = null;
+            this.$ListContainer = null;
 
-            this.$Upload        = null;
+            this.$Upload = null;
             this.$TextContainer = null;
 
             this.addEvents({
-                onOpen  : this.$onOpen,
+                onOpen: this.$onOpen,
                 onResize: this.$onResize
             });
         },
@@ -62,37 +62,37 @@ define('controls/packages/upload/Window', [
 
             this.$UploadContainer = new Element('div', {
                 styles: {
-                    left    : 20,
+                    left: 20,
                     position: 'absolute',
-                    top     : 20,
-                    width   : 'calc(100% - 40px)'
+                    top: 20,
+                    width: 'calc(100% - 40px)'
                 }
             }).inject(this.getContent());
 
             this.$ListContainer = new Element('div', {
                 styles: {
-                    display : 'none',
-                    opacity : 0,
+                    display: 'none',
+                    opacity: 0,
                     position: 'absolute',
-                    width   : 'calc(100% - 40px)'
+                    width: 'calc(100% - 40px)'
                 }
             }).inject(this.getContent());
 
 
             // upload
             this.$TextContainer = new Element('div', {
-                html  : QUILocale.get(lg, 'dialog.packages.install.upload.description'),
+                html: QUILocale.get(lg, 'dialog.packages.install.upload.description'),
                 styles: {
                     'float': 'left',
                     padding: '0 0 20px 0',
-                    width  : '100%'
+                    width: '100%'
                 }
             }).inject(this.$UploadContainer);
 
             var UploadContainer = new Element('div', {
                 styles: {
                     'float': 'left',
-                    width  : '100%'
+                    width: '100%'
                 }
             }).inject(this.$UploadContainer);
 
@@ -120,10 +120,10 @@ define('controls/packages/upload/Window', [
 
             // list
             this.$ListButton = new QUIButton({
-                icon   : 'fa fa-list',
+                icon: 'fa fa-list',
                 'class': 'quiqqer-packages-upload-uploadedList-listBtn',
-                title  : QUILocale.get(lg, 'dialog.packages.install.upload.listBtn.title'),
-                events : {
+                title: QUILocale.get(lg, 'dialog.packages.install.upload.listBtn.title'),
+                events: {
                     onClick: function (Btn) {
                         if (Btn.isActive()) {
                             self.openUpload();
@@ -148,7 +148,7 @@ define('controls/packages/upload/Window', [
                 return;
             }
 
-            var size     = this.getContent().getSize(),
+            var size = this.getContent().getSize(),
                 textSize = this.$TextContainer.getSize();
 
             var height = size.y - textSize.y;
@@ -169,7 +169,7 @@ define('controls/packages/upload/Window', [
 
             return new Promise(function (resolve) {
                 moofx(self.$UploadContainer).animate({
-                    left   : -20,
+                    left: -20,
                     opacity: 0
                 }, {
                     duration: 300,
@@ -181,7 +181,7 @@ define('controls/packages/upload/Window', [
                         self.$ListContainer.setStyle('left', 60);
 
                         moofx(self.$ListContainer).animate({
-                            left   : 20,
+                            left: 20,
                             opacity: 1
                         }, {
                             callback: function () {
@@ -207,7 +207,7 @@ define('controls/packages/upload/Window', [
 
             return new Promise(function (resolve) {
                 moofx(self.$ListContainer).animate({
-                    left   : 60,
+                    left: 60,
                     opacity: 0
                 }, {
                     duration: 300,
@@ -219,7 +219,7 @@ define('controls/packages/upload/Window', [
                         self.$UploadContainer.setStyle('left', -20);
 
                         moofx(self.$UploadContainer).animate({
-                            left   : 20,
+                            left: 20,
                             opacity: 1
                         }, {
                             callback: function () {

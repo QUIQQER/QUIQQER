@@ -20,7 +20,7 @@ define('controls/packages/server/EditServerWindow', [
     return new Class({
 
         Extends: QUIConfirm,
-        Type   : 'controls/packages/server/EditServerWindow',
+        Type: 'controls/packages/server/EditServerWindow',
 
         Binds: [
             '$onOpen',
@@ -28,24 +28,24 @@ define('controls/packages/server/EditServerWindow', [
         ],
 
         options: {
-            title    : QUILocale.get(lg, 'packages.panel.server.win.edit.title'),
-            icon     : 'fa fa-server',
+            title: QUILocale.get(lg, 'packages.panel.server.win.edit.title'),
+            icon: 'fa fa-server',
             maxHeight: 600,
-            maxWidth : 400,
+            maxWidth: 400,
             autoclose: false,
             ok_button: {
-                text     : QUILocale.get('quiqqer/core', 'edit'),
+                text: QUILocale.get('quiqqer/core', 'edit'),
                 textimage: 'fa fa-server'
             },
-            server   : false
+            server: false
         },
 
         initialize: function (options) {
             this.parent(options);
 
             this.$Server = null;
-            this.$Type   = null;
-            this.$Image  = null;
+            this.$Type = null;
+            this.$Image = null;
 
             this.addEvents({
                 onOpen: this.$onOpen
@@ -77,8 +77,8 @@ define('controls/packages/server/EditServerWindow', [
             }.bind(this));
 
             this.$Server = Form.elements.server;
-            this.$Type   = Form.elements.type;
-            this.$Image  = Content.getElement('.qui-control-packages-server-image');
+            this.$Type = Form.elements.type;
+            this.$Image = Content.getElement('.qui-control-packages-server-image');
 
             this.$Type.addEvent('change', function () {
                 this.$Image.set('html', Packages.getServerTypeIcon(this.$Type.value));
@@ -116,7 +116,7 @@ define('controls/packages/server/EditServerWindow', [
             this.Loader.show();
 
             return Packages.editServer(this.getAttribute('server'), {
-                type  : this.$Type.value,
+                type: this.$Type.value,
                 server: this.$Server.value
             }).then(function () {
                 this.fireEvent('submit', [this]);

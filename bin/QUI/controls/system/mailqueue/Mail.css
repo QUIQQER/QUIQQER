@@ -1,0 +1,95 @@
+.mailqueue-mailPanel-body {
+    background: #f1f5f9;
+    padding: 18px;
+    overflow: auto;
+    min-height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.mailqueue-mailPanel-layout {
+    display: grid;
+    gap: 12px;
+    width: 900px;
+    max-width: 90%;
+    margin: 0 auto;
+}
+
+.mailqueue-mailPanel-card {
+    background: #fff;
+    border: 1px solid #d9dde3;
+    border-radius: 4px;
+    padding: 12px;
+}
+
+.mailqueue-mailPanel-title {
+    margin: 0 0 10px;
+    font-size: 18px;
+}
+
+.mailqueue-mailPanel-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 12px;
+}
+
+.mailqueue-mailPanel-sectionTitle {
+    margin: 0 0 8px;
+    font-size: 14px;
+}
+
+.mailqueue-mailPanel-meta {
+    display: grid;
+    gap: 6px;
+    margin-top: 20px;
+}
+
+.mailqueue-mailPanel-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.mailqueue-mailPanel-rowLabel {
+    color: #6b7280;
+    font-size: 12px;
+    min-width: 95px;
+    white-space: nowrap;
+}
+
+.mailqueue-mailPanel-rowValue {
+    font-size: 13px;
+    word-break: break-word;
+    line-height: 1.35;
+}
+
+.mailqueue-mailPanel-text {
+    margin: 0;
+    max-height: 320px;
+    overflow: auto;
+    background: #f4f6f8;
+    border: 1px solid #d9dde3;
+    border-radius: 4px;
+    padding: 8px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+    font-size: 12px;
+}
+
+.mailqueue-mailPanel-htmlViewport {
+    height: 420px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #d9dde3;
+    border-radius: 4px;
+    padding: 0;
+}
+
+.mailqueue-mailPanel-htmlViewport iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}

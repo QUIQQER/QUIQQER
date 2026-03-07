@@ -149,6 +149,7 @@ class MailQueue extends QUI\System\Console\Tool
                     QUI\Mail\Queue::STATUS_SENT => 'sent',
                     QUI\Mail\Queue::STATUS_SENDING => 'sending',
                     QUI\Mail\Queue::STATUS_ERROR => 'error',
+                    QUI\Mail\Queue::STATUS_CANCELED => 'canceled',
                     default => 'unknown',
                 };
 
