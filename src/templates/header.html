@@ -48,7 +48,8 @@
             lu: '{$lastUpdate|md5}',
             ajax: '{$URL_DIR}ajax.php',
             title: '{$Template->getTitle()|escape:"html"}',
-            country: '{$systemCountry}'
+            country: '{$systemCountry}',
+            locale: '{$localePublishVersion}'
         };
 
         {assign var=httpshost value=$Project->getVHost( true, true )}
@@ -137,7 +138,7 @@
                 waitSeconds: 0,
                 locale: QUIQQER_USER.lang +"-"+ QUIQQER_USER.lang,
                 catchError: true,
-                urlArgs: "update={$lastUpdate|md5}",
+                urlArgs: "update={$lastUpdate|md5}&locale={$localePublishVersion}",
 
                 map : {
                     '*': {

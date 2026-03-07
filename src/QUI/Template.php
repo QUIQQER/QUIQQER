@@ -712,6 +712,13 @@ class Template extends QUI\QDOM
             $locales[] = $package . '/' . $Project->getLang();
         }
 
+        $localePublishVersion = md5((string)QUI::getPackageManager()->getLastUpdateDate());
+
+        try {
+            $localePublishVersion = QUI\Translator::getLocalePublishVersion();
+        } catch (QUI\Exception) {
+        }
+
 
         $headers = $this->header;
         $headerExtend = implode('', $headers);
@@ -776,6 +783,7 @@ class Template extends QUI\QDOM
             'ControlManager' => new QUI\Control\Manager(),
             'Canonical' => $Engine->getCanonical(),
             'lastUpdate' => QUI::getPackageManager()->getLastUpdateDate(),
+            'localePublishVersion' => $localePublishVersion,
             'languages' => implode(',', $Project->getLanguages()),
             'systemCountry' => QUI::conf('globals', 'country'),
             'sessionUserIsUser' => (int)QUI::getUsers()->isUser($sessionUser),
