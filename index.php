@@ -278,8 +278,13 @@ try {
             $Response->setStatusCode(Response::HTTP_SERVICE_UNAVAILABLE);
         }
 
+        // 5001 is an internal "empty content" marker from this render path; do not log it as an error.
         if ($Exception->getCode() !== 5001) {
-            Log::writeException($Exception);
+            if ($Exception instanceof QUI\Permissions\Exception) {
+                Log::addInfo($Exception->getMessage());
+            } else {
+                Log::writeException($Exception);
+            }
         }
 
         $Template = new QUI\Template();
