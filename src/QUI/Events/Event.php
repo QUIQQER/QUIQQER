@@ -148,9 +148,13 @@ class Event implements QUI\Interfaces\Events
         }
 
         foreach ($this->events[$event] as $k => $_fn) {
-            if ($_fn == $fn) {
+            if ($_fn['callable'] == $fn) {
                 unset($this->events[$event][$k]);
             }
+        }
+
+        if (empty($this->events[$event])) {
+            unset($this->events[$event]);
         }
     }
 

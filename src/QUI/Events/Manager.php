@@ -106,7 +106,7 @@ class Manager implements QUI\Interfaces\Events
             $this->writeCache();
         }
 
-        $this->Events->addEvent($event, $fn, $priority);
+        $this->Events->addEvent($event, $fn, $priority, $package);
     }
 
     /**
@@ -580,7 +580,7 @@ class Manager implements QUI\Interfaces\Events
     {
         foreach ($this->Events->getList() as $event => $entries) {
             foreach ($entries as $entry) {
-                if (($entry['package'] ?? '') !== $packageName) {
+                if ($entry['package'] !== $packageName) {
                     continue;
                 }
 
