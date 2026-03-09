@@ -25,26 +25,47 @@ use function usort;
 /**
  * Events Handling
  * Extends a class with the events interface
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Event implements QUI\Interfaces\Events
 {
     /**
-     * Registered events
+     * @var array<string, array<int, array{
+     *     callable: callable|string,
+     *     priority: int,
+     *     package: string
+     * }>>
      */
     protected array $events = [];
 
+    /**
+     * @var array<string, bool>
+     */
     protected array $currentRunning = [];
 
+    /**
+     * @var array<string, bool>
+     */
     protected array $ignore = [];
 
+    /**
+     * Return all registered runtime events.
+     *
+     * @return array<string, array<int, array{
+     *     callable: callable|string,
+     *     priority: int,
+     *     package: string
+     * }>>
+     */
     public function getList(): array
     {
         return $this->events;
     }
 
+    /**
+     * Add multiple runtime events at once.
+     *
+     * @param array<string, callable|string|array{0: callable|string, 1: int, 2: string}> $events
+     */
     public function addEvents(array $events): void
     {
         foreach ($events as $event => $fn) {
@@ -58,10 +79,12 @@ class Event implements QUI\Interfaces\Events
     }
 
     /**
-     * @param string $event - The type of event (e.g. 'complete').
-     * @param callable|string $fn - The function to execute.
-     * @param int $priority
-     * @param string $package
+     * Add a runtime event listener.
+     *
+     * @param string $event Event name such as `onSave`
+     * @param callable|string $fn Event handler
+     * @param int $priority Lower values run earlier
+     * @param string $package Owning package name
      */
     public function addEvent(
         string $event,
@@ -95,7 +118,9 @@ class Event implements QUI\Interfaces\Events
     }
 
     /**
-     * @param array $events - (optional) If not passed removes all events of all types.
+     * Remove multiple runtime events.
+     *
+     * @param array<string, callable|false> $events
      */
     public function removeEvents(array $events): void
     {
@@ -105,8 +130,10 @@ class Event implements QUI\Interfaces\Events
     }
 
     /**
-     * @param string $event - The type of event (e.g. 'complete').
-     * @param callable|boolean $fn - (optional) The function to remove.
+     * Remove a runtime event listener.
+     *
+     * @param string $event Event name
+     * @param callable|bool $fn Specific handler or `false` to remove the whole event
      */
     public function removeEvent(string $event, callable | bool $fn = false): void
     {
@@ -128,12 +155,12 @@ class Event implements QUI\Interfaces\Events
     }
 
     /**
-     * @param string $event - The type of event (e.g. 'onComplete').
-     * @param boolean|array $args - (optional) the argument(s) to pass to the function.
-     *                            The arguments must be in an array.
+     * Fire an event with optional arguments.
      *
-     * @return array - Event results, associative array
+     * @param string $event Event name such as `onComplete`
+     * @param bool|array<array-key, mixed> $args Event arguments; when provided they must be an array
      *
+     * @return array<string, mixed> Event results indexed by callback name
      * @throws QUI\ExceptionStack
      */
     public function fireEvent(
@@ -274,11 +301,9 @@ class Event implements QUI\Interfaces\Events
     //region ignore
 
     /**
-     * sets which package names should be ignored at a fire event
-     *
-     * @param $packageName
+     * Ignore all handlers of a package while firing events.
      */
-    public function ignore($packageName): void
+    public function ignore(string $packageName): void
     {
         $this->ignore[$packageName] = true;
     }
