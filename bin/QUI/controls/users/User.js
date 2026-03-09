@@ -61,6 +61,7 @@ define('controls/users/User', [
         initialize: function (uid, options) {
             this.$uid = uid;
             this.$userId = uid;
+            this.$savePromise = null;
             this.setAttribute('name', 'user-panel-' + uid);
             this.setAttribute('#id', 'user-panel-' + uid);
 
@@ -947,22 +948,50 @@ define('controls/users/User', [
          * @method controls/users/User#$onClickSave
          */
         $onClickSave: function () {
+            if (this.$savePromise) {
+                return this.$savePromise;
+            }
+
             const Active = this.getActiveCategory(),
-                User = this.getUser();
+                User = this.getUser(),
+                SaveButton = this.getButtons('userSave');
 
             if (Active) {
                 this.$onButtonNormal(Active);
             }
 
+            this.Loader.show();
+
+            if (SaveButton) {
+                SaveButton.disable();
+            }
+
             let PassWordSave = Promise.resolve();
 
-            if (Active.getAttribute('name') === 'security') {
+            if (Active && Active.getAttribute('name') === 'security') {
                 PassWordSave = this.savePassword();
             }
 
-            return PassWordSave.then(function () {
+            this.$savePromise = PassWordSave.then(function () {
                 return User.save();
-            });
+            }).then(function () {
+                if (SaveButton) {
+                    SaveButton.enable();
+                }
+
+                this.Loader.hide();
+            }.bind(this)).catch(function (err) {
+                if (SaveButton) {
+                    SaveButton.enable();
+                }
+
+                this.Loader.hide();
+                throw err;
+            }.bind(this)).finally(function () {
+                this.$savePromise = null;
+            }.bind(this));
+
+            return this.$savePromise;
         },
 
         /**
@@ -1037,12 +1066,9 @@ define('controls/users/User', [
                     return reject();
                 }
 
-                this.Loader.show();
-
                 this.getUser().savePassword(Pass1.value, Pass2.value).then(function () {
-                    this.Loader.hide();
                     resolve();
-                }.bind(this)).catch(function (err) {
+                }).catch(function (err) {
                     QUI.getMessageHandler().then(function (MH) {
                         if (typeOf(err) === 'string') {
                             MH.addError(err);
@@ -1054,8 +1080,8 @@ define('controls/users/User', [
                         }
                     });
 
-                    this.Loader.hide();
-                }.bind(this));
+                    reject(err);
+                });
             }.bind(this));
         },
 

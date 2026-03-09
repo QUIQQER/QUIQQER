@@ -1,7 +1,6 @@
 /**
  * Image input
  *
- *
  * @event onChange [ {self}, {String} ]
  */
 define('controls/projects/project/media/Input', [
@@ -45,10 +44,10 @@ define('controls/projects/project/media/Input', [
             styles: false,
 
             fileid: false,
-            breadcrumb: true,     // you can specified if the breadcrumb is shown or not
-            selectable_types: false,    // you can specified which types are selectable
-            selectable_mimetypes: false,    // you can specified which mime types are selectable
-            cssclasses: false,    // css classes can be selected
+            breadcrumb: true,     // you can specify if the breadcrumb is shown or not
+            selectable_types: false,    // you can specify which types are selectable
+            selectable_mimetypes: false,    // you can specify which mime types are selectable
+            cssclasses: false,    // CSS classes can be selected
             mediabutton: true,     // images can be selected
             ratio_warning: false     // if the image has not an 1:1 ration, a warning icon is displayed
         },

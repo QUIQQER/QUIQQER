@@ -8,7 +8,6 @@ namespace QUI\System\Console\Tools;
 
 use Exception;
 use QUI;
-use QUI\Bricks\Manager as BricksManager;
 
 use function json_encode;
 
@@ -17,7 +16,7 @@ use function json_encode;
  */
 class CopyLanguageSites extends QUI\System\Console\Tool
 {
-    protected ?BricksManager $BricksManager = null;
+    protected ?QUI\Bricks\Manager $BricksManager = null;
 
     /**
      * Maps source brick id to target brick id.
@@ -30,9 +29,6 @@ class CopyLanguageSites extends QUI\System\Console\Tool
 
     protected bool $activateSites = true;
 
-    /**
-     * Konstruktor
-     */
     public function __construct()
     {
         $this->setName('quiqqer:copy-language-sites')
@@ -83,14 +79,13 @@ class CopyLanguageSites extends QUI\System\Console\Tool
     }
 
     /**
-     * (non-PHPdoc)
-     *
      * @throws QUI\Exception
-     * @see \QUI\System\Console\Tool::execute()
      */
     public function execute(): void
     {
-        $this->BricksManager = BricksManager::init();
+        if (class_exists('QUI\Bricks\Manager')) {
+            $this->BricksManager = QUI\Bricks\Manager::init();
+        }
 
         $Projects = QUI::getProjectManager();
 
@@ -99,11 +94,11 @@ class CopyLanguageSites extends QUI\System\Console\Tool
         }
 
         // project name
-        $projectname = $this->getArgument('project_name');
+        $projectName = $this->getArgument('project_name');
 
-        if (empty($projectname)) {
+        if (empty($projectName)) {
             $this->writeLn('Project name: ');
-            $projectname = $this->readInput();
+            $projectName = $this->readInput();
         }
 
         // source lang
@@ -115,9 +110,9 @@ class CopyLanguageSites extends QUI\System\Console\Tool
         }
 
         try {
-            $SourceProject = $Projects->getProject($projectname, $source_lang);
+            $SourceProject = $Projects->getProject($projectName, $source_lang);
         } catch (Exception) {
-            $this->writeLn("Could not load project $projectname ($source_lang)");
+            $this->writeLn("Could not load project $projectName ($source_lang)");
             $this->execute();
 
             return;
@@ -150,9 +145,9 @@ class CopyLanguageSites extends QUI\System\Console\Tool
         }
 
         try {
-            $TargetProject = $Projects->getProject($projectname, $targetLang);
+            $TargetProject = $Projects->getProject($projectName, $targetLang);
         } catch (Exception) {
-            $this->writeLn("Could not load project $projectname ($targetLang)");
+            $this->writeLn("Could not load project $projectName ($targetLang)");
             $this->execute();
 
             return;
@@ -198,7 +193,11 @@ class CopyLanguageSites extends QUI\System\Console\Tool
             $copyBricks = $this->readInput();
         }
 
-        if ($copyBricks && mb_strtolower($copyBricks) !== 'n') {
+        if (
+            $copyBricks
+            && mb_strtolower($copyBricks) !== 'n'
+            && $this->BricksManager
+        ) {
             $this->copyBricks = true;
             $this->sourceBrickAreas = $this->BricksManager->getAreasByProject($SourceProject);
 
@@ -225,6 +224,10 @@ class CopyLanguageSites extends QUI\System\Console\Tool
      */
     protected function copyBricks(QUI\Projects\Project $SourceProject, QUI\Projects\Project $TargetProject): void
     {
+        if (!$this->BricksManager) {
+            return;
+        }
+
         $this->writeLn("\n\n=== Copying bricks to target language ===\n\n");
 
         $sourceBricks = QUI::getDataBase()->fetch([
@@ -326,7 +329,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
 
                 foreach ($this->sourceBrickAreas as $brickArea) {
                     $brickArea = $brickArea['name'];
-                    $bricksByArea = $this->BricksManager->getBricksByArea($brickArea, $SourceChild);
+                    $bricksByArea = $this->BricksManager?->getBricksByArea($brickArea, $SourceChild);
 
                     if (empty($bricksByArea)) {
                         continue;
@@ -334,7 +337,6 @@ class CopyLanguageSites extends QUI\System\Console\Tool
 
                     $siteAreaBricks[$brickArea] = [];
 
-                    /** @var QUI\Bricks\Brick $Brick */
                     foreach ($bricksByArea as $Brick) {
                         $brickId = (int)$Brick->getAttribute('id');
 
