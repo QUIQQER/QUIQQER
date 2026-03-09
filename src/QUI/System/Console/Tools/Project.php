@@ -8,7 +8,6 @@ namespace QUI\System\Console\Tools;
 
 use Exception;
 use QUI;
-use QUI\Bricks\Manager as BricksManager;
 use QUI\Projects\Manager as ProjectsManager;
 
 use function count;
@@ -27,7 +26,7 @@ class Project extends QUI\System\Console\Tool
 {
     protected bool $quiqqerBricksInstalled = false;
 
-    protected BricksManager $BricksManager;
+    protected ?QUI\Bricks\Manager $BricksManager = null;
 
     /**
      * Constructor
@@ -189,7 +188,7 @@ class Project extends QUI\System\Console\Tool
                     !isset($composerData['type']) ||
                     $composerData['type'] !== 'quiqqer-template'
                 ) {
-                    $this->writeLn('This template doesn \'t exists!', 'red');
+                    $this->writeLn('This template does not exists!', 'red');
                     $this->resetColor();
                     $this->writeLn('', '');
                     exit;
@@ -292,9 +291,9 @@ class Project extends QUI\System\Console\Tool
      * Prints a line to the output while using a locale variable of the 'quiqqer/core' group
      */
     protected function writeLnLocale(
-        bool|string $locale,
-        bool|string $color = false,
-        bool|string $background = false
+        bool | string $locale,
+        bool | string $color = false,
+        bool | string $background = false
     ): void {
         $text = QUI::getLocale()->get("quiqqer/core", $locale);
 
@@ -310,8 +309,8 @@ class Project extends QUI\System\Console\Tool
     {
         $this->quiqqerBricksInstalled = QUI::getPackageManager()->isInstalled('quiqqer/bricks');
 
-        if ($this->quiqqerBricksInstalled) {
-            $this->BricksManager = BricksManager::init();
+        if ($this->quiqqerBricksInstalled && class_exists('QUI\Bricks\Manager')) {
+            $this->BricksManager = QUI\Bricks\Manager::init();
         }
 
         // project name
@@ -348,18 +347,18 @@ class Project extends QUI\System\Console\Tool
             exit(1);
         }
 
-        $projectLangs = $Project->getLanguages();
+        $projectLanguages = $Project->getLanguages();
 
-        if (!in_array($langTo, $projectLangs)) {
+        if (!in_array($langTo, $projectLanguages)) {
             $this->writeLn("Project lang '$langTo' does not exist. Adding language...");
 
-            $projectLangs[] = $langTo;
+            $projectLanguages[] = $langTo;
 
             try {
                 ProjectsManager::setConfigForProject(
                     $Project->getName(),
                     [
-                        'lang' => $projectLangs
+                        'lang' => $projectLanguages
                     ]
                 );
 
@@ -405,7 +404,7 @@ class Project extends QUI\System\Console\Tool
         }
 
         // Target project bricks cleanup
-        if ($this->quiqqerBricksInstalled) {
+        if ($this->quiqqerBricksInstalled && $this->BricksManager) {
             $targetProjectBricks = $this->BricksManager->getBricksFromProject($TargetProject);
 
             if (!empty($targetProjectBricks)) {
@@ -508,7 +507,7 @@ class Project extends QUI\System\Console\Tool
         $this->writeLn(" -> Copy successful");
 
         // Bricks
-        if ($this->quiqqerBricksInstalled) {
+        if ($this->quiqqerBricksInstalled && $this->BricksManager) {
             $this->writeLn(" -> Copying bricks...");
 
             $siteAreas = $Site->getAttribute('quiqqer.bricks.areas');
