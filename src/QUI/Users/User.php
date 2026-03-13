@@ -1258,7 +1258,7 @@ class User implements QUIUserInterface
 
         if (!Auth\Helper::hasUserPermissionToUseAuthenticator($this, $authenticator)) {
             throw new QUI\Users\Exception(
-                ['quiqqer/core', 'exception.authenticator.not.found'],
+                ['quiqqer/core', 'exception.authenticator.no.permission'],
                 404
             );
         }
