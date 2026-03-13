@@ -58,40 +58,60 @@ class Handler
     /**
      * @throws Exception
      */
-    public static function onPackageSetup(QUI\Package\Package $Package): void
+    public static function onSetupAllEnd(QUI\Interfaces\System\SystemOutput $Output): void
     {
-        // create auth provider as user permissions
-        $authProviders = $Package->getProvider('auth');
+        $packages = QUI::getPackageManager()->getInstalled();
 
-        if (empty($authProviders)) {
-            return;
-        }
+        $Output->writeLn('> Import authentication permissions');
 
-        // <permission name="quiqqer.auth.AUTH.canUse" type="bool" />
-        $Locale = new QUI\Locale();
-        $Permissions = new QUI\Permissions\Manager();
-        $User = QUI::getUserBySession();
+        foreach ($packages as $entry) {
+            $package = $entry['name'];
 
-        $Locale->no_translation = true;
-
-        foreach ($authProviders as $authProvider) {
-            if (trim($authProvider, '\\') === QUIQQER::class) {
+            try {
+                $Package = QUI::getPackage($package);
+            } catch (\Exception) {
                 continue;
             }
 
-            /* @var $Authenticator AuthenticatorInterface */
-            $Authenticator = new $authProvider($User->getUsername());
-            $permissionName = Helper::parseAuthenticatorToPermission($authProvider);
+            if (!$Package->isQuiqqerPackage()) {
+                continue;
+            }
 
-            $Permissions->addPermission([
-                'name' => $permissionName,
-                'title' => str_replace(['[', ']'], '', $Authenticator->getTitle($Locale)),
-                'desc' => str_replace(['[', ']'], '', $Authenticator->getDescription($Locale)),
-                'type' => 'bool',
-                'area' => '',
-                'src' => $Package->getName(),
-                'defaultvalue' => 0
-            ]);
+            // create auth provider as user permissions
+            $authProviders = $Package->getProvider('auth');
+
+            if (empty($authProviders)) {
+                continue;
+            }
+
+            $Output->writeLn('>> '. $Package->getName());
+
+            // <permission name="quiqqer.auth.AUTH.canUse" type="bool" />
+            $Locale = new QUI\Locale();
+            $Permissions = new QUI\Permissions\Manager();
+            $User = QUI::getUserBySession();
+
+            $Locale->no_translation = true;
+
+            foreach ($authProviders as $authProvider) {
+                if (trim($authProvider, '\\') === QUIQQER::class) {
+                    continue 2;
+                }
+
+                /* @var $Authenticator AuthenticatorInterface */
+                $Authenticator = new $authProvider($User->getUsername());
+                $permissionName = Helper::parseAuthenticatorToPermission($authProvider);
+
+                $Permissions->addPermission([
+                    'name' => $permissionName,
+                    'title' => str_replace(['[', ']'], '', $Authenticator->getTitle($Locale)),
+                    'desc' => str_replace(['[', ']'], '', $Authenticator->getDescription($Locale)),
+                    'type' => 'bool',
+                    'area' => '',
+                    'src' => $Package->getName(),
+                    'defaultvalue' => 0
+                ]);
+            }
         }
     }
 

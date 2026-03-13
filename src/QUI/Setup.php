@@ -90,7 +90,7 @@ class Setup
         $Output->writeLn('> Cleanup');
         self::finish();
 
-        QUI::getEvents()->fireEvent('setupAllEnd');
+        QUI::getEvents()->fireEvent('setupAllEnd', [$Output]);
         $Output->writeLn('> Done');
     }
 

@@ -68,10 +68,15 @@ class Helper
 
         $permission = self::parseAuthenticatorToPermission($authenticator);
 
-        QUI\Permissions\Permission::checkPermission(
-            $permission,
-            $User
-        );
+        try {
+            QUI\Permissions\Permission::checkPermission(
+                $permission,
+                $User
+            );
+        } catch (\Exception $e) {
+            QUI\System\Log::addWarning($e->getMessage());
+            throw $e;
+        }
     }
 
     /**
