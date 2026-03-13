@@ -84,7 +84,7 @@ class Handler
                 continue;
             }
 
-            $Output->writeLn('>> '. $Package->getName());
+            $Output->writeLn('>> ' . $Package->getName());
 
             // <permission name="quiqqer.auth.AUTH.canUse" type="bool" />
             $Locale = new QUI\Locale();
