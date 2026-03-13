@@ -2,7 +2,6 @@
 <events>
     <event on="onAdminLoadFooter" fire="\QUI\EventHandler::onAdminLoadFooter"/>
     <event on="onUserChangePassword" fire="\QUI\EventHandler::onUserChangePassword"/>
-    <event on="onPackageSetup" fire="\QUI\Users\Auth\Handler::onPackageSetup"/>
     <event on="onPackageUpdate" fire="\QUI\EventHandler::onPackageUpdate"/>
 
     <event on="onUserLoginError" fire="\QUI\EventHandler::onUserLoginError"/>
@@ -10,4 +9,5 @@
     <event on="onUserLogin" fire="\QUI\EventHandler::onUserLogin"/>
     <event on="onUserAuthenticatorLoginStart" fire="\QUI\EventHandler::onUserAuthenticatorLoginStart"/>
 
+    <event on="onSetupAllEnd" fire="\QUI\Users\Auth\Handler::onSetupAllEnd"/>
 </events>
