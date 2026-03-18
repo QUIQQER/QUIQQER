@@ -4,7 +4,6 @@
  * The editor main class is the parent class for all WYSIWYG editors.
  * Every WYSIWYG editor must inherit from this class
  *
- *
  * @event onInit [ {self} ]
  * @event onDraw [ {self} ]
  * @event onDestroy[ {self} ]
@@ -42,7 +41,7 @@ define('controls/editors/Editor', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/editors/Editor',
+        Type: 'controls/editors/Editor',
 
         Binds: [
             '$onDrop',
@@ -52,9 +51,9 @@ define('controls/editors/Editor', [
         ],
 
         options: {
-            content   : '',
-            bodyId    : false,  // wysiwyg DOMNode body id
-            bodyClass : false,   // wysiwyg DOMNode body css class
+            content: '',
+            bodyId: false,  // wysiwyg DOMNode body id
+            bodyClass: false,   // wysiwyg DOMNode body css class
             showLoader: true
         },
 
@@ -93,9 +92,9 @@ define('controls/editors/Editor', [
          */
         create: function () {
             this.$Elm = new Element('div', {
-                html   : '<div class="control-editor-container"></div>',
+                html: '<div class="control-editor-container"></div>',
                 'class': 'control-editor',
-                styles : {
+                styles: {
                     minHeight: 300
                 }
             });
@@ -203,11 +202,11 @@ define('controls/editors/Editor', [
 
         /**
          * event : on import
-         * thats not optimal, because we must generate a new editor instance with the editor manager
+         * that's not optimal, because we must generate a new editor instance with the editor manager
          */
         $onImport: function () {
-            const self     = this,
-                  nodeName = this.$Elm.nodeName;
+            const self = this,
+                nodeName = this.$Elm.nodeName;
 
             if (nodeName === 'INPUT' || nodeName === 'TEXTAREA') {
                 this.$Input = this.$Elm;
@@ -259,7 +258,6 @@ define('controls/editors/Editor', [
         /**
          * Returns the Editor Manager
          *
-         * @method controls/editors/Editor#getManager
          * @return {Object} Editor Manager (controls/editors/Manager)
          */
         getManager: function () {
@@ -269,7 +267,6 @@ define('controls/editors/Editor', [
         /**
          * Returns the Editor Container for the editor instance
          *
-         * @method controls/editors/Editor#getContainer
          * @return {HTMLElement|null} Container
          */
         getContainer: function () {
@@ -279,7 +276,6 @@ define('controls/editors/Editor', [
         /**
          * Set the content to the editor
          *
-         * @method controls/editors/Editor#setContent
          * @fires onSetContent [content, this]
          * @param {String} content - HTML String
          */
@@ -294,7 +290,6 @@ define('controls/editors/Editor', [
         /**
          * Get the content from the editor
          *
-         * @method controls/editors/Editor#getContent
          * @return {String} content
          */
         getContent: function () {
@@ -376,7 +371,6 @@ define('controls/editors/Editor', [
         /**
          * Set the editor instance
          *
-         * @method controls/editors/Editor#setInstance
          * @param {Object} Instance - Editor Instance
          */
         setInstance: function (Instance) {
@@ -387,7 +381,6 @@ define('controls/editors/Editor', [
          * Get the editor instance
          * ckeditor, tinymce and so on
          *
-         * @method controls/editors/Editor#getInstance
          * @return {Object} Instance - Editor Instance
          */
         getInstance: function () {
