@@ -517,7 +517,35 @@ define('controls/groups/Group', [
 
                 Form = Body.getElement('form');
 
-                FormUtils.setDataToForm(Group.getAttributes(), Form);
+                const attributes = Object.clone(Group.getAttributes());
+
+                if (attributes.toolbar && attributes.toolbar.indexOf(':') === -1) {
+                    attributes.toolbar = attributes.toolbar.replace('.xml', '');
+
+                    if (attributes.toolbar !== '') {
+                        attributes.toolbar = 'quiqqer/ckeditor4:' + attributes.toolbar;
+                    }
+                }
+
+                if (attributes.assigned_toolbar) {
+                    attributes.assigned_toolbar = attributes.assigned_toolbar.split(',').map(function (toolbar) {
+                        if (toolbar.indexOf(':') !== -1) {
+                            return toolbar;
+                        }
+
+                        toolbar = toolbar.replace('.xml', '');
+
+                        if (toolbar === '') {
+                            return '';
+                        }
+
+                        return 'quiqqer/ckeditor4:' + toolbar;
+                    }).filter(function (toolbar) {
+                        return toolbar !== '';
+                    }).join(',');
+                }
+
+                FormUtils.setDataToForm(attributes, Form);
 
                 switch (Category.getAttribute('name')) {
                     case 'settings':
@@ -601,9 +629,15 @@ define('controls/groups/Group', [
                         Toolbar.set('html', '');
 
                         for (let i = 0, len = toolbars.length; i < len; i++) {
+                            let label = toolbars[i];
+
+                            if (label.indexOf(':') !== -1) {
+                                label = label.split(':').pop();
+                            }
+
                             new Element('option', {
                                 value: toolbars[i],
-                                html: toolbars[i].replace('.xml', '')
+                                html: label
                             }).inject(Toolbar);
                         }
 

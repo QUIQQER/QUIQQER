@@ -22,16 +22,23 @@ use Tidy;
 
 use function array_filter;
 use function array_flip;
+use function array_map;
 use function array_merge;
 use function array_unique;
+use function array_values;
 use function class_exists;
+use function count;
 use function explode;
 use function file_exists;
+use function file_get_contents;
 use function file_put_contents;
 use function implode;
 use function in_array;
 use function is_dir;
 use function is_numeric;
+use function json_decode;
+use function json_last_error;
+use function ksort;
 use function libxml_get_errors;
 use function libxml_use_internal_errors;
 use function md5;
@@ -40,8 +47,13 @@ use function preg_replace;
 use function preg_replace_callback;
 use function rename;
 use function sort;
+use function strpos;
+use function str_contains;
+use function str_ends_with;
 use function str_ireplace;
+use function str_starts_with;
 use function str_replace;
+use function substr;
 use function trim;
 use function unlink;
 
@@ -65,6 +77,8 @@ class Manager
     public static ?Config $Config = null;
 
     protected static ?array $toolbars = null;
+    protected static ?array $editorDefinitions = null;
+    protected static ?array $toolbarDefinitions = null;
 
     /**
      * Editor plugins
@@ -103,61 +117,7 @@ class Manager
             rename($path . "standard.xml", CMS_DIR . "var/backup/standard.xml");
         }
 
-        $toolbars = File::readDir($path);
-
-        if (empty($toolbars)) {
-            $defaultBarDir = __DIR__ . '/toolbars/';
-            $toolbars = File::readDir($defaultBarDir);
-
-            foreach ($toolbars as $toolbar) {
-                File::copy(
-                    $defaultBarDir . $toolbar,
-                    $path . $toolbar
-                );
-            }
-
-            // Prepare the root (admin) group for the new toolbars
-            $rootGroupID = QUI::conf("globals", "root");
-            $rootToolbar = "advanced.xml";
-
-            // Fallback in case the "redakteur.xml" toolbar does not exist.
-            // Should never happen in properly configured systems!
-            if (!in_array("advanced.xml", $toolbars)) {
-                $rootToolbar = $toolbars[0];
-            }
-
-            if (is_numeric($rootGroupID)) {
-                QUI::getDataBase()->update(
-                    QUI::getDBTableName("groups"),
-                    [
-                        "toolbar" => $rootToolbar,
-                        "assigned_toolbar" => implode(",", $toolbars)
-                    ],
-                    ["id" => $rootGroupID]
-                );
-            } else {
-                QUI::getDataBase()->update(
-                    QUI::getDBTableName("groups"),
-                    [
-                        "toolbar" => $rootToolbar,
-                        "assigned_toolbar" => implode(",", $toolbars)
-                    ],
-                    ["uuid" => $rootGroupID]
-                );
-            }
-
-            // Set "minimal.xml" as new default toolbar for everyone group
-            if (in_array("minimal.xml", $toolbars)) {
-                QUI::getDataBase()->update(
-                    QUI::getDBTableName("groups"),
-                    [
-                        "toolbar" => "minimal.xml",
-                        "assigned_toolbar" => "minimal.xml"
-                    ],
-                    ["id" => 1]
-                );
-            }
-        }
+        self::ensureCustomToolbarDirectories();
     }
 
     /**
@@ -189,6 +149,10 @@ class Manager
         $Conf = QUI::getConfig('etc/wysiwyg/editors.ini.php');
         $Conf->setValue($name, null, $package);
         $Conf->save();
+
+        self::ensureCustomToolbarDirectory(
+            self::getModuleFromEditorPackage($package, $name)
+        );
     }
 
     /**
@@ -228,12 +192,12 @@ class Manager
             return self::$toolbars;
         }
 
-        $folder = self::getToolbarsPath();
-        $files = QUIFile::readDir($folder, true);
+        $toolbars = array_keys(self::getToolbarDefinitions());
+        sort($toolbars);
 
-        self::$toolbars = $files;
+        self::$toolbars = $toolbars;
 
-        return $files;
+        return $toolbars;
     }
 
     public static function search($search): array
@@ -241,6 +205,300 @@ class Manager
         return array_filter(self::getToolbars(), static function ($toolbar) use ($search): bool {
             return str_contains($toolbar, $search);
         });
+    }
+
+    /**
+     * Return all known toolbar definitions.
+     */
+    public static function getToolbarDefinitions(): array
+    {
+        if (self::$toolbarDefinitions !== null) {
+            return self::$toolbarDefinitions;
+        }
+
+        $definitions = [];
+
+        foreach (self::getEditorDefinitions() as $Editor) {
+            foreach ($Editor['toolbars'] as $Toolbar) {
+                $identifier = $Editor['module'] . ':' . $Toolbar['name'];
+
+                $definitions[$identifier] = [
+                    'identifier' => $identifier,
+                    'module' => $Editor['module'],
+                    'editor' => $Editor['name'],
+                    'name' => $Toolbar['name'],
+                    'src' => $Toolbar['src'],
+                    'path' => $Toolbar['path'],
+                    'customPath' => null,
+                    'legacyPath' => null
+                ];
+            }
+        }
+
+        foreach (self::getCustomToolbarFiles() as $identifier => $path) {
+            if (!isset($definitions[$identifier])) {
+                [$module, $toolbar] = explode(':', $identifier, 2);
+
+                $definitions[$identifier] = [
+                    'identifier' => $identifier,
+                    'module' => $module,
+                    'editor' => null,
+                    'name' => $toolbar,
+                    'src' => null,
+                    'path' => null,
+                    'customPath' => $path,
+                    'legacyPath' => null
+                ];
+
+                continue;
+            }
+
+            $definitions[$identifier]['customPath'] = $path;
+        }
+
+        foreach (self::getLegacyToolbarFiles() as $identifier => $path) {
+            if (!isset($definitions[$identifier])) {
+                [$module, $toolbar] = explode(':', $identifier, 2);
+
+                $definitions[$identifier] = [
+                    'identifier' => $identifier,
+                    'module' => $module,
+                    'editor' => null,
+                    'name' => $toolbar,
+                    'src' => null,
+                    'path' => null,
+                    'customPath' => null,
+                    'legacyPath' => $path
+                ];
+
+                continue;
+            }
+
+            $definitions[$identifier]['legacyPath'] = $path;
+        }
+
+        ksort($definitions);
+
+        self::$toolbarDefinitions = $definitions;
+
+        return $definitions;
+    }
+
+    /**
+     * Return known editor definitions from installed packages.
+     */
+    protected static function getEditorDefinitions(): array
+    {
+        if (self::$editorDefinitions !== null) {
+            return self::$editorDefinitions;
+        }
+
+        $result = [];
+        $packages = QUI::getPackageManager()->getInstalled();
+
+        foreach ($packages as $package) {
+            if (empty($package['name'])) {
+                continue;
+            }
+
+            $xmlFile = OPT_DIR . $package['name'] . '/wysiwyg.xml';
+
+            if (!file_exists($xmlFile)) {
+                continue;
+            }
+
+            $definitions = Utils::getWysiwygEditorDefinitionsFromXml($xmlFile);
+
+            foreach ($definitions as $Editor) {
+                if (empty($Editor['component']) || empty($Editor['name'])) {
+                    continue;
+                }
+
+                $module = self::getModuleFromEditorPackage($Editor['component'], $package['name']);
+                $toolbars = [];
+
+                foreach ($Editor['toolbars'] as $Toolbar) {
+                    if (empty($Toolbar['name']) || empty($Toolbar['src'])) {
+                        continue;
+                    }
+
+                    $toolbars[] = [
+                        'name' => $Toolbar['name'],
+                        'src' => $Toolbar['src'],
+                        'path' => OPT_DIR . $module . '/' . ltrim($Toolbar['src'], '/')
+                    ];
+                }
+
+                $result[] = [
+                    'name' => $Editor['name'],
+                    'component' => $Editor['component'],
+                    'module' => $module,
+                    'toolbars' => $toolbars
+                ];
+            }
+        }
+
+        self::$editorDefinitions = $result;
+
+        return $result;
+    }
+
+    protected static function getModuleFromEditorPackage(string $package, string $fallback): string
+    {
+        if (!str_starts_with($package, 'package/')) {
+            return $fallback;
+        }
+
+        $package = substr($package, 8);
+        $pos = strpos($package, '/bin/');
+
+        if ($pos === false) {
+            return $fallback;
+        }
+
+        return substr($package, 0, $pos);
+    }
+
+    protected static function ensureCustomToolbarDirectories(): void
+    {
+        foreach (self::getEditorDefinitions() as $Editor) {
+            self::ensureCustomToolbarDirectory($Editor['module']);
+        }
+    }
+
+    protected static function ensureCustomToolbarDirectory(string $module): void
+    {
+        $module = trim($module, '/');
+
+        if (empty($module)) {
+            return;
+        }
+
+        QUIFile::mkdir(self::getToolbarsPath() . $module . '/');
+    }
+
+    protected static function getCustomToolbarFiles(): array
+    {
+        $result = [];
+        $folder = self::getToolbarsPath();
+
+        if (!is_dir($folder)) {
+            return $result;
+        }
+
+        $Iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($folder, \FilesystemIterator::SKIP_DOTS)
+        );
+
+        foreach ($Iterator as $File) {
+            if (!$File->isFile()) {
+                continue;
+            }
+
+            $path = $File->getPathname();
+            $relative = str_replace($folder, '', $path);
+            $relative = str_replace('\\', '/', $relative);
+
+            if (!str_contains($relative, '/')) {
+                continue;
+            }
+
+            $parts = explode('/', $relative);
+            $toolbar = array_pop($parts);
+            $module = implode('/', $parts);
+
+            if (empty($module) || empty($toolbar)) {
+                continue;
+            }
+
+            $result[$module . ':' . $toolbar] = $path;
+        }
+
+        return $result;
+    }
+
+    protected static function getLegacyToolbarFiles(): array
+    {
+        $result = [];
+        $folder = self::getToolbarsPath();
+
+        if (!is_dir($folder)) {
+            return $result;
+        }
+
+        $files = File::readDir($folder);
+
+        foreach ($files as $file) {
+            if (is_dir($folder . $file)) {
+                continue;
+            }
+
+            if (!str_ends_with($file, '.xml')) {
+                continue;
+            }
+
+            $toolbar = str_replace('.xml', '', $file);
+            $module = self::guessModuleNameForToolbar($toolbar);
+
+            if (empty($module)) {
+                continue;
+            }
+
+            $result[$module . ':' . $toolbar] = $folder . $file;
+        }
+
+        return $result;
+    }
+
+    protected static function guessModuleNameForToolbar(string $toolbar): string
+    {
+        $matches = [];
+
+        foreach (self::getEditorDefinitions() as $Editor) {
+            foreach ($Editor['toolbars'] as $Toolbar) {
+                if ($Toolbar['name'] === $toolbar) {
+                    $matches[] = $Editor['module'];
+                }
+            }
+        }
+
+        $matches = array_values(array_unique($matches));
+
+        if (count($matches) === 1) {
+            return $matches[0];
+        }
+
+        $modules = array_values(array_unique(array_map(static function ($Editor) {
+            return $Editor['module'];
+        }, self::getEditorDefinitions())));
+
+        if (count($modules) === 1) {
+            return $modules[0];
+        }
+
+        return '';
+    }
+
+    public static function normalizeToolbarIdentifier(string $toolbar): string
+    {
+        $toolbar = trim($toolbar);
+
+        if (empty($toolbar)) {
+            return '';
+        }
+
+        if (str_contains($toolbar, ':')) {
+            return $toolbar;
+        }
+
+        $toolbar = str_replace('.xml', '', $toolbar);
+        $module = self::guessModuleNameForToolbar($toolbar);
+
+        if (empty($module)) {
+            return $toolbar;
+        }
+
+        return $module . ':' . $toolbar;
     }
 
     /**
@@ -257,7 +515,11 @@ class Manager
                 $toolbars = explode(',', $Group->getAttribute('assigned_toolbar'));
 
                 foreach ($toolbars as $toolbar) {
-                    $result[] = $toolbar;
+                    $toolbar = self::normalizeToolbarIdentifier($toolbar);
+
+                    if (self::existsToolbar($toolbar)) {
+                        $result[] = $toolbar;
+                    }
                 }
             }
         }
@@ -268,7 +530,11 @@ class Manager
             $userSpecific = explode(',', $userSpecific);
 
             foreach ($userSpecific as $toolbar) {
-                $result[] = $toolbar;
+                $toolbar = self::normalizeToolbarIdentifier($toolbar);
+
+                if (self::existsToolbar($toolbar)) {
+                    $result[] = $toolbar;
+                }
             }
         }
 
@@ -289,7 +555,7 @@ class Manager
             $Group->getAttribute('toolbar') &&
             self::existsToolbar($Group->getAttribute('toolbar'))
         ) {
-            $result[] = $Group->getAttribute('toolbar');
+            $result[] = self::normalizeToolbarIdentifier($Group->getAttribute('toolbar'));
         }
 
         $groupSpecific = $Group->getAttribute('assigned_toolbar');
@@ -298,6 +564,8 @@ class Manager
             $groupSpecific = explode(',', $groupSpecific);
 
             foreach ($groupSpecific as $toolbar) {
+                $toolbar = self::normalizeToolbarIdentifier($toolbar);
+
                 if (self::existsToolbar($toolbar)) {
                     $result[] = $toolbar;
                 }
@@ -312,10 +580,58 @@ class Manager
 
     public static function existsToolbar($toolbar): bool
     {
-        $toolbars = self::getToolbars();
-        $toolbars = array_flip($toolbars);
+        $toolbar = self::normalizeToolbarIdentifier((string)$toolbar);
+        $toolbars = array_flip(self::getToolbars());
 
         return isset($toolbars[$toolbar]);
+    }
+
+    /**
+     * Return the effective toolbar source file for an identifier.
+     */
+    public static function getToolbarSourceFile(string $toolbar): string|false
+    {
+        $toolbar = self::normalizeToolbarIdentifier($toolbar);
+
+        if (empty($toolbar)) {
+            return false;
+        }
+
+        $definitions = self::getToolbarDefinitions();
+
+        if (!isset($definitions[$toolbar])) {
+            return false;
+        }
+
+        $definition = $definitions[$toolbar];
+
+        if (!empty($definition['customPath']) && file_exists($definition['customPath'])) {
+            return $definition['customPath'];
+        }
+
+        if (!empty($definition['path']) && file_exists($definition['path'])) {
+            return $definition['path'];
+        }
+
+        if (!empty($definition['legacyPath']) && file_exists($definition['legacyPath'])) {
+            return $definition['legacyPath'];
+        }
+
+        return false;
+    }
+
+    /**
+     * Return toolbar data for an identifier.
+     */
+    public static function getToolbarData(string $toolbar): array
+    {
+        $file = self::getToolbarSourceFile($toolbar);
+
+        if ($file === false) {
+            return [];
+        }
+
+        return self::parseToolbarFile($file);
     }
 
     /**
@@ -647,14 +963,13 @@ class Manager
         }
 
         // user
-        $toolbar = $User->getAttribute('toolbar');
-        $toolbarPath = self::getToolbarsPath();
+        $toolbar = self::normalizeToolbarIdentifier($User->getAttribute('toolbar'));
 
         if (!empty($toolbar)) {
-            $toolbar = $toolbarPath . $User->getAttribute('toolbar');
+            $data = self::getToolbarData($toolbar);
 
-            if (file_exists($toolbar)) {
-                return self::parseXmlFileToArray($toolbar);
+            if (!empty($data)) {
+                return $data;
             }
         }
 
@@ -663,13 +978,13 @@ class Manager
 
         /* @var $Group QUI\Groups\Group */
         foreach ($groups as $Group) {
-            $toolbar = $Group->getAttribute('toolbar');
+            $toolbar = self::normalizeToolbarIdentifier($Group->getAttribute('toolbar'));
 
             if (!empty($toolbar)) {
-                $toolbar = $toolbarPath . $Group->getAttribute('toolbar');
+                $data = self::getToolbarData($toolbar);
 
-                if (file_exists($toolbar)) {
-                    return self::parseXmlFileToArray($toolbar);
+                if (!empty($data)) {
+                    return $data;
                 }
             }
         }
@@ -688,11 +1003,52 @@ class Manager
             return [];
         }
 
-        if (str_contains($toolbar, '.xml') && file_exists($toolbarPath . $toolbar)) {
-            return self::parseXmlFileToArray($toolbarPath . $toolbar);
+        if (is_string($toolbar)) {
+            $toolbar = self::normalizeToolbarIdentifier($toolbar);
+            $data = self::getToolbarData($toolbar);
+
+            if (!empty($data)) {
+                return $data;
+            }
         }
 
         return explode(',', $Config->get('toolbars', 'standard'));
+    }
+
+    /**
+     * Reads a toolbar file and returns it as array.
+     *
+     * JSON is treated as the preferred editor-native format.
+     * Legacy XML toolbars remain readable for compatibility.
+     */
+    public static function parseToolbarFile(string $file): array
+    {
+        if (str_ends_with($file, '.xml')) {
+            return self::parseXmlFileToArray($file);
+        }
+
+        $cache = 'settings/editor/toolbar/' . md5($file);
+
+        try {
+            return QUI\Cache\Manager::get($cache);
+        } catch (QUI\Exception) {
+        }
+
+        $content = file_get_contents($file);
+
+        if ($content === false) {
+            return [];
+        }
+
+        $result = json_decode(trim($content), true);
+
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($result)) {
+            return [];
+        }
+
+        QUI\Cache\Manager::set($cache, $result);
+
+        return $result;
     }
 
     /**

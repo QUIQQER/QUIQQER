@@ -347,13 +347,39 @@ input[type="reset"],
 }
 
 /**
- * Button icon
+ * Button icon & close
  */
-.btn.btn-icon {
+.btn-icon,
+.btn-close {
+    --padding-block: 0;
+    --padding-inline: 0;
+    --qui-btn-icon-size: 2.75em;
+
     aspect-ratio: 1;
+    width: var(--qui-btn-icon-size);
 }
 
-.btn.btn-rounded {
+.btn-close {
+    --qui-btn-color: color-mix(in srgb, currentColor, white 40%);
+    --qui-btn-bgColor: transparent;
+    --qui-btn-borderColor: transparent;
+    --qui-btn-color--hover: hsl(from currentColor h s l);
+    --qui-btn-bgColor--hover: transparent;
+    --qui-btn-borderColor--hover: transparent;
+    --qui-btn-color--disabled: color-mix(in srgb, currentColor, white 40%);
+    --qui-btn-bgColor--disabled: transparent;
+    --qui-btn-borderColor--disabled: transparent;
+
+    border-radius: var(--qui-btn-close-radius);
+}
+
+.btn-icon svg,
+.btn-close svg {
+    width: 1em;
+    height: 1em;
+}
+
+.btn-rounded {
     border-radius: 10em;
 }
 

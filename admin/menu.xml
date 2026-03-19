@@ -104,14 +104,6 @@
         <locale group="quiqqer/core" var="menu.settings.quiqqer.text"/>
     </item>
     <item parent="/settings/quiqqer/"
-          name="media"
-          icon="fa fa-font"
-          require="controls/editors/Settings"
-    >
-        <locale group="quiqqer/core" var="menu.settings.editor.text"/>
-    </item>
-
-    <item parent="/settings/quiqqer/"
           name="mailqueue"
           icon="fa fa-envelope-open-o"
           require="controls/system/mailqueue/Panel"

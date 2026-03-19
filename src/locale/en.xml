@@ -938,6 +938,12 @@
         <locale name="control.editor.toolbar.select.search.field.placeholder">
             <en><![CDATA[Search toolbars ...]]></en>
         </locale>
+        <locale name="control.editor.button.switch.to.sourcecode">
+            <en><![CDATA[Switch to Sourcecode]]></en>
+        </locale>
+        <locale name="control.editor.button.switch.to.rich.text.editing">
+            <en><![CDATA[Switch to Rich Text Editing]]></en>
+        </locale>
         <locale name="quiqqer.settings.general.webserver.title">
             <en><![CDATA[Webserver]]></en>
         </locale>

@@ -448,24 +448,16 @@ class Update
 
         Log::addDebug('Read: ' . $xml_file);
 
-        $editors = XML::getWysiwygEditorsFromXml($xml_file);
+        $editors = QUI\Editor\Utils::getWysiwygEditorDefinitionsFromXml($xml_file);
 
         foreach ($editors as $Editor) {
-            if (!($Editor instanceof DOMElement)) {
-                continue;
-            }
-
-            if (!$Editor->getAttribute('package')) {
-                continue;
-            }
-
-            if (empty($Editor->nodeValue)) {
+            if (empty($Editor['component']) || empty($Editor['name'])) {
                 continue;
             }
 
             QUI\Editor\Manager::registerEditor(
-                trim($Editor->nodeValue),
-                $Editor->getAttribute('package')
+                $Editor['name'],
+                $Editor['component']
             );
         }
     }

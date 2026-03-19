@@ -27,11 +27,17 @@ define('controls/editors/toolbars/SelectItem', [
          */
         refresh: function () {
             var toolbar = this.getAttribute('id');
+            var label = toolbar;
+
+            if (label.indexOf(':') !== -1) {
+                label = label.split(':').pop();
+            }
 
             this.setAttribute('icon', 'fa fa-font');
 
             this.$Text.set({
-                html: toolbar
+                html: label,
+                title: toolbar
             });
 
             return Promise.resolve();

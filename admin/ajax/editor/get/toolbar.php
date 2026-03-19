@@ -12,9 +12,7 @@ QUI::$Ajax->registerFunction(
     'ajax_editor_get_toolbar',
     static function ($toolbar): array {
         if (isset($toolbar) && !empty($toolbar)) {
-            return QUI\Editor\Manager::parseXmlFileToArray(
-                QUI\Editor\Manager::getToolbarsPath() . $toolbar
-            );
+            return QUI\Editor\Manager::getToolbarData($toolbar);
         }
 
         return QUI\Editor\Manager::getToolbarButtonsFromUser();

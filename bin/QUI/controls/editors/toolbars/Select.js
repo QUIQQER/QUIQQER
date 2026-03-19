@@ -57,9 +57,15 @@ define('controls/editors/toolbars/Select', [
                     var data = [];
 
                     for (var i = 0, len = result.length; i < len; i++) {
+                        var label = result[i];
+
+                        if (label.indexOf(':') !== -1) {
+                            label = label.split(':').pop();
+                        }
+
                         data.push({
                             id   : result[i],
-                            title: result[i],
+                            title: label,
                             icon : 'fa fa-font'
                         });
                     }
