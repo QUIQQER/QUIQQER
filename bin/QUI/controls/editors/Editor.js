@@ -17,11 +17,12 @@ define('controls/editors/Editor', [
     'classes/editor/Manager',
     'qui/classes/storage/Storage',
     'Ajax',
+    'Locale',
     'Projects',
 
     'css!controls/editors/Editor.css'
 
-], function (QUIControl, QUILoader, EditorManager, Storage, QUIAjax, Projects) {
+], function (QUIControl, QUILoader, EditorManager, Storage, QUIAjax, QUILocale, Projects) {
     "use strict";
 
     const EDITOR_MODUS_STORAGE_KEY = 'quiqqer-editor-modus';
@@ -59,7 +60,8 @@ define('controls/editors/Editor', [
             content: '',
             bodyId: false,  // wysiwyg DOMNode body id
             bodyClass: false,   // wysiwyg DOMNode body css class
-            showLoader: true
+            showLoader: true,
+            sourcecode: false
         },
 
         initialize: function (Manager, options) {
@@ -72,6 +74,15 @@ define('controls/editors/Editor', [
                 this.$Manager = new EditorManager();
             }
 
+            if (
+                (!options || typeof options.sourcecode === 'undefined') &&
+                'QUIQQER' in window &&
+                'inAdministration' in QUIQQER &&
+                QUIQQER.inAdministration
+            ) {
+                this.setAttribute('sourcecode', true);
+            }
+
             this.parent(options);
 
             this.Loader = null;
@@ -81,6 +92,7 @@ define('controls/editors/Editor', [
 
             this.$sourceCodeEditor = null;
             this.$sourceCode = null;
+            this.$SourceCodeButton = null;
 
             this.addEvents({
                 onLoaded: this.$onLoaded,
@@ -118,14 +130,21 @@ define('controls/editors/Editor', [
             this.$Container = this.$Elm.getElement('[data-name="editor-instance"]');
 
             const subActions = this.$Elm.querySelector('[data-name="editor-sub-action"]');
+
+            if (!this.getAttribute('sourcecode')) {
+                return this.$Elm;
+            }
+
             const sourceCode = document.createElement('div');
             sourceCode.dataset.name = "editor-sub-sourcecode";
             sourceCode.classList.add('btn', 'btn-link-body');
-            sourceCode.innerHTML = '<span>Switch to Sourcecode</span>';
+            sourceCode.innerHTML = '<span></span>';
             sourceCode.addEventListener('click', () => {
                 this.toggleSourceCode();
             });
             subActions.appendChild(sourceCode);
+            this.$SourceCodeButton = sourceCode;
+            this.$refreshSourceCodeButtonLabel();
 
             return this.$Elm;
         },
@@ -152,7 +171,10 @@ define('controls/editors/Editor', [
                 this.setAttribute('bodyId', data.bodyId);
                 this.setAttribute('bodyClass', data.bodyClass);
 
-                if (storage.get(EDITOR_MODUS_STORAGE_KEY) === EDITOR_MODUS_SOURCE) {
+                if (
+                    this.getAttribute('sourcecode') &&
+                    storage.get(EDITOR_MODUS_STORAGE_KEY) === EDITOR_MODUS_SOURCE
+                ) {
                     this.showSourceCode();
 
                     if (typeof callback === 'function') {
@@ -528,8 +550,29 @@ define('controls/editors/Editor', [
 
         //region sourcecode
 
+        $refreshSourceCodeButtonLabel: function () {
+            if (!this.$SourceCodeButton) {
+                return;
+            }
+
+            const span = this.$SourceCodeButton.querySelector('span');
+
+            if (!span) {
+                return;
+            }
+
+            let locale = 'control.editor.button.switch.to.sourcecode';
+
+            if (this.$Container && this.$Container.style.display === 'none') {
+                locale = 'control.editor.button.switch.to.rich.text.editing';
+            }
+
+            span.innerHTML = QUILocale.get('quiqqer/core', locale);
+        },
+
         showSourceCode: function () {
             this.$Container.style.display = 'none';
+            this.$refreshSourceCodeButtonLabel();
 
             // lade source code
             require(['controls/editors/CodeEditor'], (CodeEditor) => {
@@ -557,6 +600,7 @@ define('controls/editors/Editor', [
             storage.set(EDITOR_MODUS_STORAGE_KEY, EDITOR_MODUS_WYSIWYG);
             this.$Container.style.display = '';
             this.$sourceCode.style.display = 'none';
+            this.$refreshSourceCodeButtonLabel();
 
             if (this.$sourceCodeEditor) {
                 this.$sourceCodeEditor.destroy();
