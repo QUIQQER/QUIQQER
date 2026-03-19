@@ -923,7 +923,7 @@ class User implements QUIUserInterface
         QUI\Utils\Doctrine::parseDbArrayToQueryBuilder($query, [
             'update' => [
                 'username' => $this->getUsername(),
-                'usergroup' => ',' . implode(',', $this->getGroups(false)) . ',', // @phpstan-ignore-line
+                'usergroup' => ',' . implode(',', $this->getGroups(false)) . ',',
                 'firstname' => $this->getAttribute('firstname'),
                 'lastname' => $this->getAttribute('lastname'),
                 'usertitle' => $this->getAttribute('usertitle'),
