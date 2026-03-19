@@ -11,8 +11,16 @@ QUI::$Ajax->registerFunction(
             $authenticators = $Auth->getGlobalBackendSecondaryAuthenticators();
         }
 
-        return array_map(function ($authenticator) use ($Auth) {
-            $instance = $Auth->getAuthenticator($authenticator);
+        $Session = QUI::getSession();
+
+        return array_map(function ($authenticator) use ($Auth, $Session) {
+            // check if 1fa is done
+            if ($Session->get('auth-primary')) {
+                $instance = $Auth->getAuthenticator($authenticator, $Session->get('uid'));
+            } else {
+                $instance = $Auth->getAuthenticator($authenticator);
+            }
+
             $settings = $instance->getSettingsControl();
 
             return [

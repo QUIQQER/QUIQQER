@@ -10,7 +10,14 @@ QUI::$Ajax->registerFunction(
             return '';
         }
 
-        $instance = new $authenticator();
+        // check if 1fa is done
+        $Session = QUI::getSession();
+
+        if ($Session->get('auth-primary')) {
+            $instance = new $authenticator($Session->get('uid'));
+        } else {
+            $instance = new $authenticator();
+        }
 
         if (!$instance->isSecondaryAuthentication()) {
             return '';
