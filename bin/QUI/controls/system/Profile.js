@@ -78,9 +78,15 @@ define('controls/system/Profile', [
                 Editors.getToolbarsFromUser(USER.id).then(function (toolbars) {
 
                     for (var i = 0, len = toolbars.length; i < len; i++) {
+                        var label = toolbars[i];
+
+                        if (label.indexOf(':') !== -1) {
+                            label = label.split(':').pop();
+                        }
+
                         new Element('option', {
                             value: toolbars[i],
-                            html : toolbars[i].replace('\.xml', '')
+                            html : label
                         }).inject(Toolbars);
                     }
 

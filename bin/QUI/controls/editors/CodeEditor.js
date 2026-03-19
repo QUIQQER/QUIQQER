@@ -1,7 +1,6 @@
-
 require.config({
     paths: {
-        'ace/ace'           : URL_OPT_DIR + 'bin/quiqqer-asset/ace-builds/ace-builds/src-min/ace',
+        'ace/ace': URL_OPT_DIR + 'bin/quiqqer-asset/ace-builds/ace-builds/src-min/ace',
         'ace/theme/twilight': URL_OPT_DIR + 'bin/quiqqer-asset/ace-builds/ace-builds/src-min/theme-twilight'
     }
 });
@@ -19,7 +18,7 @@ define('controls/editors/CodeEditor', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/editors/Editor',
+        Type: 'controls/editors/Editor',
 
         Binds: [
             '$onImport',
@@ -54,6 +53,9 @@ define('controls/editors/CodeEditor', [
             });
 
             this.$Editor = Ace.edit(this.getElm());
+            this.$Editor.on('change', (delta) => {
+                this.fireEvent('change', [this, delta]);
+            });
 
             let requireFiles = [];
 
@@ -69,6 +71,12 @@ define('controls/editors/CodeEditor', [
                         URL_OPT_DIR + 'bin/quiqqer-asset/ace-builds/ace-builds/src/mode-javascript.js'
                     );
                     break;
+
+                case 'html':
+                    requireFiles.push(
+                        URL_OPT_DIR + 'bin/quiqqer-asset/ace-builds/ace-builds/src/mode-html.js'
+                    );
+                    break;
             }
 
             require(requireFiles, () => {
@@ -81,6 +89,10 @@ define('controls/editors/CodeEditor', [
 
                     case 'javascript':
                         req = "ace/mode/javascript";
+                        break;
+
+                    case 'html':
+                        req = "ace/mode/html";
                         break;
                 }
 

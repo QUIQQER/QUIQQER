@@ -23,7 +23,7 @@ define('controls/editors/toolbars/Window', [
 
         options: {
             maxHeight: 500,
-            maxWidth : 300
+            maxWidth : 480
         },
 
         initialize: function (options) {
@@ -53,8 +53,15 @@ define('controls/editors/toolbars/Window', [
             return new Promise(function (resolve) {
                 QUIAjax.get('ajax_editor_get_toolbars', function (list) {
                     var data = list.map(function (toolbar) {
+                        var label = toolbar;
+
+                        if (label.indexOf(':') !== -1) {
+                            label = label.split(':').pop();
+                        }
+
                         return {
-                            toolbar: toolbar
+                            toolbar: toolbar,
+                            label: label
                         };
                     });
 
@@ -104,14 +111,15 @@ define('controls/editors/toolbars/Window', [
             }).inject(this.getContent());
 
             this.$Grid = new Grid(Container, {
+                filterInput: false,
                 columnModel: [{
                     header   : QUILocale.get(
                         'quiqqer/core',
                         'editors.settings.table.toolbar.name'
                     ),
-                    dataIndex: 'toolbar',
+                    dataIndex: 'label',
                     dataType : 'string',
-                    width    : 200
+                    width    : 360
                 }]
             });
 

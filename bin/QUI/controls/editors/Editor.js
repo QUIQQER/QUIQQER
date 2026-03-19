@@ -4,7 +4,6 @@
  * The editor main class is the parent class for all WYSIWYG editors.
  * Every WYSIWYG editor must inherit from this class
  *
- *
  * @event onInit [ {self} ]
  * @event onDraw [ {self} ]
  * @event onDestroy[ {self} ]
@@ -16,16 +15,24 @@ define('controls/editors/Editor', [
     'qui/controls/Control',
     'qui/controls/loader/Loader',
     'classes/editor/Manager',
+    'qui/classes/storage/Storage',
     'Ajax',
-    'Projects'
+    'Locale',
+    'Projects',
 
-], function (QUIControl, QUILoader, EditorManager, QUIAjax, Projects) {
+    'css!controls/editors/Editor.css'
+
+], function (QUIControl, QUILoader, EditorManager, Storage, QUIAjax, QUILocale, Projects) {
     "use strict";
+
+    const EDITOR_MODUS_STORAGE_KEY = 'quiqqer-editor-modus';
+    const EDITOR_MODUS_WYSIWYG = 'wysiwyg';
+    const EDITOR_MODUS_SOURCE = 'source';
+
+    const storage = new Storage();
 
     /**
      * Editor Main Class
-     *
-     * @class controls/editors/Editor
      *
      * @param {Object} Manager - classes/editor/Manager
      * @param {Object} options
@@ -36,13 +43,11 @@ define('controls/editors/Editor', [
      * @fires onSetContent [String, this]
      * @fires onGetContent [this]
      * @fires onLoaded [Editor, Instance]
-     *
-     * @memberof! <global>
      */
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/editors/Editor',
+        Type: 'controls/editors/Editor',
 
         Binds: [
             '$onDrop',
@@ -52,10 +57,11 @@ define('controls/editors/Editor', [
         ],
 
         options: {
-            content   : '',
-            bodyId    : false,  // wysiwyg DOMNode body id
-            bodyClass : false,   // wysiwyg DOMNode body css class
-            showLoader: true
+            content: '',
+            bodyId: false,  // wysiwyg DOMNode body id
+            bodyClass: false,   // wysiwyg DOMNode body css class
+            showLoader: true,
+            sourcecode: false
         },
 
         initialize: function (Manager, options) {
@@ -68,13 +74,25 @@ define('controls/editors/Editor', [
                 this.$Manager = new EditorManager();
             }
 
+            if (
+                (!options || typeof options.sourcecode === 'undefined') &&
+                'QUIQQER' in window &&
+                'inAdministration' in QUIQQER &&
+                QUIQQER.inAdministration
+            ) {
+                this.setAttribute('sourcecode', true);
+            }
+
             this.parent(options);
 
             this.Loader = null;
-
             this.$Instance = null;
             this.$Container = null;
             this.$loaded = false;
+
+            this.$sourceCodeEditor = null;
+            this.$sourceCode = null;
+            this.$SourceCodeButton = null;
 
             this.addEvents({
                 onLoaded: this.$onLoaded,
@@ -88,14 +106,17 @@ define('controls/editors/Editor', [
         /**
          * Create the DOMNode of the Editor
          *
-         * @method controls/editors/Editor#create
          * @return {HTMLElement} DOMNode Element
          */
         create: function () {
             this.$Elm = new Element('div', {
-                html   : '<div class="control-editor-container"></div>',
+                html: '' +
+                    '<div data-name="editor-instance" class="control-editor-container"></div>' +
+                    '<div data-name="sourcecode" class="control-editor-sourcecode"></div>' +
+                    '<div data-name="editor-sub-action"></div>',
                 'class': 'control-editor',
-                styles : {
+                'data-name': 'quiqqer-editor',
+                styles: {
                     minHeight: 300
                 }
             });
@@ -105,7 +126,25 @@ define('controls/editors/Editor', [
             this.$Elm.addClass('media-drop');
             this.$Elm.set('data-quiid', this.getId());
 
-            this.$Container = this.$Elm.getElement('.control-editor-container');
+            this.$sourceCode = this.$Elm.getElement('[data-name="sourcecode"]');
+            this.$Container = this.$Elm.getElement('[data-name="editor-instance"]');
+
+            const subActions = this.$Elm.querySelector('[data-name="editor-sub-action"]');
+
+            if (!this.getAttribute('sourcecode')) {
+                return this.$Elm;
+            }
+
+            const sourceCode = document.createElement('div');
+            sourceCode.dataset.name = "editor-sub-sourcecode";
+            sourceCode.classList.add('btn', 'btn-link-body');
+            sourceCode.innerHTML = '<span></span>';
+            sourceCode.addEventListener('click', () => {
+                this.toggleSourceCode();
+            });
+            subActions.appendChild(sourceCode);
+            this.$SourceCodeButton = sourceCode;
+            this.$refreshSourceCodeButtonLabel();
 
             return this.$Elm;
         },
@@ -113,7 +152,6 @@ define('controls/editors/Editor', [
         /**
          * Destroy the editor
          *
-         * @method controls/editors/Editor#destroy
          * @fires onDestroy [this]
          */
         destroy: function () {
@@ -129,17 +167,30 @@ define('controls/editors/Editor', [
          * @param {Function} [callback] - callback function
          */
         load: function (callback) {
-            const self = this;
+            this.getSettings().then((data) => {
+                this.setAttribute('bodyId', data.bodyId);
+                this.setAttribute('bodyClass', data.bodyClass);
 
-            this.getSettings().then(function (data) {
-                self.setAttribute('bodyId', data.bodyId);
-                self.setAttribute('bodyClass', data.bodyClass);
+                if (
+                    this.getAttribute('sourcecode') &&
+                    storage.get(EDITOR_MODUS_STORAGE_KEY) === EDITOR_MODUS_SOURCE
+                ) {
+                    this.showSourceCode();
+
+                    if (typeof callback === 'function') {
+                        callback(data);
+                    }
+
+                    this.fireEvent('loaded', [this, null]);
+                    this.Loader.hide();
+                    return;
+                }
 
                 if (typeof callback === 'function') {
                     callback(data);
                 }
 
-                self.fireEvent('load', [data]);
+                this.fireEvent('load', [data]);
             });
         },
 
@@ -147,29 +198,13 @@ define('controls/editors/Editor', [
          * event : on loaded
          */
         $onLoaded: function () {
-            let Document = this.getDocument();
+            const body = this.getBodyNode();
 
-            let CkEditorMainInput;
-
-            if (this.isCkEditor5()) {
-                CkEditorMainInput = Document.querySelector('.ck .ck-editor__main');
-            } else {
-                CkEditorMainInput = Document.body;
+            if (this.getAttribute('bodyId') && body) {
+                body.id = this.getAttribute('bodyId');
             }
 
-            if (typeof CkEditorMainInput === 'undefined' || !CkEditorMainInput) {
-                setTimeout(function () {
-                    this.$onLoaded();
-                }.bind(this), 1000);
-
-                return;
-            }
-
-            if (this.getAttribute('bodyId')) {
-                CkEditorMainInput.id = this.getAttribute('bodyId');
-            }
-
-            if (this.getAttribute('bodyClass')) {
+            if (this.getAttribute('bodyClass') && body) {
                 let classes = this.getAttribute('bodyClass');
 
                 if (classes) {
@@ -179,7 +214,7 @@ define('controls/editors/Editor', [
                 }
 
                 for (let i = 0, len = classes.length; i < len; i++) {
-                    CkEditorMainInput.classList.add(classes[i]);
+                    body.classList.add(classes[i]);
                 }
             }
 
@@ -203,11 +238,11 @@ define('controls/editors/Editor', [
 
         /**
          * event : on import
-         * thats not optimal, because we must generate a new editor instance with the editor manager
+         * that's not optimal, because we must generate a new editor instance with the editor manager
          */
         $onImport: function () {
-            const self     = this,
-                  nodeName = this.$Elm.nodeName;
+            const self = this,
+                nodeName = this.$Elm.nodeName;
 
             if (nodeName === 'INPUT' || nodeName === 'TEXTAREA') {
                 this.$Input = this.$Elm;
@@ -259,7 +294,6 @@ define('controls/editors/Editor', [
         /**
          * Returns the Editor Manager
          *
-         * @method controls/editors/Editor#getManager
          * @return {Object} Editor Manager (controls/editors/Manager)
          */
         getManager: function () {
@@ -269,7 +303,6 @@ define('controls/editors/Editor', [
         /**
          * Returns the Editor Container for the editor instance
          *
-         * @method controls/editors/Editor#getContainer
          * @return {HTMLElement|null} Container
          */
         getContainer: function () {
@@ -279,12 +312,16 @@ define('controls/editors/Editor', [
         /**
          * Set the content to the editor
          *
-         * @method controls/editors/Editor#setContent
          * @fires onSetContent [content, this]
          * @param {String} content - HTML String
          */
         setContent: function (content) {
             this.setAttribute('content', content);
+
+            if (this.$sourceCodeEditor) {
+                this.$sourceCodeEditor.setValue(content);
+            }
+
             this.fireEvent('setContent', [
                 content,
                 this
@@ -294,11 +331,14 @@ define('controls/editors/Editor', [
         /**
          * Get the content from the editor
          *
-         * @method controls/editors/Editor#getContent
          * @return {String} content
          */
         getContent: function () {
             this.fireEvent('getContent', [this]);
+
+            if (this.$sourceCodeEditor) {
+                this.setAttribute('content', this.$sourceCodeEditor.getValue());
+            }
 
             return this.getAttribute('content');
         },
@@ -319,22 +359,6 @@ define('controls/editors/Editor', [
 
                 callback(buttons);
             });
-        },
-
-        /**
-         * Switch to source
-         * can be overwritten
-         */
-        switchToSource: function () {
-
-        },
-
-        /**
-         * Switch to WYSIWYG
-         * can be overwritten
-         */
-        switchToWYSIWYG: function () {
-
         },
 
         /**
@@ -376,7 +400,6 @@ define('controls/editors/Editor', [
         /**
          * Set the editor instance
          *
-         * @method controls/editors/Editor#setInstance
          * @param {Object} Instance - Editor Instance
          */
         setInstance: function (Instance) {
@@ -387,8 +410,7 @@ define('controls/editors/Editor', [
          * Get the editor instance
          * ckeditor, tinymce and so on
          *
-         * @method controls/editors/Editor#getInstance
-         * @return {Object} Instance - Editor Instance
+         * @return {Object|null} Instance - Editor Instance
          */
         getInstance: function () {
             return this.$Instance;
@@ -397,14 +419,22 @@ define('controls/editors/Editor', [
         /**
          * Return the Document DOM element of the editor frame
          *
-         * @return {HTMLElement} document
+         * @return {HTMLElement|null} document
          */
         getDocument: function () {
-            if (this.isCkEditor5()) {
-                return this.$Elm.getElement('.ck');
+            if (!this.getInstance()) {
+                return null;
             }
 
-            return this.$Elm.getElement('iframe').contentWindow.document;
+            return this.getInstance().getDocument();
+        },
+
+        getBodyNode: function () {
+            if (!this.getDocument()) {
+                return null;
+            }
+
+            return this.getDocument().body;
         },
 
         /**
@@ -518,17 +548,82 @@ define('controls/editors/Editor', [
             });
         },
 
-        /**
-         * Returns if the loaded Editor is CKEditor in version 5
-         *
-         * @returns {boolean}
-         */
-        isCkEditor5: function () {
-            // CKEditor 4 does not define CKEDITOR_VERSION, but CKEditor 5 does
-            // This is probably not the best way to do this.
-            // But afaik the editor's version is unknown before initializing it without additional Ajax requests
-            // TODO: Find out if the version can be determined without the editor being initialized
-            return typeof window.CKEDITOR_VERSION !== 'undefined';
+        //region sourcecode
+
+        $refreshSourceCodeButtonLabel: function () {
+            if (!this.$SourceCodeButton) {
+                return;
+            }
+
+            const span = this.$SourceCodeButton.querySelector('span');
+
+            if (!span) {
+                return;
+            }
+
+            let locale = 'control.editor.button.switch.to.sourcecode';
+
+            if (this.$Container && this.$Container.style.display === 'none') {
+                locale = 'control.editor.button.switch.to.rich.text.editing';
+            }
+
+            span.innerHTML = QUILocale.get('quiqqer/core', locale);
+        },
+
+        showSourceCode: function () {
+            this.$Container.style.display = 'none';
+            this.$refreshSourceCodeButtonLabel();
+
+            // lade source code
+            require(['controls/editors/CodeEditor'], (CodeEditor) => {
+                this.$sourceCodeEditor = new CodeEditor({
+                    type: 'html',
+                    events: {
+                        onChange: () => {
+                            const content = this.$sourceCodeEditor.getValue();
+
+                            this.setAttribute('content', content);
+                            this.fireEvent('setContent', [content, this]);
+                        }
+                    }
+                });
+
+                this.$sourceCodeEditor.inject(this.$sourceCode);
+                this.$sourceCodeEditor.setValue(this.getAttribute('content'));
+                this.$sourceCode.style.display = '';
+
+                storage.set(EDITOR_MODUS_STORAGE_KEY, EDITOR_MODUS_SOURCE);
+            });
+        },
+
+        hideSourceCode: function () {
+            storage.set(EDITOR_MODUS_STORAGE_KEY, EDITOR_MODUS_WYSIWYG);
+            this.$Container.style.display = '';
+            this.$sourceCode.style.display = 'none';
+            this.$refreshSourceCodeButtonLabel();
+
+            if (this.$sourceCodeEditor) {
+                this.$sourceCodeEditor.destroy();
+                this.$sourceCodeEditor = null;
+            }
+
+            if (this.getInstance()) {
+                return;
+            }
+
+            this.Loader.show();
+            this.load();
+        },
+
+        toggleSourceCode: function () {
+            if (this.$Container.style.display === 'none') {
+                this.hideSourceCode();
+                return;
+            }
+
+            this.showSourceCode();
         }
+
+        //endregion
     });
 });
