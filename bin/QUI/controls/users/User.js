@@ -393,9 +393,36 @@ define('controls/users/User', [
 
                 // insert the values
                 const extras = JSON.decode(attributes.extra);
+                const normalizedAttributes = Object.clone(attributes);
+
+                if (normalizedAttributes.toolbar && normalizedAttributes.toolbar.indexOf(':') === -1) {
+                    normalizedAttributes.toolbar = normalizedAttributes.toolbar.replace('.xml', '');
+
+                    if (normalizedAttributes.toolbar !== '') {
+                        normalizedAttributes.toolbar = 'quiqqer/ckeditor4:' + normalizedAttributes.toolbar;
+                    }
+                }
+
+                if (normalizedAttributes.assigned_toolbar) {
+                    normalizedAttributes.assigned_toolbar = normalizedAttributes.assigned_toolbar.split(',').map(function (toolbar) {
+                        if (toolbar.indexOf(':') !== -1) {
+                            return toolbar;
+                        }
+
+                        toolbar = toolbar.replace('.xml', '');
+
+                        if (toolbar === '') {
+                            return '';
+                        }
+
+                        return 'quiqqer/ckeditor4:' + toolbar;
+                    }).filter(function (toolbar) {
+                        return toolbar !== '';
+                    }).join(',');
+                }
 
                 FormUtils.setDataToForm(extras, Form);
-                FormUtils.setDataToForm(attributes, Form);
+                FormUtils.setDataToForm(normalizedAttributes, Form);
 
                 Body.getElements('[data-qui]').set({
                     'data-qui-options-uid': self.getUser().getId()
@@ -648,9 +675,15 @@ define('controls/users/User', [
                             }).inject(Toolbar);
 
                             for (i = 0, len = toolbars.length; i < len; i++) {
+                                let label = toolbars[i];
+
+                                if (label.indexOf(':') !== -1) {
+                                    label = label.split(':').pop();
+                                }
+
                                 new Element('option', {
                                     value: toolbars[i],
-                                    html: toolbars[i].replace('.xml', '')
+                                    html: label
                                 }).inject(Toolbar);
                             }
 

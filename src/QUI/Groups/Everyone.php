@@ -77,6 +77,10 @@ class Everyone extends QUI\Groups\Group
 
         if ($this->getAttribute('assigned_toolbar')) {
             $toolbars = explode(',', $this->getAttribute('assigned_toolbar'));
+            $toolbars = array_map(
+                ['QUI\\Editor\\Manager', 'normalizeToolbarIdentifier'],
+                $toolbars
+            );
 
             $assignedToolbars = array_filter($toolbars, static function ($toolbar): bool {
                 return QUI\Editor\Manager::existsToolbar($toolbar);
@@ -86,7 +90,9 @@ class Everyone extends QUI\Groups\Group
         }
 
         if (QUI\Editor\Manager::existsToolbar($this->getAttribute('toolbar'))) {
-            $toolbar = $this->getAttribute('toolbar');
+            $toolbar = QUI\Editor\Manager::normalizeToolbarIdentifier(
+                $this->getAttribute('toolbar')
+            );
         }
 
         QUI::getDataBase()->update(
