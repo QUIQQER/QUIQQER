@@ -1,4 +1,4 @@
-{if $isBackend}
+{if $isBackend || $isAdminUser}
 
     {if $mailIsVerified === false}
     <div class="quiqqer-message quiqqer-message-attention" style="width: 100%; max-width: 100%">

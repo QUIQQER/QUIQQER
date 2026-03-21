@@ -194,7 +194,16 @@ define('controls/users/auth/EnableSecondaryAuthenticatorWindow', [
 
                     QUI.parse(settings).then(() => {
                         const settingsNode = settings.querySelector('[data-qui]');
+
+                        if (!settingsNode) {
+                            return resolve();
+                        }
+
                         const settingsInstance = QUI.Controls.getById(settingsNode.getAttribute('data-quiid'));
+
+                        if (!settingsInstance) {
+                            return resolve();
+                        }
 
                         settingsInstance.addEvents({
                             completed: () => {

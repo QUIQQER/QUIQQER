@@ -172,7 +172,7 @@ class Locker
         $value = $User->getUUID();
 
         if (!$lifetime) {
-            $lifetime = QUI::conf('session', 'max_life_time');
+            $lifetime = (int)QUI::conf('session', 'max_life_time');
         }
 
         $Item = self::getStash($name);

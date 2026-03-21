@@ -53,6 +53,19 @@ class VerifiedMail2FA extends AbstractAuthenticator
         } catch (QUI\Exception) {
         }
 
+        // wenn nutzer mail verifiziert ist, braucht es kein setting
+        if ($user) {
+            $email = $user->getAttribute('email');
+
+            if (method_exists($user, 'isAttributeVerified')) {
+                $isVerified = $user->isAttributeVerified($email, MailAttribute::class);
+
+                if ($isVerified) {
+                    return null;
+                }
+            }
+        }
+
         return new Controls\Settings\VerifiedMail2FA([
             'user' => $user
         ]);
