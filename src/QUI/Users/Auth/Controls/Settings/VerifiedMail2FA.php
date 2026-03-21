@@ -27,6 +27,7 @@ class VerifiedMail2FA extends Control
         $user = $this->getAttribute('user');
         $mailIsVerified = false;
         $hasAlreadyAuthenticated = false;
+        $isAdminUser = false;
 
         if ($user instanceof QUI\Interfaces\Users\User) {
             $email = $user->getAttribute('email');
@@ -41,12 +42,17 @@ class VerifiedMail2FA extends Control
             if ($user->hasAuthenticator(QUI\Users\Auth\VerifiedMail2FA::class)) {
                 $hasAlreadyAuthenticated = true;
             }
+
+            if (QUI\Permissions\Permission::isAdmin($user)) {
+                $isAdminUser = true;
+            }
         }
 
         $Engine->assign([
             'mailIsVerified' => $mailIsVerified,
             'hasAlreadyAuthenticated' => $hasAlreadyAuthenticated,
-            'isBackend' => QUI::isBackend()
+            'isBackend' => QUI::isBackend(),
+            'isAdminUser' => $isAdminUser
         ]);
 
         return $Engine->fetch(__DIR__ . '/VerifiedMail2FA.html');
