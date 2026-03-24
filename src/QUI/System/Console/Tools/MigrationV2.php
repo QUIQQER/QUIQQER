@@ -1,21 +1,23 @@
 <?php
 
-/**
- *
- * @author hen
- *
- */
-
 namespace QUI\System\Console\Tools;
 
 use Doctrine\DBAL\Exception;
 use QUI;
+use QUI\ExceptionStack;
 
+use function array_chunk;
+use function array_fill;
+use function array_merge;
+use function array_unique;
 use function array_filter;
 use function count;
 use function explode;
 use function implode;
+use function is_array;
 use function is_numeric;
+use function json_decode;
+use function sprintf;
 use function trim;
 use function var_dump;
 
@@ -36,7 +38,10 @@ class MigrationV2 extends QUI\System\Console\Tool
     }
 
     /**
-     * @throws Exception|QUI\Database\Exception
+     * @throws Exception
+     * @throws QUI\Database\Exception
+     * @throws QUI\Exception
+     * @throws ExceptionStack
      */
     public function execute(): void
     {
@@ -561,7 +566,6 @@ class MigrationV2 extends QUI\System\Console\Tool
 
     /**
      * @throws Exception
-     * @throws QUI\Database\Exception
      */
     public function workspaces(): void
     {
@@ -569,41 +573,34 @@ class MigrationV2 extends QUI\System\Console\Tool
         $this->writeLn('> Cleanup workspaces');
 
         $workspaceTable = QUI\Workspace\Manager::table();
-        $queryBuilder = QUI::getQueryBuilder();
+        $workspaceUsers = $this->getWorkspaceUsers($workspaceTable);
+        $this->writeLn('>> Found workspace owners: ' . count($workspaceUsers));
 
-        $result = $queryBuilder->select('*')->from($workspaceTable)->executeQuery();
-        $count = 0;
-        $progressInterval = 50;
+        $userMap = $this->getWorkspaceUserMap($workspaceUsers);
+        $invalidWorkspaceUsers = [];
 
-        while ($entry = $result->fetchAssociative()) {
-            $time = date('H:i:s');
-
-            try {
-                $User = QUI::getUsers()->get($entry['uid']);
-            } catch (\Exception) {
-                if (++$count % $progressInterval === 0) {
-                    $this->writeLn(">> $time [$count] ");
-                }
-
-                // user not found -> workspace can be deleted
-                QUI::getDataBaseConnection()->delete($workspaceTable, [
-                    'id' => $entry['id']
-                ]);
-
+        foreach ($workspaceUsers as $uid) {
+            if (!isset($userMap[$uid])) {
+                $invalidWorkspaceUsers[] = $uid;
                 continue;
             }
 
-            if ($User->canUseBackend()) {
-                continue;
+            if ($userMap[$uid]['admin'] !== true) {
+                $invalidWorkspaceUsers[] = $uid;
             }
+        }
 
-            if (++$count % $progressInterval === 0) {
-                $this->writeLn(">> $time [$count] ");
-            }
+        $this->writeLn('>> Workspace owner analysis complete');
+        $this->writeLn('>> Invalid workspace owners queued for cleanup: ' . count($invalidWorkspaceUsers));
 
-            QUI::getDataBaseConnection()->delete($workspaceTable, [
-                'id' => $entry['id']
-            ]);
+        if (!empty($invalidWorkspaceUsers)) {
+            $this->writeLn('>> Start deleting workspaces for invalid owners');
+        }
+
+        $deletedWorkspaces = $this->deleteWorkspacesByUids($workspaceTable, $invalidWorkspaceUsers);
+
+        if ($deletedWorkspaces > 0) {
+            $this->writeLn('>> Deleted workspaces: ' . $deletedWorkspaces);
         }
 
         $this->writeLn('> Upgrade workspaces');
@@ -612,26 +609,18 @@ class MigrationV2 extends QUI\System\Console\Tool
         QUI::getDataBaseConnection()->executeStatement(
             'ALTER TABLE `' . $table . '` CHANGE `uid` `uid` VARCHAR(50) NOT NULL;'
         );
+        $userTable = QUI\Users\Manager::table();
 
-        $workspaces = QUI::getDataBase()->fetch([
-            'from' => $table
-        ]);
+        $updatedWorkspaces = QUI::getDataBaseConnection()->executeStatement(
+            'UPDATE `' . $table . '` workspace
+            INNER JOIN `' . $userTable . '` users
+                ON workspace.`uid` = CAST(users.`id` AS CHAR)
+            SET workspace.`uid` = users.`uuid`
+            WHERE workspace.`uid` REGEXP \'^[0-9]+$\' AND workspace.`uid` != \'5\''
+        );
 
-        foreach ($workspaces as $workspace) {
-            try {
-                $uuid = QUI::getUsers()->get($workspace['uid'])->getUUID();
-            } catch (QUI\Exception) {
-                QUI::getDataBaseConnection()->delete($table, [
-                    'id' => $workspace['id']
-                ]);
-                continue;
-            }
-
-            QUI::getDataBase()->update(
-                $table,
-                ['uid' => $uuid],
-                ['id' => $workspace['id']]
-            );
+        if ($updatedWorkspaces > 0) {
+            $this->writeLn('>> Upgraded workspace owners: ' . $updatedWorkspaces);
         }
     }
 
@@ -653,5 +642,331 @@ class MigrationV2 extends QUI\System\Console\Tool
         } catch (QUI\Exception) {
             return $userId;
         }
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function getWorkspaceUsers(string $workspaceTable): array
+    {
+        $result = QUI::getDataBaseConnection()->executeQuery(
+            'SELECT DISTINCT `uid` FROM `' . $workspaceTable . '`'
+        );
+
+        $workspaceUsers = [];
+
+        while ($entry = $result->fetchAssociative()) {
+            if (!isset($entry['uid'])) {
+                continue;
+            }
+
+            $workspaceUsers[] = (string)$entry['uid'];
+        }
+
+        return array_values(array_unique($workspaceUsers));
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function getWorkspaceUserMap(array $workspaceUsers): array
+    {
+        $workspaceUsers = array_values(array_unique(array_map('strval', $workspaceUsers)));
+
+        if (empty($workspaceUsers)) {
+            return [];
+        }
+
+        $numericUserIds = [];
+        $uuidUserIds = [];
+
+        foreach ($workspaceUsers as $uid) {
+            if ($uid === '5') {
+                continue;
+            }
+
+            if (is_numeric($uid)) {
+                $numericUserIds[] = (string)$uid;
+                continue;
+            }
+
+            $uuidUserIds[] = $uid;
+        }
+
+        $users = $this->fetchWorkspaceUsers($numericUserIds, $uuidUserIds);
+        $adminUserUUIDs = $this->getAdminWorkspaceUserUUIDs($users);
+        $userMap = [
+            '5' => [
+                'uuid' => '5',
+                'admin' => true
+            ]
+        ];
+
+        foreach ($users as $user) {
+            $isAdmin = (int)$user['su'] === 1 || isset($adminUserUUIDs[$user['uuid']]);
+
+            $payload = [
+                'uuid' => $user['uuid'],
+                'admin' => $isAdmin
+            ];
+
+            $userMap[(string)$user['id']] = $payload;
+            $userMap[$user['uuid']] = $payload;
+        }
+
+        return $userMap;
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function fetchWorkspaceUsers(array $numericUserIds, array $uuidUserIds): array
+    {
+        $userTable = QUI\Users\Manager::table();
+        $conn = QUI::getDataBaseConnection();
+        $users = [];
+        $processedNumericUserIds = 0;
+        $totalUserIds = count(array_unique($numericUserIds));
+        $totalUserUUIDs = count(array_unique($uuidUserIds));
+
+        if ($totalUserIds > 0) {
+            $this->writeLn('>> Load workspace owners by numeric id');
+        }
+
+        foreach (array_chunk(array_values(array_unique($numericUserIds)), 1000) as $idChunk) {
+            if (empty($idChunk)) {
+                continue;
+            }
+
+            $placeholders = implode(',', array_fill(0, count($idChunk), '?'));
+            $result = $conn->executeQuery(
+                'SELECT `id`, `uuid`, `usergroup`, `su`
+                FROM `' . $userTable . '`
+                WHERE `id` IN (' . $placeholders . ')',
+                $idChunk
+            );
+
+            while ($entry = $result->fetchAssociative()) {
+                $users[$entry['uuid']] = $entry;
+            }
+
+            $processedNumericUserIds += count($idChunk);
+
+            $this->writeLn(
+                sprintf(
+                    '>> Processed numeric owner ids: %d/%d',
+                    min($processedNumericUserIds, $totalUserIds),
+                    $totalUserIds
+                )
+            );
+        }
+
+        $processedUuidUsers = 0;
+
+        if ($totalUserUUIDs > 0) {
+            $this->writeLn('>> Load workspace owners by uuid');
+        }
+
+        foreach (array_chunk(array_values(array_unique($uuidUserIds)), 1000) as $uuidChunk) {
+            if (empty($uuidChunk)) {
+                continue;
+            }
+
+            $placeholders = implode(',', array_fill(0, count($uuidChunk), '?'));
+            $result = $conn->executeQuery(
+                'SELECT `id`, `uuid`, `usergroup`, `su`
+                FROM `' . $userTable . '`
+                WHERE `uuid` IN (' . $placeholders . ')',
+                $uuidChunk
+            );
+
+            while ($entry = $result->fetchAssociative()) {
+                $users[$entry['uuid']] = $entry;
+            }
+
+            $processedUuidUsers += count($uuidChunk);
+
+            $this->writeLn(
+                sprintf(
+                    '>> Processed uuid owners: %d/%d',
+                    min($processedUuidUsers, $totalUserUUIDs),
+                    $totalUserUUIDs
+                )
+            );
+        }
+
+        return $users;
+    }
+
+    protected function getAdminWorkspaceUserUUIDs(array $users): array
+    {
+        if (empty($users)) {
+            return [];
+        }
+
+        $adminUsers = [];
+        $userUUIDs = [];
+        $groupUUIDs = [];
+        $groupsByUser = [];
+
+        foreach ($users as $user) {
+            $userUUID = $user['uuid'];
+            $userUUIDs[] = $userUUID;
+
+            if ((int)$user['su'] === 1) {
+                $adminUsers[$userUUID] = true;
+            }
+
+            $groupsByUser[$userUUID] = $this->parseUserGroups($user['usergroup'] ?? '');
+            $groupUUIDs = array_merge($groupUUIDs, $groupsByUser[$userUUID]);
+        }
+
+        $this->writeLn('>> Start admin owner resolution for ' . count($users) . ' users');
+        $this->writeLn('>> Check direct admin permissions for users');
+
+        $adminUsers = array_merge(
+            $adminUsers,
+            $this->getAdminSubjects(
+                QUI::getDBTableName('permissions2users'),
+                'user_id',
+                $userUUIDs
+            )
+        );
+
+        $this->writeLn('>> Check admin permissions for groups');
+
+        $adminGroups = $this->getAdminSubjects(
+            QUI::getDBTableName('permissions2groups'),
+            'group_id',
+            $groupUUIDs
+        );
+
+        foreach ($groupsByUser as $userUUID => $groups) {
+            if (isset($adminUsers[$userUUID])) {
+                continue;
+            }
+
+            foreach ($groups as $groupUUID) {
+                if (!isset($adminGroups[$groupUUID])) {
+                    continue;
+                }
+
+                $adminUsers[$userUUID] = true;
+                break;
+            }
+        }
+
+        $this->writeLn('>> Resolved admin workspace owners: ' . count($adminUsers));
+
+        return $adminUsers;
+    }
+
+    protected function getAdminSubjects(
+        string $table,
+        string $idColumn,
+        array $ids
+    ): array {
+        $ids = array_values(array_unique(array_filter($ids)));
+
+        if (empty($ids)) {
+            return [];
+        }
+
+        $conn = QUI::getDataBaseConnection();
+        $adminSubjects = [];
+        $resolvedIds = 0;
+        $totalIds = count($ids);
+
+        foreach (array_chunk($ids, 1000) as $chunk) {
+            $placeholders = implode(',', array_fill(0, count($chunk), '?'));
+            $result = $conn->executeQuery(
+                'SELECT `' . $idColumn . '`, `permissions`
+                FROM `' . $table . '`
+                WHERE `' . $idColumn . '` IN (' . $placeholders . ')',
+                $chunk
+            );
+
+            $resolvedIds += count($chunk);
+
+            while ($entry = $result->fetchAssociative()) {
+                if (!$this->hasAdminPermission($entry['permissions'] ?? '')) {
+                    continue;
+                }
+
+                $adminSubjects[$entry[$idColumn]] = true;
+            }
+
+            $this->writeLn(
+                sprintf(
+                    '>> Checked %s permissions: %d/%d',
+                    $idColumn,
+                    min($resolvedIds, $totalIds),
+                    $totalIds
+                )
+            );
+        }
+
+        return $adminSubjects;
+    }
+
+    protected function hasAdminPermission(string $permissions): bool
+    {
+        $permissions = json_decode($permissions, true);
+
+        if (!is_array($permissions)) {
+            return false;
+        }
+
+        return !empty($permissions['quiqqer.admin']);
+    }
+
+    protected function parseUserGroups(string $userGroups): array
+    {
+        $userGroups = trim($userGroups, ',');
+
+        if ($userGroups === '') {
+            return [];
+        }
+
+        return array_values(array_filter(explode(',', $userGroups)));
+    }
+
+    protected function deleteWorkspacesByUids(string $workspaceTable, array $uids): int
+    {
+        $uids = array_values(array_unique(array_filter($uids)));
+
+        if (empty($uids)) {
+            return 0;
+        }
+
+        $conn = QUI::getDataBaseConnection();
+        $deleted = 0;
+        $processed = 0;
+        $total = count($uids);
+
+        $this->writeLn('>> Cleanup delete batches: ' . $total . ' owner ids');
+
+        foreach (array_chunk($uids, 500) as $chunk) {
+            $placeholders = implode(',', array_fill(0, count($chunk), '?'));
+
+            $deleted += $conn->executeStatement(
+                'DELETE FROM `' . $workspaceTable . '`
+                WHERE `uid` IN (' . $placeholders . ')',
+                $chunk
+            );
+
+            $processed += count($chunk);
+
+            $this->writeLn(
+                sprintf(
+                    '>> Cleanup batches: %d/%d owner ids processed, %d workspaces deleted',
+                    min($processed, $total),
+                    $total,
+                    $deleted
+                )
+            );
+        }
+
+        return $deleted;
     }
 }

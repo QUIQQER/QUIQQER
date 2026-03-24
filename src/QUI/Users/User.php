@@ -21,6 +21,7 @@ use function array_filter;
 use function array_flip;
 use function array_merge;
 use function array_search;
+use function array_values;
 use function class_exists;
 use function count;
 use function current;
@@ -918,12 +919,18 @@ class User implements QUIUserInterface
 
 
         // saving
+        /** @var list<string> $groupIds */
+        $groupIds = array_values(array_filter(
+            $this->getGroups(false),
+            static fn ($group): bool => is_string($group) && $group !== ''
+        ));
+
         $query = QUI::getQueryBuilder()->update(Manager::table());
 
         QUI\Utils\Doctrine::parseDbArrayToQueryBuilder($query, [
             'update' => [
                 'username' => $this->getUsername(),
-                'usergroup' => ',' . implode(',', $this->getGroups(false)) . ',',
+                'usergroup' => ',' . implode(',', $groupIds) . ',',
                 'firstname' => $this->getAttribute('firstname'),
                 'lastname' => $this->getAttribute('lastname'),
                 'usertitle' => $this->getAttribute('usertitle'),
