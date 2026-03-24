@@ -4,7 +4,6 @@ namespace QUI\System\Console\Tools;
 
 use Doctrine\DBAL\Exception;
 use QUI;
-
 use QUI\ExceptionStack;
 
 use function array_chunk;
