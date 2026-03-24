@@ -1,15 +1,11 @@
 <?php
 
-/**
- *
- * @author hen
- *
- */
-
 namespace QUI\System\Console\Tools;
 
 use Doctrine\DBAL\Exception;
 use QUI;
+
+use QUI\ExceptionStack;
 
 use function array_filter;
 use function count;
@@ -36,7 +32,10 @@ class MigrationV2 extends QUI\System\Console\Tool
     }
 
     /**
-     * @throws Exception|QUI\Database\Exception
+     * @throws Exception
+     * @throws QUI\Database\Exception
+     * @throws QUI\Exception
+     * @throws ExceptionStack
      */
     public function execute(): void
     {
