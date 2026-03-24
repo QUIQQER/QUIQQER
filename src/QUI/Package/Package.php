@@ -312,6 +312,10 @@ class Package extends QUI\QDOM
         $lock = QUI::getPackageManager()->getPackageLock($this);
 
         if (isset($lock['version'])) {
+            if (!is_array($this->composerData)) {
+                $this->composerData = [];
+            }
+
             $this->composerData['version'] = $lock['version'];
         }
 
