@@ -42,7 +42,7 @@ define('controls/users/password/Window', [
             buttonCancel: {
                 text: QUILocale.get('quiqqer/core', 'cancel'),
                 icon: false,
-                'class': 'btn btn-inline-body'
+                'class': 'btn btn-link-body'
             }
         },
 
@@ -61,7 +61,7 @@ define('controls/users/password/Window', [
                 options.buttonCancel = {
                     text: options.cancel_button.text || false,
                     icon: options.cancel_button.textimage || false,
-                    'class': 'btn btn-inline-body'
+                    'class': 'btn btn-link-body'
                 };
             }
 
