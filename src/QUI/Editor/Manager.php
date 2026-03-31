@@ -192,12 +192,19 @@ class Manager
             return self::$toolbars;
         }
 
-        $toolbars = array_keys(self::getToolbarDefinitions());
-        sort($toolbars);
+        $standardEditor = Manager::getConf()->getValue('settings', 'standard');
+        $toolbarDefinitions = self::getToolbarDefinitions();
 
-        self::$toolbars = $toolbars;
+        $availableToolbars = array_keys(array_filter(
+            $toolbarDefinitions,
+            static fn(array $toolbarDefinition) => $toolbarDefinition['editor'] === $standardEditor
+        ));
 
-        return $toolbars;
+        sort($availableToolbars);
+
+        self::$toolbars = $availableToolbars;
+
+        return $availableToolbars;
     }
 
     public static function search($search): array
