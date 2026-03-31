@@ -311,6 +311,7 @@ class Manager
 
             foreach ($definitions as $Editor) {
                 if (empty($Editor['component']) || empty($Editor['name'])) {
+                    QUI\System\Log::addWarning("Editor Manager: 'wysiwyg.xml' of package '{$package['name']}' is invalid, skipping it.");
                     continue;
                 }
 
