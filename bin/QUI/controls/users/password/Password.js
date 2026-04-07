@@ -67,21 +67,21 @@ define('controls/users/password/Password', [
                     '    <span class="qui-control-user-password-title">' +
                     QUILocale.get(lg, 'user.panel.password.old') +
                     '    </span>' +
-                    '    <input type="password" name="oldPassword" required autocomplete="off" />' +
+                    '    <input type="password" name="oldPassword" required autocomplete="current-password" />' +
                     '</label>' +
                     '<label>' +
                     '    <span class="qui-control-user-password-title">' +
                     QUILocale.get(lg, 'user.panel.password.new') +
                     '    </span>' +
-                    '    <input type="password" name="password" required autocomplete="off" />' +
+                    '    <input type="password" name="password" required autocomplete="new-password" />' +
                     '</label>' +
                     '<label>' +
                     '    <span class="qui-control-user-password-title">' +
                     QUILocale.get(lg, 'user.panel.password.repeat') +
                     '    </span>' +
-                    '    <input type="password" name="password2" required autocomplete="off" />' +
+                    '    <input type="password" name="password2" required autocomplete="new-password" />' +
                     '</label>' +
-                    '<label>' +
+                    '<label class="qui-control-user-password-show">' +
                     '    <input type="checkbox" name="show" />' +
                     QUILocale.get(lg, 'user.panel.password.show') +
                     '</label>',
