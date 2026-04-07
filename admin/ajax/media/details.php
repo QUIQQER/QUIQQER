@@ -14,11 +14,44 @@ use QUI\Projects\Media\Utils;
 QUI::$Ajax->registerFunction(
     'ajax_media_details',
     static function ($project, $fileid) {
-        $fileid = json_decode($fileid, true);
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
 
+        $normalizeMediaId = static function ($value): int|string|null {
+            if (is_string($value)) {
+                $value = trim($value);
+
+                if ($value === '' || $value === 'null') {
+                    return null;
+                }
+            }
+
+            if (Utils::isMediaUrl($value)) {
+                return $value;
+            }
+
+            if (is_numeric($value)) {
+                return (int)$value;
+            }
+
+            return null;
+        };
+
+        if (is_string($fileid)) {
+            $decoded = json_decode($fileid, true);
+
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $fileid = $decoded;
+            }
+        }
+
         if (!is_array($fileid)) {
+            $fileid = $normalizeMediaId($fileid);
+
+            if ($fileid === null) {
+                throw new QUI\Exception('Missing or invalid media id');
+            }
+
             if (Utils::isMediaUrl($fileid)) {
                 $File = Utils::getMediaItemByUrl($fileid);
             } else {
@@ -58,6 +91,12 @@ QUI::$Ajax->registerFunction(
         $list = [];
 
         foreach ($fileid as $id) {
+            $id = $normalizeMediaId($id);
+
+            if ($id === null) {
+                continue;
+            }
+
             if (Utils::isMediaUrl($id)) {
                 $File = Utils::getMediaItemByUrl($id);
             } else {

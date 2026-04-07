@@ -1414,7 +1414,7 @@ class Manager
             }
         }
 
-        if (empty($params) || empty($params['name'])) {
+        if (empty($params['name'])) {
             return;
         }
 

@@ -75,7 +75,7 @@ class RestProvider implements QUI\REST\ProviderInterface
     /**
      * Get title of this API.
      */
-    public function getTitle(QUI\Locale $Locale = null): string
+    public function getTitle(?QUI\Locale $Locale = null): string
     {
         if (empty($Locale)) {
             $Locale = QUI::getLocale();

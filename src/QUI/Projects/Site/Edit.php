@@ -464,7 +464,7 @@ class Edit extends Site
         $result = $this->getChildrenIds($params);
 
         if (isset($params['count'])) {
-            return (int)$result[0]['count'];
+            return (int)$result;
         }
 
         if (isset($result[0])) {

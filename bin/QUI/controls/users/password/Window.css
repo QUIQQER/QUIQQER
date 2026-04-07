@@ -1,8 +1,14 @@
-.qui-controls-user-password-window-message {
-    background-color: #FAF6D4;
-    border: 1px solid #E6C26E;
-    padding: 10px;
-    margin-bottom: 1rem;
+.qui-controls-user-password-window {
+    box-sizing: border-box;
+    padding: 2rem 1.5rem 0.5rem;
+    max-width: 400px;
+    margin-inline: auto;
+}
+
+.qui-controls-user-password-window-header h1 {
+    font-size: 1.5rem;
+    line-height: 1.2;
+    margin-bottom: 1.25rem;
 }
 
 .qui-controls-user-password-quiWindow input[name="show"] {
