@@ -270,7 +270,9 @@ define('controls/projects/project/media/Input', [
                 }
             }).inject(this.$Elm);
 
-            if (!this.getAttribute('mediabutton')) {
+            let mediaButton = this.getAttribute('mediabutton');
+
+            if (mediaButton === '0' || mediaButton === 0) {
                 this.$MediaButton.hide();
             }
 
