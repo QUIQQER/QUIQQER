@@ -336,7 +336,7 @@ define('controls/editors/Editor', [
         getContent: function () {
             this.fireEvent('getContent', [this]);
 
-            if (this.$sourceCodeEditor) {
+            if (this.$sourceCodeEditor && storage.get(EDITOR_MODUS_STORAGE_KEY) === EDITOR_MODUS_SOURCE) {
                 this.setAttribute('content', this.$sourceCodeEditor.getValue());
             }
 
