@@ -520,7 +520,8 @@ define('utils/Controls', [
                         new ProjectMediaInput({
                             selectable_types    : ['image', 'file'],
                             selectable_mimetypes: selectableMimeTypes,
-                            cssclasses          : mediaImages[i].get('data-qui-options-cssclasses')
+                            cssclasses          : mediaImages[i].get('data-qui-options-cssclasses'),
+                            mediabutton         : mediaImages[i].get('data-qui-options-mediabutton')
                         }, mediaImages[i]).create();
                     }
 
