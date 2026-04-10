@@ -517,7 +517,10 @@ class Rewrite
         }
 
         $this->first_child = $this->getProject()->firstChild();
-        $this->site = $this->first_child;
+        // @phpstan-ignore identical.alwaysTrue ($this->site can be set to not null by $this->setSite())
+        if ($this->site === null) {
+            $this->site = $this->first_child;
+        }
 
         if (!empty($_REQUEST['_url']) && $this->site->getId() === $this->first_child->getId()) {
             // URL Parameter filtern

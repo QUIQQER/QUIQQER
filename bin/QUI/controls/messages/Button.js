@@ -858,8 +858,13 @@ define('controls/messages/Button', [
 
                             const Project = Projects.get(File.getAttribute('project'));
                             const Media = Project.getMedia();
+                            const parentId = File.getAttribute('parentId');
 
-                            Media.get(File.getAttribute('parentId')).then((Folder) => {
+                            if (!parentId) {
+                                return;
+                            }
+
+                            Media.get(parentId).then((Folder) => {
                                 this.$MessageHandler.addSuccess(
                                     QUILocale.get(lg, 'upload.bulk.successful', {
                                         count: progress.total,
