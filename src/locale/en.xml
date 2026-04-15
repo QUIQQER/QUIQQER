@@ -4201,7 +4201,7 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="projects.project.site.panel.settings.media.site_image">
             <en><![CDATA[Site image]]></en>
         </locale>
-        <locale name="projects.project.site.panel.settings.media.layout">
+        <locale name="projects.project.site.panel.settings.layout">
             <en><![CDATA[Layout settings]]></en>
         </locale>
         <locale name="menu.extras.projects.text">
