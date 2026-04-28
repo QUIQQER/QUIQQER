@@ -184,6 +184,7 @@ class Htaccess extends QUI\System\Console\Tool
 
     RewriteEngine On
     RewriteBase {$URL_DIR}
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
     
     {$forceHttps}
     
@@ -293,6 +294,7 @@ class Htaccess extends QUI\System\Console\Tool
 
     RewriteEngine On
     RewriteBase {$URL_DIR}
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
     
     {$forceHttps}
     
