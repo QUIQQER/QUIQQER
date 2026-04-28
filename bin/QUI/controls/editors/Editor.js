@@ -336,7 +336,7 @@ define('controls/editors/Editor', [
         getContent: function () {
             this.fireEvent('getContent', [this]);
 
-            if (this.$sourceCodeEditor) {
+            if (this.$sourceCodeEditor && storage.get(EDITOR_MODUS_STORAGE_KEY) === EDITOR_MODUS_SOURCE) {
                 this.setAttribute('content', this.$sourceCodeEditor.getValue());
             }
 
@@ -589,7 +589,7 @@ define('controls/editors/Editor', [
                 });
 
                 this.$sourceCodeEditor.inject(this.$sourceCode);
-                this.$sourceCodeEditor.setValue(this.getAttribute('content'));
+                this.$sourceCodeEditor.setValue(this.getContent());
                 this.$sourceCode.style.display = '';
 
                 storage.set(EDITOR_MODUS_STORAGE_KEY, EDITOR_MODUS_SOURCE);
