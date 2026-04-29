@@ -27,6 +27,7 @@
             <desktopSearch src="\QUI\Workspace\Search\Provider\SettingsCategories"/>
             <desktopSearch src="\QUI\Workspace\Search\Provider\UsersAndGroups"/>
             <desktopSearch src="\QUI\Workspace\Search\Provider\Projects"/>
+            <mcp src="\QUI\MCP\Provider"/>
             <installationWizard src="\QUI\InstallationWizard\QuiqqerProvider"/>
         </provider>
     </package>
