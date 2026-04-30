@@ -24,6 +24,7 @@ use QUI\MCP\Project\Sites\CreateChild;
 use QUI\MCP\Project\Sites\DeactivateSite;
 use QUI\MCP\Project\Sites\DeleteSite;
 use QUI\MCP\Project\Sites\GetSite;
+use QUI\MCP\Project\Sites\GetSiteByUrl;
 use QUI\MCP\Project\Sites\ListSites;
 use QUI\MCP\Project\Sites\MoveSite;
 use QUI\MCP\Project\Sites\SearchSites;
@@ -49,6 +50,7 @@ class Provider implements ProviderInterface
             new ListProjects(),
             new ListSites(),
             new GetSite(),
+            new GetSiteByUrl(),
             new SearchSites(),
             new CreateChild(),
             new UpdateSite(),
