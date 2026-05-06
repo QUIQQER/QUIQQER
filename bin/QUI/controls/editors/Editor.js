@@ -626,8 +626,15 @@ define('controls/editors/Editor', [
             }
 
             this.showSourceCode();
-        }
+        },
 
         //endregion
+
+        /**
+         * @deprecated Use {@link showSourceCode} instead
+         */
+        switchToSource: function () {
+            this.showSourceCode();
+        }
     });
 });
