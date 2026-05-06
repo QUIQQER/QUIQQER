@@ -631,6 +631,13 @@ define('controls/editors/Editor', [
         //endregion
 
         /**
+         * @deprecated Use {@link hideSourceCode} instead
+         */
+        switchToWYSIWYG: function () {
+            this.hideSourceCode();
+        },
+
+        /**
          * @deprecated Use {@link showSourceCode} instead
          */
         switchToSource: function () {
