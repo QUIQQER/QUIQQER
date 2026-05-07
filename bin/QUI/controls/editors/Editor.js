@@ -592,6 +592,7 @@ define('controls/editors/Editor', [
                     }
                 });
 
+                this.$sourceCode.empty();
                 this.$sourceCodeEditor.inject(this.$sourceCode);
                 this.$sourceCodeEditor.setValue(content);
                 this.$sourceCode.style.display = '';
@@ -634,6 +635,7 @@ define('controls/editors/Editor', [
          * @deprecated Use {@link hideSourceCode} instead
          */
         switchToWYSIWYG: function () {
+            console.log('switchToWYSIWYG');
             this.hideSourceCode();
         },
 
@@ -641,6 +643,7 @@ define('controls/editors/Editor', [
          * @deprecated Use {@link showSourceCode} instead
          */
         switchToSource: function () {
+            console.log('switchToSource');
             this.showSourceCode();
         }
     });
