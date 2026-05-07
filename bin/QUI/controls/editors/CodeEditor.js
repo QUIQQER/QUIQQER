@@ -57,7 +57,9 @@ define('controls/editors/CodeEditor', [
                 this.fireEvent('change', [this, delta]);
             });
 
-            let requireFiles = [];
+            let requireFiles = [
+                URL_OPT_DIR + 'bin/quiqqer-asset/ace-builds/ace-builds/src/ext-beautify.js'
+            ];
 
             switch (this.getAttribute('type')) {
                 case 'css':
@@ -96,7 +98,7 @@ define('controls/editors/CodeEditor', [
                         break;
                 }
 
-                require([req], (Module) => {
+                require([req, 'ace/ext/beautify'], (Module, beautify) => {
                     if (Module.Mode) {
                         this.$Editor.session.setMode(new Module.Mode());
                     }
@@ -104,6 +106,8 @@ define('controls/editors/CodeEditor', [
                     if (this.$value) {
                         this.$Editor.setValue(this.$value);
                     }
+
+                    beautify.beautify(this.$Editor.session);
 
                     this.fireEvent('load');
                 });
