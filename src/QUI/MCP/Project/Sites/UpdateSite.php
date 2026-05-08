@@ -101,6 +101,7 @@ class UpdateSite extends AbstractTool
 
     protected static function getUpdateAttributes(Edit $Site): array
     {
+        /** @var array<int|string, mixed> $attributes */
         $attributes = self::UPDATE_ATTRIBUTES;
 
         QUI::getEvents()->fireEvent('mcpSiteUpdateAttributes', [&$attributes, $Site]);
