@@ -13,6 +13,7 @@ use QUI\AI\MCP\ToolHelper;
 use QUI\MCP\AbstractTool;
 use QUI\Projects\Project;
 use QUI\Projects\Site;
+use QUI\Projects\Site\Edit;
 use Throwable;
 
 use function array_shift;
@@ -304,7 +305,7 @@ class GetSiteByUrl extends AbstractTool
         $path = trim($path, '/');
 
         if ($path === '') {
-            return $Project->firstChild();
+            return new Edit($Project, 1);
         }
 
         try {
@@ -326,7 +327,7 @@ class GetSiteByUrl extends AbstractTool
     protected static function resolveSiteByTreePath(Project $Project, string $path): Site
     {
         $segments = self::splitPath($path);
-        $Child = $Project->firstChild();
+        $Child = new Edit($Project, 1);
         $lastIndex = count($segments) - 1;
 
         foreach ($segments as $index => $segment) {
@@ -339,7 +340,7 @@ class GetSiteByUrl extends AbstractTool
             }
 
             $id = $Child->getChildIdByName($segment);
-            $Child = $Project->get((int)$id);
+            $Child = new Edit($Project, (int)$id);
         }
 
         return $Child;
