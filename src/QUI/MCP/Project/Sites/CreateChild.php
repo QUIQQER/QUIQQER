@@ -44,7 +44,6 @@ class CreateChild extends AbstractTool
                 try {
                     self::checkCorePermission();
 
-                    $Project = self::getProject($project, $lang);
                     $Parent = self::getEditSite($project, $parentId, $lang);
                     $createParams = [];
 
@@ -90,7 +89,7 @@ class CreateChild extends AbstractTool
                     return [
                         'created' => true,
                         'parent' => self::parseSite($Parent),
-                        'site' => self::parseSite($Project->get($childId), true)
+                        'site' => self::parseSite($Child, true)
                     ];
                 } catch (Throwable $Exception) {
                     return ToolHelper::parseExceptionToResult($Exception);

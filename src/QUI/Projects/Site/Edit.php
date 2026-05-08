@@ -579,15 +579,15 @@ class Edit extends Site
         $this->checkPermission('quiqqer.projects.site.edit');
 
         $Project = $this->getProject();
-        $Parent = $Project->get($pid);
-        $children = $this->getChildrenIds();
+        $Parent = new self($Project, $pid);
+        $children = $this->getChildrenIds(['active' => '0&1']);
 
         if (in_array($pid, $children) || $pid === $this->getId()) {
             return;
         }
 
 
-        QUI::getEvents()->fireEvent('siteMoveBefore', [$this, $this->getParent()->getId()]);
+        QUI::getEvents()->fireEvent('siteMoveBefore', [$this, $this->getParentId()]);
 
         // get new order_field if manually sorting
         if (

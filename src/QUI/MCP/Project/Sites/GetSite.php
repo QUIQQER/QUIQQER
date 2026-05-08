@@ -26,7 +26,7 @@ class GetSite extends AbstractTool
                 try {
                     self::checkCorePermission();
 
-                    $Site = self::getProject($project, $lang)->get($id);
+                    $Site = self::getEditSite($project, $id, $lang);
 
                     if ($load === true) {
                         $Site->load();
