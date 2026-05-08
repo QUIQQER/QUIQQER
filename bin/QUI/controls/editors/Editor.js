@@ -574,10 +574,6 @@ define('controls/editors/Editor', [
             this.$Container.style.display = 'none';
             this.$refreshSourceCodeButtonLabel();
 
-            // Read the current content before creating the source editor, otherwise
-            // getContent() would read back the new empty source editor on initial load.
-            const content = this.getContent();
-
             // lade source code
             require(['controls/editors/CodeEditor'], (CodeEditor) => {
                 this.$sourceCodeEditor = new CodeEditor({
@@ -592,8 +588,9 @@ define('controls/editors/Editor', [
                     }
                 });
 
+                this.$sourceCode.empty();
                 this.$sourceCodeEditor.inject(this.$sourceCode);
-                this.$sourceCodeEditor.setValue(content);
+                this.$sourceCodeEditor.setValue(this.getAttribute('content'));
                 this.$sourceCode.style.display = '';
 
                 storage.set(EDITOR_MODUS_STORAGE_KEY, EDITOR_MODUS_SOURCE);
@@ -626,8 +623,24 @@ define('controls/editors/Editor', [
             }
 
             this.showSourceCode();
-        }
+        },
 
         //endregion
+
+        /**
+         * @deprecated Use {@link hideSourceCode} instead
+         */
+        switchToWYSIWYG: function () {
+            console.log('switchToWYSIWYG');
+            this.hideSourceCode();
+        },
+
+        /**
+         * @deprecated Use {@link showSourceCode} instead
+         */
+        switchToSource: function () {
+            console.log('switchToSource');
+            this.showSourceCode();
+        }
     });
 });
