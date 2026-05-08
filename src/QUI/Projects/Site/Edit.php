@@ -84,7 +84,19 @@ class Edit extends Site
      */
     public function __construct(Project $Project, int $id)
     {
-        parent::__construct($Project, $id);
+        $this->id = $id;
+        $this->Project = $Project;
+        $this->Events = new QUI\Events\Event();
+
+        if (empty($this->id)) {
+            throw new QUI\Exception('Site Error; No ID given:' . $id, 700);
+        }
+
+        $this->TABLE = $Project->table();
+        $this->RELTABLE = $Project->table() . '_relations';
+        $this->RELLANGTABLE = QUI::getDBTableName($Project->getAttribute('name') . '_multilingual');
+
+        $this->checkPermission('quiqqer.projects.site.view');
 
         $this->refresh();
 
