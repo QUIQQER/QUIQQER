@@ -84,7 +84,19 @@ class Edit extends Site
      */
     public function __construct(Project $Project, int $id)
     {
-        parent::__construct($Project, $id);
+        $this->id = $id;
+        $this->Project = $Project;
+        $this->Events = new QUI\Events\Event();
+
+        if (empty($this->id)) {
+            throw new QUI\Exception('Site Error; No ID given:' . $id, 700);
+        }
+
+        $this->TABLE = $Project->table();
+        $this->RELTABLE = $Project->table() . '_relations';
+        $this->RELLANGTABLE = QUI::getDBTableName($Project->getAttribute('name') . '_multilingual');
+
+        $this->checkPermission('quiqqer.projects.site.view');
 
         $this->refresh();
 
@@ -567,15 +579,15 @@ class Edit extends Site
         $this->checkPermission('quiqqer.projects.site.edit');
 
         $Project = $this->getProject();
-        $Parent = $Project->get($pid);
-        $children = $this->getChildrenIds();
+        $Parent = new self($Project, $pid);
+        $children = $this->getChildrenIds(['active' => '0&1']);
 
         if (in_array($pid, $children) || $pid === $this->getId()) {
             return;
         }
 
 
-        QUI::getEvents()->fireEvent('siteMoveBefore', [$this, $this->getParent()->getId()]);
+        QUI::getEvents()->fireEvent('siteMoveBefore', [$this, $this->getParentId()]);
 
         // get new order_field if manually sorting
         if (

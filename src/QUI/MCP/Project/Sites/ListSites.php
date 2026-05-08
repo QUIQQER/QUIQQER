@@ -29,7 +29,7 @@ class ListSites extends AbstractTool
                     self::checkCorePermission();
 
                     $Project = self::getProject($project, $lang);
-                    $Parent = $Project->get($parentId ?: 1);
+                    $Parent = self::getEditSite($project, $parentId ?: 1, $lang);
 
                     return [
                         'project' => self::parseProject($Project),

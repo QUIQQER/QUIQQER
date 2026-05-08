@@ -8,6 +8,7 @@ namespace QUI\MCP\Project\Sites;
 
 use Mcp\Schema\Result\CallToolResult;
 use Mcp\Server\Builder;
+use QUI;
 use QUI\AI\MCP\Server;
 use QUI\AI\MCP\ToolHelper;
 use QUI\MCP\AbstractTool;
@@ -29,6 +30,11 @@ class UpdateSite extends AbstractTool
         'release_to',
         'meta_description',
         'meta_keywords',
+        'quiqqer.site.template',
+        'quiqqer.meta.site.robots',
+        'quiqqer.meta.site.title',
+        'quiqqer.meta.site.description',
+        'quiqqer.meta.site.canonical',
         'image_emotion',
         'image_site'
     ];
@@ -46,10 +52,11 @@ class UpdateSite extends AbstractTool
                     self::checkCorePermission();
 
                     $Site = new Edit(self::getProject($project, $lang), $id);
+                    $allowedAttributes = self::getUpdateAttributes($Site);
                     $changed = [];
 
                     foreach ($attributes as $attribute => $value) {
-                        if (!in_array($attribute, self::UPDATE_ATTRIBUTES, true)) {
+                        if (!in_array($attribute, $allowedAttributes, true)) {
                             continue;
                         }
 
@@ -90,5 +97,24 @@ class UpdateSite extends AbstractTool
                 ]
             ]
         );
+    }
+
+    protected static function getUpdateAttributes(Edit $Site): array
+    {
+        /** @var array<int|string, mixed> $attributes */
+        $attributes = [];
+
+        foreach (self::UPDATE_ATTRIBUTES as $attribute) {
+            $attributes[] = $attribute;
+        }
+
+        QUI::getEvents()->fireEvent('mcpSiteUpdateAttributes', [&$attributes, $Site]);
+
+        return array_values(array_unique(array_filter(
+            $attributes,
+            static function (mixed $attribute): bool {
+                return is_string($attribute) && $attribute !== '';
+            }
+        )));
     }
 }
