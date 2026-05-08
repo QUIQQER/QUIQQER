@@ -17,6 +17,8 @@ define('controls/projects/project/media/Panel', [
     'controls/grid/Grid',
     'controls/upload/Form',
     'classes/request/Upload',
+    'qui/controls/windows/Confirm',
+    'controls/projects/project/media/Clipboard',
     'Ajax',
     'Locale',
     'utils/Media',
@@ -44,11 +46,13 @@ define('controls/projects/project/media/Panel', [
         GridControl = arguments[7],
         UploadForm = arguments[8],
         RequestUpload = arguments[9],
-        Ajax = arguments[10],
-        Locale = arguments[11],
-        MediaUtils = arguments[12],
-        Projects = arguments[13],
-        Permissions = arguments[14];
+        QUIConfirm = arguments[10],
+        MediaClipboard = arguments[11],
+        Ajax = arguments[12],
+        Locale = arguments[13],
+        MediaUtils = arguments[14],
+        Projects = arguments[15],
+        Permissions = arguments[16];
 
     /**
      * A Media-Panel, opens the Media in an Apppanel
@@ -77,7 +81,9 @@ define('controls/projects/project/media/Panel', [
             '$loadPagination',
             '$onPaginationChange',
             '$onPaginationLimitChange',
-            '$unloadPagination'
+            '$unloadPagination',
+            '$markClipboardTarget',
+            '$onClipboardPaste'
         ],
 
         options: {
@@ -163,6 +169,7 @@ define('controls/projects/project/media/Panel', [
 
             this.addEvents({
                 onCreate: this.$onCreate,
+                onOpen: this.$markClipboardTarget,
                 onResize: this.$onResize,
                 onShow: function () {
                     if (this.$Pagination) {
@@ -170,6 +177,19 @@ define('controls/projects/project/media/Panel', [
                     }
                 }.bind(this),
                 onDestroy: function () {
+                    const Elm = this.getElm();
+
+                    if (Elm) {
+                        Elm.removeEvents({
+                            focus: this.$markClipboardTarget,
+                            mousedown: this.$markClipboardTarget,
+                            click: this.$markClipboardTarget
+                        });
+                    }
+
+                    document.removeEvent('paste', this.$onClipboardPaste);
+                    MediaClipboard.clearActivePanel(this);
+
                     this.$Media.removeEvent('onItemRename', this.$itemEvent);
                     this.$Media.removeEvent('onItemActivate', this.$itemEvent);
                     this.$Media.removeEvent('onItemDeactivate', this.$itemEvent);
@@ -280,6 +300,19 @@ define('controls/projects/project/media/Panel', [
             // blur event
             const self = this,
                 Body = this.getContent();
+
+            const Elm = this.getElm();
+
+            if (Elm) {
+                Elm.addEvents({
+                    focus: this.$markClipboardTarget,
+                    mousedown: this.$markClipboardTarget,
+                    click: this.$markClipboardTarget
+                });
+            }
+
+            document.addEvent('paste', this.$onClipboardPaste);
+            this.$markClipboardTarget();
 
             Body.addEvent('click', this.unselectItems);
             Body.addEvent('contextmenu', this.$onContextMenu);
@@ -594,6 +627,70 @@ define('controls/projects/project/media/Panel', [
 
         unload: function () {
 
+        },
+
+        $markClipboardTarget: function () {
+            MediaClipboard.setActivePanel(this);
+        },
+
+        $onClipboardPaste: function (event) {
+            const CurrentFile = this.getCurrentFile();
+
+            if (!CurrentFile || !MediaClipboard.isActivePanel(this)) {
+                return;
+            }
+
+            if (MediaClipboard.isEditableTarget(event.target)) {
+                return;
+            }
+
+            if (CurrentFile.getType() !== 'classes/projects/project/media/Folder') {
+                return;
+            }
+
+            const Files = MediaClipboard.getFilesFromPasteEvent(event);
+
+            if (!Files.length) {
+                return;
+            }
+
+            event.stop();
+
+            const self = this;
+
+            new QUIConfirm({
+                title: Locale.get(lg, 'projects.project.media.clipboard.upload.title'),
+                icon: 'fa fa-clipboard',
+                texticon: 'fa fa-upload',
+                maxWidth: 533,
+                maxHeight: 300,
+                text: Locale.get(lg, 'projects.project.media.clipboard.upload.text'),
+                information: Locale.get(lg, 'projects.project.media.clipboard.upload.information', {
+                    folder: CurrentFile.getAttribute('file')
+                }),
+                ok_button: {
+                    text: Locale.get(lg, 'projects.project.media.clipboard.upload.submit'),
+                    textimage: 'fa fa-upload'
+                },
+                autoclose: false,
+                events: {
+                    onSubmit: function (Win) {
+                        Win.Loader.show();
+                        self.Loader.show();
+
+                        CurrentFile.uploadFiles(Files).then(function () {
+                            return self.openID(CurrentFile.getId(), true);
+                        }).then(function () {
+                            self.Loader.hide();
+                            Win.close();
+                        }).catch(function (Exception) {
+                            console.error(Exception);
+                            self.Loader.hide();
+                            Win.Loader.hide();
+                        });
+                    }
+                }
+            }).open();
         },
 
         /**

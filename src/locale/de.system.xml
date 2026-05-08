@@ -903,6 +903,30 @@
         <locale name="projects.project.site.media.filePanel.btn.replace.text">
             <de><![CDATA[Ersetzen mit ...]]></de>
         </locale>
+        <locale name="projects.project.media.clipboard.upload.title">
+            <de><![CDATA[Dateien hochladen]]></de>
+        </locale>
+        <locale name="projects.project.media.clipboard.upload.text">
+            <de><![CDATA[Dateien jetzt hochladen?]]></de>
+        </locale>
+        <locale name="projects.project.media.clipboard.upload.information" html="true">
+            <de><![CDATA[Die Dateien aus der Zwischenablage werden in folgenden Ordner hochgeladen: <b>[folder]</b>]]></de>
+        </locale>
+        <locale name="projects.project.media.clipboard.upload.submit">
+            <de><![CDATA[Jetzt hochladen]]></de>
+        </locale>
+        <locale name="projects.project.media.clipboard.replace.title">
+            <de><![CDATA[Bild ersetzen]]></de>
+        </locale>
+        <locale name="projects.project.media.clipboard.replace.text">
+            <de><![CDATA[Bild jetzt ersetzen?]]></de>
+        </locale>
+        <locale name="projects.project.media.clipboard.replace.information" html="true">
+            <de><![CDATA[Das Bild aus der Zwischenablage ersetzt folgende Datei: <b>[file]</b>]]></de>
+        </locale>
+        <locale name="projects.project.media.clipboard.replace.submit">
+            <de><![CDATA[Jetzt ersetzen]]></de>
+        </locale>
         <locale name="projects.project.site.media.filePanel.btn.activate.text">
             <de><![CDATA[Aktivieren]]></de>
         </locale>

@@ -12,6 +12,7 @@ define('controls/projects/project/media/FolderPanel', [
     'qui/controls/input/Range',
     'qui/utils/Form',
     'utils/Template',
+    'controls/projects/project/media/Clipboard',
     'controls/projects/project/media/Input',
     'Projects',
     'Locale',
@@ -28,6 +29,7 @@ define('controls/projects/project/media/FolderPanel', [
              QUIRange,
              QUIFormUtils,
              Template,
+             MediaClipboard,
              MediaInput,
              Projects,
              Locale,
@@ -50,7 +52,9 @@ define('controls/projects/project/media/FolderPanel', [
             'openPermissions',
             'executeEffectsRecursive',
             '$refreshImageEffectFrame',
-            '$onFolderRefresh'
+            '$onFolderRefresh',
+            '$markClipboardTarget',
+            '$onClipboardPaste'
         ],
 
         options: {
@@ -73,7 +77,8 @@ define('controls/projects/project/media/FolderPanel', [
 
             this.addEvents({
                 onInject: this.$onInject,
-                onDestroy: this.$onDestroy
+                onDestroy: this.$onDestroy,
+                onOpen: this.$markClipboardTarget
             });
         },
 
@@ -81,6 +86,18 @@ define('controls/projects/project/media/FolderPanel', [
          * @event : on panel inject
          */
         $onInject: function () {
+            const Elm = this.getElm();
+
+            if (Elm) {
+                Elm.addEvents({
+                    focus: this.$markClipboardTarget,
+                    mousedown: this.$markClipboardTarget,
+                    click: this.$markClipboardTarget
+                });
+            }
+
+            document.addEvent('paste', this.$onClipboardPaste);
+            this.$markClipboardTarget();
             this.$load();
         },
 
@@ -88,6 +105,19 @@ define('controls/projects/project/media/FolderPanel', [
          * event : on panel destroy
          */
         $onDestroy: function () {
+            const Elm = this.getElm();
+
+            if (Elm) {
+                Elm.removeEvents({
+                    focus: this.$markClipboardTarget,
+                    mousedown: this.$markClipboardTarget,
+                    click: this.$markClipboardTarget
+                });
+            }
+
+            document.removeEvent('paste', this.$onClipboardPaste);
+            MediaClipboard.clearActivePanel(this);
+
             if (this.$Folder) {
                 this.$Folder.removeEvents({
                     onRefresh: this.$onFolderRefresh,
@@ -161,6 +191,74 @@ define('controls/projects/project/media/FolderPanel', [
             }
 
             this.openEffects();
+        },
+
+        $markClipboardTarget: function () {
+            MediaClipboard.setActivePanel(this);
+        },
+
+        $onClipboardPaste: function (event) {
+            if (!this.$Folder || !MediaClipboard.isActivePanel(this)) {
+                return;
+            }
+
+            if (MediaClipboard.isEditableTarget(event.target)) {
+                return;
+            }
+
+            const Files = MediaClipboard.getFilesFromPasteEvent(event);
+
+            if (!Files.length) {
+                return;
+            }
+
+            event.stop();
+
+            const self = this;
+
+            new QUIConfirm({
+                title: Locale.get(lg, 'projects.project.media.clipboard.upload.title'),
+                icon: 'fa fa-clipboard',
+                texticon: 'fa fa-upload',
+                maxWidth: 533,
+                maxHeight: 300,
+                text: Locale.get(lg, 'projects.project.media.clipboard.upload.text'),
+                information: Locale.get(lg, 'projects.project.media.clipboard.upload.information', {
+                    folder: this.$Folder.getAttribute('file')
+                }),
+                ok_button: {
+                    text: Locale.get(lg, 'projects.project.media.clipboard.upload.submit'),
+                    textimage: 'fa fa-upload'
+                },
+                autoclose: false,
+                events: {
+                    onSubmit: function (Win) {
+                        Win.Loader.show();
+                        self.Loader.show();
+
+                        self.$Folder.uploadFiles(Files).then(function () {
+                            const panels = QUI.Controls.get('projects-media-panel');
+
+                            for (let i = 0, len = panels.length; i < len; i++) {
+                                if (panels[i].getProject().getName() !== self.getAttribute('project')) {
+                                    continue;
+                                }
+
+                                panels[i].refresh();
+                            }
+
+                            return self.$Folder.refresh();
+                        }).then(function () {
+                            self.Loader.hide();
+                            Win.close();
+                        }).catch(function (Exception) {
+                            console.error(Exception);
+                            self.Loader.hide();
+                            Win.Loader.hide();
+                        });
+                    }
+                }
+            }).open();
         },
 
         /**

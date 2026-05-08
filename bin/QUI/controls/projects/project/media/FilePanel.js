@@ -17,6 +17,7 @@ define('controls/projects/project/media/FilePanel', [
     'qui/utils/String',
     'utils/Controls',
     'utils/Media',
+    'controls/projects/project/media/Clipboard',
     'controls/projects/project/media/Input',
     'Locale',
     'Ajax',
@@ -43,10 +44,11 @@ define('controls/projects/project/media/FilePanel', [
         StringUtils = arguments[11],
         ControlUtils = arguments[12],
         MediaUtils = arguments[13],
-        MediaInput = arguments[14],
-        Locale = arguments[15],
-        QUIAjax = arguments[16],
-        Projects = arguments[17];
+        MediaClipboard = arguments[14],
+        MediaInput = arguments[15],
+        Locale = arguments[16],
+        QUIAjax = arguments[17],
+        Projects = arguments[18];
 
     /**
      * A Media-Panel, opens the Media in an Desktop Panel
@@ -75,7 +77,9 @@ define('controls/projects/project/media/FilePanel', [
             '$unloadCategory',
             '$refreshImageEffectFrame',
             '$onFileActivate',
-            '$onFileDeactivate'
+            '$onFileDeactivate',
+            '$markClipboardTarget',
+            '$onClipboardPaste'
         ],
 
         options: {
@@ -104,7 +108,21 @@ define('controls/projects/project/media/FilePanel', [
 
             this.addEvents({
                 onInject: this.$onInject,
+                onOpen: this.$markClipboardTarget,
                 onDestroy: function () {
+                    const Elm = self.getElm();
+
+                    if (Elm) {
+                        Elm.removeEvents({
+                            focus: self.$markClipboardTarget,
+                            mousedown: self.$markClipboardTarget,
+                            click: self.$markClipboardTarget
+                        });
+                    }
+
+                    document.removeEvent('paste', self.$onClipboardPaste);
+                    MediaClipboard.clearActivePanel(self);
+
                     if (self.$ButtonDetails) {
                         self.$ButtonDetails.destroy();
                     }
@@ -231,6 +249,18 @@ define('controls/projects/project/media/FilePanel', [
 
             const self = this;
 
+            const Elm = this.getElm();
+
+            if (Elm) {
+                Elm.addEvents({
+                    focus: this.$markClipboardTarget,
+                    mousedown: this.$markClipboardTarget,
+                    click: this.$markClipboardTarget
+                });
+            }
+
+            document.addEvent('paste', this.$onClipboardPaste);
+            this.$markClipboardTarget();
             this.Loader.show();
 
             this.load(function () {
@@ -288,6 +318,79 @@ define('controls/projects/project/media/FilePanel', [
             if (typeof callback === 'function') {
                 callback();
             }
+        },
+
+        $markClipboardTarget: function () {
+            MediaClipboard.setActivePanel(this);
+        },
+
+        $onClipboardPaste: function (event) {
+            if (!this.$File || !MediaClipboard.isActivePanel(this)) {
+                return;
+            }
+
+            if (MediaClipboard.isEditableTarget(event.target)) {
+                return;
+            }
+
+            if (this.$File.getType() !== 'classes/projects/project/media/Image' &&
+                this.$File.getAttribute('type') !== 'image') {
+                return;
+            }
+
+            const ImageFile = MediaClipboard.getImageFileFromPasteEvent(event);
+
+            if (!ImageFile) {
+                return;
+            }
+
+            event.stop();
+
+            const self = this;
+
+            new QUIConfirm({
+                title: Locale.get(lg, 'projects.project.media.clipboard.replace.title'),
+                icon: 'fa fa-clipboard',
+                texticon: 'fa fa-retweet',
+                maxWidth: 533,
+                maxHeight: 300,
+                text: Locale.get(lg, 'projects.project.media.clipboard.replace.text'),
+                information: Locale.get(lg, 'projects.project.media.clipboard.replace.information', {
+                    file: this.$File.getAttribute('file')
+                }),
+                ok_button: {
+                    text: Locale.get(lg, 'projects.project.media.clipboard.replace.submit'),
+                    textimage: 'fa fa-upload'
+                },
+                autoclose: false,
+                events: {
+                    onSubmit: function (Win) {
+                        Win.Loader.show();
+                        self.Loader.show();
+
+                        self.getMedia().replace(self.$File.getId(), ImageFile).then(function () {
+                            const panels = QUI.Controls.get('projects-media-panel');
+
+                            for (let i = 0, len = panels.length; i < len; i++) {
+                                if (panels[i].getProject().getName() !== self.getAttribute('project')) {
+                                    continue;
+                                }
+
+                                panels[i].refresh();
+                            }
+
+                            return self.refresh();
+                        }).then(function () {
+                            self.Loader.hide();
+                            Win.close();
+                        }).catch(function (Exception) {
+                            console.error(Exception);
+                            self.Loader.hide();
+                            Win.Loader.hide();
+                        });
+                    }
+                }
+            }).open();
         },
 
         /**
