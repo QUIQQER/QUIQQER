@@ -8,11 +8,13 @@ namespace QUI\MCP\Project\Sites;
 
 use Mcp\Schema\Result\CallToolResult;
 use Mcp\Server\Builder;
+use PDO;
 use QUI;
 use QUI\AI\MCP\ToolHelper;
 use QUI\MCP\AbstractTool;
 use QUI\Projects\Project;
 use QUI\Projects\Site;
+use QUI\Projects\Site\Edit;
 use Throwable;
 
 class SearchSites extends AbstractTool
@@ -30,6 +32,7 @@ class SearchSites extends AbstractTool
                     self::checkCorePermission();
 
                     $results = [];
+                    $limit = self::sanitizeLimit($limit);
                     $projects = empty($project)
                         ? QUI::getProjectManager()->getProjects(true)
                         : [self::getProject($project, $lang)];
@@ -39,14 +42,10 @@ class SearchSites extends AbstractTool
                             continue;
                         }
 
-                        foreach ($Project->search($query, ['name', 'title', 'short', 'content']) as $Site) {
-                            if (!$Site instanceof Site) {
-                                continue;
-                            }
-
+                        foreach (self::searchProject($Project, $query, $limit - count($results)) as $Site) {
                             $results[] = self::parseSite($Site);
 
-                            if (count($results) >= self::sanitizeLimit($limit)) {
+                            if (count($results) >= $limit) {
                                 return $results;
                             }
                         }
@@ -71,5 +70,43 @@ class SearchSites extends AbstractTool
                 ]
             ]
         );
+    }
+
+    /**
+     * @return Site[]
+     */
+    protected static function searchProject(Project $Project, string $query, int $limit): array
+    {
+        if ($limit <= 0) {
+            return [];
+        }
+
+        $Statement = QUI::getPDO()->prepare(
+            'SELECT `id`
+            FROM `' . $Project->table() . '`
+            WHERE (
+                `name` LIKE :search OR
+                `title` LIKE :search OR
+                `short` LIKE :search OR
+                `content` LIKE :search
+            )
+            AND `deleted` = 0
+            LIMIT 0, ' . $limit
+        );
+
+        $Statement->bindValue(':search', '%' . $query . '%');
+        $Statement->execute();
+
+        $result = [];
+
+        foreach ($Statement->fetchAll(PDO::FETCH_ASSOC) as $entry) {
+            try {
+                $result[] = new Edit($Project, (int)$entry['id']);
+            } catch (Throwable $Exception) {
+                QUI\System\Log::writeDebugException($Exception);
+            }
+        }
+
+        return $result;
     }
 }
