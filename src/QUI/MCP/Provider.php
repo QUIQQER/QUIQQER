@@ -20,6 +20,9 @@ use QUI\MCP\Project\Media\SearchMedia;
 use QUI\MCP\Project\Media\UpdateMedia;
 use QUI\MCP\Project\Media\UploadMedia;
 use QUI\MCP\Project\Sites\ActivateSite;
+use QUI\MCP\Project\Sites\AddLanguageLink;
+use QUI\MCP\Project\Sites\CopySite;
+use QUI\MCP\Project\Sites\CopySiteToLanguage;
 use QUI\MCP\Project\Sites\CreateChild;
 use QUI\MCP\Project\Sites\DeactivateSite;
 use QUI\MCP\Project\Sites\DeleteSite;
@@ -52,6 +55,9 @@ class Provider implements ProviderInterface
             new GetSite(),
             new GetSiteByUrl(),
             new SearchSites(),
+            new AddLanguageLink(),
+            new CopySite(),
+            new CopySiteToLanguage(),
             new CreateChild(),
             new UpdateSite(),
             new ActivateSite(),
