@@ -2680,6 +2680,9 @@
         <locale name="users.user.address.window.delete.information">
             <de><![CDATA[Die Adresse ist nicht wiederherstellbar]]></de>
         </locale>
+        <locale name="exception.users.address.delete.default">
+            <de><![CDATA[Die Standardadresse kann nicht gelöscht werden. Setzen Sie zuerst eine andere Adresse als Standard.]]></de>
+        </locale>
         <locale name="users.input.no.results">
             <de><![CDATA[Keine Ergebnisse gefunden]]></de>
         </locale>

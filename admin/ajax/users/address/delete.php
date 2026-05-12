@@ -52,6 +52,19 @@ QUI::$Ajax->registerFunction(
 
         $User = QUI::getUsers()->get($uid);
         $Address = $User->getAddress($aid);
+        $StandardAddress = $User->getStandardAddress();
+
+        if (
+            $StandardAddress !== null
+            && $StandardAddress->getUUID() === $Address->getUUID()
+        ) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/core',
+                    'exception.users.address.delete.default'
+                )
+            );
+        }
 
         $Address->delete();
     },
