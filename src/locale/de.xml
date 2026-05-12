@@ -6704,6 +6704,24 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         <locale name="control.icons.confirm.noResultsInfo">
             <de><![CDATA[Es gibt keine Icons, die der Suchanfrage entsprechen]]></de>
         </locale>
+        <locale name="control.icons.confirm.category.all">
+            <de><![CDATA[Alle]]></de>
+        </locale>
+        <locale name="control.icons.confirm.preview.placeholder">
+            <de><![CDATA[Wählen Sie ein Icon aus]]></de>
+        </locale>
+        <locale name="control.icons.confirm.preview.cssClass">
+            <de><![CDATA[CSS-Klasse]]></de>
+        </locale>
+        <locale name="control.icons.confirm.preview.copyHtml">
+            <de><![CDATA[Code kopieren]]></de>
+        </locale>
+        <locale name="control.icons.confirm.preview.copied">
+            <de><![CDATA[Kopiert]]></de>
+        </locale>
+        <locale name="control.icons.confirm.cssClassHint">
+            <de><![CDATA[Kopieren Sie die Klasse, um das Icon in Ihrem Projekt zu verwenden.]]></de>
+        </locale>
         <locale name="control.grid.menu.button">
             <de><![CDATA[Menü]]></de>
         </locale>

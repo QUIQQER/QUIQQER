@@ -9,6 +9,7 @@ namespace QUI\Icons;
 use QUI;
 
 use function array_flip;
+use function is_array;
 use function is_null;
 use function json_encode;
 use function trim;
@@ -27,6 +28,11 @@ class Handler
      * list of needed css files
      */
     protected array $files = [];
+
+    /**
+     * optional extended icon metadata: label, categories, aliases, searchTerms
+     */
+    protected array $iconData = [];
 
     /**
      * Handler constructor.
@@ -91,6 +97,37 @@ class Handler
     public function clearCssIcons(): void
     {
         $this->list = [];
+    }
+
+    /**
+     * Add extended icon metadata. Each entry should provide at least a
+     * 'class' key. The class is additionally registered in the flat icon
+     * list so isIcon() recognises style variants like
+     * 'fa fa-regular fa-comment' that may not be present in the CSS-based
+     * class list.
+     *
+     * Recognised keys per entry: class, label, categories, aliases, searchTerms.
+     */
+    public function addIconData(array $entries): void
+    {
+        foreach ($entries as $entry) {
+            if (!is_array($entry) || empty($entry['class'])) {
+                continue;
+            }
+
+            $this->iconData[] = $entry;
+            $this->addIcon($entry['class']);
+        }
+    }
+
+    public function getIconData(): array
+    {
+        return $this->iconData;
+    }
+
+    public function hasIconData(): bool
+    {
+        return !empty($this->iconData);
     }
 
     /**
