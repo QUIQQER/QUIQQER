@@ -1720,6 +1720,12 @@ define('controls/projects/project/media/Panel', [
                         width: 150
                     },
                     {
+                        header: 'Alt',
+                        dataIndex: 'alt',
+                        dataType: 'string',
+                        width: 150
+                    },
+                    {
                         header: Locale.get(lg, 'c_date'),
                         dataIndex: 'c_date',
                         dataType: 'date',
@@ -1812,7 +1818,7 @@ define('controls/projects/project/media/Panel', [
                 }
             });
 
-            let i, len, title;
+            let i, len, title, alt;
             const children = Result.data;
 
             for (i = 0, len = children.length; i < len; i++) {
@@ -1824,6 +1830,17 @@ define('controls/projects/project/media/Panel', [
                     title = title.join('; ');
 
                     children[i].title = title;
+                } catch (e) {
+                }
+
+                try {
+                    alt = children[i].alt;
+                    alt = JSON.decode(alt);
+                    alt = Object.values(alt);
+                    alt = alt.filter(Boolean); // filter empty
+                    alt = alt.join('; ');
+
+                    children[i].alt = alt;
                 } catch (e) {
                 }
             }
