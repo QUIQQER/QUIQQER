@@ -32,6 +32,7 @@ define('controls/projects/project/media/Panel', [
     "use strict";
 
     const lg = 'quiqqer/core';
+    const STORAGE_KEY_MISSING_META_BADGES = 'qui-media-panel-missing-meta-badges';
 
     let HIDE_HIDDEN_FILES = 1; // 1 = hide all hidden files, 0 = show all hidden files
     let SHOW_SITEMAP_STATUS = false;
@@ -96,6 +97,7 @@ define('controls/projects/project/media/Panel', [
 
             title: '',
             icon: '',
+            'class': 'qui-panel--media',
 
             field: 'name',
             order: 'ASC',
@@ -502,6 +504,30 @@ define('controls/projects/project/media/Panel', [
                 );
 
                 self.addButton(Upload);
+
+                self.addButton(
+                    new QUISeparator()
+                );
+
+                const MissingMetaBadges = new QUIButton({
+                    name: 'missing-meta-badges',
+                    text: '',
+                    textimage: '',
+                    title: '',
+                    events: {
+                        onClick: function (Btn) {
+                            self.$setShowMissingMetaBadges(
+                                !self.$showMissingMetaBadges()
+                            );
+
+                            self.$refreshMissingMetaBadgeButton(Btn);
+                            self.$view(self.$children);
+                        }
+                    }
+                });
+
+                self.$refreshMissingMetaBadgeButton(MissingMetaBadges);
+                self.addButton(MissingMetaBadges);
 
                 self.$Filter = new Element('input', {
                     placeholder: 'Filter...',
@@ -1407,8 +1433,44 @@ define('controls/projects/project/media/Panel', [
             return !!this.$normalizeMediaFieldValue(value);
         },
 
+        $showMissingMetaBadges: function () {
+            const value = QUI.Storage.get(STORAGE_KEY_MISSING_META_BADGES);
+
+            if (value === null || typeof value === 'undefined') {
+                return true;
+            }
+
+            return !!parseInt(value);
+        },
+
+        $setShowMissingMetaBadges: function (value) {
+            QUI.Storage.set(STORAGE_KEY_MISSING_META_BADGES, value ? 1 : 0);
+        },
+
+        $refreshMissingMetaBadgeButton: function (Btn) {
+            if (!Btn) {
+                return;
+            }
+
+            if (this.$showMissingMetaBadges()) {
+                Btn.setAttributes({
+                    text: 'Hinweise aus',
+                    textimage: 'fa fa-eye-slash',
+                    title: 'Hinweise für fehlende Titel- und Alt-Texte ausblenden'
+                });
+
+                return;
+            }
+
+            Btn.setAttributes({
+                text: 'Hinweise an',
+                textimage: 'fa fa-eye',
+                title: 'Hinweise für fehlende Titel- und Alt-Texte einblenden'
+            });
+        },
+
         $getMissingMediaMetaBadgesHtml: function (Child) {
-            if (Child.type === 'folder') {
+            if (!this.$showMissingMetaBadges() || Child.type === 'folder') {
                 return '';
             }
 
@@ -1439,6 +1501,10 @@ define('controls/projects/project/media/Panel', [
          */
         $viewSymbols: function (Result, Container) {
             let i, len, ext, Elm, Child;
+
+            const List = new Element('div', {
+                'class': 'qui-media-content-list'
+            }).inject(Container);
 
             const droplist = [],
                 Media = this.$Media,
@@ -1478,7 +1544,7 @@ define('controls/projects/project/media/Panel', [
                     'data-mimetype': Child.mimetype,
                     'data-hidden': Child.isHidden ? 1 : 0,
 
-                    'class': 'qui-media-item smooth',
+                    'class': 'qui-media-item',
                     html: this.$getMissingMediaMetaBadgesHtml(Child) +
                         '<span class="title">' + Child.name + '</span>',
                     alt: Child.name + ext,
@@ -1492,6 +1558,10 @@ define('controls/projects/project/media/Panel', [
                         contextmenu: this.$PanelContextMenu.show.bind(this.$PanelContextMenu)
                     }
                 });
+
+                const ImgContainer = new Element('div', {
+                    'class': 'qui-media-item-img'
+                }).inject(Elm);
 
                 if (Child.isHidden) {
                     if (HIDE_HIDDEN_FILES) {
@@ -1510,20 +1580,18 @@ define('controls/projects/project/media/Panel', [
                 }
 
                 if (Child.error) {
-                    Elm.setStyles({
+                    ImgContainer.setStyles({
                         backgroundImage: 'url(' + URL_BIN_DIR + '48x48/file_broken.png)',
-                        paddingLeft: 20
                     });
 
                     showBrokenFileMsg(Child);
                 } else {
-                    Elm.setStyles({
+                    ImgContainer.setStyles({
                         backgroundImage: 'url(' + Child.icon80x80 + ')',
-                        paddingLeft: 20
                     });
                 }
 
-                Elm.inject(Container);
+                Elm.inject(List);
             }
 
             return droplist;
@@ -1540,6 +1608,10 @@ define('controls/projects/project/media/Panel', [
          */
         $viewPreview: function (Result, Container) {
             let i, len, url, ext, Child, Elm;
+
+            const List = new Element('div', {
+                'class': 'qui-media-content-list'
+            }).inject(Container);
 
             const droplist = [],
                 Media = this.$Media,
@@ -1572,7 +1644,7 @@ define('controls/projects/project/media/Panel', [
                     'data-mimetype': Child.mimetype,
                     'data-hidden': Child.isHidden ? 1 : 0,
 
-                    'class': 'qui-media-item box smooth',
+                    'class': 'qui-media-item',
                     html: this.$getMissingMediaMetaBadgesHtml(Child) +
                         '<span class="title">' + Child.name + '</span>',
                     alt: Child.name + ext,
@@ -1587,6 +1659,10 @@ define('controls/projects/project/media/Panel', [
                     }
                 });
 
+                const ImgContainer = new Element('div', {
+                    'class': 'qui-media-item-img'
+                }).inject(Elm);
+
                 if (Child.isHidden) {
                     if (HIDE_HIDDEN_FILES) {
                         Elm.addClass('qui-media-item-hidden__hide');
@@ -1597,19 +1673,17 @@ define('controls/projects/project/media/Panel', [
 
                 droplist.push(Elm);
 
-                Elm.setStyles({
+                ImgContainer.setStyles({
                     backgroundImage: 'url(' + Child.icon80x80 + ')',
-                    paddingLeft: 20
                 });
 
                 if (Child.mimetype && Child.mimetype.indexOf('svg') !== -1) {
-                    Elm.setStyle('background-size', 'contain');
+                    ImgContainer.setStyle('background-size', 'contain');
                 }
 
                 if (Child.error) {
-                    Elm.setStyles({
+                    ImgContainer.setStyles({
                         backgroundImage: 'url(' + URL_BIN_DIR + '48x48/file_broken.png)',
-                        paddingLeft: 20
                     });
 
                     QUI.getMessageHandler(function (MH) {
@@ -1621,15 +1695,15 @@ define('controls/projects/project/media/Panel', [
 
                 if (Child.type === 'image' && !Child.error) {
                     url = URL_DIR + Child.url + '&quiadmin=1';
-                    url = url + '&maxheight=80';
-                    url = url + '&maxwidth=80';
+                    url = url + '&maxheight=100';
+                    url = url + '&maxwidth=100';
 
                     // because of the browser cache
                     if (Child.e_date) {
                         url = url + '&edate=' + Child.e_date.replace(/[^0-9]/g, '');
                     }
 
-                    Elm.setStyles({
+                    ImgContainer.setStyles({
                         'backgroundImage': 'url(' + url + ')',
                         'backgroundPosition': 'center center'
                     });
@@ -1641,7 +1715,7 @@ define('controls/projects/project/media/Panel', [
                     Elm.addClass('qmi-deactive');
                 }
 
-                Elm.inject(Container);
+                Elm.inject(List);
             }
 
             return droplist;

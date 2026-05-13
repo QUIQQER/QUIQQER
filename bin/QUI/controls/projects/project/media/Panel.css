@@ -1,4 +1,6 @@
-
+.qui-panel--media .qui-button > .qui-button-drop {
+    position: initial;
+}
 .qui-media-content {
     float: left;
     height: 100%;
@@ -7,12 +9,22 @@
     border: 4px dashed transparent;
 }
 
+.qui-media-content-list {
+    float: left;
+    width: 100%;
+    border: 4px dashed transparent;
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    overflow: auto;
+    padding: 20px;
+}
+
 .qui-media-content__with-pagination {
     height: calc(100% - 50px) !important;
 }
 
 .qui-media-content-ondragdrop {
-    /*background-color: #CFF09E;*/
     border: 4px dashed #666;
 }
 
@@ -32,22 +44,42 @@
  ================================================ */
 
 .qui-media-item {
-    float: left;
-    width: 120px;
-    height: 120px;
+    --tile-size: 20px;
+    --color-main: #ffffff;
+    --color-accent: #f8f8f8;
+    --half-size: calc(var(--tile-size) / 2);
+
     cursor: pointer;
-    margin: 20px 0 0 20px;
-    /*overflow: hidden;*/
     position: relative;
     border: 1px solid #dedede;
+    aspect-ratio: 1;
+    background-color: var(--color-main);
+    background-image:
+            linear-gradient(45deg, var(--color-accent) 25%, transparent 25%),
+            linear-gradient(-45deg, var(--color-accent) 25%, transparent 25%),
+            linear-gradient(45deg, transparent 75%, var(--color-accent) 75%),
+            linear-gradient(-45deg, transparent 75%, var(--color-accent) 75%);
+    background-size: var(--tile-size) var(--tile-size);
+    background-position:
+            0 0,
+            0 var(--half-size),
+            var(--half-size) calc(-1 * var(--half-size)),
+            calc(-1 * var(--half-size)) 0px;
+}
 
+.qui-media-item-img {
     background-position: center 10px;
     background-repeat: no-repeat;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none
 }
 
 .qui-media-item.selected,
 .qui-media-item:hover {
-    background-color: #2F8FC6;
+    --color-main: #2F8FC6;
+    --color-accent: #4097c8;
 }
 
 .qui-media-item-ondragdrop {
@@ -59,7 +91,7 @@
     background-color: #CFF09E !important;
 }
 
-.qmi-active {
+.qui-media-item {
     border-top: 4px solid #77AB13;
 }
 
@@ -69,7 +101,6 @@
 }
 
 .qui-media-item > span.title {
-    background: #000;
     background: rgba(0, 0, 0, 0.5);
     bottom: 0;
     color: #fff;
@@ -82,6 +113,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 100%;
+    z-index: 1;
 }
 
 .qui-media-item-badges {

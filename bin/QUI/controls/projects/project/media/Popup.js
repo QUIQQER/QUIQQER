@@ -32,6 +32,8 @@ define('controls/projects/project/media/Popup', [
         options: {
             project: false,
             fileid: false,
+            maxWidth: 1000,
+            maxHeight: 800,
             closeButtonText: QUILocale.get('quiqqer/core', 'cancel'),
             breadcrumb: true,
             selectable: true,
