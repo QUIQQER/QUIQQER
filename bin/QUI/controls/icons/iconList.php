@@ -117,14 +117,13 @@ header('X-Frame-Options: SAMEORIGIN');
             overflow: hidden;
             margin: 1rem;
             border-radius: 1rem;
-            background-image: radial-gradient(circle at 90% 100%, color-mix(in oklab, var(--qip-color-bg-soft), black 2%), transparent 50%);
+            background-image: radial-gradient(circle at 90% 100%, color-mix(in oklab, var(--qip-color-bg-soft), black 2%), transparent 50%), radial-gradient(circle at 50% 20%, var(--qip-color-accent-soft) 0%, transparent 30%);
         }
 
         .qui-icon-picker-preview-icon {
             width: 160px;
             height: 160px;
             border-radius: 50%;
-            background: radial-gradient(circle at center, var(--qip-color-accent-soft) 0%, transparent 70%);
             display: flex;
             align-items: center;
             justify-content: center;
