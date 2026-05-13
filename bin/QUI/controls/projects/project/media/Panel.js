@@ -1284,6 +1284,8 @@ define('controls/projects/project/media/Panel', [
                 this.getAttribute('view')
             );
 
+            children = this.$prepareChildrenForView(children);
+
             switch (this.getAttribute('view')) {
                 case 'details':
                     MediaBody.removeClass('qui-media-content__with-pagination');
@@ -1365,6 +1367,68 @@ define('controls/projects/project/media/Panel', [
             this.$PanelContextMenu.showDragDropMenu(files, Elm, event);
         },
 
+        $normalizeMediaFieldValue: function (value) {
+            if (!value) {
+                return '';
+            }
+
+            try {
+                value = JSON.decode(value);
+
+                if (typeOf(value) === 'object') {
+                    value = Object.values(value);
+                    value = value.filter(Boolean);
+
+                    return value.join('; ');
+                }
+            } catch (e) {
+            }
+
+            return String(value).trim();
+        },
+
+        $prepareChildrenForView: function (Result) {
+            if (!Result || !Result.data) {
+                return Result;
+            }
+
+            let i, len;
+            const children = Result.data;
+
+            for (i = 0, len = children.length; i < len; i++) {
+                children[i].title = this.$normalizeMediaFieldValue(children[i].title);
+                children[i].alt = this.$normalizeMediaFieldValue(children[i].alt);
+            }
+
+            return Result;
+        },
+
+        $hasMediaFieldContent: function (value) {
+            return !!this.$normalizeMediaFieldValue(value);
+        },
+
+        $getMissingMediaMetaBadgesHtml: function (Child) {
+            if (Child.type === 'folder') {
+                return '';
+            }
+
+            let html = '';
+
+            if (!this.$hasMediaFieldContent(Child.title)) {
+                html += '<span class="qui-media-item-badge" title="Titel fehlt">T</span>';
+            }
+
+            if (!this.$hasMediaFieldContent(Child.alt)) {
+                html += '<span class="qui-media-item-badge" title="Alt-Text fehlt">A</span>';
+            }
+
+            if (!html) {
+                return '';
+            }
+
+            return '<div class="qui-media-item-badges">' + html + '</div>';
+        },
+
         /**
          * list the children as symbol icons
          *
@@ -1415,7 +1479,8 @@ define('controls/projects/project/media/Panel', [
                     'data-hidden': Child.isHidden ? 1 : 0,
 
                     'class': 'qui-media-item smooth',
-                    html: '<span class="title">' + Child.name + '</span>',
+                    html: this.$getMissingMediaMetaBadgesHtml(Child) +
+                        '<span class="title">' + Child.name + '</span>',
                     alt: Child.name + ext,
                     title: Child.name + ext,
 
@@ -1508,7 +1573,8 @@ define('controls/projects/project/media/Panel', [
                     'data-hidden': Child.isHidden ? 1 : 0,
 
                     'class': 'qui-media-item box smooth',
-                    html: '<span class="title">' + Child.name + '</span>',
+                    html: this.$getMissingMediaMetaBadgesHtml(Child) +
+                        '<span class="title">' + Child.name + '</span>',
                     alt: Child.name + ext,
                     title: Child.name + ext,
 
@@ -1593,8 +1659,12 @@ define('controls/projects/project/media/Panel', [
 
             let Target = event.target;
 
-            if (Target.nodeName === 'SPAN') {
-                Target = Target.getParent('div');
+            if (Target.nodeName !== 'DIV') {
+                Target = Target.getParent('.qui-media-item');
+            }
+
+            if (!Target) {
+                return;
             }
 
             if (!this.isItemSelectable(Target)) {
@@ -1818,32 +1888,7 @@ define('controls/projects/project/media/Panel', [
                 }
             });
 
-            let i, len, title, alt;
             const children = Result.data;
-
-            for (i = 0, len = children.length; i < len; i++) {
-                try {
-                    title = children[i].title;
-                    title = JSON.decode(title);
-                    title = Object.values(title);
-                    title = title.filter(Boolean); // filter empty
-                    title = title.join('; ');
-
-                    children[i].title = title;
-                } catch (e) {
-                }
-
-                try {
-                    alt = children[i].alt;
-                    alt = JSON.decode(alt);
-                    alt = Object.values(alt);
-                    alt = alt.filter(Boolean); // filter empty
-                    alt = alt.join('; ');
-
-                    children[i].alt = alt;
-                } catch (e) {
-                }
-            }
 
             if (children[0] && children[0].name !== '..') {
                 const breadcrumb_list = Array.clone(
@@ -2618,19 +2663,21 @@ define('controls/projects/project/media/Panel', [
 
             Node.getElement('span').set('html', Item.getAttribute('name'));
 
-            const itemId = parseInt(Item.getId());
+            const itemId = parseInt(Item.getId()),
+                children = this.$children && this.$children.data ? this.$children.data : [];
 
-            for (i = 0, len = this.$children.length; i < len; i++) {
-                if (parseInt(this.$children[i].id) !== itemId) {
+            for (i = 0, len = children.length; i < len; i++) {
+                if (parseInt(children[i].id) !== itemId) {
                     continue;
                 }
 
-                this.$children[i].active = Item.isActive();
-                this.$children[i].e_date = Item.getAttribute('e_date');
-                this.$children[i].name = Item.getAttribute('name');
-                this.$children[i].priority = Item.getAttribute('priority');
-                this.$children[i].short = Item.getAttribute('short');
-                this.$children[i].title = Item.getAttribute('title');
+                children[i].active = Item.isActive();
+                children[i].e_date = Item.getAttribute('e_date');
+                children[i].name = Item.getAttribute('name');
+                children[i].priority = Item.getAttribute('priority');
+                children[i].short = Item.getAttribute('short');
+                children[i].title = Item.getAttribute('title');
+                children[i].alt = Item.getAttribute('alt');
                 break;
             }
         },

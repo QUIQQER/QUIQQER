@@ -37,7 +37,7 @@
     height: 120px;
     cursor: pointer;
     margin: 20px 0 0 20px;
-    overflow: hidden;
+    /*overflow: hidden;*/
     position: relative;
     border: 1px solid #dedede;
 
@@ -68,7 +68,7 @@
     border-top: 4px solid #AE432E;
 }
 
-.qui-media-item span {
+.qui-media-item > span.title {
     background: #000;
     background: rgba(0, 0, 0, 0.5);
     bottom: 0;
@@ -82,6 +82,29 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 100%;
+}
+
+.qui-media-item-badges {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    display: flex;
+    gap: 4px;
+    z-index: 2;
+}
+
+.qui-media-item-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #ffc366;
+    color: #392b15;
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1;
 }
 
 .qui-media-item-hidden__show {
