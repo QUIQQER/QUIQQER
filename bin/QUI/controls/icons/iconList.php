@@ -117,7 +117,7 @@ header('X-Frame-Options: SAMEORIGIN');
             overflow: hidden;
             margin: 1rem;
             border-radius: 1rem;
-            background-image: radial-gradient(circle at 50% 20%, #f0f0f0, transparent);
+            background-image: radial-gradient(circle at 90% 100%, color-mix(in oklab, var(--qip-color-bg-soft), black 2%), transparent 50%);
         }
 
         .qui-icon-picker-preview-icon {
@@ -252,10 +252,9 @@ header('X-Frame-Options: SAMEORIGIN');
             flex: 1;
             display: flex;
             flex-direction: column;
-            padding: 20px;
+            padding: 20px 20px 20px 0;
             gap: 14px;
             min-width: 0;
-            margin-right: 1rem; /* because of QUIConfirm x-button  */
         }
 
         .qui-icon-picker-search {

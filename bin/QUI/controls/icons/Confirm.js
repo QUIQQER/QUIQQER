@@ -1,16 +1,16 @@
 define('controls/icons/Confirm', [
 
     'qui/QUI',
-    'qui/controls/windows/SimpleConfirmWindow',
+    'qui/controls/windows/Confirm',
     'Locale',
 
     'css!controls/icons/Confirm.css'
 
-], function (QUI, SimpleConfirmWindow, QUILocale) {
+], function (QUI, Confirm, QUILocale) {
     "use strict";
 
     return new Class({
-        Extends: SimpleConfirmWindow,
+        Extends: Confirm,
         Type   : 'controls/icons/Confirm',
 
         Binds: [
@@ -21,8 +21,11 @@ define('controls/icons/Confirm', [
             title    : QUILocale.get('quiqqer/core', 'control.icons.confirm.title'),
             icon     : 'fa fa-css3',
             'class'  : 'qui-window-popup-icons',
+            width    : 1000,
+            height   : 700,
             maxHeight: 700,
             maxWidth : 1000,
+            texticon : false,
             autoclose: true
         },
 
@@ -40,12 +43,16 @@ define('controls/icons/Confirm', [
          * event : on open
          */
         $onOpen: function () {
-            var Content = this.getContent();
+            var self    = this,
+                Content = this.getContent();
+
             Content.set('html', '');
             Content.setStyles({
                 padding: 0,
                 height : '100%'
             });
+
+            this.Loader.show();
 
             var id = this.getId(),
                 lg = 'quiqqer/core';
@@ -79,6 +86,8 @@ define('controls/icons/Confirm', [
                 },
                 events     : {
                     load: function () {
+                        self.Loader.hide();
+
                         // Move focus into the iframe search field on open.
                         try {
                             var doc = this.contentDocument;

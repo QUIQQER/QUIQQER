@@ -6720,7 +6720,7 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
             <de><![CDATA[Kopiert]]></de>
         </locale>
         <locale name="control.icons.confirm.cssClassHint">
-            <de><![CDATA[Kopieren Sie die Klasse, um das Icon in Ihrem Projekt zu verwenden.]]></de>
+            <de><![CDATA[Kopiere die Klasse, um das Icon in deinem Projekt zu verwenden.]]></de>
         </locale>
         <locale name="control.grid.menu.button">
             <de><![CDATA[Menü]]></de>
