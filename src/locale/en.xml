@@ -2262,6 +2262,12 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="groups.group.btn.save">
             <en><![CDATA[Save]]></en>
         </locale>
+        <locale name="groups.group.btn.sendMail">
+            <en><![CDATA[Send email]]></en>
+        </locale>
+        <locale name="groups.group.btn.sendMail.no_permission">
+            <en><![CDATA[You do not have the necessary permission to send emails to the users of this group]]></en>
+        </locale>
         <locale name="groups.group.btn.delete">
             <en><![CDATA[Delete group]]></en>
         </locale>
@@ -5188,6 +5194,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="RestProvider.Projects.title">
             <en><![CDATA[QUQIQER Core REST API]]></en>
         </locale>
+        <locale name="message.ajax.groups.sendMail.success">
+            <en><![CDATA[The email has been sent successfully to [count] unique email address(es) of group [group].]]></en>
+        </locale>
         <locale name="message.ajax.user.setAndSendPassword.no_mail_sent">
             <en>
                 <![CDATA[The password for user [user] was reset, but could not be sent by e-mail because there is no e-mail address stored in the user data.]]></en>
@@ -5970,6 +5979,46 @@ After logging in you will be prompted to set a new password.
         </locale>
         <locale name="controls.SendUserMail.empty_body">
             <en><![CDATA[Please provide content for the email.]]></en>
+        </locale>
+
+        <locale name="controls.SendGroupMail.title">
+            <en><![CDATA[Send email to group users]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.tpl.labelRecipientCount">
+            <en><![CDATA[Unique email addresses]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.tpl.labelMailSubject">
+            <en><![CDATA[Subject]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.tpl.labelMailContent">
+            <en><![CDATA[Content]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.submit">
+            <en><![CDATA[Confirm email with preview]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.no_recipients">
+            <en><![CDATA[No email can currently be sent to this group because none of the group users has an email address stored.]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.empty_subject">
+            <en><![CDATA[Please provide an email subject.]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.empty_body">
+            <en><![CDATA[Please provide content for the email.]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.confirm.title">
+            <en><![CDATA[Confirm email sending]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.confirm.information">
+            <en><![CDATA[You are about to send an email to [count] unique email address(es) of the group "[group]".]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.confirm.text">
+            <en><![CDATA[Do you really want to send the email now?]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.confirm.preview.title">
+            <en><![CDATA[Preview of the final email]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.confirm.submit">
+            <en><![CDATA[Send email now]]></en>
         </locale>
 
         <locale name="controls.email.select.email_invalid">

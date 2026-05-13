@@ -2305,6 +2305,12 @@
         <locale name="groups.group.btn.save">
             <de><![CDATA[Speichern]]></de>
         </locale>
+        <locale name="groups.group.btn.sendMail">
+            <de><![CDATA[E-Mail senden]]></de>
+        </locale>
+        <locale name="groups.group.btn.sendMail.no_permission">
+            <de><![CDATA[Sie haben nicht die nötige Berechtigung, um E-Mails an die Benutzer dieser Gruppe zu senden]]></de>
+        </locale>
         <locale name="groups.group.btn.delete">
             <de><![CDATA[Gruppe löschen]]></de>
         </locale>
@@ -5361,6 +5367,9 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="message.ajax.user.sendMail.success">
             <de><![CDATA[Die E-Mail wurde erfolgreich an Benutzer [user] versendet.]]></de>
         </locale>
+        <locale name="message.ajax.groups.sendMail.success">
+            <de><![CDATA[Die E-Mail wurde erfolgreich an [count] einzigartige E-Mail-Adresse(n) der Gruppe [group] versendet.]]></de>
+        </locale>
         <locale name="message.ajax.user.setAndSendPassword.no_mail_sent">
             <de>
                 <![CDATA[Das Passwort für Benutzer [user] wurde neu gesetzt, konnte aber nicht per E-Mail versendet werden, da in den Benutzerdaten keine E-Mail-Adresse hinterlegt ist.]]></de>
@@ -6177,6 +6186,46 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         </locale>
         <locale name="controls.SendUserMail.empty_body">
             <de><![CDATA[Bitte geben Sie einen Inhalt für die E-Mail an.]]></de>
+        </locale>
+
+        <locale name="controls.SendGroupMail.title">
+            <de><![CDATA[E-Mail an Gruppenbenutzer senden]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.tpl.labelRecipientCount">
+            <de><![CDATA[Einzigartige E-Mail-Adressen]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.tpl.labelMailSubject">
+            <de><![CDATA[Betreff]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.tpl.labelMailContent">
+            <de><![CDATA[Inhalt]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.submit">
+            <de><![CDATA[E-Mail mit Vorschau bestätigen]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.no_recipients">
+            <de><![CDATA[Es kann aktuell keine E-Mail an diese Gruppe gesendet werden, da keiner der Gruppenbenutzer eine hinterlegte E-Mail-Adresse besitzt.]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.empty_subject">
+            <de><![CDATA[Bitte geben Sie einen E-Mail Betreff an.]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.empty_body">
+            <de><![CDATA[Bitte geben Sie einen Inhalt für die E-Mail an.]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.confirm.title">
+            <de><![CDATA[E-Mail-Versand bestätigen]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.confirm.information">
+            <de><![CDATA[Sie sind dabei, eine E-Mail an [count] einzigartige E-Mail-Adresse(n) der Gruppe "[group]" zu senden.]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.confirm.text">
+            <de><![CDATA[Soll die E-Mail jetzt wirklich versendet werden?]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.confirm.preview.title">
+            <de><![CDATA[Vorschau der finalen E-Mail]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.confirm.submit">
+            <de><![CDATA[E-Mail jetzt verbindlich versenden]]></de>
         </locale>
 
         <locale name="controls.email.select.email_invalid">
