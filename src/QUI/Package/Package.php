@@ -108,7 +108,8 @@ class Package extends QUI\QDOM
 
         // if not exists look at bin
         if (!is_dir($packageDir) && str_contains($package, '/')) {
-            $packageDir = OPT_DIR . '/bin/' . explode('/', $package)[1] . '/';
+            [$vendor, $name] = explode('/', $package, 2);
+            $packageDir = OPT_DIR . 'bin/' . $vendor . '/' . $name . '/';
         }
 
         if (!is_dir($packageDir)) {
@@ -610,9 +611,6 @@ class Package extends QUI\QDOM
             $this->setup();
         }
 
-        $this->moveQuiqqerAsset();
-
-
         QUI::getEvents()->fireEvent('packageInstallAfter', [$this]);
         QUI::getEvents()->fireEvent('packageInstallAfter-' . $pkgName, [$this]);
     }
@@ -651,10 +649,6 @@ class Package extends QUI\QDOM
 
 
         $dir = $this->getDir();
-
-        if ($this->isQuiqqerAsset()) {
-            $this->moveQuiqqerAsset();
-        }
 
         if (!$this->isQuiqqerPackage()) {
             QUI::getEvents()->fireEvent('packageSetupEnd', [$this]);
@@ -789,28 +783,6 @@ class Package extends QUI\QDOM
     }
 
     /**
-     * @throws QUI\Exception
-     */
-    private function moveQuiqqerAsset(): void
-    {
-        if (!$this->isQuiqqerAsset()) {
-            return;
-        }
-
-        $quiqqerAssetDir = OPT_DIR . 'bin/' . $this->getName();
-
-        if (is_dir($quiqqerAssetDir)) {
-            QUI::getTemp()->moveToTemp($quiqqerAssetDir);
-        }
-
-        // copy this to the package bin
-        QUI\Utils\System\File::dircopy(
-            $this->getDir(),
-            $quiqqerAssetDir
-        );
-    }
-
-    /**
      * publish the locale files of the package
      */
     protected function setupLocalePublish(): void
@@ -909,7 +881,5 @@ class Package extends QUI\QDOM
             'packageUpdate-' . $this->getName(),
             [$this]
         );
-
-        $this->moveQuiqqerAsset();
     }
 }

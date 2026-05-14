@@ -484,10 +484,14 @@ class Manager extends QUI\QDOM
             ],
             "installer-types" => [
                 "component",
+                "quiqqer-asset",
                 "npm-asset",
                 "bower-asset"
             ],
             "installer-paths" => [
+                OPT_DIR . 'bin/{$vendor}/{$name}/' => [
+                    "type:quiqqer-asset"
+                ],
                 OPT_DIR . 'bin/{$name}/' => [
                     "type:component",
                     "type:npm-asset",
