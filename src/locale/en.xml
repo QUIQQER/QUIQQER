@@ -6320,6 +6320,30 @@ After logging in you will be prompted to set a new password.
             Please choose a file or drag a file with which you want to replace <b>[file]</b> into this window
             ]]></en>
         </locale>
+        <locale name="projects.project.media.clipboard.upload.title">
+            <en><![CDATA[Upload files]]></en>
+        </locale>
+        <locale name="projects.project.media.clipboard.upload.text">
+            <en><![CDATA[Upload files now?]]></en>
+        </locale>
+        <locale name="projects.project.media.clipboard.upload.information" html="true">
+            <en><![CDATA[The files from the clipboard will be uploaded to: <b>[folder]</b>]]></en>
+        </locale>
+        <locale name="projects.project.media.clipboard.upload.submit">
+            <en><![CDATA[Upload now]]></en>
+        </locale>
+        <locale name="projects.project.media.clipboard.replace.title">
+            <en><![CDATA[Replace image]]></en>
+        </locale>
+        <locale name="projects.project.media.clipboard.replace.text">
+            <en><![CDATA[Replace image now?]]></en>
+        </locale>
+        <locale name="projects.project.media.clipboard.replace.information" html="true">
+            <en><![CDATA[The clipboard image will replace: <b>[file]</b>]]></en>
+        </locale>
+        <locale name="projects.project.media.clipboard.replace.submit">
+            <en><![CDATA[Replace now]]></en>
+        </locale>
         <locale name="projects.media.context.move.element.select.message">
             <en><![CDATA[Please select a folder]]></en>
         </locale>

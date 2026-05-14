@@ -6523,6 +6523,30 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
             Wählen Sie bitte eine Datei aus, oder ziehen Sie eine Datei mit welcher Sie <b>[file]</b> ersetzen möchten in dieses Fenster
             ]]></de>
         </locale>
+        <locale name="projects.project.media.clipboard.upload.title">
+            <de><![CDATA[Dateien hochladen]]></de>
+        </locale>
+        <locale name="projects.project.media.clipboard.upload.text">
+            <de><![CDATA[Dateien jetzt hochladen?]]></de>
+        </locale>
+        <locale name="projects.project.media.clipboard.upload.information" html="true">
+            <de><![CDATA[Die Dateien aus der Zwischenablage werden in folgenden Ordner hochgeladen: <b>[folder]</b>]]></de>
+        </locale>
+        <locale name="projects.project.media.clipboard.upload.submit">
+            <de><![CDATA[Jetzt hochladen]]></de>
+        </locale>
+        <locale name="projects.project.media.clipboard.replace.title">
+            <de><![CDATA[Bild ersetzen]]></de>
+        </locale>
+        <locale name="projects.project.media.clipboard.replace.text">
+            <de><![CDATA[Bild jetzt ersetzen?]]></de>
+        </locale>
+        <locale name="projects.project.media.clipboard.replace.information" html="true">
+            <de><![CDATA[Das Bild aus der Zwischenablage ersetzt folgende Datei: <b>[file]</b>]]></de>
+        </locale>
+        <locale name="projects.project.media.clipboard.replace.submit">
+            <de><![CDATA[Jetzt ersetzen]]></de>
+        </locale>
         <locale name="projects.media.context.move.element.select.message">
             <de><![CDATA[Bitte wählen Sie einen Ordner aus]]></de>
         </locale>
