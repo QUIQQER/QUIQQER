@@ -68,11 +68,25 @@ class EventHandler
     /**
      * @throws QUI\Exception
      */
+    public static function onPackageSetup(QUI\Package\Package $Package): void
+    {
+        if ($Package->getName() !== 'quiqqer/core') {
+            return;
+        }
+
+        self::cleanupLegacyAssetPackagePermissions();
+    }
+
+    /**
+     * @throws QUI\Exception
+     */
     public static function onPackageUpdate(QUI\Package\Package $Package): void
     {
         if ($Package->getName() !== "quiqqer/core") {
             return;
         }
+
+        self::cleanupLegacyAssetPackagePermissions();
 
         // Check if htaccess or nginx need to be recreated
         $webServerType = QUI::conf("webserver", "type");
@@ -102,6 +116,118 @@ class EventHandler
         }
 
         self::setPackageStoreUrl();
+    }
+
+    /**
+     * Remove legacy package permissions for quiqqer-asset packages.
+     *
+     * @throws QUI\Database\Exception
+     */
+    protected static function cleanupLegacyAssetPackagePermissions(): void
+    {
+        $DataBase = QUI::getDataBase();
+        $table = QUI\Permissions\Manager::table();
+
+        $permissions = $DataBase->fetch([
+            'select' => ['name'],
+            'from' => $table
+        ]);
+
+        $permissionNames = [];
+
+        foreach ($permissions as $permission) {
+            if (!isset($permission['name'])) {
+                continue;
+            }
+
+            $name = $permission['name'];
+
+            if (
+                strpos($name, 'quiqqer.packages.quiqqerasset') === 0
+                || strpos($name, 'permission.quiqqer.packages.quiqqerasset') === 0
+            ) {
+                $permissionNames[] = $name;
+            }
+        }
+
+        if (empty($permissionNames)) {
+            return;
+        }
+
+        self::cleanupLegacyAssetPackagePermissionAssignments(
+            $table . '2users',
+            'user_id',
+            $permissionNames
+        );
+
+        self::cleanupLegacyAssetPackagePermissionAssignments(
+            $table . '2groups',
+            'group_id',
+            $permissionNames
+        );
+
+        $DataBase->delete($table, [
+            'name' => [
+                'type' => 'IN',
+                'value' => $permissionNames
+            ]
+        ]);
+
+        QUI::$Rights = null;
+
+        QUI\System\Log::addInfo(
+            'Removed legacy quiqqer-asset package permissions.',
+            ['count' => count($permissionNames)]
+        );
+    }
+
+    /**
+     * Remove stale permission keys from user/group permission blobs.
+     *
+     * @throws QUI\Database\Exception
+     */
+    protected static function cleanupLegacyAssetPackagePermissionAssignments(
+        string $table,
+        string $idField,
+        array $permissionNames
+    ): void {
+        $rows = QUI::getDataBase()->fetch([
+            'select' => [$idField, 'permissions'],
+            'from' => $table
+        ]);
+
+        foreach ($rows as $row) {
+            if (empty($row['permissions'])) {
+                continue;
+            }
+
+            $permissions = json_decode($row['permissions'], true);
+
+            if (!is_array($permissions)) {
+                continue;
+            }
+
+            $hasChanges = false;
+
+            foreach ($permissionNames as $permissionName) {
+                if (!array_key_exists($permissionName, $permissions)) {
+                    continue;
+                }
+
+                unset($permissions[$permissionName]);
+                $hasChanges = true;
+            }
+
+            if (!$hasChanges) {
+                continue;
+            }
+
+            QUI::getDataBase()->update(
+                $table,
+                ['permissions' => json_encode($permissions)],
+                [$idField => $row[$idField]]
+            );
+        }
     }
 
     /**

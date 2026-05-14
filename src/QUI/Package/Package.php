@@ -208,6 +208,14 @@ class Package extends QUI\QDOM
         return $this->isQuiqqerPackage;
     }
 
+    public function isQuiqqerAssetPackage(): bool
+    {
+        $this->readPackageData();
+
+        return isset($this->composerData['type'])
+            && $this->composerData['type'] === 'quiqqer-asset';
+    }
+
     /**
      * read the package data
      */
@@ -560,6 +568,10 @@ class Package extends QUI\QDOM
      */
     public function hasPermission(string $permission = 'canUse', null|QUI\Interfaces\Users\User $User = null): bool
     {
+        if ($this->isQuiqqerAssetPackage()) {
+            return true;
+        }
+
         if (!QUI::conf('permissions', 'package')) {
             return true;
         }
