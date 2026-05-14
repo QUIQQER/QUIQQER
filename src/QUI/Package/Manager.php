@@ -482,10 +482,20 @@ class Manager extends QUI\QDOM
                 "npm-searchable" => false,
                 "bower-searchable" => false
             ],
-            "installer-types" => ["component"],
+            "installer-types" => [
+                "component",
+                "quiqqer-asset",
+                "npm-asset",
+                "bower-asset"
+            ],
             "installer-paths" => [
+                OPT_DIR . 'bin/{$vendor}/{$name}/' => [
+                    "type:quiqqer-asset"
+                ],
                 OPT_DIR . 'bin/{$name}/' => [
-                    "type:component"
+                    "type:component",
+                    "type:npm-asset",
+                    "type:bower-asset"
                 ]
             ]
         ];
@@ -616,6 +626,16 @@ class Manager extends QUI\QDOM
         if (isset($servers['packagist.org']) && $servers['packagist.org']['active'] == 0) {
             $repositories[] = [
                 'packagist.org' => false
+            ];
+        }
+
+        if (
+            (isset($servers['npm']) && $servers['npm']['active'] == 1)
+            || (isset($servers['bower']) && $servers['bower']['active'] == 1)
+        ) {
+            $repositories[] = [
+                'type' => 'composer',
+                'url' => 'https://asset-packagist.org'
             ];
         }
 

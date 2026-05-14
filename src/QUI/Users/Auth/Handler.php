@@ -349,7 +349,13 @@ class Handler
         $lg = 'quiqqer/core';
         $tplDir = QUI::getPackage('quiqqer/core')->getDir() . 'src/templates/mail/auth/';
 
-        $Mailer = new QUI\Mail\Mailer();
+        $mailerAttributes = [];
+
+        if ($Project) {
+            $mailerAttributes['Project'] = $Project;
+        }
+
+        $Mailer = new QUI\Mail\Mailer($mailerAttributes);
         $Engine = QUI::getTemplateManager()->getEngine();
 
         $Engine->assign([

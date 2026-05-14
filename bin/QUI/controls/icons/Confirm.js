@@ -6,11 +6,11 @@ define('controls/icons/Confirm', [
 
     'css!controls/icons/Confirm.css'
 
-], function (QUI, QUIConfirm, QUILocale) {
+], function (QUI, Confirm, QUILocale) {
     "use strict";
 
     return new Class({
-        Extends: QUIConfirm,
+        Extends: Confirm,
         Type   : 'controls/icons/Confirm',
 
         Binds: [
@@ -21,19 +21,18 @@ define('controls/icons/Confirm', [
             title    : QUILocale.get('quiqqer/core', 'control.icons.confirm.title'),
             icon     : 'fa fa-css3',
             'class'  : 'qui-window-popup-icons',
-            maxHeight: 600,
-            maxWidth : 800
+            width    : 1000,
+            height   : 700,
+            maxHeight: 700,
+            maxWidth : 1000,
+            texticon : false,
+            autoclose: true
         },
 
         initialize: function (options) {
             this.parent(options);
 
-            this.$Frame          = null;
-            this.$Search         = null;
-            this.$IconContainer  = null;
-            this.icons           = null;
-            this.allIconsVisible = true;
-            this.NoResultsInfo   = null;
+            this.$Frame = null;
 
             this.addEvents({
                 onOpen: this.$onOpen
@@ -44,37 +43,64 @@ define('controls/icons/Confirm', [
          * event : on open
          */
         $onOpen: function () {
-            this.getContent().set('html', '');
+            var self    = this,
+                Content = this.getContent();
 
-            var self               = this,
-                id                 = this.getId(),
-                SearchContainer    = this.createSearch();
+            Content.set('html', '');
+            Content.setStyles({
+                padding: 0,
+                height : '100%'
+            });
 
-            SearchContainer.inject(this.getContent(), 'top');
+            this.Loader.show();
 
-            if (this.$Search) {
-                this.$Search.focus();
-            }
+            var id = this.getId(),
+                lg = 'quiqqer/core';
 
-            var frameHeight = SearchContainer.getSize().y + 10;
+            // Resolve all picker strings on the parent side. The iframe
+            // does not have reliable access to the locale cache.
+            var localeMap = {
+                searchPlaceholder : QUILocale.get(lg, 'control.icons.confirm.filterIcons'),
+                noResults         : QUILocale.get(lg, 'control.icons.confirm.noResultsInfo'),
+                categoryAll       : QUILocale.get(lg, 'control.icons.confirm.category.all'),
+                previewPlaceholder: QUILocale.get(lg, 'control.icons.confirm.preview.placeholder'),
+                cssClassLabel     : QUILocale.get(lg, 'control.icons.confirm.preview.cssClass'),
+                copyHtml          : QUILocale.get(lg, 'control.icons.confirm.preview.copyHtml'),
+                copied            : QUILocale.get(lg, 'control.icons.confirm.preview.copied'),
+                cssClassHint      : QUILocale.get(lg, 'control.icons.confirm.cssClassHint')
+            };
+
+            var src = URL_OPT_DIR + 'quiqqer/core/bin/QUI/controls/icons/iconList.php'
+                + '?quiid=' + id
+                + '&locale=' + encodeURIComponent(JSON.stringify(localeMap));
 
             this.$Frame = new Element('iframe', {
                 'class'    : 'window-iconSelect-iframe',
-                src        : URL_OPT_DIR + 'quiqqer/core/bin/QUI/controls/icons/iconList.php?quiid=' + id,
+                src        : src,
                 border     : 0,
                 frameborder: 0,
                 styles     : {
-                    border: '0px solid #fff',
-                    height: 'calc(100% - ' + frameHeight + 'px)',
+                    border: 0,
+                    height: '100%',
                     width : '100%'
                 },
                 events     : {
                     load: function () {
-                        self.$IconContainer = self.$Frame.contentDocument.getElement('div.icons');
-                        self.icons          = self.$Frame.contentDocument.getElements('.icons-entry');
+                        self.Loader.hide();
+
+                        // Move focus into the iframe search field on open.
+                        try {
+                            var doc = this.contentDocument;
+                            var search = doc && doc.getElementById('search');
+                            if (search) {
+                                search.focus();
+                            }
+                        } catch (e) {
+                            // cross-origin or not ready – ignore
+                        }
                     }
                 }
-            }).inject(this.getContent());
+            }).inject(Content);
         },
 
         /**
@@ -83,7 +109,11 @@ define('controls/icons/Confirm', [
          * @returns {Array}
          */
         getSelected: function () {
-            if (typeof this.$Frame.contentWindow === 'undefined') {
+            if (!this.$Frame || typeof this.$Frame.contentWindow === 'undefined') {
+                return [];
+            }
+
+            if (typeof this.$Frame.contentWindow.getSelected !== 'function') {
                 return [];
             }
 
@@ -94,11 +124,7 @@ define('controls/icons/Confirm', [
          * Submit the window
          */
         submit: function () {
-            if (typeof this.$Frame.contentWindow === 'undefined') {
-                return;
-            }
-
-            var selected = this.$Frame.contentWindow.getSelected();
+            var selected = this.getSelected();
 
             if (!selected.length) {
                 return;
@@ -108,169 +134,6 @@ define('controls/icons/Confirm', [
 
             if (this.getAttribute('autoclose')) {
                 this.close();
-            }
-        },
-
-        /**
-         * Create search HTML Nodes - outer div with icon and input field
-         *
-         * @returns HTML Node {Element}
-         */
-        createSearch: function () {
-            var SearchContainer = new Element('div', {
-                'class': 'window-iconSelect-searchContainer',
-                html   : '<span class="fa fa-search window-iconSelect-search-prefix"></span>'
-            });
-
-            var self     = this,
-                inputEsc = false;
-
-            this.$Search = new Element('input', {
-                'class'    : 'window-iconSelect-search',
-                type       : 'text',
-                placeholder: QUILocale.get('quiqqer/core', 'control.icons.confirm.filterIcons'),
-                events     : {
-                    keydown: function (event) {
-                        if (event.key === 'esc') {
-                            event.stop();
-                            inputEsc = true;
-                            return;
-                        }
-
-                        inputEsc = false;
-                    },
-                    keyup  : function (event) {
-                        // Esc clears the input field
-                        if (inputEsc) {
-                            event.stop();
-                            this.value = '';
-                            if (!self.allIconsVisible) {
-                                self.showAllIcons();
-                            }
-                            return;
-                        }
-
-                        self.execSearch(this.value.trim());
-                    }
-                }
-            }).inject(SearchContainer, 'top');
-
-            return SearchContainer;
-        },
-
-        /**
-         * Start search with delay
-         *
-         * @param searchTerm {string}
-         */
-        execSearch: function (searchTerm) {
-            var self = this;
-
-            if (searchTerm === '') {
-                if (!this.allIconsVisible) {
-                    this.showAllIcons();
-                }
-
-                return;
-            }
-
-            // prevents the search from being execute
-            // after action-less keys (alt, shift, ctrl, etc.)
-            if (searchTerm === this.searchTerm) {
-                return;
-            }
-
-            if (this.$Timer) {
-                clearInterval(this.$Timer);
-            }
-
-            this.$Timer = (function () {
-                self.searchTerm = searchTerm;
-
-                self.hideAllIcons();
-                self.findAndShowIcons(searchTerm.toLowerCase());
-            }).delay(400);
-        },
-
-        /**
-         * Hide all icons
-         */
-        hideAllIcons: function () {
-            this.icons.forEach(function (Icon) {
-                Icon.setStyle('display', 'none');
-            });
-
-            this.allIconsVisible = false;
-        },
-
-        /**
-         * Show all icons
-         */
-        showAllIcons: function () {
-            this.hideNoResultsInfo();
-
-            this.icons.forEach(function (Icon) {
-                Icon.setStyle('display', '');
-            });
-
-            this.allIconsVisible = true;
-        },
-
-        /**
-         * Find and show any icon that matches to search term
-         *
-         * @param searchTerm {string}
-         */
-        findAndShowIcons: function (searchTerm) {
-            var self    = this,
-                founded = false;
-
-            this.icons.forEach(function (Icon) {
-                var name = Icon.getAttribute('data-icon');
-
-                if (name.indexOf(searchTerm) >= 0) {
-                    Icon.setStyle('display', '');
-
-                    founded              = true;
-                    self.allIconsVisible = false;
-                }
-            });
-
-            if (!founded) {
-                this.showNoResultsInfo();
-                return;
-            }
-
-            this.hideNoResultsInfo()
-        },
-
-        /**
-         * Create and show no-results-info div
-         */
-        showNoResultsInfo: function () {
-            if (this.NoResultsInfo) {
-                return;
-            }
-
-            this.NoResultsInfo = new Element('div', {
-                'class': 'no-results-info',
-                html   : '<p>' + QUILocale.get('quiqqer/core', 'control.icons.confirm.noResultsInfo') + '</p><span class="fa fa-css3"></span>'
-            }).inject(this.$IconContainer);
-
-            moofx(this.NoResultsInfo).animate({
-                opacity: 0.25
-            }, {
-                duration: 300
-            });
-        },
-
-        /**
-         * Hide / destroy no-results-info
-         */
-        hideNoResultsInfo: function () {
-            if (this.NoResultsInfo) {
-                this.NoResultsInfo.destroy();
-                this.NoResultsInfo = null;
             }
         }
     });

@@ -142,6 +142,12 @@
         <locale name="permission.quiqqer._header">
             <en><![CDATA[QUIQQER]]></en>
         </locale>
+        <locale name="permission.quiqqer.core._header">
+            <en><![CDATA[Core]]></en>
+        </locale>
+        <locale name="permission.quiqqer.core.mcp">
+            <en><![CDATA[Can use the core MCP tools]]></en>
+        </locale>
         <locale name="permission.quiqqer.projects._header">
             <en><![CDATA[Projects]]></en>
         </locale>
@@ -2629,6 +2635,9 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         </locale>
         <locale name="users.user.address.window.delete.information">
             <en><![CDATA[The address can not be restored]]></en>
+        </locale>
+        <locale name="exception.users.address.delete.default">
+            <en><![CDATA[The default address cannot be deleted. Set another address as the default first.]]></en>
         </locale>
         <locale name="users.input.no.results">
             <en><![CDATA[No results found]]></en>
@@ -6482,6 +6491,24 @@ After logging in you will be prompted to set a new password.
         </locale>
         <locale name="control.icons.confirm.noResultsInfo">
             <en><![CDATA[There are no icons that match the search query]]></en>
+        </locale>
+        <locale name="control.icons.confirm.category.all">
+            <en><![CDATA[All]]></en>
+        </locale>
+        <locale name="control.icons.confirm.preview.placeholder">
+            <en><![CDATA[Select an icon]]></en>
+        </locale>
+        <locale name="control.icons.confirm.preview.cssClass">
+            <en><![CDATA[CSS class]]></en>
+        </locale>
+        <locale name="control.icons.confirm.preview.copyHtml">
+            <en><![CDATA[Copy code]]></en>
+        </locale>
+        <locale name="control.icons.confirm.preview.copied">
+            <en><![CDATA[Copied]]></en>
+        </locale>
+        <locale name="control.icons.confirm.cssClassHint">
+            <en><![CDATA[Copy the class to use the icon in your project.]]></en>
         </locale>
         <locale name="control.grid.menu.button">
             <en><![CDATA[Menu]]></en>
