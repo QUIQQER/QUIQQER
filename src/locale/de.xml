@@ -143,6 +143,12 @@
         <locale name="permission.quiqqer._header">
             <de><![CDATA[QUIQQER]]></de>
         </locale>
+        <locale name="permission.quiqqer.core._header">
+            <de><![CDATA[Core]]></de>
+        </locale>
+        <locale name="permission.quiqqer.core.mcp">
+            <de><![CDATA[Darf die Core-MCP-Tools verwenden]]></de>
+        </locale>
         <locale name="permission.quiqqer.projects._header">
             <de><![CDATA[Projekte]]></de>
         </locale>
