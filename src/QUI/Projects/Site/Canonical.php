@@ -10,8 +10,9 @@ use QUI;
 use QUI\Exception;
 
 use function ltrim;
-use function parse_url;
-use function urldecode;
+use function rtrim;
+use function strtolower;
+use function trim;
 
 use const URL_DIR;
 
@@ -32,139 +33,71 @@ class Canonical
      */
     public function output(): string
     {
-        $Site = $this->Site;
-        $Project = $Site->getProject();
-
-        $siteUrl = $this->Site->getCanonical();
-        $siteUrl = $this->removeHost($siteUrl);
-
-        $metaCanonical = $Site->getAttribute('meta.canonical');
-
-        if ($metaCanonical) {
-            if (!QUI\Projects\Site\Utils::isSiteLink($metaCanonical)) {
-                if (filter_var($metaCanonical, FILTER_VALIDATE_URL)) {
-                    return $this->getLinkRel($metaCanonical);
-                }
-
-                return '';
-            }
-        }
-
-        // host check
-        $requestHost = $_SERVER['HTTP_HOST'] ?? null;
-
-        if ($requestHost) {
-            $hostWithoutProtocol = $Project->getVHost(false, true);
-            $httpsHost = $Project->getVHost(true, true);
-
-            if ($requestHost != $hostWithoutProtocol) {
-                $httpsHost = rtrim($httpsHost, '/') . '/';
-                return $this->getLinkRel($httpsHost . $siteUrl);
-            }
-        }
-
-
-        if ($this->Site->getId() === 1) {
-            $httpsHost = $Project->getVHost(true, true);
-            $httpsHostExists = false;
-
-            if (str_contains($httpsHost, 'https:')) {
-                $httpsHostExists = true;
-            }
-
-            if (
-                $httpsHostExists
-                && QUI\Utils\System::isProtocolSecure() === false
-            ) {
-                return $this->getLinkRel($httpsHost . $siteUrl);
-            }
-
-            $canonical = $this->Site->getCanonical();
-
-            if (str_contains($canonical, 'https:') === false || str_contains($canonical, 'http:') === false) {
-                $canonical = $httpsHost . $canonical;
-            }
-
-            if ($this->Site->getAttribute('ERROR_HEADER')) {
-                return $this->getLinkRel($canonical);
-            }
-
-            if (str_contains($_REQUEST['_url'], QUI\Rewrite::URL_PARAM_SEPARATOR)) {
-                return $this->getLinkRel($canonical);
-            }
-
+        if ($this->isNoIndex()) {
             return '';
         }
 
-        $requestUrl = '';
+        $canonical = $this->buildCanonicalUrl();
 
-        if (isset($_REQUEST['_url'])) {
-            $requestUrl = $_REQUEST['_url'];
-        }
-
-        if ($this->considerGetParams) {
-            $requestUrl = ltrim($_SERVER['REQUEST_URI'], '/');
-        }
-
-        if (empty($requestUrl)) {
+        if ($canonical === '') {
             return '';
         }
 
-        $canonical = ltrim($this->Site->getCanonical(), '/');
-        $httpsHost = $Project->getVHost(true, true);
+        return $this->getLinkRel($canonical);
+    }
+
+    /**
+     * Build the canonical target as an absolute URL.
+     */
+    protected function buildCanonicalUrl(): string
+    {
+        $Project = $this->Site->getProject();
+        $canonical = trim($this->Site->getCanonical());
+        $metaCanonical = $this->Site->getAttribute('meta.canonical');
+
+        if ($metaCanonical && !QUI\Projects\Site\Utils::isSiteLink($metaCanonical)) {
+            return filter_var($metaCanonical, FILTER_VALIDATE_URL) ? $metaCanonical : '';
+        }
 
         if (QUI\Projects\Site\Utils::isSiteLink($canonical)) {
             try {
                 $CanonicalSite = QUI\Projects\Site\Utils::getSiteByLink($canonical);
                 $canonical = $CanonicalSite->getUrlRewritten();
-                $canonical = ltrim($canonical, '/');
             } catch (\Exception) {
+                return '';
             }
         }
 
-        $httpsHostExists = false;
-
-        if (str_contains($httpsHost, 'https:')) {
-            $httpsHostExists = true;
+        if ($this->isAbsoluteUrl($canonical)) {
+            return $canonical;
         }
 
-        if (empty($canonical) || $canonical == $requestUrl) {
-            // check if https host exist,
-            // if true, and request ist not https, canonical is https
-            if (
-                $httpsHostExists
-                && QUI\Utils\System::isProtocolSecure() === false
-            ) {
-                return $this->getLinkRel($httpsHost . URL_DIR . $requestUrl);
-            }
+        $httpsHost = rtrim($Project->getVHost(true, true), '/');
+        $canonical = ltrim($canonical, '/');
 
-            return '';
-        }
-
-        // canonical and request the same? then no output
-        $urlIsTheSame = urldecode($httpsHost . URL_DIR . $requestUrl) == $canonical
-            || $httpsHost . URL_DIR . $requestUrl == $canonical;
-
-        if ($urlIsTheSame && $this->considerGetParams === false) {
-            return '';
-        }
-
-
-        // fix doppelter HOST im canonical https://dev.quiqqer.com/quiqqer/core/issues/574
-        if (str_contains($canonical, 'https:') || str_contains($canonical, 'http:')) {
-            return $this->getLinkRel($canonical);
-        }
-
-        return $this->getLinkRel($httpsHost . URL_DIR . $canonical);
+        return $httpsHost . '/' . ltrim(URL_DIR . $canonical, '/');
     }
 
     /**
-     * @param $url
-     * @return array|false|int|string|null
+     * Determine whether the current page should be excluded from canonical output.
      */
-    protected function removeHost($url): bool | int | array | string | null
+    protected function isNoIndex(): bool
     {
-        return parse_url($url, PHP_URL_PATH);
+        $robots = strtolower((string)$this->Site->getAttribute('meta.robots'));
+
+        if (str_contains($robots, 'noindex')) {
+            return true;
+        }
+
+        return QUI::getLocale()->no_translation;
+    }
+
+    /**
+     * Determine whether a canonical value is already absolute.
+     */
+    protected function isAbsoluteUrl(string $url): bool
+    {
+        return str_starts_with($url, 'http://') || str_starts_with($url, 'https://');
     }
 
     /**

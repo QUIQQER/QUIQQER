@@ -32,6 +32,7 @@ define('controls/projects/project/media/Panel', [
     "use strict";
 
     const lg = 'quiqqer/core';
+    const STORAGE_KEY_MISSING_META_BADGES = 'qui-media-panel-missing-meta-badges';
 
     let HIDE_HIDDEN_FILES = 1; // 1 = hide all hidden files, 0 = show all hidden files
     let SHOW_SITEMAP_STATUS = false;
@@ -96,6 +97,7 @@ define('controls/projects/project/media/Panel', [
 
             title: '',
             icon: '',
+            'class': 'qui-panel--media',
 
             field: 'name',
             order: 'ASC',
@@ -502,6 +504,30 @@ define('controls/projects/project/media/Panel', [
                 );
 
                 self.addButton(Upload);
+
+                self.addButton(
+                    new QUISeparator()
+                );
+
+                const MissingMetaBadges = new QUIButton({
+                    name: 'missing-meta-badges',
+                    text: '',
+                    textimage: '',
+                    title: '',
+                    events: {
+                        onClick: function (Btn) {
+                            self.$setShowMissingMetaBadges(
+                                !self.$showMissingMetaBadges()
+                            );
+
+                            self.$refreshMissingMetaBadgeButton(Btn);
+                            self.$view(self.$children);
+                        }
+                    }
+                });
+
+                self.$refreshMissingMetaBadgeButton(MissingMetaBadges);
+                self.addButton(MissingMetaBadges);
 
                 self.$Filter = new Element('input', {
                     placeholder: 'Filter...',
@@ -1284,6 +1310,8 @@ define('controls/projects/project/media/Panel', [
                 this.getAttribute('view')
             );
 
+            children = this.$prepareChildrenForView(children);
+
             switch (this.getAttribute('view')) {
                 case 'details':
                     MediaBody.removeClass('qui-media-content__with-pagination');
@@ -1365,6 +1393,104 @@ define('controls/projects/project/media/Panel', [
             this.$PanelContextMenu.showDragDropMenu(files, Elm, event);
         },
 
+        $normalizeMediaFieldValue: function (value) {
+            if (!value) {
+                return '';
+            }
+
+            try {
+                value = JSON.decode(value);
+
+                if (typeOf(value) === 'object') {
+                    value = Object.values(value);
+                    value = value.filter(Boolean);
+
+                    return value.join('; ');
+                }
+            } catch (e) {
+            }
+
+            return String(value).trim();
+        },
+
+        $prepareChildrenForView: function (Result) {
+            if (!Result || !Result.data) {
+                return Result;
+            }
+
+            let i, len;
+            const children = Result.data;
+
+            for (i = 0, len = children.length; i < len; i++) {
+                children[i].title = this.$normalizeMediaFieldValue(children[i].title);
+                children[i].alt = this.$normalizeMediaFieldValue(children[i].alt);
+            }
+
+            return Result;
+        },
+
+        $hasMediaFieldContent: function (value) {
+            return !!this.$normalizeMediaFieldValue(value);
+        },
+
+        $showMissingMetaBadges: function () {
+            const value = QUI.Storage.get(STORAGE_KEY_MISSING_META_BADGES);
+
+            if (value === null || typeof value === 'undefined') {
+                return true;
+            }
+
+            return !!parseInt(value);
+        },
+
+        $setShowMissingMetaBadges: function (value) {
+            QUI.Storage.set(STORAGE_KEY_MISSING_META_BADGES, value ? 1 : 0);
+        },
+
+        $refreshMissingMetaBadgeButton: function (Btn) {
+            if (!Btn) {
+                return;
+            }
+
+            if (this.$showMissingMetaBadges()) {
+                Btn.setAttributes({
+                    text: 'Hinweise aus',
+                    textimage: 'fa fa-eye-slash',
+                    title: 'Hinweise für fehlende Titel- und Alt-Texte ausblenden'
+                });
+
+                return;
+            }
+
+            Btn.setAttributes({
+                text: 'Hinweise an',
+                textimage: 'fa fa-eye',
+                title: 'Hinweise für fehlende Titel- und Alt-Texte einblenden'
+            });
+        },
+
+        $getMissingMediaMetaBadgesHtml: function (Child) {
+            if (!this.$showMissingMetaBadges() || Child.type === 'folder') {
+                return '';
+            }
+
+            let html = '';
+
+            if (!this.$hasMediaFieldContent(Child.title)) {
+                html += '<span class="qui-media-item-badge" title="Titel fehlt">T</span>';
+            }
+
+            if (!this.$hasMediaFieldContent(Child.alt)) {
+                html += '<span class="qui-media-item-badge" title="Alt-Text fehlt">A</span>';
+            }
+
+            if (!html) {
+                return '';
+            }
+
+            return '<div class="qui-media-item-badges">' + html + '</div>';
+        },
+
         /**
          * list the children as symbol icons
          *
@@ -1375,6 +1501,10 @@ define('controls/projects/project/media/Panel', [
          */
         $viewSymbols: function (Result, Container) {
             let i, len, ext, Elm, Child;
+
+            const List = new Element('div', {
+                'class': 'qui-media-content-list'
+            }).inject(Container);
 
             const droplist = [],
                 Media = this.$Media,
@@ -1414,8 +1544,9 @@ define('controls/projects/project/media/Panel', [
                     'data-mimetype': Child.mimetype,
                     'data-hidden': Child.isHidden ? 1 : 0,
 
-                    'class': 'qui-media-item smooth',
-                    html: '<span class="title">' + Child.name + '</span>',
+                    'class': 'qui-media-item',
+                    html: this.$getMissingMediaMetaBadgesHtml(Child) +
+                        '<span class="title">' + Child.name + '</span>',
                     alt: Child.name + ext,
                     title: Child.name + ext,
 
@@ -1427,6 +1558,10 @@ define('controls/projects/project/media/Panel', [
                         contextmenu: this.$PanelContextMenu.show.bind(this.$PanelContextMenu)
                     }
                 });
+
+                const ImgContainer = new Element('div', {
+                    'class': 'qui-media-item-img'
+                }).inject(Elm);
 
                 if (Child.isHidden) {
                     if (HIDE_HIDDEN_FILES) {
@@ -1445,20 +1580,18 @@ define('controls/projects/project/media/Panel', [
                 }
 
                 if (Child.error) {
-                    Elm.setStyles({
+                    ImgContainer.setStyles({
                         backgroundImage: 'url(' + URL_BIN_DIR + '48x48/file_broken.png)',
-                        paddingLeft: 20
                     });
 
                     showBrokenFileMsg(Child);
                 } else {
-                    Elm.setStyles({
+                    ImgContainer.setStyles({
                         backgroundImage: 'url(' + Child.icon80x80 + ')',
-                        paddingLeft: 20
                     });
                 }
 
-                Elm.inject(Container);
+                Elm.inject(List);
             }
 
             return droplist;
@@ -1475,6 +1608,10 @@ define('controls/projects/project/media/Panel', [
          */
         $viewPreview: function (Result, Container) {
             let i, len, url, ext, Child, Elm;
+
+            const List = new Element('div', {
+                'class': 'qui-media-content-list'
+            }).inject(Container);
 
             const droplist = [],
                 Media = this.$Media,
@@ -1507,8 +1644,9 @@ define('controls/projects/project/media/Panel', [
                     'data-mimetype': Child.mimetype,
                     'data-hidden': Child.isHidden ? 1 : 0,
 
-                    'class': 'qui-media-item box smooth',
-                    html: '<span class="title">' + Child.name + '</span>',
+                    'class': 'qui-media-item',
+                    html: this.$getMissingMediaMetaBadgesHtml(Child) +
+                        '<span class="title">' + Child.name + '</span>',
                     alt: Child.name + ext,
                     title: Child.name + ext,
 
@@ -1521,6 +1659,10 @@ define('controls/projects/project/media/Panel', [
                     }
                 });
 
+                const ImgContainer = new Element('div', {
+                    'class': 'qui-media-item-img'
+                }).inject(Elm);
+
                 if (Child.isHidden) {
                     if (HIDE_HIDDEN_FILES) {
                         Elm.addClass('qui-media-item-hidden__hide');
@@ -1531,19 +1673,17 @@ define('controls/projects/project/media/Panel', [
 
                 droplist.push(Elm);
 
-                Elm.setStyles({
+                ImgContainer.setStyles({
                     backgroundImage: 'url(' + Child.icon80x80 + ')',
-                    paddingLeft: 20
                 });
 
                 if (Child.mimetype && Child.mimetype.indexOf('svg') !== -1) {
-                    Elm.setStyle('background-size', 'contain');
+                    ImgContainer.setStyle('background-size', 'contain');
                 }
 
                 if (Child.error) {
-                    Elm.setStyles({
+                    ImgContainer.setStyles({
                         backgroundImage: 'url(' + URL_BIN_DIR + '48x48/file_broken.png)',
-                        paddingLeft: 20
                     });
 
                     QUI.getMessageHandler(function (MH) {
@@ -1555,15 +1695,15 @@ define('controls/projects/project/media/Panel', [
 
                 if (Child.type === 'image' && !Child.error) {
                     url = URL_DIR + Child.url + '&quiadmin=1';
-                    url = url + '&maxheight=80';
-                    url = url + '&maxwidth=80';
+                    url = url + '&maxheight=100';
+                    url = url + '&maxwidth=100';
 
                     // because of the browser cache
                     if (Child.e_date) {
                         url = url + '&edate=' + Child.e_date.replace(/[^0-9]/g, '');
                     }
 
-                    Elm.setStyles({
+                    ImgContainer.setStyles({
                         'backgroundImage': 'url(' + url + ')',
                         'backgroundPosition': 'center center'
                     });
@@ -1575,7 +1715,7 @@ define('controls/projects/project/media/Panel', [
                     Elm.addClass('qmi-deactive');
                 }
 
-                Elm.inject(Container);
+                Elm.inject(List);
             }
 
             return droplist;
@@ -1593,8 +1733,12 @@ define('controls/projects/project/media/Panel', [
 
             let Target = event.target;
 
-            if (Target.nodeName === 'SPAN') {
-                Target = Target.getParent('div');
+            if (Target.nodeName !== 'DIV') {
+                Target = Target.getParent('.qui-media-item');
+            }
+
+            if (!Target) {
+                return;
             }
 
             if (!this.isItemSelectable(Target)) {
@@ -1720,6 +1864,12 @@ define('controls/projects/project/media/Panel', [
                         width: 150
                     },
                     {
+                        header: 'Alt',
+                        dataIndex: 'alt',
+                        dataType: 'string',
+                        width: 150
+                    },
+                    {
                         header: Locale.get(lg, 'c_date'),
                         dataIndex: 'c_date',
                         dataType: 'date',
@@ -1812,21 +1962,7 @@ define('controls/projects/project/media/Panel', [
                 }
             });
 
-            let i, len, title;
             const children = Result.data;
-
-            for (i = 0, len = children.length; i < len; i++) {
-                try {
-                    title = children[i].title;
-                    title = JSON.decode(title);
-                    title = Object.values(title);
-                    title = title.filter(Boolean); // filter empty
-                    title = title.join('; ');
-
-                    children[i].title = title;
-                } catch (e) {
-                }
-            }
 
             if (children[0] && children[0].name !== '..') {
                 const breadcrumb_list = Array.clone(
@@ -2601,19 +2737,21 @@ define('controls/projects/project/media/Panel', [
 
             Node.getElement('span').set('html', Item.getAttribute('name'));
 
-            const itemId = parseInt(Item.getId());
+            const itemId = parseInt(Item.getId()),
+                children = this.$children && this.$children.data ? this.$children.data : [];
 
-            for (i = 0, len = this.$children.length; i < len; i++) {
-                if (parseInt(this.$children[i].id) !== itemId) {
+            for (i = 0, len = children.length; i < len; i++) {
+                if (parseInt(children[i].id) !== itemId) {
                     continue;
                 }
 
-                this.$children[i].active = Item.isActive();
-                this.$children[i].e_date = Item.getAttribute('e_date');
-                this.$children[i].name = Item.getAttribute('name');
-                this.$children[i].priority = Item.getAttribute('priority');
-                this.$children[i].short = Item.getAttribute('short');
-                this.$children[i].title = Item.getAttribute('title');
+                children[i].active = Item.isActive();
+                children[i].e_date = Item.getAttribute('e_date');
+                children[i].name = Item.getAttribute('name');
+                children[i].priority = Item.getAttribute('priority');
+                children[i].short = Item.getAttribute('short');
+                children[i].title = Item.getAttribute('title');
+                children[i].alt = Item.getAttribute('alt');
                 break;
             }
         },

@@ -1587,6 +1587,9 @@
         <locale name="users.user.address.window.delete.information">
             <en><![CDATA[The address can not be restored]]></en>
         </locale>
+        <locale name="exception.users.address.delete.default">
+            <en><![CDATA[The default address cannot be deleted. Set another address as the default first.]]></en>
+        </locale>
         <locale name="users.input.no.results">
             <en><![CDATA[No results found]]></en>
         </locale>
