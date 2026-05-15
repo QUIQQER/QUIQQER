@@ -2022,6 +2022,36 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="projects.project.site.media.panel.btn.upload.archive">
             <en><![CDATA[Upload an archiv and extract it]]></en>
         </locale>
+        <locale name="projects.project.site.media.panel.filter.placeholder">
+            <en><![CDATA[Filter...]]></en>
+        </locale>
+        <locale name="projects.project.site.media.panel.title">
+            <en><![CDATA[ Media ({project})]]></en>
+        </locale>
+        <locale name="projects.project.site.media.panel.btn.missingMetaBadges.hide">
+            <en><![CDATA[Hide hints]]></en>
+        </locale>
+        <locale name="projects.project.site.media.panel.btn.missingMetaBadges.hide.title">
+            <en><![CDATA[Hide hints for missing title and alt texts]]></en>
+        </locale>
+        <locale name="projects.project.site.media.panel.btn.missingMetaBadges.show">
+            <en><![CDATA[Show hints]]></en>
+        </locale>
+        <locale name="projects.project.site.media.panel.btn.missingMetaBadges.show.title">
+            <en><![CDATA[Show hints for missing title and alt texts]]></en>
+        </locale>
+        <locale name="projects.project.site.media.panel.badge.title.missing">
+            <en><![CDATA[Title missing]]></en>
+        </locale>
+        <locale name="projects.project.site.media.panel.badge.alt.missing">
+            <en><![CDATA[Alt text missing]]></en>
+        </locale>
+        <locale name="projects.project.site.media.panel.file.broken">
+            <en><![CDATA[File is broken #{id} {name}]]></en>
+        </locale>
+        <locale name="projects.project.site.media.panel.grid.alt">
+            <en><![CDATA[Alt attribute]]></en>
+        </locale>
         <locale name="projects.project.site.media.panel.upload.extract.text">
             <en><![CDATA[
                 <h2><span class="fa fa-upload"></span>Upload archivefile</h2>                <p>Upload archive files to the media folder.</p>                <p>These archive files are unpacked directly.</p>]]></en>
