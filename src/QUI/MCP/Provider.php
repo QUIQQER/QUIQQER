@@ -95,7 +95,7 @@ class Provider implements ProviderInterface
     {
         try {
             Permission::checkPermission(
-                'quiqqer.core.mcp',
+                'quiqqer.core.mcp.canUse',
                 Server::getRequestUser()
             );
 

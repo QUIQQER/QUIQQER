@@ -17,7 +17,7 @@ use Throwable;
 
 class ClearCache extends AbstractTool
 {
-    protected const CACHE_CLEAR_PERMISSION = 'quiqqer.core.mcp.cache.clear';
+    protected const CACHE_CLEAR_PERMISSION = 'quiqqer.core.mcp.clearCache';
 
     public function register(Builder $serverBuilder): void
     {
