@@ -20,6 +20,8 @@ abstract class AbstractTool implements ToolInterface
 
     protected static function checkCorePermission(): void
     {
+        Permission::setUser(Server::getRequestUser());
+
         Permission::checkPermission(
             self::CORE_MCP_PERMISSION,
             Server::getRequestUser()
