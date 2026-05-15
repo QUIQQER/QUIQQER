@@ -2049,6 +2049,36 @@
         <locale name="projects.project.site.media.panel.btn.upload.archive">
             <de><![CDATA[Archiv hochladen und entpacken]]></de>
         </locale>
+        <locale name="projects.project.site.media.panel.filter.placeholder">
+            <de><![CDATA[Filter...]]></de>
+        </locale>
+        <locale name="projects.project.site.media.panel.title">
+            <de><![CDATA[ Media ({project})]]></de>
+        </locale>
+        <locale name="projects.project.site.media.panel.btn.missingMetaBadges.hide">
+            <de><![CDATA[Hinweise aus]]></de>
+        </locale>
+        <locale name="projects.project.site.media.panel.btn.missingMetaBadges.hide.title">
+            <de><![CDATA[Hinweise für fehlende Titel- und Alt-Texte ausblenden]]></de>
+        </locale>
+        <locale name="projects.project.site.media.panel.btn.missingMetaBadges.show">
+            <de><![CDATA[Hinweise an]]></de>
+        </locale>
+        <locale name="projects.project.site.media.panel.btn.missingMetaBadges.show.title">
+            <de><![CDATA[Hinweise für fehlende Titel- und Alt-Texte einblenden]]></de>
+        </locale>
+        <locale name="projects.project.site.media.panel.badge.title.missing">
+            <de><![CDATA[Titel fehlt]]></de>
+        </locale>
+        <locale name="projects.project.site.media.panel.badge.alt.missing">
+            <de><![CDATA[Alt-Text fehlt]]></de>
+        </locale>
+        <locale name="projects.project.site.media.panel.file.broken">
+            <de><![CDATA[Datei ist beschädigt #{id} {name}]]></de>
+        </locale>
+        <locale name="projects.project.site.media.panel.grid.alt">
+            <de><![CDATA[Alt-Attribut]]></de>
+        </locale>
         <locale name="projects.project.site.media.panel.upload.extract.text">
             <de><![CDATA[
             <h2><span class="fa fa-upload"></span>Archiv Upload</h2>

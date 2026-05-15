@@ -530,7 +530,7 @@ define('controls/projects/project/media/Panel', [
                 self.addButton(MissingMetaBadges);
 
                 self.$Filter = new Element('input', {
-                    placeholder: 'Filter...',
+                    placeholder: Locale.get(lg, 'projects.project.site.media.panel.filter.placeholder'),
                     styles: {
                         'float': 'right',
                         margin: 10,
@@ -756,7 +756,9 @@ define('controls/projects/project/media/Panel', [
             // set loader image
             this.setOptions({
                 icon: 'fa fa-spinner fa-spin',
-                title: ' Media (' + Project.getName() + ')'
+                title: Locale.get(lg, 'projects.project.site.media.panel.title', {
+                    project: Project.getName()
+                })
             });
 
 
@@ -777,7 +779,9 @@ define('controls/projects/project/media/Panel', [
                     // set media image to the panel
                     self.setOptions({
                         icon: 'fa fa-picture-o',
-                        title: ' Media (' + Project.getName() + ')'
+                        title: Locale.get(lg, 'projects.project.site.media.panel.title', {
+                            project: Project.getName()
+                        })
                     });
 
                     //self.refresh();
@@ -1454,18 +1458,18 @@ define('controls/projects/project/media/Panel', [
 
             if (this.$showMissingMetaBadges()) {
                 Btn.setAttributes({
-                    text: 'Hinweise aus',
+                    text: Locale.get(lg, 'projects.project.site.media.panel.btn.missingMetaBadges.hide'),
                     textimage: 'fa fa-eye-slash',
-                    title: 'Hinweise für fehlende Titel- und Alt-Texte ausblenden'
+                    title: Locale.get(lg, 'projects.project.site.media.panel.btn.missingMetaBadges.hide.title')
                 });
 
                 return;
             }
 
             Btn.setAttributes({
-                text: 'Hinweise an',
+                text: Locale.get(lg, 'projects.project.site.media.panel.btn.missingMetaBadges.show'),
                 textimage: 'fa fa-eye',
-                title: 'Hinweise für fehlende Titel- und Alt-Texte einblenden'
+                title: Locale.get(lg, 'projects.project.site.media.panel.btn.missingMetaBadges.show.title')
             });
         },
 
@@ -1477,11 +1481,15 @@ define('controls/projects/project/media/Panel', [
             let html = '';
 
             if (!this.$hasMediaFieldContent(Child.title)) {
-                html += '<span class="qui-media-item-badge" title="Titel fehlt">T</span>';
+                html += '<span class="qui-media-item-badge" title="'
+                    + Locale.get(lg, 'projects.project.site.media.panel.badge.title.missing')
+                    + '">T</span>';
             }
 
             if (!this.$hasMediaFieldContent(Child.alt)) {
-                html += '<span class="qui-media-item-badge" title="Alt-Text fehlt">A</span>';
+                html += '<span class="qui-media-item-badge" title="'
+                    + Locale.get(lg, 'projects.project.site.media.panel.badge.alt.missing')
+                    + '">A</span>';
             }
 
             if (!html) {
@@ -1516,7 +1524,10 @@ define('controls/projects/project/media/Panel', [
             const showBrokenFileMsg = function (File) {
                 QUI.getMessageHandler(function (MH) {
                     MH.addError(
-                        'File is broken #' + File.id + ' ' + File.name
+                        Locale.get(lg, 'projects.project.site.media.panel.file.broken', {
+                            id: File.id,
+                            name: File.name
+                        })
                     );
                 });
             };
@@ -1688,7 +1699,10 @@ define('controls/projects/project/media/Panel', [
 
                     QUI.getMessageHandler(function (MH) {
                         MH.addError(
-                            'File is broken #' + this.id + ' ' + this.name
+                            Locale.get(lg, 'projects.project.site.media.panel.file.broken', {
+                                id: this.id,
+                                name: this.name
+                            })
                         );
                     }.bind(Child));
                 }
@@ -1864,7 +1878,7 @@ define('controls/projects/project/media/Panel', [
                         width: 150
                     },
                     {
-                        header: 'Alt',
+                        header: Locale.get(lg, 'projects.project.site.media.panel.grid.alt'),
                         dataIndex: 'alt',
                         dataType: 'string',
                         width: 150
