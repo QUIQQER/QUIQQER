@@ -16,7 +16,7 @@ use QUI\Projects\Site\Edit;
 
 abstract class AbstractTool implements ToolInterface
 {
-    protected const CORE_MCP_PERMISSION = 'quiqqer.core.mcp';
+    protected const CORE_MCP_PERMISSION = 'quiqqer.core.mcp.canUse';
 
     protected static function checkCorePermission(): void
     {
