@@ -146,10 +146,13 @@
         <locale name="permission.quiqqer.core._header">
             <de><![CDATA[Core]]></de>
         </locale>
-        <locale name="permission.quiqqer.core.mcp">
+        <locale name="permission.quiqqer.core.mcp._header">
+            <de><![CDATA[MCP]]></de>
+        </locale>
+        <locale name="permission.quiqqer.core.mcp.canUse">
             <de><![CDATA[Darf die Core-MCP-Tools verwenden]]></de>
         </locale>
-        <locale name="permission.quiqqer.core.mcp.cache.clear">
+        <locale name="permission.quiqqer.core.mcp.clearCache">
             <de><![CDATA[Darf den QUIQQER-Cache per MCP löschen]]></de>
         </locale>
         <locale name="permission.quiqqer.projects._header">
