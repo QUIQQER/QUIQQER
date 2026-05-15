@@ -149,6 +149,9 @@
         <locale name="permission.quiqqer.core.mcp">
             <de><![CDATA[Darf die Core-MCP-Tools verwenden]]></de>
         </locale>
+        <locale name="permission.quiqqer.core.mcp.cache.clear">
+            <de><![CDATA[Darf den QUIQQER-Cache per MCP löschen]]></de>
+        </locale>
         <locale name="permission.quiqqer.projects._header">
             <de><![CDATA[Projekte]]></de>
         </locale>
