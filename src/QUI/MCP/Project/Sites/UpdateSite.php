@@ -13,6 +13,7 @@ use QUI\AI\MCP\Server;
 use QUI\AI\MCP\ToolHelper;
 use QUI\MCP\AbstractTool;
 use QUI\Projects\Site\Edit;
+use QUI\Projects\Site\Utils;
 use Throwable;
 
 class UpdateSite extends AbstractTool
@@ -54,13 +55,16 @@ class UpdateSite extends AbstractTool
                     $Site = new Edit(self::getProject($project, $lang), $id);
                     $allowedAttributes = self::getUpdateAttributes($Site);
                     $changed = [];
+                    $ignoredAttributes = [];
 
                     foreach ($attributes as $attribute => $value) {
                         if (!in_array($attribute, $allowedAttributes, true)) {
+                            $ignoredAttributes[] = $attribute;
                             continue;
                         }
 
                         if (!is_scalar($value) && $value !== null) {
+                            $ignoredAttributes[] = $attribute;
                             continue;
                         }
 
@@ -73,6 +77,7 @@ class UpdateSite extends AbstractTool
                     return [
                         'saved' => true,
                         'changedAttributes' => array_keys($changed),
+                        'ignoredAttributes' => $ignoredAttributes,
                         'site' => self::parseSite($Site, true)
                     ];
                 } catch (Throwable $Exception) {
@@ -106,6 +111,14 @@ class UpdateSite extends AbstractTool
 
         foreach (self::UPDATE_ATTRIBUTES as $attribute) {
             $attributes[] = $attribute;
+        }
+
+        foreach (Utils::getExtraAttributeListForSite($Site) as $data) {
+            if (!isset($data['attribute'])) {
+                continue;
+            }
+
+            $attributes[] = $data['attribute'];
         }
 
         QUI::getEvents()->fireEvent('mcpSiteUpdateAttributes', [&$attributes, $Site]);
