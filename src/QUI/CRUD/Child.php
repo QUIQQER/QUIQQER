@@ -63,7 +63,7 @@ abstract class Child extends QUI\QDOM
     {
         $this->Events->fireEvent('deleteBegin');
 
-        QUI::getDataBase()->delete(
+        QUI::getDataBaseConnection()->delete(
             $this->Factory->getDataBaseTableName(),
             ['id' => $this->getId()]
         );
@@ -93,7 +93,7 @@ abstract class Child extends QUI\QDOM
             $savedData[$needle] = $this->getAttribute($needle);
         }
 
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $this->Factory->getDataBaseTableName(),
             $savedData,
             ['id' => $this->getId()]

@@ -127,7 +127,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
 
         $this->setAttribute('md5hash', $md5);
 
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $this->Media->getTable(),
             ['md5hash' => $md5],
             ['id' => $this->getId()]
@@ -154,7 +154,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
 
         $this->setAttribute('sha1hash', $sha1);
 
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $this->Media->getTable(),
             ['sha1hash' => $sha1],
             ['id' => $this->getId()]

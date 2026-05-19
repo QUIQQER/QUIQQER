@@ -136,7 +136,7 @@ class QuiqqerProvider extends AbstractInstallationWizard
 
                 $permissions = file_get_contents(__DIR__ . '/permissions.editor.json');
 
-                QUI::getDataBase()->update(
+                QUI::getDataBaseConnection()->update(
                     $table2groups,
                     ['permissions' => $permissions],
                     ['group_id' => $Editor->getUUID()]
@@ -155,7 +155,7 @@ class QuiqqerProvider extends AbstractInstallationWizard
 
                 $permissions = file_get_contents(__DIR__ . '/permissions.sysadmin.json');
 
-                QUI::getDataBase()->update(
+                QUI::getDataBaseConnection()->update(
                     $table2groups,
                     ['permissions' => $permissions],
                     ['group_id' => $sysAdmin->getUUID()]
