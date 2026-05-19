@@ -9,9 +9,6 @@ use QUI;
 
 /**
  * Message Handler for QUIQQER
- *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
  */
 class Handler
 {
@@ -79,17 +76,20 @@ class Handler
         }
 
         try {
-            $list = QUI::getDataBase()->fetch([
-                'from' => self::table(),
-                'where' => [
-                    'uid' => $User->getUUID()
-                ]
-            ]);
+            $Connection = QUI::getDataBaseConnection();
 
-            QUI::getDataBase()->delete(self::table(), [
+            $list = $Connection->createQueryBuilder()
+                ->select('*')
+                ->from(self::table())
+                ->where('uid = :uid')
+                ->setParameter('uid', $User->getUUID())
+                ->executeQuery()
+                ->fetchAllAssociative();
+
+            $Connection->delete(self::table(), [
                 'uid' => $User->getUUID()
             ]);
-        } catch (QUI\Database\Exception $Exception) {
+        } catch (\Doctrine\DBAL\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
 
             return [];
@@ -216,14 +216,14 @@ class Handler
         }
 
         try {
-            QUI::getDataBase()->insert(self::table(), [
+            QUI::getDataBaseConnection()->insert(self::table(), [
                 'uid' => $User->getUUID(),
                 'message' => $Message->getMessage(),
                 'mcode' => (int)$Message->getCode(),
                 'mtime' => (int)$Message->getAttribute('time'),
                 'mtype' => $Message->getType()
             ]);
-        } catch (QUI\Database\Exception $Exception) {
+        } catch (\Doctrine\DBAL\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
     }
