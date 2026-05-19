@@ -230,14 +230,15 @@ class CopyLanguageSites extends QUI\System\Console\Tool
 
         $this->writeLn("\n\n=== Copying bricks to target language ===\n\n");
 
-        $sourceBricks = QUI::getDataBase()->fetch([
-            'select' => ['id'],
-            'from' => $this->BricksManager->getTable(),
-            'where' => [
-                'project' => $SourceProject->getName(),
-                'lang' => $SourceProject->getLang()
-            ]
-        ]);
+        $sourceBricks = QUI::getDataBaseConnection()->createQueryBuilder()
+            ->select('id')
+            ->from($this->BricksManager->getTable())
+            ->where('project = :project')
+            ->andWhere('lang = :lang')
+            ->setParameter('project', $SourceProject->getName())
+            ->setParameter('lang', $SourceProject->getLang())
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         foreach ($sourceBricks as $brick) {
             $sourceBrickId = $brick['id'];

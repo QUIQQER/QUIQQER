@@ -1170,7 +1170,7 @@ class Console
             $userAgent = $_SERVER['HTTP_USER_AGENT'];
         }
 
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $Users->table(),
             [
                 'lastvisit' => time(),
