@@ -659,8 +659,7 @@ class QUI
     /**
      * Returns the database Object (old version)
      *
-     * @deprecated
-     * use getDataBase and PDO or direct getPDO
+     * @deprecated Use QUI::getDataBaseConnection(), QUI::getQueryBuilder() or QUI::getPDO() instead.
      */
     public static function getDB(): MyDB
     {
@@ -696,9 +695,13 @@ class QUI
     }
 
     /**
-     * Returns the Database object
+     * Returns the legacy QUIQQER database object.
      *
-     * @deprecated
+     * Do not use this method in new code. Use Doctrine DBAL via
+     * QUI::getDataBaseConnection() or QUI::getQueryBuilder() instead.
+     * Keep this method only for backwards compatibility with legacy packages.
+     *
+     * @deprecated Use QUI::getDataBaseConnection(), QUI::getQueryBuilder() or QUI::getPDO() instead.
      */
     public static function getDataBase(): DB
     {
