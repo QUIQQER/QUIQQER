@@ -46,7 +46,7 @@ class Guest extends QUI\Groups\Group
     {
         $this->rights = QUI::getPermissionManager()->getRightParamsFromGroup($this);
 
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             Manager::table(),
             [
                 'name' => 'Guest',

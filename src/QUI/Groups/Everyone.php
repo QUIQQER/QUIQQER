@@ -95,7 +95,7 @@ class Everyone extends QUI\Groups\Group
             );
         }
 
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             Manager::table(),
             [
                 'name' => 'Everyone',

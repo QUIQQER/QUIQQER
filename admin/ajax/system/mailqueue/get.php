@@ -49,19 +49,19 @@ QUI::getAjax()->registerFunction(
             return [];
         }
 
-        $result = QUI::getDataBase()->fetch([
-            'from' => Queue::table(),
-            'where' => [
-                'id' => $id
-            ],
-            'limit' => 1
-        ]);
+        $QueryBuilder = QUI::getQueryBuilder();
+        $entry = $QueryBuilder
+            ->select("*")
+            ->from(Queue::table())
+            ->where($QueryBuilder->expr()->eq("id", ":id"))
+            ->setParameter("id", $id)
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchAssociative();
 
-        if (!isset($result[0])) {
+        if (!$entry) {
             return [];
         }
-
-        $entry = $result[0];
         $lastSend = (int)$entry['lastsend'];
 
         $statusMap = [

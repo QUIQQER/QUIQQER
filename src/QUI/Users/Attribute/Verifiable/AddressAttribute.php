@@ -24,15 +24,17 @@ final class AddressAttribute extends AbstractVerifiableUserAttribute
             return $this->Address;
         }
 
-        $result = QUI::getDataBase()->fetch([
-            'from' => Manager::tableAddress(),
-            'where' => [
-                'uuid' => $this->value
-            ],
-            'limit' => 1
-        ]);
+        $QueryBuilder = QUI::getQueryBuilder();
+        $result = $QueryBuilder
+            ->select("userUuid")
+            ->from(Manager::tableAddress())
+            ->where($QueryBuilder->expr()->eq("uuid", ":addressUuid"))
+            ->setParameter("addressUuid", $this->value)
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchAssociative();
 
-        if (empty($result)) {
+        if (!$result) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/core',
@@ -45,7 +47,7 @@ final class AddressAttribute extends AbstractVerifiableUserAttribute
             );
         }
 
-        $User = QUI::getUsers()->get($result[0]['userUuid']);
+        $User = QUI::getUsers()->get($result["userUuid"]);
         $this->Address = new Address($User, $this->value);
 
         return $this->Address;
