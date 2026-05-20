@@ -113,6 +113,11 @@ class Package extends QUI\QDOM
         }
 
         if (!is_dir($packageDir)) {
+            // Packages of type "component" (e.g. "quiqqer/qui"), "npm-asset" or "bower-asset" are installed to "bin/$name"
+            $packageDir = OPT_DIR . 'bin/' . $name;
+        }
+
+        if (!is_dir($packageDir)) {
             $package = htmlspecialchars($package);
             throw new QUI\Exception('Package not exists [' . $package . ']', 404);
         }
