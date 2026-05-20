@@ -367,7 +367,11 @@ class Manager extends QUI\QDOM
             $QueryBuilder->from($Platform->quoteSingleIdentifier(self::table()));
             $paramIndex = 0;
 
-            $addCondition = static function (string $field, mixed $data, string $method) use (
+            $addCondition = static function (
+                string $field,
+                mixed $data,
+                string $method
+            ) use (
                 $QueryBuilder,
                 $Platform,
                 &$paramIndex
