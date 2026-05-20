@@ -98,7 +98,7 @@ class Group extends QUI\QDOM
                 return;
             }
         } catch (QUI\Cache\Exception $Exception) {
-            QUI\System\Log::addError($Exception->getMessage());
+            QUI\System\Log::addDebug($Exception->getMessage());
         }
 
 

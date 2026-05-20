@@ -59,7 +59,7 @@ class Manager extends QUI\QDOM
 
             return self::$getListOfExtraAttributes;
         } catch (QUI\Exception $Exception) {
-            QUI\System\Log::addError($Exception->getMessage());
+            QUI\System\Log::addDebug($Exception->getMessage());
         }
 
         $list = QUI::getPackageManager()->getInstalled();

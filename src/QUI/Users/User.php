@@ -1014,7 +1014,7 @@ class User implements QUIUserInterface
         try {
             return QUI\Cache\Manager::get($cache);
         } catch (QUI\Exception $Exception) {
-            QUI\System\Log::addError($Exception->getMessage());
+            QUI\System\Log::addDebug($Exception->getMessage());
         }
 
         $list = QUI::getPackageManager()->getInstalled();
@@ -1056,7 +1056,7 @@ class User implements QUIUserInterface
         try {
             return QUI\Cache\Manager::get($cache);
         } catch (QUI\Exception $Exception) {
-            QUI\System\Log::addError($Exception->getMessage());
+            QUI\System\Log::addDebug($Exception->getMessage());
         }
 
         $Dom = QUI\Utils\Text\XML::getDomFromXml($file);
