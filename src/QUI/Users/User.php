@@ -85,7 +85,7 @@ class User implements QUIUserInterface
     protected int $deleted = 0;
 
     /**
-     * Super user flag
+     * superuser flag
      */
     protected bool $su = false;
 
@@ -213,11 +213,7 @@ class User implements QUIUserInterface
 
         // if user has no language, use the project language
         if (!$this->lang) {
-            try {
-                $this->lang = QUI\Projects\Manager::get()->getAttribute('lang');
-            } catch (QUI\Exception $Exception) {
-                QUI\System\Log::addError($Exception->getMessage());
-            }
+            $this->lang = QUI\Projects\Manager::get()->getAttribute('lang');
         }
 
         if (!$this->lang) {
@@ -252,25 +248,32 @@ class User implements QUIUserInterface
      */
     public function refresh(): void
     {
-        if ($this->uuid !== null) {
-            $data = QUI::getDataBase()->fetch([
-                'from' => Manager::table(),
-                'where' => [
-                    'uuid' => $this->uuid
-                ],
-                'limit' => 1
-            ]);
-        } else {
-            $data = QUI::getDataBase()->fetch([
-                'from' => Manager::table(),
-                'where' => [
-                    'id' => $this->id
-                ],
-                'limit' => 1
-            ]);
+        try {
+            $QueryBuilder = QUI::getQueryBuilder();
+            $QueryBuilder
+                ->select('*')
+                ->from(Manager::table())
+                ->setMaxResults(1);
+
+            if ($this->uuid !== null) {
+                $QueryBuilder
+                    ->where($QueryBuilder->expr()->eq('uuid', ':uuid'))
+                    ->setParameter('uuid', $this->uuid);
+            } else {
+                $QueryBuilder
+                    ->where($QueryBuilder->expr()->eq('id', ':id'))
+                    ->setParameter('id', $this->id);
+            }
+
+            $data = $QueryBuilder->executeQuery()->fetchAssociative();
+        } catch (\Doctrine\DBAL\Exception $Exception) {
+            throw new Exception(
+                $Exception->getMessage(),
+                (int)$Exception->getCode()
+            );
         }
 
-        if (!isset($data[0])) {
+        if (!$data) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/core',
@@ -281,42 +284,42 @@ class User implements QUIUserInterface
         }
 
         // Eigenschaften setzen
-        $this->uuid = $data[0]['uuid'];
-        $this->id = (int)$data[0]['id'];
+        $this->uuid = $data['uuid'];
+        $this->id = (int)$data['id'];
 
 
-        if (isset($data[0]['username'])) {
-            $this->name = $data[0]['username'];
-            unset($data[0]['username']);
+        if (isset($data['username'])) {
+            $this->name = $data['username'];
+            unset($data['username']);
         }
 
-        if (isset($data[0]['usergroup'])) {
-            $this->groups = $data[0]['usergroup'];
-            //$this->setGroups($data[0]['usergroup']);
+        if (isset($data['usergroup'])) {
+            $this->groups = $data['usergroup'];
+            //$this->setGroups($data['usergroup']);
 
-            unset($data[0]['usergroup']);
+            unset($data['usergroup']);
         } else {
             $this->groups = '';
         }
 
-        if (isset($data[0]['active']) && $data[0]['active'] == 1) {
+        if (isset($data['active']) && $data['active'] == 1) {
             $this->active = 1;
         }
 
-        if ($data[0]['active'] == -1) {
+        if ($data['active'] == -1) {
             $this->deleted = 1;
             $this->active = -1;
         }
 
-        if (isset($data[0]['su']) && $data[0]['su'] == 1) {
+        if (isset($data['su']) && $data['su'] == 1) {
             $this->su = true;
         }
 
-        if (isset($data[0]['password'])) {
-            $this->password = $data[0]['password'];
+        if (isset($data['password'])) {
+            $this->password = $data['password'];
         }
 
-        foreach ($data[0] as $key => $value) {
+        foreach ($data as $key => $value) {
             if ($key == 'user_agent') {
                 $this->settings['user_agent'] = $value;
                 continue;
@@ -325,8 +328,8 @@ class User implements QUIUserInterface
             $this->setAttribute($key, $value);
         }
 
-        if (isset($data[0]['company'])) {
-            $this->company = (bool)$data[0]['company'];
+        if (isset($data['company'])) {
+            $this->company = (bool)$data['company'];
         }
 
         if ($this->getAttribute('expire') == '0000-00-00 00:00:00') {
@@ -334,10 +337,10 @@ class User implements QUIUserInterface
         }
 
 
-        if (isset($data[0]['extra'])) {
+        if (isset($data['extra'])) {
             $extraList = $this->getListOfExtraAttributes();
             $extras = [];
-            $extraData = json_decode($data[0]['extra'], true);
+            $extraData = json_decode($data['extra'], true);
 
             if (!is_array($extraData)) {
                 $extraData = [];
@@ -365,16 +368,16 @@ class User implements QUIUserInterface
             }
         }
 
-        if (isset($data[0]['authenticator'])) {
-            $this->authenticator = json_decode($data[0]['authenticator'], true) ?? [];
+        if (isset($data['authenticator'])) {
+            $this->authenticator = json_decode($data['authenticator'], true) ?? [];
         }
 
         // load default address fields
         // syn main user address fields
         $this->isLoaded = true;
-        $this->setAttribute('firstname', $data[0]['firstname']);
-        $this->setAttribute('lastname', $data[0]['lastname']);
-        $this->setAttribute('email', $data[0]['email']);
+        $this->setAttribute('firstname', $data['firstname']);
+        $this->setAttribute('lastname', $data['lastname']);
+        $this->setAttribute('email', $data['email']);
 
         $this->address_list = [];
         $this->StandardAddress = null;
@@ -576,7 +579,7 @@ class User implements QUIUserInterface
     /**
      * Get an address from the user
      *
-     * @throws \QUI\Users\Exception
+     * @throws \QUI\Users\Exception|ExceptionStack
      */
     public function getAddress(int | string $id): Address
     {
@@ -592,17 +595,25 @@ class User implements QUIUserInterface
     /**
      * Returns all addresses from the user
      *
-     * @throws Exception
+     * @throws Exception|ExceptionStack
      */
     public function getAddressList(): array
     {
-        $result = QUI::getDataBase()->fetch([
-            'from' => Manager::tableAddress(),
-            'select' => 'id,uuid',
-            'where' => [
-                'userUuid' => $this->getUUID()
-            ]
-        ]);
+        try {
+            $QueryBuilder = QUI::getQueryBuilder();
+            $result = $QueryBuilder
+                ->select('id', 'uuid')
+                ->from(Manager::tableAddress())
+                ->where($QueryBuilder->expr()->eq('userUuid', ':userUuid'))
+                ->setParameter('userUuid', $this->getUUID())
+                ->executeQuery()
+                ->fetchAllAssociative();
+        } catch (\Doctrine\DBAL\Exception $Exception) {
+            throw new Exception(
+                $Exception->getMessage(),
+                (int)$Exception->getCode()
+            );
+        }
 
         if (!isset($result[0])) {
             return [];
@@ -637,17 +648,25 @@ class User implements QUIUserInterface
         $this->checkEditPermission($ParentUser);
 
         // check max limit of user address
-        $addresses = QUI::getDataBase()->fetch([
-            'count' => 'count',
-            'from' => Manager::tableAddress(),
-            'where' => [
-                'userUuid' => $this->getUUID()
-            ]
-        ]);
+        try {
+            $QueryBuilder = QUI::getQueryBuilder();
+            $addressCount = (int)$QueryBuilder
+                ->select('COUNT(id)')
+                ->from(Manager::tableAddress())
+                ->where($QueryBuilder->expr()->eq('userUuid', ':userUuid'))
+                ->setParameter('userUuid', $this->getUUID())
+                ->executeQuery()
+                ->fetchOne();
+        } catch (\Doctrine\DBAL\Exception $Exception) {
+            throw new Exception(
+                $Exception->getMessage(),
+                (int)$Exception->getCode()
+            );
+        }
 
         // max 100 addresses per user
         // @todo do it as permission
-        if (!empty($addresses[0]['count']) && $addresses[0]['count'] > 100) {
+        if ($addressCount > 100) {
             throw new QUI\Exception([
                 'quiqqer/core',
                 'exception.too.many.addresses'
@@ -691,14 +710,22 @@ class User implements QUIUserInterface
         $_params['userUuid'] = $this->getUUID();
         $_params['uuid'] = QUI\Utils\Uuid::get();
 
-        QUI::getDataBase()->insert(
-            Manager::tableAddress(),
-            $_params
-        );
+        try {
+            $Connection = QUI::getDataBaseConnection();
+            $Connection->insert(
+                Manager::tableAddress(),
+                $_params
+            );
 
-        $CreatedAddress = $this->getAddress(
-            QUI::getDataBase()->getPDO()->lastInsertId()
-        );
+            $newAddressId = $Connection->lastInsertId();
+        } catch (\Doctrine\DBAL\Exception $Exception) {
+            throw new Exception(
+                $Exception->getMessage(),
+                (int)$Exception->getCode()
+            );
+        }
+
+        $CreatedAddress = $this->getAddress($newAddressId);
 
         $tmp_first = $this->getAttribute('firstname');
         $tmp_last = $this->getAttribute('lastname');
@@ -1199,19 +1226,19 @@ class User implements QUIUserInterface
             $email = $this->getAttribute('email');
 
             if (!empty($email)) {
-                $found = QUI::getDataBase()->fetch([
-                    'from' => Manager::table(),
-                    'where' => [
-                        'email' => $email,
-                        'uuid' => [
-                            'value' => $this->getUUID(),
-                            'type' => 'NOT'
-                        ]
-                    ],
-                    'limit' => 1
-                ]);
+                $QueryBuilder = QUI::getQueryBuilder();
+                $found = $QueryBuilder
+                    ->select('uuid')
+                    ->from(Manager::table())
+                    ->where($QueryBuilder->expr()->eq('email', ':email'))
+                    ->andWhere($QueryBuilder->expr()->neq('uuid', ':uuid'))
+                    ->setParameter('email', $email)
+                    ->setParameter('uuid', $this->getUUID())
+                    ->setMaxResults(1)
+                    ->executeQuery()
+                    ->fetchAssociative();
             }
-        } catch (QUI\Exception $Exception) {
+        } catch (\Doctrine\DBAL\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
 
             throw new QUI\Users\Exception(
@@ -1219,7 +1246,7 @@ class User implements QUIUserInterface
             );
         }
 
-        if (isset($found[0])) {
+        if (!empty($found)) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get('quiqqer/core', 'exception.user.save.mail.exists')
             );
@@ -1847,11 +1874,18 @@ class User implements QUIUserInterface
         $newPassword = QUI\Security\Password::generateHash($password);
         $this->password = $newPassword;
 
-        QUI::getDataBase()->update(
-            Manager::table(),
-            ['password' => $newPassword],
-            ['uuid' => $this->getUUID()]
-        );
+        try {
+            QUI::getDataBaseConnection()->update(
+                Manager::table(),
+                ['password' => $newPassword],
+                ['uuid' => $this->getUUID()]
+            );
+        } catch (\Doctrine\DBAL\Exception $Exception) {
+            throw new Exception(
+                $Exception->getMessage(),
+                (int)$Exception->getCode()
+            );
+        }
     }
 
     /**
@@ -1953,11 +1987,18 @@ class User implements QUIUserInterface
             );
         }
 
-        QUI::getDataBase()->update(
-            Manager::table(),
-            ['active' => 1],
-            ['uuid' => $this->getUUID()]
-        );
+        try {
+            QUI::getDataBaseConnection()->update(
+                Manager::table(),
+                ['active' => 1],
+                ['uuid' => $this->getUUID()]
+            );
+        } catch (\Doctrine\DBAL\Exception $Exception) {
+            throw new Exception(
+                $Exception->getMessage(),
+                (int)$Exception->getCode()
+            );
+        }
 
         $this->active = 1;
 
@@ -1998,11 +2039,18 @@ class User implements QUIUserInterface
 
         QUI::getEvents()->fireEvent('userDeactivate', [$this]);
 
-        QUI::getDataBase()->update(
-            Manager::table(),
-            ['active' => 0],
-            ['uuid' => $this->getUUID()]
-        );
+        try {
+            QUI::getDataBaseConnection()->update(
+                Manager::table(),
+                ['active' => 0],
+                ['uuid' => $this->getUUID()]
+            );
+        } catch (\Doctrine\DBAL\Exception $Exception) {
+            throw new Exception(
+                $Exception->getMessage(),
+                (int)$Exception->getCode()
+            );
+        }
 
         $this->active = 0;
         $this->logout();
@@ -2135,28 +2183,35 @@ class User implements QUIUserInterface
             $Address->delete();
         }
 
-        QUI::getDataBase()->update(
-            Manager::table(),
-            [
-                'username' => '',
-                'active' => -1,
-                'password' => '',
-                'usergroup' => '',
-                'firstname' => '',
-                'lastname' => '',
-                'usertitle' => '',
-                'birthday' => null,
-                'email' => '',
-                'su' => 0,
-                'avatar' => '',
-                'extra' => '',
-                'lang' => '',
-                'shortcuts' => '',
-                'activation' => '',
-                'expire' => null
-            ],
-            ['uuid' => $this->getUUID()]
-        );
+        try {
+            QUI::getDataBaseConnection()->update(
+                Manager::table(),
+                [
+                    'username' => '',
+                    'active' => -1,
+                    'password' => '',
+                    'usergroup' => '',
+                    'firstname' => '',
+                    'lastname' => '',
+                    'usertitle' => '',
+                    'birthday' => null,
+                    'email' => '',
+                    'su' => 0,
+                    'avatar' => '',
+                    'extra' => '',
+                    'lang' => '',
+                    'shortcuts' => '',
+                    'activation' => '',
+                    'expire' => null
+                ],
+                ['uuid' => $this->getUUID()]
+            );
+        } catch (\Doctrine\DBAL\Exception $Exception) {
+            throw new Exception(
+                $Exception->getMessage(),
+                (int)$Exception->getCode()
+            );
+        }
 
         $this->deleted = 1;
         $this->logout();
@@ -2197,21 +2252,29 @@ class User implements QUIUserInterface
         // API
         QUI::getEvents()->fireEvent('userDelete', [$this]);
 
-        QUI::getDataBase()->delete(
-            Manager::table(),
-            ['uuid' => $this->getUUID()]
-        );
+        try {
+            $Connection = QUI::getDataBaseConnection();
+            $Connection->delete(
+                Manager::table(),
+                ['uuid' => $this->getUUID()]
+            );
 
-        // delete all workspaces of this user
-        QUI::getDataBase()->delete(
-            QUI\Workspace\Manager::table(),
-            ['uid' => $this->getId()]
-        );
+            // delete all workspaces of this user
+            $Connection->delete(
+                QUI\Workspace\Manager::table(),
+                ['uid' => $this->getId()]
+            );
 
-        QUI::getDataBase()->delete(
-            QUI\Workspace\Manager::table(),
-            ['uid' => $this->getUUID()]
-        );
+            $Connection->delete(
+                QUI\Workspace\Manager::table(),
+                ['uid' => $this->getUUID()]
+            );
+        } catch (\Doctrine\DBAL\Exception $Exception) {
+            throw new Exception(
+                $Exception->getMessage(),
+                (int)$Exception->getCode()
+            );
+        }
 
         QUI::getUsers()->onDeleteUser($this);
 

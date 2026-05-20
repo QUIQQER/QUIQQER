@@ -178,16 +178,24 @@ class QUIQQER extends AbstractAuthenticator
 
         $authParams = trim($authParams);
 
-        $userData = QUI::getDataBase()->fetch([
-            'select' => ['password'],
-            'from' => QUI::getUsers()->table(),
-            'where' => [
-                'uuid' => $this->getUser()->getUUID()
-            ],
-            'limit' => 1
-        ]);
+        try {
+            $QueryBuilder = QUI::getQueryBuilder();
+            $userData = $QueryBuilder
+                ->select('password')
+                ->from(QUI::getUsers()->table())
+                ->where($QueryBuilder->expr()->eq('uuid', ':uuid'))
+                ->setParameter('uuid', $this->getUser()->getUUID())
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchAssociative();
+        } catch (QUI\Exception | \Doctrine\DBAL\Exception $Exception) {
+            throw new QUI\Database\Exception(
+                $Exception->getMessage(),
+                (int)$Exception->getCode()
+            );
+        }
 
-        if (empty($userData) || empty($userData[0]['password'])) {
+        if (empty($userData) || empty($userData['password'])) {
             throw new QUI\Users\Exception(
                 ['quiqqer/core', 'exception.login.fail'],
                 401
@@ -195,7 +203,7 @@ class QUIQQER extends AbstractAuthenticator
         }
 
         // get password hash from db
-        $passwordHash = $userData[0]['password'];
+        $passwordHash = $userData['password'];
 
         // generate password with given password and salt
         if (!password_verify($authParams, $passwordHash)) {
@@ -210,11 +218,18 @@ class QUIQQER extends AbstractAuthenticator
                 );
             }
 
-            QUI::getDataBase()->update(
-                QUI::getDBTableName('users'),
-                ['password' => QUI\Security\Password::generateHash($authParams)],
-                ['uuid' => $this->getUserUUID()]
-            );
+            try {
+                QUI::getDataBaseConnection()->update(
+                    QUI::getDBTableName('users'),
+                    ['password' => QUI\Security\Password::generateHash($authParams)],
+                    ['uuid' => $this->getUserUUID()]
+                );
+            } catch (\Doctrine\DBAL\Exception $Exception) {
+                throw new QUI\Database\Exception(
+                    $Exception->getMessage(),
+                    (int)$Exception->getCode()
+                );
+            }
         }
 
         $this->authenticated = true;

@@ -12,7 +12,6 @@ use QUI\Utils\Security\Orthos as Orthos;
 
 use function array_key_exists;
 use function count;
-use function current;
 use function date;
 use function file_exists;
 use function implode;
@@ -64,12 +63,26 @@ class Address extends QUI\QDOM
                 $where['uuid'] = $id;
             }
 
-            $result = QUI::getDataBase()->fetch([
-                'from' => Manager::tableAddress(),
-                'where' => $where,
-                'limit' => 1
-            ]);
-        } catch (QUI\Exception $Exception) {
+            $QueryBuilder = QUI::getQueryBuilder();
+            $QueryBuilder
+                ->select('*')
+                ->from(Manager::tableAddress())
+                ->where($QueryBuilder->expr()->eq('userUuid', ':userUuid'))
+                ->setParameter('userUuid', $where['userUuid'])
+                ->setMaxResults(1);
+
+            if (isset($where['id'])) {
+                $QueryBuilder
+                    ->andWhere($QueryBuilder->expr()->eq('id', ':id'))
+                    ->setParameter('id', $where['id']);
+            } else {
+                $QueryBuilder
+                    ->andWhere($QueryBuilder->expr()->eq('uuid', ':uuid'))
+                    ->setParameter('uuid', $where['uuid']);
+            }
+
+            $result = $QueryBuilder->executeQuery()->fetchAssociative();
+        } catch (\Doctrine\DBAL\Exception $Exception) {
             QUI\System\Log::writeDebugException($Exception);
             QUI\System\Log::addWarning($Exception->getMessage());
 
@@ -92,7 +105,7 @@ class Address extends QUI\QDOM
             $this->uuid = $id;
         }
 
-        if (!isset($result[0])) {
+        if (!$result) {
             throw new Exception(
                 QUI::getLocale()->get(
                     'quiqqer/core',
@@ -105,7 +118,7 @@ class Address extends QUI\QDOM
             );
         }
 
-        $data = current($result);
+        $data = $result;
         $this->uuid = $data['uuid'];
         $this->id = (int)$data['id'];
 
@@ -507,7 +520,7 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * @throws QUI\Permissions\Exception
+     * @throws QUI\Permissions\Exception|QUI\ExceptionStack
      */
     public function save(?QUIUserInterface $PermissionUser = null): void
     {
@@ -557,12 +570,12 @@ class Address extends QUI\QDOM
         QUI::getEvents()->fireEvent('userAddressSaveBefore', [$this, $this->getUser(), &$dbData]);
 
         try {
-            QUI::getDataBase()->update(
+            QUI::getDataBaseConnection()->update(
                 Manager::tableAddress(),
                 $dbData,
                 ['uuid' => $this->getUUID()]
             );
-        } catch (QUI\Exception $Exception) {
+        } catch (\Doctrine\DBAL\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
             QUI\System\Log::writeDebugException($Exception);
         }
@@ -614,14 +627,20 @@ class Address extends QUI\QDOM
      */
     public function delete(): void
     {
-        QUI::getDataBase()->exec([
-            'delete' => true,
-            'from' => Manager::tableAddress(),
-            'where' => [
-                'uid' => $this->User->getId(),
-                'id' => $this->getId()
-            ]
-        ]);
+        try {
+            QUI::getDataBaseConnection()->delete(
+                Manager::tableAddress(),
+                [
+                    'uid' => $this->User->getId(),
+                    'id' => $this->getId()
+                ]
+            );
+        } catch (\Doctrine\DBAL\Exception $Exception) {
+            throw new QUI\Exception(
+                $Exception->getMessage(),
+                (int)$Exception->getCode()
+            );
+        }
     }
 
     /**
@@ -640,13 +659,7 @@ class Address extends QUI\QDOM
      */
     public function getDisplay(array $options = []): string
     {
-        try {
-            $Engine = QUI::getTemplateManager()->getEngine(true);
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::writeDebugException($Exception);
-
-            return '';
-        }
+        $Engine = QUI::getTemplateManager()->getEngine(true);
 
         // defaults
         if (!isset($options['tel'])) {
