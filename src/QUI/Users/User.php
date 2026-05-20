@@ -1621,12 +1621,16 @@ class User implements QUIUserInterface
             }
         }
 
-        try {
-            $Image = QUI\Projects\Media\Utils::getImageByUrl($this->getAttribute('avatar'));
+        $avatar = $this->getAttribute('avatar');
 
-            $params['avatar'] = $Image->getUrl();
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::addError($Exception->getMessage());
+        if (QUI\Projects\Media\Utils::isMediaUrl($avatar)) {
+            try {
+                $Image = QUI\Projects\Media\Utils::getImageByUrl($avatar);
+
+                $params['avatar'] = $Image->getUrl();
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addDebug($Exception->getMessage());
+            }
         }
 
         return $params;
