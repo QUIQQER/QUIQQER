@@ -283,9 +283,10 @@ class Group extends QUI\QDOM
         $this->parentIds = [];
 
         try {
+            $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
             $row = QUI::getQueryBuilder()
                 ->select('id', 'parent')
-                ->from(Manager::table())
+                ->from($Platform->quoteSingleIdentifier(Manager::table()))
                 ->where('uuid = :uuid')
                 ->setParameter('uuid', $this->getUUID())
                 ->setMaxResults(1)
@@ -317,9 +318,10 @@ class Group extends QUI\QDOM
     private function getParentIdsHelper(int | string $id): void
     {
         try {
+            $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
             $row = QUI::getQueryBuilder()
                 ->select('id', 'parent')
-                ->from(Manager::table())
+                ->from($Platform->quoteSingleIdentifier(Manager::table()))
                 ->where('uuid = :uuid')
                 ->setParameter('uuid', $id)
                 ->setMaxResults(1)
@@ -435,32 +437,33 @@ class Group extends QUI\QDOM
 
         $this->childrenIds = [];
 
-        $QueryBuilder = QUI::getQueryBuilder()
-            ->select('uuid', 'parent')
-            ->from(Manager::table())
-            ->where('parent = :parent')
-            ->setParameter('parent', $this->getUUID());
-
-        if (isset($params['order'])) {
-            $order = explode(' ', (string)$params['order'], 2);
-            $QueryBuilder->orderBy($order[0], $order[1] ?? null);
-        }
-
-        if (isset($params['limit'])) {
-            $limit = explode(',', (string)$params['limit'], 2);
-
-            if (isset($limit[1])) {
-                $QueryBuilder->setFirstResult((int)$limit[0]);
-                $QueryBuilder->setMaxResults((int)$limit[1]);
-            } else {
-                $QueryBuilder->setFirstResult((int)($params['start'] ?? 0));
-                $QueryBuilder->setMaxResults((int)$limit[0]);
-            }
-        } elseif (isset($params['start'])) {
-            $QueryBuilder->setFirstResult((int)$params['start']);
-        }
-
         try {
+            $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
+            $QueryBuilder = QUI::getQueryBuilder()
+                ->select('uuid', 'parent')
+                ->from($Platform->quoteSingleIdentifier(Manager::table()))
+                ->where('parent = :parent')
+                ->setParameter('parent', $this->getUUID());
+
+            if (isset($params['order'])) {
+                $order = explode(' ', (string)$params['order'], 2);
+                $QueryBuilder->orderBy($order[0], $order[1] ?? null);
+            }
+
+            if (isset($params['limit'])) {
+                $limit = explode(',', (string)$params['limit'], 2);
+
+                if (isset($limit[1])) {
+                    $QueryBuilder->setFirstResult((int)$limit[0]);
+                    $QueryBuilder->setMaxResults((int)$limit[1]);
+                } else {
+                    $QueryBuilder->setFirstResult((int)($params['start'] ?? 0));
+                    $QueryBuilder->setMaxResults((int)$limit[0]);
+                }
+            } elseif (isset($params['start'])) {
+                $QueryBuilder->setFirstResult((int)$params['start']);
+            }
+
             $result = $QueryBuilder->executeQuery()->fetchAllAssociative();
         } catch (\Doctrine\DBAL\Exception $DBALException) {
             throw new Exception(
@@ -492,9 +495,10 @@ class Group extends QUI\QDOM
     private function getChildrenIdsHelper(int | string $id): void
     {
         try {
+            $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
             $result = QUI::getQueryBuilder()
                 ->select('id', 'uuid')
-                ->from(Manager::table())
+                ->from($Platform->quoteSingleIdentifier(Manager::table()))
                 ->where('parent = :parent')
                 ->setParameter('parent', $id)
                 ->executeQuery()
@@ -1056,9 +1060,10 @@ class Group extends QUI\QDOM
                 mt_srand($rand);
                 $newId = mt_rand(10, 1_000_000_000);
 
+                $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
                 $row = QUI::getQueryBuilder()
                     ->select('id')
-                    ->from(Manager::table())
+                    ->from($Platform->quoteSingleIdentifier(Manager::table()))
                     ->where('id = :id')
                     ->setParameter('id', $newId)
                     ->setMaxResults(1)

@@ -101,19 +101,20 @@ class Install
             $Connection = QUI::getDataBaseConnection();
             $groupTable = QUI\Groups\Manager::table();
             $Platform = $Connection->getDatabasePlatform();
+            $quotedGroupTable = $Platform->quoteSingleIdentifier($groupTable);
 
             if ($Platform instanceof AbstractMySQLPlatform) {
                 $Connection->executeStatement(
-                    "ALTER TABLE `$groupTable` CHANGE `parent` `parent` VARCHAR(50) NULL DEFAULT NULL;"
+                    "ALTER TABLE $quotedGroupTable CHANGE `parent` `parent` VARCHAR(50) NULL DEFAULT NULL;"
                 );
             }
 
             if (!self::hasPrimaryKey($Connection, $groupTable)) {
-                $Connection->executeStatement("ALTER TABLE $groupTable ADD PRIMARY KEY (id)");
+                $Connection->executeStatement("ALTER TABLE $quotedGroupTable ADD PRIMARY KEY (id)");
             }
 
             if (!self::hasIndex($Connection, $groupTable, 'parent')) {
-                $Connection->executeStatement("CREATE INDEX parent ON $groupTable (parent)");
+                $Connection->executeStatement("CREATE INDEX parent ON $quotedGroupTable (parent)");
             }
 
 
@@ -121,7 +122,7 @@ class Install
             $QueryBuilder = QUI::getQueryBuilder();
             $result = $QueryBuilder
                 ->select('id')
-                ->from(QUI\Groups\Manager::table())
+                ->from($quotedGroupTable)
                 ->where($QueryBuilder->expr()->eq('id', ':id'))
                 ->setParameter('id', 0)
                 ->setMaxResults(1)
@@ -156,7 +157,7 @@ class Install
             $QueryBuilder = QUI::getQueryBuilder();
             $result = $QueryBuilder
                 ->select('id')
-                ->from(QUI\Groups\Manager::table())
+                ->from($quotedGroupTable)
                 ->where($QueryBuilder->expr()->eq('id', ':id'))
                 ->setParameter('id', 1)
                 ->setMaxResults(1)
