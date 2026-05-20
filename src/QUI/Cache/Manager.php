@@ -181,7 +181,7 @@ class Manager
 //                .' purposes only.'
 //            );
 
-            throw new QUI\Cache\Exception(
+            throw new QUI\Cache\MissException(
                 QUI::getLocale()->get(
                     'quiqqer/core',
                     'exception.lib.cache.manager.not.exist'

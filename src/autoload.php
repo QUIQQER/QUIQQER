@@ -136,11 +136,15 @@ function exception_handler(\Throwable $Exception): void
         header('Content-Type: application/json');
     }
 
-    if (php_sapi_name() === 'cli') {
+    $isCacheMiss = $Exception instanceof QUI\Cache\MissException;
+
+    if (php_sapi_name() === 'cli' && !$isCacheMiss) {
         Log::writeException($Exception);
     }
 
-    Log::addError($Exception->getMessage());
+    if (!$isCacheMiss) {
+        Log::addError($Exception->getMessage());
+    }
 
     echo json_encode([
         'error' => true,
