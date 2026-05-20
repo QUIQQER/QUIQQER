@@ -252,7 +252,7 @@ class User implements QUIUserInterface
             $QueryBuilder = QUI::getQueryBuilder();
             $QueryBuilder
                 ->select('*')
-                ->from(Manager::table())
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(Manager::table()))
                 ->setMaxResults(1);
 
             if ($this->uuid !== null) {
@@ -954,7 +954,7 @@ class User implements QUIUserInterface
             static fn ($group): bool => is_string($group) && $group !== ''
         ));
 
-        $query = QUI::getQueryBuilder()->update(Manager::table());
+        $query = QUI::getQueryBuilder()->update(QUI\Utils\Doctrine::quoteIdentifier(Manager::table()));
 
         QUI\Utils\Doctrine::parseDbArrayToQueryBuilder($query, [
             'update' => [
@@ -1229,7 +1229,7 @@ class User implements QUIUserInterface
                 $QueryBuilder = QUI::getQueryBuilder();
                 $found = $QueryBuilder
                     ->select('uuid')
-                    ->from(Manager::table())
+                    ->from(QUI\Utils\Doctrine::quoteIdentifier(Manager::table()))
                     ->where($QueryBuilder->expr()->eq('email', ':email'))
                     ->andWhere($QueryBuilder->expr()->neq('uuid', ':uuid'))
                     ->setParameter('email', $email)
@@ -1880,7 +1880,7 @@ class User implements QUIUserInterface
 
         try {
             QUI::getDataBaseConnection()->update(
-                Manager::table(),
+                QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
                 ['password' => $newPassword],
                 ['uuid' => $this->getUUID()]
             );
@@ -1993,7 +1993,7 @@ class User implements QUIUserInterface
 
         try {
             QUI::getDataBaseConnection()->update(
-                Manager::table(),
+                QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
                 ['active' => 1],
                 ['uuid' => $this->getUUID()]
             );
@@ -2045,7 +2045,7 @@ class User implements QUIUserInterface
 
         try {
             QUI::getDataBaseConnection()->update(
-                Manager::table(),
+                QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
                 ['active' => 0],
                 ['uuid' => $this->getUUID()]
             );
@@ -2189,7 +2189,7 @@ class User implements QUIUserInterface
 
         try {
             QUI::getDataBaseConnection()->update(
-                Manager::table(),
+                QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
                 [
                     'username' => '',
                     'active' => -1,
@@ -2259,7 +2259,7 @@ class User implements QUIUserInterface
         try {
             $Connection = QUI::getDataBaseConnection();
             $Connection->delete(
-                Manager::table(),
+                QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
                 ['uuid' => $this->getUUID()]
             );
 

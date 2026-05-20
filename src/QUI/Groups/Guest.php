@@ -47,7 +47,7 @@ class Guest extends QUI\Groups\Group
         $this->rights = QUI::getPermissionManager()->getRightParamsFromGroup($this);
 
         QUI::getDataBaseConnection()->update(
-            Manager::table(),
+            QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
             [
                 'name' => 'Guest',
                 'toolbar' => $this->getAttribute('toolbar'),

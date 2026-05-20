@@ -138,7 +138,7 @@ class Group extends QUI\QDOM
                 $this->uuid = $result[0]['uuid'];
 
                 QUI::getDataBaseConnection()->update(
-                    Manager::table(),
+                    QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
                     ['uuid' => $result[0]['uuid']],
                     ['id' => $result[0]['id']]
                 );
@@ -151,21 +151,21 @@ class Group extends QUI\QDOM
                 $Group = QUI::getGroups()->get($parentId);
 
                 QUI::getDataBaseConnection()->update(
-                    Manager::table(),
+                    QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
                     ['parent' => $Group->getUUID()],
                     ['id' => $result[0]['id']]
                 );
             }
 
             if (!isset($result[0]) && $id === Manager::EVERYONE_ID) {
-                QUI::getDataBaseConnection()->insert(Manager::table(), [
+                QUI::getDataBaseConnection()->insert(QUI\Utils\Doctrine::quoteIdentifier(Manager::table()), [
                     'id' => Manager::EVERYONE_ID,
                     'name' => 'Everyone'
                 ]);
 
                 $result = QUI::getGroups()->getGroupData($id);
             } elseif (!isset($result[0]) && $id === Manager::GUEST_ID) {
-                QUI::getDataBaseConnection()->insert(Manager::table(), [
+                QUI::getDataBaseConnection()->insert(QUI\Utils\Doctrine::quoteIdentifier(Manager::table()), [
                     'id' => Manager::GUEST_ID,
                     'name' => 'Guest'
                 ]);
@@ -377,7 +377,7 @@ class Group extends QUI\QDOM
             }
 
             $Connection = QUI::getDataBaseConnection();
-            $table = QUI\Users\Manager::table();
+            $table = QUI\Utils\Doctrine::quoteIdentifier(QUI\Users\Manager::table());
 
             $Statement = $Connection->prepare(
                 "UPDATE {$table}
@@ -396,7 +396,7 @@ class Group extends QUI\QDOM
 
             foreach ($children as $child) {
                 QUI::getDataBaseConnection()->delete(
-                    Manager::table(),
+                    QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
                     ['uuid' => $child]
                 );
 
@@ -406,7 +406,7 @@ class Group extends QUI\QDOM
             $deleteGidInUsers($this->getUUID());
 
             QUI::getDataBaseConnection()->delete(
-                Manager::table(),
+                QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
                 ['uuid' => $this->getUUID()]
             );
         } catch (\Doctrine\DBAL\Exception $DBALException) {
@@ -609,7 +609,7 @@ class Group extends QUI\QDOM
 
         try {
             QUI::getDataBaseConnection()->update(
-                Manager::table(),
+                QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
                 [
                     'name' => $this->getAttribute('name'),
                     'rights' => json_encode($this->rights),
@@ -642,7 +642,7 @@ class Group extends QUI\QDOM
     {
         try {
             QUI::getDataBaseConnection()->update(
-                Manager::table(),
+                QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
                 ['active' => 1],
                 ['uuid' => $this->getUUID()]
             );
@@ -669,7 +669,7 @@ class Group extends QUI\QDOM
     {
         try {
             QUI::getDataBaseConnection()->update(
-                Manager::table(),
+                QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
                 ['active' => 0],
                 ['uuid' => $this->getUUID()]
             );
@@ -788,7 +788,7 @@ class Group extends QUI\QDOM
 
         try {
             QUI::getDataBaseConnection()->update(
-                Manager::table(),
+                QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
                 ['parent' => $NewParent->getUUID()],
                 ['uuid' => $this->getUUID()]
             );
@@ -866,7 +866,7 @@ class Group extends QUI\QDOM
         try {
             $query = QUI::getQueryBuilder()
                 ->select('*')
-                ->from(QUI\Users\Manager::table())
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(QUI\Users\Manager::table()))
                 ->where('usergroup LIKE :groupLike OR usergroup = :groupEqual')
                 ->setParameter('groupLike', '%,' . $uuid . ',%')
                 ->setParameter('groupEqual', $uuid);
@@ -889,7 +889,7 @@ class Group extends QUI\QDOM
         try {
             $row = QUI::getQueryBuilder()
                 ->select('id', 'uuid')
-                ->from(QUI\Users\Manager::table())
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(QUI\Users\Manager::table()))
                 ->where('username = :username')
                 ->andWhere('usergroup LIKE :usergroup')
                 ->setParameter('username', $username)
@@ -931,7 +931,7 @@ class Group extends QUI\QDOM
         try {
             $QueryBuilder = QUI::getQueryBuilder()
                 ->select('id')
-                ->from(QUI\Users\Manager::table())
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(QUI\Users\Manager::table()))
                 ->where('usergroup LIKE :usergroup')
                 ->setParameter('usergroup', '%,' . $this->getUUID() . ',%');
 
@@ -1075,7 +1075,7 @@ class Group extends QUI\QDOM
                 }
             }
 
-            QUI::getDataBaseConnection()->insert(Manager::table(), [
+            QUI::getDataBaseConnection()->insert(QUI\Utils\Doctrine::quoteIdentifier(Manager::table()), [
                 'id' => $newId,
                 'uuid' => QUI\Utils\Uuid::get(),
                 'name' => $name,

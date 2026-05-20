@@ -132,7 +132,7 @@ class Install
             if (!$result) {
                 QUI\System\Log::addNotice('Guest Group does not exist.');
 
-                $Connection->insert(QUI\Groups\Manager::table(), [
+                $Connection->insert($quotedGroupTable, [
                     'id' => 0,
                     'uuid' => 0,
                     'active' => 1,
@@ -142,7 +142,7 @@ class Install
 
                 QUI\System\Log::addNotice('Guest Group was created.');
             } else {
-                $Connection->update(QUI\Groups\Manager::table(), [
+                $Connection->update($quotedGroupTable, [
                     'name' => 'Guest',
                     'active' => 1
                 ], [
@@ -167,7 +167,7 @@ class Install
             if (!$result) {
                 QUI\System\Log::addNotice('Everyone Group does not exist...');
 
-                $Connection->insert(QUI\Groups\Manager::table(), [
+                $Connection->insert($quotedGroupTable, [
                     'id' => 1,
                     'uuid' => 1,
                     'active' => 1,
@@ -177,7 +177,7 @@ class Install
 
                 QUI\System\Log::addNotice('Everyone Group was created.');
             } else {
-                $Connection->update(QUI\Groups\Manager::table(), [
+                $Connection->update($quotedGroupTable, [
                     'name' => 'Everyone',
                     'active' => 1
                 ], [

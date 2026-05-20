@@ -10,6 +10,13 @@ use function is_string;
 
 class Doctrine
 {
+    public static function quoteIdentifier(string $identifier): string
+    {
+        return \QUI::getDataBaseConnection()
+            ->getDatabasePlatform()
+            ->quoteSingleIdentifier($identifier);
+    }
+
     public static function parseDbArrayToQueryBuilder(QueryBuilder $query, array $params): QueryBuilder
     {
         if (!empty($params['update'])) {

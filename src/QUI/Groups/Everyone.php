@@ -96,7 +96,7 @@ class Everyone extends QUI\Groups\Group
         }
 
         QUI::getDataBaseConnection()->update(
-            Manager::table(),
+            QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
             [
                 'name' => 'Everyone',
                 'rights' => json_encode($this->rights),

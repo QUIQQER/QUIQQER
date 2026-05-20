@@ -607,7 +607,7 @@ class Manager
 
         try {
             $Connection = QUI::getDataBaseConnection();
-            $Connection->insert(self::table(), [
+            $Connection->insert(QUI\Utils\Doctrine::quoteIdentifier(self::table()), [
                 'uuid' => $uuid,
                 'username' => $newName,
                 'regdate' => time(),
@@ -656,7 +656,7 @@ class Manager
             $QueryBuilder = QUI::getQueryBuilder();
             $result = $QueryBuilder
                 ->select('username')
-                ->from(self::table())
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()))
                 ->where($QueryBuilder->expr()->eq('username', ':username'))
                 ->setParameter('username', $username)
                 ->setMaxResults(1)
@@ -835,7 +835,7 @@ class Manager
 
         try {
             $Connection = QUI::getDataBaseConnection();
-            $Connection->insert(self::table(), $insertData);
+            $Connection->insert(QUI\Utils\Doctrine::quoteIdentifier(self::table()), $insertData);
 
             $newId = $Connection->lastInsertId();
         } catch (\Doctrine\DBAL\Exception $Exception) {
@@ -883,7 +883,7 @@ class Manager
             $QueryBuilder = QUI::getQueryBuilder();
             $result = $QueryBuilder
                 ->select('COUNT(id)')
-                ->from(self::table())
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()))
                 ->executeQuery()
                 ->fetchOne();
         } catch (\Doctrine\DBAL\Exception $Exception) {
@@ -908,7 +908,7 @@ class Manager
 
                 return $QueryBuilder
                     ->select('*')
-                    ->from(self::table())
+                    ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()))
                     ->orderBy('username')
                     ->executeQuery()
                     ->fetchAllAssociative();
@@ -940,7 +940,7 @@ class Manager
 
             return $QueryBuilder
                 ->select('id', 'uuid')
-                ->from(self::table())
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()))
                 ->orderBy('username')
                 ->executeQuery()
                 ->fetchAllAssociative();
@@ -1064,7 +1064,7 @@ class Manager
             $QueryBuilder = QUI::getQueryBuilder();
             $userData = $QueryBuilder
                 ->select('id', 'uuid', 'expire', 'secHash', 'active')
-                ->from(self::table())
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()))
                 ->where($QueryBuilder->expr()->eq('uuid', ':uuid'))
                 ->setParameter('uuid', $userId)
                 ->setMaxResults(1)
@@ -1161,7 +1161,7 @@ class Manager
 
         try {
             QUI::getDataBaseConnection()->update(
-                self::table(),
+                QUI\Utils\Doctrine::quoteIdentifier(self::table()),
                 [
                     'lastvisit' => time(),
                     'user_agent' => $userAgent,
@@ -1196,7 +1196,7 @@ class Manager
             $QueryBuilder = QUI::getQueryBuilder();
             $result = $QueryBuilder
                 ->select('id', 'uuid')
-                ->from(self::table())
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()))
                 ->where($QueryBuilder->expr()->eq('username', ':username'))
                 ->setParameter('username', $username)
                 ->setMaxResults(1)
@@ -1390,7 +1390,7 @@ class Manager
             $QueryBuilder = QUI::getQueryBuilder();
             $QueryBuilder
                 ->select('id', 'uuid')
-                ->from(self::table());
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()));
 
             QUI\Utils\Doctrine::parseDbArrayToQueryBuilder($QueryBuilder, $params);
 
@@ -1439,7 +1439,7 @@ class Manager
             $QueryBuilder = QUI::getQueryBuilder();
             $result = $QueryBuilder
                 ->select('id', 'uuid')
-                ->from(self::table())
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()))
                 ->where($QueryBuilder->expr()->eq('email', ':email'))
                 ->setParameter('email', $email)
                 ->setMaxResults(1)
@@ -1503,7 +1503,7 @@ class Manager
             $QueryBuilder = QUI::getQueryBuilder();
             $result = $QueryBuilder
                 ->select('email')
-                ->from(self::table())
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()))
                 ->where($QueryBuilder->expr()->eq('email', ':email'))
                 ->setParameter('email', $email)
                 ->setMaxResults(1)
@@ -1582,11 +1582,11 @@ class Manager
         /**
          * SELECT
          */
-        $query = 'SELECT * FROM ' . self::table();
+        $query = 'SELECT * FROM ' . QUI\Utils\Doctrine::quoteIdentifier(self::table());
         $binds = [];
 
         if (isset($params['count'])) {
-            $query = 'SELECT COUNT( id ) AS count FROM ' . self::table();
+            $query = 'SELECT COUNT( id ) AS count FROM ' . QUI\Utils\Doctrine::quoteIdentifier(self::table());
         }
 
         /**
@@ -1851,7 +1851,7 @@ class Manager
             $QueryBuilder = QUI::getQueryBuilder();
             $result = $QueryBuilder
                 ->select('MAX(id) AS id')
-                ->from(self::table())
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()))
                 ->setMaxResults(1)
                 ->executeQuery()
                 ->fetchAssociative();
