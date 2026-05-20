@@ -89,7 +89,6 @@ define('controls/groups/Panel', [
             this.$uid = String.uniqueID();
 
             this.parent(options);
-console.log(typeof this.getAttribute('search'));
             if (typeof this.getAttribute('search') === 'string') {
                 this.getAttribute('search', '');
             }

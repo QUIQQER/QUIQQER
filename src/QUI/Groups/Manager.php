@@ -9,7 +9,6 @@ namespace QUI\Groups;
 use DOMElement;
 use QUI;
 use QUI\Exception;
-use QUI\Update;
 use QUI\Utils\Security\Orthos;
 
 use function array_filter;
@@ -59,7 +58,8 @@ class Manager extends QUI\QDOM
             self::$getListOfExtraAttributes = QUI\Cache\Manager::get($cache);
 
             return self::$getListOfExtraAttributes;
-        } catch (QUI\Exception) {
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
         }
 
         $list = QUI::getPackageManager()->getInstalled();
@@ -208,32 +208,32 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            if (is_numeric($groupId)) {
-                $result = QUI::getDataBase()->fetch([
-                    'from' => self::table(),
-                    'where' => [
-                        'id' => $groupId
-                    ],
-                    'limit' => 1
-                ]);
-            } else {
-                $result = QUI::getDataBase()->fetch([
-                    'from' => self::table(),
-                    'where' => [
-                        'uuid' => $groupId
-                    ],
-                    'limit' => 1
-                ]);
-            }
-        } catch (QUI\Exception) {
+            $Connection = QUI::getDataBaseConnection();
+            $Platform = $Connection->getDatabasePlatform();
+            $QueryBuilder = $Connection->createQueryBuilder();
+            $groupField = is_numeric($groupId) ? 'id' : 'uuid';
+            $value = is_numeric($groupId) ? (int)$groupId : (string)$groupId;
+
+            $row = $QueryBuilder
+                ->select('*')
+                ->from($Platform->quoteSingleIdentifier(self::table()))
+                ->where($QueryBuilder->expr()->eq($Platform->quoteSingleIdentifier($groupField), ':groupId'))
+                ->setParameter('groupId', $value)
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchAssociative();
+        } catch (\Throwable $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
         }
 
-        if (!isset($result[0])) {
+        if (empty($row)) {
             return [];
         }
 
-        $uuid = $result[0]['uuid'];
+        $result = [$row];
+        $uuid = $row['uuid'];
         $this->data[$uuid] = $result;
+        $this->data[$groupId] = $result;
 
         return $result;
     }
@@ -243,7 +243,19 @@ class Manager extends QUI\QDOM
      */
     public function getGroupNameById(int | string $id): string
     {
-        return $this->get($id)->getAttribute('name');
+        $data = $this->getGroupData($id);
+
+        if (isset($data[0]['name'])) {
+            return (string)$data[0]['name'];
+        }
+
+        try {
+            return (string)$this->get($id)->getAttribute('name');
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
+
+        return '';
     }
 
     /**
@@ -256,10 +268,22 @@ class Manager extends QUI\QDOM
     public function getAllGroups(bool $objects = false): array
     {
         if (!$objects) {
-            return QUI::getDataBase()->fetch([
-                'from' => self::table(),
-                'order' => 'name'
-            ]);
+            try {
+                $Connection = QUI::getDataBaseConnection();
+                $Platform = $Connection->getDatabasePlatform();
+
+                return $Connection
+                    ->createQueryBuilder()
+                    ->select('*')
+                    ->from($Platform->quoteSingleIdentifier(self::table()))
+                    ->orderBy($Platform->quoteSingleIdentifier('name'))
+                    ->executeQuery()
+                    ->fetchAllAssociative();
+            } catch (\Throwable $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
+
+                return [];
+            }
         }
 
         $result = [];
@@ -268,8 +292,8 @@ class Manager extends QUI\QDOM
         foreach ($ids as $id) {
             try {
                 $result[] = $this->get($id['id']);
-            } catch (QUI\Exception) {
-                // nothing
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
             }
         }
 
@@ -278,11 +302,22 @@ class Manager extends QUI\QDOM
 
     public function getAllGroupIds(): array
     {
-        return QUI::getDataBase()->fetch([
-            'select' => 'id, uuid',
-            'from' => self::table(),
-            'order' => 'name'
-        ]);
+        try {
+            $Connection = QUI::getDataBaseConnection();
+            $Platform = $Connection->getDatabasePlatform();
+
+            return $Connection
+                ->createQueryBuilder()
+                ->select('id', 'uuid')
+                ->from($Platform->quoteSingleIdentifier(self::table()))
+                ->orderBy($Platform->quoteSingleIdentifier('name'))
+                ->executeQuery()
+                ->fetchAllAssociative();
+        } catch (\Throwable $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+
+            return [];
+        }
     }
 
     /**
@@ -297,7 +332,6 @@ class Manager extends QUI\QDOM
 
     protected function searchHelper(array $params): array
     {
-        $DataBase = QUI::getDataBase();
         $params = Orthos::clearArray($params);
 
         $allowOrderFields = [
@@ -319,74 +353,116 @@ class Manager extends QUI\QDOM
         $max = 10;
         $start = 0;
 
-        $_fields = [
-            'from' => self::table()
-        ];
+        try {
+            $Connection = QUI::getDataBaseConnection();
+            $Platform = $Connection->getDatabasePlatform();
+            $QueryBuilder = $Connection->createQueryBuilder();
 
-        if (isset($params['count'])) {
-            $_fields['count'] = [
-                'select' => 'id',
-                'as' => 'count'
-            ];
-        }
-
-        if (
-            isset($params['limit'])
-            || isset($params['start'])
-        ) {
-            if (isset($params['limit'])) {
-                $max = (int)$params['limit'];
+            if (isset($params['count'])) {
+                $QueryBuilder->select('COUNT(id) AS count');
+            } else {
+                $QueryBuilder->select('*');
             }
 
-            if (isset($params['start'])) {
-                $start = (int)$params['start'];
-            }
+            $QueryBuilder->from($Platform->quoteSingleIdentifier(self::table()));
+            $paramIndex = 0;
 
-            $_fields['limit'] = $start . ', ' . $max;
-        }
+            $addCondition = static function (string $field, mixed $data, string $method) use (
+                $QueryBuilder,
+                $Platform,
+                &$paramIndex
+            ): void {
+                $parameter = 'param' . $paramIndex++;
+                $column = $Platform->quoteSingleIdentifier($field);
 
-        if (
-            isset($params['order'])
-            && isset($params['field'])
-            && $params['field']
-            && in_array($params['field'], $allowOrderFields)
-        ) {
-            $_fields['order'] = $params['field'] . ' ' . $params['order'];
-        }
-
-        if (isset($params['where'])) {
-            $_fields['where'] = $params['where'];
-        }
-
-        if (isset($params['where_or'])) {
-            $_fields['where_or'] = $params['where_or'];
-        }
-
-        if (isset($params['search']) && !isset($params['searchSettings'])) {
-            $_fields['where'] = [
-                'name' => [
-                    'type' => '%LIKE%',
-                    'value' => $params['search']
-                ]
-            ];
-        } elseif (
-            isset($params['search'])
-            && isset($params['searchSettings'])
-            && is_array($params['searchSettings'])
-        ) {
-            foreach ($params['searchSettings'] as $field) {
-                if (!isset($allowSearchFields[$field])) {
-                    continue;
+                if (is_array($data)) {
+                    $type = $data['type'] ?? '=';
+                    $value = $data['value'] ?? '';
+                } else {
+                    $type = '=';
+                    $value = $data;
                 }
 
-                $_fields['where_or'][$field] = [
+                if ($type === '%LIKE%') {
+                    $QueryBuilder->{$method}($QueryBuilder->expr()->like($column, ':' . $parameter));
+                    $QueryBuilder->setParameter($parameter, '%' . $value . '%');
+                    return;
+                }
+
+                $QueryBuilder->{$method}($QueryBuilder->expr()->eq($column, ':' . $parameter));
+                $QueryBuilder->setParameter($parameter, $value);
+            };
+
+            if (isset($params['where']) && is_array($params['where'])) {
+                foreach ($params['where'] as $field => $data) {
+                    if (!isset($allowSearchFields[$field])) {
+                        continue;
+                    }
+
+                    $addCondition($field, $data, 'andWhere');
+                }
+            }
+
+            if (isset($params['where_or']) && is_array($params['where_or'])) {
+                foreach ($params['where_or'] as $field => $data) {
+                    if (!isset($allowSearchFields[$field])) {
+                        continue;
+                    }
+
+                    $addCondition($field, $data, 'orWhere');
+                }
+            }
+
+            if (isset($params['search']) && !isset($params['searchSettings'])) {
+                $addCondition('name', [
                     'type' => '%LIKE%',
                     'value' => $params['search']
-                ];
-            }
-        }
+                ], 'andWhere');
+            } elseif (
+                isset($params['search'])
+                && isset($params['searchSettings'])
+                && is_array($params['searchSettings'])
+            ) {
+                foreach ($params['searchSettings'] as $field) {
+                    if (!isset($allowSearchFields[$field])) {
+                        continue;
+                    }
 
-        return $DataBase->fetch($_fields);
+                    $addCondition($field, [
+                        'type' => '%LIKE%',
+                        'value' => $params['search']
+                    ], 'orWhere');
+                }
+            }
+
+            if (!isset($params['count'])) {
+                if (isset($params['limit'])) {
+                    $max = (int)$params['limit'];
+                }
+
+                if (isset($params['start'])) {
+                    $start = (int)$params['start'];
+                }
+
+                $QueryBuilder->setFirstResult($start);
+                $QueryBuilder->setMaxResults($max);
+
+                if (
+                    isset($params['order'], $params['field'])
+                    && $params['field']
+                    && in_array($params['field'], $allowOrderFields)
+                ) {
+                    $order = strtoupper((string)$params['order']) === 'DESC' ? 'DESC' : 'ASC';
+                    $QueryBuilder->orderBy($Platform->quoteSingleIdentifier($params['field']), $order);
+                }
+            }
+
+            return $QueryBuilder->executeQuery()->fetchAllAssociative();
+        } catch (\Throwable $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+
+            return [];
+        }
     }
 
     public function isGroup(mixed $Group): bool

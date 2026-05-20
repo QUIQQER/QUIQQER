@@ -215,7 +215,8 @@ class Manager
                         $User = $UserInstance;
                     }
                 }
-            } catch (\Exception) {
+            } catch (\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
             }
 
             if (empty($User)) {
@@ -905,8 +906,8 @@ class Manager
         foreach ($ids as $id) {
             try {
                 $result[] = $this->get($id['uuid']);
-            } catch (QUI\Exception) {
-                // nothing
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
             }
         }
 
@@ -966,8 +967,8 @@ class Manager
             try {
                 $User = self::getUserByName($authData['username']);
                 $userId = $User->getUUID();
-            } catch (\Exception) {
-                // nothing
+            } catch (\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
             }
         }
 
@@ -1220,8 +1221,8 @@ class Manager
             try {
                 $User = self::getUserByName($username);
                 $userId = $User->getUUID();
-            } catch (\Exception) {
-                // nothing
+            } catch (\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
             }
         }
 
@@ -1335,8 +1336,8 @@ class Manager
         foreach ($result as $entry) {
             try {
                 $Users[] = $this->get($entry['uuid']);
-            } catch (QUI\Exception) {
-                // nothing
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
             }
         }
 
@@ -1715,7 +1716,6 @@ class Manager
             }
         }
 
-
         /**
          * ORDER
          */
@@ -1726,6 +1726,8 @@ class Manager
             && isset($allowOrderFields[$params['field']])
         ) {
             $query .= ' ORDER BY ' . $params['field'] . ' ' . $params['order'];
+        } elseif (!isset($params['count'])) {
+            $query .= ' ORDER BY regdate DESC';
         }
 
         /**

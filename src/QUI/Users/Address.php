@@ -494,7 +494,8 @@ class Address extends QUI\QDOM
             return QUI\Countries\Manager::get(
                 $this->getAttribute('country')
             );
-        } catch (QUI\Exception) {
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
         }
 
         throw new Exception(

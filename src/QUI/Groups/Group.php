@@ -96,7 +96,8 @@ class Group extends QUI\QDOM
             if (!empty($cache)) {
                 return;
             }
-        } catch (QUI\Cache\Exception) {
+        } catch (QUI\Cache\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
         }
 
 
@@ -488,7 +489,8 @@ class Group extends QUI\QDOM
 
         try {
             return QUI\Projects\Media\Utils::getImageByUrl($avatar);
-        } catch (QUI\Exception) {
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
         }
 
         $Project = QUI::getProjectManager()->getStandard();
@@ -924,8 +926,8 @@ class Group extends QUI\QDOM
                     $Child->getAttributes(),
                     ['hasChildren' => $Child->hasChildren()]
                 );
-            } catch (QUI\Exception) {
-                // nothing
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
             }
         }
 

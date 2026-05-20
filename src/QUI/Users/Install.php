@@ -28,7 +28,7 @@ class Install
 
         // Patch strict
         $DataBase->getPDO()->exec(
-            "ALTER TABLE `$table` 
+            "ALTER TABLE `$table`
             CHANGE `lastedit` `lastedit` DATETIME NULL DEFAULT NULL,
             CHANGE `expire` `expire` DATETIME NULL DEFAULT NULL,
             CHANGE `password` `password` VARCHAR(255) NOT NULL DEFAULT '',
@@ -39,26 +39,27 @@ class Install
         try {
             $DataBase->getPDO()->exec(
                 "
-                UPDATE `$table` 
-                SET lastedit = NULL 
-                WHERE 
-                    lastedit = '0000-00-00 00:00:00' OR 
+                UPDATE `$table`
+                SET lastedit = NULL
+                WHERE
+                    lastedit = '0000-00-00 00:00:00' OR
                     lastedit = '';
 
-                UPDATE `$table` 
-                SET expire = NULL 
-                WHERE 
-                    expire = '0000-00-00 00:00:00' OR 
+                UPDATE `$table`
+                SET expire = NULL
+                WHERE
+                    expire = '0000-00-00 00:00:00' OR
                     expire = '';
 
-                UPDATE `$table` 
-                SET birthday = NULL 
-                WHERE 
-                    birthday = '0000-00-00' OR 
+                UPDATE `$table`
+                SET birthday = NULL
+                WHERE
+                    birthday = '0000-00-00' OR
                     birthday = '';
             "
             );
-        } catch (\Exception) {
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
         }
     }
 

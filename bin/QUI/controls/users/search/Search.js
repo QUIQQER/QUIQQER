@@ -32,8 +32,8 @@ define('controls/users/search/Search', [
         ],
 
         options: {
-            field: 'username',
-            order: 'ASC',
+            field: 'regdate',
+            order: 'DESC',
             limit: 100,
             page: 1,
             search: false,
@@ -169,6 +169,7 @@ define('controls/users/search/Search', [
                 perPage: this.getAttribute('limit'),
                 page: this.getAttribute('page'),
                 sortOn: this.getAttribute('field'),
+                sortBy: this.getAttribute('order'),
                 serverSort: true,
                 showHeader: true,
                 sortHeader: true,

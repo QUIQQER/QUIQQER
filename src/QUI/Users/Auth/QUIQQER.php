@@ -98,14 +98,16 @@ class QUIQQER extends AbstractAuthenticator
             try {
                 $this->User = QUI::getUsers()->getUserByMail($this->user);
                 return $this->User;
-            } catch (QUI\Exception) {
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
             }
         }
 
         try {
             $this->User = QUI::getUsers()->getUserByName($this->user);
             return $this->User;
-        } catch (QUI\Exception) {
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
         }
 
         throw new QUI\Users\Exception(
