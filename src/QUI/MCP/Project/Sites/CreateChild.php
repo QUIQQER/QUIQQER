@@ -21,6 +21,7 @@ class CreateChild extends AbstractTool
         'short',
         'content',
         'type',
+        'layout',
         'active',
         'nav_hide',
         'hide',
@@ -28,6 +29,7 @@ class CreateChild extends AbstractTool
         'release_to',
         'meta_description',
         'meta_keywords',
+        'quiqqer.site.template',
         'image_emotion',
         'image_site'
     ];
