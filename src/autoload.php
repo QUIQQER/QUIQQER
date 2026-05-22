@@ -131,7 +131,7 @@ function exception_handler(\Throwable $Exception): void
 {
     $code = $Exception->getCode();
 
-    if ($code >= 400 && $code < 600) {
+    if (php_sapi_name() !== 'cli' && !headers_sent() && $code >= 400 && $code < 600) {
         http_response_code($code);
         header('Content-Type: application/json');
     }
@@ -144,6 +144,21 @@ function exception_handler(\Throwable $Exception): void
 
     if (!$isCacheMiss) {
         Log::addError($Exception->getMessage());
+    }
+
+    if (php_sapi_name() === 'cli') {
+        echo PHP_EOL;
+        echo 'Error: ' . $Exception->getMessage() . PHP_EOL;
+
+        if ($code) {
+            echo 'Code: ' . $code . PHP_EOL;
+        }
+
+        if (!$isCacheMiss) {
+            echo 'Details were written to the error log.' . PHP_EOL;
+        }
+
+        return;
     }
 
     echo json_encode([
