@@ -48,12 +48,20 @@ class UserDbalLifecycleTest extends TestCase
         $SystemUser = $Users->getSystemUser();
         $username = self::TEST_PREFIX . uniqid();
 
-        $User = $Users->createChildWithAttributes([
-            'username' => $username,
-            'email' => $username . '@example.invalid',
-            'firstname' => 'DBAL',
-            'lastname' => 'Lifecycle'
-        ], $SystemUser);
+        try {
+            $User = $Users->createChildWithAttributes([
+                'username' => $username,
+                'email' => $username . '@example.invalid',
+                'firstname' => 'DBAL',
+                'lastname' => 'Lifecycle'
+            ], $SystemUser);
+        } catch (Exception $Exception) {
+            if (str_contains($Exception->getMessage(), 'super-user')) {
+                self::markTestSkipped('QUIQQER database has no usable super-user fixture.');
+            }
+
+            throw $Exception;
+        }
 
         $this->assertSame($username, $User->getUsername());
         $this->assertFalse($User->isActive());
@@ -84,26 +92,24 @@ class UserDbalLifecycleTest extends TestCase
             $Connection->executeQuery(
                 'SELECT 1 FROM ' . QUI\Utils\Doctrine::quoteIdentifier(Manager::table()) . ' LIMIT 1'
             )->free();
-            self::skipIfSystemHasNoSuperUser($Connection);
         } catch (Throwable $Exception) {
             self::markTestSkipped('QUIQQER database is not available: ' . $Exception->getMessage());
         }
+
+        self::skipIfSystemHasNoSuperUser();
     }
 
-    private static function skipIfSystemHasNoSuperUser(Connection $Connection): void
+    private static function skipIfSystemHasNoSuperUser(): void
     {
-        $Platform = $Connection->getDatabasePlatform();
+        $superUsers = QUI::getUsers()->getUsers([
+            'where' => [
+                'su' => 1
+            ],
+            'limit' => 1
+        ]);
 
-        $superUserCount = (int)$Connection->createQueryBuilder()
-            ->select('COUNT(id)')
-            ->from(QUI\Utils\Doctrine::quoteIdentifier(Manager::table()))
-            ->where($Platform->quoteSingleIdentifier('su') . ' = :su')
-            ->setParameter('su', 1)
-            ->executeQuery()
-            ->fetchOne();
-
-        if ($superUserCount === 0) {
-            self::markTestSkipped('QUIQQER database has no super-user fixture.');
+        if (!isset($superUsers[0])) {
+            self::markTestSkipped('QUIQQER database has no usable super-user fixture.');
         }
     }
 
