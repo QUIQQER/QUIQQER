@@ -137,7 +137,7 @@ class Search
                 $selectFields[] = 'uuid';
                 $result = QUI::getDataBase()->fetch([
                     'select' => $selectFields,
-                    'from' => QUI\Users\Manager::table(),
+                    'from' => QUI\Utils\Doctrine::quoteIdentifier(QUI\Users\Manager::table()),
                     'where' => [
                         'uuid' => [
                             'type' => 'IN',
@@ -194,7 +194,7 @@ class Search
                 $selectFields[] = 'uuid';
                 $result = QUI::getDataBase()->fetch([
                     'select' => $selectFields,
-                    'from' => QUI\Groups\Manager::table(),
+                    'from' => QUI\Utils\Doctrine::quoteIdentifier(QUI\Groups\Manager::table()),
                     'where' => [
                         'uuid' => [
                             'type' => 'IN',
@@ -231,7 +231,7 @@ class Search
             $sql = 'SELECT uuid';
         }
 
-        $sql .= ' FROM ' . QUI\Users\Manager::table();
+        $sql .= ' FROM ' . QUI\Utils\Doctrine::quoteIdentifier(QUI\Users\Manager::table());
 
         // build WHERE
         $where = [];
@@ -422,7 +422,7 @@ class Search
             $sql = 'SELECT uuid';
         }
 
-        $sql .= ' FROM `' . QUI\Groups\Manager::table() . '`';
+        $sql .= ' FROM ' . QUI\Utils\Doctrine::quoteIdentifier(QUI\Groups\Manager::table());
 
         // build WHERE
         $where = [];
@@ -599,7 +599,7 @@ class Search
 
                 $result = QUI::getDataBase()->fetch([
                     'select' => $selectFields,
-                    'from' => QUI\Users\Manager::table(),
+                    'from' => QUI\Utils\Doctrine::quoteIdentifier(QUI\Users\Manager::table()),
                     'where' => [
                         'uuid' => [
                             'type' => 'IN',
@@ -635,7 +635,7 @@ class Search
 
                 $result = QUI::getDataBase()->fetch([
                     'select' => $selectFields,
-                    'from' => QUI\Groups\Manager::table(),
+                    'from' => QUI\Utils\Doctrine::quoteIdentifier(QUI\Groups\Manager::table()),
                     'where' => [
                         'uuid' => [
                             'type' => 'IN',

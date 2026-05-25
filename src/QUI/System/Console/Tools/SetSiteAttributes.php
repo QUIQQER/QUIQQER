@@ -61,17 +61,19 @@ class SetSiteAttributes extends QUI\System\Console\Tool
             return;
         }
 
-        $this->writeLn("Site query (MySQL): WHERE ");
+        $this->writeLn("Site query (SQL): WHERE ");
         $siteQuery = trim($this->readInput());
 
-        $sql = "SELECT `id` FROM " . QUI::getDBProjectTableName('sites', $Project);
-        $sql .= " WHERE $siteQuery";
+        $QueryBuilder = QUI::getQueryBuilder()
+            ->select('id')
+            ->from(QUI::getDBProjectTableName('sites', $Project))
+            ->where($siteQuery);
 
-        $this->writeLn("\nQuerying sites: " . $sql);
+        $this->writeLn("\nQuerying sites: " . $QueryBuilder->getSQL());
 
         try {
-            $siteIds = QUI::getDataBase()->fetchSQL($sql);
-        } catch (Exception $Exception) {
+            $siteIds = $QueryBuilder->executeQuery()->fetchAllAssociative();
+        } catch (\Throwable $Exception) {
             QUI\System\Log::writeException($Exception);
             $this->writeLn("\n\nERROR: Query failed -> " . $Exception->getMessage());
             exit(1);

@@ -13,28 +13,19 @@ QUI::$Ajax->registerFunction(
     'ajax_users_address_delete',
     static function ($uid, $aid): void {
         if (!isset($uid) || !$uid) {
-            if (is_numeric($aid)) {
-                $result = QUI::getDataBase()->fetch([
-                    'select' => ['id', 'uid'],
-                    'from' => QUI\Users\Manager::tableAddress(),
-                    'where_or' => [
-                        'id' => $aid,
-                    ],
-                    'limit' => 1
-                ]);
-            } else {
-                $result = QUI::getDataBase()->fetch([
-                    'select' => ['id', 'uid'],
-                    'from' => QUI\Users\Manager::tableAddress(),
-                    'where_or' => [
-                        'uuid' => $aid
-                    ],
-                    'limit' => 1
-                ]);
-            }
+            $addressField = is_numeric($aid) ? "id" : "uuid";
+            $QueryBuilder = QUI::getQueryBuilder();
+            $result = $QueryBuilder
+                ->select("id", "uid", "userUuid")
+                ->from(QUI\Users\Manager::tableAddress())
+                ->where($QueryBuilder->expr()->eq($addressField, ":addressId"))
+                ->setParameter("addressId", $aid)
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchAssociative();
 
 
-            if (!isset($result[0])) {
+            if (!$result) {
                 throw new QUI\Users\Exception(
                     QUI::getLocale()->get(
                         'quiqqer/core',
@@ -47,7 +38,7 @@ QUI::$Ajax->registerFunction(
                 );
             }
 
-            $uid = $result[0]['uuid'];
+            $uid = $result["userUuid"];
         }
 
         $User = QUI::getUsers()->get($uid);

@@ -425,14 +425,15 @@ class Project extends QUI\System\Console\Tool
                     $this->writeLn("Deleting bricks...");
 
                     // Fetch brick IDs from database (because Brick class does not offer ->getId())
-                    $result = QUI::getDataBase()->fetch([
-                        'select' => ['id'],
-                        'from' => $this->BricksManager::getTable(),
-                        'where' => [
-                            'project' => $TargetProject->getName(),
-                            'lang' => $TargetProject->getLang()
-                        ]
-                    ]);
+                    $result = QUI::getDataBaseConnection()->createQueryBuilder()
+                        ->select('id')
+                        ->from($this->BricksManager::getTable())
+                        ->where('project = :project')
+                        ->andWhere('lang = :lang')
+                        ->setParameter('project', $TargetProject->getName())
+                        ->setParameter('lang', $TargetProject->getLang())
+                        ->executeQuery()
+                        ->fetchAllAssociative();
 
                     foreach ($result as $row) {
                         $this->BricksManager->deleteBrick($row['id']);

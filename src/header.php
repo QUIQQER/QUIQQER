@@ -6,8 +6,8 @@ require 'minimalHeader.php';
 
 // Datenbankverbindung aufbauen
 try {
-    QUI::getDataBase();
-} catch (Exception $Exception) {
+    QUI::getDataBaseConnection()->getServerVersion();
+} catch (Throwable $Exception) {
     if (php_sapi_name() === 'cli') {
         echo "\033[1;31m";
 

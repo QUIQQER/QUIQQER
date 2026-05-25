@@ -672,15 +672,17 @@ class Package extends QUI\QDOM
         // permissions
         if ($this->getName() !== 'quiqqer/core') { // you can't set permissions to the core
             try {
-                $found = QUI::getDataBase()->fetch([
-                    'from' => QUI\Permissions\Manager::table(),
-                    'where' => [
-                        'name' => $this->getPermissionName()
-                    ],
-                    'limit' => 1
-                ]);
+                $QueryBuilder = QUI::getQueryBuilder();
+                $found = $QueryBuilder
+                    ->select("name")
+                    ->from(QUI\Permissions\Manager::table())
+                    ->where($QueryBuilder->expr()->eq("name", ":permissionName"))
+                    ->setParameter("permissionName", $this->getPermissionName())
+                    ->setMaxResults(1)
+                    ->executeQuery()
+                    ->fetchAssociative();
 
-                if (!isset($found[0])) {
+                if (!$found) {
                     QUI::getPermissionManager()->addPermission([
                         'name' => $this->getPermissionName(),
                         'title' => 'quiqqer/core permission.package.canUse',

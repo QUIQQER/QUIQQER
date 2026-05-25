@@ -58,18 +58,24 @@ class PermissionDenied extends QUI\Projects\Site
     public function refresh(): void
     {
         try {
-            $result = QUI::getDataBase()->fetch([
-                'from' => $this->TABLE,
-                'where' => [
-                    'id' => 1
-                ],
-                'limit' => '1'
-            ]);
+            $QueryBuilder = QUI::getQueryBuilder();
+            $result = $QueryBuilder
+                ->select("*")
+                ->from($this->TABLE)
+                ->where($QueryBuilder->expr()->eq("id", ":id"))
+                ->setParameter("id", 1)
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchAssociative();
         } catch (Exception) {
             return;
         }
 
-        $this->setAttributes($result[0]);
+        if (!$result) {
+            return;
+        }
+
+        $this->setAttributes($result);
 
         // content
         if (QUI::getUserBySession()->getId()) {

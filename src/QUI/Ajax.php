@@ -263,79 +263,81 @@ class Ajax extends QUI\QDOM
             };
         }, ARRAY_FILTER_USE_BOTH);
 
-        switch ($class) {
-            case 'PDOException':
-            case \QUI\Database\Exception::class:
-                // DB Fehler immer loggen
-                if ($this->getAttribute('db_errors')) {
-                    $return['ExceptionDBError']['message'] = $Exception->getMessage();
-                    $return['ExceptionDBError']['code'] = $Exception->getCode();
-                    $return['ExceptionDBError']['type'] = $Exception::class;
-                } else {
-                    // Standardfehler rausbringen
-                    $return['Exception']['message'] = 'Internal Server Error';
-                    $return['Exception']['code'] = 500;
-                    $return['Exception']['type'] = $Exception::class;
-                }
+        $isDatabaseException = $Exception instanceof PDOException
+            || $Exception instanceof \Doctrine\DBAL\Exception
+            || $Exception instanceof \QUI\Database\Exception;
 
-                if (
-                    (DEVELOPMENT || DEBUG_MODE)
-                    && $class !== 'PDOException'
-                    && method_exists($Exception, 'getContext')
-                ) {
-                    $return['Exception']['context'] = $Exception->getContext();
-                }
-
-                break;
-
-            case ExceptionStack::class:
-                $list = [];
-
-                if (method_exists($Exception, 'getExceptionList')) {
-                    $list = $Exception->getExceptionList();
-                }
-
-                if (isset($list[0]) && $list[0] instanceof Exception) {
-                    $FirstException = $list[0];
-                    $message = $FirstException->getMessage();
-                    $end = mb_strripos($message, ' :: ');
-
-                    if ($end) {
-                        $message = mb_substr($message, 0, $end);
-                    }
-
-
-                    $return['Exception']['message'] = $message;
-                    $return['Exception']['code'] = $FirstException->getCode();
-                    $return['Exception']['type'] = $FirstException->getType();
-
-                    if (DEVELOPMENT || DEBUG_MODE) {
-                        $return['Exception']['context'] = $FirstException->getContext();
-                    }
-                }
-
-                break;
-
-            case Exception::class:
-            case QUI\Users\Exception::class:
-                $return['Exception']['message'] = $Exception->getMessage();
-                $return['Exception']['code'] = $Exception->getCode();
-                $return['Exception']['type'] = get_class($Exception);
-
-                if ((DEVELOPMENT || DEBUG_MODE) && method_exists($Exception, 'getContext')) {
-                    $return['Exception']['context'] = $Exception->getContext();
-                }
-
-                break;
-
-            default:
-                $return['Exception']['message'] = $Exception->getMessage();
-                $return['Exception']['code'] = $Exception->getCode();
+        if ($isDatabaseException) {
+            if ($this->getAttribute('db_errors')) {
+                $return['ExceptionDBError']['message'] = $Exception->getMessage();
+                $return['ExceptionDBError']['code'] = $Exception->getCode();
+                $return['ExceptionDBError']['type'] = $Exception::class;
+            } else {
+                $return['Exception']['message'] = 'Internal Server Error';
+                $return['Exception']['code'] = 500;
                 $return['Exception']['type'] = $Exception::class;
-                break;
+            }
+
+            if (
+                (DEVELOPMENT || DEBUG_MODE)
+                && !($Exception instanceof PDOException)
+                && method_exists($Exception, 'getContext')
+            ) {
+                $return['Exception']['context'] = $Exception->getContext();
+            }
+        } else {
+            switch ($class) {
+                case ExceptionStack::class:
+                    $list = [];
+
+                    if (method_exists($Exception, 'getExceptionList')) {
+                        $list = $Exception->getExceptionList();
+                    }
+
+                    if (isset($list[0]) && $list[0] instanceof Exception) {
+                        $FirstException = $list[0];
+                        $message = $FirstException->getMessage();
+                        $end = mb_strripos($message, ' :: ');
+
+                        if ($end) {
+                            $message = mb_substr($message, 0, $end);
+                        }
+
+
+                        $return['Exception']['message'] = $message;
+                        $return['Exception']['code'] = $FirstException->getCode();
+                        $return['Exception']['type'] = $FirstException->getType();
+
+                        if (DEVELOPMENT || DEBUG_MODE) {
+                            $return['Exception']['context'] = $FirstException->getContext();
+                        }
+                    }
+
+                    break;
+
+                case Exception::class:
+                case QUI\Users\Exception::class:
+                    $return['Exception']['message'] = $Exception->getMessage();
+                    $return['Exception']['code'] = $Exception->getCode();
+                    $return['Exception']['type'] = get_class($Exception);
+
+                    if ((DEVELOPMENT || DEBUG_MODE) && method_exists($Exception, 'getContext')) {
+                        $return['Exception']['context'] = $Exception->getContext();
+                    }
+
+                    break;
+
+                default:
+                    $return['Exception']['message'] = $Exception->getMessage();
+                    $return['Exception']['code'] = $Exception->getCode();
+                    $return['Exception']['type'] = $Exception::class;
+                    break;
+            }
         }
 
-        if ($Exception instanceof QUI\Users\UserAuthException) {
+        if ($isDatabaseException) {
+            QUI\System\Log::writeException($Exception);
+        } elseif ($Exception instanceof QUI\Users\UserAuthException) {
             // do nothing
             // UserAuthException writes its own log (auth.log)
         } elseif ($class === \QUI\Permissions\Exception::class) {
