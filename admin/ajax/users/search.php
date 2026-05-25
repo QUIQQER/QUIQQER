@@ -37,6 +37,33 @@ QUI::$Ajax->registerFunction(
         $search = $Users->search($params);
         $result = [];
         $Locale = QUI::getLocale();
+        $groupNames = [
+            '0' => 'Guest',
+            '1' => 'Everyone'
+        ];
+
+        try {
+            $Connection = QUI::getDataBaseConnection();
+            $Platform = $Connection->getDatabasePlatform();
+            $groups = $Connection
+                ->createQueryBuilder()
+                ->select('id', 'uuid', 'name')
+                ->from($Platform->quoteSingleIdentifier(QUI\Groups\Manager::table()))
+                ->executeQuery()
+                ->fetchAllAssociative();
+
+            foreach ($groups as $group) {
+                if (isset($group['id'])) {
+                    $groupNames[(string)$group['id']] = (string)$group['name'];
+                }
+
+                if (!empty($group['uuid'])) {
+                    $groupNames[(string)$group['uuid']] = (string)$group['name'];
+                }
+            }
+        } catch (\Throwable $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
 
         foreach ($search as $user) {
             $user['id'] = $user['uuid'];
@@ -47,21 +74,31 @@ QUI::$Ajax->registerFunction(
             }
 
             $usergroups = explode(',', trim($user['usergroup'], ','));
-            $groupnames = '';
+            $groupnames = [];
 
             foreach ($usergroups as $gid) {
-                if (!$gid) {
+                if ($gid === '') {
                     continue;
                 }
 
-                try {
-                    $groupnames .= $Groups->getGroupNameById($gid) . ',';
-                } catch (QUI\Exception) {
-                    $groupnames .= $gid . ',';
+                if (isset($groupNames[$gid]) && $groupNames[$gid] !== '') {
+                    $groupnames[] = $groupNames[$gid];
+                    continue;
                 }
+
+                $groupname = $Groups->getGroupNameById($gid);
+
+                if ($groupname !== '') {
+                    $groupnames[] = $groupname;
+                    continue;
+                }
+
+                $groupnames[] = $gid;
             }
 
-            $user['usergroup'] = trim($groupnames, ',');
+            if (!empty($groupnames)) {
+                $user['usergroup'] = implode(',', $groupnames);
+            }
 
             if (empty($user['regdate'])) {
                 $user['regdate'] = '-';

@@ -315,7 +315,16 @@ class MigrationV2 extends QUI\System\Console\Tool
     public function groups(): void
     {
         $this->writeLn('- Migrate groups table');
-        QUI\Users\Install::groups();
+        try {
+            QUI\Users\Install::groups();
+        } catch (QUI\Exception $exception) {
+            if ((int)$exception->getCode() !== 404) {
+                throw $exception;
+            }
+
+            $this->writeLn($exception->getMessage(), 'yellow');
+            $this->resetColor();
+        }
 
 
         // migrate group parents

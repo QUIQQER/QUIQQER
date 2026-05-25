@@ -43,7 +43,7 @@ QUI::getAjax()->registerFunction(
                 continue;
             }
 
-            QUI::getDataBase()->delete(
+            QUI::getDataBaseConnection()->delete(
                 Queue::table(),
                 ['id' => $mailId]
             );

@@ -39,7 +39,7 @@ QUI::$Ajax->registerFunction(
                 continue;
             }
 
-            QUI::getDataBase()->update(
+            QUI::getDataBaseConnection()->update(
                 $Project->table(),
                 ['order_field' => $from],
                 ['id' => $id]

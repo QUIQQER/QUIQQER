@@ -6,10 +6,9 @@
 
 namespace QUI\Users;
 
+use Doctrine\DBAL\ParameterType;
 use DOMElement;
 use DOMXPath;
-use PDO;
-use PDOException;
 use QUI;
 use QUI\Database\Exception;
 use QUI\ExceptionStack;
@@ -215,7 +214,8 @@ class Manager
                         $User = $UserInstance;
                     }
                 }
-            } catch (\Exception) {
+            } catch (\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
             }
 
             if (empty($User)) {
@@ -562,6 +562,7 @@ class Manager
      * Create a new User
      *
      * @throws QUI\Users\Exception
+     * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
     public function createChild(
@@ -604,14 +605,22 @@ class Manager
             throw new QUI\Users\Exception('Could not create User. Please try again later.');
         }
 
-        QUI::getDataBase()->insert(self::table(), [
-            'uuid' => $uuid,
-            'username' => $newName,
-            'regdate' => time(),
-            'lang' => QUI::getLocale()->getCurrent()
-        ]);
+        try {
+            $Connection = QUI::getDataBaseConnection();
+            $Connection->insert(QUI\Utils\Doctrine::quoteIdentifier(self::table()), [
+                'uuid' => $uuid,
+                'username' => $newName,
+                'regdate' => time(),
+                'lang' => QUI::getLocale()->getCurrent()
+            ]);
 
-        $newId = QUI::getDataBase()->getPDO()->lastInsertId();
+            $newId = $Connection->lastInsertId();
+        } catch (\Doctrine\DBAL\Exception $Exception) {
+            throw new Exception(
+                $Exception->getMessage(),
+                (int)$Exception->getCode()
+            );
+        }
         $User = $this->get($newId);
 
         $Everyone = new QUI\Groups\Everyone();
@@ -644,21 +653,22 @@ class Manager
         }
 
         try {
-            $result = QUI::getDataBase()->fetch([
-                'select' => 'username',
-                'from' => self::table(),
-                'where' => [
-                    'username' => $username
-                ],
-                'limit' => 1
-            ]);
-        } catch (QUI\Exception $Exception) {
+            $QueryBuilder = QUI::getQueryBuilder();
+            $result = $QueryBuilder
+                ->select('username')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()))
+                ->where($QueryBuilder->expr()->eq('username', ':username'))
+                ->setParameter('username', $username)
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchAssociative();
+        } catch (\Doctrine\DBAL\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
 
             return false;
         }
 
-        return isset($result[0]);
+        return !empty($result);
     }
 
     /**
@@ -823,9 +833,17 @@ class Manager
             unset($attributes['id']);
         }
 
-        QUI::getDataBase()->insert(self::table(), $insertData);
+        try {
+            $Connection = QUI::getDataBaseConnection();
+            $Connection->insert(QUI\Utils\Doctrine::quoteIdentifier(self::table()), $insertData);
 
-        $newId = QUI::getDataBase()->getPDO()->lastInsertId();
+            $newId = $Connection->lastInsertId();
+        } catch (\Doctrine\DBAL\Exception $Exception) {
+            throw new Exception(
+                $Exception->getMessage(),
+                (int)$Exception->getCode()
+            );
+        }
         $User = $this->get($newId);
 
         $Everyone = new QUI\Groups\Everyone();
@@ -862,21 +880,19 @@ class Manager
     public function countAllUsers(): int
     {
         try {
-            $result = QUI::getDataBase()->fetch([
-                'count' => 'count',
-                'from' => self::table()
-            ]);
-        } catch (QUI\Exception $Exception) {
+            $QueryBuilder = QUI::getQueryBuilder();
+            $result = $QueryBuilder
+                ->select('COUNT(id)')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()))
+                ->executeQuery()
+                ->fetchOne();
+        } catch (\Doctrine\DBAL\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
 
             return 0;
         }
 
-        if (isset($result[0]['count'])) {
-            return $result[0]['count'];
-        }
-
-        return 0;
+        return (int)$result;
     }
 
     /**
@@ -888,11 +904,15 @@ class Manager
     {
         if (!$objects) {
             try {
-                return QUI::getDataBase()->fetch([
-                    'from' => self::table(),
-                    'order' => 'username'
-                ]);
-            } catch (QUi\Exception $Exception) {
+                $QueryBuilder = QUI::getQueryBuilder();
+
+                return $QueryBuilder
+                    ->select('*')
+                    ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()))
+                    ->orderBy('username')
+                    ->executeQuery()
+                    ->fetchAllAssociative();
+            } catch (\Doctrine\DBAL\Exception $Exception) {
                 QUI\System\Log::addError($Exception->getMessage());
 
                 return [];
@@ -905,8 +925,8 @@ class Manager
         foreach ($ids as $id) {
             try {
                 $result[] = $this->get($id['uuid']);
-            } catch (QUI\Exception) {
-                // nothing
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
             }
         }
 
@@ -916,18 +936,19 @@ class Manager
     public function getAllUserIds(): array
     {
         try {
-            $result = QUI::getDataBase()->fetch([
-                'select' => 'id,uuid',
-                'from' => self::table(),
-                'order' => 'username'
-            ]);
-        } catch (QUI\Exception $Exception) {
+            $QueryBuilder = QUI::getQueryBuilder();
+
+            return $QueryBuilder
+                ->select('id', 'uuid')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()))
+                ->orderBy('username')
+                ->executeQuery()
+                ->fetchAllAssociative();
+        } catch (\Doctrine\DBAL\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
 
             return [];
         }
-
-        return $result;
     }
 
     /**
@@ -936,6 +957,7 @@ class Manager
      * @param array|integer|string $authData - Authentication data, passwords, keys, hashes etc
      *
      * @return QUIUserInterface|null
+     * @throws QUI\Database\Exception
      * @throws QUI\Users\Exception
      * @throws \Exception
      */
@@ -966,8 +988,8 @@ class Manager
             try {
                 $User = self::getUserByName($authData['username']);
                 $userId = $User->getUUID();
-            } catch (\Exception) {
-                // nothing
+            } catch (\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
             }
         }
 
@@ -1038,18 +1060,24 @@ class Manager
         }
 
         // check user data
-        $userData = QUI::getDataBase()->fetch(
-            [
-                'select' => ['id', 'uuid', 'expire', 'secHash', 'active'],
-                'from' => self::table(),
-                'where' => [
-                    'uuid' => $userId
-                ],
-                'limit' => 1
-            ]
-        );
+        try {
+            $QueryBuilder = QUI::getQueryBuilder();
+            $userData = $QueryBuilder
+                ->select('id', 'uuid', 'expire', 'secHash', 'active')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()))
+                ->where($QueryBuilder->expr()->eq('uuid', ':uuid'))
+                ->setParameter('uuid', $userId)
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchAssociative();
+        } catch (\Doctrine\DBAL\Exception $Exception) {
+            throw new Exception(
+                $Exception->getMessage(),
+                (int)$Exception->getCode()
+            );
+        }
 
-        if (!isset($userData[0])) {
+        if (!$userData) {
             $Exception = new QUI\Users\Exception(
                 ['quiqqer/core', 'exception.login.fail.user.not.found'],
                 404
@@ -1062,7 +1090,7 @@ class Manager
             throw $Exception;
         }
 
-        if ($userData[0]['active'] == 0) {
+        if ($userData['active'] == 0) {
             $Exception = new QUI\Users\Exception(
                 ['quiqqer/core', 'exception.login.fail.user_not_active'],
                 401
@@ -1076,7 +1104,7 @@ class Manager
             throw $Exception;
         }
 
-        if ($userData[0]['active'] == -1) {
+        if ($userData['active'] == -1) {
             $Exception = new QUI\Users\Exception(
                 ['quiqqer/core', 'exception.login.fail.user_deleted'],
                 401
@@ -1091,13 +1119,13 @@ class Manager
         }
 
         if (
-            $userData[0]['expire']
-            && $userData[0]['expire'] != '0000-00-00 00:00:00'
-            && strtotime($userData[0]['expire']) < time()
+            $userData['expire']
+            && $userData['expire'] != '0000-00-00 00:00:00'
+            && strtotime($userData['expire']) < time()
         ) {
             $Exception = new QUI\Users\Exception(
                 QUI::getLocale()->get('quiqqer/core', 'exception.login.expire', [
-                    'expire' => $userData[0]['expire']
+                    'expire' => $userData['expire']
                 ])
             );
 
@@ -1131,15 +1159,22 @@ class Manager
             $userAgent = $_SERVER['HTTP_USER_AGENT'];
         }
 
-        QUI::getDataBase()->update(
-            self::table(),
-            [
-                'lastvisit' => time(),
-                'user_agent' => $userAgent,
-                'secHash' => $this->getSecHash()
-            ],
-            ['uuid' => $userId]
-        );
+        try {
+            QUI::getDataBaseConnection()->update(
+                QUI\Utils\Doctrine::quoteIdentifier(self::table()),
+                [
+                    'lastvisit' => time(),
+                    'user_agent' => $userAgent,
+                    'secHash' => $this->getSecHash()
+                ],
+                ['uuid' => $userId]
+            );
+        } catch (\Doctrine\DBAL\Exception $Exception) {
+            throw new Exception(
+                $Exception->getMessage(),
+                (int)$Exception->getCode()
+            );
+        }
 
         $User->refresh();
         $this->users[$userId] = $User;
@@ -1158,15 +1193,16 @@ class Manager
     public function getUserByName(string $username): QUIUserInterface | User
     {
         try {
-            $result = QUI::getDataBase()->fetch([
-                'select' => 'id,uuid',
-                'from' => self::table(),
-                'where' => [
-                    'username' => $username
-                ],
-                'limit' => 1
-            ]);
-        } catch (QUI\Exception $Exception) {
+            $QueryBuilder = QUI::getQueryBuilder();
+            $result = $QueryBuilder
+                ->select('id', 'uuid')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()))
+                ->where($QueryBuilder->expr()->eq('username', ':username'))
+                ->setParameter('username', $username)
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchAssociative();
+        } catch (\Doctrine\DBAL\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
 
             throw new QUI\Users\Exception(
@@ -1178,7 +1214,7 @@ class Manager
             );
         }
 
-        if (!isset($result[0])) {
+        if (!$result) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/core',
@@ -1188,7 +1224,7 @@ class Manager
             );
         }
 
-        return $this->get($result[0]['uuid']);
+        return $this->get($result['uuid']);
     }
 
     /**
@@ -1205,8 +1241,8 @@ class Manager
         $username = '';
         $Session = QUI::getSession();
 
-        // Wenn im Session ein Benutzernamen schon gesetzt wurde, von einem anderen Authenticator
-        // Dann muss IMMER dieser Benutzer zur Authentifizierung verwendet werden
+        // Wenn im Session ein Benutzername schon gesetzt wurde, von einem anderen Authenticator
+        // dann muss IMMER dieser Benutzer zur Authentifizierung verwendet werden
         if (QUI::getSession()->get('username')) {
             $username = QUI::getSession()->get('username');
         } elseif (isset($params['username'])) {
@@ -1220,8 +1256,8 @@ class Manager
             try {
                 $User = self::getUserByName($username);
                 $userId = $User->getUUID();
-            } catch (\Exception) {
-                // nothing
+            } catch (\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
             }
         }
 
@@ -1335,8 +1371,8 @@ class Manager
         foreach ($result as $entry) {
             try {
                 $Users[] = $this->get($entry['uuid']);
-            } catch (QUI\Exception) {
-                // nothing
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
             }
         }
 
@@ -1350,12 +1386,16 @@ class Manager
      */
     public function getUserIds(array $params = []): array
     {
-        $params['select'] = 'id,uuid';
-        $params['from'] = self::table();
-
         try {
-            return QUI::getDataBase()->fetch($params);
-        } catch (QUI\Exception $Exception) {
+            $QueryBuilder = QUI::getQueryBuilder();
+            $QueryBuilder
+                ->select('id', 'uuid')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()));
+
+            QUI\Utils\Doctrine::parseDbArrayToQueryBuilder($QueryBuilder, $params);
+
+            return $QueryBuilder->executeQuery()->fetchAllAssociative();
+        } catch (\Doctrine\DBAL\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
         }
 
@@ -1396,15 +1436,16 @@ class Manager
     public function getUserByMail(string $email): QUIUserInterface
     {
         try {
-            $result = QUI::getDataBase()->fetch([
-                'select' => 'id,uuid',
-                'from' => self::table(),
-                'where' => [
-                    'email' => $email
-                ],
-                'limit' => 1
-            ]);
-        } catch (QUI\Exception $Exception) {
+            $QueryBuilder = QUI::getQueryBuilder();
+            $result = $QueryBuilder
+                ->select('id', 'uuid')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()))
+                ->where($QueryBuilder->expr()->eq('email', ':email'))
+                ->setParameter('email', $email)
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchAssociative();
+        } catch (\Doctrine\DBAL\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
 
             throw new QUI\Users\Exception(
@@ -1416,7 +1457,7 @@ class Manager
             );
         }
 
-        if (!isset($result[0])) {
+        if (!$result) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/core',
@@ -1426,7 +1467,7 @@ class Manager
             );
         }
 
-        return $this->get($result[0]['uuid']);
+        return $this->get($result['uuid']);
     }
 
     /**
@@ -1459,21 +1500,22 @@ class Manager
     public function emailExists(string $email): bool
     {
         try {
-            $result = QUI::getDataBase()->fetch([
-                'select' => 'email',
-                'from' => self::table(),
-                'where' => [
-                    'email' => $email
-                ],
-                'limit' => 1
-            ]);
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::addError($Exception);
+            $QueryBuilder = QUI::getQueryBuilder();
+            $result = $QueryBuilder
+                ->select('email')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()))
+                ->where($QueryBuilder->expr()->eq('email', ':email'))
+                ->setParameter('email', $email)
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchAssociative();
+        } catch (\Doctrine\DBAL\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
 
             return false;
         }
 
-        return isset($result[0]);
+        return !empty($result);
     }
 
     /**
@@ -1517,7 +1559,6 @@ class Manager
      */
     protected function execSearch(array $params): array | int
     {
-        $PDO = QUI::getDataBase()->getPDO();
         $params = Orthos::clearArray($params);
 
         $allowOrderFields = [
@@ -1541,11 +1582,11 @@ class Manager
         /**
          * SELECT
          */
-        $query = 'SELECT * FROM ' . self::table();
+        $query = 'SELECT * FROM ' . QUI\Utils\Doctrine::quoteIdentifier(self::table());
         $binds = [];
 
         if (isset($params['count'])) {
-            $query = 'SELECT COUNT( id ) AS count FROM ' . self::table();
+            $query = 'SELECT COUNT( id ) AS count FROM ' . QUI\Utils\Doctrine::quoteIdentifier(self::table());
         }
 
         /**
@@ -1715,7 +1756,6 @@ class Manager
             }
         }
 
-
         /**
          * ORDER
          */
@@ -1726,6 +1766,8 @@ class Manager
             && isset($allowOrderFields[$params['field']])
         ) {
             $query .= ' ORDER BY ' . $params['field'] . ' ' . $params['order'];
+        } elseif (!isset($params['count'])) {
+            $query .= ' ORDER BY regdate DESC';
         }
 
         /**
@@ -1743,30 +1785,28 @@ class Manager
             $query .= ' LIMIT ' . $start . ', ' . $max;
         }
 
-        $Statement = $PDO->prepare($query);
-
-
-        foreach ($binds as $key => $value) {
-            if ($key == ':active' || $key == ':su') {
-                $Statement->bindValue($key, $value, PDO::PARAM_INT);
-            } else {
-                $Statement->bindValue($key, $value);
-            }
-        }
-
         try {
-            $Statement->execute();
-        } catch (PDOException $Exception) {
+            $Connection = QUI::getDataBaseConnection();
+            $Statement = $Connection->prepare($query);
+
+            foreach ($binds as $key => $value) {
+                if ($key == ':active' || $key == ':su') {
+                    $Statement->bindValue($key, $value, ParameterType::INTEGER);
+                } else {
+                    $Statement->bindValue($key, $value);
+                }
+            }
+
+            $result = $Statement->executeQuery()->fetchAllAssociative();
+        } catch (\Doctrine\DBAL\Exception $Exception) {
             $message = $Exception->getMessage();
             $message .= print_r($query, true);
 
             throw new QUI\Database\Exception(
                 $message,
-                $Exception->getCode()
+                (int)$Exception->getCode()
             );
         }
-
-        $result = $Statement->fetchAll(PDO::FETCH_ASSOC);
 
 
         if (isset($params['count'])) {
@@ -1807,16 +1847,25 @@ class Manager
      */
     protected function newId(): int
     {
-        $result = QUI::getDataBase()->fetch([
-            'select' => 'MAX(id) AS id',
-            'from' => self::table(),
-            'limit' => 1
-        ]);
+        try {
+            $QueryBuilder = QUI::getQueryBuilder();
+            $result = $QueryBuilder
+                ->select('MAX(id) AS id')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()))
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchAssociative();
+        } catch (\Doctrine\DBAL\Exception $Exception) {
+            throw new Exception(
+                $Exception->getMessage(),
+                (int)$Exception->getCode()
+            );
+        }
 
         $newId = 100;
 
-        if (isset($result[0]['id'])) {
-            $newId = $result[0]['id'] + 1;
+        if (isset($result['id'])) {
+            $newId = $result['id'] + 1;
         }
 
         if ($newId < 100) {

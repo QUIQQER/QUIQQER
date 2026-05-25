@@ -6,9 +6,11 @@
 
 namespace QUI\System\Tests;
 
+use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Types\Type as DoctrineType;
 use Exception;
 use QUI;
-use QUI\Database\Tables;
 use QUI\Projects\Project;
 use QUI\Utils\StringHelper as StringHelper;
 use QUI\Utils\System\File as SystemFile;
@@ -27,6 +29,7 @@ use function is_dir;
 use function mb_strpos;
 use function preg_replace;
 use function str_replace;
+use function strtolower;
 use function trim;
 
 /**
@@ -35,7 +38,7 @@ use function trim;
  */
 class DBCheck extends QUI\System\Test
 {
-    protected ?Tables $Tables = null;
+    protected array $tables = [];
 
     protected bool $error = false;
 
@@ -69,8 +72,6 @@ class DBCheck extends QUI\System\Test
         }
 
         $packages = SystemFile::readDir($packages_dir);
-        $this->Tables = QUI::getDataBase()->table();
-
         // first we need all databases
         foreach ($packages as $package) {
             if ($package == 'composer') {
@@ -297,7 +298,7 @@ class DBCheck extends QUI\System\Test
         $autoInc = $tblData['auto_inc'];
         $fields = $tblData['fields'];
 
-        if (!$this->Tables->exist($table)) {
+        if (!$this->tableExists($table)) {
             $this->addError(
                 $tbl,
                 $table,
@@ -319,7 +320,7 @@ class DBCheck extends QUI\System\Test
         }
 
         // get table info from database
-        $dbKeys = $this->Tables->getKeys($table);
+        $dbKeys = $this->getTableKeys($table);
 
         // get all primary keys
         foreach ($dbKeys as $k => $columnInfo) {
@@ -331,7 +332,7 @@ class DBCheck extends QUI\System\Test
             $dbKeys[$k] = $columnInfo['Column_name'];
         }
 
-        $_dbFields = $this->Tables->getFieldsInfos($table);
+        $_dbFields = $this->getTableFieldsInfos($table);
         $dbFields = [];
 
         foreach ($_dbFields as $_entry) {
@@ -376,7 +377,7 @@ class DBCheck extends QUI\System\Test
         }
 
         // collect detailed column information from database
-        $dbFieldsData = $this->Tables->getFieldsInfos($table);
+        $dbFieldsData = $this->getTableFieldsInfos($table);
 
         foreach ($dbFieldsData as $field) {
             $fieldName = $field['Field'];
@@ -492,6 +493,92 @@ class DBCheck extends QUI\System\Test
                 );
             }
         }
+    }
+
+    private function tableExists(string $table): bool
+    {
+        try {
+            $this->getTable($table);
+        } catch (\Throwable) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function getTable(string $table): Table
+    {
+        if (!isset($this->tables[$table])) {
+            $this->tables[$table] = QUI::getSchemaManager()->introspectTable($table);
+        }
+
+        return $this->tables[$table];
+    }
+
+    private function getTableKeys(string $table): array
+    {
+        $Table = $this->getTable($table);
+        $PrimaryKey = $Table->getPrimaryKeyConstraint();
+
+        if ($PrimaryKey === null) {
+            return [];
+        }
+
+        $keys = [];
+
+        foreach ($PrimaryKey->getColumnNames() as $ColumnName) {
+            $column = $ColumnName->toString();
+            $keys[] = [
+                'Key_name' => 'PRIMARY',
+                'Column_name' => $column
+            ];
+        }
+
+        return $keys;
+    }
+
+    private function getTableFieldsInfos(string $table): array
+    {
+        $fields = [];
+
+        foreach ($this->getTable($table)->getColumns() as $Column) {
+            $fields[] = $this->createFieldInfo($Column);
+        }
+
+        return $fields;
+    }
+
+    private function createFieldInfo(Column $Column): array
+    {
+        $typeName = strtolower(DoctrineType::lookupName($Column->getType()));
+
+        $type = match ($typeName) {
+            'boolean' => 'tinyint',
+            'integer' => 'int',
+            'string' => 'varchar',
+            default => $typeName
+        };
+
+        $length = $Column->getLength();
+
+        if ($length !== null && in_array($type, ['varchar', 'char'], true)) {
+            $type .= '(' . $length . ')';
+        }
+
+        if ($type === 'tinyint') {
+            $type .= '(1)';
+        }
+
+        if ($Column->getUnsigned()) {
+            $type .= ' unsigned';
+        }
+
+        return [
+            'Field' => $Column->getObjectName()->toString(),
+            'Type' => $type,
+            'Null' => $Column->getNotnull() ? 'NO' : 'YES',
+            'Extra' => $Column->getAutoincrement() ? 'auto_increment' : ''
+        ];
     }
 
     protected function outputError(string $xmlFile): void

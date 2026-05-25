@@ -24,6 +24,7 @@ class UpdateSite extends AbstractTool
         'short',
         'content',
         'type',
+        'layout',
         'active',
         'nav_hide',
         'hide',

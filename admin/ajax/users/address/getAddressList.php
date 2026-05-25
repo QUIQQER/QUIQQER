@@ -15,33 +15,24 @@ QUI::$Ajax->registerFunction(
         $list = [];
 
         foreach ($ids as $id) {
-            if (is_numeric($id)) {
-                $result = QUI::getDataBase()->fetch([
-                    'select' => ['id', 'uid'],
-                    'from' => QUI\Users\Manager::tableAddress(),
-                    'where' => [
-                        'id' => $id
-                    ],
-                    'limit' => 1
-                ]);
-            } else {
-                $result = QUI::getDataBase()->fetch([
-                    'select' => ['id', 'uid'],
-                    'from' => QUI\Users\Manager::tableAddress(),
-                    'where' => [
-                        'uuid' => $id
-                    ],
-                    'limit' => 1
-                ]);
-            }
+            $addressField = is_numeric($id) ? "id" : "uuid";
+            $QueryBuilder = QUI::getQueryBuilder();
+            $result = $QueryBuilder
+                ->select("id", "uid")
+                ->from(QUI\Users\Manager::tableAddress())
+                ->where($QueryBuilder->expr()->eq($addressField, ":addressId"))
+                ->setParameter("addressId", $id)
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchAssociative();
 
 
-            if (!isset($result[0])) {
+            if (!$result) {
                 continue;
             }
 
             try {
-                $uid = $result[0]['uid'];
+                $uid = $result["uid"];
                 $User = QUI::getUsers()->get($uid);
                 $Address = $User->getAddress($id);
 

@@ -59,6 +59,7 @@ class Group extends QUI\QDOM
      *
      * @param integer|string $id - Group ID
      * @throws QUI\Exception
+     * @throws QUI\Database\Exception
      */
     public function __construct(int | string $id)
     {
@@ -96,7 +97,8 @@ class Group extends QUI\QDOM
             if (!empty($cache)) {
                 return;
             }
-        } catch (QUI\Cache\Exception) {
+        } catch (QUI\Cache\Exception $Exception) {
+            QUI\System\Log::addDebug($Exception->getMessage());
         }
 
 
@@ -119,56 +121,62 @@ class Group extends QUI\QDOM
 
         $id = (int)$result[0]['id'];
 
-        // create uuid for group. if not exists
-        if (empty($result[0]['uuid']) && $result[0]['uuid'] !== "0") {
-            $uuid = QUI\Utils\Uuid::get();
+        try {
+            // create uuid for group. if not exists
+            if (empty($result[0]['uuid']) && $result[0]['uuid'] !== '0') {
+                $uuid = QUI\Utils\Uuid::get();
 
-            if ($id === 0) {
-                $uuid = 0;
+                if ($id === 0) {
+                    $uuid = 0;
+                }
+
+                if ($id === 1) {
+                    $uuid = 1;
+                }
+
+                $result[0]['uuid'] = $uuid;
+                $this->uuid = $result[0]['uuid'];
+
+                QUI::getDataBaseConnection()->update(
+                    QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
+                    ['uuid' => $result[0]['uuid']],
+                    ['id' => $result[0]['id']]
+                );
             }
 
-            if ($id === 1) {
-                $uuid = 1;
+            // @todo remove it in quiqqer/core v3
+            // merge parent id to uuid
+            if (is_numeric($result[0]['parent']) && (int)$result[0]['parent'] !== 0) {
+                $parentId = (int)$result[0]['parent'];
+                $Group = QUI::getGroups()->get($parentId);
+
+                QUI::getDataBaseConnection()->update(
+                    QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
+                    ['parent' => $Group->getUUID()],
+                    ['id' => $result[0]['id']]
+                );
             }
 
-            $result[0]['uuid'] = $uuid;
-            $this->uuid = $result[0]['uuid'];
+            if (!isset($result[0]) && $id === Manager::EVERYONE_ID) {
+                QUI::getDataBaseConnection()->insert(QUI\Utils\Doctrine::quoteIdentifier(Manager::table()), [
+                    'id' => Manager::EVERYONE_ID,
+                    'name' => 'Everyone'
+                ]);
 
-            QUI::getDatabase()->update(
-                Manager::table(),
-                ['uuid' => $result[0]['uuid']],
-                ['id' => $result[0]['id']]
+                $result = QUI::getGroups()->getGroupData($id);
+            } elseif (!isset($result[0]) && $id === Manager::GUEST_ID) {
+                QUI::getDataBaseConnection()->insert(QUI\Utils\Doctrine::quoteIdentifier(Manager::table()), [
+                    'id' => Manager::GUEST_ID,
+                    'name' => 'Guest'
+                ]);
+
+                $result = QUI::getGroups()->getGroupData($id);
+            }
+        } catch (\Doctrine\DBAL\Exception $DBALException) {
+            throw new Exception(
+                $DBALException->getMessage(),
+                (int)$DBALException->getCode()
             );
-        }
-
-        // @todo remove it in quiqqer/core v3
-        // merge parent id to uuid
-        if (is_numeric($result[0]['parent']) && (int)$result[0]['parent'] !== 0) {
-            $parentId = (int)$result[0]['parent'];
-            $Group = QUI::getGroups()->get($parentId);
-
-            QUI::getDatabase()->update(
-                Manager::table(),
-                ['parent' => $Group->getUUID()],
-                ['id' => $result[0]['id']]
-            );
-        }
-
-
-        if (!isset($result[0]) && $id === Manager::EVERYONE_ID) {
-            QUI::getDataBase()->insert(Manager::table(), [
-                'id' => Manager::EVERYONE_ID,
-                'name' => 'Everyone'
-            ]);
-
-            $result = QUI::getGroups()->getGroupData($id);
-        } elseif (!isset($result[0]) && $id === Manager::GUEST_ID) {
-            QUI::getDataBase()->insert(Manager::table(), [
-                'id' => Manager::GUEST_ID,
-                'name' => 'Guest'
-            ]);
-
-            $result = QUI::getGroups()->getGroupData($id);
         }
 
         if (!isset($result[0])) {
@@ -243,9 +251,9 @@ class Group extends QUI\QDOM
      * Return the list which extra attributes exist
      * Plugins could extend the group attributes
      *
-     * look at
-     * - https://dev.quiqqer.com/quiqqer/core/wikis/User-Xml
-     * - https://dev.quiqqer.com/quiqqer/core/wikis/Group-Xml
+     * Documentation:
+     * - https://www.quiqqer.com/docs/developer/package-reference/user-xml
+     * - https://www.quiqqer.com/docs/developer/package-reference/group-xml
      */
     protected function getListOfExtraAttributes(): array
     {
@@ -275,16 +283,26 @@ class Group extends QUI\QDOM
         $this->parentIds = [];
 
         try {
-            $result = QUI::getDataBase()->fetch([
-                'select' => 'id,parent',
-                'from' => Manager::table(),
-                'where' => [
-                    'uuid' => $this->getUUID()
-                ],
-                'limit' => 1
-            ]);
+            $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
+            $row = QUI::getQueryBuilder()
+                ->select('id', 'parent')
+                ->from($Platform->quoteSingleIdentifier(Manager::table()))
+                ->where('uuid = :uuid')
+                ->setParameter('uuid', $this->getUUID())
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchAssociative();
+        } catch (\Doctrine\DBAL\Exception $DBALException) {
+            QUI\System\Log::addError($DBALException->getMessage());
+            return [];
         } catch (\Exception $exception) {
             QUI\System\Log::addError($exception->getMessage());
+            return [];
+        }
+
+        $result = $row ? [$row] : [];
+
+        if (!isset($result[0])) {
             return [];
         }
 
@@ -299,14 +317,22 @@ class Group extends QUI\QDOM
 
     private function getParentIdsHelper(int | string $id): void
     {
-        $result = QUI::getDataBase()->fetch([
-            'select' => 'id, parent',
-            'from' => Manager::table(),
-            'where' => [
-                'uuid' => $id
-            ],
-            'limit' => 1
-        ]);
+        try {
+            $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
+            $row = QUI::getQueryBuilder()
+                ->select('id', 'parent')
+                ->from($Platform->quoteSingleIdentifier(Manager::table()))
+                ->where('uuid = :uuid')
+                ->setParameter('uuid', $id)
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchAssociative();
+        } catch (\Doctrine\DBAL\Exception $DBALException) {
+            QUI\System\Log::addError($DBALException->getMessage());
+            return;
+        }
+
+        $result = $row ? [$row] : [];
 
         if (empty($result[0]['parent'])) {
             return;
@@ -321,6 +347,7 @@ class Group extends QUI\QDOM
      * Deletes the group and subgroups
      *
      * @throws QUI\Exception
+     * @throws QUI\Database\Exception
      */
     public function delete(): void
     {
@@ -341,16 +368,18 @@ class Group extends QUI\QDOM
          * Delete the group id in all users
          *
          * @param int|string $groupId
+         *
+         * @throws \Doctrine\DBAL\Exception
          */
         $deleteGidInUsers = static function (int | string $groupId): void {
             if (!is_int($groupId)) {
                 return;
             }
 
-            $PDO = QUI::getDataBase()->getPDO();
-            $table = QUI\Users\Manager::table();
+            $Connection = QUI::getDataBaseConnection();
+            $table = QUI\Utils\Doctrine::quoteIdentifier(QUI\Users\Manager::table());
 
-            $Statement = $PDO->prepare(
+            $Statement = $Connection->prepare(
                 "UPDATE {$table}
                 SET usergroup = replace(usergroup, :search, :replace)
                 WHERE usergroup LIKE :where"
@@ -359,33 +388,33 @@ class Group extends QUI\QDOM
             $Statement->bindValue('where', '%,' . $groupId . ',%');
             $Statement->bindValue('search', ',' . $groupId . ',');
             $Statement->bindValue('replace', ',');
-            $Statement->execute();
+            $Statement->executeStatement();
         };
 
+        try {
+            $children = $this->getChildrenIds(true);
 
-        $children = $this->getChildrenIds(true);
+            foreach ($children as $child) {
+                QUI::getDataBaseConnection()->delete(
+                    QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
+                    ['uuid' => $child]
+                );
 
-        foreach ($children as $child) {
-            QUI::getDataBase()->exec([
-                'delete' => true,
-                'from' => Manager::table(),
-                'where' => [
-                    'uuid' => $child
-                ]
-            ]);
+                $deleteGidInUsers($child);
+            }
 
-            $deleteGidInUsers($child);
+            $deleteGidInUsers($this->getUUID());
+
+            QUI::getDataBaseConnection()->delete(
+                QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
+                ['uuid' => $this->getUUID()]
+            );
+        } catch (\Doctrine\DBAL\Exception $DBALException) {
+            throw new Exception(
+                $DBALException->getMessage(),
+                (int)$DBALException->getCode()
+            );
         }
-
-        $deleteGidInUsers($this->getUUID());
-
-        QUI::getDataBase()->exec([
-            'delete' => true,
-            'from' => Manager::table(),
-            'where' => [
-                'uuid' => $this->getUUID()
-            ]
-        ]);
 
         QUI\Cache\Manager::clear('qui/groups/group/' . $this->getUUID());
     }
@@ -406,26 +435,42 @@ class Group extends QUI\QDOM
             return $this->childrenIds;
         }
 
-
         $this->childrenIds = [];
 
-        $_params = [
-            'select' => 'uuid,parent',
-            'from' => Manager::table(),
-            'where' => [
-                'parent' => $this->getUUID()
-            ]
-        ];
+        try {
+            $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
+            $QueryBuilder = QUI::getQueryBuilder()
+                ->select('uuid', 'parent')
+                ->from($Platform->quoteSingleIdentifier(Manager::table()))
+                ->where('parent = :parent')
+                ->setParameter('parent', $this->getUUID());
 
-        if (isset($params['order'])) {
-            $_params['order'] = $params['order'];
+            if (isset($params['order'])) {
+                $order = explode(' ', (string)$params['order'], 2);
+                $QueryBuilder->orderBy($order[0], $order[1] ?? null);
+            }
+
+            if (isset($params['limit'])) {
+                $limit = explode(',', (string)$params['limit'], 2);
+
+                if (isset($limit[1])) {
+                    $QueryBuilder->setFirstResult((int)$limit[0]);
+                    $QueryBuilder->setMaxResults((int)$limit[1]);
+                } else {
+                    $QueryBuilder->setFirstResult((int)($params['start'] ?? 0));
+                    $QueryBuilder->setMaxResults((int)$limit[0]);
+                }
+            } elseif (isset($params['start'])) {
+                $QueryBuilder->setFirstResult((int)$params['start']);
+            }
+
+            $result = $QueryBuilder->executeQuery()->fetchAllAssociative();
+        } catch (\Doctrine\DBAL\Exception $DBALException) {
+            throw new Exception(
+                $DBALException->getMessage(),
+                (int)$DBALException->getCode()
+            );
         }
-
-        if (isset($params['limit'])) {
-            $_params['limit'] = $params['limit'];
-        }
-
-        $result = QUI::getDataBase()->fetch($_params);
 
         if (!isset($result[0])) {
             return $this->childrenIds;
@@ -449,13 +494,21 @@ class Group extends QUI\QDOM
      */
     private function getChildrenIdsHelper(int | string $id): void
     {
-        $result = QUI::getDataBase()->fetch([
-            'select' => 'id,uuid',
-            'from' => Manager::table(),
-            'where' => [
-                'parent' => $id
-            ]
-        ]);
+        try {
+            $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
+            $result = QUI::getQueryBuilder()
+                ->select('id', 'uuid')
+                ->from($Platform->quoteSingleIdentifier(Manager::table()))
+                ->where('parent = :parent')
+                ->setParameter('parent', $id)
+                ->executeQuery()
+                ->fetchAllAssociative();
+        } catch (\Doctrine\DBAL\Exception $DBALException) {
+            throw new Exception(
+                $DBALException->getMessage(),
+                (int)$DBALException->getCode()
+            );
+        }
 
         foreach ($result as $entry) {
             $this->childrenIds[] = $entry['uuid'];
@@ -488,7 +541,8 @@ class Group extends QUI\QDOM
 
         try {
             return QUI\Projects\Media\Utils::getImageByUrl($avatar);
-        } catch (QUI\Exception) {
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
         }
 
         $Project = QUI::getProjectManager()->getStandard();
@@ -502,6 +556,7 @@ class Group extends QUI\QDOM
      * All attributes are set in the database
      *
      * @throws QUI\Exception
+     * @throws QUI\Database\Exception
      */
     public function save(): void
     {
@@ -552,18 +607,25 @@ class Group extends QUI\QDOM
         QUI::getEvents()->fireEvent('groupSaveBegin', [$this]);
         QUI::getEvents()->fireEvent('groupSave', [$this]);
 
-        QUI::getDataBase()->update(
-            Manager::table(),
-            [
-                'name' => $this->getAttribute('name'),
-                'rights' => json_encode($this->rights),
-                'extra' => json_encode($extra),
-                'avatar' => $avatar,
-                'assigned_toolbar' => $assignedToolbars,
-                'toolbar' => $toolbar
-            ],
-            ['uuid' => $this->getUUID()]
-        );
+        try {
+            QUI::getDataBaseConnection()->update(
+                QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
+                [
+                    'name' => $this->getAttribute('name'),
+                    'rights' => json_encode($this->rights),
+                    'extra' => json_encode($extra),
+                    'avatar' => $avatar,
+                    'assigned_toolbar' => $assignedToolbars,
+                    'toolbar' => $toolbar
+                ],
+                ['uuid' => $this->getUUID()]
+            );
+        } catch (\Doctrine\DBAL\Exception $DBALException) {
+            throw new Exception(
+                $DBALException->getMessage(),
+                (int)$DBALException->getCode()
+            );
+        }
 
         $this->createCache();
 
@@ -574,14 +636,22 @@ class Group extends QUI\QDOM
      * Activate the group
      *
      * @throws QUI\Exception
+     * @throws QUI\Database\Exception
      */
     public function activate(): void
     {
-        QUI::getDataBase()->update(
-            Manager::table(),
-            ['active' => 1],
-            ['uuid' => $this->getUUID()]
-        );
+        try {
+            QUI::getDataBaseConnection()->update(
+                QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
+                ['active' => 1],
+                ['uuid' => $this->getUUID()]
+            );
+        } catch (\Doctrine\DBAL\Exception $DBALException) {
+            throw new Exception(
+                $DBALException->getMessage(),
+                (int)$DBALException->getCode()
+            );
+        }
 
         $this->setAttribute('active', 1);
         $this->createCache();
@@ -593,14 +663,22 @@ class Group extends QUI\QDOM
      * deactivate the group
      *
      * @throws QUI\Exception
+     * @throws QUI\Database\Exception
      */
     public function deactivate(): void
     {
-        QUI::getDataBase()->update(
-            Manager::table(),
-            ['active' => 0],
-            ['uuid' => $this->getUUID()]
-        );
+        try {
+            QUI::getDataBaseConnection()->update(
+                QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
+                ['active' => 0],
+                ['uuid' => $this->getUUID()]
+            );
+        } catch (\Doctrine\DBAL\Exception $DBALException) {
+            throw new Exception(
+                $DBALException->getMessage(),
+                (int)$DBALException->getCode()
+            );
+        }
 
         $this->setAttribute('active', 0);
         $this->createCache();
@@ -666,6 +744,7 @@ class Group extends QUI\QDOM
     /**
      * @throws QUI\Groups\Exception
      * @throws QUI\Exception
+     * @throws QUI\Database\Exception
      */
     public function setParent(int | string $parentId): void
     {
@@ -707,11 +786,18 @@ class Group extends QUI\QDOM
 
         $this->setAttribute('parent', $NewParent->getId());
 
-        QUI::getDataBase()->update(
-            Manager::table(),
-            ['parent' => $NewParent->getUUID()],
-            ['uuid' => $this->getUUID()]
-        );
+        try {
+            QUI::getDataBaseConnection()->update(
+                QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
+                ['parent' => $NewParent->getUUID()],
+                ['uuid' => $this->getUUID()]
+            );
+        } catch (\Doctrine\DBAL\Exception $DBALException) {
+            throw new Exception(
+                $DBALException->getMessage(),
+                (int)$DBALException->getCode()
+            );
+        }
 
         QUI::getEvents()->fireEvent('setParent', [$this, $NewParent]);
     }
@@ -780,7 +866,7 @@ class Group extends QUI\QDOM
         try {
             $query = QUI::getQueryBuilder()
                 ->select('*')
-                ->from(QUI\Users\Manager::table())
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(QUI\Users\Manager::table()))
                 ->where('usergroup LIKE :groupLike OR usergroup = :groupEqual')
                 ->setParameter('groupLike', '%,' . $uuid . ',%')
                 ->setParameter('groupEqual', $uuid);
@@ -796,21 +882,29 @@ class Group extends QUI\QDOM
 
     /**
      * @throws QUI\Exception
+     * @throws QUI\Database\Exception
      */
     public function getUserByName(string $username): QUI\Interfaces\Users\User
     {
-        $result = QUI::getDataBase()->fetch([
-            'select' => 'id,uuid',
-            'from' => QUI\Users\Manager::table(),
-            'where' => [
-                'username' => $username,
-                'usergroup' => [
-                    'type' => '%LIKE%',
-                    'value' => ',' . $this->getUUID() . ','
-                ]
-            ],
-            'limit' => 1
-        ]);
+        try {
+            $row = QUI::getQueryBuilder()
+                ->select('id', 'uuid')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(QUI\Users\Manager::table()))
+                ->where('username = :username')
+                ->andWhere('usergroup LIKE :usergroup')
+                ->setParameter('username', $username)
+                ->setParameter('usergroup', '%,' . $this->getUUID() . ',%')
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchAssociative();
+        } catch (\Doctrine\DBAL\Exception $DBALException) {
+            throw new Exception(
+                $DBALException->getMessage(),
+                (int)$DBALException->getCode()
+            );
+        }
+
+        $result = $row ? [$row] : [];
 
         if (!isset($result[0])) {
             throw new QUI\Exception(
@@ -834,35 +928,47 @@ class Group extends QUI\QDOM
      */
     public function countUser(array $params = []): int
     {
-        $_params = [
-            'count' => [
-                'select' => 'id',
-                'as' => 'count'
-            ],
-            'from' => QUI\Users\Manager::table(),
-            'where' => [
-                'usergroup' => [
-                    'type' => '%LIKE%',
-                    'value' => "," . $this->getUUID() . ","
-                ]
-            ]
-        ];
+        try {
+            $QueryBuilder = QUI::getQueryBuilder()
+                ->select('id')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(QUI\Users\Manager::table()))
+                ->where('usergroup LIKE :usergroup')
+                ->setParameter('usergroup', '%,' . $this->getUUID() . ',%');
 
-        if (isset($params['order'])) {
-            $_params['order'] = $params['order'];
+            if (!empty($params['order'])) {
+                $order = explode(' ', (string)$params['order'], 2);
+                $QueryBuilder->orderBy($order[0], $order[1] ?? null);
+            }
+
+            if (isset($params['limit'])) {
+                $limit = explode(',', (string)$params['limit'], 2);
+
+                if (isset($limit[1])) {
+                    $QueryBuilder->setFirstResult((int)$limit[0]);
+                    $QueryBuilder->setMaxResults((int)$limit[1]);
+                } else {
+                    $QueryBuilder->setFirstResult((int)($params['start'] ?? 0));
+                    $QueryBuilder->setMaxResults((int)$limit[0]);
+                }
+            } elseif (isset($params['start'])) {
+                $QueryBuilder->setFirstResult((int)$params['start']);
+            }
+
+            $CountQueryBuilder = QUI::getQueryBuilder();
+            $count = $CountQueryBuilder
+                ->select('COUNT(*)')
+                ->from('(' . $QueryBuilder->getSQL() . ')', 'group_users')
+                ->setParameter('usergroup', '%,' . $this->getUUID() . ',%')
+                ->executeQuery()
+                ->fetchOne();
+        } catch (\Doctrine\DBAL\Exception $DBALException) {
+            throw new Exception(
+                $DBALException->getMessage(),
+                (int)$DBALException->getCode()
+            );
         }
 
-        if (isset($params['limit'])) {
-            $_params['limit'] = $params['limit'];
-        }
-
-        $result = QUI::getDataBase()->fetch($_params);
-
-        if (isset($result[0]['count'])) {
-            return $result[0]['count'];
-        }
-
-        return 0;
+        return (int)$count;
     }
 
     /**
@@ -924,8 +1030,8 @@ class Group extends QUI\QDOM
                     $Child->getAttributes(),
                     ['hasChildren' => $Child->hasChildren()]
                 );
-            } catch (QUI\Exception) {
-                // nothing
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
             }
         }
 
@@ -934,6 +1040,7 @@ class Group extends QUI\QDOM
 
     /**
      * @throws QUI\Exception
+     * @throws QUI\Database\Exception
      */
     public function createChild(string $name, ?QUI\Interfaces\Users\User $ParentUser = null): Group
     {
@@ -946,32 +1053,41 @@ class Group extends QUI\QDOM
         $create = true;
         $newId = false;
 
-        // @todo IMPORTANT!!! wird wahrscheinlich nicht mehr benötigt, da wir uuids nutzen?
-        while ($create) {
-            $rand = (int)(microtime(true) * 1_000_000);
-            mt_srand($rand);
-            $newId = mt_rand(10, 1_000_000_000);
+        try {
+            // @todo IMPORTANT!!! wird wahrscheinlich nicht mehr benötigt, da wir uuids nutzen?
+            while ($create) {
+                $rand = (int)(microtime(true) * 1_000_000);
+                mt_srand($rand);
+                $newId = mt_rand(10, 1_000_000_000);
 
-            $result = QUI::getDataBase()->fetch([
-                'select' => 'id',
-                'from' => Manager::table(),
-                'where' => [
-                    'id' => $newId
-                ]
-            ]);
+                $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
+                $row = QUI::getQueryBuilder()
+                    ->select('id')
+                    ->from($Platform->quoteSingleIdentifier(Manager::table()))
+                    ->where('id = :id')
+                    ->setParameter('id', $newId)
+                    ->setMaxResults(1)
+                    ->executeQuery()
+                    ->fetchAssociative();
 
-            if (!isset($result[0]) || !$result[0]['id']) {
-                $create = false;
+                if (!$row || !$row['id']) {
+                    $create = false;
+                }
             }
-        }
 
-        QUI::getDataBase()->insert(Manager::table(), [
-            'id' => $newId,
-            'uuid' => QUI\Utils\Uuid::get(),
-            'name' => $name,
-            'parent' => $this->getUUID(),
-            'active' => 0
-        ]);
+            QUI::getDataBaseConnection()->insert(QUI\Utils\Doctrine::quoteIdentifier(Manager::table()), [
+                'id' => $newId,
+                'uuid' => QUI\Utils\Uuid::get(),
+                'name' => $name,
+                'parent' => $this->getUUID(),
+                'active' => 0
+            ]);
+        } catch (\Doctrine\DBAL\Exception $DBALException) {
+            throw new Exception(
+                $DBALException->getMessage(),
+                (int)$DBALException->getCode()
+            );
+        }
 
         $Group = QUI::getGroups()->get($newId);
 

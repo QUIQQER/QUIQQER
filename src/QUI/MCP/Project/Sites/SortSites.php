@@ -54,7 +54,7 @@ class SortSites extends AbstractTool
 
                         $orderField++;
 
-                        QUI::getDataBase()->update(
+                        QUI::getDataBaseConnection()->update(
                             $Project->table(),
                             ['order_field' => $orderField],
                             ['id' => $id]
