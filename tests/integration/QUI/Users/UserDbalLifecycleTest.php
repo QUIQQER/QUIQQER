@@ -84,7 +84,6 @@ class UserDbalLifecycleTest extends TestCase
             $Connection->executeQuery(
                 'SELECT 1 FROM ' . QUI\Utils\Doctrine::quoteIdentifier(Manager::table()) . ' LIMIT 1'
             )->free();
-
             self::skipIfSystemHasNoSuperUser($Connection);
         } catch (Throwable $Exception) {
             self::markTestSkipped('QUIQQER database is not available: ' . $Exception->getMessage());
