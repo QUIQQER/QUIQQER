@@ -54,24 +54,24 @@ class Install
                 "UPDATE $table
                 SET lastedit = NULL
                 WHERE
-                    lastedit = '0000-00-00 00:00:00' OR
-                    lastedit = ''"
+                    CAST(lastedit AS CHAR) = '0000-00-00 00:00:00' OR
+                    CAST(lastedit AS CHAR) = ''"
             );
 
             $Connection->executeStatement(
                 "UPDATE $table
                 SET expire = NULL
                 WHERE
-                    expire = '0000-00-00 00:00:00' OR
-                    expire = ''"
+                    CAST(expire AS CHAR) = '0000-00-00 00:00:00' OR
+                    CAST(expire AS CHAR) = ''"
             );
 
             $Connection->executeStatement(
                 "UPDATE $table
                 SET birthday = NULL
                 WHERE
-                    birthday = '0000-00-00' OR
-                    birthday = ''"
+                    CAST(birthday AS CHAR) = '0000-00-00 00:00:00' OR
+                    CAST(birthday AS CHAR) = ''"
             );
         } catch (\Doctrine\DBAL\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
