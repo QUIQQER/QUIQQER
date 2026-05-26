@@ -452,7 +452,10 @@ class Utils
             $img .= ' srcset="' . implode(', ', $srcset) . '"';
         }
 
-        $img .= ' sizes="100cqw"';
+        if (empty($attributes['sizes'])) {
+            $img .= ' sizes="auto"';
+        }
+
         $img .= ' />';
 
         // picture html (nur ein picture, keine mehrfachen sources)
