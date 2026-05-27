@@ -458,7 +458,7 @@ class Utils
             && !empty($srcset)
             && isset($imageWidth)
         ) {
-            $img .= ' sizes="(max-width: ' . $imageWidth .'px) 100vw, ' . $imageWidth .'px"';
+            $img .= ' sizes="(max-width: ' . $imageWidth . 'px) 100vw, ' . $imageWidth . 'px"';
         }
 
         $img .= ' />';
