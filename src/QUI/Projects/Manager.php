@@ -361,7 +361,6 @@ class Manager
             'media_maxImageCacheSize' => '',
             'media_createCacheOnSave' => 1,
             'media_useImageScale' => 2,
-            'media_imageBatchesCount' => 3,
             'placeholder' => '',
             'logo' => '',
             'emailLogo' => '',

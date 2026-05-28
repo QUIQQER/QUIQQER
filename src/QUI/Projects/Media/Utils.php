@@ -17,7 +17,7 @@ use QUI\Utils\Text\XML;
 
 use function array_pop;
 use function array_shift;
-use function ceil;
+use function array_unique;
 use function count;
 use function explode;
 use function file_exists;
@@ -33,6 +33,7 @@ use function method_exists;
 use function preg_match;
 use function preg_replace;
 use function sha1_file;
+use function sort;
 use function str_replace;
 use function strpos;
 use function strrpos;
@@ -391,33 +392,66 @@ class Utils
             $imgMimeType = $Image->getAttribute('mime_type');
 
             if ($imageWidth) {
-                $end = $maxWidth && $imageWidth > $maxWidth ? $maxWidth : $imageWidth;
-                $batchesCount = (int)$Project->getConfig('media_imageBatchesCount');
+                $displayMax = $maxWidth && $imageWidth > $maxWidth ? $maxWidth : $imageWidth;
+                $srcsetMax = min($imageWidth, $displayMax * $imageScale);
+                $srcsetSizes = [
+                    16,
+                    32,
+                    48,
+                    64,
+                    96,
+                    128,
+                    160,
+                    192,
+                    240,
+                    320,
+                    360,
+                    400,
+                    480,
+                    640,
+                    768,
+                    960,
+                    1024,
+                    1280,
+                    1536,
+                    1920,
+                    2560,
+                    3840
+                ];
+                $widths = [];
 
-                if (!$batchesCount) {
-                    $batchesCount = 3;
+                foreach ($srcsetSizes as $srcsetSize) {
+                    if ($srcsetSize <= $srcsetMax) {
+                        $widths[] = $srcsetSize;
+                    }
                 }
 
-                $batchSize = ceil($end / $batchesCount) ?: 200;
-                $start = 16;
+                for ($x = 1; $x <= $imageScale; $x++) {
+                    $scaledWidth = $displayMax * $x;
+
+                    if ($scaledWidth <= $srcsetMax) {
+                        $widths[] = $scaledWidth;
+                    }
+                }
+
+                if ($imageWidth <= $srcsetMax) {
+                    $widths[] = $imageWidth;
+                }
+
+                $widths = array_unique($widths);
+                sort($widths);
+
                 $duplicate = [];
 
-                for (; $start < $end + $batchSize; $start += $batchSize) {
-                    $imageUrl = $Image->getSizeCacheUrl($start, $maxHeight);
+                foreach ($widths as $width) {
+                    $imageUrl = $Image->getSizeCacheUrl($width, $maxHeight);
 
                     if (isset($duplicate[$imageUrl])) {
                         continue;
                     }
-                    $duplicate[$imageUrl] = true;
-                    $srcset[] = htmlspecialchars($host . $imageUrl) . ' ' . $start . 'w';
 
-                    // Retina/HiDPI
-                    for ($x = 2; $x <= $imageScale; $x++) {
-                        if ($imageWidth > $start * $x) {
-                            $src2x = $Image->getSizeCacheUrl($start * $x);
-                            $srcset[] = htmlspecialchars($host . $src2x) . ' ' . ($start * $x) . 'w';
-                        }
-                    }
+                    $duplicate[$imageUrl] = true;
+                    $srcset[] = htmlspecialchars($host . $imageUrl) . ' ' . $width . 'w';
                 }
             }
         } catch (QUI\Exception $Exception) {
