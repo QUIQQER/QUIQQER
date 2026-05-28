@@ -1,8 +1,14 @@
 <div class="quiqqer-breadcrumb-wrapper">
     <div class="quiqqer-breadcrumb-container">
+        {if $this->getAttribute('showTitle')}
         <span class="quiqqer-breadcrumb-title">
+            {if $this->getAttribute('titleText')}
+                {$this->getAttribute('titleText')|escape:'html'}
+            {else}
             {locale group="quiqqer/core" value="control.breadcrumb.text"}
+            {/if}
         </span>
+        {/if}
 
         <ul class="fa-ul quiqqer-breadcrumb-list"
             itemscope itemtype="https://schema.org/BreadcrumbList"
@@ -13,16 +19,20 @@
             {assign var=Site value=$Rewrite->getSite()}
             {assign var=First value=$Project->firstChild()}
             {assign var=Number value=count($Path)}
-
+            {assign var=PositionOffset value=1}
             {if $Site->getId() === 1}
+            {assign var=PositionOffset value=2}
             <li itemprop="itemListElement" itemscope
-                itemtype="https://schema.org/ListItem">
+                class="quiqqer-breadcrumb-list-element{if $Number === 0} is-current{/if}"
+                itemtype="https://schema.org/ListItem"
+            >
                 <a href="{url site=$First}"
+                   class="quiqqer-breadcrumb-link"
                    title="{$First->getAttribute('title')|escape:'html'}"
                    itemprop="item"
                 >
-                    <span class="fa fa-angle-right"></span>
-                    <span itemprop="name">{$First->getAttribute('title')}</span>
+                    <span class="quiqqer-breadcrumb-link-text"
+                          itemprop="name">{$First->getAttribute('title')}</span>
                 </a>
                 <meta itemprop="position" content="1">
             </li>
@@ -30,22 +40,25 @@
 
             {foreach from=$Path key=i item=Crumb}
             <li itemprop="itemListElement" itemscope
-                class="quiqqer-breadcrumb-list-element"
+                class="quiqqer-breadcrumb-list-element{if $i+1 >= $Number} is-current{/if}"
                 itemtype="https://schema.org/ListItem"
             >
+                {if $Site->getId() === 1 || $i > 0}
+                <span class="quiqqer-breadcrumb-separator{if $separatorConfig.type === 'icon'} quiqqer-breadcrumb-separator--icon fa {$separatorConfig.class}{else} quiqqer-breadcrumb-separator--text{/if}"
+                      aria-hidden="true"
+                >{if $separatorConfig.type === 'text'}{$separatorConfig.text|escape:'html'}{/if}</span>
+                {/if}
                 <a href="{url site=$Crumb}"
                    class="quiqqer-breadcrumb-link"
                    title="{$Crumb->getAttribute('title')|escape:'html'}"
                    itemprop="item"
                 >
-                    <span class="fa fa-angle-right breadcrumb-list-element-icon"></span>
                     <span class="quiqqer-breadcrumb-link-text"
                           itemprop="name">{$Crumb->getAttribute('title')}</span>
                 </a>
-                <meta itemprop="position" content="{$i + 1}">
+                <meta itemprop="position" content="{$i + $PositionOffset}">
             </li>
             {/foreach}
         </ul>
     </div>
-    <span class="breadcrumb-shadow"></span>
 </div>
