@@ -359,6 +359,7 @@ class Utils
 
             $Project = $Image->getMedia()->getProject();
             $imageWidth = (int)$Image->getWidth();
+//            $imageHeight = (int)$Image->getHeight();
             $maxWidth = false;
             $maxHeight = false;
 
@@ -389,7 +390,7 @@ class Utils
                 $imageScale = 2;
             }
 
-            $imgMimeType = $Image->getAttribute('mime_type');
+//            $imgMimeType = $Image->getAttribute('mime_type');
 
             if ($imageWidth) {
                 $displayMax = $maxWidth && $imageWidth > $maxWidth ? $maxWidth : $imageWidth;
@@ -486,7 +487,14 @@ class Utils
             $img .= ' srcset="' . implode(', ', $srcset) . '"';
         }
 
-        $img .= ' sizes="100cqw"';
+        if (
+            empty($attributes['sizes'])
+            && !empty($srcset)
+            && isset($imageWidth)
+        ) {
+            $img .= ' sizes="(max-width: ' . $imageWidth . 'px) 100vw, ' . $imageWidth . 'px"';
+        }
+
         $img .= ' />';
 
         // picture html (nur ein picture, keine mehrfachen sources)

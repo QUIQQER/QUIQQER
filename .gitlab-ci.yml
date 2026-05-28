@@ -3,8 +3,8 @@ include:
 
 trigger-build-of-testing-docker-image:
   needs:
-    - release
-  stage: release
+    - trigger-update-server-on-protected-branch-push
+  stage: deploy
   image: curlimages/curl
   variables:
     RELEASED_VERSION_ARTIFACT: .RELEASED_VERSION.txt
