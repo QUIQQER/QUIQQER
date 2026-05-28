@@ -4813,15 +4813,6 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
             ]]></en>
         </locale>
 
-        <locale name="projects.project.settings.panel.mediaSettings.media_imageBatchesCount">
-            <en><![CDATA[Adaptive images]]></en>
-        </locale>
-        <locale name="projects.project.settings.panel.mediaSettings.media_imageBatchesCount.description">
-            <en><![CDATA[
-            Downscaling: Images are automatically offered by QUIQQER in different sizes.
-            The setting determines the number of different image sizes. (Default: 3)
-            ]]></en>
-        </locale>
 
         <locale name="watermark.position.bottom.right">
             <en><![CDATA[bottom right]]></en>

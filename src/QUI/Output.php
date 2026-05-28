@@ -38,6 +38,7 @@ use function parse_str;
 use function parse_url;
 use function preg_replace;
 use function preg_replace_callback;
+use function preg_split;
 use function set_time_limit;
 use function str_replace;
 use function strpos;
@@ -147,11 +148,7 @@ class Output extends Singleton
         );
 
         if ($this->settings['use-absolute-urls']) {
-            $content = preg_replace_callback(
-                '#(href|src)="(.*?)([^"]*)#',
-                $this->absoluteUrls(...),
-                $content
-            );
+            $content = $this->parseAbsoluteUrls($content);
         }
 
 
@@ -296,6 +293,10 @@ class Output extends Singleton
         );
 
         $result = str_replace('<?xml encoding="utf-8" ?>', '', $result);
+
+        if ($this->settings['use-absolute-urls']) {
+            $result = $this->parseAbsoluteUrls($result);
+        }
 
         QUI::getEvents()->fireEvent('outputParseEnd', [&$result]);
 
@@ -992,6 +993,21 @@ class Output extends Singleton
         return $result;
     }
 
+    protected function parseAbsoluteUrls(string $content): string
+    {
+        $content = preg_replace_callback(
+            '#(href|src)="([^"]*)"#i',
+            $this->absoluteUrls(...),
+            $content
+        );
+
+        return preg_replace_callback(
+            '#srcset="([^"]*)"#i',
+            $this->absoluteSrcsetUrls(...),
+            $content
+        );
+    }
+
     /**
      * Set a host to all urls
      */
@@ -999,22 +1015,73 @@ class Output extends Singleton
     {
         $html = $output[0];
 
-        if (!isset($output[1]) || !isset($output[2]) || !isset($output[3])) {
+        if (!isset($output[1]) || !isset($output[2])) {
             return $html;
         }
 
-        $url = $output[3];
+        $url = $this->getAbsoluteUrl($output[2]);
 
-        if (str_contains($url, 'https://') || str_contains($url, 'http://')) {
+        if ($url === $output[2]) {
             return $html;
+        }
+
+        return $output[1] . '="' . $url . '"';
+    }
+
+    /**
+     * Set a host to all srcset urls
+     */
+    protected function absoluteSrcsetUrls($output): string
+    {
+        $html = $output[0];
+
+        if (!isset($output[1])) {
+            return $html;
+        }
+
+        $srcset = trim($output[1]);
+
+        if ($srcset === '') {
+            return $html;
+        }
+
+        $sources = array_map('trim', explode(',', $srcset));
+
+        foreach ($sources as $key => $source) {
+            if ($source === '') {
+                continue;
+            }
+
+            $parts = preg_split('/\s+/', $source, 2);
+            $url = $this->getAbsoluteUrl($parts[0]);
+
+            if (isset($parts[1])) {
+                $sources[$key] = $url . ' ' . $parts[1];
+                continue;
+            }
+
+            $sources[$key] = $url;
+        }
+
+        return 'srcset="' . implode(', ', $sources) . '"';
+    }
+
+    protected function getAbsoluteUrl(string $url): string
+    {
+        if (str_contains($url, 'https://') || str_contains($url, 'http://')) {
+            return $url;
+        }
+
+        if (str_starts_with($url, '//')) {
+            return $url;
         }
 
         if (str_contains($url, 'data:') || empty($url)) {
-            return $html;
+            return $url;
         }
 
         if (str_starts_with($url, 'mailto:')) {
-            return $html;
+            return $url;
         }
 
         $host = HOST;
@@ -1030,6 +1097,6 @@ class Output extends Singleton
         $host = trim($host, '/') . '/';
         $url = trim($url, '/');
 
-        return $output[1] . '="' . $host . $url . '"';
+        return $host . $url;
     }
 }

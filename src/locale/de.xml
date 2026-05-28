@@ -4968,15 +4968,6 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             3x und mehr steht für noch höher auflösende Displays. (Standard: 2x)
             ]]></de>
         </locale>
-        <locale name="projects.project.settings.panel.mediaSettings.media_imageBatchesCount">
-            <de><![CDATA[Adaptive Bilder]]></de>
-        </locale>
-        <locale name="projects.project.settings.panel.mediaSettings.media_imageBatchesCount.description">
-            <de><![CDATA[
-            Downscaling: Bilder werden von QUIQQER automatisch in verschiedene Größen angeboten.
-            Das Setting bestimmt die Anzahl der unterschiedlichen Bildgrössen. (Standard: 3)
-            ]]></de>
-        </locale>
 
 
         <locale name="watermark.position.bottom.right">
