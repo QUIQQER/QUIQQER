@@ -317,6 +317,7 @@ class Utils
         $md5 = md5(
             serialize([
                 'attributes' => $attributes,
+                'responsiveImageVersion' => 2,
                 'src' => $src,
                 'withHost' => $withHost
             ])
@@ -344,6 +345,7 @@ class Utils
         $srcset = [];
         $host = '';
         $imgMimeType = '';
+        $displayWidth = null;
 
         try {
             $originalSrc = urldecode($src);
@@ -359,7 +361,7 @@ class Utils
 
             $Project = $Image->getMedia()->getProject();
             $imageWidth = (int)$Image->getWidth();
-//            $imageHeight = (int)$Image->getHeight();
+            $imageHeight = (int)$Image->getHeight();
             $maxWidth = false;
             $maxHeight = false;
 
@@ -393,8 +395,24 @@ class Utils
 //            $imgMimeType = $Image->getAttribute('mime_type');
 
             if ($imageWidth) {
-                $displayMax = $maxWidth && $imageWidth > $maxWidth ? $maxWidth : $imageWidth;
-                $srcsetMax = min($imageWidth, $displayMax * $imageScale);
+                $displayWidth = $imageWidth;
+
+                if ($maxWidth) {
+                    $displayWidth = min($displayWidth, $maxWidth);
+                }
+
+                if ($maxHeight && $imageHeight) {
+                    $displayWidth = min(
+                        $displayWidth,
+                        (int)round($imageWidth * ($maxHeight / $imageHeight))
+                    );
+                }
+
+                if ($displayWidth <= 0) {
+                    $displayWidth = $imageWidth;
+                }
+
+                $sourceMaxWidth = min($imageWidth, $displayWidth * $imageScale);
                 $srcsetSizes = [
                     16,
                     32,
@@ -422,20 +440,20 @@ class Utils
                 $widths = [];
 
                 foreach ($srcsetSizes as $srcsetSize) {
-                    if ($srcsetSize <= $srcsetMax) {
+                    if ($srcsetSize <= $sourceMaxWidth) {
                         $widths[] = $srcsetSize;
                     }
                 }
 
                 for ($x = 1; $x <= $imageScale; $x++) {
-                    $scaledWidth = $displayMax * $x;
+                    $scaledWidth = $displayWidth * $x;
 
-                    if ($scaledWidth <= $srcsetMax) {
+                    if ($scaledWidth <= $sourceMaxWidth) {
                         $widths[] = $scaledWidth;
                     }
                 }
 
-                if ($imageWidth <= $srcsetMax) {
+                if ($imageWidth <= $sourceMaxWidth) {
                     $widths[] = $imageWidth;
                 }
 
@@ -490,9 +508,9 @@ class Utils
         if (
             empty($attributes['sizes'])
             && !empty($srcset)
-            && isset($imageWidth)
+            && isset($displayWidth)
         ) {
-            $img .= ' sizes="(max-width: ' . $imageWidth . 'px) 100vw, ' . $imageWidth . 'px"';
+            $img .= ' sizes="(max-width: ' . $displayWidth . 'px) 100vw, ' . $displayWidth . 'px"';
         }
 
         $img .= ' />';
