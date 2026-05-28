@@ -701,9 +701,30 @@ define('controls/users/User', [
                 }
 
                 if (Groups) {
-                    QUI.Controls.getById(Groups.get('data-quiid')).addEvent('change', function () {
+                    const GroupControl = QUI.Controls.getById(Groups.get('data-quiid'));
+                    const normalizeGroups = function (value) {
+                        if (!value) {
+                            return '';
+                        }
+
+                        return String(value).split(',').filter(function (groupId) {
+                            return groupId !== '';
+                        }).join(',');
+                    };
+
+                    let userGroups = normalizeGroups(self.getUser().getAttribute('usergroup'));
+
+                    GroupControl.addEvent('change', function () {
+                        const groupValue = normalizeGroups(GroupControl.getValue());
+
+                        if (groupValue === userGroups) {
+                            return;
+                        }
+
                         self.Loader.show();
                         self.$onClickSave().then(function () {
+                            userGroups = groupValue;
+
                             QUI.Controls.getById(
                                 Body.getElement('[name="assigned_toolbar"]').get('data-quiid')
                             ).fireEvent('change');
@@ -853,7 +874,17 @@ define('controls/users/User', [
         /**
          * Refresh the Panel if the user is refreshed
          */
-        $onUserRefresh: function () {
+        $onUserRefresh: function (Users, User) {
+            const userId = this.getUser().getId();
+
+            if (User && User.getId && User.getId() != userId) {
+                return;
+            }
+
+            if (User && !User.getId && typeof User === 'object' && typeof User[userId] === 'undefined') {
+                return;
+            }
+
             this.setAttribute('title', QUILocale.get(lg, 'users.user.title', {
                 username: this.getUser().getAttribute('username')
             }));
