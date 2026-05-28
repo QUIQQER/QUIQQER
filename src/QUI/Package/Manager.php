@@ -862,7 +862,10 @@ class Manager extends QUI\QDOM
             $list = QUI\Cache\LongTermCache::get(self::CACHE_NAME_TYPES);
 
             if (is_array($list)) {
-                $this->list = $list;
+                $this->list = array_values(array_filter($list, static function ($entry) {
+                    return ($entry['name'] ?? '') !== 'quiqqer/qui';
+                }));
+
                 return $this->list;
             }
         } catch (QUI\Exception) {
@@ -885,6 +888,10 @@ class Manager extends QUI\QDOM
 
         if (is_array($list)) {
             foreach ($list as $entry) {
+                if (($entry['name'] ?? '') === 'quiqqer/qui') {
+                    continue;
+                }
+
                 if (!isset($entry['type'])) {
                     $result[] = $entry;
                     continue;
