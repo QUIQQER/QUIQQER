@@ -1035,6 +1035,12 @@ define('controls/users/Panel', [
                 userGroups = [];
             }
 
+            userGroups = userGroups.map(function (group) {
+                return String(group).trim();
+            }).filter(function (group) {
+                return group !== '' && group !== '0';
+            });
+
             groups = document.createElement('div');
             groups.style.display = 'flex';
             groups.style.gap = '0.5rem';
@@ -1054,12 +1060,22 @@ define('controls/users/Panel', [
                 ) {
                     require(['Groups'], (GroupManager) => {
                         const groupInstance = GroupManager.get(group);
+                        const renderGroupName = function () {
+                            const groupName = groupInstance.getName();
+
+                            if (!groupName) {
+                                node.destroy();
+                                return;
+                            }
+
+                            node.innerHTML = groupName;
+                        };
 
                         if (groupInstance.isLoaded()) {
-                            node.innerHTML = groupInstance.getName();
+                            renderGroupName();
                         } else {
-                            groupInstance.load().then(() => {
-                                node.innerHTML = groupInstance.getName();
+                            groupInstance.load().then(renderGroupName).catch(() => {
+                                node.destroy();
                             });
                         }
                     });
