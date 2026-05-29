@@ -13,6 +13,16 @@ use QUI;
  */
 class Breadcrumb extends QUI\Control
 {
+    private const DEFAULT_FONT_SIZE = '0.9em';
+
+    protected array $allowedFontSizes = [
+        'xs' => '0.75em',
+        's' => '0.9em',
+        'normal' => '1em',
+        'lg' => '1.25em',
+        'xl' => '1.5em'
+    ];
+
     protected array $allowedSeparators = [
         'angle-right',
         'chevron-right',
@@ -34,12 +44,12 @@ class Breadcrumb extends QUI\Control
     {
         // default options
         $this->setAttributes([
-            'class' => 'quiqqer-breadcrumb',
-            'controlHeight' => 40,
+            'class' => 'quiqqer-core-controls-breadcrumb',
             'layout' => 'slider',
             'showTitle' => true,
             'titleText' => '',
-            'fontSize' => '0.9em',
+            'firstItemText' => '',
+            'fontSize' => 's',
             'separator' => 'angle-right',
             'lastItemStyle' => 'primary'
         ]);
@@ -81,17 +91,14 @@ class Breadcrumb extends QUI\Control
             'separatorConfig' => $separatorConfig
         ]);
 
-        $this->setAttribute(
-            'height',
-            (int)$this->getAttribute('controlHeight') . 'px'
-        );
+        if ($fontSize !== self::DEFAULT_FONT_SIZE) {
+            $this->setCustomVariable('font-size', $fontSize);
+        }
 
-        $this->setStyle('height', $this->getAttribute('controlHeight'));
-        $this->setStyle('font-size', $fontSize);
         $this->setAttribute('data-qui-breadcrumb-separator', $separator);
         $this->setAttribute('data-qui-breadcrumb-last-item-style', $lastItemStyle);
-        $this->addCSSClass('quiqqer-breadcrumb--separator-' . $separator);
-        $this->addCSSClass('quiqqer-breadcrumb--last-item-' . $lastItemStyle);
+        $this->addCSSClass('quiqqer-core-controls-breadcrumb--separator-' . $separator);
+        $this->addCSSClass('quiqqer-core-controls-breadcrumb--last-item-' . $lastItemStyle);
 
         $layout = strtolower($this->getAttribute('layout'));
 
@@ -123,6 +130,12 @@ class Breadcrumb extends QUI\Control
         return $Engine->fetch(__DIR__ . $template);
     }
 
+    /**
+     * Normalize the configured separator and apply the default fallback.
+     *
+     * @param string $separator
+     * @return string
+     */
     protected function normalizeSeparator(string $separator): string
     {
         if (!in_array($separator, $this->allowedSeparators, true)) {
@@ -132,6 +145,12 @@ class Breadcrumb extends QUI\Control
         return $separator;
     }
 
+    /**
+     * Normalize the configured last item style and apply the default fallback.
+     *
+     * @param string $lastItemStyle
+     * @return string
+     */
     protected function normalizeLastItemStyle(string $lastItemStyle): string
     {
         if (!in_array($lastItemStyle, $this->allowedLastItemStyles, true)) {
@@ -141,15 +160,27 @@ class Breadcrumb extends QUI\Control
         return $lastItemStyle;
     }
 
+    /**
+     * Resolve the configured font size preset to its CSS value.
+     *
+     * @param string $fontSize
+     * @return string
+     */
     protected function normalizeFontSize(string $fontSize): string
     {
-        if (preg_match('/^\d+(?:\.\d+)?(?:em|rem|px|%)$/', $fontSize)) {
-            return $fontSize;
+        if (isset($this->allowedFontSizes[$fontSize])) {
+            return $this->allowedFontSizes[$fontSize];
         }
 
-        return '0.9em';
+        return $this->allowedFontSizes['s'];
     }
 
+    /**
+     * Return the template config for the configured separator style.
+     *
+     * @param string $separator
+     * @return array{type: string, class: string, text: string}
+     */
     protected function getSeparatorConfig(string $separator): array
     {
         switch ($separator) {
@@ -203,5 +234,21 @@ class Breadcrumb extends QUI\Control
                     'text' => ''
                 ];
         }
+    }
+
+    /**
+     * Write an internal control CSS variable to the root element style.
+     *
+     * @param string $name
+     * @param string $value
+     * @return void
+     */
+    private function setCustomVariable(string $name, string $value): void
+    {
+        if ($name === '' || $value === '') {
+            return;
+        }
+
+        $this->setStyle('--_q-controlConf-' . $name, $value);
     }
 }

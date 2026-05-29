@@ -1,20 +1,13 @@
-.quiqqer-breadcrumb {
-    position: relative;
-    width: 100%;
-    height: 40px;
+.quiqqer-core-controls-breadcrumb {
+    --_font-size: var(--quiqqer-core-controls-breadcrumb-font-size, var(--_q-controlConf-font-size, 0.9em));
+    --_mask-size: var(--quiqqer-core-controls-breadcrumb-mask-size, 1.5rem);
+
+    font-size: var(--_font-size);
 }
 
-.quiqqer-breadcrumb-wrapper {
-    height: 100%;
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-}
-
-.quiqqer-breadcrumb-container {
-    --qui-breadcrumb-mask-size: 1.5rem;
-    --qui-breadcrumb-mask-start: 0px;
-    --qui-breadcrumb-mask-end: 0px;
+.quiqqer-core-controls-breadcrumb-container {
+    --_mask-start: 0px;
+    --_mask-end: 0px;
 
     -ms-overflow-style: none;
     align-items: center;
@@ -24,86 +17,86 @@
     mask-image: linear-gradient(
         to right,
         transparent 0,
-        #000 var(--qui-breadcrumb-mask-start),
-        #000 calc(100% - var(--qui-breadcrumb-mask-end)),
+        #000 var(--_mask-start),
+        #000 calc(100% - var(--_mask-end)),
         transparent 100%
     );
     overflow-x: auto;
     overflow-y: hidden;
     scrollbar-width: none;
     transition-duration: 0.2s;
-    transition-property: --qui-breadcrumb-mask-start, --qui-breadcrumb-mask-end;
+    transition-property: --_mask-start, --_mask-end;
     white-space: nowrap;
     width: 100%;
     -webkit-overflow-scrolling: touch;
     -webkit-mask-image: linear-gradient(
         to right,
         transparent 0,
-        #000 var(--qui-breadcrumb-mask-start),
-        #000 calc(100% - var(--qui-breadcrumb-mask-end)),
+        #000 var(--_mask-start),
+        #000 calc(100% - var(--_mask-end)),
         transparent 100%
     );
 }
 
-.quiqqer-breadcrumb-container::-webkit-scrollbar {
+.quiqqer-core-controls-breadcrumb-container::-webkit-scrollbar {
     display: none;
 }
 
-.quiqqer-breadcrumb-container--draggable {
+.quiqqer-core-controls-breadcrumb-container--draggable {
     cursor: grab;
 }
 
-.quiqqer-breadcrumb-container--draggable a {
+.quiqqer-core-controls-breadcrumb-container--draggable a {
     -webkit-user-drag: none;
 }
 
-.quiqqer-breadcrumb-container--draggable.is-dragging {
+.quiqqer-core-controls-breadcrumb-container--draggable.is-dragging {
     cursor: grabbing;
     user-select: none;
     -webkit-user-select: none;
 }
 
-.quiqqer-breadcrumb-container--draggable.is-dragging a {
+.quiqqer-core-controls-breadcrumb-container--draggable.is-dragging a {
     pointer-events: none;
 }
 
-.quiqqer-breadcrumb-title {
+.quiqqer-core-controls-breadcrumb-title {
     display: inline-flex;
     flex: 0 0 auto;
 }
 
-.quiqqer-breadcrumb ul {
+.quiqqer-core-controls-breadcrumb ul {
     align-items: center;
     display: inline-flex;
     flex: 0 0 auto;
-    gap: 0.9375rem;
+    gap: 0.75rem;
     margin: 0;
     min-width: max-content;
     padding: 0 !important;
     white-space: nowrap;
 }
 
-.quiqqer-breadcrumb ul li {
+.quiqqer-core-controls-breadcrumb ul li {
     align-items: center;
     display: inline-flex;
     flex: 0 0 auto;
-    gap: 0.9375rem;
+    gap: 0.75rem;
     margin: 0;
     overflow: visible;
     padding-left: 0;
 }
 
-.quiqqer-breadcrumb-link {
+.quiqqer-core-controls-breadcrumb-link {
     align-items: center;
     display: inline-flex;
     text-decoration: none;
 }
 
-.quiqqer-breadcrumb-list-element:not(.is-current):not(:hover, :active) .quiqqer-breadcrumb-link {
+.quiqqer-core-controls-breadcrumb-list-element:not(.is-current):not(:hover, :active) .quiqqer-core-controls-breadcrumb-link {
     color: inherit;
 }
 
-.quiqqer-breadcrumb-separator {
+.quiqqer-core-controls-breadcrumb-separator {
     align-items: center;
     color: inherit;
     display: inline-flex;
@@ -114,16 +107,16 @@
 
 
 
-.quiqqer-breadcrumb--last-item-primary .quiqqer-breadcrumb-list-element.is-current .quiqqer-breadcrumb-link {
+.quiqqer-core-controls-breadcrumb--last-item-primary .quiqqer-core-controls-breadcrumb-list-element.is-current .quiqqer-core-controls-breadcrumb-link {
     /*color: var(--qui-colors-primary, currentColor);*/
 }
 
-.quiqqer-breadcrumb--last-item-bold .quiqqer-breadcrumb-list-element.is-current .quiqqer-breadcrumb-link,
-.quiqqer-breadcrumb--last-item-primary-bold .quiqqer-breadcrumb-list-element.is-current .quiqqer-breadcrumb-link {
+.quiqqer-core-controls-breadcrumb--last-item-bold .quiqqer-core-controls-breadcrumb-list-element.is-current .quiqqer-core-controls-breadcrumb-link,
+.quiqqer-core-controls-breadcrumb--last-item-primary-bold .quiqqer-core-controls-breadcrumb-list-element.is-current .quiqqer-core-controls-breadcrumb-link {
     font-weight: 700;
 }
 
-.quiqqer-breadcrumb--last-item-primary-bold .quiqqer-breadcrumb-list-element.is-current .quiqqer-breadcrumb-link {
+.quiqqer-core-controls-breadcrumb--last-item-primary-bold .quiqqer-core-controls-breadcrumb-list-element.is-current .quiqqer-core-controls-breadcrumb-link {
     /*--color: var(--qui-colors-primary, currentColor);*/
     /*--color--hover: var(--qui-colors-primary, currentColor);*/
 }

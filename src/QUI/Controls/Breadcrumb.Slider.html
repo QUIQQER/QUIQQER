@@ -1,64 +1,64 @@
-<div class="quiqqer-breadcrumb-wrapper">
-    <div class="quiqqer-breadcrumb-container">
-        {if $this->getAttribute('showTitle')}
-        <span class="quiqqer-breadcrumb-title">
-            {if $this->getAttribute('titleText')}
-                {$this->getAttribute('titleText')|escape:'html'}
-            {else}
-            {locale group="quiqqer/core" value="control.breadcrumb.text"}
-            {/if}
-        </span>
+<div class="quiqqer-core-controls-breadcrumb-container" data-name="container">
+    {if $this->getAttribute('showTitle')}
+    <span class="quiqqer-core-controls-breadcrumb-title" data-name="title">
+        {if $this->getAttribute('titleText')}
+            {$this->getAttribute('titleText')|escape:'html'}
+        {else}
+        {locale group="quiqqer/core" value="control.breadcrumb.text"}
+        {/if}
+    </span>
+    {/if}
+
+    <ul class="fa-ul quiqqer-core-controls-breadcrumb-list"
+        data-name="list"
+        itemscope itemtype="https://schema.org/BreadcrumbList"
+    >
+        {assign var=Path value=$Rewrite->getPath()}
+        {assign var=Project value=$Rewrite->getProject()}
+        {assign var=Site value=$Rewrite->getSite()}
+        {assign var=First value=$Project->firstChild()}
+        {assign var=Number value=count($Path)}
+        {assign var=PositionOffset value=1}
+        {if $Site->getId() === 1}
+        {assign var=PositionOffset value=2}
+        <li itemprop="itemListElement" itemscope
+            class="quiqqer-core-controls-breadcrumb-list-element{if $Number === 0} is-current{/if}"
+            data-name="item"
+            itemtype="https://schema.org/ListItem"
+        >
+            <a href="{url site=$First}"
+               class="quiqqer-core-controls-breadcrumb-link"
+               title="{$First->getAttribute('title')|escape:'html'}"
+               itemprop="item"
+            >
+                <span class="quiqqer-core-controls-breadcrumb-link-text"
+                      itemprop="name">{if $this->getAttribute('firstItemText')}{$this->getAttribute('firstItemText')|escape:'html'}{else}{$First->getAttribute('title')}{/if}</span>
+            </a>
+            <meta itemprop="position" content="1">
+        </li>
         {/if}
 
-        <ul class="fa-ul quiqqer-breadcrumb-list"
-            itemscope itemtype="https://schema.org/BreadcrumbList"
-            style="height: {$this->getAttribute('height')};"
+        {foreach from=$Path key=i item=Crumb}
+        <li itemprop="itemListElement" itemscope
+            class="quiqqer-core-controls-breadcrumb-list-element{if $i+1 >= $Number} is-current{/if}"
+            data-name="item"
+            itemtype="https://schema.org/ListItem"
         >
-            {assign var=Path value=$Rewrite->getPath()}
-            {assign var=Project value=$Rewrite->getProject()}
-            {assign var=Site value=$Rewrite->getSite()}
-            {assign var=First value=$Project->firstChild()}
-            {assign var=Number value=count($Path)}
-            {assign var=PositionOffset value=1}
-            {if $Site->getId() === 1}
-            {assign var=PositionOffset value=2}
-            <li itemprop="itemListElement" itemscope
-                class="quiqqer-breadcrumb-list-element{if $Number === 0} is-current{/if}"
-                itemtype="https://schema.org/ListItem"
-            >
-                <a href="{url site=$First}"
-                   class="quiqqer-breadcrumb-link"
-                   title="{$First->getAttribute('title')|escape:'html'}"
-                   itemprop="item"
-                >
-                    <span class="quiqqer-breadcrumb-link-text"
-                          itemprop="name">{$First->getAttribute('title')}</span>
-                </a>
-                <meta itemprop="position" content="1">
-            </li>
+            {if $Site->getId() === 1 || $i > 0}
+            <span class="quiqqer-core-controls-breadcrumb-separator{if $separatorConfig.type === 'icon'} quiqqer-core-controls-breadcrumb-separator--icon fa {$separatorConfig.class}{else} quiqqer-core-controls-breadcrumb-separator--text{/if}"
+                  aria-hidden="true"
+            >{if $separatorConfig.type === 'text'}{$separatorConfig.text|escape:'html'}{/if}</span>
             {/if}
-
-            {foreach from=$Path key=i item=Crumb}
-            <li itemprop="itemListElement" itemscope
-                class="quiqqer-breadcrumb-list-element{if $i+1 >= $Number} is-current{/if}"
-                itemtype="https://schema.org/ListItem"
+            <a href="{url site=$Crumb}"
+               class="quiqqer-core-controls-breadcrumb-link"
+               title="{$Crumb->getAttribute('title')|escape:'html'}"
+               itemprop="item"
             >
-                {if $Site->getId() === 1 || $i > 0}
-                <span class="quiqqer-breadcrumb-separator{if $separatorConfig.type === 'icon'} quiqqer-breadcrumb-separator--icon fa {$separatorConfig.class}{else} quiqqer-breadcrumb-separator--text{/if}"
-                      aria-hidden="true"
-                >{if $separatorConfig.type === 'text'}{$separatorConfig.text|escape:'html'}{/if}</span>
-                {/if}
-                <a href="{url site=$Crumb}"
-                   class="quiqqer-breadcrumb-link"
-                   title="{$Crumb->getAttribute('title')|escape:'html'}"
-                   itemprop="item"
-                >
-                    <span class="quiqqer-breadcrumb-link-text"
-                          itemprop="name">{$Crumb->getAttribute('title')}</span>
-                </a>
-                <meta itemprop="position" content="{$i + $PositionOffset}">
-            </li>
-            {/foreach}
-        </ul>
-    </div>
+                <span class="quiqqer-core-controls-breadcrumb-link-text"
+                      itemprop="name">{if $Site->getId() !== 1 && $i === 0 && $this->getAttribute('firstItemText')}{$this->getAttribute('firstItemText')|escape:'html'}{else}{$Crumb->getAttribute('title')}{/if}</span>
+            </a>
+            <meta itemprop="position" content="{$i + $PositionOffset}">
+        </li>
+        {/foreach}
+    </ul>
 </div>

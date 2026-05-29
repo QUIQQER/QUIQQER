@@ -58,7 +58,7 @@ define('package/quiqqer/core/bin/Controls/BreadcrumbSlider', [
 
         $onImport: function ()
         {
-            this.$Container = this.getElm().getElement('.quiqqer-breadcrumb-container');
+            this.$Container = this.getElm().getElement('[data-name="container"]');
 
             if (!this.$Container) {
                 return;
@@ -81,7 +81,7 @@ define('package/quiqqer/core/bin/Controls/BreadcrumbSlider', [
                 });
                 document.addEventListener('mouseup', this.$onMouseUp);
                 window.addEventListener('blur', this.$onMouseUp);
-                this.$Container.addClass('quiqqer-breadcrumb-container--draggable');
+                this.$Container.addClass('quiqqer-core-controls-breadcrumb-container--draggable');
             }
 
             this.$alignToEnd();
@@ -154,13 +154,13 @@ define('package/quiqqer/core/bin/Controls/BreadcrumbSlider', [
                 this.$Container.scrollWidth - this.$tolerance;
 
             this.$Container.style.setProperty(
-                '--qui-breadcrumb-mask-start',
-                hasOverflow && !isAtStart ? 'var(--qui-breadcrumb-mask-size)' : '0px'
+                '--_mask-start',
+                hasOverflow && !isAtStart ? 'var(--_mask-size)' : '0px'
             );
 
             this.$Container.style.setProperty(
-                '--qui-breadcrumb-mask-end',
-                hasOverflow && !isAtEnd ? 'var(--qui-breadcrumb-mask-size)' : '0px'
+                '--_mask-end',
+                hasOverflow && !isAtEnd ? 'var(--_mask-size)' : '0px'
             );
         },
 
