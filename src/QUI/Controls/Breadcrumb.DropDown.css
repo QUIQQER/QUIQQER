@@ -2,25 +2,31 @@
 /** breadcrumb
  * ========================================================== */
 
-.quiqqer-breadcrumb a {
+.quiqqer-core-controls-breadcrumb {
+    --_font-size: var(--quiqqer-core-controls-breadcrumb-font-size, var(--_q-controlConf-font-size, 0.9em));
+
+    font-size: var(--_font-size);
+}
+
+.quiqqer-core-controls-breadcrumb a {
     color: #8a8a8a;
     padding: 0;
 }
 
-.quiqqer-breadcrumb a:hover .quiqqer-breadcrumb-link-text {
+.quiqqer-core-controls-breadcrumb a:hover .quiqqer-core-controls-breadcrumb-link-text {
     text-decoration: underline;
 }
 
-.quiqqer-breadcrumb-title {
+.quiqqer-core-controls-breadcrumb-title {
     display: inline-flex;
 }
 
-.quiqqer-breadcrumb ul {
+.quiqqer-core-controls-breadcrumb ul {
     margin: 0 0 0 15px;
     display: inline-flex;
 }
 
-.quiqqer-breadcrumb ul li {
+.quiqqer-core-controls-breadcrumb ul li {
     display: inline;
     margin-right: 15px;
     overflow: hidden;
@@ -30,15 +36,15 @@
     white-space: nowrap;
 }
 
-.quiqqer-breadcrumb ul li:last-child {
+.quiqqer-core-controls-breadcrumb ul li:last-child {
     margin-right: 0;
 }
 
-.quiqqer-breadcrumb .fa {
+.quiqqer-core-controls-breadcrumb .fa {
     margin-right: 15px;
 }
 
-.quiqqer-breadcrumb-container {
+.quiqqer-core-controls-breadcrumb-container {
     overflow: hidden;
     position: relative;
     white-space: nowrap;
@@ -50,7 +56,7 @@
     transition: 0.3s all ease-in-out;
 }
 
-.fa.quiqqer-breadcrumb-link-icon {
+.fa.quiqqer-core-controls-breadcrumb-link-icon {
     cursor: pointer;
     margin-right: 0;
     display: none;
@@ -63,10 +69,10 @@
 }
 
 /* mobile
- no fix point - JS calculate */
+no fix point - JS calculate */
 
 
-.quiqqer-breadcrumb.quiqqer-breadcrumb-mobile ul {
+.quiqqer-core-controls-breadcrumb.quiqqer-core-controls-breadcrumb-mobile ul {
     bottom: 0;
     display: block;
     margin: 0;
@@ -74,7 +80,7 @@
     width: 100%;
 }
 
-.quiqqer-breadcrumb.quiqqer-breadcrumb-mobile ul li {
+.quiqqer-core-controls-breadcrumb.quiqqer-core-controls-breadcrumb-mobile ul li {
     border-bottom: 1px solid #eee;
     display: block;
     margin: 0;
@@ -82,15 +88,15 @@
     padding-right: 10px;
 }
 
-.quiqqer-breadcrumb.quiqqer-breadcrumb-mobile ul li:last-child {
+.quiqqer-core-controls-breadcrumb.quiqqer-core-controls-breadcrumb-mobile ul li:last-child {
     border-bottom: none;
     padding-right: 40px;
 }
 
-.quiqqer-breadcrumb.quiqqer-breadcrumb-mobile .fa.quiqqer-breadcrumb-link-icon {
+.quiqqer-core-controls-breadcrumb.quiqqer-core-controls-breadcrumb-mobile .fa.quiqqer-core-controls-breadcrumb-link-icon {
     display: inline;
 }
 
-.quiqqer-breadcrumb.quiqqer-breadcrumb-mobile .quiqqer-breadcrumb-list-element:after {
+.quiqqer-core-controls-breadcrumb.quiqqer-core-controls-breadcrumb-mobile .quiqqer-core-controls-breadcrumb-list-element:after {
     display: inline;
 }

@@ -56,17 +56,17 @@ define('package/quiqqer/core/bin/Controls/BreadcrumbDropDown', [
          */
         $onImport: function ()
         {
-            this.container = document.getElement('.quiqqer-breadcrumb-container');
-            this.title = document.getElement('.quiqqer-breadcrumb-title');
-            this.breadcrumb = document.getElement('.quiqqer-breadcrumb');
-            this.elmNumber = document.getElements('.quiqqer-breadcrumb-list li').length;
+            this.container = this.getElm().getElement('[data-name="container"]');
+            this.title = this.getElm().getElement('[data-name="title"]');
+            this.breadcrumb = this.getElm();
+            this.elmNumber = this.getElm().getElements('[data-name="item"]').length;
             this.bodyWidth = 0;
 
             this.checkWidth();
 
-            this.height = document.getElement('.quiqqer-breadcrumb-list-element').getSize().y;
+            this.height = this.getElm().getElement('[data-name="item"]').getSize().y;
 
-            document.getElement('.quiqqer-breadcrumb-container').setStyle('height', this.height);
+            this.container.setStyle('height', this.height);
 
             this.isOpen = false;
             this.isMobile = false;
@@ -99,8 +99,8 @@ define('package/quiqqer/core/bin/Controls/BreadcrumbDropDown', [
                 containerWidthScroll = parseInt(this.container.getScrollSize().x);
 
             // if, because on start page & desktop there is no button
-            if (document.getElement('.quiqqer-breadcrumb-link-icon')) {
-                this.button = document.getElement('.quiqqer-breadcrumb-link-icon');
+            if (this.getElm().getElement('[data-name="toggle"]')) {
+                this.button = this.getElm().getElement('[data-name="toggle"]');
                 this.button.addEvent('click', this.trigger);
             }
 
@@ -126,7 +126,7 @@ define('package/quiqqer/core/bin/Controls/BreadcrumbDropDown', [
         {
             this.title.setStyle('display', 'none');
             this.isMobile = true;
-            this.breadcrumb.addClass('quiqqer-breadcrumb-mobile');
+            this.breadcrumb.addClass('quiqqer-core-controls-breadcrumb-mobile');
         },
 
         /**
@@ -136,7 +136,7 @@ define('package/quiqqer/core/bin/Controls/BreadcrumbDropDown', [
         {
             this.title.setStyle('display', '');
             this.isMobile = false;
-            this.breadcrumb.removeClass('quiqqer-breadcrumb-mobile');
+            this.breadcrumb.removeClass('quiqqer-core-controls-breadcrumb-mobile');
         },
 
         /**
