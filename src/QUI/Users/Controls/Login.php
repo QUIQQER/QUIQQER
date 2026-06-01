@@ -40,10 +40,9 @@ class Login extends Control
                 && $secondaryLoginType !== 0
             ) {
                 $authStep = 'secondary';
-            } elseif (!$Session->get('auth')) {
+            } elseif (!$Session->get('uid') && !$Session->get('auth')) {
                 $Session->remove('auth-primary');
                 $Session->remove('auth-secondary');
-                $Session->remove('uid');
                 $Session->remove('username');
             }
         }
