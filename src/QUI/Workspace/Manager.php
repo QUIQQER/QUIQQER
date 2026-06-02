@@ -75,6 +75,7 @@ class Manager
     {
         try {
             $entries = QUI::getDataBase()->fetch([
+                'select' => ['id', 'uid'],
                 'from' => self::table()
             ]);
         } catch (QUI\Exception $Exception) {
