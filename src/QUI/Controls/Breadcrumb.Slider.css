@@ -95,7 +95,7 @@
     text-decoration: none;
 }
 
-.quiqqer-core-controls-breadcrumb-list-element:not(:hover, :active) .quiqqer-core-controls-breadcrumb-link {
+.quiqqer-core-controls-breadcrumb-link:not(:hover, :active) {
     --color: inherit;
 }
 
