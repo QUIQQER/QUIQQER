@@ -4,6 +4,7 @@
 
 .quiqqer-core-controls-breadcrumb {
     --_font-size: var(--quiqqer-core-controls-breadcrumb-font-size, var(--_q-controlConf-font-size, 0.9em));
+    --_padding-y: var(--quiqqer-core-controls-breadcrumb-padding-y, var(--_q-controlConf-padding-y, 1rem));
 
     font-size: var(--_font-size);
 }
@@ -46,6 +47,8 @@
 
 .quiqqer-core-controls-breadcrumb-container {
     overflow: hidden;
+    padding-bottom: var(--_padding-y);
+    padding-top: var(--_padding-y);
     position: relative;
     white-space: nowrap;
     display: block;
