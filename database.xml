@@ -67,6 +67,7 @@
 
             <primary>id</primary>
             <auto_increment>id</auto_increment>
+            <index>uid</index>
 
             <comment>This table contains the workspaces of the QUIQQER users.</comment>
         </table>

@@ -1,10 +1,10 @@
 
-<div class="quiqqer-breadcrumb-container">
-    <span class="quiqqer-breadcrumb-title">
+<div class="quiqqer-core-controls-breadcrumb-container" data-name="container">
+    <span class="quiqqer-core-controls-breadcrumb-title" data-name="title">
         {locale group="quiqqer/core" value="control.breadcrumb.text"}
     </span>
 
-    <ul class="fa-ul quiqqer-breadcrumb-list" itemscope itemtype="https://schema.org/BreadcrumbList">
+    <ul class="fa-ul quiqqer-core-controls-breadcrumb-list" data-name="list" itemscope itemtype="https://schema.org/BreadcrumbList">
         {assign var=Path value=$Rewrite->getPath()}
         {assign var=Project value=$Rewrite->getProject()}
         {assign var=Site value=$Rewrite->getSite()}
@@ -13,33 +13,38 @@
 
         {if $Site->getId() === 1}
         <li itemprop="itemListElement" itemscope
+            class="quiqqer-core-controls-breadcrumb-list-element"
+            data-name="item"
             itemtype="https://schema.org/ListItem">
             <a href="{url site=$First}"
+               class="quiqqer-core-controls-breadcrumb-link"
                title="{$First->getAttribute('title')|escape:"html"}"
                itemprop="item"
             >
                 <span class="fa fa-angle-right"></span>
-                <span itemprop="name">{$First->getAttribute('title')}</span>
+                <span class="quiqqer-core-controls-breadcrumb-link-text"
+                      itemprop="name">{if $this->getAttribute('firstItemText')}{$this->getAttribute('firstItemText')|escape:'html'}{else}{$First->getAttribute('title')}{/if}</span>
             </a>
         </li>
         {/if}
 
         {foreach from=$Path key=i item=Crumb}
         <li itemprop="itemListElement" itemscope
-            class="quiqqer-breadcrumb-list-element"
+            class="quiqqer-core-controls-breadcrumb-list-element"
+            data-name="item"
             itemtype="https://schema.org/ListItem">
             <a href="{url site=$Crumb}"
-               class="quiqqer-breadcrumb-link"
+               class="quiqqer-core-controls-breadcrumb-link"
                title="{$Crumb->getAttribute('title')|escape:"html"}"
                itemprop="item"
             >
                 <span class="fa fa-angle-right"></span>
-                <span class="quiqqer-breadcrumb-link-text"
-                      itemprop="name">{$Crumb->getAttribute('title')}</span>
+                <span class="quiqqer-core-controls-breadcrumb-link-text"
+                      itemprop="name">{if $Site->getId() !== 1 && $i === 0 && $this->getAttribute('firstItemText')}{$this->getAttribute('firstItemText')|escape:'html'}{else}{$Crumb->getAttribute('title')}{/if}</span>
             </a>
-            <!--<span class="quiqqer-breadcrumb-list-cover"></span>-->
+            <!--<span class="quiqqer-core-controls-breadcrumb-list-cover"></span>-->
             {if $i+1 >= $Number}
-            <span class="fa fa-angle-double-down quiqqer-breadcrumb-link-icon"></span>
+            <span class="fa fa-angle-double-down quiqqer-core-controls-breadcrumb-link-icon" data-name="toggle"></span>
             {/if}
         </li>
         {/foreach}

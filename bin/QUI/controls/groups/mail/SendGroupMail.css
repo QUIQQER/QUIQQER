@@ -1,0 +1,50 @@
+.quiqqer-quiqqer-group-mail-mailEditor > label {
+    display: block;
+    margin: 10px 0;
+    width: 100%;
+}
+
+.quiqqer-quiqqer-group-mail-mailEditor-subject {
+    display: block;
+    width: 100%;
+}
+
+.quiqqer-quiqqer-group-mail-info {
+    float: left;
+    margin-top: 10px;
+}
+
+.quiqqer-quiqqer-group-mail-mailEditor-content {
+    height: 435px;
+}
+
+.quiqqer-quiqqer-group-mail-confirm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.quiqqer-quiqqer-group-mail-confirm-text {
+    font-weight: 600;
+}
+
+.quiqqer-quiqqer-group-mail-confirm-subject {
+    background: #f7f7f7;
+    border: 1px solid #ddd;
+    padding: 10px 12px;
+}
+
+.quiqqer-quiqqer-group-mail-confirm-subject-label {
+    font-weight: 600;
+}
+
+.quiqqer-quiqqer-group-mail-confirm-preview-title {
+    font-weight: 600;
+}
+
+.quiqqer-quiqqer-group-mail-confirm-preview-frame {
+    background: #fff;
+    border: 1px solid #ddd;
+    height: 580px;
+    width: 100%;
+}

@@ -3,7 +3,9 @@ include:
 
 trigger-build-of-testing-docker-image:
   needs:
-    - trigger-update-server-on-protected-branch-push
+    - job: release
+      artifacts: true
+    - job: trigger-update-server-on-protected-branch-push
   stage: deploy
   image: curlimages/curl
   variables:
