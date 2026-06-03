@@ -106,6 +106,7 @@ QUI::getAjax()->registerFunction(
         $start = ($page - 1) * $limit;
 
         $result = QUI::getDataBase()->fetch([
+            'select' => ['id', 'subject', 'lastsend', 'retry', 'status', 'mailto'],
             'from' => Queue::table(),
             'where' => $where,
             'where_or' => $whereOr,

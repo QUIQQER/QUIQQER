@@ -7,6 +7,7 @@ define('controls/groups/Group', [
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/ButtonSwitch',
     'qui/controls/buttons/Button',
+    'qui/controls/buttons/ButtonMultiple',
     'controls/grid/Grid',
     'Groups',
     'Ajax',
@@ -17,7 +18,7 @@ define('controls/groups/Group', [
 
     'css!controls/groups/Group.css'
 
-], function(QUI, QUIPanel, QUIButtonSwitch, QUIButton,
+], function(QUI, QUIPanel, QUIButtonSwitch, QUIButton, QUIButtonMultiple,
     Grid, Groups, Ajax, Editors, QUILocale, FormUtils, ControlUtils
 ) {
     'use strict';
@@ -53,7 +54,8 @@ define('controls/groups/Group', [
             '$onGroupDelete',
             '$onGroupGetUser',
             '$onUsersAdd',
-            '$onUsersRemove'
+            '$onUsersRemove',
+            '$onClickSendMail'
         ],
 
         options: {
@@ -65,14 +67,14 @@ define('controls/groups/Group', [
 
         initialize: function(gid, options) {
             // defaults
-            this.parent(options);
-
             this.$Group = null;
             this.$UserGrid = null;
 
             if (typeOf(gid) === 'string' || typeOf(gid) === 'number') {
                 this.$Group = Groups.get(gid);
             }
+
+            this.parent(options);
 
             this.addEvents({
                 onCreate: this.$onCreate,
@@ -86,8 +88,6 @@ define('controls/groups/Group', [
                     }
                 }
             });
-
-            this.parent();
         },
 
         /**
@@ -223,7 +223,7 @@ define('controls/groups/Group', [
                 }
 
                 Prom.then(function() {
-                    (function() {// because of animation bug of select button
+                    (function() {
                         self.getButtons('status').enable();
 
                         if (Group.isActive()) {
@@ -234,6 +234,36 @@ define('controls/groups/Group', [
                     }).delay(400);
 
                     self.$onGroupRefresh();
+
+                    require(['Permissions'], function (Permissions) {
+                        Permissions.hasPermission('quiqqer.admin.users.send_mail').then(function (canSendGroupMail) {
+                            const ExtrasBtn = self.getButtons('extra');
+                            const btnChildren = ExtrasBtn ? ExtrasBtn.getChildren() : [];
+                            let SendMailBtn = null;
+
+                            for (let i = 0, len = btnChildren.length; i < len; i++) {
+                                let Item = btnChildren[i];
+
+                                if (Item.getAttribute('name') === 'sendMail') {
+                                    SendMailBtn = Item;
+                                    break;
+                                }
+                            }
+
+                            if (!SendMailBtn) {
+                                return;
+                            }
+
+                            if (canSendGroupMail) {
+                                SendMailBtn.enable();
+                            } else {
+                                SendMailBtn.getElm().set(
+                                    'title',
+                                    QUILocale.get(lg, 'groups.group.btn.sendMail.no_permission')
+                                );
+                            }
+                        });
+                    });
                 });
             }).catch(function(err) {
                 console.error(err);
@@ -391,6 +421,32 @@ define('controls/groups/Group', [
          * @method controls/groups/Group#$drawButtons
          */
         $drawButtons: function() {
+            const ExtrasBtn = new QUIButtonMultiple({
+                name: 'extra',
+                textimage: 'fa fa-caret-down',
+                title: QUILocale.get(lg, 'quiqqer.customer.panel.extras.title'),
+                events: {
+                    onClick: function () {
+                        ExtrasBtn.getMenu().then(function (Menu) {
+                            const pos = ExtrasBtn.getElm().getPosition(),
+                                size = ExtrasBtn.getElm().getSize();
+
+                            Menu.setAttribute('corner', 'topRight');
+
+                            ExtrasBtn.openMenu().then(function () {
+                                Menu.setPosition(
+                                    pos.x - 150,
+                                    pos.y + size.y + 10
+                                );
+                            });
+                        });
+                    }
+                },
+                styles: {
+                    'float': 'right'
+                }
+            });
+
             this.addButton({
                 name: 'groupSave',
                 text: QUILocale.get(lg, 'groups.group.btn.save'),
@@ -415,17 +471,30 @@ define('controls/groups/Group', [
                 })
             );
 
-            this.addButton({
+            ExtrasBtn.appendChild({
+                name: 'sendMail',
+                title: QUILocale.get(lg, 'groups.group.btn.sendMail'),
+                text: QUILocale.get(lg, 'groups.group.btn.sendMail'),
+                icon: 'fa fa-envelope',
+                disabled: true,
+                events: {
+                    onClick: this.$onClickSendMail
+                }
+            });
+
+            ExtrasBtn.appendChild({
                 name: 'groupDelete',
                 title: QUILocale.get(lg, 'groups.group.btn.delete'),
+                text: QUILocale.get(lg, 'groups.group.btn.delete'),
                 icon: 'fa fa-trash-o',
                 events: {
                     onClick: this.del
-                },
-                styles: {
-                    'float': 'right'
                 }
             });
+
+            ExtrasBtn.getElm().addClass('quiqqer-quiqqer-group-mail-extrasbtn');
+
+            this.addButton(ExtrasBtn);
 
             // permissions
             new QUIButton({
@@ -788,6 +857,16 @@ define('controls/groups/Group', [
             });
 
             this.$UserGrid.refresh();
+        },
+
+        $onClickSendMail: function () {
+            const gid = this.getGroup().getId();
+
+            require(['controls/groups/mail/SendGroupMail'], function (SendGroupMail) {
+                new SendGroupMail({
+                    groupId: gid
+                }).open();
+            });
         },
 
         /**

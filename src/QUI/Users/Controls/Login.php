@@ -27,8 +27,24 @@ class Login extends Control
     {
         $authStep = 'primary';
 
-        if (QUI::getSession()->get('auth-primary') === 1) {
-            $authStep = 'secondary';
+        $Session = QUI::getSession();
+
+        if ($Session->get('auth-primary') === 1) {
+            $secondaryLoginType = QUI::isFrontend()
+                ? (int)QUI::conf('auth_settings', 'secondary_frontend')
+                : (int)QUI::conf('auth_settings', 'secondary_backend');
+
+            if (
+                $Session->get('uid')
+                && !$Session->get('auth')
+                && $secondaryLoginType !== 0
+            ) {
+                $authStep = 'secondary';
+            } elseif (!$Session->get('uid') && !$Session->get('auth')) {
+                $Session->remove('auth-primary');
+                $Session->remove('auth-secondary');
+                $Session->remove('username');
+            }
         }
 
         $this->setAttributes([

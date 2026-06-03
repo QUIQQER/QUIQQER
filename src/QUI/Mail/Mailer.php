@@ -10,6 +10,7 @@ use Exception;
 use Html2Text\Html2Text;
 use PHPMailer\PHPMailer\PHPMailer;
 use QUI;
+use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Projects\Project;
 
 use function explode;
@@ -163,18 +164,7 @@ class Mailer extends QUI\QDOM
             $PHPMailer = QUI::getMailManager()->getPHPMailer();
         }
 
-        $html = $this->Template->getHTML();
-
-        // remove picture elements
-        $Output = new QUI\Output();
-        $Output->setSetting('use-absolute-urls', true);
-        $Output->setSetting('parse-to-picture-elements', false);
-
-        $html = $Output->parse($html);
-
-        $html = preg_replace('#<picture([^>]*)>#i', '', $html);
-        $html = preg_replace('#<source([^>]*)>#i', '', $html);
-        $html = str_replace('</picture>', '', $html);
+        $html = $this->getRenderedBody();
 
         $PHPMailer->Subject = $this->getAttribute('subject');
         $PHPMailer->Body = $html;
@@ -447,7 +437,45 @@ class Mailer extends QUI\QDOM
 
     public function setBody(string $html): void
     {
-        $this->Template->setBody($html);
+        $this->Template->setBody(self::prepareBody($html));
+    }
+
+    public function getRenderedBody(): string
+    {
+        $html = $this->Template->getHTML();
+
+        $Output = new QUI\Output();
+        $Output->setSetting('use-absolute-urls', true);
+        $Output->setSetting('parse-to-picture-elements', false);
+
+        $html = $Output->parse($html);
+
+        $html = preg_replace('#<picture([^>]*)>#i', '', $html);
+        $html = preg_replace('#<source([^>]*)>#i', '', $html);
+
+        return str_replace('</picture>', '', $html);
+    }
+
+    public static function prepareBody(string $body): string
+    {
+        preg_match_all('#"(image\.php.*)"#i', $body, $matches);
+
+        if (empty($matches[1])) {
+            return $body;
+        }
+
+        $baseUrl = QUI::getRewrite()->getProject()->get(1)->getUrlRewrittenWithHost();
+        $baseUrl = rtrim($baseUrl, '/');
+
+        foreach ($matches[1] as $mediaUrl) {
+            $body = str_replace(
+                $mediaUrl,
+                $baseUrl . MediaUtils::getRewrittenUrl($mediaUrl),
+                $body
+            );
+        }
+
+        return $body;
     }
 
     /**
