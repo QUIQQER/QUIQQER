@@ -95,8 +95,8 @@
     text-decoration: none;
 }
 
-.quiqqer-core-controls-breadcrumb-list-element:not(.is-current):not(:hover, :active) .quiqqer-core-controls-breadcrumb-link {
-    color: inherit;
+.quiqqer-core-controls-breadcrumb-list-element:not(:hover, :active) .quiqqer-core-controls-breadcrumb-link {
+    --color: inherit;
 }
 
 .quiqqer-core-controls-breadcrumb-separator {
@@ -108,10 +108,8 @@
     min-width: 0.5rem;
 }
 
-
-
 .quiqqer-core-controls-breadcrumb--last-item-primary .quiqqer-core-controls-breadcrumb-list-element.is-current .quiqqer-core-controls-breadcrumb-link {
-    /*color: var(--qui-colors-primary, currentColor);*/
+    color: var(--qui-colors-primary, currentColor);
 }
 
 .quiqqer-core-controls-breadcrumb--last-item-bold .quiqqer-core-controls-breadcrumb-list-element.is-current .quiqqer-core-controls-breadcrumb-link,
@@ -120,6 +118,6 @@
 }
 
 .quiqqer-core-controls-breadcrumb--last-item-primary-bold .quiqqer-core-controls-breadcrumb-list-element.is-current .quiqqer-core-controls-breadcrumb-link {
-    /*--color: var(--qui-colors-primary, currentColor);*/
-    /*--color--hover: var(--qui-colors-primary, currentColor);*/
+    --color: var(--qui-colors-primary, currentColor);
+    --color--hover: var(--qui-colors-primary, currentColor);
 }

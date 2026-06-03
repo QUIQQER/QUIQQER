@@ -62,7 +62,7 @@ class Breadcrumb extends QUI\Control
             'fontSize' => 's',
             'paddingBlock' => 'normal',
             'separator' => 'angle-right',
-            'lastItemStyle' => 'primary'
+            'lastItemStyle' => 'bold'
         ]);
 
         parent::__construct($attributes);
