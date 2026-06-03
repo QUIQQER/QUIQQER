@@ -14,6 +14,7 @@ use QUI;
 class Breadcrumb extends QUI\Control
 {
     private const DEFAULT_FONT_SIZE = '0.9em';
+    private const DEFAULT_PADDING = '1rem';
 
     protected array $allowedFontSizes = [
         'xs' => '0.75em',
@@ -21,6 +22,15 @@ class Breadcrumb extends QUI\Control
         'normal' => '1em',
         'lg' => '1.25em',
         'xl' => '1.5em'
+    ];
+
+    protected array $allowedPaddings = [
+        'none' => '0px',
+        'xs' => '0.25rem',
+        's' => '0.5rem',
+        'normal' => '1rem',
+        'lg' => '1.25rem',
+        'xl' => '2rem'
     ];
 
     protected array $allowedSeparators = [
@@ -50,6 +60,7 @@ class Breadcrumb extends QUI\Control
             'titleText' => '',
             'firstItemText' => '',
             'fontSize' => 's',
+            'paddingBlock' => 'normal',
             'separator' => 'angle-right',
             'lastItemStyle' => 'primary'
         ]);
@@ -74,10 +85,14 @@ class Breadcrumb extends QUI\Control
         $fontSize = $this->normalizeFontSize(
             (string)$this->getAttribute('fontSize')
         );
+        $paddingBlock = $this->normalizePadding(
+            (string)$this->getAttribute('paddingBlock')
+        );
 
         $this->setAttribute('separator', $separator);
         $this->setAttribute('lastItemStyle', $lastItemStyle);
         $this->setAttribute('fontSize', $fontSize);
+        $this->setAttribute('paddingBlock', $paddingBlock);
         $this->setAttribute(
             'showTitle',
             (int)(bool)$this->getAttribute('showTitle')
@@ -93,6 +108,10 @@ class Breadcrumb extends QUI\Control
 
         if ($fontSize !== self::DEFAULT_FONT_SIZE) {
             $this->setCustomVariable('font-size', $fontSize);
+        }
+
+        if ($paddingBlock !== self::DEFAULT_PADDING) {
+            $this->setCustomVariable('padding-y', $paddingBlock);
         }
 
         $this->setAttribute('data-qui-breadcrumb-separator', $separator);
@@ -173,6 +192,58 @@ class Breadcrumb extends QUI\Control
         }
 
         return $this->allowedFontSizes['s'];
+    }
+
+    /**
+     * Resolve the configured padding preset to its CSS value.
+     *
+     * @param string $padding
+     * @return string
+     */
+    protected function normalizePadding(string $padding): string
+    {
+        if (isset($this->allowedPaddings[$padding])) {
+            return $this->allowedPaddings[$padding];
+        }
+
+        if ($this->isAllowedCssSpacingValue($padding)) {
+            return $padding;
+        }
+
+        return $this->allowedPaddings['normal'];
+    }
+
+    /**
+     * Check whether a custom CSS spacing value is safe to use.
+     *
+     * @param string $value
+     * @return bool
+     */
+    protected function isAllowedCssSpacingValue(string $value): bool
+    {
+        $value = trim($value);
+
+        if ($value === '') {
+            return false;
+        }
+
+        if (preg_match('/^0$/', $value)) {
+            return true;
+        }
+
+        if (
+            preg_match(
+                '/^-?(?:\d+|\d*\.\d+)(?:px|rem|em|%|vh|vw|svh|svw|lvh|lvw|dvh|dvw|ch|ex|cm|mm|in|pt|pc)$/',
+                $value
+            )
+        ) {
+            return true;
+        }
+
+        return preg_match(
+            '/^(?:var|calc|clamp|min|max)\([^;{}]+\)$/',
+            $value
+        ) === 1;
     }
 
     /**

@@ -1,5 +1,6 @@
 .quiqqer-core-controls-breadcrumb {
     --_font-size: var(--quiqqer-core-controls-breadcrumb-font-size, var(--_q-controlConf-font-size, 0.9em));
+    --_padding-y: var(--quiqqer-core-controls-breadcrumb-padding-y, var(--_q-controlConf-padding-y, 1rem));
     --_mask-size: var(--quiqqer-core-controls-breadcrumb-mask-size, 1.5rem);
 
     font-size: var(--_font-size);
@@ -23,6 +24,8 @@
     );
     overflow-x: auto;
     overflow-y: hidden;
+    padding-bottom: var(--_padding-y);
+    padding-top: var(--_padding-y);
     scrollbar-width: none;
     transition-duration: 0.2s;
     transition-property: --_mask-start, --_mask-end;
