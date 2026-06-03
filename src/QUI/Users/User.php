@@ -1474,8 +1474,7 @@ class User implements QUIUserInterface
             if ($Address instanceof Address) {
                 return $Address->getCountry();
             }
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::addError($Exception->getMessage());
+        } catch (QUI\Exception) {
         }
 
         try {
@@ -1484,8 +1483,7 @@ class User implements QUIUserInterface
             if ($Standard) {
                 return $Standard->getCountry();
             }
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::addError($Exception->getMessage());
+        } catch (QUI\Exception) {
         }
 
         // apache fallback falls möglich
@@ -1494,8 +1492,7 @@ class User implements QUIUserInterface
                 return QUI\Countries\Manager::get(
                     $_SERVER["GEOIP_COUNTRY_CODE"]
                 );
-            } catch (QUI\Exception $Exception) {
-                QUI\System\Log::addError($Exception->getMessage());
+            } catch (QUI\Exception) {
             }
         }
 
