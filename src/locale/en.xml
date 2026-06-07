@@ -4546,6 +4546,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="projects.project.site.panel.information.layout">
             <en><![CDATA[Layout]]></en>
         </locale>
+        <locale name="projects.project.site.childLayout.default">
+            <en><![CDATA[Default layout]]></en>
+        </locale>
         <locale name="exception.media.file.already.exists">
             <en><![CDATA[A file with the name [filename] already exist.]]></en>
         </locale>

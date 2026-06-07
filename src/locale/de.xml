@@ -4698,6 +4698,9 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="projects.project.site.panel.information.layout">
             <de><![CDATA[Layout]]></de>
         </locale>
+        <locale name="projects.project.site.childLayout.default">
+            <de><![CDATA[Standard-Layout]]></de>
+        </locale>
         <locale name="exception.media.file.already.exists">
             <de><![CDATA[Eine Datei mit dem Namen [filename] existiert bereits.]]></de>
         </locale>

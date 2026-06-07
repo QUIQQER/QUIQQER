@@ -65,6 +65,12 @@ class Site
      */
     public static function getChildType(QUI\Projects\Site $Site): string
     {
+        $override = $Site->getAttribute('quiqqer.settings.children.type');
+
+        if (!empty($override)) {
+            return $override;
+        }
+
         $siteTypes = QUI::getPackageManager()->getAvailableSiteTypes();
         $currentType = $Site->getAttribute('type');
 
@@ -87,6 +93,48 @@ class Site
         }
 
         return 'standard';
+    }
+
+    /**
+     * Get the default layout for new child sites of the given site.
+     *
+     * Reads the per-site override attribute first and falls back to the
+     * `child-layout` attribute defined in the site type's site.xml.
+     *
+     * @param QUI\Projects\Site $Site The site object to get the child layout from.
+     *
+     * @return string The child layout, or an empty string for the default layout.
+     */
+    public static function getChildLayout(QUI\Projects\Site $Site): string
+    {
+        $override = $Site->getAttribute('quiqqer.settings.children.layout');
+
+        if (!empty($override)) {
+            return $override;
+        }
+
+        $siteTypes = QUI::getPackageManager()->getAvailableSiteTypes();
+        $currentType = $Site->getAttribute('type');
+
+        foreach ($siteTypes as $module) {
+            foreach ($module as $siteType) {
+                if (!isset($siteType['type'])) {
+                    continue;
+                }
+
+                if ($currentType !== $siteType['type']) {
+                    continue;
+                }
+
+                if (empty($siteType['childrenLayout'])) {
+                    continue;
+                }
+
+                return $siteType['childrenLayout'];
+            }
+        }
+
+        return '';
     }
 
     /**
