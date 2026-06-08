@@ -98,8 +98,10 @@ class Site
     /**
      * Get the default layout for new child sites of the given site.
      *
-     * Reads the per-site override attribute first and falls back to the
-     * `child-layout` attribute defined in the site type's site.xml.
+     * Reads the per-site override attribute. Layouts are provided by the
+     * active template, so there is intentionally no site type (site.xml)
+     * default for the layout - a module cannot know which layouts a template
+     * supports. An empty string means the default layout is used.
      *
      * @param QUI\Projects\Site $Site The site object to get the child layout from.
      *
@@ -111,27 +113,6 @@ class Site
 
         if (!empty($override)) {
             return $override;
-        }
-
-        $siteTypes = QUI::getPackageManager()->getAvailableSiteTypes();
-        $currentType = $Site->getAttribute('type');
-
-        foreach ($siteTypes as $module) {
-            foreach ($module as $siteType) {
-                if (!isset($siteType['type'])) {
-                    continue;
-                }
-
-                if ($currentType !== $siteType['type']) {
-                    continue;
-                }
-
-                if (empty($siteType['childrenLayout'])) {
-                    continue;
-                }
-
-                return $siteType['childrenLayout'];
-            }
         }
 
         return '';

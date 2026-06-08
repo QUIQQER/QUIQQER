@@ -2195,7 +2195,6 @@ class Manager extends QUI\QDOM
                         $name . ':' . $Type->getAttribute('type')
                     ),
                     'childrenType' => $Type->getAttribute('child-type'),
-                    'childrenLayout' => $Type->getAttribute('child-layout'),
                     'childrenNavHide' => $Type->getAttribute('child-navHide')
                 ];
             }
