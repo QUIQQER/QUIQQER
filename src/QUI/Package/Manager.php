@@ -40,7 +40,6 @@ use function array_values;
 use function bin2hex;
 use function class_exists;
 use function count;
-use function curl_close;
 use function curl_exec;
 use function curl_init;
 use function curl_setopt_array;
@@ -2374,8 +2373,6 @@ class Manager extends QUI\QDOM
 
             $response = curl_exec($Curl);
 
-            curl_close($Curl);
-
             $isLicensed = !empty($response);
 
             QUICacheManager::set($cacheName, $isLicensed, date_interval_create_from_date_string('1 day'));
@@ -2432,8 +2429,6 @@ class Manager extends QUI\QDOM
             ]);
 
             $response = curl_exec($Curl);
-
-            curl_close($Curl);
 
             if (empty($response)) {
                 return false;

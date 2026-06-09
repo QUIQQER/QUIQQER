@@ -11,7 +11,6 @@ use QUI\Security\Encryption;
 use QUI\Utils\System\File;
 
 use function bin2hex;
-use function curl_close;
 use function curl_exec;
 use function curl_init;
 use function curl_setopt_array;
@@ -139,7 +138,6 @@ class License
         $response = curl_exec($Curl);
 
         if (PHP_VERSION_ID < 80000) {
-            curl_close($Curl);
         }
 
         if (empty($response)) {
@@ -282,8 +280,6 @@ class License
 
         $response = curl_exec($Curl);
 
-        curl_close($Curl);
-
         if (empty($response)) {
             throw new QUI\Exception([
                 'quiqqer/core',
@@ -339,8 +335,6 @@ class License
         ]);
 
         $response = curl_exec($Curl);
-
-        curl_close($Curl);
 
         if (empty($response)) {
             throw new QUI\Exception([
