@@ -85,7 +85,7 @@ class LicenseManager extends QUI\System\Console\Tool
         $filepath = $this->getArgument('register-license');
 
         if ($filepath == 1) {
-            $this->writeLn('Error: Please specify the path to your license file via "--register=path/to/file.license"', 'red');
+            $this->writeLn('Error: Please specify the path to your license file via "--register-license=path/to/file.license"', 'red');
             return false;
         }
 
