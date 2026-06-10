@@ -86,11 +86,19 @@ class LicenseManager extends QUI\System\Console\Tool
 
         if ($filepath == 1) {
             $this->writeLn('Error: Please specify the path to your license file via "--register-license=path/to/file.license"', 'red');
+
+            $this->resetColor();
+            $this->writeLn();
+
             return false;
         }
 
         if (!file_exists($filepath)) {
             $this->writeLn("Error: License file does not exist at path \"$filepath\".", 'red');
+
+            $this->resetColor();
+            $this->writeLn();
+
             return false;
         }
 
@@ -101,10 +109,17 @@ class LicenseManager extends QUI\System\Console\Tool
             QUI\System\License::registerLicenseFile($File);
         } catch (\Exception $Exception) {
             $this->writeLn('Error: ' . $Exception->getMessage(), 'red');
+
+            $this->resetColor();
+            $this->writeLn();
+
             return false;
         }
 
         $this->writeLn('License successfully registered.', 'green');
+
+        $this->resetColor();
+        $this->writeLn();
 
         return true;
     }
@@ -115,11 +130,18 @@ class LicenseManager extends QUI\System\Console\Tool
             $activationResponse = QUI\System\License::activateSystem();
         } catch (\Exception $Exception) {
             $this->writeLn('Error: ' . $Exception->getMessage(), 'red');
+
+            $this->resetColor();
+            $this->writeLn();
+
             return false;
         }
 
         if (!isset($activationResponse['error'])) {
             $this->writeLn('Error: Communication with license server failed. Please try again later.', 'red');
+
+            $this->resetColor();
+            $this->writeLn();
 
             return false;
         }
@@ -131,6 +153,9 @@ class LicenseManager extends QUI\System\Console\Tool
                 $this->writeLn($activationResponse['msg'], 'red');
             }
 
+            $this->resetColor();
+            $this->writeLn();
+
             return false;
         }
 
@@ -139,6 +164,9 @@ class LicenseManager extends QUI\System\Console\Tool
         if (isset($activationResponse['msg'])) {
             $this->writeLn($activationResponse['msg'], 'green');
         }
+
+        $this->resetColor();
+        $this->writeLn();
 
         return true;
     }
@@ -151,12 +179,18 @@ class LicenseManager extends QUI\System\Console\Tool
             $this->writeLn('Error: Could not retrieve license status:', 'red');
             $this->writeLn($Exception->getMessage(), 'red');
 
+            $this->resetColor();
+            $this->writeLn();
+
             return false;
         }
 
         if (!$licenseStatus) {
             $this->writeLn('Error: The system does not have a registered license.', 'red');
             $this->writeLn('See "quiqqer:license-manager --help" for information on how to register a license.', 'red');
+
+            $this->resetColor();
+            $this->writeLn();
 
             return true;
         }
@@ -191,12 +225,18 @@ class LicenseManager extends QUI\System\Console\Tool
             $this->writeLn('Error: Could not retrieve license status:', 'red');
             $this->writeLn($Exception->getMessage(), 'red');
 
+            $this->resetColor();
+            $this->writeLn();
+
             return false;
         }
 
         if (!$licenseData) {
             $this->writeLn('Error: The system does not have a registered license.', 'red');
             $this->writeLn('See "quiqqer:license-manager --help" for information on how to register a license.', 'red');
+
+            $this->resetColor();
+            $this->writeLn();
 
             return true;
         }
@@ -237,10 +277,16 @@ class LicenseManager extends QUI\System\Console\Tool
             $this->writeLn('Error: Could not retrieve license status:', 'red');
             $this->writeLn($Exception->getMessage(), 'red');
 
+            $this->resetColor();
+            $this->writeLn();
+
             return false;
         }
 
         $this->writeLn('License successfully deleted', 'green');
+
+        $this->resetColor();
+        $this->writeLn();
 
         return true;
     }
@@ -249,6 +295,9 @@ class LicenseManager extends QUI\System\Console\Tool
     {
         $this->writeLn('Your system ID is:');
         $this->writeLn(QUI\System\License::getSystemId(), 'green');
+
+        $this->resetColor();
+        $this->writeLn();
 
         return true;
     }
