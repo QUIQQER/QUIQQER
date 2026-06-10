@@ -81,7 +81,7 @@ class License
             throw new QUI\Exception('Could not create license config file "' . $licenseConfigFile . '"');
         }
 
-        $LicenseConfig = new Config($licenseConfigFile);
+        $LicenseConfig = QUI::getConfig('etc/license.ini.php');
 
         $LicenseConfig->set('license', 'id', $content['id']);
         $LicenseConfig->set('license', 'created', $content['created']);
@@ -93,10 +93,10 @@ class License
             bin2hex(Encryption::encrypt(hex2bin($content['licenseHash'])))
         );
 
-        $LicenseConfig->save($licenseConfigFile);
+        $LicenseConfig->save();
 
         // set license server
-        $Config = new QUI\Config(ETC_DIR . 'conf.ini.php');
+        $Config = QUI::getConfig('etc/conf.ini.php');
         $Config->set('license', 'url', $content['licenseServer']);
         $Config->save();
 
@@ -187,14 +187,8 @@ class License
      */
     public static function getLicenseData(): bool|array
     {
-        $licenseConfigFile = CMS_DIR . 'etc/license.ini.php';
-
-        if (!file_exists($licenseConfigFile)) {
-            return false;
-        }
-
         try {
-            $LicenseConfig = new Config($licenseConfigFile);
+            $LicenseConfig = QUI::getConfig('etc/license.ini.php');
         } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
             return false;
