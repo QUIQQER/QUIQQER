@@ -672,9 +672,8 @@ class Manager extends QUI\QDOM
 
         if (file_exists($licenseConfigFile)) {
             try {
-                $LicenseConfig = new QUI\Config($licenseConfigFile);
-                $data = $LicenseConfig->getSection('license');
-                $licenseServerUrl = QUI::conf('license', 'url');
+                $data = QUI\System\License::getLicenseData();
+                $licenseServerUrl = QUI\System\License::getLicenseServerUrl();
 
                 if (
                     !empty($data['id'])
