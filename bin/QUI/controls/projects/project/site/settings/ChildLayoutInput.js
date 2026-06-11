@@ -9,13 +9,10 @@
 define('controls/projects/project/site/settings/ChildLayoutInput', [
 
     'qui/controls/Control',
-    'Locale',
     'Ajax'
 
-], function (QUIControl, QUILocale, QUIAjax) {
+], function (QUIControl, QUIAjax) {
     "use strict";
-
-    const lg = 'quiqqer/core';
 
     return new Class({
 
@@ -57,7 +54,7 @@ define('controls/projects/project/site/settings/ChildLayoutInput', [
 
             new Element('option', {
                 value: '',
-                html : QUILocale.get(lg, 'projects.project.site.childLayout.default')
+                html : ''
             }).inject(this.$Select);
 
         },

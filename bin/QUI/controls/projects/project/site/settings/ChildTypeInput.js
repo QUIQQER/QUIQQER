@@ -48,11 +48,31 @@ define('controls/projects/project/site/settings/ChildTypeInput', [
             this.$Input = this.getElm();
             this.$Input.type = 'hidden';
 
+            // remove the label binding to the hidden input so clicking the
+            // row triggers the type button instead (like the site panel)
+            const Label = this.$Input.getParent('label');
+
+            if (Label && this.$Input.id && Label.get('for') === this.$Input.id) {
+                Label.removeProperty('for');
+            }
+
             this.$TypeInput = new TypeInput({
                 project: this.getAttribute('project') || false
             }, this.$Input);
 
             this.$TypeInput.create();
+
+            // open the type window when the text is clicked (like the panel)
+            const Elm = this.$TypeInput.getElm();
+            const Text = Elm.getElement('.qui-projects-type-input-text');
+            const Button = Elm.getElement('button');
+
+            if (Text && Button) {
+                Text.addEvent('click', (event) => {
+                    event.preventDefault();
+                    Button.click();
+                });
+            }
         },
 
         /**
