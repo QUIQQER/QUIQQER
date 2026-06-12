@@ -7,6 +7,9 @@
 namespace QUI\Mail;
 
 use Exception;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Schema\Table;
 use QUI;
 use QUI\Utils\System\File;
 
@@ -22,6 +25,7 @@ use function in_array;
 use function is_array;
 use function is_dir;
 use function is_string;
+use function str_contains;
 use function json_decode;
 use function json_encode;
 use function preg_replace;
@@ -54,34 +58,100 @@ class Queue
      */
     public static function setup(): void
     {
-        $Table = QUI::getDataBase()->table();
+        $SchemaManager = QUI::getSchemaManager();
+        $tableName = self::table();
 
-        $Table->addColumn(self::table(), [
-            'id' => 'int(11) NOT NULL',
-            'subject' => 'varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL',
-            'body' => 'LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL',
-            'text' => 'LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL',
-            'from' => 'TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL',
-            'fromName' => 'TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL',
-            'ishtml' => 'int(1)',
-            'mailto' => 'TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL',
-            'replyto' => 'TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL',
-            'cc' => 'TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL',
-            'bcc' => 'TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL',
-            'attachements' => 'TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL',
-            'status' => 'int(1) NOT NULL DEFAULT 0',
-            'lastsend' => 'int(11)',
-            'retry' => 'int(3) NOT NULL DEFAULT 0',
-            'errors' => 'LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL'
-        ]);
+        if ($SchemaManager->tablesExist([$tableName])) {
+            return;
+        }
 
-        $Table->setPrimaryKey(self::table(), 'id');
-        $Table->setAutoIncrement(self::table(), 'id');
+        $Table = new Table($tableName);
+        $Table->addOption('charset', 'utf8mb4');
+        $Table->addOption('collation', 'utf8mb4_general_ci');
+        $Table->addColumn('id', 'integer', ['autoincrement' => true]);
+        $Table->addColumn('subject', 'string', ['length' => 1000, 'notnull' => false]);
+        $Table->addColumn('body', 'text', ['notnull' => false]);
+        $Table->addColumn('text', 'text', ['notnull' => false]);
+        $Table->addColumn('from', 'text', ['notnull' => false]);
+        $Table->addColumn('fromName', 'text', ['notnull' => false]);
+        $Table->addColumn('ishtml', 'smallint', ['notnull' => false]);
+        $Table->addColumn('mailto', 'text', ['notnull' => false]);
+        $Table->addColumn('replyto', 'text', ['notnull' => false]);
+        $Table->addColumn('cc', 'text', ['notnull' => false]);
+        $Table->addColumn('bcc', 'text', ['notnull' => false]);
+        $Table->addColumn('attachements', 'text', ['notnull' => false]);
+        $Table->addColumn('status', 'smallint', ['default' => 0]);
+        $Table->addColumn('lastsend', 'integer', ['notnull' => false]);
+        $Table->addColumn('retry', 'smallint', ['default' => 0]);
+        $Table->addColumn('errors', 'text', ['notnull' => false]);
+        $Table->setPrimaryKey(['id']);
+
+        $SchemaManager->createTable($Table);
     }
 
     public static function table(): string
     {
         return QUI::getDBTableName('mailqueue');
+    }
+
+    protected static function connection(): Connection
+    {
+        return QUI::getDataBaseConnection();
+    }
+
+    protected static function quotedTable(): string
+    {
+        return QUI\Utils\Doctrine::quoteIdentifier(self::table());
+    }
+
+    protected static function queryBuilder(): QueryBuilder
+    {
+        return self::connection()->createQueryBuilder()
+            ->from(self::quotedTable());
+    }
+
+    protected static function fetchById(int $id): ?array
+    {
+        $QueryBuilder = self::queryBuilder();
+        $result = $QueryBuilder
+            ->select('*')
+            ->where($QueryBuilder->expr()->eq('id', ':id'))
+            ->setParameter('id', $id)
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchAssociative();
+
+        return $result ?: null;
+    }
+
+    protected static function fetchNextQueuedMail(): ?array
+    {
+        $QueryBuilder = self::queryBuilder();
+        $result = $QueryBuilder
+            ->select('*')
+            ->where($QueryBuilder->expr()->in('status', [':statusAdded', ':statusError']))
+            ->setParameter('statusAdded', self::STATUS_ADDED)
+            ->setParameter('statusError', self::STATUS_ERROR)
+            ->orderBy('c_date', 'ASC')
+            ->addOrderBy('id', 'ASC')
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchAssociative();
+
+        return $result ?: null;
+    }
+
+    protected static function fetchQueuedMailIds(): array
+    {
+        $QueryBuilder = self::queryBuilder();
+
+        return $QueryBuilder
+            ->select('id')
+            ->where($QueryBuilder->expr()->in('status', [':statusAdded', ':statusError']))
+            ->setParameter('statusAdded', self::STATUS_ADDED)
+            ->setParameter('statusError', self::STATUS_ERROR)
+            ->executeQuery()
+            ->fetchAllAssociative();
     }
 
     /**
@@ -110,9 +180,10 @@ class Queue
             unset($params['attachements']);
         }
 
-        QUI::getDataBase()->insert(self::table(), $params);
+        $Connection = self::connection();
+        $Connection->insert(self::quotedTable(), $params);
 
-        $newMailId = (int)QUI::getDataBase()->getPDO()->lastInsertId('id');
+        $newMailId = (int)$Connection->lastInsertId();
 
         // attachments
         $attachmentFiles = [];
@@ -135,8 +206,8 @@ class Queue
             }
 
             if (!empty($attachmentFiles)) {
-                QUI::getDataBase()->update(
-                    self::table(),
+                self::connection()->update(
+                    self::quotedTable(),
                     ['attachements' => json_encode($attachmentFiles)],
                     ['id' => $newMailId]
                 );
@@ -169,33 +240,18 @@ class Queue
             return true;
         }
 
-        $params = QUI::getDataBase()->fetch([
-            'from' => self::table(),
-            'where' => [
-                'status' => [
-                    'type' => 'IN',
-                    'value' => [
-                        self::STATUS_ADDED,
-                        self::STATUS_ERROR
-                    ]
-                ],
-            ],
-            'order' => 'c_date ASC, id ASC',
-            'limit' => 1
-        ]);
+        $entry = self::fetchNextQueuedMail();
 
-        if (!isset($params[0])) {
+        if (!$entry) {
             return true;
         }
-
-        $entry = $params[0];
 
         try {
             $send = $this->sendMail($entry);
 
             // successful send
             if ($send) {
-                QUI::getDataBase()->delete(self::table(), [
+                self::connection()->delete(self::quotedTable(), [
                     'id' => $entry['id']
                 ]);
 
@@ -203,8 +259,8 @@ class Queue
             }
 
             if (!$this->isMailCanceled((int)$entry['id'])) {
-                QUI::getDataBase()->update(
-                    self::table(),
+                self::connection()->update(
+                    self::quotedTable(),
                     ['status' => self::STATUS_ADDED],
                     ['id' => $entry['id']]
                 );
@@ -421,8 +477,8 @@ class Queue
                 return false;
             }
 
-            QUI::getDataBase()->update(
-                self::table(),
+            self::connection()->update(
+                self::quotedTable(),
                 ['status' => self::STATUS_ERROR],
                 ['id' => $params['id']]
             );
@@ -485,19 +541,7 @@ class Queue
             return;
         }
 
-        $result = QUI::getDataBase()->fetch([
-            'select' => 'id',
-            'from' => self::table(),
-            'where' => [
-                'status' => [
-                    'type' => 'IN',
-                    'value' => [
-                        self::STATUS_ADDED,
-                        self::STATUS_ERROR
-                    ]
-                ]
-            ]
-        ]);
+        $result = self::fetchQueuedMailIds();
 
         foreach ($result as $row) {
             try {
@@ -523,15 +567,9 @@ class Queue
             return true;
         }
 
-        $params = QUI::getDataBase()->fetch([
-            'from' => self::table(),
-            'where' => [
-                'id' => $id
-            ],
-            'limit' => 1
-        ]);
+        $entry = self::fetchById($id);
 
-        if (!isset($params[0])) {
+        if (!$entry) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'system',
@@ -542,20 +580,18 @@ class Queue
         }
 
         if (
-            (int)$params[0]['status'] === self::STATUS_SENDING
-            || (int)$params[0]['status'] === self::STATUS_CANCELED
+            (int)$entry['status'] === self::STATUS_SENDING
+            || (int)$entry['status'] === self::STATUS_CANCELED
         ) {
             return true;
         }
-
-        $entry = $params[0];
 
         try {
             $send = $this->sendMail($entry);
 
             // successful send
             if ($send) {
-                QUI::getDataBase()->delete(self::table(), [
+                self::connection()->delete(self::quotedTable(), [
                     'id' => $entry['id']
                 ]);
 
@@ -563,8 +599,8 @@ class Queue
             }
 
             if (!$this->isMailCanceled((int)$entry['id'])) {
-                QUI::getDataBase()->update(
-                    self::table(),
+                self::connection()->update(
+                    self::quotedTable(),
                     ['status' => self::STATUS_ADDED],
                     ['id' => $entry['id']]
                 );
@@ -581,21 +617,17 @@ class Queue
 
         return false;
     }
-
     /**
      * @throws QUI\Database\Exception
      */
     public function count(): int
     {
-        $result = QUI::getDataBase()->fetch([
-            'from' => self::table(),
-            'count' => [
-                'select' => 'id',
-                'as' => 'count'
-            ]
-        ]);
+        $QueryBuilder = self::queryBuilder();
 
-        return $result[0]['count'];
+        return (int)$QueryBuilder
+            ->select('COUNT(id)')
+            ->executeQuery()
+            ->fetchOne();
     }
 
     /**
@@ -603,9 +635,10 @@ class Queue
      */
     public function getList(): array
     {
-        return QUI::getDataBase()->fetch([
-            'from' => self::table()
-        ]);
+        return self::queryBuilder()
+            ->select('*')
+            ->executeQuery()
+            ->fetchAllAssociative();
     }
 
     /**
@@ -615,8 +648,8 @@ class Queue
     {
         $retry = (int)$params['retry'] + 1;
 
-        QUI::getDataBase()->update(
-            self::table(),
+        self::connection()->update(
+            self::quotedTable(),
             [
                 'status' => self::STATUS_SENDING,
                 'lastsend' => time(),
@@ -633,18 +666,13 @@ class Queue
      */
     protected function isMailCanceled(int $id): bool
     {
-        $result = QUI::getDataBase()->fetch([
-            'select' => ['status'],
-            'from' => self::table(),
-            'where' => ['id' => $id],
-            'limit' => 1
-        ]);
+        $entry = self::fetchById($id);
 
-        if (!isset($result[0])) {
+        if (!$entry) {
             return false;
         }
 
-        return (int)$result[0]['status'] === self::STATUS_CANCELED;
+        return (int)$entry['status'] === self::STATUS_CANCELED;
     }
 
     /**
@@ -658,8 +686,8 @@ class Queue
             return false;
         }
 
-        QUI::getDataBase()->update(
-            self::table(),
+        self::connection()->update(
+            self::quotedTable(),
             ['status' => self::STATUS_CANCELED],
             ['id' => $params['id']]
         );
@@ -674,24 +702,19 @@ class Queue
      */
     protected function appendError(int $id, string $message): void
     {
-        $result = QUI::getDataBase()->fetch([
-            'select' => ['errors'],
-            'from' => self::table(),
-            'where' => ['id' => $id],
-            'limit' => 1
-        ]);
+        $result = self::fetchById($id);
 
         $currentErrors = '';
 
-        if (isset($result[0]['errors']) && is_string($result[0]['errors'])) {
-            $currentErrors = $result[0]['errors'];
+        if (isset($result['errors']) && is_string($result['errors'])) {
+            $currentErrors = $result['errors'];
         }
 
         $entry = '[' . time() . '] ' . $message;
         $errors = trim($currentErrors . "\n" . $entry);
 
-        QUI::getDataBase()->update(
-            self::table(),
+        self::connection()->update(
+            self::quotedTable(),
             ['errors' => $errors],
             ['id' => $id]
         );
