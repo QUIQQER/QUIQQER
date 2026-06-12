@@ -182,7 +182,7 @@ class QUIQQER extends AbstractAuthenticator
             $QueryBuilder = QUI::getQueryBuilder();
             $userData = $QueryBuilder
                 ->select('password')
-                ->from(QUI::getUsers()->table())
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(QUI\Users\Manager::table()))
                 ->where($QueryBuilder->expr()->eq('uuid', ':uuid'))
                 ->setParameter('uuid', $this->getUser()->getUUID())
                 ->setMaxResults(1)
@@ -220,7 +220,7 @@ class QUIQQER extends AbstractAuthenticator
 
             try {
                 QUI::getDataBaseConnection()->update(
-                    QUI::getDBTableName('users'),
+                    QUI\Utils\Doctrine::quoteIdentifier(QUI\Users\Manager::table()),
                     ['password' => QUI\Security\Password::generateHash($authParams)],
                     ['uuid' => $this->getUserUUID()]
                 );
