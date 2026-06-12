@@ -29,7 +29,9 @@ class MyDB implements \Stringable
      */
     public function __construct()
     {
-        $this->DB = QUI::getDataBase();
+        $this->DB = new \QUI\Database\DB([
+            'doctrine' => QUI::getDataBaseConnection()
+        ]);
     }
 
     /**
@@ -37,7 +39,7 @@ class MyDB implements \Stringable
      */
     public function getUtilsDB(): \QUI\Database\DB
     {
-        return QUI::getDataBase();
+        return $this->DB;
     }
 
     /**
@@ -73,7 +75,7 @@ class MyDB implements \Stringable
 
     public function getPDO(): ?\PDO
     {
-        return QUI::getDataBase()->getPDO();
+        return QUI::getPDO();
     }
 
     /**

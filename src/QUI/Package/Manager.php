@@ -1776,19 +1776,17 @@ class Manager extends QUI\QDOM
 
         if ($force === false) {
             // get last database check
-            $result = QUI::getDataBase()->fetch([
-                'from' => QUI::getDBTableName('updateChecks'),
-                'where' => [
-                    'result' => [
-                        'type' => 'NOT',
-                        'value' => ''
-                    ],
-                    'date' => [
-                        'type' => '>=',
-                        'value' => $this->getLastUpdateDate()
-                    ]
-                ]
-            ]);
+            $updateChecksTable = QUI::getDBTableName('updateChecks');
+            $QueryBuilder = QUI::getQueryBuilder();
+            $result = $QueryBuilder
+                ->select('*')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier($updateChecksTable))
+                ->where($QueryBuilder->expr()->neq('result', ':result'))
+                ->andWhere('date >= :date')
+                ->setParameter('result', '')
+                ->setParameter('date', $this->getLastUpdateDate())
+                ->executeQuery()
+                ->fetchAllAssociative();
 
             if (!empty($result)) {
                 $result = json_decode($result[0]['result'], true);
@@ -1812,12 +1810,12 @@ class Manager extends QUI\QDOM
                 return strcmp($a["package"], $b["package"]);
             });
 
-            QUI::getDataBase()->insert(QUI::getDBTableName('updateChecks'), [
+            QUI::getDataBaseConnection()->insert(QUI\Utils\Doctrine::quoteIdentifier(QUI::getDBTableName('updateChecks')), [
                 'date' => time(),
                 'result' => json_encode($output)
             ]);
         } catch (QUI\Composer\Exception $Exception) {
-            QUI::getDataBase()->insert(QUI::getDBTableName('updateChecks'), [
+            QUI::getDataBaseConnection()->insert(QUI\Utils\Doctrine::quoteIdentifier(QUI::getDBTableName('updateChecks')), [
                 'date' => time(),
                 'error' => json_encode($Exception->toArray())
             ]);
@@ -1959,7 +1957,9 @@ class Manager extends QUI\QDOM
 
         QUI::getPackageManager()->setLastUpdateDate();
 
-        QUI::getDataBase()->table()->truncate(QUI::getDBTableName('updateChecks'));
+        QUI::getDataBaseConnection()->delete(
+            QUI\Utils\Doctrine::quoteIdentifier(QUI::getDBTableName('updateChecks'))
+        );
         QUI::getEvents()->fireEvent('updateEnd');
     }
 
