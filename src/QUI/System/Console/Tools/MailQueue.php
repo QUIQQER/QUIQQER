@@ -77,8 +77,8 @@ class MailQueue extends QUI\System\Console\Tool
             $input = $this->readInput();
 
             if ($input === 'YES') {
-                QUI::getDataBase()->fetchSQL(
-                    'TRUNCATE ' . QUI\Mail\Queue::table() . ';'
+                QUI::getDataBaseConnection()->delete(
+                    QUI\Utils\Doctrine::quoteIdentifier(QUI\Mail\Queue::table())
                 );
 
                 $this->writeLn('The queue has been successfully cleared');
@@ -105,8 +105,8 @@ class MailQueue extends QUI\System\Console\Tool
             }
 
             try {
-                QUI::getDataBase()->delete(
-                    QUI\Mail\Queue::table(),
+                QUI::getDataBaseConnection()->delete(
+                    QUI\Utils\Doctrine::quoteIdentifier(QUI\Mail\Queue::table()),
                     ['id' => $mailId]
                 );
 

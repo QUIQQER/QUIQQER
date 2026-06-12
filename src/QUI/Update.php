@@ -653,15 +653,12 @@ class Update
         $packages = QUIFile::readDir(OPT_DIR);
 
         // clear system permissions
-        QUI::getDataBase()->delete(
-            QUI::getDBTableName(QUI\Permissions\Manager::TABLE),
-            [
-                'src' => [
-                    'type' => 'NOT',
-                    'value' => 'user'
-                ]
-            ]
-        );
+        $QueryBuilder = QUI::getQueryBuilder();
+        $QueryBuilder
+            ->delete(QUI\Permissions\Manager::table())
+            ->where($QueryBuilder->expr()->neq('src', ':src'))
+            ->setParameter('src', 'user')
+            ->executeStatement();
 
         QUI::$Rights = null; // so we have no permission cache
 

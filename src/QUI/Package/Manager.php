@@ -40,7 +40,6 @@ use function array_values;
 use function bin2hex;
 use function class_exists;
 use function count;
-use function curl_close;
 use function curl_exec;
 use function curl_init;
 use function curl_setopt_array;
@@ -673,9 +672,8 @@ class Manager extends QUI\QDOM
 
         if (file_exists($licenseConfigFile)) {
             try {
-                $LicenseConfig = new QUI\Config($licenseConfigFile);
-                $data = $LicenseConfig->getSection('license');
-                $licenseServerUrl = QUI::conf('license', 'url');
+                $data = QUI\System\License::getLicenseData();
+                $licenseServerUrl = QUI\System\License::getLicenseServerUrl();
 
                 if (
                     !empty($data['id'])
@@ -1778,19 +1776,17 @@ class Manager extends QUI\QDOM
 
         if ($force === false) {
             // get last database check
-            $result = QUI::getDataBase()->fetch([
-                'from' => QUI::getDBTableName('updateChecks'),
-                'where' => [
-                    'result' => [
-                        'type' => 'NOT',
-                        'value' => ''
-                    ],
-                    'date' => [
-                        'type' => '>=',
-                        'value' => $this->getLastUpdateDate()
-                    ]
-                ]
-            ]);
+            $updateChecksTable = QUI::getDBTableName('updateChecks');
+            $QueryBuilder = QUI::getQueryBuilder();
+            $result = $QueryBuilder
+                ->select('*')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier($updateChecksTable))
+                ->where($QueryBuilder->expr()->neq('result', ':result'))
+                ->andWhere('date >= :date')
+                ->setParameter('result', '')
+                ->setParameter('date', $this->getLastUpdateDate())
+                ->executeQuery()
+                ->fetchAllAssociative();
 
             if (!empty($result)) {
                 $result = json_decode($result[0]['result'], true);
@@ -1814,12 +1810,12 @@ class Manager extends QUI\QDOM
                 return strcmp($a["package"], $b["package"]);
             });
 
-            QUI::getDataBase()->insert(QUI::getDBTableName('updateChecks'), [
+            QUI::getDataBaseConnection()->insert(QUI\Utils\Doctrine::quoteIdentifier(QUI::getDBTableName('updateChecks')), [
                 'date' => time(),
                 'result' => json_encode($output)
             ]);
         } catch (QUI\Composer\Exception $Exception) {
-            QUI::getDataBase()->insert(QUI::getDBTableName('updateChecks'), [
+            QUI::getDataBaseConnection()->insert(QUI\Utils\Doctrine::quoteIdentifier(QUI::getDBTableName('updateChecks')), [
                 'date' => time(),
                 'error' => json_encode($Exception->toArray())
             ]);
@@ -1961,7 +1957,9 @@ class Manager extends QUI\QDOM
 
         QUI::getPackageManager()->setLastUpdateDate();
 
-        QUI::getDataBase()->table()->truncate(QUI::getDBTableName('updateChecks'));
+        QUI::getDataBaseConnection()->delete(
+            QUI\Utils\Doctrine::quoteIdentifier(QUI::getDBTableName('updateChecks'))
+        );
         QUI::getEvents()->fireEvent('updateEnd');
     }
 
@@ -2374,8 +2372,6 @@ class Manager extends QUI\QDOM
 
             $response = curl_exec($Curl);
 
-            curl_close($Curl);
-
             $isLicensed = !empty($response);
 
             QUICacheManager::set($cacheName, $isLicensed, date_interval_create_from_date_string('1 day'));
@@ -2432,8 +2428,6 @@ class Manager extends QUI\QDOM
             ]);
 
             $response = curl_exec($Curl);
-
-            curl_close($Curl);
 
             if (empty($response)) {
                 return false;

@@ -137,33 +137,28 @@ class MigrationV2 extends QUI\System\Console\Tool
 
         QUI\Users\Install::user();
 
-        $DataBase = QUI::getDataBase();
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
         $userTable = QUI\Users\Manager::table();
 
         // uuid extreme indexes patch
-        $Stmt = $DataBase->getPDO()->prepare(
-            "SHOW INDEXES FROM `$userTable`
-            WHERE 
-                non_unique = 0 AND Key_name != 'PRIMARY';"
-        );
-
-        $Stmt->execute();
-
-        $columns = $Stmt->fetchAll();
+        $columns = $Connection->executeQuery(
+            'SHOW INDEXES FROM ' . QUI\Utils\Doctrine::quoteIdentifier($userTable) . "
+            WHERE non_unique = 0 AND Key_name != 'PRIMARY'"
+        )->fetchAllAssociative();
         $dropSql = [];
 
         foreach ($columns as $column) {
             if (str_starts_with($column['Key_name'], 'uuid_')) {
-                $dropSql[] = "ALTER TABLE `users` DROP INDEX `{$column['Key_name']}`;";
+                $dropSql[] = 'ALTER TABLE ' . QUI\Utils\Doctrine::quoteIdentifier($userTable)
+                    . ' DROP INDEX ' . $Platform->quoteSingleIdentifier($column['Key_name']);
             }
         }
 
         if (!empty($dropSql)) {
             try {
-                // foreach because of PDO::MYSQL_ATTR_USE_BUFFERED_QUERY
                 foreach ($dropSql as $sql) {
-                    $Stmt = $DataBase->getPDO()->prepare($sql);
-                    $Stmt->execute();
+                    $Connection->executeStatement($sql);
                 }
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeRecursive($dropSql);
@@ -172,95 +167,67 @@ class MigrationV2 extends QUI\System\Console\Tool
         }
 
         // users with no uuid
-        $usersWithoutUuid = QUI::getDataBase()->fetch([
-            'from' => $userTable,
-            'where' => [
-                'uuid' => ''
-            ]
-        ]);
+        $usersWithoutUuid = $this->fetchRows($userTable, ['uuid' => '']);
 
         foreach ($usersWithoutUuid as $entry) {
-            $DataBase->update(
+            $this->updateRows(
                 $userTable,
                 ['uuid' => QUI\Utils\Uuid::get()],
                 ['id' => $entry['id']]
             );
         }
 
-        $DataBase->table()->setUniqueColumns($userTable, 'uuid');
+        $this->ensureUniqueColumn($userTable, 'uuid');
 
         // addresses
         $this->writeLn('- Migrate users addresses');
 
-        $tableAddresses = QUI::getUsers()->tableAddress();
+        $tableAddresses = QUI\Users\Manager::tableAddress();
         $setAddressUuidColumnToUnique = false;
 
-        if (!$DataBase->table()->existColumnInTable($tableAddresses, 'uuid')) {
-            $DataBase->table()->addColumn(
-                $tableAddresses,
-                ['uuid' => 'VARCHAR(50) NOT NULL']
-            );
-
+        if (!$this->columnExists($tableAddresses, 'uuid')) {
+            $this->addVarcharColumn($tableAddresses, 'uuid');
             $setAddressUuidColumnToUnique = true;
         }
 
-        if (!$DataBase->table()->existColumnInTable($tableAddresses, 'userUuid')) {
-            $DataBase->table()->addColumn(
-                $tableAddresses,
-                ['userUuid' => 'VARCHAR(50) NOT NULL']
+        if (!$this->columnExists($tableAddresses, 'userUuid')) {
+            $this->addVarcharColumn($tableAddresses, 'userUuid');
+        }
+
+        if (!$this->isColumnVarchar($userTable, 'address')) {
+            $Connection->executeStatement(
+                'ALTER TABLE ' . QUI\Utils\Doctrine::quoteIdentifier($userTable)
+                . ' MODIFY ' . $Platform->quoteSingleIdentifier('address') . ' VARCHAR(50) NOT NULL'
             );
         }
 
-        $usersAddressColumn = $DataBase->table()->getColumn($userTable, 'address');
-
-        if (!str_contains($usersAddressColumn['Type'], 'varchar')) {
-            $sql = "ALTER TABLE `$userTable` MODIFY `address` VARCHAR(50) NOT NULL";
-            $DataBase->execSQL($sql);
-        }
-
-        $addressesWithoutUuid = QUI::getDataBase()->fetch([
-            'select' => ['id'],
-            'from' => $tableAddresses,
-            'where' => [
-                'uuid' => ''
-            ]
-        ]);
+        $addressesWithoutUuid = $this->fetchRows($tableAddresses, ['uuid' => ''], ['id']);
 
         $this->writeLn('-- Found addresses without UUID: ' . count($addressesWithoutUuid));
         $this->writeLn('-- Start migration ...');
 
         foreach ($addressesWithoutUuid as $entry) {
-            $addressUuid = QUI\Utils\Uuid::get();
-
-            $DataBase->update(
+            $this->updateRows(
                 $tableAddresses,
-                ['uuid' => $addressUuid],
+                ['uuid' => QUI\Utils\Uuid::get()],
                 ['id' => $entry['id']]
             );
         }
 
         // MIGRATE DEFAULT ADDRESS
-        $users = QUI::getDataBase()->fetch([
-            'from' => $userTable
-        ]);
+        $users = $this->fetchRows($userTable);
 
         foreach ($users as $user) {
             $standardAddress = $user['address'];
 
             if (is_numeric($standardAddress)) {
-                $addressData = QUI::getDataBase()->fetch([
-                    'from' => $tableAddresses,
-                    'where' => [
-                        'id' => $standardAddress
-                    ]
-                ]);
+                $addressData = $this->fetchRows($tableAddresses, ['id' => $standardAddress], ['uuid'], 1);
 
                 if (!count($addressData)) {
                     continue;
                 }
 
-                // Update references in users table
-                $DataBase->update(
+                $this->updateRows(
                     $userTable,
                     ['address' => $addressData[0]['uuid']],
                     ['id' => $user['id']]
@@ -268,50 +235,38 @@ class MigrationV2 extends QUI\System\Console\Tool
             }
         }
 
-
         if ($setAddressUuidColumnToUnique) {
-            $DataBase->table()->setUniqueColumns($tableAddresses, 'uuid');
+            $this->ensureUniqueColumn($tableAddresses, 'uuid');
         }
 
-        $addressesWithoutUserUuid = QUI::getDataBase()->fetch([
-            'select' => ['id', 'uid'],
-            'from' => $tableAddresses,
-            'where' => [
-                'userUuid' => ''
-            ]
-        ]);
+        $addressesWithoutUserUuid = $this->fetchRows(
+            $tableAddresses,
+            ['userUuid' => ''],
+            ['id', 'uid']
+        );
 
         $this->writeLn('-- Found addresses without user UUID: ' . count($addressesWithoutUserUuid));
         $this->writeLn('-- Start migration ...');
 
         foreach ($addressesWithoutUserUuid as $entry) {
-            $result = $DataBase->fetch([
-                'select' => ['uuid'],
-                'from' => $userTable,
-                'where' => [
-                    'id' => $entry['uid']
-                ],
-                'limit' => 1
-            ]);
+            $result = $this->fetchRows($userTable, ['id' => $entry['uid']], ['uuid'], 1);
 
             if (empty($result)) {
                 $this->writeLn(
-                    "-> Found orphaned address ID #{$entry['id']}. User #{$entry['uid']}" . " referenced by address does not exist.",
+                    "-> Found orphaned address ID #{$entry['id']}. User #{$entry['uid']} referenced by address does not exist.",
                     'yellow'
                 );
                 $this->resetColor();
                 continue;
             }
 
-            // Update user uuid
-            $DataBase->update(
+            $this->updateRows(
                 $tableAddresses,
                 ['userUuid' => $result[0]['uuid']],
                 ['id' => $entry['id']]
             );
         }
     }
-
     public function groups(): void
     {
         $this->writeLn('- Migrate groups table');
@@ -332,9 +287,7 @@ class MigrationV2 extends QUI\System\Console\Tool
         $rootUUID = $Root->getUUID();
         $groupTable = QUI\Groups\Manager::table();
 
-        $result = QUI::getDataBase()->fetch([
-            'from' => $groupTable
-        ]);
+        $result = $this->fetchRows($groupTable);
 
         foreach ($result as $entry) {
             $groupUUID = $entry['uuid'];
@@ -347,13 +300,13 @@ class MigrationV2 extends QUI\System\Console\Tool
 
             try {
                 if ($parent == 0) {
-                    QUI::getDataBase()->update(
+                    $this->updateRows(
                         $groupTable,
                         ['parent' => $rootUUID],
                         ['id' => $entry['id']]
                     );
                 } else {
-                    QUI::getDataBase()->update(
+                    $this->updateRows(
                         $groupTable,
                         ['parent' => QUI::getGroups()->get($parent)->getUUID()],
                         ['id' => $entry['id']]
@@ -371,9 +324,7 @@ class MigrationV2 extends QUI\System\Console\Tool
         $this->writeLn('- Migrate groups in users');
         $table = QUI\Users\Manager::table();
 
-        $result = QUI::getDataBase()->fetch([
-            'from' => $table
-        ]);
+        $result = $this->fetchRows($table);
 
         foreach ($result as $entry) {
             $userGroups = $entry['usergroup'];
@@ -391,7 +342,7 @@ class MigrationV2 extends QUI\System\Console\Tool
             }
 
             try {
-                QUI::getDataBase()->update(
+                $this->updateRows(
                     $table,
                     ['usergroup' => ',' . implode(',', $newGroups) . ','],
                     ['id' => $entry['id']]
@@ -417,9 +368,7 @@ class MigrationV2 extends QUI\System\Console\Tool
 
             foreach ($languages as $language) {
                 $table = QUI::getProject($name, $language)->table();
-                $sites = QUI::getDataBase()->fetch([
-                    'from' => $table
-                ]);
+                $sites = $this->fetchRows($table);
 
                 foreach ($sites as $site) {
                     $cUser = $site['c_user'];
@@ -433,7 +382,7 @@ class MigrationV2 extends QUI\System\Console\Tool
                         $eUser = $this->getUserHash($eUser);
                     }
 
-                    QUI::getDataBase()->update(
+                    $this->updateRows(
                         $table,
                         [
                             'c_user' => $cUser,
@@ -456,9 +405,7 @@ class MigrationV2 extends QUI\System\Console\Tool
             $Media = $Project->getMedia();
             $table = $Media->getTable();
 
-            $files = QUI::getDataBase()->fetch([
-                'from' => $table
-            ]);
+            $files = $this->fetchRows($table);
 
             foreach ($files as $file) {
                 $cUser = $file['c_user'];
@@ -472,7 +419,7 @@ class MigrationV2 extends QUI\System\Console\Tool
                     $eUser = $this->getUserHash($eUser);
                 }
 
-                QUI::getDataBase()->update(
+                $this->updateRows(
                     $table,
                     [
                         'c_user' => $cUser,
@@ -504,9 +451,7 @@ class MigrationV2 extends QUI\System\Console\Tool
         );
 
 
-        $permissions = QUI::getDataBase()->fetch([
-            'from' => $table2Users
-        ]);
+        $permissions = $this->fetchRows($table2Users);
 
         foreach ($permissions as $entry) {
             if (!is_numeric($entry['user_id'])) {
@@ -517,27 +462,25 @@ class MigrationV2 extends QUI\System\Console\Tool
                 $userUUID = QUI::getUsers()->get($entry['user_id'])->getUUID();
             } catch (QUI\Exception) {
                 // nutzer existiert nicht, kann als permission gelöscht werden
-                QUI::getDataBaseConnection()->delete($table2Users, [
+                QUI::getDataBaseConnection()->delete(QUI\Utils\Doctrine::quoteIdentifier($table2Users), [
                     'user_id' => $entry['user_id']
                 ]);
 
                 continue;
             }
 
-            QUI::getDataBaseConnection()->insert($table2Users, [
+            QUI::getDataBaseConnection()->insert(QUI\Utils\Doctrine::quoteIdentifier($table2Users), [
                 'user_id' => $userUUID,
                 'permissions' => $entry['permissions']
             ]);
 
-            QUI::getDataBaseConnection()->delete($table2Users, [
+            QUI::getDataBaseConnection()->delete(QUI\Utils\Doctrine::quoteIdentifier($table2Users), [
                 'user_id' => $entry['user_id']
             ]);
         }
 
 
-        $permissions = QUI::getDataBase()->fetch([
-            'from' => $table2Groups
-        ]);
+        $permissions = $this->fetchRows($table2Groups);
 
         foreach ($permissions as $entry) {
             if (!is_numeric($entry['group_id'])) {
@@ -549,7 +492,7 @@ class MigrationV2 extends QUI\System\Console\Tool
             } catch (\Exception) {
                 // gruppe existiert nicht, kann als permission gelöscht werden
 
-                QUI::getDataBaseConnection()->delete($table2Groups, [
+                QUI::getDataBaseConnection()->delete(QUI\Utils\Doctrine::quoteIdentifier($table2Groups), [
                     'group_id' => $entry['group_id']
                 ]);
                 continue;
@@ -560,12 +503,12 @@ class MigrationV2 extends QUI\System\Console\Tool
             }
 
             try {
-                QUI::getDataBaseConnection()->insert($table2Groups, [
+                QUI::getDataBaseConnection()->insert(QUI\Utils\Doctrine::quoteIdentifier($table2Groups), [
                     'group_id' => $groupUUID,
                     'permissions' => $entry['permissions']
                 ]);
 
-                QUI::getDataBaseConnection()->delete($table2Groups, [
+                QUI::getDataBaseConnection()->delete(QUI\Utils\Doctrine::quoteIdentifier($table2Groups), [
                     'group_id' => $entry['group_id']
                 ]);
             } catch (\Exception) {
@@ -642,6 +585,102 @@ class MigrationV2 extends QUI\System\Console\Tool
         QUI::getDataBaseConnection()->executeStatement(
             'ALTER TABLE `' . QUI::getDBTableName('login_log') . '` CHANGE `uid` `uid` VARCHAR(50) NOT NULL;'
         );
+    }
+
+    protected function fetchRows(
+        string $table,
+        array $where = [],
+        array $select = ['*'],
+        ?int $limit = null
+    ): array {
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $QueryBuilder = $Connection->createQueryBuilder();
+        $columns = [];
+
+        foreach ($select as $column) {
+            $columns[] = $column === '*' ? '*' : $Platform->quoteSingleIdentifier($column);
+        }
+
+        $QueryBuilder
+            ->select(...$columns)
+            ->from(QUI\Utils\Doctrine::quoteIdentifier($table));
+
+        $index = 0;
+
+        foreach ($where as $field => $value) {
+            $parameter = 'where' . $index;
+            $QueryBuilder
+                ->andWhere($QueryBuilder->expr()->eq($Platform->quoteSingleIdentifier($field), ':' . $parameter))
+                ->setParameter($parameter, $value);
+            $index++;
+        }
+
+        if ($limit !== null) {
+            $QueryBuilder->setMaxResults($limit);
+        }
+
+        return $QueryBuilder->executeQuery()->fetchAllAssociative();
+    }
+
+    protected function updateRows(string $table, array $data, array $where): void
+    {
+        QUI::getDataBaseConnection()->update(
+            QUI\Utils\Doctrine::quoteIdentifier($table),
+            $data,
+            $where
+        );
+    }
+
+    protected function columnExists(string $table, string $column): bool
+    {
+        return QUI::getSchemaManager()
+            ->introspectTable($table)
+            ->hasColumn($column);
+    }
+
+    protected function addVarcharColumn(string $table, string $column): void
+    {
+        $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
+
+        QUI::getDataBaseConnection()->executeStatement(
+            'ALTER TABLE ' . QUI\Utils\Doctrine::quoteIdentifier($table)
+            . ' ADD ' . $Platform->quoteSingleIdentifier($column) . ' VARCHAR(50) NOT NULL'
+        );
+    }
+
+    protected function ensureUniqueColumn(string $table, string $column): void
+    {
+        $Table = QUI::getSchemaManager()->introspectTable($table);
+
+        foreach ($Table->getIndexes() as $Index) {
+            if (!$Index->isUnique()) {
+                continue;
+            }
+
+            if ($Index->getColumns() === [$column]) {
+                return;
+            }
+        }
+
+        $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
+        $indexName = $table . '_' . $column . '_uniq';
+
+        QUI::getDataBaseConnection()->executeStatement(
+            'CREATE UNIQUE INDEX ' . $Platform->quoteSingleIdentifier($indexName)
+            . ' ON ' . QUI\Utils\Doctrine::quoteIdentifier($table)
+            . ' (' . $Platform->quoteSingleIdentifier($column) . ')'
+        );
+    }
+
+    protected function isColumnVarchar(string $table, string $column): bool
+    {
+        $type = QUI::getSchemaManager()
+            ->introspectTable($table)
+            ->getColumn($column)
+            ->getType();
+
+        return $type instanceof \Doctrine\DBAL\Types\StringType || $type instanceof \Doctrine\DBAL\Types\TextType;
     }
 
     protected function getUserHash(int | string $userId): string | int

@@ -27,9 +27,13 @@ class MigrationV1ToV2
             return;
         }
 
-        $result = QUI::getDataBase()->fetch([
-            'from' => $table
-        ]);
+        $Connection = QUI::getDataBaseConnection();
+        $result = $Connection
+            ->createQueryBuilder()
+            ->select('*')
+            ->from(QUI\Utils\Doctrine::quoteIdentifier($table))
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         foreach ($result as $entry) {
             foreach ($userTableFields as $field) {
@@ -54,12 +58,12 @@ class MigrationV1ToV2
                 }
 
                 try {
-                    QUI::getDataBase()->update(
-                        $table,
+                    $Connection->update(
+                        QUI\Utils\Doctrine::quoteIdentifier($table),
                         [$field => $uuid],
                         [$indexId => $entry[$indexId]]
                     );
-                } catch (QUI\Exception) {
+                } catch (QUI\Exception | \Doctrine\DBAL\Exception) {
                 }
             }
         }
@@ -76,9 +80,13 @@ class MigrationV1ToV2
             return;
         }
 
-        $result = QUI::getDataBase()->fetch([
-            'from' => $table
-        ]);
+        $Connection = QUI::getDataBaseConnection();
+        $result = $Connection
+            ->createQueryBuilder()
+            ->select('*')
+            ->from(QUI\Utils\Doctrine::quoteIdentifier($table))
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         foreach ($result as $entry) {
             foreach ($addressTableFields as $field) {
@@ -97,24 +105,26 @@ class MigrationV1ToV2
                 }
 
                 try {
-                    $addressData = QUI::getDataBase()->fetch([
-                        'from' => QUI::getDBTableName('users_address'),
-                        'where' => [
-                            'id' => $addressId
-                        ],
-                        'limit' => 1
-                    ]);
+                    $AddressQueryBuilder = $Connection->createQueryBuilder();
+                    $addressData = $AddressQueryBuilder
+                        ->select('uuid')
+                        ->from(QUI\Utils\Doctrine::quoteIdentifier(QUI\Users\Manager::tableAddress()))
+                        ->where($AddressQueryBuilder->expr()->eq('id', ':id'))
+                        ->setParameter('id', $addressId)
+                        ->setMaxResults(1)
+                        ->executeQuery()
+                        ->fetchAllAssociative();
 
                     if (!count($addressData)) {
                         continue;
                     }
 
-                    QUI::getDataBase()->update(
-                        $table,
+                    $Connection->update(
+                        QUI\Utils\Doctrine::quoteIdentifier($table),
                         [$field => $addressData[0]['uuid']],
                         ['id' => $entry['id']]
                     );
-                } catch (QUI\Exception) {
+                } catch (QUI\Exception | \Doctrine\DBAL\Exception) {
                 }
             }
         }
@@ -122,9 +132,13 @@ class MigrationV1ToV2
 
     public static function migrateUserGroupField(string $table, string $field, string $indexId = 'id'): void
     {
-        $result = QUI::getDataBase()->fetch([
-            'from' => $table
-        ]);
+        $Connection = QUI::getDataBaseConnection();
+        $result = $Connection
+            ->createQueryBuilder()
+            ->select('*')
+            ->from(QUI\Utils\Doctrine::quoteIdentifier($table))
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         foreach ($result as $entry) {
             $id = $entry[$indexId];
@@ -167,12 +181,12 @@ class MigrationV1ToV2
 
             // update
             try {
-                QUI::getDataBase()->update(
-                    $table,
+                $Connection->update(
+                    QUI\Utils\Doctrine::quoteIdentifier($table),
                     [$field => ',' . implode(',', $new) . ','],
                     [$indexId => $id]
                 );
-            } catch (QUI\Exception) {
+            } catch (QUI\Exception | \Doctrine\DBAL\Exception) {
             }
         }
     }

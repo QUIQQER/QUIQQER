@@ -117,9 +117,10 @@ class Manager implements QUI\Interfaces\Events
     {
         try {
             $table = QUI::getDBTableName('events');
+            $SchemaManager = QUI::getSchemaManager();
 
-            if (QUI::getDataBase()->table()->exist($table)) {
-                QUI::getDataBase()->table()->delete($table);
+            if ($SchemaManager->tablesExist([$table])) {
+                $SchemaManager->dropTable($table);
             }
         } catch (Throwable $Exception) {
             QUI\System\Log::writeDebugException($Exception);
