@@ -40,7 +40,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @example
  * \QUI::conf();
- * \QUI::getDataBase();
+ * \QUI::getDataBaseConnection();
  * \QUI::getPDO();
  * \QUI::getLocale();
  * and so on
@@ -76,7 +76,7 @@ class QUI
     public static ?MyDB $DataBase = null;
 
     /**
-     * QUI getDataBase object, use \QUI::getDataBase();
+     * QUI legacy database object; use \QUI::getDataBaseConnection() for new code.
      */
     public static ?DB $DataBase2 = null;
 
@@ -677,10 +677,6 @@ class QUI
      */
     public static function getPDO(): PDO
     {
-        if (QUI::getDataBase()->getPDO()) {
-            return QUI::getDataBase()->getPDO();
-        }
-
         try {
             $Native = self::getDataBaseConnection()->getNativeConnection();
 
