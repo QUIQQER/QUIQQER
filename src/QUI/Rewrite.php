@@ -1165,11 +1165,11 @@ class Rewrite
     {
         if ($this->registerPaths === null) {
             $table = QUI::getDBProjectTableName('paths', $Project);
-            $result = QUI::getDataBase()->fetch([
-                'from' => $table
-            ]);
-
-            $this->registerPaths = $result;
+            $this->registerPaths = QUI::getQueryBuilder()
+                ->select('*')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier($table))
+                ->executeQuery()
+                ->fetchAllAssociative();
         }
 
         $list = $this->registerPaths;
@@ -1423,22 +1423,27 @@ class Rewrite
 
         // check, if path is the same, if yes, we have nothing to do
         if (is_string($paths)) {
-            $alreadyRegistered = QUI::getDataBase()->fetch([
-                'from' => $table,
-                'where' => [
-                    'id' => $Site->getId(),
-                    'path' => $paths
-                ]
-            ]);
+            $QueryBuilder = QUI::getQueryBuilder();
+            $alreadyRegistered = $QueryBuilder
+                ->select('*')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier($table))
+                ->where($QueryBuilder->expr()->eq('id', ':id'))
+                ->andWhere($QueryBuilder->expr()->eq('path', ':path'))
+                ->setParameter('id', $Site->getId())
+                ->setParameter('path', $paths)
+                ->executeQuery()
+                ->fetchAllAssociative();
 
             if (count($alreadyRegistered)) {
                 return;
             }
         }
 
-        $currentPaths = QUI::getDataBase()->fetch([
-            'from' => $table
-        ]);
+        $currentPaths = QUI::getQueryBuilder()
+            ->select('*')
+            ->from(QUI\Utils\Doctrine::quoteIdentifier($table))
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         $this->unregisterPath($Site);
 
@@ -1452,7 +1457,7 @@ class Rewrite
         }
 
         foreach ($paths as $path) {
-            QUI::getDataBase()->insert($table, [
+            QUI::getDataBaseConnection()->insert(QUI\Utils\Doctrine::quoteIdentifier($table), [
                 'id' => $Site->getId(),
                 'path' => $path
             ]);
@@ -1506,7 +1511,6 @@ class Rewrite
             }
         }
     }
-
     /**
      * Unregister a rewrite path
      *
@@ -1517,7 +1521,7 @@ class Rewrite
         $Project = $Site->getProject();
         $table = QUI::getDBProjectTableName('paths', $Project);
 
-        QUI::getDataBase()->delete($table, [
+        QUI::getDataBaseConnection()->delete(QUI\Utils\Doctrine::quoteIdentifier($table), [
             'id' => $Site->getId()
         ]);
     }
