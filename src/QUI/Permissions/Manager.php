@@ -1503,29 +1503,71 @@ class Manager
         ];
 
         if (isset($this->cache[$params['name']])) {
-            $Connection->update(self::table(), $data, $where);
+            self::updatePermissionRow($params["name"], $data);
             return;
         }
 
         $result = self::fetchRows(self::table(), $where, 1);
 
         if (isset($result[0])) {
-            $Connection->update(self::table(), $data, $where);
+            self::updatePermissionRow($params["name"], $data);
             return;
         }
 
         // if not exist, insert it
-        $Connection->insert(self::table(), [
-            'name' => $params['name'],
-            'title' => trim($params['title']),
-            'desc' => trim($params['desc']),
-            'type' => self::parseType($params['type']),
-            'area' => self::parseArea($params['area']),
-            'src' => $params['src'],
-            'defaultvalue' => $params['defaultvalue']
+        self::insertPermissionRow([
+            "name" => $params["name"],
+            "title" => trim($params["title"]),
+            "desc" => trim($params["desc"]),
+            "type" => self::parseType($params["type"]),
+            "area" => self::parseArea($params["area"]),
+            "src" => $params["src"],
+            "defaultvalue" => $params["defaultvalue"]
         ]);
 
         $this->cache[$params['name']] = $params;
+    }
+
+    private static function updatePermissionRow(string $name, array $data): void
+    {
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $QueryBuilder = $Connection->createQueryBuilder()
+            ->update($Platform->quoteSingleIdentifier(self::table()))
+            ->where($Platform->quoteSingleIdentifier("name") . " = :permissionName")
+            ->setParameter("permissionName", $name);
+
+        $index = 0;
+
+        foreach ($data as $field => $value) {
+            $parameter = "value" . $index;
+            $QueryBuilder
+                ->set($Platform->quoteSingleIdentifier((string)$field), ":" . $parameter)
+                ->setParameter($parameter, $value);
+            $index++;
+        }
+
+        $QueryBuilder->executeStatement();
+    }
+
+    private static function insertPermissionRow(array $data): void
+    {
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $QueryBuilder = $Connection->createQueryBuilder()
+            ->insert($Platform->quoteSingleIdentifier(self::table()));
+
+        $index = 0;
+
+        foreach ($data as $field => $value) {
+            $parameter = "value" . $index;
+            $QueryBuilder
+                ->setValue($Platform->quoteSingleIdentifier((string)$field), ":" . $parameter)
+                ->setParameter($parameter, $value);
+            $index++;
+        }
+
+        $QueryBuilder->executeStatement();
     }
 
     /**
