@@ -306,7 +306,12 @@ class Session
 
         // session via database
         if ($sessionType == 'database') {
-            $PDO = QUI::getDataBase()->getNewPDO();
+            $PDO = QUI::getDataBaseConnection()->getNativeConnection();
+
+            if (!$PDO instanceof PDO) {
+                throw new \RuntimeException('Database session storage requires a PDO connection.');
+            }
+
             $PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             return new PdoSessionHandler($PDO, [
@@ -399,19 +404,24 @@ class Session
      */
     public static function setup(): void
     {
-        $DBTable = QUI::getDataBase()->table();
+        $SchemaManager = QUI::getSchemaManager();
+        $tableName = QUI::getDBTableName("sessions");
 
-        // pdo mysql options db
-        // more at http://symfony.com/doc/current/cookbook/configuration/pdo_session_storage.html
-        $DBTable->addColumn(QUI::getDBTableName('sessions'), [
-            'session_id' => 'varchar(255) NOT NULL',
-            'session_value' => 'text NOT NULL',
-            'session_time' => 'int(11) NOT NULL',
-            'session_lifetime' => 'int(12) NOT NULL',
-            'uid' => 'int(11) NULL'
-        ]);
+        if ($SchemaManager->tablesExist([$tableName])) {
+            return;
+        }
 
-        $DBTable->setPrimaryKey(QUI::getDBTableName('sessions'), 'session_id');
+        $Table = new \Doctrine\DBAL\Schema\Table($tableName);
+        $Table->addOption("charset", "utf8mb4");
+        $Table->addOption("collation", "utf8mb4_general_ci");
+        $Table->addColumn("session_id", "string", ["length" => 255]);
+        $Table->addColumn("session_value", "text");
+        $Table->addColumn("session_time", "integer");
+        $Table->addColumn("session_lifetime", "integer");
+        $Table->addColumn("uid", "integer", ["notnull" => false]);
+        $Table->setPrimaryKey(["session_id"]);
+
+        $SchemaManager->createTable($Table);
     }
 
     /**
@@ -471,22 +481,25 @@ class Session
     public function getLastRefreshFrom(string $sid): int
     {
         try {
-            $result = QUI::getDataBase()->fetch([
-                'from' => $this->table,
-                'where' => [
-                    'session_id' => $sid
-                ],
-                'limit' => 1
-            ]);
-        } catch (QUI\Database\Exception) {
+            $Connection = QUI::getDataBaseConnection();
+            $Platform = $Connection->getDatabasePlatform();
+            $sessionTime = $Connection->createQueryBuilder()
+                ->select($Platform->quoteSingleIdentifier("session_time"))
+                ->from($Platform->quoteSingleIdentifier($this->table))
+                ->where($Platform->quoteSingleIdentifier("session_id") . " = :sessionId")
+                ->setParameter("sessionId", $sid)
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchOne();
+        } catch (\Doctrine\DBAL\Exception) {
             return 0;
         }
 
-        if (!isset($result[0])) {
+        if ($sessionTime === false) {
             return 0;
         }
 
-        return $result[0]['session_time'];
+        return (int)$sessionTime;
     }
 
     /**
@@ -497,18 +510,21 @@ class Session
     public function isUserOnline(int|string $uid): bool
     {
         try {
-            $result = QUI::getDataBase()->fetch([
-                'from' => $this->table,
-                'where' => [
-                    'uid' => $uid
-                ],
-                'limit' => 1
-            ]);
-        } catch (QUI\Database\Exception) {
+            $Connection = QUI::getDataBaseConnection();
+            $Platform = $Connection->getDatabasePlatform();
+            $result = $Connection->createQueryBuilder()
+                ->select("1")
+                ->from($Platform->quoteSingleIdentifier($this->table))
+                ->where($Platform->quoteSingleIdentifier("uid") . " = :uid")
+                ->setParameter("uid", $uid)
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchOne();
+        } catch (\Doctrine\DBAL\Exception) {
             return false;
         }
 
-        return isset($result[0]);
+        return $result !== false;
     }
 
     public function getSymfonySession(): \Symfony\Component\HttpFoundation\Session\Session|bool
