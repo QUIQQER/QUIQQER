@@ -2,12 +2,13 @@
 
 namespace QUI\System\Console\Tools;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use QUI;
 use QUI\ExceptionStack;
 
 use function array_chunk;
-use function array_fill;
 use function array_merge;
 use function array_unique;
 use function array_filter;
@@ -19,7 +20,6 @@ use function is_numeric;
 use function json_decode;
 use function sprintf;
 use function trim;
-use function var_dump;
 
 use const OPT_DIR;
 
@@ -46,17 +46,12 @@ class MigrationV2 extends QUI\System\Console\Tool
     public function execute(): void
     {
         // messages
-        $this->writeLn('- Update messages table');
-        QUI::getDataBaseConnection()->executeStatement(
-            'ALTER TABLE `' . QUI::getDBTableName('messages') . '` CHANGE `uid` `uid` VARCHAR(50);'
-        );
+        $this->writeLn("- Update messages table");
+        $this->ensureStringColumn(QUI::getDBTableName("messages"), "uid", 50, false);
 
         // session
-        $this->writeLn('- Update session table');
-        QUI::getDataBaseConnection()->executeStatement(
-            'ALTER TABLE `' . QUI::getDBTableName('sessions') . '` CHANGE `uid` `uid` VARCHAR(50);'
-        );
-
+        $this->writeLn("- Update session table");
+        $this->ensureStringColumn(QUI::getDBTableName("sessions"), "uid", 50, false);
 
         $this->users();
         $this->groups();
@@ -90,41 +85,44 @@ class MigrationV2 extends QUI\System\Console\Tool
 
         // migrate databases to innodb
         try {
-            $this->writeLn('- Migrate database to MyISAM');
+            $this->writeLn('- Migrate database from MyISAM to InnoDB');
 
-            $conn = QUI::getDataBaseConnection();
-            $dbname = QUI::conf('db', 'database');
+            $Connection = QUI::getDataBaseConnection();
+            $Platform = $Connection->getDatabasePlatform();
 
-            // Alle MyISAM-Tabellen abrufen
-            $sql = "
-            SELECT table_name 
-            FROM information_schema.tables 
-            WHERE 
-                table_schema = :dbname AND engine = 'MyISAM'
-            ";
+            if (!$Platform instanceof AbstractMySQLPlatform) {
+                $this->writeLn('-> Skip MyISAM to InnoDB conversion for non-MySQL platform');
+            } else {
+                $result = $Connection->executeQuery(
+                    "SELECT table_name
+                    FROM information_schema.tables
+                    WHERE table_schema = :dbname AND engine = 'MyISAM'",
+                    ['dbname' => QUI::conf('db', 'database')]
+                );
 
-            $stmt = $conn->prepare($sql);
-            $stmt->bindValue('dbname', $dbname);
+                foreach ($result->fetchAllAssociative() as $table) {
+                    $tableName = $table['table_name'] ?? $table['TABLE_NAME'] ?? null;
 
-            $result = $stmt->executeQuery();
-            $tables = $result->fetchAllAssociative();
+                    if ($tableName === null) {
+                        continue;
+                    }
 
-            // Speicher-Engine jeder Tabelle ändern
-            foreach ($tables as $table) {
-                try {
-                    $tableName = $table['table_name'] ?? $table['TABLE_NAME'];
-                    $conn->executeStatement("ALTER TABLE `$tableName` ENGINE=InnoDB;");
-                    $this->writeLn('-> Converted ' . $tableName . ' to InnoDB');
-                } catch (\Exception $exception) {
-                    $this->writeLn('Error at table ' . $tableName, 'red');
-                    $this->writeLn($exception->getMessage(), 'red');
-                    $this->resetColor();
+                    try {
+                        $Connection->executeStatement(
+                            'ALTER TABLE ' . $Platform->quoteSingleIdentifier($tableName) . ' ENGINE=InnoDB'
+                        );
+                        $this->writeLn('-> Converted ' . $tableName . ' to InnoDB');
+                    } catch (\Exception $exception) {
+                        $this->writeLn('Error at table ' . $tableName, 'red');
+                        $this->writeLn($exception->getMessage(), 'red');
+                        $this->resetColor();
+                    }
                 }
-            }
 
-            $this->writeLn('-> Conversion complete');
-        } catch (Exception $e) {
-            $this->writeLn('An error occurred: ' . $e->getMessage());
+                $this->writeLn('-> Conversion complete');
+            }
+        } catch (Exception $Exception) {
+            $this->writeLn('An error occurred: ' . $Exception->getMessage());
         }
 
         $this->writeLn('Migration complete!', 'green');
@@ -137,31 +135,31 @@ class MigrationV2 extends QUI\System\Console\Tool
 
         QUI\Users\Install::user();
 
-        $Connection = QUI::getDataBaseConnection();
-        $Platform = $Connection->getDatabasePlatform();
         $userTable = QUI\Users\Manager::table();
 
         // uuid extreme indexes patch
-        $columns = $Connection->executeQuery(
-            'SHOW INDEXES FROM ' . QUI\Utils\Doctrine::quoteIdentifier($userTable) . "
-            WHERE non_unique = 0 AND Key_name != 'PRIMARY'"
-        )->fetchAllAssociative();
-        $dropSql = [];
+        $Table = QUI::getSchemaManager()->introspectTable($userTable);
+        $droppedIndexes = [];
 
-        foreach ($columns as $column) {
-            if (str_starts_with($column['Key_name'], 'uuid_')) {
-                $dropSql[] = 'ALTER TABLE ' . QUI\Utils\Doctrine::quoteIdentifier($userTable)
-                    . ' DROP INDEX ' . $Platform->quoteSingleIdentifier($column['Key_name']);
+        foreach ($Table->getIndexes() as $Index) {
+            if (!$Index->isUnique() || $Index->isPrimary()) {
+                continue;
+            }
+
+            if (str_starts_with($Index->getName(), 'uuid_')) {
+                $droppedIndexes[] = $Index;
             }
         }
 
-        if (!empty($dropSql)) {
+        if (!empty($droppedIndexes)) {
             try {
-                foreach ($dropSql as $sql) {
-                    $Connection->executeStatement($sql);
-                }
+                QUI::getSchemaManager()->alterTable(
+                    new \Doctrine\DBAL\Schema\TableDiff($Table, droppedIndexes: $droppedIndexes)
+                );
             } catch (\Exception $Exception) {
-                QUI\System\Log::writeRecursive($dropSql);
+                QUI\System\Log::writeRecursive(array_map(static function ($Index): string {
+                    return $Index->getName();
+                }, $droppedIndexes));
                 QUI\System\Log::writeException($Exception);
             }
         }
@@ -194,11 +192,8 @@ class MigrationV2 extends QUI\System\Console\Tool
             $this->addVarcharColumn($tableAddresses, 'userUuid');
         }
 
-        if (!$this->isColumnVarchar($userTable, 'address')) {
-            $Connection->executeStatement(
-                'ALTER TABLE ' . QUI\Utils\Doctrine::quoteIdentifier($userTable)
-                . ' MODIFY ' . $Platform->quoteSingleIdentifier('address') . ' VARCHAR(50) NOT NULL'
-            );
+        if (!$this->isColumnVarchar($userTable, "address")) {
+            $this->ensureStringColumn($userTable, "address", 50, true);
         }
 
         $addressesWithoutUuid = $this->fetchRows($tableAddresses, ['uuid' => ''], ['id']);
@@ -442,13 +437,8 @@ class MigrationV2 extends QUI\System\Console\Tool
         $table2Users = QUI::getDBTableName('permissions2users');
         $table2Groups = QUI::getDBTableName('permissions2groups');
 
-        QUI::getDataBaseConnection()->executeStatement(
-            'ALTER TABLE `' . $table2Users . '` CHANGE `user_id` `user_id` VARCHAR(50) NOT NULL DEFAULT \'0\';'
-        );
-
-        QUI::getDataBaseConnection()->executeStatement(
-            'ALTER TABLE `' . $table2Groups . '` CHANGE `group_id` `group_id` VARCHAR(50) NOT NULL DEFAULT \'0\';'
-        );
+        $this->ensureStringColumn($table2Users, "user_id", 50, true, "0");
+        $this->ensureStringColumn($table2Groups, "group_id", 50, true, "0");
 
 
         $permissions = $this->fetchRows($table2Users);
@@ -558,18 +548,16 @@ class MigrationV2 extends QUI\System\Console\Tool
         $this->writeLn('> Upgrade workspaces');
         $table = QUI::getDBTableName('users_workspaces');
 
-        QUI::getDataBaseConnection()->executeStatement(
-            'ALTER TABLE `' . $table . '` CHANGE `uid` `uid` VARCHAR(50) NOT NULL;'
-        );
-        $userTable = QUI\Users\Manager::table();
+        $this->ensureStringColumn($table, "uid", 50, true);
+        $updatedWorkspaces = 0;
 
-        $updatedWorkspaces = QUI::getDataBaseConnection()->executeStatement(
-            'UPDATE `' . $table . '` workspace
-            INNER JOIN `' . $userTable . '` users
-                ON workspace.`uid` = CAST(users.`id` AS CHAR)
-            SET workspace.`uid` = users.`uuid`
-            WHERE workspace.`uid` REGEXP \'^[0-9]+$\' AND workspace.`uid` != \'5\''
-        );
+        foreach ($workspaceUsers as $uid) {
+            if ($uid === "5" || !is_numeric($uid) || !isset($userMap[$uid])) {
+                continue;
+            }
+
+            $updatedWorkspaces += $this->updateWorkspaceUid($table, $uid, $userMap[$uid]["uuid"]);
+        }
 
         if ($updatedWorkspaces > 0) {
             $this->writeLn('>> Upgraded workspace owners: ' . $updatedWorkspaces);
@@ -582,9 +570,7 @@ class MigrationV2 extends QUI\System\Console\Tool
     public function loginLog(): void
     {
         $this->writeLn('- Migrate login log table');
-        QUI::getDataBaseConnection()->executeStatement(
-            'ALTER TABLE `' . QUI::getDBTableName('login_log') . '` CHANGE `uid` `uid` VARCHAR(50) NOT NULL;'
-        );
+        $this->ensureStringColumn(QUI::getDBTableName("login_log"), "uid", 50, true);
     }
 
     protected function fetchRows(
@@ -641,12 +627,47 @@ class MigrationV2 extends QUI\System\Console\Tool
 
     protected function addVarcharColumn(string $table, string $column): void
     {
-        $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
+        $this->ensureStringColumn($table, $column, 50, true);
+    }
 
-        QUI::getDataBaseConnection()->executeStatement(
-            'ALTER TABLE ' . QUI\Utils\Doctrine::quoteIdentifier($table)
-            . ' ADD ' . $Platform->quoteSingleIdentifier($column) . ' VARCHAR(50) NOT NULL'
+    protected function ensureStringColumn(
+        string $table,
+        string $column,
+        int $length = 50,
+        bool $notnull = true,
+        ?string $default = null
+    ): void {
+        $SchemaManager = QUI::getSchemaManager();
+
+        if (!$SchemaManager->tablesExist([$table])) {
+            return;
+        }
+
+        $Table = $SchemaManager->introspectTable($table);
+        $options = [
+            'length' => $length,
+            'notnull' => $notnull
+        ];
+
+        if ($default !== null) {
+            $options['default'] = $default;
+        }
+
+        $Column = new \Doctrine\DBAL\Schema\Column(
+            $column,
+            \Doctrine\DBAL\Types\Type::getType('string'),
+            $options
         );
+
+        if (!$Table->hasColumn($column)) {
+            $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff($Table, addedColumns: [$Column]));
+            return;
+        }
+
+        $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff(
+            $Table,
+            changedColumns: [$column => new \Doctrine\DBAL\Schema\ColumnDiff($Table->getColumn($column), $Column)]
+        ));
     }
 
     protected function ensureUniqueColumn(string $table, string $column): void
@@ -692,14 +713,33 @@ class MigrationV2 extends QUI\System\Console\Tool
         }
     }
 
+    protected function updateWorkspaceUid(string $workspaceTable, string $oldUid, string $newUid): int
+    {
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $QueryBuilder = $Connection->createQueryBuilder();
+
+        return $QueryBuilder
+            ->update($Platform->quoteSingleIdentifier($workspaceTable))
+            ->set($Platform->quoteSingleIdentifier("uid"), ":newUid")
+            ->where($QueryBuilder->expr()->eq($Platform->quoteSingleIdentifier("uid"), ":oldUid"))
+            ->setParameter("newUid", $newUid)
+            ->setParameter("oldUid", $oldUid)
+            ->executeStatement();
+    }
+
     /**
      * @throws Exception
      */
     protected function getWorkspaceUsers(string $workspaceTable): array
     {
-        $result = QUI::getDataBaseConnection()->executeQuery(
-            'SELECT DISTINCT `uid` FROM `' . $workspaceTable . '`'
-        );
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $QueryBuilder = $Connection->createQueryBuilder();
+        $result = $QueryBuilder
+            ->select("DISTINCT " . $Platform->quoteSingleIdentifier("uid"))
+            ->from($Platform->quoteSingleIdentifier($workspaceTable))
+            ->executeQuery();
 
         $workspaceUsers = [];
 
@@ -772,6 +812,7 @@ class MigrationV2 extends QUI\System\Console\Tool
     {
         $userTable = QUI\Users\Manager::table();
         $conn = QUI::getDataBaseConnection();
+        $Platform = $conn->getDatabasePlatform();
         $users = [];
         $processedNumericUserIds = 0;
         $totalUserIds = count(array_unique($numericUserIds));
@@ -786,13 +827,18 @@ class MigrationV2 extends QUI\System\Console\Tool
                 continue;
             }
 
-            $placeholders = implode(',', array_fill(0, count($idChunk), '?'));
-            $result = $conn->executeQuery(
-                'SELECT `id`, `uuid`, `usergroup`, `su`
-                FROM `' . $userTable . '`
-                WHERE `id` IN (' . $placeholders . ')',
-                $idChunk
-            );
+            $QueryBuilder = $conn->createQueryBuilder();
+            $result = $QueryBuilder
+                ->select(
+                    $Platform->quoteSingleIdentifier("id"),
+                    $Platform->quoteSingleIdentifier("uuid"),
+                    $Platform->quoteSingleIdentifier("usergroup"),
+                    $Platform->quoteSingleIdentifier("su")
+                )
+                ->from($Platform->quoteSingleIdentifier($userTable))
+                ->where($QueryBuilder->expr()->in($Platform->quoteSingleIdentifier("id"), ":ids"))
+                ->setParameter("ids", $idChunk, ArrayParameterType::STRING)
+                ->executeQuery();
 
             while ($entry = $result->fetchAssociative()) {
                 $users[$entry['uuid']] = $entry;
@@ -820,13 +866,18 @@ class MigrationV2 extends QUI\System\Console\Tool
                 continue;
             }
 
-            $placeholders = implode(',', array_fill(0, count($uuidChunk), '?'));
-            $result = $conn->executeQuery(
-                'SELECT `id`, `uuid`, `usergroup`, `su`
-                FROM `' . $userTable . '`
-                WHERE `uuid` IN (' . $placeholders . ')',
-                $uuidChunk
-            );
+            $QueryBuilder = $conn->createQueryBuilder();
+            $result = $QueryBuilder
+                ->select(
+                    $Platform->quoteSingleIdentifier("id"),
+                    $Platform->quoteSingleIdentifier("uuid"),
+                    $Platform->quoteSingleIdentifier("usergroup"),
+                    $Platform->quoteSingleIdentifier("su")
+                )
+                ->from($Platform->quoteSingleIdentifier($userTable))
+                ->where($QueryBuilder->expr()->in($Platform->quoteSingleIdentifier("uuid"), ":uuids"))
+                ->setParameter("uuids", $uuidChunk, ArrayParameterType::STRING)
+                ->executeQuery();
 
             while ($entry = $result->fetchAssociative()) {
                 $users[$entry['uuid']] = $entry;
@@ -921,18 +972,22 @@ class MigrationV2 extends QUI\System\Console\Tool
         }
 
         $conn = QUI::getDataBaseConnection();
+        $Platform = $conn->getDatabasePlatform();
         $adminSubjects = [];
         $resolvedIds = 0;
         $totalIds = count($ids);
 
         foreach (array_chunk($ids, 1000) as $chunk) {
-            $placeholders = implode(',', array_fill(0, count($chunk), '?'));
-            $result = $conn->executeQuery(
-                'SELECT `' . $idColumn . '`, `permissions`
-                FROM `' . $table . '`
-                WHERE `' . $idColumn . '` IN (' . $placeholders . ')',
-                $chunk
-            );
+            $QueryBuilder = $conn->createQueryBuilder();
+            $result = $QueryBuilder
+                ->select(
+                    $Platform->quoteSingleIdentifier($idColumn),
+                    $Platform->quoteSingleIdentifier("permissions")
+                )
+                ->from($Platform->quoteSingleIdentifier($table))
+                ->where($QueryBuilder->expr()->in($Platform->quoteSingleIdentifier($idColumn), ":ids"))
+                ->setParameter("ids", $chunk, ArrayParameterType::STRING)
+                ->executeQuery();
 
             $resolvedIds += count($chunk);
 
@@ -988,6 +1043,7 @@ class MigrationV2 extends QUI\System\Console\Tool
         }
 
         $conn = QUI::getDataBaseConnection();
+        $Platform = $conn->getDatabasePlatform();
         $deleted = 0;
         $processed = 0;
         $total = count($uids);
@@ -995,13 +1051,12 @@ class MigrationV2 extends QUI\System\Console\Tool
         $this->writeLn('>> Cleanup delete batches: ' . $total . ' owner ids');
 
         foreach (array_chunk($uids, 500) as $chunk) {
-            $placeholders = implode(',', array_fill(0, count($chunk), '?'));
-
-            $deleted += $conn->executeStatement(
-                'DELETE FROM `' . $workspaceTable . '`
-                WHERE `uid` IN (' . $placeholders . ')',
-                $chunk
-            );
+            $QueryBuilder = $conn->createQueryBuilder();
+            $deleted += $QueryBuilder
+                ->delete($Platform->quoteSingleIdentifier($workspaceTable))
+                ->where($QueryBuilder->expr()->in($Platform->quoteSingleIdentifier("uid"), ":uids"))
+                ->setParameter("uids", $chunk, ArrayParameterType::STRING)
+                ->executeStatement();
 
             $processed += count($chunk);
 
