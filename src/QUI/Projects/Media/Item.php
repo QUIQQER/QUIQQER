@@ -517,7 +517,7 @@ abstract class Item extends QUI\QDOM
             // has no parent
         }
 
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $this->Media->getTable(),
             ['active' => 1],
             ['id' => $this->getId()]
@@ -622,7 +622,7 @@ abstract class Item extends QUI\QDOM
     {
         $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $this->Media->getTable(),
             ['active' => 0],
             ['id' => $this->getId()]
@@ -721,7 +721,7 @@ abstract class Item extends QUI\QDOM
         }
 
         // change db entries
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $this->Media->getTable(),
             [
                 'deleted' => 1,
@@ -733,7 +733,7 @@ abstract class Item extends QUI\QDOM
             ]
         );
 
-        QUI::getDataBase()->delete(
+        QUI::getDataBaseConnection()->delete(
             $this->Media->getTable('relations'),
             ['child' => $this->getId()]
         );
@@ -813,7 +813,7 @@ abstract class Item extends QUI\QDOM
             QUI\System\Log::addWarning($Exception->getMessage());
         }
 
-        QUI::getDataBase()->delete($this->Media->getTable(), [
+        QUI::getDataBaseConnection()->delete($this->Media->getTable(), [
             'id' => $this->getId()
         ]);
 
@@ -887,7 +887,7 @@ abstract class Item extends QUI\QDOM
 
 
         // update file path
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $this->Media->getTable(),
             [
                 'file' => $new_file,
@@ -897,7 +897,7 @@ abstract class Item extends QUI\QDOM
         );
 
         // set the new parent relationship
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $this->Media->getTable('relations'),
             [
                 'parent' => $Folder->getId()
@@ -1009,7 +1009,7 @@ abstract class Item extends QUI\QDOM
 
                 $fileInfo = QUI\Utils\System\File::getInfo($this->getFullPath());
 
-                QUI::getDataBase()->update(
+                QUI::getDataBaseConnection()->update(
                     $this->Media->getTable(),
                     ['mime_type' => $fileInfo['mime_type']],
                     ['id' => $this->getId()]
@@ -1049,7 +1049,7 @@ abstract class Item extends QUI\QDOM
         }
 
 
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $this->Media->getTable(),
             [
                 'title' => $this->saveMultilingualField($this->title),
@@ -1121,7 +1121,7 @@ abstract class Item extends QUI\QDOM
 
             rename($fileToUpper, $fileToLower);
 
-            QUI::getDataBase()->update(
+            QUI::getDataBaseConnection()->update(
                 $this->Media->getTable(),
                 ['file' => $Parent->getPath() . $newName . '.' . mb_strtolower($extension)],
                 ['id' => $this->getId()]
@@ -1182,7 +1182,7 @@ abstract class Item extends QUI\QDOM
 
         $this->addToPathHistory($new_file);
 
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $this->Media->getTable(),
             [
                 'name' => $newName,
