@@ -29,49 +29,44 @@ class Install
         try {
             $Connection = QUI::getDataBaseConnection();
             $Platform = $Connection->getDatabasePlatform();
+            $table = QUI\Users\Manager::table();
+
+            self::ensureColumnDefinition($Connection, $table, "lastedit", "datetime", ["notnull" => false]);
+            self::ensureColumnDefinition($Connection, $table, "expire", "datetime", ["notnull" => false]);
+            self::ensureColumnDefinition($Connection, $table, "password", "string", [
+                "length" => 255,
+                "default" => ""
+            ]);
+            self::ensureColumnDefinition($Connection, $table, "birthday", "date", ["notnull" => false]);
 
             if (!$Platform instanceof AbstractMySQLPlatform) {
                 return;
             }
 
-            $table = QUI\Users\Manager::table();
-
-            try {
-                // Patch strict
-                $Connection->executeStatement(
-                    "ALTER TABLE `$table`
-                    CHANGE `lastedit` `lastedit` DATETIME NULL DEFAULT NULL,
-                    CHANGE `expire` `expire` DATETIME NULL DEFAULT NULL,
-                    CHANGE `password` `password` VARCHAR(255) NOT NULL DEFAULT '',
-                    CHANGE `birthday` `birthday` DATE NULL DEFAULT NULL;
-                    "
-                );
-            } catch (\Doctrine\DBAL\Exception $Exception) {
-                QUI\System\Log::addError($Exception->getMessage());
-            }
+            $quotedTable = $Platform->quoteSingleIdentifier($table);
 
             $Connection->executeStatement(
-                "UPDATE $table
-                SET lastedit = NULL
+                "UPDATE " . $quotedTable . "
+                SET " . $Platform->quoteSingleIdentifier("lastedit") . " = NULL
                 WHERE
-                    CAST(lastedit AS CHAR) = '0000-00-00 00:00:00' OR
-                    CAST(lastedit AS CHAR) = ''"
+                    CAST(" . $Platform->quoteSingleIdentifier("lastedit") . " AS CHAR) = '0000-00-00 00:00:00' OR
+                    CAST(" . $Platform->quoteSingleIdentifier("lastedit") . " AS CHAR) = ''"
             );
 
             $Connection->executeStatement(
-                "UPDATE $table
-                SET expire = NULL
+                "UPDATE " . $quotedTable . "
+                SET " . $Platform->quoteSingleIdentifier("expire") . " = NULL
                 WHERE
-                    CAST(expire AS CHAR) = '0000-00-00 00:00:00' OR
-                    CAST(expire AS CHAR) = ''"
+                    CAST(" . $Platform->quoteSingleIdentifier("expire") . " AS CHAR) = '0000-00-00 00:00:00' OR
+                    CAST(" . $Platform->quoteSingleIdentifier("expire") . " AS CHAR) = ''"
             );
 
             $Connection->executeStatement(
-                "UPDATE $table
-                SET birthday = NULL
+                "UPDATE " . $quotedTable . "
+                SET " . $Platform->quoteSingleIdentifier("birthday") . " = NULL
                 WHERE
-                    CAST(birthday AS CHAR) = '0000-00-00 00:00:00' OR
-                    CAST(birthday AS CHAR) = ''"
+                    CAST(" . $Platform->quoteSingleIdentifier("birthday") . " AS CHAR) = '0000-00-00 00:00:00' OR
+                    CAST(" . $Platform->quoteSingleIdentifier("birthday") . " AS CHAR) = ''"
             );
         } catch (\Doctrine\DBAL\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
@@ -103,11 +98,10 @@ class Install
             $Platform = $Connection->getDatabasePlatform();
             $quotedGroupTable = $Platform->quoteSingleIdentifier($groupTable);
 
-            if ($Platform instanceof AbstractMySQLPlatform) {
-                $Connection->executeStatement(
-                    "ALTER TABLE $quotedGroupTable CHANGE `parent` `parent` VARCHAR(50) NULL DEFAULT NULL;"
-                );
-            }
+            self::ensureColumnDefinition($Connection, $groupTable, "parent", "string", [
+                "length" => 50,
+                "notnull" => false
+            ]);
 
             if (!self::hasPrimaryKey($Connection, $groupTable)) {
                 $Connection->executeStatement("ALTER TABLE $quotedGroupTable ADD PRIMARY KEY (id)");
@@ -198,6 +192,40 @@ class Install
         QUI::getUsers()->get(0)->save($SystemUser);
         QUI::getUsers()->get(5)->save($SystemUser);
         QUI::getUsers()->get(QUI::conf('globals', 'rootuser'))->save($SystemUser);
+    }
+
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     */
+    private static function ensureColumnDefinition(
+        Connection $Connection,
+        string $tableName,
+        string $columnName,
+        string $type,
+        array $options
+    ): void {
+        $SchemaManager = $Connection->createSchemaManager();
+
+        if (!$SchemaManager->tablesExist([$tableName])) {
+            return;
+        }
+
+        $Table = $SchemaManager->introspectTable($tableName);
+        $Column = new \Doctrine\DBAL\Schema\Column(
+            $columnName,
+            \Doctrine\DBAL\Types\Type::getType($type),
+            $options
+        );
+
+        if (!$Table->hasColumn($columnName)) {
+            $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff($Table, addedColumns: [$Column]));
+            return;
+        }
+
+        $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff(
+            $Table,
+            changedColumns: [$columnName => new \Doctrine\DBAL\Schema\ColumnDiff($Table->getColumn($columnName), $Column)]
+        ));
     }
 
     /**
