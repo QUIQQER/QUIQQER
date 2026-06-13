@@ -989,10 +989,14 @@ class Project implements \Stringable
      */
     public function getParentIds(int $id, bool $reverse = false): array
     {
+        if ($id <= 1) {
+            return [];
+        }
+
         $ids = [];
         $pid = $this->getParentIdFrom($id);
 
-        while ($pid != 1) {
+        while ($pid > 1) {
             $ids[] = $pid;
             $pid = $this->getParentIdFrom($pid);
         }
