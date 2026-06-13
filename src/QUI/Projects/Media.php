@@ -14,6 +14,7 @@ use QUI\Utils\System\File as FileUtils;
 
 use function class_exists;
 use function date;
+use function explode;
 use function file_exists;
 use function is_array;
 use function json_decode;
@@ -165,88 +166,42 @@ class Media extends QUI\QDOM
      */
     public function setup(): void
     {
-        /**
-         * Media Center
-         */
         $table = $this->getTable();
-        $DataBase = QUI::getDataBase();
-
-        $DataBase->table()->addColumn($table, [
-            'id' => 'bigint(20) NOT NULL',
-            'name' => 'varchar(200) NOT NULL',
-            'title' => 'text',
-            'short' => 'text',
-            'alt' => 'text',
-            'type' => 'varchar(32) default NULL',
-            'active' => 'tinyint(1) NOT NULL DEFAULT 0',
-            'deleted' => 'tinyint(1) NOT NULL DEFAULT 0',
-            'c_date' => 'timestamp NULL default NULL',
-            'e_date' => 'timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP',
-            'file' => 'text',
-            'mime_type' => 'text',
-            'image_height' => 'int(6) default NULL',
-            'image_width' => 'int(6) default NULL',
-            'image_effects' => 'text',
-            'c_user' => 'varchar(50) default NULL',
-            'e_user' => 'varchar(50) default NULL',
-            'rate_users' => 'text',
-            'rate_count' => 'float default NULL',
-            'md5hash' => 'varchar(32)',
-            'sha1hash' => 'varchar(40)',
-            'priority' => 'int(6) default NULL',
-            'order' => 'varchar(32) default NULL',
-            'pathHistory' => 'text',
-            'hidden' => 'int(1) default 0',
-            'pathHash' => 'varchar(32) NOT NULL',
-            'extra' => 'text NULL',
-            'external' => 'text NULL',
-        ]);
-
-        $DataBase->table()->setPrimaryKey($table, 'id');
-        $DataBase->table()->setIndex($table, 'id');
-        $DataBase->table()->setAutoIncrement($table, 'id');
-
-        $DataBase->table()->setIndex($table, 'name');
-        $DataBase->table()->setIndex($table, 'type');
-        $DataBase->table()->setIndex($table, 'active');
-        $DataBase->table()->setIndex($table, 'deleted');
-        $DataBase->table()->setIndex($table, 'e_date');
-        $DataBase->table()->setIndex($table, 'order');
-        $DataBase->table()->setIndex($table, 'hidden');
-        $DataBase->table()->setIndex($table, 'pathHash');
+        $Connection = QUI::getDataBaseConnection();
+        self::ensureMediaTable($table);
 
         try {
-            $DataBase->execSQL("UPDATE $table SET pathHash = MD5(COALESCE(file, ''))");
+            $entries = $Connection->createQueryBuilder()
+                ->select("id", "file")
+                ->from($Connection->getDatabasePlatform()->quoteSingleIdentifier($table))
+                ->executeQuery()
+                ->fetchAllAssociative();
+
+            foreach ($entries as $entry) {
+                $Connection->update(
+                    $table,
+                    ["pathHash" => md5($entry["file"] ?? "")],
+                    ["id" => $entry["id"]]
+                );
+            }
         } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
 
-        // remove index (patch)
-        $removeIndex = ['c_date', 'c_user', 'e_user', 'md5hash', 'sha1hash'];
-
-        foreach ($removeIndex as $index) {
-            if ($DataBase->table()->issetIndex($table, $index)) {
-                try {
-                    $DataBase->fetchSQL(
-                        'ALTER TABLE `' . $table . '` DROP INDEX `' . $index . '`;'
-                    );
-                } catch (Exception $Exception) {
-                    QUI\System\Log::writeException($Exception);
-                }
-            }
-        }
+        self::removeMediaSetupIndexes($table);
 
         // create first site -> id 1 if not exist
-        $firstChildResult = $DataBase->fetch([
-            'from' => $table,
-            'where' => [
-                'id' => 1
-            ],
-            'limit' => 1
-        ]);
+        $firstChildResult = $Connection->createQueryBuilder()
+            ->select("*")
+            ->from($Connection->getDatabasePlatform()->quoteSingleIdentifier($table))
+            ->where($Connection->getDatabasePlatform()->quoteSingleIdentifier("id") . " = :id")
+            ->setParameter("id", 1)
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchAssociative();
 
-        if (!isset($firstChildResult[0])) {
-            $DataBase->insert($table, [
+        if ($firstChildResult === false) {
+            $Connection->insert($table, [
                 'id' => 1,
                 'name' => 'Media',
                 'title' => 'Media',
@@ -255,9 +210,9 @@ class Media extends QUI\QDOM
                 'type' => 'folder',
                 'pathHash' => md5('')
             ]);
-        } elseif ($firstChildResult[0]['type'] != 'folder') {
+        } elseif ($firstChildResult["type"] != "folder") {
             // check if id 1 is a folder, id 1 MUST BE a folder
-            $DataBase->update(
+            $Connection->update(
                 $table,
                 ['type' => 'folder'],
                 ['id' => 1]
@@ -266,28 +221,27 @@ class Media extends QUI\QDOM
 
         // Media Relations
         $table = $this->getTable('relations');
-
-        $DataBase->table()->addColumn($table, [
-            'parent' => 'bigint(20) NOT NULL',
-            'child' => 'bigint(20) NOT NULL'
-        ]);
-
-        $DataBase->table()->setIndex($table, 'parent');
-        $DataBase->table()->setIndex($table, 'child');
+        self::ensureMediaRelationsTable($table);
 
         // multilingual patch
 
         $table = $this->getTable();
 
         // check if patch needed
-        $result = QUI::getDataBase()->fetch([
-            'from' => $table,
-            'where' => [
-                'id' => 1
-            ]
-        ]);
+        $firstEntry = $Connection->createQueryBuilder()
+            ->select("*")
+            ->from($Connection->getDatabasePlatform()->quoteSingleIdentifier($table))
+            ->where($Connection->getDatabasePlatform()->quoteSingleIdentifier("id") . " = :id")
+            ->setParameter("id", 1)
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchAssociative();
 
-        $title = $result[0]['title'];
+        if ($firstEntry === false) {
+            return;
+        }
+
+        $title = $firstEntry['title'];
         $title = json_decode($title, true);
 
         if (is_array($title)) {
@@ -295,9 +249,11 @@ class Media extends QUI\QDOM
         }
 
         // patch is needed
-        $result = QUI::getDataBase()->fetch([
-            'from' => $table
-        ]);
+        $result = $Connection->createQueryBuilder()
+            ->select("*")
+            ->from($Connection->getDatabasePlatform()->quoteSingleIdentifier($table))
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         $languages = QUI::availableLanguages();
 
@@ -320,7 +276,7 @@ class Media extends QUI\QDOM
                 $newData[$language] = $value;
             }
 
-            QUI::getDataBase()->update($table, [
+            QUI::getDataBaseConnection()->update($table, [
                 $type => json_encode($newData)
             ], [
                 'id' => $data['id']
@@ -333,6 +289,214 @@ class Media extends QUI\QDOM
             $updateEntry('alt', $entry, $table);
         }
     }
+
+    private static function ensureMediaTable(string $tableName): void
+    {
+        $SchemaManager = QUI::getSchemaManager();
+
+        if (!$SchemaManager->tablesExist([$tableName])) {
+            $Table = new \Doctrine\DBAL\Schema\Table($tableName);
+            self::addUtf8Options($Table);
+            self::addMediaColumns($Table);
+            $Table->setPrimaryKey(["id"]);
+            self::addMediaIndexes($Table);
+            $SchemaManager->createTable($Table);
+            return;
+        }
+
+        $Table = $SchemaManager->introspectTable($tableName);
+        $addedColumns = [];
+
+        foreach (self::getMediaColumnDefinitions() as $name => $definition) {
+            if ($Table->hasColumn($name)) {
+                continue;
+            }
+
+            $addedColumns[] = new \Doctrine\DBAL\Schema\Column(
+                $name,
+                \Doctrine\DBAL\Types\Type::getType($definition["type"]),
+                $definition["options"]
+            );
+        }
+
+        if (!empty($addedColumns)) {
+            $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff($Table, addedColumns: $addedColumns));
+            $Table = $SchemaManager->introspectTable($tableName);
+        }
+
+        foreach (["name", "type", "active", "deleted", "e_date", "order", "hidden", "pathHash"] as $indexName) {
+            if (!$Table->hasIndex($indexName)) {
+                $Table->addIndex([$indexName], $indexName);
+                $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff($Table, addedIndexes: [$Table->getIndex($indexName)]));
+                $Table = $SchemaManager->introspectTable($tableName);
+            }
+        }
+    }
+
+    private static function ensureMediaRelationsTable(string $tableName): void
+    {
+        $SchemaManager = QUI::getSchemaManager();
+
+        if (!$SchemaManager->tablesExist([$tableName])) {
+            $Table = new \Doctrine\DBAL\Schema\Table($tableName);
+            self::addUtf8Options($Table);
+            $Table->addColumn("parent", "bigint");
+            $Table->addColumn("child", "bigint");
+            $Table->addIndex(["parent"], "parent");
+            $Table->addIndex(["child"], "child");
+            $SchemaManager->createTable($Table);
+            return;
+        }
+
+        $Table = $SchemaManager->introspectTable($tableName);
+        $addedColumns = [];
+
+        foreach (["parent", "child"] as $columnName) {
+            if (!$Table->hasColumn($columnName)) {
+                $addedColumns[] = new \Doctrine\DBAL\Schema\Column(
+                    $columnName,
+                    \Doctrine\DBAL\Types\Type::getType("bigint")
+                );
+            }
+        }
+
+        if (!empty($addedColumns)) {
+            $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff($Table, addedColumns: $addedColumns));
+            $Table = $SchemaManager->introspectTable($tableName);
+        }
+
+        foreach (["parent", "child"] as $indexName) {
+            if (!$Table->hasIndex($indexName)) {
+                $Table->addIndex([$indexName], $indexName);
+                $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff($Table, addedIndexes: [$Table->getIndex($indexName)]));
+                $Table = $SchemaManager->introspectTable($tableName);
+            }
+        }
+    }
+
+    private static function removeMediaSetupIndexes(string $tableName): void
+    {
+        $SchemaManager = QUI::getSchemaManager();
+        $Table = $SchemaManager->introspectTable($tableName);
+
+        foreach (["c_date", "c_user", "e_user", "md5hash", "sha1hash"] as $indexName) {
+            if (!$Table->hasIndex($indexName)) {
+                continue;
+            }
+
+            $Index = $Table->getIndex($indexName);
+            $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff($Table, droppedIndexes: [$Index]));
+            $Table = $SchemaManager->introspectTable($tableName);
+        }
+    }
+
+    private static function addMediaColumns(\Doctrine\DBAL\Schema\Table $Table): void
+    {
+        foreach (self::getMediaColumnDefinitions() as $name => $definition) {
+            $Table->addColumn($name, $definition["type"], $definition["options"]);
+        }
+    }
+
+    private static function addMediaIndexes(\Doctrine\DBAL\Schema\Table $Table): void
+    {
+        foreach (["name", "type", "active", "deleted", "e_date", "order", "hidden", "pathHash"] as $indexName) {
+            $Table->addIndex([$indexName], $indexName);
+        }
+    }
+
+    private static function getMediaColumnDefinitions(): array
+    {
+        return [
+            "id" => ["type" => "bigint", "options" => ["autoincrement" => true]],
+            "name" => ["type" => "string", "options" => ["length" => 200]],
+            "title" => ["type" => "text", "options" => ["notnull" => false]],
+            "short" => ["type" => "text", "options" => ["notnull" => false]],
+            "alt" => ["type" => "text", "options" => ["notnull" => false]],
+            "type" => ["type" => "string", "options" => ["length" => 32, "notnull" => false]],
+            "active" => ["type" => "smallint", "options" => ["default" => 0]],
+            "deleted" => ["type" => "smallint", "options" => ["default" => 0]],
+            "c_date" => ["type" => "datetime", "options" => ["notnull" => false]],
+            "e_date" => ["type" => "datetime", "options" => ["notnull" => false]],
+            "file" => ["type" => "text", "options" => ["notnull" => false]],
+            "mime_type" => ["type" => "text", "options" => ["notnull" => false]],
+            "image_height" => ["type" => "integer", "options" => ["notnull" => false]],
+            "image_width" => ["type" => "integer", "options" => ["notnull" => false]],
+            "image_effects" => ["type" => "text", "options" => ["notnull" => false]],
+            "c_user" => ["type" => "string", "options" => ["length" => 50, "notnull" => false]],
+            "e_user" => ["type" => "string", "options" => ["length" => 50, "notnull" => false]],
+            "rate_users" => ["type" => "text", "options" => ["notnull" => false]],
+            "rate_count" => ["type" => "float", "options" => ["notnull" => false]],
+            "md5hash" => ["type" => "string", "options" => ["length" => 32, "notnull" => false]],
+            "sha1hash" => ["type" => "string", "options" => ["length" => 40, "notnull" => false]],
+            "priority" => ["type" => "integer", "options" => ["notnull" => false]],
+            "order" => ["type" => "string", "options" => ["length" => 32, "notnull" => false]],
+            "pathHistory" => ["type" => "text", "options" => ["notnull" => false]],
+            "hidden" => ["type" => "smallint", "options" => ["default" => 0]],
+            "pathHash" => ["type" => "string", "options" => ["length" => 32]],
+            "extra" => ["type" => "text", "options" => ["notnull" => false]],
+            "external" => ["type" => "text", "options" => ["notnull" => false]]
+        ];
+    }
+
+    private static function addUtf8Options(\Doctrine\DBAL\Schema\Table $Table): void
+    {
+        $Table->addOption("charset", "utf8mb4");
+        $Table->addOption("collation", "utf8mb4_general_ci");
+    }
+
+
+    private static function applyMediaConditions(\Doctrine\DBAL\Query\QueryBuilder $QueryBuilder, array $conditions, string $method): void
+    {
+        $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
+        $index = 0;
+
+        foreach ($conditions as $field => $data) {
+            $parameter = "condition" . $method . $index;
+            $fieldParts = explode(".", (string)$field);
+            $column = $Platform->quoteSingleIdentifier((string)end($fieldParts));
+
+            if (is_array($data)) {
+                $type = $data["type"] ?? "";
+                $value = $data["value"] ?? null;
+
+                if ($type === "NOT LIKE") {
+                    $QueryBuilder->{$method}($column . " NOT LIKE :" . $parameter);
+                    $QueryBuilder->setParameter($parameter, $value);
+                    $index++;
+                    continue;
+                }
+
+                if ($type === "%LIKE%") {
+                    $QueryBuilder->{$method}($column . " LIKE :" . $parameter);
+                    $QueryBuilder->setParameter($parameter, "%" . $value . "%");
+                    $index++;
+                    continue;
+                }
+
+                if ($type === "IN" && is_array($value)) {
+                    $placeholders = [];
+
+                    foreach ($value as $valueIndex => $entry) {
+                        $entryParameter = $parameter . "_" . $valueIndex;
+                        $placeholders[] = ":" . $entryParameter;
+                        $QueryBuilder->setParameter($entryParameter, $entry);
+                    }
+
+                    if (!empty($placeholders)) {
+                        $QueryBuilder->{$method}($column . " IN (" . implode(",", $placeholders) . ")");
+                    }
+
+                    $index++;
+                    continue;
+                }
+            }
+
+            $QueryBuilder->{$method}($column . " = :" . $parameter);
+            $QueryBuilder->setParameter($parameter, $data);
+            $index++;
+        }
+    }
+
 
     /**
      * Return the DataBase table name
@@ -422,24 +586,27 @@ class Media extends QUI\QDOM
             $this->children = [];
         }
 
-        $result = QUI::getDataBase()->fetch([
-            'from' => $this->getTable(),
-            'where' => [
-                'id' => $id
-            ],
-            'limit' => 1
-        ]);
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $result = $Connection->createQueryBuilder()
+            ->select("*")
+            ->from($Platform->quoteSingleIdentifier($this->getTable()))
+            ->where($Platform->quoteSingleIdentifier("id") . " = :id")
+            ->setParameter("id", $id)
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchAssociative();
 
-        if (!isset($result[0])) {
+        if ($result === false) {
             throw new QUI\Exception('ID ' . $id . ' not found', 404);
         }
 
-        if (QUI::isFrontend() && $result[0]['deleted']) {
+        if (QUI::isFrontend() && $result['deleted']) {
             throw new QUI\Exception('ID ' . $id . ' not found', 404);
         }
 
 
-        $this->children[$id] = $this->parseResultToItem($result[0]);
+        $this->children[$id] = $this->parseResultToItem($result);
 
         return $this->children[$id];
     }
@@ -469,12 +636,42 @@ class Media extends QUI\QDOM
      */
     public function getChildrenIds(array $params = []): array
     {
-        $params['select'] = 'id';
-        $params['from'] = $this->getTable();
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $QueryBuilder = $Connection->createQueryBuilder()
+            ->select($Platform->quoteSingleIdentifier("id"))
+            ->from($Platform->quoteSingleIdentifier($this->getTable()));
+
+        if (isset($params["where"]) && is_array($params["where"])) {
+            self::applyMediaConditions($QueryBuilder, $params["where"], "andWhere");
+        }
+
+        if (isset($params["where_or"]) && is_array($params["where_or"])) {
+            self::applyMediaConditions($QueryBuilder, $params["where_or"], "orWhere");
+        }
+
+        if (!empty($params["order"])) {
+            $order = explode(" ", (string)$params["order"], 2);
+            $QueryBuilder->orderBy(
+                $Platform->quoteSingleIdentifier($order[0]),
+                isset($order[1]) && $order[1] === "DESC" ? "DESC" : "ASC"
+            );
+        }
+
+        if (!empty($params["limit"])) {
+            $limit = explode(",", (string)$params["limit"], 2);
+
+            if (isset($limit[1])) {
+                $QueryBuilder->setFirstResult((int)$limit[0]);
+                $QueryBuilder->setMaxResults((int)$limit[1]);
+            } else {
+                $QueryBuilder->setMaxResults((int)$limit[0]);
+            }
+        }
 
         try {
-            $result = QUI::getDataBase()->fetch($params);
-        } catch (QUI\Exception $Exception) {
+            $result = $QueryBuilder->executeQuery()->fetchAllAssociative();
+        } catch (\Doctrine\DBAL\Exception $Exception) {
             QUI\System\Log::addDebug($Exception->getMessage());
 
             return [];
@@ -504,21 +701,24 @@ class Media extends QUI\QDOM
         } catch (QUI\Exception) {
             $table = $this->getTable();
 
-            $result = QUI::getDataBase()->fetch([
-                'select' => [$table . '.id'],
-                'from' => [$table],
-                'where' => [
-                    $table . '.deleted' => 0,
-                    $table . '.file' => $filepath
-                ],
-                'limit' => 1
-            ]);
+            $Connection = QUI::getDataBaseConnection();
+            $Platform = $Connection->getDatabasePlatform();
+            $result = $Connection->createQueryBuilder()
+                ->select($Platform->quoteSingleIdentifier("id"))
+                ->from($Platform->quoteSingleIdentifier($table))
+                ->where($Platform->quoteSingleIdentifier("deleted") . " = :deleted")
+                ->andWhere($Platform->quoteSingleIdentifier("file") . " = :file")
+                ->setParameter("deleted", 0)
+                ->setParameter("file", $filepath)
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchAssociative();
 
-            if (!isset($result[0])) {
+            if ($result === false) {
                 throw new QUI\Exception('File ' . $filepath . ' not found', 404);
             }
 
-            $id = (int)$result[0]['id'];
+            $id = (int)$result['id'];
 
             QUI\Cache\LongTermCache::set($cache, $id);
         }
@@ -544,24 +744,25 @@ class Media extends QUI\QDOM
 
         // use direct db not the objects, because
         // if file is not ok you can replace the file though
-        $result = QUI::getDataBase()->fetch([
-            'from' => $this->getTable(),
-            'where' => [
-                'id' => $id
-            ],
-            'limit' => 1
-        ]);
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $data = $Connection->createQueryBuilder()
+            ->select("*")
+            ->from($Platform->quoteSingleIdentifier($this->getTable()))
+            ->where($Platform->quoteSingleIdentifier("id") . " = :id")
+            ->setParameter("id", $id)
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchAssociative();
 
 
-        if (!isset($result[0])) {
+        if ($data === false) {
             throw new QUI\Exception('File entry not found', 404);
         }
 
-        if ($result[0]['type'] == 'folder') {
+        if ($data['type'] == 'folder') {
             throw new QUI\Exception('Only Files can be replaced', 403);
         }
-
-        $data = $result[0];
 
         $name = $data['name'];
         $info = QUI\Utils\System\File::getInfo($file);
@@ -626,8 +827,8 @@ class Media extends QUI\QDOM
             $new_file = $Parent->getPath() . $name;
             $real_file = $Parent->getFullPath() . $name;
         } else {
-            $new_file = $result[0]['file'];
-            $real_file = $this->getFullPath() . $result[0]['file'];
+            $new_file = $data['file'];
+            $real_file = $this->getFullPath() . $data['file'];
         }
 
         $imageHeight = null;
@@ -641,7 +842,7 @@ class Media extends QUI\QDOM
             $imageWidth = $info['width'];
         }
 
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $this->getTable(),
             [
                 'file' => $new_file,
@@ -679,20 +880,22 @@ class Media extends QUI\QDOM
         }
 
         try {
-            $result = QUI::getDataBase()->fetch([
-                'select' => 'parent',
-                'from' => $this->getTable('relations'),
-                'where' => [
-                    'child' => $id
-                ],
-                'limit' => 1
-            ]);
-        } catch (QUI\Exception) {
+            $Connection = QUI::getDataBaseConnection();
+            $Platform = $Connection->getDatabasePlatform();
+            $parent = $Connection->createQueryBuilder()
+                ->select($Platform->quoteSingleIdentifier("parent"))
+                ->from($Platform->quoteSingleIdentifier($this->getTable("relations")))
+                ->where($Platform->quoteSingleIdentifier("child") . " = :child")
+                ->setParameter("child", $id)
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchOne();
+        } catch (\Doctrine\DBAL\Exception) {
             return false;
         }
 
-        if (isset($result[0])) {
-            return (int)$result[0]['parent'];
+        if ($parent !== false) {
+            return (int)$parent;
         }
 
         return false;
@@ -761,16 +964,16 @@ class Media extends QUI\QDOM
     public function updateExternalImages(): void
     {
         try {
-            $result = QUI::getDataBase()->fetch([
-                'from' => $this->getTable(),
-                'where' => [
-                    'external' => [
-                        'type' => 'NOT LIKE',
-                        'value' => ''
-                    ]
-                ]
-            ]);
-        } catch (QUI\Exception $Exception) {
+            $Connection = QUI::getDataBaseConnection();
+            $Platform = $Connection->getDatabasePlatform();
+            $result = $Connection->createQueryBuilder()
+                ->select("*")
+                ->from($Platform->quoteSingleIdentifier($this->getTable()))
+                ->where($Platform->quoteSingleIdentifier("external") . " <> :external")
+                ->setParameter("external", "")
+                ->executeQuery()
+                ->fetchAllAssociative();
+        } catch (\Doctrine\DBAL\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
             return;
         }
