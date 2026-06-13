@@ -759,8 +759,7 @@ class Manager
 
         $name = QUI\Utils\Security\Orthos::clear($name);
 
-        $DataBase = QUI::getDataBase();
-        $Table = $DataBase->table();
+        $Connection = QUI::getDataBaseConnection();
 
 
         /**
@@ -769,34 +768,10 @@ class Manager
         $table_site = QUI_DB_PRFX . $name . '_' . $lang . '_sites';
         $table_site_rel = QUI_DB_PRFX . $name . '_' . $lang . '_sites_relations';
 
-        $Table->addColumn($table_site, [
-            'id' => 'bigint(20) NOT NULL',
-            'name' => 'varchar(200) NOT NULL',
-            'title' => 'tinytext NULL',
-            'short' => 'text NULL',
-            'content' => 'longtext NULL',
-            'type' => 'varchar(255) DEFAULT NULL',
-            'active' => 'tinyint(1) NOT NULL DEFAULT 0',
-            'deleted' => 'tinyint(1) NOT NULL DEFAULT 0',
-            'c_date' => 'timestamp NULL DEFAULT NULL',
-            'e_date' => 'timestamp NOT NULL DEFAULT NOW() on update NOW()',
-            'c_user' => 'varchar(50) DEFAULT NULL',
-            'e_user' => 'varchar(50) DEFAULT NULL',
-            'nav_hide' => 'tinyint(1) NOT NULL DEFAULT 0',
-            'order_type' => 'varchar(100) NULL',
-            'order_field' => 'bigint(20) NULL',
-            'extra' => 'text NULL'
-        ]);
-
-        $Table->addColumn($table_site_rel, [
-            'parent' => 'bigint(20) NOT NULL',
-            'child' => 'bigint(20) NOT NULL'
-        ]);
-
-        $Table->setAutoIncrement($table_site, 'id');
+        self::createProjectSiteTables($table_site, $table_site_rel);
 
         // first site
-        $DataBase->insert($table_site, [
+        $Connection->insert($table_site, [
             'id' => 1,
             'name' => 'Start',
             'title' => 'start',
@@ -806,6 +781,7 @@ class Manager
             'active' => 1,
             'deleted' => 0,
             'c_date' => date('Y-m-d H:i:s'),
+            'e_date' => date('Y-m-d H:i:s'),
             'c_user' => QUI::getUserBySession()->getUUID(),
             'e_user' => QUI::getUserBySession()->getUUID(),
             'nav_hide' => 0
@@ -818,33 +794,10 @@ class Manager
         $table_media = QUI_DB_PRFX . $name . '_media';
         $table_media_rel = QUI_DB_PRFX . $name . '_media_relations';
 
-        $Table->addColumn($table_media, [
-            'id' => 'bigint(20) NOT NULL',
-            'name' => 'varchar(200) NOT NULL',
-            'title' => 'tinytext NULL',
-            'short' => 'text NULL',
-            'type' => 'varchar(32) DEFAULT NULL',
-            'active' => 'tinyint(1) NOT NULL DEFAULT 0',
-            'deleted' => 'tinyint(1) NOT NULL DEFAULT 0',
-            'c_date' => 'timestamp NULL DEFAULT NULL',
-            'e_date' => 'timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP',
-            'c_user' => 'varchar(50) DEFAULT NULL',
-            'e_user' => 'varchar(50) DEFAULT NULL',
-            'file' => 'text NULL',
-            'alt' => 'text NULL',
-            'mime_type' => 'text NULL',
-            'image_height' => 'int(6) default NULL',
-            'image_width' => 'int(6) default NULL',
-            'pathHash' => 'varchar(32) NOT NULL'
-        ]);
-
-        $Table->addColumn($table_media_rel, [
-            'parent' => 'bigint(20) NOT NULL',
-            'child' => 'bigint(20) NOT NULL'
-        ]);
+        self::createProjectMediaTables($table_media, $table_media_rel);
 
         // first folder
-        $DataBase->insert($table_media, [
+        $Connection->insert($table_media, [
             'id' => 1,
             'name' => 'Start',
             'title' => 'start',
@@ -854,6 +807,7 @@ class Manager
             'active' => 1,
             'deleted' => 0,
             'c_date' => date('Y-m-d H:i:s'),
+            'e_date' => date('Y-m-d H:i:s'),
             'c_user' => QUI::getUserBySession()->getUUID(),
             'e_user' => QUI::getUserBySession()->getUUID(),
             'pathHash' => md5('')
@@ -928,6 +882,88 @@ class Manager
         return $Project;
     }
 
+
+    private static function createProjectSiteTables(string $siteTableName, string $relationTableName): void
+    {
+        $Table = new \Doctrine\DBAL\Schema\Table($siteTableName);
+        self::addUtf8Options($Table);
+        $Table->addColumn("id", "bigint", ["autoincrement" => true]);
+        $Table->addColumn("name", "string", ["length" => 200]);
+        $Table->addColumn("title", "text", ["notnull" => false]);
+        $Table->addColumn("short", "text", ["notnull" => false]);
+        $Table->addColumn("content", "text", ["notnull" => false]);
+        $Table->addColumn("type", "string", ["length" => 255, "notnull" => false]);
+        $Table->addColumn("active", "smallint", ["default" => 0]);
+        $Table->addColumn("deleted", "smallint", ["default" => 0]);
+        $Table->addColumn("c_date", "datetime", ["notnull" => false]);
+        $Table->addColumn("e_date", "datetime", ["notnull" => false]);
+        $Table->addColumn("c_user", "string", ["length" => 50, "notnull" => false]);
+        $Table->addColumn("e_user", "string", ["length" => 50, "notnull" => false]);
+        $Table->addColumn("nav_hide", "smallint", ["default" => 0]);
+        $Table->addColumn("order_type", "string", ["length" => 100, "notnull" => false]);
+        $Table->addColumn("order_field", "bigint", ["notnull" => false]);
+        $Table->addColumn("extra", "text", ["notnull" => false]);
+        $Table->setPrimaryKey(["id"]);
+
+        QUI::getSchemaManager()->createTable($Table);
+
+        $RelationTable = new \Doctrine\DBAL\Schema\Table($relationTableName);
+        self::addUtf8Options($RelationTable);
+        $RelationTable->addColumn("parent", "bigint");
+        $RelationTable->addColumn("child", "bigint");
+
+        QUI::getSchemaManager()->createTable($RelationTable);
+    }
+
+    private static function createProjectMediaTables(string $mediaTableName, string $relationTableName): void
+    {
+        $Table = new \Doctrine\DBAL\Schema\Table($mediaTableName);
+        self::addUtf8Options($Table);
+        $Table->addColumn("id", "bigint", ["autoincrement" => true]);
+        $Table->addColumn("name", "string", ["length" => 200]);
+        $Table->addColumn("title", "text", ["notnull" => false]);
+        $Table->addColumn("short", "text", ["notnull" => false]);
+        $Table->addColumn("type", "string", ["length" => 32, "notnull" => false]);
+        $Table->addColumn("active", "smallint", ["default" => 0]);
+        $Table->addColumn("deleted", "smallint", ["default" => 0]);
+        $Table->addColumn("c_date", "datetime", ["notnull" => false]);
+        $Table->addColumn("e_date", "datetime", ["notnull" => false]);
+        $Table->addColumn("c_user", "string", ["length" => 50, "notnull" => false]);
+        $Table->addColumn("e_user", "string", ["length" => 50, "notnull" => false]);
+        $Table->addColumn("file", "text", ["notnull" => false]);
+        $Table->addColumn("alt", "text", ["notnull" => false]);
+        $Table->addColumn("mime_type", "text", ["notnull" => false]);
+        $Table->addColumn("image_height", "integer", ["notnull" => false]);
+        $Table->addColumn("image_width", "integer", ["notnull" => false]);
+        $Table->addColumn("pathHash", "string", ["length" => 32]);
+        $Table->setPrimaryKey(["id"]);
+
+        QUI::getSchemaManager()->createTable($Table);
+
+        $RelationTable = new \Doctrine\DBAL\Schema\Table($relationTableName);
+        self::addUtf8Options($RelationTable);
+        $RelationTable->addColumn("parent", "bigint");
+        $RelationTable->addColumn("child", "bigint");
+
+        QUI::getSchemaManager()->createTable($RelationTable);
+    }
+
+    private static function dropProjectTable(string $tableName): void
+    {
+        $SchemaManager = QUI::getSchemaManager();
+
+        if ($SchemaManager->tablesExist([$tableName])) {
+            $SchemaManager->dropTable($tableName);
+        }
+    }
+
+    private static function addUtf8Options(\Doctrine\DBAL\Schema\Table $Table): void
+    {
+        $Table->addOption("charset", "utf8mb4");
+        $Table->addOption("collation", "utf8mb4_general_ci");
+    }
+
+
     /**
      * Return all projects as array list or object list
      * Return the projects with its default language
@@ -1000,9 +1036,6 @@ class Manager
         $project = $Project->getName();
         $languages = $Project->getAttribute('langs');
 
-        $DataBase = QUI::getDataBase();
-        $Table = $DataBase->table();
-
         // delete site tables for all languages
         foreach ($languages as $lang) {
             $table_site = QUI::getDBTableName($project . '_' . $lang . '_sites');
@@ -1015,11 +1048,11 @@ class Manager
             $table_media = QUI::getDBTableName($project . '_media');
             $table_media_rel = QUI::getDBTableName($project . '_media_relations');
 
-            $Table->delete($table_site);
-            $Table->delete($table_site_rel);
-            $Table->delete($table_multi);
-            $Table->delete($table_media);
-            $Table->delete($table_media_rel);
+            self::dropProjectTable($table_site);
+            self::dropProjectTable($table_site_rel);
+            self::dropProjectTable($table_multi);
+            self::dropProjectTable($table_media);
+            self::dropProjectTable($table_media_rel);
         }
 
         // delete database tables from plugins
@@ -1046,20 +1079,20 @@ class Manager
                         $project . '_' . $lang . '_' . $table['suffix']
                     );
 
-                    $Table->delete($tbl);
+                    self::dropProjectTable($tbl);
                 }
             }
         }
 
         // delete projects permissions
-        QUI::getDataBase()->delete(
+        QUI::getDataBaseConnection()->delete(
             QUI::getDBTableName(QUI\Permissions\Manager::TABLE) . '2projects',
             [
                 'project' => $project
             ]
         );
 
-        QUI::getDataBase()->delete(
+        QUI::getDataBaseConnection()->delete(
             QUI::getDBTableName(QUI\Permissions\Manager::TABLE) . '2sites',
             [
                 'project' => $project
@@ -1132,16 +1165,9 @@ class Manager
         //            Database           //
         // ----------------------------- //
 
-        $tables = [];
-
-        $Stmt = QUI::getDataBase()->getPDO()->prepare('SHOW TABLES;');
-        $Stmt->execute();
-
-        $result = $Stmt->fetchAll();
-
-        foreach ($result as $row) {
-            $tables[] = $row[0];
-        }
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $tables = QUI::getSchemaManager()->listTableNames();
 
         foreach ($tables as $oldTableName) {
             if (!str_contains($oldTableName . '_', QUI_DB_PRFX . $oldName)) {
@@ -1154,11 +1180,13 @@ class Manager
                 $oldTableName
             );
 
-            $sql = 'ALTER TABLE ' . $oldTableName . ' RENAME ' . $newTableName . ';';
-            $Stmt = QUI::getDataBase()->getPDO()->prepare($sql);
+            $sql = $Platform->getRenameTableSQL(
+                $Platform->quoteSingleIdentifier($oldTableName),
+                $Platform->quoteSingleIdentifier($newTableName)
+            );
 
             try {
-                $Stmt->execute();
+                $Connection->executeStatement($sql);
             } catch (Exception $Exception) {
                 QUI\System\Log::writeRecursive(
                     "Could not rename Table '" . $oldTableName . "': " . $Exception->getMessage()
