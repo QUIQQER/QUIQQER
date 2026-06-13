@@ -1049,25 +1049,35 @@ abstract class Item extends QUI\QDOM
         }
 
 
-        QUI::getDataBaseConnection()->update(
-            $this->Media->getTable(),
-            [
-                'title' => $this->saveMultilingualField($this->title),
-                'alt' => $this->saveMultilingualField($this->alt),
-                'short' => $this->saveMultilingualField($this->description),
-                'order' => $order,
-                'priority' => (int)$this->getAttribute('priority'),
-                'external' => $this->getAttribute('external'),
-                'image_effects' => json_encode($image_effects),
-                'type' => $type,
-                'pathHistory' => json_encode($this->getPathHistory()),
-                'hidden' => $this->isHidden() ? 1 : 0,
-                'extra' => json_encode($mediaExtra)
-            ],
-            [
-                'id' => $this->getId()
-            ]
-        );
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $QueryBuilder = $Connection->createQueryBuilder();
+        $mediaData = [
+            'title' => $this->saveMultilingualField($this->title),
+            'alt' => $this->saveMultilingualField($this->alt),
+            'short' => $this->saveMultilingualField($this->description),
+            'order' => $order,
+            'priority' => (int)$this->getAttribute('priority'),
+            'external' => $this->getAttribute('external'),
+            'image_effects' => json_encode($image_effects),
+            'type' => $type,
+            'pathHistory' => json_encode($this->getPathHistory()),
+            'hidden' => $this->isHidden() ? 1 : 0,
+            'extra' => json_encode($mediaExtra)
+        ];
+
+        $QueryBuilder->update($Platform->quoteSingleIdentifier($this->Media->getTable()))
+            ->where($Platform->quoteSingleIdentifier('id') . ' = :mediaId')
+            ->setParameter('mediaId', $this->getId());
+
+        foreach ($mediaData as $field => $value) {
+            $parameter = 'media_' . $field;
+            $QueryBuilder
+                ->set($Platform->quoteSingleIdentifier((string)$field), ':' . $parameter)
+                ->setParameter($parameter, $value);
+        }
+
+        $QueryBuilder->executeStatement();
 
         // @todo in eine queue setzen
         $Project = $this->getProject();
