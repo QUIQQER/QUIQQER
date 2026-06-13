@@ -436,7 +436,8 @@ class Template extends QUI\QDOM
             'Project' => $Project,
             'Rewrite' => $Rewrite,
             'lastUpdate' => QUI::getPackageManager()->getLastUpdateDate(),
-            'Canonical' => new QUI\Projects\Site\Canonical($Site)
+            'Canonical' => new QUI\Projects\Site\Canonical($Site),
+            'Hreflang' => new QUI\Projects\Site\Hreflang($Site)
         ]);
 
         /**
@@ -782,6 +783,7 @@ class Template extends QUI\QDOM
             'headerExtend' => $headerExtend,
             'ControlManager' => new QUI\Control\Manager(),
             'Canonical' => $Engine->getCanonical(),
+            'Hreflang' => new QUI\Projects\Site\Hreflang($Site),
             'lastUpdate' => QUI::getPackageManager()->getLastUpdateDate(),
             'localePublishVersion' => $localePublishVersion,
             'languages' => implode(',', $Project->getLanguages()),

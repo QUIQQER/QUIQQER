@@ -6,9 +6,15 @@
 
 namespace QUI\CRUD;
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use QUI;
 
 use function array_key_exists;
+use function count;
+use function explode;
+use function is_array;
+use function is_string;
+use function strtoupper;
 
 /**
  * Class Factory
@@ -36,29 +42,12 @@ abstract class Factory extends QUI\Utils\Singleton
      */
     public function countChildren(array $queryParams = []): int
     {
-        $query = [
-            'from' => $this->getDataBaseTableName(),
-            'count' => [
-                'select' => 'id',
-                'as' => 'id'
-            ]
-        ];
+        $QueryBuilder = $this->createQueryBuilder();
+        $QueryBuilder->select('COUNT(id)');
 
-        if (isset($queryParams['where'])) {
-            $query['where'] = $queryParams['where'];
-        }
+        $this->applyQueryParameters($QueryBuilder, $queryParams, false);
 
-        if (isset($queryParams['where_or'])) {
-            $query['where_or'] = $queryParams['where_or'];
-        }
-
-        $count = QUI::getDataBase()->fetch($query);
-
-        if (isset($count[0]['id'])) {
-            return (int)$count[0]['id'];
-        }
-
-        return 0;
+        return (int)$QueryBuilder->executeQuery()->fetchOne();
     }
 
     abstract public function getDataBaseTableName(): string;
@@ -87,11 +76,10 @@ abstract class Factory extends QUI\Utils\Singleton
 
         $this->Events->fireEvent('createBegin', [&$childData]);
 
-        QUI::getDataBase()->insert($this->getDataBaseTableName(), $childData);
+        $Connection = QUI::getDataBaseConnection();
+        $Connection->insert(QUI\Utils\Doctrine::quoteIdentifier($this->getDataBaseTableName()), $childData);
 
-        $Child = $this->getChild(
-            QUI::getDataBase()->getPDO()->lastInsertId()
-        );
+        $Child = $this->getChild($Connection->lastInsertId());
 
         $Child->setAttributes($data);
 
@@ -111,13 +99,14 @@ abstract class Factory extends QUI\Utils\Singleton
     {
         $childClass = $this->getChildClass();
 
-        $result = QUI::getDataBase()->fetch([
-            'from' => $this->getDataBaseTableName(),
-            'where' => [
-                'id' => $id
-            ],
-            'limit' => 1
-        ]);
+        $QueryBuilder = $this->createQueryBuilder();
+        $result = $QueryBuilder
+            ->select('*')
+            ->where($QueryBuilder->expr()->eq('id', ':id'))
+            ->setParameter('id', $id)
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         if (!isset($result[0])) {
             throw new QUI\Exception(
@@ -136,6 +125,103 @@ abstract class Factory extends QUI\Utils\Singleton
     }
 
     abstract public function getChildClass(): string;
+
+    protected function createQueryBuilder(): QueryBuilder
+    {
+        return QUI::getQueryBuilder()
+            ->from(QUI\Utils\Doctrine::quoteIdentifier($this->getDataBaseTableName()));
+    }
+
+    protected function applyQueryParameters(
+        QueryBuilder $QueryBuilder,
+        array $queryParams,
+        bool $applyOrderAndLimit = true
+    ): void {
+        if (isset($queryParams['where']) && is_array($queryParams['where'])) {
+            $this->applyWhere($QueryBuilder, $queryParams['where']);
+        }
+
+        if (isset($queryParams['where_or']) && is_array($queryParams['where_or'])) {
+            $this->applyWhere($QueryBuilder, $queryParams['where_or'], true);
+        }
+
+        if (!$applyOrderAndLimit) {
+            return;
+        }
+
+        if (isset($queryParams['order']) && is_string($queryParams['order'])) {
+            $order = explode(' ', $queryParams['order']);
+            $QueryBuilder->orderBy($order[0], $order[1] ?? null);
+        }
+
+        if (isset($queryParams['limit'])) {
+            $limit = explode(',', (string)$queryParams['limit']);
+
+            if (isset($limit[0]) && $limit[0] !== '') {
+                $QueryBuilder->setFirstResult((int)$limit[0]);
+            }
+
+            if (isset($limit[1]) && $limit[1] !== '') {
+                $QueryBuilder->setMaxResults((int)$limit[1]);
+            }
+        }
+    }
+
+    protected function applyWhere(QueryBuilder $QueryBuilder, array $where, bool $or = false): void
+    {
+        $expressions = [];
+        $index = count($QueryBuilder->getParameters());
+
+        foreach ($where as $field => $value) {
+            $parameter = 'where' . $index;
+            $index++;
+
+            if (is_array($value) && isset($value['type'], $value['value'])) {
+                $type = strtoupper((string)$value['type']);
+                $value = $value['value'];
+
+                if ($type === 'NOT') {
+                    $expressions[] = $QueryBuilder->expr()->neq($field, ':' . $parameter);
+                    $QueryBuilder->setParameter($parameter, $value);
+                    continue;
+                }
+
+                if ($type === 'IN' && is_array($value)) {
+                    $placeholders = [];
+
+                    foreach ($value as $entry) {
+                        $entryParameter = 'where' . $index;
+                        $index++;
+                        $placeholders[] = ':' . $entryParameter;
+                        $QueryBuilder->setParameter($entryParameter, $entry);
+                    }
+
+                    $expressions[] = $QueryBuilder->expr()->in($field, $placeholders);
+                    continue;
+                }
+
+                $expressions[] = $field . ' ' . $type . ' :' . $parameter;
+                $QueryBuilder->setParameter($parameter, $value);
+                continue;
+            }
+
+            $expressions[] = $QueryBuilder->expr()->eq($field, ':' . $parameter);
+            $QueryBuilder->setParameter($parameter, $value);
+        }
+
+        if (empty($expressions)) {
+            return;
+        }
+
+        if ($or) {
+            $QueryBuilder->andWhere($QueryBuilder->expr()->or(...$expressions));
+            return;
+        }
+
+        foreach ($expressions as $expression) {
+            $QueryBuilder->andWhere($expression);
+        }
+    }
 
     /**
      * Return the children
@@ -170,32 +256,18 @@ abstract class Factory extends QUI\Utils\Singleton
      */
     public function getChildrenData(array $queryParams = []): array
     {
-        $query = [
-            'from' => $this->getDataBaseTableName()
-        ];
+        $QueryBuilder = $this->createQueryBuilder();
+        $select = $queryParams['select'] ?? ['*'];
 
-        if (isset($queryParams['select'])) {
-            $query['select'] = $queryParams['select'];
+        if (is_string($select)) {
+            $select = [$select];
         }
 
-        if (isset($queryParams['where'])) {
-            $query['where'] = $queryParams['where'];
-        }
-
-        if (isset($queryParams['where_or'])) {
-            $query['where_or'] = $queryParams['where_or'];
-        }
-
-        if (isset($queryParams['order'])) {
-            $query['order'] = $queryParams['order'];
-        }
-
-        if (isset($queryParams['limit'])) {
-            $query['limit'] = $queryParams['limit'];
-        }
+        $QueryBuilder->select(...$select);
+        $this->applyQueryParameters($QueryBuilder, $queryParams);
 
         // @todo filter where and where_or and select with getChildAttributes
 
-        return QUI::getDataBase()->fetch($query);
+        return $QueryBuilder->executeQuery()->fetchAllAssociative();
     }
 }

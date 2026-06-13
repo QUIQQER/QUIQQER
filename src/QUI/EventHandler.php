@@ -125,13 +125,15 @@ class EventHandler
      */
     protected static function cleanupLegacyAssetPackagePermissions(): void
     {
-        $DataBase = QUI::getDataBase();
+        $Connection = QUI::getDataBaseConnection();
         $table = QUI\Permissions\Manager::table();
 
-        $permissions = $DataBase->fetch([
-            'select' => ['name'],
-            'from' => $table
-        ]);
+        $QueryBuilder = $Connection->createQueryBuilder();
+        $permissions = $QueryBuilder
+            ->select('name')
+            ->from(QUI\Utils\Doctrine::quoteIdentifier($table))
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         $permissionNames = [];
 
@@ -166,12 +168,12 @@ class EventHandler
             $permissionNames
         );
 
-        $DataBase->delete($table, [
-            'name' => [
-                'type' => 'IN',
-                'value' => $permissionNames
-            ]
-        ]);
+        foreach ($permissionNames as $permissionName) {
+            $Connection->delete(
+                QUI\Utils\Doctrine::quoteIdentifier($table),
+                ['name' => $permissionName]
+            );
+        }
 
         QUI::$Rights = null;
 
@@ -191,10 +193,12 @@ class EventHandler
         string $idField,
         array $permissionNames
     ): void {
-        $rows = QUI::getDataBase()->fetch([
-            'select' => [$idField, 'permissions'],
-            'from' => $table
-        ]);
+        $QueryBuilder = QUI::getQueryBuilder();
+        $rows = $QueryBuilder
+            ->select($idField, 'permissions')
+            ->from(QUI\Utils\Doctrine::quoteIdentifier($table))
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         foreach ($rows as $row) {
             if (empty($row['permissions'])) {
@@ -222,8 +226,8 @@ class EventHandler
                 continue;
             }
 
-            QUI::getDataBase()->update(
-                $table,
+            QUI::getDataBaseConnection()->update(
+                QUI\Utils\Doctrine::quoteIdentifier($table),
                 ['permissions' => json_encode($permissions)],
                 [$idField => $row[$idField]]
             );
@@ -370,8 +374,8 @@ class EventHandler
             ]);
 
             // Directly update database and do not save user.
-            QUI::getDataBase()->update(
-                Manager::table(),
+            QUI::getDataBaseConnection()->update(
+                QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
                 [
                     'lastLoginAttempt' => null,
                     'failedLogins' => 0

@@ -33,30 +33,43 @@ class Manager
      */
     public static function setup(): void
     {
-        $Table = QUI::getDataBase()->table();
+        try {
+            $SchemaManager = QUI::getSchemaManager();
+            $tableName = self::table();
 
-        if ($Table->existColumnInTable(self::table(), 'data')) {
-            $column = $Table->getColumn(self::table(), 'data');
+            if ($SchemaManager->tablesExist([$tableName])) {
+                $Table = $SchemaManager->introspectTable($tableName);
 
-            if (stripos($column['Type'], 'text') !== false) {
+                if (!$Table->hasColumn('data')) {
+                    return;
+                }
+
+                if ($Table->getColumn('data')->getType() instanceof \Doctrine\DBAL\Types\TextType) {
+                    return;
+                }
+
+                $Connection = QUI::getDataBaseConnection();
+                $Platform = $Connection->getDatabasePlatform();
+                $Connection->executeStatement(
+                    'ALTER TABLE ' . QUI\Utils\Doctrine::quoteIdentifier($tableName)
+                    . ' MODIFY ' . $Platform->quoteSingleIdentifier('data') . ' TEXT'
+                );
+
                 return;
             }
-        }
 
-        try {
-            $Table->addColumn(self::table(), [
-                'id' => 'int(11) NOT NULL',
-                'uid' => 'int(11) NOT NULL',
-                'title' => 'text',
-                'data' => 'text',
-                'minHeight' => 'int',
-                'minWidth' => 'int',
-                'standard' => 'int(1)'
-            ]);
+            $Table = new \Doctrine\DBAL\Schema\Table($tableName);
+            $Table->addColumn('id', 'integer', ['autoincrement' => true]);
+            $Table->addColumn('uid', 'string', ['length' => 50]);
+            $Table->addColumn('title', 'text', ['notnull' => false]);
+            $Table->addColumn('data', 'text', ['notnull' => false]);
+            $Table->addColumn('minHeight', 'integer', ['notnull' => false]);
+            $Table->addColumn('minWidth', 'integer', ['notnull' => false]);
+            $Table->addColumn('standard', 'smallint', ['notnull' => false]);
+            $Table->setPrimaryKey(['id']);
 
-            $Table->setAutoIncrement(self::table(), 'id');
-            $Table->setPrimaryKey(self::table(), 'id');
-        } catch (Exception $Exception) {
+            $SchemaManager->createTable($Table);
+        } catch (Exception | \Doctrine\DBAL\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
         }
     }
@@ -74,11 +87,12 @@ class Manager
     public static function cleanup(): void
     {
         try {
-            $entries = QUI::getDataBase()->fetch([
-                'select' => ['id', 'uid'],
-                'from' => self::table()
-            ]);
-        } catch (QUI\Exception $Exception) {
+            $entries = QUI::getQueryBuilder()
+                ->select('id', 'uid')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()))
+                ->executeQuery()
+                ->fetchAllAssociative();
+        } catch (QUI\Exception | \Doctrine\DBAL\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
 
             return;
@@ -89,15 +103,17 @@ class Manager
                 $User = QUI::getUsers()->get($entry['uid']);
 
                 if (!QUI\Permissions\Permission::isAdmin($User)) {
-                    QUI::getDataBase()->delete(self::table(), [
-                        'id' => $entry['id']
-                    ]);
+                    QUI::getDataBaseConnection()->delete(
+                        QUI\Utils\Doctrine::quoteIdentifier(self::table()),
+                        ['id' => $entry['id']]
+                    );
                 }
-            } catch (QUI\Exception $Exception) {
+            } catch (QUI\Exception | \Doctrine\DBAL\Exception $Exception) {
                 if ($Exception->getCode() === 404) {
-                    QUI::getDataBase()->delete(self::table(), [
-                        'id' => $entry['id']
-                    ]);
+                    QUI::getDataBaseConnection()->delete(
+                        QUI\Utils\Doctrine::quoteIdentifier(self::table()),
+                        ['id' => $entry['id']]
+                    );
 
                     continue;
                 }
@@ -139,7 +155,8 @@ class Manager
 
         $title = Orthos::clear($title);
 
-        QUI::getDataBase()->insert(self::table(), [
+        $Connection = QUI::getDataBaseConnection();
+        $Connection->insert(QUI\Utils\Doctrine::quoteIdentifier(self::table()), [
             'uid' => $User->getUUID(),
             'title' => $title,
             'data' => $data,
@@ -147,7 +164,7 @@ class Manager
             'minWidth' => $minWidth
         ]);
 
-        return (int)QUI::getDataBase()->getPDO()->lastInsertId('id');
+        return (int)$Connection->lastInsertId();
     }
 
     /**
@@ -159,11 +176,14 @@ class Manager
     public static function deleteWorkspace(int $id, User $User): void
     {
         try {
-            QUI::getDataBase()->delete(self::table(), [
-                'uid' => $User->getUUID(),
-                'id' => $id
-            ]);
-        } catch (QUI\Exception $Exception) {
+            QUI::getDataBaseConnection()->delete(
+                QUI\Utils\Doctrine::quoteIdentifier(self::table()),
+                [
+                    'uid' => $User->getUUID(),
+                    'id' => $id
+                ]
+            );
+        } catch (QUI\Exception | \Doctrine\DBAL\Exception $Exception) {
             QUI\System\Log::addError($Exception, [
                 'trace' => $Exception->getTraceAsString()
             ]);
@@ -199,25 +219,28 @@ class Manager
             return [];
         }
 
-        $result = QUI::getDataBase()->fetch([
-            'from' => self::table(),
-            'where' => [
-                'uid' => $User->getUUID()
-            ]
-        ]);
+        $result = self::fetchWorkspacesByUser($User);
 
         if (empty($result)) {
             QUI::getUsers()->setDefaultWorkspacesForUsers($User);
 
-            $result = QUI::getDataBase()->fetch([
-                'from' => self::table(),
-                'where' => [
-                    'uid' => $User->getUUID()
-                ]
-            ]);
+            $result = self::fetchWorkspacesByUser($User);
         }
 
         return $result;
+    }
+
+    protected static function fetchWorkspacesByUser(User $User): array
+    {
+        $QueryBuilder = QUI::getQueryBuilder();
+
+        return $QueryBuilder
+            ->select('*')
+            ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()))
+            ->where($QueryBuilder->expr()->eq('uid', ':uid'))
+            ->setParameter('uid', $User->getUUID())
+            ->executeQuery()
+            ->fetchAllAssociative();
     }
 
     /**
@@ -252,10 +275,14 @@ class Manager
             }
         }
 
-        QUI::getDataBase()->update(self::table(), $workspace, [
-            'id' => $id,
-            'uid' => $User->getUUID()
-        ]);
+        QUI::getDataBaseConnection()->update(
+            QUI\Utils\Doctrine::quoteIdentifier(self::table()),
+            $workspace,
+            [
+                'id' => $id,
+                'uid' => $User->getUUID()
+            ]
+        );
 
         if (!isset($data['standard'])) {
             return;
@@ -273,14 +300,17 @@ class Manager
      */
     public static function getWorkspaceById(int $id, QUI\Users\User $User): array
     {
-        $result = QUI::getDataBase()->fetch([
-            'from' => self::table(),
-            'where' => [
-                'id' => $id,
-                'uid' => $User->getUUID()
-            ],
-            'limit' => 1
-        ]);
+        $QueryBuilder = QUI::getQueryBuilder();
+        $result = $QueryBuilder
+            ->select('*')
+            ->from(QUI\Utils\Doctrine::quoteIdentifier(self::table()))
+            ->where($QueryBuilder->expr()->eq('id', ':id'))
+            ->andWhere($QueryBuilder->expr()->eq('uid', ':uid'))
+            ->setParameter('id', $id)
+            ->setParameter('uid', $User->getUUID())
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         if (!isset($result[0])) {
             throw new QUI\Exception(
@@ -315,15 +345,15 @@ class Manager
         }
 
         // all to no standard
-        QUI::getDataBase()->update(
-            self::table(),
+        QUI::getDataBaseConnection()->update(
+            QUI\Utils\Doctrine::quoteIdentifier(self::table()),
             ['standard' => 0],
             ['uid' => $User->getUUID()]
         );
 
         // standard
-        QUI::getDataBase()->update(
-            self::table(),
+        QUI::getDataBaseConnection()->update(
+            QUI\Utils\Doctrine::quoteIdentifier(self::table()),
             ['standard' => 1],
             [
                 'id' => $id,

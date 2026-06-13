@@ -16,32 +16,47 @@ QUI::$Ajax->registerFunction(
 
         /* @var $Project QUI\Projects\Project */
 
-        $PDO = QUI::getDataBase()->getPDO();
-        $selects = [];
-
-        foreach ($projects as $Project) {
-            $table = $Project->table();
-            $lang = $Project->getLang();
-            $project = $Project->getName();
-
-            $selects[] = "
-            SELECT id, e_date, name, title,
-                '{$project}' as project,
-                '{$lang}' as lang,
-                '{$table}' as table_name
-            FROM
-                `{$table}`
-        ";
+        if (empty($projects)) {
+            return [];
         }
 
-        $query = 'SELECT id, e_date, name, title, project, lang
-                 FROM (' . implode(' UNION ', $selects) . ') AS merged
-                 ORDER BY e_date DESC LIMIT 0,10';
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $selects = [];
+        $parameters = [];
+        $index = 0;
 
-        $Statement = $PDO->prepare($query);
-        $Statement->execute();
+        foreach ($projects as $Project) {
+            $projectParameter = 'project' . $index;
+            $langParameter = 'lang' . $index;
+            $table = $Platform->quoteSingleIdentifier($Project->table());
 
-        return $Statement->fetchAll(\PDO::FETCH_ASSOC);
+            $selects[] = 'SELECT ' . implode(', ', [
+                $Platform->quoteSingleIdentifier('id'),
+                $Platform->quoteSingleIdentifier('e_date'),
+                $Platform->quoteSingleIdentifier('name'),
+                $Platform->quoteSingleIdentifier('title'),
+                ':' . $projectParameter . ' AS project',
+                ':' . $langParameter . ' AS lang'
+            ]) . ' FROM ' . $table;
+
+            $parameters[$projectParameter] = $Project->getName();
+            $parameters[$langParameter] = $Project->getLang();
+            $index++;
+        }
+
+        $QueryBuilder = $Connection->createQueryBuilder();
+        $QueryBuilder
+            ->select('id', 'e_date', 'name', 'title', 'project', 'lang')
+            ->from('(' . implode(' UNION ALL ', $selects) . ')', 'merged')
+            ->orderBy('e_date', 'DESC')
+            ->setMaxResults(10);
+
+        foreach ($parameters as $parameter => $value) {
+            $QueryBuilder->setParameter($parameter, $value);
+        }
+
+        return $QueryBuilder->executeQuery()->fetchAllAssociative();
     },
     ['params'],
     'Permission::checkAdminUser'

@@ -65,6 +65,7 @@ class Backup
             '--suppress-common-lines ',
             "'--color=always' ",
             "'--exclude=last_update.ini.php' ",
+            "'--ignore-matching-lines=^[[:space:]]*publishVersion[[:space:]]*=' ",
         ];
 
         // "--ignore-trailing-space" does not exist on Darwin/macOS and FreeBSD, it's enabled by default

@@ -75,8 +75,9 @@ define('controls/projects/project/site/CreateWindow', [
             QUIAjax.get([
                 'ajax_project_get_layouts',
                 'ajax_site_children_getChildType',
+                'ajax_site_children_getChildLayout',
                 'ajax_site_children_getChildNavHide'
-            ], (layouts, childType, navHide) => {
+            ], (layouts, childType, childLayout, navHide) => {
                 new Element('option', {
                     html: '',
                     value: ''
@@ -87,6 +88,10 @@ define('controls/projects/project/site/CreateWindow', [
                         html: layouts[i].title,
                         value: layouts[i].type
                     }).inject(Layouts);
+                }
+
+                if (childLayout) {
+                    Layouts.value = childLayout;
                 }
 
                 const TypeInstance = new TypeInput({
