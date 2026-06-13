@@ -60,9 +60,7 @@ class Manager
     public function __construct()
     {
         try {
-            $result = QUI::getDataBase()->fetch([
-                'from' => self::table()
-            ]);
+            $result = self::fetchRows(self::table());
 
             foreach ($result as $entry) {
                 $this->cache[$entry['name']] = $entry;
@@ -84,62 +82,113 @@ class Manager
      */
     public static function setup(): void
     {
-        $DBTable = QUI::getDataBase()->table();
         $table = self::table();
 
-        $table2users = $table . '2users';
-        $table2groups = $table . '2groups';
-        $table2sites = $table . '2sites';
-        $table2projects = $table . '2projects';
-        $table2media = $table . '2media';
+        self::ensureTableColumns($table, [
+            "name" => ["type" => "string", "options" => ["length" => 100]],
+            "type" => ["type" => "string", "options" => ["length" => 20]],
+            "area" => ["type" => "string", "options" => ["length" => 20]],
+            "title" => ["type" => "string", "options" => ["length" => 255, "notnull" => false]],
+            "desc" => ["type" => "text", "options" => ["notnull" => false]],
+            "src" => ["type" => "string", "options" => ["length" => 200, "notnull" => false]],
+            "defaultvalue" => ["type" => "text", "options" => ["notnull" => false]]
+        ], ["name"]);
 
-        $DBTable->addColumn($table, [
-            'name' => 'varchar(100) NOT NULL',
-            'type' => 'varchar(20)  NOT NULL',
-            'area' => 'varchar(20)  NOT NULL',
-            'title' => 'varchar(255) NULL',
-            'desc' => 'text NULL',
-            'src' => 'varchar(200) NULL',
-            'defaultvalue' => 'text NULL'
+        self::ensureTableColumns($table . "2users", [
+            "user_id" => ["type" => "string", "options" => ["length" => 50]],
+            "permissions" => ["type" => "text", "options" => ["notnull" => false]]
         ]);
 
-        $DBTable->setIndex($table, 'name');
-
-
-        $DBTable->addColumn($table2users, [
-            'user_id' => 'varchar(50) NOT NULL',
-            'permissions' => 'MEDIUMTEXT'
+        self::ensureTableColumns($table . "2groups", [
+            "group_id" => ["type" => "string", "options" => ["length" => 50]],
+            "permissions" => ["type" => "text", "options" => ["notnull" => false]]
         ]);
 
-        $DBTable->addColumn($table2groups, [
-            'group_id' => 'varchar(50) NOT NULL',
-            'permissions' => 'MEDIUMTEXT'
+        self::ensureTableColumns($table . "2sites", [
+            "project" => ["type" => "string", "options" => ["length" => 200]],
+            "lang" => ["type" => "string", "options" => ["length" => 2]],
+            "id" => ["type" => "bigint", "options" => ["notnull" => false]],
+            "permission" => ["type" => "text", "options" => ["notnull" => false]],
+            "value" => ["type" => "text", "options" => ["notnull" => false]]
         ]);
 
-        $DBTable->addColumn($table2sites, [
-            'project' => 'varchar(200) NOT NULL',
-            'lang' => 'varchar(2) NOT NULL',
-            'id' => 'bigint(20)',
-            'permission' => 'text',
-            'value' => 'text'
+        self::ensureTableColumns($table . "2projects", [
+            "project" => ["type" => "string", "options" => ["length" => 200]],
+            "lang" => ["type" => "string", "options" => ["length" => 2]],
+            "permission" => ["type" => "text", "options" => ["notnull" => false]],
+            "value" => ["type" => "text", "options" => ["notnull" => false]]
         ]);
 
-        $DBTable->addColumn($table2projects, [
-            'project' => 'varchar(200) NOT NULL',
-            'lang' => 'varchar(2) NOT NULL',
-            'permission' => 'text',
-            'value' => 'text'
+        $table2media = $table . "2media";
+
+        self::ensureTableColumns($table2media, [
+            "project" => ["type" => "string", "options" => ["length" => 200]],
+            "id" => ["type" => "bigint", "options" => ["notnull" => false]],
+            "permission" => ["type" => "text", "options" => ["notnull" => false]],
+            "value" => ["type" => "text", "options" => ["notnull" => false]]
         ]);
 
-        $DBTable->addColumn($table2media, [
-            'project' => 'varchar(200) NOT NULL',
-            'id' => 'bigint(20)',
-            'permission' => 'text',
-            'value' => 'text'
-        ]);
+        $SchemaManager = QUI::getSchemaManager();
+        $Table = $SchemaManager->introspectTable($table2media);
 
-        if ($DBTable->existColumnInTable($table2media, 'lang')) {
-            $DBTable->deleteColumn($table2media, 'lang');
+        if ($Table->hasColumn("lang")) {
+            $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff(
+                $Table,
+                droppedColumns: [$Table->getColumn("lang")]
+            ));
+        }
+    }
+
+    private static function ensureTableColumns(string $tableName, array $columns, array $indexes = []): void
+    {
+        $SchemaManager = QUI::getSchemaManager();
+
+        if (!$SchemaManager->tablesExist([$tableName])) {
+            $Table = new \Doctrine\DBAL\Schema\Table($tableName);
+
+            foreach ($columns as $name => $definition) {
+                $Table->addColumn($name, $definition["type"], $definition["options"] ?? []);
+            }
+
+            foreach ($indexes as $indexName) {
+                $Table->addIndex([$indexName], $indexName);
+            }
+
+            $SchemaManager->createTable($Table);
+            return;
+        }
+
+        $Table = $SchemaManager->introspectTable($tableName);
+        $addedColumns = [];
+
+        foreach ($columns as $name => $definition) {
+            if ($Table->hasColumn($name)) {
+                continue;
+            }
+
+            $addedColumns[] = new \Doctrine\DBAL\Schema\Column(
+                $name,
+                \Doctrine\DBAL\Types\Type::getType($definition["type"]),
+                $definition["options"] ?? []
+            );
+        }
+
+        if (!empty($addedColumns)) {
+            $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff($Table, addedColumns: $addedColumns));
+            $Table = $SchemaManager->introspectTable($tableName);
+        }
+
+        foreach ($indexes as $indexName) {
+            if ($Table->hasIndex($indexName)) {
+                continue;
+            }
+
+            $Table->addIndex([$indexName], $indexName);
+            $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff(
+                $Table,
+                addedIndexes: [$Table->getIndex($indexName)]
+            ));
+            $Table = $SchemaManager->introspectTable($tableName);
         }
     }
 
@@ -330,8 +379,6 @@ class Manager
      */
     protected function getData(mixed $Obj): array
     {
-        $DataBase = QUI::getDataBase();
-
         $table = self::table();
         $area = $this->objectToArea($Obj);
         $cache = $this->getDataCacheId($Obj);
@@ -340,46 +387,39 @@ class Manager
             return $this->dataCache[$cache];
         }
 
-        if ($area === 'user') {
-            /* @var $Obj User */
-            $this->dataCache[$cache] = $DataBase->fetch([
-                'from' => $table . '2users',
-                'where' => [
-                    'user_id' => $Obj->getUUID()
-                ],
-                'limit' => 1
-            ]);
+        if ($area === "user") {
+            /*  $Obj User */
+            $this->dataCache[$cache] = self::fetchRows(
+                $table . "2users",
+                ["user_id" => $Obj->getUUID()],
+                1
+            );
 
             return $this->dataCache[$cache];
         }
 
-        if ($area === 'groups') {
-            /* @var $Obj Group */
-            $this->dataCache[$cache] = $DataBase->fetch([
-                'from' => $table . '2groups',
-                'where' => [
-                    'group_id' => $Obj->getUUID()
-                ],
-                'limit' => 1
-            ]);
+        if ($area === "groups") {
+            /*  $Obj Group */
+            $this->dataCache[$cache] = self::fetchRows(
+                $table . "2groups",
+                ["group_id" => $Obj->getUUID()],
+                1
+            );
 
             return $this->dataCache[$cache];
         }
 
-        if ($area === 'project') {
-            /* @var $Obj Project */
-            $data = $DataBase->fetch([
-                'from' => $table . '2projects',
-                'where' => [
-                    'project' => $Obj->getName(),
-                    'lang' => $Obj->getLang()
-                ]
+        if ($area === "project") {
+            /*  $Obj Project */
+            $data = self::fetchRows($table . "2projects", [
+                "project" => $Obj->getName(),
+                "lang" => $Obj->getLang()
             ]);
 
             $result = [];
 
             foreach ($data as $entry) {
-                $result[$entry['permission']] = $entry['value'];
+                $result[$entry["permission"]] = $entry["value"];
             }
 
             $this->dataCache[$cache] = $result;
@@ -387,18 +427,15 @@ class Manager
             return $this->dataCache[$cache];
         }
 
-        if ($area === 'site') {
-            /* @var $Obj QUI\Projects\Site */
+        if ($area === "site") {
+            /*  $Obj QUI\Projects\Site */
             $Project = $Obj->getProject();
 
             try {
-                $data = $DataBase->fetch([
-                    'from' => $table . '2sites',
-                    'where' => [
-                        'project' => $Project->getName(),
-                        'lang' => $Project->getLang(),
-                        'id' => $Obj->getId()
-                    ]
+                $data = self::fetchRows($table . "2sites", [
+                    "project" => $Project->getName(),
+                    "lang" => $Project->getLang(),
+                    "id" => $Obj->getId()
                 ]);
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::writeDebugException($Exception);
@@ -409,33 +446,29 @@ class Manager
             $result = [];
 
             foreach ($data as $entry) {
-                $result[$entry['permission']] = $entry['value'];
+                $result[$entry["permission"]] = $entry["value"];
             }
-
 
             $this->dataCache[$cache] = $result;
 
             return $this->dataCache[$cache];
         }
 
-        if ($area === 'media') {
-            /* @var $Obj QUI\Projects\Media\Item */
-            /* @var $Project Project */
+        if ($area === "media") {
+            /*  $Obj QUI\Projects\Media\Item */
+            /*  $Project Project */
             $Media = $Obj->getMedia();
             $Project = $Media->getProject();
 
-            $data = $DataBase->fetch([
-                'from' => $table . '2media',
-                'where' => [
-                    'project' => $Project->getName(),
-                    'id' => $Obj->getId()
-                ]
+            $data = self::fetchRows($table . "2media", [
+                "project" => $Project->getName(),
+                "id" => $Obj->getId()
             ]);
 
             $result = [];
 
             foreach ($data as $entry) {
-                $result[$entry['permission']] = $entry['value'];
+                $result[$entry["permission"]] = $entry["value"];
             }
 
             $this->dataCache[$cache] = $result;
@@ -444,6 +477,43 @@ class Manager
         }
 
         return [];
+    }
+
+    private static function fetchRows(string $table, array $where = [], int | null $limit = null, array $select = ["*"]): array
+    {
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $QueryBuilder = $Connection->createQueryBuilder();
+        $selectParts = [];
+
+        foreach ($select as $field) {
+            if ($field === "*") {
+                $selectParts[] = "*";
+                continue;
+            }
+
+            $selectParts[] = $Platform->quoteSingleIdentifier((string)$field);
+        }
+
+        $QueryBuilder
+            ->select(...$selectParts)
+            ->from($Platform->quoteSingleIdentifier($table));
+
+        $whereIndex = 0;
+
+        foreach ($where as $field => $value) {
+            $parameter = "where" . $whereIndex;
+            $QueryBuilder
+                ->andWhere($Platform->quoteSingleIdentifier((string)$field) . " = :" . $parameter)
+                ->setParameter($parameter, $value);
+            $whereIndex++;
+        }
+
+        if ($limit !== null) {
+            $QueryBuilder->setMaxResults($limit);
+        }
+
+        return $QueryBuilder->executeQuery()->fetchAllAssociative();
     }
 
     /**
@@ -668,7 +738,7 @@ class Manager
             );
         }
 
-        $DataBase = QUI::getDataBase();
+        $Connection = QUI::getDataBaseConnection();
         $table = self::table();
 
         $table2users = $table . '2users';
@@ -680,7 +750,7 @@ class Manager
             case 'user':
                 /* @var $Obj User */
                 if (!isset($_data[0])) {
-                    $DataBase->insert(
+                    $Connection->insert(
                         $table2users,
                         ['user_id' => $Obj->getUUID()]
                     );
@@ -690,7 +760,7 @@ class Manager
                     unset($data['permissions']);
                 }
 
-                $DataBase->update(
+                $Connection->update(
                     $table2users,
                     ['permissions' => json_encode($data)],
                     ['user_id' => $Obj->getUUID()]
@@ -702,7 +772,7 @@ class Manager
             case 'groups':
                 /* @var $Obj Group */
                 if (!isset($_data[0])) {
-                    $DataBase->insert(
+                    $Connection->insert(
                         $table2groups,
                         ['group_id' => $Obj->getUUID()]
                     );
@@ -713,7 +783,7 @@ class Manager
                 }
 
 
-                $DataBase->update(
+                $Connection->update(
                     $table2groups,
                     ['permissions' => json_encode($data)],
                     ['group_id' => $Obj->getUUID()]
@@ -729,7 +799,7 @@ class Manager
 
                 /* @var $Project Project */
                 if (!isset($_data[0])) {
-                    $DataBase->insert(
+                    $Connection->insert(
                         $table2media,
                         [
                             'project' => $Project->getName(),
@@ -741,7 +811,7 @@ class Manager
                     return;
                 }
 
-                $DataBase->update(
+                $Connection->update(
                     $table2media,
                     ['permissions' => json_encode($data)],
                     [
@@ -905,7 +975,7 @@ class Manager
         string $permission,
         int | string $value
     ): void {
-        QUI::getDataBase()->insert(
+        QUI::getDataBaseConnection()->insert(
             self::table() . '2projects',
             [
                 'project' => $Project->getName(),
@@ -926,7 +996,7 @@ class Manager
         string $permission,
         int | string $value
     ): void {
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             self::table() . '2projects',
             ['value' => $value],
             [
@@ -1045,7 +1115,7 @@ class Manager
         $Project = $Site->getProject();
         $table = self::table();
 
-        QUI::getDataBase()->insert($table . '2sites', [
+        QUI::getDataBaseConnection()->insert($table . '2sites', [
             'project' => $Project->getName(),
             'lang' => $Project->getLang(),
             'id' => $Site->getId(),
@@ -1068,7 +1138,7 @@ class Manager
         $Project = $Site->getProject();
         $table = self::table();
 
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $table . '2sites',
             ['value' => $value],
             [
@@ -1190,7 +1260,7 @@ class Manager
         $Project = $Media->getProject();
         $table = self::table();
 
-        QUI::getDataBase()->insert($table . '2media', [
+        QUI::getDataBaseConnection()->insert($table . '2media', [
             'project' => $Project->getName(),
             'id' => $MediaItem->getId(),
             'permission' => $permission,
@@ -1212,7 +1282,7 @@ class Manager
         $Project = $Media->getProject();
         $table = self::table();
 
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $table . '2media',
             ['value' => $value],
             [
@@ -1264,7 +1334,7 @@ class Manager
             );
         }
 
-        QUI::getDataBase()->delete(
+        QUI::getDataBaseConnection()->delete(
             self::table(),
             [
                 'name' => $permission,
@@ -1397,7 +1467,7 @@ class Manager
      */
     public function addPermission(array $params): void
     {
-        $DataBase = QUI::getDataBase();
+        $Connection = QUI::getDataBaseConnection();
         $needles = [
             'name',
             'title',
@@ -1433,23 +1503,19 @@ class Manager
         ];
 
         if (isset($this->cache[$params['name']])) {
-            $DataBase->update(self::table(), $data, $where);
+            $Connection->update(self::table(), $data, $where);
             return;
         }
 
-        $result = $DataBase->fetch([
-            'from' => self::table(),
-            'where' => $where,
-            'limit' => 1
-        ]);
+        $result = self::fetchRows(self::table(), $where, 1);
 
         if (isset($result[0])) {
-            $DataBase->update(self::table(), $data, $where);
+            $Connection->update(self::table(), $data, $where);
             return;
         }
 
         // if not exist, insert it
-        $DataBase->insert(self::table(), [
+        $Connection->insert(self::table(), [
             'name' => $params['name'],
             'title' => trim($params['title']),
             'desc' => trim($params['desc']),
@@ -1501,13 +1567,12 @@ class Manager
     public function deletePermissionsFromPackage(QUI\Package\Package $Package): void
     {
         // remove from cache
-        $result = QUI::getDataBase()->fetch([
-            'select' => 'name',
-            'from' => self::table(),
-            'where' => [
-                'src' => $Package->getName()
-            ]
-        ]);
+        $result = self::fetchRows(
+            self::table(),
+            ["src" => $Package->getName()],
+            null,
+            ["name"]
+        );
 
         foreach ($result as $permission) {
             if (isset($this->cache[$permission['name']])) {
@@ -1516,7 +1581,7 @@ class Manager
         }
 
         // delete from DB
-        QUI::getDataBase()->delete(
+        QUI::getDataBaseConnection()->delete(
             self::table(),
             ['src' => $Package->getName()]
         );
@@ -1624,7 +1689,7 @@ class Manager
         $Project = $Site->getProject();
         $table = self::table();
 
-        QUI::getDataBase()->delete($table . '2sites', [
+        QUI::getDataBaseConnection()->delete($table . '2sites', [
             'project' => $Project->getName(),
             'lang' => $Project->getLang(),
             'id' => $Site->getId()
@@ -1730,10 +1795,7 @@ class Manager
     public function getRightParamsFromGroup(Group $Group): array
     {
         $result = [];
-        $rights = QUI::getDataBase()->fetch([
-            'select' => 'name,type',
-            'from' => self::table()
-        ]);
+        $rights = self::fetchRows(self::table(), [], null, ["name", "type"]);
 
         foreach ($rights as $right) {
             if ($Group->existsRight($right['name']) === false) {
@@ -1772,7 +1834,7 @@ class Manager
         $Project = $Media->getProject();
         $table = self::table();
 
-        QUI::getDataBase()->delete($table . '2media', [
+        QUI::getDataBaseConnection()->delete($table . '2media', [
             'project' => $Project->getName(),
             'id' => $MediaItem->getId()
         ]);
