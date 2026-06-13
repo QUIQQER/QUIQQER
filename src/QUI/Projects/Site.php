@@ -9,7 +9,6 @@ namespace QUI\Projects;
 use DOMElement;
 use DOMNodeList;
 use DOMXPath;
-use PDO;
 use QUI;
 use QUI\Database\Exception;
 use QUI\ExceptionStack;
@@ -335,27 +334,31 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         $lang_table = QUI::getDBTableName($projectName . '_' . $lang . '_sites');
         $rel_table = QUI::getDBTableName($projectName . '_multilingual');
 
-        $PDO = QUI::getPDO();
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $result = $Connection->createQueryBuilder()
+            ->select("rel." . $Platform->quoteSingleIdentifier($lang))
+            ->from($Platform->quoteSingleIdentifier($rel_table), "rel")
+            ->innerJoin(
+                "rel",
+                $Platform->quoteSingleIdentifier($lang_table),
+                "lang_site",
+                "rel." . $Platform->quoteSingleIdentifier($lang) . " = lang_site." . $Platform->quoteSingleIdentifier("id")
+            )
+            ->innerJoin(
+                "rel",
+                $Platform->quoteSingleIdentifier($site_table),
+                "site",
+                "rel." . $Platform->quoteSingleIdentifier($projectLang) . " = site." . $Platform->quoteSingleIdentifier("id")
+            )
+            ->where("site." . $Platform->quoteSingleIdentifier("id") . " = :id")
+            ->setParameter("id", $this->getId())
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchAssociative();
 
-        $Statement = $PDO->prepare(
-            '
-            SELECT `' . $rel_table . '`.`' . $lang . '`
-            FROM `' . $site_table . '`, `' . $lang_table . '`, `' . $rel_table . '`
-            WHERE
-                `' . $rel_table . '`.`' . $lang . '` = `' . $lang_table . '`.`id` AND
-                `' . $rel_table . '`.`' . $projectLang . '` = `' . $site_table . '`.`id` AND
-                `' . $site_table . '`.`id` = :id
-               LIMIT 1;
-        '
-        );
-
-        $Statement->bindValue(':id', $this->getId(), PDO::PARAM_INT);
-        $Statement->execute();
-
-        $result = $Statement->fetchAll(PDO::FETCH_ASSOC);
-
-        if (isset($result[0][$lang])) {
-            $this->lang_ids[$lang] = (int)$result[0][$lang];
+        if (isset($result[$lang])) {
+            $this->lang_ids[$lang] = (int)$result[$lang];
 
             return $this->lang_ids[$lang];
         }
@@ -372,15 +375,18 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     {
         $this->loadFlag = false;
 
-        $result = QUI::getDataBase()->fetch([
-            'from' => $this->TABLE,
-            'where' => [
-                'id' => $this->getId()
-            ],
-            'limit' => '1'
-        ]);
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $params = $Connection->createQueryBuilder()
+            ->select("*")
+            ->from($Platform->quoteSingleIdentifier($this->TABLE))
+            ->where($Platform->quoteSingleIdentifier("id") . " = :id")
+            ->setParameter("id", $this->getId())
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchAssociative();
 
-        if (!isset($result[0])) {
+        if ($params === false) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/core',
@@ -394,8 +400,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 ]
             );
         }
-
-        $params = $result[0];
 
         if ($params['active'] != 1 && !defined('QUIQQER_PREVIEW')) {
             throw new QUI\Exception(
@@ -430,12 +434,13 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         // Verknüpfung hohlen
         if ($this->getId() != 1) {
-            $relresult = QUI::getDataBase()->fetch([
-                'from' => $this->RELTABLE,
-                'where' => [
-                    'child' => $this->getId()
-                ]
-            ]);
+            $relresult = $Connection->createQueryBuilder()
+                ->select("*")
+                ->from($Platform->quoteSingleIdentifier($this->RELTABLE))
+                ->where($Platform->quoteSingleIdentifier("child") . " = :child")
+                ->setParameter("child", $this->getId())
+                ->executeQuery()
+                ->fetchAllAssociative();
 
             if (isset($relresult[0])) {
                 foreach ($relresult as $entry) {
@@ -448,17 +453,17 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             }
         }
 
-        if (!empty($result[0]['extra'])) {
-            $extra = json_decode($result[0]['extra'], true);
+        if (!empty($params['extra'])) {
+            $extra = json_decode($params['extra'], true);
 
             foreach ($extra as $key => $value) {
                 $this->setAttribute($key, $value);
             }
 
-            unset($result[0]['extra']);
+            unset($params['extra']);
         }
 
-        $this->setAttributes($result[0]);
+        $this->setAttributes($params);
     }
 
     /**
@@ -565,18 +570,26 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         try {
             $Project = $this->getProject();
 
-            $dbResult = QUI::getDataBase()->fetch([
-                'from' => $Project->getAttribute('name') . '_multilingual',
-                'where' => [
-                    $Project->getAttribute('lang') => $this->getId()
-                ]
-            ]);
+            $Connection = QUI::getDataBaseConnection();
+            $Platform = $Connection->getDatabasePlatform();
+            $dbResult = $Connection->createQueryBuilder()
+                ->select("*")
+                ->from($Platform->quoteSingleIdentifier($Project->getAttribute("name") . "_multilingual"))
+                ->where($Platform->quoteSingleIdentifier($Project->getAttribute("lang")) . " = :siteId")
+                ->setParameter("siteId", $this->getId())
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchAssociative();
+
+            if ($dbResult === false) {
+                $dbResult = [];
+            }
 
             $languages = $Project->getLanguages();
 
             foreach ($languages as $lang) {
-                if (isset($dbResult[0][$lang])) {
-                    $result[$lang] = $dbResult[0][$lang];
+                if (isset($dbResult[$lang])) {
+                    $result[$lang] = $dbResult[$lang];
                     continue;
                 }
 
@@ -861,16 +874,20 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             return $this->children[$id];
         }
 
-        $result = QUI::getDataBase()->fetch([
-            'from' => $this->RELTABLE,
-            'where' => [
-                'parent' => $this->getId(),
-                'child' => $id
-            ],
-            'limit' => 1
-        ]);
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $childExists = $Connection->createQueryBuilder()
+            ->select("1")
+            ->from($Platform->quoteSingleIdentifier($this->RELTABLE))
+            ->where($Platform->quoteSingleIdentifier("parent") . " = :parent")
+            ->andWhere($Platform->quoteSingleIdentifier("child") . " = :child")
+            ->setParameter("parent", $this->getId())
+            ->setParameter("child", $id)
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchOne();
 
-        if (!isset($result[0])) {
+        if ($childExists === false) {
             throw new QUI\Exception('Child not found', 705);
         }
 
@@ -1069,14 +1086,23 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             $tbl = QUI::getDBTableName($project_name . '_' . $project_lang . '_' . $fields['suffix']);
             $fieldList = array_keys($fields['fields']);
 
-            $result = QUI::getDataBase()->fetch([
-                'select' => $fieldList,
-                'from' => $tbl,
-                'where' => [
-                    'id' => $this->getId()
-                ],
-                'limit' => 1
-            ]);
+            $Connection = QUI::getDataBaseConnection();
+            $Platform = $Connection->getDatabasePlatform();
+            $result = $Connection->createQueryBuilder()
+                ->select(...array_map(
+                    static fn($field) => $Platform->quoteSingleIdentifier($field),
+                    $fieldList
+                ))
+                ->from($Platform->quoteSingleIdentifier($tbl))
+                ->where($Platform->quoteSingleIdentifier("id") . " = :id")
+                ->setParameter("id", $this->getId())
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchAssociative();
+
+            if ($result === false) {
+                $result = [];
+            }
 
             // package.package.table.attribute
             $attributePrfx = str_replace(
@@ -1090,13 +1116,13 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                     continue;
                 }
 
-                if (!isset($result[0][$field])) {
+                if (!isset($result[$field])) {
                     continue;
                 }
 
                 $this->setAttribute(
                     $attributePrfx . '.' . $field,
-                    $result[0][$field]
+                    $result[$field]
                 );
             }
         }
@@ -1156,36 +1182,39 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getChildIdByName(string $name): int
     {
-        $result = QUI::getDataBase()->fetch([
-            'from' => [
-                $this->RELTABLE,
-                $this->TABLE
-            ],
-            'where' => [
-                $this->RELTABLE . '.parent' => $this->getId(),
-                $this->TABLE . '.deleted' => 0,
-                $this->RELTABLE . '.child' => '`' . $this->TABLE . '.id`',
-                // LIKE muss bleiben wegen _,
-                // sonst werden keine Seiten mehr gefunden
-                $this->TABLE . '.name' => [
-                    'type' => 'LIKE',
-                    'value' => str_replace('-', '_', $name)
-                ]
-            ],
-            'limit' => 1
-        ]);
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $result = $Connection->createQueryBuilder()
+            ->select("site." . $Platform->quoteSingleIdentifier("id"))
+            ->from($Platform->quoteSingleIdentifier($this->RELTABLE), "rel")
+            ->innerJoin(
+                "rel",
+                $Platform->quoteSingleIdentifier($this->TABLE),
+                "site",
+                "rel." . $Platform->quoteSingleIdentifier("child") . " = site." . $Platform->quoteSingleIdentifier("id")
+            )
+            ->where("rel." . $Platform->quoteSingleIdentifier("parent") . " = :parent")
+            ->andWhere("site." . $Platform->quoteSingleIdentifier("deleted") . " = :deleted")
+            ->andWhere("site." . $Platform->quoteSingleIdentifier("name") . " LIKE :name")
+            ->setParameter("parent", $this->getId())
+            ->setParameter("deleted", 0)
+            ->setParameter("name", str_replace("-", "_", $name))
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchAssociative();
 
-        if (isset($result[0]["id"])) {
-            return $result[0]["id"];
+        if (isset($result["id"])) {
+            return (int)$result["id"];
         }
 
         throw new QUI\Exception(
-            QUI::getLocale()->get('quiqqer/core', 'exception.site.child.by.name.not.found', [
-                'name' => $name
+            QUI::getLocale()->get("quiqqer/core", "exception.site.child.by.name.not.found", [
+                "name" => $name
             ]),
             705
         );
     }
+
 
     /**
      * Gibt zurück ob Site Kinder besitzt
@@ -1198,38 +1227,29 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function hasChildren(bool $navhide = false): int
     {
-        // where
-        $where = '`' . $this->RELTABLE . '`.`parent` = :pid AND ' .
-            '`' . $this->TABLE . '`.`deleted` = :deleted AND ' .
-            '`' . $this->RELTABLE . '`.`child` = `' . $this->TABLE . '`.`id`';
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $QueryBuilder = $Connection->createQueryBuilder()
+            ->select("COUNT(site." . $Platform->quoteSingleIdentifier("id") . ")")
+            ->from($Platform->quoteSingleIdentifier($this->RELTABLE), "rel")
+            ->innerJoin(
+                "rel",
+                $Platform->quoteSingleIdentifier($this->TABLE),
+                "site",
+                "rel." . $Platform->quoteSingleIdentifier("child") . " = site." . $Platform->quoteSingleIdentifier("id")
+            )
+            ->where("rel." . $Platform->quoteSingleIdentifier("parent") . " = :parent")
+            ->andWhere("site." . $Platform->quoteSingleIdentifier("deleted") . " = :deleted")
+            ->setParameter("parent", $this->getId())
+            ->setParameter("deleted", 0);
 
         if ($navhide === false) {
-            $where .= ' AND `' . $this->TABLE . '`.`nav_hide` = :nav_hide';
+            $QueryBuilder
+                ->andWhere("site." . $Platform->quoteSingleIdentifier("nav_hide") . " = :navHide")
+                ->setParameter("navHide", 0);
         }
 
-        // prepared
-        $prepared = [
-            ':pid' => $this->getId(),
-            ':deleted' => 0
-        ];
-
-        if ($navhide === false) {
-            $prepared[':nav_hide'] = 0;
-        }
-
-        // statement
-        $Statement = QUI::getPDO()->prepare(
-            'SELECT COUNT(id) AS idc
-            FROM `' . $this->RELTABLE . '`, `' . $this->TABLE . '`
-            WHERE ' . $where . '
-            LIMIT 1'
-        );
-
-        $Statement->execute($prepared);
-
-        $result = $Statement->fetchAll(PDO::FETCH_ASSOC);
-
-        return $result[0]['idc'];
+        return (int)$QueryBuilder->executeQuery()->fetchOne();
     }
 
     /**
@@ -1291,7 +1311,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             'active' => '0&1'
         ]);
 
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $this->TABLE,
             [
                 'deleted' => 1,
@@ -1302,7 +1322,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
 
         foreach ($children as $child) {
-            QUI::getDataBase()->update(
+            QUI::getDataBaseConnection()->update(
                 $this->TABLE,
                 [
                     'deleted' => 1,
@@ -1393,14 +1413,16 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             return $this->parents_id;
         }
 
-        $result = QUI::getDataBase()->fetch([
-            'select' => 'parent',
-            'from' => $this->RELTABLE,
-            'where' => [
-                'child' => $this->getId()
-            ],
-            'order' => 'oparent ASC'
-        ]);
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $result = $Connection->createQueryBuilder()
+            ->select($Platform->quoteSingleIdentifier("parent"))
+            ->from($Platform->quoteSingleIdentifier($this->RELTABLE))
+            ->where($Platform->quoteSingleIdentifier("child") . " = :child")
+            ->setParameter("child", $this->getId())
+            ->orderBy($Platform->quoteSingleIdentifier("oparent"), "ASC")
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         $pids = [];
 
@@ -1712,7 +1734,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function restore(): void
     {
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $this->TABLE,
             ['deleted' => 0],
             ['id' => $this->getId()]
@@ -1736,33 +1758,21 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         /**
          *  Plugins Tabellen löschen
          */
-        $DataBase = QUI::getDataBase();
+        $Connection = QUI::getDataBaseConnection();
 
         // Daten löschen
-        $DataBase->exec([
-            'delete' => true,
-            'from' => $this->TABLE,
-            'where' => [
-                'id' => $this->getId()
-            ]
+        $Connection->delete($this->TABLE, [
+            "id" => $this->getId()
         ]);
 
         // sich als Kind löschen
-        $DataBase->exec([
-            'delete' => true,
-            'from' => $this->RELTABLE,
-            'where' => [
-                'child' => $this->getId()
-            ]
+        $Connection->delete($this->RELTABLE, [
+            "child" => $this->getId()
         ]);
 
         // sich als parent löschen
-        $DataBase->exec([
-            'delete' => true,
-            'from' => $this->RELTABLE,
-            'where' => [
-                'parent' => $this->getId()
-            ]
+        $Connection->delete($this->RELTABLE, [
+            "parent" => $this->getId()
         ]);
 
         // @todo Rechte löschen
@@ -1845,21 +1855,28 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     protected function existNameInChildren(string $name): bool
     {
-        $result = QUI::getDataBase()->fetch([
-            'from' => [
-                $this->RELTABLE,
-                $this->TABLE
-            ],
-            'where' => [
-                $this->RELTABLE . '.parent' => $this->getId(),
-                $this->TABLE . '.deleted' => 0,
-                $this->RELTABLE . '.child' => $this->TABLE . '.id',
-                $this->TABLE . '.name' => $name
-            ],
-            'limit' => '1'
-        ]);
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $result = $Connection->createQueryBuilder()
+            ->select("1")
+            ->from($Platform->quoteSingleIdentifier($this->RELTABLE), "rel")
+            ->innerJoin(
+                "rel",
+                $Platform->quoteSingleIdentifier($this->TABLE),
+                "site",
+                "rel." . $Platform->quoteSingleIdentifier("child") . " = site." . $Platform->quoteSingleIdentifier("id")
+            )
+            ->where("rel." . $Platform->quoteSingleIdentifier("parent") . " = :parent")
+            ->andWhere("site." . $Platform->quoteSingleIdentifier("deleted") . " = :deleted")
+            ->andWhere("site." . $Platform->quoteSingleIdentifier("name") . " = :name")
+            ->setParameter("parent", $this->getId())
+            ->setParameter("deleted", 0)
+            ->setParameter("name", $name)
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchOne();
 
-        return (bool)count($result);
+        return $result !== false;
     }
 
     //endregion
