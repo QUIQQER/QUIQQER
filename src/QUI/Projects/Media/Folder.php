@@ -437,7 +437,23 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         // copy me
         $Copy = $Folder->createFolder($this->getAttribute('name'));
 
-        $Copy->setAttributes($this->getAttributes());
+        $attributes = $this->getAttributes();
+
+        foreach (
+            [
+            'id',
+            'name',
+            'file',
+            'pathHash',
+            'pathHistory',
+            'url',
+            'cache_url'
+            ] as $attribute
+        ) {
+            unset($attributes[$attribute]);
+        }
+
+        $Copy->setAttributes($attributes);
         $Copy->save();
 
         // copy the children
