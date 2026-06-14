@@ -4,7 +4,6 @@ namespace QUI\Users;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
-use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use QUI;
 use QUI\Exception;
 use QUI\ExceptionStack;
@@ -102,14 +101,8 @@ class Install
                 "length" => 50,
                 "notnull" => false
             ]);
-
-            if (!self::hasPrimaryKey($Connection, $groupTable)) {
-                $Connection->executeStatement("ALTER TABLE $quotedGroupTable ADD PRIMARY KEY (id)");
-            }
-
-            if (!self::hasIndex($Connection, $groupTable, 'parent')) {
-                $Connection->executeStatement("CREATE INDEX parent ON $quotedGroupTable (parent)");
-            }
+            self::ensurePrimaryKey($Connection, $groupTable, "id");
+            self::ensureIndex($Connection, $groupTable, "parent");
 
 
             // Guest
@@ -231,66 +224,49 @@ class Install
     /**
      * @throws \Doctrine\DBAL\Exception
      */
-    private static function hasPrimaryKey(Connection $Connection, string $table): bool
+    private static function ensurePrimaryKey(Connection $Connection, string $tableName, string $columnName): void
     {
-        $Platform = $Connection->getDatabasePlatform();
+        $SchemaManager = $Connection->createSchemaManager();
 
-        if ($Platform instanceof AbstractMySQLPlatform) {
-            return (int)$Connection->fetchOne(
-                "SELECT COUNT(*)
-                FROM information_schema.TABLE_CONSTRAINTS
-                WHERE TABLE_SCHEMA = DATABASE()
-                    AND TABLE_NAME = ?
-                    AND CONSTRAINT_TYPE = 'PRIMARY KEY'",
-                [$table]
-            ) > 0;
+        if (!$SchemaManager->tablesExist([$tableName])) {
+            return;
         }
 
-        if ($Platform instanceof PostgreSQLPlatform) {
-            return (int)$Connection->fetchOne(
-                "SELECT COUNT(*)
-                FROM pg_index i
-                JOIN pg_class t ON t.oid = i.indrelid
-                JOIN pg_namespace n ON n.oid = t.relnamespace
-                WHERE n.nspname = current_schema()
-                    AND t.relname = ?
-                    AND i.indisprimary",
-                [$table]
-            ) > 0;
+        $Table = $SchemaManager->introspectTable($tableName);
+
+        if ($Table->getPrimaryKeyConstraint() !== null) {
+            return;
         }
 
-        return false;
+        $Table->setPrimaryKey([$columnName]);
+
+        $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff(
+            $Table,
+            addedIndexes: [$Table->getIndex("primary")]
+        ));
     }
 
     /**
      * @throws \Doctrine\DBAL\Exception
      */
-    private static function hasIndex(Connection $Connection, string $table, string $index): bool
+    private static function ensureIndex(Connection $Connection, string $tableName, string $columnName): void
     {
-        $Platform = $Connection->getDatabasePlatform();
+        $SchemaManager = $Connection->createSchemaManager();
 
-        if ($Platform instanceof AbstractMySQLPlatform) {
-            return (int)$Connection->fetchOne(
-                "SELECT COUNT(*)
-                FROM information_schema.STATISTICS
-                WHERE TABLE_SCHEMA = DATABASE()
-                    AND TABLE_NAME = ?
-                    AND INDEX_NAME = ?",
-                [$table, $index]
-            ) > 0;
+        if (!$SchemaManager->tablesExist([$tableName])) {
+            return;
         }
 
-        if ($Platform instanceof PostgreSQLPlatform) {
-            return (int)$Connection->fetchOne(
-                "SELECT COUNT(*)
-                FROM pg_indexes
-                WHERE schemaname = current_schema()
-                    AND tablename = ?
-                    AND indexname = ?",
-                [$table, $index]
-            ) > 0;
+        $Table = $SchemaManager->introspectTable($tableName);
+
+        if ($Table->hasIndex($columnName)) {
+            return;
         }
 
-        return false;
+        $Table->addIndex([$columnName], $columnName);
+        $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff(
+            $Table,
+            addedIndexes: [$Table->getIndex($columnName)]
+        ));
     }
 }
