@@ -104,6 +104,11 @@ class Queue
         return QUI\Utils\Doctrine::quoteIdentifier(self::table());
     }
 
+    protected static function quotedColumn(string $column): string
+    {
+        return self::connection()->getDatabasePlatform()->quoteSingleIdentifier($column);
+    }
+
     protected static function queryBuilder(): QueryBuilder
     {
         return self::connection()->createQueryBuilder()
@@ -181,7 +186,19 @@ class Queue
         }
 
         $Connection = self::connection();
-        $Connection->insert(self::quotedTable(), $params);
+
+        $QueryBuilder = $Connection->createQueryBuilder()
+            ->insert(self::quotedTable());
+
+        foreach ($params as $column => $value) {
+            $parameter = 'value_' . $column;
+
+            $QueryBuilder
+                ->setValue(self::quotedColumn($column), ':' . $parameter)
+                ->setParameter($parameter, $value);
+        }
+
+        $QueryBuilder->executeStatement();
 
         $newMailId = (int)$Connection->lastInsertId();
 
