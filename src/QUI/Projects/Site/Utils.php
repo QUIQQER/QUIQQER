@@ -739,7 +739,8 @@ class Utils
         $ids = [];
         $types = [];
         $parents = [];
-        $where = [];
+        $where = $params['where'] ?? [];
+        $selectorWhere = [];
 
         foreach ($sitetypes as $sitetypeEntry) {
             if (is_numeric($sitetypeEntry)) {
@@ -761,14 +762,14 @@ class Utils
 
         // query params
         if (!empty($ids)) {
-            $where['id'] = [
+            $selectorWhere['id'] = [
                 'type' => 'IN',
                 'value' => $ids
             ];
         }
 
         if (!empty($types)) {
-            $where['type'] = [
+            $selectorWhere['type'] = [
                 'type' => 'IN',
                 'value' => $types
             ];
@@ -797,7 +798,7 @@ class Utils
                 return [];
             }
 
-            $where['id'] = [
+            $selectorWhere['id'] = [
                 'type' => 'IN',
                 'value' => $ids
             ];
@@ -806,28 +807,45 @@ class Utils
             if (isset($params['count']) && $params['count']) {
                 return $Project->getSitesIds([
                     'count' => true,
-                    'where' => $where
+                    'where' => array_merge($where, $selectorWhere)
                 ]);
             }
 
             // by with parents, we use WHERE AND
             return $Project->getSites([
-                'where' => $where,
+                'where' => array_merge($where, $selectorWhere),
                 'limit' => $limit,
                 'order' => $order
             ]);
         }
 
         if (isset($params['count']) && $params['count']) {
+            if (count($selectorWhere) <= 1) {
+                return $Project->getSitesIds([
+                    'count' => true,
+                    'where' => array_merge($where, $selectorWhere)
+                ]);
+            }
+
             return $Project->getSitesIds([
                 'count' => true,
-                'where' => $where
+                'where' => $where,
+                'where_or' => $selectorWhere
             ]);
         }
 
-        // by no parents, we use WHERE OR
+        if (count($selectorWhere) <= 1) {
+            return $Project->getSites([
+                'where' => array_merge($where, $selectorWhere),
+                'limit' => $limit,
+                'order' => $order
+            ]);
+        }
+
+        // by no parents and mixed selectors, we use WHERE OR for the selectors only
         return $Project->getSites([
-            'where_or' => $where,
+            'where' => $where,
+            'where_or' => $selectorWhere,
             'limit' => $limit,
             'order' => $order
         ]);
