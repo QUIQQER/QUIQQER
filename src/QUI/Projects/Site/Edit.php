@@ -7,8 +7,6 @@
 namespace QUI\Projects\Site;
 
 use Exception;
-use PDO;
-use PDOStatement;
 use QUI;
 use QUI\ExceptionStack;
 use QUI\Groups\Group;
@@ -21,6 +19,7 @@ use QUI\Utils\Security\Orthos;
 
 use function array_merge;
 use function date;
+use function explode;
 use function in_array;
 use function is_array;
 use function is_numeric;
@@ -118,54 +117,58 @@ class Edit extends Site
      */
     public function refresh(): void
     {
-        $result = QUI::getDataBase()->fetch([
-            'from' => $this->TABLE,
-            'where' => [
-                'id' => $this->getId()
-            ],
-            'limit' => '1'
-        ]);
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $params = $Connection->createQueryBuilder()
+            ->select("*")
+            ->from($Platform->quoteSingleIdentifier($this->TABLE))
+            ->where($Platform->quoteSingleIdentifier("id") . " = :id")
+            ->setParameter("id", $this->getId())
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchAssociative();
 
         // Verknüpfung hohlen
         if ($this->getId() != 1) {
-            $relresult = QUI::getDataBase()->fetch([
-                'from' => $this->RELTABLE,
-                'where' => [
-                    'child' => $this->getId()
-                ]
-            ]);
+            $relresult = $Connection->createQueryBuilder()
+                ->select("*")
+                ->from($Platform->quoteSingleIdentifier($this->RELTABLE))
+                ->where($Platform->quoteSingleIdentifier("child") . " = :child")
+                ->setParameter("child", $this->getId())
+                ->executeQuery()
+                ->fetchAllAssociative();
 
             if (isset($relresult[0])) {
                 foreach ($relresult as $entry) {
-                    if (!isset($entry['oparent'])) {
+                    if (!isset($entry["oparent"])) {
                         continue;
                     }
 
-                    $this->LINKED_PARENT = $entry['oparent'];
+                    $this->LINKED_PARENT = $entry["oparent"];
                 }
             }
         }
 
-        if (!isset($result[0])) {
+        if ($params === false) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/core', 'exception.site.not.found'),
+                QUI::getLocale()->get("quiqqer/core", "exception.site.not.found"),
                 705,
                 [
-                    'siteId' => $this->getId(),
-                    'project' => $this->getProject()->getName(),
-                    'lang' => $this->getProject()->getLang()
+                    "siteId" => $this->getId(),
+                    "project" => $this->getProject()->getName(),
+                    "lang" => $this->getProject()->getLang()
                 ]
             );
         }
 
-        foreach ($result[0] as $a_key => $a_val) {
+        foreach ($params as $a_key => $a_val) {
             // Extra-Feld behandeln
-            if ($a_key == 'extra') {
+            if ($a_key == "extra") {
                 if (empty($a_val)) {
                     continue;
                 }
 
-                // @todo get extra attribute list
+                //  get extra attribute list
 
                 $extra = json_decode($a_val, true);
 
@@ -178,10 +181,10 @@ class Edit extends Site
 
             // integer values
             switch ($a_key) {
-                case 'active':
-                case 'deleted':
-                case 'id':
-                case 'nav_hide':
+                case "active":
+                case "deleted":
+                case "id":
+                case "nav_hide":
                     $a_val = (int)$a_val;
                     break;
             }
@@ -240,7 +243,7 @@ class Edit extends Site
         }
 
         // save
-        QUI::getDataBase()->update($this->TABLE, [
+        QUI::getDataBaseConnection()->update($this->TABLE, [
             'active' => 1,
             'release_from' => $releaseFrom,
             'e_user' => $User->getUUID()
@@ -329,7 +332,7 @@ class Edit extends Site
         foreach ($dataList as $dataEntry) {
             $table = $dataEntry['table'];
 
-            QUI::getDataBase()->delete($table, [
+            QUI::getDataBaseConnection()->delete($table, [
                 'id' => $this->getId()
             ]);
         }
@@ -354,17 +357,17 @@ class Edit extends Site
          */
 
         // Daten löschen
-        QUI::getDataBase()->delete($this->TABLE, [
+        QUI::getDataBaseConnection()->delete($this->TABLE, [
             'id' => $this->getId()
         ]);
 
         // sich als Kind löschen
-        QUI::getDataBase()->delete($this->RELTABLE, [
+        QUI::getDataBaseConnection()->delete($this->RELTABLE, [
             'child' => $this->getId()
         ]);
 
         // sich als parent löschen
-        QUI::getDataBase()->delete($this->RELTABLE, [
+        QUI::getDataBaseConnection()->delete($this->RELTABLE, [
             'parent' => $this->getId()
         ]);
 
@@ -388,43 +391,104 @@ class Edit extends Site
      */
     public function getChildrenIdsFromParentId(int $pid, array $params = []): array
     {
-        $where_1 = [
-            $this->RELTABLE . '.parent' => $pid,
-            $this->TABLE . '.deleted' => 0,
-            $this->RELTABLE . '.child' => '`' . $this->TABLE . '.id`'
-        ];
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $QueryBuilder = $Connection->createQueryBuilder();
+        $siteAlias = "site";
+        $relationAlias = "rel";
 
-        if (isset($params['where']) && is_array($params['where'])) {
-            $where = array_merge($where_1, $params['where']);
-        } elseif (isset($params['where']) && is_string($params['where'])) {
-            // @todo where als param string
-            QUI\System\Log::addDebug('WIRD NICHT verwendet' . $params['where']);
-            $where = $where_1;
-        } else {
-            $where = $where_1;
+        $QueryBuilder
+            ->from($Platform->quoteSingleIdentifier($this->RELTABLE), $relationAlias)
+            ->innerJoin(
+                $relationAlias,
+                $Platform->quoteSingleIdentifier($this->TABLE),
+                $siteAlias,
+                $relationAlias . "." . $Platform->quoteSingleIdentifier("child")
+                    . " = " . $siteAlias . "." . $Platform->quoteSingleIdentifier("id")
+            )
+            ->where($relationAlias . "." . $Platform->quoteSingleIdentifier("parent") . " = :parent")
+            ->andWhere($siteAlias . "." . $Platform->quoteSingleIdentifier("deleted") . " = :deleted")
+            ->setParameter("parent", $pid)
+            ->setParameter("deleted", 0);
+
+        if (isset($params["where"]) && is_array($params["where"])) {
+            $whereIndex = 0;
+
+            foreach ($params["where"] as $field => $value) {
+                if (is_array($value)) {
+                    continue;
+                }
+
+                $fieldParts = explode(".", (string)$field, 2);
+                $fieldName = $fieldParts[1] ?? $fieldParts[0];
+                $alias = isset($fieldParts[1]) && $fieldParts[0] === $this->RELTABLE ? $relationAlias : $siteAlias;
+                $paramName = "where" . $whereIndex;
+
+                $QueryBuilder
+                    ->andWhere($alias . "." . $Platform->quoteSingleIdentifier($fieldName) . " = :" . $paramName)
+                    ->setParameter($paramName, $value);
+
+                $whereIndex++;
+            }
+        } elseif (isset($params["where"]) && is_string($params["where"])) {
+            QUI\System\Log::addDebug("WIRD NICHT verwendet" . $params["where"]);
         }
 
-        $order = $this->TABLE . '.order_field';
+        $order = $this->TABLE . ".order_field";
 
-        if (isset($params['order'])) {
-            if (str_contains($params['order'], '.')) {
-                $order = $this->TABLE . '.' . $params['order'];
+        if (isset($params["order"])) {
+            if (str_contains($params["order"], ".")) {
+                $order = $this->TABLE . "." . $params["order"];
             } else {
-                $order = $params['order'];
+                $order = $params["order"];
             }
         }
 
-        return QUI::getDataBase()->fetch([
-            'select' => $this->TABLE . '.id',
-            'count' => isset($params['count']) ? 'count' : false,
-            'from' => [
-                $this->RELTABLE,
-                $this->TABLE
-            ],
-            'order' => $order,
-            'limit' => $params['limit'] ?? false,
-            'where' => $where
-        ]);
+        if ($order === "manuell") {
+            $order = "order_field";
+        }
+
+        $orderParts = explode(" ", $order, 2);
+        $orderField = $orderParts[0];
+        $orderDirection = isset($orderParts[1]) && $orderParts[1] === "DESC" ? "DESC" : "ASC";
+        $orderFieldParts = explode(".", $orderField, 2);
+        $orderFieldName = $orderFieldParts[1] ?? $orderFieldParts[0];
+        $orderAlias = isset($orderFieldParts[1]) && $orderFieldParts[0] === $this->RELTABLE ? $relationAlias : $siteAlias;
+
+        if (isset($params["count"])) {
+            $QueryBuilder->select("COUNT(" . $siteAlias . "." . $Platform->quoteSingleIdentifier("id") . ") AS " . $Platform->quoteSingleIdentifier("count"));
+        } else {
+            $QueryBuilder
+                ->select($siteAlias . "." . $Platform->quoteSingleIdentifier("id"))
+                ->orderBy($orderAlias . "." . $Platform->quoteSingleIdentifier($orderFieldName), $orderDirection);
+
+            if (!empty($params["limit"])) {
+                $limit = explode(",", (string)$params["limit"], 2);
+
+                if (isset($limit[1])) {
+                    $QueryBuilder->setFirstResult((int)$limit[0]);
+                    $QueryBuilder->setMaxResults((int)$limit[1]);
+                } else {
+                    $QueryBuilder->setMaxResults((int)$limit[0]);
+                }
+            }
+        }
+
+        $result = $QueryBuilder->executeQuery()->fetchAllAssociative();
+
+        if (isset($params["count"])) {
+            return $result;
+        }
+
+        $ids = [];
+
+        foreach ($result as $entry) {
+            if (isset($entry["id"])) {
+                $ids[] = (int)$entry["id"];
+            }
+        }
+
+        return $ids;
     }
 
     /**
@@ -495,13 +559,13 @@ class Edit extends Site
      * @param string $lang - Sprache zu welcher verknüpft werden soll
      * @param string|int $id - ID zu welcher verknüpft werden soll
      *
-     * @return PDOStatement
+     * @return int
      *
      * @throws QUI\Exception
      * @throws QUI\Database\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function addLanguageLink(string $lang, string | int $id): PDOStatement
+    public function addLanguageLink(string $lang, string | int $id): int
     {
         $this->checkPermission('quiqqer.projects.site.edit');
 
@@ -509,32 +573,28 @@ class Edit extends Site
         $p_lang = $Project->getAttribute('lang');
         $id = (int)$id;
 
-        $result = QUI::getDataBase()->fetch([
-            'from' => $this->RELLANGTABLE,
-            'where' => [
-                $p_lang => $this->getId()
-            ],
-            'limit' => 1
-        ]);
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $result = $Connection->createQueryBuilder()
+            ->select("1")
+            ->from($Platform->quoteSingleIdentifier($this->RELLANGTABLE))
+            ->where($Platform->quoteSingleIdentifier($p_lang) . " = :siteId")
+            ->setParameter("siteId", $this->getId())
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchOne();
 
-        if (isset($result[0])) {
-            return QUI::getDataBase()->exec([
-                'update' => $this->RELLANGTABLE,
-                'set' => [
-                    $lang => $id
-                ],
-                'where' => [
-                    $p_lang => $this->getId()
-                ]
-            ]);
+        if ($result !== false) {
+            return $Connection->update(
+                $this->RELLANGTABLE,
+                [$lang => $id],
+                [$p_lang => $this->getId()]
+            );
         }
 
-        return QUI::getDataBase()->exec([
-            'insert' => $this->RELLANGTABLE,
-            'set' => [
-                $p_lang => $this->getId(),
-                $lang => $id
-            ]
+        return $Connection->insert($this->RELLANGTABLE, [
+            $p_lang => $this->getId(),
+            $lang => $id
         ]);
     }
 
@@ -543,27 +603,23 @@ class Edit extends Site
      *
      * @param string $lang
      *
-     * @return PDOStatement
+     * @return int
      *
      * @throws QUI\Permissions\Exception
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
-    public function removeLanguageLink(string $lang): PDOStatement
+    public function removeLanguageLink(string $lang): int
     {
         $this->checkPermission('quiqqer.projects.site.edit');
 
         $Project = $this->getProject();
 
-        return QUI::getDataBase()->exec([
-            'update' => $this->RELLANGTABLE,
-            'set' => [
-                $lang => 0
-            ],
-            'where' => [
-                $Project->getAttribute('lang') => $this->getId()
-            ]
-        ]);
+        return QUI::getDataBaseConnection()->update(
+            $this->RELLANGTABLE,
+            [$lang => 0],
+            [$Project->getAttribute("lang") => $this->getId()]
+        );
     }
 
     /**
@@ -611,11 +667,16 @@ class Edit extends Site
         }
 
 
-        QUI::getDataBase()->update(
-            $this->RELTABLE,
-            ['parent' => $Parent->getId()],
-            'child = ' . $this->getId() . ' AND oparent IS NULL'
-        );
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $Connection->createQueryBuilder()
+            ->update($Platform->quoteSingleIdentifier($this->RELTABLE))
+            ->set($Platform->quoteSingleIdentifier("parent"), ":parent")
+            ->where($Platform->quoteSingleIdentifier("child") . " = :child")
+            ->andWhere($Platform->quoteSingleIdentifier("oparent") . " IS NULL")
+            ->setParameter("parent", $Parent->getId())
+            ->setParameter("child", $this->getId())
+            ->executeStatement();
 
         //$this->deleteTemp();
         $this->deleteCache();
@@ -848,7 +909,7 @@ class Edit extends Site
         }
 
         // save main data
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $this->TABLE,
             [
                 'name' => $name,
@@ -897,22 +958,25 @@ class Edit extends Site
                 );
             }
 
-            $result = QUI::getDataBase()->fetch([
-                'from' => $table,
-                'where' => [
-                    'id' => $this->getId()
-                ],
-                'limit' => 1
-            ]);
+            $Connection = QUI::getDataBaseConnection();
+            $Platform = $Connection->getDatabasePlatform();
+            $result = $Connection->createQueryBuilder()
+                ->select("1")
+                ->from($Platform->quoteSingleIdentifier($table))
+                ->where($Platform->quoteSingleIdentifier("id") . " = :id")
+                ->setParameter("id", $this->getId())
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchOne();
 
-            if (!isset($result[0])) {
-                QUI::getDataBase()->insert($table, [
-                    'id' => $this->getId()
+            if ($result === false) {
+                $Connection->insert($table, [
+                    "id" => $this->getId()
                 ]);
             }
 
-            QUI::getDataBase()->update($table, $data, [
-                'id' => $this->getId()
+            $Connection->update($table, $data, [
+                "id" => $this->getId()
             ]);
         }
 
@@ -1087,17 +1151,15 @@ class Edit extends Site
         QUI::getEvents()->fireEvent('siteCheckDeactivate', [$this]);
 
         // deactivate
-        QUI::getDataBase()->exec([
-            'update' => $this->TABLE,
-            'set' => [
-                'active' => 0,
-                'release_from' => null,
-                'e_user' => $User->getUUID()
+        QUI::getDataBaseConnection()->update(
+            $this->TABLE,
+            [
+                "active" => 0,
+                "release_from" => null,
+                "e_user" => $User->getUUID()
             ],
-            'where' => [
-                'id' => $this->getId()
-            ]
-        ]);
+            ["id" => $this->getId()]
+        );
 
         $this->setAttribute('active', 0);
         $this->getProject()->clearCache();
@@ -1250,28 +1312,27 @@ class Edit extends Site
      */
     public function existNameInChildren(string $name): bool
     {
-        $query = "
-            SELECT COUNT($this->TABLE.id) AS count
-            FROM `$this->RELTABLE`,`$this->TABLE`
-            WHERE `$this->RELTABLE`.`parent` = {$this->getId()} AND
-                  `$this->RELTABLE`.`child` = `$this->TABLE`.`id` AND
-                  `$this->TABLE`.`name` = :name AND
-                  `$this->TABLE`.`deleted` = 0
-        ";
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $count = $Connection->createQueryBuilder()
+            ->select("COUNT(site." . $Platform->quoteSingleIdentifier("id") . ")")
+            ->from($Platform->quoteSingleIdentifier($this->RELTABLE), "rel")
+            ->innerJoin(
+                "rel",
+                $Platform->quoteSingleIdentifier($this->TABLE),
+                "site",
+                "rel." . $Platform->quoteSingleIdentifier("child") . " = site." . $Platform->quoteSingleIdentifier("id")
+            )
+            ->where("rel." . $Platform->quoteSingleIdentifier("parent") . " = :parent")
+            ->andWhere("site." . $Platform->quoteSingleIdentifier("name") . " = :name")
+            ->andWhere("site." . $Platform->quoteSingleIdentifier("deleted") . " = :deleted")
+            ->setParameter("parent", $this->getId())
+            ->setParameter("name", $name)
+            ->setParameter("deleted", 0)
+            ->executeQuery()
+            ->fetchOne();
 
-        $PDO = QUI::getDataBase()->getPDO();
-        $Statement = $PDO->prepare($query);
-
-        $Statement->bindValue(':name', $name);
-        $Statement->execute();
-
-        $result = $Statement->fetchAll(PDO::FETCH_ASSOC);
-
-        if (!isset($result[0])) {
-            return false;
-        }
-
-        return (int)$result[0]['count'] ?: false;
+        return (int)$count > 0;
     }
 
     /**
@@ -1351,30 +1412,32 @@ class Edit extends Site
             $_params['content'] = $params['content'];
         }
 
-        $DataBase = QUI::getDataBase();
-        $DataBase->insert($this->TABLE, $_params);
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $Connection->insert($this->TABLE, $_params);
 
-        $newId = $DataBase->getPDO()->lastInsertId();
+        $newId = (int)$Connection->lastInsertId();
 
         // something is wrong
         if ($newId == 0) {
-            $max = $DataBase->fetch([
-                'select' => ['field' => 'id', 'function' => 'MAX'],
-                'from' => $this->TABLE
-            ]);
+            $max = $Connection->createQueryBuilder()
+                ->select("MAX(" . $Platform->quoteSingleIdentifier("id") . ")")
+                ->from($Platform->quoteSingleIdentifier($this->TABLE))
+                ->executeQuery()
+                ->fetchOne();
 
-            $newId = (int)reset($max[0]) + 1;
+            $newId = (int)$max + 1;
 
-            $DataBase->update(
+            $Connection->update(
                 $this->TABLE,
-                ['id' => $newId],
-                ['id' => 0]
+                ["id" => $newId],
+                ["id" => 0]
             );
         }
 
-        $DataBase->insert($this->RELTABLE, [
-            'parent' => $this->getId(),
-            'child' => $newId
+        $Connection->insert($this->RELTABLE, [
+            "parent" => $this->getId(),
+            "child" => $newId
         ]);
 
         // copy permissions to the child
@@ -1455,12 +1518,15 @@ class Edit extends Site
             );
         }
 
-        $links = QUI::getDataBase()->fetch([
-            'from' => $table,
-            'where' => [
-                'child' => $this->getId()
-            ]
-        ]);
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $links = $Connection->createQueryBuilder()
+            ->select("*")
+            ->from($Platform->quoteSingleIdentifier($table))
+            ->where($Platform->quoteSingleIdentifier("child") . " = :child")
+            ->setParameter("child", $this->getId())
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         foreach ($links as $entry) {
             if ($entry['parent'] == $pid) {
@@ -1471,10 +1537,10 @@ class Edit extends Site
             }
         }
 
-        QUI::getDataBase()->insert($table, [
-            'parent' => $pid,
-            'child' => $this->getId(),
-            'oparent' => $Parent->getId()
+        $Connection->insert($table, [
+            "parent" => $pid,
+            "child" => $this->getId(),
+            "oparent" => $Parent->getId()
         ]);
     }
 
@@ -1495,11 +1561,12 @@ class Edit extends Site
 
         $Project = $this->getProject();
         $Parent = $this->getParent();
-        $DataBase = QUI::getDataBase();
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
 
         $table = QUI::getDBTableName(
-            $Project->getAttribute('name') . '_' .
-            $Project->getAttribute('lang') . '_sites_relations'
+            $Project->getAttribute("name") . "_" .
+            $Project->getAttribute("lang") . "_sites_relations"
         );
 
         if (QUI\Utils\BoolHelper::JSBool($all)) {
@@ -1507,31 +1574,31 @@ class Edit extends Site
             $this->delete();
 
             // Alle Verknüpfungen
-            $DataBase->delete($table, [
-                'child' => $this->getId(),
-                'parent' => [
-                    'value' => $Parent->getId(),
-                    'type' => 'NOT'
-                ]
-            ]);
+            $Connection->createQueryBuilder()
+                ->delete($Platform->quoteSingleIdentifier($table))
+                ->where($Platform->quoteSingleIdentifier("child") . " = :child")
+                ->andWhere($Platform->quoteSingleIdentifier("parent") . " <> :parent")
+                ->setParameter("child", $this->getId())
+                ->setParameter("parent", $Parent->getId())
+                ->executeStatement();
 
             return;
         }
 
         // Einzelne Verknüpfung löschen
         if ($pid && !$orig) {
-            $DataBase->delete($table, [
-                'child' => $this->getId(),
-                'parent' => $pid
+            $Connection->delete($table, [
+                "child" => $this->getId(),
+                "parent" => $pid
             ]);
 
             return;
         }
 
-        $DataBase->delete($table, [
-            'child' => $this->getId(),
-            'parent' => $pid,
-            'oparent' => (int)$orig
+        $Connection->delete($table, [
+            "child" => $this->getId(),
+            "parent" => $pid,
+            "oparent" => (int)$orig
         ]);
     }
 

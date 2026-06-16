@@ -57,26 +57,31 @@ class OnlyDB extends QUI\Projects\Site
      */
     public function refresh(): void
     {
-        $result = QUI::getDataBase()->fetch([
-            'from' => $this->TABLE,
-            'where' => [
-                'id' => $this->getId()
-            ],
-            'limit' => '1'
-        ]);
+        $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
+        $QueryBuilder = QUI::getQueryBuilder();
+        $result = $QueryBuilder
+            ->select('*')
+            ->from($Platform->quoteSingleIdentifier($this->TABLE))
+            ->where($QueryBuilder->expr()->eq($Platform->quoteSingleIdentifier('id'), ':id'))
+            ->setParameter('id', $this->getId())
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchAssociative();
 
-        if (!isset($result[0])) {
+        if ($result === false) {
             throw new QUI\Exception('Site not exist', 404);
         }
 
         // Verknüpfung hohlen
         if ($this->getId() != 1) {
-            $relresult = QUI::getDataBase()->fetch([
-                'from' => $this->RELTABLE,
-                'where' => [
-                    'child' => $this->getId()
-                ]
-            ]);
+            $RelationQueryBuilder = QUI::getQueryBuilder();
+            $relresult = $RelationQueryBuilder
+                ->select('*')
+                ->from($Platform->quoteSingleIdentifier($this->RELTABLE))
+                ->where($RelationQueryBuilder->expr()->eq($Platform->quoteSingleIdentifier('child'), ':child'))
+                ->setParameter('child', $this->getId())
+                ->executeQuery()
+                ->fetchAllAssociative();
 
             if (isset($relresult[0])) {
                 foreach ($relresult as $entry) {
@@ -90,16 +95,16 @@ class OnlyDB extends QUI\Projects\Site
         }
 
         /* deprecated */
-        if (isset($result[0]['extra'])) {
-            $extra = json_decode($result[0]['extra'], true);
+        if (isset($result['extra'])) {
+            $extra = json_decode($result['extra'], true);
 
             foreach ($extra as $key => $value) {
                 $this->setAttribute($key, $value);
             }
 
-            unset($result[0]['extra']);
+            unset($result['extra']);
         }
 
-        $this->setAttributes($result[0]);
+        $this->setAttributes($result);
     }
 }

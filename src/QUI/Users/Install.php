@@ -4,7 +4,6 @@ namespace QUI\Users;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
-use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use QUI;
 use QUI\Exception;
 use QUI\ExceptionStack;
@@ -29,49 +28,44 @@ class Install
         try {
             $Connection = QUI::getDataBaseConnection();
             $Platform = $Connection->getDatabasePlatform();
+            $table = QUI\Users\Manager::table();
+
+            self::ensureColumnDefinition($Connection, $table, "lastedit", "datetime", ["notnull" => false]);
+            self::ensureColumnDefinition($Connection, $table, "expire", "datetime", ["notnull" => false]);
+            self::ensureColumnDefinition($Connection, $table, "password", "string", [
+                "length" => 255,
+                "default" => ""
+            ]);
+            self::ensureColumnDefinition($Connection, $table, "birthday", "date", ["notnull" => false]);
 
             if (!$Platform instanceof AbstractMySQLPlatform) {
                 return;
             }
 
-            $table = QUI\Users\Manager::table();
-
-            try {
-                // Patch strict
-                $Connection->executeStatement(
-                    "ALTER TABLE `$table`
-                    CHANGE `lastedit` `lastedit` DATETIME NULL DEFAULT NULL,
-                    CHANGE `expire` `expire` DATETIME NULL DEFAULT NULL,
-                    CHANGE `password` `password` VARCHAR(255) NOT NULL DEFAULT '',
-                    CHANGE `birthday` `birthday` DATE NULL DEFAULT NULL;
-                    "
-                );
-            } catch (\Doctrine\DBAL\Exception $Exception) {
-                QUI\System\Log::addError($Exception->getMessage());
-            }
+            $quotedTable = $Platform->quoteSingleIdentifier($table);
 
             $Connection->executeStatement(
-                "UPDATE $table
-                SET lastedit = NULL
+                "UPDATE " . $quotedTable . "
+                SET " . $Platform->quoteSingleIdentifier("lastedit") . " = NULL
                 WHERE
-                    CAST(lastedit AS CHAR) = '0000-00-00 00:00:00' OR
-                    CAST(lastedit AS CHAR) = ''"
+                    CAST(" . $Platform->quoteSingleIdentifier("lastedit") . " AS CHAR) = '0000-00-00 00:00:00' OR
+                    CAST(" . $Platform->quoteSingleIdentifier("lastedit") . " AS CHAR) = ''"
             );
 
             $Connection->executeStatement(
-                "UPDATE $table
-                SET expire = NULL
+                "UPDATE " . $quotedTable . "
+                SET " . $Platform->quoteSingleIdentifier("expire") . " = NULL
                 WHERE
-                    CAST(expire AS CHAR) = '0000-00-00 00:00:00' OR
-                    CAST(expire AS CHAR) = ''"
+                    CAST(" . $Platform->quoteSingleIdentifier("expire") . " AS CHAR) = '0000-00-00 00:00:00' OR
+                    CAST(" . $Platform->quoteSingleIdentifier("expire") . " AS CHAR) = ''"
             );
 
             $Connection->executeStatement(
-                "UPDATE $table
-                SET birthday = NULL
+                "UPDATE " . $quotedTable . "
+                SET " . $Platform->quoteSingleIdentifier("birthday") . " = NULL
                 WHERE
-                    CAST(birthday AS CHAR) = '0000-00-00 00:00:00' OR
-                    CAST(birthday AS CHAR) = ''"
+                    CAST(" . $Platform->quoteSingleIdentifier("birthday") . " AS CHAR) = '0000-00-00 00:00:00' OR
+                    CAST(" . $Platform->quoteSingleIdentifier("birthday") . " AS CHAR) = ''"
             );
         } catch (\Doctrine\DBAL\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
@@ -103,19 +97,12 @@ class Install
             $Platform = $Connection->getDatabasePlatform();
             $quotedGroupTable = $Platform->quoteSingleIdentifier($groupTable);
 
-            if ($Platform instanceof AbstractMySQLPlatform) {
-                $Connection->executeStatement(
-                    "ALTER TABLE $quotedGroupTable CHANGE `parent` `parent` VARCHAR(50) NULL DEFAULT NULL;"
-                );
-            }
-
-            if (!self::hasPrimaryKey($Connection, $groupTable)) {
-                $Connection->executeStatement("ALTER TABLE $quotedGroupTable ADD PRIMARY KEY (id)");
-            }
-
-            if (!self::hasIndex($Connection, $groupTable, 'parent')) {
-                $Connection->executeStatement("CREATE INDEX parent ON $quotedGroupTable (parent)");
-            }
+            self::ensureColumnDefinition($Connection, $groupTable, "parent", "string", [
+                "length" => 50,
+                "notnull" => false
+            ]);
+            self::ensurePrimaryKey($Connection, $groupTable, "id");
+            self::ensureIndex($Connection, $groupTable, "parent");
 
 
             // Guest
@@ -203,66 +190,83 @@ class Install
     /**
      * @throws \Doctrine\DBAL\Exception
      */
-    private static function hasPrimaryKey(Connection $Connection, string $table): bool
-    {
-        $Platform = $Connection->getDatabasePlatform();
+    private static function ensureColumnDefinition(
+        Connection $Connection,
+        string $tableName,
+        string $columnName,
+        string $type,
+        array $options
+    ): void {
+        $SchemaManager = $Connection->createSchemaManager();
 
-        if ($Platform instanceof AbstractMySQLPlatform) {
-            return (int)$Connection->fetchOne(
-                "SELECT COUNT(*)
-                FROM information_schema.TABLE_CONSTRAINTS
-                WHERE TABLE_SCHEMA = DATABASE()
-                    AND TABLE_NAME = ?
-                    AND CONSTRAINT_TYPE = 'PRIMARY KEY'",
-                [$table]
-            ) > 0;
+        if (!$SchemaManager->tablesExist([$tableName])) {
+            return;
         }
 
-        if ($Platform instanceof PostgreSQLPlatform) {
-            return (int)$Connection->fetchOne(
-                "SELECT COUNT(*)
-                FROM pg_index i
-                JOIN pg_class t ON t.oid = i.indrelid
-                JOIN pg_namespace n ON n.oid = t.relnamespace
-                WHERE n.nspname = current_schema()
-                    AND t.relname = ?
-                    AND i.indisprimary",
-                [$table]
-            ) > 0;
+        $Table = $SchemaManager->introspectTable($tableName);
+        $Column = new \Doctrine\DBAL\Schema\Column(
+            $columnName,
+            \Doctrine\DBAL\Types\Type::getType($type),
+            $options
+        );
+
+        if (!$Table->hasColumn($columnName)) {
+            $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff($Table, addedColumns: [$Column]));
+            return;
         }
 
-        return false;
+        $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff(
+            $Table,
+            changedColumns: [$columnName => new \Doctrine\DBAL\Schema\ColumnDiff($Table->getColumn($columnName), $Column)]
+        ));
     }
 
     /**
      * @throws \Doctrine\DBAL\Exception
      */
-    private static function hasIndex(Connection $Connection, string $table, string $index): bool
+    private static function ensurePrimaryKey(Connection $Connection, string $tableName, string $columnName): void
     {
-        $Platform = $Connection->getDatabasePlatform();
+        $SchemaManager = $Connection->createSchemaManager();
 
-        if ($Platform instanceof AbstractMySQLPlatform) {
-            return (int)$Connection->fetchOne(
-                "SELECT COUNT(*)
-                FROM information_schema.STATISTICS
-                WHERE TABLE_SCHEMA = DATABASE()
-                    AND TABLE_NAME = ?
-                    AND INDEX_NAME = ?",
-                [$table, $index]
-            ) > 0;
+        if (!$SchemaManager->tablesExist([$tableName])) {
+            return;
         }
 
-        if ($Platform instanceof PostgreSQLPlatform) {
-            return (int)$Connection->fetchOne(
-                "SELECT COUNT(*)
-                FROM pg_indexes
-                WHERE schemaname = current_schema()
-                    AND tablename = ?
-                    AND indexname = ?",
-                [$table, $index]
-            ) > 0;
+        $Table = $SchemaManager->introspectTable($tableName);
+
+        if ($Table->getPrimaryKeyConstraint() !== null) {
+            return;
         }
 
-        return false;
+        $Table->setPrimaryKey([$columnName]);
+
+        $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff(
+            $Table,
+            addedIndexes: [$Table->getIndex("primary")]
+        ));
+    }
+
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     */
+    private static function ensureIndex(Connection $Connection, string $tableName, string $columnName): void
+    {
+        $SchemaManager = $Connection->createSchemaManager();
+
+        if (!$SchemaManager->tablesExist([$tableName])) {
+            return;
+        }
+
+        $Table = $SchemaManager->introspectTable($tableName);
+
+        if ($Table->hasIndex($columnName)) {
+            return;
+        }
+
+        $Table->addIndex([$columnName], $columnName);
+        $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff(
+            $Table,
+            addedIndexes: [$Table->getIndex($columnName)]
+        ));
     }
 }

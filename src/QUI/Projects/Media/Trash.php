@@ -11,6 +11,7 @@ use QUI\Exception;
 use QUI\Projects\Media;
 
 use function end;
+use function explode;
 use function file_exists;
 use function json_decode;
 
@@ -51,18 +52,48 @@ class Trash implements QUI\Interfaces\Projects\Trash
             'deleted' => 1
         ];
 
-        // count
-        try {
-            $count = QUI::getDataBase()->fetch([
-                'from' => $this->Media->getTable(),
-                'count' => 'count',
-                'where' => [
-                    'deleted' => 1
-                ]
-            ]);
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $table = $Platform->quoteSingleIdentifier($this->Media->getTable());
 
-            $data = QUI::getDataBase()->fetch($query);
-        } catch (QUI\Database\Exception) {
+        try {
+            $count = $Connection->createQueryBuilder()
+                ->select("COUNT(*)")
+                ->from($table)
+                ->where($Platform->quoteSingleIdentifier("deleted") . " = :deleted")
+                ->setParameter("deleted", 1)
+                ->executeQuery()
+                ->fetchOne();
+
+            $QueryBuilder = $Connection->createQueryBuilder()
+                ->select("*")
+                ->from($table)
+                ->where($Platform->quoteSingleIdentifier("deleted") . " = :deleted")
+                ->setParameter("deleted", 1);
+
+            if (!empty($query["order"])) {
+                $order = explode(" ", (string)$query["order"], 2);
+                $orderField = match ($order[0]) {
+                    "id", "name", "title", "file", "type", "mime_type", "c_date", "e_date" => $order[0],
+                    default => "id"
+                };
+                $orderDirection = isset($order[1]) && $order[1] === "ASC" ? "ASC" : "DESC";
+                $QueryBuilder->orderBy($Platform->quoteSingleIdentifier($orderField), $orderDirection);
+            }
+
+            if (!empty($query["limit"])) {
+                $limit = explode(",", (string)$query["limit"], 2);
+
+                if (isset($limit[1])) {
+                    $QueryBuilder->setFirstResult((int)$limit[0]);
+                    $QueryBuilder->setMaxResults((int)$limit[1]);
+                } else {
+                    $QueryBuilder->setMaxResults((int)$limit[0]);
+                }
+            }
+
+            $data = $QueryBuilder->executeQuery()->fetchAllAssociative();
+        } catch (\Doctrine\DBAL\Exception) {
             return $Grid->parseResult([], 0);
         }
 
@@ -80,7 +111,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
             }
         }
 
-        return $Grid->parseResult($data, $count[0]['count']);
+        return $Grid->parseResult($data, (int)$count);
     }
 
     /**
@@ -89,13 +120,15 @@ class Trash implements QUI\Interfaces\Projects\Trash
      */
     public function clear(): void
     {
-        $data = QUI::getDataBase()->fetch([
-            'select' => 'id',
-            'from' => $this->Media->getTable(),
-            'where' => [
-                'deleted' => 1
-            ]
-        ]);
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $data = $Connection->createQueryBuilder()
+            ->select($Platform->quoteSingleIdentifier("id"))
+            ->from($Platform->quoteSingleIdentifier($this->Media->getTable()))
+            ->where($Platform->quoteSingleIdentifier("deleted") . " = :deleted")
+            ->setParameter("deleted", 1)
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         foreach ($data as $entry) {
             try {
@@ -151,15 +184,18 @@ class Trash implements QUI\Interfaces\Projects\Trash
         }
 
         // search old db entry for data
-        $data = QUI::getDataBase()->fetch([
-            'from' => $this->Media->getTable(),
-            'where' => [
-                'id' => $id
-            ],
-            'limit' => 1
-        ]);
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $data = $Connection->createQueryBuilder()
+            ->select("*")
+            ->from($Platform->quoteSingleIdentifier($this->Media->getTable()))
+            ->where($Platform->quoteSingleIdentifier("id") . " = :id")
+            ->setParameter("id", $id)
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchAssociative();
 
-        if (!isset($data[0])) {
+        if ($data === false) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/core', 'exception.trash.file.not.found'),
                 ErrorCodes::FILE_IN_TRASH_NOT_FOUND
@@ -169,10 +205,10 @@ class Trash implements QUI\Interfaces\Projects\Trash
 
         // rename the file for upload
         $extension = QUI\Utils\System\File::getEndingByMimeType(
-            $data[0]['mime_type']
+            $data['mime_type']
         );
 
-        $newFile = $this->getPath() . $data[0]['name'] . $extension;
+        $newFile = $this->getPath() . $data['name'] . $extension;
 
         QUI\Utils\System\File::move($file, $newFile);
 
@@ -181,15 +217,15 @@ class Trash implements QUI\Interfaces\Projects\Trash
 
         // change old db entry, if one exist
         $Item->setAttributes([
-            'title' => $data[0]['title'],
-            'alt' => $data[0]['alt'],
-            'short' => $data[0]['short']
+            'title' => $data['title'],
+            'alt' => $data['alt'],
+            'short' => $data['short']
         ]);
 
         $Item->save();
 
         // delete the old db entry
-        QUI::getDataBase()->delete(
+        QUI::getDataBaseConnection()->delete(
             $this->Media->getTable(),
             ['id' => $id]
         );
