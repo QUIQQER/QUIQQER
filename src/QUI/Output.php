@@ -544,8 +544,32 @@ class Output extends Singleton
                     return '';
                 }
 
-                // Create cache
-                $url = $Site->getLocation($_params);
+                try {
+                    // Create cache
+                    $url = $Site->getLocation($_params);
+                } catch (QUI\Exception $Exception) {
+                    QUI\System\Log::addError(
+                        "Could not build rewritten site URL because the site location could not be resolved.",
+                        [
+                            "reason" => "Site->getLocation() failed while Output->getSiteUrl() was creating the rewritten URL cache.",
+                            "caller" => __METHOD__,
+                            "project" => $project,
+                            "lang" => $lang,
+                            "siteId" => (int)$id,
+                            "siteName" => $Site->getAttribute("name"),
+                            "siteDeleted" => $Site->getAttribute("deleted"),
+                            "params" => $params,
+                            "locationParams" => $_params,
+                            "linkCachePath" => $linkCachePath,
+                            "exceptionCode" => $Exception->getCode(),
+                            "exceptionMessage" => $Exception->getMessage(),
+                            "exceptionContext" => $Exception->getContext(),
+                            "exceptionTrace" => $Exception->getTraceAsString()
+                        ]
+                    );
+
+                    return '';
+                }
 
                 try {
                     QUI\Cache\Manager::set($linkCachePath, $url);
