@@ -234,7 +234,7 @@ class Install
 
         $Table = $SchemaManager->introspectTable($tableName);
 
-        if ($Table->getPrimaryKeyConstraint() !== null) {
+        if (self::tableHasPrimaryKey($Table)) {
             return;
         }
 
@@ -244,6 +244,17 @@ class Install
             $Table,
             addedIndexes: [$Table->getIndex("primary")]
         ));
+    }
+
+    private static function tableHasPrimaryKey(\Doctrine\DBAL\Schema\Table $Table): bool
+    {
+        try {
+            return $Table->getPrimaryKeyConstraint() !== null;
+        } catch (\Error) {
+            // Doctrine DBAL 4.2 does not provide getPrimaryKeyConstraint().
+        }
+
+        return $Table->getPrimaryKey() !== null;
     }
 
     /**

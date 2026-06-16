@@ -112,6 +112,40 @@ class ProjectSiteDbalTest extends ProjectIntegrationTestCase
         $this->assertIsArray($notArrayValueIds);
     }
 
+    public function testGetSitesByInputListCombinesExplicitIdsWithWhereFilter(): void
+    {
+        $Project = self::getTestProject();
+        $Root = $Project->firstChild()->getEdit();
+
+        [$activeId, $inactiveId] = ProjectTestHelper::runAsSystemUser(static function () use ($Root): array {
+            $activeId = $Root->createChild([
+                "name" => "phpunit-input-list-active-" . uniqid(),
+                "title" => "PHPUnit Input List Active"
+            ]);
+            $inactiveId = $Root->createChild([
+                "name" => "phpunit-input-list-inactive-" . uniqid(),
+                "title" => "PHPUnit Input List Inactive"
+            ]);
+
+            (new Site\Edit($Root->getProject(), $activeId))->activate();
+
+            return [$activeId, $inactiveId];
+        });
+
+        $Sites = Site\Utils::getSitesByInputList($Project, [$activeId, $inactiveId], [
+            "where" => [
+                "active" => 1
+            ],
+            "limit" => 10,
+            "order" => "name ASC"
+        ]);
+
+        $this->assertSame([$activeId], array_map(
+            static fn(Site $Site): int => $Site->getId(),
+            $Sites
+        ));
+    }
+
     public function testSiteTreeQueriesReturnChildrenParentsSiblingsAndRecursiveIds(): void
     {
         $Project = self::getTestProject();
