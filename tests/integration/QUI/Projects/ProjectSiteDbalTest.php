@@ -65,6 +65,53 @@ class ProjectSiteDbalTest extends ProjectIntegrationTestCase
         $this->assertSame($siteId, (int)$ids[0]['id']);
     }
 
+    public function testProjectSitesIdsSupportsLegacyArrayConditions(): void
+    {
+        $Project = self::getTestProject();
+        $Root = $Project->firstChild()->getEdit();
+        $siteName = "phpunit-legacy-condition-site-" . uniqid();
+
+        $siteId = ProjectTestHelper::runAsSystemUser(static function () use ($Root, $siteName): int {
+            return $Root->createChild([
+                "name" => $siteName,
+                "title" => "PHPUnit Legacy Condition Site"
+            ]);
+        });
+
+        $likeIds = $Project->getSitesIds([
+            "where" => [
+                "active" => -1,
+                "name" => [
+                    "type" => "LIKE",
+                    "value" => $siteName
+                ]
+            ]
+        ]);
+
+        $inIds = $Project->getSitesIds([
+            "where" => [
+                "active" => -1,
+                "id" => [$siteId]
+            ]
+        ]);
+
+        $this->assertSame([$siteId], array_map("intval", array_column($likeIds, "id")));
+        $this->assertSame([$siteId], array_map("intval", array_column($inIds, "id")));
+
+        $notArrayValueIds = $Project->getSitesIds([
+            "where" => [
+                "active" => -1,
+                "id" => [
+                    "type" => "NOT",
+                    "value" => [$siteId]
+                ]
+            ],
+            "limit" => "0,1"
+        ]);
+
+        $this->assertIsArray($notArrayValueIds);
+    }
+
     public function testSiteTreeQueriesReturnChildrenParentsSiblingsAndRecursiveIds(): void
     {
         $Project = self::getTestProject();
