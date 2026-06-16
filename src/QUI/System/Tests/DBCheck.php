@@ -515,19 +515,47 @@ class DBCheck extends QUI\System\Test
         return $this->tables[$table];
     }
 
-    private function getTableKeys(string $table): array
+    private static function getPrimaryKeyColumns(Table $Table): array
     {
-        $Table = $this->getTable($table);
-        $PrimaryKey = $Table->getPrimaryKeyConstraint();
+        try {
+            $PrimaryKey = $Table->getPrimaryKeyConstraint();
+
+            if ($PrimaryKey === null) {
+                return [];
+            }
+
+            $columns = [];
+
+            foreach ($PrimaryKey->getColumnNames() as $ColumnName) {
+                $columns[] = $ColumnName->toString();
+            }
+
+            return $columns;
+        } catch (\Error) {
+            // Doctrine DBAL 4.2 does not provide getPrimaryKeyConstraint().
+        }
+
+        $PrimaryKey = $Table->getPrimaryKey();
 
         if ($PrimaryKey === null) {
             return [];
         }
 
+        return $PrimaryKey->getColumns();
+    }
+
+    private function getTableKeys(string $table): array
+    {
+        $Table = $this->getTable($table);
+        $primaryKeyColumns = self::getPrimaryKeyColumns($Table);
+
+        if (empty($primaryKeyColumns)) {
+            return [];
+        }
+
         $keys = [];
 
-        foreach ($PrimaryKey->getColumnNames() as $ColumnName) {
-            $column = $ColumnName->toString();
+        foreach ($primaryKeyColumns as $column) {
             $keys[] = [
                 'Key_name' => 'PRIMARY',
                 'Column_name' => $column
