@@ -1188,6 +1188,19 @@ class Project implements \Stringable
                     continue;
                 }
 
+                if (is_array($value)) {
+                    QUI\System\Log::addError("Unsupported project site query condition with array value skipped.", [
+                        "caller" => __METHOD__,
+                        "field" => (string)$field,
+                        "type" => $type,
+                        "condition" => $data,
+                        "method" => $method
+                    ]);
+
+                    $index++;
+                    continue;
+                }
+
                 if ($type === "NOT" || $type === "!=" || $type === "<>") {
                     $QueryBuilder->{$method}($column . " <> :" . $parameter);
                     $QueryBuilder->setParameter($parameter, $value);
@@ -1230,7 +1243,7 @@ class Project implements \Stringable
                     continue;
                 }
 
-                if (array_key_exists("value", $data) && !is_array($value)) {
+                if (array_key_exists("value", $data)) {
                     $QueryBuilder->{$method}($column . " = :" . $parameter);
                     $QueryBuilder->setParameter($parameter, $value);
                     $index++;
