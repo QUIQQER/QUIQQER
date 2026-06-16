@@ -97,6 +97,19 @@ class ProjectSiteDbalTest extends ProjectIntegrationTestCase
 
         $this->assertSame([$siteId], array_map("intval", array_column($likeIds, "id")));
         $this->assertSame([$siteId], array_map("intval", array_column($inIds, "id")));
+
+        $notArrayValueIds = $Project->getSitesIds([
+            "where" => [
+                "active" => -1,
+                "id" => [
+                    "type" => "NOT",
+                    "value" => [$siteId]
+                ]
+            ],
+            "limit" => "0,1"
+        ]);
+
+        $this->assertIsArray($notArrayValueIds);
     }
 
     public function testSiteTreeQueriesReturnChildrenParentsSiblingsAndRecursiveIds(): void
