@@ -7,12 +7,10 @@
 namespace QUI\UsersGroups;
 
 use Exception;
-use PDO;
 use QUI;
 use QUI\Utils\Security\Orthos;
 
 use function array_merge;
-use function current;
 use function explode;
 use function implode;
 use function is_array;
@@ -135,16 +133,7 @@ class Search
 
                 // always get id
                 $selectFields[] = 'uuid';
-                $result = QUI::getDataBase()->fetch([
-                    'select' => $selectFields,
-                    'from' => QUI\Utils\Doctrine::quoteIdentifier(QUI\Users\Manager::table()),
-                    'where' => [
-                        'uuid' => [
-                            'type' => 'IN',
-                            'value' => $resultUsers
-                        ]
-                    ]
-                ]);
+                $result = self::fetchRowsByUuids(QUI\Users\Manager::table(), $selectFields, $resultUsers);
                 foreach ($result as $row) {
                     $row['type'] = 'user';
                     $row['id'] = $row['uuid'];
@@ -192,16 +181,7 @@ class Search
 
                 // always get id
                 $selectFields[] = 'uuid';
-                $result = QUI::getDataBase()->fetch([
-                    'select' => $selectFields,
-                    'from' => QUI\Utils\Doctrine::quoteIdentifier(QUI\Groups\Manager::table()),
-                    'where' => [
-                        'uuid' => [
-                            'type' => 'IN',
-                            'value' => $resultGroups
-                        ]
-                    ]
-                ]);
+                $result = self::fetchRowsByUuids(QUI\Groups\Manager::table(), $selectFields, $resultGroups);
                 foreach ($result as $row) {
                     $row['type'] = 'group';
                     $row['id'] = $row['uuid'];
@@ -225,36 +205,30 @@ class Search
      */
     protected static function searchUsers(string $searchTerm, array $searchParams, bool $count = false): int|array
     {
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $QueryBuilder = $Connection->createQueryBuilder()
+            ->from($Platform->quoteSingleIdentifier(QUI\Users\Manager::table()));
+
         if ($count) {
-            $sql = "SELECT COUNT(*)";
+            $QueryBuilder->select("COUNT(*)");
         } else {
-            $sql = 'SELECT uuid';
+            $QueryBuilder->select($Platform->quoteSingleIdentifier("uuid"));
         }
 
-        $sql .= ' FROM ' . QUI\Utils\Doctrine::quoteIdentifier(QUI\Users\Manager::table());
-
-        // build WHERE
-        $where = [];
-        $binds = [];
-
-        // fields where searchTerm is searched
         $searchFieldsAvailable = [
-            'uuid' => true,
-            'username' => true,
-            'email' => true,
-            'firstname' => true,
-            'lastname' => true
+            "uuid" => true,
+            "username" => true,
+            "email" => true,
+            "firstname" => true,
+            "lastname" => true
         ];
 
         $searchFields = [];
 
-        if (!empty($searchParams['searchFields']) && is_array($searchParams['searchFields'])) {
-            foreach ($searchParams['searchFields'] as $field => $search) {
-                if (!isset($searchFieldsAvailable[$field])) {
-                    continue;
-                }
-
-                if (!$search) {
+        if (!empty($searchParams["searchFields"]) && is_array($searchParams["searchFields"])) {
+            foreach ($searchParams["searchFields"] as $field => $search) {
+                if (!isset($searchFieldsAvailable[$field]) || !$search) {
                     continue;
                 }
 
@@ -262,144 +236,96 @@ class Search
             }
         }
 
-        // fallback
         if (empty($searchFields)) {
-            $searchFields = [
-                'uuid',
-                'username'
-            ];
+            $searchFields = ["uuid", "username"];
         }
 
-        $whereOR = [];
-        $i = 0;
+        $orParts = [];
+        $index = 0;
 
         foreach ($searchFields as $field) {
-            $whereOR[] = '`' . $field . '` LIKE :search' . $i;
-            $binds['search' . $i] = [
-                'value' => '%' . $searchTerm . '%',
-                'type' => PDO::PARAM_STR
-            ];
-
-            $i++;
+            $parameter = "search" . $index;
+            $orParts[] = $Platform->quoteSingleIdentifier($field) . " LIKE :" . $parameter;
+            $QueryBuilder->setParameter($parameter, "%" . $searchTerm . "%");
+            $index++;
         }
 
-        /* @phpstan-ignore-next-line */
-        if (!empty($whereOR)) {
-            $where[] = '(' . implode(' OR ', $whereOR) . ')';
-        }
+        $QueryBuilder->andWhere($QueryBuilder->expr()->or(...$orParts));
 
-        // search filter
-        if (!empty($searchParams['filter']) && is_array($searchParams['filter'])) {
-            foreach ($searchParams['filter'] as $filter => $value) {
+        if (!empty($searchParams["filter"]) && is_array($searchParams["filter"])) {
+            foreach ($searchParams["filter"] as $filter => $value) {
                 switch ($filter) {
-                    case 'status':
+                    case "status":
                         switch ($value) {
                             case 1:
                             case 0:
                             case -1:
-                                $where[] = '`active` = :active';
-                                $binds['active'] = [
-                                    'value' => $value,
-                                    'type' => PDO::PARAM_INT
-                                ];
+                                $QueryBuilder
+                                    ->andWhere($Platform->quoteSingleIdentifier("active") . " = :active")
+                                    ->setParameter("active", $value);
                                 break;
                         }
 
                         break;
 
-                    case 'groups':
-                        $groupIds = explode(',', trim($value, ','));
-                        $whereOR = [];
-                        $i = 0;
+                    case "groups":
+                        $groupIds = explode(",", trim($value, ","));
+                        $groupParts = [];
+                        $groupIndex = 0;
 
                         foreach ($groupIds as $groupId) {
-                            $whereOR[] = '`usergroup` LIKE :group' . $i;
-                            $binds['group' . $i] = [
-                                'value' => '%,' . $groupId . ',%',
-                                'type' => PDO::PARAM_STR
-                            ];
-
-                            $i++;
+                            $parameter = "group" . $groupIndex;
+                            $groupParts[] = $Platform->quoteSingleIdentifier("usergroup") . " LIKE :" . $parameter;
+                            $QueryBuilder->setParameter($parameter, "%," . $groupId . ",%");
+                            $groupIndex++;
                         }
 
-                        $where[] = '(' . implode(' OR ', $whereOR) . ')';
+                        $QueryBuilder->andWhere($QueryBuilder->expr()->or(...$groupParts));
                         break;
 
-                    case 'regDateFrom':
-                        $where[] = '`regdate` >= :regDateFrom';
-                        $binds['regDateFrom'] = [
-                            'value' => QUI\Utils\Convert::convertMySqlDatetime(
-                                $value . ' 00:00:00'
-                            ),
-                            'type' => PDO::PARAM_STR
-                        ];
+                    case "regDateFrom":
+                        $QueryBuilder
+                            ->andWhere($Platform->quoteSingleIdentifier("regdate") . " >= :regDateFrom")
+                            ->setParameter("regDateFrom", QUI\Utils\Convert::convertMySqlDatetime($value . " 00:00:00"));
                         break;
 
-                    case 'regDateTo':
-                        $where[] = '`regdate` <= :regDateTo';
-                        $binds['regDateTo'] = [
-                            'value' => QUI\Utils\Convert::convertMySqlDatetime(
-                                $value . ' 00:00:00'
-                            ),
-                            'type' => PDO::PARAM_STR
-                        ];
+                    case "regDateTo":
+                        $QueryBuilder
+                            ->andWhere($Platform->quoteSingleIdentifier("regdate") . " <= :regDateTo")
+                            ->setParameter("regDateTo", QUI\Utils\Convert::convertMySqlDatetime($value . " 00:00:00"));
                         break;
                 }
             }
         }
 
-        /* @phpstan-ignore-next-line */
-        if (!empty($where)) {
-            $sql .= " WHERE " . implode(" AND ", $where);
+        if (!empty($searchParams["sortOn"])) {
+            $sortBy = !empty($searchParams["sortBy"]) && strtoupper((string)$searchParams["sortBy"]) === "DESC" ? "DESC" : "ASC";
+            $QueryBuilder->orderBy($Platform->quoteSingleIdentifier(Orthos::clear($searchParams["sortOn"])), $sortBy);
         }
 
-        if (!empty($searchParams['sortOn'])) {
-            $order = "ORDER BY " . Orthos::clear($searchParams['sortOn']);
+        if (!$count) {
+            $limit = !empty($searchParams["limit"]) ? (int)$searchParams["limit"] : self::DEFAULT_LIMIT_USERS;
+            $QueryBuilder->setMaxResults($limit);
+        }
 
-            if (!empty($searchParams['sortBy'])) {
-                $order .= " " . Orthos::clear($searchParams['sortBy']);
-            } else {
-                $order .= " ASC";
+        try {
+            if ($count) {
+                return (int)$QueryBuilder->executeQuery()->fetchOne();
             }
 
-            $sql .= " " . $order;
-        }
-
-        if (!empty($searchParams['limit']) && !$count) {
-            $sql .= " LIMIT " . $searchParams['limit'];
-        } elseif (!$count) {
-            $sql .= " LIMIT " . self::DEFAULT_LIMIT_USERS;
-        }
-
-        $PDO = QUI::getDataBase()->getPDO();
-        $Stmt = $PDO->prepare($sql);
-
-        // bind search values
-        foreach ($binds as $var => $bind) {
-            $Stmt->bindValue(':' . $var, $bind['value'], $bind['type']);
-        }
-
-        // fetch information for all corresponding passwords
-        try {
-            $Stmt->execute();
-            $result = $Stmt->fetchAll(PDO::FETCH_ASSOC);
+            $result = $QueryBuilder->executeQuery()->fetchAllAssociative();
         } catch (Exception $Exception) {
             QUI\System\Log::addError(
-                '\QUI\UsersGrouüs\Search searchUsers() Database error :: '
-                . $Exception->getMessage()
+                "\QUI\UsersGroups\Search searchUsers() Database error :: " . $Exception->getMessage()
             );
 
             return [];
         }
 
-        if ($count) {
-            return (int)current(current($result));
-        }
-
         $ids = [];
 
         foreach ($result as $row) {
-            $ids[] = $row['uuid'];
+            $ids[] = $row["uuid"];
         }
 
         return $ids;
@@ -416,36 +342,27 @@ class Search
      */
     protected static function searchGroups(string $searchTerm, array $searchParams, bool $count = false): int|array
     {
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $QueryBuilder = $Connection->createQueryBuilder()
+            ->from($Platform->quoteSingleIdentifier(QUI\Groups\Manager::table()));
+
         if ($count) {
-            $sql = "SELECT COUNT(*)";
+            $QueryBuilder->select("COUNT(*)");
         } else {
-            $sql = 'SELECT uuid';
+            $QueryBuilder->select($Platform->quoteSingleIdentifier("uuid"));
         }
 
-        $sql .= ' FROM ' . QUI\Utils\Doctrine::quoteIdentifier(QUI\Groups\Manager::table());
-
-        // build WHERE
-        $where = [];
-        $binds = [];
-
-        // fields where searchTerm is searched
         $searchFieldsAvailable = [
-            'uuid' => true,
-            'name' => true
+            "uuid" => true,
+            "name" => true
         ];
 
         $searchFields = [];
 
-        if (
-            !empty($searchParams['searchFields'])
-            && is_array($searchParams['searchFields'])
-        ) {
-            foreach ($searchParams['searchFields'] as $field => $search) {
-                if (!isset($searchFieldsAvailable[$field])) {
-                    continue;
-                }
-
-                if (!$search) {
+        if (!empty($searchParams["searchFields"]) && is_array($searchParams["searchFields"])) {
+            foreach ($searchParams["searchFields"] as $field => $search) {
+                if (!isset($searchFieldsAvailable[$field]) || !$search) {
                     continue;
                 }
 
@@ -453,105 +370,93 @@ class Search
             }
         }
 
-        // fallback
         if (empty($searchFields)) {
-            $searchFields = [
-                'uuid',
-                'name'
-            ];
+            $searchFields = ["uuid", "name"];
         }
 
-        $whereOR = [];
-        $i = 0;
+        $orParts = [];
+        $index = 0;
 
         foreach ($searchFields as $field) {
-            $whereOR[] = '`' . $field . '` LIKE :search' . $i;
-            $binds['search' . $i] = [
-                'value' => '%' . $searchTerm . '%',
-                'type' => PDO::PARAM_STR
-            ];
-
-            $i++;
+            $parameter = "search" . $index;
+            $orParts[] = $Platform->quoteSingleIdentifier($field) . " LIKE :" . $parameter;
+            $QueryBuilder->setParameter($parameter, "%" . $searchTerm . "%");
+            $index++;
         }
 
-        /* @phpstan-ignore-next-line */
-        if (!empty($whereOR)) {
-            $where[] = '(' . implode(' OR ', $whereOR) . ')';
-        }
+        $QueryBuilder->andWhere($QueryBuilder->expr()->or(...$orParts));
 
-        // search filter
-        if (!empty($searchParams['filter']) && is_array($searchParams['filter'])) {
-            foreach ($searchParams['filter'] as $filter => $value) {
-                if ($filter == 'status') {
-                    switch ($value) {
-                        case 1:
-                        case 0:
-                            $where[] = '`active` = :active';
-                            $binds['active'] = [
-                                'value' => $value,
-                                'type' => PDO::PARAM_INT
-                            ];
-                            break;
-                    }
+        if (!empty($searchParams["filter"]) && is_array($searchParams["filter"])) {
+            foreach ($searchParams["filter"] as $filter => $value) {
+                if ($filter !== "status") {
+                    continue;
+                }
+
+                switch ($value) {
+                    case 1:
+                    case 0:
+                        $QueryBuilder
+                            ->andWhere($Platform->quoteSingleIdentifier("active") . " = :active")
+                            ->setParameter("active", $value);
+                        break;
                 }
             }
         }
 
-        /* @phpstan-ignore-next-line */
-        if (!empty($where)) {
-            $sql .= " WHERE " . implode(" AND ", $where);
+        if (!empty($searchParams["sortOn"])) {
+            $sortBy = !empty($searchParams["sortBy"]) && strtoupper((string)$searchParams["sortBy"]) === "DESC" ? "DESC" : "ASC";
+            $QueryBuilder->orderBy($Platform->quoteSingleIdentifier(Orthos::clear($searchParams["sortOn"])), $sortBy);
         }
 
-        if (!empty($searchParams['sortOn'])) {
-            $order = "ORDER BY " . Orthos::clear($searchParams['sortOn']);
+        if (!$count) {
+            $limit = !empty($searchParams["limit"]) ? (int)$searchParams["limit"] : self::DEFAULT_LIMIT_GROUPS;
+            $QueryBuilder->setMaxResults($limit);
+        }
 
-            if (!empty($searchParams['sortBy'])) {
-                $order .= " " . Orthos::clear($searchParams['sortBy']);
-            } else {
-                $order .= " ASC";
+        try {
+            if ($count) {
+                return (int)$QueryBuilder->executeQuery()->fetchOne();
             }
 
-            $sql .= " " . $order;
-        }
-
-        if (!empty($searchParams['limit']) && !$count) {
-            $sql .= " LIMIT " . $searchParams['limit'];
-        } elseif (!$count) {
-            $sql .= " LIMIT " . self::DEFAULT_LIMIT_GROUPS;
-        }
-
-        $PDO = QUI::getDataBase()->getPDO();
-        $Stmt = $PDO->prepare($sql);
-
-        // bind search values
-        foreach ($binds as $var => $bind) {
-            $Stmt->bindValue(':' . $var, $bind['value'], $bind['type']);
-        }
-
-        // fetch information for all corresponding passwords
-        try {
-            $Stmt->execute();
-            $result = $Stmt->fetchAll(PDO::FETCH_ASSOC);
+            $result = $QueryBuilder->executeQuery()->fetchAllAssociative();
         } catch (Exception $Exception) {
             QUI\System\Log::addError(
-                '\QUI\UsersGrouüs\Search searchUsers() Database error :: '
-                . $Exception->getMessage()
+                "\QUI\UsersGroups\Search searchGroups() Database error :: " . $Exception->getMessage()
             );
 
             return [];
         }
 
-        if ($count) {
-            return (int)current(current($result));
-        }
-
         $ids = [];
 
         foreach ($result as $row) {
-            $ids[] = $row['uuid'];
+            $ids[] = $row["uuid"];
         }
 
         return $ids;
+    }
+
+    private static function fetchRowsByUuids(string $table, array $selectFields, array $uuids): array
+    {
+        if (empty($uuids)) {
+            return [];
+        }
+
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $select = [];
+
+        foreach ($selectFields as $field) {
+            $select[] = $Platform->quoteSingleIdentifier($field);
+        }
+
+        return $Connection->createQueryBuilder()
+            ->select(...$select)
+            ->from($Platform->quoteSingleIdentifier($table))
+            ->where($Platform->quoteSingleIdentifier("uuid") . " IN (:uuids)")
+            ->setParameter("uuids", $uuids, \Doctrine\DBAL\ArrayParameterType::STRING)
+            ->executeQuery()
+            ->fetchAllAssociative();
     }
 
     /**
@@ -597,16 +502,7 @@ class Search
                     'username'
                 ];
 
-                $result = QUI::getDataBase()->fetch([
-                    'select' => $selectFields,
-                    'from' => QUI\Utils\Doctrine::quoteIdentifier(QUI\Users\Manager::table()),
-                    'where' => [
-                        'uuid' => [
-                            'type' => 'IN',
-                            'value' => $resultUsers
-                        ]
-                    ]
-                ]);
+                $result = self::fetchRowsByUuids(QUI\Users\Manager::table(), $selectFields, $resultUsers);
 
                 foreach ($result as $row) {
                     $searchResult[] = [
@@ -633,16 +529,7 @@ class Search
                     'name'
                 ];
 
-                $result = QUI::getDataBase()->fetch([
-                    'select' => $selectFields,
-                    'from' => QUI\Utils\Doctrine::quoteIdentifier(QUI\Groups\Manager::table()),
-                    'where' => [
-                        'uuid' => [
-                            'type' => 'IN',
-                            'value' => $resultGroups
-                        ]
-                    ]
-                ]);
+                $result = self::fetchRowsByUuids(QUI\Groups\Manager::table(), $selectFields, $resultGroups);
 
                 foreach ($result as $row) {
                     $searchResult[] = [

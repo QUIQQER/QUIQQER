@@ -9,7 +9,6 @@ namespace QUI\Projects;
 use DOMElement;
 use Exception;
 use PDO;
-use PDOException;
 use QUI;
 use QUI\Groups\Group;
 use QUI\Permissions\Permission;
@@ -478,38 +477,42 @@ class Project implements \Stringable
      */
     public function search(string $search, bool|array $select = false): array
     {
-        $query = 'SELECT id FROM ' . $this->table();
-        $where = ' WHERE name LIKE :search';
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $QueryBuilder = $Connection->createQueryBuilder()
+            ->select($Platform->quoteSingleIdentifier("id"))
+            ->from($Platform->quoteSingleIdentifier($this->table()))
+            ->where($Platform->quoteSingleIdentifier("deleted") . " = :deleted")
+            ->setParameter("deleted", 0)
+            ->setParameter("search", "%" . $search . "%")
+            ->setMaxResults(50);
 
-        $allowed = ['id', 'name', 'title', 'short', 'content'];
+        $allowed = ["id", "name", "title", "short", "content"];
+        $searchFields = ["name"];
 
         if (is_array($select)) {
-            $where = ' WHERE (';
+            $searchFields = [];
 
             foreach ($select as $field) {
-                if (!in_array($field, $allowed)) {
-                    continue;
+                if (in_array($field, $allowed)) {
+                    $searchFields[] = $field;
                 }
-
-                $where .= ' ' . $field . ' LIKE :search OR ';
             }
 
-            $where = substr($where, 0, -4) . ')';
-
-            if (strlen($where) < 6) {
-                $where = ' WHERE name LIKE :search';
+            if (empty($searchFields)) {
+                $searchFields = ["name"];
             }
         }
 
-        $query = $query . $where . ' AND deleted = 0 LIMIT 0, 50';
+        $searchParts = [];
 
-        $PDO = QUI::getDataBase()->getPDO();
-        $Statement = $PDO->prepare($query);
+        foreach ($searchFields as $field) {
+            $searchParts[] = $Platform->quoteSingleIdentifier($field) . " LIKE :search";
+        }
 
-        $Statement->bindValue(':search', '%' . $search . '%');
-        $Statement->execute();
+        $QueryBuilder->andWhere("(" . implode(" OR ", $searchParts) . ")");
 
-        $dbResult = $Statement->fetchAll(PDO::FETCH_ASSOC);
+        $dbResult = $QueryBuilder->executeQuery()->fetchAllAssociative();
         $result = [];
 
         foreach ($dbResult as $entry) {
@@ -823,59 +826,98 @@ class Project implements \Stringable
      */
     public function getChildrenIdsFrom(int $parentid, array $params = []): array|int
     {
-        $where_1 = [
-            $this->RELTABLE . '.parent' => $parentid,
-            $this->TABLE . '.deleted' => 0,
-            $this->TABLE . '.active' => 1,
-            $this->RELTABLE . '.child' => '`' . $this->TABLE . '.id`'
-        ];
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $QueryBuilder = $Connection->createQueryBuilder();
+        $siteAlias = "site";
+        $relationAlias = "rel";
 
-        if (isset($params['active']) && $params['active'] === '0&1') {
-            $where_1 = [
-                $this->RELTABLE . '.parent' => $parentid,
-                $this->TABLE . '.deleted' => 0,
-                $this->RELTABLE . '.child' => '`' . $this->TABLE . '.id`'
-            ];
+        $QueryBuilder
+            ->from($Platform->quoteSingleIdentifier($this->RELTABLE), $relationAlias)
+            ->innerJoin(
+                $relationAlias,
+                $Platform->quoteSingleIdentifier($this->TABLE),
+                $siteAlias,
+                $relationAlias . "." . $Platform->quoteSingleIdentifier("child")
+                    . " = " . $siteAlias . "." . $Platform->quoteSingleIdentifier("id")
+            )
+            ->where($relationAlias . "." . $Platform->quoteSingleIdentifier("parent") . " = :parent")
+            ->andWhere($siteAlias . "." . $Platform->quoteSingleIdentifier("deleted") . " = :deleted")
+            ->setParameter("parent", $parentid)
+            ->setParameter("deleted", 0);
+
+        if (!(isset($params["active"]) && $params["active"] === "0&1")) {
+            $QueryBuilder
+                ->andWhere($siteAlias . "." . $Platform->quoteSingleIdentifier("active") . " = :active")
+                ->setParameter("active", 1);
         }
 
-        if (isset($params['where']) && is_array($params['where'])) {
-            $where = array_merge($where_1, $params['where']);
-        } elseif (isset($params['where']) && is_string($params['where'])) {
-            // @todo where als param string
+        if (isset($params["where"]) && is_array($params["where"])) {
+            $whereIndex = 0;
+
+            foreach ($params["where"] as $field => $value) {
+                if (is_array($value)) {
+                    continue;
+                }
+
+                $fieldParts = explode(".", (string)$field, 2);
+                $fieldName = $fieldParts[1] ?? $fieldParts[0];
+                $alias = isset($fieldParts[1]) && $fieldParts[0] === $this->RELTABLE ? $relationAlias : $siteAlias;
+                $paramName = "where" . $whereIndex;
+
+                $QueryBuilder
+                    ->andWhere($alias . "." . $Platform->quoteSingleIdentifier($fieldName) . " = :" . $paramName)
+                    ->setParameter($paramName, $value);
+
+                $whereIndex++;
+            }
+        } elseif (isset($params["where"]) && is_string($params["where"])) {
             QUI\System\Log::addDebug(
-                'Project->getChildrenIdsFrom WIRD NICHT verwendet' . $params['where']
+                "Project->getChildrenIdsFrom WIRD NICHT verwendet" . $params["where"]
             );
-
-            $where = $where_1;
-        } else {
-            $where = $where_1;
         }
 
-        $order = $this->TABLE . '.order_field';
+        $order = $this->TABLE . ".order_field";
 
-        if (isset($params['order'])) {
-            if (str_contains($params['order'], '.')) {
-                $order = $this->TABLE . '.' . $params['order'];
+        if (isset($params["order"])) {
+            if (str_contains($params["order"], ".")) {
+                $order = $this->TABLE . "." . $params["order"];
             } else {
-                $order = $params['order'];
+                $order = $params["order"];
             }
         }
 
-        if ($order === 'manuell') {
-            $order = 'order_field';
+        if ($order === "manuell") {
+            $order = "order_field";
         }
 
-        $result = QUI::getDataBase()->fetch([
-            'select' => $this->TABLE . '.id',
-            'count' => isset($params['count']) ? 'count' : false,
-            'from' => [
-                $this->RELTABLE,
-                $this->TABLE
-            ],
-            'order' => $order,
-            'limit' => $params['limit'] ?? false,
-            'where' => $where
-        ]);
+        $orderParts = explode(" ", $order, 2);
+        $orderField = $orderParts[0];
+        $orderDirection = isset($orderParts[1]) && $orderParts[1] === "DESC" ? "DESC" : "ASC";
+        $orderFieldParts = explode(".", $orderField, 2);
+        $orderFieldName = $orderFieldParts[1] ?? $orderFieldParts[0];
+        $orderAlias = isset($orderFieldParts[1]) && $orderFieldParts[0] === $this->RELTABLE ? $relationAlias : $siteAlias;
+
+        if (isset($params["count"])) {
+            $QueryBuilder->select("COUNT(" . $siteAlias . "." . $Platform->quoteSingleIdentifier("id") . ") AS " . $Platform->quoteSingleIdentifier("count"));
+        } else {
+            $QueryBuilder
+                ->select($siteAlias . "." . $Platform->quoteSingleIdentifier("id"))
+                ->orderBy($orderAlias . "." . $Platform->quoteSingleIdentifier($orderFieldName), $orderDirection);
+
+            if (!empty($params["limit"])) {
+                $limit = explode(",", (string)$params["limit"], 2);
+
+                if (isset($limit[1])) {
+                    $QueryBuilder->setFirstResult((int)$limit[0]);
+                    $QueryBuilder->setMaxResults((int)$limit[1]);
+                } else {
+                    $QueryBuilder->setMaxResults((int)$limit[0]);
+                }
+            }
+        }
+
+        $result = $QueryBuilder->executeQuery()->fetchAllAssociative();
 
         if (isset($params['count'])) {
             return (int)$result[0]['count'];
@@ -917,18 +959,21 @@ class Project implements \Stringable
             return 0;
         }
 
-        $result = QUI::getDataBase()->fetch([
-            'select' => 'parent',
-            'from' => $this->RELTABLE,
-            'where' => [
-                'child' => $id
-            ],
-            'order' => 'oparent ASC',
-            'limit' => '1'
-        ]);
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $QueryBuilder = $Connection->createQueryBuilder();
+        $parent = $QueryBuilder
+            ->select($Platform->quoteSingleIdentifier("parent"))
+            ->from($Platform->quoteSingleIdentifier($this->RELTABLE))
+            ->where($Platform->quoteSingleIdentifier("child") . " = :child")
+            ->setParameter("child", $id)
+            ->orderBy($Platform->quoteSingleIdentifier("oparent"), "ASC")
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchOne();
 
-        if (isset($result[0]) && $result[0]['parent']) {
-            return (int)$result[0]['parent'];
+        if ($parent) {
+            return (int)$parent;
         }
 
         return 0;
@@ -944,10 +989,14 @@ class Project implements \Stringable
      */
     public function getParentIds(int $id, bool $reverse = false): array
     {
+        if ($id <= 1) {
+            return [];
+        }
+
         $ids = [];
         $pid = $this->getParentIdFrom($id);
 
-        while ($pid != 1) {
+        while ($pid > 1) {
             $ids[] = $pid;
             $pid = $this->getParentIdFrom($pid);
         }
@@ -1004,111 +1053,342 @@ class Project implements \Stringable
      */
     public function getSitesIds(array $params = []): array
     {
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $QueryBuilder = $Connection->createQueryBuilder();
+        $table = $Platform->quoteSingleIdentifier($this->table());
+
+        $QueryBuilder->from($table);
+
         if (empty($params)) {
-            // Falls kein Query dann alle Seiten hohlen
-            // @notice - Kann performancefressend sein
-            return QUI::getDataBase()->fetch([
-                'select' => 'id',
-                'from' => $this->table()
-            ]);
+            return $QueryBuilder
+                ->select($Platform->quoteSingleIdentifier("id"))
+                ->executeQuery()
+                ->fetchAllAssociative();
         }
 
-        $order = 'order_field';
+        $order = "order_field";
 
-        if (isset($params['order'])) {
-            switch ($params['order']) {
-                case 'name ASC':
-                case 'name DESC':
-                case 'title ASC':
-                case 'title DESC':
-                case 'c_date ASC':
-                case 'c_date DESC':
-                case 'e_date ASC':
-                case 'e_date DESC':
-                case 'release_from ASC':
-                case 'release_from DESC':
-                    $order = $params['order'];
+        if (isset($params["order"])) {
+            switch ($params["order"]) {
+                case "name ASC":
+                case "name DESC":
+                case "title ASC":
+                case "title DESC":
+                case "c_date ASC":
+                case "c_date DESC":
+                case "e_date ASC":
+                case "e_date DESC":
+                case "release_from ASC":
+                case "release_from DESC":
+                    $order = $params["order"];
                     break;
 
-                case 'manuell':
+                case "manuell":
                 default:
-                    $order = 'order_field';
+                    $order = "order_field";
                     break;
             }
         }
 
-        $params['order'] = $order;
+        $where = $params["where"] ?? [];
 
-        $sql = [
-            'select' => 'id',
-            'from' => $this->table()
-        ];
-
-        if (isset($params['where'])) {
-            $sql['where'] = $params['where'];
+        if (is_array($where) && !isset($where["active"])) {
+            $where["active"] = 1;
+        } elseif (isset($where["active"]) && $where["active"] == -1) {
+            unset($where["active"]);
+        } elseif (is_string($where)) {
+            $where .= " AND active = 1";
         }
 
-        if (isset($params['where_or'])) {
-            $sql['where_or'] = $params['where_or'];
+        if (is_array($where) && !isset($where["deleted"])) {
+            $where["deleted"] = 0;
+        } elseif (isset($where["deleted"]) && $where["deleted"] == -1) {
+            unset($where["deleted"]);
+        } elseif (is_string($where)) {
+            $where .= " AND deleted = 0";
         }
 
-        // Aktivflag abfragen
-        if (isset($sql['where']) && is_array($sql['where']) && !isset($sql['where']['active'])) {
-            $sql['where']['active'] = 1;
-        } elseif (isset($sql['where']['active']) && $sql['where']['active'] == -1) {
-            unset($sql['where']['active']);
-        } elseif (isset($sql['where']) && is_string($sql['where'])) {
-            $sql['where'] .= ' AND active = 1';
-        } elseif (!isset($sql['where']['active'])) {
-            $sql['where']['active'] = 1;
-        }
-
-        // Deletedflag abfragen
-        if (
-            isset($sql['where']) && is_array($sql['where'])
-            && !isset($sql['where']['deleted'])
-        ) {
-            $sql['where']['deleted'] = 0;
-        } elseif (
-            isset($sql['where']['deleted'])
-            && $sql['where']['deleted'] == -1
-        ) {
-            unset($sql['where']['deleted']);
-        } elseif (is_string($sql['where'])) {
-            $sql['where'] .= ' AND deleted = 0';
-        } elseif (!isset($sql['where']['deleted'])) {
-            $sql['where']['deleted'] = 0;
-        }
-
-        if (isset($params['count'])) {
-            $sql['count'] = [
-                'select' => 'id',
-                'as' => 'count'
-            ];
-
-            unset($sql['select']);
+        if (isset($params["count"])) {
+            $QueryBuilder->select("COUNT(" . $Platform->quoteSingleIdentifier("id") . ") AS " . $Platform->quoteSingleIdentifier("count"));
         } else {
-            $sql['select'] = 'id';
+            $QueryBuilder->select($Platform->quoteSingleIdentifier("id"));
         }
 
-        if (isset($params['limit'])) {
-            $sql['limit'] = $params['limit'];
+        if (is_string($where) && $where !== "") {
+            $QueryBuilder->andWhere($where);
         }
 
-        $sql['order'] = $params['order'];
-
-        if (isset($params['debug'])) {
-            $sql['debug'] = true;
-
-            QUI\System\Log::writeRecursive($sql);
+        if (is_array($where)) {
+            self::applySiteConditions($QueryBuilder, $where, "andWhere");
         }
 
-        if (isset($params['where_relation'])) {
-            $sql['where_relation'] = $params['where_relation'];
+        if (isset($params["where_or"]) && is_array($params["where_or"])) {
+            self::applySiteConditions($QueryBuilder, $params["where_or"], "orWhere");
         }
 
-        return QUI::getDataBase()->fetch($sql);
+        if (isset($params["limit"])) {
+            $limit = explode(",", (string)$params["limit"], 2);
+
+            if (isset($limit[1])) {
+                $QueryBuilder->setFirstResult((int)$limit[0]);
+                $QueryBuilder->setMaxResults((int)$limit[1]);
+            } else {
+                $QueryBuilder->setMaxResults((int)$limit[0]);
+            }
+        }
+
+        if (!isset($params["count"])) {
+            $orderParts = explode(" ", $order, 2);
+            $orderDirection = isset($orderParts[1]) && $orderParts[1] === "DESC" ? "DESC" : "ASC";
+            $QueryBuilder->orderBy($Platform->quoteSingleIdentifier($orderParts[0]), $orderDirection);
+        }
+
+        if (isset($params["debug"])) {
+            QUI\System\Log::writeRecursive($QueryBuilder->getSQL());
+        }
+
+        return $QueryBuilder->executeQuery()->fetchAllAssociative();
     }
+
+    private static function applySiteConditions(\Doctrine\DBAL\Query\QueryBuilder $QueryBuilder, array $conditions, string $method): void
+    {
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $index = 0;
+
+        foreach ($conditions as $field => $data) {
+            $parameter = "condition" . $method . $index;
+            $column = $Platform->quoteSingleIdentifier((string)$field);
+
+            if (is_array($data)) {
+                $type = $data["type"] ?? "";
+                $value = $data["value"] ?? null;
+
+                if ($type === "IN" && is_array($value)) {
+                    $placeholders = [];
+
+                    foreach ($value as $valueIndex => $entry) {
+                        $entryParameter = $parameter . "_" . $valueIndex;
+                        $placeholders[] = ":" . $entryParameter;
+                        $QueryBuilder->setParameter($entryParameter, $entry);
+                    }
+
+                    if (!empty($placeholders)) {
+                        $QueryBuilder->{$method}($column . " IN (" . implode(",", $placeholders) . ")");
+                    }
+
+                    $index++;
+                    continue;
+                }
+
+                if ($type === "NOT") {
+                    $QueryBuilder->{$method}($column . " <> :" . $parameter);
+                    $QueryBuilder->setParameter($parameter, $value);
+                    $index++;
+                    continue;
+                }
+
+                if ($type === "%LIKE%") {
+                    $QueryBuilder->{$method}($column . " LIKE :" . $parameter);
+                    $QueryBuilder->setParameter($parameter, "%" . $value . "%");
+                    $index++;
+                    continue;
+                }
+            }
+
+            $QueryBuilder->{$method}($column . " = :" . $parameter);
+            $QueryBuilder->setParameter($parameter, $data);
+            $index++;
+        }
+    }
+
+
+    private static function ensureMultilingualTable(string $tableName): void
+    {
+        $SchemaManager = QUI::getSchemaManager();
+
+        if ($SchemaManager->tablesExist([$tableName])) {
+            return;
+        }
+
+        $Table = new \Doctrine\DBAL\Schema\Table($tableName);
+        self::addUtf8Options($Table);
+        $Table->addColumn("id", "bigint", ["autoincrement" => true]);
+        $Table->setPrimaryKey(["id"]);
+
+        $SchemaManager->createTable($Table);
+    }
+
+    private static function ensureMultilingualColumn(string $tableName, string $lang): void
+    {
+        $SchemaManager = QUI::getSchemaManager();
+        $Table = $SchemaManager->introspectTable($tableName);
+
+        if ($Table->hasColumn($lang)) {
+            return;
+        }
+
+        $Column = new \Doctrine\DBAL\Schema\Column($lang, \Doctrine\DBAL\Types\Type::getType("bigint"), [
+            "notnull" => false
+        ]);
+
+        $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff($Table, addedColumns: [$Column]));
+    }
+
+    private static function ensureSitesTable(string $tableName): void
+    {
+        $SchemaManager = QUI::getSchemaManager();
+
+        if (!$SchemaManager->tablesExist([$tableName])) {
+            $Table = new \Doctrine\DBAL\Schema\Table($tableName);
+            self::addUtf8Options($Table);
+            self::addSitesColumns($Table);
+            $Table->setPrimaryKey(["id"]);
+            self::addSitesIndexes($Table);
+            $SchemaManager->createTable($Table);
+            return;
+        }
+
+        $Table = $SchemaManager->introspectTable($tableName);
+        $addedColumns = [];
+        $columns = self::getSitesColumnDefinitions();
+
+        foreach ($columns as $name => $definition) {
+            if ($Table->hasColumn($name)) {
+                continue;
+            }
+
+            $addedColumns[] = new \Doctrine\DBAL\Schema\Column(
+                $name,
+                \Doctrine\DBAL\Types\Type::getType($definition["type"]),
+                $definition["options"]
+            );
+        }
+
+        if (!empty($addedColumns)) {
+            $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff($Table, addedColumns: $addedColumns));
+            $Table = $SchemaManager->introspectTable($tableName);
+        }
+
+        foreach (["name", "active", "deleted", "order_field", "type", "c_date", "e_date"] as $indexName) {
+            if (!$Table->hasIndex($indexName)) {
+                $Table->addIndex([$indexName], $indexName);
+                $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff($Table, addedIndexes: [$Table->getIndex($indexName)]));
+                $Table = $SchemaManager->introspectTable($tableName);
+            }
+        }
+    }
+
+    private static function ensureSitesRelationTable(string $tableName): void
+    {
+        $SchemaManager = QUI::getSchemaManager();
+
+        if (!$SchemaManager->tablesExist([$tableName])) {
+            $Table = new \Doctrine\DBAL\Schema\Table($tableName);
+            self::addUtf8Options($Table);
+            $Table->addColumn("parent", "bigint", ["notnull" => false]);
+            $Table->addColumn("child", "bigint", ["notnull" => false]);
+            $Table->addColumn("oparent", "bigint", ["notnull" => false]);
+            $Table->addIndex(["parent"], "parent");
+            $Table->addIndex(["child"], "child");
+            $SchemaManager->createTable($Table);
+            return;
+        }
+
+        $Table = $SchemaManager->introspectTable($tableName);
+        $addedColumns = [];
+
+        foreach (["parent", "child", "oparent"] as $columnName) {
+            if (!$Table->hasColumn($columnName)) {
+                $addedColumns[] = new \Doctrine\DBAL\Schema\Column(
+                    $columnName,
+                    \Doctrine\DBAL\Types\Type::getType("bigint"),
+                    ["notnull" => false]
+                );
+            }
+        }
+
+        if (!empty($addedColumns)) {
+            $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff($Table, addedColumns: $addedColumns));
+            $Table = $SchemaManager->introspectTable($tableName);
+        }
+
+        foreach (["parent", "child"] as $indexName) {
+            if (!$Table->hasIndex($indexName)) {
+                $Table->addIndex([$indexName], $indexName);
+                $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff($Table, addedIndexes: [$Table->getIndex($indexName)]));
+                $Table = $SchemaManager->introspectTable($tableName);
+            }
+        }
+    }
+
+    private static function addSitesColumns(\Doctrine\DBAL\Schema\Table $Table): void
+    {
+        foreach (self::getSitesColumnDefinitions() as $name => $definition) {
+            $Table->addColumn($name, $definition["type"], $definition["options"]);
+        }
+    }
+
+    private static function addSitesIndexes(\Doctrine\DBAL\Schema\Table $Table): void
+    {
+        foreach (["name", "active", "deleted", "order_field", "type", "c_date", "e_date"] as $indexName) {
+            $Table->addIndex([$indexName], $indexName);
+        }
+    }
+
+    private static function getSitesColumnDefinitions(): array
+    {
+        return [
+            "id" => ["type" => "bigint", "options" => ["autoincrement" => true]],
+            "name" => ["type" => "string", "options" => ["length" => 255]],
+            "title" => ["type" => "text", "options" => ["notnull" => false]],
+            "short" => ["type" => "text", "options" => ["notnull" => false]],
+            "content" => ["type" => "text", "options" => ["notnull" => false]],
+            "type" => ["type" => "string", "options" => ["length" => 255, "notnull" => false]],
+            "layout" => ["type" => "string", "options" => ["length" => 255, "notnull" => false]],
+            "active" => ["type" => "smallint", "options" => ["default" => 0]],
+            "deleted" => ["type" => "smallint", "options" => ["default" => 0]],
+            "c_date" => ["type" => "datetime", "options" => ["notnull" => false]],
+            "e_date" => ["type" => "datetime", "options" => ["notnull" => false]],
+            "c_user" => ["type" => "string", "options" => ["length" => 50, "notnull" => false]],
+            "e_user" => ["type" => "string", "options" => ["length" => 50, "notnull" => false]],
+            "nav_hide" => ["type" => "smallint", "options" => ["default" => 0]],
+            "order_type" => ["type" => "string", "options" => ["length" => 255, "notnull" => false]],
+            "order_field" => ["type" => "bigint", "options" => ["notnull" => false]],
+            "extra" => ["type" => "text", "options" => ["notnull" => false]],
+            "c_user_ip" => ["type" => "string", "options" => ["length" => 40, "notnull" => false]],
+            "image_emotion" => ["type" => "text", "options" => ["notnull" => false]],
+            "image_site" => ["type" => "text", "options" => ["notnull" => false]],
+            "release_from" => ["type" => "datetime", "options" => ["notnull" => false]],
+            "release_to" => ["type" => "datetime", "options" => ["notnull" => false]],
+            "auto_release" => ["type" => "smallint", "options" => ["default" => 0]]
+        ];
+    }
+
+    private static function addUtf8Options(\Doctrine\DBAL\Schema\Table $Table): void
+    {
+        $Table->addOption("charset", "utf8mb4");
+        $Table->addOption("collation", "utf8mb4_general_ci");
+    }
+
+    private static function clearInvalidReleaseDates(\Doctrine\DBAL\Connection $Connection, string $table): void
+    {
+        $Platform = $Connection->getDatabasePlatform();
+        $quotedTable = $Platform->quoteSingleIdentifier($table);
+
+        try {
+            foreach (["release_from", "release_to"] as $field) {
+                $quotedField = $Platform->quoteSingleIdentifier($field);
+                $Connection->executeStatement(
+                    "UPDATE " . $quotedTable . " SET " . $quotedField . " = NULL WHERE " . $quotedField . " = :invalidDate",
+                    ["invalidDate" => "0000-00-00 00:00:00"]
+                );
+            }
+        } catch (\Doctrine\DBAL\Exception) {
+        }
+    }
+
 
     /**
      * Execute the project setup
@@ -1130,102 +1410,33 @@ class Project implements \Stringable
 
         QUI::getEvents()->fireEvent('projectSetupBegin', [$this]);
 
-        $DataBase = QUI::getDataBase();
-        $Table = $DataBase->table();
+        $Connection = QUI::getDataBaseConnection();
         $User = QUI::getUserBySession();
 
         // multi lingual table
         $multiLingualTable = QUI_DB_PRFX . $this->name . '_multilingual';
 
-        $Table->addColumn($multiLingualTable, [
-            'id' => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY'
-        ]);
+        self::ensureMultilingualTable($multiLingualTable);
 
 
         foreach ($this->langs as $lang) {
             $table = QUI_DB_PRFX . $this->name . '_' . $lang . '_sites';
 
-            $Table->addColumn($table, [
-                'id' => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
-                'name' => 'varchar(255) NOT NULL',
-                'title' => 'tinytext NULL',
-                'short' => 'text NULL',
-                'content' => 'longtext NULL',
-                'type' => 'varchar(255) DEFAULT NULL',
-                'layout' => 'varchar(255) DEFAULT NULL',
-                'active' => 'tinyint(1) NOT NULL DEFAULT 0',
-                'deleted' => 'tinyint(1) NOT NULL DEFAULT 0',
-                'c_date' => 'timestamp NULL DEFAULT NULL',
-                'e_date' => 'timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP',
-                'c_user' => 'varchar(50) DEFAULT NULL',
-                'e_user' => 'varchar(50) DEFAULT NULL',
-                'nav_hide' => 'tinyint(1) NOT NULL DEFAULT 0',
-                'order_type' => 'varchar(255) NULL',
-                'order_field' => 'bigint(20) NULL',
-                'extra' => 'text NULL',
-                'c_user_ip' => 'varchar(40) NULL',
-                'image_emotion' => 'text NULL',
-                'image_site' => 'text NULL',
-                'release_from' => 'DATETIME NULL DEFAULT NULL',
-                'release_to' => 'DATETIME NULL DEFAULT NULL',
-                'auto_release' => 'int(1) DEFAULT 0'
-            ]);
-
-            // fix for old tables
-            $DataBase->getPDO()->exec(
-                "ALTER TABLE `$table` 
-                CHANGE `name` `name` VARCHAR(255) NOT NULL,
-                CHANGE `order_type` `order_type` VARCHAR(255) NULL DEFAULT NULL,
-                CHANGE `release_from` `release_from` DATETIME NULL DEFAULT NULL,
-                CHANGE `release_to` `release_to` DATETIME NULL DEFAULT NULL,
-                CHANGE `type` `type` VARCHAR(255) NULL DEFAULT NULL;"
-            );
-
-
-            // Patch mysql strict
-            try {
-                $DataBase->getPDO()->exec(
-                    "
-                    UPDATE `$table` 
-                    SET release_from = null 
-                    WHERE 
-                        release_from = '0000-00-00 00:00:00' OR 
-                        release_from = '';
-
-                    UPDATE `$table` 
-                    SET release_to = null 
-                    WHERE 
-                        release_to = '0000-00-00 00:00:00' OR
-                        release_to = '';
-                "
-                );
-            } catch (PDOException) {
-            }
-
-            if (!$Table->issetPrimaryKey($table, 'id')) {
-                $Table->setPrimaryKey($table, 'id');
-            }
-
-            $Table->setIndex($table, 'name');
-            $Table->setIndex($table, 'active');
-            $Table->setIndex($table, 'deleted');
-            $Table->setIndex($table, 'order_field');
-            $Table->setIndex($table, 'type');
-            $Table->setIndex($table, 'c_date');
-            $Table->setIndex($table, 'e_date');
-
+            self::ensureSitesTable($table);
+            self::clearInvalidReleaseDates($Connection, $table);
 
             // create first site -> id 1 if not exist
-            $firstChildResult = $DataBase->fetch([
-                'from' => $table,
-                'where' => [
-                    'id' => 1
-                ],
-                'limit' => 1
-            ]);
+            $firstChildExists = (bool)$Connection->createQueryBuilder()
+                ->select('1')
+                ->from($Connection->getDatabasePlatform()->quoteSingleIdentifier($table))
+                ->where($Connection->getDatabasePlatform()->quoteSingleIdentifier('id') . ' = :id')
+                ->setParameter('id', 1)
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchOne();
 
-            if (!isset($firstChildResult[0])) {
-                $DataBase->insert($table, [
+            if (!$firstChildExists) {
+                $Connection->insert($table, [
                     'id' => 1,
                     'active' => 1,
                     'deleted' => 0,
@@ -1241,20 +1452,10 @@ class Project implements \Stringable
             // Beziehungen
             $table = QUI_DB_PRFX . $this->name . '_' . $lang . '_sites_relations';
 
-            $Table->addColumn($table, [
-                'parent' => 'bigint(20)',
-                'child' => 'bigint(20)',
-                'oparent' => 'bigint(20)'
-            ]);
-
-            $Table->setIndex($table, 'parent');
-            $Table->setIndex($table, 'child');
+            self::ensureSitesRelationTable($table);
 
             // multilingual field
-            $Table->addColumn(
-                $multiLingualTable,
-                [$lang => 'bigint(20)']
-            );
+            self::ensureMultilingualColumn($multiLingualTable, $lang);
 
             // Translation Setup
             QUI\Translator::addLang($lang);
@@ -1507,16 +1708,9 @@ class Project implements \Stringable
         //            Database           //
         // ----------------------------- //
 
-        $tables = [];
-
-        $Stmt = QUI::getDataBase()->getPDO()->prepare("SHOW TABLES;");
-        $Stmt->execute();
-
-        $result = $Stmt->fetchAll();
-
-        foreach ($result as $row) {
-            $tables[] = $row[0];
-        }
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $tables = QUI::getSchemaManager()->listTableNames();
 
         foreach ($tables as $oldTableName) {
             if (!str_contains($oldTableName . "_", $this->name)) {
@@ -1525,11 +1719,13 @@ class Project implements \Stringable
 
             $newTableName = str_replace($this->name . "_", $newName . "_", $oldTableName);
 
-            $sql = "ALTER TABLE " . $oldTableName . " RENAME " . $newTableName . ";";
-            $Stmt = QUI::getDataBase()->getPDO()->prepare($sql);
+            $sql = $Platform->getRenameTableSQL(
+                $Platform->quoteSingleIdentifier($oldTableName),
+                $Platform->quoteSingleIdentifier($newTableName)
+            );
 
             try {
-                $Stmt->execute();
+                $Connection->executeStatement($sql);
             } catch (Exception $Exception) {
                 QUI\System\Log::writeRecursive(
                     "Could not rename Table '" . $oldTableName . "': " . $Exception->getMessage()

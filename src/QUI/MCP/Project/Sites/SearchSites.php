@@ -8,7 +8,6 @@ namespace QUI\MCP\Project\Sites;
 
 use Mcp\Schema\Result\CallToolResult;
 use Mcp\Server\Builder;
-use PDO;
 use QUI;
 use QUI\AI\MCP\ToolHelper;
 use QUI\MCP\AbstractTool;
@@ -81,25 +80,30 @@ class SearchSites extends AbstractTool
             return [];
         }
 
-        $Statement = QUI::getPDO()->prepare(
-            'SELECT `id`
-            FROM `' . $Project->table() . '`
-            WHERE (
-                `name` LIKE :search OR
-                `title` LIKE :search OR
-                `short` LIKE :search OR
-                `content` LIKE :search
-            )
-            AND `deleted` = 0
-            LIMIT 0, ' . $limit
-        );
-
-        $Statement->bindValue(':search', '%' . $query . '%');
-        $Statement->execute();
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $search = "%" . $query . "%";
+        $QueryBuilder = $Connection->createQueryBuilder();
+        $ExpressionBuilder = $QueryBuilder->expr();
+        $entries = $QueryBuilder
+            ->select($Platform->quoteSingleIdentifier("id"))
+            ->from($Platform->quoteSingleIdentifier($Project->table()))
+            ->where($ExpressionBuilder->or(
+                $Platform->quoteSingleIdentifier("name") . " LIKE :search",
+                $Platform->quoteSingleIdentifier("title") . " LIKE :search",
+                $Platform->quoteSingleIdentifier("short") . " LIKE :search",
+                $Platform->quoteSingleIdentifier("content") . " LIKE :search"
+            ))
+            ->andWhere($Platform->quoteSingleIdentifier("deleted") . " = :deleted")
+            ->setParameter("search", $search)
+            ->setParameter("deleted", 0)
+            ->setMaxResults($limit)
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         $result = [];
 
-        foreach ($Statement->fetchAll(PDO::FETCH_ASSOC) as $entry) {
+        foreach ($entries as $entry) {
             try {
                 $result[] = new Edit($Project, (int)$entry['id']);
             } catch (Throwable $Exception) {

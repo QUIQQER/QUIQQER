@@ -12,7 +12,6 @@ use QUI\ExceptionStack;
 use QUI\Interfaces\Users\User;
 use QUI\Projects\Media;
 use QUI\Projects\Media\Utils as MediaUtils;
-use QUI\Utils\Security\Orthos;
 use QUI\Utils\StringHelper as StringUtils;
 use QUI\Utils\System\File as FileUtils;
 use RecursiveDirectoryIterator;
@@ -78,7 +77,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     {
         $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $this->Media->getTable(),
             ['active' => 1],
             ['id' => $this->getId()]
@@ -182,30 +181,30 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             );
         }
 
-        $PDO = QUI::getDataBase()->getPDO();
-        $old_path = $this->getPath() . '/';
-        $new_path = $Parent->getPath() . '/' . $newName;
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $old_path = $this->getPath() . "/";
+        $new_path = $Parent->getPath() . "/" . $newName;
 
         $new_path = StringUtils::replaceDblSlashes($new_path);
-        $new_path = ltrim($new_path, '/');
+        $new_path = ltrim($new_path, "/");
 
         $old_path = StringUtils::replaceDblSlashes($old_path);
-        $old_path = rtrim($old_path, '/');
-        $old_path = ltrim($old_path, '/');
-
+        $old_path = rtrim($old_path, "/");
+        $old_path = ltrim($old_path, "/");
 
         // update children paths
-        $Statement = $PDO->prepare(
-            "UPDATE " . $this->Media->getTable() . "
-             SET file = REPLACE(file, :oldpath, :newpath)
-             WHERE file LIKE :search"
-        );
-
-        $Statement->bindValue('oldpath', $old_path . '/');
-        $Statement->bindValue('newpath', $new_path . '/');
-        $Statement->bindValue('search', $old_path . "/%");
-
-        $Statement->execute();
+        $Connection->createQueryBuilder()
+            ->update($Platform->quoteSingleIdentifier($this->Media->getTable()))
+            ->set(
+                $Platform->quoteSingleIdentifier("file"),
+                "REPLACE(" . $Platform->quoteSingleIdentifier("file") . ", :oldpath, :newpath)"
+            )
+            ->where($Platform->quoteSingleIdentifier("file") . " LIKE :search")
+            ->setParameter("oldpath", $old_path . "/")
+            ->setParameter("newpath", $new_path . "/")
+            ->setParameter("search", $old_path . "/%")
+            ->executeStatement();
 
         $title = $this->getAttribute('title');
 
@@ -217,7 +216,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $md5File = md5($file);
 
         // update me
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $this->Media->getTable(),
             [
                 'name' => $newName,
@@ -280,27 +279,29 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $table = $this->Media->getTable();
         $table_rel = $this->Media->getTable('relations');
 
-        $query = [
-            'select' => [
-                $table . '.id'
-            ],
-            'from' => [
-                $table,
-                $table_rel
-            ],
-            'where' => [
-                $table_rel . '.parent' => $this->getId(),
-                $table_rel . '.child' => '`' . $table . '.id`',
-                $table . '.deleted' => 0,
-                $table . '.name' => $filename
-            ]
-        ];
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $QueryBuilder = $Connection->createQueryBuilder()
+            ->select("media." . $Platform->quoteSingleIdentifier("id"))
+            ->from($Platform->quoteSingleIdentifier($table), "media")
+            ->innerJoin(
+                "media",
+                $Platform->quoteSingleIdentifier($table_rel),
+                "rel",
+                "rel." . $Platform->quoteSingleIdentifier("child") . " = media." . $Platform->quoteSingleIdentifier("id")
+            )
+            ->where("rel." . $Platform->quoteSingleIdentifier("parent") . " = :parent")
+            ->andWhere("media." . $Platform->quoteSingleIdentifier("deleted") . " = :deleted")
+            ->andWhere("media." . $Platform->quoteSingleIdentifier("name") . " = :name")
+            ->setParameter("parent", $this->getId())
+            ->setParameter("deleted", 0)
+            ->setParameter("name", $filename);
 
         if ($limit) {
-            $query['limit'] = $limit;
+            $QueryBuilder->setMaxResults((int)$limit);
         }
 
-        $dbResult = QUI::getDataBase()->fetch($query);
+        $dbResult = $QueryBuilder->executeQuery()->fetchAllAssociative();
 
         if (!isset($dbResult[0])) {
             throw new QUI\Exception(
@@ -359,31 +360,32 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             );
         }
 
-        $PDO = QUI::getDataBase()->getPDO();
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
         $old_path = $this->getPath();
-        $new_path = $Folder->getPath() . '/' . $this->getAttribute('name');
+        $new_path = $Folder->getPath() . "/" . $this->getAttribute("name");
 
         $old_path = StringUtils::replaceDblSlashes($old_path);
         $new_path = StringUtils::replaceDblSlashes($new_path);
 
         // update children paths
-        $Statement = $PDO->prepare(
-            "UPDATE " . $this->Media->getTable() . "
-             SET file = REPLACE(file, :oldpath, :newpath)
-             WHERE file LIKE :search"
-        );
-
-        $Statement->bindValue('oldpath', StringUtils::replaceDblSlashes($old_path . '/'));
-        $Statement->bindValue('newpath', StringUtils::replaceDblSlashes($new_path . '/'));
-        $Statement->bindValue('search', $old_path . "%");
-
-        $Statement->execute();
+        $Connection->createQueryBuilder()
+            ->update($Platform->quoteSingleIdentifier($this->Media->getTable()))
+            ->set(
+                $Platform->quoteSingleIdentifier("file"),
+                "REPLACE(" . $Platform->quoteSingleIdentifier("file") . ", :oldpath, :newpath)"
+            )
+            ->where($Platform->quoteSingleIdentifier("file") . " LIKE :search")
+            ->setParameter("oldpath", StringUtils::replaceDblSlashes($old_path . "/"))
+            ->setParameter("newpath", StringUtils::replaceDblSlashes($new_path . "/"))
+            ->setParameter("search", $old_path . "%")
+            ->executeStatement();
 
         // update me
         $file = StringUtils::replaceDblSlashes($new_path . '/');
 
 
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $this->Media->getTable(),
             [
                 'file' => $file,
@@ -393,7 +395,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         );
 
         // set the new parent relationship
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $this->Media->getTable('relations'),
             [
                 'parent' => $Folder->getId()
@@ -435,7 +437,23 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         // copy me
         $Copy = $Folder->createFolder($this->getAttribute('name'));
 
-        $Copy->setAttributes($this->getAttributes());
+        $attributes = $this->getAttributes();
+
+        foreach (
+            [
+            'id',
+            'name',
+            'file',
+            'pathHash',
+            'pathHistory',
+            'url',
+            'cache_url'
+            ] as $attribute
+        ) {
+            unset($attributes[$attribute]);
+        }
+
+        $Copy->setAttributes($attributes);
         $Copy->save();
 
         // copy the children
@@ -494,7 +512,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $table_rel = $this->Media->getTable('relations');
         $file = $this->getAttribute('file') . $new_name . '/';
 
-        QUI::getDataBase()->insert($table, [
+        QUI::getDataBaseConnection()->insert($table, [
             'name' => $new_name,
             'title' => $new_name,
             'short' => $new_name,
@@ -509,9 +527,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'mime_type' => 'folder'
         ]);
 
-        $id = QUI::getDataBase()->getPDO()->lastInsertId();
+        $id = (int)QUI::getDataBaseConnection()->lastInsertId();
 
-        QUI::getDataBase()->insert($table_rel, [
+        QUI::getDataBaseConnection()->insert($table_rel, [
             'parent' => $this->getId(),
             'child' => $id
         ]);
@@ -556,146 +574,103 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     public function getChildrenIds(array $params = []): array | int
     {
         $table = $this->Media->getTable();
-        $table_rel = $this->Media->getTable('relations');
-        $order = 'name';
+        $tableRel = $this->Media->getTable("relations");
+        $order = "name";
 
-        if ($this->getAttribute('order')) {
-            $order = $this->getAttribute('order');
+        if ($this->getAttribute("order")) {
+            $order = $this->getAttribute("order");
         }
 
-        if (isset($params['order'])) {
-            $order = $params['order'];
+        if (isset($params["order"])) {
+            $order = $params["order"];
         }
 
         switch ($order) {
-            case 'priority':
-            case 'priority ASC':
-            case 'priority DESC':
-            case 'c_date':
-            case 'c_date ASC':
-            case 'c_date DESC':
-            case 'name':
-            case 'name ASC':
-            case 'name DESC':
-            case 'title':
-            case 'title ASC':
-            case 'title DESC':
-            case 'id':
-            case 'id ASC':
-            case 'id DESC':
+            case "priority":
+            case "priority ASC":
+            case "priority DESC":
+            case "c_date":
+            case "c_date ASC":
+            case "c_date DESC":
+            case "name":
+            case "name ASC":
+            case "name DESC":
+            case "title":
+            case "title ASC":
+            case "title DESC":
+            case "id":
+            case "id ASC":
+            case "id DESC":
                 break;
 
             default:
-                $order = 'name';
+                $order = "name";
         }
 
-        $table = Orthos::cleanupDatabaseFieldName($table);
-        $table_rel = Orthos::cleanupDatabaseFieldName($table_rel);
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $QueryBuilder = $Connection->createQueryBuilder()
+            ->from($Platform->quoteSingleIdentifier($table), "media")
+            ->innerJoin(
+                "media",
+                $Platform->quoteSingleIdentifier($tableRel),
+                "rel",
+                "rel." . $Platform->quoteSingleIdentifier("child") . " = media." . $Platform->quoteSingleIdentifier("id")
+            )
+            ->where("rel." . $Platform->quoteSingleIdentifier("parent") . " = :parent")
+            ->andWhere("media." . $Platform->quoteSingleIdentifier("deleted") . " = :deleted")
+            ->setParameter("parent", $this->getId())
+            ->setParameter("deleted", 0);
 
-        $table_parent = $table_rel . '.`parent`';
-        $table_child = $table_rel . '.`child`';
-
-        $table_id = $table . '.`id`';
-        $table_delete = $table . '.`deleted`';
-        $table_type = $table . '.`type`';
-        $table_cDate = $table . '.`c_date`';
-        $table_name = $table . '.`name`';
-
-        $parentId = $this->getId();
-
-        switch ($order) {
-            case 'id':
-            case 'id ASC':
-                $order_by = "find_in_set($table_type, 'folder') DESC, $table_id";
-                break;
-
-            case 'id DESC':
-                $order_by = "find_in_set($table_type, 'folder') DESC, $table_id DESC";
-                break;
-
-            case 'c_date':
-            case 'c_date ASC':
-                $order_by = "find_in_set($table_type, 'folder') DESC, $table_cDate";
-                break;
-
-            case 'c_date DESC':
-                $order_by = "find_in_set($table_type, 'folder') DESC, $table_cDate DESC";
-                break;
-
-            case 'name ASC':
-                $order_by = "find_in_set($table_type, 'folder') DESC, $table_name";
-                break;
-
-            default:
-            case 'name':
-            case 'name DESC':
-                $order_by = "find_in_set($table_type, 'folder') DESC, $table_name DESC";
-                break;
-
-            case 'priority':
-            case 'priority ASC':
-            case 'priority DESC':
-                $order_by = $order;
+        if (isset($params["where"]["hidden"])) {
+            if ($params["where"]["hidden"] === 0 || $params["where"]["hidden"] === 1) {
+                $QueryBuilder
+                    ->andWhere("media." . $Platform->quoteSingleIdentifier("hidden") . " = :hidden")
+                    ->setParameter("hidden", $params["where"]["hidden"]);
+            }
         }
 
-        $limit = '';
-        $isCountRequest = !empty($params['count']);
+        if (!empty($params["count"])) {
+            return (int)$QueryBuilder
+                ->select("COUNT(media." . $Platform->quoteSingleIdentifier("id") . ")")
+                ->executeQuery()
+                ->fetchOne();
+        }
 
-        if (!$isCountRequest && isset($params['limit'])) {
-            $limitParams = explode(',', $params['limit']);
+        $QueryBuilder->select("media." . $Platform->quoteSingleIdentifier("id"));
+
+        $orderParts = explode(" ", $order, 2);
+        $orderField = $orderParts[0];
+        $orderDirection = isset($orderParts[1]) && $orderParts[1] === "DESC" ? "DESC" : "ASC";
+
+        if ($orderField === "priority") {
+            $QueryBuilder->orderBy("media." . $Platform->quoteSingleIdentifier("priority"), $orderDirection);
+        } else {
+            $QueryBuilder
+                ->addOrderBy(
+                    "CASE WHEN media." . $Platform->quoteSingleIdentifier("type") . " = :folderType THEN 0 ELSE 1 END",
+                    "ASC"
+                )
+                ->addOrderBy("media." . $Platform->quoteSingleIdentifier($orderField), $orderDirection)
+                ->setParameter("folderType", "folder");
+        }
+
+        if (isset($params["limit"])) {
+            $limitParams = explode(",", (string)$params["limit"], 2);
 
             if (count($limitParams) === 2) {
-                $limitParams[0] = (int)$limitParams[0];
-                $limitParams[1] = (int)$limitParams[1];
-
-                $limit = "LIMIT $limitParams[0], $limitParams[1]";
+                $QueryBuilder->setFirstResult((int)$limitParams[0]);
+                $QueryBuilder->setMaxResults((int)$limitParams[1]);
             } else {
-                $limitParams[0] = (int)$limitParams[0];
-                $limit = "LIMIT $limitParams[0]";
+                $QueryBuilder->setMaxResults((int)$limitParams[0]);
             }
         }
 
-        // hidden query
-        $hiddenQuery = '';
-
-        if (isset($params['where']['hidden'])) {
-            if ($params['where']['hidden'] === 0) {
-                $hiddenQuery = ' AND hidden = 0';
-            } elseif ($params['where']['hidden'] === 1) {
-                $hiddenQuery = ' AND hidden = 1';
-            }
-        }
-
-        $query = "
-        
-        SELECT id
-        FROM $table, {$table_rel}
-        WHERE
-            $table_parent = $parentId AND
-            $table_child  = $table_id AND
-            $table_delete = 0
-            {$hiddenQuery}
-        ORDER BY
-            $order_by {$limit}
-        ;
-        ";
-
-        try {
-            $fetch = QUI::getDataBase()->fetchSQL($query);
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
-
-            return [];
-        }
-
-        if ($isCountRequest) {
-            return count($fetch);
-        }
-
+        $fetch = $QueryBuilder->executeQuery()->fetchAllAssociative();
         $result = [];
 
         foreach ($fetch as $entry) {
-            $result[] = (int)$entry['id'];
+            $result[] = (int)$entry["id"];
         }
 
         return $result;
@@ -829,33 +804,32 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $table_rel = $this->Media->getTable('relations');
 
         try {
-            $result = QUI::getDataBase()->fetch([
-                'count' => 'children',
-                'from' => [
-                    $table,
-                    $table_rel
-                ],
-                'where' => [
-                    $table_rel . '.parent' => $this->getId(),
-                    $table_rel . '.child' => '`' . $table . '.id`',
-                    $table . '.deleted' => 0
-                ]
-            ]);
+            $Connection = QUI::getDataBaseConnection();
+            $Platform = $Connection->getDatabasePlatform();
+            $childrenCount = (int)$Connection->createQueryBuilder()
+                ->select("COUNT(media." . $Platform->quoteSingleIdentifier("id") . ")")
+                ->from($Platform->quoteSingleIdentifier($table), "media")
+                ->innerJoin(
+                    "media",
+                    $Platform->quoteSingleIdentifier($table_rel),
+                    "rel",
+                    "rel." . $Platform->quoteSingleIdentifier("child") . " = media." . $Platform->quoteSingleIdentifier("id")
+                )
+                ->where("rel." . $Platform->quoteSingleIdentifier("parent") . " = :parent")
+                ->andWhere("media." . $Platform->quoteSingleIdentifier("deleted") . " = :deleted")
+                ->setParameter("parent", $this->getId())
+                ->setParameter("deleted", 0)
+                ->executeQuery()
+                ->fetchOne();
         } catch (QUI\Database\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
 
             return 0;
         }
 
-        if (isset($result[0]['children'])) {
-            $childrenCount = (int)$result[0]['children'];
+        QUI\Cache\Manager::set($cachePath, $childrenCount);
 
-            QUI\Cache\Manager::set($cachePath, $childrenCount);
-
-            return $childrenCount;
-        }
-
-        return 0;
+        return $childrenCount;
     }
 
     /**
@@ -893,9 +867,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     protected function getElements(string $type, array $params): array | int
     {
         switch ($type) {
-            case 'image':
-            case 'file':
-            case 'folder':
+            case "image":
+            case "file":
+            case "folder":
                 break;
 
             default:
@@ -903,92 +877,109 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         $table = $this->Media->getTable();
-        $table_rel = $this->Media->getTable('relations');
+        $tableRel = $this->Media->getTable("relations");
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $QueryBuilder = $Connection->createQueryBuilder()
+            ->from($Platform->quoteSingleIdentifier($table), "media")
+            ->innerJoin(
+                "media",
+                $Platform->quoteSingleIdentifier($tableRel),
+                "rel",
+                "rel." . $Platform->quoteSingleIdentifier("child") . " = media." . $Platform->quoteSingleIdentifier("id")
+            )
+            ->where("rel." . $Platform->quoteSingleIdentifier("parent") . " = :parent")
+            ->andWhere("media." . $Platform->quoteSingleIdentifier("deleted") . " = :deleted")
+            ->andWhere("media." . $Platform->quoteSingleIdentifier("type") . " = :type")
+            ->setParameter("parent", $this->getId())
+            ->setParameter("deleted", 0)
+            ->setParameter("type", $type);
 
-        $dbQuery = [
-            'select' => 'id',
-            'from' => [
-                $table,
-                $table_rel
-            ],
-            'where' => [
-                $table_rel . '.parent' => $this->getId(),
-                $table_rel . '.child' => '`' . $table . '.id`',
-                $table . '.deleted' => 0,
-                $table . '.type' => $type
-            ]
-        ];
-
-        if (isset($params['active'])) {
-            $dbQuery['where']['active'] = $params['active'];
+        if (isset($params["active"])) {
+            $active = $params["active"];
         } else {
-            $dbQuery['where']['active'] = 1;
+            $active = 1;
         }
 
-        if (isset($params['where']['file'])) {
-            $params['where']['pathHash'] = md5($params['where']['file']);
-            unset($params['where']['file']);
+        $QueryBuilder
+            ->andWhere("media." . $Platform->quoteSingleIdentifier("active") . " = :active")
+            ->setParameter("active", $active);
+
+        if (isset($params["where"]["file"])) {
+            $QueryBuilder
+                ->andWhere("media." . $Platform->quoteSingleIdentifier("pathHash") . " = :pathHash")
+                ->setParameter("pathHash", md5($params["where"]["file"]));
         }
 
-        if (isset($params['count'])) {
-            $dbQuery['count'] = 'count';
-
+        if (isset($params["count"])) {
             try {
-                $fetch = QUI::getDataBase()->fetch($dbQuery);
+                return (int)$QueryBuilder
+                    ->select("COUNT(media." . $Platform->quoteSingleIdentifier("id") . ")")
+                    ->executeQuery()
+                    ->fetchOne();
             } catch (QUI\Exception) {
                 return 0;
             }
-
-            return (int)$fetch[0]['count'];
         }
 
-        if (isset($params['limit'])) {
-            $dbQuery['limit'] = $params['limit'];
-        }
+        if (isset($params["limit"])) {
+            $limit = explode(",", (string)$params["limit"], 2);
 
+            if (isset($limit[1])) {
+                $QueryBuilder->setFirstResult((int)$limit[0]);
+                $QueryBuilder->setMaxResults((int)$limit[1]);
+            } else {
+                $QueryBuilder->setMaxResults((int)$limit[0]);
+            }
+        }
 
         // sorting
-        $order = 'title ASC';
+        $order = "title ASC";
 
-        if ($this->getAttribute('order')) {
-            $order = $this->getAttribute('order');
+        if ($this->getAttribute("order")) {
+            $order = $this->getAttribute("order");
         }
 
-        if (isset($params['order'])) {
-            $order = $params['order'];
+        if (isset($params["order"])) {
+            $order = $params["order"];
         }
 
         switch ($order) {
-            case 'title':
-            case 'title DESC':
-            case 'title ASC':
-            case 'name':
-            case 'name DESC':
-            case 'name ASC':
-            case 'c_date':
-            case 'c_date DESC':
-            case 'c_date ASC':
-            case 'e_date':
-            case 'e_date ASC':
-            case 'e_date DESC':
+            case "title":
+            case "title DESC":
+            case "title ASC":
+            case "name":
+            case "name DESC":
+            case "name ASC":
+            case "c_date":
+            case "c_date DESC":
+            case "c_date ASC":
+            case "e_date":
+            case "e_date ASC":
+            case "e_date DESC":
                 break;
 
-            case 'priority':
-            case 'priority ASC':
-            case 'priority DESC':
-                // @todo priority, title
+            case "priority":
+            case "priority ASC":
+            case "priority DESC":
+                //  priority, title
                 break;
 
             default:
-                $order = 'title ASC'; // title aufsteigend
+                $order = "title ASC"; // title aufsteigend
                 break;
         }
 
-        $dbQuery['order'] = $order;
+        $orderParts = explode(" ", $order, 2);
+        $orderField = $orderParts[0];
+        $orderDirection = isset($orderParts[1]) && $orderParts[1] === "DESC" ? "DESC" : "ASC";
 
-        // database
+        $QueryBuilder
+            ->select("media." . $Platform->quoteSingleIdentifier("id"))
+            ->orderBy("media." . $Platform->quoteSingleIdentifier($orderField), $orderDirection);
+
         try {
-            $fetch = QUI::getDataBase()->fetch($dbQuery);
+            $fetch = $QueryBuilder->executeQuery()->fetchAllAssociative();
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
 
@@ -999,22 +990,22 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         foreach ($fetch as $entry) {
             try {
-                $result[] = $this->Media->get((int)$entry['id']);
+                $result[] = $this->Media->get((int)$entry["id"]);
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::addDebug($Exception->getMessage());
             }
         }
 
         switch ($order) {
-            case 'priority':
-            case 'priority ASC':
-            case 'priority DESC':
+            case "priority":
+            case "priority ASC":
+            case "priority DESC":
                 // if priority, sort, that empty priority is the last
                 usort($result, static function ($ImageA, $ImageB): int {
-                    /* @var $ImageA Image */
-                    $a = $ImageA->getAttribute('priority');
-                    /* @var $ImageB Image */
-                    $b = $ImageB->getAttribute('priority');
+                    /*  $ImageA Image */
+                    $a = $ImageA->getAttribute("priority");
+                    /*  $ImageB Image */
+                    $b = $ImageB->getAttribute("priority");
 
                     if (empty($a)) {
                         return 1;
@@ -1069,7 +1060,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function hasSubFolders(): int
     {
-        $cachePath = $this->getCachePath() . '/hasSubFolders';
+        $cachePath = $this->getCachePath() . "/hasSubFolders";
 
         try {
             return QUI\Cache\Manager::get($cachePath);
@@ -1078,37 +1069,37 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         $table = $this->Media->getTable();
-        $table_rel = $this->Media->getTable('relations');
+        $tableRel = $this->Media->getTable("relations");
 
         try {
-            $result = QUI::getDataBase()->fetch([
-                'count' => 'children',
-                'from' => [
-                    $table,
-                    $table_rel
-                ],
-                'where' => [
-                    $table_rel . '.parent' => $this->getId(),
-                    $table_rel . '.child' => '`' . $table . '.id`',
-                    $table . '.deleted' => 0,
-                    $table . '.type' => 'folder'
-                ]
-            ]);
+            $Connection = QUI::getDataBaseConnection();
+            $Platform = $Connection->getDatabasePlatform();
+            $childrenCount = (int)$Connection->createQueryBuilder()
+                ->select("COUNT(media." . $Platform->quoteSingleIdentifier("id") . ")")
+                ->from($Platform->quoteSingleIdentifier($table), "media")
+                ->innerJoin(
+                    "media",
+                    $Platform->quoteSingleIdentifier($tableRel),
+                    "rel",
+                    "rel." . $Platform->quoteSingleIdentifier("child") . " = media." . $Platform->quoteSingleIdentifier("id")
+                )
+                ->where("rel." . $Platform->quoteSingleIdentifier("parent") . " = :parent")
+                ->andWhere("media." . $Platform->quoteSingleIdentifier("deleted") . " = :deleted")
+                ->andWhere("media." . $Platform->quoteSingleIdentifier("type") . " = :type")
+                ->setParameter("parent", $this->getId())
+                ->setParameter("deleted", 0)
+                ->setParameter("type", "folder")
+                ->executeQuery()
+                ->fetchOne();
         } catch (QUI\Database\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
 
             return 0;
         }
 
-        if (isset($result[0]['children'])) {
-            $childrenCount = (int)$result[0]['children'];
+        QUI\Cache\Manager::set($cachePath, $childrenCount);
 
-            QUI\Cache\Manager::set($cachePath, $childrenCount);
-
-            return $childrenCount;
-        }
-
-        return 0;
+        return $childrenCount;
     }
 
     /**
@@ -1120,27 +1111,33 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     public function getSubFolders(): array
     {
         $table = $this->Media->getTable();
-        $table_rel = $this->Media->getTable('relations');
-
-        $result = QUI::getDataBase()->fetch([
-            'from' => [
-                $table,
-                $table_rel
-            ],
-            'where' => [
-                $table_rel . '.parent' => $this->getId(),
-                $table_rel . '.child' => '`' . $table . '.id`',
-                $table . '.deleted' => 0,
-                $table . '.type' => 'folder'
-            ],
-            'order' => 'name'
-        ]);
+        $tableRel = $this->Media->getTable("relations");
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $result = $Connection->createQueryBuilder()
+            ->select("media." . $Platform->quoteSingleIdentifier("id"))
+            ->from($Platform->quoteSingleIdentifier($table), "media")
+            ->innerJoin(
+                "media",
+                $Platform->quoteSingleIdentifier($tableRel),
+                "rel",
+                "rel." . $Platform->quoteSingleIdentifier("child") . " = media." . $Platform->quoteSingleIdentifier("id")
+            )
+            ->where("rel." . $Platform->quoteSingleIdentifier("parent") . " = :parent")
+            ->andWhere("media." . $Platform->quoteSingleIdentifier("deleted") . " = :deleted")
+            ->andWhere("media." . $Platform->quoteSingleIdentifier("type") . " = :type")
+            ->setParameter("parent", $this->getId())
+            ->setParameter("deleted", 0)
+            ->setParameter("type", "folder")
+            ->orderBy("media." . $Platform->quoteSingleIdentifier("name"), "ASC")
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         $folders = [];
 
         foreach ($result as $entry) {
             try {
-                $folders[] = $this->Media->get((int)$entry['id']);
+                $folders[] = $this->Media->get((int)$entry["id"]);
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
@@ -1155,31 +1152,34 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     public function fileWithNameExists(string $file): bool
     {
         $table = $this->Media->getTable();
-        $table_rel = $this->Media->getTable('relations');
+        $tableRel = $this->Media->getTable("relations");
 
         try {
-            $result = QUI::getDataBase()->fetch([
-                'select' => [
-                    $table . '.id'
-                ],
-                'from' => [
-                    $table,
-                    $table_rel
-                ],
-                'where' => [
-                    $table_rel . '.parent' => $this->getId(),
-                    $table_rel . '.child' => '`' . $table . '.id`',
-                    $table . '.file' => $this->getPath() . $file
-                ],
-                'limit' => 1
-            ]);
+            $Connection = QUI::getDataBaseConnection();
+            $Platform = $Connection->getDatabasePlatform();
+            $result = $Connection->createQueryBuilder()
+                ->select("1")
+                ->from($Platform->quoteSingleIdentifier($table), "media")
+                ->innerJoin(
+                    "media",
+                    $Platform->quoteSingleIdentifier($tableRel),
+                    "rel",
+                    "rel." . $Platform->quoteSingleIdentifier("child") . " = media." . $Platform->quoteSingleIdentifier("id")
+                )
+                ->where("rel." . $Platform->quoteSingleIdentifier("parent") . " = :parent")
+                ->andWhere("media." . $Platform->quoteSingleIdentifier("file") . " = :file")
+                ->setParameter("parent", $this->getId())
+                ->setParameter("file", $this->getPath() . $file)
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchOne();
         } catch (QUI\Database\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
 
             return false;
         }
 
-        return isset($result[0]);
+        return $result !== false;
     }
 
     /**
@@ -1415,7 +1415,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
 
-        QUI::getDataBase()->insert($table, [
+        QUI::getDataBaseConnection()->insert($table, [
             'name' => $new_file_info['filename'],
             'short' => '',
             'file' => $filePath,
@@ -1430,9 +1430,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'type' => MediaUtils::getMediaTypeByMimeType($new_file_info['mime_type'])
         ]);
 
-        $id = QUI::getDataBase()->getPDO()->lastInsertId();
+        $id = (int)QUI::getDataBaseConnection()->lastInsertId();
 
-        QUI::getDataBase()->insert($table_rel, [
+        QUI::getDataBaseConnection()->insert($table_rel, [
             'parent' => $this->getId(),
             'child' => $id
         ]);
@@ -1460,7 +1460,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             if ($new_file_info['width'] > $maxSize || $new_file_info['height'] > $maxSize) {
                 $File->resize($resizeData['width'], $resizeData['height']);
 
-                QUI::getDataBase()->update(
+                QUI::getDataBaseConnection()->update(
                     $table,
                     [
                         'image_width' => $resizeData['width'],
@@ -1542,7 +1542,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
-        QUI::getDataBase()->update(
+        QUI::getDataBaseConnection()->update(
             $this->Media->getTable(),
             ['active' => 0],
             ['id' => $this->getId()]
@@ -1576,16 +1576,15 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         // own sql statement, not over the getChildren() method,
         // its better for performance
         try {
-            $children = QUI::getDataBase()->fetch([
-                'select' => 'id',
-                'from' => $this->Media->getTable(),
-                'where' => [
-                    'file' => [
-                        'value' => $this->getAttribute('file'),
-                        'type' => 'LIKE%'
-                    ]
-                ]
-            ]);
+            $Connection = QUI::getDataBaseConnection();
+            $Platform = $Connection->getDatabasePlatform();
+            $children = $Connection->createQueryBuilder()
+                ->select($Platform->quoteSingleIdentifier("id"))
+                ->from($Platform->quoteSingleIdentifier($this->Media->getTable()))
+                ->where($Platform->quoteSingleIdentifier("file") . " LIKE :file")
+                ->setParameter("file", $this->getAttribute("file") . "%")
+                ->executeQuery()
+                ->fetchAllAssociative();
         } catch (QUI\Database\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
 
@@ -1656,12 +1655,12 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 }
 
                 // delete database entries
-                QUI::getDataBase()->delete(
+                QUI::getDataBaseConnection()->delete(
                     $this->Media->getTable(),
                     ['id' => $id]
                 );
 
-                QUI::getDataBase()->delete(
+                QUI::getDataBaseConnection()->delete(
                     $this->Media->getTable('relations'),
                     ['child' => $id]
                 );
@@ -1671,12 +1670,12 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         // delete the own database entries
-        QUI::getDataBase()->delete(
+        QUI::getDataBaseConnection()->delete(
             $this->Media->getTable(),
             ['id' => $this->getId()]
         );
 
-        QUI::getDataBase()->delete(
+        QUI::getDataBaseConnection()->delete(
             $this->Media->getTable('relations'),
             ['child' => $this->getId()]
         );

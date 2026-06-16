@@ -1031,15 +1031,19 @@ class Utils
      */
     public static function checkReplace(QUI\Projects\Media $Media, int $fileId, array $uploadParams): void
     {
-        $result = QUI::getDataBase()->fetch([
-            'from' => $Media->getTable(),
-            'where' => [
-                'id' => $fileId
-            ],
-            'limit' => 1
-        ]);
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $QueryBuilder = $Connection->createQueryBuilder();
+        $data = $QueryBuilder
+            ->select("*")
+            ->from($Platform->quoteSingleIdentifier($Media->getTable()))
+            ->where($QueryBuilder->expr()->eq($Platform->quoteSingleIdentifier("id"), ":id"))
+            ->setParameter("id", $fileId)
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchAssociative();
 
-        if (!isset($result[0])) {
+        if ($data === false) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/core',
@@ -1049,8 +1053,6 @@ class Utils
                 ErrorCodes::FILE_NOT_FOUND
             );
         }
-
-        $data = $result[0];
 
         // if the mimetype is the same, no check for renaming
         // so, the check is finish
@@ -1104,49 +1106,44 @@ class Utils
     {
         $mediaTable = $Project->getMedia()->getTable();
 
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+
         try {
-            $result = QUI::getDataBase()->fetch([
-                'count' => 'id',
-                'from' => $mediaTable,
-                'where' => [
-                    'type' => 'folder'
-                ]
-            ]);
-        } catch (QUI\Exception) {
+            $count = $Connection->createQueryBuilder()
+                ->select("COUNT(" . $Platform->quoteSingleIdentifier("id") . ")")
+                ->from($Platform->quoteSingleIdentifier($mediaTable))
+                ->where($Platform->quoteSingleIdentifier("type") . " = :type")
+                ->setParameter("type", "folder")
+                ->executeQuery()
+                ->fetchOne();
+        } catch (\Doctrine\DBAL\Exception) {
             return 0;
         }
 
-        if (isset($result[0])) {
-            return (int)$result[0]['id'];
-        }
-
-        return 0;
+        return (int)$count;
     }
 
     public static function countFilesForProject(QUI\Projects\Project $Project): int
     {
         $mediaTable = $Project->getMedia()->getTable();
 
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+
         try {
-            $result = QUI::getDataBase()->fetch([
-                'count' => 'id',
-                'from' => $mediaTable,
-                'where' => [
-                    'type' => [
-                        'type' => 'NOT',
-                        'value' => 'folder'
-                    ]
-                ]
-            ]);
-        } catch (QUI\Exception) {
+            $count = $Connection->createQueryBuilder()
+                ->select("COUNT(" . $Platform->quoteSingleIdentifier("id") . ")")
+                ->from($Platform->quoteSingleIdentifier($mediaTable))
+                ->where($Platform->quoteSingleIdentifier("type") . " <> :type")
+                ->setParameter("type", "folder")
+                ->executeQuery()
+                ->fetchOne();
+        } catch (\Doctrine\DBAL\Exception) {
             return 0;
         }
 
-        if (isset($result[0])) {
-            return (int)$result[0]['id'];
-        }
-
-        return 0;
+        return (int)$count;
     }
 
     /**
@@ -1214,28 +1211,25 @@ class Utils
     {
         $table = $Project->getMedia()->getTable();
 
-        $query = "
-        SELECT
-        (case
-             /* Count all 'image/%' mimetypes as image */
-             WHEN `mime_type` LIKE 'image/%' THEN 'image'
-             else `mime_type` END
-          ) as mime_type
-          , COUNT(id) as count
-        FROM `$table`
-        WHERE `type` != 'folder'
-        GROUP BY
-                            (case
-             /* Group all 'image/%' mimetypes as image */
-             WHEN `mime_type` LIKE 'image/%' THEN 'image'
-             else `mime_type` END
-          )
-        ;
-        ";
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $mimeType = $Platform->quoteSingleIdentifier("mime_type");
+        $type = $Platform->quoteSingleIdentifier("type");
+        $id = $Platform->quoteSingleIdentifier("id");
+        $fileTypeExpression = "CASE WHEN " . $mimeType . " LIKE :imageMimeType THEN :imageType ELSE " . $mimeType . " END";
+
+        $query = "SELECT " . $fileTypeExpression . " AS " . $mimeType . ", COUNT(" . $id . ") AS " . $Platform->quoteSingleIdentifier("count")
+            . " FROM " . $Platform->quoteSingleIdentifier($table)
+            . " WHERE " . $type . " <> :folderType"
+            . " GROUP BY " . $fileTypeExpression;
 
         try {
-            $result = QUI::getDataBase()->fetchSQL($query);
-        } catch (QUI\Exception) {
+            $result = $Connection->executeQuery($query, [
+                "imageMimeType" => "image/%",
+                "imageType" => "image",
+                "folderType" => "folder"
+            ])->fetchAllAssociative();
+        } catch (\Doctrine\DBAL\Exception) {
             return [];
         }
 

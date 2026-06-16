@@ -8,7 +8,6 @@ namespace QUI\Projects;
 
 use DOMElement;
 use DOMXPath;
-use PDO;
 use QUI;
 use QUI\Controls\Buttons\Button;
 use QUI\Controls\Buttons\Separator;
@@ -19,10 +18,14 @@ use QUI\Projects\Site\Edit;
 use QUI\Utils\Text\XML;
 
 use function count;
-use function end;
 use function explode;
 use function file_exists;
 use function implode;
+use function in_array;
+use function is_numeric;
+use function preg_match;
+use function strtolower;
+use function trim;
 use function method_exists;
 
 /**
@@ -442,7 +445,8 @@ class Sites
      */
     public static function search(string $search, array $params = []): array | int
     {
-        $DataBase = QUI::getDataBase();
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
 
         $page = 1;
         $limit = 50;
@@ -523,30 +527,88 @@ class Sites
             }
         }
 
-        $search = '%' . $search . '%';
-        $query = '';
+        $rawSearch = $search;
+        $likeSearch = "%" . $rawSearch . "%";
+        $textFields = ["name", "title", "short", "content", "c_user", "e_user"];
+        $numericFields = ["id"];
+        $dateFields = ["c_date", "e_date"];
+        $booleanSearch = null;
+        $normalizedSearch = strtolower(trim($rawSearch));
+
+        if (in_array($normalizedSearch, ["1", "true", "yes", "y", "on"], true)) {
+            $booleanSearch = 1;
+        } elseif (in_array($normalizedSearch, ["0", "false", "no", "n", "off"], true)) {
+            $booleanSearch = 0;
+        }
+
+        $dateSearch = false;
+
+        if (preg_match("/^\d{4}-\d{2}-\d{2}$/", $rawSearch)) {
+            $dateSearch = \DateTimeImmutable::createFromFormat("!Y-m-d", $rawSearch);
+        }
+
+        $queryParts = [];
+        $queryParams = [];
+        $tableIndex = 0;
 
         foreach ($tables as $table) {
-            $where = '';
+            $whereParts = [];
+            $projectParam = "project" . $tableIndex;
 
             foreach ($fields as $field) {
-                $where .= $field . ' LIKE :search';
+                $quotedField = $Platform->quoteSingleIdentifier($field);
+                $searchParam = "search" . $tableIndex . "_" . $field;
 
-                if ($field !== end($fields)) {
-                    $where .= ' OR ';
+                if (in_array($field, $textFields, true)) {
+                    $whereParts[] = $quotedField . " LIKE :" . $searchParam;
+                    $queryParams[$searchParam] = $likeSearch;
+                    continue;
+                }
+
+                if (in_array($field, $numericFields, true) && is_numeric($rawSearch)) {
+                    $whereParts[] = $quotedField . " = :" . $searchParam;
+                    $queryParams[$searchParam] = (int)$rawSearch;
+                    continue;
+                }
+
+                if ($field === "active" && $booleanSearch !== null) {
+                    $whereParts[] = $quotedField . " = :" . $searchParam;
+                    $queryParams[$searchParam] = $booleanSearch;
+                    continue;
+                }
+
+                if (in_array($field, $dateFields, true) && $dateSearch instanceof \DateTimeImmutable) {
+                    $dateStartParam = $searchParam . "_start";
+                    $dateEndParam = $searchParam . "_end";
+                    $whereParts[] = "(" . $quotedField . " >= :" . $dateStartParam . " AND " . $quotedField . " < :" . $dateEndParam . ")";
+                    $queryParams[$dateStartParam] = $dateSearch->format("Y-m-d 00:00:00");
+                    $queryParams[$dateEndParam] = $dateSearch->modify("+1 day")->format("Y-m-d 00:00:00");
                 }
             }
 
-            $query .= '(SELECT
-                            "' . $table['project'] . ' (' . $table['lang'] . ')" as "project",
-                            ' . implode(',', $selectList) . '
-                        FROM `' . $table['table'] . '`
-                        WHERE (' . $where . ') AND deleted = 0) ';
-
-            if ($table !== end($tables)) {
-                $query .= ' UNION ';
+            if (empty($whereParts)) {
+                $tableIndex++;
+                continue;
             }
+
+            $queryParams[$projectParam] = $table["project"] . " (" . $table["lang"] . ")";
+
+            $queryParts[] = "(SELECT\n                    :" . $projectParam . " AS " . $Platform->quoteSingleIdentifier("project") . ",\n                    " . implode(
+                ",",
+                array_map(
+                    static fn($field) => $Platform->quoteSingleIdentifier($field),
+                    $selectList
+                )
+            ) . "\n                FROM " . $Platform->quoteSingleIdentifier($table["table"]) . "\n                WHERE (" . implode(" OR ", $whereParts) . ")\n                    AND " . $Platform->quoteSingleIdentifier("deleted") . " = 0)";
+
+            $tableIndex++;
         }
+
+        if (empty($queryParts)) {
+            return isset($params["count"]) ? 0 : [];
+        }
+
+        $query = implode(" UNION ", $queryParts);
 
         // limit, pages
         if (!isset($params['count'])) {
@@ -556,18 +618,11 @@ class Sites
                 $page = 0;
             }
 
-            $query .= ' LIMIT ' . ($page * $limit) . ',' . $limit;
+            $query = $Platform->modifyLimitQuery($query, $limit, $page * $limit);
         }
 
 
-        $PDO = $DataBase->getPDO();
-        $Stmt = $PDO->prepare($query);
-
-        $Stmt->execute([
-            ':search' => $search
-        ]);
-
-        $result = $Stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $Connection->executeQuery($query, $queryParams)->fetchAllAssociative();
 
         if (isset($params['count'])) {
             return count($result);

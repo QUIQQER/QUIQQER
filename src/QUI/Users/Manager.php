@@ -1782,7 +1782,9 @@ class Manager
                 $start = (int)$params['start'];
             }
 
-            $query .= ' LIMIT ' . $start . ', ' . $max;
+            $query = QUI::getDataBaseConnection()
+                ->getDatabasePlatform()
+                ->modifyLimitQuery($query, $max, $start);
         }
 
         try {

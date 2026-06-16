@@ -70,65 +70,54 @@ QUI::getAjax()->registerFunction(
         }
 
         $sortBy = strtoupper($sortBy) === 'ASC' ? 'ASC' : 'DESC';
-
-        $where = [];
-        $whereOr = [];
-
-        if ($search !== '') {
-            $whereOr = [
-                'subject' => [
-                    'type' => '%LIKE%',
-                    'value' => $search
-                ],
-                'body' => [
-                    'type' => '%LIKE%',
-                    'value' => $search
-                ],
-                'text' => [
-                    'type' => '%LIKE%',
-                    'value' => $search
-                ],
-                'mailto' => [
-                    'type' => '%LIKE%',
-                    'value' => $search
-                ],
-                'from' => [
-                    'type' => '%LIKE%',
-                    'value' => $search
-                ],
-                'fromName' => [
-                    'type' => '%LIKE%',
-                    'value' => $search
-                ]
-            ];
-        }
-
         $start = ($page - 1) * $limit;
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $searchFields = ['subject', 'body', 'text', 'mailto', 'from', 'fromName'];
 
-        $result = QUI::getDataBase()->fetch([
-            'select' => ['id', 'subject', 'lastsend', 'retry', 'status', 'mailto'],
-            'from' => Queue::table(),
-            'where' => $where,
-            'where_or' => $whereOr,
-            'limit' => $start . ',' . $limit,
-            'order' => $sortOn . ' ' . $sortBy
-        ]);
+        $buildSearch = static function (\Doctrine\DBAL\Query\QueryBuilder $QueryBuilder) use (
+            $search,
+            $searchFields,
+            $Platform
+        ): void {
+            if ($search === '') {
+                return;
+            }
 
-        $countResult = QUI::getDataBase()->fetch([
-            'from' => Queue::table(),
-            'where' => $where,
-            'where_or' => $whereOr,
-            'count' => [
-                'select' => 'id',
-                'as' => 'count'
-            ]
-        ]);
+            $orParts = [];
 
-        $total = 0;
+            foreach ($searchFields as $field) {
+                $orParts[] = $Platform->quoteSingleIdentifier($field) . ' LIKE :search';
+            }
 
-        if (isset($countResult[0]['count'])) {
-            $total = (int)$countResult[0]['count'];
-        }
+            $QueryBuilder
+                ->andWhere($QueryBuilder->expr()->or(...$orParts))
+                ->setParameter('search', '%' . $search . '%');
+        };
+
+        $QueryBuilder = $Connection->createQueryBuilder()
+            ->select(
+                $Platform->quoteSingleIdentifier('id'),
+                $Platform->quoteSingleIdentifier('subject'),
+                $Platform->quoteSingleIdentifier('lastsend'),
+                $Platform->quoteSingleIdentifier('retry'),
+                $Platform->quoteSingleIdentifier('status'),
+                $Platform->quoteSingleIdentifier('mailto')
+            )
+            ->from($Platform->quoteSingleIdentifier(Queue::table()))
+            ->orderBy($Platform->quoteSingleIdentifier($sortOn), $sortBy)
+            ->setFirstResult($start)
+            ->setMaxResults($limit);
+
+        $buildSearch($QueryBuilder);
+        $result = $QueryBuilder->executeQuery()->fetchAllAssociative();
+
+        $CountQueryBuilder = $Connection->createQueryBuilder()
+            ->select('COUNT(' . $Platform->quoteSingleIdentifier('id') . ')')
+            ->from($Platform->quoteSingleIdentifier(Queue::table()));
+
+        $buildSearch($CountQueryBuilder);
+        $total = (int)$CountQueryBuilder->executeQuery()->fetchOne();
 
         $statusMap = [
             Queue::STATUS_ADDED => QUI::getLocale()->get('quiqqer/core', 'mailqueue.status.added'),

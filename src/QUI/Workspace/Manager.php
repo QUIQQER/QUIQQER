@@ -48,12 +48,19 @@ class Manager
                     return;
                 }
 
-                $Connection = QUI::getDataBaseConnection();
-                $Platform = $Connection->getDatabasePlatform();
-                $Connection->executeStatement(
-                    'ALTER TABLE ' . QUI\Utils\Doctrine::quoteIdentifier($tableName)
-                    . ' MODIFY ' . $Platform->quoteSingleIdentifier('data') . ' TEXT'
-                );
+                $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff(
+                    $Table,
+                    changedColumns: [
+                        'data' => new \Doctrine\DBAL\Schema\ColumnDiff(
+                            $Table->getColumn('data'),
+                            new \Doctrine\DBAL\Schema\Column(
+                                'data',
+                                \Doctrine\DBAL\Types\Type::getType('text'),
+                                ['notnull' => false]
+                            )
+                        )
+                    ]
+                ));
 
                 return;
             }
