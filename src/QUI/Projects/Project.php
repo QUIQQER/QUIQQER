@@ -1162,10 +1162,15 @@ class Project implements \Stringable
             $column = $Platform->quoteSingleIdentifier((string)$field);
 
             if (is_array($data)) {
-                $type = $data["type"] ?? "";
+                $type = strtoupper((string)($data["type"] ?? ""));
                 $value = $data["value"] ?? null;
 
-                if ($type === "IN" && is_array($value)) {
+                if ($type === "" && self::isListArray($data)) {
+                    $type = "IN";
+                    $value = $data;
+                }
+
+                if (($type === "IN" || $type === "NOT IN") && is_array($value)) {
                     $placeholders = [];
 
                     foreach ($value as $valueIndex => $entry) {
@@ -1175,15 +1180,30 @@ class Project implements \Stringable
                     }
 
                     if (!empty($placeholders)) {
-                        $QueryBuilder->{$method}($column . " IN (" . implode(",", $placeholders) . ")");
+                        $operator = $type === "NOT IN" ? " NOT IN " : " IN ";
+                        $QueryBuilder->{$method}($column . $operator . "(" . implode(",", $placeholders) . ")");
                     }
 
                     $index++;
                     continue;
                 }
 
-                if ($type === "NOT") {
+                if ($type === "NOT" || $type === "!=" || $type === "<>") {
                     $QueryBuilder->{$method}($column . " <> :" . $parameter);
+                    $QueryBuilder->setParameter($parameter, $value);
+                    $index++;
+                    continue;
+                }
+
+                if (in_array($type, [">", ">=", "<", "<="], true)) {
+                    $QueryBuilder->{$method}($column . " " . $type . " :" . $parameter);
+                    $QueryBuilder->setParameter($parameter, $value);
+                    $index++;
+                    continue;
+                }
+
+                if ($type === "LIKE") {
+                    $QueryBuilder->{$method}($column . " LIKE :" . $parameter);
                     $QueryBuilder->setParameter($parameter, $value);
                     $index++;
                     continue;
@@ -1195,12 +1215,58 @@ class Project implements \Stringable
                     $index++;
                     continue;
                 }
+
+                if ($type === "LIKE%") {
+                    $QueryBuilder->{$method}($column . " LIKE :" . $parameter);
+                    $QueryBuilder->setParameter($parameter, $value . "%");
+                    $index++;
+                    continue;
+                }
+
+                if ($type === "%LIKE") {
+                    $QueryBuilder->{$method}($column . " LIKE :" . $parameter);
+                    $QueryBuilder->setParameter($parameter, "%" . $value);
+                    $index++;
+                    continue;
+                }
+
+                if (array_key_exists("value", $data) && !is_array($value)) {
+                    $QueryBuilder->{$method}($column . " = :" . $parameter);
+                    $QueryBuilder->setParameter($parameter, $value);
+                    $index++;
+                    continue;
+                }
+
+                QUI\System\Log::addError("Unsupported project site query condition skipped.", [
+                    "caller" => __METHOD__,
+                    "field" => (string)$field,
+                    "condition" => $data,
+                    "method" => $method
+                ]);
+
+                $index++;
+                continue;
             }
 
             $QueryBuilder->{$method}($column . " = :" . $parameter);
             $QueryBuilder->setParameter($parameter, $data);
             $index++;
         }
+    }
+
+    private static function isListArray(array $data): bool
+    {
+        $index = 0;
+
+        foreach (array_keys($data) as $key) {
+            if ($key !== $index) {
+                return false;
+            }
+
+            $index++;
+        }
+
+        return true;
     }
 
 
