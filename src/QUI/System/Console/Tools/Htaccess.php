@@ -6,7 +6,6 @@
 
 namespace QUI\System\Console\Tools;
 
-use Exception;
 use QUI;
 
 use function count;
@@ -19,7 +18,6 @@ use function implode;
 use function ltrim;
 use function parse_ini_file;
 use function str_replace;
-use function substr;
 use function trim;
 
 /**
@@ -55,19 +53,12 @@ class Htaccess extends QUI\System\Console\Tool
             file_put_contents(ETC_DIR . 'htaccess.custom.php', "#<?php exit; ?>");
         }
 
-        $oldTemplate = false;
         $config = parse_ini_file(ETC_DIR . "conf.ini.php", true);
 
         if (!isset($config['webserver']['type'])) {
             $this->writeLn('Webservertype is not configured!', "red");
 
             return;
-        }
-
-        $webserverType = $config['webserver']['type'];
-
-        if ($webserverType == "apache2.2") {
-            $oldTemplate = true;
         }
 
         //
@@ -130,120 +121,12 @@ class Htaccess extends QUI\System\Console\Tool
             QUI\System\Log::addError($exception->getMessage());
         }
 
-        if ($oldTemplate) {
-            $htaccessContent .= $this->templateOld();
-        } else {
-            $htaccessContent .= $this->template();
-        }
+        $htaccessContent .= $this->template();
 
         file_put_contents($htaccessFile, $htaccessContent);
 
         $this->writeLn();
         $this->resetColor();
-    }
-
-    protected function templateOld(): string
-    {
-        $URL_DIR = URL_DIR;
-        $URL_LIB_DIR = URL_LIB_DIR;
-        $URL_BIN_DIR = URL_BIN_DIR;
-        $URL_SYS_DIR = URL_SYS_DIR;
-        $URL_VAR_DIR = URL_VAR_DIR;
-
-        if ($URL_DIR != '/') {
-            $URL_LIB_DIR = str_replace($URL_DIR, '', URL_LIB_DIR);
-            $URL_BIN_DIR = str_replace($URL_DIR, '', URL_BIN_DIR);
-            $URL_SYS_DIR = str_replace($URL_DIR, '', URL_SYS_DIR);
-            $URL_VAR_DIR = str_replace($URL_DIR, '', URL_VAR_DIR);
-        }
-
-        $URL_LIB_DIR = ltrim($URL_LIB_DIR, '/');
-        $URL_BIN_DIR = ltrim($URL_BIN_DIR, '/');
-        $URL_SYS_DIR = ltrim($URL_SYS_DIR, '/');
-        $URL_VAR_DIR = ltrim($URL_VAR_DIR, '/');
-
-        $quiqqerLib = URL_OPT_DIR . 'quiqqer/core/src';
-        $quiqqerBin = URL_OPT_DIR . 'quiqqer/core/bin';
-        $quiqqerSys = URL_OPT_DIR . 'quiqqer/core/admin';
-        $quiqqerDir = URL_OPT_DIR . 'quiqqer/core';
-
-        $URL_SYS_ADMIN_DIR = trim($URL_SYS_DIR, '/');
-
-        # Check for QUIQQERs webserver configuration
-        $forceHttps = "";
-        if (QUI::conf("webserver", "forceHttps")) {
-            $forceHttps = "# Redirect non https traffic to https. For a safer web." . PHP_EOL;
-            $forceHttps .= "    RewriteCond %{HTTPS} !on" . PHP_EOL;
-            $forceHttps .= "    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]" . PHP_EOL;
-        }
-
-        return "
-<IfModule mod_rewrite.c>
-
-    SetEnv HTTP_MOD_REWRITE On
-
-    RewriteEngine On
-    RewriteBase {$URL_DIR}
-    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-    
-    {$forceHttps}
-    
-    RewriteRule ^{$URL_SYS_ADMIN_DIR}$ {$URL_DIR}{$URL_SYS_DIR} [R=301,L]
-
-    #Block .git directories and their contents
-    RewriteCond %{REQUEST_URI} ^(.*\/)?.git(\/.*)?$ [OR]
-    RewriteCond %{REQUEST_URI} ^/console
-    RewriteRule ^(.*)$ – [L,R=403]
-
-    # pass-through if another rewrite rule has been applied already
-    RewriteCond %{ENV:REDIRECT_STATUS} 200
-    RewriteRule ^ - [L]
-
-    ## bin dir
-    RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [L]" .
-
-            # This is a temporary workaround. needs to be removed when the media upload is relocated
-            "
-    ## lib dir
-    RewriteRule ^lib/(.*)$ {$quiqqerLib}/$1 [L]
-
-    ## admin
-    RewriteRule ^{$URL_SYS_DIR}$ {$quiqqerSys}/index.php [L]
-
-    RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}image.php$
-    RewriteRule ^(.*)$ {$URL_DIR}image.php?%{QUERY_STRING} [L]
-
-    RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}$ [OR]
-    RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}index.php$ [OR]
-    RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}image.php$ [OR]
-    RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}ajax.php$ [OR]
-    RewriteRule ^{$URL_SYS_DIR}(.*)$ {$quiqqerSys}/$1 [L]
-
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ index.php?_url=$1&%{QUERY_STRING} [L]
-
-    # quiqqer API allowed requests
-    RewriteCond %{REQUEST_URI} !^/.well-known/.*$ 
-    RewriteCond %{REQUEST_URI} !^(.*)bin(.*)$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}media/cache/(.*)$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}packages/ckeditor/(.*)$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}packages/pcsg/ckeditor/(.*)$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}([a-zA-Z-\s0-9_+]*)\.html$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}([a-zA-Z-\s0-9_+]*)\.txt$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}favicon\.ico$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}robots\.txt$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}image\.php$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}index\.php$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}ajax\.php$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}.*\.crt$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}.*\.pem$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}([^/]*)$
-    
-    RewriteRule ^(.*)$ {$URL_DIR}?error=403 [R=301,L]
-</IfModule>
-        ";
     }
 
     /**
@@ -359,7 +242,6 @@ class Htaccess extends QUI\System\Console\Tool
     public function hasModifications(): bool
     {
         $htaccessFile = CMS_DIR . '.htaccess';
-        $oldTemplate = false;
 
         // Read old htaccess content and remove header
         $oldHtaccessContent = trim(file_get_contents($htaccessFile));
@@ -379,29 +261,6 @@ class Htaccess extends QUI\System\Console\Tool
         $oldHtaccessContent = implode(PHP_EOL, $lines);
 
 
-        try {
-            $version = QUI\Utils\System\Webserver::detectApacheVersion();
-
-            if (!isset($version[1])) {
-                throw new QUI\Exception("Couldn't detect Webserver version");
-            }
-
-            $this->writeLn("Apache version detected : " . $version[0] . "." . $version[1]);
-            if ($version[1] <= 2) {
-                $oldTemplate = true;
-            }
-        } catch (Exception) {
-            $this->writeLn("Please select your Apache Version.");
-            $this->writeLn("[1] Apache 2.3 and higher.");
-            $this->writeLn("[2] Apache 2.2 and lower.");
-            $this->writeLn("Please type a number [1]");
-            $input = $this->readInput();
-            if ($input === "2") {
-                $oldTemplate = true;
-            }
-        }
-
-
         //
         // Generate htaccess file
         //
@@ -415,11 +274,7 @@ class Htaccess extends QUI\System\Console\Tool
             $htaccessContent .= "\n\n";
         }
 
-        if ($oldTemplate) {
-            $htaccessContent .= $this->templateOld();
-        } else {
-            $htaccessContent .= $this->template();
-        }
+        $htaccessContent .= $this->template();
 
         if (trim($oldHtaccessContent) === trim($htaccessContent)) {
             return false;
