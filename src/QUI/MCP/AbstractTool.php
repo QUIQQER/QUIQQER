@@ -125,7 +125,7 @@ abstract class AbstractTool implements ToolInterface
                     'urlWithHost' => $LinkedSite->getUrlRewrittenWithHost(),
                     'source' => $lang === $currentLang ? 'current' : 'multilingual'
                 ];
-            } catch (QUI\Exception) {
+            } catch (\Throwable) {
                 $result[$lang] = [
                     'id' => (int)$linkedId,
                     'project' => $projectName,
