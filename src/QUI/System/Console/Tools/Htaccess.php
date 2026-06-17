@@ -135,105 +135,26 @@ class Htaccess extends QUI\System\Console\Tool
     protected function template(): string
     {
         $URL_DIR = URL_DIR;
-        $URL_LIB_DIR = URL_LIB_DIR;
-        $URL_BIN_DIR = URL_BIN_DIR;
         $URL_SYS_DIR = URL_SYS_DIR;
-        $URL_VAR_DIR = URL_VAR_DIR;
 
         if ($URL_DIR != '/') {
-            $URL_LIB_DIR = str_replace($URL_DIR, '', URL_LIB_DIR);
-            $URL_BIN_DIR = str_replace($URL_DIR, '', URL_BIN_DIR);
             $URL_SYS_DIR = str_replace($URL_DIR, '', URL_SYS_DIR);
-            $URL_VAR_DIR = str_replace($URL_DIR, '', URL_VAR_DIR);
         }
 
-        $URL_LIB_DIR = ltrim($URL_LIB_DIR, '/');
-        $URL_BIN_DIR = ltrim($URL_BIN_DIR, '/');
         $URL_SYS_DIR = ltrim($URL_SYS_DIR, '/');
-        $URL_VAR_DIR = ltrim($URL_VAR_DIR, '/');
 
-        $quiqqerLib = URL_OPT_DIR . 'quiqqer/core/src';
-        $quiqqerBin = URL_OPT_DIR . 'quiqqer/core/bin';
-        $quiqqerSys = URL_OPT_DIR . 'quiqqer/core/admin';
-        $quiqqerDir = URL_OPT_DIR . 'quiqqer/core';
+        $Engine = QUI::getTemplateManager()->getEngine();
+        $Engine->assign([
+            'forceHttps' => (bool)QUI::conf("webserver", "forceHttps"),
+            'quiqqerBin' => URL_OPT_DIR . 'quiqqer/core/bin',
+            'quiqqerLib' => URL_OPT_DIR . 'quiqqer/core/src',
+            'quiqqerSys' => URL_OPT_DIR . 'quiqqer/core/admin',
+            'URL_DIR' => $URL_DIR,
+            'URL_SYS_ADMIN_DIR' => trim($URL_SYS_DIR, '/'),
+            'URL_SYS_DIR' => $URL_SYS_DIR,
+        ]);
 
-        $URL_SYS_ADMIN_DIR = trim($URL_SYS_DIR, '/');
-
-
-        # Check for QUIQQERs webserver configuration
-        $forceHttps = "";
-
-        if (QUI::conf("webserver", "forceHttps")) {
-            $forceHttps = "# Redirect non https traffic to https. For a safer web." . PHP_EOL;
-            $forceHttps .= "    RewriteCond %{HTTPS} !on" . PHP_EOL;
-            $forceHttps .= "    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,END]" . PHP_EOL;
-        }
-
-
-        return "
-<IfModule mod_rewrite.c>
-
-    SetEnv HTTP_MOD_REWRITE On
-
-    RewriteEngine On
-    RewriteBase {$URL_DIR}
-    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-    
-    {$forceHttps}
-    
-    RewriteRule ^{$URL_SYS_ADMIN_DIR}$ {$URL_DIR}{$URL_SYS_DIR} [R=301,END]
-
-    #Block .git directories and their contents
-    RewriteCond %{REQUEST_URI} ^(.*\/)?.git(\/.*)?$ [OR]
-    RewriteCond %{REQUEST_URI} ^/console
-    RewriteRule ^(.*)$ – [END,R=403]
-
-    ## bin dir
-    RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [END]" .
-
-            # This is a temporary workaround. needs to be removed when the media upload is relocated
-            "
-    ## lib dir
-    RewriteRule ^lib/(.*)$ {$quiqqerLib}/$1 [END]
-
-
-    ## admin
-    RewriteRule ^{$URL_SYS_DIR}$ {$quiqqerSys}/index.php [END]
-
-    RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}image.php$
-    RewriteRule ^(.*)$ {$URL_DIR}image.php?%{QUERY_STRING} [END]
-
-    RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}$ [OR]
-    RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}index.php$ [OR]
-    RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}image.php$ [OR]
-    RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}ajax.php$ [OR]
-    RewriteRule ^{$URL_SYS_DIR}(.*)$ {$quiqqerSys}/$1 [END]
-
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ index.php?_url=$1&%{QUERY_STRING} [END]
-    
-    RewriteCond %{REQUEST_URI} !^/.well-known/.*$
-    RewriteCond %{REQUEST_URI} !^(.*)bin(.*)$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}media/cache/(.*)$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}packages/ckeditor/(.*)$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}packages/pcsg/ckeditor/(.*)$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}([a-zA-Z-\s0-9_+]*)\.html$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}([a-zA-Z-\s0-9_+]*)\.txt$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}.*\.crt$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}.*\.pem$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}favicon\.ico$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}robots\.txt$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}image\.php$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}index\.php$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}ajax\.php$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}ajaxBundler\.php$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}([^/]*)$
-
-    RewriteRule ^(.*)$ {$URL_DIR}?error=403 [R=301,END]
-</IfModule>
-        ";
+        return $Engine->fetch(OPT_DIR . 'quiqqer/core/src/templates/htaccess.tpl');
     }
 
     /**
