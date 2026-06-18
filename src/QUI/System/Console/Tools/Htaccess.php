@@ -10,13 +10,17 @@ use QUI;
 
 use function count;
 use function date;
+use function dirname;
 use function explode;
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
 use function implode;
+use function is_dir;
 use function ltrim;
+use function mkdir;
 use function parse_ini_file;
+use function rename;
 use function str_replace;
 use function trim;
 
@@ -47,10 +51,19 @@ class Htaccess extends QUI\System\Console\Tool
 
         $htaccessBackupFile = VAR_DIR . 'backup/htaccess_' . date('Y-m-d__H_i_s');
         $htaccessFile = CMS_DIR . '.htaccess';
+        $customHtaccessFile = $this->customHtaccessFile();
 
         # Create the custom htaccess file if it does not exist
-        if (!file_exists(ETC_DIR . 'htaccess.custom.php')) {
-            file_put_contents(ETC_DIR . 'htaccess.custom.php', "#<?php exit; ?>");
+        $this->migrateCustomHtaccessFile();
+
+        if (!file_exists($customHtaccessFile)) {
+            $customHtaccessDir = dirname($customHtaccessFile);
+
+            if (!is_dir($customHtaccessDir)) {
+                mkdir($customHtaccessDir, 0755, true);
+            }
+
+            file_put_contents($customHtaccessFile, "#<?php exit; ?>");
         }
 
         $config = parse_ini_file(ETC_DIR . "conf.ini.php", true);
@@ -108,9 +121,9 @@ class Htaccess extends QUI\System\Console\Tool
 
 
         // Custom htaccess
-        if (file_exists(ETC_DIR . 'htaccess.custom.php')) {
-            $htaccessContent .= "\n\n# Custom htaccess (" . ETC_DIR . 'htaccess.custom.php' . ")\n";
-            $htaccessContent .= file_get_contents(ETC_DIR . 'htaccess.custom.php');
+        if (file_exists($customHtaccessFile)) {
+            $htaccessContent .= "\n\n# Custom htaccess (" . $customHtaccessFile . ")\n";
+            $htaccessContent .= file_get_contents($customHtaccessFile);
             $htaccessContent .= "\n\n";
         }
 
@@ -163,6 +176,9 @@ class Htaccess extends QUI\System\Console\Tool
     public function hasModifications(): bool
     {
         $htaccessFile = CMS_DIR . '.htaccess';
+        $customHtaccessFile = $this->customHtaccessFile();
+
+        $this->migrateCustomHtaccessFile();
 
         // Read old htaccess content and remove header
         $oldHtaccessContent = trim(file_get_contents($htaccessFile));
@@ -189,9 +205,9 @@ class Htaccess extends QUI\System\Console\Tool
 
 
         // Custom htaccess
-        if (file_exists(ETC_DIR . 'htaccess.custom.php')) {
-            $htaccessContent .= "\n\n# Custom htaccess (" . ETC_DIR . 'htaccess.custom.php' . ")\n";
-            $htaccessContent .= file_get_contents(ETC_DIR . 'htaccess.custom.php');
+        if (file_exists($customHtaccessFile)) {
+            $htaccessContent .= "\n\n# Custom htaccess (" . $customHtaccessFile . ")\n";
+            $htaccessContent .= file_get_contents($customHtaccessFile);
             $htaccessContent .= "\n\n";
         }
 
@@ -203,5 +219,33 @@ class Htaccess extends QUI\System\Console\Tool
 
 
         return true;
+    }
+
+    private function customHtaccessFile(): string
+    {
+        return ETC_DIR . 'webserver/apache/htaccess.custom.php';
+    }
+
+    private function migrateCustomHtaccessFile(): void
+    {
+        $legacyCustomHtaccessFile = ETC_DIR . 'htaccess.custom.php';
+
+        if (!file_exists($legacyCustomHtaccessFile)) {
+            return;
+        }
+
+        $customHtaccessFile = $this->customHtaccessFile();
+
+        if (file_exists($customHtaccessFile)) {
+            return;
+        }
+
+        $customHtaccessDir = dirname($customHtaccessFile);
+
+        if (!is_dir($customHtaccessDir)) {
+            mkdir($customHtaccessDir, 0755, true);
+        }
+
+        rename($legacyCustomHtaccessFile, $customHtaccessFile);
     }
 }
