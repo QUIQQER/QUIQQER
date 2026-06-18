@@ -1,21 +1,14 @@
 <?php
 
-/**
- * \QUI\System\Console\Tools\Htaccess
- */
-
 namespace QUI\System\Console\Tools;
 
 use QUI;
 
-use function count;
 use function date;
 use function dirname;
-use function explode;
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
-use function implode;
 use function is_dir;
 use function ltrim;
 use function mkdir;
@@ -29,9 +22,8 @@ use function trim;
  */
 class Htaccess extends QUI\System\Console\Tool
 {
-    /**
-     * Constructor
-     */
+    private const CUSTOM_HTACCESS_FILE_PATH = ETC_DIR . 'webserver/apache/htaccess.custom.php';
+
     public function __construct()
     {
         $this->systemTool = true;
@@ -51,20 +43,6 @@ class Htaccess extends QUI\System\Console\Tool
 
         $htaccessBackupFile = VAR_DIR . 'backup/htaccess_' . date('Y-m-d__H_i_s');
         $htaccessFile = CMS_DIR . '.htaccess';
-        $customHtaccessFile = $this->customHtaccessFile();
-
-        # Create the custom htaccess file if it does not exist
-        $this->migrateCustomHtaccessFile();
-
-        if (!file_exists($customHtaccessFile)) {
-            $customHtaccessDir = dirname($customHtaccessFile);
-
-            if (!is_dir($customHtaccessDir)) {
-                mkdir($customHtaccessDir, 0755, true);
-            }
-
-            file_put_contents($customHtaccessFile, "#<?php exit; ?>");
-        }
 
         $config = parse_ini_file(ETC_DIR . "conf.ini.php", true);
 
@@ -74,9 +52,7 @@ class Htaccess extends QUI\System\Console\Tool
             return;
         }
 
-        //
-        // generate backup
-        //
+        // create backup
         if (file_exists($htaccessFile)) {
             file_put_contents(
                 $htaccessBackupFile,
@@ -95,57 +71,13 @@ class Htaccess extends QUI\System\Console\Tool
         $this->resetColor();
 
 
-        //
-        // Generate htaccess file
-        //
-        $htaccessContent
-            = '
-#  _______          _________ _______  _______  _______  _______
-# (  ___  )|\     /|\__   __/(  ___  )(  ___  )(  ____ \(  ____ )
-# | (   ) || )   ( |   ) (   | (   ) || (   ) || (    \/| (    )|
-# | |   | || |   | |   | |   | |   | || |   | || (__    | (____)|
-# | |   | || |   | |   | |   | |   | || |   | ||  __)   |     __)
-# | | /\| || |   | |   | |   | | /\| || | /\| || (      | (\ (
-# | (_\ \ || (___) |___) (___| (_\ \ || (_\ \ || (____/\| ) \ \__
-# (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
-#
-# Generated HTACCESS File via QUIQQER
-# Date: ' . date('Y-m-d H:i:s') . '
-#
-# Command to create new htaccess:
-# ./console --tool=quiqqer:htaccess
-#
-# How do I customize the .htaccess file:
-# https://dev.quiqqer.com/quiqqer/core/wikis/htaccess
-#';
-
-
-        // Custom htaccess
-        if (file_exists($customHtaccessFile)) {
-            $htaccessContent .= "\n\n# Custom htaccess (" . $customHtaccessFile . ")\n";
-            $htaccessContent .= file_get_contents($customHtaccessFile);
-            $htaccessContent .= "\n\n";
-        }
-
-        // module API
-        try {
-            QUI::getEvents()->fireEvent('onHtaccessGenerate', [&$htaccessContent]);
-        } catch (\Exception $exception) {
-            QUI\System\Log::addError($exception->getMessage());
-        }
-
-        $htaccessContent .= $this->template();
-
-        file_put_contents($htaccessFile, $htaccessContent);
+        file_put_contents($htaccessFile, $this->generateHtaccessContent());
 
         $this->writeLn();
         $this->resetColor();
     }
 
-    /**
-     * htaccess template
-     */
-    protected function template(): string
+    protected function generateBody(): string
     {
         $URL_DIR = URL_DIR;
         $URL_SYS_DIR = URL_SYS_DIR;
@@ -176,56 +108,78 @@ class Htaccess extends QUI\System\Console\Tool
     public function hasModifications(): bool
     {
         $htaccessFile = CMS_DIR . '.htaccess';
-        $customHtaccessFile = $this->customHtaccessFile();
 
+        return trim(file_get_contents($htaccessFile)) !== trim($this->generateHtaccessContent());
+    }
+
+    private function generateHtaccessContent(): string
+    {
+        $htaccessContent = <<<HTACCESS
+{$this->generateHeader()}
+
+# >>> custom htaccess content >>>
+{$this->getCustomHtaccessContent()}
+# <<< custom htaccess content <<<
+
+
+HTACCESS;
+
+        try {
+            QUI::getEvents()->fireEvent('onHtaccessGenerate', [&$htaccessContent]);
+        } catch (\Exception $exception) {
+            QUI\System\Log::addError($exception->getMessage());
+        }
+
+        return $htaccessContent . $this->generateBody();
+    }
+
+    private function generateHeader(): string
+    {
+        $customHtaccessFilePath = self::CUSTOM_HTACCESS_FILE_PATH;
+
+        return <<<HEADER
+#  _______          _________ _______  _______  _______  _______
+# (  ___  )|\     /|\__   __/(  ___  )(  ___  )(  ____ \(  ____ )
+# | (   ) || )   ( |   ) (   | (   ) || (   ) || (    \/| (    )|
+# | |   | || |   | |   | |   | |   | || |   | || (__    | (____)|
+# | |   | || |   | |   | |   | |   | || |   | ||  __)   |     __)
+# | | /\| || |   | |   | |   | | /\| || | /\| || (      | (\ (
+# | (_\ \ || (___) |___) (___| (_\ \ || (_\ \ || (____/\| ) \ \__
+# (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
+#
+# This htaccess file was automatically generated by QUIQQER.
+# Do not edit this file manually - your changes will be overwritten.
+#
+# You can extend it by doing the following:
+# 1. Edit "$customHtaccessFilePath"
+# 2. Regenerate this file via "./console quiqqer:htaccess" 
+#
+# Further information: https://dev.quiqqer.com/quiqqer/core/wikis/htaccess
+HEADER;
+    }
+
+    private function getCustomHtaccessContent(): string
+    {
         $this->migrateCustomHtaccessFile();
 
-        // Read old htaccess content and remove header
-        $oldHtaccessContent = trim(file_get_contents($htaccessFile));
-        $lines = explode(PHP_EOL, $oldHtaccessContent);
-        $counter = count($lines);
+        if (!file_exists(self::CUSTOM_HTACCESS_FILE_PATH)) {
+            $this->createCustomHtaccessFile(<<<HTACCESS
+#<?php exit; ?>
+# This file will be included into the auto generated .htaccess file
+# You can extend the .htaccess file by editing this file
 
-        for ($i = 0; $i < $counter; $i++) {
-            $line = $lines[$i];
-            if (str_starts_with($line, "#")) {
-                unset($lines[$i]);
-                continue;
-            }
-
-            break;
+HTACCESS
+            );
         }
 
-        $oldHtaccessContent = implode(PHP_EOL, $lines);
-
-
-        //
-        // Generate htaccess file
-        //
-        $htaccessContent = "";
-
-
-        // Custom htaccess
-        if (file_exists($customHtaccessFile)) {
-            $htaccessContent .= "\n\n# Custom htaccess (" . $customHtaccessFile . ")\n";
-            $htaccessContent .= file_get_contents($customHtaccessFile);
-            $htaccessContent .= "\n\n";
-        }
-
-        $htaccessContent .= $this->template();
-
-        if (trim($oldHtaccessContent) === trim($htaccessContent)) {
-            return false;
-        }
-
-
-        return true;
+        return file_get_contents(self::CUSTOM_HTACCESS_FILE_PATH);
     }
 
-    private function customHtaccessFile(): string
-    {
-        return ETC_DIR . 'webserver/apache/htaccess.custom.php';
-    }
-
+    /**
+     * @todo remove migration on next major release (3.x)
+     *
+     * @return void
+     */
     private function migrateCustomHtaccessFile(): void
     {
         $legacyCustomHtaccessFile = ETC_DIR . 'htaccess.custom.php';
@@ -234,18 +188,22 @@ class Htaccess extends QUI\System\Console\Tool
             return;
         }
 
-        $customHtaccessFile = $this->customHtaccessFile();
-
-        if (file_exists($customHtaccessFile)) {
+        if (file_exists(self::CUSTOM_HTACCESS_FILE_PATH)) {
             return;
         }
 
-        $customHtaccessDir = dirname($customHtaccessFile);
+        $this->createCustomHtaccessFile(file_get_contents($legacyCustomHtaccessFile));
+        unlink($legacyCustomHtaccessFile);
+    }
+
+    private function createCustomHtaccessFile(string $content): void
+    {
+        $customHtaccessDir = dirname(self::CUSTOM_HTACCESS_FILE_PATH);
 
         if (!is_dir($customHtaccessDir)) {
             mkdir($customHtaccessDir, 0755, true);
         }
 
-        rename($legacyCustomHtaccessFile, $customHtaccessFile);
+        file_put_contents(self::CUSTOM_HTACCESS_FILE_PATH, $content);
     }
 }
