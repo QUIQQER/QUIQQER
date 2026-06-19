@@ -293,6 +293,9 @@
         <locale name="permission.quiqqer.project.editCustomCSS">
             <de><![CDATA[Darf Custom-CSS ändern.]]></de>
         </locale>
+        <locale name="permission.quiqqer.project.editCustomJS">
+            <de><![CDATA[Darf Custom-JavaScript ändern.]]></de>
+        </locale>
         <locale name="permission.quiqqer.projects.site.view">
             <de><![CDATA[Darf die Seite besuchen.]]></de>
         </locale>
