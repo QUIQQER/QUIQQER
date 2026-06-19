@@ -9,13 +9,12 @@ define('controls/users/Panel', [
     'Users',
     'qui/controls/messages/Attention',
     'qui/controls/windows/Confirm',
-    'qui/controls/windows/Prompt',
-    'qui/controls/buttons/Button',
     'qui/controls/buttons/Switch',
+    'controls/users/CreateWindow',
+    'controls/users/InviteWindow',
     'utils/Template',
     'utils/Controls',
     'Locale',
-    'Permissions',
     'Mustache',
 
     'text!controls/users/Panel.userSearch.html',
@@ -32,15 +31,14 @@ define('controls/users/Panel', [
         Users = arguments[3],
         Attention = arguments[4],
         QUIConfirm = arguments[5],
-        QUIPrompt = arguments[6],
-        QUIButton = arguments[7],
-        QUISwitch = arguments[8],
+        QUISwitch = arguments[6],
+        CreateWindow = arguments[7],
+        InviteWindow = arguments[8],
         Template = arguments[9],
         ControlUtils = arguments[10],
         QUILocale = arguments[11],
-        Permissions = arguments[12],
-        Mustache = arguments[13],
-        userSearchTemplate = arguments[14];
+        Mustache = arguments[12],
+        userSearchTemplate = arguments[13];
 
     /**
      * @class controls/users/Panel
@@ -66,7 +64,8 @@ define('controls/users/Panel', [
             '$gridBlur',
 
             'search',
-            'createUser'
+            'createUser',
+            'inviteUser'
         ],
 
         initialize: function (options) {
@@ -429,79 +428,97 @@ define('controls/users/Panel', [
 
         /**
          * Open the user create dialog
+         *
+         * @return {Promise}
          */
         createUser: function () {
             const self = this;
 
-            new QUIPrompt({
-                name: 'CreateUser',
-                title: QUILocale.get(lg, 'users.panel.create.window.title'),
-                icon: 'fa fa-user',
-                titleicon: false,
-                text: QUILocale.get(lg, 'users.panel.create.window.text'),
-                information: QUILocale.get(lg, 'users.panel.create.window.information'),
+            return new Promise((resolve) => {
+                let handled = false;
 
-                maxWidth: 600,
-                maxHeight: 400,
+                new CreateWindow({
+                    events: {
+                        onCreateSubmit: (Win, username) => {
+                            handled = true;
 
-                check: function (Win) {
-                    Win.Loader.show();
-
-                    Users.existsUsername(Win.getValue(), function (result) {
-                        // Benutzer existiert schon
-                        if (result === true) {
-                            QUI.getMessageHandler(function (MH) {
-                                MH.addAttention(
-                                    QUILocale.get(lg, 'exception.create.user.exists')
-                                );
-                            });
-
-                            Win.Loader.hide();
-                            return;
-                        }
-
-                        Win.fireEvent('onsubmit', [
-                            Win.getValue(),
-                            Win
-                        ]);
-                        Win.close();
-                    });
-
-                    return false;
-                },
-
-                events: {
-                    onOpen: function (Win) {
-                        Win.getContent().getElement('.qui-windows-prompt-information').setStyle('paddingBottom', 20);
-
-                        Win.Loader.show();
-
-
-                        Permissions.hasPermission(
-                            'quiqqer.admin.users.create'
-                        ).then(function (hasPermission) {
-                            if (!hasPermission) {
-                                QUI.getMessageHandler().then(function (MH) {
-                                    MH.addError(
-                                        QUILocale.get('quiqqer/core', 'exception.no.permission')
-                                    );
-                                });
-
+                            Users.createUser(username).then((result) => {
                                 Win.close();
+                                self.openUser(result);
+                                self.load(() => {
+                                    resolve(result);
+                                });
+                            }).catch(() => {
+                                handled = false;
+                                Win.Loader.hide();
+                                resolve(false);
+                            });
+                        },
+
+                        onInvite: (Win) => {
+                            handled = true;
+                            Win.close();
+
+                            self.inviteUser().then(resolve);
+                        },
+
+                        onCancel: () => {
+                            handled = true;
+                            resolve(false);
+                        },
+
+                        onClose: () => {
+                            if (!handled) {
+                                resolve(false);
                             }
-
-                            Win.Loader.hide();
-                        });
-                    },
-
-                    // own event, line 488
-                    onsubmit: function (value) {
-                        Users.createUser(value, function (result) {
-                            self.openUser(result);
-                        });
+                        }
                     }
-                }
-            }).open();
+                }).open();
+            });
+        },
+
+        /**
+         * Open the user invite dialog
+         *
+         * @return {Promise}
+         */
+        inviteUser: function () {
+            const self = this;
+
+            return new Promise((resolve) => {
+                let handled = false;
+
+                new InviteWindow({
+                    events: {
+                        onInviteSubmit: (Win, email, groups) => {
+                            handled = true;
+
+                            Users.inviteUser(email, groups).then((result) => {
+                                Win.close();
+                                self.openUser(result);
+                                self.load(() => {
+                                    resolve(result);
+                                });
+                            }).catch(() => {
+                                handled = false;
+                                Win.Loader.hide();
+                                resolve(false);
+                            });
+                        },
+
+                        onCancel: () => {
+                            handled = true;
+                            self.createUser().then(resolve);
+                        },
+
+                        onClose: () => {
+                            if (!handled) {
+                                resolve(false);
+                            }
+                        }
+                    }
+                }).open();
+            });
         },
 
         /**

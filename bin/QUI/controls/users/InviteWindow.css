@@ -1,0 +1,176 @@
+.quiqqer-users-invite-window-frame .qui-window-popup-buttons {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.quiqqer-users-invite-window-frame .qui-window-popup-buttons:after {
+    display: none;
+}
+
+.quiqqer-users-invite-window-frame .quiqqer-users-create-window-invite-button {
+    margin-right: auto;
+}
+
+.quiqqer-users-invite-window-frame .qui-window-popup-buttons button {
+    flex: 0 0 auto;
+    min-width: 0 !important;
+    width: auto !important;
+}
+
+.quiqqer-users-invite-window-frame .qui-window-popup-buttons button:not(.quiqqer-users-create-window-invite-button) {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+}
+
+.quiqqer-users-create-window {
+    text-align: center;
+}
+
+.quiqqer-users-create-window .qui-windows-prompt {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    text-align: center;
+}
+
+.quiqqer-users-create-window .qui-windows-prompt-icon {
+    display: none;
+}
+
+.quiqqer-users-create-window .qui-windows-prompt-text,
+.quiqqer-users-create-window-title {
+    color: #444;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.35;
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+}
+
+.quiqqer-users-create-window .qui-windows-prompt-information,
+.quiqqer-users-create-window-information {
+    color: #333;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 8px auto 0;
+    max-width: 520px;
+    text-align: center;
+}
+
+.quiqqer-users-create-window .qui-windows-prompt-input {
+    margin-top: 28px;
+    text-align: center;
+    width: 100%;
+}
+
+.quiqqer-users-create-window input[type="text"],
+.quiqqer-users-create-window input[type="email"] {
+    display: block;
+    font-size: 16px;
+    height: 38px;
+    margin: 0 auto;
+    max-width: 360px;
+    padding-left: 14px;
+    padding-right: 14px;
+    text-align: left;
+    width: 100%;
+}
+
+.quiqqer-users-create-window-field {
+    margin-top: 14px;
+}
+
+.quiqqer-users-invite-window {
+    padding: 22px 54px 28px;
+}
+
+.quiqqer-users-invite-window-section {
+    display: flex;
+    gap: 16px;
+    margin: 28px auto 0;
+    max-width: 560px;
+    text-align: left;
+}
+
+.quiqqer-users-invite-window-step {
+    align-items: center;
+    background: #f1f3f5;
+    border: 1px solid #d7dce0;
+    border-radius: 50%;
+    color: #333;
+    display: flex;
+    flex: 0 0 28px;
+    font-weight: 600;
+    height: 28px;
+    justify-content: center;
+    margin-top: 2px;
+    width: 28px;
+}
+
+.quiqqer-users-invite-window-section-body {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.quiqqer-users-invite-window-section-title {
+    color: #333;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.quiqqer-users-invite-window-section-description {
+    color: #555;
+    font-size: 13px;
+    line-height: 1.45;
+    margin-top: 4px;
+}
+
+.quiqqer-users-create-window-groups-select {
+    margin-top: 14px;
+    min-height: 126px;
+}
+
+.quiqqer-users-create-window-groups-select > .fa,
+.quiqqer-users-create-window-groups-select > [class*="fa-group"],
+.quiqqer-users-create-window-groups-select .qui-elements-select-list > .fa,
+.quiqqer-users-create-window-groups-select .qui-elements-select-list > [class*="fa-group"] {
+    display: none;
+}
+
+.quiqqer-users-create-window-groups-select .qui-elements-select {
+    display: flex;
+    flex-direction: column;
+    min-height: 126px;
+    width: 100% !important;
+}
+
+.quiqqer-users-create-window-groups-select .qui-elements-select-list {
+    min-height: 78px;
+    width: 100%;
+}
+
+.quiqqer-users-create-window-groups-select .qui-elements-select-list-search {
+    flex: 0 0 auto;
+    order: 1;
+    width: calc(100% - 52px);
+}
+
+.quiqqer-users-create-window-groups-select .qui-elements-select > button {
+    align-self: flex-end;
+    flex: 0 0 auto;
+    height: 32px;
+    margin-top: -32px;
+    order: 1;
+}
+
+.quiqqer-users-invite-window input[type="email"] {
+    margin-left: 0;
+    margin-right: 0;
+    max-width: 100%;
+}

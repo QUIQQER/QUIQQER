@@ -1690,8 +1690,56 @@
         <locale name="users.panel.create.window.text">
             <en><![CDATA[New username:]]></en>
         </locale>
+        <locale name="users.panel.create.window.submit">
+            <en><![CDATA[Create]]></en>
+        </locale>
         <locale name="users.panel.create.window.information">
-            <en><![CDATA[Enter a new user name. The user is created inactive.]]></en>
+            <en><![CDATA[Create one user with a username or e-mail address. To send login details by e-mail, use Invite user.]]></en>
+        </locale>
+        <locale name="users.panel.create.window.placeholder">
+            <en><![CDATA[Username or e-mail address]]></en>
+        </locale>
+        <locale name="users.panel.create.window.invite.button">
+            <en><![CDATA[Invite user]]></en>
+        </locale>
+        <locale name="users.panel.create.window.value.required">
+            <en><![CDATA[Please enter a username or e-mail address.]]></en>
+        </locale>
+        <locale name="users.panel.invite.window.title">
+            <en><![CDATA[Invite user]]></en>
+        </locale>
+        <locale name="users.panel.invite.window.headline">
+            <en><![CDATA[Invite user by e-mail]]></en>
+        </locale>
+        <locale name="users.panel.invite.window.information">
+            <en><![CDATA[Enter the e-mail address and select the groups. The user receives a password by e-mail and must change it on first login.]]></en>
+        </locale>
+        <locale name="users.panel.invite.window.email.title">
+            <en><![CDATA[Enter e-mail address]]></en>
+        </locale>
+        <locale name="users.panel.invite.window.email.description">
+            <en><![CDATA[The login details are sent to this address. The address is also stored as username and e-mail address.]]></en>
+        </locale>
+        <locale name="users.panel.invite.window.groups.title">
+            <en><![CDATA[Select groups]]></en>
+        </locale>
+        <locale name="users.panel.invite.window.groups.description">
+            <en><![CDATA[Choose the groups the new user should be assigned to immediately after creation.]]></en>
+        </locale>
+        <locale name="users.panel.invite.window.submit">
+            <en><![CDATA[Invite]]></en>
+        </locale>
+        <locale name="users.panel.invite.window.email.required">
+            <en><![CDATA[Please enter an e-mail address.]]></en>
+        </locale>
+        <locale name="users.panel.invite.window.groups.required">
+            <en><![CDATA[Please select at least one group.]]></en>
+        </locale>
+        <locale name="users.invite.mail.subject">
+            <en><![CDATA[Invitation to register a user for [domain]]]></en>
+        </locale>
+        <locale name="users.invite.mail.body">
+            <en><![CDATA[Hello [email],<br><br>[username] has invited you to create a user in the system [domain].<br>You can log in at <a href="[backendUrl]">[backendUrl]</a> with the username <b>[email]</b> and password <b>[password]</b> to activate your account.<br><br>After your first login you will be asked to change your password. Please choose a secure password.<br><br>Further information and instructions are available here: <a href="https://www.quiqqer.de/FAQ/onboarding">www.quiqqer.de/FAQ/onboarding</a>.]]></en>
         </locale>
         <locale name="exception.create.user.exists">
             <en><![CDATA[The username already exists. <br />                 Please enter a different username.]]></en>
