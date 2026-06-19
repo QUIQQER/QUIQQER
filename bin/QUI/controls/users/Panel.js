@@ -903,7 +903,7 @@ define('controls/users/Panel', [
                     username += data[i].firstname + ' ';
                 }
 
-                if (data[i].firstname) {
+                if (data[i].lastname) {
                     username += data[i].lastname + ' ';
                 }
 
@@ -933,8 +933,18 @@ define('controls/users/Panel', [
                 title: QUILocale.get(lg, 'users.panel.delete.window.title'),
                 text: QUILocale.get(lg, 'users.panel.delete.window.text'),
                 information: QUILocale.get(lg, 'users.panel.delete.window.information'),
+                ok_button: {
+                    text: QUILocale.get(
+                        lg,
+                        uids.length === 1 ?
+                            'users.panel.delete.window.submit.user' :
+                            'users.panel.delete.window.submit.users'
+                    ),
+                    textimage: 'fa fa-trash-o'
+                },
                 maxWidth: 700,
                 maxHeight: 400,
+                autoclose: false,
                 uids: uids,
                 events: {
                     onOpen: (Win) => {
@@ -943,9 +953,14 @@ define('controls/users/Panel', [
                         List.inject(Header, 'after');
                     },
                     onSubmit: (Win) => {
-                        require(['Users'], function (Users) {
-                            Users.deleteUsers(Win.getAttribute('uids')).then(function () {
+                        Win.Loader.show();
+
+                        require(['Users'], (Users) => {
+                            Users.deleteUsers(Win.getAttribute('uids')).then(() => {
                                 Win.close();
+                                this.load();
+                            }).catch(() => {
+                                Win.Loader.hide();
                             });
                         });
                     }

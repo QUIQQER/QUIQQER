@@ -1700,7 +1700,13 @@
             <en><![CDATA[Delete users]]></en>
         </locale>
         <locale name="users.panel.delete.window.text">
-            <en><![CDATA[You want to delete the following users:<br /><br />[userids]]]></en>
+            <en><![CDATA[You want to delete the following users:]]></en>
+        </locale>
+        <locale name="users.panel.delete.window.submit.user">
+            <en><![CDATA[Delete user]]></en>
+        </locale>
+        <locale name="users.panel.delete.window.submit.users">
+            <en><![CDATA[Delete users]]></en>
         </locale>
         <locale name="users.panel.delete.window.information">
             <en><![CDATA[Users are completely removed from the system and can not be restored.]]></en>

@@ -2851,6 +2851,12 @@
         <locale name="users.panel.delete.window.text">
             <de><![CDATA[Sie möchten folgende Benutzer löschen:]]></de>
         </locale>
+        <locale name="users.panel.delete.window.submit.user">
+            <de><![CDATA[Benutzer löschen]]></de>
+        </locale>
+        <locale name="users.panel.delete.window.submit.users">
+            <de><![CDATA[Benutzer löschen]]></de>
+        </locale>
         <locale name="users.panel.delete.window.information">
             <de><![CDATA[
                 Die Benutzer werden komplett aus dem System entfernt und können nicht wieder hergestellt werden.]]></de>
