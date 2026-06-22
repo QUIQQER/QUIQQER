@@ -33,16 +33,31 @@ class Doctrine
             $where = $params['where'];
 
             if (is_string($where)) {
-                $query->where($where);
+                $query->andWhere($where);
             }
 
             if (is_array($where)) {
                 $wp = 0;
 
                 foreach ($where as $key => $value) {
+                    $parameter = 'wp' . $wp;
+                    $wp++;
+
+                    if (is_array($value) && isset($value['type'], $value['value'])) {
+                        $type = strtoupper((string)$value['type']);
+                        $value = $value['value'];
+
+                        if ($type === 'NOT') {
+                            $query->andWhere($key . ' <> :' . $parameter)->setParameter($parameter, $value);
+                            continue;
+                        }
+
+                        $query->andWhere($key . ' ' . $type . ' :' . $parameter)->setParameter($parameter, $value);
+                        continue;
+                    }
+
                     if (!is_array($value)) {
-                        $query->where($key . ' = :wp' . $wp)->setParameter('wp' . $wp, $value);
-                        $wp++;
+                        $query->andWhere($key . ' = :' . $parameter)->setParameter($parameter, $value);
                     }
                 }
             }
@@ -58,14 +73,13 @@ class Doctrine
         }
 
         if (isset($params['limit'])) {
-            $limit = explode(',', $params['limit']);
+            $limit = explode(',', (string)$params['limit'], 2);
 
-            if (!empty($limit[0])) {
+            if (isset($limit[1])) {
                 $query->setFirstResult((int)$limit[0]);
-            }
-
-            if (!empty($limit[1])) {
                 $query->setMaxResults((int)$limit[1]);
+            } else {
+                $query->setMaxResults((int)$limit[0]);
             }
         }
 
