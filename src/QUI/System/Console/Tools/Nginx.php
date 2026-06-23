@@ -24,521 +24,362 @@ use function trim;
  */
 class Nginx extends QUI\System\Console\Tool
 {
-    protected string $nginxConfigFile;
+    private const NGINX_CONFIG_DIRECTORY = ETC_DIR . "webserver/nginx";
+    private const NGINX_CONFIG_FILE = self::NGINX_CONFIG_DIRECTORY . "/nginx.conf";
+    private const NGINX_USER_CONFIG_DIRECTORY = self::NGINX_CONFIG_DIRECTORY . "/conf.d";
 
-    protected string $nginxConfDir;
-
-    protected string $subConfDir;
-
-    /**
-     * Constructor
-     */
     public function __construct()
     {
         $this->systemTool = true;
-        $this->setName('quiqqer:nginx')
-            ->setDescription('Generate the nginx.conf File.');
-
-        $this->nginxConfDir = ETC_DIR . "nginx/";
-        $this->nginxConfigFile = $this->nginxConfDir . "nginx.example.conf";
+        $this
+            ->setName('quiqqer:nginx')
+            ->setDescription('Generate the nginx config file.');
     }
 
-    /**
-     * (non-PHPdoc)
-     *
-     * @see \QUI\System\Console\Tool::execute()
-     */
+
     public function execute(): void
     {
-        $this->writeLn('Generating nginx.conf ...');
-
-        $nginxBackupFile = VAR_DIR . 'backup/nginx.conf_' . date('Y-m-d__H_i_s');
+        $this->writeLn('Generating nginx config…');
 
         // ************************************* //
         //              Sub Configs              //
         // ************************************* //
-
-        $header = <<<HEAD
-# This file will be included into the auto generated nginx config.
-# You can make changes to the nginx configuration by editing this file
-
-
-HEAD;
-
-        // Create cert directory
-        if (!is_dir($this->nginxConfDir . "/certs")) {
-            mkdir($this->nginxConfDir . "/certs", 0755, true);
-        }
-
-        // Create subconfig dir
-        $this->subConfDir = $this->nginxConfDir . "conf.d/";
-
-        if (!is_dir($this->subConfDir)) {
-            mkdir($this->subConfDir, 0755, true);
-        }
-
-        // Create subconfig: PHP
-        if (!file_exists($this->subConfDir . "php.include")) {
-            file_put_contents($this->subConfDir . "php.include", $header);
-
-            $geoIPSettings = <<<GEO
-### SET GEOIP Variables ###
-#fastcgi_param GEOIP_COUNTRY_CODE \$geoip2_data_country_code;
-#fastcgi_param GEOIP_COUNTRY_NAME \$geoip2_data_country_name;
-#fastcgi_param GEOIP_CITY_COUNTRY_CODE \$geoip2_data_city_country_code;
-#fastcgi_param GEOIP_CITY_COUNTRY_NAME \$geoip2_data_city_country_name;
-#fastcgi_param GEOIP_CITY \$geoip2_data_city_name;
-#fastcgi_param GEOIP_POSTAL_CODE \$geoip2_data_postal_code;
-#fastcgi_param GEOIP_CITY_CONTINENT_CODE \$geoip2_data_continent_code;
-#fastcgi_param GEOIP_LATITUDE \$geoip2_data_location_longitude;
-#fastcgi_param GEOIP_LONGITUDE \$geoip2_data_postal_code;
-GEO;
-
-            file_put_contents($this->subConfDir . "php.include", $geoIPSettings, FILE_APPEND);
-        }
-
-        if (!file_exists($this->subConfDir . "redirects.include")) {
-            file_put_contents($this->subConfDir . "redirects.include", $header);
-        }
-
-        if (!file_exists($this->subConfDir . "whitelist.include")) {
-            file_put_contents($this->subConfDir . "whitelist.include", $header);
-        }
-
-        if (!file_exists($this->subConfDir . "server.include")) {
-            file_put_contents($this->subConfDir . "server.include", $header);
-        }
-
-        if (!file_exists($this->subConfDir . "ssl.include")) {
-            $sslConfTemplate = $header;
-            $sslConfTemplate .= "ssl    on;" . PHP_EOL;
-            $sslConfTemplate .= "ssl_certificate        " . $this->nginxConfDir . "certs/cert.pem;        # Replace with valid certificate" . PHP_EOL;
-            $sslConfTemplate .= "ssl_certificate_key    " . $this->nginxConfDir . "certs/key.pem;      # Replace with valid certificate key" . PHP_EOL;
-
-            file_put_contents(
-                $this->nginxConfDir . "certs/cert.pem",
-                "# Replace this file with your valid SSL certificate"
-            );
-            file_put_contents(
-                $this->nginxConfDir . "certs/key.pem",
-                "# Replace this file with your valid certificates key"
-            );
-            file_put_contents($this->subConfDir . "ssl.include", $sslConfTemplate);
-        }
-
-        if (!file_exists($this->subConfDir . "optimization.include")) {
-            $optimizations = $header;
-            $optimizations .= PHP_EOL;
-            $optimizations .= <<<OPTI
-# GZIP Compression
-gzip on;
-gzip_comp_level    5;
-gzip_min_length    256;
-gzip_proxied       any;
-gzip_vary          on;
-
-gzip_types
-application/atom+xml
-application/javascript
-application/json
-application/ld+json
-application/manifest+json
-application/rss+xml
-application/vnd.geo+json
-application/vnd.ms-fontobject
-application/x-font-ttf
-application/x-web-app-manifest+json
-application/xhtml+xml
-application/xml
-font/opentype
-image/bmp
-image/svg+xml
-image/x-icon
-text/cache-manifest
-text/css
-text/plain
-text/html
-text/xml
-text/vcard
-text/vnd.rim.location.xloc
-text/vtt
-text/x-component
-text/x-cross-domain-policy;
-
-# Cache Control
-location ~*  \.(css)$ {
-    expires 1y;
-    add_header Cache-Control "public";
-}
-
-location ~*  \.(js)$ {
-    expires 1y;
-    add_header Cache-Control "private";
-}
-
-location ~*  \.(html|xhtml|php)$ {
-    expires 600s;
-    add_header Cache-Control "private, must-revalidate";
-}
-
-location ~*  \.(eot|svg|ttf)$ {
-    expires 1y;
-    add_header Cache-Control "public";
-}
-
-location ~*  \.(woff|woff2)$ {
-    expires 1y;
-    add_header Cache-Control "public";
-}
-
-location ~*  \.(xml)$ {
-    expires 1y;
-    add_header Cache-Control "public";
-}
-
-location ~*  \.(gif|jpg|jpeg|png|svg|ico|webp)$ {
-    expires 1y;
-    add_header Cache-Control "public";
-}
-
-# ETag
-etag off;
-OPTI;
-
-            file_put_contents($this->subConfDir . "optimization.include", $optimizations);
-        }
+        $this->createUserConfigs();
 
         // ************************************* //
         //              Backup                   //
         // ************************************* //
-
-        if (file_exists($this->nginxConfigFile)) {
-            file_put_contents(
-                $nginxBackupFile,
-                file_get_contents($this->nginxConfigFile)
-            );
-
-            $this->writeLn('You can find a .nginx Backup File at:');
-            $this->writeLn($nginxBackupFile);
-        } else {
-            $this->writeLn(
-                'No nginx.conf File found. Could not create a backup.',
-                'red'
-            );
-        }
-
-        $this->resetColor();
+        $this->createBackup();
 
         // ************************************* //
         //           Generate Template           //
         // ************************************* //
-
-        $nginxContent = $this->template();
-
-        file_put_contents($this->nginxConfigFile, $nginxContent);
+        $this->createConfigFile();
 
         $this->writeLn();
         $this->resetColor();
     }
 
-    /**
-     * nginx template
-     */
-    protected function template(): string
+    protected function getConfig(): string
     {
-        $quiqqerDir = CMS_DIR;
-        $quiqqerUrlDir = URL_DIR;
+        $nginxConfigFile = self::NGINX_CONFIG_FILE;
+        $userConfigDirectory = self::NGINX_USER_CONFIG_DIRECTORY;
+        $fastCgiConfigSnippet = $this->getFastCgiConfig();
 
-        # Process domain
-        if (!defined('HOST')) {
-            define('HOST', QUI::conf('globals', 'host'));
-        }
+        $nginxConfig = <<<NGINX
+            # ======================================================================================================== #
+            # This config file was automatically generated by QUIQQER. 
+            # Do not edit this file manually - your changes will be overwritten.
+            # User customizations belong in "conf.d/*.conf"
+            #
+            # Check out the QUIQQER wiki on how to configure nginx for QUIQQER: https://dev.quiqqer.com/quiqqer/core/-/wikis/nginx-konfiguration
+            #
+            # How to use this nginx config file:
+            # 1. Set the "\$php_fpm_backend" variable to a value that can be passed to "fastcgi_pass" (example below)
+            # 2. Include this file inside the vhost's "server {}" block(s)
+            #
+            # Usage example:
+            #
+            #     server {
+            #         server_name example.com;
+            #         root /var/www/example.com;
+            #         index index.php;
+            #
+            #         set \$php_fpm_backend unix:/run/php/php-fpm.sock;
+            #         include $nginxConfigFile;
+            #     }
+            #
+            # ======================================================================================================== #
 
-        $domain = trim(HOST);
-        $domain = str_replace("https://", "", $domain);
-        $domain = str_replace("http://", "", $domain);
+            NGINX;
 
-        $phpParams = <<<PHPPARAM
-fastcgi_param   QUERY_STRING            \$query_string;
-                fastcgi_param   REQUEST_METHOD          \$request_method;
-                fastcgi_param   CONTENT_TYPE            \$content_type;
-                fastcgi_param   CONTENT_LENGTH          \$content_length;
-                
-                fastcgi_param   SCRIPT_FILENAME         \$request_filename;
-                fastcgi_param   SCRIPT_NAME             \$fastcgi_script_name;
-                fastcgi_param   REQUEST_URI             \$request_uri;
-                fastcgi_param   DOCUMENT_URI            \$document_uri;
-                fastcgi_param   DOCUMENT_ROOT           \$document_root;
-                fastcgi_param   SERVER_PROTOCOL         \$server_protocol;
-                
-                fastcgi_param   GATEWAY_INTERFACE       CGI/1.1;
-                fastcgi_param   SERVER_SOFTWARE         nginx/\$nginx_version;
-                
-                fastcgi_param   REMOTE_ADDR             \$remote_addr;
-                fastcgi_param   REMOTE_PORT             \$remote_port;
-                fastcgi_param   SERVER_ADDR             \$server_addr;
-                fastcgi_param   SERVER_PORT             \$server_port;
-                fastcgi_param   SERVER_NAME             \$server_name;
-                
-                fastcgi_param   HTTPS                   \$https if_not_empty;
-                
-                fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-                
-                # PHP only, required if PHP was built with --enable-force-cgi-redirect
-                fastcgi_param   REDIRECT_STATUS         200;
-                fastcgi_read_timeout 180;
-                fastcgi_pass php;
-                
-                include {$this->subConfDir}php.include;
-PHPPARAM;
+        $nginxConfig .= <<<NGINX
 
-        # Define the rewrite directives
-        $rewriteRules = <<<REWRITE
-###############################
-            #  Virtual Folder/File Check  #
-            ###############################
-    
-            set \$virtual 0;
-    
-            # make all virtual folders redirect to the index php 
-            if ( !-e \$request_filename ) {
-                set \$virtual 1;
-            }
-    
-            # Virtual folders, that should not be redirected to the index.php
-            if ( \$uri ~* '{$quiqqerUrlDir}admin(.*)'){
-                set \$virtual 0;
-            }
-    
-            if ( \$uri ~* '{$quiqqerUrlDir}bin/(.*)'){
-                set \$virtual 0;
-            }
-    
-            if ( \$uri ~* '{$quiqqerUrlDir}lib/(.*)'){
-                set \$virtual 0;
-            }
-    
-    
-            # Execute virtual folder redirect if neccessary
-            if ( \$virtual = 1){
-                rewrite ^ {$quiqqerUrlDir}index.php?_url=\$uri;
-            }
-            
-            
-            ################################
-            #          Redirects           #
-            ################################
-            
-            location ^~ {$quiqqerUrlDir}bin/ {
-                rewrite ^{$quiqqerUrlDir}bin/(.*) {$quiqqerUrlDir}packages/quiqqer/core/bin/$1 last;
-            }
-    
-            location ^~ {$quiqqerUrlDir}lib/ {
-                rewrite ^{$quiqqerUrlDir}lib/(.*) {$quiqqerUrlDir}packages/quiqqer/core/src/$1 last;                                                                                              
-            }                                                                                                                                     
-    
-            location = {$quiqqerUrlDir}admin {
-                return 301 https://\$http_host{$quiqqerUrlDir}admin/;
-            }
-            
-            location = {$quiqqerUrlDir}console {
-                return 504;
-            }
-    
-            location = {$quiqqerUrlDir}admin/ {
-                rewrite {$quiqqerUrlDir}admin/(.*) {$quiqqerUrlDir}packages/quiqqer/core/admin/index.php last;
-            }
-                                                                                                                                                
-            location ^~ {$quiqqerUrlDir}admin/ {                                                                                                                    
-                rewrite {$quiqqerUrlDir}admin/(.*) {$quiqqerUrlDir}packages/quiqqer/core/admin/$1 last;
-            }        
-    
-            include {$this->subConfDir}redirects.include;
-    
-          
-    
-   
-            # /////////////////////////////////////////////////////////////////////////////////
-            # Whitelisted php
-            # ////////////////////////////////////////////////////////////////////////////////
-    
-            location = {$quiqqerUrlDir}index.php {
-                $phpParams
-            }
-    
-    
-            location = {$quiqqerUrlDir}image.php {
-                $phpParams
-            }
-    
-            location ~* ^(.*)/bin/(.*)\.php$ {
-                $phpParams
-            }
-    
-            location ~* {$quiqqerUrlDir}packages/quiqqer/core/admin/(.*).php$ {
-                $phpParams
-            }
-            
-            location ~* {$quiqqerUrlDir}[^/]*\.php$ {
-                {$phpParams}
-            }
-    
-    
-            # /////////////////////////////////////////////////////////////////////////////////
-            # Optimize static files (Cache, Compression)
-            # /////////////////////////////////////////////////////////////////////////////////
-            include {$this->subConfDir}optimization.include;
-    
-            # /////////////////////////////////////////////////////////////////////////////////
-            # Whitelisted static files
-            # /////////////////////////////////////////////////////////////////////////////////
-    
-            location ~ (.*)/bin/(.*){
-                # Do not block this
-            }
-    
-            location {$quiqqerUrlDir}media/cache/ {
-                # Do not block this
-            }
-    
-            location {$quiqqerUrlDir}packages/ckeditor/ {
-                # Do not block this
-            }
-    
-            location ~ {$quiqqerUrlDir}([a-zA-Z-\s0-9_+]*)\.html{
-                # Do not block this
-            }
-    
-            location ~ {$quiqqerUrlDir}([a-zA-Z-\s0-9_+]*)\.txt{
-                # Do not block this
-            }
-    
-            location ~ {$quiqqerUrlDir}.*\.crt {
-                # Do not block this
-            }
-    
-            location ~ {$quiqqerUrlDir}.*\.pem {
-                # Do not block this
-            }
-            
-            location ~ {$quiqqerUrlDir}[^/]*$ {
-                # Do not block this (all files in the root directory)
-            }
-            
-            location = {$quiqqerUrlDir}robots.txt {
-                # Do not block this
-            }
-    
-            location = {$quiqqerUrlDir}favicon.ico {
-                # Do not block this
-            }
-    
-            location = {$quiqqerUrlDir} {
-                # Do not block this
-            }
-            
-            include {$this->subConfDir}whitelist.include;
-            
-            # /////////////////////////////////////////////////////////////////////////////////
-            # Block everything not whitelisted
-            # /////////////////////////////////////////////////////////////////////////////////
-    
-            location / {
-                rewrite ^ {$quiqqerUrlDir}index.php?_url=error403;
-            }
-REWRITE;
+            # Keep generated redirects relative so non-standard ports from the incoming "Host" header are not dropped from "Location" headers.
+            absolute_redirect off;
 
-        # Configuration to force https
-        $forceHttpsConfiguration = <<<NGINX
-        
-         upstream php {
-                server unix:/var/run/php/php8.1-fpm.sock;   # Replace with valid path to php-fpm
-        }
+            NGINX;
 
-        server {
-            listen 80;
-            listen [::]:80;
-            
-            server_name {$domain};
-            
-            return 301 https://\$server_name\$request_uri;
-        }
-        
-        
-        server {
-        
-            listen 443;
-            listen [::]:443;
-    
-            root {$quiqqerDir};
-    
-            index index.php index.html index.htm;
-    
-            server_name {$domain};
-    
-            error_log  /var/log/nginx/{$domain}_error.log;
-    
-            
-            include {$this->subConfDir}ssl.include;
-            
-            include {$this->subConfDir}server.include;
-    
-           {$rewriteRules}
-
-        }
-NGINX;
-
-        # Configuration for parallel http and https
-        $httpConfiguration = <<<NGINX
-        
-        upstream php {
-                server unix:/var/run/php/php8.1-fpm.sock;   # Replace with valid path to php-fpm
-        }
-        
-        server {
-            listen 80;
-            listen [::]:80;
-            
-            server_name {$domain};
-            
-            root {$quiqqerDir};
-            
-            index index.php index.html index.htm;
-            
-            error_log  /var/log/nginx/{$domain}_error.log;
-            
-            include {$this->subConfDir}server.include;
-            
-            {$rewriteRules}
-        }
-        
-        
-        server {
-        
-            listen 443;
-            listen [::]:443;
-    
-            root {$quiqqerDir};
-    
-            index index.php index.html index.htm;
-    
-            server_name {$domain};
-    
-            error_log  /var/log/nginx/{$domain}_error.log;
-    
-            include {$this->subConfDir}ssl.include;
-
-            include {$this->subConfDir}server.include;
-   
-            {$rewriteRules}
-        }
-NGINX;
-
+        // Force redirect to HTTPS if configured
         if (QUI::conf("webserver", "forceHttps")) {
-            return $forceHttpsConfiguration;
+            $nginxConfig .= <<<NGINX
+
+                if (\$scheme != "https") {
+                    return 301 https://\$host\$request_uri;
+                }
+
+                NGINX;
         }
 
-        return $httpConfiguration;
+        $nginxConfig .= <<<NGINX
+
+            # User-defined configuration
+            include $userConfigDirectory/pre.conf;
+                        
+            # Hard denies.
+            location ~ (^|/)\.git(/|$) {
+                return 403;
+            }
+            
+            location ^~ /console {
+                return 403;
+            }
+            
+            # /admin -> /admin/
+            location = /admin {
+                return 301 /admin/\$is_args\$args;
+            }
+            
+            # /bin/* -> /packages/quiqqer/core/bin/*
+            location ^~ /bin/ {
+                rewrite ^/bin/(.*)$ /packages/quiqqer/core/bin/$1 last;
+            }
+            
+            # /lib/* -> /packages/quiqqer/core/src/*
+            location ^~ /lib/ {
+                rewrite ^/lib/(.*)$ /packages/quiqqer/core/src/$1 last;
+            }
+            
+            # /admin/ -> /packages/quiqqer/core/admin/index.php
+            location = /admin/ {
+                $fastCgiConfigSnippet
+            
+                include $userConfigDirectory/php.conf;
+            
+                fastcgi_param SCRIPT_FILENAME \$document_root/packages/quiqqer/core/admin/index.php;
+                fastcgi_param SCRIPT_NAME /packages/quiqqer/core/admin/index.php;
+            }
+            
+            # /admin/index.php -> /packages/quiqqer/core/admin/index.php
+            location = /admin/index.php {
+                $fastCgiConfigSnippet
+            
+                include $userConfigDirectory/php.conf;
+            
+                fastcgi_param SCRIPT_FILENAME \$document_root/packages/quiqqer/core/admin/index.php;
+                fastcgi_param SCRIPT_NAME /packages/quiqqer/core/admin/index.php;
+            }
+            
+            # /admin/image.php -> /image.php
+            location = /admin/image.php {
+                rewrite ^ /image.php last;
+            }
+            
+            # /admin/ajax.php -> /packages/quiqqer/core/admin/ajax.php
+            location = /admin/ajax.php {
+                $fastCgiConfigSnippet
+            
+                include $userConfigDirectory/php.conf;
+            
+                fastcgi_param SCRIPT_FILENAME \$document_root/packages/quiqqer/core/admin/ajax.php;
+                fastcgi_param SCRIPT_NAME /packages/quiqqer/core/admin/ajax.php;
+            }
+            
+            # Additional generated or user-provided redirects.
+            include $userConfigDirectory/redirects.conf;
+            
+            # Public static paths from the final htaccess allow-list.
+            location /.well-known/ {
+                try_files \$uri \$uri/ @quiqqer_front_controller;
+            }
+            
+            location /media/cache/ {
+                try_files \$uri \$uri/ @quiqqer_front_controller;
+            }
+            
+            location /packages/ckeditor/ {
+                try_files \$uri \$uri/ @quiqqer_front_controller;
+            }
+            
+            location /packages/pcsg/ckeditor/ {
+                try_files \$uri \$uri/ @quiqqer_front_controller;
+            }
+            
+            location = /favicon.ico {
+                try_files \$uri @quiqqer_front_controller;
+            }
+            
+            location = /robots.txt {
+                try_files \$uri @quiqqer_front_controller;
+            }
+            
+            # Root PHP entry points allowed by the htaccess rules.
+            location = /index.php {
+                $fastCgiConfigSnippet
+            
+                include $userConfigDirectory/php.conf;
+            
+                fastcgi_param SCRIPT_FILENAME \$document_root/index.php;
+                fastcgi_param SCRIPT_NAME /index.php;
+            }
+            
+            location = /image.php {
+                $fastCgiConfigSnippet
+            
+                include $userConfigDirectory/php.conf;
+            
+                fastcgi_param SCRIPT_FILENAME \$document_root/image.php;
+                fastcgi_param SCRIPT_NAME /image.php;
+            }
+            
+            location = /ajax.php {
+                $fastCgiConfigSnippet
+            
+                include $userConfigDirectory/php.conf;
+            
+                fastcgi_param SCRIPT_FILENAME \$document_root/ajax.php;
+                fastcgi_param SCRIPT_NAME /ajax.php;
+            }
+            
+            location = /ajaxBundler.php {
+                $fastCgiConfigSnippet
+            
+                include $userConfigDirectory/php.conf;
+            
+                fastcgi_param SCRIPT_FILENAME \$document_root/ajaxBundler.php;
+                fastcgi_param SCRIPT_NAME /ajaxBundler.php;
+            }
+            
+            # Allow execution of PHP scripts below "bin/" directories
+            location ~ (^|/)bin/.*\.php$ {
+                $fastCgiConfigSnippet
+            
+                include $userConfigDirectory/php.conf;
+            
+                fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+                fastcgi_param SCRIPT_NAME \$fastcgi_script_name;
+            }
+            
+            # Targets reached by the /bin and /lib rewrites above.
+            location ~ ^/packages/quiqqer/core/(?:bin|src)/.*\.php$ {
+                $fastCgiConfigSnippet
+            
+                include $userConfigDirectory/php.conf;
+            
+                fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+                fastcgi_param SCRIPT_NAME \$fastcgi_script_name;
+            }
+            
+            location ~ ^/packages/quiqqer/core/(?:bin|src)/(?!.*\.php$).+$ {
+                try_files \$uri \$uri/ =404;
+            }
+            
+            # Static file optimization, caching and compression snippets.
+            # GZIP Compression
+            gzip on;
+            gzip_comp_level    5;
+            gzip_min_length    256;
+            gzip_proxied       any;
+            gzip_vary          on;
+            
+            gzip_types
+            application/atom_xml
+            application/javascript
+            application/rss+xml
+            application/x-javascript
+            application/x-shockwave-flash
+            application/xhtml+xml
+            application/xml
+            image/svg+xml
+            text/css
+            text/javascript
+            text/plain
+            text/xml;
+            
+            # Cache Control
+            location ~ ^/(?:[^/]+|.*bin.*|\.well-known/.+|media/cache/.+|packages/ckeditor/.+|packages/pcsg/ckeditor/.+)\.(ico|jpe?g|png|gif|swf|webp)$ {
+                expires 1y;
+                add_header Cache-Control "max-age=31536000, public";
+                try_files \$uri @quiqqer_front_controller;
+            }
+            
+            location ~ ^/(?:[^/]+|.*bin.*|\.well-known/.+|media/cache/.+|packages/ckeditor/.+|packages/pcsg/ckeditor/.+)\.css$ {
+                expires 1y;
+                add_header Cache-Control "max-age=31536000, public";
+                try_files \$uri @quiqqer_front_controller;
+            }
+            
+            location ~ ^/(?:[^/]+|.*bin.*|\.well-known/.+|media/cache/.+|packages/ckeditor/.+|packages/pcsg/ckeditor/.+)\.js$ {
+                expires 1w;
+                add_header Cache-Control "max-age=31536000, private";
+                try_files \$uri @quiqqer_front_controller;
+            }
+            
+            location ~ ^/(?:[^/]+|.*bin.*|\.well-known/.+|media/cache/.+|packages/ckeditor/.+|packages/pcsg/ckeditor/.+)\.(eot|svg|ttf)$ {
+                expires 1y;
+                add_header Cache-Control "max-age=31536000, public";
+                try_files \$uri @quiqqer_front_controller;
+            }
+            
+            location ~ ^/(?:[^/]+|.*bin.*|\.well-known/.+|media/cache/.+|packages/ckeditor/.+|packages/pcsg/ckeditor/.+)\.(woff|woff2)$ {
+                expires 1y;
+                add_header Cache-Control "max-age=31536000, public";
+                try_files \$uri @quiqqer_front_controller;
+            }
+            
+            location ~ ^/(?:[^/]+|.*bin.*|\.well-known/.+|media/cache/.+|packages/ckeditor/.+|packages/pcsg/ckeditor/.+)\.html$ {
+                expires 1w;
+                try_files \$uri @quiqqer_front_controller;
+            }
+            
+            # ETag
+            etag off;
+            if_modified_since off;
+            
+            include $userConfigDirectory/optimizations.conf;
+            
+            # Top-level .html and .txt files allowed by the htaccess rules.
+            location ~ ^/[A-Za-z0-9_+\s-]*\.(html|txt)$ {
+                try_files \$uri @quiqqer_front_controller;
+            }
+            
+            # Certificate files allowed by the htaccess rules.
+            location ~ ^/.*\.(crt|pem)$ {
+                try_files \$uri @quiqqer_front_controller;
+            }
+            
+            # The htaccess allow-list excludes any URI containing "bin".
+            location ~ bin {
+                try_files \$uri \$uri/ @quiqqer_front_controller;
+            }
+            
+            # Existing nested files/directories that did not match an allow-list above are
+            # redirected to /?error=403. Non-existing nested paths go to the front controller.
+            location ~ ^/.+/.+ {
+                if (-e \$request_filename) {
+                    return 301 /?error=403;
+                }
+            
+                rewrite ^/(.*)$ /index.php?_url=$1&\$args last;
+            }
+            
+            # Existing top-level PHP files are allowed by the htaccess rules.
+            location ~ \.php$ {
+                try_files \$uri @quiqqer_front_controller;
+            
+                $fastCgiConfigSnippet
+            
+                include $userConfigDirectory/php.conf;
+            
+                fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+                fastcgi_param SCRIPT_NAME \$fastcgi_script_name;
+            }
+            
+            # Root and top-level paths. Existing top-level files/directories are accessible;
+            # non-existing paths are rewritten to the QUIQQER front controller.
+            location / {
+                try_files \$uri \$uri/ @quiqqer_front_controller;
+            }
+            
+            location @quiqqer_front_controller {
+                rewrite ^/(.*)$ /index.php?_url=$1&\$args last;
+            }
+            
+            # User-defined additions that do not need to beat generated regex locations.
+            include $userConfigDirectory/post.conf;
+            NGINX;
+
+        return $nginxConfig;
     }
 
     /**
@@ -546,17 +387,104 @@ NGINX;
      */
     public function hasModifications(): bool
     {
-        if (!file_exists($this->nginxConfigFile)) {
+        if (!file_exists(self::NGINX_CONFIG_FILE)) {
             return true;
         }
 
-        $oldContent = file_get_contents($this->nginxConfigFile);
-        $content = $this->template();
+        $oldContent = file_get_contents(self::NGINX_CONFIG_FILE);
+        $content = $this->getConfig();
 
         if (trim($oldContent) !== trim($content)) {
             return true;
         }
 
         return false;
+    }
+
+    private function createBackup(): void
+    {
+        if (!file_exists(self::NGINX_CONFIG_FILE)) {
+            // nginx config file does not exist (yet)
+            return;
+        }
+
+        $nginxBackupFile = VAR_DIR . 'backup/nginx.conf_' . date('Y-m-d__H_i_s');
+
+        QUI\Utils\System\File::copy(self::NGINX_CONFIG_FILE, $nginxBackupFile);
+
+        $this->writeLn("Storing current nginx config at: $nginxBackupFile");
+
+        $this->resetColor();
+    }
+
+    private function createUserConfigs(): void
+    {
+        $header = <<<HEAD
+            # This file will be included into the auto generated nginx config.
+            # You can make changes to the nginx configuration by editing this file.
+            HEAD;
+
+        if (!is_dir(self::NGINX_USER_CONFIG_DIRECTORY)) {
+            mkdir(self::NGINX_USER_CONFIG_DIRECTORY, 0755, true);
+        }
+
+        $userConfigFiles = [
+            "pre",
+            "php",
+            "redirects",
+            "whitelist",
+            "optimizations",
+            "post",
+        ];
+
+        foreach ($userConfigFiles as $userConfigFile) {
+            $userConfigFile = self::NGINX_USER_CONFIG_DIRECTORY . "/$userConfigFile.conf";
+            if (!file_exists($userConfigFile)) {
+                file_put_contents($userConfigFile, $header);
+            }
+        }
+    }
+
+    private function createConfigFile(): void
+    {
+        file_put_contents(self::NGINX_CONFIG_FILE, $this->getConfig());
+
+        $this->writeLn("Created new nginx config at: " . self::NGINX_CONFIG_FILE);
+    }
+
+    private function getFastCgiConfig(): string
+    {
+        // The indent is "wrong" intentionally, so that it looks nice in the generated config file
+        return <<<FASTCGI
+            fastcgi_param QUERY_STRING       \$query_string;
+                fastcgi_param REQUEST_METHOD     \$request_method;
+                fastcgi_param CONTENT_TYPE       \$content_type;
+                fastcgi_param CONTENT_LENGTH     \$content_length;
+                
+                fastcgi_param REQUEST_URI        \$request_uri;
+                fastcgi_param DOCUMENT_URI       \$document_uri;
+                fastcgi_param DOCUMENT_ROOT      \$document_root;
+                fastcgi_param SERVER_PROTOCOL    \$server_protocol;
+                
+                fastcgi_param GATEWAY_INTERFACE  CGI/1.1;
+                fastcgi_param SERVER_SOFTWARE    nginx/\$nginx_version;
+                
+                fastcgi_param REMOTE_ADDR        \$remote_addr;
+                fastcgi_param REMOTE_PORT        \$remote_port;
+                fastcgi_param SERVER_ADDR        \$server_addr;
+                fastcgi_param SERVER_PORT        \$server_port;
+                fastcgi_param SERVER_NAME        \$server_name;
+                
+                fastcgi_param HTTPS              \$https if_not_empty;
+                fastcgi_param REDIRECT_STATUS    200;
+                
+                # Equivalent of the Apache htaccess environment rules:
+                # SetEnv HTTP_MOD_REWRITE On
+                # RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+                fastcgi_param HTTP_AUTHORIZATION \$http_authorization;
+                fastcgi_param HTTP_MOD_REWRITE   On;
+                
+                fastcgi_pass \$php_fpm_backend;
+            FASTCGI;
     }
 }

@@ -9,6 +9,8 @@ namespace QUI\MCP;
 use Mcp\Server\Builder;
 use QUI\AI\MCP\ProviderInterface;
 use QUI\AI\MCP\Server;
+use QUI\MCP\Project\GetCustomCSS;
+use QUI\MCP\Project\GetCustomJavaScript;
 use QUI\MCP\Project\ListProjects;
 use QUI\MCP\Project\Media\ActivateMedia;
 use QUI\MCP\Project\Media\CreateFolder;
@@ -19,6 +21,8 @@ use QUI\MCP\Project\Media\ListMedia;
 use QUI\MCP\Project\Media\SearchMedia;
 use QUI\MCP\Project\Media\UpdateMedia;
 use QUI\MCP\Project\Media\UploadMedia;
+use QUI\MCP\Project\SetCustomCSS;
+use QUI\MCP\Project\SetCustomJavaScript;
 use QUI\MCP\Project\Sites\ActivateSite;
 use QUI\MCP\Project\Sites\AddLanguageLink;
 use QUI\MCP\Project\Sites\CopySite;
@@ -52,6 +56,10 @@ class Provider implements ProviderInterface
     {
         $this->tools = [
             new ListProjects(),
+            new GetCustomCSS(),
+            new SetCustomCSS(),
+            new GetCustomJavaScript(),
+            new SetCustomJavaScript(),
             new ListSites(),
             new GetSite(),
             new GetSiteByUrl(),

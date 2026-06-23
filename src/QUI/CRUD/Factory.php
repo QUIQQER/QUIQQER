@@ -155,14 +155,13 @@ abstract class Factory extends QUI\Utils\Singleton
         }
 
         if (isset($queryParams['limit'])) {
-            $limit = explode(',', (string)$queryParams['limit']);
+            $limit = explode(',', (string)$queryParams['limit'], 2);
 
-            if (isset($limit[0]) && $limit[0] !== '') {
+            if (isset($limit[1])) {
                 $QueryBuilder->setFirstResult((int)$limit[0]);
-            }
-
-            if (isset($limit[1]) && $limit[1] !== '') {
                 $QueryBuilder->setMaxResults((int)$limit[1]);
+            } else {
+                $QueryBuilder->setMaxResults((int)$limit[0]);
             }
         }
     }

@@ -1753,8 +1753,56 @@
         <locale name="users.panel.create.window.text">
             <de><![CDATA[Neuer Benutzername:]]></de>
         </locale>
+        <locale name="users.panel.create.window.submit">
+            <de><![CDATA[Anlegen]]></de>
+        </locale>
         <locale name="users.panel.create.window.information">
-            <de><![CDATA[Geben Sie einen neuen Benutzernamen an. Der Benutzer wird inaktiv angelegt.]]></de>
+            <de><![CDATA[Lege einen einzelnen Benutzer mit Benutzername oder E-Mail-Adresse an. Für Zugangsdaten per E-Mail nutze Benutzer einladen.]]></de>
+        </locale>
+        <locale name="users.panel.create.window.placeholder">
+            <de><![CDATA[Benutzername oder E-Mail-Adresse]]></de>
+        </locale>
+        <locale name="users.panel.create.window.invite.button">
+            <de><![CDATA[Benutzer einladen]]></de>
+        </locale>
+        <locale name="users.panel.create.window.value.required">
+            <de><![CDATA[Bitte gib einen Benutzernamen oder eine E-Mail-Adresse an.]]></de>
+        </locale>
+        <locale name="users.panel.invite.window.title">
+            <de><![CDATA[Benutzer einladen]]></de>
+        </locale>
+        <locale name="users.panel.invite.window.headline">
+            <de><![CDATA[Benutzer per E-Mail einladen]]></de>
+        </locale>
+        <locale name="users.panel.invite.window.information">
+            <de><![CDATA[Geben Sie die E-Mail-Adresse an und wählen Sie die Gruppen aus. Der Benutzer erhält ein Passwort per E-Mail und muss es beim ersten Login ändern.]]></de>
+        </locale>
+        <locale name="users.panel.invite.window.email.title">
+            <de><![CDATA[E-Mail-Adresse angeben]]></de>
+        </locale>
+        <locale name="users.panel.invite.window.email.description">
+            <de><![CDATA[An diese Adresse werden die Zugangsdaten gesendet. Die Adresse wird gleichzeitig als Benutzername und E-Mail-Adresse gespeichert.]]></de>
+        </locale>
+        <locale name="users.panel.invite.window.groups.title">
+            <de><![CDATA[Gruppen auswählen]]></de>
+        </locale>
+        <locale name="users.panel.invite.window.groups.description">
+            <de><![CDATA[Wähle die Gruppen aus, denen der neue Benutzer direkt nach dem Anlegen zugeordnet werden soll.]]></de>
+        </locale>
+        <locale name="users.panel.invite.window.submit">
+            <de><![CDATA[Einladen]]></de>
+        </locale>
+        <locale name="users.panel.invite.window.email.required">
+            <de><![CDATA[Bitte geben Sie eine E-Mail-Adresse an.]]></de>
+        </locale>
+        <locale name="users.panel.invite.window.groups.required">
+            <de><![CDATA[Bitte wählen Sie mindestens eine Gruppe aus.]]></de>
+        </locale>
+        <locale name="users.invite.mail.subject">
+            <de><![CDATA[Einladung zur Nutzerregistrierung für [domain]]]></de>
+        </locale>
+        <locale name="users.invite.mail.body">
+            <de><![CDATA[Hallo [email],<br><br>[username] hat dich eingeladen, einen Nutzer im System [domain] anzulegen.<br>Du kannst dich unter <a href="[backendUrl]">[backendUrl]</a> mit dem Benutzernamen <b>[email]</b> und dem Passwort <b>[password]</b> anmelden, um deinen Account zu aktivieren.<br><br>Nach dem ersten Login wirst du aufgefordert, dein Passwort zu ändern. Bitte wähle ein sicheres Passwort.<br><br>Weitere Informationen und Anleitungen zum System findest du hier: <a href="https://www.quiqqer.de/FAQ/onboarding">www.quiqqer.de/FAQ/onboarding</a>.]]></de>
         </locale>
         <locale name="exception.create.user.exists">
             <de><![CDATA[Der Benutzername existiert schon.<br />Bitte geben Sie einen anderen Benutzernamen an.]]></de>
@@ -1763,7 +1811,13 @@
             <de><![CDATA[Benutzer löschen]]></de>
         </locale>
         <locale name="users.panel.delete.window.text">
-            <de><![CDATA[Sie möchten folgende Benutzer löschen:<br /><br />[userids]]]></de>
+            <de><![CDATA[Sie möchten folgende Benutzer löschen:]]></de>
+        </locale>
+        <locale name="users.panel.delete.window.submit.user">
+            <de><![CDATA[Benutzer löschen]]></de>
+        </locale>
+        <locale name="users.panel.delete.window.submit.users">
+            <de><![CDATA[Benutzer löschen]]></de>
         </locale>
         <locale name="users.panel.delete.window.information">
             <de>
