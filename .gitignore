@@ -1,10 +1,8 @@
 .idea/
-tools
+/tools
 vendor
 composer.lock
 .phpunit.result.cache
-
-tools/
 
 phpstan.neon
 

@@ -66,11 +66,77 @@ abstract class AbstractTool implements ToolInterface
             'short' => $Site->getAttribute('short'),
             'type' => $Site->getAttribute('type'),
             'active' => (bool)$Site->getAttribute('active'),
-            'url' => $Site->getUrlRewritten()
+            'url' => $Site->getUrlRewritten(),
+            'urlWithHost' => $Site->getUrlRewrittenWithHost(),
+            'languageLinks' => self::parseSiteLanguageLinks($Site)
         ];
 
         if ($withAttributes) {
             $result['attributes'] = $Site->getAttributes();
+        }
+
+        return $result;
+    }
+
+    protected static function parseSiteLanguageLinks(Site $Site): array
+    {
+        $Project = $Site->getProject();
+        $projectName = $Project->getName();
+        $currentLang = $Project->getLang();
+        $langIds = $Site->getLangIds();
+        $result = [];
+
+        foreach ($Project->getLanguages() as $lang) {
+            $lang = (string)$lang;
+
+            if ($lang === '') {
+                continue;
+            }
+
+            $linkedId = $lang === $currentLang ? $Site->getId() : ($langIds[$lang] ?? null);
+
+            if (empty($linkedId)) {
+                $result[$lang] = [
+                    'id' => null,
+                    'project' => $projectName,
+                    'lang' => $lang,
+                    'exists' => false,
+                    'active' => null,
+                    'url' => null,
+                    'urlWithHost' => null,
+                    'source' => 'missing'
+                ];
+
+                continue;
+            }
+
+            try {
+                $LinkedSite = $lang === $currentLang
+                    ? $Site
+                    : new Edit(self::getProject($projectName, $lang), (int)$linkedId);
+
+                $result[$lang] = [
+                    'id' => $LinkedSite->getId(),
+                    'project' => $projectName,
+                    'lang' => $lang,
+                    'exists' => true,
+                    'active' => (bool)$LinkedSite->getAttribute('active'),
+                    'url' => $LinkedSite->getUrlRewritten(),
+                    'urlWithHost' => $LinkedSite->getUrlRewrittenWithHost(),
+                    'source' => $lang === $currentLang ? 'current' : 'multilingual'
+                ];
+            } catch (\Throwable) {
+                $result[$lang] = [
+                    'id' => (int)$linkedId,
+                    'project' => $projectName,
+                    'lang' => $lang,
+                    'exists' => false,
+                    'active' => null,
+                    'url' => null,
+                    'urlWithHost' => null,
+                    'source' => $lang === $currentLang ? 'current' : 'multilingual'
+                ];
+            }
         }
 
         return $result;

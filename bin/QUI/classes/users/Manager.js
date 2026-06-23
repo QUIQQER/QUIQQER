@@ -233,20 +233,52 @@ define('classes/users/Manager', [
          * create a new user
          *
          * @method classes/users/Manager#createUser
-         * @param {String} username     - Username
-         * @param {Function} [onfinish] - (optional), callback function
-         * @param {Object} [params]     - (optional), extra params
+         * @param {String} username - Username
+         * @param {Function|Object} [onfinish] - (optional), callback function or extra params
+         * @param {Object} [params] - (optional), extra params
+         * @return {Promise}
          */
         createUser: function(username, onfinish, params) {
-            params = ObjectUtils.combine(params, {
-                username: username
-            });
+            if (typeof onfinish !== 'function') {
+                params = onfinish;
+                onfinish = false;
+            }
 
-            Ajax.post('ajax_users_create', function(result, Request) {
-                if (typeof onfinish !== 'undefined') {
-                    onfinish(result, Request);
-                }
-            }, params);
+            return new Promise((resolve, reject) => {
+                params = ObjectUtils.combine(params, {
+                    username: username,
+                    onError: reject
+                });
+
+                Ajax.post('ajax_users_create', (result, Request) => {
+                    if (onfinish) {
+                        onfinish(result, Request);
+                    }
+
+                    resolve(result);
+                }, params);
+            });
+        },
+
+        /**
+         * Create and invite a new user by e-mail address
+         *
+         * @method classes/users/Manager#inviteUser
+         * @param {String} email - E-mail address
+         * @param {Array} groups - Group UUIDs
+         * @param {Object} [params] - (optional), extra params
+         * @return {Promise}
+         */
+        inviteUser: function(email, groups, params) {
+            return new Promise((resolve, reject) => {
+                params = ObjectUtils.combine(params, {
+                    email: email,
+                    groups: JSON.encode(groups || []),
+                    onError: reject
+                });
+
+                Ajax.post('ajax_users_invite', resolve, params);
+            });
         },
 
         /**

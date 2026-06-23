@@ -11,10 +11,39 @@ use Mcp\Server\Builder;
 use QUI\AI\MCP\ToolHelper;
 use QUI\MCP\AbstractTool;
 use QUI\Projects\Site;
+use QUI\Projects\Site\PermissionDenied;
 use Throwable;
 
 class ListSites extends AbstractTool
 {
+    /**
+     * @param array<Site> $children
+     * @return array{sites: array<int, array<string, mixed>>, skipped: array<int, array<string, mixed>>}
+     */
+    protected static function parseChildren(array $children): array
+    {
+        $sites = [];
+        $skipped = [];
+
+        foreach ($children as $Site) {
+            if ($Site instanceof PermissionDenied) {
+                $skipped[] = [
+                    'id' => $Site->getId(),
+                    'reason' => 'permission_denied'
+                ];
+
+                continue;
+            }
+
+            $sites[] = self::parseSite($Site);
+        }
+
+        return [
+            'sites' => $sites,
+            'skipped' => $skipped
+        ];
+    }
+
     public function register(Builder $serverBuilder): void
     {
         $serverBuilder->addTool(
@@ -31,15 +60,17 @@ class ListSites extends AbstractTool
                     $Project = self::getProject($project, $lang);
                     $Parent = self::getEditSite($project, $parentId ?: 1, $lang);
 
+                    $children = self::parseChildren(
+                        $Parent->getChildren([
+                            'limit' => self::parseLimit($limit, $offset)
+                        ])
+                    );
+
                     return [
                         'project' => self::parseProject($Project),
                         'parent' => self::parseSite($Parent),
-                        'children' => array_map(
-                            static fn(Site $Site): array => self::parseSite($Site),
-                            $Parent->getChildren([
-                                'limit' => self::parseLimit($limit, $offset)
-                            ])
-                        )
+                        'children' => $children['sites'],
+                        'skippedChildren' => $children['skipped']
                     ];
                 } catch (Throwable $Exception) {
                     return ToolHelper::parseExceptionToResult($Exception);

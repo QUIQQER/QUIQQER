@@ -141,6 +141,9 @@
     <!-- Darf Projekt CSS ändern -->
     <permission name="quiqqer.project.editCustomCSS" type="users_and_groups" area="project"/>
 
+    <!-- Darf Projekt JS ändern -->
+    <permission name="quiqqer.project.editCustomJS" type="users_and_groups" area="project"/>
+
 
     <!-- Site permissions  -->
 
