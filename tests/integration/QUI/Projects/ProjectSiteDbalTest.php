@@ -146,6 +146,84 @@ class ProjectSiteDbalTest extends ProjectIntegrationTestCase
         ));
     }
 
+    public function testSiteChildrenIdsSupportLegacyArrayConditions(): void
+    {
+        $Project = self::getTestProject();
+        $Root = $Project->firstChild()->getEdit();
+        $parentName = "phpunit-child-condition-parent-" . uniqid();
+        $firstName = "phpunit-child-condition-a-" . uniqid();
+        $secondName = "phpunit-child-condition-b-" . uniqid();
+        $thirdName = "phpunit-child-condition-c-" . uniqid();
+        $firstType = "phpunit/condition-a-" . uniqid();
+        $secondType = "phpunit/condition-b-" . uniqid();
+        $thirdType = "phpunit/condition-c-" . uniqid();
+
+        [$parentId, $firstId, $secondId, $thirdId] = ProjectTestHelper::runAsSystemUser(
+            static function () use (
+                $Root,
+                $parentName,
+                $firstName,
+                $secondName,
+                $thirdName,
+                $firstType,
+                $secondType,
+                $thirdType
+            ): array {
+                $parentId = $Root->createChild([
+                    "name" => $parentName,
+                    "title" => "PHPUnit Child Condition Parent"
+                ]);
+                $Parent = new Site\Edit($Root->getProject(), $parentId);
+                $firstId = $Parent->createChild([
+                    "name" => $firstName,
+                    "title" => "PHPUnit Child Condition First"
+                ]);
+                $secondId = $Parent->createChild([
+                    "name" => $secondName,
+                    "title" => "PHPUnit Child Condition Second"
+                ]);
+                $thirdId = $Parent->createChild([
+                    "name" => $thirdName,
+                    "title" => "PHPUnit Child Condition Third"
+                ]);
+
+                foreach (
+                    [
+                        $firstId => $firstType,
+                        $secondId => $secondType,
+                        $thirdId => $thirdType
+                    ] as $siteId => $type
+                ) {
+                    $Site = new Site\Edit($Root->getProject(), $siteId);
+                    $Site->setAttribute("type", $type);
+                    $Site->save();
+                    $Site->activate();
+                }
+
+                return [$parentId, $firstId, $secondId, $thirdId];
+            }
+        );
+
+        $Parent = new Site\Edit($Project, $parentId);
+
+        $this->assertSame([$firstId, $secondId], $Parent->getChildrenIds([
+            "where" => [
+                "type" => [
+                    "type" => "IN",
+                    "value" => [$firstType, $secondType]
+                ]
+            ],
+            "order" => "name ASC"
+        ]));
+
+        $this->assertSame([$thirdId], $Parent->getChildrenIds([
+            "where" => [
+                "type" => [$thirdType]
+            ],
+            "order" => "name ASC"
+        ]));
+    }
+
     public function testSiteTreeQueriesReturnChildrenParentsSiblingsAndRecursiveIds(): void
     {
         $Project = self::getTestProject();

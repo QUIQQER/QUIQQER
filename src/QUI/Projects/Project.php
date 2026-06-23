@@ -853,24 +853,16 @@ class Project implements \Stringable
         }
 
         if (isset($params["where"]) && is_array($params["where"])) {
-            $whereIndex = 0;
-
-            foreach ($params["where"] as $field => $value) {
-                if (is_array($value)) {
-                    continue;
-                }
-
-                $fieldParts = explode(".", (string)$field, 2);
-                $fieldName = $fieldParts[1] ?? $fieldParts[0];
-                $alias = isset($fieldParts[1]) && $fieldParts[0] === $this->RELTABLE ? $relationAlias : $siteAlias;
-                $paramName = "where" . $whereIndex;
-
-                $QueryBuilder
-                    ->andWhere($alias . "." . $Platform->quoteSingleIdentifier($fieldName) . " = :" . $paramName)
-                    ->setParameter($paramName, $value);
-
-                $whereIndex++;
-            }
+            self::applySiteConditions(
+                $QueryBuilder,
+                $params["where"],
+                "andWhere",
+                $siteAlias,
+                [
+                    $this->TABLE => $siteAlias,
+                    $this->RELTABLE => $relationAlias
+                ]
+            );
         } elseif (isset($params["where"]) && is_string($params["where"])) {
             QUI\System\Log::addDebug(
                 "Project->getChildrenIdsFrom WIRD NICHT verwendet" . $params["where"]
@@ -1151,15 +1143,36 @@ class Project implements \Stringable
         return $QueryBuilder->executeQuery()->fetchAllAssociative();
     }
 
-    private static function applySiteConditions(\Doctrine\DBAL\Query\QueryBuilder $QueryBuilder, array $conditions, string $method): void
-    {
+    private static function applySiteConditions(
+        \Doctrine\DBAL\Query\QueryBuilder $QueryBuilder,
+        array $conditions,
+        string $method,
+        ?string $defaultAlias = null,
+        array $tableAliases = []
+    ): void {
         $Connection = QUI::getDataBaseConnection();
         $Platform = $Connection->getDatabasePlatform();
         $index = 0;
 
         foreach ($conditions as $field => $data) {
             $parameter = "condition" . $method . $index;
-            $column = $Platform->quoteSingleIdentifier((string)$field);
+            $fieldName = (string)$field;
+            $alias = $defaultAlias;
+            $fieldParts = explode(".", (string)$field, 2);
+
+            if (isset($fieldParts[1]) && ($defaultAlias !== null || isset($tableAliases[$fieldParts[0]]))) {
+                $fieldName = $fieldParts[1];
+
+                if (isset($tableAliases[$fieldParts[0]])) {
+                    $alias = $tableAliases[$fieldParts[0]];
+                }
+            }
+
+            $column = $Platform->quoteSingleIdentifier($fieldName);
+
+            if ($alias !== null) {
+                $column = $alias . "." . $column;
+            }
 
             if (is_array($data)) {
                 $type = strtoupper((string)($data["type"] ?? ""));

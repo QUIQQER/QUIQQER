@@ -355,7 +355,7 @@ define('controls/projects/project/site/Panel', [
                           Site.getId() + ' - ' +
                           Project.getName();
 
-            if (Site.getId() !== 1) {
+            if (parseInt(Site.getId(), 10) !== 1) {
                 description = description + ' - ' + Site.getUrl();
             }
 
@@ -1187,7 +1187,7 @@ define('controls/projects/project/site/Panel', [
 
                                 if (Title) {
                                     Title.addEvent('blur', function () {
-                                        if (Site.getId() === 1) {
+                                        if (parseInt(Site.getId(), 10) === 1) {
                                             return;
                                         }
 
@@ -1543,7 +1543,9 @@ define('controls/projects/project/site/Panel', [
 
             // information tab
             if (Category.getAttribute('name') === 'information') {
-                Site.setAttribute('name', elements['site-name'].value);
+                if (parseInt(Site.getId(), 10) !== 1) {
+                    Site.setAttribute('name', elements['site-name'].value);
+                }
                 Site.setAttribute('title', elements.title.value);
                 Site.setAttribute('short', elements.short.value);
                 Site.setAttribute('nav_hide', elements.nav_hide.checked);
@@ -1744,9 +1746,20 @@ define('controls/projects/project/site/Panel', [
                 return;
             }
 
-            if (Site.getId() !== 1) {
-                UrlDisplay.set('html', Site.getUrl());
+            if (parseInt(Site.getId(), 10) === 1) {
+                NameInput.set({
+                    value   : "/",
+                    disabled: true,
+                    readonly: true
+                });
+
+                UrlDisplay.set("html", "/");
+                UrlEditButton.setStyle("display", "none");
+
+                return;
             }
+
+            UrlDisplay.set("html", Site.getUrl());
 
             new QUIButton({
                 icon  : 'fa fa-edit',
@@ -1800,7 +1813,7 @@ define('controls/projects/project/site/Panel', [
                             QUIElmUtils.setCursorPosition(this, lastPos - 1);
                         }
 
-                        if (Site.getId() !== 1) {
+                        if (parseInt(Site.getId(), 10) !== 1) {
                             UrlDisplay.set('html', sitePath + this.value + QUIQQER.Rewrite.SUFFIX);
                         }
                     },
@@ -1915,7 +1928,7 @@ define('controls/projects/project/site/Panel', [
                 const attributes = this.getSite().getAttributes();
                 const NameInput = this.getBody().getElement('input[name="site-name"]');
 
-                attributes['site-name'] = attributes.name;
+                attributes["site-name"] = parseInt(this.getSite().getId(), 10) === 1 ? "/" : attributes.name;
 
                 QUIFormUtils.setDataToForm(attributes, Form);
 
@@ -2358,6 +2371,10 @@ define('controls/projects/project/site/Panel', [
         $showTitleUrlAdjustment: function () {
             const self = this,
                   Site = this.getSite();
+
+            if (parseInt(Site.getId(), 10) === 1) {
+                return;
+            }
 
             new QUIConfirm({
                 icon         : 'fa fa-file-o',
