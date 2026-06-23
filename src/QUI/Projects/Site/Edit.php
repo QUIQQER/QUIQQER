@@ -756,9 +756,16 @@ class Edit extends Site
 
         $name = trim($name);
 
+        if ($this->getId() === 1) {
+            $name = '';
+            $this->setAttribute('name', '');
+        }
+
 
         // checks if the name is conformed and allowed to use
-        QUI\Projects\Site\Utils::checkName($name);
+        if ($this->getId() !== 1) {
+            QUI\Projects\Site\Utils::checkName($name);
+        }
 
 
         // check if a name in the same level exists
