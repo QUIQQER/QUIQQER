@@ -220,6 +220,9 @@ class SecurityUpdate extends QUI\System\Console\Tool
             $NGINX = new Nginx();
             $NGINX->execute();
 
+            $Frankenphp = new Frankenphp();
+            $Frankenphp->execute();
+
             // setup set the last update date
             QUI::getPackageManager()->setLastUpdateDate();
 
