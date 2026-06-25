@@ -320,6 +320,9 @@ class Update extends QUI\System\Console\Tool
             $NGINX = new Nginx();
             $NGINX->execute();
 
+            $Frankenphp = new Frankenphp();
+            $Frankenphp->execute();
+
             self::writeToLog(PHP_EOL);
             self::writeToLog('✔️' . PHP_EOL);
             self::writeToLog(PHP_EOL);
