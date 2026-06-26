@@ -539,7 +539,7 @@ class Locale implements \Stringable
 
     /**
      * Parse a locale string and translate it
-     * a locale strings looks like: [group] var.var.var
+     * a locale strings looks like: [group/group] var.var.var
      */
     public function parseLocaleString(array|string $title): array|string
     {
@@ -577,40 +577,33 @@ class Locale implements \Stringable
 
     /**
      * Verified the string if the string is a locale string
-     * a locale strings looks like: [group] var.var.var
+     * a locale strings looks like: [group/group] var.var.var
      */
     public function isLocaleString(string $str): bool
     {
-        if (
-            !str_contains($str, ' ')
-            || !str_contains($str, '[')
-            || !str_contains($str, ']')
-        ) {
-            return false;
-        }
-
-        return true;
+        return preg_match('/^\[[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\] [A-Za-z0-9_.-]+$/', $str) === 1;
     }
 
     /**
      * Return the parts of a locale string
-     * a locale strings looks like: [group] var.var.var
+     * a locale strings looks like: [group/group] var.var.var
      *
      * @param string $str
      * @return array -  [0=>group, 1=>var]
      */
     public function getPartsOfLocaleString(string $str): array
     {
-        $str = explode(' ', $str);
-
-        if (!isset($str[1])) {
-            return $str;
+        if (
+            preg_match(
+                '/^\[([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+)\] ([A-Za-z0-9_.-]+)$/',
+                $str,
+                $matches
+            ) !== 1
+        ) {
+            return [null, null];
         }
 
-        $group = str_replace(['[', ']'], '', $str[0]);
-        $var = trim($str[1]);
-
-        return [$group, $var];
+        return [$matches[1], $matches[2]];
     }
 
     /**

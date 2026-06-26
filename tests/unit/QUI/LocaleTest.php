@@ -112,20 +112,19 @@ class LocaleTest extends TestCase
             ['[quiqqer/core] this.is.a.test', true],
             ['[quiqqer/core] hello', true],
             ['[quiqqer/core] 123', true],
+            ['[pcsg/ai-influencer] this.is.a-test', true],
             ['this.is.a.test', false],
             ['this.is.a.test [quiqqer/core]', false],
             ['', false],
             ['[ ]', false],
+            ['[quiqqer/core]', false],
+            ['[quiqqer] this.is.a.test', false],
         ];
     }
 
     #[DataProvider('isLocaleStringDataProvider')]
     public function testIsLocaleString(string $localeString, bool $expectedResult): void
     {
-        $this->markTestSkipped(
-            'Test skipped: isLocaleString behaves wrong, thus testing is worthless (see quiqqer/core#1334)'
-        );
-
         $sut = new Locale();
 
         $this->assertEquals($expectedResult, $sut->isLocaleString($localeString));
@@ -137,10 +136,13 @@ class LocaleTest extends TestCase
             ['[quiqqer/core] this.is.a.test', 'quiqqer/core', 'this.is.a.test'],
             ['[quiqqer/core] hello', 'quiqqer/core', 'hello'],
             ['[quiqqer/core] 123', 'quiqqer/core', '123'],
+            ['[pcsg/ai-influencer] this.is.a-test', 'pcsg/ai-influencer', 'this.is.a-test'],
             ['this.is.a.test', null, null],
             ['this.is.a.test [quiqqer/core]', null, null],
             ['', null, null],
             ['[ ]', null, null],
+            ['[quiqqer/core]', null, null],
+            ['[quiqqer] this.is.a.test', null, null],
         ];
     }
 
@@ -150,10 +152,6 @@ class LocaleTest extends TestCase
         ?string $expectedGroup,
         ?string $expectedVariable
     ): void {
-        $this->markTestSkipped(
-            'Test skipped: getPartsOfLocaleString behaves odd, thus testing is worthless (see quiqqer/core#1335)'
-        );
-
         $locale = new Locale();
 
         $sut = $locale->getPartsOfLocaleString($localeStringToTest);
