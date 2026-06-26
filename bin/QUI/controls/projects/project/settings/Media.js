@@ -77,7 +77,25 @@ define('controls/projects/project/settings/Media', [
                     }
                 }
 
-                QUIFormUtils.setDataToForm(self.getAttribute('config'), Form);
+                const config = Object.merge({
+                    media_maxUploadSize: 4000,
+                    media_maxImageCacheSize: 4000,
+                    media_useImageScale: 2
+                }, self.getAttribute('config') || {});
+
+                Object.each({
+                    media_maxUploadSize: 4000,
+                    media_maxImageCacheSize: 4000,
+                    media_useImageScale: 2
+                }, function (defaultValue, configKey) {
+                    const value = parseInt(config[configKey], 10);
+
+                    if (isNaN(value) || value <= 0) {
+                        config[configKey] = defaultValue;
+                    }
+                });
+
+                QUIFormUtils.setDataToForm(config, Form);
 
                 new QUIButton({
                     text     : QUILocale.get(lg, 'projects.project.site.media.manager.calcmd5.start.text'),

@@ -808,7 +808,11 @@ class Media extends QUI\QDOM
             // create image
             $Image = $this->getImageManager()->read($file);
 
-            if (!empty($maxConfigSize)) {
+            if (
+                $maxConfigSize > 0
+                && !empty($info['width'])
+                && !empty($info['height'])
+            ) {
                 $sizes = QUI\Utils\Math::resize($info['width'], $info['height'], $maxConfigSize);
                 $Image->scaleDown($sizes[1], $sizes[2]);
             }
