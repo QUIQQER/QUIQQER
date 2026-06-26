@@ -1533,6 +1533,9 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="trash.panel.title">
             <en><![CDATA[Trash]]></en>
         </locale>
+        <locale name="trash.panel.deleted_at">
+            <en><![CDATA[Deletion date]]></en>
+        </locale>
         <locale name="trash.panel.btn.delete">
             <en><![CDATA[Delete entries]]></en>
         </locale>

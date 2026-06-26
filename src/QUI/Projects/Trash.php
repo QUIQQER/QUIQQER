@@ -60,7 +60,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
          */
         if (isset($params['order'])) {
             $_params['order'] = match ($params['order']) {
-                'name', 'title', 'type' => $params['order'],
+                'name', 'title', 'type', 'e_date', 'deleted_at' => $params['order'],
                 default => 'id',
             };
         }
@@ -86,6 +86,9 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
                     'name' => $Site->getAttribute('name'),
                     'title' => $Site->getAttribute('title'),
                     'type' => $Site->getAttribute('type'),
+                    'e_date' => $Site->getAttribute('e_date'),
+                    'deleted_at' => $Site->getAttribute('deleted_at') ?: $Site->getAttribute('e_date'),
+                    'e_user' => $Site->getAttribute('e_user'),
                     'id' => $Site->getId(),
                     'path' => $Site->getUrlRewritten()
                 ];

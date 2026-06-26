@@ -74,7 +74,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
             if (!empty($query["order"])) {
                 $order = explode(" ", (string)$query["order"], 2);
                 $orderField = match ($order[0]) {
-                    "id", "name", "title", "file", "type", "mime_type", "c_date", "e_date" => $order[0],
+                    "id", "name", "title", "file", "type", "mime_type", "c_date", "e_date", "deleted_at" => $order[0],
                     default => "id"
                 };
                 $orderDirection = isset($order[1]) && $order[1] === "ASC" ? "ASC" : "DESC";
@@ -109,6 +109,8 @@ class Trash implements QUI\Interfaces\Projects\Trash
             if (!empty($pathHistory)) {
                 $data[$key]['path'] = end($pathHistory) . '/';
             }
+
+            $data[$key]['deleted_at'] = $entry['deleted_at'] ?: ($entry['e_date'] ?? '');
         }
 
         return $Grid->parseResult($data, (int)$count);

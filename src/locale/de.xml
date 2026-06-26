@@ -1545,6 +1545,9 @@
         <locale name="trash.panel.title">
             <de><![CDATA[Papierkorb]]></de>
         </locale>
+        <locale name="trash.panel.deleted_at">
+            <de><![CDATA[Löschdatum]]></de>
+        </locale>
         <locale name="trash.panel.btn.delete">
             <de><![CDATA[Einträge löschen]]></de>
         </locale>

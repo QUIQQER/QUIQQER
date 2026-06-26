@@ -1311,11 +1311,17 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             'active' => '0&1'
         ]);
 
+        $deletedAt = date('Y-m-d H:i:s');
+        $deletedUser = QUI::getUserBySession()->getUUID();
+
         QUI::getDataBaseConnection()->update(
             $this->TABLE,
             [
                 'deleted' => 1,
-                'active' => -1
+                'active' => -1,
+                'deleted_at' => $deletedAt,
+                'e_date' => $deletedAt,
+                'e_user' => $deletedUser
             ],
             ['id' => $this->getId()]
         );
@@ -1326,7 +1332,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 $this->TABLE,
                 [
                     'deleted' => 1,
-                    'active' => -1
+                    'active' => -1,
+                    'deleted_at' => $deletedAt,
+                    'e_date' => $deletedAt,
+                    'e_user' => $deletedUser
                 ],
                 ['id' => $child]
             );
