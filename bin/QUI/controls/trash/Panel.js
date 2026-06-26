@@ -115,7 +115,7 @@ define('controls/trash/Panel', [
             });
 
             Projects.getList(function (result) {
-                var i, len, langs, project;
+                var i, len, langs, project, FirstChild;
 
                 for (project in result) {
                     if (!result.hasOwnProperty(project)) {
@@ -139,11 +139,16 @@ define('controls/trash/Panel', [
                     );
                 }
 
-                self.$Select.setValue(
-                    self.$Select.firstChild().getAttribute('value')
-                );
+                FirstChild = self.$Select.firstChild();
 
-                self.Loader.hide();
+                if (!FirstChild) {
+                    self.Loader.hide();
+                    return;
+                }
+
+                self.$Select.setValue(
+                    FirstChild.getAttribute('value')
+                );
             });
         },
 
@@ -461,6 +466,7 @@ define('controls/trash/Panel', [
                     width    : 200
                 }],
                 pagination       : true,
+                serverSort       : true,
                 selectable       : true,
                 multipleSelection: true,
                 onrefresh        : function () {
@@ -659,6 +665,7 @@ define('controls/trash/Panel', [
                     width    : 300
                 }],
                 pagination       : true,
+                serverSort       : true,
                 selectable       : true,
                 multipleSelection: true,
                 onrefresh        : function () {

@@ -66,6 +66,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
         }
 
         if (isset($params['sort'])) {
+            $_params['order'] ??= 'id';
             $_params['order'] = match ($params['sort']) {
                 'ASC' => $_params['order'] . ' ASC',
                 default => $_params['order'] . ' DESC',
