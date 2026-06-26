@@ -593,9 +593,9 @@
                                 <locale group="quiqqer/core" var="quiqqer.settings.webserver.type.desc"/>
                             </description>
                             <option value="">---</option>
-                            <option value="apache2.4">Apache 2.4</option>
-                            <option value="apache2.2">Apache 2.2</option>
+                            <option value="apache2.4">Apache</option>
                             <option value="nginx">Nginx</option>
+                            <option value="frankenphp">FrankenPHP</option>
                         </select>
                     </settings>
 
