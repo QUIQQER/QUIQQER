@@ -90,7 +90,11 @@ class Login extends Control
         }
 
         foreach ($nextAuthenticators as $authenticator) {
-            if (!empty($exclusiveAuthenticators) && !in_array($authenticator, $exclusiveAuthenticators)) {
+            if (
+                $this->getAttribute('authStep') === 'primary'
+                && !empty($exclusiveAuthenticators)
+                && !in_array($authenticator, $exclusiveAuthenticators, true)
+            ) {
                 continue;
             }
 

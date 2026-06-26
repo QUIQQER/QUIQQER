@@ -524,6 +524,7 @@ define('controls/users/Login', [
                     showLogin: false,
                     authenticator: Form.get('data-authenticator'),
                     authStep: this.$authStep,
+                    authenticators: JSON.encode(this.getAttribute('authenticators')),
                     params: JSON.encode(
                         QUIFormUtils.getFormData(Form)
                     ),
