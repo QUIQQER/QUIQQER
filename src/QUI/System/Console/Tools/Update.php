@@ -84,15 +84,12 @@ class Update extends QUI\System\Console\Tool
      */
     public function execute(): void
     {
-        if (
-            !$this->getArgument('check')
-            && !$this->getArgument('set-date')
-        ) {
-            $this->launchUpdateRun();
+        if ($this->getArgument('set-date')) {
+            $this->executeSystemUpdate();
             return;
         }
 
-        $this->executeSystemUpdate();
+        $this->launchUpdateRun();
     }
 
     public function executeSystemUpdate(): void
