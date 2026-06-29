@@ -419,10 +419,15 @@ class Update extends QUI\System\Console\Tool
         if (!empty($runs['active'])) {
             $State = $runs['active'][0];
 
-            $this->writeLn('Another update run is already active.', 'red');
-            $this->writeLn('Run: ' . $State->getId());
-            $this->writeLn('Status: ' . $State->getStatus());
-            $this->writeLn('Created: ' . date('Y-m-d H:i:s', $State->getCreatedAt()));
+            $this->writeErrorBox([
+                'Update already running',
+                'Another update process is active.',
+                'Wait until it has finished before starting a new update.',
+                '',
+                'Run ID:  ' . $State->getId(),
+                'Status:  ' . $State->getStatus(),
+                'Started: ' . date('Y-m-d H:i:s', $State->getCreatedAt())
+            ]);
             exit(1);
         }
 
@@ -731,5 +736,31 @@ class Update extends QUI\System\Console\Tool
         }
 
         return 0;
+    }
+
+    /**
+     * @param array<int, string> $lines
+     */
+    private function writeErrorBox(array $lines): void
+    {
+        $width = 0;
+
+        foreach ($lines as $line) {
+            $width = max($width, strlen($line));
+        }
+
+        $border = str_repeat(' ', $width + 4);
+        $redBackground = "\033[41;37m";
+        $reset = "\033[0m";
+
+        echo PHP_EOL;
+        echo $redBackground . $border . $reset . PHP_EOL;
+
+        foreach ($lines as $line) {
+            echo $redBackground . '  ' . str_pad($line, $width) . '  ' . $reset . PHP_EOL;
+        }
+
+        echo $redBackground . $border . $reset . PHP_EOL;
+        echo PHP_EOL . PHP_EOL;
     }
 }
