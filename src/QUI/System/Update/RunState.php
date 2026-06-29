@@ -195,6 +195,11 @@ class RunState
         return $this->status;
     }
 
+    public function getCreatedAt(): int
+    {
+        return $this->createdAt;
+    }
+
     public function getMetadata(): array
     {
         return $this->metadata;

@@ -144,6 +144,59 @@ class RunRepository
         return $deleted;
     }
 
+    /**
+     * @return array{deleted: array<int, string>, active: array<int, RunState>}
+     */
+    public function cleanupAndFindActive(int $now, int $maxAge): array
+    {
+        if (!is_dir($this->root)) {
+            return [
+                'deleted' => [],
+                'active' => []
+            ];
+        }
+
+        $deleted = [];
+        $active = [];
+        $items = new \FilesystemIterator($this->root, \FilesystemIterator::SKIP_DOTS);
+
+        foreach ($items as $item) {
+            if (!$item->isDir()) {
+                continue;
+            }
+
+            $id = $item->getFilename();
+
+            try {
+                $state = $this->load($id);
+            } catch (\Throwable) {
+                continue;
+            }
+
+            if ($state->getStatus() === RunState::STATUS_FAILED) {
+                continue;
+            }
+
+            if ($state->getCreatedAt() <= $now - $maxAge) {
+                $this->delete($id);
+                $deleted[] = $id;
+                continue;
+            }
+
+            if (
+                $state->getStatus() !== RunState::STATUS_FINISHED
+                && $state->getStatus() !== RunState::STATUS_FAILED
+            ) {
+                $active[] = $state;
+            }
+        }
+
+        return [
+            'deleted' => $deleted,
+            'active' => $active
+        ];
+    }
+
     public function getRunDirectory(string $id): string
     {
         RunState::assertValidIdentifier($id);

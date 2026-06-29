@@ -104,6 +104,28 @@ class RunRepositoryTest extends TestCase
         $this->assertDirectoryExists($activeRun->getDirectory());
     }
 
+    public function testCleanupAndFindActiveDeletesOldRunsButKeepsFailedRuns(): void
+    {
+        $repository = new RunRepository($this->root, 600);
+        $oldRun = $repository->create(1000);
+        $freshRun = $repository->create(2000);
+        $failedRun = $repository->create(500);
+        $failedState = $failedRun->getState();
+        $failedState->markFailed('failed for debugging', 501);
+        $repository->save($failedState);
+
+        $result = $repository->cleanupAndFindActive(2000, 864);
+
+        $this->assertSame([$oldRun->getState()->getId()], $result['deleted']);
+        $this->assertSame([$freshRun->getState()->getId()], array_map(
+            static fn (RunState $state): string => $state->getId(),
+            $result['active']
+        ));
+        $this->assertDirectoryDoesNotExist($oldRun->getDirectory());
+        $this->assertDirectoryExists($freshRun->getDirectory());
+        $this->assertDirectoryExists($failedRun->getDirectory());
+    }
+
     private function deleteDirectory(string $directory): void
     {
         $items = new \FilesystemIterator($directory, \FilesystemIterator::SKIP_DOTS);

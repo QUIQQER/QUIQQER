@@ -409,6 +409,23 @@ class Update extends QUI\System\Console\Tool
 
     protected function launchUpdateRun(): void
     {
+        $Repository = new QUI\System\Update\RunRepository(VAR_DIR . 'update/runs/');
+        $runs = $Repository->cleanupAndFindActive(time(), 86400);
+
+        foreach ($runs['deleted'] as $id) {
+            $this->writeLn('Removed stale update run: ' . $id, 'yellow');
+        }
+
+        if (!empty($runs['active'])) {
+            $State = $runs['active'][0];
+
+            $this->writeLn('Another update run is already active.', 'red');
+            $this->writeLn('Run: ' . $State->getId());
+            $this->writeLn('Status: ' . $State->getStatus());
+            $this->writeLn('Created: ' . date('Y-m-d H:i:s', $State->getCreatedAt()));
+            exit(1);
+        }
+
         $Launcher = QUI\System\Update\RunLauncherFactory::createDefault();
         $Launch = $Launcher->create(null, [
             'arguments' => $this->params ?? []
@@ -417,7 +434,6 @@ class Update extends QUI\System\Console\Tool
         $this->writeLn('Preparing update ...');
         echo PHP_EOL;
 
-        $Repository = new QUI\System\Update\RunRepository(VAR_DIR . 'update/runs/');
         $exitCode = 0;
         $maxRuns = 5;
 
