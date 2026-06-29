@@ -1751,13 +1751,14 @@ class Manager extends QUI\QDOM
      * Check for updates
      *
      * @param bool $force - if force is true -> database / cache output from the last check wouldn't be checked
+     * @param array<string, mixed> $composerOptions
      *
      * @return array
      *
      * @throws QUI\Exception
      * @throws Exception
      */
-    public function getOutdated(bool $force = false): array
+    public function getOutdated(bool $force = false, array $composerOptions = []): array
     {
         $this->checkComposer();
         $this->setLastUpdateCheckDate();
@@ -1792,7 +1793,7 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            $output = $this->getOutdatedPackages();
+            $output = $this->getOutdatedPackages($composerOptions);
 
             usort($output, static function (array $a, array $b): int {
                 return strcmp($a["package"], $b["package"]);
@@ -1838,21 +1839,23 @@ class Manager extends QUI\QDOM
      *   'version' => "dev-master def567",
      *   'oldVersion' => "dev-master abc1234"
      *  );
+     * @param array<string, mixed> $composerOptions
+     * @return array<int, array{package: string, version: string, oldVersion: string}>
      *
      * @throws QUI\Composer\Exception
      * @throws Exception
      */
-    protected function getOutdatedPackages(): array
+    protected function getOutdatedPackages(array $composerOptions = []): array
     {
         $repositories = $this->getServerList();
 
         foreach ($repositories as $repo) {
             if ($repo['type'] === 'vcs') {
-                return $this->getComposer()->getOutdatedPackages();
+                return $this->getComposer()->getOutdatedPackages($composerOptions);
             }
         }
 
-        return $this->getComposer()->getOutdatedPackages();
+        return $this->getComposer()->getOutdatedPackages($composerOptions);
     }
 
     /**

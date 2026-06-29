@@ -51,6 +51,11 @@ class SystemUpdateAction implements RunActionInterface
                 echo $msg;
             }
 
+            public function message(string $msg, bool|string $color = false, bool|string $bg = false): void
+            {
+                $this->write($msg, $color, $bg);
+            }
+
             public function clearMsg(): void
             {
             }

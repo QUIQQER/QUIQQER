@@ -74,6 +74,11 @@ class Update extends QUI\System\Console\Tool
                 QUI::getLocale()->get('quiqqer/core', 'console.update.skip-filesystem-check'),
                 false,
                 true
+            )->addArgument(
+                'verbose',
+                'Show verbose update progress output',
+                'v',
+                true
             );
     }
 
@@ -131,7 +136,7 @@ class Update extends QUI\System\Console\Tool
 
         // output events
         $Packages->getComposer()->addEvent('onOutput', function ($Composer, $output, $type): void {
-            if ($this->getArgument('check')) {
+            if ($this->getArgument('check') && $this->getVerbosityLevel() === 0) {
                 return;
             }
 
@@ -168,8 +173,12 @@ class Update extends QUI\System\Console\Tool
             $this->writeLn();
             $this->writeLn();
 
+            if ($this->getVerbosityLevel() > 0) {
+                $Packages->getComposer()->unmute();
+            }
+
             try {
-                $packages = $Packages->getOutdated(true);
+                $packages = $Packages->getOutdated(true, $this->getComposerVerbosityOptions());
             } catch (Exception $Exception) {
                 self::writeToLog('====== ERROR ======');
                 self::writeToLog($Exception->getMessage());
@@ -665,5 +674,46 @@ class Update extends QUI\System\Console\Tool
         }
 
         return false;
+    }
+
+    private function getComposerVerbosityOptions(): array
+    {
+        $level = $this->getVerbosityLevel();
+
+        if ($level >= 3) {
+            return ['-vvv' => true];
+        }
+
+        if ($level === 2) {
+            return ['-vv' => true];
+        }
+
+        if ($level === 1) {
+            return ['-v' => true];
+        }
+
+        return [];
+    }
+
+    private function getVerbosityLevel(): int
+    {
+        if ($this->params['-vvv'] ?? false) {
+            return 3;
+        }
+
+        if ($this->params['-vv'] ?? false) {
+            return 2;
+        }
+
+        if (
+            $this->getArgument('verbose')
+            || $this->getArgument('v')
+            || ($this->params['--verbose'] ?? false)
+            || ($this->params['-v'] ?? false)
+        ) {
+            return 1;
+        }
+
+        return 0;
     }
 }
