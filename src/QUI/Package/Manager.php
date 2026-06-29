@@ -1001,11 +1001,6 @@ class Manager extends QUI\QDOM
     {
         if (is_null($this->Composer)) {
             $this->Composer = new QUI\Composer\Composer($this->varDir);
-
-            // we want to use everytime the current composer libs
-            $this->Composer->setMode(
-                QUI\Composer\Composer::MODE_WEB
-            );
         }
 
         return $this->Composer;
@@ -1189,13 +1184,6 @@ class Manager extends QUI\QDOM
         $this->checkComposerInstallRequirements();
 
         if ($this->isVCSServerEnabled()) {
-            return $this->getComposer()->requirePackage($packages, $version);
-        }
-
-        //
-        // NO VCS enabled -> continue normal routine
-        //
-        if ($this->getComposer()->getMode() != QUI\Composer\Composer::MODE_WEB) {
             return $this->getComposer()->requirePackage($packages, $version);
         }
 
@@ -1864,10 +1852,6 @@ class Manager extends QUI\QDOM
             }
         }
 
-        if ($this->getComposer()->getMode() != QUI\Composer\Composer::MODE_WEB) {
-            return $this->getComposer()->getOutdatedPackages();
-        }
-
         return $this->getComposer()->getOutdatedPackages();
     }
 
@@ -2006,18 +1990,18 @@ class Manager extends QUI\QDOM
             ]);
         }
 
-        if ($this->getComposer()->getMode() != QUI\Composer\Composer::MODE_WEB) {
+        if (
+            $this->getComposer()->getMode() !== QUI\Composer\Composer::MODE_WEB
+            || $memoryLimit === -1
+            || $memoryLimit >= self::REQUIRED_MEMORY * 1024 * 1024
+        ) {
             return $this->getComposer()->update($updateOptions);
         }
 
-        if ($memoryLimit != -1 && $memoryLimit < self::REQUIRED_MEMORY * 1024 * 1024) {
-            throw new QUI\Exception([
-                'quiqqer/core',
-                'message.online.update.RAM.insufficient'
-            ]);
-        }
-
-        return $this->getComposer()->update($updateOptions);
+        throw new QUI\Exception([
+            'quiqqer/core',
+            'message.online.update.RAM.insufficient'
+        ]);
     }
 
     /**

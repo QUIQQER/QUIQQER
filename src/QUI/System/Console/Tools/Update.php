@@ -84,6 +84,19 @@ class Update extends QUI\System\Console\Tool
      */
     public function execute(): void
     {
+        if (
+            !$this->getArgument('check')
+            && !$this->getArgument('set-date')
+        ) {
+            $this->launchUpdateRun();
+            return;
+        }
+
+        $this->executeSystemUpdate();
+    }
+
+    public function executeSystemUpdate(): void
+    {
         $this->writeUpdateLog('====== EXECUTE UPDATE ======');
         $this->writeUpdateLog(QUI::getLocale()->get('quiqqer/core', 'update.log.message.execute.console'));
 
@@ -375,6 +388,41 @@ class Update extends QUI\System\Console\Tool
 
         $Maintenance->setArgument('status', 'off');
         $Maintenance->execute();
+    }
+
+    protected function launchUpdateRun(): void
+    {
+        $Launcher = QUI\System\Update\RunLauncherFactory::createDefault();
+        $Launch = $Launcher->create(null, [
+            'arguments' => $this->params ?? []
+        ]);
+
+        $this->writeLn('Prepared update run: ' . $Launch->getRun()->getState()->getId());
+        $this->writeLn('CLI command:');
+        $this->writeLn($Launch->getCliCommand());
+        $this->writeLn('Web URL:');
+        $this->writeLn($Launch->getWebUrl());
+        $this->writeLn();
+
+        $Repository = new QUI\System\Update\RunRepository(VAR_DIR . 'update/runs/');
+        $exitCode = 0;
+        $maxRuns = 5;
+
+        do {
+            system($Launch->getCliCommand(), $exitCode);
+
+            if ($exitCode !== 0) {
+                exit($exitCode);
+            }
+
+            $State = $Repository->load($Launch->getRun()->getState()->getId());
+            $maxRuns--;
+        } while ($State->getStatus() === QUI\System\Update\RunState::STATUS_RESTART_REQUIRED && $maxRuns > 0);
+
+        if ($State->getStatus() === QUI\System\Update\RunState::STATUS_RESTART_REQUIRED) {
+            $this->writeLn('Update run still requires a restart after maximum attempts.', 'red');
+            exit(1);
+        }
     }
 
     /**
