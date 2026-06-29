@@ -25,7 +25,7 @@ class ComposerToolUpdateActionTest extends TestCase
         $this->assertSame(1, $manager->updateCalls);
     }
 
-    public function testExecuteDoesNotUpdateAgainIfEnsureCreatedPhar(): void
+    public function testExecuteUpdatesEvenIfEnsureCreatedPhar(): void
     {
         $manager = new FakeComposerPharManager();
         $manager->ensureResult = true;
@@ -36,6 +36,6 @@ class ComposerToolUpdateActionTest extends TestCase
 
         $this->assertTrue($result->isRestartRequired());
         $this->assertSame(1, $manager->ensureCalls);
-        $this->assertSame(0, $manager->updateCalls);
+        $this->assertSame(1, $manager->updateCalls);
     }
 }

@@ -63,11 +63,67 @@ class RunEntrypoint
 
     private function sendResponse(array $payload, string $sapi, int $statusCode = 200): void
     {
+        if ($sapi === 'cli') {
+            $this->sendCliResponse($payload);
+            return;
+        }
+
         if ($sapi !== 'cli' && !headers_sent()) {
             http_response_code($statusCode);
             header('Content-Type: application/json; charset=utf-8');
         }
 
         echo json_encode($payload, JSON_UNESCAPED_SLASHES) . PHP_EOL;
+    }
+
+    private function sendCliResponse(array $payload): void
+    {
+        if (($payload['success'] ?? false) === false) {
+            $this->sendCliError((string)($payload['error'] ?? 'Unknown error'));
+            return;
+        }
+
+        $status = (string)($payload['status'] ?? '');
+        $phase = (string)($payload['phase'] ?? '');
+
+        if ($status === RunState::STATUS_RESTART_REQUIRED) {
+            echo 'Composer updated. Continuing update ...' . PHP_EOL;
+            return;
+        }
+
+        if ($status === RunState::STATUS_FINISHED) {
+            echo 'Update finished.' . PHP_EOL;
+            return;
+        }
+
+        echo 'Update status: ' . $status . ' (' . $phase . ')' . PHP_EOL;
+    }
+
+    private function sendCliError(string $message): void
+    {
+        $headline = 'Update failed';
+        $lines = [$headline, $message];
+        $width = 0;
+
+        foreach ($lines as $line) {
+            $width = max($width, strlen($line));
+        }
+
+        $border = str_repeat(' ', $width + 4);
+        $redBackground = "\033[41;37m";
+        $reset = "\033[0m";
+
+        echo $redBackground . $border . $reset . PHP_EOL;
+
+        foreach ($lines as $line) {
+            echo $redBackground
+                . '  '
+                . str_pad($line, $width)
+                . '  '
+                . $reset
+                . PHP_EOL;
+        }
+
+        echo $redBackground . $border . $reset . PHP_EOL;
     }
 }

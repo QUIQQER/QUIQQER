@@ -74,7 +74,61 @@ class RunEntrypointTest extends TestCase
         $output = (string)ob_get_clean();
 
         $this->assertSame(0, $exitCode);
-        $this->assertSame(RunState::STATUS_FINISHED, json_decode($output, true)['status']);
+        $this->assertSame('Update finished.' . PHP_EOL, $output);
+    }
+
+    public function testExecuteReturnsCliRestartMessage(): void
+    {
+        $repository = new RunRepository($this->root, 600);
+        $run = $repository->create(1000);
+        $entrypoint = new RunEntrypoint();
+
+        ob_start();
+        $exitCode = $entrypoint->execute(
+            $run->getState()->getId(),
+            $this->root,
+            [
+                RunState::PHASE_CREATED => new RecordingUpdateRunAction(RunActionResult::next(RunState::PHASE_PREPARED)),
+                RunState::PHASE_PREPARED => new RecordingUpdateRunAction(
+                    RunActionResult::next(RunState::PHASE_COMPOSER_UPDATE)
+                ),
+                RunState::PHASE_COMPOSER_UPDATE => new RecordingUpdateRunAction(RunActionResult::restartRequired())
+            ],
+            [],
+            ['execute.php', $run->getToken()],
+            'cli',
+            1001
+        );
+        $output = (string)ob_get_clean();
+
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('Composer updated. Continuing update ...' . PHP_EOL, $output);
+    }
+
+    public function testExecuteReturnsCliFailureMessage(): void
+    {
+        $repository = new RunRepository($this->root, 600);
+        $run = $repository->create(1000);
+        $entrypoint = new RunEntrypoint();
+
+        ob_start();
+        $exitCode = $entrypoint->execute(
+            $run->getState()->getId(),
+            $this->root,
+            [
+                RunState::PHASE_CREATED => new RecordingUpdateRunAction(RunActionResult::finished())
+            ],
+            [],
+            [],
+            'cli',
+            1001
+        );
+        $output = (string)ob_get_clean();
+
+        $this->assertSame(1, $exitCode);
+        $this->assertStringContainsString('Update failed', $output);
+        $this->assertStringContainsString('Invalid update run token.', $output);
+        $this->assertStringContainsString("\033[41;37m", $output);
     }
 
     public function testExecuteReturnsFailureForMissingTokenWithoutChangingState(): void

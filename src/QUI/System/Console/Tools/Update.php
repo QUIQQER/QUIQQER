@@ -92,7 +92,7 @@ class Update extends QUI\System\Console\Tool
         $this->launchUpdateRun();
     }
 
-    public function executeSystemUpdate(): void
+    public function executeSystemUpdate(): bool
     {
         $this->writeUpdateLog('====== EXECUTE UPDATE ======');
         $this->writeUpdateLog(QUI::getLocale()->get('quiqqer/core', 'update.log.message.execute.console'));
@@ -119,7 +119,7 @@ class Update extends QUI\System\Console\Tool
                     $this->writeLn();
                     $this->writeLn();
                     $this->resetColor();
-                    exit;
+                    return false;
                 }
             }
         } catch (Exception $e) {
@@ -145,9 +145,11 @@ class Update extends QUI\System\Console\Tool
             } catch (QUI\Exception $Exception) {
                 self::writeToLog('====== ERROR ======');
                 self::writeToLog($Exception->getMessage());
+
+                return false;
             }
 
-            return;
+            return true;
         }
 
         if ($this->getArgument('clearCache')) {
@@ -156,6 +158,8 @@ class Update extends QUI\System\Console\Tool
             } catch (QUI\Exception $Exception) {
                 self::writeToLog('====== ERROR ======');
                 self::writeToLog($Exception->getMessage());
+
+                return false;
             }
         }
 
@@ -170,7 +174,7 @@ class Update extends QUI\System\Console\Tool
                 self::writeToLog('====== ERROR ======');
                 self::writeToLog($Exception->getMessage());
 
-                return;
+                return false;
             }
 
             $nameLength = 0;
@@ -183,7 +187,7 @@ class Update extends QUI\System\Console\Tool
                     'green'
                 );
 
-                return;
+                return true;
             }
 
             foreach ($packages as $package) {
@@ -211,7 +215,7 @@ class Update extends QUI\System\Console\Tool
                 $this->writeLn();
             }
 
-            return;
+            return true;
         }
 
         $Maintenance = new Maintenance();
@@ -241,7 +245,7 @@ class Update extends QUI\System\Console\Tool
                 if ($this->executedAnywayQuestion() === false) {
                     $Maintenance->setArgument('status', 'off');
                     $Maintenance->execute();
-                    exit;
+                    return false;
                 }
 
                 $changes = false;
@@ -255,7 +259,7 @@ class Update extends QUI\System\Console\Tool
                 if ($this->executedAnywayQuestion() === false) {
                     $Maintenance->setArgument('status', 'off');
                     $Maintenance->execute();
-                    exit;
+                    return false;
                 }
             }
         }
@@ -381,10 +385,17 @@ class Update extends QUI\System\Console\Tool
             $this->writeLn('./console repair', 'red');
             $this->resetColor();
             $this->writeLn();
+
+            $Maintenance->setArgument('status', 'off');
+            $Maintenance->execute();
+
+            return false;
         }
 
         $Maintenance->setArgument('status', 'off');
         $Maintenance->execute();
+
+        return true;
     }
 
     protected function launchUpdateRun(): void
@@ -394,12 +405,8 @@ class Update extends QUI\System\Console\Tool
             'arguments' => $this->params ?? []
         ]);
 
-        $this->writeLn('Prepared update run: ' . $Launch->getRun()->getState()->getId());
-        $this->writeLn('CLI command:');
-        $this->writeLn($Launch->getCliCommand());
-        $this->writeLn('Web URL:');
-        $this->writeLn($Launch->getWebUrl());
-        $this->writeLn();
+        $this->writeLn('Preparing update ...');
+        echo PHP_EOL;
 
         $Repository = new QUI\System\Update\RunRepository(VAR_DIR . 'update/runs/');
         $exitCode = 0;

@@ -23,9 +23,8 @@ class ComposerToolUpdateAction implements RunActionInterface
         $Manager = $this->manager ?? $this->createDefaultManager();
 
         if ($Manager) {
-            if (!$Manager->ensure()) {
-                $Manager->update();
-            }
+            $Manager->ensure();
+            $Manager->update();
         }
 
         return RunActionResult::restartRequired();
