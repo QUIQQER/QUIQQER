@@ -194,6 +194,7 @@ class Update extends QUI\System\Console\Tool
             }
 
             try {
+                $Packages->refreshServerList();
                 $packages = $Packages->getOutdated(true, $this->getComposerVerbosityOptions());
             } catch (Exception $Exception) {
                 self::writeToLog('====== ERROR ======');
