@@ -63,9 +63,20 @@ class RunRepository
             throw new RuntimeException('Could not create update run directory.');
         }
 
-        $json = json_encode($state->toArray(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $data = $state->toArray();
+        $stateFile = $this->getStateFile($state->getId());
 
-        if ($json === false || file_put_contents($this->getStateFile($state->getId()), $json) === false) {
+        if (($data['process'] ?? null) === null && is_file($stateFile)) {
+            $existing = json_decode((string)file_get_contents($stateFile), true);
+
+            if (is_array($existing) && is_array($existing['process'] ?? null)) {
+                $data['process'] = $existing['process'];
+            }
+        }
+
+        $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+        if ($json === false || file_put_contents($stateFile, $json) === false) {
             throw new RuntimeException('Could not write update run state.');
         }
     }
@@ -109,6 +120,25 @@ class RunRepository
         }
 
         $this->deleteDirectory($directory);
+    }
+
+    public function cancel(string $id, ?int $now = null): RunState
+    {
+        $now ??= time();
+        $state = $this->load($id);
+
+        if (
+            $state->getStatus() === RunState::STATUS_FINISHED
+            || $state->getStatus() === RunState::STATUS_FAILED
+            || $state->getStatus() === RunState::STATUS_CANCELLED
+        ) {
+            return $state;
+        }
+
+        $state->markCancelled('Cancelled by console command.', $now);
+        $this->save($state);
+
+        return $state;
     }
 
     public function deleteExpired(int $now): array
@@ -173,7 +203,10 @@ class RunRepository
                 continue;
             }
 
-            if ($state->getStatus() === RunState::STATUS_FAILED) {
+            if (
+                $state->getStatus() === RunState::STATUS_FAILED
+                || $state->getStatus() === RunState::STATUS_CANCELLED
+            ) {
                 continue;
             }
 
@@ -186,6 +219,7 @@ class RunRepository
             if (
                 $state->getStatus() !== RunState::STATUS_FINISHED
                 && $state->getStatus() !== RunState::STATUS_FAILED
+                && $state->getStatus() !== RunState::STATUS_CANCELLED
             ) {
                 $active[] = $state;
             }

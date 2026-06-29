@@ -11,6 +11,7 @@ class RunState
     public const STATUS_RESTART_REQUIRED = 'restart_required';
     public const STATUS_FINISHED = 'finished';
     public const STATUS_FAILED = 'failed';
+    public const STATUS_CANCELLED = 'cancelled';
 
     public const PHASE_CREATED = 'created';
     public const PHASE_PREPARED = 'prepared';
@@ -20,36 +21,44 @@ class RunState
     public const PHASE_CLEANUP = 'cleanup';
     public const PHASE_FINISHED = 'finished';
     public const PHASE_FAILED = 'failed';
+    public const PHASE_CANCELLED = 'cancelled';
 
     private const ALLOWED_PHASE_TRANSITIONS = [
         self::PHASE_CREATED => [
             self::PHASE_PREPARED,
-            self::PHASE_FAILED
+            self::PHASE_FAILED,
+            self::PHASE_CANCELLED
         ],
         self::PHASE_PREPARED => [
             self::PHASE_COMPOSER_UPDATE,
             self::PHASE_SYSTEM_UPDATE,
-            self::PHASE_FAILED
+            self::PHASE_FAILED,
+            self::PHASE_CANCELLED
         ],
         self::PHASE_COMPOSER_UPDATE => [
             self::PHASE_RESTART_REQUIRED,
             self::PHASE_SYSTEM_UPDATE,
-            self::PHASE_FAILED
+            self::PHASE_FAILED,
+            self::PHASE_CANCELLED
         ],
         self::PHASE_RESTART_REQUIRED => [
             self::PHASE_SYSTEM_UPDATE,
-            self::PHASE_FAILED
+            self::PHASE_FAILED,
+            self::PHASE_CANCELLED
         ],
         self::PHASE_SYSTEM_UPDATE => [
             self::PHASE_CLEANUP,
-            self::PHASE_FAILED
+            self::PHASE_FAILED,
+            self::PHASE_CANCELLED
         ],
         self::PHASE_CLEANUP => [
             self::PHASE_FINISHED,
-            self::PHASE_FAILED
+            self::PHASE_FAILED,
+            self::PHASE_CANCELLED
         ],
         self::PHASE_FINISHED => [],
-        self::PHASE_FAILED => []
+        self::PHASE_FAILED => [],
+        self::PHASE_CANCELLED => []
     ];
 
     public function __construct(
@@ -62,7 +71,8 @@ class RunState
         private readonly array $metadata = [],
         private ?int $startedAt = null,
         private ?int $finishedAt = null,
-        private ?string $errorMessage = null
+        private ?string $errorMessage = null,
+        private ?array $process = null
     ) {
         self::assertValidIdentifier($id);
     }
@@ -96,7 +106,8 @@ class RunState
             is_array($data['metadata'] ?? null) ? $data['metadata'] : [],
             isset($data['startedAt']) ? (int)$data['startedAt'] : null,
             isset($data['finishedAt']) ? (int)$data['finishedAt'] : null,
-            isset($data['errorMessage']) ? (string)$data['errorMessage'] : null
+            isset($data['errorMessage']) ? (string)$data['errorMessage'] : null,
+            is_array($data['process'] ?? null) ? $data['process'] : null
         );
     }
 
@@ -119,7 +130,8 @@ class RunState
             'metadata' => $this->metadata,
             'startedAt' => $this->startedAt,
             'finishedAt' => $this->finishedAt,
-            'errorMessage' => $this->errorMessage
+            'errorMessage' => $this->errorMessage,
+            'process' => $this->process
         ];
     }
 
@@ -180,6 +192,23 @@ class RunState
         $this->errorMessage = $message;
     }
 
+    public function markCancelled(string $message, int $now): void
+    {
+        $this->phase = self::PHASE_CANCELLED;
+        $this->status = self::STATUS_CANCELLED;
+        $this->finishedAt = $now;
+        $this->errorMessage = $message;
+    }
+
+    public function setProcess(int $pid, string $command, int $startedAt): void
+    {
+        $this->process = [
+            'pid' => $pid,
+            'command' => $command,
+            'startedAt' => $startedAt
+        ];
+    }
+
     public function getId(): string
     {
         return $this->id;
@@ -203,5 +232,10 @@ class RunState
     public function getMetadata(): array
     {
         return $this->metadata;
+    }
+
+    public function getProcess(): ?array
+    {
+        return $this->process;
     }
 }

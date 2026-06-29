@@ -13,15 +13,21 @@ use function count;
 use function date;
 use function error_log;
 use function explode;
+use function function_exists;
 use function implode;
 use function is_dir;
+use function is_resource;
 use function method_exists;
 use function preg_replace;
+use function proc_close;
+use function proc_get_status;
+use function proc_open;
 use function str_pad;
 use function str_replace;
 use function strip_tags;
 use function strlen;
 use function strtolower;
+use function system;
 use function trim;
 use function unlink;
 
@@ -79,6 +85,11 @@ class Update extends QUI\System\Console\Tool
                 'Show verbose update progress output',
                 'v',
                 true
+            )->addArgument(
+                'cancel',
+                'Cancel an active update run by run id',
+                false,
+                true
             );
     }
 
@@ -89,6 +100,11 @@ class Update extends QUI\System\Console\Tool
      */
     public function execute(): void
     {
+        if ($this->getArgument('cancel')) {
+            $this->cancelUpdateRun((string)$this->getArgument('cancel'));
+            exit(0);
+        }
+
         if ($this->getArgument('set-date')) {
             $this->executeSystemUpdate();
             return;
@@ -417,17 +433,29 @@ class Update extends QUI\System\Console\Tool
         }
 
         if (!empty($runs['active'])) {
-            $State = $runs['active'][0];
-
-            $this->writeErrorBox([
+            $lines = [
                 'Update already running',
                 'Another update process is active.',
-                'Wait until it has finished before starting a new update.',
-                '',
-                'Run ID:  ' . $State->getId(),
-                'Status:  ' . $State->getStatus(),
-                'Started: ' . date('Y-m-d H:i:s', $State->getCreatedAt())
-            ]);
+                'Wait until it has finished or cancel the active run.',
+                ''
+            ];
+
+            foreach ($runs['active'] as $index => $State) {
+                if ($index > 0) {
+                    $lines[] = '';
+                }
+
+                $process = $State->getProcess();
+                $pid = is_array($process) ? (int)($process['pid'] ?? 0) : 0;
+
+                $lines[] = 'Run ID:  ' . $State->getId();
+                $lines[] = 'Status:  ' . $State->getStatus();
+                $lines[] = 'Started: ' . date('Y-m-d H:i:s', $State->getCreatedAt());
+                $lines[] = 'PID:     ' . ($pid > 0 ? (string)$pid : 'not available');
+                $lines[] = 'Cancel:  ./console update --cancel=' . $State->getId();
+            }
+
+            $this->writeErrorBox($lines);
             exit(1);
         }
 
@@ -443,7 +471,7 @@ class Update extends QUI\System\Console\Tool
         $maxRuns = 5;
 
         do {
-            system($Launch->getCliCommand(), $exitCode);
+            $exitCode = $this->executeRunProcess($Repository, $Launch);
 
             if ($exitCode !== 0) {
                 exit($exitCode);
@@ -457,6 +485,72 @@ class Update extends QUI\System\Console\Tool
             $this->writeLn('Update run still requires a restart after maximum attempts.', 'red');
             exit(1);
         }
+    }
+
+    private function executeRunProcess(
+        QUI\System\Update\RunRepository $Repository,
+        QUI\System\Update\RunLaunch $Launch
+    ): int {
+        $command = $Launch->getCliCommand();
+
+        if (!function_exists('proc_open')) {
+            system($command, $exitCode);
+            return (int)$exitCode;
+        }
+
+        $process = proc_open($command, [
+            0 => ['file', 'php://stdin', 'r'],
+            1 => ['file', 'php://stdout', 'w'],
+            2 => ['file', 'php://stderr', 'w']
+        ], $pipes);
+
+        if (!is_resource($process)) {
+            return 1;
+        }
+
+        $status = proc_get_status($process);
+        $pid = (int)$status['pid'];
+
+        if ($pid > 0) {
+            $State = $Repository->load($Launch->getRun()->getState()->getId());
+            $State->setProcess($pid, $command, time());
+            $Repository->save($State);
+        }
+
+        return proc_close($process);
+    }
+
+    private function cancelUpdateRun(string $id): void
+    {
+        $Repository = new QUI\System\Update\RunRepository(VAR_DIR . 'update/runs/');
+        $State = $Repository->cancel($id);
+        $process = $State->getProcess();
+        $pid = is_array($process) ? (int)($process['pid'] ?? 0) : 0;
+        $signalSent = false;
+
+        if ($pid > 0 && function_exists('posix_kill')) {
+            $isRunning = posix_kill($pid, 0);
+
+            if ($isRunning) {
+                $signalSent = posix_kill($pid, 15);
+            }
+        }
+
+        $lines = [
+            'Update run cancelled',
+            'The runner state was marked as cancelled.',
+            '',
+            'Run ID: ' . $State->getId(),
+            'Status: ' . $State->getStatus()
+        ];
+
+        if ($pid > 0) {
+            $lines[] = 'PID:    ' . $pid . ($signalSent ? ' (SIGTERM sent)' : ' (not stopped)');
+        } else {
+            $lines[] = 'PID:    not available';
+        }
+
+        $this->writeErrorBox($lines);
     }
 
     /**

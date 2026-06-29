@@ -110,9 +110,13 @@ class RunRepositoryTest extends TestCase
         $oldRun = $repository->create(1000);
         $freshRun = $repository->create(2000);
         $failedRun = $repository->create(500);
+        $cancelledRun = $repository->create(600);
         $failedState = $failedRun->getState();
         $failedState->markFailed('failed for debugging', 501);
         $repository->save($failedState);
+        $cancelledState = $cancelledRun->getState();
+        $cancelledState->markCancelled('cancelled for debugging', 601);
+        $repository->save($cancelledState);
 
         $result = $repository->cleanupAndFindActive(2000, 864);
 
@@ -124,6 +128,22 @@ class RunRepositoryTest extends TestCase
         $this->assertDirectoryDoesNotExist($oldRun->getDirectory());
         $this->assertDirectoryExists($freshRun->getDirectory());
         $this->assertDirectoryExists($failedRun->getDirectory());
+        $this->assertDirectoryExists($cancelledRun->getDirectory());
+    }
+
+    public function testCancelMarksActiveRunAsCancelledAndKeepsProcessData(): void
+    {
+        $repository = new RunRepository($this->root, 600);
+        $run = $repository->create(1000);
+        $state = $run->getState();
+        $state->setProcess(1234, 'php execute.php token', 1001);
+        $repository->save($state);
+
+        $cancelled = $repository->cancel($run->getState()->getId(), 1002);
+
+        $this->assertSame(RunState::STATUS_CANCELLED, $cancelled->getStatus());
+        $this->assertSame(RunState::PHASE_CANCELLED, $cancelled->getPhase());
+        $this->assertSame(1234, $cancelled->getProcess()['pid']);
     }
 
     private function deleteDirectory(string $directory): void

@@ -63,4 +63,17 @@ class RunStateTest extends TestCase
         $this->assertSame(RunState::STATUS_FAILED, $state->getStatus());
         $this->assertSame('failed', $state->toArray()['errorMessage']);
     }
+
+    public function testMarkCancelledSetsTerminalStateAndKeepsProcessData(): void
+    {
+        $state = RunState::create(str_repeat('a', 32), hash('sha256', 'secret-token'), 1000, 600);
+        $state->setProcess(1234, 'php execute.php token', 1001);
+
+        $state->markCancelled('cancelled', 1200);
+
+        $this->assertSame(RunState::PHASE_CANCELLED, $state->getPhase());
+        $this->assertSame(RunState::STATUS_CANCELLED, $state->getStatus());
+        $this->assertSame('cancelled', $state->toArray()['errorMessage']);
+        $this->assertSame(1234, $state->getProcess()['pid']);
+    }
 }

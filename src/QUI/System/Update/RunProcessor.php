@@ -42,7 +42,8 @@ class RunProcessor
             [
                 RunState::STATUS_RESTART_REQUIRED,
                 RunState::STATUS_FINISHED,
-                RunState::STATUS_FAILED
+                RunState::STATUS_FAILED,
+                RunState::STATUS_CANCELLED
             ],
             true
         );
