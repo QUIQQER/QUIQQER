@@ -109,11 +109,17 @@ class Update extends QUI\System\Console\Tool
                 'Cancel an active update run by id. Usage: --cancel=<run-id>',
                 false,
                 true
+            )->addArgument(
+                'yes',
+                'Automatically answer update confirmation questions with yes.',
+                'y',
+                true
             );
 
         $this->addExample('./console update --check');
         $this->addExample('./console update --check -vvv');
         $this->addExample('./console update --skip-filesystem-check');
+        $this->addExample('./console update --yes');
         $this->addExample('./console update --cancel=<run-id>');
     }
 
@@ -445,7 +451,7 @@ class Update extends QUI\System\Console\Tool
 
                 $Output->warning('There have been changes to the ini files.');
                 $Output->question('Should the etc backup be deleted anyway? [Y,n]');
-                $input = $this->readInput();
+                $input = $this->readUpdateConfirmationInput('y');
 
                 if (strtolower($input) === 'y') {
                     QUI\System\Backup::deleteEtcBackup($etcBackupFolder);
@@ -699,12 +705,14 @@ class Update extends QUI\System\Console\Tool
 
         $install = str_contains($message, 'Install: ');
         $installs = str_contains($message, 'Installs: ');
+        $installing = str_contains($message, ' - Installing ');
 
-        if ($update || $updates || $install || $installs || $upgrade || $remove || $removals) {
+        if ($update || $updates || $install || $installs || $installing || $upgrade || $remove || $removals) {
             $message = str_replace(['Updates: ', 'Update: '], '', $message);
             $message = str_replace(['Installs: ', 'Install: '], '', $message);
             $message = str_replace(['Removals: '], '', $message);
             $message = str_replace([' - Upgrading '], '', $message);
+            $message = str_replace([' - Installing '], '', $message);
             $message = str_replace([' - Removing '], '', $message);
             $changedPackages = explode(',', $message);
 
@@ -712,7 +720,17 @@ class Update extends QUI\System\Console\Tool
                 $Instance->writeComposerChangeHeader();
 
                 if ($verbosity === 0) {
-                    if ($upgrade || $remove) {
+                    if ($upgrade || $installing || $remove) {
+                        foreach ($changedPackages as $package) {
+                            $package = trim(strip_tags($package));
+
+                            if ($package === '') {
+                                continue;
+                            }
+
+                            $Instance->getUpdateOutput()->quote($package);
+                        }
+
                         return;
                     }
 
@@ -950,7 +968,7 @@ class Update extends QUI\System\Console\Tool
     protected function executedAnywayQuestion(): bool
     {
         $this->getUpdateOutput()->question('Should the update be executed anyway? [y,N]');
-        $answer = $this->readInput();
+        $answer = $this->readUpdateConfirmationInput('y');
 
         if (empty($answer)) {
             return false;
@@ -961,6 +979,27 @@ class Update extends QUI\System\Console\Tool
         }
 
         return false;
+    }
+
+    private function readUpdateConfirmationInput(string $autoAnswer): string
+    {
+        if ($this->shouldAnswerYes()) {
+            $this->writeLn($autoAnswer, 'cyan');
+            $this->resetColor();
+
+            return $autoAnswer;
+        }
+
+        return $this->readInput();
+    }
+
+    private function shouldAnswerYes(): bool
+    {
+        return $this->getArgument('yes')
+            || ($this->params['--yes'] ?? false)
+            || ($this->params['-y'] ?? false)
+            || ($this->params['y'] ?? false)
+            || $this->hasVerbosityArgument(['--yes', '-y', 'yes', 'y']);
     }
 
     private function getComposerVerbosityOptions(): array
