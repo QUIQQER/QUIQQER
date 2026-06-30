@@ -829,14 +829,16 @@ class Update extends QUI\System\Console\Tool
 
         $Runner = $Composer->getRunner();
         $result = [];
+        $filesystemStatusOutputWritten = false;
 
         $CLIOutput = new QUI\System\Console\Output();
-        $CLIOutput->Events->addEvent('onWrite', function ($message) use (&$result): void {
+        $CLIOutput->Events->addEvent('onWrite', function ($message) use (&$result, &$filesystemStatusOutputWritten): void {
             $result[] = $message;
             self::writeToLog($message . PHP_EOL);
 
             if ($this->getVerbosityLevel() >= 3) {
                 $this->writeLn($message);
+                $filesystemStatusOutputWritten = true;
             }
         });
 
@@ -845,6 +847,12 @@ class Update extends QUI\System\Console\Tool
         try {
             $Runner->executeComposer('status', $this->getComposerVerbosityOptions());
         } catch (\QUI\Exception $exception) {
+            if ($this->getVerbosityLevel() >= 3 && !$filesystemStatusOutputWritten) {
+                foreach ($result as $line) {
+                    $this->writeLn($line);
+                }
+            }
+
             $modified = [];
 
             foreach ($result as $line) {
@@ -975,11 +983,11 @@ class Update extends QUI\System\Console\Tool
 
     private function getVerbosityLevel(): int
     {
-        if ($this->params['-vvv'] ?? false) {
+        if ($this->hasVerbosityArgument(['-vvv', '--vvv', 'vvv'])) {
             return 3;
         }
 
-        if ($this->params['-vv'] ?? false) {
+        if ($this->hasVerbosityArgument(['-vv', '--vv', 'vv'])) {
             return 2;
         }
 
@@ -987,12 +995,36 @@ class Update extends QUI\System\Console\Tool
             $this->getArgument('verbose')
             || $this->getArgument('v')
             || ($this->params['--verbose'] ?? false)
-            || ($this->params['-v'] ?? false)
+            || $this->hasVerbosityArgument(['-v', '--v', 'v'])
         ) {
             return 1;
         }
 
         return 0;
+    }
+
+    /**
+     * @param array<int, string> $arguments
+     */
+    private function hasVerbosityArgument(array $arguments): bool
+    {
+        foreach ($arguments as $argument) {
+            if ($this->params[$argument] ?? false) {
+                return true;
+            }
+        }
+
+        foreach ($this->params as $value) {
+            if (!is_string($value)) {
+                continue;
+            }
+
+            if (in_array($value, $arguments, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function writeBufferedPackageOutput(string $buffer, UpdatePackageOutput $Output): void
