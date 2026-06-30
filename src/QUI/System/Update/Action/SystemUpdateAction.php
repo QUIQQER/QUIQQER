@@ -49,7 +49,14 @@ class SystemUpdateAction implements RunActionInterface
 
             public function write(string $msg, bool|string $color = false, bool|string $bg = false): void
             {
-                echo $msg;
+                $prefix = $this->getAnsiCode($color, false) . $this->getAnsiCode($bg, true);
+
+                if ($prefix === '') {
+                    echo $msg;
+                    return;
+                }
+
+                echo $prefix . $msg . "\033[0m";
             }
 
             public function message(string $msg, bool|string $color = false, bool|string $bg = false): void
@@ -59,6 +66,7 @@ class SystemUpdateAction implements RunActionInterface
 
             public function clearMsg(): void
             {
+                echo "\033[0m";
             }
 
             public function readInput(): string
@@ -70,6 +78,32 @@ class SystemUpdateAction implements RunActionInterface
                 }
 
                 return trim($input);
+            }
+
+            private function getAnsiCode(bool|string $color, bool $background): string
+            {
+                if (!is_string($color) || $color === '') {
+                    return '';
+                }
+
+                $colors = [
+                    'black' => 0,
+                    'red' => 1,
+                    'green' => 2,
+                    'yellow' => 3,
+                    'brown' => 3,
+                    'blue' => 4,
+                    'purple' => 5,
+                    'cyan' => 6,
+                    'white' => 7,
+                    'light_green' => 2
+                ];
+
+                if (!isset($colors[$color])) {
+                    return '';
+                }
+
+                return "\033[" . (($background ? 40 : 30) + $colors[$color]) . "m";
             }
         };
     }
