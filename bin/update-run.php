@@ -43,7 +43,8 @@ function handleJsonRequest(string $id, string $token, string $root, string $acti
             $root,
             QUI\System\Update\DefaultRunActions::create(),
             [
-                'token' => $token
+                'token' => $token,
+                'foreground' => '1'
             ]
         ));
     }
@@ -235,14 +236,63 @@ function renderHtmlConsole(string $id, string $token): void
         }
 
         .status {
+            align-items: center;
             color: var(--muted);
+            display: flex;
             font-size: 13px;
+            gap: 10px;
+        }
+
+        .pulse {
+            animation: pulse 1s ease-in-out infinite;
+            background: var(--info);
+            border-radius: 999px;
+            box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.45);
+            display: inline-block;
+            height: 9px;
+            width: 9px;
+        }
+
+        .pulse.stopped {
+            animation: none;
+            background: var(--muted);
+            box-shadow: none;
+        }
+
+        .cursor::after {
+            animation: blink 1s steps(2, start) infinite;
+            content: "█";
+            margin-left: 5px;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.45);
+            }
+
+            70% {
+                box-shadow: 0 0 0 9px rgba(56, 189, 248, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(56, 189, 248, 0);
+            }
+        }
+
+        @keyframes blink {
+            0%, 45% {
+                opacity: 1;
+            }
+
+            46%, 100% {
+                opacity: 0;
+            }
         }
 
         .console {
             background: var(--panel);
             border: 1px solid var(--line);
-            min-height: 70vh;
+            height: min(72vh, 760px);
             overflow: auto;
             padding: 20px;
             white-space: pre-wrap;
@@ -277,7 +327,7 @@ function renderHtmlConsole(string $id, string $token): void
 <div class="wrap">
     <header>
         <h1>QUIQQER Update</h1>
-        <div class="status" id="status">Preparing</div>
+        <div class="status"><span class="pulse" id="pulse"></span><span id="status">Preparing</span></div>
     </header>
     <main class="console" id="console"></main>
 </div>
@@ -286,9 +336,12 @@ const runId = {$encodedId};
 const token = {$encodedToken};
 const consoleNode = document.getElementById('console');
 const statusNode = document.getElementById('status');
+const pulseNode = document.getElementById('pulse');
 let lastLog = '';
 let stopped = false;
 let liveOutput = false;
+let continuedAfterRefresh = false;
+let cursorNode = null;
 
 function endpoint(action) {
     const url = new URL(window.location.href);
@@ -308,11 +361,40 @@ function sseEndpoint() {
 }
 
 function write(text, type) {
+    removeCursor();
+
     const node = document.createElement('span');
     node.className = 'line ' + (type || '');
     node.textContent = text;
     consoleNode.appendChild(node);
+    showCursor();
     consoleNode.scrollTop = consoleNode.scrollHeight;
+}
+
+function showCursor() {
+    if (stopped || cursorNode) {
+        return;
+    }
+
+    cursorNode = document.createElement('span');
+    cursorNode.className = 'line muted cursor';
+    cursorNode.textContent = '  [..] Waiting for update output';
+    consoleNode.appendChild(cursorNode);
+}
+
+function removeCursor() {
+    if (!cursorNode) {
+        return;
+    }
+
+    cursorNode.remove();
+    cursorNode = null;
+}
+
+function stopActivity() {
+    stopped = true;
+    removeCursor();
+    pulseNode.classList.add('stopped');
 }
 
 async function request(action) {
@@ -355,6 +437,15 @@ function finalState(status) {
     return ['finished', 'failed', 'cancelled'].indexOf(status) !== -1;
 }
 
+function writeContinueMessage() {
+    if (continuedAfterRefresh) {
+        return;
+    }
+
+    continuedAfterRefresh = true;
+    write('[..] Continuing update after Composer refresh', 'info');
+}
+
 async function poll() {
     if (stopped) {
         return;
@@ -367,13 +458,13 @@ async function poll() {
         renderLog(data.log || '');
 
         if (state.status === 'restart_required') {
-            write('[..] Continuing update after Composer refresh', 'info');
+            writeContinueMessage();
             await run();
             return;
         }
 
         if (finalState(state.status)) {
-            stopped = true;
+            stopActivity();
             write(state.status === 'finished' ? '[OK] Update finished' : '[!!] Update ' + state.status,
                 state.status === 'finished' ? 'ok' : 'err');
             return;
@@ -381,7 +472,7 @@ async function poll() {
 
         window.setTimeout(poll, 1500);
     } catch (error) {
-        stopped = true;
+        stopActivity();
         statusNode.textContent = 'failed';
         write('[!!] ' + error.message, 'err');
     }
@@ -411,12 +502,12 @@ function startSse() {
         statusNode.textContent = state.status + ' / ' + state.phase;
 
         if (state.status === 'restart_required') {
-            write('[..] Continuing update after Composer refresh', 'info');
+            writeContinueMessage();
             run();
         }
 
         if (finalState(state.status)) {
-            stopped = true;
+            stopActivity();
             source.close();
             write(state.status === 'finished' ? '[OK] Update finished' : '[!!] Update ' + state.status,
                 state.status === 'finished' ? 'ok' : 'err');
@@ -461,7 +552,7 @@ async function run() {
         }
 
         if (finalState(data.status)) {
-            stopped = true;
+            stopActivity();
             write(data.status === 'finished' ? '[OK] Update finished' : '[!!] Update ' + data.status,
                 data.status === 'finished' ? 'ok' : 'err');
             return;
@@ -471,7 +562,7 @@ async function run() {
             window.setTimeout(poll, 1000);
         }
     } catch (error) {
-        stopped = true;
+        stopActivity();
         statusNode.textContent = 'failed';
         write('[!!] ' + error.message, 'err');
     }

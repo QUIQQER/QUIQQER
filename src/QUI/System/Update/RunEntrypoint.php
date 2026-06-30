@@ -57,7 +57,7 @@ class RunEntrypoint
             $token = $this->getToken($sapi, $query, $argv);
             $repository = new RunRepository($root);
 
-            if ($sapi !== 'cli') {
+            if ($sapi !== 'cli' && ($query['foreground'] ?? '') !== '1') {
                 $state = $this->tryStartCliProcess($id, $root, $token, $repository);
 
                 if ($state !== null) {
