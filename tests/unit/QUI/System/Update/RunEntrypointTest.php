@@ -103,10 +103,10 @@ class RunEntrypointTest extends TestCase
 
         $this->assertSame(0, $exitCode);
         $this->assertSame(
-            '[2/6] Composer tool' . PHP_EOL
+            PHP_EOL
+            . '[2/6] Composer tool' . PHP_EOL
             . '  [OK] Composer updated' . PHP_EOL
-            . '  [..] Continuing with system update' . PHP_EOL
-            . PHP_EOL,
+            . '  [..] Continuing with system update' . PHP_EOL,
             $output
         );
     }
