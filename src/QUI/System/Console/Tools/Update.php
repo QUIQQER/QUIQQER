@@ -77,20 +77,25 @@ class Update extends QUI\System\Console\Tool
                 true
             )->addArgument(
                 'skip-filesystem-check',
-                QUI::getLocale()->get('quiqqer/core', 'console.update.skip-filesystem-check'),
+                'Skip the composer filesystem status check before the update.',
                 false,
                 true
             )->addArgument(
                 'verbose',
-                'Show verbose update progress output',
+                'Show verbose update progress output. Supports -v, -vv and -vvv.',
                 'v',
                 true
             )->addArgument(
                 'cancel',
-                'Cancel an active update run by run id',
+                'Cancel an active update run by id. Usage: --cancel=<run-id>',
                 false,
                 true
             );
+
+        $this->addExample('./console update --check');
+        $this->addExample('./console update --check -vvv');
+        $this->addExample('./console update --skip-filesystem-check');
+        $this->addExample('./console update --cancel=<run-id>');
     }
 
     /**
