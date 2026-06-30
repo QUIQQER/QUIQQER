@@ -116,6 +116,7 @@ class RunEntrypoint
         $redBackground = "\033[41;37m";
         $reset = "\033[0m";
 
+        echo PHP_EOL;
         echo $redBackground . $border . $reset . PHP_EOL;
 
         foreach ($lines as $line) {
