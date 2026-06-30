@@ -517,7 +517,7 @@ class Update extends QUI\System\Console\Tool
 
         $this->getUpdateOutput()->section('Preparing update');
         $this->getUpdateOutput()->info('Preparing isolated update runner');
-        $this->writeLn();
+        echo PHP_EOL;
 
         $exitCode = 0;
         $maxRuns = 5;
