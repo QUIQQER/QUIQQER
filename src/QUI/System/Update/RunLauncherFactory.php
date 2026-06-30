@@ -10,21 +10,26 @@ use const PHP_BINDIR;
 use const PHP_BINARY;
 use const PHP_MAJOR_VERSION;
 use const PHP_MINOR_VERSION;
-use const URL_VAR_DIR;
+use const URL_OPT_DIR;
 use const VAR_DIR;
 
 class RunLauncherFactory
 {
     public static function createDefault(int $ttl = 3600): RunLauncher
     {
-        return self::create(VAR_DIR, URL_VAR_DIR, self::resolveCliPhpBinary(PHP_BINARY), $ttl);
+        return self::create(
+            VAR_DIR,
+            URL_OPT_DIR . 'quiqqer/core/bin/update-run.php',
+            self::resolveCliPhpBinary(PHP_BINARY),
+            $ttl
+        );
     }
 
-    public static function create(string $varDir, string $urlVarDir, string $phpBinary, int $ttl = 3600): RunLauncher
+    public static function create(string $varDir, string $webRunnerUrl, string $phpBinary, int $ttl = 3600): RunLauncher
     {
         return new RunLauncher(
             new RunRepository(rtrim($varDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'update/runs/', $ttl),
-            rtrim($urlVarDir, '/') . '/update/runs/',
+            $webRunnerUrl,
             $phpBinary
         );
     }

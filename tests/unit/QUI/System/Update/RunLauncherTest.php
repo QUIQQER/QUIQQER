@@ -25,7 +25,7 @@ class RunLauncherTest extends TestCase
         $repository = new RunRepository($this->root, 600);
         $launcher = new RunLauncher(
             $repository,
-            'https://example.test/var/update/runs/',
+            'https://example.test/packages/quiqqer/core/bin/update-run.php',
             '/usr/bin/php'
         );
 
@@ -33,8 +33,8 @@ class RunLauncherTest extends TestCase
         $run = $launch->getRun();
 
         $this->assertSame(
-            'https://example.test/var/update/runs/' . $run->getState()->getId()
-            . '/execute.php?token=' . $run->getToken(),
+            'https://example.test/packages/quiqqer/core/bin/update-run.php?id=' . $run->getState()->getId()
+            . '&token=' . $run->getToken(),
             $launch->getWebUrl()
         );
 

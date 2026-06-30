@@ -24,7 +24,7 @@ class RunLauncherFactoryTest extends TestCase
     {
         $launcher = RunLauncherFactory::create(
             $this->root . '/var/',
-            'https://example.test/var/',
+            'https://example.test/packages/quiqqer/core/bin/update-run.php',
             '/usr/bin/php',
             600
         );
@@ -37,7 +37,7 @@ class RunLauncherFactoryTest extends TestCase
         );
 
         $this->assertStringStartsWith(
-            'https://example.test/var/update/runs/',
+            'https://example.test/packages/quiqqer/core/bin/update-run.php?id=',
             $launch->getWebUrl()
         );
     }

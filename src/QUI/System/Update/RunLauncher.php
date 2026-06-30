@@ -6,7 +6,7 @@ class RunLauncher
 {
     public function __construct(
         private readonly RunRepository $repository,
-        private readonly string $publicRunsUrl,
+        private readonly string $webRunnerUrl,
         private readonly string $phpBinary
     ) {
     }
@@ -31,9 +31,10 @@ class RunLauncher
 
     private function createWebUrl(Run $run): string
     {
-        return rtrim($this->publicRunsUrl, '/') . '/'
+        return $this->webRunnerUrl
+            . '?id='
             . rawurlencode($run->getState()->getId())
-            . '/execute.php?token='
+            . '&token='
             . rawurlencode($run->getToken());
     }
 
