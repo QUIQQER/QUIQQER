@@ -156,7 +156,8 @@ function handleSseRequest(string $id, string $token, string $root): void
 
             if (in_array($State->getStatus(), ['finished', 'failed', 'cancelled'], true)) {
                 sendSseEvent('close', [
-                    'status' => $State->getStatus()
+                    'status' => $State->getStatus(),
+                    'state' => $State->toArray()
                 ]);
                 return;
             }
@@ -205,7 +206,11 @@ function readRunLog(string $root, string $id): string
 function cleanRunLog(string $content): string
 {
     $content = preg_replace('/\x1b\[[0-9;]*m/', '', $content) ?? $content;
-    $content = preg_replace('/\{"success":(?:true|false).*?\}\s*/s', '', $content) ?? $content;
+    $jsonPosition = strpos($content, '{"success":');
+
+    if ($jsonPosition !== false) {
+        $content = substr($content, 0, $jsonPosition);
+    }
 
     return rtrim($content);
 }
@@ -390,6 +395,7 @@ let continuedAfterRefresh = false;
 let cursorNode = null;
 let runInFlight = false;
 let restartRunRequested = false;
+let finalStateWritten = false;
 
 function endpoint(action) {
     const url = new URL(window.location.href);
@@ -429,9 +435,29 @@ function cleanConsoleText(text) {
     text = String(text || '');
     text = text.replace(/\x1b\[[0-9;]*m/g, '');
     text = text.replace(/\u241b\[[0-9;]*m/g, '');
-    text = text.replace(/\{"success":(?:true|false)[\s\S]*?\}\s*/g, '');
+
+    const jsonPosition = text.indexOf('{"success":');
+
+    if (jsonPosition !== -1) {
+        text = text.substring(0, jsonPosition);
+    }
 
     return text.replace(/\s+$/g, '');
+}
+
+function writeFinalState(state) {
+    if (finalStateWritten) {
+        return;
+    }
+
+    finalStateWritten = true;
+    const finished = state.status === 'finished';
+
+    write(finished ? '[OK] Update finished' : '[!!] Update ' + state.status, finished ? 'ok' : 'err');
+
+    if (!finished && state.errorMessage) {
+        write('[!!] ' + state.errorMessage, 'err');
+    }
 }
 
 function showCursor() {
@@ -535,8 +561,7 @@ async function poll() {
 
         if (finalState(state.status)) {
             stopActivity();
-            write(state.status === 'finished' ? '[OK] Update finished' : '[!!] Update ' + state.status,
-                state.status === 'finished' ? 'ok' : 'err');
+            writeFinalState(state);
             return;
         }
 
@@ -579,17 +604,16 @@ function startSse() {
         if (finalState(state.status)) {
             stopActivity();
             source.close();
-            write(state.status === 'finished' ? '[OK] Update finished' : '[!!] Update ' + state.status,
-                state.status === 'finished' ? 'ok' : 'err');
+            writeFinalState(state);
         }
     });
 
     source.addEventListener('close', function (event) {
         const data = JSON.parse(event.data);
+        const state = data.state || data;
         stopActivity();
         source.close();
-        write(data.status === 'finished' ? '[OK] Update finished' : '[!!] Update ' + data.status,
-            data.status === 'finished' ? 'ok' : 'err');
+        writeFinalState(state);
     });
 
     source.addEventListener('error', function (event) {
