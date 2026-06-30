@@ -61,7 +61,7 @@ class UpdateConsoleOutput
 
     public function question(string $message): void
     {
-        $this->Output->writeLn('  [?] ' . $message, 'red');
+        $this->Output->write('  [?] ' . $message . ' ', 'red');
         $this->resetColor();
     }
 
