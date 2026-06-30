@@ -46,7 +46,8 @@ function handleJsonRequest(string $id, string $token, string $root, string $acti
             QUI\System\Update\DefaultRunActions::create(),
             [
                 'token' => $token,
-                'foreground' => '1'
+                'foreground' => '1',
+                'yes' => '1'
             ]
         );
         $output = (string)ob_get_clean();
@@ -204,7 +205,7 @@ function readRunLog(string $root, string $id): string
 function cleanRunLog(string $content): string
 {
     $content = preg_replace('/\x1b\[[0-9;]*m/', '', $content) ?? $content;
-    $content = preg_replace('/\{"success":(?:true|false).*?\}\s*$/s', '', $content) ?? $content;
+    $content = preg_replace('/\{"success":(?:true|false).*?\}\s*/s', '', $content) ?? $content;
 
     return rtrim($content);
 }

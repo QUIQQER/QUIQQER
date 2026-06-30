@@ -74,9 +74,7 @@ class RunEntrypoint
                 }
             }
 
-            if ($sapi === 'cli') {
-                $this->applyCliArguments($id, $repository, $argv);
-            }
+            $this->applyRunArguments($id, $repository, $sapi, $query, $argv);
 
             $processor = new RunProcessor($repository, $actions);
             $state = $processor->process($id, $token, $now);
@@ -333,11 +331,48 @@ class RunEntrypoint
     /**
      * @param array<int, string> $argv
      */
-    private function applyCliArguments(string $id, RunRepository $repository, array $argv): void
+    /**
+     * @param array<string, string> $query
+     * @param array<int, string> $argv
+     */
+    private function applyRunArguments(
+        string $id,
+        RunRepository $repository,
+        string $sapi,
+        array $query,
+        array $argv
+    ): void {
+        if ($sapi === 'cli') {
+            $this->applyArguments($id, $repository, array_slice($argv, 2));
+            return;
+        }
+
+        $arguments = [];
+
+        if (($query['yes'] ?? '') === '1' || ($query['yes'] ?? '') === 'true') {
+            $arguments[] = '--yes';
+        }
+
+        if (($query['skip-filesystem-check'] ?? '') === '1') {
+            $arguments[] = '--skip-filesystem-check';
+        }
+
+        if (isset($query['verbose']) && in_array($query['verbose'], ['1', '2', '3'], true)) {
+            $arguments[] = str_repeat('v', (int)$query['verbose']);
+            $arguments[count($arguments) - 1] = '-' . $arguments[count($arguments) - 1];
+        }
+
+        $this->applyArguments($id, $repository, $arguments);
+    }
+
+    /**
+     * @param array<int, string> $argv
+     */
+    private function applyArguments(string $id, RunRepository $repository, array $argv): void
     {
         $arguments = [];
 
-        foreach (array_slice($argv, 2) as $argument) {
+        foreach ($argv as $argument) {
             if ($argument === '--yes' || $argument === '-y') {
                 $arguments['yes'] = true;
                 continue;
