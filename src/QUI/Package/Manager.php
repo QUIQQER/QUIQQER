@@ -28,6 +28,7 @@ use QUI\Utils\System\File as QUIFile;
 use Seld\JsonLint\JsonParser;
 use Seld\JsonLint\ParsingException;
 use UnexpectedValueException;
+use Throwable;
 
 use function array_filter;
 use function array_flip;
@@ -67,7 +68,10 @@ use function parse_url;
 use function php_sapi_name;
 use function phpversion;
 use function print_r;
+use function proc_close;
+use function proc_open;
 use function rtrim;
+use function stream_get_contents;
 use function str_contains;
 use function str_replace;
 use function strcmp;
@@ -1743,6 +1747,7 @@ class Manager extends QUI\QDOM
     public function checkUpdates(): bool
     {
         $this->checkComposer();
+        $this->assertWebComposerCanUseActiveRepositories();
 
         return $this->getComposer()->updatesAvailable(false);
     }
@@ -1791,6 +1796,8 @@ class Manager extends QUI\QDOM
 
             return [];
         }
+
+        $this->assertWebComposerCanUseActiveRepositories();
 
         try {
             $output = $this->getOutdatedPackages($composerOptions);
@@ -1928,6 +1935,7 @@ class Manager extends QUI\QDOM
         }
 
         $this->createComposerBackup();
+        $this->assertWebComposerCanUseActiveRepositories();
 
         if ($mute === true) {
             $Composer->mute();
@@ -2005,6 +2013,66 @@ class Manager extends QUI\QDOM
             'quiqqer/core',
             'message.online.update.RAM.insufficient'
         ]);
+    }
+
+    /**
+     * Composer has to execute external git commands while loading VCS repositories.
+     * Some PHP-FPM/web environments block proc_open/posix_spawn, so fail early
+     * with an actionable message instead of letting Composer abort mid-update.
+     *
+     * @throws QUI\Exception
+     */
+    protected function assertWebComposerCanUseActiveRepositories(): void
+    {
+        if (php_sapi_name() === 'cli') {
+            return;
+        }
+
+        if (!$this->isVCSServerEnabled()) {
+            return;
+        }
+
+        if ($this->canExecuteGitProcess()) {
+            return;
+        }
+
+        throw new QUI\Exception(
+            'The web update cannot run while active VCS update servers are configured, '
+            . 'because the PHP web process cannot execute git. '
+            . 'Use the prepared CLI update command or disable VCS update servers before running the update from the web UI.'
+        );
+    }
+
+    protected function canExecuteGitProcess(): bool
+    {
+        if (!function_exists('proc_open')) {
+            return false;
+        }
+
+        $descriptors = [
+            0 => ['pipe', 'r'],
+            1 => ['pipe', 'w'],
+            2 => ['pipe', 'w']
+        ];
+
+        try {
+            $process = @proc_open(['git', '--version'], $descriptors, $pipes, $this->varDir);
+        } catch (Throwable) {
+            return false;
+        }
+
+        if (!is_resource($process)) {
+            return false;
+        }
+
+        foreach ($pipes as $pipe) {
+            if (is_resource($pipe)) {
+                stream_get_contents($pipe);
+                fclose($pipe);
+            }
+        }
+
+        return proc_close($process) === 0;
     }
 
     /**
