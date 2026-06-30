@@ -37,7 +37,10 @@ class RunEntrypointTest extends TestCase
                 RunState::PHASE_CREATED => new RecordingUpdateRunAction(RunActionResult::next(RunState::PHASE_PREPARED)),
                 RunState::PHASE_PREPARED => new RecordingUpdateRunAction(RunActionResult::finished())
             ],
-            ['token' => $run->getToken()],
+            [
+                'token' => $run->getToken(),
+                'foreground' => '1'
+            ],
             [],
             'cgi-fcgi',
             1001

@@ -92,6 +92,10 @@ function handleSseRequest(string $id, string $token, string $root): void
     @ini_set('output_buffering', 'off');
     @ini_set('zlib.output_compression', '0');
 
+    if (function_exists('session_write_close')) {
+        session_write_close();
+    }
+
     while (ob_get_level() > 0) {
         ob_end_flush();
     }
@@ -179,6 +183,7 @@ function renderHtmlConsole(string $id, string $token): void
     $encodedId = json_encode($id, JSON_UNESCAPED_SLASHES);
     $encodedToken = json_encode($token, JSON_UNESCAPED_SLASHES);
     $title = htmlspecialchars('QUIQQER Update', ENT_QUOTES, 'UTF-8');
+    $logo = htmlspecialchars(URL_BIN_DIR . 'quiqqer_logo.svg', ENT_QUOTES, 'UTF-8');
 
     echo <<<HTML
 <!doctype html>
@@ -230,9 +235,13 @@ function renderHtmlConsole(string $id, string $token): void
         }
 
         h1 {
-            font-size: 20px;
-            font-weight: 700;
             margin: 0;
+        }
+
+        .logo {
+            display: block;
+            height: 34px;
+            width: auto;
         }
 
         .status {
@@ -326,7 +335,7 @@ function renderHtmlConsole(string $id, string $token): void
 <body>
 <div class="wrap">
     <header>
-        <h1>QUIQQER Update</h1>
+        <h1><img alt="QUIQQER" class="logo" src="{$logo}"></h1>
         <div class="status"><span class="pulse" id="pulse"></span><span id="status">Preparing</span></div>
     </header>
     <main class="console" id="console"></main>
@@ -342,6 +351,8 @@ let stopped = false;
 let liveOutput = false;
 let continuedAfterRefresh = false;
 let cursorNode = null;
+let runInFlight = false;
+let restartRunRequested = false;
 
 function endpoint(action) {
     const url = new URL(window.location.href);
@@ -459,7 +470,7 @@ async function poll() {
 
         if (state.status === 'restart_required') {
             writeContinueMessage();
-            await run();
+            run();
             return;
         }
 
@@ -503,7 +514,7 @@ function startSse() {
 
         if (state.status === 'restart_required') {
             writeContinueMessage();
-            run();
+            requestRestartRun();
         }
 
         if (finalState(state.status)) {
@@ -516,7 +527,7 @@ function startSse() {
 
     source.addEventListener('close', function (event) {
         const data = JSON.parse(event.data);
-        stopped = true;
+        stopActivity();
         source.close();
         write(data.status === 'finished' ? '[OK] Update finished' : '[!!] Update ' + data.status,
             data.status === 'finished' ? 'ok' : 'err');
@@ -541,13 +552,20 @@ function startSse() {
 }
 
 async function run() {
+    if (runInFlight || stopped) {
+        return;
+    }
+
+    runInFlight = true;
+
     try {
         const data = await request('run');
         statusNode.textContent = data.status + ' / ' + data.phase;
         write('[..] ' + (data.message || 'Update runner processed step'), 'info');
 
         if (data.status === 'restart_required') {
-            window.setTimeout(run, 800);
+            writeContinueMessage();
+            requestRestartRun();
             return;
         }
 
@@ -565,7 +583,22 @@ async function run() {
         stopActivity();
         statusNode.textContent = 'failed';
         write('[!!] ' + error.message, 'err');
+    } finally {
+        runInFlight = false;
     }
+}
+
+function requestRestartRun() {
+    if (restartRunRequested) {
+        return;
+    }
+
+    restartRunRequested = true;
+
+    window.setTimeout(function () {
+        restartRunRequested = false;
+        run();
+    }, 800);
 }
 
 write('[1/6] Preparing update', 'info');
