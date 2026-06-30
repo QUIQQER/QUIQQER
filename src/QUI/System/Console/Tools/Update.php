@@ -9,6 +9,7 @@ namespace QUI\System\Console\Tools;
 use Exception;
 use QUI;
 use QUI\System\Console\UpdateConsoleOutput;
+use QUI\System\Console\UpdatePackageOutput;
 
 use function count;
 use function date;
@@ -384,11 +385,12 @@ class Update extends QUI\System\Console\Tool
                 $this->setupPackageCount = 0;
                 $this->composerUpdateHeaderWritten = false;
                 $this->composerChangeSummaries = [];
-                $Packages->update(false, false, $this);
-
-                if ($this->setupPackageCount > 0 && $this->getVerbosityLevel() === 0) {
-                    $Output->success('Package setup completed (' . $this->setupPackageCount . ' packages)');
-                }
+                $Packages->update(
+                    false,
+                    false,
+                    new UpdatePackageOutput($Output, $this->getVerbosityLevel())
+                );
+                $Output->success('Composer update completed');
             }
 
             $wasExecuted = QUI::getLocale()->get('quiqqer/core', 'update.message.execute');
