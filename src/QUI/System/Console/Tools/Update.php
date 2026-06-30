@@ -831,9 +831,13 @@ class Update extends QUI\System\Console\Tool
         $result = [];
 
         $CLIOutput = new QUI\System\Console\Output();
-        $CLIOutput->Events->addEvent('onWrite', static function ($message) use (&$result): void {
+        $CLIOutput->Events->addEvent('onWrite', function ($message) use (&$result): void {
             $result[] = $message;
             self::writeToLog($message . PHP_EOL);
+
+            if ($this->getVerbosityLevel() >= 3) {
+                $this->writeLn($message);
+            }
         });
 
         $Runner->setOutput($CLIOutput);
