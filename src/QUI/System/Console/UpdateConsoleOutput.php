@@ -57,13 +57,14 @@ class UpdateConsoleOutput
 
     public function warning(string $message): void
     {
+        $this->Output->writeLn();
         $this->Output->writeLn('  [!!] ' . $message, 'yellow');
         $this->resetColor();
     }
 
     public function question(string $message): void
     {
-        $this->Output->write('  [?] ' . $message . ' ', 'red');
+        $this->Output->write('  [?] ' . $message . ' ', 'cyan');
         $this->resetColor();
     }
 
