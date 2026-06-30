@@ -410,6 +410,12 @@ function sseEndpoint() {
 
 function write(text, type) {
     removeCursor();
+    text = cleanConsoleText(text);
+
+    if (!text || text.trim() === '') {
+        showCursor();
+        return;
+    }
 
     const node = document.createElement('span');
     node.className = 'line ' + (type || '');
@@ -417,6 +423,15 @@ function write(text, type) {
     consoleNode.appendChild(node);
     showCursor();
     consoleNode.scrollTop = consoleNode.scrollHeight;
+}
+
+function cleanConsoleText(text) {
+    text = String(text || '');
+    text = text.replace(/\x1b\[[0-9;]*m/g, '');
+    text = text.replace(/\u241b\[[0-9;]*m/g, '');
+    text = text.replace(/\{"success":(?:true|false)[\s\S]*?\}\s*/g, '');
+
+    return text.replace(/\s+$/g, '');
 }
 
 function showCursor() {
@@ -475,7 +490,7 @@ function renderLog(log) {
     lastLog = log;
 
     if (next.trim() !== '') {
-        write(next.replace(/\\s+$/, ''), 'muted');
+        write(next, 'muted');
     }
 }
 
@@ -485,7 +500,7 @@ function appendLog(text) {
     }
 
     lastLog += text;
-    write(text.replace(/\\s+$/, ''), 'muted');
+    write(text, 'muted');
 }
 
 function finalState(status) {

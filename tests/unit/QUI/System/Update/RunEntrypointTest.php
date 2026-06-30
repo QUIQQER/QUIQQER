@@ -56,6 +56,35 @@ class RunEntrypointTest extends TestCase
         ], json_decode($output, true));
     }
 
+    public function testExecuteAppliesWebYesArgumentToRunMetadata(): void
+    {
+        $repository = new RunRepository($this->root, 600);
+        $run = $repository->create(1000);
+        $entrypoint = new RunEntrypoint();
+        $action = new RecordingUpdateRunAction(RunActionResult::finished());
+
+        ob_start();
+        $exitCode = $entrypoint->execute(
+            $run->getState()->getId(),
+            $this->root,
+            [
+                RunState::PHASE_CREATED => $action
+            ],
+            [
+                'token' => $run->getToken(),
+                'foreground' => '1',
+                'yes' => '1'
+            ],
+            [],
+            'cgi-fcgi',
+            1001
+        );
+        ob_end_clean();
+
+        $this->assertSame(0, $exitCode);
+        $this->assertSame(['yes' => true], $action->metadata[0]['arguments'] ?? []);
+    }
+
     public function testExecuteReadsCliTokenFromFirstArgument(): void
     {
         $repository = new RunRepository($this->root, 600);

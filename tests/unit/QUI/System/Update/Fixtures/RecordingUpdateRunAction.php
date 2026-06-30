@@ -10,6 +10,8 @@ class RecordingUpdateRunAction implements RunActionInterface
 {
     public array $executedRunIds = [];
 
+    public array $metadata = [];
+
     public function __construct(private readonly RunActionResult $result)
     {
     }
@@ -17,6 +19,7 @@ class RecordingUpdateRunAction implements RunActionInterface
     public function execute(RunState $state): RunActionResult
     {
         $this->executedRunIds[] = $state->getId();
+        $this->metadata[] = $state->getMetadata();
 
         return $this->result;
     }

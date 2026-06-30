@@ -329,9 +329,6 @@ class RunEntrypoint
     }
 
     /**
-     * @param array<int, string> $argv
-     */
-    /**
      * @param array<string, string> $query
      * @param array<int, string> $argv
      */
