@@ -63,7 +63,7 @@ class UpdatePackageOutput implements SystemOutput
         }
 
         if (str_contains($message, 'Aktualisierung wurde')) {
-            $this->Output->success($message);
+            $this->Output->success('Update executed');
             return;
         }
 

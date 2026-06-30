@@ -155,7 +155,7 @@ class Update extends QUI\System\Console\Tool
         Cleanup::clearComposer();
 
         $Output->section('System update');
-        $Output->info($this->normalizeStatusMessage(QUI::getLocale()->get('quiqqer/core', 'update.message.start')));
+        $Output->info('Start update');
 
         // check license
         try {
@@ -405,8 +405,8 @@ class Update extends QUI\System\Console\Tool
                 $Output->success('Composer update completed');
             }
 
-            $wasExecuted = QUI::getLocale()->get('quiqqer/core', 'update.message.execute');
-            $webserver = QUI::getLocale()->get('quiqqer/core', 'update.message.webserver');
+            $wasExecuted = 'Update executed';
+            $webserver = 'Generate server files (.htaccess and NGINX)';
 
             $Output->success($wasExecuted);
             self::writeToLog($wasExecuted . PHP_EOL);
@@ -989,11 +989,6 @@ class Update extends QUI\System\Console\Tool
         }
 
         return 0;
-    }
-
-    private function normalizeStatusMessage(string $message): string
-    {
-        return trim($message, " \t\n\r\0\x0B-:");
     }
 
     private function writeBufferedPackageOutput(string $buffer, UpdatePackageOutput $Output): void
