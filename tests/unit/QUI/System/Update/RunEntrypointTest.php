@@ -74,7 +74,7 @@ class RunEntrypointTest extends TestCase
         $output = (string)ob_get_clean();
 
         $this->assertSame(0, $exitCode);
-        $this->assertSame('Update finished.' . PHP_EOL, $output);
+        $this->assertSame('  [OK] Update finished.' . PHP_EOL, $output);
     }
 
     public function testExecuteReturnsCliRestartMessage(): void
@@ -102,7 +102,12 @@ class RunEntrypointTest extends TestCase
         $output = (string)ob_get_clean();
 
         $this->assertSame(0, $exitCode);
-        $this->assertSame('Composer updated. Continuing update ...' . PHP_EOL, $output);
+        $this->assertSame(
+            PHP_EOL
+            . '[2/6] Composer tool' . PHP_EOL
+            . '  [OK] Composer updated. Continuing update ...' . PHP_EOL,
+            $output
+        );
     }
 
     public function testExecuteReturnsCliFailureMessage(): void

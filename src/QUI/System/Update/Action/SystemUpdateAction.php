@@ -15,6 +15,7 @@ class SystemUpdateAction implements RunActionInterface
     public function execute(RunState $state): RunActionResult
     {
         $Update = new Update();
+        $Update->setUpdateOutputSectionOffset(2);
         $Update->setAttribute('parent', $this->createCliOutput());
         $arguments = $state->getMetadata()['arguments'] ?? [];
 

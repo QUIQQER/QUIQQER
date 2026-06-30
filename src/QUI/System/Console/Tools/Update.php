@@ -8,6 +8,7 @@ namespace QUI\System\Console\Tools;
 
 use Exception;
 use QUI;
+use QUI\System\Console\UpdateConsoleOutput;
 
 use function count;
 use function date;
@@ -40,6 +41,19 @@ use const VAR_DIR;
  */
 class Update extends QUI\System\Console\Tool
 {
+    private ?UpdateConsoleOutput $updateOutput = null;
+
+    private int $setupPackageCount = 0;
+
+    private bool $composerUpdateHeaderWritten = false;
+
+    /**
+     * @var array<string, bool>
+     */
+    private array $composerChangeSummaries = [];
+
+    private int $updateOutputSectionOffset = 0;
+
     /**
      * constructor
      */
@@ -118,14 +132,26 @@ class Update extends QUI\System\Console\Tool
         $this->launchUpdateRun();
     }
 
+    public function setUpdateOutputSectionOffset(int $offset): void
+    {
+        $this->updateOutputSectionOffset = $offset;
+
+        if ($this->updateOutput !== null) {
+            $this->updateOutput->setCurrentSection($offset);
+        }
+    }
+
     public function executeSystemUpdate(): bool
     {
+        $Output = $this->getUpdateOutput();
+
         $this->writeUpdateLog('====== EXECUTE UPDATE ======');
         $this->writeUpdateLog(QUI::getLocale()->get('quiqqer/core', 'update.log.message.execute.console'));
 
         Cleanup::clearComposer();
 
-        $this->writeLn(QUI::getLocale()->get('quiqqer/core', 'update.message.start'));
+        $Output->section('System update');
+        $Output->info(QUI::getLocale()->get('quiqqer/core', 'update.message.start'));
 
         // check license
         try {
@@ -190,16 +216,17 @@ class Update extends QUI\System\Console\Tool
         }
 
         if ($this->getArgument('check')) {
-            $this->writeLn(QUI::getLocale()->get('quiqqer/core', 'update.log.message.update.via.console'));
-            $this->writeLn();
-            $this->writeLn();
+            $Output->section('Update check');
+            $Output->info(QUI::getLocale()->get('quiqqer/core', 'update.log.message.update.via.console'));
 
             if ($this->getVerbosityLevel() > 0) {
                 $Packages->getComposer()->unmute();
             }
 
             try {
+                $Output->info('Refreshing composer package sources');
                 $Packages->refreshServerList();
+                $Output->info('Resolving available package updates');
                 $packages = $Packages->getOutdated(true, $this->getComposerVerbosityOptions());
             } catch (Exception $Exception) {
                 self::writeToLog('====== ERROR ======');
@@ -213,13 +240,12 @@ class Update extends QUI\System\Console\Tool
 
             // #locale
             if (empty($packages)) {
-                $this->writeLn(
-                    QUI::getLocale()->get('quiqqer/core', 'update.message.no.updates.available'),
-                    'green'
-                );
+                $Output->success(QUI::getLocale()->get('quiqqer/core', 'update.message.no.updates.available'));
 
                 return true;
             }
+
+            $Output->warning(count($packages) . ' package update(s) available');
 
             foreach ($packages as $package) {
                 if (strlen($package['package']) > $nameLength) {
@@ -260,18 +286,19 @@ class Update extends QUI\System\Console\Tool
 
         if ($executeFileSystemCheck) {
             try {
-                $this->writeLn('- File system is checked for changes ...');
+                $Output->section('Filesystem check');
+                $Output->info('Checking package working trees');
                 $changes = $this->checkFileSystemChanges();
-            } catch (Exception $Exception) {
-                $this->writeLn();
-                $this->writeLn(
-                    'The update has received inconsistencies during the file system check.',
-                    'yellow'
-                );
 
-                $this->writeLn('Error :: ' . $Exception->getMessage(), 'red');
-                $this->writeLn();
-                $this->resetColor();
+                if (!$changes) {
+                    $Output->success('No filesystem inconsistencies found');
+                }
+            } catch (Exception $Exception) {
+                $Output->errorBox([
+                    'Filesystem check failed',
+                    'The update has received inconsistencies during the file system check.',
+                    'Error: ' . $Exception->getMessage()
+                ]);
 
                 if ($this->executedAnywayQuestion() === false) {
                     $Maintenance->setArgument('status', 'off');
@@ -283,9 +310,7 @@ class Update extends QUI\System\Console\Tool
             }
 
             if ($changes) {
-                $this->writeLn();
-                $this->writeLn('The update has found inconsistencies in the system!', 'yellow');
-                $this->resetColor();
+                $Output->warning('The update has found inconsistencies in the system.');
 
                 if ($this->executedAnywayQuestion() === false) {
                     $Maintenance->setArgument('status', 'off');
@@ -312,7 +337,8 @@ class Update extends QUI\System\Console\Tool
             $Composer->setOutput($CLIOutput);
 
             if ($this->getArgument('package')) {
-                $this->writeLn('Update Package ' . $this->getArgument('package') . '...');
+                $Output->section('Composer update');
+                $Output->info('Updating package ' . $this->getArgument('package'));
 
                 $Composer->update([
                     'packages' => [
@@ -345,18 +371,27 @@ class Update extends QUI\System\Console\Tool
                     unlink($localeFiles);
                 }
 
-                $this->writeLn('QUIQQER Update ...');
+                $Output->section('Composer update');
+                $Output->info('Updating QUIQQER packages');
                 $Packages->getComposer()->setOutput($CLIOutput);
+                $this->setupPackageCount = 0;
+                $this->composerUpdateHeaderWritten = false;
+                $this->composerChangeSummaries = [];
                 $Packages->update(false, false, $this);
+
+                if ($this->setupPackageCount > 0 && $this->getVerbosityLevel() === 0) {
+                    $Output->success('Package setup completed (' . $this->setupPackageCount . ' packages)');
+                }
             }
 
             $wasExecuted = QUI::getLocale()->get('quiqqer/core', 'update.message.execute');
             $webserver = QUI::getLocale()->get('quiqqer/core', 'update.message.webserver');
 
-            $this->writeLn($wasExecuted);
+            $Output->success($wasExecuted);
             self::writeToLog($wasExecuted . PHP_EOL);
 
-            $this->writeLn($webserver);
+            $Output->section('Server files');
+            $Output->info($webserver);
             self::writeToLog($webserver . PHP_EOL);
 
             $Htaccess = new Htaccess();
@@ -382,11 +417,12 @@ class Update extends QUI\System\Console\Tool
             $diff = QUI\System\Backup::diff($etcBackupFolder);
 
             if (!empty($diff)) {
-                $this->write($diff);
+                if ($this->getVerbosityLevel() > 0) {
+                    $this->write($diff);
+                }
 
-                $this->writeLn('There have been changes to the ini files!', 'blue');
-                $this->writeLn('Should the etc backup be deleted anyway? [Y,n]', 'blue');
-                $this->resetColor();
+                $Output->warning('There have been changes to the ini files.');
+                $Output->question('Should the etc backup be deleted anyway? [Y,n]');
                 $input = $this->readInput();
 
                 if (strtolower($input) === 'y') {
@@ -470,8 +506,8 @@ class Update extends QUI\System\Console\Tool
             'arguments' => $this->params ?? []
         ]);
 
-        $this->writeLn('Preparing update ...');
-        echo PHP_EOL;
+        $this->getUpdateOutput()->section('Preparing update');
+        $this->getUpdateOutput()->info('Preparing isolated update runner');
 
         $exitCode = 0;
         $maxRuns = 5;
@@ -488,7 +524,10 @@ class Update extends QUI\System\Console\Tool
         } while ($State->getStatus() === QUI\System\Update\RunState::STATUS_RESTART_REQUIRED && $maxRuns > 0);
 
         if ($State->getStatus() === QUI\System\Update\RunState::STATUS_RESTART_REQUIRED) {
-            $this->writeLn('Update run still requires a restart after maximum attempts.', 'red');
+            $this->getUpdateOutput()->errorBox([
+                'Update run failed',
+                'The runner still requires a restart after maximum attempts.'
+            ]);
             exit(1);
         }
     }
@@ -595,6 +634,27 @@ class Update extends QUI\System\Console\Tool
     public static function onCliOutput(string $message, QUI\Interfaces\System\SystemOutput $Instance): void
     {
         self::writeToLog($message . PHP_EOL);
+        $verbosity = $Instance instanceof self ? $Instance->getVerbosityLevel() : 0;
+        $trimmedMessage = trim(strip_tags($message));
+
+        if ($trimmedMessage === '') {
+            return;
+        }
+
+        if (str_contains($trimmedMessage, 'run setup for package')) {
+            if ($Instance instanceof self) {
+                $Instance->setupPackageCount++;
+            }
+
+            if ($verbosity < 1) {
+                return;
+            }
+        }
+
+        if ($verbosity >= 3) {
+            $Instance->writeLn($trimmedMessage);
+            return;
+        }
 
         if (str_contains($message, '<warning>')) {
             $Instance->writeLn(strip_tags($message), 'cyan');
@@ -611,24 +671,59 @@ class Update extends QUI\System\Console\Tool
         $update = str_contains($message, 'Update: ');
         $updates = str_contains($message, 'Updates: ');
         $upgrade = str_contains($message, ' - Upgrading ');
+        $remove = str_contains($message, ' - Removing ');
+        $removals = str_contains($message, 'Removals: ');
 
         $install = str_contains($message, 'Install: ');
         $installs = str_contains($message, 'Installs: ');
 
-        if ($update || $updates || $install || $installs || $upgrade) {
+        if ($update || $updates || $install || $installs || $upgrade || $remove || $removals) {
             $message = str_replace(['Updates: ', 'Update: '], '', $message);
             $message = str_replace(['Installs: ', 'Install: '], '', $message);
+            $message = str_replace(['Removals: '], '', $message);
             $message = str_replace([' - Upgrading '], '', $message);
-            $updates = explode(',', $message);
+            $message = str_replace([' - Removing '], '', $message);
+            $changedPackages = explode(',', $message);
 
-            if ($update || $upgrade) {
+            if ($Instance instanceof self) {
+                $Instance->writeComposerChangeHeader();
+
+                if ($verbosity === 0) {
+                    if ($upgrade || $remove) {
+                        return;
+                    }
+
+                    $label = 'Updates planned';
+
+                    if ($install || $installs) {
+                        $label = 'Installs planned';
+                    } elseif ($removals) {
+                        $label = 'Removals planned';
+                    }
+
+                    if (!($Instance->composerChangeSummaries[$label] ?? false)) {
+                        $Instance->getUpdateOutput()->info($label . ': ' . count($changedPackages));
+                        $Instance->composerChangeSummaries[$label] = true;
+                    }
+
+                    return;
+                }
+            } elseif ($update || $updates || $upgrade) {
                 $Instance->writeLn('Updates:', 'yellow');
-            } elseif ($install) {
+            } elseif ($install || $installs) {
                 $Instance->writeLn('Installs:', 'yellow');
+            } elseif ($remove || $removals) {
+                $Instance->writeLn('Removals:', 'yellow');
             }
 
-            foreach ($updates as $update) {
-                $Instance->writeLn('- ' . trim($update), 'purple');
+            foreach ($changedPackages as $package) {
+                $package = trim(strip_tags($package));
+
+                if ($package === '') {
+                    continue;
+                }
+
+                $Instance->writeLn('  - ' . $package, 'purple');
             }
 
             // reset color
@@ -663,14 +758,16 @@ class Update extends QUI\System\Console\Tool
 
 
         foreach ($ignore as $ig) {
-            $trim = trim($message);
-
-            if (str_starts_with($trim, $ig)) {
+            if (str_starts_with($trimmedMessage, $ig)) {
                 return;
             }
         }
 
-        $Instance->writeLn(strip_tags($message));
+        if ($verbosity < 2 && str_starts_with($trimmedMessage, '> ')) {
+            return;
+        }
+
+        $Instance->writeLn($trimmedMessage);
     }
 
     protected function checkFileSystemChanges(): bool
@@ -785,8 +882,7 @@ class Update extends QUI\System\Console\Tool
 
     protected function executedAnywayQuestion(): bool
     {
-        $this->writeLn('Should the update be executed anyway? [y,N]: ', 'red');
-        $this->resetColor();
+        $this->getUpdateOutput()->question('Should the update be executed anyway? [y,N]');
         $answer = $this->readInput();
 
         if (empty($answer)) {
@@ -841,29 +937,31 @@ class Update extends QUI\System\Console\Tool
         return 0;
     }
 
+    private function getUpdateOutput(): UpdateConsoleOutput
+    {
+        if ($this->updateOutput === null) {
+            $this->updateOutput = new UpdateConsoleOutput($this);
+            $this->updateOutput->setCurrentSection($this->updateOutputSectionOffset);
+        }
+
+        return $this->updateOutput;
+    }
+
+    private function writeComposerChangeHeader(): void
+    {
+        if ($this->composerUpdateHeaderWritten) {
+            return;
+        }
+
+        $this->getUpdateOutput()->warning('Package changes');
+        $this->composerUpdateHeaderWritten = true;
+    }
+
     /**
      * @param array<int, string> $lines
      */
     private function writeErrorBox(array $lines): void
     {
-        $width = 0;
-
-        foreach ($lines as $line) {
-            $width = max($width, strlen($line));
-        }
-
-        $border = str_repeat(' ', $width + 4);
-        $redBackground = "\033[41;37m";
-        $reset = "\033[0m";
-
-        echo PHP_EOL;
-        echo $redBackground . $border . $reset . PHP_EOL;
-
-        foreach ($lines as $line) {
-            echo $redBackground . '  ' . str_pad($line, $width) . '  ' . $reset . PHP_EOL;
-        }
-
-        echo $redBackground . $border . $reset . PHP_EOL;
-        echo PHP_EOL . PHP_EOL;
+        $this->getUpdateOutput()->errorBox($lines);
     }
 }
