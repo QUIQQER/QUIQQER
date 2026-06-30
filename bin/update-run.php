@@ -433,8 +433,8 @@ function write(text, type) {
 
 function cleanConsoleText(text) {
     text = String(text || '');
-    text = text.replace(/\x1b\[[0-9;]*m/g, '');
-    text = text.replace(/\u241b\[[0-9;]*m/g, '');
+    text = removeAnsiSequences(text, String.fromCharCode(27));
+    text = removeAnsiSequences(text, '␛');
 
     const jsonPosition = text.indexOf('{"success":');
 
@@ -442,7 +442,34 @@ function cleanConsoleText(text) {
         text = text.substring(0, jsonPosition);
     }
 
-    return text.replace(/\s+$/g, '');
+    return trimRightText(text);
+}
+
+function removeAnsiSequences(text, marker) {
+    let result = '';
+
+    for (let i = 0; i < text.length; i++) {
+        if (text.charAt(i) !== marker || text.charAt(i + 1) !== '[') {
+            result += text.charAt(i);
+            continue;
+        }
+
+        i += 2;
+
+        while (i < text.length && text.charAt(i) !== 'm') {
+            i++;
+        }
+    }
+
+    return result;
+}
+
+function trimRightText(text) {
+    while (text.length > 0 && text.charAt(text.length - 1).trim() === '') {
+        text = text.substring(0, text.length - 1);
+    }
+
+    return text;
 }
 
 function writeFinalState(state) {
@@ -467,7 +494,11 @@ function writeLogText(text) {
         return;
     }
 
-    const lines = text.split(/\r?\n/);
+    const lineBreak = String.fromCharCode(10);
+    text = text.split(String.fromCharCode(13) + lineBreak).join(lineBreak);
+    text = text.split(String.fromCharCode(13)).join(lineBreak);
+
+    const lines = text.split(lineBreak);
 
     lines.forEach(function (line) {
         line = normalizeLogLine(line);
@@ -483,9 +514,12 @@ function writeLogText(text) {
 
 function normalizeLogLine(line) {
     line = String(line || '');
-    line = line.replace(/^\s*\[\!\!\]\s*(\[\d+\/\d+\]\s*)/, '$1');
 
     const trimmed = line.trim();
+
+    if (trimmed.indexOf('[!!] [') === 0 && isSectionLine(trimmed.substring(5))) {
+        return trimmed.substring(5);
+    }
 
     if (trimmed === '\\n"}' || trimmed === '\\n}' || trimmed === '\\n') {
         return '';
@@ -497,7 +531,7 @@ function normalizeLogLine(line) {
 function getLogLineType(line) {
     const trimmed = line.trim();
 
-    if (/^\[\d+\/\d+\]/.test(trimmed)) {
+    if (isSectionLine(trimmed)) {
         return 'info';
     }
 
@@ -518,6 +552,22 @@ function getLogLineType(line) {
     }
 
     return 'muted';
+}
+
+function isSectionLine(line) {
+    if (line.charAt(0) !== '[') {
+        return false;
+    }
+
+    const end = line.indexOf(']');
+
+    if (end === -1) {
+        return false;
+    }
+
+    const parts = line.substring(1, end).split('/');
+
+    return parts.length === 2 && !isNaN(parseInt(parts[0], 10)) && !isNaN(parseInt(parts[1], 10));
 }
 
 function showCursor() {
