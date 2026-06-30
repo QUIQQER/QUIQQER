@@ -7,6 +7,7 @@
 declare(strict_types=1);
 
 define('QUIQQER_SYSTEM', true);
+define('QUIQQER_BACKEND', true);
 
 $cmsDir = dirname(__DIR__, 4) . DIRECTORY_SEPARATOR;
 
@@ -37,8 +38,9 @@ function handleJsonRequest(string $id, string $token, string $root, string $acti
 {
     if ($action === 'run') {
         $entrypoint = new QUI\System\Update\RunEntrypoint();
+        ob_start();
 
-        exit($entrypoint->execute(
+        $exitCode = $entrypoint->execute(
             $id,
             $root,
             QUI\System\Update\DefaultRunActions::create(),
@@ -46,7 +48,33 @@ function handleJsonRequest(string $id, string $token, string $root, string $acti
                 'token' => $token,
                 'foreground' => '1'
             ]
-        ));
+        );
+        $output = (string)ob_get_clean();
+        $lines = array_values(array_filter(array_map('trim', explode(PHP_EOL, $output))));
+        $payload = [];
+
+        for ($i = count($lines) - 1; $i >= 0; $i--) {
+            $decoded = json_decode($lines[$i], true);
+
+            if (is_array($decoded)) {
+                $payload = $decoded;
+                break;
+            }
+        }
+
+        if (empty($payload)) {
+            sendJson([
+                'success' => false,
+                'error' => trim($output) ?: 'Update runner returned no JSON response.',
+                'output' => $output
+            ], 500);
+            exit;
+        }
+
+        $payload['output'] = $output;
+
+        sendJson($payload, $exitCode === 0 ? 200 : 500);
+        exit;
     }
 
     try {
@@ -413,10 +441,17 @@ async function request(action) {
         cache: 'no-store',
         credentials: 'same-origin'
     });
-    const data = await response.json();
+    const text = await response.text();
+    let data;
+
+    try {
+        data = JSON.parse(text);
+    } catch (error) {
+        throw new Error(text.trim() || error.message);
+    }
 
     if (!response.ok || data.success === false) {
-        throw new Error(data.error || 'Update request failed');
+        throw new Error(data.error || data.output || 'Update request failed');
     }
 
     return data;
