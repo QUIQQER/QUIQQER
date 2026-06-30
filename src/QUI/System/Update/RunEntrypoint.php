@@ -4,6 +4,33 @@ namespace QUI\System\Update;
 
 use Throwable;
 
+use function count;
+use function escapeshellarg;
+use function exec;
+use function fclose;
+use function file_exists;
+use function function_exists;
+use function implode;
+use function in_array;
+use function is_resource;
+use function ob_end_clean;
+use function ob_get_clean;
+use function ob_get_level;
+use function ob_start;
+use function proc_close;
+use function proc_get_status;
+use function proc_open;
+use function rtrim;
+use function shell_exec;
+use function stream_get_contents;
+use function system;
+use function time;
+use function trim;
+
+use const DIRECTORY_SEPARATOR;
+use const PHP_BINARY;
+use const PHP_EOL;
+
 class RunEntrypoint
 {
     /**
@@ -24,9 +51,29 @@ class RunEntrypoint
         $query ??= $_GET;
         $argv ??= $_SERVER['argv'] ?? [];
 
+        $token = '';
+
         try {
             $token = $this->getToken($sapi, $query, $argv);
             $repository = new RunRepository($root);
+
+            if ($sapi !== 'cli') {
+                $state = $this->tryStartCliProcess($id, $root, $token, $repository);
+
+                if ($state !== null) {
+                    $this->sendResponse([
+                        'success' => true,
+                        'id' => $state->getId(),
+                        'phase' => $state->getPhase(),
+                        'status' => $state->getStatus(),
+                        'process' => $state->getProcess(),
+                        'message' => 'Update process started.'
+                    ], $sapi);
+
+                    return 0;
+                }
+            }
+
             $processor = new RunProcessor($repository, $actions);
             $state = $processor->process($id, $token, $now);
 
@@ -39,13 +86,230 @@ class RunEntrypoint
 
             return 0;
         } catch (Throwable $Exception) {
-            $this->sendResponse([
+            $payload = [
                 'success' => false,
                 'error' => $Exception->getMessage()
-            ], $sapi, 500);
+            ];
+
+            if ($sapi !== 'cli') {
+                $payload['cliCommand'] = $this->createCliCommand($id, $root, $token);
+            }
+
+            $this->sendResponse($payload, $sapi, 500);
 
             return 1;
         }
+    }
+
+    private function tryStartCliProcess(
+        string $id,
+        string $root,
+        string $token,
+        RunRepository $repository
+    ): ?RunState {
+        $now = time();
+        $state = $repository->load($id);
+        $state->assertToken($token);
+        $state->assertNotExpired($now);
+
+        if ($this->isFinalState($state)) {
+            return null;
+        }
+
+        $executeFile = $this->getExecuteFile($id, $root);
+
+        if (!file_exists($executeFile)) {
+            return null;
+        }
+
+        $singleCommand = $this->createCliCommand($id, $root, $token);
+        $command = implode(' && ', [
+            $singleCommand,
+            $singleCommand,
+            $singleCommand,
+            $singleCommand,
+            $singleCommand
+        ]);
+        $logFile = rtrim($root, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'runner.log';
+        $process = $this->startBackgroundProcess($command, $logFile);
+
+        if ($process === null) {
+            return null;
+        }
+
+        $state->markRunning($now);
+        $state->setProcess($process['pid'], $command, $now, $process['method']);
+        $repository->save($state);
+
+        return $state;
+    }
+
+    private function createCliCommand(string $id, string $root, string $token): string
+    {
+        return escapeshellarg(RunLauncherFactory::resolveCliPhpBinary(PHP_BINARY))
+            . ' '
+            . escapeshellarg($this->getExecuteFile($id, $root))
+            . ' '
+            . escapeshellarg($token);
+    }
+
+    private function getExecuteFile(string $id, string $root): string
+    {
+        return rtrim($root, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'execute.php';
+    }
+
+    /**
+     * @return array{pid: int, method: string}|null
+     */
+    private function startBackgroundProcess(string $command, string $logFile): ?array
+    {
+        $shellCommand = '(' . $command . ') > ' . escapeshellarg($logFile) . ' 2>&1 & echo $!';
+
+        $pid = $this->startBackgroundProcessWithProcOpen($shellCommand);
+
+        if ($pid > 0) {
+            return [
+                'pid' => $pid,
+                'method' => 'proc_open'
+            ];
+        }
+
+        $pid = $this->startBackgroundProcessWithShellExec($shellCommand);
+
+        if ($pid > 0) {
+            return [
+                'pid' => $pid,
+                'method' => 'shell_exec'
+            ];
+        }
+
+        $pid = $this->startBackgroundProcessWithExec($shellCommand);
+
+        if ($pid > 0) {
+            return [
+                'pid' => $pid,
+                'method' => 'exec'
+            ];
+        }
+
+        $pid = $this->startBackgroundProcessWithSystem($shellCommand);
+
+        if ($pid > 0) {
+            return [
+                'pid' => $pid,
+                'method' => 'system'
+            ];
+        }
+
+        return null;
+    }
+
+    private function startBackgroundProcessWithProcOpen(string $shellCommand): int
+    {
+        if (!function_exists('proc_open')) {
+            return 0;
+        }
+
+        try {
+            $process = @proc_open($shellCommand, [
+                0 => ['pipe', 'r'],
+                1 => ['pipe', 'w'],
+                2 => ['pipe', 'w']
+            ], $pipes);
+        } catch (Throwable) {
+            return 0;
+        }
+
+        if (!is_resource($process)) {
+            return 0;
+        }
+
+        $output = '';
+
+        foreach ($pipes as $pipe) {
+            if (is_resource($pipe)) {
+                $output .= stream_get_contents($pipe);
+                fclose($pipe);
+            }
+        }
+
+        $status = proc_get_status($process);
+        proc_close($process);
+
+        $pid = (int)trim($output);
+
+        if ($pid > 0) {
+            return $pid;
+        }
+
+        return (int)$status['pid'];
+    }
+
+    private function startBackgroundProcessWithShellExec(string $shellCommand): int
+    {
+        if (!function_exists('shell_exec')) {
+            return 0;
+        }
+
+        try {
+            return (int)trim((string)@shell_exec($shellCommand));
+        } catch (Throwable) {
+            return 0;
+        }
+    }
+
+    private function startBackgroundProcessWithExec(string $shellCommand): int
+    {
+        if (!function_exists('exec')) {
+            return 0;
+        }
+
+        try {
+            $output = [];
+            @exec($shellCommand, $output);
+        } catch (Throwable) {
+            return 0;
+        }
+
+        if (count($output) === 0) {
+            return 0;
+        }
+
+        return (int)trim((string)$output[0]);
+    }
+
+    private function startBackgroundProcessWithSystem(string $shellCommand): int
+    {
+        if (!function_exists('system')) {
+            return 0;
+        }
+
+        try {
+            ob_start();
+            @system($shellCommand);
+            $output = (string)ob_get_clean();
+        } catch (Throwable) {
+            if (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+
+            return 0;
+        }
+
+        return (int)trim($output);
+    }
+
+    private function isFinalState(RunState $state): bool
+    {
+        return in_array(
+            $state->getStatus(),
+            [
+                RunState::STATUS_FINISHED,
+                RunState::STATUS_FAILED,
+                RunState::STATUS_CANCELLED
+            ],
+            true
+        );
     }
 
     /**

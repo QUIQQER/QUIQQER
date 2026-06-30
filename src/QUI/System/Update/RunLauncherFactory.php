@@ -29,7 +29,7 @@ class RunLauncherFactory
         );
     }
 
-    private static function resolveCliPhpBinary(string $binary): string
+    public static function resolveCliPhpBinary(string $binary): string
     {
         $binaryName = basename($binary);
 

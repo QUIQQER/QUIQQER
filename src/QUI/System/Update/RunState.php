@@ -200,13 +200,17 @@ class RunState
         $this->errorMessage = $message;
     }
 
-    public function setProcess(int $pid, string $command, int $startedAt): void
+    public function setProcess(int $pid, string $command, int $startedAt, ?string $method = null): void
     {
         $this->process = [
             'pid' => $pid,
             'command' => $command,
             'startedAt' => $startedAt
         ];
+
+        if ($method !== null) {
+            $this->process['method'] = $method;
+        }
     }
 
     public function getId(): string
