@@ -484,7 +484,12 @@ function writeLogText(text) {
 function normalizeLogLine(line) {
     line = String(line || '');
     line = line.replace(/^\s*\[\!\!\]\s*(\[\d+\/\d+\]\s*)/, '$1');
-    line = line.replace(/^\\n"?\}?$/, '');
+
+    const trimmed = line.trim();
+
+    if (trimmed === '\\n"}' || trimmed === '\\n}' || trimmed === '\\n') {
+        return '';
+    }
 
     return line;
 }
