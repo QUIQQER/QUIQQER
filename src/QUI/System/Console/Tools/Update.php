@@ -151,7 +151,7 @@ class Update extends QUI\System\Console\Tool
         Cleanup::clearComposer();
 
         $Output->section('System update');
-        $Output->info(QUI::getLocale()->get('quiqqer/core', 'update.message.start'));
+        $Output->info($this->normalizeStatusMessage(QUI::getLocale()->get('quiqqer/core', 'update.message.start')));
 
         // check license
         try {
@@ -183,7 +183,14 @@ class Update extends QUI\System\Console\Tool
 
         // output events
         $Packages->getComposer()->addEvent('onOutput', function ($Composer, $output, $type): void {
-            if ($this->getArgument('check') && $this->getVerbosityLevel() === 0) {
+            if ($this->getArgument('check') && $this->getVerbosityLevel() > 0) {
+                $this->write($output);
+                self::writeToLog($output);
+                return;
+            }
+
+            if ($this->getVerbosityLevel() < 3) {
+                self::writeToLog($output);
                 return;
             }
 
@@ -763,6 +770,30 @@ class Update extends QUI\System\Console\Tool
             }
         }
 
+        if ($verbosity === 0) {
+            $normalModeIgnore = [
+                'Loading composer repositories',
+                'Updating dependencies',
+                'Dependency resolution',
+                'Analyzed ',
+                'Lock file operations',
+                'Package operations',
+                'Installing dependencies',
+                'Nothing to ',
+                'Writing lock file',
+                'Generating autoload files',
+                'Generating optimized autoload files',
+                'No security vulnerability advisories found',
+                'Cleanup database'
+            ];
+
+            foreach ($normalModeIgnore as $ig) {
+                if (str_starts_with($trimmedMessage, $ig)) {
+                    return;
+                }
+            }
+        }
+
         if ($verbosity < 2 && str_starts_with($trimmedMessage, '> ')) {
             return;
         }
@@ -819,7 +850,7 @@ class Update extends QUI\System\Console\Tool
                 }
             }
 
-            if (count($modified)) {
+            if (count($modified) && $this->getVerbosityLevel() > 0) {
                 $this->writeLn();
                 $this->writeLn('Modified files:', 'light_green');
                 $this->writeLn(implode("\n", $modified));
@@ -859,6 +890,14 @@ class Update extends QUI\System\Console\Tool
             }
 
             if (count($changesList)) {
+                if ($this->getVerbosityLevel() === 0) {
+                    $this->getUpdateOutput()->warning('Changed dependencies: ' . count($changesList));
+                    $this->getUpdateOutput()->info('Use --verbose (-v) to see package paths and files');
+                    $this->resetColor();
+
+                    return true;
+                }
+
                 $this->writeLn();
                 $this->writeLn('You have changes in the following dependencies:', 'light_green');
 
@@ -935,6 +974,11 @@ class Update extends QUI\System\Console\Tool
         }
 
         return 0;
+    }
+
+    private function normalizeStatusMessage(string $message): string
+    {
+        return trim($message, " \t\n\r\0\x0B-:");
     }
 
     private function getUpdateOutput(): UpdateConsoleOutput
