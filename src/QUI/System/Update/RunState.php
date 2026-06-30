@@ -68,7 +68,7 @@ class RunState
         private string $status,
         private readonly int $createdAt,
         private readonly int $expiresAt,
-        private readonly array $metadata = [],
+        private array $metadata = [],
         private ?int $startedAt = null,
         private ?int $finishedAt = null,
         private ?string $errorMessage = null,
@@ -236,6 +236,11 @@ class RunState
     public function getMetadata(): array
     {
         return $this->metadata;
+    }
+
+    public function setMetadataValue(string $key, mixed $value): void
+    {
+        $this->metadata[$key] = $value;
     }
 
     public function getProcess(): ?array

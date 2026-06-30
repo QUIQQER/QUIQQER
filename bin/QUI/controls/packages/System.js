@@ -32,6 +32,7 @@ define('controls/packages/System', [
             '$onInject',
             'checkUpdates',
             'executeCompleteSetup',
+            'startUpdateRun',
             'prepareUpdateRun',
             'openUpdateRun',
             'cancelUpdateRun',
@@ -104,7 +105,7 @@ define('controls/packages/System', [
                 text: QUILocale.get(lg, 'packages.panel.btn.prepareUpdate'),
                 textimage: 'fa fa-cog',
                 events: {
-                    onClick: this.prepareUpdateRun
+                    onClick: this.startUpdateRun
                 }
             }).inject(this.$RunButtons);
             this.$PrepareUpdate.getElm().addClass('btn-green');
@@ -317,36 +318,71 @@ define('controls/packages/System', [
         },
 
         /**
-         * Prepare an update process, but do not execute it in this tab.
+         * Start an update process in a new browser tab.
          *
          * @returns {Promise}
          */
-        prepareUpdateRun: function () {
+        startUpdateRun: function () {
+            const runWindow = window.open('about:blank', '_blank');
+
+            if (runWindow) {
+                runWindow.document.write('<!doctype html><title>QUIQQER update</title><body>Preparing update ...</body>');
+                runWindow.document.close();
+            }
+
+            return this.prepareUpdateRun(runWindow);
+        },
+
+        /**
+         * Prepare an update process.
+         *
+         * @param {Window|null} [runWindow]
+         * @returns {Promise}
+         */
+        prepareUpdateRun: function (runWindow) {
             this.$PrepareUpdate.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
             return Packages.prepareUpdateRun().then((result) => {
                 this.$PrepareUpdate.setAttribute('textimage', 'fa fa-cog');
 
                 if (result.active && result.run) {
+                    const metadata = result.run.metadata || {};
+
+                    if (runWindow) {
+                        if (metadata.webUrl) {
+                            runWindow.location.href = this.getAbsoluteRunUrl(metadata.webUrl);
+                        } else {
+                            runWindow.close();
+                        }
+                    }
+
                     this.$preparedRun = {
                         id: result.run.id,
-                        url: null,
+                        url: metadata.webUrl || null,
                         state: result.run
                     };
                     this.renderRunState(QUILocale.get(lg, 'packages.panel.update.run.active'));
-                    this.$setRunButtons(false);
+                    this.$setRunButtons(Boolean(this.$preparedRun.url));
                     this.startRunPolling();
                     return;
                 }
 
                 this.$preparedRun = {
                     id: result.id,
-                    url: result.url,
+                    url: this.getAbsoluteRunUrl(result.url),
                     state: result.run
                 };
                 this.renderRunState(QUILocale.get(lg, 'packages.panel.update.run.prepared'));
                 this.$setRunButtons(true);
+
+                if (runWindow && this.$preparedRun.url) {
+                    runWindow.location.href = this.$preparedRun.url;
+                }
             }).catch((Exception) => {
+                if (runWindow) {
+                    runWindow.close();
+                }
+
                 this.$PrepareUpdate.setAttribute('textimage', 'fa fa-cog');
                 return this.$showError(Exception);
             });
@@ -360,7 +396,7 @@ define('controls/packages/System', [
                 return;
             }
 
-            window.open(this.$preparedRun.url, '_blank', 'noopener');
+            window.open(this.getAbsoluteRunUrl(this.$preparedRun.url), '_blank');
             this.startRunPolling();
         },
 
@@ -378,10 +414,10 @@ define('controls/packages/System', [
 
             return Packages.cancelUpdateRun(this.$preparedRun.id).then((state) => {
                 this.$CancelRun.setAttribute('textimage', 'fa fa-ban');
-                this.$preparedRun.state = state;
+                this.stopRunPolling();
+                this.$preparedRun = null;
                 this.renderRunState(QUILocale.get(lg, 'packages.panel.update.run.cancelled'));
                 this.$setRunButtons(false);
-                this.stopRunPolling();
             }).catch((Exception) => {
                 this.$CancelRun.setAttribute('textimage', 'fa fa-ban');
                 return this.$showError(Exception);
@@ -404,13 +440,15 @@ define('controls/packages/System', [
                     return;
                 }
 
+                const metadata = active[0].metadata || {};
+
                 this.$preparedRun = {
                     id: active[0].id,
-                    url: null,
+                    url: metadata.webUrl || null,
                     state: active[0]
                 };
                 this.renderRunState(QUILocale.get(lg, 'packages.panel.update.run.active'));
-                this.$setRunButtons(false);
+                this.$setRunButtons(Boolean(this.$preparedRun.url));
                 this.startRunPolling();
             }).catch((Exception) => {
                 return this.$showError(Exception);
@@ -429,6 +467,11 @@ define('controls/packages/System', [
 
             return Packages.getUpdateRunStatus(this.$preparedRun.id).then((state) => {
                 this.$preparedRun.state = state;
+
+                if (!this.$preparedRun.url && state.metadata && state.metadata.webUrl) {
+                    this.$preparedRun.url = state.metadata.webUrl;
+                }
+
                 this.renderRunState();
 
                 if (['finished', 'failed', 'cancelled'].indexOf(state.status) !== -1) {
@@ -541,8 +584,13 @@ define('controls/packages/System', [
          */
         renderRunState: function (message) {
             if (!this.$preparedRun || !this.$preparedRun.state) {
+                const stateMessage = message ?
+                    '<div class="qui-update-check-summary">' + message + '</div>' :
+                    '';
+
                 this.$RunState.set(
                     'html',
+                    stateMessage +
                     '<div class="qui-update-run-empty">' +
                     QUILocale.get(lg, 'packages.panel.update.run.empty') +
                     '</div>'
@@ -592,7 +640,7 @@ define('controls/packages/System', [
             const urlNode = this.$RunState.querySelector('.qui-update-run-url');
 
             if (urlNode && this.$preparedRun.url) {
-                urlNode.set('text', this.$preparedRun.url);
+                urlNode.set('text', this.getAbsoluteRunUrl(this.$preparedRun.url));
             }
 
             this.renderRunActions();
@@ -675,6 +723,28 @@ define('controls/packages/System', [
             }
 
             this.$CancelRun.enable();
+        },
+
+        /**
+         * Return an absolute update runner URL.
+         *
+         * @param {String} url
+         * @returns {String}
+         */
+        getAbsoluteRunUrl: function (url) {
+            if (!url) {
+                return '';
+            }
+
+            if (/^https?:\/\//i.test(url)) {
+                return url;
+            }
+
+            if (url.charAt(0) !== '/') {
+                url = '/' + url;
+            }
+
+            return window.location.origin + url;
         },
 
         /**

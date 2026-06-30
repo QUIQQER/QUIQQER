@@ -14,11 +14,18 @@ class RunLauncher
     public function create(?int $now = null, array $metadata = []): RunLaunch
     {
         $run = $this->repository->create($now, $metadata);
+        $webUrl = $this->createWebUrl($run);
+        $cliCommand = $this->createCliCommand($run);
+        $state = $run->getState();
+
+        $state->setMetadataValue('webUrl', $webUrl);
+        $state->setMetadataValue('cliCommand', $cliCommand);
+        $this->repository->save($state);
 
         return new RunLaunch(
             $run,
-            $this->createWebUrl($run),
-            $this->createCliCommand($run)
+            $webUrl,
+            $cliCommand
         );
     }
 
