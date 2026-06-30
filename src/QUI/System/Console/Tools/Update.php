@@ -677,7 +677,12 @@ class Update extends QUI\System\Console\Tool
     {
         $Packages = QUI::getPackageManager();
         $Composer = $Packages->getComposer();
-        $Composer->unmute();
+
+        if ($this->getVerbosityLevel() > 0) {
+            $Composer->unmute();
+        } else {
+            $Composer->mute();
+        }
 
         $Runner = $Composer->getRunner();
         $result = [];
@@ -691,9 +696,7 @@ class Update extends QUI\System\Console\Tool
         $Runner->setOutput($CLIOutput);
 
         try {
-            $Runner->executeComposer('status', [
-                '-vvv' => true
-            ]);
+            $Runner->executeComposer('status', $this->getComposerVerbosityOptions());
         } catch (\QUI\Exception $exception) {
             $modified = [];
 
