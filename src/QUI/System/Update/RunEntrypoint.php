@@ -87,7 +87,6 @@ class RunEntrypoint
         $phase = (string)($payload['phase'] ?? '');
 
         if ($status === RunState::STATUS_RESTART_REQUIRED) {
-            echo PHP_EOL;
             echo '[2/6] Composer tool' . PHP_EOL;
             echo '  [OK] Composer updated' . PHP_EOL;
             echo '  [..] Continuing with system update' . PHP_EOL;
