@@ -17,6 +17,7 @@ use function error_log;
 use function explode;
 use function function_exists;
 use function implode;
+use function in_array;
 use function is_dir;
 use function is_resource;
 use function method_exists;
