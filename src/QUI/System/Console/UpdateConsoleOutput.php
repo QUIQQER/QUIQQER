@@ -30,11 +30,13 @@ class UpdateConsoleOutput
 
     public function section(string $title): void
     {
+        if ($this->section > 0) {
+            $this->Output->writeLn();
+        }
+
         $this->section++;
 
-        $this->Output->writeLn();
-        $this->Output->writeLn('[' . $this->section . '/' . $this->totalSections . '] ' . $title, 'cyan');
-        $this->resetColor();
+        $this->Output->writeLn('[' . $this->section . '/' . $this->totalSections . '] ' . $title);
     }
 
     public function setCurrentSection(int $section): void
