@@ -198,7 +198,15 @@ function readRunLog(string $root, string $id): string
         return '';
     }
 
-    return $content;
+    return cleanRunLog($content);
+}
+
+function cleanRunLog(string $content): string
+{
+    $content = preg_replace('/\x1b\[[0-9;]*m/', '', $content) ?? $content;
+    $content = preg_replace('/\{"success":(?:true|false).*?\}\s*$/s', '', $content) ?? $content;
+
+    return rtrim($content);
 }
 
 function renderHtmlConsole(string $id, string $token): void

@@ -74,6 +74,10 @@ class RunEntrypoint
                 }
             }
 
+            if ($sapi === 'cli') {
+                $this->applyCliArguments($id, $repository, $argv);
+            }
+
             $processor = new RunProcessor($repository, $actions);
             $state = $processor->process($id, $token, $now);
 
@@ -150,7 +154,8 @@ class RunEntrypoint
             . ' '
             . escapeshellarg($this->getExecuteFile($id, $root))
             . ' '
-            . escapeshellarg($token);
+            . escapeshellarg($token)
+            . ' --yes';
     }
 
     private function getExecuteFile(string $id, string $root): string
@@ -323,6 +328,59 @@ class RunEntrypoint
         }
 
         return (string)($query['token'] ?? '');
+    }
+
+    /**
+     * @param array<int, string> $argv
+     */
+    private function applyCliArguments(string $id, RunRepository $repository, array $argv): void
+    {
+        $arguments = [];
+
+        foreach (array_slice($argv, 2) as $argument) {
+            if ($argument === '--yes' || $argument === '-y') {
+                $arguments['yes'] = true;
+                continue;
+            }
+
+            if ($argument === '--skip-filesystem-check') {
+                $arguments['skip-filesystem-check'] = true;
+                continue;
+            }
+
+            if ($argument === '-v' || $argument === '--verbose') {
+                $arguments['verbose'] = true;
+                continue;
+            }
+
+            if ($argument === '-vv' || $argument === '--vv') {
+                $arguments['-vv'] = true;
+                continue;
+            }
+
+            if ($argument === '-vvv' || $argument === '--vvv') {
+                $arguments['-vvv'] = true;
+            }
+        }
+
+        if (empty($arguments)) {
+            return;
+        }
+
+        $state = $repository->load($id);
+        $metadata = $state->getMetadata();
+        $existingArguments = $metadata['arguments'] ?? [];
+
+        if (!is_array($existingArguments)) {
+            $existingArguments = [];
+        }
+
+        foreach ($arguments as $name => $value) {
+            $existingArguments[$name] = $value;
+        }
+
+        $state->setMetadataValue('arguments', $existingArguments);
+        $repository->save($state);
     }
 
     private function sendResponse(array $payload, string $sapi, int $statusCode = 200): void
