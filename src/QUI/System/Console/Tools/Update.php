@@ -20,7 +20,10 @@ use function implode;
 use function is_dir;
 use function is_resource;
 use function method_exists;
+use function ob_get_clean;
+use function ob_start;
 use function preg_replace;
+use function preg_split;
 use function proc_close;
 use function proc_get_status;
 use function proc_open;
@@ -385,11 +388,20 @@ class Update extends QUI\System\Console\Tool
                 $this->setupPackageCount = 0;
                 $this->composerUpdateHeaderWritten = false;
                 $this->composerChangeSummaries = [];
-                $Packages->update(
-                    false,
-                    false,
-                    new UpdatePackageOutput($Output, $this->getVerbosityLevel())
-                );
+                $PackageOutput = new UpdatePackageOutput($Output, $this->getVerbosityLevel());
+
+                ob_start();
+
+                try {
+                    $Packages->update(false, false, $PackageOutput);
+                } finally {
+                    $buffer = ob_get_clean();
+
+                    if ($buffer !== false) {
+                        $this->writeBufferedPackageOutput($buffer, $PackageOutput);
+                    }
+                }
+
                 $Output->success('Composer update completed');
             }
 
@@ -982,6 +994,19 @@ class Update extends QUI\System\Console\Tool
     private function normalizeStatusMessage(string $message): string
     {
         return trim($message, " \t\n\r\0\x0B-:");
+    }
+
+    private function writeBufferedPackageOutput(string $buffer, UpdatePackageOutput $Output): void
+    {
+        $lines = preg_split('/\r\n|\r|\n/', $buffer);
+
+        if (!is_array($lines)) {
+            return;
+        }
+
+        foreach ($lines as $line) {
+            $Output->writeExternalLine($line);
+        }
     }
 
     private function getUpdateOutput(): UpdateConsoleOutput

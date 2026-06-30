@@ -28,7 +28,7 @@ class UpdatePackageOutput implements SystemOutput
 
     public function writeLn(string $msg = '', bool|string $color = false, bool|string $bg = false): void
     {
-        $message = trim($msg);
+        $message = $this->sanitize($msg);
 
         if ($message === '') {
             return;
@@ -75,5 +75,23 @@ class UpdatePackageOutput implements SystemOutput
     public function write(string $msg, bool|string $color = false, bool|string $bg = false): void
     {
         $this->writeLn($msg, $color, $bg);
+    }
+
+    public function writeExternalLine(string $msg): void
+    {
+        $message = $this->sanitize($msg);
+
+        if ($message === '') {
+            return;
+        }
+
+        $this->Output->quote($message, 'red');
+    }
+
+    private function sanitize(string $message): string
+    {
+        $message = (string)preg_replace('/\033\[[0-9;]*m/', '', $message);
+
+        return trim($message);
     }
 }

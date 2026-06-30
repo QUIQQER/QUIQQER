@@ -68,6 +68,12 @@ class UpdateConsoleOutput
         $this->resetColor();
     }
 
+    public function quote(string $message, bool|string $color = false): void
+    {
+        $this->Output->writeLn('  > ' . $message, $color);
+        $this->resetColor();
+    }
+
     /**
      * @param array<int, string> $lines
      */
