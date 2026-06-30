@@ -1,277 +1,271 @@
-.qui-update-label-bar {
-    display: flex;
-    flex-direction: column;
+.qui-update {
+    color: #23272f;
+    float: left;
     width: 100%;
+}
+
+.qui-update-header {
+    align-items: flex-start;
     background: #f4f4f6;
-    color: #23272f;
-    font-size: 1rem;
-    padding: 10px 24px 6px 24px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #e0e0e0;
-    gap: 10px;
+    border-bottom: 1px solid #d7dce2;
+    display: flex;
+    gap: 32px;
+    justify-content: space-between;
+    padding: 18px 24px;
+    width: 100%;
 }
 
-.qui-update-label-bar .qui-update-meta {
-    display: flex;
+.qui-update-logo {
+    display: block;
+    margin-bottom: 12px;
+    max-height: 34px;
+}
+
+.qui-update-badges {
     align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.qui-update-meta-tableData {
     display: flex;
-    flex-direction: column;
-    gap: 5px;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
-.qui-update-meta-tableData .qui-update-label {
-    min-width: 180px;
-}
-
-.qui-update-version-label,
-.qui-update-label {
-    font-size: 0.93em;
-    font-weight: 400;
-}
-
-.qui-update-ref,
-.qui-update-lastCheck,
-.qui-update-last {
-    font-weight: 700;
-    color: #23272f;
-    margin-right: 16px;
-    min-width: 80px;
-    display: inline-block;
-}
-
-@media (max-width: 800px) {
-    .qui-update-label-bar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-        padding: 10px 8px 6px 8px;
-    }
-
-    .qui-update-label-bar .qui-update-meta {
-        gap: 10px;
-    }
-}
-
-.qui-badge {
-    display: inline-block;
-    background: #e9e9ec;
-    color: #23272f;
-    border-radius: 12px;
-    padding: 2px 10px;
-    font-size: 0.97em;
-    font-weight: 600;
-    margin-right: 10px;
-    min-width: 60px;
-    text-align: center;
+.qui-update-badge {
+    border-radius: 4px;
+    color: #fff;
+    display: inline-flex;
+    font-size: 12px;
+    gap: 4px;
+    line-height: 22px;
+    padding: 0 8px;
 }
 
 .qui-update-version {
     background: #2c2f35;
-    color: #fff;
 }
 
 .qui-phpversion {
     background: #4f5b93;
-    color: #fff;
 }
 
 .qui-database {
     background: #2d7a39;
-    color: #fff;
 }
 
+.qui-update-meta-tableData {
+    display: grid;
+    gap: 6px;
+    min-width: 360px;
+}
 
-.qui-control-packages-update-buttons {
-    float: left;
-    padding: 20px;
+.qui-update-meta {
+    align-items: center;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 150px minmax(150px, 1fr);
+}
+
+.qui-update-label {
+    color: #5f6874;
+    font-size: 12px;
+}
+
+.qui-update-value {
+    background: #e8ebef;
+    border-radius: 4px;
+    color: #20242a;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    min-height: 22px;
+    padding: 3px 8px;
+}
+
+.qui-update-grid {
+    display: grid;
+    gap: 0;
+    grid-template-columns: minmax(380px, 1.2fr) minmax(360px, 0.8fr);
     width: 100%;
 }
 
+.qui-update-section {
+    border-bottom: 1px solid #d7dce2;
+    min-height: 320px;
+    padding: 20px 24px;
+}
+
+.qui-update-section + .qui-update-section {
+    border-left: 1px solid #d7dce2;
+}
+
+.qui-update-section header {
+    align-items: flex-start;
+    border-bottom: 1px solid #edf0f3;
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+}
+
+.qui-update-check-actions,
+.qui-update-run-actions,
+.qui-update-entry-actions {
+    align-items: center;
+    display: flex;
+    flex-shrink: 0;
+    gap: 8px;
+}
+
+.qui-update-section h2 {
+    font-size: 16px;
+    line-height: 22px;
+    margin: 0 0 4px;
+}
+
+.qui-update-section p {
+    color: #68717e;
+    font-size: 12px;
+    line-height: 18px;
+    margin: 0;
+}
+
+.qui-update-check-summary,
+.qui-update-run-empty {
+    color: #68717e;
+    font-size: 13px;
+    line-height: 20px;
+    margin-bottom: 12px;
+}
+
 .qui-control-packages-update-result {
-    border-top: 1px solid #D0D3D3;
-    float: left;
-    padding: 20px;
+    display: grid;
+    gap: 0;
+    max-height: 560px;
+    overflow: auto;
     width: 100%;
 }
 
-/** package update
- ============================================== */
-
-.qui-control-packages-update-result {
+.qui-update-summary {
     display: flex;
     flex-wrap: wrap;
-    padding: 10px;
-    position: relative;
-    width: 100%;
+    gap: 8px;
+    margin-bottom: 12px;
 }
 
-/** Tile view
- ============================================== */
-
-.qui-control-packages-system-package-viewTile .packages-package-loader {
-    background: rgba(0, 0, 0, 0.5);
-    color: #fff;
-    font-size: 30px;
-    height: 100%;
-    line-height: 110px;
-    position: absolute;
-    text-align: center;
-    width: 100%;
+.qui-update-summary span {
+    background: #edf2f7;
+    border-radius: 4px;
+    color: #334155;
+    display: inline-flex;
+    gap: 4px;
+    line-height: 24px;
+    padding: 0 8px;
 }
 
-.qui-control-packages-system-package-viewTile {
-    border: 1px solid #D0D3D3;
-    cursor: default;
-    display: flex;
-    flex-direction: column;
-    margin: 10px;
+.qui-update-package-header,
+.qui-update-package {
+    align-items: center;
+    border-bottom: 1px solid #edf0f3;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: minmax(180px, 1fr) 120px 120px;
+    min-height: 38px;
+    padding: 8px 0;
+}
+
+.qui-update-package-header {
+    background: #fff;
+    color: #68717e;
+    font-size: 11px;
+    font-weight: 700;
+    min-height: 28px;
+    position: sticky;
+    text-transform: uppercase;
+    top: 0;
+    z-index: 1;
+}
+
+.qui-update-package-name {
+    font-weight: 700;
     overflow: hidden;
-    position: relative;
-    width: 160px;
-}
-
-.qui-control-packages-system-package-viewTile:hover {
-    border: 1px solid #BBB;
-    box-shadow: 0 0 10px -4px rgba(0, 0, 0, 0.75);
-    -webkit-box-shadow: 0 0 10px -4px rgba(0, 0, 0, 0.75);
-    -moz-box-shadow: 0 0 10px -4px rgba(0, 0, 0, 0.75);
-}
-
-.qui-control-packages-system-package-viewTile-text {
-    flex-grow: 1;
-    padding: 10px;
-    text-align: center;
-    white-space: nowrap;
-}
-
-.qui-control-packages-system-package-viewTile-text .version {
-    clear: both;
-    display: block;
-    font-weight: bold;
-    padding-top: 5px;
-}
-
-.qui-control-packages-system-package-viewTile-buttons {
-    background: #f6f6f6;
-    border-top: 1px solid #D0D3D3;
-    clear: both;
-    float: left;
-    height: 31px;
-    width: 100%;
-}
-
-.qui-control-packages-system-package-viewTile-buttons .button {
-    background: #f6f6f6;
-    box-shadow: none;
-    font-size: 16px;
-    line-height: 30px;
-    text-align: center;
-    width: 100%;
-}
-
-.qui-control-packages-system-package-viewTile-buttons .button:hover {
-    background: #0069b4;
-    color: #fff;
-}
-
-/** Tile view
- ============================================== */
-
-.qui-control-packages-system-package-viewList .packages-package-loader {
-    background: rgba(0, 0, 0, 0.5);
-    color: #fff;
-    font-size: 30px;
-    height: 100%;
-    line-height: 45px;
-    position: absolute;
-    text-align: center;
-    width: 100%;
-}
-
-.qui-control-packages-system-package-viewList {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    clear: both;
-    cursor: default;
-    float: left;
-    padding: 0;
-    position: relative;
-    width: 100%;
-}
-
-.qui-control-packages-system-package-viewList:hover {
-    background: rgba(0, 0, 0, 0.05);
-}
-
-.qui-control-packages-system-package-viewList-image {
-    float: left;
-    font-size: 30px;
-    line-height: 50px;
-    text-align: center;
-    width: 60px;
-}
-
-.qui-control-packages-system-package-viewList-image img {
-    max-height: 40px;
-    max-width: 40px;
-}
-
-.qui-control-packages-system-package-viewList-image .fa {
-    color: rgba(0, 0, 0, 0.05);
-}
-
-.qui-control-packages-system-package-viewList-text {
-    float: left;
-    line-height: 50px;
-    width: calc(100% - 50px);
-}
-
-.qui-control-packages-system-package-viewList-text .package {
-    float: left;
-    overflow: hidden;
-    padding-left: 10px;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: calc(100% - 300px);
 }
 
-.qui-control-packages-system-package-viewList-text .version,
-.qui-control-packages-system-package-viewList-text .oldVersion {
-    float: left;
-    overflow: hidden;
-    padding-right: 10px;
-    text-overflow: ellipsis;
+.qui-update-package-version {
+    color: #68717e;
+    font-size: 12px;
     text-align: right;
-    white-space: nowrap;
-    width: 150px;
 }
 
-.qui-control-packages-system-package-viewList-text .version {
-    font-weight: bold;
+.qui-update-show-all {
+    background: #f4f6f8;
+    border: 1px solid #cfd6df;
+    border-radius: 4px;
+    color: #334155;
+    cursor: pointer;
+    font-size: 12px;
+    height: 32px;
+    margin-top: 10px;
 }
 
-.qui-control-packages-system-package-viewList-buttons {
-    float: left;
-    padding-right: 10px;
-    text-align: right;
-    width: 50px;
+.qui-update-run-state {
+    display: grid;
+    gap: 10px;
 }
 
-.qui-control-packages-system-package-viewList-buttons .button {
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    float: none;
-    font-size: 20px;
-    font-weight: normal;
-    padding: 15px;
+.qui-update-run-detail {
+    border: 1px solid #d7dce2;
+    border-radius: 4px;
+    display: grid;
+    gap: 8px;
+    padding: 12px;
 }
 
-.qui-control-packages-system-package-viewList-buttons .button:hover {
-    background: #0069b4;
-    color: #fff;
+.qui-update-run-row {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: 90px minmax(0, 1fr);
+}
+
+.qui-update-run-row span:first-child {
+    color: #68717e;
+    font-size: 12px;
+}
+
+.qui-update-run-row span:last-child {
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.qui-update-run-url {
+    background: #f4f6f8;
+    border: 1px solid #d7dce2;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+    line-height: 18px;
+    padding: 8px;
+    overflow-wrap: anywhere;
+}
+
+.qui-update-entry-actions {
+    border-top: 1px solid #edf0f3;
+    margin-top: 4px;
+    padding-top: 10px;
+}
+
+@media (max-width: 960px) {
+    .qui-update-header,
+    .qui-update-section header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .qui-update-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .qui-update-section + .qui-update-section {
+        border-left: 0;
+    }
 }

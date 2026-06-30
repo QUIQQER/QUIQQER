@@ -6582,6 +6582,132 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         <locale name="packages.panel.btn.executeUpdate">
             <de><![CDATA[System Update ausführen]]></de>
         </locale>
+        <locale name="packages.panel.btn.prepareUpdate">
+            <de><![CDATA[Update starten]]></de>
+        </locale>
+        <locale name="packages.panel.btn.openUpdate">
+            <de><![CDATA[Update öffnen]]></de>
+        </locale>
+        <locale name="packages.panel.btn.cancelUpdate">
+            <de><![CDATA[Update abbrechen]]></de>
+        </locale>
+        <locale name="packages.panel.update.available.title">
+            <de><![CDATA[Verfügbare Updates]]></de>
+        </locale>
+        <locale name="packages.panel.update.available.description">
+            <de><![CDATA[Verwendet die letzte geplante Prüfung, bis eine manuelle Prüfung gestartet wird.]]></de>
+        </locale>
+        <locale name="packages.panel.update.check.notLoaded">
+            <de><![CDATA[Keine Update-Prüfung geladen.]]></de>
+        </locale>
+        <locale name="packages.panel.update.check.running">
+            <de><![CDATA[Update-Server werden geprüft ...]]></de>
+        </locale>
+        <locale name="packages.panel.update.check.none">
+            <de><![CDATA[Keine Updates verfügbar.]]></de>
+        </locale>
+        <locale name="packages.panel.update.check.noCachedResult">
+            <de><![CDATA[Kein gespeichertes Prüfergebnis verfügbar.]]></de>
+        </locale>
+        <locale name="packages.panel.update.system.title">
+            <de><![CDATA[System-Update]]></de>
+        </locale>
+        <locale name="packages.panel.update.system.description">
+            <de><![CDATA[Das Update wird vorbereitet und anschließend in einem separaten Browser-Tab ausgeführt.]]></de>
+        </locale>
+        <locale name="packages.panel.update.summary.updates">
+            <de><![CDATA[Updates]]></de>
+        </locale>
+        <locale name="packages.panel.update.summary.majorChanges">
+            <de><![CDATA[Major-Änderungen]]></de>
+        </locale>
+        <locale name="packages.panel.update.summary.devTargets">
+            <de><![CDATA[Dev-Ziele]]></de>
+        </locale>
+        <locale name="packages.panel.update.table.package">
+            <de><![CDATA[Paket]]></de>
+        </locale>
+        <locale name="packages.panel.update.table.installed">
+            <de><![CDATA[Installiert]]></de>
+        </locale>
+        <locale name="packages.panel.update.table.available">
+            <de><![CDATA[Verfügbar]]></de>
+        </locale>
+        <locale name="packages.panel.update.table.showAll">
+            <de><![CDATA[Alle [count] Updates anzeigen]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.empty">
+            <de><![CDATA[Kein Update vorbereitet.]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.active">
+            <de><![CDATA[Es läuft bereits ein Update.]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.prepared">
+            <de><![CDATA[Update vorbereitet. Öffnen Sie es in einem neuen Tab, um fortzufahren.]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.cancelled">
+            <de><![CDATA[Update abgebrochen.]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.id">
+            <de><![CDATA[Run-ID]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.status">
+            <de><![CDATA[Status]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.phase">
+            <de><![CDATA[Phase]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.created">
+            <de><![CDATA[Erstellt]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.status.prepared">
+            <de><![CDATA[Vorbereitet]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.status.created">
+            <de><![CDATA[Erstellt]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.status.running">
+            <de><![CDATA[Läuft]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.status.restart_required">
+            <de><![CDATA[Neustart erforderlich]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.status.finished">
+            <de><![CDATA[Abgeschlossen]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.status.failed">
+            <de><![CDATA[Fehlgeschlagen]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.status.cancelled">
+            <de><![CDATA[Abgebrochen]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.phase.created">
+            <de><![CDATA[Erstellt]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.phase.prepared">
+            <de><![CDATA[Vorbereitet]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.phase.composer_update">
+            <de><![CDATA[Composer-Update]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.phase.restart_required">
+            <de><![CDATA[Neustart erforderlich]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.phase.system_update">
+            <de><![CDATA[System-Update]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.phase.cleanup">
+            <de><![CDATA[Aufräumen]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.phase.finished">
+            <de><![CDATA[Abgeschlossen]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.phase.failed">
+            <de><![CDATA[Fehlgeschlagen]]></de>
+        </locale>
+        <locale name="packages.panel.update.run.phase.cancelled">
+            <de><![CDATA[Abgebrochen]]></de>
+        </locale>
         <locale name="packages.panel.system.packageUpdate.title">
             <de><![CDATA[Paket [package] aktualisieren auf Version [version]]]></de>
         </locale>

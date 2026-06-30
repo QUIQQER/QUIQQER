@@ -6379,6 +6379,132 @@ After logging in you will be prompted to set a new password.
         <locale name="packages.panel.btn.executeUpdate">
             <en><![CDATA[Run system update]]></en>
         </locale>
+        <locale name="packages.panel.btn.prepareUpdate">
+            <en><![CDATA[Start update]]></en>
+        </locale>
+        <locale name="packages.panel.btn.openUpdate">
+            <en><![CDATA[Open update]]></en>
+        </locale>
+        <locale name="packages.panel.btn.cancelUpdate">
+            <en><![CDATA[Cancel update]]></en>
+        </locale>
+        <locale name="packages.panel.update.available.title">
+            <en><![CDATA[Available updates]]></en>
+        </locale>
+        <locale name="packages.panel.update.available.description">
+            <en><![CDATA[Uses the last scheduled check until a manual check is started.]]></en>
+        </locale>
+        <locale name="packages.panel.update.check.notLoaded">
+            <en><![CDATA[No update check loaded.]]></en>
+        </locale>
+        <locale name="packages.panel.update.check.running">
+            <en><![CDATA[Checking update servers ...]]></en>
+        </locale>
+        <locale name="packages.panel.update.check.none">
+            <en><![CDATA[No updates available.]]></en>
+        </locale>
+        <locale name="packages.panel.update.check.noCachedResult">
+            <en><![CDATA[No cached update result available.]]></en>
+        </locale>
+        <locale name="packages.panel.update.system.title">
+            <en><![CDATA[System update]]></en>
+        </locale>
+        <locale name="packages.panel.update.system.description">
+            <en><![CDATA[The update is prepared first and then executed in a separate browser tab.]]></en>
+        </locale>
+        <locale name="packages.panel.update.summary.updates">
+            <en><![CDATA[updates]]></en>
+        </locale>
+        <locale name="packages.panel.update.summary.majorChanges">
+            <en><![CDATA[major changes]]></en>
+        </locale>
+        <locale name="packages.panel.update.summary.devTargets">
+            <en><![CDATA[dev targets]]></en>
+        </locale>
+        <locale name="packages.panel.update.table.package">
+            <en><![CDATA[Package]]></en>
+        </locale>
+        <locale name="packages.panel.update.table.installed">
+            <en><![CDATA[Installed]]></en>
+        </locale>
+        <locale name="packages.panel.update.table.available">
+            <en><![CDATA[Available]]></en>
+        </locale>
+        <locale name="packages.panel.update.table.showAll">
+            <en><![CDATA[Show all [count] updates]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.empty">
+            <en><![CDATA[No update prepared.]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.active">
+            <en><![CDATA[An update is already active.]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.prepared">
+            <en><![CDATA[Update prepared. Open it in a new tab to continue.]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.cancelled">
+            <en><![CDATA[Update cancelled.]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.id">
+            <en><![CDATA[Run ID]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.status">
+            <en><![CDATA[Status]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.phase">
+            <en><![CDATA[Phase]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.created">
+            <en><![CDATA[Created]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.status.prepared">
+            <en><![CDATA[Prepared]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.status.created">
+            <en><![CDATA[Created]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.status.running">
+            <en><![CDATA[Running]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.status.restart_required">
+            <en><![CDATA[Restart required]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.status.finished">
+            <en><![CDATA[Finished]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.status.failed">
+            <en><![CDATA[Failed]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.status.cancelled">
+            <en><![CDATA[Cancelled]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.phase.created">
+            <en><![CDATA[Created]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.phase.prepared">
+            <en><![CDATA[Prepared]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.phase.composer_update">
+            <en><![CDATA[Composer update]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.phase.restart_required">
+            <en><![CDATA[Restart required]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.phase.system_update">
+            <en><![CDATA[System update]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.phase.cleanup">
+            <en><![CDATA[Cleanup]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.phase.finished">
+            <en><![CDATA[Finished]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.phase.failed">
+            <en><![CDATA[Failed]]></en>
+        </locale>
+        <locale name="packages.panel.update.run.phase.cancelled">
+            <en><![CDATA[Cancelled]]></en>
+        </locale>
         <locale name="packages.panel.system.packageUpdate.title">
             <en><![CDATA[Update package [package] to version [version]]]></en>
         </locale>
