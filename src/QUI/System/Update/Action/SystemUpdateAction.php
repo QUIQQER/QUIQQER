@@ -59,6 +59,17 @@ class SystemUpdateAction implements RunActionInterface
             public function clearMsg(): void
             {
             }
+
+            public function readInput(): string
+            {
+                $input = defined('STDIN') ? fgets(STDIN) : file_get_contents('php://stdin');
+
+                if ($input === false) {
+                    return '';
+                }
+
+                return trim($input);
+            }
         };
     }
 }
