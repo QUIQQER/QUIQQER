@@ -16,7 +16,8 @@ class SystemUpdateAction implements RunActionInterface
     {
         $Update = new Update();
         $Update->setUpdateOutputSectionOffset(2);
-        $Update->setAttribute('parent', $this->createCliOutput());
+        $Output = $this->createCliOutput();
+        $Update->setAttribute('parent', $Output);
         $arguments = $state->getMetadata()['arguments'] ?? [];
 
         if (is_array($arguments)) {
@@ -32,7 +33,9 @@ class SystemUpdateAction implements RunActionInterface
         }
 
         if (!$Update->executeSystemUpdate()) {
-            throw new RuntimeException('Update was aborted.');
+            $message = $Output->getLastErrorMessage() ?: 'Update was aborted.';
+
+            throw new RuntimeException($message);
         }
 
         return RunActionResult::next(RunState::PHASE_CLEANUP);
@@ -41,10 +44,13 @@ class SystemUpdateAction implements RunActionInterface
     private function createCliOutput(): object
     {
         return new class {
+            private string $lastErrorMessage = '';
+
             public function writeLn(string $msg = '', bool|string $color = false, bool|string $bg = false): void
             {
                 $this->write($msg, $color, $bg);
                 echo PHP_EOL;
+                $this->rememberErrorMessage($msg, $color, $bg);
             }
 
             public function write(string $msg, bool|string $color = false, bool|string $bg = false): void
@@ -67,6 +73,11 @@ class SystemUpdateAction implements RunActionInterface
             public function clearMsg(): void
             {
                 echo "\033[0m";
+            }
+
+            public function getLastErrorMessage(): string
+            {
+                return $this->lastErrorMessage;
             }
 
             public function readInput(): string
@@ -104,6 +115,19 @@ class SystemUpdateAction implements RunActionInterface
                 }
 
                 return "\033[" . (($background ? 40 : 30) + $colors[$color]) . "m";
+            }
+
+            private function rememberErrorMessage(string $message, bool|string $color, bool|string $bg): void
+            {
+                $message = trim((string)preg_replace('/\033\[[0-9;]*m/', '', $message));
+
+                if ($message === '') {
+                    return;
+                }
+
+                if ($color === 'red' || $bg === 'red' || str_contains($message, '[error]')) {
+                    $this->lastErrorMessage = $message;
+                }
             }
         };
     }

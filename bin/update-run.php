@@ -460,6 +460,61 @@ function writeFinalState(state) {
     }
 }
 
+function writeLogText(text) {
+    text = cleanConsoleText(text);
+
+    if (!text || text.trim() === '') {
+        return;
+    }
+
+    const lines = text.split(/\r?\n/);
+
+    lines.forEach(function (line) {
+        line = normalizeLogLine(line);
+
+        if (!line || line.trim() === '') {
+            write('', 'muted');
+            return;
+        }
+
+        write(line, getLogLineType(line));
+    });
+}
+
+function normalizeLogLine(line) {
+    line = String(line || '');
+    line = line.replace(/^\s*\[\!\!\]\s*(\[\d+\/\d+\]\s*)/, '$1');
+    line = line.replace(/^\\n"?\}?$/, '');
+
+    return line;
+}
+
+function getLogLineType(line) {
+    const trimmed = line.trim();
+
+    if (/^\[\d+\/\d+\]/.test(trimmed)) {
+        return 'info';
+    }
+
+    if (trimmed.indexOf('[OK]') !== -1) {
+        return 'ok';
+    }
+
+    if (trimmed.indexOf('[?]') !== -1) {
+        return 'warn';
+    }
+
+    if (trimmed.indexOf('[!!]') !== -1 || trimmed.indexOf('[error]') !== -1) {
+        return 'err';
+    }
+
+    if (trimmed.indexOf('[..]') !== -1) {
+        return 'muted';
+    }
+
+    return 'muted';
+}
+
 function showCursor() {
     if (stopped || cursorNode) {
         return;
@@ -516,7 +571,7 @@ function renderLog(log) {
     lastLog = log;
 
     if (next.trim() !== '') {
-        write(next, 'muted');
+        writeLogText(next);
     }
 }
 
@@ -526,7 +581,7 @@ function appendLog(text) {
     }
 
     lastLog += text;
-    write(text, 'muted');
+    writeLogText(text);
 }
 
 function finalState(status) {
