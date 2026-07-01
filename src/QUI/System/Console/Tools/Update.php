@@ -697,24 +697,34 @@ class Update extends QUI\System\Console\Tool
             return;
         }
 
+        if ($trimmedMessage === 'Nothing to install, update or remove') {
+            if ($Instance instanceof self) {
+                $Instance->writeComposerChangeHeader('No package changes');
+                return;
+            }
+
+            $Instance->writeLn('No package changes');
+            return;
+        }
+
         // update message
         $update = str_contains($message, 'Update: ');
         $updates = str_contains($message, 'Updates: ');
-        $upgrade = str_contains($message, ' - Upgrading ');
-        $remove = str_contains($message, ' - Removing ');
+        $upgrade = str_starts_with($trimmedMessage, '- Upgrading ') || str_contains($message, ' - Upgrading ');
+        $remove = str_starts_with($trimmedMessage, '- Removing ') || str_contains($message, ' - Removing ');
         $removals = str_contains($message, 'Removals: ');
 
         $install = str_contains($message, 'Install: ');
         $installs = str_contains($message, 'Installs: ');
-        $installing = str_contains($message, ' - Installing ');
+        $installing = str_starts_with($trimmedMessage, '- Installing ') || str_contains($message, ' - Installing ');
 
         if ($update || $updates || $install || $installs || $installing || $upgrade || $remove || $removals) {
             $message = str_replace(['Updates: ', 'Update: '], '', $message);
             $message = str_replace(['Installs: ', 'Install: '], '', $message);
             $message = str_replace(['Removals: '], '', $message);
-            $message = str_replace([' - Upgrading '], '', $message);
-            $message = str_replace([' - Installing '], '', $message);
-            $message = str_replace([' - Removing '], '', $message);
+            $message = str_replace([' - Upgrading ', '- Upgrading '], '', $message);
+            $message = str_replace([' - Installing ', '- Installing '], '', $message);
+            $message = str_replace([' - Removing ', '- Removing '], '', $message);
             $changedPackages = explode(',', $message);
 
             if ($Instance instanceof self) {
@@ -1091,13 +1101,13 @@ class Update extends QUI\System\Console\Tool
         return $this->updateOutput;
     }
 
-    private function writeComposerChangeHeader(): void
+    private function writeComposerChangeHeader(string $message = 'Package changes'): void
     {
         if ($this->composerUpdateHeaderWritten) {
             return;
         }
 
-        $this->getUpdateOutput()->info('Package changes');
+        $this->getUpdateOutput()->info($message);
         $this->composerUpdateHeaderWritten = true;
     }
 
