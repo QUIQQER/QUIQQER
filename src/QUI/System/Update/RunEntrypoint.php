@@ -10,7 +10,6 @@ use function exec;
 use function fclose;
 use function file_exists;
 use function function_exists;
-use function implode;
 use function in_array;
 use function is_resource;
 use function ob_end_clean;
@@ -77,6 +76,24 @@ class RunEntrypoint
             $this->applyRunArguments($id, $repository, $sapi, $query, $argv);
 
             $processor = new RunProcessor($repository, $actions);
+
+            if ($sapi === 'cli') {
+                $loopCount = $this->getLoopCount($argv);
+
+                if ($loopCount > 1) {
+                    $state = $this->processCliLoop($processor, $id, $token, $loopCount, $now);
+
+                    $this->sendResponse([
+                        'success' => true,
+                        'id' => $state->getId(),
+                        'phase' => $state->getPhase(),
+                        'status' => $state->getStatus()
+                    ], $sapi);
+
+                    return 0;
+                }
+            }
+
             $state = $processor->process($id, $token, $now);
 
             $this->sendResponse([
@@ -124,14 +141,7 @@ class RunEntrypoint
             return null;
         }
 
-        $singleCommand = $this->createCliCommand($id, $root, $token);
-        $command = implode(' && ', [
-            $singleCommand,
-            $singleCommand,
-            $singleCommand,
-            $singleCommand,
-            $singleCommand
-        ]);
+        $command = $this->createCliCommand($id, $root, $token) . ' --loop=5';
         $logFile = rtrim($root, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . 'runner.log';
         $process = $this->startBackgroundProcess($command, $logFile);
 
@@ -370,6 +380,10 @@ class RunEntrypoint
         $arguments = [];
 
         foreach ($argv as $argument) {
+            if (str_starts_with($argument, '--loop=')) {
+                continue;
+            }
+
             if ($argument === '--yes' || $argument === '-y') {
                 $arguments['yes'] = true;
                 continue;
@@ -413,6 +427,47 @@ class RunEntrypoint
 
         $state->setMetadataValue('arguments', $existingArguments);
         $repository->save($state);
+    }
+
+    /**
+     * @param array<int, string> $argv
+     */
+    private function getLoopCount(array $argv): int
+    {
+        foreach ($argv as $argument) {
+            if (!str_starts_with($argument, '--loop=')) {
+                continue;
+            }
+
+            return max(1, (int)substr($argument, 7));
+        }
+
+        return 1;
+    }
+
+    private function processCliLoop(
+        RunProcessor $processor,
+        string $id,
+        string $token,
+        int $loopCount,
+        ?int $now
+    ): RunState {
+        for ($attempt = 0; $attempt < $loopCount; $attempt++) {
+            $state = $processor->process($id, $token, $now);
+
+            if ($state->getStatus() !== RunState::STATUS_RESTART_REQUIRED) {
+                return $state;
+            }
+
+            $this->sendResponse([
+                'success' => true,
+                'id' => $state->getId(),
+                'phase' => $state->getPhase(),
+                'status' => $state->getStatus()
+            ], 'cli');
+        }
+
+        throw new \RuntimeException('Update run still requires a restart after maximum attempts.');
     }
 
     private function sendResponse(array $payload, string $sapi, int $statusCode = 200): void

@@ -20,7 +20,7 @@ QUI::$Ajax->registerFunction(
             }
         }
 
-        return $State->toArray();
+        return $State->toPublicArray();
     },
     ['id'],
     [

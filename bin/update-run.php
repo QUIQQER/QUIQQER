@@ -88,7 +88,7 @@ function handleJsonRequest(string $id, string $token, string $root, string $acti
             'id' => $State->getId(),
             'phase' => $State->getPhase(),
             'status' => $State->getStatus(),
-            'state' => $State->toArray(),
+            'state' => $State->toPublicArray(),
             'log' => readRunLog($root, $id)
         ]);
     } catch (Throwable $Exception) {
@@ -151,13 +151,13 @@ function handleSseRequest(string $id, string $token, string $root): void
                 'id' => $State->getId(),
                 'phase' => $State->getPhase(),
                 'status' => $State->getStatus(),
-                'state' => $State->toArray()
+                'state' => $State->toPublicArray()
             ]);
 
             if (in_array($State->getStatus(), ['finished', 'failed', 'cancelled'], true)) {
                 sendSseEvent('close', [
                     'status' => $State->getStatus(),
-                    'state' => $State->toArray()
+                    'state' => $State->toPublicArray()
                 ]);
                 return;
             }

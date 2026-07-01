@@ -76,4 +76,23 @@ class RunStateTest extends TestCase
         $this->assertSame('cancelled', $state->toArray()['errorMessage']);
         $this->assertSame(1234, $state->getProcess()['pid']);
     }
+
+    public function testPublicArrayDoesNotExposeRunnerSecrets(): void
+    {
+        $state = RunState::create(str_repeat('a', 32), hash('sha256', 'secret-token'), 1000, 600, [
+            'type' => 'web',
+            'webUrl' => 'https://example.test/update-run.php?id=run&token=secret-token',
+            'cliCommand' => 'php execute.php secret-token'
+        ]);
+        $state->setProcess(1234, 'php execute.php secret-token', 1001);
+
+        $public = $state->toPublicArray();
+
+        $this->assertArrayNotHasKey('tokenHash', $public);
+        $this->assertArrayNotHasKey('cliCommand', $public['metadata']);
+        $this->assertArrayNotHasKey('command', $public['process']);
+        $this->assertSame('https://example.test/update-run.php?id=run&token=secret-token', $public['metadata']['webUrl']);
+        $this->assertSame('web', $public['metadata']['type']);
+        $this->assertSame(1234, $public['process']['pid']);
+    }
 }

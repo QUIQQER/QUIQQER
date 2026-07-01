@@ -12,7 +12,7 @@ QUI::$Ajax->registerFunction(
 
         return [
             'active' => array_map(static function (QUI\System\Update\RunState $State): array {
-                return $State->toArray();
+                return $State->toPublicArray();
             }, $runs['active']),
             'deleted' => $runs['deleted']
         ];

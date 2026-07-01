@@ -9,7 +9,7 @@ QUI::$Ajax->registerFunction(
     static function ($id): array {
         $Repository = new QUI\System\Update\RunRepository(VAR_DIR . 'update/runs/');
 
-        return $Repository->load((string)$id)->toArray();
+        return $Repository->load((string)$id)->toPublicArray();
     },
     ['id'],
     [

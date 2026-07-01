@@ -7,6 +7,7 @@ use QUI\Composer\Phar\HttpComposerPharDownloader;
 use QUI\System\Update\RunActionInterface;
 use QUI\System\Update\RunActionResult;
 use QUI\System\Update\RunState;
+use Throwable;
 
 use function class_exists;
 
@@ -22,9 +23,14 @@ class ComposerToolUpdateAction implements RunActionInterface
     {
         $Manager = $this->manager ?? $this->createDefaultManager();
 
-        if ($Manager) {
-            $Manager->ensure();
+        if (!$Manager || !$Manager->exists()) {
+            return RunActionResult::next(RunState::PHASE_SYSTEM_UPDATE);
+        }
+
+        try {
             $Manager->update();
+        } catch (Throwable) {
+            return RunActionResult::next(RunState::PHASE_SYSTEM_UPDATE);
         }
 
         return RunActionResult::restartRequired();

@@ -135,6 +135,43 @@ class RunState
         ];
     }
 
+    public function toPublicArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'phase' => $this->phase,
+            'status' => $this->status,
+            'createdAt' => $this->createdAt,
+            'expiresAt' => $this->expiresAt,
+            'metadata' => $this->getPublicMetadata(),
+            'startedAt' => $this->startedAt,
+            'finishedAt' => $this->finishedAt,
+            'errorMessage' => $this->errorMessage,
+            'process' => $this->getPublicProcess()
+        ];
+    }
+
+    private function getPublicMetadata(): array
+    {
+        $metadata = $this->metadata;
+
+        unset($metadata['cliCommand']);
+
+        return $metadata;
+    }
+
+    private function getPublicProcess(): ?array
+    {
+        if ($this->process === null) {
+            return null;
+        }
+
+        $process = $this->process;
+        unset($process['command']);
+
+        return $process;
+    }
+
     public function assertToken(string $token): void
     {
         if ($token === '' || !hash_equals($this->tokenHash, hash('sha256', $token))) {

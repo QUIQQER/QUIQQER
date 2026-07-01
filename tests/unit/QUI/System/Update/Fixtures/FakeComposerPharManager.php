@@ -13,6 +13,10 @@ class FakeComposerPharManager extends ComposerPharManager
 
     public bool $ensureResult = false;
 
+    public bool $existsResult = true;
+
+    public bool $throwOnUpdate = false;
+
     public function __construct()
     {
         parent::__construct('/tmp/fake-composer.phar', new class implements ComposerPharDownloaderInterface {
@@ -29,9 +33,18 @@ class FakeComposerPharManager extends ComposerPharManager
         return $this->ensureResult;
     }
 
+    public function exists(): bool
+    {
+        return $this->existsResult;
+    }
+
     public function update(): bool
     {
         $this->updateCalls++;
+
+        if ($this->throwOnUpdate) {
+            throw new \RuntimeException('update failed');
+        }
 
         return true;
     }

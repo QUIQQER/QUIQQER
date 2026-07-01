@@ -16,7 +16,7 @@ QUI::$Ajax->registerFunction(
             return [
                 'prepared' => false,
                 'active' => true,
-                'run' => $State->toArray(),
+                'run' => $State->toPublicArray(),
                 'deleted' => $runs['deleted']
             ];
         }
@@ -33,7 +33,7 @@ QUI::$Ajax->registerFunction(
             'active' => false,
             'id' => $Run->getState()->getId(),
             'url' => $Launch->getWebUrl(),
-            'run' => $Run->getState()->toArray(),
+            'run' => $Run->getState()->toPublicArray(),
             'deleted' => $runs['deleted']
         ];
     },
