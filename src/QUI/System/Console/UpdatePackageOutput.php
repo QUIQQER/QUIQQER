@@ -85,6 +85,11 @@ class UpdatePackageOutput implements SystemOutput
             return;
         }
 
+        if ($message === 'Cleanup database' || $message === '[..] Cleanup database') {
+            $this->Output->info('Cleanup database');
+            return;
+        }
+
         $this->Output->quote($message, 'red');
     }
 
