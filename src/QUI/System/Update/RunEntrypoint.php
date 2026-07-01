@@ -158,7 +158,8 @@ class RunEntrypoint
 
     private function createCliCommand(string $id, string $root, string $token): string
     {
-        return escapeshellarg(RunLauncherFactory::resolveCliPhpBinary(PHP_BINARY))
+        return CliEnvironment::createShellPrefix()
+            . escapeshellarg(RunLauncherFactory::resolveCliPhpBinary(PHP_BINARY))
             . ' '
             . escapeshellarg($this->getExecuteFile($id, $root))
             . ' '
