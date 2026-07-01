@@ -713,16 +713,46 @@ define('controls/packages/System', [
                 'class': 'qui-update-entry-actions'
             }).inject(detail);
 
-            this.$OpenRun.inject(actions);
-            this.$CancelRun.inject(actions);
+            const canOpen = Boolean(openEnabled || this.$preparedRun && this.$preparedRun.url);
 
-            if (openEnabled || (this.$preparedRun && this.$preparedRun.url)) {
-                this.$OpenRun.enable();
-            } else {
-                this.$OpenRun.disable();
-            }
+            new Element('button', {
+                type: 'button',
+                'class': 'qui-button qui-utils-noselect' + (canOpen ? '' : ' disabled'),
+                disabled: !canOpen,
+                html: '<span class="fa fa-external-link"></span> ' +
+                    QUILocale.get(lg, 'packages.panel.btn.openUpdate'),
+                events: {
+                    click: (event) => {
+                        event.preventDefault();
+                        this.openUpdateRun();
+                    }
+                }
+            }).inject(actions);
 
-            this.$CancelRun.enable();
+            const cancelButton = new Element('button', {
+                type: 'button',
+                'class': 'qui-button qui-utils-noselect',
+                html: '<span class="fa fa-ban"></span> ' +
+                    QUILocale.get(lg, 'packages.panel.btn.cancelUpdate'),
+                events: {
+                    click: (event) => {
+                        event.preventDefault();
+                        cancelButton.disabled = true;
+                        cancelButton.addClass('disabled');
+                        cancelButton.set('html', '<span class="fa fa-spinner fa-spin"></span> ' +
+                            QUILocale.get(lg, 'packages.panel.btn.cancelUpdate'));
+
+                        Promise.resolve(this.cancelUpdateRun()).finally(() => {
+                            cancelButton.disabled = false;
+                            cancelButton.removeClass('disabled');
+                            cancelButton.set('html', '<span class="fa fa-ban"></span> ' +
+                                QUILocale.get(lg, 'packages.panel.btn.cancelUpdate'));
+                        });
+                    }
+                }
+            });
+
+            cancelButton.inject(actions);
         },
 
         /**
