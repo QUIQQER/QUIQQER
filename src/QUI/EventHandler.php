@@ -88,7 +88,7 @@ class EventHandler
 
         self::cleanupLegacyAssetPackagePermissions();
 
-        // Check if htaccess or nginx need to be recreated
+        // Check if htaccess, nginx or FrankenPHP need to be recreated
         $webServerType = QUI::conf("webserver", "type");
 
         if (str_contains($webServerType, 'apache')) {
@@ -111,6 +111,18 @@ class EventHandler
 
                 QUI\System\Log::addInfo(
                     "Found changes in nginx.conf . Recreating the nginx.conf file."
+                );
+            }
+        }
+
+        if (str_contains($webServerType, 'frankenphp')) {
+            $Frankenphp = new QUI\System\Console\Tools\Frankenphp();
+
+            if ($Frankenphp->hasModifications()) {
+                $Frankenphp->execute();
+
+                QUI\System\Log::addInfo(
+                    "Found changes in FrankenPHP config. Recreating the FrankenPHP config file."
                 );
             }
         }

@@ -739,49 +739,7 @@ class Manager
 
 
         foreach ($templates as $file) {
-            if (!file_exists($file)) {
-                continue;
-            }
-
-            if (empty($css)) {
-                $cssFiles = XML::getWysiwygCSSFromXml($file);
-
-                foreach ($cssFiles as $cssFile) {
-                    // external file
-                    if (
-                        str_starts_with($cssFile, '//')
-                        || str_starts_with($cssFile, 'https://')
-                        || str_starts_with($cssFile, 'http://')
-                    ) {
-                        $css[] = $cssFile;
-                        continue;
-                    }
-
-                    $css[] = QUI\Utils\DOM::parseVar($cssFile);
-                }
-            }
-
-            // id and css class
-            if (!$bodyId && !$bodyClass) {
-                $Dom = XML::getDomFromXml($file);
-                $Path = new DOMXPath($Dom);
-
-                $WYSIWYG = $Path->query("//wysiwyg");
-
-                if ($WYSIWYG->length) {
-                    $DomElement = $WYSIWYG->item(0);
-
-                    if ($DomElement instanceof DOMElement) {
-                        $bodyId = $DomElement->getAttribute('id');
-                        $bodyClass = $DomElement->getAttribute('class');
-                    }
-                }
-
-                $styles = array_merge(
-                    QUI\Utils\DOM::getWysiwygStyles($Dom),
-                    $styles
-                );
-            }
+            self::appendWysiwygSettingsFromXml($file, $css, $styles, $bodyId, $bodyClass);
         }
 
         // read wysiwyg styles && css files from packages files
@@ -833,7 +791,7 @@ class Manager
         }
 
         $result = [
-            'cssFiles' => $css,
+            'cssFiles' => array_values(array_unique($css)),
             'bodyId' => $bodyId,
             'bodyClass' => $bodyClass,
             'styles' => $styles
@@ -846,6 +804,64 @@ class Manager
         }
 
         return $result;
+    }
+
+    /**
+     * Append wysiwyg settings from a settings.xml file.
+     */
+    private static function appendWysiwygSettingsFromXml(
+        string $file,
+        array &$css,
+        array &$styles,
+        bool|string &$bodyId,
+        bool|string &$bodyClass
+    ): void {
+        if (!file_exists($file)) {
+            return;
+        }
+
+        $cssFiles = XML::getWysiwygCSSFromXml($file);
+
+        foreach ($cssFiles as $cssFile) {
+            // external file
+            if (
+                str_starts_with($cssFile, '//')
+                || str_starts_with($cssFile, 'https://')
+                || str_starts_with($cssFile, 'http://')
+            ) {
+                $css[] = $cssFile;
+                continue;
+            }
+
+            $css[] = QUI\Utils\DOM::parseVar($cssFile);
+        }
+
+        $Dom = XML::getDomFromXml($file);
+
+        // styles
+        $styles = array_merge(
+            QUI\Utils\DOM::getWysiwygStyles($Dom),
+            $styles
+        );
+
+        // id and css class
+        if ($bodyId || $bodyClass) {
+            return;
+        }
+
+        $Path = new DOMXPath($Dom);
+        $WYSIWYG = $Path->query("//wysiwyg");
+
+        if (!$WYSIWYG->length) {
+            return;
+        }
+
+        $DomElement = $WYSIWYG->item(0);
+
+        if ($DomElement instanceof DOMElement) {
+            $bodyId = $DomElement->getAttribute('id');
+            $bodyClass = $DomElement->getAttribute('class');
+        }
     }
 
     /**

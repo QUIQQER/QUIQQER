@@ -115,7 +115,7 @@ define('controls/trash/Panel', [
             });
 
             Projects.getList(function (result) {
-                var i, len, langs, project;
+                var i, len, langs, project, FirstChild;
 
                 for (project in result) {
                     if (!result.hasOwnProperty(project)) {
@@ -139,11 +139,16 @@ define('controls/trash/Panel', [
                     );
                 }
 
-                self.$Select.setValue(
-                    self.$Select.firstChild().getAttribute('value')
-                );
+                FirstChild = self.$Select.firstChild();
 
-                self.Loader.hide();
+                if (!FirstChild) {
+                    self.Loader.hide();
+                    return;
+                }
+
+                self.$Select.setValue(
+                    FirstChild.getAttribute('value')
+                );
             });
         },
 
@@ -445,6 +450,11 @@ define('controls/trash/Panel', [
                     dataType : 'date',
                     width    : 150
                 }, {
+                    header   : Locale.get(lg, 'trash.panel.deleted_at'),
+                    dataIndex: 'deleted_at',
+                    dataType : 'date',
+                    width    : 150
+                }, {
                     header   : Locale.get(lg, 'user_id'),
                     dataIndex: 'e_user',
                     dataType : 'integer',
@@ -456,6 +466,7 @@ define('controls/trash/Panel', [
                     width    : 200
                 }],
                 pagination       : true,
+                serverSort       : true,
                 selectable       : true,
                 multipleSelection: true,
                 onrefresh        : function () {
@@ -496,7 +507,9 @@ define('controls/trash/Panel', [
                     }),
                     params : JSON.encode({
                         page   : options.page,
-                        perPage: options.perPage
+                        perPage: options.perPage,
+                        order  : self.$ProjectGrid.getAttribute('sortOn'),
+                        sort   : self.$ProjectGrid.getAttribute('sortBy')
                     }),
                     onError: reject
                 });
@@ -636,6 +649,11 @@ define('controls/trash/Panel', [
                     dataType : 'date',
                     width    : 150
                 }, {
+                    header   : Locale.get(lg, 'trash.panel.deleted_at'),
+                    dataIndex: 'deleted_at',
+                    dataType : 'date',
+                    width    : 150
+                }, {
                     header   : Locale.get(lg, 'user_id'),
                     dataIndex: 'e_user',
                     dataType : 'integer',
@@ -647,6 +665,7 @@ define('controls/trash/Panel', [
                     width    : 300
                 }],
                 pagination       : true,
+                serverSort       : true,
                 selectable       : true,
                 multipleSelection: true,
                 onrefresh        : function () {
@@ -686,7 +705,9 @@ define('controls/trash/Panel', [
                     }),
                     params : JSON.encode({
                         page   : options.page,
-                        perPage: options.perPage
+                        perPage: options.perPage,
+                        order  : self.$MediaGrid.getAttribute('sortOn'),
+                        sort   : self.$MediaGrid.getAttribute('sortBy')
                     }),
                     onError: reject
                 });

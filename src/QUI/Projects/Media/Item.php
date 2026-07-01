@@ -720,13 +720,19 @@ abstract class Item extends QUI\QDOM
             QUI\System\Log::addWarning($Exception->getMessage());
         }
 
+        $deletedAt = date('Y-m-d H:i:s');
+        $deletedUser = QUI::getUserBySession()->getUUID();
+
         // change db entries
         QUI::getDataBaseConnection()->update(
             $this->Media->getTable(),
             [
                 'deleted' => 1,
                 'active' => 0,
-                'file' => ''
+                'file' => '',
+                'deleted_at' => $deletedAt,
+                'e_date' => $deletedAt,
+                'e_user' => $deletedUser
             ],
             [
                 'id' => $this->getId()
@@ -741,6 +747,9 @@ abstract class Item extends QUI\QDOM
         $this->parent_id = false;
         $this->setAttribute('deleted', 1);
         $this->setAttribute('active', 0);
+        $this->setAttribute('deleted_at', $deletedAt);
+        $this->setAttribute('e_date', $deletedAt);
+        $this->setAttribute('e_user', $deletedUser);
 
         try {
             QUI::getEvents()->fireEvent('mediaDelete', [$this]);

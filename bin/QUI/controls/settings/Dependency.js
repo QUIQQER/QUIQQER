@@ -1,14 +1,22 @@
 /**
  * Shows / hides dependent form fields based on the value of this field.
  *
- * Attach via data-qui to the controlling field (select / input). Dependent
- * fields in the same form (or settings table) declare:
+ * Attach via data-qui to the controlling field (select / input / checkbox).
+ * Dependent fields in the same form (or settings table) declare:
  *
  *   data-dependency="<name of the controlling field>"
  *   data-dependency-options="valueA,valueB"   -> visible only for these values
  *   data-dependency-options="!valueA,!valueB" -> hidden for these values
  *
  * Use either positive or negated entries per field, do not mix both.
+ *
+ * A checkbox is treated as the value "1" when checked and "0" otherwise, so
+ * the same options apply:
+ *
+ *   (no data-dependency-options) -> visible while the checkbox is checked
+ *   data-dependency-options="1"  -> visible while the checkbox is checked
+ *   data-dependency-options="0"  -> visible while the checkbox is unchecked
+ *   data-dependency-options="!1" -> visible while the checkbox is unchecked
  *
  * The element that gets hidden is, in order of precedence:
  *   - the closest wrapper with a data-dependency-row attribute
@@ -64,7 +72,10 @@ define('package/quiqqer/core/bin/QUI/controls/settings/Dependency', [
         },
 
         $applyState: function () {
-            const value = this.$Input.value || '';
+            const isCheckbox = this.$Input.type === 'checkbox';
+            const value = isCheckbox
+                ? (this.$Input.checked ? '1' : '0')
+                : (this.$Input.value || '');
 
             this.$Fields.forEach(function (Field) {
                 const entries = (Field.getAttribute('data-dependency-options') || '')
@@ -76,20 +87,26 @@ define('package/quiqqer/core/bin/QUI/controls/settings/Dependency', [
                         return entry !== '';
                     });
 
-                const positives = entries.filter(function (entry) {
-                    return entry.charAt(0) !== '!';
-                });
+                let visible;
 
-                const negatives = entries.map(function (entry) {
-                    return entry.charAt(0) === '!' ? entry.substring(1) : null;
-                }).filter(function (entry) {
-                    return entry !== null;
-                });
+                if (!entries.length) {
+                    visible = isCheckbox ? this.$Input.checked : true;
+                } else {
+                    const positives = entries.filter(function (entry) {
+                        return entry.charAt(0) !== '!';
+                    });
 
-                let visible = !positives.length || positives.indexOf(value) !== -1;
+                    const negatives = entries.map(function (entry) {
+                        return entry.charAt(0) === '!' ? entry.substring(1) : null;
+                    }).filter(function (entry) {
+                        return entry !== null;
+                    });
 
-                if (negatives.indexOf(value) !== -1) {
-                    visible = false;
+                    visible = !positives.length || positives.indexOf(value) !== -1;
+
+                    if (negatives.indexOf(value) !== -1) {
+                        visible = false;
+                    }
                 }
 
                 const Row = Field.closest('[data-dependency-row]')
@@ -97,7 +114,7 @@ define('package/quiqqer/core/bin/QUI/controls/settings/Dependency', [
                     || Field;
 
                 Row.style.display = visible ? null : 'none';
-            });
+            }.bind(this));
         }
     });
 });

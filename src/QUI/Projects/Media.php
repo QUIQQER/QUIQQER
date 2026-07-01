@@ -324,7 +324,7 @@ class Media extends QUI\QDOM
             $Table = $SchemaManager->introspectTable($tableName);
         }
 
-        foreach (["name", "type", "active", "deleted", "e_date", "order", "hidden", "pathHash"] as $indexName) {
+        foreach (["name", "type", "active", "deleted", "deleted_at", "e_date", "order", "hidden", "pathHash"] as $indexName) {
             if (!$Table->hasIndex($indexName)) {
                 $Table->addIndex([$indexName], $indexName);
                 $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff($Table, addedIndexes: [$Table->getIndex($indexName)]));
@@ -399,7 +399,7 @@ class Media extends QUI\QDOM
 
     private static function addMediaIndexes(\Doctrine\DBAL\Schema\Table $Table): void
     {
-        foreach (["name", "type", "active", "deleted", "e_date", "order", "hidden", "pathHash"] as $indexName) {
+        foreach (["name", "type", "active", "deleted", "deleted_at", "e_date", "order", "hidden", "pathHash"] as $indexName) {
             $Table->addIndex([$indexName], $indexName);
         }
     }
@@ -415,6 +415,7 @@ class Media extends QUI\QDOM
             "type" => ["type" => "string", "options" => ["length" => 32, "notnull" => false]],
             "active" => ["type" => "smallint", "options" => ["default" => 0]],
             "deleted" => ["type" => "smallint", "options" => ["default" => 0]],
+            "deleted_at" => ["type" => "datetime", "options" => ["notnull" => false]],
             "c_date" => ["type" => "datetime", "options" => ["notnull" => false]],
             "e_date" => ["type" => "datetime", "options" => ["notnull" => false]],
             "file" => ["type" => "text", "options" => ["notnull" => false]],
@@ -807,7 +808,11 @@ class Media extends QUI\QDOM
             // create image
             $Image = $this->getImageManager()->read($file);
 
-            if (!empty($maxConfigSize)) {
+            if (
+                $maxConfigSize > 0
+                && !empty($info['width'])
+                && !empty($info['height'])
+            ) {
                 $sizes = QUI\Utils\Math::resize($info['width'], $info['height'], $maxConfigSize);
                 $Image->scaleDown($sizes[1], $sizes[2]);
             }

@@ -159,6 +159,82 @@ define('classes/packages/Manager', [
         },
 
         /**
+         * Prepare a system update runner
+         *
+         * @return {Promise}
+         */
+        prepareUpdateRun: function() {
+            return new Promise(function(resolve, reject) {
+                Ajax.post('ajax_system_update_prepare', resolve, {
+                    showError: false,
+                    onError: reject
+                });
+            });
+        },
+
+        /**
+         * Return active update runners
+         *
+         * @return {Promise}
+         */
+        getActiveUpdateRuns: function() {
+            return new Promise(function(resolve, reject) {
+                Ajax.get('ajax_system_update_active', resolve, {
+                    showError: false,
+                    onError: reject
+                });
+            });
+        },
+
+        /**
+         * Return an update runner state
+         *
+         * @param {String} id
+         * @return {Promise}
+         */
+        getUpdateRunStatus: function(id) {
+            return new Promise(function(resolve, reject) {
+                Ajax.get('ajax_system_update_status', resolve, {
+                    id: id,
+                    showError: false,
+                    onError: reject
+                });
+            });
+        },
+
+        /**
+         * Cancel an update runner
+         *
+         * @param {String} id
+         * @return {Promise}
+         */
+        cancelUpdateRun: function(id) {
+            return new Promise(function(resolve, reject) {
+                Ajax.post('ajax_system_update_cancel', resolve, {
+                    id: id,
+                    showError: false,
+                    onError: reject
+                });
+            });
+        },
+
+        /**
+         * Return update runner history
+         *
+         * @param {Number} limit
+         * @return {Promise}
+         */
+        getUpdateRunHistory: function(limit) {
+            return new Promise(function(resolve, reject) {
+                Ajax.get('ajax_system_update_history', resolve, {
+                    limit: limit || 20,
+                    showError: false,
+                    onError: reject
+                });
+            });
+        },
+
+        /**
          * Execute a system or plugin update with an internal local server
          *
          * @param {Function} [callback] - optional

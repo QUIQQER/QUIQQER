@@ -149,8 +149,7 @@ class Session
 
             // Fallback include for different Symfony package layouts across installations.
             // The fallback path may not exist in every environment.
-            /* @phpstan-ignore-next-line */
-            include_once $fileNativeSessionStorage;
+            self::includeFile($fileNativeSessionStorage);
 
             if (class_exists($classNativeSessionStorage)) {
                 $this->Storage = new $classNativeSessionStorage(
@@ -178,8 +177,7 @@ class Session
 
             // Fallback include for different Symfony package layouts across installations.
             // The fallback path may not exist in every environment.
-            /* @phpstan-ignore-next-line */
-            include_once $fileSession;
+            self::includeFile($fileSession);
 
             if (class_exists($classSession)) {
                 $this->Session = new $classSession($this->Storage);
@@ -324,6 +322,11 @@ class Session
         }
 
         return new NativeFileSessionHandler(VAR_DIR . 'sessions');
+    }
+
+    private static function includeFile(string $file): void
+    {
+        include_once $file;
     }
 
     /**

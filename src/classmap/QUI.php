@@ -1016,15 +1016,16 @@ class QUI
     public static function getDataBaseConnection(): Connection
     {
         if (!(self::$QueryBuilder instanceof Connection)) {
+            $driver = self::getDoctrineDatabaseDriver((string)self::conf('db', 'driver'));
             $port = (int)self::conf('db', 'port');
 
             if (empty($port)) {
-                $port = 3306;
+                $port = self::getDefaultDatabasePort($driver);
             }
 
             self::$QueryBuilder = Doctrine\DBAL\DriverManager::getConnection([
                 'dbname' => self::conf('db', 'database'),
-                'driver' => 'pdo_' . self::conf('db', 'driver'),
+                'driver' => $driver,
                 'host' => self::conf('db', 'host'),
                 'port' => $port,
                 'persistent' => (bool)self::conf('db', 'persistent'),
@@ -1034,6 +1035,25 @@ class QUI
         }
 
         return self::$QueryBuilder;
+    }
+
+    private static function getDoctrineDatabaseDriver(string $driver): string
+    {
+        $driver = strtolower(trim($driver));
+
+        return match ($driver) {
+            'mysql', 'pdo_mysql' => 'pdo_mysql',
+            'pgsql', 'postgres', 'postgresql', 'psql', 'pdo_pgsql' => 'pdo_pgsql',
+            default => throw new \InvalidArgumentException('Unsupported DB driver: ' . $driver)
+        };
+    }
+
+    private static function getDefaultDatabasePort(string $doctrineDriver): int
+    {
+        return match ($doctrineDriver) {
+            'pdo_pgsql' => 5432,
+            default => 3306
+        };
     }
 
     /**
