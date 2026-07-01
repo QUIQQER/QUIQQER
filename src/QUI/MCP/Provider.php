@@ -39,6 +39,7 @@ use QUI\MCP\Project\Sites\SetSiteType;
 use QUI\MCP\Project\Sites\SortSites;
 use QUI\MCP\Project\Sites\UpdateSite;
 use QUI\MCP\System\ClearCache;
+use QUI\MCP\System\Update;
 use QUI\Permissions\Permission;
 use Throwable;
 
@@ -76,6 +77,7 @@ class Provider implements ProviderInterface
             new SetSiteType(),
             new DeleteSite(),
             new ClearCache(),
+            new Update(),
             new GetMedia(),
             new ListMedia(),
             new SearchMedia(),

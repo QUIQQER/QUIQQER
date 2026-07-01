@@ -26,7 +26,7 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
     /**
      * Console parameter, values of the parameter / arguments
      */
-    protected array $params;
+    protected array $params = [];
 
     protected array $examples = [];
 
