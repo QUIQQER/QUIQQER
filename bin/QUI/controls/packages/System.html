@@ -1,38 +1,63 @@
-<div class="qui-update-label-bar">
-    <div class="qui-update-meta">
-        <img src="{{URL_BIN_DIR}}quiqqer_logo_mini.png" alt="QUIQQER Logo" class="qui-update-logo"/>
-    </div>
-    <div class="qui-update-meta" style="margin-bottom: 1rem">
-        <div class="qui-badge qui-update-version">
-            <span class="qui-update-version-label">{{titleQUIQQER}}:</span>
-            <span class="qui-update-version-value"></span>
-        </div>
-        <div class="qui-badge qui-phpversion">
-            <span class="qui-update-label">{{titlePHP}}:</span>
-            <span class="qui-phpversion-value"></span>
+<div class="qui-update">
+    <div class="qui-update-header">
+        <div>
+            <img src="{{URL_BIN_DIR}}quiqqer_logo_mini.png" alt="QUIQQER Logo" class="qui-update-logo"/>
+            <div class="qui-update-badges">
+                <span class="qui-update-badge qui-update-version">
+                    {{titleQUIQQER}}: <strong class="qui-update-version-value"></strong>
+                </span>
+                <span class="qui-update-badge qui-phpversion">
+                    {{titlePHP}}: <strong class="qui-phpversion-value"></strong>
+                </span>
+                <span class="qui-update-badge qui-database">
+                    {{titleDatabase}}: <strong class="qui-database-value"></strong>
+                </span>
+            </div>
         </div>
 
-        <div class="qui-badge qui-database">
-            <span class="qui-update-label">{{titleDatabase}}:</span>
-            <span class="qui-database-value"></span>
+        <div class="qui-update-meta-tableData">
+            <div class="qui-update-meta qui-update-ref-row">
+                <span class="qui-update-label">{{titleReference}}</span>
+                <span class="qui-update-value qui-update-ref"></span>
+            </div>
+            <div class="qui-update-meta">
+                <span class="qui-update-label">{{titleLastUpdateCheck}}</span>
+                <span class="qui-update-value qui-update-lastCheck"></span>
+            </div>
+            <div class="qui-update-meta">
+                <span class="qui-update-label">{{titleLastUpdate}}</span>
+                <span class="qui-update-value qui-update-last"></span>
+            </div>
         </div>
     </div>
 
-    <div class="qui-update-meta-tableData">
-        <div class="qui-update-meta">
-            <span class="qui-update-label">{{titleReference}}:</span>
-            <span class="qui-badge qui-update-ref"></span>
+    <div class="qui-update-run-state qui-update-active-run"></div>
+
+    <div class="qui-update-content">
+        <div class="qui-update-toolbar">
+            <div class="qui-update-check-actions"></div>
+            <div class="qui-update-run-actions"></div>
         </div>
-        <div class="qui-update-meta">
-            <span class="qui-update-label">{{titleLastUpdateCheck}}:</span>
-            <span class="qui-badge qui-update-lastCheck"></span>
-        </div>
-        <div class="qui-update-meta">
-            <span class="qui-update-label">{{titleLastUpdate}}:</span>
-            <span class="qui-badge qui-update-last"></span>
-        </div>
+
+        <section class="qui-update-section qui-update-check">
+            <header>
+                <div>
+                    <h2>{{titleAvailableUpdates}}</h2>
+                    <p>{{textAvailableUpdates}}</p>
+                </div>
+            </header>
+            <div class="qui-update-check-summary qui-update-banner">{{textNoUpdateCheckLoaded}}</div>
+            <div class="qui-control-packages-update-result" aria-hidden="true"></div>
+        </section>
+
+        <section class="qui-update-section qui-update-history">
+            <header>
+                <div>
+                    <h2>{{titleUpdateHistory}}</h2>
+                    <p>{{textUpdateHistory}}</p>
+                </div>
+            </header>
+            <div class="qui-update-history-result"></div>
+        </section>
     </div>
 </div>
-
-<div class="qui-control-packages-update-buttons"></div>
-<div class="qui-control-packages-update-result"></div>
