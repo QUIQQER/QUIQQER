@@ -55,6 +55,37 @@ class RunRepository
         return RunState::fromArray($data);
     }
 
+    /**
+     * @return array<int, RunState>
+     */
+    public function list(int $limit = 20): array
+    {
+        if (!is_dir($this->root)) {
+            return [];
+        }
+
+        $states = [];
+        $items = new \FilesystemIterator($this->root, \FilesystemIterator::SKIP_DOTS);
+
+        foreach ($items as $item) {
+            if (!$item->isDir()) {
+                continue;
+            }
+
+            try {
+                $states[] = $this->load($item->getFilename());
+            } catch (\Throwable) {
+                continue;
+            }
+        }
+
+        usort($states, static function (RunState $A, RunState $B): int {
+            return $B->getCreatedAt() <=> $A->getCreatedAt();
+        });
+
+        return array_slice($states, 0, max(1, $limit));
+    }
+
     public function save(RunState $state): void
     {
         $directory = $this->getRunDirectory($state->getId());

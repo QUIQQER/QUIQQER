@@ -131,6 +131,28 @@ class RunRepositoryTest extends TestCase
         $this->assertDirectoryExists($cancelledRun->getDirectory());
     }
 
+    public function testListReturnsNewestRunsFirstAndRespectsLimit(): void
+    {
+        $repository = new RunRepository($this->root, 600);
+        $oldRun = $repository->create(1000);
+        $newRun = $repository->create(3000);
+        $middleRun = $repository->create(2000);
+
+        $runs = $repository->list(2);
+
+        $this->assertSame([
+            $newRun->getState()->getId(),
+            $middleRun->getState()->getId()
+        ], array_map(
+            static fn (RunState $state): string => $state->getId(),
+            $runs
+        ));
+        $this->assertNotContains($oldRun->getState()->getId(), array_map(
+            static fn (RunState $state): string => $state->getId(),
+            $runs
+        ));
+    }
+
     public function testCancelMarksActiveRunAsCancelledAndKeepsProcessData(): void
     {
         $repository = new RunRepository($this->root, 600);

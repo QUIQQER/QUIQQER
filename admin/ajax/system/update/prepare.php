@@ -23,6 +23,7 @@ QUI::$Ajax->registerFunction(
 
         $Launcher = QUI\System\Update\RunLauncherFactory::createDefault();
         $Launch = $Launcher->create(null, [
+            'type' => 'web',
             'arguments' => []
         ]);
         $Run = $Launch->getRun();

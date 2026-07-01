@@ -10,6 +10,7 @@ define('controls/packages/System', [
     'qui/QUI',
     'qui/controls/Control',
     'qui/controls/buttons/Button',
+    'qui/controls/windows/Popup',
     'Packages',
     'Mustache',
     'Locale',
@@ -18,7 +19,7 @@ define('controls/packages/System', [
     'text!controls/packages/System.html',
     'css!controls/packages/System.css'
 
-], function (QUI, QUIControl, QUIButton, Packages, Mustache, QUILocale, Translator, template) {
+], function (QUI, QUIControl, QUIButton, QUIPopup, Packages, Mustache, QUILocale, Translator, template) {
     "use strict";
 
     const lg = 'quiqqer/core';
@@ -36,8 +37,11 @@ define('controls/packages/System', [
             'prepareUpdateRun',
             'openUpdateRun',
             'cancelUpdateRun',
+            'showUpdateListWindow',
             'refreshActiveRun',
             'refreshPreparedRunStatus',
+            'loadRunHistory',
+            'renderRunHistory',
             'startUpdateRunMonitor',
             'stopUpdateRunMonitor',
             'syncUpdateRunStatus'
@@ -52,6 +56,7 @@ define('controls/packages/System', [
             this.$Result = null;
             this.$RunState = null;
             this.$CheckSummary = null;
+            this.$HistoryResult = null;
             this.$list = [];
             this.$preparedRun = null;
             this.$runStatusTimer = null;
@@ -84,7 +89,9 @@ define('controls/packages/System', [
                     textNoUpdateCheckLoaded: QUILocale.get(lg, 'packages.panel.update.check.notLoaded'),
                     titleSystemUpdate: QUILocale.get(lg, 'packages.panel.update.system.title'),
                     textSystemUpdate: QUILocale.get(lg, 'packages.panel.update.system.description'),
-                    textNoUpdatePrepared: QUILocale.get(lg, 'packages.panel.update.run.empty')
+                    textNoUpdatePrepared: QUILocale.get(lg, 'packages.panel.update.run.empty'),
+                    titleUpdateHistory: QUILocale.get(lg, 'packages.panel.update.history.title'),
+                    textUpdateHistory: QUILocale.get(lg, 'packages.panel.update.history.description')
                 })
             });
 
@@ -93,6 +100,7 @@ define('controls/packages/System', [
             this.$Result = this.$Elm.querySelector('.qui-control-packages-update-result');
             this.$RunState = this.$Elm.querySelector('.qui-update-run-state');
             this.$CheckSummary = this.$Elm.querySelector('.qui-update-check-summary');
+            this.$HistoryResult = this.$Elm.querySelector('.qui-update-history-result');
 
             this.$Update = new QUIButton({
                 name: 'update',
@@ -181,6 +189,8 @@ define('controls/packages/System', [
                     return this.loadCachedUpdates();
                 }).then(() => {
                     return this.refreshActiveRun();
+                }).then(() => {
+                    return this.loadRunHistory();
                 }).then(() => {
                     this.startUpdateRunMonitor();
                     this.fireEvent('load', [this]);
@@ -379,6 +389,7 @@ define('controls/packages/System', [
                     this.renderRunState(QUILocale.get(lg, 'packages.panel.update.run.active'));
                     this.$setRunButtons(Boolean(this.$preparedRun.url));
                     this.startRunPolling();
+                    this.loadRunHistory();
                     return;
                 }
 
@@ -389,6 +400,7 @@ define('controls/packages/System', [
                 };
                 this.renderRunState(QUILocale.get(lg, 'packages.panel.update.run.prepared'));
                 this.$setRunButtons(true);
+                this.loadRunHistory();
 
                 if (runWindow && this.$preparedRun.url) {
                     runWindow.location.href = this.$preparedRun.url;
@@ -433,6 +445,7 @@ define('controls/packages/System', [
                 this.$preparedRun = null;
                 this.renderRunState(QUILocale.get(lg, 'packages.panel.update.run.cancelled'));
                 this.$setRunButtons(false);
+                this.loadRunHistory();
             }).catch((Exception) => {
                 this.$CancelRun.setAttribute('textimage', 'fa fa-ban');
                 return this.$showError(Exception);
@@ -467,6 +480,7 @@ define('controls/packages/System', [
                 this.renderRunState(QUILocale.get(lg, 'packages.panel.update.run.active'));
                 this.$setRunButtons(Boolean(this.$preparedRun.url));
                 this.startRunPolling();
+                this.loadRunHistory();
             }).catch((Exception) => {
                 if (showErrors) {
                     return this.$showError(Exception);
@@ -499,6 +513,7 @@ define('controls/packages/System', [
                     this.renderRunState();
                     this.$setRunButtons(false);
                     this.refreshLastUpdateCheckDate();
+                    this.loadRunHistory();
                 }
             }).catch(() => {
                 this.stopRunPolling();
@@ -512,90 +527,244 @@ define('controls/packages/System', [
          */
         renderUpdateList: function (manualCheck) {
             this.$Result.set('html', '');
+            this.$CheckSummary.removeEvents('click');
 
             if (!this.$list.length) {
-                this.$CheckSummary.set(
-                    'html',
+                this.$CheckSummary.set('class', 'qui-update-check-summary qui-update-banner empty');
+                this.$CheckSummary.set('html', '');
+
+                new Element('div', {
+                    html: '<div class="qui-update-banner-title"></div>' +
+                        '<div class="qui-update-banner-meta"></div>'
+                }).inject(this.$CheckSummary);
+
+                this.$CheckSummary.querySelector('.qui-update-banner-title').set(
+                    'text',
                     manualCheck ?
                         QUILocale.get(lg, 'packages.panel.update.check.none') :
                         QUILocale.get(lg, 'packages.panel.update.check.noCachedResult')
                 );
+                this.$CheckSummary.querySelector('.qui-update-banner-meta').set(
+                    'text',
+                    QUILocale.get(lg, 'packages.panel.update.available.description')
+                );
+
                 return;
             }
 
-            const visibleLimit = 30;
-            const visibleList = this.$list.slice(0, visibleLimit);
-            const majorUpdates = this.$list.filter((pkg) => {
-                const oldMajor = String(pkg.oldVersion || '').match(/\d+/);
-                const newMajor = String(pkg.version || '').match(/\d+/);
+            const majorUpdates = this.countMajorUpdates(this.$list);
+            const devUpdates = this.countDevUpdates(this.$list);
 
-                return oldMajor && newMajor && oldMajor[0] !== newMajor[0];
-            }).length;
-            const devUpdates = this.$list.filter((pkg) => {
-                return String(pkg.version || '').indexOf('dev-') !== -1;
-            }).length;
+            this.$CheckSummary.set('class', 'qui-update-check-summary qui-update-banner warning');
+            this.$CheckSummary.set('html', '');
 
-            this.$CheckSummary.set(
-                'html',
-                '<div class="qui-update-summary">' +
-                '<span><strong>' + this.$list.length + '</strong> ' +
-                QUILocale.get(lg, 'packages.panel.update.summary.updates') + '</span>' +
-                '<span><strong>' + majorUpdates + '</strong> ' +
-                QUILocale.get(lg, 'packages.panel.update.summary.majorChanges') + '</span>' +
-                '<span><strong>' + devUpdates + '</strong> ' +
-                QUILocale.get(lg, 'packages.panel.update.summary.devTargets') + '</span>' +
-                '</div>'
+            const summary = new Element('div', {
+                html: '<div class="qui-update-banner-title"></div>' +
+                    '<div class="qui-update-banner-meta"></div>'
+            }).inject(this.$CheckSummary);
+
+            summary.querySelector('.qui-update-banner-title').set(
+                'text',
+                this.$list.length + ' ' + QUILocale.get(lg, 'packages.panel.update.summary.updates')
+            );
+            summary.querySelector('.qui-update-banner-meta').set(
+                'text',
+                majorUpdates + ' ' + QUILocale.get(lg, 'packages.panel.update.summary.majorChanges') +
+                ' · ' +
+                devUpdates + ' ' + QUILocale.get(lg, 'packages.panel.update.summary.devTargets')
             );
 
+            new Element('button', {
+                type: 'button',
+                'class': 'qui-button qui-utils-noselect qui-update-banner-button',
+                html: '<span class="fa fa-list"></span> ' +
+                    QUILocale.get(lg, 'packages.panel.btn.showUpdates'),
+                events: {
+                    click: (event) => {
+                        event.stop();
+                        this.showUpdateListWindow();
+                    }
+                }
+            }).inject(this.$CheckSummary);
+
+            this.$CheckSummary.addEvent('click', this.showUpdateListWindow);
+        },
+
+        /**
+         * Show available updates in a window.
+         */
+        showUpdateListWindow: function () {
+            if (!this.$list.length) {
+                return;
+            }
+
+            new QUIPopup({
+                title: QUILocale.get(lg, 'packages.panel.update.available.title'),
+                maxWidth: 820,
+                maxHeight: 680,
+                buttons: false,
+                events: {
+                    onOpen: (Win) => {
+                        const Content = Win.getContent();
+                        const majorUpdates = this.countMajorUpdates(this.$list);
+                        const devUpdates = this.countDevUpdates(this.$list);
+
+                        Content.set('html', '');
+                        Content.addClass('qui-update-packages-window');
+
+                        const intro = new Element('div', {
+                            'class': 'qui-update-window-intro',
+                            html: '<div><strong></strong><span></span></div>'
+                        }).inject(Content);
+
+                        intro.querySelector('strong').set(
+                            'text',
+                            this.$list.length + ' ' + QUILocale.get(lg, 'packages.panel.update.summary.updates')
+                        );
+                        intro.querySelector('span').set(
+                            'text',
+                            majorUpdates + ' ' + QUILocale.get(lg, 'packages.panel.update.summary.majorChanges') +
+                            ' · ' +
+                            devUpdates + ' ' + QUILocale.get(lg, 'packages.panel.update.summary.devTargets')
+                        );
+
+                        const table = new Element('div', {
+                            'class': 'qui-update-window-table'
+                        }).inject(Content);
+
+                        this.renderPackageRows(table, this.$list);
+                    }
+                }
+            }).open();
+        },
+
+        /**
+         * Render package update rows into a target.
+         *
+         * @param {HTMLElement} Target
+         * @param {Array} list
+         */
+        renderPackageRows: function (Target, list) {
             new Element('div', {
                 'class': 'qui-update-package-header',
                 html: '<span>' + QUILocale.get(lg, 'packages.panel.update.table.package') + '</span>' +
                     '<span>' + QUILocale.get(lg, 'packages.panel.update.table.installed') + '</span>' +
                     '<span>' + QUILocale.get(lg, 'packages.panel.update.table.available') + '</span>'
-            }).inject(this.$Result);
+            }).inject(Target);
 
-            visibleList.forEach((pkg) => {
+            list.forEach((pkg) => {
                 new Element('div', {
                     'class': 'qui-update-package',
                     html: '<span class="qui-update-package-name"></span>' +
                         '<span class="qui-update-package-version old"></span>' +
                         '<span class="qui-update-package-version new"></span>'
-                }).inject(this.$Result);
+                }).inject(Target);
 
-                const row = this.$Result.getLast();
+                const row = Target.getLast();
                 row.querySelector('.qui-update-package-name').set('text', pkg.package);
                 row.querySelector('.old').set('text', pkg.oldVersion);
                 row.querySelector('.new').set('text', pkg.version);
             });
+        },
 
-            if (this.$list.length > visibleLimit) {
-                new Element('button', {
-                    'class': 'qui-update-show-all',
-                    text: QUILocale.get(lg, 'packages.panel.update.table.showAll', {
-                        count: this.$list.length
-                    }),
-                    events: {
-                        click: () => {
-                            this.$Result.getElements('.qui-update-package').destroy();
-                            this.$Result.getElement('.qui-update-show-all').destroy();
+        /**
+         * Count updates with a changed major version.
+         *
+         * @param {Array} list
+         * @returns {Number}
+         */
+        countMajorUpdates: function (list) {
+            return list.filter((pkg) => {
+                const oldMajor = String(pkg.oldVersion || '').match(/\d+/);
+                const newMajor = String(pkg.version || '').match(/\d+/);
 
-                            this.$list.forEach((pkg) => {
-                                new Element('div', {
-                                    'class': 'qui-update-package',
-                                    html: '<span class="qui-update-package-name"></span>' +
-                                        '<span class="qui-update-package-version old"></span>' +
-                                        '<span class="qui-update-package-version new"></span>'
-                                }).inject(this.$Result);
+                return oldMajor && newMajor && oldMajor[0] !== newMajor[0];
+            }).length;
+        },
 
-                                const row = this.$Result.getLast();
-                                row.querySelector('.qui-update-package-name').set('text', pkg.package);
-                                row.querySelector('.old').set('text', pkg.oldVersion);
-                                row.querySelector('.new').set('text', pkg.version);
-                            });
-                        }
-                    }
-                }).inject(this.$Result);
+        /**
+         * Count dev-target updates.
+         *
+         * @param {Array} list
+         * @returns {Number}
+         */
+        countDevUpdates: function (list) {
+            return list.filter((pkg) => {
+                return String(pkg.version || '').indexOf('dev-') !== -1;
+            }).length;
+        },
+
+        /**
+         * Load update run history.
+         *
+         * @returns {Promise}
+         */
+        loadRunHistory: function () {
+            return Packages.getUpdateRunHistory(20).then((history) => {
+                this.renderRunHistory(history || []);
+            }).catch(() => {
+                this.renderRunHistory([]);
+            });
+        },
+
+        /**
+         * Render update run history.
+         *
+         * @param {Array} history
+         */
+        renderRunHistory: function (history) {
+            this.$HistoryResult.set('html', '');
+
+            if (!history.length) {
+                new Element('div', {
+                    'class': 'qui-update-run-empty',
+                    text: QUILocale.get(lg, 'packages.panel.update.history.empty')
+                }).inject(this.$HistoryResult);
+                return;
             }
+
+            const Table = new Element('div', {
+                'class': 'qui-update-history-table'
+            }).inject(this.$HistoryResult);
+
+            new Element('div', {
+                'class': 'qui-update-history-row qui-update-history-head',
+                html: '<span>' + QUILocale.get(lg, 'packages.panel.update.history.date') + '</span>' +
+                    '<span>' + QUILocale.get(lg, 'packages.panel.update.history.type') + '</span>' +
+                    '<span>' + QUILocale.get(lg, 'packages.panel.update.history.status') + '</span>' +
+                    '<span>' + QUILocale.get(lg, 'packages.panel.update.history.phase') + '</span>' +
+                    '<span>' + QUILocale.get(lg, 'packages.panel.update.history.id') + '</span>'
+            }).inject(Table);
+
+            history.forEach((state) => {
+                const metadata = state.metadata || {};
+                const status = state.status || 'created';
+                const phase = state.phase || 'created';
+                const type = metadata.type || (metadata.webUrl ? 'web' : (metadata.cliCommand ? 'cli' : 'runner'));
+
+                const row = new Element('div', {
+                    'class': 'qui-update-history-row',
+                    html: '<span class="qui-update-history-date"></span>' +
+                        '<span class="qui-update-history-type"></span>' +
+                        '<span class="qui-update-history-status"></span>' +
+                        '<span class="qui-update-history-phase"></span>' +
+                        '<span class="qui-update-history-id"></span>'
+                }).inject(Table);
+
+                row.querySelector('.qui-update-history-date').set('text', this.formatTimestamp(state.createdAt));
+                row.querySelector('.qui-update-history-type').set('text', this.getRunTypeLabel(type));
+
+                const statusNode = row.querySelector('.qui-update-history-status');
+                statusNode.addClass(status);
+                statusNode.set(
+                    'html',
+                    '<span class="fa ' + this.getRunStatusIcon(status) + '"></span><span></span>'
+                );
+                statusNode.querySelector('span:last-child').set('text', this.getRunStateLabel('status', status));
+
+                row.querySelector('.qui-update-history-phase').set('text', this.getRunStateLabel('phase', phase));
+                row.querySelector('.qui-update-history-id').set('text', state.id || '');
+            });
         },
 
         /**
@@ -605,19 +774,12 @@ define('controls/packages/System', [
          */
         renderRunState: function (message) {
             if (!this.$preparedRun || !this.$preparedRun.state) {
-                const stateMessage = message ?
-                    '<div class="qui-update-check-summary">' + message + '</div>' :
-                    '';
-
-                this.$RunState.set(
-                    'html',
-                    stateMessage +
-                    '<div class="qui-update-run-empty">' +
-                    QUILocale.get(lg, 'packages.panel.update.run.empty') +
-                    '</div>'
-                );
+                this.$RunState.removeClass('active');
+                this.$RunState.set('html', '');
                 return;
             }
+
+            this.$RunState.addClass('active');
 
             const state = this.$preparedRun.state;
             const created = state.createdAt ?
@@ -851,6 +1013,67 @@ define('controls/packages/System', [
          */
         getRunStateLabel: function (type, value) {
             return QUILocale.get(lg, 'packages.panel.update.run.' + type + '.' + value);
+        },
+
+        /**
+         * Return translated update run type label.
+         *
+         * @param {String} value
+         * @returns {String}
+         */
+        getRunTypeLabel: function (value) {
+            return QUILocale.get(lg, 'packages.panel.update.history.type.' + value);
+        },
+
+        /**
+         * Return an icon for a run status.
+         *
+         * @param {String} status
+         * @returns {String}
+         */
+        getRunStatusIcon: function (status) {
+            switch (status) {
+                case 'finished':
+                    return 'fa-check-circle';
+
+                case 'failed':
+                    return 'fa-times-circle';
+
+                case 'cancelled':
+                    return 'fa-ban';
+
+                case 'running':
+                case 'restart_required':
+                    return 'fa-refresh';
+
+                default:
+                    return 'fa-clock-o';
+            }
+        },
+
+        /**
+         * Format a unix timestamp with the current user language.
+         *
+         * @param {Number|String} timestamp
+         * @returns {String}
+         */
+        formatTimestamp: function (timestamp) {
+            timestamp = parseInt(timestamp, 10);
+
+            if (!timestamp) {
+                return '---';
+            }
+
+            return new Date(timestamp * 1000).toLocaleString(
+                USER.lang === 'de' ? 'de-DE' : 'en-US',
+                {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }
+            );
         },
 
         /**

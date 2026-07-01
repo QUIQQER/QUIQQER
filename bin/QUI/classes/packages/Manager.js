@@ -219,6 +219,22 @@ define('classes/packages/Manager', [
         },
 
         /**
+         * Return update runner history
+         *
+         * @param {Number} limit
+         * @return {Promise}
+         */
+        getUpdateRunHistory: function(limit) {
+            return new Promise(function(resolve, reject) {
+                Ajax.get('ajax_system_update_history', resolve, {
+                    limit: limit || 20,
+                    showError: false,
+                    onError: reject
+                });
+            });
+        },
+
+        /**
          * Execute a system or plugin update with an internal local server
          *
          * @param {Function} [callback] - optional

@@ -6591,6 +6591,9 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         <locale name="packages.panel.btn.cancelUpdate">
             <de><![CDATA[Update abbrechen]]></de>
         </locale>
+        <locale name="packages.panel.btn.showUpdates">
+            <de><![CDATA[Updates anzeigen]]></de>
+        </locale>
         <locale name="packages.panel.update.available.title">
             <de><![CDATA[Verfügbare Updates]]></de>
         </locale>
@@ -6707,6 +6710,39 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         </locale>
         <locale name="packages.panel.update.run.phase.cancelled">
             <de><![CDATA[Abgebrochen]]></de>
+        </locale>
+        <locale name="packages.panel.update.history.title">
+            <de><![CDATA[Update-Historie]]></de>
+        </locale>
+        <locale name="packages.panel.update.history.description">
+            <de><![CDATA[Zeigt die letzten vorbereiteten und ausgeführten Updates.]]></de>
+        </locale>
+        <locale name="packages.panel.update.history.empty">
+            <de><![CDATA[Noch keine Update-Läufe vorhanden.]]></de>
+        </locale>
+        <locale name="packages.panel.update.history.date">
+            <de><![CDATA[Zeitpunkt]]></de>
+        </locale>
+        <locale name="packages.panel.update.history.type">
+            <de><![CDATA[Typ]]></de>
+        </locale>
+        <locale name="packages.panel.update.history.status">
+            <de><![CDATA[Status]]></de>
+        </locale>
+        <locale name="packages.panel.update.history.phase">
+            <de><![CDATA[Phase]]></de>
+        </locale>
+        <locale name="packages.panel.update.history.id">
+            <de><![CDATA[Run-ID]]></de>
+        </locale>
+        <locale name="packages.panel.update.history.type.web">
+            <de><![CDATA[Web]]></de>
+        </locale>
+        <locale name="packages.panel.update.history.type.cli">
+            <de><![CDATA[CLI]]></de>
+        </locale>
+        <locale name="packages.panel.update.history.type.runner">
+            <de><![CDATA[Runner]]></de>
         </locale>
         <locale name="packages.panel.system.packageUpdate.title">
             <de><![CDATA[Paket [package] aktualisieren auf Version [version]]]></de>

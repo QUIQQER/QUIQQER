@@ -6388,6 +6388,9 @@ After logging in you will be prompted to set a new password.
         <locale name="packages.panel.btn.cancelUpdate">
             <en><![CDATA[Cancel update]]></en>
         </locale>
+        <locale name="packages.panel.btn.showUpdates">
+            <en><![CDATA[Show updates]]></en>
+        </locale>
         <locale name="packages.panel.update.available.title">
             <en><![CDATA[Available updates]]></en>
         </locale>
@@ -6504,6 +6507,39 @@ After logging in you will be prompted to set a new password.
         </locale>
         <locale name="packages.panel.update.run.phase.cancelled">
             <en><![CDATA[Cancelled]]></en>
+        </locale>
+        <locale name="packages.panel.update.history.title">
+            <en><![CDATA[Update history]]></en>
+        </locale>
+        <locale name="packages.panel.update.history.description">
+            <en><![CDATA[Shows the latest prepared and executed update runs.]]></en>
+        </locale>
+        <locale name="packages.panel.update.history.empty">
+            <en><![CDATA[No update runs yet.]]></en>
+        </locale>
+        <locale name="packages.panel.update.history.date">
+            <en><![CDATA[Date]]></en>
+        </locale>
+        <locale name="packages.panel.update.history.type">
+            <en><![CDATA[Type]]></en>
+        </locale>
+        <locale name="packages.panel.update.history.status">
+            <en><![CDATA[Status]]></en>
+        </locale>
+        <locale name="packages.panel.update.history.phase">
+            <en><![CDATA[Phase]]></en>
+        </locale>
+        <locale name="packages.panel.update.history.id">
+            <en><![CDATA[Run ID]]></en>
+        </locale>
+        <locale name="packages.panel.update.history.type.web">
+            <en><![CDATA[Web]]></en>
+        </locale>
+        <locale name="packages.panel.update.history.type.cli">
+            <en><![CDATA[CLI]]></en>
+        </locale>
+        <locale name="packages.panel.update.history.type.runner">
+            <en><![CDATA[Runner]]></en>
         </locale>
         <locale name="packages.panel.system.packageUpdate.title">
             <en><![CDATA[Update package [package] to version [version]]]></en>

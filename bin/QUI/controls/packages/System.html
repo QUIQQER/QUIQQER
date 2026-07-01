@@ -31,30 +31,33 @@
         </div>
     </div>
 
-    <div class="qui-update-grid">
+    <div class="qui-update-run-state qui-update-active-run"></div>
+
+    <div class="qui-update-content">
+        <div class="qui-update-toolbar">
+            <div class="qui-update-check-actions"></div>
+            <div class="qui-update-run-actions"></div>
+        </div>
+
         <section class="qui-update-section qui-update-check">
             <header>
                 <div>
                     <h2>{{titleAvailableUpdates}}</h2>
                     <p>{{textAvailableUpdates}}</p>
                 </div>
-                <div class="qui-update-check-actions"></div>
             </header>
-            <div class="qui-update-check-summary">{{textNoUpdateCheckLoaded}}</div>
-            <div class="qui-control-packages-update-result"></div>
+            <div class="qui-update-check-summary qui-update-banner">{{textNoUpdateCheckLoaded}}</div>
+            <div class="qui-control-packages-update-result" aria-hidden="true"></div>
         </section>
 
-        <section class="qui-update-section qui-update-run">
+        <section class="qui-update-section qui-update-history">
             <header>
                 <div>
-                    <h2>{{titleSystemUpdate}}</h2>
-                    <p>{{textSystemUpdate}}</p>
+                    <h2>{{titleUpdateHistory}}</h2>
+                    <p>{{textUpdateHistory}}</p>
                 </div>
-                <div class="qui-update-run-actions"></div>
             </header>
-            <div class="qui-update-run-state">
-                <div class="qui-update-run-empty">{{textNoUpdatePrepared}}</div>
-            </div>
+            <div class="qui-update-history-result"></div>
         </section>
     </div>
 </div>
