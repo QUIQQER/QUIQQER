@@ -49,7 +49,7 @@ class Update extends AbstractTool
                     return ToolHelper::parseExceptionToResult($Exception);
                 }
             },
-            name: 'quiqqer_update',
+            name: 'quiqqer_system_update',
             description: 'Prepares, starts and monitors QUIQQER system update runs via MCP. Requires core MCP permission and dedicated MCP update permission.',
             inputSchema: [
                 'type' => 'object',
