@@ -6,8 +6,8 @@
 
 .qui-update-header {
     align-items: flex-start;
-    background: #f4f4f6;
-    border-bottom: 1px solid #d7dce2;
+    background: #ffffff;
+    border-bottom: 1px solid #dfe4ea;
     display: flex;
     gap: 32px;
     justify-content: space-between;
@@ -76,7 +76,7 @@
 }
 
 .qui-update-value {
-    background: #e8ebef;
+    background: #f0f3f6;
     border-radius: 4px;
     color: #20242a;
     display: block;
@@ -98,14 +98,13 @@
 
 .qui-update-toolbar {
     align-items: center;
-    background: #f7f9fb;
-    border-bottom: 1px solid #d7dce2;
+    background: #f6f7f9;
+    border-bottom: 1px solid #dfe4ea;
     display: flex;
     gap: 10px;
     justify-content: flex-end;
     min-height: 54px;
     padding: 10px 24px;
-    box-shadow: inset 0 1px 0 #ffffff;
 }
 
 .qui-update-toolbar .qui-update-check-actions,
@@ -113,6 +112,21 @@
     align-items: center;
     display: flex;
     gap: 8px;
+}
+
+.qui-update-toolbar .qui-update-check-button {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    color: #5f6874;
+}
+
+.qui-update-toolbar .qui-update-check-button:hover,
+.qui-update-toolbar .qui-update-check-button:focus {
+    background: #ffffff;
+    border-color: #d7dce2;
+    box-shadow: none;
+    color: #2f3742;
 }
 
 .qui-update-section {
@@ -337,6 +351,10 @@
     padding-right: 10px;
 }
 
+.qui-update-window-table .qui-update-package-version {
+    text-align: left;
+}
+
 .qui-update-run-state {
     display: grid;
     gap: 10px;
@@ -396,6 +414,36 @@
     border-top: 1px solid #edf0f3;
     margin-top: 4px;
     padding-top: 10px;
+}
+
+.qui-update-active-run .qui-update-entry-actions {
+    border-top-color: #e8b6b6;
+}
+
+.qui-update-run-action {
+    background: #fff7f7;
+    border-color: #e3b1b1;
+    color: #8f2d2d;
+}
+
+.qui-update-run-action:hover,
+.qui-update-run-action:focus {
+    background: #ffecec;
+    border-color: #d88383;
+    color: #7a2020;
+}
+
+.qui-update-run-action.danger {
+    background: #fff1f1;
+    border-color: #d88383;
+    color: #9f2424;
+}
+
+.qui-update-run-action.danger:hover,
+.qui-update-run-action.danger:focus {
+    background: #ffe4e4;
+    border-color: #c93636;
+    color: #7f1d1d;
 }
 
 .qui-update-history-result {

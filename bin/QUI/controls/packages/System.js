@@ -112,6 +112,7 @@ define('controls/packages/System', [
                     }
                 }
             }).inject(this.$CheckButtons);
+            this.$Update.getElm().addClass('qui-update-check-button');
 
             this.$PrepareUpdate = new QUIButton({
                 name: 'prepareUpdate',
@@ -905,12 +906,22 @@ define('controls/packages/System', [
                 return;
             }
 
+            const hasRun = Boolean(this.$preparedRun && this.$preparedRun.id);
+
+            if (this.$Update) {
+                if (openEnabled || hasRun) {
+                    this.$Update.disable();
+                } else {
+                    this.$Update.enable();
+                }
+            }
+
             if (openEnabled) {
                 this.$PrepareUpdate.disable();
                 return;
             }
 
-            if (this.$preparedRun && this.$preparedRun.id) {
+            if (hasRun) {
                 this.$PrepareUpdate.disable();
                 return;
             }
@@ -944,7 +955,7 @@ define('controls/packages/System', [
 
             new Element('button', {
                 type: 'button',
-                'class': 'qui-button qui-utils-noselect' + (canOpen ? '' : ' disabled'),
+                'class': 'qui-button qui-utils-noselect qui-update-run-action' + (canOpen ? '' : ' disabled'),
                 disabled: !canOpen,
                 html: '<span class="fa fa-external-link"></span> ' +
                     QUILocale.get(lg, 'packages.panel.btn.openUpdate'),
@@ -958,7 +969,7 @@ define('controls/packages/System', [
 
             const cancelButton = new Element('button', {
                 type: 'button',
-                'class': 'qui-button qui-utils-noselect',
+                'class': 'qui-button qui-utils-noselect qui-update-run-action danger',
                 html: '<span class="fa fa-ban"></span> ' +
                     QUILocale.get(lg, 'packages.panel.btn.cancelUpdate'),
                 events: {
