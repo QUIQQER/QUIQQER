@@ -239,7 +239,13 @@ class RunEntrypoint
 
         $output = '';
 
-        foreach ($pipes as $pipe) {
+        if (isset($pipes[0]) && is_resource($pipes[0])) {
+            fclose($pipes[0]);
+        }
+
+        foreach ([1, 2] as $pipeIndex) {
+            $pipe = $pipes[$pipeIndex] ?? null;
+
             if (is_resource($pipe)) {
                 $output .= stream_get_contents($pipe);
                 fclose($pipe);
