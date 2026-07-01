@@ -3,9 +3,17 @@
 namespace QUI\System\Update;
 
 use function basename;
+use function explode;
+use function getcwd;
+use function ini_get;
 use function is_executable;
+use function rtrim;
 use function str_contains;
+use function str_starts_with;
+use function trim;
 
+use const DIRECTORY_SEPARATOR;
+use const PATH_SEPARATOR;
 use const PHP_BINDIR;
 use const PHP_BINARY;
 use const PHP_MAJOR_VERSION;
@@ -57,11 +65,48 @@ class RunLauncherFactory
         ];
 
         foreach ($candidates as $candidate) {
-            if (is_executable($candidate)) {
+            if (!self::isAllowedByOpenBaseDir($candidate)) {
+                continue;
+            }
+
+            if (@is_executable($candidate)) {
                 return $candidate;
             }
         }
 
         return 'php';
+    }
+
+    private static function isAllowedByOpenBaseDir(string $path): bool
+    {
+        $openBaseDir = (string)ini_get('open_basedir');
+
+        if ($openBaseDir === '' || $path === '' || $path[0] !== DIRECTORY_SEPARATOR) {
+            return true;
+        }
+
+        foreach (explode(PATH_SEPARATOR, $openBaseDir) as $allowedPath) {
+            $allowedPath = trim($allowedPath);
+
+            if ($allowedPath === '') {
+                continue;
+            }
+
+            if ($allowedPath === '.') {
+                $allowedPath = (string)getcwd();
+            }
+
+            $allowedPath = rtrim($allowedPath, DIRECTORY_SEPARATOR);
+
+            if ($allowedPath === '') {
+                $allowedPath = DIRECTORY_SEPARATOR;
+            }
+
+            if ($path === $allowedPath || str_starts_with($path, $allowedPath . DIRECTORY_SEPARATOR)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
