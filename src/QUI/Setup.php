@@ -252,30 +252,8 @@ EOT;
 // maintenance mode
 \$maintenanceFile = dirname(__FILE__).'/maintenance.html';
 \$isBackendBundle = isset(\$_REQUEST['_FRONTEND']) && (string)\$_REQUEST['_FRONTEND'] === '0';
-\$maintenanceAllowedRequests = [
-    'ajax_system_update_active',
-    'ajax_system_update_status',
-    'ajax_system_update_cancel'
-];
-\$isMaintenanceAllowedRequest = false;
 
-if (isset(\$_REQUEST['quiqqerBundle']) && is_array(\$_REQUEST['quiqqerBundle'])) {
-    foreach (\$_REQUEST['quiqqerBundle'] as \$bundleRequest) {
-        if (!is_array(\$bundleRequest) || !isset(\$bundleRequest['request'])) {
-            \$isMaintenanceAllowedRequest = false;
-            break;
-        }
-
-        if (!in_array((string)\$bundleRequest['request'], \$maintenanceAllowedRequests, true)) {
-            \$isMaintenanceAllowedRequest = false;
-            break;
-        }
-
-        \$isMaintenanceAllowedRequest = true;
-    }
-}
-
-if (!\$isBackendBundle && !\$isMaintenanceAllowedRequest && file_exists(\$maintenanceFile)) {
+if (!\$isBackendBundle && file_exists(\$maintenanceFile)) {
     http_response_code(503);
     header('x-powered-by:');
     header('Retry-After:10');
