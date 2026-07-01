@@ -532,7 +532,7 @@ class Update extends QUI\System\Console\Tool
         $Launcher = QUI\System\Update\RunLauncherFactory::createDefault();
         $Launch = $Launcher->create(null, [
             'type' => 'cli',
-            'arguments' => $this->params ?? []
+            'arguments' => $this->params
         ]);
 
         $this->getUpdateOutput()->section('Preparing update');
