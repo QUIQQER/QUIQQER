@@ -99,20 +99,33 @@ class UpdatePackageOutput implements SystemOutput
             return;
         }
 
+        if ($this->writeComposerChange($message)) {
+            return;
+        }
+
         $this->Output->quote($message, 'red');
     }
 
     private function writeComposerChange(string $message): bool
     {
+        if ($message === 'Nothing to install, update or remove') {
+            if (!$this->packageChangesHeadlineWritten) {
+                $this->Output->info('No package changes');
+                $this->packageChangesHeadlineWritten = true;
+            }
+
+            return true;
+        }
+
         $update = str_contains($message, 'Update: ');
         $updates = str_contains($message, 'Updates: ');
-        $upgrade = str_contains($message, ' - Upgrading ');
-        $remove = str_contains($message, ' - Removing ');
+        $upgrade = str_starts_with($message, '- Upgrading ') || str_contains($message, ' - Upgrading ');
+        $remove = str_starts_with($message, '- Removing ') || str_contains($message, ' - Removing ');
         $removals = str_contains($message, 'Removals: ');
 
         $install = str_contains($message, 'Install: ');
         $installs = str_contains($message, 'Installs: ');
-        $installing = str_contains($message, ' - Installing ');
+        $installing = str_starts_with($message, '- Installing ') || str_contains($message, ' - Installing ');
 
         if (!$update && !$updates && !$install && !$installs && !$installing && !$upgrade && !$remove && !$removals) {
             return false;
@@ -121,9 +134,9 @@ class UpdatePackageOutput implements SystemOutput
         $message = str_replace(['Updates: ', 'Update: '], '', $message);
         $message = str_replace(['Installs: ', 'Install: '], '', $message);
         $message = str_replace(['Removals: '], '', $message);
-        $message = str_replace([' - Upgrading '], '', $message);
-        $message = str_replace([' - Installing '], '', $message);
-        $message = str_replace([' - Removing '], '', $message);
+        $message = str_replace([' - Upgrading ', '- Upgrading '], '', $message);
+        $message = str_replace([' - Installing ', '- Installing '], '', $message);
+        $message = str_replace([' - Removing ', '- Removing '], '', $message);
         $changedPackages = explode(',', $message);
 
         if (!$this->packageChangesHeadlineWritten) {

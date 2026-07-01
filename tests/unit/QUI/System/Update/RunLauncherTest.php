@@ -39,7 +39,8 @@ class RunLauncherTest extends TestCase
         );
 
         $this->assertSame(
-            "'/usr/bin/php' '" . $run->getExecuteFile() . "' '" . $run->getToken() . "'",
+            CliEnvironment::createShellPrefix()
+            . "'/usr/bin/php' '" . $run->getExecuteFile() . "' '" . $run->getToken() . "'",
             $launch->getCliCommand()
         );
     }

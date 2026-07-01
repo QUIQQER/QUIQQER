@@ -40,7 +40,8 @@ class RunLauncher
 
     private function createCliCommand(Run $run): string
     {
-        return escapeshellarg($this->phpBinary) . ' '
+        return CliEnvironment::createShellPrefix()
+            . escapeshellarg($this->phpBinary) . ' '
             . escapeshellarg($run->getExecuteFile()) . ' '
             . escapeshellarg($run->getToken());
     }
