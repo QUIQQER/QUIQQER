@@ -120,12 +120,26 @@ class SystemUpdateAction implements RunActionInterface
             private function rememberErrorMessage(string $message, bool|string $color, bool|string $bg): void
             {
                 $message = trim((string)preg_replace('/\033\[[0-9;]*m/', '', $message));
+                $message = trim($message, ': ');
 
                 if ($message === '') {
                     return;
                 }
 
+                if ($this->lastErrorMessage !== '' && !str_contains($message, '::')) {
+                    return;
+                }
+
+                if ($message === './console repair' || str_contains($message, 'repair')) {
+                    return;
+                }
+
                 if ($color === 'red' || $bg === 'red' || str_contains($message, '[error]')) {
+                    if (str_contains($message, '::')) {
+                        $parts = explode('::', $message, 2);
+                        $message = trim((string)($parts[1] ?? $message));
+                    }
+
                     $this->lastErrorMessage = $message;
                 }
             }

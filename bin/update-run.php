@@ -543,6 +543,10 @@ function getLogLineType(line) {
         return 'warn';
     }
 
+    if (trimmed.indexOf('The update has found inconsistencies') !== -1) {
+        return 'warn';
+    }
+
     if (trimmed.indexOf('[!!]') !== -1 || trimmed.indexOf('[error]') !== -1) {
         return 'err';
     }
