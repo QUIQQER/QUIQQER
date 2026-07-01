@@ -729,7 +729,7 @@ class Update extends QUI\System\Console\Tool
                                 continue;
                             }
 
-                            $Instance->getUpdateOutput()->quote($package);
+                            $Instance->getUpdateOutput()->listItem($package);
                         }
 
                         return;
@@ -1097,7 +1097,7 @@ class Update extends QUI\System\Console\Tool
             return;
         }
 
-        $this->getUpdateOutput()->warning('Package changes');
+        $this->getUpdateOutput()->info('Package changes');
         $this->composerUpdateHeaderWritten = true;
     }
 

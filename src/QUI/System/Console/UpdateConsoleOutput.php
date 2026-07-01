@@ -74,6 +74,11 @@ class UpdateConsoleOutput
         $this->resetColor();
     }
 
+    public function listItem(string $message): void
+    {
+        $this->Output->writeLn('    > ' . $message);
+    }
+
     /**
      * @param array<int, string> $lines
      */
