@@ -517,8 +517,12 @@ function normalizeLogLine(line) {
 
     const trimmed = line.trim();
 
-    if (trimmed.indexOf('[!!] [') === 0 && isSectionLine(trimmed.substring(5))) {
-        return trimmed.substring(5);
+    if (trimmed.indexOf('[!!]') === 0) {
+        const withoutErrorPrefix = trimmed.substring(4).trim();
+
+        if (isSectionLine(withoutErrorPrefix) || withoutErrorPrefix.indexOf('[..]') === 0) {
+            return withoutErrorPrefix;
+        }
     }
 
     if (trimmed === '\\n"}' || trimmed === '\\n}' || trimmed === '\\n') {
@@ -615,10 +619,27 @@ async function request(action) {
     }
 
     if (!response.ok || data.success === false) {
-        throw new Error(data.error || data.output || 'Update request failed');
+        const requestError = new Error(data.error || 'Update request failed');
+        requestError.runnerOutput = data.output || '';
+        requestError.state = data.state || data;
+
+        throw requestError;
     }
 
     return data;
+}
+
+function writeRequestError(error) {
+    if (error.runnerOutput) {
+        writeLogText(error.runnerOutput);
+    }
+
+    if (error.state && finalState(error.state.status)) {
+        writeFinalState(error.state);
+        return;
+    }
+
+    write('[!!] ' + error.message, 'err');
 }
 
 function renderLog(log) {
@@ -683,7 +704,7 @@ async function poll() {
     } catch (error) {
         stopActivity();
         statusNode.textContent = 'failed';
-        write('[!!] ' + error.message, 'err');
+        writeRequestError(error);
     }
 }
 
@@ -768,8 +789,7 @@ async function run() {
 
         if (finalState(data.status)) {
             stopActivity();
-            write(data.status === 'finished' ? '[OK] Update finished' : '[!!] Update ' + data.status,
-                data.status === 'finished' ? 'ok' : 'err');
+            writeFinalState(data);
             return;
         }
 
@@ -779,7 +799,7 @@ async function run() {
     } catch (error) {
         stopActivity();
         statusNode.textContent = 'failed';
-        write('[!!] ' + error.message, 'err');
+        writeRequestError(error);
     } finally {
         runInFlight = false;
     }
