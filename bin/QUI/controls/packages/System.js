@@ -37,7 +37,10 @@ define('controls/packages/System', [
             'openUpdateRun',
             'cancelUpdateRun',
             'refreshActiveRun',
-            'refreshPreparedRunStatus'
+            'refreshPreparedRunStatus',
+            'startUpdateRunMonitor',
+            'stopUpdateRunMonitor',
+            'syncUpdateRunStatus'
         ],
 
         initialize: function (options) {
@@ -52,6 +55,8 @@ define('controls/packages/System', [
             this.$list = [];
             this.$preparedRun = null;
             this.$runStatusTimer = null;
+            this.$runMonitorTimer = null;
+            this.$runMonitorBusy = false;
 
             this.addEvents({
                 onInject: this.$onInject
@@ -177,9 +182,19 @@ define('controls/packages/System', [
                 }).then(() => {
                     return this.refreshActiveRun();
                 }).then(() => {
+                    this.startUpdateRunMonitor();
                     this.fireEvent('load', [this]);
                 });
             });
+        },
+
+        /**
+         * Cleanup timers.
+         */
+        destroy: function () {
+            this.stopRunPolling();
+            this.stopUpdateRunMonitor();
+            this.parent();
         },
 
         /**
@@ -429,7 +444,9 @@ define('controls/packages/System', [
          *
          * @returns {Promise}
          */
-        refreshActiveRun: function () {
+        refreshActiveRun: function (showErrors) {
+            showErrors = showErrors !== false;
+
             return Packages.getActiveUpdateRuns().then((result) => {
                 const active = result && result.active || [];
 
@@ -451,7 +468,9 @@ define('controls/packages/System', [
                 this.$setRunButtons(Boolean(this.$preparedRun.url));
                 this.startRunPolling();
             }).catch((Exception) => {
-                return this.$showError(Exception);
+                if (showErrors) {
+                    return this.$showError(Exception);
+                }
             });
         },
 
@@ -476,6 +495,8 @@ define('controls/packages/System', [
 
                 if (['finished', 'failed', 'cancelled'].indexOf(state.status) !== -1) {
                     this.stopRunPolling();
+                    this.$preparedRun = null;
+                    this.renderRunState();
                     this.$setRunButtons(false);
                     this.refreshLastUpdateCheckDate();
                 }
@@ -664,6 +685,50 @@ define('controls/packages/System', [
 
             window.clearInterval(this.$runStatusTimer);
             this.$runStatusTimer = null;
+        },
+
+        /**
+         * Start monitoring update runs while this panel is open.
+         */
+        startUpdateRunMonitor: function () {
+            if (this.$runMonitorTimer) {
+                return;
+            }
+
+            this.$runMonitorTimer = window.setInterval(this.syncUpdateRunStatus, 5000);
+        },
+
+        /**
+         * Stop monitoring update runs.
+         */
+        stopUpdateRunMonitor: function () {
+            if (!this.$runMonitorTimer) {
+                return;
+            }
+
+            window.clearInterval(this.$runMonitorTimer);
+            this.$runMonitorTimer = null;
+        },
+
+        /**
+         * Sync visible update run state.
+         *
+         * @returns {Promise|undefined}
+         */
+        syncUpdateRunStatus: function () {
+            if (this.$runMonitorBusy) {
+                return;
+            }
+
+            this.$runMonitorBusy = true;
+
+            const request = this.$preparedRun && this.$preparedRun.id ?
+                this.refreshPreparedRunStatus() :
+                this.refreshActiveRun(false);
+
+            return Promise.resolve(request).finally(() => {
+                this.$runMonitorBusy = false;
+            });
         },
 
         /**
