@@ -1945,7 +1945,15 @@ class Manager extends QUI\QDOM
             $package = false;
         }
 
-        $this->composerUpdateOrInstall($package);
+        $composerOutput = $this->composerUpdateOrInstall($package);
+
+        foreach ($composerOutput as $line) {
+            if (!is_string($line)) {
+                continue;
+            }
+
+            $Output->writeLn($line);
+        }
 
         // set last update
         $Output->writeLn('Cleanup database');
