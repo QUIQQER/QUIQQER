@@ -22,12 +22,15 @@ use function is_dir;
 use function is_resource;
 use function method_exists;
 use function ob_get_clean;
+use function ob_get_level;
+use function ob_flush;
 use function ob_start;
 use function preg_replace;
 use function preg_split;
 use function proc_close;
 use function proc_get_status;
 use function proc_open;
+use function flush;
 use function str_pad;
 use function str_replace;
 use function strip_tags;
@@ -213,6 +216,7 @@ class Update extends QUI\System\Console\Tool
                 }
 
                 self::onCliOutput($line, $this);
+                $this->flushOutputBuffer();
             }
         });
 
@@ -967,14 +971,13 @@ class Update extends QUI\System\Console\Tool
                 }
 
                 $this->writeLn();
-                $this->writeLn('You have changes in the following dependencies:', 'light_green');
+                $this->getUpdateOutput()->quote('You have changes in the following dependencies:');
 
                 foreach ($changesList as $path => $files) {
-                    $this->writeLn($path, 'yellow');
-                    $this->resetColor();
+                    $this->getUpdateOutput()->quote($path);
 
                     foreach ($files as $file) {
-                        $this->writeLn('- ' . $file);
+                        $this->getUpdateOutput()->quote($file);
                     }
                 }
             }
@@ -1124,6 +1127,15 @@ class Update extends QUI\System\Console\Tool
         }
 
         return false;
+    }
+
+    private function flushOutputBuffer(): void
+    {
+        if (ob_get_level() > 0) {
+            ob_flush();
+        }
+
+        flush();
     }
 
     private function writeBufferedPackageOutput(string $buffer, UpdatePackageOutput $Output): void

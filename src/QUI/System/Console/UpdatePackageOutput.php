@@ -105,7 +105,7 @@ class UpdatePackageOutput implements SystemOutput
             return;
         }
 
-        $this->Output->quote($message, 'red');
+        $this->Output->quote($message, $this->verbosity > 0 ? false : 'red');
     }
 
     private function writeComposerChange(string $message): bool
