@@ -6,6 +6,7 @@
 
 namespace QUI\System\Console;
 
+use Closure;
 use QUI\Interfaces\System\SystemOutput;
 
 use function explode;
@@ -27,7 +28,8 @@ class UpdatePackageOutput implements SystemOutput
 
     public function __construct(
         private UpdateConsoleOutput $Output,
-        private int $verbosity = 0
+        private int $verbosity = 0,
+        private ?Closure $hasComposerChangesAlreadyWritten = null
     ) {
     }
 
@@ -109,6 +111,10 @@ class UpdatePackageOutput implements SystemOutput
     private function writeComposerChange(string $message): bool
     {
         if ($message === 'Nothing to install, update or remove') {
+            if ($this->hasComposerChangesAlreadyWritten()) {
+                return true;
+            }
+
             if (!$this->packageChangesHeadlineWritten) {
                 $this->Output->info('No package changes');
                 $this->packageChangesHeadlineWritten = true;
@@ -129,6 +135,10 @@ class UpdatePackageOutput implements SystemOutput
 
         if (!$update && !$updates && !$install && !$installs && !$installing && !$upgrade && !$remove && !$removals) {
             return false;
+        }
+
+        if ($this->hasComposerChangesAlreadyWritten()) {
+            return true;
         }
 
         $message = str_replace(['Updates: ', 'Update: '], '', $message);
@@ -162,5 +172,14 @@ class UpdatePackageOutput implements SystemOutput
         $message = (string)preg_replace('/\033\[[0-9;]*m/', '', $message);
 
         return trim($message);
+    }
+
+    private function hasComposerChangesAlreadyWritten(): bool
+    {
+        if ($this->hasComposerChangesAlreadyWritten === null) {
+            return false;
+        }
+
+        return (bool)($this->hasComposerChangesAlreadyWritten)();
     }
 }
