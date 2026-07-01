@@ -8,9 +8,12 @@ namespace QUI\System\Console;
 
 use QUI\Interfaces\System\SystemOutput;
 
+use function explode;
 use function preg_replace;
+use function str_replace;
 use function str_contains;
 use function str_starts_with;
+use function strip_tags;
 use function trim;
 
 /**
@@ -19,6 +22,8 @@ use function trim;
 class UpdatePackageOutput implements SystemOutput
 {
     private bool $requirementsHeadlineWritten = false;
+
+    private bool $packageChangesHeadlineWritten = false;
 
     public function __construct(
         private UpdateConsoleOutput $Output,
@@ -36,6 +41,10 @@ class UpdatePackageOutput implements SystemOutput
 
         if ($message === 'Cleanup database') {
             $this->Output->info('Cleanup database');
+            return;
+        }
+
+        if ($this->writeComposerChange($message)) {
             return;
         }
 
@@ -91,6 +100,48 @@ class UpdatePackageOutput implements SystemOutput
         }
 
         $this->Output->quote($message, 'red');
+    }
+
+    private function writeComposerChange(string $message): bool
+    {
+        $update = str_contains($message, 'Update: ');
+        $updates = str_contains($message, 'Updates: ');
+        $upgrade = str_contains($message, ' - Upgrading ');
+        $remove = str_contains($message, ' - Removing ');
+        $removals = str_contains($message, 'Removals: ');
+
+        $install = str_contains($message, 'Install: ');
+        $installs = str_contains($message, 'Installs: ');
+        $installing = str_contains($message, ' - Installing ');
+
+        if (!$update && !$updates && !$install && !$installs && !$installing && !$upgrade && !$remove && !$removals) {
+            return false;
+        }
+
+        $message = str_replace(['Updates: ', 'Update: '], '', $message);
+        $message = str_replace(['Installs: ', 'Install: '], '', $message);
+        $message = str_replace(['Removals: '], '', $message);
+        $message = str_replace([' - Upgrading '], '', $message);
+        $message = str_replace([' - Installing '], '', $message);
+        $message = str_replace([' - Removing '], '', $message);
+        $changedPackages = explode(',', $message);
+
+        if (!$this->packageChangesHeadlineWritten) {
+            $this->Output->info('Package changes');
+            $this->packageChangesHeadlineWritten = true;
+        }
+
+        foreach ($changedPackages as $package) {
+            $package = trim(strip_tags($package));
+
+            if ($package === '') {
+                continue;
+            }
+
+            $this->Output->listItem($package);
+        }
+
+        return true;
     }
 
     private function sanitize(string $message): string
