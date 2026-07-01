@@ -5,9 +5,39 @@ use QUI\System\Log;
 
 QUI::$Ajax->registerFunction(
     'ajax_users_login',
-    static function ($authenticator, $params, $authStep) {
+    static function ($authenticator, $params, $authStep, null | string | array $authenticators = null) {
         QUI::getEvents()->fireEvent('userLoginAjaxStart');
         QUI::getSession()->set('inAuthentication', 1);
+
+        if (is_string($authenticators)) {
+            $authenticators = json_decode($authenticators, true);
+        }
+
+        if (!is_array($authenticators)) {
+            $authenticators = [];
+        }
+
+        if ($authStep === 'primary' || empty($authStep)) {
+            if (QUI::isFrontend()) {
+                $allowedPrimaryAuthenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalFrontendAuthenticators();
+            } else {
+                $allowedPrimaryAuthenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalBackendAuthenticators();
+            }
+
+            if (!empty($authenticators)) {
+                $allowedPrimaryAuthenticators = array_values(array_intersect(
+                    $allowedPrimaryAuthenticators,
+                    $authenticators
+                ));
+            }
+
+            if (!in_array($authenticator, $allowedPrimaryAuthenticators, true)) {
+                throw new QUI\Users\Auth\Exception(
+                    ['quiqqer/core', 'exception.authenticator.not.found'],
+                    404
+                );
+            }
+        }
 
         $User = QUI::getUserBySession();
 
@@ -60,7 +90,9 @@ QUI::$Ajax->registerFunction(
             QUI::getSession()->set('auth', 1);
         }
 
-        $Login = new QUI\Users\Controls\Login();
+        $Login = new QUI\Users\Controls\Login([
+            'authenticators' => $authenticators
+        ]);
         $next = $Login->next();
         $loggedIn = false;
         if (
@@ -99,5 +131,5 @@ QUI::$Ajax->registerFunction(
             ]
         ];
     },
-    ['authenticator', 'params', 'authStep']
+    ['authenticator', 'params', 'authStep', 'authenticators']
 );

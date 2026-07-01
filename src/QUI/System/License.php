@@ -187,6 +187,10 @@ class License
      */
     public static function getLicenseData(): bool|array
     {
+        if (!file_exists(CMS_DIR . 'etc/license.ini.php')) {
+            return false;
+        }
+
         try {
             $LicenseConfig = QUI::getConfig('etc/license.ini.php');
         } catch (Exception $Exception) {

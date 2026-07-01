@@ -222,8 +222,9 @@ EOT;
 {$fileHeader}
 // maintenance mode
 \$maintenanceFile = dirname(__FILE__).'/maintenance.html';
+\$isBackendBundle = isset(\$_REQUEST['_FRONTEND']) && !(int)\$_REQUEST['_FRONTEND'];
 
-if (file_exists(\$maintenanceFile)) {
+if (!\$isBackendBundle && file_exists(\$maintenanceFile)) {
     http_response_code(503);
     header('x-powered-by:');
     header('Retry-After:10');
@@ -250,8 +251,9 @@ EOT;
 {$fileHeader}
 // maintenance mode
 \$maintenanceFile = dirname(__FILE__).'/maintenance.html';
+\$isBackendBundle = isset(\$_REQUEST['_FRONTEND']) && (string)\$_REQUEST['_FRONTEND'] === '0';
 
-if (file_exists(\$maintenanceFile)) {
+if (!\$isBackendBundle && file_exists(\$maintenanceFile)) {
     http_response_code(503);
     header('x-powered-by:');
     header('Retry-After:10');

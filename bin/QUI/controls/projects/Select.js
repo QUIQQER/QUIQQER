@@ -46,9 +46,6 @@ define('controls/projects/Select', [
             this.$Elm = new Element('div', {
                 'class': 'qui-controls-project-select'
             });
-
-            var localStorageValue = QUI.Storage.get('dashboard-media-info-card-project-select');
-
             this.$Select = new QUISelect({
                 name         : 'projects-select',
                 events       : {
@@ -103,14 +100,6 @@ define('controls/projects/Select', [
                 }
 
                 var value = self.$Select.firstChild().getAttribute('value');
-
-                if (localStorageValue) {
-                    try {
-                        value = JSON.decode(localStorageValue);
-                    } catch (e) {
-                        value = self.$Select.firstChild().getAttribute('value');
-                    }
-                }
 
                 if (self.getAttribute('project') && self.getAttribute('lang')) {
                     value = self.getAttribute('project') + ',' + self.getAttribute('lang');

@@ -20,11 +20,14 @@ use QUI\Utils\Text\XML;
 use Throwable;
 
 use function class_implements;
+use function count;
 use function defined;
 use function explode;
+use function filter_var;
 use function file_exists;
 use function func_get_args;
 use function func_num_args;
+use function idn_to_ascii;
 use function implode;
 use function in_array;
 use function is_numeric;
@@ -39,6 +42,10 @@ use function str_contains;
 use function strtotime;
 use function substr;
 use function time;
+
+use const FILTER_VALIDATE_EMAIL;
+use const IDNA_DEFAULT;
+use const INTL_IDNA_VARIANT_UTS46;
 
 /**
  * QUIQQER user manager
@@ -678,6 +685,16 @@ class Manager
      */
     public static function checkUsernameSigns(string $username): bool
     {
+        if (str_contains($username, '@')) {
+            if (self::checkEmailUsername($username)) {
+                return true;
+            }
+
+            throw new QUI\Users\Exception(
+                QUI::getLocale()->get('quiqqer/core', 'exception.lib.user.illegal.signs')
+            );
+        }
+
         if ($username !== self::clearUsername($username)) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get('quiqqer/core', 'exception.lib.user.illegal.signs')
@@ -685,6 +702,29 @@ class Manager
         }
 
         return true;
+    }
+
+    private static function checkEmailUsername(string $username): bool
+    {
+        $parts = explode('@', $username);
+
+        if (count($parts) !== 2) {
+            return false;
+        }
+
+        [$localPart, $domain] = $parts;
+
+        if ($localPart === '' || $domain === '') {
+            return false;
+        }
+
+        $asciiDomain = idn_to_ascii($domain, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+
+        if ($asciiDomain === false) {
+            return false;
+        }
+
+        return filter_var($localPart . '@' . $asciiDomain, FILTER_VALIDATE_EMAIL) !== false;
     }
 
     /**

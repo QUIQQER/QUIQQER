@@ -36,11 +36,14 @@ use function mb_substr;
 use function mb_substr_count;
 use function parse_url;
 use function pathinfo;
+use function str_contains;
 use function str_replace;
+use function str_starts_with;
 use function strlen;
 use function strpos;
 use function strrpos;
 use function strtok;
+use function strtolower;
 use function substr;
 use function trim;
 use function urldecode;
@@ -227,6 +230,8 @@ class Rewrite
         $httpHost = $_SERVER['HTTP_HOST'] ?? null;
         $vhostData = $this->getCurrentVhostData();
         $defaultSuffix = self::getDefaultSuffix();
+
+        $this->redirectCanonicalHost();
 
         // globale forwarding - 301, etc
         QUI\System\Forwarding::forward(QUI::getRequest());
@@ -517,7 +522,6 @@ class Rewrite
         }
 
         $this->first_child = $this->getProject()->firstChild();
-        // @phpstan-ignore identical.alwaysTrue ($this->site can be set to not null by $this->setSite())
         if ($this->site === null) {
             $this->site = $this->first_child;
         }
@@ -746,6 +750,69 @@ class Rewrite
         }
 
         return false;
+    }
+
+    private function redirectCanonicalHost(): void
+    {
+        if (defined('ADMIN')) {
+            return;
+        }
+
+        $Request = QUI::getRequest();
+        $host = $Request->getHost();
+
+        if ($host === '') {
+            return;
+        }
+
+        $targetScheme = $Request->getScheme();
+        $targetHost = $host;
+
+        if (QUI::conf('webserver', 'forceHttps')) {
+            $targetScheme = 'https';
+        }
+
+        $wwwRedirect = QUI::conf('webserver', 'wwwRedirect');
+        $normalizedHost = strtolower($host);
+
+        if (
+            $wwwRedirect === 'www'
+            && !str_starts_with($normalizedHost, 'www.')
+            && str_contains($host, '.')
+        ) {
+            $targetHost = 'www.' . $host;
+        }
+
+        if ($wwwRedirect === 'nonwww' && str_starts_with($normalizedHost, 'www.')) {
+            $targetHost = substr($host, 4);
+        }
+
+        if ($targetScheme === $Request->getScheme() && $targetHost === $host) {
+            return;
+        }
+
+        $target = $targetScheme . '://' . $this->getTargetHttpHost(
+            $Request->getHttpHost(),
+            $host,
+            $targetHost
+        );
+        $target .= $Request->getRequestUri();
+
+        $Redirect = new RedirectResponse($target);
+        $Redirect->setStatusCode(Response::HTTP_MOVED_PERMANENTLY);
+        $Redirect->send();
+        exit;
+    }
+
+    private function getTargetHttpHost(string $httpHost, string $currentHost, string $targetHost): string
+    {
+        $port = '';
+
+        if (str_starts_with($httpHost, $currentHost . ':')) {
+            $port = substr($httpHost, strlen($currentHost));
+        }
+
+        return $targetHost . $port;
     }
 
     /**

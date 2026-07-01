@@ -28,7 +28,6 @@
     "ext-pdo": "*",
     "ext-posix": "*",
     "ext-zip": "*",
-    "composer/composer": "^2",
     "composer/semver": "^3",
     "martinvenus/knapsack": "^10",
     "doctrine/dbal": "^4",

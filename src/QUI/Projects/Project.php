@@ -1071,6 +1071,8 @@ class Project implements \Stringable
                 case "c_date DESC":
                 case "e_date ASC":
                 case "e_date DESC":
+                case "deleted_at ASC":
+                case "deleted_at DESC":
                 case "release_from ASC":
                 case "release_from DESC":
                     $order = $params["order"];
@@ -1363,7 +1365,7 @@ class Project implements \Stringable
             $Table = $SchemaManager->introspectTable($tableName);
         }
 
-        foreach (["name", "active", "deleted", "order_field", "type", "c_date", "e_date"] as $indexName) {
+        foreach (["name", "active", "deleted", "deleted_at", "order_field", "type", "c_date", "e_date"] as $indexName) {
             if (!$Table->hasIndex($indexName)) {
                 $Table->addIndex([$indexName], $indexName);
                 $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff($Table, addedIndexes: [$Table->getIndex($indexName)]));
@@ -1424,7 +1426,7 @@ class Project implements \Stringable
 
     private static function addSitesIndexes(\Doctrine\DBAL\Schema\Table $Table): void
     {
-        foreach (["name", "active", "deleted", "order_field", "type", "c_date", "e_date"] as $indexName) {
+        foreach (["name", "active", "deleted", "deleted_at", "order_field", "type", "c_date", "e_date"] as $indexName) {
             $Table->addIndex([$indexName], $indexName);
         }
     }
@@ -1441,6 +1443,7 @@ class Project implements \Stringable
             "layout" => ["type" => "string", "options" => ["length" => 255, "notnull" => false]],
             "active" => ["type" => "smallint", "options" => ["default" => 0]],
             "deleted" => ["type" => "smallint", "options" => ["default" => 0]],
+            "deleted_at" => ["type" => "datetime", "options" => ["notnull" => false]],
             "c_date" => ["type" => "datetime", "options" => ["notnull" => false]],
             "e_date" => ["type" => "datetime", "options" => ["notnull" => false]],
             "c_user" => ["type" => "string", "options" => ["length" => 50, "notnull" => false]],
