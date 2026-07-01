@@ -129,6 +129,23 @@
     color: #2f3742;
 }
 
+.qui-update-banner.empty .qui-update-check-button {
+    background: #ffffff;
+    border-color: #bdddc0;
+    box-shadow: none;
+    color: #2f7d37;
+    flex-shrink: 0;
+    font-weight: 700;
+}
+
+.qui-update-banner.empty .qui-update-check-button:hover,
+.qui-update-banner.empty .qui-update-check-button:focus {
+    background: #f0faf1;
+    border-color: #8fc996;
+    box-shadow: none;
+    color: #236529;
+}
+
 .qui-update-section {
     border-bottom: 1px solid #d7dce2;
     padding: 20px 24px;

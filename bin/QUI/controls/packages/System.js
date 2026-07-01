@@ -550,6 +550,8 @@ define('controls/packages/System', [
                     QUILocale.get(lg, 'packages.panel.update.available.description')
                 );
 
+                this.$Update.getElm().inject(this.$CheckSummary);
+
                 return;
             }
 
@@ -558,6 +560,7 @@ define('controls/packages/System', [
 
             this.$CheckSummary.set('class', 'qui-update-check-summary qui-update-banner warning');
             this.$CheckSummary.set('html', '');
+            this.$Update.getElm().inject(this.$CheckButtons);
 
             const summary = new Element('div', {
                 html: '<div class="qui-update-banner-title"></div>' +
