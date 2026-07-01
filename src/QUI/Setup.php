@@ -293,8 +293,10 @@ EOT;
 \$ignoreMaintenance = !empty(\$_REQUEST['systemId']) &&
                         \$_REQUEST['systemId'] === '$systemId' &&
                         !empty(\$_REQUEST['ignoreMaintenance']);
+\$requestPath = parse_url(\$_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
+\$allowMaintenanceRequest = \$requestPath === '/mcp' || \$requestPath === '/mcp/';
 
-if (!\$ignoreMaintenance && file_exists(\$maintenanceFile)) {
+if (!\$ignoreMaintenance && !\$allowMaintenanceRequest && file_exists(\$maintenanceFile)) {
     http_response_code(503);
     header('x-powered-by:');
     header('Retry-After:10');

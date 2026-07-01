@@ -18,6 +18,7 @@ use QUI\System\Update\RunRepository;
 use QUI\System\Update\RunState;
 use Throwable;
 
+use const CMS_DIR;
 use const DIRECTORY_SEPARATOR;
 use const VAR_DIR;
 
@@ -101,7 +102,8 @@ class Update extends AbstractTool
                 'started' => false,
                 'active' => true,
                 'run' => $State->toPublicArray(),
-                'deleted' => $runs['deleted']
+                'deleted' => $runs['deleted'],
+                'maintenance' => self::getMaintenanceInfo()
             ];
         }
 
@@ -148,7 +150,8 @@ class Update extends AbstractTool
                 'output' => 'sse'
             ]),
             'run' => $State->toPublicArray(),
-            'deleted' => $runs['deleted']
+            'deleted' => $runs['deleted'],
+            'maintenance' => self::getMaintenanceInfo()
         ];
     }
 
@@ -163,6 +166,7 @@ class Update extends AbstractTool
         return [
             'success' => true,
             'run' => $State->toPublicArray(),
+            'maintenance' => self::getMaintenanceInfo(),
             'log' => self::readRunLog($id)
         ];
     }
@@ -177,7 +181,8 @@ class Update extends AbstractTool
                 static fn (RunState $State): array => $State->toPublicArray(),
                 $runs['active']
             ),
-            'deleted' => $runs['deleted']
+            'deleted' => $runs['deleted'],
+            'maintenance' => self::getMaintenanceInfo()
         ];
     }
 
@@ -190,7 +195,8 @@ class Update extends AbstractTool
             'history' => array_map(
                 static fn (RunState $State): array => $State->toPublicArray(),
                 self::createRepository()->list($limit)
-            )
+            ),
+            'maintenance' => self::getMaintenanceInfo()
         ];
     }
 
@@ -216,7 +222,20 @@ class Update extends AbstractTool
         return [
             'success' => true,
             'run' => $State->toPublicArray(),
+            'maintenance' => self::getMaintenanceInfo(),
             'signalSent' => $signalSent
+        ];
+    }
+
+    private static function getMaintenanceInfo(): array
+    {
+        $enabled = file_exists(CMS_DIR . 'maintenance.html');
+
+        return [
+            'active' => $enabled,
+            'message' => $enabled
+                ? 'QUIQQER maintenance mode is active. MCP remains available for update monitoring.'
+                : null
         ];
     }
 
