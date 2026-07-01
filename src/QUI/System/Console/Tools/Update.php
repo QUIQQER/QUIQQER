@@ -200,13 +200,20 @@ class Update extends QUI\System\Console\Tool
                 return;
             }
 
-            if ($this->getVerbosityLevel() < 3) {
-                self::writeToLog($output);
+            $lines = preg_split('/\r\n|\r|\n/', (string)$output);
+
+            if (!is_array($lines)) {
+                self::onCliOutput((string)$output, $this);
                 return;
             }
 
-            $this->write($output);
-            self::writeToLog($output);
+            foreach ($lines as $line) {
+                if ($line === '') {
+                    continue;
+                }
+
+                self::onCliOutput($line, $this);
+            }
         });
 
         if ($this->getArgument('set-date')) {
@@ -395,7 +402,11 @@ class Update extends QUI\System\Console\Tool
                 $this->setupPackageCount = 0;
                 $this->composerUpdateHeaderWritten = false;
                 $this->composerChangeSummaries = [];
-                $PackageOutput = new UpdatePackageOutput($Output, $this->getVerbosityLevel());
+                $PackageOutput = new UpdatePackageOutput(
+                    $Output,
+                    $this->getVerbosityLevel(),
+                    fn(): bool => $this->composerUpdateHeaderWritten
+                );
 
                 ob_start();
 
@@ -532,7 +543,7 @@ class Update extends QUI\System\Console\Tool
         $Launcher = QUI\System\Update\RunLauncherFactory::createDefault();
         $Launch = $Launcher->create(null, [
             'type' => 'cli',
-            'arguments' => $this->params
+            'arguments' => $this->normalizeUpdateRunArguments($this->params)
         ]);
 
         $this->getUpdateOutput()->section('Preparing update');
@@ -1030,6 +1041,43 @@ class Update extends QUI\System\Console\Tool
         }
 
         return [];
+    }
+
+    /**
+     * @param array<string, mixed> $arguments
+     * @return array<string, mixed>
+     */
+    private function normalizeUpdateRunArguments(array $arguments): array
+    {
+        if (
+            ($arguments['-vvv'] ?? false)
+            || ($arguments['--vvv'] ?? false)
+            || ($arguments['vvv'] ?? false)
+        ) {
+            $arguments['-vvv'] = true;
+            return $arguments;
+        }
+
+        if (
+            ($arguments['-vv'] ?? false)
+            || ($arguments['--vv'] ?? false)
+            || ($arguments['vv'] ?? false)
+        ) {
+            $arguments['-vv'] = true;
+            return $arguments;
+        }
+
+        if (
+            ($arguments['-v'] ?? false)
+            || ($arguments['--v'] ?? false)
+            || ($arguments['v'] ?? false)
+            || ($arguments['--verbose'] ?? false)
+            || ($arguments['verbose'] ?? false)
+        ) {
+            $arguments['verbose'] = true;
+        }
+
+        return $arguments;
     }
 
     private function getVerbosityLevel(): int
