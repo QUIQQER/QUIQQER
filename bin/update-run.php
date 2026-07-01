@@ -212,7 +212,27 @@ function cleanRunLog(string $content): string
         $content = substr($content, 0, $jsonPosition);
     }
 
-    return rtrim($content);
+    $lines = preg_split('/\R/', $content);
+
+    if (!is_array($lines)) {
+        return rtrim($content);
+    }
+
+    foreach ($lines as $index => $line) {
+        $trimmed = trim($line);
+
+        if (!str_starts_with($trimmed, '[!!]')) {
+            continue;
+        }
+
+        $withoutPrefix = trim(substr($trimmed, 4));
+
+        if (preg_match('/^\[\d+\/\d+\]/', $withoutPrefix) || str_starts_with($withoutPrefix, '[..]')) {
+            $lines[$index] = $withoutPrefix;
+        }
+    }
+
+    return rtrim(implode(PHP_EOL, $lines));
 }
 
 function renderHtmlConsole(string $id, string $token): void
@@ -516,6 +536,7 @@ function normalizeLogLine(line) {
     line = String(line || '');
 
     const trimmed = line.trim();
+    line = trimmed;
 
     if (trimmed.indexOf('[!!]') === 0) {
         const withoutErrorPrefix = trimmed.substring(4).trim();
@@ -634,12 +655,20 @@ function writeRequestError(error) {
         writeLogText(error.runnerOutput);
     }
 
+    if (error.message && (error.message.indexOf(String.fromCharCode(10)) !== -1 ||
+        error.message.indexOf(String.fromCharCode(13)) !== -1)) {
+        writeLogText(error.message);
+    }
+
     if (error.state && finalState(error.state.status)) {
         writeFinalState(error.state);
         return;
     }
 
-    write('[!!] ' + error.message, 'err');
+    if (error.message && error.message.indexOf(String.fromCharCode(10)) === -1 &&
+        error.message.indexOf(String.fromCharCode(13)) === -1) {
+        write('[!!] ' + error.message, 'err');
+    }
 }
 
 function renderLog(log) {
