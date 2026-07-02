@@ -32,27 +32,37 @@
 
         {if !empty($credentials)}
         <div class="quiqqer-webauthn-credentials">
+            <table class="quiqqer-webauthn-credentials-table">
+                <thead>
+                <tr>
+                    <th>{locale group="quiqqer/core" var="quiqqer.webauthn.settings.name.label"}</th>
+                    <th>{locale group="quiqqer/core" var="quiqqer.webauthn.settings.created"}</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
             {foreach $credentials as $credential}
-            <div class="quiqqer-webauthn-credential" data-id="{$credential.id}">
-                <div>
-                    <strong>
+                <tr class="quiqqer-webauthn-credential" data-id="{$credential.id}">
+                    <td>
                         {if $credential.name}
-                            {$credential.name|escape:'html'}
+                            <strong>{$credential.name|escape:'html'}</strong>
                         {else}
-                            {locale group="quiqqer/core" var="quiqqer.webauthn.settings.unnamed"}
+                            <strong>{locale group="quiqqer/core" var="quiqqer.webauthn.settings.unnamed"}</strong>
                         {/if}
-                    </strong>
-                    <small>
-                        {locale group="quiqqer/core" var="quiqqer.webauthn.settings.created"}:
+                    </td>
+                    <td>
                         {$credential.created|date_format:"%Y-%m-%d %H:%M"}
-                    </small>
-                </div>
-                <button type="button" name="delete-passkey" class="btn btn-secondary" data-id="{$credential.id}">
-                    <span class="fa fa-trash"></span>
-                    <span>{locale group="quiqqer/core" var="delete"}</span>
-                </button>
-            </div>
+                    </td>
+                    <td>
+                        <button type="button" name="delete-passkey" class="btn btn-secondary" data-id="{$credential.id}">
+                            <span class="fa fa-trash"></span>
+                            <span>{locale group="quiqqer/core" var="delete"}</span>
+                        </button>
+                    </td>
+                </tr>
             {/foreach}
+                </tbody>
+            </table>
         </div>
         {else}
         <div class="quiqqer-webauthn-settings-empty">
