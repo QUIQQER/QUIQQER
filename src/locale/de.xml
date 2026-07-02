@@ -7199,6 +7199,105 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         </locale>
     </groups>
 
+    <groups name="quiqqer/core" datatype="js,php">
+        <locale name="quiqqer.webauthn.title">
+            <de><![CDATA[Passkey / WebAuthn]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.description">
+            <de><![CDATA[Anmeldung mit Passkeys und WebAuthn.]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.frontend.title">
+            <de><![CDATA[Passkey]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.frontend.description">
+            <de><![CDATA[Melde dich mit einem Passkey, Fingerabdruck, Gesichtserkennung oder Sicherheitsschlüssel an.]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.login.button">
+            <de><![CDATA[Mit Passkey anmelden]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.settings.title">
+            <de><![CDATA[Passkeys verwalten]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.settings.description">
+            <de><![CDATA[Erstelle und verwalte Passkeys für diesen Benutzer.]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.settings.name.label">
+            <de><![CDATA[Name des Passkeys]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.settings.name.placeholder">
+            <de><![CDATA[z.B. MacBook, iPhone oder YubiKey]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.settings.create.button">
+            <de><![CDATA[Passkey erstellen]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.settings.list.title">
+            <de><![CDATA[Eingerichtete Passkeys]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.settings.unnamed">
+            <de><![CDATA[Unbenannter Passkey]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.settings.created">
+            <de><![CDATA[Erstellt]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.settings.empty">
+            <de><![CDATA[Für diesen Benutzer ist noch kein Passkey eingerichtet.]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.settings.delete.hint">
+            <de><![CDATA[Der Passkey wurde in QUIQQER entfernt. Entferne ihn bei Bedarf zusätzlich im Passwortmanager oder auf dem Gerät, auf dem er gespeichert wurde.]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.settings.activated_existing.hint">
+            <de><![CDATA[Ein vorhandener Passkey-Eintrag wurde gefunden. Passkey wurde deshalb aktiviert.]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.registrar.title">
+            <de><![CDATA[Registrierung mit Passkey]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.registrar.description">
+            <de><![CDATA[Erstelle ein Benutzerkonto und richte direkt einen Passkey ein.]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.registration.username.label">
+            <de><![CDATA[Benutzername oder E-Mail]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.registration.button">
+            <de><![CDATA[Mit Passkey registrieren]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.error.unsupported">
+            <de><![CDATA[Dieser Browser unterstützt Passkeys/WebAuthn nicht.]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.error.already_registered_on_device">
+            <de><![CDATA[Auf diesem Gerät oder in diesem Passwortmanager ist für diesen Benutzer bereits ein Passkey eingerichtet. Verwende den bestehenden Passkey oder speichere einen neuen Passkey auf einem anderen Gerät.]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.error.cancelled">
+            <de><![CDATA[Die Passkey-Anfrage wurde abgebrochen.]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.error.failed">
+            <de><![CDATA[Die Passkey-Anfrage konnte nicht abgeschlossen werden.]]></de>
+        </locale>
+        <locale name="exception.webauthn.credential_already_exists">
+            <de><![CDATA[Dieser Passkey ist bereits registriert.]]></de>
+        </locale>
+        <locale name="exception.webauthn.challenge_missing">
+            <de><![CDATA[Die Passkey-Anfrage ist abgelaufen. Bitte erneut versuchen.]]></de>
+        </locale>
+        <locale name="exception.webauthn.challenge_invalid_user">
+            <de><![CDATA[Die Passkey-Anfrage passt nicht zum Benutzer.]]></de>
+        </locale>
+        <locale name="exception.webauthn.credential_not_found">
+            <de><![CDATA[Der Passkey wurde nicht gefunden.]]></de>
+        </locale>
+        <locale name="exception.webauthn.assertion_missing">
+            <de><![CDATA[Die Passkey-Anmeldedaten fehlen.]]></de>
+        </locale>
+        <locale name="exception.webauthn.attestation_missing">
+            <de><![CDATA[Die Passkey-Registrierungsdaten fehlen.]]></de>
+        </locale>
+        <locale name="exception.webauthn.username_missing">
+            <de><![CDATA[Bitte gib einen Benutzernamen oder eine E-Mail-Adresse an.]]></de>
+        </locale>
+        <locale name="exception.webauthn.username_exists">
+            <de><![CDATA[Dieser Benutzername existiert bereits.]]></de>
+        </locale>
+    </groups>
+
     <groups name="quiqqer/controls" datatype="php,js">
         <locale name="package.title">
             <de><![CDATA[QUIQQER Controls]]></de>

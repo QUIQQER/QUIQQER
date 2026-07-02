@@ -73,4 +73,9 @@ interface AuthenticatorInterface
      * @return bool - true, if the authenticator can be used as primary authentication
      */
     public function isSecondaryAuthentication(): bool;
+
+    /**
+     * @return bool - true, if this authenticator satisfies the secondary authentication step after primary login
+     */
+    public function satisfiesSecondaryAuthentication(): bool;
 }

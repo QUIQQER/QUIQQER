@@ -1,0 +1,79 @@
+<div class="quiqqer-webauthn-settings"
+     data-name="quiqqer-webauthn-settings"
+     data-activation-mode="{if $activationMode}1{else}0{/if}"
+     data-activated-existing-credentials="{if $activatedExistingCredentials}1{else}0{/if}"
+     data-has-credentials="{if !empty($credentials)}1{else}0{/if}"
+     data-is-enabled="{if $isEnabled}1{else}0{/if}"
+>
+    <header class="quiqqer-webauthn-settings-header">
+        <div class="quiqqer-webauthn-settings-icon">
+            <span class="fa fa-fingerprint"></span>
+        </div>
+        <h1>{locale group="quiqqer/core" var="quiqqer.webauthn.settings.title"}</h1>
+        <p>{locale group="quiqqer/core" var="quiqqer.webauthn.settings.description"}</p>
+    </header>
+
+    {if $canCreateCredential}
+        <div class="quiqqer-webauthn-settings-form">
+            <label class="quiqqer-webauthn-settings-field">
+                <span>{locale group="quiqqer/core" var="quiqqer.webauthn.settings.name.label"}</span>
+                <input type="text"
+                       name="credential-name"
+                       value=""
+                       placeholder="{locale group='quiqqer/core' var='quiqqer.webauthn.settings.name.placeholder'}"
+                />
+            </label>
+
+            <button type="button" name="create-passkey" class="btn btn-primary">
+                <span class="fa fa-fingerprint"></span>
+                <span>{locale group="quiqqer/core" var="quiqqer.webauthn.settings.create.button"}</span>
+            </button>
+        </div>
+    {/if}
+
+    <div data-name="message" class="quiqqer-webauthn-settings-message"></div>
+
+    <section class="quiqqer-webauthn-settings-list">
+        <h2>{locale group="quiqqer/core" var="quiqqer.webauthn.settings.list.title"}</h2>
+
+        {if !empty($credentials)}
+        <div class="quiqqer-webauthn-credentials">
+            <table class="quiqqer-webauthn-credentials-table">
+                <thead>
+                <tr>
+                    <th>{locale group="quiqqer/core" var="quiqqer.webauthn.settings.name.label"}</th>
+                    <th>{locale group="quiqqer/core" var="quiqqer.webauthn.settings.created"}</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+            {foreach $credentials as $credential}
+                <tr class="quiqqer-webauthn-credential" data-id="{$credential.id}">
+                    <td>
+                        {if $credential.name}
+                            <strong>{$credential.name|escape:'html'}</strong>
+                        {else}
+                            <strong>{locale group="quiqqer/core" var="quiqqer.webauthn.settings.unnamed"}</strong>
+                        {/if}
+                    </td>
+                    <td>
+                        {$credential.created|date_format:"%Y-%m-%d %H:%M"}
+                    </td>
+                    <td>
+                        <button type="button" name="delete-passkey" class="btn btn-secondary" data-id="{$credential.id}">
+                            <span class="fa fa-trash"></span>
+                            <span>{locale group="quiqqer/core" var="delete"}</span>
+                        </button>
+                    </td>
+                </tr>
+            {/foreach}
+                </tbody>
+            </table>
+        </div>
+        {else}
+        <div class="quiqqer-webauthn-settings-empty">
+            {locale group="quiqqer/core" var="quiqqer.webauthn.settings.empty"}
+        </div>
+        {/if}
+    </section>
+</div>
