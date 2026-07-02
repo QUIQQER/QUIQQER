@@ -339,7 +339,7 @@ EOT;
             "require CMS_DIR . '{$relativeOptDir}quiqqer/core/quiqqer.php';\n";
 
         file_put_contents($console, $content);
-        system("chmod +x $console");
+        chmod($console, 0755);
     }
 
     /**
