@@ -6993,9 +6993,6 @@ After logging in you will be prompted to set a new password.
         <locale name="quiqqer.webauthn.frontend.description">
             <en><![CDATA[Sign in with a passkey, fingerprint, face recognition, or security key.]]></en>
         </locale>
-        <locale name="quiqqer.webauthn.login.username.optional">
-            <en><![CDATA[Username or email (optional)]]></en>
-        </locale>
         <locale name="quiqqer.webauthn.login.button">
             <en><![CDATA[Sign in with passkey]]></en>
         </locale>

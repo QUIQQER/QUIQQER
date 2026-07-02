@@ -7212,9 +7212,6 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         <locale name="quiqqer.webauthn.frontend.description">
             <de><![CDATA[Melde dich mit einem Passkey, Fingerabdruck, Gesichtserkennung oder Sicherheitsschlüssel an.]]></de>
         </locale>
-        <locale name="quiqqer.webauthn.login.username.optional">
-            <de><![CDATA[Benutzername oder E-Mail (optional)]]></de>
-        </locale>
         <locale name="quiqqer.webauthn.login.button">
             <de><![CDATA[Mit Passkey anmelden]]></de>
         </locale>
