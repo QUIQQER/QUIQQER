@@ -313,7 +313,7 @@ class Media extends QUI\QDOM
             }
 
             $addedColumns[] = new \Doctrine\DBAL\Schema\Column(
-                $name,
+                self::getMediaSchemaColumnName($name),
                 \Doctrine\DBAL\Types\Type::getType($definition["type"]),
                 $definition["options"]
             );
@@ -393,8 +393,17 @@ class Media extends QUI\QDOM
     private static function addMediaColumns(\Doctrine\DBAL\Schema\Table $Table): void
     {
         foreach (self::getMediaColumnDefinitions() as $name => $definition) {
-            $Table->addColumn($name, $definition["type"], $definition["options"]);
+            $Table->addColumn(self::getMediaSchemaColumnName($name), $definition["type"], $definition["options"]);
         }
+    }
+
+    private static function getMediaSchemaColumnName(string $name): string
+    {
+        if ($name === "external") {
+            return '"' . str_replace('"', '""', $name) . '"';
+        }
+
+        return $name;
     }
 
     private static function addMediaIndexes(\Doctrine\DBAL\Schema\Table $Table): void
