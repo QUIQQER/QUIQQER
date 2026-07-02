@@ -1584,7 +1584,7 @@ define('controls/users/User', [
                 'qui/controls/windows/Popup'
             ], (Popup) => {
                 new Popup({
-                    maxHeight: 600,
+                    maxHeight: 700,
                     maxWidth: 800,
                     title: QUILocale.get(lg, 'user.settings.authenticators.additionalSettings'),
                     icon: 'fa fa-gears',

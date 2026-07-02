@@ -27,9 +27,9 @@
 
 .quiqqer-webauthn-settings-icon {
     align-items: center;
-    background: var(--qui-btn-primary-bg, #2f8fc6);
+    background: #eef1f4;
     border-radius: 50%;
-    color: var(--qui-btn-primary-color, #fff);
+    color: #606c76;
     display: flex;
     font-size: 42px;
     height: 96px;
