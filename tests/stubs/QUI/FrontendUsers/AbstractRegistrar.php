@@ -4,12 +4,6 @@ namespace QUI\FrontendUsers;
 
 use QUI;
 
-if (!class_exists(Exception::class)) {
-    class Exception extends QUI\Exception
-    {
-    }
-}
-
 if (!class_exists(AbstractRegistrar::class)) {
     abstract class AbstractRegistrar extends QUI\QDOM
     {
