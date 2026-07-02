@@ -387,6 +387,7 @@ define('controls/users/User', [
                 const Form = Body.getElement('form');
 
                 Form.setStyles({
+                    display: 'inline-block',
                     opacity: 0,
                     position: 'relative',
                     top: -50
