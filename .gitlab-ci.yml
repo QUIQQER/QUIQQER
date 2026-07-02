@@ -1,22 +1,43 @@
 include:
   - component: dev.quiqqer.com/quiqqer/stabilization/ci-cd-components/quiqqer-package-bundle/quiqqer-package-bundle@main
 
+.testing-db: &testing-db
+  services:
+    - name: mariadb:11.8
+      alias: db
+  variables:
+    QUIQQER_DB_VENDOR: mariadb
+    QUIQQER_DB_HOST: db
+    QUIQQER_DB_NAME: quiqqer
+    QUIQQER_DB_USER: quiqqer
+    QUIQQER_DB_PASSWORD: quiqqer
+    MARIADB_DATABASE: quiqqer
+    MARIADB_USER: quiqqer
+    MARIADB_PASSWORD: quiqqer
+    MARIADB_ROOT_PASSWORD: root
+
 phpstan:
+  <<: *testing-db
   image: quiqqer/testing:v1-php8.3
 
 phpunit-php8.1:
+  <<: *testing-db
   image: quiqqer/testing:v1-php8.1
 
 phpunit-php8.2:
+  <<: *testing-db
   image: quiqqer/testing:v1-php8.2
 
 phpunit-php8.3:
+  <<: *testing-db
   image: quiqqer/testing:v1-php8.3
 
 phpunit-php8.4:
+  <<: *testing-db
   image: quiqqer/testing:v1-php8.4
 
 phpunit-php8.5:
+  <<: *testing-db
   image: quiqqer/testing:v1-php8.5
 
 trigger-build-of-testing-docker-image:
