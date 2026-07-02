@@ -54,14 +54,12 @@ define('controls/users/auth/WebAuthnLogin', [
 
             const form = this.getElm().closest('form');
             const button = this.getElm().querySelector('[name="passkey-login"]');
-            const username = this.getElm().querySelector('[name="username"]');
             const assertion = this.getElm().querySelector('[name="assertion"]');
 
             button.disabled = true;
 
             new Promise((resolve, reject) => {
                 QUIAjax.get('ajax_users_authenticator_webauthn_beginLogin', resolve, {
-                    username: username ? username.value : '',
                     onError: reject
                 });
             }).then((options) => {
