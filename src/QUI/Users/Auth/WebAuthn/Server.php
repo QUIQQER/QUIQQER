@@ -10,6 +10,7 @@ use function base64_encode;
 use function parse_url;
 use function preg_replace;
 use function rtrim;
+use function str_contains;
 use function strlen;
 use function str_repeat;
 use function strtolower;
@@ -51,8 +52,8 @@ class Server
 
         $options = $webAuthn->getCreateArgs(
             $this->credentials->userHandleToBinary($userHandle),
-            $User->getUsername(),
-            $User->getName() ?: $User->getUsername(),
+            $this->getWebAuthnAccountName($User->getUsername()),
+            $this->getWebAuthnDisplayName($User->getUsername(), $User->getName()),
             120,
             'required',
             'required',
@@ -73,6 +74,26 @@ class Server
         ];
     }
 
+    private function getWebAuthnAccountName(string $username): string
+    {
+        if (str_contains($username, '@')) {
+            return $username;
+        }
+
+        return $username . '@' . $this->getRpId();
+    }
+
+    private function getWebAuthnDisplayName(string $username, string $displayName): string
+    {
+        $displayName = trim($displayName);
+
+        if ($displayName !== '' && $displayName !== $username) {
+            return $displayName;
+        }
+
+        return $this->getWebAuthnAccountName($username);
+    }
+
     public function getRegistrationOptionsForNewUser(
         string $username,
         string $displayName,
@@ -83,8 +104,8 @@ class Server
 
         $options = $webAuthn->getCreateArgs(
             $this->credentials->userHandleToBinary($userHandle),
-            $username,
-            $displayName ?: $username,
+            $this->getWebAuthnAccountName($username),
+            $this->getWebAuthnDisplayName($username, $displayName),
             120,
             'required',
             'required'
