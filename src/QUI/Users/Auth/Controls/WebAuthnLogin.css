@@ -21,4 +21,16 @@
 
 .quiqqer-webauthn-login-message {
     margin-top: 1rem;
+    pointer-events: none;
+}
+
+.quiqqer-webauthn-login-message-entry {
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.quiqqer-webauthn-login-message-entry.is-visible {
+    opacity: 1;
+    transform: translateY(0);
 }

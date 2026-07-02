@@ -17,12 +17,16 @@ define('controls/users/auth/WebAuthnLogin', [
         Binds: [
             '$onImport',
             '$login',
+            '$setBusy',
             '$clearMessage',
             '$showMessage'
         ],
 
         initialize: function (options) {
             this.parent(options);
+
+            this.$running = false;
+            this.$messageTimer = null;
 
             this.addEvents({
                 onImport: this.$onImport
@@ -52,6 +56,10 @@ define('controls/users/auth/WebAuthnLogin', [
             event.preventDefault();
             event.stopPropagation();
 
+            if (this.$running) {
+                return;
+            }
+
             const form = this.getElm().closest('form');
             const button = this.getElm().querySelector('[name="passkey-login"]');
             const assertion = this.getElm().querySelector('[name="assertion"]');
@@ -61,7 +69,7 @@ define('controls/users/auth/WebAuthnLogin', [
                 this.$clearMessage();
             }
 
-            button.disabled = true;
+            this.$setBusy(true);
 
             new Promise((resolve, reject) => {
                 QUIAjax.get('ajax_users_authenticator_webauthn_beginLogin', resolve, {
@@ -75,7 +83,7 @@ define('controls/users/auth/WebAuthnLogin', [
                 assertion.value = JSON.encode(WebAuthnUtils.serializeAssertion(credential));
                 form.dispatchEvent(new Event('submit', {cancelable: true, bubbles: true}));
             }).catch((err) => {
-                button.disabled = false;
+                this.$setBusy(false);
 
                 this.$showMessage(
                     typeof err.getMessage === 'function'
@@ -90,12 +98,51 @@ define('controls/users/auth/WebAuthnLogin', [
             });
         },
 
+        $setBusy: function (busy) {
+            const button = this.getElm().querySelector('[name="passkey-login"]');
+
+            this.$running = busy;
+
+            if (!button) {
+                return;
+            }
+
+            if (busy) {
+                button.disabled = true;
+                button.setAttribute('disabled', 'disabled');
+                return;
+            }
+
+            button.disabled = false;
+            button.removeAttribute('disabled');
+        },
+
         $clearMessage: function () {
             const message = this.getElm().querySelector('[data-name="message"]');
 
-            if (message) {
-                message.innerHTML = '';
+            if (this.$messageTimer) {
+                window.clearTimeout(this.$messageTimer);
+                this.$messageTimer = null;
             }
+
+            if (!message) {
+                return;
+            }
+
+            const messageNode = message.querySelector('.quiqqer-webauthn-login-message-entry');
+
+            if (!messageNode) {
+                message.innerHTML = '';
+                return;
+            }
+
+            messageNode.classList.remove('is-visible');
+
+            window.setTimeout(() => {
+                if (messageNode.parentNode) {
+                    messageNode.parentNode.removeChild(messageNode);
+                }
+            }, 180);
         },
 
         $showMessage: function (text, autoHide) {
@@ -105,10 +152,25 @@ define('controls/users/auth/WebAuthnLogin', [
                 return;
             }
 
-            message.innerHTML = '<div class="messages-message message-error">' + text + '</div>';
+            if (this.$messageTimer) {
+                window.clearTimeout(this.$messageTimer);
+                this.$messageTimer = null;
+            }
+
+            message.innerHTML = '<div class="messages-message message-error quiqqer-webauthn-login-message-entry">'
+                + text
+                + '</div>';
+
+            const messageNode = message.querySelector('.quiqqer-webauthn-login-message-entry');
+
+            window.requestAnimationFrame(() => {
+                if (messageNode) {
+                    messageNode.classList.add('is-visible');
+                }
+            });
 
             if (autoHide) {
-                window.setTimeout(() => {
+                this.$messageTimer = window.setTimeout(() => {
                     this.$clearMessage();
                 }, 5000);
             }
