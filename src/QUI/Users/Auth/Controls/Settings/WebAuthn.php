@@ -23,10 +23,14 @@ class WebAuthn extends Control
         $Engine = QUI::getTemplateManager()->getEngine();
         $user = $this->getAttribute('user');
         $credentials = [];
+        $activationMode = (bool)$this->getAttribute('activationMode');
+        $activatedExistingCredentials = (bool)$this->getAttribute('activatedExistingCredentials');
         $canCreateCredential = false;
+        $isEnabled = false;
 
         if ($user instanceof QUI\Interfaces\Users\User) {
             $credentials = (new CredentialRepository())->findByUserUuid($user->getUUID());
+            $isEnabled = $user->hasAuthenticator(QUI\Users\Auth\WebAuthn::class);
             $SessionUser = QUI::getUserBySession();
 
             if (
@@ -38,7 +42,10 @@ class WebAuthn extends Control
         }
 
         $Engine->assign([
+            'activatedExistingCredentials' => $activatedExistingCredentials,
+            'activationMode' => $activationMode,
             'canCreateCredential' => $canCreateCredential,
+            'isEnabled' => $isEnabled,
             'credentials' => $credentials
         ]);
 

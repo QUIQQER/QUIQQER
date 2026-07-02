@@ -1,4 +1,10 @@
-<div class="quiqqer-webauthn-settings" data-name="quiqqer-webauthn-settings">
+<div class="quiqqer-webauthn-settings"
+     data-name="quiqqer-webauthn-settings"
+     data-activation-mode="{if $activationMode}1{else}0{/if}"
+     data-activated-existing-credentials="{if $activatedExistingCredentials}1{else}0{/if}"
+     data-has-credentials="{if !empty($credentials)}1{else}0{/if}"
+     data-is-enabled="{if $isEnabled}1{else}0{/if}"
+>
     <header class="quiqqer-webauthn-settings-header">
         <div class="quiqqer-webauthn-settings-icon">
             <span class="fa fa-fingerprint"></span>

@@ -7245,6 +7245,9 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         <locale name="quiqqer.webauthn.settings.delete.hint">
             <de><![CDATA[Der Passkey wurde in QUIQQER entfernt. Entferne ihn bei Bedarf zusätzlich im Passwortmanager oder auf dem Gerät, auf dem er gespeichert wurde.]]></de>
         </locale>
+        <locale name="quiqqer.webauthn.settings.activated_existing.hint">
+            <de><![CDATA[Ein vorhandener Passkey-Eintrag wurde gefunden. Passkey wurde deshalb aktiviert.]]></de>
+        </locale>
         <locale name="quiqqer.webauthn.registrar.title">
             <de><![CDATA[Registrierung mit Passkey]]></de>
         </locale>

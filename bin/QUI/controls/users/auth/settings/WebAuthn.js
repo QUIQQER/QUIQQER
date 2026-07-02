@@ -17,11 +17,14 @@ define('controls/users/auth/settings/WebAuthn', [
 
         Binds: [
             '$onImport',
+            'showActivationNoticeIfReady',
             '$createPasskey',
             '$deletePasskey',
+            '$activateExistingPasskeys',
             '$refresh',
             '$refreshPanel',
             '$getUserUuid',
+            '$showActivationHint',
             '$showDeleteHint',
             '$setLoading',
             '$getWindow'
@@ -58,6 +61,21 @@ define('controls/users/auth/settings/WebAuthn', [
             Array.from(this.getElm().querySelectorAll('[name="delete-passkey"]')).forEach((deleteButton) => {
                 deleteButton.addEventListener('click', this.$deletePasskey);
             });
+        },
+
+        showActivationNoticeIfReady: function () {
+            const settings = this.getElm().querySelector('[data-name="quiqqer-webauthn-settings"]');
+
+            if (!settings) {
+                return false;
+            }
+
+            if (settings.getAttribute('data-activated-existing-credentials') !== '1') {
+                return false;
+            }
+
+            this.$showActivationHint();
+            return true;
         },
 
         $createPasskey: function (event) {
@@ -168,6 +186,30 @@ define('controls/users/auth/settings/WebAuthn', [
             });
         },
 
+        $activateExistingPasskeys: function () {
+            const authenticator = this.getAttribute('authenticator') || 'QUI\\Users\\Auth\\WebAuthn';
+
+            this.$setLoading(true);
+
+            new Promise((resolve, reject) => {
+                QUIAjax.post('ajax_users_authenticator_enableByUser', resolve, {
+                    authenticator: authenticator,
+                    onError: reject
+                });
+            }).then(() => {
+                return this.$refreshPanel();
+            }).then(() => {
+                this.$setLoading(false);
+                this.fireEvent('completed');
+            }).catch((err) => {
+                this.$setLoading(false);
+
+                if (window.console) {
+                    console.error(err);
+                }
+            });
+        },
+
         $refresh: function () {
             const container = this.getElm().parentNode;
             const User = this.getAttribute('User');
@@ -249,6 +291,34 @@ define('controls/users/auth/settings/WebAuthn', [
             }
 
             return User.getAttribute('uuid') || '';
+        },
+
+        $showActivationHint: function () {
+            const message = this.getElm().querySelector('[data-name="message"]');
+
+            if (!message) {
+                return;
+            }
+
+            message.innerHTML = '<div class="messages-message message-success quiqqer-webauthn-settings-message-entry">'
+                + QUILocale.get(lg, 'quiqqer.webauthn.settings.activated_existing.hint')
+                + '</div>';
+
+            const entry = message.querySelector('.quiqqer-webauthn-settings-message-entry');
+
+            setTimeout(() => {
+                entry.classList.add('is-visible');
+            }, 20);
+
+            setTimeout(() => {
+                entry.classList.remove('is-visible');
+
+                setTimeout(() => {
+                    if (entry.parentNode) {
+                        entry.parentNode.removeChild(entry);
+                    }
+                }, 250);
+            }, 4000);
         },
 
         $showDeleteHint: function (globalMessage) {

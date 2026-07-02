@@ -56,7 +56,7 @@
     display: grid;
     gap: 12px;
     grid-template-columns: minmax(0, 1fr);
-    margin: 0 auto 38px;
+    margin: 0 auto 22px;
     max-width: 390px;
 }
 
@@ -96,17 +96,34 @@
 }
 
 .quiqqer-webauthn-settings-message {
-    margin-bottom: 18px;
+    margin: 0 auto 30px;
+    max-width: 420px;
 }
 
 .quiqqer-webauthn-settings-message:empty {
     display: none;
 }
 
+.quiqqer-webauthn-settings-message-entry {
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 250ms ease, transform 250ms ease;
+}
+
+.quiqqer-webauthn-settings-message-entry.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    margin-bottom: 20px;
+}
+
 .quiqqer-webauthn-settings-list {
     border-top: 1px solid #e4e8ec;
     margin-top: 40px;
     padding-top: 28px;
+}
+
+.quiqqer-webauthn-settings-message:not(:empty) + .quiqqer-webauthn-settings-list {
+    margin-top: 0;
 }
 
 .quiqqer-webauthn-settings-list h2 {

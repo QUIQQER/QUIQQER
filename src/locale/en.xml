@@ -7026,6 +7026,9 @@ After logging in you will be prompted to set a new password.
         <locale name="quiqqer.webauthn.settings.delete.hint">
             <en><![CDATA[The passkey has been removed from QUIQQER. If needed, also remove it from the password manager or device where it was stored.]]></en>
         </locale>
+        <locale name="quiqqer.webauthn.settings.activated_existing.hint">
+            <en><![CDATA[An existing passkey entry was found. Passkey was enabled because of it.]]></en>
+        </locale>
         <locale name="quiqqer.webauthn.registrar.title">
             <en><![CDATA[Registration with passkey]]></en>
         </locale>
