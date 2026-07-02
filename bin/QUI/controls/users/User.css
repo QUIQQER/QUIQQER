@@ -44,6 +44,10 @@
     line-height: 1;
 }
 
+.authenticator:last-of-type {
+    margin-bottom: 24px !important;
+}
+
 .user-delete-window-list-entry {
     margin-bottom: 0.5rem;
 }

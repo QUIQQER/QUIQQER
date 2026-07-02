@@ -22,6 +22,7 @@ define('controls/users/auth/settings/WebAuthn', [
             '$refresh',
             '$refreshPanel',
             '$getUserUuid',
+            '$showDeleteHint',
             '$setLoading',
             '$getWindow'
         ],
@@ -137,6 +138,8 @@ define('controls/users/auth/settings/WebAuthn', [
                     return this.$refreshPanel().then(() => {
                         const Win = this.$getWindow();
 
+                        this.$showDeleteHint(true);
+
                         if (Win && typeof Win.close === 'function') {
                             Win.close();
                         }
@@ -145,7 +148,8 @@ define('controls/users/auth/settings/WebAuthn', [
                     });
                 }
 
-                return this.$refresh().then(() => {
+                return this.$refresh().then((Control) => {
+                    Control.$showDeleteHint(false);
                     return true;
                 });
             }).then((refreshPanel) => {
@@ -188,18 +192,24 @@ define('controls/users/auth/settings/WebAuthn', [
                 QUIAjax.get('ajax_users_authenticator_webauthn_settings', (html) => {
                     container.innerHTML = html;
                     QUI.parse(container).then(() => {
+                        let refreshedControl = null;
+
                         QUI.Controls.getControlsInElement(container).each((Control) => {
                             Control.setAttribute('uid', User.getId());
                             Control.setAttribute('authenticator', authenticator);
                             Control.setAttribute('User', User);
                             Control.setAttribute('Panel', this.getAttribute('Panel'));
+
+                            if (Control.getType && Control.getType() === this.getType()) {
+                                refreshedControl = Control;
+                            }
                         });
 
                         if (Win && Win.Loader) {
                             Win.Loader.hide();
                         }
 
-                        resolve();
+                        resolve(refreshedControl || this);
                     }).catch((err) => {
                         if (Win && Win.Loader) {
                             Win.Loader.hide();
@@ -239,6 +249,24 @@ define('controls/users/auth/settings/WebAuthn', [
             }
 
             return User.getAttribute('uuid') || '';
+        },
+
+        $showDeleteHint: function (globalMessage) {
+            const hint = QUILocale.get(lg, 'quiqqer.webauthn.settings.delete.hint');
+
+            if (globalMessage) {
+                QUI.getMessageHandler().then((MessageHandler) => {
+                    MessageHandler.addInformation(hint);
+                });
+
+                return;
+            }
+
+            const message = this.getElm().querySelector('[data-name="message"]');
+
+            if (message) {
+                message.innerHTML = '<div class="messages-message message-information">' + hint + '</div>';
+            }
         },
 
         $setLoading: function (loading) {

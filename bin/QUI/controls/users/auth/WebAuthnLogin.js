@@ -16,7 +16,9 @@ define('controls/users/auth/WebAuthnLogin', [
 
         Binds: [
             '$onImport',
-            '$login'
+            '$login',
+            '$clearMessage',
+            '$showMessage'
         ],
 
         initialize: function (options) {
@@ -36,9 +38,7 @@ define('controls/users/auth/WebAuthnLogin', [
                     button.disabled = true;
                 }
 
-                if (message) {
-                    message.innerHTML = QUILocale.get(lg, 'quiqqer.webauthn.error.unsupported');
-                }
+                this.$showMessage(QUILocale.get(lg, 'quiqqer.webauthn.error.unsupported'), false);
 
                 return;
             }
@@ -58,7 +58,7 @@ define('controls/users/auth/WebAuthnLogin', [
             const message = this.getElm().querySelector('[data-name="message"]');
 
             if (message) {
-                message.innerHTML = '';
+                this.$clearMessage();
             }
 
             button.disabled = true;
@@ -77,16 +77,41 @@ define('controls/users/auth/WebAuthnLogin', [
             }).catch((err) => {
                 button.disabled = false;
 
-                if (message) {
-                    message.innerHTML = typeof err.getMessage === 'function'
+                this.$showMessage(
+                    typeof err.getMessage === 'function'
                         ? err.getMessage()
-                        : QUILocale.get(lg, WebAuthnUtils.getErrorLocaleKey(err));
-                }
+                        : QUILocale.get(lg, WebAuthnUtils.getErrorLocaleKey(err)),
+                    true
+                );
 
                 if (window.console) {
                     console.error(err);
                 }
             });
+        },
+
+        $clearMessage: function () {
+            const message = this.getElm().querySelector('[data-name="message"]');
+
+            if (message) {
+                message.innerHTML = '';
+            }
+        },
+
+        $showMessage: function (text, autoHide) {
+            const message = this.getElm().querySelector('[data-name="message"]');
+
+            if (!message) {
+                return;
+            }
+
+            message.innerHTML = '<div class="messages-message message-error">' + text + '</div>';
+
+            if (autoHide) {
+                window.setTimeout(() => {
+                    this.$clearMessage();
+                }, 5000);
+            }
         }
     });
 });

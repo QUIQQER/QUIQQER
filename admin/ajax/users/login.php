@@ -71,6 +71,15 @@ QUI::$Ajax->registerFunction(
         if ($authStep === 'primary' || empty($authStep)) {
             QUI::getSession()->set('auth-primary', 1);
             QUI::getSession()->set('auth-secondary', 0);
+
+            $PrimaryAuthenticator = new $authenticator();
+
+            if (
+                $authenticator === QUI\Users\Auth\WebAuthn::class
+                || !$PrimaryAuthenticator->isSecondaryAuthentication()
+            ) {
+                QUI::getSession()->set('auth-secondary', 1);
+            }
         }
 
         if ($authStep === 'secondary') {
