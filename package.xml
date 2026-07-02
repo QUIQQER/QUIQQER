@@ -22,6 +22,8 @@
             <rest src="\QUI\Projects\RestProvider"/>
             <auth src="\QUI\Users\Auth\QUIQQER"/>
             <auth src="\QUI\Users\Auth\VerifiedMail2FA"/>
+            <auth src="\QUI\Users\Auth\WebAuthn"/>
+            <registrar src="\QUI\Registration\WebAuthn\Registrar"/>
             <desktopSearch src="\QUI\Workspace\Search\Provider\Sites"/>
             <desktopSearch src="\QUI\Workspace\Search\Provider\Media"/>
             <desktopSearch src="\QUI\Workspace\Search\Provider\SettingsCategories"/>

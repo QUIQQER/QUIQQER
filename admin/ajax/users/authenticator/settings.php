@@ -30,7 +30,10 @@ QUI::$Ajax->registerFunction(
         $Settings = $Authenticator->getSettingsControl();
 
         if ($Settings) {
-            return $Settings->create();
+            $Output = new QUI\Output();
+            $css = QUI\Control\Manager::getCSS();
+
+            return $Output->parse($css . $Settings->create());
         }
 
         return '';
