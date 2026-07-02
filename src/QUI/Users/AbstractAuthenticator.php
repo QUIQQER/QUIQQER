@@ -77,4 +77,9 @@ abstract class AbstractAuthenticator implements QUI\Users\AuthenticatorInterface
     {
         return true;
     }
+
+    public function satisfiesSecondaryAuthentication(): bool
+    {
+        return false;
+    }
 }

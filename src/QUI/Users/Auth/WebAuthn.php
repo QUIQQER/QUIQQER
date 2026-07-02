@@ -39,6 +39,11 @@ class WebAuthn extends AbstractAuthenticator
         return new Controls\WebAuthnLogin();
     }
 
+    public function satisfiesSecondaryAuthentication(): bool
+    {
+        return true;
+    }
+
     public function getSettingsControl(): ?QUI\Control
     {
         $user = null;
