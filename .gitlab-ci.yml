@@ -1,6 +1,24 @@
 include:
   - component: dev.quiqqer.com/quiqqer/stabilization/ci-cd-components/quiqqer-package-bundle/quiqqer-package-bundle@main
 
+phpstan:
+  image: quiqqer/testing:v1-php8.3
+
+phpunit-php8.1:
+  image: quiqqer/testing:v1-php8.1
+
+phpunit-php8.2:
+  image: quiqqer/testing:v1-php8.2
+
+phpunit-php8.3:
+  image: quiqqer/testing:v1-php8.3
+
+phpunit-php8.4:
+  image: quiqqer/testing:v1-php8.4
+
+phpunit-php8.5:
+  image: quiqqer/testing:v1-php8.5
+
 trigger-build-of-testing-docker-image:
   needs:
     - job: release
