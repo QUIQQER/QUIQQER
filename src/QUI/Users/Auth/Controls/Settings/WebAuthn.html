@@ -1,0 +1,48 @@
+<div data-name="quiqqer-webauthn-settings" data-user-uuid="{$userUuid|escape:'html'}">
+    {if $canCreateCredential}
+        <p>{locale group="quiqqer/core" var="quiqqer.webauthn.settings.description"}</p>
+
+        <label>
+            <span>{locale group="quiqqer/core" var="quiqqer.webauthn.settings.name.label"}</span>
+            <input type="text"
+                   name="credential-name"
+                   value=""
+                   placeholder="{locale group='quiqqer/core' var='quiqqer.webauthn.settings.name.placeholder'}"
+            />
+        </label>
+
+        <button type="button" name="create-passkey" class="btn btn-primary">
+            <span class="fa fa-fingerprint"></span>
+            <span>{locale group="quiqqer/core" var="quiqqer.webauthn.settings.create.button"}</span>
+        </button>
+    {/if}
+
+    <div data-name="message" class="quiqqer-webauthn-settings-message"></div>
+
+    {if !empty($credentials)}
+    <h2>{locale group="quiqqer/core" var="quiqqer.webauthn.settings.list.title"}</h2>
+    <div class="quiqqer-webauthn-credentials">
+        {foreach $credentials as $credential}
+        <div class="quiqqer-webauthn-credential" data-id="{$credential.id}">
+            <div>
+                <strong>
+                    {if $credential.name}
+                        {$credential.name|escape:'html'}
+                    {else}
+                        {locale group="quiqqer/core" var="quiqqer.webauthn.settings.unnamed"}
+                    {/if}
+                </strong>
+                <small>
+                    {locale group="quiqqer/core" var="quiqqer.webauthn.settings.created"}:
+                    {$credential.created|date_format:"%Y-%m-%d %H:%M"}
+                </small>
+            </div>
+            <button type="button" name="delete-passkey" class="btn btn-secondary" data-id="{$credential.id}">
+                <span class="fa fa-trash"></span>
+                <span>{locale group="quiqqer/core" var="delete"}</span>
+            </button>
+        </div>
+        {/foreach}
+    </div>
+    {/if}
+</div>

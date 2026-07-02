@@ -1,0 +1,32 @@
+.quiqqer-webauthn-auth-settings label {
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.quiqqer-webauthn-auth-settings button .fa {
+    margin-right: 0.5rem;
+}
+
+.quiqqer-webauthn-settings-message {
+    margin-top: 1rem;
+}
+
+.quiqqer-webauthn-credentials {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.quiqqer-webauthn-credential {
+    align-items: center;
+    border: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem;
+}
+
+.quiqqer-webauthn-credential small {
+    display: block;
+    margin-top: 0.25rem;
+}

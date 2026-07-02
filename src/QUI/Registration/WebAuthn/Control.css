@@ -1,0 +1,12 @@
+.quiqqer-webauthn-registration-control label {
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.quiqqer-webauthn-registration-control button .fa {
+    margin-right: 0.5rem;
+}
+
+.quiqqer-webauthn-registration-message {
+    margin-top: 1rem;
+}

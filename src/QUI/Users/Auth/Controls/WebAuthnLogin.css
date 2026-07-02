@@ -1,0 +1,16 @@
+.quiqqer-webauthn-login {
+    width: 100%;
+}
+
+.quiqqer-webauthn-login label {
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.quiqqer-webauthn-login button .fa {
+    margin-right: 0.5rem;
+}
+
+.quiqqer-webauthn-login-message {
+    margin-top: 1rem;
+}

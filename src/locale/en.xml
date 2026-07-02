@@ -6978,6 +6978,84 @@ After logging in you will be prompted to set a new password.
         <locale name="quiqqer.config.current.version">
             <en><![CDATA[Current installed QUIQQER version: [version]]]></en>
         </locale>
+        <locale name="quiqqer.webauthn.title">
+            <en><![CDATA[Passkey / WebAuthn]]></en>
+        </locale>
+        <locale name="quiqqer.webauthn.description">
+            <en><![CDATA[Authentication with passkeys and WebAuthn.]]></en>
+        </locale>
+        <locale name="quiqqer.webauthn.frontend.title">
+            <en><![CDATA[Passkey]]></en>
+        </locale>
+        <locale name="quiqqer.webauthn.frontend.description">
+            <en><![CDATA[Sign in with a passkey, fingerprint, face recognition, or security key.]]></en>
+        </locale>
+        <locale name="quiqqer.webauthn.login.username.optional">
+            <en><![CDATA[Username or email (optional)]]></en>
+        </locale>
+        <locale name="quiqqer.webauthn.login.button">
+            <en><![CDATA[Sign in with passkey]]></en>
+        </locale>
+        <locale name="quiqqer.webauthn.settings.description">
+            <en><![CDATA[Create and manage passkeys for this user.]]></en>
+        </locale>
+        <locale name="quiqqer.webauthn.settings.name.label">
+            <en><![CDATA[Passkey name]]></en>
+        </locale>
+        <locale name="quiqqer.webauthn.settings.name.placeholder">
+            <en><![CDATA[e.g. MacBook, iPhone, or YubiKey]]></en>
+        </locale>
+        <locale name="quiqqer.webauthn.settings.create.button">
+            <en><![CDATA[Create passkey]]></en>
+        </locale>
+        <locale name="quiqqer.webauthn.settings.list.title">
+            <en><![CDATA[Registered passkeys]]></en>
+        </locale>
+        <locale name="quiqqer.webauthn.settings.unnamed">
+            <en><![CDATA[Unnamed passkey]]></en>
+        </locale>
+        <locale name="quiqqer.webauthn.settings.created">
+            <en><![CDATA[Created]]></en>
+        </locale>
+        <locale name="quiqqer.webauthn.registrar.title">
+            <en><![CDATA[Registration with passkey]]></en>
+        </locale>
+        <locale name="quiqqer.webauthn.registrar.description">
+            <en><![CDATA[Create a user account and set up a passkey directly.]]></en>
+        </locale>
+        <locale name="quiqqer.webauthn.registration.username.label">
+            <en><![CDATA[Username or email]]></en>
+        </locale>
+        <locale name="quiqqer.webauthn.registration.button">
+            <en><![CDATA[Register with passkey]]></en>
+        </locale>
+        <locale name="quiqqer.webauthn.error.unsupported">
+            <en><![CDATA[This browser does not support passkeys/WebAuthn.]]></en>
+        </locale>
+        <locale name="exception.webauthn.credential_already_exists">
+            <en><![CDATA[This passkey is already registered.]]></en>
+        </locale>
+        <locale name="exception.webauthn.challenge_missing">
+            <en><![CDATA[The passkey request has expired. Please try again.]]></en>
+        </locale>
+        <locale name="exception.webauthn.challenge_invalid_user">
+            <en><![CDATA[The passkey request does not match the user.]]></en>
+        </locale>
+        <locale name="exception.webauthn.credential_not_found">
+            <en><![CDATA[The passkey was not found.]]></en>
+        </locale>
+        <locale name="exception.webauthn.assertion_missing">
+            <en><![CDATA[The passkey sign-in data is missing.]]></en>
+        </locale>
+        <locale name="exception.webauthn.attestation_missing">
+            <en><![CDATA[The passkey registration data is missing.]]></en>
+        </locale>
+        <locale name="exception.webauthn.username_missing">
+            <en><![CDATA[Please enter a username or email address.]]></en>
+        </locale>
+        <locale name="exception.webauthn.username_exists">
+            <en><![CDATA[This username already exists.]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/controls" datatype="php,js">
         <locale name="package.title">
