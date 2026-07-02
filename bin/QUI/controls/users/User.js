@@ -390,7 +390,8 @@ define('controls/users/User', [
                     display: 'inline-block',
                     opacity: 0,
                     position: 'relative',
-                    top: -50
+                    top: -50,
+                    width: '100%'
                 });
 
                 // insert the values
