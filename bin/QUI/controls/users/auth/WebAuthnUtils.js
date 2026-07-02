@@ -63,6 +63,18 @@ define('controls/users/auth/WebAuthnUtils', [], function () {
         return options;
     };
 
+    const getErrorLocaleKey = function (err) {
+        if (err && err.name === 'InvalidStateError') {
+            return 'quiqqer.webauthn.error.already_registered_on_device';
+        }
+
+        if (err && err.name === 'NotAllowedError') {
+            return 'quiqqer.webauthn.error.cancelled';
+        }
+
+        return 'quiqqer.webauthn.error.failed';
+    };
+
     return {
         isSupported: function () {
             return !!window.PublicKeyCredential && !!navigator.credentials;
@@ -70,6 +82,7 @@ define('controls/users/auth/WebAuthnUtils', [], function () {
 
         prepareCreateOptions: prepareCreateOptions,
         prepareGetOptions: prepareGetOptions,
+        getErrorLocaleKey: getErrorLocaleKey,
 
         serializeAttestation: function (credential) {
             return {

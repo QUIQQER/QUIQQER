@@ -58,10 +58,15 @@ define('controls/users/auth/WebAuthnRegistration', [
             const username = container.querySelector('[name="username"]');
             const credentialName = container.querySelector('[name="credentialName"]');
             const attestation = container.querySelector('[name="attestation"]');
+            const message = container.querySelector('[data-name="message"]');
 
             if (!username.value.trim()) {
                 username.focus();
                 return;
+            }
+
+            if (message) {
+                message.innerHTML = '';
             }
 
             button.disabled = true;
@@ -87,6 +92,12 @@ define('controls/users/auth/WebAuthnRegistration', [
                 });
             }).catch((err) => {
                 button.disabled = false;
+
+                if (message) {
+                    message.innerHTML = typeof err.getMessage === 'function'
+                        ? err.getMessage()
+                        : QUILocale.get(lg, WebAuthnUtils.getErrorLocaleKey(err));
+                }
 
                 if (window.console) {
                     console.error(err);

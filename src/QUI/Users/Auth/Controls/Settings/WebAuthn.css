@@ -126,6 +126,7 @@
     border: 1px solid #dfe4e8;
     border-radius: 6px;
     border-spacing: 0;
+    font-size: 13px;
     overflow: hidden;
     width: 100%;
 }
@@ -141,13 +142,22 @@
 .quiqqer-webauthn-credentials-table th {
     background: #f6f8fa;
     color: #3b4650;
+    font-size: 12px;
     font-weight: 600;
+    text-transform: none;
 }
 
 .quiqqer-webauthn-credentials-table td:last-child,
 .quiqqer-webauthn-credentials-table th:last-child {
     text-align: right;
+    width: 1%;
     white-space: nowrap;
+}
+
+.quiqqer-webauthn-credentials-table td:nth-child(2),
+.quiqqer-webauthn-credentials-table th:nth-child(2) {
+    color: #697783;
+    width: 170px;
 }
 
 .quiqqer-webauthn-credentials-table tbody tr:last-child td {
@@ -158,6 +168,10 @@
     color: #222;
     display: block;
     line-height: 1.3;
+}
+
+.quiqqer-webauthn-credential [name="delete-passkey"] {
+    padding: 6px 10px;
 }
 
 .quiqqer-webauthn-settings-empty {

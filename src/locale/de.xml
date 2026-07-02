@@ -7257,6 +7257,15 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         <locale name="quiqqer.webauthn.error.unsupported">
             <de><![CDATA[Dieser Browser unterstützt Passkeys/WebAuthn nicht.]]></de>
         </locale>
+        <locale name="quiqqer.webauthn.error.already_registered_on_device">
+            <de><![CDATA[Auf diesem Gerät oder in diesem Passwortmanager ist für diesen Benutzer bereits ein Passkey eingerichtet. Verwende den bestehenden Passkey oder speichere einen neuen Passkey auf einem anderen Gerät.]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.error.cancelled">
+            <de><![CDATA[Die Passkey-Anfrage wurde abgebrochen.]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.error.failed">
+            <de><![CDATA[Die Passkey-Anfrage konnte nicht abgeschlossen werden.]]></de>
+        </locale>
         <locale name="exception.webauthn.credential_already_exists">
             <de><![CDATA[Dieser Passkey ist bereits registriert.]]></de>
         </locale>

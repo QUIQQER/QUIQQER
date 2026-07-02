@@ -7038,6 +7038,15 @@ After logging in you will be prompted to set a new password.
         <locale name="quiqqer.webauthn.error.unsupported">
             <en><![CDATA[This browser does not support passkeys/WebAuthn.]]></en>
         </locale>
+        <locale name="quiqqer.webauthn.error.already_registered_on_device">
+            <en><![CDATA[A passkey is already set up for this user on this device or in this password manager. Use the existing passkey or save a new passkey on another device.]]></en>
+        </locale>
+        <locale name="quiqqer.webauthn.error.cancelled">
+            <en><![CDATA[The passkey request was cancelled.]]></en>
+        </locale>
+        <locale name="quiqqer.webauthn.error.failed">
+            <en><![CDATA[The passkey request could not be completed.]]></en>
+        </locale>
         <locale name="exception.webauthn.credential_already_exists">
             <en><![CDATA[This passkey is already registered.]]></en>
         </locale>

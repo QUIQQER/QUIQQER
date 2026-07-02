@@ -55,6 +55,11 @@ define('controls/users/auth/WebAuthnLogin', [
             const form = this.getElm().closest('form');
             const button = this.getElm().querySelector('[name="passkey-login"]');
             const assertion = this.getElm().querySelector('[name="assertion"]');
+            const message = this.getElm().querySelector('[data-name="message"]');
+
+            if (message) {
+                message.innerHTML = '';
+            }
 
             button.disabled = true;
 
@@ -71,6 +76,12 @@ define('controls/users/auth/WebAuthnLogin', [
                 form.dispatchEvent(new Event('submit', {cancelable: true, bubbles: true}));
             }).catch((err) => {
                 button.disabled = false;
+
+                if (message) {
+                    message.innerHTML = typeof err.getMessage === 'function'
+                        ? err.getMessage()
+                        : QUILocale.get(lg, WebAuthnUtils.getErrorLocaleKey(err));
+                }
 
                 if (window.console) {
                     console.error(err);
