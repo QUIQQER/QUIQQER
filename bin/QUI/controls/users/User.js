@@ -55,7 +55,8 @@ define('controls/users/User', [
             '$onUserDelete',
             '$onClickSave',
             '$onClickDel',
-            '$onClickSendMail'
+            '$onClickSendMail',
+            '$refreshAuthenticator'
         ],
 
         initialize: function (uid, options) {
@@ -1497,12 +1498,13 @@ define('controls/users/User', [
             let table = button.closest('table'),
                 tbody = table.querySelector('tbody'),
                 auth = table.get('data-authenticator'),
+                wasEnabled = table.hasClass('authenticator-enabled'),
                 toggleStatus = Promise.resolve();
 
             button.style.width = button.offsetWidth + 'px';
             button.innerHTML = '<span class="fa fa-spinner fa-spin"></span>';
 
-            if (table.hasClass('authenticator-enabled')) {
+            if (wasEnabled) {
                 toggleStatus = user.disableAuthenticator(auth);
             } else {
                 toggleStatus = user.enableAuthenticator(auth);
@@ -1521,6 +1523,14 @@ define('controls/users/User', [
 
                     if (table.querySelector('[name="settings"]')) {
                         table.querySelector('[name="settings"]').disabled = false;
+                    }
+
+                    if (!wasEnabled && auth === 'QUI\\Users\\Auth\\WebAuthn') {
+                        const settingsButton = table.querySelector('[name="settings"]');
+
+                        if (settingsButton) {
+                            this.$openAuthSettings(settingsButton);
+                        }
                     }
 
                     //return user.getAuthenticatorSettings(auth);
@@ -1574,8 +1584,64 @@ define('controls/users/User', [
             });
         },
 
+        $refreshAuthenticator: function (authenticator) {
+            const user = this.getUser();
+            const authenticators = this.getBody().getElements('.authenticator');
+
+            let table = null;
+
+            authenticators.some((entry) => {
+                if (entry.get('data-authenticator') === authenticator) {
+                    table = entry;
+                    return true;
+                }
+
+                return false;
+            });
+
+            if (!table) {
+                return Promise.resolve();
+            }
+
+            const button = table.querySelector('thead th > button:not([name="settings"])');
+            const settingsButton = table.querySelector('thead th > button[name="settings"]');
+
+            return user.hasAuthenticator(authenticator).then((enabled) => {
+                if (enabled) {
+                    table.classList.add('authenticator-enabled');
+
+                    if (button) {
+                        button.innerHTML = QUILocale.get('quiqqer/core', 'isActivate');
+                        button.title = QUILocale.get('quiqqer/core', 'isActivate');
+                        button.classList.remove('btn-red');
+                        button.classList.add('btn-green');
+                    }
+
+                    if (settingsButton) {
+                        settingsButton.disabled = false;
+                    }
+
+                    return;
+                }
+
+                table.classList.remove('authenticator-enabled');
+
+                if (button) {
+                    button.innerHTML = QUILocale.get('quiqqer/core', 'isDeactivate');
+                    button.title = QUILocale.get('quiqqer/core', 'isDeactivate');
+                    button.classList.add('btn-red');
+                    button.classList.remove('btn-green');
+                }
+
+                if (settingsButton) {
+                    settingsButton.disabled = true;
+                }
+            });
+        },
+
         $openAuthSettings: function (button) {
             const user = this.getUser();
+            const Panel = this;
 
             let table = button.closest('table'),
                 auth = table.get('data-authenticator');
@@ -1596,9 +1662,38 @@ define('controls/users/User', [
 
                             user.getAuthenticatorSettings(auth).then((settingHtml) => {
                                 win.getContent().innerHTML = settingHtml;
+
                                 return QUI.parse(win.getContent());
                             }).then(() => {
+                                QUI.Controls.getControlsInElement(win.getContent()).each((Control) => {
+                                    Control.setAttribute('uid', user.getId());
+                                    Control.setAttribute('authenticator', auth);
+                                    Control.setAttribute('User', user);
+                                    Control.setAttribute('Panel', Panel);
+                                });
+
                                 win.Loader.hide();
+                            });
+                        },
+
+                        onClose: function () {
+                            if (auth !== 'QUI\\Users\\Auth\\WebAuthn') {
+                                return;
+                            }
+
+                            QUIAjax.post('ajax_users_authenticator_webauthn_cleanupEmpty', () => {
+                                Panel.$refreshAuthenticator(auth).catch((err) => {
+                                    if (window.console) {
+                                        console.error(err);
+                                    }
+                                });
+                            }, {
+                                userUuid: user.getAttribute('uuid'),
+                                onError: (err) => {
+                                    if (window.console) {
+                                        console.error(err);
+                                    }
+                                }
                             });
                         }
                     }

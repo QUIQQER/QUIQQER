@@ -23,12 +23,10 @@ class WebAuthn extends Control
         $Engine = QUI::getTemplateManager()->getEngine();
         $user = $this->getAttribute('user');
         $credentials = [];
-        $userUuid = '';
         $canCreateCredential = false;
 
         if ($user instanceof QUI\Interfaces\Users\User) {
             $credentials = (new CredentialRepository())->findByUserUuid($user->getUUID());
-            $userUuid = $user->getUUID();
             $SessionUser = QUI::getUserBySession();
 
             if (
@@ -41,8 +39,7 @@ class WebAuthn extends Control
 
         $Engine->assign([
             'canCreateCredential' => $canCreateCredential,
-            'credentials' => $credentials,
-            'userUuid' => $userUuid
+            'credentials' => $credentials
         ]);
 
         return $Engine->fetch(__DIR__ . '/WebAuthn.html');

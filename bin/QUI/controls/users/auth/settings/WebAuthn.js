@@ -20,6 +20,8 @@ define('controls/users/auth/settings/WebAuthn', [
             '$createPasskey',
             '$deletePasskey',
             '$refresh',
+            '$refreshPanel',
+            '$getUserUuid',
             '$setLoading',
             '$getWindow'
         ],
@@ -61,7 +63,7 @@ define('controls/users/auth/settings/WebAuthn', [
             event.preventDefault();
             event.stopPropagation();
 
-            const userUuid = this.getElm().getAttribute('data-user-uuid') || '';
+            const userUuid = this.$getUserUuid();
             const button = this.getElm().querySelector('[name="create-passkey"]');
             const name = this.getElm().querySelector('[name="credential-name"]');
             const message = this.getElm().querySelector('[data-name="message"]');
@@ -97,6 +99,7 @@ define('controls/users/auth/settings/WebAuthn', [
                 button.disabled = false;
                 return this.$refresh();
             }).then(() => {
+                this.$refreshPanel();
                 this.fireEvent('completed');
             }).catch((err) => {
                 button.disabled = false;
@@ -118,7 +121,7 @@ define('controls/users/auth/settings/WebAuthn', [
             event.preventDefault();
             event.stopPropagation();
 
-            const userUuid = this.getElm().getAttribute('data-user-uuid') || '';
+            const userUuid = this.$getUserUuid();
             const button = event.target.nodeName === 'BUTTON' ? event.target : event.target.closest('button');
             this.$setLoading(true);
             button.disabled = true;
@@ -129,8 +132,28 @@ define('controls/users/auth/settings/WebAuthn', [
                     id: button.getAttribute('data-id'),
                     onError: reject
                 });
-            }).then(() => {
-                return this.$refresh();
+            }).then((result) => {
+                if (result && result.hasCredentials === false) {
+                    return this.$refreshPanel().then(() => {
+                        const Win = this.$getWindow();
+
+                        if (Win && typeof Win.close === 'function') {
+                            Win.close();
+                        }
+
+                        return false;
+                    });
+                }
+
+                return this.$refresh().then(() => {
+                    return true;
+                });
+            }).then((refreshPanel) => {
+                if (!refreshPanel) {
+                    return;
+                }
+
+                return this.$refreshPanel();
             }).catch((err) => {
                 button.disabled = false;
                 this.$setLoading(false);
@@ -143,7 +166,9 @@ define('controls/users/auth/settings/WebAuthn', [
 
         $refresh: function () {
             const container = this.getElm().parentNode;
-            const userUuid = this.getElm().getAttribute('data-user-uuid') || '';
+            const User = this.getAttribute('User');
+            const authenticator = this.getAttribute('authenticator') || 'QUI\\Users\\Auth\\WebAuthn';
+            const userUuid = this.$getUserUuid();
             const Win = this.$getWindow();
 
             if (Win && Win.Loader) {
@@ -151,9 +176,25 @@ define('controls/users/auth/settings/WebAuthn', [
             }
 
             return new Promise((resolve, reject) => {
-                QUIAjax.get('ajax_users_authenticator_settings', (html) => {
+                if (!userUuid) {
+                    if (Win && Win.Loader) {
+                        Win.Loader.hide();
+                    }
+
+                    reject();
+                    return;
+                }
+
+                QUIAjax.get('ajax_users_authenticator_webauthn_settings', (html) => {
                     container.innerHTML = html;
                     QUI.parse(container).then(() => {
+                        QUI.Controls.getControlsInElement(container).each((Control) => {
+                            Control.setAttribute('uid', User.getId());
+                            Control.setAttribute('authenticator', authenticator);
+                            Control.setAttribute('User', User);
+                            Control.setAttribute('Panel', this.getAttribute('Panel'));
+                        });
+
                         if (Win && Win.Loader) {
                             Win.Loader.hide();
                         }
@@ -167,8 +208,7 @@ define('controls/users/auth/settings/WebAuthn', [
                         reject(err);
                     });
                 }, {
-                    uid: userUuid,
-                    authenticator: 'QUI\\Users\\Auth\\WebAuthn',
+                    userUuid: userUuid,
                     onError: (err) => {
                         if (Win && Win.Loader) {
                             Win.Loader.hide();
@@ -178,6 +218,27 @@ define('controls/users/auth/settings/WebAuthn', [
                     }
                 });
             });
+        },
+
+        $refreshPanel: function () {
+            const Panel = this.getAttribute('Panel');
+            const authenticator = this.getAttribute('authenticator') || 'QUI\\Users\\Auth\\WebAuthn';
+
+            if (Panel && typeof Panel.$refreshAuthenticator === 'function') {
+                return Panel.$refreshAuthenticator(authenticator);
+            }
+
+            return Promise.resolve();
+        },
+
+        $getUserUuid: function () {
+            const User = this.getAttribute('User');
+
+            if (!User || typeof User.getAttribute !== 'function') {
+                return '';
+            }
+
+            return User.getAttribute('uuid') || '';
         },
 
         $setLoading: function (loading) {
