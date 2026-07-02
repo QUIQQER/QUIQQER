@@ -1586,7 +1586,7 @@ define('controls/users/User', [
                 new Popup({
                     maxHeight: 600,
                     maxWidth: 800,
-                    title: 'Settings for ',
+                    title: QUILocale.get(lg, 'user.settings.authenticators.additionalSettings'),
                     icon: 'fa fa-gears',
                     buttons: false,
                     events: {

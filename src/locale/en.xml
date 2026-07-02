@@ -6996,6 +6996,9 @@ After logging in you will be prompted to set a new password.
         <locale name="quiqqer.webauthn.login.button">
             <en><![CDATA[Sign in with passkey]]></en>
         </locale>
+        <locale name="quiqqer.webauthn.settings.title">
+            <en><![CDATA[Manage passkeys]]></en>
+        </locale>
         <locale name="quiqqer.webauthn.settings.description">
             <en><![CDATA[Create and manage passkeys for this user.]]></en>
         </locale>
@@ -7016,6 +7019,9 @@ After logging in you will be prompted to set a new password.
         </locale>
         <locale name="quiqqer.webauthn.settings.created">
             <en><![CDATA[Created]]></en>
+        </locale>
+        <locale name="quiqqer.webauthn.settings.empty">
+            <en><![CDATA[No passkey has been set up for this user yet.]]></en>
         </locale>
         <locale name="quiqqer.webauthn.registrar.title">
             <en><![CDATA[Registration with passkey]]></en>

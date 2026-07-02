@@ -7215,6 +7215,9 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         <locale name="quiqqer.webauthn.login.button">
             <de><![CDATA[Mit Passkey anmelden]]></de>
         </locale>
+        <locale name="quiqqer.webauthn.settings.title">
+            <de><![CDATA[Passkeys verwalten]]></de>
+        </locale>
         <locale name="quiqqer.webauthn.settings.description">
             <de><![CDATA[Erstelle und verwalte Passkeys für diesen Benutzer.]]></de>
         </locale>
@@ -7235,6 +7238,9 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         </locale>
         <locale name="quiqqer.webauthn.settings.created">
             <de><![CDATA[Erstellt]]></de>
+        </locale>
+        <locale name="quiqqer.webauthn.settings.empty">
+            <de><![CDATA[Für diesen Benutzer ist noch kein Passkey eingerichtet.]]></de>
         </locale>
         <locale name="quiqqer.webauthn.registrar.title">
             <de><![CDATA[Registrierung mit Passkey]]></de>
