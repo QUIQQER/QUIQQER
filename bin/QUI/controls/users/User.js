@@ -597,7 +597,7 @@ define('controls/users/User', [
                         }
 
                         button = document.createElement('button');
-                        button.classList.add('btn', 'btn-secondary', 'qui-button', cls);
+                        button.classList.add('btn', 'btn-secondary', 'qui-button', 'quiqqer-user-authenticator-status', cls);
                         button.type = 'button'
                         button.title = text;
                         button.innerHTML = text;
@@ -619,7 +619,12 @@ define('controls/users/User', [
 
                         if (authenticators[i].getAttribute('data-settings')) {
                             settingButton = document.createElement('button');
-                            settingButton.classList.add('btn', 'btn-secondary', 'qui-button');
+                            settingButton.classList.add(
+                                'btn',
+                                'btn-secondary',
+                                'qui-button',
+                                'quiqqer-user-authenticator-settings'
+                            );
                             settingButton.type = 'button'
                             settingButton.name = 'settings';
                             settingButton.innerHTML = `<span class="fa fa-gears"></span>`;
