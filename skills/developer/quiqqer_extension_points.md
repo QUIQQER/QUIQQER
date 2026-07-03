@@ -184,8 +184,30 @@ After changing extension declarations:
 - Validate edited XML syntax.
 - Validate `composer.json`.
 - Run `./console setup` in a development installation when package metadata must be re-imported.
-- Run available package checks such as `./tools/phpcs`, `./tools/phpstan`, and tests.
+- Run the package-local checks: `./tools/phpcs`, `./tools/phpstan`, and `./tools/phpunit`.
 - Manually verify the feature in the administration interface, CLI, or relevant package workflow.
+
+## Tests For Extension Work
+
+Add or update PHPUnit tests for every fix and every feature that changes extension behavior.
+
+Use the repository's existing test structure. Core is a useful reference:
+
+- `phpunit.dist.xml` defines Unit and Integration suites.
+- `tests/phpunit-bootstrap.php` loads the QUIQQER bootstrap and shared test helpers.
+- `tests/unit/` contains isolated behavior tests.
+- `tests/integration/` contains database, project, media, user, group, and runtime integration tests.
+- `tests/stubs/` contains narrow compatibility stubs for optional or environment-specific classes.
+
+For provider, XML, event, console, permission, and setup behavior:
+
+- Test pure parsing or registration logic with unit tests when possible.
+- Test database, project, media, or setup side effects with integration tests.
+- Use fixtures for fake actions, fake providers, or controlled runtime collaborators.
+- Use stubs when PHPUnit cannot load optional package dependencies or classes that only exist with a newer optional package version.
+- Keep stubs minimal and local to the test suite. Do not weaken production code to make tests pass.
+
+If a test cannot run because the environment is missing a real external service, mark only that integration path as skipped and keep unit coverage for the decision logic.
 
 ## References
 
