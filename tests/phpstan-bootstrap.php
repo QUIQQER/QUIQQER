@@ -16,5 +16,7 @@ require_once __DIR__ . '/stubs/Mcp/Schema/Result/CallToolResult.php';
 require_once __DIR__ . '/stubs/QUI/AI/MCP/ProviderInterface.php';
 require_once __DIR__ . '/stubs/QUI/AI/MCP/Server.php';
 require_once __DIR__ . '/stubs/QUI/AI/MCP/ToolHelper.php';
+require_once __DIR__ . '/stubs/QUI/AI/MCP/Skill/SkillProviderInterface.php';
+require_once __DIR__ . '/stubs/QUI/AI/MCP/Skill/SkillRepository.php';
 require_once __DIR__ . '/stubs/QUI/FrontendUsers/Exception.php';
 require_once __DIR__ . '/stubs/QUI/FrontendUsers/AbstractRegistrar.php';
