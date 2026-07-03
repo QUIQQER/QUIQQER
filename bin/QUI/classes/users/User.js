@@ -31,6 +31,8 @@ define('classes/users/User', [
 
         initialize: function (uid) {
             this.$uid = uid;
+            this.attributes = {};
+            this.$originalAttributes = {};
             this.$extras = {};
             this.$loaded = false;
 
@@ -127,6 +129,7 @@ define('classes/users/User', [
                     }
 
                     this.setAttributes(result);
+                    this.updateOriginalAttributes();
 
                     if (typeof onfinish === 'function') {
                         onfinish(this);
@@ -177,6 +180,11 @@ define('classes/users/User', [
          * @return {Promise}
          */
         save: function (params, callback) {
+            if (typeof params === 'function' && typeof callback === 'undefined') {
+                callback = params;
+                params = {};
+            }
+
             return new Promise((resolve, reject) => {
                 if (!this.$uid) {
                     if (typeof callback === 'function') {
@@ -473,6 +481,98 @@ define('classes/users/User', [
          */
         getAttributes: function () {
             return this.attributes;
+        },
+
+        /**
+         * Store the current attributes as the last server-side state.
+         *
+         * @return {Object} this (classes/users/User)
+         */
+        updateOriginalAttributes: function () {
+            this.$originalAttributes = this.$cloneAttributes(this.attributes);
+            return this;
+        },
+
+        /**
+         * Return only attributes changed since the last load/save.
+         *
+         * @return {Object}
+         */
+        getChangedAttributes: function () {
+            const attributes = this.getAttributes(),
+                originalAttributes = this.$originalAttributes || {},
+                result = {};
+
+            for (let k in attributes) {
+                if (!attributes.hasOwnProperty(k)) {
+                    continue;
+                }
+
+                if (!originalAttributes.hasOwnProperty(k)) {
+                    result[k] = attributes[k];
+                    continue;
+                }
+
+                if (!this.$attributeValuesEqual(attributes[k], originalAttributes[k])) {
+                    result[k] = attributes[k];
+                }
+            }
+
+            return result;
+        },
+
+        /**
+         * Apply attributes returned by the server after a save.
+         *
+         * @param {Object} attributes
+         * @return {Object} this (classes/users/User)
+         */
+        applySavedAttributes: function (attributes) {
+            attributes = attributes || {};
+
+            if (attributes.extras) {
+                this.$extras = attributes.extras;
+                delete attributes.extras;
+            }
+
+            this.attributes = {};
+            this.setAttributes(attributes);
+            this.updateOriginalAttributes();
+
+            return this;
+        },
+
+        /**
+         * @param {*} value
+         * @return {String}
+         */
+        $normalizeAttributeValue: function (value) {
+            if (typeof value === 'undefined') {
+                return '__undefined__';
+            }
+
+            return JSON.encode(value);
+        },
+
+        /**
+         * @param {*} first
+         * @param {*} second
+         * @return {Boolean}
+         */
+        $attributeValuesEqual: function (first, second) {
+            return this.$normalizeAttributeValue(first) === this.$normalizeAttributeValue(second);
+        },
+
+        /**
+         * @param {Object} attributes
+         * @return {Object}
+         */
+        $cloneAttributes: function (attributes) {
+            if (!attributes) {
+                return {};
+            }
+
+            return JSON.decode(JSON.encode(attributes));
         },
 
         /**

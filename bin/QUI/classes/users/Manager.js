@@ -351,7 +351,9 @@ define('classes/users/Manager', [
         saveUser: function(User, params, onfinish) {
             return new Promise(function(resolve, reject) {
                 var self = this,
-                    attributes = User.getAttributes();
+                    attributes = typeof User.getChangedAttributes === 'function'
+                        ? User.getChangedAttributes()
+                        : Object.clone(User.getAttributes());
 
                 for (var i in attributes) {
                     if (!attributes.hasOwnProperty(i)) {
@@ -371,7 +373,10 @@ define('classes/users/Manager', [
                 });
 
                 Ajax.post('ajax_users_save', function(result, Request) {
-                    self.get(User.getId());
+                    if (typeof User.applySavedAttributes === 'function') {
+                        User.applySavedAttributes(result);
+                    }
+
                     self.fireEvent('save', [self, User]);
 
                     if (typeof onfinish !== 'undefined') {
