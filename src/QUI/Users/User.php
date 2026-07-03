@@ -1156,7 +1156,7 @@ class User implements QUIUserInterface
 
     public function setGroups(null | array | string $groups): void
     {
-        if (empty($groups)) {
+        if (empty($groups) || (is_string($groups) && trim($groups, ',') === '')) {
             return;
         }
 
