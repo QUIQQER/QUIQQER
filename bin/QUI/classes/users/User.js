@@ -305,7 +305,7 @@ define('classes/users/User', [
                     uid: this.getId(),
                     pw1: pass1,
                     pw2: pass2,
-                    params: JSON.encode(options),
+                    params: JSON.stringify(options),
                     onError: reject
                 });
             });
@@ -551,7 +551,7 @@ define('classes/users/User', [
                 return '__undefined__';
             }
 
-            return JSON.encode(value);
+            return JSON.stringify(value);
         },
 
         /**
@@ -572,7 +572,7 @@ define('classes/users/User', [
                 return {};
             }
 
-            return JSON.decode(JSON.encode(attributes));
+            return JSON.parse(JSON.stringify(attributes));
         },
 
         /**

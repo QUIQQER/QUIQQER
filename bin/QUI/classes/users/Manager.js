@@ -79,9 +79,9 @@ define('classes/users/Manager', [
          * @return {Promise}
          */
         getList: function(search, params) {
-            return new Promise(function(resolve, reject) {
+            return new Promise((resolve, reject) => {
                 Ajax.get('ajax_users_search', resolve, ObjectUtils.combine(params, {
-                    params: JSON.encode(search),
+                    params: JSON.stringify(search),
                     onError: reject
                 }));
             });
@@ -94,7 +94,7 @@ define('classes/users/Manager', [
          * @return {boolean}
          */
         isUser: function(User) {
-            var type = typeOf(User);
+            const type = typeOf(User);
 
             if (type === 'classes/users/Nobody') {
                 return true;
@@ -117,26 +117,24 @@ define('classes/users/Manager', [
          * @return Promise
          */
         switchStatus: function(uid, onfinish, params) {
-            var self = this;
-
-            return new Promise(function(resolve, reject) {
+            return new Promise((resolve, reject) => {
                 params = ObjectUtils.combine(params, {
-                    uid: JSON.encode(uid),
+                    uid: JSON.stringify(uid),
                     onError: reject
                 });
 
-                Ajax.post('ajax_users_switchstatus', function(result) {
-                    if (uid in result && uid in self.$users) {
-                        self.$users[uid].setAttribute('active', result[uid]);
+                Ajax.post('ajax_users_switchstatus', (result) => {
+                    if (uid in result && uid in this.$users) {
+                        this.$users[uid].setAttribute('active', result[uid]);
                     }
 
                     if (typeof onfinish !== 'undefined') {
                         onfinish(result);
                     }
 
-                    resolve(self, result);
+                    resolve(this, result);
 
-                    self.fireEvent('switchStatus', [self, result]);
+                    this.fireEvent('switchStatus', [this, result]);
                 }, params);
             });
         },
@@ -151,27 +149,25 @@ define('classes/users/Manager', [
          * @return Promise
          */
         activate: function(uid, onfinish, params) {
-            var self = this;
-
-            return new Promise(function(resolve, reject) {
+            return new Promise((resolve, reject) => {
                 params = ObjectUtils.combine(params, {
-                    uid: JSON.encode(uid),
+                    uid: JSON.stringify(uid),
                     onError: reject
                 });
 
-                Ajax.post('ajax_users_activate', function(result) {
-                    if (uid in result && uid in self.$users) {
-                        self.$users[uid].setAttribute('active', result[uid]);
+                Ajax.post('ajax_users_activate', (result) => {
+                    if (uid in result && uid in this.$users) {
+                        this.$users[uid].setAttribute('active', result[uid]);
                     }
 
                     if (typeof onfinish !== 'undefined') {
                         onfinish(result);
                     }
 
-                    resolve(self, result);
+                    resolve(this, result);
 
-                    self.fireEvent('activate', [self, result]);
-                    self.fireEvent('switchStatus', [self, result]);
+                    this.fireEvent('activate', [this, result]);
+                    this.fireEvent('switchStatus', [this, result]);
                 }, params);
             });
         },
@@ -186,27 +182,25 @@ define('classes/users/Manager', [
          * @return Promise
          */
         deactivate: function(uid, onfinish, params) {
-            var self = this;
-
-            return new Promise(function(resolve, reject) {
+            return new Promise((resolve, reject) => {
                 params = ObjectUtils.combine(params, {
-                    uid: JSON.encode(uid),
+                    uid: JSON.stringify(uid),
                     onError: reject
                 });
 
-                Ajax.post('ajax_users_deactivate', function(result) {
-                    if (uid in result && uid in self.$users) {
-                        self.$users[uid].setAttribute('active', result[uid]);
+                Ajax.post('ajax_users_deactivate', (result, Request) => {
+                    if (uid in result && uid in this.$users) {
+                        this.$users[uid].setAttribute('active', result[uid]);
                     }
 
                     if (typeof onfinish !== 'undefined') {
                         onfinish(result, Request);
                     }
 
-                    resolve(self, result);
+                    resolve(this, result);
 
-                    self.fireEvent('deactivate', [self, result]);
-                    self.fireEvent('switchStatus', [self, result]);
+                    this.fireEvent('deactivate', [this, result]);
+                    this.fireEvent('switchStatus', [this, result]);
                 }, params);
             });
         },
@@ -273,7 +267,7 @@ define('classes/users/Manager', [
             return new Promise((resolve, reject) => {
                 params = ObjectUtils.combine(params, {
                     email: email,
-                    groups: JSON.encode(groups || []),
+                    groups: JSON.stringify(groups || []),
                     onError: reject
                 });
 
@@ -290,13 +284,13 @@ define('classes/users/Manager', [
          * @param {Function} [onfinish] - (optional), callback function
          */
         deleteUsers: function(uids, params, onfinish) {
-            return new Promise(function(resolve) {
+            return new Promise((resolve) => {
                 params = ObjectUtils.combine(params, {
-                    uid: JSON.encode(uids)
+                    uid: JSON.stringify(uids)
                 });
 
-                Ajax.post('ajax_users_delete', function(result) {
-                    for (var i = 0, len = uids.length; i < len; i++) {
+                Ajax.post('ajax_users_delete', (result) => {
+                    for (let i = 0, len = uids.length; i < len; i++) {
                         if (typeof this.$users[uids[i]] !== 'undefined') {
                             delete this.$users[uids[i]];
                         }
@@ -310,8 +304,8 @@ define('classes/users/Manager', [
 
                     resolve(result);
 
-                }.bind(this), params);
-            }.bind(this));
+                }, params);
+            });
         },
 
         /**
@@ -331,7 +325,7 @@ define('classes/users/Manager', [
          * @return {Promise}
          */
         hasEmail: function(userId) {
-            return new Promise(function(resolve, reject) {
+            return new Promise((resolve, reject) => {
                 Ajax.get('ajax_users_hasEmail', resolve, {
                     userId: userId,
                     onError: reject
@@ -349,13 +343,12 @@ define('classes/users/Manager', [
          * @return {Promise}
          */
         saveUser: function(User, params, onfinish) {
-            return new Promise(function(resolve, reject) {
-                var self = this,
-                    attributes = typeof User.getChangedAttributes === 'function'
+            return new Promise((resolve, reject) => {
+                const attributes = typeof User.getChangedAttributes === 'function'
                         ? User.getChangedAttributes()
                         : Object.clone(User.getAttributes());
 
-                for (var i in attributes) {
+                for (let i in attributes) {
                     if (!attributes.hasOwnProperty(i)) {
                         continue;
                     }
@@ -368,16 +361,16 @@ define('classes/users/Manager', [
                 // attributes.extra = User.getExtras();
                 params = ObjectUtils.combine(params, {
                     uid: User.getId(),
-                    attributes: JSON.encode(attributes),
+                    attributes: JSON.stringify(attributes),
                     onError: reject
                 });
 
-                Ajax.post('ajax_users_save', function(result, Request) {
+                Ajax.post('ajax_users_save', (result, Request) => {
                     if (typeof User.applySavedAttributes === 'function') {
                         User.applySavedAttributes(result);
                     }
 
-                    self.fireEvent('save', [self, User]);
+                    this.fireEvent('save', [this, User]);
 
                     if (typeof onfinish !== 'undefined') {
                         onfinish(User, Request);
@@ -386,7 +379,7 @@ define('classes/users/Manager', [
                     resolve();
 
                 }, params);
-            }.bind(this));
+            });
         }
     });
 });
