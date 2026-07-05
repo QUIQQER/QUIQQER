@@ -208,16 +208,6 @@ class Project implements \Stringable
 
             $this->lang = $lang;
         } else {
-            if (!isset($this->config['default_lang'])) {
-                throw new QUI\Exception(
-                    QUI::getLocale()->get(
-                        'quiqqer/core',
-                        'exception.project.lang.no.default'
-                    ),
-                    805
-                );
-            }
-
             $this->lang = $this->config['default_lang'];
         }
 
