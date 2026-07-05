@@ -39,6 +39,9 @@ class ActivateMedia extends AbstractTool
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected static function mediaIdSchema(): array
     {
         return [
