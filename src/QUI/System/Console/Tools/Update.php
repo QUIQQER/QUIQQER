@@ -1027,6 +1027,9 @@ class Update extends QUI\System\Console\Tool
             || $this->hasVerbosityArgument(['--yes', '-y', 'yes', 'y']);
     }
 
+    /**
+     * @return array<string, bool>
+     */
     private function getComposerVerbosityOptions(): array
     {
         $level = $this->getVerbosityLevel();
