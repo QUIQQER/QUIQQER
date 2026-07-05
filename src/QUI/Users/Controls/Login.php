@@ -23,6 +23,9 @@ class Login extends Control
 {
     protected bool $isGlobalAuth = false;
 
+    /**
+     * @param array<string, mixed> $options
+     */
     public function __construct(array $options = [])
     {
         $authStep = 'primary';
@@ -131,6 +134,8 @@ class Login extends Control
 
     /**
      * Return the next Authenticator, if one exists
+     *
+     * @return array<int, class-string<QUI\Users\AuthenticatorInterface>>|null
      */
     public function next(): array | null
     {
@@ -208,6 +213,9 @@ class Login extends Control
         return $authenticators;
     }
 
+    /**
+     * @param string $icon
+     */
     public function renderIcon($icon): string
     {
         if (str_starts_with($icon, 'fa ') || str_starts_with($icon, 'fa-')) {
