@@ -554,7 +554,7 @@ class Template extends QUI\QDOM
         $siteType = $Site->getAttribute('type');
         $siteType = explode(':', $siteType);
 
-        if (isset($siteType[0]) && isset($siteType[1])) {
+        if (isset($siteType[1])) {
             $package = $siteType[0];
             $type = $siteType[1];
 
@@ -684,7 +684,7 @@ class Template extends QUI\QDOM
 
         $files = [];
 
-        if (isset($siteType[0]) && isset($siteType[1])) {
+        if (isset($siteType[1])) {
             $package = $siteType[0];
             $type = $siteType[1];
 
@@ -977,7 +977,7 @@ class Template extends QUI\QDOM
         $siteType = $Site->getAttribute('type');
         $siteType = explode(':', $siteType);
 
-        if (isset($siteType[0]) && isset($siteType[1])) {
+        if (isset($siteType[1])) {
             $package = $siteType[0];
             $type = $siteType[1];
 
