@@ -124,7 +124,7 @@ class Handler
      *
      * Recognised keys per entry: class, label, categories, aliases, searchTerms.
      *
-     * @param array<int, array<string, mixed>> $entries
+     * @param array<int, mixed> $entries
      */
     public function addIconData(array $entries): void
     {
