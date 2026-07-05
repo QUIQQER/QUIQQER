@@ -54,6 +54,8 @@ abstract class Item extends QUI\QDOM
 {
     /**
      * internal image effect parameter
+     *
+     * @var array<string, mixed>|bool
      */
     protected array | bool $effects = false;
 
@@ -72,16 +74,28 @@ abstract class Item extends QUI\QDOM
      */
     protected string $file;
 
+    /**
+     * @var array<int, string>|null
+     */
     protected ?array $pathHistory = null;
 
+    /**
+     * @var array<string, mixed>
+     */
     protected array $title = [];
 
+    /**
+     * @var array<string, mixed>
+     */
     protected array $description = [];
 
+    /**
+     * @var array<string, mixed>
+     */
     protected array $alt = [];
 
     /**
-     * @param array $params - item attributes
+     * @param array<string, mixed> $params - item attributes
      * @param Media $Media - Media of the file
      */
     public function __construct(array $params, Media $Media)
@@ -218,6 +232,8 @@ abstract class Item extends QUI\QDOM
     /**
      * Set multilingual attributes -> array of attributes [de => text, en => text]
      * - util method
+     *
+     * @param array<string, mixed> $val
      */
     protected function setMultilingualArray(string $type, array $val): void
     {
@@ -301,6 +317,8 @@ abstract class Item extends QUI\QDOM
     /**
      * overwritten get attributes
      * -> this method considers multilingual attributes
+     *
+     * @return array<string, mixed>
      */
     public function getAttributes(): array
     {
@@ -368,8 +386,8 @@ abstract class Item extends QUI\QDOM
      * - looks at the params type
      * - helper for setTitle, setShort, setDescription, setAlt
      *
-     * @param $params
-     * @param $type
+     * @param array<int, mixed> $params
+     * @param string $type
      */
     protected function setMultilingualParams($params, $type): void
     {
@@ -1235,6 +1253,9 @@ abstract class Item extends QUI\QDOM
         $this->pathHistory[] = $path;
     }
 
+    /**
+     * @return array<int, string>|null
+     */
     public function getPathHistory(): ?array
     {
         if ($this->pathHistory !== null) {
@@ -1260,6 +1281,8 @@ abstract class Item extends QUI\QDOM
 
     /**
      * Return the effects of the item
+     *
+     * @return bool|array<string, mixed>
      */
     public function getEffects(): bool | array
     {
@@ -1284,6 +1307,8 @@ abstract class Item extends QUI\QDOM
 
     /**
      * Set complete effects
+     *
+     * @param array<string, mixed> $effects
      */
     public function setEffects(array $effects = []): void
     {
@@ -1292,6 +1317,9 @@ abstract class Item extends QUI\QDOM
 
     // endregion
     // region Effect methods
+    /**
+     * @param array<array-key, mixed>|string $value
+     */
     protected function saveMultilingualField(array | string $value): string
     {
         if (is_array($value)) {
@@ -1345,6 +1373,7 @@ abstract class Item extends QUI\QDOM
     /**
      * Return all Parents
      *
+     * @return array<int, mixed>
      *
      * @throws Exception
      */
@@ -1362,6 +1391,8 @@ abstract class Item extends QUI\QDOM
 
     /**
      * Return all parent ids
+     *
+     * @return array<int, int>
      */
     public function getParentIds(): array
     {
@@ -1386,7 +1417,7 @@ abstract class Item extends QUI\QDOM
      *                                  one of:
      *                                  PATHINFO_DIRNAME, PATHINFO_BASENAME,
      *                                  PATHINFO_EXTENSION or PATHINFO_FILENAME.
-     * @return array|string
+     * @return array<string, mixed>|string
      */
     public function getPathinfo(bool | int $options = false): array | string
     {
@@ -1439,6 +1470,8 @@ abstract class Item extends QUI\QDOM
 
     /**
      * Are permissions set for this item?
+     *
+     * @param string $permission
      */
     public function hasPermissionsSet($permission): bool
     {
