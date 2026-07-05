@@ -395,10 +395,6 @@ class Utils
             $imageScale = (int)$Project->getConfig('media_useImageScale') ?: 2;
             $imageScale = min($imageScale, 20);
 
-            if (!$imageScale) {
-                $imageScale = 2;
-            }
-
 //            $imgMimeType = $Image->getAttribute('mime_type');
 
             if ($imageWidth) {
