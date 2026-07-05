@@ -28,6 +28,8 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     protected ?QUI\Projects\Project $Project = null;
 
     /**
+     * @param array<string, mixed> $attributes
+     *
      * @throws Exception
      */
     public function __construct(
@@ -120,12 +122,12 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Gibt alle Kinder zurück
      *
-     * @param array $params - Parameter für die Childrenausgabe
+     * @param array<string, mixed> $params - Parameter für die Childrenausgabe
      *                      $params['where']
      *                      $params['limit']
      * @param boolean $load - Legt fest ob die Kinder die Plugins laden sollen
      *
-     * @return int|array ;
+     * @return int|array<int, mixed>
      */
     public function getChildren(array $params = [], bool $load = false): int | array
     {
@@ -214,11 +216,11 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Gibt die ID's der Kinder zurück
      * Wenn nur die ID's verwendet werden sollte dies vor getChildren verwendet werden
      *
-     * @param array $params Parameter für die Childrenausgabe
+     * @param array<string, mixed> $params Parameter für die Childrenausgabe
      *                      $params['where']
      *                      $params['limit']
      *
-     * @return array
+     * @return array<int, mixed>
      */
     public function getChildrenIds(array $params = []): array
     {
@@ -228,9 +230,9 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Return ALL children ids under the site
      *
-     * @param array $params - db parameter
+     * @param array<string, mixed> $params - db parameter
      *
-     * @return array
+     * @return array<int, mixed>
      */
     public function getChildrenIdsRecursive(array $params = []): array
     {
@@ -403,6 +405,8 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * Shortcut for QUI\Permissions\Permission::hasSitePermission
+     *
+     * @param QUI\Interfaces\Users\User|bool|null $User
      */
     public function hasPermission(string $permission, $User = false): bool | int
     {
@@ -411,6 +415,8 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * Shortcut for QUI\Permissions\Permission::checkSitePermission
+     *
+     * @param QUI\Interfaces\Users\User|bool|null $User
      */
     public function checkPermission(string $permission, $User = false)
     {
