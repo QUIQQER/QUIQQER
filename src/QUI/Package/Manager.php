@@ -685,7 +685,7 @@ class Manager extends QUI\QDOM
                 return 0;
             }
 
-            if ($repoA['type'] === 'vcs' && $repoB['type'] !== 'vcs') {
+            if ($repoA['type'] === 'vcs') {
                 return -1;
             }
 
