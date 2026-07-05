@@ -31,6 +31,9 @@ class Server
         $this->credentials ??= new CredentialRepository();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getRegistrationOptions(
         QUI\Interfaces\Users\User $User,
         ?string $credentialName = null,
@@ -94,6 +97,9 @@ class Server
         return $this->getWebAuthnAccountName($username);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getRegistrationOptionsForNewUser(
         string $username,
         string $displayName,
@@ -126,6 +132,10 @@ class Server
         ];
     }
 
+    /**
+     * @param array<string, mixed> $attestation
+     * @return array<string, mixed>
+     */
     public function finishRegistrationForUser(
         QUI\Interfaces\Users\User $User,
         array $attestation,
@@ -178,6 +188,9 @@ class Server
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getAuthenticationOptions(?QUI\Interfaces\Users\User $User = null): array
     {
         $webAuthn = $this->createWebAuthn();
@@ -214,6 +227,10 @@ class Server
         ];
     }
 
+    /**
+     * @param array<string, mixed> $assertion
+     * @return array<string, mixed>
+     */
     public function finishAuthentication(array $assertion): array
     {
         $state = QUI::getSession()->get(self::SESSION_GET);
@@ -292,6 +309,10 @@ class Server
         return rtrim(strtr(base64_encode($value), '+/', '-_'), '=');
     }
 
+    /**
+     * @param array<string, mixed> $state
+     * @param array<string, mixed> $attestation
+     */
     private function processCreate(array $state, array $attestation): object
     {
         $webAuthn = $this->createWebAuthn();
@@ -305,6 +326,9 @@ class Server
         );
     }
 
+    /**
+     * @param array<string, mixed> $state
+     */
     private function assertStateIsFresh(string $sessionKey, array $state): void
     {
         if (empty($state['created']) || time() - (int)$state['created'] > self::CHALLENGE_TTL) {
