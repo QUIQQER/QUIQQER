@@ -72,7 +72,7 @@ class UserGroups
      * Check user in the user group string
      * there are also groups of user tested
      *
-     * @param string $ugString
+     * @param mixed $ugString
      */
     public static function isUserInUserGroupString(QUI\Interfaces\Users\User $User, $ugString): bool
     {
