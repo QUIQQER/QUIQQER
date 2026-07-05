@@ -7,6 +7,9 @@ use QUI\Control as QUIControl;
 
 class Control extends QUIControl
 {
+    /**
+     * @param array<string, mixed> $options
+     */
     public function __construct(array $options = [])
     {
         parent::__construct($options);
