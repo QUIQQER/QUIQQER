@@ -23,6 +23,9 @@ class CredentialRepository
         return QUI::getDBTableName('users_webauthn_credentials');
     }
 
+    /**
+     * @param string[] $transports
+     */
     public function create(
         string $userUuid,
         string $userHandle,
@@ -62,6 +65,9 @@ class CredentialRepository
         );
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function findByCredentialId(string $credentialId): ?array
     {
         $QueryBuilder = QUI::getQueryBuilder();
@@ -82,6 +88,9 @@ class CredentialRepository
         return $this->hydrate($data);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function findById(int $id): ?array
     {
         $QueryBuilder = QUI::getQueryBuilder();
@@ -102,6 +111,9 @@ class CredentialRepository
         return $this->hydrate($data);
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function findByUserUuid(string $userUuid): array
     {
         $QueryBuilder = QUI::getQueryBuilder();
@@ -195,6 +207,10 @@ class CredentialRepository
         return hex2bin($userHandle) ?: '';
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @return array<string, mixed>
+     */
     private function hydrate(array $data): array
     {
         $transports = $data['transports'] ?? [];
