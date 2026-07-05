@@ -662,10 +662,9 @@ class Output extends Singleton
 
         // falls host anders ist, dann muss dieser dran gehängt werden
         // damit kein doppelter content entsteht
-        if (
-            !isset($_SERVER['HTTP_HOST']) ||
-            (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != $projectHost && $projectHost != '')
-        ) {
+        $httpHost = $_SERVER['HTTP_HOST'] ?? null;
+
+        if ($httpHost === null || ($httpHost != $projectHost && $projectHost != '')) {
             $url = $Project->getVHost(true, true) . $url;
         }
 
