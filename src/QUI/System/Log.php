@@ -44,9 +44,9 @@ class Log
     /**
      * Writes with print_r the object into a log file
      *
-     * @param object|array|integer|string $object
+     * @param object|array<array-key, mixed>|integer|string $object
      * @param integer $logLevel - Log-Level ( \QUI\System\Log::LEVEL_ERROR ... )
-     * @param array $context - context data
+     * @param array<string, mixed> $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database
      * @param boolean $force - [optional] if true: log in any case, no matter which settings
      */
@@ -65,7 +65,7 @@ class Log
      *
      * @param string $message - string to write
      * @param integer $logLevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
-     * @param array $context - context data
+     * @param array<string, mixed> $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database,
      * @param boolean $force - [optional] if true: log in any case, no matter which settings
      *
@@ -152,7 +152,7 @@ class Log
      *
      * @param Exception|QUI\Exception|Throwable $Exception |QUI\Exception $Exception
      * @param integer $logLevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
-     * @param array $context - context data
+     * @param array<string, mixed> $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database
      * @param boolean $force - [optional] if true: log in any case, no matter which settings
      */
@@ -180,7 +180,7 @@ class Log
      *
      * @param Exception|QUI\Exception|Throwable $Exception
      * @param integer $logLevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
-     * @param array $context - context data
+     * @param array<string, mixed> $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database
      * @param boolean $force - [optional] if true: log in any case, no matter which settings
      */
@@ -214,7 +214,7 @@ class Log
      * Adds a log record at the DEBUG level.
      *
      * @param string $message The log message
-     * @param array $context - context data
+     * @param array<string, mixed> $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database (default = error)
      */
     public static function addDebug(string $message, array $context = [], bool | string $filename = false): void
@@ -222,6 +222,9 @@ class Log
         self::write($message, self::LEVEL_DEBUG, $context, $filename);
     }
 
+    /**
+     * @param array<string, mixed> $context
+     */
     public static function addDeprecated(string $message, array $context = []): void
     {
         $trace = (new QUI\Exception())->getTraceAsString();
@@ -236,7 +239,7 @@ class Log
      * Adds a log record at the INFO level.
      *
      * @param string $message The log message
-     * @param array $context - context data
+     * @param array<string, mixed> $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database (default = error)
      */
     public static function addInfo(string $message, array $context = [], bool | string $filename = false): void
@@ -248,7 +251,7 @@ class Log
      * Adds a log record at the NOTICE level.
      *
      * @param string $message The log message
-     * @param array $context - context data
+     * @param array<string, mixed> $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database (default = error)
      */
     public static function addNotice(string $message, array $context = [], bool | string $filename = false): void
@@ -260,7 +263,7 @@ class Log
      * Adds a log record at the WARNING level.
      *
      * @param string $message The log message
-     * @param array $context - context data
+     * @param array<string, mixed> $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database (default = error)
      */
     public static function addWarning(string $message, array $context = [], bool | string $filename = false): void
@@ -272,7 +275,7 @@ class Log
      * Adds a log record at the ERROR level.
      *
      * @param string $message The log message
-     * @param array $context - context data
+     * @param array<string, mixed> $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database (default = error)
      */
     public static function addError(string $message, array $context = [], bool | string $filename = false): void
@@ -284,7 +287,7 @@ class Log
      * Adds a log record at the CRITICAL level.
      *
      * @param string $message The log message
-     * @param array $context - context data
+     * @param array<string, mixed> $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database (default = error)
      */
     public static function addCritical(string $message, array $context = [], bool | string $filename = false): void
@@ -296,7 +299,7 @@ class Log
      * Adds a log record at the ALERT level.
      *
      * @param string $message The log message
-     * @param array $context - context data
+     * @param array<string, mixed> $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database (default = error)
      */
     public static function addAlert(string $message, array $context = [], bool | string $filename = false): void
@@ -308,7 +311,7 @@ class Log
      * Adds a log record at the EMERGENCY level.
      *
      * @param string $message The log message
-     * @param array $context - context data
+     * @param array<string, mixed> $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database (default = error)
      */
     public static function addEmergency(string $message, array $context = [], bool | string $filename = false): void
