@@ -640,7 +640,7 @@ class Console
      */
     public function get(bool | string $tool): bool | array | Console\Tool
     {
-        if (isset($this->tools[$tool]) && is_object($this->tools[$tool])) {
+        if (isset($this->tools[$tool])) {
             return $this->tools[$tool];
         }
 
