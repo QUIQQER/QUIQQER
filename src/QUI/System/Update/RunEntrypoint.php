@@ -309,9 +309,7 @@ class RunEntrypoint
             @system($shellCommand);
             $output = (string)ob_get_clean();
         } catch (Throwable) {
-            if (ob_get_level() > 0) {
-                ob_end_clean();
-            }
+            ob_end_clean();
 
             return 0;
         }
