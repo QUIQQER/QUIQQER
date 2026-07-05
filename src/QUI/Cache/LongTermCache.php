@@ -23,10 +23,17 @@ class LongTermCache
 
     protected static ?DriverInterface $Driver = null;
 
+    /**
+     * @var array<string, mixed>
+     */
     protected static array $runtime = [];
 
     //region API
 
+    /**
+     * @param string $name
+     * @param mixed $data
+     */
     public static function set($name, $data): void
     {
         $key = self::generateStorageKey($name);
@@ -46,6 +53,9 @@ class LongTermCache
         }
     }
 
+    /**
+     * @param string $name
+     */
     protected static function generateStorageKey($name): string
     {
         return md5(__FILE__) . '/quiqqer-lt/' . $name;
