@@ -14,6 +14,8 @@ class QuiqqerRedisDriver extends Redis
 {
     /**
      * {@inheritdoc}
+     *
+     * @param array<array-key, mixed>|null $key
      */
     public function clear($key = null)
     {
