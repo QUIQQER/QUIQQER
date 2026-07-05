@@ -566,6 +566,8 @@ class Permission
     /**
      * Check the permission with a given permission list
      *
+     * @param array<string, mixed> $permissions
+     *
      * @throws Exception
      */
     public static function checkPermissionList(
