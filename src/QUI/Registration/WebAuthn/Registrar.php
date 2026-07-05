@@ -14,6 +14,9 @@ use function trim;
 
 class Registrar extends FrontendUsers\AbstractRegistrar
 {
+    /**
+     * @var array<string, mixed>|null
+     */
     private ?array $attestation = null;
 
     public function validate(): array
@@ -126,6 +129,9 @@ class Registrar extends FrontendUsers\AbstractRegistrar
         return false;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getAttestation(): array
     {
         if (!is_null($this->attestation)) {
