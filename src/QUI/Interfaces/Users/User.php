@@ -113,10 +113,17 @@ interface User
         callable | bool | string $ruleset = false
     ): mixed;
 
+    /**
+     * @param array<array-key, mixed>|string $groups
+     *
+     * @return bool|void
+     */
     public function setGroups(array | string $groups);
 
     /**
      * @param boolean $array - returns the groups as objects (true) or as an array (false)
+     *
+     * @return array<array-key, mixed>
      */
     public function getGroups(bool $array = true): array;
 
@@ -124,6 +131,9 @@ interface User
 
     public function getAvatar(): Image | null;
 
+    /**
+     * @return bool|void
+     */
     public function setPassword(string $new, null | User $PermissionUser = null);
 
     public function changePassword(
@@ -137,6 +147,8 @@ interface User
      *
      * @param string $pass - Password
      * @param boolean $encrypted - is the given password already encrypted?
+     *
+     * @return bool
      */
     public function checkPassword(string $pass, bool $encrypted = false);
 
@@ -148,26 +160,51 @@ interface User
 
     public function isCompany(): mixed;
 
+    /**
+     * @return void
+     */
     public function setCompanyStatus(bool $status);
 
+    /**
+     * @return void
+     */
     public function addToGroup(int | string $groupId);
 
+    /**
+     * @return void
+     */
     public function removeGroup(Group | int | string $Group);
 
     /**
+     * @return void
+     *
      * @throws \QUI\Users\Exception
      */
     public function refresh();
 
     // region qdom
+    /**
+     * @return void
+     */
     public function removeAttribute(string $key);
 
+    /**
+     * @return void
+     */
     public function setAttribute(string $key, mixed $value);
 
+    /**
+     * @param array<string, mixed> $attributes
+     *
+     * @return void
+     */
     public function setAttributes(array $attributes);
 
     public function getAttribute(string $name): mixed;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getAttributes(): array;
     //endregion
 
@@ -181,6 +218,9 @@ interface User
      */
     public function getAuthenticator(string $authenticator): AuthenticatorInterface;
 
+    /**
+     * @return array<array-key, AuthenticatorInterface>
+     */
     public function getAuthenticators(): array;
 
     /**
@@ -199,7 +239,7 @@ interface User
     //region addresses
 
     /**
-     * @param array $params
+     * @param array<string, mixed> $params
      * @param User|null $ParentUser
      * @return ?Address
      *
@@ -214,6 +254,9 @@ interface User
 
     public function getStandardAddress(): null | Address;
 
+    /**
+     * @return array<int, Address>
+     */
     public function getAddressList(): array;
     //endregion
 }
