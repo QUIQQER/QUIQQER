@@ -573,6 +573,12 @@ class MigrationV2 extends QUI\System\Console\Tool
         $this->ensureStringColumn(QUI::getDBTableName("login_log"), "uid", 50, true);
     }
 
+    /**
+     * @param array<string, mixed> $where
+     * @param array<int, string> $select
+     *
+     * @return array<int, array<string, mixed>>
+     */
     protected function fetchRows(
         string $table,
         array $where = [],
@@ -609,6 +615,10 @@ class MigrationV2 extends QUI\System\Console\Tool
         return $QueryBuilder->executeQuery()->fetchAllAssociative();
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $where
+     */
     protected function updateRows(string $table, array $data, array $where): void
     {
         QUI::getDataBaseConnection()->update(
@@ -729,6 +739,8 @@ class MigrationV2 extends QUI\System\Console\Tool
     }
 
     /**
+     * @return array<int, string>
+     *
      * @throws Exception
      */
     protected function getWorkspaceUsers(string $workspaceTable): array
@@ -755,6 +767,10 @@ class MigrationV2 extends QUI\System\Console\Tool
     }
 
     /**
+     * @param array<int, string> $workspaceUsers
+     *
+     * @return array<string, array<string, mixed>>
+     *
      * @throws Exception
      */
     protected function getWorkspaceUserMap(array $workspaceUsers): array
@@ -806,6 +822,11 @@ class MigrationV2 extends QUI\System\Console\Tool
     }
 
     /**
+     * @param array<int, string> $numericUserIds
+     * @param array<int, string> $uuidUserIds
+     *
+     * @return array<string, array<string, mixed>>
+     *
      * @throws Exception
      */
     protected function fetchWorkspaceUsers(array $numericUserIds, array $uuidUserIds): array
@@ -897,6 +918,11 @@ class MigrationV2 extends QUI\System\Console\Tool
         return $users;
     }
 
+    /**
+     * @param array<string, array<string, mixed>> $users
+     *
+     * @return array<string, bool>
+     */
     protected function getAdminWorkspaceUserUUIDs(array $users): array
     {
         if (empty($users)) {
@@ -960,6 +986,11 @@ class MigrationV2 extends QUI\System\Console\Tool
         return $adminUsers;
     }
 
+    /**
+     * @param array<int, string> $ids
+     *
+     * @return array<string, bool>
+     */
     protected function getAdminSubjects(
         string $table,
         string $idColumn,
@@ -1023,6 +1054,9 @@ class MigrationV2 extends QUI\System\Console\Tool
         return !empty($permissions['quiqqer.admin']);
     }
 
+    /**
+     * @return array<int, string>
+     */
     protected function parseUserGroups(string $userGroups): array
     {
         $userGroups = trim($userGroups, ',');
@@ -1034,6 +1068,9 @@ class MigrationV2 extends QUI\System\Console\Tool
         return array_values(array_filter(explode(',', $userGroups)));
     }
 
+    /**
+     * @param array<int, string> $uids
+     */
     protected function deleteWorkspacesByUids(string $workspaceTable, array $uids): int
     {
         $uids = array_values(array_unique(array_filter($uids)));
