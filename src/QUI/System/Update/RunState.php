@@ -61,6 +61,10 @@ class RunState
         self::PHASE_CANCELLED => []
     ];
 
+    /**
+     * @param array<string, mixed> $metadata
+     * @param array<string, mixed>|null $process
+     */
     public function __construct(
         private readonly string $id,
         private readonly string $tokenHash,
@@ -77,6 +81,9 @@ class RunState
         self::assertValidIdentifier($id);
     }
 
+    /**
+     * @param array<string, mixed> $metadata
+     */
     public static function create(string $id, string $tokenHash, int $createdAt, int $ttl, array $metadata = []): self
     {
         if ($ttl <= 0) {
@@ -94,6 +101,9 @@ class RunState
         );
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -118,6 +128,9 @@ class RunState
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return [
@@ -135,6 +148,9 @@ class RunState
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toPublicArray(): array
     {
         return [
@@ -151,6 +167,9 @@ class RunState
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getPublicMetadata(): array
     {
         $metadata = $this->metadata;
@@ -160,6 +179,9 @@ class RunState
         return $metadata;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     private function getPublicProcess(): ?array
     {
         if ($this->process === null) {
@@ -270,6 +292,9 @@ class RunState
         return $this->createdAt;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getMetadata(): array
     {
         return $this->metadata;
@@ -280,6 +305,9 @@ class RunState
         $this->metadata[$key] = $value;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getProcess(): ?array
     {
         return $this->process;
