@@ -30,8 +30,14 @@ use function mt_srand;
  */
 class Group extends QUI\QDOM
 {
+    /**
+     * @var array<array-key, mixed>
+     */
     protected array $settings;
 
+    /**
+     * @var string|int|bool|array<array-key, mixed>
+     */
     protected string | int | bool | array $rootId;
 
     protected ?int $id = null;
@@ -41,16 +47,19 @@ class Group extends QUI\QDOM
     /**
      * internal right cache
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected mixed $rights = [];
 
+    /**
+     * @var array<int, int|string>|null
+     */
     protected ?array $childrenIds = null;
 
     /**
      * internal parent id cache
      *
-     * @var null|array
+     * @var array<int, int|string>|null
      */
     protected mixed $parentIds = null;
 
@@ -254,6 +263,8 @@ class Group extends QUI\QDOM
      * Documentation:
      * - https://www.quiqqer.com/docs/developer/package-reference/user-xml
      * - https://www.quiqqer.com/docs/developer/package-reference/group-xml
+     *
+     * @return array<array-key, mixed>
      */
     protected function getListOfExtraAttributes(): array
     {
@@ -274,6 +285,9 @@ class Group extends QUI\QDOM
         ]);
     }
 
+    /**
+     * @return array<int, int|string>
+     */
     public function getParentIds(): array
     {
         if ($this->parentIds) {
@@ -423,9 +437,9 @@ class Group extends QUI\QDOM
      * return the subgroup ids
      *
      * @param boolean $recursive - recursive true / false
-     * @param array $params - SQL Params (limit, order)
+     * @param array<string, mixed> $params - SQL Params (limit, order)
      *
-     * @return array|null
+     * @return array<int, int|string>|null
      *
      * @throws Exception
      */
@@ -693,23 +707,33 @@ class Group extends QUI\QDOM
 
     /**
      * @deprecated
+     *
+     * @return bool|array<array-key, mixed>|string
      */
     public function hasRight(string $right): bool | array | string
     {
         return $this->hasPermission($right);
     }
 
+    /**
+     * @return bool|array<array-key, mixed>|string
+     */
     public function hasPermission(string $permission): bool | array | string
     {
         return $this->rights[$permission] ?? false;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getRights(): array
     {
         return $this->rights;
     }
 
     /**
+     * @param array<string, mixed> $rights
+     *
      * @throws QUI\Exception
      */
     public function setRights(array $rights = []): void
@@ -840,6 +864,9 @@ class Group extends QUI\QDOM
         $User->removeGroup($this);
     }
 
+    /**
+     * @return array<int, int|string>
+     */
     public function getUserIds(): array
     {
         $userIds = [];
@@ -855,9 +882,9 @@ class Group extends QUI\QDOM
     /**
      * return the users from the group
      *
-     * @param array $params - SQL Params
+     * @param array<string, mixed> $params - SQL Params
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     public function getUsers(array $params = []): array
     {
@@ -920,7 +947,7 @@ class Group extends QUI\QDOM
     }
 
     /**
-     * @param array $params - SQL Params
+     * @param array<string, mixed> $params - SQL Params
      *
      * @return integer
      *
@@ -999,9 +1026,9 @@ class Group extends QUI\QDOM
     /**
      * Returns the subgroups
      *
-     * @param array $params - Where Parameter
+     * @param array<string, mixed> $params - Where Parameter
      *
-     * @return array
+     * @return array<int, mixed>
      */
     public function getChildren(array $params = []): array
     {
