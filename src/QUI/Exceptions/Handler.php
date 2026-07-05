@@ -39,9 +39,14 @@ class Handler extends QUI\QDOM
 {
     /**
      * registered shutdown callback functions
+     *
+     * @var array<int, array<int, mixed>>
      */
     protected array $shutDownCallbacks = [];
 
+    /**
+     * @param array<array-key, mixed> $params
+     */
     public function __construct(array $params = [])
     {
         // defaults
