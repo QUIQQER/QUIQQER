@@ -8,6 +8,9 @@ use QUI\Users\Attribute\Verifiable\PhoneNumberAttribute;
 use QUI\Users\Attribute\Verifiable\VerifiableUserAttributeInterface;
 use Ramsey\Collection\AbstractCollection;
 
+/**
+ * @extends AbstractCollection<VerifiableUserAttributeInterface>
+ */
 class VerifiableUserAttributeCollection extends AbstractCollection
 {
     /**
