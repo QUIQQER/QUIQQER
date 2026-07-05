@@ -477,6 +477,9 @@ class RunEntrypoint
         throw new \RuntimeException('Update run still requires a restart after maximum attempts.');
     }
 
+    /**
+     * @param array<string, mixed> $payload
+     */
     private function sendResponse(array $payload, string $sapi, int $statusCode = 200): void
     {
         if ($sapi === 'cli') {
@@ -492,6 +495,9 @@ class RunEntrypoint
         echo json_encode($payload, JSON_UNESCAPED_SLASHES) . PHP_EOL;
     }
 
+    /**
+     * @param array<string, mixed> $payload
+     */
     private function sendCliResponse(array $payload): void
     {
         if (($payload['success'] ?? false) === false) {
