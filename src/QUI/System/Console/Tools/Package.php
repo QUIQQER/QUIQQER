@@ -312,6 +312,9 @@ class Package extends QUI\System\Console\Tool
         }
     }
 
+    /**
+     * @param string $search
+     */
     protected function searchPackage($search): void
     {
         $this->writeLn();
