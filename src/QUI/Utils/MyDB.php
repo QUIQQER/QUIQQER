@@ -83,7 +83,7 @@ class MyDB implements \Stringable
     /**
      * MASKIERTE QUERY
      *
-     * @param string $query
+     * @param mixed $query
      *
      * @return array<int, array<int|string, mixed>>
      *
