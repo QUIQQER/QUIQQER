@@ -71,6 +71,9 @@ abstract class AbstractVerifiableUserAttribute implements VerifiableUserAttribut
         return null;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return [
@@ -82,6 +85,9 @@ abstract class AbstractVerifiableUserAttribute implements VerifiableUserAttribut
         ];
     }
 
+    /**
+     * @return void
+     */
     public function verify()
     {
         // TODO: Implement verify() method.
