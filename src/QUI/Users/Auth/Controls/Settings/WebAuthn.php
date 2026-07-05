@@ -8,6 +8,9 @@ use QUI\Users\Auth\WebAuthn\CredentialRepository;
 
 class WebAuthn extends Control
 {
+    /**
+     * @param array<string, mixed> $options
+     */
     public function __construct(array $options = [])
     {
         parent::__construct($options);
