@@ -20,14 +20,21 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
 {
     /**
      * Console parameter list, list of available parameter
+     *
+     * @var array<string, array{param: string, description: string, short: bool|string, optional: bool}>
      */
     protected array $paramsList = [];
 
     /**
      * Console parameter, values of the parameter / arguments
+     *
+     * @var array<string, bool|string>
      */
     protected array $params = [];
 
+    /**
+     * @var array<int, string>
+     */
     protected array $examples = [];
 
     protected bool $systemTool = true;
@@ -101,7 +108,7 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
     }
 
     /**
-     * @param $example
+     * @param string $example
      */
     public function addExample($example): void
     {
