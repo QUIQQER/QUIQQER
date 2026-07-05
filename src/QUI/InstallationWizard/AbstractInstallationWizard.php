@@ -34,6 +34,9 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
         throw new Exception('Step not found', 404);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(?Locale $Locale = null): array
     {
         $steps = array_map(static function ($Step) {
@@ -65,6 +68,9 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
         return ProviderHandler::getProviderStatus($this);
     }
 
+    /**
+     * @param Locale|null $Locale
+     */
     public function getFinishButtonText($Locale = null): string
     {
         if ($Locale === null) {
@@ -74,6 +80,9 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
         return $Locale->get('quiqqer/core', 'set.up.execute.button.text');
     }
 
+    /**
+     * @param array<array-key, mixed> $list
+     */
     public function onListInit(&$list): void
     {
     }
@@ -99,7 +108,7 @@ abstract class AbstractInstallationWizard implements InstallationWizardInterface
     /**
      * Returns the step which are shown during the execute() step (installation)
      *
-     * @return array
+     * @return array<array-key, mixed>
      */
     public function getExecuteSteps(): array
     {
