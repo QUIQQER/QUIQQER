@@ -32,6 +32,9 @@ class Manager extends QUI\QDOM
 
     const EVERYONE_ID = 1;
 
+    /**
+     * @var array<array-key, mixed>|null
+     */
     protected static ?array $getListOfExtraAttributes = null;
 
     protected ?Everyone $Everyone = null;
@@ -40,12 +43,24 @@ class Manager extends QUI\QDOM
 
     /**
      * internal group cache
+     *
+     * @var array<int|string, Group|Everyone|Guest>
      */
     protected array $groups = [];
+
+    /**
+     * @var array<int|string, int|string>
+     */
     protected array $groupIdsToHashes = [];
 
+    /**
+     * @var array<int|string, array<int, array<string, mixed>>>
+     */
     protected array $data = [];
 
+    /**
+     * @return object|bool|array<array-key, mixed>|string|null
+     */
     public static function getListOfExtraAttributes(): object | bool | array | string | null
     {
         if (self::$getListOfExtraAttributes !== null) {
@@ -144,6 +159,8 @@ class Manager extends QUI\QDOM
     /**
      * Read a user.xml and return the attributes,
      * if some extra attributes defined
+     *
+     * @return array<int, string>
      */
     protected static function readAttributesFromGroupXML(string $file): array
     {
@@ -200,6 +217,8 @@ class Manager extends QUI\QDOM
 
     /**
      * Return the db data of a group
+     *
+     * @return array<int, array<string, mixed>>
      */
     public function getGroupData(int | string $groupId): array
     {
@@ -261,7 +280,7 @@ class Manager extends QUI\QDOM
     /**
      * @param boolean $objects - as objects=true, as array=false
      *
-     * @return array
+     * @return array<int, array<string, mixed>|Group|Everyone|Guest>
      *
      * @throws QUI\Database\Exception
      */
@@ -300,6 +319,9 @@ class Manager extends QUI\QDOM
         return $result;
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function getAllGroupIds(): array
     {
         try {
@@ -321,15 +343,20 @@ class Manager extends QUI\QDOM
     }
 
     /**
-     * @param array $params - QUI\Database\DB params
+     * @param array<string, mixed> $params - QUI\Database\DB params
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     public function search(array $params = []): array
     {
         return $this->searchHelper($params);
     }
 
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<int, array<string, mixed>>
+     */
     protected function searchHelper(array $params): array
     {
         $params = Orthos::clearArray($params);
@@ -479,7 +506,7 @@ class Manager extends QUI\QDOM
     }
 
     /**
-     * @param array $params - QUI\Database\DB params
+     * @param array<string, mixed> $params - QUI\Database\DB params
      */
     public function count(array $params = []): int
     {
