@@ -75,6 +75,8 @@ class Edit extends Site
 
     /**
      * Project conf <<------ ??? why here
+     *
+     * @var array<string, mixed>
      */
     public array $conf = [];
 
@@ -381,9 +383,9 @@ class Edit extends Site
 
     /**
      * @param integer $pid - Parent - ID
-     * @param array $params
+     * @param array<string, mixed> $params
      *
-     * @return array
+     * @return array<int, mixed>
      *
      * @throws QUI\Database\Exception
      * @see Site::getChildrenIdsFromParentId()
@@ -494,12 +496,12 @@ class Edit extends Site
     /**
      * Return the children
      *
-     * @param array $params Parameter für die Childrenausgabe
+     * @param array<string, mixed> $params Parameter für die Childrenausgabe
      *                        $params['where']
      *                        $params['limit']
      * @param boolean $load Rekursiv alle Kinder IDs bekommen
      *
-     * @return array|int
+     * @return array<int, mixed>|int
      *
      * @throws QUI\Exception
      */
@@ -1345,8 +1347,8 @@ class Edit extends Site
     /**
      * Erstellt ein neues Kind
      *
-     * @param array $params
-     * @param array $childPermissions - [optional] permissions for the child
+     * @param array<string, mixed> $params
+     * @param array<string, mixed> $childPermissions - [optional] permissions for the child
      * @param QUI\Interfaces\Users\User|null $User - [optional] the user which create the site, optional
      *
      * @return Int
