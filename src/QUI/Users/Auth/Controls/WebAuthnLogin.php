@@ -7,6 +7,9 @@ use QUI\Control;
 
 class WebAuthnLogin extends Control
 {
+    /**
+     * @param array<string, mixed> $options
+     */
     public function __construct(array $options = [])
     {
         parent::__construct($options);
