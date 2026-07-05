@@ -153,6 +153,8 @@ class Site
     }
 
     /**
+     * @param string $url
+     *
      * @throws Exception
      */
     public static function getSiteByUrl($url): QUI\Projects\Site
