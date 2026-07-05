@@ -158,6 +158,8 @@ class Setup
 
     /**
      * Return all locale groups declared by a package.
+     *
+     * @return array<int, string>
      */
     protected static function getPackageLocaleGroups(QUI\Package\Package $Package): array
     {
@@ -544,7 +546,7 @@ EOT;
     /**
      * Execute for each project the setup
      *
-     * @param array $setupOptions - options for the package setup [executePackageSetup]
+     * @param array<string, mixed> $setupOptions - options for the package setup [executePackageSetup]
      */
     public static function executeEachProjectSetup(array $setupOptions = []): void
     {
@@ -567,7 +569,7 @@ EOT;
     /**
      * Execute for each package the setup
      *
-     * @param array $setupOptions - options for the package setup
+     * @param array<string, mixed> $setupOptions - options for the package setup
      * @param QUI\Interfaces\System\SystemOutput|null $Output
      *
      * @throws QUI\Exception
