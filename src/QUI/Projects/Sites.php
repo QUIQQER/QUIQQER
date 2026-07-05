@@ -271,7 +271,7 @@ class Sites
         $type = $Site->getAttribute('type');
         $siteTypeParts = explode(':', $type, 2);
 
-        if (isset($siteTypeParts[0], $siteTypeParts[1])) {
+        if (isset($siteTypeParts[1])) {
             $siteXmlFile = OPT_DIR . $siteTypeParts[0] . '/site.xml';
 
             if (file_exists($siteXmlFile)) {
@@ -408,11 +408,7 @@ class Sites
                 continue;
             }
 
-            if (!isset($template['name'])) {
-                continue;
-            }
-
-            $file = OPT_DIR . $template['name'] . '/site.xml';
+            $file = OPT_DIR . $template . '/site.xml';
 
             if (!file_exists($file)) {
                 continue;
