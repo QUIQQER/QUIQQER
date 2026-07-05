@@ -29,8 +29,14 @@ interface File
 
     public function setAttribute(string $name, mixed $value): void;
 
+    /**
+     * @param array<array-key, mixed>|null $attributes
+     */
     public function setAttributes(?array $attributes): void;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getAttributes(): array;
 
     public function getType(): string;
@@ -43,6 +49,9 @@ interface File
 
     public function getParentId(): int | bool;
 
+    /**
+     * @return array<int, int|string>
+     */
     public function getParentIds(): array;
 
     public function getPath(): string;
@@ -56,6 +65,8 @@ interface File
 
     /**
      * @param QUI\Interfaces\Users\User|null $PermissionUser
+     *
+     * @return void
      *
      * @throws Exception
      */
@@ -71,6 +82,9 @@ interface File
      * Deactivate the file
      *
      * @param QUI\Interfaces\Users\User|null $PermissionUser
+     *
+     * @return void
+     *
      * @throws Exception
      */
     public function deactivate(null | QUI\Interfaces\Users\User $PermissionUser = null);
@@ -93,6 +107,8 @@ interface File
     public function save(): void;
 
     /**
+     * @return void
+     *
      * @throws Exception
      */
     public function rename(
