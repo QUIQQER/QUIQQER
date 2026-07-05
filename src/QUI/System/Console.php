@@ -391,11 +391,8 @@ class Console
         // Parameter auslesen
         foreach ($_SERVER['argv'] as $argv) {
             if (str_contains($argv, '=')) {
-                $var = explode('=', $argv);
-
-                if (isset($var[0]) && isset($var[1])) {
-                    $params[$var[0]] = $var[1];
-                }
+                [$key, $value] = explode('=', $argv, 2);
+                $params[$key] = $value;
             } else {
                 $params[$argv] = true;
             }
