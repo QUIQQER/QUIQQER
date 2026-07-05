@@ -165,6 +165,8 @@ class Manager extends QUI\QDOM
 
     /**
      * Package list - installed packages
+     *
+     * @var array<int, array<string, mixed>>
      */
     protected array $list = [];
 
@@ -175,6 +177,8 @@ class Manager extends QUI\QDOM
 
     /**
      * temporary require packages
+     *
+     * @var array<string, mixed>
      */
     protected array $require = [];
 
@@ -190,21 +194,33 @@ class Manager extends QUI\QDOM
 
     /**
      * List of packages objects
+     *
+     * @var array<string, Package>
      */
     protected array $packages = [];
 
     /**
      * List of installed packages flags
+     *
+     * @var array<string, bool>
      */
     protected array $installed = [];
 
     /**
      * active servers - use as temp for local repo using
+     *
+     * @var array<int, string>
      */
     protected array $activeServers = [];
 
+    /**
+     * @var array<int, array<string, mixed>>|null
+     */
     protected ?array $installedPackages = null;
 
+    /**
+     * @param array<array-key, mixed> $attributes
+     */
     public function __construct(array $attributes = [])
     {
         // defaults
@@ -225,6 +241,8 @@ class Manager extends QUI\QDOM
 
     /**
      * Return the available QUIQQER package types
+     *
+     * @return array<int, string>
      */
     public static function getPackageTypes(): array
     {
@@ -332,6 +350,8 @@ class Manager extends QUI\QDOM
 
     /**
      * Return the lock data from the package
+     *
+     * @return array<string, mixed>
      */
     public function getPackageLock(Package $Package): array
     {
@@ -389,7 +409,8 @@ class Manager extends QUI\QDOM
     /**
      * Create the composer.json file for the system
      *
-     * @param array $packages - add packages to the composer json
+     * @param array<array-key, mixed> $packages - add packages to the composer json
+     *
      * @throws Exception
      */
     protected function createComposerJSON(array $packages = []): void
@@ -801,6 +822,9 @@ class Manager extends QUI\QDOM
         );
     }
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
     public function getServerList(): array
     {
         try {
@@ -839,6 +863,8 @@ class Manager extends QUI\QDOM
 
     /**
      * Get extra client data for composer license server header
+     *
+     * @return array<string, mixed>
      */
     protected function getLicenseClientData(): array
     {
@@ -853,6 +879,8 @@ class Manager extends QUI\QDOM
     /**
      * internal get list method
      * return all installed packages and create the internal package list cache
+     *
+     * @return array<int, array<string, mixed>>
      */
     protected function getList(): array
     {
@@ -955,7 +983,7 @@ class Manager extends QUI\QDOM
      * Set the version to packages or a package
      * This method does not perform an update
      *
-     * @param array|string $packages - list of packages or package name
+     * @param array<int, string>|string $packages - list of packages or package name
      * @param string $version - wanted version
      *
      * @throws UnexpectedValueException|Exception
@@ -1022,6 +1050,10 @@ class Manager extends QUI\QDOM
 
     /**
      * Return the installed packages, but filtered
+     *
+     * @param array<string, mixed> $params
+     *
+     * @return array<array-key, mixed>
      */
     public function searchInstalledPackages(array $params = []): array
     {
@@ -1054,6 +1086,8 @@ class Manager extends QUI\QDOM
 
     /**
      * Return all packages with the current versions
+     *
+     * @return array<string, mixed>
      */
     public function getInstalledVersions(): array
     {
@@ -1069,6 +1103,8 @@ class Manager extends QUI\QDOM
 
     /**
      * Return the installed packages
+     *
+     * @return array<int, array<string, mixed>>
      */
     public function getInstalled(): array
     {
@@ -1161,7 +1197,7 @@ class Manager extends QUI\QDOM
     /**
      * Install Package
      *
-     * @param array|string $packages - name of the package, or list of packages
+     * @param array<int, string>|string $packages - name of the package, or list of packages
      * @param boolean|string $version - (optional) version of the package default = dev-master
      *
      * @throws Exception
@@ -1180,6 +1216,10 @@ class Manager extends QUI\QDOM
     /**
      * This will check if the Lock server is enabled and available.
      * The package will be required or added to the lockfile and installed.
+     *
+     * @param array<int, string>|string $packages
+     *
+     * @return array<array-key, mixed>
      *
      * @throws PackageInstallException|QUI\Composer\Exception
      */
@@ -1270,7 +1310,7 @@ class Manager extends QUI\QDOM
     /**
      * Install only a local package
      *
-     * @param array|string $packages - name of the package
+     * @param array<int, string>|string $packages - name of the package
      * @param int|float|bool $version - (optional) version of the package
      *
      * @throws QUI\Exception
@@ -1417,8 +1457,8 @@ class Manager extends QUI\QDOM
     /**
      * Execute a setup for a package
      *
-     * @param array|string $packages
-     * @param array $setupOptions - optional, setup package options
+     * @param array<int, string>|string $packages
+     * @param array<string, mixed> $setupOptions - optional, setup package options
      */
     public function setup(array | string $packages, array $setupOptions = []): void
     {
@@ -1441,6 +1481,8 @@ class Manager extends QUI\QDOM
     /**
      * Return the params of an installed package
      * If you want the Package Object, you should use getInstalledPackage
+     *
+     * @return array<string, mixed>
      *
      * @throws Exception
      */
@@ -1497,7 +1539,7 @@ class Manager extends QUI\QDOM
      *
      * @param string $package - package name
      *
-     * @return array - list of dependencies
+     * @return array<int, string> - list of dependencies
      */
     public function getDependencies(string $package): array
     {
@@ -1522,6 +1564,8 @@ class Manager extends QUI\QDOM
      * If you want a local package, please use getInstalledPackage() and use the Package instead
      *
      * @param string $package - Name of the package eq: quiqqer/core
+     *
+     * @return array<string, mixed>
      *
      * @throws Exception
      */
@@ -1583,6 +1627,8 @@ class Manager extends QUI\QDOM
     /**
      * Search a string in the repositories
      * Returns only not installed packages
+     *
+     * @return array<string, mixed>
      */
     public function searchNewPackages(string $search): array
     {
@@ -1606,6 +1652,8 @@ class Manager extends QUI\QDOM
 
     /**
      * Search a string in the repositories
+     *
+     * @return array<string, mixed>
      */
     public function searchPackages(string $search): array
     {
@@ -1618,7 +1666,7 @@ class Manager extends QUI\QDOM
      * Edit server from the update-server list
      *
      * @param string $server - Server, IP, Host
-     * @param array $params - Server Parameter
+     * @param array<string, mixed> $params - Server Parameter
      *
      * @throws QUI\Exception
      * @throws Exception
@@ -1660,7 +1708,7 @@ class Manager extends QUI\QDOM
      * Add a server to the update-server list
      *
      * @param string $server - Server, IP, Host
-     * @param array $params - Server Parameter
+     * @param array<string, mixed> $params - Server Parameter
      *
      * @throws QUI\Exception
      * @throws Exception
@@ -1719,6 +1767,8 @@ class Manager extends QUI\QDOM
     /**
      * Remove a Server completely from the update-server list
      *
+     * @param array<int, string>|string $server
+     *
      * @throws QUI\Exception
      * @throws Exception
      */
@@ -1758,7 +1808,7 @@ class Manager extends QUI\QDOM
      * @param bool $force - if force is true -> database / cache output from the last check wouldn't be checked
      * @param array<string, mixed> $composerOptions
      *
-     * @return array
+     * @return array<array-key, mixed>
      *
      * @throws QUI\Exception
      * @throws Exception
@@ -1972,8 +2022,9 @@ class Manager extends QUI\QDOM
     /**
      * Execute a composer update for $package
      *
-     * @param bool|string|array $package - (optional) The package name which should get updated.
-     * @return array
+     * @param bool|string|array<int, string> $package - (optional) The package name which should get updated.
+     *
+     * @return array<array-key, mixed>
      *
      * @throws QUI\Exception
      */
@@ -2098,6 +2149,8 @@ class Manager extends QUI\QDOM
     /**
      * Return all packages which includes a site.xml
      *
+     * @return array<int, string>
+     *
      * @todo move to an API XML Handler
      */
     public function getPackageSiteXmlList(): array
@@ -2135,6 +2188,8 @@ class Manager extends QUI\QDOM
 
     /**
      * Return all packages which includes a media.xml
+     *
+     * @return array<int, string>
      *
      * @todo move to an API XML Handler
      */
@@ -2174,6 +2229,8 @@ class Manager extends QUI\QDOM
     /**
      * Return all packages which includes a site.xml
      *
+     * @return array<int, string>
+     *
      * @todo move to an API XML Handler
      */
     public function getPackageDatabaseXmlList(): array
@@ -2210,7 +2267,7 @@ class Manager extends QUI\QDOM
      *
      * @param string $name - e.g. "database.xml" / "package.xml" etc.
      *
-     * @return array - absolute file paths
+     * @return array<int, string> - absolute file paths
      */
     public function getPackageXMLFiles(string $name): array
     {
@@ -2232,6 +2289,9 @@ class Manager extends QUI\QDOM
         return $result;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getAvailableSiteTypes(): array
     {
         $types = [];
@@ -2312,6 +2372,8 @@ class Manager extends QUI\QDOM
     /**
      * Return the data for a type from its site.xml
      * https://dev.quiqqer.com/quiqqer/core/wikis/Site-Xml
+     *
+     * @return bool|array<string, mixed>
      */
     protected function getSiteXMLDataByType(string $type): bool | array
     {
@@ -2451,7 +2513,7 @@ class Manager extends QUI\QDOM
      * Checks if this QUIQQER system has the license to use a certain package.
      *
      * @param string $package - Package name (internal)
-     * @return bool|array
+     * @return bool|array<array-key, mixed>
      */
     public function getPackageStoreUrls(string $package): bool | array
     {
@@ -2510,6 +2572,8 @@ class Manager extends QUI\QDOM
 
     /**
      * Return the composer array
+     *
+     * @return array<string, mixed>
      *
      * @throws Exception
      */
