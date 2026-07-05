@@ -114,7 +114,7 @@ class GetSiteByUrl extends AbstractTool
             if (str_contains($projectPrefix, QUI\Rewrite::URL_PROJECT_CHARACTER)) {
                 $projectParts = explode(QUI\Rewrite::URL_PROJECT_CHARACTER, $projectPrefix, 2);
                 $projectName = $projectParts[0];
-                $template = $projectParts[1] ?? false;
+                $template = $projectParts[1];
             } else {
                 $projectName = $projectPrefix;
             }
