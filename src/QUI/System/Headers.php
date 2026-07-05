@@ -24,6 +24,8 @@ class Headers
 
     /**
      * Default HSTS settings
+     *
+     * @var array{max-age: int|string, subdomains: bool, preload: bool}
      */
     protected array $hsts = [
         'max-age' => '31536000',
@@ -31,12 +33,24 @@ class Headers
         'preload' => false
     ];
 
+    /**
+     * @var array<int, array{value: string, directive: string}>
+     */
     protected array $csp = [];
 
+    /**
+     * @var string|array<string, mixed>|bool
+     */
     protected string|array|bool $xFrameOptions = false;
 
+    /**
+     * @var string|array<string, mixed>|bool
+     */
     protected string|array|bool $xContentTypeOptions = "nosniff";
 
+    /**
+     * @var string|array<string, mixed>|bool
+     */
     protected string|array|bool $xXSSProtection = "1; mode=block";
 
     /**
