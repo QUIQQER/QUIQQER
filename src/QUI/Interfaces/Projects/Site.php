@@ -65,7 +65,7 @@ interface Site extends QUI\QDOMInterface
     /**
      * Gibt die IDs von Sprachverknüpfungen zurück
      *
-     * @return array<int, int>
+     * @return array<string, int|false>
      */
     public function getLangIds(): array;
 
