@@ -69,6 +69,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * parents array
+     *
+     * @var array<int, string>
      */
     protected array $parents;
 
@@ -79,16 +81,22 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * Parent ids
+     *
+     * @var array<int, int>|null
      */
     protected ?array $parents_id = null;
 
     /**
      * the children list
+     *
+     * @var array<int, int>
      */
     protected array $childs_container;
 
     /**
      * children
+     *
+     * @var array<int, Site>
      */
     protected array $children = [];
 
@@ -99,6 +107,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * the ids of the pages in other languages
+     *
+     * @var array<string, int>
      */
     protected array $lang_ids = [];
 
@@ -129,6 +139,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * tmp data from tables from the plugins
+     *
+     * @var array<string, mixed>
      */
     protected array $database_data = [];
 
@@ -562,6 +574,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * Gibt die IDs von Sprachverknüpfungen zurück
+     *
+     * @return array<string, int|false>
      */
     public function getLangIds(): array
     {
@@ -664,11 +678,11 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Gibt die ID's der Kinder zurück
      * Wenn nur die ID's verwendet werden sollte dies vor getChildren verwendet werden
      *
-     * @param array $params Parameter für die Childrenausgabe
+     * @param array<string, mixed> $params Parameter für die Childrenausgabe
      *                      $params['where']
      *                      $params['limit']
      *
-     * @return array|int
+     * @return array<int, mixed>|int
      *
      * @throws QUI\Exception
      */
@@ -806,12 +820,12 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Gibt alle Kinder zurück
      *
-     * @param array $params - Parameter für die Childrenausgabe
+     * @param array<string, mixed> $params - Parameter für die Childrenausgabe
      *                      $params['where']
      *                      $params['limit']
      * @param boolean $load - Legt fest ob die Kinder die Plugins laden sollen
      *
-     * @return array|integer
+     * @return array<int, mixed>|integer
      *
      * @throws QUI\Exception
      */
@@ -1129,6 +1143,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
      * @throws QUI\Exception
      */
     public function lastChild(array $params = []): bool | Edit | Site
@@ -1356,7 +1372,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Return ALL children ids under the site
      *
-     * @param array $params - db parameter
+     * @param array<string, mixed> $params - db parameter
+     *
+     * @return array<int, int>
      *
      * @throws QUI\Exception
      */
@@ -1368,12 +1386,13 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         return $this->childs_container;
     }
 
-    /**s
+    /**
      * Bereitet die ID's der Kinder vor -> getChildrenIds()
      * Funktion welche rekursiv aufgerufen wird
      *
      * @param integer $pid
-     * @param array $params
+     * @param array<string, mixed> $params
+     *
      * @throws Exception
      */
     protected function recursiveHelper(int $pid, array $params = []): void
@@ -1494,8 +1513,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Return site url without host, protocol or project
      * it returns only the site location from the project
      *
-     * @param array $pathParams - Path params, params in the site title
-     * @param array $getParams - GET params, params as get params eq: ?param=1
+     * @param array<array-key, mixed> $pathParams - Path params, params in the site title
+     * @param array<array-key, mixed> $getParams - GET params, params as get params eq: ?param=1
      *
      * @return string
      *
@@ -1616,8 +1635,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Gibt eine sprechenden URL zurück
      * DB Abfragen werden gemacht - Hier auf Performance achten
      *
-     * @param array $params - Parameter welche in den namen der seite eingefügt werden
-     * @param array $getParams
+     * @param array<array-key, mixed> $params - Parameter welche in den namen der seite eingefügt werden
+     * @param array<array-key, mixed> $getParams
+     *
      * @return string
      *
      * @throws QUI\Exception
@@ -1649,6 +1669,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * Returns a "speaking" URL with host
+     *
+     * @param array<array-key, mixed> $pathParams
+     * @param array<array-key, mixed> $getParams
      *
      * @throws QUI\Exception
      */
@@ -1811,6 +1834,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         );
     }
 
+    /**
+     * @param int|string $id
+     */
     public static function getLinkCachePath(string $projectName, string $projectLang, $id): string
     {
         $projectPath = Project::getProjectLanguageCachePath(
