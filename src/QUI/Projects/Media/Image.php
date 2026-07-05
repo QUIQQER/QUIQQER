@@ -61,6 +61,9 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      */
     protected int $IMAGE_MAX_SIZE = 4000;
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public function __construct(array $params, Media $Media)
     {
         parent::__construct($params, $Media);
@@ -382,7 +385,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @param bool|string|int $maxWidth - (optional)
      * @param bool|string|int $maxHeight - (optional)
      *
-     * @return array - array('width' => 100, 'height' => 100)
+     * @return array<string, mixed> - array('width' => 100, 'height' => 100)
      *
      * @throws QUI\Exception
      */
@@ -565,7 +568,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
-     * @return array|bool|false|string
+     * @return array<array-key, mixed>|bool|string
      */
     public function getWatermarkRatio(): bool | array | string
     {
