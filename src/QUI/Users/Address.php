@@ -41,6 +41,9 @@ class Address extends QUI\QDOM
 
     protected ?string $uuid = null;
 
+    /**
+     * @var array<string, float|bool|int|string>
+     */
     protected array $customData = [];
 
     protected ?QUIUserInterface $User = null;
@@ -159,6 +162,8 @@ class Address extends QUI\QDOM
      *     'no'   => '555 29 29',
      *     'type' => 'tel'
      * ]);
+     *
+     * @param array<string, mixed> $phone
      */
     public function addPhone(array $phone): void
     {
@@ -201,6 +206,8 @@ class Address extends QUI\QDOM
 
     /**
      * Return the complete phone list
+     *
+     * @return array<array-key, mixed>
      */
     public function getPhoneList(): array
     {
@@ -255,7 +262,7 @@ class Address extends QUI\QDOM
      * Edit an existing entry
      *
      * @param integer $index
-     * @param array|string $phone - [no => '+0049 929292', 'type' => 'fax'] or '+0049 929292'
+     * @param array<string, mixed>|string $phone - [no => '+0049 929292', 'type' => 'fax'] or '+0049 929292'
      */
     public function editPhone(int $index, array | string $phone): void
     {
@@ -285,7 +292,7 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * @param $number
+     * @param string $number
      */
     public function editMobile($number): void
     {
@@ -312,7 +319,7 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * @param $number
+     * @param string $number
      */
     public function editFax($number): void
     {
@@ -441,6 +448,9 @@ class Address extends QUI\QDOM
         $this->setAttribute('mail', json_encode($list));
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public function getMailList(): array
     {
         if (is_array($this->getAttribute('mail'))) {
@@ -604,11 +614,17 @@ class Address extends QUI\QDOM
         return $this->User;
     }
 
+    /**
+     * @return array<string, float|bool|int|string>
+     */
     public function getCustomData(): array
     {
         return $this->customData;
     }
 
+    /**
+     * @param array<string, float|bool|int|string>|null $entries
+     */
     public function setCustomData(null | array $entries): void
     {
         if (!is_array($entries)) {
@@ -645,6 +661,8 @@ class Address extends QUI\QDOM
 
     /**
      * Alias for getDisplay
+     *
+     * @param array<string, mixed> $options
      */
     public function render(array $options = []): string
     {
@@ -654,7 +672,7 @@ class Address extends QUI\QDOM
     /**
      * Return the address as HTML display
      *
-     * @param array $options - options ['mail' => true, 'tel' => true]
+     * @param array<string, mixed> $options - options ['mail' => true, 'tel' => true]
      * @return string - HTML <address>
      */
     public function getDisplay(array $options = []): string
@@ -802,6 +820,9 @@ class Address extends QUI\QDOM
         return json_encode($attributes);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getAttributes(): array
     {
         $attributes = parent::getAttributes();
