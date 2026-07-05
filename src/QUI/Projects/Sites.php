@@ -441,6 +441,10 @@ class Sites
      * $params['fields'] - searchable fields
      * $params['count'] - true/false result as a count?
      *
+     * @param array<string, mixed> $params
+     *
+     * @return array<int, mixed>|int
+     *
      * @throws Exception
      */
     public static function search(string $search, array $params = []): array | int
