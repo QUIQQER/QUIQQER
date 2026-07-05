@@ -13,6 +13,8 @@ class Utils
 {
     /**
      * Gets all available languages
+     *
+     * @return array<int, string>
      */
     public static function getAvailableLanguages(): array
     {
@@ -22,7 +24,7 @@ class Utils
     /**
      * Makes sure , that the path ends with a trailing slash.
      *
-     * @param $path - Raw Path
+     * @param string $path - Raw Path
      *
      * @return string - Path with trailing slash.
      */
@@ -34,7 +36,7 @@ class Utils
     /**
      * Checks if a directory is empty.
      *
-     * @param $dir - Path to the directory.
+     * @param string $dir - Path to the directory.
      *
      * @return bool|null - Null, if an error occured. True if dir is empty, false if it is not.
      */
@@ -57,6 +59,8 @@ class Utils
 
     /**
      * Calculates the MD5 sum of the given directory
+     *
+     * @param string $dir
      */
     public static function getDirMD5($dir): bool|string
     {
@@ -86,6 +90,8 @@ class Utils
 
     /**
      * Sanitizes the given projectname
+     *
+     * @param string $name
      */
     public static function sanitizeProjectName($name): string
     {
@@ -198,6 +204,10 @@ class Utils
         return $nginx ? $result + 4 : $result;
     }
 
+    /**
+     * @param string $templateName
+     * @param string $version
+     */
     public static function templateSupportsDemoData($templateName, $version): bool
     {
         $packagesJson = file_get_contents('https://update.quiqqer.com/packages.json');
