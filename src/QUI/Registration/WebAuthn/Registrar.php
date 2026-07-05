@@ -19,6 +19,9 @@ class Registrar extends FrontendUsers\AbstractRegistrar
      */
     private ?array $attestation = null;
 
+    /**
+     * @return array<FrontendUsers\InvalidFormField>
+     */
     public function validate(): array
     {
         $username = $this->getUsername();
@@ -49,6 +52,9 @@ class Registrar extends FrontendUsers\AbstractRegistrar
         return [];
     }
 
+    /**
+     * @return array<FrontendUsers\InvalidFormField>
+     */
     public function getInvalidFields(): array
     {
         return [];
