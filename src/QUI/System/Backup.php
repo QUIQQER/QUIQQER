@@ -40,6 +40,9 @@ class Backup
         return $uuid;
     }
 
+    /**
+     * @param string $folder
+     */
     public static function deleteEtcBackup($folder): void
     {
         $backupFolder = VAR_DIR . 'backup/etc/' . $folder;
@@ -49,6 +52,9 @@ class Backup
         }
     }
 
+    /**
+     * @param string $backupFolder
+     */
     public static function diff($backupFolder): string
     {
         $diffIsEnabled = System::isSystemFunctionCallable('diff');
