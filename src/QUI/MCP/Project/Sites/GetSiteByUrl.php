@@ -202,9 +202,9 @@ class GetSiteByUrl extends AbstractTool
 
     protected static function isRelativeSiteFile(string $url): bool
     {
-        $firstSegment = explode('/', $url, 2)[0] ?? $url;
-        $firstSegment = explode('?', $firstSegment, 2)[0] ?? $firstSegment;
-        $firstSegment = explode('#', $firstSegment, 2)[0] ?? $firstSegment;
+        $firstSegment = explode('/', $url, 2)[0];
+        $firstSegment = explode('?', $firstSegment, 2)[0];
+        $firstSegment = explode('#', $firstSegment, 2)[0];
 
         foreach ([QUI\Rewrite::getDefaultSuffix(), '.print', '.pdf'] as $suffix) {
             if ($suffix !== '' && str_ends_with($firstSegment, $suffix)) {
@@ -355,6 +355,6 @@ class GetSiteByUrl extends AbstractTool
             }
         }
 
-        return explode(QUI\Rewrite::URL_PARAM_SEPARATOR, $segment)[0] ?? '';
+        return explode(QUI\Rewrite::URL_PARAM_SEPARATOR, $segment)[0];
     }
 }
