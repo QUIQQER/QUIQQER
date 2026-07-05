@@ -11,7 +11,7 @@ use QUI\Locale;
 class Country extends QUI\InstallationWizard\AbstractInstallationWizardStep
 {
     /**
-     * @param array $attributes
+     * @param array<array-key, mixed> $attributes
      */
     public function __construct(array $attributes = [])
     {
