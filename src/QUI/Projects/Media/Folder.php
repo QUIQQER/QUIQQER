@@ -62,6 +62,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * direct children of the folder
+     *
+     * @var array<int, QUI\Interfaces\Projects\Media\File>
      */
     protected array $children = [];
 
@@ -270,6 +272,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * Return all children with the wanted name
+     *
+     * @param string $filename
+     *
+     * @return array<int, mixed>
      *
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
@@ -565,11 +571,11 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * Return the children ids ( not resursive )
      * folders first, files seconds
      *
-     * @param array $params - [optional] db query fields
+     * @param array<string, mixed> $params - [optional] db query fields
      *
      * If $params['count'] = true is set, then the total number of search results is returned!
      *
-     * @return array|int
+     * @return array<int, mixed>|int
      */
     public function getChildrenIds(array $params = []): array | int
     {
@@ -758,9 +764,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Returns all children in the folder
      *
-     * @param array $params - [optional] db query fields
+     * @param array<string, mixed> $params - [optional] db query fields
      *
-     * @return array
+     * @return array<int, mixed>
      */
     public function getChildren(array $params = []): array
     {
@@ -855,6 +861,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * Return the images from the folder
+     *
+     * @param array<string, mixed> $params
+     *
+     * @return array<int, mixed>|int
      */
     public function getImages(array $params = []): array | int
     {
@@ -863,6 +873,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * Return children / elements in the folder
+     *
+     * @param array<string, mixed> $params
+     *
+     * @return array<int, mixed>|int
      */
     protected function getElements(string $type, array $params): array | int
     {
@@ -1029,6 +1043,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * Return the sub folders from the folder
+     *
+     * @param array<string, mixed> $params
+     *
+     * @return array<int, mixed>|int
      */
     public function getFolders(array $params = []): array | int
     {
@@ -1038,7 +1056,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the files from folder
      *
-     * @param array $params - filter parameter
+     * @param array<string, mixed> $params - filter parameter
+     *
+     * @return array<int, mixed>|int
      */
     public function getFiles(array $params = []): array | int
     {
@@ -1104,6 +1124,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * Returns only the sub folders
+     *
+     * @return array<int, mixed>
      *
      * @throws QUI\Database\Exception
      * @deprecated use getFolders
@@ -1570,6 +1592,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * Returns all ids from children under the folder
+     *
+     * @return array<int, mixed>
      */
     protected function getAllRecursiveChildrenIds(): array
     {
