@@ -7,6 +7,8 @@
 if (!function_exists('array_key_first')) {
     /**
      * https://www.php.net/manual/de/function.array-key-first.php
+     *
+     * @param array<array-key, mixed> $arr
      */
     function array_key_first(array $arr): int | string | null
     {
@@ -21,6 +23,8 @@ if (!function_exists('array_key_first')) {
 if (!function_exists("array_key_last")) {
     /**
      * https://www.php.net/manual/de/function.array-key-last.php#123016
+     *
+     * @param mixed $array
      */
     function array_key_last($array): int | string | null
     {
@@ -47,6 +51,10 @@ if (!function_exists("array_merge_recursive_overwrite")) {
      *
      * @see https://www.php.net/manual/en/function.array-merge-recursive.php
      * @see https://www.php.net/manual/en/function.array-merge.php
+     *
+     * @param array<array-key, mixed> ...$arrays
+     *
+     * @return array<array-key, mixed>
      */
     function array_merge_recursive_overwrite(array ...$arrays): array
     {
